@@ -1,0 +1,101 @@
+<?php
+/* $Id$ */
+/*
+	v_public_includes_delete.php
+	Copyright (C) 2008 Mark J Crane
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	   this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
+*/
+include "root.php";
+require_once "includes/config.php";
+require_once "includes/checkauth.php";
+
+if (ifgroup("admin") || ifgroup("superadmin")) {
+	//access granted
+}
+else {
+	echo "access denied";
+	exit;
+}
+
+if (count($_GET)>0) {
+	$id = $_GET["id"];
+}
+
+if (strlen($id)>0) {
+
+	$sql = "";
+	$sql .= "select * from v_public_includes ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and public_include_id = '$id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+		$extensionname = $row["extensionname"];
+		$publicorder = $row["publicorder"];
+		//$context = $row["context"];
+		//$enabled = $row["enabled"];
+		//$descr = $row["descr"];
+		break; //limit to 1 row
+	}
+	unset ($prepstatement, $sql);
+
+	$publicincludefilename = $publicorder."_".$extensionname.".xml";
+	if (file_exists($v_conf_dir."/dialplan/public/".$publicincludefilename)) {
+		unlink($v_conf_dir."/dialplan/public/".$publicincludefilename);
+	}
+	unset($publicincludefilename, $publicorder, $extensionname);
+
+	//delete child data
+	$sql = "";
+	$sql .= "delete from v_public_includes_details ";
+	$sql .= "where public_include_id = '$id' ";
+	$sql .= "and v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	unset($sql);
+
+	//delete parent data
+	$sql = "";
+	$sql .= "delete from v_public_includes ";
+	$sql .= "where public_include_id = '$id' ";
+	$sql .= "and v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	unset($sql);
+
+	//synchronize the xml config
+	sync_package_v_public_includes();
+}
+
+require_once "includes/header.php";
+echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_includes.php\">\n";
+echo "<div align='center'>\n";
+echo "Delete Complete\n";
+echo "</div>\n";
+
+require_once "includes/footer.php";
+return;
+
+?>
+

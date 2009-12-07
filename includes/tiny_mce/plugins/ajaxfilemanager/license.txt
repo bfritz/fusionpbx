@@ -1,0 +1,12 @@
+Open Source License
+This ajax file manager is distributed under the 
+	GPL(http://www.gnu.org/licenses/gpl.html)
+	and 
+	MPL(http://www.mozilla.org/MPL/MPL-1.1.html) open source licenses
+so you could use it or integrate it into your system at no cost
+Term And Conditions
+We (phpletter.com) may at any time revise the license by updating in my official site. By using our file manager, you agree to be bound byb any such revisions and should therefore periodically visit our site to determine the current terms/License to which you are bound.
+All copyright declarations  in the source must remain unchangable. Please contact us(cailongqun at yahoo.com.cn) if you need to make changes to it, in order to avoid any Legal Issues.
+
+
+

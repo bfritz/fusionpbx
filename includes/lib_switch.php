@@ -1,0 +1,4454 @@
+<?php
+/* $Id$ */
+/*
+/* ========================================================================== */
+/*
+	v_config.inc
+	Copyright (C) 2008 Mark J Crane
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	   this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
+*/
+include "root.php";
+require_once "includes/config.php";
+//require_once "includes/checkauth.php";
+//if (ifgroup("admin") || ifgroup("superadmin")) {
+//	//access granted
+//}
+//else {
+//	echo "access denied";
+//	exit;
+//}
+
+$v_id = '1';
+
+//preferences
+	$v_label_show = true;
+	$v_path_show = true;
+	$v_menu_tab_show = false;
+	$v_fax_show = false;
+
+function v_settings()
+{
+	global $db, $v_id;
+
+	$program_dir = '';
+	$docroot = $_SERVER["DOCUMENT_ROOT"];
+	$docroot = str_replace ("\\", "/", $docroot);
+	$docrootarray = explode("/", $docroot);
+	$docrootarraycount = count($docrootarray);
+	$x = 0;
+	foreach ($docrootarray as $value) {
+		$program_dir = $program_dir.$value."/";
+		if (($docrootarraycount-3) == $x) {
+		  break;
+		}
+		$x++;
+	}
+	$program_dir = rtrim($program_dir, "/");
+	//echo "program_dir: $program_dir<br />";
+
+	$sql = "";
+	$sql .= "select * from v_system_settings ";
+	$sql .= "where v_id = '$v_id' ";
+	//echo "program_dir: ".$program_dir;
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+
+		$php_dir = $row["php_dir"];
+		$php_dir = str_replace ("{program_dir}", $program_dir, $php_dir);
+		$v_settings_array["php_dir"] = $php_dir;
+
+		$tmp_dir = $row["tmp_dir"];
+		$tmp_dir = str_replace ("{program_dir}", $program_dir, $tmp_dir);
+		$v_settings_array["tmp_dir"] = $tmp_dir;
+
+		$bin_dir = $row["bin_dir"];
+		$bin_dir = str_replace ("{program_dir}", $program_dir, $bin_dir);
+		$v_settings_array["bin_dir"] = $bin_dir;
+
+		$v_startup_script_dir = $row["v_startup_script_dir"];
+		$v_startup_script_dir = str_replace ("{program_dir}", $program_dir, $v_startup_script_dir);
+		$v_settings_array["v_startup_script_dir"] = $v_startup_script_dir;
+
+		$v_package_version = $row["v_package_version"];
+		$v_package_version = str_replace ("{program_dir}", $program_dir, $v_package_version);
+		$v_settings_array["v_package_version"] = $v_package_version;
+
+		$v_build_version = $row["v_build_version"];
+		$v_build_version = str_replace ("{program_dir}", $program_dir, $v_build_version);
+		$v_settings_array["v_build_version"] = $v_build_version;
+
+		$v_build_revision = $row["v_build_revision"];
+		$v_build_revision = str_replace ("{program_dir}", $program_dir, $v_build_revision);
+		$v_settings_array["v_build_revision"] = $v_build_revision;
+
+		$v_label = $row["v_label"];
+		$v_label = str_replace ("{program_dir}", $program_dir, $v_label);
+		$v_settings_array["v_label"] = $v_label;
+
+		$v_name = $row["v_name"];
+		$v_label = str_replace ("{program_dir}", $program_dir, $v_label);
+		$v_settings_array["v_name"] = $v_name;
+
+		$v_dir = $row["v_dir"];
+		$v_dir = str_replace ("{program_dir}", $program_dir, $v_dir);
+		$v_settings_array["v_dir"] = $v_dir;
+
+		$v_parent_dir = $row["v_parent_dir"];
+		$v_parent_dir = str_replace ("{program_dir}", $program_dir, $v_parent_dir);
+		$v_settings_array["v_parent_dir"] = $v_parent_dir;
+
+		$v_backup_dir = $row["v_backup_dir"];
+		$v_backup_dir = str_replace ("{program_dir}", $program_dir, $v_backup_dir);
+		$v_settings_array["v_backup_dir"] = $v_backup_dir;
+
+		$v_web_dir = $row["v_web_dir"];
+		$v_web_dir = str_replace ("{program_dir}", $program_dir, $v_web_dir);
+		$v_settings_array["v_web_dir"] = $v_web_dir;
+
+		$v_web_root = $row["v_web_root"];
+		$v_web_root = str_replace ("{program_dir}", $program_dir, $v_web_root);
+		$v_settings_array["v_web_root"] = $v_web_root;
+
+		$v_relative_url = $row["v_relative_url"];
+		$v_relative_url = str_replace ("{program_dir}", $program_dir, $v_relative_url);
+		$v_settings_array["v_relative_url"] = $v_relative_url;
+
+		$v_conf_dir = $row["v_conf_dir"];
+		$v_conf_dir = str_replace ("{program_dir}", $program_dir, $v_conf_dir);
+		$v_settings_array["v_conf_dir"] = $v_conf_dir;
+
+		$v_db_dir = $row["v_db_dir"];
+		$v_db_dir = str_replace ("{program_dir}", $program_dir, $v_db_dir);
+		$v_settings_array["v_db_dir"] = $v_db_dir;
+
+		$v_htdocs_dir = $row["v_htdocs_dir"];
+		$v_htdocs_dir = str_replace ("{program_dir}", $program_dir, $v_htdocs_dir);
+		$v_settings_array["v_htdocs_dir"] = $v_htdocs_dir;
+
+		$v_log_dir = $row["v_log_dir"];
+		$v_log_dir = str_replace ("{program_dir}", $program_dir, $v_log_dir);
+		$v_settings_array["v_log_dir"] = $v_log_dir;
+
+		$v_mod_dir = $row["v_mod_dir"];
+		$v_mod_dir = str_replace ("{program_dir}", $program_dir, $v_mod_dir);
+		$v_settings_array["v_mod_dir"] = $v_mod_dir;
+
+		$v_scripts_dir = $row["v_scripts_dir"];
+		$v_scripts_dir = str_replace ("{program_dir}", $program_dir, $v_scripts_dir);
+		$v_settings_array["v_scripts_dir"] = $v_scripts_dir;
+
+		$v_storage_dir = $row["v_storage_dir"];
+		$v_storage_dir = str_replace ("{program_dir}", $program_dir, $v_storage_dir);
+		$v_settings_array["v_storage_dir"] = $v_storage_dir;
+
+		$v_recordings_dir = $row["v_recordings_dir"];
+		$v_recordings_dir = str_replace ("{program_dir}", $program_dir, $v_recordings_dir);
+		$v_settings_array["v_recordings_dir"] = $v_recordings_dir;
+
+		$v_sounds_dir = $row["v_sounds_dir"];
+		$v_sounds_dir = str_replace ("{program_dir}", $program_dir, $v_sounds_dir);
+		$v_settings_array["v_sounds_dir"] = $v_sounds_dir;
+
+		$v_download_path = $row["v_download_path"];
+		$v_download_path = str_replace ("{program_dir}", $program_dir, $v_download_path);
+		$v_settings_array["v_download_path"] = $v_download_path;
+
+		$v_provisioning_tftp_dir = $row["v_provisioning_tftp_dir"];
+		$v_provisioning_tftp_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_tftp_dir);
+		$v_settings_array["v_provisioning_tftp_dir"] = $v_provisioning_tftp_dir;
+
+		$v_provisioning_ftp_dir = $row["v_provisioning_ftp_dir"];
+		$v_provisioning_ftp_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_ftp_dir);
+		$v_settings_array["v_provisioning_ftp_dir"] = $v_provisioning_ftp_dir;
+
+		$v_provisioning_https_dir = $row["v_provisioning_https_dir"];
+		$v_provisioning_https_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_https_dir);
+		$v_settings_array["v_provisioning_https_dir"] = $v_provisioning_https_dir;
+
+		$v_provisioning_http_dir = $row["v_provisioning_http_dir"];
+		$v_provisioning_http_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_http_dir);
+		$v_settings_array["v_provisioning_http_dir"] = $v_provisioning_http_dir;
+
+		//echo "program_dir: ".$program_dir;
+		//exit;
+
+		break; //limit to 1 row
+	}
+	unset ($prepstatement);
+
+	return $v_settings_array;
+
+}
+//Update the settings
+//	v_settings();
+//	write_config();
+
+$v_settings_array = v_settings();
+foreach($v_settings_array as $name => $value) {
+	$$name = $value;
+}
+
+
+if ($dbtype == "sqlite") {
+	//sqlite: check if call detail record (CDR) db file exists if not create it
+	if (!file_exists($dbfilepath.'/'.$server_name.'.cdr.db')) {
+		//echo "file does not exist: ".$v_db_dir.'/cdr.db';
+		if (copy($dbfilepath.'/cdr.clean.db', $dbfilepath.'/'.$server_name.'.cdr.db')) {
+			//echo "copy succeeded.\n";
+		}
+	}
+}
+
+
+function build_menu() {
+
+	global $v_menu_tab_show;
+
+	if ($v_menu_tab_show) {
+		global $config;
+		//$v_relative_url = $config['installedpackages']['freeswitchsettings']['config'][0]['v_relative_url'];
+
+		//$script_name_array = split ("/", $_SERVER["SCRIPT_NAME"]);
+		//$script_name = $script_name_array[count($script_name_array)-1];
+		//echo "script_name: ".$script_name."<br />";
+
+		$tab_array = array();
+		$menu_selected = false;
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_settings.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Settings"), $menu_selected, $v_relative_url."/v_settings.php");
+		unset($menu_selected);
+
+		$menu_selected = false;
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan_includes.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan_includes_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan_includes_details_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Dialplan"), $menu_selected, $v_relative_url."/v_dialplan_includes.php");
+		unset($menu_selected);
+
+		$menu_selected = false;
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_extensions.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_extensions_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Extensions"), $menu_selected, $v_relative_url."/v_extensions.php");
+		unset($menu_selected);
+
+		$menu_selected = false;
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_features.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_fax.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_fax_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_hunt_group.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_hunt_group_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_hunt_group_destinations.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_hunt_group_destinations_edit.php") { $menu_selected = true; }	
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_auto_attendant.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_auto_attendant_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_auto_attendant_options_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_modules.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_recordings.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_recordings_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Features"), $menu_selected, $v_relative_url."/v_features.php");
+		unset($menu_selected);
+
+		$menu_selected = false;
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_gateways.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_gateways_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Gateways"), $menu_selected, $v_relative_url."/v_gateways.php");
+		unset($menu_selected);
+
+		$menu_selected = false;
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_profiles.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_profile_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Profiles"), $menu_selected, $v_relative_url."/v_profiles.php");
+		unset($menu_selected);
+
+		$menu_selected = false;
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_public.php") { $menu_selected = true; }	
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_public_includes.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_public_includes_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_public_includes_details_edit.php") { $menu_selected = true; }	
+		$tab_array[] = array(gettext("Public"), $menu_selected, $v_relative_url."/v_public_includes.php");
+		unset($menu_selected);
+
+		$menu_selected = false;
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_status.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Status"), $menu_selected, $v_relative_url."/v_status.php");
+		unset($menu_selected);
+
+		$menu_selected = false;
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_vars.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Vars"), $menu_selected, $v_relative_url."/v_vars.php");
+		unset($menu_selected);
+
+		//display_top_tabs($tab_array);
+	}
+}
+
+
+function guid()
+{
+	if (function_exists('com_create_guid')){
+		return com_create_guid();
+	}else{
+		mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
+		$charid = strtoupper(md5(uniqid(rand(), true)));
+		$hyphen = chr(45);// "-"
+		$uuid = chr(123)// "{"
+			.substr($charid, 0, 8).$hyphen
+			.substr($charid, 8, 4).$hyphen
+			.substr($charid,12, 4).$hyphen
+			.substr($charid,16, 4).$hyphen
+			.substr($charid,20,12)
+			.chr(125);// "}"
+		return $uuid;
+	}
+}
+//echo guid();
+
+
+function pkg_is_service_running($servicename)
+{
+	//exec("/bin/ps ax | awk '{ print $5 }'", $psout);
+	//array_shift($psout);
+	//foreach($psout as $line) {
+	//	$ps[] = trim(array_pop(explode(' ', array_pop(explode('/', $line)))));
+	//}
+	//if(pkg_is_service_running($servicename, $ps) or is_process_running($servicename) ) {
+		return true;
+	//}
+	//else {
+	//    return false;
+	//}
+}
+
+
+function event_socket_create($host, $port, $password)
+{
+	//$host has been deprecated
+
+	//build the interface list
+	//$i = 0; $ifdescrs = array('wan' => 'WAN', 'lan' => 'LAN');
+		//for ($j = 1; isset($config['interfaces']['opt' . $j]); $j++) {
+		//	$ifdescrs['opt' . $j] = $config['interfaces']['opt' . $j]['descr'];
+		//}
+
+		//get the interface ip addresses and try to connect to them
+		//foreach ($ifdescrs as $ifdescr => $ifname){
+			//$ifinfo = get_interface_info($ifdescr);
+			//$interface_ip_address = $ifinfo['ipaddr'];
+
+			//if (strlen($interface_ip_address) > 0) {
+
+			$fp = fsockopen($host, $port, $errno, $errdesc, 3);
+			socket_set_blocking($fp,false);
+
+			if (!$fp) {
+				//connection failed continue through the loop testing other addresses
+				//invalid handle
+			}
+			else {
+				//connected to the socket return the handle
+
+				while (!feof($fp)) {
+					$buffer = fgets($fp, 1024);
+					usleep(100); //allow time for reponse
+					if (trim($buffer) == "Content-Type: auth/request") {
+						 fputs($fp, "auth $password\n\n");
+						 break;
+					}
+				}
+				return $fp;
+			}
+
+			//} //end if interface_ip_address
+		//} //end foreach
+} //end function
+
+
+function event_socket_request($fp, $cmd)
+{
+	if ($fp) {
+		fputs($fp, $cmd."\n\n");
+		usleep(100); //allow time for reponse
+
+		$response = "";
+		$i = 0;
+		$contentlength = 0;
+		while (!feof($fp)) {
+			$buffer = fgets($fp, 4096);
+			if ($contentlength > 0) {
+				$response .= $buffer;
+			}
+
+			if ($contentlength == 0) { //if contentlenght is already don't process again
+				if (strlen(trim($buffer)) > 0) { //run only if buffer has content
+					$temparray = explode(":", trim($buffer));
+					if ($temparray[0] == "Content-Length") {
+						$contentlength = trim($temparray[1]);
+					}
+				}
+			}
+
+			usleep(100); //allow time for reponse
+
+			//optional because of script timeout //don't let while loop become endless
+			if ($i > 1000) { break; }
+
+			if ($contentlength > 0) { //is contentlength set
+				//stop reading if all content has been read.
+				if (strlen($response) >= $contentlength) {
+					break;
+				}
+			}
+			$i++;
+		}
+
+		return $response;
+	}
+	else {
+		echo "no handle";
+	}
+}
+
+
+function event_socket_request_cmd($cmd)
+{
+	global $db, $v_id, $host;
+  
+	$sql = "";
+	$sql .= "select * from v_settings ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+		//$v_id = $row["v_id"];
+		$numbering_plan = $row["numbering_plan"];
+		$default_gateway = $row["default_gateway"];
+		$default_area_code = $row["default_area_code"];
+		$event_socket_port = $row["event_socket_port"];
+		$event_socket_password = $row["event_socket_password"];
+		$xml_rpc_http_port = $row["xml_rpc_http_port"];
+		$xml_rpc_auth_realm = $row["xml_rpc_auth_realm"];
+		$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
+		$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
+		$admin_pin = $row["admin_pin"];
+		$smtphost = $row["smtphost"];
+		$smtpsecure = $row["smtpsecure"];
+		$smtpauth = $row["smtpauth"];
+		$smtpusername = $row["smtpusername"];
+		$smtppassword = $row["smtppassword"];
+		$smtpfrom = $row["smtpfrom"];
+		$smtpfromname = $row["smtpfromname"];
+		$mod_shout_decoder = $row["mod_shout_decoder"];
+		$mod_shout_volume = $row["mod_shout_volume"];
+		break; //limit to 1 row
+	}
+	unset ($prepstatement);
+
+	if (pkg_is_service_running('freeswitch')) {
+		$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+		$response = event_socket_request($fp, $cmd);
+		fclose($fp);
+	}
+	unset($host, $port, $password);
+
+}
+
+function byte_convert( $bytes ) {
+
+	if ($bytes<=0) {
+		return '0 Byte';
+	}
+
+	$convention=1000; //[1000->10^x|1024->2^x]
+	$s=array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB');
+	$e=floor(log($bytes,$convention));
+	$e=floor(log($bytes,$convention));
+	return round($bytes/pow($convention,$e),2).' '.$s[$e];
+}
+
+function lan_sip_profile()
+{
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+	clearstatcache();
+
+	//if the lan directory does not exist then create it
+	if (!is_dir($v_conf_dir.'/sip_profiles/lan/')) {
+		exec("mkdir ".$v_conf_dir."/sip_profiles/lan/");
+	}
+
+	//create the LAN profile if it doesn't exist
+	if (!file_exists($v_conf_dir.'/sip_profiles/lan.xml')) {
+		$lan_ip = $config['interfaces']['lan']['ipaddr'];
+		if (strlen($lan_ip) > 0) {
+			exec("cp ".$v_conf_dir."/sip_profiles/internal.xml ".$v_conf_dir."/sip_profiles/lan.xml");
+
+			$filename = $v_conf_dir."/sip_profiles/lan.xml";
+			$handle = fopen($filename,"rb");
+			$contents = fread($handle, filesize($filename));
+			fclose($handle);
+
+			$handle = fopen($filename,"w");
+			$contents = str_replace("<profile name=\"internal\">", "<profile name=\"lan\">", $contents);
+			$contents = str_replace("<alias name=\"default\"/>", "", $contents);
+			$contents = str_replace("<X-PRE-PROCESS cmd=\"include\" data=\"internal/*.xml\"/>", "<X-PRE-PROCESS cmd=\"include\" data=\"lan/*.xml\"/>", $contents);
+			$contents = str_replace("<param name=\"rtp-ip\" value=\"\$\${local_ip_v4}\"/>", "<param name=\"rtp-ip\" value=\"".$lan_ip."\"/>", $contents);
+			$contents = str_replace("<param name=\"sip-ip\" value=\"\$\${local_ip_v4}\"/>", "<param name=\"sip-ip\" value=\"".$lan_ip."\"/>", $contents);
+			fwrite($handle, $contents);
+			unset($contents);
+			fclose($handle);
+			unset($filename);
+		}
+	}
+}
+
+function ListFiles($dir) {
+
+	if($dh = opendir($dir)) {
+
+		$files = Array();
+		$inner_files = Array();
+
+		while($file = readdir($dh)) {
+			if($file != "." && $file != ".." && $file[0] != '.') {
+				if(is_dir($dir . "/" . $file)) {
+					//$inner_files = ListFiles($dir . "/" . $file); //recursive
+					if(is_array($inner_files)) $files = array_merge($files, $inner_files); 
+			} else {
+					array_push($files, $file);
+					//array_push($files, $dir . "/" . $file);
+				}
+			}
+		}
+
+		closedir($dh);
+		return $files;
+	}
+}
+
+function switch_conf_xml()
+{
+	global $dbfilepath;
+
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	$fout = fopen($v_conf_dir."/autoload_configs/switch.conf.xml","w");
+	$tmp = "";
+	$tmp .= "";
+
+	$tmp .= "<configuration name=\"switch.conf\" description=\"Core Configuration\">\n";
+	$tmp .= "\n";
+	$tmp .= "	<cli-keybindings>\n";
+	$tmp .= "		<key name=\"1\" value=\"help\"/>\n";
+	$tmp .= "		<key name=\"2\" value=\"status\"/>\n";
+	$tmp .= "		<key name=\"3\" value=\"show channels\"/>\n";
+	$tmp .= "		<key name=\"4\" value=\"show calls\"/>\n";
+	$tmp .= "		<key name=\"5\" value=\"sofia status\"/>\n";
+	$tmp .= "		<key name=\"6\" value=\"reloadxml\"/>\n";
+	$tmp .= "		<key name=\"7\" value=\"console loglevel 0\"/>\n";
+	$tmp .= "		<key name=\"8\" value=\"console loglevel 7\"/>\n";
+	$tmp .= "		<key name=\"9\" value=\"sofia status profile internal\"/>\n";
+	$tmp .= "		<key name=\"10\" value=\"fsctl pause\"/>\n";
+	$tmp .= "		<key name=\"11\" value=\"fsctl resume\"/>\n";
+	$tmp .= "		<key name=\"12\" value=\"version\"/>\n";
+	$tmp .= "	</cli-keybindings>\n";
+	$tmp .= "\n";
+	$tmp .= "	<settings>\n";
+	$tmp .= "		<!--Colorize the Console -->\n";
+	$tmp .= "		<param name=\"colorize-console\" value=\"true\"/>\n";
+	$tmp .= "		<!--Most channels to allow at once -->\n";
+	$tmp .= "		<param name=\"max-sessions\" value=\"1000\"/>\n";
+	$tmp .= "		<!--Most channels to create per second -->\n";
+	$tmp .= "		<param name=\"sessions-per-second\" value=\"30\"/>\n";
+	$tmp .= "		<!-- Default Global Log Level - value is one of debug,info,notice,warning,err,crit,alert -->\n";
+	$tmp .= "		<param name=\"loglevel\" value=\"debug\"/>\n";
+	$tmp .= "		<!--Try to catch any crashes that can be recoverable (in the context of a call)-->\n";
+	$tmp .= "		<param name=\"crash-protection\" value=\"false\"/>\n";
+	$tmp .= "		<!--<param name=\"max_dtmf_duration\" value=\"192000\"/>-->\n";
+	$tmp .= "		<!--<param name=\"default_dtmf_duration\" value=\"8000\"/>-->\n";
+	$tmp .= "		<!--\n";
+	$tmp .= "			If you want to send out voicemail notifications via Windows you'll need to change the mailer-app\n";
+	$tmp .= "			variable to the setting below:\n";
+	$tmp .= "\n";
+	$tmp .= "			<param name=\"mailer-app\" value=\"msmtp\"/>\n";
+	$tmp .= "\n";
+	$tmp .= "			Donot change mailer-app-args.\n";
+	$tmp .= "			You will also need to download a sendmail clone for Windows (msmtp). This version works without issue:\n";
+	$tmp .= "			http://msmtp.sourceforge.net/index.html. Download and copy the .exe to %winddir%\\system32.\n";
+	$tmp .= "			You'll need to create a small config file for smtp credentials (host name, authentication, tls, etc.) in\n";
+	$tmp .= "			%USERPROFILE%\\Application Data\\ called \"msmtprc.txt\". Below is a sample copy of this file:\n";
+	$tmp .= "\n";
+	$tmp .= "			###################################\n";
+	$tmp .= "			# The SMTP server of the provider.\n";
+	$tmp .= "			account provider\n";
+	$tmp .= "			host smtp.myisp.com\n";
+	$tmp .= "			from john@myisp.com\n";
+	$tmp .= "			auth login\n";
+	$tmp .= "			user johndoe\n";
+	$tmp .= "			password mypassword\n";
+	$tmp .= "\n";
+	$tmp .= "			# Set a default account\n";
+	$tmp .= "			account default : provider\n";
+	$tmp .= "			###################################\n";
+	$tmp .= "\n";
+	$tmp .= " -->\n";
+	//$tmp .= "		<!--<param name=\"mailer-app\" value=\"/usr/local/bin/php\"/>-->\n";
+	//$tmp .= "		<!--<param name=\"mailer-app-args\" value=\"/usr/local/www/packages/freeswitch/v_mailto.php\"/>-->\n";
+	//$tmp .= "		<param name=\"mailer-app\" value=\"/fusionpbx/Program/php/php.exe\"/>\n";
+	//$tmp .= "		<param name=\"mailer-app-args\" value=\"/fusionpbx/Program/www/secure/v_mailto.php\"/>\n";
+	$tmp .= "		<param name=\"mailer-app\" value=\"".$php_dir."\"/>\n";
+	$tmp .= "		<param name=\"mailer-app-args\" value=\"".$dbfilepath."/v_mailto.php\"/>\n";
+	$tmp .= "		<param name=\"dump-cores\" value=\"yes\"/>\n";
+	$tmp .= "		<!--RTP port range -->\n";
+	$tmp .= "		<!--<param name=\"rtp-start-port\" value=\"16384\"/>-->\n";
+	$tmp .= "		<!--<param name=\"rtp-end-port\" value=\"32768\"/>-->\n";
+	$tmp .= "		<param name=\"rtp_enable_zrtp\" value=\"false\"/>\n";
+	$tmp .= "	</settings>\n";
+	$tmp .= "\n";
+	$tmp .= "</configuration>\n";
+	$tmp .= "\n";
+
+	fwrite($fout, $tmp);
+	unset($tmp);
+	fclose($fout);
+}
+
+function  recording_js()
+{
+
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	$fout = fopen($v_scripts_dir."/recordings.js","w");
+	$tmp = "";
+	$tmp .= "  include(\"config.js\");\n";
+	$tmp .= "    //admin_pin defined in config.js\n";
+	$tmp .= "\n";
+	$tmp .= "  //var admin_pin = \"\"; //don't require a pin\n";
+	$tmp .= "    //if you choose not to require a pin then then you may want to add a dialplan condition for a specific caller id\n";
+	$tmp .= "\n";
+	$tmp .= " var digitmaxlength = 0;\n";
+	$tmp .= " var timeoutpin = 7500;\n";
+	$tmp .= " var timeouttransfer = 7500;\n";
+	$tmp .= " var objdate = new Date();\n";
+	$tmp .= "\n";
+	$tmp .= " var adjusthours = 0; //Adjust Server time that is set to GMT 7 hours\n";
+	$tmp .= " var adjustoperator = \"-\"; //+ or -\n";
+	$tmp .= "\n";
+	$tmp .= " if (adjustoperator == \"-\") {\n";
+	$tmp .= "   var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() - adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
+	$tmp .= " }\n";
+	$tmp .= " if (adjustoperator == \"+\") {\n";
+	$tmp .= "   var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() + adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
+	$tmp .= " }\n";
+	$tmp .= "\n";
+	$tmp .= " var Hours = objdate2.getHours();\n";
+	$tmp .= " var Mins = objdate2.getMinutes();\n";
+	$tmp .= " var Seconds = objdate2.getSeconds();\n";
+	$tmp .= " var Month = objdate2.getMonth() + 1;\n";
+	$tmp .= " var Date = objdate2.getDate();\n";
+	$tmp .= " var Year = objdate2.getYear()\n";
+	$tmp .= " var Day = objdate2.getDay()+1;\n";
+	$tmp .= " var exit = false;\n";
+	$tmp .= "\n";
+	$tmp .= "\n";
+	$tmp .= "  function mycb( session, type, data, arg ) {\n";
+	$tmp .= "     if ( type == \"dtmf\" ) {\n";
+	$tmp .= "       //console_log( \"info\", \"digit: \"+data.digit+\"\\n\" );\n";
+	$tmp .= "       if ( data.digit == \"#\" ) {\n";
+	$tmp .= "         //console_log( \"info\", \"detected pound sign.\\n\" );\n";
+	$tmp .= "         return( true );\n";
+	$tmp .= "       }\n";
+	$tmp .= "       dtmf.digits += data.digit;\n";
+	$tmp .= "\n";
+	$tmp .= "       if ( dtmf.digits.length < digitmaxlength ) {\n";
+	$tmp .= "         return( true );\n";
+	$tmp .= "       }\n";
+	$tmp .= "     }\n";
+	$tmp .= "     return( false );\n";
+	$tmp .= "  }\n";
+	$tmp .= "\n";
+	$tmp .= "  //console_log( \"info\", \"Recording Request\\n\" );\n";
+	$tmp .= "\n";
+	$tmp .= "  var dtmf = new Object( );\n";
+	$tmp .= "  dtmf.digits = \"\";\n";
+	$tmp .= "\n";
+	$tmp .= "  if ( session.ready( ) ) {\n";
+	$tmp .= "      session.answer( );\n";
+	$tmp .= "\n";
+
+	$tmp .= "\n";
+	$tmp .= "  if (admin_pin.length > 0) {\n";
+	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
+	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
+	//$tmp .= "      session.execute(\"speak\", \"Please enter your pin number now.\");\n";
+	$tmp .= "      digitmaxlength = 6;\n";
+	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
+	$tmp .= "      session.streamFile( \"".$v_dir."/sounds/custom/8000/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.collectInput( mycb, dtmf, timeoutpin );\n";
+	$tmp .= "  }\n";
+	$tmp .= "\n";
+	$tmp .= "  if (dtmf.digits == admin_pin || admin_pin.length == 0) {\n";
+	//$tmp .= "      //console_log( \"info\", \"Recordings pin is correct\\n\" );\n";
+	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
+	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
+	//$tmp .= "      session.execute(\"speak\", \"Begin recording.\");\n";
+	$tmp .= "      session.streamFile( \"".$v_dir."/sounds/custom/8000/begin_recording.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
+	$tmp .= "      session.execute(\"record\", \"".$v_recordings_dir."/temp\"+Year+Month+Day+Hours+Mins+Seconds+\".wav 180 200\");\n";
+	$tmp .= "  }\n";
+	$tmp .= "  else {\n";
+	$tmp .= "      console_log( \"info\", \"Pin: \" + dtmf.digits + \" is incorrect\\n\" );\n";
+	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
+	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
+	//$tmp .= "      session.execute(\"speak\", \"Your pin number is incorect, goodbye.\");\n";
+	$tmp .= "      session.streamFile( \"".$v_dir."/sounds/custom/8000/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "  }\n";
+	$tmp .= "  session.hangup();\n";
+	$tmp .= "\n";
+	$tmp .= " }";
+	fwrite($fout, $tmp);
+	unset($tmp);
+	fclose($fout);
+
+}
+
+
+function sync_package_v_settings()
+{
+
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	global $db, $v_id, $host;
+
+ 
+	$sql = "";
+	$sql .= "select * from v_settings ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+		//$v_id = $row["v_id"];
+		//$numbering_plan = $row["numbering_plan"];
+		//$default_gateway = $row["default_gateway"];
+		//$default_area_code = $row["default_area_code"];
+		//$event_socket_port = $row["event_socket_port"];
+		//$event_socket_password = $row["event_socket_password"];
+		//$xml_rpc_http_port = $row["xml_rpc_http_port"];
+		//$xml_rpc_auth_realm = $row["xml_rpc_auth_realm"];
+		//$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
+		//$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
+		//$admin_pin = $row["admin_pin"];
+		//$smtphost = $row["smtphost"];
+		//$smtpsecure = $row["smtpsecure"];
+		//$smtpauth = $row["smtpauth"];
+		//$smtpusername = $row["smtpusername"];
+		//$smtppassword = $row["smtppassword"];
+		//$smtpfrom = $row["smtpfrom"];
+		//$smtpfromname = $row["smtpfromname"];
+		//$mod_shout_decoder = $row["mod_shout_decoder"];
+		//$mod_shout_volume = $row["mod_shout_volume"];
+
+		$v_secure = rtrim($v_secure, "/");
+		$fout = fopen($v_secure."/v_config_cli.php","w");
+		$tmpxml = "<?php\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
+		$tmpxml .= "\n";
+		//$tmpxml .= "\$v_web_dir= \"".$row["v_web_dir"]."\";\n";
+		$tmpxml .= "\$v_smtphost = \"".$row["smtphost"]."\";\n";
+		if ($row["smtpsecure"] == "none") {
+			$tmpxml .= "\$v_smtpsecure = \"\";\n";
+		}
+		else {
+			$tmpxml .= "\$v_smtpsecure = \"".$row["smtpsecure"]."\";\n";
+		}
+		$tmpxml .= "\$v_smtpauth = \"".$row["smtpauth"]."\";\n";
+		$tmpxml .= "\$v_smtpusername = \"".$row["smtpusername"]."\";\n";
+		$tmpxml .= "\$v_smtppassword = \"".$row["smtppassword"]."\";\n";
+		$tmpxml .= "\$v_smtpfrom = \"".$row["smtpfrom"]."\";\n";
+		$tmpxml .= "\$v_smtpfromname= \"".$row["smtpfromname"]."\";\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "?>";
+		fwrite($fout, $tmpxml);
+		unset($tmpxml);
+		fclose($fout);
+
+		$fout = fopen($v_conf_dir."/directory/default/default.xml","w");
+		$tmpxml = "<include>\n";
+		$tmpxml .= "  <user id=\"default\"> <!--if id is numeric mailbox param is not necessary-->\n";
+		$tmpxml .= "    <variables>\n";
+		$tmpxml .= "      <!--all variables here will be set on all inbound calls that originate from this user -->\n";
+		$tmpxml .= "      <!-- set these to take advantage of a dialplan localized to this user -->\n";
+		$tmpxml .= "      <variable name=\"numbering_plan\" value=\"" . $row['numbering_plan'] . "\"/>\n";
+		$tmpxml .= "      <variable name=\"default_gateway\" value=\"" . $row['default_gateway'] . "\"/>\n";
+		$tmpxml .= "      <variable name=\"default_area_code\" value=\"" . $row['default_area_code'] . "\"/>\n";
+		$tmpxml .= "    </variables>\n";
+		$tmpxml .= "  </user>\n";
+		$tmpxml .= "</include>\n";
+		fwrite($fout, $tmpxml);
+		unset($tmpxml);
+		fclose($fout);
+
+		$fout = fopen($v_conf_dir."/autoload_configs/event_socket.conf.xml","w");
+		$tmpxml = "<configuration name=\"event_socket.conf\" description=\"Socket Client\">\n";
+		$tmpxml .= "  <settings>\n";
+		$tmpxml .= "    <param name=\"listen-ip\" value=\"0.0.0.0\"/>\n";
+		$tmpxml .= "    <param name=\"listen-port\" value=\"" . $row['event_socket_port'] . "\"/>\n";
+		$tmpxml .= "    <param name=\"password\" value=\"" . $row['event_socket_password'] . "\"/>\n";
+		$tmpxml .= "    <!--<param name=\"apply-inbound-acl\" value=\"lan\"/>-->\n";
+		$tmpxml .= "  </settings>\n";
+		$tmpxml .= "</configuration>";
+		fwrite($fout, $tmpxml);
+		unset($tmpxml, $event_socket_password);
+		fclose($fout);
+
+		$fout = fopen($v_conf_dir."/autoload_configs/xml_rpc.conf.xml","w");
+		$tmpxml = "<configuration name=\"xml_rpc.conf\" description=\"XML RPC\">\n";
+		$tmpxml .= "  <settings>\n";
+		$tmpxml .= "    <!-- The port where you want to run the http service (default 8080) -->\n";
+		$tmpxml .= "    <param name=\"http-port\" value=\"" . $row['xml_rpc_http_port'] . "\"/>\n";
+		$tmpxml .= "    <!-- if all 3 of the following params exist all http traffic will require auth -->\n";
+		$tmpxml .= "    <param name=\"auth-realm\" value=\"" . $row['xml_rpc_auth_realm'] . "\"/>\n";
+		$tmpxml .= "    <param name=\"auth-user\" value=\"" . $row['xml_rpc_auth_user'] . "\"/>\n";
+		$tmpxml .= "    <param name=\"auth-pass\" value=\"" . $row['xml_rpc_auth_pass'] . "\"/>\n";
+		$tmpxml .= "  </settings>\n";
+		$tmpxml .= "</configuration>\n";
+		fwrite($fout, $tmpxml);
+		unset($tmpxml);
+		fclose($fout);
+
+		recording_js();
+
+		//shout.conf.xml
+		$fout = fopen($v_conf_dir."/autoload_configs/shout.conf.xml","w");
+		$tmpxml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
+		$tmpxml .= "  <settings>\n";
+		$tmpxml .= "    <!-- Don't change these unless you are insane -->\n";
+		$tmpxml .= "    <param name=\"decoder\" value=\"" . $row['mod_shout_decoder'] . "\"/>\n";
+		$tmpxml .= "    <param name=\"volume\" value=\"" . $row['mod_shout_volume'] . "\"/>\n";
+		$tmpxml .= "    <!--<param name=\"outscale\" value=\"8192\"/>-->\n";
+		$tmpxml .= "  </settings>\n";
+		$tmpxml .= "</configuration>";
+		fwrite($fout, $tmpxml);
+		unset($tmpxml);
+		fclose($fout);
+
+		//config.js
+		$fout = fopen($v_scripts_dir."/config.js","w");
+		$tmp = "//javascript include\n\n";
+		$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
+		$tmp .= "var sounds_dir = \"".$v_dir."/sounds\";\n";
+		$tmp .= "var recordings_dir = \"".$v_recordings_dir."\";\n";
+		$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";		
+		fwrite($fout, $tmp);
+		unset($tmp);
+		fclose($fout);
+
+		break; //limit to 1 row
+	}
+	unset ($prepstatement);
+
+	$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	unset($cmd);
+
+}
+
+
+function sync_package_v_dialplan()
+{
+
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+}
+
+
+function sync_package_v_extensions()
+{
+
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	// delete all old extensions to prepare for new ones
+		if($dh = opendir($v_conf_dir."/directory/default/")) {
+			$files = Array();
+			while($file = readdir($dh)) {
+				if($file != "." && $file != ".." && $file[0] != '.') {
+					if(is_dir($dir . "/" . $file)) {
+						//this is a directory do nothing
+					} else {
+						//check if file is an extension; verify the file numeric and the extension is xml
+						$file_array = explode(".", $file);
+						if (is_numeric($file_array[0]) && $file_array[count($file_array)-1] == "xml") {
+							//echo "name: ".$file_array[0]."<br />\n";
+							//echo "file: ".$file."<br/>\n";
+							unlink($v_conf_dir."/directory/default/".$file);
+						}
+					}
+				}
+			}
+			closedir($dh);
+		}
+
+	global $db, $v_id;
+	$sql = "";
+	$sql .= "select * from v_extensions ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+		$vm_password = $row['vm_password'];
+		$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
+
+		//echo "enabled: ".$row['enabled'];
+		if ($row['enabled'] != "false") {
+			$fout = fopen($v_conf_dir."/directory/default/".$row['extension'].".xml","w");
+
+			$tmpxml = "<include>\n";
+			if (strlen($row['cidr']) == 0) {
+				$tmpxml .= "  <user id=\"" . $row['extension'] . "\" mailbox=\"" . $row['mailbox'] . "\">\n";
+			}
+			else {
+				$tmpxml .= "  <user id=\"" . $row['extension'] . "\" mailbox=\"" . $row['mailbox'] . "\" cidr=\"" . $row['cidr'] . "\">\n";
+			}
+			$tmpxml .= "    <params>\n";
+			$tmpxml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
+			$tmpxml .= "      <param name=\"vm-password\" value=\"" . $vm_password . "\"/>\n";
+			if (strlen($row['vm_mailto']) > 0) {
+				$tmpxml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
+
+				switch ($row['vm_attach_file']) {
+				case "true":
+						$tmpxml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+						break;
+				case "false":
+						$tmpxml .= "      <param name=\"vm-attach-file\" value=\"false\"/>\n";
+						break;
+				default:
+						$tmpxml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+				}
+				switch ($row['vm_keep_local_after_email']) {
+				case "true":
+						$tmpxml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
+						break;
+				case "false":
+						$tmpxml .= "      <param name=\"vm-keep-local-after-email\" value=\"false\"/>\n";
+						break;
+				default:
+						$tmpxml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
+				}
+				$tmpxml .= "      <param name=\"vm-mailto\" value=\"" . $row['vm_mailto'] . "\"/>\n";
+			}
+			if (strlen($row['auth-acl']) > 0) {
+				$tmpxml .= "      <param name=\"auth-acl\" value=\"" . $row['auth_acl'] . "\"/>\n";
+			}
+			$tmpxml .= "    </params>\n";
+			$tmpxml .= "    <variables>\n";
+			$tmpxml .= "      <variable name=\"toll_allow\" value=\"domestic,international,local\"/>\n";
+			$tmpxml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
+			$tmpxml .= "      <variable name=\"user_context\" value=\"" . $row['user_context'] . "\"/>\n";
+			if (strlen($row['effective_caller_id_number']) > 0) {
+				$tmpxml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";
+				$tmpxml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $row['effective_caller_id_number'] . "\"/>\n";
+			}
+			if (strlen($row['outbound_caller_id_number']) > 0) {
+				$tmpxml .= "      <variable name=\"outbound_caller_id_name\" value=\"" . $row['outbound_caller_id_name'] . "\"/>\n";
+				$tmpxml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $row['outbound_caller_id_number'] . "\"/>\n";
+			}
+			if (strlen($row['sip-force-contact']) > 0) {
+				$tmpxml .= "      <variable name=\"sip-force-contact\" value=\"" . $row['sip_force_contact'] . "\"/>\n";
+			}
+			$tmpxml .= "    </variables>\n";
+			$tmpxml .= "  </user>\n";
+			$tmpxml .= "</include>\n";
+			fwrite($fout, $tmpxml);
+			unset($tmpxml);
+			fclose($fout);
+		}
+	}
+	unset ($prepstatement);
+	echo $tmpxml;
+
+	$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	unset($cmd);
+
+}
+
+function filename_safe($filename) {
+
+	// Lower case
+	$filename = strtolower($filename);
+
+	// Replace spaces with a '_'
+	$filename = str_replace(" ", "_", $filename);
+
+	// Loop through string
+	$result = '';
+	for ($i=0; $i<strlen($filename); $i++) {
+		if (preg_match('([0-9]|[a-z]|_)', $filename[$i])) {
+			$result .= $filename[$i];
+		}
+	}
+
+	// Return filename
+	return $result;
+}
+
+function sync_package_v_gateways()
+{
+
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	// delete all old gateways to prepare for new ones
+		if($dh = opendir($v_conf_dir."/sip_profiles/external/")) {
+			$files = Array();
+			while($file = readdir($dh)) {
+				if($file != "." && $file != ".." && $file[0] != '.') {
+					if(is_dir($dir . "/" . $file)) {
+						//this is a directory do nothing
+					} else {
+						//check if file extension is xml
+						$file_array = explode(".", $file);
+						if ($file_array[count($file_array)-1] == "xml") {
+							unlink($v_conf_dir."/sip_profiles/external/".$file);
+						}
+					}
+				}
+			}
+			closedir($dh);
+		}
+
+	global $db, $v_id;
+	$sql = "";
+	$sql .= "select * from v_gateways ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+
+		if ($row['enabled'] != "false") {
+				$fout = fopen($v_conf_dir."/sip_profiles/external/".$row['gateway'].".xml","w");
+
+				$tmpxml .= "<include>\n";
+				$tmpxml .= "    <gateway name=\"" . $row['gateway'] . "\">\n";
+				if (strlen($row['username']) > 0) {
+					$tmpxml .= "      <param name=\"username\" value=\"" . $row['username'] . "\"/>\n";
+				}
+				if (strlen($row['auth-username']) > 0) {
+					$tmpxml .= "      <param name=\"auth-username\" value=\"" . $row['auth_username'] . "\"/>\n";
+				} 
+				if (strlen($row['password']) > 0) {
+					$tmpxml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
+				}
+				if (strlen($row['realm']) > 0) {
+					$tmpxml .= "      <param name=\"realm\" value=\"" . $row['realm'] . "\"/>\n";
+				}
+				if (strlen($row['from-user']) > 0) {
+					$tmpxml .= "      <param name=\"from-user\" value=\"" . $row['from_user'] . "\"/>\n";
+				}
+				if (strlen($row['from-domain']) > 0) {
+					$tmpxml .= "      <param name=\"from-domain\" value=\"" . $row['from_domain'] . "\"/>\n";
+				}
+				if (strlen($row['proxy']) > 0) {
+					$tmpxml .= "      <param name=\"proxy\" value=\"" . $row['proxy'] . "\"/>\n";
+				}
+				if (strlen($row['expire-seconds']) > 0) {
+					$tmpxml .= "      <param name=\"expire-seconds\" value=\"" . $row['expire_seconds'] . "\"/>\n";
+				}
+				if (strlen($row['register']) > 0) {
+					$tmpxml .= "      <param name=\"register\" value=\"" . $row['register'] . "\"/>\n";
+				}
+
+				if (strlen($row['register-transport']) > 0) {
+					switch ($row['register-transport']) {
+					case "udp":
+						$tmpxml .= "      <param name=\"register-transport\" value=\"udp\"/>\n";
+						break;
+					case "tcp":
+						$tmpxml .= "      <param name=\"register-transport\" value=\"tcp\"/>\n";
+						break;
+					case "tls":
+						$tmpxml .= "      <param name=\"register-transport\" value=\"tls\"/>\n";
+						$tmpxml .= "      <param name=\"contact-params\" value=\"transport=tls\"/>\n";
+						break;
+					default:
+						$tmpxml .= "      <param name=\"register-transport\" value=\"" . $row['register_transport'] . "\"/>\n";
+					}
+				  }
+
+				if (strlen($row['retry-seconds']) > 0) {
+					$tmpxml .= "      <param name=\"retry-seconds\" value=\"" . $row['retry_seconds'] . "\"/>\n";
+				}
+				if (strlen($row['extension']) > 0) {
+					$tmpxml .= "      <param name=\"extension\" value=\"" . $row['extension'] . "\"/>\n";
+				}
+				if (strlen($row['ping']) > 0) {
+					$tmpxml .= "      <param name=\"ping\" value=\"" . $row['ping'] . "\"/>\n";
+				}
+				if (strlen($row['context']) > 0) {
+					$tmpxml .= "      <param name=\"context\" value=\"" . $row['context'] . "\"/>\n";
+				}
+				if (strlen($row['caller-id-in-from']) > 0) {
+					$tmpxml .= "      <param name=\"caller-id-in-from\" value=\"" . $row['caller_id_in_from'] . "\"/>\n";
+				}
+				if (strlen($row['supress-cng']) > 0) {
+					$tmpxml .= "      <param name=\"supress-cng\" value=\"" . $row['supress_cng'] . "\"/>\n";
+				}
+
+				$tmpxml .= "    </gateway>\n";
+				$tmpxml .= "</include>";
+
+				fwrite($fout, $tmpxml);
+				unset($tmpxml);
+				fclose($fout);
+		}
+
+	} //end while
+	unset($prepstatement);
+
+	$cmd = "api sofia profile external restart reloadxml";
+	//event_socket_request_cmd($cmd);
+	unset($cmd);
+
+}
+
+
+function sync_package_v_modules()
+{
+
+	global $config, $db, $v_id;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	$fout = fopen($v_conf_dir."/autoload_configs/modules.conf.xml","w");
+
+	$tmpxml ="";
+	$tmpxml .= "<configuration name=\"modules.conf\" description=\"Modules\">\n";
+	$tmpxml .= "	<modules>\n";
+	//$tmpxml .= "\n";
+	//$tmpxml .= "    <!-- Loggers (I'd load these first) -->\n";
+	//$tmpxml .= "    <load module=\"mod_console\"/>\n"; //if ($row['mod_console'] == "enable"){   $tmpxml .= "    <load module=\"mod_console\"/>\n"; }
+	//$tmpxml .= "    <load module=\"mod_logfile\"/>\n"; //if ($row['mod_logfile'] == "enable"){   $tmpxml .= "    <load module=\"mod_logfile\"/>\n"; }
+	//if ($row['mod_syslog'] == "enable"){    $tmpxml .= "    <load module=\"mod_syslog\"/>\n"; }
+	//$tmpxml .= "\n";
+
+	$sql = "";
+	$sql .= "select * from v_modules ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	$prevmodulecat = '';
+	while($row = $prepstatement->fetch()) {
+		$modulelabel = $row["modulelabel"];
+		$modulename = $row["modulename"];
+		$moduledesc = $row["moduledesc"];
+		$modulecat = $row["modulecat"];
+		$moduleenabled = $row["moduleenabled"];
+		$moduledefaultenabled = $row["moduledefaultenabled"];
+
+		//if ($row["modulename"] == "mod_console" || $row["modulename"] == "mod_logfile") {
+			//do nothing
+			//echo "do nothing <br />\n";
+		//}
+		//else {
+			//echo "do something <br />\n";
+			if ($prevmodulecat != $row[modulecat]) {
+				$tmpxml .= "\n		<!-- ".$row["modulecat"]." -->\n";
+			}
+			if ($row['moduleenabled'] == "true"){	$tmpxml .= "		<load module=\"".$row["modulename"]."\"/>\n"; }
+		//}
+		$prevmodulecat = $row[modulecat];
+	}
+	//exit;
+	$tmpxml .= "\n";
+	$tmpxml .= "	</modules>\n";
+	$tmpxml .= "</configuration>";
+
+	fwrite($fout, $tmpxml);
+	unset($tmpxml);
+	fclose($fout);
+		
+	$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	unset($cmd);
+
+}
+
+function sync_package_v_vars()
+{
+
+	global $config, $db, $v_id;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	$fout = fopen($v_conf_dir."/vars.xml","w");
+	$tmpxml ="";
+
+	$sql = "";
+	$sql .= "select * from v_vars ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "order by var_cat, var_order asc ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	$prev_var_cat = '';
+	while($row = $prepstatement->fetch()) {
+
+		$var_name = $row["var_name"];
+		$var_value = $row["var_value"];
+		$var_cat = $row["var_cat"];
+		$var_order = $row["var_order"];
+		$var_enabled = $row["var_enabled"];
+		$var_desc = $row["var_desc"];
+
+		if ($prev_var_cat != $row[var_cat]) {
+			$tmpxml .= "\n<!-- ".$row["var_cat"]." -->\n";
+			if (strlen($row["var_desc"]) > 0) {
+				$tmpxml .= "<!-- ".$row["var_desc"]." -->\n";
+			}
+		}
+		if ($row['var_enabled'] == "true"){	$tmpxml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row["var_name"]."=".$row["var_value"]."\"/>\n"; }
+
+		$prev_var_cat = $row[var_cat];
+	}
+	$tmpxml .= "\n";
+
+	fwrite($fout, $tmpxml);
+	unset($tmpxml);
+	fclose($fout);
+
+	$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	unset($cmd);
+
+}
+
+function sync_package_v_public()
+{
+
+	//global $config;
+	//$v_settings_array = v_settings();
+	//foreach($v_settings_array as $name => $value) {
+	//	$$name = $value;
+	//}
+
+  //using backup files rather than pfsense config.xml for this file
+  //$config['installedpackages']['freeswitchpublic']['config'][0]['public_xml'] = "";
+  
+  //if(strlen($config['installedpackages']['freeswitchpublic']['config'][0]['public_xml']) == 0) {
+  //    /* dialplan_public_xml not found in the pfsense config.xml get the default public.xml and save to config.xml. */
+  //    $filename = $v_conf_dir."/dialplan/public.xml";
+  //    $fout = fopen($filename,"r");
+  //    $tmpxml = fread($fout, filesize($filename));
+  //    $tmpxml = str_replace("<anti-action application=\"export\" data=\"domain_name=\${sip_req_host}\"/>", "<!--<anti-action application=\"export\" data=\"domain_name=\${sip_req_host}\"/>-->", $tmpxml);
+  //    $config['installedpackages']['freeswitchpublic']['config'][0]['public_xml'] = base64_encode($tmpxml);
+    
+  //    unset($filename, $tmpxml);
+  //    fclose($fout);
+  //}
+  //else {
+  //    /* found dialplan_public_xml in the pfsense config.xml save it to public.xml. */
+  //    $fout = fopen($v_conf_dir."/dialplan/public.xml","w");
+  //    $tmpxml = $config['installedpackages']['freeswitchpublic']['config'][0]['public_xml'];
+  //    fwrite($fout, base64_decode($tmpxml));
+  //    fclose($fout);
+  //    unset($tmpxml);
+  //}
+
+  //$cmd = "api reloadxml";
+  ////event_socket_request_cmd($cmd);
+  //unset($cmd);
+
+}
+
+function sync_package_v_internal()
+{
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	if(strlen($config['installedpackages']['freeswitchinternal']['config'][0]['internal_xml']) == 0) {
+		/* internal_xml not found in the pfsense config.xml get the internal.xml and save to config.xml. */
+		$filename = $v_conf_dir."/sip_profiles/internal.xml";
+		$fout = fopen($filename,"r");
+		$tmpxml = fread($fout, filesize($filename));
+		$config['installedpackages']['freeswitchinternal']['config'][0]['internal_xml'] = base64_encode($tmpxml);
+		unset($filename, $dialplan);
+		fclose($fout);
+	}
+	else {
+		/* found the internal_xml in the pfsense config.xml save it to internal.xml. */
+		$fout = fopen($v_conf_dir."/sip_profiles/internal.xml","w");
+		$tmpxml = $config['installedpackages']['freeswitchinternal']['config'][0]['internal_xml'];
+		fwrite($fout, base64_decode($tmpxml));
+		fclose($fout);
+		unset($tmpxml);
+	}
+
+	$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	unset($cmd);
+
+}
+
+
+function sync_package_v_external()
+{
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	if(strlen($config['installedpackages']['freeswitchexternal']['config'][0]['external_xml']) == 0) {
+		/* external_xml not found in the pfsense config.xml get the external.xml and save to config.xml. */
+		$filename = $v_conf_dir."/sip_profiles/external.xml";
+		$fout = fopen($filename,"r");
+		$tmpxml = fread($fout, filesize($filename));
+		$config['installedpackages']['freeswitchexternal']['config'][0]['external_xml'] = base64_encode($tmpxml);
+		unset($filename, $dialplan);
+		fclose($fout);
+	}
+	else {
+		/* found the external_xml in the pfsense config.xml save it to external.xml. */
+		$fout = fopen($v_conf_dir."/sip_profiles/external.xml","w");
+		$tmpxml = $config['installedpackages']['freeswitchexternal']['config'][0]['external_xml'];
+		fwrite($fout, base64_decode($tmpxml));
+		fclose($fout);
+		unset($tmpxml);
+	}
+
+	$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	unset($cmd);
+
+}
+
+
+function sync_package_v_hunt_group()
+{
+
+	//Hunt Group Javascript Notes:
+		//get the domain
+		//loop through all Hunt Groups
+			//get the Hunt Group information such as the name and description
+			//add each Hunt Group to the dialplan
+			//get the list of destinations then build the Hunt Group javascript
+
+
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+	
+	//get the domain
+		global $db, $v_id, $host;
+		$v_settings_array = v_settings();
+		foreach($v_settings_array as $name => $value) {
+			$$name = $value;
+		}
+
+		//if (pkg_is_service_running('freeswitch')) {
+		//	$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+		//	$cmd = "api global_getvar domain";
+		//	$domain = trim(event_socket_request($fp, $cmd));
+		//}
+
+		$tmp = "";
+		$tmp .= "\n";
+		$tmp .= " var domain = \"".$domain."\"; //by default this is the ipv4 address of FreeSWITCH used for transfer to voicemail\n";
+		//$tmp .= " var exit = false;\n";
+		$tmp .= "\n";
+		$tmp .= "\n";
+
+	//prepare for hunt group .js files to be written. delete all hunt groups that are prefixed with huntgroup_ and have a file extension of .js
+		$v_prefix = 'huntgroup_';
+		if($dh = opendir($v_scripts_dir)) {
+			$files = Array();
+			while($file = readdir($dh)) {
+				if($file != "." && $file != ".." && $file[0] != '.') {
+					if(is_dir($dir . "/" . $file)) {
+						//this is a directory
+					} else {
+						if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-3) == '.js') {
+							//echo "file: $file<br />\n";
+							//echo "extension: ".substr($file,-3)."<br />";
+							if ($file != "huntgroup_originate.js") {
+								unlink($v_scripts_dir.'/'.$file);
+							}
+						}
+					}
+				}
+			}
+			closedir($dh);
+		}
+
+	//loop through all Hunt Groups
+		$x = 0;
+
+		$sql = "";
+		$sql .= "select * from v_hunt_group ";
+		$sql .= "where v_id = '$v_id' ";
+		$prepstatement = $db->prepare($sql);
+		$prepstatement->execute();
+		while($row = $prepstatement->fetch()) {
+
+				//get the Hunt Group information such as the name and description
+					//$row['hunt_group_id']
+					//$row['huntgroupextension']
+					//$row['huntgroupname']
+					//$row['huntgrouptype']
+					//$row['huntgrouptimeout']
+					//$row['huntgroupcontext']
+					//$row['huntgroupringback']
+					//$row['huntgroupcidnameprefix']
+					//$row['huntgrouppin']
+					//$row['huntgroupcallerannounce']
+					//$row['huntgroupdescr']
+
+				//add each Hunt Group to the dialplan
+					if (strlen($row['hunt_group_id']) > 0) {
+						$action = 'add'; //set default action to add
+						$i = 0;
+
+						$sql = "";
+						$sql .= "select * from v_dialplan_includes ";
+						$sql .= "where v_id = '$v_id' ";
+						$sql .= "and opt1name = 'hunt_group_id' ";
+						$sql .= "and opt1value = '".$row['hunt_group_id']."' ";
+
+						$prepstatement2 = $db->prepare($sql);
+						$prepstatement2->execute();
+						while($row2 = $prepstatement2->fetch()) {
+							$action = 'update';
+							break; //limit to 1 row
+						}
+						unset ($sql, $prepstatement2);
+						//echo "sql: ".$sql."<br />";
+
+						if ($action == 'add') {
+							//create huntgroup extension in the dialplan
+								$extensionname = $row['huntgroupname'];
+								$dialplanorder ='9001';
+								$context = $row['huntgroupcontext'];
+								$enabled = 'true';
+								$descr = 'huntgroup';
+								$opt1name = 'hunt_group_id';
+								$opt1value = $row['hunt_group_id'];
+								$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+
+								$tag = 'condition'; //condition, action, antiaction
+								$fieldtype = 'destination_number';
+								$fielddata = '^'.$row['huntgroupextension'].'$';
+								$fieldorder = '000';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'javascript';
+								$fielddata = 'huntgroup_'.$row['huntgroupextension'].'.js';
+								$fieldorder = '001';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						}
+						if ($action == 'update') {
+							//update the huntgroup
+
+								$extensionname = $row['huntgroupname'];
+								$dialplanorder = '9001';
+								$context = $row['huntgroupcontext'];
+								$enabled = 'true';
+								$descr = 'huntgroup';
+								$hunt_group_id = $row['hunt_group_id'];
+
+								$sql = "";
+								$sql = "update v_dialplan_includes set ";
+								$sql .= "extensionname = '$extensionname', ";
+								$sql .= "dialplanorder = '$dialplanorder', ";
+								$sql .= "context = '$context', ";
+								$sql .= "enabled = '$enabled', ";
+								$sql .= "descr = '$descr' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and opt1name = 'hunt_group_id' ";
+								$sql .= "and opt1value = '$hunt_group_id' ";
+								//echo "sql: ".$sql."<br />";
+								//exit;
+								$db->query($sql);
+								unset($sql);
+
+								unset($extensionname);
+								unset($order);
+								unset($context);
+								unset($enabled);
+								unset($descr);
+								unset($opt1name);
+								unset($opt1value);
+
+						}
+						unset($action);
+
+
+						//check whether the fifo queue exists already
+
+							$action = 'add'; //set default action to add
+							$i = 0;
+
+							$sql = "";
+							$sql .= "select * from v_dialplan_includes ";
+							$sql .= "where v_id = '$v_id' ";
+							$sql .= "and opt1name = 'hunt_group_id_fifo' ";
+							$sql .= "and opt1value = '".$row['hunt_group_id']."' ";
+							//echo "sql2: ".$sql."<br />\n";
+							$prepstatement2 = $db->prepare($sql);
+							$prepstatement2->execute();
+							while($row2 = $prepstatement2->fetch()) {
+								$dialplan_include_id = $row2['dialplan_include_id'];
+								$action = 'update';
+								break; //limit to 1 row
+							}
+							unset ($sql, $prepstatement2);
+							//echo "action2: ".$action."<br />\n";
+
+						if ($action == 'add') {
+
+							//create a fifo queue for each huntgroup
+							$extensionname = $row['huntgroupname'].'.park';
+							$dialplanorder ='9999';
+							$context = $row['huntgroupcontext'];
+							$enabled = 'true';
+							$descr = 'fifo '.$row['huntgroupextension'];
+							$opt1name = 'hunt_group_id_fifo';
+							$opt1value = $row['hunt_group_id'];
+							$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+
+							$tag = 'condition'; //condition, action, antiaction
+							$fieldtype = 'destination_number';
+							$fielddata = '^\*'.$row['huntgroupextension'].'$';
+							$fieldorder = '000';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+							$tag = 'action'; //condition, action, antiaction
+							$fieldtype = 'set';
+							$fielddata = 'fifo_music=$${hold_music}';
+							$fieldorder = '001';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+							$huntgrouptimeouttype = $row['huntgrouptimeouttype'];
+							$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
+							if ($huntgrouptimeouttype == "voicemail") { $huntgrouptimeoutdestination = '*99'.$huntgrouptimeoutdestination; }
+
+							$tag = 'action'; //condition, action, antiaction
+							$fieldtype = 'set';
+							$fielddata = 'fifo_orbit_exten='.$huntgrouptimeoutdestination.':'.$row['huntgrouptimeout'];
+							$fieldorder = '002';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+							$tag = 'action'; //condition, action, antiaction
+							$fieldtype = 'fifo';
+							$fielddata = $row['huntgroupextension'].'@${domain_name} in';
+							$fieldorder = '003';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+						}
+						if ($action == 'update') {
+							//update the huntgroup fifo
+								$extensionname = $row['huntgroupname'].'.park';
+								$dialplanorder = '9002';
+								$context = $row['huntgroupcontext'];
+								$enabled = 'true';
+								$descr = 'fifo '.$row['huntgroupextension'];
+								$hunt_group_id = $row['hunt_group_id'];
+
+								$sql = "";
+								$sql = "update v_dialplan_includes set ";
+								$sql .= "extensionname = '$extensionname', ";
+								$sql .= "dialplanorder = '$dialplanorder', ";
+								$sql .= "context = '$context', ";
+								$sql .= "enabled = '$enabled', ";
+								$sql .= "descr = '$descr' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and opt1name = 'hunt_group_id_fifo' ";
+								$sql .= "and opt1value = '$hunt_group_id' ";
+								//echo "sql: ".$sql."<br />";
+								//exit;
+								$db->query($sql);
+								unset($sql);
+
+								$sql = "";
+								$sql = "delete from v_dialplan_includes_details ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								$db->query($sql);
+								unset($sql);
+
+								$tag = 'condition'; //condition, action, antiaction
+								$fieldtype = 'destination_number';
+								$fielddata = '^\*'.$row['huntgroupextension'].'$';
+								$fieldorder = '000';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'set';
+								$fielddata = 'fifo_music=$${hold_music}';
+								$fieldorder = '001';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$huntgrouptimeouttype = $row['huntgrouptimeouttype'];
+								$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
+								if ($huntgrouptimeouttype == "voicemail") { $huntgrouptimeoutdestination = '*99'.$huntgrouptimeoutdestination; }
+
+								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'set';
+								$fielddata = 'fifo_orbit_exten='.$huntgrouptimeoutdestination.':'.$row['huntgrouptimeout'];
+								$fieldorder = '002';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'fifo';
+								$fielddata = $row['huntgroupextension'].'@${domain_name} in';
+								$fieldorder = '003';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						}
+
+						sync_package_v_dialplan_includes();
+						unset($dialplanincludeid);
+					} //end if strlen hunt_group_id; add the Hunt Group to the dialplan
+
+
+				//Get the list of destinations then build the Hunt Group javascript
+					$tmp = "";
+					$tmp .= "\n";
+					$tmp .= "session.answer();\n";
+					$tmp .= "var domain_name = session.getVariable(\"domain_name\");\n";
+					$tmp .= "var extension = '".$row['huntgroupextension']."';\n";
+					$tmp .= "var result;\n";
+					$tmp .= "var timeoutpin = 7500;\n";
+					$tmp .= "\n";
+					$tmp .= "var objdate = new Date();\n";
+					$tmp .= "var adjusthours = 0; //Adjust Server time that is set to GMT 7 hours\n";
+					$tmp .= "var adjustoperator = \"-\"; //+ or -\n";
+					$tmp .= "if (adjustoperator == \"-\") {\n";
+					$tmp .= "var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() - adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
+					$tmp .= "}\n";
+					$tmp .= "if (adjustoperator == \"+\") {\n";
+					$tmp .= "var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() + adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
+					$tmp .= "}\n";
+					$tmp .= "var Hours = objdate2.getHours();\n";
+					$tmp .= "var Mins = objdate2.getMinutes();\n";
+					$tmp .= "var Seconds = objdate2.getSeconds();\n";
+					$tmp .= "var Month = objdate2.getMonth() + 1;\n";
+					$tmp .= "var Date = objdate2.getDate();\n";
+					$tmp .= "var Year = objdate2.getYear()\n";
+					$tmp .= "var Day = objdate2.getDay()+1;\n";
+					$tmp .= "var exit = false;\n";
+					$tmp .= "\n";
+
+					$tmp .= " function get_sofia_contact(extension,domain_name, profile){\n";
+					$tmp .= "	if (profile == \"auto\") {\n";
+					$i = 0;
+					foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
+						$sip_profile_name = str_replace(".xml", "", $sip_profile_file);
+						if ($i == 0) {
+						  $tmp .= "			profile = \"".$sip_profile_name."\";\n";
+						  $tmp .= "			session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
+						  $tmp .= "			sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
+						}
+						else {
+						  $tmp .= "\n";
+						  $tmp .= "			if (sofia_contact == \"error/user_not_registered\") {\n";
+						  $tmp .= "				profile = \"".$sip_profile_name."\";\n";
+						  $tmp .= "				session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
+						  $tmp .= "				sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
+						  $tmp .= "			}\n";
+						}
+						$i++;
+					}
+					unset ($i);
+					$tmp .= "	}\n";
+					$tmp .= "	else {\n";
+					$tmp .= "		session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
+					$tmp .= "		sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
+					$tmp .= "	}\n";
+					$tmp .= "	console_log( \"info\", \"sofia_contact \"+profile+\": \"+sofia_contact+\".\\n\" );\n";
+					$tmp .= "	return sofia_contact;\n";
+					$tmp .= " }\n";
+					$tmp .= "\n";
+
+					$tmp .= "\n";
+					$tmp .= " function mycb( session, type, obj, arg ) {\n";
+					$tmp .= "    try {\n";
+					$tmp .= "        if ( type == \"dtmf\" ) {\n";
+					$tmp .= "          console_log( \"info\", \"digit: \"+obj.digit+\"\\n\" );\n";
+					$tmp .= "          if ( obj.digit == \"#\" ) {\n";
+					$tmp .= "            //console_log( \"info\", \"detected pound sign.\\n\" );\n";
+					$tmp .= "            exit = true;\n";
+					$tmp .= "            return( false );\n";
+					$tmp .= "          }\n";
+					$tmp .= "\n";
+					$tmp .= "          dtmf.digits += obj.digit;\n";
+					$tmp .= "\n";
+					$tmp .= "          if ( dtmf.digits.length >= digitmaxlength ) {\n";
+					$tmp .= "            exit = true;\n";
+					$tmp .= "            return( false );\n";
+					$tmp .= "          }\n";
+					$tmp .= "        }\n";
+					$tmp .= "    } catch (e) {\n";
+					$tmp .= "        console_log( \"err\", e+\"\\n\" );\n";
+					$tmp .= "    }\n";
+					$tmp .= "    return( true );\n";
+					$tmp .= " } //end function mycb\n";
+					$tmp .= "\n";
+
+					$tmp .= "\n";
+					$tmp .= "dialed_extension = session.getVariable(\"dialed_extension\");\n";
+					$tmp .= "domain_name = session.getVariable(\"domain_name\");\n";
+					$tmp .= "domain = session.getVariable(\"domain\");\n";
+					$tmp .= "us_ring = session.getVariable(\"us-ring\");\n";
+					$tmp .= "caller_id_name = session.getVariable(\"caller_id_name\");\n";
+					$tmp .= "caller_id_number = session.getVariable(\"caller_id_number\");\n";
+					$tmp .= "effective_caller_id_name = session.getVariable(\"effective_caller_id_name\");\n";
+					$tmp .= "effective_caller_id_number = session.getVariable(\"effective_caller_id_number\");\n";
+					$tmp .= "outbound_caller_id_name = session.getVariable(\"outbound_caller_id_name\");\n";
+					$tmp .= "outbound_caller_id_number = session.getVariable(\"outbound_caller_id_number\");\n";
+
+
+					//pin number requested from caller if provided
+						if (strlen($row['huntgrouppin']) > 0) {
+							$tmp .= "var pin = '".$row['huntgrouppin']."';\n";
+							$tmp .= "if (pin.length > 0) {\n";
+							$tmp .= "  var dtmf = new Object();\n";
+							$tmp .= "  dtmf.digits = \"\";\n";
+							$tmp .= "  digitmaxlength = 6;\n";
+							$tmp .= "  session.execute(\"set\", \"playback_terminators=#\");\n";
+							$tmp .= "  session.streamFile( \"".$v_dir."/sounds/custom/8000/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
+							$tmp .= "  session.collectInput( mycb, dtmf, timeoutpin );\n";
+							$tmp .= "\n";
+							$tmp .= "  if (dtmf.digits == pin || pin.length == 0) {\n";
+							$tmp .= "    //continue\n";
+							$tmp .= "  }\n";
+							$tmp .= "  else {\n";
+							$tmp .= "    console_log( \"info\", \"Pin: \" + dtmf.digits + \" is incorrect\\n\" );\n";
+							$tmp .= "    session.streamFile( \"".$v_conf_dir."/sounds/custom/8000/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
+							$tmp .= "    session.hangup();\n";
+							$tmp .= "  }\n";
+							$tmp .= "}\n";
+							$tmp .= "\n";
+						}
+
+					//caller announce requested from caller if provided
+						if ($row['huntgroupcallerannounce'] == "true") {
+							$tmp .= "function originate(session, sipuri, extension, caller_announce, caller_id_name, caller_id_number) {\n";
+							$tmp .= "	caller_id_name = caller_id_name.replace(\" \", \"+\");\n";
+							$tmp .= "	apiExecute(\"jsrun\", \"huntgroup_originate.js \"+session.uuid+\" \"+sipuri+\" \"+extension+\" \"+caller_announce+\" \"+caller_id_name+\" \"+caller_id_number);\n";
+							$tmp .= "}";
+							$tmp .=	"\n";
+							$tmp .=	"var caller_announce = extension+\"_\"+Year+Month+Day+Hours+Mins+Seconds+\".wav\";\n";
+							$tmp .=	"session.streamFile( \"".$v_dir."/sounds/custom/8000/please_say_your_name_and_reason_for_calling.wav\");\n";
+							$tmp .=	"session.execute(\"gentones\", \"%(1000, 0, 640)\");\n";
+							$tmp .=	"session.execute(\"set\", \"playback_terminators=#\");\n";
+							$tmp .=	"session.execute(\"record\", \"".$tmp_dir."/\"+caller_announce+\" 180 200\");\n";
+							$tmp .=	"\n";
+							$tmp .=	"result = session.setAutoHangup(false);\n";
+							$tmp .=	"session.execute(\"transfer\", \"*\"+extension+\" XML default\");\n";
+							$tmp .= "\n";
+						}
+
+					//set caller id prefix
+						if (strlen($row['huntgroupcidnameprefix'])> 0) {
+							$tmp .= "session.execute(\"set\", \"caller_id_name=".$row['huntgroupcidnameprefix']."\"+caller_id_name);\n";
+							$tmp .= "session.execute(\"set\", \"effective_caller_id_name=".$row['huntgroupcidnameprefix']."\"+effective_caller_id_name);\n";
+							$tmp .= "session.execute(\"set\", \"outbound_caller_id_name=".$row['huntgroupcidnameprefix']."\"+outbound_caller_id_name);\n";
+						}
+
+					//set ring back
+						if (isset($row['huntgroupringback'])){
+							if ($row['huntgroupringback'] == "ring"){
+								$tmp .= "session.execute(\"set\", \"ringback=\"+us_ring);          //set to ringtone\n";
+								$tmp .= "session.execute(\"set\", \"transfer_ringback=\"+us_ring); //set to ringtone\n";
+							}
+							if ($row['huntgroupringback'] == "music"){
+								$tmp .= "session.execute(\"set\", \"ringback=\${hold_music}\");          //set to ringtone\n";
+								$tmp .= "session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to ringtone\n";
+							}
+						}
+						else {
+							$tmp .= "session.execute(\"set\", \"ringback=\${hold_music}\");          //set to ringtone\n";
+							$tmp .= "session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to ringtone\n";
+						}
+
+					if ($row['huntgrouptimeout'] > 0) {
+						$tmp .= "session.execute(\"set\", \"call_timeout=".$row['huntgrouptimeout']."\");\n";
+						$tmp .= "session.execute(\"set\", \"continue_on_fail=true\");\n";
+					}
+					$tmp .= "session.execute(\"set\", \"hangup_after_bridge=true\");\n";
+					$tmp .= "\n";
+					$tmp .= "//console_log( \"info\", \"dialed extension:\"+dialed_extension+\".\\n\" );\n";
+					$tmp .= "//console_log( \"info\", \"domain: \"+domain+\".\\n\" );\n";
+					$tmp .= "//console_log( \"info\", \"us_ring: \"+us_ring+\".\\n\" );\n";
+					$tmp .= "//console_log( \"info\", \"domain: \"+domain+\".\\n\" );\n";
+					$tmp .= "//console_log( \"info\", \"domain_name: \"+domain_name+\".\\n\" );\n";
+					$tmp .= "\n";
+					
+					$tmp .= "//console_log( \"info\", \"action call now don't wait for dtmf\\n\" );\n";
+					if ($row['huntgroupcallerannounce'] == "true") {
+						//do nothing
+					}
+					else {
+						$tmp .= "if ( session.ready() ) {\n";
+						$tmp .= "	session.answer();\n";
+					}
+					$tmp .= "\n";
+
+
+					$i = 0;
+					$sql = "";
+					$sql .= "select * from v_hunt_group_destinations ";
+					$sql .= "where hunt_group_id = '".$row['hunt_group_id']."' ";
+					$sql .= "and v_id = '$v_id' ";
+					$sql .= "order by destinationorder asc ";
+					//echo $sql;
+					$prepstatement2 = $db->prepare($sql);
+					$prepstatement2->execute();
+					while($ent = $prepstatement2->fetch()) {
+
+						/*
+						$ent['hunt_group_id']
+						$ent['destinationdata']
+						$ent['destinationtype']
+						$ent['destinationprofile']
+						$ent['destinationorder']
+						$ent['destinationdescr']
+						*/
+
+						//set the default profile
+						if (strlen($ent['destinationdata']) == 0) { $ent['destinationdata'] = "internal"; }
+
+						if ($ent['destinationtype'] == "extension") {
+							$tmp .= "sofia_contact_".$ent['destinationdata']." = get_sofia_contact(\"".$ent['destinationdata']."\",domain_name, \"".$ent['destinationprofile']."\");\n";
+							$tmp_sub_array["application"] = "bridge";
+							$tmp_sub_array["data"] = "sofia_contact_".$ent['destinationdata'];
+							$tmp_array[$i] = $tmp_sub_array;
+							unset($tmp_sub_array);
+						}
+						if ($ent['destinationtype'] == "voicemail") {
+							$tmp_sub_array["application"] = "voicemail";
+							$tmp .= "session.execute(\"voicemail\", \"default \${domain} ".$ent['destinationdata']."\");\n";
+							//$tmp_sub_array["application"] = "voicemail";
+							//$tmp_sub_array["data"] = "default \${domain} ".$ent['destinationdata'];
+							//$tmp_array[$i] = $tmp_sub_array;
+							unset($tmp_sub_array);
+						}
+						if ($ent['destinationtype'] == "sip uri") {
+							$tmp_sub_array["application"] = "bridge";
+							$tmp_sub_array["data"] = "\"".$ent['destinationdata']."\"";
+							$tmp_array[$i] = $tmp_sub_array;
+							unset($tmp_sub_array);
+						}
+						$i++;
+
+					} //end while
+					unset ($sql, $prepstatement2);
+					unset($i, $ent);
+
+
+					$i = 0;
+					if(count($tmp_array) > 0) {
+						foreach ($tmp_array as $ent) {
+							$tmpdata = $ent["data"];
+							if ($ent["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
+							if ($i < 1) {
+								$tmp_buffer = $tmpdata;
+							}
+							else {
+								$tmp_buffer .= "+\",\"+".$tmpdata;
+							}
+							$i++;
+						}
+					}
+					unset($i);
+					$delimiter = ",";
+					$tmp_application = $tmp_array[0]["application"];
+
+					switch ($row['huntgrouptype']) {
+					case "simultaneous":
+						//print_r($tmp_array);
+						if ($row['huntgroupcallerannounce'] == "true") {
+							$i = 0;
+							if (count($tmp_array) > 0) {
+								foreach ($tmp_array as $ent) {
+									$tmpdata = $ent["data"];
+									if ($ent["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
+									$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_announce, caller_id_name, caller_id_number);\n";
+								}
+							}
+						}
+						else {
+							$tmp .= "\n";
+							$tmp .= "	session.execute(\"".$tmp_application."\", $tmp_buffer);\n";
+							//$tmp .= "	session.execute(\"bridge\", sofia_contact_100+\",\"+sofia_contact_101+\",\"+sofia_contact_102+\",\"+sofia_contact_103+\",\"+sofia_contact_104);\n";
+							//$tmp .= "	//session.execute(\"bridge\", \"sofia/gateway/flowroute.com/12081231234,\"+sofia_contact_101);\n";
+						}
+						unset($tmp_array);
+						break;
+					case "sequentially":
+
+						$tmp .= "\n";
+						//print_r($tmp_array);
+						$i = 0;
+						if (count($tmp_array) > 0) {
+							if ($row['huntgroupcallerannounce'] == "true") {
+								$i = 0;
+								if (count($tmp_array) > 0) {
+									//foreach ($tmp_array as $tmp_row) {
+										//$tmpdata = $tmp_row["data"];
+										//if ($tmp_row["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
+										$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_announce, caller_id_name, caller_id_number);\n";
+									//}
+								}
+							}
+							else {
+								foreach ($tmp_array as $tmp_row) {
+									$tmp .= "	session.execute(\"".$tmp_row["application"]."\", ".$tmp_row["data"].");\n";
+								}
+							}
+							unset($tmp_array, $tmp_row);
+						}
+
+						break;
+					}
+
+					//set the timeout destination
+					$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
+					if ($row['huntgrouptimeouttype'] == "extension") { $huntgrouptimeouttype = "bridge"; }
+					if ($row['huntgrouptimeouttype'] == "voicemail") { $huntgrouptimeouttype = "transfer"; $huntgrouptimeoutdestination = "*99".$huntgrouptimeoutdestination; }
+					if ($row['huntgrouptimeouttype'] == "sip uri") { $huntgrouptimeouttype = "bridge"; }
+					$tmp .= "\n";
+					if ($row['huntgroupcallerannounce'] == "true") {
+						//do nothing
+					}
+					else {
+						$tmp .= "	//timeout\n";
+						$tmp .= "	session.execute(\"".$huntgrouptimeouttype."\", \"".$huntgrouptimeoutdestination."\");\n";
+					}
+
+					$tmp .= "\n";
+					$tmp .= "	//clear variables\n";
+					$tmp .= "	dialed_extension = \"\";\n";
+					$tmp .= "	new_extension = \"\";\n";
+					$tmp .= "	domain_name = \"\";\n";
+					$tmp .= "	domain = \"\";";
+
+					$tmp .= "\n";
+					if ($row['huntgroupcallerannounce'] == "true") {
+						//do nothing
+					}
+					else {
+						$tmp .= "} //end if session.ready\n";
+					}
+					$tmp .= "\n";
+
+					if (strlen($row['huntgroupextension']) > 0) {
+						$huntgroupfilename = "huntgroup_".$row['huntgroupextension'].".js";
+						//echo "location".$v_scripts_dir."/".$huntgroupfilename;
+						$fout = fopen($v_scripts_dir."/".$huntgroupfilename,"w");
+						fwrite($fout, $tmp);
+						unset($huntgroupfilename);
+						fclose($fout);
+					}
+
+		} //end while
+
+} //end huntgroup function
+
+
+function sync_package_v_fax()
+{
+
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+	
+	//loop through all faxes
+		$a_fax = &$config['installedpackages']['freeswitchfax']['config'];
+		if (count($a_fax) > 0) {
+			foreach($a_fax as $row) {
+		
+				//get the fax information such as the name and description
+					//$row['faxid']
+					//$row['faxextension']
+					//$row['faxname']
+					//$row['faxemail']
+					//$row['faxdomain']
+					//$row['faxdescription']
+
+				//add each fax extension to the dialplan
+					$a_dialplan_includes          	= &$config['installedpackages']['freeswitchdialplanincludes']['config'];
+					$a_dialplan_include_details 	= &$config['installedpackages']['freeswitchdialplanincludedetails']['config'];
+
+					//determine if the entry should be an add, or update to the dialplan 
+					if (strlen($row['faxid']) > 0) {
+						$action = 'add'; //set default action to add
+						$i = 0;
+						if (count($a_dialplan_includes) > 0) {
+
+							foreach($a_dialplan_includes as $row) {
+
+								//$row['faxid'];
+								//$row['faxname'];
+								//$row['context'];
+								//$row['enabled'];
+
+								if ($row['opt1name'] == "faxid" && $row['opt1value'] == $row['faxid']) {
+									//update
+									$action = 'update';
+									
+									$dialplanincludeid = $row['dialplanincludeid'];
+									$extensionname = $row['extensionname'];
+									$order = $row['order'];
+									$context = $row['context'];
+									$enabled = $row['enabled'];
+									$descr = $row['descr'];
+									$opt1name = $row['opt1name'];
+									$opt1value = $row['opt1value'];
+									$id = $i;
+									//echo "update".$i."<br />\n";
+
+									if (file_exists($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml")){
+										unlink($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml");
+									}
+								}
+								$i++;
+
+							}
+						}
+
+						$ent = array();
+						if ($action == 'add') {
+							$faxid = $row['faxid'];
+							if (strlen($row['faxname']) > 0) {
+								$ent['dialplanincludeid'] = $faxid;
+								$ent['extensionname'] = $row['faxname'];
+								$ent['order'] = '9001'; //if update use the existing order number and extension name and desc
+								$ent['context'] = "default";
+								//$ent['context'] = $row['huntgroupcontext'];
+								$ent['enabled'] = 'true';
+								$ent['descr'] = 'fax';
+								$ent['opt1name'] = 'faxid';
+								$ent['opt1value'] = $row['faxid'];
+
+								//add to the config
+									$a_dialplan_includes[] = $ent;
+									unset($ent);
+
+								//<!-- default ${domain_name} -->
+								//<condition field="destination_number" expression="^\*9978$">
+								$ent = array();
+								$ent['dialplanincludeid'] = $faxid;
+								$ent['tag'] = 'condition'; //condition, action, antiaction
+								$ent['fieldorder'] = '000';
+								$ent['fieldtype'] = 'destination_number';
+								$ent['fielddata'] = '^'.$row['faxextension'].'$';
+								$a_dialplan_include_details[] = $ent;
+								unset($ent);
+
+								//<action application="answer" />
+								$ent = array();
+								$ent['dialplanincludeid'] = $faxid;
+								$ent['tag'] = 'action'; //condition, action, antiaction
+								$ent['fieldorder'] = '001';
+								$ent['fieldtype'] = 'answer';
+								$ent['fielddata'] = '';
+								$a_dialplan_include_details[] = $ent;
+								unset($ent);
+
+								//<action application="playback" data="silence_stream://2000"/>
+								$ent = array();
+								$ent['dialplanincludeid'] = $faxid;
+								$ent['tag'] = 'action'; //condition, action, antiaction
+								$ent['fieldorder'] = '002';
+								$ent['fieldtype'] = 'playback';
+								$ent['fielddata'] = 'silence_stream://2000';
+								$a_dialplan_include_details[] = $ent;
+								unset($ent);
+
+								//<action application="set" data="last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}"/>
+								$ent = array();
+								$ent['dialplanincludeid'] = $faxid;
+								$ent['tag'] = 'action'; //condition, action, antiaction
+								$ent['fieldorder'] = '003';
+								$ent['fieldtype'] = 'set';
+								$ent['fielddata'] = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
+								$a_dialplan_include_details[] = $ent;
+								unset($ent);
+
+								//<action application="rxfax" data="$v_storage_dir/fax/inbox/${last_fax}.tif"/>
+								$ent = array();
+								$ent['dialplanincludeid'] = $faxid;
+								$ent['tag'] = 'action'; //condition, action, antiaction
+								$ent['fieldorder'] = '004';
+								$ent['fieldtype'] = 'rxfax';
+								$ent['fielddata'] = $v_storage_dir.'/fax/'.$row['faxextension'].'/inbox/${last_fax}.tif';
+								$a_dialplan_include_details[] = $ent;
+								unset($ent);
+
+								//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
+								$ent = array();
+								$ent['dialplanincludeid'] = $faxid;
+								$ent['tag'] = 'action'; //condition, action, antiaction
+								$ent['fieldorder'] = '005';
+								$ent['fieldtype'] = 'system'; 
+								$ent['fielddata'] = $php_dir.' '.$v_web_dir.'/fax_to_email.php email='.$row['faxemail'].' extension='.$row['faxextension'].' name=${last_fax} >> '.$tmp_dir.'/fax.txt';
+								$a_dialplan_include_details[] = $ent;
+								unset($ent);
+
+								//<action application="hangup"/>
+								$ent = array();
+								$ent['dialplanincludeid'] = $faxid;
+								$ent['tag'] = 'action'; //condition, action, antiaction
+								$ent['fieldorder'] = '006';
+								$ent['fieldtype'] = 'hangup';
+								$ent['fielddata'] = '';
+								$a_dialplan_include_details[] = $ent;
+								unset($ent);
+							}
+
+							unset($faxid);
+
+						}
+						if ($action == 'update') {
+
+							$ent['dialplanincludeid'] =  $row['faxid'];
+							$ent['extensionname'] = $row['faxname'];
+							$ent['order'] = $order;
+							$ent['context'] = $context;
+							$ent['enabled'] = $enabled;
+							$ent['descr'] = $faxdescription;
+							$ent['opt1name'] = $opt1name;
+							$ent['opt1value'] = $opt1value;
+
+							//update the config
+							$a_dialplan_includes[$id] = $ent;
+
+							unset($ent);
+							unset($extensionname);
+							unset($order);
+							unset($context);
+							unset($enabled);
+							unset($descr);
+							unset($opt1name);
+							unset($opt1value);
+							unset($id);
+						}
+						write_config();
+
+						sync_package_v_dialplan_includes();
+						unset($dialplanincludeid);
+
+					} //end if strlen faxid; add the fax to the dialplan
+
+			} //end foreach
+		} //end if count
+
+} //end function
+
+
+function get_recording_filename($id)
+{
+	global $v_id, $db;
+	$sql = "";
+	$sql .= "select * from v_recordings ";
+	$sql .= "where recording_id = '$id' ";
+	$sql .= "and v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+		//$v_id = $row["v_id"];
+		//$filename = $row["filename"];
+		//$recordingname = $row["recordingname"];
+		//$recordingid = $row["recordingid"];
+		//$descr = $row["descr"];
+		return $row["filename"];
+		break; //limit to 1 row
+	}
+	unset ($prepstatement);
+}
+
+
+function sync_package_v_auto_attendant()
+{
+	global $db, $v_id, $host;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	//prepare for auto attendant .js files to be written. delete all auto attendants that are prefixed with autoattendant_ and have a file extension of .js
+		$v_prefix = 'autoattendant_';
+		if($dh = opendir($v_scripts_dir)) {
+			$files = Array();
+			while($file = readdir($dh)) {
+				if($file != "." && $file != ".." && $file[0] != '.') {
+					if(is_dir($dir . "/" . $file)) {
+						//this is a directory
+					} else {
+						if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-3) == '.js') {
+							//echo "file: $file<br />\n";
+							//echo "extension: ".substr($file,-3)."<br />";
+							unlink($v_scripts_dir.'/'.$file);
+						}
+					}
+				}
+			}
+			closedir($dh);
+		}
+
+	//loop through all auto attendants
+
+	$sql = "";
+	$sql .= "select * from v_auto_attendant ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+
+		//add the auto attendant to the dialplan
+			if (strlen($row['auto_attendant_id']) > 0) {
+					$action = 'add'; //set default action to add
+
+					$sql = "";
+					$sql .= "select * from v_dialplan_includes ";
+					$sql .= "where v_id = '$v_id' ";
+					$sql .= "and opt1name = 'auto_attendant_id' ";
+					$sql .= "and opt1value = '".$row['auto_attendant_id']."' ";
+					$prepstatement2 = $db->prepare($sql);
+					$prepstatement2->execute();
+					while($row2 = $prepstatement2->fetch()) {
+						$action = 'update';
+						break; //limit to 1 row
+					}
+					unset ($sql, $prepstatement2);
+			}
+
+		if ($action == 'add') {
+
+			//create auto attendant extension in the dialplan
+				$extensionname = $row['aaextension'];
+				$dialplanorder ='9001';
+				$context = $row['aacontext'];
+				$enabled = 'true';
+				$descr = 'auto attendant';
+				$opt1name = 'auto_attendant_id';
+				$opt1value = $row['auto_attendant_id'];
+				$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+
+				$tag = 'condition'; //condition, action, antiaction
+				$fieldtype = 'destination_number';
+				$fielddata = '^'.$row['aaextension'].'$';
+				$fieldorder = '000';
+				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+				$tag = 'action'; //condition, action, antiaction
+				$fieldtype = 'javascript';
+				$fielddata = 'autoattendant_'.$row['aaextension'].'.js';
+				$fieldorder = '001';
+				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+		}
+		if ($action == 'update') {
+
+				$extensionname = $row['aaextension'];
+				$dialplanorder = '9001';
+				$context = $row['aacontext'];
+				$enabled = 'true';
+				$descr = 'auto attendant';
+				$auto_attendant_id = $row['auto_attendant_id'];
+
+				$sql = "";
+				$sql = "update v_dialplan_includes set ";
+				$sql .= "extensionname = '$extensionname', ";
+				$sql .= "dialplanorder = '$dialplanorder', ";
+				$sql .= "context = '$context', ";
+				$sql .= "enabled = '$enabled', ";
+				$sql .= "descr = '$descr' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and opt1name = 'auto_attendant_id' ";
+				$sql .= "and opt1value = '$auto_attendant_id' ";
+				//echo "sql: ".$sql."<br />";
+				//exit;
+				$db->query($sql);
+				unset($sql);
+
+				unset($ent);
+				unset($extensionname);
+				unset($dialplanorder);
+				unset($context);
+				unset($enabled);
+				unset($descr);
+				unset($opt1name);
+				unset($opt1value);
+		}
+
+		sync_package_v_dialplan_includes();
+		unset($dialplanincludeid);
+
+
+		// Build the auto attendant javascript
+		$recording_action_filename = get_recording_filename($row['recordingidaction']);
+		$recording_antiaction_filename = get_recording_filename($row['recordingidantiaction']);
+
+
+		$sql = "";
+		$sql .= "select * from v_settings ";
+		$sql .= "where v_id = '$v_id' ";
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		while($row2 = $prepstatement2->fetch()) {
+			$event_socket_port = $row2["event_socket_port"];
+			$event_socket_password = $row2["event_socket_password"];
+		}
+		unset ($prepstatement2);
+		$password = $event_socket_password;
+		$port = $event_socket_port;
+
+
+		if (pkg_is_service_running('freeswitch')) {
+			$fp = event_socket_create($host, $port, $password);
+			$cmd = "api global_getvar domain";
+			$domain = trim(event_socket_request($fp, $cmd));
+		}
+
+
+		$tmp = ""; //make sure the variable starts with no value
+		$tmp .= "\n";
+		$tmp .= " var condition = true;\n";
+		$tmp .= "\n";
+		$tmp .= " var domain = \"".$domain."\"; //by default this is the ipv4 address of FreeSWITCH used for transfer to voicemail\n";
+		$tmp .= " var digitmaxlength = 0;\n";
+		$tmp .= " var objdate = new Date();\n";
+		$tmp .= "\n";
+		$tmp .= " var adjusthours = 0; //Adjust Server time that is set to GMT 7 hours\n";
+		$tmp .= " var adjustoperator = \"-\"; //+ or -\n";
+		$tmp .= "\n";
+		$tmp .= " if (adjustoperator == \"-\") {\n";
+		$tmp .= "   var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() - adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
+		$tmp .= " }\n";
+		$tmp .= " if (adjustoperator == \"+\") {\n";
+		$tmp .= "   var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() + adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
+		$tmp .= " }\n";
+		$tmp .= "\n";
+		$tmp .= " var Hours = objdate2.getHours();\n";
+		$tmp .= " var Mins = objdate2.getMinutes();\n";
+		$tmp .= " var Seconds = objdate2.getSeconds();\n";
+		$tmp .= " var Month = objdate2.getMonth() + 1;\n";
+		$tmp .= " var Date = objdate2.getDate();\n";
+		$tmp .= " var Year = objdate2.getYear()\n";
+		$tmp .= " var Day = objdate2.getDay()+1;\n";
+		$tmp .= " var exit = false;\n";
+		$tmp .= "\n";
+		$tmp .= " dialed_extension = session.getVariable(\"dialed_extension\");\n";
+		$tmp .= " domain_name = session.getVariable(\"domain_name\");\n";
+		$tmp .= " domain = session.getVariable(\"domain\");\n";
+		$tmp .= " us_ring = session.getVariable(\"us-ring\");\n";
+		$tmp .= " caller_id_name = session.getVariable(\"caller_id_name\");\n";
+		$tmp .= " caller_id_number = session.getVariable(\"caller_id_number\");\n";
+		$tmp .= " effective_caller_id_name = session.getVariable(\"effective_caller_id_name\");\n";
+		$tmp .= " effective_caller_id_number = session.getVariable(\"effective_caller_id_number\");\n";
+		$tmp .= " outbound_caller_id_name = session.getVariable(\"outbound_caller_id_name\");\n";
+		$tmp .= " outbound_caller_id_number = session.getVariable(\"outbound_caller_id_number\");\n";
+		$tmp .= "\n";
+
+		//set caller id prefix
+		if (strlen($row['aacidnameprefix'])> 0) {
+			$tmp .= "session.execute(\"set\", \"caller_id_name=".$row['aacidnameprefix']."\"+caller_id_name);\n";
+			$tmp .= "session.execute(\"set\", \"effective_caller_id_name=".$row['aacidnameprefix']."\"+effective_caller_id_name);\n";
+			$tmp .= "session.execute(\"set\", \"outbound_caller_id_name=".$row['aacidnameprefix']."\"+outbound_caller_id_name);\n";
+		}
+
+		$tmp .= "\n";
+
+
+		$tmp .= " session.execute(\"set\", \"hangup_after_bridge=true\");\n";
+		$tmp .= " session.execute(\"set\", \"continue_on_fail=true\");\n";
+		if (strlen($row['aacalltimeout']) == 0){
+			$tmp .= " session.execute(\"set\", \"call_timeout=30\");\n"; //aacalltimeout
+		}
+		else {
+			$tmp .= " session.execute(\"set\", \"call_timeout=".$row['aacalltimeout']."\");\n"; //aacalltimeout
+		}
+
+		if (isset($row['aaringback'])){
+			if ($row['aaringback'] == "ring"){
+				$tmp .= " session.execute(\"set\", \"ringback=\"+us_ring);          //set to ringtone\n";
+				$tmp .= " session.execute(\"set\", \"transfer_ringback=\"+us_ring); //set to ringtone\n";
+			}
+			if ($row['aaringback'] == "music"){
+				$tmp .= " session.execute(\"set\", \"ringback=\${hold_music}\");          //set to ringtone\n";
+				$tmp .= " session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to ringtone\n";
+			}
+		}
+		else {
+			$tmp .= " session.execute(\"set\", \"ringback=\${hold_music}\");          //set to ringtone\n";
+			$tmp .= " session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to ringtone\n";
+		}
+		$tmp .= "\n";
+		$tmp .= "//console_log( \"info\", \"Auto Attendant Server Time is: \"+Hours+\":\"+Mins+\" \\n\" );\n";
+		$tmp .= "\n";
+
+		$tmp .= " function get_sofia_contact(extension,domain_name, profile){\n";
+		$tmp .= "	if (profile == \"auto\") {\n";
+		$i = 0;
+		foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
+			$sip_profile_name = str_replace(".xml", "", $sip_profile_file);
+			if ($i == 0) {
+			  $tmp .= "			profile = \"".$sip_profile_name."\";\n";
+			  $tmp .= "			session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
+			  $tmp .= "			sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
+			}
+			else {
+			  $tmp .= "\n";
+			  $tmp .= "			if (sofia_contact == \"error/user_not_registered\") {\n";
+			  $tmp .= "				profile = \"".$sip_profile_name."\";\n";
+			  $tmp .= "				session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
+			  $tmp .= "				sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
+			  $tmp .= "			}\n";
+			}
+			$i++;
+		}
+		unset ($i);
+		$tmp .= "	}\n";
+		$tmp .= "	else {\n";
+		$tmp .= "		session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
+		$tmp .= "		sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
+		$tmp .= "	}\n";
+		$tmp .= "	console_log( \"info\", \"sofia_contact \"+profile+\": \"+sofia_contact+\".\\n\" );\n";
+		$tmp .= "	return sofia_contact;\n";
+		$tmp .= " }\n";
+		$tmp .= "\n";
+
+		$tmp .= " function mycb( session, type, obj, arg ) {\n";
+		$tmp .= "    try {\n";
+		$tmp .= "        if ( type == \"dtmf\" ) {\n";
+		$tmp .= "          console_log( \"info\", \"digit: \"+obj.digit+\"\\n\" );\n";
+		$tmp .= "          if ( obj.digit == \"#\" ) {\n";
+		$tmp .= "            //console_log( \"info\", \"detected pound sign.\\n\" );\n";
+		$tmp .= "            exit = true;\n";
+		$tmp .= "            return( false );\n";
+		$tmp .= "          }\n";
+		$tmp .= "\n";
+		$tmp .= "          dtmf.digits += obj.digit;\n";
+		$tmp .= "\n";
+		$tmp .= "          if ( dtmf.digits.length >= digitmaxlength ) {\n";
+		$tmp .= "            exit = true;\n";
+		$tmp .= "            return( false );\n";
+		$tmp .= "          }\n";
+		$tmp .= "        }\n";
+		$tmp .= "    } catch (e) {\n";
+		$tmp .= "        console_log( \"err\", e+\"\\n\" );\n";
+		$tmp .= "    }\n";
+		$tmp .= "    return( true );\n";
+		$tmp .= " } //end function mycb\n";
+
+		$tmp .= "\n";
+		//condition
+		$tmp .= $row['aaconditionjs'];
+		$tmp .= "\n";
+		$tmp .= "\n";
+
+		//$tmp .= " //condition = true; //debugging\n";
+
+		$actiondirect = false;
+		$actiondefault = false;
+		$actioncount = 0;
+
+		$sql = "";
+		$sql .= "select * from v_auto_attendant_options ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and auto_attendant_id = '".$row['auto_attendant_id']."' ";
+		//echo $sql;
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		while($row2 = $prepstatement2->fetch()) {
+			//$auto_attendant_id = $row2["auto_attendant_id"];
+			//$optionaction = $row2["optionaction"];
+			//$optionnumber = $row2["optionnumber"];
+			//$optiontype = $row2["optiontype"];
+			//$optionprofile = $row2["optionprofile"];
+			//$optiondata = $row2["optiondata"];
+			//$optiondescr = $row2["optiondescr"];
+
+			if ($row2['optionaction'] == "action") {
+				$actioncount++;
+				if (strtolower($row2['optionnumber']) == "n") { //direct the call now don't wait for dtmf
+					//echo "now found\n";
+					$actiondirect = true;
+					$actiondirecttype = $row2['optiontype'];
+					$actiondirectprofile = $row2['optionprofile'];
+					$actiondirectdest = $row2['optiondata'];
+					$actiondirectdesc = $row2['optiondesc'];
+				}
+				if (strtolower($row2['optionnumber']) == "d") { //default option used when dtmf doesn't match any other option
+					//echo "default found\n";
+					$actiondefault = true;
+					$actiondefaulttype = $row2['optiontype'];
+					$actiondefaultprofile = $row2['optionprofile'];
+					$actiondefaultdest = $row2['optiondata'];
+					$actiondefaultdesc = $row2['optiondesc'];
+					$actiondefaultrecording = $row2['optionrecording'];
+					
+				}
+			}
+		} //end while
+		unset ($prepstatement2);
+
+		//$tmp .= "action count: ".$actioncount."<br />\n";
+		if ($actioncount > 0) {
+			if ($actiondirect) {
+				$tmp .= " if (condition) {\n";
+				$tmp .= "    //direct\n";
+				$tmp .= "    //console_log( \"info\", \"action direct\\n\" );\n";
+
+				//play the option recording if it exists
+				if (strlen($row2['optionrecording']) > 0) {
+					$option_recording_filename = get_recording_filename($row2['optionrecording']);
+					$tmp .= "    session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+				}
+
+				$tmp .= "    session.execute(\"".$actiondirecttype."\", \"".$actiondirectdest."\"); //".$actiondirectdesc."\n";
+
+				//if ($actiondirecttype == "extension") {
+				//	$tmp .= "    sofia_contact_".$actiondirectdest." = get_sofia_contact(\"".$actiondirectdest."\",domain_name, \"".$actiondirectprofile."\");\n";
+				//	$tmp .= "    session.execute(\"bridge\", sofia_contact_".$actiondirectdest."); //".$actiondirectdest."\n";
+				//	if ($actiondirectprofile == "auto") {
+				//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$actiondirectdest."\");\n";
+				//	}
+				//	else {
+				//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$actiondirectdest."\");\n";
+				//	}
+				//}
+				//if ($actiondirecttype == "voicemail") {
+				//	if ($actiondirectprofile == "auto") {
+				//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$actiondirectdest."\");\n";
+				//	}
+				//	else {
+				//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$actiondirectdest."\");\n";
+				//	}
+				//}
+				//if ($actiondirecttype == "sip uri") {
+				//	$tmp .= "    session.execute(\"bridge\", \"".$actiondirectdest."\"); //".$actiondirectdest."\n";
+				//}
+			$tmp .= "}\n";
+
+		}
+		else {
+			$tmp .= " if (condition) {\n";
+			$tmp .= "    //action\n";
+			$tmp .= "\n";
+			$tmp .= "     //console_log( \"info\", \"action call now don't wait for dtmf\\n\" );\n";
+			$tmp .= "      var dtmf = new Object( );\n";
+			$tmp .= "     dtmf.digits = \"\";\n";
+			$tmp .= "     if ( session.ready( ) ) {\n";
+			$tmp .= "         session.answer( );\n";
+			$tmp .= "\n";
+			$tmp .= "         digitmaxlength = 1;\n";
+			$tmp .= "         while (session.ready() && ! exit ) {\n";
+			$tmp .= "           //session.streamFile( \"".$v_dir."/sounds/".$recording_action_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
+			$tmp .= "           session.streamFile( \"".$v_recordings_dir."/".$recording_action_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
+			$tmp .= "           if (session.ready()) {\n";
+			$tmp .= "           	if (dtmf.digits.length == 0) {\n";
+			$tmp .= "           		dtmf.digits +=  session.getDigits(1, \"#\", ".($row['aatimeout']*1000)."); // ".$row['aatimeout']." seconds\n";
+			$tmp .= "           		if (dtmf.digits.length == 0) {\n";
+
+			//$tmp .= "           			console_log( "info", "time out option: " + dtmf.digits + "\n" );\n";
+
+					//find the timeout auto attendant options with the correct action
+					$sql = "";
+					$sql .= "select * from v_auto_attendant_options ";
+					$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
+					$sql .= "and v_id = '$v_id' ";
+					$prepstatement2 = $db->prepare($sql);
+					$prepstatement2->execute();
+					while($row2 = $prepstatement2->fetch()) {
+						//$auto_attendant_id = $row2["auto_attendant_id"];
+						//$optionaction = $row2["optionaction"];
+						//$optionnumber = $row2["optionnumber"];
+						//$optiontype = $row2["optiontype"];
+						//$optiondata = $row2["optiondata"];
+						//$optionprofile = $row2["optionprofile"];
+						//$optiondescr = $row2["optiondescr"];
+
+						if ($row2['optionaction'] == "action") {
+							if (strtolower($row2['optionnumber']) == "t") {
+
+								//play the option recording if it exists
+								if (strlen($row2['optionrecording']) > 0) {
+									$option_recording_filename = get_recording_filename($row2['optionrecording']);
+									$tmp .= "                 	session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+								}
+
+								$tmp .= "                 	session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+
+								//if ($row2['optiontype'] == "extension") {
+								//	$tmp .= "                 	sofia_contact_".$row2['optiondata']." = get_sofia_contact(\"".$row2['optiondata']."\",domain_name, \"".$row2['optionprofile']."\");\n";
+								//	$tmp .= "                 	session.execute(\"bridge\", sofia_contact_".$row2['optiondata']."); //".$row2['optiondescr']."\n";
+								//	if ($row2['optionprofile'] == "auto") {
+								//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
+								//	}
+								//	else {
+								//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
+								//	}
+								//}
+								//if ($row2['optiontype'] == "voicemail") {
+								//	if ($row2['optionprofile'] == "auto") {
+								//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+								//	}
+								//	else {
+								//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+								//	}
+								//}
+								//if ($row2['optiontype'] == "sip uri") {
+								//	$tmp .= "                 	session.execute(\"bridge\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+								//}
+							}
+						} //end anti-action
+
+					} //end while
+					unset ($prepstatement2);
+
+
+			$tmp .= "           		}\n";
+			$tmp .= "           		else {\n";
+			$tmp .= "           			break; //dtmf found end the while loop\n";
+			$tmp .= "           		}\n";
+			$tmp .= "           	}\n";
+			$tmp .= "           }\n";
+			$tmp .= "         }\n";
+			$tmp .= "\n";
+			$tmp .= "         //pickup the remaining digits\n";
+			//$tmp .= "         //http://wiki.freeswitch.org/wiki/Session_getDigits\n";
+			//$tmp .= "         //getDigits(length, terminators, timeout, digit_timeout, abs_timeout)\n";
+			//$tmp .= "       //dtmf.digits +=  session.getDigits(2, \"#\", 3000); //allow up to 3 digits\n";
+			$tmp .= "         dtmf.digits +=  session.getDigits(4, \"#\", 3000); //allow up to 5 digits\n";
+			$tmp .= "\n";
+			$tmp .= "\n";
+			//$tmp .= "         console_log( \"info\", \"Auto Attendant Digit Pressed: \" + dtmf.digits + \"\\n\" );\n";
+
+
+			//action
+			$tmpaction = "";
+
+			$tmp .= "         if ( dtmf.digits.length > \"0\" ) {\n\n";
+			$x = 0;
+
+			$sql = "";
+			$sql .= "select * from v_auto_attendant_options ";
+			$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
+			$sql .= "and v_id = '$v_id' ";
+			$prepstatement2 = $db->prepare($sql);
+			$prepstatement2->execute();
+			while($row2 = $prepstatement2->fetch()) {
+				//$auto_attendant_id = $row2["auto_attendant_id"];
+				//$optionaction = $row2["optionaction"];
+				//$optionnumber = $row2["optionnumber"];
+				//$optiontype = $row2["optiontype"];
+				//$optiondata = $row2["optiondata"];
+				//$optionprofile = $row2["optionprofile"];
+				//$optiondescr = $row2["optiondescr"];
+				$tmpactiondefault = "";
+
+				if ($row2['optionaction'] == "action") {
+					//$tmpaction .= "\n";
+
+					switch ($row2['optionnumber']) {
+					//case "t":
+					//		break;
+					//case "d":
+					//		break;
+					default:
+							//$tmpaction .= "             //console_log( \"info\", \"Auto Attendant Detected 1 digit \\n\" );\n";
+							if ($x == 0) {
+								$tmpaction .= "             if ( dtmf.digits == \"".$row2['optionnumber']."\" ) { //".$row2['optiondescr']."\n";
+							}
+							else {
+								$tmpaction .= "             else if ( dtmf.digits == \"".$row2['optionnumber']."\" ) { //".$row2['optiondescr']."\n";
+							}
+
+							//play the option recording if it was provided 
+							if (strlen($row2['optionrecording']) > 0) {
+								$option_recording_filename = get_recording_filename($row2['optionrecording']);
+								$tmpaction .= "                 session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+							}
+
+							$tmpaction .= "                 session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+
+							//if ($row2['optiontype'] == "extension") {
+							//	$tmpaction .= "                 sofia_contact_".$row2['optiondata']." = get_sofia_contact(\"".$row2['optiondata']."\",domain_name, \"".$row2['optionprofile']."\");\n";
+							//	$tmpaction .= "                 session.execute(\"bridge\", sofia_contact_".$row2['optiondata']."); //".$row2['optiondescr']."\n";
+							//	if ($row2['optionprofile'] == "auto") {
+							//		$tmpaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
+							//	}
+							//	else {
+							//		$tmpaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+							//	}
+							//}
+							//if ($row2['optiontype'] == "voicemail") {
+							//	if ($row2['optionprofile'] == "auto") {
+							//		$tmpaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+							//	}
+							//	else {
+							//		$tmpaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+							//	}
+							//}
+							//if ($row2['optiontype'] == "sip uri") {
+							//	$tmpaction .= "                 session.execute(\"bridge\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+							//}
+
+							$tmpaction .= "             }\n";
+					}
+
+					$x++;
+				} //end auto_attendant_id
+
+			} //end while
+			unset ($prepstatement2);
+
+			$tmp .= $tmpaction;
+			if ($row['aadirectdial'] == "true") {
+				$tmp .= "             else {\n";
+				$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML default\");\n";
+				//$tmp .= $tmpactiondefault;
+				$tmp .= "             }\n";
+			}
+			else {
+				if ($actiondefault) {
+					$tmp .= "             else {\n";
+					$tmp .= "	                  //console_log( \"info\", \"default option when there is no matching dtmf found\\n\" );\n";
+
+					//play the option recording if it exists
+					if (strlen($actiondefaultrecording) > 0) {
+						$option_recording_filename = get_recording_filename($actiondefaultrecording);
+						$tmp .= "	                  session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+					}
+
+					$tmp .= "	                  session.execute(\"".$actiondefaulttype."\", \"".$actiondefaultdest."\"); //".$actiondefaultdesc."\n";
+
+					//if ($actiondefaulttype == "extension") {
+					//	$tmp .= "	                  sofia_contact_".$actiondefaultdest." = get_sofia_contact(\"".$actiondefaultdest."\",domain_name, \"".$actiondefaultprofile."\");\n";
+					//	$tmp .= "	                  session.execute(\"bridge\", sofia_contact_".$actiondefaultdest."); //".$actiondefaultdest."\n";
+					//	if ($actiondirectprofile == "auto") {
+					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$actiondefaultdest."\");\n";
+					//	}
+					//	else {
+					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$actiondefaultdest."\");\n";
+					//	}
+					//}
+					//if ($actiondefaulttype == "voicemail") {
+					//	if ($actiondirectprofile == "auto") {
+					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$actiondefaultdest."\");\n";
+					//	}
+					//	else {
+					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$actiondefaultdest."\");\n";
+					//	}
+					//}
+					//if ($actiondefaulttype == "sip uri") {
+					//	$tmp .= "	                  session.execute(\"bridge\", \"".$actiondefaultdest."\"); //".$actiondefaultdest."\n";
+					//}
+
+					$tmp .= "             }\n";
+
+				}
+			}
+
+			$tmp .= "\n";
+			unset($tmpaction);
+
+
+			$tmp .= "          } \n";
+			//$tmp .= "          else if ( dtmf.digits.length == \"4\" ) {\n";
+			//$tmp .= "	                  //Transfer to the extension the caller\n";
+			//$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML default\");\n";
+			//$tmp .= "          } else {\n";
+			//$tmp .= $tmpactiondefault;
+			//$tmp .= "          }\n";
+			$tmp .= "\n";
+			$tmp .= "     } //end if session.ready\n";
+			$tmp .= "\n";
+			$tmp .= " }\n"; //end if condition
+
+		   }	//if ($actiondirect)
+		} //actioncount
+
+		$antiactiondirect = false;
+		$antiactiondefault = false;
+		$antiactioncount = 0;
+
+		$sql = "";
+		$sql .= "select * from v_auto_attendant_options ";
+		$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
+		$sql .= "and v_id = '$v_id' ";
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		while($row2 = $prepstatement2->fetch()) {
+			//$auto_attendant_id = $row2["auto_attendant_id"];
+			//$optionaction = $row2["optionaction"];
+			//$optionnumber = $row2["optionnumber"];
+			//$optiontype = $row2["optiontype"];
+			//$optionprofile = $row2["optionprofile"];
+			//$optiondata = $row2["optiondata"];
+			//$optiondescr = $row2["optiondescr"];
+
+			if ($row2['optionaction'] == "anti-action") {
+				$antiactioncount++;
+				if (strtolower($row2['optionnumber']) == "n") { //direct the call now don't wait for dtmf
+					$antiactiondirect = true;
+					$antiactiondirecttype = $row2['optiontype'];
+					$antiactiondirectdest = $row2['optiondata'];
+					$antiactiondirectdesc = $row2['optiondesc'];
+					$antiactiondirectprofile = $row2['optionprofile'];
+				}
+				if (strtolower($row2['optionnumber']) == "d") { //default option used when an dtmf doesn't match any option
+					$antiactiondefault = true;
+					$antiactiondefaulttype = $row2['optiontype'];
+					$antiactiondefaultdest = $row2['optiondata'];
+					$antiactiondefaultdesc = $row2['optiondesc'];
+					$antiactiondefaultrecording = $row2['optionrecording'];
+					$antiactiondefaultprofile = $row2['optionprofile'];
+				}
+			}
+		} //end while
+		unset ($prepstatement2);
+		//$tmp .= "anti-action count: ".$antiactioncount."<br />\n";
+
+		if ($antiactioncount > 0) {
+		  if ($antiactiondirect) {
+			$tmp .= " else {\n";
+			$tmp .= "     //console_log( \"info\", \"anti-action call now don't wait for dtmf\\n\" );\n";
+
+			$tmp .= "     session.execute(\"".$antiactiondirecttype."\", \"".$antiactiondirectdest."\"); //".$antiactiondefaultdesc."\n";
+
+			//if ($antiactiondirecttype == "extension") {
+			//	$tmp .= "    sofia_contact_".$antiactiondirectdest." = get_sofia_contact(\"".$antiactiondirectdest."\",domain_name, \"".$antiactiondirectprofile."\");\n";
+			//	$tmp .= "    session.execute(\"bridge\", sofia_contact_".$antiactiondirectdest."); //".$antiactiondirectdest."\n";
+			//	if ($antiactiondirectprofile == "auto") {
+			//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$antiactiondirectdest."\");\n";
+			//	}
+			//	else {
+			//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$antiactiondirectdest."\");\n";
+			//	}
+			//}
+			//if ($antiactiondirecttype == "voicemail") {
+			//	if ($antiactiondirectprofile == "auto") {
+			//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$antiactiondirectdest."\");\n";
+			//	}
+			//	else {
+			//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$antiactiondirectdest."\");\n";
+			//	}
+			//}
+			//if ($antiactiondirecttype == "sip uri") {
+			//	$tmp .= "    session.execute(\"bridge\", \"".$antiactiondirectdest."\"); //".$antiactiondirectdest."\n";
+			//}
+			$tmp .= "}\n";
+		}
+		else {
+			$tmp .= " else {\n";
+			$tmp .= "     //anti-action\n";
+			$tmp .= "     //console_log( \"info\", \"anti-action options\\n\" );\n";
+			$tmp .= "\n";
+			$tmp .= "     var dtmf = new Object( );\n";
+			$tmp .= "     dtmf.digits = \"\";\n";
+			$tmp .= "     if ( session.ready( ) ) {\n";
+			$tmp .= "         session.answer( );\n";
+			$tmp .= "\n";
+			$tmp .= "         digitmaxlength = 1;\n";
+			$tmp .= "         while (session.ready() && ! exit ) {\n";
+			$tmp .= "           session.streamFile( \"".$v_recordings_dir."/".$recording_antiaction_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
+			$tmp .= "           if (session.ready()) {\n";
+			$tmp .= "           	if (dtmf.digits.length == 0) {\n";
+			$tmp .= "           		dtmf.digits +=  session.getDigits(1, \"#\", ".($row['aatimeout']*1000)."); // ".$row['aatimeout']." seconds\n";
+			$tmp .= "           		if (dtmf.digits.length == 0) {\n";
+			//$tmp .= "           			console_log( "info", "time out option: " + dtmf.digits + "\n" );\n";
+
+
+			//find the timeout auto attendant options with the correct action
+				$sql = "";
+				$sql .= "select * from v_auto_attendant_options ";
+				$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
+				$sql .= "and v_id = '$v_id' ";
+				$prepstatement2 = $db->prepare($sql);
+				$prepstatement2->execute();
+				while($row2 = $prepstatement2->fetch()) {
+					$auto_attendant_id = $row2["auto_attendant_id"];
+					$optionaction = $row2["optionaction"];
+					$optionnumber = $row2["optionnumber"];
+					$optiontype = $row2["optiontype"];
+					$optionprofile = $row2["optionprofile"];
+					$optiondata = $row2["optiondata"];
+					$optiondescr = $row2["optiondescr"];
+
+					if ($row2['optionaction'] == "anti-action") {
+						 if (strtolower($row2['optionnumber']) == "t") {
+
+							//play the option recording if it exists
+							if (strlen($row2['optionrecording']) > 0) {
+								$option_recording_filename = get_recording_filename($row2['optionrecording']);
+								$tmp .= "                 	session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+							}
+
+							$tmp .= "                 	session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+
+							//if ($row2['optiontype'] == "extension") {
+							//	$tmp .= "                 	sofia_contact_".$row2['optiondata']." = get_sofia_contact(\"".$row2['optiondata']."\",domain_name, \"".$row2['optionprofile']."\");\n";
+							//	$tmp .= "                 	session.execute(\"bridge\", sofia_contact_".$row2['optiondata']."); //".$row2['optiondescr']."\n";
+							//	if ($row2['optionprofile'] == "auto") {
+							//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
+							//	}
+							//	else {
+							//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
+							//	}
+							//}
+							//if ($row2['optiontype'] == "voicemail") {
+							//	if ($row2['optionprofile'] == "auto") {
+							//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+							//	}
+							//	else {
+							//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+							//	}
+							//}
+							//if ($row2['optiontype'] == "sip uri") {
+							//	$tmp .= "                 	session.execute(\"bridge\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+							//}
+						 }
+
+					} //end anti-action
+
+				} //end while
+				unset ($prepstatement2);
+
+
+			$tmp .= "           		}\n";
+			$tmp .= "           		else {\n";
+			$tmp .= "           			break; //dtmf found end the while loop\n";
+			$tmp .= "           		}\n";
+
+			$tmp .= "           	}\n";
+			$tmp .= "           }\n";
+			$tmp .= "         }\n";
+			$tmp .= "\n";
+			$tmp .= "         //pickup the remaining digits\n";
+			$tmp .= "         //http://wiki.freeswitch.org/wiki/Session_getDigits\n";
+			$tmp .= "         //getDigits(length, terminators, timeout, digit_timeout, abs_timeout)\n";
+			$tmp .= "         dtmf.digits +=  session.getDigits(4, \"#\", 3000);\n";
+			$tmp .= "\n";
+			$tmp .= "         console_log( \"info\", \"Auto Attendant Digit Pressed: \" + dtmf.digits + \"\\n\" );\n";
+			$tmp .= "\n";
+
+
+			$tmpantiaction = "";
+			$tmp .= "         if ( dtmf.digits.length > \"0\" ) {\n\n";
+
+			$x = 0;
+			$sql = "";
+			$sql .= "select * from v_auto_attendant_options ";
+			$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
+			$sql .= "and v_id = '$v_id' ";
+			$prepstatement2 = $db->prepare($sql);
+			$prepstatement2->execute();
+			while($row2 = $prepstatement2->fetch()) {
+				$auto_attendant_id = $row2["auto_attendant_id"];
+				$optionaction = $row2["optionaction"];
+				$optionnumber = $row2["optionnumber"];
+				$optiontype = $row2["optiontype"];
+				$optionprofile = $row2["optionprofile"];
+				$optiondata = $row2["optiondata"];
+				$optiondescr = $row2["optiondescr"];
+
+				//$tmpantiactiondefault = "";
+			
+				//find the correct auto attendant options with the correct action
+
+					if ($row2['optionaction'] == "anti-action") {
+
+						switch ($row2['optionnumber']) {
+						//case "t":
+						//		//break;
+						//case "d":
+						//		//break;
+						default:
+								//$tmpantiaction .= "             //console_log( \"info\", \"Auto Attendant Detected 1 digit \\n\" );\n";
+
+								if ($x == 0) {
+									$tmpantiaction .= "             if ( dtmf.digits == \"".$row2['optionnumber']."\" ) { //".$row2['optiondescr']."\n";
+								}
+								else {
+									$tmpantiaction .= "             else if ( dtmf.digits == \"".$row2['optionnumber']."\" ) { //".$row2['optiondescr']."\n";
+								}
+
+								//play the option recording if it was provided 
+								if (strlen($row2['optionrecording']) > 0) {
+									$option_recording_filename = get_recording_filename($row2['optionrecording']);
+									$tmpantiaction .= "             session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n\n";
+								}
+
+								$tmpantiaction .= "                 session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+
+								//if ($row2['optiontype'] == "extension") {
+								//	$tmpantiaction .= "                 sofia_contact_".$row2['optiondata']." = get_sofia_contact(\"".$row2['optiondata']."\",domain_name, \"".$row2['optionprofile']."\");\n";
+								//	$tmpantiaction .= "                 session.execute(\"bridge\", sofia_contact_".$row2['optiondata']."); //".$row2['optiondescr']."\n";
+								//	if ($row2['optionprofile'] == "auto") {
+								//		$tmpantiaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
+								//	}
+								//	else {
+								//		$tmpantiaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
+								//	}
+								//}
+								//if ($row2['optiontype'] == "voicemail") {
+								//	if ($row2['optionprofile'] == "auto") {
+								//		$tmpantiaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+								//	}
+								//	else {
+								//		$tmpantiaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+								//	}
+								//}
+								//if ($row2['optiontype'] == "sip uri") {
+								//	$tmpantiaction .= "                 session.execute(\"bridge\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
+								//}
+
+								$tmpantiaction .= "             }\n";
+
+						} //end switch
+
+						  $x++;
+					} //end anti-action
+
+			} //end while
+			unset ($prepstatement2);
+
+			$tmp .= $tmpantiaction;
+			if ($row['aadirectdial'] == "true") {
+				$tmp .= "             else {\n";
+				$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML default\");\n";	
+				//$tmp .= $tmpantiactiondefault;
+				$tmp .= "             }\n";
+			}
+			else {
+				if ($antiactiondefault) {
+					$tmp .= "             else {\n";
+					$tmp .= "	                  //console_log( \"info\", \"default option used when dtmf doesn't match any other option\\n\" );\n";
+
+					//play the option recording if it exists
+					if (strlen($antiactiondefaultrecording) > 0) {
+						$option_recording_filename = get_recording_filename($antiactiondefaultrecording);
+						$tmp .= "	                  session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+					}
+
+					$tmp .= "	                  session.execute(\"".$antiactiondefaulttype."\", \"".$antiactiondefaultdest."\"); //".$antiactiondefaultdesc."\n";
+
+					//if ($antiactiondefaulttype == "extension") {
+					//	$tmp .= "	                  sofia_contact_".$antiactiondefaultdest." = get_sofia_contact(\"".$antiactiondefaultdest."\",domain_name, \"".$actiondirectprofile."\");\n";
+					//	$tmp .= "	                  session.execute(\"bridge\", sofia_contact_".$antiactiondefaultdest."); //".$antiactiondefaultdest."\n";
+					//	if ($actiondirectprofile == "auto") {
+					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$antiactiondefaultdest."\");\n";
+					//	}
+					//	else {
+					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$antiactiondefaultdest."\");\n";
+					//	}
+					//}
+					//if ($antiactiondefaulttype == "voicemail") {
+					//	if ($actiondirectprofile == "auto") {
+					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$antiactiondefaultdest."\");\n";
+					//	}
+					//	else {
+					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$antiactiondefaultdest."\");\n";
+					//	}
+					//}
+					//if ($antiactiondefaulttype == "sip uri") {
+					//	$tmp .= "	                  session.execute(\"bridge\", \"".$antiactiondefaultdest."\"); //".$antiactiondefaultdest."\n";
+					//}
+
+					$tmp .= "             }\n";
+				}
+			}
+			$tmp .= "\n";
+			unset($tmpantiaction);
+		
+			$tmp .= "          } \n";
+			//$tmp .= "          else if ( dtmf.digits.length == \"3\" ) {\n";
+			//$tmp .= "                //Transfer to the extension the caller chose\n";
+			//$tmp .= "                session.execute(\"transfer\", dtmf.digits+\" XML default\"); \n";
+			//$tmp .= "          }\n";
+			//$tmp .= "          else {\n";
+			//$tmp .= $tmpantiactiondefault;
+			//$tmp .= "          }\n";
+			$tmp .= "\n";
+			$tmp .= "     } //end if session.ready\n";
+			$tmp .= "\n";
+			$tmp .=  " } //end if condition";
+		
+		   }	//if ($antiactiondirect)
+		} //antiactioncount
+		unset($tmpactiondefault);
+		unset($tmpantiactiondefault);
+
+		if (strlen($row['aaextension']) > 0) {
+			$aafilename = "autoattendant_".$row['aaextension'].".js";
+			$fout = fopen($v_scripts_dir."/".$aafilename,"w");
+			fwrite($fout, $tmp);
+			unset($aafilename);
+			fclose($fout);
+		}
+
+	} //end while
+
+
+} //end function
+
+
+function v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value) {
+	global $db;
+	$sql = "insert into v_dialplan_includes ";
+	$sql .= "(";
+	$sql .= "v_id, ";
+	$sql .= "extensionname, ";
+	$sql .= "dialplanorder, ";
+	$sql .= "context, ";
+	$sql .= "enabled, ";
+	$sql .= "descr, ";
+	$sql .= "opt1name, ";
+	$sql .= "opt1value ";
+	$sql .= ")";
+	$sql .= "values ";
+	$sql .= "(";
+	$sql .= "'$v_id', ";
+	$sql .= "'$extensionname', ";
+	$sql .= "'$dialplanorder', ";
+	$sql .= "'$context', ";
+	$sql .= "'$enabled', ";
+	$sql .= "'$descr', ";
+	$sql .= "'$opt1name', ";
+	$sql .= "'$opt1value' ";
+	$sql .= ")";
+	//echo $sql."<br />";
+	$db->exec($sql);
+	$dialplan_include_id = $db->lastInsertId($id);
+	unset($sql);
+	return $dialplan_include_id;
+}
+
+function v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata) {
+	global $db;
+	$sql = "insert into v_dialplan_includes_details ";
+	$sql .= "(";
+	$sql .= "v_id, ";
+	$sql .= "dialplan_include_id, ";
+	$sql .= "tag, ";
+	$sql .= "fieldorder, ";
+	$sql .= "fieldtype, ";
+	$sql .= "fielddata ";
+	$sql .= ")";
+	$sql .= "values ";
+	$sql .= "(";
+	$sql .= "'$v_id', ";
+	$sql .= "'$dialplan_include_id', ";
+	$sql .= "'$tag', ";
+	$sql .= "'$fieldorder', ";
+	$sql .= "'$fieldtype', ";
+	$sql .= "'$fielddata' ";
+	$sql .= ")";
+	//echo $sql."<br />";
+	$db->exec($sql);
+	$lastinsertid = $db->lastInsertId($id);
+	unset($sql);
+}
+
+function sync_package_v_dialplan_includes()
+{
+
+	global $db, $v_id;
+  
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
+		$v_needle = 'dialplan_';
+		if($dh = opendir($v_conf_dir."/dialplan/default/")) {
+			$files = Array();
+			while($file = readdir($dh)) {
+				if($file != "." && $file != ".." && $file[0] != '.') {
+					if(is_dir($dir . "/" . $file)) {
+						//this is a directory
+					} else {
+						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
+							//echo "file: $file<br />\n";
+							unlink($v_conf_dir."/dialplan/default/".$file);
+						}
+					}
+				}
+			}
+			closedir($dh);
+		}
+
+	$sql = "";
+	$sql .= "select * from v_dialplan_includes ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+
+		$tmp = "";
+		$tmp .= "\n";
+
+		//$row['dialplanincludeid'];
+		//$row['extensionname'];
+		//$row['context'];
+		//$row['enabled'];
+
+		$tmp = "<extension name=\"".$row['extensionname']."\">\n";
+
+		$sql = "";
+		$sql .= " select * from v_dialplan_includes_details ";
+		$sql .= " where dialplan_include_id = '".$row['dialplan_include_id']."' ";
+		$sql .= " and v_id = $v_id ";
+		$sql .= " and tag = 'condition' ";
+		$sql .= " order by fieldorder asc";
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		$result2 = $prepstatement2->fetchAll();
+		$resultcount2 = count($result2);
+		unset ($prepstatement2, $sql);
+		$i=1;
+		if ($resultcount2 == 0) { //no results
+		}
+		else { //received results
+			foreach($result2 as $ent) {
+				//print_r( $row );
+				if ($resultcount2 == 1) { //single condition
+					//start tag
+					$tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
+				}
+				else { //more than one condition
+					if ($i < $resultcount2) {
+						  //all tags should be self-closing except the last one
+						  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\"/>\n";
+					}
+					else {
+						//for the last tag use the start tag
+						  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
+					}
+				}
+				$i++;
+			} //end foreach
+			$conditioncount = $resultcount2;
+			unset($sql, $resultcount2, $result2, $rowcount2);
+		} //end if results
+
+
+		$sql = "";
+		$sql .= " select * from v_dialplan_includes_details ";
+		$sql .= " where dialplan_include_id = '".$row['dialplan_include_id']."' ";
+		$sql .= " and v_id = $v_id ";
+		$sql .= " and tag = 'action' ";
+		$sql .= " order by fieldorder asc";
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		$result2 = $prepstatement2->fetchAll();
+		$resultcount2 = count($result2);
+		unset ($prepstatement2, $sql);
+		if ($resultcount2 == 0) { //no results
+		}
+		else { //received results
+			$i = 0;
+			foreach($result2 as $ent) {
+				//print_r( $row );
+				if ($ent['tag'] == "action" && $row['dialplanincludeid'] == $ent['dialplanincludeid']) {
+					$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+				}
+				$i++;
+			} //end foreach
+			unset($sql, $resultcount2, $result2, $rowcount2);
+		} //end if results
+
+
+		$sql = "";
+		$sql .= " select * from v_dialplan_includes_details ";
+		$sql .= " where dialplan_include_id = '".$row['dialplan_include_id']."' ";
+		$sql .= " and v_id = $v_id ";
+		$sql .= " and tag = 'anti-action' ";
+		$sql .= " order by fieldorder asc";
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		$result2 = $prepstatement2->fetchAll();
+		$resultcount2 = count($result2);
+		unset ($prepstatement2, $sql);
+		if ($resultcount2 == 0) { //no results
+		}
+		else { //received results
+			$i = 0;
+			foreach($result2 as $ent) {
+				//print_r( $row );
+				if ($ent['tag'] == "anti-action" && $row['dialplanincludeid'] == $ent['dialplanincludeid']) {
+					$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+				}
+				$i++;
+			} //end foreach
+			unset($sql, $resultcount2, $result2, $rowcount2);
+		} //end if results
+
+
+		//param
+
+		if ($conditioncount > 0) {
+			$tmp .= "   </condition>\n";
+		}
+		unset ($conditioncount);
+		$tmp .= "</extension>\n";
+
+		if ($row['enabled'] == "true") {
+			$dialplanincludefilename = $row['dialplanorder']."_dialplan_".$row['extensionname'].".xml";
+			$fout = fopen($v_conf_dir."/dialplan/default/".$dialplanincludefilename,"w");
+			fwrite($fout, $tmp);
+			fclose($fout);
+		}
+		unset($dialplanincludefilename);
+		unset($tmp);
+
+
+	} //end while
+
+
+}
+
+
+function sync_package_v_public_includes()
+{
+
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	global $db, $v_id;
+
+	//order the array
+	function cmp_number_public_include_details($a, $b) {
+		if ($a["fieldorder"] > $b["fieldorder"]) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+
+	$sql = "";
+	$sql .= "select * from v_public_includes ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
+		$tmp = "";
+		$tmp .= "\n";
+
+		$tmp = "<extension name=\"".$row['extensionname']."\">\n";
+
+		$sql = "";
+		$sql .= " select * from v_public_includes_details ";
+		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
+		$sql .= " and v_id = $v_id ";
+		$sql .= " and tag = 'condition' ";
+		$sql .= " order by fieldorder asc";
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		$result2 = $prepstatement2->fetchAll();
+		$resultcount2 = count($result2);
+		unset ($prepstatement2, $sql);
+		$i=1;
+		if ($resultcount2 == 0) { //no results
+		}
+		else { //received results
+			foreach($result2 as $ent) {
+				//print_r( $row );
+				if ($resultcount2 == 1) { //single condition
+					//start tag
+					$tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
+				}
+				else { //more than one condition
+					if ($i < $resultcount2) {
+						  //all tags should be self-closing except the last one
+						  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\"/>\n";
+					}
+					else {
+						//for the last tag use the start tag
+						  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
+					}
+				}
+				$i++;
+			} //end foreach
+			$conditioncount = $resultcount2;
+			unset($sql, $resultcount2, $result2, $rowcount2);
+		} //end if results
+
+
+		$sql = "";
+		$sql .= " select * from v_public_includes_details ";
+		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
+		$sql .= " and v_id = $v_id ";
+		$sql .= " and tag = 'action' ";
+		$sql .= " order by fieldorder asc";
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		$result2 = $prepstatement2->fetchAll();
+		$resultcount2 = count($result2);
+		unset ($prepstatement2, $sql);
+		if ($resultcount2 == 0) { //no results
+		}
+		else { //received results
+			$i = 0;
+			foreach($result2 as $ent) {
+				//print_r( $row );
+				if ($ent['tag'] == "action" && $row['publicincludeid'] == $ent['publicincludeid']) {
+					$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+				}
+				$i++;
+			} //end foreach
+			unset($sql, $resultcount2, $result2, $rowcount2);
+		} //end if results
+
+
+		$sql = "";
+		$sql .= " select * from v_public_includes_details ";
+		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
+		$sql .= " and v_id = $v_id ";
+		$sql .= " and tag = 'anti-action' ";
+		$sql .= " order by fieldorder asc";
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		$result2 = $prepstatement2->fetchAll();
+		$resultcount2 = count($result2);
+		unset ($prepstatement2, $sql);
+		if ($resultcount2 == 0) { //no results
+		}
+		else { //received results
+			$i = 0;
+			foreach($result2 as $ent) {
+				//print_r( $row );
+				if ($ent['tag'] == "anti-action" && $row['publicincludeid'] == $ent['publicincludeid']) {
+					$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+				}
+				$i++;
+			} //end foreach
+			unset($sql, $resultcount2, $result2, $rowcount2);
+		} //end if results
+
+
+		if ($conditioncount > 0) {
+			$tmp .= "   </condition>\n";
+		}
+		unset ($conditioncount);
+		$tmp .= "</extension>\n";
+
+
+		if ($row['enabled'] == "true") {
+			$publicincludefilename = $row['publicorder']."_".$row['extensionname'].".xml";
+			$fout = fopen($v_conf_dir."/dialplan/public/".$publicincludefilename,"w");
+			fwrite($fout, $tmp);
+			fclose($fout);
+		}
+		unset($publicincludefilename);
+		unset($tmp);
+	
+	} //end while
+	unset ($prepstatement);
+}
+
+
+if (!function_exists('call_broadcast_send_broadcast')) {
+	//html table header order by
+	function call_broadcast_send_broadcast($groupid, $call_broadcast_id) {
+
+		global $db, $config;
+		$v_settings_array = v_settings();
+		foreach($v_settings_array as $name => $value) {
+			$$name = $value;
+		}
+
+		$sql = "";
+		$sql .= "select * from v_call_broadcast ";
+		$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
+		$prepstatement = $db->prepare($sql);
+		$prepstatement->execute();
+		while($row = $prepstatement->fetch()) {
+			$broadcast_name = $row["broadcast_name"];
+			$broadcast_desc = $row["broadcast_desc"];
+			$broadcast_timeout = $row["broadcast_timeout"];
+			$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
+			$recordingid = $row["recordingid"];
+			$broadcast_caller_id_name = $row["broadcast_caller_id_name"];
+			$broadcast_caller_id_number = $row["broadcast_caller_id_number"];
+			$broadcast_destination_type = $row["broadcast_destination_type"];
+			$broadcast_destination_data = $row["broadcast_destination_data"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
+
+		$fout = fopen($v_scripts_dir."/recordings.js","w");
+		$tmp = "";
+		$tmp .= "	zzz\n";
+
+		$sql = "";
+		$sql .= " select * from v_users as u, v_group_members as m ";
+		$sql .= " where u.username = m.username ";
+		$sql .= " and m.groupid = '".$groupid."' ";
+		//echo $sql;
+
+		$prepstatement = $db->prepare($sql);
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		$resultcount = count($result);
+		unset ($prepstatement, $sql);
+
+		if ($resultcount == 0) { //no results
+		}
+		else { //received results
+			foreach($result as $row) {
+				//print_r( $row );
+				//echo "<tr >\n";
+				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[username]."&nbsp;</td>\n";
+				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[usertype]."&nbsp;</td>\n";
+				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[usercategory]."&nbsp;</td>\n";
+				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userfirstname]."&nbsp;</td>\n";
+				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userlastname]."&nbsp;</td>\n";
+				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[usercompanyname]."&nbsp;</td>\n";
+				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userphone1]."&nbsp;</td>\n";
+				//echo "</tr>\n";
+
+			} //end foreach
+			unset($sql, $result, $rowcount);
+		} //end if results
+
+		unset ($resultcount);
+		unset ($result);
+
+		$tmp .= " zzz";
+		fwrite($fout, $tmp);
+		unset($tmp);
+		fclose($fout);
+
+	}//end function
+} //function exists
+
+
+function sync_package_freeswitch()
+{
+	global $config;
+	sync_package_v_settings();
+	sync_package_v_dialplan();
+	sync_package_v_dialplan_includes();
+	sync_package_v_extensions();
+	sync_package_v_gateways();
+	sync_package_v_modules();
+	sync_package_v_public();
+	sync_package_v_public_includes();
+	sync_package_v_vars();
+	sync_package_v_internal();
+	sync_package_v_external();
+	//sync_package_v_recordings();
+	if (pkg_is_service_running('freeswitch')) {
+		sync_package_v_auto_attendant();
+	}
+	sync_package_v_hunt_group();
+
+}
+
+function pkg_add($pkg_download_path, $pkg_name)
+{
+
+	if (!is_dir('/usr/pkgs/')) {
+		exec("mkdir /usr/pkgs/");
+	}
+
+	$pkg_array = explode("\.", $pkg_name);
+	//if the package is not installed then download and install it
+	if (!strlen(exec('pkg_info | grep '.$pkg_array[0])) > 0) {
+		chdir('/usr/pkgs/');
+		exec("fetch ".$pkg_download_path.$pkg_name);
+		exec("pkg_add -F ".$pkg_name);
+		exec("rm ".$pkg_name);
+	}
+
+}
+
+function v_install_phase_2() {
+
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+//	$static_output = 'Downloading Package Files';
+//	update_output_window($static_output);
+
+	clearstatcache(); //clear file status cache
+	
+	if (!is_dir($v_web_root.'/packages/')) {
+		exec("mkdir ".$v_web_root."/packages/");
+	}
+
+	if (!is_dir($v_web_dir)) {
+		exec("mkdir ".$v_web_dir);
+	}
+
+
+	//download the dialplan default.xml
+	chdir($tmp_dir.'/');
+	exec("cd ".$tmp_dir."/;fetch ".$v_download_path."dialplan.default.xml");
+	exec("cp ".$tmp_dir."/dialplan.default.xml ".$v_conf_dir."/dialplan/default.xml");
+	unlink_if_exists($tmp_dir."/dialplan.default.xml");
+
+	//download the dialplan public.xml
+	chdir($tmp_dir.'/');
+	exec("fetch ".$v_download_path."dialplan.public.xml");
+	exec("cp ".$tmp_dir."/dialplan.public.xml ".$v_conf_dir."/dialplan/public.xml");
+	unlink_if_exists($tmp_dir."/dialplan.public.xml");
+	
+	
+	//misc files
+	if (!is_dir($v_web_root.'/edit_area/')) {
+		chdir($tmp_dir);
+		exec("fetch ".$v_download_path."edit_area.tgz");
+		chdir($v_web_root);
+		system('tar xvpfz ".tmp_dir."/edit_area.tgz edit_area');
+		unlink_if_exists($tmp_dir."/edit_area.tgz");
+	}
+
+	
+	//rename PHP files from .tmp to .php
+	chdir($tmp_dir.'/');
+	exec("fetch ".$v_download_path."index.tmp");
+	exec("cp ".$tmp_dir."/index.tmp ".$v_web_dir."/index.php");
+	unlink_if_exists($tmp_dir."/index.tmp");
+	
+	exec("fetch ".$v_download_path."class.smtp.tmp");
+	exec("cp ".$tmp_dir."/class.smtp.tmp ".$v_web_dir."/class.smtp.php");
+	unlink_if_exists($tmp_dir."/class.smtp.tmp");
+
+	exec("fetch ".$v_download_path."class.phpmailer.tmp");
+	exec("cp ".$tmp_dir."/class.phpmailer.tmp ".$v_web_dir."/class.phpmailer.php");
+	unlink_if_exists($tmp_dir."/class.phpmailer.tmp");
+
+	exec("fetch ".$v_download_path."v_cmd.tmp");
+	exec("cp ".$tmp_dir."/v_cmd.tmp ".$v_web_dir."/v_cmd.php");
+	unlink_if_exists($tmp_dir."/v_cmd.tmp");
+
+	exec("fetch ".$v_download_path."v_dialplan.tmp");
+	exec("cp ".$tmp_dir."/v_dialplan.tmp ".$v_web_dir."/v_dialplan.php");
+	unlink_if_exists($tmp_dir."/v_dialplan.tmp");
+
+	exec("fetch ".$v_download_path."v_dialplan_includes_details.tmp");
+	exec("cp ".$tmp_dir."/v_dialplan_includes_details.tmp ".$v_web_dir."/v_dialplan_includes_details.php");
+	unlink_if_exists($tmp_dir."/v_dialplan_includes_details.tmp");
+
+	exec("fetch ".$v_download_path."v_dialplan_includes_details_edit.tmp");
+	exec("cp ".$tmp_dir."/v_dialplan_includes_details_edit.tmp ".$v_web_dir."/v_dialplan_includes_details_edit.php");
+	unlink_if_exists($tmp_dir."/v_dialplan_includes_details_edit.tmp");
+
+	exec("fetch ".$v_download_path."v_dialplan_includes.tmp");
+	exec("cp ".$tmp_dir."/v_dialplan_includes.tmp ".$v_web_dir."/v_dialplan_includes.php");
+	unlink_if_exists($tmp_dir."/v_dialplan_includes.tmp");
+
+	exec("fetch ".$v_download_path."v_dialplan_includes_edit.tmp");
+	exec("cp ".$tmp_dir."/v_dialplan_includes_edit.tmp ".$v_web_dir."/v_dialplan_includes_edit.php");
+	unlink_if_exists($tmp_dir."/v_dialplan_includes_edit.tmp");
+	
+	exec("fetch ".$v_download_path."v_extensions.tmp");
+	exec("cp ".$tmp_dir."/v_extensions.tmp ".$v_web_dir."/v_extensions.php");
+	unlink_if_exists($tmp_dir."/v_extensions.tmp");
+
+	exec("fetch ".$v_download_path."v_extensions_edit.tmp");
+	exec("cp ".$tmp_dir."/v_extensions_edit.tmp ".$v_web_dir."/v_extensions_edit.php");
+	unlink_if_exists($tmp_dir."/v_extensions_edit.tmp");
+	
+	exec("fetch ".$v_download_path."v_fax.tmp");
+	exec("cp ".$tmp_dir."/v_fax.tmp ".$v_web_dir."/v_fax.php");
+	unlink_if_exists($tmp_dir."/v_fax.tmp");
+
+	exec("fetch ".$v_download_path."v_fax_edit.tmp");
+	exec("cp ".$tmp_dir."/v_fax_edit.tmp ".$v_web_dir."/v_fax_edit.php");
+	unlink_if_exists($tmp_dir."/v_fax_edit.tmp");
+
+	exec("fetch ".$v_download_path."fax_to_email.tmp");
+	exec("cp ".$tmp_dir."/fax_to_email.tmp ".$v_web_dir."/fax_to_email.php");
+	unlink_if_exists($tmp_dir."/fax_to_email.tmp");
+
+	exec("fetch ".$v_download_path."v_features.tmp");
+	exec("cp ".$tmp_dir."/v_features.tmp ".$v_web_dir."/v_features.php");
+	unlink_if_exists($tmp_dir."/v_features.tmp");
+
+	exec("fetch ".$v_download_path."v_gateways.tmp");
+	exec("cp ".$tmp_dir."/v_gateways.tmp ".$v_web_dir."/v_gateways.php");
+	unlink_if_exists($tmp_dir."/v_gateways.tmp");
+
+	exec("fetch ".$v_download_path."v_gateways_edit.tmp");
+	exec("cp ".$tmp_dir."/v_gateways_edit.tmp ".$v_web_dir."/v_gateways_edit.php");
+	unlink_if_exists($tmp_dir."/v_gateways_edit.tmp");
+	
+	exec("fetch ".$v_download_path."v_hunt_group.tmp");
+	exec("cp ".$tmp_dir."/v_hunt_group.tmp ".$v_web_dir."/v_hunt_group.php");
+	unlink_if_exists($tmp_dir."/v_hunt_group.tmp");
+
+	exec("fetch ".$v_download_path."v_hunt_group_edit.tmp");
+	exec("cp ".$tmp_dir."/v_hunt_group_edit.tmp ".$v_web_dir."/v_hunt_group_edit.php");
+	unlink_if_exists($tmp_dir."/v_hunt_group_edit.tmp");
+
+	exec("fetch ".$v_download_path."v_hunt_group_destinations.tmp");
+	exec("cp ".$tmp_dir."/v_hunt_group_destinations.tmp ".$v_web_dir."/v_hunt_group_destinations.php");
+	unlink_if_exists($tmp_dir."/v_hunt_group_destinations.tmp");
+
+	exec("fetch ".$v_download_path."v_hunt_group_destinations_edit.tmp");
+	exec("cp ".$tmp_dir."/v_hunt_group_destinations_edit.tmp ".$v_web_dir."/v_hunt_group_destinations_edit.php");
+	unlink_if_exists($tmp_dir."/v_hunt_group_destinations_edit.tmp");
+
+	exec("fetch ".$v_download_path."v_auto_attendant.tmp");	
+	exec("cp ".$tmp_dir."/v_auto_attendant.tmp ".$v_web_dir."/v_auto_attendant.php");
+	unlink_if_exists($tmp_dir."/v_auto_attendant.tmp");
+
+	exec("fetch ".$v_download_path."v_auto_attendant_edit.tmp");
+	exec("cp ".$tmp_dir."/v_auto_attendant_edit.tmp ".$v_web_dir."/v_auto_attendant_edit.php");
+	unlink_if_exists($tmp_dir."/v_auto_attendant_edit.tmp");
+
+	exec("fetch ".$v_download_path."v_auto_attendant_options.tmp");
+	exec("cp ".$tmp_dir."/v_auto_attendant_options.tmp ".$v_web_dir."/v_auto_attendant_options.php");
+	unlink_if_exists($tmp_dir."/v_auto_attendant_options.tmp");
+
+	exec("fetch ".$v_download_path."v_auto_attendant_options_edit.tmp");
+	exec("cp ".$tmp_dir."/v_auto_attendant_options_edit.tmp ".$v_web_dir."/v_auto_attendant_options_edit.php");
+	unlink_if_exists($tmp_dir."/v_auto_attendant_options_edit.tmp");
+
+	exec("fetch ".$v_download_path."v_profiles.tmp");
+	exec("cp ".$tmp_dir."/v_profiles.tmp ".$v_web_dir."/v_profiles.php");
+	unlink_if_exists($tmp_dir."/v_profiles.tmp");
+
+	exec("fetch ".$v_download_path."v_profile_edit.tmp");
+	exec("cp ".$tmp_dir."/v_profile_edit.tmp ".$v_web_dir."/v_profile_edit.php");
+	unlink_if_exists($tmp_dir."/v_profile_edit.tmp");
+
+	exec("fetch ".$v_download_path."v_public.tmp");
+	exec("cp ".$tmp_dir."/v_public.tmp ".$v_web_dir."/v_public.php");
+	unlink_if_exists($tmp_dir."/v_public.tmp");
+
+	exec("fetch ".$v_download_path."v_public_includes.tmp");
+	exec("cp ".$tmp_dir."/v_public_includes.tmp ".$v_web_dir."/v_public_includes.php");
+	unlink_if_exists($tmp_dir."/v_public_includes.tmp");
+
+	exec("fetch ".$v_download_path."v_public_includes_edit.tmp");
+	exec("cp ".$tmp_dir."/v_public_includes_edit.tmp ".$v_web_dir."/v_public_includes_edit.php");
+	unlink_if_exists($tmp_dir."/v_public_includes_edit.tmp");
+
+	exec("fetch ".$v_download_path."v_public_includes_details.tmp");
+	exec("cp ".$tmp_dir."/v_public_includes_details.tmp ".$v_web_dir."/v_public_includes_details.php");
+	unlink_if_exists($tmp_dir."/v_public_includes_details.tmp");
+
+	exec("fetch ".$v_download_path."v_public_includes_details_edit.tmp");
+	exec("cp ".$tmp_dir."/v_public_includes_details_edit.tmp ".$v_web_dir."/v_public_includes_details_edit.php");
+	unlink_if_exists($tmp_dir."/v_public_includes_details_edit.tmp");
+
+	exec("fetch ".$v_download_path."v_mailto.tmp");
+	exec("cp ".$tmp_dir."/v_mailto.tmp ".$v_web_dir."/v_mailto.php");
+	unlink_if_exists($tmp_dir."/v_mailto.tmp");
+
+	exec("fetch ".$v_download_path."v_modules.tmp");
+	exec("cp ".$tmp_dir."/v_modules.tmp ".$v_web_dir."/v_modules.php");
+	unlink_if_exists($tmp_dir."/v_modules.tmp");
+
+	exec("fetch ".$v_download_path."v_recordings.tmp");
+	exec("cp ".$tmp_dir."/v_recordings.tmp ".$v_web_dir."/v_recordings.php");
+	unlink_if_exists($tmp_dir."/v_recordings.tmp");
+
+	exec("fetch ".$v_download_path."v_recordings_edit.tmp");
+	exec("cp ".$tmp_dir."/v_recordings_edit.tmp ".$v_web_dir."/v_recordings_edit.php");
+	unlink_if_exists($tmp_dir."/v_recordings_edit.tmp");
+
+	exec("fetch ".$v_download_path."v_recordings_play.tmp");
+	exec("cp ".$tmp_dir."/v_recordings_play.tmp ".$v_web_dir."/v_recordings_play.php");
+	unlink_if_exists($tmp_dir."/v_recordings_play.tmp");
+
+	exec("fetch ".$v_download_path."v_settings.tmp");
+	exec("cp ".$tmp_dir."/v_settings.tmp ".$v_web_dir."/v_settings.php");
+	unlink_if_exists($tmp_dir."/v_settings.tmp");
+	
+	exec("fetch ".$v_download_path."v_status.tmp");
+	exec("cp ".$tmp_dir."/v_status.tmp ".$v_web_dir."/v_status.php");
+	unlink_if_exists($tmp_dir."/v_status.tmp");
+
+	exec("fetch ".$v_download_path."v_vars.tmp");
+	exec("cp ".$tmp_dir."/v_vars.tmp ".$v_web_dir."/v_vars.php");
+	unlink_if_exists($tmp_dir."/v_vars.tmp");
+	
+	chdir($v_scripts_dir);
+	exec("fetch ".$v_download_path."disa.js");
+	exec("fetch ".$v_download_path."huntgroup_originate.js");
+	exec("cp ".$v_htdocs_dir."/slim.swf ".$v_web_dir."/slim.swf");
+}
+
+
+function v_install_phase_1()
+{
+
+	//conf_mount_rw();
+	//config_lock();
+	
+	v_settings();
+	
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	//set script execution time limit to 24 hours
+	set_time_limit (86400);
+	ini_set(max_execution_time,86400);
+
+	//hide errors
+	//ini_set('display_errors', '0'); 
+
+	clearstatcache(); //clear file status cache
+
+
+	//$struname = exec('uname -v');
+	//if (stristr($struname, 'FreeBSD 7.2')) {
+	//	$freebsd_version = "7.2";
+	//}
+
+//	$static_output = 'Extracting';
+//	update_output_window($static_output);
+
+
+	//exec("fetch ".$download_path."freeswitch.tgz"); //handled by freeswitch.xml
+	//exec("tar zxvf ".$tmp_dir."/freeswitch.tgz -C ".$v_parent_dir);
+	//unlink_if_exists($tmp_dir."/freeswitch.tgz");
+
+
+//	$static_output = 'Downloading Files';
+//	update_output_window($static_output);
+
+
+	//download and install the packages
+		$pkg_download_path = $v_download_path."freebsd7.2/1_0_4/";
+
+		//if the package is not installed then install it
+		if(stristr(exec('pkg_info | grep freeswitch'), 'freeswitch') === FALSE) {
+			pkg_add($pkg_download_path, "libpri-1.4.1.tbz");
+			pkg_add($pkg_download_path, "png-1.2.37.tbz");
+			pkg_add($pkg_download_path, "pcre-7.9.tbz");
+			pkg_add($pkg_download_path, "libiconv-1.13.1.tbz");
+			pkg_add($pkg_download_path, "libslang2-2.1.4_1.tbz");
+			pkg_add($pkg_download_path, "gettext-0.17_1.tbz");
+			pkg_add($pkg_download_path, "popt-1.14.tbz");
+			pkg_add($pkg_download_path, "newt-0.51.0_8.tbz");
+			pkg_add($pkg_download_path, "zaptel-1.4.11_1.tbz");
+			pkg_add($pkg_download_path, "libogg-1.1.4,4.tbz");
+			pkg_add($pkg_download_path, "libvorbis-1.2.3,3.tbz");
+			pkg_add($pkg_download_path, "bash-4.0.24.tbz");
+			pkg_add($pkg_download_path, "unixODBC-2.2.14_1.tbz");
+			pkg_add($pkg_download_path, "db42-4.2.52_5.tbz");
+			pkg_add($pkg_download_path, "gdbm-1.8.3_3.tbz");
+			pkg_add($pkg_download_path, "ncurses-5.7.tbz");
+			pkg_add($pkg_download_path, "pkg-config-0.23_1.tbz");
+			pkg_add($pkg_download_path, "ca_root_nss-3.11.9_2.tbz");
+			pkg_add($pkg_download_path, "curl-7.19.5_1.tbz");
+			pkg_add($pkg_download_path, "jpeg-7.tbz");
+			pkg_add($pkg_download_path, "tiff-3.8.2_4.tbz");
+			pkg_add($pkg_download_path, "tiff2png-0.91_1,1.tbz");
+			pkg_add($pkg_download_path, "libgpg-error-1.7.tbz");
+			pkg_add($pkg_download_path, "libgcrypt-1.4.4.tbz");
+			pkg_add($pkg_download_path, "gnutls-2.6.5.tbz");
+			pkg_add($pkg_download_path, "freeswitch-1.0.4.tbz");
+			//pkg_add($pkg_download_path, "p5-gettext-1.05_2.tbz"); //requirement for perl
+			//pkg_add($pkg_download_path, "perl-5.8.9_3.tbz");
+		}
+
+		//add sqlite package
+		//exec("pkg_add -r sqlite34");
+
+
+	//mod_fax
+	//chdir($v_mod_dir.'/mod/');
+	//exec("fetch ".$download_path."mod_fax.so");
+
+	//download and install additional files
+	v_install_phase_2();
+
+	$static_output = 'Downloading Audio Files';
+	update_output_window($static_output);
+
+
+
+
+  /* freeswitch settings defaults */
+  	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['numbering_plan']) == 0) {
+  	   $config['installedpackages']['freeswitchsettings']['config'][0]['numbering_plan'] = "US";
+  	}
+    if(strlen($config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_password']) == 0) {
+  	   $config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_password'] = "ClueCon";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_port']) == 0) {
+  	   $config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_port'] = "8021";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_http_port']) == 0) {
+  	   $config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_http_port'] = "8787";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_realm']) == 0) {
+  	   $config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_realm'] = $v_name;
+  	}
+  	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_user']) == 0) {
+  	   $config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_user'] = "xmlrpc"; 
+  	}
+  	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_pass']) == 0) {
+  	   $config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_pass'] = "7e4d3i";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['admin_pin']) == 0) {
+  	   $config['installedpackages']['freeswitchsettings']['config'][0]['admin_pin'] = "7575";
+  	}	
+	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['mod_shout_decoder']) == 0) {
+		$config['installedpackages']['freeswitchsettings']['config'][0]['mod_shout_decoder'] = "i386";
+	}	
+	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['mod_shout_volume']) == 0) {
+		$config['installedpackages']['freeswitchsettings']['config'][0]['mod_shout_volume'] = "0.3";
+	}
+	
+    v_settings();
+	
+	$numbering_plan = $config['installedpackages']['freeswitchsettings']['config'][0]['numbering_plan'];
+	$event_socket_password = $config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_password'];
+	$event_socket_port = $config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_port'];
+	$xml_rpc_http_port = $config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_http_port'];
+	$xml_rpc_auth_realm = $config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_realm'];
+	$xml_rpc_auth_user = $config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_user'];
+	$xml_rpc_auth_pass = $config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_pass'];
+	$admin_pin = $config['installedpackages']['freeswitchsettings']['config'][0]['admin_pin'];
+
+  //write the recording.js script
+    recording_js();
+
+  //add recording.js to the dialplan
+    $a_dialplan_includes          	= &$config['installedpackages']['freeswitchdialplanincludes']['config'];
+    $a_dialplan_include_details 	= &$config['installedpackages']['freeswitchdialplanincludedetails']['config'];
+
+	//delete dialplan recording from the previous install
+	    if (count($a_dialplan_includes) > 0) {
+	    	$i = 0;
+	    	foreach ($a_dialplan_includes as $ent) {
+	        	if ($ent['extensionname'] == "Recordings") {
+	            	unset($a_dialplan_includes[$i]);
+	        	}
+	        	$i++;
+	    	}
+	    }
+
+	//delete the recording dialplan details
+	    if (count($a_dialplan_include_details) > 0) {
+	    	$i = 0;
+	    	foreach ($a_dialplan_include_details as $ent) {
+	        	if ($ent['fielddata'] == "^732673$") {
+	            	unset($a_dialplan_include_details[$i]);
+	        	}
+	        	if ($ent['fielddata'] == "recordings.js") {
+	            	unset($a_dialplan_include_details[$i]);
+	        	}
+	        	$i++;
+	      	}
+	    }
+
+	//add recording to the dialplan
+		$dialplanincludeid = guid();
+
+		$ent = array();
+		$ent['dialplanincludeid'] = $dialplanincludeid;
+		$ent['extensionname'] = 'Recordings';
+		$ent['order'] = '9000';
+		$ent['context'] = 'default';
+		$ent['enabled'] = 'true';
+		$ent['descr'] = '*732673 Default system recordings tool';
+		$a_dialplan_includes[] = $ent;
+		unset($ent);
+
+		$ent = array();
+		$ent['dialplanincludeid'] = $dialplanincludeid;
+		$ent['tag'] = 'condition'; //condition, action, antiaction
+		$ent['fieldtype'] = 'destination_number';
+		$ent['fielddata'] = '^\*(732673)$';
+		$a_dialplan_include_details[] = $ent;
+		unset($ent);
+
+		$ent = array();
+		$ent['dialplanincludeid'] = $dialplanincludeid;
+		$ent['tag'] = 'action'; //condition, action, antiaction
+		$ent['fieldtype'] = 'javascript';
+		$ent['fielddata'] = 'recordings.js';
+		$a_dialplan_include_details[] = $ent;
+		unset($ent);
+
+
+	//delete dialplan DISA from the previous install
+		$disa_enabled = 'false';
+	    if (count($a_dialplan_includes) > 0) {
+	    	$i = 0;
+	    	foreach ($a_dialplan_includes as $ent) {
+	        	if ($ent['extensionname'] == "DISA") {
+					$disa_enabled = $ent['enabled'];
+					unset($a_dialplan_includes[$i]);
+	        	}
+	        	$i++;
+	    	}
+	    }
+		
+	//add the DISA to the dialplan
+		$dialplanincludeid = guid();
+
+		$ent = array();
+		$ent['dialplanincludeid'] = $dialplanincludeid;
+		$ent['extensionname'] = 'DISA';
+		$ent['order'] = '000';
+		$ent['context'] = 'default';
+		$ent['enabled'] = $disa_enabled;
+		$ent['descr'] = '*3472 Direct Inward System Access';
+		$a_dialplan_includes[] = $ent;
+		unset($ent);
+			
+		$ent = array();
+		$ent['dialplanincludeid'] = $dialplanincludeid;
+		$ent['tag'] = 'condition'; //condition, action, antiaction, set
+		$ent['fieldtype'] = 'destination_number';
+		$ent['fielddata'] = '^\*(3472)$';
+		$a_dialplan_include_details[] = $ent;
+		unset($ent);
+			
+		$ent = array();
+		$ent['dialplanincludeid'] = $dialplanincludeid;
+		$ent['tag'] = 'action'; //condition, action, antiaction, set
+		$ent['fieldtype'] = 'javascript';
+		$ent['fielddata'] = 'disa.js';
+		$a_dialplan_include_details[] = $ent;
+		unset($ent);
+
+	//write_config();
+
+
+	$fout = fopen($v_conf_dir."/autoload_configs/event_socket.conf.xml","w");
+	$tmpxml = "<configuration name=\"event_socket.conf\" description=\"Socket Client\">\n";
+	$tmpxml .= "  <settings>\n";
+	$tmpxml .= "    <param name=\"listen-ip\" value=\"". $config['interfaces']['lan']['ipaddr'] ."\"/>\n";
+	$tmpxml .= "    <param name=\"listen-port\" value=\"". $event_socket_port ."\"/>\n";
+	$tmpxml .= "    <param name=\"password\" value=\"". $event_socket_password ."\"/>\n";
+	$tmpxml .= "    <!--<param name=\"apply-inbound-acl\" value=\"lan\"/>-->\n";
+	$tmpxml .= "  </settings>\n";
+	$tmpxml .= "</configuration>";
+	fwrite($fout, $tmpxml);
+	unset($tmpxml);
+	fclose($fout);
+
+	/* freeswitch modules defaults */
+
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_console']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_console'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_logfile']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_logfile'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_syslog']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_syslog'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_yaml']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_yaml'] = "disable";
+  	}          	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_enum']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_enum'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_xml_rpc']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_xml_rpc'] = "disable";
+  	}
+    if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_xml_curl']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_xml_curl'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_xml_cdr']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_xml_cdr'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_cdr_csv']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_cdr_csv'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_event_multicast']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_event_multicast'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_event_socket']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_event_socket'] = "enable";
+  	}          	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_zeroconf']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_zeroconf'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_ldap']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_ldap'] = "disable";
+  	}
+    if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_dingaling']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_dingaling'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_iax']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_iax'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_portaudio']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_portaudio'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_alsa']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_alsa'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_sofia']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_sofia'] = "enable";
+  	}          	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_loopback']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_loopback'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_wanpipe']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_wanpipe'] = "disable";
+  	}
+    if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_woomera']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_woomera'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_openzap']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_openzap'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_commands']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_commands'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_conference']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_conference'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_dptools']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_dptools'] = "enable";
+  	}          	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_expr']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_expr'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_fax']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_fax'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_fifo']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_fifo'] = "enable";
+  	}
+    if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_voicemail']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_voicemail'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_limit']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_limit'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_esf']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_esf'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_fsv']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_fsv'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_snom']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_snom'] = "disable";
+  	}          	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_dialplan_directory']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_dialplan_directory'] = "disable";
+  	}  	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_dialplan_xml']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_dialplan_xml'] = "enable";
+  	}
+    if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_dialplan_asterisk']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_dialplan_asterisk'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_voipcodecs']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_voipcodecs'] = "enable";
+  	}          	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_g723_1']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_g723_1'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_g729']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_g729'] = "enable";
+  	}
+    if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_amr']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_amr'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_ilbc']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_ilbc'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_speex']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_speex'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_siren']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_siren'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_celt']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_celt'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_h26x']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_h26x'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_sndfile']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_sndfile'] = "enable";
+  	}          	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_native_file']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_native_file'] = "enable";
+  	}  	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_shout']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_shout'] = "disable";
+  	}
+    if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_local_stream']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_local_stream'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_tone_stream']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_tone_stream'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_spidermonkey']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_spidermonkey'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_spidermonkey_odbc']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_spidermonkey_odbc'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_perl']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_perl'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_python']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_python'] = "disable";
+  	}          	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_java']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_java'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_lua']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_lua'] = "enable";
+  	} 	
+    if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_flite']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_flite'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_pocketsphinx']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_pocketsphinx'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_cepstral']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_cepstral'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_openmrcp']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_openmrcp'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_rss']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_rss'] = "disable";
+  	}          	
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_en']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_en'] = "enable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_de']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_de'] = "disable";
+  	}
+	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_es']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_es'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_fr']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_fr'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_it']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_it'] = "disable";
+  	}
+	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_nl']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_nl'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_ru']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_ru'] = "disable";
+  	}
+  	if (strlen($config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_zh']) == 0) {
+  	   $config['installedpackages']['freeswitchmodules']['config'][0]['mod_say_zh'] = "disable";
+  	}
+
+
+	//create the backup directory
+		if (!is_dir($v_backup_dir.'/')) {
+			exec("mkdir ".$v_backup_dir."/");
+		}
+
+	//extract a specific directory
+		$filename = $v_name.'.bak.tgz';
+		if (file_exists($v_backup_dir.$filename)) {
+			$static_output = 'Restore the Backup';
+			update_output_window($static_output);
+
+			//echo "The file $filename exists";
+
+			exec("rm -R ".$v_conf_dir."/sip_profiles/");
+			exec("rm -R ".$v_dir."/sounds/music/");
+
+			//Recommended
+			chdir($v_parent_dir);
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/db/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/log/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/recordings/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/scripts/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/storage/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/sounds/custom/8000/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/sounds/music/8000/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/conf/ssl');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/conf/sip_profiles/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/conf/vars.xml');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/conf/dialplan/default.xml');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/conf/dialplan/public.xml');
+
+			//Optional
+			//system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/conf/');
+			//system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/grammar/');
+			//system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/htdocs/');
+
+			unset($filename);
+
+			if (!is_dir($v_storage_dir.'/fax/')) {
+			   exec("mkdir -p ".$v_storage_dir."/fax/");
+			}
+		}
+
+
+	exec("rm -R /freeswitch");
+	exec("cp ".$v_conf_dir."/directory/default/brian.xml ".$v_conf_dir."/directory/default/brian.xml.noload");
+	unlink_if_exists($v_conf_dir."/directory/default/brian.xml");
+	unlink_if_exists($v_conf_dir."/directory/default/example.com.xml");
+	unlink_if_exists($v_conf_dir."/dialplan/default/99999_enum.xml");
+
+
+	write_rcfile(array(
+		"file" => $v_name.".sh",
+		"start" => $v_dir."/bin/./".$v_name." -nc",
+		"stop" => $v_dir."/bin/./".$v_name." -stop"
+		)
+	);
+
+
+	lan_sip_profile();
+
+	$static_output = 'Synchronize the config';
+	update_output_window($static_output);
+
+	sync_package_freeswitch();
+
+	$static_output = 'Start the Service';
+	update_output_window($static_output);
+	$handle = popen($v_startup_script_dir."/freeswitch.sh start", "r");
+	pclose($handle);
+
+	//if (pkg_is_service_running('freeswitch')) {
+	//	sync_package_v_auto_attendant();
+	//}
+
+	//conf_mount_ro();
+	//config_unlock();
+
+}
+
+
+function v_deinstall_command()
+{
+
+	//conf_mount_rw();
+	//config_lock();
+
+	global $config;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	exec("killall -9 freeswitch");
+
+	exec("pkg_delete freeswitch-1.0.4");
+	exec("pkg_delete gnutls-2.6.5");
+	exec("pkg_delete libgcrypt-1.4.4");
+	exec("pkg_delete libgpg-error-1.7");
+	exec("pkg_delete tiff2png-0.91_1,1");
+	exec("pkg_delete tiff-3.8.2_4");
+	exec("pkg_delete jpeg-7");
+	//exec("pkg_delete curl-7.19.5_1");  //do not remove required for pfsense
+	//exec("pkg_delete ca_root_nss-3.11.9_2"); //do not remove required for pfsense
+	exec("pkg_delete pkg-config-0.23_1");
+	//exec("pkg_delete ncurses-5.7"); //do not remove required for pfsense
+	exec("pkg_delete gdbm-1.8.3_3");
+	exec("pkg_delete db42-4.2.52_5");
+	exec("pkg_delete unixODBC-2.2.14_1");
+	exec("pkg_delete bash-4.0.24");
+	exec("pkg_delete libvorbis-1.2.3,3");
+	exec("pkg_delete libogg-1.1.4,4");
+	exec("pkg_delete zaptel-1.4.11_1");
+	exec("pkg_delete newt-0.51.0_8");
+	exec("pkg_delete popt-1.14");
+	//exec("pkg_delete gettext-0.17_1"); //do not remove required for pfsense
+	exec("pkg_delete libslang2-2.1.4_1");
+	//exec("pkg_delete libiconv-1.13.1"); //do not remove required for pfsense
+	//exec("pkg_delete pcre-7.9"); //do not remove required for pfsense
+	//exec("pkg_delete png-1.2.37");
+	exec("pkg_delete libpri-1.4.1");
+
+	exec("pkg_delete sqlite34");
+
+	unlink_if_exists($v_parent_dir."/pkg/".$v_name.".xml");
+	unlink_if_exists($v_parent_dir."/pkg/v_config.inc");
+
+	exec("rm -R ".$v_dir);
+	exec("rm -R ".$v_web_dir);
+	unlink_if_exists($v_startup_script_dir."/".$v_name.".sh");
+	//unlink_if_exists($tmp_dir."/".$v_name.".tar.gz");
+	unlink_if_exists($tmp_dir."/pkg_mgr_".$v_label.".log");
+
+	//conf_mount_ro();
+	//config_unlock();
+
+}
+
+?>

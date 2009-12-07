@@ -1,0 +1,33 @@
+2/June/2007 v0.6
+	a lot of improvements and features added
+	rewrite and clean up most of functions
+	advanced ajax image editor added
+	theme supported
+	multiple javascript content editors supported
+	
+7/May/2007 
+v0.5.7
+	fixed a security bug which is allowed any users to change files to unexpected extensions
+  
+	1. function.base.php
+  	
+	2. ajax_save_image_name.php
+  	
+	3. language files
+
+5/May/2007 
+v0.5.5      
+	fixed a security bug which is allowed any users to manage any files out of the system root folder
+      	fixed a bug which unable to recursively delete folders
+     
+	make the popup window bigger to fix the silly IE toolbar
+      
+	files changed:
+     
+	 1. function.base.php
+     
+	 2. class.file.php
+      
+	 3. test.php
+ 
+1/May/2007 first release v0.5
