@@ -45,7 +45,7 @@ $v_id = '1';
 	$v_label_show = true;
 	$v_path_show = true;
 	$v_menu_tab_show = false;
-	$v_fax_show = false;
+	$v_fax_show = true;
 
 function v_settings()
 {
@@ -1979,7 +1979,10 @@ function sync_package_v_hunt_group()
 					}
 					else {
 						$tmp .= "	//timeout\n";
-						$tmp .= "	session.execute(\"".$huntgrouptimeouttype."\", \"".$huntgrouptimeoutdestination."\");\n";
+						$tmp .= "	if (session.getVariable(\"originate_disposition\")!=\"SUCCESS\" && session.getVariable(\"originate_disposition\")!=\"ORIGINATOR_CANCEL\"){\n";
+						$tmp .= "		session.execute(\"info\", \"\");\n";
+						$tmp .= "		session.execute(\"".$huntgrouptimeouttype."\", \"".$huntgrouptimeoutdestination."\");\n";
+						$tmp .= "	}\n";
 					}
 
 					$tmp .= "\n";
@@ -2015,194 +2018,172 @@ function sync_package_v_hunt_group()
 function sync_package_v_fax()
 {
 
-	global $config;
+	global $v_id, $db;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
 		$$name = $value;
 	}
-	
-	//loop through all faxes
-		$a_fax = &$config['installedpackages']['freeswitchfax']['config'];
-		if (count($a_fax) > 0) {
-			foreach($a_fax as $row) {
-		
-				//get the fax information such as the name and description
-					//$row['faxid']
-					//$row['faxextension']
-					//$row['faxname']
-					//$row['faxemail']
-					//$row['faxdomain']
-					//$row['faxdescription']
 
-				//add each fax extension to the dialplan
-					$a_dialplan_includes          	= &$config['installedpackages']['freeswitchdialplanincludes']['config'];
-					$a_dialplan_include_details 	= &$config['installedpackages']['freeswitchdialplanincludedetails']['config'];
+	$sql = "";
+	$sql .= "select * from v_fax ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	while($row = $prepstatement->fetch()) {
 
-					//determine if the entry should be an add, or update to the dialplan 
-					if (strlen($row['faxid']) > 0) {
-						$action = 'add'; //set default action to add
-						$i = 0;
-						if (count($a_dialplan_includes) > 0) {
+		//get the fax information such as the name and description
+			//$row['fax_id']
+			//$row['faxextension']
+			//$row['faxname']
+			//$row['faxemail']
+			//$row['faxdomain']
+			//$row['faxdescription']
 
-							foreach($a_dialplan_includes as $row) {
+		//add each fax extension to the dialplan
+			//$a_dialplan_includes          	= &$config['installedpackages']['freeswitchdialplanincludes']['config'];
+			//$a_dialplan_include_details 	= &$config['installedpackages']['freeswitchdialplanincludedetails']['config'];
 
-								//$row['faxid'];
-								//$row['faxname'];
-								//$row['context'];
-								//$row['enabled'];
+		//determine if the entry should be an add, or update to the dialplan 
+		if (strlen($row['fax_id']) > 0) {
+			$action = 'add'; //set default action to add
 
-								if ($row['opt1name'] == "faxid" && $row['opt1value'] == $row['faxid']) {
-									//update
-									$action = 'update';
-									
-									$dialplanincludeid = $row['dialplanincludeid'];
-									$extensionname = $row['extensionname'];
-									$order = $row['order'];
-									$context = $row['context'];
-									$enabled = $row['enabled'];
-									$descr = $row['descr'];
-									$opt1name = $row['opt1name'];
-									$opt1value = $row['opt1value'];
-									$id = $i;
-									//echo "update".$i."<br />\n";
+			$sql = "";
+			$sql .= "select * from v_dialplan_includes ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and opt1name = 'faxid' ";
+			$sql .= "and opt1value = '".$row['fax_id']."' ";
+			$prepstatement2 = $db->prepare($sql);
+			$prepstatement2->execute();
+			while($row2 = $prepstatement2->fetch()) {
+				$action = 'update';
 
-									if (file_exists($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml")){
-										unlink($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml");
-									}
-								}
-								$i++;
+				$dialplan_include_id = $row['dialplan_include_id'];
+				$extensionname = $row['extensionname'];
+				$order = $row['order'];
+				$context = $row['context'];
+				$enabled = $row['enabled'];
+				$descr = $row['descr'];
+				$opt1name = $row['opt1name'];
+				$opt1value = $row['opt1value'];
+				$id = $i;
+				//echo "update".$i."<br />\n";
 
-							}
-						}
+				if (file_exists($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml")){
+					unlink($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml");
+				}
 
-						$ent = array();
-						if ($action == 'add') {
-							$faxid = $row['faxid'];
-							if (strlen($row['faxname']) > 0) {
-								$ent['dialplanincludeid'] = $faxid;
-								$ent['extensionname'] = $row['faxname'];
-								$ent['order'] = '9001'; //if update use the existing order number and extension name and desc
-								$ent['context'] = "default";
-								//$ent['context'] = $row['huntgroupcontext'];
-								$ent['enabled'] = 'true';
-								$ent['descr'] = 'fax';
-								$ent['opt1name'] = 'faxid';
-								$ent['opt1value'] = $row['faxid'];
+				break; //limit to 1 row
+			}
+			unset ($sql, $prepstatement2);
 
-								//add to the config
-									$a_dialplan_includes[] = $ent;
-									unset($ent);
 
-								//<!-- default ${domain_name} -->
-								//<condition field="destination_number" expression="^\*9978$">
-								$ent = array();
-								$ent['dialplanincludeid'] = $faxid;
-								$ent['tag'] = 'condition'; //condition, action, antiaction
-								$ent['fieldorder'] = '000';
-								$ent['fieldtype'] = 'destination_number';
-								$ent['fielddata'] = '^'.$row['faxextension'].'$';
-								$a_dialplan_include_details[] = $ent;
-								unset($ent);
+			if ($action == 'add') {
+				//$faxid = $row['fax_id'];
+				if (strlen($row['faxname']) > 0) {
 
-								//<action application="answer" />
-								$ent = array();
-								$ent['dialplanincludeid'] = $faxid;
-								$ent['tag'] = 'action'; //condition, action, antiaction
-								$ent['fieldorder'] = '001';
-								$ent['fieldtype'] = 'answer';
-								$ent['fielddata'] = '';
-								$a_dialplan_include_details[] = $ent;
-								unset($ent);
+					//create auto attendant extension in the dialplan
+					$extensionname = $row['faxname'];
+					$dialplanorder ='9001';
+					$context = "default";
+					$enabled = 'true';
+					$descr = 'fax';
+					$opt1name = 'faxid';
+					$opt1value = $row['fax_id'];
+					$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
 
-								//<action application="playback" data="silence_stream://2000"/>
-								$ent = array();
-								$ent['dialplanincludeid'] = $faxid;
-								$ent['tag'] = 'action'; //condition, action, antiaction
-								$ent['fieldorder'] = '002';
-								$ent['fieldtype'] = 'playback';
-								$ent['fielddata'] = 'silence_stream://2000';
-								$a_dialplan_include_details[] = $ent;
-								unset($ent);
+					//<!-- default ${domain_name} -->
+					//<condition field="destination_number" expression="^\*9978$">
+					$tag = 'condition'; //condition, action, antiaction
+					$fieldtype = 'destination_number';
+					$fielddata = '^'.$row['faxextension'].'$';
+					$fieldorder = '000';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
-								//<action application="set" data="last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}"/>
-								$ent = array();
-								$ent['dialplanincludeid'] = $faxid;
-								$ent['tag'] = 'action'; //condition, action, antiaction
-								$ent['fieldorder'] = '003';
-								$ent['fieldtype'] = 'set';
-								$ent['fielddata'] = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
-								$a_dialplan_include_details[] = $ent;
-								unset($ent);
+					//<action application="answer" />
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'answer';
+					$fielddata = '';
+					$fieldorder = '001';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
-								//<action application="rxfax" data="$v_storage_dir/fax/inbox/${last_fax}.tif"/>
-								$ent = array();
-								$ent['dialplanincludeid'] = $faxid;
-								$ent['tag'] = 'action'; //condition, action, antiaction
-								$ent['fieldorder'] = '004';
-								$ent['fieldtype'] = 'rxfax';
-								$ent['fielddata'] = $v_storage_dir.'/fax/'.$row['faxextension'].'/inbox/${last_fax}.tif';
-								$a_dialplan_include_details[] = $ent;
-								unset($ent);
+					//<action application="playback" data="silence_stream://2000"/>
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'playback';
+					$fielddata = 'silence_stream://2000';
+					$fieldorder = '002';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
-								//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
-								$ent = array();
-								$ent['dialplanincludeid'] = $faxid;
-								$ent['tag'] = 'action'; //condition, action, antiaction
-								$ent['fieldorder'] = '005';
-								$ent['fieldtype'] = 'system'; 
-								$ent['fielddata'] = $php_dir.' '.$v_web_dir.'/fax_to_email.php email='.$row['faxemail'].' extension='.$row['faxextension'].' name=${last_fax} >> '.$tmp_dir.'/fax.txt';
-								$a_dialplan_include_details[] = $ent;
-								unset($ent);
+					//<action application="set" data="last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}"/>
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'set';
+					$fielddata = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
+					$fieldorder = '003';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
-								//<action application="hangup"/>
-								$ent = array();
-								$ent['dialplanincludeid'] = $faxid;
-								$ent['tag'] = 'action'; //condition, action, antiaction
-								$ent['fieldorder'] = '006';
-								$ent['fieldtype'] = 'hangup';
-								$ent['fielddata'] = '';
-								$a_dialplan_include_details[] = $ent;
-								unset($ent);
-							}
+					//<action application="rxfax" data="$v_storage_dir/fax/inbox/${last_fax}.tif"/>
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'rxfax';
+					$fielddata = $v_storage_dir.'/fax/'.$row['faxextension'].'/inbox/${last_fax}.tif';
+					$fieldorder = '004';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
-							unset($faxid);
+					//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'system';
+					$fielddata = $php_dir.' '.$v_web_dir.'/fax_to_email.php email='.$row['faxemail'].' extension='.$row['faxextension'].' name=${last_fax} >> '.$tmp_dir.'/fax.txt';
+					$fieldorder = '005';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
-						}
-						if ($action == 'update') {
+					//<action application="hangup"/>
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'hangup';
+					$fielddata = '';
+					$fieldorder = '006';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
-							$ent['dialplanincludeid'] =  $row['faxid'];
-							$ent['extensionname'] = $row['faxname'];
-							$ent['order'] = $order;
-							$ent['context'] = $context;
-							$ent['enabled'] = $enabled;
-							$ent['descr'] = $faxdescription;
-							$ent['opt1name'] = $opt1name;
-							$ent['opt1value'] = $opt1value;
+				}
+				//unset($fax_id);
+			}
+			if ($action == 'update') {
+				$extensionname = $row['faxname'];
+				$dialplanorder = $order;
+				$context = $context;
+				$enabled = $enabled;
+				$descr = $faxdescription;
 
-							//update the config
-							$a_dialplan_includes[$id] = $ent;
+				$sql = "";
+				$sql = "update v_dialplan_includes set ";
+				$sql .= "extensionname = '$extensionname', ";
+				$sql .= "dialplanorder = '$dialplanorder', ";
+				$sql .= "context = '$context', ";
+				$sql .= "enabled = '$enabled', ";
+				$sql .= "descr = '$descr' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and opt1name = '$opt1name' ";
+				$sql .= "and opt1value = '$opt1value' ";
+				//echo "sql: ".$sql."<br />";
+				//exit;
+				$db->query($sql);
+				unset($sql);
 
-							unset($ent);
-							unset($extensionname);
-							unset($order);
-							unset($context);
-							unset($enabled);
-							unset($descr);
-							unset($opt1name);
-							unset($opt1value);
-							unset($id);
-						}
-						write_config();
+				unset($extensionname);
+				unset($order);
+				unset($context);
+				unset($enabled);
+				unset($descr);
+				unset($opt1name);
+				unset($opt1value);
+				unset($id);
+			}
 
-						sync_package_v_dialplan_includes();
-						unset($dialplanincludeid);
+			sync_package_v_dialplan_includes();
+			unset($dialplanincludeid);
 
-					} //end if strlen faxid; add the fax to the dialplan
+		} //end if strlen fax_id; add the fax to the dialplan
 
-			} //end foreach
-		} //end if count
+	} //end if result
 
-} //end function
+} //end fax function
 
 
 function get_recording_filename($id)

@@ -125,6 +125,8 @@ if ($_POST["persistformvar"] != "true") {
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
+		sync_package_v_fax();
+
 		require_once "includes/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
 		echo "<div align='center'>\n";
@@ -146,6 +148,8 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "and fax_id = '$fax_id' ";
 		$db->exec($sql);
 		unset($sql);
+
+		sync_package_v_fax();
 
 		require_once "includes/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
