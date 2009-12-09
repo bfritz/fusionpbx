@@ -14,7 +14,7 @@ CREATE TABLE v_menu (menuid SERIAL, v_id NUMERIC, menulanguage TEXT, menutitle T
 INSERT INTO v_menu VALUES(1,1,'en','Menu Manager','/core/menu/menu_list.php','internal','admin','',3,31,'mcrane','2007-05-02 15:24:32','mcrane','2009-10-30 18:24:53');
 INSERT INTO v_menu VALUES(3,1,'en','Admin','','internal','admin','','',24,'mcrane','2007-05-02 15:35:39','admin','2009-11-04 18:20:27');
 INSERT INTO v_menu VALUES(4,1,'en','Content Manager','/core/content/rsslist.php','internal','admin','',3,26,'mcrane','2007-05-02 15:37:30','mcrane','2009-10-27 22:31:44');
-INSERT INTO v_menu VALUES(5,1,'en','User Manager','/core/users/index.php','internal','superadmin','',3,32,'mcrane','2007-05-02 15:38:04','mcrane','2009-10-30 18:25:09');
+INSERT INTO v_menu VALUES(5,1,'en','User Manager','/core/users/index.php','internal','admin','',3,32,'mcrane','2007-05-02 15:38:04','mcrane','2009-10-30 18:25:09');
 INSERT INTO v_menu VALUES(7,1,'en','Home','/index.php','internal','','','',0,'mcrane','2007-05-02 15:43:52','mcrane','2009-10-24 01:02:47');
 INSERT INTO v_menu VALUES(8,1,'en','Login','/login.php','internal','hidden','',31,40,'mcrane','2007-05-02 16:34:06','mcrane','2009-10-23 22:08:45');
 INSERT INTO v_menu VALUES(10,1,'en','Task Manager','/tasks/rsslist.php','internal','hidden','',31,41,'mcrane','2007-05-02 16:50:51','admin','2009-09-11 23:41:05');
@@ -41,7 +41,7 @@ INSERT INTO v_menu VALUES(44,1,'en','Modules','/core/modules/v_modules.php','int
 INSERT INTO v_menu VALUES(45,1,'en','Music on Hold','/mod/recordings/v_recordings.php','internal','admin','',38,12,'mcrane','2009-08-20 10:49:31','mcrane','2009-10-27 22:52:15');
 INSERT INTO v_menu VALUES(46,1,'en','Recordings','/mod/recordings/v_recordings.php','internal','admin','',38,13,'mcrane','2009-08-20 10:50:12','mcrane','2009-10-27 22:51:39');
 INSERT INTO v_menu VALUES(47,1,'en','SIP Profiles','/core/profiles/v_profiles.php','internal','admin','',40,17,'mcrane','2009-08-20 10:51:17','mcrane','2009-10-27 22:11:38');
-INSERT INTO v_menu VALUES(48,1,'en','Inbound','/core/public_includes/v_public_includes.php','internal','admin','',40,18,'mcrane','2009-08-20 10:51:56','mcrane','2009-10-27 22:12:16');
+INSERT INTO v_menu VALUES(48,1,'en','Inbound Routes','/core/public_includes/v_public_includes.php','internal','admin','',40,18,'mcrane','2009-08-20 10:51:56','mcrane','2009-10-27 22:12:16');
 INSERT INTO v_menu VALUES(49,1,'en','Status','/core/status/v_status.php','internal','admin','',40,19,'mcrane','2009-08-20 10:52:38','mcrane','2009-10-27 22:26:42');
 INSERT INTO v_menu VALUES(50,1,'en','Variables','/core/vars/v_vars.php','internal','admin','',40,20,'mcrane','2009-08-20 10:53:12','mcrane','2009-10-27 22:54:08');
 INSERT INTO v_menu VALUES(52,1,'en','Call Detail Records','/core/cdr/v_cdr.php','internal','admin','',38,7,'mcrane','2009-09-05 00:30:16','mcrane','2009-10-27 22:49:14');
