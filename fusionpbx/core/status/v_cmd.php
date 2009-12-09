@@ -56,8 +56,6 @@ while($row = $prepstatement->fetch()) {
 unset ($prepstatement);
 
 
-$host = '127.0.0.1';
-
 $fp = event_socket_create($host, $event_socket_port, $event_socket_password);
 $response = event_socket_request($fp, $cmd);
 fclose($fp);

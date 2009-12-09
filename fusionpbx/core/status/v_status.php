@@ -138,10 +138,6 @@ require_once "includes/header.php";
 //$host = $config['interfaces']['lan']['ipaddr'];
 
 
-
-
-$host = '127.0.0.1';
-
 $sql = "";
 $sql .= "select * from v_settings ";
 $sql .= "where v_id = '$v_id' ";
@@ -170,10 +166,6 @@ while($row = $prepstatement->fetch()) {
 	$mod_shout_volume = $row["mod_shout_volume"];
 	break; //limit to 1 row
 }
-
-$host = "127.0.0.1";
-
-
 
 
 //if service is not running then start it
