@@ -180,9 +180,13 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$faxdomain = $row["faxdomain"];
 		$faxdescription = $row["faxdescription"];
 
-		//example /usr/local/freeswitch/storage/fax/329/inbox
-		$dir_fax_inbox = $v_storage_dir.'/fax/'.$faxextension.'/inbox';
-		$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
+		//set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
+			$dir_fax_inbox = $v_storage_dir.'/fax/'.$faxextension.'/inbox';
+			$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
+
+		//make sure the directories exist
+			if (!is_dir($dir_fax_inbox)) { mkdir($dir_fax_inbox,0777,true); }
+			if (!is_dir($dir_fax_sent)) { mkdir($dir_fax_sent,0777,true); }
 
 		break; //limit to 1 row
 	}
@@ -390,13 +394,13 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 				if (strtolower($file_ext) == "tif") {
 
 					echo "<tr>\n";
-					echo "  <td class=\"vtable\" ondblclick=\"\">\n";
+					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=bin&filename=".$file."\">\n";
 					echo "    	$file";
 					echo "	  </a>";
 					echo "  </td>\n";
 
-					echo "  <td class=\"vtable\" ondblclick=\"\">\n";
+					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					if (file_exists($dir_fax_inbox.'/'.$file.".png")) {
 						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=bin&filename=".$file.".pdf\">\n";
 						echo "    	pdf";
@@ -407,7 +411,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					}
 					echo "  </td>\n";
 
-					echo "  <td class=\"vtable\" ondblclick=\"\">\n";
+					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					if (file_exists($dir_fax_inbox.'/'.$file.".png")) {
 						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=png&filename=".$file.".png\" target=\"_blank\">\n";
 						echo "    	png";
@@ -418,18 +422,17 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					}
 					echo "  </td>\n";
 
-					echo "  <td class=\"vtable\" ondblclick=\"\">\n";
+					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					echo 		date ("F d Y H:i:s", filemtime($dir_fax_inbox.'/'.$file));
 					echo "  </td>\n";
 
-					echo "  <td class=\"vtable\" ondblclick=\"\">\n";
+					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					echo "	".$tmp_filesize;
 					echo "  </td>\n";
 
 					echo "  <td valign=\"middle\" nowrap class=\"list\">\n";
 					echo "    <table border=\"0\" cellspacing=\"0\" cellpadding=\"1\">\n";
 					echo "      <tr>\n";
-					//echo "        <td valign=\"middle\"><a href=\"v_fax_edit.php?id=$i\"><img src=\"/themes/".$g['theme']."/images/icons/icon_e.gif\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
 					echo "        <td><a href=\"v_fax_edit.php?id=".$id."&type=fax_inbox&act=del&filename=".$file."\" onclick=\"return confirm('Do you really want to delete this file?')\"><img src=\"$v_icon_delete\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
 					echo "      </tr>\n";
 					echo "   </table>\n";
@@ -481,16 +484,16 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	if ($handle = opendir($dir_fax_sent)) {
 		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_file($dir_fax_sent.$file)) {
+			if ($file != "." && $file != ".." && is_file($dir_fax_sent.'/'.$file)) {
 
 				$tmp_filesize = filesize($dir_fax_sent.$file);
 				$tmp_filesize = byte_convert($tmp_filesize);
 
-				$tmp_file_array = split("\.",$file);
+				$tmp_file_array = explode(".",$file);
+				//print_r($tmp_file_array);
 				$file_name = $tmp_file_array[0];
-				$file_ext = $tmp_file_array[1];
-
-				if ($file_ext == "tif") {
+				$file_ext = $tmp_file_array[count($tmp_file_array)-1];
+				if (strtolower($file_ext) == "tif") {
 
 					echo "<tr>\n";
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
@@ -499,34 +502,47 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					echo "	  </a>";
 					echo "  </td>\n";
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-					echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_sent&t=bin&filename=".$file_name.".pdf\">\n";
-					echo "    	pdf";
-					echo "	  </a>";
+					if (file_exists($dir_fax_sent.'/'.$file.".pdf")) {
+						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_sent&t=bin&filename=".$file_name.".pdf\">\n";
+						echo "    	pdf";
+						echo "	  </a>";
+					}
+					else {
+						echo "&nbsp;\n";
+					}
 					echo "  </td>\n";
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-					echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_sent&t=png&filename=".$file_name.".png\" target=\"_blank\">\n";
-					echo "    	png";
-					echo "	  </a>";
+					if (file_exists($dir_fax_sent.'/'.$file.".png")) {
+						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_sent&t=png&filename=".$file_name.".png\" target=\"_blank\">\n";
+						echo "    	png";
+						echo "	  </a>";
+					}
+					else {
+						echo "&nbsp;\n";
+					}
 					echo "  </td>\n";
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					echo 		date ("F d Y H:i:s", filemtime($dir_fax_sent.$file));
 					echo "  </td>\n";
-					echo "  <td class=\"listlr\" ondblclick=\"\">\n";
+
+					echo "  <td class=\"".$rowstyle[$c]."\" ondblclick=\"list\">\n";
 					echo "	".$tmp_filesize;
 					echo "  </td>\n";
-					echo "  <td class='".$rowstyle[$c]."' valign=\"middle\" nowrap>\n";
+
+					echo "  <td class='' valign=\"middle\" nowrap>\n";
 					echo "    <table border=\"0\" cellspacing=\"0\" cellpadding=\"1\">\n";
 					echo "      <tr>\n";
-					//echo "        <td valign=\"middle\"><a href=\"v_fax_edit.php?id=$i\"><img src=\"/themes/".$g['theme']."/images/icons/icon_e.gif\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
 					echo "        <td><a href=\"v_fax_edit.php?id=".$id."&type=fax_sent&act=del&filename=".$file."\" onclick=\"return confirm('Do you really want to delete this file?')\"><img src=\"$v_icon_delete\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
 					echo "      </tr>\n";
 					echo "   </table>\n";
 					echo "  </td>\n";
 					echo "</tr>\n";
-				}
+					if ($c==0) { $c=1; } else { $c=0; }
+				} //check if the file is a .tif file
+
 
 			}
-		}
+		} //end while
 		closedir($handle);
 	}
 
