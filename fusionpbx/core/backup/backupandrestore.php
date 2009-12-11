@@ -41,7 +41,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "	<a href='".PROJECT_PATH."/core/backup/backup.php'>download</a>	\n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\">\n";
-	echo "To backup your application. Click on 'Backup Now' and choose  \n";
+	echo "To backup your application click on the download link and then choose  \n";
 	echo "a safe location on your computer to save the file. You may want to \n";
 	echo "save the backup to more than one computer to prevent the backup from being lost. \n";
 	echo "	</td>\n";
@@ -63,7 +63,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "<div class='borderlight' style='padding:10px;'>\n";
 	//Browse to  Backup File
 	echo "Click on 'Browse' then locate and select the application backup file named '.bak'.  \n";
-	echo "Then click on 'Restore.' Restart the application. Your backup is now restored. \n";
+	echo "Then click on 'Restore.' \n";
 	echo "<br><br>";
 
 	echo "<div align='center'>";
