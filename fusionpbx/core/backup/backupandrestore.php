@@ -54,8 +54,6 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "<br>";
 
 
-
-
 	echo "<br><br>";
 
 	/*
