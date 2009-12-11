@@ -41,28 +41,7 @@ require_once "includes/paging.php";
 
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
-if (!function_exists('thorderby')) {
-	//html table header order by
-	function thorderby($fieldname, $columntitle, $orderby, $order) {
 
-		$html .= "<th class='' nowrap>&nbsp; &nbsp; ";
-		if (strlen($orderby)==0) {
-		  $html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-		}
-		else {
-		  if ($order=="asc") {
-			  $html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-		  }
-		  else {
-			  $html .= "<a href='?orderby=$fieldname&order=asc' title='descending'>$columntitle</a>";
-		  }
-		}
-		$html .= "&nbsp; &nbsp; </th>";
-
-		return $html;
-	}
-}
-//example use
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
