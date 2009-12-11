@@ -177,7 +177,7 @@ if (count($_POST)>0) {
 		$shell_result = system($shellcmd);
 		echo "-->\n";
 		echo "<pre>\n";
-		echo $shell_result;
+		echo htmlentities($shell_result);
 		echo "</pre>\n";
 	}
 
@@ -186,7 +186,7 @@ if (count($_POST)>0) {
 		echo "<b>php command:</b>\n";
 		echo "<pre>\n";
 		$php_result = eval($phpcmd);
-		echo $php_result;
+		echo htmlentities($php_result);
 		echo "</pre>\n";
 	}
 
@@ -228,8 +228,7 @@ if (count($_POST)>0) {
 		echo "<pre>\n";
 		$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
 		$switch_result = event_socket_request($fp, 'api '.$switchcmd);
-		//$switch_result = eval($switchcmd);
-		echo $switch_result;
+		echo htmlentities($switch_result);
 		echo "</pre>\n";
 	}
 
