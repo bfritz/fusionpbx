@@ -29,7 +29,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("member") || ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -60,10 +60,29 @@ if (count($_REQUEST)>0) {
 	$network_addr = $_REQUEST["network_addr"];
 }
 
-header('Content-type: application/octet-binary');
-header('Content-Disposition: attachment; filename=cdr.csv');
+//get a list of assigned extensions for this user
+	$sql = "";
+	$sql .= " select * from v_extensions ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	//$v_mailboxes = '';
+	$x = 0;
+	while($row = $prepstatement->fetch()) {
+		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
+		//$extension_id = $row["extension_id"];
+		//$mailbox = $row["mailbox"];
+		$extension_array[$x]['extension_id'] = $row["extension_id"];
+		$extension_array[$x]['extension'] = $row["extension"];
+		$x++;
+	}
+	unset ($prepstatement, $x);
 
-$sqlwhere = "where ";
+
+if (ifgroup("admin") || ifgroup("superadmin")) {
+	$sqlwhere = "where ";
+}
 if (strlen($v_id) > 0) { $sqlwhere .= "and v_id like '$v_id' "; }
 if (strlen($cdr_id) > 0) { $sqlwhere .= "and cdr_id like '%$cdr_id%' "; }
 if (strlen($caller_id_name) > 0) { $sqlwhere .= "and caller_id_name like '%$caller_id_name%' "; }
@@ -83,8 +102,21 @@ if (strlen($read_codec) > 0) { $sqlwhere .= "and read_codec like '%$read_codec%'
 if (strlen($write_codec) > 0) { $sqlwhere .= "and write_codec like '%$write_codec%' "; }
 if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
 if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
+if (!ifgroup("admin") || !ifgroup("superadmin")) {
+	if (trim($sqlwhere) == "where") { $sqlwhere = ""; }
+	//echo $sqlwhere;
+	$sqlwhereorig = $sqlwhere;
+	$sqlwhere = "where ";
+	if (count($extension_array) > 0) {
+		foreach($extension_array as $value) {
+			if ($value['extension'] > 0) { $sqlwhere .= "or caller_id_number = '".$value['extension']."' ". $sqlwhereorig; } //source
+			if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '".$value['extension']."' ".$sqlwhereorig; } //destination
+			if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '*99".$value['extension']."' ".$sqlwhereorig; } //destination
+		}
+	} //count($extension_array)
+}
+$sqlwhere = str_replace ("where or", "where", $sqlwhere);
 $sqlwhere = str_replace ("where and", "where", $sqlwhere);
-if (trim($sqlwhere) == "where") { $sqlwhere = ""; }
 
 $sql = "";
 $sql .= "select * from v_cdr ";
@@ -95,6 +127,9 @@ $prepstatement->execute();
 $result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
 $resultcount = count($result);
 
+
+header('Content-type: application/octet-binary');
+header('Content-Disposition: attachment; filename=cdr.csv');
 
 $z = 0;
 foreach($result[0] as $key => $val) {

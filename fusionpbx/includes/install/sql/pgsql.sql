@@ -47,7 +47,7 @@ INSERT INTO v_menu VALUES(50,1,'en','Variables','/core/vars/v_vars.php','interna
 INSERT INTO v_menu VALUES(52,1,'en','Call Detail Records','/core/cdr/v_cdr.php','internal','admin','',38,7,'mcrane','2009-09-05 00:30:16','mcrane','2009-10-27 22:49:14');
 INSERT INTO v_menu VALUES(53,1,'en','XML Editor','/mod/xml_edit/','internal','admin','',38,8,'mcrane','2009-09-08 17:50:37','mcrane','2009-10-27 22:36:27');
 INSERT INTO v_menu VALUES(54,1,'en','Voicemail Status','/mod/voicemail_status/v_voicemail.php','internal','admin','',38,15,'mcrane','2009-09-10 22:26:54','mcrane','2009-10-27 22:52:54');
-INSERT INTO v_menu VALUES(56,1,'en','Voicemail','/mod/voicemail_msgs/v_voicemail_msgs.php','internal','member','',23,22,'mcrane','2009-09-16 04:04:11','mcrane','2009-10-27 23:32:25');
+INSERT INTO v_menu VALUES(56,1,'en','Voicemail','/mod/voicemail_msgs/v_voicemail_msgs.php','internal','member','',23,24,'mcrane','2009-09-16 04:04:11','mcrane','2009-10-27 23:32:25');
 INSERT INTO v_menu VALUES(58,1,'en','PHP Editor','/mod/php_edit/index.php','internal','superadmin','',3,36,'mcrane','2009-09-23 12:15:51','mcrane','2009-10-30 18:26:11');
 INSERT INTO v_menu VALUES(64,1,'en','Command','/mod/exec/v_exec.php','internal','superadmin','',3,35,'mcrane','2009-09-23 21:55:57','mcrane','2009-10-30 18:25:54');
 INSERT INTO v_menu VALUES(65,1,'en','Contact Manager','/mod/contacts/users.php','internal','admin','',3,28,'mcrane','2009-10-03 13:48:07','mcrane','2009-10-27 22:33:36');
@@ -58,6 +58,7 @@ INSERT INTO v_menu VALUES(71,1,'en','SQLite Query','/mod/sqlite_query/index.php'
 INSERT INTO v_menu VALUES(72,1,'en','Vertical','','internal','hidden','','',44,'mcrane','2009-11-04 01:58:46','admin','2009-11-04 18:21:33');
 INSERT INTO v_menu VALUES(73,1,'en','Script Editor','/mod/script_edit/index.php','internal','superadmin','',3,36,'mcrane','2009-09-23 12:15:51','mcrane','2009-10-30 18:26:11');
 INSERT INTO v_menu VALUES(74,1,'en','Grammar Editor','/mod/grammar_edit/index.php','internal','superadmin','',3,36,'mcrane','2009-09-23 12:15:51','mcrane','2009-10-30 18:26:11');
+INSERT INTO v_menu VALUES(75,1,'en','Call Detail Records','/core/cdr/v_cdr.php','internal','member','',38,23,'mcrane','2009-09-05 00:30:16','mcrane','2009-10-27 22:49:14');
 CREATE TABLE v_rss (rssid SERIAL, v_id NUMERIC, rsslanguage TEXT, rsscategory TEXT, rsssubcategory TEXT, rsstitle TEXT, rsslink TEXT, rssdesc TEXT, rssimg bytea, rssoptional1 TEXT, rssoptional2 TEXT, rssoptional3 TEXT, rssoptional4 TEXT, rssoptional5 TEXT, rssadddate TEXT, rssadduser TEXT, rssdeldate TEXT, rssdeluser TEXT, rssorder NUMERIC, rsscontent TEXT, rssgroup TEXT);
 INSERT INTO v_rss VALUES(1,1,'en','content','default','FusionPBX','/index.php','','','text/html','','','','','2009-09-12 17:11:58','mcrane',NULL,NULL,1,NULL,'');
 CREATE TABLE v_rss_sub (rsssubid SERIAL, v_id NUMERIC, rssid NUMERIC, rsssublanguage TEXT, rsssubtitle TEXT, rsssublink TEXT, rsssubdesc TEXT, rsssuboptional1 TEXT, rsssuboptional2 TEXT, rsssuboptional3 TEXT, rsssuboptional4 TEXT, rsssuboptional5 TEXT, rsssubadddate TEXT, rsssubadduser TEXT, rsssubdeluser TEXT, rsssubdeldate TEXT, rsssubparentid TEXT);

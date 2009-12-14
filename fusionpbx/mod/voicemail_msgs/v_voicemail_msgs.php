@@ -118,7 +118,7 @@ $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
 
-//get a list of assigned mailboxes for this user
+//get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= " select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";

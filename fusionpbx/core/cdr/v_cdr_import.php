@@ -34,7 +34,7 @@ if(php_sapi_name() == 'cli') {
 else {
 	//require authentication
 	require_once "includes/checkauth.php";
-	if (ifgroup("admin") || ifgroup("superadmin")) {
+	if (ifgroup("member") || ifgroup("admin") || ifgroup("superadmin")) {
 		//access granted
 	}
 	else {
