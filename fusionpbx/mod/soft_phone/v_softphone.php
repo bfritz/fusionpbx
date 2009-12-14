@@ -68,49 +68,49 @@ echo "<td>\n";
 
 	echo "<tr>\n";
 	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '1';\" value='1'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '1';\" value='1'>\n";
 	echo "</td>\n";
 	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '2';\" value='2'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '2';\" value='2'>\n";
 	echo "</td>\n";
 	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '3';\" value='3'>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '4';\" value='4'>\n";
-	echo "</td>\n";
-	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '5';\" value='5'>\n";
-	echo "</td>\n";
-	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '6';\" value='6'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '3';\" value='3'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '7';\" value='7'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '4';\" value='4'>\n";
 	echo "</td>\n";
 	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '8';\" value='8'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '5';\" value='5'>\n";
 	echo "</td>\n";
 	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '9';\" value='9'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '6';\" value='6'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '*';\" value='*'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '7';\" value='7'>\n";
 	echo "</td>\n";
 	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '0';\" value='0'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '8';\" value='8'>\n";
 	echo "</td>\n";
 	echo "<td align='center'>\n";
-	echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '#';\" value='#'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '9';\" value='9'>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td align='center'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '*';\" value='*'>\n";
+	echo "</td>\n";
+	echo "<td align='center'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '0';\" value='0'>\n";
+	echo "</td>\n";
+	echo "<td align='center'>\n";
+	echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"document.getElementById('dial').value += '#';\" value='#'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -126,16 +126,16 @@ echo "<td>\n";
 	echo "</table>\n";
 
 echo "</td>\n";
-echo "<td width='50' >\n";
-echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"backspace();\" value='<'>\n";
-echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"clear();\" value='clear'>\n";
-echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"pa_call();\" value='call'>\n";
-echo "	<input type='button' style='width: 100%; height: 100%;' disabled class='btn' name='xfer' id = 'xfer' alt='view' onclick=\"xfer();\" value='xfer'>\n";
+echo "<td width='50'>\n";
+echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"backspace();\" value='<'>\n";
+echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"clear();\" value='clear'>\n";
+echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"pa_call();\" value='call'>\n";
+echo "	<input type='button' style='width: 100%; height: 20px;' disabled class='btn' name='xfer' id = 'xfer' alt='view' onclick=\"xfer();\" value='xfer'>\n";
 //echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"rec();\" value='rec'>\n";
-echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"pa_switch();\" value='switch'>\n";
-echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"pa_switch_none();\" value='hold'>\n";
-echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"cmd();\" value='cmd'>\n";
-echo "	<input type='button' style='width: 100%; height: 100%;' class='btn' name='' alt='view' onclick=\"pa_hangup();\" value='end'>\n";
+echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"pa_switch();\" value='switch'>\n";
+echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"pa_switch_none();\" value='hold'>\n";
+echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"cmd();\" value='cmd'>\n";
+echo "	<input type='button' style='width: 100%; height: 20px;' class='btn' name='' alt='view' onclick=\"pa_hangup();\" value='end'>\n";
 echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
@@ -166,13 +166,13 @@ function ajaxFunction()
 	{
 	if(xmlhttp.readyState==4)
 		{
-			dial = document.getElementById('dial').value;
+			var dial = document.getElementById('dial').value;
 			//alert('dial:'+dial);
-			response = xmlhttp.responseText;
+			var response = xmlhttp.responseText;
 			document.getElementById('ajax_response').innerHTML = '<pre>\n'+response+'</pre>\n';
 			//alert('response: '+response);
 			//response = response.replace('SUCCESS:', '');
-			response_array = response.split(':');
+			var response_array = response.split(':');
 			if (response_array.length > 1) {
 				document.getElementById('uid').value = response_array[2];
 				document.getElementById('xfer').disabled = false;
@@ -181,7 +181,7 @@ function ajaxFunction()
 		}
 	}
 
-	api_cmd = document.getElementById('api_cmd').value;
+	var api_cmd = document.getElementById('api_cmd').value;
 	//alert('cmd:'. api_cmd);
 	xmlhttp.open("GET","<?php echo PROJECT_PATH; ?>/includes/v_cmd.php?cmd="+escape(api_cmd)+"&rdr=false",true);
 	xmlhttp.send(null);
@@ -189,7 +189,7 @@ function ajaxFunction()
 
 function backspace() {
 	document.getElementById('api_cmd').value = '';
-	dial = document.getElementById('dial').value;
+	var dial = document.getElementById('dial').value;
 	document.getElementById('dial').value = dial.substr(0, (dial.length -1));
 }
 
@@ -201,8 +201,8 @@ function clear() {
 
 function pa_call() {
 	document.getElementById('api_cmd').value = 'api pa call '+document.getElementById('dial').value;
-	uid = document.getElementById('uid').value;
-	dial = document.getElementById('dial').value;
+	var uid = document.getElementById('uid').value;
+	var dial = document.getElementById('dial').value;
 	if (dial.length == 0) {
 		document.getElementById('api_cmd').value = 'api pa answer';
 		document.getElementById('xfer').disabled = false;
@@ -218,8 +218,8 @@ function pa_call() {
 
 function xfer() {
 	//uuid_transfer,<uuid> [-bleg|-both] <dest-exten> [<dialplan>] [<context>],Transfer a session,mod_commands
-	uid = document.getElementById('uid').value;
-	dial = document.getElementById('dial').value;
+	var uid = document.getElementById('uid').value;
+	var dial = document.getElementById('dial').value;
 	if (uid.length > 0) {
 		document.getElementById('api_cmd').value = 'api uuid_transfer '+uid+' '+dial+' XML default';
 	}
@@ -230,8 +230,8 @@ function xfer() {
 function rec() {
 	//this function is making the recording but freeswitch crashes after hanging up the call. So it is currently disabled.
 	//uuid_record,<uuid> [start|stop] <path> [<limit>],session record,mod_commands
-	uid = document.getElementById('uid').value;
-	rec = document.getElementById('rec').value;
+	var uid = document.getElementById('uid').value;
+	var rec = document.getElementById('rec').value;
 	if (uid.length > 0) {
 		if (rec.length > 0) {
 			//stop
