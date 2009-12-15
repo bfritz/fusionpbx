@@ -560,6 +560,9 @@ function switch_conf_xml()
 		$$name = $value;
 	}
 
+	if (file_exists($php_dir.'/php')) { $php_bin = 'php'; }
+	if (file_exists($php_dir.'/php.exe')) { $php_bin = 'php.exe'; }
+
 	$fout = fopen($v_conf_dir."/autoload_configs/switch.conf.xml","w");
 	$tmp = "";
 	$tmp .= "";
@@ -624,7 +627,7 @@ function switch_conf_xml()
 	//$tmp .= "		<!--<param name=\"mailer-app-args\" value=\"/usr/local/www/packages/freeswitch/v_mailto.php\"/>-->\n";
 	//$tmp .= "		<param name=\"mailer-app\" value=\"/fusionpbx/Program/php/php.exe\"/>\n";
 	//$tmp .= "		<param name=\"mailer-app-args\" value=\"/fusionpbx/Program/www/secure/v_mailto.php\"/>\n";
-	$tmp .= "		<param name=\"mailer-app\" value=\"".$php_dir."\"/>\n";
+	$tmp .= "		<param name=\"mailer-app\" value=\"".$php_dir."/".$php_bin."\"/>\n";
 	$tmp .= "		<param name=\"mailer-app-args\" value=\"".$dbfilepath."/v_mailto.php\"/>\n";
 	$tmp .= "		<param name=\"dump-cores\" value=\"yes\"/>\n";
 	$tmp .= "		<!--RTP port range -->\n";

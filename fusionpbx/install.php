@@ -97,6 +97,21 @@ include "root.php";
 			$v_parent_dir = 'C:/program files';
 			$v_startup_script_dir = '';
 		}
+		if (is_dir('D:/program files/FreeSWITCH')) {
+			$install_v_dir = 'D:/program files/FreeSWITCH';
+			$v_parent_dir = 'D:/program files';
+			$v_startup_script_dir = '';
+		}
+		if (is_dir('E:/program files/FreeSWITCH')) {
+			$install_v_dir = 'E:/program files/FreeSWITCH';
+			$v_parent_dir = 'E:/program files';
+			$v_startup_script_dir = '';
+		}
+		if (is_dir('F:/program files/FreeSWITCH')) {
+			$install_v_dir = 'F:/program files/FreeSWITCH';
+			$v_parent_dir = 'F:/program files';
+			$v_startup_script_dir = '';
+		}
 		if (is_dir('C:/FreeSWITCH')) {
 			$install_v_dir = 'C:/FreeSWITCH';
 			$v_parent_dir = 'C:';
@@ -107,12 +122,28 @@ include "root.php";
 			$v_parent_dir = 'D:';
 			$v_startup_script_dir = '';
 		}
+		if (is_dir('E:/FreeSWITCH')) {
+			$install_v_dir = 'E:/FreeSWITCH';
+			$v_parent_dir = 'E:';
+			$v_startup_script_dir = '';
+		}
+		if (is_dir('F:/FreeSWITCH')) {
+			$install_v_dir = 'F:/FreeSWITCH';
+			$v_parent_dir = 'F:';
+			$v_startup_script_dir = '';
+		}
 		if (is_dir('C:/PHP')) { $install_php_dir = 'C:/PHP'; }
 		if (is_dir('D:/PHP')) { $install_php_dir = 'D:/PHP'; }
+		if (is_dir('E:/PHP')) { $install_php_dir = 'E:/PHP'; }
+		if (is_dir('F:/PHP')) { $install_php_dir = 'F:/PHP'; }
 		if (is_dir('C:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'C:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-		if (is_dir('D:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'C:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
+		if (is_dir('D:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'D:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
+		if (is_dir('E:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'E:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
+		if (is_dir('F:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'F:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
 		if (is_dir('C:/fusionpbx/Program/php')) { $install_php_dir = 'C:/fusionpbx/Program/php'; }
 		if (is_dir('D:/fusionpbx/Program/php')) { $install_php_dir = 'D:/fusionpbx/Program/php'; }
+		if (is_dir('E:/fusionpbx/Program/php')) { $install_php_dir = 'E:/fusionpbx/Program/php'; }
+		if (is_dir('F:/fusionpbx/Program/php')) { $install_php_dir = 'F:/fusionpbx/Program/php'; }
 	}
 	else { 
 		//echo "other: ".PHP_OS;
@@ -573,11 +604,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		fclose($handle);
 
 		$handle = fopen($filename,"w");
-		$contents = str_replace("<param name=\"mailer-app\" value=\"sendmail\"/>", "<param name=\"mailer-app\" value=\"".$install_php_dir."\"/>", $contents);
-		$contents = str_replace("<param name=\"mailer-app-args\" value=\"-t\"/>", "<param name=\"mailer-app-args\" value=\"".$v_web_dir."/v_mailto.php\"/>", $contents);
+		if (file_exists($install_php_dir.'/php')) { $install_php_bin = 'php'; }
+		if (file_exists($install_php_dir.'/php.exe')) { $install_php_bin = 'php.exe'; }
+		$contents = str_replace("<param name=\"mailer-app\" value=\"sendmail\"/>", "<!--<param name=\"mailer-app\" value=\"sendmail\"/>-->\n<param name=\"mailer-app\" value=\"".$install_php_dir."/".$install_php_bin."\"/>", $contents);
+		$contents = str_replace("<param name=\"mailer-app-args\" value=\"-t\"/>", "<!--<param name=\"mailer-app-args\" value=\"-t\"/>-->\n<param name=\"mailer-app-args\" value=\"".$v_web_dir."/v_mailto.php\"/>", $contents);
 		fwrite($handle, $contents);
-		unset($contents);
 		fclose($handle);
+		unset($contents);
 		unset($filename);
 
 	//prepare shout.conf.xml for mod_shout
