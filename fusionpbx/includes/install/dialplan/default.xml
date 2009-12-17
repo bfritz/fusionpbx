@@ -17,7 +17,7 @@
     <extension name="unloop">
       <condition field="${unroll_loops}" expression="^true$"/>
       <condition field="${sip_looped_call}" expression="^true$">
-	<action application="deflect" data="${destination_number}"/>
+        <action application="deflect" data="${destination_number}"/>
       </condition>
     </extension>
 
@@ -26,23 +26,23 @@
       <!-- man strftime - M-F, 9AM to 6PM -->
       <condition field="${strftime(%w)}" expression="^([1-5])$"/>
       <condition field="${strftime(%H%M)}" expression="^((09|1[0-7])[0-5][0-9]|1800)$">
-	<action application="set" data="open=true"/>
+        <action application="set" data="open=true"/>
       </condition>
     </extension>
 
     <extension name="global-intercept">
       <condition field="destination_number" expression="^\*886$">
-	<action application="answer"/>
-	<action application="intercept" data="${db(select/${domain_name}-last_dial/global)}"/>
-	<action application="sleep" data="2000"/>
+        <action application="answer"/>
+        <action application="intercept" data="${db(select/${domain_name}-last_dial/global)}"/>
+        <action application="sleep" data="2000"/>
       </condition>
     </extension>
 
     <extension name="group-intercept">
       <condition field="destination_number" expression="^\*8$">
-	<action application="answer"/>
-	<action application="intercept" data="${db(select/${domain_name}-last_dial/${callgroup})}"/>
-	<action application="sleep" data="2000"/>
+        <action application="answer"/>
+        <action application="intercept" data="${db(select/${domain_name}-last_dial/${callgroup})}"/>
+        <action application="sleep" data="2000"/>
       </condition>
     </extension>
 
@@ -164,55 +164,35 @@
 
     <extension name="add-group">
       <condition field="destination_number" expression="^\*81(\d{2})$">
-	<action application="answer"/>
-	<action application="group" data="insert:$1@${domain_name}:${sofia_contact(${sip_from_user}@${domain_name})}"/>
-	<action application="gentones" data="%(1000, 0, 640)"/>
+        <action application="answer"/>
+        <action application="group" data="insert:$1@${domain_name}:${sofia_contact(${sip_from_user}@${domain_name})}"/>
+        <action application="gentones" data="%(1000, 0, 640)"/>
       </condition>
     </extension>
 
     <extension name="call-group-simo">
       <condition field="destination_number" expression="^\*82(\d{2})$">
-	<action application="bridge" data="{ignore_early_media=true}${group(call:$1@${domain_name})}"/>
+        <action application="bridge" data="{ignore_early_media=true}${group(call:$1@${domain_name})}"/>
       </condition>
     </extension>
 
     <extension name="call-group-order">
       <condition field="destination_number" expression="^\*83(\d{2})$">
-	<action application="set" data="call_timeout=10"/>
-	<action application="bridge" data="{ignore_early_media=true}${group(call:$1@${domain_name}:order)}"/>
+        <action application="set" data="call_timeout=10"/>
+        <action application="bridge" data="{ignore_early_media=true}${group(call:$1@${domain_name}:order)}"/>
       </condition>
     </extension>
 
     <extension name="extension-intercom">
-      <condition field="destination_number" expression="^\*8(\d{4})$">
-	<action application="set" data="dialed_extension=$1"/>
-	<action application="export" data="sip_auto_answer=true"/>
-	<action application="bridge" data="user/${dialed_extension}@${domain_name}"/>
+      <condition field="destination_number" expression="^\*8(\d{3,6})$">
+        <action application="set" data="dialed_extension=$1"/>
+        <action application="export" data="sip_auto_answer=true"/>
+        <action application="bridge" data="user/${dialed_extension}@${domain_name}"/>
       </condition>
     </extension>
     
-    <extension name="send_to_voicemail_5digits">
-      <condition field="destination_number" expression="^\*99(\d{5})$">
-        <action application="answer"/>
-        <action application="sleep" data="1000"/>
-        <action application="set" data="dialed_extension=$1"/>
-        <action application="export" data="dialed_extension=$1"/>
-        <action application="voicemail" data="default ${domain_name} ${dialed_extension}"/>
-      </condition>
-    </extension>
-
-    <extension name="send_to_voicemail_4digits">
-      <condition field="destination_number" expression="^\*99(\d{4})$">
-        <action application="answer"/>
-        <action application="sleep" data="1000"/>
-        <action application="set" data="dialed_extension=$1"/>
-        <action application="export" data="dialed_extension=$1"/>
-        <action application="voicemail" data="default ${domain_name} ${dialed_extension}"/>
-      </condition>
-    </extension>
-
-    <extension name="send_to_voicemail_3digits">
-	<condition field="destination_number" expression="^\*99(\d{3})$">
+    <extension name="send_to_voicemail">
+      <condition field="destination_number" expression="^\*99(\d{3,6})$">
         <action application="answer"/>
         <action application="sleep" data="1000"/>
         <action application="set" data="dialed_extension=$1"/>
@@ -225,13 +205,13 @@
 
     <extension name="group_dial_sales">
       <condition field="destination_number" expression="^\*2000$">
-	<action application="bridge" data="${group_call(sales@${domain_name})}"/>
+        <action application="bridge" data="${group_call(sales@${domain_name})}"/>
       </condition>
     </extension>
 
     <extension name="group_dial_support">
       <condition field="destination_number" expression="^\*2001$">
-	<action application="bridge" data="group/support@${domain_name}"/>
+        <action application="bridge" data="group/support@${domain_name}"/>
       </condition>
     </extension>
 
