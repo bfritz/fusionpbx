@@ -155,7 +155,7 @@
     </extension>
 
     <extension name="del-group">
-      <condition field="destination_number" expression="^\*80(\d{2})$">
+      <condition field="destination_number" expression="^\**80(\d{2})$">
 	<action application="answer"/>
 	<action application="group" data="delete:$1@${domain_name}:${sofia_contact(${sip_from_user}@${domain_name})}"/>
 	<action application="gentones" data="%(1000, 0, 320)"/>
@@ -163,7 +163,7 @@
     </extension>
 
     <extension name="add-group">
-      <condition field="destination_number" expression="^\*81(\d{2})$">
+      <condition field="destination_number" expression="^\**81(\d{2})$">
         <action application="answer"/>
         <action application="group" data="insert:$1@${domain_name}:${sofia_contact(${sip_from_user}@${domain_name})}"/>
         <action application="gentones" data="%(1000, 0, 640)"/>
@@ -171,13 +171,13 @@
     </extension>
 
     <extension name="call-group-simo">
-      <condition field="destination_number" expression="^\*82(\d{2})$">
+      <condition field="destination_number" expression="^\**82(\d{2})$">
         <action application="bridge" data="{ignore_early_media=true}${group(call:$1@${domain_name})}"/>
       </condition>
     </extension>
 
     <extension name="call-group-order">
-      <condition field="destination_number" expression="^\*83(\d{2})$">
+      <condition field="destination_number" expression="^\**83(\d{2})$">
         <action application="set" data="call_timeout=10"/>
         <action application="bridge" data="{ignore_early_media=true}${group(call:$1@${domain_name}:order)}"/>
       </condition>
@@ -190,7 +190,7 @@
         <action application="bridge" data="user/${dialed_extension}@${domain_name}"/>
       </condition>
     </extension>
-    
+
     <extension name="send_to_voicemail">
       <condition field="destination_number" expression="^\*99(\d{3,6})$">
         <action application="answer"/>
@@ -246,7 +246,7 @@
 	<action application="answer"/>
 	<action application="sleep" data="1000"/>
 	<action application="voicemail" data="check default ${domain_name} ${sip_from_user}"/>
-      </condition>
+	</condition>
     </extension>
     
     <!-- dial via SIP uri -->
