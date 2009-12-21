@@ -73,16 +73,18 @@ if (!function_exists('thorderby')) {
 if ($_GET['a'] == "download") {
 
 	session_cache_limiter('public');
-	
+
 	if ($_GET['type'] = "rec") {
-		if  (file_exists($v_recordings_dir.'/'.$_GET['filename'])) {
-			$fd = fopen($v_recordings_dir.'/'.$_GET['filename'], "rb");
+
+		if (file_exists($v_recordings_dir.'/'.base64_decode($_GET['filename']))) {
+			$fd = fopen($v_recordings_dir.'/'.base64_decode($_GET['filename']), "rb");
+
 			if ($_GET['t'] == "bin") {
 				header("Content-Type: application/force-download");
 				header("Content-Type: application/octet-stream");
 				header("Content-Type: application/download");
 				header("Content-Description: File Transfer");
-				header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
+				header('Content-Disposition: attachment; filename="'.base64_decode($_GET['filename']).'"');
 			}
 			else {
 				$file_ext = substr($_GET['filename'], -3);
@@ -95,7 +97,7 @@ if ($_GET['a'] == "download") {
 			}
 			header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past	
-			header("Content-Length: " . filesize($v_recordings_dir.'/'.$_GET['filename']));
+			header("Content-Length: " . filesize($v_recordings_dir.'/'.base64_decode($_GET['filename'])));
 			fpassthru($fd);
 		}
 	}
@@ -335,10 +337,10 @@ require_once "includes/header.php";
 			//print_r( $row );
 			$tmp_filesize = filesize($v_recordings_dir.'/'.$row[filename]);
 			$tmp_filesize = byte_convert($tmp_filesize);
-				
+
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
-			echo "		<a href=\"v_recordings.php?a=download&type=rec&t=bin&filename=".$row[filename]."\">\n";
+			echo "		<a href=\"v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode($row[filename])."\">\n";
 			echo $row[filename];
 			echo "	  </a>";
 			echo "	</td>\n";
