@@ -54,6 +54,8 @@ if (count($_POST)>0) {
 	$numbering_plan = checkstr($_POST["numbering_plan"]);
 	$default_gateway = checkstr($_POST["default_gateway"]);
 	$default_area_code = checkstr($_POST["default_area_code"]);
+	$event_socket_ip_address = checkstr($_POST["event_socket_ip_address"]);
+	if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
 	$event_socket_port = checkstr($_POST["event_socket_port"]);
 	$event_socket_password = checkstr($_POST["event_socket_password"]);
 	$xml_rpc_http_port = checkstr($_POST["xml_rpc_http_port"]);
@@ -129,6 +131,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "numbering_plan, ";
 			$sql .= "default_gateway, ";
 			$sql .= "default_area_code, ";
+			$sql .= "event_socket_ip_address, ";
 			$sql .= "event_socket_port, ";
 			$sql .= "event_socket_password, ";
 			$sql .= "xml_rpc_http_port, ";
@@ -152,6 +155,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$numbering_plan', ";
 			$sql .= "'$default_gateway', ";
 			$sql .= "'$default_area_code', ";
+			$sql .= "'$event_socket_ip_address', ";
 			$sql .= "'$event_socket_port', ";
 			$sql .= "'$event_socket_password', ";
 			$sql .= "'$xml_rpc_http_port', ";
@@ -191,6 +195,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "numbering_plan = '$numbering_plan', ";
 			$sql .= "default_gateway = '$default_gateway', ";
 			$sql .= "default_area_code = '$default_area_code', ";
+			$sql .= "event_socket_ip_address = '$event_socket_ip_address', ";
 			$sql .= "event_socket_port = '$event_socket_port', ";
 			$sql .= "event_socket_password = '$event_socket_password', ";
 			$sql .= "xml_rpc_http_port = '$xml_rpc_http_port', ";
@@ -207,7 +212,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "smtpfromname = '$smtpfromname', ";
 			$sql .= "mod_shout_decoder = '$mod_shout_decoder', ";
 			$sql .= "mod_shout_volume = '$mod_shout_volume' ";
-			$sql .= "where setting_id = '$setting_id'";
+			$sql .= "where setting_id = '$setting_id' ";
 			$db->exec($sql);
 			unset($sql);
 
@@ -240,6 +245,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$numbering_plan = $row["numbering_plan"];
 			$default_gateway = $row["default_gateway"];
 			$default_area_code = $row["default_area_code"];
+			$event_socket_ip_address = $row["event_socket_ip_address"];
 			$event_socket_port = $row["event_socket_port"];
 			$event_socket_password = $row["event_socket_password"];
 			$xml_rpc_http_port = $row["xml_rpc_http_port"];
@@ -320,6 +326,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <input class='formfld' type='text' name='default_area_code' maxlength='255' value=\"$default_area_code\">\n";
 	echo "<br />\n";
 	echo "Enter the area code here. example: 208\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Event Socket IP Address:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='event_socket_ip_address' maxlength='255' value=\"$event_socket_ip_address\">\n";
+	echo "<br />\n";
+	echo "Enter the event socket port here. default: 0.0.0.0\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

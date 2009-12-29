@@ -37,7 +37,6 @@ else {
 	exit;
 }
 
-
 $cmd = $_GET['cmd'];
 $rdr = $_GET['rdr'];
 
@@ -47,16 +46,15 @@ $sql .= "where v_id = '$v_id' ";
 $prepstatement = $db->prepare($sql);
 $prepstatement->execute();
 while($row = $prepstatement->fetch()) {
-
+	$event_socket_ip_address = $row["event_socket_ip_address"];
 	$event_socket_port = $row["event_socket_port"];
 	$event_socket_password = $row["event_socket_password"];
-
 	break; //limit to 1 row
 }
 unset ($prepstatement);
 
 
-$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 $response = event_socket_request($fp, $cmd);
 fclose($fp);
 

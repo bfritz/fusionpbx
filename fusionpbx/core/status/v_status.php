@@ -133,10 +133,6 @@ if ($_GET['a'] == "other") {
 
 require_once "includes/header.php";
 
-//$event_socket_password = $config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_password'];
-//$event_socket_port = $config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_port'];
-//$host = $config['interfaces']['lan']['ipaddr'];
-
 
 $sql = "";
 $sql .= "select * from v_settings ";
@@ -147,7 +143,8 @@ while($row = $prepstatement->fetch()) {
 	//$v_id = $row["v_id"];
 	$numbering_plan = $row["numbering_plan"];
 	$default_gateway = $row["default_gateway"];
-	$default_area_code = $row["default_area_code"];
+	$default_area_code = $row["default_area_code"];	
+	$event_socket_ip_address = $row["event_socket_ip_address"];
 	$event_socket_port = $row["event_socket_port"];
 	$event_socket_password = $row["event_socket_password"];
 	$xml_rpc_http_port = $row["xml_rpc_http_port"];
@@ -226,7 +223,7 @@ echo "<table width='100%'><tr><td align='left'>\n";
 echo "<br /><br />\n\n";
 
 
-$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 $cmd = "api sofia status";
 $response = event_socket_request($fp, $cmd);
 echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
@@ -248,7 +245,7 @@ echo "<br /><br />\n\n";
 foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
 	
 	$sip_profile_name = str_replace(".xml", "", $sip_profile_file);
-	$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 	$cmd = "api sofia status profile ".$sip_profile_name;
 	$response = event_socket_request($fp, $cmd);
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
@@ -278,7 +275,7 @@ foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
 }
 
 
-$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 $cmd = "api status";
 $response = event_socket_request($fp, $cmd);
 echo "<b>status</b><br />\n";
@@ -289,7 +286,7 @@ fclose($fp);
 echo "<br /><br />\n\n";
 
 
-$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 $cmd = "api show channels";
 $response = event_socket_request($fp, $cmd);
 echo "<b>show channels</b><br />\n";
@@ -308,7 +305,7 @@ echo "<br /><br />\n\n";
 echo "<br /><br />\n\n";
 
 
-$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 $cmd = "api show calls";
 $response = event_socket_request($fp, $cmd);
 echo "<b>show calls</b><br />\n";
@@ -407,7 +404,7 @@ else {
 echo "<br /><br />\n\n";
 
 
-//$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+//$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 //$cmd = "api sofia ";
 //$response = event_socket_request($fp, $cmd);
 //echo "<b>api sofia</b><br />\n";

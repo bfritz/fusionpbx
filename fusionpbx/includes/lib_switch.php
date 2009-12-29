@@ -446,6 +446,7 @@ function event_socket_request_cmd($cmd)
 		$numbering_plan = $row["numbering_plan"];
 		$default_gateway = $row["default_gateway"];
 		$default_area_code = $row["default_area_code"];
+		$event_socket_ip_address = $row["event_socket_ip_address"];
 		$event_socket_port = $row["event_socket_port"];
 		$event_socket_password = $row["event_socket_password"];
 		$xml_rpc_http_port = $row["xml_rpc_http_port"];
@@ -467,11 +468,10 @@ function event_socket_request_cmd($cmd)
 	unset ($prepstatement);
 
 	if (pkg_is_service_running('freeswitch')) {
-		$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 		$response = event_socket_request($fp, $cmd);
 		fclose($fp);
 	}
-	unset($host, $port, $password);
 
 }
 
@@ -769,6 +769,7 @@ function sync_package_v_settings()
 		//$numbering_plan = $row["numbering_plan"];
 		//$default_gateway = $row["default_gateway"];
 		//$default_area_code = $row["default_area_code"];
+		//$event_socket_ip_address = $row["event_socket_ip_address"];
 		//$event_socket_port = $row["event_socket_port"];
 		//$event_socket_password = $row["event_socket_password"];
 		//$xml_rpc_http_port = $row["xml_rpc_http_port"];
@@ -827,10 +828,13 @@ function sync_package_v_settings()
 		unset($tmpxml);
 		fclose($fout);
 
+		$event_socket_ip_address = $row['event_socket_ip_address'];
+		if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
+
 		$fout = fopen($v_conf_dir."/autoload_configs/event_socket.conf.xml","w");
 		$tmpxml = "<configuration name=\"event_socket.conf\" description=\"Socket Client\">\n";
 		$tmpxml .= "  <settings>\n";
-		$tmpxml .= "    <param name=\"listen-ip\" value=\"0.0.0.0\"/>\n";
+		$tmpxml .= "    <param name=\"listen-ip\" value=\"" . $event_socket_ip_address . "\"/>\n";
 		$tmpxml .= "    <param name=\"listen-port\" value=\"" . $row['event_socket_port'] . "\"/>\n";
 		$tmpxml .= "    <param name=\"password\" value=\"" . $row['event_socket_password'] . "\"/>\n";
 		$tmpxml .= "    <!--<param name=\"apply-inbound-acl\" value=\"lan\"/>-->\n";

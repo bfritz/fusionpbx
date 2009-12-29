@@ -196,8 +196,6 @@ if (count($_POST)>0) {
 	//fs cmd
 	if (strlen($switchcmd) > 0) {
 
-		$host = '127.0.0.1';
-
 		$sql = "";
 		$sql .= "select * from v_settings ";
 		$sql .= "where v_id = '$v_id' ";
@@ -208,6 +206,7 @@ if (count($_POST)>0) {
 			$numbering_plan = $row["numbering_plan"];
 			$default_gateway = $row["default_gateway"];
 			$default_area_code = $row["default_area_code"];
+			$event_socket_ip_address = $row["event_socket_ip_address"];
 			$event_socket_port = $row["event_socket_port"];
 			$event_socket_password = $row["event_socket_password"];
 			$xml_rpc_http_port = $row["xml_rpc_http_port"];
@@ -229,8 +228,9 @@ if (count($_POST)>0) {
 
 		echo "<b>switch command:</b>\n";
 		echo "<pre>\n";
-		$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 		$switch_result = event_socket_request($fp, 'api '.$switchcmd);
+		//$switch_result = eval($switchcmd);
 		echo htmlentities($switch_result);
 		echo "</pre>\n";
 	}
