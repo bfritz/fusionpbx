@@ -56,9 +56,10 @@ if (count($_POST)>0) {
 		echo "		// initialisation //load,\n";
 		echo "		editAreaLoader.init({\n";
 		echo "			id: \"shellcmd\"	// id of the textarea to transform //, |, help\n";
-		echo "			,start_highlight: true\n";
+		echo "			,start_highlight: false\n";
+		echo "			,display: \"later\"\n";
 		echo "			,font_size: \"8\"\n";
-		echo "			,allow_toggle: false\n";
+		echo "			,allow_toggle: true\n";
 		echo "			,language: \"en\"\n";
 		echo "			,syntax: \"html\"\n";
 		echo "			,toolbar: \"search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help\" //new_document,\n";
@@ -70,9 +71,10 @@ if (count($_POST)>0) {
 		echo "\n";
 		echo "		editAreaLoader.init({\n";
 		echo "			id: \"phpcmd\"	// id of the textarea to transform //, |, help\n";
-		echo "			,start_highlight: true\n";
+		echo "			,start_highlight: false\n";
+		echo "			,display: \"later\"\n";
 		echo "			,font_size: \"8\"\n";
-		echo "			,allow_toggle: false\n";
+		echo "			,allow_toggle: true\n";
 		echo "			,language: \"en\"\n";
 		echo "			,syntax: \"php\"\n";
 		echo "			,toolbar: \"search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help\" //new_document,\n";
@@ -83,9 +85,10 @@ if (count($_POST)>0) {
 		echo "\n";
 		echo "		editAreaLoader.init({\n";
 		echo "			id: \"switchcmd\"	// id of the textarea to transform //, |, help\n";
-		echo "			,start_highlight: true\n";
+		echo "			,start_highlight: false\n";
+		echo "			,display: \"later\"\n";
 		echo "			,font_size: \"8\"\n";
-		echo "			,allow_toggle: false\n";
+		echo "			,allow_toggle: true\n";
 		echo "			,language: \"en\"\n";
 		echo "			,syntax: \"php\"\n";
 		echo "			,toolbar: \"search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help\" //new_document,\n";
