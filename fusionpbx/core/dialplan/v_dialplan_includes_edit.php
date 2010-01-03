@@ -53,6 +53,7 @@ if (count($_POST)>0) {
 	//$v_id = checkstr($_POST["v_id"]);
 	$extensionname = checkstr($_POST["extensionname"]);
 	$dialplanorder = checkstr($_POST["dialplanorder"]);
+	$extensioncontinue = checkstr($_POST["extensioncontinue"]);
 	$context = checkstr($_POST["context"]);
 	$enabled = checkstr($_POST["enabled"]);
 	$descr = checkstr($_POST["descr"]);
@@ -76,6 +77,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($extensionname) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		if (strlen($dialplanorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		if (strlen($extensioncontinue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
 		//if (strlen($context) == 0) { $msg .= "Please provide: Context<br>\n"; }
 		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		//if (strlen($descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
@@ -110,6 +112,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "v_id, ";
 		$sql .= "extensionname, ";
 		$sql .= "dialplanorder, ";
+		$sql .= "extensioncontinue, ";
 		$sql .= "context, ";
 		$sql .= "enabled, ";
 		$sql .= "descr ";
@@ -119,6 +122,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$v_id', ";
 		$sql .= "'$extensionname', ";
 		$sql .= "'$dialplanorder', ";
+		$sql .= "'$extensioncontinue', ";
 		$sql .= "'$context', ";
 		$sql .= "'$enabled', ";
 		$sql .= "'$descr' ";
@@ -144,6 +148,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "v_id = '$v_id', ";
 		$sql .= "extensionname = '$extensionname', ";
 		$sql .= "dialplanorder = '$dialplanorder', ";
+		$sql .= "extensioncontinue = '$extensioncontinue', ";
 		$sql .= "context = '$context', ";
 		$sql .= "enabled = '$enabled', ";
 		$sql .= "descr = '$descr' ";
@@ -154,7 +159,6 @@ if ($_POST["persistformvar"] != "true") {
 
 		//synchronize the xml config
 		sync_package_v_dialplan_includes();
-		
 		require_once "includes/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan_includes.php\">\n";
 		echo "<div align='center'>\n";
@@ -180,6 +184,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$v_id = $row["v_id"];
 		$extensionname = $row["extensionname"];
 		$dialplanorder = $row["dialplanorder"];
+		$extensioncontinue = $row["extensioncontinue"];
 		$context = $row["context"];
 		$enabled = $row["enabled"];
 		$descr = $row["descr"];
@@ -278,6 +283,31 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	//echo "\n";
 	//echo "</td>\n";
 	//echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Continue:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='extensioncontinue'>\n";
+	echo "    <option value=''></option>\n";
+	if ($extensioncontinue == "true") { 
+		echo "    <option value='true' SELECTED >true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($extensioncontinue == "false") { 
+		echo "    <option value='false' SELECTED >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "Extension Continue in most cases this is false. default: false\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
