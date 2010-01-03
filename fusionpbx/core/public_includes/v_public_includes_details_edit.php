@@ -486,10 +486,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
     echo "";
 
     if ($v_path_show) {
-    echo "Additional information on applications for Actions and Anti-Actions.<br />\n";
-    echo "<a href='http://wiki.freeswitch.org/wiki/Modules#Applications' target='_blank'>http://wiki.freeswitch.org/wiki/Modules#Applications</a>\n";
-    echo "<br />\n";
-    echo "<a href='http://wiki.freeswitch.org/wiki/public_Functions' target='_blank'>http://wiki.freeswitch.org/wiki/public_Functions</a>\n";
+		echo "Additional information on applications for Actions and Anti-Actions.<br />\n";
+		echo "<a href='http://wiki.freeswitch.org/wiki/Modules#Applications' target='_blank'>http://wiki.freeswitch.org/wiki/Modules#Applications</a>\n";
+		//echo "<br />\n";
     }
 
     echo "    <br />\n";
@@ -529,7 +528,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 
     if ($v_path_show) {
-    echo "<a href='http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go' target='_blank'>http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go</a>\n";
+		echo "<a href='http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go' target='_blank'>http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go</a>\n";
     }
     echo "    <ul>\n";
     echo "    <li><b>codec-ms</b> 20</li>\n";
