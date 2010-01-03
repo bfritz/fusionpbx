@@ -41,60 +41,37 @@ require_once "includes/paging.php";
 
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
-if (!function_exists('thorderby')) {
-	//html table header order by
-	function thorderby($fieldname, $columntitle, $orderby, $order) {
 
-		$html .= "<th class='' nowrap>&nbsp; &nbsp; ";
-		if (strlen($orderby)==0) {
-		  $html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-		}
-		else {
-		  if ($order=="asc") {
-			  $html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-		  }
-		  else {
-			  $html .= "<a href='?orderby=$fieldname&order=asc' title='descending'>$columntitle</a>";
-		  }
-		}
-		$html .= "&nbsp; &nbsp; </th>";
-
-		return $html;
-	}
-}
-//example use
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "      <br />";
+	echo "<td align=\"center\">\n";
+	echo "<br />";
 
-
-	echo "  	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-	echo "      <tr>\n";
-	echo "        <td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Dialplan\n";
-	echo "            </strong></span></span>\n";
-	echo "        </td>\n";
-	echo "        <td align='right'>\n";
-	echo "          <input type='button' class='btn' value='advanced' onclick=\"document.location.href='v_dialplan.php';\">\n";
-	echo "        </td>\n";
-	echo "      </tr>\n";
-	echo "      <tr>\n";
-	echo "        <td align='left' colspan='2'>\n";
-	echo "          <span class=\"vexpl\">\n";
-	echo "              The dialplan is used to setup call destinations based on conditions and context.\n";
-	echo "			  You can use the dialplan to send calls to gateways, auto attendants, external numbers,\n";
-	echo "			  to scripts, or any destination.\n";
-	echo "          </span>\n";
-	echo "        </td>\n";
+	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+	echo "	<tr>\n";
+	echo "	<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Dialplan\n";
+	echo "		</strong></span></span>\n";
+	echo "	</td>\n";
+	echo "	<td align='right'>\n";
+	echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='v_dialplan.php';\">\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
+	echo "	<tr>\n";
+	echo "	<td align='left' colspan='2'>\n";
+	echo "		<span class=\"vexpl\">\n";
+	echo "			The dialplan is used to setup call destinations based on conditions and context.\n";
+	echo "			You can use the dialplan to send calls to gateways, auto attendants, external numbers,\n";
+	echo "			to scripts, or any destination.\n";
+	echo "		</span>\n";
+	echo "	</td>\n";
 	echo "\n";
-	echo "      </tr>\n";
-	echo "    </table>";
+	echo "	</tr>\n";
+	echo "	</table>";
 
-	echo "      <br />";
-	echo "      <br />";
+	echo "	<br />";
+	echo "	<br />";
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
@@ -139,7 +116,7 @@ if (!function_exists('thorderby')) {
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_dialplan_includes_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='v_dialplan_includes_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 	//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
@@ -154,7 +131,7 @@ if (!function_exists('thorderby')) {
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extensionname]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplanorder]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
-			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."</td>\n";
+			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			echo "		<a href='v_dialplan_includes_edit.php?id=".$row[dialplan_include_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
 			echo "		<a href='v_dialplan_includes_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
@@ -174,7 +151,7 @@ if (!function_exists('thorderby')) {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_dialplan_includes_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_dialplan_includes_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
