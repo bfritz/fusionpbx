@@ -338,359 +338,30 @@ function type_onchange(field_type) {
 </script>
 
 <?php
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "      <br>";
-
-	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
-
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-	echo "  <tr>\n";
-	echo "    <td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Inbound Call Routing\n";
-	echo "        </strong></span></span>\n";
-	echo "    </td>\n";
-	echo "    <td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public_includes.php'\" value='Back'></td>\n";
-	echo "  </tr>\n";
-	echo "  <tr>\n";
-	echo "    <td align='left' width='30%' colspan='2'>\n";
-	echo "      <span class=\"vexpl\">\n";
-	echo "          The public dialplan is used to route incoming calls to destinations based on one or more conditions and context. It can send incoming calls to an auto attendant, huntgroup, extension, external number, or a script.\n";
-	echo "      </span>\n";
-	echo "		<br />\n";
-	echo "		<br />\n";
-	echo "    </td>\n";
-	echo "  </tr>\n";
-	echo "</table>";
-
-	echo "<br />\n";
-
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Name:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	//echo "<tr>\n";
-	//echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	//echo "    Order:\n";
-	//echo "</td>\n";
-	//echo "<td class='vtable' align='left'>\n";
-	//echo "              <select name='dialplanorder' class='formfld' style='width: 60%;'>\n";
-	////echo "              <option></option>\n";
-	//if (strlen(htmlspecialchars($dialplanorder))> 0) {
-	//	echo "              <option selected='yes' value='".htmlspecialchars($dialplanorder)."'>".htmlspecialchars($dialplanorder)."</option>\n";
-	//}
-	//$i=0;
-	//while($i<=999) {
-	//	if (strlen($i) == 1) { echo "              <option value='00$i'>00$i</option>\n"; }
-	//	if (strlen($i) == 2) { echo "              <option value='0$i'>0$i</option>\n"; }
-	//	if (strlen($i) == 3) { echo "              <option value='$i'>$i</option>\n"; }
-	//	$i++;
-	//}
-	//echo "              </select>\n";
-	//echo "<br />\n";
-	//echo "\n";
-	//echo "</td>\n";
-	//echo "</tr>\n";
-
-	//echo "<tr>\n";
-	//echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	//echo "    Continue:\n";
-	//echo "</td>\n";
-	//echo "<td class='vtable' align='left'>\n";
-	//echo "    <select class='formfld' name='extensioncontinue'>\n";
-	//echo "    <option value=''></option>\n";
-	//if ($extensioncontinue == "true") { 
-	//	echo "    <option value='true' SELECTED >true</option>\n";
-	//}
-	//else {
-	//	echo "    <option value='true'>true</option>\n";
-	//}
-	//if ($extensioncontinue == "false") { 
-	//	echo "    <option value='false' SELECTED >false</option>\n";
-	//}
-	//else {
-	//	echo "    <option value='false'>false</option>\n";
-	//}
-	//echo "    </select>\n";
-	//echo "<br />\n";
-	//echo "Extension Continue in most cases this is false. default: false\n";
-	//echo "</td>\n";
-	//echo "</tr>\n";
-
-	/*
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Enabled:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='enabled'>\n";
-	echo "    <option value=''></option>\n";
-	if ($enabled == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
-	}
-	else {
-		echo "    <option value='true'>true</option>\n";
-	}
-	if ($enabled == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
-	}
-	else {
-		echo "    <option value='false'>false</option>\n";
-	}
-	echo "    </select>\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	*/
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	Condition 1:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<table style='width: 60%;' border='0'>\n";
-	echo "	<tr>\n";
-	echo "	<td style='width: 62px;'>Field</td>\n";
-	echo "	<td style='width: 35%;'>\n";
-	echo "    <select class='formfld' name='condition_field_1' id='condition_field_1' onchange='type_onchange(\"condition_field_1\");' style='width:100%'>\n";
-	echo "    <option value=''></option>\n";
-	if (strlen($condition_field_1) > 0) {
-		echo "    <option value='$condition_field_1' selected>$condition_field_1</option>\n";
-	}
-	echo "    <option value='context'>context</option>\n";
-	echo "    <option value='rdnis'>rdnis</option>\n";
-	echo "    <option value='destination_number'>destination_number</option>\n";
-	echo "    <option value='public'>public</option>\n";
-	echo "    <option value='caller_id_name'>caller_id_name</option>\n";
-	echo "    <option value='caller_id_number'>caller_id_number</option>\n";
-	echo "    <option value='ani'>ani</option>\n";
-	echo "    <option value='ani2'>ani2</option>\n";
-	echo "    <option value='uuid'>uuid</option>\n";
-	echo "    <option value='source'>source</option>\n";
-	echo "    <option value='chan_name'>chan_name</option>\n";
-	echo "    <option value='network_addr'>network_addr</option>\n";
-	echo "    </select><br />\n";
-	echo "	</td>\n";
-	echo "	<td style='width: 73px;'>&nbsp; Expression</td>\n";
-	echo "	<td>\n";
-	echo "		<input class='formfld' type='text' name='condition_expression_1' maxlength='255' style='width:100%' value=\"$condition_expression_1\">\n";
-	echo "	</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "	<div id='desc_condition_expression_1'></div>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Condition 2\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-
-	echo "	<table style='width: 60%;' border='0'>\n";
-	echo "	<tr>\n";
-	echo "	<td align='left' style='width: 62px;'>\n";
-	echo "		Field:\n";
-	echo "	</td>\n";
-	echo "	<td style='width: 35%;' align='left'>\n";
-	echo "    <select class='formfld' name='condition_field_2' id='condition_field_2' onchange='type_onchange(\"condition_field_2\");' style='width:100%'>\n";
-	echo "    <option value=''></option>\n";
-	if (strlen($condition_field_2) > 0) {
-		echo "    <option value='$condition_field_2' selected>$condition_field_2</option>\n";
-	}
-	echo "    <option value='context'>context</option>\n";
-	echo "    <option value='rdnis'>rdnis</option>\n";
-	echo "    <option value='destination_number'>destination_number</option>\n";
-	echo "    <option value='public'>public</option>\n";
-	echo "    <option value='caller_id_name'>caller_id_name</option>\n";
-	echo "    <option value='caller_id_number'>caller_id_number</option>\n";
-	echo "    <option value='ani'>ani</option>\n";
-	echo "    <option value='ani2'>ani2</option>\n";
-	echo "    <option value='uuid'>uuid</option>\n";
-	echo "    <option value='source'>source</option>\n";
-	echo "    <option value='chan_name'>chan_name</option>\n";
-	echo "    <option value='network_addr'>network_addr</option>\n";
-	echo "    </select><br />\n";
-	echo "	</td>\n";
-	echo "	<td style='width: 73px;' align='left'>\n";
-	echo "		&nbsp; Expression:\n";
-	echo "	</td>\n";
-	echo "	<td>\n";
-	echo "		<input class='formfld' type='text' name='condition_expression_2' maxlength='255' style='width:100%' value=\"$condition_expression_2\">\n";
-	echo "	</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "	<div id='desc_condition_expression_2'></div>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Action 1:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<table style='width: 60%;' border='0' >\n";
-	echo "	<tr>\n";
-	echo "	<td style='width: 62px;'>Application: </td>\n";
-	echo "	<td style='width: 35%;'>\n";
-	echo "    <select class='formfld' style='width:100%' id='action_application_1' name='action_application_1' onchange='type_onchange(\"action_application_1\");'>\n";
-	echo "    <option value=''></option>\n";
-	if (strlen($action_application_1) > 0) {
-		echo "    <option value='$action_application_1' selected>$action_application_1</option>\n";
-	}
-	echo "    <option value='answer'>answer</option>\n";
-	echo "    <option value='bridge'>bridge</option>\n";
-	echo "    <option value='cond'>cond</option>\n";
-	echo "    <option value='db'>db</option>\n";
-	echo "    <option value='global_set'>global_set</option>\n";
-	echo "    <option value='group'>group</option>\n";
-	echo "    <option value='expr'>expr</option>\n";
-	echo "    <option value='hangup'>hangup</option>\n";
-	echo "    <option value='info'>info</option>\n";
-	echo "    <option value='javascript'>javascript</option>\n";
-	echo "    <option value='reject'>reject</option>\n";
-	echo "    <option value='playback'>playback</option>\n";
-	echo "    <option value='reject'>reject</option>\n";
-	echo "    <option value='respond'>respond</option>\n";
-	echo "    <option value='ring_ready'>ring_ready</option>\n";
-	echo "    <option value='set'>set</option>\n";
-	echo "    <option value='set_user'>set_user</option>\n";
-	echo "    <option value='sleep'>sleep</option>\n";
-	echo "    <option value='sofia_contact'>sofia_contact</option>\n";
-	echo "    <option value='transfer'>transfer</option>\n";
-	echo "    <option value='voicemail'>voicemail</option>\n";
-	echo "    </select><br />\n";
-	echo "	</td>\n";
-	echo "	<td style='width: 73px;'>\n";
-	echo "		&nbsp; Data: \n";
-	echo "	</td>\n";
-	echo "	<td>\n";
-	echo "		<input class='formfld' style='width: 100%;' type='text' name='action_data_1' maxlength='255' value=\"$action_data_1\">\n";
-	echo "	</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "	<div id='desc_action_data_1'></div>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Action 2:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<table style='width: 60%;' border='0' >\n";
-	echo "	<tr>\n";
-	echo "	<td style='width: 62px;'>Application: </td>\n";
-	echo "	<td style='width: 35%;'>\n";
-	echo "    <select class='formfld' style='width:100%' id='action_application_2' name='action_application_2' onchange='type_onchange(\"action_application_2\");'>\n";
-	echo "    <option value=''></option>\n";
-	if (strlen($action_application_2) > 0) {
-		echo "    <option value='$action_application_2' selected>$action_application_2</option>\n";
-	}
-	echo "    <option value='answer'>answer</option>\n";
-	echo "    <option value='bridge'>bridge</option>\n";
-	echo "    <option value='cond'>cond</option>\n";
-	echo "    <option value='db'>db</option>\n";
-	echo "    <option value='global_set'>global_set</option>\n";
-	echo "    <option value='group'>group</option>\n";
-	echo "    <option value='expr'>expr</option>\n";
-	echo "    <option value='hangup'>hangup</option>\n";
-	echo "    <option value='info'>info</option>\n";
-	echo "    <option value='javascript'>javascript</option>\n";
-	echo "    <option value='reject'>reject</option>\n";
-	echo "    <option value='playback'>playback</option>\n";
-	echo "    <option value='reject'>reject</option>\n";
-	echo "    <option value='respond'>respond</option>\n";
-	echo "    <option value='ring_ready'>ring_ready</option>\n";
-	echo "    <option value='set'>set</option>\n";
-	echo "    <option value='set_user'>set_user</option>\n";
-	echo "    <option value='sleep'>sleep</option>\n";
-	echo "    <option value='sofia_contact'>sofia_contact</option>\n";
-	echo "    <option value='transfer'>transfer</option>\n";
-	echo "    <option value='voicemail'>voicemail</option>\n";
-	echo "    </select><br />\n";
-	echo "	</td>\n";
-	echo "	<td style='width: 73px;'>\n";
-	echo "		&nbsp; Data: \n";
-	echo "	</td>\n";
-	echo "	<td>\n";
-	echo "		<input class='formfld' style='width: 100%;' type='text' name='action_data_2' maxlength='255' value=\"$action_data_2\">\n";
-	echo "	</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "	<div id='desc_action_data_2'></div>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Description:\n";
-	echo "</td>\n";
-	echo "<td colspan='4' class='vtable' align='left'>\n";
-	//echo "    <textarea class='formfld' name='descr' rows='4'>$descr</textarea>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "	<td colspan='5' align='right'>\n";
-	if ($action == "update") {
-		echo "			<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
-	}
-	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
-	echo "	</td>\n";
-	echo "</tr>";
-
-	echo "</table>";
-	echo "</form>";
-	echo "</div>";
-
-
-//-------------------------------------------------------------------------------------------
-
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "      <br>";
-
+	echo "<td align=\"center\">\n";
+	echo "<br>";
 
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-	echo "  <tr>\n";
-	echo "    <td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Call Route List\n";
-	echo "        </strong></span></span>\n";
-	echo "    </td>\n";
-	echo "    <td align='right'>";
-	//echo "      <input type='button' value='public.xml' alt='' onclick=\"document.location.href='".$v_relative_url."v_public.php';\">\n";
-	echo "    </td>\n";
-	echo "  </tr>\n";
-	echo "  <tr>\n";
-	echo "    <td align='left' colspan='2'>\n";
-	echo "      <span class=\"vexpl\">\n";
-	echo "          List of the inbound routes with their name and descriptions. Order is important when an anti-action is used or when there are more than one entries with conditions that match.\n";
-	echo "      </span>\n";
-	echo "    </td>\n";
-	echo "  </tr>\n";
+	echo "	<tr>\n";
+	echo "	<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Inbound Call Routing\n";
+	echo "		</strong></span></span>\n";
+	echo "	</td>\n";
+	echo "	<td width='70%' align='right'>";
+	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public_includes.php'\" value='Back'>\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
+	echo "	<tr>\n";
+	echo "	<td align='left' colspan='2'>\n";
+	echo "		<span class=\"vexpl\">\n";
+	echo "			The public dialplan is used to route incoming calls to destinations based on one or more conditions and context. It can send incoming calls to an auto attendant, huntgroup, extension, external number, or a script.\n";
+	echo "			Order is important when an anti-action is used or when there are multiple conditions that match.\n";
+	echo "		</span>\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
 	echo "</table>";
 
 	echo "<br />\n";
@@ -741,10 +412,9 @@ function type_onchange(field_type) {
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_public_includes_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='v_public_includes_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
-	//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 
 	if ($resultcount == 0) { //no results
 	}
@@ -761,7 +431,6 @@ function type_onchange(field_type) {
 			echo "		<a href='v_public_includes_delete.php?id=".$row[public_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
-			//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%'' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $rowcount);
@@ -775,7 +444,7 @@ function type_onchange(field_type) {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_public_includes_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_public_includes_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
