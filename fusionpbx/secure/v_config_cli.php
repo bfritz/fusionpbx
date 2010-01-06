@@ -5,9 +5,9 @@
 $v_smtphost = "smtp.gmail.com:465";
 $v_smtpsecure = "tls";
 $v_smtpauth = "true";
-$v_smtpusername = "markjcrane@gmail.com";
-$v_smtppassword = "040679jc";
-$v_smtpfrom = "markjcrane@gmail.com";
+$v_smtpusername = "example@gmail.com";
+$v_smtppassword = "";
+$v_smtpfrom = "example@gmail.com";
 $v_smtpfromname= "Voicemail";
 
 ?>
