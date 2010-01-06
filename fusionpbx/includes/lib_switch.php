@@ -49,7 +49,7 @@ $v_id = '1';
 
 function v_settings()
 {
-	global $db, $v_id;
+	global $db, $v_id, $v_secure;
 
 	$program_dir = '';
 	$docroot = $_SERVER["DOCUMENT_ROOT"];
@@ -74,6 +74,9 @@ function v_settings()
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
 	while($row = $prepstatement->fetch()) {
+
+		//detected automatically with includes/lib_php.php
+		$v_settings_array["v_secure"] = $v_secure;
 
 		$php_dir = $row["php_dir"];
 		$php_dir = str_replace ("{program_dir}", $program_dir, $php_dir);
@@ -757,7 +760,6 @@ function sync_package_v_settings()
 	}
 
 	global $db, $v_id, $host;
-
  
 	$sql = "";
 	$sql .= "select * from v_settings ";
@@ -787,7 +789,6 @@ function sync_package_v_settings()
 		//$mod_shout_decoder = $row["mod_shout_decoder"];
 		//$mod_shout_volume = $row["mod_shout_volume"];
 
-		$v_secure = rtrim($v_secure, "/");
 		$fout = fopen($v_secure."/v_config_cli.php","w");
 		$tmpxml = "<?php\n";
 		$tmpxml .= "\n";
@@ -3241,10 +3242,16 @@ function sync_package_v_dialplan_includes()
 
 		//$row['dialplanincludeid'];
 		//$row['extensionname'];
+		//$row['extensioncontinue'];
 		//$row['context'];
 		//$row['enabled'];
 
-		$tmp = "<extension name=\"".$row['extensionname']."\">\n";
+		$extensioncontinue = '';
+		if ($row['extensioncontinue'] == "true") {
+			$extensioncontinue = "continue=\"true\"";
+		}
+
+		$tmp = "<extension name=\"".$row['extensionname']."\" $extensioncontinue>\n";
 
 		$sql = "";
 		$sql .= " select * from v_dialplan_includes_details ";

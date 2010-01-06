@@ -1,5 +1,12 @@
 <?php
 
+	//error_reporting(E_ALL ^ E_NOTICE); //hide notices
+		error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
+		//error_reporting(E_ALL);
+
+	//start the session
+		session_start();
+
 	//icons
 		$v_icon_edit = PROJECT_PATH."/images/icon_e.gif";
 		$v_icon_add = PROJECT_PATH."/images/icon_plus.gif";
@@ -8,12 +15,23 @@
 		$v_icon_cal = PROJECT_PATH."/images/icon_cal.gif";
 		$v_icon_up = PROJECT_PATH."/images/icon_up.gif";
 
-	//start the session
-		session_start();
 
-	//error_reporting(E_ALL ^ E_NOTICE); //hide notices
-		error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
-		//error_reporting(E_ALL);
+	//get the document_root parent directory
+		$document_root_parent = join(array_slice(explode("\\",realpath($_SERVER["DOCUMENT_ROOT"])),0,-1), '/');
+
+	//detect the v_secure directory
+		if (strlen($dbfilepath) == 0) {
+			$tmp_path = $document_root_parent."/secure";
+			if (file_exists($tmp_path)) { $v_secure = $tmp_path; }
+
+			$tmp_path = realpath($_SERVER["DOCUMENT_ROOT"]).PROJECT_PATH."/secure";
+			if (file_exists($tmp_path)) { $v_secure = $tmp_path; }
+		}
+		else {
+			$v_secure = $dbfilepath;
+		}
+		$v_secure = str_replace("\\", "/", $v_secure);
+
 
 	//generate a random password with upper, lowercase and symbols
 		function generate_password($length = 10, $strength = 4) {

@@ -14,34 +14,10 @@
 			$dbfilenameshort = $dbfilename;
 		}
 
-		if (strlen($dbfilepath) == 0) {
-
-			//$filepath = $_SERVER["DOCUMENT_ROOT"]."/secure/";
-			//$dbfilepath = $_SERVER["DOCUMENT_ROOT"]."/secure/";
-			$docroot = realpath($_SERVER["DOCUMENT_ROOT"]);
-			$docroot = str_replace("\\", "/", $docroot);
-			//echo 'docroot: '.$docroot."<br><br>";
-			$docrootarray = explode("/", $docroot);
-			$docrootarraycount = count($docrootarray); 
-
-			$x = 0;
-			foreach ($docrootarray as $value) {
-				$securepath = $securepath.$value."/";
-				if (($docrootarraycount-2) == $x) {
-					break;    
-				}
-				$x++;
-			}
-			unset($x);
-			$securepath = $securepath."/secure";
-			$filepath = $securepath;
-			$dbfilepath = $securepath;
-			unset($securepath);
-		}
-
-		$dbfilepath = str_replace("\\", "/", $dbfilepath);
+		$filepath = $v_secure;
+		$dbfilepath = $v_secure;
 		$dbfilepath = realpath($dbfilepath);
-		//echo $dbfilepath.'/'.$dbfilename;
+		//echo "dbfilepath and name: ".$dbfilepath."/".$dbfilename."\n";
 		if (file_exists($dbfilepath.'/'.$dbfilename)) {
 			//echo "main file exists<br>";
 		}
