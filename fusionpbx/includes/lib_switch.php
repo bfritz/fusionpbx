@@ -78,6 +78,10 @@ function v_settings()
 		//detected automatically with includes/lib_php.php
 		$v_settings_array["v_secure"] = $v_secure;
 
+		if (file_exists($php_dir."/php")) {  $php_exe = "php"; }
+		if (file_exists($php_dir."/php.exe")) {  $php_exe = "php.exe"; }
+		$v_settings_array["php_exe"] = $php_exe;
+
 		$php_dir = $row["php_dir"];
 		$php_dir = str_replace ("{program_dir}", $program_dir, $php_dir);
 		$v_settings_array["php_dir"] = $php_dir;
@@ -2138,7 +2142,7 @@ function sync_package_v_fax()
 					//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'system';
-					$fielddata = $php_dir.' '.$v_web_dir.'/fax_to_email.php email='.$row['faxemail'].' extension='.$row['faxextension'].' name=${last_fax} >> '.$tmp_dir.'/fax.txt';
+					$fielddata = $php_dir.'/'.$php_exe.' '.$v_secure.'/fax_to_email.php email='.$row['faxemail'].' extension='.$row['faxextension'].' name=${last_fax}';
 					$fieldorder = '005';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
