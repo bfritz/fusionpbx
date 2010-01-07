@@ -78,13 +78,13 @@ function v_settings()
 		//detected automatically with includes/lib_php.php
 		$v_settings_array["v_secure"] = $v_secure;
 
-		if (file_exists($php_dir."/php")) {  $php_exe = "php"; }
-		if (file_exists($php_dir."/php.exe")) {  $php_exe = "php.exe"; }
-		$v_settings_array["php_exe"] = $php_exe;
-
 		$php_dir = $row["php_dir"];
 		$php_dir = str_replace ("{program_dir}", $program_dir, $php_dir);
 		$v_settings_array["php_dir"] = $php_dir;
+		
+		if (file_exists($php_dir."/php")) {  $php_exe = "php"; }
+		if (file_exists($php_dir."/php.exe")) {  $php_exe = "php.exe"; }
+		$v_settings_array["php_exe"] = $php_exe;
 
 		$tmp_dir = $row["tmp_dir"];
 		$tmp_dir = str_replace ("{program_dir}", $program_dir, $tmp_dir);
