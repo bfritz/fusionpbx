@@ -179,7 +179,7 @@
 					$db = new PDO("mysql:host=$dbhost;port=$dbport;dbname=$dbname;", $dbusername, $dbpassword);
 				}
 			}
-			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY);
 		}
 		catch (PDOException $error) {
 			print "error: " . $error->getMessage() . "<br/>";
