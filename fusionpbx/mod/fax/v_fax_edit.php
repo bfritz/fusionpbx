@@ -40,11 +40,11 @@ if ($_GET['a'] == "download") {
 
 	session_cache_limiter('public');
 	//Test to see if it is in the inbox or sent directory.
-	if ($_GET['type'] = "fax_inbox") {
+	if ($_GET['type'] == "fax_inbox") {
 		if (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
 			$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
 		}
-	}else if ($_GET['type'] = "fax_sent") {
+	}else if ($_GET['type'] == "fax_sent") {
 		if  (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
 			$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'];
 		}
@@ -64,11 +64,9 @@ if ($_GET['a'] == "download") {
 			$file_ext = substr($_GET['filename'], -3);
 			if ($file_ext == "tif") {
 			  header("Content-Type: image/tiff");
-			}
-			if ($file_ext == "png") {
+			}else if ($file_ext == "png") {
 			  header("Content-Type: image/png");
-			}
-			if ($file_ext == "pdf") {
+			}else if ($file_ext == "pdf") {
 			  header("Content-Type: application/pdf");
 			}
 		}
@@ -472,8 +470,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					echo "  </td>\n";
 
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-					if (file_exists($dir_fax_inbox.'/'.$file.".png")) {
-						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=bin&ext=".$faxextension."&filename=".$file.".pdf\">\n";
+					if (file_exists($dir_fax_inbox.'/'.$file_name.".pdf")) {
+						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=bin&ext=".$faxextension."&filename=".$file_name.".pdf\">\n";
 						echo "    	pdf";
 						echo "	  </a>";
 					}
@@ -483,8 +481,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					echo "  </td>\n";
 
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-					if (file_exists($dir_fax_inbox.'/'.$file.".png")) {
-						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=png&ext=".$faxextension."&filename=".$file.".png\" target=\"_blank\">\n";
+					if (file_exists($dir_fax_inbox.'/'.$file_name.".png")) {
+						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=png&ext=".$faxextension."&filename=".$file_name.".png\" target=\"_blank\">\n";
 						echo "    	png";
 						echo "	  </a>";
 					}
@@ -573,7 +571,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					echo "	  </a>";
 					echo "  </td>\n";
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-					if (file_exists($dir_fax_sent.'/'.$file.".pdf")) {
+					if (file_exists($dir_fax_sent.'/'.$file_name.".pdf")) {
 						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_sent&t=bin&ext=".$faxextension."&filename=".$file_name.".pdf\">\n";
 						echo "    	pdf";
 						echo "	  </a>";
@@ -583,7 +581,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					}
 					echo "  </td>\n";
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-					if (file_exists($dir_fax_sent.'/'.$file.".png")) {
+					if (file_exists($dir_fax_sent.'/'.$file_name.".png")) {
 						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_sent&t=png&ext=".$faxextension."&filename=".$file_name.".png\" target=\"_blank\">\n";
 						echo "    	png";
 						echo "	  </a>";
