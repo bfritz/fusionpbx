@@ -169,6 +169,22 @@ if ($_POST["persistformvar"] != "true") {
 		$db->exec($sql);
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
+		//set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
+			$dir_fax_inbox = $v_storage_dir.'/fax/'.$faxextension.'/inbox';
+			$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
+		//make sure the directories exist
+			if (!is_dir($v_storage_dir.'/fax/'.$faxextension)) {
+				mkdir($v_storage_dir.'/fax/'.$faxextension,0777,true);
+				chmod($v_storage_dir.'/fax/'.$faxextension,0777);
+			}
+			if (!is_dir($dir_fax_inbox)) { 
+				mkdir($dir_fax_inbox,0777,true); 
+				chmod($dir_fax_inbox,0777);
+			}
+			if (!is_dir($dir_fax_sent)) { 
+				mkdir($dir_fax_sent,0777,true); 
+				chmod($dir_fax_sent,0777);
+			}
 
 		sync_package_v_fax();
 
@@ -230,8 +246,18 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 			$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
 
 		//make sure the directories exist
-			if (!is_dir($dir_fax_inbox)) { mkdir($dir_fax_inbox,0777,true); }
-			if (!is_dir($dir_fax_sent)) { mkdir($dir_fax_sent,0777,true); }
+			if (!is_dir($v_storage_dir.'/fax/'.$faxextension)) {
+				mkdir($v_storage_dir.'/fax/'.$faxextension,0777,true);
+				chmod($v_storage_dir.'/fax/'.$faxextension,0777);
+			}
+			if (!is_dir($dir_fax_inbox)) { 
+				mkdir($dir_fax_inbox,0777,true); 
+				chmod($dir_fax_inbox,0777);
+			}
+			if (!is_dir($dir_fax_sent)) { 
+				mkdir($dir_fax_sent,0777,true); 
+				chmod($dir_fax_sent,0777);
+			}
 
 		break; //limit to 1 row
 	}
