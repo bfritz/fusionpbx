@@ -105,7 +105,9 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($conference_array) == 0) {
+		//when there are no conferences do this to hide all remaining entries
 		$sql .= " where v_id = $v_id ";
+		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
@@ -139,7 +141,9 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($conference_array) == 0) {
+		//when there are no conferences do this to hide all remaining entries
 		$sql .= " where v_id = $v_id ";
+		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
