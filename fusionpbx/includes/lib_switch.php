@@ -1841,6 +1841,7 @@ function sync_package_v_hunt_group()
 
 					if ($row['huntgrouptimeout'] > 0) {
 						$tmp .= "session.execute(\"set\", \"call_timeout=".$row['huntgrouptimeout']."\");\n";
+						$tmp .= "session.execute(\"export\", \"call_timeout=".$row['huntgrouptimeout']."\");\n";
 						$tmp .= "session.execute(\"set\", \"continue_on_fail=true\");\n";
 					}
 					$tmp .= "session.execute(\"set\", \"hangup_after_bridge=true\");\n";
@@ -1887,7 +1888,7 @@ function sync_package_v_hunt_group()
 						if (strlen($ent['destinationdata']) == 0) { $ent['destinationdata'] = "internal"; }
 
 						if ($ent['destinationtype'] == "extension") {
-							$tmp .= "sofia_contact_".$ent['destinationdata']." = get_sofia_contact(\"".$ent['destinationdata']."\",domain_name, \"".$ent['destinationprofile']."\");\n";
+							$tmp .= "	sofia_contact_".$ent['destinationdata']." = get_sofia_contact(\"".$ent['destinationdata']."\",domain_name, \"".$ent['destinationprofile']."\");\n";
 							$tmp_sub_array["application"] = "bridge";
 							$tmp_sub_array["data"] = "sofia_contact_".$ent['destinationdata'];
 							$tmp_array[$i] = $tmp_sub_array;
@@ -1895,7 +1896,7 @@ function sync_package_v_hunt_group()
 						}
 						if ($ent['destinationtype'] == "voicemail") {
 							$tmp_sub_array["application"] = "voicemail";
-							$tmp .= "session.execute(\"voicemail\", \"default \${domain} ".$ent['destinationdata']."\");\n";
+							$tmp .= "	session.execute(\"voicemail\", \"default \${domain} ".$ent['destinationdata']."\");\n";
 							//$tmp_sub_array["application"] = "voicemail";
 							//$tmp_sub_array["data"] = "default \${domain} ".$ent['destinationdata'];
 							//$tmp_array[$i] = $tmp_sub_array;
@@ -2417,9 +2418,11 @@ function sync_package_v_auto_attendant()
 		$tmp .= " session.execute(\"set\", \"continue_on_fail=true\");\n";
 		if (strlen($row['aacalltimeout']) == 0){
 			$tmp .= " session.execute(\"set\", \"call_timeout=30\");\n"; //aacalltimeout
+			$tmp .= " session.execute(\"export\", \"call_timeout=30\");\n"; //aacalltimeout
 		}
 		else {
 			$tmp .= " session.execute(\"set\", \"call_timeout=".$row['aacalltimeout']."\");\n"; //aacalltimeout
+			$tmp .= " session.execute(\"export\", \"call_timeout=".$row['aacalltimeout']."\");\n"; //aacalltimeout
 		}
 
 		if (isset($row['aaringback'])){
