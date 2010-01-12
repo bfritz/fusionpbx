@@ -148,11 +148,12 @@ include "root.php";
 	else { 
 		//echo "other: ".PHP_OS;
 		if (is_dir('/usr/local/freeswitch')) {
-			if (is_dir('/usr/local/freeswitch')) { $install_v_dir = '/usr/local/freeswitch'; }
-			if (is_dir('/usr/local/freeswitch')) { $v_parent_dir = '/usr/local'; }
-
-			if (is_dir('/opt/freeswitch')) { $install_v_dir = '/opt/freeswitch'; }
-			if (is_dir('/opt/freeswitch')) { $v_parent_dir = '/opt'; }
+			$install_v_dir = '/usr/local/freeswitch';
+			$v_parent_dir = '/usr/local';
+		}
+		if (is_dir('/opt/freeswitch')) {
+			$install_v_dir = '/opt/freeswitch';
+			$v_parent_dir = '/opt';
 		}
 		switch (PHP_OS) {
 		case "FreeBSD":
