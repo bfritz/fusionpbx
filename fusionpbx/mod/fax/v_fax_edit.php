@@ -81,24 +81,129 @@ if ($_GET['a'] == "download") {
 	exit;
 }
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$fax_id = checkstr($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
+//action add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$fax_id = checkstr($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+	}
 
 //POST to PHP variables
-if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$faxextension = checkstr($_POST["faxextension"]);
-	$faxname = checkstr($_POST["faxname"]);
-	$faxemail = checkstr($_POST["faxemail"]);
-	$faxdomain = checkstr($_POST["faxdomain"]);
-	$faxdescription = checkstr($_POST["faxdescription"]);
-}
+	if (count($_POST)>0) {
+		//$v_id = checkstr($_POST["v_id"]);
+		$faxextension = checkstr($_POST["faxextension"]);
+		$faxname = checkstr($_POST["faxname"]);
+		$faxemail = checkstr($_POST["faxemail"]);
+		$faxdomain = checkstr($_POST["faxdomain"]);
+		$faxdescription = checkstr($_POST["faxdescription"]);
+	}
+
+//clear file status cache
+	clearstatcache(); 
+
+//set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
+	$dir_fax_inbox = $v_storage_dir.'/fax/'.$faxextension.'/inbox';
+	$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
+	$dir_fax_temp = $v_storage_dir.'/fax/'.$faxextension.'/temp';
+
+//make sure the directories exist
+	if (!is_dir($v_storage_dir)) {
+		mkdir($v_storage_dir);
+		chmod($dir_fax_sent,0777);
+	}
+	if (!is_dir($v_storage_dir.'/fax/'.$faxextension)) {
+		mkdir($v_storage_dir.'/fax/'.$faxextension,0777,true);
+		chmod($v_storage_dir.'/fax/'.$faxextension,0777);
+	}
+	if (!is_dir($dir_fax_inbox)) { 
+		mkdir($dir_fax_inbox,0777,true); 
+		chmod($dir_fax_inbox,0777);
+	}
+	if (!is_dir($dir_fax_sent)) { 
+		mkdir($dir_fax_sent,0777,true); 
+		chmod($dir_fax_sent,0777);
+	}
+	if (!is_dir($dir_fax_temp)) {
+		mkdir($dir_fax_temp);
+		chmod($dir_fax_temp,0777);
+	}
+
+//upload and send the fax
+if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_name'])) {
+
+	$fax_number = $_POST['fax_number'];
+	$fax_name = $_FILES['fax_file']['name'];
+	$fax_name = str_replace(".tif", "", $fax_name);
+	$fax_name = str_replace(".tiff", "", $fax_name);
+	$fax_name = str_replace(".pdf", "", $fax_name);
+	$fax_gateway = $_POST['fax_gateway'];
+
+	//get event socket connection information
+		$sql = "";
+		$sql .= "select * from v_settings ";
+		$sql .= "where v_id = '$v_id' ";
+		$prepstatement = $db->prepare($sql);
+		$prepstatement->execute();
+		while($row = $prepstatement->fetch()) {
+			$event_socket_ip_address = $row["event_socket_ip_address"];
+			$event_socket_port = $row["event_socket_port"];
+			$event_socket_password = $row["event_socket_password"];
+			break; //limit to 1 row
+		}
+
+	//upload the file
+		move_uploaded_file($_FILES['fax_file']['tmp_name'], $dir_fax_temp.$_FILES['fax_file']['name']);
+
+		$fax_file_extension = substr($dir_fax_temp.$_FILES['fax_file']['name'], -4);
+		if ($fax_file_extension == ".pdf") {
+			chdir($dir_fax_temp);
+			exec("gs -q -sDEVICE=tiffg3 -r204x98 -dNOPAUSE -sOutputFile=".$fax_name.".tif -- ".$fax_name.".pdf -c quit");
+			//exec("rm ".$dir_fax_temp.$fax_name.".pdf");		
+		}
+		if ($fax_file_extension == ".tiff") {
+			chdir($dir_fax_temp);
+			exec("cp ".$dir_fax_temp.$fax_name.".tiff ".$dir_fax_temp.$fax_name.".tif");
+			exec("rm ".$dir_fax_temp.$fax_name.".tiff");
+		}
+
+	//send the fax
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+		$cmd = "api originate [absolute_codec_string=PCMU]sofia/gateway/".$fax_gateway."/".$fax_number." &txfax(".$dir_fax_temp.$fax_name.".tif)";
+		$response = event_socket_request($fp, $cmd);
+		$response = str_replace("\n", "", $response);
+		$uuid = str_replace("+OK ", "", $response);
+		fclose($fp);
+
+		//if ($response >= 1) {
+		//	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+		//	$cmd = "api uuid_getvar ".$uuid." fax_result_text";
+		//	echo $cmd."\n";
+		//	$response = event_socket_request($fp, $cmd);
+		//	$response = trim($response);
+		//	fclose($fp);
+		//}
+
+	sleep(5);
+
+	//copy the .tif to the sent directory
+		exec("cp ".$dir_fax_temp.$fax_name.".tif ".$dir_fax_sent.$fax_name.".tif");
+	
+	//delete the .tif from the temp directory
+		//exec("rm ".$dir_fax_temp.$fax_name.".tif");
+	
+	//convert the tif to pdf and png
+		chdir($dir_fax_sent);
+		//which tiff2pdf
+		if (isfile("/usr/local/bin/tiff2png")) {
+			exec("".bin_dir."/tiff2png ".$dir_fax_sent.$fax_name.".tif");
+			exec("".bin_dir."/tiff2pdf -f -o ".$fax_name.".pdf ".$dir_fax_sent.$fax_name.".tif");
+		}
+
+	header("Location: v_fax_edit.php?id=".$id."&msg=".$response);
+	exit;
+} //end upload and send fax
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
@@ -143,6 +248,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$tmp .= "Description: $faxdescription\n";
 
 
+
 //Add or update the database
 if ($_POST["persistformvar"] != "true") {
 	if ($action == "add") {
@@ -167,22 +273,6 @@ if ($_POST["persistformvar"] != "true") {
 		$db->exec($sql);
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
-		//set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
-			$dir_fax_inbox = $v_storage_dir.'/fax/'.$faxextension.'/inbox';
-			$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
-		//make sure the directories exist
-			if (!is_dir($v_storage_dir.'/fax/'.$faxextension)) {
-				mkdir($v_storage_dir.'/fax/'.$faxextension,0777,true);
-				chmod($v_storage_dir.'/fax/'.$faxextension,0777);
-			}
-			if (!is_dir($dir_fax_inbox)) { 
-				mkdir($dir_fax_inbox,0777,true); 
-				chmod($dir_fax_inbox,0777);
-			}
-			if (!is_dir($dir_fax_sent)) { 
-				mkdir($dir_fax_sent,0777,true); 
-				chmod($dir_fax_sent,0777);
-			}
 
 		sync_package_v_fax();
 
@@ -608,7 +698,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					echo "</tr>\n";
 					if ($c==0) { $c=1; } else { $c=0; }
 				} //check if the file is a .tif file
-
 
 			}
 		} //end while
