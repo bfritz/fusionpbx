@@ -178,7 +178,7 @@ if (!function_exists('thorderby')) {
 			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$var_desc."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_vars_edit.php?id=".$row[var_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
-			echo "		<a href='v_vars_delete.php?id=".$row[extension_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
+			echo "		<a href='v_vars_delete.php?id=".$row[var_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
 			//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_vars_edit.php?id=".$row[var_id]."'\" value='e'>\n";
 			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_vars_delete.php?id=".$row[var_id]."' }\" value='x'>\n";
 			echo "	</td>\n";
