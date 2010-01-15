@@ -173,13 +173,20 @@
 			else {
 				if (strlen($dbport) == 0) {
 					//leave out port if it is empty
-					$db = new PDO("mysql:host=$dbhost;dbname=$dbname;", $dbusername, $dbpassword);
+					$db = new PDO("mysql:host=$dbhost;dbname=$dbname;", $dbusername, $dbpassword, array(
+						PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+						PDO::ATTR_ERRMODE, 
+						PDO::ERRMODE_EXCEPTION
+					));
 				}
 				else {
-					$db = new PDO("mysql:host=$dbhost;port=$dbport;dbname=$dbname;", $dbusername, $dbpassword);
+					$db = new PDO("mysql:host=$dbhost;port=$dbport;dbname=$dbname;", $dbusername, $dbpassword, array(
+						PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+						PDO::ATTR_ERRMODE, 
+						PDO::ERRMODE_EXCEPTION
+					));
 				}
 			}
-			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_USE_BUFFERED_QUERY);
 		}
 		catch (PDOException $error) {
 			print "error: " . $error->getMessage() . "<br/>";
