@@ -232,30 +232,32 @@ echo "<br />";
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		//linux
 			echo "<!--\n";
-			$shellcmd="ps -e -o pcpu,cpu,nice,state,cputime,args --sort pcpu | sed '/^ 0.0 /d'";
-			$shell_result = system($shellcmd);
-			echo "-->\n";
-			if (strlen($shell_result) > 0) {
-				echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-				echo "<tr>\n";
-				echo "	<th colspan='2' align='left' valign='top'>CPU Information</th>\n";
-				echo "</tr>\n";
-				echo "<tr>\n";
-				echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-				echo "	CPU Status:\n";
-				echo "	</td>\n";
-				echo "	<td class=\"vtable\">\n";
-				echo "	<pre>\n";
+			if(stristr(system('uname -r'), 'astlinux') === FALSE) {
+				$shellcmd="ps -e -o pcpu,cpu,nice,state,cputime,args --sort pcpu | sed '/^ 0.0 /d'";
 				$shell_result = system($shellcmd);
-				echo $shell_result;
-				echo "</pre>\n";
-				unset($shell_result);
-				echo "	</td>\n";
-				echo "</tr>\n";
-				echo "</table>\n";
-				echo "<br />";
-				echo "<br />";
-				echo "<br />";
+				echo "-->\n";
+				if (strlen($shell_result) > 0) {
+					echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+					echo "<tr>\n";
+					echo "	<th colspan='2' align='left' valign='top'>CPU Information</th>\n";
+					echo "</tr>\n";
+					echo "<tr>\n";
+					echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+					echo "	CPU Status:\n";
+					echo "	</td>\n";
+					echo "	<td class=\"vtable\">\n";
+					echo "	<pre>\n";
+					$shell_result = system($shellcmd);
+					echo $shell_result;
+					echo "</pre>\n";
+					unset($shell_result);
+					echo "	</td>\n";
+					echo "</tr>\n";
+					echo "</table>\n";
+					echo "<br />";
+					echo "<br />";
+					echo "<br />";
+				}
 			}
 
 		//freebsd
