@@ -634,8 +634,14 @@ function switch_conf_xml()
 	//$tmp .= "		<!--<param name=\"mailer-app-args\" value=\"/usr/local/www/packages/freeswitch/v_mailto.php\"/>-->\n";
 	//$tmp .= "		<param name=\"mailer-app\" value=\"/fusionpbx/Program/php/php.exe\"/>\n";
 	//$tmp .= "		<param name=\"mailer-app-args\" value=\"/fusionpbx/Program/www/secure/v_mailto.php\"/>\n";
-	$tmp .= "		<param name=\"mailer-app\" value=\"".$php_dir."/".$php_bin."\"/>\n";
-	$tmp .= "		<param name=\"mailer-app-args\" value=\"".$dbfilepath."/v_mailto.php\"/>\n";
+	if (stristr(PHP_OS, 'WIN')) {
+		$tmp .= "		<param name=\"mailer-app\" value=\"".$php_dir."/".$php_bin."\"/>\n";
+		$tmp .= "		<param name=\"mailer-app-args\" value=\"".$dbfilepath."/v_mailto.php\"/>\n";
+	}
+	else {
+		$tmp .= "		<param name=\"mailer-app\" value=\"".$php_dir."/".$php_bin." ".$dbfilepath."/v_mailto.php\"/>\n";
+		$tmp .= "		<param name=\"mailer-app-args\" value=\"\"/>\n";
+	}
 	$tmp .= "		<param name=\"dump-cores\" value=\"yes\"/>\n";
 	$tmp .= "		<!--RTP port range -->\n";
 	$tmp .= "		<!--<param name=\"rtp-start-port\" value=\"16384\"/>-->\n";
