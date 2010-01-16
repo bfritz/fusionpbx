@@ -29,19 +29,15 @@
 if(!isset($_SERVER["DOCUMENT_ROOT"])) { $_SERVER["DOCUMENT_ROOT"]=substr($_SERVER['SCRIPT_FILENAME'] , 0 , -strlen($_SERVER['PHP_SELF'])+1 );}
 include "v_config_cli.php";
 
-
 ini_set('max_execution_time',900); //15 minutes
 ini_set('memory_limit', '96M');
-
 
 $fd = fopen("php://stdin", "r");
 $email = file_get_contents ("php://stdin");
 fclose($fd);
 
-if($fd){
-	$fp = fopen($v_dir."/voicemailtoemail.txt", "w");
-}
-
+if (file_exists('/tmp')) { $tmp_dir = '/tmp'; } else { $tmp_dir = ''; }
+$fp = fopen($tmp_dir."/voicemailtoemail.txt", "w");
 
 ob_end_clean();
 ob_start();
@@ -56,7 +52,7 @@ ob_start();
 	$mainheader = $tmparray[0];
 	$maincontent = substr($email, strlen($mainheader), strlen($email));
 
-echo "main content:\n".$maincontent."\n";
+//echo "main content:\n".$maincontent."\n";
 
 //get the boundary
 	$tmparray = explode("\n", $mainheader);
@@ -68,7 +64,7 @@ echo "main content:\n".$maincontent."\n";
 	//$boundary = trim($boundary,'"');
 	$boundary = str_replace('"', '', $boundary);
 
-echo "boundary: $boundary\n";
+//echo "boundary: $boundary\n";
 
 
 //put the main headers into an array
@@ -94,7 +90,7 @@ echo "boundary: $boundary\n";
 	$maincontent = str_replace($boundary."--", $boundary, $maincontent);
 	$tmparray = explode("--".$boundary, $maincontent);
 
-echo "explode mime type:\n".print_r($tmparray)."\n";
+//echo "explode mime type:\n".print_r($tmparray)."\n";
 
 // loop through each mime part
 	$i=0;
@@ -215,9 +211,15 @@ echo "type: ".$contenttype."\n";
 	$v_to = $var['To'];
 	$v_to = str_replace(";", ",", $v_to);
 	$v_to_array = explode(",", $v_to);
-	foreach($v_to_array as $v_to_row) {
-		if (strlen($v_to_row) > 0) {
-			$mail->AddAddress($v_to_row);
+	if (count($v_to_array) == 0) {
+		$mail->AddAddress($var['To']);
+	}
+	else {
+		foreach($v_to_array as $v_to_row) {
+			if (strlen($v_to_row) > 0) {
+				echo "Add Address: $v_to_row\n";
+				$mail->AddAddress($v_to_row);
+			}
 		}
 	}
 
@@ -235,7 +237,7 @@ echo "type: ".$contenttype."\n";
 		echo "Message sent!";
 	}
 
-echo phpinfo();
+//echo phpinfo();
 
 $content = ob_get_contents(); //get the output from the buffer
 ob_end_clean(); //clean the buffer
