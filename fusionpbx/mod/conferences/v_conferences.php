@@ -53,7 +53,8 @@ $order = $_GET["order"];
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
 	$x = 0;
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$dialplan_include_id = $row["dialplan_include_id"];
 		//$tag = $row["tag"];
 		//$fieldorder = $row["fieldorder"];

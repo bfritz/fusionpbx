@@ -102,8 +102,8 @@ else {
 	$sql .= "and rssid = '$rssid' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$rsscategory = $row["rsscategory"];
 		$rsssubcategory = $row["rsssubcategory"];
 		$rssoptional1 = $row["rssoptional1"];

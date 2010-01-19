@@ -90,7 +90,8 @@ $prepstatement->execute();
 
 $lastcat = "";
 $count = 0;
-while($row = $prepstatement->fetch()) {
+$result = $prepstatement->fetchAll();
+foreach ($result as &$row) {
 
 	$rssid = $row["rssid"];
 	$rsstitle = $row["rsstitle"];

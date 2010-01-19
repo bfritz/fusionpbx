@@ -275,7 +275,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and extension_id = '$extension_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$v_id = $row["v_id"];
 		$extension = $row["extension"];
 		$password = $row["password"];

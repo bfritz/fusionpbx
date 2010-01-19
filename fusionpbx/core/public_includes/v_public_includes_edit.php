@@ -146,7 +146,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "and public_include_id = '$public_include_id' ";
 			$prepstatement = $db->prepare($sql);
 			$prepstatement->execute();
-			while($row = $prepstatement->fetch()) {
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
 				$orig_extensionname = $row["extensionname"];
 				$orig_publicorder = $row["publicorder"];
 				//$context = $row["context"];
@@ -199,7 +200,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and public_include_id = '$public_include_id' ";
 		$prepstatement = $db->prepare($sql);
 		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
 			//$v_id = $row["v_id"];
 			$extensionname = $row["extensionname"];
 			$publicorder = $row["publicorder"];

@@ -190,7 +190,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and auto_attendant_option_id = '$auto_attendant_option_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$v_id = $row["v_id"];
 		$auto_attendant_id = $row["auto_attendant_id"];
 		$optionaction = $row["optionaction"];
@@ -356,7 +357,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		if ($optionrecording == $row['recording_id']) {
 			echo "		<option value='".$row['recording_id']."' selected='yes'>".$row['recordingname']."</option>\n";
 		}

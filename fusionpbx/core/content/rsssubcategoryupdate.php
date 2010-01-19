@@ -72,8 +72,8 @@ else {
 	$sql .= "and rsssubcategoryid = '$rsssubcategoryid' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$rsscategory = $row["rsscategory"];
 		$rsssubcategory = $row["rsssubcategory"];
 		$rsssubcategorydesc = $row["rsssubcategorydesc"];

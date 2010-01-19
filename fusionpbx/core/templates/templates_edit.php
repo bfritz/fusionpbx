@@ -160,7 +160,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and templateid = '$template_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$templatename = $row["templatename"];
 		$templatedesc = $row["templatedesc"];
 		$template = base64_decode($row["template"]);

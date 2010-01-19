@@ -141,7 +141,8 @@ $order = $_GET["order"];
 			//echo $sql;
 			$prepstatement = $db->prepare($sql);
 			$prepstatement->execute();
-			while($row2 = $prepstatement->fetch()) {
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row2) {
 				$count = $row2["count"];
 				break; //limit to 1 row
 			}

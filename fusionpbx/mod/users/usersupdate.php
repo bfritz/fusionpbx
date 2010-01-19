@@ -58,7 +58,8 @@ if (!ifgroup("admin")) {
 	$sql .= "and id = '$id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$username = $row["username"];
 		break; //limit to 1 row
 	}
@@ -254,8 +255,8 @@ else {
       //echo $sql;
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		if (ifgroup("admin")) {
 			$username = $row["username"];
 		}

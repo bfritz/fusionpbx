@@ -50,7 +50,8 @@ if (strlen($id)>0) {
 	$sql .= "and public_include_id = '$id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$extensionname = $row["extensionname"];
 		$publicorder = $row["publicorder"];
 		//$context = $row["context"];

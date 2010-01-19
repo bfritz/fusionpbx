@@ -60,7 +60,8 @@ if (strlen($uuid)>0) {
 	//echo $sql;
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$created_epoch = $row["created_epoch"];
 		$read_epoch = $row["read_epoch"];
 		$username = $row["username"];

@@ -59,7 +59,8 @@ if ($_GET['a'] == "download") {
 	//echo $sql;
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$created_epoch = $row["created_epoch"];
 		$read_epoch = $row["read_epoch"];
 		$username = $row["username"];
@@ -127,7 +128,8 @@ $order = $_GET["order"];
 	$prepstatement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
 		//$extension_id = $row["extension_id"]
 		//$mailbox = $row["mailbox"]

@@ -52,7 +52,8 @@ if (count($_GET)>0) {
 	//return;
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//print_r( $row );
 		$highestrssorder = $row[rssorder];
 	}

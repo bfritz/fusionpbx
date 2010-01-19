@@ -176,7 +176,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and var_id = '$var_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$var_name = $row["var_name"];
 		$var_value = $row["var_value"];
 		$var_cat = $row["var_cat"];

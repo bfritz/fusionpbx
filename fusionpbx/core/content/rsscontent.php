@@ -46,8 +46,8 @@ $sql .= "and rssid = '$rssid' ";
 //echo $sql;
 $prepstatement = $db->prepare($sql);
 $prepstatement->execute();
-
-while($row = $prepstatement->fetch()) {
+$result = $prepstatement->fetchAll();
+foreach ($result as &$row) {
 	$rsscategory = $row["rsscategory"];
 	$rsssubcategory = $row["rsssubcategory"];
 	$rsstitle = $row["rsstitle"];

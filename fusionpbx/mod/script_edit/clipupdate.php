@@ -68,36 +68,37 @@ if (count($_POST)>0) {
     return;
 }
 else {
-  //get data from the db
-      $id = $_GET["id"];
+	//get data from the db
+		$id = $_GET["id"];
 
-      $sql = "";
-      $sql .= "select * from tblcliplibrary ";
-      $sql .= "where id = '$id' ";
-      $prepstatement = $db->prepare($sql);
-      $prepstatement->execute();
+		$sql = "";
+		$sql .= "select * from tblcliplibrary ";
+		$sql .= "where id = '$id' ";
+		$prepstatement = $db->prepare($sql);
+		$prepstatement->execute();
 
-      while($row = $prepstatement->fetch()) {
-          $clipname = $row["clipname"];
-          $clipfolder = $row["clipfolder"];
-          $cliptextstart = $row["cliptextstart"];
-          $cliptextend = $row["cliptextend"];
-          $clipdesc = $row["clipdesc"];
-          $cliporder = $row["cliporder"];
-          break; //limit to 1 row
-      }
-      echo "</table>";
-      echo "<div>";}
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$clipname = $row["clipname"];
+			$clipfolder = $row["clipfolder"];
+			$cliptextstart = $row["cliptextstart"];
+			$cliptextend = $row["cliptextend"];
+			$clipdesc = $row["clipdesc"];
+			$cliporder = $row["cliporder"];
+			break; //limit to 1 row
+		}
+		echo "</table>";
+		echo "<div>";}
 
-    require_once "header.php";
-    echo "<div align='left'>";
-    echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
+	require_once "header.php";
+	echo "<div align='left'>";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
-    echo "<tr class='border'>\n";
-    echo "	<td align=\"left\">\n";
+	echo "<tr class='border'>\n";
+	echo "	<td align=\"left\">\n";
 
-    echo "<form method='post' action=''>";
-    echo "<table border='0' width='100%'>";
+	echo "<form method='post' action=''>";
+	echo "<table border='0' width='100%'>";
       echo "	<tr>";
       echo "		<td>Name:</td>";
       echo "		<td><input type='text' class='txt' name='clipname' value='$clipname'></td>";

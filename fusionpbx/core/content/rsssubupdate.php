@@ -119,7 +119,8 @@ else {
 	$sql .= "and rsssubid = '$rsssubid' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//$rssid = $row["rssid"];
 		$rsssubtitle = $row["rsssubtitle"];
 		$rsssublink = $row["rsssublink"];

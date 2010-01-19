@@ -86,7 +86,8 @@ $strlist .= "	</td>\n";
 $strlist .= "</tr>\n";
 
 $count = 0;
-while($row = $prepstatement->fetch()) {
+$result = $prepstatement->fetchAll();
+foreach ($result as &$row) {
 	$id = $row["id"];
 	$username = $row["username"];
 	$strlist .= "<tr'>";

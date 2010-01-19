@@ -221,7 +221,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//$v_id = $row["v_id"];
 		$huntgroupextension = $row["huntgroupextension"];
 		$huntgroupname = $row["huntgroupname"];

@@ -50,7 +50,8 @@ if (strlen($id)>0) {
 		$sql .= "and v_id = '$v_id' ";
 		$prepstatement = $db->prepare($sql);
 		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
 			$filename = $row["filename"];
 			break; //limit to 1 row
 		}

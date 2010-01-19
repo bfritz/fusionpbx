@@ -71,7 +71,8 @@ if(stristr($sql, 'insert') === FALSE) {
         $sql2 .= "where name = '$tblname' ";
         $prepstatement = $db->prepare($sql2);
         $prepstatement->execute();
-        while($row = $prepstatement->fetch()) {
+        $result = $prepstatement->fetchAll();
+        foreach ($result as &$row) {
             $tblsql = $row[sql];
         }
         //echo $tblsql."<br><br>";
@@ -990,9 +991,8 @@ if ($resulttype == "phpupdate") {
       echo "    \$prepstatement = \$db->prepare(\$sql);\n";
       echo "    \$prepstatement->execute();\n";
       echo "\n";
-
-      echo "    while(\$row = \$prepstatement->fetch()) {\n";
-
+      echo "    \$result = \$prepstatement->fetchAll();\n";
+      echo "    foreach (\$result as &\$row) {\n";
           foreach($result[0] as $key => $val) {
               if (!ispkint($dbmem, $tblname, $key)) { //if not a integer and primary key (auto increment value)
                   echo "        \$$key = \$row[\"$key\"];\n";

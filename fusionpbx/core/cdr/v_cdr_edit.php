@@ -244,7 +244,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$prepstatement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
 		//$extension_id = $row["extension_id"];
 		//$mailbox = $row["mailbox"];
@@ -279,7 +280,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= $sqlwhere;
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$caller_id_name = $row["caller_id_name"];
 		$caller_id_number = $row["caller_id_number"];
 		$destination_number = $row["destination_number"];

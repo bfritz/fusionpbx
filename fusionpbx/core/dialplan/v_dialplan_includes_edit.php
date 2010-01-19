@@ -180,7 +180,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$v_id = $row["v_id"];
 		$extensionname = $row["extensionname"];
 		$dialplanorder = $row["dialplanorder"];

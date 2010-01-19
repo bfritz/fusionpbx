@@ -73,7 +73,8 @@ function v_settings()
 	//echo "program_dir: ".$program_dir;
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 
 		//detected automatically with includes/lib_php.php
 		$v_settings_array["v_secure"] = $v_secure;
@@ -81,7 +82,7 @@ function v_settings()
 		$php_dir = $row["php_dir"];
 		$php_dir = str_replace ("{program_dir}", $program_dir, $php_dir);
 		$v_settings_array["php_dir"] = $php_dir;
-		
+
 		if (file_exists($php_dir."/php")) {  $php_exe = "php"; }
 		if (file_exists($php_dir."/php.exe")) {  $php_exe = "php.exe"; }
 		$v_settings_array["php_exe"] = $php_exe;
@@ -448,7 +449,8 @@ function event_socket_request_cmd($cmd)
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//$v_id = $row["v_id"];
 		$numbering_plan = $row["numbering_plan"];
 		$default_gateway = $row["default_gateway"];
@@ -776,7 +778,8 @@ function sync_package_v_settings()
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//$v_id = $row["v_id"];
 		//$numbering_plan = $row["numbering_plan"];
 		//$default_gateway = $row["default_gateway"];
@@ -1089,8 +1092,8 @@ function sync_package_v_gateways()
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
-
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		if ($row['enabled'] != "false") {
 				$fout = fopen($v_conf_dir."/sip_profiles/external/".$row['gateway'].".xml","w");
 
@@ -1205,7 +1208,8 @@ function sync_package_v_modules()
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
 	$prevmodulecat = '';
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$modulelabel = $row["modulelabel"];
 		$modulename = $row["modulename"];
 		$moduledesc = $row["moduledesc"];
@@ -1260,7 +1264,8 @@ function sync_package_v_vars()
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
 	$prev_var_cat = '';
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 
 		$var_name = $row["var_name"];
 		$var_value = $row["var_value"];
@@ -1462,8 +1467,8 @@ function sync_package_v_hunt_group()
 		$sql .= "where v_id = '$v_id' ";
 		$prepstatement = $db->prepare($sql);
 		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
-
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
 				//get the Hunt Group information such as the name and description
 					//$row['hunt_group_id']
 					//$row['huntgroupextension']
@@ -2048,8 +2053,8 @@ function sync_package_v_fax()
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
-
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//get the fax information such as the name and description
 			//$row['fax_id']
 			//$row['faxextension']
@@ -2214,7 +2219,8 @@ function get_recording_filename($id)
 	$sql .= "and v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//$v_id = $row["v_id"];
 		//$filename = $row["filename"];
 		//$recordingname = $row["recordingname"];
@@ -2262,8 +2268,8 @@ function sync_package_v_auto_attendant()
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
-
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//add the auto attendant to the dialplan
 			if (strlen($row['auto_attendant_id']) > 0) {
 					$action = 'add'; //set default action to add
@@ -3248,8 +3254,8 @@ function sync_package_v_dialplan_includes()
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
-
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$tmp = "";
 		$tmp .= "\n";
 
@@ -3406,7 +3412,8 @@ function sync_package_v_public_includes()
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$tmp = "";
 		$tmp .= "\n";
 
@@ -3538,7 +3545,8 @@ if (!function_exists('call_broadcast_send_broadcast')) {
 		$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
 		$prepstatement = $db->prepare($sql);
 		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
 			$broadcast_name = $row["broadcast_name"];
 			$broadcast_desc = $row["broadcast_desc"];
 			$broadcast_timeout = $row["broadcast_timeout"];

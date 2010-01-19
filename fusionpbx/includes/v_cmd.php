@@ -46,7 +46,8 @@ $sql .= "select * from v_settings ";
 $sql .= "where v_id = '$v_id' ";
 $prepstatement = $db->prepare($sql);
 $prepstatement->execute();
-while($row = $prepstatement->fetch()) {
+$result = $prepstatement->fetchAll();
+foreach ($result as &$row) {
 	$event_socket_ip_address = $row["event_socket_ip_address"];
 	$event_socket_port = $row["event_socket_port"];
 	$event_socket_password = $row["event_socket_password"];

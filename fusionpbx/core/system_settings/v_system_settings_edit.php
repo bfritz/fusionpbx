@@ -279,7 +279,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$v_id = $row["v_id"];
 		$php_dir = $row["php_dir"];
 		$tmp_dir = $row["tmp_dir"];

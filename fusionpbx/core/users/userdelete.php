@@ -47,7 +47,8 @@ $id = checkstr($_GET["id"]);
 	$sql .= "and id = '$id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$username = $row["username"];
 		break; //limit to 1 row
 	}
@@ -60,7 +61,8 @@ $id = checkstr($_GET["id"]);
 	$sql .= "and id = '$id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$username = $row["username"];
 		break; //limit to 1 row
 	}

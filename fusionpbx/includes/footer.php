@@ -66,8 +66,8 @@ else {
 //echo $sql;
 $prepstatement = $db->prepare($sql);
 $prepstatement->execute();
-
-while($row = $prepstatement->fetch()) {
+$result = $prepstatement->fetchAll();
+foreach ($result as &$row) {
 	$template = base64_decode($row["template"]);
 	$templatemenutype = $row["templatemenutype"];
 	$templatemenucss = base64_decode($row["templatemenucss"]);

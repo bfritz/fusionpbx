@@ -100,7 +100,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//echo $sql."<br><br>";
 			$prepstatement = $db->prepare($sql);
 			$prepstatement->execute();
-			while($row = $prepstatement->fetch()){
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
 				//print_r( $row );
 				$highestmenuorder = $row[menuorder];
 			}
@@ -184,8 +185,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and menuid = '$menuid' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$menutitle = $row["menutitle"];
 		$menustr = $row["menustr"];
 		$menucategory = $row["menucategory"];

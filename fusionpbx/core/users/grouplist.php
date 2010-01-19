@@ -77,7 +77,8 @@ else {
 	//$strlist .= "<tr><td colspan='7'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
 	$count = 0;
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$id = $row["id"];
 		$groupid = $row["groupid"];
 		$groupdesc = $row["groupdesc"];

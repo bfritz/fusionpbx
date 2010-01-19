@@ -300,7 +300,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and auto_attendant_id = '$auto_attendant_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$v_id = $row["v_id"];
 		$aaextension = $row["aaextension"];
 		$aaname = $row["aaname"];
@@ -408,7 +409,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		if ($recordingidaction == $row['recording_id']) {
 			echo "		<option value='".$row['recording_id']."' selected='yes'>".$row['recordingname']."</option>\n";
 		}
@@ -437,7 +439,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//$v_id = $row["v_id"];
 		//$filename = $row["filename"];
 		//$recordingname = $row["recordingname"];

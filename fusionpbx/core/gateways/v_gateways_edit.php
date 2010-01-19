@@ -272,7 +272,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "where v_id = '$v_id' ";
 		$prepstatement = $db->prepare($sql);
 		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
 			$default_area_code = $row["default_area_code"];
 			break;
 		}
@@ -442,7 +443,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and gateway_id = '$gateway_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$v_id = $row["v_id"];
 		$gateway = $row["gateway"];
 		$username = $row["username"];

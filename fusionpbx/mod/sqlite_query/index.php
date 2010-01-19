@@ -71,7 +71,8 @@ $sql .= "WHERE type='table' ";
 $sql .= "order by type;";
 $prepstatement = $db->prepare($sql);
 $prepstatement->execute();
-while($row = $prepstatement->fetch()) {
+$result = $prepstatement->fetchAll();
+foreach ($result as &$row) {
     //print_r( $row );
     echo "	        <option value='".$row[name]."'>".$row[name]."</option>\n";
 }

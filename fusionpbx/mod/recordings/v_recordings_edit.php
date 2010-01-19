@@ -141,7 +141,8 @@ if ($_POST["persistformvar"] != "true") {
 			//echo "sql: ".$sql."<br />\n";
 			$prepstatement = $db->prepare($sql);
 			$prepstatement->execute();
-			while($row = $prepstatement->fetch()) {
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
 				$filename_orig = $row["filename"];
 				break; //limit to 1 row
 			}
@@ -188,7 +189,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and recording_id = '$recording_id' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		$v_id = $row["v_id"];
 		$filename = $row["filename"];
 		$recordingname = $row["recordingname"];

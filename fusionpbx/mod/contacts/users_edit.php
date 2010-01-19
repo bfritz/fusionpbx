@@ -404,7 +404,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "where id = '$id' ";
 		$prepstatement = $db->prepare($sql);
 		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
 			//$username = $row["username"];
 			//$password = $row["password"];
 			$usertype = $row["usertype"];

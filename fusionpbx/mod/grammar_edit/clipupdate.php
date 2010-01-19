@@ -77,7 +77,8 @@ else {
       $prepstatement = $db->prepare($sql);
       $prepstatement->execute();
 
-      while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
           $clipname = $row["clipname"];
           $clipfolder = $row["clipfolder"];
           $cliptextstart = $row["cliptextstart"];

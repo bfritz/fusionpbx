@@ -69,7 +69,8 @@ if (count($_REQUEST)>0) {
 	$prepstatement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
-	while($row = $prepstatement->fetch()) {
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
 		//$extension_id = $row["extension_id"];
 		//$mailbox = $row["mailbox"];

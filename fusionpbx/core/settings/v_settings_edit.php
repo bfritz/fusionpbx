@@ -240,7 +240,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and v_id = '$v_id' ";
 		$prepstatement = $db->prepare($sql);
 		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
 			//$v_id = $row["v_id"];
 			$numbering_plan = $row["numbering_plan"];
 			$default_gateway = $row["default_gateway"];
