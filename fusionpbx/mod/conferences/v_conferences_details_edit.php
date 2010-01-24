@@ -367,6 +367,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "</div>\n";
 	echo "</form>";
 
 	echo "    <table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -481,12 +482,15 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	  <br />
 	  -->
 
+	  <br />
+	  <br />
+	  <br />
+	  <br />
+	  <br />
 
-	  <br />
-	  <br />
-	  <br />
-	  <br />
-	  <br />
+	</td>
+	</tr>
+	</table>
 
 	<?php
 	echo "	</td>";

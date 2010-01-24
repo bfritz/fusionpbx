@@ -641,7 +641,12 @@ echo "	</td>\n";
 echo "</tr>";
 
 echo "</table>";
+echo "</div>";
 echo "</form>";
+
+echo "</td>\n";
+echo "</tr>";
+echo "</table>";
 echo "</div>";
 
 echo "<br><br>";
