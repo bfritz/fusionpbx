@@ -87,8 +87,10 @@ if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 			$menustr = $field[menustr];
 			$menucategory = $field[menucategory];
 			$menugroup = $field[menugroup];
+			$menudesc = $field[menudesc];
 			$menuparentid = $field[menuparentid];
-			//$zzz = $field[zzz];
+			$menuorder = $field[menuorder];
+			$menulanguage = $field[menulanguage];
 
 			$menuatags = '';
 			switch ($menucategory) {

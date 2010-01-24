@@ -1,11 +1,28 @@
 <?php
 
-
-//--- Begin: Determine Template and Content --------------------------------------
+// get the content
 	if (strlen($content) == 0) {
 		$content = $_GET["c"]; //link
 	}
 
+	//echo "content: ".$content;
+
+
+//get the parent id
+	$sql = "";
+	$sql .= "select * from v_menu ";
+	$sql .= "where menustr = '".$_SERVER["SCRIPT_NAME"]."' ";
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
+		$menuparentid = $row["menuparentid"];
+		break; //limit to 1 row
+	}
+	unset($result);
+
+
+//get the content
 	$sql = "";
 	$sql .= "select * from v_rss ";
 	$sql .= "where v_id = '$v_id' ";
@@ -50,32 +67,30 @@
 	} //end foreach
 	unset($sql, $result, $rowcount);
 
-//--- End: Determine Template and Content --------------------------------------
+//get the template information
+	$sql = "";
+	$sql .= "select * from v_templates ";
+	if (strlen($template_rsssubcategory) > 0) {
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and templatename = '$template_rsssubcategory' ";
+	}
+	else {
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and template_default = 'true' ";
+	}
+	//echo $sql;
+	$prepstatement = $db->prepare($sql);
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
+		$template = base64_decode($row["template"]);
+		$templatemenutype = $row["templatemenutype"];
+		$templatemenucss = base64_decode($row["templatemenucss"]);
 
-
-$sql = "";
-$sql .= "select * from v_templates ";
-if (strlen($template_rsssubcategory) > 0) {
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and templatename = '$template_rsssubcategory' ";
-}
-else {
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and template_default = 'true' ";
-}
-//echo $sql;
-$prepstatement = $db->prepare($sql);
-$prepstatement->execute();
-$result = $prepstatement->fetchAll();
-foreach ($result as &$row) {
-	$template = base64_decode($row["template"]);
-	$templatemenutype = $row["templatemenutype"];
-	$templatemenucss = base64_decode($row["templatemenucss"]);
-
-	//$adduser = $row["adduser"];
-	//$adddate = $row["adddate"];
-	break; //limit to 1 row
-}
+		//$adduser = $row["adduser"];
+		//$adddate = $row["adddate"];
+		break; //limit to 1 row
+	}
 
 
 $body = $content_from_db.ob_get_contents(); //get the output from the buffer
