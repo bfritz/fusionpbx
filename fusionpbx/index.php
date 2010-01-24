@@ -101,14 +101,6 @@ echo "<br />";
 	echo "<tr>\n";
 	echo "	<th colspan='2' align='left'>System Information</th>\n";
 	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		Name: \n";
-	echo "	</td>\n";
-	echo "	<td class=\"vtable\">\n";
-	echo "		<a href='$softwareurl' target='_blank'>$softwarename</a> \n";
-	echo "	</td>\n";
-	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
