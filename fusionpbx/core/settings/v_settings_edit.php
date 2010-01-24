@@ -337,7 +337,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='event_socket_ip_address' maxlength='255' value=\"$event_socket_ip_address\">\n";
 	echo "<br />\n";
-	echo "Enter the event socket port here. default: 0.0.0.0\n";
+	echo "Enter the event socket port here. default: 127.0.0.1\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
