@@ -16,7 +16,8 @@
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$menuparentid = $row["menuparentid"];
+		//$menuparentid = $row["menuparentid"];
+		$_SESSION["menuparentid"] = $row["menuparentid"];
 		break; //limit to 1 row
 	}
 	unset($result);
