@@ -10,44 +10,49 @@ if (strlen($_SESSION["username"]) == 0) {
 	$_SESSION["menu"] = ""; //clear the menu
 
 	//if username from form is not provided then send to login.php
-	if (strlen(check_str($_POST["username"])) == 0) {
-		$strphpself = $_SERVER["PHP_SELF"];
-		//$strphpself = str_replace ("/", "", $strphpself);
-		$msg = "Please provide a username.";
-		header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($strphpself)."&msg=".urlencode($msg));
-		exit;
-	}
+		if (strlen(check_str($_POST["username"])) == 0) {
+			$strphpself = $_SERVER["PHP_SELF"];
+			//$strphpself = str_replace ("/", "", $strphpself);
+			$msg = "Please provide a username.";
+			header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($strphpself)."&msg=".urlencode($msg));
+			exit;
+		}
 
-	$sql = "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and username = '".check_str($_POST["username"])."' ";
-	$sql .= "and password = '".md5('e3.7d.12'.check_str($_POST["password"]))."'";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	if (count($result) == 0) {
-		$strphpself = $_SERVER["PHP_SELF"];
-		//$strphpself = str_replace ("/", "", $strphpself);
-		$msg = "Username or Password were incorrect. Please try again.";
-		header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($strphpself)."&msg=".urlencode($msg));
-		exit;
-	}
-	else {
-		$_SESSION["username"] = check_str($_POST["username"]);
-		//echo "username: ".$_SESSION["username"]." and password are correct";
-	}
+	//check the username and password if they don't match then redirect back to login
+		$sql = "select * from v_users ";
+		$sql .= "where v_id=:v_id ";
+		$sql .= "and username=:username ";
+		$sql .= "and password=:password ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->bindParam(':v_id', $v_id);
+		$prepstatement->bindParam(':username', check_str($_POST["username"]));
+		$prepstatement->bindParam(':password', md5('e3.7d.12'.check_str($_POST["password"])));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		$resultcount = count($result);
+		if (count($result) == 0) {
+			$strphpself = $_SERVER["PHP_SELF"];
+			//$strphpself = str_replace ("/", "", $strphpself);
+			$msg = "Username or Password were incorrect. Please try again.";
+			header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($strphpself)."&msg=".urlencode($msg));
+			exit;
+		}
+		else {
+			$_SESSION["username"] = check_str($_POST["username"]);
+			//echo "username: ".$_SESSION["username"]." and password are correct";
+		}
 
 	//get the groups the user is a member of
-	$sql = "SELECT * FROM v_group_members ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and username = '".$_SESSION["username"]."' ";
-	//echo $sql;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
+		$sql = "SELECT * FROM v_group_members ";
+		$sql .= "where v_id=:v_id ";
+		$sql .= "and username=:username ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->bindParam(':v_id', $v_id);
+		$prepstatement->bindParam(':username', $_SESSION["username"]);
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		$resultcount = count($result);
+
 
 	$groups = "||";
 	foreach($result as $field) {
