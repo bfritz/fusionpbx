@@ -12,6 +12,7 @@
 
 	if (!function_exists('check_sql')) {
 		function check_sql($strtemp) {
+			global $dbtype;
 			if ($dbtype == "sqlite") {
 				//$strtemp = str_replace ("'", "''", $strtemp); //escape the single quote
 			}
