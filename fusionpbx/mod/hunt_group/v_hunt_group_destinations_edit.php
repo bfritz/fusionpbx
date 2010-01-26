@@ -41,28 +41,28 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$hunt_group_destination_id = checkstr($_REQUEST["id"]);
+	$hunt_group_destination_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
 }
 
 if (isset($_REQUEST["id2"])) {
-	$hunt_group_id = checkstr($_REQUEST["id2"]);
+	$hunt_group_id = check_str($_REQUEST["id2"]);
 }
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
+	//$v_id = check_str($_POST["v_id"]);
 	if (isset($_POST["hunt_group_id"])) {
-		$hunt_group_id = checkstr($_POST["hunt_group_id"]);
+		$hunt_group_id = check_str($_POST["hunt_group_id"]);
 	}
 
-	$destinationdata = checkstr($_POST["destinationdata"]);
-	$destinationtype = checkstr($_POST["destinationtype"]);
-	$destinationprofile = checkstr($_POST["destinationprofile"]);
-	$destinationorder = checkstr($_POST["destinationorder"]);
-	$destinationdescr = checkstr($_POST["destinationdescr"]);
+	$destinationdata = check_str($_POST["destinationdata"]);
+	$destinationtype = check_str($_POST["destinationtype"]);
+	$destinationprofile = check_str($_POST["destinationprofile"]);
+	$destinationorder = check_str($_POST["destinationorder"]);
+	$destinationdescr = check_str($_POST["destinationdescr"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -76,7 +76,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$hunt_group_destination_id = checkstr($_POST["hunt_group_destination_id"]);
+		$hunt_group_destination_id = check_str($_POST["hunt_group_destination_id"]);
 	}
 
 	//check for all required data
@@ -131,7 +131,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$destinationorder', ";
 			$sql .= "'$destinationdescr' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -158,7 +158,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "destinationdescr = '$destinationdescr' ";
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and hunt_group_destination_id = '$hunt_group_destination_id'";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 			//synchronize the xml config
@@ -183,7 +183,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_hunt_group_destinations ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and hunt_group_destination_id = '$hunt_group_destination_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

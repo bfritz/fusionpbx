@@ -56,7 +56,7 @@ if (!ifgroup("admin")) {
 	$sql .= "select * from v_users ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and id = '$id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -207,7 +207,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	}
 
 	//echo $sql;
-	$count = $db->exec($sql);
+	$count = $db->exec(check_sql($sql));
 	//echo "Affected Rows: ".$count;
 
 	//todo: show only if admin
@@ -253,7 +253,7 @@ else {
       //      $sql .= "where username = '$username' ";
       //}
       //echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

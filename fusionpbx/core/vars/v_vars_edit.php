@@ -40,7 +40,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$var_id = checkstr($_REQUEST["id"]);
+	$var_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -48,15 +48,15 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	$var_name = checkstr($_POST["var_name"]);
-	$var_value = checkstr($_POST["var_value"]);
-	$var_cat = checkstr($_POST["var_cat"]);
+	$var_name = check_str($_POST["var_name"]);
+	$var_value = check_str($_POST["var_value"]);
+	$var_cat = check_str($_POST["var_cat"]);
 	if (strlen($_POST["var_cat_other"]) > 0) {
-		$var_cat = checkstr($_POST["var_cat_other"]);
+		$var_cat = check_str($_POST["var_cat_other"]);
 	}
-	$var_enabled = checkstr($_POST["var_enabled"]);
-	$var_order = checkstr($_POST["var_order"]);
-	$var_desc = checkstr($_POST["var_desc"]);
+	$var_enabled = check_str($_POST["var_enabled"]);
+	$var_order = check_str($_POST["var_order"]);
+	$var_desc = check_str($_POST["var_desc"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -70,7 +70,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$var_id = checkstr($_POST["var_id"]);
+		$var_id = check_str($_POST["var_id"]);
 	}
 
 	//check for all required data
@@ -125,7 +125,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$var_order', ";
 		$sql .= "'".base64_encode($var_desc)."' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -150,7 +150,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "var_desc = '".base64_encode($var_desc)."' ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and var_id = '$var_id'";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 		sync_package_v_vars();
@@ -174,7 +174,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_vars ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and var_id = '$var_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

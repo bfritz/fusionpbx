@@ -141,7 +141,7 @@ function builddbchildmenulist ($db, $menulevel, $menuid, $c) {
 					$sql .= "where v_id = '".$v_id."' ";
 					$sql .= "and menuid = '".$row2[menuid]."' ";
 					//echo $sql."<br />\n";
-					$count = $db->exec($sql);
+					$count = $db->exec(check_sql($sql));
 				}
 				$tmp_menuorder++;
 
@@ -186,7 +186,7 @@ $order = $_GET["order"];
 	else {
 		$sql .= "order by menuorder asc ";
 	}
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -275,7 +275,7 @@ $order = $_GET["order"];
 				$sql .= "where v_id = '".$v_id."' ";
 				$sql .= "and menuid = '".$row[menuid]."' ";
 				//echo $sql."<br />\n";
-				$count = $db->exec($sql);
+				$count = $db->exec(check_sql($sql));
 			}
 			$tmp_menuorder++;
 			$menulevel = 0;

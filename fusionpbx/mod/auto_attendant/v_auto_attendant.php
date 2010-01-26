@@ -92,7 +92,7 @@ echo "<br />";
 	$sql .= " select * from v_auto_attendant ";
 	$sql .= "where v_id = $v_id ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$numrows = count($result);
@@ -110,7 +110,7 @@ echo "<br />";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

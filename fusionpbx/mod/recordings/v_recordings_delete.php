@@ -48,7 +48,7 @@ if (strlen($id)>0) {
 		$sql .= "select * from v_recordings ";
 		$sql .= "where recording_id = '$id' ";
 		$sql .= "and v_id = '$v_id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
@@ -62,7 +62,7 @@ if (strlen($id)>0) {
 		$sql .= "delete from v_recordings ";
 		$sql .= "where recording_id = '$id' ";
 		$sql .= "and v_id = '$v_id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		unset($sql);
 

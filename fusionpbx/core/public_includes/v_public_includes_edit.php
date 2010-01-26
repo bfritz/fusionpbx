@@ -43,7 +43,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$public_include_id = checkstr($_REQUEST["id"]);
+	$public_include_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -51,12 +51,12 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$extensionname = checkstr($_POST["extensionname"]);
-	$publicorder = checkstr($_POST["publicorder"]);
-	$context = checkstr($_POST["context"]);
-	$enabled = checkstr($_POST["enabled"]);
-	$descr = checkstr($_POST["descr"]);
+	//$v_id = check_str($_POST["v_id"]);
+	$extensionname = check_str($_POST["extensionname"]);
+	$publicorder = check_str($_POST["publicorder"]);
+	$context = check_str($_POST["context"]);
+	$enabled = check_str($_POST["enabled"]);
+	$descr = check_str($_POST["descr"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -70,7 +70,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$public_include_id = checkstr($_POST["public_include_id"]);
+		$public_include_id = check_str($_POST["public_include_id"]);
 	}
 
 	//check for all required data
@@ -122,7 +122,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$enabled', ";
 			$sql .= "'$descr' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -144,7 +144,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "select * from v_public_includes ";
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and public_include_id = '$public_include_id' ";
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
@@ -171,7 +171,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "descr = '$descr' ";
 			$sql .= "where public_include_id = '$public_include_id'";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 
@@ -198,7 +198,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_public_includes ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and public_include_id = '$public_include_id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
@@ -385,7 +385,7 @@ if ($action == "update") {
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$sql .= " limit $rowsperpage offset $offset ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -439,7 +439,7 @@ if ($action == "update") {
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$sql .= " limit $rowsperpage offset $offset ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -480,7 +480,7 @@ if ($action == "update") {
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$sql .= " limit $rowsperpage offset $offset ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

@@ -71,7 +71,7 @@ function v_settings()
 	$sql .= "select * from v_system_settings ";
 	$sql .= "where v_id = '$v_id' ";
 	//echo "program_dir: ".$program_dir;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -447,7 +447,7 @@ function event_socket_request_cmd($cmd)
 	$sql = "";
 	$sql .= "select * from v_settings ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -776,7 +776,7 @@ function sync_package_v_settings()
 	$sql = "";
 	$sql .= "select * from v_settings ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -957,7 +957,7 @@ function sync_package_v_extensions()
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	while($row = $prepstatement->fetch()) {
 		$vm_password = $row['vm_password'];
@@ -1090,7 +1090,7 @@ function sync_package_v_gateways()
 	$sql = "";
 	$sql .= "select * from v_gateways ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -1205,7 +1205,7 @@ function sync_package_v_modules()
 	$sql = "";
 	$sql .= "select * from v_modules ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$prevmodulecat = '';
 	$result = $prepstatement->fetchAll();
@@ -1261,7 +1261,7 @@ function sync_package_v_vars()
 	$sql .= "select * from v_vars ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "order by var_cat, var_order asc ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$prev_var_cat = '';
 	$result = $prepstatement->fetchAll();
@@ -1465,7 +1465,7 @@ function sync_package_v_hunt_group()
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
 		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
@@ -2051,7 +2051,7 @@ function sync_package_v_fax()
 	$sql = "";
 	$sql .= "select * from v_fax ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -2217,7 +2217,7 @@ function get_recording_filename($id)
 	$sql .= "select * from v_recordings ";
 	$sql .= "where recording_id = '$id' ";
 	$sql .= "and v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -2266,7 +2266,7 @@ function sync_package_v_auto_attendant()
 	$sql = "";
 	$sql .= "select * from v_auto_attendant ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -3188,7 +3188,7 @@ function v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context
 	$sql .= "'$opt1value' ";
 	$sql .= ")";
 	//echo $sql."<br />";
-	$db->exec($sql);
+	$db->exec(check_sql($sql));
 	$dialplan_include_id = $db->lastInsertId($id);
 	unset($sql);
 	return $dialplan_include_id;
@@ -3215,7 +3215,7 @@ function v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fie
 	$sql .= "'$fielddata' ";
 	$sql .= ")";
 	//echo $sql."<br />";
-	$db->exec($sql);
+	$db->exec(check_sql($sql));
 	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 }
@@ -3252,7 +3252,7 @@ function sync_package_v_dialplan_includes()
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -3410,7 +3410,7 @@ function sync_package_v_public_includes()
 	$sql = "";
 	$sql .= "select * from v_public_includes ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -3543,7 +3543,7 @@ if (!function_exists('call_broadcast_send_broadcast')) {
 		$sql = "";
 		$sql .= "select * from v_call_broadcast ";
 		$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
@@ -3570,7 +3570,7 @@ if (!function_exists('call_broadcast_send_broadcast')) {
 		$sql .= " and m.groupid = '".$groupid."' ";
 		//echo $sql;
 
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		$resultcount = count($result);

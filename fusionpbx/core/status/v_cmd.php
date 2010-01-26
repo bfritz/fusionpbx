@@ -43,7 +43,7 @@ $rdr = $_GET['rdr'];
 $sql = "";
 $sql .= "select * from v_settings ";
 $sql .= "where v_id = '$v_id' ";
-$prepstatement = $db->prepare($sql);
+$prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 $result = $prepstatement->fetchAll();
 foreach ($result as &$row) {

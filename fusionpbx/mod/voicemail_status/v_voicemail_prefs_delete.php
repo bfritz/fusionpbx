@@ -57,9 +57,9 @@ if (strlen($id)>0) {
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and username = '$v_id' ";
 	//echo $sql;
-	$count = $db->exec($sql);
+	$count = $db->exec(check_sql($sql));
 	//$sql .= "and extension_id = '$id' ";
-	//$prepstatement = $db->prepare($sql);
+	//$prepstatement = $db->prepare(check_sql($sql));
 	//$prepstatement->execute();
 	unset($sql);
 }

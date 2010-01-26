@@ -80,7 +80,7 @@ if (count($_REQUEST)>0) {
 	$sql .= " select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
@@ -172,7 +172,7 @@ if (count($_REQUEST)>0) {
 		$sql .= "order by $orderby $order "; 
 	}
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$numrows = count($result);
@@ -215,7 +215,7 @@ if (count($_REQUEST)>0) {
 	}
 	$sql .= " limit $rowsperpage offset $offset ";
 
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

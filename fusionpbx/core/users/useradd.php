@@ -38,14 +38,14 @@ else {
 	return;
 }
 
-$path = checkstr($_GET["path"]);
-$msg = checkstr($_GET["msg"]);
+$path = check_str($_GET["path"]);
+$msg = check_str($_GET["msg"]);
 
-$username = checkstr($_POST["username"]);
-$password = checkstr($_POST["password"]);
-$groupid = checkstr($_POST["groupid"]);
-//$passwordquestion = checkstr($_POST["passwordquestion"]);
-//$passwordanswer = checkstr($_POST["passwordanswer"]);
+$username = check_str($_POST["username"]);
+$password = check_str($_POST["password"]);
+$groupid = check_str($_POST["groupid"]);
+//$passwordquestion = check_str($_POST["passwordquestion"]);
+//$passwordanswer = check_str($_POST["passwordanswer"]);
 
 
 if (strlen($username) > 0) {
@@ -108,7 +108,7 @@ if (strlen($username) > 0) {
 	$sql .= "where v_id = '".$v_id."' ";
 	$sql .= "and username = '".$_SESSION["username"]."' ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -189,7 +189,7 @@ echo "<td>\n";
 //---- Begin Select List --------------------
 $sql = "SELECT * FROM v_groups ";
 $sql .= "where v_id = '".$v_id."' ";
-$prepstatement = $db->prepare($sql);
+$prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 echo "<select name=\"groupid\" class='frm'>\n";
 echo "<option value=\"\"></option>\n";

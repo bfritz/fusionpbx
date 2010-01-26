@@ -41,7 +41,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$recording_id = checkstr($_REQUEST["id"]);
+	$recording_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -49,11 +49,11 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$filename = checkstr($_POST["filename"]);
-	$recordingname = checkstr($_POST["recordingname"]);
-	//$recordingid = checkstr($_POST["recordingid"]);
-	$descr = checkstr($_POST["descr"]);
+	//$v_id = check_str($_POST["v_id"]);
+	$filename = check_str($_POST["filename"]);
+	$recordingname = check_str($_POST["recordingname"]);
+	//$recordingid = check_str($_POST["recordingid"]);
+	$descr = check_str($_POST["descr"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -67,7 +67,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$recording_id = checkstr($_POST["recording_id"]);
+		$recording_id = check_str($_POST["recording_id"]);
 	}
 
 	//check for all required data
@@ -118,7 +118,7 @@ if ($_POST["persistformvar"] != "true") {
 		//$sql .= "'$recordingid', ";
 		$sql .= "'$descr' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -139,7 +139,7 @@ if ($_POST["persistformvar"] != "true") {
 			$sql .= "where recording_id = '$recording_id' ";
 			$sql .= "and v_id = '$v_id' ";
 			//echo "sql: ".$sql."<br />\n";
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
@@ -164,7 +164,7 @@ if ($_POST["persistformvar"] != "true") {
 			$sql .= "descr = '$descr' ";
 			$sql .= "where v_id = '$v_id'";
 			$sql .= "and recording_id = '$recording_id'";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 		require_once "includes/header.php";
@@ -187,7 +187,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_recordings ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and recording_id = '$recording_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

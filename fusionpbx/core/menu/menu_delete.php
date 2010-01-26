@@ -38,13 +38,13 @@ if (!ifgroup("superadmin")) {
 if (count($_GET)>0) {
 
 	$_SESSION["menu"] = ""; //clear the menu session so it will rebuild with the update
-	$menuid = checkstr($_GET["menuid"]);
+	$menuid = check_str($_GET["menuid"]);
 
 	$sql  = "delete from v_menu ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and menuid = '$menuid' ";
 	//echo $sql;
-	$db->exec($sql);
+	$db->exec(check_sql($sql));
 	//$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 

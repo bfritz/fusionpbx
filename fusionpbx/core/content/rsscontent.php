@@ -44,7 +44,7 @@ $sql .= "select * from v_rss ";
 $sql .= "where v_id = '$v_id' ";
 $sql .= "and rssid = '$rssid' ";
 //echo $sql;
-$prepstatement = $db->prepare($sql);
+$prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 $result = $prepstatement->fetchAll();
 foreach ($result as &$row) {

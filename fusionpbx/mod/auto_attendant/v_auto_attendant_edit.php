@@ -42,7 +42,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$auto_attendant_id = checkstr($_REQUEST["id"]);
+	$auto_attendant_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -50,19 +50,19 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$aaextension = checkstr($_POST["aaextension"]);
-	$aaname = checkstr($_POST["aaname"]);
-	$recordingidaction = checkstr($_POST["recordingidaction"]);
-	$recordingidantiaction = checkstr($_POST["recordingidantiaction"]);
-	$aatimeout = checkstr($_POST["aatimeout"]);
-	$aacalltimeout = checkstr($_POST["aacalltimeout"]);
-	$aacontext = checkstr($_POST["aacontext"]);
-	$aadirectdial = checkstr($_POST["aadirectdial"]);
-	$aaringback = checkstr($_POST["aaringback"]);
-	$aacidnameprefix = checkstr($_POST["aacidnameprefix"]);
-	$aaconditionjs = checkstr($_POST["aaconditionjs"]);
-	$aadescr = checkstr($_POST["aadescr"]);
+	//$v_id = check_str($_POST["v_id"]);
+	$aaextension = check_str($_POST["aaextension"]);
+	$aaname = check_str($_POST["aaname"]);
+	$recordingidaction = check_str($_POST["recordingidaction"]);
+	$recordingidantiaction = check_str($_POST["recordingidantiaction"]);
+	$aatimeout = check_str($_POST["aatimeout"]);
+	$aacalltimeout = check_str($_POST["aacalltimeout"]);
+	$aacontext = check_str($_POST["aacontext"]);
+	$aadirectdial = check_str($_POST["aadirectdial"]);
+	$aaringback = check_str($_POST["aaringback"]);
+	$aacidnameprefix = check_str($_POST["aacidnameprefix"]);
+	$aaconditionjs = check_str($_POST["aaconditionjs"]);
+	$aadescr = check_str($_POST["aadescr"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -76,7 +76,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$auto_attendant_id = checkstr($_POST["auto_attendant_id"]);
+		$auto_attendant_id = check_str($_POST["auto_attendant_id"]);
 	}
 
 	//check for all required data
@@ -156,7 +156,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$aaconditionjs', ";
 			$sql .= "'$aadescr' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -192,7 +192,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "aadescr = '$aadescr' ";
 			$sql .= "where v_id = $v_id ";
 			$sql .= "and auto_attendant_id = '$auto_attendant_id'";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 			//synchronize the xml config
@@ -298,7 +298,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_auto_attendant ";
 	$sql .= "where v_id = $v_id ";
 	$sql .= "and auto_attendant_id = '$auto_attendant_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -407,7 +407,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql = "";
 	$sql .= "select * from v_recordings ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -437,7 +437,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql = "";
 	$sql .= "select * from v_recordings ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -658,7 +658,7 @@ if ($action == "update") {
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$sql .= " limit $rowsperpage offset $offset ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -763,7 +763,7 @@ if ($action == "update") {
 
 	//$sql .= " limit $rowsperpage offset $offset ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

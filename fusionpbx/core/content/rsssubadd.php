@@ -38,17 +38,17 @@ if (!ifgroup("admin")) {
 $rssid = $_GET["rssid"];
 
 if (count($_POST)>0) {
-	$rssid = checkstr($_POST["rssid"]);
-	$rsssubtitle = checkstr($_POST["rsssubtitle"]);
-	$rsssublink = checkstr($_POST["rsssublink"]);
-	$rsssubdesc = checkstr($_POST["rsssubdesc"]);
-	$rsssuboptional1 = checkstr($_POST["rsssuboptional1"]);
-	$rsssuboptional2 = checkstr($_POST["rsssuboptional2"]);
-	$rsssuboptional3 = checkstr($_POST["rsssuboptional3"]);
-	$rsssuboptional4 = checkstr($_POST["rsssuboptional4"]);
-	$rsssuboptional5 = checkstr($_POST["rsssuboptional5"]);
-	$rsssubadddate = checkstr($_POST["rsssubadddate"]);
-	$rsssubadduser = checkstr($_POST["rsssubadduser"]);
+	$rssid = check_str($_POST["rssid"]);
+	$rsssubtitle = check_str($_POST["rsssubtitle"]);
+	$rsssublink = check_str($_POST["rsssublink"]);
+	$rsssubdesc = check_str($_POST["rsssubdesc"]);
+	$rsssuboptional1 = check_str($_POST["rsssuboptional1"]);
+	$rsssuboptional2 = check_str($_POST["rsssuboptional2"]);
+	$rsssuboptional3 = check_str($_POST["rsssuboptional3"]);
+	$rsssuboptional4 = check_str($_POST["rsssuboptional4"]);
+	$rsssuboptional5 = check_str($_POST["rsssuboptional5"]);
+	$rsssubadddate = check_str($_POST["rsssubadddate"]);
+	$rsssubadduser = check_str($_POST["rsssubadduser"]);
 
 	$sql = "insert into v_rss_sub ";
 	$sql .= "(";
@@ -80,7 +80,7 @@ if (count($_POST)>0) {
 	$sql .= "now(), ";
 	$sql .= "'".$_SESSION["username"]."' ";
 	$sql .= ")";
-	$db->exec($sql);
+	$db->exec(check_sql($sql));
 	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 

@@ -38,7 +38,7 @@ else {
 	return;
 }
 
-$id = checkstr($_GET["id"]);
+$id = check_str($_GET["id"]);
 
 $sqldelete = "delete from v_groups ";
 $sqldelete .= "where v_id = '$v_id' ";

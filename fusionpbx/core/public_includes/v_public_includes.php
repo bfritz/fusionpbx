@@ -48,16 +48,16 @@ $order = $_GET["order"];
 
 	//POST to PHP variables
 		if (count($_POST)>0) {
-			$extension_name = checkstr($_POST["extension_name"]);
-			$condition_field_1 = checkstr($_POST["condition_field_1"]);
-			$condition_expression_1 = checkstr($_POST["condition_expression_1"]);
-			$condition_field_2 = checkstr($_POST["condition_field_2"]);
-			$condition_expression_2 = checkstr($_POST["condition_expression_2"]);
-			$action_application_1 = checkstr($_POST["action_application_1"]);
-			$action_data_1 = checkstr($_POST["action_data_1"]);
-			$action_application_2 = checkstr($_POST["action_application_2"]);
-			$action_data_2 = checkstr($_POST["action_data_2"]);
-			$description = checkstr($_POST["description"]);
+			$extension_name = check_str($_POST["extension_name"]);
+			$condition_field_1 = check_str($_POST["condition_field_1"]);
+			$condition_expression_1 = check_str($_POST["condition_expression_1"]);
+			$condition_field_2 = check_str($_POST["condition_field_2"]);
+			$condition_expression_2 = check_str($_POST["condition_expression_2"]);
+			$action_application_1 = check_str($_POST["action_application_1"]);
+			$action_data_1 = check_str($_POST["action_data_1"]);
+			$action_application_2 = check_str($_POST["action_application_2"]);
+			$action_data_2 = check_str($_POST["action_data_2"]);
+			$description = check_str($_POST["description"]);
 		}
 
 	if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -103,7 +103,7 @@ $order = $_GET["order"];
 			$sql .= "'true', ";
 			$sql .= "'$description' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			$public_include_id = $db->lastInsertId($id);
 			unset($sql);
 
@@ -126,7 +126,7 @@ $order = $_GET["order"];
 			$sql .= "'public', ";
 			$sql .= "'0' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -149,7 +149,7 @@ $order = $_GET["order"];
 			$sql .= "'$condition_expression_1', ";
 			$sql .= "'1' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -173,7 +173,7 @@ $order = $_GET["order"];
 				$sql .= "'$condition_expression_2', ";
 				$sql .= "'2' ";
 				$sql .= ")";
-				$db->exec($sql);
+				$db->exec(check_sql($sql));
 				//$lastinsertid = $db->lastInsertId($id);
 				unset($sql);
 			}
@@ -197,7 +197,7 @@ $order = $_GET["order"];
 			$sql .= "'$action_data_1', ";
 			$sql .= "'3' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -221,7 +221,7 @@ $order = $_GET["order"];
 				$sql .= "'$action_data_2', ";
 				$sql .= "'4' ";
 				$sql .= ")";
-				$db->exec($sql);
+				$db->exec(check_sql($sql));
 				//$lastinsertid = $db->lastInsertId($id);
 				unset($sql);
 			}
@@ -372,7 +372,7 @@ function type_onchange(field_type) {
 	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder asc "; }
 
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$numrows = count($result);
@@ -391,7 +391,7 @@ function type_onchange(field_type) {
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

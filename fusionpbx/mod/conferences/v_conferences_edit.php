@@ -42,7 +42,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$dialplan_include_id = checkstr($_REQUEST["id"]);
+	$dialplan_include_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -50,13 +50,13 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$extensionname = checkstr($_POST["extensionname"]);
-	$dialplanorder = checkstr($_POST["dialplanorder"]);
-	$extensioncontinue = checkstr($_POST["extensioncontinue"]);
-	$context = checkstr($_POST["context"]);
-	$enabled = checkstr($_POST["enabled"]);
-	$descr = checkstr($_POST["descr"]);
+	//$v_id = check_str($_POST["v_id"]);
+	$extensionname = check_str($_POST["extensionname"]);
+	$dialplanorder = check_str($_POST["dialplanorder"]);
+	$extensioncontinue = check_str($_POST["extensioncontinue"]);
+	$context = check_str($_POST["context"]);
+	$enabled = check_str($_POST["enabled"]);
+	$descr = check_str($_POST["descr"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -70,7 +70,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$dialplan_include_id = checkstr($_POST["dialplan_include_id"]);
+		$dialplan_include_id = check_str($_POST["dialplan_include_id"]);
 	}
 
 	//check for all required data
@@ -127,7 +127,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$enabled', ";
 		$sql .= "'$descr' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -154,7 +154,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "descr = '$descr' ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and dialplan_include_id = '$dialplan_include_id'";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 		//synchronize the xml config
@@ -178,7 +178,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_dialplan_includes ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -398,7 +398,7 @@ if ($action == "update") {
 	$sql .= " order by fieldorder asc";
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -453,7 +453,7 @@ if ($action == "update") {
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$sql .= " limit $rowsperpage offset $offset ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -494,7 +494,7 @@ if ($action == "update") {
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$sql .= " limit $rowsperpage offset $offset ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

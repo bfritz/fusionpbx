@@ -37,7 +37,7 @@ if (!ifgroup("superadmin")) {
 //action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$template_id = checkstr($_REQUEST["id"]);
+	$template_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -45,10 +45,10 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	$templatename = checkstr($_POST["templatename"]);
-	$templatedesc = checkstr($_POST["templatedesc"]);
+	$templatename = check_str($_POST["templatename"]);
+	$templatedesc = check_str($_POST["templatedesc"]);
 	$template = $_POST["template"];
-	$templatemenutype = checkstr($_POST["templatemenutype"]);
+	$templatemenutype = check_str($_POST["templatemenutype"]);
 	$templatemenucss = $_POST["templatemenucss"];
 }
 
@@ -63,7 +63,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$template_id = checkstr($_POST["template_id"]);
+		$template_id = check_str($_POST["template_id"]);
 	}
 
 	//check for all required data
@@ -114,7 +114,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$templatemenutype', ";
 		$sql .= "'".base64_encode($templatemenucss)."' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -136,7 +136,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "templatemenucss = '".base64_encode($templatemenucss)."' ";
 		$sql .= "where v_id = '$v_id'";
 		$sql .= "and templateid = '$template_id'";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 		require_once "includes/header.php";
@@ -158,7 +158,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_templates ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and templateid = '$template_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

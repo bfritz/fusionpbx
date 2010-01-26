@@ -85,7 +85,7 @@ $sql .= "or rsscategory = '$rsscategory' ";
 $sql .= "and rssdeldate is null ";
 $sql .= "order by rssid asc ";
 //echo $sql;
-$prepstatement = $db->prepare($sql);
+$prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 
 $lastcat = "";

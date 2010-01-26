@@ -55,7 +55,7 @@ if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 			$sql .= "order by menuorder asc ";
 		}
 		//echo "base: ".$sql;
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 
 		$result = $prepstatement->fetchAll();

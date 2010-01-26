@@ -198,7 +198,7 @@ echo "<body>";
     $sql .= "order by clipfolder ";
     //$sql .= "and clipname asc ";
 
-    $prepstatement = $db->prepare($sql);
+    $prepstatement = $db->prepare(check_sql($sql));
     $prepstatement->execute();
     $result = $prepstatement->fetchAll();
     $resultcount = count($result);

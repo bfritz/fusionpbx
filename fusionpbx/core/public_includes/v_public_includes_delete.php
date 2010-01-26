@@ -48,7 +48,7 @@ if (strlen($id)>0) {
 	$sql .= "select * from v_public_includes ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and public_include_id = '$id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -72,7 +72,7 @@ if (strlen($id)>0) {
 	$sql .= "delete from v_public_includes_details ";
 	$sql .= "where public_include_id = '$id' ";
 	$sql .= "and v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
 
@@ -81,7 +81,7 @@ if (strlen($id)>0) {
 	$sql .= "delete from v_public_includes ";
 	$sql .= "where public_include_id = '$id' ";
 	$sql .= "and v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
 

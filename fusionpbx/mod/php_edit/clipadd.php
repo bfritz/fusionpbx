@@ -39,12 +39,12 @@ else {
 require_once "config.php";
 
 if (count($_POST)>0) {
-    $clipname = checkstr($_POST["clipname"]);
-    $clipfolder = checkstr($_POST["clipfolder"]);
-    $cliptextstart = checkstr($_POST["cliptextstart"]);
-    $cliptextend = checkstr($_POST["cliptextend"]);
-    $clipdesc = checkstr($_POST["clipdesc"]);
-    $cliporder = checkstr($_POST["cliporder"]);
+    $clipname = check_str($_POST["clipname"]);
+    $clipfolder = check_str($_POST["clipfolder"]);
+    $cliptextstart = check_str($_POST["cliptextstart"]);
+    $cliptextend = check_str($_POST["cliptextend"]);
+    $clipdesc = check_str($_POST["clipdesc"]);
+    $cliporder = check_str($_POST["cliporder"]);
     
 
     $sql = "insert into tblcliplibrary ";
@@ -65,7 +65,7 @@ if (count($_POST)>0) {
     $sql .= "'$clipdesc', ";
     $sql .= "'$cliporder' ";
     $sql .= ")";
-    $db->exec($sql);
+    $db->exec(check_sql($sql));
     $lastinsertid = $db->lastInsertId($id);
     unset($sql,$db);
 

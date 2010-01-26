@@ -89,7 +89,7 @@ $order = $_GET["order"];
 	else {
 		$sql .= "order by extension asc ";
 	}
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$numrows = count($result);
@@ -113,7 +113,7 @@ $order = $_GET["order"];
 		$sql .= "order by extension asc ";
 	}
 	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -139,7 +139,7 @@ $order = $_GET["order"];
 			$sql .= "select count(*) as count from voicemail_msgs ";
 			$sql .= "where username = '".$row[mailbox]."' ";
 			//echo $sql;
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row2) {

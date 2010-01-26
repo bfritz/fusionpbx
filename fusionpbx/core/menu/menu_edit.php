@@ -41,7 +41,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["menuid"])) {
 	$action = "update";
-	$menuid = checkstr($_REQUEST["menuid"]);
+	$menuid = check_str($_REQUEST["menuid"]);
 }
 else {
 	$action = "add";
@@ -51,14 +51,14 @@ if (count($_POST)>0) {
 
 	$_SESSION["menu"] = ""; //clear the menu session so it will rebuild with the update
 
-	$menuid = checkstr($_POST["menuid"]);
-	$menutitle = checkstr($_POST["menutitle"]);
-	$menustr = checkstr($_POST["menustr"]);
-	$menucategory = checkstr($_POST["menucategory"]);
-	$menugroup = checkstr($_POST["menugroup"]);
-	$menudesc = checkstr($_POST["menudesc"]);
-	$menuparentid = checkstr($_POST["menuparentid"]);
-	$menuorder = checkstr($_POST["menuorder"]);
+	$menuid = check_str($_POST["menuid"]);
+	$menutitle = check_str($_POST["menutitle"]);
+	$menustr = check_str($_POST["menustr"]);
+	$menucategory = check_str($_POST["menucategory"]);
+	$menugroup = check_str($_POST["menugroup"]);
+	$menudesc = check_str($_POST["menudesc"]);
+	$menuparentid = check_str($_POST["menuparentid"]);
+	$menuorder = check_str($_POST["menuorder"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -66,7 +66,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$msg = '';
 
 	if ($action == "update") {
-		$menuid = checkstr($_POST["menuid"]);
+		$menuid = check_str($_POST["menuid"]);
 	}
 
 	//check for all required data
@@ -98,7 +98,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "order by menuorder desc ";
 			$sql .= "limit 1 ";
 			//echo $sql."<br><br>";
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
@@ -133,7 +133,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'".$_SESSION["username"]."', ";
 			$sql .= "now() ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -161,7 +161,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and menuid = '$menuid' ";
 			//echo $sql;
-			$count = $db->exec($sql);
+			$count = $db->exec(check_sql($sql));
 
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_list.php\">\n";
@@ -183,7 +183,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_menu ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and menuid = '$menuid' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -254,7 +254,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql = "SELECT * FROM v_menu ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "order by menutitle asc ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 
 	echo "<select name=\"menuparentid\" class='formfld'>\n";
@@ -286,7 +286,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 
 	echo "<select name=\"menugroup\" class='formfld'>\n";

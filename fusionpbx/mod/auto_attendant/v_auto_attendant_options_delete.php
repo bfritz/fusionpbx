@@ -39,7 +39,7 @@ else {
 
 if (count($_GET)>0) {
     $id = $_GET["id"];
-    $auto_attendant_id = checkstr($_REQUEST["id2"]);
+    $auto_attendant_id = check_str($_REQUEST["id2"]);
 }
 
 if (strlen($id)>0) {
@@ -48,7 +48,7 @@ if (strlen($id)>0) {
 	$sql .= "where v_id = $v_id ";
     $sql .= "and auto_attendant_option_id = '$id' ";
     $sql .= "and auto_attendant_id = '$auto_attendant_id' ";
-    $prepstatement = $db->prepare($sql);
+    $prepstatement = $db->prepare(check_sql($sql));
     $prepstatement->execute();
     unset($sql);
 	

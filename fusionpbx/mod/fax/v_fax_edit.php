@@ -84,7 +84,7 @@ if ($_GET['a'] == "download") {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$fax_id = checkstr($_REQUEST["id"]);
+		$fax_id = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -92,12 +92,12 @@ if ($_GET['a'] == "download") {
 
 //POST to PHP variables
 	if (count($_POST)>0) {
-		//$v_id = checkstr($_POST["v_id"]);
-		$faxextension = checkstr($_POST["faxextension"]);
-		$faxname = checkstr($_POST["faxname"]);
-		$faxemail = checkstr($_POST["faxemail"]);
-		$faxdomain = checkstr($_POST["faxdomain"]);
-		$faxdescription = checkstr($_POST["faxdescription"]);
+		//$v_id = check_str($_POST["v_id"]);
+		$faxextension = check_str($_POST["faxextension"]);
+		$faxname = check_str($_POST["faxname"]);
+		$faxemail = check_str($_POST["faxemail"]);
+		$faxdomain = check_str($_POST["faxdomain"]);
+		$faxdescription = check_str($_POST["faxdescription"]);
 	}
 
 //clear file status cache
@@ -144,7 +144,7 @@ if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_
 		$sql = "";
 		$sql .= "select * from v_settings ";
 		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
@@ -217,7 +217,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$fax_id = checkstr($_POST["fax_id"]);
+		$fax_id = check_str($_POST["fax_id"]);
 	}
 
 	//check for all required data
@@ -271,7 +271,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$faxdomain', ";
 		$sql .= "'$faxdescription' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -296,7 +296,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "faxdescription = '$faxdescription' ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and fax_id = '$fax_id' ";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 		sync_package_v_fax();
@@ -320,7 +320,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_fax ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and fax_id = '$fax_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

@@ -40,7 +40,7 @@ else {
 
 if (count($_GET)>0) {
 	$id = $_GET["id"];
-	$public_include_id = checkstr($_REQUEST["id2"]);
+	$public_include_id = check_str($_REQUEST["id2"]);
 }
 
 if (strlen($id)>0) {
@@ -49,7 +49,7 @@ if (strlen($id)>0) {
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and public_includes_detail_id = '$id' ";
 	$sql .= "and public_include_id = '$public_include_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
 }

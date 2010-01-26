@@ -69,7 +69,7 @@ echo "	        <option value=''></option>\n";
 $sql = "SELECT name FROM sqlite_master ";
 $sql .= "WHERE type='table' ";
 $sql .= "order by type;";
-$prepstatement = $db->prepare($sql);
+$prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 $result = $prepstatement->fetchAll();
 foreach ($result as &$row) {

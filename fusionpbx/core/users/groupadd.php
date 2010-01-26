@@ -40,11 +40,11 @@ else {
 
 
 
-$path = checkstr($_GET["path"]);
-$msg = checkstr($_GET["msg"]);
+$path = check_str($_GET["path"]);
+$msg = check_str($_GET["msg"]);
 
-$groupid = checkstr($_POST["groupid"]);
-$groupdesc = checkstr($_POST["groupdesc"]);
+$groupid = check_str($_POST["groupid"]);
+$groupdesc = check_str($_POST["groupdesc"]);
 
 
 if (strlen($groupid) > 0) {

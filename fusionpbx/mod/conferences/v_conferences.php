@@ -50,7 +50,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes_details ";
 	$sql .= "where v_id = $v_id ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$x = 0;
 	$result = $prepstatement->fetchAll();
@@ -126,7 +126,7 @@ $order = $_GET["order"];
 	}
 	//echo $sql; //exit;
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$numrows = count($result);
@@ -162,7 +162,7 @@ $order = $_GET["order"];
 	}
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

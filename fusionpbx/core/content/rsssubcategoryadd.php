@@ -37,11 +37,11 @@ if (!ifgroup("admin")) {
 }
 
 if (count($_POST)>0) {
-	$rsscategory = checkstr($_POST["rsscategory"]);
-	$rsssubcategory = checkstr($_POST["rsssubcategory"]);
-	$rsssubcategorydesc = checkstr($_POST["rsssubcategorydesc"]);
-	$rssadduser = checkstr($_POST["rssadduser"]);
-	$rssadddate = checkstr($_POST["rssadddate"]);
+	$rsscategory = check_str($_POST["rsscategory"]);
+	$rsssubcategory = check_str($_POST["rsssubcategory"]);
+	$rsssubcategorydesc = check_str($_POST["rsssubcategorydesc"]);
+	$rssadduser = check_str($_POST["rssadduser"]);
+	$rssadddate = check_str($_POST["rssadddate"]);
 
 	$sql = "insert into v_rss_sub_category ";
 	$sql .= "(";
@@ -61,7 +61,7 @@ if (count($_POST)>0) {
 	$sql .= "'$rssadduser', ";
 	$sql .= "'$rssadddate' ";
 	$sql .= ")";
-	$db->exec($sql);
+	$db->exec(check_sql($sql));
 	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 

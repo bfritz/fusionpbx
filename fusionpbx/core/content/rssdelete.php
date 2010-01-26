@@ -37,7 +37,7 @@ if (!ifgroup("admin")) {
 }
 
 if (count($_GET)>0) {
-	$rssid = checkstr($_GET["rssid"]);
+	$rssid = check_str($_GET["rssid"]);
 
 	//mark the the item as deleted and who deleted it
 	$sql  = "update v_rss set ";
@@ -47,7 +47,7 @@ if (count($_GET)>0) {
 	$sql .= "and rssid = '$rssid' ";
 	$sql .= "and rsscategory  = '$rsscategory' ";
 	//echo $sql;
-	$db->exec($sql);
+	$db->exec(check_sql($sql));
 	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 

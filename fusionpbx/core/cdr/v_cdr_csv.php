@@ -65,7 +65,7 @@ if (count($_REQUEST)>0) {
 	$sql .= " select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
@@ -123,7 +123,7 @@ $sql = "";
 $sql .= "select * from v_cdr ";
 $sql .= $sqlwhere;
 if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-$prepstatement = $db->prepare($sql);
+$prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 $result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
 $resultcount = count($result);

@@ -27,7 +27,7 @@ session_start();
 	}
 	$sql .= "and rssdeldate is null ";
 
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

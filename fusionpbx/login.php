@@ -3,11 +3,11 @@ include "root.php";
 require_once "includes/config.php";
 
 
-$path = checkstr($_GET["path"]);
-$msg = checkstr($_GET["msg"]);
+$path = check_str($_GET["path"]);
+$msg = check_str($_GET["msg"]);
 
 $sql = "SELECT * FROM v_users ";
-$prepstatement = $db->prepare($sql);
+$prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 
 $result = $prepstatement->fetchAll();

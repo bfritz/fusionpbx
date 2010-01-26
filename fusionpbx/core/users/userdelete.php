@@ -38,14 +38,14 @@ else {
 	return;
 }
 
-$id = checkstr($_GET["id"]);
+$id = check_str($_GET["id"]);
 
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and id = '$id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -59,7 +59,7 @@ $id = checkstr($_GET["id"]);
 	$sql .= "select * from v_users ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and id = '$id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

@@ -43,7 +43,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$hunt_group_id = checkstr($_REQUEST["id"]);
+	$hunt_group_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -51,19 +51,19 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$huntgroupextension = checkstr($_POST["huntgroupextension"]);
-	$huntgroupname = checkstr($_POST["huntgroupname"]);
-	$huntgrouptype = checkstr($_POST["huntgrouptype"]);
-	$huntgroupcontext = checkstr($_POST["huntgroupcontext"]);
-	$huntgrouptimeout = checkstr($_POST["huntgrouptimeout"]);
-	$huntgrouptimeoutdestination = checkstr($_POST["huntgrouptimeoutdestination"]);
-	$huntgrouptimeouttype = checkstr($_POST["huntgrouptimeouttype"]);
-	$huntgroupringback = checkstr($_POST["huntgroupringback"]);
-	$huntgroupcidnameprefix = checkstr($_POST["huntgroupcidnameprefix"]);
-	$huntgrouppin = checkstr($_POST["huntgrouppin"]);
-	$huntgroupcallerannounce = checkstr($_POST["huntgroupcallerannounce"]);
-	$huntgroupdescr = checkstr($_POST["huntgroupdescr"]);
+	//$v_id = check_str($_POST["v_id"]);
+	$huntgroupextension = check_str($_POST["huntgroupextension"]);
+	$huntgroupname = check_str($_POST["huntgroupname"]);
+	$huntgrouptype = check_str($_POST["huntgrouptype"]);
+	$huntgroupcontext = check_str($_POST["huntgroupcontext"]);
+	$huntgrouptimeout = check_str($_POST["huntgrouptimeout"]);
+	$huntgrouptimeoutdestination = check_str($_POST["huntgrouptimeoutdestination"]);
+	$huntgrouptimeouttype = check_str($_POST["huntgrouptimeouttype"]);
+	$huntgroupringback = check_str($_POST["huntgroupringback"]);
+	$huntgroupcidnameprefix = check_str($_POST["huntgroupcidnameprefix"]);
+	$huntgrouppin = check_str($_POST["huntgrouppin"]);
+	$huntgroupcallerannounce = check_str($_POST["huntgroupcallerannounce"]);
+	$huntgroupdescr = check_str($_POST["huntgroupdescr"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -77,7 +77,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$hunt_group_id = checkstr($_POST["hunt_group_id"]);
+		$hunt_group_id = check_str($_POST["hunt_group_id"]);
 	}
 
 	//check for all required data
@@ -158,7 +158,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$huntgroupcallerannounce', ";
 		$sql .= "'$huntgroupdescr' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -191,7 +191,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "huntgroupdescr = '$huntgroupdescr' ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and hunt_group_id = '$hunt_group_id'";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 		//synchronize the xml config
@@ -219,7 +219,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_hunt_group ";
 	$sql .= "where hunt_group_id = '$hunt_group_id' ";
 	$sql .= "and v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -527,7 +527,7 @@ if ($action == "update") {
 
 	//$sql .= " limit $rowsperpage offset $offset ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

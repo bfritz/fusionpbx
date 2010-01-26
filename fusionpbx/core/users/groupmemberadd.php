@@ -45,8 +45,8 @@ else {
 	}
 
 //HTTP GET set to a variable
-	$groupid = checkstr($_POST["groupid"]);
-	$username = checkstr($_POST["username"]);
+	$groupid = check_str($_POST["groupid"]);
+	$username = check_str($_POST["username"]);
 
 if (strlen($username) > 0  && strlen($groupid) > 0)   {
 

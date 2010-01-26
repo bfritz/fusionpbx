@@ -40,7 +40,7 @@ else {
 
 if (count($_GET)>0) {
 	$id = $_GET["id"];
-	$hunt_group_id = checkstr($_REQUEST["id2"]);
+	$hunt_group_id = check_str($_REQUEST["id2"]);
 }
 
 if (strlen($id)>0) {
@@ -49,7 +49,7 @@ if (strlen($id)>0) {
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and hunt_group_destination_id = '$id' ";
 	$sql .= "and hunt_group_id = '$hunt_group_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
 

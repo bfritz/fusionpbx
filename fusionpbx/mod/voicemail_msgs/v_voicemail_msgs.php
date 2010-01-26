@@ -57,7 +57,7 @@ if ($_GET['a'] == "download") {
 	$sql .= "select * from voicemail_msgs ";
 	$sql .= "where uuid = '$uuid' ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -124,7 +124,7 @@ $order = $_GET["order"];
 	$sql .= " select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
@@ -222,7 +222,7 @@ if (count($mailbox_array) > 0) {
 			//$sql = "";
 			//$sql .= " select * from voicemail_msgs ";
 			//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-			//$prepstatement = $db->prepare($sql);
+			//$prepstatement = $db->prepare(check_sql($sql));
 			//$prepstatement->execute();
 			//$result = $prepstatement->fetchAll();
 			//$numrows = count($result);
@@ -240,7 +240,7 @@ if (count($mailbox_array) > 0) {
 			$sql .= " where username = '".$value['mailbox']."' ";
 			if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 			//$sql .= " limit $rowsperpage offset $offset ";
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			$resultcount = count($result);

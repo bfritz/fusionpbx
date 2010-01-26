@@ -43,7 +43,7 @@ if (strlen($id)>0) {
 	$sql .= "delete from v_templates ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and templateid = '$id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
 }

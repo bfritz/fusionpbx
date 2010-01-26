@@ -10,7 +10,7 @@ if (strlen($_SESSION["username"]) == 0) {
 	$_SESSION["menu"] = ""; //clear the menu
 
 	//if username from form is not provided then send to login.php
-	if (strlen(checkstr($_POST["username"])) == 0) {
+	if (strlen(check_str($_POST["username"])) == 0) {
 		$strphpself = $_SERVER["PHP_SELF"];
 		//$strphpself = str_replace ("/", "", $strphpself);
 		$msg = "Please provide a username.";
@@ -20,9 +20,9 @@ if (strlen($_SESSION["username"]) == 0) {
 
 	$sql = "select * from v_users ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and username = '".checkstr($_POST["username"])."' ";
-	$sql .= "and password = '".md5('e3.7d.12'.checkstr($_POST["password"]))."'";
-	$prepstatement = $db->prepare($sql);
+	$sql .= "and username = '".check_str($_POST["username"])."' ";
+	$sql .= "and password = '".md5('e3.7d.12'.check_str($_POST["password"]))."'";
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 
 	$result = $prepstatement->fetchAll();
@@ -35,7 +35,7 @@ if (strlen($_SESSION["username"]) == 0) {
 		exit;
 	}
 	else {
-		$_SESSION["username"] = checkstr($_POST["username"]);
+		$_SESSION["username"] = check_str($_POST["username"]);
 		//echo "username: ".$_SESSION["username"]." and password are correct";
 	}
 
@@ -44,7 +44,7 @@ if (strlen($_SESSION["username"]) == 0) {
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and username = '".$_SESSION["username"]."' ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

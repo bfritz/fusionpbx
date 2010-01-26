@@ -41,7 +41,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$id = checkstr($_REQUEST["id"]);
+	$id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -49,51 +49,51 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	$username = checkstr($_POST["username"]);
-	$password = checkstr($_POST["password"]);
-	$usertype = checkstr($_POST["usertype"]);
-	$usercategory = checkstr($_POST["usercategory"]);
-	$userfirstname = checkstr($_POST["userfirstname"]);
-	$userlastname = checkstr($_POST["userlastname"]);
-	$usercompanyname = checkstr($_POST["usercompanyname"]);
-	$userphysicaladdress1 = checkstr($_POST["userphysicaladdress1"]);
-	$userphysicaladdress2 = checkstr($_POST["userphysicaladdress2"]);
-	$userphysicalcity = checkstr($_POST["userphysicalcity"]);
-	$userphysicalstateprovince = checkstr($_POST["userphysicalstateprovince"]);
-	$userphysicalpostalcode = checkstr($_POST["userphysicalpostalcode"]);
-	$userphysicalcountry = checkstr($_POST["userphysicalcountry"]);
-	$usermailingaddress1 = checkstr($_POST["usermailingaddress1"]);
-	$usermailingaddress2 = checkstr($_POST["usermailingaddress2"]);
-	$usermailingcity = checkstr($_POST["usermailingcity"]);
-	$usermailingstateprovince = checkstr($_POST["usermailingstateprovince"]);
-	$usermailingpostalcode = checkstr($_POST["usermailingpostalcode"]);
-	$usermailingcountry = checkstr($_POST["usermailingcountry"]);
-	$userbillingaddress1 = checkstr($_POST["userbillingaddress1"]);
-	$userbillingaddress2 = checkstr($_POST["userbillingaddress2"]);
-	$userbillingcity = checkstr($_POST["userbillingcity"]);
-	$userbillingstateprovince = checkstr($_POST["userbillingstateprovince"]);
-	$userbillingpostalcode = checkstr($_POST["userbillingpostalcode"]);
-	$userbillingcountry = checkstr($_POST["userbillingcountry"]);
-	$usershippingaddress1 = checkstr($_POST["usershippingaddress1"]);
-	$usershippingaddress2 = checkstr($_POST["usershippingaddress2"]);
-	$usershippingcity = checkstr($_POST["usershippingcity"]);
-	$usershippingstateprovince = checkstr($_POST["usershippingstateprovince"]);
-	$usershippingpostalcode = checkstr($_POST["usershippingpostalcode"]);
-	$usershippingcountry = checkstr($_POST["usershippingcountry"]);
-	$userphone1 = checkstr($_POST["userphone1"]);
-	$userphone1ext = checkstr($_POST["userphone1ext"]);
-	$userphone2 = checkstr($_POST["userphone2"]);
-	$userphone2ext = checkstr($_POST["userphone2ext"]);
-	$userphonemobile = checkstr($_POST["userphonemobile"]);
-	$userphonefax = checkstr($_POST["userphonefax"]);
-	$userphoneemergencymobile = checkstr($_POST["userphoneemergencymobile"]);
-	$useremailemergency = checkstr($_POST["useremailemergency"]);
-	$useremail = checkstr($_POST["useremail"]);
-	$userurl = checkstr($_POST["userurl"]);
-	$usernotes = checkstr($_POST["usernotes"]);
-	$useroptional1 = checkstr($_POST["useroptional1"]);
-	$useradduser = checkstr($_POST["useradduser"]);
-	$useradddate = checkstr($_POST["useradddate"]);
+	$username = check_str($_POST["username"]);
+	$password = check_str($_POST["password"]);
+	$usertype = check_str($_POST["usertype"]);
+	$usercategory = check_str($_POST["usercategory"]);
+	$userfirstname = check_str($_POST["userfirstname"]);
+	$userlastname = check_str($_POST["userlastname"]);
+	$usercompanyname = check_str($_POST["usercompanyname"]);
+	$userphysicaladdress1 = check_str($_POST["userphysicaladdress1"]);
+	$userphysicaladdress2 = check_str($_POST["userphysicaladdress2"]);
+	$userphysicalcity = check_str($_POST["userphysicalcity"]);
+	$userphysicalstateprovince = check_str($_POST["userphysicalstateprovince"]);
+	$userphysicalpostalcode = check_str($_POST["userphysicalpostalcode"]);
+	$userphysicalcountry = check_str($_POST["userphysicalcountry"]);
+	$usermailingaddress1 = check_str($_POST["usermailingaddress1"]);
+	$usermailingaddress2 = check_str($_POST["usermailingaddress2"]);
+	$usermailingcity = check_str($_POST["usermailingcity"]);
+	$usermailingstateprovince = check_str($_POST["usermailingstateprovince"]);
+	$usermailingpostalcode = check_str($_POST["usermailingpostalcode"]);
+	$usermailingcountry = check_str($_POST["usermailingcountry"]);
+	$userbillingaddress1 = check_str($_POST["userbillingaddress1"]);
+	$userbillingaddress2 = check_str($_POST["userbillingaddress2"]);
+	$userbillingcity = check_str($_POST["userbillingcity"]);
+	$userbillingstateprovince = check_str($_POST["userbillingstateprovince"]);
+	$userbillingpostalcode = check_str($_POST["userbillingpostalcode"]);
+	$userbillingcountry = check_str($_POST["userbillingcountry"]);
+	$usershippingaddress1 = check_str($_POST["usershippingaddress1"]);
+	$usershippingaddress2 = check_str($_POST["usershippingaddress2"]);
+	$usershippingcity = check_str($_POST["usershippingcity"]);
+	$usershippingstateprovince = check_str($_POST["usershippingstateprovince"]);
+	$usershippingpostalcode = check_str($_POST["usershippingpostalcode"]);
+	$usershippingcountry = check_str($_POST["usershippingcountry"]);
+	$userphone1 = check_str($_POST["userphone1"]);
+	$userphone1ext = check_str($_POST["userphone1ext"]);
+	$userphone2 = check_str($_POST["userphone2"]);
+	$userphone2ext = check_str($_POST["userphone2ext"]);
+	$userphonemobile = check_str($_POST["userphonemobile"]);
+	$userphonefax = check_str($_POST["userphonefax"]);
+	$userphoneemergencymobile = check_str($_POST["userphoneemergencymobile"]);
+	$useremailemergency = check_str($_POST["useremailemergency"]);
+	$useremail = check_str($_POST["useremail"]);
+	$userurl = check_str($_POST["userurl"]);
+	$usernotes = check_str($_POST["usernotes"]);
+	$useroptional1 = check_str($_POST["useroptional1"]);
+	$useradduser = check_str($_POST["useradduser"]);
+	$useradddate = check_str($_POST["useradddate"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -107,7 +107,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$id = checkstr($_POST["id"]);
+		$id = check_str($_POST["id"]);
 	}
 
 	//check for all required data
@@ -317,7 +317,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$useradduser', ";
 			$sql .= "'$useradddate' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -381,7 +381,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$sql .= "useradddate = '$useradddate' ";
 			$sql .= "where id = '$id'";
 			//echo $sql;
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 			require_once "includes/header.php";
@@ -402,7 +402,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_users ";
 		$sql .= "where id = '$id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {

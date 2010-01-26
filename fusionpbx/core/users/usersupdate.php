@@ -57,7 +57,7 @@ else {
 	$sql .= "select * from v_users ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and id = '$id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -208,7 +208,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	}
 
 	//echo $sql;
-	$count = $db->exec($sql);
+	$count = $db->exec(check_sql($sql));
 	//echo "Affected Rows: ".$count;
 
 	//todo: show only if admin
@@ -232,7 +232,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				  $sql .= "where username = '$username' and groupid = 'customerbronze' ";
 				  $sql .= "or username = '$username' and groupid = 'customersilver' ";
 				  $sql .= "or username = '$username' and groupid = 'customergold' ";
-				  $db->exec($sql);
+				  $db->exec(check_sql($sql));
 				  unset($sql);
 
 				  $sql = "insert into v_group_members ";
@@ -245,7 +245,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				  $sql .= "'$groupid', ";
 				  $sql .= "'$username' ";
 				  $sql .= ")";
-				  $db->exec($sql);
+				  $db->exec(check_sql($sql));
 				  //$lastinsertid = $db->lastInsertId($id);
 				  unset($sql);
 			  }
@@ -286,7 +286,7 @@ else {
 			$sql .= "and username = '$username' ";
 	}
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

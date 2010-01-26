@@ -88,7 +88,7 @@ require "includes/lib_cdr.php";
 
 					if (strlen($sql) > 0) {
 						//echo $sql."<br /><br />\n";
-						$count = $db->exec($sql); //returns affected rows
+						$count = $db->exec(check_sql($sql)); //returns affected rows
 
 						$x++;
 						if ($x > 10000) {

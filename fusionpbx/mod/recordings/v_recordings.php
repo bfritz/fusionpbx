@@ -169,7 +169,7 @@ if ($_GET['act'] == "del") {
 	$sql = "";
 	$sql .= "select * from v_recordings ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -207,7 +207,7 @@ if (is_dir($v_recordings_dir.'/')) {
 					//$sql .= "'".guid()."', ";
 					$sql .= "'auto' ";
 					$sql .= ")";
-					$db->exec($sql);
+					$db->exec(check_sql($sql));
 					echo $sql;
 					//$lastinsertid = $db->lastInsertId($id);
 					unset($sql);
@@ -288,7 +288,7 @@ require_once "includes/header.php";
 	$sql .= "select * from v_recordings ";
 	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$numrows = count($result);
@@ -306,7 +306,7 @@ require_once "includes/header.php";
 	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

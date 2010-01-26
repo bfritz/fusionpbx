@@ -41,28 +41,28 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$public_includes_detail_id = checkstr($_REQUEST["id"]);
+	$public_includes_detail_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
-    $public_include_id = checkstr($_REQUEST["id2"]);
+    $public_include_id = check_str($_REQUEST["id2"]);
 }
 
 if (isset($_REQUEST["id2"])) {
-	$public_include_id = checkstr($_REQUEST["id2"]);
+	$public_include_id = check_str($_REQUEST["id2"]);
 }
 
 //echo "public_include_id $public_include_id<br />\n";
 //POST to PHP variables
 if (count($_POST)>0) {
-    //$v_id = checkstr($_POST["v_id"]);
+    //$v_id = check_str($_POST["v_id"]);
     if (isset($_POST["public_include_id"])) {
-        $public_include_id = checkstr($_POST["public_include_id"]);
+        $public_include_id = check_str($_POST["public_include_id"]);
     }
-    $tag = checkstr($_POST["tag"]);
-    $fieldtype = checkstr($_POST["fieldtype"]);
-    $fielddata = checkstr($_POST["fielddata"]);
-    $fieldorder = checkstr($_POST["fieldorder"]);
+    $tag = check_str($_POST["tag"]);
+    $fieldtype = check_str($_POST["fieldtype"]);
+    $fielddata = check_str($_POST["fielddata"]);
+    $fieldorder = check_str($_POST["fieldorder"]);
 }
 //echo "public_include_id $public_include_id<br />\n";
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -76,7 +76,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
     ////$filedir = $_ENV["TEMP"]."\\";
 
     if ($action == "update") {
-        $public_includes_detail_id = checkstr($_POST["public_includes_detail_id"]);
+        $public_includes_detail_id = check_str($_POST["public_includes_detail_id"]);
     }
 
     //check for all required data
@@ -130,7 +130,7 @@ if ($_POST["persistformvar"] != "true") {
         $sql .= "'$fielddata', ";
         $sql .= "'$fieldorder' ";
         $sql .= ")";
-        $db->exec($sql);
+        $db->exec(check_sql($sql));
         //$lastinsertid = $db->lastInsertId($id);
         unset($sql);
 
@@ -155,7 +155,7 @@ if ($_POST["persistformvar"] != "true") {
         $sql .= "fielddata = '$fielddata', ";
         $sql .= "fieldorder = '$fieldorder' ";
         $sql .= "where public_includes_detail_id = '$public_includes_detail_id'";
-        $db->exec($sql);
+        $db->exec(check_sql($sql));
         unset($sql);
 
         //synchronize the xml config
@@ -180,7 +180,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
     $sql .= "select * from v_public_includes_details ";
     $sql .= "where public_includes_detail_id = '$public_includes_detail_id' ";
     $sql .= "and v_id = '$v_id' ";
-    $prepstatement = $db->prepare($sql);
+    $prepstatement = $db->prepare(check_sql($sql));
     $prepstatement->execute();
     $result = $prepstatement->fetchAll();
     foreach ($result as &$row) {

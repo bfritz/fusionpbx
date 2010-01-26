@@ -45,8 +45,8 @@ else {
 	}
 
 //HTTP GET set to a variable
-	$groupid = checkstr($_GET["groupid"]);
-	$username = checkstr($_GET["username"]);
+	$groupid = check_str($_GET["groupid"]);
+	$username = check_str($_GET["username"]);
 
 //if (ifpermission("delete")) {
 

@@ -45,14 +45,14 @@ $order = $_GET["order"];
 
 //POST to PHP variables
 	if (count($_POST)>0) {
-		$extension_name = checkstr($_POST["extension_name"]);
-		$extension_number = checkstr($_POST["extension_number"]);
-		$dialplanorder = checkstr($_POST["dialplanorder"]);
-		$pin_number = checkstr($_POST["pin_number"]);
-		$profile = checkstr($_POST["profile"]);
-		$flags = checkstr($_POST["flags"]);
-		$enabled = checkstr($_POST["enabled"]);
-		$description = checkstr($_POST["description"]);
+		$extension_name = check_str($_POST["extension_name"]);
+		$extension_number = check_str($_POST["extension_number"]);
+		$dialplanorder = check_str($_POST["dialplanorder"]);
+		$pin_number = check_str($_POST["pin_number"]);
+		$profile = check_str($_POST["profile"]);
+		$flags = check_str($_POST["flags"]);
+		$enabled = check_str($_POST["enabled"]);
+		$description = check_str($_POST["description"]);
 		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
 	}
 
@@ -103,7 +103,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$enabled', ";
 		$sql .= "'$description' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		$dialplan_include_id = $db->lastInsertId($id);
 		unset($sql);
 
@@ -127,7 +127,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'^".$extension_number."$', ";
 			$sql .= "'1' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -150,7 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'', ";
 			$sql .= "'2' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -176,7 +176,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'".$conference_action_data."', ";
 			$sql .= "'3' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 	} //end if (strlen($dialplan_include_id) > 0)

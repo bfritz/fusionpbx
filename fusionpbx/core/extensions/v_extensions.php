@@ -89,7 +89,7 @@ if (!function_exists('thorderby')) {
 	else {
 		$sql .= "order by extension asc ";
 	}
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$numrows = count($result);
@@ -112,7 +112,7 @@ if (!function_exists('thorderby')) {
 		$sql .= "order by extension asc ";
 	}
 	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);

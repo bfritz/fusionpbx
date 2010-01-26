@@ -53,7 +53,7 @@ function ifgroupmembers($db, $groupid, $username) {
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and groupid = '$groupid' ";
 	$sql .= "and username = '$username' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	if (count($prepstatement->fetchAll()) == 0) { return true; } else { return false; }
 	unset ($sql, $prepstatement);
@@ -72,7 +72,7 @@ echo "<span  class=\"\" height='50'>Member list for <b>$groupid</b></span><br />
 $sql = "SELECT * FROM v_group_members ";
 $sql .= "where v_id = '$v_id' ";
 $sql .= "and groupid = '$groupid' ";
-$prepstatement = $db->prepare($sql);
+$prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 
 $strlist = "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
@@ -122,7 +122,7 @@ echo "		<td width='60%' align='right'>";
 //---- Begin Select List --------------------
 $sql = "SELECT * FROM v_users ";
 $sql .= "where v_id = '$v_id' ";
-$prepstatement = $db->prepare($sql);
+$prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 
 echo "<select name=\"username\" style='width: 200px;' class='formfld'>\n";

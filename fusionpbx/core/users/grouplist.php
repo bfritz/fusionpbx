@@ -54,7 +54,7 @@ else {
 
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 
 	$c = 0;

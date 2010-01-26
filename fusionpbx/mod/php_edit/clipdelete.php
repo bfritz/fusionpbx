@@ -43,7 +43,7 @@ if (strlen($id)>0) {
     $sql = "";
     $sql .= "delete from tblcliplibrary ";
     $sql .= "where id = '$id' ";
-    $prepstatement = $db->prepare($sql);
+    $prepstatement = $db->prepare(check_sql($sql));
     $prepstatement->execute();
     unset($sql,$db);
 }

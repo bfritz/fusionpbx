@@ -37,7 +37,7 @@ require_once "includes/header.php";
 require_once "includes/checkauth.php";
 
 if (count($_POST)>0) {
-	$templateid = checkstr($_POST["templateid"]);
+	$templateid = check_str($_POST["templateid"]);
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		if (strlen($templateid) > 0) {
 			//clear the current default
@@ -45,7 +45,7 @@ if (count($_POST)>0) {
 				$sql .= "template_default = '' ";
 				$sql .= "where v_id = '$v_id' ";
 				//echo "sql:  ".$sql." <br />"; 
-				$db->exec($sql);
+				$db->exec(check_sql($sql));
 				unset($sql);
 
 			//set the new default
@@ -54,7 +54,7 @@ if (count($_POST)>0) {
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and templateid = '$templateid' ";
 				//echo "sql:  ".$sql." <br />"; 
-				$db->exec($sql);
+				$db->exec(check_sql($sql));
 				unset($sql);
 				//exit;
 		}
@@ -87,7 +87,7 @@ echo "<br />";
 	$sql = "";
 	$sql .= "select * from v_software ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	while($row = $prepstatement->fetch()) {
 		$softwarename = $row["softwarename"];
@@ -341,7 +341,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	$sql .= "select * from v_templates ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and template_default = 'true'; ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	while($row = $prepstatement->fetch()) {
 		$templatename = $row["templatename"];

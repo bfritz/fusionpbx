@@ -110,7 +110,7 @@ function createtblinfo($db, $dbmem) {
         $result = $db->query($sql);
         $resultcount = count($result);
         /*
-        $prepstatement = $db->prepare($sql);
+        $prepstatement = $db->prepare(check_sql($sql));
         $prepstatement->execute();
         $result = $prepstatement->fetchAll();
         $resultcount = count($result);

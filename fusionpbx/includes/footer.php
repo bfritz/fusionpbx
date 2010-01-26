@@ -12,7 +12,7 @@
 	$sql = "";
 	$sql .= "select * from v_menu ";
 	$sql .= "where menustr = '".$_SERVER["SCRIPT_NAME"]."' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -46,7 +46,7 @@
 	$sql .= "and rssdeldate is null ";
 	$sql .= "order by rssorder asc ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -80,7 +80,7 @@
 		$sql .= "and template_default = 'true' ";
 	}
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

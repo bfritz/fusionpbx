@@ -40,7 +40,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$extension_id = checkstr($_REQUEST["id"]);
+	$extension_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -49,34 +49,34 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$extension = checkstr($_POST["extension"]);
-	$password = checkstr($_POST["password"]);
+	//$v_id = check_str($_POST["v_id"]);
+	$extension = check_str($_POST["extension"]);
+	$password = check_str($_POST["password"]);
 
-	$user_list = checkstr($_POST["user_list"]."|");
+	$user_list = check_str($_POST["user_list"]."|");
 	$user_list = str_replace("\n", "|", "|".$user_list);
 	$user_list = str_replace("\r", "", $user_list);
 	$user_list = str_replace(" ", "", $user_list);
 	$user_list = str_replace("||", "|", $user_list);
   
-	$mailbox = checkstr($_POST["mailbox"]);
-	$vm_password = checkstr($_POST["vm_password"]);
-	$accountcode = checkstr($_POST["accountcode"]);
-	$effective_caller_id_name = checkstr($_POST["effective_caller_id_name"]);
-	$effective_caller_id_number = checkstr($_POST["effective_caller_id_number"]);
-	$outbound_caller_id_name = checkstr($_POST["outbound_caller_id_name"]);
-	$outbound_caller_id_number = checkstr($_POST["outbound_caller_id_number"]);
-	$vm_mailto = checkstr($_POST["vm_mailto"]);
-	$vm_attach_file = checkstr($_POST["vm_attach_file"]);
-	$vm_keep_local_after_email = checkstr($_POST["vm_keep_local_after_email"]);
-	$user_context = checkstr($_POST["user_context"]);
-	$range = checkstr($_POST["range"]);
-	$callgroup = checkstr($_POST["callgroup"]);
-	$auth_acl = checkstr($_POST["auth_acl"]);
-	$cidr = checkstr($_POST["cidr"]);
-	$sip_force_contact = checkstr($_POST["sip_force_contact"]);
-	$enabled = checkstr($_POST["enabled"]);
-	$description = checkstr($_POST["description"]);
+	$mailbox = check_str($_POST["mailbox"]);
+	$vm_password = check_str($_POST["vm_password"]);
+	$accountcode = check_str($_POST["accountcode"]);
+	$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
+	$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
+	$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
+	$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
+	$vm_mailto = check_str($_POST["vm_mailto"]);
+	$vm_attach_file = check_str($_POST["vm_attach_file"]);
+	$vm_keep_local_after_email = check_str($_POST["vm_keep_local_after_email"]);
+	$user_context = check_str($_POST["user_context"]);
+	$range = check_str($_POST["range"]);
+	$callgroup = check_str($_POST["callgroup"]);
+	$auth_acl = check_str($_POST["auth_acl"]);
+	$cidr = check_str($_POST["cidr"]);
+	$sip_force_contact = check_str($_POST["sip_force_contact"]);
+	$enabled = check_str($_POST["enabled"]);
+	$description = check_str($_POST["description"]);
 
 }
 
@@ -91,7 +91,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$extension_id = checkstr($_POST["extension_id"]);
+		$extension_id = check_str($_POST["extension_id"]);
 	}
 
 	//check for all required data
@@ -195,7 +195,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$enabled', ";
 				$sql .= "'$description' ";
 				$sql .= ")";
-				$db->exec($sql);
+				$db->exec(check_sql($sql));
 				//$lastinsertid = $db->lastInsertId($id);
 				unset($sql);
 
@@ -248,7 +248,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "description = '$description' ";
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and extension_id = '$extension_id'";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 			//syncrhonize configuration
@@ -273,7 +273,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and extension_id = '$extension_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

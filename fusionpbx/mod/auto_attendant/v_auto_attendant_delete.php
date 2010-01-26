@@ -49,7 +49,7 @@ if (strlen($id)>0) {
 		$sql .= "delete from v_auto_attendant_options ";
 		$sql .= "where v_id = $v_id ";
 		$sql .= "and auto_attendant_id = '$id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		unset($sql);
 
@@ -58,7 +58,7 @@ if (strlen($id)>0) {
 		$sql .= "delete from v_auto_attendant ";
 		$sql .= "where v_id = $v_id ";
 		$sql .= "and auto_attendant_id = '$id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		unset($sql);
 

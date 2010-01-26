@@ -43,7 +43,7 @@ require_once "v_cdr_import.php";
 //action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$cdr_id = checkstr($_REQUEST["id"]);
+	$cdr_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -51,23 +51,23 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	$caller_id_name = checkstr($_POST["caller_id_name"]);
-	$caller_id_number = checkstr($_POST["caller_id_number"]);
-	$destination_number = checkstr($_POST["destination_number"]);
-	$context = checkstr($_POST["context"]);
-	$start_stamp = checkstr($_POST["start_stamp"]);
-	$answer_stamp = checkstr($_POST["answer_stamp"]);
-	$end_stamp = checkstr($_POST["end_stamp"]);
-	$duration = checkstr($_POST["duration"]);
-	$billsec = checkstr($_POST["billsec"]);
-	$hangup_cause = checkstr($_POST["hangup_cause"]);
-	$uuid = checkstr($_POST["uuid"]);
-	$bleg_uuid = checkstr($_POST["bleg_uuid"]);
-	$accountcode = checkstr($_POST["accountcode"]);
-	$read_codec = checkstr($_POST["read_codec"]);
-	$write_codec = checkstr($_POST["write_codec"]);
-	$remote_media_ip = checkstr($_POST["remote_media_ip"]);
-	$network_addr = checkstr($_POST["network_addr"]);
+	$caller_id_name = check_str($_POST["caller_id_name"]);
+	$caller_id_number = check_str($_POST["caller_id_number"]);
+	$destination_number = check_str($_POST["destination_number"]);
+	$context = check_str($_POST["context"]);
+	$start_stamp = check_str($_POST["start_stamp"]);
+	$answer_stamp = check_str($_POST["answer_stamp"]);
+	$end_stamp = check_str($_POST["end_stamp"]);
+	$duration = check_str($_POST["duration"]);
+	$billsec = check_str($_POST["billsec"]);
+	$hangup_cause = check_str($_POST["hangup_cause"]);
+	$uuid = check_str($_POST["uuid"]);
+	$bleg_uuid = check_str($_POST["bleg_uuid"]);
+	$accountcode = check_str($_POST["accountcode"]);
+	$read_codec = check_str($_POST["read_codec"]);
+	$write_codec = check_str($_POST["write_codec"]);
+	$remote_media_ip = check_str($_POST["remote_media_ip"]);
+	$network_addr = check_str($_POST["network_addr"]);
 }
 
 /*
@@ -82,7 +82,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$cdr_id = checkstr($_POST["cdr_id"]);
+		$cdr_id = check_str($_POST["cdr_id"]);
 	}
 
 	//check for all required data
@@ -183,7 +183,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$remote_media_ip', ";
 			$sql .= "'$network_addr' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -218,7 +218,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "network_addr = '$network_addr' ";
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and cdr_id = '$cdr_id' ";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 			require "includes/config.php";
@@ -240,7 +240,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql .= " select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
@@ -278,7 +278,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sqlwhere = str_replace ("where or", "where", $sqlwhere);
 	$sqlwhere = str_replace ("where and", "where", $sqlwhere);
 	$sql .= $sqlwhere;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

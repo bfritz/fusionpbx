@@ -41,7 +41,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$module_id = checkstr($_REQUEST["id"]);
+	$module_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -49,13 +49,13 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$modulelabel = checkstr($_POST["modulelabel"]);
-	$modulename = checkstr($_POST["modulename"]);
-	$moduledesc = checkstr($_POST["moduledesc"]);
-	$modulecat = checkstr($_POST["modulecat"]);
-	$moduleenabled = checkstr($_POST["moduleenabled"]);
-	$moduledefaultenabled = checkstr($_POST["moduledefaultenabled"]);
+	//$v_id = check_str($_POST["v_id"]);
+	$modulelabel = check_str($_POST["modulelabel"]);
+	$modulename = check_str($_POST["modulename"]);
+	$moduledesc = check_str($_POST["moduledesc"]);
+	$modulecat = check_str($_POST["modulecat"]);
+	$moduleenabled = check_str($_POST["moduleenabled"]);
+	$moduledefaultenabled = check_str($_POST["moduledefaultenabled"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -69,7 +69,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$module_id = checkstr($_POST["module_id"]);
+		$module_id = check_str($_POST["module_id"]);
 	}
 
 	//check for all required data
@@ -127,7 +127,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$moduleenabled', ";
 		$sql .= "'$moduledefaultenabled' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -152,7 +152,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "moduledefaultenabled = '$moduledefaultenabled' ";
 		$sql .= "where v_id = '$v_id'";
 		$sql .= "and module_id = '$module_id'";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 		sync_package_v_modules();
@@ -176,7 +176,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_modules ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and module_id = '$module_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

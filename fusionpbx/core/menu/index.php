@@ -84,7 +84,7 @@ if (!ifgroup("superadmin")) {
 			$sql .= "order by menuorder asc ";
 		}
 		//echo "base: ".$sql;
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 
 		$result = $prepstatement->fetchAll();

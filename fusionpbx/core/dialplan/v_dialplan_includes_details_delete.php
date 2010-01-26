@@ -39,7 +39,7 @@ else {
 
 if (count($_GET)>0) {
     $id = $_GET["id"];
-    $dialplan_include_id = checkstr($_REQUEST["id2"]);
+    $dialplan_include_id = check_str($_REQUEST["id2"]);
 }
 
 if (strlen($id)>0) {

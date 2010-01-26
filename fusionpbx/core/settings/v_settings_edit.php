@@ -42,7 +42,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$setting_id = checkstr($_REQUEST["id"]);
+	$setting_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -50,28 +50,28 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$numbering_plan = checkstr($_POST["numbering_plan"]);
-	$default_gateway = checkstr($_POST["default_gateway"]);
-	$default_area_code = checkstr($_POST["default_area_code"]);
-	$event_socket_ip_address = checkstr($_POST["event_socket_ip_address"]);
+	//$v_id = check_str($_POST["v_id"]);
+	$numbering_plan = check_str($_POST["numbering_plan"]);
+	$default_gateway = check_str($_POST["default_gateway"]);
+	$default_area_code = check_str($_POST["default_area_code"]);
+	$event_socket_ip_address = check_str($_POST["event_socket_ip_address"]);
 	if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
-	$event_socket_port = checkstr($_POST["event_socket_port"]);
-	$event_socket_password = checkstr($_POST["event_socket_password"]);
-	$xml_rpc_http_port = checkstr($_POST["xml_rpc_http_port"]);
-	$xml_rpc_auth_realm = checkstr($_POST["xml_rpc_auth_realm"]);
-	$xml_rpc_auth_user = checkstr($_POST["xml_rpc_auth_user"]);
-	$xml_rpc_auth_pass = checkstr($_POST["xml_rpc_auth_pass"]);
-	$admin_pin = checkstr($_POST["admin_pin"]);
-	$smtphost = checkstr($_POST["smtphost"]);
-	$smtpsecure = checkstr($_POST["smtpsecure"]);
-	$smtpauth = checkstr($_POST["smtpauth"]);
-	$smtpusername = checkstr($_POST["smtpusername"]);
-	$smtppassword = checkstr($_POST["smtppassword"]);
-	$smtpfrom = checkstr($_POST["smtpfrom"]);
-	$smtpfromname = checkstr($_POST["smtpfromname"]);
-	$mod_shout_decoder = checkstr($_POST["mod_shout_decoder"]);
-	$mod_shout_volume = checkstr($_POST["mod_shout_volume"]);
+	$event_socket_port = check_str($_POST["event_socket_port"]);
+	$event_socket_password = check_str($_POST["event_socket_password"]);
+	$xml_rpc_http_port = check_str($_POST["xml_rpc_http_port"]);
+	$xml_rpc_auth_realm = check_str($_POST["xml_rpc_auth_realm"]);
+	$xml_rpc_auth_user = check_str($_POST["xml_rpc_auth_user"]);
+	$xml_rpc_auth_pass = check_str($_POST["xml_rpc_auth_pass"]);
+	$admin_pin = check_str($_POST["admin_pin"]);
+	$smtphost = check_str($_POST["smtphost"]);
+	$smtpsecure = check_str($_POST["smtpsecure"]);
+	$smtpauth = check_str($_POST["smtpauth"]);
+	$smtpusername = check_str($_POST["smtpusername"]);
+	$smtppassword = check_str($_POST["smtppassword"]);
+	$smtpfrom = check_str($_POST["smtpfrom"]);
+	$smtpfromname = check_str($_POST["smtpfromname"]);
+	$mod_shout_decoder = check_str($_POST["mod_shout_decoder"]);
+	$mod_shout_volume = check_str($_POST["mod_shout_volume"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -85,7 +85,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$setting_id = checkstr($_POST["setting_id"]);
+		$setting_id = check_str($_POST["setting_id"]);
 	}
 
 	//check for all required data
@@ -173,7 +173,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$mod_shout_decoder', ";
 			$sql .= "'$mod_shout_volume' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -213,7 +213,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "mod_shout_decoder = '$mod_shout_decoder', ";
 			$sql .= "mod_shout_volume = '$mod_shout_volume' ";
 			$sql .= "where setting_id = '$setting_id' ";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 		//synchronize settings
@@ -238,7 +238,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_settings ";
 		$sql .= "where setting_id = '$setting_id' ";
 		$sql .= "and v_id = '$v_id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {

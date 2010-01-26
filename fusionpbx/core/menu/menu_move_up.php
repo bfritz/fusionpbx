@@ -40,9 +40,9 @@ if (!ifgroup("superadmin")) {
 //update v_menu set menuorder = (menuorder+1) where menuorder > 2 or menuorder = 2
 
 if (count($_GET)>0) {
-	$menuid = checkstr($_GET["menuid"]);
-	$menuorder = checkstr($_GET["menuorder"]);
-	$menuparentid = checkstr($_GET["menuparentid"]);
+	$menuid = check_str($_GET["menuid"]);
+	$menuorder = check_str($_GET["menuorder"]);
+	$menuparentid = check_str($_GET["menuparentid"]);
 
 	if ($menuorder != 1) {
 
@@ -58,7 +58,7 @@ if (count($_GET)>0) {
 		$sql .= "and menuorder = '".($menuorder-1).".0' ";
 		$sql .= "and menuparentid  = '$menuparentid' ";        
 		//echo $sql."<br><br>";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -69,7 +69,7 @@ if (count($_GET)>0) {
 		$sql .= "and menuid = '$menuid' ";
 		$sql .= "and menuparentid  = '$menuparentid' ";
 		//echo $sql."<br><br>";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 

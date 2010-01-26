@@ -71,7 +71,7 @@ if (count($_POST)>0) {
     $sql = trim($sql);
     if (substr($sql, -5) == "where"){ $sql = substr($sql, 0, (strlen($sql)-5)); }
     $sql = str_replace ("where and", "where", $sql);
-    $prepstatement = $db->prepare($sql);
+    $prepstatement = $db->prepare(check_sql($sql));
     $prepstatement->execute();
     $result = $prepstatement->fetchAll();
     $resultcount = count($result);

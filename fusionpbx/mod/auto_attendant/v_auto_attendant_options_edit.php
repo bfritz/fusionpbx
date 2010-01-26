@@ -41,15 +41,15 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$auto_attendant_option_id = checkstr($_REQUEST["id"]);
+	$auto_attendant_option_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
-	$auto_attendant_id = checkstr($_REQUEST["id2"]);
+	$auto_attendant_id = check_str($_REQUEST["id2"]);
 }
 
 if (isset($_REQUEST["id2"])) {
-	$auto_attendant_id = checkstr($_REQUEST["id2"]);
+	$auto_attendant_id = check_str($_REQUEST["id2"]);
 }
 if (isset($_REQUEST["optionaction"])) {
 	$optionaction = $_REQUEST["optionaction"];
@@ -57,17 +57,17 @@ if (isset($_REQUEST["optionaction"])) {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
+	//$v_id = check_str($_POST["v_id"]);
 	if (isset($_REQUEST["dialplan_include_id"])) {
-		$auto_attendant_id = checkstr($_POST["auto_attendant_id"]);
+		$auto_attendant_id = check_str($_POST["auto_attendant_id"]);
 	}
-	$optionaction = checkstr($_POST["optionaction"]);
-	$optionnumber = checkstr($_POST["optionnumber"]);
-	$optiontype = checkstr($_POST["optiontype"]);
-	$optionprofile = checkstr($_POST["optionprofile"]);
-	$optionrecording = checkstr($_POST["optionrecording"]);
-	$optiondata = checkstr($_POST["optiondata"]);
-	$optiondescr = checkstr($_POST["optiondescr"]);
+	$optionaction = check_str($_POST["optionaction"]);
+	$optionnumber = check_str($_POST["optionnumber"]);
+	$optiontype = check_str($_POST["optiontype"]);
+	$optionprofile = check_str($_POST["optionprofile"]);
+	$optionrecording = check_str($_POST["optionrecording"]);
+	$optiondata = check_str($_POST["optiondata"]);
+	$optiondescr = check_str($_POST["optiondescr"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -81,7 +81,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$auto_attendant_option_id = checkstr($_POST["auto_attendant_option_id"]);
+		$auto_attendant_option_id = check_str($_POST["auto_attendant_option_id"]);
 	}
 
 	//check for all required data
@@ -134,7 +134,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$optionrecording', ";
 			$sql .= "'$optiondescr' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -162,7 +162,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "optiondescr = '$optiondescr' ";
 			$sql .= "where v_id = $v_id ";
 			$sql .= "and auto_attendant_option_id = '$auto_attendant_option_id'";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 			//synchronize the xml config
@@ -188,7 +188,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_auto_attendant_options ";
 	$sql .= "where v_id = $v_id ";
 	$sql .= "and auto_attendant_option_id = '$auto_attendant_option_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -355,7 +355,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql = "";
 	$sql .= "select * from v_recordings ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

@@ -586,7 +586,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
 			//$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir' ";
 			$sql .= "where v_id = '$v_id'";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 	//remove the default config files that are not needed

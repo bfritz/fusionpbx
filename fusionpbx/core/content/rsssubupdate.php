@@ -40,18 +40,18 @@ if (!ifgroup("admin")) {
 
 if (count($_POST)>0 && $_POST["persistform"] == "0") {
 
-	$rsssubid = checkstr($_POST["rsssubid"]);
-	$rssid = checkstr($_POST["rssid"]);
-	$rsssubtitle = checkstr($_POST["rsssubtitle"]);
-	$rsssublink = checkstr($_POST["rsssublink"]);
-	$rsssubdesc = checkstr($_POST["rsssubdesc"]);
-	$rsssuboptional1 = checkstr($_POST["rsssuboptional1"]);
-	$rsssuboptional2 = checkstr($_POST["rsssuboptional2"]);
-	$rsssuboptional3 = checkstr($_POST["rsssuboptional3"]);
-	$rsssuboptional4 = checkstr($_POST["rsssuboptional4"]);
-	$rsssuboptional5 = checkstr($_POST["rsssuboptional5"]);
-	$rsssubadddate = checkstr($_POST["rsssubadddate"]);
-	$rsssubadduser = checkstr($_POST["rsssubadduser"]);
+	$rsssubid = check_str($_POST["rsssubid"]);
+	$rssid = check_str($_POST["rssid"]);
+	$rsssubtitle = check_str($_POST["rsssubtitle"]);
+	$rsssublink = check_str($_POST["rsssublink"]);
+	$rsssubdesc = check_str($_POST["rsssubdesc"]);
+	$rsssuboptional1 = check_str($_POST["rsssuboptional1"]);
+	$rsssuboptional2 = check_str($_POST["rsssuboptional2"]);
+	$rsssuboptional3 = check_str($_POST["rsssuboptional3"]);
+	$rsssuboptional4 = check_str($_POST["rsssuboptional4"]);
+	$rsssuboptional5 = check_str($_POST["rsssuboptional5"]);
+	$rsssubadddate = check_str($_POST["rsssubadddate"]);
+	$rsssubadduser = check_str($_POST["rsssubadduser"]);
 
 	$msg = '';
 	if (strlen($rssid) == 0) { $msg .= "Error missing rssid.<br>\n"; }
@@ -97,7 +97,7 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and rsssubid = '$rsssubid' ";
 	//$sql .= "and rssid = '$rssid' ";
-	$count = $db->exec($sql);
+	$count = $db->exec(check_sql($sql));
 	//echo "Affected Rows: ".$count;
 
 	//edit: make sure the meta redirect url is correct 
@@ -117,7 +117,7 @@ else {
 	$sql .= "select * from v_rss_sub ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and rsssubid = '$rsssubid' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

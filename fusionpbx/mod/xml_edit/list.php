@@ -40,7 +40,7 @@ require_once "header.php";
     $sql = "";
     $sql .= "select * from tblcliplibrary ";
 
-    $prepstatement = $db->prepare($sql);
+    $prepstatement = $db->prepare(check_sql($sql));
     $prepstatement->execute();
     $result = $prepstatement->fetchAll();
     $resultcount = count($result);
@@ -83,7 +83,8 @@ require_once "header.php";
 
             echo "<tr><td colspan='1'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
             if ($c==0) { $c=1; } else { $c=0; }
-        } //end foreach        unset($sql, $result, $rowcount);
+        } //end foreach
+		unset($sql, $result, $rowcount);
         
         
 

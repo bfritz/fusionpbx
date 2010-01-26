@@ -37,26 +37,26 @@ if (!ifgroup("admin")) {
 }
 
 if (count($_POST)>0) {
-	$rssid = checkstr($_POST["rssid"]);
-	//$rsscategory = checkstr($_POST["rsscategory"]); //defined in local config.php
-	$rsssubcategory = checkstr($_POST["rsssubcategory"]);
-	$rsstitle = checkstr($_POST["rsstitle"]);
-	$rsslink = checkstr($_POST["rsslink"]);
-	$rssdesc = checkstr($_POST["rssdesc"]);
-	$rssgroup = checkstr($_POST["rssgroup"]);
-	$rssorder = checkstr($_POST["rssorder"]);
+	$rssid = check_str($_POST["rssid"]);
+	//$rsscategory = check_str($_POST["rsscategory"]); //defined in local config.php
+	$rsssubcategory = check_str($_POST["rsssubcategory"]);
+	$rsstitle = check_str($_POST["rsstitle"]);
+	$rsslink = check_str($_POST["rsslink"]);
+	$rssdesc = check_str($_POST["rssdesc"]);
+	$rssgroup = check_str($_POST["rssgroup"]);
+	$rssorder = check_str($_POST["rssorder"]);
 
 	//$rssdesc = str_replace ("<br />\r\n<br />", "<br />", $rssdesc);
 	//$rssdesc = str_replace ("<br />\n<br />", "<br />", $rssdesc);
 	//$rssdesc = str_replace ("<p>", "", $rssdesc);
 	//$rssdesc = str_replace ("</p>", "<br />", $rssdesc);
 
-	$rssimg = checkstr($_POST["rssimg"]);
-	$rssoptional1 = checkstr($_POST["rssoptional1"]);
-	$rssoptional2 = checkstr($_POST["rssoptional2"]);
-	//$rssoptional3 = checkstr($_POST["rssoptional3"]);
-	//$rssoptional4 = checkstr($_POST["rssoptional4"]);
-	//$rssoptional5 = checkstr($_POST["rssoptional5"]);
+	$rssimg = check_str($_POST["rssimg"]);
+	$rssoptional1 = check_str($_POST["rssoptional1"]);
+	$rssoptional2 = check_str($_POST["rssoptional2"]);
+	//$rssoptional3 = check_str($_POST["rssoptional3"]);
+	//$rssoptional4 = check_str($_POST["rssoptional4"]);
+	//$rssoptional5 = check_str($_POST["rssoptional5"]);
 
 	//sql update
 	$sql  = "update v_rss set ";
@@ -78,7 +78,7 @@ if (count($_POST)>0) {
 	$sql .= "and rsscategory = '$rsscategory' ";
 	//echo $sql;
 	//return;
-	$count = $db->exec($sql);
+	$count = $db->exec(check_sql($sql));
 	//echo $sql."<br>";
 	//echo "Affected Rows: ".$count;
 	//exit;
@@ -100,7 +100,7 @@ else {
 	$sql .= "select * from v_rss ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and rssid = '$rssid' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -315,7 +315,7 @@ else {
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 
 	echo "<select name=\"rssgroup\" class='formfld'>\n";
@@ -345,7 +345,7 @@ else {
 		$sql = "SELECT distinct(templatename) as templatename FROM v_templates ";
 		$sql .= "where v_id = '$v_id' ";
 		//echo $sql;
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		echo "<select name=\"rsssubcategory\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";

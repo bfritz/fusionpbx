@@ -39,13 +39,13 @@ else {
 require_once "config.php";
 
 if (count($_POST)>0) {
-    $id = checkstr($_POST["id"]);
-    $clipname = checkstr($_POST["clipname"]);
-    $clipfolder = checkstr($_POST["clipfolder"]);
-    $cliptextstart = checkstr($_POST["cliptextstart"]);
-    $cliptextend = checkstr($_POST["cliptextend"]);
-    $clipdesc = checkstr($_POST["clipdesc"]);
-    $cliporder = checkstr($_POST["cliporder"]);
+    $id = check_str($_POST["id"]);
+    $clipname = check_str($_POST["clipname"]);
+    $clipfolder = check_str($_POST["clipfolder"]);
+    $cliptextstart = check_str($_POST["cliptextstart"]);
+    $cliptextend = check_str($_POST["cliptextend"]);
+    $clipdesc = check_str($_POST["clipdesc"]);
+    $cliporder = check_str($_POST["cliporder"]);
 
     //sql update
     $sql  = "update tblcliplibrary set ";
@@ -56,7 +56,7 @@ if (count($_POST)>0) {
     $sql .= "clipdesc = '$clipdesc', ";
     $sql .= "cliporder = '$cliporder' ";
     $sql .= "where id = '$id' ";
-    $count = $db->exec($sql);
+    $count = $db->exec(check_sql($sql));
     //echo "Affected Rows: ".$count;
 
 
@@ -74,7 +74,7 @@ else {
       $sql = "";
       $sql .= "select * from tblcliplibrary ";
       $sql .= "where id = '$id' ";
-      $prepstatement = $db->prepare($sql);
+      $prepstatement = $db->prepare(check_sql($sql));
       $prepstatement->execute();
       $result = $prepstatement->fetchAll();
       foreach ($result as &$row) {

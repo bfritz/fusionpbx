@@ -41,7 +41,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$v_id = checkstr($_REQUEST["id"]);
+	$v_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -49,36 +49,36 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	$v_id = checkstr($_POST["v_id"]);
-	$php_dir = checkstr($_POST["php_dir"]);
-	$tmp_dir = checkstr($_POST["tmp_dir"]);
-	$bin_dir = checkstr($_POST["bin_dir"]);
-	$v_startup_script_dir = checkstr($_POST["v_startup_script_dir"]);
-	$v_package_version = checkstr($_POST["v_package_version"]);
-	$v_build_version = checkstr($_POST["v_build_version"]);
-	$v_build_revision = checkstr($_POST["v_build_revision"]);
-	$v_label = checkstr($_POST["v_label"]);
-	$v_name = checkstr($_POST["v_name"]);
-	$v_dir = checkstr($_POST["v_dir"]);
-	$v_parent_dir = checkstr($_POST["v_parent_dir"]);
-	$v_backup_dir = checkstr($_POST["v_backup_dir"]);
-	$v_web_dir = checkstr($_POST["v_web_dir"]);
-	$v_web_root = checkstr($_POST["v_web_root"]);
-	$v_relative_url = checkstr($_POST["v_relative_url"]);
-	$v_conf_dir = checkstr($_POST["v_conf_dir"]);
-	$v_db_dir = checkstr($_POST["v_db_dir"]);
-	$v_htdocs_dir = checkstr($_POST["v_htdocs_dir"]);
-	$v_log_dir = checkstr($_POST["v_log_dir"]);
-	$v_mod_dir = checkstr($_POST["v_mod_dir"]);
-	$v_scripts_dir = checkstr($_POST["v_scripts_dir"]);
-	$v_storage_dir = checkstr($_POST["v_storage_dir"]);
-	$v_recordings_dir = checkstr($_POST["v_recordings_dir"]);
-	$v_sounds_dir = checkstr($_POST["v_sounds_dir"]);
-	$v_download_path = checkstr($_POST["v_download_path"]);
-	$v_provisioning_tftp_dir = checkstr($_POST["v_provisioning_tftp_dir"]);
-	$v_provisioning_ftp_dir = checkstr($_POST["v_provisioning_ftp_dir"]);
-	$v_provisioning_https_dir = checkstr($_POST["v_provisioning_https_dir"]);
-	$v_provisioning_http_dir = checkstr($_POST["v_provisioning_http_dir"]);
+	$v_id = check_str($_POST["v_id"]);
+	$php_dir = check_str($_POST["php_dir"]);
+	$tmp_dir = check_str($_POST["tmp_dir"]);
+	$bin_dir = check_str($_POST["bin_dir"]);
+	$v_startup_script_dir = check_str($_POST["v_startup_script_dir"]);
+	$v_package_version = check_str($_POST["v_package_version"]);
+	$v_build_version = check_str($_POST["v_build_version"]);
+	$v_build_revision = check_str($_POST["v_build_revision"]);
+	$v_label = check_str($_POST["v_label"]);
+	$v_name = check_str($_POST["v_name"]);
+	$v_dir = check_str($_POST["v_dir"]);
+	$v_parent_dir = check_str($_POST["v_parent_dir"]);
+	$v_backup_dir = check_str($_POST["v_backup_dir"]);
+	$v_web_dir = check_str($_POST["v_web_dir"]);
+	$v_web_root = check_str($_POST["v_web_root"]);
+	$v_relative_url = check_str($_POST["v_relative_url"]);
+	$v_conf_dir = check_str($_POST["v_conf_dir"]);
+	$v_db_dir = check_str($_POST["v_db_dir"]);
+	$v_htdocs_dir = check_str($_POST["v_htdocs_dir"]);
+	$v_log_dir = check_str($_POST["v_log_dir"]);
+	$v_mod_dir = check_str($_POST["v_mod_dir"]);
+	$v_scripts_dir = check_str($_POST["v_scripts_dir"]);
+	$v_storage_dir = check_str($_POST["v_storage_dir"]);
+	$v_recordings_dir = check_str($_POST["v_recordings_dir"]);
+	$v_sounds_dir = check_str($_POST["v_sounds_dir"]);
+	$v_download_path = check_str($_POST["v_download_path"]);
+	$v_provisioning_tftp_dir = check_str($_POST["v_provisioning_tftp_dir"]);
+	$v_provisioning_ftp_dir = check_str($_POST["v_provisioning_ftp_dir"]);
+	$v_provisioning_https_dir = check_str($_POST["v_provisioning_https_dir"]);
+	$v_provisioning_http_dir = check_str($_POST["v_provisioning_http_dir"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -92,7 +92,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$preferenceid = checkstr($_POST["v_id"]);
+		$preferenceid = check_str($_POST["v_id"]);
 	}
 
 	//check for all required data
@@ -209,7 +209,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$v_provisioning_https_dir', ";
 			$sql .= "'$v_provisioning_http_dir' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
@@ -255,7 +255,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
 			$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir' ";
 			$sql .= "where v_id = '$v_id'";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 			require_once "includes/header.php";
@@ -277,7 +277,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_system_settings ";
 	$sql .= "where v_id = '$v_id' ";
 
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

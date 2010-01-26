@@ -36,12 +36,12 @@ if (!ifgroup("admin")) {
 }
 
 if (count($_POST)>0) {
-	$rsssubcategoryid = checkstr($_POST["rsssubcategoryid"]);
-	$rsscategory = checkstr($_POST["rsscategory"]);
-	$rsssubcategory = checkstr($_POST["rsssubcategory"]);
-	$rsssubcategorydesc = checkstr($_POST["rsssubcategorydesc"]);
-	$rssadduser = checkstr($_POST["rssadduser"]);
-	$rssadddate = checkstr($_POST["rssadddate"]);
+	$rsssubcategoryid = check_str($_POST["rsssubcategoryid"]);
+	$rsscategory = check_str($_POST["rsscategory"]);
+	$rsssubcategory = check_str($_POST["rsssubcategory"]);
+	$rsssubcategorydesc = check_str($_POST["rsssubcategorydesc"]);
+	$rssadduser = check_str($_POST["rssadduser"]);
+	$rssadddate = check_str($_POST["rssadddate"]);
 
 	//sql update
 	$sql  = "update v_rss_sub_category set ";
@@ -52,7 +52,7 @@ if (count($_POST)>0) {
 	$sql .= "rssadddate = '$rssadddate' ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and rsssubcategoryid = '$rsssubcategoryid' ";
-	$count = $db->exec($sql);
+	$count = $db->exec(check_sql($sql));
 	//echo "Affected Rows: ".$count;
 
 	//edit: make sure the meta redirect url is correct 
@@ -70,7 +70,7 @@ else {
 	$sql .= "select * from v_rss_sub_category ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and rsssubcategoryid = '$rsssubcategoryid' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

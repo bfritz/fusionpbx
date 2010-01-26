@@ -1,12 +1,25 @@
 <?php
 
-	if (!function_exists('checkstr')) {
-		function checkstr($strtemp) {
+	if (!function_exists('check_str')) {
+		function check_str($strtemp) {
 			////when code in db is urlencoded the ' does not need to be modified
 			//$strtemp = str_replace ("\'", "''", $strtemp); //escape the single quote
 			$strtemp = str_replace ("'", "''", $strtemp); //escape the single quote
+			$strtemp = trim ($strtemp); //remove white space
+			return $strtemp;
+		}
+	}
+
+	if (!function_exists('check_sql')) {
+		function check_sql($strtemp) {
+			if ($dbtype == "sqlite") {
+				//$strtemp = str_replace ("'", "''", $strtemp); //escape the single quote
+			}
 			if ($dbtype == "pgsql") {
-				$strtemp = str_replace ("\\", "\\\\", $strtemp); //escape the single quote
+				$strtemp = str_replace ("\\", "\\\\", $strtemp); //escape the backslash
+			}
+			if ($dbtype == "mysql") {
+				$strtemp = str_replace ("\\", "\\\\", $strtemp); //escape the backslash
 			}
 			$strtemp = trim ($strtemp); //remove white space
 			return $strtemp;
@@ -52,7 +65,7 @@
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and username = '".$username."' ";
 			//echo $sql;
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			$resultcount = count($result);
@@ -86,7 +99,7 @@
 			$sql = "select * from v_group_members ";
 			$sql .= "where groupid = 'superadmin' ";
 			//echo $sql;
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			$resultcount = count($result);
@@ -128,7 +141,7 @@
 
 			$sql = "SELECT distinct($fieldname) as $fieldname FROM $tablename $sqlwhereoptional ";
 			//echo $sql;
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			$resultcount = count($result);
@@ -178,7 +191,7 @@
 				$sql = "SELECT distinct($fieldname) as $fieldname FROM $tablename $sqlwhereoptional ";
 			}
 
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			$resultcount = count($result);
@@ -226,7 +239,7 @@
 
 			$sql = "SELECT distinct($fieldname) as $fieldname FROM $tablename $sqlwhereoptional ";
 			//echo $sql;
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			$resultcount = count($result);
@@ -287,8 +300,8 @@
 		//$tablename = 'tblcontacts'; $fieldname = 'contactcategory'; $sqlwhereoptional = "", $fieldcurrentvalue ='';
 		//echo htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
 	////  On the page that recieves the POST
-		//if (checkstr($_POST["contactcategory"]) == "Other") { //echo "found: ".$contactcategory;
-		//  $contactcategory = checkstr($_POST["contactcategoryother"]);
+		//if (check_str($_POST["contactcategory"]) == "Other") { //echo "found: ".$contactcategory;
+		//  $contactcategory = check_str($_POST["contactcategoryother"]);
 		//}
 
 	if (!function_exists('logadd')) {
@@ -316,7 +329,7 @@
 			$sql .= "now() ";
 			$sql .= ")";
 			//echo $sql;
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 		//--- End: Log entry -------------------------------------------------------
@@ -477,7 +490,7 @@
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and username = '".$username."' ";
 			//echo $sql;
-			$prepstatement = $db->prepare($sql);
+			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			$resultcount = count($result);
@@ -527,7 +540,7 @@
 					$sql .= ")";
 					//echo $sql;
 					//exit;
-					$db->exec($sql);
+					$db->exec(check_sql($sql));
 					$lastinsertid = $db->lastInsertId($id);
 					unset($sql);
 
@@ -545,7 +558,7 @@
 					$sql .= "'$groupid', ";
 					$sql .= "'$username' ";
 					$sql .= ")";
-					$db->exec($sql);
+					$db->exec(check_sql($sql));
 					$lastinsertid = $db->lastInsertId($id);
 					unset($sql);
 			} //end if !user_exists

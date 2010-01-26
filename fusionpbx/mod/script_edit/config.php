@@ -162,8 +162,8 @@ if(!function_exists('escapejs')){
 }
 
 
-if(!function_exists('checkstr')){
-  function checkstr($strtemp) {
+if(!function_exists('check_str')){
+  function check_str($strtemp) {
       //$strtemp = str_replace ("\$", "\\\$", $strtemp); //escape the single quote
       //$strtemp = str_replace ("\'", "''", $strtemp); //escape the single quote
       $strtemp = str_replace ("'", "''", $strtemp); //escape the single quote

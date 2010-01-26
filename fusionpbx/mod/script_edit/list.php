@@ -40,7 +40,7 @@ require_once "admin/edit/header.php";
     $sql = "";
     $sql .= "select * from tblcliplibrary ";
 
-    $prepstatement = $db->prepare($sql);
+    $prepstatement = $db->prepare(check_sql($sql));
     $prepstatement->execute();
     $result = $prepstatement->fetchAll();
     $resultcount = count($result);

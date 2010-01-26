@@ -126,7 +126,7 @@ if(stristr($sql, 'insert') === FALSE) {
 
     try {
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $prepstatement = $db->prepare($sql);
+        $prepstatement = $db->prepare(check_sql($sql));
         $prepstatement->execute();
         $result = $prepstatement->fetchall(PDO::FETCH_ASSOC);
         $resultcount = count($result);
@@ -141,7 +141,7 @@ if(stristr($sql, 'insert') === FALSE) {
             $temprecordid = $db->lastInsertId($id);
             //echo "temprecordid $temprecordid<br>";
 
-            $prepstatement = $db->prepare($sql);
+            $prepstatement = $db->prepare(check_sql($sql));
             $prepstatement->execute();
             $result = $prepstatement->fetchall(PDO::FETCH_ASSOC);
             $resultcount = count($result);
@@ -168,7 +168,7 @@ else {
         //no semi-colon ; character found in the sql string
             try {
                 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $prepstatement = $db->prepare($sql);
+                $prepstatement = $db->prepare(check_sql($sql));
                 $prepstatement->execute();
                 $result = $prepstatement->fetchall(PDO::FETCH_ASSOC);
                 $resultcount = count($result);
@@ -200,7 +200,7 @@ else {
 
             try {
                 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $prepstatement = $db->prepare($sql);
+                $prepstatement = $db->prepare(check_sql($sql));
                 $prepstatement->execute();
                 $result = $prepstatement->fetchall(PDO::FETCH_ASSOC);
                 $resultcount = count($result);
@@ -1356,7 +1356,7 @@ if (strlen($tblname) > 0) {
             //remove the temporary record that was used to provide access to the field names
             $sql = "delete from $tblname where $temprecordprimarykey = $temprecordid";
             //echo $sql;
-            $db->exec($sql);
+            $db->exec(check_sql($sql));
         }
     }
 

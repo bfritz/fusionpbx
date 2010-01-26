@@ -40,7 +40,7 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$gateway_id = checkstr($_REQUEST["id"]);
+	$gateway_id = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -48,30 +48,30 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = checkstr($_POST["v_id"]);
-	$gateway = checkstr($_POST["gateway"]);
-	$username = checkstr($_POST["username"]);
-	$password = checkstr($_POST["password"]);
-	$auth_username = checkstr($_POST["auth_username"]);
-	$realm = checkstr($_POST["realm"]);
-	$from_user = checkstr($_POST["from_user"]);
-	$from_domain = checkstr($_POST["from_domain"]);
-	$proxy = checkstr($_POST["proxy"]);
-	$expire_seconds = checkstr($_POST["expire_seconds"]);
-	$register = checkstr($_POST["register"]);
-	$register_transport = checkstr($_POST["register_transport"]);
-	$retry_seconds = checkstr($_POST["retry_seconds"]);
-	$extension = checkstr($_POST["extension"]);
-	$ping = checkstr($_POST["ping"]);
-	$caller_id_in_from = checkstr($_POST["caller_id_in_from"]);
-	$supress_cng = checkstr($_POST["supress_cng"]);
-	$effective_caller_id_name = checkstr($_POST["effective_caller_id_name"]);
-	$effective_caller_id_number = checkstr($_POST["effective_caller_id_number"]);
-	$outbound_caller_id_name = checkstr($_POST["outbound_caller_id_name"]);
-	$outbound_caller_id_number = checkstr($_POST["outbound_caller_id_number"]);
-	$context = checkstr($_POST["context"]);
-	$enabled = checkstr($_POST["enabled"]);
-	$description = checkstr($_POST["description"]);
+	//$v_id = check_str($_POST["v_id"]);
+	$gateway = check_str($_POST["gateway"]);
+	$username = check_str($_POST["username"]);
+	$password = check_str($_POST["password"]);
+	$auth_username = check_str($_POST["auth_username"]);
+	$realm = check_str($_POST["realm"]);
+	$from_user = check_str($_POST["from_user"]);
+	$from_domain = check_str($_POST["from_domain"]);
+	$proxy = check_str($_POST["proxy"]);
+	$expire_seconds = check_str($_POST["expire_seconds"]);
+	$register = check_str($_POST["register"]);
+	$register_transport = check_str($_POST["register_transport"]);
+	$retry_seconds = check_str($_POST["retry_seconds"]);
+	$extension = check_str($_POST["extension"]);
+	$ping = check_str($_POST["ping"]);
+	$caller_id_in_from = check_str($_POST["caller_id_in_from"]);
+	$supress_cng = check_str($_POST["supress_cng"]);
+	$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
+	$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
+	$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
+	$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
+	$context = check_str($_POST["context"]);
+	$enabled = check_str($_POST["enabled"]);
+	$description = check_str($_POST["description"]);
 
 }
 
@@ -86,7 +86,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$gateway_id = checkstr($_POST["gateway_id"]);
+		$gateway_id = check_str($_POST["gateway_id"]);
 	}
 
 	//check for all required data
@@ -211,7 +211,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$enabled', ";
 			$sql .= "'$description' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			$gateway_id = $db->lastInsertId($id);
 			unset($sql);
 
@@ -248,7 +248,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "description = '$description' ";
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and gateway_id = '$gateway_id'";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 			//syncrhonize configuration
@@ -270,7 +270,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_settings ";
 		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
@@ -441,7 +441,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_gateways ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and gateway_id = '$gateway_id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {

@@ -45,18 +45,18 @@ $order = $_GET["order"];
 
 //POST to PHP variables
 	if (count($_POST)>0) {
-		$extension_name = checkstr($_POST["extension_name"]);
-		$publicorder = checkstr($_POST["publicorder"]);
-		$condition_field_1 = checkstr($_POST["condition_field_1"]);
-		$condition_expression_1 = checkstr($_POST["condition_expression_1"]);
-		$condition_field_2 = checkstr($_POST["condition_field_2"]);
-		$condition_expression_2 = checkstr($_POST["condition_expression_2"]);
-		$action_application_1 = checkstr($_POST["action_application_1"]);
-		$action_data_1 = checkstr($_POST["action_data_1"]);
-		$action_application_2 = checkstr($_POST["action_application_2"]);
-		$action_data_2 = checkstr($_POST["action_data_2"]);
-		$enabled = checkstr($_POST["enabled"]);
-		$description = checkstr($_POST["description"]);
+		$extension_name = check_str($_POST["extension_name"]);
+		$publicorder = check_str($_POST["publicorder"]);
+		$condition_field_1 = check_str($_POST["condition_field_1"]);
+		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
+		$condition_field_2 = check_str($_POST["condition_field_2"]);
+		$condition_expression_2 = check_str($_POST["condition_expression_2"]);
+		$action_application_1 = check_str($_POST["action_application_1"]);
+		$action_data_1 = check_str($_POST["action_data_1"]);
+		$action_application_2 = check_str($_POST["action_application_2"]);
+		$action_data_2 = check_str($_POST["action_data_2"]);
+		$enabled = check_str($_POST["enabled"]);
+		$description = check_str($_POST["description"]);
 		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
 	}
 
@@ -104,7 +104,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$enabled', ";
 		$sql .= "'$description' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		$public_include_id = $db->lastInsertId($id);
 		unset($sql);
 
@@ -127,7 +127,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'public', ";
 		$sql .= "'0' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -150,7 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$condition_expression_1', ";
 		$sql .= "'1' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -174,7 +174,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$condition_expression_2', ";
 			$sql .= "'2' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 		}
@@ -198,7 +198,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$action_data_1', ";
 		$sql .= "'3' ";
 		$sql .= ")";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -222,7 +222,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$action_data_2', ";
 			$sql .= "'4' ";
 			$sql .= ")";
-			$db->exec($sql);
+			$db->exec(check_sql($sql));
 			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 		}

@@ -40,8 +40,8 @@ if (!ifgroup("admin")) {
 //update v_rss set rssorder = (rssorder+1) where rssorder > 2 or rssorder = 2
 
 if (count($_GET)>0) {
-	$rssid = checkstr($_GET["rssid"]);
-	$rssorder = checkstr($_GET["rssorder"]);
+	$rssid = check_str($_GET["rssid"]);
+	$rssorder = check_str($_GET["rssorder"]);
 
 	$sql = "SELECT rssorder FROM v_rss ";
 	$sql .= "where v_id  = '$v_id' ";
@@ -50,7 +50,7 @@ if (count($_GET)>0) {
 	$sql .= "limit 1 ";
 	//echo $sql."<br><br>";
 	//return;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -67,7 +67,7 @@ if (count($_GET)>0) {
 		$sql .= "and rssorder = ".($rssorder+1)." ";
 		$sql .= "and rsscategory  = '$rsscategory' ";
 		//echo $sql."<br><br>";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
@@ -78,7 +78,7 @@ if (count($_GET)>0) {
 		$sql .= "and rssid = '$rssid' ";
 		$sql .= "and rsscategory  = '$rsscategory' ";
 		//echo $sql."<br><br>";
-		$db->exec($sql);
+		$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 	}

@@ -68,7 +68,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
         $sql = "SELECT * FROM v_users ";
 		$sql .= " where v_id = '$v_id' ";
 		$sql .= " and username = '$username' ";
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		if (count($prepstatement->fetchAll()) > 0) {
 			$msgerror .= "Please choose a different Username.<br>\n";
@@ -201,7 +201,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= ")";
 	//echo $sql;
 	//exit;
-	$db->exec($sql);
+	$db->exec(check_sql($sql));
 	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
@@ -223,7 +223,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= "'$groupid', ";
 	$sql .= "'$username' ";
 	$sql .= ")";
-	$db->exec($sql);
+	$db->exec(check_sql($sql));
 	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
@@ -313,7 +313,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	  //echo "            <input type='text' class='txt' name='userphysicalstateprovince' value='$userphysicalstateprovince'>";
 	  //---- Begin Select List --------------------
       $sql = "SELECT * FROM v_states ";
-	  $prepstatement = $db->prepare($sql);
+	  $prepstatement = $db->prepare(check_sql($sql));
 	  $prepstatement->execute();
 
 	  echo "<select name=\"userphysicalstateprovince\" class='txt'>\n";
@@ -399,7 +399,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	  //echo "            <input type='text' class='txt' name='userbillingstateprovince' value='$userbillingstateprovince'>";
 	  //---- Begin Select List --------------------
       $sql = "SELECT * FROM v_states ";
-	  $prepstatement = $db->prepare($sql);
+	  $prepstatement = $db->prepare(check_sql($sql));
 	  $prepstatement->execute();
 
 	  echo "<select name=\"userbillingstateprovince\" class='txt'>\n";

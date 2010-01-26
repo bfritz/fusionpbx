@@ -45,7 +45,7 @@ if (strlen($id)>0) {
 	$sql .= "delete from v_vars ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and var_id = '$id' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
 }

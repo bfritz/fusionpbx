@@ -63,7 +63,7 @@ require_once "includes/header.php";
 	$sql .= "order by rssid asc ";
 
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -169,7 +169,7 @@ require_once "includes/header.php";
 		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 		//echo $sql;
 
-		$prepstatement = $db->prepare($sql);
+		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		$resultcount = count($result);

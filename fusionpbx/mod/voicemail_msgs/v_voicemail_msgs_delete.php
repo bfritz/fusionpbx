@@ -58,7 +58,7 @@ if (strlen($uuid)>0) {
 	$sql .= "select * from voicemail_msgs ";
 	$sql .= "where uuid = '$uuid' ";
 	//echo $sql;
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
@@ -85,7 +85,7 @@ if (strlen($uuid)>0) {
 	$sql = "";
 	$sql .= "delete from voicemail_msgs ";
 	$sql .= "where uuid = '$uuid' ";
-	$prepstatement = $db->prepare($sql);
+	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
 }
