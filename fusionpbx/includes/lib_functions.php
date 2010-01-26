@@ -3,7 +3,6 @@
 	if (!function_exists('check_str')) {
 		function check_str($strtemp) {
 			////when code in db is urlencoded the ' does not need to be modified
-			//$strtemp = str_replace ("\'", "''", $strtemp); //escape the single quote
 			$strtemp = str_replace ("'", "''", $strtemp); //escape the single quote
 			$strtemp = trim ($strtemp); //remove white space
 			return $strtemp;
@@ -14,7 +13,7 @@
 		function check_sql($strtemp) {
 			global $dbtype;
 			if ($dbtype == "sqlite") {
-				//$strtemp = str_replace ("'", "''", $strtemp); //escape the single quote
+				//place holder
 			}
 			if ($dbtype == "pgsql") {
 				$strtemp = str_replace ("\\", "\\\\", $strtemp); //escape the backslash
