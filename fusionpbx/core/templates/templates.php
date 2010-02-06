@@ -105,8 +105,8 @@ $order = $_GET["order"];
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[templatename]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[templatedesc]."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[templatename]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[templatedesc]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='templates_edit.php?id=".$row[templateid]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
 			echo "		<a href='templates_delete.php?id=".$row[templateid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
