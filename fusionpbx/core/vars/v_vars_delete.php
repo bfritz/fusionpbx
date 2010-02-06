@@ -45,6 +45,8 @@ if (strlen($id)>0) {
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
+
+	sync_package_v_vars();
 }
 
 require_once "includes/header.php";
