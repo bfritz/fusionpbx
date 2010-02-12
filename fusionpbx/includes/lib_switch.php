@@ -37,7 +37,7 @@ require_once "includes/config.php";
 $v_id = '1';
 
 //preferences
-	$v_label_show = true;
+	$v_label_show = false;
 	$v_path_show = true;
 	$v_menu_tab_show = false;
 	$v_fax_show = true;
@@ -2236,6 +2236,8 @@ function sync_package_v_auto_attendant()
 		$$name = $value;
 	}
 
+	$db->beginTransaction();
+
 	//prepare for auto attendant .js files to be written. delete all auto attendants that are prefixed with autoattendant_ and have a file extension of .js
 		$v_prefix = 'autoattendant_';
 		if($dh = opendir($v_scripts_dir)) {
@@ -2357,16 +2359,14 @@ function sync_package_v_auto_attendant()
 		$prepstatement2 = $db->prepare($sql);
 		$prepstatement2->execute();
 		while($row2 = $prepstatement2->fetch()) {
+			$event_socket_ip_address = $row2["event_socket_ip_address"];
 			$event_socket_port = $row2["event_socket_port"];
 			$event_socket_password = $row2["event_socket_password"];
 		}
 		unset ($prepstatement2);
-		$password = $event_socket_password;
-		$port = $event_socket_port;
-
 
 		if (pkg_is_service_running('freeswitch')) {
-			$fp = event_socket_create($host, $port, $password);
+			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 			$cmd = "api global_getvar domain";
 			$domain = trim(event_socket_request($fp, $cmd));
 		}
@@ -2417,7 +2417,6 @@ function sync_package_v_auto_attendant()
 			$tmp .= "session.execute(\"set\", \"effective_caller_id_name=".$row['aacidnameprefix']."\"+effective_caller_id_name);\n";
 			$tmp .= "session.execute(\"set\", \"outbound_caller_id_name=".$row['aacidnameprefix']."\"+outbound_caller_id_name);\n";
 		}
-
 		$tmp .= "\n";
 
 
@@ -2550,7 +2549,6 @@ function sync_package_v_auto_attendant()
 					$actiondefaultdest = $row2['optiondata'];
 					$actiondefaultdesc = $row2['optiondesc'];
 					$actiondefaultrecording = $row2['optionrecording'];
-					
 				}
 			}
 		} //end while
@@ -3017,8 +3015,6 @@ function sync_package_v_auto_attendant()
 				$optiondata = $row2["optiondata"];
 				$optiondescr = $row2["optiondescr"];
 
-				//$tmpantiactiondefault = "";
-			
 				//find the correct auto attendant options with the correct action
 
 					if ($row2['optionaction'] == "anti-action") {
@@ -3125,7 +3121,7 @@ function sync_package_v_auto_attendant()
 			}
 			$tmp .= "\n";
 			unset($tmpantiaction);
-		
+
 			$tmp .= "          } \n";
 			//$tmp .= "          else if ( dtmf.digits.length == \"3\" ) {\n";
 			//$tmp .= "                //Transfer to the extension the caller chose\n";
@@ -3153,9 +3149,8 @@ function sync_package_v_auto_attendant()
 		}
 
 	} //end while
-
-
-} //end function
+	$db->commit();
+} //end auto attendant function
 
 
 function v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value) {
