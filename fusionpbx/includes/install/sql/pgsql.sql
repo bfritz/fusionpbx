@@ -35,7 +35,7 @@ INSERT INTO v_menu VALUES(38,1,'en','Features','/mod/features/v_features.php','i
 INSERT INTO v_menu VALUES(39,1,'en','SIP Gateways','/core/gateways/v_gateways.php','internal','admin','',40,16,'mcrane','2009-08-20 10:41:08','mcrane','2009-10-27 22:10:27');
 INSERT INTO v_menu VALUES(40,1,'en','Voice','','internal','admin','','',1,'mcrane','2009-08-20 10:42:11','admin','2009-11-04 18:20:59');
 INSERT INTO v_menu VALUES(41,1,'en','Auto Attendant','/mod/auto_attendant/v_auto_attendant.php','internal','admin','',38,6,'mcrane','2009-08-20 10:46:04','mcrane','2009-10-27 22:44:29');
-INSERT INTO v_menu VALUES(42,1,'en','Fax','/mod/fax/v_fax.php','internal','hidden','',38,9,'mcrane','2009-08-20 10:46:39','mcrane','2009-10-27 22:49:59');
+INSERT INTO v_menu VALUES(42,1,'en','Fax Server','/mod/fax/v_fax.php','internal','admin','',38,9,'mcrane','2009-08-20 10:46:39','mcrane','2009-10-27 22:49:59');
 INSERT INTO v_menu VALUES(43,1,'en','Hunt Group','/mod/hunt_group/v_hunt_group.php','internal','admin','',38,10,'mcrane','2009-08-20 10:47:13','mcrane','2009-10-27 22:50:24');
 INSERT INTO v_menu VALUES(44,1,'en','Modules','/core/modules/v_modules.php','internal','admin','',38,11,'mcrane','2009-08-20 10:47:46','mcrane','2009-10-27 22:50:59');
 INSERT INTO v_menu VALUES(45,1,'en','Music on Hold','/mod/recordings/v_recordings.php','internal','admin','',38,12,'mcrane','2009-08-20 10:49:31','mcrane','2009-10-27 22:52:15');
@@ -52,7 +52,7 @@ INSERT INTO v_menu VALUES(58,1,'en','PHP Editor','/mod/php_edit/index.php','inte
 INSERT INTO v_menu VALUES(64,1,'en','Command','/mod/exec/v_exec.php','internal','superadmin','',3,35,'mcrane','2009-09-23 21:55:57','mcrane','2009-10-30 18:25:54');
 INSERT INTO v_menu VALUES(65,1,'en','Contact Manager','/mod/contacts/users.php','internal','admin','',3,28,'mcrane','2009-10-03 13:48:07','mcrane','2009-10-27 22:33:36');
 INSERT INTO v_menu VALUES(66,1,'en','Softphone','/mod/soft_phone/v_softphone.php','internal','admin','',3,29,'mcrane','2009-10-10 12:23:39','mcrane','2009-10-27 23:00:27');
-INSERT INTO v_menu VALUES(67,1,'en','Call Broadcast','/mod/call_broadcast/v_call_broadcast.php','internal','hidden','',38,14,'mcrane','2009-10-13 11:40:28','mcrane','2009-10-27 22:44:50');
+INSERT INTO v_menu VALUES(67,1,'en','Call Broadcast','/mod/call_broadcast/v_call_broadcast.php','internal','admin','',38,14,'mcrane','2009-10-13 11:40:28','mcrane','2009-10-27 22:44:50');
 INSERT INTO v_menu VALUES(68,1,'en','fusionpbx.com','http://www.fusionpbx.com','external','admin','',3,30,'mcrane','2009-10-24 01:03:32',NULL,NULL);
 INSERT INTO v_menu VALUES(71,1,'en','SQLite Query','/mod/sqlite_query/index.php','internal','hidden','',3,37,'mcrane','2009-10-28 01:00:41','mcrane','2009-10-30 18:26:27');
 INSERT INTO v_menu VALUES(72,1,'en','Vertical','','internal','hidden','','',44,'mcrane','2009-11-04 01:58:46','admin','2009-11-04 18:21:33');
