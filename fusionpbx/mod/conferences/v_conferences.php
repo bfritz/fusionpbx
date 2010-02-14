@@ -91,7 +91,7 @@ $order = $_GET["order"];
 	echo "	<td align='left' colspan='2'>\n";
 	echo "		<span class=\"vexpl\">\n";
 	echo "			Conferences is used to setup conference rooms with a name, description, and optional pin number.\n";
-	echo "			Show <a href='/mod/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.\n";
+	echo "			Show <a href='".PROJECT_PATH."/mod/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.\n";
 	echo "		</span>\n";
 	echo "	</td>\n";
 	echo "\n";
