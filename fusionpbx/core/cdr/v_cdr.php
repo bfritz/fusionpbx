@@ -121,10 +121,6 @@ if (count($_REQUEST)>0) {
 	echo "</td>\n";
 	echo "</tr></table>\n";
 
-	if (ifgroup("admin") || ifgroup("superadmin")) {
-		$sqlwhere = "where ";
-	}
-	if (strlen($v_id) > 0) { $sqlwhere .= "and v_id like '$v_id' "; }
 	if (strlen($cdr_id) > 0) { $sqlwhere .= "and cdr_id like '%$cdr_id%' "; }
 	if (strlen($caller_id_name) > 0) { $sqlwhere .= "and caller_id_name like '%$caller_id_name%' "; }
 	if (strlen($caller_id_number) > 0) { $sqlwhere .= "and caller_id_number like '%$caller_id_number%' "; }
@@ -144,20 +140,22 @@ if (count($_REQUEST)>0) {
 	if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
 	if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
 	if (!ifgroup("admin") || !ifgroup("superadmin")) {
-		if (trim($sqlwhere) == "where") { $sqlwhere = ""; }
-		//echo $sqlwhere;
 		$sqlwhereorig = $sqlwhere;
 		$sqlwhere = "where ";
 		if (count($extension_array) > 0) {
 			foreach($extension_array as $value) {
-				if ($value['extension'] > 0) { $sqlwhere .= "or caller_id_number = '".$value['extension']."' ". $sqlwhereorig; } //source
-				if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '".$value['extension']."' ".$sqlwhereorig; } //destination
-				if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '*99".$value['extension']."' ".$sqlwhereorig; } //destination
+				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and caller_id_number = '".$value['extension']."' ". $sqlwhereorig." \n"; } //source
+				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
+				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '*99".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
 			}
 		} //count($extension_array)
 	}
+	else {
+		//superadmin or admin
+		$sqlwhere = "where v_id = '$v_id' ";
+	}
 	$sqlwhere = str_replace ("where or", "where", $sqlwhere);
-	$sqlwhere = str_replace ("where and", "where", $sqlwhere);
+	$sqlwhere = str_replace ("where and", " and", $sqlwhere);
 
 	$sql = "";
 	$sql .= " select * from v_cdr ";
