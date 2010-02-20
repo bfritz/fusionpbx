@@ -177,7 +177,9 @@ echo "<br />";
 				echo "	<td class=\"vtable\">\n";
 				echo "	<pre>\n";
 				$shell_result = system($shellcmd);
-				echo $shell_result;
+				foreach ($shell_result as $value) {
+						echo "$value<br>";
+				}
 				echo "</pre>\n";
 				unset($shell_result);
 				echo "	</td>\n";
@@ -205,7 +207,9 @@ echo "<br />";
 				echo "	<td class=\"vtable\">\n";
 				echo "	<pre>\n";
 				$shell_result = system($shellcmd);
-				echo $shell_result;
+				foreach ($shell_result as $value) {
+						echo "$value<br>";
+				}
 				echo "</pre>\n";
 				unset($shell_result);
 				echo "	</td>\n";
@@ -237,7 +241,9 @@ echo "<br />";
 					echo "	<td class=\"vtable\">\n";
 					echo "	<pre>\n";
 					$shell_result = system($shellcmd);
-					echo $shell_result;
+					foreach ($shell_result as $value) {
+							echo "$value<br>";
+					}
 					echo "</pre>\n";
 					unset($shell_result);
 					echo "	</td>\n";
@@ -266,7 +272,9 @@ echo "<br />";
 				echo "	<td class=\"vtable\">\n";
 				echo "	<pre>\n";
 				$shell_result = system($shellcmd);
-				echo $shell_result;
+				foreach ($shell_result as $value) {
+						echo "$value<br>";
+				}
 				echo "</pre>\n";
 				unset($shell_result);
 				echo "	</td>\n";
