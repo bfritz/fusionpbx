@@ -324,9 +324,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$tmp_config .= "		//\$dbpassword = '".$dbpassword."';\n";
 		}
 		$tmp_config .= "\n";
-		$tmp_config .= "	//set the host ip or name that the will be used to communicate with the phone system\n";
-		$tmp_config .= "		\$host = '127.0.0.1';\n";
-		$tmp_config .= "\n";
 		$tmp_config .= "	//show errors\n";
 		$tmp_config .= "		ini_set('display_errors', '1');\n";
 		$tmp_config .= "		//error_reporting (E_ALL); // Report everything\n";
@@ -1027,18 +1024,16 @@ if ($installmsg) {
 }
 
 ?>
-<br />
-<br />
 
 <div align='center'>
-<table width='90%' class='border' border='0' cellpadding='0' cellspacing='1'>
+<table width='90%' class='border' border='0' cellpadding='0' cellspacing='0'>
 <tr>
 <td class='headermain' width='100%'>
-	<table style="background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_blue_light_stripe.gif'); color: #FFFFFF; font-size: 20px;'" width='100%'>
+	<table cellpadding='0' cellspacing='0' style="background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_head.png'); color: #FFFFFF; font-size: 20px;'" width='100%'>
 	<tr>
 	<td></td>
 	<td align='left' valign='middle' height='65px;' nowrap>
-		<img src='<?php echo PROJECT_PATH; ?>/images/logo.png' height='45px' />
+		<img src='<?php echo PROJECT_PATH; ?>/images/logo.png' height='70px' />
 	</td>
 	</tr>
 	<tr>
@@ -1306,7 +1301,7 @@ function dbtype_onchange() {
 </tr>
 </table>
 <span class='smalltext'>
-<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2009. All Rights Reserved
+<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2010. All Rights Reserved
 </span>
 
 </td>
