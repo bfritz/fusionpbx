@@ -222,7 +222,8 @@ echo "type: ".$contenttype."\n";
 
 	if (strlen($attachment_str) > 0) {
 			//$mail->AddAttachment($v_dir."/data/domain/example.wav");  // attachment
-			$filename='voicemail'.$attachment_ext; $encoding = "base64";
+			$filename='voicemail'.date('Ymds').$attachment_ext;
+			$encoding = "base64";
 			$mail->AddStringAttachment(base64_decode($attachment_str),$filename,$encoding,$attachment_type);
 	}
 	unset($attachment_str);
