@@ -39,7 +39,7 @@ require_once "includes/v_dialplan_entry_exists.php";
 
 recording_js();
 
-$dir_music_on_hold_8000 = $v_dir.'/sounds/music/8000/';
+$dir_music_on_hold_8000 = $v_sounds_dir.'/music/8000/';
 ini_set(max_execution_time,7200);
 
 $orderby = $_GET["orderby"];
