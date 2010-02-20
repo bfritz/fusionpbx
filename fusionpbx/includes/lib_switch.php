@@ -727,7 +727,7 @@ function  recording_js()
 	//$tmp .= "      session.execute(\"speak\", \"Please enter your pin number now.\");\n";
 	$tmp .= "      digitmaxlength = 6;\n";
 	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
-	$tmp .= "      session.streamFile( \"".$v_dir."/sounds/custom/8000/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/8000/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
 	$tmp .= "      session.collectInput( mycb, dtmf, timeoutpin );\n";
 	$tmp .= "  }\n";
 	$tmp .= "\n";
@@ -736,7 +736,7 @@ function  recording_js()
 	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
 	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
 	//$tmp .= "      session.execute(\"speak\", \"Begin recording.\");\n";
-	$tmp .= "      session.streamFile( \"".$v_dir."/sounds/custom/8000/begin_recording.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/8000/begin_recording.wav\", mycb, \"dtmf\");\n";
 	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
 	$tmp .= "      session.execute(\"record\", \"".$v_recordings_dir."/temp\"+Year+Month+Day+Hours+Mins+Seconds+\".wav 180 200\");\n";
 	$tmp .= "  }\n";
@@ -745,7 +745,7 @@ function  recording_js()
 	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
 	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
 	//$tmp .= "      session.execute(\"speak\", \"Your pin number is incorect, goodbye.\");\n";
-	$tmp .= "      session.streamFile( \"".$v_dir."/sounds/custom/8000/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/8000/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
 	$tmp .= "  }\n";
 	$tmp .= "  session.hangup();\n";
 	$tmp .= "\n";
@@ -888,7 +888,7 @@ function sync_package_v_settings()
 		$fout = fopen($v_scripts_dir."/config.js","w");
 		$tmp = "//javascript include\n\n";
 		$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
-		$tmp .= "var sounds_dir = \"".$v_dir."/sounds\";\n";
+		$tmp .= "var sounds_dir = \"".$v_sounds_dir."\";\n";
 		$tmp .= "var recordings_dir = \"".$v_recordings_dir."\";\n";
 		$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";		
 		fwrite($fout, $tmp);
@@ -1420,7 +1420,7 @@ function sync_package_v_hunt_group()
 		}
 
 		//if (pkg_is_service_running('freeswitch')) {
-		//	$fp = event_socket_create($host, $event_socket_port, $event_socket_password);
+		//	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 		//	$cmd = "api global_getvar domain";
 		//	$domain = trim(event_socket_request($fp, $cmd));
 		//}
@@ -1789,7 +1789,7 @@ function sync_package_v_hunt_group()
 							$tmp .= "  dtmf.digits = \"\";\n";
 							$tmp .= "  digitmaxlength = 6;\n";
 							$tmp .= "  session.execute(\"set\", \"playback_terminators=#\");\n";
-							$tmp .= "  session.streamFile( \"".$v_dir."/sounds/custom/8000/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
+							$tmp .= "  session.streamFile( \"".$v_sounds_dir."/custom/8000/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
 							$tmp .= "  session.collectInput( mycb, dtmf, timeoutpin );\n";
 							$tmp .= "\n";
 							$tmp .= "  if (dtmf.digits == pin || pin.length == 0) {\n";
@@ -1797,7 +1797,7 @@ function sync_package_v_hunt_group()
 							$tmp .= "  }\n";
 							$tmp .= "  else {\n";
 							$tmp .= "    console_log( \"info\", \"Pin: \" + dtmf.digits + \" is incorrect\\n\" );\n";
-							$tmp .= "    session.streamFile( \"".$v_conf_dir."/sounds/custom/8000/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
+							$tmp .= "    session.streamFile( \"".$v_sounds_dir."/custom/8000/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
 							$tmp .= "    session.hangup();\n";
 							$tmp .= "  }\n";
 							$tmp .= "}\n";
@@ -1812,7 +1812,7 @@ function sync_package_v_hunt_group()
 							$tmp .= "}";
 							$tmp .=	"\n";
 							$tmp .=	"var caller_announce = extension+\"_\"+Year+Month+Day+Hours+Mins+Seconds+\".wav\";\n";
-							$tmp .=	"session.streamFile( \"".$v_dir."/sounds/custom/8000/please_say_your_name_and_reason_for_calling.wav\");\n";
+							$tmp .=	"session.streamFile( \"".$v_sounds_dir."/custom/8000/please_say_your_name_and_reason_for_calling.wav\");\n";
 							$tmp .=	"session.execute(\"gentones\", \"%(1000, 0, 640)\");\n";
 							$tmp .=	"session.execute(\"set\", \"playback_terminators=#\");\n";
 							$tmp .=	"session.execute(\"record\", \"".$tmp_dir."/\"+caller_announce+\" 180 200\");\n";
@@ -2605,7 +2605,6 @@ function sync_package_v_auto_attendant()
 			$tmp .= "\n";
 			$tmp .= "         digitmaxlength = 1;\n";
 			$tmp .= "         while (session.ready() && ! exit ) {\n";
-			$tmp .= "           //session.streamFile( \"".$v_dir."/sounds/".$recording_action_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
 			$tmp .= "           session.streamFile( \"".$v_recordings_dir."/".$recording_action_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
 			$tmp .= "           if (session.ready()) {\n";
 			$tmp .= "           	if (dtmf.digits.length == 0) {\n";
@@ -4333,7 +4332,7 @@ function v_install_phase_1()
 			//echo "The file $filename exists";
 
 			exec("rm -R ".$v_conf_dir."/sip_profiles/");
-			exec("rm -R ".$v_dir."/sounds/music/");
+			exec("rm -R ".$v_sounds_dir."/music/");
 
 			//Recommended
 			chdir($v_parent_dir);
