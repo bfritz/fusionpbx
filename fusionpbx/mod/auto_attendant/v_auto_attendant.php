@@ -130,7 +130,6 @@ echo "<br />";
 	echo "	<a href='v_auto_attendant_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
-	//echo "<tr><td colspan='3'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 	if ($resultcount == 0) { //no results
 	}
 	else { //received results
@@ -146,7 +145,6 @@ echo "<br />";
 			echo "		<a href='v_auto_attendant_delete.php?id=".$row[auto_attendant_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
 			echo "   </td>\n";
 			echo "</tr>\n";
-			//echo "<tr><td colspan='3'><img src='/images/spacer.gif' width='100%'' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $rowcount);
@@ -170,7 +168,7 @@ echo "<br />";
 	echo "<td colspan='5' align='left'>\n";
 	echo "<br />\n";
 	if ($v_path_show) {
-		echo $v_conf_dir."/scripts/";
+		echo $v_scripts_dir."";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
