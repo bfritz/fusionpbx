@@ -425,7 +425,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	}
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    User List:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -448,7 +448,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	if ($action == "update") {
 		echo "<tr>\n";
-		echo "<th class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 		echo "    Mailbox:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
