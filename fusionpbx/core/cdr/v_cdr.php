@@ -373,7 +373,7 @@ if (count($_REQUEST)>0) {
 	echo "<input type='submit' class='btn' name='submit' value=' csv '>\n";
 	//echo "    <input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_cdr_csv.php?id=".$row[cdr_id]."'\" value='csv'>\n";
 	//echo "  <input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_cdr_edit.php'\" value='+'>\n";
-	echo "&nbsp;</td>\n";
+	echo "</td>\n";
 	echo "</form>\n";
 	echo "<tr>\n";
 
