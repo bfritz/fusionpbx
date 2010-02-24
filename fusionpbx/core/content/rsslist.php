@@ -29,25 +29,25 @@ require_once "includes/checkauth.php";
 require_once "config.php";
 
 if (!function_exists('thorderby')) {
-    //html table header order by
-    function thorderby($fieldname, $columntitle, $orderby, $order) {
+	//html table header order by
+	function thorderby($fieldname, $columntitle, $orderby, $order) {
 
-        $html .= "<th nowrap>&nbsp; &nbsp; ";
-        if (strlen($orderby)==0) {
-          $html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-        }
-        else {
-          if ($order=="asc") {
-              $html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-          }
-          else {
-              $html .= "<a href='?orderby=$fieldname&order=asc' title='descending'>$columntitle</a>";
-          }
-        }
-        $html .= "&nbsp; &nbsp; </th>";
+		$html .= "<th nowrap>&nbsp; &nbsp; ";
+		if (strlen($orderby)==0) {
+			$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
+		}
+		else {
+			if ($order=="asc") {
+				$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
+			}
+			else {
+				$html .= "<a href='?orderby=$fieldname&order=asc' title='descending'>$columntitle</a>";
+			}
+		}
+		$html .= "&nbsp; &nbsp; </th>";
 
-        return $html;
-    }
+		return $html;
+	}
 }
 
 require_once "includes/header.php";
@@ -127,7 +127,7 @@ $order = $_GET["order"];
 
 				echo "<td valign='top' nowrap class='".$rowstyle[$c]."'>&nbsp;".$row[rsstitle]."&nbsp;</td>";                
 				echo "<td valign='top' nowrap class='".$rowstyle[$c]."'>&nbsp;<a href='/index.php?c=".$row[rsslink]."'>".$row[rsslink]."</a>&nbsp;</td>";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[rsssubcategory]."</td>";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[rsssubcategory]."&nbsp;</td>";
 				if (strlen($row[rssgroup]) > 0) {
 					echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[rssgroup]."</td>";
 				}
