@@ -131,11 +131,36 @@ $rowstyle["1"] = "rowstyle1";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>$uuid</td>\n";
 		echo "<td valign='top' class='".$rowstyle[$c]."'>$caller_id_name</td>\n";
 		echo "<td valign='top' class='".$rowstyle[$c]."'>$caller_id_number</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>$flag_can_hear</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>$flag_can_speak</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>$flag_talking</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>$flag_has_video</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>$flag_has_floor</td>\n";
+		if ($flag_can_hear == "true") {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+		}
+		else {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+		}
+		if ($flag_can_speak == "true") {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+		}
+		else {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+		}
+		if ($flag_talking == "true") {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+		}
+		else {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+		}
+		if ($flag_has_video == "true") {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+		}
+		else {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+		}
+		if ($flag_has_floor == "true") {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+		}
+		else {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+		}
 		echo "<td valign='top' class='".$rowstyle[$c]."' style='text-align:right;'>\n";
 		//energy
 			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=energy&direction=up&cmd=conference%20".$conference_name." energy ".$id."');\">+energy</a>&nbsp;\n";
