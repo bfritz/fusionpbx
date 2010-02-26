@@ -199,6 +199,8 @@ catch(Exception $e) {
 					$call_length_hour = floor($call_length_seconds/3600);
 					$call_length_min = floor($call_length_seconds/60 - ($call_length_hour * 60));
 					$call_length_sec = $call_length_seconds - (($call_length_hour * 3600) + ($call_length_min * 60));
+					$call_length_min = sprintf("%02d", $call_length_min);
+					$call_length_sec = sprintf("%02d", $call_length_sec);
 					$call_length = $call_length_hour.':'.$call_length_min.':'.$call_length_sec;
 				}
 			}
