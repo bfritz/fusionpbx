@@ -773,19 +773,13 @@ body {
 	margin-bottom: 0px;
 	margin-right: 0px;
 	margin-left: 0px;
-	/*background-repeat: repeat-x;*/
-	/*background-image: url('<?php echo PROJECT_PATH; ?>/files/design/bg.gif');*/
-	/*background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_blue_dark_stripe.gif');*/
-	/*background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_blue_light_stripe.gif');*/
-	/*background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_gray_stripe.gif');*/
-	background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_gray_stripe.gif');
+	background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background.gif');
 	background-color: #d3d3d3;
 }
 
 th {
-	/*background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_gray_stripe.gif');*/
 	border-top: 1px solid #999999;
-	border-bottom: 1px solid #999999;
+	border-bottom: 1px solid #777777;
 	color: #CCCCCC;
 	font-size: 12px;
 	font-family: arial;
@@ -863,7 +857,7 @@ INPUT.txt {
 	/*border-bottom: 1px solid #999999;*/
 	border-bottom: 1px solid #CCCCCC;
 	background-color: #639BC1;
-	background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_blue_light_stripe.gif');
+	background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background_cell.png');
 	padding-right: 20px;
 	padding-left: 8px;
 	text-align: left;
@@ -878,7 +872,7 @@ INPUT.txt {
 .vncell a:active{ color:#FFBF00; }
 
 .vncellreq {
-	background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_blue_light_stripe.gif');
+	background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background_cell.png');
 	border-bottom: 1px solid #FFFFFF;
 	background-color: #639BC1;
 	padding-right: 20px;
@@ -886,7 +880,6 @@ INPUT.txt {
 	text-align: left;
 	font-weight: bold;
 	color: #EFEFEF;
-
 }
 
 .vtable {
@@ -905,7 +898,7 @@ INPUT.txt {
 }
 
 .rowstyle0 {
-	background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_blue_light_stripe.gif');
+	background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background_cell.png');
 	/*border-bottom: 1px solid #575757;*/
 	border-bottom: 1px solid #575757;
 	/*background-color: #ECE9D8; */
@@ -934,7 +927,6 @@ INPUT.txt {
 }
 
 .rowstylebg {
-	/*background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_gray_stripe.gif');*/
 	border-bottom: 1px solid #999999;
 	background-color: #5F5F5F;
 	color: #FFFFFF;
@@ -1029,11 +1021,11 @@ if ($installmsg) {
 <table width='90%' class='border' border='0' cellpadding='0' cellspacing='0'>
 <tr>
 <td class='headermain' width='100%'>
-	<table cellpadding='0' cellspacing='0' style="background-image: url('<?php echo PROJECT_PATH; ?>/images/bg_head.png'); color: #FFFFFF; font-size: 20px;'" width='100%'>
+	<table cellpadding='0' cellspacing='0' style="background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background_head.png'); color: #FFFFFF; font-size: 20px;'" width='100%'>
 	<tr>
 	<td></td>
 	<td align='left' valign='middle' height='65px;' nowrap>
-		<img src='<?php echo PROJECT_PATH; ?>/images/logo.png' height='70px' />
+		<img src='<?php echo PROJECT_PATH; ?>/themes/default/logo.png' height='70px' />
 	</td>
 	</tr>
 	<tr>
