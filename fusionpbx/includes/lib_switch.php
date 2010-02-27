@@ -1097,7 +1097,7 @@ function sync_package_v_gateways()
 				if (strlen($row['username']) > 0) {
 					$tmpxml .= "      <param name=\"username\" value=\"" . $row['username'] . "\"/>\n";
 				}
-				if (strlen($row['auth-username']) > 0) {
+				if (strlen($row['auth_username']) > 0) {
 					$tmpxml .= "      <param name=\"auth-username\" value=\"" . $row['auth_username'] . "\"/>\n";
 				} 
 				if (strlen($row['password']) > 0) {
@@ -1106,24 +1106,30 @@ function sync_package_v_gateways()
 				if (strlen($row['realm']) > 0) {
 					$tmpxml .= "      <param name=\"realm\" value=\"" . $row['realm'] . "\"/>\n";
 				}
-				if (strlen($row['from-user']) > 0) {
+				if (strlen($row['from_user']) > 0) {
 					$tmpxml .= "      <param name=\"from-user\" value=\"" . $row['from_user'] . "\"/>\n";
 				}
-				if (strlen($row['from-domain']) > 0) {
+				if (strlen($row['from_domain']) > 0) {
 					$tmpxml .= "      <param name=\"from-domain\" value=\"" . $row['from_domain'] . "\"/>\n";
 				}
 				if (strlen($row['proxy']) > 0) {
 					$tmpxml .= "      <param name=\"proxy\" value=\"" . $row['proxy'] . "\"/>\n";
 				}
-				if (strlen($row['expire-seconds']) > 0) {
+			        if (strlen($row['register_proxy']) > 0) {
+                                        $tmpxml .= "      <param name=\"register-proxy\" value=\"" . $row['register_proxy'] . "\"/>\n";
+                                }
+                                if (strlen($row['outbound_proxy']) > 0) {
+                                        $tmpxml .= "      <param name=\"outbound-proxy\" value=\"" . $row['outbound_proxy'] . "\"/>\n";
+                                }
+                        	if (strlen($row['expire_seconds']) > 0) {
 					$tmpxml .= "      <param name=\"expire-seconds\" value=\"" . $row['expire_seconds'] . "\"/>\n";
 				}
 				if (strlen($row['register']) > 0) {
 					$tmpxml .= "      <param name=\"register\" value=\"" . $row['register'] . "\"/>\n";
 				}
 
-				if (strlen($row['register-transport']) > 0) {
-					switch ($row['register-transport']) {
+				if (strlen($row['register_transport']) > 0) {
+					switch ($row['register_transport']) {
 					case "udp":
 						$tmpxml .= "      <param name=\"register-transport\" value=\"udp\"/>\n";
 						break;
@@ -1139,7 +1145,7 @@ function sync_package_v_gateways()
 					}
 				  }
 
-				if (strlen($row['retry-seconds']) > 0) {
+				if (strlen($row['retry_seconds']) > 0) {
 					$tmpxml .= "      <param name=\"retry-seconds\" value=\"" . $row['retry_seconds'] . "\"/>\n";
 				}
 				if (strlen($row['extension']) > 0) {
@@ -1151,10 +1157,10 @@ function sync_package_v_gateways()
 				if (strlen($row['context']) > 0) {
 					$tmpxml .= "      <param name=\"context\" value=\"" . $row['context'] . "\"/>\n";
 				}
-				if (strlen($row['caller-id-in-from']) > 0) {
+				if (strlen($row['caller_id_in_from']) > 0) {
 					$tmpxml .= "      <param name=\"caller-id-in-from\" value=\"" . $row['caller_id_in_from'] . "\"/>\n";
 				}
-				if (strlen($row['supress-cng']) > 0) {
+				if (strlen($row['supress_cng']) > 0) {
 					$tmpxml .= "      <param name=\"supress-cng\" value=\"" . $row['supress_cng'] . "\"/>\n";
 				}
 

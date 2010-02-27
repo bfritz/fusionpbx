@@ -54,6 +54,8 @@ if (count($_POST)>0) {
 	$from_user = check_str($_POST["from_user"]);
 	$from_domain = check_str($_POST["from_domain"]);
 	$proxy = check_str($_POST["proxy"]);
+	$register_proxy = check_str($_POST["register_proxy"]);
+	$outbound_proxy = check_str($_POST["outbound_proxy"]);
 	$expire_seconds = check_str($_POST["expire_seconds"]);
 	$register = check_str($_POST["register"]);
 	$register_transport = check_str($_POST["register_transport"]);
@@ -134,6 +136,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$tmp .= "From user: $from_user\n";
 	$tmp .= "From domain: $from_domain\n";
 	$tmp .= "Proxy: $proxy\n";
+        $tmp .= "Register Proxy: $register_proxy\n";
+        $tmp .= "Outbound Proxy: $outbound_proxy\n";
 	$tmp .= "Expire seconds: $expire_seconds\n";
 	$tmp .= "Register: $register\n";
 	$tmp .= "Register transport: $register_transport\n";
@@ -165,6 +169,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "from_user, ";
 			$sql .= "from_domain, ";
 			$sql .= "proxy, ";
+			$sql .= "register_proxy, ";
+			$sql .= "outbound_proxy, ";
 			$sql .= "expire_seconds, ";
 			$sql .= "register, ";
 			$sql .= "register_transport, ";
@@ -192,6 +198,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$from_user', ";
 			$sql .= "'$from_domain', ";
 			$sql .= "'$proxy', ";
+			$sql .= "'$register_proxy', ";
+			$sql .= "'$outbound_proxy', ";
 			$sql .= "'$expire_seconds', ";
 			$sql .= "'$register', ";
 			$sql .= "'$register_transport', ";
@@ -228,6 +236,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "from_user = '$from_user', ";
 			$sql .= "from_domain = '$from_domain', ";
 			$sql .= "proxy = '$proxy', ";
+			$sql .= "register_proxy = '$register_proxy', ";
+			$sql .= "outbound_proxy = '$outbound_proxy', ";
 			$sql .= "expire_seconds = '$expire_seconds', ";
 			$sql .= "register = '$register', ";
 			$sql .= "register_transport = '$register_transport', ";
@@ -451,6 +461,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$from_user = $row["from_user"];
 		$from_domain = $row["from_domain"];
 		$proxy = $row["proxy"];
+		$register_proxy = $row["register_proxy"];
+		$outbound_proxy = $row["outbound_proxy"];
 		$expire_seconds = $row["expire_seconds"];
 		$register = $row["register"];
 		$register_transport = $row["register_transport"];
@@ -733,6 +745,28 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    </select>\n";
 	echo "<br />\n";
 	echo "Choose whether to register-transport. \n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Register Proxy:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='register_proxy' maxlength='255' value=\"$register_proxy\">\n";
+	echo "<br />\n";
+	echo "Enter the register proxy here.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Outbound Proxy:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='outbound_proxy' maxlength='255' value=\"$outbound_proxy\">\n";
+	echo "<br />\n";
+	echo "Enter the outbound proxy here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
