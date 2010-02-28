@@ -250,6 +250,7 @@ INSERT INTO v_vars VALUES(1,29,'external_sip_port',5080,'SIP Profile: External',
 INSERT INTO v_vars VALUES(1,30,'external_tls_port',5081,'SIP Profile: External','true',29,'');
 INSERT INTO v_vars VALUES(1,31,'external_ssl_enable','false','SIP Profile: External','true',29,'');
 INSERT INTO v_vars VALUES(1,32,'external_ssl_dir','$${base_dir}/conf/ssl','SIP Profile: External','true',30,'');
+INSERT INTO v_vars VALUES(1,33,'use_profile','internal','Defaults','true',0,'');
 CREATE TABLE v_cdr ( cdr_id SERIAL, v_id NUMERIC, caller_id_name TEXT, caller_id_number TEXT, destination_number TEXT, context TEXT, start_stamp TEXT, answer_stamp TEXT, end_stamp TEXT, duration NUMERIC, billsec NUMERIC, hangup_cause TEXT, uuid TEXT, bleg_uuid TEXT, accountcode TEXT, read_codec TEXT, write_codec TEXT, remote_media_ip TEXT, network_addr TEXT );
 CREATE INDEX index_billsec ON v_cdr(billsec ASC);
 CREATE INDEX index_caller_id_name ON v_cdr(caller_id_name ASC);
