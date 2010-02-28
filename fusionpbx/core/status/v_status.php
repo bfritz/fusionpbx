@@ -255,10 +255,8 @@ foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
 	echo "  <input type='button' class='btn' value='start' onclick=\"document.location.href='v_cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+start';\" />\n";
 	echo "  <input type='button' class='btn' value='stop' onclick=\"document.location.href='v_cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+stop';\" />\n";
 	echo "  <input type='button' class='btn' value='restart' onclick=\"document.location.href='v_cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+restart';\" />\n";
-	if ($sip_profile_name == "external") {
-		echo "  <input type='button' class='btn' value='rescan' onclick=\"document.location.href='v_cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+rescan';\" />\n";
-	}
-	else {
+	echo "  <input type='button' class='btn' value='rescan' onclick=\"document.location.href='v_cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+rescan';\" />\n";
+	if ($sip_profile_name != "external") {
 		echo "  <input type='button' class='btn' value='flush_inbound_reg' onclick=\"document.location.href='v_cmd.php?cmd=api+sofia+profile+".$sip_profile_name."+flush_inbound_reg';\" />\n";
 	}
 	echo "</td>\n";
