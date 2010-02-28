@@ -91,6 +91,7 @@
 	<action application="set" data="open=false"/>
       </condition>
     </extension>
+
     <extension name="global-intercept">
       <condition field="destination_number" expression="^\*886$">
         <action application="answer"/>
@@ -481,7 +482,6 @@
 	<action application="valet_park" data="valet_parking_lot $1"/>
       </condition>
     </extension>
-
 
     <!--
 	This extension is used with Snom phones.  
