@@ -158,7 +158,7 @@ echo "}\n";
 echo "\n";
 //uuid_record,<uuid> [start|stop] <path> [<limit>],session record,mod_commands
 echo "function get_record_cmd(uuid, extension) {\n";
-echo "	cmd = \"uuid_record \"+uuid+\" start recordings/active_calls_"+extension+".wav\";\n";
+echo "	cmd = \"uuid_record \"+uuid+\" start recordings/active_calls_".$extension.".wav\";\n";
 echo "	return escape(cmd);\n";
 echo "}\n";
 echo "-->\n";
