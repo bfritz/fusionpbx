@@ -131,145 +131,31 @@ else {
 }
 
 	require_once "includes/header.php";
-	if ($rssoptional1 == "text/html") {
-		require_once "includes/wysiwyg.php";
+	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
+		if ($rssoptional1 == "text/html") {
+			require_once "includes/wysiwyg.php";
+		}
 	}
+	else {
+		//--- Begin: Edit Area -----------------------------------------------------
+			echo "    <script language=\"javascript\" type=\"text/javascript\" src=\"".PROJECT_PATH."/includes/edit_area/edit_area_full.js\"></script>\n";
+			echo "    <!-- -->\n";
 
-	if ($rssoptional1 == "text/javascript") {
-	//--- Begin: AJAX-----------------------------------------------------------
-
-		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-
-
-		echo "// Replaces all instances of the given substring.\n";
-		echo "String.prototype.replaceall = function(\n";
-		echo "strTarget, \n"; // The substring you want to replace
-		echo "strSubString \n"; // The string you want to replace in
-		echo ")\n";
-		echo "{\n";
-		echo "  var strText = this;\n";
-		echo "  var intIndexOfMatch = strText.indexOf( strTarget );\n";
-		echo "  \n";
-		echo "  // Keep looping while an instance of the target string\n";
-		echo "  // still exists in the string.\n";
-		echo "  while (intIndexOfMatch != -1){\n";
-		echo "  // Relace out the current instance.\n";
-		echo "  strText = strText.replace( strTarget, strSubString )\n";
-		echo "  \n";
-		echo "  // Get the index of any next matching substring.\n";
-		echo "  intIndexOfMatch = strText.indexOf( strTarget );\n";
-		echo "}\n";
-		//echo "// Return the updated string with ALL the target strings\n";
-		//echo "// replaced out with the new substring.\n";
-		echo "return( strText );\n";
-		echo "}\n";
-
-		echo "function urlencode(str) {\n";
-		echo "  str=escape(str); \n"; //Escape does not encode '/' and '+' character
-		echo "  str=str.replaceall(\"+\", \"%2B\");\n";
-		echo "  str=str.replaceall(\"/\", \"%2F\");\n";
-		echo "  return str;\n";
-		echo "}";
-		echo "</script>\n";
-
-		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-		echo "    function makeRequest(url, strpost) {\n";
-		//echo "        alert(url); \n";
-		echo "        var http_request = false;\n";
-		echo "\n";
-		echo "        if (window.XMLHttpRequest) { // Mozilla, Safari, ...\n";
-		echo "            http_request = new XMLHttpRequest();\n";
-		echo "            if (http_request.overrideMimeType) {\n";
-		echo "                http_request.overrideMimeType('text/xml');\n";
-		echo "                // See note below about this line\n";
-		echo "            }\n";
-		echo "        } else if (window.ActiveXObject) { // IE\n";
-		echo "            try {\n";
-		echo "                http_request = new ActiveXObject(\"Msxml2.XMLHTTP\");\n";
-		echo "            } catch (e) {\n";
-		echo "                try {\n";
-		echo "                    http_request = new ActiveXObject(\"Microsoft.XMLHTTP\");\n";
-		echo "                } catch (e) {}\n";
-		echo "            }\n";
-		echo "        }\n";
-		echo "\n";
-		echo "        if (!http_request) {\n";
-		echo "            alert('Giving up :( Cannot create an XMLHTTP instance');\n";
-		echo "            return false;\n";
-		echo "        }\n";
-		echo "        http_request.onreadystatechange = function() { returnContent(http_request); };\n";
-		echo "        if (http_request.overrideMimeType) {\n";
-		echo "              http_request.overrideMimeType('text/html');\n";
-		echo "        }\n";
-		echo "        http_request.open('POST', url, true);\n";
-		echo "\n";
-		echo "\n";
-		echo "        if (strpost.length == 0) {\n";
-		//echo "            alert('none');\n";
-		echo "            //http_request.send(null);\n";
-		//echo "            http_request.send('name=value&foo=bar');\n";
-		echo "            http_request.send(strpost);\n";
-
-		echo "        }\n";
-		echo "        else {\n";
-		//echo "            alert(strpost);\n";
-		echo "            http_request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');\n";
-		//echo "            http_request.send('name=value&foo=bar');\n";
-		echo "            http_request.send(strpost);\n";
-		echo "        }\n";
-		echo "\n";
-		echo "    }\n";
-		echo "\n";
-
-		echo "    function load_content(local_page, strpost){\n";
-		//qstring is the query string
-		//makeRequest('filesave.php','file='+document.getElementById('file').value+'&content='+urlencode(content));\n";
-		echo "    makeRequest(local_page,strpost);    \n";
-		echo "    }\n";
-
-
-		echo "    function returnContent(http_request) {\n";
-		echo "\n";
-		echo "        if (http_request.readyState == 4) {\n";
-		echo "            if (http_request.status == 200) {\n";
-		echo "                      ajaxresponse = http_request.responseText; \n";
-		echo "                      document.getElementById('rssdesc').innerHTML = ajaxresponse;\n";
-
-		//echo "  alert(http_request.responseText); \n";
-		//echo "                    document.getElementById('hiddencontent').innerHTML = http_request.responseText \n";
-
-
-		//echo "                  alert(document.getElementById('action').value); \n";
-		//echo "                  if (document.getElementById('action').value == 'save') { \n";
-		//echo "                      document.getElementById('action').value = ''; \n";
-		//echo "                   }\n";
-		//echo "                   else {\n";
-		//echo "                      parent.editAreaLoader.setValue('edit1', http_request.responseText); \n";
-		//echo "                   }\n";
-		//echo "                alert(http_request.responseText);\n";
-		//echo "\n";
-		//echo "                //var xmldoc = http_request.responseXML;\n";
-		//echo "                //var root_node = xmldoc.getElementsByTagName('doc').item(0);\n";
-		//echo "                //alert(xmldoc.getElementByID('fr1').value);\n";
-		//echo "                //alert(root_node.firstChild.data);\n";
-		//echo "\n";
-		echo "            }\n";
-		echo "            else {\n";
-		echo "                alert('There was a problem with the request.');\n";
-		echo "            }\n";
-		echo "        }\n";
-		echo "\n";
-		echo "    }\n";
-		//echo "  alert('test1'); \n";
-		echo "  load_content('rsscontent.php', 'rssid=".$rssid."');";
-
-		echo "</script>";
-
-
-	//--- End: AJAX-----------------------------------------------------------
-	} //if ($rssoptional1 == "text/javascript") {
-
-
+			echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
+			echo "		editAreaLoader.init({\n";
+			echo "			id: \"rssdesc\" // id of the textarea to transform //, |, help\n";
+			echo "			,start_highlight: true\n";
+			echo "			,font_size: \"8\"\n";
+			echo "			,allow_toggle: false\n";
+			echo "			,language: \"en\"\n";
+			echo "			,syntax: \"html\"\n";
+			echo "			,toolbar: \"search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help\" //new_document,\n";
+			echo "			,plugins: \"charmap\"\n";
+			echo "			,charmap_default: \"arrows\"\n";
+			echo "    });\n";
+			echo "    </script>";
+		//--- End: Edit Area -------------------------------------------------------
+	}
 
 	echo "<div align='center'>";
 	echo "<table border='0' width='90%' cellpadding='0' cellspacing='0'>\n";
@@ -387,9 +273,11 @@ else {
 	echo "	<tr>";
 	//echo "		<td  class='vncellreq' valign='top'></td>";
 	echo "		<td  class='' colspan='2' align='left'>";
-	echo "            Content: ";
+	echo "            <strong>Content:</strong> ";
 	if ($rssoptional1 == "text/html") {
-		echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rssdesc'); return false;\">on/off</a><br>";
+		if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
+			echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rssdesc'); return false;\">on/off</a><br>";
+		}
 		echo "            <textarea name='rssdesc'  id='rssdesc' class='formfld' cols='20' style='width: 100%' rows='12' >$rssdesc</textarea>";
 	}
 	if ($rssoptional1 == "text/javascript") {

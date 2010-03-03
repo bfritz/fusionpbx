@@ -180,7 +180,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		echo "    <!-- -->\n";
 
 		echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
-		echo "		// initialisation //load,\n";
 		echo "		editAreaLoader.init({\n";
 		echo "			id: \"template\" // id of the textarea to transform //, |, help\n";
 		echo "			,start_highlight: true\n";

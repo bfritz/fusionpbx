@@ -101,7 +101,29 @@ if (count($_POST)>0) {
 }
 
 	require_once "includes/header.php";
-	require_once "includes/wysiwyg.php";
+	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
+		require_once "includes/wysiwyg.php";
+	}
+	else {
+		//--- Begin: Edit Area -----------------------------------------------------
+			echo "    <script language=\"javascript\" type=\"text/javascript\" src=\"".PROJECT_PATH."/includes/edit_area/edit_area_full.js\"></script>\n";
+			echo "    <!-- -->\n";
+
+			echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
+			echo "		editAreaLoader.init({\n";
+			echo "			id: \"rssdesc\" // id of the textarea to transform //, |, help\n";
+			echo "			,start_highlight: true\n";
+			echo "			,font_size: \"8\"\n";
+			echo "			,allow_toggle: false\n";
+			echo "			,language: \"en\"\n";
+			echo "			,syntax: \"html\"\n";
+			echo "			,toolbar: \"search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help\" //new_document,\n";
+			echo "			,plugins: \"charmap\"\n";
+			echo "			,charmap_default: \"arrows\"\n";
+			echo "    });\n";
+			echo "    </script>";
+		//--- End: Edit Area -------------------------------------------------------
+	}
 	echo "<div align='center'>";
 	echo "<table border='0' width='100%' cellpadding='0' cellspacing='2'>\n";
 
@@ -203,12 +225,12 @@ if (count($_POST)>0) {
 	echo "		<td><input type='text' class='txt' name='rssorder' value='$rssorder'></td>";
 	echo "	</tr>";
 
-	echo "	<tr>";
-	echo "		<td colspan='2' valign='top'>Content: editor &nbsp; <a href=\"#\" title=\"toggle\" onclick=\"toogleEditorMode('rssdesc'); return false;\">on/off</a></td>";
-	echo "    </tr>";
+	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
+		echo "	<tr>";
+		echo "		<td colspan='2' valign='top'>Content: editor &nbsp; <a href=\"#\" title=\"toggle\" onclick=\"toogleEditorMode('rssdesc'); return false;\">on/off</a></td>";
+		echo "    </tr>";
+	}
 	echo "    <tr>";
-
-
 	echo "		<td colspan='2'>";
 	echo "            <textarea name='rssdesc' id='rssdesc' cols='20' style='width: 100%' rows='12' class='txt'></textarea>";
 	echo "        </td>";
