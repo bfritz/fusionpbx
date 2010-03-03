@@ -382,8 +382,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					//create the database
 						$sql = "";
 						$sql .= "CREATE DATABASE $dbname; ";
-						echo $sql;
-						$db->query($sql);
+						//echo $sql;
+						$dbsql->query($sql);
 						unset($sql);
 
 					//close database connection_aborted
