@@ -142,7 +142,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			}
 			unset($tmp_user);
 
-			$count = $db->exec("BEGIN;"); //returns affected rows
+			$db->beginTransaction();
 			for ($i=1; $i<=$range; $i++) {
 				$sql = "insert into v_extensions ";
 				$sql .= "(";
@@ -198,7 +198,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				$extension++;
 			}
-			$count = $db->exec("COMMIT;"); //returns affected rows (mysql)
+			$db->commit();
 
 			//syncrhonize configuration
 				sync_package_v_extensions();
