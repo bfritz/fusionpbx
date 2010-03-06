@@ -200,17 +200,17 @@
 
 
 	if (!function_exists('htmlselect')) {
-		function htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $fieldvalue = '') {
+		function htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $fieldvalue = '', $style = '') {
 			//html select other : build a select box from distinct items in db with option for other
 			global $v_id;
 
 			if (strlen($fieldvalue) > 0) {
-			$html .= "<select id=\"".$fieldvalue."\" name=\"".$fieldvalue."\" class='formfld'>\n";
+			$html .= "<select id=\"".$fieldvalue."\" name=\"".$fieldvalue."\" class='formfld' style='".$style."'>\n";
 			$html .= "<option value=\"\"></option>\n";
 				$sql = "SELECT distinct($fieldname) as $fieldname, $fieldvalue FROM $tablename $sqlwhereoptional ";
 			}
 			else {
-				$html .= "<select id=\"".$fieldname."\" name=\"".$fieldname."\" class='formfld'>\n";
+				$html .= "<select id=\"".$fieldname."\" name=\"".$fieldname."\" class='formfld' style='".$style."'>\n";
 				$html .= "<option value=\"\"></option>\n";
 				$sql = "SELECT distinct($fieldname) as $fieldname FROM $tablename $sqlwhereoptional ";
 			}
