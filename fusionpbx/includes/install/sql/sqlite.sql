@@ -35,7 +35,7 @@ INSERT INTO v_menu VALUES(38,1,'en','Features','/mod/features/v_features.php','i
 INSERT INTO v_menu VALUES(39,1,'en','SIP Gateways','/core/gateways/v_gateways.php','internal','admin','',40,16,'mcrane','2009-08-20 10:41:08','mcrane','2009-10-27 22:10:27');
 INSERT INTO v_menu VALUES(40,1,'en','Voice','','internal','admin','','',1,'mcrane','2009-08-20 10:42:11','admin','2009-11-04 18:20:59');
 INSERT INTO v_menu VALUES(41,1,'en','Auto Attendant','/mod/auto_attendant/v_auto_attendant.php','internal','admin','',38,6,'mcrane','2009-08-20 10:46:04','mcrane','2009-10-27 22:44:29');
-INSERT INTO v_menu VALUES(42,1,'en','Fax Server','/mod/fax/v_fax.php','internal','admin','',38,9,'mcrane','2009-08-20 10:46:39','mcrane','2009-10-27 22:49:59');
+INSERT INTO v_menu VALUES(42,1,'en','Fax Server','/mod/fax/v_fax.php','internal','admin','',40,9,'mcrane','2009-08-20 10:46:39','mcrane','2009-10-27 22:49:59');
 INSERT INTO v_menu VALUES(43,1,'en','Hunt Group','/mod/hunt_group/v_hunt_group.php','internal','admin','',38,10,'mcrane','2009-08-20 10:47:13','mcrane','2009-10-27 22:50:24');
 INSERT INTO v_menu VALUES(44,1,'en','Modules','/core/modules/v_modules.php','internal','admin','',38,11,'mcrane','2009-08-20 10:47:46','mcrane','2009-10-27 22:50:59');
 INSERT INTO v_menu VALUES(45,1,'en','Music on Hold','/mod/recordings/v_recordings.php','internal','admin','',38,12,'mcrane','2009-08-20 10:49:31','mcrane','2009-10-27 22:52:15');
@@ -64,7 +64,6 @@ INSERT INTO v_menu VALUES(77,1,'en','Call Forward','/mod/call_forward/v_call_for
 INSERT INTO v_menu VALUES(78,1,'en','Active Calls','/mod/calls_active/v_calls_active.php','internal','admin','',38,6,'mcrane','2010-02-26 00:30:16','mcrane','2010-02-26 02:40:14');
 INSERT INTO v_menu VALUES(79,1,'en','Active Extensions','/mod/calls_active/v_calls_active_extensions.php','internal','admin','',38,7,'mcrane','2010-02-26 00:30:16','mcrane','2010-02-26 02:40:14');
 CREATE TABLE v_rss (rssid INTEGER PRIMARY KEY, v_id NUMERIC, rsslanguage TEXT, rsscategory TEXT, rsssubcategory TEXT, rsstitle TEXT, rsslink TEXT, rssdesc TEXT, rssimg BLOB, rssoptional1 TEXT, rssoptional2 TEXT, rssoptional3 TEXT, rssoptional4 TEXT, rssoptional5 TEXT, rssadddate TEXT, rssadduser TEXT, rssdeldate TEXT, rssdeluser TEXT, rssorder NUMERIC, rsscontent TEXT, rssgroup TEXT);
-INSERT INTO v_rss VALUES(1,1,'en','content','default','FusionPBX','/index.php','','','text/html','','','','','2009-09-12 17:11:58','mcrane',NULL,NULL,1,NULL,'');
 CREATE TABLE v_rss_sub (rsssubid INTEGER PRIMARY KEY, v_id NUMERIC, rssid NUMERIC, rsssublanguage TEXT, rsssubtitle TEXT, rsssublink TEXT, rsssubdesc TEXT, rsssuboptional1 TEXT, rsssuboptional2 TEXT, rsssuboptional3 TEXT, rsssuboptional4 TEXT, rsssuboptional5 TEXT, rsssubadddate TEXT, rsssubadduser TEXT, rsssubdeluser TEXT, rsssubdeldate TEXT, rsssubparentid TEXT);
 CREATE TABLE v_rss_sub_category ( rsssubcategoryid INTEGER PRIMARY KEY, v_id NUMERIC, rsssubcategorylanguage TEXT, rsscategory TEXT, rsssubcategory TEXT, rsssubcategorydesc TEXT, rssadduser TEXT, rssadddate TEXT);
 CREATE TABLE v_software (id INTEGER PRIMARY KEY, v_id NUMERIC, software TEXT, softwarename TEXT, softwareurl TEXT, softwareversion TEXT);
