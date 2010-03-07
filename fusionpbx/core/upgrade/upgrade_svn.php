@@ -54,7 +54,7 @@ if ($display_results) {
 
 
 $url = 'http://fusionpbx.googlecode.com/svn';
-require_once('/core/phpsvnclient/phpsvnclient.php');
+require_once('/includes/phpsvnclient/phpsvnclient.php');
 $phpsvnclient = new phpsvnclient($url);
 
 
