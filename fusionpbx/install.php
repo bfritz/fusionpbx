@@ -660,7 +660,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//the FreeBSD port will copy this directory
 			break;
 		default:
-			$srcdir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+			$srcdir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/secure';
 			//if the directory already exists do not copy over it.
 			if (!is_dir($dbfilepath)) {
 				//only copy if the src and dest are different
