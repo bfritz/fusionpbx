@@ -358,19 +358,18 @@ else {
 //echo "<br /><br />\n\n";
 
 
-//disabled until further development
-//echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
-//echo "<tr>\n";
-//echo "<td width='50%'>\n";
-//echo "<b>Web Interface</b><br />\n";
-//echo "Use the following button to update the web interface.<br /><br />\n";
-//echo "</td>\n";
-//echo "<td width='50%' align='right'>\n";
-//echo "  <input type='button' class='btn' value='update' onclick=\"document.location.href='v_status.php?a=update&t=gui_phase_1';\" />\n";
-//echo "</td>\n";
-//echo "</tr>\n";
-//echo "</table>\n";
-//echo "<br /><br />\n\n";
+echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
+echo "<tr>\n";
+echo "<td width='50%'>\n";
+echo "<b>Upgrade</b><br />\n";
+echo "Use this button to upgrade the graphical interface to the latest version. The first time this is run it will take a while please be patient. In most cases future upgrades will take less time.<br /><br />\n";
+echo "</td>\n";
+echo "<td width='50%' align='right'>\n";
+echo "  <input type='button' class='btn' value='update' onclick=\"document.location.href='/core/upgrade/upgrade.php';\" />\n";
+echo "</td>\n";
+echo "</tr>\n";
+echo "</table>\n";
+echo "<br /><br />\n\n";
 
 echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 echo "<tr>\n";
