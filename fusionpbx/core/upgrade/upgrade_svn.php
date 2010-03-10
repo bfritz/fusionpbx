@@ -53,11 +53,6 @@ if ($display_results) {
 }
 
 
-$url = 'http://fusionpbx.googlecode.com/svn';
-require_once('includes/phpsvnclient/phpsvnclient.php');
-$phpsvnclient = new phpsvnclient($url);
-
-
 //set path_array
 	$sql = "";
 	$sql .= "select * from v_src ";
@@ -66,7 +61,7 @@ $phpsvnclient = new phpsvnclient($url);
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$path = $row["path"];
+		$path = ltrim($row["path"], "/");
 		$path_array[$path][type] = $row["type"];
 		$path_array[$path][last_mod] = $row["last_mod"];
 		$path_array[$path][status] = $row["status"];
@@ -75,23 +70,23 @@ $phpsvnclient = new phpsvnclient($url);
 	//print_r($path_array);
 	//exit;
 
-//CREATE TABLE v_src ( 
-//	src_id INTEGER PRIMARY KEY, 
-//	v_id NUMERIC, 
-//	type TEXT, 
-//	last_mod TEXT, 
-//	path TEXT, 
-//	status TEXT );
 
-$svn_path = '/trunk/fusionpbx';
-$svn_array = $phpsvnclient->getDirectoryTree($svn_path);
-//$file_content = $phpsvnclient->getFile('trunk/fusionpbx/images/background_cell_active.gif');
-//echo $file_content;
-//echo "<pre>\n";
-//print_r($svn_array);
-//echo "</pre>\n";
+$svn_url = 'http://fusionpbx.googlecode.com/svn';
+$svn_path = '/trunk/fusionpbx/';
+$xml_str = file_get_contents($svn_url.$svn_path.'includes/install/source.xml');
+//echo $xml_str;
+//exit;
+try {
+	$xml = new SimpleXMLElement($xml_str);
+}
+catch(Exception $e) {
+	//echo $e->getMessage();
+}
+//print_r($xml);
+//exit;
 
-$db->beginTransaction();
+
+//$db->beginTransaction();
 
 if ($display_results) {
 	echo "<table width='100%' border='0' cellpadding='20' cellspacing='0'>\n";
@@ -99,15 +94,15 @@ if ($display_results) {
 	//echo "<th>type</th>\n";
 	echo "<th>Last Modified</th>\n";
 	echo "<th>Path</th>\n";
-	//echo "<th>Status</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<tr>\n";
 }
-foreach($svn_array as $row) {
-	$type = $row['type'];
-	$last_mod = $row['last-mod'];
-	$path = $row['path'];
-	$status = $row['status'];
+foreach ($xml->src as $row) {
+	//print_r($row);
+	$type = ltrim($row->type, "/");
+	$path = $row->path;
+	$last_mod = $row->last_mod;
+
 	//$new_path = strlen($svn_path)$path;
 	//$path = 'trunk/fusionpbx/mod/xml_edit/header.php';
 	$relative_path = substr($path, strlen($svn_path), strlen($path)); //remove the svn_path
@@ -118,10 +113,9 @@ foreach($svn_array as $row) {
 				echo "<tr>\n";
 				//echo "<td class='rowstyle1'>$type</td>\n";
 				echo "<td class='rowstyle1'>$last_mod</td>\n";
-				//echo "<td class='rowstyle1'>$path</td>\n";
 				echo "<td class='rowstyle1'>$relative_path</td>\n";
-				//echo "<td class='rowstyle1'>$status</td>\n";
 				echo "<td class='rowstyle1'>\n";
+//				echo "|$new_path|";
 			}
 		}
 
@@ -133,16 +127,14 @@ foreach($svn_array as $row) {
 				$sql .= "v_id, ";
 				$sql .= "type, ";
 				$sql .= "last_mod, ";
-				$sql .= "path, ";
-				$sql .= "status ";
+				$sql .= "path ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$v_id', ";
 				$sql .= "'$type', ";
 				$sql .= "'$last_mod', ";
-				$sql .= "'$path', ";
-				$sql .= "'$status' ";
+				$sql .= "'$relative_path' ";
 				$sql .= ")";
 				//echo "[insert] ";
 		} 
@@ -151,24 +143,25 @@ foreach($svn_array as $row) {
 				//update the src table
 					$sql = "update v_src set ";
 					$sql .= "type = '$type', ";
-					$sql .= "last_mod = '$last_mod', ";
-					//$sql .= "path = '$path', ";
-					$sql .= "status = '$status' ";
+					$sql .= "last_mod = '$last_mod' ";
 					$sql .= "where v_id = '$v_id' ";
-					$sql .= "and path = '$path' ";
+					$sql .= "and path = '$relative_path' ";
 					//echo "[update] ";
 			}
 		}
 
 		if (file_exists($new_path)) {
+			//echo "file exists |";
 			//if the path exists then compare the v_src last_mod to the last_mod in the svn if they don't match save the new one
 			if ($type == 'file') {
-				if ($last_mod != $path_array[$path][last_mod]) {
-					$file_content = $phpsvnclient->getFile($path);
+				if ($last_mod != $path_array[$relative_path][last_mod]) {
+					$file_content = file_get_contents($svn_url.$svn_path.$relative_path);
 					//echo "<td>$file_content</td>\n";
-					$fh = fopen($new_path, 'w');
-					fwrite($fh, $file_content);
-					fclose($fh);
+					if (strlen($file_content) > 0) {
+						$fh = fopen($new_path, 'w');
+						fwrite($fh, $file_content);
+						fclose($fh);
+					}
 
 					if (strlen($sql) > 0) {
 						$db->exec(check_sql($sql));
@@ -186,17 +179,23 @@ foreach($svn_array as $row) {
 			}
 		}
 		else {
+			//echo "file is missing |";
 			//if the path does not exist create it and then add it to the database
 			if ($type == 'directory') {
 				mkdir ($new_path, 0755, true);
 				//echo $new_path;
 			}
 			if ($type == 'file') {
-				$file_content = $phpsvnclient->getFile($path);
+				if (!is_dir($svn_url.$svn_path)){
+					mkdir ($svn_url.$svn_path, 0755, true);
+				}
+				$file_content = file_get_contents($svn_url.$svn_path.$relative_path);
 				//echo "<td>$file_content</td>\n";
-				$fh = fopen($new_path, 'w');
-				fwrite($fh, $file_content);
-				fclose($fh);
+				if (strlen($file_content) > 0) {
+					$fh = fopen($new_path, 'w');
+					fwrite($fh, $file_content);
+					fclose($fh);
+				}
 				if ($display_results) {
 					echo "updated ";
 				}
@@ -215,7 +214,7 @@ foreach($svn_array as $row) {
 		}
 	}
 }
-$db->commit();
+//$db->commit();
 if ($display_results) {
 	echo "</table>\n";
 	require_once "includes/footer.php";
