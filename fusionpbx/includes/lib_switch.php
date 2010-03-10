@@ -1842,8 +1842,9 @@ function sync_package_v_hunt_group()
 								$tmp .= "session.execute(\"set\", \"transfer_ringback=\"+us_ring); //set to ringtone\n";
 							}
 							if ($row['huntgroupringback'] == "music"){
-								$tmp .= "session.execute(\"set\", \"ringback=\${hold_music}\");          //set to ringtone\n";
-								$tmp .= "session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to ringtone\n";
+								$tmp .= "session.execute(\"set\", \"ringback=\${hold_music}\");          //set to music\n";
+								$tmp .= "session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to music\n";
+								$tmp .= "session.execute(\"set\", \"ignore_early_media=true\"); //set to music\n";
 							}
 						}
 						else {
