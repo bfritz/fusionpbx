@@ -54,6 +54,7 @@
 			$v_secure = $dbfilepath;
 		}
 		$v_secure = str_replace("\\", "/", $v_secure);
+		$v_secure = realpath($v_secure);
 
 
 	//generate a random password with upper, lowercase and symbols
