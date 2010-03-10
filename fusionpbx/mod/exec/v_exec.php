@@ -201,26 +201,9 @@ if (count($_POST)>0) {
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
 			//$v_id = $row["v_id"];
-			$numbering_plan = $row["numbering_plan"];
-			$default_gateway = $row["default_gateway"];
-			$default_area_code = $row["default_area_code"];
 			$event_socket_ip_address = $row["event_socket_ip_address"];
 			$event_socket_port = $row["event_socket_port"];
 			$event_socket_password = $row["event_socket_password"];
-			$xml_rpc_http_port = $row["xml_rpc_http_port"];
-			$xml_rpc_auth_realm = $row["xml_rpc_auth_realm"];
-			$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
-			$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
-			$admin_pin = $row["admin_pin"];
-			$smtphost = $row["smtphost"];
-			$smtpsecure = $row["smtpsecure"];
-			$smtpauth = $row["smtpauth"];
-			$smtpusername = $row["smtpusername"];
-			$smtppassword = $row["smtppassword"];
-			$smtpfrom = $row["smtpfrom"];
-			$smtpfromname = $row["smtpfromname"];
-			$mod_shout_decoder = $row["mod_shout_decoder"];
-			$mod_shout_volume = $row["mod_shout_volume"];
 			break; //limit to 1 row
 		}
 
