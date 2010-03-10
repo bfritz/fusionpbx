@@ -58,6 +58,7 @@
 					//$db = new PDO('sqlite2:example.db'); //sqlite 2
 					//$dbimg = new PDO('sqlite::memory:'); //sqlite 3
 					$dbsql = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilename); //sqlite 3
+					$dbsql->beginTransaction();
 				}
 				catch (PDOException $error) {
 					print "error: " . $error->getMessage() . "<br/>";
@@ -71,22 +72,17 @@
 					$stringarray = explode("\n", $file_contents);
 					$x = 0;
 					foreach($stringarray as $sql) {
-						//create the call detail records database
-						//if (strtolower(substr($sql, 0, 18)) == "create table v_cdr") {
-						//	//add the CDR database from lib_cdr.php
-						//}
-						//else { //create the tables and fill in the basic settings
-							try {
-								$dbsql->query($sql);
-							}
-							catch (PDOException $error) {
-								echo "error: " . $error->getMessage() . " sql: $sql<br/>";
-								//die();
-							}
-						//}
+						try {
+							$dbsql->query($sql);
+						}
+						catch (PDOException $error) {
+							echo "error: " . $error->getMessage() . " sql: $sql<br/>";
+							//die();
+						}
 						$x++;
 					}
 					unset ($file_contents, $sql);
+					$dbsql->commit();
 			//--- end: create the sqlite db -----------------------------------------
 
 			if (is_writable($dbfilepath.'/'.$dbfilename)) { //is writable
