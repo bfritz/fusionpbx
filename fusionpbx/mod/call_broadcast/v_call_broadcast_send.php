@@ -149,7 +149,7 @@ if (strlen($broadcast_caller_id_number) == 0) {
 
 
 //start the count at 0
-$response = exec("C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=0\"");
+$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=0\"");
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -236,30 +236,30 @@ $response = exec("C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"global_setvar broa
 			//}
 
 			//set the global variable
-			//$cmd = "C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"global_setvar broadcast_test_count=75\"";
+			//$cmd = $bin_dir."/fs_cli -x \"global_setvar broadcast_test_count=75\"";
 			//echo exec($cmd);
 
 			//get the global variable
-			//$cmd = "C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"global_getvar broadcast_test_count\"";
+			//$cmd = $bin_dir."/fs_cli -x \"global_getvar broadcast_test_count\"";
 			//echo exec($cmd);
 
 			//make the call
 				if (strlen($phone1)> 0) {
-					$broadcast_count = trim(exec("C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
-					$response = exec("C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
-					$cmd = "C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=5}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." ".$broadcast_caller_id_name." ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
+					$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
+					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." ".$broadcast_caller_id_name." ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
 					cmd_async($cmd);
 				}
 				if (strlen($phone2)> 0) {
-					$broadcast_count = trim(exec("C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
-					$response = exec("C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
-					$cmd = "C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=5}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." ".$broadcast_caller_id_name." ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
+					$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
+					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." ".$broadcast_caller_id_name." ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
 					cmd_async($cmd);
 				}
 
 			//check the number of calls do not continue wait until the number is below the limit
 				while (true) {
-					$broadcast_count = trim(exec("C:/fusionpbx/Program/FreeSWITCH/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
+					$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
 					if ($broadcast_count < $broadcast_concurrent_limit) {
 						break;
 					}
