@@ -61,10 +61,9 @@ if ($display_results) {
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$path = ltrim($row["path"], "/");
+		$path = trim($row["path"]);
 		$path_array[$path][type] = $row["type"];
 		$path_array[$path][last_mod] = $row["last_mod"];
-		$path_array[$path][status] = $row["status"];
 	}
 	unset ($prepstatement);
 	//print_r($path_array);
@@ -75,7 +74,6 @@ $svn_url = 'http://fusionpbx.googlecode.com/svn';
 $svn_path = '/trunk/fusionpbx/';
 $xml_str = file_get_contents($svn_url.$svn_path.'includes/install/source.xml');
 //echo $xml_str;
-//exit;
 
 try {
 	$xml = new SimpleXMLElement($xml_str);
@@ -84,48 +82,40 @@ catch(Exception $e) {
 	//echo $e->getMessage();
 }
 //print_r($xml);
-//exit;
-
-
 //$db->beginTransaction();
 
 if ($display_results) {
 	echo "<table width='100%' border='0' cellpadding='20' cellspacing='0'>\n";
 	echo "<tr>\n";
-	//echo "<th>type</th>\n";
+	echo "<th>Type</th>\n";
 	echo "<th>Last Modified</th>\n";
 	echo "<th>Path</th>\n";
+	echo "<th>Size</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<tr>\n";
 }
 foreach ($xml->src as $row) {
 	//print_r($row);
-	$type = ltrim($row->type, "/");
-	$path = $row->path;
+	$type = $row->type;
+	$relative_path = trim($row->path);
 	$last_mod = $row->last_mod;
 	$md5 = $row->md5;
 	$size = $row->size;
 
-
-	//$new_path = strlen($svn_path)$path;
-	//$path = 'trunk/fusionpbx/mod/xml_edit/header.php';
-	$relative_path = substr($path, strlen($svn_path), strlen($path)); //remove the svn_path
 	$new_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/'.$relative_path;
 	if (strlen($relative_path) > 0) {
 		if ($display_results) {
 			if ($type == 'file') {
 				echo "<tr>\n";
-				//echo "<td class='rowstyle1'>$type</td>\n";
+				echo "<td class='rowstyle1'>$type</td>\n";
 				echo "<td class='rowstyle1'>$last_mod</td>\n";
 				echo "<td class='rowstyle1'>$relative_path</td>\n";
 				echo "<td class='rowstyle1'>$size</td>\n";
 				echo "<td class='rowstyle1'>\n";
-//				echo "|$new_path|";
 			}
 		}
 
-		//echo $path_array[$path]['last_mod']." ";
-		if (strlen($path_array[$relative_path]['last_mod']) == 0) { 
+		if (strlen($path_array[$relative_path]['type']) == 0) { 
 			//insert a new record into the src table
 				$sql = "insert into v_src ";
 				$sql .= "(";
@@ -141,7 +131,7 @@ foreach ($xml->src as $row) {
 				$sql .= "'$last_mod', ";
 				$sql .= "'$relative_path' ";
 				$sql .= ")";
-				echo "[insert] ";
+				//echo "[insert] ";
 		} 
 		else {
 			if ($last_mod != $path_array[$relative_path][last_mod]) {
@@ -151,7 +141,7 @@ foreach ($xml->src as $row) {
 					$sql .= "last_mod = '$last_mod' ";
 					$sql .= "where v_id = '$v_id' ";
 					$sql .= "and path = '$relative_path' ";
-					echo "[update] ";
+					//echo "[update] ";
 			}
 		}
 
@@ -163,12 +153,9 @@ foreach ($xml->src as $row) {
 					$file_content = file_get_contents($svn_url.$svn_path.$relative_path);
 					//check to make sure the string matches the file md5 that was recorded.
 					if ($md5 == md5($file_content)) {
-						if (strlen($file_content) > 0) {
-							$fh = fopen($new_path, 'w');
-							fwrite($fh, $file_content);
-							fclose($fh);
-						}
-						echo " {md5 matched} ";
+						$fh = fopen($new_path, 'w');
+						fwrite($fh, $file_content);
+						fclose($fh);
 					}
 					unset($file_content);
 					if (strlen($sql) > 0) {
@@ -199,12 +186,10 @@ foreach ($xml->src as $row) {
 				$file_content = file_get_contents($svn_url.$svn_path.$relative_path);
 				//check to make sure the string matches the file md5 that was recorded.
 				if ($md5 == md5($file_content)) {
-					if (strlen($file_content) > 0) {
-						$fh = fopen($new_path, 'w');
-						fwrite($fh, $file_content);
-						fclose($fh);
-					}
-					echo " {md5 matched} ";
+					$fh = fopen($new_path, 'w');
+					fwrite($fh, $file_content);
+					fclose($fh);
+					//echo " {md5 matched} ";
 				}
 				unset($file_content);
 				if ($display_results) {
