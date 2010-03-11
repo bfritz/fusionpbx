@@ -162,7 +162,7 @@ foreach ($xml->src as $row) {
 						fwrite($fh, $file_content);
 						fclose($fh);
 					}
-
+					unset($file_content);
 					if (strlen($sql) > 0) {
 						$db->exec(check_sql($sql));
 					}
@@ -186,8 +186,8 @@ foreach ($xml->src as $row) {
 				//echo $new_path;
 			}
 			if ($type == 'file') {
-				if (!is_dir($svn_url.$svn_path)){
-					mkdir ($svn_url.$svn_path, 0755, true);
+				if (!is_dir(dirname($new_path))){
+					mkdir (dirname($new_path), 0755, true);
 				}
 				$file_content = file_get_contents($svn_url.$svn_path.$relative_path);
 				//echo "<td>$file_content</td>\n";
@@ -196,6 +196,7 @@ foreach ($xml->src as $row) {
 					fwrite($fh, $file_content);
 					fclose($fh);
 				}
+				unset($file_content);
 				if ($display_results) {
 					echo "updated ";
 				}
