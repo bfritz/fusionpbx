@@ -2002,13 +2002,6 @@
 		<size>789</size> 
 	</src> 
 	<src> 
-		<type>file</type> 
-		<path>includes/install/new.source.xml</path> 
-		<last_mod>Thu, 11 Mar 2010 03:39:05 GMT</last_mod> 
-		<md5>b54a396a95ff7fc3fa28dddc88561257</md5> 
-		<size>129626</size> 
-	</src> 
-	<src> 
 		<type>directory</type> 
 		<path>includes/install/recordings</path> 
 		<last_mod></last_mod> 
