@@ -76,6 +76,7 @@ $svn_path = '/trunk/fusionpbx/';
 $xml_str = file_get_contents($svn_url.$svn_path.'includes/install/source.xml');
 //echo $xml_str;
 //exit;
+
 try {
 	$xml = new SimpleXMLElement($xml_str);
 }
@@ -102,6 +103,9 @@ foreach ($xml->src as $row) {
 	$type = ltrim($row->type, "/");
 	$path = $row->path;
 	$last_mod = $row->last_mod;
+	$md5 = $row->md5;
+	$size = $row->size;
+
 
 	//$new_path = strlen($svn_path)$path;
 	//$path = 'trunk/fusionpbx/mod/xml_edit/header.php';
@@ -114,13 +118,14 @@ foreach ($xml->src as $row) {
 				//echo "<td class='rowstyle1'>$type</td>\n";
 				echo "<td class='rowstyle1'>$last_mod</td>\n";
 				echo "<td class='rowstyle1'>$relative_path</td>\n";
+				echo "<td class='rowstyle1'>$size</td>\n";
 				echo "<td class='rowstyle1'>\n";
 //				echo "|$new_path|";
 			}
 		}
 
 		//echo $path_array[$path]['last_mod']." ";
-		if (strlen($path_array[$path]['last_mod']) == 0) { 
+		if (strlen($path_array[$relative_path]['last_mod']) == 0) { 
 			//insert a new record into the src table
 				$sql = "insert into v_src ";
 				$sql .= "(";
@@ -136,31 +141,34 @@ foreach ($xml->src as $row) {
 				$sql .= "'$last_mod', ";
 				$sql .= "'$relative_path' ";
 				$sql .= ")";
-				//echo "[insert] ";
+				echo "[insert] ";
 		} 
 		else {
-			if ($last_mod != $path_array[$path][last_mod]) {
+			if ($last_mod != $path_array[$relative_path][last_mod]) {
 				//update the src table
 					$sql = "update v_src set ";
 					$sql .= "type = '$type', ";
 					$sql .= "last_mod = '$last_mod' ";
 					$sql .= "where v_id = '$v_id' ";
 					$sql .= "and path = '$relative_path' ";
-					//echo "[update] ";
+					echo "[update] ";
 			}
 		}
 
 		if (file_exists($new_path)) {
-			//echo "file exists |";
 			//if the path exists then compare the v_src last_mod to the last_mod in the svn if they don't match save the new one
+			//echo "file exists |";
 			if ($type == 'file') {
 				if ($last_mod != $path_array[$relative_path][last_mod]) {
 					$file_content = file_get_contents($svn_url.$svn_path.$relative_path);
-					//echo "<td>$file_content</td>\n";
-					if (strlen($file_content) > 0) {
-						$fh = fopen($new_path, 'w');
-						fwrite($fh, $file_content);
-						fclose($fh);
+					//check to make sure the string matches the file md5 that was recorded.
+					if ($md5 == md5($file_content)) {
+						if (strlen($file_content) > 0) {
+							$fh = fopen($new_path, 'w');
+							fwrite($fh, $file_content);
+							fclose($fh);
+						}
+						echo " {md5 matched} ";
 					}
 					unset($file_content);
 					if (strlen($sql) > 0) {
@@ -179,22 +187,24 @@ foreach ($xml->src as $row) {
 			}
 		}
 		else {
-			//echo "file is missing |";
 			//if the path does not exist create it and then add it to the database
+			//echo "file is missing |";
 			if ($type == 'directory') {
-				mkdir ($new_path, 0755, true);
-				//echo $new_path;
+				mkdir (dirname($new_path), 0755, true);
 			}
 			if ($type == 'file') {
 				if (!is_dir(dirname($new_path))){
 					mkdir (dirname($new_path), 0755, true);
 				}
 				$file_content = file_get_contents($svn_url.$svn_path.$relative_path);
-				//echo "<td>$file_content</td>\n";
-				if (strlen($file_content) > 0) {
-					$fh = fopen($new_path, 'w');
-					fwrite($fh, $file_content);
-					fclose($fh);
+				//check to make sure the string matches the file md5 that was recorded.
+				if ($md5 == md5($file_content)) {
+					if (strlen($file_content) > 0) {
+						$fh = fopen($new_path, 'w');
+						fwrite($fh, $file_content);
+						fclose($fh);
+					}
+					echo " {md5 matched} ";
 				}
 				unset($file_content);
 				if ($display_results) {
