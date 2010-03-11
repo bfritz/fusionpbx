@@ -48,8 +48,11 @@ $order = $_GET["order"];
 
 	echo "<table width='100%' border='0'><tr>\n";
 	echo "<td width='50%' align='left' nowrap><b>Template List</b></td>\n";
-	echo "<td width='50%' align='right'>&nbsp;</td>\n";
-	echo "</tr></table>\n";
+	echo "<td width='50%' align='right'>\n";
+	echo "	<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='template_restore_default.php';\" />";
+	echo "</td>\n";
+	echo "<td width='35' nowrap></td>\n";
+	echo "</tr></table>";
 
 
 	$sql = "";
