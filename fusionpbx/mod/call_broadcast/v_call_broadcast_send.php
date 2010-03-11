@@ -225,15 +225,28 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 			//if (strlen($gateway) > 0) {
 				if ($phonetype1 == "phone1" && strlen($row[userphone1]) > 0) { $phone1 = $row[userphone1]; }
 				if ($phonetype1 == "phone2" && strlen($row[userphone2]) > 0) { $phone1 = $row[userphone2]; }
+				if ($phonetype1 == "cell" && strlen($row[userphonemobile]) > 0) { $phone1 = $row[userphonemobile]; }
 				if ($phonetype2 == "phone1" && strlen($row[userphone2]) > 0) { $phone2 = $row[userphone2]; }
 				if ($phonetype2 == "phone2" && strlen($row[userphone2]) > 0) { $phone2 = $row[userphone2]; }
-			//}
-			//else {
-			//	if ($phonetype1 == "phone1" && strlen($row[userphone1]) > 0) { $phone1 = $row[userphone1] }
-			//	if ($phonetype1 == "phone2" && strlen($row[userphone2]) > 0) { $phone1 = $row[userphone2] }
-			//	if ($phonetype2 == "phone1" && strlen($row[userphone2]) > 0) { $phone1 = $row[userphone2] }
-			//	if ($phonetype2 == "phone2" && strlen($row[userphone2]) > 0) { $phone2 = $row[userphone2] }
-			//}
+				if ($phonetype2 == "cell" && strlen($row[userphonemobile]) > 0) { $phone2 = $row[userphonemobile]; }
+
+			//make sure the phone numbers are correct
+				$phone1 = str_replace("-", "", $phone1);
+				$phone1 = str_replace("(", "", $phone1);
+				$phone1 = str_replace(")", "", $phone1);
+				$phone1 = str_replace(" ", "", $phone1);
+				$phone1 = str_replace(".", "", $phone1);
+				$phone2 = str_replace("-", "", $phone2);
+				$phone2 = str_replace("(", "", $phone2);
+				$phone2 = str_replace(")", "", $phone2);
+				$phone2 = str_replace(" ", "", $phone2);
+				$phone2 = str_replace(".", "", $phone2);
+				if (strlen($phone1) == 10) {
+					$phone1 = "1".$phone1;
+				}
+				if (strlen($phone2) == 10) {
+					$phone2 = "1".$phone2;
+				}
 
 			//set the global variable
 			//$cmd = $bin_dir."/fs_cli -x \"global_setvar broadcast_test_count=75\"";
@@ -242,23 +255,34 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 			//get the global variable
 			//$cmd = $bin_dir."/fs_cli -x \"global_getvar broadcast_test_count\"";
 			//echo exec($cmd);
+//echo "phone1: $phone1<br />\n";
+//echo "phone2: $phone2<br />\n";
 
 			//make the call
 				if (strlen($phone1)> 0) {
-					$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
-					$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
+					if (strlen($broadcast_concurrent_limit) > 0) {
+						$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
+						$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
+					}
 					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." ".$broadcast_caller_id_name." ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					//echo $cmd."<br />\n";
 					cmd_async($cmd);
 				}
 				if (strlen($phone2)> 0) {
-					$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
-					$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
+					if (strlen($broadcast_concurrent_limit) > 0) {
+						$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
+						$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
+					}
 					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." ".$broadcast_caller_id_name." ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					//echo $cmd."<br />\n";
 					cmd_async($cmd);
 				}
 
 			//check the number of calls do not continue wait until the number is below the limit
 				while (true) {
+					if (strlen($broadcast_concurrent_limit) == 0) {
+						break; //for testing
+					}
 					$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
 					if ($broadcast_count < $broadcast_concurrent_limit) {
 						break;
