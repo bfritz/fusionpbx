@@ -104,10 +104,10 @@ $order = $_GET["order"];
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_name]."</td>\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_concurrent_limit]."</td>\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_name]."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_concurrent_limit]."&nbsp;</td>\n";
 		//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[recordingid]."</td>\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_desc]."</td>\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_desc]."&nbsp;</td>\n";
 		echo "	<td valign='top' align='right'>\n";
 		echo "		<a href='v_call_broadcast_edit.php?id=".$row[call_broadcast_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
 		echo "		<a href='v_call_broadcast_delete.php?id=".$row[extension_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";

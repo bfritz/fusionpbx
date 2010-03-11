@@ -312,7 +312,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "Applicable if the provider that allow the Caller ID number to be sent. default: 0000000000\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
+/*
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "	Type:\n";
@@ -338,6 +338,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "transfer (external number): 12081231234 XML default <br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+*/
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";

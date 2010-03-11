@@ -255,8 +255,8 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 			//get the global variable
 			//$cmd = $bin_dir."/fs_cli -x \"global_getvar broadcast_test_count\"";
 			//echo exec($cmd);
-//echo "phone1: $phone1<br />\n";
-//echo "phone2: $phone2<br />\n";
+			//echo "phone1: $phone1<br />\n";
+			//echo "phone2: $phone2<br />\n";
 
 			//make the call
 				if (strlen($phone1)> 0) {
