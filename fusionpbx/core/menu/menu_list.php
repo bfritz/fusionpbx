@@ -168,8 +168,11 @@ $order = $_GET["order"];
 
 	echo "<table width='100%' border='0'><tr>";
 	echo "<td width='50%'><b>Menu Manager</b></td>";
+	echo "<td width='50%' align='right'>\n";
+	echo "	<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='menu_restore_default.php';\" />";
+	echo "</td>\n";
+	echo "<td width='35' nowrap></td>\n";
 	echo "</tr></table>";
-
 
 	$sql = "";
 	$sql .= "select * from v_menu ";
@@ -306,6 +309,7 @@ $order = $_GET["order"];
 	echo "  </td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
+
 	//echo "<input type='button' class='btn' name='' onclick=\"window.location='menusearch.php'\" value='Search'>&nbsp; &nbsp;\n";
 	//echo "<input type='button' class='btn' name='' onclick=\"window.location='menuadd.php'\" value='Add'>&nbsp; &nbsp;\n";
 	echo "</div>";
