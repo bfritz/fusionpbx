@@ -257,7 +257,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='broadcast_concurrent_limit' maxlength='255' value=\"$broadcast_concurrent_limit\">\n";
 	echo "<br />\n";
-	echo "Limit the number of concurrent calls. Leave this empty for no limit.\n";
+	echo "Limit the approximate number of concurrent calls. Leave this empty for no limit.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

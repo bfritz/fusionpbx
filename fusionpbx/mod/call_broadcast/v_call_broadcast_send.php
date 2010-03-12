@@ -54,6 +54,22 @@ function cmd_async($cmd) {
 	}
 }
 
+//get the event socket connection information
+	$sql = "";
+	$sql .= "select * from v_settings ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
+		$event_socket_ip_address = $row["event_socket_ip_address"];
+		$event_socket_port = $row["event_socket_port"];
+		$event_socket_password = $row["event_socket_password"];
+		break; //limit to 1 row
+	}
+	unset ($prepstatement);
+
+
 //send the call broadcast
 if (strlen($_GET["f"]) > 0) {
 
@@ -264,7 +280,7 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 						$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
 						$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
 					}
-					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." ".$broadcast_caller_id_name." ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
 					//echo $cmd."<br />\n";
 					cmd_async($cmd);
 				}
@@ -273,12 +289,13 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 						$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
 						$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
 					}
-					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." ".$broadcast_caller_id_name." ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone2." ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
 					//echo $cmd."<br />\n";
 					cmd_async($cmd);
 				}
 
 			//check the number of calls do not continue wait until the number is below the limit
+				$x = 0;
 				while (true) {
 					if (strlen($broadcast_concurrent_limit) == 0) {
 						break; //for testing
@@ -291,6 +308,17 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 						//100000 microseconds = 0.1 seconds
 						usleep(100000);
 					}
+					if ($x > 200) {
+						$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+						$cmd = "api show channels count";
+						$response = event_socket_request($fp, $cmd);
+						$concurrent_count = preg_replace("/[^0-9]/", '', $response);
+						fclose($fp);
+
+						$response = trim(exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=$concurrent_count\""));
+						$x = 0;
+					}
+					$x++;
 				}
 
 			if ($c==0) { $c=1; } else { $c=0; }
