@@ -131,10 +131,10 @@ else { //received results
 	foreach($result as $row) {
 		//print_r( $row );
 		echo "<tr >\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[numbering_plan]."</td>\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[default_gateway]."</td>\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[default_area_code]."</td>\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[smtphost]."</td>\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[numbering_plan]."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[default_gateway]."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[default_area_code]."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[smtphost]."&nbsp;</td>\n";
 		echo "	<td valign='top' align='right'>\n";
 		echo "		<a href='v_settings_edit.php?id=".$row[setting_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
 		echo "		<a href='v_settings_delete.php?id=".$row[setting_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
