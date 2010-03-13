@@ -576,9 +576,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/settings/v_settings.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:02:37 GMT</last_mod> 
-		<md5>889d6a639a15f8d6c4e7d4dcb413762e</md5> 
-		<size>5625</size> 
+		<last_mod>Fri, 12 Mar 2010 23:36:33 GMT</last_mod> 
+		<md5>8d62ecfaa3034f22dc76fcd3481ca181</md5> 
+		<size>5649</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2277,8 +2277,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Thu, 11 Mar 2010 10:17:25 GMT</last_mod> 
-		<md5>190a44dad57cac113be842d27459bfcd</md5> 
+		<last_mod>Fri, 12 Mar 2010 21:08:25 GMT</last_mod> 
+		<md5>a0225c4c27e142f1c34157ded426e216</md5> 
 		<size>133364</size> 
 	</src> 
 	<src> 
@@ -2431,9 +2431,9 @@
 	<src> 
 		<type>file</type> 
 		<path>install.php</path> 
-		<last_mod>Sun, 07 Mar 2010 05:00:40 GMT</last_mod> 
-		<md5>d4e4e92030314c0f955992f26728e475</md5> 
-		<size>48358</size> 
+		<last_mod>Fri, 12 Mar 2010 23:31:02 GMT</last_mod> 
+		<md5>ebc4cdedb5f56e512f477bd5ef4d1742</md5> 
+		<size>48101</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4500,4 +4500,4 @@
 		<md5>e45f2d2b34a95646df5e16393857278d</md5> 
 		<size>14978</size> 
 	</src> 
-</xml>
+</xml> 
