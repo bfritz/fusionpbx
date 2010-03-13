@@ -384,16 +384,16 @@ echo "</table>\n";
 echo "<br /><br />\n\n";
 if (stristr(PHP_OS, 'WIN')) { 
 	//windows detected
-	echo "<b>tail -n 500 ".$v_log_dir."/".$v_name.".log</b><br />\n";
+	echo "<b>tail -n 1500 ".$v_log_dir."/".$v_name.".log</b><br />\n";
 	echo "<textarea id='log' name='log' style='width: 100%' rows='30' wrap='off'>\n";
-	echo tail($v_log_dir."/".$v_name.".log", 500);
+	echo tail($v_log_dir."/".$v_name.".log", 1500);
 	echo "</textarea>\n";
 }
 else {
 	//windows not detected
-	echo "<b>tail -n 500 ".$v_log_dir."/".$v_name.".log</b><br />\n";
+	echo "<b>tail -n 1500 ".$v_log_dir."/".$v_name.".log</b><br />\n";
 	echo "<textarea id='log' name='log' style='width: 100%' rows='30' style='' wrap='off'>\n";
-	echo system("tail -n 500 ".$v_log_dir."/".$v_name.".log");
+	echo system("tail -n 1500 ".$v_log_dir."/".$v_name.".log");
 	echo "</textarea>\n";
 }
 echo "<br /><br />\n\n";
