@@ -618,9 +618,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/status/v_status.php</path> 
-		<last_mod>Sun, 07 Mar 2010 04:32:35 GMT</last_mod> 
-		<md5>10e3cd31e20043ffa6544cec76552526</md5> 
-		<size>14950</size> 
+		<last_mod>Sat, 13 Mar 2010 04:22:23 GMT</last_mod> 
+		<md5>a9b5262dfd71a6371c29f2e5f1a71906</md5> 
+		<size>14954</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2116,9 +2116,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/secure/.htaccess</path> 
-		<last_mod>Tue, 08 Dec 2009 02:24:27 GMT</last_mod> 
-		<md5>ca9c442085089ce26a34686e85cdc91b</md5> 
-		<size>62</size> 
+		<last_mod>Sat, 13 Mar 2010 04:25:35 GMT</last_mod> 
+		<md5>d3e3f4f1861877f7e035cb8876ba8d18</md5> 
+		<size>60</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2144,9 +2144,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/secure/htaccess.tmp</path> 
-		<last_mod>Tue, 08 Dec 2009 02:24:27 GMT</last_mod> 
-		<md5>ca9c442085089ce26a34686e85cdc91b</md5> 
-		<size>62</size> 
+		<last_mod>Sat, 13 Mar 2010 04:25:20 GMT</last_mod> 
+		<md5>d3e3f4f1861877f7e035cb8876ba8d18</md5> 
+		<size>60</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2277,9 +2277,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Fri, 12 Mar 2010 21:08:25 GMT</last_mod> 
-		<md5>a0225c4c27e142f1c34157ded426e216</md5> 
-		<size>133364</size> 
+		<last_mod>Sat, 13 Mar 2010 01:25:12 GMT</last_mod> 
+		<md5>914170fbdca96a3e619b449443c23b25</md5> 
+		<size>133365</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 

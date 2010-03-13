@@ -1,4 +1,3 @@
-<Files ~ "\.db$">
-	Order allow,deny
+<FilesMatch "\.(db|sqlite)$">
 	Deny from all
-</Files>
+</FilesMatch>
