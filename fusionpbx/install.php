@@ -24,6 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
+require_once "includes/lib_functions.php";
 
 //error reporting
 	ini_set('display_errors', '1');
@@ -196,10 +197,9 @@ include "root.php";
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
 	$dbtype = $_POST["dbtype"];
 	$dbfilename = $_POST["dbfilename"];
-	$dbfilepath = realpath($_POST["dbfilepath"]);
+	$dbfilepath = $_POST["dbfilepath"];
 	$dbhost = $_POST["dbhost"];
 	$dbport = $_POST["dbport"];
 	$dbname = $_POST["dbname"];
@@ -340,6 +340,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$tmp_config .= "	require_once \"includes/lib_switch.php\";\n";
 		$tmp_config .= "\n";
 		$tmp_config .= "?>";
+
+		//copy the secure directory
+			$srcdir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/secure';
+			//if the directory already exists do not copy over it.
+			if (!is_dir($dbfilepath)) {
+				//only copy if the src and dest are different
+				if ($srcdir != $dbfilepath) {
+					if (!is_dir($dbfilepath)) { mkdir($dbfilepath,0777,true); }
+					recursive_copy($srcdir, $dbfilepath);
+				}
+			}
+			unset($srcdir);
+
 
 		$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php","w");
 		fwrite($fout, $tmp_config);
@@ -653,24 +666,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			exit;
 		}
 		unset($srcfile, $destfile);
-
-	//copy the secure directory
-		switch (PHP_OS) {
-		case "FreeBSD":
-			//the FreeBSD port will copy this directory
-			break;
-		default:
-			$srcdir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/secure';
-			//if the directory already exists do not copy over it.
-			if (!is_dir($dbfilepath)) {
-				//only copy if the src and dest are different
-				if ($srcdir != $dbfilepath) {
-					if (!is_dir($dbfilepath)) { mkdir($dbfilepath,0777,true); }
-					recursive_copy($srcdir, $dbfilepath);
-				}
-			}
-			unset($srcdir);
-		}
 
 	//copy files from autoload_configs
 		recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/autoload_configs', $v_conf_dir.'/autoload_configs');
@@ -992,9 +987,6 @@ if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/header.php"))
 }
 if (!is_writable($install_v_dir)) {
 	$installmsg .= "<li>Write access to the 'FreeSWITCH Directory' and most of its sub directories is required.</li>\n";
-}
-if (!is_writable($dbfilepath)) {
-	$installmsg .= "<li>Write access to the 'Secure Directory' is required. If the $dbfilepath is incorrect please change it below.</li>\n";
 }
 if (!extension_loaded('PDO')) {
 	$installmsg .= "<li>PHP PDO was not detected. Please install it before proceeding.</li>";
