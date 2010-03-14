@@ -43,7 +43,7 @@ INSERT INTO v_menu VALUES(47,1,'en','SIP Profiles','/core/profiles/v_profiles.ph
 INSERT INTO v_menu VALUES(48,1,'en','Inbound Routes','/core/public_includes/v_public_includes.php','internal','admin','',40,18,'mcrane','2009-08-20 10:51:56','mcrane','2009-10-27 22:12:16');
 INSERT INTO v_menu VALUES(49,1,'en','Status','/core/status/v_status.php','internal','admin','',40,19,'mcrane','2009-08-20 10:52:38','mcrane','2009-10-27 22:26:42');
 INSERT INTO v_menu VALUES(50,1,'en','Variables','/core/vars/v_vars.php','internal','admin','',40,20,'mcrane','2009-08-20 10:53:12','mcrane','2009-10-27 22:54:08');
-INSERT INTO v_menu VALUES(52,1,'en','Call Detail Records','/core/cdr/v_cdr.php','internal','admin','',38,7,'mcrane','2009-09-05 00:30:16','mcrane','2009-10-27 22:49:14');
+INSERT INTO v_menu VALUES(52,1,'en','Call Detail Records','/core/cdr/v_cdr.php','internal','admin','',23,28,'mcrane','2009-09-05 00:30:16','mcrane','2009-10-27 22:49:14');
 INSERT INTO v_menu VALUES(53,1,'en','XML Editor','/mod/xml_edit/','internal','admin','',38,8,'mcrane','2009-09-08 17:50:37','mcrane','2009-10-27 22:36:27');
 INSERT INTO v_menu VALUES(54,1,'en','Voicemail Status','/mod/voicemail_status/v_voicemail.php','internal','admin','',38,15,'mcrane','2009-09-10 22:26:54','mcrane','2009-10-27 22:52:54');
 INSERT INTO v_menu VALUES(56,1,'en','Voicemail','/mod/voicemail_msgs/v_voicemail_msgs.php','internal','member','',23,24,'mcrane','2009-09-16 04:04:11','mcrane','2009-10-27 23:32:25');
