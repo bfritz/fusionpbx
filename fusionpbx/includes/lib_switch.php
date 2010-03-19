@@ -1844,7 +1844,6 @@ function sync_package_v_hunt_group()
 							if ($row['huntgroupringback'] == "music"){
 								$tmp .= "session.execute(\"set\", \"ringback=\${hold_music}\");          //set to music\n";
 								$tmp .= "session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to music\n";
-								$tmp .= "session.execute(\"set\", \"ignore_early_media=true\"); //set to music\n";
 							}
 						}
 						else {
@@ -1854,8 +1853,8 @@ function sync_package_v_hunt_group()
 
 					if ($row['huntgrouptimeout'] > 0) {
 						$tmp .= "session.execute(\"set\", \"call_timeout=".$row['huntgrouptimeout']."\");\n";
-						$tmp .= "session.execute(\"export\", \"call_timeout=".$row['huntgrouptimeout']."\");\n";
 						$tmp .= "session.execute(\"set\", \"continue_on_fail=true\");\n";
+						$tmp .= "session.execute(\"set\", \"ignore_early_media=true\");\n";
 					}
 					$tmp .= "session.execute(\"set\", \"hangup_after_bridge=true\");\n";
 					$tmp .= "\n";
@@ -2426,7 +2425,7 @@ function sync_package_v_auto_attendant()
 		}
 		$tmp .= "\n";
 
-
+		$tmp .= "session.execute(\"set\", \"ignore_early_media=true\");\n";
 		$tmp .= " session.execute(\"set\", \"hangup_after_bridge=true\");\n";
 		$tmp .= " session.execute(\"set\", \"continue_on_fail=true\");\n";
 		if (strlen($row['aacalltimeout']) == 0){
