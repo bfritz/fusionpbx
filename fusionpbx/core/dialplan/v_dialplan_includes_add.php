@@ -401,6 +401,7 @@ if (strlen($condition_field_1) > 0) {
 	echo "    <option value='$condition_field_1' selected>$condition_field_1</option>\n";
 }
 echo "    <option value='context'>context</option>\n";
+echo "    <option value='user'>user</option>\n";
 echo "    <option value='rdnis'>rdnis</option>\n";
 echo "    <option value='destination_number'>destination_number</option>\n";
 echo "    <option value='public'>public</option>\n";
@@ -442,6 +443,7 @@ if (strlen($condition_field_2) > 0) {
 	echo "    <option value='$condition_field_2' selected>$condition_field_2</option>\n";
 }
 echo "    <option value='context'>context</option>\n";
+echo "    <option value='user'>user</option>\n";
 echo "    <option value='rdnis'>rdnis</option>\n";
 echo "    <option value='destination_number'>destination_number</option>\n";
 echo "    <option value='public'>public</option>\n";

@@ -394,7 +394,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
     echo "    <table cellpadding='3'>\n";
     echo "    <tr><th class=\"vncellreq\" width='75' align=\"left\">Tag:</th><td  class=\"vtable\">condition</td></tr>\n";
     echo "    <tr><th class=\"vncellreq\" align=\"left\">Type:</th><td  class=\"vtable\">destination_number</td></tr>\n";
-    echo "    <tr><th class=\"vncellreq\" align=\"left\">Data:</th><td  class=\"vtable\">^(12085551234)\$</td></tr>\n";
+    echo "    <tr><th class=\"vncellreq\" align=\"left\">Data:</th><td  class=\"vtable\">^12085551234\$</td></tr>\n";
     echo "    </table>\n";
     echo "\n";
     echo "    <br />\n";
@@ -455,6 +455,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
     echo "    Conditions are pattern matching tags that help decide if the current call should be processed in this extension or not. When matching conditions against the current call you have several <b>fields</b> that you can compare against.\n";
     echo "    <ul>\n";
     echo "        <li><b>context</b></li>\n";
+    echo "        <li><b>user</b> Extension Number, Also known as the extension number.</li>\n";
     echo "        <li><b>rdnis</b> Redirected Number, the directory number to which the call was last presented.</li>\n";
     echo "        <li><b>destination_number</b> Called Number, the number this call is trying to reach (within a given context)</li>\n";
     echo "        <li><b>public</b> Name of the public module that are used, the name is provided by each public module. Example: XML</li>\n";
@@ -495,7 +496,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
     echo "    The following is a partial list of <b>applications</b>.\n";
     echo "    <ul>\n";
     echo "    <li><b>answer</b> answer the call</li>\n";
-    echo "    <li><b>bridge</b> bridge the call<li>\n";
+    echo "    <li><b>bridge</b> bridge the call</li>\n";
     echo "    <li><b>cond</b></li>\n";
     echo "    <li><b>db</b> is a a runtime database either sqlite by default or odbc</li>\n";
     echo "    <li><b>global_set</b> allows setting of global vars similar to the ones found in vars.xml</li>\n";

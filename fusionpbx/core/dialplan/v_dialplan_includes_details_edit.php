@@ -379,46 +379,47 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		echo "<br />\n";
 		echo "<a href='http://wiki.freeswitch.org/wiki/Dialplan_XML' target='_blank'>http://wiki.freeswitch.org/wiki/Dialplan_XML</a>";
 	}
-	  ?>
-	  <br />
-	  <br />
-	  <br />
-	  <br />
+	?>
+	<br />
+	<br />
+	<br />
+	<br />
 
-	  <b>Conditions</b>
-	  <br />
-	  <br />
-	  Conditions are pattern matching tags that help decide if the current call should be processed in this extension or not. When matching conditions against the current call you have several <b>fields</b> that you can compare against.
-	  <ul>
-		  <li><b>context</b></li>
-		  <li><b>rdnis</b> Redirected Number, the directory number to which the call was last presented.</li>
-		  <li><b>destination_number</b> Called Number, the number this call is trying to reach (within a given context)</li>
-		  <li><b>dialplan</b> Name of the dialplan module that are used, the name is provided by each dialplan module. Example: XML</li>
-		  <li><b>caller_id_name</b> Name of the caller (provided by the User Agent that has called us).</li>
-		  <li><b>caller_id_number</b> Directory Number of the party who called (callee) -- can be masked (hidden)</li>
-		  <li><b>ani</b> Automatic Number Identification, the number of the calling party (callee) -- cannot be masked</li>
-		  <li><b>ani2</b> The type of device placing the call [1]</li>
-		  <li><b>uuid</b> Unique identifier of the current call? (looks like a GUID)</li>
-		  <li><b>source</b> Name of the module that received the call (e.g. PortAudio)</li>
-		  <li><b>chan_name</b> Name of the current channel (Example: PortAudio/1234). Give us examples when this one can be used.</li>
-		  <li><b>network_addr</b> IP address of the signalling source for a VoIP call.</li>
-	  </ul>
-	  In addition to the above you can also do variables using the syntax ${variable} or api functions using the syntax %{api} {args}
-	  <br />
-	  <br />
-	  Variables may be used in either the field or the expression, as follows
+	<b>Conditions</b>
+	<br />
+	<br />
+	Conditions are pattern matching tags that help decide if the current call should be processed in this extension or not. When matching conditions against the current call you have several <b>fields</b> that you can compare against.
+	<ul>
+		<li><b>context</b></li>
+		<li><b>user</b> Extension Number, Also known as the extension number.</li>
+		<li><b>rdnis</b> Redirected Number, the directory number to which the call was last presented.</li>
+		<li><b>destination_number</b> Called Number, the number this call is trying to reach (within a given context)</li>
+		<li><b>dialplan</b> Name of the dialplan module that are used, the name is provided by each dialplan module. Example: XML</li>
+		<li><b>caller_id_name</b> Name of the caller (provided by the User Agent that has called us).</li>
+		<li><b>caller_id_number</b> Directory Number of the party who called (callee) -- can be masked (hidden)</li>
+		<li><b>ani</b> Automatic Number Identification, the number of the calling party (callee) -- cannot be masked</li>
+		<li><b>ani2</b> The type of device placing the call [1]</li>
+		<li><b>uuid</b> Unique identifier of the current call? (looks like a GUID)</li>
+		<li><b>source</b> Name of the module that received the call (e.g. PortAudio)</li>
+		<li><b>chan_name</b> Name of the current channel (Example: PortAudio/1234). Give us examples when this one can be used.</li>
+		<li><b>network_addr</b> IP address of the signalling source for a VoIP call.</li>
+	</ul>
+	In addition to the above you can also do variables using the syntax ${variable} or api functions using the syntax %{api} {args}
+	<br />
+	<br />
+	Variables may be used in either the field or the expression, as follows
 
-	  <br />
-	  <br />
-	  <br />
-	  <br />
+	<br />
+	<br />
+	<br />
+	<br />
 
-	  <b>Action and Anti-Actions</b>
-	  <br />
-	  <br />
-	  Actions are executed when the <b>condition matches</b>. Anti-Actions are executed when the <b>condition does NOT match</b>.
-	  <?php
-	  if ($v_path_show) {
+	<b>Action and Anti-Actions</b>
+	<br />
+	<br />
+	Actions are executed when the <b>condition matches</b>. Anti-Actions are executed when the <b>condition does NOT match</b>.
+	<?php
+	if ($v_path_show) {
 		  echo "Additional information on applications for Actions and Anti-Actions.<br />\n";
 		  echo "<a href='http://wiki.freeswitch.org/wiki/Modules#Applications' target='_blank'>http://wiki.freeswitch.org/wiki/Modules#Applications</a>\n";
 		  echo "<br />\n";
