@@ -365,7 +365,7 @@ echo "<b>Upgrade</b><br />\n";
 echo "Use this button to upgrade the graphical interface to the latest version. The first time this is run it will take a while please be patient. In most cases future upgrades will take less time.<br /><br />\n";
 echo "</td>\n";
 echo "<td width='50%' align='right'>\n";
-echo "  <input type='button' class='btn' value='update' onclick=\"document.location.href='/core/upgrade/upgrade.php';\" />\n";
+echo "  <input type='button' class='btn' value='upgrade' onclick=\"document.location.href='".PROJECT_PATH."/core/upgrade/upgrade.php';\" />\n";
 echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
