@@ -455,7 +455,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
     echo "    Conditions are pattern matching tags that help decide if the current call should be processed in this extension or not. When matching conditions against the current call you have several <b>fields</b> that you can compare against.\n";
     echo "    <ul>\n";
     echo "        <li><b>context</b></li>\n";
-    echo "        <li><b>user</b> Extension Number, Also known as the extension number.</li>\n";
+    echo "        <li><b>username</b> Extension Number, Also known as the extension number.</li>\n";
     echo "        <li><b>rdnis</b> Redirected Number, the directory number to which the call was last presented.</li>\n";
     echo "        <li><b>destination_number</b> Called Number, the number this call is trying to reach (within a given context)</li>\n";
     echo "        <li><b>public</b> Name of the public module that are used, the name is provided by each public module. Example: XML</li>\n";
