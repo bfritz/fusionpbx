@@ -1163,6 +1163,9 @@ function sync_package_v_gateways()
 				if (strlen($row['supress_cng']) > 0) {
 					$tmpxml .= "      <param name=\"supress-cng\" value=\"" . $row['supress_cng'] . "\"/>\n";
 				}
+				if (strlen($row['extension_in_contact']) > 0) {
+					$tmpxml .= "      <param name=\"extension_in_contact\" value=\"" . $row['extension_in_contact'] . "\"/>\n";
+				}
 
 				$tmpxml .= "    </gateway>\n";
 				$tmpxml .= "</include>";

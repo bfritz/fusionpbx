@@ -64,6 +64,7 @@ if (count($_POST)>0) {
 	$ping = check_str($_POST["ping"]);
 	$caller_id_in_from = check_str($_POST["caller_id_in_from"]);
 	$supress_cng = check_str($_POST["supress_cng"]);
+	$extension_in_contact = check_str($_POST["extension_in_contact"]);
 	$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
 	$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
 	$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
@@ -106,6 +107,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($ping) == 0) { $msg .= "Please provide: Ping<br>\n"; }
 		//if (strlen($caller_id_in_from) == 0) { $msg .= "Please provide: Caller ID in from<br>\n"; }
 		//if (strlen($supress_cng) == 0) { $msg .= "Please provide: Supress CNG<br>\n"; }
+		//if (strlen($extension_in_contact) == 0) { $msg .= "Please provide: Extension in Contact<br>\n"; }
 		//if (strlen($effective_caller_id_name) == 0) { $msg .= "Please provide: Effective Caller ID Name<br>\n"; }
 		//if (strlen($effective_caller_id_number) == 0) { $msg .= "Please provide: Effective Caller ID Number<br>\n"; }
 		//if (strlen($outbound_caller_id_name) == 0) { $msg .= "Please provide: Outbound Caller ID Name<br>\n"; }
@@ -136,8 +138,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$tmp .= "From user: $from_user\n";
 	$tmp .= "From domain: $from_domain\n";
 	$tmp .= "Proxy: $proxy\n";
-        $tmp .= "Register Proxy: $register_proxy\n";
-        $tmp .= "Outbound Proxy: $outbound_proxy\n";
+	$tmp .= "Register Proxy: $register_proxy\n";
+	$tmp .= "Outbound Proxy: $outbound_proxy\n";
 	$tmp .= "Expire seconds: $expire_seconds\n";
 	$tmp .= "Register: $register\n";
 	$tmp .= "Register transport: $register_transport\n";
@@ -146,6 +148,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$tmp .= "Ping: $ping\n";
 	$tmp .= "Caller ID in from: $caller_id_in_from\n";
 	$tmp .= "Supress CNG: $supress_cng\n";
+	$tmp .= "Supress CNG: $extension_in_contact\n";
 	$tmp .= "Effective Caller ID Name: $effective_caller_id_name\n";
 	$tmp .= "Effective Caller ID Number: $effective_caller_id_number\n";
 	$tmp .= "Outbound Caller ID Name: $outbound_caller_id_name\n";
@@ -179,6 +182,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "ping, ";
 			$sql .= "caller_id_in_from, ";
 			$sql .= "supress_cng, ";
+			$sql .= "extension_in_contact, ";
 			$sql .= "effective_caller_id_name, ";
 			$sql .= "effective_caller_id_number, ";
 			$sql .= "outbound_caller_id_name, ";
@@ -208,6 +212,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$ping', ";
 			$sql .= "'$caller_id_in_from', ";
 			$sql .= "'$supress_cng', ";
+			$sql .= "'$extension_in_contact', ";
 			$sql .= "'$effective_caller_id_name', ";
 			$sql .= "'$effective_caller_id_number', ";
 			$sql .= "'$outbound_caller_id_name', ";
@@ -246,6 +251,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "ping = '$ping', ";
 			$sql .= "caller_id_in_from = '$caller_id_in_from', ";
 			$sql .= "supress_cng = '$supress_cng', ";
+			$sql .= "extension_in_contact = '$extension_in_contact', ";
 			$sql .= "effective_caller_id_name = '$effective_caller_id_name', ";
 			$sql .= "effective_caller_id_number = '$effective_caller_id_number', ";
 			$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
@@ -298,6 +304,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$label = "7 digits";
 					$abbrv = "7d";
 					break;
+				case "^(\d{8})$":
+					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
+					$label = "8 digits";
+					$abbrv = "8d";
+					break;
+				case "^(\d{9})$":
+					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
+					$label = "9 digits";
+					$abbrv = "9d";
+					break;
 				case "^(\d{10})$":
 					$action_data = "sofia/gateway/".$gateway."/1\$1";
 					$label = "10 digits";
@@ -307,6 +323,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$action_data = "sofia/gateway/".$gateway."/\$1";
 					$label = "11 digits";
 					$abbrv = "11d";
+					break;
+				case "^(\d{12})$":
+					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$label = "12 digits";
+					$abbrv = "12d";
 					break;
 				case "^(311)$":
 					$action_data = "sofia/gateway/".$gateway."/\$1";
@@ -471,6 +492,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$ping = $row["ping"];
 		$caller_id_in_from = $row["caller_id_in_from"];
 		$supress_cng = $row["supress_cng"];
+		$extension_in_contact = $row["extension_in_contact"];
 		$effective_caller_id_name = $row["effective_caller_id_name"];
 		$effective_caller_id_number = $row["effective_caller_id_number"];
 		$outbound_caller_id_name = $row["outbound_caller_id_name"];
@@ -818,6 +840,31 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    </select>\n";
 	echo "<br />\n";
 	echo "Enter the supress-cng.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Extension in Contact:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='extension_in_contact'>\n";
+	echo "    <option value=''></option>\n";
+	if ($extension_in_contact == "true") { 
+		echo "    <option value='true' SELECTED >true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($extension_in_contact == "false") { 
+		echo "    <option value='false' SELECTED >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "Enter the extension_in_contact.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
