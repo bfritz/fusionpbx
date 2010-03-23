@@ -3630,6 +3630,17 @@ if (!function_exists('sync_directory')) {
 			$$name = $value;
 		}
 
+		//if the directory does not exist then create it.
+		clearstatcache();
+		if (!is_dir($v_sounds_dir."/en/us/callie/directory/48000")) {
+			mkdir($v_sounds_dir."/en/us/callie/directory/48000", 0700, true);
+			$src_dir = $v_web_dir.'/includes/install/sounds/directory/48000';
+			$dest_dir = $v_sounds_dir."/en/us/callie/directory/48000";
+			//echo "src_dir $src_dir<br />\n";
+			//echo "dest_dir $dest_dir<br />\n";
+			recursive_copy($src_dir, $dest_dir);
+		}
+
 		$tmp = "include(\"config.js\");\n";
 		$tmp .= "//var sounds_dir\n";
 		$tmp .= "var admin_pin = \"\";\n";
