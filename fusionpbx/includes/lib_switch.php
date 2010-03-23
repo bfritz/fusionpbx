@@ -3763,6 +3763,10 @@ if (!function_exists('sync_directory')) {
 							$userlastname = $row_tmp["userlastname"];
 							if ($userfirstname == "na") { $userfirstname = ""; }
 							if ($userlastname == "na") { $userlastname = ""; }
+							if ($userfirstname == "admin") { $userfirstname = ""; }
+							if ($userlastname == "admin") { $userlastname = ""; }
+							if ($userfirstname == "superadmin") { $userfirstname = ""; }
+							if ($userlastname == "superadmin") { $userlastname = ""; }
 							if (strlen($userfirstname.$userlastname) == 0) {
 								$name_array = explode (" ", $effective_caller_id_name);
 								$userfirstname = $name_array[0];
