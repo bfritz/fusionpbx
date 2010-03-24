@@ -3610,6 +3610,7 @@ if (!function_exists('call_broadcast_send_broadcast')) {
 
 if (!function_exists('phone_letter_to_number')) {
 	function phone_letter_to_number($tmp) {
+		$tmp = strtolower($tmp);
 		if ($tmp == "a" | $tmp == "b" | $tmp == "c") { return 2; }
 		if ($tmp == "d" | $tmp == "e" | $tmp == "f") { return 3; }
 		if ($tmp == "g" | $tmp == "h" | $tmp == "i") { return 4; }
