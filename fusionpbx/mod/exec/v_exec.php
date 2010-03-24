@@ -143,7 +143,7 @@ if (count($_POST)>0) {
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	if ($v_name == "freeswitch") {
-		echo "    FreeSWITCH Command:\n";
+		echo "    Switch Command:\n";
 	}
 	else {
 		echo "    ".ucfirst($v_name)." Command:\n";
