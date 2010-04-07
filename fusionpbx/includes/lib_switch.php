@@ -1013,7 +1013,7 @@ function sync_package_v_extensions()
 				$tmpxml .= "      <variable name=\"outbound_caller_id_name\" value=\"" . $row['outbound_caller_id_name'] . "\"/>\n";
 				$tmpxml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $row['outbound_caller_id_number'] . "\"/>\n";
 			}
-			if (strlen($row['sip-force-contact']) > 0) {
+			if (strlen($row['sip_force_contact']) > 0) {
 				$tmpxml .= "      <variable name=\"sip-force-contact\" value=\"" . $row['sip_force_contact'] . "\"/>\n";
 			}
 			$tmpxml .= "    </variables>\n";
