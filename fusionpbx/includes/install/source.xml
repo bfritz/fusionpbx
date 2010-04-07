@@ -2403,8 +2403,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Tue, 23 Mar 2010 12:11:33 GMT</last_mod> 
-		<md5>93d9b9d4657c20c8cffb5cced149c7fc</md5> 
+		<last_mod>Thu, 25 Mar 2010 22:18:39 GMT</last_mod> 
+		<md5>b8fd4c450e348cff1736227c50af8997</md5> 
 		<size>137675</size> 
 	</src> 
 	<src> 
@@ -2466,8 +2466,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Wed, 24 Mar 2010 00:12:07 GMT</last_mod> 
-		<md5>8bc44172ece4c27d66e7c314b811a8fe</md5> 
+		<last_mod>Wed, 07 Apr 2010 03:36:38 GMT</last_mod> 
+		<md5>aec64ef7a7b1411941fd675a2364a627</md5> 
 		<size>189000</size> 
 	</src> 
 	<src> 
