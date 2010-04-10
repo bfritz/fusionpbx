@@ -807,9 +807,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/users/signup.php</path> 
-		<last_mod>Sat, 06 Feb 2010 17:54:41 GMT</last_mod> 
-		<md5>792f735e268a1caa6446691175a7581b</md5> 
-		<size>22803</size> 
+		<last_mod>Sat, 10 Apr 2010 21:44:19 GMT</last_mod> 
+		<md5>a30b0d7d1fa04ea052f30f81b77cd404</md5> 
+		<size>23254</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -835,9 +835,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/users/usersupdate.php</path> 
-		<last_mod>Sat, 06 Feb 2010 17:54:29 GMT</last_mod> 
-		<md5>4b0efbb7e34f815d81d825862155e820</md5> 
-		<size>23016</size> 
+		<last_mod>Sat, 10 Apr 2010 21:43:51 GMT</last_mod> 
+		<md5>fe4716eb3b7ac27988fe998b463f19ff</md5> 
+		<size>23476</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2403,8 +2403,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Wed, 07 Apr 2010 03:50:19 GMT</last_mod> 
-		<md5>951d6713692086729f060d893533acf9</md5> 
+		<last_mod>Sat, 10 Apr 2010 02:40:43 GMT</last_mod> 
+		<md5>55d3e608251c5005eaaa99f0ad321c88</md5> 
 		<size>137675</size> 
 	</src> 
 	<src> 
@@ -2718,16 +2718,16 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/call_broadcast/v_call_broadcast_edit.php</path> 
-		<last_mod>Fri, 12 Mar 2010 01:11:21 GMT</last_mod> 
-		<md5>31d365d5104349e3dcec0f52f2359951</md5> 
-		<size>18624</size> 
+		<last_mod>Sat, 10 Apr 2010 21:48:03 GMT</last_mod> 
+		<md5>96ce01790b361f2fdd0e5f0a74326ced</md5> 
+		<size>18682</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>mod/call_broadcast/v_call_broadcast_send.php</path> 
-		<last_mod>Fri, 12 Mar 2010 01:12:04 GMT</last_mod> 
-		<md5>2b9b678d066bada99ab8451c22b37aed</md5> 
-		<size>12406</size> 
+		<last_mod>Sat, 10 Apr 2010 21:48:18 GMT</last_mod> 
+		<md5>7175f1321d74bd90078a03a8866387b8</md5> 
+		<size>13120</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4626,4 +4626,4 @@
 		<md5>e45f2d2b34a95646df5e16393857278d</md5> 
 		<size>14978</size> 
 	</src> 
-</xml> 
+</xml>

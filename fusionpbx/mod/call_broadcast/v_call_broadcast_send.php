@@ -280,7 +280,12 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 						$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
 						$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
 					}
-					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					if ($gateway == "loopback") {
+						$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}loopback/".$phone1."/default/XML ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					}
+					else {
+						$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					}
 					//echo $cmd."<br />\n";
 					cmd_async($cmd);
 				}
@@ -289,8 +294,12 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 						$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
 						$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
 					}
-					$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone2." ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
-					//echo $cmd."<br />\n";
+					if ($gateway == "loopback") {
+						$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}loopback/".$phone2."/default/XML ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					}
+					else {
+						$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone2." ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+					}					//echo $cmd."<br />\n";
 					cmd_async($cmd);
 				}
 

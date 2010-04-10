@@ -459,6 +459,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 			}
 		}
 		unset ($prepstatement);
+		echo "		<option value='loopback'>loopback</option>\n";
 		echo "		</select>\n";
 		echo "<br />\n";
 		//echo "zzz.<br />\n";
