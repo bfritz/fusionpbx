@@ -78,7 +78,7 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 var requestTime = function() {
 	var url = 'v_calls_active_inc.php?c=<?php echo trim($_REQUEST["c"]); ?>';
 	new loadXmlHttp(url, 'ajax_reponse');
-	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 1222);
+	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 888);
 }
 
 if (window.addEventListener) {
@@ -155,6 +155,11 @@ echo "}\n";
 echo "\n";
 echo "function get_park_cmd(uuid) {\n";
 echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg *5900 xml default\";\n";
+echo "	return escape(cmd);\n";
+echo "}\n";
+echo "\n";
+echo "function get_record_cmd(uuid, prefix, name) {\n";
+echo "	cmd = \"uuid_record \"+uuid+\" start ".$v_recordings_dir."/\"+prefix+\"\"+name+\"_recording.wav\";\n";
 echo "	return escape(cmd);\n";
 echo "}\n";
 echo "-->\n";

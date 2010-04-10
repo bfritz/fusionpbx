@@ -101,11 +101,30 @@ if (count($_GET)>0) {
 		*/
 
 		//echo "<b>switch command:</b>\n";
-		//echo "<pre>\n";
+		echo "<pre>\n";
 		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-		//$switch_result = eval($switch_cmd);
-		//echo htmlentities($switch_result);
-		//echo "</pre>\n";
+		echo htmlentities($switch_result);
+		echo "</pre>\n";
+
+		if ($action == "record") {
+			if (trim($_GET["action2"]) == "stop") {
+				$x=0;
+				while (true) {
+					if ($x > 0) {
+						$dest_file = $v_recordings_dir."/".$_GET["prefix"]."".$_GET["name"]."_".$x.".wav";
+					}
+					else {
+						$dest_file = $v_recordings_dir."/".$_GET["prefix"]."".$_GET["name"].".wav";
+					}
+					if (!file_exists($dest_file)) {
+						//echo $dest_file;
+						rename($v_recordings_dir."/".$_GET["prefix"]."".$_GET["name"]."_recording.wav", $dest_file);
+						break;
+					}
+					$x++;
+				}
+			}
+		}
 	}
 
 }

