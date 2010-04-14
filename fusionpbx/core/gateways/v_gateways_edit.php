@@ -305,12 +305,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$abbrv = "7d";
 					break;
 				case "^(\d{8})$":
-					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
+					$action_data = "sofia/gateway/".$gateway."/\$1";
 					$label = "8 digits";
 					$abbrv = "8d";
 					break;
 				case "^(\d{9})$":
-					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
+					$action_data = "sofia/gateway/".$gateway."/\$1";
 					$label = "9 digits";
 					$abbrv = "9d";
 					break;
@@ -345,12 +345,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$abbrv = "911";
 					break;
 				case "^9(\d{3})$":
-					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
+					$action_data = "sofia/gateway/".$gateway."/\$1";
 					$label = "dial 9, 3 digits";
 					$abbrv = "9.3d";
 					break;
 				case "^9(\d{4})$":
-					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
+					$action_data = "sofia/gateway/".$gateway."/\$1";
 					$label = "dial 9, 4 digits";
 					$abbrv = "9.4d";
 					break;	
@@ -360,7 +360,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$abbrv = "9.7d";
 					break;
 				case "^9(\d{10})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway."/1\$1";
 					$label = "dial 9, 10 digits";
 					$abbrv = "9.10d";
 					break;
