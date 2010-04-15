@@ -44,28 +44,6 @@ ini_set(max_execution_time,7200);
 
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
-if (!function_exists('thorderby')) {
-	//html table header order by
-	function thorderby($fieldname, $columntitle, $orderby, $order) {
-
-		$html .= "<th class='' nowrap>&nbsp; &nbsp; ";
-		if (strlen($orderby)==0) {
-			$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-		}
-		else {
-		  if ($order=="asc") {
-				$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-		  }
-		  else {
-				$html .= "<a href='?orderby=$fieldname&order=asc' title='descending'>$columntitle</a>";
-		  }
-		}
-		$html .= "&nbsp; &nbsp; </th>";
-
-		return $html;
-	}
-}
-
 
 if ($_GET['a'] == "download") {
 
@@ -84,33 +62,33 @@ if ($_GET['a'] == "download") {
 				header('Content-Disposition: attachment; filename="'.base64_decode($_GET['filename']).'"');
 			}
 			else {
-				$file_ext = substr($_GET['filename'], -3);
+				$file_ext = substr(base64_decode($_GET['filename']), -3);
 				if ($file_ext == "wav") {
-				  header("Content-Type: audio/x-wav");
+					header("Content-Type: audio/x-wav");
 				}
 				if ($file_ext == "mp3") {
-				  header("Content-Type: audio/mp3");
+					header("Content-Type: audio/mp3");
 				}
 			}
 			header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past	
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 			header("Content-Length: " . filesize($v_recordings_dir.'/'.base64_decode($_GET['filename'])));
 			fpassthru($fd);
 		}
 	}
 
 	if ($_GET['type'] = "moh") {
-		if  (file_exists($dir_music_on_hold_8000.$_GET['filename'])) {
-			$fd = fopen($dir_music_on_hold_8000.$_GET['filename'], "rb");
+		if (file_exists($dir_music_on_hold_8000.base64_decode($_GET['filename']))) {
+			$fd = fopen($dir_music_on_hold_8000.base64_decode($_GET['filename']), "rb");
 			if ($_GET['t'] == "bin") {
 				header("Content-Type: application/force-download");
 				header("Content-Type: application/octet-stream");
 				header("Content-Type: application/download");
 				header("Content-Description: File Transfer");
-				header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
+				header('Content-Disposition: attachment; filename="'.base64_decode($_GET['filename']).'"');
 			}
 			else {
-				$file_ext = substr($_GET['filename'], -3);
+				$file_ext = substr(base64_decode($_GET['filename']), -3);
 				if ($file_ext == "wav") {
 				  header("Content-Type: audio/x-wav");
 				}
@@ -120,11 +98,10 @@ if ($_GET['a'] == "download") {
 			}
 			header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past	
-			header("Content-Length: " . filesize($dir_music_on_hold_8000.$_GET['filename']));
+			header("Content-Length: " . filesize($dir_music_on_hold_8000.base64_decode($_GET['filename'])));
 			fpassthru($fd);
 		}
 	}
-
 	exit;
 }
 else {
@@ -205,7 +182,7 @@ if (is_dir($v_recordings_dir.'/')) {
 					$sql .= "'auto' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
-					echo $sql;
+					//echo $sql;
 					//$lastinsertid = $db->lastInsertId($id);
 					unset($sql);
 
@@ -343,7 +320,7 @@ require_once "includes/header.php";
 			echo "	  </a>";
 			echo "	</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
-			echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('v_recordings_play.php?a=download&type=moh&filename=".$row[filename]."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
+			echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('v_recordings_play.php?a=download&type=moh&filename=".base64_encode($row[filename])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
 			echo $row[recordingname];
 			echo "	  </a>";
 			echo 	"</td>\n";
@@ -443,12 +420,12 @@ require_once "includes/header.php";
 
 				echo "<tr>\n";
 				echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-				echo "		<a href=\"v_recordings.php?a=download&type=moh&t=bin&filename=".$file."\">\n";
+				echo "		<a href=\"v_recordings.php?a=download&type=moh&t=bin&filename=".base64_encode($file)."\">\n";
 				echo "		$file";
 				echo "		</a>";
 				echo "	</td>\n";
 				echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-				echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('v_recordings_play.php?a=download&type=moh&filename=".$file."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
+				echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('v_recordings_play.php?a=download&type=moh&filename=".base64_encode($file)."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
 				$tmp_file_array = explode("\.",$file);
 				echo "    	".$tmp_file_array[0];
 				echo "	  </a>";
@@ -463,7 +440,7 @@ require_once "includes/header.php";
 				echo "    <table border=\"0\" cellspacing=\"0\" cellpadding=\"5\">\n";
 				echo "      <tr>\n";
 				//echo "        <td valign=\"middle\"><a href=\"v_recordings.php?id=$i\"><img src=\"/themes/".$g['theme']."/images/icons/icon_e.gif\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
-				echo "        <td><a href=\"v_recordings.php?type=moh&act=del&filename=".$file."\" onclick=\"return confirm('Do you really want to delete this file?')\"><img src=\"".$v_icon_delete."\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
+				echo "        <td><a href=\"v_recordings.php?type=moh&act=del&filename=".base64_encode($file)."\" onclick=\"return confirm('Do you really want to delete this file?')\"><img src=\"".$v_icon_delete."\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
 				echo "      </tr>\n";
 				echo "   </table>\n";
 				echo "  </td>\n";
