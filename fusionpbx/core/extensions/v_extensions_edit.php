@@ -62,7 +62,6 @@ if (count($_POST)>0) {
 	$provisioning_list = str_replace(" ", "", $provisioning_list);
 	$provisioning_list = str_replace("||", "|", $provisioning_list);
   
-	$mailbox = check_str($_POST["mailbox"]);
 	$vm_password = check_str($_POST["vm_password"]);
 	$accountcode = check_str($_POST["accountcode"]);
 	$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
@@ -104,7 +103,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
 		}
 		//if (strlen($user_list) == 0) { $msg .= "Please provide: User List<br>\n"; }
-		//if (strlen($mailbox) == 0) { $msg .= "Please provide: Mailbox<br>\n"; }
 		//if (strlen($vm_password) == 0) { $msg .= "Please provide: Voicemail Password<br>\n"; }
 		//if (strlen($accountcode) == 0) { $msg .= "Please provide: Account Code<br>\n"; }
 		//if (strlen($effective_caller_id_name) == 0) { $msg .= "Please provide: Effective Caller ID Name<br>\n"; }
@@ -157,7 +155,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "password, ";
 				$sql .= "user_list, ";
 				$sql .= "provisioning_list, ";
-				$sql .= "mailbox, ";
 				$sql .= "vm_password, ";
 				$sql .= "accountcode, ";
 				$sql .= "effective_caller_id_name, ";
@@ -182,7 +179,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$password', ";
 				$sql .= "'$user_list', ";
 				$sql .= "'$provisioning_list', ";
-				$sql .= "'$extension', ";
 				$sql .= "'#".generate_password(4, 1)."', ";
 				$sql .= "'$extension', ";
 				$sql .= "'$effective_caller_id_name', ";
@@ -235,7 +231,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "password = '$password', ";
 			$sql .= "user_list = '$user_list', ";
 			$sql .= "provisioning_list = '$provisioning_list', ";
-			$sql .= "mailbox = '$mailbox', ";
 			$sql .= "vm_password = '#$vm_password', ";
 			$sql .= "accountcode = '$accountcode', ";
 			$sql .= "effective_caller_id_name = '$effective_caller_id_name', ";
@@ -568,19 +563,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
-	if ($action == "update") {
-		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "    Mailbox:\n";
-		echo "</td>\n";
-		echo "<td class='vtable' align='left'>\n";
-		echo "    <input class='formfld' type='text' name='mailbox' maxlength='255' value=\"$mailbox\">\n";
-		echo "<br />\n";
-		echo "Enter the mailbox here. Example: extension 1001 then mailbox 1001\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-	}
 
 	if ($action == "update") {
 		echo "<tr>\n";
