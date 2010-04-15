@@ -175,11 +175,11 @@ if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_
 	//send the fax
 		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 		if ($provider_type == "gateway") {
-			$cmd = "api originate [absolute_codec_string=PCMU]sofia/gateway/".$fax_gateway."/".$fax_number." &txfax(".$dir_fax_temp.$fax_name.".tif)";
+			$cmd = "api originate [absolute_codec_string=PCMU]sofia/gateway/".$fax_gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 		}
 		if ($provider_type == "sip_uri") {
 			$sip_uri = str_replace("\$1", $fax_number, $sip_uri);
-			$cmd = "api originate [absolute_codec_string=PCMU]$sip_uri &txfax(".$dir_fax_temp.'/'.$fax_name.".tif)";
+			$cmd = "api originate [absolute_codec_string=PCMU]$sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 		}
 
 		$response = event_socket_request($fp, $cmd);

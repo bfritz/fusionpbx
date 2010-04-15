@@ -628,7 +628,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    Proxy:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -654,9 +654,10 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    Expire seconds:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
+	if (strlen($expire_seconds) == 0) { $expire_seconds = "800"; }
 	echo "  <input class='formfld' type='text' name='expire_seconds' maxlength='255' value='$expire_seconds'>\n";
 	echo "<br />\n";
-	echo "Enter the expire-seconds here. Example: 2400\n";
+	echo "Enter the expire-seconds here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -690,13 +691,12 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    Retry seconds:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
+	if (strlen($retry_seconds) == 0) { $retry_seconds = "60"; }
 	echo "  <input class='formfld' type='text' name='retry_seconds' maxlength='255' value='$retry_seconds'>\n";
 	echo "<br />\n";
-	echo "Enter the retry-seconds here. Example: 60\n";
+	echo "Enter the retry-seconds here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
-
 
 
 	//--- begin: showadvanced -----------------------
@@ -936,9 +936,10 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    Context:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
+	if (strlen($context) == 0) { $context = "public"; }
 	echo "    <input class='formfld' type='text' name='context' maxlength='255' value=\"$context\">\n";
 	echo "<br />\n";
-	echo "Enter the context here. Example: public\n";
+	echo "Enter the context here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
