@@ -33,6 +33,17 @@ else {
 	echo "access denied";
 	exit;
 }
+
+if ($_GET['a'] == "del") {
+	$faxextension = check_str($_GET["faxextension"]);
+	if ($_GET['type'] == "fax_inbox") {
+		unlink($v_storage_dir.'/fax/'.$faxextension.'/inbox/'.$_GET['filename']);
+	}
+	if ($_GET['type'] == "fax_sent") {
+		unlink($v_storage_dir.'/fax/'.$faxextension.'/sent/'.$_GET['filename']);
+	}
+}
+
 if ($_GET['a'] == "download") {
 
 	session_cache_limiter('public');
@@ -382,7 +393,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "      <br>";
 
 
-
 	echo "<form method='post' name='frm' action=''>\n";
 
 	echo "<div align='center'>\n";
@@ -634,14 +644,14 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					//}
 					echo "<tr>\n";
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-					echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=bin&ext=".$faxextension."&filename=".$file."\">\n";
+					echo "	  <a href=\"v_fax_edit.php?id=".$fax_id."&a=download&type=fax_inbox&t=bin&ext=".urlencode($faxextension)."&filename=".urlencode($file)."\">\n";
 					echo "    	$file";
 					echo "	  </a>";
 					echo "  </td>\n";
 
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					if (file_exists($dir_fax_inbox.'/'.$file_name.".pdf")) {
-						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=bin&ext=".$faxextension."&filename=".$file_name.".pdf\">\n";
+						echo "	  <a href=\"v_fax_edit.php?id=".$fax_id."&a=download&type=fax_inbox&t=bin&ext=".urlencode($faxextension)."&filename=".urlencode($file_name).".pdf\">\n";
 						echo "    	PDF";
 						echo "	  </a>";
 					}
@@ -652,7 +662,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 					//echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					//if (file_exists($dir_fax_inbox.'/'.$file_name.".jpg")) {
-					//	echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_inbox&t=jpg&ext=".$faxextension."&filename=".$file_name.".jpg\" target=\"_blank\">\n";
+					//	echo "	  <a href=\"v_fax_edit.php?id=".$fax_id."&a=download&type=fax_inbox&t=jpg&ext=".$faxextension."&filename=".$file_name.".jpg\" target=\"_blank\">\n";
 					//	echo "    	jpg";
 					//	echo "	  </a>";
 					//}
@@ -672,7 +682,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					echo "  <td valign=\"middle\" nowrap class=\"list\">\n";
 					echo "    <table border=\"0\" cellspacing=\"0\" cellpadding=\"1\">\n";
 					echo "      <tr>\n";
-					echo "        <td><a href=\"v_fax_edit.php?id=".$id."&type=fax_inbox&act=del&filename=".$file."\" onclick=\"return confirm('Do you really want to delete this file?')\"><img src=\"$v_icon_delete\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
+					echo "        <td><a href=\"v_fax_edit.php?id=".$fax_id."&type=fax_inbox&a=del&faxextension=".urlencode($faxextension)."&filename=".urlencode($file)."\" onclick=\"return confirm('Do you really want to delete this file?')\"><img src=\"$v_icon_delete\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
 					echo "      </tr>\n";
 					echo "   </table>\n";
 					echo "  </td>\n";
@@ -755,13 +765,13 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					}
 					echo "<tr>\n";
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-					echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_sent&t=bin&ext=".$faxextension."&filename=".$file."\">\n";
+					echo "	  <a href=\"v_fax_edit.php?id=".$fax_id."&a=download&type=fax_sent&t=bin&ext=".urlencode($faxextension)."&filename=".urlencode($file)."\">\n";
 					echo "    	$file";
 					echo "	  </a>";
 					echo "  </td>\n";
 					echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					if (file_exists($dir_fax_sent.'/'.$file_name.".pdf")) {
-						echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_sent&t=bin&ext=".$faxextension."&filename=".$file_name.".pdf\">\n";
+						echo "	  <a href=\"v_fax_edit.php?id=".$fax_id."&a=download&type=fax_sent&t=bin&ext=".urlencode($faxextension)."&filename=".urlencode($file_name).".pdf\">\n";
 						echo "    	PDF";
 						echo "	  </a>";
 					}
@@ -771,7 +781,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					echo "  </td>\n";
 					//echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 					//if (file_exists($dir_fax_sent.'/'.$file_name.".jpg")) {
-					//	echo "	  <a href=\"v_fax_edit.php?id=".$id."&a=download&type=fax_sent&t=jpg&ext=".$faxextension."&filename=".$file_name.".jpg\" target=\"_blank\">\n";
+					//	echo "	  <a href=\"v_fax_edit.php?id=".$fax_id."&a=download&type=fax_sent&t=jpg&ext=".$faxextension."&filename=".$file_name.".jpg\" target=\"_blank\">\n";
 					//	echo "    	jpg";
 					//	echo "	  </a>";
 					//}
@@ -790,7 +800,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 					echo "  <td class='' valign=\"middle\" nowrap>\n";
 					echo "    <table border=\"0\" cellspacing=\"0\" cellpadding=\"1\">\n";
 					echo "      <tr>\n";
-					echo "        <td><a href=\"v_fax_edit.php?id=".$id."&type=fax_sent&act=del&filename=".$file."\" onclick=\"return confirm('Do you really want to delete this file?')\"><img src=\"$v_icon_delete\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
+					echo "        <td><a href=\"v_fax_edit.php?id=".$fax_id."&type=fax_sent&a=del&faxextension=".urlencode($faxextension)."&filename=".urlencode($file)."\" onclick=\"return confirm('Do you really want to delete this file?')\"><img src=\"$v_icon_delete\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
 					echo "      </tr>\n";
 					echo "   </table>\n";
 					echo "  </td>\n";

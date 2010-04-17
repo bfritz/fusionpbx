@@ -1417,7 +1417,6 @@ function sync_package_v_hunt_group()
 			//add each Hunt Group to the dialplan
 			//get the list of destinations then build the Hunt Group javascript
 
-
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -1504,6 +1503,7 @@ function sync_package_v_hunt_group()
 						$prepstatement2->execute();
 						while($row2 = $prepstatement2->fetch()) {
 							$action = 'update';
+							$dialplan_include_id = $row2['dialplan_include_id'];
 							break; //limit to 1 row
 						}
 						unset ($sql, $prepstatement2);
@@ -1556,6 +1556,29 @@ function sync_package_v_hunt_group()
 								//exit;
 								$db->query($sql);
 								unset($sql);
+
+								//update the condition
+								$sql = "";
+								$sql = "update v_dialplan_includes_details set ";
+								$sql .= "fielddata = '^".$row['huntgroupextension']."$' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and tag = 'condition' ";
+								$sql .= "and fieldtype = 'destination_number' ";
+								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								//echo $sql."<br />";
+								$db->query($sql);
+								unset($sql);
+
+								//update the action
+								$sql = "";
+								$sql = "update v_dialplan_includes_details set ";
+								$sql .= "fielddata = 'autoattendant_".$row['huntgroupextension'].".js' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and tag = 'action' ";
+								$sql .= "and fieldtype = 'javascript' ";
+								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								//echo $sql."<br />";
+								$db->query($sql);
 
 								unset($extensionname);
 								unset($order);
@@ -2088,16 +2111,15 @@ function sync_package_v_fax()
 			while($row2 = $prepstatement2->fetch()) {
 				$action = 'update';
 
-				$dialplan_include_id = $row['dialplan_include_id'];
-				$extensionname = $row['extensionname'];
-				$order = $row['order'];
-				$context = $row['context'];
-				$enabled = $row['enabled'];
-				$descr = $row['descr'];
-				$opt1name = $row['opt1name'];
-				$opt1value = $row['opt1value'];
+				$dialplan_include_id = $row2['dialplan_include_id'];
+				$extensionname = $row2['extensionname'];
+				$order = $row2['order'];
+				$context = $row2['context'];
+				$enabled = $row2['enabled'];
+				$descr = $row2['descr'];
+				$opt1name = $row2['opt1name'];
+				$opt1value = $row2['opt1value'];
 				$id = $i;
-				//echo "update".$i."<br />\n";
 
 				if (file_exists($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml")){
 					unlink($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml");
@@ -2197,6 +2219,42 @@ function sync_package_v_fax()
 				$db->query($sql);
 				unset($sql);
 
+				//update the condition
+				$sql = "";
+				$sql = "update v_dialplan_includes_details set ";
+				$sql .= "fielddata = '^".$row['faxextension']."$' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and tag = 'condition' ";
+				$sql .= "and fieldtype = 'destination_number' ";
+				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				//echo $sql."<br />";
+				$db->query($sql);
+				unset($sql);
+
+				//update the action
+				$fielddata = $v_storage_dir.'/fax/'.$row['faxextension'].'/inbox/${last_fax}.tif';
+				$sql = "";
+				$sql = "update v_dialplan_includes_details set ";
+				$sql .= "fielddata = '".$fielddata."' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and tag = 'action' ";
+				$sql .= "and fieldtype = 'rxfax' ";
+				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				//echo $sql."<br />";
+				$db->query($sql);
+
+				//update the action
+				$fielddata = $php_dir.'/'.$php_exe.' '.$v_secure.'/fax_to_email.php email='.$row['faxemail'].' extension='.$row['faxextension'].' name=${last_fax}';
+				$sql = "";
+				$sql = "update v_dialplan_includes_details set ";
+				$sql .= "fielddata = '".$fielddata."' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and tag = 'action' ";
+				$sql .= "and fieldtype = 'system' ";
+				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				//echo $sql."<br />";
+				$db->query($sql);
+
 				unset($extensionname);
 				unset($order);
 				unset($context);
@@ -2292,6 +2350,7 @@ function sync_package_v_auto_attendant()
 					$prepstatement2->execute();
 					while($row2 = $prepstatement2->fetch()) {
 						$action = 'update';
+						$dialplan_include_id = $row2['dialplan_include_id'];
 						break; //limit to 1 row
 					}
 					unset ($sql, $prepstatement2);
@@ -2331,6 +2390,7 @@ function sync_package_v_auto_attendant()
 				$descr = 'auto attendant';
 				$auto_attendant_id = $row['auto_attendant_id'];
 
+				//update the main dialplan entry
 				$sql = "";
 				$sql = "update v_dialplan_includes set ";
 				$sql .= "extensionname = '$extensionname', ";
@@ -2346,6 +2406,30 @@ function sync_package_v_auto_attendant()
 				$db->query($sql);
 				unset($sql);
 
+				//update the condition
+				$sql = "";
+				$sql = "update v_dialplan_includes_details set ";
+				$sql .= "fielddata = '^".$row['aaextension']."$' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and tag = 'condition' ";
+				$sql .= "and fieldtype = 'destination_number' ";
+				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				//echo $sql."<br />";
+				$db->query($sql);
+				unset($sql);
+
+				//update the action
+				$sql = "";
+				$sql = "update v_dialplan_includes_details set ";
+				$sql .= "fielddata = 'autoattendant_".$row['aaextension'].".js' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and tag = 'action' ";
+				$sql .= "and fieldtype = 'javascript' ";
+				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				//echo $sql."<br />";
+				$db->query($sql);
+
+				unset($sql);
 				unset($ent);
 				unset($extensionname);
 				unset($dialplanorder);
@@ -3329,7 +3413,12 @@ function sync_package_v_dialplan_includes()
 			foreach($result2 as $ent) {
 				//print_r( $row );
 				if ($ent['tag'] == "action" && $row['dialplanincludeid'] == $ent['dialplanincludeid']) {
-					$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					if (strlen($ent['fielddata']) > 0) {
+						$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					}
+					else {
+						$tmp .= "       <action application=\"".$ent['fieldtype']."\"/>\n";
+					}
 				}
 				$i++;
 			} //end foreach
@@ -3355,13 +3444,17 @@ function sync_package_v_dialplan_includes()
 			foreach($result2 as $ent) {
 				//print_r( $row );
 				if ($ent['tag'] == "anti-action" && $row['dialplanincludeid'] == $ent['dialplanincludeid']) {
-					$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					if (strlen($ent['fielddata']) > 0) {
+						$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					}
+					else {
+						$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\"/>\n";
+					}
 				}
 				$i++;
 			} //end foreach
 			unset($sql, $resultcount2, $result2, $rowcount2);
 		} //end if results
-
 
 		//param
 
@@ -3380,9 +3473,7 @@ function sync_package_v_dialplan_includes()
 		unset($dialplanincludefilename);
 		unset($tmp);
 
-
 	} //end while
-
 
 }
 
@@ -3417,7 +3508,6 @@ function sync_package_v_public_includes()
 	foreach ($result as &$row) {
 		$tmp = "";
 		$tmp .= "\n";
-
 		$tmp = "<extension name=\"".$row['extensionname']."\">\n";
 
 		$sql = "";
@@ -3476,7 +3566,12 @@ function sync_package_v_public_includes()
 			foreach($result2 as $ent) {
 				//print_r( $row );
 				if ($ent['tag'] == "action" && $row['publicincludeid'] == $ent['publicincludeid']) {
-					$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					if (strlen($ent['fielddata']) > 0) {
+						$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					}
+					else {
+						$tmp .= "       <action application=\"".$ent['fieldtype']."\"/>\n";
+					}
 				}
 				$i++;
 			} //end foreach
@@ -3502,7 +3597,12 @@ function sync_package_v_public_includes()
 			foreach($result2 as $ent) {
 				//print_r( $row );
 				if ($ent['tag'] == "anti-action" && $row['publicincludeid'] == $ent['publicincludeid']) {
-					$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					if (strlen($ent['fielddata']) > 0) {
+						$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					}
+					else {
+						$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\"/>\n";
+					}
 				}
 				$i++;
 			} //end foreach

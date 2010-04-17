@@ -51,6 +51,7 @@ if (count($_POST)>0) {
 	$extensionname = check_str($_POST["extensionname"]);
 	$dialplanorder = check_str($_POST["dialplanorder"]);
 	$extensioncontinue = check_str($_POST["extensioncontinue"]);
+	if (strlen($extensioncontinue) == 0) { $extensioncontinue = "false"; }
 	$context = check_str($_POST["context"]);
 	$enabled = check_str($_POST["enabled"]);
 	$descr = check_str($_POST["descr"]);
@@ -168,7 +169,7 @@ if ($_POST["persistformvar"] != "true") {
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
+//pre-populate the form
 if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$dialplan_include_id = $_GET["id"];
 	$sql = "";

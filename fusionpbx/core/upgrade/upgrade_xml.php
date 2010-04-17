@@ -29,6 +29,8 @@ $file_count = 0;
 $row_count = 0;
 $svn_array = '';
 
+clearstatcache();
+
 function recur_dir($dir) {
 	global $svn_array;
 	global $dir_count;
@@ -36,7 +38,6 @@ function recur_dir($dir) {
 	global $svn_path;
 	global $row_count;
 
-	clearstatcache();
 	$htmldirlist = '';
 	$htmlfilelist = '';
 	$dirlist = opendir($dir);
