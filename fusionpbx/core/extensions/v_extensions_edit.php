@@ -559,6 +559,17 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Call Group:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='callgroup' maxlength='255' value=\"$callgroup\">\n";
+	echo "<br />\n";
+	echo "Enter the user call group here. Groups available by default: sales, support, billing\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    User Context:\n";
 	echo "</td>\n";
@@ -571,17 +582,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	}
 	echo "<br />\n";
 	echo "Enter the user context here.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Call Group:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='callgroup' maxlength='255' value=\"$callgroup\">\n";
-	echo "<br />\n";
-	echo "Enter the user call group here. Example: sales, support\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
