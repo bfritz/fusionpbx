@@ -952,9 +952,19 @@ function sync_package_v_extensions()
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
+	$sql .= "order by callgroup asc ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
+	$i = 0;
 	while($row = $prepstatement->fetch()) {
+		$callgroup = $row['callgroup'];
+		$callgroup = str_replace(";", ",", $callgroup);
+		$tmp_array = explode(",", $callgroup);
+		foreach ($tmp_array as &$tmp_callgroup) {
+			$callgroups_array[$i]['callgroup'] = $tmp_callgroup;
+			$callgroups_array[$i]['extension'] = $row['extension'];
+			$i++;
+		}
 		$vm_password = $row['vm_password'];
 		$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 
@@ -1026,6 +1036,79 @@ function sync_package_v_extensions()
 	}
 	unset ($prepstatement);
 	//echo $tmpxml;
+
+	//define the group members
+		$tmpxml = "<!--\n";
+		$tmpxml .= "	NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "	FreeSWITCH works off the concept of users and domains just like email.\n";
+		$tmpxml .= "	You have users that are in domains for example 1000@domain.com.\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "	When freeswitch gets a register packet it looks for the user in the directory\n";
+		$tmpxml .= "	based on the from or to domain in the packet depending on how your sofia profile\n";
+		$tmpxml .= "	is configured.  Out of the box the default domain will be the IP address of the\n";
+		$tmpxml .= "	machine running FreeSWITCH.  This IP can be found by typing \"sofia status\" at the\n";
+		$tmpxml .= "	CLI.  You will register your phones to the IP and not the hostname by default.\n";
+		$tmpxml .= "	If you wish to register using the domain please open vars.xml in the root conf\n";
+		$tmpxml .= "	directory and set the default domain to the hostname you desire.  Then you would\n";
+		$tmpxml .= "	use the domain name in the client instead of the IP address to register\n";
+		$tmpxml .= "	with FreeSWITCH.\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "	NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE\n";
+		$tmpxml .= "-->\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "<include>\n";
+		$tmpxml .= "	<!--the domain or ip (the right hand side of the @ in the addr-->\n";
+		$tmpxml .= "	<domain name=\"\$\${domain}\">\n";
+		$tmpxml .= "		<params>\n";
+		$tmpxml .= "			<param name=\"dial-string\" value=\"{presence_id=\${dialed_user}@\${dialed_domain}}\${sofia_contact(\${dialed_user}@\${dialed_domain})}\"/>\n";
+		$tmpxml .= "		</params>\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "		<variables>\n";
+		$tmpxml .= "			<variable name=\"record_stereo\" value=\"true\"/>\n";
+		$tmpxml .= "			<variable name=\"default_gateway\" value=\"\$\${default_provider}\"/>\n";
+		$tmpxml .= "			<variable name=\"default_areacode\" value=\"\$\${default_areacode}\"/>\n";
+		$tmpxml .= "			<variable name=\"transfer_fallback_extension\" value=\"operator\"/>\n";
+		$tmpxml .= "		</variables>\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "		<groups>\n";
+		$tmpxml .= "			<group name=\"default\">\n";
+		$tmpxml .= "			<users>\n";
+		$tmpxml .= "				<X-PRE-PROCESS cmd=\"include\" data=\"default/*.xml\"/>\n";
+		$tmpxml .= "			</users>\n";
+		$tmpxml .= "			</group>\n";
+		$tmpxml .= "\n";
+		$previous_callgroup = "";
+		foreach ($callgroups_array as &$row2) {
+			$callgroup = $row2['callgroup'];
+			if ($previous_callgroup != $callgroup) {
+				$tmpxml .= "			<group name=\"$callgroup\">\n";
+				$tmpxml .= "				<users>\n";
+				$tmpxml .= "					<!--\n";
+				$tmpxml .= "					type=\"pointer\" is a pointer so you can have the\n";
+				$tmpxml .= "					same user in multiple groups.  It basically means\n";
+				$tmpxml .= "					to keep searching for the user in the directory.\n";
+				$tmpxml .= "					-->\n";
+				foreach ($callgroups_array as &$row3) {
+					if ($callgroup == $row3['callgroup']) {
+						$extension = $row3['extension'];
+						$tmpxml .= "					<user id=\"$extension\" type=\"pointer\"/>\n";
+					}
+				}
+				$tmpxml .= "				</users>\n";
+				$tmpxml .= "			</group>\n";
+				$tmpxml .= "\n";
+			}
+			$previous_callgroup = $callgroup;
+		}
+		$tmpxml .= "		</groups>\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "	</domain>\n";
+		$tmpxml .= "</include>";
+		$fout = fopen($v_conf_dir."/directory/default.xml","w");
+		fwrite($fout, $tmpxml);
+		unset($tmpxml);
+		fclose($fout);
 
 	//syncrhonize the phone directory
 	sync_directory();
