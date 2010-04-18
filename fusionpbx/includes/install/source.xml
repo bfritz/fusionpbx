@@ -2403,9 +2403,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Thu, 15 Apr 2010 08:38:46 GMT</last_mod> 
-		<md5>53ada7d28040d93715177b65a232e640</md5> 
-		<size>137675</size> 
+		<last_mod>Sun, 18 Apr 2010 06:36:39 GMT</last_mod> 
+		<md5>a1f99e879518c352b8f4faa5f1f9cc5e</md5> 
+		<size>137879</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2417,22 +2417,22 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/mysql.sql</path> 
-		<last_mod>Sun, 18 Apr 2010 02:57:13 GMT</last_mod> 
-		<md5>edf066c241a1f81b2794bfb436783cec</md5> 
+		<last_mod>Sun, 18 Apr 2010 06:48:58 GMT</last_mod> 
+		<md5>3ad4645ac16e4993bb4793808c2f1b42</md5> 
 		<size>60655</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/pgsql.sql</path> 
-		<last_mod>Sun, 18 Apr 2010 02:57:04 GMT</last_mod> 
-		<md5>fb7d8d6437ff871464e24f07cae2ca89</md5> 
+		<last_mod>Sun, 18 Apr 2010 06:49:18 GMT</last_mod> 
+		<md5>46afa660977dfa69607ae580e852e201</md5> 
 		<size>60231</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/sqlite.sql</path> 
-		<last_mod>Sun, 18 Apr 2010 02:56:50 GMT</last_mod> 
-		<md5>b3a67524e3988a8a269978b8b6e6149f</md5> 
+		<last_mod>Sun, 18 Apr 2010 06:49:40 GMT</last_mod> 
+		<md5>25db336615f9a5f64417c9632622c4b8</md5> 
 		<size>60576</size> 
 	</src> 
 	<src> 
@@ -4633,4 +4633,4 @@
 		<md5>e45f2d2b34a95646df5e16393857278d</md5> 
 		<size>14978</size> 
 	</src> 
-</xml>
+</xml> 
