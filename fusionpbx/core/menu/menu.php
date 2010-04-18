@@ -97,6 +97,7 @@ if (!ifgroup("superadmin")) {
 					$menutags = "href='$menustr'";
 					break;
 				case "external":
+					$menustr = str_replace ("<!--{project_path}-->", PROJECT_PATH, $menustr);
 					$menutags = "href='$menustr' target='_blank'";
 					break;
 				case "email":
@@ -216,6 +217,7 @@ if (!ifgroup("superadmin")) {
 										$menutags = "href='$menustr'";
 										break;
 									case "external":
+										$menustr = str_replace ("<!--{project_path}-->", PROJECT_PATH, $menustr);
 										$menutags = "href='$menustr' target='_blank'";
 										break;
 									case "email":

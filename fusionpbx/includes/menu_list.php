@@ -100,6 +100,7 @@ if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 					$menutags = "href='$menustr'";
 					break;
 				case "external":
+					$menustr = str_replace ("<!--{project_path}-->", PROJECT_PATH, $menustr);
 					$menutags = "href='".PROJECT_PATH."$menustr' target='_blank'";
 					break;
 				case "email":
@@ -223,6 +224,7 @@ if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 										$menutags = "href='$menustr'";
 										break;
 									case "external":
+										$menustr = str_replace ("<!--{project_path}-->", PROJECT_PATH, $menustr);
 										$menutags = "href='".PROJECT_PATH."$menustr' target='_blank'";
 										break;
 									case "email":
