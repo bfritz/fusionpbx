@@ -81,18 +81,7 @@ echo "<br />";
 	}
 
 //get the software information
-	$sql = "";
-	$sql .= "select * from v_software ";
-	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
-		$softwarename = $row["softwarename"];
-		$softwareversion = $row["softwareversion"];
-		$softwareurl = $row["softwareurl"];
-		break; //limit to 1 row
-	}
-	unset ($prepstatement);
+	include "includes/v_version.php";
 
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "<tr>\n";

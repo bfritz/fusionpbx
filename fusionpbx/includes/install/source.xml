@@ -296,9 +296,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/dialplan/v_dialplan_includes_edit.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:07:04 GMT</last_mod> 
-		<md5>ab3b6134e0c1afa0cb109d73ebd94734</md5> 
-		<size>19758</size> 
+		<last_mod>Sat, 17 Apr 2010 08:40:52 GMT</last_mod> 
+		<md5>dad6f567e9f0d36aa94103cbad249d78</md5> 
+		<size>19830</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -331,9 +331,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/extensions/v_extensions_edit.php</path> 
-		<last_mod>Thu, 15 Apr 2010 03:28:18 GMT</last_mod> 
-		<md5>8058d79298f8fcb40df7c43c8250fcfb</md5> 
-		<size>32691</size> 
+		<last_mod>Sat, 17 Apr 2010 23:38:14 GMT</last_mod> 
+		<md5>a98da434d4252bc2c0952d06dad99283</md5> 
+		<size>27962</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -387,9 +387,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/menu/menu.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:05:21 GMT</last_mod> 
-		<md5>3b09ea58eb1df6a9d18be8e5cda35a01</md5> 
-		<size>10252</size> 
+		<last_mod>Sun, 18 Apr 2010 03:01:20 GMT</last_mod> 
+		<md5>a785f65f026e1f9d0047a733357015be</md5> 
+		<size>10417</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -408,9 +408,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/menu/menu_list.php</path> 
-		<last_mod>Thu, 11 Mar 2010 09:40:23 GMT</last_mod> 
-		<md5>9ea369ef1e650495014d65fb78f39aa7</md5> 
-		<size>12566</size> 
+		<last_mod>Sun, 18 Apr 2010 02:59:59 GMT</last_mod> 
+		<md5>10d6480abb523fe9982f5461b6c2b748</md5> 
+		<size>12727</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -618,9 +618,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/status/v_status.php</path> 
-		<last_mod>Wed, 24 Mar 2010 19:52:04 GMT</last_mod> 
-		<md5>1fefe689de5d093242b4c83c3785573f</md5> 
-		<size>14969</size> 
+		<last_mod>Sat, 17 Apr 2010 08:27:56 GMT</last_mod> 
+		<md5>ef7717972a3c7cd96f1e94422b1076f7</md5> 
+		<size>14971</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -737,9 +737,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/upgrade/upgrade_xml.php</path> 
-		<last_mod>Thu, 11 Mar 2010 03:30:16 GMT</last_mod> 
-		<md5>3c45fcc58cba37f2688422add43158ff</md5> 
-		<size>3389</size> 
+		<last_mod>Sat, 17 Apr 2010 08:27:30 GMT</last_mod> 
+		<md5>188722699feed272b382df6fb7ed2ec4</md5> 
+		<size>3390</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2403,8 +2403,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Wed, 14 Apr 2010 06:22:22 GMT</last_mod> 
-		<md5>f16a361b5557b3ffc3ab3e757dcfd4c2</md5> 
+		<last_mod>Thu, 15 Apr 2010 08:38:46 GMT</last_mod> 
+		<md5>53ada7d28040d93715177b65a232e640</md5> 
 		<size>137675</size> 
 	</src> 
 	<src> 
@@ -2417,23 +2417,23 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/mysql.sql</path> 
-		<last_mod>Wed, 14 Apr 2010 09:37:48 GMT</last_mod> 
-		<md5>7938ded47ec0607e462bd97519f83138</md5> 
-		<size>60571</size> 
+		<last_mod>Sun, 18 Apr 2010 02:57:13 GMT</last_mod> 
+		<md5>edf066c241a1f81b2794bfb436783cec</md5> 
+		<size>60655</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/pgsql.sql</path> 
-		<last_mod>Wed, 14 Apr 2010 09:37:05 GMT</last_mod> 
-		<md5>e61baf98c6bba95b642e9bc71d79562e</md5> 
-		<size>60147</size> 
+		<last_mod>Sun, 18 Apr 2010 02:57:04 GMT</last_mod> 
+		<md5>fb7d8d6437ff871464e24f07cae2ca89</md5> 
+		<size>60231</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/sqlite.sql</path> 
-		<last_mod>Wed, 14 Apr 2010 09:36:00 GMT</last_mod> 
-		<md5>62cf046b103d78ec8f053f4caaf314b5</md5> 
-		<size>60492</size> 
+		<last_mod>Sun, 18 Apr 2010 02:56:50 GMT</last_mod> 
+		<md5>b3a67524e3988a8a269978b8b6e6149f</md5> 
+		<size>60576</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2466,23 +2466,23 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Thu, 15 Apr 2010 03:26:20 GMT</last_mod> 
-		<md5>e0e027e2abc4fda9ef23486eb6727dab</md5> 
-		<size>188931</size> 
+		<last_mod>Sat, 17 Apr 2010 23:42:55 GMT</last_mod> 
+		<md5>36461b5cf08aec059c3660e673bd66fb</md5> 
+		<size>196583</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/menu.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:18:53 GMT</last_mod> 
-		<md5>c860947208b6d8e3a470a9cbb0d3b2ef</md5> 
-		<size>9368</size> 
+		<last_mod>Sun, 18 Apr 2010 02:58:04 GMT</last_mod> 
+		<md5>8825aef61e2df6e755579ab750a52e6b</md5> 
+		<size>9533</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/menu_list.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:17:53 GMT</last_mod> 
-		<md5>0611a5e14a2d6a3cfda9029521fcb9ff</md5> 
-		<size>10330</size> 
+		<last_mod>Sun, 18 Apr 2010 03:03:28 GMT</last_mod> 
+		<md5>5d695dfe5ee9b84b3fb3ac394aad120c</md5> 
+		<size>10495</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2542,6 +2542,13 @@
 	</src> 
 	<src> 
 		<type>file</type> 
+		<path>includes/v_version.php</path> 
+		<last_mod>Sat, 17 Apr 2010 09:21:37 GMT</last_mod> 
+		<md5>0ce82fb31cfec0293e84531626773e8f</md5> 
+		<size>936</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
 		<path>includes/wysiwyg.php</path> 
 		<last_mod>Sat, 06 Feb 2010 18:17:17 GMT</last_mod> 
 		<md5>951c322cd95551458a036020407add07</md5> 
@@ -2550,9 +2557,9 @@
 	<src> 
 		<type>file</type> 
 		<path>index.php</path> 
-		<last_mod>Sat, 20 Feb 2010 04:24:46 GMT</last_mod> 
-		<md5>17ef8484c84a97bd63dc97b3d50d9b40</md5> 
-		<size>10934</size> 
+		<last_mod>Sat, 17 Apr 2010 23:45:00 GMT</last_mod> 
+		<md5>c70ee82a6780c7354609654f17401694</md5> 
+		<size>10589</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2977,9 +2984,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/fax/v_fax_edit.php</path> 
-		<last_mod>Wed, 14 Apr 2010 06:19:33 GMT</last_mod> 
-		<md5>078e77c3ae7abae441563b9abd5650b5</md5> 
-		<size>28194</size> 
+		<last_mod>Sat, 17 Apr 2010 08:46:14 GMT</last_mod> 
+		<md5>7e2c7a03fbb7381a18f30e2861b65918</md5> 
+		<size>28727</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4626,4 +4633,4 @@
 		<md5>e45f2d2b34a95646df5e16393857278d</md5> 
 		<size>14978</size> 
 	</src> 
-</xml> 
+</xml>
