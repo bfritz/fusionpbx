@@ -1655,7 +1655,7 @@ function sync_package_v_hunt_group()
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = 'autoattendant_".$row['huntgroupextension'].".js' ";
+								$sql .= "fielddata = 'huntgroup_".$row['huntgroupextension'].".js' ";
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'action' ";
 								$sql .= "and fieldtype = 'javascript' ";
