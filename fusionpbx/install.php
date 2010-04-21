@@ -451,81 +451,63 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//echo "</pre>\n";
 				//exit;
 
-				//database connection
-					try {
-						if (strlen($dbhost) == 0 && strlen($dbport) == 0) {
-							//if both host and port are empty use the unix socket
-							$dbsql = new PDO("mysql:host=$dbhost;unix_socket=/var/run/mysqld/mysqld.sock;", $dbusername, $dbpassword);
+				try {
+					if (strlen($dbhost) == 0 && strlen($dbport) == 0) {
+						//if both host and port are empty use the unix socket
+						$dbsql = new PDO("mysql:host=$dbhost;unix_socket=/var/run/mysqld/mysqld.sock;", $dbusername, $dbpassword);
+					}
+					else {
+						if (strlen($dbport) == 0) {
+							//leave out port if it is empty
+							$dbsql = new PDO("mysql:host=$dbhost;", $dbusername, $dbpassword);
 						}
 						else {
-							if (strlen($dbport) == 0) {
-								//leave out port if it is empty
-								$dbsql = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbusername, $dbpassword);
-							}
-							else {
-								$dbsql = new PDO("mysql:host=$dbhost;port=$dbport;dbname=$dbname;", $dbusername, $dbpassword);
-							}
+							$dbsql = new PDO("mysql:host=$dbhost;port=$dbport;", $dbusername, $dbpassword);
 						}
-						$dbsql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-						$database_exists = true;
+					}
+					$dbsql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				}
+				catch (PDOException $error) {
+					print "error: " . $error->getMessage() . "<br/>";
+					//die();
+				}
+
+				//create the database
+					try {
+						$dbsql->query("CREATE DATABASE $dbname;");
 					}
 					catch (PDOException $error) {
-						$database_exists = false;
-						//print "error: " . $error->getMessage() . "<br/>";
-						//die();
+						//database exists so upgrade the schema
+						$display_results = false;
+						require_once "core/upgrade/upgrade_schema.php";
+						header("Location: ".PROJECT_PATH."/login.php");
+						exit;
 					}
 
-				//database does not exist so create it.
-					if (!$database_exists) {
-						try {
-							if (strlen($dbhost) == 0 && strlen($dbport) == 0) {
-								//if both host and port are empty use the unix socket
-								$dbsql = new PDO("mysql:host=$dbhost;unix_socket=/var/run/mysqld/mysqld.sock;", $dbusername, $dbpassword);
+				//select the database
+					$dbsql->query("USE $dbname;");
+
+				//replace \r\n with \n then explode on \n
+					$file_contents = str_replace("\r\n", "\n", $file_contents);
+
+				//loop line by line through all the lines of sql code
+					$stringarray = explode("\n", $file_contents);
+					$x = 0;
+					foreach($stringarray as $sql) {
+						if (strlen($sql) > 3) {
+							try {
+								$dbsql->query($sql);
 							}
-							else {
-								if (strlen($dbport) == 0) {
-									//leave out port if it is empty
-									$dbsql = new PDO("mysql:host=$dbhost;", $dbusername, $dbpassword);
-								}
-								else {
-									$dbsql = new PDO("mysql:host=$dbhost;port=$dbport;", $dbusername, $dbpassword);
-								}
+							catch (PDOException $error) {
+								//echo "error on line $x: " . $error->getMessage() . " sql: $sql<br/>";
+								//die();
 							}
-							$dbsql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-							$database_exists = true;
 						}
-						catch (PDOException $error) {
-							$database_exists = false;
-							//print "error: " . $error->getMessage() . "<br/>";
-							//die();
-						}
-
-						//create the database
-							$dbsql->query("CREATE DATABASE $dbname;");
-
-						//select the database
-							$dbsql->query("USE $dbname;");
-
-						//replace \r\n with \n then explode on \n
-							$file_contents = str_replace("\r\n", "\n", $file_contents);
-
-						//loop line by line through all the lines of sql code
-							$stringarray = explode("\n", $file_contents);
-							$x = 0;
-							foreach($stringarray as $sql) {
-								if (strlen($sql) > 3) {
-									try {
-										$dbsql->query($sql);
-									}
-									catch (PDOException $error) {
-										echo "error on line $x: " . $error->getMessage() . " sql: $sql<br/>";
-										die();
-									}
-								}
-								$x++;
-							}
-							unset ($dbsql, $file_contents, $sql);
+						$x++;
 					}
+					unset ($dbsql, $file_contents, $sql);
+
+
 			}
 			//--- end: create the mysql database -----------------------------------------
 
