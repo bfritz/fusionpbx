@@ -974,7 +974,7 @@ function sync_package_v_extensions()
 
 			$tmpxml = "<include>\n";
 			if (strlen($row['cidr']) == 0) {
-				$tmpxml .= "  <user id=\"" . $row['extension'] . "\" \">\n";
+				$tmpxml .= "  <user id=\"" . $row['extension'] . "\">\n";
 			}
 			else {
 				$tmpxml .= "  <user id=\"" . $row['extension'] . "\" cidr=\"" . $row['cidr'] . "\">\n";
