@@ -52,7 +52,12 @@ $order = $_GET["order"];
 	echo "		</strong></span></span>\n";
 	echo "	</td>\n";
 	echo "	<td align='right'>\n";
-	echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='v_dialplan.php';\">\n";
+	if (ifgroup("superadmin")) {
+		echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='v_dialplan.php';\">\n";
+	}
+	else {
+		echo "&nbsp;\n";
+	}
 	echo "	</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
