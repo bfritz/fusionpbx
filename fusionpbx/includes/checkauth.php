@@ -111,7 +111,10 @@ if (strlen($_SESSION["username"]) == 0) {
 	//exit;
 }
 
-
+//hide the path unless logged in as a superadmin.
+if (!ifgroup("superadmin")) {
+	$v_path_show = false;
+}
 
 //if (ifpermission("view")) {
 //    echo "true";
