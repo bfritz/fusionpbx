@@ -157,6 +157,7 @@ if ($_POST["persistformvar"] != "true") {
 
 		//synchronize the xml config
 		sync_package_v_dialplan_includes();
+
 		require_once "includes/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan_includes.php\">\n";
 		echo "<div align='center'>\n";

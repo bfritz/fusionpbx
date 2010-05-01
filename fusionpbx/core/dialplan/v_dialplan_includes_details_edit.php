@@ -103,7 +103,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$tmp .= "Data: $fielddata\n";
 
 
-
 	//Add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add") {
@@ -169,7 +168,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
+//pre-populate the form
 if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$dialplan_includes_detail_id = $_GET["id"];
 	$sql = "";
