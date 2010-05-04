@@ -2417,9 +2417,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Tue, 04 May 2010 03:46:20 GMT</last_mod> 
-		<md5>30ff5adc2e7103df3d04706c93394f01</md5> 
-		<size>138858</size> 
+		<last_mod>Tue, 04 May 2010 06:48:29 GMT</last_mod> 
+		<md5>5c2d1b121d5723790df559f2460b58da</md5> 
+		<size>138857</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2480,9 +2480,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Tue, 04 May 2010 01:24:53 GMT</last_mod> 
-		<md5>13927570eac11bef266366e0ec607eec</md5> 
-		<size>197990</size> 
+		<last_mod>Tue, 04 May 2010 21:25:46 GMT</last_mod> 
+		<md5>a123b19f2811ef53f6fe3b018ad9abe9</md5> 
+		<size>198468</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2557,9 +2557,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/v_version.php</path> 
-		<last_mod>Sat, 17 Apr 2010 09:21:37 GMT</last_mod> 
-		<md5>0ce82fb31cfec0293e84531626773e8f</md5> 
-		<size>936</size> 
+		<last_mod>Tue, 04 May 2010 21:26:15 GMT</last_mod> 
+		<md5>81fc126feadcebea59046de166754dcb</md5> 
+		<size>938</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2571,9 +2571,9 @@
 	<src> 
 		<type>file</type> 
 		<path>index.php</path> 
-		<last_mod>Sat, 01 May 2010 08:26:18 GMT</last_mod> 
-		<md5>676dd703bba6898eef51b9e1bedc4c94</md5> 
-		<size>10547</size> 
+		<last_mod>Tue, 04 May 2010 21:27:20 GMT</last_mod> 
+		<md5>1709fa04f8c5372980e8aa8b9c936a4d</md5> 
+		<size>10924</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -3376,9 +3376,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/hunt_group/v_hunt_group_edit.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:27:40 GMT</last_mod> 
-		<md5>445d8a3d63c486a625eb91ac2648e09a</md5> 
-		<size>20876</size> 
+		<last_mod>Tue, 04 May 2010 21:25:06 GMT</last_mod> 
+		<md5>958323e0dc5a06c0b922a1a47ade27b7</md5> 
+		<size>21246</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 

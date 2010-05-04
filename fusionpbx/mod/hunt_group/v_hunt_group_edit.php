@@ -402,10 +402,22 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    <select class='formfld' name='huntgroupringback'>\n";
 	echo "    <option value=''></option>\n";
 	if ($huntgroupringback == "ring") { 
-		echo "    <option value='ring' SELECTED >ring</option>\n";
+		echo "    <option value='us-ring' SELECTED >us-ring</option>\n";
 	}
 	else {
-		echo "    <option value='ring'>ring</option>\n";
+		echo "    <option value='us-ring'>us-ring</option>\n";
+	}
+	if ($huntgroupringback == "us-ring") { 
+		echo "    <option value='us-ring' SELECTED >us-ring</option>\n";
+	}
+	else {
+		echo "    <option value='us-ring'>us-ring</option>\n";
+	}
+	if ($huntgroupringback == "uk-ring") { 
+		echo "    <option value='uk-ring' SELECTED >uk-ring</option>\n";
+	}
+	else {
+		echo "    <option value='uk-ring'>uk-ring</option>\n";
 	}
 	if ($huntgroupringback == "music") { 
 		echo "    <option value='music' SELECTED >music</option>\n";

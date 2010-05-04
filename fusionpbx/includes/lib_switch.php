@@ -1922,7 +1922,6 @@ function sync_package_v_hunt_group()
 					$tmp .= "dialed_extension = session.getVariable(\"dialed_extension\");\n";
 					$tmp .= "domain_name = session.getVariable(\"domain_name\");\n";
 					$tmp .= "domain = session.getVariable(\"domain\");\n";
-					$tmp .= "us_ring = session.getVariable(\"us-ring\");\n";
 					$tmp .= "caller_id_name = session.getVariable(\"caller_id_name\");\n";
 					$tmp .= "caller_id_number = session.getVariable(\"caller_id_number\");\n";
 					$tmp .= "effective_caller_id_name = session.getVariable(\"effective_caller_id_name\");\n";
@@ -1982,8 +1981,16 @@ function sync_package_v_hunt_group()
 					//set ring back
 						if (isset($row['huntgroupringback'])){
 							if ($row['huntgroupringback'] == "ring"){
-								$tmp .= "session.execute(\"set\", \"ringback=\"+us_ring);          //set to ringtone\n";
-								$tmp .= "session.execute(\"set\", \"transfer_ringback=\"+us_ring); //set to ringtone\n";
+								$tmp .= "session.execute(\"set\", \"ringback=ringback=\$\${us-ring}\"); //set to ringtone\n";
+								$tmp .= "session.execute(\"set\", \"transfer_ringback=\$\${us-ring}\"); //set to ringtone\n";
+							}
+							if ($row['huntgroupringback'] == "us-ring"){
+								$tmp .= "session.execute(\"set\", \"ringback=ringback=\$\${us-ring}\"); //set to ringtone\n";
+								$tmp .= "session.execute(\"set\", \"transfer_ringback=\$\${us-ring}\"); //set to ringtone\n";
+							}
+							if ($row['huntgroupringback'] == "uk-ring"){
+								$tmp .= "session.execute(\"set\", \"ringback=ringback=\$\${uk-ring}\"); //set to ringtone\n";
+								$tmp .= "session.execute(\"set\", \"transfer_ringback=\$\${uk-ring}\"); //set to ringtone\n";
 							}
 							if ($row['huntgroupringback'] == "music"){
 								$tmp .= "session.execute(\"set\", \"ringback=\${hold_music}\");          //set to music\n";
