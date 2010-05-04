@@ -25,7 +25,6 @@
 */
 include "root.php";
 include "includes/config.php";
-
 if (!ifgroup("superadmin")) {
 	echo "access denied";
 	return;

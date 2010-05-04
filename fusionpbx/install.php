@@ -451,8 +451,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//echo "</pre>\n";
 				//exit;
 
-				try {
-					if (strlen($dbhost) == 0 && strlen($dbport) == 0) {
+				//database connection
+					try {
+						if (strlen($dbhost) == 0 && strlen($dbport) == 0) {
 						//if both host and port are empty use the unix socket
 						$dbsql = new PDO("mysql:host=$dbhost;unix_socket=/var/run/mysqld/mysqld.sock;", $dbusername, $dbpassword);
 					}
@@ -537,6 +538,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$v_htdocs_dir = $install_v_dir.'/htdocs';
 			$v_log_dir = $install_v_dir.'/log';
 			$v_mod_dir = $install_v_dir.'/modules';
+			$v_extensions_dir = $install_v_dir.'/conf/directory/default';
+			$v_dialplan_public_dir = $install_v_dir.'/conf/dialplan/public';
+			$v_dialplan_default_dir = $install_v_dir.'/conf/dialplan/default';
 			$v_scripts_dir = $install_v_dir.'/scripts';
 			$v_storage_dir = $install_v_dir.'/storage';
 			$v_recordings_dir = $install_v_dir.'/recordings';
@@ -565,6 +569,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_htdocs_dir = '$v_htdocs_dir', ";
 			$sql .= "v_log_dir = '$v_log_dir', ";
 			$sql .= "v_mod_dir = '$v_mod_dir', ";
+			$sql .= "v_extensions_dir = '$v_extensions_dir', ";
+			$sql .= "v_dialplan_public_dir = '$v_dialplan_public_dir', ";
+			$sql .= "v_dialplan_default_dir = '$v_dialplan_default_dir', ";
 			$sql .= "v_scripts_dir = '$v_scripts_dir', ";
 			$sql .= "v_storage_dir = '$v_storage_dir', ";
 			$sql .= "v_recordings_dir = '$v_recordings_dir', ";

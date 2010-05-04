@@ -452,7 +452,7 @@ function type_onchange(field_type) {
 	echo "<td colspan='5' align='left'>\n";
 	echo "<br />\n";
 	if ($v_path_show) {
-		echo "<b>location:</b> ".$v_conf_dir."/dialplan/public/";
+		echo "<b>location:</b> ".$v_dialplan_public_dir."\n";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";

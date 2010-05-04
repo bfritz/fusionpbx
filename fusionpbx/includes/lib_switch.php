@@ -38,9 +38,10 @@ $v_id = '1';
 
 //preferences
 	$v_label_show = false;
-	$v_path_show = true;
 	$v_menu_tab_show = false;
 	$v_fax_show = true;
+	$v_path_show = true;
+
 
 function v_settings()
 {
@@ -153,6 +154,21 @@ function v_settings()
 		$v_log_dir = $row["v_log_dir"];
 		$v_log_dir = str_replace ("{program_dir}", $program_dir, $v_log_dir);
 		$v_settings_array["v_log_dir"] = $v_log_dir;
+
+		$v_extensions_dir = $row["v_extensions_dir"];
+		if (strlen($v_extensions_dir) == 0) { $v_extensions_dir = $v_conf_dir.'/directory/default'; }
+		$v_extensions_dir = str_replace ("{program_dir}", $program_dir, $v_extensions_dir);
+		$v_settings_array["v_extensions_dir"] = $v_extensions_dir;
+
+		$v_dialplan_public_dir = $row["v_dialplan_public_dir"];
+		if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $v_conf_dir.'/dialplan/public'; }
+		$v_dialplan_public_dir = str_replace ("{program_dir}", $program_dir, $v_dialplan_public_dir);
+		$v_settings_array["v_dialplan_public_dir"] = $v_dialplan_public_dir;
+
+		$v_dialplan_default_dir = $row["v_dialplan_default_dir"];
+		if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_dir.'/dialplan/default'; }
+		$v_dialplan_default_dir = str_replace ("{program_dir}", $program_dir, $v_dialplan_default_dir);
+		$v_settings_array["v_dialplan_default_dir"] = $v_dialplan_default_dir;
 
 		$v_mod_dir = $row["v_mod_dir"];
 		$v_mod_dir = str_replace ("{program_dir}", $program_dir, $v_mod_dir);
@@ -927,8 +943,24 @@ function sync_package_v_extensions()
 		$$name = $value;
 	}
 
+	//determine the extensions parent directory
+		//$v_extensions_dir = str_replace("\\", "/", $file_contents);
+		$v_extensions_dir_array = explode("/", $v_extensions_dir);
+		$extension_parent_dir = "";
+		$x=1;
+		foreach ($v_extensions_dir_array as $tmp_dir) {
+			if (count($v_extensions_dir_array) > $x) {
+				$extension_parent_dir .= $tmp_dir."/";
+			}
+			else {
+				$extension_dir_name = $tmp_dir; 
+			}
+			$x++;
+		}
+		$extension_parent_dir = rtrim($extension_parent_dir, "/");
+
 	// delete all old extensions to prepare for new ones
-		if($dh = opendir($v_conf_dir."/directory/default/")) {
+		if($dh = opendir($v_extensions_dir)) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -940,7 +972,7 @@ function sync_package_v_extensions()
 						if (is_numeric($file_array[0]) && $file_array[count($file_array)-1] == "xml") {
 							//echo "name: ".$file_array[0]."<br />\n";
 							//echo "file: ".$file."<br/>\n";
-							unlink($v_conf_dir."/directory/default/".$file);
+							unlink($v_extensions_dir."/".$file);
 						}
 					}
 				}
@@ -970,7 +1002,7 @@ function sync_package_v_extensions()
 
 		//echo "enabled: ".$row['enabled'];
 		if ($row['enabled'] != "false") {
-			$fout = fopen($v_conf_dir."/directory/default/".$row['extension'].".xml","w");
+			$fout = fopen($v_extensions_dir."/".$row['extension'].".xml","w");
 
 			$tmpxml = "<include>\n";
 			if (strlen($row['cidr']) == 0) {
@@ -1072,9 +1104,9 @@ function sync_package_v_extensions()
 		$tmpxml .= "		</variables>\n";
 		$tmpxml .= "\n";
 		$tmpxml .= "		<groups>\n";
-		$tmpxml .= "			<group name=\"default\">\n";
+		$tmpxml .= "			<group name=\"".$extension_dir_name."\">\n";
 		$tmpxml .= "			<users>\n";
-		$tmpxml .= "				<X-PRE-PROCESS cmd=\"include\" data=\"default/*.xml\"/>\n";
+		$tmpxml .= "				<X-PRE-PROCESS cmd=\"include\" data=\"".$extension_dir_name."/*.xml\"/>\n";
 		$tmpxml .= "			</users>\n";
 		$tmpxml .= "			</group>\n";
 		$tmpxml .= "\n";
@@ -1105,7 +1137,7 @@ function sync_package_v_extensions()
 		$tmpxml .= "\n";
 		$tmpxml .= "	</domain>\n";
 		$tmpxml .= "</include>";
-		$fout = fopen($v_conf_dir."/directory/default.xml","w");
+		$fout = fopen($extension_parent_dir."/".$extension_dir_name.".xml","w");
 		fwrite($fout, $tmpxml);
 		unset($tmpxml);
 		fclose($fout);
@@ -2204,8 +2236,8 @@ function sync_package_v_fax()
 				$opt1value = $row2['opt1value'];
 				$id = $i;
 
-				if (file_exists($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml")){
-					unlink($v_conf_dir."/dialplan/default/".$order."_".$extensionname.".xml");
+				if (file_exists($v_dialplan_default_dir."/".$order."_".$extensionname.".xml")){
+					unlink($v_dialplan_default_dir."/".$order."_".$extensionname.".xml");
 				}
 
 				break; //limit to 1 row
@@ -3400,7 +3432,7 @@ function sync_package_v_dialplan_includes()
 
 	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
 		$v_needle = 'dialplan_';
-		if($dh = opendir($v_conf_dir."/dialplan/default/")) {
+		if($dh = opendir($v_dialplan_default_dir."/")) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -3409,7 +3441,7 @@ function sync_package_v_dialplan_includes()
 					} else {
 						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
 							//echo "file: $file<br />\n";
-							unlink($v_conf_dir."/dialplan/default/".$file);
+							unlink($v_dialplan_default_dir."/".$file);
 						}
 					}
 				}
@@ -3549,7 +3581,7 @@ function sync_package_v_dialplan_includes()
 
 		if ($row['enabled'] == "true") {
 			$dialplanincludefilename = $row['dialplanorder']."_dialplan_".$row['extensionname'].".xml";
-			$fout = fopen($v_conf_dir."/dialplan/default/".$dialplanincludefilename,"w");
+			$fout = fopen($v_dialplan_default_dir."/".$dialplanincludefilename,"w");
 			fwrite($fout, $tmp);
 			fclose($fout);
 		}
@@ -3702,7 +3734,7 @@ function sync_package_v_public_includes()
 
 		if ($row['enabled'] == "true") {
 			$publicincludefilename = $row['publicorder']."_".$row['extensionname'].".xml";
-			$fout = fopen($v_conf_dir."/dialplan/public/".$publicincludefilename,"w");
+			$fout = fopen($v_public_includes."/".$publicincludefilename,"w");
 			fwrite($fout, $tmp);
 			fclose($fout);
 		}
@@ -4115,7 +4147,6 @@ function v_install_phase_2() {
 	if (!is_dir($v_web_dir)) {
 		exec("mkdir ".$v_web_dir);
 	}
-
 
 	//download the dialplan default.xml
 	chdir($tmp_dir.'/');

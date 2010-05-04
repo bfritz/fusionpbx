@@ -26,8 +26,6 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-//require_once "config.php";
-
 if (!ifgroup("superadmin")) {
 	echo "access denied";
 	return;

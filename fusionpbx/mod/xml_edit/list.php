@@ -25,6 +25,14 @@
 */
 include "root.php";
 require_once "config.php";
+require_once "includes/checkauth.php";
+if (ifgroup("superadmin")) {
+	//access granted
+}
+else {
+	echo "access denied";
+	exit;
+}
 require_once "header.php";
     echo "<div align='left'>";
     echo "<table width='175'  border='0' cellpadding='0' cellspacing='2'>\n";

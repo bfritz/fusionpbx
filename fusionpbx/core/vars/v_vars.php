@@ -23,13 +23,12 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
-
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 require_once "includes/header.php";
 require_once "includes/paging.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	//access granted
 }
 else {

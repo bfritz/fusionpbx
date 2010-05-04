@@ -176,7 +176,7 @@ if (!function_exists('thorderby')) {
 	//echo "<br />\n";
 	echo "<br />\n";
 	if ($v_path_show) {
-		echo $v_conf_dir."/directory/default/\n";
+		echo $v_extensions_dir."\n";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";

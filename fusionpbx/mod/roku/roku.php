@@ -94,7 +94,7 @@ if (strlen($cmd)==0) {
 //echo "cmd ".$cmd;
 //exit;
 
-$host = "10.7.0.247";
+$host = "10.7.0.235";
 $port = "8080";
 $cmd = "press ".$cmd;
 

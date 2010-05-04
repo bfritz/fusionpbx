@@ -28,7 +28,6 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/includes/config.php"))
 	header("Location: ".PROJECT_PATH."/install.php");
 	exit;
 }
-
 require_once "includes/config.php";
 require_once "includes/header.php";
 require_once "includes/checkauth.php";
@@ -107,7 +106,6 @@ echo "<br />";
 	echo "</tr>\n";
 
 	if (ifgroup("admin") || ifgroup("superadmin")) {
-
 		echo "<!--\n";
 		$tmp_result = system('uname -a');
 		echo "-->\n";
@@ -330,7 +328,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 
 
 //templates selection
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	$sql = "";
 	$sql .= "select * from v_templates ";
 	$sql .= "where v_id = '$v_id' ";
@@ -369,7 +367,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 }
 
 //backup
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	if ($dbtype == 'sqlite') {
 		require_once "core/backup/backupandrestore.php";
 	}

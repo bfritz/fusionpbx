@@ -39,7 +39,7 @@ require_once "includes/v_dialplan_entry_exists.php";
 
 recording_js();
 
-$dir_music_on_hold_8000 = $v_sounds_dir.'/music/8000/';
+$dir_music_on_hold_8000 = $v_sounds_dir.'/music/8000';
 ini_set(max_execution_time,7200);
 
 $orderby = $_GET["orderby"];
@@ -78,8 +78,8 @@ if ($_GET['a'] == "download") {
 	}
 
 	if ($_GET['type'] = "moh") {
-		if (file_exists($dir_music_on_hold_8000.base64_decode($_GET['filename']))) {
-			$fd = fopen($dir_music_on_hold_8000.base64_decode($_GET['filename']), "rb");
+		if (file_exists($dir_music_on_hold_8000."/".base64_decode($_GET['filename']))) {
+			$fd = fopen($dir_music_on_hold_8000."/".base64_decode($_GET['filename']), "rb");
 			if ($_GET['t'] == "bin") {
 				header("Content-Type: application/force-download");
 				header("Content-Type: application/octet-stream");
@@ -98,7 +98,7 @@ if ($_GET['a'] == "download") {
 			}
 			header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past	
-			header("Content-Length: " . filesize($dir_music_on_hold_8000.base64_decode($_GET['filename'])));
+			header("Content-Length: " . filesize($dir_music_on_hold_8000."/".base64_decode($_GET['filename'])));
 			fpassthru($fd);
 		}
 	}
@@ -112,13 +112,13 @@ else {
 if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['ulfile']['tmp_name'])) {
 
 	if ($_POST['type'] == 'moh') {
-		move_uploaded_file($_FILES['ulfile']['tmp_name'], $dir_music_on_hold_8000 . $_FILES['ulfile']['name']);
-		$savemsg = "Uploaded file to $dir_music_on_hold_8000" . htmlentities($_FILES['ulfile']['name']);
+		move_uploaded_file($_FILES['ulfile']['tmp_name'], $dir_music_on_hold_8000."/".$_FILES['ulfile']['name']);
+		$savemsg = "Uploaded file to ".$dir_music_on_hold_8000."/".htmlentities($_FILES['ulfile']['name']);
 		//system('chmod -R 744 $dir_music_on_hold_8000*');
 		unset($_POST['txtCommand']);
 	}
 	if ($_POST['type'] == 'rec') {
-		move_uploaded_file($_FILES['ulfile']['tmp_name'], $v_recordings_dir.'/' . $_FILES['ulfile']['name']);
+		move_uploaded_file($_FILES['ulfile']['tmp_name'], $v_recordings_dir.'/'.$_FILES['ulfile']['name']);
 		$savemsg = "Uploaded file to ".$v_recordings_dir."/". htmlentities($_FILES['ulfile']['name']);
 		//system('chmod -R 744 $v_recordings_dir*');
 		unset($_POST['txtCommand']);
@@ -130,7 +130,7 @@ if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['ulfile']['tmp_na
 if ($_GET['act'] == "del") {
 
 	if ($_GET['type'] == 'moh') {
-		unlink($dir_music_on_hold_8000.$_GET['filename']);
+		unlink($dir_music_on_hold_8000."/".$_GET['filename']);
 		header("Location: v_recordings.php");
 		exit;
 	}
@@ -159,7 +159,7 @@ if (is_dir($v_recordings_dir.'/')) {
 	if ($dh = opendir($v_recordings_dir.'/')) {
 		while (($file = readdir($dh)) !== false) {
 
-			if (filetype($v_recordings_dir.'/' . $file) == "file") {
+			if (filetype($v_recordings_dir."/".$file) == "file") {
 				if (strpos($config_recording_list, "|".$file) === false) {
 					//echo "The $file was not found<br/>";
 					//file not found add it to the database
@@ -242,7 +242,7 @@ require_once "includes/header.php";
 	echo "		<td align='left' width='50%'>\n";
 	if ($v_path_show) {
 		echo "<b>location:</b> \n";
-		echo $v_recordings_dir.'/';
+		echo $v_recordings_dir;
 	}
 	echo "		</td>\n";
 	echo "		<td valign=\"top\" class=\"label\">\n";
@@ -413,9 +413,9 @@ require_once "includes/header.php";
 
 	if ($handle = opendir($dir_music_on_hold_8000)) {
 		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_file($dir_music_on_hold_8000.$file)) {
+			if ($file != "." && $file != ".." && is_file($dir_music_on_hold_8000."/".$file)) {
 
-				$tmp_filesize = filesize($dir_music_on_hold_8000.$file);
+				$tmp_filesize = filesize($dir_music_on_hold_8000."/".$file);
 				$tmp_filesize = byte_convert($tmp_filesize);
 
 				echo "<tr>\n";
@@ -431,7 +431,7 @@ require_once "includes/header.php";
 				echo "	  </a>";
 				echo "  </td>\n";
 				echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-				echo 		date ("F d Y H:i:s", filemtime($dir_music_on_hold_8000.$file));
+				echo 		date ("F d Y H:i:s", filemtime($dir_music_on_hold_8000."/".$file));
 				echo "  </td>\n";
 				echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 				echo "	".$tmp_filesize;

@@ -60,6 +60,7 @@ echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan_includes_edit.php?
 echo "<div align='center'>\n";
 echo "Delete Complete\n";
 echo "</div>\n";
+
 require_once "includes/footer.php";
 return;
 

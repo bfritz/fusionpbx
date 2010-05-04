@@ -165,7 +165,7 @@ $order = $_GET["order"];
 	echo "<br />\n";
 	//echo "<br />\n";
 	if ($v_path_show) {
-		echo $v_conf_dir."/dialplan/default/";
+		echo $v_dialplan_default_dir;
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
