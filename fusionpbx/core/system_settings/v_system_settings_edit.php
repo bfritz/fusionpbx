@@ -80,11 +80,6 @@ if (count($_POST)>0) {
 		$v_provisioning_ftp_dir = check_str($_POST["v_provisioning_ftp_dir"]);
 		$v_provisioning_https_dir = check_str($_POST["v_provisioning_https_dir"]);
 		$v_provisioning_http_dir = check_str($_POST["v_provisioning_http_dir"]);
-
-	//set defaults if value is emtpy
-		if (strlen($v_extensions_dir) == 0) { $v_extensions_dir = $v_conf_dir.'/directory/default'; }
-		if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $v_conf_dir.'/dialplan/public'; }
-		if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_dir.'/dialplan/default'; }
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -337,6 +332,10 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	unset ($prepstatement);
 }
 
+//set defaults if value is emtpy
+if (strlen($v_extensions_dir) == 0) { $v_extensions_dir = $v_conf_dir.'/directory/default'; }
+if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $v_conf_dir.'/dialplan/public'; }
+if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_dir.'/dialplan/default'; }
 
 	require_once "includes/header.php";
 
