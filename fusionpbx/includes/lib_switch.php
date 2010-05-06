@@ -3741,7 +3741,7 @@ function sync_package_v_public_includes()
 
 		if ($row['enabled'] == "true") {
 			$publicincludefilename = $row['publicorder']."_".$row['extensionname'].".xml";
-			$fout = fopen($v_public_includes."/".$publicincludefilename,"w");
+			$fout = fopen($v_dialplan_public_dir."/".$publicincludefilename,"w");
 			fwrite($fout, $tmp);
 			fclose($fout);
 		}
