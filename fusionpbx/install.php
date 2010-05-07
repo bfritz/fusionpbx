@@ -523,8 +523,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$install_tmp_dir = '';
 			$bin_dir = '/usr/local/freeswitch/bin'; //freeswitch bin directory
 			//$v_startup_script_dir = '';
-			$v_package_version = '1.0';
-			$v_build_version = '1.0.4';
+			$v_package_version = '1.0.1';
+			$v_build_version = '1.0.6';
 			$v_build_revision = 'Release';
 			$v_label = 'FusionPBX';
 			$v_name = 'freeswitch';
@@ -548,6 +548,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$v_download_path = 'http://fusionpbx.com/downloads/fusionpbx.tgz';
 
 			$v_id = 1;
+
+			//$sql = "insert into v_system_settings (v_id) values ('$v_id') ";
+			//$db->exec(check_sql($sql));
+			//unset($sql);
+
 			$sql = "update v_system_settings set ";
 			$sql .= "php_dir = '$install_php_dir', ";
 			$sql .= "tmp_dir = '$install_tmp_dir', ";
