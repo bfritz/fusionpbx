@@ -2417,9 +2417,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Thu, 13 May 2010 11:17:44 GMT</last_mod> 
-		<md5>f179596024d3de5d961240c30192a3aa</md5> 
-		<size>138857</size> 
+		<last_mod>Thu, 13 May 2010 22:42:58 GMT</last_mod> 
+		<md5>14f9d2bf854096ddebd789bec9de77e0</md5> 
+		<size>140941</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2480,9 +2480,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Thu, 06 May 2010 22:13:22 GMT</last_mod> 
-		<md5>39fecb61ec5486bf840d2fb85a385c0e</md5> 
-		<size>198472</size> 
+		<last_mod>Thu, 13 May 2010 22:52:54 GMT</last_mod> 
+		<md5>2d119dfe1de125b2e7f8f07c1e4afea5</md5> 
+		<size>207810</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -3403,13 +3403,6 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>mod/ivr_menu/v_ivr_menu.sql</path> 
-		<last_mod>Wed, 12 May 2010 02:47:19 GMT</last_mod> 
-		<md5>a61dd384e1e14d7359e5c0da3cdcce6b</md5> 
-		<size>608</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
 		<path>mod/ivr_menu/v_ivr_menu_delete.php</path> 
 		<last_mod>Wed, 12 May 2010 23:27:21 GMT</last_mod> 
 		<md5>3ab15f0aa7f7b82a3feae85b3d937ca5</md5> 
@@ -3428,13 +3421,6 @@
 		<last_mod>Thu, 13 May 2010 20:37:25 GMT</last_mod> 
 		<md5>31b341e13d39b5bf8e66fa8d1bc95d2d</md5> 
 		<size>6213</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/ivr_menu/v_ivr_menu_options.sql</path> 
-		<last_mod>Sun, 09 May 2010 05:41:27 GMT</last_mod> 
-		<md5>1145c9faf120950c0e671407ceff978e</md5> 
-		<size>233</size> 
 	</src> 
 	<src> 
 		<type>file</type> 

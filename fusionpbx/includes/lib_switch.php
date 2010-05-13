@@ -670,7 +670,7 @@ function switch_conf_xml()
 	fclose($fout);
 }
 
-function  recording_js()
+function recording_js()
 {
 
 	$v_settings_array = v_settings();
@@ -4093,6 +4093,244 @@ if (!function_exists('sync_directory')) {
 	} //end sync_directory
 } //end if function exists
 
+if (!function_exists('sync_package_v_ivr_menu')) {
+	function sync_package_v_ivr_menu()
+	{
+		global $db, $v_id;
+
+		$v_settings_array = v_settings();
+		foreach($v_settings_array as $name => $value) {
+			$$name = $value;
+		}
+
+		//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
+			$v_needle = 'v_';
+			if($dh = opendir($v_conf_dir."/ivr_menus/")) {
+				$files = Array();
+				while($file = readdir($dh)) {
+					if($file != "." && $file != ".." && $file[0] != '.') {
+						if(is_dir($dir . "/" . $file)) {
+							//this is a directory
+						} else {
+							if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
+								//echo "file: $file<br />\n";
+								unlink($v_conf_dir."/ivr_menus/".$file);
+							}
+						}
+					}
+				}
+				closedir($dh);
+			}
+
+		$sql = "";
+		$sql .= " select * from v_ivr_menu ";
+		$sql .= " where v_id = '$v_id' ";
+		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+		$sql .= " ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		$resultcount = count($result);
+		unset ($prepstatement, $sql);
+		if ($resultcount == 0) { //no results
+		}
+		else { //received results
+			foreach($result as $row) {
+				$ivr_menu_id = $row["ivr_menu_id"];
+				$ivr_menu_name = $row["ivr_menu_name"];
+				$ivr_menu_extension = $row["ivr_menu_extension"];
+				$ivr_menu_greet_long = $row["ivr_menu_greet_long"];
+				$ivr_menu_greet_short = $row["ivr_menu_greet_short"];
+				$ivr_menu_invalid_sound = $row["ivr_menu_invalid_sound"];
+				$ivr_menu_exit_sound = $row["ivr_menu_exit_sound"];
+				$ivr_menu_confirm_macro = $row["ivr_menu_confirm_macro"];
+				$ivr_menu_confirm_key = $row["ivr_menu_confirm_key"];
+				$ivr_menu_tts_engine = $row["ivr_menu_tts_engine"];
+				$ivr_menu_tts_voice = $row["ivr_menu_tts_voice"];
+				$ivr_menu_confirm_attempts = $row["ivr_menu_confirm_attempts"];
+				$ivr_menu_timeout = $row["ivr_menu_timeout"];
+				$ivr_menu_inter_digit_timeout = $row["ivr_menu_inter_digit_timeout"];
+				$ivr_menu_max_failures = $row["ivr_menu_max_failures"];
+				$ivr_menu_max_timeouts = $row["ivr_menu_max_timeouts"];
+				$ivr_menu_digit_len = $row["ivr_menu_digit_len"];
+				$ivr_menu_direct_dial = $row["ivr_menu_direct_dial"];
+				$ivr_menu_enabled = $row["ivr_menu_enabled"];
+				$ivr_menu_desc = $row["ivr_menu_desc"];
+
+				//replace space with an underscore
+					$ivr_menu_name = str_replace(" ", "_", $ivr_menu_name);
+
+				//add each IVR Menu to the dialplan
+					if (strlen($row['ivr_menu_id']) > 0) {
+						$action = 'add'; //set default action to add
+						$i = 0;
+
+						$sql = "";
+						$sql .= "select * from v_dialplan_includes ";
+						$sql .= "where v_id = '$v_id' ";
+						$sql .= "and opt1name = 'ivr_menu_id' ";
+						$sql .= "and opt1value = '".$row['ivr_menu_id']."' ";
+
+						$prepstatement2 = $db->prepare($sql);
+						$prepstatement2->execute();
+						while($row2 = $prepstatement2->fetch()) {
+							$action = 'update';
+							$dialplan_include_id = $row2['dialplan_include_id'];
+							break; //limit to 1 row
+						}
+						unset ($sql, $prepstatement2);
+						//echo "sql: ".$sql."<br />";
+
+						if ($action == 'add') {
+							//create IVR Menu extension in the dialplan
+								$extensionname = $ivr_menu_name;
+								$dialplanorder ='9001';
+								//$context = $row['ivr_menu_context'];
+								$context = 'default';
+								$enabled = 'true';
+								$descr = 'ivr_menu';
+								$opt1name = 'ivr_menu_id';
+								$opt1value = $row['ivr_menu_id'];
+								$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+
+								$tag = 'condition'; //condition, action, antiaction
+								$fieldtype = 'destination_number';
+								$fielddata = '^'.$row['ivr_menu_extension'].'$';
+								$fieldorder = '000';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'answer';
+								$fielddata = '';
+								$fieldorder = '001';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'sleep';
+								$fielddata = '2000';
+								$fieldorder = '002';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'ivr';
+								$fielddata = $ivr_menu_name;
+								$fieldorder = '003';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						}
+						if ($action == 'update') {
+							//update the IVR menu
+
+								$extensionname = $ivr_menu_name;
+								$dialplanorder = '9001';
+								//$context = $row['ivr_menu_context'];
+								$context = 'default';
+								$enabled = 'true';
+								$descr = 'ivr_menu';
+								$ivr_menu_id = $row['ivr_menu_id'];
+
+								$sql = "";
+								$sql = "update v_dialplan_includes set ";
+								$sql .= "extensionname = '$extensionname', ";
+								$sql .= "dialplanorder = '$dialplanorder', ";
+								$sql .= "context = '$context', ";
+								$sql .= "enabled = '$enabled', ";
+								$sql .= "descr = '$descr' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and opt1name = 'ivr_menu_id' ";
+								$sql .= "and opt1value = '$ivr_menu_id' ";
+								//echo "sql: ".$sql."<br />";
+								//exit;
+								$db->query($sql);
+								unset($sql);
+
+								//update the condition
+								$sql = "";
+								$sql = "update v_dialplan_includes_details set ";
+								$sql .= "fielddata = '^".$row['ivr_menu_extension']."$' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and tag = 'condition' ";
+								$sql .= "and fieldtype = 'destination_number' ";
+								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								//echo $sql."<br />";
+								//exit;
+								$db->query($sql);
+								unset($sql);
+
+								//update the action
+								$sql = "";
+								$sql = "update v_dialplan_includes_details set ";
+								$sql .= "fielddata = '".$ivr_menu_name."' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and tag = 'action' ";
+								$sql .= "and fieldtype = 'ivr' ";
+								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								//echo $sql."<br />";
+								$db->query($sql);
+
+								unset($extensionname);
+								unset($order);
+								unset($context);
+								unset($enabled);
+								unset($descr);
+								unset($opt1name);
+								unset($opt1value);
+
+						}
+						unset($action);
+						unset($dialplanincludeid);
+					} //end if strlen ivr_menu_id; add the IVR Menu to the dialplan
+
+				//add each IVR menu to the XML config
+					$tmp = "	<!-- $ivr_menu_desc -->\n";
+					$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
+					//$tmp .= "		greet-long=\"C:/fusionpbx/program/FreeSWITCH/recordings/auto_attendant_sales1_support2_billing3.wav\"\n";
+					$tmp .= "		greet-long=\"".$v_recordings_dir."/".$ivr_menu_greet_long."\"\n";
+					$tmp .= "		greet-short=\"".$v_recordings_dir."/".$ivr_menu_greet_short."\"\n";
+					$tmp .= "		invalid-sound=\"$ivr_menu_invalid_sound\"\n";
+					$tmp .= "		exit-sound=\"$ivr_menu_exit_sound\"\n";
+					$tmp .= "		confirm-macro=\"$ivr_menu_confirm_macro\"\n";
+					$tmp .= "		confirm-key=\"$ivr_menu_confirm_key\"\n";
+					$tmp .= "		tts-engine=\"$ivr_menu_tts_engine\"\n";
+					$tmp .= "		tts-voice=\"$ivr_menu_tts_voice\"\n";
+					$tmp .= "		confirm-attempts=\"$ivr_menu_confirm_attempts\"\n";
+					$tmp .= "		timeout=\"$ivr_menu_timeout\"\n";
+					$tmp .= "		inter-digit-timeout=\"$ivr_menu_inter_digit_timeout\"\n";
+					$tmp .= "		max-failures=\"$ivr_menu_max_failures\"\n";
+					$tmp .= "		max-timeouts=\"$ivr_menu_max_timeouts\"\n";
+					$tmp .= "		digit-len=\"$ivr_menu_digit_len\">\n";
+
+					$sub_sql = "";
+					$sub_sql .= "select * from v_ivr_menu_options ";
+					$sub_sql .= "where ivr_menu_id = '$ivr_menu_id' ";
+					$sub_sql .= "and v_id = '$v_id' ";
+					$sub_prepstatement = $db->prepare(check_sql($sub_sql));
+					$sub_prepstatement->execute();
+					$sub_result = $sub_prepstatement->fetchAll();
+					foreach ($sub_result as &$sub_row) {
+						//$ivr_menu_id = $sub_row["ivr_menu_id"];
+						$ivr_menu_options_digits = $sub_row["ivr_menu_options_digits"];
+						$ivr_menu_options_action = $sub_row["ivr_menu_options_action"];
+						$ivr_menu_options_param = $sub_row["ivr_menu_options_param"];
+						$ivr_menu_options_desc = $sub_row["ivr_menu_options_desc"];
+
+						$tmp .= "		<entry action=\"$ivr_menu_options_action\" digits=\"$ivr_menu_options_digits\" param=\"$ivr_menu_options_param\"/>";
+						$tmp .= "	<!-- $ivr_menu_options_desc -->\n";
+					}
+					unset ($sub_prepstatement, $sub_row);
+
+					if ($ivr_menu_direct_dial == "true") {
+						$tmp .= "		<entry action=\"menu-exec-app\" digits=\"/(^\*\d{3,5}$|^\d{3,5}$)/\" param=\"transfer $1 XML default\"/>\n";
+					}
+					$tmp .= "	</menu>";
+					//write the file
+					$fout = fopen($v_conf_dir."/ivr_menus/v_".$ivr_menu_name.".xml","w");
+					fwrite($fout, $tmp);
+					fclose($fout);
+			}
+		}
+		sync_package_v_dialplan_includes();
+	}
+}
 
 function sync_package_freeswitch()
 {
