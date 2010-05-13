@@ -2417,9 +2417,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Fri, 07 May 2010 17:17:21 GMT</last_mod> 
-		<md5>c54f1450d2b13769baa257f4c2230bc0</md5> 
-		<size>138858</size> 
+		<last_mod>Fri, 07 May 2010 19:25:25 GMT</last_mod> 
+		<md5>521ef4bb836172accc8d73403c80dce5</md5> 
+		<size>138857</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2928,9 +2928,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/conferences_active/v_conference_interactive_inc.php</path> 
-		<last_mod>Wed, 24 Feb 2010 23:12:54 GMT</last_mod> 
-		<md5>4902c86798c43413640d8ca73e1d8ed8</md5> 
-		<size>7926</size> 
+		<last_mod>Thu, 13 May 2010 10:58:29 GMT</last_mod> 
+		<md5>68214114f8ddd7127aa1c27f16f4f93d</md5> 
+		<size>7970</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 

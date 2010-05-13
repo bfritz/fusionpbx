@@ -163,29 +163,29 @@ $rowstyle["1"] = "rowstyle1";
 		}
 		echo "<td valign='top' class='".$rowstyle[$c]."' style='text-align:right;'>\n";
 		//energy
-			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=energy&direction=up&cmd=conference%20".$conference_name." energy ".$id."');\">+energy</a>&nbsp;\n";
-			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=energy&direction=down&cmd=conference%20".$conference_name." energy ".$id."');\">-energy</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=energy&direction=up&cmd=conference%20".$conference_name."%20energy%20".$id."');\">+energy</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=energy&direction=down&cmd=conference%20".$conference_name."%20energy%20".$id."');\">-energy</a>&nbsp;\n";
 		//volume
-			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_in&direction=up&cmd=conference%20".$conference_name." volume_in ".$id."');\">+vol</a>&nbsp;\n";
-			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_in&direction=down&cmd=conference%20".$conference_name." volume_in ".$id."');\">-vol</a>&nbsp;\n";
-			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_out&direction=up&cmd=conference%20".$conference_name." volume_out ".$id."');\">+gain</a>&nbsp;\n";
-			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_out&direction=down&cmd=conference%20".$conference_name." volume_out ".$id."');\">-gain</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_in&direction=up&cmd=conference%20".$conference_name."%20volume_in%20".$id."');\">+vol</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_in&direction=down&cmd=conference%20".$conference_name."%20volume_in%20".$id."');\">-vol</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_out&direction=up&cmd=conference%20".$conference_name."%20volume_out%20".$id."');\">+gain</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_out&direction=down&cmd=conference%20".$conference_name."%20volume_out%20".$id."');\">-gain</a>&nbsp;\n";
 		//mute and unmute
 			if ($flag_can_speak == "true"){
-				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name." mute ".$id."');\">mute</a>&nbsp;\n";
+				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20mute%20".$id."');\">mute</a>&nbsp;\n";
 			}
 			else {
-				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name." unmute ".$id."');\">unmute</a>&nbsp;\n";
+				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20unmute%20".$id."');\">unmute</a>&nbsp;\n";
 			}
 		//deaf and undeaf
 			if ($flag_can_hear == "true"){
-				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name." deaf ".$id."');\">deaf</a>&nbsp;\n";
+				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20deaf%20".$id."');\">deaf</a>&nbsp;\n";
 			}
 			else {
-				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name." undeaf ".$id."');\">undeaf</a>&nbsp;\n";
+				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20undeaf%20".$id."');\">undeaf</a>&nbsp;\n";
 			}
 		//kick someone from the conference
-			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name." kick ".$id."');\">kick</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20kick%20".$id."');\">kick</a>&nbsp;\n";
 		echo "	&nbsp;";
 		echo "</td>\n";
 		echo "</tr>\n";
