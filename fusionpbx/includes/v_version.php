@@ -25,7 +25,7 @@
 */
 
 $softwarename = 'FusionPBX';
-$softwareversion = '1.1.4';
+$softwareversion = '1.1.5';
 $softwareurl = 'http://www.fusionpbx.com';
 
 ?>

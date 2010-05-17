@@ -1004,8 +1004,14 @@ function sync_package_v_extensions()
 		$callgroup = str_replace(";", ",", $callgroup);
 		$tmp_array = explode(",", $callgroup);
 		foreach ($tmp_array as &$tmp_callgroup) {
-			$callgroups_array[$i]['callgroup'] = $tmp_callgroup;
-			$callgroups_array[$i]['extension'] = $row['extension'];
+			if (strlen($tmp_callgroup) > 0) {
+				if (strlen($callgroups_array[$tmp_callgroup]) == 0) {
+					$callgroups_array[$tmp_callgroup] = $row['extension'];
+				}
+				else {
+					$callgroups_array[$tmp_callgroup] = $callgroups_array[$tmp_callgroup].','.$row['extension'];
+				}
+			}
 			$i++;
 		}
 		$vm_password = $row['vm_password'];
@@ -1122,27 +1128,29 @@ function sync_package_v_extensions()
 		$tmpxml .= "			</group>\n";
 		$tmpxml .= "\n";
 		$previous_callgroup = "";
-		foreach ($callgroups_array as &$row2) {
-			$callgroup = $row2['callgroup'];
-			if ($previous_callgroup != $callgroup) {
-				$tmpxml .= "			<group name=\"$callgroup\">\n";
-				$tmpxml .= "				<users>\n";
-				$tmpxml .= "					<!--\n";
-				$tmpxml .= "					type=\"pointer\" is a pointer so you can have the\n";
-				$tmpxml .= "					same user in multiple groups.  It basically means\n";
-				$tmpxml .= "					to keep searching for the user in the directory.\n";
-				$tmpxml .= "					-->\n";
-				foreach ($callgroups_array as &$row3) {
-					if ($callgroup == $row3['callgroup']) {
-						$extension = $row3['extension'];
-						$tmpxml .= "					<user id=\"$extension\" type=\"pointer\"/>\n";
+		foreach ($callgroups_array as $key => $value) {
+			$callgroup = $key;
+			$extension_list = $value;
+			if (strlen($callgroup) > 0) {
+				if ($previous_callgroup != $callgroup) {
+					$tmpxml .= "			<group name=\"$callgroup\">\n";
+					$tmpxml .= "				<users>\n";
+					$tmpxml .= "					<!--\n";
+					$tmpxml .= "					type=\"pointer\" is a pointer so you can have the\n";
+					$tmpxml .= "					same user in multiple groups.  It basically means\n";
+					$tmpxml .= "					to keep searching for the user in the directory.\n";
+					$tmpxml .= "					-->\n";
+					$extension_array = explode(",", $extension_list);
+					foreach ($extension_array as &$tmp_extension) {
+						$tmpxml .= "					<user id=\"$tmp_extension\" type=\"pointer\"/>\n";
 					}
+					$tmpxml .= "				</users>\n";
+					$tmpxml .= "			</group>\n";
+					$tmpxml .= "\n";
 				}
-				$tmpxml .= "				</users>\n";
-				$tmpxml .= "			</group>\n";
-				$tmpxml .= "\n";
+				$previous_callgroup = $callgroup;
 			}
-			$previous_callgroup = $callgroup;
+			unset($callgroup);
 		}
 		$tmpxml .= "		</groups>\n";
 		$tmpxml .= "\n";
