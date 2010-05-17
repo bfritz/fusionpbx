@@ -61,6 +61,9 @@ if (count($_POST)>0) {
 	$huntgrouppin = check_str($_POST["huntgrouppin"]);
 	$huntgroupcallerannounce = check_str($_POST["huntgroupcallerannounce"]);
 	$huntgroupdescr = check_str($_POST["huntgroupdescr"]);
+
+	//set default
+	if (strlen($huntgroupcallerannounce) == 0) { $huntgroupcallerannounce = "false"; }
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -161,7 +164,7 @@ if ($_POST["persistformvar"] != "true") {
 
 		//synchronize the xml config
 		sync_package_v_hunt_group();
-		
+
 		require_once "includes/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group.php\">\n";
 		echo "<div align='center'>\n";
@@ -196,7 +199,7 @@ if ($_POST["persistformvar"] != "true") {
 
 		//synchronize the xml config
 		sync_package_v_dialplan_includes();
-		
+
 		require_once "includes/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group.php\">\n";
 		echo "<div align='center'>\n";
@@ -453,30 +456,32 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Caller Announce:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='huntgroupcallerannounce'>\n";
-	echo "    <option value=''></option>\n";
-	if ($huntgroupcallerannounce == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+	if (switch_module_exists('mod_spidermonkey')) {
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "    Caller Announce:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "    <select class='formfld' name='huntgroupcallerannounce'>\n";
+		echo "    <option value=''></option>\n";
+		if ($huntgroupcallerannounce == "true") { 
+			echo "    <option value='true' SELECTED >true</option>\n";
+		}
+		else {
+			echo "    <option value='true'>true</option>\n";
+		}
+		if ($huntgroupcallerannounce == "false") { 
+			echo "    <option value='false' SELECTED >false</option>\n";
+		}
+		else {
+			echo "    <option value='false'>false</option>\n";
+		}
+		echo "    </select>\n";
+		echo "<br />\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
 	}
-	else {
-		echo "    <option value='true'>true</option>\n";
-	}
-	if ($huntgroupcallerannounce == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
-	}
-	else {
-		echo "    <option value='false'>false</option>\n";
-	}
-	echo "    </select>\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";

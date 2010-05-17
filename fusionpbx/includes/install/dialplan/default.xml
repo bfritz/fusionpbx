@@ -465,7 +465,7 @@
 	 Retrieve a valet parked call by dialing 6000 + park number + #
     -->
     <extension name="valet_park">
-      <condition field="destination_number" expression="^(6000)$">
+      <condition field="destination_number" expression="^(\*6000)$">
 	<action application="answer"/>
 	<action application="valet_park" data="valet_parking_lot ask 1 11 10000 ivr/ivr-enter_ext_pound.wav"/>
       </condition>
@@ -477,7 +477,7 @@
 	 After call is retrieved, park extension is free for another call.
     -->
     <extension name="valet_park">
-      <condition field="destination_number" expression="^(60\d[1-9])$">
+      <condition field="destination_number" expression="^(\*60\d[1-9])$">
 	<action application="answer"/>
 	<action application="valet_park" data="valet_parking_lot $1"/>
       </condition>
