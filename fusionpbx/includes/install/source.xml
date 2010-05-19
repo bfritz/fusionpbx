@@ -2417,9 +2417,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Mon, 17 May 2010 19:27:45 GMT</last_mod> 
-		<md5>0b5c539ff7c37a727c3e68cbc9f5e318</md5> 
-		<size>140514</size> 
+		<last_mod>Wed, 19 May 2010 17:20:22 GMT</last_mod> 
+		<md5>ce4e132d4d3e10039231c965815a2445</md5> 
+		<size>140513</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4251,9 +4251,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/voicemail_msgs/v_voicemail_msgs.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:23:06 GMT</last_mod> 
-		<md5>0c7083ce8e9e263a1cc2e298d1a6166c</md5> 
-		<size>12002</size> 
+		<last_mod>Wed, 19 May 2010 20:31:23 GMT</last_mod> 
+		<md5>78422b1c8d6033ef33428e7af054909c</md5> 
+		<size>12024</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4293,9 +4293,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/voicemail_status/v_voicemail.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:22:38 GMT</last_mod> 
-		<md5>341884e9fcf8c610251d190c74a9a98d</md5> 
-		<size>6726</size> 
+		<last_mod>Wed, 19 May 2010 19:38:36 GMT</last_mod> 
+		<md5>2c91f3e2ef57976b11cbe1887847a1a6</md5> 
+		<size>6734</size> 
 	</src> 
 	<src> 
 		<type>file</type> 

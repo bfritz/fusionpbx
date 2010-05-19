@@ -127,11 +127,11 @@ $order = $_GET["order"];
 	$x = 0;
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
+		//$v_mailboxes = $v_mailboxes.$row["extension"].'|';
 		//$extension_id = $row["extension_id"]
-		//$mailbox = $row["mailbox"]
+		//$extension = $row["extension"]
 		$mailbox_array[$x]['extension_id'] = $row["extension_id"];
-		$mailbox_array[$x]['mailbox'] = $row["mailbox"];
+		$mailbox_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}
 	unset ($prepstatement, $x);
@@ -177,15 +177,15 @@ if (count($mailbox_array) > 0) {
 
 	foreach($mailbox_array as $value) {
 		//print_r($value);
-		//$value['mailbox']
+		//$value['extension']
 		//$value['extension_id']
-		if (strlen($value['mailbox']) > 0) {
+		if (strlen($value['extension']) > 0) {
 
 			echo "<tr><td colspan='5' align='left'>\n";
 			echo "	<br />\n";
 			echo "	<br />\n";
-			//echo "	<a href='v_voicemail_msgs_password.php?id=$extension_id' alt='edit'><b>Mailbox: ".$value['mailbox']."</b></a>&nbsp;\n";
-			echo "	<b>Mailbox: ".$value['mailbox']."</b>&nbsp;\n";
+			//echo "	<a href='v_voicemail_msgs_password.php?id=$extension_id' alt='edit'><b>Mailbox: ".$value['extension']."</b></a>&nbsp;\n";
+			echo "	<b>Mailbox: ".$value['extension']."</b>&nbsp;\n";
 			echo "	\n";
 			echo "</td>\n";
 			echo "<td valign='bottom' align='right'>\n";
@@ -234,7 +234,7 @@ if (count($mailbox_array) > 0) {
 
 			$sql = "";
 			$sql .= " select * from voicemail_msgs ";
-			$sql .= " where username = '".$value['mailbox']."' ";
+			$sql .= " where username = '".$value['extension']."' ";
 			if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 			//$sql .= " limit $rowsperpage offset $offset ";
 			$prepstatement = $db->prepare(check_sql($sql));
@@ -255,7 +255,7 @@ if (count($mailbox_array) > 0) {
 
 					$extension_id = '';
 					foreach($mailbox_array as $value) {
-						if ($value['mailbox'] == $row[username]) {
+						if ($value['extension'] == $row[username]) {
 							$extension_id = $value['extension_id'];
 							break;
 						}

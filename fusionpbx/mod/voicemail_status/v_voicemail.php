@@ -65,7 +65,7 @@ $order = $_GET["order"];
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('mailbox', 'Mailbox', $orderby, $order);
+	echo thorderby('extension', 'Extension', $orderby, $order);
 	echo thorderby('vm_mailto', 'Voicemail Mail To', $orderby, $order);
 	echo "<th>Messages</th>\n";
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
@@ -134,7 +134,7 @@ $order = $_GET["order"];
 
 			$sql = "";
 			$sql .= "select count(*) as count from voicemail_msgs ";
-			$sql .= "where username = '".$row[mailbox]."' ";
+			$sql .= "where username = '".$row[extension]."' ";
 			//echo $sql;
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
@@ -147,7 +147,7 @@ $order = $_GET["order"];
 
 			//print_r( $row );
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[mailbox]."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[extension]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[vm_mailto]."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$count."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[enabled]."</td>\n";
