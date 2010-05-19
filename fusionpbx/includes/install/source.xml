@@ -723,9 +723,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/upgrade/upgrade_schema.php</path> 
-		<last_mod>Sun, 07 Mar 2010 03:45:07 GMT</last_mod> 
-		<md5>49a423dcac0e95d929bc36de0d0920d2</md5> 
-		<size>12267</size> 
+		<last_mod>Wed, 19 May 2010 17:14:27 GMT</last_mod> 
+		<md5>345385f335a43012dc7cbadbbf8029bc</md5> 
+		<size>12320</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2417,8 +2417,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Mon, 17 May 2010 14:53:23 GMT</last_mod> 
-		<md5>10e95a1d64dd596c91ae776060d1d705</md5> 
+		<last_mod>Mon, 17 May 2010 19:27:45 GMT</last_mod> 
+		<md5>0b5c539ff7c37a727c3e68cbc9f5e318</md5> 
 		<size>140514</size> 
 	</src> 
 	<src> 
@@ -4724,4 +4724,4 @@
 		<md5>e45f2d2b34a95646df5e16393857278d</md5> 
 		<size>14978</size> 
 	</src> 
-</xml> 
+</xml>

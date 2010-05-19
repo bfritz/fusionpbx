@@ -328,6 +328,7 @@ function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column
 				}
 				if ($dbtype == "mysql") {
 					$sql = str_replace("INTEGER PRIMARY KEY", "INT NOT NULL AUTO_INCREMENT PRIMARY KEY", $sql);
+					$sql = str_replace("NUMBER", "NUMERIC", $sql);
 					$sqlupdate .= $sql."\n";
 				}
 				if ($display_results) {
