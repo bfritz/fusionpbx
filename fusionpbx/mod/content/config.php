@@ -24,8 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 
-$softwarename = 'FusionPBX';
-$softwareversion = '1.1.6';
-$softwareurl = 'http://www.fusionpbx.com';
+$moduletitle = 'Content';
+$rsscategory = 'content';
 
+$rsssubshow = 0; //1 = yes, 0 = no
+$rsssubtitle = 'Content';
 ?>

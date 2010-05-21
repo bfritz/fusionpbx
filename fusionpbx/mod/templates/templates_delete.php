@@ -23,9 +23,36 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
+include "root.php";
+require_once "includes/config.php";
+require_once "includes/checkauth.php";
+if (!ifgroup("superadmin")) {
+	echo "access denied";
+	exit;
+}
 
-$softwarename = 'FusionPBX';
-$softwareversion = '1.1.6';
-$softwareurl = 'http://www.fusionpbx.com';
+if (count($_GET)>0) {
+	$id = $_GET["id"];
+}
+
+if (strlen($id)>0) {
+	$sql = "";
+	$sql .= "delete from v_templates ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and templateid = '$id' ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	unset($sql);
+}
+
+require_once "includes/header.php";
+echo "<meta http-equiv=\"refresh\" content=\"2;url=templates.php\">\n";
+echo "<div align='center'>\n";
+echo "Delete Complete\n";
+echo "</div>\n";
+
+require_once "includes/footer.php";
+return;
 
 ?>
+

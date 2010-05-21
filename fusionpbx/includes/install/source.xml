@@ -36,342 +36,6 @@
 	</src> 
 	<src> 
 		<type>directory</type> 
-		<path>core/cdr</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/cdr/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:09:39 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/cdr/v_cdr.php</path> 
-		<last_mod>Wed, 24 Feb 2010 07:08:55 GMT</last_mod> 
-		<md5>e7485f0897ca1b125d8f3563d6388206</md5> 
-		<size>17813</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/cdr/v_cdr_csv.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:09:27 GMT</last_mod> 
-		<md5>a36ce3aa756bbc24df7fb0a6bf9a171f</md5> 
-		<size>6096</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/cdr/v_cdr_edit.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:09:24 GMT</last_mod> 
-		<md5>e88f0928c489eac174c5777ad766ba8f</md5> 
-		<size>17723</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/cdr/v_cdr_import.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:09:39 GMT</last_mod> 
-		<md5>f2bf231819b7a300987da2eb3b6a0f64</md5> 
-		<size>3355</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/cdr/v_cdr_search.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:09:39 GMT</last_mod> 
-		<md5>bf89f835f41245e026b946655314cacb</md5> 
-		<size>5900</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>core/content</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/config.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:07:35 GMT</last_mod> 
-		<md5>cbdd755318ded931751144138f390fd3</md5> 
-		<size>954</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/index.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:07:33 GMT</last_mod> 
-		<md5>0d5bda44b8b09c0db174bab3e3544674</md5> 
-		<size>1233</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:07:29 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rss.css</path> 
-		<last_mod>Tue, 08 Dec 2009 02:25:06 GMT</last_mod> 
-		<md5>a3f96f1ba9be618ea2154531627e80f8</md5> 
-		<size>694</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rss.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:09:06 GMT</last_mod> 
-		<md5>aa0d12cd56d15f9e1f5da159444c8a27</md5> 
-		<size>7682</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rssadd.php</path> 
-		<last_mod>Wed, 03 Mar 2010 05:51:28 GMT</last_mod> 
-		<md5>c3ce8c17429e41d226a738a302f78769</md5> 
-		<size>10519</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsscontent.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:59 GMT</last_mod> 
-		<md5>228dae7777d58771f221f00b32018653</md5> 
-		<size>2012</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rssdelete.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:56 GMT</last_mod> 
-		<md5>beb831a08e22ffc8e964ded2fa62d81b</md5> 
-		<size>1736</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsslist.php</path> 
-		<last_mod>Wed, 24 Feb 2010 16:13:54 GMT</last_mod> 
-		<md5>2649f7eecd704336e7525eed5a043b06</md5> 
-		<size>8186</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rssmovedown.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:49 GMT</last_mod> 
-		<md5>5f7dab425e7d66a42bd7894e0a79eb2b</md5> 
-		<size>2765</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rssmoveup.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:45 GMT</last_mod> 
-		<md5>0cf84cff43bdb4918299b2c3a80e1c25</md5> 
-		<size>2288</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsssearch.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:42 GMT</last_mod> 
-		<md5>f55e6c830fb6925129351c05f5e2ab39</md5> 
-		<size>10682</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsssubadd.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:38 GMT</last_mod> 
-		<md5>400785b818e1db9374b0349ba490633f</md5> 
-		<size>5129</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsssubcategoryadd.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:35 GMT</last_mod> 
-		<md5>8b45e488cb5d1f1db7201f0707f0eeb5</md5> 
-		<size>3376</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsssubcategorylist.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:18 GMT</last_mod> 
-		<md5>8ac2d1a519a64aeceaf3cc2e36c12eb2</md5> 
-		<size>6260</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsssubcategoryupdate.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:12 GMT</last_mod> 
-		<md5>3df7a52702ac43ef0503d8e0ad7e39c0</md5> 
-		<size>4137</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsssubdelete.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:09 GMT</last_mod> 
-		<md5>ad9c0b56734087b768869a1532c34986</md5> 
-		<size>1749</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsssublist.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:04 GMT</last_mod> 
-		<md5>639203a208621a400d7bc04917660a1c</md5> 
-		<size>14992</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsssubsearch.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:08:00 GMT</last_mod> 
-		<md5>19203a2e993a429b7dded8a2c724d4a7</md5> 
-		<size>10203</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rsssubupdate.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:07:49 GMT</last_mod> 
-		<md5>02a9263e38177e0c6302b2a084328fa5</md5> 
-		<size>6956</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/content/rssupdate.php</path> 
-		<last_mod>Wed, 03 Mar 2010 05:50:12 GMT</last_mod> 
-		<md5>f619cf3e72b32d8d0d29f24a64313497</md5> 
-		<size>14275</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>core/dialplan</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/dialplan/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:07:05 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/dialplan/v_dialplan.php</path> 
-		<last_mod>Sat, 01 May 2010 07:58:21 GMT</last_mod> 
-		<md5>a3be48af0b44ecfefa947281feaa8585</md5> 
-		<size>4431</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/dialplan/v_dialplan_includes.php</path> 
-		<last_mod>Tue, 04 May 2010 01:28:42 GMT</last_mod> 
-		<md5>b1a0d09a3c629c9c70183cd92a1889f8</md5> 
-		<size>6568</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/dialplan/v_dialplan_includes_add.php</path> 
-		<last_mod>Sun, 21 Mar 2010 00:35:12 GMT</last_mod> 
-		<md5>71a32e2b94b30818f65349fba078cea6</md5> 
-		<size>23977</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/dialplan/v_dialplan_includes_delete.php</path> 
-		<last_mod>Sat, 01 May 2010 19:07:25 GMT</last_mod> 
-		<md5>70c98ad23504a24fa38c13c6ca8ee0b6</md5> 
-		<size>1830</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/dialplan/v_dialplan_includes_details_delete.php</path> 
-		<last_mod>Tue, 04 May 2010 01:29:47 GMT</last_mod> 
-		<md5>a731a9a1e8963c1a1aecd5f3bd0eafb2</md5> 
-		<size>1747</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/dialplan/v_dialplan_includes_details_edit.php</path> 
-		<last_mod>Sat, 01 May 2010 19:09:51 GMT</last_mod> 
-		<md5>d8aa600ec687d0fb74673dd48fe58a41</md5> 
-		<size>16360</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/dialplan/v_dialplan_includes_edit.php</path> 
-		<last_mod>Sat, 01 May 2010 19:06:44 GMT</last_mod> 
-		<md5>ffbd9c0f4d3ac86fafee1e4d3585d832</md5> 
-		<size>19831</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>core/extensions</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/extensions/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:06:15 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/extensions/v_extensions.php</path> 
-		<last_mod>Tue, 04 May 2010 01:28:30 GMT</last_mod> 
-		<md5>8fab56a672c58baa2e8cf0ed28d3ccb3</md5> 
-		<size>6423</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/extensions/v_extensions_delete.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:06:15 GMT</last_mod> 
-		<md5>da29fa8196cbf0be474eba43be84b68a</md5> 
-		<size>1586</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/extensions/v_extensions_edit.php</path> 
-		<last_mod>Sat, 17 Apr 2010 23:38:14 GMT</last_mod> 
-		<md5>a98da434d4252bc2c0952d06dad99283</md5> 
-		<size>27962</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>core/gateways</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/gateways/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:05:48 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/gateways/v_gateways.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:05:49 GMT</last_mod> 
-		<md5>f547f19c3bce7a9f87c09923afc9f210</md5> 
-		<size>6683</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/gateways/v_gateways_delete.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:05:49 GMT</last_mod> 
-		<md5>d4eadbdaa260723a8c51ad80fda630bc</md5> 
-		<size>2631</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/gateways/v_gateways_edit.php</path> 
-		<last_mod>Thu, 15 Apr 2010 02:46:17 GMT</last_mod> 
-		<md5>c19621cd60edecd451d037d6e73e847f</md5> 
-		<size>35734</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
 		<path>core/menu</path> 
 		<last_mod></last_mod> 
 		<md5></md5> 
@@ -439,125 +103,6 @@
 		<last_mod>Sat, 06 Feb 2010 18:05:21 GMT</last_mod> 
 		<md5>d399882b4822a07f0f4745cc41e1af1a</md5> 
 		<size>1911</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>core/modules</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/modules/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:04:36 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/modules/v_modules.php</path> 
-		<last_mod>Sat, 01 May 2010 08:04:43 GMT</last_mod> 
-		<md5>bf50f66f71171a4981b3c9073526bcd1</md5> 
-		<size>7316</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/modules/v_modules_delete.php</path> 
-		<last_mod>Sat, 01 May 2010 08:04:43 GMT</last_mod> 
-		<md5>f54ff1eabd51b61e3159b9b68a7dc32a</md5> 
-		<size>1518</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/modules/v_modules_edit.php</path> 
-		<last_mod>Sat, 01 May 2010 08:04:43 GMT</last_mod> 
-		<md5>b111c8003901a2867d69533b4305b7cc</md5> 
-		<size>10317</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>core/profiles</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/profiles/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:04:00 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/profiles/v_profiles.php</path> 
-		<last_mod>Sat, 01 May 2010 08:07:29 GMT</last_mod> 
-		<md5>3885dfc9ba65f4916692d0dac7d99cc8</md5> 
-		<size>6046</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/profiles/v_profile_edit.php</path> 
-		<last_mod>Sat, 01 May 2010 08:07:29 GMT</last_mod> 
-		<md5>a686d9b5c036aea94fae303405bdff34</md5> 
-		<size>3478</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>core/public_includes</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/public_includes/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:03:20 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/public_includes/v_public_includes.php</path> 
-		<last_mod>Tue, 04 May 2010 01:31:36 GMT</last_mod> 
-		<md5>42e47a50509083c0e403d193e4dd8e8c</md5> 
-		<size>16862</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/public_includes/v_public_includes_add.php</path> 
-		<last_mod>Sun, 21 Mar 2010 00:36:33 GMT</last_mod> 
-		<md5>76b179e822ec01b530dae908c210ed3e</md5> 
-		<size>24731</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/public_includes/v_public_includes_delete.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:03:20 GMT</last_mod> 
-		<md5>48aac49ab1fc7d95e1acf1186559abe6</md5> 
-		<size>2769</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/public_includes/v_public_includes_details_delete.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:03:20 GMT</last_mod> 
-		<md5>73c0fae3464189c82a535680d9d84ccf</md5> 
-		<size>1761</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/public_includes/v_public_includes_details_edit.php</path> 
-		<last_mod>Sun, 21 Mar 2010 00:38:13 GMT</last_mod> 
-		<md5>724526a9fff19d86248dce91577801e6</md5> 
-		<size>23076</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/public_includes/v_public_includes_edit.php</path> 
-		<last_mod>Fri, 12 Feb 2010 19:47:35 GMT</last_mod> 
-		<md5>3c399e80b87056d064e7ebdb9c7f89b7</md5> 
-		<size>19259</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -656,48 +201,6 @@
 		<last_mod>Tue, 04 May 2010 04:26:06 GMT</last_mod> 
 		<md5>7d94d69320206a2c191410894ed6584b</md5> 
 		<size>26413</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>core/templates</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/templates/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:00:35 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/templates/templates.php</path> 
-		<last_mod>Thu, 11 Mar 2010 10:04:45 GMT</last_mod> 
-		<md5>220314b2ccf5c6dab1824010e4797e97</md5> 
-		<size>5632</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/templates/templates_delete.php</path> 
-		<last_mod>Sat, 06 Feb 2010 18:00:25 GMT</last_mod> 
-		<md5>e2ae034aa17a21d33bbb4be026effa05</md5> 
-		<size>1531</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/templates/templates_edit.php</path> 
-		<last_mod>Wed, 03 Mar 2010 05:36:33 GMT</last_mod> 
-		<md5>20d75f9e30b002ff11f6eb36dc866122</md5> 
-		<size>12442</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/templates/template_restore_default.php</path> 
-		<last_mod>Thu, 11 Mar 2010 10:03:27 GMT</last_mod> 
-		<md5>70a7f40648f6b3cc7b57922ebc02f6e7</md5> 
-		<size>4141</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -838,48 +341,6 @@
 		<last_mod>Sat, 10 Apr 2010 21:43:51 GMT</last_mod> 
 		<md5>fe4716eb3b7ac27988fe998b463f19ff</md5> 
 		<size>23476</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>core/vars</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/vars/root.php</path> 
-		<last_mod>Sat, 06 Feb 2010 17:52:31 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/vars/v_vars.php</path> 
-		<last_mod>Sat, 01 May 2010 08:06:02 GMT</last_mod> 
-		<md5>75c63ebf17ffe1ee74ac40d9ae53513c</md5> 
-		<size>7887</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/vars/v_vars.textarea.php</path> 
-		<last_mod>Sat, 01 May 2010 08:06:02 GMT</last_mod> 
-		<md5>2d73130196e06c933427fcc8afd4330e</md5> 
-		<size>4538</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/vars/v_vars_delete.php</path> 
-		<last_mod>Sat, 01 May 2010 08:06:27 GMT</last_mod> 
-		<md5>a16822bccc972ec3ab6b54167daa16b1</md5> 
-		<size>1513</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>core/vars/v_vars_edit.php</path> 
-		<last_mod>Sat, 01 May 2010 08:06:02 GMT</last_mod> 
-		<md5>cb2dea33746d2156c0a888bd72f6d472</md5> 
-		<size>14042</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2417,8 +1878,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Wed, 19 May 2010 17:20:22 GMT</last_mod> 
-		<md5>ce4e132d4d3e10039231c965815a2445</md5> 
+		<last_mod>Wed, 19 May 2010 20:32:51 GMT</last_mod> 
+		<md5>d74a8c413b88c20967ae2ddf93199e70</md5> 
 		<size>140513</size> 
 	</src> 
 	<src> 
@@ -2431,23 +1892,23 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/mysql.sql</path> 
-		<last_mod>Thu, 13 May 2010 22:41:43 GMT</last_mod> 
-		<md5>4ee167d887d22892e14e7f7fe68da16a</md5> 
-		<size>62609</size> 
+		<last_mod>Fri, 21 May 2010 06:58:51 GMT</last_mod> 
+		<md5>0756ccd37d476b50d062239a0d927988</md5> 
+		<size>62597</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/pgsql.sql</path> 
-		<last_mod>Thu, 13 May 2010 22:40:45 GMT</last_mod> 
-		<md5>87958a1e45829cf224c4708c83c454ad</md5> 
-		<size>62118</size> 
+		<last_mod>Fri, 21 May 2010 06:58:32 GMT</last_mod> 
+		<md5>118d9cd6a34b643181151ad0c15077de</md5> 
+		<size>62106</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/sqlite.sql</path> 
-		<last_mod>Thu, 13 May 2010 22:40:18 GMT</last_mod> 
-		<md5>56844be7c5a4d3dd479fe4fad4172ef4</md5> 
-		<size>62495</size> 
+		<last_mod>Fri, 21 May 2010 06:57:44 GMT</last_mod> 
+		<md5>19c5fc703329ae5e71cd64a5996c2db3</md5> 
+		<size>62484</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2557,8 +2018,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/v_version.php</path> 
-		<last_mod>Mon, 17 May 2010 19:23:49 GMT</last_mod> 
-		<md5>5865b48ec869e3f96a6fbd41c5a2c29a</md5> 
+		<last_mod>Fri, 21 May 2010 07:51:38 GMT</last_mod> 
+		<md5>b9b089816f917eacfff42916d7c08ae0</md5> 
 		<size>938</size> 
 	</src> 
 	<src> 
@@ -2808,6 +2269,55 @@
 	</src> 
 	<src> 
 		<type>directory</type> 
+		<path>mod/cdr</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/cdr/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:09:39 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/cdr/v_cdr.php</path> 
+		<last_mod>Wed, 24 Feb 2010 07:08:55 GMT</last_mod> 
+		<md5>e7485f0897ca1b125d8f3563d6388206</md5> 
+		<size>17813</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/cdr/v_cdr_csv.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:09:27 GMT</last_mod> 
+		<md5>a36ce3aa756bbc24df7fb0a6bf9a171f</md5> 
+		<size>6096</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/cdr/v_cdr_edit.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:09:24 GMT</last_mod> 
+		<md5>e88f0928c489eac174c5777ad766ba8f</md5> 
+		<size>17723</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/cdr/v_cdr_import.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:09:39 GMT</last_mod> 
+		<md5>f2bf231819b7a300987da2eb3b6a0f64</md5> 
+		<size>3355</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/cdr/v_cdr_search.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:09:39 GMT</last_mod> 
+		<md5>bf89f835f41245e026b946655314cacb</md5> 
+		<size>5900</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
 		<path>mod/click_to_call</path> 
 		<last_mod></last_mod> 
 		<md5></md5> 
@@ -2969,6 +2479,223 @@
 	</src> 
 	<src> 
 		<type>directory</type> 
+		<path>mod/content</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/config.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:07:35 GMT</last_mod> 
+		<md5>cbdd755318ded931751144138f390fd3</md5> 
+		<size>954</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/index.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:07:33 GMT</last_mod> 
+		<md5>0d5bda44b8b09c0db174bab3e3544674</md5> 
+		<size>1233</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:07:29 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rss.css</path> 
+		<last_mod>Tue, 08 Dec 2009 02:25:06 GMT</last_mod> 
+		<md5>a3f96f1ba9be618ea2154531627e80f8</md5> 
+		<size>694</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rss.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:09:06 GMT</last_mod> 
+		<md5>aa0d12cd56d15f9e1f5da159444c8a27</md5> 
+		<size>7682</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rssadd.php</path> 
+		<last_mod>Wed, 03 Mar 2010 05:51:28 GMT</last_mod> 
+		<md5>c3ce8c17429e41d226a738a302f78769</md5> 
+		<size>10519</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsscontent.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:59 GMT</last_mod> 
+		<md5>228dae7777d58771f221f00b32018653</md5> 
+		<size>2012</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rssdelete.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:56 GMT</last_mod> 
+		<md5>beb831a08e22ffc8e964ded2fa62d81b</md5> 
+		<size>1736</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsslist.php</path> 
+		<last_mod>Wed, 24 Feb 2010 16:13:54 GMT</last_mod> 
+		<md5>2649f7eecd704336e7525eed5a043b06</md5> 
+		<size>8186</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rssmovedown.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:49 GMT</last_mod> 
+		<md5>5f7dab425e7d66a42bd7894e0a79eb2b</md5> 
+		<size>2765</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rssmoveup.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:45 GMT</last_mod> 
+		<md5>0cf84cff43bdb4918299b2c3a80e1c25</md5> 
+		<size>2288</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsssearch.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:42 GMT</last_mod> 
+		<md5>f55e6c830fb6925129351c05f5e2ab39</md5> 
+		<size>10682</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsssubadd.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:38 GMT</last_mod> 
+		<md5>400785b818e1db9374b0349ba490633f</md5> 
+		<size>5129</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsssubcategoryadd.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:35 GMT</last_mod> 
+		<md5>8b45e488cb5d1f1db7201f0707f0eeb5</md5> 
+		<size>3376</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsssubcategorylist.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:18 GMT</last_mod> 
+		<md5>8ac2d1a519a64aeceaf3cc2e36c12eb2</md5> 
+		<size>6260</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsssubcategoryupdate.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:12 GMT</last_mod> 
+		<md5>3df7a52702ac43ef0503d8e0ad7e39c0</md5> 
+		<size>4137</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsssubdelete.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:09 GMT</last_mod> 
+		<md5>ad9c0b56734087b768869a1532c34986</md5> 
+		<size>1749</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsssublist.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:04 GMT</last_mod> 
+		<md5>639203a208621a400d7bc04917660a1c</md5> 
+		<size>14992</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsssubsearch.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:08:00 GMT</last_mod> 
+		<md5>19203a2e993a429b7dded8a2c724d4a7</md5> 
+		<size>10203</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rsssubupdate.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:07:49 GMT</last_mod> 
+		<md5>02a9263e38177e0c6302b2a084328fa5</md5> 
+		<size>6956</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/content/rssupdate.php</path> 
+		<last_mod>Wed, 03 Mar 2010 05:50:12 GMT</last_mod> 
+		<md5>f619cf3e72b32d8d0d29f24a64313497</md5> 
+		<size>14275</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
+		<path>mod/dialplan</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/dialplan/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:07:05 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/dialplan/v_dialplan.php</path> 
+		<last_mod>Sat, 01 May 2010 07:58:21 GMT</last_mod> 
+		<md5>a3be48af0b44ecfefa947281feaa8585</md5> 
+		<size>4431</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/dialplan/v_dialplan_includes.php</path> 
+		<last_mod>Tue, 04 May 2010 01:28:42 GMT</last_mod> 
+		<md5>b1a0d09a3c629c9c70183cd92a1889f8</md5> 
+		<size>6568</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/dialplan/v_dialplan_includes_add.php</path> 
+		<last_mod>Sun, 21 Mar 2010 00:35:12 GMT</last_mod> 
+		<md5>71a32e2b94b30818f65349fba078cea6</md5> 
+		<size>23977</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/dialplan/v_dialplan_includes_delete.php</path> 
+		<last_mod>Sat, 01 May 2010 19:07:25 GMT</last_mod> 
+		<md5>70c98ad23504a24fa38c13c6ca8ee0b6</md5> 
+		<size>1830</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/dialplan/v_dialplan_includes_details_delete.php</path> 
+		<last_mod>Tue, 04 May 2010 01:29:47 GMT</last_mod> 
+		<md5>a731a9a1e8963c1a1aecd5f3bd0eafb2</md5> 
+		<size>1747</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/dialplan/v_dialplan_includes_details_edit.php</path> 
+		<last_mod>Sat, 01 May 2010 19:09:51 GMT</last_mod> 
+		<md5>d8aa600ec687d0fb74673dd48fe58a41</md5> 
+		<size>16360</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/dialplan/v_dialplan_includes_edit.php</path> 
+		<last_mod>Sat, 01 May 2010 19:06:44 GMT</last_mod> 
+		<md5>ffbd9c0f4d3ac86fafee1e4d3585d832</md5> 
+		<size>19831</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
 		<path>mod/exec</path> 
 		<last_mod></last_mod> 
 		<md5></md5> 
@@ -2987,6 +2714,41 @@
 		<last_mod>Sat, 10 Apr 2010 02:34:16 GMT</last_mod> 
 		<md5>8e33fb266adfaa5e267be76ab9c1c1a1</md5> 
 		<size>7190</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
+		<path>mod/extensions</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/extensions/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:06:15 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/extensions/v_extensions.php</path> 
+		<last_mod>Tue, 04 May 2010 01:28:30 GMT</last_mod> 
+		<md5>8fab56a672c58baa2e8cf0ed28d3ccb3</md5> 
+		<size>6423</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/extensions/v_extensions_delete.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:06:15 GMT</last_mod> 
+		<md5>da29fa8196cbf0be474eba43be84b68a</md5> 
+		<size>1586</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/extensions/v_extensions_edit.php</path> 
+		<last_mod>Sat, 17 Apr 2010 23:38:14 GMT</last_mod> 
+		<md5>a98da434d4252bc2c0952d06dad99283</md5> 
+		<size>27962</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -3043,6 +2805,41 @@
 		<last_mod>Wed, 24 Feb 2010 07:36:30 GMT</last_mod> 
 		<md5>3d5c49ea8ba3b39e56729c67597f87f5</md5> 
 		<size>5671</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
+		<path>mod/gateways</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/gateways/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:05:48 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/gateways/v_gateways.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:05:49 GMT</last_mod> 
+		<md5>f547f19c3bce7a9f87c09923afc9f210</md5> 
+		<size>6683</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/gateways/v_gateways_delete.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:05:49 GMT</last_mod> 
+		<md5>d4eadbdaa260723a8c51ad80fda630bc</md5> 
+		<size>2631</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/gateways/v_gateways_edit.php</path> 
+		<last_mod>Thu, 15 Apr 2010 02:46:17 GMT</last_mod> 
+		<md5>c19621cd60edecd451d037d6e73e847f</md5> 
+		<size>35734</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -3438,6 +3235,41 @@
 	</src> 
 	<src> 
 		<type>directory</type> 
+		<path>mod/modules</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/modules/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:04:36 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/modules/v_modules.php</path> 
+		<last_mod>Sat, 01 May 2010 08:04:43 GMT</last_mod> 
+		<md5>bf50f66f71171a4981b3c9073526bcd1</md5> 
+		<size>7316</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/modules/v_modules_delete.php</path> 
+		<last_mod>Sat, 01 May 2010 08:04:43 GMT</last_mod> 
+		<md5>f54ff1eabd51b61e3159b9b68a7dc32a</md5> 
+		<size>1518</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/modules/v_modules_edit.php</path> 
+		<last_mod>Sat, 01 May 2010 08:04:43 GMT</last_mod> 
+		<md5>b111c8003901a2867d69533b4305b7cc</md5> 
+		<size>10317</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
 		<path>mod/php_edit</path> 
 		<last_mod></last_mod> 
 		<md5></md5> 
@@ -3722,6 +3554,90 @@
 		<last_mod>Sat, 06 Feb 2010 18:36:26 GMT</last_mod> 
 		<md5>d399882b4822a07f0f4745cc41e1af1a</md5> 
 		<size>1911</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
+		<path>mod/profiles</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/profiles/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:04:00 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/profiles/v_profiles.php</path> 
+		<last_mod>Sat, 01 May 2010 08:07:29 GMT</last_mod> 
+		<md5>3885dfc9ba65f4916692d0dac7d99cc8</md5> 
+		<size>6046</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/profiles/v_profile_edit.php</path> 
+		<last_mod>Sat, 01 May 2010 08:07:29 GMT</last_mod> 
+		<md5>a686d9b5c036aea94fae303405bdff34</md5> 
+		<size>3478</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
+		<path>mod/public_includes</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/public_includes/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:03:20 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/public_includes/v_public_includes.php</path> 
+		<last_mod>Tue, 04 May 2010 01:31:36 GMT</last_mod> 
+		<md5>42e47a50509083c0e403d193e4dd8e8c</md5> 
+		<size>16862</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/public_includes/v_public_includes_add.php</path> 
+		<last_mod>Sun, 21 Mar 2010 00:36:33 GMT</last_mod> 
+		<md5>76b179e822ec01b530dae908c210ed3e</md5> 
+		<size>24731</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/public_includes/v_public_includes_delete.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:03:20 GMT</last_mod> 
+		<md5>48aac49ab1fc7d95e1acf1186559abe6</md5> 
+		<size>2769</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/public_includes/v_public_includes_details_delete.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:03:20 GMT</last_mod> 
+		<md5>73c0fae3464189c82a535680d9d84ccf</md5> 
+		<size>1761</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/public_includes/v_public_includes_details_edit.php</path> 
+		<last_mod>Sun, 21 Mar 2010 00:38:13 GMT</last_mod> 
+		<md5>724526a9fff19d86248dce91577801e6</md5> 
+		<size>23076</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/public_includes/v_public_includes_edit.php</path> 
+		<last_mod>Fri, 12 Feb 2010 19:47:35 GMT</last_mod> 
+		<md5>3c399e80b87056d064e7ebdb9c7f89b7</md5> 
+		<size>19259</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4208,6 +4124,48 @@
 	</src> 
 	<src> 
 		<type>directory</type> 
+		<path>mod/templates</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/templates/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:00:35 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/templates/templates.php</path> 
+		<last_mod>Thu, 11 Mar 2010 10:04:45 GMT</last_mod> 
+		<md5>220314b2ccf5c6dab1824010e4797e97</md5> 
+		<size>5632</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/templates/templates_delete.php</path> 
+		<last_mod>Sat, 06 Feb 2010 18:00:25 GMT</last_mod> 
+		<md5>e2ae034aa17a21d33bbb4be026effa05</md5> 
+		<size>1531</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/templates/templates_edit.php</path> 
+		<last_mod>Wed, 03 Mar 2010 05:36:33 GMT</last_mod> 
+		<md5>20d75f9e30b002ff11f6eb36dc866122</md5> 
+		<size>12442</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/templates/template_restore_default.php</path> 
+		<last_mod>Thu, 11 Mar 2010 10:03:27 GMT</last_mod> 
+		<md5>70a7f40648f6b3cc7b57922ebc02f6e7</md5> 
+		<size>4141</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
 		<path>mod/users</path> 
 		<last_mod></last_mod> 
 		<md5></md5> 
@@ -4233,6 +4191,48 @@
 		<last_mod>Sat, 06 Feb 2010 18:23:29 GMT</last_mod> 
 		<md5>09adf52fc395642806f0b6ee6ad37c92</md5> 
 		<size>22236</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
+		<path>mod/vars</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/vars/root.php</path> 
+		<last_mod>Sat, 06 Feb 2010 17:52:31 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/vars/v_vars.php</path> 
+		<last_mod>Sat, 01 May 2010 08:06:02 GMT</last_mod> 
+		<md5>75c63ebf17ffe1ee74ac40d9ae53513c</md5> 
+		<size>7887</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/vars/v_vars.textarea.php</path> 
+		<last_mod>Sat, 01 May 2010 08:06:02 GMT</last_mod> 
+		<md5>2d73130196e06c933427fcc8afd4330e</md5> 
+		<size>4538</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/vars/v_vars_delete.php</path> 
+		<last_mod>Sat, 01 May 2010 08:06:27 GMT</last_mod> 
+		<md5>a16822bccc972ec3ab6b54167daa16b1</md5> 
+		<size>1513</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/vars/v_vars_edit.php</path> 
+		<last_mod>Sat, 01 May 2010 08:06:02 GMT</last_mod> 
+		<md5>cb2dea33746d2156c0a888bd72f6d472</md5> 
+		<size>14042</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 

@@ -23,9 +23,20 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
+return; //disable
 
-$softwarename = 'FusionPBX';
-$softwareversion = '1.1.6';
-$softwareurl = 'http://www.fusionpbx.com';
+include "root.php";
+//require_once "includes/config.php";
+//require_once "includes/checkauth.php";
+require_once "config.php";
+session_start();
 
+require_once "includes/header.php";
+echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"\" href=\"rss.php\" />\n";
+
+$_GET["c"] = "html";
+require_once "rss.php";
+require_once "includes/footer.php";
+
+return;
 ?>
