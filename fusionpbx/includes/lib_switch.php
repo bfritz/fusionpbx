@@ -3987,7 +3987,7 @@ function sync_package_v_auto_attendant()
 
 
 function v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value) {
-	global $db;
+	global $db, $dbtype;
 	$sql = "insert into v_dialplan_includes ";
 	$sql .= "(";
 	$sql .= "v_id, ";
@@ -4010,9 +4010,20 @@ function v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context
 	$sql .= "'$opt1name', ";
 	$sql .= "'$opt1value' ";
 	$sql .= ")";
-	//echo $sql."<br />";
-	$db->exec(check_sql($sql));
-	$dialplan_include_id = $db->lastInsertId($id);
+	if ($dbtype == "sqlite" || $dbtype == "mysql" ) {
+		$db->exec(check_sql($sql));
+		$dialplan_include_id = $db->lastInsertId($id);
+	}
+	if ($dbtype == "pgsql") {
+		$sql .= " RETURNING dialplan_include_id ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$dialplan_include_id = $row["dialplan_include_id"];
+		}
+		unset($prepstatement, $result);
+	}
 	unset($sql);
 	return $dialplan_include_id;
 }
@@ -4037,9 +4048,7 @@ function v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fie
 	$sql .= "'$fieldtype', ";
 	$sql .= "'$fielddata' ";
 	$sql .= ")";
-	//echo $sql."<br />";
 	$db->exec(check_sql($sql));
-	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 }
 
