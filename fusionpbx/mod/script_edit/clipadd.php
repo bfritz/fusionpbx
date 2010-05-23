@@ -36,92 +36,90 @@ else {
 require_once "config.php";
 
 if (count($_POST)>0) {
-    $clipname = check_str($_POST["clipname"]);
-    $clipfolder = check_str($_POST["clipfolder"]);
-    $cliptextstart = check_str($_POST["cliptextstart"]);
-    $cliptextend = check_str($_POST["cliptextend"]);
-    $clipdesc = check_str($_POST["clipdesc"]);
-    $cliporder = check_str($_POST["cliporder"]);
-    
+	$clipname = check_str($_POST["clipname"]);
+	$clipfolder = check_str($_POST["clipfolder"]);
+	$cliptextstart = check_str($_POST["cliptextstart"]);
+	$cliptextend = check_str($_POST["cliptextend"]);
+	$clipdesc = check_str($_POST["clipdesc"]);
+	$cliporder = check_str($_POST["cliporder"]);
 
-    $sql = "insert into tblcliplibrary ";
-    $sql .= "(";
-    $sql .= "clipname, ";
-    $sql .= "clipfolder, ";
-    $sql .= "cliptextstart, ";
-    $sql .= "cliptextend, ";
-    $sql .= "clipdesc, ";
-    $sql .= "cliporder ";
-    $sql .= ")";
-    $sql .= "values ";
-    $sql .= "(";
-    $sql .= "'$clipname', ";
-    $sql .= "'$clipfolder', ";
-    $sql .= "'$cliptextstart', ";
-    $sql .= "'$cliptextend', ";
-    $sql .= "'$clipdesc', ";
-    $sql .= "'$cliporder' ";
-    $sql .= ")";
-    $db->exec(check_sql($sql));
-    $lastinsertid = $db->lastInsertId($id);
-    unset($sql,$db);
+	$sql = "insert into tblcliplibrary ";
+	$sql .= "(";
+	$sql .= "clipname, ";
+	$sql .= "clipfolder, ";
+	$sql .= "cliptextstart, ";
+	$sql .= "cliptextend, ";
+	$sql .= "clipdesc, ";
+	$sql .= "cliporder ";
+	$sql .= ")";
+	$sql .= "values ";
+	$sql .= "(";
+	$sql .= "'$clipname', ";
+	$sql .= "'$clipfolder', ";
+	$sql .= "'$cliptextstart', ";
+	$sql .= "'$cliptextend', ";
+	$sql .= "'$clipdesc', ";
+	$sql .= "'$cliporder' ";
+	$sql .= ")";
+	$db->exec(check_sql($sql));
+	unset($sql,$db);
 
-    require_once "header.php";
-    echo "<meta http-equiv=\"refresh\" content=\"1;url=clipoptions.php\">\n";
-    echo "Add Complete";
-    require_once "footer.php";
-    return;
+	require_once "header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"1;url=clipoptions.php\">\n";
+	echo "Add Complete";
+	require_once "footer.php";
+	return;
 }
 
-    require_once "header.php";
-    echo "<div align='left'>";
-    echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
+	require_once "header.php";
+	echo "<div align='left'>";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
-    echo "<tr class='border'>\n";
-    echo "	<td align=\"left\">\n";
+	echo "<tr class='border'>\n";
+	echo "	<td align=\"left\">\n";
 
-    //echo "Clip Library";
-    //echo "<hr size='1'>";
-    echo "<form method='post' action=''>";
-    echo "<table width='100%' border='0'>";
-      echo "	<tr>";
-      echo "		<td>Name:</td>";
-      echo "		<td><input type='text' class='txt' name='clipname'></td>";
-      echo "	</tr>";
-      
-      echo "	<tr>";
-      echo "		<td>Folder:</td>";
-      echo "		<td><input type='text' class='txt' name='clipfolder'></td>";
-      echo "	</tr>";
-      
-      echo "	<tr>";
-      echo "		<td colspan='2'>Before Selection:<br>";
-      echo "		  <textarea name='cliptextstart' class='txt'></textarea>";
-      echo "		</td>";
-      echo "	</tr>";
-      
-      echo "	<tr>";
-      echo "		<td colspan='2'>After Selection:<br>";
-      echo "		  <textarea name='cliptextend' class='txt'></textarea>";
-      echo "		</td>";
-      echo "	</tr>";
-      
-      echo "	<tr>";
-      echo "		<td colspan='2'>Notes:<br>";
-      echo "		  <textarea name='clipdesc' class='txt'></textarea>";
-      echo "		</td>";
-      echo "	</tr>";
+	//echo "Clip Library";
+	//echo "<hr size='1'>";
+	echo "<form method='post' action=''>";
+	echo "<table width='100%' border='0'>";
+	  echo "	<tr>";
+	  echo "		<td>Name:</td>";
+	  echo "		<td><input type='text' class='txt' name='clipname'></td>";
+	  echo "	</tr>";
+	  
+	  echo "	<tr>";
+	  echo "		<td>Folder:</td>";
+	  echo "		<td><input type='text' class='txt' name='clipfolder'></td>";
+	  echo "	</tr>";
+	  
+	  echo "	<tr>";
+	  echo "		<td colspan='2'>Before Selection:<br>";
+	  echo "		  <textarea name='cliptextstart' class='txt'></textarea>";
+	  echo "		</td>";
+	  echo "	</tr>";
+	  
+	  echo "	<tr>";
+	  echo "		<td colspan='2'>After Selection:<br>";
+	  echo "		  <textarea name='cliptextend' class='txt'></textarea>";
+	  echo "		</td>";
+	  echo "	</tr>";
+	  
+	  echo "	<tr>";
+	  echo "		<td colspan='2'>Notes:<br>";
+	  echo "		  <textarea name='clipdesc' class='txt'></textarea>";
+	  echo "		</td>";
+	  echo "	</tr>";
 
-    echo "		<td colspan='2' align='right'><input type='submit' name='submit' value='Add'></td>";
-    echo "	</tr>";
-    echo "</table>";
-    echo "</form>";
+	echo "		<td colspan='2' align='right'><input type='submit' name='submit' value='Add'></td>";
+	echo "	</tr>";
+	echo "</table>";
+	echo "</form>";
 
 
-    echo "	</td>";
-    echo "	</tr>";
-    echo "</table>";
-    echo "</div>";
+	echo "	</td>";
+	echo "	</tr>";
+	echo "</table>";
+	echo "</div>";
 
 
 require_once "footer.php";

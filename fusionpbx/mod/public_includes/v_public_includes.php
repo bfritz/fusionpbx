@@ -100,8 +100,20 @@ $order = $_GET["order"];
 			$sql .= "'true', ";
 			$sql .= "'$description' ";
 			$sql .= ")";
-			$db->exec(check_sql($sql));
-			$public_include_id = $db->lastInsertId($id);
+			if ($dbtype == "sqlite" || $dbtype == "mysql" ) {
+				$db->exec(check_sql($sql));
+				$public_include_id = $db->lastInsertId($id);
+			}
+			if ($dbtype == "pgsql") {
+				$sql .= " RETURNING public_include_id ";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+				$result = $prepstatement->fetchAll();
+				foreach ($result as &$row) {
+					$public_include_id = $row["public_include_id"];
+				}
+				unset($prepstatement, $result);
+			}
 			unset($sql);
 
 		//add condition public context
@@ -124,7 +136,6 @@ $order = $_GET["order"];
 			$sql .= "'0' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
 		//add condition 1
@@ -147,7 +158,6 @@ $order = $_GET["order"];
 			$sql .= "'1' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
 		//add condition 2
@@ -171,7 +181,6 @@ $order = $_GET["order"];
 				$sql .= "'2' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
-				//$lastinsertid = $db->lastInsertId($id);
 				unset($sql);
 			}
 
@@ -195,7 +204,6 @@ $order = $_GET["order"];
 			$sql .= "'3' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
 		//add action 2
@@ -219,7 +227,6 @@ $order = $_GET["order"];
 				$sql .= "'4' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
-				//$lastinsertid = $db->lastInsertId($id);
 				unset($sql);
 			}
 

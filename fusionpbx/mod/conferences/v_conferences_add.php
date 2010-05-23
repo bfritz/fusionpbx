@@ -100,10 +100,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$enabled', ";
 		$sql .= "'$description' ";
 		$sql .= ")";
-		$db->exec(check_sql($sql));
-		$dialplan_include_id = $db->lastInsertId($id);
+		if ($dbtype == "sqlite" || $dbtype == "mysql" ) {
+			$db->exec(check_sql($sql));
+			$dialplan_include_id = $db->lastInsertId($id);
+		}
+		if ($dbtype == "pgsql") {
+			$sql .= " RETURNING dialplan_include_id ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
+				$dialplan_include_id = $row["dialplan_include_id"];
+			}
+			unset($prepstatement, $result);
+		}
 		unset($sql);
-
+ 
 	if (strlen($dialplan_include_id) > 0) {
 		//add condition for the extension number
 			$sql = "insert into v_dialplan_includes_details ";
@@ -125,7 +137,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'1' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
 		//add action answer
@@ -148,7 +159,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'2' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
 		//add action conference
@@ -174,7 +184,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'3' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 	} //end if (strlen($dialplan_include_id) > 0)
 

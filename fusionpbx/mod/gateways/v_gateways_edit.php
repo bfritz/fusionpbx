@@ -222,7 +222,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$description' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			$gateway_id = $db->lastInsertId($id);
 			unset($sql);
 
 			//syncrhonize configuration

@@ -183,7 +183,6 @@ if (is_dir($v_recordings_dir.'/')) {
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					//echo $sql;
-					//$lastinsertid = $db->lastInsertId($id);
 					unset($sql);
 
 					//$recordingent = array();

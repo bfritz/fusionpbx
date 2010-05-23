@@ -121,7 +121,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$v_id', ";
-			$sql .= "'$hunt_group_id', ";		
+			$sql .= "'$hunt_group_id', ";
 			$sql .= "'$destinationdata', ";
 			$sql .= "'$destinationtype', ";
 			$sql .= "'$destinationprofile', ";
@@ -129,7 +129,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$destinationdescr' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
 			//synchronize the xml config

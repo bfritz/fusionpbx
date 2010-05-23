@@ -119,14 +119,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$v_id', ";
-				$sql .= "'$dialplan_include_id', ";		
+				$sql .= "'$dialplan_include_id', ";
 				$sql .= "'$tag', ";
 				$sql .= "'$fieldorder', ";
 				$sql .= "'$fieldtype', ";
 				$sql .= "'$fielddata' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
-				//$lastinsertid = $db->lastInsertId($id);
 				unset($sql);
 
 				//synchronize the xml config

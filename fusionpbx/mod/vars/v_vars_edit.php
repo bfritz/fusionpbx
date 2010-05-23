@@ -123,7 +123,6 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'".base64_encode($var_desc)."' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
 		sync_package_v_vars();

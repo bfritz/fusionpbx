@@ -112,7 +112,6 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'".base64_encode($templatemenucss)."' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
 		require_once "includes/header.php";

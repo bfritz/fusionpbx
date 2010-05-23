@@ -70,7 +70,6 @@ if (count($_GET)>0) {
 		$sql .= "and menuparentid  = '$menuparentid' ";
 		//echo $sql."<br><br>";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
 		//move the selected item's order number down
@@ -81,7 +80,6 @@ if (count($_GET)>0) {
 		$sql .= "and menuparentid  = '$menuparentid' ";
 		//echo $sql."<br><br>";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 	}
 	require_once "includes/header.php";

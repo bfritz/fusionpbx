@@ -63,7 +63,6 @@ if (count($_POST)>0) {
     $sql .= "'$cliporder' ";
     $sql .= ")";
     $db->exec(check_sql($sql));
-    $lastinsertid = $db->lastInsertId($id);
     unset($sql,$db);
 
     require_once "header.php";

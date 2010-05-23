@@ -93,7 +93,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "and menuparentid  = '$menuparentid' ";
 			$sql .= "order by menuorder desc ";
 			$sql .= "limit 1 ";
-			//echo $sql."<br><br>";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
@@ -130,7 +129,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "now() ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
 			require_once "includes/header.php";

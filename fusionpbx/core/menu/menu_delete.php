@@ -41,7 +41,6 @@ if (count($_GET)>0) {
 	$sql .= "and menuid = '$menuid' ";
 	//echo $sql;
 	$db->exec(check_sql($sql));
-	//$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
 	require_once "includes/header.php";

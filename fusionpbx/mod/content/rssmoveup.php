@@ -48,7 +48,6 @@ if (count($_GET)>0) {
 		$sql .= "and rsscategory  = '$rsscategory' ";
 		//echo $sql."<br><br>";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
 
@@ -60,7 +59,6 @@ if (count($_GET)>0) {
 		$sql .= "and rsscategory  = '$rsscategory' ";
 		//echo $sql."<br><br>";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 	}
 	require_once "includes/header.php";

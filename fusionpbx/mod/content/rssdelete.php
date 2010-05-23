@@ -43,9 +43,7 @@ if (count($_GET)>0) {
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and rssid = '$rssid' ";
 	$sql .= "and rsscategory  = '$rsscategory' ";
-	//echo $sql;
 	$db->exec(check_sql($sql));
-	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
 	require_once "includes/header.php";

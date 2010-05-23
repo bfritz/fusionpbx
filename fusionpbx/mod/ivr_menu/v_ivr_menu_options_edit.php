@@ -108,7 +108,6 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$ivr_menu_options_desc' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
 		//synchronize the xml config

@@ -94,8 +94,6 @@ require "includes/lib_cdr.php";
 						}
 
 					}
-					//echo "Affected Rows: ".$count."<br>";
-					//echo "Last Insert Id: ".$db->lastInsertId($id)."<br>";
 					unset($sql);
 
 			//---EndSQLite-------------------------------------

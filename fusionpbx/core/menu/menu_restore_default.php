@@ -118,7 +118,6 @@ else {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			
 			$sql .= "'$menuid', ";
 			$sql .= "'$v_id', ";
 			$sql .= "'$menulanguage', ";
@@ -135,7 +134,6 @@ else {
 			$sql .= "'$menumoddate' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			//echo $sql."<br />\n";
 			unset($sql);
 	}

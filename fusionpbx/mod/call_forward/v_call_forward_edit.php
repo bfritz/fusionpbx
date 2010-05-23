@@ -125,7 +125,6 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$descr' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
 		//synchronize the xml config

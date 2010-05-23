@@ -354,7 +354,6 @@
 			$sql .= ")";
 			//echo $sql;
 			$db->exec(check_sql($sql));
-			$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 		//--- End: Log entry -------------------------------------------------------
 		}
@@ -565,7 +564,6 @@
 					//echo $sql;
 					//exit;
 					$db->exec(check_sql($sql));
-					$lastinsertid = $db->lastInsertId($id);
 					unset($sql);
 
 				//add the user to the member group
@@ -583,7 +581,6 @@
 					$sql .= "'$username' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
-					$lastinsertid = $db->lastInsertId($id);
 					unset($sql);
 			} //end if !user_exists
 		} //end function definition

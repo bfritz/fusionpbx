@@ -134,7 +134,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$broadcast_destination_data' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
 			require_once "includes/header.php";

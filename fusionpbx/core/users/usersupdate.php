@@ -243,7 +243,6 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				  $sql .= "'$username' ";
 				  $sql .= ")";
 				  $db->exec(check_sql($sql));
-				  //$lastinsertid = $db->lastInsertId($id);
 				  unset($sql);
 			  }
 			  */

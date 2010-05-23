@@ -178,7 +178,6 @@ function createtblinfo($db, $dbmem) {
               $sql .= ")";
               $dbmem->exec($sql);
               //echo $sql."<br><br>";
-              $lastinsertid = $dbmem->lastInsertId($id);
               unset($sql);
     
                 //echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";

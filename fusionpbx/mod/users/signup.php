@@ -134,8 +134,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	}
 
 
-
-    $sql = "insert into v_users ";
+	$sql = "insert into v_users ";
 	$sql .= "(";
 	$sql .= "v_id, ";
 	$sql .= "username, ";
@@ -226,7 +225,6 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	//echo $sql;
 	//exit;
 	$db->exec(check_sql($sql));
-	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
 	//log the success
@@ -248,7 +246,6 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= "'$username' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
-	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
 

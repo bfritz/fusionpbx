@@ -78,7 +78,6 @@ if (count($_POST)>0) {
 	$sql .= "'".$_SESSION["username"]."' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
-	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
 	require_once "includes/header.php";

@@ -128,7 +128,6 @@ if ($_POST["persistformvar"] != "true") {
         $sql .= "'$fieldorder' ";
         $sql .= ")";
         $db->exec(check_sql($sql));
-        //$lastinsertid = $db->lastInsertId($id);
         unset($sql);
 
         //synchronize the xml config

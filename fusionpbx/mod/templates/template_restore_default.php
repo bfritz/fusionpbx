@@ -120,7 +120,6 @@ else {
 			$sql .= "'$template_default' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			//$lastinsertid = $db->lastInsertId($id);
 			unset($sql);
 
 	}

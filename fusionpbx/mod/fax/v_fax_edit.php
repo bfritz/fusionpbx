@@ -296,7 +296,6 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$faxdescription' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
 		sync_package_v_fax();

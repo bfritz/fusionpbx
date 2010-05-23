@@ -125,7 +125,6 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$moduledefaultenabled' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
-		//$lastinsertid = $db->lastInsertId($id);
 		unset($sql);
 
 		sync_package_v_modules();

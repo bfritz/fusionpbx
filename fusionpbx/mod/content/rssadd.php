@@ -88,7 +88,6 @@ if (count($_POST)>0) {
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	//echo $sql;
-	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
 	require_once "includes/header.php";

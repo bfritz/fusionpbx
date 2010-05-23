@@ -237,9 +237,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "'".$_SESSION["username"]."' ";
 	$sql .= ")";
 	//echo $sql;
-	//exit;
 	$db->exec(check_sql($sql));
-	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
 	//log the success
@@ -260,7 +258,6 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "'$username' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
-	$lastinsertid = $db->lastInsertId($id);
 	unset($sql);
 
 	require_once "includes/header.php";

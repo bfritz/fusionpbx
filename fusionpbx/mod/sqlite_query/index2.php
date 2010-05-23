@@ -807,7 +807,6 @@ if ($resulttype == "phpadd") {
     //echo "    \$sql = str_replace (\", )\", \")\", \$sql);\n";
 
     echo "    \$db->exec(\$sql);\n";
-    echo "    \$lastinsertid = \$db->lastInsertId(\$id);\n";
     echo "    unset(\$sql,\$db);\n\n";
 
     //after insert move to meta redirect
@@ -1348,14 +1347,14 @@ if ($resulttype == "sqlcreatetbl") {
 
 
 if (strlen($tblname) > 0) {
-    if ($temprecordid > 0) {
-        if (strlen($temprecordprimarykey) > 0) {
-            //remove the temporary record that was used to provide access to the field names
-            $sql = "delete from $tblname where $temprecordprimarykey = $temprecordid";
-            //echo $sql;
-            $db->exec(check_sql($sql));
-        }
-    }
+	if ($temprecordid > 0) {
+		if (strlen($temprecordprimarykey) > 0) {
+			//remove the temporary record that was used to provide access to the field names
+			$sql = "delete from $tblname where $temprecordprimarykey = $temprecordid";
+			//echo $sql;
+			$db->exec(check_sql($sql));
+		}
+	}
 
 }
 ?>
