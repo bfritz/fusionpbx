@@ -51,7 +51,7 @@ INSERT INTO v_menu VALUES(1,1,'en','Menu Manager','/core/menu/menu_list.php','in
 INSERT INTO v_menu VALUES(58,1,'en','PHP Editor','<!--{project_path}-->/mod/php_edit/index.php','external','superadmin','',3,7,'mcrane','2009-09-23 12:15:51','mcrane','2009-10-30 18:26:11');
 INSERT INTO v_menu VALUES(73,1,'en','Script Editor','<!--{project_path}-->/mod/script_edit/index.php','external','superadmin','',3,8,'mcrane','2009-09-23 12:15:51','mcrane','2009-10-30 18:26:11');
 INSERT INTO v_menu VALUES(66,1,'en','Softphone','/mod/soft_phone/v_softphone.php','internal','superadmin','',3,9,'mcrane','2009-10-10 12:23:39','mcrane','2009-10-27 23:00:27');
-INSERT INTO v_menu VALUES(71,1,'en','SQLite Query','/mod/sqlite_query/index.php','internal','superadmin','',3,10,'mcrane','2009-10-28 01:00:41','mcrane','2009-10-30 18:26:27');
+INSERT INTO v_menu VALUES(71,1,'en','SQL Query','/mod/sql_query/v_sql_query.php','internal','superadmin','',3,10,'mcrane','2009-10-28 01:00:41','mcrane','2009-10-30 18:26:27');
 INSERT INTO v_menu VALUES(34,1,'en','System Settings','/core/system_settings/v_system_settings.php','internal','superadmin','',3,11,'mcrane','2009-08-20 10:15:35','mcrane','2009-10-30 18:25:41');
 INSERT INTO v_menu VALUES(30,1,'en','Template Manager','/mod/templates/templates.php','internal','superadmin','',3,12,'mcrane','2007-08-22 14:03:34','mcrane','2009-10-30 18:25:24');
 INSERT INTO v_menu VALUES(5,1,'en','User Manager','/core/users/index.php','internal','admin','',3,13,'mcrane','2007-05-02 15:38:04','mcrane','2009-10-30 18:25:09');
