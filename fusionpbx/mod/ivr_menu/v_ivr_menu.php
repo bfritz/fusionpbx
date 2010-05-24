@@ -74,6 +74,7 @@ $order = $_GET["order"];
 	echo thorderby('ivr_menu_extension', 'Extension', $orderby, $order);
 	echo thorderby('ivr_menu_direct_dial', 'Direct Dial', $orderby, $order);
 	echo thorderby('ivr_menu_enabled', 'Enabled', $orderby, $order);
+	echo thorderby('ivr_menu_desc', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_ivr_menu_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_ivr_menu_edit.php'\" value='+'>\n";
@@ -90,6 +91,7 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_extension]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_direct_dial]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_enabled]."</td>\n";
+			echo "	<td valign='top' class='rowstylebg'>".$row[ivr_menu_desc]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_ivr_menu_edit.php?id=".$row[ivr_menu_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
 			echo "		<a href='v_ivr_menu_delete.php?id=".$row[ivr_menu_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
@@ -104,7 +106,7 @@ $order = $_GET["order"];
 
 
 	echo "<tr>\n";
-	echo "<td colspan='5' align='left'>\n";
+	echo "<td colspan='6' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
