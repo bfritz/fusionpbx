@@ -324,6 +324,7 @@ function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column
 				}
 				if ($dbtype == "pgsql") {
 					$sql = str_replace("INTEGER PRIMARY KEY", "SERIAL", $sql);
+					$sql = str_replace("NUMBER", "NUMERIC", $sql);
 					$sqlupdate .= $sql."\n";
 				}
 				if ($dbtype == "mysql") {
@@ -355,6 +356,7 @@ function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column
 		}
 		echo "</table>\n";
 	}
+
 	//loop line by line through all the lines of sql code
 		$udpate_array = explode("\n", $sqlupdate);
 		$x = 0;
