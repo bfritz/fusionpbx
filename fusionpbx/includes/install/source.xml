@@ -1878,9 +1878,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Mon, 24 May 2010 21:50:43 GMT</last_mod> 
-		<md5>fcb4d882d8729d3ebc33e03390ecd2b4</md5> 
-		<size>139801</size> 
+		<last_mod>Mon, 24 May 2010 22:26:22 GMT</last_mod> 
+		<md5>9a6cc45cd9c5ebbfa84ee1eaf302b881</md5> 
+		<size>139800</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -1892,23 +1892,23 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/mysql.sql</path> 
-		<last_mod>Sun, 23 May 2010 08:34:45 GMT</last_mod> 
-		<md5>def9d91559ca4855780ac9c65c951c05</md5> 
-		<size>62597</size> 
+		<last_mod>Wed, 26 May 2010 02:54:41 GMT</last_mod> 
+		<md5>aeeb106df362d40635bfac5b6586406d</md5> 
+		<size>62598</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/pgsql.sql</path> 
-		<last_mod>Sun, 23 May 2010 08:34:45 GMT</last_mod> 
-		<md5>bb1f0701f97c46a08bb30cfbf88b8fae</md5> 
-		<size>62106</size> 
+		<last_mod>Wed, 26 May 2010 02:54:28 GMT</last_mod> 
+		<md5>1ddde7f6c88c13960452963b986fb309</md5> 
+		<size>62107</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/sqlite.sql</path> 
-		<last_mod>Sun, 23 May 2010 08:34:45 GMT</last_mod> 
-		<md5>acb18bd77917ba308756745e83c3c5c9</md5> 
-		<size>62484</size> 
+		<last_mod>Wed, 26 May 2010 02:54:55 GMT</last_mod> 
+		<md5>7c62d49d5b87b48fd0ad59a899c2e113</md5> 
+		<size>62485</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -1941,9 +1941,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Sat, 22 May 2010 20:07:01 GMT</last_mod> 
-		<md5>1bdeba29ece3f63b5f6543b283cbaa96</md5> 
-		<size>232864</size> 
+		<last_mod>Wed, 26 May 2010 02:30:46 GMT</last_mod> 
+		<md5>12e24e70be3faa3a2174447f66958113</md5> 
+		<size>235829</size> 
 	</src> 
 	<src> 
 		<type>file</type> 

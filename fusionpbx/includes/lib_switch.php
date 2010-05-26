@@ -773,6 +773,71 @@ function recording_js()
 }
 
 
+function recording_lua()
+{
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	global $db, $v_id, $host;
+
+	$sql = "";
+	$sql .= "select * from v_settings ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
+		$admin_pin = $row["admin_pin"];
+		break; //limit to 1 row
+	}
+	unset ($prepstatement);
+
+	$fout = fopen($v_scripts_dir."/recordings.lua","w");
+	$tmp = "";
+	$tmp .= "\n";
+	$tmp .= "admin_pin = \"".$admin_pin."\";\n";
+	$tmp .= "digitmaxlength = 6;\n";
+	$tmp .= "timeoutpin = 7500;\n";
+	$tmp .= "\n";
+	$tmp .= "--dtmf call back function detects the \"#\" and ends the call\n";
+	$tmp .= "	function onInput(s, type, obj)\n";
+	$tmp .= "		if (type == \"dtmf\" and obj['digit'] == '#') then\n";
+	$tmp .= "			return \"break\";\n";
+	$tmp .= "		end\n";
+	$tmp .= "	end\n";
+	$tmp .= "\n";
+	$tmp .= "if ( session:ready() ) then\n";
+	$tmp .= "	session:answer();\n";
+	$tmp .= "	if (admin_pin) then\n";
+	$tmp .= "		--This has 8 arguments: min_digits, max_digits, max_tries, timeout, terminators, audio_files, bad_input_audio_file, digits_regex\n";
+	$tmp .= "		digits = session:playAndGetDigits(2, 6, 3, timeoutpin, \"#\", \"".$v_sounds_dir."/custom/8000/please_enter_the_pin_number.wav\", \"\", \"\\\\d+|\\\\*\");\n";
+	$tmp .= "		if (digits == admin_pin) then\n";
+	$tmp .= "			freeswitch.consoleLog(\"info\", \"pin number: \".. digits ..\": is correct\\n\");\n";
+	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/custom/8000/begin_recording.wav\");\n";
+	$tmp .= "			session:execute(\"set\", \"playback_terminators=#\");\n";
+	$tmp .= "			session:execute(\"record\", \"".$v_recordings_dir."/temp\"..session:get_uuid()..\".wav 180 200\");\n";
+	$tmp .= "			--session:setInputCallback(\"onInput\", \"\");\n";
+	$tmp .= "			--session:recordFile(\"/tmp/blah.wav\", 30000, 10, 10); -- pressing # ends the recording\n";
+	$tmp .= "		else\n";
+	$tmp .= "			freeswitch.consoleLog(\"info\", \"pin number: \".. digits ..\": is not correct\\n\");\n";
+	$tmp .= "			--console_log( \"info\", \"Pin: \" + digits + \" is incorrect\\n\" );\n";
+	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/8000/your_pin_number_is_incorect_goodbye.wav\");\n";
+	$tmp .= "		end\n";
+	$tmp .= "	else\n";
+	$tmp .= "		--pin not required begin the recording\n";
+	$tmp .= "		session:execute(\"set\", \"playback_terminators=#\");\n";
+	$tmp .= "		session:execute(\"record\", \"".$v_recordings_dir."/temp-\"..session:get_uuid()..\".wav 180 200\");\n";
+	$tmp .= "	end\n";
+	$tmp .= "	session:hangup();\n";
+	$tmp .= "end";
+	fwrite($fout, $tmp);
+	unset($tmp);
+	fclose($fout);
+}
+
+
 function sync_package_v_settings()
 {
 
@@ -884,7 +949,9 @@ function sync_package_v_settings()
 		unset($tmpxml);
 		fclose($fout);
 
-		recording_js();
+		//write the recording.js and recording.lua script
+			recording_js();
+			recording_lua();
 
 		//shout.conf.xml
 		$fout = fopen($v_conf_dir."/autoload_configs/shout.conf.xml","w");
@@ -5335,9 +5402,9 @@ function v_install_phase_1()
 	if (strlen($config['installedpackages']['freeswitchsettings']['config'][0]['mod_shout_volume']) == 0) {
 		$config['installedpackages']['freeswitchsettings']['config'][0]['mod_shout_volume'] = "0.3";
 	}
-	
-    v_settings();
-	
+
+	v_settings();
+
 	$numbering_plan = $config['installedpackages']['freeswitchsettings']['config'][0]['numbering_plan'];
 	$event_socket_password = $config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_password'];
 	$event_socket_port = $config['installedpackages']['freeswitchsettings']['config'][0]['event_socket_port'];
@@ -5347,12 +5414,13 @@ function v_install_phase_1()
 	$xml_rpc_auth_pass = $config['installedpackages']['freeswitchsettings']['config'][0]['xml_rpc_auth_pass'];
 	$admin_pin = $config['installedpackages']['freeswitchsettings']['config'][0]['admin_pin'];
 
-  //write the recording.js script
-    recording_js();
+	//write the recording.js and recording.lua script
+		recording_js();
+		recording_lua();
 
-  //add recording.js to the dialplan
-    $a_dialplan_includes          	= &$config['installedpackages']['freeswitchdialplanincludes']['config'];
-    $a_dialplan_include_details 	= &$config['installedpackages']['freeswitchdialplanincludedetails']['config'];
+	//add recording.js to the dialplan
+		$a_dialplan_includes          	= &$config['installedpackages']['freeswitchdialplanincludes']['config'];
+		$a_dialplan_include_details 	= &$config['installedpackages']['freeswitchdialplanincludedetails']['config'];
 
 	//delete dialplan recording from the previous install
 	    if (count($a_dialplan_includes) > 0) {
@@ -5816,4 +5884,8 @@ function v_deinstall_command()
 
 }
 
+//include all the .php files in the /includes/mod directory
+	//foreach (glob($v_web_dir."/includes/mod/*.php") as $filename) {
+	//	require_once $filename;
+	//}
 ?>

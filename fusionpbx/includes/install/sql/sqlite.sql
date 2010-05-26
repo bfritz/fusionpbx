@@ -99,7 +99,7 @@ INSERT INTO v_dialplan_includes_details VALUES(9,1,4,NULL,'action',1,'javascript
 INSERT INTO v_dialplan_includes_details VALUES(10,1,5,NULL,'condition',0,'destination_number','^7002$','');
 INSERT INTO v_dialplan_includes_details VALUES(11,1,5,NULL,'action',1,'javascript','huntgroup_7002.js','');
 INSERT INTO v_dialplan_includes_details VALUES(16,1,7,NULL,'condition',0,'destination_number','^\*(732673)$','');
-INSERT INTO v_dialplan_includes_details VALUES(17,1,7,NULL,'action',1,'javascript','recordings.js','');
+INSERT INTO v_dialplan_includes_details VALUES(17,1,7,NULL,'action',1,'javascript','recordings.lua','');
 INSERT INTO v_dialplan_includes_details VALUES(18,1,8,NULL,'condition',0,'destination_number','^\*(3472)$','');
 INSERT INTO v_dialplan_includes_details VALUES(19,1,8,NULL,'action',1,'javascript','disa.js','');
 INSERT INTO v_dialplan_includes_details VALUES(74,1,15,NULL,'condition',0,'destination_number','^2001$','');
