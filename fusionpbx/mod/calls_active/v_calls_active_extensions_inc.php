@@ -195,6 +195,9 @@ catch(Exception $e) {
 					$write_rate = $tmp_row->write_rate;
 					$secure = $tmp_row->secure;
 
+					//remove the '+' because it breaks the call recording
+					$cid_num = str_replace("+", "", $cid_num);
+
 					$call_length_seconds = time() - $created_epoch;
 					$call_length_hour = floor($call_length_seconds/3600);
 					$call_length_min = floor($call_length_seconds/60 - ($call_length_hour * 60));

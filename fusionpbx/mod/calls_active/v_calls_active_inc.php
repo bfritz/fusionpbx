@@ -269,30 +269,33 @@ $rowstyle["1"] = "rowstyle1";
 		$write_rate = $row->write_rate;
 		$secure = $row->secure;
 
+		//remove the '+' because it breaks the call recording
+			$cid_num = str_replace("+", "", $cid_num);
+
 		//$caller_id_name = $row->caller_id_name;
 		//$caller_id_name = str_replace("%20", " ", $caller_id_name);
 		//$caller_id_number = $row->caller_id_number;
-/*
-    <uuid>5ca89c63-3c73-dd40-88ca-d89f7bcd2a0e</uuid>
-    <direction>inbound</direction>
-    <created>2010-02-11 16:59:16</created>
-    <created_epoch>1265932756</created_epoch>
-    <name>sofia/internal/1004@markjcrane.dyndns.org</name>
-    <state>CS_EXECUTE</state>
-    <cid_name>1004</cid_name>
-    <cid_num>1004</cid_num>
-    <ip_addr>10.7.0.249</ip_addr>
-    <dest>5002</dest>
-    <application>set</application>
-    <application_data>transfer_ringback=%(2000, 4000, 440.0, 480.0)</application_data>
-    <dialplan>XML</dialplan>
-    <context>default</context>
-    <read_codec>PCMU</read_codec>
-    <read_rate>8000</read_rate>
-    <write_codec>PCMU</write_codec>
-    <write_rate>8000</write_rate>
-    <secure></secure>
-*/
+		/*
+		<uuid>5ca89c63-3c73-dd40-88ca-d89f7bcd2a0e</uuid>
+		<direction>inbound</direction>
+		<created>2010-02-11 16:59:16</created>
+		<created_epoch>1265932756</created_epoch>
+		<name>sofia/internal/1004@markjcrane.dyndns.org</name>
+		<state>CS_EXECUTE</state>
+		<cid_name>1004</cid_name>
+		<cid_num>1004</cid_num>
+		<ip_addr>10.7.0.249</ip_addr>
+		<dest>5002</dest>
+		<application>set</application>
+		<application_data>transfer_ringback=%(2000, 4000, 440.0, 480.0)</application_data>
+		<dialplan>XML</dialplan>
+		<context>default</context>
+		<read_codec>PCMU</read_codec>
+		<read_rate>8000</read_rate>
+		<write_codec>PCMU</write_codec>
+		<write_rate>8000</write_rate>
+		<secure></secure>
+		*/
 		echo "<tr>\n";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>$id &nbsp;</td>\n";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>$uuid &nbsp;</td>\n";
