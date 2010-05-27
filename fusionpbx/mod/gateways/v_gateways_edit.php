@@ -328,18 +328,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$label = "12 digits";
 					$abbrv = "12d";
 					break;
-				case "^(311)$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+				case "^311$":
+					$action_data = "sofia/gateway/".$gateway."/311";
 					$label = "311";
 					$abbrv = "311";
 					break;
-				case "^(411)$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+				case "^411$":
+					$action_data = "sofia/gateway/".$gateway."/411";
 					$label = "411";
 					$abbrv = "411";
 					break;
-				case "^(911)$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+				case "^911$":
+					$action_data = "sofia/gateway/".$gateway."/911";
 					$label = "911";
 					$abbrv = "911";
 					break;
