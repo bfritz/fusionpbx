@@ -378,9 +378,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		echo "    Password:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "    <input class='formfld' type='password' name='password' id='password' onfocus=\"document.getElementById('show_password').innerHTML = 'Password: '+document.getElementById('password').value;\" onblur=\"//document.getElementById('show_password').innerHTML = ''\" autocomplete='off' maxlength='50' value=\"$password\">\n";
+		echo "    <input class='formfld' type='password' name='password' id='password' onfocus=\"document.getElementById('show_password').innerHTML = 'Password: '+document.getElementById('password').value;\" autocomplete='off' maxlength='50' value=\"$password\">\n";
 		echo "<br />\n";
-		echo "Enter the password here. <span id='show_password'>\n";
+		echo "<span onclick=\"document.getElementById('show_password').innerHTML = ''\">Enter the password here. </span><span id='show_password'></span>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -454,9 +454,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		echo "    Voicemail Password:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "  <input class='formfld' type='password' name='vm_password' id='vm_password' onfocus=\"document.getElementById('show_vm_password').innerHTML = 'Password: '+document.getElementById('vm_password').value;\" onblur=\"document.getElementById('show_vm_password').innerHTML = ''\" maxlength='255' value='$vm_password'>\n";
+		echo "  <input class='formfld' type='password' name='vm_password' id='vm_password' onfocus=\"document.getElementById('show_vm_password').innerHTML = 'Password: '+document.getElementById('vm_password').value;\" maxlength='255' value='$vm_password'>\n";
 		echo "<br />\n";
-		echo "Enter the voicemail password here. <span id='show_vm_password'></span>\n";
+		echo "<span onclick=\"document.getElementById('show_vm_password').innerHTML = ''\">Enter the voicemail password here. </span><span id='show_vm_password'></span>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}

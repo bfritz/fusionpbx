@@ -598,9 +598,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    Password:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='password' name='password' maxlength='50' value=\"$password\">\n";
+	echo "    <input class='formfld' type='password' name='password' id='password' maxlength='50' onfocus=\"document.getElementById('show_password').innerHTML = 'Password: '+document.getElementById('password').value;\" value=\"$password\">\n";
 	echo "<br />\n";
-	echo "Enter the password here.\n";
+	echo "<span onclick=\"document.getElementById('show_password').innerHTML = ''\">Enter the password here. </span><span id='show_password'></span>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
