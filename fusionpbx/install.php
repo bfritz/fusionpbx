@@ -26,6 +26,8 @@
 include "root.php";
 require_once "includes/lib_functions.php";
 
+$v_id = '1';
+
 //error reporting
 	ini_set('display_errors', '1');
 	//error_reporting (E_ALL); // Report everything
@@ -61,7 +63,6 @@ require_once "includes/lib_functions.php";
 		$msg .= "Already installed.<br />\n";
 		header("Location: ".PROJECT_PATH."/login.php?msg=".urlencode($msg));
 	}
-
 
 //set the max execution time to 1 hour
 	ini_set('max_execution_time',3600);
@@ -353,12 +354,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			}
 			unset($srcdir);
 
-
 		$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php","w");
 		fwrite($fout, $tmp_config);
 		unset($tmp_config);
 		fclose($fout);
-
 
 		//load data into the database
 			if ($dbtype == "sqlite") {
@@ -374,8 +373,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//echo "<pre>\n";
 				//echo $file_contents;
 				//echo "</pre>\n";
-				//exit;
-
 
 				//database connection
 					try {
@@ -401,7 +398,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 					//close database connection_aborted
 						$dbsql = null;
-
 
 					//open database connection with $dbname
 						try {
@@ -449,7 +445,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//echo "<pre>\n";
 				//echo $file_contents;
 				//echo "</pre>\n";
-				//exit;
 
 				//database connection
 					try {
@@ -508,7 +503,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					}
 					unset ($dbsql, $file_contents, $sql);
 
-
 			}
 			//--- end: create the mysql database -----------------------------------------
 
@@ -516,14 +510,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//include the new config.php file
 			require_once "includes/config.php";
 
-
 		//set system settings paths
 			//$install_v_dir = ''; //freeswitch directory
 			//$install_php_dir = '';
 			//$install_tmp_dir = '';
 			$bin_dir = '/usr/local/freeswitch/bin'; //freeswitch bin directory
 			//$v_startup_script_dir = '';
-			$v_package_version = '1.0.1';
+			$v_package_version = '1.0.8';
 			$v_build_version = '1.0.6';
 			$v_build_revision = 'Release';
 			$v_label = 'FusionPBX';
@@ -546,12 +539,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$v_recordings_dir = $install_v_dir.'/recordings';
 			$v_sounds_dir = $install_v_dir.'/sounds';
 			$v_download_path = 'http://fusionpbx.com/downloads/fusionpbx.tgz';
-
-			$v_id = 1;
-
-			//$sql = "insert into v_system_settings (v_id) values ('$v_id') ";
-			//$db->exec(check_sql($sql));
-			//unset($sql);
 
 			$sql = "update v_system_settings set ";
 			$sql .= "php_dir = '$install_php_dir', ";
@@ -739,309 +726,110 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 }
 
-// begin header ---------------------------------------------------------
-?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-<title>Install</title>
-<!--{head}-->
-<style type='text/css'>
 
-img {
-	/*behavior: url('<?php echo PROJECT_PATH; ?>/includes/png.htc');*/
-	border: none;
-}
+//temp sqlite db
+	$dbfilepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH;
+	//if (file_exists($dbfilepath.'/'.$dbfilename)) {
+	//	unlink($dbfilepath.'/'.$dbfilename);
+	//}
+	//--- begin: create the sqlite db file -----------------------------------------
+		$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/sqlite.sql';
+		$file_contents = file_get_contents($filename);
+		unset($filename);
+		//echo "<pre>\n";
+		//echo $file_contents;
+		//echo "</pre>\n";
+		//exit;
+		try {
+			//$db_temp = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilename); //sqlite 3
+			$db_temp = new PDO('sqlite::memory:'); //sqlite 3
+			$db_temp->beginTransaction();
+		}
+		catch (PDOException $error) {
+			print "error: " . $error->getMessage() . "<br/>";
+			die();
+		}
 
-A {
-	color: #004083;
-	width: 100%;
-}
+		//replace \r\n with \n then explode on \n
+			$file_contents = str_replace("\r\n", "\n", $file_contents);
 
-body {
-	margin-top: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-	margin-left: 0px;
-	background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background.gif');
-	background-color: #d3d3d3;
-}
+		//loop line by line through all the lines of sql code
+			$stringarray = explode("\n", $file_contents);
+			$x = 0;
+			foreach($stringarray as $sql) {
+				//create the call detail records database
+				//if (strtolower(substr($sql, 0, 18)) == "create table v_cdr") {
+				//	//add the CDR database from lib_cdr.php
+				//}
+				//else { //create the tables and fill in the basic settings
+					try {
+						$db_temp->query($sql);
+					}
+					catch (PDOException $error) {
+						echo "error: " . $error->getMessage() . " sql: $sql<br/>";
+						//die();
+					}
+				//}
+				$x++;
+			}
+			unset ($file_contents, $sql);
+			//$db_temp->commit();
+	//--- end: create the sqlite db -----------------------------------------
 
-th {
-	border-top: 1px solid #999999;
-	border-bottom: 1px solid #777777;
-	color: #CCCCCC;
-	font-size: 12px;
-	font-family: arial;
-	font-weight: bold;
-	background-color: #333333;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-right: 7px;
-	padding-left: 7px;
-}
-
-th a:link{ color:#CCCCCC; }
-th a:visited{ color:#CCCCCC; }
-th a:hover{ color:#FFBF00; }
-th a:active{ color:#FFBF00; }
-
-td {
-	color: #5f5f5f;
-	font-size: 12px;
-	font-family: arial;
-}
-
-INPUT.btn {
-	font-family: verdana;
-	font-size: 11px;
-}
-
-INPUT.button {
-	font-family: verdana;
-	font-size: 11px;
-}
-
-SELECT.txt {
-	font-family: arial;
-	font-size: 12px;
-	width: 98.75%;
-	border: solid 1px #CCCCCC;
-	color: #666666;
-	background-color: #EFEFEF;
-	background-repeat:repeat-x;
-	height: 19px;
-}
-
-TEXTAREA.txt {
-	font-family: arial;
-	font-size: 12px;
-	width: 98.75%;
-	border: solid 1px #CCCCCC;
-	color: #666666;
-	background-color: #EFEFEF;
-	background-repeat:repeat-x;
-	overflow: auto;
-}
-
-INPUT.txt {
-	font-family: arial;
-	font-size: 12px;
-	width: 98.75%;
-	border: solid 1px #CCCCCC;
-	color: #666666;
-	background-color: #EFEFEF;
-	background-repeat:repeat-x;
-}
-
-.formfld {
-	border: solid 1px #CCCCCC;
-	color: #666666;
-	background-color: #F7F7F7;
-	width: 50%;
-	text-align: left;
-	/*width: 300px;*/
-}
-
-.vncell {
-	/*border-bottom: 1px solid #999999;*/
-	border-bottom: 1px solid #CCCCCC;
-	background-color: #639BC1;
-	background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background_cell.png');
-	padding-right: 20px;
-	padding-left: 8px;
-	text-align: left;
-	color: #FFFFFF;
-	/*border-bottom: 1px solid #999999;*/
-	border-bottom: 1px solid #FFFFFF;
-}
-
-.vncell a:link{ color:#FFFFFF; }
-.vncell a:visited{ color:#FFFFFF; }
-.vncell style0 a:hover{ color:#FFBF00; }
-.vncell a:active{ color:#FFBF00; }
-
-.vncellreq {
-	background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background_cell.png');
-	border-bottom: 1px solid #FFFFFF;
-	background-color: #639BC1;
-	padding-right: 20px;
-	padding-left: 8px;
-	text-align: left;
-	font-weight: bold;
-	color: #EFEFEF;
-}
-
-.vtable {
-	border-bottom: 1px solid #DFDFDF;
-}
-
-.listbg {
-	border-bottom: 1px solid #999999;
-	font-size: 11px;
-	background-color: #990000;
-	color: #FFFFFF;	
-	padding-right: 16px;
-	padding-left: 6px;
-	padding-top: 4px;
-	padding-bottom: 4px;*/
-}
-
-.rowstyle0 {
-	background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background_cell.png');
-	/*border-bottom: 1px solid #575757;*/
-	border-bottom: 1px solid #575757;
-	/*background-color: #ECE9D8; */
-	background-color: #639BC1;
-	color: #FFFFFF;
-	text-align: left;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-right: 7px;
-	padding-left: 7px;
-}
-
-.rowstyle0 a:link{ color:#FFFFFF; }
-.rowstyle0 a:visited{ color:#FFFFFF; }
-.rowstyle0 a:hover{ color:#FFBF00; }
-.rowstyle0 a:active{ color:#FFBF00; }
-
-.rowstyle1 {
-	border-bottom: 1px solid #DFDFDF;
-	background-color: #FFFFFF;
-	text-align: left;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-right: 7px;
-	padding-left: 7px;
-}
-
-.rowstylebg {
-	border-bottom: 1px solid #999999;
-	background-color: #5F5F5F;
-	color: #FFFFFF;
-	text-align: left;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-right: 10px;
-	padding-left: 10px;
-}
-
-.border {
-	border: solid 1px #777777;
-	background-color: #FFFFFF;
-}
-
-.headermain {
-	background-color: #7FAEDE;
-}
-
-.frm {
-	border: solid 1px #CCCCCC;
-	color: #666666;
-	background-color: #EFEFEF;
-}
-
-.smalltext {
-	color: #BBBBBB;
-	font-size: 11px;
-	font-family: arial;
-}
-
-</style>
-<script type="text/javascript">
-<!--
-function jsconfirm(title,msg,url) {
-	if (confirm(msg)){
-		window.location = url;
+//get the template information
+	$sql = "";
+	$sql .= "select * from v_templates ";
+	if (strlen($template_rsssubcategory) > 0) {
+		$sql .= "where v_id = '$v_id' ";
+		//$sql .= "and templatename = '$template_rsssubcategory' ";
 	}
-	else{
+	else {
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and template_default = 'true' ";
 	}
-}
-//-->
-</script>
-<script type="text/javascript">
-<!--
-function confirmdelete(url)
-{
-	var confirmed = confirm("Are you sure want to delete this.");
-	if (confirmed == true) {
-		window.location=url;
+	$prepstatement = $db_temp->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
+		$template = base64_decode($row["template"]);
+		$templatemenutype = $row["templatemenutype"];
+		$templatemenucss = base64_decode($row["templatemenucss"]);
+		//$adduser = $row["adduser"];
+		//$adddate = $row["adddate"];
+		break; //limit to 1 row
 	}
-}
-//-->
-</script>
 
-</head>
-<body>
+//buffer the content
+	ob_end_clean(); //clean the buffer
+	ob_start();
 
-<?php
+//--- begin: content ---------------------------------------------
+	if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/header.php")) {
+		$installmsg .= "<li>Write access to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/ is required during the install.</li>\n";
+	}
+	if (!is_writable($install_v_dir)) {
+		$installmsg .= "<li>Write access to the 'FreeSWITCH Directory' and most of its sub directories is required.</li>\n";
+	}
+	if (!extension_loaded('PDO')) {
+		$installmsg .= "<li>PHP PDO was not detected. Please install it before proceeding.</li>";
+	}
 
-if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/header.php")) {
-	$installmsg .= "<li>Write access to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/ is required during the install.</li>\n";
-}
-if (!is_writable($install_v_dir)) {
-	$installmsg .= "<li>Write access to the 'FreeSWITCH Directory' and most of its sub directories is required.</li>\n";
-}
-if (!extension_loaded('PDO')) {
-	$installmsg .= "<li>PHP PDO was not detected. Please install it before proceeding.</li>";
-}
-
-if ($installmsg) {
-	echo "<br />\n";
-	echo "<div align='center'>\n";
-	echo "<table width='75%'>\n";
-	echo "<tr>\n";
-	echo "<th align='left'>Message</th>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td class='rowstyle1'><strong><ul>$installmsg</ul></strong></td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</div>\n";
-  //print_info_box($installmsg);
-}
-
-?>
-
-<div align='center'>
-<table width='90%' class='border' border='0' cellpadding='0' cellspacing='0'>
-<tr>
-<td class='headermain' width='100%'>
-	<table cellpadding='0' cellspacing='0' style="background-image: url('<?php echo PROJECT_PATH; ?>/themes/default/background_head.png'); color: #FFFFFF; font-size: 20px;'" width='100%'>
-	<tr>
-	<td></td>
-	<td align='left' valign='middle' height='65px;' nowrap>
-		<img src='<?php echo PROJECT_PATH; ?>/themes/default/logo.png' height='70px' />
-	</td>
-	</tr>
-	<tr>
-	<td align='left' colspan='2' style='background-color: #222222; height: 22px; width: 100%;'>
-	<!--{menu}-->
-		&nbsp;
-	</td>
-	</tr>
-	</table>
-</td>
-
-</tr>
-<tr><td colspan='100%'><img src='<?php echo PROJECT_PATH; ?>/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>
-<tr>
-<!--
-<td align='center' valign='top' width='100%'>
-</td>
--->
-<td valign='top' align='center' width='100%'>
-<br />
-<br />
-
-<table width='95%' cellpadding='5' border='0'>
-<tr>
-<td align='left'>
-<?php
-// end header ---------------------------------------------------------
+	if ($installmsg) {
+		echo "<br />\n";
+		echo "<div align='center'>\n";
+		echo "<table width='75%'>\n";
+		echo "<tr>\n";
+		echo "<th align='left'>Message</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td class='rowstyle1'><strong><ul>$installmsg</ul></strong></td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+		echo "</div>\n";
+	  //print_info_box($installmsg);
+	}
 
 	echo "<div align='center'>\n";
-
 	$msg = '';
 	//make sure the includes directory is writable so the config.php file can be written.
 		if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/lib_pdo.php")) {
@@ -1060,9 +848,7 @@ if ($installmsg) {
 		}
 
 	echo "<form method='post' name='frm' action=''>\n";
-
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
-
 
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap><b>Installation</b></td>\n";
@@ -1254,7 +1040,6 @@ function dbtype_onchange() {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	echo "			<input type='submit' name='submit' class='btn' value='Install'>\n";
@@ -1262,38 +1047,36 @@ function dbtype_onchange() {
 	echo "	</tr>";
 	echo "</table>";
 	echo "</form>";
-
 	echo "</div>";
-
-
 	echo "<script type=\"text/javascript\">dbtype_onchange();</script>\n";
-// begin footer ---------------------------------------------------------
-?>
-</td>
-</tr>
-</table>
-
-<br />
-<br />  
-</td>
-</tr>
-</table>
-<span class='smalltext'>
-<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2010. All Rights Reserved
-</span>
-
-</td>
-</tr>
-</table>
-</div>
 
 
-</td>
-</tr>
-</table>
-<br>
-</body>
-</html>
-<?php
-//end footer ---------------------------------------------------------
+// add the content to the template and then send output -----------------------
+	$body = $content_from_db.ob_get_contents(); //get the output from the buffer
+	ob_end_clean(); //clean the buffer
+
+	ob_start();
+	$template = $strheadertop.$template;
+	eval('?>' . $template . '<?php ');
+	$template = ob_get_contents(); //get the output from the buffer
+	ob_end_clean(); //clean the buffer
+	$customhead = $customhead.$templatemenucss;
+	//$customhead ='test';
+	//$output = str_replace ("\r\n", "<br>", $output);
+	$output = str_replace ("<!--{title}-->", $customtitle, $template); //<!--{title}--> defined in each individual page
+	$output = str_replace ("<!--{head}-->", $customhead, $output); //<!--{head}--> defined in each individual page
+	$output = str_replace ("<!--{menu}-->", $_SESSION["menu"], $output); //defined in /includes/menu.php
+	$output = str_replace ("<!--{project_path}-->", PROJECT_PATH, $output); //defined in /includes/menu.php
+
+	$pos = strrpos($output, "<!--{body}-->");
+	if ($pos === false) {
+		$output = $body; //if tag not found just show the body
+	}
+	else {
+		//replace the body
+		$output = str_replace ("<!--{body}-->", $body, $output);
+	}
+
+	echo $output;
+	unset($output);
 ?>

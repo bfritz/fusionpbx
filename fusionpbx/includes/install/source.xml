@@ -1878,8 +1878,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Sat, 29 May 2010 05:34:53 GMT</last_mod> 
-		<md5>6e14dde09553b539636e47f3d90f596b</md5> 
+		<last_mod>Sat, 29 May 2010 17:44:50 GMT</last_mod> 
+		<md5>a1abc9055b72935f30bebc58358faa04</md5> 
 		<size>139801</size> 
 	</src> 
 	<src> 
@@ -1892,23 +1892,23 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/mysql.sql</path> 
-		<last_mod>Sat, 29 May 2010 17:41:27 GMT</last_mod> 
-		<md5>b09222fd3e2db74b31383eb1cab1de94</md5> 
-		<size>59766</size> 
+		<last_mod>Sun, 30 May 2010 07:43:12 GMT</last_mod> 
+		<md5>acd679085f551460e882679c941d7762</md5> 
+		<size>59745</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/pgsql.sql</path> 
-		<last_mod>Sat, 29 May 2010 17:40:46 GMT</last_mod> 
-		<md5>f9cb5e6495a4d3ffbbdf66796dc20fbf</md5> 
-		<size>59279</size> 
+		<last_mod>Sun, 30 May 2010 07:43:14 GMT</last_mod> 
+		<md5>f9cc8734f618bb5ae0800b0db550c019</md5> 
+		<size>59258</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/sqlite.sql</path> 
-		<last_mod>Sat, 29 May 2010 17:39:59 GMT</last_mod> 
-		<md5>96952a152cd8e88348090f771af65bb4</md5> 
-		<size>59558</size> 
+		<last_mod>Sun, 30 May 2010 07:42:38 GMT</last_mod> 
+		<md5>993d05fad55015577cc24b7e3b5c4862</md5> 
+		<size>59537</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2018,8 +2018,8 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/v_version.php</path> 
-		<last_mod>Sun, 23 May 2010 08:42:38 GMT</last_mod> 
-		<md5>9c7b6c0b14fde242a8e2acf02013f094</md5> 
+		<last_mod>Sun, 30 May 2010 07:45:17 GMT</last_mod> 
+		<md5>e00d9271c5f8a0d7c294162fc9e3f4ec</md5> 
 		<size>938</size> 
 	</src> 
 	<src> 
@@ -2039,9 +2039,9 @@
 	<src> 
 		<type>file</type> 
 		<path>install.php</path> 
-		<last_mod>Fri, 07 May 2010 19:23:36 GMT</last_mod> 
-		<md5>f66390ed915ceaffc4a3d8b4c6b77752</md5> 
-		<size>47816</size> 
+		<last_mod>Sun, 30 May 2010 07:42:03 GMT</last_mod> 
+		<md5>00baafaff153df6d1607854b866f0018</md5> 
+		<size>45212</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4703,4 +4703,4 @@
 		<md5>e45f2d2b34a95646df5e16393857278d</md5> 
 		<size>14978</size> 
 	</src> 
-</xml> 
+</xml>
