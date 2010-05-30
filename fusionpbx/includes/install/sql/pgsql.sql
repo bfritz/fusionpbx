@@ -55,7 +55,7 @@ INSERT INTO v_menu VALUES(66,1,'en','Softphone','/mod/soft_phone/v_softphone.php
 INSERT INTO v_menu VALUES(71,1,'en','SQL Query','/mod/sql_query/v_sql_query.php','internal','superadmin','',3,10,'mcrane','2009-10-28 01:00:41','mcrane','2009-10-30 18:26:27');
 INSERT INTO v_menu VALUES(34,1,'en','System Settings','/core/system_settings/v_system_settings.php','internal','superadmin','',3,11,'mcrane','2009-08-20 10:15:35','mcrane','2009-10-30 18:25:41');
 INSERT INTO v_menu VALUES(30,1,'en','Template Manager','/mod/templates/templates.php','internal','superadmin','',3,12,'mcrane','2007-08-22 14:03:34','mcrane','2009-10-30 18:25:24');
-INSERT INTO v_menu VALUES(82,1,'en','Upgrade','<!--{project_path}-->/core/upgrade/upgrade.php','internal','superadmin','',3,14,'mcrane','2010-05-28 11:31:37','mcrane','2010-05-28 11:31:37');
+INSERT INTO v_menu VALUES(82,1,'en','Upgrade','/core/upgrade/upgrade.php','internal','superadmin','',3,14,'mcrane','2010-05-28 11:31:37','mcrane','2010-05-28 11:31:37');
 INSERT INTO v_menu VALUES(5,1,'en','User Manager','/core/users/index.php','internal','admin','',3,15,'mcrane','2007-05-02 15:38:04','mcrane','2009-10-30 18:25:09');
 INSERT INTO v_menu VALUES(8,1,'en','Login','/login.php','internal','hidden','',31,47,'mcrane','2007-05-02 16:34:06','mcrane','2009-10-23 22:08:45');
 INSERT INTO v_menu VALUES(20,1,'en','Logout','/logout.php','internal','member','','',45,'mcrane','2007-05-26 22:23:52','mcrane','2009-10-28 01:24:53');
