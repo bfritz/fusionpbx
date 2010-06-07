@@ -280,46 +280,60 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	//1 megabyte = 1024 kilobyte
 	if (stristr(PHP_OS, 'WIN')) { 
 		$driveletter = substr($_SERVER["DOCUMENT_ROOT"], 0, 2);
+		$disksize = round(disk_total_space($driveletter)/1024/1024, 2);
+		$disksizefree = round(disk_free_space($driveletter)/1024/1024, 2);
+		$diskpercentavailable = round(($disksizefree/$disksize) * 100, 2);
+
+		echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+		echo "<tr>\n";
+		echo "	<th colspan='2' align='left'>Drive Space</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "		Capacity: \n";
+		echo "	</td>\n";
+		echo "	<td class=\"vtable\">\n";
+		echo "		$disksize mb\n";
+		echo "	</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "		Free Space: \n";
+		echo "	</td>\n";
+		echo "	<td class=\"vtable\">\n";
+		echo "		$disksizefree mb\n";
+		echo "	</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "		Percent Free: \n";
+		echo "	</td>\n";
+		echo "	<td class=\"vtable\">\n";
+		echo "		$diskpercentavailable% \n";
+		echo "	</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+		echo "\n";
 	}
 	else {
-		$driveletter = "/";
+		echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+		echo "<tr>\n";
+		echo "	<th colspan='2' align='left'>Drive Information</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "		Drive Space: \n";
+		echo "	</td>\n";
+		echo "	<td class=\"vtable\">\n";
+		echo "<pre>\n";
+		system("df -h");
+		echo "</pre>\n";
+		echo "	</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
 	}
-	$disksize = round(disk_total_space($driveletter)/1024/1024, 2);
-	$disksizefree = round(disk_free_space($driveletter)/1024/1024, 2);
-	$diskpercentavailable = round(($disksizefree/$disksize) * 100, 2);
-
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-	echo "<tr>\n";
-	echo "	<th colspan='2' align='left'>Drive Space</th>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		Capacity: \n";
-	echo "	</td>\n";
-	echo "	<td class=\"vtable\">\n";
-	echo "		$disksize mb\n";
-	echo "	</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		Free Space: \n";
-	echo "	</td>\n";
-	echo "	<td class=\"vtable\">\n";
-	echo "		$disksizefree mb\n";
-	echo "	</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		Percent Free: \n";
-	echo "	</td>\n";
-	echo "	<td class=\"vtable\">\n";
-	echo "		$diskpercentavailable% \n";
-	echo "	</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "\n";
 
 	echo "<br />";
 	echo "<br />";
