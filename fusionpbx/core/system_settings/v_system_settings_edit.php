@@ -125,7 +125,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($v_storage_dir) == 0) { $msg .= "Please provide: Storage Directory<br>\n"; }
 		if (strlen($v_recordings_dir) == 0) { $msg .= "Please provide: Recordings Directory<br>\n"; }
 		if (strlen($v_sounds_dir) == 0) { $msg .= "Please provide: Sounds Directory<br>\n"; }
-		if (strlen($v_download_path) == 0) { $msg .= "Please provide: Download Path<br>\n"; }
+		//if (strlen($v_download_path) == 0) { $msg .= "Please provide: Download Path<br>\n"; }
 		//if (strlen($v_provisioning_tftp_dir) == 0) { $msg .= "Please provide: Provisioning TFTP Directory<br>\n"; }
 		//if (strlen($v_provisioning_ftp_dir) == 0) { $msg .= "Please provide: Provisioning FTP Directory<br>\n"; }
 		//if (strlen($v_provisioning_https_dir) == 0) { $msg .= "Please provide: Provisioning HTTPS Directory<br>\n"; }
@@ -177,7 +177,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_storage_dir, ";
 			$sql .= "v_recordings_dir, ";
 			$sql .= "v_sounds_dir, ";
-			$sql .= "v_download_path, ";
+			//$sql .= "v_download_path, ";
 			$sql .= "v_provisioning_tftp_dir, ";
 			$sql .= "v_provisioning_ftp_dir, ";
 			$sql .= "v_provisioning_https_dir, ";
@@ -213,7 +213,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$v_storage_dir', ";
 			$sql .= "'$v_recordings_dir', ";
 			$sql .= "'$v_sounds_dir', ";
-			$sql .= "'$v_download_path', ";
+			//$sql .= "'$v_download_path', ";
 			$sql .= "'$v_provisioning_tftp_dir', ";
 			$sql .= "'$v_provisioning_ftp_dir', ";
 			$sql .= "'$v_provisioning_https_dir', ";
@@ -261,7 +261,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_storage_dir = '$v_storage_dir', ";
 			$sql .= "v_recordings_dir = '$v_recordings_dir', ";
 			$sql .= "v_sounds_dir = '$v_sounds_dir', ";
-			$sql .= "v_download_path = '$v_download_path', ";
+			//$sql .= "v_download_path = '$v_download_path', ";
 			$sql .= "v_provisioning_tftp_dir = '$v_provisioning_tftp_dir', ";
 			$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
 			$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
