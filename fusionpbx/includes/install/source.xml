@@ -4692,9 +4692,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/system_settings/v_system_settings_default.php</path> 
-		<last_mod>Thu, 10 Jun 2010 18:55:19 GMT</last_mod> 
-		<md5>bac5734c01a3ebdf9a80007e45b8f58b</md5> 
-		<size>8707</size> 
+		<last_mod>Thu, 10 Jun 2010 19:35:16 GMT</last_mod> 
+		<md5>6776fa956d5556705dec727903a34c99</md5> 
+		<size>8706</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 

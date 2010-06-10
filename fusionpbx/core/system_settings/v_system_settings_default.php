@@ -246,7 +246,7 @@ else {
 		$sql .= "v_scripts_dir = '$v_scripts_dir', ";
 		$sql .= "v_storage_dir = '$v_storage_dir', ";
 		$sql .= "v_recordings_dir = '$v_recordings_dir', ";
-		$sql .= "v_sounds_dir = '$v_sounds_dir', ";
+		$sql .= "v_sounds_dir = '$v_sounds_dir' ";
 		//$sql .= "v_download_path = '$v_download_path' ";
 		//$sql .= "v_provisioning_tftp_dir = '$v_provisioning_tftp_dir', ";
 		//$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
