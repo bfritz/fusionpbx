@@ -359,7 +359,10 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap><b>System Settings Edit</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_system_settings.php'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'>\n";
+	echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='v_system_settings_default.php?id=".$v_id."';\" />";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_system_settings.php'\" value='Back'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -659,16 +662,16 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Download Path:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_download_path' maxlength='255' value=\"$v_download_path\">\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	//echo "<tr>\n";
+	//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	//echo "    Download Path:\n";
+	//echo "</td>\n";
+	//echo "<td class='vtable' align='left'>\n";
+	//echo "    <input class='formfld' type='text' name='v_download_path' maxlength='255' value=\"$v_download_path\">\n";
+	//echo "<br />\n";
+	//echo "\n";
+	//echo "</td>\n";
+	//echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";

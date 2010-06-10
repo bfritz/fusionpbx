@@ -2620,9 +2620,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/xml_cdr/index.php</path> 
-		<last_mod>Tue, 01 Jun 2010 15:17:32 GMT</last_mod> 
-		<md5>f76b6cf4d253b2a72ded036bfa7b2af5</md5> 
-		<size>2251</size> 
+		<last_mod>Thu, 10 Jun 2010 04:58:41 GMT</last_mod> 
+		<md5>c326a39ff669db40aa06839593646921</md5> 
+		<size>2192</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4517,9 +4517,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/upgrade/upgrade_xml.php</path> 
-		<last_mod>Tue, 08 Jun 2010 06:02:20 GMT</last_mod> 
-		<md5>8a41c492d767bc21d16dce24cd478f9b</md5> 
-		<size>3358</size> 
+		<last_mod>Tue, 08 Jun 2010 06:08:56 GMT</last_mod> 
+		<md5>311d7e5b0431c1a49913d8ea26787110</md5> 
+		<size>3360</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4678,9 +4678,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/system_settings/v_system_settings_edit.php</path> 
-		<last_mod>Sun, 23 May 2010 09:02:30 GMT</last_mod> 
-		<md5>cc56ca1d68ae0c2b22dcd6ef26569ccd</md5> 
-		<size>26368</size> 
+		<last_mod>Thu, 10 Jun 2010 19:09:18 GMT</last_mod> 
+		<md5>ff67e771686838d24684fc7f6aac5612</md5> 
+		<size>26560</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4688,6 +4688,13 @@
 		<last_mod>Fri, 07 May 2010 19:27:42 GMT</last_mod> 
 		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
 		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>core/system_settings/v_system_settings_default.php</path> 
+		<last_mod>Thu, 10 Jun 2010 18:55:19 GMT</last_mod> 
+		<md5>bac5734c01a3ebdf9a80007e45b8f58b</md5> 
+		<size>8707</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4860,8 +4867,8 @@
 	<src> 
 		<type>file</type> 
 		<path>secure/fusionpbx.db</path> 
-		<last_mod>Tue, 08 Jun 2010 05:44:19 GMT</last_mod> 
-		<md5>0b9d1ead7abcc7df3c105b48e472b5de</md5> 
+		<last_mod>Thu, 10 Jun 2010 18:55:03 GMT</last_mod> 
+		<md5>2a67cd64bae69c31e71a36106763c082</md5> 
 		<size>414720</size> 
 	</src> 
 	<src> 
@@ -4895,9 +4902,9 @@
 	<src> 
 		<type>file</type> 
 		<path>install.php</path> 
-		<last_mod>Sun, 30 May 2010 08:06:17 GMT</last_mod> 
-		<md5>00baafaff153df6d1607854b866f0018</md5> 
-		<size>45212</size> 
+		<last_mod>Thu, 10 Jun 2010 17:29:51 GMT</last_mod> 
+		<md5>4803f776efd80c44d8d25ba058cb8374</md5> 
+		<size>45211</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
