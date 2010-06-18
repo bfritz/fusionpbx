@@ -103,7 +103,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$enabled', ";
 		$sql .= "'$description' ";
 		$sql .= ")";
-		$db->exec(check_sql($sql));
 		if ($dbtype == "sqlite" || $dbtype == "mysql" ) {
 			$db->exec(check_sql($sql));
 			$dialplan_include_id = $db->lastInsertId($id);
@@ -233,91 +232,91 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 <script type="text/javascript">
 <!--
 function type_onchange(field_type) {
-var field_value = document.getElementById(field_type).value;
+	var field_value = document.getElementById(field_type).value;
 
-//desc_action_data_1
-//desc_action_data_2
+	//desc_action_data_1
+	//desc_action_data_2
 
-if (field_type == "condition_field_1") {
-	if (field_value == "destination_number") {
-		document.getElementById("desc_condition_expression_1").innerHTML = "expression: ^12081231234$";
+	if (field_type == "condition_field_1") {
+		if (field_value == "destination_number") {
+			document.getElementById("desc_condition_expression_1").innerHTML = "expression: ^12081231234$";
+		}
+		else if (field_value == "zzz") {
+			document.getElementById("desc_condition_expression_1").innerHTML = "";
+		}
+		else {
+			document.getElementById("desc_condition_expression_1").innerHTML = "";
+		}
 	}
-	else if (field_value == "zzz") {
-		document.getElementById("desc_condition_expression_1").innerHTML = "";
+	if (field_type == "condition_field_2") {
+		if (field_value == "destination_number") {
+			document.getElementById("desc_condition_expression_2").innerHTML = "expression: ^12081231234$";
+		}
+		else if (field_value == "zzz") {
+			document.getElementById("desc_condition_expression_2").innerHTML = "";
+		}
+		else {
+			document.getElementById("desc_condition_expression_2").innerHTML = "";
+		}
 	}
-	else {
-		document.getElementById("desc_condition_expression_1").innerHTML = "";
+	if (field_type == "action_application_1") {
+		if (field_value == "transfer") {
+			document.getElementById("desc_action_data_1").innerHTML = "Transfer the call through the dialplan to the destination. data: 1001 XML default";
+		}
+		else if (field_value == "bridge") {
+			var tmp = "Bridge the call to a destination. <br />";
+			tmp += "sip uri (voicemail): sofia/internal/*98@${domain}<br />\n";
+			tmp += "sip uri (external number): sofia/gateway/gatewayname/12081231234<br />\n";
+			tmp += "sip uri (hunt group): sofia/internal/7002@${domain}<br />\n";
+			tmp += "sip uri (auto attendant): sofia/internal/5002@${domain}<br />\n";
+			//tmp += "sip uri (user): /user/1001@${domain}<br />\n";
+			document.getElementById("desc_action_data_1").innerHTML = tmp;
+		}
+		else if (field_value == "global_set") {
+			document.getElementById("desc_action_data_1").innerHTML = "Sets a global variable. data: var1=1234";
+		}
+		else if (field_value == "javascript") {
+			document.getElementById("desc_action_data_1").innerHTML = "Direct the call to a javascript file. data: disa.js";
+		}
+		else if (field_value == "set") {
+			document.getElementById("desc_action_data_1").innerHTML = "Sets a variable. data: var2=1234";
+		}
+		else if (field_value == "voicemail") {
+			document.getElementById("desc_action_data_1").innerHTML = "Send the call to voicemail. data: default ${domain} 1001";
+		}
+		else {
+			document.getElementById("desc_action_data_1").innerHTML = "";
+		}
 	}
-}
-if (field_type == "condition_field_2") {
-	if (field_value == "destination_number") {
-		document.getElementById("desc_condition_expression_2").innerHTML = "expression: ^12081231234$";
+	if (field_type == "action_application_2") {
+		if (field_value == "transfer") {
+			document.getElementById("desc_action_data_2").innerHTML = "Transfer the call through the dialplan to the destination. data: 1001 XML default";
+		}
+		else if (field_value == "bridge") {
+			var tmp = "Bridge the call to a destination. <br />";
+			tmp += "sip uri (voicemail): sofia/internal/*98@${domain}<br />\n";
+			tmp += "sip uri (external number): sofia/gateway/gatewayname/12081231234<br />\n";
+			tmp += "sip uri (hunt group): sofia/internal/7002@${domain}<br />\n";
+			tmp += "sip uri (auto attendant): sofia/internal/5002@${domain}<br />\n";
+			//tmp += "sip uri (user): /user/1001@${domain}<br />\n";
+			document.getElementById("desc_action_data_2").innerHTML = tmp;
+		}
+		else if (field_value == "global_set") {
+			document.getElementById("desc_action_data_2").innerHTML = "Sets a global variable. data: var1=1234";
+		}
+		else if (field_value == "javascript") {
+			document.getElementById("desc_action_data_2").innerHTML = "Direct the call to a javascript file. data: disa.js";
+		}
+		else if (field_value == "set") {
+			document.getElementById("desc_action_data_2").innerHTML = "Sets a variable. data: var2=1234";
+		}
+		else if (field_value == "voicemail") {
+			document.getElementById("desc_action_data_2").innerHTML = "Send the call to voicemail. data: default ${domain} 1001";
+		}
+		else {
+			document.getElementById("desc_action_data_2").innerHTML = "";
+		}
 	}
-	else if (field_value == "zzz") {
-		document.getElementById("desc_condition_expression_2").innerHTML = "";
-	}
-	else {
-		document.getElementById("desc_condition_expression_2").innerHTML = "";
-	}
-}
-if (field_type == "action_application_1") {
-	if (field_value == "transfer") {
-		document.getElementById("desc_action_data_1").innerHTML = "Transfer the call through the dialplan to the destination. data: 1001 XML default";
-	}
-	else if (field_value == "bridge") {
-		var tmp = "Bridge the call to a destination. <br />";
-		tmp += "sip uri (voicemail): sofia/internal/*98@${domain}<br />\n";
-		tmp += "sip uri (external number): sofia/gateway/gatewayname/12081231234<br />\n";
-		tmp += "sip uri (hunt group): sofia/internal/7002@${domain}<br />\n";
-		tmp += "sip uri (auto attendant): sofia/internal/5002@${domain}<br />\n";
-		//tmp += "sip uri (user): /user/1001@${domain}<br />\n";
-		document.getElementById("desc_action_data_1").innerHTML = tmp;
-	}
-	else if (field_value == "global_set") {
-		document.getElementById("desc_action_data_1").innerHTML = "Sets a global variable. data: var1=1234";
-	}
-	else if (field_value == "javascript") {
-		document.getElementById("desc_action_data_1").innerHTML = "Direct the call to a javascript file. data: disa.js";
-	}
-	else if (field_value == "set") {
-		document.getElementById("desc_action_data_1").innerHTML = "Sets a variable. data: var2=1234";
-	}
-	else if (field_value == "voicemail") {
-		document.getElementById("desc_action_data_1").innerHTML = "Send the call to voicemail. data: default ${domain} 1001";
-	}
-	else {
-		document.getElementById("desc_action_data_1").innerHTML = "";
-	}
-}
-if (field_type == "action_application_2") {
-	if (field_value == "transfer") {
-		document.getElementById("desc_action_data_2").innerHTML = "Transfer the call through the dialplan to the destination. data: 1001 XML default";
-	}
-	else if (field_value == "bridge") {
-		var tmp = "Bridge the call to a destination. <br />";
-		tmp += "sip uri (voicemail): sofia/internal/*98@${domain}<br />\n";
-		tmp += "sip uri (external number): sofia/gateway/gatewayname/12081231234<br />\n";
-		tmp += "sip uri (hunt group): sofia/internal/7002@${domain}<br />\n";
-		tmp += "sip uri (auto attendant): sofia/internal/5002@${domain}<br />\n";
-		//tmp += "sip uri (user): /user/1001@${domain}<br />\n";
-		document.getElementById("desc_action_data_2").innerHTML = tmp;
-	}
-	else if (field_value == "global_set") {
-		document.getElementById("desc_action_data_2").innerHTML = "Sets a global variable. data: var1=1234";
-	}
-	else if (field_value == "javascript") {
-		document.getElementById("desc_action_data_2").innerHTML = "Direct the call to a javascript file. data: disa.js";
-	}
-	else if (field_value == "set") {
-		document.getElementById("desc_action_data_2").innerHTML = "Sets a variable. data: var2=1234";
-	}
-	else if (field_value == "voicemail") {
-		document.getElementById("desc_action_data_2").innerHTML = "Send the call to voicemail. data: default ${domain} 1001";
-	}
-	else {
-		document.getElementById("desc_action_data_2").innerHTML = "";
-	}
-}
 
 }
 -->
@@ -534,7 +533,7 @@ echo "</td>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 echo "    Action 2:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
