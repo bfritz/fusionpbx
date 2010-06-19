@@ -93,7 +93,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($gateway) == 0) { $msg .= "Please provide: Gateway<br>\n"; }
 		if (strlen($username) == 0) { $msg .= "Please provide: Username<br>\n"; }
-		if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
+		//if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
 		//if (strlen($auth_username) == 0) { $msg .= "Please provide: Auth username<br>\n"; }
 		//if (strlen($realm) == 0) { $msg .= "Please provide: Realm<br>\n"; }
 		//if (strlen($from_user) == 0) { $msg .= "Please provide: From user<br>\n"; }
@@ -127,36 +127,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		}
-
-	$tmp = "\n";
-	//$tmp .= "v_id: $v_id\n";
-	$tmp .= "Gateway: $gateway\n";
-	$tmp .= "Username: $username\n";
-	$tmp .= "Password: $password\n";
-	$tmp .= "Auth username: $auth_username\n";
-	$tmp .= "Realm: $realm\n";
-	$tmp .= "From user: $from_user\n";
-	$tmp .= "From domain: $from_domain\n";
-	$tmp .= "Proxy: $proxy\n";
-	$tmp .= "Register Proxy: $register_proxy\n";
-	$tmp .= "Outbound Proxy: $outbound_proxy\n";
-	$tmp .= "Expire seconds: $expire_seconds\n";
-	$tmp .= "Register: $register\n";
-	$tmp .= "Register transport: $register_transport\n";
-	$tmp .= "Retry seconds: $retry_seconds\n";
-	$tmp .= "Extension: $extension\n";
-	$tmp .= "Ping: $ping\n";
-	$tmp .= "Caller ID in from: $caller_id_in_from\n";
-	$tmp .= "Supress CNG: $supress_cng\n";
-	$tmp .= "Supress CNG: $extension_in_contact\n";
-	$tmp .= "Effective Caller ID Name: $effective_caller_id_name\n";
-	$tmp .= "Effective Caller ID Number: $effective_caller_id_number\n";
-	$tmp .= "Outbound Caller ID Name: $outbound_caller_id_name\n";
-	$tmp .= "Outbound Caller ID Number: $outbound_caller_id_number\n";
-	$tmp .= "Context: $context\n";
-	$tmp .= "Enabled: $enabled\n";
-	$tmp .= "Gateway Description: $description\n";
-
 
 	//Add or update the database
 	if ($_POST["persistformvar"] != "true") {
@@ -594,7 +564,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Password:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
