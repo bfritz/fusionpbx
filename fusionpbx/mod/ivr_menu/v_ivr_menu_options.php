@@ -101,7 +101,7 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_options_digits]."</td>\n";
 			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_options_action]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$ivr_menu_options_param."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_options_desc]."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_options_desc]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_ivr_menu_options_edit.php?ivr_menu_id=".$row[ivr_menu_id]."&id=".$row[ivr_menu_option_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
 			echo "		<a href='v_ivr_menu_options_delete.php?ivr_menu_id=".$row[ivr_menu_id]."&id=".$row[ivr_menu_option_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
