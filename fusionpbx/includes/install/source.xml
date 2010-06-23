@@ -2598,13 +2598,6 @@
 	</src> 
 	<src> 
 		<type>directory</type> 
-		<path>mod/pop3</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
 		<path>mod/xml_cdr</path> 
 		<last_mod></last_mod> 
 		<md5></md5> 
@@ -4293,9 +4286,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/v_version.php</path> 
-		<last_mod>Sun, 30 May 2010 08:06:16 GMT</last_mod> 
-		<md5>e00d9271c5f8a0d7c294162fc9e3f4ec</md5> 
-		<size>938</size> 
+		<last_mod>Wed, 23 Jun 2010 22:09:32 GMT</last_mod> 
+		<md5>82cc0754f6013ee545121dcd22775021</md5> 
+		<size>943</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4944,9 +4937,9 @@
 	<src> 
 		<type>file</type> 
 		<path>index.php</path> 
-		<last_mod>Thu, 10 Jun 2010 20:02:20 GMT</last_mod> 
-		<md5>f0ab3972f000b29b24c79c56fee19449</md5> 
-		<size>11419</size> 
+		<last_mod>Wed, 23 Jun 2010 22:08:09 GMT</last_mod> 
+		<md5>2c68213b07d057f82578e74c3a22a0f0</md5> 
+		<size>11423</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4955,4 +4948,4 @@
 		<md5>bd5c1718766023dfcde02eeca15ebc64</md5> 
 		<size>2911</size> 
 	</src> 
-</xml>
+</xml> 

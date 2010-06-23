@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 
-$softwarename = 'FusionPBX';
-$softwareversion = '1.1.12';
-$softwareurl = 'http://www.fusionpbx.com';
+$software_name = 'FusionPBX';
+$software_version = '1.1.12';
+$software_url = 'http://www.fusionpbx.com';
 
 ?>

@@ -92,7 +92,7 @@ echo "<br />";
 	echo "		Version: \n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\">\n";
-	echo "		$softwareversion \n";
+	echo "		".$software_version."\n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 
