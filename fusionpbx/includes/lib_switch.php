@@ -1661,7 +1661,7 @@ function sync_package_v_hunt_group_lua()
 					if(is_dir($dir . "/" . $file)) {
 						//this is a directory
 					} else {
-						if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-3) == '.lua') {
+						if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-4) == '.lua') {
 							//echo "file: $file<br />\n";
 							//echo "extension: ".substr($file,-3)."<br />";
 							if ($file != "huntgroup_originate.lua") {
@@ -4975,9 +4975,16 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 				//add each IVR menu to the XML config
 					$tmp = "	<!-- $ivr_menu_desc -->\n";
 					$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
-					//$tmp .= "		greet-long=\"C:/fusionpbx/program/FreeSWITCH/recordings/auto_attendant_sales1_support2_billing3.wav\"\n";
-					$tmp .= "		greet-long=\"".$v_recordings_dir."/".$ivr_menu_greet_long."\"\n";
-					$tmp .= "		greet-short=\"".$v_recordings_dir."/".$ivr_menu_greet_short."\"\n";
+					if (strpos($mystring, 'mp3') !== false || strpos($mystring, 'wav') !== false) {
+						//found wav or mp3
+						$tmp .= "		greet-long=\"".$v_recordings_dir."/".$ivr_menu_greet_long."\"\n";
+						$tmp .= "		greet-short=\"".$v_recordings_dir."/".$ivr_menu_greet_short."\"\n";
+					}
+					else {
+						//not found
+						$tmp .= "		greet-long=\"".$ivr_menu_greet_long."\"\n";
+						$tmp .= "		greet-short=\"".$ivr_menu_greet_short."\"\n";
+					}
 					$tmp .= "		invalid-sound=\"$ivr_menu_invalid_sound\"\n";
 					$tmp .= "		exit-sound=\"$ivr_menu_exit_sound\"\n";
 					$tmp .= "		confirm-macro=\"$ivr_menu_confirm_macro\"\n";

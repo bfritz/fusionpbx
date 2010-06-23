@@ -389,24 +389,36 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		echo "		<select name='ivr_menu_greet_long' class='formfld'>\n";
 	}
 	echo "		<option></option>\n";
-		if($dh = opendir($v_recordings_dir."/")) {
-			$files = Array();
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($dir . "/" . $file)) {
-						//this is a directory
-					} else {
-						if ($ivr_menu_greet_long == $file) {
-							echo "		<option value='$file' selected>".$file."</option>\n";
-						}
-						else {
-							echo "		<option value='$file'>".$file."</option>\n";
-						}
+	if (ifgroup("superadmin")) {
+		echo "		<option value='phrase:'>phrase:</option>\n";
+		echo "		<option value='say:'>say:</option>\n";
+	}
+	if($dh = opendir($v_recordings_dir."/")) {
+		$tmp_selected = false;
+		$files = Array();
+		while($file = readdir($dh)) {
+			if($file != "." && $file != ".." && $file[0] != '.') {
+				if(is_dir($dir . "/" . $file)) {
+					//this is a directory
+				} else {
+					if ($ivr_menu_greet_long == $file) {
+						$tmp_selected = true;
+						echo "		<option value='$file' selected>".$file."</option>\n";
+					}
+					else {
+						echo "		<option value='$file'>".$file."</option>\n";
 					}
 				}
 			}
-			closedir($dh);
 		}
+		closedir($dh);
+	}
+	if (ifgroup("superadmin")) {
+		if (!$tmp_selected) {
+			echo "		<option value='".$ivr_menu_greet_long."' selected>".$ivr_menu_greet_long."</option>\n";
+		}
+		unset($tmp_selected);
+	}
 	echo "		</select>\n";
 
 	echo "<br />\n";
@@ -423,24 +435,36 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "\n";
 	echo "		<select name='ivr_menu_greet_short' class='formfld' onchange='changeToInput(this);'\">\n";
 	echo "		<option></option>\n";
-		if($dh = opendir($v_recordings_dir."/")) {
-			$files = Array();
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($dir . "/" . $file)) {
-						//this is a directory
-					} else {
-						if ($ivr_menu_greet_short == $file) {
-							echo "		<option value='$file' selected>".$file."</option>\n";
-						}
-						else {
-							echo "		<option value='$file'>".$file."</option>\n";
-						}
+	if (ifgroup("superadmin")) {
+		echo "		<option value='phrase:'>phrase:</option>\n";
+		echo "		<option value='say:'>say:</option>\n";
+	}
+	if($dh = opendir($v_recordings_dir."/")) {
+		$tmp_selected = false;
+		$files = Array();
+		while($file = readdir($dh)) {
+			if($file != "." && $file != ".." && $file[0] != '.') {
+				if(is_dir($dir . "/" . $file)) {
+					//this is a directory
+				} else {
+					if ($ivr_menu_greet_short == $file) {
+						$tmp_selected = true;
+						echo "		<option value='$file' selected>".$file."</option>\n";
+					}
+					else {
+						echo "		<option value='$file'>".$file."</option>\n";
 					}
 				}
 			}
-			closedir($dh);
 		}
+		closedir($dh);
+	}
+	if (ifgroup("superadmin")) {
+		if (!$tmp_selected) {
+			echo "		<option value='".$ivr_menu_greet_short."' selected>".$ivr_menu_greet_short."</option>\n";
+		}
+		unset($tmp_selected);
+	}
 	echo "		</select>\n";
 
 

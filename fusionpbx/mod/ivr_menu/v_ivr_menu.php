@@ -91,7 +91,7 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_extension]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_direct_dial]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_enabled]."</td>\n";
-			echo "	<td valign='top' class='rowstylebg'>".$row[ivr_menu_desc]."</td>\n";
+			echo "	<td valign='top' class='rowstylebg'>".$row[ivr_menu_desc]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_ivr_menu_edit.php?id=".$row[ivr_menu_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
 			echo "		<a href='v_ivr_menu_delete.php?id=".$row[ivr_menu_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
