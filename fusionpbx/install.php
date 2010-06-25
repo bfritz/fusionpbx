@@ -77,7 +77,7 @@ $v_id = '1';
 	$dbusername = '';
 	$dbpassword = '';
 
-	//install_ prefix was used to so these variables aren't overwritten by config.php
+//install_ prefix was used to so these variables aren't overwritten by config.php
 	$install_v_dir = '';
 	$install_php_dir = '';
 	$install_tmp_dir = '';

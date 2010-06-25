@@ -227,13 +227,13 @@ INSERT INTO v_vars VALUES(1,32,'external_ssl_dir','$${base_dir}/conf/ssl','SIP P
 INSERT INTO v_vars VALUES(1,33,'use_profile','internal','Defaults','true',0,'');
 CREATE TABLE v_cdr (cdr_id SERIAL, v_id NUMERIC, caller_id_name TEXT, caller_id_number TEXT, destination_number TEXT, context TEXT, start_stamp TEXT, answer_stamp TEXT, end_stamp TEXT, duration NUMERIC, billsec NUMERIC, hangup_cause TEXT, uuid TEXT, bleg_uuid TEXT, accountcode TEXT, read_codec TEXT, write_codec TEXT, remote_media_ip TEXT, network_addr TEXT );
 CREATE TABLE v_ivr_menu (ivr_menu_id SERIAL,v_id NUMERIC,ivr_menu_name TEXT,ivr_menu_extension NUMERIC,ivr_menu_greet_long TEXT,ivr_menu_greet_short TEXT,ivr_menu_invalid_sound TEXT,ivr_menu_exit_sound TEXT,ivr_menu_confirm_macro TEXT,ivr_menu_confirm_key TEXT,ivr_menu_tts_engine TEXT,ivr_menu_tts_voice TEXT,ivr_menu_confirm_attempts NUMERIC,ivr_menu_timeout NUMERIC,ivr_menu_inter_digit_timeout NUMERIC,ivr_menu_max_failures NUMERIC,ivr_menu_max_timeouts NUMERIC,ivr_menu_digit_len NUMERIC,ivr_menu_direct_dial TEXT,ivr_menu_enabled TEXT,ivr_menu_desc TEXT)
-CREATE TABLE v_ivr_menu_options (ivr_menu_option_id SERIAL, ivr_menu_id NUMERIC, v_id NUMERIC, ivr_menu_options_digits NUMERIC, ivr_menu_options_action TEXT, ivr_menu_options_param TEXT, ivr_menu_options_desc TEXT)
+CREATE TABLE v_ivr_menu_options (ivr_menu_option_id SERIAL, ivr_menu_id NUMERIC, v_id NUMERIC, ivr_menu_options_digits TEXT, ivr_menu_options_action TEXT, ivr_menu_options_param TEXT, ivr_menu_options_order NUMERIC, ivr_menu_options_desc TEXT)
 CREATE TABLE v_php_service (php_service_id SERIAL, service_name TEXT, service_script TEXT, service_enabled TEXT, service_description TEXT);
 CREATE TABLE v_src (src_id SERIAL, v_id NUMERIC, type TEXT, last_mod TEXT, path TEXT);
-CREATE INDEX index_billsec ON v_cdr(billsec ASC);
-CREATE INDEX index_caller_id_name ON v_cdr(caller_id_name ASC);
-CREATE INDEX index_destination_number ON v_cdr(destination_number ASC);
-CREATE INDEX index_duration ON v_cdr(duration ASC);
-CREATE INDEX index_hangup_cause ON v_cdr(hangup_cause ASC);
-CREATE INDEX index_start_stamp ON v_cdr(start_stamp ASC);
+CREATE INDEX index_billsec ON v_cdr(billsec);
+CREATE INDEX index_caller_id_name ON v_cdr(caller_id_name);
+CREATE INDEX index_destination_number ON v_cdr(destination_number);
+CREATE INDEX index_duration ON v_cdr(duration);
+CREATE INDEX index_hangup_cause ON v_cdr(hangup_cause);
+CREATE INDEX index_start_stamp ON v_cdr(start_stamp);
 --COMMIT;

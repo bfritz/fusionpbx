@@ -30,6 +30,7 @@ if (count($_POST)>0) {
 	$ivr_menu_options_digits = check_str($_POST["ivr_menu_options_digits"]);
 	$ivr_menu_options_action = check_str($_POST["ivr_menu_options_action"]);
 	$ivr_menu_options_param = check_str($_POST["ivr_menu_options_param"]);
+	$ivr_menu_options_order = check_str($_POST["ivr_menu_options_order"]);
 	$ivr_menu_options_desc = check_str($_POST["ivr_menu_options_desc"]);
 
 	//set the default ivr_menu_options_action
@@ -39,19 +40,13 @@ if (count($_POST)>0) {
 
 	//seperate the action and the param
 		$options_array = explode(":", $ivr_menu_options_param);
-		$ivr_menu_options_action = $options_array[0];
-		$ivr_menu_options_param = $options_array[1];
+		$ivr_menu_options_action = array_shift($options_array);
+		$ivr_menu_options_param = join(':', $options_array);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
 		$ivr_menu_option_id = check_str($_POST["ivr_menu_option_id"]);
@@ -63,6 +58,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($ivr_menu_options_digits) == 0) { $msg .= "Please provide: Option<br>\n"; }
 		//if (strlen($ivr_menu_options_action) == 0) { $msg .= "Please provide: Type<br>\n"; }
 		//if (strlen($ivr_menu_options_param) == 0) { $msg .= "Please provide: Destination<br>\n"; }
+		if (strlen($ivr_menu_options_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
 		//if (strlen($ivr_menu_options_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
@@ -77,13 +73,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	$tmp .= "v_id: $v_id\n";
-	$tmp .= "ivr_menu_id: $ivr_menu_id\n";
-	$tmp .= "Option: $ivr_menu_options_digits\n";
-	$tmp .= "Type: $ivr_menu_options_action\n";
-	$tmp .= "Destination: $ivr_menu_options_param\n";
-	$tmp .= "Description: $ivr_menu_options_desc\n";
 
 
 //Add or update the database
@@ -96,6 +85,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "ivr_menu_options_digits, ";
 		$sql .= "ivr_menu_options_action, ";
 		$sql .= "ivr_menu_options_param, ";
+		$sql .= "ivr_menu_options_order, ";
 		$sql .= "ivr_menu_options_desc ";
 		$sql .= ")";
 		$sql .= "values ";
@@ -105,6 +95,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$ivr_menu_options_digits', ";
 		$sql .= "'$ivr_menu_options_action', ";
 		$sql .= "'$ivr_menu_options_param', ";
+		$sql .= "'$ivr_menu_options_order', ";
 		$sql .= "'$ivr_menu_options_desc' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
@@ -129,6 +120,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "ivr_menu_options_digits = '$ivr_menu_options_digits', ";
 		$sql .= "ivr_menu_options_action = '$ivr_menu_options_action', ";
 		$sql .= "ivr_menu_options_param = '$ivr_menu_options_param', ";
+		$sql .= "ivr_menu_options_order = '$ivr_menu_options_order', ";
 		$sql .= "ivr_menu_options_desc = '$ivr_menu_options_desc' ";
 		$sql .= "where ivr_menu_option_id = '$ivr_menu_option_id'";
 		$db->exec(check_sql($sql));
@@ -165,6 +157,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$ivr_menu_options_digits = $row["ivr_menu_options_digits"];
 		$ivr_menu_options_action = $row["ivr_menu_options_action"];
 		$ivr_menu_options_param = $row["ivr_menu_options_param"];
+		$ivr_menu_options_order = $row["ivr_menu_options_order"];
 		$ivr_menu_options_desc = $row["ivr_menu_options_desc"];
 		break; //limit to 1 row
 	}
@@ -210,7 +203,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<td class='vtable' align='left'>\n";
 	echo "  <input class='formfld' type='text' name='ivr_menu_options_digits' maxlength='255' value='$ivr_menu_options_digits'>\n";
 	echo "<br />\n";
-	echo "Any number 1-5 digits.\n";
+	echo "Any number between 1-5 digits or regular expressions.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -484,6 +477,35 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<br />\n";
 	echo "Select the destination.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	Order:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<select name='ivr_menu_options_order' class='formfld'>\n";
+	//echo "	<option></option>\n";
+	if (strlen(htmlspecialchars($ivr_menu_options_order))> 0) {
+		echo "	<option selected='yes' value='".htmlspecialchars($ivr_menu_options_order)."'>".htmlspecialchars($ivr_menu_options_order)."</option>\n";
+	}
+	$i=0;
+	while($i<=999) {
+		if (strlen($i) == 1) {
+			echo "	<option value='00$i'>00$i</option>\n";
+		}
+		if (strlen($i) == 2) {
+			echo "	<option value='0$i'>0$i</option>\n";
+		}
+		if (strlen($i) == 3) {
+			echo "	<option value='$i'>$i</option>\n";
+		}
+		$i++;
+	}
+	echo "	</select>\n";
+	echo "<br />\n";
+	echo "Select the order.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

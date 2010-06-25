@@ -73,6 +73,7 @@ $order = $_GET["order"];
 	echo thorderby('ivr_menu_options_digits', 'Option', $orderby, $order);
 	//echo thorderby('ivr_menu_options_action', 'Type', $orderby, $order);
 	echo thorderby('ivr_menu_options_param', 'Destination', $orderby, $order);
+	echo thorderby('ivr_menu_options_order', 'Order', $orderby, $order);
 	echo thorderby('ivr_menu_options_desc', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_ivr_menu_options_edit.php?ivr_menu_id=".$row[ivr_menu_id]."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
@@ -101,6 +102,7 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_options_digits]."</td>\n";
 			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_options_action]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$ivr_menu_options_param."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_options_order]."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[ivr_menu_options_desc]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_ivr_menu_options_edit.php?ivr_menu_id=".$row[ivr_menu_id]."&id=".$row[ivr_menu_option_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
@@ -116,7 +118,7 @@ $order = $_GET["order"];
 
 
 	echo "<tr>\n";
-	echo "<td colspan='5' align='left'>\n";
+	echo "<td colspan='6' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";

@@ -4978,12 +4978,16 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 					if (strpos($mystring, 'mp3') !== false || strpos($mystring, 'wav') !== false) {
 						//found wav or mp3
 						$tmp .= "		greet-long=\"".$v_recordings_dir."/".$ivr_menu_greet_long."\"\n";
-						$tmp .= "		greet-short=\"".$v_recordings_dir."/".$ivr_menu_greet_short."\"\n";
+						if (strlen($ivr_menu_greet_short) > 0) {
+							$tmp .= "		greet-short=\"".$v_recordings_dir."/".$ivr_menu_greet_short."\"\n";
+						}
 					}
 					else {
 						//not found
 						$tmp .= "		greet-long=\"".$ivr_menu_greet_long."\"\n";
-						$tmp .= "		greet-short=\"".$ivr_menu_greet_short."\"\n";
+						if (strlen($ivr_menu_greet_short) > 0) {
+							$tmp .= "		greet-short=\"".$ivr_menu_greet_short."\"\n";
+						}
 					}
 					$tmp .= "		invalid-sound=\"$ivr_menu_invalid_sound\"\n";
 					$tmp .= "		exit-sound=\"$ivr_menu_exit_sound\"\n";

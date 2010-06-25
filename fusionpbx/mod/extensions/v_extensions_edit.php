@@ -281,7 +281,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$extension = $row["extension"];
 		$password = $row["password"];
 		$user_list = $row["user_list"];
-		//$provisioning_list = $row["provisioning_list"];
+		$provisioning_list = $row["provisioning_list"];
 		$vm_password = $row["vm_password"];
 		$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 		$accountcode = $row["accountcode"];
@@ -306,10 +306,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 
 	require_once "includes/header.php";
-
-	echo "<script language='javascript' src='/includes/calendar_popcalendar.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_layers.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_menu.js'></script>\n";
 
 	echo "<script type=\"text/javascript\" language=\"JavaScript\">\n";
 	echo "\n";
@@ -447,6 +443,152 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Phone Provisioning:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "<select id='prov_template' name='prov_template' class='formfld'>\n";
+	echo "<option value=''></option>\n";
+	$temp_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/provisioning";
+	function select_dir_option_list($dir) {
+		if($dh_sub = opendir($temp_dir.'/'.$dir)) {
+			while($dir_sub = readdir($dh_sub)) {
+				if($file != "." && $dir_sub != ".." && $dir_sub[0] != '.') {
+					if(is_dir($temp_dir . "/" . $dir_sub)) {
+						echo "<option value='$dir_sub'>$dir_sub</option>\n";
+					}
+				}
+			}
+			closedir($dh_sub);
+		}
+	}
+	if($dh = opendir($temp_dir)) {
+		while($dir = readdir($dh)) {
+			if($file != "." && $dir != ".." && $dir[0] != '.') {
+				if(is_dir($temp_dir . "/" . $dir)) {
+					echo "<optgroup label='$dir'>";
+					if($dh_sub = opendir($temp_dir.'/'.$dir)) {
+						while($dir_sub = readdir($dh_sub)) {
+							if($file_sub != '.' && $dir_sub != '..' && $dir_sub[0] != '.') {
+								if(is_dir($temp_dir . '/' . $dir .'/'. $dir_sub)) {
+									echo "<option value='".$dir."/".$dir_sub."'>".$dir."/".$dir_sub."</option>\n";
+								}
+							}
+						}
+						closedir($dh_sub);
+					}
+					echo "</optgroup>";
+				}
+			}
+		}
+		closedir($dh);
+	}
+	echo "</select>\n";
+	echo "<br />\n";
+	echo "Select a template.\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "	<select id='prov_line' name='prov_line' class='formfld'>\n";
+	//echo "	<option value=''></option>\n";
+	echo "	<option value='1'>1</option>\n";
+	echo "	<option value='2'>2</option>\n";
+	echo "	<option value='3'>3</option>\n";
+	echo "	<option value='4'>4</option>\n";
+	echo "	<option value='5'>5</option>\n";
+	echo "	<option value='6'>6</option>\n";
+	echo "	<option value='7'>7</option>\n";
+	echo "	<option value='8'>8</option>\n";
+	echo "	<option value='9'>9</option>\n";
+	echo "	<option value='10'>10</option>\n";
+	echo "	<option value='11'>11</option>\n";
+	echo "	<option value='12'>12</option>\n";
+	echo "	<option value='13'>13</option>\n";
+	echo "	<option value='14'>14</option>\n";
+	echo "	<option value='15'>15</option>\n";
+	echo "	<option value='16'>16</option>\n";
+	echo "	<option value='17'>17</option>\n";
+	echo "	<option value='18'>18</option>\n";
+	echo "	<option value='19'>19</option>\n";
+	echo "	<option value='20'>20</option>\n";
+	echo "	<option value='21'>21</option>\n";
+	echo "	<option value='22'>22</option>\n";
+	echo "	<option value='23'>23</option>\n";
+	echo "	<option value='24'>24</option>\n";
+	echo "	<option value='25'>25</option>\n";
+	echo "	<option value='26'>26</option>\n";
+	echo "	<option value='27'>27</option>\n";
+	echo "	<option value='28'>28</option>\n";
+	echo "	<option value='29'>29</option>\n";
+	echo "	<option value='30'>30</option>\n";
+	echo "	<option value='31'>31</option>\n";
+	echo "	<option value='32'>32</option>\n";
+	echo "	</select>\n";
+	echo "<br />\n";
+	echo "Select a line number.<br>\n";
+	echo "<br />\n";
+
+	$onchange = "document.getElementById('provisioning_list').value += document.getElementById('select_mac_address').value;";
+	$onchange .= "document.getElementById('provisioning_list').value += ':'+document.getElementById('prov_line').value;";
+	$onchange .= "document.getElementById('provisioning_list').value += ':'+document.getElementById('prov_template').value + '\\n';";
+	echo "<select name=\"select_mac_address\" id=\"select_mac_address\" class=\"formfld\" onchange=\"$onchange\">\n";
+	echo "<option value=''></option>\n";
+	echo "<option value='xx-xx-xx-xx-xx-xx'>xx-xx-xx-xx-xx-xx</option>\n";
+	$tmp_arp = shell_exec('arp -a');
+	$pattern = "/[0-9a-f][0-9a-f][:-]".
+	"[0-9a-f][0-9a-f][:-]".
+	"[0-9a-f][0-9a-f][:-]".
+	"[0-9a-f][0-9a-f][:-]".
+	"[0-9a-f][0-9a-f][:-]".
+	"[0-9a-f][0-9a-f]/i";
+	preg_match_all($pattern, $tmp_arp, $matches);
+	$mac_array = $matches[0];
+	$x = 0;
+	foreach ($mac_array as $mac_address){
+		//echo "$x ".$mac_address."<br />\n";
+		//<optgroup label="Server-side languages">
+		//http://www.coffer.com/mac_find/
+		switch (substr(strtolower($mac_address), 0, 8)) {
+		case "00-0e-08":
+			echo "<option value='".$mac_address."'>".$mac_address." Linksys</option>\n";
+			break;
+		case "00-04-f2":
+			echo "<option value='".$mac_address."'>".$mac_address." Polycom</option>\n";
+			break;
+		case "00-90-7a":
+			echo "<option value='".$mac_address."'>".$mac_address." Polycom</option>\n";
+			break;
+		case "00-18-73":
+			echo "<option value='".$mac_address."'>".$mac_address." Cisco</option>\n";
+			break;
+		case "00-04-5a":
+			echo "<option value='".$mac_address."'>".$mac_address." Linksys</option>\n";
+			break;
+		case "00-06-25":
+			echo "<option value='".$mac_address."'>".$mac_address." Linksys</option>\n";
+			break;
+		default:
+			echo "<option value='".$mac_address."'>".$mac_address."</option>\n";
+		}
+		//</optgroup>
+		//<optgroup label="Client-side languages">
+		//<option>JavaScript</option>
+		//<option>VBScript</option>
+		//</optgroup>
+		$x++;
+	}
+	echo "</select>\n";
+	echo "<br />\n";
+	echo "Select a device to assign to this extension by its MAC addresses.\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	$provisioning_list = str_replace("|", "\n", $provisioning_list);
+	echo "    <textarea name=\"provisioning_list\" id=\"provisioning_list\" class=\"formfld\" cols=\"30\" rows=\"3\" wrap=\"off\">$provisioning_list</textarea>\n";
+	echo "    <br>\n";
+	echo "If a MAC address is not in the select list it can be added manually.<br />Format: MAC Address:Line Number:Template Name\n";
+	echo "<br />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
 	if ($action == "update") {
 		echo "<tr>\n";
@@ -515,13 +657,13 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    <select class='formfld' name='vm_attach_file'>\n";
 	echo "    <option value=''></option>\n";
 	if ($vm_attach_file == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+		echo "    <option value='true' selected >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($vm_attach_file == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+		echo "    <option value='false' selected >false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";
@@ -540,13 +682,13 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    <select class='formfld' name='vm_keep_local_after_email'>\n";
 	echo "    <option value=''></option>\n";
 	if ($vm_keep_local_after_email == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+		echo "    <option value='true' selected >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($vm_keep_local_after_email == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+		echo "    <option value='false' selected >false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";
@@ -687,13 +829,13 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    <select class='formfld' name='enabled'>\n";
 	echo "    <option value=''></option>\n";
 	if ($enabled == "true" || strlen($enabled) == 0) { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+		echo "    <option value='true' selected >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($enabled == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+		echo "    <option value='false' selected >false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";

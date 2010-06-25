@@ -186,13 +186,13 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 		$sql .= " where u.username = m.username ";
 		$sql .= " and m.groupid = '".$groupid."' ";
 		$sql .= " and u.usercategory = '".$usercategory."' ";
-		//echo $sql;
+		//echo $sql."<br />";
 	}
 	else {
 		$sql = "";
 		$sql .= " select * from v_users as u ";
 		$sql .= " where u.usercategory = '".$usercategory."' ";
-		//echo $sql;
+		//echo $sql."<br />";
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

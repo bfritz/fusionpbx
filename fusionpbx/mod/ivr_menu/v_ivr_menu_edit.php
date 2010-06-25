@@ -62,7 +62,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($ivr_menu_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($ivr_menu_extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		if (strlen($ivr_menu_greet_long) == 0) { $msg .= "Please provide: Greet Long<br>\n"; }
-		if (strlen($ivr_menu_greet_short) == 0) { $msg .= "Please provide: Greet Short<br>\n"; }
+		//if (strlen($ivr_menu_greet_short) == 0) { $msg .= "Please provide: Greet Short<br>\n"; }
 		if (strlen($ivr_menu_invalid_sound) == 0) { $msg .= "Please provide: Invalid Sound<br>\n"; }
 		if (strlen($ivr_menu_exit_sound) == 0) { $msg .= "Please provide: Exit Sound<br>\n"; }
 		//if (strlen($ivr_menu_confirm_macro) == 0) { $msg .= "Please provide: Confirm Macro<br>\n"; }
@@ -91,31 +91,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	$tmp .= "v_id: $v_id\n";
-	$tmp .= "Name: $ivr_menu_name\n";
-	$tmp .= "Extension: $ivr_menu_extension\n";
-	$tmp .= "Greet Long: $ivr_menu_greet_long\n";
-	$tmp .= "Greet Short: $ivr_menu_greet_short\n";
-	$tmp .= "Invalid Sound: $ivr_menu_invalid_sound\n";
-	$tmp .= "Exit Sound: $ivr_menu_exit_sound\n";
-	$tmp .= "Confirm Macro: $ivr_menu_confirm_macro\n";
-	$tmp .= "Confirm Key: $ivr_menu_confirm_key\n";
-	$tmp .= "TTS Engine: $ivr_menu_tts_engine\n";
-	$tmp .= "TTS Voice: $ivr_menu_tts_voice\n";
-	$tmp .= "Confirm Attempts: $ivr_menu_confirm_attempts\n";
-	$tmp .= "Timeout: $ivr_menu_timeout\n";
-	$tmp .= "Inter Digit Timeout: $ivr_menu_inter_digit_timeout\n";
-	$tmp .= "Max Failures: $ivr_menu_max_failures\n";
-	$tmp .= "Max Timeouts: $ivr_menu_max_timeouts\n";
-	$tmp .= "Digit Length: $ivr_menu_digit_len\n";
-	$tmp .= "Direct Dial: $ivr_menu_direct_dial\n";
-	$tmp .= "Enabled: $ivr_menu_enabled\n";
-	$tmp .= "Description: $ivr_menu_desc\n";
 
-
-
-//Add or update the database
+//add or update the database
 if ($_POST["persistformvar"] != "true") {
 	if ($action == "add") {
 		$sql = "insert into v_ivr_menu ";
@@ -427,7 +404,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "	Greet Short:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
