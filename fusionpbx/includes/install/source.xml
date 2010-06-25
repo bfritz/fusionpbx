@@ -4440,9 +4440,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Fri, 25 Jun 2010 03:53:42 GMT</last_mod> 
-		<md5>4ee32011a2e25e0fe23e479b358de25e</md5> 
-		<size>236097</size> 
+		<last_mod>Fri, 25 Jun 2010 07:07:20 GMT</last_mod> 
+		<md5>836e55bbc16b54c76a860db1ea8392a9</md5> 
+		<size>236276</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4522,41 +4522,6 @@
 		<size></size> 
 	</src> 
 
-	<src> 
-		<type>file</type> 
-		<path>includes/provisioning/cisco/7940/7960/SIPDefault.cnf</path> 
-		<last_mod>Fri, 26 Mar 2010 18:52:17 GMT</last_mod> 
-		<md5>41dd4fcab9efa129ca85a3a043557e7a</md5> 
-		<size>5659</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>includes/provisioning/cisco/7940/7960/SIP{mac}.cnf</path> 
-		<last_mod>Fri, 26 Mar 2010 18:48:20 GMT</last_mod> 
-		<md5>d27730ce0910138c5f658b1be2730282</md5> 
-		<size>3860</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>includes/provisioning/cisco/7940/7960/SEP{mac}.cnf.xml</path> 
-		<last_mod>Wed, 30 Dec 2009 04:30:38 GMT</last_mod> 
-		<md5>d7ef1843f26977d3f552b3e612570c87</md5> 
-		<size>974</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>includes/provisioning/cisco/7940/7940</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>includes/provisioning/cisco/7940/7940/SEP{mac}.cnf.xml</path> 
-		<last_mod>Wed, 30 Dec 2009 04:30:38 GMT</last_mod> 
-		<md5>d7ef1843f26977d3f552b3e612570c87</md5> 
-		<size>974</size> 
-	</src> 
 	<src> 
 		<type>directory</type> 
 		<path>includes/provisioning/linksys</path> 
@@ -4993,6 +4958,13 @@
 	</src> 
 	<src> 
 		<type>file</type> 
+		<path>secure/fusionpbx.db</path> 
+		<last_mod>Fri, 25 Jun 2010 07:11:50 GMT</last_mod> 
+		<md5>273f3d20a764861a19e1688747f4f49d</md5> 
+		<size>745472</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
 		<path>secure/fusionpbx.clean.db</path> 
 		<last_mod>Mon, 17 May 2010 20:09:36 GMT</last_mod> 
 		<md5>965dd2c22bcc5b5e8d818f92d20c59b4</md5> 
@@ -5029,8 +5001,8 @@
 	<src> 
 		<type>file</type> 
 		<path>index.php</path> 
-		<last_mod>Fri, 25 Jun 2010 04:31:49 GMT</last_mod> 
-		<md5>e9e2d8f55d44967f991cbe0657cc51ca</md5> 
+		<last_mod>Fri, 25 Jun 2010 06:58:13 GMT</last_mod> 
+		<md5>4c60c4eadd2b1dc3f53707b7260f8a00</md5> 
 		<size>11455</size> 
 	</src> 
 	<src> 
@@ -5040,4 +5012,4 @@
 		<md5>bd5c1718766023dfcde02eeca15ebc64</md5> 
 		<size>2911</size> 
 	</src> 
-</xml>
+</xml> 

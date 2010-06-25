@@ -4975,16 +4975,21 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 				//add each IVR menu to the XML config
 					$tmp = "	<!-- $ivr_menu_desc -->\n";
 					$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
-					if (strpos($mystring, 'mp3') !== false || strpos($mystring, 'wav') !== false) {
+					if (stripos($ivr_menu_greet_long, 'mp3') !== false || stripos($ivr_menu_greet_long, 'wav') !== false) {
 						//found wav or mp3
 						$tmp .= "		greet-long=\"".$v_recordings_dir."/".$ivr_menu_greet_long."\"\n";
+					}
+					else {
+						//not found
+						$tmp .= "		greet-long=\"".$ivr_menu_greet_long."\"\n";
+					}
+					if (stripos($ivr_menu_greet_short, 'mp3') !== false || stripos($ivr_menu_greet_short, 'wav') !== false) {
 						if (strlen($ivr_menu_greet_short) > 0) {
 							$tmp .= "		greet-short=\"".$v_recordings_dir."/".$ivr_menu_greet_short."\"\n";
 						}
 					}
 					else {
 						//not found
-						$tmp .= "		greet-long=\"".$ivr_menu_greet_long."\"\n";
 						if (strlen($ivr_menu_greet_short) > 0) {
 							$tmp .= "		greet-short=\"".$ivr_menu_greet_short."\"\n";
 						}
