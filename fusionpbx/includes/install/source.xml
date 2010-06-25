@@ -1976,9 +1976,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/ivr_menu/v_ivr_menu_options.php</path> 
-		<last_mod>Fri, 25 Jun 2010 03:27:21 GMT</last_mod> 
-		<md5>7c0b674962c28b69bf478f19b24e4a2a</md5> 
-		<size>6390</size> 
+		<last_mod>Fri, 25 Jun 2010 09:27:21 GMT</last_mod> 
+		<md5>7de103b3451c2770945912c2baa448fe</md5> 
+		<size>6590</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4440,9 +4440,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Fri, 25 Jun 2010 07:07:20 GMT</last_mod> 
-		<md5>836e55bbc16b54c76a860db1ea8392a9</md5> 
-		<size>236276</size> 
+		<last_mod>Fri, 25 Jun 2010 09:37:13 GMT</last_mod> 
+		<md5>718ed2fa3fbfd21ef85dba6df7e977ef</md5> 
+		<size>236434</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4516,25 +4516,17 @@
 	</src> 
 	<src> 
 		<type>directory</type> 
-		<path>includes/provisioning/cisco</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-
-	<src> 
-		<type>directory</type> 
-		<path>includes/provisioning/linksys</path> 
+		<path>includes/provisioning/snom/820</path> 
 		<last_mod></last_mod> 
 		<md5></md5> 
 		<size></size> 
 	</src> 
 	<src> 
-		<type>directory</type> 
-		<path>includes/provisioning/polycom</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
+		<type>file</type> 
+		<path>includes/provisioning/snom/820/snom{v_mac}.php</path> 
+		<last_mod>Sun, 14 Mar 2010 05:49:41 GMT</last_mod> 
+		<md5>957fb09e5176d658634cf5edc50dd871</md5> 
+		<size>2407</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4955,13 +4947,6 @@
 		<last_mod>Fri, 07 May 2010 00:48:04 GMT</last_mod> 
 		<md5>7d448536e53dde28ad8e7c88aa1f8a37</md5> 
 		<size>4496</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>secure/fusionpbx.db</path> 
-		<last_mod>Fri, 25 Jun 2010 07:11:50 GMT</last_mod> 
-		<md5>273f3d20a764861a19e1688747f4f49d</md5> 
-		<size>745472</size> 
 	</src> 
 	<src> 
 		<type>file</type> 

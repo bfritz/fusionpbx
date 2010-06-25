@@ -36,8 +36,14 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_ivr_menu_options ";
-	$sql .= " where ivr_menu_id = '$ivr_menu_id' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+	$sql .= " where v_id = '$v_id' ";
+	$sql .= " and ivr_menu_id = '$ivr_menu_id' ";
+	if (strlen($orderby)> 0) { 
+		$sql .= "order by ivr_menu_options_orderm $orderby $order "; 
+	}
+	else {
+		$sql .= "order by ivr_menu_options_order asc "; 
+	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -52,9 +58,14 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_ivr_menu_options ";
-	$sql .= " where ivr_menu_id = '$ivr_menu_id' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$sql .= " limit $rowsperpage offset $offset ";
+	$sql .= " where v_id = '$v_id' ";
+	$sql .= " and ivr_menu_id = '$ivr_menu_id' ";
+	if (strlen($orderby)> 0) { 
+		$sql .= "order by ivr_menu_options_orderm $orderby $order "; 
+	}
+	else {
+		$sql .= "order by ivr_menu_options_order asc "; 
+	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();

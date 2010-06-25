@@ -5011,6 +5011,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 					$sub_sql .= "select * from v_ivr_menu_options ";
 					$sub_sql .= "where ivr_menu_id = '$ivr_menu_id' ";
 					$sub_sql .= "and v_id = '$v_id' ";
+					$sub_sql .= "order by ivr_menu_options_order asc "; 
 					$sub_prepstatement = $db->prepare(check_sql($sub_sql));
 					$sub_prepstatement->execute();
 					$sub_result = $sub_prepstatement->fetchAll();
@@ -5022,7 +5023,12 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 						$ivr_menu_options_desc = $sub_row["ivr_menu_options_desc"];
 
 						$tmp .= "		<entry action=\"$ivr_menu_options_action\" digits=\"$ivr_menu_options_digits\" param=\"$ivr_menu_options_param\"/>";
-						$tmp .= "	<!-- $ivr_menu_options_desc -->\n";
+						if (strlen($ivr_menu_options_desc) == 0) {
+							$tmp .= "\n";
+						}
+						else {
+							$tmp .= "	<!-- $ivr_menu_options_desc -->\n";
+						}
 					}
 					unset ($sub_prepstatement, $sub_row);
 
