@@ -22,7 +22,8 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
-*/clude "root.php";
+*/
+include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 if (ifgroup("admin") || ifgroup("superadmin")) {

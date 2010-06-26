@@ -1,48 +1,54 @@
-<!--
+<include>
+	<!--
 destination_number
 extension_name
 
 
 -->
+	<extension name="Agent_Wait">
+		<condition field="destination_number" expression="^7010$">
+			<action application="set" data="fifo_music=$${hold_music}" />
+			<action application="answer" />
+			<action application="fifo" data="myq out wait" />
+		</condition>
+	</extension>
 
-<extension name="Agent_Wait">
-	<condition field="destination_number" expression="^7010$">
-		<action application="set" data="fifo_music=$${hold_music}"/>
-		<action application="answer"/>
-		<action application="fifo" data="myq out wait"/>
-	</condition>
-</extension>
-<extension name="Queue_Call_In">
-	<condition field="destination_number" expression="^7011$">
-		<action application="set" data="fifo_music=$${hold_music}"/>
-		<action application="answer"/>
-		<action application="fifo" data="myq in"/>
-	</condition>
-</extension>
+	<extension name="Queue_Call_In">
+		<condition field="destination_number" expression="^7011$">
+			<action application="set" data="fifo_music=$${hold_music}" />
+			<action application="answer" />
+			<action application="fifo" data="myq in" />
+		</condition>
+	</extension>
 
 	<extension name="Agent Login">
 		<condition field="destination_number" expression="^7000(\d)">
-		<action application="answer"/>
-		<action application="set" data="result=${fifo_member(add ACD$1 {fifo_member_wait=nowait}user/${user_name} )"/>
-		<action application="log" data="INFO Add FIFO agent result: ${result}"/>
-		<action application="log" data="INFO User Login: ACD$1 User: ${user_name}"/>
-		<action application="playback" data="ivr/ivr-you_are_now_logged_in.wav"/> 
+			<action application="answer" />
+			<action application="set"
+				data="result=${fifo_member(add ACD$1 {fifo_member_wait=nowait}user/${user_name} )" />
+			<action application="log" data="INFO Add FIFO agent result: ${result}" />
+			<action application="log"
+				data="INFO User Login: ACD$1 User: ${user_name}" />
+			<action application="playback" data="ivr/ivr-you_are_now_logged_in.wav" />
 		</condition>
 	</extension>
 	<extension name="Agent Logout">
 		<condition field="destination_number" expression="^7001(\d)">
-		<action application="answer"/>
-		<action application="set" data="result=${fifo_member(del ACD$1 {fifo_member_wait=nowait}user/${user_name})}"/>
-		<action application="log" data="INFO Del FIFO agent result: ${result}"/>
-		<action application="log" data="INFO User Logout: ACD$1 User: ${user_name}"/>
-		<action application="playback" data="ivr/ivr-you_are_now_logged_out.wav"/>
+			<action application="answer" />
+			<action application="set"
+				data="result=${fifo_member(del ACD$1 {fifo_member_wait=nowait}user/${user_name})}" />
+			<action application="log" data="INFO Del FIFO agent result: ${result}" />
+			<action application="log"
+				data="INFO User Logout: ACD$1 User: ${user_name}" />
+			<action application="playback" data="ivr/ivr-you_are_now_logged_out.wav" />
 		</condition>
 	</extension>
-	 <extension name="send caller to ACD">
-	   <condition field="destination_number" expression="^610(\d)$">
-		 <action application="answer"/>
-		 <action application="set" data="fifo_music=$${hold_music}"/>
-		 <action application="playback" data="ivr/ivr-hold_connect_call.wav"/>
-		 <action application="fifo" data="ACD$1 in"/>
-	   </condition>
-	 </extension>
+	<extension name="send caller to ACD">
+		<condition field="destination_number" expression="^610(\d)$">
+			<action application="answer" />
+			<action application="set" data="fifo_music=$${hold_music}" />
+			<action application="playback" data="ivr/ivr-hold_connect_call.wav" />
+			<action application="fifo" data="ACD$1 in" />
+		</condition>
+	</extension>
+</include>
