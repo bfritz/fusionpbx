@@ -115,6 +115,7 @@ if (!function_exists('thorderby')) {
 	//echo "<tr><td colspan='5'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
 	echo "<tr>\n";
+	echo thorderby('v_domain', 'Domain', $orderby, $order);
 	//echo thorderby('v_package_version', 'Package Version', $orderby, $order);
 	echo thorderby('v_label', 'Label', $orderby, $order);
 	//echo thorderby('v_name', 'Name', $orderby, $order);
@@ -133,6 +134,7 @@ if (!function_exists('thorderby')) {
 	foreach($result as $row) {
 		//print_r( $row );
 		echo "<tr >\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[v_domain]."</td>\n";
 		//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[v_package_version]."</td>\n";
 		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[v_label]."</td>\n";
 		//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[v_name]."</td>\n";
@@ -151,7 +153,7 @@ if (!function_exists('thorderby')) {
 
 
 	echo "<tr>\n";
-	echo "<td colspan='6'>\n";
+	echo "<td colspan='7'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";

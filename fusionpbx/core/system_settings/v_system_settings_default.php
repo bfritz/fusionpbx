@@ -149,19 +149,19 @@ else {
 		}
 		switch (PHP_OS) {
 		case "FreeBSD":
-			$v_startup_script_dir = '/usr/local/share/fusionpbx_secure';
+			$v_startup_script_dir = '/usr/local/etc/rc.d';
 			$install_php_dir = '/usr/local/bin';
 			break;
 		case "NetBSD":
-			$v_startup_script_dir = '/usr/local/share/fusionpbx_secure';
+			$v_startup_script_dir = '/usr/local/etc/rc.d';
 			$install_php_dir = '/usr/local/bin';
 			break;
 		case "OpenBSD":
-			$v_startup_script_dir = '/usr/local/share/fusionpbx_secure';
+			$v_startup_script_dir = '/usr/local/etc/rc.d';
 			$install_php_dir = '/usr/local/bin';
 			break;
 		default:
-			$v_startup_script_dir = '';
+			$v_startup_script_dir = '/etc/init.d';
 			$install_php_dir = '/usr/bin';
 		}
 
@@ -189,6 +189,7 @@ else {
 
 
 	//set system settings paths
+		$v_domain = $_SERVER["HTTP_HOST"]; 
 		//$install_v_dir = ''; //freeswitch directory
 		//$install_php_dir = '';
 		//$install_tmp_dir = '';
@@ -218,8 +219,90 @@ else {
 		$v_sounds_dir = $install_v_dir.'/sounds';
 		$v_download_path = '';
 
+	//add to v_system settings
+		$action = "add";
+		if ($action == "add") {
+			$sql = "insert into v_system_settings ";
+			$sql .= "(";
+			//$sql .= "v_id, ";
+			$sql .= "v_domain, ";
+			$sql .= "php_dir, ";
+			$sql .= "tmp_dir, ";
+			$sql .= "bin_dir, ";
+			$sql .= "v_startup_script_dir, ";
+			//$sql .= "v_package_version, ";
+			$sql .= "v_build_version, ";
+			$sql .= "v_build_revision, ";
+			$sql .= "v_label, ";
+			$sql .= "v_name, ";
+			$sql .= "v_dir, ";
+			$sql .= "v_parent_dir, ";
+			$sql .= "v_backup_dir, ";
+			$sql .= "v_web_dir, ";
+			$sql .= "v_web_root, ";
+			$sql .= "v_relative_url, ";
+			$sql .= "v_conf_dir, ";
+			$sql .= "v_db_dir, ";
+			$sql .= "v_htdocs_dir, ";
+			$sql .= "v_log_dir, ";
+			$sql .= "v_extensions_dir, ";
+			$sql .= "v_dialplan_public_dir, ";
+			$sql .= "v_dialplan_default_dir, ";
+			$sql .= "v_mod_dir, ";
+			$sql .= "v_scripts_dir, ";
+			$sql .= "v_storage_dir, ";
+			$sql .= "v_recordings_dir, ";
+			$sql .= "v_sounds_dir, ";
+			//$sql .= "v_download_path, ";
+			$sql .= "v_provisioning_tftp_dir, ";
+			$sql .= "v_provisioning_ftp_dir, ";
+			$sql .= "v_provisioning_https_dir, ";
+			$sql .= "v_provisioning_http_dir ";
+			$sql .= ")";
+			$sql .= "values ";
+			$sql .= "(";
+			//$sql .= "'$v_id', ";
+			$sql .= "'$v_domain', ";
+			$sql .= "'$php_dir', ";
+			$sql .= "'$tmp_dir', ";
+			$sql .= "'$bin_dir', ";
+			$sql .= "'$v_startup_script_dir', ";
+			//$sql .= "'$v_package_version', ";
+			$sql .= "'$v_build_version', ";
+			$sql .= "'$v_build_revision', ";
+			$sql .= "'$v_label', ";
+			$sql .= "'$v_name', ";
+			$sql .= "'$v_dir', ";
+			$sql .= "'$v_parent_dir', ";
+			$sql .= "'$v_backup_dir', ";
+			$sql .= "'$v_web_dir', ";
+			$sql .= "'$v_web_root', ";
+			$sql .= "'$v_relative_url', ";
+			$sql .= "'$v_conf_dir', ";
+			$sql .= "'$v_db_dir', ";
+			$sql .= "'$v_htdocs_dir', ";
+			$sql .= "'$v_log_dir', ";
+			$sql .= "'$v_extensions_dir', ";
+			$sql .= "'$v_dialplan_public_dir', ";
+			$sql .= "'$v_dialplan_default_dir', ";
+			$sql .= "'$v_mod_dir', ";
+			$sql .= "'$v_scripts_dir', ";
+			$sql .= "'$v_storage_dir', ";
+			$sql .= "'$v_recordings_dir', ";
+			$sql .= "'$v_sounds_dir', ";
+			//$sql .= "'$v_download_path', ";
+			$sql .= "'$v_provisioning_tftp_dir', ";
+			$sql .= "'$v_provisioning_ftp_dir', ";
+			$sql .= "'$v_provisioning_https_dir', ";
+			$sql .= "'$v_provisioning_http_dir' ";
+			$sql .= ")";
+			$db->exec(check_sql($sql));
+			unset($sql);
+		}
+
 	//restore the defaults in the database
 		$sql = "update v_system_settings set ";
+		$sql .= "v_domain = '$v_domain', ";
 		$sql .= "php_dir = '$install_php_dir', ";
 		$sql .= "tmp_dir = '$install_tmp_dir', ";
 		$sql .= "bin_dir = '$bin_dir', ";

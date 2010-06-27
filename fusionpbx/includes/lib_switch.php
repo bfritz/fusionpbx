@@ -75,6 +75,8 @@ function v_settings()
 		//detected automatically with includes/lib_php.php
 		$v_settings_array["v_secure"] = $v_secure;
 
+		$v_settings_array["v_domain"] = $row["v_domain"];
+
 		$php_dir = $row["php_dir"];
 		$php_dir = str_replace ("{program_dir}", $program_dir, $php_dir);
 		$v_settings_array["php_dir"] = $php_dir;

@@ -47,6 +47,7 @@ else {
 //POST to PHP variables
 if (count($_POST)>0) {
 	//get post variables
+		$v_domain = check_str($_POST["v_domain"]);
 		$v_id = check_str($_POST["v_id"]);
 		$php_dir = check_str($_POST["php_dir"]);
 		$tmp_dir = check_str($_POST["tmp_dir"]);
@@ -98,6 +99,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($v_domain) == 0) { $msg .= "Please provide: Domain<br>\n"; }
 		if (strlen($php_dir) == 0) { $msg .= "Please provide: PHP Directory<br>\n"; }
 		if (strlen($tmp_dir) == 0) { $msg .= "Please provide: Temp Directory<br>\n"; }
 		if (strlen($bin_dir) == 0) { $msg .= "Please provide: Bin Directory<br>\n"; }
@@ -149,7 +151,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_system_settings ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			//$sql .= "v_id, ";
+			$sql .= "v_domain, ";
 			$sql .= "php_dir, ";
 			$sql .= "tmp_dir, ";
 			$sql .= "bin_dir, ";
@@ -185,7 +188,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			//$sql .= "'$v_id', ";
+			$sql .= "'$v_domain', ";
 			$sql .= "'$php_dir', ";
 			$sql .= "'$tmp_dir', ";
 			$sql .= "'$bin_dir', ";
@@ -234,6 +238,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "update") {
 			$sql = "update v_system_settings set ";
 			//$sql .= "v_id = '$v_id', ";
+			$sql .= "v_domain = '$v_domain', ";
 			$sql .= "php_dir = '$php_dir', ";
 			$sql .= "tmp_dir = '$tmp_dir', ";
 			$sql .= "bin_dir = '$bin_dir', ";
@@ -294,6 +299,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$v_id = $row["v_id"];
+		$v_domain = $row["v_domain"];
 		$php_dir = $row["php_dir"];
 		$tmp_dir = $row["tmp_dir"];
 		$bin_dir = $row["bin_dir"];
@@ -365,6 +371,16 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	Domain:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='v_domain' maxlength='255' value=\"$v_domain\">\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    PHP Directory:\n";
