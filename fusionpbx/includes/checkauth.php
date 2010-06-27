@@ -26,6 +26,12 @@
 require_once "includes/config.php";
 session_start();
 
+/* set the salt for password hash generation
+ * changing this string can cause existing users to no longer be able to log in,
+ * unless you regenerate their passwords in the v_users table
+ */
+$salt   = 'e3.7d.12';
+
 
 //if username session is not set the check username and password
 //echo $_SESSION["username"];
@@ -50,7 +56,7 @@ if (strlen($_SESSION["username"]) == 0) {
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->bindParam(':v_id', $v_id);
 		$prepstatement->bindParam(':username', check_str($_POST["username"]));
-		$prepstatement->bindParam(':password', md5('e3.7d.12'.check_str($_POST["password"])));
+		$prepstatement->bindParam(':password', md5($salt.check_str($_POST["password"])));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		$resultcount = count($result);

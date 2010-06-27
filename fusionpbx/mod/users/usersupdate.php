@@ -157,7 +157,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "username = '$username', ";
 	}
 	if (strlen($password) > 0) {
-		$sql .= "password = '".md5('e3.7d.12'.$password)."', ";
+		$sql .= "password = '".md5($salt.$password)."', ";
 	}
 	$sql .= "userfirstname = '$userfirstname', ";
 	$sql .= "userlastname = '$userlastname', ";
