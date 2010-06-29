@@ -60,7 +60,7 @@ if ( session:ready() ) then
 				freeswitch.consoleLog("NOTICE", "file_exists: false\n");
 
 				dtmf = ""; --clear dtmf digits to prepare for next dtmf request
-				if (destination_number == 0) then
+				if (destination_number) then
 					-- do nothing
 				else
 					-- destination_number is not defined so request it
