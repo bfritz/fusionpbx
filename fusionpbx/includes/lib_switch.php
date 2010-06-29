@@ -2897,7 +2897,9 @@ function sync_package_v_fax()
 			//$row['faxextension']
 			//$row['faxname']
 			//$row['faxemail']
-			//$row['faxdomain']
+			//$row['fax_pin_number']
+			//$row['fax_caller_id_name']
+			//$row['fax_caller_id_number']
 			//$row['faxdescription']
 
 		//add each fax extension to the dialplan

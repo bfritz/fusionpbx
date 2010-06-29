@@ -107,7 +107,9 @@ if ($_GET['a'] == "download") {
 		$faxextension = check_str($_POST["faxextension"]);
 		$faxname = check_str($_POST["faxname"]);
 		$faxemail = check_str($_POST["faxemail"]);
-		$faxdomain = check_str($_POST["faxdomain"]);
+		$fax_pin_number = check_str($_POST["fax_pin_number"]);
+		$fax_caller_id_name = check_str($_POST["fax_caller_id_name"]);
+		$fax_caller_id_number = check_str($_POST["fax_caller_id_number"]);
 		$faxdescription = check_str($_POST["faxdescription"]);
 	}
 
@@ -183,14 +185,15 @@ if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_
 			exec("rm ".$dir_fax_temp.'/'.$fax_name.".tiff");
 		}
 
+
 	//send the fax
 		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 		if ($provider_type == "gateway") {
-			$cmd = "api originate [absolute_codec_string=PCMU]sofia/gateway/".$fax_gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+			$cmd = "api originate sofia/gateway/".$fax_gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 		}
 		if ($provider_type == "sip_uri") {
 			$sip_uri = str_replace("\$1", $fax_number, $sip_uri);
-			$cmd = "api originate [absolute_codec_string=PCMU]$sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+			$cmd = "api originate $sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 		}
 
 		$response = event_socket_request($fp, $cmd);
@@ -250,7 +253,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($faxextension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		if (strlen($faxname) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($faxemail) == 0) { $msg .= "Please provide: Email<br>\n"; }
-		if (strlen($faxdomain) == 0) { $msg .= "Please provide: Domain<br>\n"; }
+		//if (strlen($fax_pin_number) == 0) { $msg .= "Please provide: Pin Number<br>\n"; }
+		//if (strlen($fax_caller_id_name) == 0) { $msg .= "Please provide: Caller ID Name<br>\n"; }
+		//if (strlen($fax_caller_id_number) == 0) { $msg .= "Please provide: Caller ID Number<br>\n"; }
 		//if (strlen($faxdescription) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
@@ -265,13 +270,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	//$tmp = "\n";
-	//$tmp .= "v_id: $v_id\n";
-	//$tmp .= "Extension: $faxextension\n";
-	//$tmp .= "Name: $faxname\n";
-	//$tmp .= "Email: $faxemail\n";
-	//$tmp .= "Domain: $faxdomain\n";
-	//$tmp .= "Description: $faxdescription\n";
 
 
 //Add or update the database
@@ -283,7 +281,9 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "faxextension, ";
 		$sql .= "faxname, ";
 		$sql .= "faxemail, ";
-		$sql .= "faxdomain, ";
+		$sql .= "fax_pin_number, ";
+		$sql .= "fax_caller_id_name, ";
+		$sql .= "fax_caller_id_number, ";
 		$sql .= "faxdescription ";
 		$sql .= ")";
 		$sql .= "values ";
@@ -292,7 +292,9 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "'$faxextension', ";
 		$sql .= "'$faxname', ";
 		$sql .= "'$faxemail', ";
-		$sql .= "'$faxdomain', ";
+		$sql .= "'$fax_pin_number', ";
+		$sql .= "'$fax_caller_id_name', ";
+		$sql .= "'$fax_caller_id_number', ";
 		$sql .= "'$faxdescription' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
@@ -315,7 +317,9 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "faxextension = '$faxextension', ";
 		$sql .= "faxname = '$faxname', ";
 		$sql .= "faxemail = '$faxemail', ";
-		$sql .= "faxdomain = '$faxdomain', ";
+		$sql .= "fax_pin_number = '$fax_pin_number', ";
+		$sql .= "fax_caller_id_name = '$fax_caller_id_name', ";
+		$sql .= "fax_caller_id_number = '$fax_caller_id_number', ";
 		$sql .= "faxdescription = '$faxdescription' ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and fax_id = '$fax_id' ";
@@ -351,7 +355,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$faxextension = $row["faxextension"];
 		$faxname = $row["faxname"];
 		$faxemail = $row["faxemail"];
-		$faxdomain = $row["faxdomain"];
+		$fax_pin_number = $row["fax_pin_number"];
+		$fax_caller_id_name = $row["fax_caller_id_name"];
+		$fax_caller_id_number = $row["fax_caller_id_number"];
 		$faxdescription = $row["faxdescription"];
 
 		//set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
@@ -380,9 +386,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	require_once "includes/header.php";
 
-	echo "<script language='javascript' src='/includes/calendar_popcalendar.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_layers.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_menu.js'></script>\n";
 
 	echo "<div align='center'>";
 	echo "<table border='0' cellpadding='0' cellspacing='2'>\n";
@@ -409,10 +412,10 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Extension:\n";
+	echo "	Extension:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='faxextension' maxlength='255' value=\"$faxextension\">\n";
+	echo "	<input class='formfld' type='text' name='faxextension' maxlength='255' value=\"$faxextension\">\n";
 	echo "<br />\n";
 	echo "Enter the fax extension here.\n";
 	echo "</td>\n";
@@ -420,10 +423,10 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Name:\n";
+	echo "	Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='faxname' maxlength='255' value=\"$faxname\">\n";
+	echo "	<input class='formfld' type='text' name='faxname' maxlength='255' value=\"$faxname\">\n";
 	echo "<br />\n";
 	echo "Enter the name here.\n";
 	echo "</td>\n";
@@ -431,32 +434,54 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Email:\n";
+	echo "	Email:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='faxemail' maxlength='255' value=\"$faxemail\">\n";
+	echo "	<input class='formfld' type='text' name='faxemail' maxlength='255' value=\"$faxemail\">\n";
 	echo "<br />\n";
-	echo "Optional: Enter the email address to send the FAX to.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Domain:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='faxdomain' maxlength='255' value=\"$faxdomain\">\n";
-	echo "<br />\n";
-	echo "Enter the domain here.\n";
+	echo "	Enter the email address to send the FAX to.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Description:\n";
+	echo "	Pin Number:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='faxdescription' maxlength='255' value=\"$faxdescription\">\n";
+	echo "	<input class='formfld' type='text' name='fax_pin_number' maxlength='255' value=\"$fax_pin_number\">\n";
+	echo "<br />\n";
+	echo "Enter the pin number here.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Caller ID Name:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='fax_caller_id_name' maxlength='255' value=\"$fax_caller_id_name\">\n";
+	echo "<br />\n";
+	echo "Enter the Caller ID name here.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Caller ID Number:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='fax_caller_id_number' maxlength='255' value=\"$fax_caller_id_number\">\n";
+	echo "<br />\n";
+	echo "Enter the Caller ID number here.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Description:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='faxdescription' maxlength='255' value=\"$faxdescription\">\n";
 	echo "<br />\n";
 	echo "Enter the description here.\n";
 	echo "</td>\n";
@@ -477,7 +502,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<form action=\"\" method=\"POST\" enctype=\"multipart/form-data\" name=\"frmUpload\" onSubmit=\"\">\n";
 	echo "<div align='center'>\n";
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"3\" cellspacing=\"0\">\n";
+	echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 	echo "	<tr>\n";
 	echo "		<td align='left' width='30%'>\n";
 	echo "			<span class=\"vexpl\"><span class=\"red\"><strong>Send</strong></span>\n";
@@ -498,7 +523,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<td class='vtable' align='left'>\n";
 	echo "		<input type=\"text\" name=\"fax_number\" class='formfld' style='' value=\"\">\n";
 	echo "<br />\n";
-	//echo "Enter the domain here.\n";
+	echo "Enter the Number here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -511,7 +536,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "						<input name=\"type\" type=\"hidden\" value=\"fax_send\">\n";
 	echo "						<input name=\"fax_file\" type=\"file\" class=\"btn\" id=\"fax_file\">\n";
 	echo "<br />\n";
-	//echo "Enter the domain here.\n";
+	echo "Select the file to upload and send as a fax.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -555,8 +580,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</tr>\n";
 	echo "</table>\n";
 
-	echo "	<br />\n";
-	//echo "	Enter the description here.\n";
+	echo "	Select the gateway or use a SIP URI.\n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 	echo "	<tr>\n";

@@ -343,7 +343,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$tmp_config .= "?>";
 
 		//copy the secure directory
-			$srcdir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/secure';
+			$srcdir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 			//if the directory already exists do not copy over it.
 			if (!is_dir($dbfilepath)) {
 				//only copy if the src and dest are different

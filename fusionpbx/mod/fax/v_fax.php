@@ -107,7 +107,6 @@ $order = $_GET["order"];
 	echo thorderby('faxextension', 'Extension', $orderby, $order);
 	echo thorderby('faxname', 'Name', $orderby, $order);
 	echo thorderby('faxemail', 'Email', $orderby, $order);
-	echo thorderby('faxdomain', 'Domain', $orderby, $order);
 	echo thorderby('faxdescription', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_fax_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
@@ -124,7 +123,6 @@ $order = $_GET["order"];
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[faxextension]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[faxname]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[faxemail]."&nbsp;</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[faxdomain]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='35%'>".$row[faxdescription]."</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			echo "		<a href='v_fax_edit.php?id=".$row[fax_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
@@ -137,7 +135,7 @@ $order = $_GET["order"];
 	} //end if results
 
 	echo "<tr>\n";
-	echo "<td colspan='6'>\n";
+	echo "<td colspan='5'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
