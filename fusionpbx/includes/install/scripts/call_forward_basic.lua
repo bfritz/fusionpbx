@@ -39,8 +39,8 @@ if ( session:ready() ) then
 	extension = session:getVariable("user_name");
 	pin_number = session:getVariable("pin_number");
 	sounds_dir = session:getVariable("sounds_dir");
+	destination_number = session:getVariable("destination_number");
 
-	--if (string.len(pin_number) > 0) then
 	if (pin_number) then
 		digits = session:playAndGetDigits(3, 8, 3, digit_timeout, "#", sounds_dir.."/custom/8000/please_enter_the_pin_number.wav", "", "\\d+");
 		if (digits == pin_number) then
@@ -60,12 +60,17 @@ if ( session:ready() ) then
 				freeswitch.consoleLog("NOTICE", "file_exists: false\n");
 
 				dtmf = ""; --clear dtmf digits to prepare for next dtmf request
-				call_forward_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/custom/8000/please_enter_the_phone_number.wav", "", "\\d+");
-				if (call_forward_number) then
+				if (destination_number == 0) then
+					-- do nothing
+				else
+					-- destination_number is not defined so request it
+					destination_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/custom/8000/please_enter_the_phone_number.wav", "", "\\d+");
+				end
+				if (string.len(destination_number) > 0) then
 				--write the xml file
 					xml = "<extension name=\"call_forward_"..extension.."\" >\n";
 					xml = xml .. "	<condition field=\"destination_number\" expression=\"^"..extension.."$\">\n";
-					xml = xml .. "		<action application=\"transfer\" data=\""..call_forward_number.." XML default\"/>\n";
+					xml = xml .. "		<action application=\"transfer\" data=\""..destination_number.." XML default\"/>\n";
 					xml = xml .. "	</condition>\n";
 					xml = xml .. "</extension>\n";
 					local file = assert(io.open("/usr/local/freeswitch/conf/dialplan/default/999_call_forward_"..extension..".xml", "w"));
@@ -107,12 +112,16 @@ if ( session:ready() ) then
 			freeswitch.consoleLog("NOTICE", "file_exists: false\n");
 
 			dtmf = ""; --clear dtmf digits to prepare for next dtmf request
-			call_forward_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/custom/8000/please_enter_the_phone_number.wav", "", "\\d+");
-			if (string.len(call_forward_number) > 0) then
+			if (destination_number) then
+				-- do nothing
+			else
+				destination_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/custom/8000/please_enter_the_phone_number.wav", "", "\\d+");
+			end
+			if (string.len(destination_number) > 0) then
 			--write the xml file
 				xml = "<extension name=\"call_forward_"..extension.."\" >\n";
 				xml = xml .. "	<condition field=\"destination_number\" expression=\"^"..extension.."$\">\n";
-				xml = xml .. "		<action application=\"transfer\" data=\""..call_forward_number.." XML default\"/>\n";
+				xml = xml .. "		<action application=\"transfer\" data=\""..destination_number.." XML default\"/>\n";
 				xml = xml .. "	</condition>\n";
 				xml = xml .. "</extension>\n";
 				local file = assert(io.open("/usr/local/freeswitch/conf/dialplan/default/999_call_forward_"..extension..".xml", "w"));
