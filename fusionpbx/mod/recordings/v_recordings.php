@@ -97,15 +97,12 @@ if ($_GET['a'] == "download") {
 				}
 			}
 			header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past	
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 			header("Content-Length: " . filesize($dir_music_on_hold_8000."/".base64_decode($_GET['filename'])));
 			fpassthru($fd);
 		}
 	}
 	exit;
-}
-else {
-	//echo $v_recordings_dir.'/'.$_GET['filename'];
 }
 
 
@@ -130,7 +127,7 @@ if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['ulfile']['tmp_na
 if ($_GET['act'] == "del") {
 
 	if ($_GET['type'] == 'moh') {
-		unlink($dir_music_on_hold_8000."/".$_GET['filename']);
+		unlink($dir_music_on_hold_8000."/".base64_decode($_GET['filename']));
 		header("Location: v_recordings.php");
 		exit;
 	}

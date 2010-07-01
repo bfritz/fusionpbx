@@ -35,8 +35,6 @@ else {
 	exit;
 }
 
-//require("v_config.inc");
-
 $filename = base64_decode($_GET['filename']);
 $type = $_GET['type']; //moh //rec
 
@@ -57,15 +55,15 @@ $type = $_GET['type']; //moh //rec
 		<?php
 		$file_ext = substr($filename, -3);
 		if ($file_ext == "wav") {
-			//HTML5 method (works in Firefox)
+			//HTML5 method
 			echo "<audio src=\"http://localhost:8000/mod/recordings/v_recordings.php?a=download&type=".$type."&filename=".base64_encode($filename)."\" autoplay=\"autoplay\">"; 
 			echo "</audio>";
 
-			echo "<embed src=\"v_recordings.php?a=download&type=".$type."&filename=".base64_encode($filename)."\" autostart=\"true\" width=\"200\" height=\"40\" name=\"sound".base64_encode($filename)."\" enablejavascript=\"true\">\n";
+			echo "<embed src=\"v_recordings.php?a=download&type=".$type."&filename=".base64_encode($filename)."\" autostart=\"true\" width=\"200\" height=\"40\" name=\"sound_".$filename."\" enablejavascript=\"true\">\n";
 
 		}
 		if ($file_ext == "mp3") {
-			echo "<object type=\"application/x-shockwave-flash\" width=\"400\" height=\"17\" data=\"slim.swf?autoplay=true&song_title=".base64_encode($filename)."&song_url=v_recordings.php?a=download&type=".$type."&filename=".base64_encode($filename)."\">\n";
+			echo "<object type=\"application/x-shockwave-flash\" width=\"400\" height=\"17\" data=\"slim.swf?autoplay=true&song_title=".urlencode($filename)."&song_url=v_recordings.php?a=download&type=".$type."&filename=".base64_encode($filename)."\">\n";
 			echo "<param name=\"movie\" value=\"slim.swf?autoplay=true&song_url=v_recordings.php?a=download&type=".$type."&filename=".base64_encode($filename)."\" />\n";
 			echo "<param name=\"quality\" value=\"high\"/>\n";
 			echo "<param name=\"bgcolor\" value=\"#E6E6E6\"/>\n";
