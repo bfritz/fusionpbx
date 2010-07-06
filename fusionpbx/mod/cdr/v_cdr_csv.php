@@ -103,7 +103,8 @@ if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_
 if (!ifgroup("admin") || !ifgroup("superadmin")) {
 	if (trim($sqlwhere) == "where") { $sqlwhere = ""; }
 	//echo $sqlwhere;
-	$sqlwhereorig = $sqlwhere;
+	//disable member search
+	//$sqlwhereorig = $sqlwhere;
 	$sqlwhere = "where ";
 	if (count($extension_array) > 0) {
 		foreach($extension_array as $value) {

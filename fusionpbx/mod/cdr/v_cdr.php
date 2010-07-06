@@ -140,7 +140,8 @@ if (count($_REQUEST)>0) {
 	if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
 	if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
 	if (!ifgroup("admin") || !ifgroup("superadmin")) {
-		$sqlwhereorig = $sqlwhere;
+		//disable member search
+		//$sqlwhereorig = $sqlwhere;
 		$sqlwhere = "where ";
 		if (count($extension_array) > 0) {
 			foreach($extension_array as $value) {
@@ -152,7 +153,7 @@ if (count($_REQUEST)>0) {
 	}
 	else {
 		//superadmin or admin
-		$sqlwhere = "where v_id = '$v_id' ";
+		$sqlwhere = "where v_id = '$v_id' ".$sqlwhere;
 	}
 	$sqlwhere = str_replace ("where or", "where", $sqlwhere);
 	$sqlwhere = str_replace ("where and", " and", $sqlwhere);
@@ -209,7 +210,7 @@ if (count($_REQUEST)>0) {
 		$sql .= "order by $orderby $order "; 
 	}
 	$sql .= " limit $rowsperpage offset $offset ";
-
+	//echo $sql;
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -221,114 +222,118 @@ if (count($_REQUEST)>0) {
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
-	echo "<div align='center'>\n";
+	//search the call detail records
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo "<div align='center'>\n";
 
-	echo "<form method='post' action=''>";
+		echo "<form method='post' action=''>";
 
-	echo "<table width='95%' cellpadding='3' border='0'>";
-	echo "<tr>";
-	echo "<td width='33.3%'>\n";
-		echo "<table width='100%'>";
-		//echo "	<tr>";
-		//echo "		<td>Source Name:</td>";
-		//echo "		<td><input type='text' class='txt' name='caller_id_name' value='$caller_id_name'></td>";
-		//echo "	</tr>";
-		echo "	<tr>";
-		echo "		<td align='left' width='25%'>Start:</td>";
-		echo "		<td align='left' width='75%'><input type='text' class='txt' name='start_stamp' value='$start_stamp'></td>";
-		echo "	</tr>";
-		echo "	<tr>";
-		echo "		<td align='left' width='25%'>Status:</td>";
-		echo "		<td align='left' width='75%'><input type='text' class='txt' name='hangup_cause' value='$hangup_cause'></td>";
-		echo "	</tr>";
-		echo "</table>\n";
+		echo "<table width='95%' cellpadding='3' border='0'>";
+		echo "<tr>";
+		echo "<td width='33.3%'>\n";
+			echo "<table width='100%'>";
+			//echo "	<tr>";
+			//echo "		<td>Source Name:</td>";
+			//echo "		<td><input type='text' class='txt' name='caller_id_name' value='$caller_id_name'></td>";
+			//echo "	</tr>";
+			echo "	<tr>";
+			echo "		<td align='left' width='25%'>Start:</td>";
+			echo "		<td align='left' width='75%'><input type='text' class='txt' name='start_stamp' value='$start_stamp'></td>";
+			echo "	</tr>";
+			echo "	<tr>";
+			echo "		<td align='left' width='25%'>Status:</td>";
+			echo "		<td align='left' width='75%'><input type='text' class='txt' name='hangup_cause' value='$hangup_cause'></td>";
+			echo "	</tr>";
+			echo "</table>\n";
 
-	echo "</td>\n";
-	echo "<td width='33.3%'>\n";
+		echo "</td>\n";
+		echo "<td width='33.3%'>\n";
 
-		echo "<table width='100%'>";
-		echo "	<tr>";
-		echo "		<td align='left' width='25%'>Source:</td>";
-		echo "		<td align='left' width='75%'><input type='text' class='txt' name='caller_id_number' value='$caller_id_number'></td>";
-		echo "	</tr>";
-		echo "	<tr>";
-		echo "		<td align='left' width='25%'>Destination:</td>";
-		echo "		<td align='left' width='75%'><input type='text' class='txt' name='destination_number' value='$destination_number'></td>";
-		echo "	</tr>";	
-		echo "</table>\n";
+			echo "<table width='100%'>";
+			echo "	<tr>";
+			echo "		<td align='left' width='25%'>Source:</td>";
+			echo "		<td align='left' width='75%'><input type='text' class='txt' name='caller_id_number' value='$caller_id_number'></td>";
+			echo "	</tr>";
+			echo "	<tr>";
+			echo "		<td align='left' width='25%'>Destination:</td>";
+			echo "		<td align='left' width='75%'><input type='text' class='txt' name='destination_number' value='$destination_number'></td>";
+			echo "	</tr>";	
+			echo "</table>\n";
 
-	echo "</td>\n";
-	echo "<td width='33.3%'>\n";
+		echo "</td>\n";
+		echo "<td width='33.3%'>\n";
 
-		echo "<table width='100%'>\n";
-		//echo "	<tr>";
-		//echo "		<td>Context:</td>";
-		//echo "		<td><input type='text' class='txt' name='context' value='$context'></td>";
-		//echo "	</tr>";
+			echo "<table width='100%'>\n";
+			//echo "	<tr>";
+			//echo "		<td>Context:</td>";
+			//echo "		<td><input type='text' class='txt' name='context' value='$context'></td>";
+			//echo "	</tr>";
 
-		//echo "	<tr>";
-		//echo "		<td>Answer:</td>";
-		//echo "		<td><input type='text' class='txt' name='answer_stamp' value='$answer_stamp'></td>";
-		//echo "	</tr>";
-		//echo "	<tr>";
-		//echo "		<td>End:</td>";
-		//echo "		<td><input type='text' class='txt' name='end_stamp' value='$end_stamp'></td>";
-		//echo "	</tr>";
-		echo "	<tr>";
-		echo "		<td align='left' width='25%'>Duration:</td>";
-		echo "		<td align='left' width='75%'><input type='text' class='txt' name='duration' value='$duration'></td>";
-		echo "	</tr>";
-		echo "	<tr>";
-		echo "		<td align='left' width='25%'>Bill:</td>";
-		echo "		<td align='left' width='75%'><input type='text' class='txt' name='billsec' value='$billsec'></td>";
-		echo "	</tr>";
+			//echo "	<tr>";
+			//echo "		<td>Answer:</td>";
+			//echo "		<td><input type='text' class='txt' name='answer_stamp' value='$answer_stamp'></td>";
+			//echo "	</tr>";
+			//echo "	<tr>";
+			//echo "		<td>End:</td>";
+			//echo "		<td><input type='text' class='txt' name='end_stamp' value='$end_stamp'></td>";
+			//echo "	</tr>";
+			echo "	<tr>";
+			echo "		<td align='left' width='25%'>Duration:</td>";
+			echo "		<td align='left' width='75%'><input type='text' class='txt' name='duration' value='$duration'></td>";
+			echo "	</tr>";
+			echo "	<tr>";
+			echo "		<td align='left' width='25%'>Bill:</td>";
+			echo "		<td align='left' width='75%'><input type='text' class='txt' name='billsec' value='$billsec'></td>";
+			echo "	</tr>";
 
-		//echo "	<tr>";
-		//echo "		<td>UUID:</td>";
-		//echo "		<td><input type='text' class='txt' name='uuid' value='$uuid'></td>";
-		//echo "	</tr>";
-		//echo "	<tr>";
-		//echo "		<td>Bleg UUID:</td>";
-		//echo "		<td><input type='text' class='txt' name='bleg_uuid' value='$bleg_uuid'></td>";
-		//echo "	</tr>";
-		//echo "	<tr>";
-		//echo "		<td>Account Code:</td>";
-		//echo "		<td><input type='text' class='txt' name='accountcode' value='$accountcode'></td>";
-		//echo "	</tr>";
-		//echo "	<tr>";
-		//echo "		<td>Read Codec:</td>";
-		//echo "		<td><input type='text' class='txt' name='read_codec' value='$read_codec'></td>";
-		//echo "	</tr>";
-		//echo "	<tr>";
-		//echo "		<td>Write Codec:</td>";
-		//echo "		<td><input type='text' class='txt' name='write_codec' value='$write_codec'></td>";
-		//echo "	</tr>";
-		//echo "	<tr>";
-		//echo "		<td>Remote Media IP:</td>";
-		//echo "		<td><input type='text' class='txt' name='remote_media_ip' value='$remote_media_ip'></td>";
-		//echo "	</tr>";
-		//echo "	<tr>";
-		//echo "		<td>Network Address:</td>";
-		//echo "		<td><input type='text' class='txt' name='network_addr' value='$network_addr'></td>";
-		//echo "	</tr>";
-		//echo "	<tr>";
+			//echo "	<tr>";
+			//echo "		<td>UUID:</td>";
+			//echo "		<td><input type='text' class='txt' name='uuid' value='$uuid'></td>";
+			//echo "	</tr>";
+			//echo "	<tr>";
+			//echo "		<td>Bleg UUID:</td>";
+			//echo "		<td><input type='text' class='txt' name='bleg_uuid' value='$bleg_uuid'></td>";
+			//echo "	</tr>";
+			//echo "	<tr>";
+			//echo "		<td>Account Code:</td>";
+			//echo "		<td><input type='text' class='txt' name='accountcode' value='$accountcode'></td>";
+			//echo "	</tr>";
+			//echo "	<tr>";
+			//echo "		<td>Read Codec:</td>";
+			//echo "		<td><input type='text' class='txt' name='read_codec' value='$read_codec'></td>";
+			//echo "	</tr>";
+			//echo "	<tr>";
+			//echo "		<td>Write Codec:</td>";
+			//echo "		<td><input type='text' class='txt' name='write_codec' value='$write_codec'></td>";
+			//echo "	</tr>";
+			//echo "	<tr>";
+			//echo "		<td>Remote Media IP:</td>";
+			//echo "		<td><input type='text' class='txt' name='remote_media_ip' value='$remote_media_ip'></td>";
+			//echo "	</tr>";
+			//echo "	<tr>";
+			//echo "		<td>Network Address:</td>";
+			//echo "		<td><input type='text' class='txt' name='network_addr' value='$network_addr'></td>";
+			//echo "	</tr>";
+			//echo "	<tr>";
 
-		echo "	</tr>";
+			echo "	</tr>";
+			echo "</table>";
+
+		echo "</td>";
+		echo "</tr>";
+		echo "<tr>\n";
+		echo "<td colspan='2' align='right'>\n";
+		//echo "	<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_cdr_search.php'\" value='advanced'>\n";
+		echo "</td>\n";
+		echo "<td colspan='1' align='right'>\n";
+		echo "	<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_cdr_search.php'\" value='advanced'>&nbsp;\n";
+		echo "	<input type='submit' class='btn' name='submit' value='filter'>\n";
+		echo "</td>\n";
+		echo "</tr>";
 		echo "</table>";
+		echo "</form>";
+	}
 
-	echo "</td>";
-	echo "</tr>";
-	echo "<tr>\n";
-	echo "<td colspan='2' align='right'>\n";
-	//echo "	<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_cdr_search.php'\" value='advanced'>\n";
-	echo "</td>\n";
-	echo "<td colspan='1' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_cdr_search.php'\" value='advanced'>&nbsp;\n";
-	echo "	<input type='submit' class='btn' name='submit' value='filter'>\n";
-	echo "</td>\n";
-	echo "</tr>";
-	echo "</table>";
-	echo "</form>";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 

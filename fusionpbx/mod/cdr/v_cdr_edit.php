@@ -252,7 +252,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	unset ($prepstatement, $x);
 
 
-//Pre-populate the form
+//pre-populate the form
 if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$cdr_id = $_GET["id"];
 	$sql = "";

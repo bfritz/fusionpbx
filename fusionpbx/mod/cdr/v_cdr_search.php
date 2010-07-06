@@ -17,8 +17,8 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
-	the Initial Developer. All Rights Reserved.
+	Copyright (C) 2008-2010 
+	All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("member") || ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
 }
 else {
