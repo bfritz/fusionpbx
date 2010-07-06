@@ -44,7 +44,7 @@
 		// if admin_pin has been defined then request the pin number
 		if (admin_pin.length > 0) {
 			digitmaxlength = 6;
-			session.streamFile( sounds_dir+"/custom/8000/please_enter_the_pin_number.wav", mycb, "dtmf");
+			session.streamFile( sounds_dir+"/custom/please_enter_the_pin_number.wav", mycb, "dtmf");
 			session.collectInput( mycb, dtmf, timeoutpin );
 			//console_log( "info", "DISA pin: " + dtmf.digits + "\n" );
 		}
@@ -61,7 +61,7 @@
 			if (predefined_destination.length == 0) {
 				dtmf.digits = ""; //clear dtmf digits to prepare for next dtmf request
 				digitmaxlength = 1;
-				session.streamFile( sounds_dir+"/custom/8000/please_enter_the_phone_number.wav", mycb, "dtmf");
+				session.streamFile( sounds_dir+"/custom/please_enter_the_phone_number.wav", mycb, "dtmf");
 				session.collectInput( mycb, dtmf, timeouttransfer );
 
 				//collect the remaining digits (allow up to 10 additional digits)
@@ -76,7 +76,7 @@
 
 		}
 		else {
-			session.streamFile( sounds_dir+"/custom/8000/your_pin_number_is_incorect_goodbye.wav", mycb, "dtmf");
+			session.streamFile( sounds_dir+"/custom/your_pin_number_is_incorect_goodbye.wav", mycb, "dtmf");
 			console_log( "info", "DISA Pin: " + dtmf.digits + " is incorrect\n" );
 		}
 

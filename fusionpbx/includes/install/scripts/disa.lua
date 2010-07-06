@@ -16,8 +16,8 @@
 --
 --	The Initial Developer of the Original Code is
 --	Mark J Crane <markjcrane@fusionpbx.com>
---	Portions created by the Initial Developer are Copyright (C) 2008-2010
---	the Initial Developer. All Rights Reserved.
+--	Copyright (C) 2008-2010
+--	All Rights Reserved.
 --
 --	Contributor(s):
 --	Mark J Crane <markjcrane@fusionpbx.com>
@@ -48,7 +48,7 @@ if ( session:ready() ) then
 	-- if a pin number has been defined then request the pin number
 	if (pin_number) then
 		pin_length = string.len(pin_number);
-		digits = session:playAndGetDigits(pin_length, pin_length, retries, 3000, "#", sounds_dir.."/custom/8000/please_enter_the_pin_number.wav", "", "\\d+");
+		digits = session:playAndGetDigits(pin_length, pin_length, retries, 3000, "#", sounds_dir.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
 		if (digits == pin_number) then
 			--pin is correct 
 			--session:execute("set", "hangup_after_bridge=true");
@@ -58,7 +58,7 @@ if ( session:ready() ) then
 				session:execute("transfer", predefined_destination .. " XML default");
 			else
 				dtmf = ""; --clear dtmf digits to prepare for next dtmf request
-				destination_number = session:playAndGetDigits(digit_min_length, digit_max_length, retries, digit_timeout, "#", sounds_dir.."/custom/8000/please_enter_the_phone_number.wav", "", "\\d+");
+				destination_number = session:playAndGetDigits(digit_min_length, digit_max_length, retries, digit_timeout, "#", sounds_dir.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
 				--if (string.len(destination_number) == 10) then destination_number = "1"..destination_number; end
 				session:execute("transfer", destination_number .. " XML default");
 				--session:execute("bridge", "sofia/gateway/flowroute.com/"..destination_number);
@@ -70,7 +70,7 @@ if ( session:ready() ) then
 			end
 
 		else 
-			session:streamFile( sounds_dir.."/custom/8000/your_pin_number_is_incorect_goodbye.wav");
+			session:streamFile( sounds_dir.."/custom/your_pin_number_is_incorect_goodbye.wav");
 			session:hangup();
 		end
 
@@ -82,7 +82,7 @@ if ( session:ready() ) then
 				session:execute("transfer", predefined_destination .. " XML default");
 		else
 			dtmf = ""; --clear dtmf digits to prepare for next dtmf request
-			digits = session:playAndGetDigits(digit_min_length, digit_max_length, retries, digit_timeout, "#", sounds_dir.."/custom/8000/please_enter_the_phone_number.wav", "", "\\d+");
+			digits = session:playAndGetDigits(digit_min_length, digit_max_length, retries, digit_timeout, "#", sounds_dir.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
 			session:execute("transfer", digits .. " XML default");
 		end
 	end

@@ -745,7 +745,7 @@ function recording_js()
 	//$tmp .= "      session.execute(\"speak\", \"Please enter your pin number now.\");\n";
 	$tmp .= "      digitmaxlength = 6;\n";
 	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
-	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/8000/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
 	$tmp .= "      session.collectInput( mycb, dtmf, timeoutpin );\n";
 	$tmp .= "  }\n";
 	$tmp .= "\n";
@@ -754,7 +754,7 @@ function recording_js()
 	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
 	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
 	//$tmp .= "      session.execute(\"speak\", \"Begin recording.\");\n";
-	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/8000/begin_recording.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/begin_recording.wav\", mycb, \"dtmf\");\n";
 	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
 	$tmp .= "      session.execute(\"record\", \"".$v_recordings_dir."/temp\"+Year+Month+Day+Hours+Mins+Seconds+\".wav 180 200\");\n";
 	$tmp .= "  }\n";
@@ -763,7 +763,7 @@ function recording_js()
 	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
 	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
 	//$tmp .= "      session.execute(\"speak\", \"Your pin number is incorect, goodbye.\");\n";
-	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/8000/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
 	$tmp .= "  }\n";
 	$tmp .= "  session.hangup();\n";
 	$tmp .= "\n";
@@ -814,10 +814,10 @@ function recording_lua()
 	$tmp .= "	session:answer();\n";
 	$tmp .= "	if (admin_pin) then\n";
 	$tmp .= "		--This has 8 arguments: min_digits, max_digits, max_tries, timeout, terminators, audio_files, bad_input_audio_file, digits_regex\n";
-	$tmp .= "		digits = session:playAndGetDigits(2, 6, 3, timeoutpin, \"#\", \"".$v_sounds_dir."/custom/8000/please_enter_the_pin_number.wav\", \"\", \"\\\\d+|\\\\*\");\n";
+	$tmp .= "		digits = session:playAndGetDigits(2, 6, 3, timeoutpin, \"#\", \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", \"\", \"\\\\d+|\\\\*\");\n";
 	$tmp .= "		if (digits == admin_pin) then\n";
 	$tmp .= "			freeswitch.consoleLog(\"info\", \"pin number: \".. digits ..\": is correct\\n\");\n";
-	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/custom/8000/begin_recording.wav\");\n";
+	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/custom/begin_recording.wav\");\n";
 	$tmp .= "			session:execute(\"set\", \"playback_terminators=#\");\n";
 	$tmp .= "			session:execute(\"record\", \"".$v_recordings_dir."/temp\"..session:get_uuid()..\".wav 180 200\");\n";
 	$tmp .= "			--session:setInputCallback(\"onInput\", \"\");\n";
@@ -825,7 +825,7 @@ function recording_lua()
 	$tmp .= "		else\n";
 	$tmp .= "			freeswitch.consoleLog(\"info\", \"pin number: \".. digits ..\": is not correct\\n\");\n";
 	$tmp .= "			--console_log( \"info\", \"Pin: \" + digits + \" is incorrect\\n\" );\n";
-	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/8000/your_pin_number_is_incorect_goodbye.wav\");\n";
+	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/your_pin_number_is_incorect_goodbye.wav\");\n";
 	$tmp .= "		end\n";
 	$tmp .= "	else\n";
 	$tmp .= "		--pin not required begin the recording\n";
@@ -1953,13 +1953,13 @@ function sync_package_v_hunt_group_lua()
 					//pin number requested from caller if provided
 						if (strlen($row['huntgrouppin']) > 0) {
 							$tmp .= "pin = '".$row['huntgrouppin']."';\n";
-							$tmp .= "digits = session:playAndGetDigits(".strlen($row['huntgrouppin']).", ".strlen($row['huntgrouppin']).", 3, 3000, \"#\", \"".$v_sounds_dir."/custom/8000/please_enter_the_pin_number.wav\", \"\", \"\\\\d+\");\n";
+							$tmp .= "digits = session:playAndGetDigits(".strlen($row['huntgrouppin']).", ".strlen($row['huntgrouppin']).", 3, 3000, \"#\", \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", \"\", \"\\\\d+\");\n";
 							$tmp .= "\n";
 							$tmp .= "\n";
 							$tmp .= "if (digits == pin) then\n";
 							$tmp .= "	--continue\n";
 							$tmp .= "else \n";
-							$tmp .= "	session:streamFile( \"".$v_sounds_dir."/custom/8000/your_pin_number_is_incorect_goodbye.wav\");\n";
+							$tmp .= "	session:streamFile( \"".$v_sounds_dir."/custom/your_pin_number_is_incorect_goodbye.wav\");\n";
 							$tmp .= "	session:hangup();\n";
 							$tmp .= "end\n";
 							$tmp .= "\n";
@@ -1978,7 +1978,7 @@ function sync_package_v_hunt_group_lua()
 							$tmp .=	"end";
 							$tmp .=	"\n";
 							$tmp .=	"caller_announce = extension..\"_\"..session.uuid..\".wav\";\n";
-							$tmp .=	"session:streamFile( \"".$v_sounds_dir."/custom/8000/please_say_your_name_and_reason_for_calling.wav\");\n";
+							$tmp .=	"session:streamFile( \"".$v_sounds_dir."/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
 							$tmp .=	"session:execute(\"gentones\", \"%(1000, 0, 640)\");\n";
 							$tmp .=	"session:execute(\"set\", \"playback_terminators=#\");\n";
 							$tmp .=	"session:execute(\"record\", \"".$tmp_dir."/\"..caller_announce..\" 180 200\");\n";
@@ -2624,7 +2624,7 @@ function sync_package_v_hunt_group_js()
 							$tmp .= "  dtmf.digits = \"\";\n";
 							$tmp .= "  digitmaxlength = 6;\n";
 							$tmp .= "  session.execute(\"set\", \"playback_terminators=#\");\n";
-							$tmp .= "  session.streamFile( \"".$v_sounds_dir."/custom/8000/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
+							$tmp .= "  session.streamFile( \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
 							$tmp .= "  session.collectInput( mycb, dtmf, timeoutpin );\n";
 							$tmp .= "\n";
 							$tmp .= "  if (dtmf.digits == pin || pin.length == 0) {\n";
@@ -2632,7 +2632,7 @@ function sync_package_v_hunt_group_js()
 							$tmp .= "  }\n";
 							$tmp .= "  else {\n";
 							$tmp .= "    console_log( \"info\", \"Pin: \" + dtmf.digits + \" is incorrect\\n\" );\n";
-							$tmp .= "    session.streamFile( \"".$v_sounds_dir."/custom/8000/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
+							$tmp .= "    session.streamFile( \"".$v_sounds_dir."/custom/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
 							$tmp .= "    session.hangup();\n";
 							$tmp .= "  }\n";
 							$tmp .= "}\n";
@@ -2647,7 +2647,7 @@ function sync_package_v_hunt_group_js()
 							$tmp .= "}";
 							$tmp .=	"\n";
 							$tmp .=	"var caller_announce = extension+\"_\"+Year+Month+Day+Hours+Mins+Seconds+\".wav\";\n";
-							$tmp .=	"session.streamFile( \"".$v_sounds_dir."/custom/8000/please_say_your_name_and_reason_for_calling.wav\");\n";
+							$tmp .=	"session.streamFile( \"".$v_sounds_dir."/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
 							$tmp .=	"session.execute(\"gentones\", \"%(1000, 0, 640)\");\n";
 							$tmp .=	"session.execute(\"set\", \"playback_terminators=#\");\n";
 							$tmp .=	"session.execute(\"record\", \"".$tmp_dir."/\"+caller_announce+\" 180 200\");\n";
@@ -5795,8 +5795,8 @@ function v_install_phase_1()
 			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/recordings/');
 			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/scripts/');
 			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/storage/');
-			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/sounds/custom/8000/');
-			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/sounds/music/8000/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/sounds/custom/');
+			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/sounds/music/');
 			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/conf/ssl');
 			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/conf/sip_profiles/');
 			system('cd /usr/local; tar xvpfz '.$v_backup_dir.'/'.$filename.' '.$v_name.'/conf/vars.xml');

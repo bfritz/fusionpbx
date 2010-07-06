@@ -22,7 +22,7 @@ function originate (sipuri, caller_id_name, caller_id_number) {
 	new_session.execute("set", "call_timeout=30");
 		
 	if ( new_session.ready() ) {
-		new_session.streamFile( sounds_dir+"/custom/8000/press_1_to_accept_2_to_reject_or_3_for_voicemail.wav");
+		new_session.streamFile( sounds_dir+"/custom/press_1_to_accept_2_to_reject_or_3_for_voicemail.wav");
 		digitmaxlength = 1;
 		while (new_session.ready()) {
 			//console_log( "info", "originate succeeded\n" );
