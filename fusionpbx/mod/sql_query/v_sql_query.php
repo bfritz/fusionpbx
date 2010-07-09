@@ -109,7 +109,7 @@ else {
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		//print_r( $row );
-		echo "			<option value='".$row[name]."'>".$row[name]."</option>\n";
+		echo "			<option value='".$row[0]."'>".$row[0]."</option>\n";
 	}
 	echo "			</select>\n";
 
