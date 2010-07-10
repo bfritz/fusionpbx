@@ -52,8 +52,8 @@ if (count($_POST)>0) {
 	$user_list = check_str($_POST["user_list"]."|");
 	$user_list = str_replace("\n", "|", "|".$user_list);
 	$user_list = str_replace("\r", "", $user_list);
-	$user_list = str_replace(" ", "", $user_list);
 	$user_list = str_replace("||", "|", $user_list);
+	$user_list = trim($user_list);
 
 	$provisioning_list = check_str($_POST["provisioning_list"]."|");
 	$provisioning_list = str_replace("\n", "|", "|".$provisioning_list);
