@@ -366,31 +366,16 @@ function pkg_is_service_running($servicename)
 
 function event_socket_create($host, $port, $password)
 {
-	//$host has been deprecated
-
-	//build the interface list
-	//$i = 0; $ifdescrs = array('wan' => 'WAN', 'lan' => 'LAN');
-		//for ($j = 1; isset($config['interfaces']['opt' . $j]); $j++) {
-		//	$ifdescrs['opt' . $j] = $config['interfaces']['opt' . $j]['descr'];
-		//}
-
-		//get the interface ip addresses and try to connect to them
-		//foreach ($ifdescrs as $ifdescr => $ifname){
-			//$ifinfo = get_interface_info($ifdescr);
-			//$interface_ip_address = $ifinfo['ipaddr'];
-
-			//if (strlen($interface_ip_address) > 0) {
-
 			$fp = fsockopen($host, $port, $errno, $errdesc, 3);
 			socket_set_blocking($fp,false);
 
 			if (!$fp) {
-				//connection failed continue through the loop testing other addresses
 				//invalid handle
+				echo "error number: ".$errno."<br />\n";
+				echo "error description: ".$errdesc."<br />\n";
 			}
 			else {
 				//connected to the socket return the handle
-
 				while (!feof($fp)) {
 					$buffer = fgets($fp, 1024);
 					usleep(100); //allow time for reponse
@@ -402,8 +387,6 @@ function event_socket_create($host, $port, $password)
 				return $fp;
 			}
 
-			//} //end if interface_ip_address
-		//} //end foreach
 } //end function
 
 
@@ -422,7 +405,7 @@ function event_socket_request($fp, $cmd)
 				$response .= $buffer;
 			}
 
-			if ($contentlength == 0) { //if contentlenght is already don't process again
+			if ($contentlength == 0) { //if content length is already don't process again
 				if (strlen(trim($buffer)) > 0) { //run only if buffer has content
 					$temparray = explode(":", trim($buffer));
 					if ($temparray[0] == "Content-Length") {
