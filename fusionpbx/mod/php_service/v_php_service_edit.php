@@ -479,7 +479,7 @@ echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "	Script:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
-echo "	<textarea class='formfld' style='width: 90%;' rows='17' name='service_script' id='service_script' rows='4'>$service_script</textarea>\n";
+echo "	<textarea class='formfld' style='width: 90%;' wrap='off' rows='17' name='service_script' id='service_script' rows='4'>$service_script</textarea>\n";
 echo "<br />\n";
 echo "Enter the PHP script here.\n";
 echo "</td>\n";
