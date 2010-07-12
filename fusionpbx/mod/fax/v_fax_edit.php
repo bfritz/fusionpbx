@@ -151,8 +151,8 @@ if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_
 	$fax_name = str_replace(".tif", "", $fax_name);
 	$fax_name = str_replace(".tiff", "", $fax_name);
 	$fax_name = str_replace(".pdf", "", $fax_name);
-	$fax_gateway = $_POST['fax_gateway'];
 	$provider_type = $_POST['provider_type'];
+	$gateway = $_POST['gateway'];
 	$sip_uri = $_POST['sip_uri'];
 	$fax_id = $_POST["id"];
 
@@ -185,11 +185,10 @@ if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_
 			exec("rm ".$dir_fax_temp.'/'.$fax_name.".tiff");
 		}
 
-
 	//send the fax
 		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 		if ($provider_type == "gateway") {
-			$cmd = "api originate sofia/gateway/".$fax_gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+			$cmd = "api originate sofia/gateway/".$gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 		}
 		if ($provider_type == "sip_uri") {
 			$sip_uri = str_replace("\$1", $fax_number, $sip_uri);
@@ -251,7 +250,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($faxextension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
-		if (strlen($faxname) == 0) { $msg .= "Please provide: Name<br>\n"; }
+		if (strlen($faxname) == 0) { $msg .= "Please provide: A file to Fax<br>\n"; }
 		//if (strlen($faxemail) == 0) { $msg .= "Please provide: Email<br>\n"; }
 		//if (strlen($fax_pin_number) == 0) { $msg .= "Please provide: Pin Number<br>\n"; }
 		//if (strlen($fax_caller_id_name) == 0) { $msg .= "Please provide: Caller ID Name<br>\n"; }
@@ -489,9 +488,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='fax_id' value='$fax_id'>\n";
+		echo "			<input type='hidden' name='fax_id' value='$fax_id'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
@@ -529,14 +528,14 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "		Upload:\n";
+	echo "	Upload:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "						<input name=\"id\" type=\"hidden\" value=\"\$id\">\n";
-	echo "						<input name=\"type\" type=\"hidden\" value=\"fax_send\">\n";
-	echo "						<input name=\"fax_file\" type=\"file\" class=\"btn\" id=\"fax_file\">\n";
-	echo "<br />\n";
-	echo "Select the file to upload and send as a fax.\n";
+	echo "	<input name=\"id\" type=\"hidden\" value=\"\$id\">\n";
+	echo "	<input name=\"type\" type=\"hidden\" value=\"fax_send\">\n";
+	echo "	<input name=\"fax_file\" type=\"file\" class=\"btn\" id=\"fax_file\">\n";
+	echo "	<br />\n";
+	echo "	Select the file to upload and send as a fax.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -570,11 +569,11 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</td>\n";
 	echo "<td width='left' width='40%' align='left' nowrap>\n";
 	echo "	<span id='gateway' style='display: inline;'>\n";
-	$tablename = 'v_gateways'; $fieldname = 'gateway'; $sqlwhereoptional = "where v_id = $v_id"; $fieldcurrentvalue = '$fax_gateway'; $fieldstyle = '';
+	$tablename = 'v_gateways'; $fieldname = 'gateway'; $sqlwhereoptional = "where v_id = $v_id"; $fieldcurrentvalue = '$gateway'; $fieldstyle = '';
 	echo 	htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, "", $fieldstyle);
 	echo "	</span>\n";
 	echo "	<span id='sip_uri' style='display: none;'>\n";
-	echo "		<input type=\"text\" name=\"sip_uri\" class='formfld' style='' value=\"\">\n";
+	echo "		<input type=\"text\" name=\"sip_uri\" class='formfld' style='' value=\"$sip_uri\">\n";
 	echo "	</span>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
