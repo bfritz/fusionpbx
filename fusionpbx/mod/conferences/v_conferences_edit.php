@@ -1,4 +1,4 @@
-<<?php
+<?php
 /*
 	FusionPBX
 	Version: MPL 1.1
@@ -71,13 +71,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
-		if (strlen($extensionname) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
-		if (strlen($dialplanorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
-		if (strlen($extensioncontinue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
-		//if (strlen($context) == 0) { $msg .= "Please provide: Context<br>\n"; }
-		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		//if (strlen($descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br />\n"; }
+		if (strlen($extensionname) == 0) { $msg .= "Please provide: Extension Name<br />\n"; }
+		if (strlen($dialplanorder) == 0) { $msg .= "Please provide: Order<br />\n"; }
+		if (strlen($extensioncontinue) == 0) { $msg .= "Please provide: Continue<br />\n"; }
+		//if (strlen($context) == 0) { $msg .= "Please provide: Context<br />\n"; }
+		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br />\n"; }
+		//if (strlen($descr) == 0) { $msg .= "Please provide: Description<br />\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -192,10 +192,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 
 	require_once "includes/header.php";
-
-	echo "<script language='javascript' src='/includes/calendar_popcalendar.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_layers.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_menu.js'></script>\n";
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
