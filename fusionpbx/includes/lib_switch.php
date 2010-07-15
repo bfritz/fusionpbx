@@ -556,6 +556,525 @@ function ListFiles($dir) {
 	}
 }
 
+function switch_select_destination($select_type, $select_name, $select_value, $select_style) {
+	//$select_type = "ivr"; //$select_type='dialplan'
+	global $config, $db, $v_id;
+	$v_settings_array = v_settings();
+	foreach($v_settings_array as $name => $value) {
+		$$name = $value;
+	}
+
+	if (ifgroup("superadmin")) {
+		echo "<script>\n";
+		echo "var Objs;\n";
+		echo "\n";
+		echo "function changeToInput(obj){\n";
+		echo "	tb=document.createElement('INPUT');\n";
+		echo "	tb.type='text';\n";
+		echo "	tb.name=obj.name;\n";
+		echo "	tb.setAttribute('class', 'formfld');\n";
+		echo "	tb.setAttribute('style', '".$select_style."');\n";
+		echo "	tb.value=obj.options[obj.selectedIndex].value;\n";
+		echo "	tbb=document.createElement('INPUT');\n";
+		echo "	tbb.setAttribute('class', 'btn');\n";
+		echo "	tbb.type='button';\n";
+		echo "	tbb.value='<';\n";
+		echo "	tbb.objs=[obj,tb,tbb];\n";
+		echo "	tbb.onclick=function(){ Replace(this.objs); }\n";
+		echo "	obj.parentNode.insertBefore(tb,obj);\n";
+		echo "	obj.parentNode.insertBefore(tbb,obj);\n";
+		echo "	obj.parentNode.removeChild(obj);\n";
+		echo "}\n";
+		echo "\n";
+		echo "function Replace(obj){\n";
+		echo "	obj[2].parentNode.insertBefore(obj[0],obj[2]);\n";
+		echo "	obj[0].parentNode.removeChild(obj[1]);\n";
+		echo "	obj[0].parentNode.removeChild(obj[2]);\n";
+		echo "}\n";
+		echo "</script>\n";
+		echo "\n";
+	}
+
+	//default selection found to false
+		$selection_found = false;
+
+	if (ifgroup("superadmin")) {
+		echo "		<select name='".$select_name."' class='formfld' style='".$select_style."' onchange='changeToInput(this);'>\n";
+		if (strlen($select_value) > 0) {
+			echo "		<option value='".$select_value."' selected='selected'>".$select_value."</option>\n";
+		}
+	}
+	else {
+		echo "		<select name='select_value' class='formfld' style='".$select_style."'>\n";
+	}
+
+	echo "		<option></option>\n";
+
+	//list extensions
+		$sql = "";
+		$sql .= "select * from v_extensions ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and enabled = 'true' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		echo "<optgroup label='Extensions'>\n";
+		foreach ($result as &$row) {
+			$extension = $row["extension"];
+			if ("transfer ".$extension." XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+				}
+				$selection_found = true;
+			}
+			else {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
+				}
+			}
+		}
+		echo "</optgroup>\n";
+		unset ($prepstatement, $extension);
+
+	//list conferences
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "where v_id = $v_id ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$x = 0;
+		$result = $prepstatement->fetchAll();
+		echo "<optgroup label='Conferences'>\n";
+		$previous_conference_name = "";
+		foreach ($result as &$row) {
+			//$tag = $row["tag"];
+			if ($row["fieldtype"] == "conference") {
+				$conference_name = $row["fielddata"];
+				$conference_name = str_replace('_${domain_name}@default', '', $conference_name);
+				if ($previous_conference_name != $conference_name) {
+					if ("voicemail default \${domain} $extension" == $select_value || "voicemail:default \${domain} $extension" == $select_value) {
+						if ($select_type == "ivr") {
+							echo "		<option value='menu-exec-app:conference ".$row["fielddata"]."' selected='selected'>".$conference_name."</option>\n";
+						}
+						if ($select_type == "dialplan") {
+							echo "		<option value='conference:".$row["fielddata"]."' selected='selected'>".$conference_name."</option>\n";
+						}
+						$selection_found = true;
+					}
+					else {
+						if ($select_type == "ivr") {
+							echo "		<option value='menu-exec-app:conference  ".$row["fielddata"]."'>".$conference_name."</option>\n";
+						}
+						if ($select_type == "dialplan") {
+							echo "		<option value='conference:".$row["fielddata"]."'>".$conference_name."</option>\n";
+						}
+					}
+					$previous_conference_name = $conference_name;
+				}
+
+				$x++;
+			}
+		}
+		echo "</optgroup>\n";
+		unset ($prepstatement);
+
+	//list fax extensions
+		$sql = "";
+		$sql .= "select * from v_fax ";
+		$sql .= "where v_id = '$v_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		echo "<optgroup label='FAX'>\n";
+		foreach ($result as &$row) {
+			$extension = $row["faxextension"];
+			if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+				}
+				$selection_found = true;
+			}
+			else {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
+				}
+			}
+		}
+		echo "</optgroup>\n";
+		unset ($prepstatement, $extension);
+
+	//list fifo queues
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "where v_id = $v_id ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$x = 0;
+		$result = $prepstatement->fetchAll();
+		echo "<optgroup label='FIFO'>\n";
+		foreach ($result as &$row) {
+			//$tag = $row["tag"];
+			if ($row["fieldtype"] == "fifo") {
+				if (strpos($row["fielddata"], '@${domain_name} in') !== false) {
+					$dialplan_include_id = $row["dialplan_include_id"];
+					//get the extension number using the dialplan_include_id
+						$sql = "select fielddata as extension_number ";
+						$sql .= "from v_dialplan_includes_details ";
+						$sql .= "where v_id = $v_id ";
+						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+						$sql .= "and fieldtype = 'destination_number' ";
+						$tmp = $db->query($sql)->fetch();
+						$extension_number = $tmp['extension_number'];
+						$extension_number = ltrim($extension_number, "^");
+						$extension_number = ltrim($extension_number, "\\");
+						$extension_number = rtrim($extension_number, "$");
+						unset($tmp);
+
+					$fifo_name = $row["fielddata"];
+					$fifo_name = str_replace('@${domain_name} in', '', $fifo_name);
+					$option_label = $extension_number;
+					if ($select_type == "ivr") {
+						if ("menu-exec-app:transfer ".$row["fielddata"] == $select_value) {
+							echo "		<option value='menu-exec-app:transfer ".$extension_number."' selected='selected'>".$option_label."</option>\n";
+							$selection_found = true;
+						}
+						else {
+							echo "		<option value='menu-exec-app:transfer ".$extension_number."'>".$option_label."</option>\n";
+						}
+					}
+					if ($select_type == "dialplan") {
+						if ("transfer:".$row["fielddata"] == $select_value) {
+							echo "		<option value='transfer:".$extension_number."' selected='selected'>".$option_label."</option>\n";
+							$selection_found = true;
+						}
+						else {
+							echo "		<option value='transfer:".$extension_number."'>".$option_label."</option>\n";
+						}
+					}
+				}
+			}
+		}
+		echo "</optgroup>\n";
+		unset ($prepstatement);
+
+	//list hunt groups
+		$sql = "";
+		$sql .= "select * from v_hunt_group ";
+		$sql .= "where v_id = '$v_id' ";
+		//$sql .= "and enabled = 'true' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		echo "<optgroup label='Hunt Groups'>\n";
+		foreach ($result as &$row) {
+			//$v_id = $row["v_id"];
+			$extension = $row["huntgroupextension"];
+			if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+				}
+				$selection_found = true;
+			}
+			else {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
+				}
+			}
+		}
+		echo "</optgroup>\n";
+		unset ($prepstatement, $extension);
+
+	//list ivr menus
+		$sql = "";
+		$sql .= "select * from v_ivr_menu ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and ivr_menu_enabled = 'true' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		echo "<optgroup label='IVR Menu'>\n";
+		foreach ($result as &$row) {
+			$extension = $row["ivr_menu_extension"];
+			if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+				}
+				$selection_found = true;
+			}
+			else {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+				}
+			}
+		}
+		echo "</optgroup>\n";
+		unset ($prepstatement, $extension);
+
+	//list ivr menus
+		if ($select_type == "ivr") {
+			//list sub ivr menu
+				$sql = "";
+				$sql .= "select * from v_ivr_menu ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and ivr_menu_enabled = 'true' ";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+				$result = $prepstatement->fetchAll();
+				echo "<optgroup label='IVR Sub'>\n";
+				foreach ($result as &$row) {
+					$extension_name = $row["ivr_menu_name"];
+					$extension_name = str_replace(" ", "_", $extension_name);
+					if ($extension_name == $select_value) {
+						echo "		<option value='menu-sub:$extension_name' selected='selected'>".$extension_name."</option>\n";
+						$selection_found = true;
+					}
+					else {
+						echo "		<option value='menu-sub:$extension_name'>".$extension_name."</option>\n";
+					}
+				}
+				echo "</optgroup>\n";
+				unset ($prepstatement, $extension_name);
+
+			//list ivr misc
+				echo "<optgroup label='IVR Misc'>\n";
+				if ($ivr_menu_options_action == "menu-top") {
+					echo "		<option value='menu-top:' selected='selected'>Top</option>\n";
+					$selection_found = true;
+				}
+				else {
+					echo "		<option value='menu-top:'>Top</option>\n";
+				}
+				if ($ivr_menu_options_action == "menu-exit") {
+					echo "		<option value='menu-exit:' selected='selected'>Exit</option>\n";
+					$selection_found = true;
+				}
+				else {
+					echo "		<option value='menu-exit:'>Exit</option>\n";
+				}
+				if (strlen($select_value) > 0) {
+					if (!$selection_found) {
+						echo "		<option value='$select_value' selected='selected'>".$select_value."</option>\n";
+					}
+				}
+				echo "</optgroup>\n";
+		}
+
+	//list the languages
+		echo "<optgroup label='Language'>\n";
+		//english
+		if ("menu-exec-app:set set_language=en" == $select_value || "set:set_language=en" == $select_value) {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set set_language=en' selected='selected'>English</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:set_language=en' selected='selected'>English</option>\n";
+			}
+		}
+		else {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set set_language=en'>English</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:set_language=en'>English</option>\n";
+			}
+		}
+		//french
+		if ("menu-exec-app:set set_language=fr" == $select_value || "set:set_language=fr" == $select_value) {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set set_language=fr' selected='selected'>French</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:set_language=fr' selected='selected'>French</option>\n";
+			}
+		}
+		else {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set set_language=fr'>French</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:set_language=fr'>French</option>\n";
+			}
+		}
+		//german
+		if ("menu-exec-app:set set_language=de" == $select_value || "set:set_language=de" == $select_value) {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set set_language=de' selected='selected'>German</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:set_language=de' selected='selected'>German</option>\n";
+			}
+		}
+		else {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set set_language=de'>German</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:set_language=de'>German</option>\n";
+			}
+		}
+		//spanish
+		if ("menu-exec-app:set set_language=es" == $select_value || "set:set_language=es" == $select_value) {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set set_language=es' selected='selected'>Spanish</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:set_language=es' selected='selected'>Spanish</option>\n";
+			}
+		}
+		else {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set set_language=es'>Spanish</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:set_language=es'>Spanish</option>\n";
+			}
+		}
+		echo "</optgroup>\n";
+
+	//list time conditions
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "where v_id = $v_id ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$x = 0;
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			//$tag = $row["tag"];
+			switch ($row['fieldtype']) {
+			case "hour":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			case "minute":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			case "minute-of-day":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			case "mday":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			case "mweek":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			case "mon":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			case "yday":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			case "year":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			case "wday":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			case "week":
+				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			default:
+				//$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				break;
+			}
+		}
+		echo "<optgroup label='Time Conditions'>\n";
+		foreach($time_array as $key=>$val) {    
+			$dialplan_include_id = $key;
+			//get the extension number using the dialplan_include_id
+				$sql = "select fielddata as extension_number ";
+				$sql .= "from v_dialplan_includes_details ";
+				$sql .= "where v_id = $v_id ";
+				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$sql .= "and fieldtype = 'destination_number' ";
+				echo $sql."<br />\n";
+				$tmp = $db->query($sql)->fetch();
+				$extension_number = $tmp['extension_number'];
+				$extension_number = ltrim($extension_number, "^");
+				$extension_number = ltrim($extension_number, "\\");
+				$extension_number = rtrim($extension_number, "$");
+				unset($tmp);
+				$option_label = $extension_number;
+				if ($select_type == "ivr") {
+					if ("menu-exec-app:transfer ".$row["fielddata"] == $select_value) {
+						echo "		<option value='menu-exec-app:transfer ".$extension_number."' selected='selected'>".$option_label."</option>\n";
+						$selection_found = true;
+					}
+					else {
+						echo "		<option value='menu-exec-app:transfer ".$extension_number."'>".$option_label."</option>\n";
+					}
+				}
+				if ($select_type == "dialplan") {
+					if ("transfer:".$row["fielddata"] == $select_value) {
+						echo "		<option value='transfer:".$extension_number."' selected='selected'>".$option_label."</option>\n";
+						$selection_found = true;
+					}
+					else {
+						echo "		<option value='transfer:".$extension_number."'>".$option_label."</option>\n";
+					}
+				}
+		}
+		echo "</optgroup>\n";
+		unset ($prepstatement);
+
+	//list voicemail
+		$sql = "";
+		$sql .= "select * from v_extensions ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and enabled = 'true' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		echo "<optgroup label='Voicemail'>\n";
+		foreach ($result as &$row) {
+			$extension = $row["extension"]; //default ${domain_name} 
+			if ("voicemail default \${domain} ".$extension == $select_value || "voicemail:default \${domain} ".$extension == $select_value) {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:voicemail default \${domain} $extension' selected='selected'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='voicemail:default \${domain} $extension' selected='selected'>".$extension."</option>\n";
+				}
+				$selection_found = true;
+			}
+			else {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:voicemail default \${domain} $extension'>".$extension."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='voicemail:default \${domain} $extension'>".$extension."</option>\n";
+				}
+			}
+		}
+		echo "</optgroup>\n";
+		unset ($prepstatement, $extension);
+
+	echo "		</select>\n";
+}
+
 function switch_conf_xml()
 {
 	global $dbfilepath;
@@ -4174,19 +4693,65 @@ function sync_package_v_dialplan_includes()
 		}
 		else { //received results
 			foreach($result2 as $ent) {
-				//print_r( $row );
+				//determine the correct attribute
+					switch ($ent['fieldtype']) {
+					case "hour":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					case "minute":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					case "minute-of-day":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					case "mday":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					case "mweek":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					case "mon":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					case "yday":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					case "year":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					case "wday":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					case "week":
+						$condition_attribute = $ent['fieldtype'].'="'.$ent['fielddata'].'"';
+						$condition_expression = '';
+						break;
+					default:
+						$condition_attribute = 'field="'.$ent['fieldtype'].'"';
+						$condition_expression = 'expression="'.$ent['fielddata'].'"';
+					}
+
 				if ($resultcount2 == 1) { //single condition
 					//start tag
-					$tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
+					$tmp .= "   <condition $condition_attribute $condition_expression>\n";
 				}
 				else { //more than one condition
 					if ($i < $resultcount2) {
-						  //all tags should be self-closing except the last one
-						  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\"/>\n";
+						//all tags should be self-closing except the last one
+						$tmp .= "   <condition $condition_attribute $condition_expression/>\n";
 					}
 					else {
 						//for the last tag use the start tag
-						  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
+						$tmp .= "   <condition $condition_attribute $condition_expression>\n";
 					}
 				}
 				$i++;

@@ -48,10 +48,24 @@ $order = $_GET["order"];
 		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
 		$condition_field_2 = check_str($_POST["condition_field_2"]);
 		$condition_expression_2 = check_str($_POST["condition_expression_2"]);
-		$action_application_1 = check_str($_POST["action_application_1"]);
-		$action_data_1 = check_str($_POST["action_data_1"]);
-		$action_application_2 = check_str($_POST["action_application_2"]);
-		$action_data_2 = check_str($_POST["action_data_2"]);
+
+ 		$action_1 = check_str($_POST["action_1"]);
+		//$action_1 = "transfer:1001 XML default";
+		$action_1_array = explode(":", $action_1);
+		$action_application_1 = array_shift($action_1_array);
+		$action_data_1 = join(':', $action_1_array);
+
+ 		$action_2 = check_str($_POST["action_2"]);
+		//$action_2 = "transfer:1001 XML default";
+		$action_2_array = explode(":", $action_2);
+		$action_application_2 = array_shift($action_2_array);
+		$action_data_2 = join(':', $action_2_array);
+
+		//$action_application_1 = check_str($_POST["action_application_1"]);
+		//$action_data_1 = check_str($_POST["action_data_1"]);
+		//$action_application_2 = check_str($_POST["action_application_2"]);
+		//$action_data_2 = check_str($_POST["action_data_2"]);
+
 		$enabled = check_str($_POST["enabled"]);
 		$description = check_str($_POST["description"]);
 		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
@@ -259,7 +273,7 @@ var field_value = document.getElementById(field_type).value;
 
 if (field_type == "condition_field_1") {
 	if (field_value == "destination_number") {
-		document.getElementById("desc_condition_expression_1").innerHTML = "expression: ^12081231234$";
+		document.getElementById("desc_condition_expression_1").innerHTML = "expression: 5551231234";
 	}
 	else if (field_value == "zzz") {
 		document.getElementById("desc_condition_expression_1").innerHTML = "";
@@ -270,7 +284,7 @@ if (field_type == "condition_field_1") {
 }
 if (field_type == "condition_field_2") {
 	if (field_value == "destination_number") {
-		document.getElementById("desc_condition_expression_2").innerHTML = "expression: ^12081231234$";
+		document.getElementById("desc_condition_expression_2").innerHTML = "expression: 5551231234";
 	}
 	else if (field_value == "zzz") {
 		document.getElementById("desc_condition_expression_2").innerHTML = "";
@@ -279,6 +293,7 @@ if (field_type == "condition_field_2") {
 		document.getElementById("desc_condition_expression_2").innerHTML = "";
 	}
 }
+/*
 if (field_type == "action_application_1") {
 	if (field_value == "transfer") {
 		document.getElementById("desc_action_data_1").innerHTML = "Transfer the call through the dialplan to the destination. data: 1001 XML default";
@@ -337,8 +352,7 @@ if (field_type == "action_application_2") {
 		document.getElementById("desc_action_data_2").innerHTML = "";
 	}
 }
-
-}
+*/
 -->
 </script>
 
@@ -502,6 +516,11 @@ echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "    Action 1:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
+
+//switch_select_destination(select_type, select_name, select_value, select_style);
+switch_select_destination("dialplan", "action_1", $action_1, "width: 60%;");
+
+/*
 echo "	<table style='width: 60%;' border='0' >\n";
 echo "	<tr>\n";
 echo "	<td style='width: 62px;'>Application: </td>\n";
@@ -532,6 +551,8 @@ echo "    <option value='sleep'>sleep</option>\n";
 echo "    <option value='sofia_contact'>sofia_contact</option>\n";
 echo "    <option value='transfer'>transfer</option>\n";
 echo "    <option value='voicemail'>voicemail</option>\n";
+echo "    <option value='conference'>conference</option>\n";
+echo "    <option value='conference_set_auto_outcall'>conference_set_auto_outcall</option>\n";
 echo "    </select><br />\n";
 echo "	</td>\n";
 echo "	<td style='width: 73px;'>\n";
@@ -543,6 +564,7 @@ echo "	</td>\n";
 echo "	</tr>\n";
 echo "	</table>\n";
 echo "	<div id='desc_action_data_1'></div>\n";
+*/
 echo "</td>\n";
 echo "</tr>\n";
 
@@ -554,6 +576,11 @@ echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "    Action 2:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
+
+//switch_select_destination(select_type, select_name, select_value, select_style);
+switch_select_destination("dialplan", "action_2", $action_2, "width: 60%;");
+
+/*
 echo "	<table style='width: 60%;' border='0' >\n";
 echo "	<tr>\n";
 echo "	<td style='width: 62px;'>Application: </td>\n";
@@ -570,9 +597,11 @@ echo "    <option value='db'>db</option>\n";
 echo "    <option value='global_set'>global_set</option>\n";
 echo "    <option value='group'>group</option>\n";
 echo "    <option value='expr'>expr</option>\n";
+echo "    <option value='export'>export</option>\n";
 echo "    <option value='hangup'>hangup</option>\n";
 echo "    <option value='info'>info</option>\n";
 echo "    <option value='javascript'>javascript</option>\n";
+echo "    <option value='read'>read</option>\n";
 echo "    <option value='reject'>reject</option>\n";
 echo "    <option value='playback'>playback</option>\n";
 echo "    <option value='reject'>reject</option>\n";
@@ -584,6 +613,8 @@ echo "    <option value='sleep'>sleep</option>\n";
 echo "    <option value='sofia_contact'>sofia_contact</option>\n";
 echo "    <option value='transfer'>transfer</option>\n";
 echo "    <option value='voicemail'>voicemail</option>\n";
+echo "    <option value='conference'>conference</option>\n";
+echo "    <option value='conference_set_auto_outcall'>conference_set_auto_outcall</option>\n";
 echo "    </select><br />\n";
 echo "	</td>\n";
 echo "	<td style='width: 73px;'>\n";
@@ -595,6 +626,7 @@ echo "	</td>\n";
 echo "	</tr>\n";
 echo "	</table>\n";
 echo "	<div id='desc_action_data_2'></div>\n";
+*/
 echo "</td>\n";
 echo "</tr>\n";
 
