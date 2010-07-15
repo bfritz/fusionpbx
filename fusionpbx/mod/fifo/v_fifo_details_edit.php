@@ -17,8 +17,8 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
-	the Initial Developer. All Rights Reserved.
+	Copyright (C) 2010
+	All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -35,42 +35,35 @@ else {
 }
 
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$dialplan_includes_detail_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-	$dialplan_include_id = check_str($_REQUEST["id2"]);
-}
-
-if (isset($_REQUEST["id2"])) {
-	$dialplan_include_id = check_str($_REQUEST["id2"]);
-}
-
-
-//POST to PHP variables
-if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
-	if (isset($_REQUEST["dialplan_include_id"])) {
-		$dialplan_include_id = check_str($_POST["dialplan_include_id"]);
+//action add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$dialplan_includes_detail_id = check_str($_REQUEST["id"]);
 	}
-	$tag = check_str($_POST["tag"]);
-	$fieldorder = check_str($_POST["fieldorder"]);
-	$fieldtype = check_str($_POST["fieldtype"]);
-	$fielddata = check_str($_POST["fielddata"]);
-}
+	else {
+		$action = "add";
+		$dialplan_include_id = check_str($_REQUEST["id2"]);
+	}
+	if (isset($_REQUEST["id2"])) {
+		$dialplan_include_id = check_str($_REQUEST["id2"]);
+	}
+
+
+//get post and set variables
+	if (count($_POST)>0) {
+		//$v_id = check_str($_POST["v_id"]);
+		if (isset($_REQUEST["dialplan_include_id"])) {
+			$dialplan_include_id = check_str($_POST["dialplan_include_id"]);
+		}
+		$tag = check_str($_POST["tag"]);
+		$fieldorder = check_str($_POST["fieldorder"]);
+		$fieldtype = check_str($_POST["fieldtype"]);
+		$fielddata = check_str($_POST["fielddata"]);
+	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
 		$dialplan_includes_detail_id = check_str($_POST["dialplan_includes_detail_id"]);
@@ -94,14 +87,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		}
-
-	$tmp = "\n";
-	//$tmp .= "v_id: $v_id\n";
-	$tmp .= "Tag: $tag\n";
-	$tmp .= "Order: $fieldorder\n";
-	$tmp .= "Type: $fieldtype\n";
-	$tmp .= "Data: $fielddata\n";
-
 
 
 	//Add or update the database
@@ -132,7 +117,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				sync_package_v_dialplan_includes();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_queues_edit.php?id=".$dialplan_include_id."\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo_edit.php?id=".$dialplan_include_id."\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -152,12 +137,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
-				
+
 				//synchronize the xml config
 				sync_package_v_dialplan_includes();
-				
+
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_queues_edit.php?id=".$dialplan_include_id."\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo_edit.php?id=".$dialplan_include_id."\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -168,27 +153,27 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$dialplan_includes_detail_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_dialplan_includes_details ";
-	$sql .= "where v_id = $v_id ";
-	$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$dialplan_include_id = $row["dialplan_include_id"];
-		$tag = $row["tag"];
-		$fieldorder = $row["fieldorder"];
-		$fieldtype = $row["fieldtype"];
-		$fielddata = $row["fielddata"];
-		break; //limit to 1 row
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$dialplan_includes_detail_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "where v_id = $v_id ";
+		$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$v_id = $row["v_id"];
+			$dialplan_include_id = $row["dialplan_include_id"];
+			$tag = $row["tag"];
+			$fieldorder = $row["fieldorder"];
+			$fieldtype = $row["fieldtype"];
+			$fielddata = $row["fielddata"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
 
 	require_once "includes/header.php";
@@ -214,7 +199,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap><b>Queue Detail Update</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_queues_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_fifo_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
 	echo "</tr>\n";
 
 	?>

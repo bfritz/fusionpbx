@@ -186,7 +186,7 @@ if (is_array($_FILES) && array_key_exists('users_file', $_FILES)) {
 				$grp_line 	= array('member', $line[$user_places['username']]);
 				$grp_places	= array('groupid' => 0, 'username' => 1);
 				insert_db_row($db, $grp_line, $grp_places, 'v_group_members', $v_ids);
-					
+				
 				// add user's extension
 				insert_db_row($db, $line, $extension_places, 'v_extensions', $v_ids);
 			}

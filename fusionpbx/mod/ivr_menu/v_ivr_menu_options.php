@@ -54,7 +54,7 @@ $order = $_GET["order"];
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
 	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page; 
+	$offset = $rowsperpage * $page;
 
 	$sql = "";
 	$sql .= " select * from v_ivr_menu_options ";

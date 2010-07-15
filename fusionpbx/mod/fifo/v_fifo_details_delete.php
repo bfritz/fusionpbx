@@ -17,8 +17,8 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
-	the Initial Developer. All Rights Reserved.
+	Copyright (C) 2010
+	All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -36,35 +36,26 @@ else {
 
 if (count($_GET)>0) {
     $id = $_GET["id"];
+    $dialplan_include_id = check_str($_REQUEST["id2"]);
 }
 
 if (strlen($id)>0) {
 
-    //delete child data
-		$sql = "";
-		$sql .= "delete from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
-		$sql .= "and dialplan_include_id = '$id' ";
-		//echo $sql;
-		$db->query($sql);
-		unset($sql);
-
-    //delete parent data
-		$sql = "";
-		$sql .= "delete from v_dialplan_includes ";
-		$sql .= "where v_id = $v_id ";
-		$sql .= "and dialplan_include_id = '$id' ";
-		//echo $sql;
-		$db->query($sql);
-		unset($sql);
+    $sql = "";
+    $sql .= "delete from v_dialplan_includes_details ";
+	$sql .= "where v_id = $v_id ";
+    $sql .= "and dialplan_includes_detail_id = '$id' ";
+    $sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+	$db->query($sql);
+    unset($sql);
 
     //synchronize the xml config
-		sync_package_v_dialplan_includes();
+    sync_package_v_dialplan_includes();
 
 }
 
 require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_queues.php\">\n";
+echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo_edit.php?id=".$dialplan_include_id."\">\n";
 echo "<div align='center'>\n";
 echo "Delete Complete\n";
 echo "</div>\n";

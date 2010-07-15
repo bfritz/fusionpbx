@@ -37,6 +37,9 @@ require_once "includes/config.php";
 //define variables from HTTP GET
 	$mac = $_GET['mac'];
 	$mac = str_replace(":", "-", $mac);
+	if (strlen($mac) == 12) { 
+		$mac = substr($mac, 0,2).'-'.substr($mac, 2,2).'-'.substr($mac, 4,2).'-'.substr($mac, 6,2).'-'.substr($mac, 8,2).'-'.substr($mac, 10,2);
+	}
 	$file = $_GET['file'];
 
 //check to see if the mac_address exists in v_hardware_phones

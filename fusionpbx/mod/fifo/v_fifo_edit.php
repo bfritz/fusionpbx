@@ -131,7 +131,7 @@ if ($_POST["persistformvar"] != "true") {
 		sync_package_v_dialplan_includes();
 
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_queues.php\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo.php\">\n";
 		echo "<div align='center'>\n";
 		echo "Add Complete\n";
 		echo "</div>\n";
@@ -156,7 +156,7 @@ if ($_POST["persistformvar"] != "true") {
 		//synchronize the xml config
 		sync_package_v_dialplan_includes();
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_queues.php\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo.php\">\n";
 		echo "<div align='center'>\n";
 		echo "Update Complete\n";
 		echo "</div>\n";
@@ -216,7 +216,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "        <strong>Queues</strong><br />\n";
 	echo "        </span>\n";
 	echo "    </td>\n";
-	echo "    <td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_queues.php'\" value='Back'></td>\n";
+	echo "    <td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_fifo.php'\" value='Back'></td>\n";
 	echo "  </tr>\n";
 	echo "  <tr>\n";
 	echo "    <td align='left' colspan='2'>\n";
@@ -413,7 +413,7 @@ if ($action == "update") {
 	echo "<th align='center'>Data</th>\n";
 	echo "<th align='center'>Order</th>\n";
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_queues_details_edit.php?id2=".$dialplan_include_id."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='v_fifo_details_edit.php?id2=".$dialplan_include_id."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -429,8 +429,8 @@ if ($action == "update") {
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fielddata]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldorder]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_queues_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_queues_details_delete.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			echo "		<a href='v_fifo_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
+			echo "		<a href='v_fifo_details_delete.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -470,8 +470,8 @@ if ($action == "update") {
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fielddata]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldorder]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_queues_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_queues_details_delete.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			echo "		<a href='v_fifo_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
+			echo "		<a href='v_fifo_details_delete.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -511,8 +511,8 @@ if ($action == "update") {
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fielddata]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldorder]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_queues_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_queues_details_delete.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			echo "		<a href='v_fifo_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
+			echo "		<a href='v_fifo_details_delete.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -527,7 +527,7 @@ if ($action == "update") {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_queues_details_edit.php?id2=".$dialplan_include_id."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_fifo_details_edit.php?id2=".$dialplan_include_id."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

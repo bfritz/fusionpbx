@@ -17,8 +17,8 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
-	the Initial Developer. All Rights Reserved.
+	Copyright (C) 2010
+	All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -35,17 +35,16 @@ else {
 }
 require_once "includes/header.php";
 require_once "includes/paging.php";
-
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
 
-//POST to PHP variables
+//get post and set as variables
 	if (count($_POST)>0) {
 		$extension_name = check_str($_POST["extension_name"]);
-		$extension_type = check_str($_POST["extension_type"]);
-		$extension_number_1 = check_str($_POST["extension_number_1"]);
-		$extension_number_2 = check_str($_POST["extension_number_2"]);
+		$queue_extension_number = check_str($_POST["queue_extension_number"]);
+		$agent_queue_extension_number = check_str($_POST["agent_queue_extension_number"]);
+		$agent_login_logout_extension_number = check_str($_POST["agent_login_logout_extension_number"]);		
 		$dialplanorder = check_str($_POST["dialplanorder"]);
 		$pin_number = check_str($_POST["pin_number"]);
 		$profile = check_str($_POST["profile"]);
@@ -59,9 +58,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
-		if (strlen($extension_type) == 0) { $msg .= "Please provide: Extension Type<br>\n"; }
-		if (strlen($extension_number_1) == 0) { $msg .= "Please provide: Extension Number 1<br>\n"; }
-		if (strlen($extension_number_2) == 0) { $msg .= "Please provide: Extension Number 2<br>\n"; }
+		if (strlen($queue_extension_number) == 0) { $msg .= "Please provide: Extension Number 1<br>\n"; }
+		//if (strlen($agent_queue_extension_number) == 0) { $msg .= "Please provide: Queue Extension Number<br>\n"; }
+		//if (strlen($agent_queue_extension_number) == 0) { $msg .= "Please provide: Agent Login Logout Extension Number<br>\n"; }
 		//if (strlen($pin_number) == 0) { $msg .= "Please provide: PIN Number<br>\n"; }
 		//if (strlen($profile) == 0) { $msg .= "Please provide: profile<br>\n"; }
 		//if (strlen($flags) == 0) { $msg .= "Please provide: Flags<br>\n"; }
@@ -83,61 +82,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//start the atomic transaction
 		$count = $db->exec("BEGIN;"); //returns affected rows
 
-	// Caller Queue / Agent Queue
-	if ($extension_type == "Caller Queue / Agent Queue") {
-		//--------------------------------------------------------
-		// Agent Queue [FIFO out]
-		//<extension name="Agent_Wait">
-		//	<condition field="destination_number" expression="^7010\$">
-		//		<action application="set" data="fifo_music=\$\${hold_music}"/>
-		//		<action application="answer"/>
-		//		<action application="fifo" data="myq out wait"/>
-		//	</condition>
-		//</extension>
-		//--------------------------------------------------------
-			$extensionname = $extension_name."_agent_queue";
-			$context = 'default';
-			//$opt1name = 'zzz_id';
-			//$opt1value = $row['zzz_id'];
-			$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $description, $opt1name, $opt1value);
-			if (strlen($dialplan_include_id) > 0) {
-				//set the destination number
-					$tag = 'condition'; //condition, action, antiaction
-					$fieldtype = 'destination_number';
-					$fielddata = '^'.$extension_number_1.'$';
-					$fieldorder = '000';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-				//set the hold music
-					if (strlen($hold_music) > 0) {
-						$tag = 'action'; //condition, action, antiaction
-						$fieldtype = 'set';
-						$fielddata = 'fifo_music=\$\${hold_music_1}';
-						$fieldorder = '001';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-					}
-				//action answer
-					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'answer';
-					$fielddata = '';
-					$fieldorder = '002';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-				//action fifo
-					//if (strlen($pin_number) > 0) { $pin_number = "+".$pin_number; }
-					//if (strlen($flags) > 0) { $flags = "+{".$flags."}"; }
-					//$queue_action_data = $extension_name."_\${domain_name}@".$profile.$flags.$pin_number;
-					$queue_action_data = $extension_name."_\${domain_name}@ out wait";
-					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'fifo';
-					$fielddata = $queue_action_data;
-					$fieldorder = '003';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-			}
-
+	if (strlen($queue_extension_number) > 0) {
 		//--------------------------------------------------------
 		//Caller Queue [FIFO in]
 		//<extension name="Queue_Call_In">
 		//	<condition field="destination_number" expression="^7011\$">
-		//		<action application="set" data="fifo_music=\$\${hold_music}"/>
+		//		<action application="set" data="fifo_music=$${hold_music}"/>
 		//		<action application="answer"/>
 		//		<action application="fifo" data="myq in"/>
 		//	</condition>
@@ -152,17 +102,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//set the destination number
 					$tag = 'condition'; //condition, action, antiaction
 					$fieldtype = 'destination_number';
-					$fielddata = '^'.$extension_number_2.'$';
+					$fielddata = '^'.$queue_extension_number.'$';
 					$fieldorder = '000';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 				//set the hold music
-					if (strlen($hold_music) > 0) {
+					//if (strlen($hold_music) > 0) {
 						$tag = 'action'; //condition, action, antiaction
 						$fieldtype = 'set';
-						$fielddata = 'fifo_music=\$\${hold_music}';
+						$fielddata = 'fifo_music=$${hold_music}';
 						$fieldorder = '001';
 						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-					}
+					//}
 				//action answer
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'answer';
@@ -172,15 +122,131 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//action fifo
 					//if (strlen($pin_number) > 0) { $pin_number = "+".$pin_number; }
 					//if (strlen($flags) > 0) { $flags = "+{".$flags."}"; }
-					//$queue_action_data = $extension_name."_\${domain_name}@".$profile.$flags.$pin_number;
-					$queue_action_data = $extension_name."_\${domain_name}@ in";
+					//$queue_action_data = $extension_name."@\${domain_name}".$profile.$flags.$pin_number;
+					$queue_action_data = $extension_name."@\${domain_name} in";
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'fifo';
 					$fielddata = $queue_action_data;
 					$fieldorder = '003';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 			}
-	} //end if Caller Queue / Agent Queue
+	} //end if queue_extension_number
+
+
+	// Caller Queue / Agent Queue
+	if (strlen($agent_queue_extension_number) > 0) {
+		//--------------------------------------------------------
+		// Agent Queue [FIFO out]
+		//<extension name="Agent_Wait">
+		//	<condition field="destination_number" expression="^7010\$">
+		//		<action application="set" data="fifo_music=$${hold_music}"/>
+		//		<action application="answer"/>
+		//		<action application="fifo" data="myq out wait"/>
+		//	</condition>
+		//</extension>
+		//--------------------------------------------------------
+			$extensionname = $extension_name."_agent_queue";
+			$context = 'default';
+			//$opt1name = 'zzz_id';
+			//$opt1value = $row['zzz_id'];
+			$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $description, $opt1name, $opt1value);
+			if (strlen($dialplan_include_id) > 0) {
+				//set the destination number
+					$tag = 'condition'; //condition, action, antiaction
+					$fieldtype = 'destination_number';
+					$fielddata = '^'.$agent_queue_extension_number.'$';
+					$fieldorder = '000';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				//set the hold music
+					//if (strlen($hold_music) > 0) {
+						$tag = 'action'; //condition, action, antiaction
+						$fieldtype = 'set';
+						$fielddata = 'fifo_music=$${hold_music}';
+						$fieldorder = '001';
+						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					//}
+				//action answer
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'answer';
+					$fielddata = '';
+					$fieldorder = '002';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				//action fifo
+					//if (strlen($pin_number) > 0) { $pin_number = "+".$pin_number; }
+					//if (strlen($flags) > 0) { $flags = "+{".$flags."}"; }
+					//$queue_action_data = $extension_name."@\${domain_name}".$profile.$flags.$pin_number;
+					$queue_action_data = $extension_name."@\${domain_name} out wait";
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'fifo';
+					$fielddata = $queue_action_data;
+					$fieldorder = '003';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+			}
+	}
+
+	
+	// agent or member login / logout
+	if (strlen($agent_login_logout_extension_number) > 0) {
+		//--------------------------------------------------------
+		// Agent Queue [FIFO out]
+		//<extension name="Agent_Wait">
+		//	<condition field="destination_number" expression="^7010\$">
+		//		<action application="set" data="fifo_music=$${hold_music}"/>
+		//		<action application="answer"/>
+		//		<action application="fifo" data="myq out wait"/>
+		//	</condition>
+		//</extension>
+		//--------------------------------------------------------
+			$extensionname = $extension_name."_agent_login_logout";
+			$context = 'default';
+			//$opt1name = 'zzz_id';
+			//$opt1value = $row['zzz_id'];
+			$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $description, $opt1name, $opt1value);
+			if (strlen($dialplan_include_id) > 0) {
+				//set the destination number
+					$tag = 'condition'; //condition, action, antiaction
+					$fieldtype = 'destination_number';
+					$fielddata = '^'.$agent_login_logout_extension_number.'$';
+					$fieldorder = '000';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				//set the queue_name
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'set';
+					$fielddata = 'queue_name='.$extension_name.'@\${domain_name}';
+					$fieldorder = '001';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				//set the fifo_simo
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'set';
+					$fielddata = 'fifo_simo=1';
+					$fieldorder = '002';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				//set the fifo_timeout
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'set';
+					$fielddata = 'fifo_timeout=10';
+					$fieldorder = '003';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				//set the fifo_lag
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'set';
+					$fielddata = 'fifo_lag=10';
+					$fieldorder = '004';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				//set the pin_number
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'set';
+					$fielddata = 'pin_number=';
+					$fieldorder = '005';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				//action lua
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'lua';
+					$fielddata = 'fifo_member.lua';
+					$fieldorder = '006';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+			}
+	}
 
 	//commit the atomic transaction
 		$count = $db->exec("COMMIT;"); //returns affected rows
@@ -189,7 +255,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		sync_package_v_dialplan_includes();
 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_queues.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo.php\">\n";
 	echo "<div align='center'>\n";
 	echo "Update Complete\n";
 	echo "</div>\n";
@@ -207,7 +273,7 @@ echo "	<td align=\"left\">\n";
 echo "		<br>";
 
 echo "<form method='post' name='frm' action=''>\n";
-echo "<div align='center'>\n";
+echo "<div align='left'>\n";
 
 echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "	<tr>\n";
@@ -216,13 +282,13 @@ echo "			<strong>Queues</strong>\n";
 echo "			</span></span>\n";
 echo "		</td>\n";
 echo "		<td align='right'>\n";
-echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_queues.php'\" value='Back'>\n";
+echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_fifo.php'\" value='Back'>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
 echo "	<tr>\n";
 echo "		<td align='left' colspan='2'>\n";
 echo "			<span class=\"vexpl\">\n";
-echo "			Queues are used to setup waiting lines for callers. Also known as FIFO Queues.\n";
+echo "			In simple terms queues are holding patterns for callers to wait until until someone is available to take the call. Also known as FIFO Queues.\n";
 echo "			</span>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
@@ -231,55 +297,32 @@ echo "	</table>";
 echo "<br />\n";
 echo "<br />\n";
 
-echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+//echo "<fieldset style=\"text-align:right;\">\n";
+//echo "<legend><b>Queue Details</b></legend>\n";
+//echo "<b>Queue Details</b><br />\n";
+//echo "<br />\n";
+echo "	<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+echo "	<tr>\n";
+echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "		Queue Name:\n";
+echo "	</td>\n";
+echo "	<td class='vtable' align='left'>\n";
+echo "		<input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
+echo "		<br />\n";
+echo "		The name the queue will be assigned.\n";
+echo "	</td>\n";
+echo "	</tr>\n";
 
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Queue Name:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
-echo "<br />\n";
-echo "The name the queue will be assigned.\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Extension Number 1:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_number' maxlength='255' value=\"$extension_number_1\">\n";
-echo "<br />\n";
-echo "The number that will be assinged to the queue.\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Extension Number 2:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_number' maxlength='255' value=\"$extension_number_2\">\n";
-echo "<br />\n";
-echo "The number that will be assinged to the queue.\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Type:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <select class='formfld' name='extension_type' style='width: 60%;'>\n";
-echo "    <option value=''></option>\n";
-if ($extension_type == "Caller Queue / Agent Queue") { echo "<option value='Caller Queue / Agent Queue' SELECTED >Caller Queue / Agent Queue</option>\n"; } else {	echo "<option value='Caller Queue / Agent Queue'>Caller Queue / Agent Queue</option>\n"; }
-if ($extension_type == "Agent Login/Logout/Static") { echo "<option value='Agent Login/Logout/Static' SELECTED >Agent Login/Logout/Static</option>\n"; } else {	echo "<option value='Agent Login/Logout/Static'>Agent Login/Logout/Static</option>\n"; }
-echo "    </select>\n";
-echo "<br />\n";
-echo "Set the type of queue you would like to use.\n";
-echo "</td>\n";
-echo "</tr>\n";
+echo "	<tr>\n";
+echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "	Extension Number:\n";
+echo "	</td>\n";
+echo "	<td class='vtable' align='left'>\n";
+echo "		<input class='formfld' style='width: 60%;' type='text' name='queue_extension_number' maxlength='255' value=\"$queue_extension_number\">\n";
+echo "		<br />\n";
+echo "		The number that will be assinged to the queue.\n";
+echo "	</td>\n";
+echo "	</tr>\n";
 
 //echo "<tr>\n";
 //echo "<td class='vncell' valign='top' align='left' nowrap>\n";
@@ -352,6 +395,43 @@ echo "\n";
 echo "</td>\n";
 echo "</tr>\n";
 
+
+echo "<tr>\n";
+echo "<td class='vtable' valign='top' align='left' nowrap>\n";
+echo "	<br /><br />\n";
+echo "	<b>Agent Details</b>\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "    &nbsp\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+
+echo "<tr>\n";
+echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
+echo "    Queue Extension Number:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "    <input class='formfld' style='width: 60%;' type='text' name='agent_queue_extension_number' maxlength='255' value=\"$agent_queue_extension_number\">\n";
+echo "<br />\n";
+echo "The extension number for the Agent FIFO Queue. This is the holding pattern for agents wating to service calls in the caller FIFO queue.\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+echo "    Login/Logout Extension Number:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "    <input class='formfld' style='width: 60%;' type='text' name='agent_login_logout_extension_number' maxlength='255' value=\"$agent_login_logout_extension_number\">\n";
+echo "<br />\n";
+echo "Agents use this extension number to login or logout of the Queue. After logging into the agent will be ready to receive calls from the Queue. \n";
+echo "</td>\n";
+echo "</tr>\n";
+echo "	</table>\n";
+echo "</fieldset>\n";
+
+echo "	<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 echo "<tr>\n";
 echo "	<td colspan='5' align='right'>\n";
 if ($action == "update") {

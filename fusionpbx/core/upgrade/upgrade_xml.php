@@ -89,9 +89,10 @@ function recur_dir($dir) {
 	closedir($dirlist);
 }
 
-$svn_path = "C:/Mark/projects/fusionpbx/svn/fusionpbx/";
+$svn_path = "/usr/local/www/fusionpbx/";
 //print_r($file_array);
-echo recur_dir("C:/Mark/projects/fusionpbx/svn/fusionpbx");
+echo recur_dir("/usr/local/www/fusionpbx");
+
 
 //echo "<pre>\n";
 //echo print_r($svn_array);

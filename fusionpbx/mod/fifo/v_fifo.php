@@ -17,8 +17,8 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
-	the Initial Developer. All Rights Reserved.
+	Copyright (C) 2010
+	All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -44,31 +44,38 @@ $order = $_GET["order"];
 	//define the queue array
 		$queue_array = array ();
 
-	$sql = "";
-	$sql .= "select * from v_dialplan_includes_details ";
-	$sql .= "where v_id = $v_id ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$x = 0;
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$dialplan_include_id = $row["dialplan_include_id"];
-		//$tag = $row["tag"];
-		//$fieldorder = $row["fieldorder"];
-		$fieldtype = $row["fieldtype"];
-		//$fielddata = $row["fielddata"];
-		if ($fieldtype == "queue") {
-			//echo "dialplan_include_id: $dialplan_include_id<br />";
-			//echo "fielddata: $fielddata<br />";
-			$queue_array[$x]['dialplan_include_id'] = $dialplan_include_id;
-			$x++;
+	//add data to the queue array
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "where v_id = $v_id ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$x = 0;
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$dialplan_include_id = $row["dialplan_include_id"];
+			//$tag = $row["tag"];
+			//$fieldorder = $row["fieldorder"];
+			$fieldtype = $row["fieldtype"];
+			$fielddata = $row["fielddata"];
+			if ($fieldtype == "fifo") {
+				//echo "dialplan_include_id: $dialplan_include_id<br />";
+				//echo "fielddata: $fielddata<br />";
+				$queue_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+				$x++;
+			}
+			else {
+				if ($fielddata == "fifo_member.lua") {
+					$queue_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+					$x++;
+				}
+			}
 		}
-	}
-	unset ($prepstatement);
-	//print_r($queue_array);
-	//foreach ($queue_array as &$row) {
-	//	echo "--".$row['dialplan_include_id']."--<br />\n";
-	//}
+		unset ($prepstatement);
+		//print_r($queue_array);
+		//foreach ($queue_array as &$row) {
+		//	echo "--".$row['dialplan_include_id']."--<br />\n";
+		//}
 
 
 //begin the form
@@ -84,7 +91,7 @@ $order = $_GET["order"];
 	echo "		</strong></span></span>\n";
 	echo "	</td>\n";
 	echo "	<td align='right'>\n";
-	//echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='v_queues.php';\">\n";
+	//echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='v_fifo.php';\">\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -179,7 +186,7 @@ $order = $_GET["order"];
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_queues_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='v_fifo_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -195,8 +202,8 @@ $order = $_GET["order"];
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_queues_edit.php?id=".$row[dialplan_include_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_queues_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			echo "		<a href='v_fifo_edit.php?id=".$row[dialplan_include_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
+			echo "		<a href='v_fifo_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
 			echo "   </td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -212,7 +219,7 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_queues_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_fifo_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
