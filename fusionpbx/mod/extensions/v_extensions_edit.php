@@ -341,7 +341,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<form method='post' name='frm' action=''>\n";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
 
 	echo "<tr>\n";
 	if ($action == "add") {

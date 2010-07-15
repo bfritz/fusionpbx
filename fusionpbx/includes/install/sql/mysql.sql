@@ -31,8 +31,9 @@ INSERT INTO v_menu VALUES(44,1,'en','Modules','/mod/modules/v_modules.php','inte
 INSERT INTO v_menu VALUES(45,1,'en','Music on Hold','/mod/recordings/v_recordings.php','internal','admin','',38,12,'mcrane','2009-08-20 10:49:31','mcrane','2009-10-27 22:52:15');
 INSERT INTO v_menu VALUES(84,1,'en','Phones','/mod/hardware_phones/v_hardware_phones.php','internal','admin','',38,13,'mcrane','2010-08-20 10:50:12','mcrane','2010-06-26 13:01:39');
 INSERT INTO v_menu VALUES(46,1,'en','Recordings','/mod/recordings/v_recordings.php','internal','admin','',38,14,'mcrane','2009-08-20 10:50:12','mcrane','2009-10-27 22:51:39');
-INSERT INTO v_menu VALUES(54,1,'en','Voicemail Status','/mod/voicemail_status/v_voicemail.php','internal','admin','',38,15,'mcrane','2009-09-10 22:26:54','mcrane','2009-10-27 22:52:54');
-INSERT INTO v_menu VALUES(53,1,'en','XML Editor','<!--{project_path}-->/mod/xml_edit/','external','superadmin','',38,16,'mcrane','2009-09-08 17:50:37','mcrane','2009-10-27 22:36:27');
+INSERT INTO v_menu VALUES(54,1,'en','Time Conditions','/mod/time_conditions/v_dialplan_includes.php','internal','admin','',38,15,'mcrane','2010-07-15 10:00:01','mcrane','2010-07-15 10:00:01');
+INSERT INTO v_menu VALUES(54,1,'en','Voicemail Status','/mod/voicemail_status/v_voicemail.php','internal','admin','',38,16,'mcrane','2009-09-10 22:26:54','mcrane','2009-10-27 22:52:54');
+INSERT INTO v_menu VALUES(53,1,'en','XML Editor','<!--{project_path}-->/mod/xml_edit/','external','superadmin','',38,17,'mcrane','2009-09-08 17:50:37','mcrane','2009-10-27 22:36:27');
 INSERT INTO v_menu VALUES(39,1,'en','SIP Gateways','/mod/gateways/v_gateways.php','internal','admin','',40,21,'mcrane','2009-08-20 10:41:08','mcrane','2009-10-27 22:10:27');
 INSERT INTO v_menu VALUES(47,1,'en','SIP Profiles','/mod/profiles/v_profiles.php','internal','superadmin','',40,22,'mcrane','2009-08-20 10:51:17','mcrane','2009-10-27 22:11:38');
 INSERT INTO v_menu VALUES(48,1,'en','Inbound Routes','/mod/public_includes/v_public_includes.php','internal','admin','',40,23,'mcrane','2009-08-20 10:51:56','mcrane','2009-10-27 22:12:16');
