@@ -132,7 +132,7 @@ INSERT INTO v_modules VALUES(31,1,'File String','mod_file_string','','Applicatio
 INSERT INTO v_modules VALUES(32,1,'FSV','mod_fsv','Video application (Recording and playback). ','Applications','true','true');
 INSERT INTO v_modules VALUES(33,1,'Voicemail','mod_voicemail','Full featured voicemail module.','Applications','true','true');
 INSERT INTO v_modules VALUES(34,1,'LCR','mod_lcr','Least Cost Routing.','Applications','false','false');
-INSERT INTO v_modules VALUES(35,1,'Limit','mod_limit','Resource limitation. ','Applications','true','true');
+INSERT INTO v_modules VALUES(35,1,'Hash','mod_hash','Resource limitation. ','Applications','true','true');
 INSERT INTO v_modules VALUES(36,1,'SoundTouch','mod_soundtouch','Modify pitch and other sound effects.','Applications','false','false');
 INSERT INTO v_modules VALUES(37,1,'Spy','mod_spy','','Applications','false','false');
 INSERT INTO v_modules VALUES(38,1,'VMD','mod_vmd','Voicemail Beep Detection.','Applications','true','true');
