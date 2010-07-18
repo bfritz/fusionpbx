@@ -30,24 +30,45 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-if (ifgroup("admin")) {
-	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
+//authorized group
+	//if (ifgroup("admin")) {
+	//	//access granted
+	//}
+	//else {
+	//	echo "access denied";
+	//	exit;
+	//}
+
+//authorized referrer
+	if(stristr($_SERVER["HTTP_REFERER"], '/v_calls_active_extensions.php') === false) {
+		echo "access denied";
+		exit;
+	}
+
+//http get variables set to php variables
+	if (count($_GET)>0) {
+		$switch_cmd = trim($_GET["cmd"]);
+		$action = trim($_GET["action"]);
+		$direction = trim($_GET["direction"]);
+	}
+
+//authorized commands
+	if (stristr($switch_cmd, '&uuid=') == true) {
+		//authorized;
+	} elseif (stristr($switch_cmd, 'uuid_kill') == true) {
+		//authorized;
+	} elseif (stristr($switch_cmd, 'uuid_transfer') == true) {
+		//authorized;
+	} elseif (stristr($switch_cmd, 'uuid_record') == true) {
+		//authorized;
+	} else {
+		//not found. this command is not authorized
+		echo "access denied";
+		exit;
+	}
+
 
 if (count($_GET)>0) {
-	$switch_cmd = trim($_GET["cmd"]);
-	$action = trim($_GET["action"]);
-	$direction = trim($_GET["direction"]);
-}
-
-
-//GET to PHP variables
-if (count($_GET)>0) {
-
 	//fs cmd
 	if (strlen($switch_cmd) > 0) {
 

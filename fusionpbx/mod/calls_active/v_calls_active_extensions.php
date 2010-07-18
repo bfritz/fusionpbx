@@ -26,13 +26,17 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
-	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
+
+//http get and set variables
+	if (strlen($_GET['url']) > 0) {
+		$url = $_GET['url'];
+	}
+	if (strlen($_GET['rows']) > 0) {
+		$rows = $_GET['rows'];
+	}
+	else {
+		$rows = 0;
+	}
 
 $conference_name = trim($_REQUEST["c"]);
 $tmp_conference_name = str_replace("_", " ", $conference_name);
@@ -76,7 +80,7 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 }
 
 var requestTime = function() {
-	var url = 'v_calls_active_extensions_inc.php?c=<?php echo trim($_REQUEST["c"]); ?>';
+	var url = 'v_calls_active_extensions_inc.php?rows=<?php echo $rows; ?>&url=<?php echo $url; ?>&c=<?php echo trim($_REQUEST["c"]); ?>';
 	new loadXmlHttp(url, 'ajax_reponse');
 	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 1222);
 }
@@ -106,7 +110,6 @@ var destination;
 </script>
 
 <?php
-
 
 echo "<div align='center'>";
 
