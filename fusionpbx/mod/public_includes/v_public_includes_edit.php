@@ -50,6 +50,7 @@ else {
 if (count($_POST)>0) {
 	//$v_id = check_str($_POST["v_id"]);
 	$extensionname = check_str($_POST["extensionname"]);
+	$extensioncontinue = check_str($_POST["extensioncontinue"]);
 	$publicorder = check_str($_POST["publicorder"]);
 	$context = check_str($_POST["context"]);
 	$enabled = check_str($_POST["enabled"]);
@@ -74,6 +75,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($extensionname) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		if (strlen($publicorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		if (strlen($extensioncontinue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
 		//if (strlen($context) == 0) { $msg .= "Please provide: Context<br>\n"; }
 		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		//if (strlen($descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
@@ -90,14 +92,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	//$tmp .= "v_id: $v_id\n";
-	$tmp .= "Extension Name: $extensionname\n";
-	$tmp .= "Order: $publicorder\n";
-	$tmp .= "Context: $context\n";
-	$tmp .= "Enabled: $enabled\n";
-	$tmp .= "Description: $descr\n";
-
 	//Add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
@@ -106,6 +100,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "extensionname, ";
 			$sql .= "publicorder, ";
+			$sql .= "extensioncontinue, ";
 			$sql .= "context, ";
 			$sql .= "enabled, ";
 			$sql .= "descr ";
@@ -115,6 +110,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$v_id', ";
 			$sql .= "'$extensionname', ";
 			$sql .= "'$publicorder', ";
+			$sql .= "'$extensioncontinue', ";
 			$sql .= "'default', ";
 			$sql .= "'$enabled', ";
 			$sql .= "'$descr' ";
@@ -163,10 +159,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$sql .= "v_id = '$v_id', ";
 			$sql .= "extensionname = '$extensionname', ";
 			$sql .= "publicorder = '$publicorder', ";
+			$sql .= "extensioncontinue = '$extensioncontinue', ";
 			$sql .= "context = '$context', ";
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "descr = '$descr' ";
-			$sql .= "where public_include_id = '$public_include_id'";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and public_include_id = '$public_include_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -201,6 +199,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$v_id = $row["v_id"];
 			$extensionname = $row["extensionname"];
 			$publicorder = $row["publicorder"];
+			$extensioncontinue = $row["extensioncontinue"];
 			$context = $row["context"];
 			$enabled = $row["enabled"];
 			$descr = $row["descr"];
@@ -294,6 +293,32 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//echo "\n";
 	//echo "</td>\n";
 	//echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Continue:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='extensioncontinue'>\n";
+	echo "    <option value=''></option>\n";
+	if (strlen($extensioncontinue) == 0) { $extensioncontinue = "false"; }
+	if ($extensioncontinue == "true") { 
+		echo "    <option value='true' SELECTED >true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($extensioncontinue == "false") { 
+		echo "    <option value='false' SELECTED >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "Extension Continue in most cases this is false. default: false\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";

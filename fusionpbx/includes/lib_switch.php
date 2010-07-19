@@ -4872,9 +4872,15 @@ function sync_package_v_public_includes()
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
+
+		$extensioncontinue = '';
+		if ($row['extensioncontinue'] == "true") {
+			$extensioncontinue = "continue=\"true\"";
+		}
+
 		$tmp = "";
 		$tmp .= "\n";
-		$tmp = "<extension name=\"".$row['extensionname']."\">\n";
+		$tmp = "<extension name=\"".$row['extensionname']."\" $extensioncontinue>\n";
 
 		$sql = "";
 		$sql .= " select * from v_public_includes_details ";
