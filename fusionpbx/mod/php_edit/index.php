@@ -151,6 +151,7 @@ echo "	<title></title>";
 			,start_highlight: true
 			,allow_toggle: false
 			,language: "en"
+			,word_wrap: false
 			,syntax: "xml"
 			,toolbar: "save, |, search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help"
 			,syntax_selection_allow: "css,html,js,php,xml,c,cpp,sql"
@@ -203,7 +204,7 @@ echo "	<title></title>";
 
 <table border='0' style="height: 100%; width: 100%;">
 <tr>
-<td id='toolbar' valign='top' width='200' style="width: 200;" height='100%' nowrap>
+<td id='toolbar' valign='top' width='200' style="width: 200;" height='100%' nowrap='nowrap'>
 
 <IFRAME SRC='filelist.php' style='border: solid 1px #CCCCCC; height: 50%; width: 100%;' TITLE=''>
 <!-- File List: Requires IFRAME support -->
@@ -217,11 +218,11 @@ echo "	<title></title>";
 <?php
 	if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)) {
 		//IE doesn't work with the 100% width with the IFRAME
-		echo "<textarea id='edit1' style='height: 100%; width: 800px;' name=''>\n";
+		echo "<textarea id='edit1' wrap='off' style='height: 100%; width: 800px; white-space: nowrap;' name=''>\n";
 		echo "</textarea>\n";
 	}
 	else {
-		echo "<textarea id='edit1' style='height: 100%; width: 100%;' name=''>\n";
+		echo "<textarea id='edit1' wrap='off' style='height: 100%; width: 100%; white-space: nowrap;' name=''>\n";
 		echo "</textarea>\n";
 	}
 ?>

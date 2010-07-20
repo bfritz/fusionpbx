@@ -46,11 +46,23 @@ function recur_dir($dir) {
 			$newpath = $dir.'/'.$file;
 			$level = explode('/',$newpath);
 
-			if (is_dir($newpath)) { //directories
-				if (strlen($newpath) > 0) {
-					$relative_path = substr($newpath, strlen($svn_path), strlen($newpath)); //remove the svn_path
-					$pos = strpos($relative_path, ".svn");
-					if ($pos === false) {
+			if (substr($newpath, -4) == ".svn") {
+				//ignore .svn dir and subdir
+			}
+			elseif (substr($newpath, -3) == ".db") {
+				//ignore .db files
+			}
+			elseif (end($level) == "config.php") {
+				//ignore config.php
+			}
+			elseif (substr(end($level), 0, 12) == "php_service_") {
+				//ignore files that are prefixed with 'php_service_'
+			}
+			else {
+				if (is_dir($newpath)) { //directories
+					if (strlen($newpath) > 0) {
+						$relative_path = substr($newpath, strlen($svn_path), strlen($newpath)); //remove the svn_path
+
 						//echo $relative_path."<br />\n";
 						$svn_array[$row_count]['type'] = 'directory';
 						$svn_array[$row_count]['path'] = $relative_path;
@@ -58,18 +70,17 @@ function recur_dir($dir) {
 						$svn_array[$row_count]['md5'] = '';
 						$svn_array[$row_count]['size'] = '';
 						$row_count++;
-					}
-					$dir_count++;
-				}
 
-				$dirname = end($level);
-				recur_dir($newpath);
-			}
-			else { //files
-				if (strlen($newpath) > 0) {
-					$relative_path = substr($newpath, strlen($svn_path), strlen($newpath)); //remove the svn_path
-					$pos = strpos($relative_path, ".svn");
-					if ($pos === false) {
+						$dir_count++;
+					}
+
+					$dirname = end($level);
+					recur_dir($newpath);
+				}
+				else { //files
+					if (strlen($newpath) > 0) {
+						$relative_path = substr($newpath, strlen($svn_path), strlen($newpath)); //remove the svn_path
+
 						//echo $relative_path."<br />\n";
 						$svn_array[$row_count]['type'] = 'file';
 						$svn_array[$row_count]['path'] = $relative_path;
@@ -78,11 +89,11 @@ function recur_dir($dir) {
 						$svn_array[$row_count]['size'] = filesize($newpath); //round(filesize($newpath)/1024, 2);
 						//echo $newpath."<br />\n";
 						$row_count++;
+
+						$file_count++;
 					}
-					$file_count++;
 				}
 			}
-
 		}
 	}
 
