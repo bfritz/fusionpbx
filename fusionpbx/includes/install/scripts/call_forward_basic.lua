@@ -39,6 +39,7 @@ if ( session:ready() ) then
 	extension = session:getVariable("user_name");
 	pin_number = session:getVariable("pin_number");
 	sounds_dir = session:getVariable("sounds_dir");
+	dialplan_default_dir = session:getVariable("dialplan_default_dir");
 	call_forward_number = session:getVariable("call_forward_number");
 	extension_required = session:getVariable("extension_required");
 
@@ -53,9 +54,9 @@ if ( session:ready() ) then
 				end
 			end
 
-			if (file_exists("/usr/local/freeswitch/conf/dialplan/default/999_call_forward_"..extension..".xml")) then
+			if (file_exists(dialplan_default_dir.."/999_call_forward_"..extension..".xml")) then
 				--freeswitch.consoleLog("NOTICE", "file_exists: true\n");
-				session:execute("system", "rm /usr/local/freeswitch/conf/dialplan/default/999_call_forward_"..extension..".xml");
+				os.remove (dialplan_default_dir.."/999_call_forward_"..extension..".xml");
 
 			--stream file
 				session:streamFile(sounds_dir.."/custom/call_forward_has_been_deleted.wav");
@@ -80,7 +81,7 @@ if ( session:ready() ) then
 					xml = xml .. "		<action application=\"transfer\" data=\""..call_forward_number.." XML default\"/>\n";
 					xml = xml .. "	</condition>\n";
 					xml = xml .. "</extension>\n";
-					local file = assert(io.open("/usr/local/freeswitch/conf/dialplan/default/999_call_forward_"..extension..".xml", "w"));
+					local file = assert(io.open(dialplan_default_dir.."/999_call_forward_"..extension..".xml", "w"));
 					file:write(xml);
 					file:close();
 
@@ -112,9 +113,9 @@ if ( session:ready() ) then
 			end
 		end
 
-		if (file_exists("/usr/local/freeswitch/conf/dialplan/default/999_call_forward_"..extension..".xml")) then
+		if (file_exists(dialplan_default_dir.."/999_call_forward_"..extension..".xml")) then
 			freeswitch.consoleLog("NOTICE", "file_exists: true\n");
-			session:execute("system", "rm /usr/local/freeswitch/conf/dialplan/default/999_call_forward_"..extension..".xml");
+			os.remove (dialplan_default_dir.."/999_call_forward_"..extension..".xml");
 
 		--stream file
 			session:streamFile(sounds_dir.."/custom/call_forward_has_been_deleted.wav");
@@ -139,7 +140,7 @@ if ( session:ready() ) then
 				xml = xml .. "	</condition>\n";
 				xml = xml .. "</extension>\n";
 				session:execute("log", xml);
-				local file = assert(io.open("/usr/local/freeswitch/conf/dialplan/default/999_call_forward_"..extension..".xml", "w"));
+				local file = assert(io.open(dialplan_default_dir.."/999_call_forward_"..extension..".xml", "w"));
 				file:write(xml);
 				file:close();
 
