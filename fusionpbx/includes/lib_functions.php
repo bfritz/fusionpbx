@@ -54,7 +54,7 @@
 	if (!function_exists('recursive_copy')) {
 		function recursive_copy($src,$dst) {
 			$dir = opendir($src);
-			@mkdir($dst);
+			if (!is_dir($dst)) { mkdir($dst); }
 			while(false !== ( $file = readdir($dir)) ) {
 				if (( $file != '.' ) && ( $file != '..' )) {
 					if ( is_dir($src . '/' . $file) ) {
