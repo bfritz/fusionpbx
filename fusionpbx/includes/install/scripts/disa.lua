@@ -16,7 +16,7 @@
 --
 --	The Initial Developer of the Original Code is
 --	Mark J Crane <markjcrane@fusionpbx.com>
---	Copyright (C) 2008-2010
+--	Copyright (C) 2010
 --	the Initial Developer. All Rights Reserved.
 --
 --	Contributor(s):
@@ -25,6 +25,20 @@
 predefined_destination = "";
 max_tries = "3";
 digit_timeout = "5000";
+
+function trim (s)
+	return (string.gsub(s, "^%s*(.-)%s*$", "%1"))
+end
+
+function explode ( seperator, str ) 
+	local pos, arr = 0, {}
+	for st, sp in function() return string.find( str, seperator, pos, true ) end do -- for each divider found
+		table.insert( arr, string.sub( str, pos, st-1 ) ) -- attach chars left of current divider
+		pos = sp + 1 -- jump past current divider
+	end
+	table.insert( arr, string.sub( str, pos ) ) -- attach chars right of last divider
+	return arr
+end
 
 if ( session:ready() ) then
 	session:answer( );
@@ -35,6 +49,7 @@ if ( session:ready() ) then
 	predefined_destination = session:getVariable("predefined_destination");
 	digit_min_length = session:getVariable("digit_min_length");
 	digit_max_length = session:getVariable("digit_max_length");
+	gateway = session:getVariable("gateway");
 
 	--set defaults
 		if (digit_min_length) then
@@ -63,26 +78,63 @@ if ( session:ready() ) then
 			end
 		end
 
-	--if a predefined_destination is provided then send the call there otherwise prompt for the destination number then send the call
+	--if a predefined_destination is provided then set the number to the predefined_destination
 		if (predefined_destination) then
-			session:execute("transfer", predefined_destination .. " XML default");
+			destination_number = predefined_destination;
 		else
 			dtmf = ""; --clear dtmf digits to prepare for next dtmf request
 			destination_number = session:playAndGetDigits(digit_min_length, digit_max_length, max_tries, digit_timeout, "#", sounds_dir.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
 			--if (string.len(destination_number) == 10) then destination_number = "1"..destination_number; end
-			session:execute("transfer", destination_number .. " XML default");
-
-			--alternate method
-				--session:execute("set", "hangup_after_bridge=true");
-				--session:execute("set", "continue_on_fail=true");
-				--session:execute("bridge", "sofia/gateway/flowroute.com/"..destination_number);
-
-			--alternate method
-				--local session2 = freeswitch.Session("{ignore_early_media=true}sofia/gateway/flowroute.com/"..destination_number);
-				--t1 = os.date('*t');
-				--call_start_time = os.time(t1);
-				--freeswitch.bridge(session, session2);
 		end
+
+	--set the caller id anme and number
+		if (string.len(destination_number) < 7) then
+			if (caller_id_name) then
+				--caller id name provided do nothing
+			else
+				caller_id_number = session:getVariable("effective_caller_id_name");
+			end
+			if (caller_id_number) then
+				--caller id number provided do nothing
+			else
+				caller_id_number = session:getVariable("effective_caller_id_number");
+			end
+		else 
+			if (caller_id_name) then
+				--caller id name provided do nothing
+			else
+				caller_id_number = session:getVariable("outbound_caller_id_name");
+			end
+			if (caller_id_number) then
+				--caller id number provided do nothing
+			else
+				caller_id_number = session:getVariable("outbound_caller_id_number");
+			end
+		end
+
+	--transfer or bridge the call
+		if (string.len(destination_number) < 7) then
+			--local call
+			session:execute("transfer", destination_number .. " XML default");
+		else
+			--remote call
+			if (gateway) then
+				gateway_table = explode(",",gateway);
+				for index,value in pairs(gateway_table) do
+					session:execute("bridge", "{continue_on_fail=true,hangup_after_bridge=true,origination_caller_id_name="..caller_id_name..",origination_caller_id_number="..caller_id_number.."}sofia/gateway/"..value.."/"..destination_number);
+				end
+			else
+				session:execute("set", "effective_caller_id_name="..caller_id_name);
+				session:execute("set", "effective_caller_id_number="..caller_id_number);
+				session:execute("transfer", destination_number .. " XML default");
+			end
+		end
+
+		--alternate method
+			--local session2 = freeswitch.Session("{ignore_early_media=true}sofia/gateway/flowroute.com/"..destination_number);
+			--t1 = os.date('*t');
+			--call_start_time = os.time(t1);
+			--freeswitch.bridge(session, session2);
 end
 
 --function HangupHook(s, status, arg)
