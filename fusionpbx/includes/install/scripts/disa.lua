@@ -121,7 +121,7 @@ if ( session:ready() ) then
 			if (gateway) then
 				gateway_table = explode(",",gateway);
 				for index,value in pairs(gateway_table) do
-					session:execute("bridge", "{continue_on_fail=true,hangup_after_bridge=true,origination_caller_id_name="..caller_id_name..",origination_caller_id_number="..caller_id_number.."}sofia/gateway/"..value.."/"..destination_number);
+					session:execute("bridge", "{continue_on_fail=true,hangup_after_bridge=true,effective_caller_id_name="..caller_id_name..",effective_caller_id_number="..caller_id_number.."}sofia/gateway/"..value.."/"..destination_number);
 				end
 			else
 				session:execute("set", "effective_caller_id_name="..caller_id_name);
