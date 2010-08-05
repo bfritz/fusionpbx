@@ -42,7 +42,6 @@ if (count($_POST)>0) {
 }
 
 
-
 //POST to PHP variables
 if (count($_POST)>0) {
 	echo "<html>\n";
@@ -103,16 +102,25 @@ if (count($_POST)>0) {
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
-	echo "<b>SQL Query:</b><br>\n";
-	echo "".$sql_cmd."<br /><br />";
+	$sql_array = explode(";", $sql_cmd);
+	reset($sql_array);
+	foreach($sql_array as $sql) {
+		$sql = trim($sql);
+		echo "<b>SQL Query:</b><br>\n";
+		echo "".$sql."<br /><br />";
 
-	//sql cmd
-	if (strlen($sql_cmd) > 0) {
-		try {
-			$prepstatement = $db->prepare(check_sql($sql_cmd));
+		//sql cmd
+		if (strlen($sql) > 0) {
+			$prepstatement = $db->prepare(check_sql($sql));
 			if ($prepstatement) { 
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+			}
+			else {
+				echo "<b>Error:</b>\n";
+				echo "<pre>\n";
+				print_r($db->errorInfo());
+				echo "</pre>\n";
 			}
 
 			echo "<b>Results: ".count($result)."</b><br />";
@@ -134,17 +142,12 @@ if (count($_POST)>0) {
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
 			echo "</table>\n";
-
+			echo "<br>\n";
 		}
-		catch (PDOException $error) {
-			print "error: " . $error->getMessage() . "<br/>";
-			//die();
-		}
-	}
+	} //foreach($sql_array as $sql)
 
 	echo "<body>\n";
 	echo "<html>\n";
-
 }
 
 ?>
