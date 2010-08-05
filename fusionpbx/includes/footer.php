@@ -130,25 +130,30 @@ ob_end_clean(); //clean the buffer
 
 require_once "includes/menu.php";
 
-$customhead = $customhead.$templatemenucss;
-//$customhead ='test';
-//$output = str_replace ("\r\n", "<br>", $output);
-$output = str_replace ("<!--{title}-->", $customtitle, $template); //<!--{title}--> defined in each individual page
-$output = str_replace ("<!--{head}-->", $customhead, $output); //<!--{head}--> defined in each individual page
-$output = str_replace ("<!--{menu}-->", $_SESSION["menu"], $output); //defined in /includes/menu.php
-$output = str_replace ("<!--{project_path}-->", PROJECT_PATH, $output); //defined in /includes/menu.php
+//prepare the output
+	$customhead = $customhead.$templatemenucss;
+	//$customhead ='test';
+	//$output = str_replace ("\r\n", "<br>", $output);
+	$output = str_replace ("<!--{title}-->", $customtitle, $template); //<!--{title}--> defined in each individual page
+	$output = str_replace ("<!--{head}-->", $customhead, $output); //<!--{head}--> defined in each individual page
+	$output = str_replace ("<!--{menu}-->", $_SESSION["menu"], $output); //defined in /includes/menu.php
+	$output = str_replace ("<!--{project_path}-->", PROJECT_PATH, $output); //defined in /includes/menu.php
 
-$pos = strrpos($output, "<!--{body}-->");
-if ($pos === false) {
-	$output = $body; //if tag not found just show the body
-}
-else {
-	//replace the body
-	$output = str_replace ("<!--{body}-->", $body, $output);
-}
+	$pos = strrpos($output, "<!--{body}-->");
+	if ($pos === false) {
+		$output = $body; //if tag not found just show the body
+	}
+	else {
+		//replace the body
+		$output = str_replace ("<!--{body}-->", $body, $output);
+	}
 
-echo $output;
-unset($output);
+//http compression
+	if(!ob_start("ob_gzhandler")) ob_start();
+
+//send the output to the browser
+	echo $output;
+	unset($output);
 
 //$statsauth = "a6f07386f610892b5f9993d60a8dbd5f";
 //require_once "stats/statsadd.php";
