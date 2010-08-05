@@ -71,7 +71,7 @@ $order = $_GET["order"];
 	$numrows = count($result);
 	unset ($prepstatement, $result, $sql);
 
-	$rowsperpage = 40;
+	$rowsperpage = 100;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
