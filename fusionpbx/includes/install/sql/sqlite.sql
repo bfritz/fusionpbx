@@ -21,7 +21,7 @@ INSERT INTO v_menu VALUES(78,1,'en','Active Calls','/mod/calls_active/v_calls_ac
 INSERT INTO v_menu VALUES(79,1,'en','Active Extensions','/mod/calls_active/v_calls_active_extensions.php','internal','admin','',38,2,'mcrane','2010-02-26 00:30:16','mcrane','2010-02-26 02:40:14');
 INSERT INTO v_menu VALUES(41,1,'en','Auto Attendant','/mod/auto_attendant/v_auto_attendant.php','internal','admin','',38,3,'mcrane','2009-08-20 10:46:04','mcrane','2009-10-27 22:44:29');
 INSERT INTO v_menu VALUES(67,1,'en','Call Broadcast','/mod/call_broadcast/v_call_broadcast.php','internal','admin','',38,4,'mcrane','2009-10-13 11:40:28','mcrane','2009-10-27 22:44:50');
-INSERT INTO v_menu VALUES(52,1,'en','Call Detail Records','/mod/cdr/v_cdr.php','internal','admin','',38,5,'mcrane','2009-09-05 00:30:16','mcrane','2009-10-27 22:49:14');
+INSERT INTO v_menu VALUES(52,1,'en','Call Detail Records','/mod/xml_cdr/v_xml_cdr.php','internal','admin','',38,5,'mcrane','2009-09-05 00:30:16','mcrane','2010-08-08 03:53:50');
 INSERT INTO v_menu VALUES(77,1,'en','Call Forward','/mod/call_forward/v_call_forward.php','internal','admin','',38,6,'mcrane','2010-02-02 00:30:16','mcrane','2010-02-12 22:49:14');
 INSERT INTO v_menu VALUES(80,1,'en','Click to Call','/mod/click_to_call/click_to_call.php','internal','admin','',38,7,'mcrane','2010-05-26 20:55:15','mcrane','2010-05-26 20:55:15');
 INSERT INTO v_menu VALUES(76,1,'en','Conferences','/mod/conferences/v_conferences.php','internal','admin','',38,8,'mcrane','2010-08-01 00:30:16','mcrane','2010-08-01 22:49:14');
@@ -235,10 +235,11 @@ CREATE TABLE v_ivr_menu_options (ivr_menu_option_id INTEGER PRIMARY KEY, v_id NU
 CREATE TABLE v_php_service (php_service_id INTEGER PRIMARY KEY, service_name TEXT, service_script TEXT, service_enabled TEXT, service_description TEXT);
 CREATE TABLE v_hardware_phones (hardware_phone_id INTEGER PRIMARY KEY, phone_mac_address TEXT, phone_vendor TEXT, phone_model TEXT, phone_provision_enable TEXT, phone_template TEXT, phone_username TEXT, phone_password TEXT, phone_description TEXT);
 CREATE TABLE v_src (src_id INTEGER PRIMARY KEY, v_id NUMERIC, type TEXT, last_mod TEXT, path TEXT);
-CREATE INDEX index_billsec ON v_cdr(billsec ASC);
-CREATE INDEX index_caller_id_name ON v_cdr(caller_id_name ASC);
-CREATE INDEX index_destination_number ON v_cdr(destination_number ASC);
-CREATE INDEX index_duration ON v_cdr(duration ASC);
-CREATE INDEX index_hangup_cause ON v_cdr(hangup_cause ASC);
-CREATE INDEX index_start_stamp ON v_cdr(start_stamp ASC);
+CREATE TABLE v_xml_cdr (xml_cdr_id INTEGER PRIMARY KEY, v_id NUMBER, uuid TEXT, direction TEXT, default_language TEXT, context TEXT, xml_cdr TEXT, caller_id_name TEXT, caller_id_number NUMBER, destination_number NUMBER, start_epoch NUMBER, start_stamp TEXT, start_uepoch NUMBER, answer_stamp TEXT, answer_epoch NUMBER, answer_uepoch NUMBER, end_epoch NUMBER, end_uepoch NUMBER, end_stamp TEXT, duration NUMBER, mduration NUMBER, billsec NUMBER, billmsec NUMBER, bridge_uuid TEXT, read_codec TEXT, write_codec TEXT, remote_media_ip TEXT, network_addr TEXT, hangup_cause TEXT, hangup_cause_q850 NUMBER);
+CREATE INDEX index_billsec ON v_xml_cdr(billsec ASC);
+CREATE INDEX index_caller_id_name ON v_xml_cdr(caller_id_name ASC);
+CREATE INDEX index_destination_number ON v_xml_cdr(destination_number ASC);
+CREATE INDEX index_duration ON v_xml_cdr(duration ASC);
+CREATE INDEX index_hangup_cause ON v_xml_cdr(hangup_cause ASC);
+CREATE INDEX index_start_stamp ON v_xml_cdr(start_stamp ASC);
 --COMMIT;
