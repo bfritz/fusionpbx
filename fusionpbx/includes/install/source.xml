@@ -926,8 +926,8 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/recordings/v_recordings.php</path> 
-		<last_mod>Thu, 01 Jul 2010 16:45:41 GMT</last_mod> 
-		<md5>3c77f1ef35f09c5ede59f6da6a342e73</md5> 
+		<last_mod>Fri, 06 Aug 2010 08:21:52 GMT</last_mod> 
+		<md5>c14100f1b535f96974626b13328a3090</md5> 
 		<size>16499</size> 
 	</src> 
 	<src> 
@@ -1286,6 +1286,62 @@
 		<last_mod>Thu, 15 Jul 2010 22:21:01 GMT</last_mod> 
 		<md5>745a04241d9d3d90d3c7fb886f02c767</md5> 
 		<size>2818</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
+		<path>mod/xml_cdr</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/xml_cdr/root.php</path> 
+		<last_mod>Fri, 07 May 2010 19:30:10 GMT</last_mod> 
+		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
+		<size>1913</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/xml_cdr/v_xml_cdr_csv.php</path> 
+		<last_mod>Thu, 05 Aug 2010 02:10:02 GMT</last_mod> 
+		<md5>0ca01856fdb9494ae857287555a09c5d</md5> 
+		<size>5992</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/xml_cdr/v_xml_cdr_delete.php</path> 
+		<last_mod>Wed, 04 Aug 2010 19:26:51 GMT</last_mod> 
+		<md5>de136c983ae66ade089f09116b08fcb0</md5> 
+		<size>730</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/xml_cdr/v_xml_cdr_details.php</path> 
+		<last_mod>Sun, 08 Aug 2010 09:45:46 GMT</last_mod> 
+		<md5>2c7fe2f7f8840762def3c67bc41ea70a</md5> 
+		<size>16342</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/xml_cdr/v_xml_cdr_import.php</path> 
+		<last_mod>Sun, 08 Aug 2010 09:44:58 GMT</last_mod> 
+		<md5>e0a2ef0d72b913b88d4aaf198ce217ef</md5> 
+		<size>9220</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/xml_cdr/v_xml_cdr_edit.php</path> 
+		<last_mod>Wed, 04 Aug 2010 19:29:59 GMT</last_mod> 
+		<md5>5773cc956021af6461db226fb091684d</md5> 
+		<size>22717</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/xml_cdr/v_xml_cdr_search.php</path> 
+		<last_mod>Wed, 04 Aug 2010 23:11:43 GMT</last_mod> 
+		<md5>539839d031b24f1716d43c60989d2291</md5> 
+		<size>5819</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -1738,9 +1794,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/ivr_menu/v_ivr_menu.php</path> 
-		<last_mod>Thu, 15 Jul 2010 22:21:12 GMT</last_mod> 
-		<md5>a24799a8865325459cc769fb1d0ed645</md5> 
-		<size>5399</size> 
+		<last_mod>Sat, 07 Aug 2010 03:29:02 GMT</last_mod> 
+		<md5>242160e93508dd07e97c0aac365ab045</md5> 
+		<size>5400</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -1752,16 +1808,16 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/ivr_menu/v_ivr_menu_edit.php</path> 
-		<last_mod>Thu, 15 Jul 2010 22:21:13 GMT</last_mod> 
-		<md5>8012d44cb350aff930a08e67825ca878</md5> 
-		<size>25042</size> 
+		<last_mod>Sun, 08 Aug 2010 12:13:11 GMT</last_mod> 
+		<md5>6b7a209284ea0dddf651bb2f2b18ed43</md5> 
+		<size>28243</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>mod/ivr_menu/v_ivr_menu_options.php</path> 
-		<last_mod>Fri, 25 Jun 2010 20:30:48 GMT</last_mod> 
-		<md5>46f82061cb90b1bc83e91f5f0a9f475c</md5> 
-		<size>6589</size> 
+		<last_mod>Sat, 07 Aug 2010 03:35:10 GMT</last_mod> 
+		<md5>1d812f1a1975d9069bb656ce73dc2fd4</md5> 
+		<size>6591</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -1857,9 +1913,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/extensions/v_extensions_edit.php</path> 
-		<last_mod>Thu, 15 Jul 2010 22:21:15 GMT</last_mod> 
-		<md5>48cbb44859ff4cee4bc54561eebb74b7</md5> 
-		<size>31226</size> 
+		<last_mod>Thu, 05 Aug 2010 02:17:30 GMT</last_mod> 
+		<md5>34604f016378c1d2e6678e20a49b39a2</md5> 
+		<size>31329</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -1871,9 +1927,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/extensions/v_extensions.php</path> 
-		<last_mod>Thu, 15 Jul 2010 22:21:15 GMT</last_mod> 
-		<md5>c94ac343d0115d17ce39f872353e41f6</md5> 
-		<size>5812</size> 
+		<last_mod>Thu, 05 Aug 2010 15:50:16 GMT</last_mod> 
+		<md5>3ef63d4f5b1cf9c304ee40ee4ceb37b7</md5> 
+		<size>5813</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2186,7 +2242,7 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/cdr/v_cdr.php</path> 
-		<last_mod>Thu, 15 Jul 2010 22:21:23 GMT</last_mod> 
+		<last_mod>Wed, 04 Aug 2010 20:22:09 GMT</last_mod> 
 		<md5>3e5c8318f8769cd78e8d3c594aee9c88</md5> 
 		<size>18050</size> 
 	</src> 
@@ -2389,9 +2445,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/sql_query/v_sql_query_result.php</path> 
-		<last_mod>Thu, 15 Jul 2010 22:21:28 GMT</last_mod> 
-		<md5>e75175728702582cf04a7cea088428e4</md5> 
-		<size>3902</size> 
+		<last_mod>Thu, 05 Aug 2010 06:01:03 GMT</last_mod> 
+		<md5>d9fac6d0d25b33d339bf7bfed553e7bf</md5> 
+		<size>4055</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2413,27 +2469,6 @@
 		<last_mod>Thu, 11 Mar 2010 10:21:27 GMT</last_mod> 
 		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
 		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>mod/xml_cdr</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/xml_cdr/root.php</path> 
-		<last_mod>Fri, 07 May 2010 19:30:10 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/xml_cdr/index.php</path> 
-		<last_mod>Mon, 26 Jul 2010 16:16:07 GMT</last_mod> 
-		<md5>a7698c1182b6e512128fdc2fd80268c3</md5> 
-		<size>4395</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2630,132 +2665,6 @@
 		<last_mod>Sun, 11 Jul 2010 08:59:23 GMT</last_mod> 
 		<md5>492de8f176feaf5d9987d1bb70e36337</md5> 
 		<size>4080</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>mod/fifo_agents</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agents/v_fifo_agents_delete.php</path> 
-		<last_mod>Fri, 16 Jul 2010 13:11:11 GMT</last_mod> 
-		<md5>8b0b29d5aa3c9c7a99c7b27fe59c5543</md5> 
-		<size>715</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agents/v_fifo_agents_edit.php</path> 
-		<last_mod>Fri, 16 Jul 2010 14:07:57 GMT</last_mod> 
-		<md5>832498b740411fddd93cfb83767e5ceb</md5> 
-		<size>9971</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agents/v_fifo_agents.php</path> 
-		<last_mod>Fri, 16 Jul 2010 20:04:00 GMT</last_mod> 
-		<md5>972e014f97c43c560e617d63123f9447</md5> 
-		<size>5020</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agents/v_fifo_agents.sql</path> 
-		<last_mod>Wed, 21 Jul 2010 15:07:03 GMT</last_mod> 
-		<md5>e539a256e1eefb9b330d9759e2a2fb34</md5> 
-		<size>204</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agents/root.php</path> 
-		<last_mod>Tue, 20 Oct 2009 18:13:40 GMT</last_mod> 
-		<md5>1d66d2f0f6ca694fc5d98c5b0e94e05b</md5> 
-		<size>1091</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agents/v_fifo_agent_logout.php</path> 
-		<last_mod>Tue, 20 Jul 2010 14:58:29 GMT</last_mod> 
-		<md5>9193644e0ce983f21688dd9b2388f0ed</md5> 
-		<size>672</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agents/v_fifo_agent_login.php</path> 
-		<last_mod>Wed, 21 Jul 2010 14:46:27 GMT</last_mod> 
-		<md5>bb511d6ff6ab5793ccf3d257b52446e8</md5> 
-		<size>7879</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
-		<path>mod/fifo_agent_profiles</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agent_profiles/v_fifo_agent_profiles.sql</path> 
-		<last_mod>Mon, 19 Jul 2010 17:02:27 GMT</last_mod> 
-		<md5>e86ef4bf8ba144fad2c795ab038cf160</md5> 
-		<size>131</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agent_profiles/v_fifo_agent_profiles_edit.php</path> 
-		<last_mod>Mon, 19 Jul 2010 19:08:47 GMT</last_mod> 
-		<md5>2b3720cbcbf6bdf3009839ddf94fc95b</md5> 
-		<size>5684</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agent_profiles/v_fifo_agent_profiles.php</path> 
-		<last_mod>Mon, 19 Jul 2010 19:52:16 GMT</last_mod> 
-		<md5>e242b7cb8d0d0ab4cbd6af04e36e0733</md5> 
-		<size>4719</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agent_profiles/v_fifo_agent_profiles_delete.php</path> 
-		<last_mod>Mon, 19 Jul 2010 22:31:15 GMT</last_mod> 
-		<md5>8924864cff526f096ef57aacd7e7d41a</md5> 
-		<size>1100</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agent_profiles/v_fifo_agent_profile_members.sql</path> 
-		<last_mod>Mon, 19 Jul 2010 17:06:54 GMT</last_mod> 
-		<md5>79a224c31606476ccc2a86f12d3580e6</md5> 
-		<size>201</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agent_profiles/v_fifo_agent_profile_members_edit.php</path> 
-		<last_mod>Mon, 19 Jul 2010 19:50:52 GMT</last_mod> 
-		<md5>c381502cba82e08ad00d4e4d6bdf783e</md5> 
-		<size>9989</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agent_profiles/v_fifo_agent_profile_members.php</path> 
-		<last_mod>Mon, 19 Jul 2010 19:50:15 GMT</last_mod> 
-		<md5>6d0c0200a73dab1557e5ae9537b535dd</md5> 
-		<size>5318</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agent_profiles/v_fifo_agent_profile_members_delete.php</path> 
-		<last_mod>Mon, 19 Jul 2010 18:43:42 GMT</last_mod> 
-		<md5>2a81e9eeba3d891b0433b7b96bea3738</md5> 
-		<size>885</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>mod/fifo_agent_profiles/root.php</path> 
-		<last_mod>Thu, 15 Jul 2010 22:20:38 GMT</last_mod> 
-		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
-		<size>1913</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -3873,23 +3782,23 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/sqlite.sql</path> 
-		<last_mod>Sat, 17 Jul 2010 00:39:57 GMT</last_mod> 
-		<md5>3721051cdace679f2d1b7e039839b533</md5> 
-		<size>60929</size> 
+		<last_mod>Sun, 08 Aug 2010 09:55:32 GMT</last_mod> 
+		<md5>bd18009a855a7ed7259f82b8efd21ad6</md5> 
+		<size>61564</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/mysql.sql</path> 
-		<last_mod>Sat, 17 Jul 2010 00:42:15 GMT</last_mod> 
-		<md5>366505208082a1cf6f4cb4015bcc2451</md5> 
-		<size>61176</size> 
+		<last_mod>Sun, 08 Aug 2010 09:55:02 GMT</last_mod> 
+		<md5>b586052d25f09eefba771f22312672fd</md5> 
+		<size>61823</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>includes/install/sql/pgsql.sql</path> 
-		<last_mod>Sat, 17 Jul 2010 00:42:14 GMT</last_mod> 
-		<md5>f29ca18e3b4e1b571703d77f2891ffaf</md5> 
-		<size>62038</size> 
+		<last_mod>Sun, 08 Aug 2010 09:54:45 GMT</last_mod> 
+		<md5>712f21a781a45906e3ae8383f2bc872a</md5> 
+		<size>62674</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4370,9 +4279,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/footer.php</path> 
-		<last_mod>Thu, 15 Jul 2010 22:22:24 GMT</last_mod> 
-		<md5>ff847f2783eb54f3305f14d501599e76</md5> 
-		<size>4655</size> 
+		<last_mod>Thu, 05 Aug 2010 02:56:43 GMT</last_mod> 
+		<md5>cb940931f8ac763b7c7d79bfeb18049f</md5> 
+		<size>4794</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4552,9 +4461,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Thu, 29 Jul 2010 02:18:34 GMT</last_mod> 
-		<md5>fc5be96ffb8e7be6ea9fd016e5307c0a</md5> 
-		<size>218080</size> 
+		<last_mod>Sat, 07 Aug 2010 00:06:38 GMT</last_mod> 
+		<md5>e3ab9d3f4d0262ee49df9954b01d3d47</md5> 
+		<size>219432</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4776,9 +4685,9 @@
 	<src> 
 		<type>file</type> 
 		<path>core/upgrade/upgrade_xml.php</path> 
-		<last_mod>Tue, 20 Jul 2010 02:14:47 GMT</last_mod> 
-		<md5>7bf91067097b7938f8f220355f51d5d6</md5> 
-		<size>3590</size> 
+		<last_mod>Sun, 08 Aug 2010 13:04:16 GMT</last_mod> 
+		<md5>85d7d20e334887b4d687ebdb68c15b5e</md5> 
+		<size>3592</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -5154,8 +5063,8 @@
 	<src> 
 		<type>file</type> 
 		<path>index.php</path> 
-		<last_mod>Sun, 18 Jul 2010 05:49:14 GMT</last_mod> 
-		<md5>ad763156c214472a734cf279d1c4fe6e</md5> 
+		<last_mod>Sun, 08 Aug 2010 12:20:35 GMT</last_mod> 
+		<md5>2d734e681671e593c273c4e6b1037a89</md5> 
 		<size>11455</size> 
 	</src> 
 	<src> 
