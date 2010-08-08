@@ -14,6 +14,7 @@ require_once "includes/paging.php";
 
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
+
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";

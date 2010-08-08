@@ -104,7 +104,7 @@ $order = $_GET["order"];
 			}
 			$ivr_menu_options_param = str_replace("menu-", "", $ivr_menu_options_param);
 			$ivr_menu_options_param = str_replace("XML", "", $ivr_menu_options_param);
-			$ivr_menu_options_param = str_replace("default", "", $ivr_menu_options_param);
+			//$ivr_menu_options_param = str_replace("default", "", $ivr_menu_options_param);
 			$ivr_menu_options_param = str_replace("\${domain_name}", "", $ivr_menu_options_param);
 			$ivr_menu_options_param = str_replace("\${domain}", "", $ivr_menu_options_param);
 			$ivr_menu_options_param = ucfirst(trim($ivr_menu_options_param));
