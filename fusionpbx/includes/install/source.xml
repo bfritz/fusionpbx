@@ -1303,6 +1303,13 @@
 	</src> 
 	<src> 
 		<type>file</type> 
+		<path>mod/xml_cdr/v_xml_cdr.php</path> 
+		<last_mod>Sun, 08 Aug 2010 09:46:35 GMT</last_mod> 
+		<md5>00286667215a01bf26a668eb9db3adf0</md5> 
+		<size>21136</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
 		<path>mod/xml_cdr/v_xml_cdr_csv.php</path> 
 		<last_mod>Thu, 05 Aug 2010 02:10:02 GMT</last_mod> 
 		<md5>0ca01856fdb9494ae857287555a09c5d</md5> 
