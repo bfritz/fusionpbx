@@ -885,72 +885,106 @@ function switch_select_destination($select_type, $select_name, $select_value, $s
 
 	//list the languages
 		echo "<optgroup label='Language'>\n";
-		//english
-		if ("menu-exec-app:set set_language=en" == $select_value || "set:set_language=en" == $select_value) {
+		//dutch
+		if ("menu-exec-app:set default_language=nl" == $select_value || "set:default_language=nl" == $select_value) {
 			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set set_language=en' selected='selected'>English</option>\n";
+				echo "	<option value='menu-exec-app:set default_language=nl' selected='selected'>Dutch</option>\n";
 			}
 			if ($select_type == "dialplan") {
-				echo "	<option value='set:set_language=en' selected='selected'>English</option>\n";
+				echo "	<option value='set:default_language=nl' selected='selected'>Dutch</option>\n";
 			}
 		}
 		else {
 			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set set_language=en'>English</option>\n";
+				echo "	<option value='menu-exec-app:set default_language=nl'>Dutch</option>\n";
 			}
 			if ($select_type == "dialplan") {
-				echo "	<option value='set:set_language=en'>English</option>\n";
+				echo "	<option value='set:default_language=nl'>Dutch</option>\n";
+			}
+		}
+		//english
+		if ("menu-exec-app:set default_language=en" == $select_value || "set:default_language=en" == $select_value) {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set default_language=en' selected='selected'>English</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:default_language=en' selected='selected'>English</option>\n";
+			}
+		}
+		else {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set default_language=en'>English</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:default_language=en'>English</option>\n";
 			}
 		}
 		//french
-		if ("menu-exec-app:set set_language=fr" == $select_value || "set:set_language=fr" == $select_value) {
+		if ("menu-exec-app:set default_language=fr" == $select_value || "set:default_language=fr" == $select_value) {
 			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set set_language=fr' selected='selected'>French</option>\n";
+				echo "	<option value='menu-exec-app:set default_language=fr' selected='selected'>French</option>\n";
 			}
 			if ($select_type == "dialplan") {
-				echo "	<option value='set:set_language=fr' selected='selected'>French</option>\n";
+				echo "	<option value='set:default_language=fr' selected='selected'>French</option>\n";
 			}
 		}
 		else {
 			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set set_language=fr'>French</option>\n";
+				echo "	<option value='menu-exec-app:set default_language=fr'>French</option>\n";
 			}
 			if ($select_type == "dialplan") {
-				echo "	<option value='set:set_language=fr'>French</option>\n";
+				echo "	<option value='set:default_language=fr'>French</option>\n";
+			}
+		}
+		//italian
+		if ("menu-exec-app:set default_language=it" == $select_value || "set:default_language=it" == $select_value) {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set default_language=it' selected='selected'>Italian</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:default_language=it' selected='selected'>Italian</option>\n";
+			}
+		}
+		else {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set default_language=it'>Italian</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:default_language=it'>Italian</option>\n";
 			}
 		}
 		//german
-		if ("menu-exec-app:set set_language=de" == $select_value || "set:set_language=de" == $select_value) {
+		if ("menu-exec-app:set default_language=de" == $select_value || "set:default_language=de" == $select_value) {
 			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set set_language=de' selected='selected'>German</option>\n";
+				echo "	<option value='menu-exec-app:set default_language=de' selected='selected'>German</option>\n";
 			}
 			if ($select_type == "dialplan") {
-				echo "	<option value='set:set_language=de' selected='selected'>German</option>\n";
+				echo "	<option value='set:default_language=de' selected='selected'>German</option>\n";
 			}
 		}
 		else {
 			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set set_language=de'>German</option>\n";
+				echo "	<option value='menu-exec-app:set default_language=de'>German</option>\n";
 			}
 			if ($select_type == "dialplan") {
-				echo "	<option value='set:set_language=de'>German</option>\n";
+				echo "	<option value='set:default_language=de'>German</option>\n";
 			}
 		}
 		//spanish
-		if ("menu-exec-app:set set_language=es" == $select_value || "set:set_language=es" == $select_value) {
+		if ("menu-exec-app:set default_language=es" == $select_value || "set:default_language=es" == $select_value) {
 			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set set_language=es' selected='selected'>Spanish</option>\n";
+				echo "	<option value='menu-exec-app:set default_language=es' selected='selected'>Spanish</option>\n";
 			}
 			if ($select_type == "dialplan") {
-				echo "	<option value='set:set_language=es' selected='selected'>Spanish</option>\n";
+				echo "	<option value='set:default_language=es' selected='selected'>Spanish</option>\n";
 			}
 		}
 		else {
 			if ($select_type == "ivr") {
-				echo "	<option value='menu-exec-app:set set_language=es'>Spanish</option>\n";
+				echo "	<option value='menu-exec-app:set default_language=es'>Spanish</option>\n";
 			}
 			if ($select_type == "dialplan") {
-				echo "	<option value='set:set_language=es'>Spanish</option>\n";
+				echo "	<option value='set:default_language=es'>Spanish</option>\n";
 			}
 		}
 		echo "</optgroup>\n";
@@ -5535,7 +5569,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 					$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
 					if (stripos($ivr_menu_greet_long, 'mp3') !== false || stripos($ivr_menu_greet_long, 'wav') !== false) {
 						//found wav or mp3
-						$tmp .= "		greet-long=\"".$v_recordings_dir."/".$ivr_menu_greet_long."\"\n";
+						$tmp .= "		greet-long=\"".$ivr_menu_greet_long."\"\n";
 					}
 					else {
 						//not found
@@ -5543,7 +5577,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 					}
 					if (stripos($ivr_menu_greet_short, 'mp3') !== false || stripos($ivr_menu_greet_short, 'wav') !== false) {
 						if (strlen($ivr_menu_greet_short) > 0) {
-							$tmp .= "		greet-short=\"".$v_recordings_dir."/".$ivr_menu_greet_short."\"\n";
+							$tmp .= "		greet-short=\"".$ivr_menu_greet_short."\"\n";
 						}
 					}
 					else {
