@@ -272,9 +272,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "	Destination:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	
-	//switch_select_destination(select_type, select_name, select_value, select_style);
-	switch_select_destination("ivr", "ivr_menu_options_param", $ivr_menu_options_param, "");
+
+	//switch_select_destination(select_type, select_name, select_value, select_style, action);
+	switch_select_destination("ivr", "ivr_menu_options_param", $ivr_menu_options_param, "", $ivr_menu_options_action);
 
 	echo "<br />\n";
 	echo "Select the destination.\n";
