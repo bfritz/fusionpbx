@@ -121,9 +121,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/calls_active/v_calls_active_extensions.php</path> 
-		<last_mod>Sun, 18 Jul 2010 05:16:16 GMT</last_mod> 
-		<md5>6ae530f9a9e39d18aa85ee611be60bed</md5> 
-		<size>5412</size> 
+		<last_mod>Tue, 10 Aug 2010 08:32:55 GMT</last_mod> 
+		<md5>27bfc4f34f813772053baa604460ce3b</md5> 
+		<size>5411</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -142,9 +142,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/calls_active/v_calls_active_extensions_inc.php</path> 
-		<last_mod>Sun, 18 Jul 2010 05:31:57 GMT</last_mod> 
-		<md5>39ada2f8a07de9cd1b14217803a9938e</md5> 
-		<size>15310</size> 
+		<last_mod>Tue, 10 Aug 2010 09:47:31 GMT</last_mod> 
+		<md5>adc42ac9e39ef7ae83ed920c38618be9</md5> 
+		<size>16054</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -1303,13 +1303,6 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>mod/xml_cdr/v_xml_cdr.php</path> 
-		<last_mod>Sun, 08 Aug 2010 09:46:35 GMT</last_mod> 
-		<md5>00286667215a01bf26a668eb9db3adf0</md5> 
-		<size>21136</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
 		<path>mod/xml_cdr/v_xml_cdr_csv.php</path> 
 		<last_mod>Thu, 05 Aug 2010 02:10:02 GMT</last_mod> 
 		<md5>0ca01856fdb9494ae857287555a09c5d</md5> 
@@ -1349,6 +1342,13 @@
 		<last_mod>Wed, 04 Aug 2010 23:11:43 GMT</last_mod> 
 		<md5>539839d031b24f1716d43c60989d2291</md5> 
 		<size>5819</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>mod/xml_cdr/v_xml_cdr.php</path> 
+		<last_mod>Sun, 08 Aug 2010 09:46:35 GMT</last_mod> 
+		<md5>00286667215a01bf26a668eb9db3adf0</md5> 
+		<size>21136</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -1836,9 +1836,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/ivr_menu/v_ivr_menu_options_edit.php</path> 
-		<last_mod>Thu, 15 Jul 2010 03:40:47 GMT</last_mod> 
-		<md5>4ec5d067d55f420d8e05589be91e1cf3</md5> 
-		<size>11074</size> 
+		<last_mod>Tue, 10 Aug 2010 22:48:11 GMT</last_mod> 
+		<md5>9001a479d993ddb25912afd519d2a5dd</md5> 
+		<size>11107</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -3859,9 +3859,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/dialplan/default.xml</path> 
-		<last_mod>Fri, 25 Jun 2010 04:46:20 GMT</last_mod> 
-		<md5>84bca9d9646149d958254c659a1b2450</md5> 
-		<size>33422</size> 
+		<last_mod>Tue, 10 Aug 2010 19:55:09 GMT</last_mod> 
+		<md5>dd6850dc2abfdc193854db5d1c498d5f</md5> 
+		<size>34107</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4272,9 +4272,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/source.xml</path> 
-		<last_mod>Thu, 06 May 2010 10:16:16 GMT</last_mod> 
-		<md5>ad9ca8e9e944fda38e0ca572eac5d5e5</md5> 
-		<size>138857</size> 
+		<last_mod>Sun, 08 Aug 2010 13:08:37 GMT</last_mod> 
+		<md5>bdc136c9a34f8eda8d4b006651716fd2</md5> 
+		<size>150758</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4391,9 +4391,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/checkauth.php</path> 
-		<last_mod>Sun, 27 Jun 2010 10:21:05 GMT</last_mod> 
-		<md5>40384b0938a6d9bb8c191de881ffbccb</md5> 
-		<size>4546</size> 
+		<last_mod>Wed, 11 Aug 2010 04:00:53 GMT</last_mod> 
+		<md5>2a2799b91f43db064bdb0a122bf56f79</md5> 
+		<size>4544</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4468,9 +4468,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Sat, 09 Aug 2010 00:06:38 GMT</last_mod> 
-		<md5>e3ab9d3f4d0262ee49df9954b01d3d47</md5> 
-		<size>219432</size> 
+		<last_mod>Tue, 10 Aug 2010 22:28:23 GMT</last_mod> 
+		<md5>684480b884229a6e48a7fe287089616c</md5> 
+		<size>219456</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4811,7 +4811,7 @@
 	<src> 
 		<type>file</type> 
 		<path>core/users/index.php</path> 
-		<last_mod>Mon, 08 Aug 2010 22:22:36 GMT</last_mod> 
+		<last_mod>Thu, 15 Jul 2010 22:22:36 GMT</last_mod> 
 		<md5>9e0a8c8ef7c0af5cdec0afb0d16f65c9</md5> 
 		<size>1450</size> 
 	</src> 
@@ -5070,8 +5070,8 @@
 	<src> 
 		<type>file</type> 
 		<path>index.php</path> 
-		<last_mod>Sun, 08 Aug 2010 10:42:35 GMT</last_mod> 
-		<md5>2d734e681671e593c273c4e6b1037a89</md5> 
+		<last_mod>Wed, 11 Aug 2010 06:50:33 GMT</last_mod> 
+		<md5>68aa1842bbb2858a2a574adbf8347fd4</md5> 
 		<size>11455</size> 
 	</src> 
 	<src> 
