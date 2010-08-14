@@ -10,44 +10,44 @@ else {
 	exit;
 }
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$ivr_menu_option_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
+//action add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$ivr_menu_option_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+	}
 
-if (strlen($_GET["ivr_menu_id"]) > 0) {
-	$ivr_menu_id = check_str($_GET["ivr_menu_id"]);
-}
+//get the menu id
+	if (strlen($_GET["ivr_menu_id"]) > 0) {
+		$ivr_menu_id = check_str($_GET["ivr_menu_id"]);
+	}
 
-//POST to PHP variables
-if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
-	$ivr_menu_id = check_str($_POST["ivr_menu_id"]);
-	$ivr_menu_options_digits = check_str($_POST["ivr_menu_options_digits"]);
-	$ivr_menu_options_action = check_str($_POST["ivr_menu_options_action"]);
-	$ivr_menu_options_param = check_str($_POST["ivr_menu_options_param"]);
-	$ivr_menu_options_order = check_str($_POST["ivr_menu_options_order"]);
-	$ivr_menu_options_desc = check_str($_POST["ivr_menu_options_desc"]);
+//get the http post variables and set them to php variables
+	if (count($_POST)>0) {
+		//$v_id = check_str($_POST["v_id"]);
+		$ivr_menu_id = check_str($_POST["ivr_menu_id"]);
+		$ivr_menu_options_digits = check_str($_POST["ivr_menu_options_digits"]);
+		$ivr_menu_options_action = check_str($_POST["ivr_menu_options_action"]);
+		$ivr_menu_options_param = check_str($_POST["ivr_menu_options_param"]);
+		$ivr_menu_options_order = check_str($_POST["ivr_menu_options_order"]);
+		$ivr_menu_options_desc = check_str($_POST["ivr_menu_options_desc"]);
 
-	//set the default ivr_menu_options_action
-		if (strlen($ivr_menu_options_action) == 0) {
-			$ivr_menu_options_action = "menu-exec-app";
-		}
+		//set the default ivr_menu_options_action
+			if (strlen($ivr_menu_options_action) == 0) {
+				$ivr_menu_options_action = "menu-exec-app";
+			}
 
-	//seperate the action and the param
-		$options_array = explode(":", $ivr_menu_options_param);
-		$ivr_menu_options_action = array_shift($options_array);
-		$ivr_menu_options_param = join(':', $options_array);
-}
+		//seperate the action and the param
+			$options_array = explode(":", $ivr_menu_options_param);
+			$ivr_menu_options_action = array_shift($options_array);
+			$ivr_menu_options_param = join(':', $options_array);
+	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
 	if ($action == "update") {
 		$ivr_menu_option_id = check_str($_POST["ivr_menu_option_id"]);
 	}
@@ -73,98 +73,107 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
+	//add or update the database
+		if ($_POST["persistformvar"] != "true") {
+			if ($action == "add") {
+				$sql = "insert into v_ivr_menu_options ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "ivr_menu_id, ";
+				$sql .= "ivr_menu_options_digits, ";
+				$sql .= "ivr_menu_options_action, ";
+				$sql .= "ivr_menu_options_param, ";
+				$sql .= "ivr_menu_options_order, ";
+				$sql .= "ivr_menu_options_desc ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$ivr_menu_id', ";
+				$sql .= "'$ivr_menu_options_digits', ";
+				$sql .= "'$ivr_menu_options_action', ";
+				$sql .= "'$ivr_menu_options_param', ";
+				$sql .= "'$ivr_menu_options_order', ";
+				$sql .= "'$ivr_menu_options_desc' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
+				//synchronize the xml config
+				sync_package_v_ivr_menu();
 
-//Add or update the database
-if ($_POST["persistformvar"] != "true") {
-	if ($action == "add") {
-		$sql = "insert into v_ivr_menu_options ";
-		$sql .= "(";
-		$sql .= "v_id, ";
-		$sql .= "ivr_menu_id, ";
-		$sql .= "ivr_menu_options_digits, ";
-		$sql .= "ivr_menu_options_action, ";
-		$sql .= "ivr_menu_options_param, ";
-		$sql .= "ivr_menu_options_order, ";
-		$sql .= "ivr_menu_options_desc ";
-		$sql .= ")";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'$v_id', ";
-		$sql .= "'$ivr_menu_id', ";
-		$sql .= "'$ivr_menu_options_digits', ";
-		$sql .= "'$ivr_menu_options_action', ";
-		$sql .= "'$ivr_menu_options_param', ";
-		$sql .= "'$ivr_menu_options_order', ";
-		$sql .= "'$ivr_menu_options_desc' ";
-		$sql .= ")";
-		$db->exec(check_sql($sql));
-		unset($sql);
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_id\">\n";
+				echo "<div align='center'>\n";
+				echo "Add Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "add")
 
-		//synchronize the xml config
-		sync_package_v_ivr_menu();
+			if ($action == "update") {
+				$sql = "update v_ivr_menu_options set ";
+				$sql .= "v_id = '$v_id', ";
+				$sql .= "ivr_menu_id = '$ivr_menu_id', ";
+				$sql .= "ivr_menu_options_digits = '$ivr_menu_options_digits', ";
+				$sql .= "ivr_menu_options_action = '$ivr_menu_options_action', ";
+				$sql .= "ivr_menu_options_param = '$ivr_menu_options_param', ";
+				$sql .= "ivr_menu_options_order = '$ivr_menu_options_order', ";
+				$sql .= "ivr_menu_options_desc = '$ivr_menu_options_desc' ";
+				$sql .= "where ivr_menu_option_id = '$ivr_menu_option_id'";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_id\">\n";
-		echo "<div align='center'>\n";
-		echo "Add Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "add")
+				//synchronize the xml config
+				sync_package_v_ivr_menu();
 
-	if ($action == "update") {
-		$sql = "update v_ivr_menu_options set ";
-		$sql .= "v_id = '$v_id', ";
-		$sql .= "ivr_menu_id = '$ivr_menu_id', ";
-		$sql .= "ivr_menu_options_digits = '$ivr_menu_options_digits', ";
-		$sql .= "ivr_menu_options_action = '$ivr_menu_options_action', ";
-		$sql .= "ivr_menu_options_param = '$ivr_menu_options_param', ";
-		$sql .= "ivr_menu_options_order = '$ivr_menu_options_order', ";
-		$sql .= "ivr_menu_options_desc = '$ivr_menu_options_desc' ";
-		$sql .= "where ivr_menu_option_id = '$ivr_menu_option_id'";
-		$db->exec(check_sql($sql));
-		unset($sql);
-
-		//synchronize the xml config
-		sync_package_v_ivr_menu();
-
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_id\">\n";
-		echo "<div align='center'>\n";
-		echo "Update Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "update")
-} //if ($_POST["persistformvar"] != "true") { 
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_id\">\n";
+				echo "<div align='center'>\n";
+				echo "Update Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "update")
+		} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$ivr_menu_option_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_ivr_menu_options ";
-	$sql .= "where ivr_menu_option_id = '$ivr_menu_option_id' ";
-	$sql .= "and v_id = '$v_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$ivr_menu_id = $row["ivr_menu_id"];
-		$ivr_menu_options_digits = $row["ivr_menu_options_digits"];
-		$ivr_menu_options_action = $row["ivr_menu_options_action"];
-		$ivr_menu_options_param = $row["ivr_menu_options_param"];
-		$ivr_menu_options_order = $row["ivr_menu_options_order"];
-		$ivr_menu_options_desc = $row["ivr_menu_options_desc"];
-		break; //limit to 1 row
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$ivr_menu_option_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_ivr_menu_options ";
+		$sql .= "where ivr_menu_option_id = '$ivr_menu_option_id' ";
+		$sql .= "and v_id = '$v_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$v_id = $row["v_id"];
+			$ivr_menu_id = $row["ivr_menu_id"];
+			$ivr_menu_options_digits = $row["ivr_menu_options_digits"];
+			$ivr_menu_options_action = $row["ivr_menu_options_action"];
+			$ivr_menu_options_param = $row["ivr_menu_options_param"];
+
+			//if admin show only the param
+				if (ifgroup("admin")) {
+					$ivr_menu_options_label = $ivr_menu_options_param;
+				}
+
+			//if superadmin show both the action and param
+				if (ifgroup("superadmin")) {
+					$ivr_menu_options_label = $ivr_menu_options_action.':'.$ivr_menu_options_param;
+				}
+
+			$ivr_menu_options_order = $row["ivr_menu_options_order"];
+			$ivr_menu_options_desc = $row["ivr_menu_options_desc"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
-
+//send the content to the browser
 	require_once "includes/header.php";
 
 
@@ -273,8 +282,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 
-	//switch_select_destination(select_type, select_name, select_value, select_style, action);
-	switch_select_destination("ivr", "ivr_menu_options_param", $ivr_menu_options_param, "", $ivr_menu_options_action);
+	//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
+	switch_select_destination("ivr", $ivr_menu_options_label, "ivr_menu_options_param", $ivr_menu_options_action.':'.$ivr_menu_options_param, "", $ivr_menu_options_action);
 
 	echo "<br />\n";
 	echo "Select the destination.\n";

@@ -67,25 +67,50 @@ $v_id = '1';
 //set the max execution time to 1 hour
 	ini_set('max_execution_time',3600);
 
-//define the variables
-	$dbtype = '';
-	$dbfilename = '';
-	$dbfilepath = '';
-	$dbhost = '';
-	$dbport = '';
-	$dbname = '';
-	$dbusername = '';
-	$dbpassword = '';
+//set php variables with data from http
+	$db_type = $_POST["db_type"];
+	$db_filename = $_POST["db_filename"];
+	$db_host = $_POST["db_host"];
+	$db_port = $_POST["db_port"];
+	$db_name = $_POST["db_name"];
+	$db_username = $_POST["db_username"];
+	$db_password = $_POST["db_password"];
+	$db_create_username = $_POST["db_create_username"];
+	$db_create_password = $_POST["db_create_password"];
+	$db_filepath = $_POST["db_filepath"];
+	$install_step = $_POST["install_step"];
+	$install_secure_dir = $_POST["install_secure_dir"];
+	$install_php_dir = $_POST["install_php_dir"];
+	$install_tmp_dir = $_POST["install_tmp_dir"];
+	$install_v_backup_dir = $_POST["install_v_backup_dir"];
+	$install_v_dir = $_POST["install_v_dir"];
 
-//install_ prefix was used to so these variables aren't overwritten by config.php
-	$install_v_dir = '';
-	$install_php_dir = '';
-	$install_tmp_dir = '';
-	$install_v_backup_dir = '';
+//clean up the values
+	$install_v_dir = realpath($install_v_dir);
+	$install_v_dir = str_replace("\\", "/", $install_v_dir);
 
-	//set the default dbfilepath
-	if (strlen($dbfilepath) == 0) { //secure dir
-		$dbfilepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+	$install_php_dir = realpath($_POST["install_php_dir"]);
+	$install_php_dir = str_replace("\\", "/", $install_php_dir);
+
+	$install_tmp_dir = realpath($_POST["install_tmp_dir"]);
+	$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
+
+	$install_v_backup_dir = realpath($_POST["install_v_backup_dir"]);
+	$install_v_backup_dir = str_replace("\\", "/", $install_v_backup_dir);
+
+//set the default install_secure_dir
+	if (strlen($install_secure_dir) == 0) { //secure dir
+		$install_secure_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+	}
+
+//set the default db_filepath
+	if (strlen($db_filepath) == 0) { //secure dir
+		$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+	}
+
+//set the default db_filename
+	if ($db_type == "sqlite") {
+		if (strlen($db_filename) == 0) { $db_filename = "fusionpbx.db"; }
 	}
 
 //find the freeswitch directory
@@ -195,31 +220,11 @@ $v_id = '1';
 	}
 
 
-if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
+if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-	$dbtype = $_POST["dbtype"];
-	$dbfilename = $_POST["dbfilename"];
-	$dbfilepath = $_POST["dbfilepath"];
-	$dbhost = $_POST["dbhost"];
-	$dbport = $_POST["dbport"];
-	$dbname = $_POST["dbname"];
-	$dbusername = $_POST["dbusername"];
-	$dbpassword = $_POST["dbpassword"];
-	$install_v_dir = realpath($_POST["install_v_dir"]);
-	$install_v_dir = str_replace("\\", "/", $install_v_dir);
-
-	$install_php_dir = realpath($_POST["install_php_dir"]);
-	$install_php_dir = str_replace("\\", "/", $install_php_dir);
-
-	$install_tmp_dir = realpath($_POST["install_tmp_dir"]);
-	$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
-
-	$install_v_backup_dir = realpath($_POST["install_v_backup_dir"]);
-	$install_v_backup_dir = str_replace("\\", "/", $install_v_backup_dir);
-
 	//check for all required data
-		if (strlen($dbtype) == 0) { $msg .= "Please provide the Database Type<br>\n"; }
+		if (strlen($db_type) == 0) { $msg .= "Please provide the Database Type<br>\n"; }
 		if (strlen($install_v_dir) == 0) { $msg .= "Please provide the Switch Directory<br>\n"; }
 		if (strlen($install_php_dir) == 0) { $msg .= "Please provide the PHP Directory<br>\n"; }
 		if (strlen($install_tmp_dir) == 0) { $msg .= "Please provide the Temp Directory<br>\n"; }
@@ -229,7 +234,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//some windows operating systems report read only but are writable
 			}
 			else {
-				$msg .= "<b>Write access to ".$install_v_dir." and its sub-directories is required.</b><br />\n";
+				//$msg .= "<b>Write access to ".$install_v_dir." and its sub-directories is required.</b><br />\n";
 			}
 		}
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -280,26 +285,26 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$tmp_config .= "//-----------------------------------------------------\n";
 		$tmp_config .= "\n";
 		$tmp_config .= "	//set the database type\n";
-		$tmp_config .= "		\$dbtype = '".$dbtype."'; //sqlite, mysql, pgsql, others with a manually created PDO connection\n";
+		$tmp_config .= "		\$dbtype = '".$db_type."'; //sqlite, mysql, pgsql, others with a manually created PDO connection\n";
 		$tmp_config .= "\n";
-		if ($dbtype == "sqlite") {
+		if ($db_type == "sqlite") {
 			$tmp_config .= "	//sqlite: the dbfilename and dbfilepath are automatically assigned however the values can be overidden by setting the values here.\n";
-			$tmp_config .= "		\$dbfilename = '".$dbfilename."'; //host name/ip address + '.db' is the default database filename\n";
-			$tmp_config .= "		\$dbfilepath = '".$dbfilepath."'; //the path is determined by a php variable\n";
+			$tmp_config .= "		\$dbfilename = '".$db_filename."'; //host name/ip address + '.db' is the default database filename\n";
+			$tmp_config .= "		\$dbfilepath = '".$db_filepath."'; //the path is determined by a php variable\n";
 		}
 		$tmp_config .= "\n";
 		$tmp_config .= "	//mysql: database connection information\n";
-		if ($dbtype == "mysql") {
-			if ($dbhost == "localhost") {
+		if ($db_type == "mysql") {
+			if ($db_host == "localhost") {
 				//if localhost is used it defaults to a Unix Socket which doesn't seem to work.
 				//replace localhost with 127.0.0.1 so that it will connect using TCP
-				$dbhost = "127.0.0.1";
+				$db_host = "127.0.0.1";
 			}
-			$tmp_config .= "		\$dbhost = '".$dbhost."';\n";
-			$tmp_config .= "		\$dbport = '".$dbport."';\n";
-			$tmp_config .= "		\$dbname = '".$dbname."';\n";
-			$tmp_config .= "		\$dbusername = '".$dbusername."';\n";
-			$tmp_config .= "		\$dbpassword = '".$dbpassword."';\n";
+			$tmp_config .= "		\$dbhost = '".$db_host."';\n";
+			$tmp_config .= "		\$dbport = '".$db_port."';\n";
+			$tmp_config .= "		\$dbname = '".$db_name."';\n";
+			$tmp_config .= "		\$dbusername = '".$db_username."';\n";
+			$tmp_config .= "		\$dbpassword = '".$db_password."';\n";
 		}
 		else {
 			$tmp_config .= "		//\$dbhost = '';\n";
@@ -310,19 +315,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		$tmp_config .= "\n";
 		$tmp_config .= "	//pgsql: database connection information\n";
-		if ($dbtype == "pgsql") {
-			$tmp_config .= "		\$dbhost = '".$dbhost."'; //set the host only if the database is not local\n";
-			$tmp_config .= "		\$dbport = '".$dbport."';\n";
-			$tmp_config .= "		\$dbname = '".$dbname."';\n";
-			$tmp_config .= "		\$dbusername = '".$dbusername."';\n";
-			$tmp_config .= "		\$dbpassword = '".$dbpassword."';\n";
+		if ($db_type == "pgsql") {
+			$tmp_config .= "		\$dbhost = '".$db_host."'; //set the host only if the database is not local\n";
+			$tmp_config .= "		\$dbport = '".$db_port."';\n";
+			$tmp_config .= "		\$dbname = '".$db_name."';\n";
+			$tmp_config .= "		\$dbusername = '".$db_username."';\n";
+			$tmp_config .= "		\$dbpassword = '".$db_password."';\n";
 		}
 		else {
-			$tmp_config .= "		//\$dbhost = '".$dbhost."'; //set the host only if the database is not local\n";
-			$tmp_config .= "		//\$dbport = '".$dbport."';\n";
-			$tmp_config .= "		//\$dbname = '".$dbname."';\n";
-			$tmp_config .= "		//\$dbusername = '".$dbusername."';\n";
-			$tmp_config .= "		//\$dbpassword = '".$dbpassword."';\n";
+			$tmp_config .= "		//\$dbhost = '".$db_host."'; //set the host only if the database is not local\n";
+			$tmp_config .= "		//\$dbport = '".$db_port."';\n";
+			$tmp_config .= "		//\$dbname = '".$db_name."';\n";
+			$tmp_config .= "		//\$dbusername = '".$db_username."';\n";
+			$tmp_config .= "		//\$dbpassword = '".$db_password."';\n";
 		}
 		$tmp_config .= "\n";
 		$tmp_config .= "	//show errors\n";
@@ -345,11 +350,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//copy the secure directory
 			$srcdir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 			//if the directory already exists do not copy over it.
-			if (!is_dir($dbfilepath)) {
+			if (!is_dir($install_secure_dir)) {
 				//only copy if the src and dest are different
-				if ($srcdir != $dbfilepath) {
-					if (!is_dir($dbfilepath)) { mkdir($dbfilepath,0777,true); }
-					recursive_copy($srcdir, $dbfilepath);
+				if ($srcdir != $install_secure_dir) {
+					if (!is_dir($install_secure_dir)) { mkdir($install_secure_dir,0777,true); }
+					recursive_copy($srcdir, $install_secure_dir);
 				}
 			}
 			unset($srcdir);
@@ -360,13 +365,44 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		fclose($fout);
 
 		//load data into the database
-			if ($dbtype == "sqlite") {
+			if ($db_type == "sqlite") {
 				//sqlite database will be created when the config.php is loaded and only if the database file does not exist
+				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/sqlite.sql';
+				$file_contents = file_get_contents($filename);
+				unset($filename);
+				try {
+					$db = new PDO('sqlite:'.$db_filepath.'/'.$db_filename); //sqlite 3
+					//$db = new PDO('sqlite::memory:'); //sqlite 3
+					$db->beginTransaction();
+				}
+				catch (PDOException $error) {
+					print "error: " . $error->getMessage() . "<br/>";
+					die();
+				}
+
+				//replace \r\n with \n then explode on \n
+					$file_contents = str_replace("\r\n", "\n", $file_contents);
+
+				//loop line by line through all the lines of sql code
+					$stringarray = explode("\n", $file_contents);
+					$x = 0;
+					foreach($stringarray as $sql) {
+						try {
+							$db->query($sql);
+						}
+						catch (PDOException $error) {
+							echo "error: " . $error->getMessage() . " sql: $sql<br/>";
+							//die();
+						}
+						$x++;
+					}
+					unset ($file_contents, $sql);
+					$db->commit();
 			}
 
 			//--- begin: create the pgsql database -----------------------------------------
 			/*
-			if ($dbtype == "pgsql") {
+			if ($db_type == "pgsql") {
 
 				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/pgsql.sql';
 				$file_contents = file_get_contents($filename);
@@ -376,12 +412,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				//database connection
 					try {
-						if (strlen($dbhost) > 0) {
-							if (strlen($dbport) == 0) { $dbport = "5432"; }
-							$dbsql = new PDO("pgsql:host=localhost port=5432 user=$dbusername password=$dbpassword");
+						if (strlen($db_host) > 0) {
+							if (strlen($db_port) == 0) { $db_port = "5432"; }
+							$db_sql = new PDO("pgsql:host=localhost port=5432 user=$db_username password=$db_password");
 						}
 						else {
-							$dbsql = new PDO("pgsql:user=$dbusername password=$dbpassword");
+							$db_sql = new PDO("pgsql:user=$db_username password=$db_password");
 						}
 					}
 					catch (PDOException $error) {
@@ -391,22 +427,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 					//create the database
 						$sql = "";
-						$sql .= "CREATE DATABASE $dbname; ";
+						$sql .= "CREATE DATABASE $db_name; ";
 						//echo $sql;
-						$dbsql->query($sql);
+						$db_sql->query($sql);
 						unset($sql);
 
 					//close database connection_aborted
-						$dbsql = null;
+						$db_sql = null;
 
-					//open database connection with $dbname
+					//open database connection with $db_name
 						try {
-							if (strlen($dbhost) > 0) {
-								if (strlen($dbport) == 0) { $dbport = "5432"; }
-								$dbsql = new PDO("pgsql:host=localhost port=5432 dbname=$dbname user=$dbusername password=$dbpassword");
+							if (strlen($db_host) > 0) {
+								if (strlen($db_port) == 0) { $db_port = "5432"; }
+								$db_sql = new PDO("pgsql:host=localhost port=5432 db_name=$db_name user=$db_username password=$db_password");
 							}
 							else {
-								$dbsql = new PDO("pgsql:dbname=$dbname user=$dbusername password=$dbpassword");
+								$db_sql = new PDO("pgsql:db_name=$db_name user=$db_username password=$db_password");
 							}
 						}
 						catch (PDOException $error) {
@@ -423,7 +459,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					foreach($stringarray as $sql) {
 						if (strlen($sql) > 3) {
 							try {
-								$dbsql->query($sql);
+								$db_sql->query($sql);
 							}
 							catch (PDOException $error) {
 								echo "error: " . $error->getMessage() . " sql: $sql<br/>";
@@ -432,57 +468,60 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						}
 						$x++;
 					}
-					unset ($dbsql, $file_contents, $sql);
+					unset ($db_sql, $file_contents, $sql);
 			}
 			*/
 			//--- end: create the pgsql database -----------------------------------------
 
 
 			//--- begin: create the mysql database -----------------------------------------
-			if ($dbtype == "mysql") {
+			if ($db_type == "mysql") {
 				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/mysql.sql';
 				$file_contents = file_get_contents($filename);
-				//echo "<pre>\n";
-				//echo $file_contents;
-				//echo "</pre>\n";
 
 				//database connection
 					try {
-						if (strlen($dbhost) == 0 && strlen($dbport) == 0) {
-						//if both host and port are empty use the unix socket
-						$dbsql = new PDO("mysql:host=$dbhost;unix_socket=/var/run/mysqld/mysqld.sock;", $dbusername, $dbpassword);
-					}
-					else {
-						if (strlen($dbport) == 0) {
-							//leave out port if it is empty
-							$dbsql = new PDO("mysql:host=$dbhost;", $dbusername, $dbpassword);
+						if (strlen($db_host) == 0 && strlen($db_port) == 0) {
+							//if both host and port are empty use the unix socket
+							$db_sql = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_username, $db_password);
 						}
 						else {
-							$dbsql = new PDO("mysql:host=$dbhost;port=$dbport;", $dbusername, $dbpassword);
+							if (strlen($db_port) == 0) {
+								//leave out port if it is empty
+								$db_sql = new PDO("mysql:host=$db_host;", $db_username, $db_password);
+							}
+							else {
+								$db_sql = new PDO("mysql:host=$db_host;port=$db_port;", $db_username, $db_password);
+							}
 						}
-					}
-					$dbsql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				}
-				catch (PDOException $error) {
-					print "error: " . $error->getMessage() . "<br/>";
-					//die();
-				}
-
-				//create the database
-					try {
-						$dbsql->query("CREATE DATABASE $dbname;");
+						$db_sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 					}
 					catch (PDOException $error) {
-						//database exists so upgrade the schema
-						$display_results = false;
-						require_once "core/upgrade/upgrade_schema.php";
-						header("Location: ".PROJECT_PATH."/login.php");
-						exit;
+						print "error: " . $error->getMessage() . "<br/>";
+						//die();
 					}
 
-				//select the database
-					$dbsql->query("USE $dbname;");
+				//create the database
+					$db_sql->query("CREATE DATABASE $db_name;");
 
+				//select the database
+					$db_sql->query("USE $db_name;");
+
+				//include the new config.php file
+					require_once "includes/config.php";
+
+				//load the default database into memory and compare it with the active database
+					$display_results = false;
+					require_once "includes/lib_schema.php";
+					db_upgrade_schema ($db, $db_type, $display_results);
+
+				//add the defaults data into the database
+
+				//redirect to the login page
+					header("Location: ".PROJECT_PATH."/login.php");
+					exit;
+
+				/*
 				//replace \r\n with \n then explode on \n
 					$file_contents = str_replace("\r\n", "\n", $file_contents);
 
@@ -492,7 +531,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					foreach($stringarray as $sql) {
 						if (strlen($sql) > 3) {
 							try {
-								$dbsql->query($sql);
+								$db_sql->query($sql);
 							}
 							catch (PDOException $error) {
 								//echo "error on line $x: " . $error->getMessage() . " sql: $sql<br/>";
@@ -501,14 +540,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						}
 						$x++;
 					}
-					unset ($dbsql, $file_contents, $sql);
-
+					unset ($db_sql, $file_contents, $sql);
+				*/
 			}
 			//--- end: create the mysql database -----------------------------------------
 
-
-		//include the new config.php file
-			require_once "includes/config.php";
 
 		//set system settings paths
 			//$install_v_dir = ''; //freeswitch directory
@@ -690,8 +726,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset($srcfile, $destfile);
 
 	//activate the .htaccess file
-		$srcfile = $dbfilepath.'/htaccess.tmp';
-		$destfile = $dbfilepath.'/.htaccess';
+		$srcfile = $install_secure_dir.'/htaccess.tmp';
+		$destfile = $install_secure_dir.'/.htaccess';
 		if (!copy($srcfile, $destfile)) {
 			//echo "failed to copy $srcfile to $destfile...\n";
 			//exit;
@@ -706,7 +742,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//redirect to the login page
 		$msg = "</strong><br />\n";
-		$msg .= "Congratulations, the installation has been completed. <br />";
+		$msg .= "Installation is complete. <br />";
 		$msg .= "<br /> ";
 		$msg .= "<strong>Getting Started:</strong><br /> ";
 		$msg .= "<ul><li>There are two levels of admins 1. superadmin 2. admin.<br />";
@@ -728,20 +764,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 
 //temp sqlite db
-	$dbfilepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH;
-	//if (file_exists($dbfilepath.'/'.$dbfilename)) {
-	//	unlink($dbfilepath.'/'.$dbfilename);
-	//}
 	//--- begin: create the sqlite db file -----------------------------------------
 		$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/sqlite.sql';
 		$file_contents = file_get_contents($filename);
 		unset($filename);
-		//echo "<pre>\n";
-		//echo $file_contents;
-		//echo "</pre>\n";
-		//exit;
 		try {
-			//$db_temp = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilename); //sqlite 3
+			//$db_temp = new PDO('sqlite:'.$db_filepath.'/'.$db_filename); //sqlite 3
 			$db_temp = new PDO('sqlite::memory:'); //sqlite 3
 			$db_temp->beginTransaction();
 		}
@@ -757,19 +785,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$stringarray = explode("\n", $file_contents);
 			$x = 0;
 			foreach($stringarray as $sql) {
-				//create the call detail records database
-				//if (strtolower(substr($sql, 0, 18)) == "create table v_cdr") {
-				//	//add the CDR database from lib_cdr.php
-				//}
-				//else { //create the tables and fill in the basic settings
-					try {
-						$db_temp->query($sql);
-					}
-					catch (PDOException $error) {
-						echo "error: " . $error->getMessage() . " sql: $sql<br/>";
-						//die();
-					}
-				//}
+				try {
+					$db_temp->query($sql);
+				}
+				catch (PDOException $error) {
+					echo "error: " . $error->getMessage() . " sql: $sql<br/>";
+					//die();
+				}
 				$x++;
 			}
 			unset ($file_contents, $sql);
@@ -847,215 +869,343 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//exit;
 		}
 
-	echo "<form method='post' name='frm' action=''>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
-	echo "<tr>\n";
-	echo "<td align='left' width='30%' nowrap><b>Installation</b></td>\n";
-	echo "<td width='70%' align='right'>&nbsp;</td>\n";
-	//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
-	echo "</tr>\n";
-?>
-<script type="text/javascript">
-function dbtype_onchange() {
-	var dbtype = document.getElementById("dbtype").value;
+/*
+pgsql
+		document.getElementById("desc_db_type").innerHTML = "Choose the database where the settings will be stored. <br /><b>Note: Before proceeding use the <a href='<?php echo PROJECT_PATH; ?>/includes/install/sql/pgsql.sql' target='_blank'>pgsql.sql</a> script to setup the database.</b>";
 
-	if (dbtype == "mysql") {
+		document.getElementById("desc_db_filename").innerHTML = "Not applicable"; document.frm.db_filename.value = ''; document.frm.db_filename.disabled = true;
+		document.getElementById("desc_install_secure_dir").innerHTML = "Path to the secure folder that contains PHP command line scripts.";
+		document.getElementById("desc_db_host").innerHTML = "Optional for PostgreSQL when the database is local."; document.frm.db_host.disabled = false;
+		document.getElementById("desc_db_port").innerHTML = "Optional if the database is using the default port."; document.frm.db_port.disabled = false; 
+		document.getElementById("desc_db_name").innerHTML = "Required for PostgreSQL."; document.frm.db_name.value = 'fusionpbx'; document.frm.db_name.disabled = false;
+		document.getElementById("desc_db_username").innerHTML = "Required for PostgreSQL."; document.frm.db_username.disabled = false;
+		document.getElementById("desc_db_password").innerHTML = "Required for PostgreSQL."; document.frm.db_password.disabled = false;
+*/
 
-		document.getElementById("desc_dbtype").innerHTML = "If you use the root database account the database can be created automatically. However if preferred the database can be created manually with the <a href='<?php echo PROJECT_PATH; ?>/includes/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
+// begin step 1 --------------------------------------
+	if ($_POST["install_step"] == "") {
+		echo "<form method='post' name='frm' action=''>\n";
+		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
-		document.getElementById("desc_dbfilename").innerHTML = "Not applicable"; document.frm.dbfilename.value = ''; document.frm.dbfilename.disabled = true;
-		document.getElementById("desc_dbfilepath").innerHTML = "Choose the database where the settings will be stored. <br />Path to the secure folder that contains PHP command line scripts.";
-		document.getElementById("desc_dbhost").innerHTML = "Recommended for MySQL."; document.frm.dbhost.disabled = false;
-		document.getElementById("desc_dbport").innerHTML = "Optional if the database is using the default port."; document.frm.dbport.disabled = false;
-		document.getElementById("desc_dbname").innerHTML = "Required for MySQL."; document.frm.dbname.value = 'fusionpbx'; document.frm.dbname.disabled = false;
-		document.getElementById("desc_dbusername").innerHTML = "Required for MySQL. "; document.frm.dbusername.disabled = false;
-		document.getElementById("desc_dbpassword").innerHTML = "Required for MySQL."; document.frm.dbpassword.disabled = false;
+		echo "<tr>\n";
+		echo "<td align='left' width='30%' nowrap><b>Installation: Step 1</b></td>\n";
+		echo "<td width='70%' align='right'>&nbsp;</td>\n";
+		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
+		echo "</tr>\n";
+
+		$db_type = $_POST["db_type"];
+		$install_step = $_POST["install_step"];
+
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "    Database Type:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<select name='db_type' id='db_type' class='formfld' id='form_tag' onchange='db_type_onchange();'>\n";
+		if (extension_loaded('pdo_pgsql')) {	echo "	<option value='pgsql'>postgresql</option>\n"; }
+		if (extension_loaded('pdo_mysql')) {	echo "	<option value='mysql'>mysql</option>\n"; }
+		if (extension_loaded('pdo_sqlite')) {	echo "	<option  value='sqlite' selected>sqlite</option>\n"; } //set sqlite as the default
+		echo "	</select><br />\n";
+		echo "		\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "		Secure Directory:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='install_secure_dir' maxlength='255' value=\"$install_secure_dir\"><br />\n";
+		echo "		Path to the secure directory that contains PHP command line scripts.\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "    FreeSWITCH Directory:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "    <input class='formfld' type='text' name='install_v_dir' maxlength='255' value=\"$install_v_dir\">\n";
+		echo "<br />\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "    PHP Directory:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "    <input class='formfld' type='text' name='install_php_dir' maxlength='255' value=\"$install_php_dir\"><br />\n";
+		echo "Path to PHP's bin or executable directory.<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "    Temp Directory:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "    <input class='formfld' type='text' name='install_tmp_dir' maxlength='255' value=\"".realpath(sys_get_temp_dir())."\"><br />\n";
+		echo "Set this to the temporary directory.<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "    Backup Directory:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "    <input class='formfld' type='text' name='install_v_backup_dir' maxlength='255' value=\"".realpath(sys_get_temp_dir())."\"><br />\n";
+		echo "Set a backup directory.<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "	<tr>\n";
+		echo "		<td colspan='2' align='right'>\n";
+		echo "			<input type='hidden' name='install_step' value='2'>\n";
+		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
+		echo "		</td>\n";
+		echo "	</tr>";
+
+		echo "</table>";
+		echo "</form>";
+		echo "</div>";
 	}
-	else if (dbtype == "pgsql") {
-		document.getElementById("desc_dbtype").innerHTML = "Choose the database where the settings will be stored. <br /><b>Note: Before proceeding use the <a href='<?php echo PROJECT_PATH; ?>/includes/install/sql/pgsql.sql' target='_blank'>pgsql.sql</a> script to setup the database.</b>";
+// end step 1 --------------------------------------
 
-		document.getElementById("desc_dbfilename").innerHTML = "Not applicable"; document.frm.dbfilename.value = ''; document.frm.dbfilename.disabled = true;
-		document.getElementById("desc_dbfilepath").innerHTML = "Path to the secure folder that contains PHP command line scripts.";
-		document.getElementById("desc_dbhost").innerHTML = "Optional for PostgreSQL when the database is local."; document.frm.dbhost.disabled = false;
-		document.getElementById("desc_dbport").innerHTML = "Optional if the database is using the default port."; document.frm.dbport.disabled = false; 
-		document.getElementById("desc_dbname").innerHTML = "Required for PostgreSQL."; document.frm.dbname.value = 'fusionpbx'; document.frm.dbname.disabled = false;
-		document.getElementById("desc_dbusername").innerHTML = "Required for PostgreSQL."; document.frm.dbusername.disabled = false;
-		document.getElementById("desc_dbpassword").innerHTML = "Required for PostgreSQL."; document.frm.dbpassword.disabled = false;
+
+// begin step 2, sqlite --------------------------------------
+	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "sqlite") {
+
+		echo "<form method='post' name='frm' action=''>\n";
+		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+
+		echo "<tr>\n";
+		echo "<td align='left' width='30%' nowrap><b>Installation: Step 2 - SQLite</b></td>\n";
+		echo "<td width='70%' align='right'>&nbsp;</td>\n";
+		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' 'valign='top' align='left' nowrap>\n";
+		echo "	Database Filename:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<input class='formfld' type='text' name='db_filename' maxlength='255' value=\"$db_filename\"><br />\n";
+		echo "	Default: fusiopbx.db. If the field is left empty then the file name is determined by the host or IP address.\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' 'valign='top' align='left' nowrap>\n";
+		echo "	Database Directory:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<input class='formfld' type='text' name='db_filepath' maxlength='255' value=\"$db_filepath\"><br />\n";
+		echo "	Path to the secure folder that contains PHP command line scripts and the SQLite database.\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "	<tr>\n";
+		echo "		<td colspan='2' align='right'>\n";
+		echo "			<input type='hidden' name='db_type' value='$db_type'>\n";
+		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
+		echo "			<input type='hidden' name='install_v_dir' value='$install_v_dir'>\n";
+		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
+		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
+		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
+		echo "			<input type='hidden' name='install_step' value='3'>\n";
+		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
+		echo "		</td>\n";
+		echo "	</tr>";
+
+		echo "</table>";
+		echo "</form>";
+		echo "</div>";
 	}
-	else if (dbtype == "sqlite") {
-		document.getElementById("desc_dbtype").innerHTML = "Choose the database where the settings will be stored. <br />The sqlite database will be created automatically.";
-		document.frm.dbfilename.value = 'fusionpbx.db';
-		document.getElementById("desc_dbfilename").innerHTML = "Default: fusiopbx.db. If the field is left empty then the file name is determined by the host or IP address."; document.frm.dbfilename.disabled = false;
-		document.getElementById("desc_dbfilepath").innerHTML = "Path to the secure folder that contains PHP command line scripts and the SQLite database.";
-		document.getElementById("desc_dbhost").innerHTML = "Not applicable"; document.frm.dbhost.value = ''; document.frm.dbhost.disabled = true;
-		document.getElementById("desc_dbport").innerHTML = "Not applicable"; document.frm.dbport.value = ''; document.frm.dbport.disabled = true;
-		document.getElementById("desc_dbname").innerHTML = "Not applicable"; document.frm.dbname.value = ''; document.frm.dbname.disabled = true;
-		document.getElementById("desc_dbusername").innerHTML = "Not applicable"; document.frm.dbusername.value = ''; document.frm.dbusername.disabled = true;
-		document.getElementById("desc_dbpassword").innerHTML = "Not applicable"; document.frm.dbpassword.value = ''; document.frm.dbpassword.disabled = true;
+
+
+// begin step 2, mysql --------------------------------------
+	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "mysql") {
+
+		echo "If you use the root database account the database can be created automatically. However if preferred the database can be created manually with the <a href='<?php echo PROJECT_PATH; ?>/includes/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
+
+		echo "<form method='post' name='frm' action=''>\n";
+		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+
+		echo "<tr>\n";
+		echo "<td align='left' width='30%' nowrap><b>Installation: Step 2 - MySQL</b></td>\n";
+		echo "<td width='70%' align='right'>&nbsp;</td>\n";
+		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Host:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_host' maxlength='255' value=\"$db_host\"><br />\n";
+		echo "		Recommended for MySQL.\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Port:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_port' maxlength='255' value=\"$db_port\"><br />\n";
+		echo "		Optional if the database is using the default port.\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Name:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_name' maxlength='255' value=\"$db_name\"><br />\n";
+		echo "		Required for MySQL\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Username:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_username' maxlength='255' value=\"$db_username\"><br />\n";
+		echo "		Required for MySQL\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Password:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_password' maxlength='255' value=\"$db_password\"><br />\n";
+		echo "		Required for MySQL\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "	<tr>\n";
+		echo "		<td colspan='2' align='right'>\n";
+		echo "			<input type='hidden' name='db_type' value='$db_type'>\n";
+		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
+		echo "			<input type='hidden' name='install_v_dir' value='$install_v_dir'>\n";
+		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
+		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
+		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
+		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
+		echo "		</td>\n";
+		echo "	</tr>";
+
+		echo "</table>";
+		echo "</form>";
+		echo "</div>";
 	}
-	if (dbtype == "") {
-		document.getElementById("desc_dbfilename").innerHTML = "";
-		document.getElementById("desc_dbfilepath").innerHTML = "";
-		document.getElementById("desc_dbhost").innerHTML = "";
-		document.getElementById("desc_dbport").innerHTML = "";
-		document.getElementById("desc_dbname").innerHTML = "";
-		document.getElementById("desc_dbusername").innerHTML = "";
-		document.getElementById("desc_dbpassword").innerHTML = "";
+
+	// begin step 2, pgsql --------------------------------------
+	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "pgsql") {
+
+		echo "<form method='post' name='frm' action=''>\n";
+		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+
+		echo "<tr>\n";
+		echo "<td align='left' width='30%' nowrap><b>Installation: Step 2 - Postgres</b></td>\n";
+		echo "<td width='70%' align='right'>&nbsp;</td>\n";
+		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Host:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_host' maxlength='255' value=\"$db_host\"><br />\n";
+		echo "		\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Port:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_port' maxlength='255' value=\"$db_port\"><br />\n";
+		echo "		\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Name:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_name' maxlength='255' value=\"$db_name\"><br />\n";
+		echo "		\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Username:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_username' maxlength='255' value=\"$db_username\"><br />\n";
+		echo "		\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Database Password:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_password' maxlength='255' value=\"$db_password\"><br />\n";
+		echo "		\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "	<tr>\n";
+		echo "		<td colspan='2' align='right'>\n";
+		echo "			<input type='hidden' name='db_type' value='$db_type'>\n";
+		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
+		echo "			<input type='hidden' name='install_v_dir' value='$install_v_dir'>\n";
+		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
+		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
+		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
+		echo "			<input type='submit' name='submit' class='btn' value='Install'>\n";
+		echo "		</td>\n";
+		echo "	</tr>";
+
+		echo "</table>";
+		echo "</form>";
+		echo "</div>";
 	}
-}
-</script>
-<?php
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Database Type:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<select name='dbtype' id='dbtype' class='formfld' id='form_tag' onchange='dbtype_onchange();'>\n";
-	if (extension_loaded('pdo_pgsql')) {	echo "	<option value='pgsql'>postgresql</option>\n"; }
-	if (extension_loaded('pdo_mysql')) {	echo "	<option value='mysql'>mysql</option>\n"; }
-	if (extension_loaded('pdo_sqlite')) {	echo "	<option  value='sqlite' selected>sqlite</option>\n"; } //set sqlite as the default
-	echo "	</select><br />\n";
-	echo "	<span id='desc_dbtype'></span><br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' 'valign='top' align='left' nowrap>\n";
-	echo "		Database Filename:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "		<input class='formfld' type='text' name='dbfilename' maxlength='255' value=\"$dbfilename\"><br />\n";
-	echo "		<span id='desc_dbfilename'></span><br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "		Secure Directory:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "		<input class='formfld' type='text' name='dbfilepath' maxlength='255' value=\"$dbfilepath\"><br />\n";
-	echo "		<span id='desc_dbfilepath'></span><br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "		Database Host:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "		<input class='formfld' type='text' name='dbhost' maxlength='255' value=\"$dbhost\"><br />\n";
-	echo "		<span id='desc_dbhost'></span><br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "		Database Port:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "		<input class='formfld' type='text' name='dbport' maxlength='255' value=\"$dbport\"><br />\n";
-	echo "		<span id='desc_dbport'></span><br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "		Database Name:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "		<input class='formfld' type='text' name='dbname' maxlength='255' value=\"$dbname\"><br />\n";
-	echo "		<span id='desc_dbname'></span><br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "		Database Username:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "		<input class='formfld' type='text' name='dbusername' maxlength='255' value=\"$dbusername\"><br />\n";
-	echo "		<span id='desc_dbusername'></span><br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "		Database Password:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "		<input class='formfld' type='text' name='dbpassword' maxlength='255' value=\"$dbpassword\"></span><br />\n";
-	echo "		<span id='desc_dbpassword'></span><br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    FreeSWITCH Directory:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='install_v_dir' maxlength='255' value=\"$install_v_dir\">\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    PHP Directory:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='install_php_dir' maxlength='255' value=\"$install_php_dir\"><br />\n";
-	echo "Path to PHP's bin or executable directory.<br />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Temp Directory:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='install_tmp_dir' maxlength='255' value=\"".realpath(sys_get_temp_dir())."\"><br />\n";
-	echo "Set this to the temporary directory.<br />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Backup Directory:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='install_v_backup_dir' maxlength='255' value=\"".realpath(sys_get_temp_dir())."\"><br />\n";
-	echo "Set a backup directory.<br />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "	<tr>\n";
-	echo "		<td colspan='2' align='right'>\n";
-	echo "			<input type='submit' name='submit' class='btn' value='Install'>\n";
-	echo "		</td>\n";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</form>";
-	echo "</div>";
-	echo "<script type=\"text/javascript\">dbtype_onchange();</script>\n";
 
 
 // add the content to the template and then send output -----------------------
 	$body = $content_from_db.ob_get_contents(); //get the output from the buffer
 	ob_end_clean(); //clean the buffer
-
 	ob_start();
+
 	$template = $strheadertop.$template;
 	eval('?>' . $template . '<?php ');
 	$template = ob_get_contents(); //get the output from the buffer

@@ -556,7 +556,7 @@ function ListFiles($dir) {
 	}
 }
 
-function switch_select_destination($select_type, $select_name, $select_value, $select_style, $action='') {
+function switch_select_destination($select_type, $select_label, $select_name, $select_value, $select_style, $action='') {
 	//$select_type = "ivr"; //$select_type='dialplan'
 	global $config, $db, $v_id;
 	$v_settings_array = v_settings();
@@ -601,7 +601,7 @@ function switch_select_destination($select_type, $select_name, $select_value, $s
 	if (ifgroup("superadmin")) {
 		echo "		<select name='".$select_name."' class='formfld' style='".$select_style."' onchange='changeToInput(this);'>\n";
 		if (strlen($select_value) > 0) {
-			echo "		<option value='".$action.":".$select_value."' selected='selected'>".$select_value."</option>\n";
+			echo "		<option value='".$action.":".$select_value."' selected='selected'>".$select_label."</option>\n";
 		}
 	}
 	else {

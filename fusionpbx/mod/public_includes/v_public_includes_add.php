@@ -517,8 +517,8 @@ echo "    Action 1:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
-//switch_select_destination(select_type, select_name, select_value, select_style);
-switch_select_destination("dialplan", "action_1", $action_1, "width: 60%;");
+//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
+switch_select_destination("dialplan", "", "action_1", $action_1, "width: 60%;", "");
 
 /*
 echo "	<table style='width: 60%;' border='0' >\n";
@@ -577,8 +577,8 @@ echo "    Action 2:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
-//switch_select_destination(select_type, select_name, select_value, select_style);
-switch_select_destination("dialplan", "action_2", $action_2, "width: 60%;");
+//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
+switch_select_destination("dialplan", "", "action_2", $action_2, "width: 60%;", "");
 
 /*
 echo "	<table style='width: 60%;' border='0' >\n";
