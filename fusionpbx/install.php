@@ -67,7 +67,7 @@ $v_id = '1';
 //set the max execution time to 1 hour
 	ini_set('max_execution_time',3600);
 
-//set php variables with data from http
+//set php variables with data from http post
 	$db_type = $_POST["db_type"];
 	$db_filename = $_POST["db_filename"];
 	$db_host = $_POST["db_host"];
@@ -113,90 +113,87 @@ $v_id = '1';
 		if (strlen($db_filename) == 0) { $db_filename = "fusionpbx.db"; }
 	}
 
-//find the freeswitch directory
-	if (stristr(PHP_OS, 'WIN')) { 
-		//echo "windows: ".PHP_OS;
-		if (is_dir('C:/program files/FreeSWITCH')) {
-			$install_v_dir = 'C:/program files/FreeSWITCH';
-			$v_parent_dir = 'C:/program files';
-			$v_startup_script_dir = '';
-		}
-		if (is_dir('D:/program files/FreeSWITCH')) {
-			$install_v_dir = 'D:/program files/FreeSWITCH';
-			$v_parent_dir = 'D:/program files';
-			$v_startup_script_dir = '';
-		}
-		if (is_dir('E:/program files/FreeSWITCH')) {
-			$install_v_dir = 'E:/program files/FreeSWITCH';
-			$v_parent_dir = 'E:/program files';
-			$v_startup_script_dir = '';
-		}
-		if (is_dir('F:/program files/FreeSWITCH')) {
-			$install_v_dir = 'F:/program files/FreeSWITCH';
-			$v_parent_dir = 'F:/program files';
-			$v_startup_script_dir = '';
-		}
-		if (is_dir('C:/FreeSWITCH')) {
-			$install_v_dir = 'C:/FreeSWITCH';
-			$v_parent_dir = 'C:';
-			$v_startup_script_dir = '';
-		}
-		if (is_dir('D:/FreeSWITCH')) {
-			$install_v_dir = 'D:/FreeSWITCH';
-			$v_parent_dir = 'D:';
-			$v_startup_script_dir = '';
-		}
-		if (is_dir('E:/FreeSWITCH')) {
-			$install_v_dir = 'E:/FreeSWITCH';
-			$v_parent_dir = 'E:';
-			$v_startup_script_dir = '';
-		}
-		if (is_dir('F:/FreeSWITCH')) {
-			$install_v_dir = 'F:/FreeSWITCH';
-			$v_parent_dir = 'F:';
-			$v_startup_script_dir = '';
-		}
-		if (is_dir('C:/PHP')) { $install_php_dir = 'C:/PHP'; }
-		if (is_dir('D:/PHP')) { $install_php_dir = 'D:/PHP'; }
-		if (is_dir('E:/PHP')) { $install_php_dir = 'E:/PHP'; }
-		if (is_dir('F:/PHP')) { $install_php_dir = 'F:/PHP'; }
-		if (is_dir('C:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'C:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-		if (is_dir('D:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'D:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-		if (is_dir('E:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'E:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-		if (is_dir('F:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'F:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-		if (is_dir('C:/fusionpbx/Program/php')) { $install_php_dir = 'C:/fusionpbx/Program/php'; }
-		if (is_dir('D:/fusionpbx/Program/php')) { $install_php_dir = 'D:/fusionpbx/Program/php'; }
-		if (is_dir('E:/fusionpbx/Program/php')) { $install_php_dir = 'E:/fusionpbx/Program/php'; }
-		if (is_dir('F:/fusionpbx/Program/php')) { $install_php_dir = 'F:/fusionpbx/Program/php'; }
-	}
-	else { 
-		//echo "other: ".PHP_OS;
-		if (is_dir('/usr/local/freeswitch')) {
-			$install_v_dir = '/usr/local/freeswitch';
-			$v_parent_dir = '/usr/local';
-		}
-		if (is_dir('/opt/freeswitch')) {
-			$install_v_dir = '/opt/freeswitch';
-			$v_parent_dir = '/opt';
-		}
-		switch (PHP_OS) {
-		case "FreeBSD":
-			$v_startup_script_dir = '/usr/local/share/fusionpbx_secure';
+//set the required directories
+
+	//set the php bin directory
+		if (file_exists('/usr/local/bin/php') || file_exists('/usr/local/bin/php5')) {
 			$install_php_dir = '/usr/local/bin';
-			break;
-		case "NetBSD":
-			$v_startup_script_dir = '/usr/local/share/fusionpbx_secure';
-			$install_php_dir = '/usr/local/bin';
-			break;
-		case "OpenBSD":
-			$v_startup_script_dir = '/usr/local/share/fusionpbx_secure';
-			$install_php_dir = '/usr/local/bin';
-			break;
-		default:
-			$v_startup_script_dir = '';
+		}
+		if (file_exists('/usr/bin/php') || file_exists('/usr/bin/php5')) {
 			$install_php_dir = '/usr/bin';
 		}
 
+	//set the freeswitch bin directory
+		if (file_exists('/usr/local/freeswitch/bin')) {
+			$install_v_dir = '/usr/local/freeswitch';
+			$v_bin_dir = '/usr/local/freeswitch/bin';
+			$v_parent_dir = '/usr/local';
+		}
+		if (file_exists('/opt/freeswitch')) {
+			$install_v_dir = '/opt/freeswitch';
+			$v_bin_dir = '/opt/freeswitch/bin';
+			$v_parent_dir = '/opt';
+		}
+
+	//set the default startup script directory
+		if (file_exists('/usr/local/etc/rc.d')) {
+			$v_startup_script_dir = '/usr/local/etc/rc.d';
+		}
+		if (file_exists('/etc/init.d')) {
+			$v_startup_script_dir = '/etc/init.d';
+		}
+
+	//set the default directories
+		$v_bin_dir = $install_v_dir.'/bin'; //freeswitch bin directory
+		$v_conf_dir = $install_v_dir.'/conf';
+		$v_db_dir = $install_v_dir.'/db';
+		$v_htdocs_dir = $install_v_dir.'/htdocs';
+		$v_log_dir = $install_v_dir.'/log';
+		$v_mod_dir = $install_v_dir.'/mod';
+		$v_extensions_dir = $v_conf_dir.'/directory/default';
+		$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
+		$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
+		$v_scripts_dir = $install_v_dir.'/scripts';
+		$v_grammar_dir = $install_v_dir.'/grammar';
+		$v_storage_dir = $install_v_dir.'/storage';
+		$v_voicemail_dir = $install_v_dir.'/storage/voicemail';
+		$v_recordings_dir = $install_v_dir.'/recordings';
+		$v_sounds_dir = $install_v_dir.'/sounds';
+		$install_tmp_dir = realpath(sys_get_temp_dir());
+		$install_v_backup_dir = realpath(sys_get_temp_dir());
+		$v_download_path = '';
+
+	//set specific alternative directories as required
+		switch (PHP_OS) {
+		case "FreeBSD":
+			//if the freebsd port is installed use the following paths by default.
+				if (file_exists('/usr/local/etc/freeswitch/conf')) {
+					$v_bin_dir = '/usr/local/bin'; //freeswitch bin directory
+					$v_conf_dir = '/usr/local/etc/freeswitch/conf';
+					$v_db_dir = '/var/db/freeswitch';
+					$v_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
+					$v_log_dir = '/var/log/freewitch';
+					$v_mod_dir = '/usr/local/lib/freeswitch/mod';
+					$v_extensions_dir = $v_conf_dir.'/directory/default';
+					$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
+					$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
+					$v_scripts_dir = '/usr/local/etc/freeswitch/scripts';
+					$v_grammar_dir = '/usr/local/etc/freeswitch/grammar';
+					$v_storage_dir = '/var/freeswitch';
+					$v_voicemail_dir = '/var/spool/freeswitch/voicemail';
+					$v_recordings_dir = '/var/freeswitch/recordings';
+					$v_sounds_dir = '/usr/local/share/freeswitch/sounds';
+				}
+			break;
+		case "NetBSD":
+			$v_startup_script_dir = '';
+			$install_php_dir = '/usr/local/bin';
+			break;
+		case "OpenBSD":
+			$v_startup_script_dir = '';
+			break;
+		default:
+		}
 		/*
 		* CYGWIN_NT-5.1
 		* Darwin
@@ -217,7 +214,63 @@ $v_id = '1';
 		* HP-UX
 		* OpenBSD (not in Wikipedia)
 		*/
-	}
+
+	//set the dir defaults for windows
+		if (stristr(PHP_OS, 'WIN')) { 
+			//echo "windows: ".PHP_OS;
+			if (is_dir('C:/program files/FreeSWITCH')) {
+				$install_v_dir = 'C:/program files/FreeSWITCH';
+				$v_parent_dir = 'C:/program files';
+				$v_startup_script_dir = '';
+			}
+			if (is_dir('D:/program files/FreeSWITCH')) {
+				$install_v_dir = 'D:/program files/FreeSWITCH';
+				$v_parent_dir = 'D:/program files';
+				$v_startup_script_dir = '';
+			}
+			if (is_dir('E:/program files/FreeSWITCH')) {
+				$install_v_dir = 'E:/program files/FreeSWITCH';
+				$v_parent_dir = 'E:/program files';
+				$v_startup_script_dir = '';
+			}
+			if (is_dir('F:/program files/FreeSWITCH')) {
+				$install_v_dir = 'F:/program files/FreeSWITCH';
+				$v_parent_dir = 'F:/program files';
+				$v_startup_script_dir = '';
+			}
+			if (is_dir('C:/FreeSWITCH')) {
+				$install_v_dir = 'C:/FreeSWITCH';
+				$v_parent_dir = 'C:';
+				$v_startup_script_dir = '';
+			}
+			if (is_dir('D:/FreeSWITCH')) {
+				$install_v_dir = 'D:/FreeSWITCH';
+				$v_parent_dir = 'D:';
+				$v_startup_script_dir = '';
+			}
+			if (is_dir('E:/FreeSWITCH')) {
+				$install_v_dir = 'E:/FreeSWITCH';
+				$v_parent_dir = 'E:';
+				$v_startup_script_dir = '';
+			}
+			if (is_dir('F:/FreeSWITCH')) {
+				$install_v_dir = 'F:/FreeSWITCH';
+				$v_parent_dir = 'F:';
+				$v_startup_script_dir = '';
+			}
+			if (is_dir('C:/PHP')) { $install_php_dir = 'C:/PHP'; }
+			if (is_dir('D:/PHP')) { $install_php_dir = 'D:/PHP'; }
+			if (is_dir('E:/PHP')) { $install_php_dir = 'E:/PHP'; }
+			if (is_dir('F:/PHP')) { $install_php_dir = 'F:/PHP'; }
+			if (is_dir('C:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'C:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
+			if (is_dir('D:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'D:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
+			if (is_dir('E:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'E:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
+			if (is_dir('F:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'F:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
+			if (is_dir('C:/fusionpbx/Program/php')) { $install_php_dir = 'C:/fusionpbx/Program/php'; }
+			if (is_dir('D:/fusionpbx/Program/php')) { $install_php_dir = 'D:/fusionpbx/Program/php'; }
+			if (is_dir('E:/fusionpbx/Program/php')) { $install_php_dir = 'E:/fusionpbx/Program/php'; }
+			if (is_dir('F:/fusionpbx/Program/php')) { $install_php_dir = 'F:/fusionpbx/Program/php'; }
+		}
 
 
 if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -346,18 +399,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp_config .= "	require_once \"includes/lib_switch.php\";\n";
 		$tmp_config .= "\n";
 		$tmp_config .= "?>";
-
-		//copy the secure directory
-			$srcdir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
-			//if the directory already exists do not copy over it.
-			if (!is_dir($install_secure_dir)) {
-				//only copy if the src and dest are different
-				if ($srcdir != $install_secure_dir) {
-					if (!is_dir($install_secure_dir)) { mkdir($install_secure_dir,0777,true); }
-					recursive_copy($srcdir, $install_secure_dir);
-				}
-			}
-			unset($srcdir);
 
 		$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php","w");
 		fwrite($fout, $tmp_config);
@@ -510,10 +551,13 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				//include the new config.php file
 					require_once "includes/config.php";
 
+				//set group permissions for the install
+					$_SESSION["groups"] = '||admin||member||superadmin||';
+
 				//load the default database into memory and compare it with the active database
 					$display_results = false;
 					require_once "includes/lib_schema.php";
-					db_upgrade_schema ($db, $db_type, $display_results);
+					db_upgrade_schema ($db, $display_results);
 
 				//add the defaults data into the database
 
@@ -547,39 +591,19 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 
 		//set system settings paths
-			//$install_v_dir = ''; //freeswitch directory
-			//$install_php_dir = '';
-			//$install_tmp_dir = '';
-			$bin_dir = '/usr/local/freeswitch/bin'; //freeswitch bin directory
-			//$v_startup_script_dir = '';
 			$v_package_version = '1.0.8';
 			$v_build_version = '1.0.6';
 			$v_build_revision = 'Release';
 			$v_label = 'FusionPBX';
 			$v_name = 'freeswitch';
-			//$v_parent_dir = '/usr/local';
-			$install_v_backup_dir = '/backup';
 			$v_web_dir = $_SERVER["DOCUMENT_ROOT"];
 			$v_web_root = $_SERVER["DOCUMENT_ROOT"];
 			if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $v_relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $v_relative_url = '/'; }
-			$v_conf_dir = $install_v_dir.'/conf';
-			$v_db_dir = $install_v_dir.'/db';
-			$v_htdocs_dir = $install_v_dir.'/htdocs';
-			$v_log_dir = $install_v_dir.'/log';
-			$v_mod_dir = $install_v_dir.'/modules';
-			$v_extensions_dir = $install_v_dir.'/conf/directory/default';
-			$v_dialplan_public_dir = $install_v_dir.'/conf/dialplan/public';
-			$v_dialplan_default_dir = $install_v_dir.'/conf/dialplan/default';
-			$v_scripts_dir = $install_v_dir.'/scripts';
-			$v_storage_dir = $install_v_dir.'/storage';
-			$v_recordings_dir = $install_v_dir.'/recordings';
-			$v_sounds_dir = $install_v_dir.'/sounds';
-			$v_download_path = 'http://fusionpbx.com/downloads/fusionpbx.tgz';
 
 			$sql = "update v_system_settings set ";
 			$sql .= "php_dir = '$install_php_dir', ";
 			$sql .= "tmp_dir = '$install_tmp_dir', ";
-			$sql .= "bin_dir = '$bin_dir', ";
+			$sql .= "bin_dir = '$v_bin_dir', ";
 			$sql .= "v_startup_script_dir = '$v_startup_script_dir', ";
 			$sql .= "v_package_version = '$v_package_version', ";
 			$sql .= "v_build_version = '$v_build_version', ";
@@ -601,7 +625,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "v_dialplan_public_dir = '$v_dialplan_public_dir', ";
 			$sql .= "v_dialplan_default_dir = '$v_dialplan_default_dir', ";
 			$sql .= "v_scripts_dir = '$v_scripts_dir', ";
+			$sql .= "v_grammar_dir = '$v_grammar_dir', ";
 			$sql .= "v_storage_dir = '$v_storage_dir', ";
+			$sql .= "v_voicemail_dir = '$v_voicemail_dir', ";
 			$sql .= "v_recordings_dir = '$v_recordings_dir', ";
 			$sql .= "v_sounds_dir = '$v_sounds_dir', ";
 			$sql .= "v_download_path = '$v_download_path' ";
@@ -615,11 +641,11 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 	//remove the default config files that are not needed
 		require_once "includes/config.php";
-		$file = $v_conf_dir."/directory/default/brian.xml"; if (file_exists($file)) { unlink($file); }
-		$file = $v_conf_dir."/directory/default/example.com.xml"; if (file_exists($file)) { unlink($file); }
-		$file = $v_conf_dir."/dialplan/default/99999_enum.xml"; if (file_exists($file)) { unlink($file); }
-		$file = $v_conf_dir."/dialplan/default/01_example.com.xml"; if (file_exists($file)) { unlink($file); }
-		$file = $v_conf_dir."/dialplan/public/00_inbound_did.xml"; if (file_exists($file)) { unlink($file); }
+		$file = $v_extensions_dir."/brian.xml"; if (file_exists($file)) { unlink($file); }
+		$file = $v_extensions_dir."/example.com.xml"; if (file_exists($file)) { unlink($file); }
+		$file = $v_dialplan_default_dir."/99999_enum.xml"; if (file_exists($file)) { unlink($file); }
+		$file = $v_dialplan_default_dir."/01_example.com.xml"; if (file_exists($file)) { unlink($file); }
+		$file = $v_dialplan_public_dir."/00_inbound_did.xml"; if (file_exists($file)) { unlink($file); }
 		unset($file);
 
 	//prepare switch.conf.xml for voicemail to email
@@ -912,16 +938,16 @@ pgsql
 		echo "</td>\n";
 		echo "</tr>\n";
 
-		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "		Secure Directory:\n";
-		echo "</td>\n";
-		echo "<td class='vtable' align='left'>\n";
-		echo "		<input class='formfld' type='text' name='install_secure_dir' maxlength='255' value=\"$install_secure_dir\"><br />\n";
-		echo "		Path to the secure directory that contains PHP command line scripts.\n";
-		echo "\n";
-		echo "</td>\n";
-		echo "</tr>\n";
+		//echo "<tr>\n";
+		//echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		//echo "		Secure Directory:\n";
+		//echo "</td>\n";
+		//echo "<td class='vtable' align='left'>\n";
+		//echo "		<input class='formfld' type='text' name='install_secure_dir' maxlength='255' value=\"$install_secure_dir\"><br />\n";
+		//echo "		Path to the secure directory that contains PHP command line scripts.\n";
+		//echo "\n";
+		//echo "</td>\n";
+		//echo "</tr>\n";
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
@@ -949,7 +975,7 @@ pgsql
 		echo "    Temp Directory:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "    <input class='formfld' type='text' name='install_tmp_dir' maxlength='255' value=\"".realpath(sys_get_temp_dir())."\"><br />\n";
+		echo "    <input class='formfld' type='text' name='install_tmp_dir' maxlength='255' value=\"".$install_tmp_dir."\"><br />\n";
 		echo "Set this to the temporary directory.<br />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -959,7 +985,7 @@ pgsql
 		echo "    Backup Directory:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "    <input class='formfld' type='text' name='install_v_backup_dir' maxlength='255' value=\"".realpath(sys_get_temp_dir())."\"><br />\n";
+		echo "    <input class='formfld' type='text' name='install_v_backup_dir' maxlength='255' value=\"".$install_v_backup_dir."\"><br />\n";
 		echo "Set a backup directory.<br />\n";
 		echo "</td>\n";
 		echo "</tr>\n";

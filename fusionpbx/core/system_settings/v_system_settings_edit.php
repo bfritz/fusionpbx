@@ -73,7 +73,9 @@ if (count($_POST)>0) {
 		$v_dialplan_default_dir = check_str($_POST["v_dialplan_default_dir"]);
 		$v_mod_dir = check_str($_POST["v_mod_dir"]);
 		$v_scripts_dir = check_str($_POST["v_scripts_dir"]);
+		$v_grammar_dir = check_str($_POST["v_grammar_dir"]);
 		$v_storage_dir = check_str($_POST["v_storage_dir"]);
+		$v_voicemail_dir = check_str($_POST["v_voicemail_dir"]);
 		$v_recordings_dir = check_str($_POST["v_recordings_dir"]);
 		$v_sounds_dir = check_str($_POST["v_sounds_dir"]);
 		$v_download_path = check_str($_POST["v_download_path"]);
@@ -124,7 +126,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($v_dialplan_default_dir) == 0) { $msg .= "Please provide: Dialplan Default Directory<br>\n"; }
 		if (strlen($v_mod_dir) == 0) { $msg .= "Please provide: Mod Directory<br>\n"; }
 		if (strlen($v_scripts_dir) == 0) { $msg .= "Please provide: Scripts Directory<br>\n"; }
+		if (strlen($v_grammar_dir) == 0) { $msg .= "Please provide: Grammar Directory<br>\n"; }
 		if (strlen($v_storage_dir) == 0) { $msg .= "Please provide: Storage Directory<br>\n"; }
+		if (strlen($v_voicemail_dir) == 0) { $msg .= "Please provide: Voicemail Directory<br>\n"; }
 		if (strlen($v_recordings_dir) == 0) { $msg .= "Please provide: Recordings Directory<br>\n"; }
 		if (strlen($v_sounds_dir) == 0) { $msg .= "Please provide: Sounds Directory<br>\n"; }
 		//if (strlen($v_download_path) == 0) { $msg .= "Please provide: Download Path<br>\n"; }
@@ -177,10 +181,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_dialplan_default_dir, ";
 			$sql .= "v_mod_dir, ";
 			$sql .= "v_scripts_dir, ";
+			$sql .= "v_grammar_dir, ";
 			$sql .= "v_storage_dir, ";
+			$sql .= "v_voicemail_dir, ";
 			$sql .= "v_recordings_dir, ";
-			$sql .= "v_sounds_dir, ";
 			//$sql .= "v_download_path, ";
+			$sql .= "v_sounds_dir, ";
 			$sql .= "v_provisioning_tftp_dir, ";
 			$sql .= "v_provisioning_ftp_dir, ";
 			$sql .= "v_provisioning_https_dir, ";
@@ -214,10 +220,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$v_dialplan_default_dir', ";
 			$sql .= "'$v_mod_dir', ";
 			$sql .= "'$v_scripts_dir', ";
+			$sql .= "'$v_grammar_dir', ";
 			$sql .= "'$v_storage_dir', ";
+			$sql .= "'$v_voicemail_dir', ";
 			$sql .= "'$v_recordings_dir', ";
-			$sql .= "'$v_sounds_dir', ";
 			//$sql .= "'$v_download_path', ";
+			$sql .= "'$v_sounds_dir', ";
 			$sql .= "'$v_provisioning_tftp_dir', ";
 			$sql .= "'$v_provisioning_ftp_dir', ";
 			$sql .= "'$v_provisioning_https_dir', ";
@@ -263,7 +271,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_dialplan_default_dir = '$v_dialplan_default_dir', ";
 			$sql .= "v_mod_dir = '$v_mod_dir', ";
 			$sql .= "v_scripts_dir = '$v_scripts_dir', ";
+			$sql .= "v_grammar_dir = '$v_grammar_dir', ";
 			$sql .= "v_storage_dir = '$v_storage_dir', ";
+			$sql .= "v_voicemail_dir = '$v_voicemail_dir', ";
 			$sql .= "v_recordings_dir = '$v_recordings_dir', ";
 			$sql .= "v_sounds_dir = '$v_sounds_dir', ";
 			//$sql .= "v_download_path = '$v_download_path', ";
@@ -324,7 +334,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$v_dialplan_default_dir = $row["v_dialplan_default_dir"];
 		$v_mod_dir = $row["v_mod_dir"];
 		$v_scripts_dir = $row["v_scripts_dir"];
+		$v_grammar_dir = $row["v_grammar_dir"];
 		$v_storage_dir = $row["v_storage_dir"];
+		$v_voicemail_dir = $row["v_voicemail_dir"];
 		$v_recordings_dir = $row["v_recordings_dir"];
 		$v_sounds_dir = $row["v_sounds_dir"];
 		$v_download_path = $row["v_download_path"];
@@ -647,12 +659,34 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	Grammar Directory:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='v_grammar_dir' maxlength='255' value=\"$v_grammar_dir\">\n";
+	echo "<br />\n";
+	echo "Enter the grammar directory.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    Storage Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='v_storage_dir' maxlength='255' value=\"$v_storage_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	Voicemail Directory:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='v_voicemail_dir' maxlength='255' value=\"$v_voicemail_dir\">\n";
+	echo "<br />\n";
+	echo "Enter the voicemail directory.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

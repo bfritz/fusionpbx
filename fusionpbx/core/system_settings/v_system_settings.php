@@ -68,9 +68,11 @@ if (!function_exists('thorderby')) {
 	echo "      <br>";
 
 
-	echo "<table width='100%' border='0'><tr>\n";
+	echo "<table width='100%' border='0'>\n";
+	echo "<tr>\n";
 	echo "<td align='left' width='50%' nowrap><b>System Settings</b></td>\n";
 	echo "<td align='left' width='50%' align='right'>&nbsp;</td>\n";
+	echo "</tr>\n";
 	echo "</tr></table>\n";
 
 
@@ -158,7 +160,7 @@ if (!function_exists('thorderby')) {
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
-	echo "		<td width='33.3%' align='right'>";
+	echo "		<td width='33.3%' align='right'>\n";
 	echo "			<a href='v_system_settings_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";

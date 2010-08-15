@@ -35,7 +35,7 @@ else {
 }
 
 if (count($_GET)>0) {
-	$id = $_GET["id"];
+	$id = check_str($_GET["id"]);
 }
 
 if (strlen($id)>0) {
