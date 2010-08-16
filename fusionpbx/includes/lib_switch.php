@@ -414,10 +414,10 @@ function event_socket_request($fp, $cmd)
 				}
 			}
 
-			usleep(100); //allow time for reponse
+			usleep(20); //allow time for reponse
 
 			//optional because of script timeout //don't let while loop become endless
-			if ($i > 1000) { break; }
+			if ($i > 1000000) { break; }
 
 			if ($contentlength > 0) { //is contentlength set
 				//stop reading if all content has been read.
