@@ -334,7 +334,7 @@ else {
 	$param .= "&network_addr=$network_addr";
 
 //create the sql query to get the xml cdr records
-	if (strlen($orderby) == 0)  { $orderby  = "start_uepoch"; }
+	if (strlen($orderby) == 0)  { $orderby  = "start_epoch"; }
 	if (strlen($order) == 0)  { $order  = "desc"; }
 
 	$sql = "";
