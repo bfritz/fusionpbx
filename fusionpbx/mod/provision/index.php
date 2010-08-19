@@ -249,7 +249,7 @@ require_once "includes/config.php";
 	//$file_contents = str_replace("{v_proxy2_address}", $proxy2_address, $file_contents);
 	//$file_contents = str_replace("{v_proxy3_address}", $proxy3_address, $file_contents);
 
-//delive the customized config over HTTP/HTTPS
+//deliver the customized config over HTTP/HTTPS
 	header ("content-type: text/xml"); //need to make sure content-type is correct
 	echo $file_contents;
 
