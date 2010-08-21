@@ -45,7 +45,7 @@ require_once "includes/config.php";
 //check to see if the mac_address exists in v_hardware_phones
 	if (mac_exists_in_v_hardware_phones($db, $mac)) {
 		//get the phone_template
-			$sql = "SELECT phone_template FROM v_hardware_phones ";
+			$sql = "SELECT phone_template, phone_vendor FROM v_hardware_phones ";
 			//$sql .= "where v_id=:v_id ";
 			$sql .= "where phone_mac_address=:mac ";
 			$prepstatement2 = $db->prepare(check_sql($sql));
@@ -55,12 +55,16 @@ require_once "includes/config.php";
 				$prepstatement2->execute();
 				$row = $prepstatement2->fetch();
 				$phone_template = $row['phone_template'];
+				$phone_vendor = $row['phone_vendor'];
 			}
 	}
 	else {
 		//mac does not exist in v_hardware_phones add it to the table
 		//use the mac address to find the vendor
 			switch (substr(strtolower($mac), 0, 8)) {
+			case "00-08-5d":
+				$phone_vendor = "aastra";
+				break;
 			case "00-0e-08":
 				$phone_vendor = "linksys";
 				break;
@@ -249,8 +253,15 @@ require_once "includes/config.php";
 	//$file_contents = str_replace("{v_proxy2_address}", $proxy2_address, $file_contents);
 	//$file_contents = str_replace("{v_proxy3_address}", $proxy3_address, $file_contents);
 
-//delive the customized config over HTTP/HTTPS
-	header ("content-type: text/xml"); //need to make sure content-type is correct
+//deliver the customized config over HTTP/HTTPS
+
+	//need to make sure content-type is correct
+	$cfg_ext = ".cfg";
+	if ($phone_vendor === "aastra" && strrpos($file, $cfg_ext, 0) === strlen($file) - strlen($cfg_ext)) {
+		header ("content-type: text/plain");
+	} else {
+		header ("content-type: text/xml");
+	}
 	echo $file_contents;
 
 
