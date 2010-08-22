@@ -22,8 +22,6 @@
 --	Contributor(s):
 --	Mark J Crane <markjcrane@fusionpbx.com>
 
-sounds_dir = "";
-recordings_dir = "";
 pin_number = "";
 max_tries = "3";
 digit_timeout = "3000";
@@ -43,14 +41,22 @@ if ( session:ready() ) then
 	call_forward_number = session:getVariable("call_forward_number");
 	extension_required = session:getVariable("extension_required");
 
+	--set the sounds path for the language, dialect and voice
+		default_language = session:getVariable("default_language");
+		default_dialect = session:getVariable("default_dialect");
+		default_voice = session:getVariable("default_voice");
+		if (not default_language) then default_language = 'en'; end
+		if (not default_dialect) then default_dialect = 'us'; end
+		if (not default_voice) then default_voice = 'callie'; end
+
 	if (pin_number) then
-		digits = session:playAndGetDigits(3, 8, 3, digit_timeout, "#", sounds_dir.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
+		digits = session:playAndGetDigits(3, 8, 3, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
 		if (digits == pin_number) then
 			--pin is correct
 
 			if (extension_required) then
 				if (extension_required == "true") then
-					extension = session:playAndGetDigits(3, 6, max_tries, digit_timeout, "#", sounds_dir.."/custom/please_enter_the_extension_number.wav", "", "\\d+");
+					extension = session:playAndGetDigits(3, 6, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_extension_number.wav", "", "\\d+");
 				end
 			end
 
@@ -59,7 +65,7 @@ if ( session:ready() ) then
 				os.remove (dialplan_default_dir.."/999_call_forward_"..extension..".xml");
 
 			--stream file
-				session:streamFile(sounds_dir.."/custom/call_forward_has_been_deleted.wav");
+				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_deleted.wav");
 
 			--wait for the file to be written before proceeding
 				session:sleep(1000);
@@ -72,7 +78,7 @@ if ( session:ready() ) then
 					-- do nothing
 				else
 					-- call_forward_number is not defined so request it
-					call_forward_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
+					call_forward_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
 				end
 				if (string.len(call_forward_number) > 0) then
 				--write the xml file
@@ -89,7 +95,7 @@ if ( session:ready() ) then
 					--session:sleep(20000); 
 
 				--stream file
-					session:streamFile(sounds_dir.."/custom/call_forward_has_been_set.wav");
+					session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_set.wav");
 				end
 			end
 
@@ -103,13 +109,13 @@ if ( session:ready() ) then
 			session:hangup();
 
 		else
-			session:streamFile(sounds_dir.."/custom/your_pin_number_is_incorect_goodbye.wav");
+			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/your_pin_number_is_incorect_goodbye.wav");
 		end
 	else
 
 		if (extension_required) then
 			if (extension_required == "true") then
-				extension = session:playAndGetDigits(3, 6, max_tries, digit_timeout, "#", sounds_dir.."/custom/please_enter_the_extension_number.wav", "", "\\d+");
+				extension = session:playAndGetDigits(3, 6, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_extension_number.wav", "", "\\d+");
 			end
 		end
 
@@ -118,7 +124,7 @@ if ( session:ready() ) then
 			os.remove (dialplan_default_dir.."/999_call_forward_"..extension..".xml");
 
 		--stream file
-			session:streamFile(sounds_dir.."/custom/call_forward_has_been_deleted.wav");
+			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_deleted.wav");
 
 		--wait for the file to be written before proceeding
 			session:sleep(1000);
@@ -130,7 +136,7 @@ if ( session:ready() ) then
 			if (call_forward_number) then
 				-- do nothing
 			else
-				call_forward_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
+				call_forward_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
 			end
 			if (string.len(call_forward_number) > 0) then
 			--write the xml file
@@ -148,7 +154,7 @@ if ( session:ready() ) then
 				--session:sleep(20000); 
 
 			--stream file
-				session:streamFile(sounds_dir.."/custom/call_forward_has_been_set.wav");
+				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_set.wav");
 			end
 		end
 
