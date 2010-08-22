@@ -524,15 +524,30 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					try {
 						if (strlen($db_host) == 0 && strlen($db_port) == 0) {
 							//if both host and port are empty use the unix socket
-							$db_sql = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_username, $db_password);
+							if (strlen($db_create_username) == 0) {
+								$db_sql = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_username, $db_password);
+							}
+							else {
+								$db_sql = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_create_username, $db_create_password);
+							}
 						}
 						else {
 							if (strlen($db_port) == 0) {
 								//leave out port if it is empty
-								$db_sql = new PDO("mysql:host=$db_host;", $db_username, $db_password);
+								if (strlen($db_create_username) == 0) {
+									$db_sql = new PDO("mysql:host=$db_host;", $db_username, $db_password);
+								}
+								else {
+									$db_sql = new PDO("mysql:host=$db_host;", $db_create_username, $db_create_password);
+								}
 							}
 							else {
-								$db_sql = new PDO("mysql:host=$db_host;port=$db_port;", $db_username, $db_password);
+								if (strlen($db_create_username) == 0) {
+									$db_sql = new PDO("mysql:host=$db_host;port=$db_port;", $db_username, $db_password);
+								}
+								else {
+									$db_sql = new PDO("mysql:host=$db_host;port=$db_port;", $db_create_username, $db_create_password);
+								}
 							}
 						}
 						$db_sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -552,20 +567,15 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					require_once "includes/config.php";
 
 				//set group permissions for the install
-					$_SESSION["groups"] = '||admin||member||superadmin||';
+					//$_SESSION["groups"] = '||admin||member||superadmin||';
 
 				//load the default database into memory and compare it with the active database
-					$display_results = false;
-					require_once "includes/lib_schema.php";
-					db_upgrade_schema ($db, $display_results);
+					//$display_results = false;
+					//require_once "includes/lib_schema.php";
+					//db_upgrade_schema ($db, $display_results);
 
 				//add the defaults data into the database
 
-				//redirect to the login page
-					header("Location: ".PROJECT_PATH."/login.php");
-					exit;
-
-				/*
 				//replace \r\n with \n then explode on \n
 					$file_contents = str_replace("\r\n", "\n", $file_contents);
 
@@ -585,7 +595,11 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$x++;
 					}
 					unset ($db_sql, $file_contents, $sql);
-				*/
+
+				//redirect to the login page
+					header("Location: ".PROJECT_PATH."/login.php");
+					exit;
+					
 			}
 			//--- end: create the mysql database -----------------------------------------
 
