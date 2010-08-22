@@ -16,9 +16,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/roku/roku.php</path> 
-		<last_mod>Thu, 15 Jul 2010 22:20:26 GMT</last_mod> 
-		<md5>fd5f7dbfc57228ee1cd7b38bcf491274</md5> 
-		<size>2141</size> 
+		<last_mod>Mon, 16 Aug 2010 09:44:37 GMT</last_mod> 
+		<md5>43f3c848ae6907d85e81562a97a1d26a</md5> 
+		<size>2159</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -121,9 +121,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/calls_active/v_calls_active_extensions.php</path> 
-		<last_mod>Tue, 10 Aug 2010 08:32:55 GMT</last_mod> 
-		<md5>27bfc4f34f813772053baa604460ce3b</md5> 
-		<size>5411</size> 
+		<last_mod>Fri, 20 Aug 2010 23:59:40 GMT</last_mod> 
+		<md5>d88ec67645698b60936ecb7fe57383a4</md5> 
+		<size>7690</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -142,9 +142,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/calls_active/v_calls_active_extensions_inc.php</path> 
-		<last_mod>Tue, 10 Aug 2010 09:47:31 GMT</last_mod> 
-		<md5>adc42ac9e39ef7ae83ed920c38618be9</md5> 
-		<size>16054</size> 
+		<last_mod>Sun, 22 Aug 2010 08:53:05 GMT</last_mod> 
+		<md5>f6c77e58c460b4f896d6d4b45e292499</md5> 
+		<size>16405</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -163,9 +163,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/calls_active/v_calls_active_assigned_extensions_inc.php</path> 
-		<last_mod>Sun, 18 Jul 2010 05:43:05 GMT</last_mod> 
-		<md5>7d1ae32b8559ef497036e8f721841a6c</md5> 
-		<size>10595</size> 
+		<last_mod>Fri, 20 Aug 2010 23:06:35 GMT</last_mod> 
+		<md5>a0d720d60f75b2a16c4ee8823cd8db1d</md5> 
+		<size>11664</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2466,9 +2466,9 @@
 	<src> 
 		<type>file</type> 
 		<path>mod/provision/index.php</path> 
-		<last_mod>Fri, 02 Jul 2010 06:14:30 GMT</last_mod> 
-		<md5>f1c18be994104b8c07eb4d21662203a8</md5> 
-		<size>15366</size> 
+		<last_mod>Sat, 21 Aug 2010 00:11:41 GMT</last_mod> 
+		<md5>6e338d6199a5cec02dfbf988b603f29d</md5> 
+		<size>15673</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -3950,9 +3950,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/install/scripts/call_forward_basic.lua</path> 
-		<last_mod>Tue, 06 Jul 2010 07:06:49 GMT</last_mod> 
-		<md5>799c49e3f43bce25a18871707c8ec015</md5> 
-		<size>6000</size> 
+		<last_mod>Sat, 21 Aug 2010 16:45:53 GMT</last_mod> 
+		<md5>75055a5e981fb90ad16d678449853c15</md5> 
+		<size>6941</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4468,9 +4468,9 @@
 	<src> 
 		<type>file</type> 
 		<path>includes/lib_switch.php</path> 
-		<last_mod>Fri, 13 Aug 2010 07:28:11 GMT</last_mod> 
-		<md5>cc000f02b36cb5245e8b9263d4703662</md5> 
-		<size>219471</size> 
+		<last_mod>Sat, 21 Aug 2010 02:33:51 GMT</last_mod> 
+		<md5>221f1b1e9b83d2f71a61d92d489c0b22</md5> 
+		<size>219473</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4604,6 +4604,27 @@
 		<last_mod>Mon, 05 Jul 2010 17:49:11 GMT</last_mod> 
 		<md5>826df81f528099612f785bb68ca542f8</md5> 
 		<size>1364</size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
+		<path>includes/provision_templates/aastra</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>directory</type> 
+		<path>includes/provision_templates/aastra/675x</path> 
+		<last_mod></last_mod> 
+		<md5></md5> 
+		<size></size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>includes/provision_templates/aastra/675x/{v_mac}.cfg</path> 
+		<last_mod>Thu, 19 Aug 2010 07:41:58 GMT</last_mod> 
+		<md5>dabe18bd088393a798ce77e09d4e84c7</md5> 
+		<size>3697</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
