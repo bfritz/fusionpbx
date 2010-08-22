@@ -39,14 +39,36 @@ require_once "includes/checkauth.php";
 		$rows = 0;
 	}
 
+/*
+//check session cache expire
+	if (strlen($_SESSION['session_start_time']) == 0) {
+		//$time_start = microtime(true);
+		$_SESSION['session_start_time'] = microtime(true);
+		//usleep(1000000);
+	}
+
+	$time_end = microtime(true);
+	$time = $time_end - $_SESSION['session_start_time'];
+	if ($time < 5.000) {
+		//echo "load time $time seconds\n";
+		//echo "use cache ";
+		echo $_SESSION['active_extension_content'];
+		return;
+	}
+	else {
+		//echo "load time $time seconds\n";
+		//echo "expired the cache so reset the cache start time ";
+		//$_SESSION['session_start_time'] = microtime(true);
+	}
+*/
 
 //set http compression
-	if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
-		ob_start("ob_gzhandler");
-	}
-	else{
-		ob_start();
-	}
+//	if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+//		ob_start("ob_gzhandler");
+//	}
+//	else{
+//		ob_start();
+//	}
 
 //define variables
 	$c = 0;
@@ -108,10 +130,28 @@ require_once "includes/checkauth.php";
 
 //active extensions -----------------------------
 	//get the extension information
+		unset($_SESSION['extension_array']);
 		if (count($_SESSION['extension_array']) == 0) {
 			$sql = "";
 			$sql .= "select * from v_extensions ";
-			$sql .= "where v_id = '$v_id' ";
+			$x = 0;
+			$range_array = $_GET['range'];
+			foreach($range_array as $tmp_range) {
+				$tmp_array = explode(":", $tmp_range);
+				$tmp_min = $tmp_array[0];
+				$tmp_max = $tmp_array[1];
+				if ($x == 0) {
+					$sql .= "where v_id = '$v_id' ";
+					$sql .= "and extension >= $tmp_min ";
+					$sql .= "and extension <= $tmp_max ";
+				}
+				else {
+					$sql .= "or v_id = '$v_id' ";
+					$sql .= "and extension >= $tmp_min ";
+					$sql .= "and extension <= $tmp_max ";
+				}
+				$x++;
+			}
 			$sql .= "order by extension asc ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
@@ -152,7 +192,6 @@ require_once "includes/checkauth.php";
 		//echo "<pre>\n";
 		//print_r($_SESSION['extension_array']);
 		//echo "</pre>\n";
-
 
 	//get a list of assigned extensions for this user
 		include "v_calls_active_assigned_extensions_inc.php";
@@ -425,8 +464,6 @@ require_once "includes/checkauth.php";
 		}
 
 	echo "</table>\n";
-
-
 
 echo "<br /><br />\n";
 echo "<div id='cmd_reponse'>\n";

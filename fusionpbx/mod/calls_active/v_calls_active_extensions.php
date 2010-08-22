@@ -28,6 +28,15 @@ require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
 //http get and set variables
+	$event_type = $_GET['event_type']; //open_window //iframe
+	if ($event_type=="iframe") {
+		$iframe_width = $_GET['iframe_width'];
+		$iframe_height = $_GET['iframe_height'];
+		$iframe_postition = $_GET['iframe_postition'];
+		if (strlen($iframe_postition) > 0) { $iframe_postition = 'right'; }
+		if (strlen($iframe_width) > 0) { $iframe_width = '25%'; }
+		if (strlen($iframe_height) > 0) { $iframe_height = '100%'; }
+	}
 	if (strlen($_GET['url']) > 0) {
 		$url = $_GET['url'];
 	}
@@ -45,6 +54,20 @@ require_once "includes/header.php";
 ?>
 
 <script type="text/javascript">
+<!--
+
+//declare variables
+var previous_uuid_1;
+var previous_uuid_2;
+var url = '<?php echo $url; ?>';
+
+function open_window(url) {
+	open_window=window.open(url,'_blank');
+	if (window.focus) {open_window.focus()}
+	return false;
+}
+
+//define the ajax function
 function loadXmlHttp(url, id) {
 	var f = this;
 	f.xmlHttp = null;
@@ -77,12 +100,52 @@ loadXmlHttp.prototype.stateChanged=function () {
 if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test(window.location.href)))
 	//this.el.innerHTML = this.xmlHttp.responseText;
 	document.getElementById('ajax_reponse').innerHTML = this.xmlHttp.responseText;
+
+	uuid_1 = document.getElementById('uuid_1').innerHTML;
+	direction_1 = document.getElementById('direction_1').innerHTML;
+	cid_name_1 = document.getElementById('cid_name_1').innerHTML;
+	cid_num_1 = document.getElementById('cid_num_1').innerHTML;
+
+
+
+	if (previous_uuid_1 != uuid_1) {
+		if (uuid_1.length > 0) {
+			if (direction_1 == "outbound") {
+				//$url = "http://fusionpbx.com/?cid_name={cid_name}&cid_num={cid_num}&uuid={uuid}";
+				//echo urlencode($url);
+
+				//alert('new call: '+uuid_1+'\n direction: '+direction_1+'\n cid_name: '+cid_name_1+'\n cid_num: '+cid_num_1+'\n url: '+url);
+				var new_url = url;
+				new_url = new_url.replace("{cid_name}", cid_name_1);
+				new_url = new_url.replace("{cid_num}", cid_num_1);
+				new_url = new_url.replace("{uuid}", uuid_1);
+
+<?php 
+				if ($event_type=="open_window") {
+					echo "open_window(new_url,'','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes');";
+				}
+				if ($event_type=="iframe") {
+					echo "document.getElementById('iframe').src = new_url;\n";
+					//iframe_postition
+					//iframe_width
+					//iframe_height
+				}
+?>
+
+			}
+		}
+		else {
+			//hangup or initial page load detected
+		}
+		previous_uuid_1 = uuid_1;
+	}
+
 }
 
 var requestTime = function() {
-	var url = 'v_calls_active_extensions_inc.php?rows=<?php echo $rows; ?>&url=<?php echo $url; ?>&c=<?php echo trim($_REQUEST["c"]); ?>';
+	var url = 'v_calls_active_extensions_inc.php?<?php echo $_SERVER["QUERY_STRING"]; ?>';
 	new loadXmlHttp(url, 'ajax_reponse');
-	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 1222);
+	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 1200);
 }
 
 if (window.addEventListener) {
@@ -107,6 +170,7 @@ function send_cmd(url) {
 var record_count = 0;
 var cmd;
 var destination;
+// -->
 </script>
 
 <?php
@@ -137,10 +201,25 @@ echo "</table>\n";
 
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 echo "	<tr class='border'>\n";
-echo "	<td align=\"left\">\n";
+if ($event_type=="iframe") {
+	echo "	<td align=\"left\" width='75%'>\n";
+}
+else {
+	echo "	<td align=\"left\" width='100%'>\n";
+}
 echo "		<div id=\"ajax_reponse\"></div>\n";
 echo "		<div id=\"time_stamp\" style=\"visibility:hidden\">".date('Y-m-d-s')."</div>\n";
-echo "	</td>";
+echo "	</td>\n";
+
+if ($event_type=="iframe") {
+	echo "</td>\n";
+	echo "<td width='".$iframe_width."' height='".$iframe_height."'>\n";
+	echo "	<iframe src ='' width='100%' id='iframe' height='100%' frameborder=0>\n";
+	echo "		<p>Your browser does not support iframes.</p>\n";
+	echo "	</iframe>\n";
+	echo "</td>\n";
+}
+
 echo "	</tr>";
 echo "</table>";
 

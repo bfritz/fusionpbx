@@ -97,6 +97,7 @@ require_once "includes/checkauth.php";
 				if ($extension == $user_row['extension']) {
 
 					$found_extension = false;
+					$x = 1;
 					foreach ($xml as $tmp_row) {
 						if ($tmp_row->number == $extension) {
 							$found_extension = true;
@@ -131,10 +132,12 @@ require_once "includes/checkauth.php";
 							$call_length_min = sprintf("%02d", $call_length_min);
 							$call_length_sec = sprintf("%02d", $call_length_sec);
 							$call_length = $call_length_hour.':'.$call_length_min.':'.$call_length_sec;
+
 						}
 					} //end foreach
 
 					if ($found_extension) {
+
 						if ($application == "conference") { 
 							$alt_color = "background-image: url('/images/background_cell_active.gif";
 						}
@@ -161,6 +164,24 @@ require_once "includes/checkauth.php";
 							echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."cid_name=".$cid_name."&cid_num=".$cid_num."' style='color: #444444;' target='_blank'>".$cid_name."</a></td>\n";
 							echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."cid_name=".$cid_name."&cid_num=".$cid_num."' style='color: #444444;' target='_blank'>".$cid_num."</a></td>\n";
 						}
+						
+						//get the active uuid list
+							if (strlen($uuid) > 0 ) {
+								if ($x == 1) {
+									$uuid_1 = $uuid;
+									$direction_1 = $direction;
+									$cid_name_1 = $cid_name;
+									$cid_num_1 = $cid_num;
+									$x++;
+								}
+								if ($x == 2) {
+									$uuid_2 = $uuid;
+									$direction_2 = $direction;
+									$cid_name_2 = $cid_name;
+									$cid_num_2 = $cid_num;
+									$x++;
+								}
+							}
 					}
 					else {
 						$style_alternate = "style=\"color: #444444; background-image: url('/images/background_cell_light.gif');\"";
@@ -278,6 +299,16 @@ require_once "includes/checkauth.php";
 
 	echo "</table>\n";
 
-echo "<br /><br />\n";
+echo "<span id='uuid_1' style='visibility:hidden;'>$uuid_1</span>\n";
+echo "<span id='direction_1' style='visibility:hidden;'>$direction_1</span>\n";
+echo "<span id='cid_name_1' style='visibility:hidden;'>$cid_name_1</span>\n";
+echo "<span id='cid_num_1' style='visibility:hidden;'>$cid_num_1</span>\n";
 
+echo "<span id='uuid_2' style='visibility:hidden;'>$uuid_2</span>\n";
+echo "<span id='direction_2' style='visibility:hidden;'>$direction_2</span>\n";
+echo "<span id='cid_name_2' style='visibility:hidden;'>$cid_name_2</span>\n";
+echo "<span id='cid_num_2' style='visibility:hidden;'>$cid_num_2</span>\n";
+
+echo "<br />\n";
+echo "<br />\n";
 ?>
