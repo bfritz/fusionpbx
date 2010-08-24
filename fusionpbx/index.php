@@ -227,9 +227,10 @@ echo "<br />";
 					echo "	</td>\n";
 					echo "	<td class=\"vtable\">\n";
 					echo "	<pre>\n";
-					$shell_result = system($shellcmd);
+					$last_line = exec($shellcmd, $shell_result);
 					foreach ($shell_result as $value) {
-							echo "$value<br>";
+						echo substr($value, 0, 100);
+						echo "<br />";
 					}
 					echo "</pre>\n";
 					unset($shell_result);
@@ -258,9 +259,10 @@ echo "<br />";
 				echo "	</td>\n";
 				echo "	<td class=\"vtable\">\n";
 				echo "	<pre>\n";
-				$shell_result = system($shellcmd);
+				$last_line = exec($shellcmd, $shell_result);
 				foreach ($shell_result as $value) {
-						echo "$value<br>";
+					echo substr($value, 0, 100);
+					echo "<br />";
 				}
 				echo "</pre>\n";
 				unset($shell_result);
