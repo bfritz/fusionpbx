@@ -39,7 +39,7 @@ $order = $_GET["order"];
 	$sql .= " where v_id = '$v_id' ";
 	$sql .= " and ivr_menu_id = '$ivr_menu_id' ";
 	if (strlen($orderby)> 0) { 
-		$sql .= "order by ivr_menu_options_orderm $orderby $order "; 
+		$sql .= "order by ivr_menu_options_order $orderby $order "; 
 	}
 	else {
 		$sql .= "order by ivr_menu_options_order asc "; 
@@ -61,7 +61,7 @@ $order = $_GET["order"];
 	$sql .= " where v_id = '$v_id' ";
 	$sql .= " and ivr_menu_id = '$ivr_menu_id' ";
 	if (strlen($orderby)> 0) { 
-		$sql .= "order by ivr_menu_options_orderm $orderby $order "; 
+		$sql .= "order by ivr_menu_options_order $orderby $order "; 
 	}
 	else {
 		$sql .= "order by ivr_menu_options_order asc "; 
