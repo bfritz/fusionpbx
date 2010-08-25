@@ -149,9 +149,10 @@ echo "	<title></title>";
 			id: "edit1"	// id of the textarea to transform
 			,start_highlight: true
 			,allow_toggle: false
+			,word_wrap: false
 			,language: "en"
 			,syntax: "xml"
-			,toolbar: "save, |, search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help"
+			,toolbar: "save, |, search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, word_wrap, |, help"
 			,syntax_selection_allow: "css,html,js,php,xml,c,cpp,sql"
 			,show_line_colors: true
 			,load_callback: "my_load"
