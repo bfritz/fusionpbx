@@ -752,7 +752,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		if (!is_dir($v_sounds_dir.'/custom/8000')) { mkdir($v_sounds_dir.'/custom/8000',0777,true); }
 		//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds', $v_sounds_dir);
 		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/custom/8000';
-		$dst_dir = $v_sounds_dir.'/custom/8000';
+		$dst_dir = $v_sounds_dir.'/en/us/callie/custom/8000';
 		$tmp_file = 'begin_recording.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir<br />\n"; }
 		$tmp_file = 'call_forward_has_been_deleted.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
 		$tmp_file = 'call_forward_has_been_set.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
@@ -766,7 +766,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp_file = 'your_pin_number_is_incorect_goodbye.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
 
 		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/custom/16000';
-		$dst_dir = $v_sounds_dir.'/custom/16000';
+		$dst_dir = $v_sounds_dir.'/en/us/callie/custom/16000';
 		$tmp_file = 'begin_recording.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir<br />\n"; }
 		$tmp_file = 'call_forward_has_been_deleted.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
 		$tmp_file = 'call_forward_has_been_set.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
@@ -1122,7 +1122,7 @@ pgsql
 // begin step 2, mysql --------------------------------------
 	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "mysql") {
 
-		echo "If you use the root database account the database can be created automatically. However if preferred the database can be created manually with the <a href='<?php echo PROJECT_PATH; ?>/includes/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
+		//echo "If you use the root database account the database can be created automatically. However if preferred the database can be created manually with the <a href='". echo PROJECT_PATH; ."/includes/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
 
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
@@ -1188,6 +1188,29 @@ pgsql
 		echo "</td>\n";
 		echo "</tr>\n";
 
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Create Database Username:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_create_username' maxlength='255' value=\"$db_create_username\"><br />\n";
+		echo "		When supplied this username is used to create the database. <br />\n";
+		echo "		If not supplied then it assumed that the database has already been created.\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Create Database Password:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_create_password' maxlength='255' value=\"$db_create_password\"><br />\n";
+		echo "		Enter the create database password\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
 		echo "			<input type='hidden' name='db_type' value='$db_type'>\n";
@@ -1196,6 +1219,7 @@ pgsql
 		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
 		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
+		echo "			<input type='hidden' name='install_step' value='3'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
@@ -1280,6 +1304,7 @@ pgsql
 		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
 		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
+		echo "			<input type='hidden' name='install_step' value='3'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Install'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
