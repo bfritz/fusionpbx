@@ -50,7 +50,7 @@ if ($display_results) {
 
 //load the default database into memory and compare it with the active database
 	require_once "includes/lib_schema.php";
-	db_upgrade_schema ($db, $display_results);
+	db_upgrade_schema ($db, $db_type, $display_results);
 
 if ($display_results) {
 	echo "<br />\n";
