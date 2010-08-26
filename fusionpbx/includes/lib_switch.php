@@ -2023,7 +2023,7 @@ function sync_package_v_vars()
 		if ($prev_var_cat != $row[var_cat]) {
 			$tmpxml .= "\n<!-- ".$row["var_cat"]." -->\n";
 			if (strlen($row["var_desc"]) > 0) {
-				$tmpxml .= "<!-- ".$row["var_desc"]." -->\n";
+				$tmpxml .= "<!-- ".base64_decode($row["var_desc"])." -->\n";
 			}
 		}
 		if ($row['var_enabled'] == "true"){	$tmpxml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row["var_name"]."=".$row["var_value"]."\"/>\n"; }
