@@ -19,7 +19,6 @@ INSERT INTO v_menu VALUES(37,1,'en','Extensions','/mod/extensions/v_extensions.p
 INSERT INTO v_menu VALUES(38,1,'en','Features','/mod/features/v_features.php','internal','admin','',40,5,'mcrane','2009-08-20 10:40:31','mcrane','2009-10-27 22:56:57');
 INSERT INTO v_menu VALUES(78,1,'en','Active Calls','/mod/calls_active/v_calls_active.php','internal','admin','',38,1,'mcrane','2010-02-26 00:30:16','mcrane','2010-02-26 02:40:14');
 INSERT INTO v_menu VALUES(79,1,'en','Active Extensions','/mod/calls_active/v_calls_active_extensions.php','internal','admin','',38,2,'mcrane','2010-02-26 00:30:16','mcrane','2010-02-26 02:40:14');
-INSERT INTO v_menu VALUES(41,1,'en','Auto Attendant','/mod/auto_attendant/v_auto_attendant.php','internal','admin','',38,3,'mcrane','2009-08-20 10:46:04','mcrane','2009-10-27 22:44:29');
 INSERT INTO v_menu VALUES(67,1,'en','Call Broadcast','/mod/call_broadcast/v_call_broadcast.php','internal','admin','',38,4,'mcrane','2009-10-13 11:40:28','mcrane','2009-10-27 22:44:50');
 INSERT INTO v_menu VALUES(52,1,'en','Call Detail Records','/mod/xml_cdr/v_xml_cdr.php','internal','admin','',38,5,'mcrane','2009-09-05 00:30:16','mcrane','2010-08-08 03:53:50');
 INSERT INTO v_menu VALUES(77,1,'en','Call Forward','/mod/call_forward/v_call_forward.php','internal','admin','',38,6,'mcrane','2010-02-02 00:30:16','mcrane','2010-02-12 22:49:14');
@@ -42,9 +41,9 @@ INSERT INTO v_menu VALUES(47,1,'en','SIP Profiles','/mod/profiles/v_profiles.php
 INSERT INTO v_menu VALUES(48,1,'en','Inbound Routes','/mod/public_includes/v_public_includes.php','internal','admin','',40,23,'mcrane','2009-08-20 10:51:56','mcrane','2009-10-27 22:12:16');
 INSERT INTO v_menu VALUES(49,1,'en','Status','/core/status/v_status.php','internal','admin','',40,24,'mcrane','2009-08-20 10:52:38','mcrane','2009-10-27 22:26:42');
 INSERT INTO v_menu VALUES(50,1,'en','Variables','/mod/vars/v_vars.php','internal','superadmin','',40,25,'mcrane','2009-08-20 10:53:12','mcrane','2009-10-27 22:54:08');
-INSERT INTO v_menu VALUES(23,1,'en','Member','','internal','member','','',26,'mcrane','2007-06-22 17:57:38','mcrane','2009-08-20 10:53:59');
+INSERT INTO v_menu VALUES(23,1,'en','User','','internal','member','','',26,'mcrane','2007-06-22 17:57:38','mcrane','2009-08-20 10:53:59');
 INSERT INTO v_menu VALUES(25,1,'en','Account Settings','/mod/users/usersupdate.php','internal','member','',23,1,'mcrane','2007-07-12 01:05:51','mcrane','2009-10-27 23:09:16');
-INSERT INTO v_menu VALUES(75,1,'en','Call Detail Records','/mod/cdr/v_cdr.php','internal','member','',23,2,'mcrane','2009-09-05 00:30:16','mcrane','2009-10-27 22:49:14');
+INSERT INTO v_menu VALUES(75,1,'en','Call Detail Records','/mod/xml_cdr/v_xml_cdr.php','internal','member','',23,2,'mcrane','2009-09-05 00:30:16','mcrane','2009-10-27 22:49:14');
 INSERT INTO v_menu VALUES(56,1,'en','Voicemail','/mod/voicemail_msgs/v_voicemail_msgs.php','internal','member','',23,3,'mcrane','2009-09-16 04:04:11','mcrane','2009-10-27 23:32:25');
 INSERT INTO v_menu VALUES(3,1,'en','Admin','','internal','admin','','',30,'mcrane','2007-05-02 15:35:39','admin','2009-11-04 18:20:27');
 INSERT INTO v_menu VALUES(32,1,'en','Apply Settings','/core/status/v_cmd.php?cmd=api+reloadxml','internal','admin','',3,1,'mcrane','2007-08-25 19:05:30','','');
@@ -185,8 +184,7 @@ CREATE TABLE v_public_includes (public_include_id INTEGER PRIMARY KEY, v_id NUME
 INSERT INTO v_public_includes VALUES(1,1,'inbound01','',1,'',NULL,NULL,'true','inbound');
 CREATE TABLE v_public_includes_details ( public_includes_detail_id INTEGER PRIMARY KEY, v_id NUMERIC, public_include_id NUMERIC, parent_id NUMERIC, tag TEXT, fieldtype TEXT, fielddata TEXT, fieldorder NUMERIC, fieldbreak TEXT);
 INSERT INTO v_public_includes_details VALUES(1,1,1,NULL,'condition','destination_number','^(12081231234)$',0,'');
-INSERT INTO v_public_includes_details VALUES(2,1,1,NULL,'action','start_dtmf','',1,'');
-INSERT INTO v_public_includes_details VALUES(3,1,1,NULL,'action','transfer','7002 XML default',2,'');
+INSERT INTO v_public_includes_details VALUES(2,1,1,NULL,'action','transfer','7002 XML default',2,'');
 CREATE TABLE v_recordings ( recording_id INTEGER PRIMARY KEY, v_id NUMERIC, filename TEXT, recordingname TEXT, recordingid TEXT, descr TEXT );
 INSERT INTO v_recordings VALUES(1,1,'auto_attendant_sales1_support2_billing3.wav','auto_attendant_sales1_support2_billing3.wav',NULL,'auto');
 INSERT INTO v_recordings VALUES(2,1,'call_transfer.wav','call_transfer.wav',NULL,'auto');
