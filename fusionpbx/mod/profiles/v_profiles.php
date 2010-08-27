@@ -124,55 +124,56 @@ $rowstyle["1"] = "rowstyle1";
 
 	<?php
 	foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$file){
-
-		echo "<tr>\n";
-		echo "	<td class='".$rowstyle[$c]."' ondblclick=\"document.location='v_profile_edit.php?f=".$file."'\";\" valign='middle'>\n";
-		echo $file;
-		echo "&nbsp;\n";
-		echo "	</td>\n";
-		echo "	<td class='rowstylebg' ondblclick=\"document.location='v_profile_edit.php?f=".$file."\">\n";
-
-		switch ($file) {
-		case "internal.xml":
-			echo "The Internal profile by default requires registration which is most often used for extensions. ";
-			echo "By default the Internal profile binds to the WAN IP which is accessible to the internal network. ";
-			echo "A rule can be set from PFSense -> Firewall -> Rules -> WAN to the the WAN IP for port 5060 which ";
-			echo "enables phones register from outside the network.";
-			echo "";
-			echo "&nbsp;";
-			break; 
-		case "internal-ipv6.xml":
-			echo "The Internal IPV6 profile binds to the IP version 6 address and is similar to the Internal profile.\n";
-			echo "&nbsp;";
-			break;
-		case "external.xml":
-			echo "The External profile handles outbound registrations to a SIP provider or other SIP Server. The SIP provider sends calls to you, and you ";
-			echo "send calls to your provider, through the external profile. The external profile allows anonymous calling, which is ";
-			echo "required as your provider will never authenticate with you to send you a call. Calls can be sent using a SIP URL \"my.domain.com:5080\" ";
-			echo "&nbsp;";
-			break;
-		case "lan.xml":
-			echo "The LAN profile is the same as the Internal profile except that it is bound to the LAN IP.\n";
-			echo "&nbsp;";
-			break;
-		default:
-			//echo "<font color='#FFFFFF'>default</font>&nbsp;";
+		if (substr($file, -4) == ".xml") {
+			echo "<tr>\n";
+			echo "	<td class='".$rowstyle[$c]."' ondblclick=\"document.location='v_profile_edit.php?f=".$file."'\";\" valign='middle'>\n";
+			echo $file;
+			echo "&nbsp;\n";
+			echo "	</td>\n";
+			echo "	<td class='rowstylebg' ondblclick=\"document.location='v_profile_edit.php?f=".$file."\">\n";
+	
+			switch ($file) {
+			case "internal.xml":
+				echo "The Internal profile by default requires registration which is most often used for extensions. ";
+				echo "By default the Internal profile binds to the WAN IP which is accessible to the internal network. ";
+				echo "A rule can be set from PFSense -> Firewall -> Rules -> WAN to the the WAN IP for port 5060 which ";
+				echo "enables phones register from outside the network.";
+				echo "";
+				echo "&nbsp;";
+				break; 
+			case "internal-ipv6.xml":
+				echo "The Internal IPV6 profile binds to the IP version 6 address and is similar to the Internal profile.\n";
+				echo "&nbsp;";
+				break;
+			case "external.xml":
+				echo "The External profile handles outbound registrations to a SIP provider or other SIP Server. The SIP provider sends calls to you, and you ";
+				echo "send calls to your provider, through the external profile. The external profile allows anonymous calling, which is ";
+				echo "required as your provider will never authenticate with you to send you a call. Calls can be sent using a SIP URL \"my.domain.com:5080\" ";
+				echo "&nbsp;";
+				break;
+			case "lan.xml":
+				echo "The LAN profile is the same as the Internal profile except that it is bound to the LAN IP.\n";
+				echo "&nbsp;";
+				break;
+			default:
+				//echo "<font color='#FFFFFF'>default</font>&nbsp;";
+			}
+	
+			echo "	</td>\n";
+			echo "	<td valign='middle' nowrap class='list' valign='top'>\n";
+			echo "	  <table border='0' cellspacing='2' cellpadding='1'>\n";
+			echo "		<tr>\n";
+			echo "		  <td valign='middle'><a href='v_profile_edit.php?type=profile&f=".$file."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a></td>\n";
+			echo "		  <td><a href='v_profiles.php?type=profile&a=del&f=".$file."'  alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a></td>\n";
+			echo "		</tr>\n";
+			echo "	 </table>\n";
+			echo "	</td>\n";
+			echo "</tr>\n";
+			//echo "<tr><td colspan='2'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
+	
+			if ($c==0) { $c=1; } else { $c=0; }
+			$i++;
 		}
-
-		echo "	</td>\n";
-		echo "	<td valign='middle' nowrap class='list' valign='top'>\n";
-		echo "	  <table border='0' cellspacing='2' cellpadding='1'>\n";
-		echo "		<tr>\n";
-		echo "		  <td valign='middle'><a href='v_profile_edit.php?type=profile&f=".$file."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a></td>\n";
-		echo "		  <td><a href='v_profiles.php?type=profile&a=del&f=".$file."'  alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a></td>\n";
-		echo "		</tr>\n";
-		echo "	 </table>\n";
-		echo "	</td>\n";
-		echo "</tr>\n";
-		//echo "<tr><td colspan='2'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
-
-		if ($c==0) { $c=1; } else { $c=0; }
-		$i++;
 	}
 
 	?>
