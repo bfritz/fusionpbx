@@ -103,11 +103,6 @@ $v_id = '1';
 		$install_secure_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 	}
 
-//set the default db_filepath
-	if (strlen($db_filepath) == 0) { //secure dir
-		$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
-	}
-
 //set the default db_filename
 	if ($db_type == "sqlite") {
 		if (strlen($db_filename) == 0) { $db_filename = "fusionpbx.db"; }
@@ -168,31 +163,59 @@ $v_id = '1';
 		case "FreeBSD":
 			//if the freebsd port is installed use the following paths by default.
 				if (file_exists('/usr/local/etc/freeswitch/conf')) {
-					$v_bin_dir = '/usr/local/bin'; //freeswitch bin directory
-					$v_conf_dir = '/usr/local/etc/freeswitch/conf';
-					$v_db_dir = '/var/db/freeswitch';
-					$v_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
-					$v_log_dir = '/var/log/freewitch';
-					$v_mod_dir = '/usr/local/lib/freeswitch/mod';
-					$v_extensions_dir = $v_conf_dir.'/directory/default';
-					$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
-					$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
-					$v_scripts_dir = '/usr/local/etc/freeswitch/scripts';
-					$v_grammar_dir = '/usr/local/etc/freeswitch/grammar';
-					$v_storage_dir = '/var/freeswitch';
-					$v_voicemail_dir = '/var/spool/freeswitch/voicemail';
-					$v_recordings_dir = '/var/freeswitch/recordings';
-					$v_sounds_dir = '/usr/local/share/freeswitch/sounds';
+
+					//set the default db_filepath
+						if (strlen($db_filepath) == 0) { //secure dir
+							$db_filepath = '/var/db/fusionpbx';
+							if (!is_dir($db_filepath)) { mkdir($db_filepath,0777,true); }
+						}
+
+					//set the other default directories
+						$v_bin_dir = '/usr/local/bin'; //freeswitch bin directory
+						$v_conf_dir = '/usr/local/etc/freeswitch/conf';
+						$v_db_dir = '/var/db/freeswitch';
+						$v_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
+						$v_log_dir = '/var/log/freewitch';
+						$v_mod_dir = '/usr/local/lib/freeswitch/mod';
+						$v_extensions_dir = $v_conf_dir.'/directory/default';
+						$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
+						$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
+						$v_scripts_dir = '/usr/local/etc/freeswitch/scripts';
+						$v_grammar_dir = '/usr/local/etc/freeswitch/grammar';
+						$v_storage_dir = '/var/freeswitch';
+						$v_voicemail_dir = '/var/spool/freeswitch/voicemail';
+						$v_recordings_dir = '/var/freeswitch/recordings';
+						$v_sounds_dir = '/usr/local/share/freeswitch/sounds';
+				}
+				else {
+					//set the default db_filepath
+						if (strlen($db_filepath) == 0) { //secure dir
+							$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+						}
 				}
 			break;
 		case "NetBSD":
 			$v_startup_script_dir = '';
 			$install_php_dir = '/usr/local/bin';
+
+			//set the default db_filepath
+				if (strlen($db_filepath) == 0) { //secure dir
+					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+				}
 			break;
 		case "OpenBSD":
 			$v_startup_script_dir = '';
+
+			//set the default db_filepath
+				if (strlen($db_filepath) == 0) { //secure dir
+					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+				}
 			break;
 		default:
+			//set the default db_filepath
+				if (strlen($db_filepath) == 0) { //secure dir
+					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+				}
 		}
 		/*
 		* CYGWIN_NT-5.1
@@ -563,8 +586,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				//select the database
 					$db_sql->query("USE $db_name;");
 
-				//include the new config.php file
-					require_once "includes/config.php";
+				//include sets the datbaase connection
+					require_once "includes/lib_pdo.php";
 
 				//set group permissions for the install
 					//$_SESSION["groups"] = '||admin||member||superadmin||';
@@ -650,11 +673,11 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			//$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
 			//$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir' ";
 			$sql .= "where v_id = '$v_id'";
-			$db->exec(check_sql($sql));
+			$db->exec($sql);
 			unset($sql);
 
 	//remove the default config files that are not needed
-		require_once "includes/config.php";
+		//require_once "includes/config.php";
 		$file = $v_extensions_dir."/brian.xml"; if (file_exists($file)) { unlink($file); }
 		$file = $v_extensions_dir."/example.com.xml"; if (file_exists($file)) { unlink($file); }
 		$file = $v_dialplan_default_dir."/99999_enum.xml"; if (file_exists($file)) { unlink($file); }
@@ -678,24 +701,13 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		unset($contents);
 		unset($filename);
 
-	//prepare shout.conf.xml for mod_shout
-		$fout = fopen($v_conf_dir."/autoload_configs/shout.conf.xml","w");
-		$tmpxml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
-		$tmpxml .= "  <settings>\n";
-		$tmpxml .= "    <!-- Don't change these unless you are insane -->\n";
-		$tmpxml .= "    <param name=\"decoder\" value=\"i586\"/>\n";
-		$tmpxml .= "    <!--<param name=\"volume\" value=\".1\"/>-->\n";
-		$tmpxml .= "    <!--<param name=\"outscale\" value=\"8192\"/>-->\n";
-		$tmpxml .= "  </settings>\n";
-		$tmpxml .= "</configuration>";
-		fwrite($fout, $tmpxml);
-		unset($tmpxml);
-		fclose($fout);
-
 	//create the necessary directories
 		if (!is_dir($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
 		if (!is_dir($install_v_backup_dir)) { mkdir($install_v_backup_dir,0777,true); }
-		if (!is_dir($install_v_dir.'/sounds/custom/8000')) { mkdir($install_v_dir.'/sounds/custom/8000',0777,true); }
+		if (!is_dir($install_v_dir.'/sounds/en/us/callie/custom/8000')) { mkdir($install_v_dir.'/sounds/en/us/callie/custom/8000',0777,true); }
+		if (!is_dir($install_v_dir.'/sounds/en/us/callie/custom/16000')) { mkdir($install_v_dir.'/sounds/en/us/callie/custom/16000',0777,true); }
+		if (!is_dir($install_v_dir.'/sounds/en/us/callie/custom/32000')) { mkdir($install_v_dir.'/sounds/en/us/callie/custom/32000',0777,true); }
+		if (!is_dir($install_v_dir.'/sounds/en/us/callie/custom/48000')) { mkdir($install_v_dir.'/sounds/en/us/callie/custom/48000',0777,true); }
 		if (!is_dir($v_storage_dir.'/fax/')) { mkdir($v_storage_dir.'/fax',0777,true); }
 		if (!is_dir($v_log_dir.'')) { mkdir($v_log_dir.'',0777,true); }
 		if (!is_dir($v_log_dir.'/cdr-csv/')) { mkdir($v_log_dir.'/cdr-csv',0777,true); }
@@ -724,95 +736,23 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		}
 		unset($srcfile, $destfile);
 
-	//copy files from autoload_configs
-		//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/autoload_configs', $v_conf_dir.'/autoload_configs');
-		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/autoload_configs';
-		$dst_dir = $v_conf_dir."/autoload_configs";
-		$tmp_file = 'cdr_csv.conf.xml'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir<br />\n"; }
-
-	//make a backup copy of the default config used with the 'Restore Default' buttons on the text areas.
-		//if (!is_dir($v_conf_dir.".orig")) { mkdir($v_conf_dir.".orig".'',0777,true); }
-		//recursive_copy($v_conf_dir, $v_conf_dir.".orig");
-		$src_dir = $v_conf_dir;
-		$dst_dir = $v_conf_dir.'.orig';
-		exec ('cp -R '.$src_dir.' '.$dst_dir);
-
-	//copy the dialplan default.xml file
-		$srcfile = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/dialplan/default.xml';
-		$destfile = $v_conf_dir.'/dialplan/default.xml';
-		if (file_exists($destfile)) { unlink($destfile); }
-		if (!copy($srcfile, $destfile)) {
-			unlink($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php");
-			echo "failed to copy $srcfile to $destfile...\n";
-			exit;
+	//copy the files and directories from includes/install
+		switch (PHP_OS) {
+		case "FreeBSD":
+				if (file_exists('/usr/local/etc/freeswitch/conf')) {
+					//the freebsd port will copy the files and directories
+				}
+				else {
+					//include the new lib_install_copy.php file
+						include "includes/lib_install_copy.php";
+				}
+				break;
+		default:
+			//set the default db_filepath
+				if (strlen($db_filepath) == 0) {
+					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+				}
 		}
-		unset($srcfile, $destfile);
-
-	//copy sound files
-		if (!is_dir($v_sounds_dir.'/custom/8000')) { mkdir($v_sounds_dir.'/custom/8000',0777,true); }
-		//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds', $v_sounds_dir);
-		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/custom/8000';
-		$dst_dir = $v_sounds_dir.'/en/us/callie/custom/8000';
-		$tmp_file = 'begin_recording.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir<br />\n"; }
-		$tmp_file = 'call_forward_has_been_deleted.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'call_forward_has_been_set.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'followme_menu.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'press_1_to_accept_2_to_reject_or_3_for_voicemail.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_enter_the_extension_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_enter_the_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_enter_the_phone_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_say_your_name_and_reason_for_calling.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_enter_your_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'your_pin_number_is_incorect_goodbye.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-
-		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/custom/16000';
-		$dst_dir = $v_sounds_dir.'/en/us/callie/custom/16000';
-		$tmp_file = 'begin_recording.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir<br />\n"; }
-		$tmp_file = 'call_forward_has_been_deleted.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'call_forward_has_been_set.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'followme_menu.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'press_1_to_accept_2_to_reject_or_3_for_voicemail.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_enter_the_extension_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_enter_the_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_enter_the_phone_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_say_your_name_and_reason_for_calling.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'please_enter_your_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'your_pin_number_is_incorect_goodbye.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-
-	//copy recordings files
-		//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/recordings', $v_recordings_dir.'');
-		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/recordings';
-		$dst_dir = $v_recordings_dir;
-		$tmp_file = 'auto_attendant_sales1_support2_billing3.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'call_transfer.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'simple_auto_attendant.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-
-	//get the script files
-		if (!is_dir($v_scripts_dir.'')) { mkdir($v_scripts_dir.'',0777,true); }
-		if (!is_dir($v_scripts_dir.'/javascript')) { mkdir($v_scripts_dir.'/javascript',0777,true); }
-		if (!is_dir($v_scripts_dir.'/lua')) { mkdir($v_scripts_dir.'/lua',0777,true); }
-		if (!is_dir($v_scripts_dir.'/perl')) { mkdir($v_scripts_dir.'/perl',0777,true); }
-		//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/scripts', $v_scripts_dir);
-		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/scripts';
-		$dst_dir = $v_scripts_dir;
-		$tmp_file = 'call_broadcast_originate.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'call_forward_basic.lua'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'disa.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'disa.lua'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'huntgroup_originate.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'originate.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'recordings.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'roku.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-		$tmp_file = 'voicemail.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-
-	//copy additional the flash mp3 player
-		$srcfile = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/htdocs/slim.swf';
-		$destfile = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/mod/recordings/slim.swf';
-		if (!copy($srcfile, $destfile)) {
-			//echo "failed to copy $srcfile to $destfile...\n";
-			//exit;
-		}
-		unset($srcfile, $destfile);
 
 	//activate the .htaccess file
 		$srcfile = $install_secure_dir.'/htaccess.tmp';
@@ -822,6 +762,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			//exit;
 		}
 		unset($srcfile, $destfile);
+
+	//include the new config.php file
+		require_once "includes/config.php";
 
 	//create the switch.conf.xml file
 		switch_conf_xml();
@@ -1033,28 +976,10 @@ pgsql
 		echo "</td>\n";
 		echo "</tr>\n";
 
-		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "    Temp Directory:\n";
-		echo "</td>\n";
-		echo "<td class='vtable' align='left'>\n";
-		echo "    <input class='formfld' type='text' name='install_tmp_dir' maxlength='255' value=\"".$install_tmp_dir."\"><br />\n";
-		echo "Set this to the temporary directory.<br />\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-
-		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "    Backup Directory:\n";
-		echo "</td>\n";
-		echo "<td class='vtable' align='left'>\n";
-		echo "    <input class='formfld' type='text' name='install_v_backup_dir' maxlength='255' value=\"".$install_v_backup_dir."\"><br />\n";
-		echo "Set a backup directory.<br />\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
+		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
+		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='2'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
 		echo "		</td>\n";
@@ -1096,7 +1021,7 @@ pgsql
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='db_filepath' maxlength='255' value=\"$db_filepath\"><br />\n";
-		echo "	Path to the secure folder that contains PHP command line scripts and the SQLite database.\n";
+		echo "	Set the path to the database directory.\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
