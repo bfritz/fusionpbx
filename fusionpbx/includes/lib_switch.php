@@ -180,6 +180,10 @@ function v_settings()
 		$v_scripts_dir = str_replace ("{program_dir}", $program_dir, $v_scripts_dir);
 		$v_settings_array["v_scripts_dir"] = $v_scripts_dir;
 
+		$v_grammar_dir = $row["v_grammar_dir"];
+		$v_grammar_dir = str_replace ("{program_dir}", $program_dir, $v_grammar_dir);
+		$v_settings_array["v_grammar_dir"] = $v_grammar_dir;
+
 		$v_storage_dir = $row["v_storage_dir"];
 		$v_storage_dir = str_replace ("{program_dir}", $program_dir, $v_storage_dir);
 		$v_settings_array["v_storage_dir"] = $v_storage_dir;
