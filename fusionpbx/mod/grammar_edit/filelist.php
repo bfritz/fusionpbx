@@ -90,14 +90,6 @@ function recur_dir($dir) {
 			*/
 			$dirname = end($level);
 			$htmldirlist .= space(count($level))."<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap><a onClick=\"Toggle(this)\"><IMG SRC=\"images/plus.gif\"> <IMG SRC=\"images/folder.gif\" border='0'> $dirname </a><DIV style='display:none'>\n";
-			//$htmldirlist .= space(count($level))."   <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap><A onClick=\"Toggle(this)\"><IMG SRC=\"images/plus.gif\"> <IMG SRC=\"images/gear.png\"> Tools </A><DIV style='display:none'>\n";
-			//$htmldirlist .= space(count($level))."       <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><IMG SRC=\"images/file.png\"><a href='foldernew.php?folder=".urlencode($newpath)."' title=''>New Folder </a><DIV style='display:none'>\n"; //parent.document.getElementById('file').value='".urlencode($newpath)."'
-			//$htmldirlist .= space(count($level))."       </DIV></TD></TR></TABLE>\n";
-			//$htmldirlist .= space(count($level))."       <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><IMG SRC=\"images/file.png\"><a href='filenew.php?folder=".urlencode($newpath)."' title=''>New File </a><DIV style='display:none'>\n"; //parent.document.getElementById('file').value='".urlencode($newpath)."'
-			//$htmldirlist .= space(count($level))."       </DIV></TD></TR></TABLE>\n";
-			//$htmldirlist .= space(count($level))."   </DIV></TD></TR></TABLE>\n";
-			//$htmldirlist .= space(count($level))."       <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><IMG SRC=\"images/gear.png\"><a href='fileoptions.php?folder=".urlencode($newpath)."' title=''>Options </a><DIV style='display:none'>\n"; //parent.document.getElementById('file').value='".urlencode($newpath)."'
-			//$htmldirlist .= space(count($level))."       </DIV></TD></TR></TABLE>\n";
 			$htmldirlist .= recur_dir($newpath);
 			$htmldirlist .= space(count($level))."</DIV></TD></TR></TABLE>\n";
 
@@ -175,13 +167,7 @@ function recur_dir($dir) {
 	echo "            if (http_request.status == 200) {\n";
 
 	echo "                  parent.editAreaLoader.setValue('edit1', http_request.responseText); \n";
-	//echo "                alert(http_request.responseText);\n";
 	echo "\n";
-	//echo "                //var xmldoc = http_request.responseXML;\n";
-	//echo "                //var root_node = xmldoc.getElementsByTagName('doc').item(0);\n";
-	//echo "                //alert(xmldoc.getElementByID('fr1').value);\n";
-	//echo "                //alert(root_node.firstChild.data);\n";
-	//echo "\n";
 	echo "            }\n";
 	echo "            else {\n";
 	echo "                alert('There was a problem with the request.');\n";
@@ -225,57 +211,17 @@ function recur_dir($dir) {
 	echo "}\n";
 	echo "</SCRIPT>";
 
-
 	echo "<div align='center' valign='1'>";
 	echo "<table  width='100%' height='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\" valign='top' nowrap>\n";
-	//echo "      <br>";
+	echo "\n";
+	echo "		<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><a href='javascript:void(0);' onclick=\"if (typeof(clipwin)!='undefined') { clipwin.close(); } clipwin = window.open('fileoptions.php?folder=".urlencode($_SERVER["DOCUMENT_ROOT"])."','null','left=20,top=20,width=310,height=300,toolbar=0,resizable=0');\" style='text-decoration:none;' title=''><IMG SRC=\"images/folder.gif\" border='0'> Files </a><DIV style=''>\n"; //display:none
 
+	echo recur_dir($v_grammar_dir);
 
-	echo "\n";
-	echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><a href='javascript:void(0);' onclick=\"if (typeof(clipwin)!='undefined') { clipwin.close(); } clipwin = window.open('fileoptions.php?folder=".urlencode($_SERVER["DOCUMENT_ROOT"])."','null','left=20,top=20,width=310,height=300,toolbar=0,resizable=0');\" style='text-decoration:none;' title=''><IMG SRC=\"images/folder.gif\" border='0'> Files </a><DIV style=''>\n"; //display:none
-	//echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><A onClick=\"Toggle(this)\"><IMG SRC=\"images/plus.gif\"> <IMG SRC=\"images/folder.gif\"> Files </A><DIV style=''>\n"; //display:none
-
-	//echo "<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap><A onClick=\"Toggle(this)\"><IMG SRC=\"images/plus.gif\"> <IMG SRC=\"images/gear.png\"> Tools </A><DIV style='display:none'>\n";
-	//echo "<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><IMG SRC=\"images/file.png\"><a href='/edit/foldernew.php?folder=".urlencode($_SERVER["DOCUMENT_ROOT"])."' title=''>New Folder </a><DIV style='display:none'>\n"; //parent.document.getElementById('file').value='".urlencode($newpath)."'
-	//echo "</DIV></TD></TR></TABLE>\n";
-	//echo "<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><IMG SRC=\"images/file.png\"><a href='/edit/filenew.php?folder=".urlencode($_SERVER["DOCUMENT_ROOT"])."' title=''>New File </a><DIV style='display:none'>\n"; //parent.document.getElementById('file').value='".urlencode($newpath)."'
-	//echo "</DIV></TD></TR></TABLE>\n";
-	//echo "</DIV></TD></TR></TABLE>\n";
-
-	echo recur_dir($v_dir.'/grammar');
-
-	echo "</DIV></TD></TR></TABLE>\n";
-
-	/*
-	echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><A onClick=\"Toggle(this)\"><IMG SRC=\"/images/plus.gif\"> <IMG SRC=\"/images/folder.gif\"> Files </A><DIV style='display:none'>\n";
-	echo "\n";
-	echo "         <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD><A onClick=\"Toggle(this)\"><IMG SRC=\"/images/plus.gif\"> <IMG SRC=\"/images/folder.gif\"> Folder 1</A><DIV style='display:none'>\n";
-	echo "\n";
-	echo "         <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo1.php <DIV style='display:none'>\n";
-	echo "         </DIV></TD></TR></TABLE>\n";
-	echo "\n";
-	echo "         <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo2.php <DIV style='display:none'>\n";
-	echo "         </DIV></TD></TR></TABLE>\n";
-	echo "\n";
-	echo "         </DIV></TD></TR></TABLE>\n";
-	echo "\n";
-	echo "        <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD><A onClick=\"Toggle(this)\"><IMG SRC=\"/images/plus.gif\"> <IMG SRC=\"/images/folder.gif\"> Folder 2</A><DIV style='display:none'>\n";
-	echo "\n";
-	echo "            <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo3.php <DIV style='display:none'>\n";
-	echo "            </DIV></TD></TR></TABLE>\n";
-	echo "\n";
-	echo "            <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo4.php <DIV style='display:none'>\n";
-	echo "            </DIV></TD></TR></TABLE>\n";
-	echo "\n";
-	echo "         </DIV></TD></TR></TABLE>\n";
-	echo "\n";
-	echo "      </DIV></TD></TR></TABLE>\n";
-	*/
-
-
+	echo "</div></td></tr></table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
