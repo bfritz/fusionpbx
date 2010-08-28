@@ -55,9 +55,9 @@ if ( session:ready() ) then
 		default_language = session:getVariable("default_language");
 		default_dialect = session:getVariable("default_dialect");
 		default_voice = session:getVariable("default_voice");
-		if (default_language) then else default_language = 'en'; end
-		if (default_dialect) then else default_dialect = 'us'; end
-		if (default_voice) then else default_voice = 'callie'; end
+		if (not default_language) then default_language = 'en'; end
+		if (not default_dialect) then default_dialect = 'us'; end
+		if (not default_voice) then default_voice = 'callie'; end
 
 	--set defaults
 		if (digit_min_length) then
