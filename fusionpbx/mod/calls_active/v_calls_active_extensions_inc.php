@@ -399,7 +399,7 @@ require_once "includes/checkauth.php";
 					}
 					else {
 						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-						echo "	2&nbsp;";
+						echo "	&nbsp;";
 						echo "</td>\n";
 					}
 				}
