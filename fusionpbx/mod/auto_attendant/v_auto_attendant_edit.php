@@ -323,9 +323,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	require_once "includes/header.php";
 
-	echo "<script language='javascript' src='/includes/calendar_popcalendar.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_layers.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_menu.js'></script>\n";
 
 	echo "<script language=\"Javascript\">\n";
 	echo "function sf() { document.forms[0].savetopath.focus(); }\n";

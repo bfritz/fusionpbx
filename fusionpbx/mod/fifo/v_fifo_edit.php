@@ -193,9 +193,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	require_once "includes/header.php";
 
-	echo "<script language='javascript' src='/includes/calendar_popcalendar.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_layers.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_menu.js'></script>\n";
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -203,7 +200,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
-
 
 
 	echo "<form method='post' name='frm' action=''>\n";

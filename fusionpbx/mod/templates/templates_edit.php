@@ -170,9 +170,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 
 	require_once "includes/header.php";
-	echo "<script language='javascript' src='/includes/calendar_popcalendar.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_layers.js'></script>\n";
-	echo "<script language='javascript' src='/includes/calendar_lw_menu.js'></script>\n";
+
 
 	//--- Begin: Edit Area -----------------------------------------------------
 		echo "    <script language=\"javascript\" type=\"text/javascript\" src=\"".PROJECT_PATH."/includes/edit_area/edit_area_full.js\"></script>\n";
