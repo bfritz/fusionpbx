@@ -104,14 +104,14 @@ INSERT INTO v_modules VALUES(3,1,'Syslog','mod_syslog','Send logs to a remote sy
 INSERT INTO v_modules VALUES(4,1,'ENUM','mod_enum','Route PSTN numbers over internet according to ENUM servers, such as e164.org.','Multi-Faceted','true','true');
 INSERT INTO v_modules VALUES(5,1,'XML RPC','mod_xml_rpc','XML Remote Procedure Calls. Issue commands from your web application.','XML Interfaces','true','true');
 INSERT INTO v_modules VALUES(6,1,'XML cURL','mod_xml_curl','XML Gateway Code. Configure FreeSWITCH from a web server on boot and on the fly.','XML Interfaces','false','false');
-INSERT INTO v_modules VALUES(7,1,'XML CDR','mod_xml_cdr','XML based call detail record handler.','XML Interfaces','false','false');
+INSERT INTO v_modules VALUES(7,1,'XML CDR','mod_xml_cdr','XML based call detail record handler.','XML Interfaces','true','true');
 INSERT INTO v_modules VALUES(8,1,'CDR CSV','mod_cdr_csv','CSV call detail record handler.','Event Handlers','true','true');
 INSERT INTO v_modules VALUES(9,1,'Event Multicast','mod_event_multicast','Broadcasts events to netmask.','Event Handlers','false','false');
 INSERT INTO v_modules VALUES(10,1,'Event Socket','mod_event_socket','Sends events via a single socket.','Event Handlers','true','true');
 INSERT INTO v_modules VALUES(11,1,'Zeroconf','mod_zeroconf','Support for zeroconf.','Event Handlers','false','false');
 INSERT INTO v_modules VALUES(12,1,'LDAP','mod_ldap','LDAP module made to obtain dialplans, user accounts, etc.','Directory Interfaces','true','true');
 INSERT INTO v_modules VALUES(13,1,'Dingaling','mod_dingaling',NULL,'Endpoints','true','true');
-INSERT INTO v_modules VALUES(14,1,'IAX','mod_iax','IAX2.','Endpoints','true','true');
+INSERT INTO v_modules VALUES(14,1,'FreeTDM','mod_openzap','Interface to TDM hardware.','Endpoints','false','false');
 INSERT INTO v_modules VALUES(15,1,'PortAudio','mod_portaudio','Voice through a local soundcard.','Endpoints','true','true');
 INSERT INTO v_modules VALUES(16,1,'ALSA','mod_alsa','','Endpoints','false','false');
 INSERT INTO v_modules VALUES(17,1,'Sofia','mod_sofia','SIP module.','Endpoints','true','true');
