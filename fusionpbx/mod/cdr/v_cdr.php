@@ -139,7 +139,7 @@ if (count($_REQUEST)>0) {
 	if (strlen($write_codec) > 0) { $sqlwhere .= "and write_codec like '%$write_codec%' "; }
 	if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
 	if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
-	if (!ifgroup("admin") || !ifgroup("superadmin")) {
+	if (!ifgroup("admin") && !ifgroup("superadmin")) {
 		//disable member search
 		//$sqlwhereorig = $sqlwhere;
 		$sqlwhere = "where ";
@@ -167,7 +167,6 @@ if (count($_REQUEST)>0) {
 	else {
 		$sql .= "order by $orderby $order "; 
 	}
-	//echo $sql;
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();

@@ -72,7 +72,7 @@ else {
 
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
-	echo "      <br>";
+	echo "		<br>";
 
 
 	echo "<table width='100%' border='0'><tr>\n";
@@ -97,7 +97,6 @@ else {
 	//search the call detail records
 		if (ifgroup("admin") || ifgroup("superadmin")) {
 			echo "<div align='center'>\n";
-
 			echo "<form method='post' action=''>";
 
 			echo "<table width='95%' cellpadding='3' border='0'>";
@@ -273,7 +272,7 @@ else {
 	if (strlen($write_codec) > 0) { $sqlwhere .= "and write_codec like '%$write_codec%' "; }
 	if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
 	if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
-	if (!ifgroup("admin") || !ifgroup("superadmin")) {
+	if (!ifgroup("admin") && !ifgroup("superadmin")) {
 		//disable member search
 		//$sqlwhereorig = $sqlwhere;
 		$sqlwhere = "where ";
@@ -300,7 +299,6 @@ else {
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
-	//$v_mailboxes = '';
 	$x = 0;
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
