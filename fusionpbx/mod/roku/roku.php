@@ -93,15 +93,13 @@ if (strlen($cmd)==0) {
 
 //echo "cmd ".$cmd;
 //exit;
+$host = $_SERVER['argv'][2];
+$port = $_SERVER['argv'][3];
 
-$host = "10.7.0.235";
-$port = "8080";
 $cmd = "press ".$cmd;
 
 $fp = fsockopen($host, $port, $errno, $errdesc) or die("Connection to $host $errno $errdesc failed");
 fputs($fp, $cmd."\r\n");
-
-
 
 
 ?>
