@@ -196,7 +196,7 @@ function db_upgrade_schema ($db, $db_type, $display_results) {
 			}
 
 			//check if the table exists
-				if (db_table_exists($db, $db_type, $dbname, $table_name)) {
+				if (db_table_exists($db, $db_type, $db_name, $table_name)) {
 					if ($display_results) {
 						echo "<td valign='top' class='rowstyle1'><strong>table</strong><br />$table_name</td>\n";
 						echo "<td valign='top' class='rowstyle1' style='background-color:#00FF00;'><strong>exists</strong><br />true</td>\n";
