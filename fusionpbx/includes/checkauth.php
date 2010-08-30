@@ -30,7 +30,7 @@ session_start();
  * changing this string can cause existing users to no longer be able to log in,
  * unless you regenerate their passwords in the v_users table
  */
-$salt   = 'e3.7d.12';
+$salt = 'e3.7d.12';
 
 
 //if username session is not set the check username and password
