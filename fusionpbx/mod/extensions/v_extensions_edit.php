@@ -33,53 +33,52 @@ else {
 	exit;
 }
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$extension_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
+//action add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$extension_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+	}
 
 
-//POST to PHP variables
-if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
-	$extension = check_str($_POST["extension"]);
-	$password = check_str($_POST["password"]);
+//http post to php variables
+	if (count($_POST)>0) {
+		//$v_id = check_str($_POST["v_id"]);
+		$extension = check_str($_POST["extension"]);
+		$password = check_str($_POST["password"]);
 
-	$user_list = check_str($_POST["user_list"]."|");
-	$user_list = str_replace("\n", "|", "|".$user_list);
-	$user_list = str_replace("\r", "", $user_list);
-	$user_list = str_replace("||", "|", $user_list);
-	$user_list = trim($user_list);
+		$user_list = check_str($_POST["user_list"]."|");
+		$user_list = str_replace("\n", "|", "|".$user_list);
+		$user_list = str_replace("\r", "", $user_list);
+		$user_list = str_replace("||", "|", $user_list);
+		$user_list = trim($user_list);
 
-	$provisioning_list = check_str($_POST["provisioning_list"]."|");
-	$provisioning_list = str_replace("\n", "|", "|".$provisioning_list);
-	$provisioning_list = str_replace("\r", "", $provisioning_list);
-	$provisioning_list = str_replace(" ", "", $provisioning_list);
-	$provisioning_list = str_replace("||", "|", $provisioning_list);
-  
-	$vm_password = check_str($_POST["vm_password"]);
-	$accountcode = check_str($_POST["accountcode"]);
-	$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
-	$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
-	$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
-	$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
-	$vm_mailto = check_str($_POST["vm_mailto"]);
-	$vm_attach_file = check_str($_POST["vm_attach_file"]);
-	$vm_keep_local_after_email = check_str($_POST["vm_keep_local_after_email"]);
-	$user_context = check_str($_POST["user_context"]);
-	$range = check_str($_POST["range"]);
-	$callgroup = check_str($_POST["callgroup"]);
-	$auth_acl = check_str($_POST["auth_acl"]);
-	$cidr = check_str($_POST["cidr"]);
-	$sip_force_contact = check_str($_POST["sip_force_contact"]);
-	$enabled = check_str($_POST["enabled"]);
-	$description = check_str($_POST["description"]);
-
-}
+		$provisioning_list = check_str($_POST["provisioning_list"]."|");
+		$provisioning_list = str_replace("\n", "|", "|".$provisioning_list);
+		$provisioning_list = str_replace("\r", "", $provisioning_list);
+		$provisioning_list = str_replace(" ", "", $provisioning_list);
+		$provisioning_list = str_replace("||", "|", $provisioning_list);
+	  
+		$vm_password = check_str($_POST["vm_password"]);
+		$accountcode = check_str($_POST["accountcode"]);
+		$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
+		$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
+		$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
+		$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
+		$vm_mailto = check_str($_POST["vm_mailto"]);
+		$vm_attach_file = check_str($_POST["vm_attach_file"]);
+		$vm_keep_local_after_email = check_str($_POST["vm_keep_local_after_email"]);
+		$user_context = check_str($_POST["user_context"]);
+		$range = check_str($_POST["range"]);
+		$callgroup = check_str($_POST["callgroup"]);
+		$auth_acl = check_str($_POST["auth_acl"]);
+		$cidr = check_str($_POST["cidr"]);
+		$sip_force_contact = check_str($_POST["sip_force_contact"]);
+		$enabled = check_str($_POST["enabled"]);
+		$description = check_str($_POST["description"]);
+	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
@@ -132,7 +131,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 
-	//Add or update the database
+	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 
@@ -266,45 +265,45 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$extension_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and extension_id = '$extension_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$extension = $row["extension"];
-		$password = $row["password"];
-		$user_list = $row["user_list"];
-		$provisioning_list = $row["provisioning_list"];
-		$vm_password = $row["vm_password"];
-		$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
-		$accountcode = $row["accountcode"];
-		$effective_caller_id_name = $row["effective_caller_id_name"];
-		$effective_caller_id_number = $row["effective_caller_id_number"];
-		$outbound_caller_id_name = $row["outbound_caller_id_name"];
-		$outbound_caller_id_number = $row["outbound_caller_id_number"];
-		$vm_mailto = $row["vm_mailto"];
-		$vm_attach_file = $row["vm_attach_file"];
-		$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
-		$user_context = $row["user_context"];
-		$callgroup = $row["callgroup"];
-		$auth_acl = $row["auth_acl"];
-		$cidr = $row["cidr"];
-		$sip_force_contact = $row["sip_force_contact"];
-		$enabled = $row["enabled"];
-		$description = $row["description"];
-		break; //limit to 1 row
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$extension_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_extensions ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and extension_id = '$extension_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$v_id = $row["v_id"];
+			$extension = $row["extension"];
+			$password = $row["password"];
+			$user_list = $row["user_list"];
+			$provisioning_list = $row["provisioning_list"];
+			$vm_password = $row["vm_password"];
+			$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
+			$accountcode = $row["accountcode"];
+			$effective_caller_id_name = $row["effective_caller_id_name"];
+			$effective_caller_id_number = $row["effective_caller_id_number"];
+			$outbound_caller_id_name = $row["outbound_caller_id_name"];
+			$outbound_caller_id_number = $row["outbound_caller_id_number"];
+			$vm_mailto = $row["vm_mailto"];
+			$vm_attach_file = $row["vm_attach_file"];
+			$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
+			$user_context = $row["user_context"];
+			$callgroup = $row["callgroup"];
+			$auth_acl = $row["auth_acl"];
+			$cidr = $row["cidr"];
+			$sip_force_contact = $row["sip_force_contact"];
+			$enabled = $row["enabled"];
+			$description = $row["description"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
-
+//begin the page content
 	require_once "includes/header.php";
 
 	echo "<script type=\"text/javascript\" language=\"JavaScript\">\n";
