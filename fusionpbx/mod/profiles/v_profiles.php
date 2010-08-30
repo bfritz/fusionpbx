@@ -71,7 +71,7 @@ if ($_GET['a'] == "del") {
             //unset($a_extensions[$_GET['id']]);
             //write_config();
 
-			unlink($v_conf_dir."/sip_profiles/".$_GET['f']);			
+            unlink($v_conf_dir."/sip_profiles/".$_GET['f']);			
             header("Location: v_profiles.php");
             exit;
         //}
