@@ -831,7 +831,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+					echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
 				}
 			}
 		}
@@ -1048,7 +1048,6 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$sql .= "where v_id = $v_id ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				$sql .= "and fieldtype = 'destination_number' ";
-				echo $sql."<br />\n";
 				$tmp = $db->query($sql)->fetch();
 				$extension_number = $tmp['extension_number'];
 				$extension_number = ltrim($extension_number, "^");
@@ -1108,6 +1107,145 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			}
 		}
 		echo "</optgroup>\n";
+
+	//other
+		if (ifgroup("superadmin") && $select_type == "dialplan") {
+			echo "<optgroup label='Other'>\n";
+
+				if ($select_value == "answer") {
+					echo "		<option value='answer' selected='selected'>answer</option>\n";
+				}
+				else {
+					echo "		<option value='answer'>answer</option>\n";
+				}
+
+				if ($select_value == "bridge") {
+					echo "		<option value='bridge:' selected='selected'>bridge</option>\n";
+				}
+				else {
+					echo "		<option value='bridge:'>bridge</option>\n";
+				}
+
+				if ($select_value == "db") {
+					echo "		<option value='db:' selected='selected'>db</option>\n";
+				}
+				else {
+					echo "		<option value='db:'>db</option>\n";
+				}
+
+				if ($select_value == "export") {
+					echo "		<option value='export:' selected='selected'>export</option>\n";
+				}
+				else {
+					echo "		<option value='export:'>export</option>\n";
+				}
+
+				if ($select_value == "global_set") {
+					echo "		<option value='global_set:' selected='selected'>global_set</option>\n";
+				}
+				else {
+					echo "		<option value='global_set:'>global_set</option>\n";
+				}
+
+				if ($select_value == "group") {
+					echo "		<option value='group:' selected='selected'>group</option>\n";
+				}
+				else {
+					echo "		<option value='group:'>group</option>\n";
+				}
+
+				if ($select_value == "hangup") {
+					echo "		<option value='hangup' selected='selected'>hangup</option>\n";
+				}
+				else {
+					echo "		<option value='hangup'>hangup</option>\n";
+				}
+
+				if ($select_value == "info") {
+					echo "		<option value='info' selected='selected'>info</option>\n";
+				}
+				else {
+					echo "		<option value='info'>info</option>\n";
+				}
+
+				if ($select_value == "javascript") {
+					echo "		<option value='javascript:' selected='selected'>javascript</option>\n";
+				}
+				else {
+					echo "		<option value='javascript:'>javascript</option>\n";
+				}
+
+				if ($select_value == "lua") {
+					echo "		<option value='lua:' selected='selected'>lua</option>\n";
+				}
+				else {
+					echo "		<option value='lua:'>lua</option>\n";
+				}
+
+				if ($select_value == "reject") {
+					echo "		<option value='reject' selected='selected'>reject</option>\n";
+				}
+				else {
+					echo "		<option value='reject'>reject</option>\n";
+				}
+
+				if ($select_value == "set") {
+					echo "		<option value='set:' selected='selected'>set</option>\n";
+				}
+				else {
+					echo "		<option value='set:'>set</option>\n";
+				}
+
+				if ($select_value == "sleep") {
+					echo "		<option value='sleep:' selected='selected'>sleep</option>\n";
+				}
+				else {
+					echo "		<option value='sleep:'>sleep</option>\n";
+				}
+
+				if ($select_value == "transfer") {
+					echo "		<option value='transfer:' selected='selected'>transfer</option>\n";
+				}
+				else {
+					echo "		<option value='transfer:'>transfer</option>\n";
+				}
+
+				if ($select_value == "other") {
+					echo "		<option value='' selected='selected'>other</option>\n";
+				}
+				else {
+					echo "		<option value=''>other</option>\n";
+				}
+
+			echo "</optgroup>\n";
+		}
+		/*
+		//echo "    <option value='answer'>answer</option>\n";
+		//echo "    <option value='bridge'>bridge</option>\n";
+		echo "    <option value='cond'>cond</option>\n";
+		//echo "    <option value='db'>db</option>\n";
+		//echo "    <option value='global_set'>global_set</option>\n";
+		//echo "    <option value='group'>group</option>\n";
+		echo "    <option value='expr'>expr</option>\n";
+		//echo "    <option value='export'>export</option>\n";
+		//echo "    <option value='hangup'>hangup</option>\n";
+		//echo "    <option value='info'>info</option>\n";
+		//echo "    <option value='javascript'>javascript</option>\n";
+		//echo "    <option value='lua'>lua</option>\n";
+		echo "    <option value='playback'>playback</option>\n";
+		echo "    <option value='read'>read</option>\n";
+		//echo "    <option value='reject'>reject</option>\n";
+		echo "    <option value='respond'>respond</option>\n";
+		echo "    <option value='ring_ready'>ring_ready</option>\n";
+		//echo "    <option value='set'>set</option>\n";
+		echo "    <option value='set_user'>set_user</option>\n";
+		//echo "    <option value='sleep'>sleep</option>\n";
+		echo "    <option value='sofia_contact'>sofia_contact</option>\n";
+		//echo "    <option value='transfer'>transfer</option>\n";
+		echo "    <option value='voicemail'>voicemail</option>\n";
+		echo "    <option value='conference'>conference</option>\n";
+		echo "    <option value='conference_set_auto_outcall'>conference_set_auto_outcall</option>\n";
+		*/
 		unset ($prepstatement, $extension);
 
 	echo "		</select>\n";
@@ -2480,6 +2618,7 @@ function sync_package_v_hunt_group_lua()
 					$tmp .= "\n";
 
 					$tmp .= "\n";
+					$tmp .= "sounds_dir = session:getVariable(\"sounds_dir\");\n";
 					$tmp .= "dialed_extension = session:getVariable(\"dialed_extension\");\n";
 					$tmp .= "domain_name = session:getVariable(\"domain_name\");\n";
 					$tmp .= "domain = session:getVariable(\"domain\");\n";
@@ -2489,17 +2628,27 @@ function sync_package_v_hunt_group_lua()
 					$tmp .= "effective_caller_id_number = session:getVariable(\"effective_caller_id_number\");\n";
 					$tmp .= "outbound_caller_id_name = session:getVariable(\"outbound_caller_id_name\");\n";
 					$tmp .= "outbound_caller_id_number = session:getVariable(\"outbound_caller_id_number\");\n";
+					$tmp .= "\n";
+
+					$tmp .= "	--set the sounds path for the language, dialect and voice\n";
+					$tmp .= "		default_language = session:getVariable(\"default_language\");\n";
+					$tmp .= "		default_dialect = session:getVariable(\"default_dialect\");\n";
+					$tmp .= "		default_voice = session:getVariable(\"default_voice\");\n";
+					$tmp .= "		if (not default_language) then default_language = 'en'; end\n";
+					$tmp .= "		if (not default_dialect) then default_dialect = 'us'; end\n";
+					$tmp .= "		if (not default_voice) then default_voice = 'callie'; end\n";
+					$tmp .= "\n";
 
 					//pin number requested from caller if provided
 						if (strlen($row['huntgrouppin']) > 0) {
 							$tmp .= "pin = '".$row['huntgrouppin']."';\n";
-							$tmp .= "digits = session:playAndGetDigits(".strlen($row['huntgrouppin']).", ".strlen($row['huntgrouppin']).", 3, 3000, \"#\", \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", \"\", \"\\\\d+\");\n";
+							$tmp .= "digits = session:playAndGetDigits(".strlen($row['huntgrouppin']).", ".strlen($row['huntgrouppin']).", 3, 3000, \"#\", sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_enter_the_pin_number.wav\", \"\", \"\\\\d+\");\n";
 							$tmp .= "\n";
 							$tmp .= "\n";
 							$tmp .= "if (digits == pin) then\n";
 							$tmp .= "	--continue\n";
 							$tmp .= "else \n";
-							$tmp .= "	session:streamFile( \"".$v_sounds_dir."/custom/your_pin_number_is_incorect_goodbye.wav\");\n";
+							$tmp .= "	session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/your_pin_number_is_incorect_goodbye.wav\");\n";
 							$tmp .= "	session:hangup();\n";
 							$tmp .= "end\n";
 							$tmp .= "\n";
@@ -2518,7 +2667,7 @@ function sync_package_v_hunt_group_lua()
 							$tmp .=	"end";
 							$tmp .=	"\n";
 							$tmp .=	"caller_announce = extension..\"_\"..session.uuid..\".wav\";\n";
-							$tmp .=	"session:streamFile( \"".$v_sounds_dir."/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
+							$tmp .=	"session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
 							$tmp .=	"session:execute(\"gentones\", \"%(1000, 0, 640)\");\n";
 							$tmp .=	"session:execute(\"set\", \"playback_terminators=#\");\n";
 							$tmp .=	"session:execute(\"record\", \"".$tmp_dir."/\"..caller_announce..\" 180 200\");\n";
