@@ -75,8 +75,6 @@ function recur_dir($dir) {
 	}
 
 	asort($dir_array);
-	//print_r($dir_array);
-	//exit;
 	foreach ($dir_array as $newpath){
 
 			//$newpath = $dir.'/'.$file;
