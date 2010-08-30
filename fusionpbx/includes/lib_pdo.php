@@ -25,6 +25,20 @@
  Raymond Chandler <intralanman@gmail.com>
  */
 
+//set defaults
+	if (strlen($dbtype) > 0) { 
+		$db_type = $dbtype; 
+	}
+	if (strlen($dbname) > 0) { 
+		$db_name = $dbname; 
+	}
+	if (strlen($dbusername) > 0) { 
+		$db_username = $dbusername; 
+	}
+	if (strlen($dbpassword) > 0) { 
+		$db_password = $dbpassword; 
+	}
+
 if (!function_exists('get_db_field_names')) {
 	function get_db_field_names($db, $table, $dbname='fusionpbx') {
 		$query = sprintf('SELECT * FROM %s LIMIT 1', $table);
@@ -84,19 +98,14 @@ if ($dbtype == "sqlite") {
 	$filepath = $v_secure;
 	$dbfilepath = $v_secure;
 	$dbfilepath = realpath($dbfilepath);
-	//echo "dbfilepath and name: ".$dbfilepath."/".$dbfilename."\n";
 	if (file_exists($dbfilepath.'/'.$dbfilename)) {
 		//echo "main file exists<br>";
 	}
-	else { //file doese not exist
+	else {
 
 		//--- begin: create the sqlite db file -----------------------------------------
 		$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/sqlite.sql';
 		$file_contents = file_get_contents($filename);
-		//echo "<pre>\n";
-		//echo $file_contents;
-		//echo "</pre>\n";
-		//exit;
 		try {
 			//$db = new PDO('sqlite2:example.db'); //sqlite 2
 			//$dbimg = new PDO('sqlite::memory:'); //sqlite 3
