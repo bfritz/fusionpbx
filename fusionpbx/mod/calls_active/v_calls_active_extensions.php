@@ -57,8 +57,8 @@ require_once "includes/header.php";
 <!--
 
 //declare variables
-var previous_uuid_1;
-var previous_uuid_2;
+var previous_uuid_1 = '';
+var previous_uuid_2 = '';
 var url = '<?php echo $url; ?>';
 
 function open_window(url) {
@@ -107,7 +107,6 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 	cid_num_1 = document.getElementById('cid_num_1').innerHTML;
 
 
-
 	if (previous_uuid_1 != uuid_1) {
 		if (uuid_1.length > 0) {
 			if (direction_1 == "outbound") {
@@ -120,18 +119,18 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 				new_url = new_url.replace("{cid_num}", cid_num_1);
 				new_url = new_url.replace("{uuid}", uuid_1);
 
+				previous_uuid_1 = uuid_1;
 <?php 
 				if ($event_type=="open_window") {
 					echo "open_window(new_url,'','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes');";
 				}
 				if ($event_type=="iframe") {
-					echo "document.getElementById('iframe').src = new_url;\n";
+					echo "document.getElementById('iframe1').src = new_url;\n";
 					//iframe_postition
 					//iframe_width
 					//iframe_height
 				}
 ?>
-
 			}
 		}
 		else {
@@ -145,7 +144,7 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 var requestTime = function() {
 	var url = 'v_calls_active_extensions_inc.php?<?php echo $_SERVER["QUERY_STRING"]; ?>';
 	new loadXmlHttp(url, 'ajax_reponse');
-	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 1200);
+	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 750);
 }
 
 if (window.addEventListener) {
@@ -202,7 +201,7 @@ echo "</table>\n";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 echo "	<tr class='border'>\n";
 if ($event_type=="iframe") {
-	echo "	<td align=\"left\" width='75%'>\n";
+	echo "	<td align=\"left\" width='".$iframe_width."'>\n";
 }
 else {
 	echo "	<td align=\"left\" width='100%'>\n";
@@ -214,7 +213,7 @@ echo "	</td>\n";
 if ($event_type=="iframe") {
 	echo "</td>\n";
 	echo "<td width='".$iframe_width."' height='".$iframe_height."'>\n";
-	echo "	<iframe src ='' width='100%' id='iframe' height='100%' frameborder=0>\n";
+	echo "	<iframe src ='$url' width='100%' id='iframe1' height='100%' frameborder=0>\n";
 	echo "		<p>Your browser does not support iframes.</p>\n";
 	echo "	</iframe>\n";
 	echo "</td>\n";
