@@ -26,6 +26,10 @@
 include "root.php";
 require_once "includes/config.php";
 
+
+//set debug
+	$debug = false; //true //false
+
 //increase limits
 	set_time_limit(3600);
 	ini_set('memory_limit', '256M');
@@ -33,7 +37,7 @@ require_once "includes/config.php";
 function process_xml_cdr($db, $v_log_dir, $xml_string) {
 
 	//set global variable
-		global $v_id;
+		global $v_id, $debug;
 
 	//determine where the xml cdr will be archived
 		$sql = "select * from v_vars ";
@@ -188,7 +192,7 @@ function process_xml_cdr($db, $v_log_dir, $xml_string) {
 		$sql .= ")";
 		try {
 			if (strlen($uuid) > 0) {
-				//echo $sql."<br />\n";
+				if ($debug) { echo $sql."<br />\n"; }
 				$db->exec(check_sql($sql));
 			}
 		}
@@ -218,8 +222,8 @@ function process_xml_cdr($db, $v_log_dir, $xml_string) {
 							$auth_array = explode(":", $row->attributes()->value);
 							$_SESSION["xml_cdr_username"] = $auth_array[0];
 							$_SESSION["xml_cdr_password"] = $auth_array[1];
-							echo "username: ".$_SESSION["xml_cdr_username"]."<br />\n";
-							echo "password: ".$_SESSION["xml_cdr_password"]."<br />\n";
+							//echo "username: ".$_SESSION["xml_cdr_username"]."<br />\n";
+							//echo "password: ".$_SESSION["xml_cdr_password"]."<br />\n";
 						}
 					}
 			}
@@ -272,13 +276,15 @@ function process_xml_cdr($db, $v_log_dir, $xml_string) {
 	closedir($dir_handle);
 
 //testing
-	//ob_end_clean(); //clean the buffer
-	//ob_start();
-	//phpinfo();
-	//$content = ob_get_contents(); //get the output from the buffer
-	//ob_end_clean(); //clean the buffer
-	//$fp = fopen('/tmp/test.htm', 'w');
-	//fwrite($fp, $content);
-	//fclose($fp);
+	if ($debug) {
+		//ob_end_clean(); //clean the buffer
+		//ob_start();
+		//phpinfo();
+		$content = ob_get_contents(); //get the output from the buffer
+		ob_end_clean(); //clean the buffer
+		$fp = fopen('/tmp/xml_cdr_post.log', 'w');
+		fwrite($fp, $content);
+		fclose($fp);
+	}
 
 ?>
