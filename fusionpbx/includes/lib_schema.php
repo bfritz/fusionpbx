@@ -57,11 +57,9 @@ function db_table_exists ($db, $db_type, $db_name, $table_name) {
 	else {
 		return false; //table doesn't exist
 	}
-
 }
 
 function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column_name) {
-
 	//check if the column exists
 		$sql = "";
 		if ($db_type == "sqlite") {
@@ -71,7 +69,8 @@ function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column
 			$sql .= "SELECT attname FROM pg_attribute WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = '$tmp_table_name') AND attname = '$tmp_column_name'; ";
 		}
 		if ($db_type == "mysql") {
-			$sql .= "SELECT * FROM information_schema.COLUMNS where TABLE_SCHEMA = '$db_name' and TABLE_NAME = '$tmp_table_name' and COLUMN_NAME = '$tmp_column_name' ";
+			//$sql .= "SELECT * FROM information_schema.COLUMNS where TABLE_SCHEMA = '$db_name' and TABLE_NAME = '$tmp_table_name' and COLUMN_NAME = '$tmp_column_name' ";
+			$sql .= "show columns from $tmp_table_name where field = '$tmp_column_name' ";
 		}
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -91,7 +90,7 @@ function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column
 }
 
 
-function db_upgrade_schema ($db, $db_type, $display_results) {
+function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 
 	$db->beginTransaction();
 
@@ -124,7 +123,6 @@ function db_upgrade_schema ($db, $db_type, $display_results) {
 			//check if table exists
 				SELECT TABLE_NAME FROM ALL_TABLES
 	*/
-
 
 	//schema sqlite db
 		//--- begin: create the sqlite db file -----------------------------------------
@@ -239,7 +237,7 @@ function db_upgrade_schema ($db, $db_type, $display_results) {
 									echo "<td class='rowstyle1' width='200'>".$column_row['column_name']."</td>\n";
 									echo "<td class='rowstyle1'>".$column_row['column_data_type']."</td>\n";
 								}
-								if (db_column_exists ($db, $db_type, $dbname, $table_name, $column_row['column_name'])) {
+								if (db_column_exists ($db, $db_type, $db_name, $table_name, $column_row['column_name'])) {
 									if ($display_results) {
 										echo "<td class='rowstyle1' style='background-color:#00FF00;'>true</td>\n";
 										echo "<td>&nbsp;</td>\n";
