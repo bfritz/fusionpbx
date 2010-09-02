@@ -117,8 +117,8 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$useremail = check_str($_POST["useremail"]);
 	$groupmember = check_str($_POST["groupmember"]);
 
-	if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
-	if ($password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
+	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
+	if (strlen($password) > 0 && $password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
 	if (strlen($userfirstname) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
 	if (strlen($userlastname) == 0) { $msgerror .= "Please provide a last name $userlastname.<br>\n"; }
 	//if (strlen($usercompanyname) == 0) { $msgerror .= "Please provide a company name.<br>\n"; }
@@ -157,7 +157,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	if (ifgroup("admin") && strlen($_POST["username"])> 0) {
 		$sql .= "username = '$username', ";
 	}
-	if (strlen($password) > 0) {
+	if (strlen($password) > 0 && $confirmpassword == $password) {
 		$sql .= "password = '".md5('e3.7d.12'.$password)."', ";
 	}
 	$sql .= "userfirstname = '$userfirstname', ";
@@ -326,12 +326,12 @@ else {
 		$userphonefax = $row["userphonefax"];
 		$useremail = $row["useremail"];
 		break; //limit to 1 row
-	  }
+	}
 
-	  //get the groups the user is a member of
-	  //groupmemberlist function defined in config.php
-	  $groupmemberlist = groupmemberlist($db, $username);
-	  //echo "groupmemberlist $groupmemberlist";
+	//get the groups the user is a member of
+	//groupmemberlist function defined in config.php
+	$groupmemberlist = groupmemberlist($db, $username);
+	//echo "groupmemberlist $groupmemberlist";
 
 }
 
@@ -357,11 +357,11 @@ else {
 	echo "	</tr>";
 
 	echo "	<tr>";
-	echo "		<td class='vncellreq'>Password:</td>";
+	echo "		<td class='vncell'>Password:</td>";
 	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='password' value=\"\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncellreq'>Confirm Password:</td>";
+	echo "		<td class='vncell'>Confirm Password:</td>";
 	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirmpassword' value=\"\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
