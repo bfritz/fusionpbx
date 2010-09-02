@@ -460,7 +460,14 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		if (ifgroup("superadmin")) {
 			if (!$tmp_selected) {
 				echo "<optgroup label='selected'>\n";
-				echo "		<option value='".$ivr_menu_greet_long."' selected>".$ivr_menu_greet_long."</option>\n";
+				if (file_exists($v_recordings_dir."/".$ivr_menu_greet_long)) {
+					echo "		<option value='".$v_recordings_dir."/".$ivr_menu_greet_long."' selected>".$ivr_menu_greet_long."</option>\n";
+				}
+				else {
+					$tmp_dir = "\$\${sounds_dir}/\${default_language}/\${default_dialect}/\${default_voice}";
+					echo "		<option value='".$tmp_dir."/".$ivr_menu_greet_long."' selected>".$ivr_menu_greet_long."</option>\n";
+				}
+
 				echo "</optgroup>\n";
 			}
 			unset($tmp_selected);
