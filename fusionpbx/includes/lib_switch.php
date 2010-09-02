@@ -605,7 +605,12 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	if (ifgroup("superadmin")) {
 		echo "		<select name='".$select_name."' class='formfld' style='".$select_style."' onchange='changeToInput(this);'>\n";
 		if (strlen($select_value) > 0) {
-			echo "		<option value='".$action.":".$select_value."' selected='selected'>".$select_label."</option>\n";
+			if ($select_type == "ivr") {
+				echo "		<option value='".$select_value."' selected='selected'>".$select_label." 2</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "		<option value='".$action.":".$select_value."' selected='selected'>".$select_label." 2</option>\n";
+			}
 		}
 	}
 	else {

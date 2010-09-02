@@ -331,11 +331,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "				<input type='hidden' name='ivr_menu_id' value='$ivr_menu_id'>\n";
+	echo "			<input type='hidden' name='ivr_menu_id' value='$ivr_menu_id'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='ivr_menu_option_id' value='$ivr_menu_option_id'>\n";
+		echo "			<input type='hidden' name='ivr_menu_option_id' value='$ivr_menu_option_id'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
