@@ -47,11 +47,11 @@ $order = $_GET["order"];
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' nowrap><b>Hardware Phone List</b></td>\n";
+	echo "<td width='50%' nowrap='nowrap' align='left'><b>Hardware Phone List</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td colspan='2' align='left'>\n";
 
 
 	echo "Phones in this list are automatcally added to the list when they contact the provisioning \n";

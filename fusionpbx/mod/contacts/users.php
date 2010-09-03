@@ -69,7 +69,7 @@ if (!function_exists('thorderby')) {
 
 
 	echo "<table width='100%' border='0'><tr>\n";
-	echo "<td width='50%' nowrap><b>Contact List</b></td>\n";
+	echo "<td width='50%' nowrap='nowrap' align='left'><b>Contact List</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr></table>\n";
 

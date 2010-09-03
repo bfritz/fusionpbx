@@ -24,11 +24,11 @@ $order = $_GET["order"];
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' nowrap><b>IVR Menu List</b></td>\n";
+	echo "<td width='50%' nowrap='nowrap' align='left'><b>IVR Menu List</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td colspan='2' align='left'>\n";
 	echo "The IVR Menu plays a recording or a pre-defined phrase that presents the caller with options to choose from. Each option has a corresponding destination. The destinations can be extensions, voicemail, IVR menus, hunt groups, FAX extensions, and more. <br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

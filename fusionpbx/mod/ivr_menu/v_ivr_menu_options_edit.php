@@ -192,15 +192,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap><b>IVR Menu Option Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap' align='left'><b>IVR Menu Option Add</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap><b>IVR Menu Option Edit</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap' align='left'><b>IVR Menu Option Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_ivr_menu_edit.php?id=$ivr_menu_id'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td colspan='2' align='left'>\n";
 	echo "The recording presents options to the caller. Options match key presses (DTMF digits) from the caller which directs the call to the destinations. <br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

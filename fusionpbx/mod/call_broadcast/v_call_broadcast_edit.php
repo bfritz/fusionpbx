@@ -199,15 +199,12 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	require_once "includes/header.php";
 
-
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
 
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "	  <br>";
-
-
 
 	echo "<form method='post' name='frm' action=''>\n";
 
@@ -216,10 +213,10 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td width='30%' nowrap><b>Call Broadcast</b></td>\n";
+		echo "<td width='30%' nowrap='nowrap' align='left'><b>Call Broadcast</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td width='30%' nowrap><b>Call Broadcast Edit</b></td>\n";
+		echo "<td width='30%' nowrap='nowrap' align='left'><b>Call Broadcast Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_broadcast.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
@@ -367,7 +364,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 		echo "<table width='100%' border='0'>\n";
 		echo "<tr>\n";
-		echo "<td width='50%' nowrap><b>Call Broadcast</b></td>\n";
+		echo "<td width='50%' nowrap='nowrap' align='left'><b>Call Broadcast</b></td>\n";
 		echo "<td width='50%' align='right'>&nbsp;</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";

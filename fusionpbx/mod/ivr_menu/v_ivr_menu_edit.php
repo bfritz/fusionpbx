@@ -330,15 +330,15 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap><b>IVR Menu Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap' align='left'><b>IVR Menu Add</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap><b>IVR Menu Edit</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap' align='left'><b>IVR Menu Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_ivr_menu.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td colspan='2' align='left'>\n";
 	echo "The IVR Menu plays a recording or a pre-defined phrase that presents the caller with options to choose from. Each option has a corresponding destination. The destinations can be extensions, voicemail, IVR menus, hunt groups, FAX extensions, and more. <br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

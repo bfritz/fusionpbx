@@ -65,11 +65,11 @@ $order = $_GET["order"];
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' nowrap><b>PHP Service</b></td>\n";
-	echo "<td width='50%' align='right'>&nbsp;</td>\n";
+	echo "<td width='50%' nowrap='nowrap' align='left'><b>PHP Service</b></td>\n";
+	echo "<td width='50%'>&nbsp;</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td colspan='2' align='left'>\n";
 	echo "Manages multiple dynamic and customizable services. There are many possible uses including alerts, ssh access control, scheduling commands to run, and many others uses that are yet to be discovered.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

@@ -23,11 +23,11 @@ $order = $_GET["order"];
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' nowrap><b>IVR Menu Option List</b></td>\n";
+	echo "<td width='50%' nowrap='nowrap' align='left'><b>IVR Menu Option List</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td colspan='2' align='left'>\n";
 	echo "The recording presents options to the caller. Options match key presses (DTMF digits) from the caller which directs the call to the destinations. <br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
