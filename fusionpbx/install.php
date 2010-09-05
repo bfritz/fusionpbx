@@ -581,7 +581,12 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					}
 
 				//create the database
-					$db_sql->query("CREATE DATABASE $db_name;");
+					try {
+						$db_sql->query("CREATE DATABASE $db_name;");
+					}
+					catch (PDOException $error) {
+						//print "error: " . $error->getMessage() . "<br/>";
+					}
 
 				//select the database
 					$db_sql->query("USE $db_name;");
@@ -830,28 +835,11 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			//$db_temp->commit();
 	//--- end: create the sqlite db -----------------------------------------
 
-//get the template information
-	$sql = "";
-	$sql .= "select * from v_templates ";
-	if (strlen($template_rsssubcategory) > 0) {
-		$sql .= "where v_id = '$v_id' ";
-		//$sql .= "and templatename = '$template_rsssubcategory' ";
-	}
-	else {
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and template_default = 'true' ";
-	}
-	$prepstatement = $db_temp->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$template = base64_decode($row["template"]);
-		$templatemenutype = $row["templatemenutype"];
-		$templatemenucss = base64_decode($row["templatemenucss"]);
-		//$adduser = $row["adduser"];
-		//$adddate = $row["adddate"];
-		break; //limit to 1 row
-	}
+//set a default template
+	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
+
+//get the contents of the template and save it to the template variable
+	$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$_SESSION["template_name"].'/template.php');
 
 //buffer the content
 	ob_end_clean(); //clean the buffer
@@ -1239,6 +1227,23 @@ pgsql
 		echo "</div>";
 	}
 
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "<br />\n";
 
 // add the content to the template and then send output -----------------------
 	$body = $content_from_db.ob_get_contents(); //get the output from the buffer
