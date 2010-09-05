@@ -63,7 +63,7 @@ echo "<br />";
 	if (strlen($_SESSION["username"]) > 0) {
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 		echo "<tr>\n";
-		echo "	<th colspan='2' align='left'>User Information</th>\n";
+		echo "	<th class='th' colspan='2' align='left'>User Information</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
@@ -84,7 +84,7 @@ echo "<br />";
 	$software_version = "1.1.30";
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "<tr>\n";
-	echo "	<th colspan='2' align='left'>System Information</th>\n";
+	echo "	<th class='th' colspan='2' align='left'>System Information</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -219,7 +219,7 @@ echo "<br />";
 				if (strlen($shell_result) > 0) {
 					echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 					echo "<tr>\n";
-					echo "	<th colspan='2' align='left' valign='top'>CPU Information</th>\n";
+					echo "	<th class='th' colspan='2' align='left' valign='top'>CPU Information</th>\n";
 					echo "</tr>\n";
 					echo "<tr>\n";
 					echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
@@ -251,7 +251,7 @@ echo "<br />";
 			if (strlen($shell_result) > 0) {
 				echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 				echo "<tr>\n";
-				echo "	<th colspan='2' align='left' valign='top'>CPU Information</th>\n";
+				echo "	<th class='th' colspan='2' align='left' valign='top'>CPU Information</th>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
 				echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
@@ -288,7 +288,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 		echo "<tr>\n";
-		echo "	<th colspan='2' align='left'>Drive Space</th>\n";
+		echo "	<th class='th' colspan='2' align='left'>Drive Space</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
@@ -322,7 +322,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	else {
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 		echo "<tr>\n";
-		echo "	<th colspan='2' align='left'>Drive Information</th>\n";
+		echo "	<th class='th' colspan='2' align='left'>Drive Information</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
@@ -342,45 +342,6 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "<br />";
 }
 
-
-//templates selection
-if (ifgroup("superadmin")) {
-	$sql = "";
-	$sql .= "select * from v_templates ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and template_default = 'true'; ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
-		$templatename = $row["templatename"];
-		break; //limit to 1 row
-	}
-	unset ($prepstatement);
-	echo "<form method='post' name='frm' action=''>\n";
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-	echo "<tr>\n";
-	echo "	<th colspan='2' align='left'>Theme</th>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		Template: \n";
-	echo "	</td>\n";
-	echo "	<td class=\"vtable\">\n";
-	$tablename = 'v_templates'; $fieldname = 'templatename'; $sqlwhereoptional = "where v_id = '$v_id' "; $fieldcurrentvalue = $templatename; $fieldvalue = 'templateid';
-	echo htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $fieldvalue);
-	echo "<input type='submit' name='submit' class='btn' value='Save'>\n";
-	echo "	<br />\n";
-	echo "	Select a template to set as the default and then press save.\n";
-
-	echo "	</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</form>\n";
-
-	echo "<br />";
-	echo "<br />";
-	echo "<br />";
-}
 
 //backup
 if (ifgroup("superadmin")) {

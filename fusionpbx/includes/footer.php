@@ -23,12 +23,14 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
+require_once "root.php";
+require_once "includes/config.php";
+
 
 // get the content
 	if (strlen($content) == 0) {
 		$content = $_GET["c"]; //link
 	}
-
 	//echo "content: ".$content;
 
 
@@ -92,45 +94,27 @@
 	} //end foreach
 	unset($sql, $result, $rowcount);
 
-//get the template information
-	$sql = "";
-	$sql .= "select * from v_templates ";
-	if (strlen($template_rsssubcategory) > 0) {
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and templatename = '$template_rsssubcategory' ";
-	}
-	else {
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and template_default = 'true' ";
-	}
-	//echo $sql;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$template = base64_decode($row["template"]);
-		$templatemenutype = $row["templatemenutype"];
-		$templatemenucss = base64_decode($row["templatemenucss"]);
 
-		//$adduser = $row["adduser"];
-		//$adddate = $row["adddate"];
-		break; //limit to 1 row
-	}
+//set a default template
+	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
 
+//get the contents of the template and save it to the template variable
+	$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$_SESSION["template_name"].'/template.php');
 
-$body = $content_from_db.ob_get_contents(); //get the output from the buffer
-ob_end_clean(); //clean the buffer
+//get the output from the buffer
+	$body = $content_from_db.ob_get_contents(); 
+	ob_end_clean(); //clean the buffer
 
-ob_start();
-$template = $strheadertop.$template;
-eval('?>' . $template . '<?php ');
-$template = ob_get_contents(); //get the output from the buffer
-ob_end_clean(); //clean the buffer
+	ob_start();
+	$template = $strheadertop.$template;
+	eval('?>' . $template . '<?php ');
+	$template = ob_get_contents(); //get the output from the buffer
+	ob_end_clean(); //clean the buffer
 
+//get the menu
+	require_once "includes/menu.php";
 
-require_once "includes/menu.php";
-
-//prepare the output
+//prepare the template to display the output
 	$customhead = $customhead.$templatemenucss;
 	//$customhead ='test';
 	//$output = str_replace ("\r\n", "<br>", $output);

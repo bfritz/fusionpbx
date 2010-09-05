@@ -69,6 +69,10 @@ if (strlen($_SESSION["username"]) == 0) {
 		}
 		else {
 			$_SESSION["username"] = check_str($_POST["username"]);
+			foreach ($result as &$row) {
+				$_SESSION["template_name"] = $row["user_template_name"];
+				break;
+			}
 			//echo "username: ".$_SESSION["username"]." and password are correct";
 		}
 
@@ -118,9 +122,9 @@ if (strlen($_SESSION["username"]) == 0) {
 }
 
 //hide the path unless logged in as a superadmin.
-if (!ifgroup("superadmin")) {
-	$v_path_show = false;
-}
+	if (!ifgroup("superadmin")) {
+		$v_path_show = false;
+	}
 
 //if (ifpermission("view")) {
 //    echo "true";

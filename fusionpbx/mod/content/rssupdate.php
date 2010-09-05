@@ -221,35 +221,32 @@ else {
 	echo "        </td>";
 	echo "	</tr>";
 
-	echo "	<tr>";
-	echo "		<td class='vncellreq' nowrap>Template:</td>";
-	echo "		<td class='vtable' width='100%'>";
-	//---- Begin Select List --------------------
-		$sql = "SELECT distinct(templatename) as templatename FROM v_templates ";
-		$sql .= "where v_id = '$v_id' ";
-		//echo $sql;
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		echo "<select name=\"rsssubcategory\" class='formfld'>\n";
-		echo "<option value=\"\"></option>\n";
-		$result = $prepstatement->fetchAll();
-		//$catcount = count($result);
-		foreach($result as $field) {
-		//    echo "<option value='".$field[templatename]."'>".$field[templatename]."</option>\n";
-			if ($rsssubcategory == $field[templatename]) {
-				echo "<option value='".$field[templatename]."' selected>".$field[templatename]."</option>\n";
+	echo "	<tr>\n";
+	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+	echo "		Template: \n";
+	echo "	</td>\n";
+	echo "	<td class=\"vtable\">\n";
+	echo "<select id='rsssubcategory' name='rsssubcategory' class='formfld' style=''>\n";
+	echo "<option value=''></option>\n";
+	$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
+	if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && $file != ".svn" && is_dir($theme_dir.'/'.$file)) {
+				if ($file == $rsssubcategory) {
+					echo "<option value='$file' selected='selected'>$file</option>\n";
+				}
+				else {
+					echo "<option value='$file'>$file</option>\n";
+				}
 			}
-			else {
-				echo "<option value='".$field[templatename]."'>".$field[templatename]."</option>\n";
-			}
-		  
 		}
-		echo "</select>";
-		unset($sql, $result);
-	//---- End Select List --------------------
-	echo "    </td>";
-	echo "	</tr>";
-
+		closedir($handle);
+	}
+	echo "	</select>\n";
+	echo "	<br />\n";
+	echo "	Select a template to set as the default and then press save.<br />\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
 
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Type:</td>";

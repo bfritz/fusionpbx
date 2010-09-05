@@ -113,10 +113,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$userphone2ext = $_POST["userphone2ext"];
 	$userphonemobile = $_POST["userphonemobile"];
 	$userphonefax = $_POST["userphonefax"];
+	$user_template_name = $_POST["user_template_name"];
 	$useremail = $_POST["useremail"];
 	$groupmember = $_POST["groupmember"];
 
-	if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
+	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
 	if ($password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
 	if (strlen($userfirstname) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
 	if (strlen($userlastname) == 0) { $msgerror .= "Please provide a last name $userlastname.<br>\n"; }
@@ -193,6 +194,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= "userphone2ext = '$userphone2ext', ";
 	$sql .= "userphonemobile = '$userphonemobile', ";
 	$sql .= "userphonefax = '$userphonefax', ";
+	$sql .= "user_template_name = '$user_template_name', ";
 	$sql .= "useremail = '$useremail' ";
 	if (strlen($id)> 0) {
 		$sql .= "where v_id = '$v_id' ";
@@ -293,6 +295,7 @@ else {
 		$userphonemobile = $row["userphonemobile"];
 		$userphonefax = $row["userphonefax"];
 		$useremail = $row["useremail"];
+		$user_template_name = $row["user_template_name"];
 		break; //limit to 1 row
 	  }
 
@@ -316,9 +319,12 @@ else {
 	$tablewidth ='width="100%"';
 	echo "<form method='post' action=''>";
 
-	echo "<b>User Info</b><br>";
+	echo "<br>";
 	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
+	echo "<tr>\n";
+	echo "	<th class='th' colspan='2' align='left'>User Info</th>\n";
+	echo "</tr>\n";
 	echo "	<tr>";
 	echo "		<td width='30%' class='vncellreq'>Username:</td>";
 	echo "		<td width='70%' class='vtable'>$username</td>";
@@ -348,9 +354,11 @@ else {
 	echo "    </div>";
 	echo "<br>";
 
-	echo "<b>Physical Address</b><br>";
 	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
+	echo "<tr>\n";
+	echo "	<th class='th' colspan='2' align='left'>Physical Address</th>\n";
+	echo "</tr>\n";
 	echo "	<tr>";
 	echo "		<td class='vncell' width='30%'>Address 1:</td>";
 	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='userphysicaladdress1' value='$userphysicaladdress1'></td>";
@@ -474,9 +482,11 @@ else {
 	echo "<br>";
 	*/
 
-	echo "<b>Additional Info</b><br>";
 	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
+	echo "	<tr>\n";
+	echo "	<th class='th' colspan='2' align='left'>Additional Info</th>\n";
+	echo "	</tr>\n";
 	echo "	<tr>";
 	echo "		<td class='vncell'width='30%'>Website:</td>";
 	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='userurl' value='$userurl'></td>";
@@ -509,10 +519,36 @@ else {
 	echo "		<td class='vncell'>Email:</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='useremail' value='$useremail'></td>";
 	echo "	</tr>";
-
+	echo "	<tr>\n";
+	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+	echo "		Template: \n";
+	echo "	</td>\n";
+	echo "	<td class=\"vtable\">\n";
+	echo "<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
+	echo "<option value=''></option>\n";
+	$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
+	if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && $file != ".svn" && is_dir($theme_dir.'/'.$file)) {
+				if ($file == $user_template_name) {
+					echo "<option value='$file' selected='selected'>$file</option>\n";
+				}
+				else {
+					echo "<option value='$file'>$file</option>\n";
+				}
+			}
+		}
+		closedir($handle);
+	}
+	echo "	</select>\n";
+	echo "	<br />\n";
+	echo "	Select a template to set as the default and then press save.<br />\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
 	echo "    </table>";
 	echo "    </div>";
 
+	echo "<br>";
 
 
 	echo "<div class='' style='padding:10px;'>\n";
