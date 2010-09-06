@@ -98,8 +98,16 @@ require_once "includes/config.php";
 //set a default template
 	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
 
-//get the contents of the template and save it to the template variable
-	$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$_SESSION["template_name"].'/template.php');
+//set a default template
+	if (strlen($template_rsssubcategory) > 0) {
+		//this template was assigned by the content manager
+			//get the contents of the template and save it to the template variable
+			$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$template_rsssubcategory.'/template.php');
+	}
+	else {
+		//get the contents of the template and save it to the template variable
+			$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$_SESSION["template_name"].'/template.php');
+	}
 
 //get the output from the buffer
 	$body = $content_from_db.ob_get_contents(); 
