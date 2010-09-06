@@ -1035,7 +1035,12 @@ pgsql
 // begin step 2, mysql --------------------------------------
 	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "mysql") {
 
-		//echo "If you use the root database account the database can be created automatically. However if preferred the database can be created manually with the <a href='". echo PROJECT_PATH; ."/includes/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
+		//set defaults
+			if (strlen($db_host) == 0) { $db_host = '127.0.0.1'; }
+			if (strlen($db_port) == 0) { $db_port = '3306'; }
+			//if (strlen($db_name) == 0) { $db_name = 'fusionpbx'; }
+
+		//echo "However if preferred the database can be created manually with the <a href='". echo PROJECT_PATH; ."/includes/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
 
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
@@ -1047,7 +1052,7 @@ pgsql
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "		Database Host:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -1058,7 +1063,7 @@ pgsql
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "		Database Port:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -1069,7 +1074,7 @@ pgsql
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "		Database Name:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -1080,7 +1085,7 @@ pgsql
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "		Database Username:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -1091,7 +1096,7 @@ pgsql
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "		Database Password:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
