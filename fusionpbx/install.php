@@ -435,9 +435,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				$file_contents = file_get_contents($filename);
 				unset($filename);
 				try {
-					$db = new PDO('sqlite:'.$db_filepath.'/'.$db_filename); //sqlite 3
-					//$db = new PDO('sqlite::memory:'); //sqlite 3
-					$db->beginTransaction();
+					$db_tmp = new PDO('sqlite:'.$db_filepath.'/'.$db_filename); //sqlite 3
+					//$db_tmp = new PDO('sqlite::memory:'); //sqlite 3
+					$db_tmp->beginTransaction();
 				}
 				catch (PDOException $error) {
 					print "error: " . $error->getMessage() . "<br/>";
@@ -452,7 +452,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					$x = 0;
 					foreach($stringarray as $sql) {
 						try {
-							$db->query($sql);
+							$db_tmp->query($sql);
 						}
 						catch (PDOException $error) {
 							echo "error: " . $error->getMessage() . " sql: $sql<br/>";
@@ -461,7 +461,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$x++;
 					}
 					unset ($file_contents, $sql);
-					$db->commit();
+					$db_tmp->commit();
 			}
 
 			//--- begin: create the pgsql database -----------------------------------------
@@ -478,10 +478,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					try {
 						if (strlen($db_host) > 0) {
 							if (strlen($db_port) == 0) { $db_port = "5432"; }
-							$db_sql = new PDO("pgsql:host=localhost port=5432 user=$db_username password=$db_password");
+							$db_tmp = new PDO("pgsql:host=localhost port=5432 user=$db_username password=$db_password");
 						}
 						else {
-							$db_sql = new PDO("pgsql:user=$db_username password=$db_password");
+							$db_tmp = new PDO("pgsql:user=$db_username password=$db_password");
 						}
 					}
 					catch (PDOException $error) {
@@ -493,20 +493,20 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$sql = "";
 						$sql .= "CREATE DATABASE $db_name; ";
 						//echo $sql;
-						$db_sql->query($sql);
+						$db_tmp->query($sql);
 						unset($sql);
 
 					//close database connection_aborted
-						$db_sql = null;
+						$db_tmp = null;
 
 					//open database connection with $db_name
 						try {
 							if (strlen($db_host) > 0) {
 								if (strlen($db_port) == 0) { $db_port = "5432"; }
-								$db_sql = new PDO("pgsql:host=localhost port=5432 db_name=$db_name user=$db_username password=$db_password");
+								$db_tmp = new PDO("pgsql:host=localhost port=5432 db_name=$db_name user=$db_username password=$db_password");
 							}
 							else {
-								$db_sql = new PDO("pgsql:db_name=$db_name user=$db_username password=$db_password");
+								$db_tmp = new PDO("pgsql:db_name=$db_name user=$db_username password=$db_password");
 							}
 						}
 						catch (PDOException $error) {
@@ -523,7 +523,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					foreach($stringarray as $sql) {
 						if (strlen($sql) > 3) {
 							try {
-								$db_sql->query($sql);
+								$db_tmp->query($sql);
 							}
 							catch (PDOException $error) {
 								echo "error: " . $error->getMessage() . " sql: $sql<br/>";
@@ -532,7 +532,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						}
 						$x++;
 					}
-					unset ($db_sql, $file_contents, $sql);
+					unset ($db_tmp, $file_contents, $sql);
 			}
 			*/
 			//--- end: create the pgsql database -----------------------------------------
@@ -548,51 +548,102 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						if (strlen($db_host) == 0 && strlen($db_port) == 0) {
 							//if both host and port are empty use the unix socket
 							if (strlen($db_create_username) == 0) {
-								$db_sql = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_username, $db_password);
+								$db_tmp = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_username, $db_password);
 							}
 							else {
-								$db_sql = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_create_username, $db_create_password);
+								$db_tmp = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_create_username, $db_create_password);
 							}
 						}
 						else {
 							if (strlen($db_port) == 0) {
 								//leave out port if it is empty
 								if (strlen($db_create_username) == 0) {
-									$db_sql = new PDO("mysql:host=$db_host;", $db_username, $db_password);
+									$db_tmp = new PDO("mysql:host=$db_host;", $db_username, $db_password);
 								}
 								else {
-									$db_sql = new PDO("mysql:host=$db_host;", $db_create_username, $db_create_password);
+									$db_tmp = new PDO("mysql:host=$db_host;", $db_create_username, $db_create_password);
 								}
 							}
 							else {
 								if (strlen($db_create_username) == 0) {
-									$db_sql = new PDO("mysql:host=$db_host;port=$db_port;", $db_username, $db_password);
+									$db_tmp = new PDO("mysql:host=$db_host;port=$db_port;", $db_username, $db_password);
 								}
 								else {
-									$db_sql = new PDO("mysql:host=$db_host;port=$db_port;", $db_create_username, $db_create_password);
+									$db_tmp = new PDO("mysql:host=$db_host;port=$db_port;", $db_create_username, $db_create_password);
 								}
 							}
 						}
-						$db_sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+						$db_tmp->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 					}
 					catch (PDOException $error) {
 						print "error: " . $error->getMessage() . "<br/>";
 						//die();
 					}
 
-				//create the database
+				//select the mysql database
 					try {
-						$db_sql->query("CREATE DATABASE $db_name;");
+						$db_tmp->query("USE mysql;");
+					}
+					catch (PDOException $error) {
+						//print "error: " . $error->getMessage() . "<br/>";
+					}
+
+				//create user and set the permissions
+					try {
+						$tmp_sql = "CREATE USER '".$db_username."'@'%' IDENTIFIED BY '".$db_password."'; ";
+						$db_tmp->query($tmp_sql);
+					}
+					catch (PDOException $error) {
+						//print "error: " . $error->getMessage() . "<br/>";
+					}
+
+				//set account to unlimitted use
+					try {
+						$tmp_sql = "GRANT USAGE ON * . * TO '".$db_username."'@'localhost' ";
+						$tmp_sql .= "IDENTIFIED BY '".$db_password."' ";
+						$tmp_sql .= "WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0; ";
+						$db_tmp->query($tmp_sql);
+					}
+					catch (PDOException $error) {
+						//print "error: " . $error->getMessage() . "<br/>";
+					}
+
+				//create the database and set the create user with permissions
+					try {
+						$tmp_sql = "CREATE DATABASE IF NOT EXISTS ".$db_name."; ";
+						$db_tmp->query($tmp_sql);
+					}
+					catch (PDOException $error) {
+						//print "error: " . $error->getMessage() . "<br/>";
+					}
+
+				//set user permissions
+					try {
+						$db_tmp->query("GRANT ALL PRIVILEGES ON ".$db_name.".* TO '".$db_username."'@'%'; ");
+					}
+					catch (PDOException $error) {
+						//print "error: " . $error->getMessage() . "<br/>";
+					}
+
+				//make the changes active
+					try {
+						$tmp_sql = "FLUSH PRIVILEGES; ";
+						$db_tmp->query($tmp_sql);
 					}
 					catch (PDOException $error) {
 						//print "error: " . $error->getMessage() . "<br/>";
 					}
 
 				//select the database
-					$db_sql->query("USE $db_name;");
+					try {
+						$db_tmp->query("USE ".$db_name.";");
+					}
+					catch (PDOException $error) {
+						//print "error: " . $error->getMessage() . "<br/>";
+					}
 
 				//include sets the datbaase connection
-					require_once "includes/lib_pdo.php";
+					require "includes/lib_pdo.php";
 
 				//set group permissions for the install
 					//$_SESSION["groups"] = '||admin||member||superadmin||';
@@ -613,7 +664,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					foreach($stringarray as $sql) {
 						if (strlen($sql) > 3) {
 							try {
-								$db_sql->query($sql);
+								$db_tmp->query($sql);
 							}
 							catch (PDOException $error) {
 								//echo "error on line $x: " . $error->getMessage() . " sql: $sql<br/>";
@@ -622,67 +673,68 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						}
 						$x++;
 					}
-					unset ($db_sql, $file_contents, $sql);
-
-				//redirect to the login page
-					header("Location: ".PROJECT_PATH."/login.php");
-					exit;
-					
+					unset ($file_contents, $sql);
 			}
 			//--- end: create the mysql database -----------------------------------------
 
 
-		//set system settings paths
-			$v_package_version = '1.0.8';
-			$v_build_version = '1.0.6';
-			$v_build_revision = 'Release';
-			$v_label = 'FusionPBX';
-			$v_name = 'freeswitch';
-			$v_web_dir = $_SERVER["DOCUMENT_ROOT"];
-			$v_web_root = $_SERVER["DOCUMENT_ROOT"];
-			if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $v_relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $v_relative_url = '/'; }
 
-			$sql = "update v_system_settings set ";
-			$sql .= "php_dir = '$install_php_dir', ";
-			$sql .= "tmp_dir = '$install_tmp_dir', ";
-			$sql .= "bin_dir = '$v_bin_dir', ";
-			$sql .= "v_startup_script_dir = '$v_startup_script_dir', ";
-			$sql .= "v_package_version = '$v_package_version', ";
-			$sql .= "v_build_version = '$v_build_version', ";
-			$sql .= "v_build_revision = '$v_build_revision', ";
-			$sql .= "v_label = '$v_label', ";
-			$sql .= "v_name = '$v_name', ";
-			$sql .= "v_dir = '$install_v_dir', ";
-			$sql .= "v_parent_dir = '$v_parent_dir', ";
-			$sql .= "v_backup_dir = '$install_v_backup_dir', ";
-			$sql .= "v_web_dir = '$v_web_dir', ";
-			$sql .= "v_web_root = '$v_web_root', ";
-			$sql .= "v_relative_url = '$v_relative_url', ";
-			$sql .= "v_conf_dir = '$v_conf_dir', ";
-			$sql .= "v_db_dir = '$v_db_dir', ";
-			$sql .= "v_htdocs_dir = '$v_htdocs_dir', ";
-			$sql .= "v_log_dir = '$v_log_dir', ";
-			$sql .= "v_mod_dir = '$v_mod_dir', ";
-			$sql .= "v_extensions_dir = '$v_extensions_dir', ";
-			$sql .= "v_dialplan_public_dir = '$v_dialplan_public_dir', ";
-			$sql .= "v_dialplan_default_dir = '$v_dialplan_default_dir', ";
-			$sql .= "v_scripts_dir = '$v_scripts_dir', ";
-			$sql .= "v_grammar_dir = '$v_grammar_dir', ";
-			$sql .= "v_storage_dir = '$v_storage_dir', ";
-			$sql .= "v_voicemail_dir = '$v_voicemail_dir', ";
-			$sql .= "v_recordings_dir = '$v_recordings_dir', ";
-			$sql .= "v_sounds_dir = '$v_sounds_dir', ";
-			$sql .= "v_download_path = '$v_download_path' ";
-			//$sql .= "v_provisioning_tftp_dir = '$v_provisioning_tftp_dir', ";
-			//$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
-			//$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
-			//$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir' ";
-			$sql .= "where v_id = '$v_id'";
-			$db->exec($sql);
-			unset($sql);
+	//set system settings paths
+		$v_package_version = '1.0.8';
+		$v_build_version = '1.0.6';
+		$v_build_revision = 'Release';
+		$v_label = 'FusionPBX';
+		$v_name = 'freeswitch';
+		$v_web_dir = $_SERVER["DOCUMENT_ROOT"];
+		$v_web_root = $_SERVER["DOCUMENT_ROOT"];
+		if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $v_relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $v_relative_url = '/'; }
+
+		$sql = "update v_system_settings set ";
+		$sql .= "php_dir = '$install_php_dir', ";
+		$sql .= "tmp_dir = '$install_tmp_dir', ";
+		$sql .= "bin_dir = '$v_bin_dir', ";
+		$sql .= "v_startup_script_dir = '$v_startup_script_dir', ";
+		$sql .= "v_package_version = '$v_package_version', ";
+		$sql .= "v_build_version = '$v_build_version', ";
+		$sql .= "v_build_revision = '$v_build_revision', ";
+		$sql .= "v_label = '$v_label', ";
+		$sql .= "v_name = '$v_name', ";
+		$sql .= "v_dir = '$install_v_dir', ";
+		$sql .= "v_parent_dir = '$v_parent_dir', ";
+		$sql .= "v_backup_dir = '$install_v_backup_dir', ";
+		$sql .= "v_web_dir = '$v_web_dir', ";
+		$sql .= "v_web_root = '$v_web_root', ";
+		$sql .= "v_relative_url = '$v_relative_url', ";
+		$sql .= "v_conf_dir = '$v_conf_dir', ";
+		$sql .= "v_db_dir = '$v_db_dir', ";
+		$sql .= "v_htdocs_dir = '$v_htdocs_dir', ";
+		$sql .= "v_log_dir = '$v_log_dir', ";
+		$sql .= "v_mod_dir = '$v_mod_dir', ";
+		$sql .= "v_extensions_dir = '$v_extensions_dir', ";
+		$sql .= "v_dialplan_public_dir = '$v_dialplan_public_dir', ";
+		$sql .= "v_dialplan_default_dir = '$v_dialplan_default_dir', ";
+		$sql .= "v_scripts_dir = '$v_scripts_dir', ";
+		$sql .= "v_grammar_dir = '$v_grammar_dir', ";
+		$sql .= "v_storage_dir = '$v_storage_dir', ";
+		$sql .= "v_voicemail_dir = '$v_voicemail_dir', ";
+		$sql .= "v_recordings_dir = '$v_recordings_dir', ";
+		$sql .= "v_sounds_dir = '$v_sounds_dir', ";
+		$sql .= "v_download_path = '$v_download_path' ";
+		//$sql .= "v_provisioning_tftp_dir = '$v_provisioning_tftp_dir', ";
+		//$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
+		//$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
+		//$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir' ";
+		$sql .= "where v_id = '$v_id' ";
+		$db_tmp->exec($sql);
+		unset($sql);
+
+	//unset the temporary database connection
+		unset($db_tmp);
+
+	//include the new config.php file
+		require "includes/config.php";
 
 	//remove the default config files that are not needed
-		//require_once "includes/config.php";
 		$file = $v_extensions_dir."/brian.xml"; if (file_exists($file)) { unlink($file); }
 		$file = $v_extensions_dir."/example.com.xml"; if (file_exists($file)) { unlink($file); }
 		$file = $v_dialplan_default_dir."/99999_enum.xml"; if (file_exists($file)) { unlink($file); }
@@ -768,9 +820,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		}
 		unset($srcfile, $destfile);
 
-	//include the new config.php file
-		require_once "includes/config.php";
-
 	//create the switch.conf.xml file
 		switch_conf_xml();
 
@@ -798,42 +847,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		header("Location: ".PROJECT_PATH."/login.php?msg=".urlencode($msg));
 
 }
-
-
-//temp sqlite db
-	//--- begin: create the sqlite db file -----------------------------------------
-		$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/sqlite.sql';
-		$file_contents = file_get_contents($filename);
-		unset($filename);
-		try {
-			//$db_temp = new PDO('sqlite:'.$db_filepath.'/'.$db_filename); //sqlite 3
-			$db_temp = new PDO('sqlite::memory:'); //sqlite 3
-			$db_temp->beginTransaction();
-		}
-		catch (PDOException $error) {
-			print "error: " . $error->getMessage() . "<br/>";
-			die();
-		}
-
-		//replace \r\n with \n then explode on \n
-			$file_contents = str_replace("\r\n", "\n", $file_contents);
-
-		//loop line by line through all the lines of sql code
-			$stringarray = explode("\n", $file_contents);
-			$x = 0;
-			foreach($stringarray as $sql) {
-				try {
-					$db_temp->query($sql);
-				}
-				catch (PDOException $error) {
-					echo "error: " . $error->getMessage() . " sql: $sql<br/>";
-					//die();
-				}
-				$x++;
-			}
-			unset ($file_contents, $sql);
-			//$db_temp->commit();
-	//--- end: create the sqlite db -----------------------------------------
 
 //set a default template
 	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
@@ -1036,7 +1049,7 @@ pgsql
 	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "mysql") {
 
 		//set defaults
-			if (strlen($db_host) == 0) { $db_host = '127.0.0.1'; }
+			if (strlen($db_host) == 0) { $db_host = 'localhost'; }
 			if (strlen($db_port) == 0) { $db_port = '3306'; }
 			//if (strlen($db_name) == 0) { $db_name = 'fusionpbx'; }
 
@@ -1057,18 +1070,18 @@ pgsql
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_host' maxlength='255' value=\"$db_host\"><br />\n";
-		echo "		Recommended for MySQL.\n";
+		echo "		Enter the host address for the database server.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 		echo "		Database Port:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_port' maxlength='255' value=\"$db_port\"><br />\n";
-		echo "		Optional if the database is using the default port.\n";
+		echo "		Enter the port number. It is optional if the database is using the default port.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1079,7 +1092,7 @@ pgsql
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_name' maxlength='255' value=\"$db_name\"><br />\n";
-		echo "		Required for MySQL\n";
+		echo "		Enter the name of the database.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1090,7 +1103,7 @@ pgsql
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_username' maxlength='255' value=\"$db_username\"><br />\n";
-		echo "		Required for MySQL\n";
+		echo "		Enter the database username. \n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1101,7 +1114,7 @@ pgsql
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_password' maxlength='255' value=\"$db_password\"><br />\n";
-		echo "		Required for MySQL\n";
+		echo "		Enter the database password.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1112,9 +1125,8 @@ pgsql
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_create_username' maxlength='255' value=\"$db_create_username\"><br />\n";
-		echo "		When supplied this username is used to create the database. <br />\n";
-		echo "		If not supplied then it assumed that the database has already been created.\n";
-		echo "\n";
+		echo "		Optional, this username is used to create the database, a database user and set the permissions. \n";
+		echo "		By default this username is 'root' however it can be any account with permission to add a database, user, and grant permissions. \n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
@@ -1124,7 +1136,7 @@ pgsql
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_create_password' maxlength='255' value=\"$db_create_password\"><br />\n";
-		echo "		Enter the create database password\n";
+		echo "		Enter the create database password.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";

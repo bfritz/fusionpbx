@@ -94,7 +94,6 @@ require_once "includes/config.php";
 	} //end foreach
 	unset($sql, $result, $rowcount);
 
-
 //set a default template
 	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
 
