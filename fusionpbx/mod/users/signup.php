@@ -27,6 +27,17 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
+//used to disable the page until it is needed
+	require_once "includes/checkauth.php";
+	if (ifgroup("superadmin")) {
+		//echo "access granted";
+		//exit;
+	}
+	else {
+		echo "access denied";
+		exit;
+	}
+
 $username = $_POST["username"];
 $password = $_POST["password"];
 $confirmpassword = $_POST["confirmpassword"];
