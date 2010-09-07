@@ -31,93 +31,87 @@ ob_start();
 echo "\n---------------------------------\n";
 
 
-$phpversion = substr(phpversion(), 0, 1);
-if ($phpversion == '4') {
-	$faxemail = $_REQUEST["email"];
-	$faxextension = $_REQUEST["extension"];
-	$faxname = $_REQUEST["name"];
-	$faxmessages = $_REQUEST["messages"];
-	$faxretry = $_REQUEST["retry"];
+$php_version = substr(phpversion(), 0, 1);
+if ($php_version == '4') {
+	$fax_email = $_REQUEST["email"];
+	$fax_extension = $_REQUEST["extension"];
+	$fax_name = $_REQUEST["name"];
+	$fax_messages = $_REQUEST["messages"];
+	$fax_retry = $_REQUEST["retry"];
 }
 else {
-	$tmparray = explode("=", $_SERVER["argv"][1]);
-	$faxemail = $tmparray[1];
-	unset($tmparray);
-	
-	$tmparray = explode("=", $_SERVER["argv"][2]);
-	$faxextension = $tmparray[1];
-	unset($tmparray);
+	$tmp_array = explode("=", $_SERVER["argv"][1]);
+	$fax_email = $tmp_array[1];
+	unset($tmp_array);
 
-	$tmparray = explode("=", $_SERVER["argv"][3]);
-	$faxname = $tmparray[1];
-	unset($tmparray);
+	$tmp_array = explode("=", $_SERVER["argv"][2]);
+	$fax_extension = $tmp_array[1];
+	unset($tmp_array);
 
-	$tmparray = explode("=", $_SERVER["argv"][4]);
-	$faxmessages = $tmparray[1];
-	unset($tmparray);
+	$tmp_array = explode("=", $_SERVER["argv"][3]);
+	$fax_name = $tmp_array[1];
+	unset($tmp_array);
 
-	$tmparray = explode("=", $_SERVER["argv"][5]);
-	$faxretry = $tmparray[1];
-	unset($tmparray);
+	$tmp_array = explode("=", $_SERVER["argv"][4]);
+	$fax_messages = $tmp_array[1];
+	unset($tmp_array);
+
+	$tmp_array = explode("=", $_SERVER["argv"][5]);
+	$fax_retry = $tmp_array[1];
+	unset($tmp_array);
 }
 
-//echo "faxemail $faxemail\n";
-//echo "faxextension $faxextension\n";
-//echo "faxname $faxname\n";
-//echo "cd $dir_fax; /usr/bin/tiff2png ".$dir_fax.$faxname.".png\n";
+//echo "fax_email $fax_email\n";
+//echo "fax_extension $fax_extension\n";
+//echo "fax_name $fax_name\n";
+//echo "cd $dir_fax; /usr/bin/tiff2png ".$dir_fax.'/'.$fax_name.".png\n";
 
+$dir_fax = $v_storage_dir.'/fax/'.$fax_extension.'/inbox';
 
-$dir_fax = '/usr/local/freeswitch/storage/fax/'.$faxextension.'/inbox/';
-
-
-$faxfilewarning="";
-if (file_exists($dir_fax.$faxname.".tif")) {
-
-	if (!file_exists($dir_fax.$faxname.".png")) {
+$fax_file_warning = "";
+if (file_exists($dir_fax.'/'.$fax_name.".tif")) {
+	if (!file_exists($dir_fax.'/'.$fax_name.".png")) {
 		//cd /usr/local/freeswitch/storage/fax/9975/inbox/;/usr/local/bin/tiff2png /usr/local/freeswitch/storage/fax/9975/inbox/1001-2009-06-06-01-15-11.tif
-		//echo "cd $dir_fax; /usr/bin/tiff2png ".$dir_fax.$faxname.".tif\n";
+		//echo "cd $dir_fax; /usr/bin/tiff2png ".$dir_fax.'/'.$fax_name.".tif\n";
 		$tmp_tiff2png = exec("which tiff2png");
 		if (strlen($tmp_tiff2png) > 0) {
-			exec("cd ".$dir_fax."; ".$tmp_tiff2png." ".$dir_fax.$faxname.".tif");
+			exec("cd ".$dir_fax."; ".$tmp_tiff2png." ".$dir_fax.'/'.$fax_name.".tif");
 		}
 	}
 
-	if (!file_exists($dir_fax.$faxname.".pdf")) {
-		//echo "cd $dir_fax; /usr/bin/tiff2pdf -f -o ".$faxname.".pdf ".$dir_fax.$faxname.".tif\n";
+	if (!file_exists($dir_fax.'/'.$fax_name.".pdf")) {
+		//echo "cd $dir_fax; /usr/bin/tiff2pdf -f -o ".$fax_name.".pdf ".$dir_fax.'/'.$fax_name.".tif\n";
 		$tmp_tiff2pdf = exec("which tiff2pdf");
 		if (strlen($tmp_tiff2pdf) > 0) {
-			exec("cd ".$dir_fax."; ".$tmp_tiff2pdf." -f -o ".$faxname.".pdf ".$dir_fax.$faxname.".tif");
+			exec("cd ".$dir_fax."; ".$tmp_tiff2pdf." -f -o ".$fax_name.".pdf ".$dir_fax.'/'.$fax_name.".tif");
 		}
 	}
-} else {
-  $faxfilewarning=" Fax image not available on server.";
+}
+else {
+	$fax_file_warning = " Fax image not available on server.";
 }
 
-
-$tmp_subject = "Fax Received: ".$faxname;
+$tmp_subject = "Fax Received: ".$fax_name;
 $tmp_textplain  = "\nFax Received:\n";
-$tmp_textplain .= "Name: ".$faxname."\n";
-$tmp_textplain .= "Extension: ".$faxextension."\n";
-$tmp_textplain .= "Messages: ".$faxmessages."\n";
-$tmp_textplain .= $faxfilewarning."\n";
-if ($faxretry=='yes') {
+$tmp_textplain .= "Name: ".$fax_name."\n";
+$tmp_textplain .= "Extension: ".$fax_extension."\n";
+$tmp_textplain .= "Messages: ".$fax_messages."\n";
+$tmp_textplain .= $fax_file_warning."\n";
+if ($fax_retry == 'yes') {
   $tmp_textplain .= "This message arrived earlier and has been queued until now due to email server issues.\n";
 }
 $tmp_texthtml = $tmp_textplain;
 
+//set php ini values
+	ini_set(max_execution_time,900); //15 minutes
+	ini_set('memory_limit', '96M');
 
-ini_set(max_execution_time,900); //15 minutes
-ini_set('memory_limit', '96M');
-
-$fp = fopen("/tmp/faxtoemail.txt", "w");
-
-
+//open the file for writing
+	$fp = fopen($tmp_dir."/fax_to_email.txt", "w");
 
 //send the email
-
 	include "class.phpmailer.php";
 	include "class.smtp.php"; // optional, gets called from within class.phpmailer.php if not already loaded
-
 	$mail = new PHPMailer();
 
 	$mail->IsSMTP(); // set mailer to use SMTP
@@ -144,8 +138,7 @@ $fp = fopen("/tmp/faxtoemail.txt", "w");
 	$mail->AltBody    = $tmp_textplain;   // optional, comment out and test
 	$mail->MsgHTML($tmp_texthtml);
 
-
-	$tmp_to = $faxemail;
+	$tmp_to = $fax_email;
 	$tmp_to = str_replace(";", ",", $tmp_to);
 	$tmp_to_array = split(",", $tmp_to);
 	foreach($tmp_to_array as $tmp_to_row) {
@@ -155,16 +148,16 @@ $fp = fopen("/tmp/faxtoemail.txt", "w");
 		}
 	}
 
-	if (strlen($faxname) > 0) {
-		if (!file_exists($dir_fax.$faxname.".pdf")) {
-			$mail->AddAttachment($dir_fax.$faxname.'.tif');  // tif attachment
+	if (strlen($fax_name) > 0) {
+		if (!file_exists($dir_fax.'/'.$fax_name.".pdf")) {
+			$mail->AddAttachment($dir_fax.'/'.$fax_name.'.tif');  // tif attachment
 		}
-		if (file_exists($dir_fax.$faxname.".pdf")) {
-			$mail->AddAttachment($dir_fax.$faxname.'.pdf');  // pdf attachment
+		if (file_exists($dir_fax.'/'.$fax_name.".pdf")) {
+			$mail->AddAttachment($dir_fax.'/'.$fax_name.'.pdf');  // pdf attachment
 		}
-		if (!file_exists($dir_fax.$faxname.".pdf")) {
-			if (file_exists($dir_fax.$faxname.".png")) {
-				$mail->AddAttachment($dir_fax.$faxname.'.png');  // png attachment
+		if (!file_exists($dir_fax.'/'.$fax_name.".pdf")) {
+			if (file_exists($dir_fax.'/'.$fax_name.".png")) {
+				$mail->AddAttachment($dir_fax.'/'.$fax_name.'.png');  // png attachment
 			}
 		}
 		//$filename='fax.tif'; $encoding = "base64"; $type = "image/tif";
@@ -191,39 +184,43 @@ fclose($fp);
 
 // the following files are created:
 //     /usr/local/freeswitch/storage/fax
-//        emailedfaxes.log - this is a log of all the faxes we have successfully emailed.  (note that we need to work out how to rotate this log)
-//        failedfaxemails.log - this is a log of all the faxes we have failed to email.  This log is in the form of instructions that we can re-execute in order to retry.
+//        emailed_faxes.log - this is a log of all the faxes we have successfully emailed.  (note that we need to work out how to rotate this log)
+//        failed_fax_emails.log - this is a log of all the faxes we have failed to email.  This log is in the form of instructions that we can re-execute in order to retry.
 //            Whenever this exists there should be an at job present to run it sometime in the next 3 minutes (check with atq).  If we succeed in sending the messages
 //            this file will be removed.
 //     /tmp
-//        faxemailretry.sh - this is the renamed failedfaxemails.log and is created only at the point in time that we are trying to re-send the emails.  Note however
+//        fax_email_retry.sh - this is the renamed failed_fax_emails.log and is created only at the point in time that we are trying to re-send the emails.  Note however
 //            that this will continue to exist even if we succeed as we do not delete it when finished.
-//        failedfaxemails.sh - this is created when we have a email we need to re-send.  At the time it is created, an at job is created to execute it in 3 minutes time,
+//        failed_fax_emails.sh - this is created when we have a email we need to re-send.  At the time it is created, an at job is created to execute it in 3 minutes time,
 //            this allows us to try sending the email again at that time.  If the file exists but there is no at job this is because there are no longer any emails queued
 //            as we have successfully sent them all.
-$faxtoemailqueuedir="/usr/local/freeswitch/storage/fax";
-// note that we need to IDENTIFY the error condition and only make this happen if the error occurs - currently we do it every time and this is bad!
-if ($email_status == 'ok') {
-	$fp = fopen($faxtoemailqueuedir."/emailedfaxes.log", "a");
-	fwrite($fp, $faxname." received on ".$faxextension." emailed to ".$faxemail." ".$faxmessages."\n");
-	fclose($fp);
-} else {
-	// create an instruction log to email messages once the connection to the mail server has been restored
-	$fp = fopen($faxtoemailqueuedir."/failedfaxemails.log", "a");
-	fwrite($fp, "/usr/bin/php /var/www/fusionpbx/secure/fax_to_email.php email=$faxemail extension=$faxextension name=$faxname messages='$faxmessages' retry=yes\n");
-	fclose($fp);
-
-	// create a script to do the delayed mailing
-	$fp = fopen("/tmp/failedfaxemails.sh", "w");
-	fwrite($fp, "rm /tmp/faxemailretry.sh\n");
-	fwrite($fp, "mv ".$faxtoemailqueuedir."/failedfaxemails.log /tmp/faxemailretry.sh\n");
-	fwrite($fp, "chmod 777 /tmp/faxemailretry.sh\n");
-	fwrite($fp, "/tmp/faxemailretry.sh\n");
-	fclose($fp);
-	$tmp_response = exec("chmod 777 /tmp/failedfaxemails.sh");
-	// note we use batch in order to execute when system load is low.  Alternatively this could be replaced with AT.
-	$tmp_response = exec("batch -f /tmp/failedfaxemails.sh now + 3 minutes");
+if (stristr(PHP_OS, 'WIN')) {
+	//not compatible with windows
 }
+else {
+	$fax_to_email_queue_dir = $v_storage_dir."/fax";
 
+	// note that we need to IDENTIFY the error condition and only make this happen if the error occurs - currently we do it every time and this is bad!
+	if ($email_status == 'ok') {
+		$fp = fopen($fax_to_email_queue_dir."/emailed_faxes.log", "a");
+		fwrite($fp, $fax_name." received on ".$fax_extension." emailed to ".$fax_email." ".$fax_messages."\n");
+		fclose($fp);
+	} else {
+		// create an instruction log to email messages once the connection to the mail server has been restored
+		$fp = fopen($fax_to_email_queue_dir."/failed_fax_emails.log", "a");
+		fwrite($fp, $php_dir."/php ".$v_secure."/fax_to_email.php email=$fax_email extension=$fax_extension name=$fax_name messages='$fax_messages' retry=yes\n");
+		fclose($fp);
+
+		// create a script to do the delayed mailing
+		$fp = fopen($tmp_dir."/failed_fax_emails.sh", "w");
+		fwrite($fp, "rm ".$tmp_dir."/fax_email_retry.sh\n");
+		fwrite($fp, "mv ".$fax_to_email_queue_dir."/failed_fax_emails.log ".$tmp_dir."/fax_email_retry.sh\n");
+		fwrite($fp, "chmod 777 ".$tmp_dir."/fax_email_retry.sh\n");
+		fwrite($fp, $tmp_dir."/fax_email_retry.sh\n");
+		fclose($fp);
+		$tmp_response = exec("chmod 777 ".$tmp_dir."/failed_fax_emails.sh");
+		// note we use batch in order to execute when system load is low.  Alternatively this could be replaced with AT.
+		$tmp_response = exec("batch -f ".$tmp_dir."/failed_fax_emails.sh now + 3 minutes");
+	}
+}
 ?>
-
