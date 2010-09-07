@@ -46,6 +46,13 @@ $order = $_GET["order"];
 		$extension_number = check_str($_POST["extension_number"]);
 		$dialplanorder = check_str($_POST["dialplanorder"]);
 		$pin_number = check_str($_POST["pin_number"]);
+
+		$user_list = check_str($_POST["user_list"]."|");
+		$user_list = str_replace("\n", "|", "|".$user_list);
+		$user_list = str_replace("\r", "", $user_list);
+		$user_list = str_replace("||", "|", $user_list);
+		$user_list = trim($user_list);
+
 		$profile = check_str($_POST["profile"]);
 		$flags = check_str($_POST["flags"]);
 		$enabled = check_str($_POST["enabled"]);
@@ -161,6 +168,28 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
+		//add action set
+			$sql = "insert into v_dialplan_includes_details ";
+			$sql .= "(";
+			$sql .= "v_id, ";
+			$sql .= "dialplan_include_id, ";
+			$sql .= "tag, ";
+			$sql .= "fieldtype, ";
+			$sql .= "fielddata, ";
+			$sql .= "fieldorder ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$v_id', ";
+			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'action', ";
+			$sql .= "'set', ";
+			$sql .= "'user_list=$user_list', ";
+			$sql .= "'3' ";
+			$sql .= ")";
+			$db->exec(check_sql($sql));
+			unset($sql);
+
 		//add action conference
 			if (strlen($pin_number) > 0) { $pin_number = "+".$pin_number; }
 			if (strlen($flags) > 0) { $flags = "+{".$flags."}"; }
@@ -181,7 +210,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'action', ";
 			$sql .= "'conference', ";
 			$sql .= "'".$conference_action_data."', ";
-			$sql .= "'3' ";
+			$sql .= "'4' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -268,6 +297,26 @@ echo "<td class='vtable' align='left'>\n";
 echo "    <input class='formfld' style='width: 60%;' type='text' name='pin_number' maxlength='255' value=\"$pin_number\">\n";
 echo "<br />\n";
 echo "Optional PIN number to secure access to the conference.\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+echo "		User List:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
+$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; //$sqlwhereoptional = "where v_id = $v_id"; 
+echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
+echo "<br />\n";
+echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";
+echo "<br />\n";
+echo "<br />\n";
+$user_list = str_replace("|", "\n", $user_list);
+echo "		<textarea name=\"user_list\" id=\"user_list\" class=\"formfld\" cols=\"30\" rows=\"3\" style='width: 60%;' wrap=\"off\">$user_list</textarea>\n";
+echo "		<br>\n";
+echo "If a user is not in the select list it can be added manually to the user list and it will be created automatically.\n";
+echo "<br />\n";
 echo "</td>\n";
 echo "</tr>\n";
 
