@@ -1568,19 +1568,25 @@ function sync_package_v_settings()
 		$tmpxml .= "\n";
 		$tmpxml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
 		$tmpxml .= "\n";
-		//$tmpxml .= "\$v_web_dir= \"".$row["v_web_dir"]."\";\n";
-		$tmpxml .= "\$v_smtphost = \"".$row["smtphost"]."\";\n";
+		$tmpxml .= "//set the email variables\n";
+		$tmpxml .= "	\$v_smtphost = \"".$row["smtphost"]."\";\n";
 		if ($row["smtpsecure"] == "none") {
-			$tmpxml .= "\$v_smtpsecure = \"\";\n";
+			$tmpxml .= "	\$v_smtpsecure = \"\";\n";
 		}
 		else {
-			$tmpxml .= "\$v_smtpsecure = \"".$row["smtpsecure"]."\";\n";
+			$tmpxml .= "	\$v_smtpsecure = \"".$row["smtpsecure"]."\";\n";
 		}
-		$tmpxml .= "\$v_smtpauth = \"".$row["smtpauth"]."\";\n";
-		$tmpxml .= "\$v_smtpusername = \"".$row["smtpusername"]."\";\n";
-		$tmpxml .= "\$v_smtppassword = \"".$row["smtppassword"]."\";\n";
-		$tmpxml .= "\$v_smtpfrom = \"".$row["smtpfrom"]."\";\n";
-		$tmpxml .= "\$v_smtpfromname= \"".$row["smtpfromname"]."\";\n";
+		$tmpxml .= "	\$v_smtpauth = \"".$row["smtpauth"]."\";\n";
+		$tmpxml .= "	\$v_smtpusername = \"".$row["smtpusername"]."\";\n";
+		$tmpxml .= "	\$v_smtppassword = \"".$row["smtppassword"]."\";\n";
+		$tmpxml .= "	\$v_smtpfrom = \"".$row["smtpfrom"]."\";\n";
+		$tmpxml .= "	\$v_smtpfromname = \"".$row["smtpfromname"]."\";\n";
+		$tmpxml .= "\n";
+		$tmpxml .= "//set system dir variables\n";
+		$tmpxml .= "	\$v_storage_dir = \"".$v_storage_dir."\";\n";
+		$tmpxml .= "	\$tmp_dir = \"".$tmp_dir."\";\n";
+		$tmpxml .= "	\$php_dir = \"".$php_dir."\";\n";
+		$tmpxml .= "	\$v_secure = \"".$v_secure."\";\n";
 		$tmpxml .= "\n";
 		$tmpxml .= "?>";
 		fwrite($fout, $tmpxml);
