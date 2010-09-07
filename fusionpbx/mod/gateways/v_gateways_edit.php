@@ -374,20 +374,20 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 				}
 
-				if (strlen($effective_caller_id_number) > 0) {
+				//if (strlen($effective_caller_id_number) > 0) {
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'set';
-					$fielddata = 'effective_caller_id_number='.$effective_caller_id_number;
+					$fielddata = 'effective_caller_id_number=${outbound_caller_id_number}';
 					$fieldorder = '002';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-				}
-				if (strlen($outbound_caller_id_name) > 0) {
+				//}
+				//if (strlen($outbound_caller_id_name) > 0) {
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'set';
-					$fielddata = 'outbound_caller_id_name='.$outbound_caller_id_name;
+					$fielddata = 'outbound_caller_id_name=${outbound_caller_id_name}';
 					$fieldorder = '003';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-				}
+				//}
 				if (strlen($outbound_caller_id_number) > 0) {
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'set';
@@ -409,8 +409,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			} //if strlen
 		} //end for each
 
-	//synchronize the xml config
-		sync_package_v_dialplan_includes();
+		//synchronize the xml config
+			sync_package_v_dialplan_includes();
 
 	}
 
