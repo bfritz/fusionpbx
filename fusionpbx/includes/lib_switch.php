@@ -1819,7 +1819,7 @@ function sync_package_v_extensions()
 			}
 			$tmpxml .= "    </params>\n";
 			$tmpxml .= "    <variables>\n";
-			$tmpxml .= "      <variable name=\"toll_allow\" value=\"domestic,international,local\"/>\n";
+			$tmpxml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
 			$tmpxml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
 			$tmpxml .= "      <variable name=\"user_context\" value=\"" . $row['user_context'] . "\"/>\n";
 			if (strlen($row['effective_caller_id_number']) > 0) {

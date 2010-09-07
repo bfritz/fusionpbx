@@ -60,7 +60,7 @@ else {
 		$provisioning_list = str_replace("\r", "", $provisioning_list);
 		$provisioning_list = str_replace(" ", "", $provisioning_list);
 		$provisioning_list = str_replace("||", "|", $provisioning_list);
-	  
+
 		$vm_password = check_str($_POST["vm_password"]);
 		$accountcode = check_str($_POST["accountcode"]);
 		$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
@@ -72,6 +72,7 @@ else {
 		$vm_keep_local_after_email = check_str($_POST["vm_keep_local_after_email"]);
 		$user_context = check_str($_POST["user_context"]);
 		$range = check_str($_POST["range"]);
+		$toll_allow = check_str($_POST["toll_allow"]);
 		$callgroup = check_str($_POST["callgroup"]);
 		$auth_acl = check_str($_POST["auth_acl"]);
 		$cidr = check_str($_POST["cidr"]);
@@ -111,6 +112,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($vm_attach_file) == 0) { $msg .= "Please provide: Voicemail Attach File<br>\n"; }
 		//if (strlen($vm_keep_local_after_email) == 0) { $msg .= "Please provide: VM Keep Local After Email<br>\n"; }
 		if (strlen($user_context) == 0) { $msg .= "Please provide: User Context<br>\n"; }
+		//if (strlen($toll_allow) == 0) { $msg .= "Please provide: Toll Allow<br>\n"; }
 		//if (strlen($callgroup) == 0) { $msg .= "Please provide: Call Group<br>\n"; }
 		//if (strlen($auth_acl) == 0) { $msg .= "Please provide: Auth ACL<br>\n"; }
 		//if (strlen($cidr) == 0) { $msg .= "Please provide: CIDR<br>\n"; }
@@ -129,7 +131,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		}
-
 
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
@@ -164,6 +165,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "vm_attach_file, ";
 				$sql .= "vm_keep_local_after_email, ";
 				$sql .= "user_context, ";
+				$sql .= "toll_allow, ";
 				$sql .= "callgroup, ";
 				$sql .= "auth_acl, ";
 				$sql .= "cidr, ";
@@ -188,6 +190,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$vm_attach_file', ";
 				$sql .= "'$vm_keep_local_after_email', ";
 				$sql .= "'$user_context', ";
+				$sql .= "'$toll_allow', ";
 				$sql .= "'$callgroup', ";
 				$sql .= "'$auth_acl', ";
 				$sql .= "'$cidr', ";
@@ -239,6 +242,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "vm_attach_file = '$vm_attach_file', ";
 			$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email', ";
 			$sql .= "user_context = '$user_context', ";
+			$sql .= "toll_allow = '$toll_allow', ";
 			$sql .= "callgroup = '$callgroup', ";
 			$sql .= "auth_acl = '$auth_acl', ";
 			$sql .= "cidr = '$cidr', ";
@@ -292,6 +296,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$vm_attach_file = $row["vm_attach_file"];
 			$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
 			$user_context = $row["user_context"];
+			$toll_allow = $row["toll_allow"];
 			$callgroup = $row["callgroup"];
 			$auth_acl = $row["auth_acl"];
 			$cidr = $row["cidr"];
@@ -302,6 +307,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		unset ($prepstatement);
 	}
+
 
 //begin the page content
 	require_once "includes/header.php";
@@ -424,7 +430,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    User List:\n";
+	echo "		User List:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
@@ -435,8 +441,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<br />\n";
 	echo "<br />\n";
 	$user_list = str_replace("|", "\n", $user_list);
-	echo "    <textarea name=\"user_list\" id=\"user_list\" class=\"formfld\" cols=\"30\" rows=\"3\" wrap=\"off\">$user_list</textarea>\n";
-	echo "    <br>\n";
+	echo "		<textarea name=\"user_list\" id=\"user_list\" class=\"formfld\" cols=\"30\" rows=\"3\" wrap=\"off\">$user_list</textarea>\n";
+	echo "		<br>\n";
 	echo "If a user is not in the select list it can be added manually to the user list and it will be created automatically.\n";
 	echo "<br />\n";
 	echo "</td>\n";
@@ -636,6 +642,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    </select>\n";
 	echo "<br />\n";
 	echo "Keep local file after sending the email. \n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Toll Allow:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='toll_allow' maxlength='255' value=\"$toll_allow\">\n";
+	echo "<br />\n";
+	echo "Enter the toll allow value here. example: domestic,international,local\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

@@ -342,6 +342,38 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "<br />";
 }
 
+if (ifgroup("member")) {
+	//find the conference extensions from the dialplan include details
+
+		//define the conference array
+			$conference_array = array ();
+
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "where v_id = $v_id ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$x = 0;
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$dialplan_include_id = $row["dialplan_include_id"];
+			//$tag = $row["tag"];
+			//$fieldorder = $row["fieldorder"];
+			$fieldtype = $row["fieldtype"];
+			//$fielddata = $row["fielddata"];
+			if ($fieldtype == "conference") {
+				//echo "dialplan_include_id: $dialplan_include_id<br />";
+				//echo "fielddata: $fielddata<br />";
+				$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+				$x++;
+			}
+		}
+		unset ($prepstatement);
+		//print_r($conference_array);
+		foreach ($conference_array as &$row) {
+			echo "--".$row['dialplan_include_id']."--<br />\n";
+		}
+}
 
 //backup
 if (ifgroup("superadmin")) {
