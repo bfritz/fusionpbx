@@ -342,6 +342,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "<br />";
 }
 
+/*
 if (ifgroup("member")) {
 	//find the conference extensions from the dialplan include details
 
@@ -374,6 +375,7 @@ if (ifgroup("member")) {
 			echo "--".$row['dialplan_include_id']."--<br />\n";
 		}
 }
+*/
 
 //backup
 if (ifgroup("superadmin")) {
