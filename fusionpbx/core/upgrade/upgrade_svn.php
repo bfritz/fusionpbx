@@ -163,47 +163,55 @@ foreach ($xml->src as $row) {
 		if (file_exists($new_path)) {
 			//if the path exists then compare the v_src $md5_xml to the md5_file($new_path) in the svn if they don't match save the new one
 			if ($xml_type == 'file') {
-				if ($md5_xml != md5_file($new_path)) {
-					//get the remote file contents
-						$file_content = file_get_contents($svn_url.$svn_path.$xml_relative_path);
-
-					//make sure the string matches the file md5 that was recorded.
-						if (strlen($file_content) > 0) {
-							$tmp_fh = fopen($new_path, 'w');
-							fwrite($tmp_fh, $file_content);
-							fclose($tmp_fh);
-						}
-
-					//update the database
-						if (strlen($sql) > 0) {
-							$db->exec(check_sql($sql));
-							//echo "$sql<br />\n";
-						}
-						unset($sql);
-
-					//display the results
-						if ($display_results) {
-							echo "<strong style='color: #FF0000;'> ";
-							if (is_writable($new_path)) {
-								echo "updated ";
-							}
-							else {
-								echo "not writable ";
-							}
-							//echo $md5_xml." ".md5($file_content)."<br />";
-							//echo "length: ".strlen($file_content)."<br />";
-							//echo "<textarea>$file_content</textarea>\n";
-
-							echo "</strong>";
-							echo "<br />\n";
-							//echo "<strong style='color: #FF0000;'>updated ".strlen($file_content)." ".$svn_url.$svn_path.$xml_relative_path." ".$svn_url.$svn_path.$xml_relative_path.md5($file_content)."</strong>";
-						}
-
-				}
-				else {
+				//the md5 of the xml file and the local file do not match
+				if ($md5_xml == md5_file($new_path)) {
 					if ($display_results) {
 						echo "current "; //the file is up to date
 					}
+				}
+				else {
+					//get the remote file contents
+						$file_content = file_get_contents($svn_url.$svn_path.$xml_relative_path);
+
+					//the md5 of the local file and the remote content match
+						if (md5_file($new_path) == md5($file_content)) {
+							if ($display_results) {
+								echo "current "; //the file is up to date
+							}
+						}
+						else {
+							//make sure the string matches the file md5 that was recorded.
+								if (strlen($file_content) > 0) {
+									$tmp_fh = fopen($new_path, 'w');
+									fwrite($tmp_fh, $file_content);
+									fclose($tmp_fh);
+								}
+
+							//update the database
+								if (strlen($sql) > 0) {
+									$db->exec(check_sql($sql));
+									//echo "$sql<br />\n";
+								}
+								unset($sql);
+
+							//display the results
+								if ($display_results) {
+									echo "<strong style='color: #FF0000;'> ";
+									if (is_writable($new_path)) {
+										echo "updated ";
+									}
+									else {
+										echo "not writable ";
+									}
+									//echo $md5_xml." ".$new_path."<br />";
+									//echo $md5_xml." ".md5($file_content)."<br />";
+									//echo "length: ".strlen($file_content)."<br />";
+									//echo "<textarea>$file_content</textarea>\n";
+
+									echo "</strong>";
+									echo "<br />\n";
+								}
+						}
 				}
 
 				//unset the variable
