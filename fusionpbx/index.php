@@ -81,7 +81,7 @@ echo "<br />";
 
 //get the software information
 	//include "includes/v_version.php";
-	$software_version = "1.1.33";
+	$software_version = "1.1.34";
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>System Information</th>\n";
