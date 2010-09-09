@@ -72,8 +72,8 @@ if ($display_results) {
 
 
 $svn_url = 'http://fusionpbx.googlecode.com/svn';
-$svn_path = '/trunk/fusionpbx/';
-$xml_str = file_get_contents($svn_url.$svn_path.'includes/install/source.xml');
+$svn_path = '/trunk/fusionpbx';
+$xml_str = file_get_contents($svn_url.$svn_path.'/includes/install/source.xml');
 //echo $xml_str;
 
 try {
@@ -92,7 +92,8 @@ if ($display_results) {
 	echo "<th>Last Modified</th>\n";
 	echo "<th>Path</th>\n";
 	echo "<th>Size</th>\n";
-	//echo "<th>MD5</th>\n";
+	//echo "<th>MD5 file</th>\n";
+	//echo "<th>MD5 xml</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<tr>\n";
 }
@@ -102,11 +103,12 @@ foreach ($xml->src as $row) {
 	$xml_type = $row->type;
 	$xml_relative_path = trim($row->path);
 	$xml_last_mod = $row->last_mod;
-	$xml_md5 = $row->md5;
+	$md5_xml = $row->md5;
 	$xml_size = $row->size;
 
 	$new_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/'.$xml_relative_path;
-	if ($xml_md5 == md5_file($new_path)){ 
+	$md5_file = md5_file($new_path);
+	if ($md5_xml == $md5_file){ 
 		$md5_match = true; 
 	}
 	else {
@@ -121,6 +123,8 @@ foreach ($xml->src as $row) {
 				echo "<td class='rowstyle1'>$xml_last_mod</td>\n";
 				echo "<td class='rowstyle1'>$xml_relative_path</td>\n";
 				echo "<td class='rowstyle1'>$xml_size</td>\n";
+				//echo "<td class='rowstyle1'>$md5_file</td>\n";
+				//echo "<td class='rowstyle1'>$md5_xml</td>\n";
 				//echo "<td class='rowstyle1'>$md5_match file_get_contents($svn_url.$svn_path.$xml_relative_path);</td>\n";
 				echo "<td class='rowstyle1'>\n";
 			}
@@ -146,7 +150,7 @@ foreach ($xml->src as $row) {
 					//echo "$sql<br />\n";
 			} 
 			else {
-				if ($xml_md5 != md5_file($new_path)) {
+				if ($md5_xml != md5_file($new_path)) {
 					//update the src table
 						$sql = "update v_src set ";
 						$sql .= "type = '$xml_type', ";
@@ -157,9 +161,9 @@ foreach ($xml->src as $row) {
 			}
 
 		if (file_exists($new_path)) {
-			//if the path exists then compare the v_src $xml_md5 to the md5_file($new_path) in the svn if they don't match save the new one
+			//if the path exists then compare the v_src $md5_xml to the md5_file($new_path) in the svn if they don't match save the new one
 			if ($xml_type == 'file') {
-				if ($xml_md5 != md5_file($new_path)) {
+				if ($md5_xml != md5_file($new_path)) {
 					//get the remote file contents
 						$file_content = file_get_contents($svn_url.$svn_path.$xml_relative_path);
 
@@ -169,7 +173,6 @@ foreach ($xml->src as $row) {
 							fwrite($tmp_fh, $file_content);
 							fclose($tmp_fh);
 						}
-						unset($file_content);
 
 					//update the database
 						if (strlen($sql) > 0) {
@@ -180,14 +183,31 @@ foreach ($xml->src as $row) {
 
 					//display the results
 						if ($display_results) {
-							echo "<strong style='color: #FF0000;'>updated</strong>";
+							echo "<strong style='color: #FF0000;'> ";
+							if (is_writable($new_path)) {
+								echo "updated ";
+							}
+							else {
+								echo "not writable ";
+							}
+							//echo $md5_xml." ".md5($file_content)."<br />";
+							//echo "length: ".strlen($file_content)."<br />";
+							//echo "<textarea>$file_content</textarea>\n";
+
+							echo "</strong>";
+							echo "<br />\n";
+							//echo "<strong style='color: #FF0000;'>updated ".strlen($file_content)." ".$svn_url.$svn_path.$xml_relative_path." ".$svn_url.$svn_path.$xml_relative_path.md5($file_content)."</strong>";
 						}
+
 				}
 				else {
 					if ($display_results) {
 						echo "current "; //the file is up to date
 					}
 				}
+
+				//unset the variable
+					unset($file_content);
 			}
 		}
 		else {
@@ -219,6 +239,9 @@ foreach ($xml->src as $row) {
 					if ($display_results) {
 						echo "updated ";
 					}
+
+				//unset the variable
+					unset($file_content);
 			}
 
 			//update the database
