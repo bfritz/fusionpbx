@@ -22,7 +22,7 @@ INSERT INTO v_menu VALUES(20,1,'en','Logout','/logout.php','internal','member','
 INSERT INTO v_menu VALUES(22,1,'en','Website Stats','/stats/','internal','hidden','',31,55,'mcrane','2007-06-18 17:45:25','mcrane','2007-08-25 18:59:27');
 INSERT INTO v_menu VALUES(23,1,'en','Status','','internal','member','','',43,'mcrane','2007-06-22 17:57:38','superadmin','2010-08-05 17:43:12');
 INSERT INTO v_menu VALUES(25,1,'en','Account Settings','/mod/users/usersupdate.php','internal','member','',7,2,'mcrane','2007-07-12 01:05:51','superadmin','2010-08-05 18:09:16');
-INSERT INTO v_menu VALUES(30,1,'en','Templates','/mod/templates/templates.php','internal','superadmin','',93,66,'mcrane','2007-08-22 14:03:34','superadmin','2010-09-06 03:21:06');
+INSERT INTO v_menu VALUES(30,1,'en','Templates','/mod/templates/templates.php','internal','hidden','',93,66,'mcrane','2007-08-22 14:03:34','superadmin','2010-09-06 03:21:06');
 INSERT INTO v_menu VALUES(31,1,'en','Hidden','','internal','hidden','','',51,'mcrane','2007-08-25 18:59:08','admin','2009-11-04 18:21:23');
 INSERT INTO v_menu VALUES(32,1,'en','Apply Settings','/core/status/v_cmd.php?cmd=api+reloadxml','internal','admin','',7,3,'mcrane','2007-08-25 19:05:30','superadmin','2010-09-01 16:24:16');
 INSERT INTO v_menu VALUES(33,1,'en','Sign Up','/mod/users/signup.php','internal','hidden','',31,54,'mcrane','2007-08-25 19:17:44','mcrane','2009-10-27 23:09:37');
