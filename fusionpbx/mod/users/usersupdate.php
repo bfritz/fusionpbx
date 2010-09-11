@@ -28,7 +28,6 @@ require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
 
-
 //get data from the db
 	if (strlen($_GET["id"])> 0) {
 		$id = $_GET["id"];
@@ -145,6 +144,9 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		require_once "includes/footer.php";
 		return;
 	}
+
+	//set the session theme for the user
+		$_SESSION["template_name"] = $user_template_name;
 
 	//sql update
 	$sql  = "update v_users set ";
