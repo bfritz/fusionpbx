@@ -465,8 +465,16 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			}
 
 			//--- begin: create the pgsql database -----------------------------------------
-			/*
+			
 			if ($db_type == "pgsql") {
+
+				//echo "DB Name: {$db_name}<br>";
+				//echo "DB Host: {$db_host}<br>";
+				//echo "DB User: {$db_username}<br>";
+				//echo "DB Pass: {$db_password}<br>";
+				//echo "DB Port: {$db_port}<br>";
+				//echo "DB Create User: {$db_create_username}<br>";
+				//echo "DB Create Pass: {$db_create_password}<br>";
 
 				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/pgsql.sql';
 				$file_contents = file_get_contents($filename);
@@ -476,37 +484,32 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 				//database connection
 					try {
+						if (strlen($db_port) == 0) { $db_port = "5432"; }
 						if (strlen($db_host) > 0) {
-							if (strlen($db_port) == 0) { $db_port = "5432"; }
-							$db_tmp = new PDO("pgsql:host=localhost port=5432 user=$db_username password=$db_password");
+							$db_tmp = new PDO("pgsql:host={$db_host} port={$db_port} user={$db_create_username} password={$db_create_password} dbname=template1");
+						} else {
+							$db_tmp = new PDO("pgsql:host=localhost port={$db_port} user={$db_create_username} password={$db_create_password} dbname=template1");
 						}
-						else {
-							$db_tmp = new PDO("pgsql:user=$db_username password=$db_password");
-						}
-					}
-					catch (PDOException $error) {
+					} catch (PDOException $error) {
 						print "error: " . $error->getMessage() . "<br/>";
 						die();
 					}
 
-					//create the database
-						$sql = "";
-						$sql .= "CREATE DATABASE $db_name; ";
-						//echo $sql;
-						$db_tmp->query($sql);
-						unset($sql);
+					//create the database, user, grant perms
+					$db_tmp->exec("CREATE DATABASE {$db_name}");
+					$db_tmp->exec("CREATE USER {$db_username} WITH PASSWORD '{$db_password}'");
+					$db_tmp->exec("GRANT ALL ON {$db_name} TO {$db_username}");
 
 					//close database connection_aborted
-						$db_tmp = null;
+					$db_tmp = null;
 
 					//open database connection with $db_name
 						try {
+							if (strlen($db_port) == 0) { $db_port = "5432"; }
 							if (strlen($db_host) > 0) {
-								if (strlen($db_port) == 0) { $db_port = "5432"; }
-								$db_tmp = new PDO("pgsql:host=localhost port=5432 db_name=$db_name user=$db_username password=$db_password");
-							}
-							else {
-								$db_tmp = new PDO("pgsql:db_name=$db_name user=$db_username password=$db_password");
+								$db_tmp = new PDO("pgsql:host={$db_host} port={$db_port} dbname={$db_name} user={$db_username} password={$db_password}");
+							} else {
+								$db_tmp = new PDO("pgsql:host=localhost port={$db_port} user={$db_username} password={$db_password} dbname={$db_name}");
 							}
 						}
 						catch (PDOException $error) {
@@ -532,9 +535,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						}
 						$x++;
 					}
-					unset ($db_tmp, $file_contents, $sql);
+					unset ($file_contents, $sql);
 			}
-			*/
+			
 			//--- end: create the pgsql database -----------------------------------------
 
 
@@ -642,7 +645,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						//print "error: " . $error->getMessage() . "<br/>";
 					}
 
-				//include sets the datbaase connection
+				//include sets the database connection
 					require "includes/lib_pdo.php";
 
 				//set group permissions for the install
@@ -676,7 +679,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					unset ($file_contents, $sql);
 			}
 			//--- end: create the mysql database -----------------------------------------
-
 
 
 	//set system settings paths
@@ -788,7 +790,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		if (file_exists($destfile)) { unlink($destfile); }
 		if (!copy($srcfile, $destfile)) {
 			unlink($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php");
-			echo "failed to copy $srcfile to $destfile...\n";
+			echo "failed to copy $srcfile to $destfile\n";
 			exit;
 		}
 		unset($srcfile, $destfile);
@@ -1161,6 +1163,10 @@ pgsql
 
 	// begin step 2, pgsql --------------------------------------
 	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "pgsql") {
+		if (strlen($db_host) == 0) { $db_host = 'localhost'; }
+		if (strlen($db_port) == 0) { $db_port = '5432'; }
+		if (strlen($db_create_username) == 0) { $db_create_username = 'pgsql'; }
+		//if (strlen($db_name) == 0) { $db_name = 'fusionpbx'; }
 
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
@@ -1222,6 +1228,28 @@ pgsql
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_password' maxlength='255' value=\"$db_password\"><br />\n";
 		echo "		\n";
+		echo "\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Create Database Username:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_create_username' maxlength='255' value=\"$db_create_username\"><br />\n";
+		echo "		Optional, this username is used to create the database, a database user and set the permissions. \n";
+		echo "		By default this username is 'pgsql' however it can be any account with permission to add a database, user, and grant permissions. \n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		Create Database Password:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "		<input class='formfld' type='text' name='db_create_password' maxlength='255' value=\"$db_create_password\"><br />\n";
+		echo "		Enter the create database password.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
