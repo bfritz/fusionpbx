@@ -184,7 +184,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$dialplan_include_id', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
-			$sql .= "'user_list=$user_list', ";
+			$sql .= "'conference_user_list=$user_list', ";
 			$sql .= "'3' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
@@ -193,7 +193,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//add action conference
 			if (strlen($pin_number) > 0) { $pin_number = "+".$pin_number; }
 			if (strlen($flags) > 0) { $flags = "+{".$flags."}"; }
-			$conference_action_data = $extension_name."_\${domain_name}@".$profile.$flags.$pin_number;
+			$conference_action_data = $extension_name."@".$profile.$flags.$pin_number;
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "v_id, ";

@@ -26,13 +26,13 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+//if (ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
+//}
+//else {
+//	echo "access denied";
+//	exit;
+//}
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
@@ -47,6 +47,11 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes_details ";
 	$sql .= "where v_id = $v_id ";
+	if (!ifgroup("admin") || !ifgroup("superadmin")) {
+		//find the assigned users
+			$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
+	}
+	//echo $sql;
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$x = 0;
@@ -57,10 +62,20 @@ $order = $_GET["order"];
 		//$fieldorder = $row["fieldorder"];
 		$fieldtype = $row["fieldtype"];
 		//$fielddata = $row["fielddata"];
-		if ($fieldtype == "conference") {
+		if (ifgroup("admin") || ifgroup("superadmin")) {
+			if ($fieldtype == "conference") {
+				//echo "dialplan_include_id: $dialplan_include_id<br />";
+				//echo "fielddata: $fielddata<br />";
+				$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+				//print_r($row);
+				$x++;
+			}
+		}
+		else {
 			//echo "dialplan_include_id: $dialplan_include_id<br />";
 			//echo "fielddata: $fielddata<br />";
 			$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+			//print_r($row);
 			$x++;
 		}
 	}
@@ -69,7 +84,6 @@ $order = $_GET["order"];
 	//foreach ($conference_array as &$row) {
 	//	echo "--".$row['dialplan_include_id']."--<br />\n";
 	//}
-
 
 //begin the form
 	echo "<div align='center'>";
@@ -175,12 +189,19 @@ $order = $_GET["order"];
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('extensionname', 'Extension Name', $orderby, $order);
-	echo thorderby('dialplanorder', 'Order', $orderby, $order);
+	echo thorderby('extensionname', 'Conference Name', $orderby, $order);
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo thorderby('dialplanorder', 'Order', $orderby, $order);
+	}
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
-	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_conferences_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo "<td align='right' width='42'>\n";
+		echo "	<a href='v_conferences_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	}
+	else {
+		echo "<td align='right' width='21'>\n";
+	}
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -192,12 +213,16 @@ $order = $_GET["order"];
 			//print_r( $row );
 			echo "<tr >\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extensionname]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplanorder]."</td>\n";
+			if (ifgroup("admin") || ifgroup("superadmin")) {
+				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplanorder]."</td>\n";
+			}
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			echo "		<a href='v_conferences_edit.php?id=".$row[dialplan_include_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_conferences_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			if (ifgroup("admin") || ifgroup("superadmin")) {
+				echo "		<a href='v_conferences_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			}
 			echo "   </td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -213,7 +238,9 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_conferences_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo "			<a href='v_conferences_add.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

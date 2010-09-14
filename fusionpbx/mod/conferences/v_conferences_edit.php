@@ -26,58 +26,98 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-require_once "includes/paging.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+//if (ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
+//}
+//else {
+//	echo "access denied";
+//	exit;
+//}
+require_once "includes/header.php";
+require_once "includes/paging.php";
 
+$orderby = $_GET["orderby"];
+$order = $_GET["order"];
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$dialplan_include_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
+//select * from v_dialplan_includes where dialplan_include_id = '52'
+//select * from v_dialplan_includes_details where dialplan_include_id = '52'
 
-//POST to PHP variables
-if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
-	$extensionname = check_str($_POST["extensionname"]);
-	$dialplanorder = check_str($_POST["dialplanorder"]);
-	$extensioncontinue = check_str($_POST["extensioncontinue"]);
-	$context = check_str($_POST["context"]);
-	$enabled = check_str($_POST["enabled"]);
-	$descr = check_str($_POST["descr"]);
-}
-
-if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
-
-	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
-	if ($action == "update") {
-		$dialplan_include_id = check_str($_POST["dialplan_include_id"]);
+//action add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$dialplan_include_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
 	}
 
+//check if the user has been assigned this conference room
+	if (!ifgroup("admin") || !ifgroup("superadmin")) {
+		//get the list of conference numbers
+			$sql = "select * from v_dialplan_includes_details ";
+			$sql .= "where v_id = $v_id ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$x = 0;
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
+				$tmp_dialplan_include_id = $row["dialplan_include_id"];
+				$fieldtype = $row["fieldtype"];
+				if ($fieldtype == "conference") {
+					$conference_array[$x]['dialplan_include_id'] = $tmp_dialplan_include_id;
+					$x++;
+				}
+			}
+			unset ($prepstatement);
+
+		//get the list of assigned conference numbers for this user
+			foreach ($conference_array as &$row) {
+				$sql = "select * from v_dialplan_includes_details ";
+				$sql .= "where dialplan_include_id = '".$row['dialplan_include_id']."' ";
+				$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
+				$tmp_row = $db->query($sql)->fetch();
+				if (strlen($tmp_row['dialplan_include_id']) > 0) {
+					$conference_auth_array[$tmp_row['dialplan_include_id']] = $tmp_row['dialplan_include_id'];
+				}
+			}
+
+		//check if the user has been assigned to this conference room
+			if (strlen($conference_auth_array[$dialplan_include_id]) == 0) {
+				echo "access denied";
+				exit;
+			}
+	}
+
+//http post to php variables
+	if (count($_POST)>0) {
+		$extension_name = check_str($_POST["extension_name"]);
+		$extension_number = check_str($_POST["extension_number"]);
+		$dialplan_order = check_str($_POST["dialplan_order"]);
+		$pin_number = check_str($_POST["pin_number"]);
+
+		$user_list = check_str($_POST["user_list"]."|");
+		$user_list = str_replace("\n", "|", "|".$user_list);
+		$user_list = str_replace("\r", "", $user_list);
+		$user_list = str_replace("||", "|", $user_list);
+		$user_list = trim($user_list);
+
+		$profile = check_str($_POST["profile"]);
+		$flags = check_str($_POST["flags"]);
+		$enabled = check_str($_POST["enabled"]);
+		$description = check_str($_POST["description"]);
+		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
+	}
+
+if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br />\n"; }
-		if (strlen($extensionname) == 0) { $msg .= "Please provide: Extension Name<br />\n"; }
-		if (strlen($dialplanorder) == 0) { $msg .= "Please provide: Order<br />\n"; }
-		if (strlen($extensioncontinue) == 0) { $msg .= "Please provide: Continue<br />\n"; }
-		//if (strlen($context) == 0) { $msg .= "Please provide: Context<br />\n"; }
-		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br />\n"; }
-		//if (strlen($descr) == 0) { $msg .= "Please provide: Description<br />\n"; }
+		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
+		if (strlen($extension_number) == 0) { $msg .= "Please provide: Extension Number<br>\n"; }
+		//if (strlen($pin_number) == 0) { $msg .= "Please provide: PIN Number<br>\n"; }
+		//if (strlen($profile) == 0) { $msg .= "Please provide: profile<br>\n"; }
+		//if (strlen($flags) == 0) { $msg .= "Please provide: Flags<br>\n"; }
+		//if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
+		//if (strlen($description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -91,458 +131,498 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	//$tmp .= "v_id: $v_id\n";
-	$tmp .= "Extension Name: $extensionname\n";
-	$tmp .= "Order: $dialplanorder\n";
-	$tmp .= "Context: $context\n";
-	$tmp .= "Enabled: $enabled\n";
-	$tmp .= "Description: $descr\n";
+	//start the atomic transaction
+		$count = $db->exec("BEGIN;"); //returns affected rows
 
-
-
-//Add or update the database
-if ($_POST["persistformvar"] != "true") {
 	if ($action == "add") {
-		$sql = "insert into v_dialplan_includes ";
-		$sql .= "(";
-		$sql .= "v_id, ";
-		$sql .= "extensionname, ";
-		$sql .= "dialplanorder, ";
-		$sql .= "extensioncontinue, ";
-		$sql .= "context, ";
-		$sql .= "enabled, ";
-		$sql .= "descr ";
-		$sql .= ")";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'$v_id', ";
-		$sql .= "'$extensionname', ";
-		$sql .= "'$dialplanorder', ";
-		$sql .= "'$extensioncontinue', ";
-		$sql .= "'$context', ";
-		$sql .= "'$enabled', ";
-		$sql .= "'$descr' ";
-		$sql .= ")";
-		$db->exec(check_sql($sql));
-		unset($sql);
 
-		//synchronize the xml config
-		sync_package_v_dialplan_includes();
+		//add the main dialplan include entry
+			$sql = "insert into v_dialplan_includes ";
+			$sql .= "(";
+			$sql .= "v_id, ";
+			$sql .= "extensionname, ";
+			$sql .= "dialplanorder, ";
+			$sql .= "extensioncontinue, ";
+			$sql .= "context, ";
+			$sql .= "enabled, ";
+			$sql .= "descr ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$v_id', ";
+			$sql .= "'$extension_name', ";
+			$sql .= "'$dialplan_order', ";
+			$sql .= "'false', ";
+			$sql .= "'default', ";
+			$sql .= "'$enabled', ";
+			$sql .= "'$description' ";
+			$sql .= ")";
+			if ($dbtype == "sqlite" || $dbtype == "mysql" ) {
+				$db->exec(check_sql($sql));
+				$dialplan_include_id = $db->lastInsertId($id);
+			}
+			if ($dbtype == "pgsql") {
+				$sql .= " RETURNING dialplan_include_id ";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+				$result = $prepstatement->fetchAll();
+				foreach ($result as &$row) {
+					$dialplan_include_id = $row["dialplan_include_id"];
+				}
+				unset($prepstatement, $result);
+			}
+			unset($sql);
 
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_conferences.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Add Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
+		if (strlen($dialplan_include_id) > 0) {
+			//add condition for the extension number
+				$sql = "insert into v_dialplan_includes_details ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "dialplan_include_id, ";
+				$sql .= "tag, ";
+				$sql .= "fieldtype, ";
+				$sql .= "fielddata, ";
+				$sql .= "fieldorder ";
+				$sql .= ") ";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$dialplan_include_id', ";
+				$sql .= "'condition', ";
+				$sql .= "'destination_number', ";
+				$sql .= "'^".$extension_number."$', ";
+				$sql .= "'1' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
+
+			//add action answer
+				$sql = "insert into v_dialplan_includes_details ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "dialplan_include_id, ";
+				$sql .= "tag, ";
+				$sql .= "fieldtype, ";
+				$sql .= "fielddata, ";
+				$sql .= "fieldorder ";
+				$sql .= ") ";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$dialplan_include_id', ";
+				$sql .= "'action', ";
+				$sql .= "'answer', ";
+				$sql .= "'', ";
+				$sql .= "'2' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
+
+			//add action set
+				$sql = "insert into v_dialplan_includes_details ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "dialplan_include_id, ";
+				$sql .= "tag, ";
+				$sql .= "fieldtype, ";
+				$sql .= "fielddata, ";
+				$sql .= "fieldorder ";
+				$sql .= ") ";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$dialplan_include_id', ";
+				$sql .= "'action', ";
+				$sql .= "'set', ";
+				$sql .= "'conference_user_list=$user_list', ";
+				$sql .= "'3' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
+
+			//add action conference
+				$tmp_pin_number = ''; if (strlen($pin_number) > 0) { $tmp_pin_number = "+".$pin_number; }
+				$tmp_flags = ''; if (strlen($flags) > 0) { $tmp_flags = "+{".$flags."}"; }
+				$fielddata = $extension_name."@".$profile.$tmp_pin_number.$tmp_flags;
+
+				$sql = "insert into v_dialplan_includes_details ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "dialplan_include_id, ";
+				$sql .= "tag, ";
+				$sql .= "fieldtype, ";
+				$sql .= "fielddata, ";
+				$sql .= "fieldorder ";
+				$sql .= ") ";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$dialplan_include_id', ";
+				$sql .= "'action', ";
+				$sql .= "'conference', ";
+				$sql .= "'".$conference_action_data."', ";
+				$sql .= "'4' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
+				unset($fielddata);
+		} //end if (strlen($dialplan_include_id) > 0)
 	} //if ($action == "add")
 
-	if ($action == "update") {
-		$sql = "update v_dialplan_includes set ";
-		$sql .= "v_id = '$v_id', ";
-		$sql .= "extensionname = '$extensionname', ";
-		$sql .= "dialplanorder = '$dialplanorder', ";
-		$sql .= "extensioncontinue = '$extensioncontinue', ";
-		$sql .= "context = '$context', ";
-		$sql .= "enabled = '$enabled', ";
-		$sql .= "descr = '$descr' ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and dialplan_include_id = '$dialplan_include_id'";
-		$db->exec(check_sql($sql));
-		unset($sql);
+	//update the data
+		if ($action == "update") {
+			$sql = "update v_dialplan_includes set ";
+			$sql .= "extensionname = '$extension_name', ";
+			$sql .= "dialplanorder = '$dialplan_order', ";
+			//$sql .= "extensioncontinue = '$extensioncontinue', ";
+			$sql .= "context = '$context', ";
+			$sql .= "enabled = '$enabled', ";
+			$sql .= "descr = '$description' ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and dialplan_include_id = '$dialplan_include_id'";
+			$db->exec(check_sql($sql));
+			unset($sql);
 
-		//synchronize the xml config
+			$sql = "";
+			$sql .= "select * from v_dialplan_includes_details ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+			//echo $sql;
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			unset($prepstatement);
+			foreach ($result as $row) {
+				if ($row['fieldtype'] == "destination_number") {
+					$sql = "update v_dialplan_includes_details set ";
+					//$sql .= "tag = '$tag', ";
+					//$sql .= "fieldtype = '$fieldtype', ";
+					$sql .= "fielddata = '^".$extension_number."$', ";
+					$sql .= "fieldorder = '".$row['fieldorder']."' ";
+					$sql .= "where v_id = '$v_id' ";
+					$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+					$sql .= "and dialplan_includes_detail_id = '".$row['dialplan_includes_detail_id']."' ";
+					//echo $sql."<br />\n";
+					$db->exec(check_sql($sql));
+					unset($sql);
+				}
+				if (ifgroup("superadmin")) {
+					$fielddata_array = explode("=", $row['fielddata']);
+					if ($fielddata_array[0] == "conference_user_list") {
+						$sql = "update v_dialplan_includes_details set ";
+						//$sql .= "tag = '$tag', ";
+						//$sql .= "fieldtype = '$fieldtype', ";
+						$sql .= "fielddata = 'conference_user_list=".$user_list."', ";
+						$sql .= "fieldorder = '".$row['fieldorder']."' ";
+						$sql .= "where v_id = '$v_id' ";
+						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+						$sql .= "and dialplan_includes_detail_id = '".$row['dialplan_includes_detail_id']."' ";
+						//echo $sql."<br />\n";
+						$db->exec(check_sql($sql));
+						unset($sql);
+					}
+				}
+				if ($row['fieldtype'] == "conference") {
+					$tmp_pin_number = ''; if (strlen($pin_number) > 0) { $tmp_pin_number = "+".$pin_number; }
+					$tmp_flags = ''; if (strlen($flags) > 0) { $tmp_flags = "+flags{".$flags."}"; }
+					$fielddata = $extension_name."@".$profile.$tmp_pin_number.$tmp_flags;
+
+					$sql = "update v_dialplan_includes_details set ";
+					//$sql .= "tag = '$tag', ";
+					//$sql .= "fieldtype = '$fieldtype', ";
+					$sql .= "fielddata = '".$fielddata."', ";
+					$sql .= "fieldorder = '".$row['fieldorder']."' ";
+					$sql .= "where v_id = '$v_id' ";
+					$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+					$sql .= "and dialplan_includes_detail_id = '".$row['dialplan_includes_detail_id']."' ";
+					$db->exec(check_sql($sql));
+					//echo $sql."<br />\n";
+					unset($sql);
+					unset($fielddata);
+				}
+			}
+
+		} //if ($action == "update")
+
+	//commit the atomic transaction
+		$count = $db->exec("COMMIT;"); //returns affected rows
+
+	//synchronize the xml config
 		sync_package_v_dialplan_includes();
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_conferences.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Update Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "update")
-} //if ($_POST["persistformvar"] != "true") { 
-
-} //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
-
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$dialplan_include_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_dialplan_includes ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$extensionname = $row["extensionname"];
-		$dialplanorder = $row["dialplanorder"];
-		$extensioncontinue = $row["extensioncontinue"];
-		$context = $row["context"];
-		$enabled = $row["enabled"];
-		$descr = $row["descr"];
-		break; //limit to 1 row
-	}
-	unset ($prepstatement);
-}
-
 
 	require_once "includes/header.php";
-
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "      <br>";
-
-
-
-	echo "<form method='post' name='frm' action=''>\n";
-
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_conferences.php\">\n";
 	echo "<div align='center'>\n";
+	if ($action == "add") {
+		echo "Add Complete\n";
+	}
+	if ($action == "update") {
+		echo "Update Complete\n";
+	}
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"1\" cellspacing=\"0\">\n";
-	echo "  <tr>\n";
-	echo "    <td align='left' width='30%'><p><span class=\"vexpl\"><span class=\"red\">\n";
-	echo "        <strong>Conference</strong><br />\n";
-	echo "        </span>\n";
-	echo "    </td>\n";
-	echo "    <td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_conferences.php'\" value='Back'></td>\n";
-	echo "  </tr>\n";
-	echo "  <tr>\n";
-	echo "    <td align='left' colspan='2'>\n";
-	echo "        Conference general settings. Allows the conference to be customized.\n";
-	echo "        </span></p>\n";
-	echo "    </td>\n";
-	echo "  </tr>\n";
-	echo "</table>";
-	echo "<br />\n";
+} //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Name:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='extensionname' maxlength='255' value=\"$extensionname\">\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Order:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='dialplanorder' class='formfld'>\n";
-	//echo "              <option></option>\n";
-	if (strlen(htmlspecialchars($dialplanorder))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($dialplanorder)."'>".htmlspecialchars($dialplanorder)."</option>\n";
-	}
-	$i=0;
-	while($i<=999) {
-	  if (strlen($i) == 1) {
-		echo "              <option value='00$i'>00$i</option>\n";
-	  }
-	  if (strlen($i) == 2) {
-		echo "              <option value='0$i'>0$i</option>\n";
-	  }
-	  if (strlen($i) == 3) {
-		echo "              <option value='$i'>$i</option>\n";
-	  }
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+		$row = $db->query($sql)->fetch();
+		$extension_name = $row['extensionname'];
+		$context = $row['context'];
+		$dialplan_order = $row['dialplanorder'];
+		$enabled = $row['enabled'];
+		$description = $row['descr'];
 
-	  $i++;
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			if ($row['fieldtype'] == "destination_number") {
+				$extension_number = $row['fielddata'];
+				$extension_number = trim($extension_number, '^$');
+			}
+			$fielddata_array = explode("=", $row['fielddata']);
+			if ($fielddata_array[0] == "conference_user_list") {
+				$user_list = $fielddata_array[1];
+			}
+			if ($row['fieldtype'] == "conference") {
+				$fielddata = $row['fielddata'];
+				$tmp_pos = stripos($fielddata, "@");
+				if ($tmp_pos !== false) {
+					$tmp_fielddata = substr($fielddata, $tmp_pos+1, strlen($fielddata));
+					$tmp_fielddata_array = explode("+",$tmp_fielddata);
+					foreach ($tmp_fielddata_array as &$tmp_row) {
+						//print_r($tmp_row);
+						if (is_numeric($tmp_row)) {
+							$pin_number = $tmp_row;
+						}
+						if (substr($tmp_row, 0, 5) == "flags") {
+							$flags = substr($tmp_row, 6, $tmp_row-1);
+						}
+					}
+					$profile = $tmp_fielddata_array[0];
+				}
+			}
+		}
 	}
-	echo "              </select>\n";
-	//echo "  <input class='formfld' type='text' name='dialplanorder' maxlength='255' value='$dialplanorder'>\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
 
-	//echo "<tr>\n";
-	//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	//echo "    Context:\n";
-	//echo "</td>\n";
-	//echo "<td class='vtable' align='left'>\n";
-	//echo "    <input class='formfld' type='text' name='context' maxlength='255' value=\"$context\">\n";
-	//echo "<br />\n";
-	//echo "\n";
-	//echo "</td>\n";
-	//echo "</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Continue:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='extensioncontinue'>\n";
-	echo "    <option value=''></option>\n";
-	if ($extensioncontinue == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
-	}
-	else {
-		echo "    <option value='true'>true</option>\n";
-	}
-	if ($extensioncontinue == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
-	}
-	else {
-		echo "    <option value='false'>false</option>\n";
-	}
-	echo "    </select>\n";
-	echo "<br />\n";
-	echo "Extension Continue in most cases this is false. default: false\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+echo "<div align='center'>";
+echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Enabled:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='enabled'>\n";
-	echo "    <option value=''></option>\n";
-	if ($enabled == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
-	}
-	else {
-		echo "    <option value='true'>true</option>\n";
-	}
-	if ($enabled == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
-	}
-	else {
-		echo "    <option value='false'>false</option>\n";
-	}
-	echo "    </select>\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+echo "<tr class='border'>\n";
+echo "	<td align=\"left\">\n";
+echo "		<br>";
 
+echo "<form method='post' name='frm' action=''>\n";
+echo "<div align='center'>\n";
+
+echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "	<tr>\n";
+echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\">\n";
+echo "			<strong>Conferences</strong>\n";
+echo "			</span></span>\n";
+echo "		</td>\n";
+echo "		<td align='right'>\n";
+if (ifgroup("superadmin") && $action == "update") {
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_conferences_edit_advanced.php?id=$dialplan_include_id'\" value='Advanced'>\n";
+}
+echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_conferences.php'\" value='Back'>\n";
+echo "		</td>\n";
+echo "	</tr>\n";
+echo "	<tr>\n";
+echo "		<td align='left' colspan='2'>\n";
+echo "			<span class=\"vexpl\">\n";
+echo "			Conferences is used to setup conference rooms with a name, description, and optional pin number.\n";
+echo "			</span>\n";
+echo "		</td>\n";
+echo "	</tr>\n";
+echo "	</table>";
+
+echo "<br />\n";
+echo "<br />\n";
+
+echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+
+echo "<tr>\n";
+echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "    Conference Name:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
+echo "<br />\n";
+echo "The name the conference will be assigned.\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "    Extension Number:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_number' maxlength='255' value=\"$extension_number\">\n";
+echo "<br />\n";
+echo "The number that will be assinged to the conference.\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+echo "    PIN Number:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "    <input class='formfld' style='width: 60%;' type='text' name='pin_number' maxlength='255' value=\"$pin_number\">\n";
+echo "<br />\n";
+echo "Optional PIN number to secure access to the conference.\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+if (ifgroup("superadmin")) {
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Description:\n";
+	echo "		User List:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <textarea class='formfld' name='descr' rows='4'>$descr</textarea>\n";
+	$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
+	$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; //$sqlwhereoptional = "where v_id = $v_id"; 
+	echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
 	echo "<br />\n";
-	echo "\n";
+	echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	$user_list = str_replace("|", "\n", $user_list);
+	echo "		<textarea name=\"user_list\" id=\"user_list\" class=\"formfld\" cols=\"30\" rows=\"3\" style='width: 60%;' wrap=\"off\">$user_list</textarea>\n";
+	echo "		<br>\n";
+	echo "If a user is not in the select list it can be added manually to the user list and it will be created automatically.\n";
+	echo "<br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-	echo "	<tr>\n";
-	echo "		<td colspan='2' align='right'>\n";
-	if ($action == "update") {
-		echo "				<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
-	}
-	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
-	echo "		</td>\n";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</form>";
+}
 
+echo "<tr>\n";
+echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "    Profile:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "    <select class='formfld' name='profile' style='width: 60%;'>\n";
+echo "    <option value=''></option>\n";
+if ($profile == "default") { echo "<option value='default' SELECTED >default</option>\n"; } else {	echo "<option value='default'>default</option>\n"; }
+if ($profile == "wideband") { echo "<option value='wideband' SELECTED >wideband</option>\n"; } else {	echo "<option value='wideband'>wideband</option>\n"; }
+if ($profile == "ultrawideband") { echo "<option value='ultrawideband' SELECTED >ultrawideband</option>\n"; } else {	echo "<option value='ultrawideband'>ultrawideband</option>\n"; }
+if ($profile == "cdquality") { echo "<option value='cdquality' SELECTED >cdquality</option>\n"; } else {	echo "<option value='cdquality'>cdquality</option>\n"; }
+echo "    </select>\n";
+echo "<br />\n";
+echo "Conference Profile is a collection of settings for the conference.\n";
+echo "</td>\n";
+echo "</tr>\n";
 
-	echo "	</td>";
-	echo "	</tr>";
-	echo "</table>";
-	echo "</div>";
+echo "<tr>\n";
+echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+echo "    Flags:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "    <input class='formfld' style='width: 60%;' type='text' name='flags' maxlength='255' value=\"$flags\">\n";
+echo "<br />\n";
+echo "Optional conference flags. examples: mute|deaf|waste|moderator\n";
+echo "</td>\n";
+echo "</tr>\n";
 
-//---- begin: v_dialplan_details ---------------------------
+echo "<tr>\n";
+echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "    Order:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "              <select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
+//echo "              <option></option>\n";
+if (strlen(htmlspecialchars($dialplan_order))> 0) {
+	echo "              <option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
+}
+$i=0;
+while($i<=999) {
+	if (strlen($i) == 1) { echo "              <option value='00$i'>00$i</option>\n"; }
+	if (strlen($i) == 2) { echo "              <option value='0$i'>0$i</option>\n"; }
+	if (strlen($i) == 3) { echo "              <option value='$i'>$i</option>\n"; }
+	$i++;
+}
+echo "              </select>\n";
+echo "<br />\n";
+echo "\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "    Enabled:\n";
+echo "</td>\n";
+echo "<td class='vtable' align='left'>\n";
+echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
+//echo "    <option value=''></option>\n";
+if ($enabled == "true") { 
+	echo "    <option value='true' SELECTED >true</option>\n";
+}
+else {
+	echo "    <option value='true'>true</option>\n";
+}
+if ($enabled == "false") { 
+	echo "    <option value='false' SELECTED >false</option>\n";
+}
+else {
+	echo "    <option value='false'>false</option>\n";
+}
+echo "    </select>\n";
+echo "<br />\n";
+echo "\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+echo "    Description:\n";
+echo "</td>\n";
+echo "<td colspan='4' class='vtable' align='left'>\n";
+//echo "    <textarea class='formfld' name='description' rows='4'>$description</textarea>\n";
+echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
+echo "<br />\n";
+echo "\n";
+echo "</td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "	<td colspan='5' align='right'>\n";
 if ($action == "update") {
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
+	echo "			<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
+}
+echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
+echo "	</td>\n";
+echo "</tr>";
 
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "      <br>";
+echo "</table>";
+echo "</div>";
+echo "</form>";
 
+echo "</td>\n";
+echo "</tr>";
+echo "</table>";
+echo "</div>";
 
-	//echo "<table width='100%' border='0'><tr>\n";
-	//echo "<td width='50%' nowrap><b>Conditions and Actions</b></td>\n";
-	//echo "<td width='50%' align='right'>&nbsp;</td>\n";
-	//echo "</tr></table>\n";
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-	echo "  <tr>\n";
-	echo "    <td align='left'><p><span class=\"vexpl\"><span class=\"red\"><strong>Conditions and Actions<br />\n";
-	echo "        </strong></span>\n";
-	echo "        The following conditions, actions and anti-actions are used in the dialplan to direct \n";
-	echo "        call flow. Each is processed in order until you reach the action tag which tells what action to perform. \n";
-	echo "        You are not limited to only one condition or action tag for a given extension.\n";
-	echo "        </span></p></td>\n";
-	echo "  </tr>\n";
-	echo "</table>";
-	echo "<br />\n";
+echo "<br><br>";
 
 
-	$sql = "";
-	$sql .= " select * from v_dialplan_includes_details ";
-	$sql .= " where v_id = '$v_id' ";
-	$sql .= " and dialplan_include_id = '$dialplan_include_id' ";
-	$sql .= " and tag = 'condition' ";
-	$sql .= " order by fieldorder asc";
-	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	//echo $sql;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
-
-	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
-
-	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
-	echo "<tr>\n";
-	echo "<th align='center'>Tag</th>\n";
-	echo "<th align='center'>Type</th>\n";
-	echo "<th align='center'>Data</th>\n";
-	echo "<th align='center'>Order</th>\n";
-	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_conferences_details_edit.php?id2=".$dialplan_include_id."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
-	echo "</td>\n";
-	echo "<tr>\n";
-
-	if ($resultcount == 0) { //no results
-	}
-	else { //received results
-
-		foreach($result as $row) {
-			//print_r( $row );
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldtype]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fielddata]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldorder]."</td>\n";
-			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_conferences_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_conferences_details_delete.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
-			echo "	</td>\n";
-			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
-		} //end foreach
-		unset($sql, $result, $rowcount);
-	} //end if results
-
-	//--------------------------------------------------------------------------
-
-	$sql = "";
-	$sql .= " select * from v_dialplan_includes_details ";
-	$sql .= " where v_id = $v_id ";
-	$sql .= " and dialplan_include_id = '$dialplan_include_id' ";
-	$sql .= " and tag = 'action' ";
-	$sql .= " order by fieldorder asc";
-	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	//$sql .= " limit $rowsperpage offset $offset ";
-	//echo $sql;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
-
-	//$c = 0;
-	//$rowstyle["0"] = "rowstyle0";
-	//$rowstyle["1"] = "rowstyle1";
-
-	if ($resultcount == 0) { //no results
-	}
-	else { //received results
-		foreach($result as $row) {
-			//print_r( $row );
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldtype]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fielddata]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldorder]."</td>\n";
-			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_conferences_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_conferences_details_delete.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
-			echo "	</td>\n";
-			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
-		} //end foreach
-		unset($sql, $result, $rowcount);
-	} //end if results
-
-	//--------------------------------------------------------------------------
-
-	$sql = "";
-	$sql .= " select * from v_dialplan_includes_details ";
-	$sql .= " where v_id = $v_id ";
-	$sql .= " and dialplan_include_id = '$dialplan_include_id' ";
-	$sql .= " and tag = 'anti-action' ";
-	$sql .= " order by fieldorder asc";
-	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	//$sql .= " limit $rowsperpage offset $offset ";
-	//echo $sql;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
-
-	//$c = 0;
-	//$rowstyle["0"] = "rowstyle0";
-	//$rowstyle["1"] = "rowstyle1";
-
-	if ($resultcount == 0) { //no results
-	}
-	else { //received results
-		foreach($result as $row) {
-			//print_r( $row );
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldtype]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fielddata]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldorder]."</td>\n";
-			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_conferences_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_conferences_details_delete.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
-			echo "	</td>\n";
-			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
-		} //end foreach
-		unset($sql, $result, $rowcount);
-	} //end if results
-
-	echo "<tr>\n";
-	echo "<td colspan='5'>\n";
-	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
-	echo "	<tr>\n";
-	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_conferences_details_edit.php?id2=".$dialplan_include_id."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
-	echo "		</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-
-	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-	echo "<br><br>";
-
-
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-} //end if update
-//---- end: v_dialplan_details ---------------------------
 require_once "includes/footer.php";
+unset ($resultcount);
+unset ($result);
+unset ($key);
+unset ($val);
+unset ($c);
 ?>
