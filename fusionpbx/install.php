@@ -923,8 +923,21 @@ pgsql
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
+		//echo "<tr>\n";
+		//echo "<td colspan='2' align='left' width='30%' nowrap><b>Installation</b></td>\n";
+		//echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td align='left' width='30%' nowrap><b>Installation: Step 1</b></td>\n";
+		echo "<td colspan='2' width='100%' align='left'>\n";
+		echo "	<strong>The installation is a simple two step process.</strong> \n";
+		echo "	<ul>\n";
+		echo "	<li>Step 1 is used for selecting the database engine to use. After making that section then ensure the paths are correct and then press next. </li> ";
+		echo "	<li>Step 2 requests the database specific settings. When finished press save. The installation will then complete the tasks required to do the install. </li></td>\n";
+		echo "	</ul>\n";
+		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td align='left' width='30%' nowrap><b>Step 1</b></td>\n";
 		echo "<td width='70%' align='right'>&nbsp;</td>\n";
 		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
 		echo "</tr>\n";
@@ -934,7 +947,7 @@ pgsql
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "    Database Type:\n";
+		echo "	Database Type:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<select name='db_type' id='db_type' class='formfld' id='form_tag' onchange='db_type_onchange();'>\n";
@@ -942,7 +955,7 @@ pgsql
 		if (extension_loaded('pdo_mysql')) {	echo "	<option value='mysql'>mysql</option>\n"; }
 		if (extension_loaded('pdo_sqlite')) {	echo "	<option  value='sqlite' selected>sqlite</option>\n"; } //set sqlite as the default
 		echo "	</select><br />\n";
-		echo "		\n";
+		echo "		Select the database type.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -960,22 +973,22 @@ pgsql
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "    FreeSWITCH Directory:\n";
+		echo "	FreeSWITCH Directory:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "    <input class='formfld' type='text' name='install_v_dir' maxlength='255' value=\"$install_v_dir\">\n";
+		echo "	<input class='formfld' type='text' name='install_v_dir' maxlength='255' value=\"$install_v_dir\">\n";
 		echo "<br />\n";
-		echo "\n";
+		echo "Enter the FreeSWITCH directory path.\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "    PHP Directory:\n";
+		echo "	PHP Directory:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "    <input class='formfld' type='text' name='install_php_dir' maxlength='255' value=\"$install_php_dir\"><br />\n";
-		echo "Path to PHP's bin or executable directory.<br />\n";
+		echo "	<input class='formfld' type='text' name='install_php_dir' maxlength='255' value=\"$install_php_dir\"><br />\n";
+		echo "	Enter the path to PHP's bin or executable directory.<br />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
@@ -1178,12 +1191,12 @@ pgsql
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "		Database Host:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_host' maxlength='255' value=\"$db_host\"><br />\n";
-		echo "		\n";
+		echo "		Enter the host address for the database server.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1194,40 +1207,40 @@ pgsql
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_port' maxlength='255' value=\"$db_port\"><br />\n";
-		echo "		\n";
+		echo "		Enter the port number. It is optional if the database is using the default port.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "		Database Name:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_name' maxlength='255' value=\"$db_name\"><br />\n";
-		echo "		\n";
+		echo "		Enter the name of the database.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "		Database Username:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_username' maxlength='255' value=\"$db_username\"><br />\n";
-		echo "		\n";
+		echo "		Enter the database username.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "		Database Password:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "		<input class='formfld' type='text' name='db_password' maxlength='255' value=\"$db_password\"><br />\n";
-		echo "		\n";
+		echo "		Enter the database password.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
