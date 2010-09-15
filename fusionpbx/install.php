@@ -577,6 +577,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 							}
 						}
 						$db_tmp->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+						$db_tmp->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 					}
 					catch (PDOException $error) {
 						print "error: " . $error->getMessage() . "<br/>";
@@ -588,7 +589,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$db_tmp->query("USE mysql;");
 					}
 					catch (PDOException $error) {
-						//print "error: " . $error->getMessage() . "<br/>";
+						print "error: " . $error->getMessage() . "<br/>";
 					}
 
 				//create user and set the permissions
@@ -597,7 +598,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$db_tmp->query($tmp_sql);
 					}
 					catch (PDOException $error) {
-						//print "error: " . $error->getMessage() . "<br/>";
+						print "error: " . $error->getMessage() . "<br/>";
 					}
 
 				//set account to unlimitted use
@@ -608,7 +609,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$db_tmp->query($tmp_sql);
 					}
 					catch (PDOException $error) {
-						//print "error: " . $error->getMessage() . "<br/>";
+						print "error: " . $error->getMessage() . "<br/>";
 					}
 
 				//create the database and set the create user with permissions
@@ -617,7 +618,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$db_tmp->query($tmp_sql);
 					}
 					catch (PDOException $error) {
-						//print "error: " . $error->getMessage() . "<br/>";
+						print "error: " . $error->getMessage() . "<br/>";
 					}
 
 				//set user permissions
@@ -625,7 +626,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$db_tmp->query("GRANT ALL PRIVILEGES ON ".$db_name.".* TO '".$db_username."'@'%'; ");
 					}
 					catch (PDOException $error) {
-						//print "error: " . $error->getMessage() . "<br/>";
+						print "error: " . $error->getMessage() . "<br/>";
 					}
 
 				//make the changes active
