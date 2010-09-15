@@ -28,9 +28,9 @@ include "root.php";
 
 //copy files from autoload_configs
 	//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/autoload_configs', $v_conf_dir.'/autoload_configs');
-	$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/autoload_configs';
-	$dst_dir = $v_conf_dir."/autoload_configs";
-	$tmp_file = 'cdr_csv.conf.xml'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir<br />\n"; }
+	//$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/autoload_configs';
+	//$dst_dir = $v_conf_dir."/autoload_configs";
+	//$tmp_file = 'cdr_csv.conf.xml'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir<br />\n"; }
 
 //make a backup copy of the default config used with the 'Restore Default' buttons on the text areas.
 	//if (!is_dir($v_conf_dir.".orig")) { mkdir($v_conf_dir.".orig".'',0777,true); }

@@ -769,20 +769,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		if (!is_dir($install_v_dir.'/sounds/en/us/callie/custom/48000')) { mkdir($install_v_dir.'/sounds/en/us/callie/custom/48000',0777,true); }
 		if (!is_dir($v_storage_dir.'/fax/')) { mkdir($v_storage_dir.'/fax',0777,true); }
 		if (!is_dir($v_log_dir.'')) { mkdir($v_log_dir.'',0777,true); }
-		if (!is_dir($v_log_dir.'/cdr-csv/')) { mkdir($v_log_dir.'/cdr-csv',0777,true); }
 		if (!is_dir($v_sounds_dir.'')) { mkdir($v_sounds_dir.'',0777,true); }
 		if (!is_dir($v_recordings_dir.'')) { mkdir($v_recordings_dir.'',0777,true); }
-		if (!file_exists($v_log_dir.'/cdr-csv/Master.csv')) { 
-			touch($v_log_dir.'/cdr-csv/Master.csv'); 
-		}
-		else {
-			//make a backup copy of the old cdr file that is likely incompatible with the sql cdr.
-			copy($v_log_dir.'/cdr-csv/Master.csv', $v_log_dir.'/cdr-csv/Master.csv.old');
-
-			//truncate the file now that it has been backed up
-			$fh = fopen($v_log_dir.'/cdr-csv/Master.csv', 'w');
-			fclose($fh);
-		}
 
 	//generate dialplan.xml
 		$srcfile = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/dialplan/default.xml';
