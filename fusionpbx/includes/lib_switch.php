@@ -3692,7 +3692,8 @@ function sync_package_v_fax()
 					//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'system';
-					$fielddata = $php_dir.'/'.$php_exe.' '.$v_secure.'/fax_to_email.php email='.$row['faxemail'].' extension='.$row['faxextension'].' name=${last_fax}';
+					$fielddata = $php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php email=".$row['faxemail']." extension=".$row['faxextension']." name=\${last_fax} ";
+					$fielddata .=  "messages='result: \${fax_result_text} sender:\${fax_remote_station_id} pages:\${fax_document_total_pages}' ";
 					$fieldorder = '005';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
