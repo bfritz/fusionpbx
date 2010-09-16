@@ -14,6 +14,8 @@ require_once "includes/paging.php";
 
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
+
+//begin content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
@@ -33,7 +35,6 @@ $order = $_GET["order"];
 	echo "</tr>\n";
 	echo "</tr></table>\n";
 
-
 	$sql = "";
 	$sql .= " select * from v_ivr_menu_options ";
 	$sql .= " where v_id = '$v_id' ";
@@ -42,15 +43,15 @@ $order = $_GET["order"];
 		$sql .= "order by ivr_menu_options_order $orderby $order "; 
 	}
 	else {
-		$sql .= "order by ivr_menu_options_order asc "; 
+		$sql .= "order by ivr_menu_options_digits, ivr_menu_options_order asc "; 
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$numrows = count($result);
 	unset ($prepstatement, $result, $sql);
-	$rowsperpage = 10;
-	$param = "";
+	$rowsperpage = 100;
+	$param = $_SERVER["QUERY_STRING"];
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
 	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
@@ -64,7 +65,7 @@ $order = $_GET["order"];
 		$sql .= "order by ivr_menu_options_order $orderby $order "; 
 	}
 	else {
-		$sql .= "order by ivr_menu_options_order asc "; 
+		$sql .= "order by ivr_menu_options_digits, ivr_menu_options_order asc "; 
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
