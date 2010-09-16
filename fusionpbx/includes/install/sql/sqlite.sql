@@ -230,7 +230,10 @@ INSERT INTO v_vars VALUES(1,29,'external_sip_port',5080,'SIP Profile: External',
 INSERT INTO v_vars VALUES(1,30,'external_tls_port',5081,'SIP Profile: External','true',29,'');
 INSERT INTO v_vars VALUES(1,31,'external_ssl_enable','false','SIP Profile: External','true',29,'');
 INSERT INTO v_vars VALUES(1,32,'external_ssl_dir','$${base_dir}/conf/ssl','SIP Profile: External','true',30,'');
-INSERT INTO v_vars VALUES(1,33,'use_profile','internal','Defaults','true',0,'');
+INSERT INTO v_vars VALUES(1,33,'use_profile','internal','Defaults','true',31,'');
+INSERT INTO v_vars VALUES(1,34,'default_language','en','Defaults','true',32,'');
+INSERT INTO v_vars VALUES(1,35,'default_dialect','us','Defaults','true',33,'');
+INSERT INTO v_vars VALUES(1,36,'default_voice','callie','Defaults','true',34,'');
 CREATE TABLE v_cdr (cdr_id INTEGER PRIMARY KEY, v_id NUMERIC, caller_id_name TEXT, caller_id_number TEXT, destination_number TEXT, context TEXT, start_stamp TEXT, answer_stamp TEXT, end_stamp TEXT, duration NUMERIC, billsec NUMERIC, hangup_cause TEXT, uuid TEXT, bleg_uuid TEXT, accountcode TEXT, read_codec TEXT, write_codec TEXT, remote_media_ip TEXT, network_addr TEXT );
 CREATE TABLE v_ivr_menu (ivr_menu_id INTEGER PRIMARY KEY, v_id NUMBER, ivr_menu_name TEXT, ivr_menu_extension NUMBER, ivr_menu_greet_long TEXT, ivr_menu_greet_short TEXT, ivr_menu_invalid_sound TEXT, ivr_menu_exit_sound TEXT, ivr_menu_confirm_macro TEXT, ivr_menu_confirm_key TEXT, ivr_menu_tts_engine TEXT, ivr_menu_tts_voice TEXT, ivr_menu_confirm_attempts NUMBER, ivr_menu_timeout NUMBER, ivr_menu_inter_digit_timeout NUMBER, ivr_menu_max_failures NUMBER, ivr_menu_max_timeouts NUMBER, ivr_menu_digit_len NUMBER, ivr_menu_direct_dial TEXT, ivr_menu_enabled TEXT, ivr_menu_desc TEXT);
 CREATE TABLE v_ivr_menu_options (ivr_menu_option_id INTEGER PRIMARY KEY, v_id NUMBER, ivr_menu_id NUMBER, ivr_menu_options_digits TEXT, ivr_menu_options_action TEXT, ivr_menu_options_param TEXT, ivr_menu_options_order NUMERIC, ivr_menu_options_desc TEXT);
