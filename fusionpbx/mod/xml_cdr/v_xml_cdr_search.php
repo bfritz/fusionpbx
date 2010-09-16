@@ -70,7 +70,7 @@ else {
 
 	echo "<tr>\n";
 	echo "<td width='30%' nowrap valign='top'><b>Advanced Search</b></td>\n";
-	echo "<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_cdr.php'\" value='Back'><br /><br /></td>\n";
+	echo "<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_xml_cdr.php'\" value='Back'><br /><br /></td>\n";
 	echo "</tr>\n";
 
 	echo "	<tr>";
