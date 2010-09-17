@@ -54,7 +54,14 @@
 	if (!function_exists('recursive_copy')) {
 		function recursive_copy($src,$dst) {
 			$dir = opendir($src);
-			if (!is_dir($dst)) { mkdir($dst); }
+			if (!$dir) {
+				throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
+			}
+			if (!is_dir($dst)) {
+				if (!mkdir($dst)) {
+					throw new Exception("recursive_copy() failed to create destination directory '".$dst."'");
+				}
+			}
 			while(false !== ( $file = readdir($dir)) ) {
 				if (( $file != '.' ) && ( $file != '..' )) {
 					if ( is_dir($src . '/' . $file) ) {
