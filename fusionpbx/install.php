@@ -482,7 +482,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				//echo $file_contents;
 				//echo "</pre>\n";
 
-				//database connection
+				//if $db_create_username provided, attempt to create new PG role and database
+					if (strlen($db_create_username) > 0) {
 					try {
 						if (strlen($db_port) == 0) { $db_port = "5432"; }
 						if (strlen($db_host) > 0) {
@@ -502,6 +503,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 					//close database connection_aborted
 					$db_tmp = null;
+					}
 
 					//open database connection with $db_name
 						try {
@@ -1242,6 +1244,7 @@ pgsql
 		echo "		<input class='formfld' type='text' name='db_create_username' maxlength='255' value=\"$db_create_username\"><br />\n";
 		echo "		Optional, this username is used to create the database, a database user and set the permissions. \n";
 		echo "		By default this username is 'pgsql' however it can be any account with permission to add a database, user, and grant permissions. \n";
+		echo "		Leave blank if the user and empty database already exist and you do not want them created. \n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
