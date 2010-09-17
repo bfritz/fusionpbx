@@ -44,14 +44,23 @@ end
 
 if ( session:ready() ) then
 	session:answer();
-	pin_number = session:getVariable("pin_number");
-	domain_name = session:getVariable("domain_name");
-	sounds_dir = session:getVariable("sounds_dir");
-	extension_list = session:getVariable("extension_list");
-	caller_id_name = session:getVariable("caller_id_name");
-	caller_id_number = session:getVariable("caller_id_number");
-	extension_table = explode(",",extension_list);
-	sip_from_user = session:getVariable("sip_from_user");
+	--get the dialplan variables and set them as local variables
+		pin_number = session:getVariable("pin_number");
+		domain_name = session:getVariable("domain_name");
+		sounds_dir = session:getVariable("sounds_dir");
+		extension_list = session:getVariable("extension_list");
+		caller_id_name = session:getVariable("caller_id_name");
+		caller_id_number = session:getVariable("caller_id_number");
+		extension_table = explode(",",extension_list);
+		sip_from_user = session:getVariable("sip_from_user");
+
+	--set the sounds path for the language, dialect and voice
+		default_language = session:getVariable("default_language");
+		default_dialect = session:getVariable("default_dialect");
+		default_voice = session:getVariable("default_voice");
+		if (not default_language) then default_language = 'en'; end
+		if (not default_dialect) then default_dialect = 'us'; end
+		if (not default_voice) then default_voice = 'callie'; end
 
 	if (caller_id_name) then
 		--caller id name provided do nothing
@@ -71,11 +80,11 @@ if ( session:ready() ) then
 	if (pin_number) then
 		min_digits = string.len(pin_number);
 		max_digits = string.len(pin_number)+1;
-		digits = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
+		digits = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
 		if (digits == pin_number) then
 			--pin is correct
 		else
-			session:streamFile(sounds_dir.."/custom/your_pin_number_is_incorect_goodbye.wav");
+			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/your_pin_number_is_incorect_goodbye.wav");
 			session:hangup("NORMAL_CLEARING");
 			return;
 		end
