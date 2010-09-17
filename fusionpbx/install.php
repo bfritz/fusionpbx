@@ -484,40 +484,40 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 				//if $db_create_username provided, attempt to create new PG role and database
 					if (strlen($db_create_username) > 0) {
-					try {
-						if (strlen($db_port) == 0) { $db_port = "5432"; }
-						if (strlen($db_host) > 0) {
-							$db_tmp = new PDO("pgsql:host={$db_host} port={$db_port} user={$db_create_username} password={$db_create_password} dbname=template1");
-						} else {
-							$db_tmp = new PDO("pgsql:host=localhost port={$db_port} user={$db_create_username} password={$db_create_password} dbname=template1");
-						}
-					} catch (PDOException $error) {
-						print "error: " . $error->getMessage() . "<br/>";
-						die();
-					}
-
-					//create the database, user, grant perms
-					$db_tmp->exec("CREATE DATABASE {$db_name}");
-					$db_tmp->exec("CREATE USER {$db_username} WITH PASSWORD '{$db_password}'");
-					$db_tmp->exec("GRANT ALL ON {$db_name} TO {$db_username}");
-
-					//close database connection_aborted
-					$db_tmp = null;
-					}
-
-					//open database connection with $db_name
 						try {
 							if (strlen($db_port) == 0) { $db_port = "5432"; }
 							if (strlen($db_host) > 0) {
-								$db_tmp = new PDO("pgsql:host={$db_host} port={$db_port} dbname={$db_name} user={$db_username} password={$db_password}");
+								$db_tmp = new PDO("pgsql:host={$db_host} port={$db_port} user={$db_create_username} password={$db_create_password} dbname=template1");
 							} else {
-								$db_tmp = new PDO("pgsql:host=localhost port={$db_port} user={$db_username} password={$db_password} dbname={$db_name}");
+								$db_tmp = new PDO("pgsql:host=localhost port={$db_port} user={$db_create_username} password={$db_create_password} dbname=template1");
 							}
-						}
-						catch (PDOException $error) {
+						} catch (PDOException $error) {
 							print "error: " . $error->getMessage() . "<br/>";
 							die();
 						}
+
+						//create the database, user, grant perms
+						$db_tmp->exec("CREATE DATABASE {$db_name}");
+						$db_tmp->exec("CREATE USER {$db_username} WITH PASSWORD '{$db_password}'");
+						$db_tmp->exec("GRANT ALL ON {$db_name} TO {$db_username}");
+
+						//close database connection_aborted
+						$db_tmp = null;
+					}
+
+				//open database connection with $db_name
+					try {
+						if (strlen($db_port) == 0) { $db_port = "5432"; }
+						if (strlen($db_host) > 0) {
+							$db_tmp = new PDO("pgsql:host={$db_host} port={$db_port} dbname={$db_name} user={$db_username} password={$db_password}");
+						} else {
+							$db_tmp = new PDO("pgsql:host=localhost port={$db_port} user={$db_username} password={$db_password} dbname={$db_name}");
+						}
+					}
+					catch (PDOException $error) {
+						print "error: " . $error->getMessage() . "<br/>";
+						die();
+					}
 
 				//replace \r\n with \n then explode on \n
 					$file_contents = str_replace("\r\n", "\n", $file_contents);
