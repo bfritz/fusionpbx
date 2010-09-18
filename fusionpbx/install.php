@@ -775,17 +775,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		if (!is_dir($v_sounds_dir.'')) { mkdir($v_sounds_dir.'',0777,true); }
 		if (!is_dir($v_recordings_dir.'')) { mkdir($v_recordings_dir.'',0777,true); }
 
-	//generate dialplan.xml
-		$srcfile = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/dialplan/default.xml';
-		$destfile = $v_conf_dir.'/dialplan/default.xml';
-		if (file_exists($destfile)) { unlink($destfile); }
-		if (!copy($srcfile, $destfile)) {
-			unlink($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php");
-			echo "failed to copy $srcfile to $destfile\n";
-			exit;
-		}
-		unset($srcfile, $destfile);
-
 	//copy the files and directories from includes/install
 		include "includes/lib_install_copy.php";
 
