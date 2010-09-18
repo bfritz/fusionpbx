@@ -787,31 +787,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		unset($srcfile, $destfile);
 
 	//copy the files and directories from includes/install
-		switch (PHP_OS) {
-		case "FreeBSD":
-				if (file_exists('/usr/local/etc/freeswitch/conf')) {
-					//the freebsd port will copy the files and directories
-				}
-				else {
-					//include the new lib_install_copy.php file
-						include "includes/lib_install_copy.php";
-				}
-				break;
-		default:
-			//set the default db_filepath
-				if (strlen($db_filepath) == 0) {
-					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
-				}
-		}
-
-	//activate the .htaccess file
-		$srcfile = $install_secure_dir.'/htaccess.tmp';
-		$destfile = $install_secure_dir.'/.htaccess';
-		if (!copy($srcfile, $destfile)) {
-			//echo "failed to copy $srcfile to $destfile...\n";
-			//exit;
-		}
-		unset($srcfile, $destfile);
+		include "includes/lib_install_copy.php";
 
 	//create the switch.conf.xml file
 		switch_conf_xml();
