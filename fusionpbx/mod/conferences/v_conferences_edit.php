@@ -134,6 +134,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//start the atomic transaction
 		$count = $db->exec("BEGIN;"); //returns affected rows
 
+	//prepare the fieldata so that it combines the conference name, profile, pin number and flags
+		if (strlen($action) > 0) {
+			$tmp_pin_number = ''; if (strlen($pin_number) > 0) { $tmp_pin_number = "+".$pin_number; }
+			$tmp_flags = ''; if (strlen($flags) > 0) { $tmp_flags = "+flags{".$flags."}"; }
+			$tmp_fielddata = $extension_name."@".$profile.$tmp_pin_number.$tmp_flags;
+		}
+
 	if ($action == "add") {
 
 		//add the main dialplan include entry
@@ -241,10 +248,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 			//add action conference
-				$tmp_pin_number = ''; if (strlen($pin_number) > 0) { $tmp_pin_number = "+".$pin_number; }
-				$tmp_flags = ''; if (strlen($flags) > 0) { $tmp_flags = "+{".$flags."}"; }
-				$fielddata = $extension_name."@".$profile.$tmp_pin_number.$tmp_flags;
-
 				$sql = "insert into v_dialplan_includes_details ";
 				$sql .= "(";
 				$sql .= "v_id, ";
@@ -260,7 +263,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$dialplan_include_id', ";
 				$sql .= "'action', ";
 				$sql .= "'conference', ";
-				$sql .= "'".$conference_action_data."', ";
+				$sql .= "'".$tmp_fielddata."', ";
 				$sql .= "'4' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
@@ -323,14 +326,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					}
 				}
 				if ($row['fieldtype'] == "conference") {
-					$tmp_pin_number = ''; if (strlen($pin_number) > 0) { $tmp_pin_number = "+".$pin_number; }
-					$tmp_flags = ''; if (strlen($flags) > 0) { $tmp_flags = "+flags{".$flags."}"; }
-					$fielddata = $extension_name."@".$profile.$tmp_pin_number.$tmp_flags;
-
 					$sql = "update v_dialplan_includes_details set ";
 					//$sql .= "tag = '$tag', ";
 					//$sql .= "fieldtype = '$fieldtype', ";
-					$sql .= "fielddata = '".$fielddata."', ";
+					$sql .= "fielddata = '".$tmp_fielddata."', ";
 					$sql .= "fieldorder = '".$row['fieldorder']."' ";
 					$sql .= "where v_id = '$v_id' ";
 					$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
