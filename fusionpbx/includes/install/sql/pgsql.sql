@@ -45,7 +45,7 @@ INSERT INTO v_menu VALUES(47,1,'en','SIP Profiles','/mod/profiles/v_profiles.php
 INSERT INTO v_menu VALUES(48,1,'en','Inbound Routes','/mod/public_includes/v_public_includes.php','internal','admin','',40,15,'mcrane','2009-08-20 10:51:56','mcrane','2009-10-27 22:12:16');
 INSERT INTO v_menu VALUES(49,1,'en','SIP Status','/core/status/v_status.php','internal','admin','',23,48,'mcrane','2009-08-20 10:52:38','superadmin','2010-09-01 16:33:43');
 INSERT INTO v_menu VALUES(50,1,'en','Variables','/mod/vars/v_vars.php','internal','superadmin','',7,10,'mcrane','2009-08-20 10:53:12','superadmin','2010-09-01 16:23:20');
-INSERT INTO v_menu VALUES(52,1,'en','Call Detail Records','/mod/xml_cdr/v_xml_cdr.php','internal','admin','',38,22,'mcrane','2009-09-05 00:30:16','superadmin','2010-08-08 10:04:05');
+INSERT INTO v_menu VALUES(52,1,'en','Call Detail Records','/mod/xml_cdr/v_xml_cdr.php','internal','member','',38,22,'mcrane','2009-09-05 00:30:16','superadmin','2010-08-08 10:04:05');
 INSERT INTO v_menu VALUES(53,1,'en','XML Editor','<!--{project_path}-->/mod/xml_edit/','external','superadmin','',93,67,'mcrane','2009-09-08 17:50:37','superadmin','2010-09-06 03:14:06');
 INSERT INTO v_menu VALUES(54,1,'en','Voicemail Status','/mod/voicemail_status/v_voicemail.php','internal','admin','',23,50,'mcrane','2009-09-10 22:26:54','superadmin','2010-09-06 03:57:04');
 INSERT INTO v_menu VALUES(56,1,'en','Voicemail','/mod/voicemail_msgs/v_voicemail_msgs.php','internal','member','',7,11,'mcrane','2009-09-16 04:04:11','superadmin','2010-09-06 04:02:11');
@@ -57,7 +57,6 @@ INSERT INTO v_menu VALUES(67,1,'en','Call Broadcast','/mod/call_broadcast/v_call
 INSERT INTO v_menu VALUES(71,1,'en','SQL Query','/mod/sql_query/v_sql_query.php','internal','superadmin','',93,65,'mcrane','2009-10-28 01:00:41','superadmin','2010-08-05 18:03:52');
 INSERT INTO v_menu VALUES(73,1,'en','Script Editor','<!--{project_path}-->/mod/script_edit/index.php','external','superadmin','',93,63,'mcrane','2009-09-23 12:15:51','superadmin','2010-09-06 03:13:52');
 INSERT INTO v_menu VALUES(74,1,'en','Grammar Editor','<!--{project_path}-->/mod/grammar_edit/index.php','external','superadmin','',93,59,'mcrane','2009-09-23 12:15:51','superadmin','2010-09-06 03:18:26');
-INSERT INTO v_menu VALUES(75,1,'en','Call Detail Records','/mod/cdr/v_cdr.php','internal','member','',7,4,'mcrane','2009-09-05 00:30:16','superadmin','2010-09-06 04:02:35');
 INSERT INTO v_menu VALUES(76,1,'en','Conferences','/mod/conferences/v_conferences.php','internal','member','',38,27,'mcrane','2010-08-01 00:30:16','mcrane','2010-08-01 22:49:14');
 INSERT INTO v_menu VALUES(77,1,'en','Call Forward','/mod/call_forward/v_call_forward.php','internal','admin','',38,23,'mcrane','2010-02-02 00:30:16','mcrane','2010-02-12 22:49:14');
 INSERT INTO v_menu VALUES(78,1,'en','Active Calls','/mod/calls_active/v_calls_active.php','internal','admin','',23,44,'mcrane','2010-02-26 00:30:16','superadmin','2010-08-06 01:47:15');
@@ -70,7 +69,7 @@ INSERT INTO v_menu VALUES(84,1,'en','Phones','/mod/hardware_phones/v_hardware_ph
 INSERT INTO v_menu VALUES(85,1,'en','Time Conditions','/mod/time_conditions/v_dialplan_includes.php','internal','admin','',38,35,'mcrane','2010-07-15 10:00:01','mcrane','2010-07-15 10:00:01');
 INSERT INTO v_menu VALUES(86,1,'en','Queues','/mod/fifo/v_fifo.php','internal','admin','',38,36,'mcrane','2010-07-15 13:10:57','superadmin','2010-09-06 18:36:57');
 INSERT INTO v_menu VALUES(87,1,'en','Active Queues','/mod/fifo_list/v_fifo_list.php','internal','admin','',23,47,'mcrane','2010-07-15 13:10:57','superadmin','2010-09-06 18:37:39');
-INSERT INTO v_menu VALUES(92,1,'en','CDR CSV','/mod/cdr/v_cdr.php','internal','admin','',38,24,'superadmin','2010-08-04 08:41:24','superadmin','2010-09-06 18:40:30');
+INSERT INTO v_menu VALUES(92,1,'en','CDR CSV','/mod/cdr/v_cdr.php','internal','hidden','',38,24,'superadmin','2010-08-04 08:41:24','superadmin','2010-09-06 18:40:30');
 INSERT INTO v_menu VALUES(93,1,'en','Advanced','','internal','superadmin','','',56,'superadmin','2010-08-05 17:55:41','superadmin','2010-09-06 03:11:17');
 INSERT INTO v_menu VALUES(94,1,'en','Active Conferences','/mod/conferences_active/v_conferences_active.php','internal','admin','',23,46,'superadmin','2010-08-06 07:07:48','superadmin','2010-09-06 03:56:39');
 INSERT INTO v_menu VALUES(95,1,'en','Agent','/mod/fifo_agents/fifo_agent/v_fifo_agent_edit.php','internal','agent','',38,18,'superadmin','2010-08-10 15:30:30','superadmin','2010-09-06 04:06:44');
