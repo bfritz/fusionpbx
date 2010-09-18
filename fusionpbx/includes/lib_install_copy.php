@@ -83,11 +83,11 @@ include "root.php";
 
 //copy recordings files
 	//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/recordings', $v_recordings_dir.'');
-	$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/recordings';
-	$dst_dir = $v_recordings_dir;
-	$tmp_file = 'auto_attendant_sales1_support2_billing3.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'call_transfer.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	$tmp_file = 'simple_auto_attendant.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
+	//$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/recordings';
+	//$dst_dir = $v_recordings_dir;
+	//$tmp_file = 'auto_attendant_sales1_support2_billing3.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
+	//$tmp_file = 'call_transfer.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
+	//$tmp_file = 'simple_auto_attendant.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
 
 //get the script files
 	if (!is_dir($v_scripts_dir.'')) { mkdir($v_scripts_dir.'',0777,true); }
