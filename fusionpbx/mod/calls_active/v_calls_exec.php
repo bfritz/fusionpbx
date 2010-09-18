@@ -41,8 +41,10 @@ require_once "includes/checkauth.php";
 
 //authorized referrer
 	if(stristr($_SERVER["HTTP_REFERER"], '/v_calls_active_extensions.php') === false) {
-		echo "access denied";
-		exit;
+		if(stristr($_SERVER["HTTP_REFERER"], '/v_calls_active.php') === false) {
+			echo " access denied";
+			exit;
+		}
 	}
 
 //http get variables set to php variables
