@@ -1374,6 +1374,9 @@ function recording_js()
 	$tmp .= " var digitmaxlength = 0;\n";
 	$tmp .= " var timeoutpin = 7500;\n";
 	$tmp .= " var timeouttransfer = 7500;\n";
+	$tmp .= "\n";
+	$tmp .= "  include(\"common.js\");\n";
+	$tmp .= "\n";
 	$tmp .= " var objdate = new Date();\n";
 	$tmp .= "\n";
 	$tmp .= " var adjusthours = 0; //Adjust Server time that is set to GMT 7 hours\n";
@@ -1428,7 +1431,7 @@ function recording_js()
 	//$tmp .= "      session.execute(\"speak\", \"Please enter your pin number now.\");\n";
 	$tmp .= "      digitmaxlength = 6;\n";
 	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
-	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.streamFile( find_custom_sound(session, sounds_dir, \"please_enter_the_pin_number.wav\"), mycb, \"dtmf\");\n";
 	$tmp .= "      session.collectInput( mycb, dtmf, timeoutpin );\n";
 	$tmp .= "  }\n";
 	$tmp .= "\n";
@@ -1437,7 +1440,7 @@ function recording_js()
 	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
 	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
 	//$tmp .= "      session.execute(\"speak\", \"Begin recording.\");\n";
-	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/begin_recording.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.streamFile( find_custom_sound(session, sounds_dir, \"begin_recording.wav\"), mycb, \"dtmf\");\n";
 	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
 	$tmp .= "      session.execute(\"record\", \"".$v_recordings_dir."/temp\"+Year+Month+Day+Hours+Mins+Seconds+\".wav 180 200\");\n";
 	$tmp .= "  }\n";
@@ -1446,7 +1449,7 @@ function recording_js()
 	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
 	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
 	//$tmp .= "      session.execute(\"speak\", \"Your pin number is incorect, goodbye.\");\n";
-	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
+	$tmp .= "      session.streamFile( find_custom_sound(session, sounds_dir, \"your_pin_number_is_incorect_goodbye.wav\"), mycb, \"dtmf\");\n";
 	$tmp .= "  }\n";
 	$tmp .= "  session.hangup();\n";
 	$tmp .= "\n";
@@ -1486,6 +1489,8 @@ function recording_lua()
 	$tmp .= "digitmaxlength = 6;\n";
 	$tmp .= "timeoutpin = 7500;\n";
 	$tmp .= "\n";
+	$tmp .= "dofile(\"".$v_scripts_dir."/common.lua\")\n";
+	$tmp .= "\n";
 	$tmp .= "--dtmf call back function detects the \"#\" and ends the call\n";
 	$tmp .= "	function onInput(s, type, obj)\n";
 	$tmp .= "		if (type == \"dtmf\" and obj['digit'] == '#') then\n";
@@ -1497,10 +1502,10 @@ function recording_lua()
 	$tmp .= "	session:answer();\n";
 	$tmp .= "	if (admin_pin) then\n";
 	$tmp .= "		--This has 8 arguments: min_digits, max_digits, max_tries, timeout, terminators, audio_files, bad_input_audio_file, digits_regex\n";
-	$tmp .= "		digits = session:playAndGetDigits(2, 6, 3, timeoutpin, \"#\", \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", \"\", \"\\\\d+|\\\\*\");\n";
+	$tmp .= "		digits = session:playAndGetDigits(2, 6, 3, timeoutpin, \"#\", find_custom_sound(session, sounds_dir, \"please_enter_the_pin_number.wav\"), \"\", \"\\\\d+|\\\\*\");\n";
 	$tmp .= "		if (digits == admin_pin) then\n";
 	$tmp .= "			freeswitch.consoleLog(\"info\", \"pin number: \".. digits ..\": is correct\\n\");\n";
-	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/custom/begin_recording.wav\");\n";
+	$tmp .= "			session:streamFile(find_custom_sound(session, sounds_dir, \"begin_recording.wav\"));\n";
 	$tmp .= "			session:execute(\"set\", \"playback_terminators=#\");\n";
 	$tmp .= "			session:execute(\"record\", \"".$v_recordings_dir."/temp\"..session:get_uuid()..\".wav 180 200\");\n";
 	$tmp .= "			--session:setInputCallback(\"onInput\", \"\");\n";
@@ -1508,7 +1513,7 @@ function recording_lua()
 	$tmp .= "		else\n";
 	$tmp .= "			freeswitch.consoleLog(\"info\", \"pin number: \".. digits ..\": is not correct\\n\");\n";
 	$tmp .= "			--console_log( \"info\", \"Pin: \" + digits + \" is incorrect\\n\" );\n";
-	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/your_pin_number_is_incorect_goodbye.wav\");\n";
+	$tmp .= "			session:streamFile(find_custom_sound(session, sounds_dir, \"your_pin_number_is_incorect_goodbye.wav\"));\n";
 	$tmp .= "		end\n";
 	$tmp .= "	else\n";
 	$tmp .= "		--pin not required begin the recording\n";
@@ -2641,25 +2646,16 @@ function sync_package_v_hunt_group_lua()
 					$tmp .= "outbound_caller_id_number = session:getVariable(\"outbound_caller_id_number\");\n";
 					$tmp .= "\n";
 
-					$tmp .= "	--set the sounds path for the language, dialect and voice\n";
-					$tmp .= "		default_language = session:getVariable(\"default_language\");\n";
-					$tmp .= "		default_dialect = session:getVariable(\"default_dialect\");\n";
-					$tmp .= "		default_voice = session:getVariable(\"default_voice\");\n";
-					$tmp .= "		if (not default_language) then default_language = 'en'; end\n";
-					$tmp .= "		if (not default_dialect) then default_dialect = 'us'; end\n";
-					$tmp .= "		if (not default_voice) then default_voice = 'callie'; end\n";
-					$tmp .= "\n";
-
 					//pin number requested from caller if provided
 						if (strlen($row['huntgrouppin']) > 0) {
 							$tmp .= "pin = '".$row['huntgrouppin']."';\n";
-							$tmp .= "digits = session:playAndGetDigits(".strlen($row['huntgrouppin']).", ".strlen($row['huntgrouppin']).", 3, 3000, \"#\", sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_enter_the_pin_number.wav\", \"\", \"\\\\d+\");\n";
+							$tmp .= "digits = session:playAndGetDigits(".strlen($row['huntgrouppin']).", ".strlen($row['huntgrouppin']).", 3, 3000, \"#\", find_custom_sound(session, sounds_dir, \"please_enter_the_pin_number.wav\"), \"\", \"\\\\d+\");\n";
 							$tmp .= "\n";
 							$tmp .= "\n";
 							$tmp .= "if (digits == pin) then\n";
 							$tmp .= "	--continue\n";
 							$tmp .= "else \n";
-							$tmp .= "	session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/your_pin_number_is_incorect_goodbye.wav\");\n";
+							$tmp .= "	session:streamFile(find_custom_sound(session, sounds_dir, \"your_pin_number_is_incorect_goodbye.wav\"));\n";
 							$tmp .= "	session:hangup();\n";
 							$tmp .= "end\n";
 							$tmp .= "\n";
@@ -2678,7 +2674,7 @@ function sync_package_v_hunt_group_lua()
 							$tmp .=	"end";
 							$tmp .=	"\n";
 							$tmp .=	"caller_announce = extension..\"_\"..session.uuid..\".wav\";\n";
-							$tmp .=	"session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
+							$tmp .=	"session:streamFile(find_custom_sound(session, sounds_dir, \"please_say_your_name_and_reason_for_calling.wav\"));\n";
 							$tmp .=	"session:execute(\"gentones\", \"%(1000, 0, 640)\");\n";
 							$tmp .=	"session:execute(\"set\", \"playback_terminators=#\");\n";
 							$tmp .=	"session:execute(\"record\", \"".$tmp_dir."/\"..caller_announce..\" 180 200\");\n";
@@ -3222,6 +3218,8 @@ function sync_package_v_hunt_group_js()
 
 				//Get the list of destinations then build the Hunt Group javascript
 					$tmp = "";
+					$tmp .= "include(\"config.js\")\n";
+					$tmp .= "include(\"common.js\")\n";
 					$tmp .= "\n";
 					$tmp .= "session.answer();\n";
 					$tmp .= "var domain_name = session.getVariable(\"domain_name\");\n";
@@ -3324,7 +3322,7 @@ function sync_package_v_hunt_group_js()
 							$tmp .= "  dtmf.digits = \"\";\n";
 							$tmp .= "  digitmaxlength = 6;\n";
 							$tmp .= "  session.execute(\"set\", \"playback_terminators=#\");\n";
-							$tmp .= "  session.streamFile( \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
+							$tmp .= "  session.streamFile( find_custom_sound(session, sounds_dir, \"please_enter_the_pin_number.wav\"), mycb, \"dtmf\");\n";
 							$tmp .= "  session.collectInput( mycb, dtmf, timeoutpin );\n";
 							$tmp .= "\n";
 							$tmp .= "  if (dtmf.digits == pin || pin.length == 0) {\n";
@@ -3332,7 +3330,7 @@ function sync_package_v_hunt_group_js()
 							$tmp .= "  }\n";
 							$tmp .= "  else {\n";
 							$tmp .= "    console_log( \"info\", \"Pin: \" + dtmf.digits + \" is incorrect\\n\" );\n";
-							$tmp .= "    session.streamFile( \"".$v_sounds_dir."/custom/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
+							$tmp .= "    session.streamFile( find_custom_sound(session, sounds_dir, \"your_pin_number_is_incorect_goodbye.wav\"), mycb, \"dtmf\");\n";
 							$tmp .= "    session.hangup();\n";
 							$tmp .= "  }\n";
 							$tmp .= "}\n";
@@ -3347,7 +3345,7 @@ function sync_package_v_hunt_group_js()
 							$tmp .= "}";
 							$tmp .=	"\n";
 							$tmp .=	"var caller_announce = extension+\"_\"+Year+Month+Day+Hours+Mins+Seconds+\".wav\";\n";
-							$tmp .=	"session.streamFile( \"".$v_sounds_dir."/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
+							$tmp .=	"session.streamFile( find_custom_sound(session, sounds_dir, \"please_say_your_name_and_reason_for_calling.wav\") );\n";
 							$tmp .=	"session.execute(\"gentones\", \"%(1000, 0, 640)\");\n";
 							$tmp .=	"session.execute(\"set\", \"playback_terminators=#\");\n";
 							$tmp .=	"session.execute(\"record\", \"".$tmp_dir."/\"+caller_announce+\" 180 200\");\n";

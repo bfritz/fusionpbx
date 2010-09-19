@@ -4,6 +4,8 @@
   //var admin_pin = ""; //don't require a pin
     //if you choose not to require a pin then then you may want to add a dialplan condition for a specific caller id
 
+  include("common.js");
+
  var digitmaxlength = 0;
  var timeoutpin = 7500;
  var timeouttransfer = 7500;
@@ -57,18 +59,18 @@
   if (admin_pin.length > 0) {
       digitmaxlength = 6;
       session.execute("set", "playback_terminators=#");
-      session.streamFile( "C:/fusionpbx/program/FreeSWITCH/sounds/custom/please_enter_the_pin_number.wav", mycb, "dtmf");
+      session.streamFile( find_custom_sound(session, sounds_dir, "please_enter_the_pin_number.wav"), mycb, "dtmf");
       session.collectInput( mycb, dtmf, timeoutpin );
   }
 
   if (dtmf.digits == admin_pin || admin_pin.length == 0) {
-      session.streamFile( "C:/fusionpbx/program/FreeSWITCH/sounds/custom/begin_recording.wav", mycb, "dtmf");
+      session.streamFile( find_custom_sound(session, sounds_dir, "begin_recording.wav"), mycb, "dtmf");
       session.execute("set", "playback_terminators=#");
       session.execute("record", "C:/fusionpbx/program/FreeSWITCH/recordings/temp"+Year+Month+Day+Hours+Mins+Seconds+".wav 180 200");
   }
   else {
       console_log( "info", "Pin: " + dtmf.digits + " is incorrect\n" );
-      session.streamFile( "C:/fusionpbx/program/FreeSWITCH/sounds/custom/your_pin_number_is_incorect_goodbye.wav", mycb, "dtmf");
+      session.streamFile( find_custom_sound(session, sounds_dir, "your_pin_number_is_incorect_goodbye.wav"), mycb, "dtmf");
   }
   session.hangup();
 

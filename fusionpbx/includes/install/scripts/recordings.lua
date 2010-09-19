@@ -22,11 +22,15 @@
 --	Contributor(s):
 --	Mark J Crane <markjcrane@fusionpbx.com>
 
+dofile("FS_DIR/scripts/config.lua")
+
 pin_number = "";
 max_tries = "3";
 digit_timeout = "3000";
 sounds_dir = "";
 recordings_dir = "";
+
+dofile("FS_DIR/scripts/common.lua")
 
 --dtmf call back function detects the "#" and ends the call
 	function onInput(s, type, obj)
@@ -38,16 +42,8 @@ recordings_dir = "";
 --start the recording
 	function begin_record(session, sounds_dir, recordings_dir)
 
-		--set the sounds path for the language, dialect and voice
-			default_language = session:getVariable("default_language");
-			default_dialect = session:getVariable("default_dialect");
-			default_voice = session:getVariable("default_voice");
-			if (not default_language) then default_language = 'en'; end
-			if (not default_dialect) then default_dialect = 'us'; end
-			if (not default_voice) then default_voice = 'callie'; end
-
 		--prompt for the recording
-			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/begin_recording.wav");
+			session:streamFile(find_custom_sound(session, sounds_dir, "begin_recording.wav"));
 			session:execute("set", "playback_terminators=#");
 
 		--begin recording
@@ -111,23 +107,15 @@ if ( session:ready() ) then
 		sounds_dir = session:getVariable("sounds_dir");
 		recordings_dir = session:getVariable("recordings_dir");
 
-	--set the sounds path for the language, dialect and voice
-		default_language = session:getVariable("default_language");
-		default_dialect = session:getVariable("default_dialect");
-		default_voice = session:getVariable("default_voice");
-		if (not default_language) then default_language = 'en'; end
-		if (not default_dialect) then default_dialect = 'us'; end
-		if (not default_voice) then default_voice = 'callie'; end
-
 	--if the pin number is provided then require it
 		if (pin_number) then
 			min_digits = string.len(pin_number);
 			max_digits = string.len(pin_number)+1;
-			digits = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
+			digits = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", find_custom_sound(session, sounds_dir, "please_enter_the_pin_number.wav"), "", "\\d+");
 			if (digits == pin_number) then
 				--pin is correct
 			else
-				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/your_pin_number_is_incorect_goodbye.wav");
+				session:streamFile(find_custom_sound(session, sounds_dir, "your_pin_number_is_incorect_goodbye.wav"));
 				session:hangup("NORMAL_CLEARING");
 				return;
 			end

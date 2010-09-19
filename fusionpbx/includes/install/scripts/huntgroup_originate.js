@@ -3,6 +3,8 @@ include("config.js");
 	//var admin_pin
 	//var tmp_dir
 
+include("common.js");
+
 var uuid = argv[0];
 var sipuri = argv[1];
 var extension = argv[2];
@@ -35,7 +37,7 @@ function originate (session, sipuri, extension, caller_announce, caller_id_name,
 			if (caller_announce.length > 0) {
 				new_session.streamFile( tmp_dir+"/"+caller_announce);
 			}
-			new_session.streamFile( sounds_dir+"/custom/press_1_to_accept_2_to_reject_or_3_for_voicemail.wav");
+			new_session.streamFile( find_custom_sound(session, sounds_dir, "press_1_to_accept_2_to_reject_or_3_for_voicemail.wav"));
 			if (new_session.ready()) {
 				if (dtmf.digits.length == 0) {
 					dtmf.digits +=  new_session.getDigits(1, "#", 10000); // 10 seconds

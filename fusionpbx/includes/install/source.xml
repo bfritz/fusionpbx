@@ -1548,6 +1548,20 @@
 	</src> 
 	<src> 
 		<type>file</type> 
+		<path>/includes/install/scripts/common.js</path> 
+		<last_mod>Sun, 20 Sep 2010 01:17:41 GMT</last_mod> 
+		<md5>69e0fab5b9cf48e109bd378ed8874f6a</md5> 
+		<size>571</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>/includes/install/scripts/common.lua</path> 
+		<last_mod>Sun, 20 Sep 2010 01:17:41 GMT</last_mod> 
+		<md5>fa9ac3bec9e06144c21547458e146c9f</md5> 
+		<size>620</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
 		<path>/includes/install/scripts/disa.js</path> 
 		<last_mod>Tue, 06 Jul 2010 07:10:04 GMT</last_mod> 
 		<md5>4c9e9c03a98121737fd593996ac0ccb2</md5> 

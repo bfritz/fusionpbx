@@ -3,6 +3,8 @@ include("config.js");
 	//var admin_pin
 	//var tmp_dir
 
+include("common.js");
+
 var sipuri = argv[0];
 var caller_id_name = argv[1];
 var caller_id_number = argv[2];
@@ -22,7 +24,7 @@ function originate (sipuri, caller_id_name, caller_id_number) {
 	new_session.execute("set", "call_timeout=30");
 		
 	if ( new_session.ready() ) {
-		new_session.streamFile( sounds_dir+"/custom/press_1_to_accept_2_to_reject_or_3_for_voicemail.wav");
+		new_session.streamFile( find_custom_sound(session, sounds_dir, "press_1_to_accept_2_to_reject_or_3_for_voicemail.wav"));
 		digitmaxlength = 1;
 		while (new_session.ready()) {
 			//console_log( "info", "originate succeeded\n" );

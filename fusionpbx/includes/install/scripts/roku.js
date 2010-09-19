@@ -3,6 +3,8 @@
 		//var admin_pin = "456789";
 		//var tmp_dir
 
+	include("common.js");
+
 	//var admin_pin = ""; //don't require a pin
 	//if you choose not to require a pin then then you may want to add a dialplan condition for a specific caller id
 	var digitmaxlength = 0;
@@ -40,7 +42,7 @@
 		// if admin_pin has been defined then request the pin number
 		if (admin_pin.length > 0) {
 			digitmaxlength = 6;
-			session.streamFile( sounds_dir+"/custom/please_enter_the_pin_number.wav", mycb, "dtmf");
+			session.streamFile( find_custom_sound(session, sounds_dir, "please_enter_the_pin_number.wav"), mycb, "dtmf");
 			session.collectInput( mycb, dtmf, timeoutpin );
 			//console_log( "info", "adming pin: " + dtmf.digits + "\n" );
 		}
@@ -51,7 +53,7 @@
 
 			dtmf.digits = ""; //clear dtmf digits to prepare for next dtmf request
 			digitmaxlength = 1;
-			session.streamFile( sounds_dir+"/custom/please_enter_the_phone_number.wav", mycb, "dtmf");
+			session.streamFile( find_custom_sound(session, "please_enter_the_phone_number.wav"), mycb, "dtmf");
 			//session.collectInput( mycb, dtmf, timeouttransfer );
 			var x = 0;
 			while (true) {
@@ -75,7 +77,7 @@
 
 		}
 		else {
-			session.streamFile( sounds_dir+"/custom/your_pin_number_is_incorect_goodbye.wav", mycb, "dtmf");
+			session.streamFile( find_custom_sound(session, "your_pin_number_is_incorect_goodbye.wav"), mycb, "dtmf");
 			console_log( "info", "Roku Pin: " + dtmf.digits + " is incorrect\n" );
 		}
 
