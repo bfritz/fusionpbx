@@ -107,7 +107,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
 	$sql .= " where v_id = $v_id ";
-	$sql .= " and opt1name == 'call_forward_id' ";
+	$sql .= " and opt1name = 'call_forward_id' ";
 	/*
 	if (count($call_forward_array) == 0) {
 		//when there are no conferences do this to hide all remaining entries
@@ -147,10 +147,10 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
 	$sql .= " where v_id = $v_id ";
-	$sql .= " and opt1name == 'call_forward_id' ";
+	$sql .= " and opt1name = 'call_forward_id' ";
 	/*
 	if (count($call_forward_array) == 0) {
-		//when there are no conferences do this to hide all remaining entries
+		//when there are no entries do this to hide all remaining entries
 		$sql .= " where v_id = $v_id ";
 		$sql .= " and context = 'hide' ";
 	}
