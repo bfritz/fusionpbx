@@ -55,39 +55,39 @@ include "root.php";
 	//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds', $v_sounds_dir);
 	$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/custom/8000';
 	$dst_dir = $v_sounds_dir.'/en/us/callie/custom/8000';
-	$tmp_file = 'begin_recording.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'call_forward_has_been_deleted.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'call_forward_has_been_set.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'followme_menu.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'press_1_to_accept_2_to_reject_or_3_for_voicemail.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_enter_the_extension_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_enter_the_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_enter_the_phone_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_say_your_name_and_reason_for_calling.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_enter_your_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'your_pin_number_is_incorect_goodbye.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
+	$tmp_file = 'begin_recording.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'call_forward_has_been_deleted.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'call_forward_has_been_set.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'followme_menu.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'press_1_to_accept_2_to_reject_or_3_for_voicemail.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_enter_the_extension_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_enter_the_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_enter_the_phone_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_say_your_name_and_reason_for_calling.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_enter_your_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'your_pin_number_is_incorect_goodbye.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
 
 	$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/custom/16000';
 	$dst_dir = $v_sounds_dir.'/en/us/callie/custom/16000';
-	$tmp_file = 'begin_recording.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'call_forward_has_been_deleted.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'call_forward_has_been_set.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'followme_menu.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'press_1_to_accept_2_to_reject_or_3_for_voicemail.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_enter_the_extension_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_enter_the_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_enter_the_phone_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_say_your_name_and_reason_for_calling.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'please_enter_your_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	$tmp_file = 'your_pin_number_is_incorect_goodbye.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
+	$tmp_file = 'begin_recording.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'call_forward_has_been_deleted.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'call_forward_has_been_set.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'followme_menu.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'press_1_to_accept_2_to_reject_or_3_for_voicemail.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_enter_the_extension_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_enter_the_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_enter_the_phone_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_say_your_name_and_reason_for_calling.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'please_enter_your_pin_number.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'your_pin_number_is_incorect_goodbye.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
 
 //copy recordings files
 	//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/recordings', $v_recordings_dir.'');
 	//$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/recordings';
 	//$dst_dir = $v_recordings_dir;
-	//$tmp_file = 'auto_attendant_sales1_support2_billing3.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $src_dir.'/'.$tmp_file $dst_dir.'/'.$tmp_file<br />\n"; }
-	//$tmp_file = 'call_transfer.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	//$tmp_file = 'simple_auto_attendant.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
+	//$tmp_file = 'auto_attendant_sales1_support2_billing3.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	//$tmp_file = 'call_transfer.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	//$tmp_file = 'simple_auto_attendant.wav'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
 
 //get the script files
 	if (!is_dir($v_scripts_dir.'')) { mkdir($v_scripts_dir.'',0777,true); }
@@ -97,15 +97,14 @@ include "root.php";
 	//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/scripts', $v_scripts_dir);
 	$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/scripts';
 	$dst_dir = $v_scripts_dir;
-	$tmp_file = 'call_broadcast_originate.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	$tmp_file = 'call_forward_basic.lua'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	$tmp_file = 'disa.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	$tmp_file = 'disa.lua'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	$tmp_file = 'huntgroup_originate.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	$tmp_file = 'originate.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	$tmp_file = 'recordings.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	$tmp_file = 'roku.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
-	$tmp_file = 'voicemail.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed to $dst_dir <br />\n"; }
+	$tmp_file = 'call_broadcast_originate.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'call_forward_basic.lua'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'disa.lua'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'huntgroup_originate.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'intercom.lua'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'originate.js'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'recordings.lua'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
+	$tmp_file = 'roku.lua'; if (!copy($src_dir.'/'.$tmp_file, $dst_dir.'/'.$tmp_file)) { echo "copy failed from ".$src_dir."/".$tmp_file." to ".$dst_dir."/".$tmp_file."<br />\n"; }
 
 //copy additional the flash mp3 player
 	$srcfile = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/htdocs/slim.swf';
