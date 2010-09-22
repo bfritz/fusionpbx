@@ -1355,173 +1355,6 @@ function switch_conf_xml()
 	fclose($fout);
 }
 
-function recording_js()
-{
-
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
-		$$name = $value;
-	}
-
-	$fout = fopen($v_scripts_dir."/recordings.js","w");
-	$tmp = "";
-	$tmp .= "  include(\"config.js\");\n";
-	$tmp .= "    //admin_pin defined in config.js\n";
-	$tmp .= "\n";
-	$tmp .= "  //var admin_pin = \"\"; //don't require a pin\n";
-	$tmp .= "    //if you choose not to require a pin then then you may want to add a dialplan condition for a specific caller id\n";
-	$tmp .= "\n";
-	$tmp .= " var digitmaxlength = 0;\n";
-	$tmp .= " var timeoutpin = 7500;\n";
-	$tmp .= " var timeouttransfer = 7500;\n";
-	$tmp .= " var objdate = new Date();\n";
-	$tmp .= "\n";
-	$tmp .= " var adjusthours = 0; //Adjust Server time that is set to GMT 7 hours\n";
-	$tmp .= " var adjustoperator = \"-\"; //+ or -\n";
-	$tmp .= "\n";
-	$tmp .= " if (adjustoperator == \"-\") {\n";
-	$tmp .= "   var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() - adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
-	$tmp .= " }\n";
-	$tmp .= " if (adjustoperator == \"+\") {\n";
-	$tmp .= "   var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() + adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
-	$tmp .= " }\n";
-	$tmp .= "\n";
-	$tmp .= " var Hours = objdate2.getHours();\n";
-	$tmp .= " var Mins = objdate2.getMinutes();\n";
-	$tmp .= " var Seconds = objdate2.getSeconds();\n";
-	$tmp .= " var Month = objdate2.getMonth() + 1;\n";
-	$tmp .= " var Date = objdate2.getDate();\n";
-	$tmp .= " var Year = objdate2.getYear()\n";
-	$tmp .= " var Day = objdate2.getDay()+1;\n";
-	$tmp .= " var exit = false;\n";
-	$tmp .= "\n";
-	$tmp .= "\n";
-	$tmp .= "  function mycb( session, type, data, arg ) {\n";
-	$tmp .= "     if ( type == \"dtmf\" ) {\n";
-	$tmp .= "       //console_log( \"info\", \"digit: \"+data.digit+\"\\n\" );\n";
-	$tmp .= "       if ( data.digit == \"#\" ) {\n";
-	$tmp .= "         //console_log( \"info\", \"detected pound sign.\\n\" );\n";
-	$tmp .= "         return( true );\n";
-	$tmp .= "       }\n";
-	$tmp .= "       dtmf.digits += data.digit;\n";
-	$tmp .= "\n";
-	$tmp .= "       if ( dtmf.digits.length < digitmaxlength ) {\n";
-	$tmp .= "         return( true );\n";
-	$tmp .= "       }\n";
-	$tmp .= "     }\n";
-	$tmp .= "     return( false );\n";
-	$tmp .= "  }\n";
-	$tmp .= "\n";
-	$tmp .= "  //console_log( \"info\", \"Recording Request\\n\" );\n";
-	$tmp .= "\n";
-	$tmp .= "  var dtmf = new Object( );\n";
-	$tmp .= "  dtmf.digits = \"\";\n";
-	$tmp .= "\n";
-	$tmp .= "  if ( session.ready( ) ) {\n";
-	$tmp .= "      session.answer( );\n";
-	$tmp .= "\n";
-
-	$tmp .= "\n";
-	$tmp .= "  if (admin_pin.length > 0) {\n";
-	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
-	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
-	//$tmp .= "      session.execute(\"speak\", \"Please enter your pin number now.\");\n";
-	$tmp .= "      digitmaxlength = 6;\n";
-	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
-	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
-	$tmp .= "      session.collectInput( mycb, dtmf, timeoutpin );\n";
-	$tmp .= "  }\n";
-	$tmp .= "\n";
-	$tmp .= "  if (dtmf.digits == admin_pin || admin_pin.length == 0) {\n";
-	//$tmp .= "      //console_log( \"info\", \"Recordings pin is correct\\n\" );\n";
-	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
-	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
-	//$tmp .= "      session.execute(\"speak\", \"Begin recording.\");\n";
-	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/begin_recording.wav\", mycb, \"dtmf\");\n";
-	$tmp .= "      session.execute(\"set\", \"playback_terminators=#\");\n";
-	$tmp .= "      session.execute(\"record\", \"".$v_recordings_dir."/temp\"+Year+Month+Day+Hours+Mins+Seconds+\".wav 180 200\");\n";
-	$tmp .= "  }\n";
-	$tmp .= "  else {\n";
-	$tmp .= "      console_log( \"info\", \"Pin: \" + dtmf.digits + \" is incorrect\\n\" );\n";
-	//$tmp .= "      session.execute(\"set\", \"tts_engine=flite\");\n";
-	//$tmp .= "      session.execute(\"set\", \"tts_voice=kal\");\n";
-	//$tmp .= "      session.execute(\"speak\", \"Your pin number is incorect, goodbye.\");\n";
-	$tmp .= "      session.streamFile( \"".$v_sounds_dir."/custom/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
-	$tmp .= "  }\n";
-	$tmp .= "  session.hangup();\n";
-	$tmp .= "\n";
-	$tmp .= " }";
-	fwrite($fout, $tmp);
-	unset($tmp);
-	fclose($fout);
-
-}
-
-
-function recording_lua()
-{
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
-		$$name = $value;
-	}
-
-	global $db, $v_id, $host;
-
-	$sql = "";
-	$sql .= "select * from v_settings ";
-	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$admin_pin = $row["admin_pin"];
-		break; //limit to 1 row
-	}
-	unset ($prepstatement);
-
-	$fout = fopen($v_scripts_dir."/recordings.lua","w");
-	$tmp = "";
-	$tmp .= "\n";
-	$tmp .= "admin_pin = \"".$admin_pin."\";\n";
-	$tmp .= "digitmaxlength = 6;\n";
-	$tmp .= "timeoutpin = 7500;\n";
-	$tmp .= "\n";
-	$tmp .= "--dtmf call back function detects the \"#\" and ends the call\n";
-	$tmp .= "	function onInput(s, type, obj)\n";
-	$tmp .= "		if (type == \"dtmf\" and obj['digit'] == '#') then\n";
-	$tmp .= "			return \"break\";\n";
-	$tmp .= "		end\n";
-	$tmp .= "	end\n";
-	$tmp .= "\n";
-	$tmp .= "if ( session:ready() ) then\n";
-	$tmp .= "	session:answer();\n";
-	$tmp .= "	if (admin_pin) then\n";
-	$tmp .= "		--This has 8 arguments: min_digits, max_digits, max_tries, timeout, terminators, audio_files, bad_input_audio_file, digits_regex\n";
-	$tmp .= "		digits = session:playAndGetDigits(2, 6, 3, timeoutpin, \"#\", \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", \"\", \"\\\\d+|\\\\*\");\n";
-	$tmp .= "		if (digits == admin_pin) then\n";
-	$tmp .= "			freeswitch.consoleLog(\"info\", \"pin number: \".. digits ..\": is correct\\n\");\n";
-	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/custom/begin_recording.wav\");\n";
-	$tmp .= "			session:execute(\"set\", \"playback_terminators=#\");\n";
-	$tmp .= "			session:execute(\"record\", \"".$v_recordings_dir."/temp\"..session:get_uuid()..\".wav 180 200\");\n";
-	$tmp .= "			--session:setInputCallback(\"onInput\", \"\");\n";
-	$tmp .= "			--session:recordFile(\"/tmp/blah.wav\", 30000, 10, 10); -- pressing # ends the recording\n";
-	$tmp .= "		else\n";
-	$tmp .= "			freeswitch.consoleLog(\"info\", \"pin number: \".. digits ..\": is not correct\\n\");\n";
-	$tmp .= "			--console_log( \"info\", \"Pin: \" + digits + \" is incorrect\\n\" );\n";
-	$tmp .= "			session:streamFile(\"".$v_sounds_dir."/your_pin_number_is_incorect_goodbye.wav\");\n";
-	$tmp .= "		end\n";
-	$tmp .= "	else\n";
-	$tmp .= "		--pin not required begin the recording\n";
-	$tmp .= "		session:execute(\"set\", \"playback_terminators=#\");\n";
-	$tmp .= "		session:execute(\"record\", \"".$v_recordings_dir."/temp-\"..session:get_uuid()..\".wav 180 200\");\n";
-	$tmp .= "	end\n";
-	$tmp .= "	session:hangup();\n";
-	$tmp .= "end";
-	fwrite($fout, $tmp);
-	unset($tmp);
-	fclose($fout);
-}
-
 
 function sync_package_v_settings()
 {
@@ -1640,10 +1473,6 @@ function sync_package_v_settings()
 		unset($tmpxml);
 		fclose($fout);
 
-		//write the recording.js and recording.lua script
-			recording_js();
-			recording_lua();
-
 		//shout.conf.xml
 		$fout = fopen($v_conf_dir."/autoload_configs/shout.conf.xml","w");
 		$tmpxml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
@@ -1675,7 +1504,7 @@ function sync_package_v_settings()
 		$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
 		$tmp .= "var sounds_dir = \"".$v_sounds_dir."\";\n";
 		$tmp .= "var recordings_dir = \"".$v_recordings_dir."\";\n";
-		$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";		
+		$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";
 		fwrite($fout, $tmp);
 		unset($tmp);
 		fclose($fout);
