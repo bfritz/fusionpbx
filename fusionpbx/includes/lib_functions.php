@@ -24,6 +24,12 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 
+	if (!function_exists('software_version')) {
+		function software_version() {
+			return '1.1.37';
+		}
+	}
+
 	if (!function_exists('check_str')) {
 		function check_str($strtemp) {
 			////when code in db is urlencoded the ' does not need to be modified
