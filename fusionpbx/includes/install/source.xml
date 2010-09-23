@@ -254,9 +254,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/core/upgrade/upgrade_svn.php</path> 
-		<last_mod>Thu, 26 Aug 2010 21:29:52 GMT</last_mod> 
-		<md5>c1b1f92ac3e6a71c1e17dbc2a4dfb195</md5> 
-		<size>6549</size> 
+		<last_mod>Thu, 09 Sep 2010 06:11:54 GMT</last_mod> 
+		<md5>f0c7192b55c864260bbf3d5dc2549a2e</md5> 
+		<size>7549</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -359,9 +359,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/core/users/usersupdate.php</path> 
-		<last_mod>Thu, 02 Sep 2010 04:01:52 GMT</last_mod> 
-		<md5>77b4ce3275c2151f65f4984f1d5efcd2</md5> 
-		<size>23471</size> 
+		<last_mod>Sat, 11 Sep 2010 16:59:21 GMT</last_mod> 
+		<md5>d054a42ee31abcbd9d0099b88a5ee9c8</md5> 
+		<size>24995</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -1499,34 +1499,6 @@
 	</src> 
 	<src> 
 		<type>directory</type> 
-		<path>/includes/install/recordings</path> 
-		<last_mod></last_mod> 
-		<md5></md5> 
-		<size></size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>/includes/install/recordings/auto_attendant_sales1_support2_billing3.wav</path> 
-		<last_mod>Tue, 08 Dec 2009 02:24:56 GMT</last_mod> 
-		<md5>dd89f7408b6f9a96f38ca2333d9fae41</md5> 
-		<size>149556</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>/includes/install/recordings/call_transfer.wav</path> 
-		<last_mod>Tue, 08 Dec 2009 02:24:56 GMT</last_mod> 
-		<md5>7dd1fc2cd915ee461fcd55f91e3b3d08</md5> 
-		<size>27192</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>/includes/install/recordings/simple_auto_attendant.wav</path> 
-		<last_mod>Tue, 08 Dec 2009 02:24:56 GMT</last_mod> 
-		<md5>d90038717a3556ae62dc6493978ccf9e</md5> 
-		<size>67080</size> 
-	</src> 
-	<src> 
-		<type>directory</type> 
 		<path>/includes/install/scripts</path> 
 		<last_mod></last_mod> 
 		<md5></md5> 
@@ -1548,13 +1520,6 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/includes/install/scripts/disa.js</path> 
-		<last_mod>Tue, 06 Jul 2010 07:10:04 GMT</last_mod> 
-		<md5>4c9e9c03a98121737fd593996ac0ccb2</md5> 
-		<size>2720</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
 		<path>/includes/install/scripts/disa.lua</path> 
 		<last_mod>Sat, 28 Aug 2010 07:27:50 GMT</last_mod> 
 		<md5>e9d0a9f5368cf132bf74ade7044b2556</md5> 
@@ -1570,9 +1535,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/includes/install/scripts/intercom.lua</path> 
-		<last_mod>Mon, 30 Aug 2010 02:16:20 GMT</last_mod> 
-		<md5>d44d69121460c287b4405c3971aae97d</md5> 
-		<size>4428</size> 
+		<last_mod>Sat, 02 Oct 2010 21:29:15 GMT</last_mod> 
+		<md5>470c734e4cc5b1bf18a47a4ada28015c</md5> 
+		<size>5057</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -1583,31 +1548,17 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/includes/install/scripts/recordings.js</path> 
-		<last_mod>Tue, 06 Jul 2010 07:12:12 GMT</last_mod> 
-		<md5>510971ab9e4a74588f3f5dfc436d14eb</md5> 
-		<size>2562</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
 		<path>/includes/install/scripts/recordings.lua</path> 
-		<last_mod>Sun, 29 Aug 2010 22:05:20 GMT</last_mod> 
-		<md5>4088e1a27f64dfe244179657e1615268</md5> 
-		<size>4492</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>/includes/install/scripts/roku.js</path> 
-		<last_mod>Tue, 06 Jul 2010 07:12:58 GMT</last_mod> 
-		<md5>5ac13d24d8cdaa743831eaf7b62bf8c1</md5> 
-		<size>2418</size> 
+		<last_mod>Sat, 18 Sep 2010 23:31:58 GMT</last_mod> 
+		<md5>1b462d10b8d7b93ed0b14c4a2e63c562</md5> 
+		<size>5618</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>/includes/install/scripts/roku.lua</path> 
-		<last_mod>Sat, 28 Aug 2010 00:45:40 GMT</last_mod> 
-		<md5>f11229675fcf0b33fd335555cac6af6b</md5> 
-		<size>3298</size> 
+		<last_mod>Thu, 09 Sep 2010 22:29:29 GMT</last_mod> 
+		<md5>88a5b268bd9b45587f0d41e612217db3</md5> 
+		<size>3338</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -1794,9 +1745,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/includes/install/source.xml</path> 
-		<last_mod>Sun, 05 Sep 2010 07:37:09 GMT</last_mod> 
-		<md5>255bedc21f944af7fd7d29f73c85e5b6</md5> 
-		<size>155965</size> 
+		<last_mod>Thu, 09 Sep 2010 05:07:14 GMT</last_mod> 
+		<md5>f4e6de980c77dd44fc860d6899bf7f2e</md5> 
+		<size>146914</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -1808,23 +1759,23 @@
 	<src> 
 		<type>file</type> 
 		<path>/includes/install/sql/mysql.sql</path> 
-		<last_mod>Tue, 07 Sep 2010 11:58:20 GMT</last_mod> 
-		<md5>13e1d971dedabd8ad98d245ea272dc79</md5> 
-		<size>41880</size> 
+		<last_mod>Sat, 18 Sep 2010 20:09:43 GMT</last_mod> 
+		<md5>916e8fe7f7477f196cb724ec2da1ca94</md5> 
+		<size>41951</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>/includes/install/sql/pgsql.sql</path> 
-		<last_mod>Tue, 07 Sep 2010 11:58:08 GMT</last_mod> 
-		<md5>4fe43bb42bf06ba32a92b0641bb3a2ac</md5> 
-		<size>42690</size> 
+		<last_mod>Sat, 18 Sep 2010 20:09:50 GMT</last_mod> 
+		<md5>201eb1f2001c9839dbd005de6e764722</md5> 
+		<size>42761</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>/includes/install/sql/sqlite.sql</path> 
-		<last_mod>Tue, 07 Sep 2010 11:57:53 GMT</last_mod> 
-		<md5>d3f2fee1247d352411f96b2c4fd5db65</md5> 
-		<size>41657</size> 
+		<last_mod>Sat, 18 Sep 2010 20:08:35 GMT</last_mod> 
+		<md5>02662b3efdeb52cb09ba47203984c8d2</md5> 
+		<size>41728</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -1836,23 +1787,23 @@
 	<src> 
 		<type>file</type> 
 		<path>/includes/lib_functions.php</path> 
-		<last_mod>Mon, 30 Aug 2010 02:45:53 GMT</last_mod> 
-		<md5>513e9b88a40b6ff03391947c8c86dead</md5> 
-		<size>20100</size> 
+		<last_mod>Thu, 23 Sep 2010 10:36:46 GMT</last_mod> 
+		<md5>28ba5b89a5660e0734239d4439a60e98</md5> 
+		<size>20444</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>/includes/lib_install_copy.php</path> 
-		<last_mod>Fri, 27 Aug 2010 21:38:26 GMT</last_mod> 
-		<md5>c9857a1dfe72af6b2fd404fce57948ee</md5> 
-		<size>9713</size> 
+		<last_mod>Tue, 21 Sep 2010 16:40:39 GMT</last_mod> 
+		<md5>6db91d8c03136b915d65371b801311d0</md5> 
+		<size>10391</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>/includes/lib_pdo.php</path> 
-		<last_mod>Mon, 30 Aug 2010 22:47:36 GMT</last_mod> 
-		<md5>b5b3f71bec991cb855f6d2583a094da1</md5> 
-		<size>8315</size> 
+		<last_mod>Thu, 23 Sep 2010 08:11:46 GMT</last_mod> 
+		<md5>2a66473313ff282fc45b0328ccfa6feb</md5> 
+		<size>8465</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -1871,9 +1822,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/includes/lib_switch.php</path> 
-		<last_mod>Tue, 07 Sep 2010 11:59:06 GMT</last_mod> 
-		<md5>d8938ef58126b9079747f01f75eec179</md5> 
-		<size>225426</size> 
+		<last_mod>Wed, 22 Sep 2010 15:30:03 GMT</last_mod> 
+		<md5>a96c4f73ee5321da9786b9f940e835d3</md5> 
+		<size>217716</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2101,13 +2052,6 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/includes/v_version.php</path> 
-		<last_mod>Sun, 27 Jun 2010 10:31:29 GMT</last_mod> 
-		<md5>d6a1a2a0aefe3df908ebd211ed78b1e8</md5> 
-		<size>938</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
 		<path>/includes/wysiwyg.php</path> 
 		<last_mod>Sat, 06 Feb 2010 18:17:17 GMT</last_mod> 
 		<md5>951c322cd95551458a036020407add07</md5> 
@@ -2116,16 +2060,16 @@
 	<src> 
 		<type>file</type> 
 		<path>/index.php</path> 
-		<last_mod>Tue, 07 Sep 2010 12:08:24 GMT</last_mod> 
-		<md5>7b7be1c6f39587c7de6430fad52d7865</md5> 
-		<size>11275</size> 
+		<last_mod>Thu, 23 Sep 2010 10:37:11 GMT</last_mod> 
+		<md5>3a4264b33e02dc3d8cf804f845e0bbd7</md5> 
+		<size>11206</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
 		<path>/install.php</path> 
-		<last_mod>Mon, 06 Sep 2010 22:25:46 GMT</last_mod> 
-		<md5>3d636f7c4e84ca2e7785537bbd4113c0</md5> 
-		<size>52180</size> 
+		<last_mod>Thu, 23 Sep 2010 08:43:41 GMT</last_mod> 
+		<md5>0fb3b6e5b3b51f763949eb54b97c5f29</md5> 
+		<size>54107</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2256,9 +2200,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/mod/calls_active/v_calls_exec.php</path> 
-		<last_mod>Sun, 18 Jul 2010 05:47:06 GMT</last_mod> 
-		<md5>9901c01282e5dacd24c865e787217078</md5> 
-		<size>5104</size> 
+		<last_mod>Sat, 18 Sep 2010 21:19:42 GMT</last_mod> 
+		<md5>dd5ed8421d87d8b10b290e2e3190c412</md5> 
+		<size>5186</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -2319,9 +2263,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/mod/call_forward/v_call_forward.php</path> 
-		<last_mod>Tue, 04 May 2010 01:35:55 GMT</last_mod> 
-		<md5>e6ef8f9e19df37845ab151a90abdc6f4</md5> 
-		<size>8284</size> 
+		<last_mod>Sun, 19 Sep 2010 03:39:37 GMT</last_mod> 
+		<md5>cd8f2129b853ab739e8060d3ffe7e43c</md5> 
+		<size>8278</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2445,16 +2389,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/mod/conferences/v_conferences.php</path> 
-		<last_mod>Tue, 04 May 2010 01:34:58 GMT</last_mod> 
-		<md5>959b4d0ba9df5b4349eb79e8098b0a15</md5> 
-		<size>8121</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>/mod/conferences/v_conferences_add.php</path> 
-		<last_mod>Tue, 07 Sep 2010 12:11:45 GMT</last_mod> 
-		<md5>000e9f47111886498ada6eff7c16d0e2</md5> 
-		<size>14456</size> 
+		<last_mod>Sat, 18 Sep 2010 18:41:56 GMT</last_mod> 
+		<md5>ae89b09587aae22ca8a047769ba34add</md5> 
+		<size>8971</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -2480,7 +2417,14 @@
 	<src> 
 		<type>file</type> 
 		<path>/mod/conferences/v_conferences_edit.php</path> 
-		<last_mod>Wed, 14 Jul 2010 14:58:46 GMT</last_mod> 
+		<last_mod>Sat, 18 Sep 2010 18:41:15 GMT</last_mod> 
+		<md5>3f0b47f93758ff1e26c5fb169cfaf98a</md5> 
+		<size>21403</size> 
+	</src> 
+	<src> 
+		<type>file</type> 
+		<path>/mod/conferences/v_conferences_edit_advanced.php</path> 
+		<last_mod>Thu, 15 Jul 2010 22:20:31 GMT</last_mod> 
 		<md5>4276f5bcd02bebfd87c9d8ed9e5f15ee</md5> 
 		<size>18909</size> 
 	</src> 
@@ -3474,9 +3418,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/mod/ivr_menu/v_ivr_menu_options.php</path> 
-		<last_mod>Fri, 03 Sep 2010 07:54:05 GMT</last_mod> 
-		<md5>4dd15b5628a4fa50eed01cb0018a161d</md5> 
-		<size>6624</size> 
+		<last_mod>Fri, 01 Oct 2010 02:14:39 GMT</last_mod> 
+		<md5>ac7f17b3e58a9f7de9cc4db487e03dab</md5> 
+		<size>6713</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
@@ -4419,9 +4363,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/mod/users/usersupdate.php</path> 
-		<last_mod>Mon, 06 Sep 2010 10:18:04 GMT</last_mod> 
-		<md5>c12ec8128ab67b1d2d1cf029f32094d1</md5> 
-		<size>24730</size> 
+		<last_mod>Sat, 11 Sep 2010 16:52:29 GMT</last_mod> 
+		<md5>592fc38cdf16f7ee96b4140f91eca1cb</md5> 
+		<size>24822</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
@@ -4615,9 +4559,9 @@
 	<src> 
 		<type>file</type> 
 		<path>/mod/xml_cdr/v_xml_cdr_search.php</path> 
-		<last_mod>Wed, 04 Aug 2010 23:11:43 GMT</last_mod> 
-		<md5>539839d031b24f1716d43c60989d2291</md5> 
-		<size>5819</size> 
+		<last_mod>Fri, 01 Oct 2010 02:25:52 GMT</last_mod> 
+		<md5>19a6723d640d78293e46f5d019cf2fd9</md5> 
+		<size>5823</size> 
 	</src> 
 	<src> 
 		<type>directory</type> 
