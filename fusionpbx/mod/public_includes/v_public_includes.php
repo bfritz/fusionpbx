@@ -100,11 +100,11 @@ $order = $_GET["order"];
 			$sql .= "'true', ";
 			$sql .= "'$description' ";
 			$sql .= ")";
-			if ($dbtype == "sqlite" || $dbtype == "mysql" ) {
+			if ($db_type == "sqlite" || $db_type == "mysql" ) {
 				$db->exec(check_sql($sql));
 				$public_include_id = $db->lastInsertId($id);
 			}
-			if ($dbtype == "pgsql") {
+			if ($db_type == "pgsql") {
 				$sql .= " RETURNING public_include_id ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();

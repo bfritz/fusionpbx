@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 /*
-if ($dbtype == "sqlite") {
+if ($db_type == "sqlite") {
 	try {
 		if (strlen($dbfilename) == 0) {
 			//if (strlen($_SERVER["SERVER_NAME"]) == 0) { $_SERVER["SERVER_NAME"] = "http://localhost"; }

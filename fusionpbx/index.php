@@ -377,7 +377,7 @@ if (ifgroup("member")) {
 
 //backup
 if (ifgroup("superadmin")) {
-	if ($dbtype == 'sqlite') {
+	if ($db_type == 'sqlite') {
 		require_once "core/backup/backupandrestore.php";
 	}
 }

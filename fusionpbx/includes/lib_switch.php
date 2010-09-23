@@ -236,7 +236,7 @@ foreach($v_settings_array as $name => $value) {
 }
 
 
-if ($dbtype == "sqlite") {
+if ($db_type == "sqlite") {
 	//sqlite: check if call detail record (CDR) db file exists if not create it
 	if (!file_exists($dbfilepath.'/'.$server_name.'.cdr.db')) {
 		//echo "file does not exist: ".$v_db_dir.'/cdr.db';
@@ -4588,7 +4588,7 @@ function sync_package_v_auto_attendant()
 
 
 function v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value) {
-	global $db, $dbtype;
+	global $db, $db_type;
 	$sql = "insert into v_dialplan_includes ";
 	$sql .= "(";
 	$sql .= "v_id, ";
@@ -4611,11 +4611,11 @@ function v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context
 	$sql .= "'$opt1name', ";
 	$sql .= "'$opt1value' ";
 	$sql .= ")";
-	if ($dbtype == "sqlite" || $dbtype == "mysql" ) {
+	if ($db_type == "sqlite" || $db_type == "mysql" ) {
 		$db->exec(check_sql($sql));
 		$dialplan_include_id = $db->lastInsertId($id);
 	}
-	if ($dbtype == "pgsql") {
+	if ($db_type == "pgsql") {
 		$sql .= " RETURNING dialplan_include_id ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

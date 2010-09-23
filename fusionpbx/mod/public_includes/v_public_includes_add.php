@@ -115,11 +115,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$enabled', ";
 		$sql .= "'$description' ";
 		$sql .= ")";
-		if ($dbtype == "sqlite" || $dbtype == "mysql" ) {
+		if ($db_type == "sqlite" || $db_type == "mysql" ) {
 			$db->exec(check_sql($sql));
 			$public_include_id = $db->lastInsertId($id);
 		}
-		if ($dbtype == "pgsql") {
+		if ($db_type == "pgsql") {
 			$sql .= " RETURNING public_include_id ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();

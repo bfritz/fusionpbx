@@ -89,19 +89,19 @@ else {
 	echo "		Table: \n";
 	echo "			<select name='table_name'>\n";
 	echo "			<option value=''></option>\n";
-	if ($dbtype == "sqlite") {
+	if ($db_type == "sqlite") {
 		$sql = "SELECT name FROM sqlite_master ";
 		$sql .= "WHERE type='table' ";
 		$sql .= "order by name;";
 	}
-	if ($dbtype == "pgsql") {
+	if ($db_type == "pgsql") {
 		$sql = "select table_name as name ";
 		$sql .= "from information_schema.tables ";
 		$sql .= "where table_schema='public' ";
 		$sql .= "and table_type='BASE TABLE' ";
 		$sql .= "order by table_name ";
 	}
-	if ($dbtype == "mysql") {
+	if ($db_type == "mysql") {
 		$sql = "show tables";
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
