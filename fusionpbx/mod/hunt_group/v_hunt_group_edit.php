@@ -412,6 +412,12 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	else {
 		echo "    <option value='us-ring'>us-ring</option>\n";
 	}
+	if ($huntgroupringback == "fr-ring") { 
+		echo "    <option value='fr-ring' SELECTED >fr-ring</option>\n";
+	}
+	else {
+		echo "    <option value='fr-ring'>fr-ring</option>\n";
+	}
 	if ($huntgroupringback == "uk-ring") { 
 		echo "    <option value='uk-ring' SELECTED >uk-ring</option>\n";
 	}
