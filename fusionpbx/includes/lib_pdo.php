@@ -29,6 +29,12 @@
 	if (strlen($dbtype) > 0) { 
 		$db_type = $dbtype; 
 	}
+	if (strlen($dbhost) > 0) { 
+		$db_host = $dbhost; 
+	}
+	if (strlen($dbport) > 0) { 
+		$db_port = $dbport; 
+	}
 	if (strlen($dbname) > 0) { 
 		$db_name = $dbname; 
 	}
@@ -40,7 +46,7 @@
 	}
 
 if (!function_exists('get_db_field_names')) {
-	function get_db_field_names($db, $table, $dbname='fusionpbx') {
+	function get_db_field_names($db, $table, $db_name='fusionpbx') {
 		$query = sprintf('SELECT * FROM %s LIMIT 1', $table);
 		foreach ($db->query($query, PDO::FETCH_ASSOC) as $row) {
 			return array_keys($row);
@@ -64,7 +70,7 @@ if (!function_exists('get_db_field_names')) {
 		} else {
 			$query 		= sprintf("SELECT * FROM information_schema.columns
 		WHERE table_schema='%s' AND table_name='%s';"
-		, $dbname, $table
+		, $db_name, $table
 		);
 		$stmt 		= $db->prepare($query);
 		$result 	= $stmt->execute();
@@ -80,7 +86,7 @@ if (!function_exists('get_db_field_names')) {
 }
 
 
-if ($dbtype == "sqlite") {
+if ($db_type == "sqlite") {
 
 	if (strlen($dbfilename) == 0) {
 		//if (strlen($_SERVER["SERVER_NAME"]) == 0) { $_SERVER["SERVER_NAME"] = "http://localhost"; }
@@ -109,8 +115,8 @@ if ($dbtype == "sqlite") {
 		try {
 			//$db = new PDO('sqlite2:example.db'); //sqlite 2
 			//$dbimg = new PDO('sqlite::memory:'); //sqlite 3
-			$dbsql = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilename); //sqlite 3
-			$dbsql->beginTransaction();
+			$db_sql = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilename); //sqlite 3
+			$db_sql->beginTransaction();
 		}
 		catch (PDOException $error) {
 			print "error: " . $error->getMessage() . "<br/>";
@@ -125,7 +131,7 @@ if ($dbtype == "sqlite") {
 		$x = 0;
 		foreach($stringarray as $sql) {
 			try {
-				$dbsql->query($sql);
+				$db_sql->query($sql);
 			}
 			catch (PDOException $error) {
 				echo "error: " . $error->getMessage() . " sql: $sql<br/>";
@@ -134,7 +140,7 @@ if ($dbtype == "sqlite") {
 			$x++;
 		}
 		unset ($file_contents, $sql);
-		$dbsql->commit();
+		$db_sql->commit();
 		//--- end: create the sqlite db -----------------------------------------
 
 		if (is_writable($dbfilepath.'/'.$dbfilename)) { //is writable
@@ -232,26 +238,26 @@ if ($dbtype == "sqlite") {
 		print "error: " . $error->getMessage() . "<br/>";
 		die();
 	}
-} //end if dbtype sqlite
+} //end if db_type sqlite
 
 
-if ($dbtype == "mysql") {
+if ($db_type == "mysql") {
 	//database connection
 	try {
-		if (strlen($dbhost) == 0 && strlen($dbport) == 0) {
+		if (strlen($db_host) == 0 && strlen($db_port) == 0) {
 			//if both host and port are empty use the unix socket
-			$db = new PDO("mysql:host=$dbhost;unix_socket=/var/run/mysqld/mysqld.sock;dbname=$dbname", $dbusername, $dbpassword);
+			$db = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;dbname=$db_name", $db_username, $db_password);
 		}
 		else {
-			if (strlen($dbport) == 0) {
+			if (strlen($db_port) == 0) {
 				//leave out port if it is empty
-				$db = new PDO("mysql:host=$dbhost;dbname=$dbname;", $dbusername, $dbpassword, array(
+				$db = new PDO("mysql:host=$db_host;dbname=$db_name;", $db_username, $db_password, array(
 				PDO::ATTR_ERRMODE,
 				PDO::ERRMODE_EXCEPTION
 				));
 			}
 			else {
-				$db = new PDO("mysql:host=$dbhost;port=$dbport;dbname=$dbname;", $dbusername, $dbpassword, array(
+				$db = new PDO("mysql:host=$db_host;port=$db_port;dbname=$db_name;", $db_username, $db_password, array(
 				PDO::ATTR_ERRMODE,
 				PDO::ERRMODE_EXCEPTION
 				));
@@ -262,23 +268,23 @@ if ($dbtype == "mysql") {
 		print "error: " . $error->getMessage() . "<br/>";
 		die();
 	}
-} //end if dbtype mysql
+} //end if db_type mysql
 
 
-if ($dbtype == "pgsql") {
+if ($db_type == "pgsql") {
 	//database connection
 	try {
-		if (strlen($dbhost) > 0) {
-			if (strlen($dbport) == 0) { $dbport = "5432"; }
-			$db = new PDO("pgsql:host=localhost port=5432 dbname=$dbname user=$dbusername password=$dbpassword");
+		if (strlen($db_host) > 0) {
+			if (strlen($db_port) == 0) { $db_port = "5432"; }
+			$db = new PDO("pgsql:host=$db_host port=$db_port dbname=$db_name user=$db_username password=$db_password");
 		}
 		else {
-			$db = new PDO("pgsql:dbname=$dbname user=$dbusername password=$dbpassword");
+			$db = new PDO("pgsql:dbname=$db_name user=$db_username password=$db_password");
 		}
 	}
 	catch (PDOException $error) {
 		print "error: " . $error->getMessage() . "<br/>";
 		die();
 	}
-} //end if dbtype pgsql
+} //end if db_type pgsql
 ?>

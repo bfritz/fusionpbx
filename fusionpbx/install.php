@@ -28,6 +28,9 @@ require_once "includes/lib_functions.php";
 
 $v_id = '1';
 
+//set debug to true or false
+	$v_debug = false;
+
 //error reporting
 	ini_set('display_errors', '1');
 	//error_reporting (E_ALL); // Report everything
@@ -361,7 +364,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp_config .= "//-----------------------------------------------------\n";
 		$tmp_config .= "\n";
 		$tmp_config .= "	//set the database type\n";
-		$tmp_config .= "		\$dbtype = '".$db_type."'; //sqlite, mysql, pgsql, others with a manually created PDO connection\n";
+		$tmp_config .= "		\$db_type = '".$db_type."'; //sqlite, mysql, pgsql, others with a manually created PDO connection\n";
 		$tmp_config .= "\n";
 		if ($db_type == "sqlite") {
 			$tmp_config .= "	//sqlite: the dbfilename and dbfilepath are automatically assigned however the values can be overidden by setting the values here.\n";
@@ -376,34 +379,34 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				//replace localhost with 127.0.0.1 so that it will connect using TCP
 				$db_host = "127.0.0.1";
 			}
-			$tmp_config .= "		\$dbhost = '".$db_host."';\n";
-			$tmp_config .= "		\$dbport = '".$db_port."';\n";
-			$tmp_config .= "		\$dbname = '".$db_name."';\n";
-			$tmp_config .= "		\$dbusername = '".$db_username."';\n";
-			$tmp_config .= "		\$dbpassword = '".$db_password."';\n";
+			$tmp_config .= "		\$db_host = '".$db_host."';\n";
+			$tmp_config .= "		\$db_port = '".$db_port."';\n";
+			$tmp_config .= "		\$db_name = '".$db_name."';\n";
+			$tmp_config .= "		\$db_username = '".$db_username."';\n";
+			$tmp_config .= "		\$db_password = '".$db_password."';\n";
 		}
 		else {
-			$tmp_config .= "		//\$dbhost = '';\n";
-			$tmp_config .= "		//\$dbport = '';\n";
-			$tmp_config .= "		//\$dbname = '';\n";
-			$tmp_config .= "		//\$dbusername = '';\n";
-			$tmp_config .= "		//\$dbpassword = '';\n";
+			$tmp_config .= "		//\$db_host = '';\n";
+			$tmp_config .= "		//\$db_port = '';\n";
+			$tmp_config .= "		//\$db_name = '';\n";
+			$tmp_config .= "		//\$db_username = '';\n";
+			$tmp_config .= "		//\$db_password = '';\n";
 		}
 		$tmp_config .= "\n";
 		$tmp_config .= "	//pgsql: database connection information\n";
 		if ($db_type == "pgsql") {
-			$tmp_config .= "		\$dbhost = '".$db_host."'; //set the host only if the database is not local\n";
-			$tmp_config .= "		\$dbport = '".$db_port."';\n";
-			$tmp_config .= "		\$dbname = '".$db_name."';\n";
-			$tmp_config .= "		\$dbusername = '".$db_username."';\n";
-			$tmp_config .= "		\$dbpassword = '".$db_password."';\n";
+			$tmp_config .= "		\$db_host = '".$db_host."'; //set the host only if the database is not local\n";
+			$tmp_config .= "		\$db_port = '".$db_port."';\n";
+			$tmp_config .= "		\$db_name = '".$db_name."';\n";
+			$tmp_config .= "		\$db_username = '".$db_username."';\n";
+			$tmp_config .= "		\$db_password = '".$db_password."';\n";
 		}
 		else {
-			$tmp_config .= "		//\$dbhost = '".$db_host."'; //set the host only if the database is not local\n";
-			$tmp_config .= "		//\$dbport = '".$db_port."';\n";
-			$tmp_config .= "		//\$dbname = '".$db_name."';\n";
-			$tmp_config .= "		//\$dbusername = '".$db_username."';\n";
-			$tmp_config .= "		//\$dbpassword = '".$db_password."';\n";
+			$tmp_config .= "		//\$db_host = '".$db_host."'; //set the host only if the database is not local\n";
+			$tmp_config .= "		//\$db_port = '".$db_port."';\n";
+			$tmp_config .= "		//\$db_name = '".$db_name."';\n";
+			$tmp_config .= "		//\$db_username = '".$db_username."';\n";
+			$tmp_config .= "		//\$db_password = '".$db_password."';\n";
 		}
 		$tmp_config .= "\n";
 		$tmp_config .= "	//show errors\n";
@@ -582,82 +585,91 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$db_tmp->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 					}
 					catch (PDOException $error) {
-						print "error: " . $error->getMessage() . "<br/>";
-						//die();
+						if ($v_debug) {
+							print "error: " . $error->getMessage() . "<br/>";
+						}
 					}
 
-				//select the mysql database
-					try {
-						$db_tmp->query("USE mysql;");
-					}
-					catch (PDOException $error) {
-						print "error: " . $error->getMessage() . "<br/>";
-					}
+				//create the table, user and set the permissions only if the db_create_username was provided
+					if (strlen($db_create_username) > 0) {
 
-				//create user and set the permissions
-					try {
-						$tmp_sql = "CREATE USER '".$db_username."'@'%' IDENTIFIED BY '".$db_password."'; ";
-						$db_tmp->query($tmp_sql);
-					}
-					catch (PDOException $error) {
-						print "error: " . $error->getMessage() . "<br/>";
-					}
+						//select the mysql database
+							try {
+								$db_tmp->query("USE mysql;");
+							}
+							catch (PDOException $error) {
+								if ($v_debug) {
+									print "error: " . $error->getMessage() . "<br/>";
+								}
+							}
 
-				//set account to unlimitted use
-					try {
-						$tmp_sql = "GRANT USAGE ON * . * TO '".$db_username."'@'localhost' ";
-						$tmp_sql .= "IDENTIFIED BY '".$db_password."' ";
-						$tmp_sql .= "WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0; ";
-						$db_tmp->query($tmp_sql);
-					}
-					catch (PDOException $error) {
-						print "error: " . $error->getMessage() . "<br/>";
-					}
+						//create user and set the permissions
+							try {
+								$tmp_sql = "CREATE USER '".$db_username."'@'%' IDENTIFIED BY '".$db_password."'; ";
+								$db_tmp->query($tmp_sql);
+							}
+							catch (PDOException $error) {
+								if ($v_debug) {
+									print "error: " . $error->getMessage() . "<br/>";
+								}
+							}
 
-				//create the database and set the create user with permissions
-					try {
-						$tmp_sql = "CREATE DATABASE IF NOT EXISTS ".$db_name."; ";
-						$db_tmp->query($tmp_sql);
-					}
-					catch (PDOException $error) {
-						print "error: " . $error->getMessage() . "<br/>";
-					}
+						//set account to unlimitted use
+							try {
+								$tmp_sql = "GRANT USAGE ON * . * TO '".$db_username."'@'localhost' ";
+								$tmp_sql .= "IDENTIFIED BY '".$db_password."' ";
+								$tmp_sql .= "WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0; ";
+								$db_tmp->query($tmp_sql);
+							}
+							catch (PDOException $error) {
+								if ($v_debug) {
+									print "error: " . $error->getMessage() . "<br/>";
+								}
+							}
 
-				//set user permissions
-					try {
-						$db_tmp->query("GRANT ALL PRIVILEGES ON ".$db_name.".* TO '".$db_username."'@'%'; ");
-					}
-					catch (PDOException $error) {
-						print "error: " . $error->getMessage() . "<br/>";
-					}
+						//create the database and set the create user with permissions
+							try {
+								$tmp_sql = "CREATE DATABASE IF NOT EXISTS ".$db_name."; ";
+								$db_tmp->query($tmp_sql);
+							}
+							catch (PDOException $error) {
+								if ($v_debug) {
+									print "error: " . $error->getMessage() . "<br/>";
+								}
+							}
 
-				//make the changes active
-					try {
-						$tmp_sql = "FLUSH PRIVILEGES; ";
-						$db_tmp->query($tmp_sql);
-					}
-					catch (PDOException $error) {
-						//print "error: " . $error->getMessage() . "<br/>";
-					}
+						//set user permissions
+							try {
+								$db_tmp->query("GRANT ALL PRIVILEGES ON ".$db_name.".* TO '".$db_username."'@'%'; ");
+							}
+							catch (PDOException $error) {
+								if ($v_debug) {
+									print "error: " . $error->getMessage() . "<br/>";
+								}
+							}
+
+						//make the changes active
+							try {
+								$tmp_sql = "FLUSH PRIVILEGES; ";
+								$db_tmp->query($tmp_sql);
+							}
+							catch (PDOException $error) {
+								if ($v_debug) {
+									print "error: " . $error->getMessage() . "<br/>";
+								}
+							}
+
+					} //if (strlen($db_create_username) > 0)
 
 				//select the database
 					try {
 						$db_tmp->query("USE ".$db_name.";");
 					}
 					catch (PDOException $error) {
-						//print "error: " . $error->getMessage() . "<br/>";
+						if ($v_debug) {
+							print "error: " . $error->getMessage() . "<br/>";
+						}
 					}
-
-				//include sets the database connection
-					require "includes/lib_pdo.php";
-
-				//set group permissions for the install
-					//$_SESSION["groups"] = '||admin||member||superadmin||';
-
-				//load the default database into memory and compare it with the active database
-					//$display_results = false;
-					//require_once "includes/lib_schema.php";
-					//db_upgrade_schema ($db, $display_results);
 
 				//add the defaults data into the database
 
@@ -685,9 +697,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 
 	//set system settings paths
-		$v_package_version = '1.0.8';
-		$v_build_version = '1.0.6';
-		$v_build_revision = 'Release';
+		$v_package_version = '';
+		$v_build_version = '';
+		$v_build_revision = '';
 		$v_label = 'FusionPBX';
 		$v_name = 'freeswitch';
 		$v_web_dir = $_SERVER["DOCUMENT_ROOT"];
@@ -739,12 +751,12 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//include the new config.php file
 		require "includes/config.php";
 
-	//remove the default config files that are not needed
-		$file = $v_extensions_dir."/brian.xml"; if (file_exists($file)) { unlink($file); }
-		$file = $v_extensions_dir."/example.com.xml"; if (file_exists($file)) { unlink($file); }
-		$file = $v_dialplan_default_dir."/99999_enum.xml"; if (file_exists($file)) { unlink($file); }
-		$file = $v_dialplan_default_dir."/01_example.com.xml"; if (file_exists($file)) { unlink($file); }
-		$file = $v_dialplan_public_dir."/00_inbound_did.xml"; if (file_exists($file)) { unlink($file); }
+	//rename the default config files that are not needed
+		$file = $v_extensions_dir.'/brian'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
+		$file = $v_extensions_dir.'/example.com'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
+		$file = $v_dialplan_default_dir.'/99999_enum'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
+		$file = $v_dialplan_default_dir.'/01_example.com'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
+		$file = $v_dialplan_public_dir.'/00_inbound_did'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
 		unset($file);
 
 	//prepare switch.conf.xml for voicemail to email
