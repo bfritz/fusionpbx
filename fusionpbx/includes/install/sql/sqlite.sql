@@ -37,7 +37,7 @@ INSERT INTO v_menu VALUES(41,1,'en','Auto Attendant','/mod/auto_attendant/v_auto
 INSERT INTO v_menu VALUES(42,1,'en','Fax Server','/mod/fax/v_fax.php','internal','admin','',38,28,'mcrane','2009-08-20 10:46:39','mcrane','2009-10-27 22:49:59');
 INSERT INTO v_menu VALUES(43,1,'en','Hunt Group','/mod/hunt_group/v_hunt_group.php','internal','admin','',38,30,'mcrane','2009-08-20 10:47:13','superadmin','2010-09-06 18:35:33');
 INSERT INTO v_menu VALUES(44,1,'en','Modules','/mod/modules/v_modules.php','internal','superadmin','',7,5,'mcrane','2009-08-20 10:47:46','superadmin','2010-09-01 16:26:19');
-INSERT INTO v_menu VALUES(45,1,'en','Music on Hold','/mod/recordings/v_recordings.php','internal','admin','',38,32,'mcrane','2009-08-20 10:49:31','mcrane','2009-10-27 22:52:15');
+INSERT INTO v_menu VALUES(45,1,'en','Music on Hold','/mod/music_on_hold/v_music_on_hold.php','internal','admin','',38,32,'mcrane','2009-08-20 10:49:31','mcrane','2009-10-27 22:52:15');
 INSERT INTO v_menu VALUES(46,1,'en','Recordings','/mod/recordings/v_recordings.php','internal','admin','',38,34,'mcrane','2009-08-20 10:50:12','mcrane','2009-10-27 22:51:39');
 INSERT INTO v_menu VALUES(47,1,'en','SIP Profiles','/mod/profiles/v_profiles.php','internal','superadmin','',93,64,'mcrane','2009-08-20 10:51:17','superadmin','2010-09-06 03:13:43');
 INSERT INTO v_menu VALUES(48,1,'en','Inbound Routes','/mod/public_includes/v_public_includes.php','internal','admin','',40,15,'mcrane','2009-08-20 10:51:56','mcrane','2009-10-27 22:12:16');
@@ -55,6 +55,7 @@ INSERT INTO v_menu VALUES(67,1,'en','Call Broadcast','/mod/call_broadcast/v_call
 INSERT INTO v_menu VALUES(71,1,'en','SQL Query','/mod/sql_query/v_sql_query.php','internal','superadmin','',93,65,'mcrane','2009-10-28 01:00:41','superadmin','2010-08-05 18:03:52');
 INSERT INTO v_menu VALUES(73,1,'en','Script Editor','<!--{project_path}-->/mod/script_edit/index.php','external','superadmin','',93,63,'mcrane','2009-09-23 12:15:51','superadmin','2010-09-06 03:13:52');
 INSERT INTO v_menu VALUES(74,1,'en','Grammar Editor','<!--{project_path}-->/mod/grammar_edit/index.php','external','superadmin','',93,59,'mcrane','2009-09-23 12:15:51','superadmin','2010-09-06 03:18:26');
+INSERT INTO v_menu VALUES(75,1,'en','Call Detail Records','/mod/cdr/v_cdr.php','internal','hidden','',38,4,'mcrane','2009-09-05 00:30:16','superadmin','2010-09-06 04:02:35');
 INSERT INTO v_menu VALUES(76,1,'en','Conferences','/mod/conferences/v_conferences.php','internal','member','',38,27,'mcrane','2010-08-01 00:30:16','mcrane','2010-08-01 22:49:14');
 INSERT INTO v_menu VALUES(77,1,'en','Call Forward','/mod/call_forward/v_call_forward.php','internal','admin','',38,23,'mcrane','2010-02-02 00:30:16','mcrane','2010-02-12 22:49:14');
 INSERT INTO v_menu VALUES(78,1,'en','Active Calls','/mod/calls_active/v_calls_active.php','internal','admin','',23,44,'mcrane','2010-02-26 00:30:16','superadmin','2010-08-06 01:47:15');
