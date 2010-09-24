@@ -197,7 +197,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 				if (db_table_exists($db, $db_type, $db_name, $table_name)) {
 					if ($display_results) {
 						echo "<td valign='top' class='rowstyle1'><strong>table</strong><br />$table_name</td>\n";
-						echo "<td valign='top' class='rowstyle1' style='background-color:#00FF00;'><strong>exists</strong><br />true</td>\n";
+						echo "<td valign='top' class='vncell' style=''>true</td>\n";
 					}
 					if (preg_match("/\(.*\)/", $sql, $matches)) {
 						//print_r($matches);
@@ -239,7 +239,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 								}
 								if (db_column_exists ($db, $db_type, $db_name, $table_name, $column_row['column_name'])) {
 									if ($display_results) {
-										echo "<td class='rowstyle1' style='background-color:#00FF00;'>true</td>\n";
+										echo "<td class='vncell' style=''>true</td>\n";
 										echo "<td>&nbsp;</td>\n";
 									}
 								}
@@ -247,8 +247,8 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 									$tmpsql = "alter table ".$table_name." add ".$column_row['column_name']." ".$column_row['column_data_type']."\n";
 									$sqlupdate .= $tmpsql;
 									if ($display_results) {
-										echo "<td class='rowstyle1' style='background-color:#FF0000;'>false</td>\n";
-										echo "<td class='rowstyle1' style='background-color:#FF0000;'>$tmpsql</td>\n";
+										echo "<td class='rowstyle1' style='background-color:#8D0D0D;'>false</td>\n";
+										echo "<td class='rowstyle1' style='background-color:#8D0D0D;'>$tmpsql</td>\n";
 									}
 								}
 								if ($display_results) {
@@ -287,7 +287,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 					}
 					if ($display_results) {
 						echo "<td valign='top' class='rowstyle1'><strong>table</strong><br />$table_name</td>\n";
-						echo "<td valign='top' class='rowstyle1' style='background-color:#FF0000;'><strong>exists</strong><br />false</td>\n";
+						echo "<td valign='top' class='rowstyle1' style='background-color:#8D0D0D;'><strong>exists</strong><br />false</td>\n";
 					}
 				}
 
