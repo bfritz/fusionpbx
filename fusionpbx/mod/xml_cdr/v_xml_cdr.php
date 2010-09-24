@@ -272,26 +272,7 @@ else {
 	if (strlen($write_codec) > 0) { $sqlwhere .= "and write_codec like '%$write_codec%' "; }
 	if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
 	if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
-	if (!ifgroup("admin") && !ifgroup("superadmin")) {
-		//disable member search
-		//$sqlwhereorig = $sqlwhere;
-		$sqlwhere = "where ";
-		if (count($extension_array) > 0) {
-			foreach($extension_array as $value) {
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and caller_id_number = '".$value['extension']."' ". $sqlwhereorig." \n"; } //source
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '*99".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
-			}
-		} //count($extension_array)
-	}
-	else {
-		//superadmin or admin
-		$sqlwhere = "where v_id = '$v_id' ".$sqlwhere;
-	}
-	$sqlwhere = str_replace ("where or", "where", $sqlwhere);
-	$sqlwhere = str_replace ("where and", " and", $sqlwhere);
-
-
+	
 //get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= " select * from v_extensions ";
@@ -310,6 +291,25 @@ else {
 		$x++;
 	}
 	unset ($prepstatement, $x);
+	
+	if (!ifgroup("admin") && !ifgroup("superadmin")) {
+		//disable member search
+		//$sqlwhereorig = $sqlwhere;
+		$sqlwhere = "where ";
+		if (count($extension_array) > 0) {
+			foreach($extension_array as $value) {
+				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and caller_id_number = '".$value['extension']."' ". $sqlwhereorig." \n"; } //source
+				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
+				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '*99".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
+			}
+		} //count($extension_array)
+	}
+	else {
+		//superadmin or admin
+		$sqlwhere = "where v_id = '$v_id' ".$sqlwhere;
+	}
+	$sqlwhere = str_replace ("where or", "where", $sqlwhere);
+	$sqlwhere = str_replace ("where and", " and", $sqlwhere);
 
 //set the param variable which is used with paging
 	$param = "";
