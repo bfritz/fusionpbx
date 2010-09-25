@@ -949,8 +949,8 @@ echo "    Action when True:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
-//switch_select_destination(select_type, select_name, select_value, select_style);
-switch_select_destination("dialplan", "action_1", $action_1, "width: 60%;");
+//switch_select_destination(select_type, select_label, select_name, select_value, select_style, $action);
+switch_select_destination("dialplan", $action_1, "action_1", $action_1, "width: 60%;", "");
 
 /*
 echo "	<table style='width: 60%;' border='0' >\n";
@@ -1010,8 +1010,8 @@ echo "    Action when False:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
-//switch_select_destination(select_type, select_name, select_value, select_style);
-switch_select_destination("dialplan", "anti_action_1", $anti_action_1, "width: 60%;");
+//switch_select_destination(select_type, select_label, select_name, select_value, select_style, $action);
+switch_select_destination("dialplan", $anti_action_1, "anti_action_1", $anti_action_1, "width: 60%;", "");
 
 /*
 echo "	<table style='width: 60%;' border='0' >\n";
