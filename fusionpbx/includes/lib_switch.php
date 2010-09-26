@@ -42,6 +42,29 @@ $v_id = '1';
 	$v_fax_show = true;
 	$v_path_show = true;
 
+//determine whether to use php http compression
+	if (strlen($_SESSION['php_http_compression']) == 0) {
+		$sql = "";
+		$sql .= "select * from v_vars ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and var_name = 'php_http_compression' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$_SESSION['php_http_compression'] = $row["var_value"];
+			break; //limit to 1 row
+		}
+	}
+//set http compression
+	if ($_SESSION['http_compression'] != "false") {
+			if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+				ob_start("ob_gzhandler");
+			}
+			else{
+				ob_start();
+			}
+	}
 
 function v_settings()
 {
