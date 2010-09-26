@@ -268,7 +268,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 echo "<div align='center'>";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
-echo "<tr class='border'>\n";
+echo "<tr class=''>\n";
 echo "	<td align=\"left\">\n";
 echo "		<br>";
 
@@ -297,10 +297,6 @@ echo "	</table>";
 echo "<br />\n";
 echo "<br />\n";
 
-//echo "<fieldset style=\"text-align:right;\">\n";
-//echo "<legend><b>Queue Details</b></legend>\n";
-//echo "<b>Queue Details</b><br />\n";
-//echo "<br />\n";
 echo "	<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 echo "	<tr>\n";
 echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
@@ -395,7 +391,6 @@ echo "\n";
 echo "</td>\n";
 echo "</tr>\n";
 
-
 echo "<tr>\n";
 echo "<td class='vtable' valign='top' align='left' nowrap>\n";
 echo "	<br /><br />\n";
@@ -405,7 +400,6 @@ echo "<td class='vtable' align='left'>\n";
 echo "    &nbsp\n";
 echo "</td>\n";
 echo "</tr>\n";
-
 
 echo "<tr>\n";
 echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
@@ -429,9 +423,9 @@ echo "Agents use this extension number to login or logout of the Queue. After lo
 echo "</td>\n";
 echo "</tr>\n";
 echo "	</table>\n";
-echo "</fieldset>\n";
 
-echo "	<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+
+echo "	<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
 echo "<tr>\n";
 echo "	<td colspan='5' align='right'>\n";
 if ($action == "update") {
