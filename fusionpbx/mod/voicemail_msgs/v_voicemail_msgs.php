@@ -162,18 +162,53 @@ echo "	<td align=\"center\">\n";
 echo "      <br>";
 
 
-echo "<table width='100%' border='0'><tr>\n";
+echo "<table width='100%' border='0'>\n";
+echo "<tr>\n";
 echo "<td align='left' width='50%' nowrap><b>Voicemail Messages</b></td>\n";
 echo "<td align='left' width='50%' align='right'>&nbsp;</td>\n";
-echo "</tr></table>\n";
+echo "</tr>\n";
+echo "<tr>\n";
+echo "<td colspan='2' align='left'>\n";
+echo "Voicemails are listed, played, downloaded and deleted from this page. \n";
+if (ifgroup("admin") || ifgroup("superadmin")) {
+	echo "Voicemails for an extension are shown to the user(s) that have been assigned to an extension.\n";
+	echo "User accounts are created in the 'User Manager' and then are assigned on the 'Extensions' page. \n";
+	echo "<br />\n";
+}
+echo "</td>\n";
+echo "</tr>\n";
+echo "</table>\n";
 
+echo "<br />\n";
 
-if (count($mailbox_array) > 0) {
+$tmp_msg_header = '';
+$tmp_msg_header .= "<tr>\n";
+$tmp_msg_header .= thorderby('created_epoch', 'Created', $orderby, $order);
+//$tmp_msg_header .= thorderby('read_epoch', 'Read', $orderby, $order);
+//$tmp_msg_header .= thorderby('username', 'Ext', $orderby, $order);
+//$tmp_msg_header .= thorderby('domain', 'Domain', $orderby, $order);
+//$tmp_msg_header .= thorderby('uuid', 'UUID', $orderby, $order);
+$tmp_msg_header .= thorderby('cid_name', 'Caller ID Name', $orderby, $order);
+$tmp_msg_header .= thorderby('cid_number', 'Caller ID Number', $orderby, $order);
+$tmp_msg_header .= thorderby('in_folder', 'Folder', $orderby, $order);
+//$tmp_msg_header .= "<th>Options</th>\n";
+//$tmp_msg_header .= thorderby('file_path', 'File Path', $orderby, $order);
+$tmp_msg_header .= thorderby('message_len', 'Length (play)', $orderby, $order);
+$tmp_msg_header .= "<th nowrap>Size (download)</th>\n";
+//$tmp_msg_header .= thorderby('flags', 'Flags', $orderby, $order);
+//$tmp_msg_header .= thorderby('read_flags', 'Read Flags', $orderby, $order);
+$tmp_msg_header .= "<td align='right' width='22'>\n";
+//$tmp_msg_header .= "  <input type='button' class='btn' name='' alt='add' onclick=\"window.location='voicemail_msgs_edit.php'\" value='+'>\n";
+$tmp_msg_header .= "</td>\n";
+$tmp_msg_header .= "<tr>\n";
 
+echo "<div align='center'>\n";
+echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
 
-	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
-
+if (count($mailbox_array) == 0) {
+	echo $tmp_msg_header;
+}
+else {
 
 	foreach($mailbox_array as $value) {
 		//print_r($value);
@@ -193,28 +228,7 @@ if (count($mailbox_array) > 0) {
 			echo "</td>\n";
 			echo "</tr>\n";
 
-			$tmp_msg_header = '';
-			$tmp_msg_header .= "<tr>\n";
-			$tmp_msg_header .= thorderby('created_epoch', 'Created', $orderby, $order);
-			//$tmp_msg_header .= thorderby('read_epoch', 'Read', $orderby, $order);
-			//$tmp_msg_header .= thorderby('username', 'Ext', $orderby, $order);
-			//$tmp_msg_header .= thorderby('domain', 'Domain', $orderby, $order);
-			//$tmp_msg_header .= thorderby('uuid', 'UUID', $orderby, $order);
-			$tmp_msg_header .= thorderby('cid_name', 'Caller ID Name', $orderby, $order);
-			$tmp_msg_header .= thorderby('cid_number', 'Caller ID Number', $orderby, $order);
-			$tmp_msg_header .= thorderby('in_folder', 'Folder', $orderby, $order);
-			//$tmp_msg_header .= "<th>Options</th>\n";
-			//$tmp_msg_header .= thorderby('file_path', 'File Path', $orderby, $order);
-			$tmp_msg_header .= thorderby('message_len', 'Length (play)', $orderby, $order);
-			$tmp_msg_header .= "<th nowrap>Size (download)</th>\n";
-			//$tmp_msg_header .= thorderby('flags', 'Flags', $orderby, $order);
-			//$tmp_msg_header .= thorderby('read_flags', 'Read Flags', $orderby, $order);
-			$tmp_msg_header .= "<td align='right' width='22'>\n";
-			//$tmp_msg_header .= "  <input type='button' class='btn' name='' alt='add' onclick=\"window.location='voicemail_msgs_edit.php'\" value='+'>\n";
-			$tmp_msg_header .= "</td>\n";
-			$tmp_msg_header .= "<tr>\n";
 			echo $tmp_msg_header;
-
 
 			//$sql = "";
 			//$sql .= " select * from voicemail_msgs ";
@@ -261,7 +275,6 @@ if (count($mailbox_array) > 0) {
 						}
 						$x++;
 					}
-
 
 					$tmp_filesize = filesize($row[file_path]);
 					$tmp_filesize = byte_convert($tmp_filesize);
@@ -310,12 +323,9 @@ if (count($mailbox_array) > 0) {
 					if ($c==0) { $c=1; } else { $c=0; }
 				} //end foreach
 				unset($sql, $result, $rowcount);
-
 			} //end if results
-
 		}
 	}
-
 
 	echo "<tr>\n";
 	echo "<td colspan='10'>\n";
