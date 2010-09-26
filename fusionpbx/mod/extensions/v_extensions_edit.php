@@ -350,10 +350,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td width='30%' nowrap valign='top'><b>Extension Add</b></td>\n";
+		echo "<td width='30%' nowrap align='left' valign='top'><b>Extension Add</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td width='30%' nowrap valign='top'><b>Extension Edit</b></td>\n";
+		echo "<td width='30%' nowrap align='left' valign='top'><b>Extension Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right' valign='top'>\n";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_extensions.php'\" value='Back'>\n";
