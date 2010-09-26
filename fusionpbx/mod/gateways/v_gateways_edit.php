@@ -936,7 +936,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	echo "  <td valign=\"top\" class=\"vncell\">Dialplan Expression</td>\n";
-	echo "  <td class=\"vtable\">";
+	echo "  <td align='left' class=\"vtable\">";
 	echo "    <textarea name=\"dialplan_expression\" id=\"dialplan_expression\" class=\"formfld\" cols=\"30\" rows=\"4\" wrap=\"off\"></textarea>\n";
 	echo "    <br>\n";
 	echo "    <select name='dialplan_expression_select' id='dialplan_expression_select' onchange=\"document.getElementById('dialplan_expression').value += document.getElementById('dialplan_expression_select').value + '\\n';\" class='formfld'>\n";
