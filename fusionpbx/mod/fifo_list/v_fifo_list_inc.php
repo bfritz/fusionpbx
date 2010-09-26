@@ -34,14 +34,6 @@ else {
 	exit;
 }
 
-//set http compression
-	if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
-		ob_start("ob_gzhandler");
-	}
-	else{
-		ob_start();
-	}
-
 //get the event socket information
 	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
 		$sql = "";

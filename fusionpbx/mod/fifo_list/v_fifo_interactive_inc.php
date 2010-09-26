@@ -34,14 +34,6 @@ else {
 	exit;
 }
 
-//set http compression
-	if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
-		ob_start("ob_gzhandler");
-	}
-	else{
-		ob_start();
-	}
-
 //set variables
 	$fifo_name = trim($_REQUEST["c"]);
 	$tmp_fifo_name = str_replace('_', ' ', $fifo_name);

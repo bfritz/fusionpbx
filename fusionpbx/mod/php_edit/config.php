@@ -26,7 +26,7 @@
 include "root.php";
 
 error_reporting (E_ALL ^ E_NOTICE);
-//ob_start("ob_gzhandler");
+
 
 $applicationname = 'Edit';
 $bodyoptions = "";
