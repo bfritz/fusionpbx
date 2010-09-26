@@ -100,25 +100,24 @@ $order = $_GET["order"];
 	$rowstyle["1"] = "rowstyle1";
 
 	echo "<div align='left'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-	//echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
-
+	echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
+	echo "<tr>";
+	echo thorderby('rsstitle', 'Title', $orderby, $order);
+	echo thorderby('rsslink', 'Link', $orderby, $order);
+	echo thorderby('rsssubcategory', 'Template', $orderby, $order);
+	echo thorderby('rssgroup', 'Group', $orderby, $order);
+	echo thorderby('rssorder', 'Order', $orderby, $order);
 	if ($resultcount == 0) { //no results
-		echo "<tr><td>&nbsp;</td></tr>";
+		echo "<td align='right' width='21'>\n";
 	}
-	else { //received results
-
-		echo "<tr>";
-		echo thorderby('rsstitle', 'Title', $orderby, $order);        
-		echo thorderby('rsslink', 'Link', $orderby, $order);
-		echo thorderby('rsssubcategory', 'Template', $orderby, $order);
-		echo thorderby('rssgroup', 'Group', $orderby, $order);     
-		echo thorderby('rssorder', 'Order', $orderby, $order);   
+	else {
 		echo "<td align='right' width='42'>\n";
-		echo "	<a href='rssadd.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
-		echo "</td>\n";                  
-		echo "</tr>";
+	}
+	echo "	<a href='rssadd.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "</td>\n";
+	echo "</tr>";
 
+	if ($resultcount > 0) {
 		foreach($result as $row) {
 		//print_r( $row );
 			echo "<tr style='".$rowstyle[$c]."'>\n";
@@ -167,10 +166,6 @@ $order = $_GET["order"];
 				//echo "  <input type='button' class='btn' name='' onclick=\"if (confirm('Are you sure you wish to continue?')) { window.location='rssdelete.php?rssid=".$row[rssid]."' }\" value='Delete'>";
 				//echo "</td>";
 
-				//echo "<td valign='top' align='right' class='".$rowstyle[$c]."'>";
-				//echo "  <input type='button' class='btn' name='' onclick=\"window.location='rsssublist.php?rssid=".$row[rssid]."'\" value='Details'>";
-				//echo "</td>";
-
 			echo "</tr>";
 
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -181,6 +176,7 @@ $order = $_GET["order"];
 
 	echo "<tr>\n";
 	echo "<td colspan='6' align='left'>\n";
+
 	echo "	<table border='0' width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
@@ -190,9 +186,9 @@ $order = $_GET["order"];
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
+
 	echo "</td>\n";
 	echo "</tr>\n";
-
 	echo "</table>\n";
 	echo "</div>\n";
 
