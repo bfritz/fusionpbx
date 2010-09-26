@@ -140,7 +140,7 @@ require_once "includes/config.php";
 	}
 
 //http compression
-	//if(!ob_start("ob_gzhandler")) ob_start();
+	if(!ob_start("ob_gzhandler")) ob_start();
 
 //send the output to the browser
 	echo $output;
