@@ -217,6 +217,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$enabled', ";
 					$sql .= "'$description' ";
 					$sql .= ")";
+					if ($v_debug) {
+						echo $sql."<br />";
+					}
 					if ($db_type == "sqlite" || $db_type == "mysql" ) {
 						$db->exec(check_sql($sql));
 						$dialplan_include_id = $db->lastInsertId($id);
@@ -452,7 +455,7 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "  <td valign=\"top\" class=\"vncellreq\">Dialplan Expression</td>\n";
-echo "  <td class=\"vtable\">";
+echo "  <td align='left' class=\"vtable\">";
 echo "    <textarea name=\"dialplan_expression\" id=\"dialplan_expression\" class=\"formfld\" style='width: 60%;' cols=\"30\" rows=\"4\" wrap=\"off\"></textarea>\n";
 echo "    <br>\n";
 echo "    <select name='dialplan_expression_select' id='dialplan_expression_select' onchange=\"document.getElementById('dialplan_expression').value += document.getElementById('dialplan_expression_select').value + '\\n';\" class='formfld' style='width: 60%;'>\n";
