@@ -34,42 +34,34 @@ require_once "includes/checkauth.php";
 
 // active extensions -----------------------------
 
-		//get a list of assigned extensions for this user
-			$sql = "";
-			$sql .= " select * from v_extensions ";
-			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			//$v_mailboxes = '';
-			$x = 0;
-			$result = $prepstatement->fetchAll();
-			foreach ($result as &$row) {
-				//$v_mailboxes = $v_mailboxes.$row["extension"].'|';
-				//$extension_id = $row["extension_id"]
-				//$extension = $row["extension"]
-				$user_array[$x]['extension_id'] = $row["extension_id"];
-				$user_array[$x]['extension'] = $row["extension"];
-				$x++;
-			}
-			unset ($prepstatement, $x);
-			//$user_list = str_replace("\n", "|", "|".$user_list);
-			//echo "v_mailboxes $v_mailboxes<br />";
-			//$user_array = explode ("|", $v_mailboxes);
-			//echo "<pre>\n";
-			//print_r($user_array);
-			//echo "</pre>\n";
+	//get a list of assigned extensions for this user
+		$sql = "";
+		$sql .= " select * from v_extensions ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		//$v_mailboxes = '';
+		$x = 0;
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			//$v_mailboxes = $v_mailboxes.$row["extension"].'|';
+			//$extension_id = $row["extension_id"]
+			//$extension = $row["extension"]
+			$user_array[$x]['extension_id'] = $row["extension_id"];
+			$user_array[$x]['extension'] = $row["extension"];
+			$x++;
+		}
+		unset ($prepstatement, $x);
+		//$user_list = str_replace("\n", "|", "|".$user_list);
+		//echo "v_mailboxes $v_mailboxes<br />";
+		//$user_array = explode ("|", $v_mailboxes);
+		//echo "<pre>\n";
+		//print_r($user_array);
+		//echo "</pre>\n";
 
-
+	//if (count($_SESSION['assigned_extension_array']) > 0) {
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-		//echo "<tr>\n";
-		//echo "<td >\n";
-		//echo "	<strong>Count: $row_count</strong>\n";
-		//echo "</td>\n";
-		//echo "<td colspan='2'>\n";
-		//echo "	&nbsp;\n";
-		//echo "</td>\n";
-		//echo "<td colspan='1' align='right'>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
@@ -297,18 +289,19 @@ require_once "includes/checkauth.php";
 			} //end foreach
 		}
 
-	echo "</table>\n";
+		echo "</table>\n";
 
-echo "<span id='uuid_1' style='visibility:hidden;'>$uuid_1</span>\n";
-echo "<span id='direction_1' style='visibility:hidden;'>$direction_1</span>\n";
-echo "<span id='cid_name_1' style='visibility:hidden;'>$cid_name_1</span>\n";
-echo "<span id='cid_num_1' style='visibility:hidden;'>$cid_num_1</span>\n";
+		echo "<span id='uuid_1' style='visibility:hidden;'>$uuid_1</span>\n";
+		echo "<span id='direction_1' style='visibility:hidden;'>$direction_1</span>\n";
+		echo "<span id='cid_name_1' style='visibility:hidden;'>$cid_name_1</span>\n";
+		echo "<span id='cid_num_1' style='visibility:hidden;'>$cid_num_1</span>\n";
 
-echo "<span id='uuid_2' style='visibility:hidden;'>$uuid_2</span>\n";
-echo "<span id='direction_2' style='visibility:hidden;'>$direction_2</span>\n";
-echo "<span id='cid_name_2' style='visibility:hidden;'>$cid_name_2</span>\n";
-echo "<span id='cid_num_2' style='visibility:hidden;'>$cid_num_2</span>\n";
+		echo "<span id='uuid_2' style='visibility:hidden;'>$uuid_2</span>\n";
+		echo "<span id='direction_2' style='visibility:hidden;'>$direction_2</span>\n";
+		echo "<span id='cid_name_2' style='visibility:hidden;'>$cid_name_2</span>\n";
+		echo "<span id='cid_num_2' style='visibility:hidden;'>$cid_num_2</span>\n";
 
-echo "<br />\n";
-echo "<br />\n";
+		echo "<br />\n";
+		echo "<br />\n";
+	//}
 ?>

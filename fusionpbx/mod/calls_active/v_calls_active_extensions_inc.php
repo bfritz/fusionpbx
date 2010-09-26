@@ -62,14 +62,6 @@ require_once "includes/checkauth.php";
 	}
 */
 
-//set http compression
-//	if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
-//		ob_start("ob_gzhandler");
-//	}
-//	else{
-//		ob_start();
-//	}
-
 //define variables
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
