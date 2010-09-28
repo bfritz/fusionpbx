@@ -26,71 +26,6 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
-	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
-
-if ($_GET['a'] == "del") {
-	$faxextension = check_str($_GET["faxextension"]);
-	if ($_GET['type'] == "fax_inbox") {
-		unlink($v_storage_dir.'/fax/'.$faxextension.'/inbox/'.$_GET['filename']);
-	}
-	if ($_GET['type'] == "fax_sent") {
-		unlink($v_storage_dir.'/fax/'.$faxextension.'/sent/'.$_GET['filename']);
-	}
-}
-
-if ($_GET['a'] == "download") {
-
-	session_cache_limiter('public');
-	//test to see if it is in the inbox or sent directory.
-	if ($_GET['type'] == "fax_inbox") {
-		if (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
-			$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
-		}
-	}else if ($_GET['type'] == "fax_sent") {
-		if  (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
-			$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'];
-		}
-	}
-	//let's see if we found it.
-	if (strlen($tmp_faxdownload_file) > 0) {
-		$fd = fopen($tmp_faxdownload_file, "rb");
-
-		if ($_GET['t'] == "bin") {
-			header("Content-Type: application/force-download");
-			header("Content-Type: application/octet-stream");
-			header("Content-Type: application/download");
-			header("Content-Description: File Transfer");
-			header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
-		}
-		else {
-			$file_ext = substr($_GET['filename'], -3);
-			if ($file_ext == "tif") {
-			  header("Content-Type: image/tiff");
-			}else if ($file_ext == "png") {
-			  header("Content-Type: image/png");
-			}else if ($file_ext == "jpg") {
-			  header('Content-Type: image/jpeg');
-			}else if ($file_ext == "pdf") {
-			  header("Content-Type: application/pdf");
-			}
-		}
-		header('Accept-Ranges: bytes');
-		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-		header("Content-Length: " . filesize($tmp_faxdownload_file));
-		fpassthru($fd);
-	}else {
-		echo "File not found.";
-	}
-
-	exit;
-}
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -110,6 +45,11 @@ if ($_GET['a'] == "download") {
 		$fax_pin_number = check_str($_POST["fax_pin_number"]);
 		$fax_caller_id_name = check_str($_POST["fax_caller_id_name"]);
 		$fax_caller_id_number = check_str($_POST["fax_caller_id_number"]);
+		$fax_user_list = check_str($_POST["fax_user_list"])."|";
+		$fax_user_list = str_replace("\n", "|", "|".$fax_user_list);
+		$fax_user_list = str_replace("\r", "", $fax_user_list);
+		$fax_user_list = str_replace("||", "|", $fax_user_list);
+		$fax_user_list = trim($fax_user_list);
 		$faxdescription = check_str($_POST["faxdescription"]);
 	}
 
@@ -236,13 +176,6 @@ if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$fax_id = check_str($_POST["fax_id"]);
 	}
@@ -255,6 +188,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($fax_pin_number) == 0) { $msg .= "Please provide: Pin Number<br>\n"; }
 		//if (strlen($fax_caller_id_name) == 0) { $msg .= "Please provide: Caller ID Name<br>\n"; }
 		//if (strlen($fax_caller_id_number) == 0) { $msg .= "Please provide: Caller ID Number<br>\n"; }
+		//if (strlen($fax_user_list) == 0) { $msg .= "Please provide: Assigned Users<br>\n"; }
 		//if (strlen($faxdescription) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
@@ -269,130 +203,203 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
+	//add or update the database
+		if ($_POST["persistformvar"] != "true") {
+			if (ifgroup("admin") || ifgroup("superadmin")) {
+				if ($action == "add") {
+					$sql = "insert into v_fax ";
+					$sql .= "(";
+					$sql .= "v_id, ";
+					$sql .= "faxextension, ";
+					$sql .= "faxname, ";
+					$sql .= "faxemail, ";
+					$sql .= "fax_pin_number, ";
+					$sql .= "fax_caller_id_name, ";
+					$sql .= "fax_caller_id_number, ";
+					$sql .= "fax_user_list, ";
+					$sql .= "faxdescription ";
+					$sql .= ")";
+					$sql .= "values ";
+					$sql .= "(";
+					$sql .= "'$v_id', ";
+					$sql .= "'$faxextension', ";
+					$sql .= "'$faxname', ";
+					$sql .= "'$faxemail', ";
+					$sql .= "'$fax_pin_number', ";
+					$sql .= "'$fax_caller_id_name', ";
+					$sql .= "'$fax_caller_id_number', ";
+					$sql .= "'$fax_user_list', ";
+					$sql .= "'$faxdescription' ";
+					$sql .= ")";
+					$db->exec(check_sql($sql));
+					unset($sql);
 
+					sync_package_v_fax();
 
-//Add or update the database
-if ($_POST["persistformvar"] != "true") {
-	if ($action == "add") {
-		$sql = "insert into v_fax ";
-		$sql .= "(";
-		$sql .= "v_id, ";
-		$sql .= "faxextension, ";
-		$sql .= "faxname, ";
-		$sql .= "faxemail, ";
-		$sql .= "fax_pin_number, ";
-		$sql .= "fax_caller_id_name, ";
-		$sql .= "fax_caller_id_number, ";
-		$sql .= "faxdescription ";
-		$sql .= ")";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'$v_id', ";
-		$sql .= "'$faxextension', ";
-		$sql .= "'$faxname', ";
-		$sql .= "'$faxemail', ";
-		$sql .= "'$fax_pin_number', ";
-		$sql .= "'$fax_caller_id_name', ";
-		$sql .= "'$fax_caller_id_number', ";
-		$sql .= "'$faxdescription' ";
-		$sql .= ")";
-		$db->exec(check_sql($sql));
-		unset($sql);
+					require_once "includes/header.php";
+					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
+					echo "<div align='center'>\n";
+					echo "Add Complete\n";
+					echo "</div>\n";
+					require_once "includes/footer.php";
+					return;
+				} //if ($action == "add")
+			}
 
-		sync_package_v_fax();
+			if ($action == "update") {
+				$sql = "update v_fax set ";
+				$sql .= "v_id = '$v_id', ";
+				$sql .= "faxextension = '$faxextension', ";
+				$sql .= "faxname = '$faxname', ";
+				$sql .= "faxemail = '$faxemail', ";
+				$sql .= "fax_pin_number = '$fax_pin_number', ";
+				$sql .= "fax_caller_id_name = '$fax_caller_id_name', ";
+				$sql .= "fax_caller_id_number = '$fax_caller_id_number', ";
+				//$sql .= "fax_user_list = '$fax_user_list', ";
+				$sql .= "faxdescription = '$faxdescription' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and fax_id = '$fax_id' ";
+				if (!ifgroup("admin") || !ifgroup("superadmin")) {
+					$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
+				}
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Add Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "add")
+				sync_package_v_fax();
 
-	if ($action == "update") {
-		$sql = "update v_fax set ";
-		$sql .= "v_id = '$v_id', ";
-		$sql .= "faxextension = '$faxextension', ";
-		$sql .= "faxname = '$faxname', ";
-		$sql .= "faxemail = '$faxemail', ";
-		$sql .= "fax_pin_number = '$fax_pin_number', ";
-		$sql .= "fax_caller_id_name = '$fax_caller_id_name', ";
-		$sql .= "fax_caller_id_number = '$fax_caller_id_number', ";
-		$sql .= "faxdescription = '$faxdescription' ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and fax_id = '$fax_id' ";
-		$db->exec(check_sql($sql));
-		unset($sql);
-
-		sync_package_v_fax();
-
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Update Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "update")
-} //if ($_POST["persistformvar"] != "true") { 
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Update Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "update")
+		} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$fax_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_fax ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and fax_id = '$fax_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$faxextension = $row["faxextension"];
-		$faxname = $row["faxname"];
-		$faxemail = $row["faxemail"];
-		$fax_pin_number = $row["fax_pin_number"];
-		$fax_caller_id_name = $row["fax_caller_id_name"];
-		$fax_caller_id_number = $row["fax_caller_id_number"];
-		$faxdescription = $row["faxdescription"];
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$fax_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_fax ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and fax_id = '$fax_id' ";
+		if (!ifgroup("admin") || !ifgroup("superadmin")) {
+			$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
+		}
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		if (count($result) == 0) {
+			echo "access denied";
+			exit;
+		}
+		foreach ($result as &$row) {
+			$v_id = $row["v_id"];
+			$faxextension = $row["faxextension"];
+			$faxname = $row["faxname"];
+			$faxemail = $row["faxemail"];
+			$fax_pin_number = $row["fax_pin_number"];
+			$fax_caller_id_name = $row["fax_caller_id_name"];
+			$fax_caller_id_number = $row["fax_caller_id_number"];
+			$fax_user_list = $row["fax_user_list"];
+			$faxdescription = $row["faxdescription"];
 
-		//set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
-			$dir_fax_inbox = $v_storage_dir.'/fax/'.$faxextension.'/inbox';
-			$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
+			//set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
+				$dir_fax_inbox = $v_storage_dir.'/fax/'.$faxextension.'/inbox';
+				$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
 
-		//make sure the directories exist
-			if (!is_dir($v_storage_dir.'/fax/'.$faxextension)) {
-				mkdir($v_storage_dir.'/fax/'.$faxextension,0777,true);
-				chmod($v_storage_dir.'/fax/'.$faxextension,0777);
-			}
-			if (!is_dir($dir_fax_inbox)) { 
-				mkdir($dir_fax_inbox,0777,true); 
-				chmod($dir_fax_inbox,0777);
-			}
-			if (!is_dir($dir_fax_sent)) { 
-				mkdir($dir_fax_sent,0777,true); 
-				chmod($dir_fax_sent,0777);
-			}
+			//make sure the directories exist
+				if (!is_dir($v_storage_dir.'/fax/'.$faxextension)) {
+					mkdir($v_storage_dir.'/fax/'.$faxextension,0777,true);
+					chmod($v_storage_dir.'/fax/'.$faxextension,0777);
+				}
+				if (!is_dir($dir_fax_inbox)) { 
+					mkdir($dir_fax_inbox,0777,true); 
+					chmod($dir_fax_inbox,0777);
+				}
+				if (!is_dir($dir_fax_sent)) { 
+					mkdir($dir_fax_sent,0777,true); 
+					chmod($dir_fax_sent,0777);
+				}
 
-		break; //limit to 1 row
+			break; //limit to 1 row
+		}
+		
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
+//delete the fax
+	if ($_GET['a'] == "del") {
+		$faxextension = check_str($_GET["faxextension"]);
+		if ($_GET['type'] == "fax_inbox") {
+			unlink($v_storage_dir.'/fax/'.$faxextension.'/inbox/'.$_GET['filename']);
+		}
+		if ($_GET['type'] == "fax_sent") {
+			unlink($v_storage_dir.'/fax/'.$faxextension.'/sent/'.$_GET['filename']);
+		}
+	}
 
+//download the fax
+	if ($_GET['a'] == "download") {
+		session_cache_limiter('public');
+		//test to see if it is in the inbox or sent directory.
+			if ($_GET['type'] == "fax_inbox") {
+				if (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
+					$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
+				}
+			}else if ($_GET['type'] == "fax_sent") {
+				if  (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
+					$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'];
+				}
+			}
+		//check to see if it was found.
+			if (strlen($tmp_faxdownload_file) > 0) {
+				$fd = fopen($tmp_faxdownload_file, "rb");
+				if ($_GET['t'] == "bin") {
+					header("Content-Type: application/force-download");
+					header("Content-Type: application/octet-stream");
+					header("Content-Type: application/download");
+					header("Content-Description: File Transfer");
+					header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
+				}
+				else {
+					$file_ext = substr($_GET['filename'], -3);
+					if ($file_ext == "tif") {
+					  header("Content-Type: image/tiff");
+					}else if ($file_ext == "png") {
+					  header("Content-Type: image/png");
+					}else if ($file_ext == "jpg") {
+					  header('Content-Type: image/jpeg');
+					}else if ($file_ext == "pdf") {
+					  header("Content-Type: application/pdf");
+					}
+				}
+				header('Accept-Ranges: bytes');
+				header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+				header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+				header("Content-Length: " . filesize($tmp_faxdownload_file));
+				fpassthru($fd);
+			}
+			else {
+				echo "File not found.";
+			}
+		//exit the code execution
+			exit;
+	}
+
+//show the header
 	require_once "includes/header.php";
 
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table border='0' cellpadding='0' cellspacing='2'>\n";
 
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
-	echo "      <br>";
-
+	echo "		<br>";
 
 	echo "<form method='post' name='frm' action=''>\n";
 
@@ -444,12 +451,12 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Pin Number:\n";
+	echo "	PIN Number:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='fax_pin_number' maxlength='255' value=\"$fax_pin_number\">\n";
 	echo "<br />\n";
-	echo "Enter the pin number here.\n";
+	echo "Enter the PIN number here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -474,6 +481,28 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "Enter the Caller ID number here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		User List:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		$onchange = "document.getElementById('fax_user_list').value += document.getElementById('username').value + '\\n';";
+		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; //$sqlwhereoptional = "where v_id = $v_id"; 
+		echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
+		echo "<br />\n";
+		echo "Use the select list to add users to the user list. This will assign users to this extension.\n";
+		echo "<br />\n";
+		echo "<br />\n";
+		$fax_user_list = str_replace("|", "\n", $fax_user_list);
+		echo "		<textarea name=\"fax_user_list\" id=\"fax_user_list\" class=\"formfld\" cols=\"30\" rows=\"3\" wrap=\"off\">$fax_user_list</textarea>\n";
+		echo "		<br>\n";
+		echo "Assign the users that are can manage this fax extension.\n";
+		echo "<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
@@ -512,6 +541,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	//pkg_add -r ghostscript8-nox11; rehash
 	echo "			To send a fax you can upload a .tif file or if ghost script has been installed then you can also send a fax by uploading a PDF. \n";
 	echo "			When sending a fax you can view status of the transmission by viewing the logs from the Status tab or by watching the response from the console.\n";
+	echo "			<br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 

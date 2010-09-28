@@ -26,13 +26,14 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+//if (ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
+//}
+//else {
+//	echo "access denied";
+//	exit;
+//}
+
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
@@ -40,6 +41,7 @@ $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
 
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -70,6 +72,10 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_fax ";
 	$sql .= "where v_id = '$v_id' ";
+	if (!ifgroup("admin") || !ifgroup("superadmin")) {
+		//$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
+		$sql .= "and fax_user_list like '%".$_SESSION["username"]."|%' ";
+	}
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -87,7 +93,12 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_fax ";
 	$sql .= "where v_id = '$v_id' ";
+	if (!ifgroup("admin") || !ifgroup("superadmin")) {
+		//$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
+		$sql .= "and fax_user_list like '%".$_SESSION["username"]."|%' ";
+	}
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -109,7 +120,9 @@ $order = $_GET["order"];
 	echo thorderby('faxemail', 'Email', $orderby, $order);
 	echo thorderby('faxdescription', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_fax_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo "	<a href='v_fax_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	}
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -126,7 +139,9 @@ $order = $_GET["order"];
 			echo "   <td valign='top' class='rowstylebg' width='35%'>".$row[faxdescription]."</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			echo "		<a href='v_fax_edit.php?id=".$row[fax_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_fax_delete.php?id=".$row[fax_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			if (ifgroup("admin") || ifgroup("superadmin")) {
+				echo "		<a href='v_fax_delete.php?id=".$row[fax_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			}
 			echo "   </td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -141,7 +156,9 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_fax_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo "			<a href='v_fax_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

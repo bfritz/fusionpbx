@@ -36,7 +36,7 @@ INSERT INTO v_menu VALUES(38,1,'en','Apps','','internal','member','','',17,'mcra
 INSERT INTO v_menu VALUES(39,1,'en','Gateways','/mod/gateways/v_gateways.php','internal','admin','SIP Gateways',38,29,'mcrane','2009-08-20 10:41:08','superadmin','2010-09-06 18:42:02');
 INSERT INTO v_menu VALUES(40,1,'en','Dialplan','','internal','admin','','',13,'mcrane','2009-08-20 10:42:11','superadmin','2010-09-01 17:12:38');
 INSERT INTO v_menu VALUES(41,1,'en','Auto Attendant','/mod/auto_attendant/v_auto_attendant.php','internal','hidden','',38,19,'mcrane','2009-08-20 10:46:04','superadmin','2010-09-06 18:33:02');
-INSERT INTO v_menu VALUES(42,1,'en','Fax Server','/mod/fax/v_fax.php','internal','admin','',38,28,'mcrane','2009-08-20 10:46:39','mcrane','2009-10-27 22:49:59');
+INSERT INTO v_menu VALUES(42,1,'en','Fax Server','/mod/fax/v_fax.php','internal','member','',38,28,'mcrane','2009-08-20 10:46:39','mcrane','2009-10-27 22:49:59');
 INSERT INTO v_menu VALUES(43,1,'en','Hunt Group','/mod/hunt_group/v_hunt_group.php','internal','admin','',38,30,'mcrane','2009-08-20 10:47:13','superadmin','2010-09-06 18:35:33');
 INSERT INTO v_menu VALUES(44,1,'en','Modules','/mod/modules/v_modules.php','internal','superadmin','',7,5,'mcrane','2009-08-20 10:47:46','superadmin','2010-09-01 16:26:19');
 INSERT INTO v_menu VALUES(45,1,'en','Music on Hold','/mod/music_on_hold/v_music_on_hold.php','internal','admin','',38,32,'mcrane','2009-08-20 10:49:31','mcrane','2009-10-27 22:52:15');
@@ -61,7 +61,7 @@ INSERT INTO v_menu VALUES(75,1,'en','Call Detail Records','/mod/cdr/v_cdr.php','
 INSERT INTO v_menu VALUES(76,1,'en','Conferences','/mod/conferences/v_conferences.php','internal','member','',38,27,'mcrane','2010-08-01 00:30:16','mcrane','2010-08-01 22:49:14');
 INSERT INTO v_menu VALUES(77,1,'en','Call Forward','/mod/call_forward/v_call_forward.php','internal','admin','',38,23,'mcrane','2010-02-02 00:30:16','mcrane','2010-02-12 22:49:14');
 INSERT INTO v_menu VALUES(78,1,'en','Active Calls','/mod/calls_active/v_calls_active.php','internal','admin','',23,44,'mcrane','2010-02-26 00:30:16','superadmin','2010-08-06 01:47:15');
-INSERT INTO v_menu VALUES(79,1,'en','Active Extensions','/mod/calls_active/v_calls_active_extensions.php','internal','admin','',23,45,'mcrane','2010-02-26 00:30:16','superadmin','2010-08-06 01:47:49');
+INSERT INTO v_menu VALUES(79,1,'en','Active Extensions','/mod/calls_active/v_calls_active_extensions.php','internal','member','',23,45,'mcrane','2010-02-26 00:30:16','superadmin','2010-08-06 01:47:49');
 INSERT INTO v_menu VALUES(80,1,'en','Click to Call','/mod/click_to_call/click_to_call.php','internal','admin','',38,25,'mcrane','2010-05-26 20:55:15','mcrane','2010-05-26 20:55:15');
 INSERT INTO v_menu VALUES(81,1,'en','IVR Menu','/mod/ivr_menu/v_ivr_menu.php','internal','admin','',38,31,'mcrane','2009-09-08 17:50:37','superadmin','2010-09-06 18:36:18');
 INSERT INTO v_menu VALUES(82,1,'en','Upgrade','/core/upgrade/upgrade.php','internal','superadmin','',7,8,'mcrane','2010-05-28 11:31:37','superadmin','2010-08-05 17:54:23');
@@ -72,7 +72,7 @@ INSERT INTO v_menu VALUES(86,1,'en','Queues','/mod/fifo/v_fifo.php','internal','
 INSERT INTO v_menu VALUES(87,1,'en','Active Queues','/mod/fifo_list/v_fifo_list.php','internal','admin','',23,47,'mcrane','2010-07-15 13:10:57','superadmin','2010-09-06 18:37:39');
 INSERT INTO v_menu VALUES(92,1,'en','CDR CSV','/mod/cdr/v_cdr.php','internal','hidden','',38,24,'superadmin','2010-08-04 08:41:24','superadmin','2010-09-06 18:40:30');
 INSERT INTO v_menu VALUES(93,1,'en','Advanced','','internal','superadmin','','',56,'superadmin','2010-08-05 17:55:41','superadmin','2010-09-06 03:11:17');
-INSERT INTO v_menu VALUES(94,1,'en','Active Conferences','/mod/conferences_active/v_conferences_active.php','internal','admin','',23,46,'superadmin','2010-08-06 07:07:48','superadmin','2010-09-06 03:56:39');
+INSERT INTO v_menu VALUES(94,1,'en','Active Conferences','/mod/conferences_active/v_conferences_active.php','internal','member','',23,46,'superadmin','2010-08-06 07:07:48','superadmin','2010-09-06 03:56:39');
 INSERT INTO v_menu VALUES(95,1,'en','Agent','/mod/fifo_agents/fifo_agent/v_fifo_agent_edit.php','internal','agent','',38,18,'superadmin','2010-08-10 15:30:30','superadmin','2010-09-06 04:06:44');
 INSERT INTO v_menu VALUES(99,1,'en','Accounts','#','internal','hidden','','',12,'superadmin','2010-09-01 17:16:12','superadmin','2010-09-06 03:17:15');
 INSERT INTO v_menu VALUES(100,1,'en','Outbound Routes','/mod/dialplan_outbound/v_dialplan_outbound.php','internal','admin','',40,16,'superadmin','2010-09-02 02:17:06',NULL,NULL);
@@ -104,7 +104,7 @@ INSERT INTO v_dialplan_includes_details VALUES(5,1,2,NULL,'action',1,'set','pin_
 INSERT INTO v_dialplan_includes_details VALUES(6,1,2,NULL,'action',2,'lua','disa.lua','');
 SELECT setval('v_dialplan_includes_details_dialplan_includes_detail_id_seq', (SELECT MAX(dialplan_includes_detail_id) FROM v_dialplan_includes_details)+1);
 CREATE TABLE v_extensions (extension_id SERIAL, v_id NUMERIC, extension TEXT, password TEXT, user_list TEXT, provisioning_list TEXT, mailbox TEXT, vm_password TEXT, accountcode TEXT, effective_caller_id_name TEXT, effective_caller_id_number TEXT, outbound_caller_id_name TEXT, outbound_caller_id_number TEXT, vm_mailto TEXT, vm_attach_file TEXT, vm_keep_local_after_email TEXT, user_context TEXT, toll_allow TEXT, callgroup TEXT, auth_acl TEXT, cidr TEXT, sip_force_contact TEXT, enabled TEXT, description TEXT);
-CREATE TABLE v_fax (fax_id SERIAL, v_id NUMERIC, faxextension TEXT, faxname TEXT, faxemail TEXT, fax_pin_number TEXT, fax_caller_id_name TEXT, fax_caller_id_number TEXT, faxdescription TEXT);
+CREATE TABLE v_fax (fax_id SERIAL, v_id NUMERIC, faxextension TEXT, faxname TEXT, faxemail TEXT, fax_pin_number TEXT, fax_caller_id_name TEXT, fax_caller_id_number TEXT, fax_user_list TEXT, faxdescription TEXT);
 CREATE TABLE v_gateways (gateway_id SERIAL, v_id NUMERIC, gateway TEXT, username TEXT, password TEXT, auth_username TEXT, realm TEXT, from_user TEXT, from_domain TEXT, proxy TEXT, register_proxy TEXT, outbound_proxy TEXT, expire_seconds NUMERIC, register TEXT, register_transport TEXT, retry_seconds NUMERIC, extension TEXT, ping TEXT, caller_id_in_from TEXT, supress_cng TEXT, extension_in_contact TEXT, effective_caller_id_name TEXT, effective_caller_id_number TEXT, outbound_caller_id_name TEXT, outbound_caller_id_number TEXT, context TEXT, enabled TEXT, description TEXT);
 CREATE TABLE v_hunt_group (hunt_group_id SERIAL, v_id NUMERIC, huntgroupextension TEXT, huntgroupname TEXT, huntgrouptype TEXT, huntgroupcontext TEXT, huntgrouptimeout TEXT, huntgrouptimeoutdestination TEXT, huntgrouptimeouttype TEXT, huntgroupringback TEXT, huntgroupcidnameprefix TEXT, huntgrouppin TEXT, huntgroupcallerannounce TEXT, huntgroupdescr TEXT);
 CREATE TABLE v_hunt_group_destinations (hunt_group_destination_id SERIAL, v_id NUMERIC, hunt_group_id NUMERIC, destinationdata TEXT, destinationtype TEXT, destinationprofile TEXT, destinationorder NUMERIC, destinationdescr TEXT);
@@ -137,7 +137,7 @@ INSERT INTO v_modules VALUES(25,1,'Dialplan Plan Tools','mod_dptools','Provides 
 INSERT INTO v_modules VALUES(26,1,'Easyroute','mod_easyroute','DID routing engine that uses a database lookup to determine how to route an incoming call.','Applications','false','false');
 INSERT INTO v_modules VALUES(27,1,'ESF','mod_esf','Holds the multi cast paging application for SIP.','Applications','true','true');
 INSERT INTO v_modules VALUES(28,1,'Expr','mod_expr','Expression evaluation library.','Applications','true','true');
-INSERT INTO v_modules VALUES(29,1,'Fax','mod_fax','FAX provides fax send and receive.','Applications','true','true');
+INSERT INTO v_modules VALUES(29,1,'Fax','mod_spandsp','FAX provides fax send and receive.','Applications','true','true');
 INSERT INTO v_modules VALUES(30,1,'FIFO','mod_fifo','FIFO provides custom call queues including call park.','Applications','true','true');
 INSERT INTO v_modules VALUES(31,1,'File String','mod_file_string','','Applications','false','false');
 INSERT INTO v_modules VALUES(32,1,'FSV','mod_fsv','Video application (Recording and playback). ','Applications','true','true');
