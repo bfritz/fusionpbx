@@ -105,7 +105,7 @@ echo "<br />";
 
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		echo "<!--\n";
-		$tmp_result = system('uname -a');
+		$tmp_result = shell_exec('uname -a');
 		echo "-->\n";
 		if (strlen($tmp_result) > 0) {
 			echo "<tr>\n";
@@ -120,7 +120,7 @@ echo "<br />";
 		unset($tmp_result);
 
 		echo "<!--\n";
-		$tmp_result = system('uptime');
+		$tmp_result = shell_exec('uptime');
 		echo "-->\n";
 		if (strlen($tmp_result) > 0) {
 			echo "<tr>\n";
@@ -142,13 +142,12 @@ echo "<br />";
 	echo "<br />";
 	echo "<br />";
 
-
 //memory information
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		//linux
 			echo "<!--\n";
 			$shellcmd='free';
-			$shell_result = system($shellcmd);
+			$shell_result = shell_exec($shellcmd);
 			echo "-->\n";
 			if (strlen($shell_result) > 0) {
 				echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
@@ -161,10 +160,7 @@ echo "<br />";
 				echo "	</td>\n";
 				echo "	<td class=\"vtable\">\n";
 				echo "	<pre>\n";
-				$shell_result = system($shellcmd);
-				foreach ($shell_result as $value) {
-						echo "$value<br>";
-				}
+				echo "$shell_result<br>";
 				echo "</pre>\n";
 				unset($shell_result);
 				echo "	</td>\n";
@@ -178,7 +174,7 @@ echo "<br />";
 		//freebsd
 			echo "<!--\n";
 			$shellcmd='sysctl vm.vmtotal';
-			$shell_result = system($shellcmd);
+			$shell_result = shell_exec($shellcmd);
 			echo "-->\n";
 			if (strlen($shell_result) > 0) {
 				echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
@@ -191,10 +187,7 @@ echo "<br />";
 				echo "	</td>\n";
 				echo "	<td class=\"vtable\">\n";
 				echo "	<pre>\n";
-				$shell_result = system($shellcmd);
-				foreach ($shell_result as $value) {
-						echo "$value<br>";
-				}
+				echo "$shell_result<br>";
 				echo "</pre>\n";
 				unset($shell_result);
 				echo "	</td>\n";
@@ -210,9 +203,9 @@ echo "<br />";
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		//linux
 			echo "<!--\n";
-			if(stristr(system('uname -r'), 'astlinux') === FALSE) {
+			if(stristr(shell_exec('uname -r'), 'astlinux') === FALSE) {
 				$shellcmd="ps -e -o pcpu,cpu,nice,state,cputime,args --sort pcpu | sed '/^ 0.0 /d'";
-				$shell_result = system($shellcmd);
+				$shell_result = shell_exec($shellcmd);
 				echo "-->\n";
 				if (strlen($shell_result) > 0) {
 					echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
@@ -225,11 +218,15 @@ echo "<br />";
 					echo "	</td>\n";
 					echo "	<td class=\"vtable\">\n";
 					echo "	<pre>\n";
-					$last_line = exec($shellcmd, $shell_result);
-					foreach ($shell_result as $value) {
-						echo substr($value, 0, 100);
-						echo "<br />";
-					}
+
+					//$last_line = shell_exec($shellcmd, $shell_result);
+					//foreach ($shell_result as $value) {
+					//	echo substr($value, 0, 100);
+					//	echo "<br />";
+					//}
+
+					echo "$shell_result<br>";
+
 					echo "</pre>\n";
 					unset($shell_result);
 					echo "	</td>\n";
@@ -244,7 +241,7 @@ echo "<br />";
 		//freebsd
 			echo "<!--\n";
 			$shellcmd='top';
-			$shell_result = system($shellcmd);
+			$shell_result = shell_exec($shellcmd);
 			echo "-->\n";
 			if (strlen($shell_result) > 0) {
 				echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
@@ -257,11 +254,7 @@ echo "<br />";
 				echo "	</td>\n";
 				echo "	<td class=\"vtable\">\n";
 				echo "	<pre>\n";
-				$last_line = exec($shellcmd, $shell_result);
-				foreach ($shell_result as $value) {
-					echo substr($value, 0, 100);
-					echo "<br />";
-				}
+				echo "$shell_result<br>";
 				echo "</pre>\n";
 				unset($shell_result);
 				echo "	</td>\n";
@@ -328,7 +321,9 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 		echo "	</td>\n";
 		echo "	<td class=\"vtable\">\n";
 		echo "<pre>\n";
-		system("df -h");
+		$shellcmd = 'df -h';
+		$shell_result = shell_exec($shellcmd);
+		echo "$shell_result<br>";
 		echo "</pre>\n";
 		echo "	</td>\n";
 		echo "</tr>\n";
