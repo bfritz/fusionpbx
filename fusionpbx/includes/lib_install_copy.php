@@ -91,9 +91,9 @@ include "root.php";
 
 //get the script files
 	if (!is_dir($v_scripts_dir.'')) { mkdir($v_scripts_dir.'',0777,true); }
-	if (!is_dir($v_scripts_dir.'/javascript')) { mkdir($v_scripts_dir.'/javascript',0777,true); }
-	if (!is_dir($v_scripts_dir.'/lua')) { mkdir($v_scripts_dir.'/lua',0777,true); }
-	if (!is_dir($v_scripts_dir.'/perl')) { mkdir($v_scripts_dir.'/perl',0777,true); }
+	//if (!is_dir($v_scripts_dir.'/javascript')) { mkdir($v_scripts_dir.'/javascript',0777,true); }
+	//if (!is_dir($v_scripts_dir.'/lua')) { mkdir($v_scripts_dir.'/lua',0777,true); }
+	//if (!is_dir($v_scripts_dir.'/perl')) { mkdir($v_scripts_dir.'/perl',0777,true); }
 	//recursive_copy($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/scripts', $v_scripts_dir);
 	$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/scripts';
 	$dst_dir = $v_scripts_dir;
