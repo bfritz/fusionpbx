@@ -32,7 +32,6 @@
 // make sure the document_root is set
 	$_SERVER["SCRIPT_FILENAME"] = str_replace("\\", "/", $_SERVER["SCRIPT_FILENAME"]);
 	$_SERVER["DOCUMENT_ROOT"] = str_replace($_SERVER["PHP_SELF"], "", $_SERVER["SCRIPT_FILENAME"]);
-	$_SERVER["DOCUMENT_ROOT"] = realpath($_SERVER["DOCUMENT_ROOT"]);
 	//echo "DOCUMENT_ROOT: ".$_SERVER["DOCUMENT_ROOT"]."<br />\n";
 	//echo "PHP_SELF: ".$_SERVER["PHP_SELF"]."<br />\n";
 	//echo "SCRIPT_FILENAME: ".$_SERVER["SCRIPT_FILENAME"]."<br />\n";
