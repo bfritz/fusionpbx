@@ -25,7 +25,6 @@
 predefined_destination = "";
 max_tries = "3";
 digit_timeout = "5000";
---host = "markjcrane.dyndns.org";
 port = "8080";
 
 if ( session:ready() ) then
@@ -33,7 +32,6 @@ if ( session:ready() ) then
 	pin_number = session:getVariable("pin_number");
 	sounds_dir = session:getVariable("sounds_dir");
 	host = session:getVariable("host");
-	roku = session:getVariable("roku");
 
 	--set the sounds path for the language, dialect and voice
 		default_language = session:getVariable("default_language");
