@@ -44,7 +44,6 @@ if ( session:ready() ) then
 	digitmaxlength = 0;
 	timeoutpin = 7500;
 	timeouttransfer = 7500;
-	pin_number = "4545";
 
 	--if the pin number is provided then require it
 		if (pin_number) then
