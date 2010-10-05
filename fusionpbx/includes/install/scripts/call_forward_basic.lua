@@ -49,79 +49,33 @@ if ( session:ready() ) then
 		if (not default_dialect) then default_dialect = 'us'; end
 		if (not default_voice) then default_voice = 'callie'; end
 
+	--if the pin number is provided then require it
 	if (pin_number) then
-		digits = session:playAndGetDigits(3, 8, 3, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
+		min_digits = string.len(pin_number);
+		max_digits = string.len(pin_number)+1;
+		digits = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
 		if (digits == pin_number) then
 			--pin is correct
-
-			if (extension_required) then
-				if (extension_required == "true") then
-					extension = session:playAndGetDigits(3, 6, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_extension_number.wav", "", "\\d+");
-				end
-			end
-
-			if (file_exists(dialplan_default_dir.."/999_call_forward_"..extension..".xml")) then
-				--freeswitch.consoleLog("NOTICE", "file_exists: true\n");
-				os.remove (dialplan_default_dir.."/999_call_forward_"..extension..".xml");
-
-			--stream file
-				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_deleted.wav");
-
-			--wait for the file to be written before proceeding
-				session:sleep(1000);
-
-			else
-				freeswitch.consoleLog("NOTICE", "file_exists: false\n");
-
-				dtmf = ""; --clear dtmf digits to prepare for next dtmf request
-				if (call_forward_number) then
-					-- do nothing
-				else
-					-- call_forward_number is not defined so request it
-					call_forward_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
-				end
-				if (string.len(call_forward_number) > 0) then
-				--write the xml file
-					xml = "<extension name=\"call_forward_"..extension.."\" >\n";
-					xml = xml .. "	<condition field=\"destination_number\" expression=\"^"..extension.."$\">\n";
-					xml = xml .. "		<action application=\"transfer\" data=\""..call_forward_number.." XML default\"/>\n";
-					xml = xml .. "	</condition>\n";
-					xml = xml .. "</extension>\n";
-					local file = assert(io.open(dialplan_default_dir.."/999_call_forward_"..extension..".xml", "w"));
-					file:write(xml);
-					file:close();
-
-				--wait for the file to be written before proceeding
-					--session:sleep(20000); 
-
-				--stream file
-					session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_set.wav");
-				end
-			end
-
-			--reloadxml
-				api = freeswitch.API();
-				reply = api:executeString("reloadxml");
-
-			--wait for the file to be written before proceeding
-				session:sleep(1000);
-
-			session:hangup();
-
 		else
 			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/your_pin_number_is_incorect_goodbye.wav");
+			session:hangup("NORMAL_CLEARING");
+			return;
 		end
-	else
+	end
 
-		if (extension_required) then
-			if (extension_required == "true") then
-				extension = session:playAndGetDigits(3, 6, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_extension_number.wav", "", "\\d+");
-			end
+	--if extension_requires is true then get the extension number
+	if (extension_required) then
+		if (extension_required == "true") then
+			extension = session:playAndGetDigits(3, 6, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_extension_number.wav", "", "\\d+");
 		end
+	end
 
-		if (file_exists(dialplan_default_dir.."/999_call_forward_"..extension..".xml")) then
-			freeswitch.consoleLog("NOTICE", "file_exists: true\n");
-			os.remove (dialplan_default_dir.."/999_call_forward_"..extension..".xml");
+
+	if (file_exists(dialplan_default_dir.."/0_call_forward_"..extension..".xml")) then
+		--file exists
+
+		--remove the call forward dialplan entry
+		os.remove (dialplan_default_dir.."/0_call_forward_"..extension..".xml");
 
 		--stream file
 			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_deleted.wav");
@@ -129,42 +83,43 @@ if ( session:ready() ) then
 		--wait for the file to be written before proceeding
 			session:sleep(1000);
 
+	else
+		--file does not exist
+
+		dtmf = ""; --clear dtmf digits to prepare for next dtmf request
+		if (call_forward_number) then
+			-- do nothing
 		else
-			freeswitch.consoleLog("NOTICE", "file_exists: false\n");
-
-			dtmf = ""; --clear dtmf digits to prepare for next dtmf request
-			if (call_forward_number) then
-				-- do nothing
-			else
-				call_forward_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
-			end
-			if (string.len(call_forward_number) > 0) then
-			--write the xml file
-				xml = "<extension name=\"call_forward_"..extension.."\" >\n";
-				xml = xml .. "	<condition field=\"destination_number\" expression=\"^"..extension.."$\">\n";
-				xml = xml .. "		<action application=\"transfer\" data=\""..call_forward_number.." XML default\"/>\n";
-				xml = xml .. "	</condition>\n";
-				xml = xml .. "</extension>\n";
-				session:execute("log", xml);
-				local file = assert(io.open(dialplan_default_dir.."/999_call_forward_"..extension..".xml", "w"));
-				file:write(xml);
-				file:close();
-
-			--wait for the file to be written before proceeding
-				--session:sleep(20000); 
-
-			--stream file
-				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_set.wav");
-			end
+			-- get the call forward number
+			call_forward_number = session:playAndGetDigits(3, 15, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
 		end
-
-		--reloadxml
-			api = freeswitch.API();
-			reply = api:executeString("reloadxml");
+		if (string.len(call_forward_number) > 0) then
+		--write the xml file
+			xml = "<extension name=\"call_forward_"..extension.."\" >\n";
+			xml = xml .. "	<condition field=\"destination_number\" expression=\"^"..extension.."$\">\n";
+			xml = xml .. "		<action application=\"transfer\" data=\""..call_forward_number.." XML default\"/>\n";
+			xml = xml .. "	</condition>\n";
+			xml = xml .. "</extension>\n";
+			session:execute("log", xml);
+			local file = assert(io.open(dialplan_default_dir.."/0_call_forward_"..extension..".xml", "w"));
+			file:write(xml);
+			file:close();
 
 		--wait for the file to be written before proceeding
-			session:sleep(1000);
+			--session:sleep(20000); 
 
-		session:hangup();
+		--stream file
+			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_set.wav");
+		end
 	end
+
+	--reloadxml
+		api = freeswitch.API();
+		reply = api:executeString("reloadxml");
+
+	--wait for the file to be written before proceeding
+		session:sleep(1000);
+
+	session:hangup();
+
 end
