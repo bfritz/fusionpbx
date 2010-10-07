@@ -55,7 +55,7 @@ if (strlen($_GET["a"]) > 0) {
 
 //check if a process is running
 	function is_process_running($pid) {
-		$status = shell_exec( 'ps -C ' . $pid );
+		$status = shell_exec( 'ps -p ' . $pid );
 		$status_array = explode ("\n", $status);
 		if (strlen(trim($status_array[1])) > 0) {
 			return true;
