@@ -77,7 +77,7 @@ INSERT INTO v_menu VALUES(95,1,'en','Agent','/mod/fifo_agents/fifo_agent/v_fifo_
 INSERT INTO v_menu VALUES(99,1,'en','Accounts','#','internal','hidden','','',12,'superadmin','2010-09-01 17:16:12','superadmin','2010-09-06 03:17:15');
 INSERT INTO v_menu VALUES(100,1,'en','Outbound Routes','/mod/dialplan_outbound/v_dialplan_outbound.php','internal','admin','',40,16,'superadmin','2010-09-02 02:17:06',NULL,NULL);
 INSERT INTO v_menu VALUES(101,1,'en','Upgrade Schema','/core/upgrade/upgrade_schema.php','internal','superadmin','',93,67,'mcrane','2010-09-23 17:50:37','superadmin','2010-09-23 03:14:06');
-INSERT INTO v_menu VALUES(102,1,'en','Services','/core/status/v_status.php','internal','admin','',23,47,'mcrane','2010-10-06 10:52:38','superadmin','2010-10-06 10:52:38');
+INSERT INTO v_menu VALUES(102,1,'en','Services','/mod/services/v_services.php','internal','admin','',23,47,'mcrane','2010-10-06 10:52:38','superadmin','2010-10-06 10:52:38');
 INSERT INTO v_menu VALUES(103,1,'en','Active Call Center','/mod/call_center_active/v_call_center_active.php','internal','admin','',23,44,'mcrane','2010-10-06 10:52:38','superadmin','2010-10-06 10:52:38');
 SELECT setval('v_menu_menuid_seq', (SELECT MAX(menuid) FROM v_menu)+1);
 CREATE TABLE v_rss (rssid SERIAL, v_id NUMERIC, rsslanguage TEXT, rsscategory TEXT, rsssubcategory TEXT, rsstitle TEXT, rsslink TEXT, rssdesc TEXT, rssimg bytea, rssoptional1 TEXT, rssoptional2 TEXT, rssoptional3 TEXT, rssoptional4 TEXT, rssoptional5 TEXT, rssadddate TEXT, rssadduser TEXT, rssdeldate TEXT, rssdeluser TEXT, rssorder NUMERIC, rsscontent TEXT, rssgroup TEXT);
