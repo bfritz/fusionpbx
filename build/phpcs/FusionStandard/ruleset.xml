@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="FusionPBX Standard">
+  <description>Coding standard for FusionPBX project</description>
+  <rule ref="PEAR">
+    <!--
+      Suppress some of the PEAR indent checks for now.  There are too
+      many violations in the FusionPBX source for them to be helpful.
+    -->
+    <exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+    <exclude name="PEAR.WhiteSpace.ScopeIndent"/>
+  </rule>
+</ruleset>

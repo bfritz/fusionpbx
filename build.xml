@@ -32,7 +32,7 @@
 
   <target name="phpcs">
     <exec executable="${php}" dir="${src_dir}" output="${basedir}/build/logs/checkstyle.xml" failonerror="off">
-      <arg line="${php_opts} '${php_bin_dir}/phpcs' --report=checkstyle --standard=PEAR --extensions=php '${src_dir}'"/>
+      <arg line="${php_opts} '${php_bin_dir}/phpcs' --report=checkstyle --standard='${basedir}/build/phpcs/FusionStandard' --extensions=php '${src_dir}'"/>
     </exec>
   </target>
 
