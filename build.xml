@@ -26,7 +26,7 @@
 
   <target name="phpmd">
     <exec executable="${php}" dir="${basedir}" failonerror="off">
-      <arg line="${php_opts} '${php_bin_dir}/phpmd' '${src_dir}' xml codesize,unusedcode --reportfile '${basedir}/build/logs/pmd.xml'"/>
+      <arg line="${php_opts} '${php_bin_dir}/phpmd' '${src_dir}' xml codesize,unusedcode --reportfile '${basedir}/build/logs/pmd.xml' --exclude class.phpmailer.php,class.smtp.php"/>
     </exec>
   </target>
 
