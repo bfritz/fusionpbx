@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="FusionPBX" default="build">
+  <target name="build" depends="phpunit"/>
+
+  <property name="php" value="php"/>
+  <property name="php_memory" value="512M"/>
+  <property name="php_opts" value="-d memory_limit=${php_memory} -d include_path=&quot;.:${user.home}/php:/usr/share/php&quot;"/>
+  <property name="php_bin_dir" value="${user.home}/php/bin"/>
+
+  <property name="shell" value="sh"/>
+  <property name="sloccount" value="sloccount"/>
+
+  <property name="src_dir" value="${basedir}/fusionpbx"/>
+
+  <target name="init">
+    <mkdir dir="${basedir}/build/logs"/>
+  </target>
+
+  <target name="ci" depends="init,phpmd,phpcs,phpcpd,sloccount"/>
+
+  <target name="phpunit" depends="init">
+    <exec executable="${php_cmd}/phpunit" dir="${basedir}/tests" failonerror="on">
+      <arg line=" --log-junit '${basedir}/build/logs/phpunit.xml' --coverage-clover '${basedir}/build/logs/clover.xml' --coverage-html '${basedir}/build/logs/coverage'"/>
+    </exec>
+  </target>
+
+  <target name="phpmd">
+    <exec executable="${php}" dir="${basedir}" failonerror="off">
+      <arg line="${php_opts} '${php_bin_dir}/phpmd' '${src_dir}' xml codesize,unusedcode --reportfile '${basedir}/build/logs/pmd.xml'"/>
+    </exec>
+  </target>
+
+  <target name="phpcs">
+    <exec executable="${php}" dir="${src_dir}" output="${basedir}/build/logs/checkstyle.xml" failonerror="off">
+      <arg line="${php_opts} '${php_bin_dir}/phpcs' --report=checkstyle --standard=PEAR --extensions=php '${src_dir}'"/>
+    </exec>
+  </target>
+
+  <target name="phpcpd">
+    <exec executable="${php}" dir="${basedir}" failonerror="off">
+      <arg line="${php_opts} '${php_bin_dir}/phpcpd' --log-pmd '${basedir}/build/logs/phpcpd.xml' '${src_dir}'"/>
+    </exec>
+  </target>
+
+  <target name="sloccount">
+    <exec executable="${shell}" dir="${basedir}" failonerror="off">
+      <arg value="-c"/>
+      <arg value="${sloccount} --duplicates --wide --details '${src_dir}' &gt; '${basedir}/build/logs/sloccount.sc'"/>
+    </exec>
+  </target>
+</project>
