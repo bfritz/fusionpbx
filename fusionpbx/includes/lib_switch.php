@@ -5202,7 +5202,7 @@ if (!function_exists('sync_directory')) {
 		$tmp .= "function directory_search(search_type) {\n";
 		$tmp .= "\n";
 		$tmp .= "	digitmaxlength = 3;\n";
-		$tmp .= "	session.streamFile( sounds_dir+\"/en/us/callie/directory/48000/dir-enter-person.wav\");\n";
+		$tmp .= "	session.streamFile( sounds_dir+\"/en/us/callie/directory/48000/dir-enter_person.wav\");\n";
 		$tmp .= "	if (search_type == \"last_name\") {\n";
 		$tmp .= "		session.streamFile( sounds_dir+\"/en/us/callie/directory/48000/dir-last_name.wav\", mycb, \"dtmf\");\n";
 		$tmp .= "		session.streamFile( sounds_dir+\"/en/us/callie/directory/48000/dir-to_search_by.wav\", mycb, \"dtmf\");\n";
