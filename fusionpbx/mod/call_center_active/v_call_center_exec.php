@@ -69,37 +69,8 @@ if (count($_GET)>0) {
 
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 
-		if ($action == "energy") {
-			//conference 3001-markjcrane.dyndns.org energy 103
-			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-			$result_array = explode("=",$switch_result);
-			$tmp_value = $result_array[1];
-			if ($direction == "up") { $tmp_value = $tmp_value + 100; }
-			if ($direction == "down") { $tmp_value = $tmp_value - 100; }
-			//echo "energy $tmp_value<br />\n";
-			$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
-		}
-		if ($action == "volume_in") {
-			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-			$result_array = explode("=",$switch_result);
-			$tmp_value = $result_array[1];
-			if ($direction == "up") { $tmp_value = $tmp_value + 1; }
-			if ($direction == "down") { $tmp_value = $tmp_value - 1; }
-			//echo "volume $tmp_value<br />\n";
-			$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
-		}
-		if ($action == "volume_out") {
-			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-			$result_array = explode("=",$switch_result);
-			$tmp_value = $result_array[1];
-			if ($direction == "up") { $tmp_value = $tmp_value + 1; }
-			if ($direction == "down") { $tmp_value = $tmp_value - 1; }
-			//echo "volume $tmp_value<br />\n";
-			$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
-		}
-
-		//echo "<b>switch command:</b>\n";
-		//echo "<pre>\n";
+		echo "<b>switch command:</b>\n";
+		echo "<pre>\n";
 		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 		//$switch_result = eval($switch_cmd);
 		//echo htmlentities($switch_result);
