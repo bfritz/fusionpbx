@@ -36,6 +36,7 @@ require_once "includes/config.php";
 
 //define variables from HTTP GET
 	$mac = $_GET['mac'];
+	$mac = strtolower($mac);
 	$mac = str_replace(":", "-", $mac);
 	if (strlen($mac) == 12) { 
 		$mac = substr($mac, 0,2).'-'.substr($mac, 2,2).'-'.substr($mac, 4,2).'-'.substr($mac, 6,2).'-'.substr($mac, 8,2).'-'.substr($mac, 10,2);
@@ -75,7 +76,7 @@ require_once "includes/config.php";
 	else {
 		//mac does not exist in v_hardware_phones add it to the table
 		//use the mac address to find the vendor
-			switch (substr(strtolower($mac), 0, 8)) {
+			switch (substr($mac, 0, 8)) {
 			case "00-08-5d":
 				$phone_vendor = "aastra";
 				break;

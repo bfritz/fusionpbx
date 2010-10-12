@@ -45,6 +45,7 @@ else {
 //POST to PHP variables
 if (count($_POST)>0) {
 	$phone_mac_address = check_str($_POST["phone_mac_address"]);
+	$phone_mac_address = strtolower($phone_mac_address);
 	$phone_vendor = check_str($_POST["phone_vendor"]);
 	$phone_model = check_str($_POST["phone_model"]);
 	$phone_provision_enable = check_str($_POST["phone_provision_enable"]);
@@ -158,6 +159,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
 			$phone_mac_address = $row["phone_mac_address"];
+			$phone_mac_address = strtolower($phone_mac_address);
 			$phone_vendor = $row["phone_vendor"];
 			$phone_model = $row["phone_model"];
 			$phone_provision_enable = $row["phone_provision_enable"];

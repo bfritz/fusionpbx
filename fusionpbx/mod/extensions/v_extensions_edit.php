@@ -60,6 +60,7 @@ else {
 		$provisioning_list = str_replace("\r", "", $provisioning_list);
 		$provisioning_list = str_replace(" ", "", $provisioning_list);
 		$provisioning_list = str_replace("||", "|", $provisioning_list);
+		$provisioning_list = strtolower($provisioning_list);
 
 		$vm_password = check_str($_POST["vm_password"]);
 		$accountcode = check_str($_POST["accountcode"]);
@@ -256,7 +257,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//syncrhonize configuration
 			sync_package_v_extensions();
-			
+		
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_extensions.php\">\n";
 			echo "<div align='center'>\n";
@@ -285,6 +286,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$password = $row["password"];
 			$user_list = $row["user_list"];
 			$provisioning_list = $row["provisioning_list"];
+			$provisioning_list = strtolower($provisioning_list);
 			$vm_password = $row["vm_password"];
 			$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 			$accountcode = $row["accountcode"];
@@ -330,7 +332,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "function hide_advanced_config() {\n";
 	echo "	document.getElementById(\"showadvancedbox\").innerHTML='';\n";
 	echo "	aodiv = document.getElementById('showadvanced');\n";
-	echo "	aodiv.style.display = \"block\";\n";
+	echo "	aodiv.style.display = \"none\";\n";
 	echo "}\n";
 	echo "</script>";
 
