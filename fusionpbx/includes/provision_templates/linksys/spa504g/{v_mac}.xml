@@ -372,7 +372,7 @@
 <State_Agent_2_ group="Ext_2/Call_Feature_Settings"/>
 <CFWD_Notify_Serv_2_ group="Ext_2/Call_Feature_Settings">No</CFWD_Notify_Serv_2_>
 <CFWD_Notifier_2_ group="Ext_2/Call_Feature_Settings"/>
-<Proxy_2_ group="Ext_2/Proxy_and_Registration"/>{v_domain}</Proxy_2_>
+<Proxy_2_ group="Ext_2/Proxy_and_Registration">{v_domain}</Proxy_2_>
 <Use_Outbound_Proxy_2_ group="Ext_2/Proxy_and_Registration">No</Use_Outbound_Proxy_2_>
 <Outbound_Proxy_2_ group="Ext_2/Proxy_and_Registration"/>
 <Use_OB_Proxy_In_Dialog_2_ group="Ext_2/Proxy_and_Registration">Yes</Use_OB_Proxy_In_Dialog_2_>
@@ -534,7 +534,7 @@
 <State_Agent_4_ group="Ext_4/Call_Feature_Settings"/>
 <CFWD_Notify_Serv_4_ group="Ext_4/Call_Feature_Settings">No</CFWD_Notify_Serv_4_>
 <CFWD_Notifier_4_ group="Ext_4/Call_Feature_Settings"/>
-<Proxy_4_ group="Ext_4/Proxy_and_Registration"/>{v_domain}</Proxy_4_>
+<Proxy_4_ group="Ext_4/Proxy_and_Registration">{v_domain}</Proxy_4_>
 <Use_Outbound_Proxy_4_ group="Ext_4/Proxy_and_Registration">No</Use_Outbound_Proxy_4_>
 <Outbound_Proxy_4_ group="Ext_4/Proxy_and_Registration"/>
 <Use_OB_Proxy_In_Dialog_4_ group="Ext_4/Proxy_and_Registration">Yes</Use_OB_Proxy_In_Dialog_4_>
