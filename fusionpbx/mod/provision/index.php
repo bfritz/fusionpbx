@@ -57,6 +57,20 @@ require_once "includes/config.php";
 				$phone_template = $row['phone_template'];
 				$phone_vendor = $row['phone_vendor'];
 			}
+		//find a template that was defined on another phone and use that as the default.
+			if (strlen($phone_template) == 0) {
+				$sql = "SELECT phone_template, phone_vendor FROM v_hardware_phones ";
+				$sql .= "where phone_template like '%/%' ";
+				$prepstatement3 = $db->prepare(check_sql($sql));
+				//$prepstatement3->bindParam(':v_id', $v_id);
+				if ($prepstatement3) {
+					$prepstatement3->bindParam(':mac', $mac);
+					$prepstatement3->execute();
+					$row = $prepstatement3->fetch();
+					$phone_template = $row['phone_template'];
+					$phone_vendor = $row['phone_vendor'];
+				}
+			}
 	}
 	else {
 		//mac does not exist in v_hardware_phones add it to the table
