@@ -250,17 +250,69 @@ require_once "includes/config.php";
 //replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 	$file_contents = str_replace("{v_mac}", $mac, $file_contents);
 	$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
+
 	$file_contents = str_replace("{v_line1_server_address}", $line1_server_address, $file_contents);
 	$file_contents = str_replace("{v_line1_displayname}", $line1_displayname, $file_contents);
 	$file_contents = str_replace("{v_line1_shortname}", $line1_shortname, $file_contents);
 	$file_contents = str_replace("{v_line1_user_id}", $line1_user_id, $file_contents);
 	$file_contents = str_replace("{v_line1_user_password}", $line1_user_password, $file_contents);
+
 	$file_contents = str_replace("{v_line2_server_address}", $line2_server_address, $file_contents);
 	$file_contents = str_replace("{v_line2_displayname}", $line2_displayname, $file_contents);
 	$file_contents = str_replace("{v_line2_shortname}", $line2_shortname, $file_contents);
 	$file_contents = str_replace("{v_line2_user_id}", $line2_user_id, $file_contents);
 	$file_contents = str_replace("{v_line2_user_password}", $line2_user_password, $file_contents);
 	$file_contents = str_replace("{v_line2_server_address}", $line2_server_address, $file_contents);
+
+	$file_contents = str_replace("{v_line3_server_address}", $line3_server_address, $file_contents);
+	$file_contents = str_replace("{v_line3_displayname}", $line3_displayname, $file_contents);
+	$file_contents = str_replace("{v_line3_shortname}", $line3_shortname, $file_contents);
+	$file_contents = str_replace("{v_line3_user_id}", $line3_user_id, $file_contents);
+	$file_contents = str_replace("{v_line3_user_password}", $line3_user_password, $file_contents);
+	$file_contents = str_replace("{v_line3_server_address}", $line3_server_address, $file_contents);
+
+	$file_contents = str_replace("{v_line4_server_address}", $line4_server_address, $file_contents);
+	$file_contents = str_replace("{v_line4_displayname}", $line4_displayname, $file_contents);
+	$file_contents = str_replace("{v_line4_shortname}", $line4_shortname, $file_contents);
+	$file_contents = str_replace("{v_line4_user_id}", $line4_user_id, $file_contents);
+	$file_contents = str_replace("{v_line4_user_password}", $line4_user_password, $file_contents);
+	$file_contents = str_replace("{v_line4_server_address}", $line4_server_address, $file_contents);
+
+	$file_contents = str_replace("{v_line4_server_address}", $line4_server_address, $file_contents);
+	$file_contents = str_replace("{v_line4_displayname}", $line4_displayname, $file_contents);
+	$file_contents = str_replace("{v_line4_shortname}", $line4_shortname, $file_contents);
+	$file_contents = str_replace("{v_line4_user_id}", $line4_user_id, $file_contents);
+	$file_contents = str_replace("{v_line4_user_password}", $line4_user_password, $file_contents);
+	$file_contents = str_replace("{v_line4_server_address}", $line4_server_address, $file_contents);
+
+	$file_contents = str_replace("{v_line5_server_address}", $line5_server_address, $file_contents);
+	$file_contents = str_replace("{v_line5_displayname}", $line5_displayname, $file_contents);
+	$file_contents = str_replace("{v_line5_shortname}", $line5_shortname, $file_contents);
+	$file_contents = str_replace("{v_line5_user_id}", $line5_user_id, $file_contents);
+	$file_contents = str_replace("{v_line5_user_password}", $line5_user_password, $file_contents);
+	$file_contents = str_replace("{v_line5_server_address}", $line5_server_address, $file_contents);
+
+	$file_contents = str_replace("{v_line6_server_address}", $line6_server_address, $file_contents);
+	$file_contents = str_replace("{v_line6_displayname}", $line6_displayname, $file_contents);
+	$file_contents = str_replace("{v_line6_shortname}", $line6_shortname, $file_contents);
+	$file_contents = str_replace("{v_line6_user_id}", $line6_user_id, $file_contents);
+	$file_contents = str_replace("{v_line6_user_password}", $line6_user_password, $file_contents);
+	$file_contents = str_replace("{v_line6_server_address}", $line6_server_address, $file_contents);
+
+	$file_contents = str_replace("{v_line7_server_address}", $line7_server_address, $file_contents);
+	$file_contents = str_replace("{v_line7_displayname}", $line7_displayname, $file_contents);
+	$file_contents = str_replace("{v_line7_shortname}", $line7_shortname, $file_contents);
+	$file_contents = str_replace("{v_line7_user_id}", $line7_user_id, $file_contents);
+	$file_contents = str_replace("{v_line7_user_password}", $line7_user_password, $file_contents);
+	$file_contents = str_replace("{v_line7_server_address}", $line7_server_address, $file_contents);
+
+	$file_contents = str_replace("{v_line8_server_address}", $line8_server_address, $file_contents);
+	$file_contents = str_replace("{v_line8_displayname}", $line8_displayname, $file_contents);
+	$file_contents = str_replace("{v_line8_shortname}", $line8_shortname, $file_contents);
+	$file_contents = str_replace("{v_line8_user_id}", $line8_user_id, $file_contents);
+	$file_contents = str_replace("{v_line8_user_password}", $line8_user_password, $file_contents);
+	$file_contents = str_replace("{v_line8_server_address}", $line8_server_address, $file_contents);
+
 	$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
 	//$file_contents = str_replace("{v_server2_address}", $server2_address, $file_contents);
 	//$file_contents = str_replace("{v_server3_address}", $server3_address, $file_contents);
