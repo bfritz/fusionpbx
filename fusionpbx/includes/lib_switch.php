@@ -57,13 +57,16 @@ $v_id = '1';
 		}
 	}
 //set http compression
-	if ($_SESSION['http_compression'] != "false") {
-			if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
-				ob_start("ob_gzhandler");
-			}
-			else{
-				ob_start();
-			}
+	if ($_SESSION['http_compression'] == "true") {
+		if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
+			ob_start("ob_gzhandler");
+		}
+		else{
+			ob_start();
+		}
+	}
+	else {
+		ob_start();
 	}
 
 function v_settings()
