@@ -32,31 +32,6 @@ require_once "includes/config.php";
 require_once "includes/header.php";
 require_once "includes/checkauth.php";
 
-if (count($_POST)>0) {
-	$templateid = check_str($_POST["templateid"]);
-	if (ifgroup("admin") || ifgroup("superadmin")) {
-		if (strlen($templateid) > 0) {
-			//clear the current default
-				$sql = "update v_templates set ";
-				$sql .= "template_default = '' ";
-				$sql .= "where v_id = '$v_id' ";
-				//echo "sql:  ".$sql." <br />"; 
-				$db->exec(check_sql($sql));
-				unset($sql);
-
-			//set the new default
-				$sql = "update v_templates set ";
-				$sql .= "template_default = 'true' ";
-				$sql .= "where v_id = '$v_id' ";
-				$sql .= "and templateid = '$templateid' ";
-				//echo "sql:  ".$sql." <br />"; 
-				$db->exec(check_sql($sql));
-				unset($sql);
-				//exit;
-		}
-	}
-}
-
 echo "<br />";
 
 //user information
