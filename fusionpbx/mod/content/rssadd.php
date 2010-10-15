@@ -101,7 +101,9 @@ if (count($_POST)>0) {
 
 	require_once "includes/header.php";
 	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
-		require_once "includes/wysiwyg.php";
+		if ($rssoptional1 == "text/html") {
+			require_once "includes/wysiwyg.php";
+		}
 	}
 	else {
 		//--- Begin: Edit Area -----------------------------------------------------
@@ -123,37 +125,43 @@ if (count($_POST)>0) {
 			echo "    </script>";
 		//--- End: Edit Area -------------------------------------------------------
 	}
+
 	echo "<div align='center'>";
 	echo "<table border='0' width='100%' cellpadding='0' cellspacing='2'>\n";
 
 	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "      <br>";
+	echo "	<td align=\"left\" width='100%'>\n";
+	//echo "      <br>";
 
 
 	echo "<form method='post' action=''>";
-	echo "<table width='100%'>";
+	echo "<table width='100%' cellpadding='6' cellspacing='0'>";
+
+	echo "<tr>\n";
+	echo "<td width='30%' nowrap valign='top'><b>Content Add</b></td>\n";
+	echo "<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='rsslist.php'\" value='Back'><br /><br /></td>\n";
+	echo "</tr>\n";
 	//echo "	<tr>";
-	//echo "		<td width='20%'>Category:</td>";
-	//echo "		<td width='80%'><input type='text' class='txt' name='rsscategory'></td>";
+	//echo "		<td class='vncellreq'>Category:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rsscategory' value='$rsscategory'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Sub Category:</td>";
-	//echo "		<td><input type='text' class='txt' name='rsssubcategory'></td>";
+	//echo "		<td class='vncellreq' nowrap>Sub Category:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rsssubcategory' value='$rsssubcategory'></td>";
 	//echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td nowrap>Title:</td>";
-	echo "		<td width='100%'><input type='text' class='txt' name='rsstitle'></td>";
+	echo "		<td width='30%' class='vncellreq' nowrap>Title:</td>";
+	echo "		<td width='70%' class='vtable' width='100%'><input type='text' class='formfld' name='rsstitle' value='$rsstitle'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td>Link:</td>";
-	echo "		<td><input type='text' class='txt' name='rsslink'></td>";
+	echo "		<td class='vncellreq'>Link:</td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='rsslink' value='$rsslink'></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
-	echo "		<td>Group:</td>";
-	echo "		<td>";
-	//echo "            <input type='text' class='txt' name='menuparentid' value='$menuparentid'>";
+	echo "		<td class='vncellreq'>Group:</td>";
+	echo "		<td class='vtable'>";
+	//echo "            <input type='text' class='formfld' name='menuparentid' value='$menuparentid'>";
 
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_groups ";
@@ -161,7 +169,7 @@ if (count($_POST)>0) {
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 
-	echo "<select name=\"rssgroup\" class='txt'>\n";
+	echo "<select name=\"rssgroup\" class='formfld'>\n";
 	echo "<option value=\"\">public</option>\n";
 	$result = $prepstatement->fetchAll();
 	//$count = count($result);
@@ -181,35 +189,38 @@ if (count($_POST)>0) {
 	echo "        </td>";
 	echo "	</tr>";
 
-	echo "	<tr>";
-	echo "		<td nowrap>Template:</td>";
-	echo "		<td width='100%'>";
-	//---- Begin Select List --------------------
-	$sql = "SELECT distinct(templatename) as templatename FROM v_templates ";
-	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-
-	echo "<select name=\"rsssubcategory\" class='txt'>\n";
-	echo "<option value=\"\"></option>\n";
-	$result = $prepstatement->fetchAll();
-	//$catcount = count($result);
-	foreach($result as $field) {
-	  echo "<option value='".$field[templatename]."'>".$field[templatename]."</option>\n";
+	echo "	<tr>\n";
+	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+	echo "		Template: \n";
+	echo "	</td>\n";
+	echo "	<td class=\"vtable\">\n";
+	echo "<select id='rsssubcategory' name='rsssubcategory' class='formfld' style=''>\n";
+	echo "<option value=''></option>\n";
+	$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
+	if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && $file != ".svn" && is_dir($theme_dir.'/'.$file)) {
+				if ($file == $rsssubcategory) {
+					echo "<option value='$file' selected='selected'>$file</option>\n";
+				}
+				else {
+					echo "<option value='$file'>$file</option>\n";
+				}
+			}
+		}
+		closedir($handle);
 	}
-
-	echo "</select>";
-	unset($sql, $result);
-	//---- End Select List --------------------
-	echo "    </td>";
-	echo "	</tr>";
-
+	echo "	</select>\n";
+	echo "	<br />\n";
+	echo "	Select a template to set as the default and then press save.<br />\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
 
 	echo "	<tr>";
-	echo "		<td>Type:</td>";
-	echo "		<td>";
-	echo "            <select name=\"rssoptional1\" class='txt'>\n";
-	if ($rssoptional1 == "text/html") { echo "<option value=\"html\" selected>text/html</option>\n"; }
+	echo "		<td class='vncellreq'>Type:</td>";
+	echo "		<td class='vtable'>";
+	echo "            <select name=\"rssoptional1\" class='formfld'>\n";
+	if ($rssoptional1 == "text/html") { echo "<option value=\"text/html\" selected>text/html</option>\n"; }
 	else { echo "<option value=\"text/html\">text/html</option>\n"; }
 
 	if ($rssoptional1 == "text/javascript") { echo "<option value=\"text/javascript\" selected>text/javascript</option>\n"; }
@@ -220,29 +231,32 @@ if (count($_POST)>0) {
 
 
 	echo "	<tr>";
-	echo "		<td>Order:</td>";
-	echo "		<td><input type='text' class='txt' name='rssorder' value='$rssorder'></td>";
+	echo "		<td class='vncellreq'>Order:</td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='rssorder' value='$rssorder'></td>";
 	echo "	</tr>";
 
+	echo "	<tr>";
+	//echo "		<td  class='vncellreq' valign='top'></td>";
+	echo "		<td  class='' colspan='2' align='left'>";
+	echo "            <strong>Content:</strong> ";
 	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
-		echo "	<tr>";
-		echo "		<td colspan='2' valign='top'>Content: editor &nbsp; <a href=\"#\" title=\"toggle\" onclick=\"toogleEditorMode('rssdesc'); return false;\">on/off</a></td>";
-		echo "    </tr>";
+		echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rssdesc'); return false;\">on/off</a><br>";
 	}
-	echo "    <tr>";
-	echo "		<td colspan='2'>";
-	echo "            <textarea name='rssdesc' id='rssdesc' cols='20' style='width: 100%' rows='12' class='txt'></textarea>";
+	else {
+		echo "            <textarea name='rssdesc'  id='rssdesc' class='formfld' cols='20' style='width: 100%' rows='12' ></textarea>";
+	}
 	echo "        </td>";
 	echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Image:</td>";
-	//echo "		<td><input type='text' class='txt' name='rssimg'></td>";
+	//echo "		<td class='vncellreq'>Image:</td>";
+	//echo "		<td class='vtable'><input type='text' name='rssimg' value='$rssimg'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Priority:</td>";
-	//echo "		<td>";
-	//echo "          <input type='text' name='rssoptional1'>";
-	//echo "            <select name=\"rssoptional1\" class='txt'>\n";
+	//echo "		<td class='vncellreq'>Priority:</td>";
+	//echo "		<td class='vtable'>";
+	//echo "            <input type='text' name='rssoptional1' value='$rssoptional1'>";
+	//echo "            <select name=\"rssoptional1\" class='formfld'>\n";
+	//echo "            <option value=\"$rssoptional1\">$rssoptional1</option>\n";
 	//echo "            <option value=\"\"></option>\n";
 	//echo "            <option value=\"low\">low</option>\n";
 	//echo "            <option value=\"med\">med</option>\n";
@@ -251,10 +265,11 @@ if (count($_POST)>0) {
 	//echo "        </td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Status:</td>";
-	//echo "		<td>";
-	//echo "            <input type='text' name='rssoptional2'>";
-	//echo "            <select name=\"rssoptional2\" class='txt'>\n";
+	//echo "		<td class='vncellreq'>Status:</td>";
+	//echo "		<td class='vtable'>";
+	//echo "            <input type='text' name='rssoptional2' value='$rssoptional2'>";
+	//echo "            <select name=\"rssoptional2\" class=\"formfld\">\n";
+	//echo "            <option value=\"$rssoptional2\">$rssoptional2</option>\n";
 	//echo "            <option value=\"\"></option>\n";
 	//echo "            <option value=\"0\">0</option>\n";
 	//echo "            <option value=\"10\">10</option>\n";
@@ -271,23 +286,24 @@ if (count($_POST)>0) {
 	//echo "        </td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Optional 3:</td>";
-	//echo "		<td><input type='text' class='txt' name='rssoptional3'></td>";
+	//echo "		<td class='vncellreq'>Optional 3:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rssoptional3' value='$rssoptional3'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Optional 4:</td>";
-	//echo "		<td><input type='text' class='txt' name='rssoptional4'></td>";
+	//echo "		<td class='vncellreq'>Optional 4:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rssoptional4' value='$rssoptional4'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Optional 5:</td>";
-	//echo "		<td><input type='text' class='txt' name='rssoptional5'></td>";
+	//echo "		<td class='vncellreq'>Rssoptional5:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rssoptional5' value='$rssoptional5'></td>";
+	//echo "	</tr>";
+	//echo "	<tr>";
+	//echo "		<td class='vncellreq'>Rssadddate:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rssadddate' value='$rssadddate'></td>";
 	//echo "	</tr>";
 
-	//echo "	<tr>";
-	//echo "	<td>example:</td>";
-	//echo "	<td><textarea name='example'></textarea></td>";
-	//echo "	</tr>";    echo "	<tr>";
-	echo "		<td colspan='2' align='right'>\n";
+	echo "	<tr>";
+	echo "		<td class='' colspan='2' align='right'>";
 	echo "          <input type='submit' class='btn' name='submit' value='Add $moduletitle'>\n";
 	echo "      </td>";
 	echo "	</tr>";

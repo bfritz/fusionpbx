@@ -320,7 +320,7 @@ else {
 	//echo "            <option value=\"100\">100</option>\n";
 	//echo "            </select>";
 	//echo "        </td>";
-	//secho "	</tr>";
+	//echo "	</tr>";
 	//echo "	<tr>";
 	//echo "		<td class='vncellreq'>Optional 3:</td>";
 	//echo "		<td class='vtable'><input type='text' class='formfld' name='rssoptional3' value='$rssoptional3'></td>";
