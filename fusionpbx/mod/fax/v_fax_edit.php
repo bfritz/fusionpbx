@@ -26,6 +26,63 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
+if ($_GET['a'] == "del") {
+	$faxextension = check_str($_GET["faxextension"]);
+	if ($_GET['type'] == "fax_inbox") {
+		unlink($v_storage_dir.'/fax/'.$faxextension.'/inbox/'.$_GET['filename']);
+	}
+	if ($_GET['type'] == "fax_sent") {
+		unlink($v_storage_dir.'/fax/'.$faxextension.'/sent/'.$_GET['filename']);
+	}
+}
+
+if ($_GET['a'] == "download") {
+
+	session_cache_limiter('public');
+	//test to see if it is in the inbox or sent directory.
+	if ($_GET['type'] == "fax_inbox") {
+		if (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
+			$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
+		}
+	}else if ($_GET['type'] == "fax_sent") {
+		if  (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
+			$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'];
+		}
+	}
+	//let's see if we found it.
+	if (strlen($tmp_faxdownload_file) > 0) {
+		$fd = fopen($tmp_faxdownload_file, "rb");
+
+		if ($_GET['t'] == "bin") {
+			header("Content-Type: application/force-download");
+			header("Content-Type: application/octet-stream");
+			header("Content-Type: application/download");
+			header("Content-Description: File Transfer");
+			header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
+		}
+		else {
+			$file_ext = substr($_GET['filename'], -3);
+			if ($file_ext == "tif") {
+			  header("Content-Type: image/tiff");
+			}else if ($file_ext == "png") {
+			  header("Content-Type: image/png");
+			}else if ($file_ext == "jpg") {
+			  header('Content-Type: image/jpeg');
+			}else if ($file_ext == "pdf") {
+			  header("Content-Type: application/pdf");
+			}
+		}
+		header('Accept-Ranges: bytes');
+		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+		header("Content-Length: " . filesize($tmp_faxdownload_file));
+		fpassthru($fd);
+	}else {
+		echo "File not found.";
+	}
+
+	exit;
+}
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
