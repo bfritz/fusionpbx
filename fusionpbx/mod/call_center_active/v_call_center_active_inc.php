@@ -199,10 +199,12 @@ echo "<br />\n";
 		foreach ($result as $row) {
 			//print_r($row);
 			$name = $row['name'];
+			$name = str_replace('@'.$v_domain, '', $name);
 			//$system = $row['system'];
 			//$uuid = $row['uuid'];
 			//$type = $row['type'];
 			$contact = $row['contact'];
+			$contact = str_replace('@'.$v_domain, '', $contact);
 			$status = $row['status'];
 			$state = $row['state'];
 			$max_no_answer = $row['max_no_answer'];
@@ -217,6 +219,7 @@ echo "<br />\n";
 			$calls_answered = $row['calls_answered'];
 			$talk_time = $row['talk_time'];
 			$ready_time = $row['ready_time'];
+
 
 			$last_offered_call_seconds = time() - $last_offered_call;
 			$last_offered_call_length_hour = floor($last_offered_call_seconds/3600);
@@ -245,7 +248,7 @@ echo "<br />\n";
 			echo "<td valign='top' class='".$rowstyle[$c]."'>".$calls_answered."</td>\n";
 			echo "<td valign='top' class='".$rowstyle[$c]."'>";
 
-			echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+agent+del+".$name."');}\">delete</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+agent+del+".$name."@".$v_domain."');}\">delete</a>&nbsp;\n";
 			echo "</td>";
 			echo "</tr>\n";
 
@@ -291,7 +294,9 @@ echo "<br />\n";
 		foreach ($result as $row) {
 			//print_r($row);
 			$queue = $row['queue'];
+			//$queue = str_replace('@'.$v_domain, '', $queue);
 			$agent = $row['agent'];
+			$agent = str_replace('@'.$v_domain, '', $agent);
 			$state = $row['state'];
 			$level = $row['level'];
 			$position = $row['position'];
@@ -303,7 +308,7 @@ echo "<br />\n";
 			echo "<td valign='top' class='".$rowstyle[$c]."'>".$level."</td>\n";
 			echo "<td valign='top' class='".$rowstyle[$c]."'>".$position."</td>\n";
 			echo "<td valign='top' class='".$rowstyle[$c]."' style='text-align:right;'>";
-			echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+tier+del+".$queue."+".$agent."');}\">delete</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+tier+del+".$queue."+".$agent."@".$v_domain."');}\">delete</a>&nbsp;\n";
 			echo "</td>";
 			echo "</tr>\n";
 

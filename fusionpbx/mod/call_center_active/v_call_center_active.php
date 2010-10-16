@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("agent") || ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -124,7 +124,7 @@ echo "<div align='center'>";
 
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 echo "	<tr>\n";
-echo "	<td valign='top' align='left'><b>Active Call Center</b><br />\n";
+echo "	<td valign='top' align='left'><b>Call Center</b><br />\n";
 echo "		List the call center queue information.<br />\n";
 echo "	</td>\n";
 echo "	<td valign='top' align='right'>\n";
@@ -170,11 +170,11 @@ echo "				<td width='50%;'>\n";
 echo "					&nbsp; \n";
 echo "				</td>\n";
 echo "				<td align='right' valign='top'>\n";
-echo "					<div id=\"div_btn_agent\"><input type=\"button\" class='btn' onClick=\"hide_div('div_tier');show_div('div_agent');show_div('div_hide_agent');hide_div('div_btn_agent');show_div('div_hide_agent');\" value=\"Agents\"/></div>\n";
+echo "					<div id=\"div_btn_agent\"><input type=\"button\" class='btn' onClick=\"hide_div('div_tier');show_div('div_agent');show_div('div_hide_agent');hide_div('div_btn_agent');show_div('div_hide_agent');\" value=\"Show Agents\"/></div>\n";
 echo "					<div id=\"div_hide_agent\" style=\"display:none\"><input type=\"button\" class='btn' onClick=\"hide_div('div_agent');hide_div('div_tier');hide_div('div_hide_agent');hide_div('div_btn_agent');show_div('div_btn_agent');\" value=\"Hide Agents\"/></div>\n";
 echo "				</td>\n";
 echo "				<td align='right' valign='top'>\n";
-echo "					<div id=\"div_btn_tier\"><input type=\"button\" class='btn' onClick=\"hide_div('div_agent');show_div('div_tier');show_div('div_hide_tier');hide_div('div_btn_tier');\" value=\"Tiers\"/></div>\n";
+echo "					<div id=\"div_btn_tier\"><input type=\"button\" class='btn' onClick=\"hide_div('div_agent');show_div('div_tier');show_div('div_hide_tier');hide_div('div_btn_tier');\" value=\"Show Tiers\"/></div>\n";
 echo "					<div id=\"div_hide_tier\" style=\"display:none\"><input type=\"button\" class='btn' onClick=\"hide_div('div_agent');hide_div('div_tier');hide_div('div_hide_tier');show_div('div_btn_tier');\" value=\"Hide Tiers\"/></div>\n";
 echo "				</td>\n";
 echo "			</tr>\n";
@@ -197,9 +197,26 @@ echo "	<td valign='top' align='left' colspan='2'>\n";
 	echo "			Agent:\n";
 	echo "		</td>\n";
 	echo "		<td class='vtable' align='left'>\n";
-	echo "			<input type=\"text\" id=\"agent_agent_name\" name=\"agent_name\" class='formfld' value=\"\"/>\n";
+
+	//---- Begin Select List --------------------
+	$sql = "SELECT * FROM v_users ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+
+	echo "<select id=\"agent_name\" name=\"agent_name\" class='formfld'>\n";
+	echo "<option value=\"\"></option>\n";
+	$result = $prepstatement->fetchAll();
+	//$catcount = count($result);
+	foreach($result as $field) {
+		echo "<option value='".$field[username]."'>".$field[username]."</option>\n";
+	}
+	echo "</select>";
+	unset($sql, $result);
+	//---- End Select List --------------------
+
 	echo "			<br />\n";
-	echo "			Enter the agent name. Example: 1001\n";
+	echo "			Select the agent username.\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -207,7 +224,7 @@ echo "	<td valign='top' align='left' colspan='2'>\n";
 	echo "			Status:\n";
 	echo "		</td>\n";
 	echo "		<td class='vtable' align='left'>\n";
-	echo "			<select id='agent_agent_status' name='agent_status' class='formfld'>\n";
+	echo "			<select id='agent_status' name='agent_status' class='formfld'>\n";
 	echo "				<option value=''></option>\n";
 	echo "				<option value='Available'>Available</option>\n";
 	echo "				<option value='Available+(On+Demand)'>Available (On Demand)</option>\n";
@@ -223,50 +240,51 @@ echo "	<td valign='top' align='left' colspan='2'>\n";
 	echo "			Contact:\n";
 	echo "		</td>\n";
 	echo "		<td class='vtable' align='left'>\n";
-	echo "			<input type=\"text\" id=\"agent_agent_contact\" name=\"contact\" class='formfld' value=\"\"/>\n";
+
+	//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
+	switch_select_destination("call_center_contact", "", "agent_contact", $agent_contact, "", "");
+
 	echo "			<br />\n";
-	echo "			Enter the contact number.<br />\n";
-	echo "			extension: [call_timeout=10]user/1001 <br />\n";
-	echo "			gateway: [call_timeout=10]sofia/gateway/gateway_name/12081231234 <br />\n";
+	echo "			Select the contact number.<br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
-/*
+
 	echo "	<tr>\n";
 	echo "		<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "			Call Timeout:\n";
 	echo "		</td>\n";
 	echo "		<td class='vtable' align='left'>\n";
-	echo "			<input type=\"text\" id=\"agent_call_timeout\" name=\"call_timeout\" class='formfld' value=\"[call_timeout=10]user/1003\"/>\n";
+	echo "			<input type=\"text\" id=\"agent_call_timeout\" name=\"agent_call_timeout\" class='formfld' value=\"10\"/>\n";
 	echo "			<br />\n";
-	echo "			Enter the call timeout. Examples:<br >\n";
+	echo "			Enter the call timeout.<br >\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
-*/
+
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 
 	echo "<script type='text/javascript'>\n";
 	echo "	function agent_add() {\n";
-	echo "		agent_agent_name = document.getElementById('agent_agent_name').value;\n";
-	echo "		agent_agent_name = agent_agent_name+'@".$v_domain."';\n";
-	echo "		agent_agent_contact = document.getElementById('agent_agent_contact').value;\n";
-	echo "		agent_agent_contact = agent_agent_contact+'@".$v_domain."';\n";
-	//echo "		call_timeout = document.getElementById('agent_call_timeout').value;\n";
-	echo "		agent_agent_status = document.getElementById('agent_agent_status').value;\n";
-
+	echo "		agent_name = document.getElementById('agent_name').value;\n";
+	echo "		agent_name = agent_name+'@".$v_domain."';\n";
+	echo "		agent_contact = document.getElementById('agent_contact').value;\n";
+	echo "		agent_contact = agent_contact+'@".$v_domain."';\n";
+	echo "		agent_call_timeout = document.getElementById('agent_call_timeout').value;\n";
+	echo "		agent_status = document.getElementById('agent_status').value;\n";
+	echo "		agent_call_timeout = '[call_timeout='+agent_call_timeout+']';\n";
 	//add the agent
-		echo "		agent_add_str = 'callcenter_config+agent+add+'+agent_agent_name+'+callback';\n";
+		echo "		agent_add_str = 'callcenter_config+agent+add+'+agent_name+'+callback';\n";
 		echo "		send_cmd('v_call_center_exec.php?cmd='+agent_add_str);\n";
 		echo "\n";
 
 	//set the contact number
-		echo "		agent_set_str_1 = 'callcenter_config+agent+set+contact+'+agent_agent_name+'+'+agent_agent_contact;\n";
+		echo "		agent_set_str_1 = 'callcenter_config+agent+set+contact+'+agent_name+'+'+agent_call_timeout+agent_contact;\n";
 		echo "		send_cmd('v_call_center_exec.php?cmd='+agent_set_str_1);\n";
 		echo "\n";
 
 	//set the agent status
-		echo "		agent_set_str_2 = \"callcenter_config+agent+set+status+\"+agent_agent_name+\"+'\"+agent_agent_status+\"'\";\n";
+		echo "		agent_set_str_2 = \"callcenter_config+agent+set+status+\"+agent_name+\"+'\"+agent_status+\"'\";\n";
 		echo "		send_cmd('v_call_center_exec.php?cmd='+agent_set_str_2);\n";
 		echo "\n";
 
@@ -294,9 +312,27 @@ echo "	<td valign='top' align='left' colspan='2'>\n";
 	echo "			Agent:\n";
 	echo "		</td>\n";
 	echo "		<td class='vtable' align='left'>\n";
-	echo "			<input type=\"text\" id=\"tier_agent_name\" name=\"agent_name\" class='formfld' value=\"\"/>\n";
+	//echo "			<input type=\"text\" id=\"tier_agent_name\" name=\"agent_name\" class='formfld' value=\"\"/>\n";
+
+	//---- Begin Select List --------------------
+	$sql = "SELECT * FROM v_users ";
+	$sql .= "where v_id = '$v_id' ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+
+	echo "<select id=\"tier_agent_name\" name=\"tier_agent_name\" class='formfld'>\n";
+	echo "<option value=\"\"></option>\n";
+	$result = $prepstatement->fetchAll();
+	//$catcount = count($result);
+	foreach($result as $field) {
+		echo "<option value='".$field[username]."'>".$field[username]."</option>\n";
+	}
+	echo "</select>";
+	unset($sql, $result);
+	//---- End Select List --------------------
+
 	echo "			<br />\n";
-	echo "			Enter the agent name. Example: 1001\n";
+	echo "			Select the agent username.\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
