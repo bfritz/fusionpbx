@@ -181,18 +181,18 @@ echo "	<td align='left'><b>Active Extensions</b><br>\n";
 echo "		Use this to view all extensions and monitor and interact with active calls.\n";
 echo "	</td>\n";
 echo "	<td align='right'>\n";
-//if (count($_SESSION['assigned_extension_array']) > 0) {
-	echo "		<table>\n";
-	echo "		<td align='left' valign='middle'>\n";
-	echo "			<div id=\"form_label\"><strong>Transfer To</strong></div>\n";
-	echo "			<div id=\"url\"></div>\n";
-	echo "		</td>\n";
-	echo "		<td align='left' valign='middle'>\n";
-	echo "			<input type=\"text\" id=\"form_value\" name=\"form_value\" />\n";
-	echo "		</td>\n";
-	echo "		</tr>\n";
-	echo "		</table>\n";
-//}
+
+echo "		<table>\n";
+echo "		<td align='left' valign='middle'>\n";
+echo "			<div id=\"form_label\"><strong>Transfer To</strong></div>\n";
+echo "			<div id=\"url\"></div>\n";
+echo "		</td>\n";
+echo "		<td align='left' valign='middle'>\n";
+echo "			<input type=\"text\" id=\"form_value\" name=\"form_value\" />\n";
+echo "		</td>\n";
+echo "		</tr>\n";
+echo "		</table>\n";
+
 echo "	</td>\n";
 echo "	</tr>\n";
 echo "</table>\n";
