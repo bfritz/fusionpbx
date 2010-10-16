@@ -303,5 +303,4 @@ require_once "includes/checkauth.php";
 
 		echo "<br />\n";
 		echo "<br />\n";
-	//}
 ?>
