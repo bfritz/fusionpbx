@@ -603,6 +603,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		echo "	tb.type='text';\n";
 		echo "	tb.name=obj.name;\n";
 		echo "	tb.className='formfld';\n";
+		echo "	tb.setAttribute('id', '".$select_name."');\n";
 		echo "	tb.setAttribute('style', '".$select_style."');\n";
 		echo "	tb.value=obj.options[obj.selectedIndex].value;\n";
 		echo "	document.getElementById('btn_select_to_input_".$select_name."').style.visibility = 'hidden';\n";
@@ -656,7 +657,10 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
-		echo "<optgroup label='Extensions'>\n";
+
+		if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
+			echo "<optgroup label='Extensions'>\n";
+		}
 		foreach ($result as &$row) {
 			$extension = $row["extension"];
 			if ("transfer ".$extension." XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
@@ -665,6 +669,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				}
 				if ($select_type == "dialplan") {
 					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+				}
+				if ($select_type == "call_center_contact") {
+					echo "		<option value='user/$extension' selected='selected'>".$extension."</option>\n";
 				}
 				$selection_found = true;
 			}
@@ -675,9 +682,14 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				if ($select_type == "dialplan") {
 					echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
 				}
+				if ($select_type == "call_center_contact") {
+					echo "		<option value='user/$extension'>".$extension."</option>\n";
+				}
 			}
 		}
-		echo "</optgroup>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
+			echo "</optgroup>\n";
+		}
 		unset ($prepstatement, $extension);
 
 	//list conferences
@@ -688,7 +700,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$prepstatement->execute();
 		$x = 0;
 		$result = $prepstatement->fetchAll();
-		echo "<optgroup label='Conferences'>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='Conferences'>\n";
+		}
 		$previous_conference_name = "";
 		foreach ($result as &$row) {
 			//$tag = $row["tag"];
@@ -715,11 +729,12 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					}
 					$previous_conference_name = $conference_name;
 				}
-
 				$x++;
 			}
 		}
-		echo "</optgroup>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
 		unset ($prepstatement);
 
 	//list fax extensions
@@ -729,7 +744,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
-		echo "<optgroup label='FAX'>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='FAX'>\n";
+		}
 		foreach ($result as &$row) {
 			$extension = $row["faxextension"];
 			if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
@@ -750,7 +767,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				}
 			}
 		}
-		echo "</optgroup>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
 		unset ($prepstatement, $extension);
 
 	//list fifo queues
@@ -761,7 +780,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$prepstatement->execute();
 		$x = 0;
 		$result = $prepstatement->fetchAll();
-		echo "<optgroup label='FIFO'>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='FIFO'>\n";
+		}
 		foreach ($result as &$row) {
 			//$tag = $row["tag"];
 			if ($row["fieldtype"] == "fifo") {
@@ -804,7 +825,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				}
 			}
 		}
-		echo "</optgroup>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
 		unset ($prepstatement);
 
 	//list hunt groups
@@ -815,7 +838,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
-		echo "<optgroup label='Hunt Groups'>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='Hunt Groups'>\n";
+		}
 		foreach ($result as &$row) {
 			//$v_id = $row["v_id"];
 			$extension = $row["huntgroupextension"];
@@ -837,7 +862,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				}
 			}
 		}
-		echo "</optgroup>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
 		unset ($prepstatement, $extension);
 
 	//list ivr menus
@@ -848,7 +875,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
-		echo "<optgroup label='IVR Menu'>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='IVR Menu'>\n";
+		}
 		foreach ($result as &$row) {
 			$extension = $row["ivr_menu_extension"];
 			if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
@@ -869,7 +898,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				}
 			}
 		}
-		echo "</optgroup>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
 		unset ($prepstatement, $extension);
 
 	//list ivr menus
@@ -882,7 +913,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll();
-				echo "<optgroup label='IVR Sub'>\n";
+				if ($select_type == "dialplan" || $select_type == "ivr") {
+					echo "<optgroup label='IVR Sub'>\n";
+				}
 				foreach ($result as &$row) {
 					$extension_name = $row["ivr_menu_name"];
 					$extension_name = str_replace(" ", "_", $extension_name);
@@ -894,11 +927,15 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 						echo "		<option value='menu-sub:$extension_name'>".$extension_name."</option>\n";
 					}
 				}
-				echo "</optgroup>\n";
+				if ($select_type == "dialplan" || $select_type == "ivr") {
+					echo "</optgroup>\n";
+				}
 				unset ($prepstatement, $extension_name);
 
 			//list ivr misc
-				echo "<optgroup label='IVR Misc'>\n";
+				if ($select_type == "dialplan" || $select_type == "ivr") {
+					echo "<optgroup label='IVR Misc'>\n";
+				}
 				if ($ivr_menu_options_action == "menu-top") {
 					echo "		<option value='menu-top:' selected='selected'>Top</option>\n";
 					$selection_found = true;
@@ -918,11 +955,15 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 						echo "		<option value='$select_value' selected='selected'>".$select_value."</option>\n";
 					}
 				}
-				echo "</optgroup>\n";
+				if ($select_type == "dialplan" || $select_type == "ivr") {
+					echo "</optgroup>\n";
+				}
 		}
 
 	//list the languages
-		echo "<optgroup label='Language'>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='Language'>\n";
+		}
 		//dutch
 		if ("menu-exec-app:set default_language=nl" == $select_value || "set:default_language=nl" == $select_value) {
 			if ($select_type == "ivr") {
@@ -1025,7 +1066,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				echo "	<option value='set:default_language=es'>Spanish</option>\n";
 			}
 		}
-		echo "</optgroup>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
 
 	//list time conditions
 		$sql = "";
@@ -1073,7 +1116,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				break;
 			}
 		}
-		echo "<optgroup label='Time Conditions'>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='Time Conditions'>\n";
+		}
 		foreach($time_array as $key=>$val) {    
 			$dialplan_include_id = $key;
 			//get the extension number using the dialplan_include_id
@@ -1108,7 +1153,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					}
 				}
 		}
-		echo "</optgroup>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
 		unset ($prepstatement);
 
 	//list voicemail
@@ -1119,7 +1166,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
-		echo "<optgroup label='Voicemail'>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='Voicemail'>\n";
+		}
 		foreach ($result as &$row) {
 			$extension = $row["extension"]; //default ${domain_name} 
 			if ("voicemail default \${domain} ".$extension == $select_value || "voicemail:default \${domain} ".$extension == $select_value) {
@@ -1140,11 +1189,54 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				}
 			}
 		}
-		echo "</optgroup>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
+
+	//gateways
+		if (ifgroup("superadmin")) {
+			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
+				echo "<optgroup label='Gateways'>\n";
+			}
+			$sql = "";
+			$sql .= " select * from v_gateways ";
+			$sql .= " where v_id = '$v_id' ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			$resultcount = count($result);
+			unset ($prepstatement, $sql);
+			$tmp_selected = '';
+			foreach($result as $row) {
+				if ($row[gateway] == $select_value) {
+					$tmp_selected = "selected='selected'";
+				}
+					if ($select_type == "dialplan") {
+						echo "		<option value='bridge:sofia/gateway/".$row[gateway]."/xxxxxxxxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxxxxxxxx</option>\n";
+					}
+					if ($select_type == "ivr") {
+						echo "		<option value='menu-exec-app:bridge sofia/gateway/".$row[gateway]."/xxxxxxxxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxxxxxxxx</option>\n";
+					}
+					if ($select_type == "call_center_contact") {
+						echo "		<option value='sofia/gateway/".$row[gateway]."/xxxxxxxxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxxxxxxxx</option>\n";
+					}
+					$tmp_selected = '';
+
+			}
+			unset($sql, $result, $rowcount);
+			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
+				echo "</optgroup>\n";
+			}
+		}
 
 	//other
 		if (ifgroup("superadmin") && $select_type == "dialplan") {
-			echo "<optgroup label='Other'>\n";
+			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
+				echo "<optgroup label='Other'>\n";
+			}
+				if ($select_type == "call_center_contact") {
+					echo "		<option value='[call_timeout=10]sofia/gateway/gateway_name/11231231234' selected='selected'>[call_timeout=10]sofia/gateway/gateway_name/11231231234</option>\n";
+				}
 
 				if ($select_value == "answer") {
 					echo "		<option value='answer' selected='selected'>answer</option>\n";
@@ -1250,8 +1342,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				else {
 					echo "		<option value=''>other</option>\n";
 				}
-
-			echo "</optgroup>\n";
+			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
+				echo "</optgroup>\n";
+			}
 		}
 		/*
 		//echo "    <option value='answer'>answer</option>\n";
@@ -1599,10 +1692,7 @@ function sync_package_v_extensions()
 						//this is a directory do nothing
 					} else {
 						//check if file is an extension; verify the file numeric and the extension is xml
-						$file_array = explode(".", $file);
-						if (is_numeric($file_array[0]) && $file_array[count($file_array)-1] == "xml") {
-							//echo "name: ".$file_array[0]."<br />\n";
-							//echo "file: ".$file."<br/>\n";
+						if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
 							unlink($v_extensions_dir."/".$file);
 						}
 					}
@@ -1619,6 +1709,11 @@ function sync_package_v_extensions()
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$i = 0;
+	$extension_xml_condensed = false;
+	if ($extension_xml_condensed) {
+		$fout = fopen($v_extensions_dir."/v_extensions.xml","w");
+		$tmpxml = "<include>\n";
+	}
 	while($row = $prepstatement->fetch()) {
 		$callgroup = $row['callgroup'];
 		$callgroup = str_replace(";", ",", $callgroup);
@@ -1639,9 +1734,10 @@ function sync_package_v_extensions()
 
 		//echo "enabled: ".$row['enabled'];
 		if ($row['enabled'] != "false") {
-			$fout = fopen($v_extensions_dir."/".$row['extension'].".xml","w");
-
-			$tmpxml = "<include>\n";
+			if (!$extension_xml_condensed) {
+				$fout = fopen($v_extensions_dir."/v_".$row['extension'].".xml","w");
+				$tmpxml .= "<include>\n";
+			}
 			if (strlen($row['cidr']) == 0) {
 				$tmpxml .= "  <user id=\"" . $row['extension'] . "\">\n";
 			}
@@ -1697,14 +1793,22 @@ function sync_package_v_extensions()
 			}
 			$tmpxml .= "    </variables>\n";
 			$tmpxml .= "  </user>\n";
-			$tmpxml .= "</include>\n";
-			fwrite($fout, $tmpxml);
-			unset($tmpxml);
-			fclose($fout);
+
+			if (!$extension_xml_condensed) {
+				$tmpxml .= "</include>\n";
+				fwrite($fout, $tmpxml);
+				unset($tmpxml);
+				fclose($fout);
+			}
 		}
 	}
 	unset ($prepstatement);
-	//echo $tmpxml;
+	if ($extension_xml_condensed) {
+		$tmpxml .= "</include>\n";
+		fwrite($fout, $tmpxml);
+		unset($tmpxml);
+		fclose($fout);
+	}
 
 	//define the group members
 		$tmpxml = "<!--\n";
@@ -1828,8 +1932,7 @@ function sync_package_v_gateways()
 						//this is a directory do nothing
 					} else {
 						//check if file extension is xml
-						$file_array = explode(".", $file);
-						if ($file_array[count($file_array)-1] == "xml") {
+						if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
 							unlink($v_conf_dir."/sip_profiles/external/".$file);
 						}
 					}
@@ -1847,7 +1950,7 @@ function sync_package_v_gateways()
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		if ($row['enabled'] != "false") {
-				$fout = fopen($v_conf_dir."/sip_profiles/external/".$row['gateway'].".xml","w");
+				$fout = fopen($v_conf_dir."/sip_profiles/external/v_".$row['gateway'].".xml","w");
 
 				$tmpxml .= "<include>\n";
 				$tmpxml .= "    <gateway name=\"" . $row['gateway'] . "\">\n";
@@ -1872,13 +1975,13 @@ function sync_package_v_gateways()
 				if (strlen($row['proxy']) > 0) {
 					$tmpxml .= "      <param name=\"proxy\" value=\"" . $row['proxy'] . "\"/>\n";
 				}
-			        if (strlen($row['register_proxy']) > 0) {
-                                        $tmpxml .= "      <param name=\"register-proxy\" value=\"" . $row['register_proxy'] . "\"/>\n";
-                                }
-                                if (strlen($row['outbound_proxy']) > 0) {
-                                        $tmpxml .= "      <param name=\"outbound-proxy\" value=\"" . $row['outbound_proxy'] . "\"/>\n";
-                                }
-                        	if (strlen($row['expire_seconds']) > 0) {
+				if (strlen($row['register_proxy']) > 0) {
+									$tmpxml .= "      <param name=\"register-proxy\" value=\"" . $row['register_proxy'] . "\"/>\n";
+				}
+				if (strlen($row['outbound_proxy']) > 0) {
+						$tmpxml .= "      <param name=\"outbound-proxy\" value=\"" . $row['outbound_proxy'] . "\"/>\n";
+				}
+				if (strlen($row['expire_seconds']) > 0) {
 					$tmpxml .= "      <param name=\"expire-seconds\" value=\"" . $row['expire_seconds'] . "\"/>\n";
 				}
 				if (strlen($row['register']) > 0) {
@@ -4690,14 +4793,14 @@ function sync_package_v_dialplan_includes()
 {
 
 	global $db, $v_id;
-  
+
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
 		$$name = $value;
 	}
 
 	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
-		$v_needle = 'dialplan_';
+		$v_needle = 'v_dialplan_';
 		if($dh = opendir($v_dialplan_default_dir."/")) {
 			$files = Array();
 			while($file = readdir($dh)) {
@@ -4706,8 +4809,7 @@ function sync_package_v_dialplan_includes()
 						//this is a directory
 					} else {
 						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-							//echo "file: $file<br />\n";
-							unlink($v_dialplan_default_dir."/".$file);
+							unlink($v_dialplan_default_dir."/".$file); //remove before final release
 						}
 					}
 				}
@@ -4892,7 +4994,7 @@ function sync_package_v_dialplan_includes()
 		$tmp .= "</extension>\n";
 
 		if ($row['enabled'] == "true") {
-			$dialplanincludefilename = $row['dialplanorder']."_dialplan_".$row['extensionname'].".xml";
+			$dialplanincludefilename = $row['dialplanorder']."_v_dialplan_".$row['extensionname'].".xml";
 			$fout = fopen($v_dialplan_default_dir."/".$dialplanincludefilename,"w");
 			fwrite($fout, $tmp);
 			fclose($fout);
@@ -4916,16 +5018,25 @@ function sync_package_v_public_includes()
 
 	global $db, $v_id;
 
-	//order the array
-	function cmp_number_public_include_details($a, $b) {
-		if ($a["fieldorder"] > $b["fieldorder"]) {
-			return 1;
+	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
+		$v_needle = 'v_public_';
+		if($dh = opendir($v_dialplan_public_dir."/")) {
+			$files = Array();
+			while($file = readdir($dh)) {
+				if($file != "." && $file != ".." && $file[0] != '.') {
+					if(is_dir($dir . "/" . $file)) {
+						//this is a directory
+					} else {
+						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
+							unlink($v_dialplan_public_dir."/".$file);
+						}
+					}
+				}
+			}
+			closedir($dh);
 		}
-		else {
-			return 0;
-		}
-	}
 
+	//loop through all the public includes aka inbound routes
 	$sql = "";
 	$sql .= "select * from v_public_includes ";
 	$sql .= "where v_id = '$v_id' ";
@@ -5051,7 +5162,7 @@ function sync_package_v_public_includes()
 
 
 		if ($row['enabled'] == "true") {
-			$publicincludefilename = $row['publicorder']."_".$row['extensionname'].".xml";
+			$publicincludefilename = $row['publicorder']."_v_public_".$row['extensionname'].".xml";
 			$fout = fopen($v_dialplan_public_dir."/".$publicincludefilename,"w");
 			fwrite($fout, $tmp);
 			fclose($fout);
@@ -5062,83 +5173,6 @@ function sync_package_v_public_includes()
 	} //end while
 	unset ($prepstatement);
 }
-
-
-if (!function_exists('call_broadcast_send_broadcast')) {
-	//html table header order by
-	function call_broadcast_send_broadcast($groupid, $call_broadcast_id) {
-
-		global $db, $config;
-		$v_settings_array = v_settings();
-		foreach($v_settings_array as $name => $value) {
-			$$name = $value;
-		}
-
-		$sql = "";
-		$sql .= "select * from v_call_broadcast ";
-		$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			$broadcast_name = $row["broadcast_name"];
-			$broadcast_desc = $row["broadcast_desc"];
-			$broadcast_timeout = $row["broadcast_timeout"];
-			$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
-			$recordingid = $row["recordingid"];
-			$broadcast_caller_id_name = $row["broadcast_caller_id_name"];
-			$broadcast_caller_id_number = $row["broadcast_caller_id_number"];
-			$broadcast_destination_type = $row["broadcast_destination_type"];
-			$broadcast_destination_data = $row["broadcast_destination_data"];
-			break; //limit to 1 row
-		}
-		unset ($prepstatement);
-
-		$fout = fopen($v_scripts_dir."/recordings.js","w");
-		$tmp = "";
-		$tmp .= "	zzz\n";
-
-		$sql = "";
-		$sql .= " select * from v_users as u, v_group_members as m ";
-		$sql .= " where u.username = m.username ";
-		$sql .= " and m.groupid = '".$groupid."' ";
-		//echo $sql;
-
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		$resultcount = count($result);
-		unset ($prepstatement, $sql);
-
-		if ($resultcount == 0) { //no results
-		}
-		else { //received results
-			foreach($result as $row) {
-				//print_r( $row );
-				//echo "<tr >\n";
-				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[username]."&nbsp;</td>\n";
-				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[usertype]."&nbsp;</td>\n";
-				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[usercategory]."&nbsp;</td>\n";
-				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userfirstname]."&nbsp;</td>\n";
-				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userlastname]."&nbsp;</td>\n";
-				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[usercompanyname]."&nbsp;</td>\n";
-				//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userphone1]."&nbsp;</td>\n";
-				//echo "</tr>\n";
-
-			} //end foreach
-			unset($sql, $result, $rowcount);
-		} //end if results
-
-		unset ($resultcount);
-		unset ($result);
-
-		$tmp .= " zzz";
-		fwrite($fout, $tmp);
-		unset($tmp);
-		fclose($fout);
-
-	}//end function
-} //function exists
 
 
 if (!function_exists('phone_letter_to_number')) {
