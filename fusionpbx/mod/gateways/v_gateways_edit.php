@@ -366,35 +366,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$fieldorder = '000';
 				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
-				if (strlen($effective_caller_id_name) > 0) {
-					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'effective_caller_id_name='.$effective_caller_id_name;
-					$fieldorder = '001';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-				}
+				$tag = 'action'; //condition, action, antiaction
+				$fieldtype = 'set';
+				$fielddata = 'effective_caller_id_name=${outbound_caller_id_name}';
+				$fieldorder = '001';
+				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
-				//if (strlen($effective_caller_id_number) > 0) {
-					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'effective_caller_id_number=${outbound_caller_id_number}';
-					$fieldorder = '002';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-				//}
-				//if (strlen($outbound_caller_id_name) > 0) {
-					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'outbound_caller_id_name=${outbound_caller_id_name}';
-					$fieldorder = '003';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-				//}
-				if (strlen($outbound_caller_id_number) > 0) {
-					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'outbound_caller_id_number='.$outbound_caller_id_number;
-					$fieldorder = '004';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-				}
+				$tag = 'action'; //condition, action, antiaction
+				$fieldtype = 'set';
+				$fielddata = 'effective_caller_id_number=${outbound_caller_id_number}';
+				$fieldorder = '002';
+				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 				$tag = 'action'; //condition, action, antiaction
 				$fieldtype = 'bridge';
