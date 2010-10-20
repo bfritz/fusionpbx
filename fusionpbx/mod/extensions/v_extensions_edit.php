@@ -257,7 +257,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//syncrhonize configuration
 			sync_package_v_extensions();
-		
+
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_extensions.php\">\n";
 			echo "<div align='center'>\n";
@@ -371,7 +371,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='extension' autocomplete='off' maxlength='255' value=\"$extension\">\n";
 	echo "<br />\n";
-	echo "Enter the extension here. The default configuration allows 3, 4, or 5 digit extensions.\n";
+	echo "Enter the extension here. The default configuration allows 2 - 7 digit extensions.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -422,6 +422,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "    <option value='500'>500</option>\n";
 		echo "    <option value='500'>750</option>\n";
 		echo "    <option value='1000'>1000</option>\n";
+		echo "    <option value='5000'>5000</option>\n";
 		echo "    </select>\n";
 		echo "<br />\n";
 		echo "Enter the number of extensions to create. Increments each extension by 1.<br />\n";
