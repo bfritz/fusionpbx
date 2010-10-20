@@ -114,7 +114,7 @@ $order = $_GET["order"];
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_tier_rule_wait_multiply_level]."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_description]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='/mod/call_center_active/v_call_center_active.php?queue_name=".$row[queue_name]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
+			echo "		<a href='".PROJECT_PATH."/mod/call_center_active/v_call_center_active.php?queue_name=".$row[queue_name]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
 			//echo "		<a href='v_call_center_queue_delete.php?id=".$row[call_center_queue_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
 			//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_call_center_queue_edit.php?id=".$row[call_center_queue_id]."'\" value='e'>\n";
 			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_call_center_queue_delete.php?id=".$row[call_center_queue_id]."' }\" value='x'>\n";
