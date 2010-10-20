@@ -245,7 +245,7 @@ require_once "includes/config.php";
 		//$proxy3_address= "";
 
 //get the contents of the template
-	$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/provision_templates/".$phone_template ."/".$file);
+	$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/".$file);
 
 //replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 	$file_contents = str_replace("{v_mac}", $mac, $file_contents);

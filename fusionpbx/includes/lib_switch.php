@@ -663,7 +663,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 		foreach ($result as &$row) {
 			$extension = $row["extension"];
-			if ("transfer ".$extension." XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
+			if ("transfer ".$extension." XML default" == $select_value || "transfer:".$extension." XML default" == $select_value || "user/$extension" == $select_value) {
 				if ($select_type == "ivr") {
 					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
 				}
@@ -5688,6 +5688,300 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 	}
 }
 
+if (!function_exists('sync_package_v_call_center')) {
+	function sync_package_v_call_center()
+	{
+		global $db, $v_id;
+
+		$v_settings_array = v_settings();
+		foreach($v_settings_array as $name => $value) {
+			$$name = $value;
+		}
+
+		$sql = "";
+		$sql .= "select * from v_call_center_queue ";
+		$sql .= "where v_id = '$v_id' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		$result_count = count($result);
+		unset ($prepstatement, $sql);
+		if ($result_count > 0) { //found results
+			foreach($result as $row) {
+				//$v_id = $row["v_id"];
+				$call_center_queue_id = $row["call_center_queue_id"];
+				$queue_name = $row["queue_name"];
+				$queue_extension = $row["queue_extension"];
+				$queue_strategy = $row["queue_strategy"];
+				$queue_moh_sound = $row["queue_moh_sound"];
+				$queue_record_template = $row["queue_record_template"];
+				$queue_time_base_score = $row["queue_time_base_score"];
+				$queue_max_wait_time = $row["queue_max_wait_time"];
+				$queue_max_wait_time_with_no_agent = $row["queue_max_wait_time_with_no_agent"];
+				$queue_tier_rules_apply = $row["queue_tier_rules_apply"];
+				$queue_tier_rule_wait_second = $row["queue_tier_rule_wait_second"];
+				$queue_tier_rule_wait_multiply_level = $row["queue_tier_rule_wait_multiply_level"];
+				$queue_tier_rule_no_agent_no_wait = $row["queue_tier_rule_no_agent_no_wait"];
+				$queue_discard_abandoned_after = $row["queue_discard_abandoned_after"];
+				$queue_abandoned_resume_allowed = $row["queue_abandoned_resume_allowed"];
+				$queue_description = $row["queue_description"];
+
+				//replace space with an underscore
+					$queue_name = str_replace(" ", "_", $queue_name);
+
+				//add each Queue to the dialplan
+					if (strlen($row['call_center_queue_id']) > 0) {
+						$action = 'add'; //set default action to add
+						$i = 0;
+
+						$sql = "";
+						$sql .= "select * from v_dialplan_includes ";
+						$sql .= "where v_id = '$v_id' ";
+						$sql .= "and opt1name = 'call_center_queue_id' ";
+						$sql .= "and opt1value = '".$row['call_center_queue_id']."' ";
+						$prepstatement2 = $db->prepare($sql);
+						$prepstatement2->execute();
+						while($row2 = $prepstatement2->fetch()) {
+							$action = 'update';
+							$dialplan_include_id = $row2['dialplan_include_id'];
+							break; //limit to 1 row
+						}
+						unset ($sql, $prepstatement2);
+
+						if ($action == 'add') {
+							//create queue entry in the dialplan
+								$extensionname = $queue_name;
+								$dialplanorder ='9';
+								//$context = $row['queue_context'];
+								$context = 'default';
+								$enabled = 'true';
+								$descr = $queue_description;
+								$opt1name = 'call_center_queue_id';
+								$opt1value = $row['call_center_queue_id'];
+								$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+
+								$tag = 'condition'; //condition, action, antiaction
+								$fieldtype = 'destination_number';
+								$fielddata = '^'.$row['queue_extension'].'$';
+								$fieldorder = '000';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'answer';
+								$fielddata = '';
+								$fieldorder = '001';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'callcenter';
+								$fielddata = $queue_name."@".$v_domain;
+								$fieldorder = '002';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						}
+						if ($action == 'update') {
+							//update the queue entry in the dialplan
+
+								$extensionname = $queue_name;
+								$dialplanorder = '9';
+								//$context = $row['queue_context'];
+								$context = 'default';
+								$enabled = 'true';
+								$descr = $queue_description;
+								$call_center_queue_id = $row['call_center_queue_id'];
+
+								$sql = "";
+								$sql = "update v_dialplan_includes set ";
+								$sql .= "extensionname = '$extensionname', ";
+								$sql .= "dialplanorder = '$dialplanorder', ";
+								$sql .= "context = '$context', ";
+								$sql .= "enabled = '$enabled', ";
+								$sql .= "descr = '$descr' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and opt1name = 'call_center_queue_id' ";
+								$sql .= "and opt1value = '$call_center_queue_id' ";
+								//echo "sql: ".$sql."<br />";
+								//exit;
+								$db->query($sql);
+								unset($sql);
+
+								//update the condition
+								$sql = "";
+								$sql = "update v_dialplan_includes_details set ";
+								$sql .= "fielddata = '^".$row['queue_extension']."$' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and tag = 'condition' ";
+								$sql .= "and fieldtype = 'destination_number' ";
+								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								//echo $sql."<br />";
+								//exit;
+								$db->query($sql);
+								unset($sql);
+
+								//update the action
+								$sql = "";
+								$sql = "update v_dialplan_includes_details set ";
+								$sql .= "fielddata = '".$queue_name."@".$v_domain."' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and tag = 'action' ";
+								$sql .= "and fieldtype = 'callcenter' ";
+								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								//echo $sql."<br />";
+								$db->query($sql);
+
+								unset($extensionname);
+								unset($order);
+								unset($context);
+								unset($enabled);
+								unset($descr);
+								unset($opt1name);
+								unset($opt1value);
+						}
+						unset($action);
+						unset($dialplanincludeid);
+					} //end if strlen ivr_menu_id; add the IVR Menu to the dialplan
+			}
+
+			//prepare Queue XML string
+				$v_queues = '';
+				$sql = "";
+				$sql .= "select * from v_call_center_queue ";
+				$sql .= "where v_id = '$v_id' ";
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
+				$x=0;
+				foreach ($result as &$row) {
+					//$v_id = $row["v_id"];
+					$queue_name = $row["queue_name"];
+					$queue_extension = $row["queue_extension"];
+					$queue_strategy = $row["queue_strategy"];
+					$queue_moh_sound = $row["queue_moh_sound"];
+					$queue_record_template = $row["queue_record_template"];
+					$queue_time_base_score = $row["queue_time_base_score"];
+					$queue_max_wait_time = $row["queue_max_wait_time"];
+					$queue_max_wait_time_with_no_agent = $row["queue_max_wait_time_with_no_agent"];
+					$queue_tier_rules_apply = $row["queue_tier_rules_apply"];
+					$queue_tier_rule_wait_second = $row["queue_tier_rule_wait_second"];
+					$queue_tier_rule_wait_multiply_level = $row["queue_tier_rule_wait_multiply_level"];
+					$queue_tier_rule_no_agent_no_wait = $row["queue_tier_rule_no_agent_no_wait"];
+					$queue_discard_abandoned_after = $row["queue_discard_abandoned_after"];
+					$queue_abandoned_resume_allowed = $row["queue_abandoned_resume_allowed"];
+					$queue_description = $row["queue_description"];
+					if ($x > 0) {
+						$v_queues .= "\n";
+						$v_queues .= "		";
+					}
+					$v_queues .= "<queue name=\"$queue_name@$v_domain\">\n";
+					$v_queues .= "			<param name=\"strategy\" value=\"$queue_strategy\"/>\n";
+					$v_queues .= "			<param name=\"moh-sound\" value=\"$queue_moh_sound\"/>\n";
+					if (strlen($queue_record_template) > 0) {
+						$v_queues .= "			<param name=\"record-template\" value=\"$queue_record_template\"/>\n";
+					}
+					$v_queues .= "			<param name=\"time-base-score\" value=\"$queue_time_base_score\"/>\n";
+					$v_queues .= "			<param name=\"max-wait-time\" value=\"$queue_max_wait_time\"/>\n";
+					$v_queues .= "			<param name=\"max-wait-time-with-no-agent\" value=\"$queue_max_wait_time_with_no_agent\"/>\n";
+					$v_queues .= "			<param name=\"tier-rules-apply\" value=\"$queue_tier_rules_apply\"/>\n";
+					$v_queues .= "			<param name=\"tier-rule-wait-second\" value=\"$queue_tier_rule_wait_second\"/>\n";
+					$v_queues .= "			<param name=\"tier-rule-wait-multiply-level\" value=\"$queue_tier_rule_wait_multiply_level\"/>\n";
+					$v_queues .= "			<param name=\"tier-rule-no-agent-no-wait\" value=\"$queue_tier_rule_no_agent_no_wait\"/>\n";
+					$v_queues .= "			<param name=\"discard-abandoned-after\" value=\"$queue_discard_abandoned_after\"/>\n";
+					$v_queues .= "			<param name=\"abandoned-resume-allowed\" value=\"$queue_abandoned_resume_allowed\"/>\n";
+					$v_queues .= "		</queue>";
+					$x++;
+				}
+				unset ($prep_statement);
+
+			//prepare Agent XML string
+				$v_agents = '';
+				$sql = "";
+				$sql .= "select * from v_call_center_agent ";
+				$sql .= "where v_id = '$v_id' ";
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
+				$x=0;
+				foreach ($result as &$row) {
+					$agent_name = $row["agent_name"];
+					$agent_type = $row["agent_type"];
+					$agent_call_timeout = $row["agent_call_timeout"];
+					$agent_contact = $row["agent_contact"];
+					$agent_status = $row["agent_status"];
+					$agent_max_no_answer = $row["agent_max_no_answer"];
+					$agent_wrap_up_time = $row["agent_wrap_up_time"];
+					$agent_reject_delay_time = $row["agent_reject_delay_time"];
+					$agent_busy_delay_time = $row["agent_busy_delay_time"];
+					if ($x > 0) {
+						$v_agents .= "\n";
+						$v_agents .= "		";
+					}
+					$v_agents .= "		<agent ";
+					$v_agents .= "name=\"$agent_name@$v_domain\" ";
+					$v_agents .= "type=\"$agent_type\" ";
+
+					if(stristr($agent_contact, '/gateway/') != FALSE) {
+						//gateway
+						$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact\" ";
+					}
+					else {
+						//extensions
+						$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact@$v_domain\" ";
+					}
+					$v_agents .= "status=\"$agent_status\" ";
+					$v_agents .= "max-no-answer=\"$agent_max_no_answer\" ";
+					$v_agents .= "wrap-up-time=\"$agent_wrap_up_time\" ";
+					$v_agents .= "reject-delay-time=\"$agent_reject_delay_time\" ";
+					$v_agents .= "busy-delay-time=\"$agent_busy_delay_time\" ";
+					$v_agents .= "/>";
+					$x++;
+				}
+				unset ($prep_statement);
+
+			//prepare Tier XML string
+				$v_tiers = '';
+				$sql = "";
+				$sql .= "select * from v_call_center_tier ";
+				$sql .= "where v_id = '$v_id' ";
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
+				$x=0;
+				foreach ($result as &$row) {
+					$agent_name = $row["agent_name"];
+					$queue_name = $row["queue_name"];
+					$tier_level = $row["tier_level"];
+					$tier_position = $row["tier_position"];
+					if ($x > 0) {
+						$v_tiers .= "\n";
+						$v_tiers .= "		";
+					}
+					$v_tiers .= "<tier agent=\"$agent_name@$v_domain\" queue=\"$queue_name@$v_domain\" level=\"$tier_level\" position=\"$tier_position\"/>";
+					$x++;
+				}
+
+			//get the contents of the template
+				$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/autoload_configs/callcenter.conf.xml");
+
+			//add the Call Center Queues, Agents and Tiers to the XML config
+				$file_contents = str_replace("{v_queues}", $v_queues, $file_contents);
+				unset ($v_queues);
+
+				$file_contents = str_replace("{v_agents}", $v_agents, $file_contents);
+				unset ($v_agents);
+
+				$file_contents = str_replace("{v_tiers}", $v_tiers, $file_contents);
+				unset ($v_tiers);
+
+			//write the XML config file
+				$fout = fopen($v_conf_dir."/autoload_configs/callcenter.conf.xml","w");
+				fwrite($fout, $file_contents);
+				fclose($fout);
+
+			//syncrhonize configuration
+				sync_package_v_dialplan_includes();
+		}
+	}
+}
+
 function sync_package_freeswitch()
 {
 	global $config;
@@ -5707,7 +6001,8 @@ function sync_package_freeswitch()
 		sync_package_v_auto_attendant();
 	}
 	sync_package_v_hunt_group();
-
+	sync_package_v_ivr_menu();
+	sync_package_v_call_center();
 }
 
 //include all the .php files in the /includes/mod directory
