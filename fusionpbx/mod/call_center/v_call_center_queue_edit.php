@@ -334,7 +334,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='queue_record_template' maxlength='255' value=\"$queue_record_template\">\n";
 	echo "<br />\n";
-	echo "Enter a record template.\n";
+	echo "Enter a record template. \$\${base_dir}/recordings/archive/\${strftime(%Y)}/\${strftime(%b)}/\${strftime(%d)}/\${uuid}.wav\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

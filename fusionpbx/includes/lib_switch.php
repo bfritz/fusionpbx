@@ -5773,9 +5773,15 @@ if (!function_exists('sync_package_v_call_center')) {
 								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'system';
+								$fielddata = 'mkdir -p $${base_dir}/recordings/archive/${strftime(%Y)}/${strftime(%b)}/${strftime(%d)}/';
+								$fieldorder = '002';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
 								$fieldtype = 'callcenter';
 								$fielddata = $queue_name."@".$v_domain;
-								$fieldorder = '002';
+								$fieldorder = '003';
 								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 						}
 						if ($action == 'update') {
