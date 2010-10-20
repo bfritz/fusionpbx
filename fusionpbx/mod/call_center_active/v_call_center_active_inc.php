@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("agent") || ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -93,10 +93,13 @@ else {
 		$event_socket_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
 		$result = str_to_named_array($event_socket_str, '|');
 
+	//short queue name
+		$queue_name_array = explode('@', $queue_name);
+
 	//show the title
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 		echo "  <tr>\n";
-		echo "	<td align='left'><b>Queues</b><br />\n";
+		echo "	<td align='left'><b>".ucfirst($queue_name_array[0])." Queue</b><br />\n";
 		echo "		Shows a list of callers in the queue.<br />\n";
 		echo "	</td>\n";
 		echo "  </tr>\n";
@@ -193,7 +196,9 @@ echo "<br />\n";
 		echo "<th>Last Status Change</th>\n";
 		echo "<th>No Answer Count</th>\n";
 		echo "<th>Calls Answered</th>\n";
-		echo "<th>&nbsp;</th>\n";
+		if (ifgroup("admin") || ifgroup("superadmin")) {
+			echo "<th>&nbsp;</th>\n";
+		}
 		echo "</tr>\n";
 
 		foreach ($result as $row) {
@@ -246,10 +251,11 @@ echo "<br />\n";
 			echo "<td valign='top' class='".$rowstyle[$c]."'>".$last_status_change_length."</td>\n";
 			echo "<td valign='top' class='".$rowstyle[$c]."'>".$no_answer_count."</td>\n";
 			echo "<td valign='top' class='".$rowstyle[$c]."'>".$calls_answered."</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."'>";
-
-			echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+agent+del+".$name."@".$v_domain."');}\">delete</a>&nbsp;\n";
-			echo "</td>";
+			if (ifgroup("admin") || ifgroup("superadmin")) {
+				echo "<td valign='top' class='".$rowstyle[$c]."'>";
+				echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+agent+del+".$name."@".$v_domain."');}\">delete</a>&nbsp;\n";
+				echo "</td>";
+			}
 			echo "</tr>\n";
 
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -263,56 +269,57 @@ echo "<br />\n";
 
 
 //get the tier list
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		//show the title
+			echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+			echo "  <tr>\n";
+			echo "	<td align='left'><b>Tiers</b><br />\n";
+			echo "		List the tiers.<br />\n";
+			echo "	</td>\n";
+			echo "  </tr>\n";
+			echo "</table>\n";
+			echo "<br />\n";
 
-	//show the title
-		echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-		echo "  <tr>\n";
-		echo "	<td align='left'><b>Tiers</b><br />\n";
-		echo "		List the tiers.<br />\n";
-		echo "	</td>\n";
-		echo "  </tr>\n";
-		echo "</table>\n";
-		echo "<br />\n";
+		//send the event socket command and get the response
+			$switch_cmd = 'callcenter_config tier list '.$queue_name;
+			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+			$event_socket_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
+			$result = str_to_named_array($event_socket_str, '|');
 
-	//send the event socket command and get the response
-		$switch_cmd = 'callcenter_config tier list '.$queue_name;
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-		$event_socket_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
-		$result = str_to_named_array($event_socket_str, '|');
-
-	//list the agents
-		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-		echo "<tr>\n";
-		echo "<th>Queue</th>\n";
-		echo "<th>Agent</th>\n";
-		echo "<th>State</th>\n";
-		echo "<th>Level</th>\n";
-		echo "<th>Position</th>\n";
-		echo "<th>&nbsp;</th>\n";
-		echo "</tr>\n";
-
-		foreach ($result as $row) {
-			//print_r($row);
-			$queue = $row['queue'];
-			//$queue = str_replace('@'.$v_domain, '', $queue);
-			$agent = $row['agent'];
-			$agent = str_replace('@'.$v_domain, '', $agent);
-			$state = $row['state'];
-			$level = $row['level'];
-			$position = $row['position'];
-
+		//list the agents
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."'>".$queue."</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."'>".$agent."</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."'>".$level."</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."'>".$position."</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."' style='text-align:right;'>";
-			echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+tier+del+".$queue."+".$agent."@".$v_domain."');}\">delete</a>&nbsp;\n";
-			echo "</td>";
+			echo "<th>Queue</th>\n";
+			echo "<th>Agent</th>\n";
+			echo "<th>State</th>\n";
+			echo "<th>Level</th>\n";
+			echo "<th>Position</th>\n";
+			echo "<th>&nbsp;</th>\n";
 			echo "</tr>\n";
 
-			if ($c==0) { $c=1; } else { $c=0; }
-		}
-		echo "</table>\n";
+			foreach ($result as $row) {
+				//print_r($row);
+				$queue = $row['queue'];
+				//$queue = str_replace('@'.$v_domain, '', $queue);
+				$agent = $row['agent'];
+				$agent = str_replace('@'.$v_domain, '', $agent);
+				$state = $row['state'];
+				$level = $row['level'];
+				$position = $row['position'];
+
+				echo "<tr>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$queue."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$agent."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$level."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$position."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."' style='text-align:right;'>";
+				echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+tier+del+".$queue."+".$agent."@".$v_domain."');}\">delete</a>&nbsp;\n";
+				echo "</td>";
+				echo "</tr>\n";
+
+				if ($c==0) { $c=1; } else { $c=0; }
+			}
+			echo "</table>\n";
+	}
 ?>

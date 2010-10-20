@@ -30,7 +30,7 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("agent") || ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
 }
 else {
