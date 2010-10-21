@@ -73,7 +73,6 @@ INSERT INTO v_menu VALUES(87,1,'en','Active Queues','/mod/fifo_list/v_fifo_list.
 INSERT INTO v_menu VALUES(92,1,'en','CDR CSV','/mod/cdr/v_cdr.php','internal','hidden','',38,24,'superadmin','2010-08-04 08:41:24','superadmin','2010-09-06 18:40:30');
 INSERT INTO v_menu VALUES(93,1,'en','Advanced','','internal','superadmin','','',56,'superadmin','2010-08-05 17:55:41','superadmin','2010-09-06 03:11:17');
 INSERT INTO v_menu VALUES(94,1,'en','Active Conferences','/mod/conferences_active/v_conferences_active.php','internal','member','',23,46,'superadmin','2010-08-06 07:07:48','superadmin','2010-09-06 03:56:39');
-INSERT INTO v_menu VALUES(95,1,'en','Agent','/mod/fifo_agents/fifo_agent/v_fifo_agent_edit.php','internal','agent','',38,18,'superadmin','2010-08-10 15:30:30','superadmin','2010-09-06 04:06:44');
 INSERT INTO v_menu VALUES(99,1,'en','Accounts','#','internal','hidden','','',12,'superadmin','2010-09-01 17:16:12','superadmin','2010-09-06 03:17:15');
 INSERT INTO v_menu VALUES(100,1,'en','Outbound Routes','/mod/dialplan_outbound/v_dialplan_outbound.php','internal','admin','',40,16,'superadmin','2010-09-02 02:17:06',NULL,NULL);
 INSERT INTO v_menu VALUES(101,1,'en','Upgrade Schema','/core/upgrade/upgrade_schema.php','internal','superadmin','',93,67,'mcrane','2010-09-23 17:50:37','superadmin','2010-09-23 03:14:06');
