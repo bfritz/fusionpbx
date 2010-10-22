@@ -477,27 +477,9 @@ function event_socket_request_cmd($cmd)
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		//$v_id = $row["v_id"];
-		$numbering_plan = $row["numbering_plan"];
-		$default_gateway = $row["default_gateway"];
-		$default_area_code = $row["default_area_code"];
 		$event_socket_ip_address = $row["event_socket_ip_address"];
 		$event_socket_port = $row["event_socket_port"];
 		$event_socket_password = $row["event_socket_password"];
-		$xml_rpc_http_port = $row["xml_rpc_http_port"];
-		$xml_rpc_auth_realm = $row["xml_rpc_auth_realm"];
-		$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
-		$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
-		$admin_pin = $row["admin_pin"];
-		$smtphost = $row["smtphost"];
-		$smtpsecure = $row["smtpsecure"];
-		$smtpauth = $row["smtpauth"];
-		$smtpusername = $row["smtpusername"];
-		$smtppassword = $row["smtppassword"];
-		$smtpfrom = $row["smtpfrom"];
-		$smtpfromname = $row["smtpfromname"];
-		$mod_shout_decoder = $row["mod_shout_decoder"];
-		$mod_shout_volume = $row["mod_shout_volume"];
 		break; //limit to 1 row
 	}
 	unset ($prepstatement);
@@ -1381,106 +1363,6 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	}
 
 }
-
-function switch_conf_xml()
-{
-	global $dbfilepath;
-
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
-		$$name = $value;
-	}
-
-	if (file_exists($php_dir.'/php')) { $php_bin = 'php'; }
-	if (file_exists($php_dir.'/php.exe')) { $php_bin = 'php.exe'; }
-
-	$fout = fopen($v_conf_dir."/autoload_configs/switch.conf.xml","w");
-	$tmp = "";
-	$tmp .= "";
-
-	$tmp .= "<configuration name=\"switch.conf\" description=\"Core Configuration\">\n";
-	$tmp .= "\n";
-	$tmp .= "	<cli-keybindings>\n";
-	$tmp .= "		<key name=\"1\" value=\"help\"/>\n";
-	$tmp .= "		<key name=\"2\" value=\"status\"/>\n";
-	$tmp .= "		<key name=\"3\" value=\"show channels\"/>\n";
-	$tmp .= "		<key name=\"4\" value=\"show calls\"/>\n";
-	$tmp .= "		<key name=\"5\" value=\"sofia status\"/>\n";
-	$tmp .= "		<key name=\"6\" value=\"reloadxml\"/>\n";
-	$tmp .= "		<key name=\"7\" value=\"console loglevel 0\"/>\n";
-	$tmp .= "		<key name=\"8\" value=\"console loglevel 7\"/>\n";
-	$tmp .= "		<key name=\"9\" value=\"sofia status profile internal\"/>\n";
-	$tmp .= "		<key name=\"10\" value=\"fsctl pause\"/>\n";
-	$tmp .= "		<key name=\"11\" value=\"fsctl resume\"/>\n";
-	$tmp .= "		<key name=\"12\" value=\"version\"/>\n";
-	$tmp .= "	</cli-keybindings>\n";
-	$tmp .= "\n";
-	$tmp .= "	<settings>\n";
-	$tmp .= "		<!--Colorize the Console -->\n";
-	$tmp .= "		<param name=\"colorize-console\" value=\"true\"/>\n";
-	$tmp .= "		<!--Most channels to allow at once -->\n";
-	$tmp .= "		<param name=\"max-sessions\" value=\"1000\"/>\n";
-	$tmp .= "		<!--Most channels to create per second -->\n";
-	$tmp .= "		<param name=\"sessions-per-second\" value=\"30\"/>\n";
-	$tmp .= "		<!-- Default Global Log Level - value is one of debug,info,notice,warning,err,crit,alert -->\n";
-	$tmp .= "		<param name=\"loglevel\" value=\"debug\"/>\n";
-	$tmp .= "		<!--Try to catch any crashes that can be recoverable (in the context of a call)-->\n";
-	$tmp .= "		<param name=\"crash-protection\" value=\"false\"/>\n";
-	$tmp .= "		<!--<param name=\"max_dtmf_duration\" value=\"192000\"/>-->\n";
-	$tmp .= "		<!--<param name=\"default_dtmf_duration\" value=\"8000\"/>-->\n";
-	$tmp .= "		<!--\n";
-	$tmp .= "			If you want to send out voicemail notifications via Windows you'll need to change the mailer-app\n";
-	$tmp .= "			variable to the setting below:\n";
-	$tmp .= "\n";
-	$tmp .= "			<param name=\"mailer-app\" value=\"msmtp\"/>\n";
-	$tmp .= "\n";
-	$tmp .= "			Donot change mailer-app-args.\n";
-	$tmp .= "			You will also need to download a sendmail clone for Windows (msmtp). This version works without issue:\n";
-	$tmp .= "			http://msmtp.sourceforge.net/index.html. Download and copy the .exe to %winddir%\\system32.\n";
-	$tmp .= "			You'll need to create a small config file for smtp credentials (host name, authentication, tls, etc.) in\n";
-	$tmp .= "			%USERPROFILE%\\Application Data\\ called \"msmtprc.txt\". Below is a sample copy of this file:\n";
-	$tmp .= "\n";
-	$tmp .= "			###################################\n";
-	$tmp .= "			# The SMTP server of the provider.\n";
-	$tmp .= "			account provider\n";
-	$tmp .= "			host smtp.myisp.com\n";
-	$tmp .= "			from john@myisp.com\n";
-	$tmp .= "			auth login\n";
-	$tmp .= "			user johndoe\n";
-	$tmp .= "			password mypassword\n";
-	$tmp .= "\n";
-	$tmp .= "			# Set a default account\n";
-	$tmp .= "			account default : provider\n";
-	$tmp .= "			###################################\n";
-	$tmp .= "\n";
-	$tmp .= " -->\n";
-	//$tmp .= "		<!--<param name=\"mailer-app\" value=\"/usr/local/bin/php\"/>-->\n";
-	//$tmp .= "		<!--<param name=\"mailer-app-args\" value=\"/usr/local/www/packages/freeswitch/v_mailto.php\"/>-->\n";
-	//$tmp .= "		<param name=\"mailer-app\" value=\"/fusionpbx/Program/php/php.exe\"/>\n";
-	//$tmp .= "		<param name=\"mailer-app-args\" value=\"/fusionpbx/Program/www/secure/v_mailto.php\"/>\n";
-	if (stristr(PHP_OS, 'WIN')) {
-		$tmp .= "		<param name=\"mailer-app\" value=\"".$php_dir."/".$php_bin."\"/>\n";
-		$tmp .= "		<param name=\"mailer-app-args\" value=\"".$dbfilepath."/v_mailto.php\"/>\n";
-	}
-	else {
-		$tmp .= "		<param name=\"mailer-app\" value=\"".$php_dir."/".$php_bin." ".$dbfilepath."/v_mailto.php\"/>\n";
-		$tmp .= "		<param name=\"mailer-app-args\" value=\"\"/>\n";
-	}
-	$tmp .= "		<param name=\"dump-cores\" value=\"yes\"/>\n";
-	$tmp .= "		<!--RTP port range -->\n";
-	$tmp .= "		<!--<param name=\"rtp-start-port\" value=\"16384\"/>-->\n";
-	$tmp .= "		<!--<param name=\"rtp-end-port\" value=\"32768\"/>-->\n";
-	$tmp .= "		<param name=\"rtp_enable_zrtp\" value=\"false\"/>\n";
-	$tmp .= "	</settings>\n";
-	$tmp .= "\n";
-	$tmp .= "</configuration>\n";
-	$tmp .= "\n";
-
-	fwrite($fout, $tmp);
-	unset($tmp);
-	fclose($fout);
-}
-
 
 function sync_package_v_settings()
 {
@@ -5420,9 +5302,9 @@ if (!function_exists('sync_directory')) {
 		$tmp .= "";
 
 		//write the file
-		$fout = fopen($v_scripts_dir."/directory.js","w");
-		fwrite($fout, $tmp);
-		fclose($fout);
+			$fout = fopen($v_scripts_dir."/directory.js","w");
+			fwrite($fout, $tmp);
+			fclose($fout);
 
 	} //end sync_directory
 } //end if function exists
@@ -5988,27 +5870,104 @@ if (!function_exists('sync_package_v_call_center')) {
 	}
 }
 
-function sync_package_freeswitch()
-{
-	global $config;
-	sync_package_v_settings();
-	sync_package_v_dialplan();
-	sync_package_v_dialplan_includes();
-	sync_package_v_extensions();
-	sync_package_v_gateways();
-	sync_package_v_modules();
-	sync_package_v_public();
-	sync_package_v_public_includes();
-	sync_package_v_vars();
-	sync_package_v_internal();
-	sync_package_v_external();
-	//sync_package_v_recordings();
-	if (pkg_is_service_running('freeswitch')) {
-		sync_package_v_auto_attendant();
+if (!function_exists('switch_conf_xml')) {
+	function switch_conf_xml() {
+
+		//get the global variables
+			global $db, $v_id;
+
+		//get settings as array and convert them to a php variable
+			$v_settings_array = v_settings();
+			foreach($v_settings_array as $name => $value) {
+				$$name = $value;
+			}
+
+		//get the contents of the template
+			$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/autoload_configs/switch.conf.xml");
+
+		//prepare the php variables
+			if (file_exists($php_dir.'/php')) { $php_bin = 'php'; }
+			if (file_exists($php_dir.'/php.exe')) { $php_bin = 'php.exe'; }
+			if (stristr(PHP_OS, 'WIN')) {
+				$v_mailer_app = $php_dir."/".$php_bin."";
+				$v_mailer_app_args = "".$v_secure."/v_mailto.php";
+			}
+			else {
+				$v_mailer_app = $php_dir."/".$php_bin." ".$v_secure."/v_mailto.php";
+				$v_mailer_app_args = "";
+			}
+
+		//replace the values in the template
+			$file_contents = str_replace("{v_mailer_app}", $v_mailer_app, $file_contents);
+			unset ($v_mailer_app);
+
+		//replace the values in the template
+			$file_contents = str_replace("{v_mailer_app_args}", $v_mailer_app_args, $file_contents);
+			unset ($v_mailer_app_args);
+
+		//write the XML config file
+			$fout = fopen($v_conf_dir."/autoload_configs/switch.conf.xml","w");
+			fwrite($fout, $file_contents);
+			fclose($fout);
 	}
-	sync_package_v_hunt_group();
-	sync_package_v_ivr_menu();
-	sync_package_v_call_center();
+}
+
+if (!function_exists('xml_cdr_conf_xml')) {
+	function xml_cdr_conf_xml() {
+
+		//get the global variables
+			global $db, $v_id;
+
+		//get settings as array and convert them to a php variable
+			$v_settings_array = v_settings();
+			foreach($v_settings_array as $name => $value) {
+				$$name = $value;
+			}
+
+		//get the contents of the template
+			$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/autoload_configs/xml_cdr.conf.xml");
+
+		//replace the values in the template
+			$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
+			unset ($v_domain);
+
+			$v_user = generate_password();
+			$file_contents = str_replace("{v_user}", $v_user, $file_contents);
+			unset ($v_user);
+
+			$v_pass = generate_password();
+			$file_contents = str_replace("{v_pass}", $v_pass, $file_contents);
+			unset ($v_pass);
+
+		//write the XML config file
+			$fout = fopen($v_conf_dir."/autoload_configs/xml_cdr.conf.xml","w");
+			fwrite($fout, $file_contents);
+			fclose($fout);
+	}
+}
+
+if (!function_exists('sync_package_freeswitch')) {
+	function sync_package_freeswitch() {
+		global $config;
+		sync_package_v_settings();
+		sync_package_v_dialplan();
+		sync_package_v_dialplan_includes();
+		sync_package_v_extensions();
+		sync_package_v_gateways();
+		sync_package_v_modules();
+		sync_package_v_public();
+		sync_package_v_public_includes();
+		sync_package_v_vars();
+		sync_package_v_internal();
+		sync_package_v_external();
+		//sync_package_v_recordings();
+		if (pkg_is_service_running('freeswitch')) {
+			sync_package_v_auto_attendant();
+		}
+		sync_package_v_hunt_group();
+		sync_package_v_ivr_menu();
+		sync_package_v_call_center();
+	}
 }
 
 //include all the .php files in the /includes/mod directory

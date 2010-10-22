@@ -759,22 +759,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$file = $v_dialplan_public_dir.'/00_inbound_did'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
 		unset($file);
 
-	//prepare switch.conf.xml for voicemail to email
-		$filename = $v_conf_dir."/autoload_configs/switch.conf.xml";
-		$handle = fopen($filename,"rb");
-		$contents = fread($handle, filesize($filename));
-		fclose($handle);
-
-		$handle = fopen($filename,"w");
-		if (file_exists($install_php_dir.'/php')) { $install_php_bin = 'php'; }
-		if (file_exists($install_php_dir.'/php.exe')) { $install_php_bin = 'php.exe'; }
-		$contents = str_replace("<param name=\"mailer-app\" value=\"sendmail\"/>", "<!--<param name=\"mailer-app\" value=\"sendmail\"/>-->\n<param name=\"mailer-app\" value=\"".$install_php_dir."/".$install_php_bin."\"/>", $contents);
-		$contents = str_replace("<param name=\"mailer-app-args\" value=\"-t\"/>", "<!--<param name=\"mailer-app-args\" value=\"-t\"/>-->\n<param name=\"mailer-app-args\" value=\"".$v_web_dir."/v_mailto.php\"/>", $contents);
-		fwrite($handle, $contents);
-		fclose($handle);
-		unset($contents);
-		unset($filename);
-
 	//create the necessary directories
 		if (!is_dir($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
 		if (!is_dir($install_v_backup_dir)) { mkdir($install_v_backup_dir,0777,true); }
@@ -790,7 +774,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//copy the files and directories from includes/install
 		include "includes/lib_install_copy.php";
 
-	//create the switch.conf.xml file
+	//write the xml_cdr.conf.xml file
+		xml_cdr_conf_xml();
+
+	//write the switch.conf.xml file
 		switch_conf_xml();
 
 	//synchronize the config with the saved settings

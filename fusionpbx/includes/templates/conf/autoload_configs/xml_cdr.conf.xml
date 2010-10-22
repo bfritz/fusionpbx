@@ -31,7 +31,7 @@
     <param name="encode" value="true"/>
 
     <!-- optional: set to true to disable Expect: 100-continue lighttpd requires this setting --> 
-    <!--<param name="disable-100-continue" value="true"/>--> 
+    <param name="disable-100-continue" value="true"/>
     
     <!-- optional: full path to the error log dir for failed web posts if not specified its the same as log-dir -->
     <!-- either an absolute path, a relative path assuming ${prefix}/logs or a blank or omitted value will default to ${prefix}/logs/xml_cdr -->
