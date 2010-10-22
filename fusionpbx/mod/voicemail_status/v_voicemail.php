@@ -79,7 +79,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and user_list like '%".$_SESSION["username"]."%' ";
+	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	if (strlen($orderby)> 0) { 
 		$sql .= "order by $orderby $order ";
 	}
@@ -102,7 +102,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and user_list like '%".$_SESSION["username"]."%' ";
+	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	if (strlen($orderby)> 0) {
 		$sql .= "order by $orderby $order ";
 	}
