@@ -129,13 +129,13 @@ require_once "includes/config.php";
 
 //if $file is not provided then look for a default file that exists
 	if (strlen($file) == 0) { 
-		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/provision_templates/".$phone_template ."/{v_mac}")) {
+		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}")) {
 			$file = "{v_mac}";
 		}
-		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/provision_templates/".$phone_template ."/{v_mac}.xml")) {
+		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}.xml")) {
 			$file = "{v_mac}.xml";
 		}
-		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/provision_templates/".$phone_template ."/{v_mac}.cfg")) {
+		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}.cfg")) {
 			$file = "{v_mac}.cfg";
 		}
 		if (strlen($file) == 0) { 
@@ -145,7 +145,7 @@ require_once "includes/config.php";
 	}
 	else {
 		//make sure the file exists
-		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/provision_templates/".$phone_template ."/".$file)) {
+		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/".$file)) {
 			echo "file not found";
 			exit;
 		}
@@ -445,7 +445,7 @@ function mac_exists_in_v_hardware_phones($db, $mac) {
 
 			closedir($dirlist);
 		}
-		$prov_template_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/provision_templates/$template";
+		$prov_template_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/$template";
 		recur_dir($prov_template_dir);
 
 		foreach ($tmp_array as $row) {

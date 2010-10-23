@@ -222,7 +222,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<select id='phone_template' name='phone_template' class='formfld'>\n";
 	echo "<option value=''></option>\n";
-	$temp_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/provision_templates";
+	$temp_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision";
 	if($dh = opendir($temp_dir)) {
 		while($dir = readdir($dh)) {
 			if($file != "." && $dir != ".." && $dir[0] != '.') {
