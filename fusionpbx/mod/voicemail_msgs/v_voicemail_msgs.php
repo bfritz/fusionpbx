@@ -35,17 +35,11 @@ else {
 	exit;
 }
 
+
 if ($_GET['a'] == "download") {
 
-	try {
-		unset($db);
-		//$db = new PDO('sqlite::memory:'); //sqlite 3
-		$db = new PDO('sqlite:'.$v_db_dir.'/voicemail_default.db'); //sqlite 3
-	}
-	catch (PDOException $error) {
-		print "error: " . $error->getMessage() . "<br/>";
-		die();
-	}
+	//pdo voicemail database connection
+		include "includes/lib_pdo_vm.php";
 
 	session_cache_limiter('public');
 
@@ -100,7 +94,7 @@ if ($_GET['a'] == "download") {
 				}
 			}
 			header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past	
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // date in the past
 			header("Content-Length: " . filesize($file_path));
 			fpassthru($fd);
 		}
@@ -142,16 +136,8 @@ $order = $_GET["order"];
 	//print_r($mailbox_array);
 	//echo "</pre>\n";
 
-
-try {
-	unset($db);
-	//$db = new PDO('sqlite::memory:'); //sqlite 3
-	$db = new PDO('sqlite:'.$v_db_dir.'/voicemail_default.db'); //sqlite 3
-}
-catch (PDOException $error) {
-	print "error: " . $error->getMessage() . "<br/>";
-	die();
-}
+//pdo voicemail database connection
+	include "includes/lib_pdo_vm.php";
 
 
 echo "<div align='center'>";

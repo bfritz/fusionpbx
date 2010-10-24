@@ -38,15 +38,8 @@ if (count($_GET)>0) {
 	$id = $_GET["id"];
 }
 
-try {
-	unset($db);
-	//$db = new PDO('sqlite::memory:'); //sqlite 3
-	$db = new PDO('sqlite:'.$v_db_dir.'/voicemail_default.db'); //sqlite 3
-}
-catch (PDOException $error) {
-	print "error: " . $error->getMessage() . "<br/>";
-	die();
-}
+//pdo voicemail database connection
+	include "includes/lib_pdo_vm.php";
 
 if (strlen($id)>0) {
 	$sql = "";

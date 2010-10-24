@@ -116,21 +116,13 @@ $order = $_GET["order"];
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
+	//pdo voicemail database connection
+		include "includes/lib_pdo_vm.php";
 
 	if ($resultcount == 0) { //no results
 	}
 	else { //received results
 		foreach($result as $row) {
-
-			try {
-				unset($db);
-				//$db = new PDO('sqlite::memory:'); //sqlite 3
-				$db = new PDO('sqlite:'.$v_db_dir.'/voicemail_default.db'); //sqlite 3
-			}
-			catch (PDOException $error) {
-				print "error: " . $error->getMessage() . "<br/>";
-				die();
-			}
 
 			$sql = "";
 			$sql .= "select count(*) as count from voicemail_msgs ";
