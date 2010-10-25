@@ -98,6 +98,9 @@ require_once "includes/config.php";
 			case "00-06-25":
 				$phone_vendor = "linksys";
 				break;
+			case "00-15-65":
+				$phone_vendor = "yealink";
+				break;
 			default:
 				$phone_vendor = "";
 			}
