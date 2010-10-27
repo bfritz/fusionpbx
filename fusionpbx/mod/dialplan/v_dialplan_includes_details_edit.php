@@ -430,7 +430,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	  The following is a partial list of <b>applications</b>.
 	  <ul>
 	  <li><b>answer</b> answer the call</li>
-	  <li><b>bridge</b> bridge the call<li>
+	  <li><b>bridge</b> bridge the call</li>
 	  <li><b>cond</b></li>
 	  <li><b>db</b> is a a runtime database either sqlite by default or odbc</li>
 	  <li><b>global_set</b> allows setting of global vars similar to the ones found in vars.xml</li>
@@ -447,7 +447,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	  <li><b>set_user</b></li>
 	  <li><b>sleep</b></li>
 	  <li><b>sofia_contact</b></li>
-	  <li><b>transfer</b> transfer the call to another extension or number<li>
+	  <li><b>transfer</b> transfer the call to another extension or number</li>
 	  <li><b>voicemail</b> send the call to voicemail</li>
 	  </ul>
 

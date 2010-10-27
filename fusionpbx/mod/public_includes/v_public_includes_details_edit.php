@@ -509,7 +509,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
     echo "    <li><b>set_user</b></li>\n";
     echo "    <li><b>sleep</b></li>\n";
     echo "    <li><b>sofia_contact</b></li>\n";
-    echo "    <li><b>transfer</b> transfer the call to another extension or number<li>\n";
+    echo "    <li><b>transfer</b> transfer the call to another extension or number</li>\n";
     echo "    <li><b>voicemail</b> send the call to voicemail</li>\n";
     echo "    </ul>\n";
     echo "\n";
