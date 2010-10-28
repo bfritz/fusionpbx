@@ -119,6 +119,8 @@ echo "		<td width='60%' align='right'>";
 //---- Begin Select List --------------------
 $sql = "SELECT * FROM v_users ";
 $sql .= "where v_id = '$v_id' ";
+$sql .= "and username = '$username' ";
+$sql .= "order by username ";
 $prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 
