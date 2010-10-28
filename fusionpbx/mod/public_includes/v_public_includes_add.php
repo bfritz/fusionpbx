@@ -572,7 +572,7 @@ echo "</td>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 echo "    Action 2:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
