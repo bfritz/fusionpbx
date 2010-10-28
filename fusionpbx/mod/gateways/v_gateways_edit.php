@@ -93,7 +93,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($gateway) == 0) { $msg .= "Please provide: Gateway<br>\n"; }
 		if (strlen($username) == 0) { $msg .= "Please provide: Username<br>\n"; }
-		//if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
+		if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
 		//if (strlen($auth_username) == 0) { $msg .= "Please provide: Auth username<br>\n"; }
 		//if (strlen($realm) == 0) { $msg .= "Please provide: Realm<br>\n"; }
 		//if (strlen($from_user) == 0) { $msg .= "Please provide: From user<br>\n"; }
@@ -507,10 +507,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td align='left' colspan='2'>\n";
-	if ($v_path_show) {
-		echo "The 'SIP Provider Examples' from the FreeSWITCH wiki can be used as reference to get started. <br />\n";
-		echo "<a href='http://wiki.freeswitch.org/wiki/SIP_Provider_Examples' target='_blank'>http://wiki.freeswitch.org/wiki/SIP_Provider_Examples</a>\n";
-	}
+	echo "			Defines a connections to a SIP Provider or another SIP server. <br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
@@ -543,7 +540,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    Password:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -582,7 +579,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='proxy' maxlength='255' value=\"$proxy\">\n";
 	echo "<br />\n";
-	echo "Enter the proxy here.\n";
+	echo "Enter the domain or IP address of the proxy.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
