@@ -626,7 +626,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 	}
 	else {
-		echo "		<select name='select_value' class='formfld' style='".$select_style."'>\n";
+		echo "		<select name='$select_value' class='formfld' style='".$select_style."'>\n";
 	}
 
 	echo "		<option></option>\n";
