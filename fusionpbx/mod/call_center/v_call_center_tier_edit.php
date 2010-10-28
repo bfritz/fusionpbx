@@ -180,6 +180,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_users ";
 	$sql .= "where v_id = '$v_id' ";
+	$sql .= "order by agent_name asc ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 
@@ -213,6 +214,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_call_center_queue ";
 	$sql .= "where v_id = '$v_id' ";
+	$sql .= "order by queue_name asc ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 
