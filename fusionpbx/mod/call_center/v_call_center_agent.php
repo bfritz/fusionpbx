@@ -38,13 +38,19 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_call_center_agent ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+	if (strlen($orderby) == 0) {
+		$orderby = 'agent_name';
+		$order = 'asc';
+	}
+	else {
+		$sql .= "order by $orderby $order ";
+	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	$numrows = count($result);
 	unset ($prep_statement, $result, $sql);
-	$rows_per_page = 10;
+	$rows_per_page = 100;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
@@ -53,7 +59,13 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_call_center_agent ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+	if (strlen($orderby) == 0) {
+		$orderby = 'agent_name';
+		$order = 'asc';
+	}
+	else {
+		$sql .= "order by $orderby $order ";
+	}
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
