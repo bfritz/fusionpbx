@@ -347,7 +347,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    Data:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='fielddata' maxlength='255' value=\"$fielddata\">\n";
+	echo "    <input class='formfld' type='text' name='fielddata' value=\"$fielddata\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
