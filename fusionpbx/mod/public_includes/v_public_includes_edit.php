@@ -181,7 +181,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		} //if ($action == "update")
-	} //if ($_POST["persistformvar"] != "true") { 
+	} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
@@ -234,7 +234,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td width='30%' align='left' nowrap><b>Public Include Update</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public_includes.php'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'>\n";
+	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_public_includes_copy.php?id=".$public_include_id."';}\" value='Copy'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public_includes.php'\" value='Back'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
