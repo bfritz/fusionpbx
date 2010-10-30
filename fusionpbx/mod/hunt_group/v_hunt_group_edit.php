@@ -252,7 +252,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "      <br>";
 
 
-
 	echo "<form method='post' name='frm' action=''>\n";
 
 	echo "<div align='center'>\n";
@@ -264,16 +263,19 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<table width='100%'>\n";
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap>\n";
-	echo "    <p><span class='vexpl'><span class='red'><strong>Hunt Group:<br>\n";
+	echo "    <span class='vexpl'><strong>Hunt Group:<br>\n";
 	echo "        </strong></span>\n";
 	echo "</td>\n";
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_hunt_group.php'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'>\n";
+	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_hunt_group_copy.php?id=".$row[hunt_group_id]."';}\" value='Copy'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_hunt_group.php'\" value='Back'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
 		echo "        A Hunt Group is a list of destinations that can be called in sequence or simultaneously. \n";
-		echo "        </span></p>\n";
+		echo "        </span><br />\n";
 		echo "<br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

@@ -111,7 +111,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_hunt_group_destinations ";
 			$sql .= "(";
 			$sql .= "v_id, ";
-			$sql .= "hunt_group_id, ";		
+			$sql .= "hunt_group_id, ";
 			$sql .= "destinationdata, ";
 			$sql .= "destinationtype, ";
 			$sql .= "destinationprofile, ";
