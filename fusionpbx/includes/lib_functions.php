@@ -220,7 +220,7 @@
 			if (strlen($fieldvalue) > 0) {
 			$html .= "<select id=\"".$fieldvalue."\" name=\"".$fieldvalue."\" class='formfld' style='".$style."'>\n";
 			$html .= "<option value=\"\"></option>\n";
-				$sql = "SELECT distinct($fieldname) as $fieldname, $fieldvalue FROM $tablename $sqlwhereoptional ";
+				$sql = "SELECT distinct($fieldname) as $fieldname, $fieldvalue FROM $tablename $sqlwhereoptional order by $fieldname asc ";
 			}
 			else {
 				$html .= "<select id=\"".$fieldname."\" name=\"".$fieldname."\" class='formfld' style='".$style."'>\n";
@@ -274,7 +274,7 @@
 			$html .= "<select id=\"".$fieldname."\" name=\"".$fieldname."\" class='formfld' onchange=\"".$onchange."\">\n";
 			$html .= "<option value=''></option>\n";
 
-			$sql = "SELECT distinct($fieldname) as $fieldname FROM $tablename $sqlwhereoptional ";
+			$sql = "SELECT distinct($fieldname) as $fieldname FROM $tablename $sqlwhereoptional order by $fieldname asc ";
 			//echo $sql;
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
