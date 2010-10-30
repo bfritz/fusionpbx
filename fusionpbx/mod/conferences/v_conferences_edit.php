@@ -39,9 +39,6 @@ require_once "includes/paging.php";
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
-//select * from v_dialplan_includes where dialplan_include_id = '52'
-//select * from v_dialplan_includes_details where dialplan_include_id = '52'
-
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
