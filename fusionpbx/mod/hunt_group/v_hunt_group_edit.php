@@ -267,7 +267,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "        </strong></span>\n";
 	echo "</td>\n";
 	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_hunt_group_copy.php?id=".$row[hunt_group_id]."';}\" value='Copy'>\n";
+	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_hunt_group_copy.php?id=".$hunt_group_id."';}\" value='Copy'>\n";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_hunt_group.php'\" value='Back'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
