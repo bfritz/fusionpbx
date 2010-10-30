@@ -374,8 +374,7 @@ function type_onchange(field_type) {
 	$sql = "";
 	$sql .= " select * from v_public_includes ";
 	$sql .= "where v_id = '$v_id' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder, extensionname asc "; }
-
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder asc, extensionname asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
