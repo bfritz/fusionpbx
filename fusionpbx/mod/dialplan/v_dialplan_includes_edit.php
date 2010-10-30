@@ -195,8 +195,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	require_once "includes/header.php";
 
-
-
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -204,23 +202,23 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
 
-
-
 	echo "<form method='post' name='frm' action=''>\n";
-
 	echo "<div align='center'>\n";
 
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"1\" cellspacing=\"0\">\n";
-	echo "  <tr>\n";
-	echo "    <td align='left' width='30%'><p><span class=\"vexpl\"><span class=\"red\"><strong>Dialplan<br />\n";
-	echo "        </strong></span>\n";
+	echo "	<tr>\n";
+	echo "		<td align='left' width='30%'>\n";
+	echo"			<span class=\"vexpl\"><strong>Dialplan</strong></span><br />\n";
 	echo "    </td>\n";
-	echo "    <td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes.php'\" value='Back'></td>\n";
+	echo "    <td width='70%' align='right'>\n";
+	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_dialplan_includes_copy.php?id=".$row[dialplan_include_id]."';}\" value='Copy'>\n";
+	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes.php'\" value='Back'>\n";
+	echo "	</td>\n";
 	echo "  </tr>\n";
 	echo "  <tr>\n";
 	echo "    <td align='left' colspan='2'>\n";
 	echo "        Dialplan Include general settings. \n";
-	echo "        </span></p>\n";
+	echo "        \n";
 	echo "    </td>\n";
 	echo "  </tr>\n";
 	echo "</table>";
