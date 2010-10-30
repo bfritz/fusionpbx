@@ -344,7 +344,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "      <br>";
 
 
-
 	echo "<form method='post' name='frm' action=''>\n";
 
 	echo "<div align='center'>\n";
@@ -358,8 +357,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td width='30%' nowrap align='left' valign='top'><b>Extension Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right' valign='top'>\n";
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_extensions.php'\" value='Back'>\n";
 	echo "	<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_extensions_copy.php?id=".$extension_id."';}\" value='Copy'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_extensions.php'\" value='Back'>\n";
+
 	echo "	<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
