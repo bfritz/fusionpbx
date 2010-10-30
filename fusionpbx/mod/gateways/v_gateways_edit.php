@@ -413,48 +413,48 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	} //if ($action == "update")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$gateway_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_gateways ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and gateway_id = '$gateway_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$gateway = $row["gateway"];
-		$username = $row["username"];
-		$password = $row["password"];
-		$auth_username = $row["auth_username"];
-		$realm = $row["realm"];
-		$from_user = $row["from_user"];
-		$from_domain = $row["from_domain"];
-		$proxy = $row["proxy"];
-		$register_proxy = $row["register_proxy"];
-		$outbound_proxy = $row["outbound_proxy"];
-		$expire_seconds = $row["expire_seconds"];
-		$register = $row["register"];
-		$register_transport = $row["register_transport"];
-		$retry_seconds = $row["retry_seconds"];
-		$extension = $row["extension"];
-		$ping = $row["ping"];
-		$caller_id_in_from = $row["caller_id_in_from"];
-		$supress_cng = $row["supress_cng"];
-		$extension_in_contact = $row["extension_in_contact"];
-		$effective_caller_id_name = $row["effective_caller_id_name"];
-		$effective_caller_id_number = $row["effective_caller_id_number"];
-		$outbound_caller_id_name = $row["outbound_caller_id_name"];
-		$outbound_caller_id_number = $row["outbound_caller_id_number"];
-		$context = $row["context"];
-		$enabled = $row["enabled"];
-		$description = $row["description"];
-		break; //limit to 1 row
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$gateway_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_gateways ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and gateway_id = '$gateway_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$v_id = $row["v_id"];
+			$gateway = $row["gateway"];
+			$username = $row["username"];
+			$password = $row["password"];
+			$auth_username = $row["auth_username"];
+			$realm = $row["realm"];
+			$from_user = $row["from_user"];
+			$from_domain = $row["from_domain"];
+			$proxy = $row["proxy"];
+			$register_proxy = $row["register_proxy"];
+			$outbound_proxy = $row["outbound_proxy"];
+			$expire_seconds = $row["expire_seconds"];
+			$register = $row["register"];
+			$register_transport = $row["register_transport"];
+			$retry_seconds = $row["retry_seconds"];
+			$extension = $row["extension"];
+			$ping = $row["ping"];
+			$caller_id_in_from = $row["caller_id_in_from"];
+			$supress_cng = $row["supress_cng"];
+			$extension_in_contact = $row["extension_in_contact"];
+			$effective_caller_id_name = $row["effective_caller_id_name"];
+			$effective_caller_id_number = $row["effective_caller_id_number"];
+			$outbound_caller_id_name = $row["outbound_caller_id_name"];
+			$outbound_caller_id_number = $row["outbound_caller_id_number"];
+			$context = $row["context"];
+			$enabled = $row["enabled"];
+			$description = $row["description"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
 
 	require_once "includes/header.php";
@@ -489,8 +489,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
 
-
-	//Write the HTML form
 	echo "<form method='post' name='ifrm' action=''>\n";
 
 	echo "<div align='center'>\n";
@@ -503,7 +501,11 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "		<td align='left' width=\"50%\">\n";
 	echo "			<strong>Gateway Edit</strong><br>\n";
 	echo "		</td>";
-	echo "		<td width='50%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_gateways.php'\" value='Back'></td>\n";
+	echo "		<td width='50%' align='right'>\n";
+	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "			<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_gateways_copy.php?id=".$gateway_id."';}\" value='Copy'>\n";
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_gateways.php'\" value='Back'>\n";
+	echo "		</td>\n";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td align='left' colspan='2'>\n";
