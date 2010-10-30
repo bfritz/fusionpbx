@@ -569,7 +569,7 @@ function ListFiles($dir) {
 }
 
 function switch_select_destination($select_type, $select_label, $select_name, $select_value, $select_style, $action='') {
-	//$select_type = "ivr"; //$select_type='dialplan'
+	//$select_type = 'ivr'; //$select_type='dialplan' //$select_type='call_center_contact'
 	global $config, $db, $v_id;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -636,6 +636,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql .= "select * from v_extensions ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and enabled = 'true' ";
+		$sql .= "order by extension asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -678,6 +679,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
 		$sql .= "where v_id = $v_id ";
+		$sql .= "order by fielddata asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$x = 0;
@@ -723,6 +725,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_fax ";
 		$sql .= "where v_id = '$v_id' ";
+		$sql .= "order by extension asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -758,6 +761,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
 		$sql .= "where v_id = $v_id ";
+		$sql .= "order by fielddata asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$x = 0;
@@ -816,7 +820,8 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
 		$sql .= "where v_id = '$v_id' ";
-		//$sql .= "and enabled = 'true' ";
+		$sql .= "and enabled = 'true' ";
+		$sql .= "order by huntgroupextension asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -854,6 +859,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql .= "select * from v_ivr_menu ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and ivr_menu_enabled = 'true' ";
+		$sql .= "order by ivr_menu_extension asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -892,6 +898,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$sql .= "select * from v_ivr_menu ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and ivr_menu_enabled = 'true' ";
+				$sql .= "order by ivr_menu_name asc ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll();
@@ -1109,6 +1116,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$sql .= "where v_id = $v_id ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				$sql .= "and fieldtype = 'destination_number' ";
+				$sql .= "order by extension_number asc ";
 				$tmp = $db->query($sql)->fetch();
 				$extension_number = $tmp['extension_number'];
 				$extension_number = ltrim($extension_number, "^");
@@ -1145,6 +1153,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql .= "select * from v_extensions ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and enabled = 'true' ";
+		$sql .= "order by extension asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -1181,8 +1190,10 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				echo "<optgroup label='Gateways'>\n";
 			}
 			$sql = "";
-			$sql .= " select * from v_gateways ";
-			$sql .= " where v_id = '$v_id' ";
+			$sql .= "select * from v_gateways ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and enabled = 'true' ";
+			$sql .= "order by gateway asc ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
@@ -1194,16 +1205,15 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					$tmp_selected = "selected='selected'";
 				}
 					if ($select_type == "dialplan") {
-						echo "		<option value='bridge:sofia/gateway/".$row[gateway]."/xxxxxxxxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxxxxxxxx</option>\n";
+						echo "		<option value='bridge:sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxx</option>\n";
 					}
 					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:bridge sofia/gateway/".$row[gateway]."/xxxxxxxxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxxxxxxxx</option>\n";
+						echo "		<option value='menu-exec-app:bridge sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxx</option>\n";
 					}
 					if ($select_type == "call_center_contact") {
-						echo "		<option value='sofia/gateway/".$row[gateway]."/xxxxxxxxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxxxxxxxx</option>\n";
+						echo "		<option value='sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxx</option>\n";
 					}
 					$tmp_selected = '';
-
 			}
 			unset($sql, $result, $rowcount);
 			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
