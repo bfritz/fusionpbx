@@ -1683,6 +1683,9 @@ function sync_package_v_extensions()
 			if (strlen($row['sip_force_contact']) > 0) {
 				$tmpxml .= "      <variable name=\"sip-force-contact\" value=\"" . $row['sip_force_contact'] . "\"/>\n";
 			}
+			if (strlen($row['nibble_account']) > 0) {
+				$tmpxml .= "      <variable name=\"nibble_account\" value=\"" . $row['nibble_account'] . "\"/>\n";
+			}
 			$tmpxml .= "    </variables>\n";
 			$tmpxml .= "  </user>\n";
 
