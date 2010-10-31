@@ -223,7 +223,7 @@ $rowstyle["1"] = "rowstyle1";
 	//echo "<th>ID</th>\n";
 
 	//echo "<th>UUID</th>\n";
-	echo "<th>Direction</th>\n";
+	echo "<th>Dir</th>\n";
 	echo "<th>Profile</th>\n";
 	echo "<th>Created</th>\n";
 	//echo "<th>Created Epoch</th>\n";
@@ -238,7 +238,7 @@ $rowstyle["1"] = "rowstyle1";
 	//echo "<th>Application Data</th>\n";
 	//echo "<th>Dialplan</th>\n";
 	//echo "<th>Context</th>\n";
-	//echo "<th>Read Codec</th>\n";
+	echo "<th>R/W Codec</th>\n";
 	//echo "<th>Read Rate</th>\n";
 	//echo "<th>Write Codec</th>\n";
 	//echo "<th>Write Rate</th>\n";
@@ -268,6 +268,13 @@ $rowstyle["1"] = "rowstyle1";
 		$write_codec = $row->write_codec;
 		$write_rate = $row->write_rate;
 		$secure = $row->secure;
+		
+		if ($direction == "inbound") {
+			$direction = 'In';
+		}
+		else {
+			$direction = 'Out';
+		}
 
 		//remove the '+' because it breaks the call recording
 			$cid_num = str_replace("+", "", $cid_num);
@@ -330,7 +337,7 @@ $rowstyle["1"] = "rowstyle1";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>$application_data &nbsp;</td>\n";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>$dialplan &nbsp;</td>\n";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>$context &nbsp;</td>\n";
-		//echo "<td valign='top' class='".$rowstyle[$c]."'>$read_codec &nbsp;</td>\n";
+		echo "<td valign='top' class='".$rowstyle[$c]."'>$read_codec:$read_rate / $write_codec:$write_rate &nbsp;</td>\n";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>$read_rate &nbsp;</td>\n";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>$write_codec &nbsp;</td>\n";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>$write_rate &nbsp;</td>\n";
@@ -342,7 +349,7 @@ $rowstyle["1"] = "rowstyle1";
 			//uuid_transfer c985c31b-7e5d-3844-8b3b-aa0835ff6db9 -bleg *9999 xml default
 
 			//document.getElementById('url').innerHTML='v_calls_exec.php?action=energy&direction=down&cmd='+prepare_cmd(escape('$uuid'));
-			echo "	<a href='javascript:void(0);' onMouseover=\"document.getElementById('form_label').innerHTML='<strong>Transfer To</strong>';\" onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">transfer</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' onMouseover=\"document.getElementById('form_label').innerHTML='<strong>Transfer To</strong>';\" onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">xfer</a>&nbsp;\n";
 
 		//park
 			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_park_cmd(escape('$uuid')));\">park</a>&nbsp;\n";
@@ -354,11 +361,11 @@ $rowstyle["1"] = "rowstyle1";
 			$tmp_file = $v_recordings_dir."/active_calls_".$cid_num."_recording.wav";
 			if (file_exists($tmp_file)) {
 				//stop
-				echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_calls_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=stop&prefix=active_calls_&name='+escape('$cid_num'));\">stop record</a>&nbsp;\n";
+				echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_calls_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=stop&prefix=active_calls_&name='+escape('$cid_num'));\">stop rec</a>&nbsp;\n";
 			}
 			else {
 				//start
-				echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_calls_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=start&prefix=active_calls_');\">start record</a>&nbsp;\n";
+				echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_calls_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=start&prefix=active_calls_');\">rec</a>&nbsp;\n";
 			}
 
 		echo "	&nbsp;";
