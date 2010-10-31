@@ -78,6 +78,7 @@ else {
 		$auth_acl = check_str($_POST["auth_acl"]);
 		$cidr = check_str($_POST["cidr"]);
 		$sip_force_contact = check_str($_POST["sip_force_contact"]);
+		$nibble_account = check_str($_POST["nibble_account"]);
 		$enabled = check_str($_POST["enabled"]);
 		$description = check_str($_POST["description"]);
 	}
@@ -171,6 +172,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "auth_acl, ";
 				$sql .= "cidr, ";
 				$sql .= "sip_force_contact, ";
+				$sql .= "nibble_account, ";
 				$sql .= "enabled, ";
 				$sql .= "description ";
 				$sql .= ")";
@@ -196,6 +198,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$auth_acl', ";
 				$sql .= "'$cidr', ";
 				$sql .= "'$sip_force_contact', ";
+				$sql .= "'$nibble_account', ";
 				$sql .= "'$enabled', ";
 				$sql .= "'$description' ";
 				$sql .= ")";
@@ -248,6 +251,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "auth_acl = '$auth_acl', ";
 			$sql .= "cidr = '$cidr', ";
 			$sql .= "sip_force_contact = '$sip_force_contact', ";
+			$sql .= "nibble_account = '$nibble_account', ";
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "description = '$description' ";
 			$sql .= "where v_id = '$v_id' ";
@@ -303,6 +307,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$auth_acl = $row["auth_acl"];
 			$cidr = $row["cidr"];
 			$sip_force_contact = $row["sip_force_contact"];
+			$nibble_account=$row["nibble_account"];
 			$enabled = $row["enabled"];
 			$description = $row["description"];
 			break; //limit to 1 row
@@ -772,6 +777,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<br />\n";
 	echo "Choose sip-force-contact can be used to NDLB-connectile-dysfunction rewrites contact IP and port,
 	and NDLB-tls-connectile-dysfunction rewrites the contact port.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Nibblebill Account:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='nibble_account' maxlength='255' value=\"$nibble_account\">\n";
+	echo "<br />\n";
+	echo "Enter the account number for nibblebill to use.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
