@@ -118,7 +118,7 @@ require_once "includes/checkauth.php";
 			echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'sip-auth-user'}."&nbsp;</td>\n";
 			echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'agent'}."&nbsp;</td>\n";
 			//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'host'}."&nbsp;</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'network-ip'}."&nbsp;</td>\n";
+			echo "	<td class='".$rowstyle[$c]."'>&nbsp;<a href='http://".$row->{'network-ip'}."' target='_blank'>".$row->{'network-ip'}."</a>&nbsp;</td>\n";
 			echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'network-port'}."&nbsp;</td>\n";
 			//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'sip-auth-realm'}."&nbsp;</td>\n";
 			//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'mwi-account'}."&nbsp;</td>\n";
