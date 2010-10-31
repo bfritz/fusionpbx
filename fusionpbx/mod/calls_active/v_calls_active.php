@@ -78,7 +78,7 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 var requestTime = function() {
 	var url = 'v_calls_active_inc.php?c=<?php echo trim($_REQUEST["c"]); ?>';
 	new loadXmlHttp(url, 'ajax_reponse');
-	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 888);
+	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 1500);
 }
 
 if (window.addEventListener) {

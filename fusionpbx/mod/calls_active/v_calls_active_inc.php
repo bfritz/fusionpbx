@@ -238,7 +238,7 @@ $rowstyle["1"] = "rowstyle1";
 	//echo "<th>Application Data</th>\n";
 	//echo "<th>Dialplan</th>\n";
 	//echo "<th>Context</th>\n";
-	echo "<th>R/W Codec</th>\n";
+	echo "<th>Read / Write Codec</th>\n";
 	//echo "<th>Read Rate</th>\n";
 	//echo "<th>Write Codec</th>\n";
 	//echo "<th>Write Rate</th>\n";
