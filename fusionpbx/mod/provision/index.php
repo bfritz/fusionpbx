@@ -31,8 +31,34 @@ require_once "includes/config.php";
 	$row_count = 0;
 	$tmp_array = '';
 
+//get any system -> variables defined in the 'provision;
+	$sql = "";
+	$sql .= "select * from v_vars ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and var_enabled= 'true' ";
+	$sql .= "and var_cat = 'Provision' ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$provision_variables_array = $prepstatement->fetchAll();
+	foreach ($provision_variables_array as &$row) {
+		if ($row[var_name] == "password") {
+			$var_name = $row[var_name];
+			$var_value = $row[var_value];
+			$$var_name = $var_value;
+		}
+	}
+
+//if password was defined in the system -> variables page then require the password.
+	if (strlen($password) > 0) {
+		//deny access if the password doesn't match
+			if ($password != $_GET['password']) {
+				echo "access denied";
+				return;
+			}
+	}
+
 //test URL without rewrite
-	//http://10.2.0.2/mod/provision/?mac=xx-xx-xx-xx-xx-xx
+	//http://10.2.0.2/mod/provision/?mac=xx-xx-xx-xx-xx-xx&password=555555
 
 //define variables from HTTP GET
 	$mac = $_GET['mac'];
@@ -322,6 +348,13 @@ require_once "includes/config.php";
 	$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);
 	//$file_contents = str_replace("{v_proxy2_address}", $proxy2_address, $file_contents);
 	//$file_contents = str_replace("{v_proxy3_address}", $proxy3_address, $file_contents);
+
+//replace the dynamic provision variables that are defined in the system -> variables page
+	foreach ($provision_variables_array as &$row) {
+		if (substr($var_name, 0, 2) == "v_") {
+			$file_contents = str_replace('{'.$row[var_name].'}', $row[var_value], $file_contents);
+		}
+	}
 
 //deliver the customized config over HTTP/HTTPS
 
