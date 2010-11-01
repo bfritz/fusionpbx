@@ -1672,10 +1672,16 @@ function sync_package_v_extensions()
 			$tmpxml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
 			$tmpxml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
 			$tmpxml .= "      <variable name=\"user_context\" value=\"" . $row['user_context'] . "\"/>\n";
-			$tmpxml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";
-			$tmpxml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $row['effective_caller_id_number'] . "\"/>\n";
+			if (strlen($row['effective_caller_id_name']) > 0) {
+				$tmpxml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";
+			}
 			if (strlen($row['outbound_caller_id_number']) > 0) {
+				$tmpxml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $row['effective_caller_id_number'] . "\"/>\n";
+			}
+			if (strlen($row['outbound_caller_id_name']) > 0) {
 				$tmpxml .= "      <variable name=\"outbound_caller_id_name\" value=\"" . $row['outbound_caller_id_name'] . "\"/>\n";
+			}
+			if (strlen($row['outbound_caller_id_number']) > 0) {
 				$tmpxml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $row['outbound_caller_id_number'] . "\"/>\n";
 			}
 			if (strlen($row['sip_force_contact']) > 0) {
@@ -2480,7 +2486,6 @@ function sync_package_v_hunt_group_lua()
 					$tmp = "";
 					$tmp .= "\n";
 					$tmp .= "session:answer();\n";
-					$tmp .= "domain_name = session:getVariable(\"domain_name\");\n";
 					$tmp .= "extension = '".$row['huntgroupextension']."';\n";
 					$tmp .= "result = '';\n";
 					$tmp .= "timeoutpin = 7500;\n";
