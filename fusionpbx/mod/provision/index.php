@@ -187,73 +187,6 @@ require_once "includes/config.php";
 	//fwrite($fh, $tmp_string);
 	//fclose($fh);
 
-//lookup the provisioning information for this MAC address.
-	$sql = "";
-	$sql .= "select * from v_extensions ";
-	$sql .= "where provisioning_list like '%$mac%' ";
-	$sql .= "and v_id = '$v_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		//print_r($row);
-		$provisioning_list = $row["provisioning_list"];
-
-		$provisioning_list_array = explode("|", $provisioning_list);
-		foreach ($provisioning_list_array as &$prov_row) {
-			$prov_row_array = explode(":", $prov_row);
-			if ($prov_row_array[0] == $mac) {
-				$line_number = $prov_row_array[1];
-			}
-		}
-
-		$extension = $row["extension"];
-		$password = $row["password"];
-
-		//$line1_displayname= "1001";
-		$variable_name = "line".$line_number."_displayname";
-		$$variable_name = $row["extension"];
-
-		//$line1_shortname= "1001";
-		$variable_name = "line".$line_number."_shortname";
-		$$variable_name = $row["extension"];
-
-		//$line1_user_id= "1001";
-		$variable_name = "line".$line_number."_user_id";
-		$$variable_name = $row["extension"];
-		//echo "line1_user_id: ".$$variable_name."<br />";
-
-		//$line1_user_password= "1234.";
-		$variable_name = "line".$line_number."_user_password";
-		$$variable_name = $row["password"];
-		//echo "line1_user_password: ".$$variable_name."<br />";
-
-		//$line1_server_address= "10.2.0.2";
-		$variable_name = "line".$line_number."_server_address";
-		$$variable_name = $v_domain; //defined in /includes/lib_switch.php
-
-		//$user_list = $row["user_list"];
-		//$vm_password = $row["vm_password"];
-		//$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
-		//$accountcode = $row["accountcode"];
-		//$effective_caller_id_name = $row["effective_caller_id_name"];
-		//$effective_caller_id_number = $row["effective_caller_id_number"];
-		//$outbound_caller_id_name = $row["outbound_caller_id_name"];
-		//$outbound_caller_id_number = $row["outbound_caller_id_number"];
-		//$vm_mailto = $row["vm_mailto"];
-		//$vm_attach_file = $row["vm_attach_file"];
-		//$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
-		//$user_context = $row["user_context"];
-		//$callgroup = $row["callgroup"];
-		//$auth_acl = $row["auth_acl"];
-		//$cidr = $row["cidr"];
-		//$sip_force_contact = $row["sip_force_contact"];
-		//$enabled = $row["enabled"];
-		//$description = $row["description"];
-		break; //limit to 1 row
-	}
-	unset ($prepstatement);
-
 	//set variables for testing
 		//$line1_displayname= "1001";
 		//$line1_shortname= "1001";
@@ -277,84 +210,81 @@ require_once "includes/config.php";
 	$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/".$file);
 
 //replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
-	$file_contents = str_replace("{v_mac}", $mac, $file_contents);
-	$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
 
-	$file_contents = str_replace("{v_line1_server_address}", $line1_server_address, $file_contents);
-	$file_contents = str_replace("{v_line1_displayname}", $line1_displayname, $file_contents);
-	$file_contents = str_replace("{v_line1_shortname}", $line1_shortname, $file_contents);
-	$file_contents = str_replace("{v_line1_user_id}", $line1_user_id, $file_contents);
-	$file_contents = str_replace("{v_line1_user_password}", $line1_user_password, $file_contents);
+	//lookup the provisioning information for this MAC address.
+		$sql = "";
+		$sql .= "select * from v_extensions ";
+		$sql .= "where provisioning_list like '%$mac%' ";
+		$sql .= "and v_id = '$v_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			//print_r($row);
+			$provisioning_list = $row["provisioning_list"];
 
-	$file_contents = str_replace("{v_line2_server_address}", $line2_server_address, $file_contents);
-	$file_contents = str_replace("{v_line2_displayname}", $line2_displayname, $file_contents);
-	$file_contents = str_replace("{v_line2_shortname}", $line2_shortname, $file_contents);
-	$file_contents = str_replace("{v_line2_user_id}", $line2_user_id, $file_contents);
-	$file_contents = str_replace("{v_line2_user_password}", $line2_user_password, $file_contents);
-	$file_contents = str_replace("{v_line2_server_address}", $line2_server_address, $file_contents);
+			$provisioning_list_array = explode("|", $provisioning_list);
+			foreach ($provisioning_list_array as &$prov_row) {
+				$prov_row_array = explode(":", $prov_row);
+				if ($prov_row_array[0] == $mac) {
+					$line_number = $prov_row_array[1];
+					break;
+				}
+			}
 
-	$file_contents = str_replace("{v_line3_server_address}", $line3_server_address, $file_contents);
-	$file_contents = str_replace("{v_line3_displayname}", $line3_displayname, $file_contents);
-	$file_contents = str_replace("{v_line3_shortname}", $line3_shortname, $file_contents);
-	$file_contents = str_replace("{v_line3_user_id}", $line3_user_id, $file_contents);
-	$file_contents = str_replace("{v_line3_user_password}", $line3_user_password, $file_contents);
-	$file_contents = str_replace("{v_line3_server_address}", $line3_server_address, $file_contents);
+			$file_contents = str_replace("{v_line".$line_number."_server_address}", $v_domain, $file_contents);
+			$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["extension"], $file_contents);
+			$file_contents = str_replace("{v_line".$line_number."_shortname}", $row["extension"], $file_contents);
+			$file_contents = str_replace("{v_line".$line_number."_user_id}", $row["extension"], $file_contents);
+			$file_contents = str_replace("{v_line".$line_number."_user_password}", $row["password"], $file_contents);
 
-	$file_contents = str_replace("{v_line4_server_address}", $line4_server_address, $file_contents);
-	$file_contents = str_replace("{v_line4_displayname}", $line4_displayname, $file_contents);
-	$file_contents = str_replace("{v_line4_shortname}", $line4_shortname, $file_contents);
-	$file_contents = str_replace("{v_line4_user_id}", $line4_user_id, $file_contents);
-	$file_contents = str_replace("{v_line4_user_password}", $line4_user_password, $file_contents);
-	$file_contents = str_replace("{v_line4_server_address}", $line4_server_address, $file_contents);
-
-	$file_contents = str_replace("{v_line4_server_address}", $line4_server_address, $file_contents);
-	$file_contents = str_replace("{v_line4_displayname}", $line4_displayname, $file_contents);
-	$file_contents = str_replace("{v_line4_shortname}", $line4_shortname, $file_contents);
-	$file_contents = str_replace("{v_line4_user_id}", $line4_user_id, $file_contents);
-	$file_contents = str_replace("{v_line4_user_password}", $line4_user_password, $file_contents);
-	$file_contents = str_replace("{v_line4_server_address}", $line4_server_address, $file_contents);
-
-	$file_contents = str_replace("{v_line5_server_address}", $line5_server_address, $file_contents);
-	$file_contents = str_replace("{v_line5_displayname}", $line5_displayname, $file_contents);
-	$file_contents = str_replace("{v_line5_shortname}", $line5_shortname, $file_contents);
-	$file_contents = str_replace("{v_line5_user_id}", $line5_user_id, $file_contents);
-	$file_contents = str_replace("{v_line5_user_password}", $line5_user_password, $file_contents);
-	$file_contents = str_replace("{v_line5_server_address}", $line5_server_address, $file_contents);
-
-	$file_contents = str_replace("{v_line6_server_address}", $line6_server_address, $file_contents);
-	$file_contents = str_replace("{v_line6_displayname}", $line6_displayname, $file_contents);
-	$file_contents = str_replace("{v_line6_shortname}", $line6_shortname, $file_contents);
-	$file_contents = str_replace("{v_line6_user_id}", $line6_user_id, $file_contents);
-	$file_contents = str_replace("{v_line6_user_password}", $line6_user_password, $file_contents);
-	$file_contents = str_replace("{v_line6_server_address}", $line6_server_address, $file_contents);
-
-	$file_contents = str_replace("{v_line7_server_address}", $line7_server_address, $file_contents);
-	$file_contents = str_replace("{v_line7_displayname}", $line7_displayname, $file_contents);
-	$file_contents = str_replace("{v_line7_shortname}", $line7_shortname, $file_contents);
-	$file_contents = str_replace("{v_line7_user_id}", $line7_user_id, $file_contents);
-	$file_contents = str_replace("{v_line7_user_password}", $line7_user_password, $file_contents);
-	$file_contents = str_replace("{v_line7_server_address}", $line7_server_address, $file_contents);
-
-	$file_contents = str_replace("{v_line8_server_address}", $line8_server_address, $file_contents);
-	$file_contents = str_replace("{v_line8_displayname}", $line8_displayname, $file_contents);
-	$file_contents = str_replace("{v_line8_shortname}", $line8_shortname, $file_contents);
-	$file_contents = str_replace("{v_line8_user_id}", $line8_user_id, $file_contents);
-	$file_contents = str_replace("{v_line8_user_password}", $line8_user_password, $file_contents);
-	$file_contents = str_replace("{v_line8_server_address}", $line8_server_address, $file_contents);
-
-	$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
-	//$file_contents = str_replace("{v_server2_address}", $server2_address, $file_contents);
-	//$file_contents = str_replace("{v_server3_address}", $server3_address, $file_contents);
-	$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);
-	//$file_contents = str_replace("{v_proxy2_address}", $proxy2_address, $file_contents);
-	//$file_contents = str_replace("{v_proxy3_address}", $proxy3_address, $file_contents);
-
-//replace the dynamic provision variables that are defined in the system -> variables page
-	foreach ($provision_variables_array as &$row) {
-		if (substr($var_name, 0, 2) == "v_") {
-			$file_contents = str_replace('{'.$row[var_name].'}', $row[var_value], $file_contents);
+			//$user_list = $row["user_list"];
+			//$vm_password = $row["vm_password"];
+			//$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
+			//$accountcode = $row["accountcode"];
+			//$effective_caller_id_name = $row["effective_caller_id_name"];
+			//$effective_caller_id_number = $row["effective_caller_id_number"];
+			//$outbound_caller_id_name = $row["outbound_caller_id_name"];
+			//$outbound_caller_id_number = $row["outbound_caller_id_number"];
+			//$vm_mailto = $row["vm_mailto"];
+			//$vm_attach_file = $row["vm_attach_file"];
+			//$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
+			//$user_context = $row["user_context"];
+			//$callgroup = $row["callgroup"];
+			//$auth_acl = $row["auth_acl"];
+			//$cidr = $row["cidr"];
+			//$sip_force_contact = $row["sip_force_contact"];
+			//$enabled = $row["enabled"];
+			//$description = $row["description"];
 		}
-	}
+		unset ($prepstatement);
+
+	//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
+		$file_contents = str_replace("{v_mac}", $mac, $file_contents);
+		$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
+
+		$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
+		//$file_contents = str_replace("{v_server2_address}", $server2_address, $file_contents);
+		//$file_contents = str_replace("{v_server3_address}", $server3_address, $file_contents);
+		$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);
+		//$file_contents = str_replace("{v_proxy2_address}", $proxy2_address, $file_contents);
+		//$file_contents = str_replace("{v_proxy3_address}", $proxy3_address, $file_contents);
+
+	//cleanup any remaining variables
+		for ($i = 1; $i <= 10; $i++) {
+			$file_contents = str_replace("{v_line".$i."_server_address}", "", $file_contents);
+			$file_contents = str_replace("{v_line".$i."_displayname}", "", $file_contents);
+			$file_contents = str_replace("{v_line".$i."_shortname}", "", $file_contents);
+			$file_contents = str_replace("{v_line".$i."_user_id}", "", $file_contents);
+			$file_contents = str_replace("{v_line".$i."_user_password}", "", $file_contents);
+		}
+
+	//replace the dynamic provision variables that are defined in the system -> variables page
+		foreach ($provision_variables_array as &$row) {
+			if (substr($var_name, 0, 2) == "v_") {
+				$file_contents = str_replace('{'.$row[var_name].'}', $row[var_value], $file_contents);
+			}
+		}
 
 //deliver the customized config over HTTP/HTTPS
 
