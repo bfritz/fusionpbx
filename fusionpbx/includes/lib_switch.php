@@ -722,40 +722,38 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		unset ($prepstatement);
 
 	//list fax extensions
-		$sql = "";
-		$sql .= "select * from v_fax ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "order by extension asc ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
 		if ($select_type == "dialplan" || $select_type == "ivr") {
+			$sql = "";
+			$sql .= "select * from v_fax ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "order by extension asc ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
 			echo "<optgroup label='FAX'>\n";
-		}
-		foreach ($result as &$row) {
-			$extension = $row["faxextension"];
-			if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
-				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+			foreach ($result as &$row) {
+				$extension = $row["faxextension"];
+				if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
+					if ($select_type == "ivr") {
+						echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+					}
+					if ($select_type == "dialplan") {
+						echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+					}
+					$selection_found = true;
 				}
-				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+				else {
+					if ($select_type == "ivr") {
+						echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+					}
+					if ($select_type == "dialplan") {
+						echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
+					}
 				}
-				$selection_found = true;
 			}
-			else {
-				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
-				}
-				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
-				}
-			}
-		}
-		if ($select_type == "dialplan" || $select_type == "ivr") {
 			echo "</optgroup>\n";
+			unset ($prepstatement, $extension);
 		}
-		unset ($prepstatement, $extension);
 
 	//list fifo queues
 		$sql = "";
@@ -820,7 +818,6 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and enabled = 'true' ";
 		$sql .= "order by huntgroupextension asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -948,6 +945,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "</optgroup>\n";
 				}
 		}
+
 
 	//list the languages
 		if ($select_type == "dialplan" || $select_type == "ivr") {
@@ -1338,6 +1336,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				echo "</optgroup>\n";
 			}
 		}
+
 		/*
 		//echo "    <option value='answer'>answer</option>\n";
 		//echo "    <option value='bridge'>bridge</option>\n";
@@ -1371,7 +1370,6 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	if (ifgroup("superadmin")) {
 		echo "<input type='button' id='btn_select_to_input_".$select_name."' class='btn' name='' alt='back' onclick='changeToInput".$select_name."(document.getElementById(\"".$select_name."\"));this.style.visibility = \"hidden\";' value='<'>";
 	}
-
 }
 
 function sync_package_v_settings()
