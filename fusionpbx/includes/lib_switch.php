@@ -726,7 +726,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$sql = "";
 			$sql .= "select * from v_fax ";
 			$sql .= "where v_id = '$v_id' ";
-			$sql .= "order by extension asc ";
+			$sql .= "order by faxextension asc ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
