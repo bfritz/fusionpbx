@@ -131,6 +131,21 @@ require_once "includes/config.php";
 				$phone_vendor = "";
 			}
 
+
+		//use the user_agent to pre-assign a template for 1-hit provisioning. Enter the a unique string to match in the user agent, and the template it should match.
+			$template_list=array(  
+					"Linksys/SPA-2102"=>"linksys/spa2102",
+					"Linksys/SPA-3102"=>"linksys/spa3102"
+					);
+
+			foreach ($template_list as $key=>$val){
+					if(stripos($_SERVER['HTTP_USER_AGENT'],$key)!== false) {
+							$phone_template=$val;
+							break;
+							}
+					}
+			unset($template_list);
+
 		//the mac address does not exist in the table so add it
 			$sql = "insert into v_hardware_phones ";
 			$sql .= "(";
@@ -138,6 +153,7 @@ require_once "includes/config.php";
 			$sql .= "phone_vendor, ";
 			$sql .= "phone_model, ";
 			$sql .= "phone_provision_enable, ";
+			$sql .= "phone_template, ";
 			$sql .= "phone_username, ";
 			$sql .= "phone_password, ";
 			$sql .= "phone_description ";
@@ -148,6 +164,7 @@ require_once "includes/config.php";
 			$sql .= "'$phone_vendor', ";
 			$sql .= "'', ";
 			$sql .= "'true', ";
+			$sql .= "'$phone_template', ";
 			$sql .= "'', ";
 			$sql .= "'', ";
 			$sql .= "'auto' ";
@@ -228,15 +245,13 @@ require_once "includes/config.php";
 				$prov_row_array = explode(":", $prov_row);
 				if ($prov_row_array[0] == $mac) {
 					$line_number = $prov_row_array[1];
-					break;
+					$file_contents = str_replace("{v_line".$line_number."_server_address}", $v_domain, $file_contents);
+					$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["extension"], $file_contents);
+					$file_contents = str_replace("{v_line".$line_number."_shortname}", $row["extension"], $file_contents);
+					$file_contents = str_replace("{v_line".$line_number."_user_id}", $row["extension"], $file_contents);
+					$file_contents = str_replace("{v_line".$line_number."_user_password}", $row["password"], $file_contents);
 				}
 			}
-
-			$file_contents = str_replace("{v_line".$line_number."_server_address}", $v_domain, $file_contents);
-			$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["extension"], $file_contents);
-			$file_contents = str_replace("{v_line".$line_number."_shortname}", $row["extension"], $file_contents);
-			$file_contents = str_replace("{v_line".$line_number."_user_id}", $row["extension"], $file_contents);
-			$file_contents = str_replace("{v_line".$line_number."_user_password}", $row["password"], $file_contents);
 
 			//$user_list = $row["user_list"];
 			//$vm_password = $row["vm_password"];
@@ -262,16 +277,11 @@ require_once "includes/config.php";
 	//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 		$file_contents = str_replace("{v_mac}", $mac, $file_contents);
 		$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
-
 		$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
-		//$file_contents = str_replace("{v_server2_address}", $server2_address, $file_contents);
-		//$file_contents = str_replace("{v_server3_address}", $server3_address, $file_contents);
 		$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);
-		//$file_contents = str_replace("{v_proxy2_address}", $proxy2_address, $file_contents);
-		//$file_contents = str_replace("{v_proxy3_address}", $proxy3_address, $file_contents);
 
 	//cleanup any remaining variables
-		for ($i = 1; $i <= 10; $i++) {
+		for ($i = 1; $i <= 100; $i++) {
 			$file_contents = str_replace("{v_line".$i."_server_address}", "", $file_contents);
 			$file_contents = str_replace("{v_line".$i."_displayname}", "", $file_contents);
 			$file_contents = str_replace("{v_line".$i."_shortname}", "", $file_contents);
