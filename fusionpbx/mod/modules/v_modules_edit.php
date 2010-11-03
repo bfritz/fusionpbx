@@ -90,108 +90,98 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	$tmp .= "v_id: $v_id\n";
-	$tmp .= "Label: $modulelabel\n";
-	$tmp .= "Module Name: $modulename\n";
-	$tmp .= "Description: $moduledesc\n";
-	$tmp .= "Module Category: $modulecat\n";
-	$tmp .= "Enabled: $moduleenabled\n";
-	$tmp .= "Default Enabled: $moduledefaultenabled\n";
 
+	//add or update the database
+		if ($_POST["persistformvar"] != "true") {
+			if ($action == "add") {
+				$sql = "insert into v_modules ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "modulelabel, ";
+				$sql .= "modulename, ";
+				$sql .= "moduledesc, ";
+				$sql .= "modulecat, ";
+				$sql .= "moduleenabled, ";
+				$sql .= "moduledefaultenabled ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$modulelabel', ";
+				$sql .= "'$modulename', ";
+				$sql .= "'$moduledesc', ";
+				$sql .= "'$modulecat', ";
+				$sql .= "'$moduleenabled', ";
+				$sql .= "'$moduledefaultenabled' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
+				sync_package_v_modules();
 
-//Add or update the database
-if ($_POST["persistformvar"] != "true") {
-	if ($action == "add") {
-		$sql = "insert into v_modules ";
-		$sql .= "(";
-		$sql .= "v_id, ";
-		$sql .= "modulelabel, ";
-		$sql .= "modulename, ";
-		$sql .= "moduledesc, ";
-		$sql .= "modulecat, ";
-		$sql .= "moduleenabled, ";
-		$sql .= "moduledefaultenabled ";
-		$sql .= ")";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'$v_id', ";
-		$sql .= "'$modulelabel', ";
-		$sql .= "'$modulename', ";
-		$sql .= "'$moduledesc', ";
-		$sql .= "'$modulecat', ";
-		$sql .= "'$moduleenabled', ";
-		$sql .= "'$moduledefaultenabled' ";
-		$sql .= ")";
-		$db->exec(check_sql($sql));
-		unset($sql);
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_modules.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Add Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "add")
 
-		sync_package_v_modules();
+			if ($action == "update") {
+				$sql = "update v_modules set ";
+				$sql .= "modulelabel = '$modulelabel', ";
+				$sql .= "modulename = '$modulename', ";
+				$sql .= "moduledesc = '$moduledesc', ";
+				$sql .= "modulecat = '$modulecat', ";
+				$sql .= "moduleenabled = '$moduleenabled', ";
+				$sql .= "moduledefaultenabled = '$moduledefaultenabled' ";
+				$sql .= "where v_id = '$v_id'";
+				$sql .= "and module_id = '$module_id'";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_modules.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Add Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "add")
+				sync_package_v_modules();
 
-	if ($action == "update") {
-		$sql = "update v_modules set ";
-		$sql .= "modulelabel = '$modulelabel', ";
-		$sql .= "modulename = '$modulename', ";
-		$sql .= "moduledesc = '$moduledesc', ";
-		$sql .= "modulecat = '$modulecat', ";
-		$sql .= "moduleenabled = '$moduleenabled', ";
-		$sql .= "moduledefaultenabled = '$moduledefaultenabled' ";
-		$sql .= "where v_id = '$v_id'";
-		$sql .= "and module_id = '$module_id'";
-		$db->exec(check_sql($sql));
-		unset($sql);
-
-		sync_package_v_modules();
-
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_modules.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Update Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "update")
-} //if ($_POST["persistformvar"] != "true") { 
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_modules.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Update Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "update")
+		} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$module_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_modules ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and module_id = '$module_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$modulelabel = $row["modulelabel"];
-		$modulename = $row["modulename"];
-		$moduledesc = $row["moduledesc"];
-		$modulecat = $row["modulecat"];
-		$moduleenabled = $row["moduleenabled"];
-		$moduledefaultenabled = $row["moduledefaultenabled"];
-		break; //limit to 1 row
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$module_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_modules ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and module_id = '$module_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$v_id = $row["v_id"];
+			$modulelabel = $row["modulelabel"];
+			$modulename = $row["modulename"];
+			$moduledesc = $row["moduledesc"];
+			$modulecat = $row["modulecat"];
+			$moduleenabled = $row["moduleenabled"];
+			$moduledefaultenabled = $row["moduledefaultenabled"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
-
+//show the header
 	require_once "includes/header.php";
 
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -214,17 +204,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	}
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_modules.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
-
-	//echo "<tr>\n";
-	//echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	//echo "    v_id:\n";
-	//echo "</td>\n";
-	//echo "<td class='vtable' align='left'>\n";
-	//echo "  <input class='formfld' type='text' name='v_id' maxlength='255' value='$v_id'>\n";
-	//echo "<br />\n";
-	//echo "\n";
-	//echo "</td>\n";
-	//echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
@@ -264,7 +243,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    Module Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='modulecat' maxlength='255' value=\"$modulecat\">\n";
+	$tablename = 'v_modules';$fieldname = 'modulecat';$sqlwhereoptional = "where v_id = '$v_id'";$fieldcurrentvalue = $modulecat;
+	echo htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
