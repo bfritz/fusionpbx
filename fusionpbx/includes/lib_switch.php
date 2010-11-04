@@ -1688,6 +1688,10 @@ function sync_package_v_extensions()
 			if (strlen($row['nibble_account']) > 0) {
 				$tmpxml .= "      <variable name=\"nibble_account\" value=\"" . $row['nibble_account'] . "\"/>\n";
 			}
+			foreach ($callgroups_array as $key => $value) {
+				$tmpxml .= "      <variable name=\"callgroup\" value=\"$key\"/>\n";
+				break;
+			}
 			$tmpxml .= "    </variables>\n";
 			$tmpxml .= "  </user>\n";
 
