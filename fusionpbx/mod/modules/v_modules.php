@@ -38,29 +38,60 @@ require_once "includes/paging.php";
 
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
-if (!function_exists('thorderby')) {
-	//html table header order by
-	function thorderby($fieldname, $columntitle, $orderby, $order) {
 
-		$html .= "<th class='' nowrap>&nbsp; &nbsp; ";
-		if (strlen($orderby)==0) {
-		  $html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
+$sql = "";
+$sql .= "select * from v_settings ";
+$sql .= "where v_id = '$v_id' ";
+$prepstatement = $db->prepare(check_sql($sql));
+$prepstatement->execute();
+$result = $prepstatement->fetchAll();
+foreach ($result as &$row) {
+	$event_socket_ip_address = $row["event_socket_ip_address"];
+	$event_socket_port = $row["event_socket_port"];
+	$event_socket_password = $row["event_socket_password"];
+	break; //limit to 1 row
+}
+
+if (strlen($_GET["a"]) > 0) {
+	if ($_GET["a"] == "stop") {
+		$module_name = $_GET["m"];
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+		$cmd = "api unload $module_name";
+		$response = trim(event_socket_request($fp, $cmd));
+		$msg = '<strong>Unload Module:</strong><pre>'.$response.'</pre>';
+	}
+	if ($_GET["a"] == "start") {
+		$module_name = $_GET["m"];
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+		$cmd = "api load $module_name";
+		$response = trim(event_socket_request($fp, $cmd));
+		$msg = '<strong>Load Module:</strong><pre>'.$response.'</pre>';
+	}
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_modules.php\">\n";
+	echo "<div align='center'>\n";
+	echo "<table><tr><td align='left'>$msg</td></tr></table>\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
+}
+
+if (!function_exists('switch_module_active')) {
+	function switch_module_active($module_name) {
+		global $event_socket_ip_address, $event_socket_port, $event_socket_password;
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+		$cmd = "api module_exists $module_name";
+		$response = trim(event_socket_request($fp, $cmd));
+		if ($response == "true") {
+			return true;
 		}
 		else {
-		  if ($order=="asc") {
-			  $html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-		  }
-		  else {
-			  $html .= "<a href='?orderby=$fieldname&order=asc' title='descending'>$columntitle</a>";
-		  }
+			return false;
 		}
-		$html .= "&nbsp; &nbsp; </th>";
-
-		return $html;
 	}
 }
 
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -129,6 +160,8 @@ if (!function_exists('thorderby')) {
 	$tmp_module_header .= thorderby('modulelabel', 'Label', $orderby, $order);
 	//$tmp_module_header .= thorderby('modulename', 'Module Name', $orderby, $order);
 	$tmp_module_header .= thorderby('moduledesc', 'Description', $orderby, $order);
+	$tmp_module_header .= "<th>Status</th>\n";
+	$tmp_module_header .= "<th>Action</th>\n";
 	$tmp_module_header .= thorderby('moduleenabled', 'Enabled', $orderby, $order);
 	//$tmp_module_header .= thorderby('moduledefaultenabled', 'Default Enabled', $orderby, $order);
 	$tmp_module_header .= "<td align='right' width='42'>\n";
@@ -145,7 +178,7 @@ if (!function_exists('thorderby')) {
 				$c=0;
 				if (strlen($prevmodulecat) > 0) {
 					echo "<tr>\n";
-					echo "<td colspan='5'>\n";
+					echo "<td colspan='6'>\n";
 					echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 					echo "	<tr>\n";
 					echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
@@ -172,6 +205,14 @@ if (!function_exists('thorderby')) {
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[modulelabel]."</td>\n";
 			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[modulename]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[moduledesc]."&nbsp;</td>\n";
+			if (switch_module_active($row[modulename])) {
+				echo "   <td valign='top' class='".$rowstyle[$c]."'>Running</td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=stop&m=".$row[modulename]."' alt='stop'>Stop</a></td>\n";
+			}
+			else {
+				echo "   <td valign='top' class='".$rowstyle[$c]."'>Stopped</td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=start&m=".$row[modulename]."' alt='start'>Start</a></td>\n";
+			}
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[moduleenabled]."</td>\n";
 			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[moduledefaultenabled]."</td>\n";
 			echo "   <td valign='top' align='right'>\n";
@@ -187,7 +228,7 @@ if (!function_exists('thorderby')) {
 	} //end if results
 
 	echo "<tr>\n";
-	echo "<td colspan='5'>\n";
+	echo "<td colspan='6'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
