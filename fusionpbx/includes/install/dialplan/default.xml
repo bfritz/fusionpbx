@@ -748,7 +748,8 @@
 	<action application="bridge" data="user/${dialed_extension}@${domain_name}"/>
 	<action application="answer"/>
 	<action application="sleep" data="1000"/>
-	<action application="bridge" data="loopback/app=voicemail:default ${domain_name} ${dialed_extension}"/>
+	<!--<action application="bridge" data="loopback/app=voicemail:default ${domain_name} ${dialed_extension}"/>-->
+	<action application="voicemail" data="default ${domain_name} ${dialed_extension}"/>
       </condition>
     </extension>
 
@@ -767,6 +768,7 @@
     -->
 
 	<extension name="enum">
+	<condition field="destination_number" expression="(^\d{10,15}$)"/>
 	<condition field="${module_exists(mod_enum)}" expression="true"/>
 	<condition field="destination_number" expression="^(.*)$">
 	  <action application="transfer" data="$1 enum"/>
