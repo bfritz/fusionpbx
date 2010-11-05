@@ -67,13 +67,6 @@ if (strlen($_GET["a"]) > 0) {
 		$response = trim(event_socket_request($fp, $cmd));
 		$msg = '<strong>Load Module:</strong><pre>'.$response.'</pre>';
 	}
-	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_modules.php\">\n";
-	echo "<div align='center'>\n";
-	echo "<table><tr><td align='left'>$msg</td></tr></table>\n";
-	echo "</div>\n";
-	require_once "includes/footer.php";
-	return;
 }
 
 if (!function_exists('switch_module_active')) {
@@ -90,6 +83,20 @@ if (!function_exists('switch_module_active')) {
 		}
 	}
 }
+
+//show the msg
+	if ($msg) {
+		echo "<div align='center'>\n";
+		echo "<table width='40%'>\n";
+		echo "<tr>\n";
+		echo "<th align='left'>Message</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+		echo "</div>\n";
+	}
 
 //show the content
 	echo "<div align='center'>";
@@ -174,7 +181,7 @@ if (!function_exists('switch_module_active')) {
 	else { //received results
 		$prevmodulecat = '';
 		foreach($result as $row) {
-			if ($prevmodulecat != $row[modulecat]) {
+			if ($prevmodulecat != $row["modulecat"]) {
 				$c=0;
 				if (strlen($prevmodulecat) > 0) {
 					echo "<tr>\n";
@@ -195,33 +202,33 @@ if (!function_exists('switch_module_active')) {
 				echo "<tr><td colspan='4' align='left'>\n";
 				echo "	<br />\n";
 				echo "	<br />\n";
-				echo "	<b>".$row[modulecat]."</b>&nbsp;</td></tr>\n";
+				echo "	<b>".$row["modulecat"]."</b>&nbsp;</td></tr>\n";
 				echo $tmp_module_header;
 			}
 
 			//print_r( $row );
 			echo "<tr >\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[modulecat]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[modulelabel]."</td>\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[modulename]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[moduledesc]."&nbsp;</td>\n";
-			if (switch_module_active($row[modulename])) {
+			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["modulecat"]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["modulelabel"]."</td>\n";
+			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["modulename"]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["moduledesc"]."&nbsp;</td>\n";
+			if (switch_module_active($row["modulename"])) {
 				echo "   <td valign='top' class='".$rowstyle[$c]."'>Running</td>\n";
-				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=stop&m=".$row[modulename]."' alt='stop'>Stop</a></td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=stop&m=".$row["modulename"]."' alt='stop'>Stop</a></td>\n";
 			}
 			else {
 				echo "   <td valign='top' class='".$rowstyle[$c]."'>Stopped</td>\n";
-				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=start&m=".$row[modulename]."' alt='start'>Start</a></td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=start&m=".$row["modulename"]."' alt='start'>Start</a></td>\n";
 			}
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[moduleenabled]."</td>\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[moduledefaultenabled]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["moduleenabled"]."</td>\n";
+			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["moduledefaultenabled"]."</td>\n";
 			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_modules_edit.php?id=".$row[module_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_modules_delete.php?id=".$row[module_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			echo "		<a href='v_modules_edit.php?id=".$row["module_id"]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
+			echo "		<a href='v_modules_delete.php?id=".$row["module_id"]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
 			echo "   </td>\n";
 			echo "</tr>\n";
 
-			$prevmodulecat = $row[modulecat];
+			$prevmodulecat = $row["modulecat"];
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $rowcount);
