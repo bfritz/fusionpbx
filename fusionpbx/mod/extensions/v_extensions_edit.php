@@ -87,12 +87,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$extension_id = check_str($_POST["extension_id"]);
 	}
@@ -142,8 +136,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$user_list_array = explode("|", $user_list);
 			//print_r($user_list_array);
 			foreach($user_list_array as $tmp_user){ 
-				$password = generate_password();
-				user_add($tmp_user, $password, $userfirstname, $userlastname, $useremail);
+				$user_password = generate_password();
+				user_add($tmp_user, $user_password, $userfirstname, $userlastname, $useremail);
 			}
 			unset($tmp_user);
 
@@ -225,8 +219,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$userfirstname='extension';$userlastname=$extension;$useremail='';
 			$user_list_array = explode("|", $user_list);
 			//print_r($user_list_array);
-			foreach($user_list_array as $tmp_user){ 
-				user_add($tmp_user, $password, $userfirstname, $userlastname, $useremail);
+			foreach($user_list_array as $tmp_user){
+				$user_password = generate_password();
+				user_add($tmp_user, $user_password, $userfirstname, $userlastname, $useremail);
 			}
 			unset($tmp_user);
 
