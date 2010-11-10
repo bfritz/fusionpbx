@@ -150,10 +150,10 @@ if (strlen($_GET["a"]) > 0) {
 
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>\n";
 			if (is_process_running($pid)) {
-				echo "		<a href='v_services.php?id=".$row[service_id]."&a=stop' alt='edit'>Stop</a>";
+				echo "		<a href='v_services.php?id=".$row[service_id]."&a=stop' alt='stop'>Stop</a>";
 			}
 			else {
-				echo "		<a href='v_services.php?id=".$row[service_id]."&a=start' alt='edit'>Start</a>";
+				echo "		<a href='v_services.php?id=".$row[service_id]."&a=start' alt='start'>Start</a>";
 			}
 			echo "</td>\n";
 
