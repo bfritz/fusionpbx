@@ -129,7 +129,8 @@ require_once "includes/checkauth.php";
 			$x = 0;
 			$range_array = $_GET['range'];
 			foreach($range_array as $tmp_range) {
-				$tmp_array = explode(":", $tmp_range);
+				$tmp_range = str_replace(":", "-", $tmp_range);
+				$tmp_array = explode("-", $tmp_range);
 				$tmp_min = $tmp_array[0];
 				$tmp_max = $tmp_array[1];
 				if ($x == 0) {
@@ -151,7 +152,6 @@ require_once "includes/checkauth.php";
 			foreach ($result as &$row) {
 				if ($row["enabled"] == "true") {
 					$extension = $row["extension"];
-					//echo $extension;
 					$extension_array[$extension]['v_id'] = $row["v_id"];
 					$extension_array[$extension]['extension'] = $row["extension"];
 
