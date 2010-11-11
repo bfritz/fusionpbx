@@ -3526,39 +3526,39 @@ function sync_package_v_fax()
 					$fieldorder = '000';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
+					//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
+					$tag = 'action'; //condition, action, antiaction
+					$fieldtype = 'set';
+					$fielddata = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php email=".$row['faxemail']." extension=".$row['faxextension']." name=\${last_fax} ";
+					$fielddata .= "messages=\"result: \${fax_result_text} sender:\${fax_remote_station_id} pages:\${fax_document_total_pages}\" ";
+					$fieldorder = '001';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
 					//<action application="answer" />
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'answer';
 					$fielddata = '';
-					$fieldorder = '001';
+					$fieldorder = '002';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 					//<action application="playback" data="silence_stream://2000"/>
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'playback';
 					$fielddata = 'silence_stream://2000';
-					$fieldorder = '002';
+					$fieldorder = '003';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 					//<action application="set" data="last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}"/>
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'set';
 					$fielddata = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
-					$fieldorder = '003';
+					$fieldorder = '004';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 					//<action application="rxfax" data="$v_storage_dir/fax/inbox/${last_fax}.tif"/>
 					$tag = 'action'; //condition, action, antiaction
 					$fieldtype = 'rxfax';
 					$fielddata = $v_storage_dir.'/fax/'.$row['faxextension'].'/inbox/${last_fax}.tif';
-					$fieldorder = '004';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-					//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
-					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'system';
-					$fielddata = $php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php email=".$row['faxemail']." extension=".$row['faxextension']." name=\${last_fax} ";
-					$fielddata .=  "messages='result: \${fax_result_text} sender:\${fax_remote_station_id} pages:\${fax_document_total_pages}' ";
 					$fieldorder = '005';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
