@@ -2196,12 +2196,6 @@ function sync_package_v_hunt_group_lua()
 			$$name = $value;
 		}
 
-		//if (pkg_is_service_running('freeswitch')) {
-		//	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		//	$cmd = "api global_getvar domain";
-		//	$domain = trim(event_socket_request($fp, $cmd));
-		//}
-
 		$tmp = "";
 		$tmp .= "\n";
 		$tmp .= " domain = \"".$domain."\"; //by default this is the ipv4 address of FreeSWITCH used for transfer to voicemail\n";
@@ -2353,10 +2347,8 @@ function sync_package_v_hunt_group_lua()
 								unset($descr);
 								unset($opt1name);
 								unset($opt1value);
-
 						}
 						unset($action);
-
 
 						//check whether the fifo queue exists already
 
@@ -2368,7 +2360,6 @@ function sync_package_v_hunt_group_lua()
 							$sql .= "where v_id = '$v_id' ";
 							$sql .= "and opt1name = 'hunt_group_id_fifo' ";
 							$sql .= "and opt1value = '".$row['hunt_group_id']."' ";
-							//echo "sql2: ".$sql."<br />\n";
 							$prepstatement2 = $db->prepare($sql);
 							$prepstatement2->execute();
 							while($row2 = $prepstatement2->fetch()) {
@@ -2418,7 +2409,6 @@ function sync_package_v_hunt_group_lua()
 							$fielddata = $row['huntgroupextension'].'@${domain_name} in';
 							$fieldorder = '003';
 							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
 						}
 						if ($action == 'update') {
 							//update the huntgroup fifo
@@ -2439,8 +2429,6 @@ function sync_package_v_hunt_group_lua()
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and opt1name = 'hunt_group_id_fifo' ";
 								$sql .= "and opt1value = '$hunt_group_id' ";
-								//echo "sql: ".$sql."<br />";
-								//exit;
 								$db->query($sql);
 								unset($sql);
 
@@ -2502,8 +2490,8 @@ function sync_package_v_hunt_group_lua()
 					$tmp .= "caller_id_number = session:getVariable(\"caller_id_number\");\n";
 					$tmp .= "effective_caller_id_name = session:getVariable(\"effective_caller_id_name\");\n";
 					$tmp .= "effective_caller_id_number = session:getVariable(\"effective_caller_id_number\");\n";
-					$tmp .= "outbound_caller_id_name = session:getVariable(\"outbound_caller_id_name\");\n";
-					$tmp .= "outbound_caller_id_number = session:getVariable(\"outbound_caller_id_number\");\n";
+					$tmp .= "outbound_caller_id_name = session:getVariable(\"effective_caller_id_name\");\n";
+					$tmp .= "outbound_caller_id_number = session:getVariable(\"effective_caller_id_number\");\n";
 					$tmp .= "\n";
 
 					$tmp .= "	--set the sounds path for the language, dialect and voice\n";
