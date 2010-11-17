@@ -61,12 +61,6 @@ var previous_uuid_1 = '';
 var previous_uuid_2 = '';
 var url = '<?php echo $url; ?>';
 
-function open_window(url) {
-	open_window=window.open(url,'_blank');
-	if (window.focus) {open_window.focus()}
-	return false;
-}
-
 //define the ajax function
 function loadXmlHttp(url, id) {
 	var f = this;
@@ -122,7 +116,8 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 				previous_uuid_1 = uuid_1;
 <?php 
 				if ($event_type=="open_window") {
-					echo "open_window(new_url,'','toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes');";
+					echo "open_window = window.open(new_url,'_blank','width='+window.innerWidth+',height='+window.innerHeight+',left=0px;toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes');";
+					echo "if (window.focus) {open_window.focus()}\n";
 				}
 				if ($event_type=="iframe") {
 					echo "document.getElementById('iframe1').src = new_url;\n";
