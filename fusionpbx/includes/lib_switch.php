@@ -1925,7 +1925,7 @@ function sync_package_v_gateways()
 					$tmpxml .= "      <param name=\"supress-cng\" value=\"" . $row['supress_cng'] . "\"/>\n";
 				}
 				if (strlen($row['extension_in_contact']) > 0) {
-					$tmpxml .= "      <param name=\"extension_in_contact\" value=\"" . $row['extension_in_contact'] . "\"/>\n";
+					$tmpxml .= "      <param name=\"extension-in-contact\" value=\"" . $row['extension_in_contact'] . "\"/>\n";
 				}
 
 				$tmpxml .= "    </gateway>\n";
@@ -2608,7 +2608,6 @@ function sync_package_v_hunt_group_lua()
 					$sql .= "where hunt_group_id = '".$row['hunt_group_id']."' ";
 					$sql .= "and v_id = '$v_id' ";
 					$sql .= "order by destinationorder asc ";
-					//echo $sql;
 					$prepstatement2 = $db->prepare($sql);
 					$prepstatement2->execute();
 					while($ent = $prepstatement2->fetch()) {
@@ -2646,7 +2645,6 @@ function sync_package_v_hunt_group_lua()
 							unset($tmp_sub_array);
 						}
 						$i++;
-
 					} //end while
 					unset ($sql, $prepstatement2);
 					unset($i, $ent);
