@@ -166,7 +166,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "auth_acl, ";
 				$sql .= "cidr, ";
 				$sql .= "sip_force_contact, ";
-				$sql .= "nibble_account, ";
+				if (strlen($nibble_account) > 0) {
+					$sql .= "nibble_account, ";
+				}
 				$sql .= "enabled, ";
 				$sql .= "description ";
 				$sql .= ")";
@@ -192,7 +194,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$auth_acl', ";
 				$sql .= "'$cidr', ";
 				$sql .= "'$sip_force_contact', ";
-				$sql .= "'$nibble_account', ";
+				if (strlen($nibble_account) > 0) {
+					$sql .= "'$nibble_account', ";
+				}
 				$sql .= "'$enabled', ";
 				$sql .= "'$description' ";
 				$sql .= ")";
