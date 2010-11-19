@@ -42,10 +42,8 @@ else {
 		$action = "add";
 	}
 
-
 //http post to php variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
 		$extension = check_str($_POST["extension"]);
 		$password = check_str($_POST["password"]);
 
@@ -230,7 +228,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($tmp_user);
 
 			$sql = "update v_extensions set ";
-			//$sql .= "v_id = '$v_id', ";
 			$sql .= "extension = '$extension', ";
 			$sql .= "password = '$password', ";
 			$sql .= "user_list = '$user_list', ";
@@ -250,7 +247,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "auth_acl = '$auth_acl', ";
 			$sql .= "cidr = '$cidr', ";
 			$sql .= "sip_force_contact = '$sip_force_contact', ";
-			$sql .= "nibble_account = '$nibble_account', ";
+			if (strlen($nibble_account) > 0) {
+				$sql .= "nibble_account = '$nibble_account', ";
+			}
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "description = '$description' ";
 			$sql .= "where v_id = '$v_id' ";
@@ -400,7 +399,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "    <select class='formfld' name='range'>\n";
-		//echo "    <option value=''></option>\n";
 		echo "    <option value='1'>1</option>\n";
 		echo "    <option value='2'>2</option>\n";
 		echo "    <option value='3'>3</option>\n";
