@@ -74,7 +74,6 @@ else {
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
 
-
 	echo "<table width='100%' border='0'><tr>\n";
 	echo "<td align='left' width='50%' nowrap><b>Call Detail Records</b></td>\n";
 	echo "<td align='left' width='50%' align='right'>&nbsp;</td>\n";
@@ -154,7 +153,6 @@ else {
 				//echo "		<td>Context:</td>";
 				//echo "		<td><input type='text' class='txt' name='context' value='$context'></td>";
 				//echo "	</tr>";
-
 				//echo "	<tr>";
 				//echo "		<td>Answer:</td>";
 				//echo "		<td><input type='text' class='txt' name='answer_stamp' value='$answer_stamp'></td>";
@@ -197,12 +195,10 @@ else {
 				//echo "		<td align='left' width='25%'>Duration:</td>";
 				//echo "		<td align='left' width='75%'><input type='text' class='txt' name='duration' value='$duration'></td>";
 				//echo "	</tr>";
-
 				//echo "	<tr>";
 				//echo "		<td align='left' width='25%'>Bill:</td>";
 				//echo "		<td align='left' width='75%'><input type='text' class='txt' name='billsec' value='$billsec'></td>";
 				//echo "	</tr>";
-
 				//echo "	<tr>";
 				//echo "		<td>UUID:</td>";
 				//echo "		<td><input type='text' class='txt' name='uuid' value='$uuid'></td>";
@@ -251,7 +247,6 @@ else {
 			echo "</form>";
 		}
 
-
 //build the sql where string
 	if (strlen($cdr_id) > 0) { $sqlwhere .= "and cdr_id like '%$cdr_id%' "; }
 	if (strlen($direction) > 0) { $sqlwhere .= "and direction like '%$direction%' "; }
@@ -272,7 +267,7 @@ else {
 	if (strlen($write_codec) > 0) { $sqlwhere .= "and write_codec like '%$write_codec%' "; }
 	if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
 	if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
-	
+
 //get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= " select * from v_extensions ";
@@ -283,33 +278,39 @@ else {
 	$x = 0;
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
-		//$extension_id = $row["extension_id"];
-		//$mailbox = $row["mailbox"];
 		$extension_array[$x]['extension_id'] = $row["extension_id"];
 		$extension_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}
 	unset ($prepstatement, $x);
-	
+
+	//example sql
+		// select caller_id_number, destination_number from v_xml_cdr where v_id = '1' 
+		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
 	if (!ifgroup("admin") && !ifgroup("superadmin")) {
-		//disable member search
-		//$sqlwhereorig = $sqlwhere;
-		$sqlwhere = "where ";
+		$sqlwhere = "where v_id = '$v_id' and ( ";
 		if (count($extension_array) > 0) {
+			$x = 0;
 			foreach($extension_array as $value) {
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and caller_id_number = '".$value['extension']."' ". $sqlwhereorig." \n"; } //source
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '*99".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
+				if ($x==0) {
+					if ($value['extension'] > 0) { $sqlwhere .= "caller_id_number = '".$value['extension']."' \n"; } //source
+				}
+				else {
+					if ($value['extension'] > 0) { $sqlwhere .= "or caller_id_number = '".$value['extension']."' \n"; } //source
+				}
+				if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '".$value['extension']."' \n"; } //destination
+				if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '*99".$value['extension']."' \n"; } //destination
+				$x++;
 			}
-		} //count($extension_array)
+		}
+		$sqlwhere .= ") ";
 	}
 	else {
 		//superadmin or admin
 		$sqlwhere = "where v_id = '$v_id' ".$sqlwhere;
 	}
-	$sqlwhere = str_replace ("where or", "where", $sqlwhere);
-	$sqlwhere = str_replace ("where and", " and", $sqlwhere);
+	//$sqlwhere = str_replace ("where or", "where", $sqlwhere);
+	//$sqlwhere = str_replace ("where and", " and", $sqlwhere);
 
 //set the param variable which is used with paging
 	$param = "";
@@ -369,7 +370,6 @@ else {
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "		<br>";
-
 
 	echo "<div align='left'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
@@ -486,12 +486,10 @@ else {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
