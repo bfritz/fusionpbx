@@ -1098,28 +1098,40 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 
 	//recordings
-		if($dh = opendir($v_recordings_dir."/")) {
-			$tmp_selected = false;
-			$files = Array();
-			echo "<optgroup label='Recordings'>\n";
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($v_recordings_dir . "/" . $file)) {
-						//this is a directory
-					}
-					else {
-						if ($ivr_menu_greet_long == $v_recordings_dir."/".$file) {
-							$tmp_selected = true;
-							echo "		<option value='".$v_recordings_dir."/".$file."' selected>".$file."</option>\n";
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			if($dh = opendir($v_recordings_dir."/")) {
+				$tmp_selected = false;
+				$files = Array();
+				echo "<optgroup label='Recordings'>\n";
+				while($file = readdir($dh)) {
+					if($file != "." && $file != ".." && $file[0] != '.') {
+						if(is_dir($v_recordings_dir . "/" . $file)) {
+							//this is a directory
 						}
 						else {
-							echo "		<option value='".$v_recordings_dir."/".$file."'>".$file."</option>\n";
+							if ($ivr_menu_greet_long == $v_recordings_dir."/".$file) {
+								$tmp_selected = true;
+								if ($select_type == "dialplan") {
+									echo "		<option value='playback:".$v_recordings_dir."/".$file."' selected>".$file."</option>\n";
+								}
+								if ($select_type == "ivr") {
+									echo "		<option value='menu-exec-app:playback ".$v_recordings_dir."/".$file."' selected>".$file."</option>\n";
+								}
+							}
+							else {
+								if ($select_type == "dialplan") {
+									echo "		<option value='playback:".$v_recordings_dir."/".$file."'>".$file."</option>\n";
+								}
+								if ($select_type == "ivr") {
+									echo "		<option value='menu-exec-app:playback ".$v_recordings_dir."/".$file."'>".$file."</option>\n";
+								}
+							}
 						}
 					}
 				}
+				closedir($dh);
+				echo "</optgroup>\n";
 			}
-			closedir($dh);
-			echo "</optgroup>\n";
 		}
 
 	//list time conditions
