@@ -646,27 +646,28 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 		foreach ($result as &$row) {
 			$extension = $row["extension"];
+			$description = $row["description"];
 			if ("transfer ".$extension." XML default" == $select_value || "transfer:".$extension." XML default" == $select_value || "user/$extension" == $select_value) {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
-					echo "		<option value='user/$extension' selected='selected'>".$extension."</option>\n";
+					echo "		<option value='user/$extension' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				$selection_found = true;
 			}
 			else {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
+					echo "		<option value='transfer:$extension XML default'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
-					echo "		<option value='user/$extension'>".$extension."</option>\n";
+					echo "		<option value='user/$extension'>".$extension." ".$description."</option>\n";
 				}
 			}
 		}
@@ -732,22 +733,23 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$result = $prepstatement->fetchAll();
 			echo "<optgroup label='FAX'>\n";
 			foreach ($result as &$row) {
+				$fax_name = $row["faxname"];
 				$extension = $row["faxextension"];
 				if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
 					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+						echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension." ".$fax_name."</option>\n";
 					}
 					if ($select_type == "dialplan") {
-						echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+						echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension." ".$fax_name."</option>\n";
 					}
 					$selection_found = true;
 				}
 				else {
 					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+						echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension." ".$fax_name."</option>\n";
 					}
 					if ($select_type == "dialplan") {
-						echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
+						echo "		<option value='transfer:$extension XML default'>".$extension." ".$fax_name."</option>\n";
 					}
 				}
 			}
@@ -790,20 +792,20 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					$option_label = $extension_number;
 					if ($select_type == "ivr") {
 						if ("menu-exec-app:transfer ".$row["fielddata"] == $select_value) {
-							echo "		<option value='menu-exec-app:transfer ".$extension_number."' selected='selected'>".$option_label."</option>\n";
+							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML default' selected='selected'>".$option_label."</option>\n";
 							$selection_found = true;
 						}
 						else {
-							echo "		<option value='menu-exec-app:transfer ".$extension_number."'>".$option_label."</option>\n";
+							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML default'>".$option_label."</option>\n";
 						}
 					}
 					if ($select_type == "dialplan") {
 						if ("transfer:".$row["fielddata"] == $select_value) {
-							echo "		<option value='transfer:".$extension_number."' selected='selected'>".$option_label."</option>\n";
+							echo "		<option value='transfer:".$extension_number." XML default' selected='selected'>".$option_label."</option>\n";
 							$selection_found = true;
 						}
 						else {
-							echo "		<option value='transfer:".$extension_number."'>".$option_label."</option>\n";
+							echo "		<option value='transfer:".$extension_number." XML default'>".$option_label."</option>\n";
 						}
 					}
 				}
@@ -813,6 +815,43 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			echo "</optgroup>\n";
 		}
 		unset ($prepstatement);
+
+	//gateways
+		if (ifgroup("superadmin")) {
+			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
+				echo "<optgroup label='Gateways'>\n";
+			}
+			$sql = "";
+			$sql .= "select * from v_gateways ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and enabled = 'true' ";
+			$sql .= "order by gateway asc ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			$resultcount = count($result);
+			unset ($prepstatement, $sql);
+			$tmp_selected = '';
+			foreach($result as $row) {
+				if ($row[gateway] == $select_value) {
+					$tmp_selected = "selected='selected'";
+				}
+					if ($select_type == "dialplan") {
+						echo "		<option value='bridge:sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>".$row[gateway]."</option>\n";
+					}
+					if ($select_type == "ivr") {
+						echo "		<option value='menu-exec-app:bridge sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>".$row[gateway]."</option>\n";
+					}
+					if ($select_type == "call_center_contact") {
+						echo "		<option value='sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>".$row[gateway]."</option>\n";
+					}
+					$tmp_selected = '';
+			}
+			unset($sql, $result, $rowcount);
+			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
+				echo "</optgroup>\n";
+			}
+		}
 
 	//list hunt groups
 		$sql = "";
@@ -865,21 +904,23 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 		foreach ($result as &$row) {
 			$extension = $row["ivr_menu_extension"];
+			$extension_name = $row["ivr_menu_name"];
+			$extension_name = str_replace(" ", "_", $extension_name);
 			if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension." ".$extension_name."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension." ".$extension_name."</option>\n";
 				}
 				$selection_found = true;
 			}
 			else {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension." ".$extension_name."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
+					echo "		<option value='transfer:$extension XML default'>".$extension." ".$extension_name."</option>\n";
 				}
 			}
 		}
@@ -945,7 +986,6 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "</optgroup>\n";
 				}
 		}
-
 
 	//list the languages
 		if ($select_type == "dialplan" || $select_type == "ivr") {
@@ -1057,6 +1097,31 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			echo "</optgroup>\n";
 		}
 
+	//recordings
+		if($dh = opendir($v_recordings_dir."/")) {
+			$tmp_selected = false;
+			$files = Array();
+			echo "<optgroup label='Recordings'>\n";
+			while($file = readdir($dh)) {
+				if($file != "." && $file != ".." && $file[0] != '.') {
+					if(is_dir($v_recordings_dir . "/" . $file)) {
+						//this is a directory
+					}
+					else {
+						if ($ivr_menu_greet_long == $v_recordings_dir."/".$file) {
+							$tmp_selected = true;
+							echo "		<option value='".$v_recordings_dir."/".$file."' selected>".$file."</option>\n";
+						}
+						else {
+							echo "		<option value='".$v_recordings_dir."/".$file."'>".$file."</option>\n";
+						}
+					}
+				}
+			}
+			closedir($dh);
+			echo "</optgroup>\n";
+		}
+
 	//list time conditions
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
@@ -1160,63 +1225,27 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 		foreach ($result as &$row) {
 			$extension = $row["extension"]; //default ${domain_name} 
+			$description = $row["description"];
 			if ("voicemail default \${domain} ".$extension == $select_value || "voicemail:default \${domain} ".$extension == $select_value) {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:voicemail default \${domain} $extension' selected='selected'>".$extension."</option>\n";
+					echo "		<option value='menu-exec-app:voicemail default \${domain} $extension' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='voicemail:default \${domain} $extension' selected='selected'>".$extension."</option>\n";
+					echo "		<option value='voicemail:default \${domain} $extension' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				$selection_found = true;
 			}
 			else {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:voicemail default \${domain} $extension'>".$extension."</option>\n";
+					echo "		<option value='menu-exec-app:voicemail default \${domain} $extension'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='voicemail:default \${domain} $extension'>".$extension."</option>\n";
+					echo "		<option value='voicemail:default \${domain} $extension'>".$extension." ".$description."</option>\n";
 				}
 			}
 		}
 		if ($select_type == "dialplan" || $select_type == "ivr") {
 			echo "</optgroup>\n";
-		}
-
-	//gateways
-		if (ifgroup("superadmin")) {
-			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
-				echo "<optgroup label='Gateways'>\n";
-			}
-			$sql = "";
-			$sql .= "select * from v_gateways ";
-			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and enabled = 'true' ";
-			$sql .= "order by gateway asc ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
-			unset ($prepstatement, $sql);
-			$tmp_selected = '';
-			foreach($result as $row) {
-				if ($row[gateway] == $select_value) {
-					$tmp_selected = "selected='selected'";
-				}
-					if ($select_type == "dialplan") {
-						echo "		<option value='bridge:sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxx</option>\n";
-					}
-					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:bridge sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxx</option>\n";
-					}
-					if ($select_type == "call_center_contact") {
-						echo "		<option value='sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>sofia/gateway/".$row[gateway]."/xxxxx</option>\n";
-					}
-					$tmp_selected = '';
-			}
-			unset($sql, $result, $rowcount);
-			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
-				echo "</optgroup>\n";
-			}
 		}
 
 	//other
@@ -2494,13 +2523,13 @@ function sync_package_v_hunt_group_lua()
 					$tmp .= "outbound_caller_id_number = session:getVariable(\"effective_caller_id_number\");\n";
 					$tmp .= "\n";
 
-					$tmp .= "	--set the sounds path for the language, dialect and voice\n";
-					$tmp .= "		default_language = session:getVariable(\"default_language\");\n";
-					$tmp .= "		default_dialect = session:getVariable(\"default_dialect\");\n";
-					$tmp .= "		default_voice = session:getVariable(\"default_voice\");\n";
-					$tmp .= "		if (not default_language) then default_language = 'en'; end\n";
-					$tmp .= "		if (not default_dialect) then default_dialect = 'us'; end\n";
-					$tmp .= "		if (not default_voice) then default_voice = 'callie'; end\n";
+					$tmp .= "--set the sounds path for the language, dialect and voice\n";
+					$tmp .= "	default_language = session:getVariable(\"default_language\");\n";
+					$tmp .= "	default_dialect = session:getVariable(\"default_dialect\");\n";
+					$tmp .= "	default_voice = session:getVariable(\"default_voice\");\n";
+					$tmp .= "	if (not default_language) then default_language = 'en'; end\n";
+					$tmp .= "	if (not default_dialect) then default_dialect = 'us'; end\n";
+					$tmp .= "	if (not default_voice) then default_voice = 'callie'; end\n";
 					$tmp .= "\n";
 
 					//pin number requested from caller if provided
