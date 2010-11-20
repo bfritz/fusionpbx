@@ -44,12 +44,14 @@ $order = $_GET["order"];
 	if (count($_POST)>0) {
 		$extension_name = check_str($_POST["extension_name"]);
 		$gateway = check_str($_POST["gateway"]);
+		$gateway_array = explode(":",$gateway);
+		$gateway_id = $gateway_array[0];
+		$gateway_name = $gateway_array[1];
 		$dialplanorder = check_str($_POST["dialplanorder"]);
 		$condition_field_1 = check_str($_POST["condition_field_1"]);
 		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
 		$condition_field_2 = check_str($_POST["condition_field_2"]);
 		$condition_expression_2 = check_str($_POST["condition_expression_2"]);
-
 		$enabled = check_str($_POST["enabled"]);
 		$description = check_str($_POST["description"]);
 		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
@@ -81,10 +83,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	if (strlen(trim($_POST['dialplan_expression']))> 0) {
 
-		if ($action == "update") {
-			$gateway_id = $_POST['gateway_id'];
-		}
-
 		$sql = "";
 		$sql .= "select * from v_settings ";
 		$sql .= "where v_id = '$v_id' ";
@@ -99,102 +97,100 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$tmp_array = explode("\n", $_POST['dialplan_expression']);
 
 		foreach($tmp_array as $dialplan_expression) {
-	
 			$dialplan_expression = trim($dialplan_expression);
 			if (strlen($dialplan_expression)>0) {
 
 				switch ($dialplan_expression) {
 				case "^(\d{7})$":
-					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/1".$default_area_code."\$1";
 					$label = "7 digits";
 					$abbrv = "7d";
 					break;
 				case "^(\d{8})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "8 digits";
 					$abbrv = "8d";
 					break;
 				case "^(\d{9})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "9 digits";
 					$abbrv = "9d";
 					break;
 				case "^(\d{10})$":
-					$action_data = "sofia/gateway/".$gateway."/1\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/1\$1";
 					$label = "10 digits";
 					$abbrv = "10d";
 					break;
 				case "^(\d{11})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "11 digits";
 					$abbrv = "11d";
 					break;
 				case "^(\d{12})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "12 digits";
 					$abbrv = "12d";
 					break;
 				case "^311$":
-					$action_data = "sofia/gateway/".$gateway."/311";
+					$action_data = "sofia/gateway/".$gateway_name."/311";
 					$label = "311";
 					$abbrv = "311";
 					break;
 				case "^411$":
-					$action_data = "sofia/gateway/".$gateway."/411";
+					$action_data = "sofia/gateway/".$gateway_name."/411";
 					$label = "411";
 					$abbrv = "411";
 					break;
 				case "^911$":
-					$action_data = "sofia/gateway/".$gateway."/911";
+					$action_data = "sofia/gateway/".$gateway_name."/911";
 					$label = "911";
 					$abbrv = "911";
 					break;
 				case "^9(\d{3})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "dial 9, 3 digits";
 					$abbrv = "9.3d";
 					break;
 				case "^9(\d{4})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "dial 9, 4 digits";
 					$abbrv = "9.4d";
 					break;	
 				case "^9(\d{7})$":
-					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/1".$default_area_code."\$1";
 					$label = "dial 9, 7 digits";
 					$abbrv = "9.7d";
 					break;
 				case "^9(\d{10})$":
-					$action_data = "sofia/gateway/".$gateway."/1\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/1\$1";
 					$label = "dial 9, 10 digits";
 					$abbrv = "9.10d";
 					break;
 				case "^9(\d{11})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "dial 9, 11 digits";
 					$abbrv = "9.11d";
 					break;
 				case "^1?(8(00|55|66|77|88)[2-9]\d{6})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "toll free";
 					$abbrv = "tollfree";
 					break;
 				default:
-					$action_data = "sofia/gateway/".$gateway."/\$1";
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = $dialplan_expression;
 					$abbrv = filename_safe($dialplan_expression);
 					//echo "abbrv: $abbrv<br />\n";
 					//exit;
 				}
 
-				$extension_name = $gateway.".".$abbrv;
-				//$dialplanorder ='9002';
-				//$context = $context;
-				//$enabled = 'true';
-				//$descr = $label.' '.$gateway;
+				$extension_name = $gateway_name.".".$abbrv;
+				$dialplanorder ='999';
+				$context = 'default';
+				$enabled = 'true';
 				$opt1name = 'gateway_id';
 				$opt1value = $gateway_id;
-				//$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+				//$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $description, $opt1name, $opt1value);
 
 				//add the main dialplan include entry
 					$sql = "insert into v_dialplan_includes ";
@@ -204,6 +200,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "dialplanorder, ";
 					$sql .= "extensioncontinue, ";
 					$sql .= "context, ";
+					$sql .= "opt1name, ";
+					$sql .= "opt1value, ";
 					$sql .= "enabled, ";
 					$sql .= "descr ";
 					$sql .= ") ";
@@ -212,8 +210,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$v_id', ";
 					$sql .= "'$extension_name', ";
 					$sql .= "'$dialplanorder', ";
-					$sql .= "'true', ";
-					$sql .= "'default', ";
+					$sql .= "'$enabled', ";
+					$sql .= "'$context', ";
+					$sql .= "'$opt1name', ";
+					$sql .= "'$opt1value', ";
 					$sql .= "'$enabled', ";
 					$sql .= "'$description' ";
 					$sql .= ")";
@@ -348,9 +348,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 function type_onchange(field_type) {
 	var field_value = document.getElementById(field_type).value;
 
-	//desc_action_data_1
-	//desc_action_data_2
-
 	if (field_type == "condition_field_1") {
 		if (field_value == "destination_number") {
 			document.getElementById("desc_condition_expression_1").innerHTML = "expression: ^12081231234$";
@@ -401,7 +398,7 @@ echo "	<tr>\n";
 echo "		<td align='left' colspan='2'>\n";
 echo "			<span class=\"vexpl\">\n";
 echo "				Outbound dialplans have one or more conditions that are matched to attributes of a call. \n";
-echo "				When a call matches the conditions the call is then routed to the gateway..\n";
+echo "				When a call matches the conditions the call is then routed to the gateway.\n";
 echo "			</span>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
@@ -417,36 +414,25 @@ echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "    Gateway:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
-
 $sql = "";
 $sql .= " select * from v_gateways ";
 $sql .= " where v_id = '$v_id' ";
 $prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 $result = $prepstatement->fetchAll();
-$resultcount = count($result);
 unset ($prepstatement, $sql);
 echo "<select name=\"gateway\" id=\"gateway\" class=\"formfld\" style='width: 60%;'>\n";
 echo "<option value=''></option>\n";
-
 foreach($result as $row) {
-	//print_r( $row );
-	if ($row[gateway] == $gateway) {
-		echo "<option value='".$row[gateway]."' selected>".$row[gateway]."</option>\n";
+	if ($row['gateway'] == $gateway_name) {
+		echo "<option value=\"".$row['gateway_id'].":".$row['gateway']."\" selected>".$row['gateway']."</option>\n";
 	}
 	else {
-		echo "<option value='".$row[gateway]."'>".$row[gateway]."</option>\n";
+		echo "<option value=\"".$row['gateway_id'].":".$row['gateway']."\">".$row['gateway']."</option>\n";
 	}
-	//$row[phone_mac_address]
-	//$row[phone_vendor]
-	//$row[phone_model]
-	//$row[phone_provision_enable]
-	//$row[phone_description]
-	//$row[hardware_phone_id]
-} //end foreach
+}
 unset($sql, $result, $rowcount);
 echo "</select>\n";
-
 echo "<br />\n";
 echo "Select the gateway to use with this outbound route.\n";
 echo "</td>\n";
@@ -647,7 +633,6 @@ echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 echo "    Description:\n";
 echo "</td>\n";
 echo "<td colspan='4' class='vtable' align='left'>\n";
-//echo "    <textarea class='formfld' name='descr' rows='4'>$descr</textarea>\n";
 echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
 echo "<br />\n";
 echo "Enter a description for the outbound route.\n";
