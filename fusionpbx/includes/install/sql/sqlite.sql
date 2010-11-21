@@ -120,7 +120,7 @@ INSERT INTO v_modules VALUES(10,1,'Event Socket','mod_event_socket','Sends event
 INSERT INTO v_modules VALUES(11,1,'Zeroconf','mod_zeroconf','Support for zeroconf.','Event Handlers','false','false');
 INSERT INTO v_modules VALUES(12,1,'LDAP','mod_ldap','LDAP module made to obtain dialplans, user accounts, etc.','Directory Interfaces','true','true');
 INSERT INTO v_modules VALUES(13,1,'Dingaling','mod_dingaling',NULL,'Endpoints','true','true');
-INSERT INTO v_modules VALUES(14,1,'FreeTDM','mod_openzap','Interface to TDM hardware.','Endpoints','false','false');
+INSERT INTO v_modules VALUES(14,1,'FreeTDM','mod_freetdm','Interface to TDM hardware.','Endpoints','false','false');
 INSERT INTO v_modules VALUES(15,1,'PortAudio','mod_portaudio','Voice through a local soundcard.','Endpoints','true','true');
 INSERT INTO v_modules VALUES(16,1,'ALSA','mod_alsa','','Endpoints','false','false');
 INSERT INTO v_modules VALUES(17,1,'Sofia','mod_sofia','SIP module.','Endpoints','true','true');
