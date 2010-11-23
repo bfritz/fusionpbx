@@ -73,6 +73,7 @@ else {
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap><b>SQL Query</b></td>\n";
 	echo "<td width='70%' align='right'>\n";
+	echo "	<input type='button' class='btn' name='' alt='backup' onclick=\"window.location='v_sql_backup.php'\" value='Backup'>\n";
 	echo "	<input type='button' class='btn' name='' alt='back' onClick=\"history.back()\" value='Back'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
