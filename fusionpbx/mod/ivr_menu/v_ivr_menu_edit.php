@@ -243,40 +243,40 @@ if ($_POST["persistformvar"] != "true") {
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$ivr_menu_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_ivr_menu ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and ivr_menu_id = '$ivr_menu_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$ivr_menu_name = $row["ivr_menu_name"];
-		$ivr_menu_extension = $row["ivr_menu_extension"];
-		$ivr_menu_greet_long = $row["ivr_menu_greet_long"];
-		$ivr_menu_greet_short = $row["ivr_menu_greet_short"];
-		$ivr_menu_invalid_sound = $row["ivr_menu_invalid_sound"];
-		$ivr_menu_exit_sound = $row["ivr_menu_exit_sound"];
-		$ivr_menu_confirm_macro = $row["ivr_menu_confirm_macro"];
-		$ivr_menu_confirm_key = $row["ivr_menu_confirm_key"];
-		$ivr_menu_tts_engine = $row["ivr_menu_tts_engine"];
-		$ivr_menu_tts_voice = $row["ivr_menu_tts_voice"];
-		$ivr_menu_confirm_attempts = $row["ivr_menu_confirm_attempts"];
-		$ivr_menu_timeout = $row["ivr_menu_timeout"];
-		$ivr_menu_inter_digit_timeout = $row["ivr_menu_inter_digit_timeout"];
-		$ivr_menu_max_failures = $row["ivr_menu_max_failures"];
-		$ivr_menu_max_timeouts = $row["ivr_menu_max_timeouts"];
-		$ivr_menu_digit_len = $row["ivr_menu_digit_len"];
-		$ivr_menu_direct_dial = $row["ivr_menu_direct_dial"];
-		$ivr_menu_enabled = $row["ivr_menu_enabled"];
-		$ivr_menu_desc = $row["ivr_menu_desc"];
-		break; //limit to 1 row
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$ivr_menu_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_ivr_menu ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and ivr_menu_id = '$ivr_menu_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$v_id = $row["v_id"];
+			$ivr_menu_name = $row["ivr_menu_name"];
+			$ivr_menu_extension = $row["ivr_menu_extension"];
+			$ivr_menu_greet_long = $row["ivr_menu_greet_long"];
+			$ivr_menu_greet_short = $row["ivr_menu_greet_short"];
+			$ivr_menu_invalid_sound = $row["ivr_menu_invalid_sound"];
+			$ivr_menu_exit_sound = $row["ivr_menu_exit_sound"];
+			$ivr_menu_confirm_macro = $row["ivr_menu_confirm_macro"];
+			$ivr_menu_confirm_key = $row["ivr_menu_confirm_key"];
+			$ivr_menu_tts_engine = $row["ivr_menu_tts_engine"];
+			$ivr_menu_tts_voice = $row["ivr_menu_tts_voice"];
+			$ivr_menu_confirm_attempts = $row["ivr_menu_confirm_attempts"];
+			$ivr_menu_timeout = $row["ivr_menu_timeout"];
+			$ivr_menu_inter_digit_timeout = $row["ivr_menu_inter_digit_timeout"];
+			$ivr_menu_max_failures = $row["ivr_menu_max_failures"];
+			$ivr_menu_max_timeouts = $row["ivr_menu_max_timeouts"];
+			$ivr_menu_digit_len = $row["ivr_menu_digit_len"];
+			$ivr_menu_direct_dial = $row["ivr_menu_direct_dial"];
+			$ivr_menu_enabled = $row["ivr_menu_enabled"];
+			$ivr_menu_desc = $row["ivr_menu_desc"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
 //set defaults
 	if (strlen($ivr_menu_timeout) == 0) { $ivr_menu_timeout = '10000'; }
