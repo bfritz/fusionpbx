@@ -27,51 +27,44 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-if (ifgroup("admin") || ifgroup("superadmin")) {
-	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
+//if (ifgroup("admin") || ifgroup("superadmin")) {
+//	//access granted
+//}
+//else {
+//	echo "access denied";
+//	exit;
+//}
 
 //Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$hunt_group_destination_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
-
-if (isset($_REQUEST["id2"])) {
-	$hunt_group_id = check_str($_REQUEST["id2"]);
-}
-
-//POST to PHP variables
-if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
-	if (isset($_POST["hunt_group_id"])) {
-		$hunt_group_id = check_str($_POST["hunt_group_id"]);
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$hunt_group_destination_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
 	}
 
-	$destinationdata = check_str($_POST["destinationdata"]);
-	$destinationtype = check_str($_POST["destinationtype"]);
-	$destinationprofile = check_str($_POST["destinationprofile"]);
-	$destinationorder = check_str($_POST["destinationorder"]);
-	$destinationdescr = check_str($_POST["destinationdescr"]);
-}
+	if (isset($_REQUEST["id2"])) {
+		$hunt_group_id = check_str($_REQUEST["id2"]);
+	}
+
+//POST to PHP variables
+	if (count($_POST)>0) {
+		if (isset($_POST["hunt_group_id"])) {
+			$hunt_group_id = check_str($_POST["hunt_group_id"]);
+		}
+		$destinationdata = check_str($_POST["destinationdata"]);
+		$destinationtype = check_str($_POST["destinationtype"]);
+		$destinationprofile = check_str($_POST["destinationprofile"]);
+		$destination_timeout = check_str($_POST["destination_timeout"]);
+		$destinationorder = check_str($_POST["destinationorder"]);
+		$destination_enabled = check_str($_POST["destination_enabled"]);
+		$destinationdescr = check_str($_POST["destinationdescr"]);
+	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$hunt_group_destination_id = check_str($_POST["hunt_group_destination_id"]);
 	}
@@ -81,7 +74,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($destinationdata) == 0) { $msg .= "Please provide: Destination<br>\n"; }
 		if (strlen($destinationtype) == 0) { $msg .= "Please provide: Type<br>\n"; }
 		if (strlen($destinationprofile) == 0) { $msg .= "Please provide: Profile<br>\n"; }
-		if (strlen($destinationorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		if (strlen($destination_timeout) == 0) { $msg .= "Please provide: Timeout<br>\n"; }
+		//if (strlen($destinationorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		//if (strlen($destination_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		//if (strlen($destinationdescr) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
@@ -96,117 +91,113 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	//$tmp .= "v_id: $v_id\n";
-	$tmp .= "Destination: $destinationdata\n";
-	$tmp .= "Type: $destinationtype\n";
-	$tmp .= "Profile: $destinationprofile\n";
-	$tmp .= "Order: $destinationorder\n";
-	$tmp .= "Description: $destinationdescr\n";
+	//add or update the database
+		if ($_POST["persistformvar"] != "true") {
+			if ($action == "add") {
+				$sql = "insert into v_hunt_group_destinations ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "hunt_group_id, ";
+				$sql .= "destinationdata, ";
+				$sql .= "destinationtype, ";
+				$sql .= "destinationprofile, ";
+				$sql .= "destination_timeout, ";
+				$sql .= "destinationorder, ";
+				$sql .= "destination_enabled, ";
+				$sql .= "destinationdescr ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$hunt_group_id', ";
+				$sql .= "'$destinationdata', ";
+				$sql .= "'$destinationtype', ";
+				$sql .= "'$destinationprofile', ";
+				$sql .= "'$destination_timeout', ";
+				$sql .= "'$destinationorder', ";
+				$sql .= "'$destination_enabled', ";
+				$sql .= "'$destinationdescr' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
+				//synchronize the xml config
+				sync_package_v_hunt_group();
 
-	//Add or update the database
-	if ($_POST["persistformvar"] != "true") {
-		if ($action == "add") {
-			$sql = "insert into v_hunt_group_destinations ";
-			$sql .= "(";
-			$sql .= "v_id, ";
-			$sql .= "hunt_group_id, ";
-			$sql .= "destinationdata, ";
-			$sql .= "destinationtype, ";
-			$sql .= "destinationprofile, ";
-			$sql .= "destinationorder, ";
-			$sql .= "destinationdescr ";
-			$sql .= ")";
-			$sql .= "values ";
-			$sql .= "(";
-			$sql .= "'$v_id', ";
-			$sql .= "'$hunt_group_id', ";
-			$sql .= "'$destinationdata', ";
-			$sql .= "'$destinationtype', ";
-			$sql .= "'$destinationprofile', ";
-			$sql .= "'$destinationorder', ";
-			$sql .= "'$destinationdescr' ";
-			$sql .= ")";
-			$db->exec(check_sql($sql));
-			unset($sql);
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_id."\">\n";
+				echo "<div align='center'>\n";
+				echo "Add Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "add")
 
-			//synchronize the xml config
-			sync_package_v_hunt_group();
-			
-			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_id."\">\n";
-			echo "<div align='center'>\n";
-			echo "Add Complete\n";
-			echo "</div>\n";
-			require_once "includes/footer.php";
-			return;
-		} //if ($action == "add")
+			if ($action == "update") {
+				$sql = "update v_hunt_group_destinations set ";
+				$sql .= "v_id = '$v_id', ";
+				$sql .= "hunt_group_id = '$hunt_group_id', ";
+				$sql .= "destinationdata = '$destinationdata', ";
+				$sql .= "destinationtype = '$destinationtype', ";
+				$sql .= "destinationprofile = '$destinationprofile', ";
+				$sql .= "destination_timeout = '$destination_timeout', ";
+				$sql .= "destinationorder = '$destinationorder', ";
+				$sql .= "destination_enabled = '$destination_enabled', ";
+				$sql .= "destinationdescr = '$destinationdescr' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and hunt_group_destination_id = '$hunt_group_destination_id'";
+				$db->exec(check_sql($sql));
 
-		if ($action == "update") {
-			$sql = "update v_hunt_group_destinations set ";
-			$sql .= "v_id = '$v_id', ";
-			$sql .= "hunt_group_id = '$hunt_group_id', ";		
-			$sql .= "destinationdata = '$destinationdata', ";
-			$sql .= "destinationtype = '$destinationtype', ";
-			$sql .= "destinationprofile = '$destinationprofile', ";
-			$sql .= "destinationorder = '$destinationorder', ";
-			$sql .= "destinationdescr = '$destinationdescr' ";
-			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and hunt_group_destination_id = '$hunt_group_destination_id'";
-			$db->exec(check_sql($sql));
-			unset($sql);
+				//synchronize the xml config
+				sync_package_v_hunt_group();
 
-			//synchronize the xml config
-			sync_package_v_hunt_group();
-			
-			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_id."\">\n";
-			echo "<div align='center'>\n";
-			echo "Update Complete\n";
-			echo "</div>\n";
-			require_once "includes/footer.php";
-			return;
-	   } //if ($action == "update")
-	} //if ($_POST["persistformvar"] != "true") { 
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_id."\">\n";
+				echo "<div align='center'>\n";
+				echo "Update Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "update")
+		} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$hunt_group_destination_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_hunt_group_destinations ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and hunt_group_destination_id = '$hunt_group_destination_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		//$v_id = $row["v_id"];
-		$hunt_group_id = $row["hunt_group_id"];
-		$destinationdata = $row["destinationdata"];
-		$destinationtype = $row["destinationtype"];
-		$destinationprofile = $row["destinationprofile"];
-		$destinationorder = $row["destinationorder"];
-		$destinationdescr = $row["destinationdescr"];
-		break; //limit to 1 row
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$hunt_group_destination_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_hunt_group_destinations ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and hunt_group_destination_id = '$hunt_group_destination_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			//$v_id = $row["v_id"];
+			$hunt_group_id = $row["hunt_group_id"];
+			$destinationdata = $row["destinationdata"];
+			$destinationtype = $row["destinationtype"];
+			$destinationprofile = $row["destinationprofile"];
+			$destination_timeout = $row["destination_timeout"];
+			$destinationorder = $row["destinationorder"];
+			$destination_enabled = $row["destination_enabled"];
+			$destinationdescr = $row["destinationdescr"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
-
+//show the header
 	require_once "includes/header.php";
 
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
-
-
 
 	echo "<form method='post' name='frm' action=''>\n";
 
@@ -283,7 +274,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	else {
 		echo "                <option>auto</option>\n";
 	}
-	foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){	
+	foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
 		$sip_profile_name = str_replace(".xml", "", $sip_profile_file);
 
 		if (htmlspecialchars($destinationprofile) == $sip_profile_name) {
@@ -301,16 +292,37 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Timeout:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "              <select name='destination_timeout' class='formfld'>\n";
+	echo "              <option></option>\n";
+	if (strlen($destination_timeout)> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($destination_timeout)."'>".htmlspecialchars($destination_timeout)."</option>\n";
+	}
+	$i=0;
+	while($i<=301) {
+		echo "              <option value='$i'>$i</option>\n";
+		$i++;
+	}
+	echo "              </select>\n";
+	echo "<br />\n";
+	echo "Select the destination timeout in seconds. \n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "              <select name='destinationorder' class='formfld'>\n";
 	//echo "              <option></option>\n";
-	if (strlen(htmlspecialchars($pconfig['destinationorder']))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($pconfig['destinationorder'])."'>".htmlspecialchars($pconfig['destinationorder'])."</option>\n";
+	if (strlen($destinationorder)> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($destinationorder)."'>".htmlspecialchars($destinationorder)."</option>\n";
 	}
 	$i=0;
-	while($i<=999) {
+	while($i<=301) {
 		if (strlen($i) == 1) {
 			echo "              <option value='00$i'>00$i</option>\n";
 		}
@@ -329,6 +341,31 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Enabled:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='destination_enabled'>\n";
+	echo "    <option value=''></option>\n";
+	if ($destination_enabled == "true" || strlen($destination_enabled) == 0) { 
+		echo "    <option value='true' selected >true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($destination_enabled == "false") { 
+		echo "    <option value='false' selected >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Description:\n";
 	echo "</td>\n";
@@ -338,6 +375,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "You may enter a description here for your reference (not parsed).\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	echo "				<input type='hidden' name='hunt_group_id' value='$hunt_group_id'>\n";

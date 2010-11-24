@@ -114,18 +114,17 @@ if (!function_exists('thorderby')) {
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-	//echo "<tr><td colspan='3'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
 	echo "<tr>\n";
 	echo thorderby('huntgroupextension', 'Extension', $orderby, $order);
 	echo thorderby('huntgroupname', 'Hunt Group Name', $orderby, $order);
+	echo thorderby('huntgroupname', 'Enabled', $orderby, $order);
 	echo thorderby('huntgroupdescr', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_hunt_group_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
-	//echo "<tr><td colspan='3'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
-	
+
 	if ($resultcount == 0) { //no results
 	}
 	else { //received results
@@ -134,13 +133,13 @@ if (!function_exists('thorderby')) {
 			echo "<tr >\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[huntgroupextension]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[huntgroupname]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[hunt_group_enabled]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='40%'>".$row[huntgroupdescr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			echo "		<a href='v_hunt_group_edit.php?id=".$row[hunt_group_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
 			echo "		<a href='v_hunt_group_delete.php?id=".$row[hunt_group_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
 			echo "   </td>\n";
 			echo "</tr>\n";
-			//echo "<tr><td colspan='3'><img src='/images/spacer.gif' width='100%'' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $rowcount);
