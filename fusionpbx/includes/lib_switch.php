@@ -2662,7 +2662,12 @@ function sync_package_v_hunt_group()
 
 					//caller announce requested from caller if provided
 						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
-							$tmp .=	"function originate(session, sipuri, extension, caller_id_name, caller_id_number, caller_announce) \n";
+							if ($row['huntgroupcallerannounce'] == "true") {
+								$tmp .=	"function originate(session, sipuri, extension, caller_id_name, caller_id_number, caller_announce) \n";
+							}
+							else {
+								$tmp .=	"function originate(session, sipuri, extension, caller_id_name, caller_id_number) \n";
+							}
 							$tmp .=	"	--caller_id_name = caller_id_name.replace(\" \", \"..\");\n";
 							$tmp .=	"	caller_id_name = string.gsub(caller_id_name, \" \", \"..\");\n";
 							//$tmp .=	"	--session:execute(\"luarun\", \"huntgroup_originate.lua \"..uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_id_name..\" \"..caller_id_number..\" \"..caller_announce);\n";
@@ -2671,7 +2676,7 @@ function sync_package_v_hunt_group()
 								$tmp .=	"	result = api:execute(\"luarun\", \"huntgroup_originate.lua \"..uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_id_name..\" \"..caller_id_number..\" \"..caller_announce);\n";
 							}
 							else {
-								$tmp .=	"	result = api:execute(\"luarun\", \"huntgroup_originate.lua \"..uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_id_name..\" \"..caller_id_number..\" ''\");\n";
+								$tmp .=	"	result = api:execute(\"luarun\", \"huntgroup_originate.lua \"..uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_id_name..\" \"..caller_id_number..\"\");\n";
 							}
 							$tmp .=	"end";
 							$tmp .=	"\n";
@@ -2843,7 +2848,7 @@ function sync_package_v_hunt_group()
 										$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_id_name, caller_id_number, caller_announce);\n";
 									}
 									else {
-										$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_id_name, caller_id_number, '');\n";
+										$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_id_name, caller_id_number);\n";
 									}
 								}
 							}
@@ -2869,7 +2874,7 @@ function sync_package_v_hunt_group()
 											$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_id_name, caller_id_number, caller_announce);\n";
 										}
 										else {
-											$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_id_name, caller_id_number, '');\n";
+											$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_id_name, caller_id_number);\n";
 										}
 									}
 								}
