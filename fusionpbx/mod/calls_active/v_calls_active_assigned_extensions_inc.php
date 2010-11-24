@@ -32,7 +32,7 @@ require_once "includes/checkauth.php";
 		$url = $_GET['url'];
 	}
 
-// active extensions -----------------------------
+// active extensions
 
 	//get a list of assigned extensions for this user
 		$sql = "";
@@ -60,7 +60,6 @@ require_once "includes/checkauth.php";
 		//print_r($user_array);
 		//echo "</pre>\n";
 
-	//if (count($_SESSION['assigned_extension_array']) > 0) {
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "</tr>\n";
 
@@ -79,7 +78,6 @@ require_once "includes/checkauth.php";
 		echo "</tr>\n";
 		foreach ($_SESSION['extension_array'] as $row) {
 
-			//print_r($row);
 			$v_id = $row['v_id'];
 			$extension = $row['extension'];
 			$enabled = $row['enabled'];

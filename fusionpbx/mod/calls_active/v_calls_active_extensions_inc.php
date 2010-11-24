@@ -96,9 +96,8 @@ require_once "includes/checkauth.php";
 	catch(Exception $e) {
 		//echo $e->getMessage();
 	}
-	//print_r($xml);
 
-//active channels array ----------------------
+//active channels array
 	$channel_array = "";
 	foreach ($xml as $row) {
 		//print_r($row);
@@ -120,7 +119,7 @@ require_once "includes/checkauth.php";
 	//echo "</pre>\n";
 
 
-//active extensions -----------------------------
+//active extensions
 	//get the extension information
 		unset($_SESSION['extension_array']);
 		if (count($_SESSION['extension_array']) == 0) {
@@ -176,7 +175,6 @@ require_once "includes/checkauth.php";
 					$extension_array[$extension]['sip_force_contact'] = $row["sip_force_contact"];
 					//$extension_array[$extension]['enabled'] = $row["enabled"];
 					$extension_array[$extension]['description'] = $row["description"];
-					//break; //limit to 1 row
 				}
 			}
 			$_SESSION['extension_array'] = $extension_array;

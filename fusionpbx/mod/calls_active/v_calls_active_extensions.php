@@ -57,66 +57,86 @@ require_once "includes/header.php";
 <!--
 
 //declare variables
-var previous_uuid_1 = '';
-var previous_uuid_2 = '';
-var url = '<?php echo $url; ?>';
+	var previous_uuid_1 = '';
+	var previous_uuid_2 = '';
+	var url = '<?php echo $url; ?>';
 
 //define the ajax function
-function loadXmlHttp(url, id) {
-	var f = this;
-	f.xmlHttp = null;
-	/*@cc_on @*/ // used here and below, limits try/catch to those IE browsers that both benefit from and support it
-	/*@if(@_jscript_version >= 5) // prevents errors in old browsers that barf on try/catch & problems in IE if Active X disabled
-	try {f.ie = window.ActiveXObject}catch(e){f.ie = false;}
-	@end @*/
-	if (window.XMLHttpRequest&&!f.ie||/^http/.test(window.location.href))
-		f.xmlHttp = new XMLHttpRequest(); // Firefox, Opera 8.0+, Safari, others, IE 7+ when live - this is the standard method
-	else if (/(object)|(function)/.test(typeof createRequest))
-		f.xmlHttp = createRequest(); // ICEBrowser, perhaps others
-	else {
+	function loadXmlHttp(url, id) {
+		var f = this;
 		f.xmlHttp = null;
-		 // Internet Explorer 5 to 6, includes IE 7+ when local //
-		/*@cc_on @*/
-		/*@if(@_jscript_version >= 5)
-		try{f.xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}
-		catch (e){try{f.xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}catch(e){f.xmlHttp=null;}}
+		/*@cc_on @*/ // used here and below, limits try/catch to those IE browsers that both benefit from and support it
+		/*@if(@_jscript_version >= 5) // prevents errors in old browsers that barf on try/catch & problems in IE if Active X disabled
+		try {f.ie = window.ActiveXObject}catch(e){f.ie = false;}
 		@end @*/
+		if (window.XMLHttpRequest&&!f.ie||/^http/.test(window.location.href))
+			f.xmlHttp = new XMLHttpRequest(); // Firefox, Opera 8.0+, Safari, others, IE 7+ when live - this is the standard method
+		else if (/(object)|(function)/.test(typeof createRequest))
+			f.xmlHttp = createRequest(); // ICEBrowser, perhaps others
+		else {
+			f.xmlHttp = null;
+			 // Internet Explorer 5 to 6, includes IE 7+ when local //
+			/*@cc_on @*/
+			/*@if(@_jscript_version >= 5)
+			try{f.xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");}
+			catch (e){try{f.xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");}catch(e){f.xmlHttp=null;}}
+			@end @*/
+		}
+		if(f.xmlHttp != null){
+			f.el = document.getElementById(id);
+			f.xmlHttp.open("GET",url,true);
+			f.xmlHttp.onreadystatechange = function(){f.stateChanged();};
+			f.xmlHttp.send(null);
+		}
 	}
-	if(f.xmlHttp != null){
-		f.el = document.getElementById(id);
-		f.xmlHttp.open("GET",url,true);
-		f.xmlHttp.onreadystatechange = function(){f.stateChanged();};
-		f.xmlHttp.send(null);
-	}
-}
 
 loadXmlHttp.prototype.stateChanged=function () {
 if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test(window.location.href)))
-	//this.el.innerHTML = this.xmlHttp.responseText;
+
 	document.getElementById('ajax_reponse').innerHTML = this.xmlHttp.responseText;
 
-	uuid_1 = document.getElementById('uuid_1').innerHTML;
-	direction_1 = document.getElementById('direction_1').innerHTML;
-	cid_name_1 = document.getElementById('cid_name_1').innerHTML;
-	cid_num_1 = document.getElementById('cid_num_1').innerHTML;
+	if (document.getElementById('uuid_1')) {
+		uuid_1 = document.getElementById('uuid_1').innerHTML;
+	}
+	else {
+		uuid_1 = "";
+	}
 
+	if (document.getElementById('direction_1')) {
+		direction_1 = document.getElementById('direction_1').innerHTML;
+	}
+	else {
+		direction_1 = "";
+	}
+
+	if (document.getElementById('cid_name_1')) {
+		cid_name_1 = document.getElementById('cid_name_1').innerHTML;
+	}
+	else {
+		cid_name_1 = "";
+	}
+
+	if (document.getElementById('cid_num_1')) {
+		cid_num_1 = document.getElementById('cid_num_1').innerHTML;
+	}
+	else {
+		cid_num_1 = "";
+	}
 
 	if (previous_uuid_1 != uuid_1) {
 		if (uuid_1.length > 0) {
 			if (direction_1 == "outbound") {
 				//$url = "http://fusionpbx.com/?cid_name={cid_name}&cid_num={cid_num}&uuid={uuid}";
 				//echo urlencode($url);
-
 				//alert('new call: '+uuid_1+'\n direction: '+direction_1+'\n cid_name: '+cid_name_1+'\n cid_num: '+cid_num_1+'\n url: '+url);
 				var new_url = url;
 				new_url = new_url.replace("{cid_name}", cid_name_1);
 				new_url = new_url.replace("{cid_num}", cid_num_1);
 				new_url = new_url.replace("{uuid}", uuid_1);
-
 				previous_uuid_1 = uuid_1;
-<?php 
+<?php
 				if ($event_type=="open_window") {
-					echo "open_window = window.open(new_url,'_blank','width='+window.innerWidth+',height='+window.innerHeight+',left=0px;toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes');";
+					echo "open_window = window.open(new_url,'width='+window.innerWidth+',height='+window.innerHeight+',left=0px;toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes');";
 					echo "if (window.focus) {open_window.focus()}\n";
 				}
 				if ($event_type=="iframe") {
@@ -215,7 +235,6 @@ if ($event_type=="iframe") {
 
 echo "	</tr>";
 echo "</table>";
-
 echo "</div>\n";
 
 echo "<script type=\"text/javascript\">\n";
