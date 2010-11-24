@@ -101,7 +101,7 @@ INSERT INTO v_dialplan_includes VALUES(1,1,'Recordings','',9001,'default','true'
 INSERT INTO v_dialplan_includes VALUES(2,1,'DISA','',9001,'default','true','*3472 Direct Inward System Access ','disa',3472);
 SELECT setval('v_dialplan_includes_dialplan_include_id_seq', (SELECT MAX(dialplan_include_id) FROM v_dialplan_includes)+1);
 CREATE TABLE v_dialplan_includes_details (dialplan_includes_detail_id SERIAL, v_id NUMERIC, dialplan_include_id NUMERIC, parent_id NUMERIC, tag TEXT, fieldorder NUMERIC, fieldtype TEXT, fielddata TEXT, fieldbreak TEXT);
-INSERT INTO v_dialplan_includes_details VALUES(1,1,1,NULL,'condition',0,'destination_number','^\\*732673$','');
+INSERT INTO v_dialplan_includes_details VALUES(1,1,1,NULL,'condition',0,'destination_number','^\\*732$|^\\*732673$','');
 INSERT INTO v_dialplan_includes_details VALUES(2,1,1,NULL,'action',1,'set','pin_number=','');
 INSERT INTO v_dialplan_includes_details VALUES(3,1,1,NULL,'action',2,'lua','recordings.lua','');
 INSERT INTO v_dialplan_includes_details VALUES(4,1,2,NULL,'condition',0,'destination_number','^\\*3472$','');
@@ -111,8 +111,8 @@ SELECT setval('v_dialplan_includes_details_dialplan_includes_detail_id_seq', (SE
 CREATE TABLE v_extensions (extension_id SERIAL, v_id NUMERIC, extension TEXT, password TEXT, user_list TEXT, provisioning_list TEXT, mailbox TEXT, vm_password TEXT, accountcode TEXT, effective_caller_id_name TEXT, effective_caller_id_number TEXT, outbound_caller_id_name TEXT, outbound_caller_id_number TEXT, vm_mailto TEXT, vm_attach_file TEXT, vm_keep_local_after_email TEXT, user_context TEXT, toll_allow TEXT, callgroup TEXT, auth_acl TEXT, cidr TEXT, sip_force_contact TEXT, nibble_account NUMERIC, enabled TEXT, description TEXT);
 CREATE TABLE v_fax (fax_id SERIAL, v_id NUMERIC, faxextension TEXT, faxname TEXT, faxemail TEXT, fax_pin_number TEXT, fax_caller_id_name TEXT, fax_caller_id_number TEXT, fax_user_list TEXT, faxdescription TEXT);
 CREATE TABLE v_gateways (gateway_id SERIAL, v_id NUMERIC, gateway TEXT, username TEXT, password TEXT, auth_username TEXT, realm TEXT, from_user TEXT, from_domain TEXT, proxy TEXT, register_proxy TEXT, outbound_proxy TEXT, expire_seconds NUMERIC, register TEXT, register_transport TEXT, retry_seconds NUMERIC, extension TEXT, ping TEXT, caller_id_in_from TEXT, supress_cng TEXT, extension_in_contact TEXT, effective_caller_id_name TEXT, effective_caller_id_number TEXT, outbound_caller_id_name TEXT, outbound_caller_id_number TEXT, context TEXT, enabled TEXT, description TEXT);
-CREATE TABLE v_hunt_group (hunt_group_id SERIAL, v_id NUMERIC, huntgroupextension TEXT, huntgroupname TEXT, huntgrouptype TEXT, huntgroupcontext TEXT, huntgrouptimeout TEXT, huntgrouptimeoutdestination TEXT, huntgrouptimeouttype TEXT, huntgroupringback TEXT, huntgroupcidnameprefix TEXT, huntgrouppin TEXT, huntgroupcallerannounce TEXT, huntgroupdescr TEXT);
-CREATE TABLE v_hunt_group_destinations (hunt_group_destination_id SERIAL, v_id NUMERIC, hunt_group_id NUMERIC, destinationdata TEXT, destinationtype TEXT, destinationprofile TEXT, destinationorder NUMERIC, destinationdescr TEXT);
+CREATE TABLE v_hunt_group (hunt_group_id SERIAL, v_id NUMERIC, huntgroupextension TEXT, huntgroupname TEXT, huntgrouptype TEXT, huntgroupcontext TEXT, huntgrouptimeout TEXT, huntgrouptimeoutdestination TEXT, huntgrouptimeouttype TEXT, huntgroupringback TEXT, huntgroupcidnameprefix TEXT, huntgrouppin TEXT, huntgroupcallerannounce TEXT, hunt_group_call_prompt TEXT, hunt_group_user_list TEXT, hunt_group_enabled TEXT, huntgroupdescr TEXT);
+CREATE TABLE v_hunt_group_destinations (hunt_group_destination_id SERIAL, v_id NUMERIC, hunt_group_id NUMERIC, destinationdata TEXT, destinationtype TEXT, destinationprofile TEXT, destination_timeout TEXT, destinationorder NUMERIC, destination_enabled TEXT, destinationdescr TEXT);
 CREATE TABLE v_modules (module_id SERIAL, v_id NUMERIC, modulelabel TEXT, modulename TEXT, moduledesc TEXT, modulecat TEXT, moduleenabled TEXT, moduledefaultenabled TEXT);
 INSERT INTO v_modules VALUES(1,1,'Console','mod_console','Send logs to the console. ','Loggers','true','true');
 INSERT INTO v_modules VALUES(2,1,'Log File','mod_logfile','Send logs to the local file system. ','Loggers','true','true');
@@ -121,7 +121,7 @@ INSERT INTO v_modules VALUES(4,1,'ENUM','mod_enum','Route PSTN numbers over inte
 INSERT INTO v_modules VALUES(5,1,'XML RPC','mod_xml_rpc','XML Remote Procedure Calls. Issue commands from your web application.','XML Interfaces','true','true');
 INSERT INTO v_modules VALUES(6,1,'XML cURL','mod_xml_curl','XML Gateway Code. Configure FreeSWITCH from a web server on boot and on the fly.','XML Interfaces','false','false');
 INSERT INTO v_modules VALUES(7,1,'XML CDR','mod_xml_cdr','XML based call detail record handler.','XML Interfaces','true','true');
-INSERT INTO v_modules VALUES(8,1,'CDR CSV','mod_cdr_csv','CSV call detail record handler.','Event Handlers','true','true');
+INSERT INTO v_modules VALUES(8,1,'CDR CSV','mod_cdr_csv','CSV call detail record handler.','Event Handlers','false','false');
 INSERT INTO v_modules VALUES(9,1,'Event Multicast','mod_event_multicast','Broadcasts events to netmask.','Event Handlers','false','false');
 INSERT INTO v_modules VALUES(10,1,'Event Socket','mod_event_socket','Sends events via a single socket.','Event Handlers','true','true');
 INSERT INTO v_modules VALUES(11,1,'Zeroconf','mod_zeroconf','Support for zeroconf.','Event Handlers','false','false');
@@ -202,10 +202,6 @@ CREATE TABLE v_public_includes (public_include_id SERIAL, v_id NUMERIC, extensio
 CREATE TABLE v_public_includes_details ( public_includes_detail_id SERIAL, v_id NUMERIC, public_include_id NUMERIC, parent_id NUMERIC, tag TEXT, fieldtype TEXT, fielddata TEXT, fieldorder NUMERIC, fieldbreak TEXT);
 SELECT setval('v_public_includes_details_public_includes_detail_id_seq', (SELECT MAX(public_includes_detail_id) FROM v_public_includes_details)+1);
 CREATE TABLE v_recordings ( recording_id SERIAL, v_id NUMERIC, filename TEXT, recordingname TEXT, recordingid TEXT, descr TEXT );
-INSERT INTO v_recordings VALUES(1,1,'auto_attendant_sales1_support2_billing3.wav','auto_attendant_sales1_support2_billing3.wav',NULL,'auto');
-INSERT INTO v_recordings VALUES(2,1,'call_transfer.wav','call_transfer.wav',NULL,'auto');
-INSERT INTO v_recordings VALUES(3,1,'simple_auto_attendant.wav','simple_auto_attendant.wav',NULL,'auto');
-SELECT setval('v_recordings_recording_id_seq', (SELECT MAX(recording_id) FROM v_recordings)+1);
 CREATE TABLE v_settings (setting_id SERIAL, v_id NUMERIC, numbering_plan TEXT, default_gateway TEXT, default_area_code TEXT, event_socket_ip_address TEXT, event_socket_port TEXT, event_socket_password TEXT, xml_rpc_http_port TEXT, xml_rpc_auth_realm TEXT, xml_rpc_auth_user TEXT, xml_rpc_auth_pass TEXT, admin_pin NUMERIC, smtphost TEXT, smtpsecure TEXT, smtpauth TEXT, smtpusername TEXT, smtppassword TEXT, smtpfrom TEXT, smtpfromname TEXT, mod_shout_decoder TEXT, mod_shout_volume TEXT);
 INSERT INTO v_settings VALUES(1,1,'US','',208,'127.0.0.1',8021,'ClueCon',8787,'localhost','xmlrpc','7e4d3i',1234,'','none','','','','','Voicemail','i386',0.3);
 SELECT setval('v_settings_setting_id_seq', (SELECT MAX(setting_id) FROM v_settings)+1);
