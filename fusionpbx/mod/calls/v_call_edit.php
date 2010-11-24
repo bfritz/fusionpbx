@@ -3,10 +3,6 @@ require_once "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-//to do list enter the correct data in the
-//hunt group and hunt group details database 
-//for a call forward, follow me and dnd
-
 function destination_select($select_name, $select_value, $select_default) {
 	if (strlen($select_value) == 0) { $select_value = $select_default; }
 	echo "	<select class='formfld' style='width: 40px;' name='$select_name'>\n";
@@ -860,13 +856,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-
 	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
+	echo "	<td align=\"center\">\n";
+	echo "		<br>";
 
 	echo "<form method='post' name='frm' action=''>\n";
-	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap>\n";
@@ -878,7 +872,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
-	echo "Directs incoming calls for extension  $extension.<br /><br />\n";
+	echo "	Directs incoming calls for extension  $extension.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

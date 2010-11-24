@@ -40,15 +40,17 @@ $order = $_GET["order"];
 	echo "	<td align=\"center\">\n";
 	echo "      <br>";
 
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-	echo "  <tr>\n";
-	echo "	<td align='left'><b>Calls</b><br>\n";
-	echo "		Use the links to configure call forward follow me, or do no disturb.\n";
-	echo "		The following list the extensions that have been assigned to this user account. \n";
-	echo "	</td>\n";
-	echo "  </tr>\n";
-	echo "</table>\n";
-	echo "<br />";
+	if ($is_included != "true") {
+		echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+		echo "  <tr>\n";
+		echo "	<td align='left'><b>Calls</b><br>\n";
+		echo "		Use the links to configure call forward follow me, or do no disturb.\n";
+		echo "		The following list the extensions that have been assigned to this user account. \n";
+		echo "	</td>\n";
+		echo "  </tr>\n";
+		echo "</table>\n";
+		echo "<br />";
+	}
 
 	$sql = "";
 	$sql .= " select * from v_extensions ";
@@ -125,36 +127,28 @@ $order = $_GET["order"];
 		unset($sql, $result, $rowcount);
 	} //end if results
 
-
-	echo "<tr>\n";
-	echo "<td colspan='5' align='left'>\n";
-	echo "	<table border='0' width='100%' cellpadding='0' cellspacing='0'>\n";
-	echo "	<tr>\n";
-	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
+	if (strlen($pagingcontrols) > 0) {
+		echo "<tr>\n";
+		echo "<td colspan='5' align='left'>\n";
+		echo "	<table border='0' width='100%' cellpadding='0' cellspacing='0'>\n";
+		echo "	<tr>\n";
+		echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
+		echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+		echo "	</tr>\n";
+		echo "	</table>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
 
 	echo "</table>";
 	echo "</div>";
-	echo "<br><br>";
-	echo "<br><br>";
+	echo "<br>";
+	echo "<br>";
+	echo "<br>";
+
+	if ($is_included != "true") {
+		require_once "includes/footer.php";
+	}
 
 
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-
-
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
 ?>
