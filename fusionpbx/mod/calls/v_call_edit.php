@@ -78,24 +78,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$dnd_enabled = check_str($_POST["dnd_enabled"]);
 			$hunt_group_call_prompt = check_str($_POST["hunt_group_call_prompt"]);
 
-			$replace_array = array(" ", "-", ".", "(", ")", ",");
 			if (strlen($call_forward_number) > 0) {
-				$call_forward_number = str_replace($replace_array, "", $call_forward_number);
+				$call_forward_number = preg_replace("~[^0-9]~", "",$call_forward_number);
 			}
 			if (strlen($destination_data_1) > 0) {
-				$destination_data_1 = str_replace($replace_array, "", $destination_data_1);
+				$destination_data_1 = preg_replace("~[^0-9]~", "",$destination_data_1);
 			}
 			if (strlen($destination_data_2) > 0) {
-				$destination_data_2 = str_replace($replace_array, "", $destination_data_2);
+				$destination_data_2 = preg_replace("~[^0-9]~", "",$destination_data_2);
 			}
 			if (strlen($destination_data_3) > 0) {
-				$destination_data_3 = str_replace($replace_array, "", $destination_data_3);
+				$destination_data_3 = preg_replace("~[^0-9]~", "",$destination_data_3);
 			}
 			if (strlen($destination_data_4) > 0) {
-				$destination_data_4 = str_replace($replace_array, "", $destination_data_4);
+				$destination_data_4 = preg_replace("~[^0-9]~", "",$destination_data_4);
 			}
 			if (strlen($destination_data_5) > 0) {
-				$destination_data_5 = str_replace($replace_array, "", $destination_data_5);
+				$destination_data_5 = preg_replace("~[^0-9]~", "",$destination_data_5);
 			}
 
 			//get the event socket information
