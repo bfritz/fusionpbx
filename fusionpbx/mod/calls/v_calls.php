@@ -101,35 +101,24 @@ $order = $_GET["order"];
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo thorderby('extension', 'Extension', $orderby, $order);
-	//echo "<th>&nbsp;</th>\n";
 	echo "<th>Tools</th>\n";
-	//echo thorderby('vm_mailto', 'Voicemail Mail To', $orderby, $order);
 	echo thorderby('description', 'Description', $orderby, $order);
-	//echo "<td align='right' width='42'>\n";
-	//echo "	<a href='v_extensions_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
-	//echo "</td>\n";
 	echo "<tr>\n";
 
 	if ($resultcount == 0) { //no results
 	}
 	else { //received results
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[extension]."</td>\n";
-			//echo "	<td class='".$rowstyle[$c]."' width='50%'>&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>\n";
-			echo "		<a href='v_call_edit.php?id=".$row[extension_id]."&a=call_forward' alt='Call Forward'>Call Forward</a> \n";
+			echo "		<a href='".PROJECT_PATH."/mod/calls/v_call_edit.php?id=".$row[extension_id]."&a=call_forward' alt='Call Forward'>Call Forward</a> \n";
 			echo "		&nbsp;&nbsp;\n";
-			echo "		<a href='v_call_edit.php?id=".$row[extension_id]."&a=follow_me' alt='Follow Me'>Follow Me</a> \n";
+			echo "		<a href='".PROJECT_PATH."/mod/calls/v_call_edit.php?id=".$row[extension_id]."&a=follow_me' alt='Follow Me'>Follow Me</a> \n";
 			echo "		&nbsp;&nbsp;\n";
-			echo "		<a href='v_call_edit.php?id=".$row[extension_id]."&a=do_not_disturb' alt='Do Not Disturb'>Do Not Disturb</a> \n";
+			echo "		<a href='".PROJECT_PATH."/mod/calls/v_call_edit.php?id=".$row[extension_id]."&a=do_not_disturb' alt='Do Not Disturb'>Do Not Disturb</a> \n";
 			echo "	</td>\n";
 			echo "	<td valign='top' class='rowstylebg' width='40%'>".$row[description]."&nbsp;</td>\n";
-			//echo "	<td valign='top' align='right'>\n";
-			//echo "		<a href='v_call_edit.php?id=".$row[extension_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
-			//echo "		<a href='v_extensions_delete.php?id=".$row[extension_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
-			//echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
@@ -143,9 +132,6 @@ $order = $_GET["order"];
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
-	//echo "		<td width='33.3%' align='right'>\n";
-	//echo "			<a href='v_extensions_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
-	//echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
 	echo "</td>\n";

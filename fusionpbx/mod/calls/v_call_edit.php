@@ -78,6 +78,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$dnd_enabled = check_str($_POST["dnd_enabled"]);
 			$hunt_group_call_prompt = check_str($_POST["hunt_group_call_prompt"]);
 
+			//get the event socket information
+				$sql = "";
+				$sql .= "select * from v_settings ";
+				$sql .= "where v_id = '$v_id' ";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+				$result = $prepstatement->fetchAll();
+				foreach ($result as &$row) {
+					$event_socket_ip_address = $row["event_socket_ip_address"];
+					$event_socket_port = $row["event_socket_port"];
+					$event_socket_password = $row["event_socket_password"];
+					break; //limit to 1 row
+				}
+				unset ($prepstatement);
+
 			//set the default
 				if (strlen($hunt_group_call_prompt) == 0) {
 					$hunt_group_call_prompt = 'false';
@@ -715,6 +730,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//synchronize the xml config
 			sync_package_v_dialplan_includes();
 
+		//reloadxml
+			$cmd = 'api reloadxml';
+			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+			$response = event_socket_request($fp, $cmd);
+			fclose($fp);
+
 		//redirect the user
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"3;url=/mod/calls/v_calls.php\">\n";
@@ -977,16 +998,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
     echo "<select class='formfld' name='follow_me_type'>\n";
 	echo "<option value=''></option>\n";
 	if ($follow_me_type == "follow_me_sequence") {
-		echo "<option value='follow_me_sequence' selected='selected'>one after another</option>\n";
+		echo "<option value='follow_me_sequence' selected='selected'>sequence</option>\n";
 	}
 	else {
-		echo "<option value='follow_me_sequence'>one after another</option>\n";
+		echo "<option value='follow_me_sequence'>sequence</option>\n";
 	}
 	if ($follow_me_type == "follow_me_simultaneous") {
-		echo "<option value='follow_me_simultaneous' selected='selected'>all at the same time</option>\n";
+		echo "<option value='follow_me_simultaneous' selected='selected'>simultaneous</option>\n";
 	}
 	else {
-		echo "<option value='follow_me_simultaneous'>all at the same time</option>\n";
+		echo "<option value='follow_me_simultaneous'>simultaneous</option>\n";
 	}
     echo "</select>\n";
 	//echo "<br />\n";
@@ -994,7 +1015,30 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Prompt to accept the call:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "<select class='formfld' name='hunt_group_call_prompt'>\n";
+	echo "<option value=''></option>\n";
+	if ($hunt_group_call_prompt == "true") {
+		echo "<option value='true' selected='selected'>true</option>\n";
+	}
+	else {
+		echo "<option value='true'>true</option>\n";
+	}
+	if ($hunt_group_call_prompt == "false") {
+		echo "<option value='false' selected='selected'>false</option>\n";
+	}
+	else {
+		echo "<option value='false'>false</option>\n";
+	}
+	echo "</select>\n";
+	//echo "<br />\n";
+	//echo "Enter the destination number.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
@@ -1027,31 +1071,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
 	echo "	<br />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Prompt to accept the call:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-    echo "<select class='formfld' name='hunt_group_call_prompt'>\n";
-	echo "<option value=''></option>\n";
-	if ($hunt_group_call_prompt == "true") {
-		echo "<option value='true' selected='selected'>true</option>\n";
-	}
-	else {
-		echo "<option value='true'>true</option>\n";
-	}
-	if ($hunt_group_call_prompt == "false") {
-		echo "<option value='false' selected='selected'>false</option>\n";
-	}
-	else {
-		echo "<option value='false'>false</option>\n";
-	}
-    echo "</select>\n";
-	//echo "<br />\n";
-	//echo "Enter the destination number.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
