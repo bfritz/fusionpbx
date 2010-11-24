@@ -2205,16 +2205,102 @@ function sync_package_v_external()
 
 }
 
-function sync_package_v_hunt_group() {
-	if (switch_module_exists('mod_spidermonkey')) {
-		sync_package_v_hunt_group_js();
+function outbound_route_to_bridge ($destination_number) {
+	global $v_id, $db;
+
+	$sql = "";
+	$sql .= "select * from v_dialplan_includes ";
+	$sql .= "where v_id = $v_id ";
+	$sql .= "and opt1name= 'gateway_id' ";
+	$sql .= "and enabled = 'true' ";
+	$sql .= "order by dialplanorder asc ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+	$x = 0;
+	foreach ($result as &$row) {
+		$dialplan_include_id = $row['dialplan_include_id'];
+		$tag = $row["tag"];
+		$field_type = $row['fieldtype'];
+		$extension_continue = $row['extensioncontinue'];
+
+		//get the extension number using the dialplan_include_id
+			$sql = "select * ";
+			$sql .= "from v_dialplan_includes_details ";
+			$sql .= "where v_id = $v_id ";
+			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+			$sql .= "order by fieldorder asc ";
+			$sub_result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+			$regex_match = false;
+			foreach ($sub_result as &$sub_row) {
+				if ($sub_row['tag'] == "condition") {
+					if ($sub_row['fieldtype'] == "destination_number") {
+						//print_r($sub_row);
+						$field_data = $sub_row['fielddata'];
+						$pattern = '/'.$field_data.'/';
+						preg_match($pattern, $destination_number, $matches, PREG_OFFSET_CAPTURE);
+						if (count($matches) == 0) {
+							$regex_match = false;
+						}
+						else {
+							$regex_match = true;
+							$regex_match_1 = $matches[1][0];
+							$regex_match_2 = $matches[2][0];
+							$regex_match_3 = $matches[3][0];
+							$regex_match_4 = $matches[4][0];
+							$regex_match_5 = $matches[5][0];
+							//echo "regex_match_1: ".$regex_match_1;
+							//print_r($matches);
+						}
+					}
+				}
+			}
+			if ($regex_match) {
+				foreach ($sub_result as &$sub_row) {
+					if ($sub_row['tag'] == "action" && $sub_row['fieldtype'] == "bridge") {
+						//print_r($sub_row);
+						$field_data = $sub_row['fielddata'];
+						$field_data = str_replace("\$1", $regex_match_1, $field_data);
+						$field_data = str_replace("\$2", $regex_match_2, $field_data);
+						$field_data = str_replace("\$3", $regex_match_3, $field_data);
+						$field_data = str_replace("\$4", $regex_match_4, $field_data);
+						$field_data = str_replace("\$5", $regex_match_5, $field_data);
+						//echo "field_data: $field_data";
+						$bridge_array[$x] = $field_data;
+						$x++;
+						if ($extension_continue == "false") {
+							break 2;
+						}
+					}
+				}
+			}
+	}
+	return $bridge_array;
+	unset ($prep_statement);
+}
+//$destination_number = '1231234';
+//$bridge_array = outbound_route_to_bridge ($destination_number);
+//foreach ($bridge_array as &$bridge) {
+//	echo "bridge: ".$bridge."<br />";
+//}
+
+function extension_exists($extension) {
+	global $db, $v_id;
+	$sql = "";
+	$sql .= " select * from v_extensions ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and extension = '$extension' ";
+	$sql .= "and enabled = 'true' ";
+	$result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+	if (count($result) > 0) {
+		return true;
 	}
 	else {
-		sync_package_v_hunt_group_lua();
+		return false;
 	}
 }
 
-function sync_package_v_hunt_group_lua()
+function sync_package_v_hunt_group()
 {
 
 	//Hunt Group Lua Notes:
@@ -2240,7 +2326,6 @@ function sync_package_v_hunt_group_lua()
 		$tmp = "";
 		$tmp .= "\n";
 		$tmp .= " domain = \"".$domain."\"; //by default this is the ipv4 address of FreeSWITCH used for transfer to voicemail\n";
-		//$tmp .= " exit = false;\n";
 		$tmp .= "\n";
 		$tmp .= "\n";
 
@@ -2287,6 +2372,7 @@ function sync_package_v_hunt_group_lua()
 					//$row['huntgroupcidnameprefix']
 					//$row['huntgrouppin']
 					//$row['huntgroupcallerannounce']
+					//$row['hunt_group_enabled']
 					//$row['huntgroupdescr']
 
 				//add each Hunt Group to the dialplan
@@ -2308,14 +2394,18 @@ function sync_package_v_hunt_group_lua()
 							break; //limit to 1 row
 						}
 						unset ($sql, $prepstatement2);
-						//echo "sql: ".$sql."<br />";
 
 						if ($action == 'add') {
 							//create huntgroup extension in the dialplan
 								$extensionname = $row['huntgroupname'];
-								$dialplanorder ='9001';
+								$dialplanorder ='999';
 								$context = $row['huntgroupcontext'];
-								$enabled = 'true';
+								if ($row['hunt_group_enabled'] == "false") {
+									$enabled = 'false';
+								}
+								else {
+									$enabled = 'true';
+								}
 								$descr = 'huntgroup';
 								$opt1name = 'hunt_group_id';
 								$opt1value = $row['hunt_group_id'];
@@ -2337,9 +2427,14 @@ function sync_package_v_hunt_group_lua()
 							//update the huntgroup
 
 								$extensionname = $row['huntgroupname'];
-								$dialplanorder = '9001';
+								$dialplanorder = '999';
 								$context = $row['huntgroupcontext'];
-								$enabled = 'true';
+								if ($row['hunt_group_enabled'] == "false") {
+									$enabled = 'false';
+								}
+								else {
+									$enabled = 'true';
+								}
 								$descr = 'huntgroup';
 								$hunt_group_id = $row['hunt_group_id'];
 
@@ -2353,8 +2448,6 @@ function sync_package_v_hunt_group_lua()
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and opt1name = 'hunt_group_id' ";
 								$sql .= "and opt1value = '$hunt_group_id' ";
-								//echo "sql: ".$sql."<br />";
-								//exit;
 								$db->query($sql);
 								unset($sql);
 
@@ -2366,7 +2459,6 @@ function sync_package_v_hunt_group_lua()
 								$sql .= "and tag = 'condition' ";
 								$sql .= "and fieldtype = 'destination_number' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-								//echo $sql."<br />";
 								$db->query($sql);
 								unset($sql);
 
@@ -2378,7 +2470,6 @@ function sync_package_v_hunt_group_lua()
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'action' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-								//echo $sql."<br />";
 								$db->query($sql);
 
 								unset($extensionname);
@@ -2409,15 +2500,19 @@ function sync_package_v_hunt_group_lua()
 								break; //limit to 1 row
 							}
 							unset ($sql, $prepstatement2);
-							//echo "action2: ".$action."<br />\n";
 
 						if ($action == 'add') {
 
 							//create a fifo queue for each huntgroup
 							$extensionname = $row['huntgroupname'].'.park';
-							$dialplanorder ='9999';
+							$dialplanorder ='999';
 							$context = $row['huntgroupcontext'];
-							$enabled = 'true';
+							if ($row['hunt_group_enabled'] == "false") {
+								$enabled = 'false';
+							}
+							else {
+								$enabled = 'true';
+							}
 							$descr = 'fifo '.$row['huntgroupextension'];
 							$opt1name = 'hunt_group_id_fifo';
 							$opt1value = $row['hunt_group_id'];
@@ -2454,9 +2549,14 @@ function sync_package_v_hunt_group_lua()
 						if ($action == 'update') {
 							//update the huntgroup fifo
 								$extensionname = $row['huntgroupname'].'.park';
-								$dialplanorder = '9002';
+								$dialplanorder = '999';
 								$context = $row['huntgroupcontext'];
-								$enabled = 'true';
+								if ($row['hunt_group_enabled'] == "false") {
+									$enabled = 'false';
+								}
+								else {
+									$enabled = 'true';
+								}
 								$descr = 'fifo '.$row['huntgroupextension'];
 								$hunt_group_id = $row['hunt_group_id'];
 
@@ -2513,7 +2613,7 @@ function sync_package_v_hunt_group_lua()
 						unset($dialplanincludeid);
 					} //end if strlen hunt_group_id; add the Hunt Group to the dialplan
 
-				//Get the list of destinations then build the Hunt Group Lua
+				//get the list of destinations then build the Hunt Group Lua
 					$tmp = "";
 					$tmp .= "\n";
 					$tmp .= "session:answer();\n";
@@ -2524,6 +2624,7 @@ function sync_package_v_hunt_group_lua()
 
 					$tmp .= "\n";
 					$tmp .= "sounds_dir = session:getVariable(\"sounds_dir\");\n";
+					$tmp .= "uuid = session:getVariable(\"uuid\");\n";
 					$tmp .= "dialed_extension = session:getVariable(\"dialed_extension\");\n";
 					$tmp .= "domain_name = session:getVariable(\"domain_name\");\n";
 					$tmp .= "domain = session:getVariable(\"domain\");\n";
@@ -2560,22 +2661,27 @@ function sync_package_v_hunt_group_lua()
 						}
 
 					//caller announce requested from caller if provided
-						if ($row['huntgroupcallerannounce'] == "true") {
-							$tmp .=	"function originate(session, sipuri, extension, caller_announce, caller_id_name, caller_id_number) then\n";
+						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+							$tmp .=	"function originate(session, sipuri, extension, caller_id_name, caller_id_number, caller_announce) \n";
 							$tmp .=	"	--caller_id_name = caller_id_name.replace(\" \", \"..\");\n";
 							$tmp .=	"	caller_id_name = string.gsub(caller_id_name, \" \", \"..\");\n";
-
-							$tmp .=	"	--session:execute(\"luarun\", \"huntgroup_originate.lua \"..session.uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_announce..\" \"..caller_id_name..\" \"..caller_id_number);\n";
+							//$tmp .=	"	--session:execute(\"luarun\", \"huntgroup_originate.lua \"..uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_id_name..\" \"..caller_id_number..\" \"..caller_announce);\n";
 							$tmp .=	"	api = freeswitch.API();\n";
-							$tmp .=	"	result = api:execute(\"luarun\", \"huntgroup_originate.lua \"..session.uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_announce..\" \"..caller_id_name..\" \"..caller_id_number);\n";
-
+							if ($row['huntgroupcallerannounce'] == "true") {
+								$tmp .=	"	result = api:execute(\"luarun\", \"huntgroup_originate.lua \"..uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_id_name..\" \"..caller_id_number..\" \"..caller_announce);\n";
+							}
+							else {
+								$tmp .=	"	result = api:execute(\"luarun\", \"huntgroup_originate.lua \"..uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_id_name..\" \"..caller_id_number..\" ''\");\n";
+							}
 							$tmp .=	"end";
 							$tmp .=	"\n";
-							$tmp .=	"caller_announce = extension..\"_\"..session.uuid..\".wav\";\n";
-							$tmp .=	"session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
-							$tmp .=	"session:execute(\"gentones\", \"%(1000, 0, 640)\");\n";
-							$tmp .=	"session:execute(\"set\", \"playback_terminators=#\");\n";
-							$tmp .=	"session:execute(\"record\", \"".$tmp_dir."/\"..caller_announce..\" 180 200\");\n";
+							if ($row['huntgroupcallerannounce'] == "true") {
+								$tmp .=	"caller_announce = extension..\"_\"..uuid..\".wav\";\n";
+								$tmp .=	"session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
+								$tmp .=	"session:execute(\"gentones\", \"%(1000, 0, 640)\");\n";
+								$tmp .=	"session:execute(\"set\", \"playback_terminators=#\");\n";
+								$tmp .=	"session:execute(\"record\", \"".$tmp_dir."/\"..caller_announce..\" 180 200\");\n";
+							}
 							$tmp .=	"\n";
 							$tmp .=	"session:setAutoHangup(false);\n";
 							$tmp .=	"session:execute(\"transfer\", \"*\"..extension..\" XML default\");\n";
@@ -2620,7 +2726,7 @@ function sync_package_v_hunt_group_lua()
 						}
 
 					if ($row['huntgrouptimeout'] > 0) {
-						$tmp .= "session:setVariable(\"call_timeout\", \"".$row['huntgrouptimeout']."\");\n";
+						//$tmp .= "session:setVariable(\"call_timeout\", \"".$row['huntgrouptimeout']."\");\n";
 						$tmp .= "session:setVariable(\"continue_on_fail\", \"true\");\n";
 						$tmp .= "session:setVariable(\"ignore_early_media\", \"true\");\n";
 					}
@@ -2634,7 +2740,7 @@ function sync_package_v_hunt_group_lua()
 					$tmp .= "\n";
 
 					$tmp .= "--freeswitch.consoleLog( \"info\", \"action call now don't wait for dtmf\\n\" );\n";
-					if ($row['huntgroupcallerannounce'] == "true") {
+					if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
 						//do nothing
 					}
 					else {
@@ -2648,26 +2754,32 @@ function sync_package_v_hunt_group_lua()
 					$sql .= "select * from v_hunt_group_destinations ";
 					$sql .= "where hunt_group_id = '".$row['hunt_group_id']."' ";
 					$sql .= "and v_id = '$v_id' ";
+					//$sql .= "and destination_enabled = 'true' ";
 					$sql .= "order by destinationorder asc ";
 					$prepstatement2 = $db->prepare($sql);
 					$prepstatement2->execute();
-					while($ent = $prepstatement2->fetch()) {
-						/*
-						$ent['hunt_group_id']
-						$ent['destinationdata']
-						$ent['destinationtype']
-						$ent['destinationprofile']
-						$ent['destinationorder']
-						$ent['destinationdescr']
-						*/
+					while($ent = $prepstatement2->fetch(PDO::FETCH_ASSOC)) {
+						//$ent['hunt_group_id']
+						//$ent['destinationdata']
+						//$ent['destinationtype']
+						//$ent['destinationprofile']
+						//$ent['destinationorder']
+						//$ent['destination_enabled']
+						//$ent['destinationdescr']
+
+						$destination_timeout = $ent['destination_timeout'];
+						if (strlen($destination_timeout) == 0) {
+							$destination_timeout = '30';
+						}
 
 						//set the default profile
 						if (strlen($ent['destinationdata']) == 0) { $ent['destinationdata'] = "internal"; }
 
 						if ($ent['destinationtype'] == "extension") {
-							$tmp .= "	sofia_contact_".$ent['destinationdata']." = \"\${sofia_contact(".$ent['destinationprofile']."/".$ent['destinationdata']."@\"..domain_name..\")}\";\n";
+							//$tmp .= "	sofia_contact_".$ent['destinationdata']." = \"\${sofia_contact(".$ent['destinationprofile']."/".$ent['destinationdata']."@\"..domain_name..\")}\";\n";
 							$tmp_sub_array["application"] = "bridge";
-							$tmp_sub_array["data"] = "sofia_contact_".$ent['destinationdata'];
+							//$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]\"..sofia_contact_".$ent['destinationdata'];
+							$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]user/".$ent['destinationdata']."@\"..domain_name";
 							$tmp_array[$i] = $tmp_sub_array;
 							unset($tmp_sub_array);
 						}
@@ -2681,9 +2793,14 @@ function sync_package_v_hunt_group_lua()
 						}
 						if ($ent['destinationtype'] == "sip uri") {
 							$tmp_sub_array["application"] = "bridge";
-							$tmp_sub_array["data"] = "\"".$ent['destinationdata']."\"";
+							//$destination_data = "{user=foo}loopback/".$ent['destinationdata']."/default/XML";
+							$bridge_array = outbound_route_to_bridge ($ent['destinationdata']);
+							$destination_data = $bridge_array[0];
+							$tmp_sub_array["application"] = "bridge";
+							$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]".$destination_data."\"";
 							$tmp_array[$i] = $tmp_sub_array;
 							unset($tmp_sub_array);
+							unset($destination_data);
 						}
 						$i++;
 					} //end while
@@ -2708,764 +2825,120 @@ function sync_package_v_hunt_group_lua()
 					$delimiter = ",";
 					$tmp_application = $tmp_array[0]["application"];
 
-					switch ($row['huntgrouptype']) {
+					if ($row['huntgrouptype'] == "simultaneous" || $row['huntgrouptype'] == "follow_me_simultaneous" || $row['huntgrouptype'] ==  "call_forward") {
+						$tmp_switch = "simultaneous";
+					}
+					if ($row['huntgrouptype'] == "sequence" || $row['huntgrouptype'] == "follow_me_sequence" || $row['huntgrouptype'] ==  "sequentially") {
+						$tmp_switch = "sequence";
+					}
+					switch ($tmp_switch) {
 					case "simultaneous":
-						//print_r($tmp_array);
-						if ($row['huntgroupcallerannounce'] == "true") {
+						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
 							$i = 0;
 							if (count($tmp_array) > 0) {
-								foreach ($tmp_array as $ent) {
-									$tmpdata = $ent["data"];
-									if ($ent["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
-									$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_announce, caller_id_name, caller_id_number);\n";
+								foreach ($tmp_array as $tmp_row) {
+									$tmpdata = $tmp_row["data"];
+									if ($tmp_row["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
+									if ($row['huntgroupcallerannounce'] == "true") {
+										$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_id_name, caller_id_number, caller_announce);\n";
+									}
+									else {
+										$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_id_name, caller_id_number, '');\n";
+									}
 								}
 							}
 						}
 						else {
 							$tmp .= "\n";
-							$tmp .= "	session:execute(\"".$tmp_application."\", $tmp_buffer);\n";
-							//$tmp .= "	session:execute(\"bridge\", sofia_contact_100+\",\"+sofia_contact_101+\",\"+sofia_contact_102+\",\"+sofia_contact_103+\",\"+sofia_contact_104);\n";
-							//$tmp .= "	--session:execute(\"bridge\", \"sofia/gateway/flowroute.com/12081231234,\"+sofia_contact_101);\n";
+							if (strlen($tmp_buffer) > 0) {
+								$tmp .= "	session:execute(\"".$tmp_application."\", $tmp_buffer);\n";
+							}
 						}
-						unset($tmp_array);
 						break;
-					case "sequentially":
+					case "sequence":
 						$tmp .= "\n";
-						//print_r($tmp_array);
 						$i = 0;
 						if (count($tmp_array) > 0) {
-							if ($row['huntgroupcallerannounce'] == "true") {
+							if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
 								$i = 0;
 								if (count($tmp_array) > 0) {
-									//foreach ($tmp_array as $tmp_row) {
-										//$tmpdata = $tmp_row["data"];
-										//if ($tmp_row["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
-										$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_announce, caller_id_name, caller_id_number);\n";
-									//}
+									foreach ($tmp_array as $tmp_row) {
+										$tmpdata = $tmp_row["data"];
+										if ($tmp_row["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
+										if ($row['huntgroupcallerannounce'] == "true") {
+											$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_id_name, caller_id_number, caller_announce);\n";
+										}
+										else {
+											$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_id_name, caller_id_number, '');\n";
+										}
+									}
 								}
 							}
 							else {
 								foreach ($tmp_array as $tmp_row) {
-									$tmp .= "	session:execute(\"".$tmp_row["application"]."\", ".$tmp_row["data"].");\n";
+									if (strlen($tmp_row["data"]) > 0) {
+										$tmp .= "	session:execute(\"".$tmp_application."\", ".$tmp_row["data"].");\n";
+									}
 								}
 							}
-							unset($tmp_array, $tmp_row);
+							unset($tmp_row);
 						}
 						break;
 					}
+					unset($tmp_switch, $tmp_buffer, $tmp_array);
 
 					//set the timeout destination
-					$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
-					if ($row['huntgrouptimeouttype'] == "extension") { $huntgrouptimeouttype = "bridge"; }
-					if ($row['huntgrouptimeouttype'] == "voicemail") { $huntgrouptimeouttype = "transfer"; $huntgrouptimeoutdestination = "*99".$huntgrouptimeoutdestination; }
-					if ($row['huntgrouptimeouttype'] == "sip uri") { $huntgrouptimeouttype = "bridge"; }
-					$tmp .= "\n";
-					if ($row['huntgroupcallerannounce'] == "true") {
-						//do nothing
-					}
-					else {
-						$tmp .= "	--timeout\n";
-						$tmp .= "	if session:getVariable(\"originate_disposition\") == \"NO_ANSWER\" then\n";
-						$tmp .= "			session:execute(\"".$huntgrouptimeouttype."\", \"".$huntgrouptimeoutdestination."\");\n";
-						$tmp .= "	end\n";
-					}
+						$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
+						if ($row['huntgrouptimeouttype'] == "extension") { $huntgrouptimeouttype = "bridge"; }
+						if ($row['huntgrouptimeouttype'] == "voicemail") { $huntgrouptimeouttype = "transfer"; $huntgrouptimeoutdestination = "*99".$huntgrouptimeoutdestination; }
+						if ($row['huntgrouptimeouttype'] == "sip uri") { $huntgrouptimeouttype = "bridge"; }
+						$tmp .= "\n";
+						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+							//do nothing
+						}
+						else {
+							$tmp .= "	--timeout\n";
+							if ($row['huntgrouptype'] != 'dnd') {
+								$tmp .= "	originate_disposition = session:getVariable(\"originate_disposition\");\n";
+								$tmp .= "	if originate_disposition == \"NO_ANSWER\" or originate_disposition == \"ALLOTTED_TIMEOUT\" then\n";
+							}
+							$tmp .= "			session:execute(\"".$huntgrouptimeouttype."\", \"".$huntgrouptimeoutdestination."\");\n";
+							if ($row['huntgrouptype'] != 'dnd') {
+								$tmp .= "	end\n";
+							}
+						}
 
-					$tmp .= "\n";
-					$tmp .= "	--clear variables\n";
-					$tmp .= "	dialed_extension = \"\";\n";
-					$tmp .= "	new_extension = \"\";\n";
-					$tmp .= "	domain_name = \"\";\n";
-					$tmp .= "	domain = \"\";";
+					//unset variables
+						$tmp .= "\n";
+						$tmp .= "	--clear variables\n";
+						$tmp .= "	dialed_extension = \"\";\n";
+						$tmp .= "	new_extension = \"\";\n";
+						$tmp .= "	domain_name = \"\";\n";
+						$tmp .= "	domain = \"\";";
 
-					$tmp .= "\n";
-					if ($row['huntgroupcallerannounce'] == "true") {
-						//do nothing
-					}
-					else {
-						$tmp .= "end --end if session:ready\n";
-					}
-					$tmp .= "\n";
+						$tmp .= "\n";
+						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+							//do nothing
+						}
+						else {
+							$tmp .= "end --end if session:ready\n";
+						}
+						$tmp .= "\n";
 
-					if (strlen($row['huntgroupextension']) > 0) {
-						$huntgroupfilename = "huntgroup_".$row['huntgroupextension'].".lua";
-						//echo "location".$v_scripts_dir."/".$huntgroupfilename;
-						$fout = fopen($v_scripts_dir."/".$huntgroupfilename,"w");
-						fwrite($fout, $tmp);
-						unset($huntgroupfilename);
-						fclose($fout);
-					}
-
+					//write the hungroup lua script
+						if (strlen($row['huntgroupextension']) > 0) {
+							if ($row['hunt_group_enabled'] != "false") {
+								$huntgroupfilename = "huntgroup_".$row['huntgroupextension'].".lua";
+								//echo "location".$v_scripts_dir."/".$huntgroupfilename;
+								$fout = fopen($v_scripts_dir."/".$huntgroupfilename,"w");
+								fwrite($fout, $tmp);
+								unset($huntgroupfilename);
+								fclose($fout);
+							}
+						}
 		} //end while
 
 } //end huntgroup function lua
-
-
-function sync_package_v_hunt_group_js()
-{
-
-	//Hunt Group Javascript Notes:
-		//get the domain
-		//loop through all Hunt Groups
-			//get the Hunt Group information such as the name and description
-			//add each Hunt Group to the dialplan
-			//get the list of destinations then build the Hunt Group javascript
-
-	global $config;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
-		$$name = $value;
-	}
-	
-	//get the domain
-		global $db, $v_id, $host;
-		$v_settings_array = v_settings();
-		foreach($v_settings_array as $name => $value) {
-			$$name = $value;
-		}
-
-		//if (pkg_is_service_running('freeswitch')) {
-		//	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		//	$cmd = "api global_getvar domain";
-		//	$domain = trim(event_socket_request($fp, $cmd));
-		//}
-
-		$tmp = "";
-		$tmp .= "\n";
-		$tmp .= " var domain = \"".$domain."\"; //by default this is the ipv4 address of FreeSWITCH used for transfer to voicemail\n";
-		//$tmp .= " var exit = false;\n";
-		$tmp .= "\n";
-		$tmp .= "\n";
-
-	//prepare for hunt group .js files to be written. delete all hunt groups that are prefixed with huntgroup_ and have a file extension of .js
-		$v_prefix = 'huntgroup_';
-		if($dh = opendir($v_scripts_dir)) {
-			$files = Array();
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($dir . "/" . $file)) {
-						//this is a directory
-					} else {
-						if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-3) == '.js') {
-							//echo "file: $file<br />\n";
-							//echo "extension: ".substr($file,-3)."<br />";
-							if ($file != "huntgroup_originate.js") {
-								unlink($v_scripts_dir.'/'.$file);
-							}
-						}
-					}
-				}
-			}
-			closedir($dh);
-		}
-
-	//loop through all Hunt Groups
-		$x = 0;
-
-		$sql = "";
-		$sql .= "select * from v_hunt_group ";
-		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-				//get the Hunt Group information such as the name and description
-					//$row['hunt_group_id']
-					//$row['huntgroupextension']
-					//$row['huntgroupname']
-					//$row['huntgrouptype']
-					//$row['huntgrouptimeout']
-					//$row['huntgroupcontext']
-					//$row['huntgroupringback']
-					//$row['huntgroupcidnameprefix']
-					//$row['huntgrouppin']
-					//$row['huntgroupcallerannounce']
-					//$row['huntgroupdescr']
-
-				//add each Hunt Group to the dialplan
-					if (strlen($row['hunt_group_id']) > 0) {
-						$action = 'add'; //set default action to add
-						$i = 0;
-
-						$sql = "";
-						$sql .= "select * from v_dialplan_includes ";
-						$sql .= "where v_id = '$v_id' ";
-						$sql .= "and opt1name = 'hunt_group_id' ";
-						$sql .= "and opt1value = '".$row['hunt_group_id']."' ";
-
-						$prepstatement2 = $db->prepare($sql);
-						$prepstatement2->execute();
-						while($row2 = $prepstatement2->fetch()) {
-							$action = 'update';
-							$dialplan_include_id = $row2['dialplan_include_id'];
-							break; //limit to 1 row
-						}
-						unset ($sql, $prepstatement2);
-						//echo "sql: ".$sql."<br />";
-
-						if ($action == 'add') {
-							//create huntgroup extension in the dialplan
-								$extensionname = $row['huntgroupname'];
-								$dialplanorder ='9001';
-								$context = $row['huntgroupcontext'];
-								$enabled = 'true';
-								$descr = 'huntgroup';
-								$opt1name = 'hunt_group_id';
-								$opt1value = $row['hunt_group_id'];
-								$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
-
-								$tag = 'condition'; //condition, action, antiaction
-								$fieldtype = 'destination_number';
-								$fielddata = '^'.$row['huntgroupextension'].'$';
-								$fieldorder = '000';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-								$tag = 'action'; //condition, action, antiaction
-								$fieldtype = 'javascript';
-								$fielddata = 'huntgroup_'.$row['huntgroupextension'].'.js';
-								$fieldorder = '001';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-						}
-						if ($action == 'update') {
-							//update the huntgroup
-
-								$extensionname = $row['huntgroupname'];
-								$dialplanorder = '9001';
-								$context = $row['huntgroupcontext'];
-								$enabled = 'true';
-								$descr = 'huntgroup';
-								$hunt_group_id = $row['hunt_group_id'];
-
-								$sql = "";
-								$sql = "update v_dialplan_includes set ";
-								$sql .= "extensionname = '$extensionname', ";
-								$sql .= "dialplanorder = '$dialplanorder', ";
-								$sql .= "context = '$context', ";
-								$sql .= "enabled = '$enabled', ";
-								$sql .= "descr = '$descr' ";
-								$sql .= "where v_id = '$v_id' ";
-								$sql .= "and opt1name = 'hunt_group_id' ";
-								$sql .= "and opt1value = '$hunt_group_id' ";
-								//echo "sql: ".$sql."<br />";
-								//exit;
-								$db->query($sql);
-								unset($sql);
-
-								//update the condition
-								$sql = "";
-								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = '^".$row['huntgroupextension']."$' ";
-								$sql .= "where v_id = '$v_id' ";
-								$sql .= "and tag = 'condition' ";
-								$sql .= "and fieldtype = 'destination_number' ";
-								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-								//echo $sql."<br />";
-								$db->query($sql);
-								unset($sql);
-
-								//update the action
-								$sql = "";
-								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = 'huntgroup_".$row['huntgroupextension'].".js', ";
-								$sql .= "fieldtype = 'javascript' ";
-								$sql .= "where v_id = '$v_id' ";
-								$sql .= "and tag = 'action' ";
-								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-								//echo $sql."<br />";
-								$db->query($sql);
-
-								unset($extensionname);
-								unset($order);
-								unset($context);
-								unset($enabled);
-								unset($descr);
-								unset($opt1name);
-								unset($opt1value);
-
-						}
-						unset($action);
-
-
-						//check whether the fifo queue exists already
-
-							$action = 'add'; //set default action to add
-							$i = 0;
-
-							$sql = "";
-							$sql .= "select * from v_dialplan_includes ";
-							$sql .= "where v_id = '$v_id' ";
-							$sql .= "and opt1name = 'hunt_group_id_fifo' ";
-							$sql .= "and opt1value = '".$row['hunt_group_id']."' ";
-							//echo "sql2: ".$sql."<br />\n";
-							$prepstatement2 = $db->prepare($sql);
-							$prepstatement2->execute();
-							while($row2 = $prepstatement2->fetch()) {
-								$dialplan_include_id = $row2['dialplan_include_id'];
-								$action = 'update';
-								break; //limit to 1 row
-							}
-							unset ($sql, $prepstatement2);
-							//echo "action2: ".$action."<br />\n";
-
-						if ($action == 'add') {
-
-							//create a fifo queue for each huntgroup
-							$extensionname = $row['huntgroupname'].'.park';
-							$dialplanorder ='9999';
-							$context = $row['huntgroupcontext'];
-							$enabled = 'true';
-							$descr = 'fifo '.$row['huntgroupextension'];
-							$opt1name = 'hunt_group_id_fifo';
-							$opt1value = $row['hunt_group_id'];
-							$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
-
-							$tag = 'condition'; //condition, action, antiaction
-							$fieldtype = 'destination_number';
-							$fielddata = '^\*'.$row['huntgroupextension'].'$';
-							$fieldorder = '000';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'set';
-							$fielddata = 'fifo_music=$${hold_music}';
-							$fieldorder = '001';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-							$huntgrouptimeouttype = $row['huntgrouptimeouttype'];
-							$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
-							if ($huntgrouptimeouttype == "voicemail") { $huntgrouptimeoutdestination = '*99'.$huntgrouptimeoutdestination; }
-
-							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'set';
-							$fielddata = 'fifo_orbit_exten='.$huntgrouptimeoutdestination.':'.$row['huntgrouptimeout'];
-							$fieldorder = '002';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'fifo';
-							$fielddata = $row['huntgroupextension'].'@${domain_name} in';
-							$fieldorder = '003';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-						}
-						if ($action == 'update') {
-							//update the huntgroup fifo
-								$extensionname = $row['huntgroupname'].'.park';
-								$dialplanorder = '9002';
-								$context = $row['huntgroupcontext'];
-								$enabled = 'true';
-								$descr = 'fifo '.$row['huntgroupextension'];
-								$hunt_group_id = $row['hunt_group_id'];
-
-								$sql = "";
-								$sql = "update v_dialplan_includes set ";
-								$sql .= "extensionname = '$extensionname', ";
-								$sql .= "dialplanorder = '$dialplanorder', ";
-								$sql .= "context = '$context', ";
-								$sql .= "enabled = '$enabled', ";
-								$sql .= "descr = '$descr' ";
-								$sql .= "where v_id = '$v_id' ";
-								$sql .= "and opt1name = 'hunt_group_id_fifo' ";
-								$sql .= "and opt1value = '$hunt_group_id' ";
-								//echo "sql: ".$sql."<br />";
-								//exit;
-								$db->query($sql);
-								unset($sql);
-
-								$sql = "";
-								$sql = "delete from v_dialplan_includes_details ";
-								$sql .= "where v_id = '$v_id' ";
-								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-								$db->query($sql);
-								unset($sql);
-
-								$tag = 'condition'; //condition, action, antiaction
-								$fieldtype = 'destination_number';
-								$fielddata = '^\*'.$row['huntgroupextension'].'$';
-								$fieldorder = '000';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-								$tag = 'action'; //condition, action, antiaction
-								$fieldtype = 'set';
-								$fielddata = 'fifo_music=$${hold_music}';
-								$fieldorder = '001';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-								$huntgrouptimeouttype = $row['huntgrouptimeouttype'];
-								$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
-								if ($huntgrouptimeouttype == "voicemail") { $huntgrouptimeoutdestination = '*99'.$huntgrouptimeoutdestination; }
-
-								$tag = 'action'; //condition, action, antiaction
-								$fieldtype = 'set';
-								$fielddata = 'fifo_orbit_exten='.$huntgrouptimeoutdestination.':'.$row['huntgrouptimeout'];
-								$fieldorder = '002';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-								$tag = 'action'; //condition, action, antiaction
-								$fieldtype = 'fifo';
-								$fielddata = $row['huntgroupextension'].'@${domain_name} in';
-								$fieldorder = '003';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-						}
-
-						sync_package_v_dialplan_includes();
-						unset($dialplanincludeid);
-					} //end if strlen hunt_group_id; add the Hunt Group to the dialplan
-
-
-				//Get the list of destinations then build the Hunt Group javascript
-					$tmp = "";
-					$tmp .= "\n";
-					$tmp .= "session.answer();\n";
-					$tmp .= "var domain_name = session.getVariable(\"domain_name\");\n";
-					$tmp .= "var extension = '".$row['huntgroupextension']."';\n";
-					$tmp .= "var result;\n";
-					$tmp .= "var timeoutpin = 7500;\n";
-					$tmp .= "\n";
-					$tmp .= "var objdate = new Date();\n";
-					$tmp .= "var adjusthours = 0; //Adjust Server time that is set to GMT 7 hours\n";
-					$tmp .= "var adjustoperator = \"-\"; //+ or -\n";
-					$tmp .= "if (adjustoperator == \"-\") {\n";
-					$tmp .= "var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() - adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
-					$tmp .= "}\n";
-					$tmp .= "if (adjustoperator == \"+\") {\n";
-					$tmp .= "var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() + adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
-					$tmp .= "}\n";
-					$tmp .= "var Hours = objdate2.getHours();\n";
-					$tmp .= "var Mins = objdate2.getMinutes();\n";
-					$tmp .= "var Seconds = objdate2.getSeconds();\n";
-					$tmp .= "var Month = objdate2.getMonth() + 1;\n";
-					$tmp .= "var Date = objdate2.getDate();\n";
-					$tmp .= "var Year = objdate2.getYear()\n";
-					$tmp .= "var Day = objdate2.getDay()+1;\n";
-					$tmp .= "var exit = false;\n";
-					$tmp .= "\n";
-
-					$tmp .= " function get_sofia_contact(extension,domain_name, profile){\n";
-					$tmp .= "	if (profile == \"auto\") {\n";
-					$i = 0;
-					foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
-						$sip_profile_name = str_replace(".xml", "", $sip_profile_file);
-						if ($i == 0) {
-						  $tmp .= "			profile = \"".$sip_profile_name."\";\n";
-						  $tmp .= "			session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
-						  $tmp .= "			sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
-						}
-						else {
-						  $tmp .= "\n";
-						  $tmp .= "			if (sofia_contact == \"error/user_not_registered\") {\n";
-						  $tmp .= "				profile = \"".$sip_profile_name."\";\n";
-						  $tmp .= "				session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
-						  $tmp .= "				sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
-						  $tmp .= "			}\n";
-						}
-						$i++;
-					}
-					unset ($i);
-					$tmp .= "	}\n";
-					$tmp .= "	else {\n";
-					$tmp .= "		session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
-					$tmp .= "		sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
-					$tmp .= "	}\n";
-					$tmp .= "	console_log( \"info\", \"sofia_contact \"+profile+\": \"+sofia_contact+\".\\n\" );\n";
-					$tmp .= "	return sofia_contact;\n";
-					$tmp .= " }\n";
-					$tmp .= "\n";
-
-					$tmp .= "\n";
-					$tmp .= " function mycb( session, type, obj, arg ) {\n";
-					$tmp .= "    try {\n";
-					$tmp .= "        if ( type == \"dtmf\" ) {\n";
-					$tmp .= "          console_log( \"info\", \"digit: \"+obj.digit+\"\\n\" );\n";
-					$tmp .= "          if ( obj.digit == \"#\" ) {\n";
-					$tmp .= "            //console_log( \"info\", \"detected pound sign.\\n\" );\n";
-					$tmp .= "            exit = true;\n";
-					$tmp .= "            return( false );\n";
-					$tmp .= "          }\n";
-					$tmp .= "\n";
-					$tmp .= "          dtmf.digits += obj.digit;\n";
-					$tmp .= "\n";
-					$tmp .= "          if ( dtmf.digits.length >= digitmaxlength ) {\n";
-					$tmp .= "            exit = true;\n";
-					$tmp .= "            return( false );\n";
-					$tmp .= "          }\n";
-					$tmp .= "        }\n";
-					$tmp .= "    } catch (e) {\n";
-					$tmp .= "        console_log( \"err\", e+\"\\n\" );\n";
-					$tmp .= "    }\n";
-					$tmp .= "    return( true );\n";
-					$tmp .= " } //end function mycb\n";
-					$tmp .= "\n";
-
-					$tmp .= "\n";
-					$tmp .= "dialed_extension = session.getVariable(\"dialed_extension\");\n";
-					$tmp .= "domain_name = session.getVariable(\"domain_name\");\n";
-					$tmp .= "domain = session.getVariable(\"domain\");\n";
-					$tmp .= "caller_id_name = session.getVariable(\"caller_id_name\");\n";
-					$tmp .= "caller_id_number = session.getVariable(\"caller_id_number\");\n";
-					$tmp .= "effective_caller_id_name = session.getVariable(\"effective_caller_id_name\");\n";
-					$tmp .= "effective_caller_id_number = session.getVariable(\"effective_caller_id_number\");\n";
-					$tmp .= "outbound_caller_id_name = session.getVariable(\"outbound_caller_id_name\");\n";
-					$tmp .= "outbound_caller_id_number = session.getVariable(\"outbound_caller_id_number\");\n";
-
-
-					//pin number requested from caller if provided
-						if (strlen($row['huntgrouppin']) > 0) {
-							$tmp .= "var pin = '".$row['huntgrouppin']."';\n";
-							$tmp .= "if (pin.length > 0) {\n";
-							$tmp .= "  var dtmf = new Object();\n";
-							$tmp .= "  dtmf.digits = \"\";\n";
-							$tmp .= "  digitmaxlength = 6;\n";
-							$tmp .= "  session.execute(\"set\", \"playback_terminators=#\");\n";
-							$tmp .= "  session.streamFile( \"".$v_sounds_dir."/custom/please_enter_the_pin_number.wav\", mycb, \"dtmf\");\n";
-							$tmp .= "  session.collectInput( mycb, dtmf, timeoutpin );\n";
-							$tmp .= "\n";
-							$tmp .= "  if (dtmf.digits == pin || pin.length == 0) {\n";
-							$tmp .= "    //continue\n";
-							$tmp .= "  }\n";
-							$tmp .= "  else {\n";
-							$tmp .= "    console_log( \"info\", \"Pin: \" + dtmf.digits + \" is incorrect\\n\" );\n";
-							$tmp .= "    session.streamFile( \"".$v_sounds_dir."/custom/your_pin_number_is_incorect_goodbye.wav\", mycb, \"dtmf\");\n";
-							$tmp .= "    session.hangup();\n";
-							$tmp .= "  }\n";
-							$tmp .= "}\n";
-							$tmp .= "\n";
-						}
-
-					//caller announce requested from caller if provided
-						if ($row['huntgroupcallerannounce'] == "true") {
-							$tmp .= "function originate(session, sipuri, extension, caller_announce, caller_id_name, caller_id_number) {\n";
-							$tmp .= "	caller_id_name = caller_id_name.replace(\" \", \"+\");\n";
-							$tmp .= "	apiExecute(\"jsrun\", \"huntgroup_originate.js \"+session.uuid+\" \"+sipuri+\" \"+extension+\" \"+caller_announce+\" \"+caller_id_name+\" \"+caller_id_number);\n";
-							$tmp .= "}";
-							$tmp .=	"\n";
-							$tmp .=	"var caller_announce = extension+\"_\"+Year+Month+Day+Hours+Mins+Seconds+\".wav\";\n";
-							$tmp .=	"session.streamFile( \"".$v_sounds_dir."/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
-							$tmp .=	"session.execute(\"gentones\", \"%(1000, 0, 640)\");\n";
-							$tmp .=	"session.execute(\"set\", \"playback_terminators=#\");\n";
-							$tmp .=	"session.execute(\"record\", \"".$tmp_dir."/\"+caller_announce+\" 180 200\");\n";
-							$tmp .=	"\n";
-							$tmp .=	"result = session.setAutoHangup(false);\n";
-							$tmp .=	"session.execute(\"transfer\", \"*\"+extension+\" XML default\");\n";
-							$tmp .= "\n";
-						}
-
-					//set caller id prefix
-						if (strlen($row['huntgroupcidnameprefix'])> 0) {
-							$tmp .= "session.execute(\"set\", \"caller_id_name=".$row['huntgroupcidnameprefix']."\"+caller_id_name);\n";
-							$tmp .= "session.execute(\"set\", \"effective_caller_id_name=".$row['huntgroupcidnameprefix']."\"+effective_caller_id_name);\n";
-							$tmp .= "session.execute(\"set\", \"outbound_caller_id_name=".$row['huntgroupcidnameprefix']."\"+outbound_caller_id_name);\n";
-						}
-
-					//set ring back
-						if (isset($row['huntgroupringback'])){
-							if ($row['huntgroupringback'] == "ring"){
-								$tmp .= "session.execute(\"set\", \"ringback=ringback=\$\${us-ring}\"); //set to ringtone\n";
-								$tmp .= "session.execute(\"set\", \"transfer_ringback=\$\${us-ring}\"); //set to ringtone\n";
-							}
-							if ($row['huntgroupringback'] == "us-ring"){
-								$tmp .= "session.execute(\"set\", \"ringback=ringback=\$\${us-ring}\"); //set to ringtone\n";
-								$tmp .= "session.execute(\"set\", \"transfer_ringback=\$\${us-ring}\"); //set to ringtone\n";
-							}
-							if ($row['huntgroupringback'] == "uk-ring"){
-								$tmp .= "session.execute(\"set\", \"ringback=ringback=\$\${uk-ring}\"); //set to ringtone\n";
-								$tmp .= "session.execute(\"set\", \"transfer_ringback=\$\${uk-ring}\"); //set to ringtone\n";
-							}
-							if ($row['huntgroupringback'] == "music"){
-								$tmp .= "session.execute(\"set\", \"ringback=\${hold_music}\");          //set to music\n";
-								$tmp .= "session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to music\n";
-							}
-						}
-						else {
-							$tmp .= "session.execute(\"set\", \"ringback=\${hold_music}\");          //set to ringtone\n";
-							$tmp .= "session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to ringtone\n";
-						}
-
-					if ($row['huntgrouptimeout'] > 0) {
-						$tmp .= "session.execute(\"set\", \"call_timeout=".$row['huntgrouptimeout']."\");\n";
-						$tmp .= "session.execute(\"set\", \"continue_on_fail=true\");\n";
-						$tmp .= "session.execute(\"set\", \"ignore_early_media=true\");\n";
-					}
-					$tmp .= "session.execute(\"set\", \"hangup_after_bridge=true\");\n";
-					$tmp .= "\n";
-					$tmp .= "//console_log( \"info\", \"dialed extension:\"+dialed_extension+\".\\n\" );\n";
-					$tmp .= "//console_log( \"info\", \"domain: \"+domain+\".\\n\" );\n";
-					$tmp .= "//console_log( \"info\", \"us_ring: \"+us_ring+\".\\n\" );\n";
-					$tmp .= "//console_log( \"info\", \"domain: \"+domain+\".\\n\" );\n";
-					$tmp .= "//console_log( \"info\", \"domain_name: \"+domain_name+\".\\n\" );\n";
-					$tmp .= "\n";
-					
-					$tmp .= "//console_log( \"info\", \"action call now don't wait for dtmf\\n\" );\n";
-					if ($row['huntgroupcallerannounce'] == "true") {
-						//do nothing
-					}
-					else {
-						$tmp .= "if ( session.ready() ) {\n";
-						$tmp .= "	session.answer();\n";
-					}
-					$tmp .= "\n";
-
-					$i = 0;
-					$sql = "";
-					$sql .= "select * from v_hunt_group_destinations ";
-					$sql .= "where hunt_group_id = '".$row['hunt_group_id']."' ";
-					$sql .= "and v_id = '$v_id' ";
-					$sql .= "order by destinationorder asc ";
-					//echo $sql;
-					$prepstatement2 = $db->prepare($sql);
-					$prepstatement2->execute();
-					while($ent = $prepstatement2->fetch()) {
-
-						/*
-						$ent['hunt_group_id']
-						$ent['destinationdata']
-						$ent['destinationtype']
-						$ent['destinationprofile']
-						$ent['destinationorder']
-						$ent['destinationdescr']
-						*/
-
-						//set the default profile
-						if (strlen($ent['destinationdata']) == 0) { $ent['destinationdata'] = "internal"; }
-
-						if ($ent['destinationtype'] == "extension") {
-							$tmp .= "	sofia_contact_".$ent['destinationdata']." = get_sofia_contact(\"".$ent['destinationdata']."\",domain_name, \"".$ent['destinationprofile']."\");\n";
-							$tmp_sub_array["application"] = "bridge";
-							$tmp_sub_array["data"] = "sofia_contact_".$ent['destinationdata'];
-							$tmp_array[$i] = $tmp_sub_array;
-							unset($tmp_sub_array);
-						}
-						if ($ent['destinationtype'] == "voicemail") {
-							$tmp_sub_array["application"] = "voicemail";
-							$tmp .= "	session.execute(\"voicemail\", \"default \${domain} ".$ent['destinationdata']."\");\n";
-							//$tmp_sub_array["application"] = "voicemail";
-							//$tmp_sub_array["data"] = "default \${domain} ".$ent['destinationdata'];
-							//$tmp_array[$i] = $tmp_sub_array;
-							unset($tmp_sub_array);
-						}
-						if ($ent['destinationtype'] == "sip uri") {
-							$tmp_sub_array["application"] = "bridge";
-							$tmp_sub_array["data"] = "\"".$ent['destinationdata']."\"";
-							$tmp_array[$i] = $tmp_sub_array;
-							unset($tmp_sub_array);
-						}
-						$i++;
-
-					} //end while
-					unset ($sql, $prepstatement2);
-					unset($i, $ent);
-
-
-					$i = 0;
-					if(count($tmp_array) > 0) {
-						foreach ($tmp_array as $ent) {
-							$tmpdata = $ent["data"];
-							if ($ent["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
-							if ($i < 1) {
-								$tmp_buffer = $tmpdata;
-							}
-							else {
-								$tmp_buffer .= "+\",\"+".$tmpdata;
-							}
-							$i++;
-						}
-					}
-					unset($i);
-					$delimiter = ",";
-					$tmp_application = $tmp_array[0]["application"];
-
-					switch ($row['huntgrouptype']) {
-					case "simultaneous":
-						//print_r($tmp_array);
-						if ($row['huntgroupcallerannounce'] == "true") {
-							$i = 0;
-							if (count($tmp_array) > 0) {
-								foreach ($tmp_array as $ent) {
-									$tmpdata = $ent["data"];
-									if ($ent["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
-									$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_announce, caller_id_name, caller_id_number);\n";
-								}
-							}
-						}
-						else {
-							$tmp .= "\n";
-							$tmp .= "	session.execute(\"".$tmp_application."\", $tmp_buffer);\n";
-							//$tmp .= "	session.execute(\"bridge\", sofia_contact_100+\",\"+sofia_contact_101+\",\"+sofia_contact_102+\",\"+sofia_contact_103+\",\"+sofia_contact_104);\n";
-							//$tmp .= "	//session.execute(\"bridge\", \"sofia/gateway/flowroute.com/12081231234,\"+sofia_contact_101);\n";
-						}
-						unset($tmp_array);
-						break;
-					case "sequentially":
-
-						$tmp .= "\n";
-						//print_r($tmp_array);
-						$i = 0;
-						if (count($tmp_array) > 0) {
-							if ($row['huntgroupcallerannounce'] == "true") {
-								$i = 0;
-								if (count($tmp_array) > 0) {
-									//foreach ($tmp_array as $tmp_row) {
-										//$tmpdata = $tmp_row["data"];
-										//if ($tmp_row["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
-										$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_announce, caller_id_name, caller_id_number);\n";
-									//}
-								}
-							}
-							else {
-								foreach ($tmp_array as $tmp_row) {
-									$tmp .= "	session.execute(\"".$tmp_row["application"]."\", ".$tmp_row["data"].");\n";
-								}
-							}
-							unset($tmp_array, $tmp_row);
-						}
-
-						break;
-					}
-
-					//set the timeout destination
-					$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
-					if ($row['huntgrouptimeouttype'] == "extension") { $huntgrouptimeouttype = "bridge"; }
-					if ($row['huntgrouptimeouttype'] == "voicemail") { $huntgrouptimeouttype = "transfer"; $huntgrouptimeoutdestination = "*99".$huntgrouptimeoutdestination; }
-					if ($row['huntgrouptimeouttype'] == "sip uri") { $huntgrouptimeouttype = "bridge"; }
-					$tmp .= "\n";
-					if ($row['huntgroupcallerannounce'] == "true") {
-						//do nothing
-					}
-					else {
-						$tmp .= "	//timeout\n";
-						$tmp .= "	if (session.getVariable(\"originate_disposition\")!=\"SUCCESS\" && session.getVariable(\"originate_disposition\")!=\"ORIGINATOR_CANCEL\"){\n";
-						$tmp .= "		session.execute(\"info\", \"\");\n";
-						$tmp .= "		session.execute(\"".$huntgrouptimeouttype."\", \"".$huntgrouptimeoutdestination."\");\n";
-						$tmp .= "	}\n";
-					}
-
-					$tmp .= "\n";
-					$tmp .= "	//clear variables\n";
-					$tmp .= "	dialed_extension = \"\";\n";
-					$tmp .= "	new_extension = \"\";\n";
-					$tmp .= "	domain_name = \"\";\n";
-					$tmp .= "	domain = \"\";";
-
-					$tmp .= "\n";
-					if ($row['huntgroupcallerannounce'] == "true") {
-						//do nothing
-					}
-					else {
-						$tmp .= "} //end if session.ready\n";
-					}
-					$tmp .= "\n";
-
-					if (strlen($row['huntgroupextension']) > 0) {
-						$huntgroupfilename = "huntgroup_".$row['huntgroupextension'].".js";
-						//echo "location".$v_scripts_dir."/".$huntgroupfilename;
-						$fout = fopen($v_scripts_dir."/".$huntgroupfilename,"w");
-						fwrite($fout, $tmp);
-						unset($huntgroupfilename);
-						fclose($fout);
-					}
-
-		} //end while
-
-} //end huntgroup function js
 
 
 function sync_package_v_fax()
@@ -3537,7 +3010,7 @@ function sync_package_v_fax()
 
 					//create auto attendant extension in the dialplan
 					$extensionname = $row['faxname'];
-					$dialplanorder ='9001';
+					$dialplanorder ='999';
 					$context = "default";
 					$enabled = 'true';
 					$descr = 'fax';
@@ -3762,7 +3235,7 @@ function sync_package_v_auto_attendant()
 
 			//create auto attendant extension in the dialplan
 				$extensionname = $row['aaextension'];
-				$dialplanorder ='9001';
+				$dialplanorder ='999';
 				$context = $row['aacontext'];
 				$enabled = 'true';
 				$descr = 'auto attendant';
@@ -3786,7 +3259,7 @@ function sync_package_v_auto_attendant()
 		if ($action == 'update') {
 
 				$extensionname = $row['aaextension'];
-				$dialplanorder = '9001';
+				$dialplanorder = '999';
 				$context = $row['aacontext'];
 				$enabled = 'true';
 				$descr = 'auto attendant';
@@ -5445,7 +4918,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 						if ($action == 'add') {
 							//create IVR Menu extension in the dialplan
 								$extensionname = $ivr_menu_name;
-								$dialplanorder ='9001';
+								$dialplanorder ='999';
 								//$context = $row['ivr_menu_context'];
 								$context = 'default';
 								$enabled = 'true';
@@ -5482,7 +4955,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 							//update the IVR menu
 
 								$extensionname = $ivr_menu_name;
-								$dialplanorder = '9001';
+								$dialplanorder = '999';
 								//$context = $row['ivr_menu_context'];
 								$context = 'default';
 								$enabled = 'true';
