@@ -347,8 +347,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$action_data = "sofia/gateway/".$gateway."/\$1";
 					$label = $dialplan_expression;
 					$abbrv = filename_safe($dialplan_expression);
-					//echo "abbrv: $abbrv<br />\n";
-					//exit;
 				}
 
 				$extensionname = $gateway.".".$abbrv;
