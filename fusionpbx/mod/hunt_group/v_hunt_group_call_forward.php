@@ -73,13 +73,18 @@ $c = 0;
 $rowstyle["0"] = "rowstyle0";
 $rowstyle["1"] = "rowstyle1";
 
-echo "<div align='center'>\n";
-echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-echo "<tr>\n";
-echo thorderby('huntgroupextension', 'Hunt Group Extension', $orderby, $order);
-echo "<th>Tools</th>\n";
-echo thorderby('huntgroupdescr', 'Description', $orderby, $order);
-echo "<tr>\n";
+if ($is_included == "true" && $result_count == 0) {
+	//hide this when there is no result
+}
+else {
+	echo "<div align='center'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<tr>\n";
+	echo thorderby('huntgroupextension', 'Hunt Group Extension', $orderby, $order);
+	echo "<th>Tools</th>\n";
+	echo thorderby('huntgroupdescr', 'Description', $orderby, $order);
+	echo "<tr>\n";
+}
 
 if ($result_count == 0) { //no results
 }
@@ -95,14 +100,20 @@ else { //received results
 		if ($c==0) { $c=1; } else { $c=0; }
 	} //end foreach
 	unset($sql, $result, $rowcount);
+
 } //end if results
 
-echo "</table>";
-echo "</div>";
+if ($is_included == "true" && $result_count == 0) {
+	//hide this when there is no result
+}
+else {
+	echo "</table>";
+	echo "</div>";
 
-echo "<br>";
-echo "<br>";
-echo "<br>";
+	echo "<br>";
+	echo "<br>";
+	echo "<br>";
+}
 
 if ($is_included != "true") {
 	require_once "includes/footer.php";
