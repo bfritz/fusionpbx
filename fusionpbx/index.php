@@ -76,6 +76,10 @@ echo "<br />";
 	$is_included = "true";
 	require_once "mod/calls/v_calls.php";
 
+//call forward, follow me and dnd
+	$is_included = "true";
+	require_once "mod/hunt_group/v_hunt_group_call_forward.php";
+
 //system information
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "<tr>\n";
