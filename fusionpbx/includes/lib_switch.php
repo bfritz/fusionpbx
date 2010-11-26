@@ -4419,12 +4419,12 @@ function sync_package_v_dialplan_includes()
 		$result2 = $prepstatement2->fetchAll();
 		$resultcount2 = count($result2);
 		unset ($prepstatement2, $sql);
-		if ($resultcount2 == 0) { //no results
+		if ($resultcount2 == 0) {
+			//no results
 		}
 		else { //received results
 			$i = 0;
 			foreach($result2 as $ent) {
-				//print_r( $row );
 				if ($ent['tag'] == "anti-action" && $row['dialplanincludeid'] == $ent['dialplanincludeid']) {
 					if (strlen($ent['fielddata']) > 0) {
 						$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
@@ -4447,12 +4447,18 @@ function sync_package_v_dialplan_includes()
 		$tmp .= "</extension>\n";
 
 		if ($row['enabled'] == "true") {
-			$dialplanincludefilename = $row['dialplanorder']."_v_dialplan_".$row['extensionname'].".xml";
-			$fout = fopen($v_dialplan_default_dir."/".$dialplanincludefilename,"w");
+			$dialplan_order = $row['dialplanorder'];
+			if (strlen($dialplan_order) == 0) { $dialplan_order = "000".$dialplan_order; }
+			if (strlen($dialplan_order) == 1) { $dialplan_order = "00".$dialplan_order; }
+			if (strlen($dialplan_order) == 2) { $dialplan_order = "0".$dialplan_order; }
+			if (strlen($dialplan_order) == 4) { $dialplan_order = "999"; }
+			if (strlen($dialplan_order) == 5) { $dialplan_order = "999"; }
+			$dialplan_include_filename = $dialplan_order."_v_dialplan_".$row['extensionname'].".xml";
+			$fout = fopen($v_dialplan_default_dir."/".$dialplan_include_filename,"w");
 			fwrite($fout, $tmp);
 			fclose($fout);
 		}
-		unset($dialplanincludefilename);
+		unset($dialplan_include_filename);
 		unset($tmp);
 
 	} //end while
@@ -4519,11 +4525,11 @@ function sync_package_v_public_includes()
 		$resultcount2 = count($result2);
 		unset ($prepstatement2, $sql);
 		$i=1;
-		if ($resultcount2 == 0) { //no results
+		if ($resultcount2 == 0) {
+			//no results
 		}
 		else { //received results
 			foreach($result2 as $ent) {
-				//print_r( $row );
 				if ($resultcount2 == 1) { //single condition
 					//start tag
 					$tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
@@ -4615,12 +4621,18 @@ function sync_package_v_public_includes()
 
 
 		if ($row['enabled'] == "true") {
-			$publicincludefilename = $row['publicorder']."_v_public_".$row['extensionname'].".xml";
-			$fout = fopen($v_dialplan_public_dir."/".$publicincludefilename,"w");
+			$public_order = $row['publicorder'];
+			if (strlen($public_order) == 0) { $public_order = "000".$public_order; }
+			if (strlen($public_order) == 1) { $public_order = "00".$public_order; }
+			if (strlen($public_order) == 2) { $public_order = "0".$public_order; }
+			if (strlen($public_order) == 4) { $public_order = "999"; }
+			if (strlen($public_order) == 5) { $public_order = "999"; }
+			$public_include_filename = $public_order."_v_public_".$row['extensionname'].".xml";
+			$fout = fopen($v_dialplan_public_dir."/".$public_include_filename,"w");
 			fwrite($fout, $tmp);
 			fclose($fout);
 		}
-		unset($publicincludefilename);
+		unset($public_include_filename);
 		unset($tmp);
 	
 	} //end while
