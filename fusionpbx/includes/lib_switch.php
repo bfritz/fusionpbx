@@ -631,6 +631,94 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 	echo "		<option></option>\n";
 
+	//list call center queues
+		$sql = "";
+		$sql .= "select * from v_call_center_queue ";
+		$sql .= "where v_id = $v_id ";
+		$sql .= "order by queue_name asc ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='Call Center'>\n";
+		}
+		$previous_call_center_name = "";
+		foreach ($result as &$row) {
+			$queue_name = $row["queue_name"];
+			$queue_name = str_replace('_${domain_name}@default', '', $queue_name);
+			$queue_extension = $row["queue_extension"];
+			if ($previous_call_center_name != $queue_name) {
+				if ("menu-exec-app:transfer ".$queue_extension." XML default" == $select_value || "transfer:".$queue_extension." XML default" == $select_value) {
+					if ($select_type == "ivr") {
+						echo "		<option value='menu-exec-app:transfer ".$queue_extension." XML default' selected='selected'>".$queue_extension." ".$queue_name."</option>\n";
+					}
+					if ($select_type == "dialplan") {
+						echo "		<option value='transfer:".$queue_extension." XML default' selected='selected'>".$queue_extension." ".$queue_name."</option>\n";
+					}
+					$selection_found = true;
+				}
+				else {
+					if ($select_type == "ivr") {
+						echo "		<option value='menu-exec-app:transfer ".$queue_extension." XML default'>".$queue_extension." ".$queue_name."</option>\n";
+					}
+					if ($select_type == "dialplan") {
+						echo "		<option value='transfer:".$queue_extension." XML default'>".$queue_extension." ".$queue_name."</option>\n";
+					}
+				}
+				$previous_call_center_name = $queue_name;
+			}
+		}
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
+		unset ($prepstatement);
+
+	//list conferences
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "where v_id = $v_id ";
+		$sql .= "order by fielddata asc ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$x = 0;
+		$result = $prepstatement->fetchAll();
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='Conferences'>\n";
+		}
+		$previous_conference_name = "";
+		foreach ($result as &$row) {
+			//$tag = $row["tag"];
+			if ($row["fieldtype"] == "conference") {
+				$conference_name = $row["fielddata"];
+				$conference_name = str_replace('_${domain_name}@default', '', $conference_name);
+				if ($previous_conference_name != $conference_name) {
+					if ("menu-exec-app:conference ".$row["fielddata"] == $select_value || "conference:default ".$row["fielddata"] == $select_value) {
+						if ($select_type == "ivr") {
+							echo "		<option value='menu-exec-app:conference ".$row["fielddata"]."' selected='selected'>".$conference_name."</option>\n";
+						}
+						if ($select_type == "dialplan") {
+							echo "		<option value='conference:".$row["fielddata"]."' selected='selected'>".$conference_name."</option>\n";
+						}
+						$selection_found = true;
+					}
+					else {
+						if ($select_type == "ivr") {
+							echo "		<option value='menu-exec-app:conference ".$row["fielddata"]."'>".$conference_name."</option>\n";
+						}
+						if ($select_type == "dialplan") {
+							echo "		<option value='conference:".$row["fielddata"]."'>".$conference_name."</option>\n";
+						}
+					}
+					$previous_conference_name = $conference_name;
+				}
+				$x++;
+			}
+		}
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
+		unset ($prepstatement);
+
 	//list extensions
 		$sql = "";
 		$sql .= "select * from v_extensions ";
@@ -675,52 +763,6 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			echo "</optgroup>\n";
 		}
 		unset ($prepstatement, $extension);
-
-	//list conferences
-		$sql = "";
-		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
-		$sql .= "order by fielddata asc ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$x = 0;
-		$result = $prepstatement->fetchAll();
-		if ($select_type == "dialplan" || $select_type == "ivr") {
-			echo "<optgroup label='Conferences'>\n";
-		}
-		$previous_conference_name = "";
-		foreach ($result as &$row) {
-			//$tag = $row["tag"];
-			if ($row["fieldtype"] == "conference") {
-				$conference_name = $row["fielddata"];
-				$conference_name = str_replace('_${domain_name}@default', '', $conference_name);
-				if ($previous_conference_name != $conference_name) {
-					if ("voicemail default \${domain} $extension" == $select_value || "voicemail:default \${domain} $extension" == $select_value) {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:conference ".$row["fielddata"]."' selected='selected'>".$conference_name."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='conference:".$row["fielddata"]."' selected='selected'>".$conference_name."</option>\n";
-						}
-						$selection_found = true;
-					}
-					else {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:conference  ".$row["fielddata"]."'>".$conference_name."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='conference:".$row["fielddata"]."'>".$conference_name."</option>\n";
-						}
-					}
-					$previous_conference_name = $conference_name;
-				}
-				$x++;
-			}
-		}
-		if ($select_type == "dialplan" || $select_type == "ivr") {
-			echo "</optgroup>\n";
-		}
-		unset ($prepstatement);
 
 	//list fax extensions
 		if ($select_type == "dialplan" || $select_type == "ivr") {
@@ -857,6 +899,11 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
 		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and ( ";
+		$sql .= "huntgrouptype = 'simultaneous' ";
+		$sql .= "or huntgrouptype = 'sequence' ";
+		$sql .= "or huntgrouptype = 'sequentially' ";
+		$sql .= ") ";
 		$sql .= "order by huntgroupextension asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -867,21 +914,22 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		foreach ($result as &$row) {
 			//$v_id = $row["v_id"];
 			$extension = $row["huntgroupextension"];
+			$huntgroupname = $row["huntgroupname"];
 			if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension." ".$huntgroupname."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension."</option>\n";
+					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension." ".$huntgroupname."</option>\n";
 				}
 				$selection_found = true;
 			}
 			else {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension." ".$huntgroupname."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default'>".$extension."</option>\n";
+					echo "		<option value='transfer:$extension XML default'>".$extension." ".$huntgroupname."</option>\n";
 				}
 			}
 		}
