@@ -2256,6 +2256,16 @@ function sync_package_v_external()
 function outbound_route_to_bridge ($destination_number) {
 	global $v_id, $db;
 
+	$destination_number = trim($destination_number);
+	if (is_numeric($destination_number)) {
+		//not found, continue to process the function
+	}
+	else {
+		//not a number, brige_array and exit the function
+		$bridge_array[0] = $destination_number;
+		return $bridge_array;
+	}
+
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes ";
 	$sql .= "where v_id = $v_id ";
