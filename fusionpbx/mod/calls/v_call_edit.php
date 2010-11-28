@@ -880,18 +880,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<strong>Call Forward:</strong>\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
+	$on_click = "document.getElementById('follow_me_enabled').checked=true;";
+	$on_click .= "document.getElementById('follow_me_disabled').checked=true;";
+	$on_click .= "document.getElementById('dnd_enabled').checked=false;";
+	$on_click .= "document.getElementById('dnd_disabled').checked=true;";
 	if ($call_forward_enabled == "true") {
-		echo "	<input type='radio' name='call_forward_enabled' value='true' checked='checked'/> Enabled \n";
+		echo "	<input type='radio' name='call_forward_enabled' id='call_forward_enabled' onclick=\"$on_click\" value='true' checked='checked'/> Enabled \n";
 	}
 	else {
-		echo "	<input type='radio' name='call_forward_enabled' value='true' /> Enable \n";
+		echo "	<input type='radio' name='call_forward_enabled' id='call_forward_enabled' onclick=\"$on_click\" value='true' /> Enable \n";
 	}
 	if ($call_forward_enabled == "false" || $call_forward_enabled == "") {
-		echo "	<input type='radio' name='call_forward_enabled' value='false' checked='checked' /> Disabled \n";
+		echo "	<input type='radio' name='call_forward_enabled' id='call_forward_disabled' onclick=\"\" value='false' checked='checked' /> Disabled \n";
 	}
 	else {
-		echo "	<input type='radio' name='call_forward_enabled' value='false' /> Disable \n";
+		echo "	<input type='radio' name='call_forward_enabled' id='call_forward_disabled' onclick=\"\" value='false' /> Disable \n";
 	}
+	unset($on_click);
 	echo "<br />\n";
 	echo "<br />\n";
 	//echo "Enable or disable call forward.\n";
@@ -920,18 +925,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<strong>Follow Me:</strong>\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
+	$on_click = "document.getElementById('call_forward_enabled').checked=true;";
+	$on_click .= "document.getElementById('call_forward_disabled').checked=true;";
+	$on_click .= "document.getElementById('dnd_enabled').checked=false;";
+	$on_click .= "document.getElementById('dnd_disabled').checked=true;";
 	if ($follow_me_enabled == "true") {
-		echo "	<input type='radio' name='follow_me_enabled' value='true' checked='checked'/> Enabled \n";
+		echo "	<input type='radio' name='follow_me_enabled' id='follow_me_enabled' value='true' onclick=\"$on_click\" checked='checked'/> Enabled \n";
 	}
 	else {
-		echo "	<input type='radio' name='follow_me_enabled' value='true' /> Enable \n";
+		echo "	<input type='radio' name='follow_me_enabled' id='follow_me_enabled' value='true' onclick=\"$on_click\" /> Enable \n";
 	}
 	if ($follow_me_enabled == "false" || $follow_me_enabled == "") {
-		echo "	<input type='radio' name='follow_me_enabled' value='false' checked='checked' /> Disabled \n";
+		echo "	<input type='radio' name='follow_me_enabled' id='follow_me_disabled' value='false' onclick=\"\" checked='checked' /> Disabled \n";
 	}
 	else {
-		echo "	<input type='radio' name='follow_me_enabled' value='false' /> Disable \n";
+		echo "	<input type='radio' name='follow_me_enabled' id='follow_me_disabled' value='false' onclick=\"\" /> Disable \n";
 	}
+	unset($on_click);
 	echo "<br />\n";
 	echo "<br />\n";
 	echo "</td>\n";
@@ -1063,18 +1073,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<strong>Do Not Disturb:</strong>\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-
+	$on_click = "document.getElementById('call_forward_enabled').checked=true;";
+	$on_click .= "document.getElementById('call_forward_disabled').checked=true;";
+	$on_click .= "document.getElementById('follow_me_enabled').checked=true;";
+	$on_click .= "document.getElementById('follow_me_disabled').checked=true;";
 	if ($dnd_enabled == "true") {
-		echo "	<input type='radio' name='dnd_enabled' value='true' checked='checked'/> Enabled \n";
+		echo "	<input type='radio' name='dnd_enabled' id='dnd_enabled' value='true' onclick=\"$on_click\" checked='checked'/> Enabled \n";
 	}
 	else {
-		echo "	<input type='radio' name='dnd_enabled' value='true' /> Enable \n";
+		echo "	<input type='radio' name='dnd_enabled' id='dnd_enabled' value='true' onclick=\"$on_click\"/> Enable \n";
 	}
 	if ($dnd_enabled == "false" || $dnd_enabled == "") {
-		echo "	<input type='radio' name='dnd_enabled' value='false' checked='checked' /> Disabled \n";
+		echo "	<input type='radio' name='dnd_enabled' id='dnd_disabled' value='false' onclick=\"\" checked='checked' /> Disabled \n";
 	}
 	else {
-		echo "	<input type='radio' name='dnd_enabled' value='false' /> Disable \n";
+		echo "	<input type='radio' name='dnd_enabled' id='dnd_disabled' value='false' onclick=\"\" /> Disable \n";
 	}
 	echo "	<br />\n";
 	echo "</td>\n";
