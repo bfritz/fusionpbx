@@ -59,7 +59,6 @@ else {
 		$xml_string = file_get_contents($tmp_dir.'/'.$tmp_file);
 	}
 
-
 //parse the xml to get the call detail record info
 	try {
 		$xml = simplexml_load_string($xml_string);
@@ -203,7 +202,6 @@ else {
 	$rowstyle["1"] = "rowstyle1";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo "<td><b>Channel Data</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
@@ -234,12 +232,10 @@ else {
 	$rowstyle["1"] = "rowstyle1";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo "<td><b>Variables</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
-
 	echo "<tr>\n";
 	echo "<th>Name</th>\n";
 	echo "<th>Value</th>\n";
@@ -270,7 +266,6 @@ else {
 	$rowstyle["1"] = "rowstyle1";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo "<td><b>Application Log</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
@@ -308,176 +303,173 @@ else {
 	foreach ($xml->callflow as $row) {
 		//print_r($row);
 		echo "<tr>\n";
-		echo "<td><b>Call Flow</b>&nbsp;</td>\n";
-		echo "<td></td>\n";
+		echo "	<td><b>Call Flow</b>&nbsp;</td>\n";
+		echo "	<td></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<th>&nbsp;</th>\n";
-		echo "<th>&nbsp;</th>\n";
+		echo "	<th>&nbsp;</th>\n";
+		echo "	<th>&nbsp;</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td colspan='2'>&nbsp;</td>\n";
+		echo "	<td colspan='2'>&nbsp;</td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td align='left'>\n";
+		echo "	<td align='left'>\n";
 
-		echo "<div align='right'>\n";
-		echo "<table width='95%' border='0' cellpadding='0' cellspacing='0'>\n";
+		echo "		<table width='95%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 		//attributes
-			echo "<tr>\n";
-			echo "<td><b>Call Flow: Attributes</b>&nbsp;</td>\n";
-			echo "<td></td>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<td><b>Call Flow: Attributes</b>&nbsp;</td>\n";
+			echo "			<td></td>\n";
+			echo "		</tr>\n";
 
-			echo "<tr>\n";
-			echo "<th>Name</th>\n";
-			echo "<th>Value</th>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<th>Name</th>\n";
+			echo "			<th>Value</th>\n";
+			echo "		</tr>\n";
 			foreach($row->attributes() as $key => $value) {
-				echo "<tr>\n";
-				echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-				echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
-				echo "</tr>\n";
+				echo "		<tr>\n";
+				echo "				<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
+				echo "				<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+				echo "		</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
-			echo "<tr>\n";
-			echo "	<td colspan='2'><br /><br /></td>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<td colspan='2'><br /><br /></td>\n";
+			echo "		</tr>\n";
 
 
 		//extension->attributes
-			echo "<tr>\n";
-			echo "<td><b>Call Flow: Extension: Attributes</b>&nbsp;</td>\n";
-			echo "<td></td>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<td><b>Call Flow: Extension: Attributes</b>&nbsp;</td>\n";
+			echo "			<td></td>\n";
+			echo "		</tr>\n";
 
-			echo "<tr>\n";
-			echo "<th>Name</th>\n";
-			echo "<th>Value</th>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<th>Name</th>\n";
+			echo "			<th>Value</th>\n";
+			echo "		</tr>\n";
 			foreach($row->extension->attributes() as $key => $value) {
-				echo "<tr >\n";
-				echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-				echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
-				echo "</tr>\n";
+				echo "		<tr >\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+				echo "		</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
-			echo "<tr>\n";
-			echo "	<td colspan='2'><br /><br /></td>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<td colspan='2'><br /><br /></td>\n";
+			echo "		</tr>\n";
 
 		//extension->application
-			echo "<tr>\n";
-			echo "<td><b>Call Flow: Extension: Application</b>&nbsp;</td>\n";
-			echo "<td></td>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<td><b>Call Flow: Extension: Application</b>&nbsp;</td>\n";
+			echo "			<td></td>\n";
+			echo "		</tr>\n";
 
-			echo "<tr>\n";
-			echo "<th>Name</th>\n";
-			echo "<th>Data</th>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<th>Name</th>\n";
+			echo "			<th>Data</th>\n";
+			echo "		</tr>\n";
 			foreach ($row->extension->application as $tmp_row) {
 				$app_name = $tmp_row->attributes()->app_name;
 				$app_data = $tmp_row->attributes()->app_data;
-				echo "<tr >\n";
-				echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$app_name."</td>\n";
-				echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($app_data,75,"<br />\n", TRUE)."</td>\n";
-				echo "</tr>\n";
+				echo "		<tr >\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$app_name."</td>\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($app_data,75,"<br />\n", TRUE)."</td>\n";
+				echo "		</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
-			echo "<tr>\n";
-			echo "	<td colspan='2'><br /><br /></td>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<td colspan='2'><br /><br /></td>\n";
+			echo "		</tr>\n";
 
 		//caller_profile
-			echo "<tr>\n";
-			echo "<td><b>Call Flow: Caller Profile</b>&nbsp;</td>\n";
-			echo "<td></td>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<td><b>Call Flow: Caller Profile</b>&nbsp;</td>\n";
+			echo "			<td></td>\n";
+			echo "		</tr>\n";
 
-			echo "<tr>\n";
-			echo "<th>Name</th>\n";
-			echo "<th>Value</th>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<th>Name</th>\n";
+			echo "			<th>Value</th>\n";
+			echo "		</tr>\n";
 			foreach($row->caller_profile->children() as $child) {
 				$key = $child->getName();
-				echo "<tr >\n";
+				echo "		<tr >\n";
 				if ($key != "originatee") {
 					$value = urldecode($child);
-					echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-					echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+					echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
+					echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
 				}
 				else {
-					echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-					echo "	<td>\n";
-					echo "		<table width='100%'>\n";
+					echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
+					echo "			<td>\n";
+					echo "				<table width='100%'>\n";
 					foreach($child->originatee_caller_profile->children() as $tmp_child) {
 						//print_r($tmp_child);
 						$key = $tmp_child->getName();
 						$value = urldecode($tmp_child);
-						echo "		<tr >\n";
-						echo "			<td valign='top' align='left' width='20%' class='".$rowstyle[$c]."'>".$key."</td>\n";
+						echo "				<tr >\n";
+						echo "					<td valign='top' align='left' width='20%' class='".$rowstyle[$c]."'>".$key."</td>\n";
 						if ($key != "uuid") {
-							echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+							echo "					<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
 						}
 						else {
-							echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=$value'>".$value."</a></td>\n";
+							echo "					<td valign='top' align='left' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=$value'>".$value."</a></td>\n";
 						}
-						echo "		</tr>\n";
+						echo "				</tr>\n";
 					}
-					echo "		</table>\n";
-					echo "	</td>\n";
+					echo "				</table>\n";
+					echo "			</td>\n";
 				}
 				echo "</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
-			echo "<tr>\n";
-			echo "	<td colspan='2'><br /><br /></td>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<td colspan='2'><br /><br /></td>\n";
+			echo "		</tr>\n";
 
 		//times
-			echo "<tr>\n";
-			echo "<td><b>Call Flow: Times</b>&nbsp;</td>\n";
-			echo "<td></td>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<td><b>Call Flow: Times</b>&nbsp;</td>\n";
+			echo "			<td></td>\n";
+			echo "		</tr>\n";
 
-			echo "<tr>\n";
-			echo "<th>Name</th>\n";
-			echo "<th>Value</th>\n";
-			echo "</tr>\n";
+			echo "		<tr>\n";
+			echo "			<th>Name</th>\n";
+			echo "			<th>Value</th>\n";
+			echo "		</tr>\n";
 			foreach($row->times->children() as $child) {
 				$key = $child->getName();
 				$value = urldecode($child);
-				echo "<tr >\n";
-				echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-				echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
-				echo "</tr>\n";
+				echo "		<tr >\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+				echo "		</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
-			echo "<tr>\n";
-			echo "	<td colspan='2'><br /><br /></td>\n";
-			echo "</tr>\n";
 
-			echo "</table>";
-			echo "<br /><br />\n";
-//			echo "<br /><br />\n";
+			echo "		<tr>\n";
+			echo "			<td colspan='2'><br /><br /></td>\n";
+			echo "		</tr>\n";
 
-		echo "</td>\n";
-		echo "</tr>\n";
+			echo "	</table>";
+			echo "	<br /><br />\n";
 	}
 
+	echo "</td>\n";
+	echo "</tr>\n";
 	echo "</table>";
-	echo "</div>";
 
-/*
+
 //testing
-	echo "<pre>\n";
-	echo htmlentities($xml_string);
+	//echo "<pre>\n";
+	//echo htmlentities($xml_string);
 	//print_r($xml);
-	echo "</pre>\n";
-*/
+	//echo "</pre>\n";
+
 
 //get the footer
 	require_once "includes/footer.php";
