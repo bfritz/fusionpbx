@@ -68,10 +68,9 @@ else {
 
 //page title and description
 	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
+	echo "	<td align=\"center\" colspan='11'>\n";
 	echo "		<br>";
 
 	echo "<table width='100%' border='0'><tr>\n";
@@ -91,13 +90,12 @@ else {
 	echo "<br />\n";
 
 	echo "</td>\n";
-	echo "</tr></table>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 
 	//search the call detail records
 		if (ifgroup("admin") || ifgroup("superadmin")) {
-			echo "<div align='center'>\n";
 			echo "<form method='post' action=''>";
-
 			echo "<table width='95%' cellpadding='3' border='0'>";
 			echo "<tr>";
 			echo "<td width='33.3%'>\n";
@@ -360,29 +358,19 @@ else {
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
-
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"left\">\n";
-	echo "		<br>";
-
-	echo "<div align='left'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
-	echo thorderby('direction', 'Direction', $orderby, $order);
+	//echo thorderby('direction', 'Direction', $orderby, $order);
 	//echo thorderby('default_language', 'Language', $orderby, $order);
 	//echo thorderby('context', 'Context', $orderby, $order);
 	echo thorderby('caller_id_name', 'Name', $orderby, $order);
 	echo thorderby('caller_id_number', 'Number', $orderby, $order);
 	echo thorderby('destination_number', 'Destination', $orderby, $order);
 	echo thorderby('start_stamp', 'Start', $orderby, $order);
-	echo thorderby('end_stamp', 'End', $orderby, $order);
+	//echo thorderby('end_stamp', 'End', $orderby, $order);
 	echo thorderby('duration', 'Length', $orderby, $order);
 	echo thorderby('hangup_cause', 'Status', $orderby, $order);
 
@@ -406,37 +394,32 @@ else {
 	echo "<input type='hidden' name='remote_media_ip' value='$remote_media_ip'>\n";
 	echo "<input type='hidden' name='network_addr' value='$network_addr'>\n";
 	echo "<input type='submit' class='btn' name='submit' value=' csv '>\n";
-	//echo "	<a href='v_xml_cdr_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_xml_cdr_edit.php'\" value='+'>\n";
 	echo "</td>\n";
-	echo "</form>\n";
 	echo "<tr>\n";
-
+	echo "</form>\n";
 
 	if ($resultcount == 0) { //no results
 	}
 	else { //received results
 		foreach($result as $row) {
-			//print_r( $row );
-
 			$tmp_year = date("Y", strtotime($row[start_stamp]));
 			$tmp_month = date("M", strtotime($row[start_stamp]));
 			$tmp_day = date("d", strtotime($row[start_stamp]));
 
+			$hangup_cause = $row['hangup_cause'];
+			$hangup_cause = str_replace("_", " ", $hangup_cause);
+			$hangup_cause = strtolower($hangup_cause);
+			$hangup_cause = ucwords($hangup_cause);
+
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=".$row[uuid]."'>".$row[direction]."</a></td>\n";
+			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[direction]."</td>\n";
 			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[default_language]."</td>\n";
 			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[context]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
 			if (file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$row[uuid].'.wav')) {
-				//echo "		<a href=\"../recordings/v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$row[uuid].'.wav')."\">\n";
-				//echo "	  </a>";
-
 				echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('../recordings/v_recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$row[uuid].'.wav')."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
-				//$tmp_file_array = explode("\.",$file);
 				echo 	$row[caller_id_name].' ';
 				echo "	  </a>";
-
 			}
 			else {
 				echo 	$row[caller_id_name].' ';
@@ -454,15 +437,11 @@ else {
 			echo "	</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[destination_number]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[start_stamp]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[end_stamp]."</td>\n";
+			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[end_stamp]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[duration]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[hangup_cause]."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=".$row[uuid]."'>".$hangup_cause."</a></td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_xml_cdr_edit.php?id=".$row[xml_cdr_id]."'\" value='  >  '>\n";
-			//echo "		<a href='v_xml_cdr_edit.php?id=".$row[xml_cdr_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
-			//echo "		<a href='v_xml_cdr_delete.php?id=".$row[xml_cdr_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
-			//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_xml_cdr_edit.php?id=".$row[xml_cdr_id]."'\" value='e'>\n";
-			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_xml_cdr_delete.php?id=".$row[xml_cdr_id]."' }\" value='x'>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -491,17 +470,5 @@ else {
 	echo "<br><br>";
 	echo "<br><br>";
 
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-
-
 require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
 ?>
