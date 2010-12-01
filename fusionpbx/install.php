@@ -89,8 +89,10 @@ $v_id = '1';
 	$install_v_dir = $_POST["install_v_dir"];
 
 //clean up the values
-	$install_v_dir = realpath($install_v_dir);
-	$install_v_dir = str_replace("\\", "/", $install_v_dir);
+	if (strlen($install_v_dir) > 0) { 
+		$install_v_dir = realpath($install_v_dir);
+		$install_v_dir = str_replace("\\", "/", $install_v_dir);
+	}
 
 	$install_php_dir = realpath($_POST["install_php_dir"]);
 	$install_php_dir = str_replace("\\", "/", $install_php_dir);
@@ -166,13 +168,11 @@ $v_id = '1';
 		case "FreeBSD":
 			//if the freebsd port is installed use the following paths by default.
 				if (file_exists('/usr/local/etc/freeswitch/conf')) {
-
 					//set the default db_filepath
 						if (strlen($db_filepath) == 0) { //secure dir
 							$db_filepath = '/var/db/fusionpbx';
 							if (!is_dir($db_filepath)) { mkdir($db_filepath,0777,true); }
 						}
-
 					//set the other default directories
 						$v_bin_dir = '/usr/local/bin'; //freeswitch bin directory
 						$v_conf_dir = '/usr/local/etc/freeswitch/conf';
@@ -304,7 +304,12 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	$msg = '';
 	//check for all required data
 		if (strlen($db_type) == 0) { $msg .= "Please provide the Database Type<br>\n"; }
-		if (strlen($install_v_dir) == 0) { $msg .= "Please provide the Switch Directory<br>\n"; }
+		if (PHP_OS == "FreeBSD" && file_exists('/usr/local/etc/freeswitch/conf')) {
+			//install_v_dir not required for the freebsd freeswitch port;
+		}
+		else {
+			if (strlen($install_v_dir) == 0) { $msg .= "Please provide the Switch Directory<br>\n"; }
+		}
 		if (strlen($install_php_dir) == 0) { $msg .= "Please provide the PHP Directory<br>\n"; }
 		if (strlen($install_tmp_dir) == 0) { $msg .= "Please provide the Temp Directory<br>\n"; }
 		if (strlen($install_v_backup_dir) == 0) { $msg .= "Please provide the Backup Directory<br>\n"; }
@@ -762,10 +767,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//create the necessary directories
 		if (!is_dir($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
 		if (!is_dir($install_v_backup_dir)) { mkdir($install_v_backup_dir,0777,true); }
-		if (!is_dir($install_v_dir.'/sounds/en/us/callie/custom/8000')) { mkdir($install_v_dir.'/sounds/en/us/callie/custom/8000',0777,true); }
-		if (!is_dir($install_v_dir.'/sounds/en/us/callie/custom/16000')) { mkdir($install_v_dir.'/sounds/en/us/callie/custom/16000',0777,true); }
-		if (!is_dir($install_v_dir.'/sounds/en/us/callie/custom/32000')) { mkdir($install_v_dir.'/sounds/en/us/callie/custom/32000',0777,true); }
-		if (!is_dir($install_v_dir.'/sounds/en/us/callie/custom/48000')) { mkdir($install_v_dir.'/sounds/en/us/callie/custom/48000',0777,true); }
+		if (!is_dir($v_sounds_dir.'/en/us/callie/custom/8000')) { mkdir($v_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
+		if (!is_dir($v_sounds_dir.'/en/us/callie/custom/16000')) { mkdir($v_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
+		if (!is_dir($v_sounds_dir.'/en/us/callie/custom/32000')) { mkdir($v_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
+		if (!is_dir($v_sounds_dir.'/en/us/callie/custom/48000')) { mkdir($v_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
 		if (!is_dir($v_storage_dir.'/fax/')) { mkdir($v_storage_dir.'/fax',0777,true); }
 		if (!is_dir($v_log_dir.'')) { mkdir($v_log_dir.'',0777,true); }
 		if (!is_dir($v_sounds_dir.'')) { mkdir($v_sounds_dir.'',0777,true); }
@@ -819,8 +824,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/header.php")) {
 		$installmsg .= "<li>Write access to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/ is required during the install.</li>\n";
 	}
-	if (!is_writable($install_v_dir)) {
-		$installmsg .= "<li>Write access to the 'FreeSWITCH Directory' and most of its sub directories is required.</li>\n";
+	if (strlen($install_v_dir) > 0) {
+		if (!is_writable($install_v_dir)) {
+			$installmsg .= "<li>Write access to the 'FreeSWITCH Directory' and most of its sub directories is required.</li>\n";
+		}
 	}
 	if (!extension_loaded('PDO')) {
 		$installmsg .= "<li>PHP PDO was not detected. Please install it before proceeding.</li>";
@@ -875,6 +882,7 @@ pgsql
 
 // begin step 1 --------------------------------------
 	if ($_POST["install_step"] == "") {
+
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
@@ -926,16 +934,18 @@ pgsql
 		//echo "</td>\n";
 		//echo "</tr>\n";
 
-		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "	FreeSWITCH Directory:\n";
-		echo "</td>\n";
-		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='install_v_dir' maxlength='255' value=\"$install_v_dir\">\n";
-		echo "<br />\n";
-		echo "Enter the FreeSWITCH directory path.\n";
-		echo "</td>\n";
-		echo "</tr>\n";
+		if (strlen($install_v_dir) > 0) {
+			echo "<tr>\n";
+			echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+			echo "	FreeSWITCH Directory:\n";
+			echo "</td>\n";
+			echo "<td class='vtable' align='left'>\n";
+			echo "	<input class='formfld' type='text' name='install_v_dir' maxlength='255' value=\"$install_v_dir\">\n";
+			echo "<br />\n";
+			echo "Enter the FreeSWITCH directory path.\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
@@ -1287,4 +1297,5 @@ pgsql
 
 	echo $output;
 	unset($output);
+
 ?>
