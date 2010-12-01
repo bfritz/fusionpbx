@@ -522,7 +522,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$hunt_group_user_list = str_replace("|", "\n", $hunt_group_user_list);
 		echo "		<textarea name=\"hunt_group_user_list\" id=\"hunt_group_user_list\" class=\"formfld\" cols=\"30\" rows=\"3\" wrap=\"off\">$hunt_group_user_list</textarea>\n";
 		echo "		<br>\n";
-		echo "Assign the users that are can manage this fax extension.\n";
+		echo "Assign the users that are can manage this hunt group extension.\n";
 		echo "<br />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
