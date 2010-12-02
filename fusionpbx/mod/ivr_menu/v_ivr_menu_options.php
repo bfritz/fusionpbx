@@ -9,7 +9,7 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
+//require_once "includes/header.php";
 require_once "includes/paging.php";
 
 $orderby = $_GET["orderby"];
@@ -33,7 +33,8 @@ $order = $_GET["order"];
 	echo "The recording presents options to the caller. Options match key presses (DTMF digits) from the caller which directs the call to the destinations. <br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-	echo "</tr></table>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 
 	$sql = "";
 	$sql .= " select * from v_ivr_menu_options ";
@@ -73,14 +74,12 @@ $order = $_GET["order"];
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
-
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
-	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo thorderby('ivr_menu_options_digits', 'Option', $orderby, $order);
 	//echo thorderby('ivr_menu_options_action', 'Type', $orderby, $order);
@@ -89,7 +88,6 @@ $order = $_GET["order"];
 	echo thorderby('ivr_menu_options_desc', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_ivr_menu_options_edit.php?ivr_menu_id=".$row[ivr_menu_id]."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_ivr_menu_options_edit.php'\" value='+'>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -128,7 +126,6 @@ $order = $_GET["order"];
 		unset($sql, $result, $rowcount);
 	} //end if results
 
-
 	echo "<tr>\n";
 	echo "<td colspan='6' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -137,19 +134,15 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	echo "			<a href='v_ivr_menu_options_edit.php?ivr_menu_id=".$row[ivr_menu_id]."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
-	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_ivr_menu_options_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
-
 	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-	echo "<br><br>";
 
+	echo "<br><br>";
+	echo "<br><br>";
 
 	echo "</td>";
 	echo "</tr>";
@@ -157,11 +150,5 @@ $order = $_GET["order"];
 	echo "</div>";
 	echo "<br><br>";
 
-
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
+//require_once "includes/footer.php";
 ?>

@@ -32,24 +32,22 @@ require_once "includes/paging.php";
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
-
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
-	echo "      <br>";
+	echo "		<br>";
 
 	if ($is_included != "true") {
-		echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-		echo "  <tr>\n";
-		echo "	<td align='left'><b>Calls</b><br>\n";
-		echo "		Use the links to configure call forward follow me, or do no disturb.\n";
-		echo "		The following list the extensions that have been assigned to this user account. \n";
-		echo "	</td>\n";
-		echo "  </tr>\n";
-		echo "</table>\n";
-		echo "<br />";
+		echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+		echo "		<tr>\n";
+		echo "		<td align='left'><b>Calls</b><br>\n";
+		echo "			Use the links to configure call forward follow me, or do no disturb.\n";
+		echo "			The following list the extensions that have been assigned to this user account. \n";
+		echo "		</td>\n";
+		echo "		</tr>\n";
+		echo "		</table>\n";
+		echo "		<br />";
 	}
 
 	$sql = "";
@@ -99,13 +97,12 @@ $order = $_GET["order"];
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
-	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo thorderby('extension', 'Extension', $orderby, $order);
 	echo "<th>Tools</th>\n";
 	echo thorderby('description', 'Description', $orderby, $order);
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($resultcount == 0) { //no results
 	}
@@ -139,6 +136,7 @@ $order = $_GET["order"];
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
+	echo "</table>";
 
 	echo "</table>";
 	echo "</div>";

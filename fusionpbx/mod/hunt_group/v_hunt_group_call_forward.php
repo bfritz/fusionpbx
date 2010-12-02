@@ -35,21 +35,20 @@ $order = $_GET["order"];
 
 echo "<div align='center'>";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 echo "<tr class='border'>\n";
 echo "	<td align=\"center\">\n";
 
 if ($is_included != "true") {
-	echo "      <br>";
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-	echo "  <tr>\n";
+	echo "	<br>";
+	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+	echo "	<tr>\n";
 	echo "	<td align='left'><b>Hunt Group Call Forward</b><br>\n";
 	echo "		Use the links to configure hunt group call forward.\n";
 	echo "		The following hunt groups have been assigned to this user account. \n";
 	echo "	</td>\n";
-	echo "  </tr>\n";
-	echo "</table>\n";
-	echo "<br />";
+	echo "	</tr>\n";
+	echo "	</table>\n";
+	echo "	<br />";
 }
 
 $sql = "";
@@ -77,13 +76,12 @@ if ($is_included == "true" && $result_count == 0) {
 	//hide this when there is no result
 }
 else {
-	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo thorderby('huntgroupextension', 'Hunt Group Extension', $orderby, $order);
 	echo "<th>Tools</th>\n";
 	echo thorderby('huntgroupdescr', 'Description', $orderby, $order);
-	echo "<tr>\n";
+	echo "</tr>\n";
 }
 
 if ($result_count == 0) { //no results
@@ -108,12 +106,14 @@ if ($is_included == "true" && $result_count == 0) {
 }
 else {
 	echo "</table>";
-	echo "</div>";
 
 	echo "<br>";
 	echo "<br>";
 	echo "<br>";
 }
+
+echo "</table>";
+echo "</div>";
 
 if ($is_included != "true") {
 	require_once "includes/footer.php";

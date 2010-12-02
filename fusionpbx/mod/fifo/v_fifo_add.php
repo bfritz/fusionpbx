@@ -267,14 +267,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 echo "<div align='center'>";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 echo "<tr class=''>\n";
 echo "	<td align=\"left\">\n";
 echo "		<br>";
 
 echo "<form method='post' name='frm' action=''>\n";
-echo "<div align='left'>\n";
-
 echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "	<tr>\n";
 echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\">\n";
@@ -360,15 +357,14 @@ echo "    Enabled:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
-//echo "    <option value=''></option>\n";
 if ($enabled == "true") { 
-	echo "    <option value='true' SELECTED >true</option>\n";
+	echo "    <option value='true' selected='selected' >true</option>\n";
 }
 else {
 	echo "    <option value='true'>true</option>\n";
 }
 if ($enabled == "false") { 
-	echo "    <option value='false' SELECTED >false</option>\n";
+	echo "    <option value='false' selected='selected' >false</option>\n";
 }
 else {
 	echo "    <option value='false'>false</option>\n";
@@ -384,7 +380,6 @@ echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 echo "    Description:\n";
 echo "</td>\n";
 echo "<td colspan='4' class='vtable' align='left'>\n";
-//echo "    <textarea class='formfld' name='descr' rows='4'>$descr</textarea>\n";
 echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
 echo "<br />\n";
 echo "\n";
@@ -422,10 +417,10 @@ echo "<br />\n";
 echo "Agents use this extension number to login or logout of the Queue. After logging into the agent will be ready to receive calls from the Queue. \n";
 echo "</td>\n";
 echo "</tr>\n";
-echo "	</table>\n";
+echo "</table>\n";
 
 
-echo "	<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
+echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
 echo "<tr>\n";
 echo "	<td colspan='5' align='right'>\n";
 if ($action == "update") {
@@ -434,18 +429,17 @@ if ($action == "update") {
 echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 echo "	</td>\n";
 echo "</tr>";
-
 echo "</table>";
+
 echo "</form>";
+
+echo "</td>\n";
+echo "</tr>\n";
+echo "</table>\n";
 echo "</div>";
 
 echo "<br><br>";
 
 
 require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
 ?>

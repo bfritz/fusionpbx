@@ -170,12 +170,9 @@ if (is_dir($v_recordings_dir.'/')) {
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
 	echo "      <br>";
-
 
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "  <tr>\n";
@@ -211,7 +208,6 @@ if (is_dir($v_recordings_dir.'/')) {
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
-	echo "</div>\n";
 	echo "</form>";
 
 	$sql = "";
@@ -242,14 +238,11 @@ if (is_dir($v_recordings_dir.'/')) {
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
-
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
-	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo thorderby('filename', 'Filename (download)', $orderby, $order);
 	echo thorderby('recordingname', 'Recording Name (play)', $orderby, $order);
@@ -258,7 +251,7 @@ if (is_dir($v_recordings_dir.'/')) {
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_recordings_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($resultcount == 0) { //no results
 	}
@@ -294,9 +287,8 @@ if (is_dir($v_recordings_dir.'/')) {
 		} //end foreach
 		unset($sql, $result, $rowcount);
 	} //end if results
+	echo "</table>\n";
 
-	echo "<tr>\n";
-	echo "<td colspan='5'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
@@ -306,18 +298,16 @@ if (is_dir($v_recordings_dir.'/')) {
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
+
 	echo "</td>\n";
 	echo "</tr>\n";
-
 	echo "</table>";
 	echo "</div>";
 
-
 	echo "<br>\n";
 	echo "<br>\n";
 	echo "<br>\n";
 	echo "<br>\n";
-
 
 //include the footer
 	require_once "includes/footer.php";

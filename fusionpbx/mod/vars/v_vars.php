@@ -137,6 +137,9 @@ if (!function_exists('thorderby')) {
 	else { //received results
 		$prev_var_cat = '';
 		foreach($result as $row) {
+			$var_value = $row[var_value];
+			$var_value = substr($var_value, 0, 50);
+
 			if ($prev_var_cat != $row[var_cat]) {
 				$c=0;
 				if (strlen($prev_var_cat) > 0) {
@@ -165,7 +168,7 @@ if (!function_exists('thorderby')) {
 			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$row[var_name]."</td>\n";
-			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$row[var_value]."</td>\n";
+			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$var_value."</td>\n";
 			//echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$row[var_cat]."</td>\n";
 			//echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$row[var_order]."</td>\n";
 			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$row[var_enabled]."</td>\n";
