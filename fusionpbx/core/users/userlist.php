@@ -108,11 +108,11 @@ $order = $_GET["order"];    echo "<div align='center'>";
 
 		echo "<tr>";
 		echo thorderby('Username', 'Username', $orderby, $order);
-		echo thorderby('Userfirstname', 'First Name', $orderby, $order);
-		echo thorderby('Userlastname', 'Last Name', $orderby, $order);
+		//echo thorderby('Userfirstname', 'First Name', $orderby, $order);
+		echo thorderby('Userlastname', 'Name', $orderby, $order);
 		echo thorderby('Usercompanyname', 'Company', $orderby, $order);
 		echo thorderby('Userphysicalcity', 'City', $orderby, $order);
-		echo thorderby('Userphysicalstateprovince', 'State', $orderby, $order);
+		//echo thorderby('Userphysicalstateprovince', 'State', $orderby, $order);
 		echo thorderby('Userphone1', 'Phone', $orderby, $order);
 		echo thorderby('Useremail', 'Email', $orderby, $order);
 		echo "<td width='42px' align=\"right\" nowrap>\n";
@@ -137,13 +137,13 @@ $order = $_GET["order"];    echo "<div align='center'>";
 						echo "<td valign='top' class='".$rowstyle[$c]."'><a href=''>".$row[username]."</a></td>";
 					}
 					//echo "<td valign='top'>".$row[password]."</td>";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[userfirstname]."&nbsp;</td>";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[userlastname]."&nbsp;</td>";
+					//echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[userfirstname]."&nbsp;</td>";
+					echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[userfirstname]." ".$row[userlastname]."&nbsp;</td>";
 					echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[usercompanyname]."&nbsp;</td>";
 					//echo "<td valign='top'>".$row[userphysicaladdress1]."</td>";
 					//echo "<td valign='top'>".$row[userphysicaladdress2]."</td>";
 					echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[userphysicalcity]."&nbsp;</td>";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[userphysicalstateprovince]."&nbsp;</td>";
+					//echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[userphysicalstateprovince]."&nbsp;</td>";
 					//echo "<td valign='top'>".$row[userphysicalcountry]."</td>";
 					//echo "<td valign='top'>".$row[userphysicalpostalcode]."</td>";
 					/*
