@@ -113,6 +113,9 @@ else {
 	echo "<th>Name</th>\n";
 	echo "<th>Number</th>\n";
 	echo "<th>Status</th>\n";
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo "<th>Options</th>\n";
+	}
 	echo "</tr>\n";
 
 	foreach ($result as $row) {
@@ -149,12 +152,19 @@ else {
 		//$system_length_sec = sprintf("%02d", $system_length_sec);
 		//$system_length = $system_length_hour.':'.$system_length_min.':'.$system_length_sec;
 
+		//get the extensions that are assigned to this user 
+		$user_extension_array = explode("|", $_SESSION['user_extension_list']);
 		echo "<tr>\n";
 		echo "<td valign='top' class='".$rowstyle[$c]."'>".$joined_length."</td>\n";
 		//echo "<td valign='top' class='".$rowstyle[$c]."'>".$system_length."</td>\n";
 		echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_name."</td>\n";
 		echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_number."</td>\n";
 		echo "<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
+		if (ifgroup("admin") || ifgroup("superadmin")) {
+			echo "<td valign='top' class='".$rowstyle[$c]."'>";
+			echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=originate+user/".$user_extension_array[0]."+&eavesdrop(".$uuid.")'}\">eavesdrop</a>&nbsp;\n";
+			echo "</td>";
+		}
 		echo "</tr>\n";
 
 		if ($c==0) { $c=1; } else { $c=0; }
