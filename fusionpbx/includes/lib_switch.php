@@ -252,14 +252,37 @@ function v_settings()
 	return $v_settings_array;
 
 }
-//Update the settings
-//	v_settings();
-//	write_config();
-
+//update the settings
 $v_settings_array = v_settings();
 foreach($v_settings_array as $name => $value) {
 	$$name = $value;
 }
+
+
+//get the extensions that are assigned to this user
+	if (strlen($_SESSION['user_extension_list']) == 0) {
+		$_SESSION['user_extension_list'] = '';
+		$sql = "";
+		$sql .= " select extension from v_extensions ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and enabled = 'true' ";
+		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+		$sql .= "order by extension asc ";
+		$result = $db->query($sql)->fetchAll();
+		$x = 1;
+		foreach($result as $row) {
+			if (count($result) == $x) {
+				$_SESSION['user_extension_list'] .= $row['extension']."";
+			}
+			else {
+				$_SESSION['user_extension_list'] .= $row['extension']."|";
+			}
+			$x++;
+		}
+		$user_extension_list = $_SESSION['user_extension_list'];
+		$ext_array = explode("|",$user_extension_list);
+		print_r($ext_array);
+	}
 
 
 if ($db_type == "sqlite") {
