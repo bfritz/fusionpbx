@@ -934,7 +934,10 @@ pgsql
 		//echo "</td>\n";
 		//echo "</tr>\n";
 
-		if (strlen($install_v_dir) > 0) {
+		if (PHP_OS == "FreeBSD" && file_exists('/usr/local/etc/freeswitch/conf')) {
+			//install_v_dir not required for the freebsd freeswitch port;
+		}
+		else {
 			echo "<tr>\n";
 			echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 			echo "	FreeSWITCH Directory:\n";
