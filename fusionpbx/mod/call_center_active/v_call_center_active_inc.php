@@ -162,7 +162,7 @@ else {
 		echo "<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
 		if (ifgroup("admin") || ifgroup("superadmin")) {
 			echo "<td valign='top' class='".$rowstyle[$c]."'>";
-			echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=originate+user/".$user_extension_array[0]."+&eavesdrop(".$uuid.")'}\">eavesdrop</a>&nbsp;\n";
+			echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=originate+user/".$user_extension_array[0]."+%26eavesdrop(".$uuid.")');}\">eavesdrop</a>&nbsp;\n";
 			echo "</td>";
 		}
 		echo "</tr>\n";
