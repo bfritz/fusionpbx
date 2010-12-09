@@ -129,17 +129,17 @@ require_once "includes/checkauth.php";
 					if ($found_extension) {
 
 						if ($application == "conference") { 
-							$alt_color = "background-image: url('/images/background_cell_active.gif";
+							$alt_color = "background-image: url('".PROJECT_PATH."/images/background_cell_active.gif";
 						}
 						switch ($application) {
 						case "conference":
-							$style_alternate = "style=\"color: #444444; background-image: url('/images/background_cell_conference.gif');\"";
+							$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_conference.gif');\"";
 							break;
 						case "fifo":
-							$style_alternate = "style=\"color: #444444; background-image: url('/images/background_cell_fifo.gif');\"";
+							$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_fifo.gif');\"";
 							break;
 						default:
-							$style_alternate = "style=\"color: #444444; background-image: url('/images/background_cell_active.gif');\"";
+							$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_active.gif');\"";
 						}
 						echo "<tr>\n";
 						echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
@@ -174,7 +174,7 @@ require_once "includes/checkauth.php";
 							}
 					}
 					else {
-						$style_alternate = "style=\"color: #444444; background-image: url('/images/background_cell_light.gif');\"";
+						$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_light.gif');\"";
 						echo "<tr>\n";
 						echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
 						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
