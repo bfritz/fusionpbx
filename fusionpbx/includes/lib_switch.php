@@ -380,41 +380,26 @@ function build_menu() {
 }
 
 
-function guid()
-{
+function guid() {
 	if (function_exists('com_create_guid')){
-		return com_create_guid();
-	}else{
+		return trim(com_create_guid(), '{}');
+	}
+	else{
 		mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
-		$charid = strtoupper(md5(uniqid(rand(), true)));
-		$hyphen = chr(45);// "-"
-		$uuid = chr(123)// "{"
-			.substr($charid, 0, 8).$hyphen
-			.substr($charid, 8, 4).$hyphen
-			.substr($charid,12, 4).$hyphen
-			.substr($charid,16, 4).$hyphen
-			.substr($charid,20,12)
-			.chr(125);// "}"
+		$char_id = strtoupper(md5(uniqid(rand(), true)));
+		$hyphen = chr(45); // "-"
+		$uuid = '';
+		//$uuid = chr(123); //'{'
+		$uuid .= substr($char_id, 0, 8).$hyphen;
+		$uuid .= substr($char_id, 8, 4).$hyphen;
+		$uuid .= substr($char_id,12, 4).$hyphen;
+		$uuid .= substr($char_id,16, 4).$hyphen;
+		$uuid .= substr($char_id,20,12);
+		//$uuid = .chr(125); //'}'
 		return $uuid;
 	}
 }
 //echo guid();
-
-
-function pkg_is_service_running($servicename)
-{
-	//exec("/bin/ps ax | awk '{ print $5 }'", $psout);
-	//array_shift($psout);
-	//foreach($psout as $line) {
-	//	$ps[] = trim(array_pop(explode(' ', array_pop(explode('/', $line)))));
-	//}
-	//if(pkg_is_service_running($servicename, $ps) or is_process_running($servicename) ) {
-		return true;
-	//}
-	//else {
-	//    return false;
-	//}
-}
 
 
 function event_socket_create($host, $port, $password)
@@ -507,12 +492,9 @@ function event_socket_request_cmd($cmd)
 	}
 	unset ($prepstatement);
 
-	if (pkg_is_service_running('freeswitch')) {
-		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		$response = event_socket_request($fp, $cmd);
-		fclose($fp);
-	}
-
+	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+	$response = event_socket_request($fp, $cmd);
+	fclose($fp);
 }
 
 function byte_convert( $bytes ) {
@@ -3404,11 +3386,9 @@ function sync_package_v_auto_attendant()
 		sync_package_v_dialplan_includes();
 		unset($dialplanincludeid);
 
-
 		// Build the auto attendant javascript
 		$recording_action_filename = get_recording_filename($row['recordingidaction']);
 		$recording_antiaction_filename = get_recording_filename($row['recordingidantiaction']);
-
 
 		$sql = "";
 		$sql .= "select * from v_settings ";
@@ -3422,12 +3402,9 @@ function sync_package_v_auto_attendant()
 		}
 		unset ($prepstatement2);
 
-		if (pkg_is_service_running('freeswitch')) {
-			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-			$cmd = "api global_getvar domain";
-			$domain = trim(event_socket_request($fp, $cmd));
-		}
-
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+		$cmd = "api global_getvar domain";
+		$domain = trim(event_socket_request($fp, $cmd));
 
 		$tmp = ""; //make sure the variable starts with no value
 		$tmp .= "\n";
@@ -5577,9 +5554,7 @@ if (!function_exists('sync_package_freeswitch')) {
 		sync_package_v_internal();
 		sync_package_v_external();
 		//sync_package_v_recordings();
-		if (pkg_is_service_running('freeswitch')) {
-			sync_package_v_auto_attendant();
-		}
+		sync_package_v_auto_attendant();
 		sync_package_v_hunt_group();
 		sync_package_v_ivr_menu();
 		sync_package_v_call_center();
