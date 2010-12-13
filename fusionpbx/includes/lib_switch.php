@@ -833,9 +833,19 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 						$extension_number = rtrim($extension_number, "$");
 						unset($tmp);
 
+					//get the extension number using the dialplan_include_id
+						$sql = "select * ";
+						$sql .= "from v_dialplan_includes ";
+						$sql .= "where v_id = $v_id ";
+						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+						$tmp = $db->query($sql)->fetch();
+						$extension_name = $tmp['extensionname'];
+						$extension_name = str_replace("_", " ", $extension_name);
+						unset($tmp);
+
 					$fifo_name = $row["fielddata"];
 					$fifo_name = str_replace('@${domain_name} in', '', $fifo_name);
-					$option_label = $extension_number;
+					$option_label = $extension_number.' '.$extension_name;
 					if ($select_type == "ivr") {
 						if ("menu-exec-app:transfer ".$row["fielddata"] == $select_value) {
 							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML default' selected='selected'>".$option_label."</option>\n";
@@ -1250,7 +1260,18 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$extension_number = ltrim($extension_number, "\\");
 				$extension_number = rtrim($extension_number, "$");
 				unset($tmp);
-				$option_label = $extension_number;
+
+			//get the extension number using the dialplan_include_id
+				$sql = "select * ";
+				$sql .= "from v_dialplan_includes ";
+				$sql .= "where v_id = $v_id ";
+				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$tmp = $db->query($sql)->fetch();
+				$extension_name = $tmp['extensionname'];
+				$extension_name = str_replace("_", " ", $extension_name);
+				unset($tmp);
+
+				$option_label = $extension_number.' '.$extension_name;
 				if ($select_type == "ivr") {
 					if ("menu-exec-app:transfer ".$row["fielddata"] == $select_value) {
 						echo "		<option value='menu-exec-app:transfer ".$extension_number."' selected='selected'>".$option_label."</option>\n";
