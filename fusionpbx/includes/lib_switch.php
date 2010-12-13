@@ -281,7 +281,6 @@ foreach($v_settings_array as $name => $value) {
 		}
 		$user_extension_list = $_SESSION['user_extension_list'];
 		$ext_array = explode("|",$user_extension_list);
-		print_r($ext_array);
 	}
 
 
