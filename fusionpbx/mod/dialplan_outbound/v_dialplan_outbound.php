@@ -47,7 +47,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes_details ";
 	$sql .= "where v_id = $v_id ";
-	$sql .= "and fielddata like 'sofia/gateway/%' ";
+	$sql .= "and (fielddata like 'sofia/gateway/%' or fielddata like 'freetdm%' or fielddata like 'openzap%') ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$x = 0;
