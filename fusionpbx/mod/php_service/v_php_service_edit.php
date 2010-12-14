@@ -96,7 +96,7 @@ function phpservice_sync_package_php() {
 				$tmp .= "//run this program as long as the pid file exists\n";
 				$tmp .= "\$filename = '".$tmp_dir."/php_service_".$tmp_service_name.".pid';\n";
 				$tmp .= "\$fp = fopen(\$filename, 'w');\n";
-				$tmp .= "fwrite(\$fp, \"If this file is deleted then the php service will stop.\");\n";
+				$tmp .= "fwrite(\$fp, getmypid());\n";
 				$tmp .= "fclose(\$fp);\n";
 				//$tmp .= "chmod(\"".$tmp_dir."/php_service_".$tmp_service_name.".pid\", 0766);\n";
 				$tmp .= "unset(\$filename);\n";
