@@ -100,7 +100,7 @@ if ( session:ready() ) then
 			if (value == sip_from_user) then
 				--this extension is the caller that initated the intercom
 			else
-				cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name="..caller_id_name..",origination_caller_id_number="..caller_id_number.."}user/"..value.."@"..domain_name.." conference:intercom@default+flags{mute} inline";
+				cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..value.."@"..domain_name.." conference:intercom@default+flags{mute} inline";
 				api:executeString(cmd_string);
 			end
 			--freeswitch.consoleLog("NOTICE", "cmd_string "..cmd_string.."\n");
