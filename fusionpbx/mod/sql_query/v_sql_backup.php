@@ -82,11 +82,9 @@ else {
 					$column_array[$x] = $key;
 					$x++;
 				}
-				//echo "<pre>\n";
-				//print_r($column_array);
+
 				$column_array_count = count($column_array);
-				//echo $column_array_count."<br />\n";
-				//echo "</pre>\n";
+
 				foreach ($result2 as &$row) {
 					echo "INSERT INTO $table_name (";
 					$x = 1;

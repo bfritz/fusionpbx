@@ -38,10 +38,9 @@ else {
 
 	require_once "includes/header.php";
 
-	//--- Begin: Edit Area -----------------------------------------------------
+	//edit area
 		echo "    <script language=\"javascript\" type=\"text/javascript\" src=\"".PROJECT_PATH."/includes/edit_area/edit_area_full.js\"></script>\n";
 		echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
-
 		echo "\n";
 		echo "		editAreaLoader.init({\n";
 		echo "			id: \"sql_cmd\"	// id of the textarea to transform //, |, help\n";
@@ -56,9 +55,8 @@ else {
 		echo "			,charmap_default: \"arrows\"\n";
 		echo "\n";
 		echo "    });\n";
-
 		echo "    </script>";
-	//--- End: Edit Area -------------------------------------------------------
+
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -87,6 +85,15 @@ else {
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
+
+	echo "			Type: <select name='sql_type'>\n";
+	echo "			<option value='default'>default</option>\n";
+	echo "			<option value='sql insert into'>sql insert into</option>\n";
+	echo "			</select>\n";
+
+	echo "		&nbsp;\n";
+	echo "		&nbsp;\n";
+
 	echo "		Table: \n";
 	echo "			<select name='table_name'>\n";
 	echo "			<option value=''></option>\n";
@@ -109,7 +116,6 @@ else {
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		//print_r( $row );
 		echo "			<option value='".$row[0]."'>".$row[0]."</option>\n";
 	}
 	echo "			</select>\n";
@@ -125,7 +131,6 @@ else {
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
-
 
 
 	echo "<iframe id='frame' width='100%' height='400' FRAMEBORDER='0' name='frame' style='background-color : #FFFFFF;'></iframe>\n";
