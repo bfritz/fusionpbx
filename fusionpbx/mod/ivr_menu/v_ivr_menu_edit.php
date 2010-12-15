@@ -331,7 +331,10 @@ if ($_POST["persistformvar"] != "true") {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap='nowrap' align='left'><b>IVR Menu Edit</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_ivr_menu.php'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'>\n";
+	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_ivr_menu_copy.php?id=".$ivr_menu_id."';}\" value='Copy'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_ivr_menu.php'\" value='Back'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2' align='left'>\n";
