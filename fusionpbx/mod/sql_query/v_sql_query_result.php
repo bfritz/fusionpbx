@@ -159,7 +159,7 @@ if (count($_POST)>0) {
 
 		echo $tmp_footer;
 	}
-	
+
 	if ($sql_type == "sql insert into") {
 		echo $tmp_header;
 
@@ -219,6 +219,67 @@ if (count($_POST)>0) {
 				}
 			}
 		echo $tmp_footer;
+	}
+
+	if ($sql_type == "csv") {
+		//echo $tmp_header;
+
+		//set the headers
+			header('Content-type: application/octet-binary');
+			header('Content-Disposition: attachment; filename='.$table_name.'.sql');
+
+		//get the table data
+			$sql = trim($sql);
+			$sql = "select * from $table_name";
+			if (strlen($sql) > 0) {
+				$prepstatement = $db->prepare(check_sql($sql));
+				if ($prepstatement) { 
+					$prepstatement->execute();
+					$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+				}
+				else {
+					echo "<b>Error:</b>\n";
+					echo "<pre>\n";
+					print_r($db->errorInfo());
+					echo "</pre>\n";
+				}
+
+				$x = 0;
+				foreach ($result[0] as $key => $value) {
+					$column_array[$x] = $key;
+					$x++;
+				}
+
+				$column_array_count = count($column_array);
+
+				$x = 1;
+				foreach ($column_array as $column) {
+					if ($x < $column_array_count) {
+						echo "'".$column."',";
+					}
+					else {
+						echo "'".$column."'";
+					}
+					$x++;
+				}
+				echo "\r\n";
+
+				foreach ($result as &$row) {
+					//echo "VALUES ( ";
+					$x = 1;
+					foreach ($column_array as $column) {
+						if ($x < $column_array_count) {
+							echo "'".check_str($row[$column])."',";
+						}
+						else {
+							echo "'".check_str($row[$column])."'";
+						}
+						$x++;
+					}
+					echo "\n";
+				}
+			}
+		//echo $tmp_footer;
 	}
 }
 

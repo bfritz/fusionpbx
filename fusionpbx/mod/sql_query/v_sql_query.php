@@ -88,6 +88,7 @@ else {
 
 	echo "			Type: <select name='sql_type'>\n";
 	echo "			<option value='default'>default</option>\n";
+	echo "			<option value='csv'>csv</option>\n";
 	echo "			<option value='sql insert into'>sql insert into</option>\n";
 	echo "			</select>\n";
 
