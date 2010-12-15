@@ -71,11 +71,11 @@ if ( session:ready() ) then
 	end
 
 
-	if (file_exists(dialplan_default_dir.."/0_call_forward_"..extension..".xml")) then
+	if (file_exists(dialplan_default_dir.."/000_call_forward_"..extension..".xml")) then
 		--file exists
 
 		--remove the call forward dialplan entry
-		os.remove (dialplan_default_dir.."/0_call_forward_"..extension..".xml");
+		os.remove (dialplan_default_dir.."/000_call_forward_"..extension..".xml");
 
 		--stream file
 			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/call_forward_has_been_deleted.wav");
@@ -101,7 +101,7 @@ if ( session:ready() ) then
 			xml = xml .. "	</condition>\n";
 			xml = xml .. "</extension>\n";
 			session:execute("log", xml);
-			local file = assert(io.open(dialplan_default_dir.."/0_call_forward_"..extension..".xml", "w"));
+			local file = assert(io.open(dialplan_default_dir.."/000_call_forward_"..extension..".xml", "w"));
 			file:write(xml);
 			file:close();
 
