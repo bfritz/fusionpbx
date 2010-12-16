@@ -46,12 +46,10 @@ $order = $_GET["order"];
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
 
-
 	echo "<table width='100%' border='0'><tr>\n";
 	echo "<td width='50%' nowrap='nowrap' align='left'><b>Call Broadcast List</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr></table>\n";
-
 
 	$sql = "";
 	$sql .= " select * from v_call_broadcast ";

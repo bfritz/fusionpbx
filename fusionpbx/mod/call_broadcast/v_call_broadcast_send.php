@@ -34,8 +34,9 @@ else {
 	exit;
 }
 
-//set the max execution time to 3600 * 4
-	ini_set(max_execution_time,14400);
+//set the max execution time to 1 hour
+	ini_set(max_execution_time,3600);
+
 
 function cmd_async($cmd) {
 	//windows
@@ -69,103 +70,137 @@ function cmd_async($cmd) {
 	}
 	unset ($prepstatement);
 
+//get the http get values and set as php variables
+	$groupid = $_GET["groupid"];
+	$call_broadcast_id = $_GET["call_broadcast_id"];
+	$usercategory = $_GET["usercategory"];
+	$gateway = $_GET["gateway"];
+	$phonetype1 = $_GET["phonetype1"];
+	$phonetype2 = $_GET["phonetype2"];
 
-//send the call broadcast
-if (strlen($_GET["f"]) > 0) {
-
+//get the call broadcast details from the database
 	$sql = "";
-	$sql .= "select * from v_settings ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "select * from v_call_broadcast ";
+	$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	while($row = $prepstatement->fetch()) {
-		$event_socket_ip_address = $row["event_socket_ip_address"];
-		$event_socket_port = $row["event_socket_port"];
-		$event_socket_password = $row["event_socket_password"];
+		$broadcast_name = $row["broadcast_name"];
+		$broadcast_desc = $row["broadcast_desc"];
+		$broadcast_timeout = $row["broadcast_timeout"];
+		$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
+		$recordingid = $row["recordingid"];
+		$broadcast_caller_id_name = $row["broadcast_caller_id_name"];
+		$broadcast_caller_id_number = $row["broadcast_caller_id_number"];
+		$broadcast_destination_type = $row["broadcast_destination_type"];
+		$broadcast_phone_numbers = $row["broadcast_phone_numbers"];
+		$broadcast_destination_data = $row["broadcast_destination_data"];
+		//if (strlen($row["broadcast_destination_data"]) == 0) {
+		//	$broadcast_destination_application = '';
+		//	$broadcast_destination_data = '';
+		//}
+		//else {
+		//	$broadcast_destination_array = explode(":", $row["broadcast_destination_data"]);
+		//	$broadcast_destination_application = $broadcast_destination_array[0];
+		//	$broadcast_destination_data = $broadcast_destination_array[1];
+		//}
 		break; //limit to 1 row
 	}
 	unset ($prepstatement);
 
-	$cmd = 'api jsrun '.$_GET["f"];
-	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-	$response = event_socket_request($fp, $cmd);
-	fclose($fp);
+	if (strlen($broadcast_caller_id_name) == 0) {
+		$broadcast_caller_id_name = "anonymous";
+	}
+	if (strlen($broadcast_caller_id_number) == 0) {
+		$broadcast_caller_id_number = "0000000000";
+	}
 
-	require_once "includes/header.php";
-	//echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_broadcast.php\">\n";
-	echo "<div align='center'>\n";
-
-	echo "<div align='center'>\n";
-	echo "<table width='50%'>\n";
-	echo "<tr>\n";
-	echo "<th align='left'>Message</th>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td class='rowstyle1'><strong>Call Broadcast has been started.</strong></td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</div>\n";
-
-	require_once "includes/footer.php";
-	return;
-
-}
-
-
-require_once "includes/header.php";
-
-
-$groupid = $_GET["groupid"];
-$call_broadcast_id = $_GET["call_broadcast_id"];
-$usercategory = $_GET["usercategory"];
-$gateway = $_GET["gateway"];
-$phonetype1 = $_GET["phonetype1"];
-$phonetype2 = $_GET["phonetype2"];
-
-
-
-$sql = "";
-$sql .= "select * from v_call_broadcast ";
-$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
-$prepstatement = $db->prepare(check_sql($sql));
-$prepstatement->execute();
-while($row = $prepstatement->fetch()) {
-	$broadcast_name = $row["broadcast_name"];
-	$broadcast_desc = $row["broadcast_desc"];
-	$broadcast_timeout = $row["broadcast_timeout"];
-	$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
-	$recordingid = $row["recordingid"];
-	$broadcast_caller_id_name = $row["broadcast_caller_id_name"];
-	$broadcast_caller_id_number = $row["broadcast_caller_id_number"];
-	$broadcast_destination_type = $row["broadcast_destination_type"];
-	$broadcast_destination_data = $row["broadcast_destination_data"];
-	break; //limit to 1 row
-}
-unset ($prepstatement);
-
-if (strlen($broadcast_caller_id_name) == 0) {
-	$broadcast_caller_id_name = "anonymous";
-}
-if (strlen($broadcast_caller_id_number) == 0) {
-	$broadcast_caller_id_number = "0000000000";
-}
-
-//get the recording name
-	$recording_filename = get_recording_filename($recordingid);
-
+	//get the recording name
+		//$recording_filename = get_recording_filename($recordingid);
 
 //remove unsafe characters from the name
 	$broadcast_name = str_replace(" ", "", $broadcast_name);
 	$broadcast_name = str_replace("'", "", $broadcast_name);
 
+//send the call broadcast
+	if (strlen($broadcast_phone_numbers) > 0) {
+
+		$broadcast_phone_number_array = explode ("\n", $broadcast_phone_numbers);
+		$count = 1;
+		$sched_seconds = '3';
+		foreach ($broadcast_phone_number_array as $tmp_value) {
+			$tmp_value = str_replace(";", "|", $tmp_value);
+			$tmp_value_array = explode ("|", $tmp_value);
+
+			//make sure the phone numbers are correct
+				$phone1 = trim($tmp_value_array[0]);
+				$phone1 = str_replace("-", "", $phone1);
+				$phone1 = str_replace("(", "", $phone1);
+				$phone1 = str_replace(")", "", $phone1);
+				$phone1 = str_replace(" ", "", $phone1);
+				$phone1 = str_replace(".", "", $phone1);
+				if (strlen($phone1) == 10) {
+					$phone1 = "1".$phone1;
+				}
+
+			//schedule the call
+				$bridge_array = outbound_route_to_bridge ($phone1);
+				//print_r($bridge_array);
+
+				$channel_variables = "origination_caller_id_name='$broadcast_caller_id_name',origination_caller_id_number=$broadcast_caller_id_number";
+				$origination_url = "{".$channel_variables."}".$bridge_array[0]."";
+				$cmd = "sched_api +".$sched_seconds." none originate ".$origination_url." &transfer(".$broadcast_destination_data." XML default)";
+				//echo $cmd."<br />\n";
+
+				//method 1
+					$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+					$response = event_socket_request($fp, 'api '.$cmd);
+					fclose($fp);
+
+				//method 2
+					//cmd_async($bin_dir."/fs_cli -x \"".$cmd."\";");
+
+				//spread the calls out so that they are scheduled with different times
+					if (strlen($broadcast_concurrent_limit) > 0 && strlen($broadcast_timeout) > 0) {
+						if ($broadcast_concurrent_limit == $count) { 
+							$sched_seconds = $sched_seconds + $broadcast_timeout;
+							$count=0;
+						}
+					}
+				$count++;
+		}
+
+		require_once "includes/header.php";
+		//echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/mod/calls_active/v_calls_active.php\">\n";
+		echo "<div align='center'>\n";
+		echo "<table width='50%'>\n";
+		echo "<tr>\n";
+		echo "<th align='left'>Message</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td class='rowstyle1' align='center'>\n";
+		echo "	<strong>Call Broadcast $broadcast_name has been started.</strong>\n";
+		echo "	<br /><br />\n";
+		echo "	<table width='100%'>\n";
+		echo "	<tr>\n";
+		echo "	<td align='center'>\n";
+		echo "		<a href='".PROJECT_PATH."/mod/calls_active/v_calls_active.php'>View Calls</a>\n";
+		echo "	</td>\n";
+		echo "	</table>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+		echo "</div>\n";
+
+		require_once "includes/footer.php";
+		return;
+	}
 
 
-//$tmpjs .= "function extract_numbers(str){\n";
-//$tmpjs .= "	return str.match(/\\d+/g);\n";
+/*
+//reserved for future use
 
-
-//start the count at 0
-$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=0\"");
+require_once "includes/header.php";
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -179,6 +214,34 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 	echo "<td width='50%' nowrap><b>Contact List</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr></table>\n";
+
+		$broadcast_phone_number_array = explode ("\n", $broadcast_phone_numbers);
+		foreach ($broadcast_phone_number_array as $tmp_value) {
+			$tmp_value = str_replace(";", "|", $tmp_value);
+			$tmp_value_array = explode ("|", $tmp_value);
+
+			//make sure the phone numbers are correct
+				$phone1 = trim($tmp_value_array[0]);
+				$phone1 = str_replace("-", "", $phone1);
+				$phone1 = str_replace("(", "", $phone1);
+				$phone1 = str_replace(")", "", $phone1);
+				$phone1 = str_replace(" ", "", $phone1);
+				$phone1 = str_replace(".", "", $phone1);
+				if (strlen($phone1) == 10) {
+					$phone1 = "1".$phone1;
+				}
+
+			if ($gateway == "loopback") {
+				$cmd = $bin_dir."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone1."/default/XML ".$v_recordings_dir."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
+			}
+			else {
+				$cmd = $bin_dir."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$v_recordings_dir."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
+			}
+			echo $cmd."<br />\n";
+			cmd_async($cmd);
+			//sleep(60);
+		}
+
 
 	if (strlen($groupid) > 0) {
 		$sql = "";
@@ -234,10 +297,6 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userphone2]."&nbsp;</td>\n";
 			echo "</tr>\n";
 
-			$tmpjs .= "var count = getGlobalVariable('broadcast_".$broadcast_name."_count');\n";
-			$tmpjs .= "setGlobalVariable(\"broadcast_".$broadcast_name."_count\", (parseInt(count)+1));\n";
-			//cmd_async($cmd);
-
 			//if (strlen($gateway) > 0) {
 				if ($phonetype1 == "phone1" && strlen($row[userphone1]) > 0) { $phone1 = $row[userphone1]; }
 				if ($phonetype1 == "phone2" && strlen($row[userphone2]) > 0) { $phone1 = $row[userphone2]; }
@@ -264,70 +323,26 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 					$phone2 = "1".$phone2;
 				}
 
-			//set the global variable
-			//$cmd = $bin_dir."/fs_cli -x \"global_setvar broadcast_test_count=75\"";
-			//echo exec($cmd);
-
-			//get the global variable
-			//$cmd = $bin_dir."/fs_cli -x \"global_getvar broadcast_test_count\"";
-			//echo exec($cmd);
-			//echo "phone1: $phone1<br />\n";
-			//echo "phone2: $phone2<br />\n";
-
 			//make the call
 				if (strlen($phone1)> 0) {
-					if (strlen($broadcast_concurrent_limit) > 0) {
-						$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
-						$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
-					}
 					if ($gateway == "loopback") {
-						$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}loopback/".$phone1."/default/XML ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+						$cmd = $bin_dir."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone1."/default/XML ".$v_recordings_dir."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
 					}
 					else {
-						$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+						$cmd = $bin_dir."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$v_recordings_dir."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
 					}
 					//echo $cmd."<br />\n";
 					cmd_async($cmd);
 				}
 				if (strlen($phone2)> 0) {
-					if (strlen($broadcast_concurrent_limit) > 0) {
-						$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
-						$response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=".($broadcast_count+1)."\"");
-					}
 					if ($gateway == "loopback") {
-						$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}loopback/".$phone2."/default/XML ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
+						$cmd = $bin_dir."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone2."/default/XML ".$v_recordings_dir."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
 					}
 					else {
-						$cmd = $bin_dir."/fs_cli -x \"jsrun call_broadcast_originate.js {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone2." ".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." broadcast_".$broadcast_name."_count\"";
-					}					//echo $cmd."<br />\n";
+						$cmd = $bin_dir."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone2." ".$v_recordings_dir."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
+					}
+					//echo $cmd."<br />\n";
 					cmd_async($cmd);
-				}
-
-			//check the number of calls do not continue wait until the number is below the limit
-				$x = 0;
-				while (true) {
-					if (strlen($broadcast_concurrent_limit) == 0) {
-						break; //for testing
-					}
-					$broadcast_count = trim(exec($bin_dir."/fs_cli -x \"global_getvar broadcast_".$broadcast_name."_count\""));
-					if ($broadcast_count < $broadcast_concurrent_limit) {
-						break;
-					}
-					else {
-						//100000 microseconds = 0.1 seconds
-						usleep(100000);
-					}
-					if ($x > 200) {
-						$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-						$cmd = "api show channels count";
-						$response = event_socket_request($fp, $cmd);
-						$concurrent_count = preg_replace("/[^0-9]/", '', $response);
-						fclose($fp);
-
-						$response = trim(exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_name."_count=$concurrent_count\""));
-						$x = 0;
-					}
-					$x++;
 				}
 
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -339,8 +354,6 @@ $response = exec($bin_dir."/fs_cli -x \"global_setvar broadcast_".$broadcast_nam
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
-	//echo "  <input type='button' class='btn' value='call now' onclick=\"document.location.href='v_call_broadcast_send.php?f=".$filename."';\" />\n";
 
 	echo "</td>";
 	echo "</tr>";
@@ -355,4 +368,5 @@ unset ($result);
 unset ($key);
 unset ($val);
 unset ($c);
+*/
 ?>

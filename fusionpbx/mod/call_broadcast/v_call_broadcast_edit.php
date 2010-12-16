@@ -54,6 +54,7 @@ if (count($_POST)>0) {
 	$broadcast_caller_id_name = check_str($_POST["broadcast_caller_id_name"]);
 	$broadcast_caller_id_number = check_str($_POST["broadcast_caller_id_number"]);
 	$broadcast_destination_type = check_str($_POST["broadcast_destination_type"]);
+	$broadcast_phone_numbers = check_str($_POST["broadcast_phone_numbers"]);
 	$broadcast_destination_data = check_str($_POST["broadcast_destination_data"]);
 }
 
@@ -80,6 +81,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($broadcast_caller_id_name) == 0) { $msg .= "Please provide: Caller ID Name<br>\n"; }
 		//if (strlen($broadcast_caller_id_number) == 0) { $msg .= "Please provide: Caller ID Number<br>\n"; }
 		//if (strlen($broadcast_destination_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
+		//if (strlen($broadcast_phone_numbers) == 0) { $msg .= "Please provide: Phone Number List<br>\n"; }
 		//if (strlen($broadcast_destination_data) == 0) { $msg .= "Please provide: Destination<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
@@ -94,19 +96,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	$tmp .= "Name: $broadcast_name\n";
-	$tmp .= "Description: $broadcast_desc\n";
-	$tmp .= "Timeout: $broadcast_timeout\n";
-	$tmp .= "Concurrent Limit: $broadcast_concurrent_limit\n";
-	$tmp .= "Recording: $recordingid\n";
-	$tmp .= "Caller ID Name: $broadcast_caller_id_name\n";
-	$tmp .= "Caller ID Number: $broadcast_caller_id_number\n";
-	$tmp .= "Type: $broadcast_destination_type\n";
-	$tmp .= "Destination: $broadcast_destination_data\n";
-
-
-	//Add or update the database
+	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			$sql = "insert into v_call_broadcast ";
@@ -119,6 +109,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "broadcast_caller_id_name, ";
 			$sql .= "broadcast_caller_id_number, ";
 			$sql .= "broadcast_destination_type, ";
+			$sql .= "broadcast_phone_numbers, ";
 			$sql .= "broadcast_destination_data ";
 			$sql .= ")";
 			$sql .= "values ";
@@ -131,6 +122,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$broadcast_caller_id_name', ";
 			$sql .= "'$broadcast_caller_id_number', ";
 			$sql .= "'$broadcast_destination_type', ";
+			$sql .= "'$broadcast_phone_numbers', ";
 			$sql .= "'$broadcast_destination_data' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
@@ -155,6 +147,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "broadcast_caller_id_name = '$broadcast_caller_id_name', ";
 			$sql .= "broadcast_caller_id_number = '$broadcast_caller_id_number', ";
 			$sql .= "broadcast_destination_type = '$broadcast_destination_type', ";
+			$sql .= "broadcast_phone_numbers = '$broadcast_phone_numbers', ";
 			$sql .= "broadcast_destination_data = '$broadcast_destination_data' ";
 			$sql .= "where call_broadcast_id = '$call_broadcast_id'";
 			$db->exec(check_sql($sql));
@@ -168,37 +161,39 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		} //if ($action == "update")
-	} //if ($_POST["persistformvar"] != "true") { 
+	} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$call_broadcast_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_call_broadcast ";
-	$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
-		$broadcast_name = $row["broadcast_name"];
-		$broadcast_desc = $row["broadcast_desc"];
-		$broadcast_timeout = $row["broadcast_timeout"];
-		$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
-		$recordingid = $row["recordingid"];
-		$broadcast_caller_id_name = $row["broadcast_caller_id_name"];
-		$broadcast_caller_id_number = $row["broadcast_caller_id_number"];
-		$broadcast_destination_type = $row["broadcast_destination_type"];
-		$broadcast_destination_data = $row["broadcast_destination_data"];
-		break; //limit to 1 row
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$call_broadcast_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_call_broadcast ";
+		$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		while($row = $prepstatement->fetch()) {
+			$broadcast_name = $row["broadcast_name"];
+			$broadcast_desc = $row["broadcast_desc"];
+			$broadcast_timeout = $row["broadcast_timeout"];
+			$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
+			$recordingid = $row["recordingid"];
+			$broadcast_caller_id_name = $row["broadcast_caller_id_name"];
+			$broadcast_caller_id_number = $row["broadcast_caller_id_number"];
+			$broadcast_destination_type = $row["broadcast_destination_type"];
+			$broadcast_phone_numbers = $row["broadcast_phone_numbers"];
+			$broadcast_destination_data = $row["broadcast_destination_data"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
-
+//begin header
 	require_once "includes/header.php";
 
+//begin content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
 
@@ -213,12 +208,14 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td width='30%' nowrap='nowrap' align='left'><b>Call Broadcast</b></td>\n";
+		echo "<td width='30%' nowrap><b>Call Broadcast</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td width='30%' nowrap='nowrap' align='left'><b>Call Broadcast Edit</b></td>\n";
+		echo "<td width='30%' nowrap><b>Call Broadcast Edit</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_broadcast.php'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_broadcast.php'\" value='Back'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -255,33 +252,33 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</tr>\n";
 
 
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Recording:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "		<select name='recordingid' class='formfld'>\n";
-	echo "		<option></option>\n";
-	$sql = "";
-	$sql .= "select * from v_recordings ";
-	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
-		if ($recordingid == $row['recording_id']) {
-			echo "		<option value='".$row['recording_id']."' selected='yes'>".$row['recordingname']."</option>\n";
-		}
-		else {
-			echo "		<option value='".$row['recording_id']."'>".$row['recordingname']."</option>\n";
-		}
-	}
-	unset ($prepstatement);
-	echo "		</select>\n";
-	echo "<br />\n";
-	echo "Recording to play when the call is answered.<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	//echo "<tr>\n";
+	//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	//echo "	Recording:\n";
+	//echo "</td>\n";
+	//echo "<td class='vtable' align='left'>\n";
+	//echo "		<select name='recordingid' class='formfld'>\n";
+	//echo "		<option></option>\n";
+	//$sql = "";
+	//$sql .= "select * from v_recordings ";
+	//$sql .= "where v_id = '$v_id' ";
+	//$prepstatement = $db->prepare(check_sql($sql));
+	//$prepstatement->execute();
+	//while($row = $prepstatement->fetch()) {
+	//	if ($recordingid == $row['recording_id']) {
+	//		echo "		<option value='".$row['recording_id']."' selected='yes'>".$row['recordingname']."</option>\n";
+	//	}
+	//	else {
+	//		echo "		<option value='".$row['recording_id']."'>".$row['recordingname']."</option>\n";
+	//	}
+	//}
+	//unset ($prepstatement);
+	//echo "		</select>\n";
+	//echo "<br />\n";
+	//echo "Recording to play when the call is answered.<br />\n";
+	//echo "\n";
+	//echo "</td>\n";
+	//echo "</tr>\n";
 
 
 	echo "<tr>\n";
@@ -335,11 +332,32 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Destination Number:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='broadcast_destination_data' maxlength='255' value=\"$broadcast_destination_data\">\n";
+	echo "<br />\n";
+	echo "Send the call to the extension an IVR Menu, Conference Room, or any other number. <br /><br />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Phone Number List:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<textarea class='formfld' type='text' name='broadcast_phone_numbers' rows='10'>$broadcast_phone_numbers</textarea>\n";
+	echo "<br />\n";
+	echo "Optional, set a list of phone numbers one per row in the following format: 123-123-1234|Last Name, First Name <br /><br />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='broadcast_desc' maxlength='255' value=\"$broadcast_desc\">\n";
-	//echo "	<textarea class='formfld' name='broadcast_desc' rows='4'>$broadcast_desc</textarea>\n";
 	echo "<br />\n";
 	echo "Enter a description here.\n";
 	echo "</td>\n";
@@ -348,8 +366,10 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='call_broadcast_id' value='$call_broadcast_id'>\n";
+		echo "			<input type='hidden' name='call_broadcast_id' value='$call_broadcast_id'>\n";
+		echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_broadcast_send.php?call_broadcast_id=$call_broadcast_id'\" value='Send Broadcast'>\n";
 	}
+
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
@@ -360,11 +380,12 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<br />\n";
 	echo "<br />\n";
 
+	/*
 	if ($action == "update") {
 
 		echo "<table width='100%' border='0'>\n";
 		echo "<tr>\n";
-		echo "<td width='50%' nowrap='nowrap' align='left'><b>Call Broadcast</b></td>\n";
+		echo "<td width='50%' nowrap><b>Call Broadcast</b></td>\n";
 		echo "<td width='50%' align='right'>&nbsp;</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
@@ -509,7 +530,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		echo "</table>";
 		echo "</form>";
 	}
-
+	*/
 
 
 	echo "	</td>";
