@@ -37,35 +37,27 @@ if (!ifgroup("superadmin")) {
 if (count($_GET)>0) {
 	$menuid = check_str($_GET["menuid"]);
 	$menuorder = check_str($_GET["menuorder"]);
-	$menuparentid = check_str($_GET["menuparentid"]);
 
 	if ($menuorder != 1) {
 
-		$_SESSION["menu"] = ""; //clear the menu session so it will rebuild with the update
+		//clear the menu session so it will rebuild with the update
+			$_SESSION["menu"] = ""; 
 
 		//move the current item's order number down
-		$sql  = "update v_menu set ";
-		$sql .= "menuorder = (menuorder+1) "; //move down
-		$sql .= "where v_id = '".$v_id."' ";
-		$sql .= "and menuorder = ".($menuorder-1)." ";
-		$sql .= "and menuparentid  = '$menuparentid' ";
-		$sql .= "or v_id = '".$v_id."' ";
-		$sql .= "and menuorder = '".($menuorder-1).".0' ";
-		$sql .= "and menuparentid  = '$menuparentid' ";        
-		//echo $sql."<br><br>";
-		$db->exec(check_sql($sql));
-		unset($sql);
+			$sql  = "update v_menu set ";
+			$sql .= "menuorder = (menuorder+1) "; //move down
+			$sql .= "where v_id = '".$v_id."' ";
+			$sql .= "and menuorder = ".($menuorder-1)." ";
+			$db->exec(check_sql($sql));
+			unset($sql);
 
 		//move the selected item's order number up
-		$sql  = "update v_menu set ";
-		$sql .= "menuorder = (menuorder-1) "; //move up
-		$sql .= "where v_id = '".$v_id."' ";
-		$sql .= "and menuid = '$menuid' ";
-		$sql .= "and menuparentid  = '$menuparentid' ";
-		//echo $sql."<br><br>";
-		$db->exec(check_sql($sql));
-		unset($sql);
-
+			$sql  = "update v_menu set ";
+			$sql .= "menuorder = (menuorder-1) "; //move up
+			$sql .= "where v_id = '".$v_id."' ";
+			$sql .= "and menuid = '$menuid' ";
+			$db->exec(check_sql($sql));
+			unset($sql);
 	}
 
 	require_once "includes/header.php";
