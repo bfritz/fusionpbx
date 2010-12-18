@@ -178,7 +178,7 @@ if (is_dir($v_recordings_dir.'/')) {
 	echo "  <tr>\n";
 	echo "    <td align='left'><p><span class=\"vexpl\"><span class=\"red\"><strong>Recordings:<br>\n";
 	echo "        </strong></span>\n";
-	echo "        To make a recording dial *732673 (record) or you can make a\n";
+	echo "        To make a recording dial *732 or you can make a\n";
 	echo "        16bit 8khz/16khz Mono WAV file then copy it to the\n";
 	echo "        following directory then refresh the page to play it back.\n";
 	echo "        Click on the 'Filename' to download it or the 'Recording Name' to\n";
