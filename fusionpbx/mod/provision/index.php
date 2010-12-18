@@ -41,9 +41,9 @@ require_once "includes/config.php";
 	$prepstatement->execute();
 	$provision_variables_array = $prepstatement->fetchAll();
 	foreach ($provision_variables_array as &$row) {
-		if ($row[var_name] == "password") {
-			$var_name = $row[var_name];
-			$var_value = $row[var_value];
+		if ($row['var_name'] == "password") {
+			$var_name = $row['var_name'];
+			$var_value = $row['var_value'];
 			$$var_name = $var_value;
 		}
 	}
