@@ -98,7 +98,7 @@ function phpservice_sync_package_php() {
 				$tmp .= "\$fp = fopen(\$filename, 'w');\n";
 				$tmp .= "fwrite(\$fp, getmypid());\n";
 				$tmp .= "fclose(\$fp);\n";
-				//$tmp .= "chmod(\"".$tmp_dir."/php_service_".$tmp_service_name.".pid\", 0766);\n";
+				$tmp .= "chmod(\"".$tmp_dir."/php_service_".$tmp_service_name.".pid\", 0776);\n";
 				$tmp .= "unset(\$filename);\n";
 				$tmp .= "\n";
 
@@ -138,6 +138,9 @@ function phpservice_sync_package_php() {
 				fwrite($fout, $tmp);
 				unset($tmp);
 				fclose($fout);
+
+			//add execute permissions to the php service script
+				chmod($v_secure."/".$php_service_file, 0776);
 
 			//write the start up script
 				// CYGWIN_NT-5.1
@@ -198,7 +201,7 @@ function phpservice_sync_package_php() {
 					fclose($fout);
 
 					//add execute permissions to the start script
-						chmod($v_startup_script_dir."/php_service_".$tmp_service_name.".sh", 0755);
+						chmod($v_startup_script_dir."/php_service_".$tmp_service_name.".sh", 0776);
 
 					break;
 				default:
@@ -251,7 +254,7 @@ function phpservice_sync_package_php() {
 					fclose($fout);
 
 					//add execute permissions to the start script
-						chmod($v_startup_script_dir."/php_service_".$tmp_service_name.".sh", 0755);
+						chmod($v_startup_script_dir."/php_service_".$tmp_service_name.".sh", 0776);
 				}
 		} //end if enabled
 	}
@@ -380,7 +383,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		} //if ($action == "update")
 
-	} //if ($_POST["persistformvar"] != "true") { 
+	} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
