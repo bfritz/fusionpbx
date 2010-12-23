@@ -235,7 +235,7 @@ $order = $_GET["order"];
 
 
 	echo "<tr>\n";
-	echo "<td colspan='5'>\n";
+	echo "<td colspan='6'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
