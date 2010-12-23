@@ -29,14 +29,13 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-
-if (ifgroup("admin") || ifgroup("superadmin")) {
+//if (ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
+//}
+//else {
+//	echo "access denied";
+//	exit;
+//}
 
 if (count($_GET)>0) {
 	$switch_cmd = trim($_GET["cmd"]);

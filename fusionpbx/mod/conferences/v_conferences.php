@@ -80,7 +80,6 @@ $order = $_GET["order"];
 		}
 	}
 	unset ($prepstatement);
-	//print_r($conference_array);
 	//foreach ($conference_array as &$row) {
 	//	echo "--".$row['dialplan_include_id']."--<br />\n";
 	//}
@@ -105,7 +104,9 @@ $order = $_GET["order"];
 	echo "	<td align='left' colspan='2'>\n";
 	echo "		<span class=\"vexpl\">\n";
 	echo "			Conferences is used to setup conference rooms with a name, description, and optional pin number.\n";
-	echo "			Show <a href='".PROJECT_PATH."/mod/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.\n";
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo "			Show <a href='".PROJECT_PATH."/mod/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.\n";
+	}
 	echo "		</span>\n";
 	echo "	</td>\n";
 	echo "\n";
@@ -190,6 +191,7 @@ $order = $_GET["order"];
 
 	echo "<tr>\n";
 	echo thorderby('extensionname', 'Conference Name', $orderby, $order);
+	echo "<th>Tools</th>\n";
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		echo thorderby('dialplanorder', 'Order', $orderby, $order);
 	}
@@ -212,18 +214,19 @@ $order = $_GET["order"];
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extensionname]."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['extensionname']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='".PROJECT_PATH."/mod/conferences_active/v_conference_interactive.php?c=".$row['extensionname']."'>view</a></td>\n";
 			if (ifgroup("admin") || ifgroup("superadmin")) {
-				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplanorder]."</td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['dialplanorder']."</td>\n";
 			}
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
-			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
-			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_conferences_edit.php?id=".$row[dialplan_include_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['enabled']."</td>\n";
+			echo "	<td valign='top' class='rowstylebg' width='30%'>".$row['descr']."&nbsp;</td>\n";
+			echo "	<td valign='top' align='right'>\n";
+			echo "		<a href='v_conferences_edit.php?id=".$row['dialplan_include_id']."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
 			if (ifgroup("admin") || ifgroup("superadmin")) {
-				echo "		<a href='v_conferences_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+				echo "		<a href='v_conferences_delete.php?id=".$row['dialplan_include_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
 			}
-			echo "   </td>\n";
+			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
