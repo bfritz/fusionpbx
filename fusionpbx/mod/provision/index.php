@@ -139,11 +139,11 @@ require_once "includes/config.php";
 					);
 
 			foreach ($template_list as $key=>$val){
-					if(stripos($_SERVER['HTTP_USER_AGENT'],$key)!== false) {
-							$phone_template=$val;
-							break;
-							}
-					}
+				if(stripos($_SERVER['HTTP_USER_AGENT'],$key)!== false) {
+					$phone_template=$val;
+					break;
+				}
+			}
 			unset($template_list);
 
 		//the mac address does not exist in the table so add it

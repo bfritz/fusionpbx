@@ -131,7 +131,7 @@ else {
 	echo "</tr>\n";
 
 	foreach ($xml->fifo->callers->caller as $row) {
-		//print_r($row);
+		/*
 		$username = $row->caller_profile->username;
 		$dialplan = $row->caller_profile->dialplan;
 		$caller_id_name = urldecode($row->caller_profile->caller_id_name);
@@ -150,6 +150,29 @@ else {
 		$fifo_priority = $row->variables->fifo_priority;
 		$fifo_status = $row->variables->fifo_status;
 		$fifo_timestamp = urldecode($row->variables->fifo_timestamp);
+		$fifo_time = strtotime($fifo_timestamp);
+		$fifo_duration = time() - $fifo_time;
+		$fifo_duration_formatted = str_pad(intval(intval($fifo_duration/3600)),2,"0",STR_PAD_LEFT).":" . str_pad(intval(($fifo_duration / 60) % 60),2,"0",STR_PAD_LEFT).":" . str_pad(intval($fifo_duration % 60),2,"0",STR_PAD_LEFT) ;
+		*/
+
+		$username = $row->cdr->callflow->caller_profile->username;
+		$dialplan = $row->cdr->callflow->caller_profile->dialplan;
+		$caller_id_name = urldecode($row->cdr->callflow->caller_profile->caller_id_name);
+		$caller_id_number = $row->cdr->callflow->caller_profile->caller_id_number;
+		$ani = $row->cdr->callflow->caller_profile->ani;
+		$aniii = $row->cdr->callflow->caller_profile->aniii;
+		$network_addr = $row->cdr->callflow->caller_profile->network_addr;
+		$destination_number = $row->cdr->callflow->caller_profile->destination_number;
+		$rdnis = $row->cdr->callflow->caller_profile->rdnis;
+		$uuid = $row->cdr->callflow->caller_profile->uuid;
+		$source = $row->cdr->callflow->caller_profile->source;
+		$context = $row->cdr->callflow->caller_profile->context;
+		$chan_name = $row->cdr->callflow->caller_profile->chan_name;
+		$default_language = $row->cdr->variables->default_language;
+		$fifo_position = $row->cdr->variables->fifo_position;
+		$fifo_priority = $row->cdr->variables->fifo_priority;
+		$fifo_status = $row->cdr->variables->fifo_status;
+		$fifo_timestamp = urldecode($row->cdr->variables->fifo_timestamp);
 		$fifo_time = strtotime($fifo_timestamp);
 		$fifo_duration = time() - $fifo_time;
 		$fifo_duration_formatted = str_pad(intval(intval($fifo_duration/3600)),2,"0",STR_PAD_LEFT).":" . str_pad(intval(($fifo_duration / 60) % 60),2,"0",STR_PAD_LEFT).":" . str_pad(intval($fifo_duration % 60),2,"0",STR_PAD_LEFT) ;
