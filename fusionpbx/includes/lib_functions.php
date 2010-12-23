@@ -211,7 +211,6 @@
 		}
 	}
 
-
 	if (!function_exists('htmlselect')) {
 		function htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $fieldvalue = '', $style = '') {
 			//html select other : build a select box from distinct items in db with option for other
@@ -232,9 +231,7 @@
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			$resultcount = count($result);
-			//echo $resultcount;
 			if ($resultcount > 0) { //if user account exists then show login
-				//print_r($result);
 				foreach($result as $field) {
 					if (strlen($field[$fieldname]) > 0) {
 						if ($fieldcurrentvalue == $field[$fieldname]) {
@@ -303,7 +300,6 @@
 						}
 					}
 				}
-
 			}
 			unset($sql, $result, $resultcount);
 			$html .= "</select>\n";
@@ -329,7 +325,6 @@
 				}
 			}
 			$html .= "&nbsp; &nbsp; </th>";
-
 			return $html;
 		}
 	}
@@ -343,7 +338,6 @@
 
 	if (!function_exists('logadd')) {
 		function logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $logadduserip) {
-		//--- Begin: Log entry -----------------------------------------------------
 			return; //this disables the function
 			global $v_id;
 
@@ -368,7 +362,6 @@
 			//echo $sql;
 			$db->exec(check_sql($sql));
 			unset($sql);
-		//--- End: Log entry -------------------------------------------------------
 		}
 	}
 	//$logtype = ''; $logstatus=''; $logadduser=''; $logdesc='';
@@ -461,7 +454,6 @@
 								}
 						}
 
-
 					//find unique filename: check if file exists if it does then increment the filename
 						$i = 1;
 						while( file_exists($dest_dir.'/'.$file_name)) {
@@ -486,16 +478,10 @@
 					//bool move_uploaded_file  ( string $filename, string $destination  )
 
 						if (move_uploaded_file($tmp_name, $dest_dir.'/'.$file_name)){
-							//print "<pre>";
-							//print_r($_FILES);
-							//print "</pre>";
 							 return $file_name;
 						}
 						else {
 							echo "File upload failed!  Here's some debugging info:\n";
-							//print "<pre>";
-							//print_r($_FILES);
-							//print "</pre>";
 							return false;
 						}
 						exit;
@@ -574,8 +560,6 @@
 					$sql .= "now(), ";
 					$sql .= "'".$_SESSION["username"]."' ";
 					$sql .= ")";
-					//echo $sql;
-					//exit;
 					$db->exec(check_sql($sql));
 					unset($sql);
 
@@ -631,4 +615,52 @@ function switch_module_exists($mod) {
 		unset($switchcmd);
 }
 //switch_module_exists('mod_spidermonkey');
+
+//format a number (n) replace with a number (r) remove the number
+function format_string ($format, $data) {
+	$x=0;
+	$tmp = '';
+	for ($i = 0; $i <= strlen($format); $i++) {
+		$tmp_format = strtolower(substr($format, $i, 1));
+		if ($tmp_format == 'x') {
+			$tmp .= substr($data, $x, 1);
+			$x++;
+		}
+		elseif ($tmp_format == 'r') {
+			$x++;
+		}
+		else {
+			$tmp .= $tmp_format;
+		}
+	}
+	return $tmp;
+}
+
+//get the format and use it to format the phone number
+	function format_phone($phone_number) {
+		if (strlen($_SESSION["format_phone_array"]) == 0) {
+			$_SESSION["format_phone_array"] = ""; //clear the menu
+			global $v_id, $db;
+			$sql = "select * from v_vars ";
+			$sql .= "where v_id  = '$v_id' ";
+			$sql .= "and var_name = 'format_phone' ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
+				$_SESSION["format_phone_array"][] = $row["var_value"];
+			}
+			unset ($prepstatement);
+		}
+		foreach ($_SESSION["format_phone_array"] as &$format) {
+			$format_count = substr_count($format, 'x');
+			$format_count = $format_count + substr_count($format, 'R');
+			if ($format_count == strlen($phone_number)) {
+				//format the number
+				$phone_number = format_string($format, $phone_number);
+			}
+		}
+		return $phone_number;
+	}
+
 ?>
