@@ -195,10 +195,14 @@ if (count($_POST)>0) {
 					$x = 1;
 					foreach ($column_array as $column) {
 						if ($x < $column_array_count) {
-							echo "'".$column."',";
+							if ($column != "menuid" && $column != "menuparentid") {
+								echo "".$column.",";
+							}
 						}
 						else {
-							echo "'".$column."'";
+							if ($column != "menuid" && $column != "menuparentid") {
+								echo "".$column."";
+							}
 						}
 						$x++;
 					}
@@ -208,10 +212,14 @@ if (count($_POST)>0) {
 					$x = 1;
 					foreach ($column_array as $column) {
 						if ($x < $column_array_count) {
-							echo "'".check_str($row[$column])."',";
+							if ($column != "menuid" && $column != "menuparentid") {
+								echo "'".check_str($row[$column])."',";
+							}
 						}
 						else {
-							echo "'".check_str($row[$column])."'";
+							if ($column != "menuid" && $column != "menuparentid") {
+								echo "'".check_str($row[$column])."'";
+							}
 						}
 						$x++;
 					}
@@ -255,10 +263,10 @@ if (count($_POST)>0) {
 				$x = 1;
 				foreach ($column_array as $column) {
 					if ($x < $column_array_count) {
-						echo "'".$column."',";
+						echo "\"".$column."\",";
 					}
 					else {
-						echo "'".$column."'";
+						echo "\"".$column."\"";
 					}
 					$x++;
 				}
@@ -269,10 +277,10 @@ if (count($_POST)>0) {
 					$x = 1;
 					foreach ($column_array as $column) {
 						if ($x < $column_array_count) {
-							echo "'".check_str($row[$column])."',";
+							echo "\"".check_str($row[$column])."\",";
 						}
 						else {
-							echo "'".check_str($row[$column])."'";
+							echo "\"".check_str($row[$column])."\"";
 						}
 						$x++;
 					}
