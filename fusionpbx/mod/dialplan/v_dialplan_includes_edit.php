@@ -423,7 +423,7 @@ if ($action == "update") {
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldtype]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fielddata]."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".wordwrap($row[fielddata],180,"<br>",1)."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[fieldorder]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_dialplan_includes_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
