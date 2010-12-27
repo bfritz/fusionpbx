@@ -35,6 +35,8 @@ else {
 	return;
 }
 
+require_once "includes/header.php";
+
 //if (ifpermission("add")) {
 	echo "<div class='' style='padding:0px;'>\n";
 	echo "<table width='100%'>";
@@ -43,7 +45,7 @@ else {
 	echo "<table width='100%' border='0'><tr>";
 	echo "<td width='50%'><b>Group List</b></td>";
 	echo "<td width='50%' align='right'>";
-	//echo "  <input type='button' class='btn' onclick=\"history.go(-1);\" value='back'>";
+	echo "  <input type='button' class='btn' onclick=\"window.location='index.php'\" value='User Manager'>";
 	//echo "  <input type='button' class='btn' name='' onclick=\"window.location='groupadd.php'\" value='Add Group'>\n";
 	echo "</td>\n";
 	echo "</tr></table>";
@@ -59,7 +61,6 @@ else {
 	$rowstyle["1"] = "rowstyle1";
 
 	$strlist = "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-	//$strlist .= "<tr><td colspan='7'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
 	$strlist .= "<tr class='border'>\n";
 	$strlist .= "	<th align=\"left\" nowrap> &nbsp; Group ID &nbsp; </th>\n";
@@ -69,9 +70,7 @@ else {
 	$strlist .= "	<td width='22px' align=\"right\" nowrap>\n";
 	$strlist .= "	<a href='groupadd.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
 	$strlist .= "	</td>\n";
-
 	$strlist .= "</tr>\n";
-	//$strlist .= "<tr><td colspan='7'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
 	$count = 0;
 	$result = $prepstatement->fetchAll();
@@ -134,3 +133,6 @@ else {
 
 //} //end if add permission
 
+require_once "includes/footer.php";
+
+?>

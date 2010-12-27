@@ -35,19 +35,15 @@ else {
 	return;
 }
 
-
 //get data from the db
-	if (strlen($_GET["id"])> 0) {
-		$id = $_GET["id"];
+	if (strlen($_REQUEST["id"])> 0) {
+		$id = $_REQUEST["id"];
 	}
 	else {
 		if (strlen($_SESSION["username"]) > 0) {
-			//if (!ifgroup("member")) {
-			  $username = $_SESSION["username"];
-			//}
+			$username = $_SESSION["username"];
 		}
 	}
-
 
 //get the username from v_users
 	$sql = "";
@@ -72,12 +68,26 @@ else {
 		}
 	}
 
+//delete the group from the user
+	if ($_GET["a"] == "delete") {
+		//set the variables
+			$groupid = $_GET["groupid"];
+		//delete the group from the users
+			$sql = "delete from v_group_members ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and groupid = '$groupid' ";
+			$sql .= "and username = '$username' ";
+			$db->exec(check_sql($sql));
+		//redirect the user
+			require_once "includes/header.php";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$id\">\n";
+			echo "<div align='center'>Update Complete</div>";
+			require_once "includes/footer.php";
+			return;
+	}
 
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
-	$id = $_POST["id"];
-	//if (ifgroup("admin") && strlen($_POST["username"])> 0) {
-		$username = $_POST["username"];
-	//}
+	$id = $_REQUEST["id"];
 	$password = check_str($_POST["password"]);
 	$confirmpassword = check_str($_POST["confirmpassword"]);
 	$userfirstname = check_str($_POST["userfirstname"]);
@@ -119,6 +129,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$groupmember = check_str($_POST["groupmember"]);
 
 	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
+	if (strlen($username) == 0) { $msgerror .= "Please provide the username.<br>\n"; }
 	if ($password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
 	if (strlen($userfirstname) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
 	if (strlen($userlastname) == 0) { $msgerror .= "Please provide a last name $userlastname.<br>\n"; }
@@ -138,7 +149,6 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	//if (strlen($useremail) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
 	//if (strlen($useremailemergency) == 0) { $msgerror .= "Please provide an emergency email.<br>\n"; }
 
-
 	if (strlen($msgerror) > 0) {
 		require_once "includes/header.php";
 		echo "<div align='center'>";
@@ -152,6 +162,31 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		require_once "includes/footer.php";
 		return;
 	}
+
+	//assign the user to the group
+		if (strlen($_REQUEST["groupid"]) > 0) {
+			//add the user to the group
+				$sqlinsert = "insert into v_group_members ";
+				$sqlinsert .= "(";
+				$sqlinsert .= "v_id, ";
+				$sqlinsert .= "groupid, ";
+				$sqlinsert .= "username ";
+				$sqlinsert .= ")";
+				$sqlinsert .= "values ";
+				$sqlinsert .= "(";
+				$sqlinsert .= "'$v_id', ";
+				$sqlinsert .= "'".$_REQUEST["groupid"]."', ";
+				$sqlinsert .= "'$username' ";
+				$sqlinsert .= ")";
+				if (!$db->exec($sqlinsert)) {
+					//echo $db->errorCode() . "<br>";
+					$info = $db->errorInfo();
+					print_r($info);
+					// $info[0] == $db->errorCode() unified error code
+					// $info[1] is the driver specific error code
+					// $info[2] is the driver specific error string
+				}
+		}
 
 	//set the session theme for the active user
 		if ($_SESSION["username"] == $username) {
@@ -210,71 +245,26 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and username = '$username' ";
 	}
-
-	//echo $sql;
 	$count = $db->exec(check_sql($sql));
-	//echo "Affected Rows: ".$count;
 
-	//todo: show only if admin
-	if (strlen($groupmember) > 0) {
-
-		//groupmemberlist function defined in config.php
-		$groupmemberlist = groupmemberlist($db, $username);
-
-		if (ifgroupmember($groupmemberlist, "customer".$groupmember)) {
-			//if the group provided from the html form is in the groupmemberlist
-			//then the user is already in the group
+	//redirect the user
+		require_once "includes/header.php";
+		if (ifgroup("admin")) {
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$id\">\n";
 		}
 		else {
-			//group is not in the database it needs to be added
-			//remove the old group and add the new group
-
-			/*
-			if (ifgroup("admin")) {
-
-				  $sql = "delete from v_group_members ";
-				  $sql .= "where username = '$username' and groupid = 'customerbronze' ";
-				  $sql .= "or username = '$username' and groupid = 'customersilver' ";
-				  $sql .= "or username = '$username' and groupid = 'customergold' ";
-				  $db->exec(check_sql($sql));
-				  unset($sql);
-
-				  $sql = "insert into v_group_members ";
-				  $sql .= "(";
-				  $sql .= "groupid, ";
-				  $sql .= "username ";
-				  $sql .= ")";
-				  $sql .= "values ";
-				  $sql .= "(";
-				  $sql .= "'$groupid', ";
-				  $sql .= "'$username' ";
-				  $sql .= ")";
-				  $db->exec(check_sql($sql));
-				  unset($sql);
-			  }
-			  */
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$id\">\n";
 		}
-	} //if (strlen($groupmember) > 0) {
-
-
-	//edit: make sure the meta redirect url is correct
-	require_once "includes/header.php";
-	if (ifgroup("admin")) {
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=index.php\">\n";
-	}
-	else {
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=index.php\">\n";
-	}
-	echo "<div align='center'>Update Complete</div>";
-	require_once "includes/footer.php";
-	return;
+		echo "<div align='center'>Update Complete</div>";
+		require_once "includes/footer.php";
+		return;
 }
 else {
 
 	$sql = "";
 	$sql .= "select * from v_users ";
+	//allow admin access
 	if (ifgroup("admin")) {
-		//allow admin access
 		if (strlen($id)> 0) {
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and id = '$id' ";
@@ -288,7 +278,6 @@ else {
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and username = '$username' ";
 	}
-	//echo $sql;
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -339,25 +328,32 @@ else {
 	//get the groups the user is a member of
 	//groupmemberlist function defined in config.php
 	$groupmemberlist = groupmemberlist($db, $username);
-	//echo "groupmemberlist $groupmemberlist";
-
 }
 
 
 	require_once "includes/header.php";
-	echo "<div align='center'>";
-	echo "<table width='90%' border='0' cellpadding='0' cellspacing='2'>\n";
+	echo "<br />\n";
 
+	echo "<div align='center'>";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
+	echo "<tr>\n";
+	echo "<td align='left' width='90%' nowrap><b>User Manager</b></td>\n";
+	echo "<td>\n";
+	echo "  <input type='button' class='btn' onclick=\"window.location='index.php'\" value='Back'>";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td align='left' colspan='4'>\n";
+	echo "Edit user information and group membership. \n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "	<td align=\"left\">\n";
-	echo "      <br>";
-
 
 	$tablewidth ='width="100%"';
 	echo "<form method='post' action=''>";
-
-	echo "<br>";
-	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>User Info</th>\n";
@@ -375,6 +371,7 @@ else {
 	echo "		<td class='vncell'>Confirm Password:</td>";
 	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirmpassword' value=\"\"></td>";
 	echo "	</tr>";
+
 	echo "	<tr>";
 	echo "		<td class='vncell'>First Name:</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='userfirstname' value=\"$userfirstname\"></td>";
@@ -387,11 +384,56 @@ else {
 	echo "		<td class='vncell'>Company Name:</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='usercompanyname' value=\"$usercompanyname\"></td>";
 	echo "	</tr>";
+
+	echo "	<tr>";
+	echo "		<td class='vncell' valign='top'>Groups:</td>";
+	echo "		<td class='vtable'>";
+	
+	echo "<table width='52%'>\n";
+	$sql = "SELECT * FROM v_group_members ";
+	$sql .= "where v_id=:v_id ";
+	$sql .= "and username=:username ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->bindParam(':v_id', $v_id);
+	$prepstatement->bindParam(':username', $username);
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	$resultcount = count($result);
+	foreach($result as $field) {
+		//get the list of groups
+		if (strlen($field['groupid']) > 0) {
+			echo "<tr>\n";
+			echo "	<td class='vtable'>".$field['groupid']."</td>\n";
+			echo "	<td>\n";
+			echo "		<a href='usersupdate.php?id=".$id."&groupid=".$field['groupid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
+			echo "	</td>\n";
+			echo "</tr>\n";
+		}
+	}
+	echo "</table>\n";
+
+	echo "<br />\n";
+	$sql = "SELECT * FROM v_groups ";
+	$sql .= "where v_id = '".$v_id."' ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	echo "<select name=\"groupid\" class='frm'>\n";
+	echo "<option value=\"\"></option>\n";
+	$result = $prepstatement->fetchAll();
+	//$catcount = count($result);
+	foreach($result as $field) {
+		echo "<option value='".$field['groupid']."'>".$field['groupid']."</option>\n";
+	}
+	echo "</select>";
+	echo "<input type=\"submit\" class='btn' value=\"Add\">\n";
+	unset($sql, $result);
+	echo "		</td>";
+	echo "	</tr>";
 	echo "    </table>";
-	echo "    </div>";
+
+	echo "<br>";
 	echo "<br>";
 
-	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>Physical Address</th>\n";
@@ -421,12 +463,12 @@ else {
 	echo "		<td class='vtable'><input type='text' class='formfld' name='userphysicalpostalcode' value=\"$userphysicalpostalcode\"></td>";
 	echo "	</tr>";
 	echo "    </table>";
-	echo "    </div>";
+
+	echo "<br>";
 	echo "<br>";
 
 	/*
 	echo "<b>Mailing Address</b><br>";
-	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "	<tr>";
 	echo "		<td class='vncell' width='40%'>Address 1:</td>";
@@ -453,11 +495,11 @@ else {
 	echo "		<td class='vtable'><input type='text' class='formfld' name='usermailingpostalcode' value='$usermailingpostalcode'></td>";
 	echo "	</tr>";
 	echo "    </table>";
-	echo "    </div>";
+
+	echo "<br>";
 	echo "<br>";
 
 	echo "<b>Billing Address</b><br>";
-	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "	<tr>";
 	echo "		<td class='vncell' width='30%'>Address 1:</td>";
@@ -484,11 +526,11 @@ else {
 	echo "		<td class='vtable'><input type='text' class='formfld' name='userbillingpostalcode' value='$userbillingpostalcode'></td>";
 	echo "	</tr>";
 	echo "    </table>";
-	echo "    </div>";
+
+	echo "<br>";
 	echo "<br>";
 
 	echo "<b>Shipping Address</b><br>";
-	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "	<tr>";
 	echo "		<td class='vncell' width='30%'>Address 1:</td>";
@@ -515,11 +557,11 @@ else {
 	echo "		<td class='vtable'><input type='text' class='formfld' name='usershippingpostalcode' value='$usershippingpostalcode'></td>";
 	echo "	</tr>";
 	echo "    </table>";
-	echo "    </div>";
+
+	echo "<br>";
 	echo "<br>";
 	*/
 
-	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "	<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>Additional Info</th>\n";
@@ -583,10 +625,9 @@ else {
 	echo "	</td>\n";
 	echo "	</tr>\n";
 	echo "    </table>";
-	echo "    </div>";
 
 	echo "<br>";
-
+	echo "<br>";
 
 	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth>";
@@ -599,7 +640,6 @@ else {
 	echo "	</tr>";
 	echo "</table>";
 	echo "</form>";
-
 
 	echo "	</td>";
 	echo "	</tr>";

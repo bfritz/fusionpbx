@@ -38,13 +38,13 @@ else {
 require_once "includes/header.php";
 
 echo "<div align='center'>";
-echo "<table width='90%' border='0'>";
+echo "<table width='100%' border='0'>";
 echo "<tr>";
 echo "<td align='left' width='100%'>";
 
 
-require_once "grouplist.php";
-echo "<br>";
+//require_once "grouplist.php";
+//echo "<br>";
 require_once "userlist.php";
 
 
