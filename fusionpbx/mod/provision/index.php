@@ -52,6 +52,7 @@ require_once "includes/config.php";
 	if (strlen($password) > 0) {
 		//deny access if the password doesn't match
 			if ($password != $_GET['password']) {
+				usleep(rand(1000000,3500000));//1-3.5 seconds.
 				echo "access denied";
 				return;
 			}
@@ -279,6 +280,7 @@ require_once "includes/config.php";
 		$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
 		$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
 		$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);
+		$file_contents = str_replace("{v_password}", $password, $file_contents);
 
 	//cleanup any remaining variables
 		for ($i = 1; $i <= 100; $i++) {
