@@ -358,7 +358,9 @@ $rowstyle["1"] = "rowstyle1";
 			echo "	<a href='javascript:void(0);' onclick=\"confirm_response = confirm('Do you really want to hangup this call?');if (confirm_response){send_cmd('v_calls_exec.php?cmd=uuid_kill%20'+(escape('$uuid')));}\">hangup</a>&nbsp;\n";
 
 		//record start/stop
-			$tmp_file = $v_recordings_dir."/active_calls_".$cid_num."_recording.wav";
+			$tmp_dir = $v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d");
+			mkdir($tmp_dir, 0777, true);
+			$tmp_file = $tmp_dir."/".$uuid.".wav";
 			if (file_exists($tmp_file)) {
 				//stop
 				echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_calls_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=stop&prefix=active_calls_&name='+escape('$cid_num'));\">stop rec</a>&nbsp;\n";
