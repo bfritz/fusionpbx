@@ -62,7 +62,7 @@
 			$charset = '';
 			if ($strength >= 1) { $charset .= "0123456789"; }
 			if ($strength >= 2) { $charset .= "abcdefghijkmnopqrstuvwxyz";	}
-			if ($strength >= 3) { $charset .= "!!!!!@^$#%*?....."; }
+			if ($strength >= 3) { $charset .= "!!!!!@^$%*?....."; }
 			if ($strength >= 4) { $charset .= "ABCDEFGHIJKLMNPQRSTUVWXYZ";	}
 			srand((double)microtime() * rand(1000000, 9999999));
 			while ($length > 0) {
