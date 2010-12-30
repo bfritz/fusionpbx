@@ -256,9 +256,7 @@ if (is_dir($v_recordings_dir.'/')) {
 	if ($resultcount == 0) { //no results
 	}
 	else { //received results
-
 		foreach($result as $row) {
-			//print_r( $row );
 			$tmp_filesize = filesize($v_recordings_dir.'/'.$row[filename]);
 			$tmp_filesize = byte_convert($tmp_filesize);
 

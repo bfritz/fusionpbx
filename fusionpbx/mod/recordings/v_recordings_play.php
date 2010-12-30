@@ -59,7 +59,7 @@ $type = $_GET['type']; //moh //rec
 			echo "<audio src=\"http://localhost:8000/mod/recordings/v_recordings.php?a=download&type=".$type."&filename=".base64_encode($filename)."\" autoplay=\"autoplay\">"; 
 			echo "</audio>";
 
-			echo "<embed src=\"v_recordings.php?a=download&type=".$type."&filename=".base64_encode($filename)."\" autostart=\"true\" width=\"200\" height=\"40\" name=\"sound_".$filename."\" enablejavascript=\"true\">\n";
+			echo "<embed src=\"v_recordings.php?a=download&type=".$type."&filename=".base64_encode($filename)."\" autostart=\"true\" width=\"300\" height=\"90\" name=\"sound_".$filename."\" enablejavascript=\"true\">\n";
 
 		}
 		if ($file_ext == "mp3") {
