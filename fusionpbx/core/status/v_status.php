@@ -182,7 +182,6 @@ if ($savemsg) {
 	echo "</tr>\n";
 	echo "</table>\n";
 	echo "</div>\n";
-  //print_info_box($savemsg);
 }
 
 echo "<div align='center'>\n";
