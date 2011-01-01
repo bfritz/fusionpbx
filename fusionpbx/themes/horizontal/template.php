@@ -283,9 +283,7 @@ table tr:last-child td:first-of-type {
 	-webkit-border-top-right-radius:10px;
 	border-top-right-radius:10px
 	}
-*/
 
-/*
 table tr:last-child td:first-child {
 	-moz-border-radius-bottomleft:10px;
 	-webkit-border-bottom-left-radius:10px;
@@ -312,7 +310,6 @@ table tr:last-child td:last-child {
 	font:bold 11px/16px arial,helvetica,sans-serif;
 	display:block;
 	/*border-color:#ccc #888 #555 #bbb;*/
-	border: solid 0.5px #222222;
 	white-space:nowrap;
 	margin:0;
 	padding:3px 3px 3px 3px;
@@ -321,14 +318,12 @@ table tr:last-child td:last-child {
 	#menu h2{
 	/*background:#222222 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 	/*text-transform:uppercase*/
-	border: solid 0.5px #222222;
 	width:108px;
 	}
 
 	#menu h2 h2{
 	background:#4e4b56 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;
 	/*text-transform:uppercase*/
-	border: solid 0.5px #222222;
 	padding:3px 3px 3px 3px;
 	}
 
