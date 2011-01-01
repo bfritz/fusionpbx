@@ -68,28 +68,7 @@ if ($_GET['a'] == "download") {
 	exit;
 }
 
-//disabled until further development
-//if ($_GET['a'] == "update") {
-//	if ($_GET['t'] == "gui_phase_1") {
-//		//chdir('/tmp/');
-//		chdir($v_parent_dir.'/pkg/');
-//		exec("fetch ".$v_download_path."v_config.inc");
-//		//exec("cp ".$tmp_dir."/v_config.tmp ".$v_parent_dir."/pkg/v_config.php");
-//		//unlink_if_exists($tmp_dir."/v_config.tmp");
-//		
-//		header( 'Location: v_status.php?a=update&t=gui_phase_2' ) ;
-//		exit;
-//	}
-//}
 
-////disabled until further development
-//if ($_GET['a'] == "update") {
-//	if ($_GET['t'] == "gui_phase_2") {
-//		v_install_phase_2(); //needs to run on the new page so that it uses the new v_config.inc file
-//		header( 'Location: v_status.php?savemsg=Update+Completed.' ) ;
-//		exit;
-//	}
-//}
 /*
 if ($_GET['a'] == "other") {
 	if ($_GET['t'] == "restore") {
@@ -141,7 +120,6 @@ $prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 $result = $prepstatement->fetchAll();
 foreach ($result as &$row) {
-	//$v_id = $row["v_id"];
 	$event_socket_ip_address = $row["event_socket_ip_address"];
 	$event_socket_port = $row["event_socket_port"];
 	$event_socket_password = $row["event_socket_password"];
@@ -192,14 +170,12 @@ echo "<br /><br />\n\n";
 	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 	$cmd = "api sofia xmlstatus";
 	$xml_response = trim(event_socket_request($fp, $cmd));
-	//echo "--".$xml_response."--";
 	try {
 		$xml = new SimpleXMLElement($xml_response);
 	}
 	catch(Exception $e) {
 		echo $e->getMessage();
 	}
-	//print_r($xml);
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 	echo "<tr>\n";
 	echo "<td width='50%'>\n";
@@ -252,7 +228,6 @@ echo "<br /><br />\n\n";
 	echo "</table>\n";
 	fclose($fp);
 	unset($xml);
-
 	echo "<br /><br />\n\n";
 
 //sofia status profile
@@ -274,10 +249,8 @@ echo "<br /><br />\n\n";
 				echo $e->getMessage();
 				exit;
 			}
-	
 			echo "<br />\n";
 			echo "<br />\n";
-	
 			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 			echo "<tr>\n";
 			echo "<td width='50%'>\n";
@@ -295,15 +268,14 @@ echo "<br /><br />\n\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
-	
+
 			echo "<table width='100%' cellspacing='0' cellpadding='5'>\n";
 			echo "<tr>\n";
 			echo "<th width='20%'>&nbsp;</th>\n";
 			echo "<th>&nbsp;</th>\n";
 			echo "</tr>\n";
-	
+
 			foreach ($xml->profile_info as $row) {
-				//print_r($row);
 				echo "	<tr><td class='vncell'>name</td><td class='vtable'>&nbsp; &nbsp;".$row->name."&nbsp;</td></tr>\n";
 				echo "	<tr><td class='vncell'>domain-name</td><td class='vtable'>&nbsp; &nbsp;".$row->{'domain-name'}."&nbsp;</td></tr>\n";
 				echo "	<tr><td class='vncell'>auto-nat</td><td class='vtable'>&nbsp;".$row->{'auto-nat'}."&nbsp;</td></tr>\n";
@@ -361,45 +333,6 @@ echo "<br /><br />\n\n";
 	fclose($fp);
 	echo "<br /><br />\n\n";
 
-/*
-$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-$cmd = "api show channels";
-$response = event_socket_request($fp, $cmd);
-echo "<b>show channels</b><br />\n";
-if (strlen($response) > 40) {
-  echo "<textarea cols='85' rows='10' wrap='off'>\n";
-  echo $response;
-  echo "</textarea>\n";
-}
-else {
-  echo "<pre style=\"font-size: 9pt;\">\n";
-  echo $response;
-  echo "</pre>\n";
-}
-fclose($fp);
-echo "<br /><br />\n\n";
-echo "<br /><br />\n\n";
-
-
-$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-$cmd = "api show calls";
-$response = event_socket_request($fp, $cmd);
-echo "<b>show calls</b><br />\n";
-if (strlen($response) > 40) {
-  echo "<textarea cols='85' rows='10' wrap='off'>\n";
-  echo $response;
-  echo "</textarea>\n";
-}
-else {
-  echo "<pre style=\"font-size: 9pt;\">\n";
-  echo $response;
-  echo "</pre>\n";
-}
-fclose($fp);
-echo "<br /><br />\n\n";
-echo "<br /><br />\n\n";
-*/
-
 if (stripos($_SERVER["HTTP_USER_AGENT"], 'windows') !== false) {
 	//windows detected
 }
@@ -423,34 +356,6 @@ else {
 	echo "</table>\n";
 	echo "<br /><br />\n\n";
 }
-
-
-//echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
-//echo "<tr>\n";
-//echo "<td width='50%'>\n";
-//echo "<b>Call Detail Records</b><br />\n";
-//echo $v_log_dir."/cdr-csv/Master.csv<br /><br />\n";
-//echo "</td>\n";
-//echo "<td width='50%' align='right'>\n";
-//echo "  <input type='button' class='btn' value='download cdr csv' onclick=\"document.location.href='v_status.php?a=download&t=cdrcsv';\" />\n";
-//echo "</td>\n";
-//echo "</tr>\n";
-//echo "</table>\n";
-//echo "<br /><br />\n\n";
-
-
-echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
-echo "<tr>\n";
-echo "<td width='50%'>\n";
-echo "<b>Upgrade</b><br />\n";
-echo "Use this button to upgrade the graphical interface to the latest version. The first time this is run it will take a while please be patient. In most cases future upgrades will take less time.<br /><br />\n";
-echo "</td>\n";
-echo "<td width='50%' align='right'>\n";
-echo "  <input type='button' class='btn' value='upgrade' onclick=\"document.location.href='".PROJECT_PATH."/core/upgrade/upgrade.php';\" />\n";
-echo "</td>\n";
-echo "</tr>\n";
-echo "</table>\n";
-echo "<br /><br />\n\n";
 
 echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 echo "<tr>\n";
