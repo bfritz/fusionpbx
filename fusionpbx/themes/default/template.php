@@ -318,15 +318,15 @@ function confirmdelete(url) {
 <table width='90%' class='border' border='0' cellpadding='0' cellspacing='0'>
 <tr>
 <td class='headermain' style='background-color:#FFFFFF;' width='100%'>
-	<table cellpadding='0' cellspacing='0' border='0' style="background-image: url('<!--{project_path}-->/themes/default/background_head.png'); color: #FFFFFF; font-size: 20px;'" width='100%'>
+	<table cellpadding='0' cellspacing='0' border='0' style="background-image: url('<!--{project_path}-->/themes/default/background_head.png'); color: #FFFFFF; font-size: 20px;" width='100%'>
 	<tr>
 	<td align='center' colspan='2' style='' width='100%' height='4'>
 	</td>
 	</tr>
 	<tr>
 	<td></td>
-	<td align='left' valign='middle' height='70px;' nowrap>
-		<img src='<!--{project_path}-->/themes/default/logo.png' height='70px' />
+	<td align='left' valign='middle' nowrap>
+		<img src='<!--{project_path}-->/themes/default/logo.png' />
 	</td>
 	</tr>
 	<tr>
@@ -352,6 +352,41 @@ function confirmdelete(url) {
 <!--{menu}-->
 </td>
 <td align='left' valign='top'>
+<?php
+if ($_SESSION["reload_xml"]) {
+		if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
+			if(stristr($_SERVER["PHP_SELF"] , "_edit") != FALSE) { 
+				//found
+			}
+			else {
+				echo "<div align='center'>\n";
+				echo "<table border='0' width='400px'>\n";
+				echo "<tr>\n";
+				echo "<th align='left'>Message</th>\n";
+				echo "</tr>\n";
+				echo "<tr>\n";
+				echo "<td class='rowstyle1'>\n";
+
+				echo "	<table width='100%' border='0'>\n";
+				echo "	<tr>\n";
+				echo "	<td width='90%' align='left'>\n";
+				echo "			The configuration has been changed. \n";
+				echo "			Apply the changes in order for them to take effect. \n";
+				echo "	</td>\n";
+				echo "	<td align='right'>\n";
+				echo "		<input type='button' class='btn' value='Apply Settings' onclick=\"document.location.href='".PROJECT_PATH."/core/status/v_cmd.php?cmd=api+reloadxml';\" />\n";
+				echo "	</td>\n";
+				echo "	</tr>\n";
+				echo "	</table>\n";
+
+				echo "</td>\n";
+				echo "</tr>\n";
+				echo "</table>\n";
+				echo "</div>\n";
+			}
+	}
+}
+?>
 <!--{body}-->
 
 </td>

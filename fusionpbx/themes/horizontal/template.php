@@ -106,10 +106,22 @@ INPUT.txt {
 }
 
 /*
-.th {
-	-webkit-border-radius: 10px 10px 0px 0px;
-	-moz-border-radius: 10px 10px 0px 0px;
-	border-radius: 10px 10px 0px 0px;
+table{
+	-webkit-border-radius: 18px 18px 0px 0px;
+	-moz-border-radius: 18px 18px 0px 0px;
+	border-radius: 18px 18px 0px 0px;
+}
+
+.th:first-child .th:first-child {
+	-webkit-border-radius: 8px 8px 0px 0px;
+	-moz-border-radius: 8px 8px 0px 0px;
+	border-radius: 8px 8px 0px 0px;
+}
+
+th:last-child th:first-child {
+	-webkit-border-radius: 8px 8px 0px 0px;
+	-moz-border-radius: 8px 8px 0px 0px;
+	border-radius: 8px 8px 0px 0px;
 }
 */
 
@@ -122,6 +134,7 @@ INPUT.txt {
 	text-align: left;
 	color: #444444;
 }
+
 /*
 .vncell a:link{ color:#444444; }
 .vncell a:visited{ color:#444444; }
@@ -152,7 +165,7 @@ INPUT.txt {
 	padding-right: 16px;
 	padding-left: 6px;
 	padding-top: 4px;
-	padding-bottom: 4px;*/
+	padding-bottom: 4px;
 }
 
 .rowstyle0 {
@@ -214,6 +227,78 @@ INPUT.txt {
 	font-family: arial;
 }
 
+
+table {
+	/*background:#ccc;*/
+	/*margin:20px;*/
+	/*border:#ccc 1px solid;*/
+	}
+
+table th {padding:4px 10px}
+ 
+table td {
+	/*background:#fff;*/
+	/*padding:2px 10px 4px 10px*/
+	}
+
+table tr.even td {
+	background:#eee;
+	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
+	border-bottom: 1px solid #999999;
+	color: #444444;
+	}
+ 
+table tr.odd td {
+	border-bottom: 1px solid #999999;
+	color: #000000;
+	}
+
+table tr:first-child th:first-child {
+	-moz-border-radius-topleft:10px;
+	-webkit-border-top-left-radius:10px;
+	border-top-left-radius:10px
+	}
+
+table tr:first-child th:last-of-type {
+	-moz-border-radius-topright:10px;
+	-webkit-border-top-right-radius:10px;
+	border-top-right-radius:10px
+	}
+
+table tr:nth-last-child(-5) td:first-of-type {
+	-moz-border-radius-bottomleft:10px;
+	-webkit-border-bottom-left-radius:10px;
+	border-bottom-left-radius:10px
+	}
+
+table tr:nth-last-child(-5) td:first-of-type {
+	-moz-border-radius-topleft:10px;
+	-webkit-border-top-left-radius:10px;
+	border-bottom-top-radius:10px
+	}
+
+/*
+table tr:last-child td:first-of-type {
+	-moz-border-radius-topright:10px;
+	-webkit-border-top-right-radius:10px;
+	border-top-right-radius:10px
+	}
+*/
+
+/*
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft:10px;
+	-webkit-border-bottom-left-radius:10px;
+	border-bottom-left-radius:10px
+	}
+
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright:10px;
+	-webkit-border-bottom-right-radius:10px;
+	border-bottom-right-radius:10px
+	}
+*/
+
 /* begin the menu css*/
 
 	/* CSS Menus - Horizontal CSS Menu with Dropdown and Popout Menus - 20050131 */
@@ -237,6 +322,7 @@ INPUT.txt {
 	/*background:#222222 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 	/*text-transform:uppercase*/
 	border: solid 0.5px #222222;
+	width:108px;
 	}
 
 	#menu h2 h2{
@@ -254,6 +340,7 @@ INPUT.txt {
 	/* drop down text color */
 	#menu a, #menu a:visited{
 	color:#cccccc;
+	background-color: rgba(20, 20, 20, 0.9);
 	}
 
 	#menu a:hover{
@@ -300,6 +387,9 @@ INPUT.txt {
 	file and this method */
 
 	div#menu h2:hover{
+	-webkit-border-radius: 12px 12px 0px 0px;
+	-moz-border-radius: 12px 12px 0px 0px;
+	border-radius: 12px 12px 0px 0px;
 	background:#1F1F1F url(<!--{project_path}-->/css/images/expand3.gif) no-repeat -999px -9999px;
 	}
 
@@ -372,15 +462,15 @@ function confirmdelete(url) {
 <table width='90%' class='border.disabled' style='background-color:#FFFFFF;' border='0' cellpadding='0' cellspacing='0'>
 <tr>
 <td class='headermain' style='background-color:#FFFFFF;' width='100%'>
-	<table cellpadding='0' cellspacing='0' border='0' style="background-image: url('<!--{project_path}-->/themes/horizontal/background_head.png'); color: #FFFFFF; font-size: 20px;'" width='100%'>
+	<table cellpadding='0' cellspacing='0' border='0' style="background-image: url('<!--{project_path}-->/themes/horizontal/background_head.png'); color: #FFFFFF; font-size: 20px;" width='100%'>
 	<tr>
 	<td align='center' colspan='2' style='' width='100%' height='4'>
 	</td>
 	</tr>
 	<tr>
 	<td></td>
-	<td align='left' valign='middle' height='70px;' nowrap>
-		<img src='<!--{project_path}-->/themes/horizontal/logo.png' height='70px' />
+	<td align='left' valign='middle' nowrap>
+		<img src='<!--{project_path}-->/themes/horizontal/logo.png' />
 	</td>
 	</tr>
 	<tr>
@@ -402,6 +492,41 @@ function confirmdelete(url) {
 
 <table width='100%' cellpadding='25' cellspacing='0' border='0'>
 <td width='100%' align='left' valign='top'>
+<?php
+if ($_SESSION["reload_xml"]) {
+		if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
+			if(stristr($_SERVER["PHP_SELF"] , "_edit") != FALSE) { 
+				//found
+			}
+			else {
+				echo "<div align='center'>\n";
+				echo "<table border='0' width='400px'>\n";
+				echo "<tr>\n";
+				echo "<th align='left'>Message</th>\n";
+				echo "</tr>\n";
+				echo "<tr>\n";
+				echo "<td class='rowstyle1'>\n";
+
+				echo "	<table width='100%' border='0'>\n";
+				echo "	<tr>\n";
+				echo "	<td width='90%' align='left'>\n";
+				echo "			The configuration has been changed. \n";
+				echo "			Apply the changes in order for them to take effect. \n";
+				echo "	</td>\n";
+				echo "	<td align='right'>\n";
+				echo "		<input type='button' class='btn' value='Apply Settings' onclick=\"document.location.href='".PROJECT_PATH."/core/status/v_cmd.php?cmd=api+reloadxml';\" />\n";
+				echo "	</td>\n";
+				echo "	</tr>\n";
+				echo "	</table>\n";
+
+				echo "</td>\n";
+				echo "</tr>\n";
+				echo "</table>\n";
+				echo "</div>\n";
+			}
+	}
+}
+?>
 <!--{body}-->
 <br />
 <br />
