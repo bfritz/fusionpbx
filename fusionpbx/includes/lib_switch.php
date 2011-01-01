@@ -56,6 +56,7 @@ $v_id = '1';
 			break; //limit to 1 row
 		}
 	}
+
 //set http compression
 	if ($_SESSION['http_compression'] == "true") {
 		if (substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')) {
@@ -242,15 +243,10 @@ function v_settings()
 		$v_provisioning_http_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_http_dir);
 		$v_settings_array["v_provisioning_http_dir"] = $v_provisioning_http_dir;
 
-		//echo "program_dir: ".$program_dir;
-		//exit;
-
 		break; //limit to 1 row
 	}
 	unset ($prepstatement);
-
 	return $v_settings_array;
-
 }
 //update the settings
 $v_settings_array = v_settings();
@@ -1604,61 +1600,60 @@ function sync_package_v_settings()
 		fclose($fout);
 
 		//shout.conf.xml
-		$fout = fopen($v_conf_dir."/autoload_configs/shout.conf.xml","w");
-		$tmpxml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
-		$tmpxml .= "  <settings>\n";
-		$tmpxml .= "    <!-- Don't change these unless you are insane -->\n";
-		$tmpxml .= "    <param name=\"decoder\" value=\"" . $row['mod_shout_decoder'] . "\"/>\n";
-		$tmpxml .= "    <param name=\"volume\" value=\"" . $row['mod_shout_volume'] . "\"/>\n";
-		$tmpxml .= "    <!--<param name=\"outscale\" value=\"8192\"/>-->\n";
-		$tmpxml .= "  </settings>\n";
-		$tmpxml .= "</configuration>";
-		fwrite($fout, $tmpxml);
-		unset($tmpxml);
-		fclose($fout);
+			$fout = fopen($v_conf_dir."/autoload_configs/shout.conf.xml","w");
+			$tmpxml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
+			$tmpxml .= "  <settings>\n";
+			$tmpxml .= "    <!-- Don't change these unless you are insane -->\n";
+			$tmpxml .= "    <param name=\"decoder\" value=\"" . $row['mod_shout_decoder'] . "\"/>\n";
+			$tmpxml .= "    <param name=\"volume\" value=\"" . $row['mod_shout_volume'] . "\"/>\n";
+			$tmpxml .= "    <!--<param name=\"outscale\" value=\"8192\"/>-->\n";
+			$tmpxml .= "  </settings>\n";
+			$tmpxml .= "</configuration>";
+			fwrite($fout, $tmpxml);
+			unset($tmpxml);
+			fclose($fout);
 
 		//config.lua
-		$fout = fopen($v_scripts_dir."/config.lua","w");
-		$tmp = "--lua include\n\n";
-		$tmp .= "admin_pin = \"".$row["admin_pin"]."\";\n";
-		$tmp .= "sounds_dir = \"".$v_sounds_dir."\";\n";
-		$tmp .= "recordings_dir = \"".$v_recordings_dir."\";\n";
-		$tmp .= "tmp_dir = \"".$tmp_dir."\";\n";
-		fwrite($fout, $tmp);
-		unset($tmp);
-		fclose($fout);
+			$fout = fopen($v_scripts_dir."/config.lua","w");
+			$tmp = "--lua include\n\n";
+			$tmp .= "admin_pin = \"".$row["admin_pin"]."\";\n";
+			$tmp .= "sounds_dir = \"".$v_sounds_dir."\";\n";
+			$tmp .= "recordings_dir = \"".$v_recordings_dir."\";\n";
+			$tmp .= "tmp_dir = \"".$tmp_dir."\";\n";
+			fwrite($fout, $tmp);
+			unset($tmp);
+			fclose($fout);
 
 		//config.js
-		$fout = fopen($v_scripts_dir."/config.js","w");
-		$tmp = "//javascript include\n\n";
-		$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
-		$tmp .= "var sounds_dir = \"".$v_sounds_dir."\";\n";
-		$tmp .= "var recordings_dir = \"".$v_recordings_dir."\";\n";
-		$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";
-		fwrite($fout, $tmp);
-		unset($tmp);
-		fclose($fout);
-
+			$fout = fopen($v_scripts_dir."/config.js","w");
+			$tmp = "//javascript include\n\n";
+			$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
+			$tmp .= "var sounds_dir = \"".$v_sounds_dir."\";\n";
+			$tmp .= "var recordings_dir = \"".$v_recordings_dir."\";\n";
+			$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";
+			fwrite($fout, $tmp);
+			unset($tmp);
+			fclose($fout);
 		break; //limit to 1 row
 	}
 	unset ($prepstatement);
 
-	$cmd = "api reloadxml";
-	//event_socket_request_cmd($cmd);
-	unset($cmd);
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 
+	//$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	//unset($cmd);
 }
 
 
 function sync_package_v_dialplan()
 {
-
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
 		$$name = $value;
 	}
-
 }
 
 
@@ -1901,12 +1896,14 @@ function sync_package_v_extensions()
 		fclose($fout);
 
 	//syncrhonize the phone directory
-	sync_directory();
+		sync_directory();
 
-	$cmd = "api reloadxml";
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
+
+	//$cmd = "api reloadxml";
 	//event_socket_request_cmd($cmd);
-	unset($cmd);
-
+	//unset($cmd);
 }
 
 function filename_safe($filename) {
@@ -2053,10 +2050,12 @@ function sync_package_v_gateways()
 	} //end while
 	unset($prepstatement);
 
-	$cmd = "api sofia profile external restart reloadxml";
-	//event_socket_request_cmd($cmd);
-	unset($cmd);
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 
+	//$cmd = "api sofia profile external restart reloadxml";
+	//event_socket_request_cmd($cmd);
+	//unset($cmd);
 }
 
 
@@ -2117,11 +2116,13 @@ function sync_package_v_modules()
 	fwrite($fout, $tmpxml);
 	unset($tmpxml);
 	fclose($fout);
-		
-	$cmd = "api reloadxml";
-	//event_socket_request_cmd($cmd);
-	unset($cmd);
 
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
+
+	//$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	//unset($cmd);
 }
 
 function sync_package_v_vars()
@@ -2153,13 +2154,15 @@ function sync_package_v_vars()
 		$var_enabled = $row["var_enabled"];
 		$var_desc = $row["var_desc"];
 
-		if ($prev_var_cat != $row[var_cat]) {
-			$tmpxml .= "\n<!-- ".$row["var_cat"]." -->\n";
-			if (strlen($row["var_desc"]) > 0) {
-				$tmpxml .= "<!-- ".base64_decode($row["var_desc"])." -->\n";
+		if ($var_cat != 'Provision') {
+			if ($prev_var_cat != $row[var_cat]) {
+				$tmpxml .= "\n<!-- ".$row["var_cat"]." -->\n";
+				if (strlen($row["var_desc"]) > 0) {
+					$tmpxml .= "<!-- ".base64_decode($row["var_desc"])." -->\n";
+				}
 			}
+			if ($row['var_enabled'] == "true"){	$tmpxml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row["var_name"]."=".$row["var_value"]."\"/>\n"; }
 		}
-		if ($row['var_enabled'] == "true"){	$tmpxml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row["var_name"]."=".$row["var_value"]."\"/>\n"; }
 
 		$prev_var_cat = $row[var_cat];
 	}
@@ -2169,10 +2172,12 @@ function sync_package_v_vars()
 	unset($tmpxml);
 	fclose($fout);
 
-	$cmd = "api reloadxml";
-	//event_socket_request_cmd($cmd);
-	unset($cmd);
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 
+	//$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	//unset($cmd);
 }
 
 function sync_package_v_public()
@@ -2239,10 +2244,12 @@ function sync_package_v_internal()
 		unset($tmpxml);
 	}
 
-	$cmd = "api reloadxml";
-	//event_socket_request_cmd($cmd);
-	unset($cmd);
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 
+	//$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	//unset($cmd);
 }
 
 
@@ -2272,10 +2279,12 @@ function sync_package_v_external()
 		unset($tmpxml);
 	}
 
-	$cmd = "api reloadxml";
-	//event_socket_request_cmd($cmd);
-	unset($cmd);
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 
+	//$cmd = "api reloadxml";
+	//event_socket_request_cmd($cmd);
+	//unset($cmd);
 }
 
 function outbound_route_to_bridge ($destination_number) {
@@ -3026,6 +3035,8 @@ function sync_package_v_hunt_group()
 						}
 		} //end while
 
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 } //end huntgroup function lua
 
 
@@ -3156,7 +3167,6 @@ function sync_package_v_fax()
 					$fielddata = '';
 					$fieldorder = '006';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
 				}
 				//unset($fax_id);
 			}
@@ -3235,6 +3245,8 @@ function sync_package_v_fax()
 
 	} //end if result
 
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 } //end fax function
 
 
@@ -4203,6 +4215,9 @@ function sync_package_v_auto_attendant()
 
 	} //end while
 	$db->commit();
+
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 } //end auto attendant function
 
 
@@ -4437,7 +4452,6 @@ function sync_package_v_dialplan_includes()
 			unset($sql, $resultcount2, $result2, $rowcount2);
 		} //end if results
 
-
 		$sql = "";
 		$sql .= " select * from v_dialplan_includes_details ";
 		$sql .= " where dialplan_include_id = '".$row['dialplan_include_id']."' ";
@@ -4468,8 +4482,6 @@ function sync_package_v_dialplan_includes()
 			unset($sql, $resultcount2, $result2, $rowcount2);
 		} //end if results
 
-		//param
-
 		if ($conditioncount > 0) {
 			$tmp .= "   </condition>\n";
 		}
@@ -4493,6 +4505,8 @@ function sync_package_v_dialplan_includes()
 
 	} //end while
 
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 }
 
 
@@ -4611,7 +4625,6 @@ function sync_package_v_public_includes()
 			unset($sql, $resultcount2, $result2, $rowcount2);
 		} //end if results
 
-
 		$sql = "";
 		$sql .= " select * from v_public_includes_details ";
 		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
@@ -4642,13 +4655,11 @@ function sync_package_v_public_includes()
 			unset($sql, $resultcount2, $result2, $rowcount2);
 		} //end if results
 
-
 		if ($conditioncount > 0) {
 			$tmp .= "   </condition>\n";
 		}
 		unset ($conditioncount);
 		$tmp .= "</extension>\n";
-
 
 		if ($row['enabled'] == "true") {
 			$public_order = $row['publicorder'];
@@ -4664,9 +4675,11 @@ function sync_package_v_public_includes()
 		}
 		unset($public_include_filename);
 		unset($tmp);
-	
 	} //end while
 	unset ($prepstatement);
+
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 }
 
 
@@ -4683,6 +4696,7 @@ if (!function_exists('phone_letter_to_number')) {
 		if ($tmp == "w" | $tmp == "x" | $tmp == "y" | $tmp == "z") { return 9; }
 	}
 }
+
 
 if (!function_exists('sync_directory')) {
 	function sync_directory() {
@@ -4919,6 +4933,8 @@ if (!function_exists('sync_directory')) {
 			fwrite($fout, $tmp);
 			fclose($fout);
 
+		//apply settings reminder
+			$_SESSION["reload_xml"] = true;
 	} //end sync_directory
 } //end if function exists
 
@@ -5103,7 +5119,6 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								unset($descr);
 								unset($opt1name);
 								unset($opt1value);
-
 						}
 						unset($action);
 						unset($dialplanincludeid);
@@ -5180,6 +5195,9 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 			}
 		}
 		sync_package_v_dialplan_includes();
+
+		//apply settings reminder
+			$_SESSION["reload_xml"] = true;
 	}
 }
 
@@ -5480,6 +5498,9 @@ if (!function_exists('sync_package_v_call_center')) {
 			//syncrhonize configuration
 				sync_package_v_dialplan_includes();
 		}
+
+		//apply settings reminder
+			$_SESSION["reload_xml"] = true;
 	}
 }
 
@@ -5522,6 +5543,9 @@ if (!function_exists('switch_conf_xml')) {
 			$fout = fopen($v_conf_dir."/autoload_configs/switch.conf.xml","w");
 			fwrite($fout, $file_contents);
 			fclose($fout);
+
+		//apply settings reminder
+			$_SESSION["reload_xml"] = true;
 	}
 }
 
@@ -5556,6 +5580,9 @@ if (!function_exists('xml_cdr_conf_xml')) {
 			$fout = fopen($v_conf_dir."/autoload_configs/xml_cdr.conf.xml","w");
 			fwrite($fout, $file_contents);
 			fclose($fout);
+
+		//apply settings reminder
+			$_SESSION["reload_xml"] = true;
 	}
 }
 
@@ -5581,7 +5608,7 @@ if (!function_exists('sync_package_freeswitch')) {
 	}
 }
 
-//include all the .php files in the /includes/mod directory
+//include all the .php files in the /includes/mod/includes directory
 	//foreach (glob($v_web_dir."/includes/mod/includes/*.php") as $filename) {
 	//	require_once $filename;
 	//}
