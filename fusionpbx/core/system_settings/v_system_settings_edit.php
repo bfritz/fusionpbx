@@ -107,12 +107,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($bin_dir) == 0) { $msg .= "Please provide: Bin Directory<br>\n"; }
 		if (strlen($v_startup_script_dir) == 0) { $msg .= "Please provide: Startup Script Directory<br>\n"; }
 		//if (strlen($v_package_version) == 0) { $msg .= "Please provide: Package Version<br>\n"; }
-		if (strlen($v_build_version) == 0) { $msg .= "Please provide: Build Version<br>\n"; }
-		if (strlen($v_build_revision) == 0) { $msg .= "Please provide: Build Revision<br>\n"; }
+		//if (strlen($v_build_version) == 0) { $msg .= "Please provide: Build Version<br>\n"; }
+		//if (strlen($v_build_revision) == 0) { $msg .= "Please provide: Build Revision<br>\n"; }
 		if (strlen($v_label) == 0) { $msg .= "Please provide: Label<br>\n"; }
 		if (strlen($v_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		if (strlen($v_dir) == 0) { $msg .= "Please provide: Directory<br>\n"; }
-		if (strlen($v_parent_dir) == 0) { $msg .= "Please provide: Parent Directory<br>\n"; }
+		//if (strlen($v_parent_dir) == 0) { $msg .= "Please provide: Parent Directory<br>\n"; }
 		if (strlen($v_backup_dir) == 0) { $msg .= "Please provide: Backup Directory<br>\n"; }
 		if (strlen($v_web_dir) == 0) { $msg .= "Please provide: Web Directory<br>\n"; }
 		if (strlen($v_web_root) == 0) { $msg .= "Please provide: Web Root<br>\n"; }
@@ -395,7 +395,7 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    PHP Directory:\n";
+	echo "    PHP Bin Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='php_dir' maxlength='255' value=\"$php_dir\">\n";
@@ -417,7 +417,7 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Bin Directory:\n";
+	echo "    FreeSWITCH Bin Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='bin_dir' maxlength='255' value=\"$bin_dir\">\n";
@@ -449,7 +449,7 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 	//echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Build Version:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -460,7 +460,7 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Build Revision:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -493,7 +493,7 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    FreeSWITCH Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -504,7 +504,7 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Parent Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
