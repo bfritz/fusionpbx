@@ -176,7 +176,7 @@ echo "	<td align=\"center\">\n";
 	echo thorderby('useremail', 'Email', $orderby, $order);
 	//echo thorderby('user_template_name', 'Template', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='signup.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='signup.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -194,8 +194,8 @@ echo "	<td align=\"center\">\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[useremail]."</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[user_template_name]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='usersupdate.php?id=".$row['id']."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
-			echo "		<a href='userdelete.php?id=".$row['id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
+			echo "		<a href='usersupdate.php?id=".$row['id']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='userdelete.php?id=".$row['id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -210,7 +210,7 @@ echo "	<td align=\"center\">\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='signup.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='signup.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

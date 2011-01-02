@@ -172,7 +172,7 @@ if (!function_exists('switch_module_active')) {
 	$tmp_module_header .= thorderby('moduleenabled', 'Enabled', $orderby, $order);
 	//$tmp_module_header .= thorderby('moduledefaultenabled', 'Default Enabled', $orderby, $order);
 	$tmp_module_header .= "<td align='right' width='42'>\n";
-	$tmp_module_header .= "	<a href='v_modules_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	$tmp_module_header .= "	<a href='v_modules_edit.php' alt='add'>$v_link_label_add</a>\n";
 	$tmp_module_header .= "</td>\n";
 	$tmp_module_header .= "<tr>\n";
 
@@ -191,7 +191,7 @@ if (!function_exists('switch_module_active')) {
 					echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 					echo "		<td width='33.3%' align='center' nowrap>&nbsp;</td>\n";
 					echo "		<td width='33.3%' align='right'>\n";
-					echo "			<a href='v_modules_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+					echo "			<a href='v_modules_edit.php' alt='add'>$v_link_label_add</a>\n";
 					echo "		</td>\n";
 					echo "	</tr>\n";
 					echo "	</table>\n";
@@ -242,7 +242,7 @@ if (!function_exists('switch_module_active')) {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_modules_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_modules_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

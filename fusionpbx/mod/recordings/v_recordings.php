@@ -249,7 +249,7 @@ if (is_dir($v_recordings_dir.'/')) {
 	echo "<th width=\"10%\" class=\"listhdr\" nowrap>Size</th>\n";
 	echo thorderby('descr', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_recordings_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='v_recordings_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -292,7 +292,7 @@ if (is_dir($v_recordings_dir.'/')) {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_recordings_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_recordings_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

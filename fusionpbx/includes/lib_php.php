@@ -30,14 +30,6 @@
 	//start the session
 		session_start();
 
-	//icons
-		$v_icon_edit = PROJECT_PATH."/images/icon_e.gif";
-		$v_icon_add = PROJECT_PATH."/images/icon_plus.gif";
-		$v_icon_delete = PROJECT_PATH."/images/icon_x.gif";
-		$v_icon_view = PROJECT_PATH."/images/icon_view.gif";
-		$v_icon_cal = PROJECT_PATH."/images/icon_cal.gif";
-		$v_icon_up = PROJECT_PATH."/images/icon_up.gif";
-
 	//get the document_root parent directory
 		$document_root_parent = join(array_slice(explode("\\",realpath($_SERVER["DOCUMENT_ROOT"])),0,-1), '/');
 

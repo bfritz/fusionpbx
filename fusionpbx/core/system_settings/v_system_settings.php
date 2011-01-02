@@ -124,7 +124,7 @@ if (!function_exists('thorderby')) {
 	echo thorderby('v_dir', 'Directory', $orderby, $order);
 	echo thorderby('v_web_dir', 'Web Directory', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "			<a href='v_system_settings_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_system_settings_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 	//echo "<tr><td colspan='5'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
@@ -143,8 +143,8 @@ if (!function_exists('thorderby')) {
 		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[v_dir]."</td>\n";
 		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[v_web_dir]."</td>\n";
 		echo "	<td valign='top' align='right'>\n";
-		echo "		<a href='v_system_settings_edit.php?id=".$row[v_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
-		echo "		<a href='v_system_settings_delete.php?id=".$row[v_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
+		echo "		<a href='v_system_settings_edit.php?id=".$row[v_id]."' alt='edit'>$v_link_label_edit</a>\n";
+		echo "		<a href='v_system_settings_delete.php?id=".$row[v_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 		echo "	</td>\n";
 		echo "</tr>\n";
 		//echo "<tr><td colspan='5'><img src='/images/spacer.gif' width='100%'' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
@@ -161,7 +161,7 @@ if (!function_exists('thorderby')) {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_system_settings_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_system_settings_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

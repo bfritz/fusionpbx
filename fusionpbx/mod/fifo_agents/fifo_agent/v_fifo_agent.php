@@ -107,7 +107,7 @@ $order = $_GET["order"];
 	echo thorderby('agent_last_call', 'Last Call', $orderby, $order);
 	echo thorderby('agent_contact_number', 'Contact Number', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
-	//echo "	<a href='v_fifo_agents_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	//echo "	<a href='v_fifo_agents_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -139,8 +139,8 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$agent_last_call_desc."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[agent_contact_number]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_fifo_agent_edit.php?id=".$row[fifo_agent_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
-			//echo "		<a href='v_fifo_agents_delete.php?id=".$row[fifo_agent_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
+			echo "		<a href='v_fifo_agent_edit.php?id=".$row[fifo_agent_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			//echo "		<a href='v_fifo_agents_delete.php?id=".$row[fifo_agent_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -156,7 +156,7 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	//echo "			<a href='v_fifo_agents_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	//echo "			<a href='v_fifo_agents_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";

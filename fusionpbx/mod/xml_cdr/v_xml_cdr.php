@@ -457,7 +457,7 @@ else {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	//echo "			<a href='v_xml_cdr_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	//echo "			<a href='v_xml_cdr_edit.php' alt='add'>$v_link_label_add</a>\n";
 	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_xml_cdr_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";

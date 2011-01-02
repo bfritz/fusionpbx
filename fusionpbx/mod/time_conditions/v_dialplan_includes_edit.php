@@ -410,7 +410,7 @@ if ($action == "update") {
 	echo "<th align='center'>Data</th>\n";
 	echo "<th align='center'>Order</th>\n";
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_dialplan_includes_details_edit.php?id2=".$dialplan_include_id."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='v_dialplan_includes_details_edit.php?id2=".$dialplan_include_id."' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -528,7 +528,7 @@ if ($action == "update") {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_dialplan_includes_details_edit.php?id2=".$dialplan_include_id."' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_dialplan_includes_details_edit.php?id2=".$dialplan_include_id."' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

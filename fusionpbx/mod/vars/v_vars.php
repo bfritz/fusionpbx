@@ -127,7 +127,7 @@ if (!function_exists('thorderby')) {
 	$tmp_var_header .= thorderby('var_enabled', 'Enabled', $orderby, $order);
 	$tmp_var_header .= "<th>Description</th>\n";
 	$tmp_var_header .= "<td align='right' width='42'>\n";
-	$tmp_var_header .= "	<a href='v_vars_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	$tmp_var_header .= "	<a href='v_vars_edit.php' alt='add'>$v_link_label_add</a>\n";
 	//$tmp_var_header .= "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_vars_edit.php'\" value='+'>\n";
 	$tmp_var_header .= "</td>\n";
 	$tmp_var_header .= "<tr>\n";
@@ -150,7 +150,7 @@ if (!function_exists('thorderby')) {
 					echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 					echo "		<td width='33.3%' align='center' nowrap>&nbsp;</td>\n";
 					echo "		<td width='33.3%' align='right'>\n";
-					echo "			<a href='v_vars_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+					echo "			<a href='v_vars_edit.php' alt='add'>$v_link_label_add</a>\n";
 					echo "		</td>\n";
 					echo "	</tr>\n";
 					echo "	</table>\n";
@@ -177,8 +177,8 @@ if (!function_exists('thorderby')) {
 			$var_desc = str_replace("   ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", $var_desc);
 			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$var_desc."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_vars_edit.php?id=".$row[var_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
-			echo "		<a href='v_vars_delete.php?id=".$row[var_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
+			echo "		<a href='v_vars_edit.php?id=".$row[var_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_vars_delete.php?id=".$row[var_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_vars_edit.php?id=".$row[var_id]."'\" value='e'>\n";
 			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_vars_delete.php?id=".$row[var_id]."' }\" value='x'>\n";
 			echo "	</td>\n";
@@ -198,7 +198,7 @@ if (!function_exists('thorderby')) {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_vars_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_vars_edit.php' alt='add'>$v_link_label_add</a>\n";
 	//echo "			<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_vars_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";

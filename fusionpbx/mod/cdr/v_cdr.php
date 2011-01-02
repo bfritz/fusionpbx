@@ -401,7 +401,7 @@ if (count($_REQUEST)>0) {
 			echo "   <td valign='top' class='".$rowstyle[$c]."' nowrap>&nbsp;".$row[billsec]."&nbsp;</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."' nowrap>&nbsp;".strtolower($row[hangup_cause])."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
-			//echo "	<a href='v_cdr_edit.php?id=".$row[cdr_id]."' alt='add'><img src='".$v_icon_view."' width='17' height='17' border='0' alt='add'></a>\n";
+			//echo "	<a href='v_cdr_edit.php?id=".$row[cdr_id]."' alt='add'>$v_link_label_view</a>\n";
 			echo "       <input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_cdr_edit.php?id=".$row[cdr_id]."'\" value='  >  '>\n";
 			//echo "       <input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_cdr_delete.php?id=".$row[cdr_id]."' }\" value='x'>\n";
 			echo "   </td>\n";

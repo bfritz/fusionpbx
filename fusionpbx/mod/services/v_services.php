@@ -124,7 +124,7 @@ if (strlen($_GET["a"]) > 0) {
 	echo "<th>Status</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_services_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='v_services_edit.php' alt='add'>$v_link_label_add</a>\n";
 	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_services_edit.php'\" value='+'>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
@@ -164,8 +164,8 @@ if (strlen($_GET["a"]) > 0) {
 			//else {
 			//	echo "		<a href='v_services.php?id=".$row[service_id]."&a=start' alt='edit'><img src='/images/icon_start.gif' width='17' height='17' alt='edit' border='0'></a>";
 			//}
-			echo "		<a href='v_services_edit.php?id=".$row[service_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' alt='edit' border='0'></a>\n";
-			echo "		<a href='v_services_delete.php?id=".$row[service_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
+			echo "		<a href='v_services_edit.php?id=".$row[service_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_services_delete.php?id=".$row[service_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_services_edit.php?id=".$row[service_id]."'\" value='e'>\n";
 			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_services_delete.php?id=".$row[service_id]."' }\" value='x'>\n";
 			echo "	</td>\n";
@@ -183,7 +183,7 @@ if (strlen($_GET["a"]) > 0) {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_services_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_services_edit.php' alt='add'>$v_link_label_add</a>\n";
 	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_services_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";

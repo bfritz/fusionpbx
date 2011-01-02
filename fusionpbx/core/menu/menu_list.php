@@ -203,7 +203,7 @@ $order = $_GET["order"];
 		echo "<th align='left'  width='55' nowrap>&nbsp; Order &nbsp;</th>";
 		echo "<th nowrap width='70'>&nbsp; </th>";
 		echo "<td align='right' width='42'>\n";
-		echo "	<a href='menu_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+		echo "	<a href='menu_edit.php' alt='add'>$v_link_label_add</a>\n";
 		echo "</td>\n";
 		echo "</tr>";
 
@@ -288,7 +288,7 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='menu_edit.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='menu_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

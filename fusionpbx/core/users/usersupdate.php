@@ -405,7 +405,7 @@ else {
 			echo "<tr>\n";
 			echo "	<td class='vtable'>".$field['groupid']."</td>\n";
 			echo "	<td>\n";
-			echo "		<a href='usersupdate.php?id=".$id."&groupid=".$field['groupid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' alt='delete' border='0'></a>\n";
+			echo "		<a href='usersupdate.php?id=".$id."&groupid=".$field['groupid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 		}

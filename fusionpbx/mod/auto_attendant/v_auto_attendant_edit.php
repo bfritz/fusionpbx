@@ -673,7 +673,7 @@ if ($action == "update") {
 	echo "<th align='left'>&nbsp;&nbsp;Destination</th>\n";
 	echo "<th align='left'>&nbsp;&nbsp;Description</th>\n";
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_auto_attendant_options_edit.php?id2=".$auto_attendant_id."&optionaction=action' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='v_auto_attendant_options_edit.php?id2=".$auto_attendant_id."&optionaction=action' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -708,7 +708,7 @@ if ($action == "update") {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_auto_attendant_options_edit.php?id2=".$auto_attendant_id."&optionaction=action' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_auto_attendant_options_edit.php?id2=".$auto_attendant_id."&optionaction=action' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
@@ -778,7 +778,7 @@ if ($action == "update") {
 	echo "<th align='left'>&nbsp;&nbsp;Destination</th>\n";
 	echo "<th align='left'>&nbsp;&nbsp;Description</th>\n";
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_auto_attendant_options_edit.php?id2=".$auto_attendant_id."&optionaction=action' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "	<a href='v_auto_attendant_options_edit.php?id2=".$auto_attendant_id."&optionaction=action' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 	//echo "<tr><td colspan='5'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
@@ -812,7 +812,7 @@ if ($action == "update") {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_auto_attendant_options_edit.php?id2=".$auto_attendant_id."&optionaction=anti-action' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	echo "			<a href='v_auto_attendant_options_edit.php?id2=".$auto_attendant_id."&optionaction=anti-action' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";

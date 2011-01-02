@@ -68,7 +68,7 @@ require_once "includes/header.php";
 	$strlist .= "	<th align=\"center\" nowrap>&nbsp;</th>\n";
 
 	$strlist .= "	<td width='22px' align=\"right\" nowrap>\n";
-	$strlist .= "	<a href='groupadd.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	$strlist .= "	<a href='groupadd.php' alt='add'>$v_link_label_add</a>\n";
 	$strlist .= "	</td>\n";
 	$strlist .= "</tr>\n";
 
@@ -114,7 +114,7 @@ require_once "includes/header.php";
 
 	$strlist .= "<tr>\n";
 	$strlist .= "<td colspan='4' align='right' height='20'>\n";
-	$strlist .= "	<a href='groupadd.php' alt='add'><img src='".$v_icon_add."' width='17' height='17' border='0' alt='add'></a>\n";
+	$strlist .= "	<a href='groupadd.php' alt='add'>$v_link_label_add</a>\n";
 	$strlist .= "</td>\n";
 	$strlist .= "</tr>\n";
 

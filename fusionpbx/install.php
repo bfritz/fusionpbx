@@ -788,6 +788,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//synchronize the config with the saved settings
 		sync_package_freeswitch();
 
+	//do not show the apply settings reminder on the login page
+		$_SESSION["reload_xml"] = false;
+
 	//redirect to the login page
 		$msg = "</strong><br />\n";
 		$msg .= "Installation is complete. <br />";
