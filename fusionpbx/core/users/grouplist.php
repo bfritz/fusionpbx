@@ -101,8 +101,8 @@ require_once "includes/header.php";
 			//}
 
 			$strlist .= "<td align=\"right\" nowrap>\n";
-			//echo "		<a href='v_gateways_edit.php?id=".$id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			$strlist .= "<a href='groupdelete.php?id=$id' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			//echo "		<a href='v_gateways_edit.php?id=".$id."' alt='edit'>$v_link_label_edit</a>\n";
+			$strlist .= "<a href='groupdelete.php?id=$id' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 
 			$strlist .= "</td>\n";
 			$strlist .= "</tr>\n";

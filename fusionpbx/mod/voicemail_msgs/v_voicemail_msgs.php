@@ -299,8 +299,8 @@ else {
 					echo "		</a>";
 					echo 	"</td>\n";
 					echo "   <td valign='top' align='center' nowrap>\n";
-					//echo "		<a href='v_voicemail_msgs_edit.php?id=".$row[voicemail_msg_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-					echo "		&nbsp;&nbsp;<a href='v_voicemail_msgs_delete.php?uuid=".$row[uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+					//echo "		<a href='v_voicemail_msgs_edit.php?id=".$row[voicemail_msg_id]."' alt='edit'>$v_link_label_edit</a>\n";
+					echo "		&nbsp;&nbsp;<a href='v_voicemail_msgs_delete.php?uuid=".$row[uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 					echo "   </td>\n";
 					echo "</tr>\n";
 

@@ -120,8 +120,8 @@ function builddbchildmenulist ($db, $menulevel, $menu_guid, $c) {
 					echo "</td>";
 
 					echo "   <td valign='top' align='right' nowrap>\n";
-					echo "		<a href='menu_edit.php?menuid=".$row2[menuid]."&menu_parent_guid=".$row2['menu_parent_guid']."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-					echo "		<a href='menu_delete.php?menuid=".$row2[menuid]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+					echo "		<a href='menu_edit.php?menuid=".$row2[menuid]."&menu_parent_guid=".$row2['menu_parent_guid']."' alt='edit'>$v_link_label_edit</a>\n";
+					echo "		<a href='menu_delete.php?menuid=".$row2[menuid]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 					echo "   </td>\n";
 
 				echo "</tr>";
@@ -257,8 +257,8 @@ $order = $_GET["order"];
 			echo "</td>";
 
 			echo "   <td valign='top' align='right' nowrap>\n";
-			echo "		<a href='menu_edit.php?menuid=".$row[menuid]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='menu_delete.php?menuid=".$row[menuid]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			echo "		<a href='menu_edit.php?menuid=".$row[menuid]."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='menu_delete.php?menuid=".$row[menuid]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 			echo "   </td>\n";
 
 			echo "</tr>";

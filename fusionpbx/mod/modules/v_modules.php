@@ -224,8 +224,8 @@ if (!function_exists('switch_module_active')) {
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["moduleenabled"]."</td>\n";
 			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["moduledefaultenabled"]."</td>\n";
 			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_modules_edit.php?id=".$row["module_id"]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_modules_delete.php?id=".$row["module_id"]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			echo "		<a href='v_modules_edit.php?id=".$row["module_id"]."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_modules_delete.php?id=".$row["module_id"]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "   </td>\n";
 			echo "</tr>\n";
 

@@ -138,9 +138,9 @@ $order = $_GET["order"];
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[faxemail]."&nbsp;</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='35%'>".$row[faxdescription]."</td>\n";
 			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_fax_edit.php?id=".$row[fax_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
+			echo "		<a href='v_fax_edit.php?id=".$row[fax_id]."' alt='edit'>$v_link_label_edit</a>\n";
 			if (ifgroup("admin") || ifgroup("superadmin")) {
-				echo "		<a href='v_fax_delete.php?id=".$row[fax_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+				echo "		<a href='v_fax_delete.php?id=".$row[fax_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "   </td>\n";
 			echo "</tr>\n";

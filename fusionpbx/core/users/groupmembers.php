@@ -91,7 +91,7 @@ foreach ($result as &$row) {
 	$strlist .= "<td align=\"left\"  class='".$rowstyle[$c]."' nowrap> &nbsp; $username &nbsp; </td>\n";
 	$strlist .= "<td align=\"left\"  class='".$rowstyle[$c]."' nowrap> &nbsp; </td>\n";
 	$strlist .= "<td align=\"right\" nowrap>\n";
-	$strlist .= "	<a href='groupmemberdelete.php?username=$username&groupid=$groupid' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+	$strlist .= "	<a href='groupmemberdelete.php?username=$username&groupid=$groupid' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 	$strlist .= "</td>\n";
 	$strlist .= "</tr>\n";
 

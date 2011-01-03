@@ -127,8 +127,8 @@ else { //received results
 		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[enabled]."</td>\n";
 		echo "   <td valign='top' class='rowstylebg'>".$row[description]."</td>\n";
 		echo "   <td valign='top' align='right'>\n";
-		echo "		<a href='v_gateways_edit.php?id=".$row[gateway_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-		echo "		<a href='v_gateways_delete.php?id=".$row[gateway_id]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+		echo "		<a href='v_gateways_edit.php?id=".$row[gateway_id]."' alt='edit'>$v_link_label_edit</a>\n";
+		echo "		<a href='v_gateways_delete.php?id=".$row[gateway_id]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 		echo "   </td>\n";
 		echo "</tr>\n";
 		//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%'' height='1' style='background-color: #BBBBBB;'></td></tr>\n";

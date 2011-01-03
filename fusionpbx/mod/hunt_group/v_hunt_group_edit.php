@@ -649,8 +649,8 @@ if ($action == "update") {
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[destinationorder]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[destinationdescr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_hunt_group_destinations_edit.php?id=".$row[hunt_group_destination_id]."&id2=".$hunt_group_id."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_hunt_group_destinations_delete.php?id=".$row[hunt_group_destination_id]."&id2=".$hunt_group_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			echo "		<a href='v_hunt_group_destinations_edit.php?id=".$row[hunt_group_destination_id]."&id2=".$hunt_group_id."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_hunt_group_destinations_delete.php?id=".$row[hunt_group_destination_id]."&id2=".$hunt_group_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "   </td>\n";
 			echo "</tr>\n";
 

@@ -429,8 +429,8 @@ function type_onchange(field_type) {
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "	<td valign='top' class='rowstylebg' width='35%'>&nbsp;&nbsp;".$row[descr]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_public_includes_edit.php?id=".$row[public_include_id]."' alt='edit'><img src='".$v_icon_edit."' width='17' height='17' border='0' alt='edit'></a>\n";
-			echo "		<a href='v_public_includes_delete.php?id=".$row[public_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\"><img src='".$v_icon_delete."' width='17' height='17' border='0' alt='delete'></a>\n";
+			echo "		<a href='v_public_includes_edit.php?id=".$row[public_include_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_public_includes_delete.php?id=".$row[public_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
