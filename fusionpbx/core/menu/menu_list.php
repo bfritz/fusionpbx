@@ -34,7 +34,7 @@ if (!ifgroup("superadmin")) {
 $tmp_menuorder = 0;
 
 function builddbchildmenulist ($db, $menulevel, $menu_guid, $c) {
-	global $v_id, $tmp_menuorder, $v_icon_edit, $v_icon_delete;
+	global $v_id, $tmp_menuorder, $v_link_label_edit, $v_link_label_delete;
 
 	//begin check for children
 		$menulevel = $menulevel+1;
