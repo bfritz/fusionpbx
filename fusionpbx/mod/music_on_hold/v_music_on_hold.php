@@ -189,7 +189,7 @@ if ($_GET['act'] == "del") {
 				echo "    <table border=\"0\" cellspacing=\"0\" cellpadding=\"5\">\n";
 				echo "      <tr>\n";
 				//echo "        <td valign=\"middle\"><a href=\"v_music_on_hold.php?id=$i\"><img src=\"/themes/".$g['theme']."/images/icons/icon_e.gif\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
-				echo "        <td><a href=\"v_music_on_hold.php?type=moh&act=del&filename=".base64_encode($file)."\" onclick=\"return confirm('Do you really want to delete this file?')\"><img src=\"".$v_icon_delete."\" width=\"17\" height=\"17\" border=\"0\"></a></td>\n";
+				echo "        <td><a href=\"v_music_on_hold.php?type=moh&act=del&filename=".base64_encode($file)."\" onclick=\"return confirm('Do you really want to delete this file?')\">$v_link_label_delete</a></td>\n";
 				echo "      </tr>\n";
 				echo "   </table>\n";
 				echo "  </td>\n";
