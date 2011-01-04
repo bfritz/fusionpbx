@@ -26,13 +26,6 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
-	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
 
 require_once "includes/paging.php";
 require_once "includes/v_dialplan_entry_exists.php";
@@ -73,6 +66,14 @@ if ($_GET['a'] == "download") {
 	exit;
 }
 
+//check the permissions
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		//access granted
+	}
+	else {
+		echo "access denied";
+		exit;
+	}
 
 if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['ulfile']['tmp_name'])) {
 	if ($_POST['type'] == 'rec') {
