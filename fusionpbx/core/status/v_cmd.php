@@ -51,25 +51,32 @@ foreach ($result as &$row) {
 }
 unset ($prepstatement);
 
-//prepare the socket connection
-	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-
 //if reloadxml then run reloadacl, reloadxml and rescan the external profile for new gateways
 	if ($cmd == "api reloadxml") {
 		//clear the apply settings reminder
 			$_SESSION["reload_xml"] = false;
 
-		//run these additional commands to make it easier on the user
+		//reloadacl - access control list
 			$cmd = 'api reloadacl';
 			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 			$response = event_socket_request($fp, $cmd);
+			fclose($fp);
 
+		// wait for .02 seconds
+			usleep(20000);
+
+		//rescan the external profile to look for new or stopped gateways
 			$cmd = 'api sofia profile external rescan';
+			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 			$response = event_socket_request($fp, $cmd);
-			//echo "response: $response<br />\n";
+			fclose($fp);
+
+		// wait for .02 seconds
+			usleep(20000);
 	}
 
 //run the requested command
+	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 	$response = event_socket_request($fp, $cmd);
 	fclose($fp);
 
