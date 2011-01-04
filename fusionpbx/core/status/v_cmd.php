@@ -56,20 +56,22 @@ unset ($prepstatement);
 		//clear the apply settings reminder
 			$_SESSION["reload_xml"] = false;
 
-		//reloadacl - access control list
-			$cmd = 'api reloadacl';
+		//reload the access control list
+			$tmp_cmd = 'api reloadacl';
 			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-			$response = event_socket_request($fp, $cmd);
+			$response = event_socket_request($fp, $tmp_cmd);
 			fclose($fp);
+			unset($tmp_cmd);
 
 		// wait for .02 seconds
 			usleep(20000);
 
 		//rescan the external profile to look for new or stopped gateways
-			$cmd = 'api sofia profile external rescan';
+			$tmp_cmd = 'api sofia profile external rescan';
 			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-			$response = event_socket_request($fp, $cmd);
+			$response = event_socket_request($fp, $tmp_cmd);
 			fclose($fp);
+			unset($tmp_cmd);
 
 		// wait for .02 seconds
 			usleep(20000);
