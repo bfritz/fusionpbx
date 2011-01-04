@@ -564,7 +564,7 @@
 					unset($sql);
 
 				//add the user to the member group
-					$groupid = 'member';
+					$groupid = 'user';
 					$sql = "insert into v_group_members ";
 					$sql .= "(";
 					$sql .= "v_id, ";
