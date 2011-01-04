@@ -30,13 +30,46 @@ require_once "includes/config.php";
 	$body = $content_from_db.ob_get_contents(); 
 	ob_end_clean(); //clean the buffer
 
+//set a default template
+	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
+
+//set a default template
+	//$_SESSION["template_content"] = ''; //force the template to generate on every page load
+	if (strlen($_SESSION["template_content"])==0) { //build template it session template has no length
+		if (strlen($template_rsssubcategory) > 0) {
+			//this template was assigned by the content manager
+				//get the contents of the template and save it to the template variable
+				$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$template_rsssubcategory.'/template.php');
+				$_SESSION["template_content"] = $template;
+		}
+		else {
+			//get the contents of the template and save it to the template variable
+				$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$_SESSION["template_name"].'/template.php');
+				$_SESSION["template_content"] = $template;
+		}
+	}
+
+//start the output buffer
+	ob_start();
+	$template = $strheadertop.$_SESSION["template_content"];
+	eval('?>' . $template . '<?php ');
+	$template = ob_get_contents(); //get the output from the buffer
+	ob_end_clean(); //clean the buffer
+
+//get the menu
+	require_once "includes/menu.php";
+
 //prepare the template to display the output
 	$customhead = $customhead.$templatemenucss;
-	//$customhead ='test';
 	//$output = str_replace ("\r\n", "<br>", $output);
 	$output = str_replace ("<!--{title}-->", $customtitle, $template); //<!--{title}--> defined in each individual page
 	$output = str_replace ("<!--{head}-->", $customhead, $output); //<!--{head}--> defined in each individual page
-	$output = str_replace ("<!--{menu}-->", $_SESSION["menu"], $output); //defined in /includes/menu.php
+	if (strlen($v_menu) > 0) {
+		$output = str_replace ("<!--{menu}-->", $v_menu, $output); //defined in /includes/menu.php
+	}
+	else {
+		$output = str_replace ("<!--{menu}-->", $_SESSION["menu"], $output); //defined in /includes/menu.php
+	}
 	$output = str_replace ("<!--{project_path}-->", PROJECT_PATH, $output); //defined in /includes/menu.php
 
 	$pos = strrpos($output, "<!--{body}-->");
@@ -55,7 +88,7 @@ require_once "includes/config.php";
 	echo $output;
 	unset($output);
 
-//$statsauth = "a6f07386f610892b5f9993d60a8dbd5f";
-//require_once "stats/statsadd.php";
+//$statsauth = "a3az349x2bf3fdfa8dbt7x34fas5X";
+//require_once "stats/stat_sadd.php";
 
 ?>

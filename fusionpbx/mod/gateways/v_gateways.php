@@ -113,14 +113,11 @@ echo "<td align='right' width='42'>\n";
 echo "	<a href='v_gateways_edit.php' alt='add'>$v_link_label_add</a>\n";
 echo "</td>\n";
 echo "<tr>\n";
-//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 
 if ($resultcount == 0) { //no results
 }
 else { //received results
-
 	foreach($result as $row) {
-		//print_r( $row );
 		echo "<tr >\n";
 		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[gateway]."</td>\n";
 		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[context]."</td>\n";
@@ -131,7 +128,6 @@ else { //received results
 		echo "		<a href='v_gateways_delete.php?id=".$row[gateway_id]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 		echo "   </td>\n";
 		echo "</tr>\n";
-		//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%'' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 		if ($c==0) { $c=1; } else { $c=0; }
 	} //end foreach
 	unset($sql, $result, $rowcount);

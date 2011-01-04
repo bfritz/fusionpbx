@@ -27,6 +27,9 @@ include "root.php";
 include "includes/config.php";
 session_start();
 
+//define the variable
+	$v_menu = '';
+
 $_SESSION["menu"] = ''; //force the menu to generate on every page load
 if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 
@@ -35,31 +38,29 @@ if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 	//echo "    <!-- http://www.seoconsultants.com/css/menus/horizontal/ -->\n";
 	//echo "    <!-- http://www.tanfa.co.uk/css/examples/css-dropdown-menus.asp -->";
 
-	$str_menu = "";
-	$str_menu .= "    <!--[if IE]>\n";
-	$str_menu .= "    <style type=\"text/css\" media=\"screen\">\n";
-	$str_menu .= "    #menu{float:none;} /* This is required for IE to avoid positioning bug when placing content first in source. */\n";
-	$str_menu .= "    /* IE Menu CSS */\n";
-	$str_menu .= "    /* csshover.htc file version: V1.21.041022 - Available for download from: http://www.xs4all.nl/~peterned/csshover.html */\n";
-	$str_menu .= "    body{behavior:url(/includes/csshover.htc);\n";
-	$str_menu .= "    font-size:100%; /* to enable text resizing in IE */\n";
-	$str_menu .= "    }\n";
-	$str_menu .= "    #menu ul li{float:left;width:100%;}\n";
-	$str_menu .= "    #menu h2, #menu a{height:1%;font:bold arial,helvetica,sans-serif;}\n";
-	$str_menu .= "    </style>\n";
-	$str_menu .= "    <![endif]-->\n";
-	//$str_menu .= "    <style type=\"text/css\">@import url(\"/includes/menuh.css\");</style>\n";
-	$str_menu .= "\n";
+	$v_menu = "";
+	$v_menu .= "    <!--[if IE]>\n";
+	$v_menu .= "    <style type=\"text/css\" media=\"screen\">\n";
+	$v_menu .= "    #menu{float:none;} /* This is required for IE to avoid positioning bug when placing content first in source. */\n";
+	$v_menu .= "    /* IE Menu CSS */\n";
+	$v_menu .= "    /* csshover.htc file version: V1.21.041022 - Available for download from: http://www.xs4all.nl/~peterned/csshover.html */\n";
+	$v_menu .= "    body{behavior:url(/includes/csshover.htc);\n";
+	$v_menu .= "    font-size:100%; /* to enable text resizing in IE */\n";
+	$v_menu .= "    }\n";
+	$v_menu .= "    #menu ul li{float:left;width:100%;}\n";
+	$v_menu .= "    #menu h2, #menu a{height:1%;font:bold arial,helvetica,sans-serif;}\n";
+	$v_menu .= "    </style>\n";
+	$v_menu .= "    <![endif]-->\n";
+	//$v_menu .= "    <style type=\"text/css\">@import url(\"/includes/menuh.css\");</style>\n";
+	$v_menu .= "\n";
 
-	$str_menu .= "\n";
-	$str_menu .= "    <!-- End Grab This -->";
+	$v_menu .= "\n";
+	$v_menu .= "    <!-- End Grab This -->";
 
-	$str_menu .= "<!-- Begin CSS Horizontal Popout Menu -->\n";
-	$str_menu .= "<div id=\"menu\" style=\"position: relative; z-index:199; width:100%;\" align='left'>\n";
-	$str_menu .= "\n";
+	$v_menu .= "<!-- Begin CSS Horizontal Popout Menu -->\n";
+	$v_menu .= "<div id=\"menu\" style=\"position: relative; z-index:199; width:100%;\" align='left'>\n";
+	$v_menu .= "\n";
 
-
-	//---- Begin DB Menu --------------------
 	function builddbmenu($db, $sql, $menulevel) {
 
 		global $v_id;
@@ -138,7 +139,6 @@ if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 					//not authorized do not add to menu
 				}
 			}
-
 		} //end for each
 
 		unset($menu_title);
@@ -155,105 +155,95 @@ if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 
 	function builddbchildmenu($db, $menulevel, $menu_guid) {
 
-			global $v_id;
-			$menulevel = $menulevel+1;
+		global $v_id;
+		$menulevel = $menulevel+1;
 
-				//--- Begin check for children -----------------------------------------
-					$sql = "select * from v_menu ";
-					$sql .= "where v_id = '$v_id' ";
-					$sql .= "and menu_parent_guid = '$menu_guid' ";
-					$sql .= "order by menuorder asc ";
-					$prepstatement2 = $db->prepare($sql);
-					$prepstatement2->execute();
-					$result2 = $prepstatement2->fetchAll();
-					if (count($result2) > 0) {
-						//child menu found
-						$dbmenusub .= "<ul>\n";
+		$sql = "select * from v_menu ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and menu_parent_guid = '$menu_guid' ";
+		$sql .= "order by menuorder asc ";
+		$prepstatement2 = $db->prepare($sql);
+		$prepstatement2->execute();
+		$result2 = $prepstatement2->fetchAll();
+		if (count($result2) > 0) {
+			//child menu found
+			$dbmenusub .= "<ul>\n";
 
-						foreach($result2 as $row) {
-							$menu_id = $row['menuid'];
-							$menu_title = $row['menutitle'];
-							$menu_str = $row['menustr'];
-							$menu_category = $row['menucategory'];
-							$menu_group = $row['menugroup'];
-							$menu_guid = $row['menu_guid'];
-							$menu_parent_guid = $row['menu_parent_guid'];
+			foreach($result2 as $row) {
+				$menu_id = $row['menuid'];
+				$menu_title = $row['menutitle'];
+				$menu_str = $row['menustr'];
+				$menu_category = $row['menucategory'];
+				$menu_group = $row['menugroup'];
+				$menu_guid = $row['menu_guid'];
+				$menu_parent_guid = $row['menu_parent_guid'];
 
-							$menuatags = '';
-							switch ($menu_category) {
-								case "internal":
-									$menu_tags = "href='".PROJECT_PATH."$menu_str'";
-									break;
-								case "external":
-									$menu_str = str_replace ("<!--{project_path}-->", PROJECT_PATH, $menu_str);
-									$menu_tags = "href='$menu_str' target='_blank'";
-									break;
-								case "email":
-									$menu_tags = "href='mailto:$menu_str'";
-									break;
-							}
+				$menuatags = '';
+				switch ($menu_category) {
+					case "internal":
+						$menu_tags = "href='".PROJECT_PATH."$menu_str'";
+						break;
+					case "external":
+						$menu_str = str_replace ("<!--{project_path}-->", PROJECT_PATH, $menu_str);
+						$menu_tags = "href='$menu_str' target='_blank'";
+						break;
+					case "email":
+						$menu_tags = "href='mailto:$menu_str'";
+						break;
+				}
 
-							if (strlen($menu_group)==0) { //public
-									$dbmenusub .= "<li>";
+				if (strlen($menu_group)==0) { //public
+						$dbmenusub .= "<li>";
 
-									//get sub menu for children
-									$strchildmenu = builddbchildmenu($db, $menulevel, $menu_guid);
+						//get sub menu for children
+						$strchildmenu = builddbchildmenu($db, $menulevel, $menu_guid);
 
-									if (strlen($strchildmenu) > 1) {
-										$dbmenusub .= "<a $menu_tags>$menu_title</a>";
-										$dbmenusub .= $strchildmenu;
-										unset($strchildmenu);
-									}
-									else {
-										$dbmenusub .= "<a $menu_tags>$menu_title</a>";
-									}
-									$dbmenusub .= "</li>\n";
-							}
-							else {
-								//show only to designated group
-								if (ifgroup($menu_group)) { 
-									$dbmenusub .= "<li>";
-
-									//get sub menu for children
-									$strchildmenu = builddbchildmenu($db, $menulevel, $menu_guid);
-
-									if (strlen($strchildmenu) > 1) {
-										$dbmenusub .= "<a $menu_tags>$menu_title</a>";
-										$dbmenusub .= $strchildmenu;
-										unset($strchildmenu);
-									}
-									else {
-										$dbmenusub .= "<a $menu_tags>$menu_title</a>";
-									}
-									$dbmenusub .= "</li>\n";
-								}
-								else {
-									//not authorized do not add to menu
-								}
-							}
+						if (strlen($strchildmenu) > 1) {
+							$dbmenusub .= "<a $menu_tags>$menu_title</a>";
+							$dbmenusub .= $strchildmenu;
+							unset($strchildmenu);
 						}
-						unset($sql, $result2);
-						$dbmenusub .="</ul>\n";
-						return $dbmenusub;
-					}
-					unset($prepstatement2, $sql);
-				//--- End check for children -----------------------------------------
+						else {
+							$dbmenusub .= "<a $menu_tags>$menu_title</a>";
+						}
+						$dbmenusub .= "</li>\n";
+				}
+				else {
+					//show only to designated group
+					if (ifgroup($menu_group)) { 
+						$dbmenusub .= "<li>";
 
+						//get sub menu for children
+						$strchildmenu = builddbchildmenu($db, $menulevel, $menu_guid);
+
+						if (strlen($strchildmenu) > 1) {
+							$dbmenusub .= "<a $menu_tags>$menu_title</a>";
+							$dbmenusub .= $strchildmenu;
+							unset($strchildmenu);
+						}
+						else {
+							$dbmenusub .= "<a $menu_tags>$menu_title</a>";
+						}
+						$dbmenusub .= "</li>\n";
+					}
+					else {
+						//not authorized do not add to menu
+					}
+				}
+			}
+			unset($sql, $result2);
+			$dbmenusub .="</ul>\n";
+			return $dbmenusub;
+		}
+		unset($prepstatement2, $sql);
 	}
 
-	$str_menu .= builddbmenu($db, "", "main"); //display the menu
-	//---- End DB Menu --------------------
-
-	$str_menu .= "</div>\n";
-
-	$_SESSION["menu"] = $str_menu;
-	unset ($str_menu);
-
-} //end if //if (strlen($_SESSION["menu"])==0)
+	$v_menu .= builddbmenu($db, "", "main"); //display the menu
+	$v_menu .= "</div>\n";
+	$_SESSION["menu"] = $v_menu;
+}
 else {
 	//echo "from session";
 }
-//echo $_SESSION["menu"];
-
 
 ?>

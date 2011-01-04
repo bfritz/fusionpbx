@@ -37,7 +37,11 @@ $salt = 'e3.7d.12';
 //echo $_SESSION["username"];
 if (strlen($_SESSION["username"]) == 0) {
 
-	$_SESSION["menu"] = ""; //clear the menu
+	//clear the menu
+		$_SESSION["menu"] = "";
+
+	//clear the template
+		$_SESSION["template_content"] = '';
 
 	//if username from form is not provided then send to login.php
 		if (strlen(check_str($_POST["username"])) == 0) {

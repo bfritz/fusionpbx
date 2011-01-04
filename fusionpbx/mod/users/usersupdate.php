@@ -201,13 +201,8 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "and username = '$username' ";
 	}
 
-	//echo $sql;
 	$count = $db->exec(check_sql($sql));
-	//echo "Affected Rows: ".$count;
-
-	//todo: show only if admin
 	if (strlen($groupmember) > 0) {
-
 		//groupmemberlist function defined in config.php
 		$groupmemberlist = groupmemberlist($db, $username);
 
@@ -221,58 +216,46 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 			/*
 			if (ifgroup("admin")) {
+				$sql = "delete from v_group_members ";
+				$sql .= "where username = '$username' and groupid = 'customerbronze' ";
+				$sql .= "or username = '$username' and groupid = 'customersilver' ";
+				$sql .= "or username = '$username' and groupid = 'customergold' ";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-				  $sql = "delete from v_group_members ";
-				  $sql .= "where username = '$username' and groupid = 'customerbronze' ";
-				  $sql .= "or username = '$username' and groupid = 'customersilver' ";
-				  $sql .= "or username = '$username' and groupid = 'customergold' ";
-				  $db->exec(check_sql($sql));
-				  unset($sql);
-
-				  $sql = "insert into v_group_members ";
-				  $sql .= "(";
-				  $sql .= "groupid, ";
-				  $sql .= "username ";
-				  $sql .= ")";
-				  $sql .= "values ";
-				  $sql .= "(";
-				  $sql .= "'$groupid', ";
-				  $sql .= "'$username' ";
-				  $sql .= ")";
-				  $db->exec(check_sql($sql));
-				  unset($sql);
-			  }
-			  */
+				$sql = "insert into v_group_members ";
+				$sql .= "(";
+				$sql .= "groupid, ";
+				$sql .= "username ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$groupid', ";
+				$sql .= "'$username' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
+			}
+			*/
 		}
 	} //if (strlen($groupmember) > 0) {
 
+	//clear the template so it will rebuild in case the template was changed
+		$_SESSION["template_content"] = '';
 
-	//edit: make sure the meta redirect url is correct
-	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/\">\n";
-	echo "<div align='center'>Update Complete</div>";
-	require_once "includes/footer.php";
-	return;
+	//redirect the browser
+		require_once "includes/header.php";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/\">\n";
+		echo "<div align='center'>Update Complete</div>";
+		require_once "includes/footer.php";
+		return;
 }
 else {
 
-      $sql = "";
-      $sql .= "select * from v_users ";
-      $sql .= "where v_id = '$v_id' ";
-      $sql .= "and username = '$username' ";
-      //if (ifgroup("admin")) {
-      //    //allow admin access
-      //    if (strlen($id)> 0) {
-      //        $sql .= "where id = '$id' ";
-      //    }
-      //    else {
-      //        $sql .= "where username = '$username' ";
-      //    }
-      //}
-      //else {
-      //      $sql .= "where username = '$username' ";
-      //}
-      //echo $sql;
+	$sql = "";
+	$sql .= "select * from v_users ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and username = '$username' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
