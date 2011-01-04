@@ -335,7 +335,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 }
 
 /*
-if (ifgroup("member")) {
+if (ifgroup("user")) {
 	//find the conference extensions from the dialplan include details
 
 		//define the conference array

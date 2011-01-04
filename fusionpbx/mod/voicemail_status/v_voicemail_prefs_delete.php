@@ -26,7 +26,7 @@
 include "root.php";
 require "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin") || ifgroup("member")) {
+if (ifgroup("user") || ifgroup("admin") || ifgroup("superadmin")) {
 	//access granted
 }
 else {

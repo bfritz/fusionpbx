@@ -34,7 +34,7 @@ require_once "includes/checkauth.php";
 	}
 	else {
 		if (strlen($_SESSION["username"]) > 0) {
-			//if (!ifgroup("member")) {
+			//if (!ifgroup("user")) {
 			  $username = $_SESSION["username"];
 			//}
 		}
