@@ -39,6 +39,51 @@ require_once "includes/paging.php";
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
+//get the event socket connection information
+$sql = "";
+$sql .= "select * from v_settings ";
+$sql .= "where v_id = '$v_id' ";
+$prepstatement = $db->prepare(check_sql($sql));
+$prepstatement->execute();
+$result = $prepstatement->fetchAll();
+foreach ($result as &$row) {
+	$event_socket_ip_address = $row["event_socket_ip_address"];
+	$event_socket_port = $row["event_socket_port"];
+	$event_socket_password = $row["event_socket_password"];
+	break; //limit to 1 row
+}
+
+if (strlen($_GET["a"]) > 0) {
+	if ($_GET["a"] == "stop") {
+		$gateway_name = $_GET["gateway"];
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+		$cmd = "api sofia profile external killgw $gateway_name";
+		$response = trim(event_socket_request($fp, $cmd));
+		$msg = '<strong>Stop Gateway:</strong><pre>'.$response.'</pre>';
+	}
+	if ($_GET["a"] == "start") {
+		$gateway_name = $_GET["gateway"];
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+		$cmd = "api sofia profile external rescan";
+		$response = trim(event_socket_request($fp, $cmd));
+		$msg = '<strong>Start Gateway:</strong><pre>'.$response.'</pre>';
+	}
+}
+
+if (!function_exists('switch_gateway_status')) {
+	function switch_gateway_status($gateway_name, $result_type = 'xml') {
+		global $event_socket_ip_address, $event_socket_port, $event_socket_password;
+		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+		if ($result_type == "xml") {
+			$cmd = "api sofia xmlstatus gateway $gateway_name";
+		}
+		else {
+			$cmd = "api sofia xmlstatus gateway $gateway_name";
+		}
+		return trim(event_socket_request($fp, $cmd));
+	}
+}
+
 echo "<div align='center'>";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -95,18 +140,18 @@ $result = $prepstatement->fetchAll();
 $resultcount = count($result);
 unset ($prepstatement, $sql);
 
-
 $c = 0;
 $rowstyle["0"] = "rowstyle0";
 $rowstyle["1"] = "rowstyle1";
 
 echo "<div align='center'>\n";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
-
 echo "<tr>\n";
 echo thorderby('gateway', 'Gateway', $orderby, $order);
 echo thorderby('context', 'Context', $orderby, $order);
+echo "<th>Status</th>\n";
+echo "<th>Action</th>\n";
+echo "<th>State</th>\n";
 echo thorderby('enabled', 'Enabled', $orderby, $order);
 echo thorderby('description', 'Gateway Description', $orderby, $order);
 echo "<td align='right' width='42'>\n";
@@ -119,14 +164,36 @@ if ($resultcount == 0) { //no results
 else { //received results
 	foreach($result as $row) {
 		echo "<tr >\n";
-		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[gateway]."</td>\n";
-		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[context]."</td>\n";
-		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[enabled]."</td>\n";
-		echo "   <td valign='top' class='rowstylebg'>".$row[description]."</td>\n";
-		echo "   <td valign='top' align='right'>\n";
-		echo "		<a href='v_gateways_edit.php?id=".$row[gateway_id]."' alt='edit'>$v_link_label_edit</a>\n";
-		echo "		<a href='v_gateways_delete.php?id=".$row[gateway_id]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
-		echo "   </td>\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row["gateway"]."</td>\n";
+		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row["context"]."</td>\n";
+
+		$response = switch_gateway_status($row["gateway"]);
+		if ($response == "Invalid Gateway!") {
+			//not running
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>Stopped</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=start&gateway=".$row["gateway"]."' alt='start'>Start</a></td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;</td>\n";
+		}
+		else {
+			//running
+			try {
+				$xml = new SimpleXMLElement($response);
+				$state = $xml->state;
+				echo "	<td valign='top' class='".$rowstyle[$c]."'>Running</td>\n";
+				echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=stop&gateway=".$row["gateway"]."' alt='stop'>Stop</a></td>\n";
+				echo "	<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
+			}
+			catch(Exception $e) {
+				//echo $e->getMessage();
+			}
+		}
+
+		echo "	<td valign='top' class='".$rowstyle[$c]."' style='align: center;'>".$row["enabled"]."</td>\n";
+		echo "	<td valign='top' class='rowstylebg'>".$row["description"]."</td>\n";
+		echo "	<td valign='top' align='right'>\n";
+		echo "		<a href='v_gateways_edit.php?id=".$row["gateway_id"]."' alt='edit'>$v_link_label_edit</a>\n";
+		echo "		<a href='v_gateways_delete.php?id=".$row["gateway_id"]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
+		echo "	</td>\n";
 		echo "</tr>\n";
 		if ($c==0) { $c=1; } else { $c=0; }
 	} //end foreach
@@ -135,7 +202,7 @@ else { //received results
 
 
 echo "<tr>\n";
-echo "<td colspan='5'>\n";
+echo "<td colspan='8'>\n";
 echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 echo "		<tr>\n";
 echo "			<td width='33.3%' nowrap>&nbsp;</td>\n";
@@ -149,7 +216,7 @@ echo "</td>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td colspan='5' align='left'>\n";
+echo "<td colspan='8' align='left'>\n";
 echo "<br />\n";
 if ($v_path_show) {
 	echo $v_conf_dir."/sip_profiles/external/\n";
