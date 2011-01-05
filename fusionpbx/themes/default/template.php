@@ -218,6 +218,49 @@ INPUT.txt {
 	font-family: arial;
 }
 
+table tr:first-child th:first-child {
+	-moz-border-radius-topleft:7px;
+	-webkit-border-top-left-radius:7px;
+	border-top-left-radius:7px
+	}
+
+table tr:first-child th:last-of-type {
+	-moz-border-radius-topright:7px;
+	-webkit-border-top-right-radius:7px;
+	border-top-right-radius:7px
+	}
+
+table tr:nth-last-child(-5) td:first-of-type {
+	-moz-border-radius-bottomleft:7px;
+	-webkit-border-bottom-left-radius:7px;
+	border-bottom-left-radius:7px
+	}
+
+table tr:nth-last-child(-5) td:first-of-type {
+	-moz-border-radius-topleft:7px;
+	-webkit-border-top-left-radius:7px;
+	border-bottom-top-radius:7px
+	}
+
+/*
+table tr:last-child td:first-of-type {
+	-moz-border-radius-topright:10px;
+	-webkit-border-top-right-radius:10px;
+	border-top-right-radius:10px
+	}
+
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft:10px;
+	-webkit-border-bottom-left-radius:10px;
+	border-bottom-left-radius:10px
+	}
+
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright:10px;
+	-webkit-border-bottom-right-radius:10px;
+	border-bottom-right-radius:10px
+	}
+*/
 
 /* begin the menu css*/
 	.menu_bg {
