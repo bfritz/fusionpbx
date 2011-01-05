@@ -98,11 +98,13 @@ $order = $_GET["order"];
 	$rowstyle["1"] = "rowstyle1";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<divc class='th'>\n";
 	echo "<tr>\n";
-	echo thorderby('extension', 'Extension', $orderby, $order);
+	echo "<th>Extension</th>\n";
 	echo "<th>Tools</th>\n";
-	echo thorderby('description', 'Description', $orderby, $order);
+	echo "<th>Description</th>\n";
 	echo "</tr>\n";
+	echo "<div>\n";
 
 	if ($resultcount == 0) { //no results
 	}

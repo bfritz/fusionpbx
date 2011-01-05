@@ -78,9 +78,9 @@ if ($is_included == "true" && $result_count == 0) {
 else {
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('huntgroupextension', 'Hunt Group Extension', $orderby, $order);
+	echo "<th>Hunt Group Extension</th>\n";
 	echo "<th>Tools</th>\n";
-	echo thorderby('huntgroupdescr', 'Description', $orderby, $order);
+	echo "<th>Description</th>\n";
 	echo "</tr>\n";
 }
 
