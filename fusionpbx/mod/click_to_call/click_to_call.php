@@ -119,11 +119,11 @@ echo "	</table>";
 echo "	<br />";
 
 echo "<form>\n";
-echo "<table width='100%' cellpadding='6' cellspacing='0'\n";
-echo "<tr><td class='vncellreq'>Caller ID Name:</td><td class='vtable'><input name=\"cid_name\" value='$cid_name' class='formfld'></td></tr>\n";
-echo "<tr><td class='vncellreq'>Caller ID Number:</td><td class='vtable'><input name=\"cid_number\" value='$cid_number' class='formfld'></td></tr>\n";
-echo "<tr><td class='vncellreq'>Source Number:</td><td class='vtable'><input name=\"src\" value='$src' class='formfld'></td></tr>\n";
-echo "<tr><td class='vncellreq'>Destination Number:</td><td class='vtable'><input name=\"dest\" value='' class='formfld'></td></tr>\n";
+echo "<table border='0' width='100%' cellpadding='6' cellspacing='0'\n";
+echo "<tr><td class='vncellreq' width='40%'>Caller ID Name:</td><td class='vtable' align='left'><input name=\"cid_name\" value='$cid_name' class='formfld'></td></tr>\n";
+echo "<tr><td class='vncellreq'>Caller ID Number:</td><td class='vtable' align='left'><input name=\"cid_number\" value='$cid_number' class='formfld'></td></tr>\n";
+echo "<tr><td class='vncellreq'>Source Number:</td><td class='vtable' align='left'><input name=\"src\" value='$src' class='formfld'></td></tr>\n";
+echo "<tr><td class='vncellreq'>Destination Number:</td><td class='vtable' align='left'><input name=\"dest\" value='' class='formfld'></td></tr>\n";
 echo "<tr><td colspan='2' align='right'><input type=\"submit\" class='btn' value=\"Call\"></td></tr>";
 echo "</table>\n";
 echo "</form>";
