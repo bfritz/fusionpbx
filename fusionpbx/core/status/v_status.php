@@ -42,10 +42,6 @@ require_once "includes/v_dialplan_entry_exists.php";
 	$rowstyle["1"] = "rowstyle1";
 
 if ($_GET['a'] == "download") {
-	if ($_GET['t'] == "logs") {
-		$tmp = $v_log_dir.'/';
-		$filename = $v_name.'.log';
-	}
 	if ($_GET['t'] == "cdrcsv") {
 		$tmp = $v_log_dir.'/cdr-csv/';
 		$filename = 'Master.csv';
@@ -125,28 +121,6 @@ foreach ($result as &$row) {
 	$event_socket_password = $row["event_socket_password"];
 	break; //limit to 1 row
 }
-
-?>
-
-<script language="Javascript" type="text/javascript" src="<?php echo PROJECT_PATH ?>/includes/edit_area/edit_area_full.js"></script>
-<script language="Javascript" type="text/javascript">
-	// initialisation
-	editAreaLoader.init({
-		id: "log"	// id of the textarea to transform
-		,start_highlight: false
-		,allow_toggle: true
-		,display: "later"
-		,language: "en"
-		,syntax: "html"
-		,toolbar: "search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help"
-		,syntax_selection_allow: "css,html,js,php,xml,c,cpp,sql"
-		,show_line_colors: true
-	});
-</script>
-
-
-<?php
-
 
 $savemsg = $_GET["savemsg"];
 if ($savemsg) {
@@ -356,37 +330,6 @@ else {
 	echo "</table>\n";
 	echo "<br /><br />\n\n";
 }
-
-echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
-echo "<tr>\n";
-echo "<td width='50%'>\n";
-echo "<b>Logs</b><br />\n";
-//echo $v_log_dir.'/'.$v_name.".log<br /><br />\n";
-echo "</td>\n";
-echo "<td width='50%' align='right'>\n";
-echo "  <input type='button' class='btn' value='download logs' onclick=\"document.location.href='v_status.php?a=download&t=logs';\" />\n";
-echo "</tr>\n";
-echo "</table>\n";
-echo "<br />\n\n";
-if (stristr(PHP_OS, 'WIN')) { 
-	//windows detected
-	//echo "<b>tail -n 1500 ".$v_log_dir."/".$v_name.".log</b><br />\n";
-	echo "<textarea id='log' name='log' style='width: 100%' rows='30' wrap='off'>\n";
-	echo tail($v_log_dir."/".$v_name.".log", 1500);
-	echo "</textarea>\n";
-}
-else {
-	//windows not detected
-	//echo "<b>tail -n 1500 ".$v_log_dir."/".$v_name.".log</b><br />\n";
-	echo "<textarea id='log' name='log' style='width: 100%' rows='30' style='' wrap='off'>\n";
-	echo shell_exec("tail -n 1500 ".$v_log_dir."/".$v_name.".log");
-	echo "</textarea>\n";
-}
-echo "<br /><br />\n\n";
-
-
-echo "</td></tr></table>\n";
-echo "</div>\n";
 
 require_once "includes/footer.php";
 

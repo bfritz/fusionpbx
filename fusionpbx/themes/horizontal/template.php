@@ -84,6 +84,23 @@ TEXTAREA.txt {
 	background-color: #EFEFEF;
 	background-repeat:repeat-x;
 	overflow: auto;
+	padding: 4px;
+
+	-moz-border-radius-topleft:5px;
+	-webkit-border-top-left-radius:5px;
+	border-top-left-radius:5px
+
+	-moz-border-radius-topright:5px;
+	-webkit-border-top-right-radius:5px;
+	border-top-right-radius:5px
+
+	-moz-border-radius-bottomleft:5px;
+	-webkit-border-bottom-left-radius:5px;
+	border-bottom-left-radius:5px
+
+	-moz-border-radius-bottomright:5px;
+	-webkit-border-bottom-right-radius:5px;
+	border-bottom-right-radius:5px
 }
 
 INPUT.txt {
@@ -103,6 +120,23 @@ INPUT.txt {
 	width: 50%;
 	text-align: left;
 	/*width: 300px;*/
+	padding-left: 4px;
+
+	-moz-border-radius-topleft:5px;
+	-webkit-border-top-left-radius:5px;
+	border-top-left-radius:5px
+
+	-moz-border-radius-topright:5px;
+	-webkit-border-top-right-radius:5px;
+	border-top-right-radius:5px
+
+	-moz-border-radius-bottomleft:5px;
+	-webkit-border-bottom-left-radius:5px;
+	border-bottom-left-radius:5px
+
+	-moz-border-radius-bottomright:5px;
+	-webkit-border-bottom-right-radius:5px;
+	border-bottom-right-radius:5px
 }
 
 /*
@@ -254,27 +288,27 @@ table tr.odd td {
 	}
 
 table tr:first-child th:first-child {
-	-moz-border-radius-topleft:10px;
-	-webkit-border-top-left-radius:10px;
-	border-top-left-radius:10px
+	-moz-border-radius-topleft:7px;
+	-webkit-border-top-left-radius:7px;
+	border-top-left-radius:7px
 	}
 
 table tr:first-child th:last-of-type {
-	-moz-border-radius-topright:10px;
-	-webkit-border-top-right-radius:10px;
-	border-top-right-radius:10px
+	-moz-border-radius-topright:7px;
+	-webkit-border-top-right-radius:7px;
+	border-top-right-radius:7px
 	}
 
 table tr:nth-last-child(-5) td:first-of-type {
-	-moz-border-radius-bottomleft:10px;
-	-webkit-border-bottom-left-radius:10px;
-	border-bottom-left-radius:10px
+	-moz-border-radius-bottomleft:7px;
+	-webkit-border-bottom-left-radius:7px;
+	border-bottom-left-radius:7px
 	}
 
 table tr:nth-last-child(-5) td:first-of-type {
-	-moz-border-radius-topleft:10px;
-	-webkit-border-top-left-radius:10px;
-	border-bottom-top-radius:10px
+	-moz-border-radius-topleft:7px;
+	-webkit-border-top-left-radius:7px;
+	border-bottom-top-radius:7px
 	}
 
 /*
@@ -318,7 +352,7 @@ table tr:last-child td:last-child {
 	#menu h2{
 	/*background:#222222 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 	/*text-transform:uppercase*/
-	width:108px;
+	width:118px;
 	}
 
 	#menu h2 h2{
@@ -330,6 +364,8 @@ table tr:last-child td:last-child {
 	#menu a{
 	background:#333333;
 	text-decoration:none;
+	padding-left:7px;
+	width:114px;
 	}
 
 	/* drop down text color */
@@ -452,7 +488,6 @@ function confirmdelete(url) {
 </SCRIPT>
 </head>
 <body>
-
 <div align='center'>
 <table width='90%' class='border.disabled' style='background-color:#FFFFFF;' border='0' cellpadding='0' cellspacing='0'>
 <tr>
@@ -490,7 +525,7 @@ function confirmdelete(url) {
 <?php
 if ($_SESSION["reload_xml"]) {
 		if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
-			if(stristr($_SERVER["PHP_SELF"] , "_edit") != FALSE) { 
+			if(stristr($_SERVER["PHP_SELF"], "_edit") != FALSE) { 
 				//found
 			}
 			else {
@@ -529,6 +564,7 @@ if ($_SESSION["reload_xml"]) {
 </tr>
 </table>
 
+
 </td>
 </tr>
 </table>
@@ -550,6 +586,7 @@ if ($_SESSION["reload_xml"]) {
 
 </body>
 </html>
+
 <?php
 
 //define the link labels
