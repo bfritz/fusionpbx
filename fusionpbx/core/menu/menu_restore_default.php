@@ -85,7 +85,6 @@ else {
 
 //use the menu array to restore the default menu
 	foreach ($menu_array as &$row) {
-		$menuid = $row["menuid"];
 		$menulanguage = $row["menulanguage"];
 		$menutitle = $row["menutitle"];
 		$menustr = $row["menustr"];
@@ -101,52 +100,61 @@ else {
 		$menu_guid = $row["menu_guid"];
 		$menu_parent_guid = $row["menu_parent_guid"];
 
-		//insert the defaul menu into the database
-			$sql = "insert into v_menu ";
-			$sql .= "(";
-			$sql .= "menuid, ";
-			$sql .= "v_id, ";
-			$sql .= "menulanguage, ";
-			$sql .= "menutitle, ";
-			$sql .= "menustr, ";
-			$sql .= "menucategory, ";
-			$sql .= "menugroup, ";
-			$sql .= "menudesc, ";
-			$sql .= "menuorder, ";
-			$sql .= "menuadduser, ";
-			$sql .= "menuadddate, ";
-			$sql .= "menumoduser, ";
-			$sql .= "menumoddate, ";
-			$sql .= "menu_protected, ";
-			$sql .= "menu_guid, ";
-			$sql .= "menu_parent_guid ";
-			$sql .= ")";
-			$sql .= "values ";
-			$sql .= "(";
-			$sql .= "'$menuid', ";
-			$sql .= "'$v_id', ";
-			$sql .= "'$menulanguage', ";
-			$sql .= "'$menutitle', ";
-			$sql .= "'$menustr', ";
-			$sql .= "'$menucategory', ";
-			$sql .= "'$menugroup', ";
-			$sql .= "'$menudesc', ";
-			$sql .= "'$menuorder', ";
-			$sql .= "'$menuadduser', ";
-			$sql .= "'$menuadddate', ";
-			$sql .= "'$menumoduser', ";
-			$sql .= "'$menumoddate', ";
-			$sql .= "'$menu_protected', ";
-			$sql .= "'$menu_guid', ";
-			$sql .= "'$menu_parent_guid' ";
-			$sql .= ")";
-			$db->exec(check_sql($sql));
-			//echo $sql."<br />\n";
+		//if the guid is not currently in the db then add it
+			$sql = "select count(*) as count from v_menu ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and menu_guid = '$menu_guid' ";
+			$result = $db->query($sql)->fetch();
 			unset($sql);
+
+			if ($result['count'] == 0) {
+				//insert the default menu into the database
+					$sql = "insert into v_menu ";
+					$sql .= "(";
+					$sql .= "v_id, ";
+					$sql .= "menulanguage, ";
+					$sql .= "menutitle, ";
+					$sql .= "menustr, ";
+					$sql .= "menucategory, ";
+					$sql .= "menugroup, ";
+					$sql .= "menudesc, ";
+					$sql .= "menuorder, ";
+					$sql .= "menuadduser, ";
+					$sql .= "menuadddate, ";
+					$sql .= "menumoduser, ";
+					$sql .= "menumoddate, ";
+					$sql .= "menu_protected, ";
+					$sql .= "menu_guid, ";
+					$sql .= "menu_parent_guid ";
+					$sql .= ")";
+					$sql .= "values ";
+					$sql .= "(";
+					$sql .= "'$v_id', ";
+					$sql .= "'$menulanguage', ";
+					$sql .= "'$menutitle', ";
+					$sql .= "'$menustr', ";
+					$sql .= "'$menucategory', ";
+					$sql .= "'$menugroup', ";
+					$sql .= "'$menudesc', ";
+					$sql .= "'$menuorder', ";
+					$sql .= "'$menuadduser', ";
+					$sql .= "'$menuadddate', ";
+					$sql .= "'$menumoduser', ";
+					$sql .= "'$menumoddate', ";
+					$sql .= "'$menu_protected', ";
+					$sql .= "'$menu_guid', ";
+					$sql .= "'$menu_parent_guid' ";
+					$sql .= ")";
+					$db->exec(check_sql($sql));
+					unset($sql);
+			}
 	}
 
 	//unset the menu session variable
 		$_SESSION["menu"] = "";
+
+	//unset the default template
+		$_SESSION["template_content"] = '';
 
 	require_once "includes/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_list.php\">\n";
