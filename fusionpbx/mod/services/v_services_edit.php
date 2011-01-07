@@ -147,17 +147,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //begin the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "	  <br>";
 
-
 	echo "<form method='post' name='frm' action=''>\n";
-
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	if ($action == "add") {
 		echo "<td align='left' width='30%' nowrap><b>Service Add</b></td>\n";
@@ -168,7 +164,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_services.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "Shows a list of processes and provides ability to start and stop them.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -214,7 +210,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Data:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<textarea class='formfld' name='v_service_data' rows='4'>$v_service_data</textarea>\n";
+	echo "	<input class='formfld' type='text' name='v_service_data' maxlength='255' value=\"$v_service_data\">\n";
+	//echo "	<textarea class='formfld' name='v_service_data' rows='4'>$v_service_data</textarea>\n";
 	echo "<br />\n";
 	echo "Enter the service data.\n";
 	echo "</td>\n";

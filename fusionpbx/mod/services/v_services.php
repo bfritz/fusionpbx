@@ -74,11 +74,11 @@ if (strlen($_GET["a"]) > 0) {
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' nowrap><b>Services</b></td>\n";
+	echo "<td width='50%' align='left' nowrap='nowrap'><b>Services</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "Shows a list of processes, the status of the process and provides control to start and stop the process.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -125,7 +125,6 @@ if (strlen($_GET["a"]) > 0) {
 	echo "<th>Action</th>\n";
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_services_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_services_edit.php'\" value='+'>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -133,7 +132,6 @@ if (strlen($_GET["a"]) > 0) {
 	}
 	else { //received results
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[v_service_name]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[v_service_desc]."</td>\n";
@@ -158,16 +156,8 @@ if (strlen($_GET["a"]) > 0) {
 			echo "</td>\n";
 
 			echo "	<td valign='top' align='right'>\n";
-			//if (is_process_running($pid)) {
-			//	echo "		<a href='v_services.php?id=".$row[service_id]."&a=stop' alt='edit'><img src='/images/icon_stop.gif' width='17' height='17' alt='edit' border='0'></a>";
-			//}
-			//else {
-			//	echo "		<a href='v_services.php?id=".$row[service_id]."&a=start' alt='edit'><img src='/images/icon_start.gif' width='17' height='17' alt='edit' border='0'></a>";
-			//}
 			echo "		<a href='v_services_edit.php?id=".$row[service_id]."' alt='edit'>$v_link_label_edit</a>\n";
 			echo "		<a href='v_services_delete.php?id=".$row[service_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-			//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_services_edit.php?id=".$row[service_id]."'\" value='e'>\n";
-			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_services_delete.php?id=".$row[service_id]."' }\" value='x'>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -184,7 +174,6 @@ if (strlen($_GET["a"]) > 0) {
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	echo "			<a href='v_services_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_services_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
