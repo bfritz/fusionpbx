@@ -63,7 +63,7 @@ $rowstyle["0"] = "rowstyle0";
 $rowstyle["1"] = "rowstyle1";
 
 echo "<div align='center'>\n";
-echo "<table width='90%' border='0'><tr><td>\n";
+echo "<table width='90%' border='0'><tr><td align='left'>\n";
 echo "<span  class=\"\" height='50'>Member list for <b>$groupid</b></span><br /><br />\n";
 
 $sql = "SELECT * FROM v_group_members ";
