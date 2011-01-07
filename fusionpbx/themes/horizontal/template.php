@@ -504,7 +504,7 @@ function confirmdelete(url) {
 	</td>
 	</tr>
 	<tr>
-	<td align='center' colspan='2' style="background-image: url('<!--{project_path}-->/themes/default/background_black.png');" width='100%' height='22'>
+	<td align='center' colspan='2' style="background-image: url('<!--{project_path}-->/themes/horizontal/background_black.png');" width='100%' height='22'>
 	<!--{menu}-->
 	</td>
 	</tr>
