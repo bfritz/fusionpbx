@@ -220,20 +220,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
+	echo "		<br>";
 
 	echo "<form method='post' name='frm' action=''>\n";
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap><b>Call Center Queue Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>Call Center Queue Add</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap><b>Call Center Queue Edit</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>Call Center Queue Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
 	if ($action == "update") {
@@ -246,7 +245,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "List of queues for the call center.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

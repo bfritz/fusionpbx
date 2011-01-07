@@ -158,15 +158,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap><b>Call Center Tier Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>Call Center Tier Add</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap><b>Call Center Tier Edit</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>Call Center Tier Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_center_tier.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "List all tiers. Tiers assign agents to queues.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

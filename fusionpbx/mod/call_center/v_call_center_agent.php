@@ -20,21 +20,19 @@ $order = $_GET["order"];
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
 
-
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' nowrap><b>Call Center Agent List</b></td>\n";
+	echo "<td width='50%' align='left' nowrap='nowrap'><b>Call Center Agent List</b></td>\n";
 	echo "<td width='50%' align='right'>\n";
 	echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_call_center_queue.php'\" value='Back'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "List of call center agents.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</tr></table>\n";
-
 
 	$sql = "";
 	$sql .= " select * from v_call_center_agent ";
