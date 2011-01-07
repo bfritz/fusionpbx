@@ -208,13 +208,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td width='30%' nowrap><b>Call Broadcast</b></td>\n";
+		echo "<td width='30%' align='left' nowrap='nowrap'><b>Call Broadcast</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td width='30%' nowrap><b>Call Broadcast Edit</b></td>\n";
+		echo "<td width='30%' align='left' nowrap='nowrap'><b>Call Broadcast Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_broadcast.php'\" value='Back'>\n";
+	echo "	<input type='button' class='btn' name='back' alt='back' onclick=\"window.location='v_call_broadcast.php'\" value='Back'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
