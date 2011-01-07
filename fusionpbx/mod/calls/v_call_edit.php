@@ -870,7 +870,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "	Directs incoming calls for extension  $extension.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
