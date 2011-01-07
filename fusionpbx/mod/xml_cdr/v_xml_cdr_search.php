@@ -56,17 +56,16 @@ if (count($_POST)>0) {
 }
 else {
 
-	echo "\n";    
 	require_once "includes/header.php";
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
-	echo "      <br>";
+	echo "		<br>";
 
-	echo "<form method='post' action='v_xml_cdr.php'>";
-	echo "<table width='100%' cellpadding='6' cellspacing='0'>";
+	echo "<form method='post' action='v_xml_cdr.php'>\n";
+	echo "<table width='100%' cellpadding='6' cellspacing='0'>\n";
 
 	echo "<tr>\n";
 	echo "<td width='30%' nowrap valign='top'><b>Advanced Search</b></td>\n";
@@ -154,7 +153,7 @@ else {
 	echo "</div>";
 
 
-require_once "includes/footer.php";
+	require_once "includes/footer.php";
 
 } //end if not post
 ?>

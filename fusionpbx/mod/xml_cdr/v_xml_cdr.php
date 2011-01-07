@@ -73,10 +73,33 @@ else {
 	echo "	<td align=\"center\" colspan='11'>\n";
 	echo "		<br>";
 
-	echo "<table width='100%' border='0'><tr>\n";
-	echo "<td align='left' width='50%' nowrap><b>Call Detail Records</b></td>\n";
-	echo "<td align='left' width='50%' align='right'>&nbsp;</td>\n";
+	echo "<table width='100%' border='0'>\n";
+	echo "<tr>\n";
+	echo "<td align='left' width='50%' nowrap='nowrap'><b>Call Detail Records</b></td>\n";
+	echo "<form method='post' action='v_xml_cdr_csv.php'>";
+	echo "<td align='right' width='100%'>\n";
+	echo "<input type='hidden' name='caller_id_name' value='$caller_id_name'>\n";
+	echo "<input type='hidden' name='start_stamp' value='$start_stamp'>\n";
+	echo "<input type='hidden' name='hangup_cause' value='$hangup_cause'>\n";
+	echo "<input type='hidden' name='caller_id_number' value='$caller_id_number'>\n";
+	echo "<input type='hidden' name='destination_number' value='$destination_number'>\n";
+	//echo "<input type='hidden' name='context' value='$context'>\n";
+	echo "<input type='hidden' name='answer_stamp' value='$answer_stamp'>\n";
+	echo "<input type='hidden' name='end_stamp' value='$end_stamp'>\n";
+	echo "<input type='hidden' name='duration' value='$duration'>\n";
+	echo "<input type='hidden' name='billsec' value='$billsec'>\n";
+	echo "<input type='hidden' name='uuid' value='$uuid'>\n";
+	echo "<input type='hidden' name='bleg_uuid' value='$bleg_uuid'>\n";
+	echo "<input type='hidden' name='accountcode' value='$accountcode'>\n";
+	echo "<input type='hidden' name='read_codec' value='$read_codec'>\n";
+	echo "<input type='hidden' name='write_codec' value='$write_codec'>\n";
+	echo "<input type='hidden' name='remote_media_ip' value='$remote_media_ip'>\n";
+	echo "<input type='hidden' name='network_addr' value='$network_addr'>\n";
+	echo "<input type='submit' class='btn' name='submit' value=' csv '>\n";
+	echo "</td>\n";
+	echo "</form>\n";
 	echo "</tr>\n";
+
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
 
@@ -99,11 +122,10 @@ else {
 			echo "<table width='95%' cellpadding='3' border='0'>";
 			echo "<tr>";
 			echo "<td width='33.3%'>\n";
-				echo "<table width='100%'>";
-
+				echo "<table width='100%' border='0'>";
 				echo "	<tr>";
-				echo "		<td>Direction:</td>";
-				echo "		<td>\n";
+				echo "		<td align='left' width='25%'>Direction:</td>";
+				echo "		<td align='left' width='75%'>\n";
 				echo "			<select name='direction' style='width:100%' class='frm'>\n";
 				echo "			<option value=''>                                </option>\n";
 				if ($direction == "inbound") {
@@ -374,37 +396,13 @@ else {
 	echo thorderby('duration', 'Length', $orderby, $order);
 	echo thorderby('hangup_cause', 'Status', $orderby, $order);
 
-	echo "<form method='post' action='v_xml_cdr_csv.php'>";
-	echo "<td align='left' width='22'>\n";
-	echo "<input type='hidden' name='caller_id_name' value='$caller_id_name'>\n";
-	echo "<input type='hidden' name='start_stamp' value='$start_stamp'>\n";
-	echo "<input type='hidden' name='hangup_cause' value='$hangup_cause'>\n";
-	echo "<input type='hidden' name='caller_id_number' value='$caller_id_number'>\n";
-	echo "<input type='hidden' name='destination_number' value='$destination_number'>\n";
-	//echo "<input type='hidden' name='context' value='$context'>\n";
-	echo "<input type='hidden' name='answer_stamp' value='$answer_stamp'>\n";
-	echo "<input type='hidden' name='end_stamp' value='$end_stamp'>\n";
-	echo "<input type='hidden' name='duration' value='$duration'>\n";
-	echo "<input type='hidden' name='billsec' value='$billsec'>\n";
-	echo "<input type='hidden' name='uuid' value='$uuid'>\n";
-	echo "<input type='hidden' name='bleg_uuid' value='$bleg_uuid'>\n";
-	echo "<input type='hidden' name='accountcode' value='$accountcode'>\n";
-	echo "<input type='hidden' name='read_codec' value='$read_codec'>\n";
-	echo "<input type='hidden' name='write_codec' value='$write_codec'>\n";
-	echo "<input type='hidden' name='remote_media_ip' value='$remote_media_ip'>\n";
-	echo "<input type='hidden' name='network_addr' value='$network_addr'>\n";
-	echo "<input type='submit' class='btn' name='submit' value=' csv '>\n";
-	echo "</td>\n";
-	echo "<tr>\n";
-	echo "</form>\n";
-
 	if ($resultcount == 0) { //no results
 	}
 	else { //received results
 		foreach($result as $row) {
-			$tmp_year = date("Y", strtotime($row[start_stamp]));
-			$tmp_month = date("M", strtotime($row[start_stamp]));
-			$tmp_day = date("d", strtotime($row[start_stamp]));
+			$tmp_year = date("Y", strtotime($row['start_stamp']));
+			$tmp_month = date("M", strtotime($row['start_stamp']));
+			$tmp_day = date("d", strtotime($row['start_stamp']));
 
 			$hangup_cause = $row['hangup_cause'];
 			$hangup_cause = str_replace("_", " ", $hangup_cause);
@@ -412,38 +410,48 @@ else {
 			$hangup_cause = ucwords($hangup_cause);
 
 			echo "<tr >\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[direction]."</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[default_language]."</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[context]."</td>\n";
+			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['direction']."</td>\n";
+			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['default_language']."</td>\n";
+			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['context']."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
-			if (file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$row[uuid].'.wav')) {
-				echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('../recordings/v_recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$row[uuid].'.wav')."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
-				echo 	$row[caller_id_name].' ';
+			$tmp_dir = $v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
+			$tmp_name = $row['uuid'].'.wav';
+			if (!file_exists($tmp_dir.'/'.$tmp_name)) {
+				$tmp_name = $row['uuid']."_1.wav";
+			}
+			if (file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
+				echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('../recordings/v_recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
+				echo 	$row['caller_id_name'].' ';
 				echo "	  </a>";
 			}
 			else {
-				echo 	$row[caller_id_name].' ';
+				echo 	$row['caller_id_name'].' ';
 			}
 			echo "	</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
-			if (file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$row[uuid].'.wav')) {
-				echo "		<a href=\"../recordings/v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$row[uuid].'.wav')."\">\n";
-				echo 	$row[caller_id_number].' ';
+			if (file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
+				echo "		<a href=\"../recordings/v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode("archive/".$tmp_year."/".$tmp_month."/".$tmp_day."/".$tmp_name)."\">\n";
+				echo 	$row['caller_id_number'].' ';
 				echo "	  </a>";
 			}
 			else {
-				echo 	$row[caller_id_number].' ';
+				echo 	$row['caller_id_number'].' ';
 			}
 			echo "	</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[destination_number]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[start_stamp]."</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[end_stamp]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[duration]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=".$row[uuid]."'>".$hangup_cause."</a></td>\n";
-			echo "	<td valign='top' align='right'>\n";
-			echo "<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_xml_cdr_edit.php?id=".$row[xml_cdr_id]."'\" value='  >  '>\n";
-			echo "</td>\n";
-			echo "</tr>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['destination_number']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['start_stamp']."</td>\n";
+			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['end_stamp']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['duration']."</td>\n";
+			if (ifgroup("admin") || ifgroup("superadmin")) {
+				echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=".$row['uuid']."'>".$hangup_cause."</a></td>\n";
+				echo "	<td valign='top' align='right' width='50px'>\n";
+				echo "		<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_xml_cdr_edit.php?id=".$row['xml_cdr_id']."'\" value='  >  '>\n";
+				echo "	</td>\n";
+				echo "</tr>\n";
+			}
+			else {
+				echo "	<td valign='top' class='".$rowstyle[$c]."'>".$hangup_cause."</td>\n";
+			}
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $rowcount);
@@ -456,9 +464,7 @@ else {
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
-	//echo "			<a href='v_xml_cdr_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_xml_cdr_edit.php'\" value='+'>\n";
+	echo "		<td width='33.3%' nowrap='nowrap'>&nbsp;</td>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";

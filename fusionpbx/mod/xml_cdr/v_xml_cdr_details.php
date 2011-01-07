@@ -74,7 +74,7 @@ else {
 	echo "<br>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='30%' nowrap valign='top'><b>Call Details</b></td>\n";
+	echo "<td width='30%' align='left' valign='top' nowrap='nowrap'><b>Call Details</b></td>\n";
 	echo "<td width='70%' align='right' valign='top'>\n";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_xml_cdr.php'\" value='Back'>\n";
 	echo "</td>\n";
@@ -139,7 +139,7 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td><b>Summary</b>&nbsp;</td>\n";
+	echo "<td align='left'><b>Summary</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
 
@@ -203,7 +203,7 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td><b>Channel Data</b>&nbsp;</td>\n";
+	echo "<td align='left'><b>Channel Data</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
 
@@ -215,8 +215,8 @@ else {
 		$key = $child->getName();
 		$value = urldecode($child);
 		echo "<tr >\n";
-		echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-		echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+		echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."&nbsp;</td>\n";
+		echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 		echo "</tr>\n";
 		if ($c==0) { $c=1; } else { $c=0; }
 	}
@@ -233,7 +233,7 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td><b>Variables</b>&nbsp;</td>\n";
+	echo "	<td align='left'><b>Variables</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -246,10 +246,10 @@ else {
 		echo "<tr >\n";
 		echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
 		if ($key == "bridge_uuid" || $key == "signal_bond") {
-			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=$value'>".$value."</a></td>\n";
+			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=$value'>".$value."</a>&nbsp;</td>\n";
 		}
 		else {
-			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 		}
 		echo "</tr>\n";
 		if ($c==0) { $c=1; } else { $c=0; }
@@ -267,7 +267,7 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td><b>Application Log</b>&nbsp;</td>\n";
+	echo "<td align='left'><b>Application Log</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
 
@@ -280,8 +280,8 @@ else {
 		$app_name = $row->attributes()->app_name;
 		$app_data = $row->attributes()->app_data;
 		echo "<tr >\n";
-		echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$app_name."</td>\n";
-		echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($app_data,75,"<br />\n", TRUE)."</td>\n";
+		echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$app_name."&nbsp;</td>\n";
+		echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($app_data,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 		echo "</tr>\n";
 		if ($c==0) { $c=1; } else { $c=0; }
 	}
@@ -331,8 +331,8 @@ else {
 			echo "		</tr>\n";
 			foreach($row->attributes() as $key => $value) {
 				echo "		<tr>\n";
-				echo "				<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-				echo "				<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+				echo "				<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."&nbsp;</td>\n";
+				echo "				<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				echo "		</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
@@ -353,8 +353,8 @@ else {
 			echo "		</tr>\n";
 			foreach($row->extension->attributes() as $key => $value) {
 				echo "		<tr >\n";
-				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."&nbsp;</td>\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				echo "		</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
@@ -376,8 +376,8 @@ else {
 				$app_name = $tmp_row->attributes()->app_name;
 				$app_data = $tmp_row->attributes()->app_data;
 				echo "		<tr >\n";
-				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$app_name."</td>\n";
-				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($app_data,75,"<br />\n", TRUE)."</td>\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$app_name."&nbsp;</td>\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($app_data,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				echo "		</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
@@ -400,8 +400,8 @@ else {
 				echo "		<tr >\n";
 				if ($key != "originatee") {
 					$value = urldecode($child);
-					echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-					echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+					echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."&nbsp;</td>\n";
+					echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				}
 				else {
 					echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
@@ -412,12 +412,12 @@ else {
 						$key = $tmp_child->getName();
 						$value = urldecode($tmp_child);
 						echo "				<tr >\n";
-						echo "					<td valign='top' align='left' width='20%' class='".$rowstyle[$c]."'>".$key."</td>\n";
+						echo "					<td valign='top' align='left' width='20%' class='".$rowstyle[$c]."'>".$key."&nbsp;</td>\n";
 						if ($key != "uuid") {
-							echo "					<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+							echo "					<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 						}
 						else {
-							echo "					<td valign='top' align='left' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=$value'>".$value."</a></td>\n";
+							echo "					<td valign='top' align='left' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=$value'>".$value."</a>&nbsp;</td>\n";
 						}
 						echo "				</tr>\n";
 					}
@@ -445,8 +445,8 @@ else {
 				$key = $child->getName();
 				$value = urldecode($child);
 				echo "		<tr >\n";
-				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."</td>\n";
-				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."</td>\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".$key."&nbsp;</td>\n";
+				echo "			<td valign='top' align='left' class='".$rowstyle[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 				echo "		</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
