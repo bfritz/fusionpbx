@@ -476,7 +476,7 @@ if ($_SESSION["reload_xml"]) {
 </table>
 
 <span class='smalltext'>
-<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2010. All Rights Reserved
+<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2011. All Rights Reserved
 </span>
 
 </td>
