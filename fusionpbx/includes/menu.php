@@ -104,7 +104,7 @@ if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 			}
 
 			if ($menulevel == "main") {
-				$dbmenu  = "<ul>\n";
+				$dbmenu  = "<ul class='menu_main'>\n";
 				$dbmenu .= "<li>\n";
 				if (strlen($_SESSION["username"]) == 0) {
 					$dbmenu .= "<a $menu_tags style='padding: 0px 0px; border-style: none; background: none;'><h2 align='center' style=''>$menu_title</h2></a>\n";
@@ -167,7 +167,7 @@ if (strlen($_SESSION["menu"])==0) { //build menu it session menu has no length
 		$result2 = $prepstatement2->fetchAll();
 		if (count($result2) > 0) {
 			//child menu found
-			$dbmenusub .= "<ul>\n";
+			$dbmenusub .= "<ul class='menu_sub'>\n";
 
 			foreach($result2 as $row) {
 				$menu_id = $row['menuid'];
