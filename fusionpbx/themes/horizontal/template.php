@@ -88,19 +88,19 @@ TEXTAREA.txt {
 
 	-moz-border-radius-topleft:5px;
 	-webkit-border-top-left-radius:5px;
-	border-top-left-radius:5px
+	border-top-left-radius:5px;
 
 	-moz-border-radius-topright:5px;
 	-webkit-border-top-right-radius:5px;
-	border-top-right-radius:5px
+	border-top-right-radius:5px;
 
 	-moz-border-radius-bottomleft:5px;
 	-webkit-border-bottom-left-radius:5px;
-	border-bottom-left-radius:5px
+	border-bottom-left-radius:5px;
 
 	-moz-border-radius-bottomright:5px;
 	-webkit-border-bottom-right-radius:5px;
-	border-bottom-right-radius:5px
+	border-bottom-right-radius:5px;
 }
 
 INPUT.txt {
@@ -124,19 +124,19 @@ INPUT.txt {
 
 	-moz-border-radius-topleft:5px;
 	-webkit-border-top-left-radius:5px;
-	border-top-left-radius:5px
+	border-top-left-radius:5px;
 
 	-moz-border-radius-topright:5px;
 	-webkit-border-top-right-radius:5px;
-	border-top-right-radius:5px
+	border-top-right-radius:5px;
 
 	-moz-border-radius-bottomleft:5px;
 	-webkit-border-bottom-left-radius:5px;
-	border-bottom-left-radius:5px
+	border-bottom-left-radius:5px;
 
 	-moz-border-radius-bottomright:5px;
 	-webkit-border-bottom-right-radius:5px;
-	border-bottom-right-radius:5px
+	border-bottom-right-radius:5px;
 }
 
 /*
@@ -261,155 +261,158 @@ th:last-child th:first-child {
 	font-family: arial;
 }
 
-
 table {
 	/*background:#ccc;*/
 	/*margin:20px;*/
 	/*border:#ccc 1px solid;*/
-	}
+}
 
-table th {padding:4px 10px}
+table th {
+	padding:4px 10px
+}
  
 table td {
 	/*background:#fff;*/
 	/*padding:2px 10px 4px 10px*/
-	}
+}
 
 table tr.even td {
 	background:#eee;
 	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	color: #444444;
-	}
+}
  
 table tr.odd td {
 	border-bottom: 1px solid #999999;
 	color: #000000;
-	}
+}
 
 table tr:first-child th:first-child {
 	-moz-border-radius-topleft:7px;
 	-webkit-border-top-left-radius:7px;
-	border-top-left-radius:7px
-	}
+	border-top-left-radius:7px;
+}
 
 table tr:first-child th:last-of-type {
 	-moz-border-radius-topright:7px;
 	-webkit-border-top-right-radius:7px;
-	border-top-right-radius:7px
-	}
+	border-top-right-radius:7px;
+}
 
 table tr:nth-last-child(-5) td:first-of-type {
 	-moz-border-radius-bottomleft:7px;
 	-webkit-border-bottom-left-radius:7px;
-	border-bottom-left-radius:7px
-	}
+	border-bottom-left-radius:7px;
+}
 
 table tr:nth-last-child(-5) td:first-of-type {
 	-moz-border-radius-topleft:7px;
 	-webkit-border-top-left-radius:7px;
-	border-bottom-top-radius:7px
-	}
+	border-bottom-top-radius:7px;
+}
 
-/*
-table tr:last-child td:first-of-type {
-	-moz-border-radius-topright:10px;
-	-webkit-border-top-right-radius:10px;
-	border-top-right-radius:10px
-	}
-
-table tr:last-child td:first-child {
-	-moz-border-radius-bottomleft:10px;
-	-webkit-border-bottom-left-radius:10px;
-	border-bottom-left-radius:10px
-	}
-
-table tr:last-child td:last-child {
-	-moz-border-radius-bottomright:10px;
-	-webkit-border-bottom-right-radius:10px;
-	border-bottom-right-radius:10px
-	}
-*/
 
 /* begin the menu css*/
 
 	/* CSS Menus - Horizontal CSS Menu with Dropdown and Popout Menus - 20050131 */
 
 	#menu{
-	width:100%;
-	float:left;
+		width:100%;
+		float:left;
 	}
 
 	#menu a, #menu h2{
-	font:bold 11px/16px arial,helvetica,sans-serif;
-	display:block;
-	/*border-color:#ccc #888 #555 #bbb;*/
-	white-space:nowrap;
-	margin:0;
-	padding:3px 3px 3px 3px;
+		font:bold 11px/16px arial,helvetica,sans-serif;
+		display:block;
+		/*border-color:#ccc #888 #555 #bbb;*/
+		white-space:nowrap;
+		margin:0;
+		padding:3px 3px 3px 3px;
 	}
 
 	#menu h2{
-	/*background:#222222 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
-	/*text-transform:uppercase*/
-	width:118px;
+		/*background:#222222 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
+		/*text-transform:uppercase*/
+		width:118px;
 	}
 
 	#menu h2 h2{
-	background:#4e4b56 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;
-	/*text-transform:uppercase*/
-	padding:3px 3px 3px 3px;
+		background:#4e4b56 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;
+		/*text-transform:uppercase*/
+		padding:3px 3px 3px 3px;
 	}
 
 	#menu a{
-	background:#333333;
-	text-decoration:none;
-	padding-left:7px;
-	width:114px;
+		<?php
+		$user_agent = http_user_agent();
+		$browser_version =  $user_agent['version'];
+		$browser_name =  $user_agent['name'];
+		$browser_version_array = explode('.', $browser_version);
+		if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
+			echo "background:#333333;";
+		}
+		?>
+		text-decoration:none;
+		padding-left:7px;
+		width:114px;
 	}
 
-	/* drop down text color */
 	#menu a, #menu a:visited{
-	color:#cccccc;
-	background-color: rgba(20, 20, 20, 0.9);
+		color:#cccccc;
+	}
+
+	#menu .menu_sub {
+		width:124px;
+		background:#333333;
+		background-color: rgba(20, 20, 20, 0.9);
+		-moz-border-radius-bottomleft:7px;
+		-webkit-border-bottom-left-radius:7px;
+		border-bottom-left-radius:7px;
+		-moz-border-radius-bottomright:7px;
+		-webkit-border-bottom-right-radius:7px;
+		border-bottom-right-radius:7px;
 	}
 
 	#menu a:hover{
-	color:#fd9c03;
-	background:#1F1F1F;
+		width:114px;
+		color:#fd9c03;
+		background:#1F1F1F;
+		-moz-border-radius-bottomleft:7px;
+		-webkit-border-bottom-left-radius:7px;
+		border-bottom-left-radius:7px;
+		-moz-border-radius-bottomright:7px;
+		-webkit-border-bottom-right-radius:7px;
+		border-bottom-right-radius:7px;
 	}
 
 	#menu a:active{
-	color:#fd9c03;
-	background:#1F1F1F;
+		color:#fd9c03;
 	}
 
 	#menu ul{
-	list-style:none;
-	margin:0;
-	padding:0;
-	float:left;
-	width:9em;
+		list-style:none;
+		margin:0;
+		padding:0;
+		float:left;
+		width:9em;
 	}
 
 	#menu li{
-	position:relative;
+		position:relative;
 	}
 
 	#menu ul ul{
-	position:absolute;
-	z-index:500;
-	top:auto;
-	display:none;
+		position:absolute;
+		z-index:500;
+		top:auto;
+		display:none;
 	}
 
 	#menu ul ul ul{
-	top:0;
-	left:100%;
+		top:0;
+		left:100%;
 	}
-
-
-	/* Begin non-anchor hover selectors */
 
 	/* Enter the more specific element (div) selector
 	on non-anchor hovers for IE5.x to comply with the
@@ -418,15 +421,15 @@ table tr:last-child td:last-child {
 	file and this method */
 
 	div#menu h2:hover{
-	-webkit-border-radius: 12px 12px 0px 0px;
-	-moz-border-radius: 12px 12px 0px 0px;
-	border-radius: 12px 12px 0px 0px;
-	background:#1F1F1F url(<!--{project_path}-->/css/images/expand3.gif) no-repeat -999px -9999px;
+		-webkit-border-radius: 12px 12px 0px 0px;
+		-moz-border-radius: 12px 12px 0px 0px;
+		border-radius: 12px 12px 0px 0px;
+		background:#1F1F1F url(<!--{project_path}-->/css/images/expand3.gif) no-repeat -999px -9999px;
 	}
 
 	div#menu li:hover{
-	cursor:pointer;
-	z-index:100;
+		cursor:pointer;
+		z-index:100;
 	}
 
 	div#menu li:hover ul ul,
@@ -441,24 +444,20 @@ table tr:last-child td:last-child {
 	div#menu li li li li:hover ul
 	{display:block;}
 
-	/* End of non-anchor hover selectors */
-
-	/* Styling for Expand */
-
 	#menu a.x, #menu a.x:visited{
-	font-weight:bold;
-	color:#000;
-	background:#999999 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;
+		font-weight:bold;
+		color:#000;
+		background:#999999 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;
 	}
 
 	#menu a.x:hover{
-	color:#fff;
-	background:#000;
+		color:#fff;
+		background:#000;
 	}
 
 	#menu a.x:active{
-	color:#060;
-	background:#ccc;
+		color:#060;
+		background:#ccc;
 	}
 
 /* end the menu css*/
