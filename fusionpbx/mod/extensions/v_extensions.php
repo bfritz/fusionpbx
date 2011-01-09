@@ -94,7 +94,6 @@ $order = $_GET["order"];
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
-
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
