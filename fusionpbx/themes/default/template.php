@@ -583,11 +583,39 @@ function confirmdelete(url) {
 </SCRIPT>
 </head>
 <body>
-<div id="page-background"><img src="<!--{project_path}-->/themes/default/images/backgrounds/background.jpg" width="100%" height="100%" alt=""></div>
+<?php
+
+//get a random background image
+	$dir = $v_web_dir.PROJECT_PATH.'/themes/default/images/backgrounds';
+	$dir_list = opendir($dir);
+	$v_background_array = array();
+	while (false !== ($file = readdir($dir_list))) {
+		if ($file != "." AND $file != ".."){
+			$new_path = $dir.'/'.$file;
+			$level = explode('/',$new_path);
+			if (substr($new_path, -4) == ".svn") {
+				//ignore .svn dir and subdir
+			}
+			elseif (substr($new_path, -3) == ".db") {
+				//ignore .db files
+			}
+			else {
+				$new_path = str_replace($v_web_dir, "", $new_path);
+				$v_background_array[] = $new_path;
+			}
+			if ($x > 1000) { break; };
+			$x++;
+		}
+	}
+	$background_image = $v_background_array[array_rand($v_background_array, 1)];
+	echo "<div id=\"page-background\"><img src=\"$background_image\" width='100%' height='100%' alt=''></div>\n";
+?>
+
+
 <div id="page" align='center'>
 <table width='90%' class='border.disabled' border='0' cellpadding='10' cellspacing='7'>
 <tr>
-<td class='headermain' colspan='2' width='100%'>
+<td align='left' class='headermain' colspan='2' width='100%'>
 	<img src='<!--{project_path}-->/themes/default/logo.png' />
 </td>
 </tr>
