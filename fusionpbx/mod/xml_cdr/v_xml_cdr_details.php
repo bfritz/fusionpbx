@@ -142,7 +142,9 @@ else {
 	echo "<td align='left'><b>Summary</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
+	echo "</table>\n";
 
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<th>Direction</th>\n";
 	//echo "<th>Language</th>\n";
@@ -206,7 +208,9 @@ else {
 	echo "<td align='left'><b>Channel Data</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
+	echo "</table>\n";
 
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<th>Name</th>\n";
 	echo "<th>Value</th>\n";
@@ -236,6 +240,9 @@ else {
 	echo "	<td align='left'><b>Variables</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<th>Name</th>\n";
 	echo "<th>Value</th>\n";
@@ -270,7 +277,9 @@ else {
 	echo "<td align='left'><b>Application Log</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
+	echo "</table>\n";
 
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<th>Name</th>\n";
 	echo "<th>Data</th>\n";
@@ -290,41 +299,27 @@ else {
 
 //breaking space
 	echo "<br /><br />\n";
-	echo "<br /><br />\n";
-
 
 //callflow
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	foreach ($xml->callflow as $row) {
-		//print_r($row);
-		echo "<tr>\n";
-		echo "	<td><b>Call Flow</b>&nbsp;</td>\n";
-		echo "	<td></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "	<th>&nbsp;</th>\n";
-		echo "	<th>&nbsp;</th>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "	<td colspan='2'>&nbsp;</td>\n";
-		echo "</tr>\n";
 
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";
 		echo "	<td align='left'>\n";
 
-		echo "		<table width='95%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 		//attributes
+			echo "	<table width='95%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<td><b>Call Flow: Attributes</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
 			echo "		</tr>\n";
+			echo "	</table>\n";
 
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<th>Name</th>\n";
 			echo "			<th>Value</th>\n";
@@ -339,14 +334,17 @@ else {
 			echo "		<tr>\n";
 			echo "			<td colspan='2'><br /><br /></td>\n";
 			echo "		</tr>\n";
-
+			echo "</table>\n";
 
 		//extension->attributes
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<td><b>Call Flow: Extension: Attributes</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
 			echo "		</tr>\n";
+			echo "</table>\n";
 
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<th>Name</th>\n";
 			echo "			<th>Value</th>\n";
@@ -361,13 +359,17 @@ else {
 			echo "		<tr>\n";
 			echo "			<td colspan='2'><br /><br /></td>\n";
 			echo "		</tr>\n";
+			echo "</table>\n";
 
 		//extension->application
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<td><b>Call Flow: Extension: Application</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
 			echo "		</tr>\n";
+			echo "</table>\n";
 
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<th>Name</th>\n";
 			echo "			<th>Data</th>\n";
@@ -384,13 +386,17 @@ else {
 			echo "		<tr>\n";
 			echo "			<td colspan='2'><br /><br /></td>\n";
 			echo "		</tr>\n";
+			echo "</table>\n";
 
 		//caller_profile
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<td><b>Call Flow: Caller Profile</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
 			echo "		</tr>\n";
+			echo "</table>\n";
 
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<th>Name</th>\n";
 			echo "			<th>Value</th>\n";
@@ -430,8 +436,10 @@ else {
 			echo "		<tr>\n";
 			echo "			<td colspan='2'><br /><br /></td>\n";
 			echo "		</tr>\n";
+			echo "</table>\n";
 
 		//times
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
 			echo "			<td><b>Call Flow: Times</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
