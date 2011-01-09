@@ -764,7 +764,9 @@ if (!function_exists('builddbchildmenu2')) {
 	}
 }
 $menulevel = '0'; //menu_parent_id
-echo builddbchildmenu2($db, $menulevel, $php_self_parent_guid);
+if (strlen($php_self_parent_guid) > 0) {
+	echo builddbchildmenu2($db, $menulevel, $php_self_parent_guid);
+}
 
 ?>
 </td>
