@@ -21,21 +21,21 @@ body {
 	margin-bottom: 0px;
 	margin-right: 0px;
 	margin-left: 0px;
-	/*background-image: url('<!--{project_path}-->/themes/default/background.gif');*/
-	background-image: url('<!--{project_path}-->/themes/default/menu_background.jpg');
-	background-repeat: repeat-x;
-	background-color: #FFFFFF;
-	background-attachment:fixed;
+	/*background-image: url('<!--{project_path}-->/themes/default/background.jpg');*/
+	/*background-repeat: repeat-x;*/
+	/*background-attachment: fixed;*/
+	/*background-color: #FFFFFF;*/
 }
 
 th {
-	border-top: 1px solid #999999;
-	border-bottom: 1px solid #777777;
+	border-top: 1px solid #444444;
+	border-bottom: 1px solid #444444;
+	text-align: left;
 	color: #FFFFFF;
 	font-size: 12px;
 	font-family: arial;
 	font-weight: bold;
-	background-color: #FFFFFF;
+	/*background-color: #506eab;*/
 	background-image: url('<!--{project_path}-->/themes/default/background_th.png');
 	padding-top: 4px;
 	padding-bottom: 4px;
@@ -45,8 +45,8 @@ th {
 
 th a:link{ color:#FFFFFF; }
 th a:visited{ color:#FFFFFF; }
-th a:hover{ color:#FFBF00; }
-th a:active{ color:#FFBF00; }
+th a:hover{ color:#FFFFFF; }
+th a:active{ color:#FFFFFF; }
 
 td {
 	color: #5f5f5f;
@@ -88,19 +88,19 @@ TEXTAREA.txt {
 
 	-moz-border-radius-topleft:5px;
 	-webkit-border-top-left-radius:5px;
-	border-top-left-radius:5px
+	border-top-left-radius:5px;
 
 	-moz-border-radius-topright:5px;
 	-webkit-border-top-right-radius:5px;
-	border-top-right-radius:5px
+	border-top-right-radius:5px;
 
 	-moz-border-radius-bottomleft:5px;
 	-webkit-border-bottom-left-radius:5px;
-	border-bottom-left-radius:5px
+	border-bottom-left-radius:5px;
 
 	-moz-border-radius-bottomright:5px;
 	-webkit-border-bottom-right-radius:5px;
-	border-bottom-right-radius:5px
+	border-bottom-right-radius:5px;
 }
 
 INPUT.txt {
@@ -124,45 +124,57 @@ INPUT.txt {
 
 	-moz-border-radius-topleft:5px;
 	-webkit-border-top-left-radius:5px;
-	border-top-left-radius:5px
+	border-top-left-radius:5px;
 
 	-moz-border-radius-topright:5px;
 	-webkit-border-top-right-radius:5px;
-	border-top-right-radius:5px
+	border-top-right-radius:5px;
 
 	-moz-border-radius-bottomleft:5px;
 	-webkit-border-bottom-left-radius:5px;
-	border-bottom-left-radius:5px
+	border-bottom-left-radius:5px;
 
 	-moz-border-radius-bottomright:5px;
 	-webkit-border-bottom-right-radius:5px;
-	border-bottom-right-radius:5px
+	border-bottom-right-radius:5px;
 }
 
 /*
-.th {
-	-webkit-border-radius: 10px 10px 0px 0px;
-	-moz-border-radius: 10px 10px 0px 0px;
-	border-radius: 10px 10px 0px 0px;
+table{
+	-webkit-border-radius: 18px 18px 0px 0px;
+	-moz-border-radius: 18px 18px 0px 0px;
+	border-radius: 18px 18px 0px 0px;
+}
+
+.th:first-child .th:first-child {
+	-webkit-border-radius: 8px 8px 0px 0px;
+	-moz-border-radius: 8px 8px 0px 0px;
+	border-radius: 8px 8px 0px 0px;
+}
+
+th:last-child th:first-child {
+	-webkit-border-radius: 8px 8px 0px 0px;
+	-moz-border-radius: 8px 8px 0px 0px;
+	border-radius: 8px 8px 0px 0px;
 }
 */
 
 .vncell {
-	background: #EFEFEF;
-	color: gray;
-	border-bottom: 1px solid #CCCCCC;
+	border-bottom: 1px solid #999999;
+	/*background-color: #639BC1;*/
 	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
 	padding-right: 20px;
 	padding-left: 8px;
 	text-align: left;
-	color: #555555;
-	border-bottom: 1px solid #999999;
+	color: #444444;
 }
 
-.vncell a:link{ color:#555555; }
-.vncell a:visited{ color:#555555; }
-.vncell style0 a:hover{ color:#FFBF00; }
-.vncell a:active{ color:#555555; }
+/*
+.vncell a:link{ color:#444444; }
+.vncell a:visited{ color:#444444; }
+.vncell style0 a:hover{ color:#444444; }
+.vncell a:active{ color:#444444; }
+*/
 
 .vncellreq {
 	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
@@ -172,30 +184,29 @@ INPUT.txt {
 	padding-left: 8px;
 	text-align: left;
 	font-weight: bold;
-	color: #555555;
+	color: #444444;
 }
 
 .vtable {
 	border-bottom: 1px solid #DFDFDF;
+	border-right: 1px solid #DFDFDF;
 }
 
 .listbg {
 	border-bottom: 1px solid #999999;
 	font-size: 11px;
 	background-color: #990000;
-	color: #FFFFFF;
+	color: #444444;	
 	padding-right: 16px;
 	padding-left: 6px;
 	padding-top: 4px;
-	padding-bottom: 4px;*/
+	padding-bottom: 4px;
 }
 
 .rowstyle0 {
 	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
 	border-bottom: 1px solid #999999;
-	/*background-color: #ECE9D8; */
-	background-color: #639BC1;
-	color: #555555;
+	color: #444444;
 	text-align: left;
 	padding-top: 4px;
 	padding-bottom: 4px;
@@ -203,10 +214,10 @@ INPUT.txt {
 	padding-left: 7px;
 }
 
-.rowstyle0 a:link{ color:#555555; }
-.rowstyle0 a:visited{ color:#555555; }
-.rowstyle0 a:hover{ color:#FFBF00; }
-.rowstyle0 a:active{ color:#FFBF00; }
+.rowstyle0 a:link{ color:#444444; }
+.rowstyle0 a:visited{ color:#444444; }
+.rowstyle0 a:hover{ color:#444444; }
+.rowstyle0 a:active{ color:#444444; }
 
 .rowstyle1 {
 	border-bottom: 1px solid #999999;
@@ -219,7 +230,7 @@ INPUT.txt {
 }
 
 .rowstylebg {
-	border-bottom: 1px solid #999999;
+	border-bottom: 1px solid #888888;
 	background-color: #5F5F5F;
 	color: #FFFFFF;
 	text-align: left;
@@ -230,13 +241,12 @@ INPUT.txt {
 }
 
 .border {
-	border-left: 1px solid #FFFFFF;
-	border-right: 1px solid #FFFFFF;
-	background-color: #FFFFFF;
+	border: solid 1px #999999;
+	/*background-color: #FFFFFF;*/
 }
 
 .headermain {
-	background-color: #7FAEDE;
+	/*background-color: #7FAEDE;*/
 }
 
 .frm {
@@ -252,55 +262,83 @@ INPUT.txt {
 	font-family: arial;
 }
 
+table {
+	/*background:#ccc;*/
+	/*margin:20px;*/
+	/*border:#ccc 1px solid;*/
+}
+
+table th {
+	padding:4px 10px
+}
+ 
+table td {
+	/*background:#fff;*/
+	/*padding:2px 10px 4px 10px*/
+}
+
+table tr.even td {
+	background:#eee;
+	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
+	border-bottom: 1px solid #999999;
+	color: #444444;
+}
+ 
+table tr.odd td {
+	border-bottom: 1px solid #999999;
+	color: #000000;
+}
+
 table tr:first-child th:first-child {
 	-moz-border-radius-topleft:7px;
 	-webkit-border-top-left-radius:7px;
-	border-top-left-radius:7px
-	}
+	border-top-left-radius:7px;
+}
 
 table tr:first-child th:last-of-type {
 	-moz-border-radius-topright:7px;
 	-webkit-border-top-right-radius:7px;
-	border-top-right-radius:7px
-	}
+	border-top-right-radius:7px;
+}
 
 table tr:nth-last-child(-5) td:first-of-type {
 	-moz-border-radius-bottomleft:7px;
 	-webkit-border-bottom-left-radius:7px;
-	border-bottom-left-radius:7px
-	}
+	border-bottom-left-radius:7px;
+}
 
 table tr:nth-last-child(-5) td:first-of-type {
 	-moz-border-radius-topleft:7px;
 	-webkit-border-top-left-radius:7px;
-	border-bottom-top-radius:7px
-	}
+	border-bottom-top-radius:7px;
+}
 
-/*
-table tr:last-child td:first-of-type {
-	-moz-border-radius-topright:10px;
-	-webkit-border-top-right-radius:10px;
-	border-top-right-radius:10px
-	}
-
-table tr:last-child td:first-child {
-	-moz-border-radius-bottomleft:10px;
-	-webkit-border-bottom-left-radius:10px;
-	border-bottom-left-radius:10px
-	}
-
-table tr:last-child td:last-child {
-	-moz-border-radius-bottomright:10px;
-	-webkit-border-bottom-right-radius:10px;
-	border-bottom-right-radius:10px
-	}
-*/
 
 /* begin the menu css*/
+
+	.menu_bar {
+		background-image: url('<!--{project_path}-->/themes/default/background_black.png');
+		-webkit-border-radius: 7px 7px 7px 7px;
+		-moz-border-radius: 7px 7px 7px 7px;
+		border-radius: 7px 7px 7px 7px;
+		padding: 3px;
+	}
+
 	.menu_bg {
-		background-image: url('<!--{project_path}-->/themes/default/menu_background.jpg');
+		background-image: url('<!--{project_path}-->/themes/default/menu_background.png');
 		background-repeat: repeat-x;
-		background-color: #FFFFFF;
+		background-attachment: fixed;
+		/*background-color: #FFFFFF;*/
+
+		opacity: 0.9;
+		filter:alpha(opacity=90);
+		-moz-opacity:0.9;
+		-khtml-opacity: 0.9;
+		opacity: 0.9;
+
+		-webkit-border-radius: 7px 7px 7px 7px;
+		-moz-border-radius: 7px 7px 7px 7px;
+		border-radius: 7px 7px 7px 7px;
 		text-align: left;
 		padding-top: 4px;
 		padding-bottom: 25px;
@@ -312,59 +350,214 @@ table tr:last-child td:last-child {
 		text-align: left;
 	}
 
-	#menu ul {
-		list-style-type:none;
-		padding:0px;
-		margin:0px;
-	}
-
-	#menu li {
-		margin-top: 0;
-		border-top-width: 0;
-		padding-top: 0;
-		margin-bottom: 0;
-		border-bottom-width: 0;
-		padding-bottom: 0;
-		list-style-type:none;
-		padding:0px;
-		margin:0px;
-		padding-left:15px;
-	}
-
-	#menu {
+	#menu{
 		width:100%;
 		float:left;
 	}
 
-	#menu a, #menu h2 {
+	#menu a, #menu h2{
 		font:bold 11px/16px arial,helvetica,sans-serif;
 		display:block;
 		/*border-color:#ccc #888 #555 #bbb;*/
-		/*border: solid 0.5px #222222;*/
 		white-space:nowrap;
 		margin:0;
-		padding-top:2px;
-		padding-bottom:2px;
+		padding:3px 3px 3px 3px;
 	}
 
-	#menu h2 {
-		align: left;
+	#menu h2{
+		/*background:#222222 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 		/*text-transform:uppercase*/
+		width:118px;
 	}
 
-	#menu a {
-		/*background:#333333;*/
+	#menu h2 h2{
+		/*background:#4e4b56 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
+		/*text-transform:uppercase*/
+		padding:3px 3px 3px 3px;
+	}
+
+	#menu a{
+		<?php
+		$user_agent = http_user_agent();
+		$browser_version =  $user_agent['version'];
+		$browser_name =  $user_agent['name'];
+		$browser_version_array = explode('.', $browser_version);
+		if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
+			echo "background:#333333;";
+		}
+		?>
+		text-decoration:none;
+		padding-left:7px;
+		width:114px;
+	}
+
+	#menu a, #menu a:visited{
+		color:#cccccc;
+	}
+
+	#menu .menu_sub {
+		display:none;
+		width:124px;
+		background:#333333;
+		background-color: rgba(20, 20, 20, 0.9);
+		-webkit-border-radius: 12px 12px 12px 12px;
+		-moz-border-radius: 12px 12px 12px 12px;
+		border-radius: 12px 12px 12px 12px;
+	}
+
+	#menu a:hover{
+		width:114px;
+		color:#fd9c03;
+		background:#1F1F1F;
+	}
+
+	#menu a:active{
+		color:#fd9c03;
+	}
+
+	#menu ul{
+		list-style:none;
+		margin:0;
+		padding:0;
+		float:left;
+		width:9em;
+	}
+
+	#menu li{
+		position:relative;
+	}
+
+	#menu ul ul{
+		position:absolute;
+		z-index:500;
+		top:auto;
+		display:none;
+	}
+
+	#menu ul ul ul{
+		top:0;
+		left:100%;
+	}
+
+	/* Enter the more specific element (div) selector
+	on non-anchor hovers for IE5.x to comply with the
+	older version of csshover.htc - V1.21.041022. It
+	improves IE's performance speed to use the older
+	file and this method */
+
+	div#menu h2:hover{
+		-webkit-border-radius: 12px 12px 12px 12px;
+		-moz-border-radius: 12px 12px 12px 12px;
+		border-radius: 12px 12px 12px 12px;
+		/*background:#1F1F1F url(<!--{project_path}-->/css/images/expand3.gif) no-repeat -999px -9999px;*/
+	}
+
+	div#menu li:hover{
+		cursor:pointer;
+		z-index:100;
+	}
+
+	div#menu li:hover ul ul,
+	div#menu li li:hover ul ul,
+	div#menu li li li:hover ul ul,
+	div#menu li li li li:hover ul ul
+	{display:none;}
+	/*
+	div#menu li:hover ul,
+	div#menu li li:hover ul,
+	div#menu li li li:hover ul,
+	div#menu li li li li:hover ul
+	{display:block;}
+	*/
+	#menu a.x, #menu a.x:visited{
+		font-weight:bold;
+		color:#000;
+		/*background:#999999 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
+	}
+
+	#menu a.x:hover{
+		color:#fff;
+		background:#000;
+	}
+
+	#menu a.x:active{
+		color:#060;
+		background:#ccc;
+	}
+
+	.menu_sub_vertical {
+		width:118px;
+		text-decoration:none;
+		border-color:#ccc;
+		border-width: 1px;
+		border-bottom-style: solid;
+		list-style-image: url(<!--{project_path}-->/themes/default/arrow.png);
+		padding:3px 5px 5px 3px;
+		opacity: 1.0;
+	}
+
+	.menu_sub_vertical a {
 		text-decoration:none;
 	}
-
-	#menu a:hover {
-		list-style-type:disc;
-		text-decoration:underline;
-		/*list-style-image: url("images/img.gif");*/
+/* end the menu css*/
+</style>
+<style type="text/css">
+	/* Remove margins from the 'html' and 'body' tags, and ensure the page takes up full screen height */
+	html, body {
+		height:100%;
+		margin:0;
+		padding:0;
 	}
 
-/* end the menu css */
+	/* Set the position and dimensions of the background image. */
+	#page-background {
+		position:fixed; 
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+	}
+
+	/* Specify the position and layering for the content that needs to 
+	appear in front of the background image. Must have a higher z-index 
+	value than the background image. Also add some padding to compensate 
+	for removing the margin from the 'html' and 'body' tags. */
+	#page {
+		position:relative; 
+		z-index:1;
+		padding:10px;
+	}
+
+	.vtable {
+		position:relative; 
+		z-index:1;
+		padding:10px;
+		color: 000;
+		/*
+		box-shadow:5px -5px 10px #700;
+		-webkit-box-shadow:5px -5px 10px #888;
+		-moz-box-shadow:5px -5px 10px #334455;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		*/
+		/*border: 1px solid #555555;*/
+		/*padding: 10px;*/
+		background-color: #FFFFFF;
+		filter:alpha(opacity=50);
+		-moz-opacity:0.7;
+		-khtml-opacity: 0.7;
+		opacity: 0.7;
+	}
 </style>
+<!-- The above code doesn't work in Internet Explorer 6. To address this, we use a conditional comment to specify an alternative style sheet for IE 6 -->
+<!--[if IE 6]>
+	<style type="text/css">
+	html {overflow-y:hidden;}
+	body {overflow-y:auto;}
+	#page-background {position:absolute; z-index:-1; background-attachment:fixed;}
+	#page {position:static;padding:10px;}
+	</style>
+<![endif]-->
 
 <script type="text/javascript">
 <!--
@@ -390,49 +583,152 @@ function confirmdelete(url) {
 </SCRIPT>
 </head>
 <body>
-
-<div align='center'>
-<table width='90%' class='border' border='0' cellpadding='0' cellspacing='0'>
+<div id="page-background"><img src="<!--{project_path}-->/themes/default/images/backgrounds/background.jpg" width="100%" height="100%" alt=""></div>
+<div id="page" align='center'>
+<table width='90%' class='border.disabled' border='0' cellpadding='10' cellspacing='7'>
 <tr>
-<td class='headermain' style='background-color:#FFFFFF;' width='100%'>
-	<table cellpadding='0' cellspacing='0' border='0' style="background-image: url('<!--{project_path}-->/themes/default/background_head.png'); color: #FFFFFF; font-size: 20px;" width='100%'>
-	<tr>
-	<td align='center' colspan='2' style='' width='100%' height='4'>
-	</td>
-	</tr>
-	<tr>
-	<td></td>
-	<td align='left' valign='middle' nowrap>
-		<img src='<!--{project_path}-->/themes/default/logo.png' />
-	</td>
-	</tr>
-	<tr>
-	<td align='center' colspan='2' style="background-image: url('<!--{project_path}-->/themes/default/background_black.png');" width='100%' height='22'>
-		<!--{menu.disabled}-->
-	</td>
-	</tr>
-	</table>
-
+<td class='headermain' colspan='2' width='100%'>
+	<img src='<!--{project_path}-->/themes/default/logo.png' />
 </td>
 </tr>
-<!--
-<tr><td colspan='100%'><img src='<!--{project_path}-->/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>
--->
-<tr>
-<td valign='top' align='center' width='100%'>
 
-<table width='100%' cellpadding='30' cellspacing='0' border='0'>
 <tr>
-<td width='140' align='left' valign='top' class='menu_bg'>
-<br />
-
-<!--{menu}-->
+<td class='menu_bar' colspan='2' width='100%' height='30px'>
+	<!--{menu}-->
 </td>
-<td align='left' valign='top'>
+</tr>
+
+<tr>
+<td class='menu_bg' valign='top' align='center' width='15%'>
+
+<br />
+<?php
+
+//get the php self path and set a variable with only the directory path
+	$php_self_array = explode ("/", $_SERVER['PHP_SELF']);
+	$php_self_dir = '';
+	foreach ($php_self_array as &$value) {
+		if (substr($value, -4) != ".php") {
+			$php_self_dir .= $value."/";
+		}
+	}
+	unset($php_self_array);
+
+//get the current page menu_parent_guid
+	$sql = "select * from v_menu ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and menustr like '".$php_self_dir."%' ";
+	$sql .= "order by menuorder asc ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	$count = count($result);
+	foreach($result as $field) {
+		if (strlen($field['menu_parent_guid']) > 0) {
+			$php_self_parent_guid = $field['menu_parent_guid'];
+		}
+		else {
+			$php_self_parent_guid = $field['menu_guid'];
+		}
+		break;
+	}
+
+if (!function_exists('builddbchildmenu2')) {
+	function builddbchildmenu2($db, $menulevel, $menu_guid) {
+			global $v_id;
+			$menulevel = $menulevel+1;
+
+				//--- Begin check for children -----------------------------------------
+					$sql = "select * from v_menu ";
+					$sql .= "where v_id = '$v_id' ";
+					$sql .= "and menu_parent_guid = '$menu_guid' ";
+					$sql .= "order by menuorder asc ";
+					$prepstatement2 = $db->prepare($sql);
+					$prepstatement2->execute();
+					$result2 = $prepstatement2->fetchAll();
+
+					if (count($result2) > 0) {
+							$dbmenusub .= "<ul>\n";
+
+							foreach($result2 as $row) {
+								$menuid = $row['menuid'];
+								$menutitle = $row['menutitle'];
+								$menustr = $row['menustr'];
+								$menucategory = $row['menucategory'];
+								$menugroup = $row['menugroup'];
+								$menu_guid = $row['menu_guid'];
+								$menu_parent_guid = $row['menu_parent_guid'];
+
+								$menuatags = '';
+								switch ($menucategory) {
+									case "internal":
+										$menutags = "href='$menustr'";
+										break;
+									case "external":
+										$menustr = str_replace ("<!--{project_path}-->", PROJECT_PATH, $menustr);
+										$menutags = "href='".PROJECT_PATH."$menustr' target='_blank'";
+										break;
+									case "email":
+										$menutags = "href='mailto:$menustr'";
+										break;
+								}
+
+								if (strlen($menugroup)==0) { //public
+									if ($menutitle == "Logout" && strlen($_SESSION["username"]) > 0) {                                  
+										$dbmenusub .= "<li class='menu_sub_vertical'>";
+										$strchildmenu = builddbchildmenu($db, $menulevel, $menu_guid);   //get sub menu for children
+										if (strlen($strchildmenu) > 1) {
+											$dbmenusub .= "<a $menutags>$menutitle</a>";
+											$dbmenusub .= $strchildmenu;
+											unset($strchildmenu);
+										}
+										else {
+											$dbmenusub .= "<a $menutags>$menutitle</a>";
+										}
+										$dbmenusub .= "</li>\n";
+										
+									}        
+								}
+								else {
+									if (ifgroup($menugroup)) { //viewable only to designated group
+										
+										$dbmenusub .= "<li class='menu_sub_vertical'>";
+										$strchildmenu = builddbchildmenu2($db, $menulevel, $menu_guid);   //get sub menu for children
+										if (strlen($strchildmenu) > 1) {
+											$dbmenusub .= "<a $menutags>$menutitle</a>";
+											$dbmenusub .= $strchildmenu;
+											unset($strchildmenu);
+										}
+										else {
+											$dbmenusub .= "<a $menutags>$menutitle</a>";
+										}
+										$dbmenusub .= "</li>\n";
+									}
+									else {
+										//echo "not a member of: ".$menugroup." required by: $menutitle<br>\n";
+										//not authorized do not add to menu
+									}
+									
+								}
+							}
+							unset($sql, $result2);
+							$dbmenusub .="</ul>\n";
+							return $dbmenusub;
+					}
+					unset($prepstatement2, $sql);
+				//--- End check for children -----------------------------------------
+	}
+}
+$menulevel = '0'; //menu_parent_id
+echo builddbchildmenu2($db, $menulevel, $php_self_parent_guid);
+
+?>
+</td>
+<td class='menu_bg' align='left' valign='top' width='85%'>
 <?php
 if ($_SESSION["reload_xml"]) {
 		if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
-			if(stristr($_SERVER["PHP_SELF"] , "_edit") != FALSE) { 
+			if(stristr($_SERVER["PHP_SELF"], "_edit") != FALSE) { 
 				//found
 			}
 			else {
@@ -465,7 +761,8 @@ if ($_SESSION["reload_xml"]) {
 }
 ?>
 <!--{body}-->
-
+<br />
+<br />
 </td>
 </tr>
 </table>
@@ -492,6 +789,7 @@ if ($_SESSION["reload_xml"]) {
 
 </body>
 </html>
+
 <?php
 
 //define the link labels
