@@ -131,6 +131,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$label = "12 digits";
 					$abbrv = "12d";
 					break;
+				case "^(\d{13})$":
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$label = "13 digits";
+					$abbrv = "13d";
+					break;
+				case "^(\d{14})$":
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$label = "14 digits";
+					$abbrv = "14d";
+					break;
+				case "^(\d{15})$":
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$label = "International";
+					$abbrv = "15d";
+					break;
 				case "^311$":
 					$action_data = "sofia/gateway/".$gateway_name."/311";
 					$label = "311";
@@ -170,6 +185,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "dial 9, 11 digits";
 					$abbrv = "9.11d";
+				case "^9(\d{12})$":
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$label = "dial 9, International";
+					$abbrv = "9.12d";
+					break;
+				case "^9(\d{13})$":
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$label = "dial 9, International";
+					$abbrv = "9.13d";
+					break;
+				case "^9(\d{14})$":
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$label = "dial 9, International";
+					break;
+				case "^9(\d{15})$":
+					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$label = "dial 9, International";
+					$abbrv = "9.15d";
 					break;
 				case "^1?(8(00|55|66|77|88)[2-9]\d{6})$":
 					$action_data = "sofia/gateway/".$gateway_name."/\$1";
@@ -446,19 +479,38 @@ echo "    <textarea name=\"dialplan_expression\" id=\"dialplan_expression\" clas
 echo "    <br>\n";
 echo "    <select name='dialplan_expression_select' id='dialplan_expression_select' onchange=\"document.getElementById('dialplan_expression').value += document.getElementById('dialplan_expression_select').value + '\\n';\" class='formfld' style='width: 60%;'>\n";
 echo "    <option></option>\n";
+echo "    <option value='^(\\d{2})\$'>2 digits</option>\n";
+echo "    <option value='^(\\d{3})\$'>3 digits</option>\n";
+echo "    <option value='^(\\d{4})\$'>4 digits</option>\n";
+echo "    <option value='^(\\d{5})\$'>5 digits</option>\n";
+echo "    <option value='^(\\d{6})\$'>6 digits</option>\n";
 echo "    <option value='^(\\d{7})\$'>7 digits local</option>\n";
+echo "    <option value='^(\\d{8})\$'>8 digits</option>\n";
+echo "    <option value='^(\\d{9})\$'>9 digits</option>\n";
 echo "    <option value='^(\\d{10})\$'>10 digits long distance</option>\n";
 echo "    <option value='^(\\d{11})\$'>11 digits long distance</option>\n";
-echo "    <option value='^011(.*)\$'>011 International</option>\n";
+echo "    <option value='^(\\d{12})\$'>12 digits</option>\n";
+echo "    <option value='^(\\d{13})\$'>13 digits</option>\n";
+echo "    <option value='^(\\d{14})\$'>14 digits</option>\n";
+echo "    <option value='^(\\d{15})\$'>15 digits International</option>\n";
 echo "    <option value='^311\$'>311 information</option>\n";
 echo "    <option value='^411\$'>411 information</option>\n";
 echo "    <option value='^911\$'>911 emergency</option>\n";
 echo "    <option value='^1?(8(00|55|66|77|88)[2-9]\\d{6})\$'>toll free</option>\n";
+echo "    <option value='^9(\\d{2})\$'>Dial 9 then 2 digits</option>\n";
 echo "    <option value='^9(\\d{3})\$'>Dial 9 then 3 digits</option>\n";
 echo "    <option value='^9(\\d{4})\$'>Dial 9 then 4 digits</option>\n";
+echo "    <option value='^9(\\d{5})\$'>Dial 9 then 5 digits</option>\n";
+echo "    <option value='^9(\\d{6})\$'>Dial 9 then 6 digits</option>\n";
 echo "    <option value='^9(\\d{7})\$'>Dial 9 then 7 digits</option>\n";
+echo "    <option value='^9(\\d{8})\$'>Dial 9 then 8 digits</option>\n";
+echo "    <option value='^9(\\d{9})\$'>Dial 9 then 9 digits</option>\n";
 echo "    <option value='^9(\\d{10})\$'>Dial 9 then 10 digits</option>\n";
 echo "    <option value='^9(\\d{11})\$'>Dial 9 then 11 digits</option>\n";
+echo "    <option value='^9(\\d{12})\$'>Dial 9 then 12 digits</option>\n";
+echo "    <option value='^9(\\d{13})\$'>Dial 9 then 13 digits</option>\n";
+echo "    <option value='^9(\\d{14})\$'>Dial 9 then 14 digits</option>\n";
+echo "    <option value='^9(\\d{15})\$'>Dial 9 then 15 digits</option>\n";
 echo "    </select>\n";
 echo "    <span class=\"vexpl\">\n";
 echo "    <br />\n";
