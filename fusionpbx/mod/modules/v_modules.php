@@ -217,8 +217,12 @@ if (!function_exists('switch_module_active')) {
 				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=stop&m=".$row["modulename"]."' alt='stop'>Stop</a></td>\n";
 			}
 			else {
-				$notice = ($row[moduleenabled]=="true") ? " !!" : null ;
-				echo "   <td valign='top' class='".$rowstyle[$c]."'>Stopped $notice</td>\n";
+				if ($row['moduleenabled']=="true") {
+					echo "   <td valign='top' class='".$rowstyle[$c]."'><b>Stopped</b></td>\n";
+				}
+				else {
+					echo "   <td valign='top' class='".$rowstyle[$c]."'>Stopped $notice</td>\n";
+				}
 				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=start&m=".$row["modulename"]."' alt='start'>Start</a></td>\n";
 			}
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["moduleenabled"]."</td>\n";
