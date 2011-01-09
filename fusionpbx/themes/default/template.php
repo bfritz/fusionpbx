@@ -2,6 +2,12 @@
 <head>
 <title><!--{title}--></title>
 <!--{head}-->
+<?php
+	$user_agent = http_user_agent();
+	$browser_version =  $user_agent['version'];
+	$browser_name =  $user_agent['name'];
+	$browser_version_array = explode('.', $browser_version);
+?>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 <style type='text/css'>
@@ -325,7 +331,14 @@ table tr:nth-last-child(-5) td:first-of-type {
 	}
 
 	.menu_bg {
-		background-image: url('<!--{project_path}-->/themes/default/menu_background.png');
+		<?php
+			if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
+				echo "background-color: #FFFFFF;";
+			}
+			else {
+				echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+			}
+		?>
 		background-repeat: repeat-x;
 		background-attachment: fixed;
 		/*background-color: #FFFFFF;*/
@@ -347,7 +360,14 @@ table tr:nth-last-child(-5) td:first-of-type {
 	}
 
 	.main_content {
-		background-image: url('<!--{project_path}-->/themes/default/menu_background.png');
+		<?php
+			if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
+				echo "background-color: #FFFFFF;";
+			}
+			else {
+				echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+			}
+		?>
 		background-repeat: repeat-x;
 		background-attachment: fixed;
 		/*background-color: #FFFFFF;*/
@@ -392,10 +412,6 @@ table tr:nth-last-child(-5) td:first-of-type {
 
 	#menu a{
 		<?php
-		$user_agent = http_user_agent();
-		$browser_version =  $user_agent['version'];
-		$browser_name =  $user_agent['name'];
-		$browser_version_array = explode('.', $browser_version);
 		if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
 			echo "background:#333333;";
 		}
@@ -839,9 +855,9 @@ if ($_SESSION["reload_xml"]) {
 <?php
 
 //define the link labels
-	$v_link_label_edit = "<img src='".PROJECT_PATH."/images/icon_e.gif' width='17' height='17' alt='edit' border='0'>";
-	$v_link_label_add = "<img src='".PROJECT_PATH."/images/icon_plus.gif' width='17' height='17' border='0' alt='add'>";
-	$v_link_label_delete = "<img src='".PROJECT_PATH."/images/icon_x.gif' width='17' height='17' alt='delete' border='0'>";
+	$v_link_label_edit = "<img src='".PROJECT_PATH."/images/icon_e.png' width='17' height='17' alt='edit' border='0'>";
+	$v_link_label_add = "<img src='".PROJECT_PATH."/images/icon_plus.png' width='17' height='17' border='0' alt='add'>";
+	$v_link_label_delete = "<img src='".PROJECT_PATH."/images/icon_x.png' width='17' height='17' alt='delete' border='0'>";
 	$v_link_label_view = "<img src='".PROJECT_PATH."/images/icon_view.gif' width='17' height='17' border='0' alt='add'>";
 	//$v_link_label_cal = "<img src='".PROJECT_PATH."/images/icon_cal.gif' width='17' height='17' border='0' alt='add'>";
 	//$v_link_label_up = "<img src='".PROJECT_PATH."/images/icon_up.gif' width='17' height='17' border='0' alt='up'>";
