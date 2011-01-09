@@ -27,7 +27,6 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-
 //check permissions
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		//access granted
@@ -37,16 +36,13 @@ require_once "includes/checkauth.php";
 		exit;
 	}
 
-
 //request form values and set them as variables
 	$sip_profile_name = trim($_REQUEST["profile"]);
-
 
 //define variables
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
-
 
 //get the event socket connection information
 	$sql = "";
@@ -63,7 +59,6 @@ require_once "includes/checkauth.php";
 		break; //limit to 1 row
 	}
 
-
 //get sofia status profile information including registrations
 	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 	$cmd = "api sofia xmlstatus profile ".$sip_profile_name."";
@@ -79,13 +74,11 @@ require_once "includes/checkauth.php";
 		exit;
 	}
 
-
 //show the header
 	require_once "includes/header.php";
 
-
 //show the registrations
-	echo "<br /><br />\n\n";
+	//echo "<br />\n\n";
 	echo "<table width='100%' border='0' cellspacing='0' cellpadding='5'>\n";
 	echo "<tr>\n";
 	echo "<td colspan='4'>\n";
@@ -111,6 +104,7 @@ require_once "includes/checkauth.php";
 	//echo "	<th class='vncell'>mwi-account</th>\n";
 	echo "	<th>Status</th>\n";
 	echo "</tr>\n";
+
 	if (count($xml->registrations->registration) > 0) {
 		foreach ($xml->registrations->registration as $row) {
 			//print_r($row);
