@@ -95,6 +95,9 @@ require_once "includes/checkauth.php";
 	echo "  <input type='button' class='btn' value='back' onclick=\"document.location.href='v_status.php';\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<table width='100%' border='0' cellspacing='0' cellpadding='5'>\n";
 	echo "<tr>\n";
 	//echo "	<th class='vncell'>Caller ID</th>\n";
 	echo "	<th>User</th>\n";
