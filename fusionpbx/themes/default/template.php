@@ -340,13 +340,27 @@ table tr:nth-last-child(-5) td:first-of-type {
 		-moz-border-radius: 7px 7px 7px 7px;
 		border-radius: 7px 7px 7px 7px;
 		text-align: left;
-		padding-top: 4px;
+		padding-top: 15px;
 		padding-bottom: 25px;
 		padding-left: 5px;
 		padding-right:20px;
 	}
 
-	.menu_bg h2 {
+	.main_content {
+		background-image: url('<!--{project_path}-->/themes/default/menu_background.png');
+		background-repeat: repeat-x;
+		background-attachment: fixed;
+		/*background-color: #FFFFFF;*/
+		padding: 20px;
+		opacity: 0.9;
+		filter:alpha(opacity=90);
+		-moz-opacity:0.9;
+		-khtml-opacity: 0.9;
+		opacity: 0.9;
+
+		-webkit-border-radius: 7px 7px 7px 7px;
+		-moz-border-radius: 7px 7px 7px 7px;
+		border-radius: 7px 7px 7px 7px;
 		text-align: left;
 	}
 
@@ -492,7 +506,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 		border-width: 1px;
 		border-bottom-style: solid;
 		list-style-image: url(<!--{project_path}-->/themes/default/arrow.png);
-		padding:3px 5px 5px 3px;
+		padding: 5px;
 		opacity: 1.0;
 	}
 
@@ -607,15 +621,17 @@ function confirmdelete(url) {
 			$x++;
 		}
 	}
-	$background_image = $v_background_array[array_rand($v_background_array, 1)];
-	echo "<div id=\"page-background\"><img src=\"$background_image\" width='100%' height='100%' alt=''></div>\n";
+	if (strlen($_SESSION['background_image'])== 0) {
+		$_SESSION['background_image'] = $v_background_array[array_rand($v_background_array, 1)];
+	}
+	echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
 ?>
 
 
 <div id="page" align='center'>
-<table width='90%' class='border.disabled' border='0' cellpadding='10' cellspacing='7'>
+<table width='90%' class='border.disabled' border='0' cellpadding='0' cellspacing='7'>
 <tr>
-<td align='left' class='headermain' colspan='2' width='100%'>
+<td align='left' valign='top' class='headermain' colspan='2' width='100%' height='70px;'>
 	<img src='<!--{project_path}-->/themes/default/logo.png' />
 </td>
 </tr>
@@ -752,7 +768,7 @@ echo builddbchildmenu2($db, $menulevel, $php_self_parent_guid);
 
 ?>
 </td>
-<td class='menu_bg' align='left' valign='top' width='85%'>
+<td class='main_content' align='left' valign='top' width='85%'>
 <?php
 if ($_SESSION["reload_xml"]) {
 		if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
