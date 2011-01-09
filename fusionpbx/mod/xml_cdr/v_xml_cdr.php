@@ -69,11 +69,6 @@ else {
 //page title and description
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\" colspan='11'>\n";
-	echo "		<br>";
-
-	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left' width='50%' nowrap='nowrap'><b>Call Detail Records</b></td>\n";
 	echo "<form method='post' action='v_xml_cdr_csv.php'>";
@@ -126,7 +121,7 @@ else {
 				echo "	<tr>";
 				echo "		<td align='left' width='25%'>Direction:</td>";
 				echo "		<td align='left' width='75%'>\n";
-				echo "			<select name='direction' style='width:100%' class='frm'>\n";
+				echo "			<select name='direction' style='width:100%' class='formfld'>\n";
 				echo "			<option value=''>                                </option>\n";
 				if ($direction == "inbound") {
 					echo "			<option value='inbound' selected='selected'>inbound</option>\n";
@@ -146,7 +141,7 @@ else {
 
 				echo "	<tr>";
 				echo "		<td>CID Name:</td>";
-				echo "		<td><input type='text' class='txt' name='caller_id_name' value='$caller_id_name'></td>";
+				echo "		<td><input type='text' class='formfld' name='caller_id_name' style='width:100%' value='$caller_id_name'></td>";
 				echo "	</tr>";
 
 				echo "</table>\n";
@@ -157,11 +152,11 @@ else {
 				echo "<table width='100%'>";
 				echo "	<tr>";
 				echo "		<td align='left' width='25%'>Source:</td>";
-				echo "		<td align='left' width='75%'><input type='text' class='txt' name='caller_id_number' value='$caller_id_number'></td>";
+				echo "		<td align='left' width='75%'><input type='text' class='formfld' name='caller_id_number' style='width:100%' value='$caller_id_number'></td>";
 				echo "	</tr>";
 				echo "	<tr>";
 				echo "		<td align='left' width='25%'>Destination:</td>";
-				echo "		<td align='left' width='75%'><input type='text' class='txt' name='destination_number' value='$destination_number'></td>";
+				echo "		<td align='left' width='75%'><input type='text' class='formfld' name='destination_number' style='width:100%' value='$destination_number'></td>";
 				echo "	</tr>";	
 				echo "</table>\n";
 
@@ -171,26 +166,26 @@ else {
 				echo "<table width='100%'>\n";
 				//echo "	<tr>";
 				//echo "		<td>Context:</td>";
-				//echo "		<td><input type='text' class='txt' name='context' value='$context'></td>";
+				//echo "		<td><input type='text' class='formfld' name='context' style='width:100%' value='$context'></td>";
 				//echo "	</tr>";
 				//echo "	<tr>";
 				//echo "		<td>Answer:</td>";
-				//echo "		<td><input type='text' class='txt' name='answer_stamp' value='$answer_stamp'></td>";
+				//echo "		<td><input type='text' class='formfld' name='answer_stamp' style='width:100%' value='$answer_stamp'></td>";
 				//echo "	</tr>";
 				//echo "	<tr>";
 				//echo "		<td>End:</td>";
-				//echo "		<td><input type='text' class='txt' name='end_stamp' value='$end_stamp'></td>";
+				//echo "		<td><input type='text' class='formfld' name='end_stamp' style='width:100%' value='$end_stamp'></td>";
 				//echo "	</tr>";
 
 				echo "	<tr>";
 				echo "		<td align='left' width='25%'>Start:</td>";
-				echo "		<td align='left' width='75%'><input type='text' class='txt' name='start_stamp' value='$start_stamp'></td>";
+				echo "		<td align='left' width='75%'><input type='text' class='formfld' name='start_stamp' style='width:100%' value='$start_stamp'></td>";
 				echo "	</tr>";
 
 				echo "	<tr>";
 				echo "		<td align='left' width='25%'>Status:</td>";
 				echo "		<td align='left' width='75%'>\n";
-				echo "			<select name=\"hangup_cause\" style='width:100%' class='frm'>\n";
+				echo "			<select name=\"hangup_cause\" style='width:100%' class='formfld'>\n";
 				echo "			<option value=\"\"></option>\n";
 				$sql = "";
 				$sql .= "select distinct(hangup_cause) from v_xml_cdr ";
@@ -384,6 +379,7 @@ else {
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
+	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	//echo thorderby('direction', 'Direction', $orderby, $order);
 	//echo thorderby('default_language', 'Language', $orderby, $order);
@@ -395,6 +391,7 @@ else {
 	//echo thorderby('end_stamp', 'End', $orderby, $order);
 	echo thorderby('duration', 'Length', $orderby, $order);
 	echo thorderby('hangup_cause', 'Status', $orderby, $order);
+	echo "</tr>\n";
 
 	if ($resultcount == 0) { //no results
 	}
