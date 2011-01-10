@@ -616,7 +616,7 @@ function confirmdelete(url) {
 <?php
 
 //get a random background image
-	$dir = $v_web_dir.PROJECT_PATH.'/themes/default/images/backgrounds';
+	$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/default/images/backgrounds';
 	$dir_list = opendir($dir);
 	$v_background_array = array();
 	while (false !== ($file = readdir($dir_list))) {
@@ -630,7 +630,7 @@ function confirmdelete(url) {
 				//ignore .db files
 			}
 			else {
-				$new_path = str_replace($v_web_dir, "", $new_path);
+				$new_path = str_replace($_SERVER["DOCUMENT_ROOT"], "", $new_path);
 				$v_background_array[] = $new_path;
 			}
 			if ($x > 1000) { break; };
@@ -675,22 +675,24 @@ function confirmdelete(url) {
 	unset($php_self_array);
 
 //get the current page menu_parent_guid
-	$sql = "select * from v_menu ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and menustr like '".$php_self_dir."%' ";
-	$sql .= "order by menuorder asc ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$count = count($result);
-	foreach($result as $field) {
-		if (strlen($field['menu_parent_guid']) > 0) {
-			$php_self_parent_guid = $field['menu_parent_guid'];
+	if ($db) {
+		$sql = "select * from v_menu ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and menustr like '".$php_self_dir."%' ";
+		$sql .= "order by menuorder asc ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		$count = count($result);
+		foreach($result as $field) {
+			if (strlen($field['menu_parent_guid']) > 0) {
+				$php_self_parent_guid = $field['menu_parent_guid'];
+			}
+			else {
+				$php_self_parent_guid = $field['menu_guid'];
+			}
+			break;
 		}
-		else {
-			$php_self_parent_guid = $field['menu_guid'];
-		}
-		break;
 	}
 
 if (!function_exists('builddbchildmenu2')) {
@@ -780,8 +782,10 @@ if (!function_exists('builddbchildmenu2')) {
 	}
 }
 $menulevel = '0'; //menu_parent_id
-if (strlen($php_self_parent_guid) > 0) {
-	echo builddbchildmenu2($db, $menulevel, $php_self_parent_guid);
+if ($db) {
+	if (strlen($php_self_parent_guid) > 0) {
+		echo builddbchildmenu2($db, $menulevel, $php_self_parent_guid);
+	}
 }
 
 ?>
