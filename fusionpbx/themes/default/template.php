@@ -332,7 +332,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 
 	.menu_bg {
 		<?php
-			if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
+			if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '10' ) {
 				echo "background-color: #FFFFFF;";
 			}
 			else {
@@ -361,7 +361,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 
 	.main_content {
 		<?php
-			if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
+			if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '10' ) {
 				echo "background-color: #FFFFFF;";
 			}
 			else {
@@ -412,7 +412,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 
 	#menu a{
 		<?php
-		if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
+		if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '10' ) {
 			echo "background:#333333;";
 		}
 		?>
