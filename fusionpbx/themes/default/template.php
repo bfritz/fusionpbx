@@ -738,7 +738,7 @@ if (!function_exists('builddbchildmenu2')) {
 								if (strlen($menugroup)==0) { //public
 									if ($menutitle == "Logout" && strlen($_SESSION["username"]) > 0) {                                  
 										$dbmenusub .= "<li class='menu_sub_vertical'>";
-										$strchildmenu = builddbchildmenu($db, $menulevel, $menu_guid);   //get sub menu for children
+										$strchildmenu = builddbchildmenu2($db, $menulevel, $menu_guid);   //get sub menu for children
 										if (strlen($strchildmenu) > 1) {
 											$dbmenusub .= "<a $menutags>$menutitle</a>";
 											$dbmenusub .= $strchildmenu;
