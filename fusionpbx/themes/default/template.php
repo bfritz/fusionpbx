@@ -673,6 +673,9 @@ function confirmdelete(url) {
 		}
 	}
 	unset($php_self_array);
+	if (strlen(PROJECT_PATH) > 0) {
+		$php_self_dir = substr($php_self_dir, strlen(PROJECT_PATH), strlen($php_self_dir));
+	}
 
 //get the current page menu_parent_guid
 	if ($db) {
@@ -724,11 +727,11 @@ if (!function_exists('builddbchildmenu2')) {
 								$menuatags = '';
 								switch ($menucategory) {
 									case "internal":
-										$menutags = "href='$menustr'";
+										$menutags = "href='".PROJECT_PATH.$menustr."'";
 										break;
 									case "external":
 										$menustr = str_replace ("<!--{project_path}-->", PROJECT_PATH, $menustr);
-										$menutags = "href='".PROJECT_PATH."$menustr' target='_blank'";
+										$menutags = "href='".PROJECT_PATH.$menustr."' target='_blank'";
 										break;
 									case "email":
 										$menutags = "href='mailto:$menustr'";
