@@ -23,18 +23,24 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
+/*
+   $mtime = microtime();
+   $mtime = explode(" ",$mtime);
+   $mtime = $mtime[1] + $mtime[0];
+   $starttime = $mtime;
+*/
+
 include "root.php";
 require_once "includes/config.php";
+require_once "includes/phpsvnclient/phpsvnclient.php";
+
 if (!isset($display_results)) {
 	$display_results = true;
 }
+
 if (strlen($_SERVER['HTTP_USER_AGENT']) > 0) {
 	require_once "includes/checkauth.php";
-	if (ifgroup("superadmin")) {
-		//echo "access granted";
-		//exit;
-	}
-	else {
+	if (!ifgroup("superadmin")) {
 		echo "access denied";
 		exit;
 	}
@@ -44,7 +50,6 @@ else {
 	//$display_type = 'csv'; //html, csv
 }
 
-
 ini_set('display_errors', '0');
 ini_set(max_execution_time,3600);
 clearstatcache();
@@ -53,6 +58,8 @@ if ($display_results) {
 	require_once "includes/header.php";
 }
 
+$svn_url = 'http://fusionpbx.googlecode.com/svn/';
+$svn_path = '/trunk/fusionpbx/';
 
 //set path_array
 	$sql = "";
@@ -67,23 +74,12 @@ if ($display_results) {
 		$path_array[$path][last_mod] = $row["last_mod"];
 	}
 	unset ($prepstatement);
-	//print_r($path_array);
-	//exit;
 
 
-$svn_url = 'http://fusionpbx.googlecode.com/svn';
-$svn_path = '/trunk/fusionpbx';
-$xml_str = file_get_contents($svn_url.$svn_path.'/includes/install/source.xml');
-//echo $xml_str;
+$svn  = new phpsvnclient($svn_url);
+//$svn_version = $svn->getVersion();	
+$svn_directory_tree = $svn->getDirectoryTree($svn_path);
 
-try {
-	$xml = new SimpleXMLElement($xml_str);
-}
-catch(Exception $e) {
-	//echo $e->getMessage();
-}
-//print_r($xml);
-//$db->beginTransaction();
 
 if ($display_results) {
 	echo "<table width='100%' border='0' cellpadding='20' cellspacing='0'>\n";
@@ -91,141 +87,154 @@ if ($display_results) {
 	echo "<th>Type</th>\n";
 	echo "<th>Last Modified</th>\n";
 	echo "<th>Path</th>\n";
-	echo "<th>Size</th>\n";
-	//echo "<th>MD5 file</th>\n";
-	//echo "<th>MD5 xml</th>\n";
+	echo "<th>Status/Size</th>\n";
+	echo "<th>MD5 file</th>\n";
+	echo "<th>MD5 xml</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<tr>\n";
 }
 
-foreach ($xml->src as $row) {
-	//print_r($row);
-	$xml_type = $row->type;
-	$xml_relative_path = trim($row->path);
-	$xml_last_mod = $row->last_mod;
-	$md5_xml = $row->md5;
-	$xml_size = $row->size;
+//$db->beginTransaction();
+/* we add & to not copy the whole array again */
+foreach ($svn_directory_tree as &$row) {
+	$md5_match = false;
+	$xml_type = $row[type];
+	$xml_relative_path = trim(str_replace(trim($svn_path,'/'),"",$row[path]));
+	$xml_last_mod = $row[last_mod];
+	$new_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH . $xml_relative_path;
 
-	$new_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/'.$xml_relative_path;
-	$md5_file = md5_file($new_path);
-	if ($md5_xml == $md5_file){ 
-		$md5_match = true; 
+	if (file_exists($new_path)) {
+		$exists = true;
 	}
 	else {
-		$md5_match = false; 
+		$exists = false;
+	}	
+	
+	if ( $xml_type == 'file' ) {
+		$xml_file_path = trim($row[path]); //we need this to download the file from svn
+		$md5_xml = $row[md5];
+		if ($exists) {
+			$md5_file = md5_file($new_path);
+			if ($md5_xml == $md5_file){ 
+				$md5_match = true; 
+			}
+		}
+		else { 
+			$md5_match = false;//???
+			$md5_file = '';
+		}
+	}
+	else {
+		$md5_xml = '';//directory has no md5
 	}
 
 	if (strlen($xml_relative_path) > 0) {
 		if ($display_results) {
-			if ($xml_type == 'file') {
+			if ($xml_type == 'file' && !$md5_match) {
 				echo "<tr>\n";
 				echo "<td class='rowstyle1'>$xml_type</td>\n";
 				echo "<td class='rowstyle1'>$xml_last_mod</td>\n";
 				echo "<td class='rowstyle1'>$xml_relative_path</td>\n";
-				echo "<td class='rowstyle1'>$xml_size</td>\n";
-				//echo "<td class='rowstyle1'>$md5_file</td>\n";
-				//echo "<td class='rowstyle1'>$md5_xml</td>\n";
-				//echo "<td class='rowstyle1'>$md5_match file_get_contents($svn_url.$svn_path.$xml_relative_path);</td>\n";
+				echo "<td class='rowstyle1'>$exists</td>\n";
+//				echo "<td class='rowstyle1'>$xml_size</td>\n";
+				echo "<td class='rowstyle1'>$md5_file</td>\n";
+				echo "<td class='rowstyle1'>$md5_xml</td>\n";
+				echo "<td class='rowstyle1'>$md5_match </td>\n";
+				//file_get_contents($svn_url.$svn_path.$xml_relative_path);</td>\n";
 				echo "<td class='rowstyle1'>\n";
 			}
 		}
 
 		//update the v_scr data
-			if (strlen($path_array[$xml_relative_path]['type']) == 0) { 
-				//insert a new record into the src table
-					$sql = "insert into v_src ";
-					$sql .= "(";
-					$sql .= "v_id, ";
-					$sql .= "type, ";
-					$sql .= "last_mod, ";
-					$sql .= "path ";
-					$sql .= ")";
-					$sql .= "values ";
-					$sql .= "(";
-					$sql .= "'$v_id', ";
-					$sql .= "'$xml_type', ";
-					$sql .= "'$xml_last_mod', ";
-					$sql .= "'$xml_relative_path' ";
-					$sql .= ")";
-					//echo "$sql<br />\n";
-			} 
-			else {
-				if ($md5_xml != md5_file($new_path)) {
-					//update the src table
-						$sql = "update v_src set ";
-						$sql .= "type = '$xml_type', ";
-						$sql .= "last_mod = '$xml_last_mod' ";
-						$sql .= "where v_id = '$v_id' ";
-						$sql .= "and path = '$xml_relative_path' ";
+		if ($xml_type=='file' && strlen($path_array[$xml_relative_path]['type']) == 0) { 
+			//insert a new record into the src table
+			$sql ="";
+			$sql .= "insert into v_src ";
+			$sql .= "(";
+			$sql .= "v_id, ";
+			$sql .= "type, ";
+			$sql .= "last_mod, ";
+			$sql .= "path ";
+			$sql .= ")";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$v_id', ";
+			$sql .= "'$xml_type', ";
+			$sql .= "'$xml_last_mod', ";
+			$sql .= "'$xml_relative_path' ";
+			$sql .= ")";
+			//echo "$sql<br />\n";
+		} 
+		else {
+			if ($xml_type=='file' && !$md5_match) {//update changed files
+				//update the src table
+				$sql =""; 
+				$sql .= "update v_src set ";
+				$sql .= "type = '$xml_type', ";
+				$sql .= "last_mod = '$xml_last_mod' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and path = '$xml_relative_path' ";
+				//echo "$sql<br />\n";
+			}
+		}
+		//if the path exists and is a file
+		if ($exists && $xml_type == 'file') {
+			//the md5 of the xml file and the local file do not match
+			if ($md5_match) {
+				if ($display_results) {
+					//echo "current "; //the file is up to date
 				}
 			}
-
-		if (file_exists($new_path)) {
-			//if the path exists then compare the v_src $md5_xml to the md5_file($new_path) in the svn if they don't match save the new one
-			if ($xml_type == 'file') {
-				//the md5 of the xml file and the local file do not match
-				if ($md5_xml == md5_file($new_path)) {
+			else {
+/*				if ($xml_file_path == '/core/upgrade/upgrade_svn.php' ) {
 					if ($display_results) {
-						echo "current "; //the file is up to date
+						echo "white list"; //the file is up to date
+					}
+					continue;
+				}
+*/				//get the remote file contents
+				$file_content = $svn->getFile($xml_file_path);
+				
+				//the md5 of the local file and the remote content match
+				if (md5_file($new_path) == md5($file_content)) {
+					if ($display_results) {
+						//echo "current 2 "; //the file is up to date
 					}
 				}
 				else {
-					//get the remote file contents
-						$file_content = file_get_contents($svn_url.$svn_path.$xml_relative_path);
+					//make sure the string matches the file md5 that was recorded.
+					if (strlen($file_content) > 0) {
+						$tmp_fh = fopen($new_path, 'w');
+						fwrite($tmp_fh, $file_content);
+						fclose($tmp_fh);
+					}
 
-					//the md5 of the local file and the remote content match
-						if (md5_file($new_path) == md5($file_content)) {
-							if ($display_results) {
-								echo "current "; //the file is up to date
-							}
+					//display the results
+					if ($display_results) {
+						echo "<strong style='color: #FF0000;'> ";
+						if (is_writable($new_path)) {
+							echo "updated ";
 						}
 						else {
-							//make sure the string matches the file md5 that was recorded.
-								if (strlen($file_content) > 0) {
-									$tmp_fh = fopen($new_path, 'w');
-									fwrite($tmp_fh, $file_content);
-									fclose($tmp_fh);
-								}
-
-							//update the database
-								if (strlen($sql) > 0) {
-									$db->exec(check_sql($sql));
-									//echo "$sql<br />\n";
-								}
-								unset($sql);
-
-							//display the results
-								if ($display_results) {
-									echo "<strong style='color: #FF0000;'> ";
-									if (is_writable($new_path)) {
-										echo "updated ";
-									}
-									else {
-										echo "not writable ";
-									}
-									//echo $md5_xml." ".$new_path."<br />";
-									//echo $md5_xml." ".md5($file_content)."<br />";
-									//echo "length: ".strlen($file_content)."<br />";
-									//echo "<textarea>$file_content</textarea>\n";
-
-									echo "</strong>";
-									echo "<br />\n";
-								}
+							echo "not writable ";
 						}
+						echo "</strong>";
+					}
 				}
-
-				//unset the variable
-					unset($file_content);
 			}
+			//unset the variable
+			unset($file_content);
 		}
 		else {
+			
 			//if the path does not exist create it and then add it to the database
 			//echo "file is missing |";
-			if ($xml_type == 'directory') {
+			if ($xml_type == 'directory' && !$exists) {
 				//make sure the directory exists
 					mkdir (dirname($new_path), 0755, true);
 			}
 			if ($xml_type == 'file') {
+
 
 				//make sure the directory exists
 					if (!is_dir(dirname($new_path))){
@@ -233,45 +242,58 @@ foreach ($xml->src as $row) {
 					}
 
 				//get the remote file contents
-					$file_content = file_get_contents($svn_url.$svn_path.$xml_relative_path);
+					$file_content = $svn->getFile($xml_file_path);
 
-				//make sure the string matches the file md5 that was recorded.
+				//make sure we got some data.
 					if (strlen($file_content) > 0) {
 						$tmp_fh = fopen($new_path, 'w');
 						fwrite($tmp_fh, $file_content);
 						fclose($tmp_fh);
 					}
-					unset($file_content);
 
-				//display the results
 					if ($display_results) {
-						echo "updated ";
+						echo "<strong style='color: #FF0000;'> ";
+						if (is_writable($new_path)) {
+							echo "added/restored";
+						}
+						else {
+							echo "not writable ";
+						}
+						echo "</strong>";
+						//echo "<br />\n";
 					}
-
 				//unset the variable
 					unset($file_content);
 			}
-
-			//update the database
-				if (strlen($sql) > 0) {
-					$db->exec(check_sql($sql));
-					//echo "$sql<br />\n";
-				}
-				unset($sql);
 		}
 
 		if ($display_results) {
-			if ($xml_type == 'file') {
+			if ($xml_type == 'file' && !$md5_match) {
 				echo "&nbsp;";
 				echo "</td>\n";
 				echo "<tr>\n";
 			}
 		}
+		//update the database
+		if (strlen($sql) > 0) {
+			$db->exec(check_sql($sql));
+			//echo "$sql<br />\n";
+		}
+		unset($sql);
 	}
 }
 //$db->commit();
+//clearstatcache();
 if ($display_results) {
 	echo "</table>\n";
 	require_once "includes/footer.php";
 }
+/*
+   $mtime = microtime();
+   $mtime = explode(" ",$mtime);
+   $mtime = $mtime[1] + $mtime[0];
+   $endtime = $mtime;
+   $totaltime = ($endtime - $starttime);
+   echo "This page was created in ".$totaltime." seconds";
+*/
 ?>
