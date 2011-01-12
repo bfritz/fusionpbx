@@ -2773,11 +2773,11 @@ function sync_package_v_hunt_group()
 							$tmp .=	"end";
 							$tmp .=	"\n";
 							if ($row['huntgroupcallerannounce'] == "true") {
-								$tmp .=	"caller_announce = extension..\"_\"..uuid..\".wav\";\n";
+								$tmp .=	"caller_announce = \"".$tmp_dir."/\"..extension..\"_\"..uuid..\".wav\";\n";
 								$tmp .=	"session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
 								$tmp .=	"session:execute(\"gentones\", \"%(1000, 0, 640)\");\n";
 								$tmp .=	"session:execute(\"set\", \"playback_terminators=#\");\n";
-								$tmp .=	"session:execute(\"record\", \"".$tmp_dir."/\"..caller_announce..\" 180 200\");\n";
+								$tmp .=	"session:execute(\"record\", caller_announce..\" 180 200\");\n";
 							}
 							$tmp .=	"\n";
 							$tmp .=	"session:setAutoHangup(false);\n";
