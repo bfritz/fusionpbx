@@ -9,7 +9,6 @@
 --variable preparation
 	tmp_sipuri = '';
 	caller_id_name = string.gsub(caller_id_name, "+", " ");
-	tmp_dir = '/tmp';
 
 function explode ( seperator, str ) 
 	local pos, arr = 0, {}
@@ -39,7 +38,7 @@ function originate (session, sipuri, extension, caller_announce, caller_id_name,
 
 		--caller announce
 			if (caller_announce) then
-				new_session.streamFile( tmp_dir.."/"..caller_announce);
+				new_session:streamFile(caller_announce);
 			end
 
 		--set the sounds directory
