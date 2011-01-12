@@ -2,6 +2,26 @@
 <head>
 <title><!--{title}--></title>
 <!--{head}-->
+<?php
+//get the browser version
+	$user_agent = http_user_agent();
+	$browser_version =  $user_agent['version'];
+	$browser_name =  $user_agent['name'];
+	$browser_version_array = explode('.', $browser_version);
+
+//get the php self path and set a variable with only the directory path
+	$php_self_array = explode ("/", $_SERVER['PHP_SELF']);
+	$php_self_dir = '';
+	foreach ($php_self_array as &$value) {
+		if (substr($value, -4) != ".php") {
+			$php_self_dir .= $value."/";
+		}
+	}
+	unset($php_self_array);
+	if (strlen(PROJECT_PATH) > 0) {
+		$php_self_dir = substr($php_self_dir, strlen(PROJECT_PATH), strlen($php_self_dir));
+	}
+?>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 <style type='text/css'>
@@ -21,10 +41,10 @@ body {
 	margin-bottom: 0px;
 	margin-right: 0px;
 	margin-left: 0px;
-	background-image: url('<!--{project_path}-->/themes/horizontal/background.jpg');
-	background-repeat: repeat-x;
-	background-attachment: fixed;
-	background-color: #FFFFFF;
+	/*background-image: url('<!--{project_path}-->/themes/default/background.jpg');*/
+	/*background-repeat: repeat-x;*/
+	/*background-attachment: fixed;*/
+	/*background-color: #FFFFFF;*/
 }
 
 th {
@@ -36,7 +56,7 @@ th {
 	font-family: arial;
 	font-weight: bold;
 	/*background-color: #506eab;*/
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_th.png');
+	background-image: url('<!--{project_path}-->/themes/default/background_th.png');
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-right: 7px;
@@ -139,45 +159,24 @@ INPUT.txt {
 	border-bottom-right-radius:5px;
 }
 
-/*
-table{
-	-webkit-border-radius: 18px 18px 0px 0px;
-	-moz-border-radius: 18px 18px 0px 0px;
-	border-radius: 18px 18px 0px 0px;
-}
-
-.th:first-child .th:first-child {
-	-webkit-border-radius: 8px 8px 0px 0px;
-	-moz-border-radius: 8px 8px 0px 0px;
-	border-radius: 8px 8px 0px 0px;
-}
-
-th:last-child th:first-child {
-	-webkit-border-radius: 8px 8px 0px 0px;
-	-moz-border-radius: 8px 8px 0px 0px;
-	border-radius: 8px 8px 0px 0px;
-}
-*/
-
 .vncell {
 	border-bottom: 1px solid #999999;
 	/*background-color: #639BC1;*/
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
 	padding-right: 20px;
 	padding-left: 8px;
 	text-align: left;
 	color: #444444;
 }
 
-/*
 .vncell a:link{ color:#444444; }
 .vncell a:visited{ color:#444444; }
 .vncell style0 a:hover{ color:#444444; }
 .vncell a:active{ color:#444444; }
-*/
+
 
 .vncellreq {
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	background-color: #639BC1;
 	padding-right: 20px;
@@ -203,7 +202,7 @@ th:last-child th:first-child {
 }
 
 .rowstyle0 {
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	color: #444444;
 	text-align: left;
@@ -241,11 +240,11 @@ th:last-child th:first-child {
 
 .border {
 	border: solid 1px #999999;
-	background-color: #FFFFFF;
+	/*background-color: #FFFFFF;*/
 }
 
 .headermain {
-	background-color: #7FAEDE;
+	/*background-color: #7FAEDE;*/
 }
 
 .frm {
@@ -278,9 +277,9 @@ table td {
 
 table tr.even td {
 	background:#eee;
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
 	border-bottom: 1px solid #999999;
-	color: #444444;
+	color: #333333;
 }
  
 table tr.odd td {
@@ -315,7 +314,75 @@ table tr:nth-last-child(-5) td:first-of-type {
 
 /* begin the menu css*/
 
-	/* CSS Menus - Horizontal CSS Menu with Dropdown and Popout Menus - 20050131 */
+	.menu_bar {
+		background-image: url('<!--{project_path}-->/themes/default/background_black.png');
+		-webkit-border-radius: 7px 7px 7px 7px;
+		-moz-border-radius: 7px 7px 7px 7px;
+		border-radius: 7px 7px 7px 7px;
+		padding: 3px;
+	}
+
+	.menu_bg {
+		<?php
+			if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '10' ) {
+				echo "background-color: #FFFFFF;";
+			}
+			else {
+				if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
+					echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+				}
+				else {
+					echo "background-image: url('<!--{project_path}-->/themes/default/login_background.png');";
+				}
+			}
+		?>
+		background-repeat: repeat-x;
+		background-attachment: fixed;
+		/*background-color: #FFFFFF;*/
+
+		opacity: 0.9;
+		filter:alpha(opacity=90);
+		-moz-opacity:0.9;
+		-khtml-opacity: 0.9;
+		opacity: 0.9;
+
+		-webkit-border-radius: 7px 7px 7px 7px;
+		-moz-border-radius: 7px 7px 7px 7px;
+		border-radius: 7px 7px 7px 7px;
+		text-align: left;
+		padding-top: 15px;
+		padding-bottom: 25px;
+		padding-left: 5px;
+		padding-right:20px;
+	}
+
+	.main_content {
+		<?php
+			if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '10' ) {
+				echo "background-color: #FFFFFF;";
+			}
+			else {
+				if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
+					echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+				}
+				else {
+					echo "background-image: url('<!--{project_path}-->/themes/default/login_background.png');";
+				}
+			}
+		?>
+		background-repeat: repeat-x;
+		background-attachment: fixed;
+		padding: 20px;
+		opacity: 0.9;
+		filter:alpha(opacity=9);
+		-moz-opacity:0.9;
+		-khtml-opacity: 0.9;
+		opacity: 0.9;
+		-webkit-border-radius: 7px 7px 7px 7px;
+		-moz-border-radius: 7px 7px 7px 7px;
+		border-radius: 7px 7px 7px 7px;
+		text-align: left;
+	}
 
 	#menu{
 		width:100%;
@@ -338,18 +405,14 @@ table tr:nth-last-child(-5) td:first-of-type {
 	}
 
 	#menu h2 h2{
-		background:#4e4b56 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;
+		/*background:#4e4b56 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 		/*text-transform:uppercase*/
 		padding:3px 3px 3px 3px;
 	}
 
 	#menu a{
 		<?php
-		$user_agent = http_user_agent();
-		$browser_version =  $user_agent['version'];
-		$browser_name =  $user_agent['name'];
-		$browser_version_array = explode('.', $browser_version);
-		if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
+		if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '10' ) {
 			echo "background:#333333;";
 		}
 		?>
@@ -363,27 +426,20 @@ table tr:nth-last-child(-5) td:first-of-type {
 	}
 
 	#menu .menu_sub {
+		display:none;
+		padding-top:10px;
 		width:124px;
 		background:#333333;
 		background-color: rgba(20, 20, 20, 0.9);
-		-moz-border-radius-bottomleft:7px;
-		-webkit-border-bottom-left-radius:7px;
-		border-bottom-left-radius:7px;
-		-moz-border-radius-bottomright:7px;
-		-webkit-border-bottom-right-radius:7px;
-		border-bottom-right-radius:7px;
+		-webkit-border-radius: 0px 0px 12px 12px;
+		-moz-border-radius: 0px 0px 12px 12px;
+		border-radius: 0px 0px 12px 12px;
 	}
 
 	#menu a:hover{
 		width:114px;
 		color:#fd9c03;
 		background:#1F1F1F;
-		-moz-border-radius-bottomleft:7px;
-		-webkit-border-bottom-left-radius:7px;
-		border-bottom-left-radius:7px;
-		-moz-border-radius-bottomright:7px;
-		-webkit-border-bottom-right-radius:7px;
-		border-bottom-right-radius:7px;
 	}
 
 	#menu a:active{
@@ -421,11 +477,10 @@ table tr:nth-last-child(-5) td:first-of-type {
 	file and this method */
 
 	div#menu h2:hover{
-		-webkit-border-radius: 12px 12px 0px 0px;
-		-moz-border-radius: 12px 12px 0px 0px;
-		border-radius: 12px 12px 0px 0px;
+		-webkit-border-radius: 12px 12px 12px 12px;
+		-moz-border-radius: 12px 12px 12px 12px;
+		border-radius: 12px 12px 12px 12px;
 		/*background:#1F1F1F url(<!--{project_path}-->/css/images/expand3.gif) no-repeat -999px -9999px;*/
-		/*background:#1F1F1F url(<!--{project_path}-->/themes/horizontal/background_cell.gif) no-repeat -999px -9999px;*/
 	}
 
 	div#menu li:hover{
@@ -448,7 +503,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 	#menu a.x, #menu a.x:visited{
 		font-weight:bold;
 		color:#000;
-		background:#999999 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;
+		/*background:#999999 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 	}
 
 	#menu a.x:hover{
@@ -463,6 +518,63 @@ table tr:nth-last-child(-5) td:first-of-type {
 
 /* end the menu css*/
 </style>
+<style type="text/css">
+	/* Remove margins from the 'html' and 'body' tags, and ensure the page takes up full screen height */
+	html, body {
+		height:100%;
+		margin:0;
+		padding:0;
+	}
+
+	/* Set the position and dimensions of the background image. */
+	#page-background {
+		position:fixed; 
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+	}
+
+	/* Specify the position and layering for the content that needs to 
+	appear in front of the background image. Must have a higher z-index 
+	value than the background image. Also add some padding to compensate 
+	for removing the margin from the 'html' and 'body' tags. */
+	#page {
+		position:relative; 
+		z-index:1;
+		padding:10px;
+	}
+
+	.vtable {
+		position:relative; 
+		z-index:1;
+		padding:10px;
+		color: 000;
+		/*
+		box-shadow:5px -5px 10px #700;
+		-webkit-box-shadow:5px -5px 10px #888;
+		-moz-box-shadow:5px -5px 10px #334455;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		*/
+		/*border: 1px solid #555555;*/
+		/*padding: 10px;*/
+		background-color: #FFFFFF;
+		filter:alpha(opacity=90);
+		-moz-opacity:0.9;
+		-khtml-opacity: 0.9;
+		opacity: 0.9;
+	}
+</style>
+<!-- The above code doesn't work in Internet Explorer 6. To address this, we use a conditional comment to specify an alternative style sheet for IE 6 -->
+<!--[if IE 6]>
+	<style type="text/css">
+	html {overflow-y:hidden;}
+	body {overflow-y:auto;}
+	#page-background {position:absolute; z-index:-1; background-attachment:fixed;}
+	#page {position:static;padding:10px;}
+	</style>
+<![endif]-->
 
 <script type="text/javascript">
 <!--
@@ -488,40 +600,58 @@ function confirmdelete(url) {
 </SCRIPT>
 </head>
 <body>
-<div align='center'>
-<table width='90%' class='border.disabled' style='background-color:#FFFFFF;' border='0' cellpadding='0' cellspacing='0'>
-<tr>
-<td class='headermain' style='background-color:#FFFFFF;' width='100%'>
-	<table cellpadding='0' cellspacing='0' border='0' style="background-image: url('<!--{project_path}-->/themes/horizontal/background_head.png'); color: #FFFFFF; font-size: 20px;" width='100%'>
-	<tr>
-	<td align='center' colspan='2' style='' width='100%' height='4'>
-	</td>
-	</tr>
-	<tr>
-	<td></td>
-	<td align='left' valign='middle' nowrap>
-		<img src='<!--{project_path}-->/themes/horizontal/logo.png' />
-	</td>
-	</tr>
-	<tr>
-	<td align='center' colspan='2' style="background-image: url('<!--{project_path}-->/themes/horizontal/background_black.png');" width='100%' height='22'>
-	<!--{menu}-->
-	</td>
-	</tr>
-	</table>
+<?php
 
+//get a random background image
+	$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/default/images/backgrounds';
+	$dir_list = opendir($dir);
+	$v_background_array = array();
+	while (false !== ($file = readdir($dir_list))) {
+		if ($file != "." AND $file != ".."){
+			$new_path = $dir.'/'.$file;
+			$level = explode('/',$new_path);
+			if (substr($new_path, -4) == ".svn") {
+				//ignore .svn dir and subdir
+			}
+			elseif (substr($new_path, -3) == ".db") {
+				//ignore .db files
+			}
+			else {
+				$new_path = str_replace($_SERVER["DOCUMENT_ROOT"], "", $new_path);
+				$v_background_array[] = $new_path;
+			}
+			if ($x > 1000) { break; };
+			$x++;
+		}
+	}
+	if (strlen($_SESSION['background_image'])== 0) {
+		$_SESSION['background_image'] = $v_background_array[array_rand($v_background_array, 1)];
+	}
+	echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
+?>
+
+
+<div id="page" align='center'>
+<table width='90%' class='border.disabled' border='0' cellpadding='0' cellspacing='7'>
+<tr>
+<td align='left' valign='top' class='headermain' colspan='2' width='100%' height='70px;'>
+	<img src='<!--{project_path}-->/themes/default/logo.png' />
 </td>
 </tr>
-<!--
-<tr><td colspan='100%'><img src='<!--{project_path}-->/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>
--->
+
+<tr>
+<td class='menu_bar' colspan='2' width='100%' height='30px'>
+	<!--{menu}-->
+</td>
+</tr>
+
 <tr>
 
 <td valign='top' align='center' width='100%'>
 
 
 <table width='100%' cellpadding='25' cellspacing='0' border='0'>
-<td width='100%' align='left' valign='top'>
+<td class='main_content' align='left' valign='top' width='85%'>
 <?php
 if ($_SESSION["reload_xml"]) {
 		if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
@@ -558,8 +688,25 @@ if ($_SESSION["reload_xml"]) {
 }
 ?>
 <!--{body}-->
-<br />
-<br />
+
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+
 </td>
 </tr>
 </table>
@@ -568,11 +715,20 @@ if ($_SESSION["reload_xml"]) {
 </td>
 </tr>
 </table>
-
-<span class='smalltext'>
-<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2011. All Rights Reserved
-</span>
-
+<?php
+if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
+	echo "<span class='smalltext'>\n";
+	echo "	<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2011. All Rights Reserved\n";
+	echo "</span>\n";
+}
+else {
+	echo "<!--\n";
+	echo "	http://www.fusionpbx.com \n";
+	echo "	Copyright 2008 - 2011 \n";
+	echo "	All Rights Reserved\n";
+	echo "-->\n";
+}
+?>
 </td>
 </tr>
 </table>
@@ -582,7 +738,7 @@ if ($_SESSION["reload_xml"]) {
 </tr>
 </table>
 
-<br>
+<br /><br />
 
 </body>
 </html>
@@ -590,9 +746,9 @@ if ($_SESSION["reload_xml"]) {
 <?php
 
 //define the link labels
-	$v_link_label_edit = "<img src='".PROJECT_PATH."/images/icon_e.gif' width='17' height='17' alt='edit' border='0'>";
-	$v_link_label_add = "<img src='".PROJECT_PATH."/images/icon_plus.gif' width='17' height='17' border='0' alt='add'>";
-	$v_link_label_delete = "<img src='".PROJECT_PATH."/images/icon_x.gif' width='17' height='17' alt='delete' border='0'>";
+	$v_link_label_edit = "<img src='".PROJECT_PATH."/images/icon_e.png' width='17' height='17' alt='edit' border='0'>";
+	$v_link_label_add = "<img src='".PROJECT_PATH."/images/icon_plus.png' width='17' height='17' border='0' alt='add'>";
+	$v_link_label_delete = "<img src='".PROJECT_PATH."/images/icon_x.png' width='17' height='17' alt='delete' border='0'>";
 	$v_link_label_view = "<img src='".PROJECT_PATH."/images/icon_view.gif' width='17' height='17' border='0' alt='add'>";
 	//$v_link_label_cal = "<img src='".PROJECT_PATH."/images/icon_cal.gif' width='17' height='17' border='0' alt='add'>";
 	//$v_link_label_up = "<img src='".PROJECT_PATH."/images/icon_up.gif' width='17' height='17' border='0' alt='up'>";

@@ -21,22 +21,22 @@ body {
 	margin-bottom: 0px;
 	margin-right: 0px;
 	margin-left: 0px;
-	background-image: url('<!--{project_path}-->/themes/horizontal/background.jpg');
+	/*background-image: url('<!--{project_path}-->/themes/accordion/background.gif');*/
+	background-image: url('<!--{project_path}-->/themes/accordion/menu_background.jpg');
 	background-repeat: repeat-x;
-	background-attachment: fixed;
 	background-color: #FFFFFF;
+	background-attachment:fixed;
 }
 
 th {
-	border-top: 1px solid #444444;
-	border-bottom: 1px solid #444444;
-	text-align: left;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #777777;
 	color: #FFFFFF;
 	font-size: 12px;
 	font-family: arial;
 	font-weight: bold;
-	/*background-color: #506eab;*/
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_th.png');
+	background-color: #FFFFFF;
+	background-image: url('<!--{project_path}-->/themes/accordion/background_th.png');
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-right: 7px;
@@ -45,8 +45,8 @@ th {
 
 th a:link{ color:#FFFFFF; }
 th a:visited{ color:#FFFFFF; }
-th a:hover{ color:#FFFFFF; }
-th a:active{ color:#FFFFFF; }
+th a:hover{ color:#FFBF00; }
+th a:active{ color:#FFBF00; }
 
 td {
 	color: #5f5f5f;
@@ -88,19 +88,19 @@ TEXTAREA.txt {
 
 	-moz-border-radius-topleft:5px;
 	-webkit-border-top-left-radius:5px;
-	border-top-left-radius:5px;
+	border-top-left-radius:5px
 
 	-moz-border-radius-topright:5px;
 	-webkit-border-top-right-radius:5px;
-	border-top-right-radius:5px;
+	border-top-right-radius:5px
 
 	-moz-border-radius-bottomleft:5px;
 	-webkit-border-bottom-left-radius:5px;
-	border-bottom-left-radius:5px;
+	border-bottom-left-radius:5px
 
 	-moz-border-radius-bottomright:5px;
 	-webkit-border-bottom-right-radius:5px;
-	border-bottom-right-radius:5px;
+	border-bottom-right-radius:5px
 }
 
 INPUT.txt {
@@ -124,67 +124,55 @@ INPUT.txt {
 
 	-moz-border-radius-topleft:5px;
 	-webkit-border-top-left-radius:5px;
-	border-top-left-radius:5px;
+	border-top-left-radius:5px
 
 	-moz-border-radius-topright:5px;
 	-webkit-border-top-right-radius:5px;
-	border-top-right-radius:5px;
+	border-top-right-radius:5px
 
 	-moz-border-radius-bottomleft:5px;
 	-webkit-border-bottom-left-radius:5px;
-	border-bottom-left-radius:5px;
+	border-bottom-left-radius:5px
 
 	-moz-border-radius-bottomright:5px;
 	-webkit-border-bottom-right-radius:5px;
-	border-bottom-right-radius:5px;
+	border-bottom-right-radius:5px
 }
 
 /*
-table{
-	-webkit-border-radius: 18px 18px 0px 0px;
-	-moz-border-radius: 18px 18px 0px 0px;
-	border-radius: 18px 18px 0px 0px;
-}
-
-.th:first-child .th:first-child {
-	-webkit-border-radius: 8px 8px 0px 0px;
-	-moz-border-radius: 8px 8px 0px 0px;
-	border-radius: 8px 8px 0px 0px;
-}
-
-th:last-child th:first-child {
-	-webkit-border-radius: 8px 8px 0px 0px;
-	-moz-border-radius: 8px 8px 0px 0px;
-	border-radius: 8px 8px 0px 0px;
+.th {
+	-webkit-border-radius: 10px 10px 0px 0px;
+	-moz-border-radius: 10px 10px 0px 0px;
+	border-radius: 10px 10px 0px 0px;
 }
 */
 
 .vncell {
-	border-bottom: 1px solid #999999;
-	/*background-color: #639BC1;*/
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
+	background: #EFEFEF;
+	color: gray;
+	border-bottom: 1px solid #CCCCCC;
+	background-image: url('<!--{project_path}-->/themes/accordion/background_cell.gif');
 	padding-right: 20px;
 	padding-left: 8px;
 	text-align: left;
-	color: #444444;
+	color: #555555;
+	border-bottom: 1px solid #999999;
 }
 
-/*
-.vncell a:link{ color:#444444; }
-.vncell a:visited{ color:#444444; }
-.vncell style0 a:hover{ color:#444444; }
-.vncell a:active{ color:#444444; }
-*/
+.vncell a:link{ color:#555555; }
+.vncell a:visited{ color:#555555; }
+.vncell style0 a:hover{ color:#FFBF00; }
+.vncell a:active{ color:#555555; }
 
 .vncellreq {
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/accordion/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	background-color: #639BC1;
 	padding-right: 20px;
 	padding-left: 8px;
 	text-align: left;
 	font-weight: bold;
-	color: #444444;
+	color: #555555;
 }
 
 .vtable {
@@ -195,17 +183,19 @@ th:last-child th:first-child {
 	border-bottom: 1px solid #999999;
 	font-size: 11px;
 	background-color: #990000;
-	color: #444444;	
+	color: #FFFFFF;
 	padding-right: 16px;
 	padding-left: 6px;
 	padding-top: 4px;
-	padding-bottom: 4px;
+	padding-bottom: 4px;*/
 }
 
 .rowstyle0 {
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/accordion/background_cell.gif');
 	border-bottom: 1px solid #999999;
-	color: #444444;
+	/*background-color: #ECE9D8; */
+	background-color: #639BC1;
+	color: #555555;
 	text-align: left;
 	padding-top: 4px;
 	padding-bottom: 4px;
@@ -213,10 +203,10 @@ th:last-child th:first-child {
 	padding-left: 7px;
 }
 
-.rowstyle0 a:link{ color:#444444; }
-.rowstyle0 a:visited{ color:#444444; }
-.rowstyle0 a:hover{ color:#444444; }
-.rowstyle0 a:active{ color:#444444; }
+.rowstyle0 a:link{ color:#555555; }
+.rowstyle0 a:visited{ color:#555555; }
+.rowstyle0 a:hover{ color:#FFBF00; }
+.rowstyle0 a:active{ color:#FFBF00; }
 
 .rowstyle1 {
 	border-bottom: 1px solid #999999;
@@ -229,7 +219,7 @@ th:last-child th:first-child {
 }
 
 .rowstylebg {
-	border-bottom: 1px solid #888888;
+	border-bottom: 1px solid #999999;
 	background-color: #5F5F5F;
 	color: #FFFFFF;
 	text-align: left;
@@ -240,7 +230,8 @@ th:last-child th:first-child {
 }
 
 .border {
-	border: solid 1px #999999;
+	border-left: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;
 	background-color: #FFFFFF;
 }
 
@@ -261,207 +252,118 @@ th:last-child th:first-child {
 	font-family: arial;
 }
 
-table {
-	/*background:#ccc;*/
-	/*margin:20px;*/
-	/*border:#ccc 1px solid;*/
-}
-
-table th {
-	padding:4px 10px
-}
- 
-table td {
-	/*background:#fff;*/
-	/*padding:2px 10px 4px 10px*/
-}
-
-table tr.even td {
-	background:#eee;
-	background-image: url('<!--{project_path}-->/themes/horizontal/background_cell.gif');
-	border-bottom: 1px solid #999999;
-	color: #444444;
-}
- 
-table tr.odd td {
-	border-bottom: 1px solid #999999;
-	color: #000000;
-}
-
 table tr:first-child th:first-child {
 	-moz-border-radius-topleft:7px;
 	-webkit-border-top-left-radius:7px;
-	border-top-left-radius:7px;
-}
+	border-top-left-radius:7px
+	}
 
 table tr:first-child th:last-of-type {
 	-moz-border-radius-topright:7px;
 	-webkit-border-top-right-radius:7px;
-	border-top-right-radius:7px;
-}
+	border-top-right-radius:7px
+	}
 
 table tr:nth-last-child(-5) td:first-of-type {
 	-moz-border-radius-bottomleft:7px;
 	-webkit-border-bottom-left-radius:7px;
-	border-bottom-left-radius:7px;
-}
+	border-bottom-left-radius:7px
+	}
 
 table tr:nth-last-child(-5) td:first-of-type {
 	-moz-border-radius-topleft:7px;
 	-webkit-border-top-left-radius:7px;
-	border-bottom-top-radius:7px;
-}
+	border-bottom-top-radius:7px
+	}
 
+/*
+table tr:last-child td:first-of-type {
+	-moz-border-radius-topright:10px;
+	-webkit-border-top-right-radius:10px;
+	border-top-right-radius:10px
+	}
+
+table tr:last-child td:first-child {
+	-moz-border-radius-bottomleft:10px;
+	-webkit-border-bottom-left-radius:10px;
+	border-bottom-left-radius:10px
+	}
+
+table tr:last-child td:last-child {
+	-moz-border-radius-bottomright:10px;
+	-webkit-border-bottom-right-radius:10px;
+	border-bottom-right-radius:10px
+	}
+*/
 
 /* begin the menu css*/
+	.menu_bg {
+		background-image: url('<!--{project_path}-->/themes/accordion/menu_background.jpg');
+		background-repeat: repeat-x;
+		background-color: #FFFFFF;
+		text-align: left;
+		padding-top: 4px;
+		padding-bottom: 25px;
+		padding-left: 5px;
+		padding-right:20px;
+	}
 
-	/* CSS Menus - Horizontal CSS Menu with Dropdown and Popout Menus - 20050131 */
+	.menu_bg h2 {
+		text-align: left;
+	}
 
-	#menu{
+	#menu ul {
+		list-style-type:none;
+		padding:0px;
+		margin:0px;
+	}
+
+	#menu li {
+		margin-top: 0;
+		border-top-width: 0;
+		padding-top: 0;
+		margin-bottom: 0;
+		border-bottom-width: 0;
+		padding-bottom: 0;
+		list-style-type:none;
+		padding:0px;
+		margin:0px;
+		padding-left:15px;
+	}
+
+	#menu {
 		width:100%;
 		float:left;
 	}
 
-	#menu a, #menu h2{
+	#menu a, #menu h2 {
 		font:bold 11px/16px arial,helvetica,sans-serif;
 		display:block;
 		/*border-color:#ccc #888 #555 #bbb;*/
+		/*border: solid 0.5px #222222;*/
 		white-space:nowrap;
 		margin:0;
-		padding:3px 3px 3px 3px;
+		padding-top:2px;
+		padding-bottom:2px;
 	}
 
-	#menu h2{
-		/*background:#222222 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
+	#menu h2 {
+		align: left;
 		/*text-transform:uppercase*/
-		width:118px;
 	}
 
-	#menu h2 h2{
-		background:#4e4b56 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;
-		/*text-transform:uppercase*/
-		padding:3px 3px 3px 3px;
-	}
-
-	#menu a{
-		<?php
-		$user_agent = http_user_agent();
-		$browser_version =  $user_agent['version'];
-		$browser_name =  $user_agent['name'];
-		$browser_version_array = explode('.', $browser_version);
-		if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '9' ) {
-			echo "background:#333333;";
-		}
-		?>
+	#menu a {
+		/*background:#333333;*/
 		text-decoration:none;
-		padding-left:7px;
-		width:114px;
 	}
 
-	#menu a, #menu a:visited{
-		color:#cccccc;
+	#menu a:hover {
+		list-style-type:disc;
+		text-decoration:underline;
+		/*list-style-image: url("images/img.gif");*/
 	}
 
-	#menu .menu_sub {
-		width:124px;
-		background:#333333;
-		background-color: rgba(20, 20, 20, 0.9);
-		-moz-border-radius-bottomleft:7px;
-		-webkit-border-bottom-left-radius:7px;
-		border-bottom-left-radius:7px;
-		-moz-border-radius-bottomright:7px;
-		-webkit-border-bottom-right-radius:7px;
-		border-bottom-right-radius:7px;
-	}
-
-	#menu a:hover{
-		width:114px;
-		color:#fd9c03;
-		background:#1F1F1F;
-		-moz-border-radius-bottomleft:7px;
-		-webkit-border-bottom-left-radius:7px;
-		border-bottom-left-radius:7px;
-		-moz-border-radius-bottomright:7px;
-		-webkit-border-bottom-right-radius:7px;
-		border-bottom-right-radius:7px;
-	}
-
-	#menu a:active{
-		color:#fd9c03;
-	}
-
-	#menu ul{
-		list-style:none;
-		margin:0;
-		padding:0;
-		float:left;
-		width:9em;
-	}
-
-	#menu li{
-		position:relative;
-	}
-
-	#menu ul ul{
-		position:absolute;
-		z-index:500;
-		top:auto;
-		display:none;
-	}
-
-	#menu ul ul ul{
-		top:0;
-		left:100%;
-	}
-
-	/* Enter the more specific element (div) selector
-	on non-anchor hovers for IE5.x to comply with the
-	older version of csshover.htc - V1.21.041022. It
-	improves IE's performance speed to use the older
-	file and this method */
-
-	div#menu h2:hover{
-		-webkit-border-radius: 12px 12px 0px 0px;
-		-moz-border-radius: 12px 12px 0px 0px;
-		border-radius: 12px 12px 0px 0px;
-		/*background:#1F1F1F url(<!--{project_path}-->/css/images/expand3.gif) no-repeat -999px -9999px;*/
-		/*background:#1F1F1F url(<!--{project_path}-->/themes/horizontal/background_cell.gif) no-repeat -999px -9999px;*/
-	}
-
-	div#menu li:hover{
-		cursor:pointer;
-		z-index:100;
-	}
-
-	div#menu li:hover ul ul,
-	div#menu li li:hover ul ul,
-	div#menu li li li:hover ul ul,
-	div#menu li li li li:hover ul ul
-	{display:none;}
-
-	div#menu li:hover ul,
-	div#menu li li:hover ul,
-	div#menu li li li:hover ul,
-	div#menu li li li li:hover ul
-	{display:block;}
-
-	#menu a.x, #menu a.x:visited{
-		font-weight:bold;
-		color:#000;
-		background:#999999 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;
-	}
-
-	#menu a.x:hover{
-		color:#fff;
-		background:#000;
-	}
-
-	#menu a.x:active{
-		color:#060;
-		background:#ccc;
-	}
-
-/* end the menu css*/
+/* end the menu css */
 </style>
 
 <script type="text/javascript">
@@ -488,11 +390,12 @@ function confirmdelete(url) {
 </SCRIPT>
 </head>
 <body>
+
 <div align='center'>
-<table width='90%' class='border.disabled' style='background-color:#FFFFFF;' border='0' cellpadding='0' cellspacing='0'>
+<table width='90%' class='border' border='0' cellpadding='0' cellspacing='0'>
 <tr>
 <td class='headermain' style='background-color:#FFFFFF;' width='100%'>
-	<table cellpadding='0' cellspacing='0' border='0' style="background-image: url('<!--{project_path}-->/themes/horizontal/background_head.png'); color: #FFFFFF; font-size: 20px;" width='100%'>
+	<table cellpadding='0' cellspacing='0' border='0' style="background-image: url('<!--{project_path}-->/themes/accordion/background_head.png'); color: #FFFFFF; font-size: 20px;" width='100%'>
 	<tr>
 	<td align='center' colspan='2' style='' width='100%' height='4'>
 	</td>
@@ -500,12 +403,12 @@ function confirmdelete(url) {
 	<tr>
 	<td></td>
 	<td align='left' valign='middle' nowrap>
-		<img src='<!--{project_path}-->/themes/horizontal/logo.png' />
+		<img src='<!--{project_path}-->/themes/accordion/logo.png' />
 	</td>
 	</tr>
 	<tr>
-	<td align='center' colspan='2' style="background-image: url('<!--{project_path}-->/themes/horizontal/background_black.png');" width='100%' height='22'>
-	<!--{menu}-->
+	<td align='center' colspan='2' style="background-image: url('<!--{project_path}-->/themes/accordion/background_black.png');" width='100%' height='22'>
+		<!--{menu.disabled}-->
 	</td>
 	</tr>
 	</table>
@@ -516,16 +419,20 @@ function confirmdelete(url) {
 <tr><td colspan='100%'><img src='<!--{project_path}-->/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>
 -->
 <tr>
-
 <td valign='top' align='center' width='100%'>
 
+<table width='100%' cellpadding='30' cellspacing='0' border='0'>
+<tr>
+<td width='140' align='left' valign='top' class='menu_bg'>
+<br />
 
-<table width='100%' cellpadding='25' cellspacing='0' border='0'>
-<td width='100%' align='left' valign='top'>
+<!--{menu}-->
+</td>
+<td align='left' valign='top'>
 <?php
 if ($_SESSION["reload_xml"]) {
 		if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
-			if(stristr($_SERVER["PHP_SELF"], "_edit") != FALSE) { 
+			if(stristr($_SERVER["PHP_SELF"] , "_edit") != FALSE) { 
 				//found
 			}
 			else {
@@ -558,8 +465,7 @@ if ($_SESSION["reload_xml"]) {
 }
 ?>
 <!--{body}-->
-<br />
-<br />
+
 </td>
 </tr>
 </table>
@@ -586,7 +492,6 @@ if ($_SESSION["reload_xml"]) {
 
 </body>
 </html>
-
 <?php
 
 //define the link labels
