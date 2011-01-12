@@ -673,25 +673,25 @@ echo "<br />";
 						case "text":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%' type='text' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 							echo "</td>\n";
 							break;
 						case "email":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='text' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 							echo "</td>\n";
 							break;
 						case "password":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='password' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='password' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 							echo "</td>\n";
 							break;
 						case "pin_number":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value=\"".$row[virtual_field_name]."\">\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='password' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='password' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 							echo "</td>\n";
 							break;
 						case "hidden":
@@ -703,22 +703,22 @@ echo "<br />";
 						case "url":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value=\"".$row[virtual_field_name]."\">\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' name='".$x."field_value' maxlength='50' value='".$data_row[$row[virtual_field_name]]."'>\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='text' name='".$x."field_value' maxlength='50' value='".$data_row[$row[virtual_field_name]]."'>\n";
 							echo "</td>\n";
 							break;
 						case "date":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value=\"".$row[virtual_field_name]."\">\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' name='".$x."field_value' maxlength='50' value='".$data_row[$row[virtual_field_name]]."'>\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='text' name='".$x."field_value' maxlength='50' value='".$data_row[$row[virtual_field_name]]."'>\n";
 
 							//echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
 							//echo "<table border='0' width='100%' cellpadding='0' cellspacing='0'>";
 							//echo "<tr>";
-							//echo "<td valign='top'><input tabindex='".$row[virtual_field_order_tab]."' name='".$x."field_value' readonly class='txt' value='".$data_row[$row[virtual_field_name]]."' type='text' class='frm' onclick='popUpCalendar(this, this, \"mm/dd/yyyy\");'></td>\n";
+							//echo "<td valign='top'><input tabindex='".$row[virtual_field_order_tab]."' name='".$x."field_value' readonly class='formfld' style='width:90%'  value='".$data_row[$row[virtual_field_name]]."' type='text' class='frm' onclick='popUpCalendar(this, this, \"mm/dd/yyyy\");'></td>\n";
 							//echo "<td valign='middle' width='20' align='right'><img src='/images/icon_calendar.gif' onclick='popUpCalendar(this, frm.".$x."field_value, \"mm/dd/yyyy\");'></td>	\n";
 							//echo "</tr>";
 							//echo "</table>";
-							//echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' name='".$x."field_value' maxlength='50' value='".$data_row[$row[virtual_field_name]]."'>\n";
+							//echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='text' name='".$x."field_value' maxlength='50' value='".$data_row[$row[virtual_field_name]]."'>\n";
 							echo "</td>\n";
 							break;
 						case "truefalse":
@@ -729,16 +729,16 @@ echo "<br />";
 							echo "<tr>\n";
 							switch ($row[virtual_field_name]) {
 								case "true":
-									echo "<td>True</td><td width='50'><input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='checkbox' name='".$x."field_value' checked='checked' value='true' /></td>\n";
-									echo "<td>False</td><td><input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='checkbox' name='".$x."field_value' value='false'></td>\n";
+									echo "<td>True</td><td width='50'><input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='checkbox' name='".$x."field_value' checked='checked' value='true' /></td>\n";
+									echo "<td>False</td><td><input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='checkbox' name='".$x."field_value' value='false'></td>\n";
 									break;
 								case "false":
-									echo "<td>True</td><td width='50'><input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='checkbox' name='".$x."field_value' value='true' /></td>\n";
-									echo "<td>False</td><td><input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='checkbox' name='".$x."field_value' checked='checked' value='false' /></td>\n";
+									echo "<td>True</td><td width='50'><input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='checkbox' name='".$x."field_value' value='true' /></td>\n";
+									echo "<td>False</td><td><input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='checkbox' name='".$x."field_value' checked='checked' value='false' /></td>\n";
 									break;
 								default:
-									echo "<td>True</td><td width='50'><input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='checkbox' name='".$x."field_value' value='true' /></td>\n";
-									echo "<td>False</td><td><input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='checkbox' name='".$x."field_value' value='false' /></td>\n";
+									echo "<td>True</td><td width='50'><input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='checkbox' name='".$x."field_value' value='true' /></td>\n";
+									echo "<td>False</td><td><input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='checkbox' name='".$x."field_value' value='false' /></td>\n";
 							}
 
 							echo "</tr>\n";
@@ -748,7 +748,7 @@ echo "<br />";
 						case "textarea":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-							echo "<textarea tabindex='".$row[virtual_field_order_tab]."' class='txt' name='".$x."field_value' rows='4'>".$data_row[$row[virtual_field_name]]."</textarea>\n";
+							echo "<textarea tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  name='".$x."field_value' rows='4'>".$data_row[$row[virtual_field_name]]."</textarea>\n";
 							echo "</td>\n";
 							break;
 						case "radiobutton":
@@ -764,7 +764,7 @@ echo "<br />";
 							$result2 = $prepstatement2->fetchAll();
 							$resultcount2 = count($result2);
 
-							//echo "<select class='txt' name='".$x."field_value'>\n";
+							//echo "<select class='formfld' style='width:90%'  name='".$x."field_value'>\n";
 							//echo "<option value=''></option>\n";
 							echo "<table>";
 							if ($resultcount > 0) {
@@ -795,7 +795,7 @@ echo "<br />";
 							$result2 = $prepstatement2->fetchAll();
 							$resultcount2 = count($result2);
 
-							echo "<select tabindex='".$row[virtual_field_order_tab]."' class='txt' name='".$x."field_value'>\n";
+							echo "<select tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  name='".$x."field_value'>\n";
 							echo "<option value=''></option>\n";
 							if ($resultcount > 0) {
 								foreach($result2 as $row2) {
@@ -812,14 +812,14 @@ echo "<br />";
 							//max 15
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' name='".$x."field_value' maxlength='15' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='text' name='".$x."field_value' maxlength='15' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 							echo "</td>\n";
 							break;
 						case "ipv6":
 							//maximum number of characters 39
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' name='".$x."field_value' maxlength='39' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='text' name='".$x."field_value' maxlength='39' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 							echo "</td>\n";
 							break;
 						case "phone":
@@ -827,13 +827,13 @@ echo "<br />";
 							$tmp_phone = format_phone($tmp_phone);
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' name='".$x."field_value' maxlength='20' value=\"".$tmp_phone."\">\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='text' name='".$x."field_value' maxlength='20' value=\"".$tmp_phone."\">\n";
 							echo "</td>\n";
 							break;
 						case "money":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' name=".$x."field_value' maxlength='255' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='text' name=".$x."field_value' maxlength='255' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 							echo "</td>\n";
 							break;
 						case "add_user":
@@ -897,7 +897,7 @@ echo "<br />";
 							else {
 								echo "<td valign='top' align='left' class='vtable'>\n";
 								echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-								echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='file' name='".$x."field_value' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+								echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='file' name='".$x."field_value' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 								echo "</td>\n";
 							}
 							break;
@@ -906,7 +906,7 @@ echo "<br />";
 								echo "<td valign='top' align='left' class='vtable'>\n";
 								echo "<script type=\"text/javascript\">\n";
 								echo $row[virtual_field_name]." = \"<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\";\n";
-								echo $row[virtual_field_name]." += \"<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='file' name='".$x."field_value' value='".$data_row[$row[virtual_field_name]]."'>\";\n";
+								echo $row[virtual_field_name]." += \"<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='file' name='".$x."field_value' value='".$data_row[$row[virtual_field_name]]."'>\";\n";
 								echo "</script>\n";
 
 								echo "<span id='".$row[virtual_field_name]."'>";
@@ -926,7 +926,7 @@ echo "<br />";
 							else {
 								echo "<td valign='top' align='left' class='vtable'>\n";
 								echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-								echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='file' name='".$x."field_value' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+								echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='file' name='".$x."field_value' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 								echo "</td>\n";
 							}
 
@@ -934,7 +934,7 @@ echo "<br />";
 						default:
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
-							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='txt' type='text' style='' name='".$x."field_value' maxlength='255' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
+							echo "<input tabindex='".$row[virtual_field_order_tab]."' class='formfld' style='width:90%'  type='text' style='' name='".$x."field_value' maxlength='255' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
 							echo "</td>\n";
 						}
 					if ($row[virtual_field_type] != "hidden"){
