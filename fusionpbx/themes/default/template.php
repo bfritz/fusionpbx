@@ -3,10 +3,24 @@
 <title><!--{title}--></title>
 <!--{head}-->
 <?php
+//get the browser version
 	$user_agent = http_user_agent();
 	$browser_version =  $user_agent['version'];
 	$browser_name =  $user_agent['name'];
 	$browser_version_array = explode('.', $browser_version);
+
+//get the php self path and set a variable with only the directory path
+	$php_self_array = explode ("/", $_SERVER['PHP_SELF']);
+	$php_self_dir = '';
+	foreach ($php_self_array as &$value) {
+		if (substr($value, -4) != ".php") {
+			$php_self_dir .= $value."/";
+		}
+	}
+	unset($php_self_array);
+	if (strlen(PROJECT_PATH) > 0) {
+		$php_self_dir = substr($php_self_dir, strlen(PROJECT_PATH), strlen($php_self_dir));
+	}
 ?>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
@@ -145,26 +159,6 @@ INPUT.txt {
 	border-bottom-right-radius:5px;
 }
 
-/*
-table{
-	-webkit-border-radius: 18px 18px 0px 0px;
-	-moz-border-radius: 18px 18px 0px 0px;
-	border-radius: 18px 18px 0px 0px;
-}
-
-.th:first-child .th:first-child {
-	-webkit-border-radius: 8px 8px 0px 0px;
-	-moz-border-radius: 8px 8px 0px 0px;
-	border-radius: 8px 8px 0px 0px;
-}
-
-th:last-child th:first-child {
-	-webkit-border-radius: 8px 8px 0px 0px;
-	-moz-border-radius: 8px 8px 0px 0px;
-	border-radius: 8px 8px 0px 0px;
-}
-*/
-
 .vncell {
 	border-bottom: 1px solid #999999;
 	/*background-color: #639BC1;*/
@@ -175,12 +169,11 @@ th:last-child th:first-child {
 	color: #444444;
 }
 
-/*
 .vncell a:link{ color:#444444; }
 .vncell a:visited{ color:#444444; }
 .vncell style0 a:hover{ color:#444444; }
 .vncell a:active{ color:#444444; }
-*/
+
 
 .vncellreq {
 	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
@@ -195,7 +188,6 @@ th:last-child th:first-child {
 
 .vtable {
 	border-bottom: 1px solid #DFDFDF;
-	border-right: 1px solid #DFDFDF;
 }
 
 .listbg {
@@ -287,7 +279,7 @@ table tr.even td {
 	background:#eee;
 	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
 	border-bottom: 1px solid #999999;
-	color: #444444;
+	color: #333333;
 }
  
 table tr.odd td {
@@ -336,7 +328,12 @@ table tr:nth-last-child(-5) td:first-of-type {
 				echo "background-color: #FFFFFF;";
 			}
 			else {
-				echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+				if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
+					echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+				}
+				else {
+					echo "background-image: url('<!--{project_path}-->/themes/default/login_background.png');";
+				}
 			}
 		?>
 		background-repeat: repeat-x;
@@ -365,19 +362,22 @@ table tr:nth-last-child(-5) td:first-of-type {
 				echo "background-color: #FFFFFF;";
 			}
 			else {
-				echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+				if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
+					echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+				}
+				else {
+					echo "background-image: url('<!--{project_path}-->/themes/default/login_background.png');";
+				}
 			}
 		?>
 		background-repeat: repeat-x;
 		background-attachment: fixed;
-		/*background-color: #FFFFFF;*/
 		padding: 20px;
 		opacity: 0.9;
 		filter:alpha(opacity=90);
 		-moz-opacity:0.9;
 		-khtml-opacity: 0.9;
 		opacity: 0.9;
-
 		-webkit-border-radius: 7px 7px 7px 7px;
 		-moz-border-radius: 7px 7px 7px 7px;
 		border-radius: 7px 7px 7px 7px;
@@ -664,19 +664,6 @@ function confirmdelete(url) {
 <br />
 <?php
 
-//get the php self path and set a variable with only the directory path
-	$php_self_array = explode ("/", $_SERVER['PHP_SELF']);
-	$php_self_dir = '';
-	foreach ($php_self_array as &$value) {
-		if (substr($value, -4) != ".php") {
-			$php_self_dir .= $value."/";
-		}
-	}
-	unset($php_self_array);
-	if (strlen(PROJECT_PATH) > 0) {
-		$php_self_dir = substr($php_self_dir, strlen(PROJECT_PATH), strlen($php_self_dir));
-	}
-
 //get the current page menu_parent_guid
 	if ($db) {
 		$sql = "select * from v_menu ";
@@ -840,11 +827,20 @@ if ($_SESSION["reload_xml"]) {
 </td>
 </tr>
 </table>
-
-<span class='smalltext'>
-<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2011. All Rights Reserved
-</span>
-
+<?php
+if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
+	echo "<span class='smalltext'>\n";
+	echo "	<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2011. All Rights Reserved\n";
+	echo "</span>\n";
+}
+else {
+	echo "<!--\n";
+	echo "	http://www.fusionpbx.com \n";
+	echo "	Copyright 2008 - 2011 \n";
+	echo "	All Rights Reserved\n";
+	echo "-->\n";
+}
+?>
 </td>
 </tr>
 </table>
