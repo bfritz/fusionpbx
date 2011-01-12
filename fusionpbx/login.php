@@ -47,23 +47,23 @@ if (strlen($msg) > 0) {
 }
 
 echo "<form name='login' METHOD=\"POST\" action=\"".PROJECT_PATH."/index.php\">\n";
-echo "<table width='200'>\n";
+echo "<table width='200' border='0'>\n";
 echo "<tr>\n";
 echo "<td align='left'>\n";
-echo "	UserName:\n";
+echo "	<strong>UserName:</strong>\n";
 echo "</td>\n";
 echo "<td>\n";
-echo "  <input type=\"text\" class='frm' name=\"username\">\n";
+echo "  <input type=\"text\" style='width: 125px;' class='formfld' name=\"username\">\n";
 echo "</td>\n";
 echo "</tr>\n";
 echo "\n";
 echo "<tr>\n";
 echo "<td align='left'>\n";
-echo "	Password:\n";
+echo "	<strong>Password:</strong>\n";
 echo "</td>\n";
 echo "\n";
 echo "<td align='left'>\n";
-echo "	<input type=\"password\" class='frm' name=\"password\">\n";
+echo "	<input type=\"password\" style='width: 125px;' class='formfld' name=\"password\">\n";
 echo "</td>\n";
 echo "</tr>\n";
 echo "\n";
@@ -86,8 +86,7 @@ echo "</form>";
 
 echo "</div>";
 
-echo "<br><br>";
-echo "<br><br>";
+//echo "<br><br>";
 
 
 include "includes/footer.php";
