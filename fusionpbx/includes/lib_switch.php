@@ -3188,7 +3188,6 @@ function sync_package_v_fax()
 				$sql .= "and opt1name = '$opt1name' ";
 				$sql .= "and opt1value = '$opt1value' ";
 				//echo "sql: ".$sql."<br />";
-				//exit;
 				$db->query($sql);
 				unset($sql);
 
