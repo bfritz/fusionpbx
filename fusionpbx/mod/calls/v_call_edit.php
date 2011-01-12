@@ -1,11 +1,35 @@
 <?php
+/*
+	FusionPBX
+	Version: MPL 1.1
+
+	The contents of this file are subject to the Mozilla Public License Version
+	1.1 (the "License"); you may not use this file except in compliance with
+	the License. You may obtain a copy of the License at
+	http://www.mozilla.org/MPL/
+
+	Software distributed under the License is distributed on an "AS IS" basis,
+	WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+	for the specific language governing rights and limitations under the
+	License.
+
+	The Original Code is FusionPBX
+
+	The Initial Developer of the Original Code is
+	Mark J Crane <markjcrane@fusionpbx.com>
+	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	the Initial Developer. All Rights Reserved.
+
+	Contributor(s):
+	Mark J Crane <markjcrane@fusionpbx.com>
+*/
 require_once "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
 function destination_select($select_name, $select_value, $select_default) {
 	if (strlen($select_value) == 0) { $select_value = $select_default; }
-	echo "	<select class='formfld' style='width: 40px;' name='$select_name'>\n";
+	echo "	<select class='formfld' style='width: 45px;' name='$select_name'>\n";
 	echo "	<option value=''></option>\n";
 
 	$i=5;
@@ -191,6 +215,44 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$dnd_action = "add";
 		$follow_me_action = "add";
 
+	//get the hunt group timeout
+		//add the destination timeouts together to create the hunt group timeout
+			if ($follow_me_type == "follow_me_sequence") {
+				if (strlen($destination_data_1) > 0) {
+					$hunt_group_timeout = $destination_timeout_1;
+				}
+				if (strlen($destination_data_2) > 0) {
+					$hunt_group_timeout = $hunt_group_timeout + $destination_timeout_2;
+				}
+				if (strlen($destination_data_3) > 0) {
+					$hunt_group_timeout = $hunt_group_timeout + $destination_timeout_3;
+				}
+				if (strlen($destination_data_4) > 0) {
+					$hunt_group_timeout = $hunt_group_timeout + $destination_timeout_4;
+				}
+				if (strlen($destination_data_5) > 0) {
+					$hunt_group_timeout = $hunt_group_timeout + $destination_timeout_5;
+				}
+			}
+		//find the highest timeout and set that as the hunt_group_timeout
+			if ($follow_me_type == "follow_me_simultaneous") {
+				if (strlen($destination_data_1) > 0) {
+					$hunt_group_timeout = $destination_timeout_1;
+				}
+				if (strlen($destination_data_2) > 0 && $hunt_group_timeout < $destination_timeout_2) {
+					$hunt_group_timeout = $destination_timeout_2;
+				}
+				if (strlen($destination_data_3) > 0 && $hunt_group_timeout < $destination_timeout_3) {
+					$hunt_group_timeout = $destination_timeout_3;
+				}
+				if (strlen($destination_data_4) > 0 && $hunt_group_timeout < $destination_timeout_4) {
+					$hunt_group_timeout = $destination_timeout_4;
+				}
+				if (strlen($destination_data_5) > 0 && $hunt_group_timeout < $destination_timeout_5) {
+					$hunt_group_timeout = $destination_timeout_5;
+				}
+			}
+
 	//hunt_group information used to determine if this is an add or an update
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
@@ -224,7 +286,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$huntgroup_name = 'call_forward_'.$extension;
 		$hunt_group_type = 'call_forward';
 		$hunt_group_context = 'default';
-		$hunt_group_timeout = '3600';
 		$hunt_group_timeout_destination = $extension;
 		$hunt_group_timeout_type = 'voicemail';
 		$hunt_group_ring_back = 'us-ring';
@@ -752,6 +813,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 			$response = event_socket_request($fp, $cmd);
 			fclose($fp);
+
+		//apply settings reminder
+			$_SESSION["reload_xml"] = false;
 
 		//redirect the user
 			require_once "includes/header.php";
