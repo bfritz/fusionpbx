@@ -55,6 +55,12 @@ License: LGPL
 
 //-----------------------------------------------------------------------------------
 
+phpsvnclient
+http://code.google.com/p/phpsvnclient/
+License: New BSD License
+
+//-----------------------------------------------------------------------------------
+
 POP3Class
 http://www.phpclasses.org/package/2-PHP-Access-to-e-mail-mailboxes-using-the-POP3-protocol.html
 
