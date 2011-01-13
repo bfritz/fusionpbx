@@ -90,6 +90,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add") {
 				$sql = "insert into v_hardware_phones ";
 				$sql .= "(";
+				$sql .= "v_id, ";
 				$sql .= "phone_mac_address, ";
 				$sql .= "phone_vendor, ";
 				$sql .= "phone_model, ";
@@ -101,6 +102,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
+				$sql .= "'$v_id', ";
 				$sql .= "'$phone_mac_address', ";
 				$sql .= "'$phone_vendor', ";
 				$sql .= "'$phone_model', ";
@@ -132,7 +134,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "phone_username = '$phone_username', ";
 				$sql .= "phone_password = '$phone_password', ";
 				$sql .= "phone_description = '$phone_description' ";
-				$sql .= "where hardware_phone_id = '$hardware_phone_id'";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and hardware_phone_id = '$hardware_phone_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -153,7 +156,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$hardware_phone_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_hardware_phones ";
-		$sql .= "where hardware_phone_id = '$hardware_phone_id' ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and hardware_phone_id = '$hardware_phone_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
