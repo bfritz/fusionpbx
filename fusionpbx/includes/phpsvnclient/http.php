@@ -333,7 +333,8 @@ class http_class
 
 	Function Resolve($domain, &$ip, $server_type)
 	{
-		if(ereg('^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$',$domain))
+//		if(ereg('^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$',$domain))
+		if(preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/',$domain))
 			$ip=$domain;
 		else
 		{
@@ -1459,7 +1460,8 @@ class http_class
 				return($this->SetError("4 could not read request reply: ".$this->error));
 			if(strlen($this->response_status)==0)
 			{
-				if(!eregi($match="^http/[0-9]+\\.[0-9]+[ \t]+([0-9]+)[ \t]*(.*)\$",$line,$matches))
+//				if(!eregi($match="^http/[0-9]+\\.[0-9]+[ \t]+([0-9]+)[ \t]*(.*)\$",$line,$matches))
+				if(!preg_match("~^http/[0-9]+\\.[0-9]+[ \t]+([0-9]+)[ \t]*(.*)\$~i",$line,$matches))
 					return($this->SetError("3 it was received an unexpected HTTP response status"));
 				$this->response_status=$matches[1];
 				$this->response_message=$matches[2];
