@@ -528,32 +528,33 @@ else {
 	echo "		Template: \n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\">\n";
-	echo "<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
-	echo "<option value=''></option>\n";
+	echo "		<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
+	echo "		<option value=''></option>\n";
 	$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
 	if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && $file != ".svn" && is_dir($theme_dir.'/'.$file)) {
-				if ($file == $user_template_name) {
-					echo "<option value='$file' selected='selected'>$file</option>\n";
+		while (false !== ($dir_name = readdir($handle))) {
+			if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
+				$dir_label = str_replace('_', ' ', $dir_name);
+				$dir_label = str_replace('-', ' ', $dir_label);
+				if ($dir_name == $user_template_name) {
+					echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
 				}
 				else {
-					echo "<option value='$file'>$file</option>\n";
+					echo "		<option value='$dir_name'>$dir_label</option>\n";
 				}
 			}
 		}
 		closedir($handle);
 	}
-	echo "	</select>\n";
-	echo "	<br />\n";
-	echo "	Select a template to set as the default and then press save.<br />\n";
+	echo "		</select>\n";
+	echo "		<br />\n";
+	echo "		Select a template to set as the default and then press save.<br />\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
 	echo "    </table>";
 	echo "    </div>";
 
 	echo "<br>";
-
 
 	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth>";
