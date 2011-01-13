@@ -47,7 +47,6 @@ if (strlen($uuid)>0) {
 	$sql = "";
 	$sql .= "select * from voicemail_msgs ";
 	$sql .= "where uuid = '$uuid' ";
-	//echo $sql;
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -91,4 +90,3 @@ require_once "includes/footer.php";
 return;
 
 ?>
-
