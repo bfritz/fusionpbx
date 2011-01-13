@@ -194,58 +194,61 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		}
 
 	//sql update
-	$sql  = "update v_users set ";
-	if (ifgroup("admin") && strlen($_POST["username"])> 0) {
-		$sql .= "username = '$username', ";
-	}
-	if (strlen($password) > 0 && $confirmpassword == $password) {
-		$sql .= "password = '".md5($salt.$password)."', ";
-	}
-	$sql .= "userfirstname = '$userfirstname', ";
-	$sql .= "userlastname = '$userlastname', ";
-	$sql .= "usercompanyname = '$usercompanyname', ";
-	$sql .= "userphysicaladdress1 = '$userphysicaladdress1', ";
-	$sql .= "userphysicaladdress2 = '$userphysicaladdress2', ";
-	$sql .= "userphysicalcity = '$userphysicalcity', ";
-	$sql .= "userphysicalstateprovince = '$userphysicalstateprovince', ";
-	$sql .= "userphysicalcountry = '$userphysicalcountry', ";
-	$sql .= "userphysicalpostalcode = '$userphysicalpostalcode', ";
-	$sql .= "usermailingaddress1 = '$usermailingaddress1', ";
-	$sql .= "usermailingaddress2 = '$usermailingaddress2', ";
-	$sql .= "usermailingcity = '$usermailingcity', ";
-	$sql .= "usermailingstateprovince = '$usermailingstateprovince', ";
-	$sql .= "usermailingcountry = '$usermailingcountry', ";
-	$sql .= "usermailingpostalcode = '$usermailingpostalcode', ";
-	$sql .= "userbillingaddress1 = '$userbillingaddress1', ";
-	$sql .= "userbillingaddress2 = '$userbillingaddress2', ";
-	$sql .= "userbillingcity = '$userbillingcity', ";
-	$sql .= "userbillingstateprovince = '$userbillingstateprovince', ";
-	$sql .= "userbillingcountry = '$userbillingcountry', ";
-	$sql .= "userbillingpostalcode = '$userbillingpostalcode', ";
-	$sql .= "usershippingaddress1 = '$usershippingaddress1', ";
-	$sql .= "usershippingaddress2 = '$usershippingaddress2', ";
-	$sql .= "usershippingcity = '$usershippingcity', ";
-	$sql .= "usershippingstateprovince = '$usershippingstateprovince', ";
-	$sql .= "usershippingcountry = '$usershippingcountry', ";
-	$sql .= "usershippingpostalcode = '$usershippingpostalcode', ";
-	$sql .= "userurl = '$userurl', ";
-	$sql .= "userphone1 = '$userphone1', ";
-	$sql .= "userphone1ext = '$userphone1ext', ";
-	$sql .= "userphone2 = '$userphone2', ";
-	$sql .= "userphone2ext = '$userphone2ext', ";
-	$sql .= "userphonemobile = '$userphonemobile', ";
-	$sql .= "userphonefax = '$userphonefax', ";
-	$sql .= "user_template_name = '$user_template_name', ";
-	$sql .= "useremail = '$useremail' ";
-	if (strlen($id)> 0) {
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and id = $id ";
-	}
-	else {
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and username = '$username' ";
-	}
-	$count = $db->exec(check_sql($sql));
+		$sql  = "update v_users set ";
+		if (ifgroup("admin") && strlen($_POST["username"])> 0) {
+			$sql .= "username = '$username', ";
+		}
+		if (strlen($password) > 0 && $confirmpassword == $password) {
+			$sql .= "password = '".md5($salt.$password)."', ";
+		}
+		$sql .= "userfirstname = '$userfirstname', ";
+		$sql .= "userlastname = '$userlastname', ";
+		$sql .= "usercompanyname = '$usercompanyname', ";
+		$sql .= "userphysicaladdress1 = '$userphysicaladdress1', ";
+		$sql .= "userphysicaladdress2 = '$userphysicaladdress2', ";
+		$sql .= "userphysicalcity = '$userphysicalcity', ";
+		$sql .= "userphysicalstateprovince = '$userphysicalstateprovince', ";
+		$sql .= "userphysicalcountry = '$userphysicalcountry', ";
+		$sql .= "userphysicalpostalcode = '$userphysicalpostalcode', ";
+		$sql .= "usermailingaddress1 = '$usermailingaddress1', ";
+		$sql .= "usermailingaddress2 = '$usermailingaddress2', ";
+		$sql .= "usermailingcity = '$usermailingcity', ";
+		$sql .= "usermailingstateprovince = '$usermailingstateprovince', ";
+		$sql .= "usermailingcountry = '$usermailingcountry', ";
+		$sql .= "usermailingpostalcode = '$usermailingpostalcode', ";
+		$sql .= "userbillingaddress1 = '$userbillingaddress1', ";
+		$sql .= "userbillingaddress2 = '$userbillingaddress2', ";
+		$sql .= "userbillingcity = '$userbillingcity', ";
+		$sql .= "userbillingstateprovince = '$userbillingstateprovince', ";
+		$sql .= "userbillingcountry = '$userbillingcountry', ";
+		$sql .= "userbillingpostalcode = '$userbillingpostalcode', ";
+		$sql .= "usershippingaddress1 = '$usershippingaddress1', ";
+		$sql .= "usershippingaddress2 = '$usershippingaddress2', ";
+		$sql .= "usershippingcity = '$usershippingcity', ";
+		$sql .= "usershippingstateprovince = '$usershippingstateprovince', ";
+		$sql .= "usershippingcountry = '$usershippingcountry', ";
+		$sql .= "usershippingpostalcode = '$usershippingpostalcode', ";
+		$sql .= "userurl = '$userurl', ";
+		$sql .= "userphone1 = '$userphone1', ";
+		$sql .= "userphone1ext = '$userphone1ext', ";
+		$sql .= "userphone2 = '$userphone2', ";
+		$sql .= "userphone2ext = '$userphone2ext', ";
+		$sql .= "userphonemobile = '$userphonemobile', ";
+		$sql .= "userphonefax = '$userphonefax', ";
+		$sql .= "user_template_name = '$user_template_name', ";
+		$sql .= "useremail = '$useremail' ";
+		if (strlen($id)> 0) {
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and id = $id ";
+		}
+		else {
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and username = '$username' ";
+		}
+		$count = $db->exec(check_sql($sql));
+
+	//clear the template so it will rebuild in case the template was changed
+		$_SESSION["template_content"] = '';
 
 	//redirect the user
 		require_once "includes/header.php";
@@ -603,17 +606,19 @@ else {
 	echo "		Template: \n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\">\n";
-	echo "<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
-	echo "<option value=''></option>\n";
+	echo "		<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
+	echo "		<option value=''></option>\n";
 	$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
 	if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && $file != ".svn" && is_dir($theme_dir.'/'.$file)) {
-				if ($file == $user_template_name) {
-					echo "<option value='$file' selected='selected'>$file</option>\n";
+		while (false !== ($dir_name = readdir($handle))) {
+			if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
+				$dir_label = str_replace('_', ' ', $dir_name);
+				$dir_label = str_replace('-', ' ', $dir_label);
+				if ($dir_name == $user_template_name) {
+					echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
 				}
 				else {
-					echo "<option value='$file'>$file</option>\n";
+					echo "		<option value='$dir_name'>$dir_label</option>\n";
 				}
 			}
 		}
