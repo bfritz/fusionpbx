@@ -208,6 +208,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//syncrhonize configuration
 				sync_package_v_extensions();
 
+			//write the provision files
+				if (strlen($provisioning_list)>0) {
+					require_once "mod/provision/v_provision_write.php";
+				}
+
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_extensions.php\">\n";
 			echo "<div align='center'>\n";
@@ -258,7 +263,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//syncrhonize configuration
-			sync_package_v_extensions();
+				sync_package_v_extensions();
+
+			//write the provision files
+				if (strlen($provisioning_list)>0) {
+					require_once "mod/provision/v_provision_write.php";
+				}
 
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_extensions.php\">\n";
