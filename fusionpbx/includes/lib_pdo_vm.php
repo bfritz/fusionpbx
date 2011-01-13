@@ -22,8 +22,10 @@
 
  Contributor(s):
  Mark J Crane <markjcrane@fusionpbx.com>
- */
- 
+*/
+include "root.php";
+require "includes/config.php";
+
 //get the contents of xml_cdr.conf.xml
 	$conf_xml_string = file_get_contents($v_conf_dir.'/autoload_configs/voicemail.conf.xml');
 
@@ -64,4 +66,4 @@
 	   echo 'Connection failed: ' . $e->getMessage();
 	}
  
- ?> 
+ ?>
