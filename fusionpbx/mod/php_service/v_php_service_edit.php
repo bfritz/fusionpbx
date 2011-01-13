@@ -64,7 +64,7 @@ function phpservice_sync_package_php() {
 	global $db, $v_id, $v_startup_script_dir, $v_secure, $php_dir, $tmp_dir;
 	$sql = "";
 	$sql .= "select * from v_php_service ";
-	//$sql .= "where v_id = '$v_id' ";
+	$sql .= "where v_id = '$v_id' ";
 	$tmp_prepstatement = $db->prepare(check_sql($sql));
 	$tmp_prepstatement->execute();
 	$tmp_result = $tmp_prepstatement->fetchAll();
@@ -334,6 +334,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_php_service ";
 			$sql .= "(";
+			$sql .= "v_id, ";
 			$sql .= "service_name, ";
 			$sql .= "service_script, ";
 			$sql .= "service_enabled, ";
@@ -341,6 +342,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
+			$sql .= "'$v_id', ";
 			$sql .= "'$service_name', ";
 			$sql .= "'".base64_encode($service_script)."', ";
 			$sql .= "'$service_enabled', ";
@@ -367,7 +369,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "service_script = '".base64_encode($service_script)."', ";
 			$sql .= "service_enabled = '$service_enabled', ";
 			$sql .= "service_description = '$service_description' ";
-			$sql .= "where php_service_id = '$php_service_id'";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and php_service_id = '$php_service_id' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -392,7 +395,8 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$php_service_id = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_php_service ";
-	$sql .= "where php_service_id = '$php_service_id' ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and php_service_id = '$php_service_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();

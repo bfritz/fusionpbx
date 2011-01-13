@@ -39,17 +39,17 @@ require_once "includes/paging.php";
 /*
 function pkg_is_service_running($servicename) 
 {
-    exec("/bin/ps ax | awk '{ print $5 }'", $psout);
-    array_shift($psout);
-    foreach($psout as $line) {
-    	$ps[] = trim(array_pop(explode(' ', array_pop(explode('/', $line)))));
-    }
-    if(is_service_running($servicename, $ps) or is_process_running($servicename) ) {
-        return true;
-    }
-    else {
-        return false;
-    }
+	exec("/bin/ps ax | awk '{ print $5 }'", $psout);
+	array_shift($psout);
+	foreach($psout as $line) {
+		$ps[] = trim(array_pop(explode(' ', array_pop(explode('/', $line)))));
+	}
+	if(is_service_running($servicename, $ps) or is_process_running($servicename) ) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 */
 
@@ -61,7 +61,6 @@ $order = $_GET["order"];
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
-
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
@@ -75,9 +74,9 @@ $order = $_GET["order"];
 	echo "</tr>\n";
 	echo "</tr></table>\n";
 
-
 	$sql = "";
 	$sql .= " select * from v_php_service ";
+	$sql .= " where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -93,6 +92,7 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_php_service ";
+	$sql .= " where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -101,14 +101,12 @@ $order = $_GET["order"];
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
-
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo thorderby('service_name', 'Name', $orderby, $order);
 	//echo thorderby('service_group', 'Group', $orderby, $order);
@@ -116,7 +114,6 @@ $order = $_GET["order"];
 	echo thorderby('service_description', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_php_service_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_php_service_edit.php'\" value='+'>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -142,7 +139,6 @@ $order = $_GET["order"];
 		unset($sql, $result, $rowcount);
 	} //end if results
 
-
 	echo "<tr>\n";
 	echo "<td colspan='5' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -151,19 +147,16 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	echo "			<a href='v_php_service_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_php_service_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
@@ -171,11 +164,5 @@ $order = $_GET["order"];
 	echo "</div>";
 	echo "<br><br>";
 
-
 require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
 ?>
