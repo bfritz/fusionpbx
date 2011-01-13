@@ -817,8 +817,25 @@ if ($_SESSION["reload_xml"]) {
 }
 ?>
 <!--{body}-->
-<br />
-<br />
+
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+
 </td>
 </tr>
 </table>

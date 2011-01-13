@@ -41,7 +41,7 @@ body {
 	margin-bottom: 0px;
 	margin-right: 0px;
 	margin-left: 0px;
-	/*background-image: url('<!--{project_path}-->/themes/default/background.jpg');*/
+	/*background-image: url('<!--{project_path}-->/themes/enhanced/background.jpg');*/
 	/*background-repeat: repeat-x;*/
 	/*background-attachment: fixed;*/
 	/*background-color: #FFFFFF;*/
@@ -56,7 +56,7 @@ th {
 	font-family: arial;
 	font-weight: bold;
 	/*background-color: #506eab;*/
-	background-image: url('<!--{project_path}-->/themes/default/background_th.png');
+	background-image: url('<!--{project_path}-->/themes/enhanced/background_th.png');
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-right: 7px;
@@ -162,7 +162,7 @@ INPUT.txt {
 .vncell {
 	border-bottom: 1px solid #999999;
 	/*background-color: #639BC1;*/
-	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/enhanced/background_cell.gif');
 	padding-right: 20px;
 	padding-left: 8px;
 	text-align: left;
@@ -176,7 +176,7 @@ INPUT.txt {
 
 
 .vncellreq {
-	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/enhanced/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	background-color: #639BC1;
 	padding-right: 20px;
@@ -202,7 +202,7 @@ INPUT.txt {
 }
 
 .rowstyle0 {
-	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/enhanced/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	color: #444444;
 	text-align: left;
@@ -277,7 +277,7 @@ table td {
 
 table tr.even td {
 	background:#eee;
-	background-image: url('<!--{project_path}-->/themes/default/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/enhanced/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	color: #333333;
 }
@@ -315,7 +315,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 /* begin the menu css*/
 
 	.menu_bar {
-		background-image: url('<!--{project_path}-->/themes/default/background_black.png');
+		background-image: url('<!--{project_path}-->/themes/enhanced/background_black.png');
 		-webkit-border-radius: 7px 7px 7px 7px;
 		-moz-border-radius: 7px 7px 7px 7px;
 		border-radius: 7px 7px 7px 7px;
@@ -329,10 +329,10 @@ table tr:nth-last-child(-5) td:first-of-type {
 			}
 			else {
 				if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
-					echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+					echo "background-image: url('<!--{project_path}-->/themes/enhanced/menu_background.png');";
 				}
 				else {
-					echo "background-image: url('<!--{project_path}-->/themes/default/login_background.png');";
+					echo "background-image: url('<!--{project_path}-->/themes/enhanced/login_background.png');";
 				}
 			}
 		?>
@@ -363,10 +363,10 @@ table tr:nth-last-child(-5) td:first-of-type {
 			}
 			else {
 				if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
-					echo "background-image: url('<!--{project_path}-->/themes/default/menu_background.png');";
+					echo "background-image: url('<!--{project_path}-->/themes/enhanced/content_background.png');";
 				}
 				else {
-					echo "background-image: url('<!--{project_path}-->/themes/default/login_background.png');";
+					echo "background-image: url('<!--{project_path}-->/themes/enhanced/login_background.png');";
 				}
 			}
 		?>
@@ -606,7 +606,7 @@ function confirmdelete(url) {
 	<?php
 
 	//get a random background image
-		$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/default/images/backgrounds';
+		$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/enhanced/images/backgrounds';
 		$dir_list = opendir($dir);
 		$v_background_array = array();
 		while (false !== ($file = readdir($dir_list))) {
@@ -637,7 +637,7 @@ function confirmdelete(url) {
 	<table width='90%' class='border.disabled' border='0' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td align='left' valign='top' class='headermain' colspan='2' width='100%' height='70px;'>
-				<img src='<!--{project_path}-->/themes/default/logo.png' />
+				<img src='<!--{project_path}-->/themes/enhanced/logo.png' />
 			</td>
 		</tr>
 		<tr>
