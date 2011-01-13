@@ -440,6 +440,9 @@ table tr:nth-last-child(-5) td:first-of-type {
 		width:114px;
 		color:#fd9c03;
 		background:#1F1F1F;
+		-webkit-border-radius: 12px 12px 12px 12px;
+		-moz-border-radius: 12px 12px 12px 12px;
+		border-radius: 12px 12px 12px 12px;
 	}
 
 	#menu a:active{
@@ -600,145 +603,139 @@ function confirmdelete(url) {
 </SCRIPT>
 </head>
 <body>
-<?php
+	<?php
 
-//get a random background image
-	$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/default/images/backgrounds';
-	$dir_list = opendir($dir);
-	$v_background_array = array();
-	while (false !== ($file = readdir($dir_list))) {
-		if ($file != "." AND $file != ".."){
-			$new_path = $dir.'/'.$file;
-			$level = explode('/',$new_path);
-			if (substr($new_path, -4) == ".svn") {
-				//ignore .svn dir and subdir
+	//get a random background image
+		$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/default/images/backgrounds';
+		$dir_list = opendir($dir);
+		$v_background_array = array();
+		while (false !== ($file = readdir($dir_list))) {
+			if ($file != "." AND $file != ".."){
+				$new_path = $dir.'/'.$file;
+				$level = explode('/',$new_path);
+				if (substr($new_path, -4) == ".svn") {
+					//ignore .svn dir and subdir
+				}
+				elseif (substr($new_path, -3) == ".db") {
+					//ignore .db files
+				}
+				else {
+					$new_path = str_replace($_SERVER["DOCUMENT_ROOT"], "", $new_path);
+					$v_background_array[] = $new_path;
+				}
+				if ($x > 1000) { break; };
+				$x++;
 			}
-			elseif (substr($new_path, -3) == ".db") {
-				//ignore .db files
-			}
-			else {
-				$new_path = str_replace($_SERVER["DOCUMENT_ROOT"], "", $new_path);
-				$v_background_array[] = $new_path;
-			}
-			if ($x > 1000) { break; };
-			$x++;
 		}
+		if (strlen($_SESSION['background_image'])== 0) {
+			$_SESSION['background_image'] = $v_background_array[array_rand($v_background_array, 1)];
+		}
+		echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
+	?>
+
+	<div id="page" align='center'>
+	<table width='90%' class='border.disabled' border='0' cellpadding='0' cellspacing='0'>
+		<tr>
+			<td align='left' valign='top' class='headermain' colspan='2' width='100%' height='70px;'>
+				<img src='<!--{project_path}-->/themes/default/logo.png' />
+			</td>
+		</tr>
+		<tr>
+			<td class='' colspan='2' width='100%' height='7px'><img src='<!--{project_path}-->/images/blank.gif'></td>
+		</tr>
+		<tr>
+			<td class='menu_bar' colspan='2' width='100%' height='30px'>
+				<!--{menu}-->
+			</td>
+		</tr>
+		<tr>
+			<td class='' colspan='2' width='100%' height='7px'><img src='<!--{project_path}-->/images/blank.gif'></td>
+		</tr>
+		<tr>
+			<td valign='top' align='center' width='100%'>
+
+				<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+					<tr>
+						<td class='main_content' align='left' valign='top' width='85%'>
+							<?php
+							if ($_SESSION["reload_xml"]) {
+									if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
+										if(stristr($_SERVER["PHP_SELF"], "_edit") != FALSE) { 
+											//found
+										}
+										else {
+											echo "<div align='center'>\n";
+											echo "<table border='0' width='400px'>\n";
+											echo "<tr>\n";
+											echo "<th align='left'>Message</th>\n";
+											echo "</tr>\n";
+											echo "<tr>\n";
+											echo "<td class='rowstyle1'>\n";
+
+											echo "	<table width='100%' border='0'>\n";
+											echo "	<tr>\n";
+											echo "	<td width='90%' align='left'>\n";
+											echo "			The configuration has been changed. \n";
+											echo "			Apply the changes in order for them to take effect. \n";
+											echo "	</td>\n";
+											echo "	<td align='right'>\n";
+											echo "		<input type='button' class='btn' value='Apply Settings' onclick=\"document.location.href='".PROJECT_PATH."/core/status/v_cmd.php?cmd=api+reloadxml';\" />\n";
+											echo "	</td>\n";
+											echo "	</tr>\n";
+											echo "	</table>\n";
+
+											echo "</td>\n";
+											echo "</tr>\n";
+											echo "</table>\n";
+											echo "</div>\n";
+										}
+								}
+							}
+							?>
+							<!--{body}-->
+
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+							<br /><br />
+
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<?php
+	if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
+		echo "<span class='smalltext'>\n";
+		echo "	<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2011. All Rights Reserved\n";
+		echo "</span>\n";
 	}
-	if (strlen($_SESSION['background_image'])== 0) {
-		$_SESSION['background_image'] = $v_background_array[array_rand($v_background_array, 1)];
+	else {
+		echo "<!--\n";
+		echo "	http://www.fusionpbx.com \n";
+		echo "	Copyright 2008 - 2011 \n";
+		echo "	All Rights Reserved\n";
+		echo "-->\n";
 	}
-	echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
-?>
+	?>
+	</div>
 
-
-<div id="page" align='center'>
-<table width='90%' class='border.disabled' border='0' cellpadding='0' cellspacing='7'>
-<tr>
-<td align='left' valign='top' class='headermain' colspan='2' width='100%' height='70px;'>
-	<img src='<!--{project_path}-->/themes/default/logo.png' />
-</td>
-</tr>
-
-<tr>
-<td class='menu_bar' colspan='2' width='100%' height='30px'>
-	<!--{menu}-->
-</td>
-</tr>
-
-<tr>
-
-<td valign='top' align='center' width='100%'>
-
-
-<table width='100%' cellpadding='25' cellspacing='0' border='0'>
-<td class='main_content' align='left' valign='top' width='85%'>
-<?php
-if ($_SESSION["reload_xml"]) {
-		if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
-			if(stristr($_SERVER["PHP_SELF"], "_edit") != FALSE) { 
-				//found
-			}
-			else {
-				echo "<div align='center'>\n";
-				echo "<table border='0' width='400px'>\n";
-				echo "<tr>\n";
-				echo "<th align='left'>Message</th>\n";
-				echo "</tr>\n";
-				echo "<tr>\n";
-				echo "<td class='rowstyle1'>\n";
-
-				echo "	<table width='100%' border='0'>\n";
-				echo "	<tr>\n";
-				echo "	<td width='90%' align='left'>\n";
-				echo "			The configuration has been changed. \n";
-				echo "			Apply the changes in order for them to take effect. \n";
-				echo "	</td>\n";
-				echo "	<td align='right'>\n";
-				echo "		<input type='button' class='btn' value='Apply Settings' onclick=\"document.location.href='".PROJECT_PATH."/core/status/v_cmd.php?cmd=api+reloadxml';\" />\n";
-				echo "	</td>\n";
-				echo "	</tr>\n";
-				echo "	</table>\n";
-
-				echo "</td>\n";
-				echo "</tr>\n";
-				echo "</table>\n";
-				echo "</div>\n";
-			}
-	}
-}
-?>
-<!--{body}-->
-
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-<br /><br />
-
-</td>
-</tr>
-</table>
-
-
-</td>
-</tr>
-</table>
-<?php
-if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
-	echo "<span class='smalltext'>\n";
-	echo "	<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2011. All Rights Reserved\n";
-	echo "</span>\n";
-}
-else {
-	echo "<!--\n";
-	echo "	http://www.fusionpbx.com \n";
-	echo "	Copyright 2008 - 2011 \n";
-	echo "	All Rights Reserved\n";
-	echo "-->\n";
-}
-?>
-</td>
-</tr>
-</table>
-</div>
-
-</td>
-</tr>
-</table>
-
-<br /><br />
+	<br />
+	<br />
 
 </body>
 </html>
