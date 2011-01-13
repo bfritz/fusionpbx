@@ -115,13 +115,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hardware_phones.php\">\n";
-				echo "<div align='center'>\n";
-				echo "Add Complete\n";
-				echo "</div>\n";
-				require_once "includes/footer.php";
-				return;
+				//write the provision files
+					require_once "mod/provision/v_provision_write.php";
+
+				//redirect the user
+					require_once "includes/header.php";
+					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hardware_phones.php\">\n";
+					echo "<div align='center'>\n";
+					echo "Add Complete\n";
+					echo "</div>\n";
+					require_once "includes/footer.php";
+					return;
 			} //if ($action == "add")
 
 			if ($action == "update") {
@@ -139,14 +143,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hardware_phones.php\">\n";
-				echo "<div align='center'>\n";
-				echo "Update Complete\n";
-				echo "</div>\n";
-				require_once "includes/footer.php";
-				return;
-			} //if ($action == "update")
+				//write the provision files
+					require_once "mod/provision/v_provision_write.php";
+
+				//redirect the user
+					require_once "includes/header.php";
+					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hardware_phones.php\">\n";
+					echo "<div align='center'>\n";
+					echo "Update Complete\n";
+					echo "</div>\n";
+					require_once "includes/footer.php";
+					return;
+			}
+
 		} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
