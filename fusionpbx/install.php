@@ -802,9 +802,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$msg .= "username: <strong>admin</strong> <br />password: <strong>fusionpbx</strong> <br/><br/>\n";
 		$msg .= "</li>\n";
 		$msg .= "<li>\n";
-		$msg .= "After making changes to settings in the interface use the menu to '<strong>apply settings</strong>' or go click on '<strong>reloadxml</strong>' from the status page.<br /><br />\n";
-		$msg .= "</li>\n";
-		$msg .= "<li>\n";
 		$msg .= "The database connection settings have been saved to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php.<br />\n";
 		$msg .= "</li>\n";
 		$msg .= "</ul><strong>\n";
