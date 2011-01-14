@@ -44,9 +44,8 @@ include "root.php";
 	$destfile = $v_conf_dir.'/dialplan/default.xml';
 	if (file_exists($destfile)) { unlink($destfile); }
 	if (!copy($srcfile, $destfile)) {
-		unlink($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php");
-		echo "failed to copy $srcfile to $destfile...\n";
-		exit;
+		//use an alternate method to copy the file
+		exec ('cp -R '.$srcfile.' '.$destfile);
 	}
 	unset($srcfile, $destfile);
 
@@ -110,8 +109,8 @@ include "root.php";
 	$srcfile = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/htdocs/slim.swf';
 	$destfile = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/mod/recordings/slim.swf';
 	if (!copy($srcfile, $destfile)) {
-		//echo "failed to copy $srcfile to $destfile...\n";
-		//exit;
+		//use an alternate method to copy the file
+		exec ('cp -R '.$srcfile.' '.$destfile);
 	}
 	unset($srcfile, $destfile);
 
