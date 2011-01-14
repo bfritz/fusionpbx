@@ -569,13 +569,13 @@ table tr:nth-last-child(-5) td:first-of-type {
 		opacity: 0.9;
 	}
 </style>
-<!-- The above code doesn't work in Internet Explorer 6. To address this, we use a conditional comment to specify an alternative style sheet for IE 6 -->
-<!--[if IE 6]>
+<!-- The above code doesn't work in Internet Explorer. To address this, we use a conditional comment to specify an alternative style sheet for IE -->
+<!--[if IE]>
 	<style type="text/css">
 	html {overflow-y:hidden;}
 	body {overflow-y:auto;}
 	#page-background {position:absolute; z-index:-1; background-attachment:fixed;}
-	#page {position:static;padding:10px;}
+	#page {position:static;padding:0px;}
 	</style>
 <![endif]-->
 
