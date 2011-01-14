@@ -374,7 +374,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 		background-attachment: fixed;
 		padding: 20px;
 		opacity: 0.9;
-		filter:alpha(opacity=9);
+		filter:alpha(opacity=90);
 		-moz-opacity:0.9;
 		-khtml-opacity: 0.9;
 		opacity: 0.9;

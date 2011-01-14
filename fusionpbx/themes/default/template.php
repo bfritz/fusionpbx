@@ -573,10 +573,10 @@ table tr:nth-last-child(-5) td:first-of-type {
 		/*border: 1px solid #555555;*/
 		/*padding: 10px;*/
 		background-color: #FFFFFF;
-		filter:alpha(opacity=50);
-		-moz-opacity:0.7;
-		-khtml-opacity: 0.7;
-		opacity: 0.7;
+		filter:alpha(opacity=90);
+		-moz-opacity:0.9;
+		-khtml-opacity: 0.9;
+		opacity: 0.9;
 	}
 </style>
 <!-- The above code doesn't work in Internet Explorer 6. To address this, we use a conditional comment to specify an alternative style sheet for IE 6 -->
