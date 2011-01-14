@@ -25,7 +25,6 @@
 */
 include "root.php";
 require_once "includes/lib_functions.php";
-
 $v_id = '1';
 
 //set debug to true or false
@@ -885,7 +884,7 @@ pgsql
 
 // begin step 1 --------------------------------------
 	if ($_POST["install_step"] == "") {
-
+		echo "<div id='page' align='center'>\n";
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
@@ -981,7 +980,7 @@ pgsql
 
 // begin step 2, sqlite --------------------------------------
 	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "sqlite") {
-
+		echo "<div id='page' align='center'>\n";
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
@@ -1040,7 +1039,7 @@ pgsql
 			//if (strlen($db_name) == 0) { $db_name = 'fusionpbx'; }
 
 		//echo "However if preferred the database can be created manually with the <a href='". echo PROJECT_PATH; ."/includes/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
-
+		echo "<div id='page' align='center'>\n";
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
@@ -1152,6 +1151,7 @@ pgsql
 		if (strlen($db_create_username) == 0) { $db_create_username = 'pgsql'; }
 		//if (strlen($db_name) == 0) { $db_name = 'fusionpbx'; }
 
+		echo "<div id='page' align='center'>\n";
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
