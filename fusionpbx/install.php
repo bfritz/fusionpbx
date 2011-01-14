@@ -1285,7 +1285,7 @@ pgsql
 	$template = ob_get_contents(); //get the output from the buffer
 	ob_end_clean(); //clean the buffer
 	$customhead = $customhead.$templatemenucss;
-	//$customhead ='test';
+
 	//$output = str_replace ("\r\n", "<br>", $output);
 	$output = str_replace ("<!--{title}-->", $customtitle, $template); //<!--{title}--> defined in each individual page
 	$output = str_replace ("<!--{head}-->", $customhead, $output); //<!--{head}--> defined in each individual page
