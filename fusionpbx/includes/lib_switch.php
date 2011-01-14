@@ -2035,6 +2035,9 @@ function sync_package_v_gateways()
 				if (strlen($row['supress_cng']) > 0) {
 					$tmpxml .= "      <param name=\"supress-cng\" value=\"" . $row['supress_cng'] . "\"/>\n";
 				}
+				if (strlen($row['sip_cid_type']) > 0) {
+					$tmpxml .= "      <param name=\"sip_cid_type\" value=\"" . $row['sip_cid_type'] . "\"/>\n";
+				}
 				if (strlen($row['extension_in_contact']) > 0) {
 					$tmpxml .= "      <param name=\"extension-in-contact\" value=\"" . $row['extension_in_contact'] . "\"/>\n";
 				}
