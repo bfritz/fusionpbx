@@ -556,10 +556,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	foreach($result as $row) {
 		//print_r( $row );
 		if ($row[phone_mac_address] == $select_mac_address) {
-			echo "<option value='".$row[phone_mac_address]."' selected>".$row[phone_mac_address]." ".$row[phone_model]."</option>\n";
+			echo "<option value='".$row[phone_mac_address]."' selected>".$row[phone_mac_address]." ".$row[phone_model]." ".$row[phone_description]."</option>\n";
 		}
 		else {
-			echo "<option value='".$row[phone_mac_address]."'>".$row[phone_mac_address]." ".$row[phone_model]."</option>\n";
+			echo "<option value='".$row[phone_mac_address]."'>".$row[phone_mac_address]." ".$row[phone_model]." ".$row[phone_description]."</option>\n";
 		}
 		//$row[phone_mac_address]
 		//$row[phone_vendor]
