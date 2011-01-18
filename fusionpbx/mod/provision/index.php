@@ -74,11 +74,11 @@ require_once "includes/config.php";
 	if (mac_exists_in_v_hardware_phones($db, $mac)) {
 		//get the phone_template
 			$sql = "SELECT phone_template, phone_vendor FROM v_hardware_phones ";
-			//$sql .= "where v_id=:v_id ";
-			$sql .= "where phone_mac_address=:mac ";
+			$sql .= "where v_id=:v_id ";
+			$sql .= "and phone_mac_address=:mac ";
 			$prepstatement2 = $db->prepare(check_sql($sql));
-			//$prepstatement2->bindParam(':v_id', $v_id);
 			if ($prepstatement2) {
+				$prepstatement2->bindParam(':v_id', $v_id);
 				$prepstatement2->bindParam(':mac', $mac);
 				$prepstatement2->execute();
 				$row = $prepstatement2->fetch();
@@ -88,10 +88,11 @@ require_once "includes/config.php";
 		//find a template that was defined on another phone and use that as the default.
 			if (strlen($phone_template) == 0) {
 				$sql = "SELECT phone_template, phone_vendor FROM v_hardware_phones ";
-				$sql .= "where phone_template like '%/%' ";
+				$sql .= "where v_id=:v_id ";
+				$sql .= "and phone_template like '%/%' ";
 				$prepstatement3 = $db->prepare(check_sql($sql));
-				//$prepstatement3->bindParam(':v_id', $v_id);
 				if ($prepstatement3) {
+					$prepstatement3->bindParam(':v_id', $v_id);
 					$prepstatement3->bindParam(':mac', $mac);
 					$prepstatement3->execute();
 					$row = $prepstatement3->fetch();
@@ -150,6 +151,7 @@ require_once "includes/config.php";
 		//the mac address does not exist in the table so add it
 			$sql = "insert into v_hardware_phones ";
 			$sql .= "(";
+			$sql .= "v_id, ";
 			$sql .= "phone_mac_address, ";
 			$sql .= "phone_vendor, ";
 			$sql .= "phone_model, ";
@@ -161,6 +163,7 @@ require_once "includes/config.php";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
+			$sql .= "'$v_id', ";
 			$sql .= "'$mac', ";
 			$sql .= "'$phone_vendor', ";
 			$sql .= "'', ";
@@ -238,9 +241,7 @@ require_once "includes/config.php";
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			//print_r($row);
 			$provisioning_list = $row["provisioning_list"];
-
 			$provisioning_list_array = explode("|", $provisioning_list);
 			foreach ($provisioning_list_array as &$prov_row) {
 				$prov_row_array = explode(":", $prov_row);
@@ -313,11 +314,11 @@ require_once "includes/config.php";
 function mac_exists_in_v_hardware_phones($db, $mac) {
 	global $v_id;
 	$sql = "SELECT count(*) as count FROM v_hardware_phones ";
-	//$sql .= "where v_id=:v_id ";
-	$sql .= "where phone_mac_address=:mac ";
+	$sql .= "where v_id=:v_id ";
+	$sql .= "and phone_mac_address=:mac ";
 	$prepstatement = $db->prepare(check_sql($sql));
-	//$prepstatement->bindParam(':v_id', $v_id);
 	if ($prepstatement) {
+		$prepstatement->bindParam(':v_id', $v_id);
 		$prepstatement->bindParam(':mac', $mac);
 		$prepstatement->execute();
 		$row = $prepstatement->fetch();
@@ -334,135 +335,5 @@ function mac_exists_in_v_hardware_phones($db, $mac) {
 	}
 }
 
-
-//reserved for future use
-	/*
-	//get a list of mac addresses with arp -a
-			//$tmp_arp = shell_exec('arp -a');
-			//http://www.coffer.com/mac_find/
-			/*
-			$pattern = "/[0-9a-f][0-9a-f][:-]".
-			"[0-9a-f][0-9a-f][:-]".
-			"[0-9a-f][0-9a-f][:-]".
-			"[0-9a-f][0-9a-f][:-]".
-			"[0-9a-f][0-9a-f][:-]".
-			"[0-9a-f][0-9a-f]/i";
-			preg_match_all($pattern, $tmp_arp, $matches);
-			$mac_array = $matches[0];
-			$x = 0;
-			foreach ($mac_array as $mac_address){
-				switch (substr(strtolower($mac_address), 0, 8)) {
-				case "00-0e-08":
-					$phone_vendor = "linksys";
-					break;
-				default:
-					$phone_vendor = "";
-				}
-				$x++;
-			}
-
-	//useful for saving the entire template to a directory for ftp or tftp
-		clearstatcache();
-		function recur_dir($dir) {
-			global $tmp_array;
-			global $dir_count;
-			global $file_count;
-			global $row_count;
-
-			$htmldirlist = '';
-			$htmlfilelist = '';
-			$dirlist = opendir($dir);
-			while ($file = readdir ($dirlist)) {
-				if ($file != '.' && $file != '..') {
-					$newpath = $dir.'/'.$file;
-					$level = explode('/',$newpath);
-
-					if (is_dir($newpath)) { //directories
-						if (strlen($newpath) > 0) {
-							//$relative_path = substr($newpath, strlen($_SERVER["DOCUMENT_ROOT"]), strlen($newpath)); //remove the $_SERVER["DOCUMENT_ROOT"]
-							//$pos = strpos($relative_path, ".svn");
-							$relative_path = $newpath;
-							//if ($pos === false) {
-								//echo $relative_path."<br />\n";
-								$tmp_array[$row_count]['type'] = 'directory';
-								$tmp_array[$row_count]['name'] = $file;
-								$tmp_array[$row_count]['path'] = $relative_path;
-								$tmp_array[$row_count]['last_mod'] = '';
-								$tmp_array[$row_count]['md5'] = '';
-								$tmp_array[$row_count]['size'] = '';
-								$row_count++;
-							//}
-							$dir_count++;
-						}
-
-						$dirname = end($level);
-						recur_dir($newpath);
-					}
-					else { //files
-						if (strlen($newpath) > 0) {
-							//$relative_path = substr($newpath, strlen($_SERVER["DOCUMENT_ROOT"]), strlen($newpath)); //remove the $_SERVER["DOCUMENT_ROOT"]
-							//$pos = strpos($relative_path, ".svn");
-							$relative_path = $newpath;
-							//if ($pos === false) {
-								//echo $relative_path."<br />\n";
-								$tmp_array[$row_count]['type'] = 'file';
-								$tmp_array[$row_count]['name'] = $file;
-								$tmp_array[$row_count]['path'] = $relative_path;
-								$tmp_array[$row_count]['last_mod'] = gmdate ("D, d M Y H:i:s T", filemtime($newpath));
-								$tmp_array[$row_count]['md5'] = md5_file($newpath);
-								$tmp_array[$row_count]['size'] = filesize($newpath); //round(filesize($newpath)/1024, 2);
-								//echo $newpath."<br />\n";
-								$row_count++;
-							//}
-							$file_count++;
-						}
-					}
-
-				}
-			}
-
-			closedir($dirlist);
-		}
-		$prov_template_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/$template";
-		recur_dir($prov_template_dir);
-
-		foreach ($tmp_array as $row) {
-			if (strlen($row['path']) > 0) {
-				if ($row['type'] == "file") {
-					$file_name = $row['name'];
-					$path = $row['path'];
-					$file_name = str_replace("{mac}", $mac, $file_name);
-					$file_contents = file_get_contents($path);
-
-					//replace the variables in the template
-						$file_contents = str_replace("{v_mac}", $mac, $file_contents);
-						$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
-						$file_contents = str_replace("{v_line1_server_address}", $line1_server_address, $file_contents);
-						$file_contents = str_replace("{v_line1_displayname}", $line1_displayname, $file_contents);
-						$file_contents = str_replace("{v_line1_shortname}", $line1_shortname, $file_contents);
-						$file_contents = str_replace("{v_line1_user_id}", $line1_user_id, $file_contents);
-						$file_contents = str_replace("{v_line1_user_password}", $line1_user_password, $file_contents);
-						$file_contents = str_replace("{v_line1_server_address}", $line1_server_address, $file_contents);
-						$file_contents = str_replace("{v_line2_server_address}", $line2_server_address, $file_contents);
-						$file_contents = str_replace("{v_line2_displayname}", $line2_displayname, $file_contents);
-						$file_contents = str_replace("{v_line2_shortname}", $line2_shortname, $file_contents);
-						$file_contents = str_replace("{v_line2_user_id}", $line2_user_id, $file_contents);
-						$file_contents = str_replace("{v_line2_user_password}", $line2_user_password, $file_contents);
-						$file_contents = str_replace("{v_line2_server_address}", $line2_server_address, $file_contents);
-						$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
-						//$file_contents = str_replace("{v_server2_address}", $server2_address, $file_contents);
-						//$file_contents = str_replace("{v_server3_address}", $server3_address, $file_contents);
-						$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);
-						//$file_contents = str_replace("{v_proxy2_address}", $proxy2_address, $file_contents);
-						//$file_contents = str_replace("{v_proxy3_address}", $proxy3_address, $file_contents);
-
-					//write the modified $file_contents for each file back to the ftp/tftp directory
-						//$file_contents;
-				}
-			}
-		}
-	*/
-
 exit;
-
 ?>
