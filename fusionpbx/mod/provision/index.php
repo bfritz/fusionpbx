@@ -248,7 +248,7 @@ require_once "includes/config.php";
 				if ($prov_row_array[0] == $mac) {
 					$line_number = $prov_row_array[1];
 					$file_contents = str_replace("{v_line".$line_number."_server_address}", $v_domain, $file_contents);
-					$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["extension"], $file_contents);
+					$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["effective_caller_id_name"], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_shortname}", $row["extension"], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_user_id}", $row["extension"], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_user_password}", $row["password"], $file_contents);
