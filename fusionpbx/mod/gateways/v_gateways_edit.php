@@ -869,7 +869,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='outbound_caller_id_name' maxlength='255' value=\"$outbound_caller_id_name\">\n";
 	echo "<br />\n";
-	echo "Enter the effective caller ID number here.\n";
+	echo "Enter the outbound caller ID name here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

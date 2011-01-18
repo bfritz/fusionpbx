@@ -61,7 +61,7 @@ require_once "includes/checkauth.php";
 
 //get sofia status profile information including registrations
 	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-	$cmd = "api sofia xmlstatus profile ".$sip_profile_name."";
+	$cmd = "api sofia xmlstatus profile ".$sip_profile_name." reg";
 	$xml_response = trim(event_socket_request($fp, $cmd));
 	if ($xml_response == "Invalid Profile!") { $xml_response = "<error_msg>Invalid Profile!</error_msg>"; }
 	$xml_response = str_replace("<profile-info>", "<profile_info>", $xml_response);
