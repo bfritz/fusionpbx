@@ -63,6 +63,13 @@ require_once "includes/config.php";
 
 //define variables from HTTP GET
 	$mac = $_GET['mac'];
+
+	if(empty($mac)){//check alternate MAC source
+		if($_SERVER['HTTP_USER_AGENT'][strlen($_SERVER['HTTP_USER_AGENT'])-17-1]==" ") {
+			$mac= substr($_SERVER['HTTP_USER_AGENT'],-17);
+			}//Yealink: 17 digit mac appended to the user agent, so check for a space exactly 17 digits before the end.
+		}//check alternates
+
 	$mac = strtolower($mac);
 	$mac = str_replace(":", "-", $mac);
 	if (strlen($mac) == 12) { 
@@ -171,7 +178,7 @@ require_once "includes/config.php";
 			$sql .= "'$phone_template', ";
 			$sql .= "'', ";
 			$sql .= "'', ";
-			$sql .= "'auto' ";
+			$sql .= "'auto {$_SERVER['HTTP_USER_AGENT']}' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
