@@ -2748,10 +2748,6 @@ function sync_package_v_hunt_group()
 							$tmp .= "\n";
 							$tmp .= "if (digits == pin) then\n";
 							$tmp .= "	--continue\n";
-							$tmp .= "else \n";
-							$tmp .= "	session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/your_pin_number_is_incorect_goodbye.wav\");\n";
-							$tmp .= "	session:hangup();\n";
-							$tmp .= "end\n";
 							$tmp .= "\n";
 						}
 
@@ -3007,7 +3003,23 @@ function sync_package_v_hunt_group()
 								$tmp .= "	end\n";
 							}
 						}
-
+						
+						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+							//do nothing
+						}
+						else {
+							$tmp .= "end --end if session:ready\n";
+						}
+						$tmp .= "\n";
+						//pin number requested from caller if provided
+						if (strlen($row['huntgrouppin']) > 0) {
+							$tmp .= "else \n";
+							$tmp .= "	session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/your_pin_number_is_incorect_goodbye.wav\");\n";
+							$tmp .= "	session:hangup();\n";
+							$tmp .= "end\n";
+							$tmp .= "\n";
+						}
+						
 					//unset variables
 						$tmp .= "\n";
 						$tmp .= "	--clear variables\n";
@@ -3016,13 +3028,6 @@ function sync_package_v_hunt_group()
 						$tmp .= "	domain_name = \"\";\n";
 						$tmp .= "	domain = \"\";";
 
-						$tmp .= "\n";
-						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
-							//do nothing
-						}
-						else {
-							$tmp .= "end --end if session:ready\n";
-						}
 						$tmp .= "\n";
 
 					//write the hungroup lua script
