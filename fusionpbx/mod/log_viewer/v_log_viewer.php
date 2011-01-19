@@ -87,7 +87,7 @@ echo "	<b>Logs</b><br />\n";
 echo "</td>\n";
 echo "<td width='50%' align='right'>\n";
 if (ifgroup("superadmin")) {
-	echo "  <input type='button' class='btn' value='download logs' onclick=\"document.location.href='v_switch_logs.php?a=download&t=logs';\" />\n";
+	echo "  <input type='button' class='btn' value='download logs' onclick=\"document.location.href='v_log_viewer.php?a=download&t=logs';\" />\n";
 }
 echo "</tr>\n";
 echo "</table>\n";
