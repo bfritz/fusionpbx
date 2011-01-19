@@ -108,7 +108,7 @@ $order = $_GET["order"];
 		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_desc]."&nbsp;</td>\n";
 		echo "	<td valign='top' align='right'>\n";
 		echo "		<a href='v_call_broadcast_edit.php?id=".$row[call_broadcast_id]."' alt='edit'>$v_link_label_edit</a>\n";
-		echo "		<a href='v_call_broadcast_delete.php?id=".$row[extension_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+		echo "		<a href='v_call_broadcast_delete.php?id=".$row[call_broadcast_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 		//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_call_broadcast_edit.php?id=".$row[call_broadcast_id]."'\" value='e'>\n";
 		//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_call_broadcast_delete.php?id=".$row[call_broadcast_id]."' }\" value='x'>\n";
 		echo "	</td>\n";
