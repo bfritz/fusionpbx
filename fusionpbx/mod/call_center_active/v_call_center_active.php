@@ -39,9 +39,7 @@ else {
 
 //get the header
 	require_once "includes/header.php";
-?>
-
-<script type="text/javascript">
+?><script type="text/javascript">
 function loadXmlHttp(url, id) {
 	var f = this;
 	f.xmlHttp = null;

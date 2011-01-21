@@ -186,7 +186,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "aacidnameprefix = '$aacidnameprefix', ";
 			$sql .= "aaconditionjs = '$aaconditionjs', ";
 			$sql .= "aadescr = '$aadescr' ";
-			$sql .= "where v_id = $v_id ";
+			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and auto_attendant_id = '$auto_attendant_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -292,7 +292,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$auto_attendant_id = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_auto_attendant ";
-	$sql .= "where v_id = $v_id ";
+	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and auto_attendant_id = '$auto_attendant_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -644,7 +644,7 @@ if ($action == "update") {
 
 	$sql = "";
 	$sql .= " select * from v_auto_attendant_options ";
-	$sql .= " where v_id = $v_id ";
+	$sql .= " where v_id = '$v_id' ";
 	$sql .= " and auto_attendant_id = '$auto_attendant_id' ";
 	$sql .= " and optionaction = 'action' ";
 	$sql .= " order by optionnumber asc";

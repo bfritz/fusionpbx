@@ -43,7 +43,7 @@ if (count($_GET)>0) {
 		//move the current item's order number down
 		$sql  = "update v_rss set ";
 		$sql .= "rssorder = (rssorder+1) "; //move down
-		$sql .= "where v_id = ".$v_id." ";
+		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and rssorder = ".($rssorder-1)." ";
 		$sql .= "and rsscategory  = '$rsscategory' ";
 		//echo $sql."<br><br>";

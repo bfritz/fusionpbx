@@ -37,9 +37,7 @@ else {
 require_once "includes/v_dialplan_entry_exists.php";
 require_once "includes/header.php";
 
-?>
-
-<br />
+?><br />
 
 <div align='center'>
 
@@ -104,9 +102,7 @@ require_once "includes/header.php";
 	</tr>
 	<?php
 	}
-	?>
-
-	<tr>
+	?>	<tr>
 		<td width='10%' class="vncell" style='text-align: center;'><a href='<?php echo PROJECT_PATH; ?>/mod/hunt_group/v_hunt_group.php'>Hunt Group</a></td>
 		<td class="vtable">
 			Hunt Group is a group of destinations to call at once or in succession.

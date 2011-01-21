@@ -71,8 +71,6 @@ fclose($fd);
 
 ?>
 
-
-
 <script language="Javascript">
 function sf() { document.forms[0].savetopath.focus(); }
 </script>
@@ -168,4 +166,3 @@ function sf() { document.forms[0].savetopath.focus(); }
 <?php
 	require_once "includes/footer.php";
 ?>
-

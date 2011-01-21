@@ -202,7 +202,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	//generate the fifo name select list
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes_details ";
-	$sql .= "where v_id = $v_id ";
+	$sql .= "where v_id = '$v_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$x = 0;

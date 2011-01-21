@@ -83,8 +83,6 @@ require_once "includes/header.php";
 ?>
 
 
-
-
 <?php
 //include("fbegin.inc");
 //if ($v_label_show) {
@@ -94,9 +92,7 @@ require_once "includes/header.php";
 $c = 0;
 $rowstyle["0"] = "rowstyle0";
 $rowstyle["1"] = "rowstyle1";
-?>
-
-<div align='center'>
+?><div align='center'>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 	 <td class="tabcont" align='left'>

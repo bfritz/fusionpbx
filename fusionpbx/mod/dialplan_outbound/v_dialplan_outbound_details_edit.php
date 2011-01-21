@@ -140,7 +140,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "fieldorder = '$fieldorder', ";
 				$sql .= "fieldtype = '$fieldtype', ";
 				$sql .= "fielddata = '$fielddata' ";
-				$sql .= "where v_id = $v_id ";
+				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -165,7 +165,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$dialplan_includes_detail_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

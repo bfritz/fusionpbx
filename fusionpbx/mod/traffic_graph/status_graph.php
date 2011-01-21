@@ -67,8 +67,6 @@ $pg_title = "<b>Traffic Graph</b>\n";
 
 require_once "includes/header.php";
 ?>
-
-
 <table width='100%'>
 <tr>
 <td align='left'>

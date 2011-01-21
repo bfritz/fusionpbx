@@ -676,7 +676,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	//list conferences
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$sql .= "order by fielddata asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -802,7 +802,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	//list fifo queues
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$sql .= "order by fielddata asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -819,7 +819,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					//get the extension number using the dialplan_include_id
 						$sql = "select fielddata as extension_number ";
 						$sql .= "from v_dialplan_includes_details ";
-						$sql .= "where v_id = $v_id ";
+						$sql .= "where v_id = '$v_id' ";
 						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 						$sql .= "and fieldtype = 'destination_number' ";
 						$tmp = $db->query($sql)->fetch();
@@ -832,7 +832,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					//get the extension number using the dialplan_include_id
 						$sql = "select * ";
 						$sql .= "from v_dialplan_includes ";
-						$sql .= "where v_id = $v_id ";
+						$sql .= "where v_id = '$v_id' ";
 						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 						$tmp = $db->query($sql)->fetch();
 						$extension_name = $tmp['extensionname'];
@@ -1195,7 +1195,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	//list time conditions
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$x = 0;
@@ -1246,7 +1246,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			//get the extension number using the dialplan_include_id
 				$sql = "select fielddata as extension_number ";
 				$sql .= "from v_dialplan_includes_details ";
-				$sql .= "where v_id = $v_id ";
+				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				$sql .= "and fieldtype = 'destination_number' ";
 				$sql .= "order by extension_number asc ";
@@ -1260,7 +1260,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			//get the extension number using the dialplan_include_id
 				$sql = "select * ";
 				$sql .= "from v_dialplan_includes ";
-				$sql .= "where v_id = $v_id ";
+				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				$tmp = $db->query($sql)->fetch();
 				$extension_name = $tmp['extensionname'];
@@ -2305,7 +2305,7 @@ function outbound_route_to_bridge ($destination_number) {
 
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes ";
-	$sql .= "where v_id = $v_id ";
+	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and opt1name= 'gateway_id' ";
 	$sql .= "and enabled = 'true' ";
 	$sql .= "order by dialplanorder asc ";
@@ -2322,7 +2322,7 @@ function outbound_route_to_bridge ($destination_number) {
 		//get the extension number using the dialplan_include_id
 			$sql = "select * ";
 			$sql .= "from v_dialplan_includes_details ";
-			$sql .= "where v_id = $v_id ";
+			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 			$sql .= "order by fieldorder asc ";
 			$sub_result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);

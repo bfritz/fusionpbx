@@ -89,7 +89,7 @@ else {
 	//get the the dialplan details
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

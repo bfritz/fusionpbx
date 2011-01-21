@@ -151,9 +151,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 } //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-?>
-
-<script type="text/javascript">
+?><script type="text/javascript">
 <!--
 function type_onchange(field_type) {
 var field_value = document.getElementById(field_type).value;

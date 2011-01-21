@@ -201,9 +201,7 @@ echo "	<title></title>";
 </head>
 <?php
 //<body marginwidth="0" marginheight="0" style="margin: 0" onresize="elem = document.getElementById('edit1'); elem.style.height='100%';  elem.style.width='100%'; document.getElementById('toolbar').style.width='200px';">
-?>
-
-<table border='0' style="height: 100%; width: 100%;">
+?><table border='0' style="height: 100%; width: 100%;">
 <tr>
 <td id='toolbar' valign='top' width='200' style="width: 200;" height='100%' nowrap='nowrap'>
 
@@ -244,7 +242,5 @@ echo "    	<input type='button' onclick='test_setSelectedText(\"edit1\");' value
 echo "    	<input type='button' onclick='editAreaLoader.insertTags(\"edit1\", \"[OPEN]\", \"[CLOSE]\");' value='insertTags' />\n";
 echo "    </p>";
 */
-?>
-
-</body>
+?></body>
 </html>

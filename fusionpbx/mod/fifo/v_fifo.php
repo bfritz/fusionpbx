@@ -47,7 +47,7 @@ $order = $_GET["order"];
 	//add data to the queue array
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$x = 0;
@@ -111,18 +111,18 @@ $order = $_GET["order"];
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($queue_array) == 0) {
 		//when there are no queues then hide all dialplan entries
-		$sql .= " where v_id = $v_id ";
+		$sql .= " where v_id = '$v_id' ";
 		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
 		foreach ($queue_array as &$row) {
 			if ($x == 0) {
-				$sql .= " where v_id = $v_id \n";
+				$sql .= " where v_id = '$v_id' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			else {
-				$sql .= " or v_id = $v_id \n";
+				$sql .= " or v_id = '$v_id' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			$x++;
@@ -147,18 +147,18 @@ $order = $_GET["order"];
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($queue_array) == 0) {
 		//when there are no queues then hide all dialplan entries
-		$sql .= " where v_id = $v_id ";
+		$sql .= " where v_id = '$v_id' ";
 		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
 		foreach ($queue_array as &$row) {
 			if ($x == 0) {
-				$sql .= " where v_id = $v_id \n";
+				$sql .= " where v_id = '$v_id' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			else {
-				$sql .= " or v_id = $v_id \n";
+				$sql .= " or v_id = '$v_id' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			$x++;

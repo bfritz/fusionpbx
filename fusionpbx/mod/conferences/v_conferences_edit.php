@@ -52,7 +52,7 @@ $order = $_GET["order"];
 	if (!ifgroup("admin") || !ifgroup("superadmin")) {
 		//get the list of conference numbers
 			$sql = "select * from v_dialplan_includes_details ";
-			$sql .= "where v_id = $v_id ";
+			$sql .= "where v_id = '$v_id' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$x = 0;
@@ -491,7 +491,7 @@ if (ifgroup("superadmin")) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
-	$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; //$sqlwhereoptional = "where v_id = $v_id"; 
+	$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; //$sqlwhereoptional = "where v_id = '$v_id'"; 
 	echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
 	echo "<br />\n";
 	echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";

@@ -44,7 +44,7 @@ if (strlen($id)>0) {
 	//delete child data
 		$sql = "";
 		$sql .= "delete from v_auto_attendant_options ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and auto_attendant_id = '$id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -53,7 +53,7 @@ if (strlen($id)>0) {
 	//delete parent data
 		$sql = "";
 		$sql .= "delete from v_auto_attendant ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and auto_attendant_id = '$id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

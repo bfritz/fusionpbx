@@ -87,7 +87,7 @@ echo "<br />";
 
 	$sql = "";
 	$sql .= " select * from v_auto_attendant ";
-	$sql .= "where v_id = $v_id ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -103,7 +103,7 @@ echo "<br />";
 	$offset = $rowsperpage * $page; 
 	$sql = "";
 	$sql .= " select * from v_auto_attendant ";
-	$sql .= " where v_id = $v_id ";
+	$sql .= " where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 
@@ -120,8 +120,6 @@ echo "<br />";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-	//echo "<tr><td colspan='3'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
-
 	echo "<tr>\n";
 	echo thorderby('aaextension', 'Extension', $orderby, $order);
 	echo thorderby('aaname', 'Name', $orderby, $order);
@@ -133,7 +131,6 @@ echo "<br />";
 	if ($resultcount == 0) { //no results
 	}
 	else { //received results
-
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";

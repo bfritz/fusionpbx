@@ -47,7 +47,6 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
 	$extensionname = check_str($_POST["extensionname"]);
 	$dialplanorder = check_str($_POST["dialplanorder"]);
 	$extensioncontinue = check_str($_POST["extensioncontinue"]);
@@ -91,15 +90,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		}
-
-	$tmp = "\n";
-	//$tmp .= "v_id: $v_id\n";
-	$tmp .= "Extension Name: $extensionname\n";
-	$tmp .= "Order: $dialplanorder\n";
-	$tmp .= "Context: $context\n";
-	$tmp .= "Enabled: $enabled\n";
-	$tmp .= "Description: $descr\n";
-
 
 
 //Add or update the database
@@ -180,7 +170,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
 		$extensionname = $row["extensionname"];
 		$dialplanorder = $row["dialplanorder"];
 		$extensioncontinue = $row["extensioncontinue"];
@@ -280,7 +269,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	//echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Continue:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -300,7 +289,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	}
 	echo "    </select>\n";
 	echo "<br />\n";
-	echo "Extension Continue in most cases this is false. default: false\n";
+	echo "Extension Continue in most cases this is false.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -439,7 +428,7 @@ if ($action == "update") {
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes_details ";
-	$sql .= " where v_id = $v_id ";
+	$sql .= " where v_id = '$v_id' ";
 	$sql .= " and dialplan_include_id = '$dialplan_include_id' ";
 	$sql .= " and tag = 'action' ";
 	$sql .= " order by fieldorder asc";
@@ -482,7 +471,7 @@ if ($action == "update") {
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes_details ";
-	$sql .= " where v_id = $v_id ";
+	$sql .= " where v_id = '$v_id' ";
 	$sql .= " and dialplan_include_id = '$dialplan_include_id' ";
 	$sql .= " and tag = 'anti-action' ";
 	$sql .= " order by fieldorder asc";

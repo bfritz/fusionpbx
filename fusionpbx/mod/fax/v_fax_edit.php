@@ -546,7 +546,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		$onchange = "document.getElementById('fax_user_list').value += document.getElementById('username').value + '\\n';";
-		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where v_id = $v_id"; 
+		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where v_id = '$v_id'"; 
 		echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
 		echo "<br />\n";
 		echo "Use the select list to add users to the user list. This will assign users to this extension.\n";
@@ -656,7 +656,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td width='left' width='40%' align='left' nowrap>\n";
 	echo "	<span id='gateway' style='display: inline;'>\n";
-	$tablename = 'v_gateways'; $fieldname = 'gateway'; $sqlwhereoptional = "where v_id = $v_id"; $fieldcurrentvalue = '$gateway'; $fieldstyle = '';
+	$tablename = 'v_gateways'; $fieldname = 'gateway'; $sqlwhereoptional = "where v_id = '$v_id'"; $fieldcurrentvalue = '$gateway'; $fieldstyle = '';
 	echo 	htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, "", $fieldstyle);
 	echo "	</span>\n";
 	echo "	<span id='sip_uri' style='display: none;'>\n";

@@ -49,7 +49,6 @@ else {
 
 //get post and set variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
 		if (isset($_REQUEST["dialplan_include_id"])) {
 			$dialplan_include_id = check_str($_POST["dialplan_include_id"]);
 		}
@@ -130,7 +129,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "fieldorder = '$fieldorder', ";
 				$sql .= "fieldtype = '$fieldtype', ";
 				$sql .= "fielddata = '$fielddata' ";
-				$sql .= "where v_id = $v_id ";
+				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -155,13 +154,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$dialplan_includes_detail_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
 			$dialplan_include_id = $row["dialplan_include_id"];
 			$tag = $row["tag"];
 			$fieldorder = $row["fieldorder"];

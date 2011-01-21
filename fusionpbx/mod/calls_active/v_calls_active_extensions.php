@@ -51,9 +51,7 @@ $conference_name = trim($_REQUEST["c"]);
 $tmp_conference_name = str_replace("_", " ", $conference_name);
 
 require_once "includes/header.php";
-?>
-
-<script type="text/javascript">
+?><script type="text/javascript">
 <!--
 
 //declare variables

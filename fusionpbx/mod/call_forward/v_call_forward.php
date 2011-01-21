@@ -39,40 +39,6 @@ require_once "includes/paging.php";
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
-/*
-//find the call forward entries in the dialplan include details
-
-	//define the call fordward array
-		$call_forward_array = array ();
-
-	$sql = "";
-	$sql .= "select * from v_dialplan_includes_details ";
-	$sql .= "where v_id = $v_id ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$x = 0;
-	while($row = $prepstatement->fetch()) {
-		$dialplan_include_id = $row["dialplan_include_id"];
-		//$tag = $row["tag"];
-		//$fieldorder = $row["fieldorder"];
-		$fieldtype = $row["fieldtype"];
-		//$fielddata = $row["fielddata"];
-		$opt1name = $row["opt1name"];
-		if ($opt1name == "call_forward_id") {
-			//echo "dialplan_include_id: $dialplan_include_id<br />";
-			//echo "fielddata: $fielddata<br />";
-			$call_forward_array[$x]['dialplan_include_id'] = $dialplan_include_id;
-			$x++;
-		}
-	}
-	unset ($prepstatement);
-	print_r($call_forward_array);
-	//foreach ($call_forward_array as &$row) {
-	//	echo "--".$row['dialplan_include_id']."--<br />\n";
-	//}
-*/
-
-
 //begin the form
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -106,30 +72,8 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
-	$sql .= " where v_id = $v_id ";
+	$sql .= " where v_id = '$v_id' ";
 	$sql .= " and opt1name = 'call_forward_id' ";
-	/*
-	if (count($call_forward_array) == 0) {
-		//when there are no conferences do this to hide all remaining entries
-		$sql .= " where v_id = $v_id ";
-		$sql .= " and context = 'hide' ";
-	}
-	else {
-		$x = 0;
-		foreach ($call_forward_array as &$row) {
-			if ($x == 0) {
-				$sql .= " where v_id = $v_id \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
-			}
-			else {
-				$sql .= " or v_id = $v_id \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
-			}
-			$x++;
-		}
-	}
-	*/
-	//echo $sql; //exit;
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -146,29 +90,8 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
-	$sql .= " where v_id = $v_id ";
+	$sql .= " where v_id = '$v_id' ";
 	$sql .= " and opt1name = 'call_forward_id' ";
-	/*
-	if (count($call_forward_array) == 0) {
-		//when there are no entries do this to hide all remaining entries
-		$sql .= " where v_id = $v_id ";
-		$sql .= " and context = 'hide' ";
-	}
-	else {
-		$x = 0;
-		foreach ($call_forward_array as &$row) {
-			if ($x == 0) {
-				$sql .= " where v_id = $v_id \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
-			}
-			else {
-				$sql .= " or v_id = $v_id \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
-			}
-			$x++;
-		}
-	}
-	*/
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));

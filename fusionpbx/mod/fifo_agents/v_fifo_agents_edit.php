@@ -45,7 +45,6 @@ else {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
 		$fifo_name = check_str($_POST["fifo_name"]);
 		$agent_username = check_str($_POST["agent_username"]);
 		$agent_priority = check_str($_POST["agent_priority"]);
@@ -165,7 +164,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
 			$fifo_name = $row["fifo_name"];
 			$agent_username = $row["agent_username"];
 			$agent_priority = $row["agent_priority"];
@@ -220,7 +218,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//generate the fifo name select list
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$x = 0;

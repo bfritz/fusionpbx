@@ -77,7 +77,7 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
-	$sql .= " where v_id = $v_id ";
+	$sql .= " where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder asc, extensionname asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -94,7 +94,7 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
-	$sql .= " where v_id = $v_id ";
+	$sql .= " where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder asc, extensionname asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -110,8 +110,6 @@ $order = $_GET["order"];
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-	//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
-
 	echo "<tr>\n";
 	echo thorderby('extensionname', 'Extension Name', $orderby, $order);
 	echo thorderby('dialplanorder', 'Order', $orderby, $order);
@@ -121,7 +119,6 @@ $order = $_GET["order"];
 	echo "	<a href='v_dialplan_includes_add.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
-	//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 
 	if ($resultcount == 0) { //no results
 	}
@@ -139,7 +136,6 @@ $order = $_GET["order"];
 			echo "		<a href='v_dialplan_includes_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "   </td>\n";
 			echo "</tr>\n";
-			//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%'' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $rowcount);

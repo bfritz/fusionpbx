@@ -92,8 +92,6 @@ fclose($fd);
 	//--- End: Edit Area -----------------------------------------------------
 ?>
 
-
-
 <div align='center'>
 
 <table width="90%" border="0" cellpadding="0" cellspacing="0">
@@ -168,4 +166,3 @@ fclose($fd);
 <?php
 	require_once "includes/footer.php";
 ?>
-

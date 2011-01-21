@@ -42,7 +42,7 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
     $sql = "";
     $sql .= "delete from v_auto_attendant_options ";
-	$sql .= "where v_id = $v_id ";
+	$sql .= "where v_id = '$v_id' ";
     $sql .= "and auto_attendant_option_id = '$id' ";
     $sql .= "and auto_attendant_id = '$auto_attendant_id' ";
     $prepstatement = $db->prepare(check_sql($sql));
@@ -63,4 +63,3 @@ require_once "includes/footer.php";
 return;
 
 ?>
-

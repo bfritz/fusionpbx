@@ -186,9 +186,7 @@ session_start();
 $c = 0;
 $rowstyle["0"] = "rowstyle0";
 $rowstyle["1"] = "rowstyle1";
-?>
-
-<div id="cmd_reponse">
+?><div id="cmd_reponse">
 </div>
 
 <?php

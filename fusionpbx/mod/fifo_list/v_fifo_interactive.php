@@ -38,9 +38,7 @@ $fifo_name = trim($_REQUEST["c"]);
 $tmp_fifo_name = str_replace('_', ' ', $fifo_name);
 //$tmp_fifo_name = str_replace('@', '', $tmp_fifo_name);
 require_once "includes/header.php";
-?>
-
-<script type="text/javascript">
+?><script type="text/javascript">
 function loadXmlHttp(url, id) {
 	var f = this;
 	f.xmlHttp = null;

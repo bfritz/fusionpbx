@@ -40,7 +40,7 @@ require_once "includes/checkauth.php";
 //find the conference extensions from the dialplan include details
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes_details ";
-	$sql .= "where v_id = $v_id ";
+	$sql .= "where v_id = '$v_id' ";
 	if (!ifgroup("admin") || !ifgroup("superadmin")) {
 		//find the assigned users
 			$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
@@ -138,9 +138,7 @@ $locked = $xml->conference['locked'];
 $c = 0;
 $rowstyle["0"] = "rowstyle0";
 $rowstyle["1"] = "rowstyle1";
-?>
-
-<div id="cmd_reponse">
+?><div id="cmd_reponse">
 </div>
 <?php
 
