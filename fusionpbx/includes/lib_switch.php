@@ -634,7 +634,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	//list call center queues
 		$sql = "";
 		$sql .= "select * from v_call_center_queue ";
-		$sql .= "where v_id = $v_id ";
+		$sql .= "where v_id = '$v_id' ";
 		$sql .= "order by queue_name asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
