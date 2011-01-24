@@ -579,18 +579,6 @@ table tr:nth-last-child(-5) td:first-of-type {
 		opacity: 0.9;
 	}
 </style>
-<!-- 
-The above code doesn't work in Internet Explorer 6 and 7. 
-To address this, we use a conditional comment to specify an alternative style sheet for IE 6 and 7 
--->
-<!--[if IE]>
-	<style type="text/css">
-	html {overflow-y:hidden;}
-	body {overflow-y:auto;}
-	#page-background {position:absolute; z-index:-1; background-attachment:fixed;}
-	#page {position:static;padding:0px;}
-	</style>
-<![endif]-->
 
 <script type="text/javascript">
 <!--
@@ -643,7 +631,16 @@ function confirmdelete(url) {
 	if (strlen($_SESSION['background_image'])== 0) {
 		$_SESSION['background_image'] = $v_background_array[array_rand($v_background_array, 1)];
 	}
-	echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
+
+	if (stristr($_SERVER["PHP_SELF"], "install.php") != FALSE && isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)) {
+		//hide the background from install.php for IE
+		echo "<div id=\"page-background\" style='width:0px;height:0px;'></div>\n";
+	}
+	else {
+		//show the background
+		echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
+	}
+
 ?>
 
 
