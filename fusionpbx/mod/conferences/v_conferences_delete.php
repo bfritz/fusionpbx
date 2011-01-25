@@ -35,12 +35,12 @@ else {
 }
 
 if (count($_GET)>0) {
-    $id = $_GET["id"];
+	$id = $_GET["id"];
 }
 
 if (strlen($id)>0) {
 
-    //delete child data
+	//delete child data
 		$sql = "";
 		$sql .= "delete from v_dialplan_includes_details ";
 		$sql .= "where v_id = '$v_id' ";
@@ -58,7 +58,7 @@ if (strlen($id)>0) {
 		$db->query($sql);
 		unset($sql);
 
-    //synchronize the xml config
+	//synchronize the xml config
 		sync_package_v_dialplan_includes();
 
 }

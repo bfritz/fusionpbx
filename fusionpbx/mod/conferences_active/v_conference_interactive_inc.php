@@ -71,7 +71,11 @@ require_once "includes/checkauth.php";
 	//print_r($conference_array);
 
 //find if the user is in the admin or superadmin group or has been assigned to this conference
-	if (!ifgroup("admin") || !ifgroup("superadmin")) {
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		//allow admin and superadmin access to all conference rooms
+	}
+	else {
+		//get the list of conference numbers the user is assigned to
 		$sql = "";
 		$sql .= " select * from v_dialplan_includes_details ";
 		$x = 0;

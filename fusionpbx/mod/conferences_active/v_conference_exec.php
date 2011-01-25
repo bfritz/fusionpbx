@@ -69,7 +69,7 @@ if (count($_GET)>0) {
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 
 		if ($action == "energy") {
-			//conference 3001-markjcrane.dyndns.org energy 103
+			//conference 3001-example-domain.org energy 103
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 			$result_array = explode("=",$switch_result);
 			$tmp_value = $result_array[1];

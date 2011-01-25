@@ -36,7 +36,7 @@ else {
 }
 
 
-//Action add or update
+//action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
 	$dialplan_include_id = check_str($_REQUEST["id"]);

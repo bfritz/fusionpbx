@@ -26,14 +26,6 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-//if (ifgroup("admin") || ifgroup("superadmin")) {
-	//access granted
-//}
-//else {
-//	echo "access denied";
-//	exit;
-//}
-require_once "includes/header.php";
 require_once "includes/paging.php";
 
 $orderby = $_GET["orderby"];
@@ -49,8 +41,11 @@ $order = $_GET["order"];
 	}
 
 //check if the user has been assigned this conference room
-	if (!ifgroup("admin") || !ifgroup("superadmin")) {
-		//get the list of conference numbers
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		//allow admin and superadmin access to all conference rooms
+	}
+	else {
+		//get the list of conference numbers the user is assigned to
 			$sql = "select * from v_dialplan_includes_details ";
 			$sql .= "where v_id = '$v_id' ";
 			$prepstatement = $db->prepare(check_sql($sql));
@@ -84,6 +79,9 @@ $order = $_GET["order"];
 				exit;
 			}
 	}
+
+//show the header
+	require_once "includes/header.php";
 
 //http post to php variables
 	if (count($_POST)>0) {
@@ -484,7 +482,7 @@ echo "Optional PIN number to secure access to the conference.\n";
 echo "</td>\n";
 echo "</tr>\n";
 
-if (ifgroup("superadmin")) {
+if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "		User List:\n";
