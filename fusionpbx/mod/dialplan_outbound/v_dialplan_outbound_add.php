@@ -121,7 +121,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$label = "10 digits";
 					$abbrv = "10d";
 					break;
-				case "^(\d{11})$":
+				case "^\+?(\d{11})$":
 					$action_data = "sofia/gateway/".$gateway_name."/\$1";
 					$label = "11 digits";
 					$abbrv = "11d";
@@ -486,7 +486,7 @@ echo "    <option value='^(\\d{7})\$'>7 digits local</option>\n";
 echo "    <option value='^(\\d{8})\$'>8 digits</option>\n";
 echo "    <option value='^(\\d{9})\$'>9 digits</option>\n";
 echo "    <option value='^(\\d{10})\$'>10 digits long distance</option>\n";
-echo "    <option value='^(\\d{11})\$'>11 digits long distance</option>\n";
+echo "    <option value='^\+?(\\d{11})\$'>11 digits long distance</option>\n";
 echo "    <option value='^(\\d{12})\$'>12 digits</option>\n";
 echo "    <option value='^(\\d{13})\$'>13 digits</option>\n";
 echo "    <option value='^(\\d{14})\$'>14 digits</option>\n";
