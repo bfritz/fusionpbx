@@ -662,7 +662,6 @@ echo "<br />";
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row[virtual_field_name]."'>\n";
 							if (strlen($data_row[$row[virtual_field_name]])>0) {
-							
 								echo "<input tabindex='".$row[virtual_field_order_tab]."' class='' type='checkbox' name='".$x."field_value' maxlength='50' value=\"".$row[virtual_field_value]."\" checked='checked'/>\n";
 							}
 							else {

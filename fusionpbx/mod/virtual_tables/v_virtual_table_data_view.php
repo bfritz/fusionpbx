@@ -244,7 +244,7 @@ if (strlen($_GET["id"]) > 0) {
 	echo "		$virtual_table_desc\n";
 	echo "	</td>\n";
 	echo "	<td align='right' valign='top'>\n";
-	if ($virtual_data_parent_row_id == 0) {
+	if (strlen($virtual_data_parent_row_id) == 0) {
 		echo "<form method='GET' name='frm_search' action=''>\n";
 		echo "	<input class='formfld' type='text' name='search_all' value='$search_all'>\n";
 		echo "	<input type='hidden' name='id' value='$virtual_table_id'>\n";
@@ -346,7 +346,12 @@ if (strlen($_GET["id"]) > 0) {
 		}
 
 		echo "<td valign='top' align='right' nowrap='nowrap'>\n";
-		echo "	<a href='v_virtual_table_data_edit.php?virtual_table_id=".$row[virtual_table_id]."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_data_row_id=".$row['virtual_data_row_id']."&search_all=$search_all' alt='edit'>$v_link_label_edit</a>\n";
+		if (strlen($virtual_data_parent_row_id) == 0) {
+			echo "	<a href='v_virtual_table_data_edit.php?virtual_table_id=".$row[virtual_table_id]."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_data_row_id=".$row['virtual_data_row_id']."&search_all=$search_all' alt='edit'>$v_link_label_edit</a>\n";
+		}
+		else {
+			echo "	<a href='v_virtual_table_data_edit.php?virtual_table_id=".$row[virtual_table_id]."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_data_row_id=".$row['virtual_data_row_id']."' alt='edit'>$v_link_label_edit</a>\n";
+		}
 		echo"	<a href='v_virtual_table_data_delete.php?virtual_data_row_id=".$row['virtual_data_row_id']."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_table_id=".$virtual_table_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 		echo "</td>\n";
 
