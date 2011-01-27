@@ -799,7 +799,7 @@ echo "<br />";
 							if ($resultcount > 0) {
 								foreach($result2 as $row2) {
 										echo "<option value=\"" . $row2["virtual_data_types_value"] . "\"";
-										if ($row2["virtual_data_types_value"] == $data_row[$row[virtual_field_name]]) { echo " selected='selected' "; }
+										if (strtolower($row2["virtual_data_types_value"]) == strtolower($data_row[$row[virtual_field_name]])) { echo " selected='selected' "; }
 										echo ">" . $row2["virtual_data_types_name"] . "</option>\n";
 								} //end foreach
 							} //end if results
