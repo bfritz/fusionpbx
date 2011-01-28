@@ -201,10 +201,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap><b>Conference Detail Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap><b>Outbound Routes Detail Add</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap><b>Conference Detail Update</b></td>\n";
+		echo "<td align='left' width='30%' nowrap><b>Outbound Routes Detail Update</b></td>\n";
 	}
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_outbound_edit.php?id=".$dialplan_include_id."'\" value='Back'></td>\n";
 	echo "</tr>\n";
