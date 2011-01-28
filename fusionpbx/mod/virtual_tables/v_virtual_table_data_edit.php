@@ -401,7 +401,7 @@ else {
 					}
 				}
 			}
-			$sql .= "order by virtual_table_data_id asc ";
+			$sql .= "order by virtual_data_row_id asc ";
 
 			$row_id = '';
 			$row_id_found = false;
