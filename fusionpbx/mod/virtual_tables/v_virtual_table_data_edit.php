@@ -36,23 +36,27 @@ else {
 
 //set http get variables to php variables
 	$search_all = check_str($_GET["search_all"]);
+	$virtual_table_id = check_str($_GET["virtual_table_id"]);
 	if (strlen($_GET["virtual_data_row_id"])>0) { //update
 		$virtual_data_row_id = check_str($_GET["virtual_data_row_id"]);
-		$virtual_table_id = check_str($_GET["virtual_table_id"]);
-		//$virtual_table_name = check_str($_GET["virtual_table_name"]);
 		$action = "update";
-		//print_r( $_GET );
 	}
-	else { //add
-		$action = "add";
-		$virtual_table_id = check_str($_GET["virtual_table_id"]);
-		//$virtual_table_name = check_str($_GET["virtual_table_name"]);
+	else {
+		if (strlen($search_all) > 0) {
+			$action = "update";
+		}
+		else { //add
+			$action = "add";
+		}
+	}
+	if (strlen($_GET["id"]) > 0) {
+		$virtual_table_id = check_str($_GET["id"]);
 	}
 	if (strlen($_GET["virtual_data_parent_row_id"])>0) {
 		$virtual_data_parent_row_id = check_str($_GET["virtual_data_parent_row_id"]);
 	}
 
-//get virtual table data by id
+//get virtual table information
 	$sql = "";
 	$sql .= "select * from v_virtual_tables ";
 	$sql .= "where v_id = '$v_id' ";
@@ -74,7 +78,6 @@ else {
 
 //process the data submitted to by the html form
 	if (count($_POST)>0) { //add
-		//print_r( $_POST );
 		$virtual_table_id = check_str($_POST["virtual_table_id"]);
 		$virtual_table_name = check_str($_POST["virtual_table_name"]);
 		$rcount = check_str($_POST["rcount"]);
@@ -117,7 +120,6 @@ else {
 
 		$i = 1;
 		while($i <= $rcount){
-
 			$virtual_field_name = check_str($_POST[$i."field_name"]);
 			$virtual_data_field_value = check_str($_POST[$i."field_value"]);
 			if ($i==1) {
@@ -131,12 +133,10 @@ else {
 			$prepstatement = $db->prepare($sql);
 			$prepstatement->execute();
 			while($row = $prepstatement->fetch()){
-				//print_r( $row );
 				$virtual_field_type = $row[virtual_field_type];
 			}
 
 			if ($virtual_field_type == "upload_file" || $virtual_field_type == "uploadimage") {
-
 				//print_r($_FILES);
 				$upload_temp_dir = $_ENV["TEMP"]."\\";
 				ini_set('upload_tmp_dir', $upload_temp_dir);
@@ -158,34 +158,29 @@ else {
 				//$i."field_value"
 				//echo "if (move_uploaded_file(\$_FILES[$i.'field_value']['tmp_name'], $upload_file)) ";
 				//if (strlen($_FILES[$i.'field_value']['name'])>0) { //only do the following if there is a file name
-				//foreach($_FILES as $file)
-				//{
-					//[$i.'field_value']
-					//print_r($file);
-					if($_FILES[$i.'field_value']['error'] == 0 && $_FILES[$i.'field_value']['size'] > 0) {
-							if (move_uploaded_file($_FILES[$i.'field_value']['tmp_name'], $upload_file))
-							{
-								//echo $_FILES['userfile']['name'] ." <br>";
-								//echo "was successfully uploaded. ";
-								//echo "<br><br>";
-
-								//echo "Here's some more debugging info:\n";
-								//print "<pre>";
-								//print_r($_FILES);
-								//print "</pre>";
-							}
-							else
-							{
-								//echo "Upload Error.  Here's some debugging info:\n";
-								//print "<pre>\n";
-								//print_r($_FILES);
-								//print "</pre>\n";
-								//exit;
-							}
-					}
+					//foreach($_FILES as $file)
+					//{
+						//[$i.'field_value']
+						//print_r($file);
+						if($_FILES[$i.'field_value']['error'] == 0 && $_FILES[$i.'field_value']['size'] > 0) {
+								if (move_uploaded_file($_FILES[$i.'field_value']['tmp_name'], $upload_file)) {
+									//echo $_FILES['userfile']['name'] ." <br>";
+									//echo "was successfully uploaded. ";
+									//echo "<br><br>";
+									//print "<pre>";
+									//print_r($_FILES);
+									//print "</pre>";
+								}
+								else {
+									//echo "Upload Error.  Here's some debugging info:\n";
+									//print "<pre>\n";
+									//print_r($_FILES);
+									//print "</pre>\n";
+									//exit;
+								}
+						}
+					//}
 				//}
-				//}
-
 			} //end if file or image
 
 
@@ -243,7 +238,6 @@ else {
 					$sql .= "'".$_SESSION["username"]."', ";
 					$sql .= "now() ";
 					$sql .= ")";
-					//echo "insert: ".$sql."<br />";
 					$db->exec(check_sql($sql));
 					$lastinsertid = $db->lastInsertId($id);
 					unset($sql);
@@ -353,7 +347,7 @@ else {
 
 		//set the meta redirect
 			if (strlen($virtual_data_parent_row_id) == 0) {
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_view.php?id=$virtual_table_id&virtual_data_row_id=$virtual_data_row_id\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?id=$virtual_table_id&virtual_data_row_id=$virtual_data_row_id\">\n";
 			}
 			else {
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id\">\n";
@@ -367,7 +361,6 @@ else {
 			require_once "includes/footer.php";
 			return;
 	}
-
 
 //show the header
 	require_once "includes/header.php";
@@ -393,10 +386,22 @@ else {
 					$sql .= " and virtual_data_parent_row_id = '$virtual_data_parent_row_id' ";
 				}
 				else {
-					$sql .= "and virtual_data_field_value like '%$search_all%' )\n";
+					//$sql .= "and virtual_data_field_value like '%$search_all%' )\n";
+					$tmp_digits = preg_replace('{\D}', '', $search_all);
+					if (is_numeric($tmp_digits) && strlen($tmp_digits) > 5) {
+						if (strlen($tmp_digits) == '11' ) {
+							$sql .= "and virtual_data_field_value like '%".substr($tmp_digits, -10)."%' )\n";
+						}
+						else {
+							$sql .= "and virtual_data_field_value like '%$tmp_digits%' )\n";
+						}
+					}
+					else {
+						$sql .= "and virtual_data_field_value like '%$search_all%' )\n";
+					}
 				}
 			}
-			$sql .= "order by virtual_data_row_id asc ";
+			$sql .= "order by virtual_table_data_id asc ";
 
 			$row_id = '';
 			$row_id_found = false;
@@ -407,7 +412,10 @@ else {
 			while($row = $prepstatement->fetch()) {
 				//set the last last row id
 					if ($x==0) {
-						$first_virtual_data_row_id = $row['virtual_data_row_id'];
+				if (strlen($virtual_data_row_id) == 0) {
+					$virtual_data_row_id = $row['virtual_data_row_id'];
+				}
+				$first_virtual_data_row_id = $row['virtual_data_row_id'];
 					}
 				//get the data for the specific row id
 					if ($virtual_data_row_id == $row['virtual_data_row_id']) {
@@ -454,9 +462,7 @@ else {
 				else {
 					$n = $_GET["n"];
 				}
-
 			unset($sql, $prepstatement, $row);
-			//print_r( $dbvaluearray );
 	}
 
 //use this when the calendar is needed
@@ -464,55 +470,13 @@ else {
 	//echo "<script language=\"javascript\" src=\"/includes/calendar_lw_layers.js\"></script>\n";
 	//echo "<script language=\"javascript\" src=\"/includes/calendar_lw_menu.js\"></script>";
 
-/*
-//http://www.openjs.com/scripts/examples/addfield.php
-if ($action == "update") {
-	echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-	echo "<!--\n";
-	echo "//Add more fields dynamically.\n";
-	echo "function addField(area,field,fieldtype,field_value,limit) {\n";
-	echo "	if(!document.getElementById) return; //Prevent older browsers from getting any further.\n";
-	echo "	var field_area = document.getElementById(area);\n";
-	echo "	var all_inputs = field_area.getElementsByTagName(\"input\"); //Get all the input fields in the given area.\n";
-	echo "	//Find the count of the last element of the list. It will be in the format '<field><number>'. If the\n";
-	echo "	//		field given in the argument is 'friend_' the last id will be 'friend_4'.\n";
-	echo "	var last_item = all_inputs.length - 1;\n";
-	echo "	var last = all_inputs[last_item].id;\n";
-	echo "	var count = Number(last.split(\"_\")[1]) + 1;\n";
-	echo "\n";
-	echo "	//If the maximum number of elements have been reached, exit the function.\n";
-	echo "	//		If the given limit is lower than 0, infinite number of fields can be created.\n";
-	echo "	if(count > limit && limit > 0) return;\n";
-	echo "\n";
-	echo "	if(document.createElement) { //W3C Dom method.\n";
-	echo "		//var li = document.createElement(\"li\");\n";
-	echo "		var input = document.createElement(\"input\");\n";
-	echo "		//input.id = field+count;\n";
-	echo "		//input.name = field+count;\n";
-	echo "		input.id = field;\n";
-	echo "		input.name = field;\n";
-	echo "		input.value = field_value;\n";
-	echo "		input.type = fieldtype; //Type of field - can be any valid input type like text,file,checkbox etc.\n";
-	echo "		//li.appendChild(input);\n";
-	echo "		field_area.appendChild(input);\n";
-	echo "	} else { //Older Method\n";
-	echo "	//	field_area.innerHTML += \"<input name='\"+(field+count)+\"' id='\"+(field+count)+\"' type='text' />\";\n";
-	echo "	}\n";
-	echo "}\n";
-	echo "//-->\n";
-	echo "</script>";
-	//echo "    <input type=\"button\" value=\"Add Friend Field\" onclick=\"addField('test_area','friend1', 'text', '1234',1);addField('friends_area','demo2', 'hidden', 'abcde',1);\" />\n";
-}
-*/
-
-//begin creating the html form
-
-echo "<br />";
+//begin creating the content 
+	echo "<br />";
 
 //get the title and description of the virtual table
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-	echo "  <tr>\n";
-	echo "	<td align='left'>\n";
+	echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+	echo "	<tr>\n";
+	echo "		<td width='50%' valign='top' nowrap='nowrap'>\n";
 	echo 	"	<b>$virtual_table_label \n";
 	if ($action == "add") {
 		echo 	"	Add\n";
@@ -520,36 +484,65 @@ echo "<br />";
 	else {
 		echo 	"Edit\n";
 	}
-	echo 	"	</b><br>\n";
-	echo "		$virtual_table_desc\n";
-	echo "	</td>\n";
-	echo "	<td align='right' valign='top'>\n";
+	echo "	</b>\n";
+	echo "	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+	if ($action == "update") {
+		echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_id'\" value='Add'>\n";
+		//echo "	<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Do you really want to delete this?')){window.location='v_virtual_table_data_delete.php?id=".$virtual_table_id."&?virtual_data_row_id=".$virtual_data_row_id."&virtual_data_parent_row_id=$virtual_data_parent_row_id';}\" value='Delete'>\n";
+	}
+	echo "			<br />\n";
+	echo "			$virtual_table_desc\n";
+	echo "			<br />\n";
+	echo "			<br />\n";
+	echo "		</td>\n";
 
 	if (strlen($virtual_data_parent_row_id) == 0) {
-		//echo "		<input type='button' class='btn' name='' alt='first' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_id&virtual_data_row_id=".$first_virtual_data_row_id."'\" value='First'>\n";
 
-		if (strlen($previous_virtual_data_row_id) == 0) {
-			echo "		<input type='button' class='btn' name='' alt='prev' disabled='disabled' value='Prev'>\n";
+		echo "<td align='center' valign='top' nowrap='nowrap'>\n";
+
+		if ($action == "update") {
+			//echo "		<input type='button' class='btn' name='' alt='first' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_id&virtual_data_row_id=".$first_virtual_data_row_id."'\" value='First'>\n";
+			if (strlen($previous_virtual_data_row_id) == 0) {
+				echo "		<input type='button' class='btn' name='' alt='prev' disabled='disabled' value='Prev'>\n";
+			}
+			else {
+				echo "		<input type='button' class='btn' name='' alt='prev' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_id&virtual_data_row_id=".$previous_virtual_data_row_id."&search_all=$search_all&n=".($n-1)."'\" value='Prev ".$previous_record_id."'>\n";
+			}
+			echo "		<input type='button' class='btn' name='' alt='prev' value='".$record_number_array[$virtual_data_row_id]." of $total_records'>\n";
+			if (strlen($next_virtual_data_row_id) == 0) {
+				echo "		<input type='button' class='btn' name='' alt='next' disabled='disabled' value='Next'>\n";
+			}
+			else {
+				echo "		<input type='button' class='btn' name='' alt='next' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_id&virtual_data_row_id=".$next_virtual_data_row_id."&search_all=$search_all&n=".($n+1)."'\" value='Next ".$next_record_id."'>\n";
+			}
+			//echo "		<input type='button' class='btn' name='' alt='last' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_id&virtual_data_row_id=".$last_virtual_data_row_id."'\" value='Last'>\n";
 		}
-		else {
-			echo "		<input type='button' class='btn' name='' alt='prev' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_id&virtual_data_row_id=".$previous_virtual_data_row_id."&search_all=$search_all&n=".($n-1)."'\" value='Prev ".$previous_record_id."'>\n";
-		}
-		echo "		<input type='button' class='btn' name='' alt='prev' value='".$record_number_array[$virtual_data_row_id]." of $total_records'>\n";
-		if (strlen($next_virtual_data_row_id) == 0) {
-			echo "		<input type='button' class='btn' name='' alt='next' disabled='disabled' value='Next'>\n";
-		}
-		else {
-			echo "		<input type='button' class='btn' name='' alt='next' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_id&virtual_data_row_id=".$next_virtual_data_row_id."&search_all=$search_all&n=".($n+1)."'\" value='Next ".$next_record_id."'>\n";
-		}
-		//echo "		<input type='button' class='btn' name='' alt='last' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_id&virtual_data_row_id=".$last_virtual_data_row_id."'\" value='Last'>\n";
+		echo "		&nbsp;&nbsp;&nbsp;";
+		echo "		&nbsp;&nbsp;&nbsp;";
+		echo "		&nbsp;&nbsp;&nbsp;";
+		echo "</td>\n";
+
+		echo "<form method='GET' name='frm_search' action='v_virtual_table_data_edit.php'>\n";
+		echo "<td width='45%' align='right' valign='top' nowrap='nowrap'>\n";
+		echo "	<input type='hidden' name='virtual_table_id' value='$virtual_table_id'>\n";
+		//echo "	<input type='hidden' name='id' value='$virtual_table_id'>\n";
+		//echo "	<input type='hidden' name='virtual_data_parent_row_id' value='$virtual_data_parent_row_id'>\n";
+		//echo "	<input type='hidden' name='virtual_data_row_id' value='$first_virtual_data_row_id'>\n";
+		echo "	<input class='formfld' type='text' name='search_all' value='$search_all'>\n";
+		echo "	<input class='btn' type='submit' name='submit' value='Search All'>\n";
+		echo "</td>\n";
+		echo "</form>\n";
+		echo "<td width='5%' align='right' valign='top' nowrap='nowrap'>\n";
 		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_table_data_view.php?id=$virtual_table_id'\" value='Back'>\n";
+		echo "</td>\n";
 	}
 	else {
+		echo "	<td width='50%' align='right'>\n";
 		//echo "		<input type='button' class='btn' name='' alt='prev' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id'\" value='Prev'>\n";
 		//echo "		<input type='button' class='btn' name='' alt='next' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id'\" value='Next'>\n";
 		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id'\" value='Back'>\n";
+		echo "	</td>\n";
 	}
-	echo "	</td>\n";
 	echo "  </tr>\n";
 	echo "</table>\n";
 
@@ -588,29 +581,15 @@ echo "<br />";
 
 	echo "<input type='hidden' name='rcount' value='$resultcount'>\n";
 	echo "<input type='hidden' name='virtual_table_id' value='$virtual_table_id'>\n";
-	//echo "<input type='hidden' name='virtual_table_name' value='$virtual_table_name'>\n";
 
 	if ($resultcount == 0) { //no results
 		echo "<tr><td class='vncell'>&nbsp;</td></tr>\n";
 	}
 	else { //received results
 		$x=1;
-		//print_r( $result )."<br>\n\n";
 		$virtual_field_column_previous = '';
 		$column_table_cell_status = '';
 		foreach($result as $row) {
-			//print_r( $row );
-			//echo "<td valign='top'><a href='virtualtablefieldsupdate.php?virtual_table_id=$virtual_table_id&virtual_field_id=".$row[virtual_field_id]."'>".$row[virtual_field_id]."</a></td>";
-			//echo "<td valign='top'>".$row[virtual_table_field_id]."</td>";
-			//echo "<td valign='top'>".$row[virtual_field_name]."</td>";
-			//echo "<td valign='top'>".$row[virtual_field_type]."</td>";
-			//echo "<td valign='top'>".$row[virtual_field_order]."</td>";
-			//virtual_field_column TEXT, 
-			//virtual_field_required TEXT, 
-			//virtual_field_order NUMBER, 
-			//virtual_field_order_tab NUMBER, 
-			//virtual_field_desc TEXT
-
 			//handle more than one column
 				$virtual_field_column = $row[virtual_field_column];
 				//echo "<!--[column: $virtual_field_column]-->\n";
@@ -622,14 +601,11 @@ echo "<br />";
 								echo "</td>\n";
 								echo "</tr>\n";
 								echo "</table>\n";
-
 							//close the row
 								echo "</td>\n";
 						}
-
 					//open a new row
 						echo "<td valign='top'>\n";
-
 					//start a table in the new row
 						echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
 				}
@@ -694,10 +670,8 @@ echo "<br />";
 							echo "</td>\n";
 							break;
 						case "hidden":
-							//echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value=\"".$row[virtual_field_name]."\">\n";
 							echo "<input type='hidden' name='".$x."field_value' value=\"".$data_row[$row[virtual_field_name]]."\">\n";
-							//echo "</td>\n";
 							break;
 						case "url":
 							echo "<td valign='top' align='left' class='vtable'>\n";
@@ -953,29 +927,8 @@ echo "<br />";
 		}
 	} //end if results
 
-
-	//echo "<table>";
-	//  echo "	<tr>";
-	//  echo "		<td>Table Name:</td>";
-	//  echo "		<td>$virtual_table_name</td>";
-	//  echo "	</tr>";
-	//  echo "	<tr>";
-	//  echo "		<td>Field Name:</td>";
-	//  echo "		<td><input type='text' name='virtual_field_name'></td>";
-	//  echo "	</tr>";
-	//  echo "	<tr>";
-	//  echo "		<td>Field Value:</td>";
-	//  echo "		<td><input type='text' name='virtual_data_field_value'></td>";
-	//  echo "	</tr>";
-
 	echo "	<tr>\n";
-	//echo "	<td>example:</td>";
-	//echo "	<td><textarea name='example'></textarea></td>";
-	//echo "	</tr>";    echo "	<tr>\n";
 	echo "		<td colspan='999' align='right'>\n";
-		//if (strlen($virtual_data_parent_row_id) > 0) {
-		//	echo "          <input type='hidden' name='virtual_data_parent_row_id' value='$virtual_data_parent_row_id'>\n";
-		//}
 		if ($action == "add") {
 			echo "		    <input type='submit' class='btn' name='submit' value='save'>\n";
 		}
