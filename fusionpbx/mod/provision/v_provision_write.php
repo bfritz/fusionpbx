@@ -224,13 +224,13 @@ else {
 
 						//write the configuration to the directory
 							if (strlen($v_provisioning_tftp_dir) > 0) {
-								$fh = fopen($v_provisioning_tftp_dir.'/'.$file_name,"w") or die("can't open file");
+								$fh = fopen($v_provisioning_tftp_dir.'/'.$file_name,"w") or die("Unable to write to $v_provisioning_tftp_dir for provisioning. Make sure the path exists and permissons are set correctly.");
 								fwrite($fh, $file_contents);
 								unset($file_name);
 								fclose($fh);
 							}
 							if (strlen($v_provisioning_ftp_dir) > 0) {
-								$fh = fopen($v_provisioning_ftp_dir.'/'.$file_name,"w") or die("can't open file");
+								$fh = fopen($v_provisioning_ftp_dir.'/'.$file_name,"w") or die("Unable to write to $v_provisioning_ftp_dir for provisioning. Make sure the path exists and permissons are set correctly.");
 								fwrite($fh, $file_contents);
 								unset($file_name);
 								fclose($fh);
