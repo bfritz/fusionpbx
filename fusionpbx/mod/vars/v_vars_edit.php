@@ -90,77 +90,75 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	$tmp .= "Name: $var_name\n";
-	$tmp .= "Value: $var_value\n";
-	$tmp .= "Category: $var_cat\n";
-	$tmp .= "Enabled: $var_enabled\n";
-	$tmp .= "Order: $var_order\n";
-	$tmp .= "Description: $var_desc\n";
+	//add or update the database
+		if ($_POST["persistformvar"] != "true") {
+			if ($action == "add") {
+				$sql = "insert into v_vars ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "var_name, ";
+				$sql .= "var_value, ";
+				$sql .= "var_cat, ";
+				$sql .= "var_enabled, ";
+				$sql .= "var_order, ";
+				$sql .= "var_desc ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$var_name', ";
+				$sql .= "'$var_value', ";
+				$sql .= "'$var_cat', ";
+				$sql .= "'$var_enabled', ";
+				$sql .= "'$var_order', ";
+				$sql .= "'".base64_encode($var_desc)."' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
+				//unset the user defined variables
+					$_SESSION["user_defined_variables"] = "";
 
-//Add or update the database
-if ($_POST["persistformvar"] != "true") {
-	if ($action == "add") {
-		$sql = "insert into v_vars ";
-		$sql .= "(";
-		$sql .= "v_id, ";
-		$sql .= "var_name, ";
-		$sql .= "var_value, ";
-		$sql .= "var_cat, ";
-		$sql .= "var_enabled, ";
-		$sql .= "var_order, ";
-		$sql .= "var_desc ";
-		$sql .= ")";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'$v_id', ";
-		$sql .= "'$var_name', ";
-		$sql .= "'$var_value', ";
-		$sql .= "'$var_cat', ";
-		$sql .= "'$var_enabled', ";
-		$sql .= "'$var_order', ";
-		$sql .= "'".base64_encode($var_desc)."' ";
-		$sql .= ")";
-		$db->exec(check_sql($sql));
-		unset($sql);
+				//synchronize the configuration
+					sync_package_v_vars();
 
-		sync_package_v_vars();
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_vars.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Add Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "add")
 
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_vars.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Add Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "add")
+			if ($action == "update") {
+				$sql = "update v_vars set ";
+				$sql .= "var_name = '$var_name', ";
+				$sql .= "var_value = '$var_value', ";
+				$sql .= "var_cat = '$var_cat', ";
+				$sql .= "var_enabled = '$var_enabled', ";
+				$sql .= "var_order = '$var_order', ";
+				$sql .= "var_desc = '".base64_encode($var_desc)."' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and var_id = '$var_id'";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-	if ($action == "update") {
-		$sql = "update v_vars set ";
-		$sql .= "var_name = '$var_name', ";
-		$sql .= "var_value = '$var_value', ";
-		$sql .= "var_cat = '$var_cat', ";
-		$sql .= "var_enabled = '$var_enabled', ";
-		$sql .= "var_order = '$var_order', ";
-		$sql .= "var_desc = '".base64_encode($var_desc)."' ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and var_id = '$var_id'";
-		$db->exec(check_sql($sql));
-		unset($sql);
+				//unset the user defined variables
+					$_SESSION["user_defined_variables"] = "";
 
-		sync_package_v_vars();
+				//synchronize the configuration
+					sync_package_v_vars();
 
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_vars.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Update Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "update")
-} //if ($_POST["persistformvar"] != "true") { 
-
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_vars.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Update Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "update")
+	} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //Pre-populate the form

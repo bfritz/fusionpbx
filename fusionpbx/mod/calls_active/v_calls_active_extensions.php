@@ -154,9 +154,12 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 }
 
 var requestTime = function() {
-	var url = 'v_calls_active_extensions_inc.php?<?php echo $_SERVER["QUERY_STRING"]; ?>';
-	new loadXmlHttp(url, 'ajax_reponse');
-	setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, 750);
+	<?php
+	echo "var url = 'v_calls_active_extensions_inc.php?". $_SERVER["QUERY_STRING"]."';\n";
+	echo "new loadXmlHttp(url, 'ajax_reponse');\n";
+	if (strlen($_SESSION["ajax_refresh_rate"]) == 0) { $_SESSION["ajax_refresh_rate"] = "900"; }
+	echo "setInterval(function(){new loadXmlHttp(url, 'ajax_reponse');}, ".$_SESSION["ajax_refresh_rate"].");";
+	?>
 }
 
 if (window.addEventListener) {
@@ -193,19 +196,73 @@ echo "	<tr>\n";
 echo "	<td align='left'><b>Active Extensions</b><br>\n";
 echo "		Use this to view all extensions and monitor and interact with active calls.\n";
 echo "	</td>\n";
-echo "	<td align='right'>\n";
 
+//get the user status when the page loads
+	$sql = "";
+	$sql .= "select * from v_users ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and username = '".$_SESSION['username']."' ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
+		$user_status = $row["user_status"];
+		break; //limit to 1 row
+	}
+
+if ($_SESSION['user_status_display'] == "false") {
+	//hide the user_status when it is set to false
+}
+else {
+	echo "		<td class='' valign='bottom' align='right' nowrap='nowrap'>\n";
+	echo "			<strong>Status</strong>&nbsp;\n";
+	echo "			<select id='agent_status' name='agent_status' class='formfld' onchange=\"send_cmd('v_calls_exec.php?action=user_status&data='+this.value);\">\n";
+	echo "				<option value=''></option>\n";
+	if ($user_status == "Available") {
+		echo "		<option value='Available' selected='selected'>Available</option>\n";
+	}
+	else {
+		echo "		<option value='Available'>Available</option>\n";
+	}
+	if ($user_status == "Available (On Demand)") {
+		echo "		<option value='Available_On_Demand' selected='selected'>Available (On Demand)</option>\n";
+	}
+	else {
+		echo "		<option value='Available_On_Demand'>Available (On Demand)</option>\n";
+	}
+	if ($user_status == "Logged Out") {
+		echo "		<option value='Logged_Out' selected='selected'>Logged Out</option>\n";
+	}
+	else {
+		echo "		<option value='Logged_Out'>Logged Out</option>\n";
+	}
+	if ($user_status == "On Break") {
+		echo "		<option value='On_Break' selected='selected'>On Break</option>\n";
+	}
+	else {
+		echo "		<option value='On_Break'>On Break</option>\n";
+	}
+	if ($user_status == "Do Not Disturb") {
+		echo "		<option value='Do_Not_Disturb' selected='selected'>Do Not Disturb</option>\n";
+	}
+	else {
+		echo "		<option value='Do_Not_Disturb'>Do Not Disturb</option>\n";
+	}
+	echo "			</select>\n";
+	echo "		</td>\n";
+}
+
+echo "	<td align='right'>\n";
 echo "		<table>\n";
-echo "		<td align='left' valign='middle'>\n";
+echo "		<td align='left' valign='middle' nowrap='nowrap'>\n";
 echo "			<div id=\"form_label\"><strong>Transfer To</strong></div>\n";
 echo "			<div id=\"url\"></div>\n";
 echo "		</td>\n";
 echo "		<td align='left' valign='middle'>\n";
-echo "			<input type=\"text\" id=\"form_value\" name=\"form_value\" />\n";
+echo "			<input type=\"text\" id=\"form_value\" name=\"form_value\" class='formfld' style='width:125px'/>\n";
 echo "		</td>\n";
 echo "		</tr>\n";
 echo "		</table>\n";
-
 echo "	</td>\n";
 echo "	</tr>\n";
 echo "</table>\n";

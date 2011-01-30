@@ -64,8 +64,9 @@ require_once "includes/checkauth.php";
 
 //define variables
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
+	$rowstyle["0"] = "rowstyle1";
 	$rowstyle["1"] = "rowstyle1";
+	//$rowstyle["1"] = "rowstyle1";
 
 //get the event socket information
 	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
@@ -81,6 +82,40 @@ require_once "includes/checkauth.php";
 			$_SESSION['event_socket_password'] = $row["event_socket_password"];
 			break; //limit to 1 row
 		}
+	}
+
+//get the user status
+	if ($_SESSION['user_status_display'] == "false") {
+		//hide the user_status when it is set to false
+	}
+	else {
+		$sql = "";
+		$sql .= "select e.extension, u.username, u.user_status, e.user_list ";
+		$sql .= "from v_users as u, v_extensions as e ";
+		$sql .= "where e.v_id = '$v_id' ";
+		$sql .= "and u.v_id = '$v_id' ";
+		$sql .= "and u.usercategory = 'user' ";
+		if ($db_type == "sqlite") {
+			$sql .= "and e.user_list like '%|' || u.username || '|%' ";
+		}
+		if ($db_type == "pgsql") {
+			$sql .= "and e.user_list like '%|' || u.username || '|%' ";
+		}
+		if ($db_type == "mysql") {
+			$sql .= "and e.user_list like CONCAT('%|', u.username, '|%'); ";
+		}
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$x = 0;
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$user_array[$row["extension"].'_'.$row["username"]]['user_status'] = $row["user_status"];
+			$x++;
+		}
+		unset ($prepstatement, $x);
+		//echo "<pre>\n";
+		//print_r($user_array);
+		//echo "</pre>\n";
 	}
 
 //get information over event socket
@@ -100,25 +135,23 @@ require_once "includes/checkauth.php";
 //active channels array
 	$channel_array = "";
 	foreach ($xml as $row) {
-		//print_r($row);
 		$name = $row->name;
-		//echo $name;
 		$name_array = explode("/", $name);
-		$sip_profile = $name_array[1];
+		//$sip_profile = $name_array[1];
 		$sip_uri = $name_array[2];
-		//echo $sip_uri;
 		$temp_array = explode("@", $sip_uri);
 		$number = $temp_array[0];
 		$number = str_replace("sip:", "", $number);
 		$row->addChild('number', $number);
-		$row->addChild('sip_profile', $sip_profile);
+		//$row->addChild('sip_profile', $sip_profile);
 		//$row->addAttribute('number', $number);
 	}
 
-
 //active extensions
 	//get the extension information
-		unset($_SESSION['extension_array']);
+		if ($debug) {
+			unset($_SESSION['extension_array']);
+		}
 		if (count($_SESSION['extension_array']) == 0) {
 			$sql = "";
 			$sql .= "select * from v_extensions ";
@@ -171,7 +204,7 @@ require_once "includes/checkauth.php";
 					$extension_array[$extension]['cidr'] = $row["cidr"];
 					$extension_array[$extension]['sip_force_contact'] = $row["sip_force_contact"];
 					//$extension_array[$extension]['enabled'] = $row["enabled"];
-					$extension_array[$extension]['description'] = $row["description"];
+					$extension_array[$extension]['effective_caller_id_name'] = $row["effective_caller_id_name"];
 				}
 			}
 			$_SESSION['extension_array'] = $extension_array;
@@ -181,272 +214,301 @@ require_once "includes/checkauth.php";
 		include "v_calls_active_assigned_extensions_inc.php";
 
 	//list all extensions
-		echo "<table width='100%' border='0' cellpadding='5' cellspacing='0'>\n";
-		echo "<tr>\n";
-		echo "<td valign='top'>\n";
-
-		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-		//echo "<tr>\n";
-		//echo "<td >\n";
-		//echo "	<strong>Count: $row_count</strong>\n";
-		//echo "</td>\n";
-		//echo "<td colspan='2'>\n";
-		//echo "	&nbsp;\n";
-		//echo "</td>\n";
-		//echo "<td colspan='1' align='right'>\n";
-		//echo "</tr>\n";
-
-		echo "<tr>\n";
-		echo "<th>Ext</th>\n";
-		echo "<th>Time</th>\n";
-		if (ifgroup("admin") || ifgroup("superadmin")) {
-			if (strlen(($_GET['rows'])) == 0) {
-				echo "<th>Direction</th>\n";
-				echo "<th>Profile</th>\n";
-				echo "<th>CID Name</th>\n";
-				echo "<th>CID Number</th>\n";
-				echo "<th>Dest</th>\n";
-				echo "<th>App</th>\n";
-				echo "<th>Secure</th>\n";
-			}
+		if ($_SESSION['active_extensions_list_display'] == "false") {
+			//hide the list when active_extensions_list_display is set to false
 		}
-		echo "<th>Description</th>\n";
-		if (ifgroup("admin") || ifgroup("superadmin")) {
-			if (strlen(($_GET['rows'])) == 0) {
-				echo "<th>Options</th>\n";
+		else {
+			echo "<table width='100%' border='0' cellpadding='5' cellspacing='0'>\n";
+			echo "<tr>\n";
+			echo "<td valign='top'>\n";
+
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+			//echo "<tr>\n";
+			//echo "<td >\n";
+			//echo "	<strong>Count: $row_count</strong>\n";
+			//echo "</td>\n";
+			//echo "<td colspan='2'>\n";
+			//echo "	&nbsp;\n";
+			//echo "</td>\n";
+			//echo "<td colspan='1' align='right'>\n";
+			//echo "</tr>\n";
+
+			echo "<tr>\n";
+			echo "<th>Ext</th>\n";
+			if ($_SESSION['user_status_display'] == "false") {
+				//hide the user_status when it is set to false
 			}
-		}
-		echo "</tr>\n";
-		$x = 1;
-		foreach ($_SESSION['extension_array'] as $row) {
-			$v_id = $row['v_id'];
-			$extension = $row['extension'];
-			$enabled = $row['enabled'];
-			$description = $row['description'];
-
-			$found_extension = false;
-			foreach ($xml as $tmp_row) {
-				if ($tmp_row->number == $extension) {
-					$found_extension = true;
-					$uuid = $tmp_row->uuid;
-					$direction = $tmp_row->direction;
-					$sip_profile = $tmp_row->sip_profile;
-					$created = $tmp_row->created;
-					$created_epoch = $tmp_row->created_epoch;
-					$name = $tmp_row->name;
-					$state = $tmp_row->state;
-					$cid_name = $tmp_row->cid_name;
-					$cid_num = $tmp_row->cid_num;
-					$ip_addr = $tmp_row->ip_addr;
-					$dest = $tmp_row->dest;
-					$application = $tmp_row->application;
-					$application_data = $tmp_row->application_data;
-					$dialplan = $tmp_row->dialplan;
-					$context = $tmp_row->context;
-					$read_codec = $tmp_row->read_codec;
-					$read_rate = $tmp_row->read_rate;
-					$write_codec = $tmp_row->write_codec;
-					$write_rate = $tmp_row->write_rate;
-					$secure = $tmp_row->secure;
-
-					//remove the '+' because it breaks the call recording
-					$cid_num = str_replace("+", "", $cid_num);
-
-					$call_length_seconds = time() - $created_epoch;
-					$call_length_hour = floor($call_length_seconds/3600);
-					$call_length_min = floor($call_length_seconds/60 - ($call_length_hour * 60));
-					$call_length_sec = $call_length_seconds - (($call_length_hour * 3600) + ($call_length_min * 60));
-					$call_length_min = sprintf("%02d", $call_length_min);
-					$call_length_sec = sprintf("%02d", $call_length_sec);
-					$call_length = $call_length_hour.':'.$call_length_min.':'.$call_length_sec;
+			else {
+				echo "<th>Status</th>\n";
+			}
+			echo "<th>Time</th>\n";
+			if (ifgroup("admin") || ifgroup("superadmin")) {
+				if (strlen(($_GET['rows'])) == 0) {
+					//echo "<th>Direction</th>\n";
+					//echo "<th>Profile</th>\n";
+					echo "<th>CID Name</th>\n";
+					echo "<th>CID Number</th>\n";
+					echo "<th>Dest</th>\n";
+					echo "<th>App</th>\n";
+					echo "<th>Secure</th>\n";
 				}
 			}
+			echo "<th>Name</th>\n";
+			if (ifgroup("admin") || ifgroup("superadmin")) {
+				if (strlen(($_GET['rows'])) == 0) {
+					echo "<th>Options</th>\n";
+				}
+			}
+			echo "</tr>\n";
+			$x = 1;
+			foreach ($_SESSION['extension_array'] as $row) {
+				$v_id = $row['v_id'];
+				$extension = $row['extension'];
+				$enabled = $row['enabled'];
+				$effective_caller_id_name = $row['effective_caller_id_name'];
 
-			if ($found_extension) {
-				if ($application == "conference") { 
-					$alt_color = "background-image: url('".PROJECT_PATH."/images/background_cell_active.gif";
+				$found_extension = false;
+				foreach ($xml as $tmp_row) {
+					if ($tmp_row->number == $extension) {
+						$found_extension = true;
+						$uuid = $tmp_row->uuid;
+						//$direction = $tmp_row->direction;
+						//$sip_profile = $tmp_row->sip_profile;
+						$created = $tmp_row->created;
+						$created_epoch = $tmp_row->created_epoch;
+						$name = $tmp_row->name;
+						$state = $tmp_row->state;
+						$cid_name = $tmp_row->cid_name;
+						$cid_num = $tmp_row->cid_num;
+						$ip_addr = $tmp_row->ip_addr;
+						$dest = $tmp_row->dest;
+						$application = $tmp_row->application;
+						$application_data = $tmp_row->application_data;
+						$dialplan = $tmp_row->dialplan;
+						$context = $tmp_row->context;
+						$read_codec = $tmp_row->read_codec;
+						$read_rate = $tmp_row->read_rate;
+						$write_codec = $tmp_row->write_codec;
+						$write_rate = $tmp_row->write_rate;
+						$secure = $tmp_row->secure;
+
+						//remove the '+' because it breaks the call recording
+						$cid_num = str_replace("+", "", $cid_num);
+
+						$call_length_seconds = time() - $created_epoch;
+						$call_length_hour = floor($call_length_seconds/3600);
+						$call_length_min = floor($call_length_seconds/60 - ($call_length_hour * 60));
+						$call_length_sec = $call_length_seconds - (($call_length_hour * 3600) + ($call_length_min * 60));
+						$call_length_min = sprintf("%02d", $call_length_min);
+						$call_length_sec = sprintf("%02d", $call_length_sec);
+						$call_length = $call_length_hour.':'.$call_length_min.':'.$call_length_sec;
+					}
 				}
-				switch ($application) {
-				case "conference":
-					$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_conference.gif');\"";
-					break;
-				case "fifo":
-					$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_fifo.gif');\"";
-					break;
-				default:
-					$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_active.gif');\"";
+
+				if ($found_extension) {
+					if ($application == "conference") { 
+						$alt_color = "background-image: url('".PROJECT_PATH."/images/background_cell_active.gif";
+					}
+					switch ($application) {
+					case "conference":
+						$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_conference.gif');\"";
+						break;
+					case "fifo":
+						$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_fifo.gif');\"";
+						break;
+					default:
+						$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_active.gif');\"";
+					}
+					echo "<tr>\n";
+					echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
+					if ($_SESSION['user_status_display'] == "false") {
+						//hide the user_status when it is set to false
+					}
+					else {
+						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension.'_'.$_SESSION['username']]['user_status']."</td>\n";
+					}
+					echo "<td class='".$rowstyle[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
+					if (ifgroup("admin") || ifgroup("superadmin")) {
+						if (strlen(($_GET['rows'])) == 0) {
+							//echo "<td class='".$rowstyle[$c]."' $style_alternate>$direction</td>\n";
+							//echo "<td class='".$rowstyle[$c]."' $style_alternate>$sip_profile</td>\n";
+							if (strlen($url) == 0) {
+								echo "<td class='".$rowstyle[$c]."' $style_alternate>".$cid_name."</td>\n";
+								echo "<td class='".$rowstyle[$c]."' $style_alternate>".$cid_num."</td>\n";
+							}
+							else {
+								echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."cid_name=".$cid_name."&cid_num=".$cid_num."' style='color: #444444;' target='_blank'>".$cid_name."</a></td>\n";
+								echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."cid_name=".$cid_name."&cid_num=".$cid_num."' style='color: #444444;' target='_blank'>".$cid_num."</a></td>\n";
+							}
+						}
+					}
 				}
-				echo "<tr>\n";
-				echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
-				echo "<td class='".$rowstyle[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
+				else {
+					$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_light.gif');\"";
+					echo "<tr>\n";
+					echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
+					if ($_SESSION['user_status_display'] == "false") {
+						//hide the user_status when it is set to false
+					}
+					else {
+						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension.'_'.$_SESSION['username']]['user_status']."</td>\n";
+					}
+					echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+					if (ifgroup("admin") || ifgroup("superadmin")) {
+						if (strlen(($_GET['rows'])) == 0) {
+							//echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+							//echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+						}
+					}
+				}
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					if (strlen(($_GET['rows'])) == 0) {
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>$direction</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>$sip_profile</td>\n";
-						if (strlen($url) == 0) {
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$cid_name."</td>\n";
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$cid_num."</td>\n";
+						if ($found_extension) {
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
 						}
 						else {
-							echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."cid_name=".$cid_name."&cid_num=".$cid_num."' style='color: #444444;' target='_blank'>".$cid_name."</a></td>\n";
-							echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."cid_name=".$cid_name."&cid_num=".$cid_num."' style='color: #444444;' target='_blank'>".$cid_num."</a></td>\n";
+							echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						}
+						echo "".$dest."<br />\n";
+						echo "</td>\n";
+
+						if ($found_extension) {
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+						}
+						else {
+							echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						}
+						if ($application == "fifo") {
+							echo "queue &nbsp;\n";
+						}
+						else {
+							echo $application." &nbsp;\n";
+						}
+						echo "</td>\n";
+
+						if ($found_extension) {
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+						}
+						else {
+							echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						}
+						echo "".$secure."<br />\n";
+						echo "</td>\n";
+					}
+				}
+				if ($found_extension) {
+					echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+				}
+				else {
+					echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+				}
+				echo "".$effective_caller_id_name."<br />\n";
+				echo "</td>\n";
+				if (ifgroup("admin") || ifgroup("superadmin")) {
+					if (strlen(($_GET['rows'])) == 0) {
+						if ($found_extension) {
+							echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+								//transfer
+									//uuid_transfer c985c31b-7e5d-3844-8b3b-aa0835ff6db9 -bleg *9999 xml default
+									//document.getElementById('url').innerHTML='v_calls_exec.php?action=energy&direction=down&cmd='+prepare_cmd(escape('$uuid'));
+									echo "	<a href='javascript:void(0);' style='color: #444444;' onMouseover=\"document.getElementById('form_label').innerHTML='<strong>Transfer To</strong>';\" onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">transfer</a>&nbsp;\n";
+
+								//park
+									echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_park_cmd(escape('$uuid')));\">park</a>&nbsp;\n";
+
+								//hangup
+									echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to hangup this call?');if (confirm_response){send_cmd('v_calls_exec.php?cmd=uuid_kill%20'+(escape('$uuid')));}\">hangup</a>&nbsp;\n";
+
+								//record start/stop
+									$tmp_file = $v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d")."/".$uuid.".wav";
+									if (file_exists($tmp_file)) {
+										//stop
+										echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_extensions_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=stop&prefix=active_extensions_&name='+escape('$cid_num'));\">stop record</a>&nbsp;\n";
+									}
+									else {
+										//start
+										echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_extensions_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=start&prefix=active_extensions_');\">start record</a>&nbsp;\n";
+									}
+
+								echo "	&nbsp;";
+							echo "</td>\n";
+						}
+						else {
+							echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+							echo "	&nbsp;";
+							echo "</td>\n";
 						}
 					}
 				}
-			}
-			else {
-				$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_light.gif');\"";
-				echo "<tr>\n";
-				echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
-				echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-				if (ifgroup("admin") || ifgroup("superadmin")) {
-					if (strlen(($_GET['rows'])) == 0) {
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-					}
-				}
-			}
-			if (ifgroup("admin") || ifgroup("superadmin")) {
-				if (strlen(($_GET['rows'])) == 0) {
-					if ($found_extension) {
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
-					}
-					else {
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-					}
-					echo "".$dest."<br />\n";
-					echo "</td>\n";
 
-					if ($found_extension) {
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
-					}
-					else {
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-					}
-					if ($application == "fifo") {
-						echo "queue &nbsp;\n";
-					}
-					else {
-						echo $application." &nbsp;\n";
-					}
-					echo "</td>\n";
-
-					if ($found_extension) {
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
-					}
-					else {
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-					}
-					echo "".$secure."<br />\n";
-					echo "</td>\n";
-				}
-			}
-			if ($found_extension) {
-				echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
-			}
-			else {
-				echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-			}
-			echo "".$description."<br />\n";
-			echo "</td>\n";
-			if (ifgroup("admin") || ifgroup("superadmin")) {
-				if (strlen(($_GET['rows'])) == 0) {
-					if ($found_extension) {
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-							//transfer
-								//uuid_transfer c985c31b-7e5d-3844-8b3b-aa0835ff6db9 -bleg *9999 xml default
-								//document.getElementById('url').innerHTML='v_calls_exec.php?action=energy&direction=down&cmd='+prepare_cmd(escape('$uuid'));
-								echo "	<a href='javascript:void(0);' style='color: #444444;' onMouseover=\"document.getElementById('form_label').innerHTML='<strong>Transfer To</strong>';\" onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">transfer</a>&nbsp;\n";
-
-							//park
-								echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_park_cmd(escape('$uuid')));\">park</a>&nbsp;\n";
-
-							//hangup
-								echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to hangup this call?');if (confirm_response){send_cmd('v_calls_exec.php?cmd=uuid_kill%20'+(escape('$uuid')));}\">hangup</a>&nbsp;\n";
-
-							//record start/stop
-								$tmp_file = $v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d")."/".$uuid.".wav";
-								if (file_exists($tmp_file)) {
-									//stop
-									echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_extensions_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=stop&prefix=active_extensions_&name='+escape('$cid_num'));\">stop record</a>&nbsp;\n";
-								}
-								else {
-									//start
-									echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_extensions_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=start&prefix=active_extensions_');\">start record</a>&nbsp;\n";
-								}
-
-							echo "	&nbsp;";
-						echo "</td>\n";
-					}
-					else {
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-						echo "	&nbsp;";
-						echo "</td>\n";
-					}
-				}
-			}
-
-			echo "</tr>\n";
-
-			unset($found_extension);
-			unset($uuid);
-			unset($direction);
-			unset($sip_profile);
-			unset($created);
-			unset($created_epoch);
-			unset($name);
-			unset($state);
-			unset($cid_name);
-			unset($cid_num);
-			unset($ip_addr);
-			unset($dest);
-			unset($application);
-			unset($application_data);
-			unset($dialplan);
-			unset($context);
-			unset($read_codec);
-			unset($read_rate);
-			unset($write_codec);
-			unset($write_rate);
-			unset($secure);
-
-			if ($x == $rows) {
-				$x = 0;
-				echo "</table>\n";
-
-				echo "</td>\n";
-				echo "<td valign='top'>\n";
-
-				echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-				echo "<tr>\n";
-				echo "<th>Ext</th>\n";
-				echo "<th>Time</th>\n";
-				if (ifgroup("admin") || ifgroup("superadmin")) {
-					if (strlen(($_GET['rows'])) == 0) {
-						echo "<th>Direction</th>\n";
-						echo "<th>Profile</th>\n";
-						echo "<th>CID Name</th>\n";
-						echo "<th>CID Number</th>\n";
-						echo "<th>Dest</th>\n";
-						echo "<th>App</th>\n";
-						echo "<th>Secure</th>\n";
-					}
-				}
-				echo "<th>Description</th>\n";
-				if (ifgroup("admin") || ifgroup("superadmin")) {
-					if (strlen(($_GET['rows'])) == 0) {
-						echo "<th>Options</th>\n";
-					}
-				}
 				echo "</tr>\n";
-			}
-			$x++;
-			if ($c==0) { $c=1; } else { $c=0; }
-		}
 
-	echo "</table>\n";
+				unset($found_extension);
+				unset($uuid);
+				//unset($direction);
+				//unset($sip_profile);
+				unset($created);
+				unset($created_epoch);
+				unset($name);
+				unset($state);
+				unset($cid_name);
+				unset($cid_num);
+				unset($ip_addr);
+				unset($dest);
+				unset($application);
+				unset($application_data);
+				unset($dialplan);
+				unset($context);
+				unset($read_codec);
+				unset($read_rate);
+				unset($write_codec);
+				unset($write_rate);
+				unset($secure);
+
+				if ($x == $rows) {
+					$x = 0;
+					echo "</table>\n";
+
+					echo "</td>\n";
+					echo "<td valign='top'>\n";
+
+					echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+					echo "<tr>\n";
+					echo "<th>Ext</th>\n";
+					if ($_SESSION['user_status_display'] == "false") {
+						//hide the user_status when it is set to false
+					}
+					else {
+						echo "<th>Status</th>\n";
+					}
+					echo "<th>Time</th>\n";
+					if (ifgroup("admin") || ifgroup("superadmin")) {
+						if (strlen(($_GET['rows'])) == 0) {
+							//echo "<th>Direction</th>\n";
+							//echo "<th>Profile</th>\n";
+							echo "<th>CID Name</th>\n";
+							echo "<th>CID Number</th>\n";
+							echo "<th>Dest</th>\n";
+							echo "<th>App</th>\n";
+							echo "<th>Secure</th>\n";
+						}
+					}
+					echo "<th>Name</th>\n";
+					if (ifgroup("admin") || ifgroup("superadmin")) {
+						if (strlen(($_GET['rows'])) == 0) {
+							echo "<th>Options</th>\n";
+						}
+					}
+					echo "</tr>\n";
+				}
+				$x++;
+				if ($c==0) { $c=1; } else { $c=0; }
+			}
+
+		echo "</table>\n";
+	}
 
 echo "<br /><br />\n";
 echo "<div id='cmd_reponse'>\n";

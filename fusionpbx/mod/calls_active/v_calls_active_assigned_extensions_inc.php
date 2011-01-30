@@ -35,45 +35,43 @@ require_once "includes/checkauth.php";
 // active extensions
 
 	//get a list of assigned extensions for this user
-		$sql = "";
-		$sql .= " select * from v_extensions ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		//$v_mailboxes = '';
-		$x = 0;
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			//$v_mailboxes = $v_mailboxes.$row["extension"].'|';
-			//$extension_id = $row["extension_id"]
-			//$extension = $row["extension"]
-			$user_array[$x]['extension_id'] = $row["extension_id"];
-			$user_array[$x]['extension'] = $row["extension"];
-			$x++;
+		if (count($_SESSION['user_extension_array']) == 0) {
+			$sql = "";
+			$sql .= "select * from v_extensions ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$x = 0;
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
+				$user_extension_array[$x]['extension_id'] = $row["extension_id"];
+				$user_extension_array[$x]['extension'] = $row["extension"];
+				//$user_extension_array[$x]['zzz'] = $row["zzz"];
+				$x++;
+			}
+			unset ($prepstatement, $x);
+			$_SESSION['user_extension_array'] = $user_extension_array;
 		}
-		unset ($prepstatement, $x);
-		//$user_list = str_replace("\n", "|", "|".$user_list);
-		//echo "v_mailboxes $v_mailboxes<br />";
-		//$user_array = explode ("|", $v_mailboxes);
-		//echo "<pre>\n";
-		//print_r($user_array);
-		//echo "</pre>\n";
 
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-		echo "</tr>\n";
-
 		echo "<tr>\n";
 		echo "<th>Extension</th>\n";
+		if ($_SESSION['user_status_display'] == "false") {
+			//hide the user_status when it is set to false
+		}
+		else {
+			echo "<th>Status</th>\n";
+		}
 		echo "<th>Time</th>\n";
-		echo "<th>Direction</th>\n";
-		echo "<th>Profile</th>\n";
+		//echo "<th>Direction</th>\n";
+		//echo "<th>Profile</th>\n";
 		echo "<th>CID Name</th>\n";
 		echo "<th>CID Number</th>\n";
 		echo "<th>Dest</th>\n";
 		echo "<th>Application</th>\n";
 		echo "<th>Secure</th>\n";
-		echo "<th>Description</th>\n";
+		echo "<th>Name</th>\n";
 		echo "<th>Options</th>\n";
 		echo "</tr>\n";
 		foreach ($_SESSION['extension_array'] as $row) {
@@ -81,9 +79,9 @@ require_once "includes/checkauth.php";
 			$v_id = $row['v_id'];
 			$extension = $row['extension'];
 			$enabled = $row['enabled'];
-			$description = $row['description'];
+			$effective_caller_id_name = $row['effective_caller_id_name'];
 
-			foreach ($user_array as &$user_row) {
+			foreach ($_SESSION['user_extension_array'] as &$user_row) {
 				if ($extension == $user_row['extension']) {
 
 					$found_extension = false;
@@ -92,8 +90,8 @@ require_once "includes/checkauth.php";
 						if ($tmp_row->number == $extension) {
 							$found_extension = true;
 							$uuid = $tmp_row->uuid;
-							$direction = $tmp_row->direction;
-							$sip_profile = $tmp_row->sip_profile;
+							//$direction = $tmp_row->direction;
+							//$sip_profile = $tmp_row->sip_profile;
 							$created = $tmp_row->created;
 							$created_epoch = $tmp_row->created_epoch;
 							$name = $tmp_row->name;
@@ -122,7 +120,6 @@ require_once "includes/checkauth.php";
 							$call_length_min = sprintf("%02d", $call_length_min);
 							$call_length_sec = sprintf("%02d", $call_length_sec);
 							$call_length = $call_length_hour.':'.$call_length_min.':'.$call_length_sec;
-
 						}
 					} //end foreach
 
@@ -143,9 +140,15 @@ require_once "includes/checkauth.php";
 						}
 						echo "<tr>\n";
 						echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
+						if ($_SESSION['user_status_display'] == "false") {
+							//hide the user_status when it is set to false
+						}
+						else {
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension.'_'.$_SESSION["username"]]['user_status']."</td>\n";
+						}
 						echo "<td class='".$rowstyle[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>$direction</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>$sip_profile</td>\n";
+						//echo "<td class='".$rowstyle[$c]."' $style_alternate>$direction</td>\n";
+						//echo "<td class='".$rowstyle[$c]."' $style_alternate>$sip_profile</td>\n";
 						if (strlen($url) == 0) {
 							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$cid_name."</td>\n";
 							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$cid_num."</td>\n";
@@ -177,9 +180,15 @@ require_once "includes/checkauth.php";
 						$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_light.gif');\"";
 						echo "<tr>\n";
 						echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
+						if ($_SESSION['user_status_display'] == "false") {
+							//hide the user_status when it is set to false
+						}
+						else {
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension.'_'.$_SESSION["username"]]['user_status']."</td>\n";
+						}
 						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+						//echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+						//echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
 						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
 						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
 					}
@@ -222,7 +231,7 @@ require_once "includes/checkauth.php";
 					else {
 						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
 					}
-					echo "".$description."<br />\n";
+					echo "".$effective_caller_id_name."<br />\n";
 					echo "</td>\n";
 
 					if ($found_extension) {
@@ -262,8 +271,8 @@ require_once "includes/checkauth.php";
 
 					unset($found_extension);
 					unset($uuid);
-					unset($direction);
-					unset($sip_profile);
+					//unset($direction);
+					//unset($sip_profile);
 					unset($created);
 					unset($created_epoch);
 					unset($name);

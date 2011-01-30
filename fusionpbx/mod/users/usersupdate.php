@@ -106,6 +106,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$userphone2ext = check_str($_POST["userphone2ext"]);
 	$userphonemobile = check_str($_POST["userphonemobile"]);
 	$userphonefax = check_str($_POST["userphonefax"]);
+	$user_status = check_str($_POST["user_status"]);
 	$user_template_name = check_str($_POST["user_template_name"]);
 	$useremail = check_str($_POST["useremail"]);
 	$groupmember = check_str($_POST["groupmember"]);
@@ -130,7 +131,6 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	//if (strlen($useremail) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
 	//if (strlen($useremailemergency) == 0) { $msgerror .= "Please provide an emergency email.<br>\n"; }
 
-
 	if (strlen($msgerror) > 0) {
 		require_once "includes/header.php";
 		echo "<div align='center'>";
@@ -149,57 +149,58 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$_SESSION["template_name"] = $user_template_name;
 
 	//sql update
-	$sql  = "update v_users set ";
-	if (ifgroup("admin") && strlen($_POST["username"])> 0) {
-		$sql .= "username = '$username', ";
-	}
-	if (strlen($password) > 0 && $confirmpassword == $password) {
-		$sql .= "password = '".md5($salt.$password)."', ";
-	}
-	$sql .= "userfirstname = '$userfirstname', ";
-	$sql .= "userlastname = '$userlastname', ";
-	$sql .= "usercompanyname = '$usercompanyname', ";
-	$sql .= "userphysicaladdress1 = '$userphysicaladdress1', ";
-	$sql .= "userphysicaladdress2 = '$userphysicaladdress2', ";
-	$sql .= "userphysicalcity = '$userphysicalcity', ";
-	$sql .= "userphysicalstateprovince = '$userphysicalstateprovince', ";
-	$sql .= "userphysicalcountry = '$userphysicalcountry', ";
-	$sql .= "userphysicalpostalcode = '$userphysicalpostalcode', ";
-	$sql .= "usermailingaddress1 = '$usermailingaddress1', ";
-	$sql .= "usermailingaddress2 = '$usermailingaddress2', ";
-	$sql .= "usermailingcity = '$usermailingcity', ";
-	$sql .= "usermailingstateprovince = '$usermailingstateprovince', ";
-	$sql .= "usermailingcountry = '$usermailingcountry', ";
-	$sql .= "usermailingpostalcode = '$usermailingpostalcode', ";
-	$sql .= "userbillingaddress1 = '$userbillingaddress1', ";
-	$sql .= "userbillingaddress2 = '$userbillingaddress2', ";
-	$sql .= "userbillingcity = '$userbillingcity', ";
-	$sql .= "userbillingstateprovince = '$userbillingstateprovince', ";
-	$sql .= "userbillingcountry = '$userbillingcountry', ";
-	$sql .= "userbillingpostalcode = '$userbillingpostalcode', ";
-	$sql .= "usershippingaddress1 = '$usershippingaddress1', ";
-	$sql .= "usershippingaddress2 = '$usershippingaddress2', ";
-	$sql .= "usershippingcity = '$usershippingcity', ";
-	$sql .= "usershippingstateprovince = '$usershippingstateprovince', ";
-	$sql .= "usershippingcountry = '$usershippingcountry', ";
-	$sql .= "usershippingpostalcode = '$usershippingpostalcode', ";
-	$sql .= "userurl = '$userurl', ";
-	$sql .= "userphone1 = '$userphone1', ";
-	$sql .= "userphone1ext = '$userphone1ext', ";
-	$sql .= "userphone2 = '$userphone2', ";
-	$sql .= "userphone2ext = '$userphone2ext', ";
-	$sql .= "userphonemobile = '$userphonemobile', ";
-	$sql .= "userphonefax = '$userphonefax', ";
-	$sql .= "user_template_name = '$user_template_name', ";
-	$sql .= "useremail = '$useremail' ";
-	if (strlen($id)> 0) {
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and id = $id ";
-	}
-	else {
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and username = '$username' ";
-	}
+		$sql  = "update v_users set ";
+		if (ifgroup("admin") && strlen($_POST["username"])> 0) {
+			$sql .= "username = '$username', ";
+		}
+		if (strlen($password) > 0 && $confirmpassword == $password) {
+			$sql .= "password = '".md5($salt.$password)."', ";
+		}
+		$sql .= "userfirstname = '$userfirstname', ";
+		$sql .= "userlastname = '$userlastname', ";
+		$sql .= "usercompanyname = '$usercompanyname', ";
+		$sql .= "userphysicaladdress1 = '$userphysicaladdress1', ";
+		$sql .= "userphysicaladdress2 = '$userphysicaladdress2', ";
+		$sql .= "userphysicalcity = '$userphysicalcity', ";
+		$sql .= "userphysicalstateprovince = '$userphysicalstateprovince', ";
+		$sql .= "userphysicalcountry = '$userphysicalcountry', ";
+		$sql .= "userphysicalpostalcode = '$userphysicalpostalcode', ";
+		$sql .= "usermailingaddress1 = '$usermailingaddress1', ";
+		$sql .= "usermailingaddress2 = '$usermailingaddress2', ";
+		$sql .= "usermailingcity = '$usermailingcity', ";
+		$sql .= "usermailingstateprovince = '$usermailingstateprovince', ";
+		$sql .= "usermailingcountry = '$usermailingcountry', ";
+		$sql .= "usermailingpostalcode = '$usermailingpostalcode', ";
+		$sql .= "userbillingaddress1 = '$userbillingaddress1', ";
+		$sql .= "userbillingaddress2 = '$userbillingaddress2', ";
+		$sql .= "userbillingcity = '$userbillingcity', ";
+		$sql .= "userbillingstateprovince = '$userbillingstateprovince', ";
+		$sql .= "userbillingcountry = '$userbillingcountry', ";
+		$sql .= "userbillingpostalcode = '$userbillingpostalcode', ";
+		$sql .= "usershippingaddress1 = '$usershippingaddress1', ";
+		$sql .= "usershippingaddress2 = '$usershippingaddress2', ";
+		$sql .= "usershippingcity = '$usershippingcity', ";
+		$sql .= "usershippingstateprovince = '$usershippingstateprovince', ";
+		$sql .= "usershippingcountry = '$usershippingcountry', ";
+		$sql .= "usershippingpostalcode = '$usershippingpostalcode', ";
+		$sql .= "userurl = '$userurl', ";
+		$sql .= "userphone1 = '$userphone1', ";
+		$sql .= "userphone1ext = '$userphone1ext', ";
+		$sql .= "userphone2 = '$userphone2', ";
+		$sql .= "userphone2ext = '$userphone2ext', ";
+		$sql .= "userphonemobile = '$userphonemobile', ";
+		$sql .= "userphonefax = '$userphonefax', ";
+		$sql .= "user_status = '$user_status', ";
+		$sql .= "user_template_name = '$user_template_name', ";
+		$sql .= "useremail = '$useremail' ";
+		if (strlen($id)> 0) {
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and id = $id ";
+		}
+		else {
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and username = '$username' ";
+		}
 
 	$count = $db->exec(check_sql($sql));
 	if (strlen($groupmember) > 0) {
@@ -299,6 +300,7 @@ else {
 		$userphonemobile = $row["userphonemobile"];
 		$userphonefax = $row["userphonefax"];
 		$useremail = $row["useremail"];
+		$user_status = $row["user_status"];
 		$user_template_name = $row["user_template_name"];
 		break; //limit to 1 row
 	}
@@ -524,6 +526,53 @@ else {
 	echo "		<td class='vtable'><input type='text' class='formfld' name='useremail' value=\"$useremail\"></td>";
 	echo "	</tr>";
 	echo "	<tr>\n";
+	if ($_SESSION['user_status_display'] == "false") {
+		//hide the user_status when it is set to false
+	}
+	else {
+		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "		Status: ".$_SESSION['user_status_display']."\n";
+		echo "	</td>\n";
+		echo "	<td class=\"vtable\">\n";
+		echo "		<select id='user_status' name='user_status' class='formfld' style=''>\n";
+		echo "		<option value=''></option>\n";
+		if ($user_status == "Available") {
+			echo "		<option value='Available' selected='selected'>Available</option>\n";
+		}
+		else {
+			echo "		<option value='Available'>Available</option>\n";
+		}
+		if ($user_status == "Available (On Demand)") {
+			echo "		<option value='Available (On Demand)' selected='selected'>Available (On Demand)</option>\n";
+		}
+		else {
+			echo "		<option value='Available (On Demand)'>Available (On Demand)</option>\n";
+		}
+		if ($user_status == "Logged Out") {
+			echo "		<option value='Logged Out' selected='selected'>Logged Out</option>\n";
+		}
+		else {
+			echo "		<option value='Logged Out'>Logged Out</option>\n";
+		}
+		if ($user_status == "On Break") {
+			echo "		<option value='On Break' selected='selected'>On Break</option>\n";
+		}
+		else {
+			echo "		<option value='On Break'>On Break</option>\n";
+		}
+		if ($user_status == "Do Not Disturb") {
+			echo "		<option value='Do Not Disturb' selected='selected'>Do Not Disturb</option>\n";
+		}
+		else {
+			echo "		<option value='Do Not Disturb'>Do Not Disturb</option>\n";
+		}
+		echo "		</select>\n";
+		echo "		<br />\n";
+		echo "		Select a template to set as the default and then press save.<br />\n";
+		echo "	</td>\n";
+		echo "	</tr>\n";
+	}
+	echo "	<tr>\n";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 	echo "		Template: \n";
 	echo "	</td>\n";
@@ -551,6 +600,7 @@ else {
 	echo "		Select a template to set as the default and then press save.<br />\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
+
 	echo "    </table>";
 	echo "    </div>";
 

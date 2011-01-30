@@ -25,14 +25,6 @@
 */
 include "root.php";
 require_once "includes/config.php";
-//require_once "includes/checkauth.php";
-//if (ifgroup("admin") || ifgroup("superadmin")) {
-//	//access granted
-//}
-//else {
-//	echo "access denied";
-//	exit;
-//}
 
 $v_id = '1';
 
@@ -42,19 +34,47 @@ $v_id = '1';
 	$v_fax_show = true;
 	$v_path_show = true;
 
-//determine whether to use php http compression
-	if (strlen($_SESSION['http_compression']) == 0) {
+//get user defined variables
+	if (strlen($_SESSION['user_defined_variables']) == 0) {
 		$sql = "";
 		$sql .= "select * from v_vars ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and var_name = 'http_compression' ";
+		$sql .= "and var_cat = 'Defaults' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$_SESSION['http_compression'] = $row["var_value"];
-			break; //limit to 1 row
+			switch ($row["var_name"]) {
+				case "username":
+					//not allowed to override this value
+					break;
+				case "groups":
+					//not allowed to override this value
+					break;
+				case "menu":
+					//not allowed to override this value
+					break;
+				case "template_name":
+					//not allowed to override this value
+					break;
+				case "template_content":
+					//not allowed to override this value
+					break;
+				case "extension_array":
+					//not allowed to override this value
+					break;
+				case "user_extension_array":
+					//not allowed to override this value
+					break;
+				case "user_array":
+					//not allowed to override this value
+					break;
+				default:
+					$_SESSION[$row["var_name"]] = $row["var_value"];
+			}
 		}
+		//when this value is cleared it will re-read the user defined variables
+		$_SESSION["user_defined_variables"] = "set";
 	}
 
 //set http compression
@@ -70,8 +90,7 @@ $v_id = '1';
 		ob_start();
 	}
 
-function v_settings()
-{
+function v_settings() {
 	global $db, $v_id, $v_secure;
 
 	$program_dir = '';
@@ -88,7 +107,6 @@ function v_settings()
 		$x++;
 	}
 	$program_dir = rtrim($program_dir, "/");
-	//echo "program_dir: $program_dir<br />";
 
 	$sql = "";
 	$sql .= "select * from v_system_settings ";

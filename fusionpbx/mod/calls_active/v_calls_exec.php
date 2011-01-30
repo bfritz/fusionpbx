@@ -30,15 +30,6 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-//authorized group
-	//if (ifgroup("admin")) {
-	//	//access granted
-	//}
-	//else {
-	//	echo "access denied";
-	//	exit;
-	//}
-
 //authorized referrer
 	if(stristr($_SERVER["HTTP_REFERER"], '/v_calls_active_extensions.php') === false) {
 		if(stristr($_SERVER["HTTP_REFERER"], '/v_calls_active.php') === false) {
@@ -51,6 +42,7 @@ require_once "includes/checkauth.php";
 	if (count($_GET)>0) {
 		$switch_cmd = trim($_GET["cmd"]);
 		$action = trim($_GET["action"]);
+		$data = trim($_GET["data"]);
 		$direction = trim($_GET["direction"]);
 	}
 
@@ -63,6 +55,8 @@ require_once "includes/checkauth.php";
 		//authorized;
 	} elseif (stristr($switch_cmd, 'uuid_record') == true) {
 		//authorized;
+	} elseif (stristr($action, 'user_status') == true) {
+		//authorized;
 	} else {
 		//not found. this command is not authorized
 		echo "access denied";
@@ -71,10 +65,40 @@ require_once "includes/checkauth.php";
 
 
 if (count($_GET)>0) {
+	if (stristr($action, 'user_status') == true) {
+		$user_status = $data;
+		switch ($data) {
+		case "Available":
+			$user_status = "Available";
+			break;
+		case "Available_On_Demand":
+			$user_status = "Available (On Demand)";
+			break;
+		case "Logged_Out":
+			$user_status = "Logged Out";
+			break;
+		case "On_Break":
+			$user_status = "On Break";
+			break;
+		case "Do_Not_Disturb":
+			$user_status = "Do Not Disturb";
+			break;
+		default:
+			$user_status = "";
+		}
+		$sql  = "update v_users set ";
+		$sql .= "user_status = '$user_status' ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and username = '".$_SESSION['username']."' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		exit;
+	}
+
 	//fs cmd
 	if (strlen($switch_cmd) > 0) {
 
-	//get the event socket information
+		//get the event socket information
 		if (strlen($_SESSION['event_socket_ip_address']) == 0) {
 				$sql = "";
 				$sql .= "select * from v_settings ";
