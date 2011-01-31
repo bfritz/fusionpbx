@@ -57,6 +57,8 @@ require_once "includes/checkauth.php";
 		//authorized;
 	} elseif (stristr($action, 'user_status') == true) {
 		//authorized;
+	} elseif (stristr($action, 'callcenter_config') == true) {
+		//authorized;
 	} else {
 		//not found. this command is not authorized
 		echo "access denied";
@@ -92,11 +94,16 @@ if (count($_GET)>0) {
 		$sql .= "and username = '".$_SESSION['username']."' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
-		exit;
 	}
 
 	//fs cmd
 	if (strlen($switch_cmd) > 0) {
+
+		//set the status so they are compatible with mod_callcenter
+			$switch_cmd = str_replace("Available_On_Demand", "'Available (On Demand)'", $switch_cmd);
+			$switch_cmd = str_replace("Logged_Out", "'Logged Out'", $switch_cmd);
+			$switch_cmd = str_replace("On_Break", "'On Break'", $switch_cmd);
+			$switch_cmd = str_replace("Do_Not_Disturb", "'Logged Out'", $switch_cmd);
 
 		//get the event socket information
 		if (strlen($_SESSION['event_socket_ip_address']) == 0) {
@@ -118,7 +125,7 @@ if (count($_GET)>0) {
 
 		/*
 		//if ($action == "energy") {
-			//conference 3001-markjcrane.dyndns.org energy 103
+			//conference 3001-example.org energy 103
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 			$result_array = explode("=",$switch_result);
 			$tmp_value = $result_array[1];
