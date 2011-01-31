@@ -124,6 +124,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$userphone2ext = check_str($_POST["userphone2ext"]);
 	$userphonemobile = check_str($_POST["userphonemobile"]);
 	$userphonefax = check_str($_POST["userphonefax"]);
+	$user_status = check_str($_POST["user_status"]);
 	$user_template_name = check_str($_POST["user_template_name"]);
 	$useremail = check_str($_POST["useremail"]);
 	$groupmember = check_str($_POST["groupmember"]);
@@ -235,6 +236,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "userphone2ext = '$userphone2ext', ";
 		$sql .= "userphonemobile = '$userphonemobile', ";
 		$sql .= "userphonefax = '$userphonefax', ";
+		$sql .= "user_status = '$user_status', ";
 		$sql .= "user_template_name = '$user_template_name', ";
 		$sql .= "useremail = '$useremail' ";
 		if (strlen($id)> 0) {
@@ -246,6 +248,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 			$sql .= "and username = '$username' ";
 		}
 		$count = $db->exec(check_sql($sql));
+
+	//update the user_status
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		$switch_cmd .= "callcenter_config agent set status ".$username."@".$v_domain." '".$user_status."'";
+		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 
 	//clear the template so it will rebuild in case the template was changed
 		$_SESSION["template_content"] = '';
@@ -324,6 +331,7 @@ else {
 		$userphonemobile = $row["userphonemobile"];
 		$userphonefax = $row["userphonefax"];
 		$useremail = $row["useremail"];
+		$user_status = $row["user_status"];
 		$user_template_name = $row["user_template_name"];
 		break; //limit to 1 row
 	}
@@ -601,6 +609,54 @@ else {
 	echo "		<td class='vncell'>Email:</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='useremail' value=\"$useremail\"></td>";
 	echo "	</tr>";
+	if ($_SESSION['user_status_display'] == "false") {
+		//hide the user_status when it is set to false
+	}
+	else {
+		echo "	<tr>\n";
+		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "		Status:\n";
+		echo "	</td>\n";
+		echo "	<td class=\"vtable\">\n";
+		$cmd = "'/mod/calls_active/v_calls_exec.php?cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$v_domain."+'+this.value";
+		echo "		<select id='user_status' name='user_status' class='formfld' style='' onchange=\"send_cmd($cmd);\">\n";
+		echo "		<option value=''></option>\n";
+		if ($user_status == "Available") {
+			echo "		<option value='Available' selected='selected'>Available</option>\n";
+		}
+		else {
+			echo "		<option value='Available'>Available</option>\n";
+		}
+		if ($user_status == "Available (On Demand)") {
+			echo "		<option value='Available (On Demand)' selected='selected'>Available (On Demand)</option>\n";
+		}
+		else {
+			echo "		<option value='Available (On Demand)'>Available (On Demand)</option>\n";
+		}
+		if ($user_status == "Logged Out") {
+			echo "		<option value='Logged Out' selected='selected'>Logged Out</option>\n";
+		}
+		else {
+			echo "		<option value='Logged Out'>Logged Out</option>\n";
+		}
+		if ($user_status == "On Break") {
+			echo "		<option value='On Break' selected='selected'>On Break</option>\n";
+		}
+		else {
+			echo "		<option value='On Break'>On Break</option>\n";
+		}
+		if ($user_status == "Do Not Disturb") {
+			echo "		<option value='Do Not Disturb' selected='selected'>Do Not Disturb</option>\n";
+		}
+		else {
+			echo "		<option value='Do Not Disturb'>Do Not Disturb</option>\n";
+		}
+		echo "		</select>\n";
+		echo "		<br />\n";
+		echo "		Select a template to set as the default and then press save.<br />\n";
+		echo "	</td>\n";
+		echo "	</tr>\n";
+	}
 	echo "	<tr>\n";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 	echo "		Template: \n";

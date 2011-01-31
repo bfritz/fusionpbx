@@ -202,6 +202,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 			$sql .= "and username = '$username' ";
 		}
 
+	//update the user_status
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		$switch_cmd .= "callcenter_config agent set status ".$username."@".$v_domain." '".$user_status."'";
+		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+
 	$count = $db->exec(check_sql($sql));
 	if (strlen($groupmember) > 0) {
 		//groupmemberlist function defined in config.php
@@ -525,16 +530,17 @@ else {
 	echo "		<td class='vncell'>Email:</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='useremail' value=\"$useremail\"></td>";
 	echo "	</tr>";
-	echo "	<tr>\n";
 	if ($_SESSION['user_status_display'] == "false") {
 		//hide the user_status when it is set to false
 	}
 	else {
+		echo "	<tr>\n";
 		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-		echo "		Status: ".$_SESSION['user_status_display']."\n";
+		echo "		Status:\n";
 		echo "	</td>\n";
 		echo "	<td class=\"vtable\">\n";
-		echo "		<select id='user_status' name='user_status' class='formfld' style=''>\n";
+		$cmd = "'/mod/calls_active/v_calls_exec.php?cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$v_domain."+'+this.value";
+		echo "		<select id='user_status' name='user_status' class='formfld' style='' onchange=\"send_cmd($cmd);\">\n";
 		echo "		<option value=''></option>\n";
 		if ($user_status == "Available") {
 			echo "		<option value='Available' selected='selected'>Available</option>\n";

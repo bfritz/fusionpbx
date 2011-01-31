@@ -273,6 +273,23 @@ foreach($v_settings_array as $name => $value) {
 }
 
 
+//get the event socket information
+	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
+			$sql = "";
+			$sql .= "select * from v_settings ";
+			$sql .= "where v_id = '$v_id' ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
+				$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
+				$_SESSION['event_socket_port'] = $row["event_socket_port"];
+				$_SESSION['event_socket_password'] = $row["event_socket_password"];
+				break; //limit to 1 row
+			}
+	}
+
+
 //get the extensions that are assigned to this user
 	if (strlen($_SESSION['user_extension_list']) == 0) {
 		$_SESSION['user_extension_list'] = '';
