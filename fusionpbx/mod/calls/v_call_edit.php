@@ -736,6 +736,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$hunt_group_enabled = $dnd_enabled;
 		$hunt_group_descr = 'dnd '.$extension;
 
+		//update the user_status
+		if ($dnd_enabled == "true") {
+			//update the call center status
+				$user_status = "Logged Out";
+				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+				$switch_cmd .= "callcenter_config agent set status ".$_SESSION['username']."@".$v_domain." '".$user_status."'";
+				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+
+			//update the database user_status
+				$user_status = "Do Not Disturb";
+				$sql  = "update v_users set ";
+				$sql .= "user_status = '$user_status' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and username = '".$_SESSION['username']."' ";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+		}
+
 		if ($dnd_action == "add") {
 			$sql = "insert into v_hunt_group ";
 			$sql .= "(";
