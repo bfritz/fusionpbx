@@ -144,7 +144,7 @@ require_once "includes/checkauth.php";
 							//hide the user_status when it is set to false
 						}
 						else {
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension.'_'.$_SESSION["username"]]['user_status']."</td>\n";
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."</td>\n";
 						}
 						echo "<td class='".$rowstyle[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
 						//echo "<td class='".$rowstyle[$c]."' $style_alternate>$direction</td>\n";
@@ -184,7 +184,7 @@ require_once "includes/checkauth.php";
 							//hide the user_status when it is set to false
 						}
 						else {
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension.'_'.$_SESSION["username"]]['user_status']."</td>\n";
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."</td>\n";
 						}
 						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
 						//echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";

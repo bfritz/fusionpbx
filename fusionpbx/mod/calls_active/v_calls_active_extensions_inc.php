@@ -68,22 +68,6 @@ require_once "includes/checkauth.php";
 	$rowstyle["1"] = "rowstyle1";
 	//$rowstyle["1"] = "rowstyle1";
 
-//get the event socket information
-	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
-		$sql = "";
-		$sql .= "select * from v_settings ";
-		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
-			$_SESSION['event_socket_port'] = $row["event_socket_port"];
-			$_SESSION['event_socket_password'] = $row["event_socket_password"];
-			break; //limit to 1 row
-		}
-	}
-
 //get the user status
 	if ($_SESSION['user_status_display'] == "false") {
 		//hide the user_status when it is set to false
@@ -109,7 +93,12 @@ require_once "includes/checkauth.php";
 		$x = 0;
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$user_array[$row["extension"].'_'.$row["username"]]['user_status'] = $row["user_status"];
+			$user_array[$row["extension"]]['user_status'] = '';
+			$user_array[$row["extension"]]['username'] = '';
+			if (strlen($row["user_status"]) > 0) {
+				$user_array[$row["extension"]]['user_status'] = $row["user_status"];
+				$user_array[$row["extension"]]['username'] = $row["username"];
+			}
 			$x++;
 		}
 		unset ($prepstatement, $x);
@@ -325,7 +314,7 @@ require_once "includes/checkauth.php";
 						//hide the user_status when it is set to false
 					}
 					else {
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension.'_'.$_SESSION['username']]['user_status']."</td>\n";
+						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."</td>\n";
 					}
 					echo "<td class='".$rowstyle[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
 					if (ifgroup("admin") || ifgroup("superadmin")) {
@@ -351,7 +340,7 @@ require_once "includes/checkauth.php";
 						//hide the user_status when it is set to false
 					}
 					else {
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension.'_'.$_SESSION['username']]['user_status']."</td>\n";
+						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."</td>\n";
 					}
 					echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
 					if (ifgroup("admin") || ifgroup("superadmin")) {
