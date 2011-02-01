@@ -67,6 +67,12 @@ if (strlen($_SESSION["username"]) == 0) {
 		if (count($result) == 0) {
 			$strphpself = $_SERVER["PHP_SELF"];
 			//$strphpself = str_replace ("/", "", $strphpself);
+
+			//Log the failed auth attempt to the system, to be available for fail2ban.
+			openlog('FusionPBX', LOG_NDELAY, LOG_AUTH);
+			syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] authentication failed for ".$_POST["username"]);
+			closelog();
+
 			$msg = "Username or Password were incorrect. Please try again.";
 			header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($strphpself)."&msg=".urlencode($msg));
 			exit;
