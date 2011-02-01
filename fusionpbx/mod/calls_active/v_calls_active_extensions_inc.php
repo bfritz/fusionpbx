@@ -93,8 +93,6 @@ require_once "includes/checkauth.php";
 		$x = 0;
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$user_array[$row["extension"]]['user_status'] = '';
-			$user_array[$row["extension"]]['username'] = '';
 			if (strlen($row["user_status"]) > 0) {
 				$user_array[$row["extension"]]['user_status'] = $row["user_status"];
 				$user_array[$row["extension"]]['username'] = $row["username"];
