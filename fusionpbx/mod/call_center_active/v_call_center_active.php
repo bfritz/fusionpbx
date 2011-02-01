@@ -282,13 +282,13 @@ echo "	<td valign='top' align='left' colspan='2'>\n";
 		echo "	</tr>\n";
 	}
 
-
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 
 	echo "<script type='text/javascript'>\n";
 	echo "	function agent_add() {\n";
 	echo "		agent_name = document.getElementById('agent_name').value;\n";
+	echo "		username = agent_name;\n";
 	echo "		agent_name = agent_name+'@".$v_domain."';\n";
 	echo "		agent_status = document.getElementById('agent_status').value;\n";
 	if (ifgroup("admin") || ifgroup("superadmin")) {
@@ -314,7 +314,7 @@ echo "	<td valign='top' align='left' colspan='2'>\n";
 
 	//set the agent status
 		echo "		agent_set_str_2 = \"callcenter_config+agent+set+status+\"+agent_name+\"+'\"+agent_status+\"'\";\n";
-		echo "		send_cmd('v_call_center_exec.php?cmd='+agent_set_str_2);\n";
+		echo "		result = send_cmd(\"v_call_center_exec.php?action=user_status&data='\"+agent_status+\"'&username=\"+username+\"&cmd=\"+agent_set_str_2);\n";
 		echo "\n";
 
 	echo "	}\n";

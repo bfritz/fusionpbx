@@ -38,42 +38,42 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	$switch_cmd = trim($_GET["cmd"]);
-	$action = trim($_GET["action"]);
-	$direction = trim($_GET["direction"]);
-}
+//http get variables set to php variables
+	if (count($_GET)>0) {
+		$switch_cmd = trim($_GET["cmd"]);
+		$action = trim(check_str($_GET["action"]));
+		$data = trim(check_str($_GET["data"]));
+		$username = trim(check_str($_GET["username"]));
+	}
 
 
 //GET to PHP variables
 if (count($_GET)>0) {
+	if ($action == "user_status") {
+		$user_status = $data;
+		$sql  = "update v_users set ";
+		$sql .= "user_status = '".trim($user_status, "'")."' ";
+		$sql .= "where v_id = '$v_id' ";
+		if (ifgroup("admin") || ifgroup("superadmin")) {
+			$sql .= "and username = '".$username."' ";
+		}
+		else {
+			$sql .= "and username = '".$_SESSION['username']."' ";
+		}
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+	}
 
 	//fs cmd
 	if (strlen($switch_cmd) > 0) {
 
-	//get the event socket information
-		if (strlen($_SESSION['event_socket_ip_address']) == 0) {
-				$sql = "";
-				$sql .= "select * from v_settings ";
-				$sql .= "where v_id = '$v_id' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
-				foreach ($result as &$row) {
-					$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
-					$_SESSION['event_socket_port'] = $row["event_socket_port"];
-					$_SESSION['event_socket_password'] = $row["event_socket_password"];
-					break; //limit to 1 row
-				}
-		}
+		//setup the event socket connection
+			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-
-		echo "<b>switch command:</b>\n";
-		echo "<pre>\n";
+		//echo "<b>switch command:</b>\n";
+		//echo "<pre>\n";
+		//echo $switch_cmd;
 		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-		//$switch_result = eval($switch_cmd);
-		//echo htmlentities($switch_result);
 		//echo "</pre>\n";
 	}
 
