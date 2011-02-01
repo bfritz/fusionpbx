@@ -140,10 +140,10 @@ if (count($_GET)>0) {
 		*/
 
 		//echo "<b>switch command:</b>\n";
-		echo "<pre>\n";
+		//echo "<pre>\n";
 		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-		echo htmlentities($switch_result);
-		echo "</pre>\n";
+		//echo htmlentities($switch_result);
+		//echo "</pre>\n";
 
 		if ($action == "record") {
 			if (trim($_GET["action2"]) == "stop") {
