@@ -201,8 +201,8 @@ require_once "includes/checkauth.php";
 		include "v_calls_active_assigned_extensions_inc.php";
 
 	//list all extensions
-		if ($_SESSION['active_extensions_list_display'] == "false") {
-			//hide the list when active_extensions_list_display is set to false
+		if ($_SESSION['active_extensions_list_display'] == "false" && !ifgroup("superadmin")) {
+			//hide the list when active_extensions_list_display is set to false, unless it's the superadmin
 		}
 		else {
 			echo "<table width='100%' border='0' cellpadding='5' cellspacing='0'>\n";
