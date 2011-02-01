@@ -312,7 +312,7 @@ require_once "includes/checkauth.php";
 						//hide the user_status when it is set to false
 					}
 					else {
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."</td>\n";
+						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
 					}
 					echo "<td class='".$rowstyle[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
 					if (ifgroup("admin") || ifgroup("superadmin")) {
@@ -338,7 +338,7 @@ require_once "includes/checkauth.php";
 						//hide the user_status when it is set to false
 					}
 					else {
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."</td>\n";
+						echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
 					}
 					echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
 					if (ifgroup("admin") || ifgroup("superadmin")) {
