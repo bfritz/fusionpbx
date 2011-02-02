@@ -52,6 +52,11 @@ require_once "includes/config.php";
 	if (strlen($password) > 0) {
 		//deny access if the password doesn't match
 			if ($password != $_GET['password']) {
+				//Log the failed auth attempt to the system, to be available for fail2ban.
+				openlog('FusionPBX', LOG_NDELAY, LOG_AUTH);
+				syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt bad password for ".$_GET['mac']);
+				closelog();
+
 				usleep(rand(1000000,3500000));//1-3.5 seconds.
 				echo "access denied";
 				return;
