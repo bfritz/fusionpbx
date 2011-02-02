@@ -30,40 +30,20 @@ require_once "includes/config.php";
 	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
 
 //set a default template
-	//$_SESSION["template_content"] = ''; //force the template to generate on every page load
-	if (strlen($_SESSION["template_content"])==0) { //build template it session template has no length
-		if (strlen($template_rsssubcategory) > 0) {
-			//this template was assigned by the content manager
-				//get the contents of the template and save it to the template variable
-				$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$template_rsssubcategory.'/template.php');
-				$_SESSION["template_content"] = $template;
-		}
-		else {
-			//get the contents of the template and save it to the template variable
-				$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$_SESSION["template_name"].'/template.php');
-				$_SESSION["template_content"] = $template;
+	$v_template_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
+	if (strlen($_SESSION["template_name"])==0) {
+		//get the contents of the template and save it to the template variable
+		$template_full_path = $v_template_path.'/'.$_SESSION["template_name"].'/template.php';
+		if (!file_exists($template_full_path)) {
+			$_SESSION["template_name"] = 'default';
 		}
 	}
 
 //start the output buffer
-	ob_start();
-	$template = $strheadertop.$_SESSION["template_content"];
-	eval('?>' . $template . '<?php ');
-	$template = ob_get_contents(); //get the output from the buffer
-	ob_end_clean(); //clean the buffer
+	include $v_template_path.'/'.$_SESSION["template_name"].'/config.php';
 
 //start the output buffer
 	ob_start();
-
-//set the doctype
-	$strheadertop ='';
-	if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false))
-		//return true;
-		$strheadertop .= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-	else {
-		//return false;
-	}
-	//$strheadertop .= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n";
 
 // get the content
 	if (strlen($content) == 0) {

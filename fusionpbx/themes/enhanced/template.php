@@ -1,3 +1,15 @@
+<?php
+//get the browser version
+	$user_agent = http_user_agent();
+	$browser_version =  $user_agent['version'];
+	$browser_name =  $user_agent['name'];
+	$browser_version_array = explode('.', $browser_version);
+
+//set the doctype
+	if ($browser_name == "Internet Explorer") {
+		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	}
+?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <title><!--{title}--></title>
@@ -622,14 +634,8 @@ function confirmdelete(url) {
 			$_SESSION['background_image'] = $v_background_array[array_rand($v_background_array, 1)];
 		}
 
-		if (stristr($_SERVER["PHP_SELF"], "install.php") != FALSE && isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)) {
-			//hide the background from install.php for IE
-			echo "<div id=\"page-background\" style='width:0px;height:0px;'></div>\n";
-		}
-		else {
-			//show the background
-			echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
-		}
+		//show the background
+		echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
 	?>
 
 	<div id="page" align='center'>
@@ -738,15 +744,3 @@ function confirmdelete(url) {
 
 </body>
 </html>
-
-<?php
-
-//define the link labels
-	$v_link_label_edit = "<img src='".PROJECT_PATH."/images/icon_e.png' width='17' height='17' alt='edit' border='0'>";
-	$v_link_label_add = "<img src='".PROJECT_PATH."/images/icon_plus.png' width='17' height='17' border='0' alt='add'>";
-	$v_link_label_delete = "<img src='".PROJECT_PATH."/images/icon_x.png' width='17' height='17' alt='delete' border='0'>";
-	$v_link_label_view = "<img src='".PROJECT_PATH."/images/icon_view.gif' width='17' height='17' border='0' alt='add'>";
-	//$v_link_label_cal = "<img src='".PROJECT_PATH."/images/icon_cal.gif' width='17' height='17' border='0' alt='add'>";
-	//$v_link_label_up = "<img src='".PROJECT_PATH."/images/icon_up.gif' width='17' height='17' border='0' alt='up'>";
-
-?>

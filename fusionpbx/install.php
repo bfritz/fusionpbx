@@ -1275,9 +1275,8 @@ pgsql
 // add the content to the template and then send output -----------------------
 	$body = $content_from_db.ob_get_contents(); //get the output from the buffer
 	ob_end_clean(); //clean the buffer
-	ob_start();
 
-	$template = $strheadertop.$template;
+	ob_start();
 	eval('?>' . $template . '<?php ');
 	$template = ob_get_contents(); //get the output from the buffer
 	ob_end_clean(); //clean the buffer

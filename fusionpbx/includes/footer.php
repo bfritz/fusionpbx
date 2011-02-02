@@ -23,7 +23,7 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
-require_once "root.php";
+include "root.php";
 require_once "includes/config.php";
 
 //get the output from the buffer
@@ -35,13 +35,14 @@ require_once "includes/config.php";
 
 //set a default template
 	//$_SESSION["template_content"] = ''; //force the template to generate on every page load
-	if (strlen($_SESSION["template_content"])==0) { //build template it session template has no length
+	if (strlen($_SESSION["template_content"])==0) { //build template if session template has no length
 		$v_template_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
 		if (strlen($template_rsssubcategory) > 0) {
 			//this template was assigned by the content manager
 				//get the contents of the template and save it to the template variable
 				$template_full_path = $v_template_path.'/themes/'.$template_rsssubcategory.'/template.php';
 				if (!file_exists($template_full_path)) {
+					$_SESSION["template_name"] = 'default';
 					$template_full_path = $v_template_path.'/themes/default/template.php';
 				}
 				$template = file_get_contents($template_full_path);
@@ -51,6 +52,7 @@ require_once "includes/config.php";
 			//get the contents of the template and save it to the template variable
 				$template_full_path = $v_template_path.'/'.$_SESSION["template_name"].'/template.php';
 				if (!file_exists($template_full_path)) {
+					$_SESSION["template_name"] = 'default';
 					$template_full_path = $v_template_path.'/themes/default/template.php';
 				}
 				$template = file_get_contents($template_full_path);

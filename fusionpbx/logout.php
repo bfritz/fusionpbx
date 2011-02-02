@@ -25,11 +25,13 @@
 */
 
 include "root.php";
+session_start();
 $_SESSION["username"] = "";
 $_SESSION["permissions"] = "";
 $_SESSION["http_compression"] = "";
 $_SESSION['background_image'] = "";
-session_start();
+$_SESSION["template_name"] = "";
+$_SESSION["template_content"] = "";
 session_destroy();
 header("Location: ".PROJECT_PATH."/login.php");
 return;
