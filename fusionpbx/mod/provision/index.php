@@ -194,20 +194,20 @@ require_once "includes/config.php";
 		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}")) {
 			$file = "{v_mac}";
 		}
-		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}.xml")) {
+		elseif (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}.xml")) {
 			$file = "{v_mac}.xml";
 		}
-		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}.cfg")) {
+		elseif (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}.cfg")) {
 			$file = "{v_mac}.cfg";
 		}
-		if (strlen($file) == 0) { 
+		else {
 			echo "file not found";
 			exit;
 		}
 	}
 	else {
 		//make sure the file exists
-		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/".$file)) {
+		if (!file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/".$file)) {
 			echo "file not found";
 			exit;
 		}
