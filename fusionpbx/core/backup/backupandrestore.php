@@ -29,7 +29,7 @@ require_once "includes/checkauth.php";
 
 if (ifgroup("admin") || ifgroup("superadmin")) {
 
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+	echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
 	echo "<tr>\n";
 	echo "	<th colspan='2' align='left'>Backup</th>\n";
 	echo "</tr>\n";
@@ -37,10 +37,13 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 	echo "	<a href='".PROJECT_PATH."/core/backup/backup.php'>download</a>	\n";
 	echo "	</td>\n";
-	echo "	<td class=\"vtable\">\n";
+	echo "	<td class=\"rowstyle1\">\n";
+	echo "	<br />\n";
 	echo "To backup your application click on the download link and then choose  \n";
 	echo "a safe location on your computer to save the file. You may want to \n";
 	echo "save the backup to more than one computer to prevent the backup from being lost. \n";
+	echo "	<br />\n";
+	echo "	<br />\n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 
