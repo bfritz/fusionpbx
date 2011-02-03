@@ -44,24 +44,29 @@ else {
 	$action = "add";
 }
 
-//POST to PHP variables
+//get the form value and set to php variables
 if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
 	$filename = check_str($_POST["filename"]);
 	$recordingname = check_str($_POST["recordingname"]);
 	//$recordingid = check_str($_POST["recordingid"]);
 	$descr = check_str($_POST["descr"]);
+
+	//clean the filename and recording name
+	$filename = str_replace(" ", "_", $filename);
+	$filename = str_replace("'", "", $filename);
+	$recordingname = str_replace(" ", "_", $recordingname);
+	$recordingname = str_replace("'", "", $recordingname);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 
-	////recommend moving this to the config.php file
+	//recommend moving this to the config.php file
 	$uploadtempdir = $_ENV["TEMP"]."\\";
 	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
+	//$imagedir = $_ENV["TEMP"]."\\";
+	//$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
 		$recording_id = check_str($_POST["recording_id"]);
@@ -86,131 +91,118 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	$tmp .= "v_id: $v_id\n";
-	$tmp .= "Filename (download): $filename\n";
-	$tmp .= "Recording Name (play): $recordingname\n";
-	//$tmp .= "recordingid: $recordingid\n";
-	$tmp .= "Description: $descr\n";
+	//add or update the database
+	if ($_POST["persistformvar"] != "true") {
 
-
-
-//Add or update the database
-if ($_POST["persistformvar"] != "true") {
-
-	if ($action == "add") {
-		$sql = "insert into v_recordings ";
-		$sql .= "(";
-		$sql .= "v_id, ";
-		$sql .= "filename, ";
-		$sql .= "recordingname, ";
-		//$sql .= "recordingid, ";
-		$sql .= "descr ";
-		$sql .= ")";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'$v_id', ";
-		$sql .= "'$filename', ";
-		$sql .= "'$recordingname', ";
-		//$sql .= "'$recordingid', ";
-		$sql .= "'$descr' ";
-		$sql .= ")";
-		$db->exec(check_sql($sql));
-		unset($sql);
-
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_recordings.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Add Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "add")
-
-	if ($action == "update") {
-
-		//get the original filename
-			$sql = "";
-			$sql .= "select * from v_recordings ";
-			$sql .= "where recording_id = '$recording_id' ";
-			$sql .= "and v_id = '$v_id' ";
-			//echo "sql: ".$sql."<br />\n";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			foreach ($result as &$row) {
-				$filename_orig = $row["filename"];
-				break; //limit to 1 row
-			}
-			unset ($prepstatement);
-
-		//if file name is not the same then rename the file
-			if ($filename != $filename_orig) {
-				//echo "orig: ".$v_recordings_dir.'/'.$filename_orig."<br />\n";
-				//echo "new: ".$v_recordings_dir.'/'.$filename."<br />\n";
-				rename($v_recordings_dir.'/'.$filename_orig, $v_recordings_dir.'/'.$filename);
-			}
-
-		//update the database with the new data
-			$sql = "update v_recordings set ";
-			$sql .= "v_id = '$v_id', ";
-			$sql .= "filename = '$filename', ";
-			$sql .= "recordingname = '$recordingname', ";
-			//$sql .= "recordingid = '$recordingid', ";
-			$sql .= "descr = '$descr' ";
-			$sql .= "where v_id = '$v_id'";
-			$sql .= "and recording_id = '$recording_id'";
+		if ($action == "add") {
+			$sql = "insert into v_recordings ";
+			$sql .= "(";
+			$sql .= "v_id, ";
+			$sql .= "filename, ";
+			$sql .= "recordingname, ";
+			//$sql .= "recordingid, ";
+			$sql .= "descr ";
+			$sql .= ")";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$v_id', ";
+			$sql .= "'$filename', ";
+			$sql .= "'$recordingname', ";
+			//$sql .= "'$recordingid', ";
+			$sql .= "'$descr' ";
+			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_recordings.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Update Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "update")
+			require_once "includes/header.php";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_recordings.php\">\n";
+			echo "<div align='center'>\n";
+			echo "Add Complete\n";
+			echo "</div>\n";
+			require_once "includes/footer.php";
+			return;
+		} //if ($action == "add")
 
-} //if ($_POST["persistformvar"] != "true") { 
+		if ($action == "update") {
+
+			//get the original filename
+				$sql = "";
+				$sql .= "select * from v_recordings ";
+				$sql .= "where recording_id = '$recording_id' ";
+				$sql .= "and v_id = '$v_id' ";
+				//echo "sql: ".$sql."<br />\n";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+				$result = $prepstatement->fetchAll();
+				foreach ($result as &$row) {
+					$filename_orig = $row["filename"];
+					break; //limit to 1 row
+				}
+				unset ($prepstatement);
+
+			//if file name is not the same then rename the file
+				if ($filename != $filename_orig) {
+					//echo "orig: ".$v_recordings_dir.'/'.$filename_orig."<br />\n";
+					//echo "new: ".$v_recordings_dir.'/'.$filename."<br />\n";
+					rename($v_recordings_dir.'/'.$filename_orig, $v_recordings_dir.'/'.$filename);
+				}
+
+			//update the database with the new data
+				$sql = "update v_recordings set ";
+				$sql .= "v_id = '$v_id', ";
+				$sql .= "filename = '$filename', ";
+				$sql .= "recordingname = '$recordingname', ";
+				//$sql .= "recordingid = '$recordingid', ";
+				$sql .= "descr = '$descr' ";
+				$sql .= "where v_id = '$v_id'";
+				$sql .= "and recording_id = '$recording_id'";
+				$db->exec(check_sql($sql));
+				unset($sql);
+
+			require_once "includes/header.php";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_recordings.php\">\n";
+			echo "<div align='center'>\n";
+			echo "Update Complete\n";
+			echo "</div>\n";
+			require_once "includes/footer.php";
+			return;
+		} //if ($action == "update")
+
+	} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$recording_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_recordings ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and recording_id = '$recording_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$filename = $row["filename"];
-		$recordingname = $row["recordingname"];
-		//$recordingid = $row["recordingid"];
-		$descr = $row["descr"];
-		break; //limit to 1 row
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$recording_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_recordings ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and recording_id = '$recording_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$v_id = $row["v_id"];
+			$filename = $row["filename"];
+			$recordingname = $row["recordingname"];
+			//$recordingid = $row["recordingid"];
+			$descr = $row["descr"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
-
+//show the header
 	require_once "includes/header.php";
 
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
 
-
-
-//Write the HTML form
 	echo "<form method='post' name='frm' action=''>\n";
 
 	echo "<div align='center'>\n";
