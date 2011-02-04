@@ -272,6 +272,14 @@ foreach($v_settings_array as $name => $value) {
 	$$name = $value;
 }
 
+//create the recordings/archive/year/month/day directory structure
+	$v_recording_archive_dir = $v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d");
+	if(!is_dir($v_recording_archive_dir)) {
+		mkdir($v_recording_archive_dir, 0764, true);
+		chmod($v_recordings_dir."/archive/".date("Y"), 0764);
+		chmod($v_recordings_dir."/archive/".date("Y")."/".date("M"), 0764);
+		chmod($v_recording_archive_dir, 0764);
+	}
 
 //get the event socket information
 	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
