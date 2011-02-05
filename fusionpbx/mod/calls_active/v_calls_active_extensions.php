@@ -122,8 +122,7 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 	}
 
 	if (previous_uuid_1 != uuid_1) {
-		if (uuid_1.length > 0) {
-			if (direction_1 == "outbound") {
+		if (cid_num_1.length > 6) {
 				//$url = "http://fusionpbx.com/?cid_name={cid_name}&cid_num={cid_num}&uuid={uuid}";
 				//echo urlencode($url);
 				//alert('new call: '+uuid_1+'\n direction: '+direction_1+'\n cid_name: '+cid_name_1+'\n cid_num: '+cid_num_1+'\n url: '+url);
@@ -144,7 +143,6 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 					//iframe_height
 				}
 ?>
-			}
 		}
 		else {
 			//hangup or initial page load detected
@@ -303,7 +301,7 @@ echo "	return escape(cmd);\n";
 echo "}\n";
 echo "\n";
 echo "function get_park_cmd(uuid) {\n";
-echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg *5900 xml default\";\n";
+echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg *6000 xml default\";\n";
 echo "	return escape(cmd);\n";
 echo "}\n";
 echo "\n";
