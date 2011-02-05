@@ -1006,7 +1006,8 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		foreach ($result as &$row) {
 			$extension = $row["ivr_menu_extension"];
 			$extension_name = $row["ivr_menu_name"];
-			$extension_label = str_replace(" ", "_", $extension_name);
+			$extension_label = $row["ivr_menu_name"];
+			$extension_name = str_replace(" ", "_", $extension_name);
 			if ("ivr:".$extension_name."" == $select_value || "ivr $extension_name" == $select_value || "transfer:".$extension." XML default" == $select_value) {
 				if ($select_type == "ivr") {
 					echo "		<option value='menu-exec-app:ivr $extension_name' selected='selected'>".$extension." ".$extension_label."</option>\n";
@@ -1046,13 +1047,14 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				}
 				foreach ($result as &$row) {
 					$extension_name = $row["ivr_menu_name"];
+					$extension_label = $row["ivr_menu_name"];
 					$extension_name = str_replace(" ", "_", $extension_name);
 					if ($extension_name == $select_value) {
-						echo "		<option value='menu-sub:$extension_name' selected='selected'>".$extension_name."</option>\n";
+						echo "		<option value='menu-sub:$extension_name' selected='selected'>".$extension_label."</option>\n";
 						$selection_found = true;
 					}
 					else {
-						echo "		<option value='menu-sub:$extension_name'>".$extension_name."</option>\n";
+						echo "		<option value='menu-sub:$extension_name'>".$extension_label."</option>\n";
 					}
 				}
 				if ($select_type == "dialplan" || $select_type == "ivr") {
