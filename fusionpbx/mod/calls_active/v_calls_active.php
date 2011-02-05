@@ -150,7 +150,7 @@ echo "	return escape(cmd);\n";
 echo "}\n";
 echo "\n";
 echo "function get_park_cmd(uuid) {\n";
-echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg *5900 xml default\";\n";
+echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg *6000 xml default\";\n";
 echo "	return escape(cmd);\n";
 echo "}\n";
 echo "\n";

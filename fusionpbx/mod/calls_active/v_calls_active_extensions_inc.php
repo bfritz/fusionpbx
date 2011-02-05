@@ -105,11 +105,35 @@ require_once "includes/checkauth.php";
 		//echo "</pre>\n";
 	}
 
+//create the event socket connection
+	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+
+//get information over event socket
+	$switch_cmd = 'valet_info';
+	$valet_xml_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
+
+//parse the xml
+	try {
+		$valet_xml = new SimpleXMLElement($valet_xml_str);
+	}
+	catch(Exception $e) {
+		//echo $e->getMessage();
+	}
+	$valet_xml = new SimpleXMLElement($valet_xml_str);
+	foreach ($valet_xml as $row) {
+		$valet_name = (string) $row->attributes()->name;
+		//echo "valet_name: ".$valet_name."<br />\n";
+		foreach ($row->extension as $row2) {
+			$extension = (string) $row2;
+			$uuid = (string) $row2->attributes()->uuid;
+			$valet_array[$uuid]['name'] = $valet_name;
+			$valet_array[$uuid]['extension'] = $extension;
+		}
+	}
+
 //get information over event socket
 	$switch_cmd = 'show channels as xml';
-	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 	$xml_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
-	//echo $xml_str;
 
 //parse the xml
 	try {
@@ -258,26 +282,26 @@ require_once "includes/checkauth.php";
 				foreach ($xml as $tmp_row) {
 					if ($tmp_row->number == $extension) {
 						$found_extension = true;
-						$uuid = $tmp_row->uuid;
+						$uuid = (string) $tmp_row->uuid;
 						//$direction = $tmp_row->direction;
 						//$sip_profile = $tmp_row->sip_profile;
-						$created = $tmp_row->created;
-						$created_epoch = $tmp_row->created_epoch;
-						$name = $tmp_row->name;
-						$state = $tmp_row->state;
-						$cid_name = $tmp_row->cid_name;
-						$cid_num = $tmp_row->cid_num;
-						$ip_addr = $tmp_row->ip_addr;
-						$dest = $tmp_row->dest;
-						$application = $tmp_row->application;
-						$application_data = $tmp_row->application_data;
-						$dialplan = $tmp_row->dialplan;
-						$context = $tmp_row->context;
-						$read_codec = $tmp_row->read_codec;
-						$read_rate = $tmp_row->read_rate;
-						$write_codec = $tmp_row->write_codec;
-						$write_rate = $tmp_row->write_rate;
-						$secure = $tmp_row->secure;
+						$created = (string) $tmp_row->created;
+						$created_epoch = (string) $tmp_row->created_epoch;
+						$name = (string) $tmp_row->name;
+						$state = (string) $tmp_row->state;
+						$cid_name = (string) $tmp_row->cid_name;
+						$cid_num = (string) $tmp_row->cid_num;
+						$ip_addr = (string) $tmp_row->ip_addr;
+						$dest = (string) $tmp_row->dest;
+						$application = (string) $tmp_row->application;
+						$application_data = (string) $tmp_row->application_data;
+						$dialplan = (string) $tmp_row->dialplan;
+						$context = (string) $tmp_row->context;
+						$read_codec = (string) $tmp_row->read_codec;
+						$read_rate = (string) $tmp_row->read_rate;
+						$write_codec = (string) $tmp_row->write_codec;
+						$write_rate = (string) $tmp_row->write_rate;
+						$secure = (string) $tmp_row->secure;
 
 						//remove the '+' because it breaks the call recording
 						$cid_num = str_replace("+", "", $cid_num);
@@ -289,6 +313,12 @@ require_once "includes/checkauth.php";
 						$call_length_min = sprintf("%02d", $call_length_min);
 						$call_length_sec = sprintf("%02d", $call_length_sec);
 						$call_length = $call_length_hour.':'.$call_length_min.':'.$call_length_sec;
+
+						//valet park
+						$valet_array[$uuid]['cid_name'] = $cid_name;
+						$valet_array[$uuid]['cid_num'] = $cid_num;
+						$valet_array[$uuid]['call_length'] = $call_length;
+						//$valet_array[$uuid]['zzz'] = $zzz;
 					}
 				}
 
@@ -429,7 +459,6 @@ require_once "includes/checkauth.php";
 						}
 					}
 				}
-
 				echo "</tr>\n";
 
 				unset($found_extension);
@@ -496,8 +525,30 @@ require_once "includes/checkauth.php";
 
 		echo "</table>\n";
 	}
+echo "<br /><br />\n";
+
+//valet park
+	echo "<table width='100%' border='0' cellpadding='5' cellspacing='0'>\n";
+	echo "<tr>\n";
+	echo "<th valign='top'>Valet Park</th>\n";
+	echo "<th valign='top'>Time</th>\n";
+	echo "<th valign='top'>CID Name</th>\n";
+	echo "<th valign='top'>CID Number</th>\n";
+	echo "</tr>\n";
+	foreach ($valet_array as $row) {
+		if (strlen($row['extension']) > 0) {
+			echo "<tr>\n";
+			echo "<td valign='top' class='".$rowstyle[$c]."' >*".$row['extension']."</td>\n";
+			echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['call_length']."</td>\n";
+			echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_name']."</td>\n";
+			echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_num']."</td>\n";
+			echo "</tr>\n";
+		}
+	}
+	echo "<table>\n";
 
 echo "<br /><br />\n";
+
 echo "<div id='cmd_reponse'>\n";
 echo "</div>\n";
 
