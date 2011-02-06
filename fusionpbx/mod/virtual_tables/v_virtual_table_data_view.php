@@ -245,8 +245,9 @@ if (strlen($_GET["id"]) > 0) {
 	echo "	</td>\n";
 	echo "	<td align='right' valign='top'>\n";
 	if (strlen($virtual_data_parent_row_id) == 0) {
+		$search_all = str_replace("''", "'", $search_all);
 		echo "<form method='GET' name='frm_search' action=''>\n";
-		echo "	<input class='formfld' type='text' name='search_all' value='$search_all'>\n";
+		echo "	<input class='formfld' type='text' name='search_all' value=\"$search_all\">\n";
 		echo "	<input type='hidden' name='id' value='$virtual_table_id'>\n";
 		echo "	<input type='hidden' name='virtual_data_parent_row_id' value='$virtual_data_parent_row_id'>\n";
 		echo "	<input class='btn' type='submit' name='submit' value='Search All'>\n";
