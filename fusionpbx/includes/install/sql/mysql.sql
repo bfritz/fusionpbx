@@ -190,6 +190,7 @@ INSERT INTO v_modules VALUES(80,1,'Russian','mod_say_ru','','Say','false','false
 INSERT INTO v_modules VALUES(81,1,'Chinese','mod_say_zh','','Say','false','false');
 INSERT INTO v_modules VALUES(82,1,'Valet Parking','mod_valet_parking',NULL,'Applications','true','true');
 INSERT INTO v_modules VALUES(83,1,'Directory','mod_directory',NULL,'Applications','true','true');
+INSERT INTO v_modules VALUES(84,1,'Call Center','mod_callcenter','Call Center','Applications','true','true');
 CREATE TABLE v_public_includes (public_include_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, v_id NUMERIC, extensionname TEXT, extensioncontinue TEXT, publicorder NUMERIC, context TEXT, opt1name TEXT, opt1value TEXT, enabled TEXT, descr TEXT);
 INSERT INTO v_public_includes VALUES(1,1,'inbound01','',1,'',NULL,NULL,'true','inbound');
 CREATE TABLE v_public_includes_details ( public_includes_detail_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, v_id NUMERIC, public_include_id NUMERIC, parent_id NUMERIC, tag TEXT, fieldtype TEXT, fielddata TEXT, fieldorder NUMERIC, fieldbreak TEXT);
