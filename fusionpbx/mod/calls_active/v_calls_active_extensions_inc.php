@@ -282,44 +282,44 @@ require_once "includes/checkauth.php";
 				foreach ($xml as $tmp_row) {
 					if ($tmp_row->number == $extension) {
 						$found_extension = true;
-						$uuid = (string) $tmp_row->uuid;
-						//$direction = $tmp_row->direction;
-						//$sip_profile = $tmp_row->sip_profile;
-						$created = (string) $tmp_row->created;
-						$created_epoch = (string) $tmp_row->created_epoch;
-						$name = (string) $tmp_row->name;
-						$state = (string) $tmp_row->state;
-						$cid_name = (string) $tmp_row->cid_name;
-						$cid_num = (string) $tmp_row->cid_num;
-						$ip_addr = (string) $tmp_row->ip_addr;
-						$dest = (string) $tmp_row->dest;
-						$application = (string) $tmp_row->application;
-						$application_data = (string) $tmp_row->application_data;
-						$dialplan = (string) $tmp_row->dialplan;
-						$context = (string) $tmp_row->context;
-						$read_codec = (string) $tmp_row->read_codec;
-						$read_rate = (string) $tmp_row->read_rate;
-						$write_codec = (string) $tmp_row->write_codec;
-						$write_rate = (string) $tmp_row->write_rate;
-						$secure = (string) $tmp_row->secure;
-
-						//remove the '+' because it breaks the call recording
-						$cid_num = str_replace("+", "", $cid_num);
-
-						$call_length_seconds = time() - $created_epoch;
-						$call_length_hour = floor($call_length_seconds/3600);
-						$call_length_min = floor($call_length_seconds/60 - ($call_length_hour * 60));
-						$call_length_sec = $call_length_seconds - (($call_length_hour * 3600) + ($call_length_min * 60));
-						$call_length_min = sprintf("%02d", $call_length_min);
-						$call_length_sec = sprintf("%02d", $call_length_sec);
-						$call_length = $call_length_hour.':'.$call_length_min.':'.$call_length_sec;
-
-						//valet park
-						$valet_array[$uuid]['cid_name'] = $cid_name;
-						$valet_array[$uuid]['cid_num'] = $cid_num;
-						$valet_array[$uuid]['call_length'] = $call_length;
-						//$valet_array[$uuid]['zzz'] = $zzz;
 					}
+					$uuid = (string) $tmp_row->uuid;
+					//$direction = $tmp_row->direction;
+					//$sip_profile = $tmp_row->sip_profile;
+					$created = (string) $tmp_row->created;
+					$created_epoch = (string) $tmp_row->created_epoch;
+					$name = (string) $tmp_row->name;
+					$state = (string) $tmp_row->state;
+					$cid_name = (string) $tmp_row->cid_name;
+					$cid_num = (string) $tmp_row->cid_num;
+					$ip_addr = (string) $tmp_row->ip_addr;
+					$dest = (string) $tmp_row->dest;
+					$application = (string) $tmp_row->application;
+					$application_data = (string) $tmp_row->application_data;
+					$dialplan = (string) $tmp_row->dialplan;
+					$context = (string) $tmp_row->context;
+					$read_codec = (string) $tmp_row->read_codec;
+					$read_rate = (string) $tmp_row->read_rate;
+					$write_codec = (string) $tmp_row->write_codec;
+					$write_rate = (string) $tmp_row->write_rate;
+					$secure = (string) $tmp_row->secure;
+
+					//remove the '+' because it breaks the call recording
+					$cid_num = str_replace("+", "", $cid_num);
+
+					$call_length_seconds = time() - $created_epoch;
+					$call_length_hour = floor($call_length_seconds/3600);
+					$call_length_min = floor($call_length_seconds/60 - ($call_length_hour * 60));
+					$call_length_sec = $call_length_seconds - (($call_length_hour * 3600) + ($call_length_min * 60));
+					$call_length_min = sprintf("%02d", $call_length_min);
+					$call_length_sec = sprintf("%02d", $call_length_sec);
+					$call_length = $call_length_hour.':'.$call_length_min.':'.$call_length_sec;
+
+					//valet park
+					$valet_array[$uuid]['cid_name'] = $cid_name;
+					$valet_array[$uuid]['cid_num'] = $cid_num;
+					$valet_array[$uuid]['call_length'] = $call_length;
+					//$valet_array[$uuid]['zzz'] = $zzz;
 				}
 
 				if ($found_extension) {
@@ -524,28 +524,29 @@ require_once "includes/checkauth.php";
 			}
 
 		echo "</table>\n";
-	}
-echo "<br /><br />\n";
 
-//valet park
-	echo "<table width='100%' border='0' cellpadding='5' cellspacing='0'>\n";
-	echo "<tr>\n";
-	echo "<th valign='top'>Valet Park</th>\n";
-	echo "<th valign='top'>Time</th>\n";
-	echo "<th valign='top'>CID Name</th>\n";
-	echo "<th valign='top'>CID Number</th>\n";
-	echo "</tr>\n";
-	foreach ($valet_array as $row) {
-		if (strlen($row['extension']) > 0) {
+		echo "<br /><br />\n";
+
+		//valet park
+			echo "<table width='100%' border='0' cellpadding='5' cellspacing='0'>\n";
 			echo "<tr>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."' >*".$row['extension']."</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['call_length']."</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_name']."</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_num']."</td>\n";
+			echo "<th valign='top'>Park Extension</th>\n";
+			echo "<th valign='top'>Time</th>\n";
+			echo "<th valign='top'>CID Name</th>\n";
+			echo "<th valign='top'>CID Number</th>\n";
 			echo "</tr>\n";
-		}
+			foreach ($valet_array as $row) {
+				if (strlen($row['extension']) > 0) {
+					echo "<tr>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."' >*".$row['extension']."</td>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['call_length']."</td>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_name']."</td>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_num']."</td>\n";
+					echo "</tr>\n";
+				}
+			}
+			echo "<table>\n";
 	}
-	echo "<table>\n";
 
 echo "<br /><br />\n";
 
