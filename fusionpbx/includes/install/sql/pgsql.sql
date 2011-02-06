@@ -98,8 +98,8 @@ CREATE TABLE v_auto_attendant (auto_attendant_id SERIAL, v_id NUMERIC, aaextensi
 CREATE TABLE v_auto_attendant_options (auto_attendant_option_id SERIAL, v_id NUMERIC, auto_attendant_id NUMERIC, optionaction TEXT, optionnumber TEXT, optiontype TEXT, optionprofile TEXT, optiondata TEXT, optionrecording TEXT, optiondescr TEXT);
 CREATE TABLE v_call_broadcast (call_broadcast_id SERIAL, broadcast_name TEXT, broadcast_desc TEXT, broadcast_timeout NUMERIC, broadcast_concurrent_limit NUMERIC, recordingid TEXT, broadcast_caller_id_name TEXT, broadcast_caller_id_number TEXT, broadcast_destination_type TEXT, broadcast_phone_numbers TEXT, broadcast_destination_data TEXT);
 CREATE TABLE v_dialplan_includes (dialplan_include_id SERIAL, v_id NUMERIC, extensionname TEXT, extensioncontinue TEXT, dialplanorder NUMERIC, context TEXT, enabled TEXT, descr TEXT, opt1name TEXT, opt1value TEXT);
-INSERT INTO v_dialplan_includes VALUES(1,1,'Recordings','',9001,'default','true','*732673 default system recordings tool','recordings',732673);
-INSERT INTO v_dialplan_includes VALUES(2,1,'DISA','',9001,'default','true','*3472 Direct Inward System Access ','disa',3472);
+INSERT INTO v_dialplan_includes VALUES(1,1,'Recordings','',900,'default','true','*732673 default system recordings tool','recordings',732673);
+INSERT INTO v_dialplan_includes VALUES(2,1,'DISA','',900,'default','true','*3472 Direct Inward System Access ','disa',3472);
 SELECT setval('v_dialplan_includes_dialplan_include_id_seq', (SELECT MAX(dialplan_include_id) FROM v_dialplan_includes)+1);
 CREATE TABLE v_dialplan_includes_details (dialplan_includes_detail_id SERIAL, v_id NUMERIC, dialplan_include_id NUMERIC, parent_id NUMERIC, tag TEXT, fieldorder NUMERIC, fieldtype TEXT, fielddata TEXT, fieldbreak TEXT);
 INSERT INTO v_dialplan_includes_details VALUES(1,1,1,NULL,'condition',0,'destination_number','^\\*732$|^\\*732673$','');
