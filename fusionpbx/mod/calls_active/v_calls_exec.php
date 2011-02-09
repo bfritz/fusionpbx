@@ -67,9 +67,13 @@ require_once "includes/checkauth.php";
 
 
 if (count($_GET)>0) {
+
+	//setup the event socket connection
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+
 	if (stristr($action, 'user_status') == true) {
 		$user_status = $data;
-		switch ($data) {
+		switch ($user_status) {
 		case "Available":
 			$user_status = "Available";
 			break;
@@ -88,12 +92,92 @@ if (count($_GET)>0) {
 		default:
 			$user_status = "";
 		}
-		$sql  = "update v_users set ";
-		$sql .= "user_status = '$user_status' ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and username = '".$_SESSION['username']."' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+
+		//update the v_users table with the status
+			$sql  = "update v_users set ";
+			$sql .= "user_status = '$user_status' ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and username = '".$_SESSION['username']."' ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+
+		if (strlen($user_status) > 0) {
+			//include the dnd class
+				include "includes/classes/do_not_disturb.php";
+			//loop through the list of assigned extensions
+				$sql = "";
+				$sql .= "select * from v_extensions ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+				$x = 0;
+				$result = $prepstatement->fetchAll();
+				foreach ($result as &$row) {
+					$extension = $row["extension"];
+					//echo "ext: $extension<br />\n";
+
+					//set the default action
+						if ($user_status == "Do Not Disturb") {
+							$dnd_action = "add";
+						}
+
+					//hunt_group information used to determine if this is an add or an update
+						$sql  = "select * from v_hunt_group ";
+						$sql .= "where v_id = '$v_id' ";
+						$sql .= "and huntgroupextension = '$extension' ";
+						$prepstatement2 = $db->prepare(check_sql($sql));
+						$prepstatement2->execute();
+						$result2 = $prepstatement2->fetchAll();
+						foreach ($result2 as &$row2) {
+							if ($row2["huntgrouptype"] == 'dnd') {
+								$dnd_action = "update";
+								$dnd_id = $row2["hunt_group_id"];
+							}
+						}
+						unset ($prepstatement2, $result, $row2);
+
+					//add or update dnd
+						$dnd = new do_not_disturb;
+						$dnd->v_id = $v_id;
+						$dnd->dnd_id = $dnd_id;
+						$dnd->v_domain = $v_domain;
+						$dnd->extension = $extension;
+						if ($user_status == "Do Not Disturb") {
+							$dnd->dnd_enabled = "true";
+							if ($dnd_action == "add") {
+								$dnd->dnd_add();
+							}
+							if ($dnd_action == "update") {
+								$dnd->dnd_update();
+							}
+						}
+						else {
+							//for other status disable dnd
+							if ($dnd_action == "update") {
+								$dnd->dnd_enabled = "false";
+								$dnd->dnd_update();
+							}
+						}
+
+						$dnd->dnd_status();
+						unset($dnd);
+				}
+				unset ($prepstatement);
+		}
+
+		//synchronize the xml config
+			sync_package_v_hunt_group();
+
+		//synchronize the xml config
+			sync_package_v_dialplan_includes();
+
+		//reloadxml
+			$cmd = 'api reloadxml';
+			$response = event_socket_request($fp, $cmd);
+
+		//apply settings reminder
+			$_SESSION["reload_xml"] = false;
 	}
 
 	//fs cmd
@@ -104,9 +188,6 @@ if (count($_GET)>0) {
 			$switch_cmd = str_replace("Logged_Out", "'Logged Out'", $switch_cmd);
 			$switch_cmd = str_replace("On_Break", "'On Break'", $switch_cmd);
 			$switch_cmd = str_replace("Do_Not_Disturb", "'Logged Out'", $switch_cmd);
-
-		//setup the event socket connection
-			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 
 		/*
 		//if ($action == "energy") {
