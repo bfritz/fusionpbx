@@ -149,7 +149,7 @@ function cmd_async($cmd) {
 
 				$channel_variables = "origination_caller_id_name='$broadcast_caller_id_name',origination_caller_id_number=$broadcast_caller_id_number";
 				$origination_url = "{".$channel_variables."}".$bridge_array[0]."";
-				$cmd = "sched_api +".$sched_seconds." none originate ".$origination_url." &transfer(".$broadcast_destination_data." XML default)";
+				$cmd = "sched_api +".$sched_seconds." none originate {ignore_early_media=true}".$origination_url." &transfer(".$broadcast_destination_data." XML default)";
 				//echo $cmd."<br />\n";
 
 				//method 1
