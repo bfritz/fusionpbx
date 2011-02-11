@@ -413,19 +413,19 @@ else {
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
 			$tmp_dir = $v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
 			$tmp_name = '';
-			if (!file_exists($tmp_dir.'/'.$row['uuid'].'_1.wav')) {
-				$tmp_name = $row['uuid']."_1.wav";
-			}
-			if (!file_exists($tmp_dir.'/'.$row['uuid'].'.wav')) {
+			if (file_exists($tmp_dir.'/'.$row['uuid'].'.wav')) {
 				$tmp_name = $row['uuid'].".wav";
 			}
-			if (!file_exists($tmp_dir.'/'.$row['uuid'].'_1.mp3')) {
-				$tmp_name = $row['uuid']."_1.mp3";
+			if (file_exists($tmp_dir.'/'.$row['uuid'].'_1.wav')) {
+				$tmp_name = $row['uuid']."_1.wav";
 			}
-			if (!file_exists($tmp_dir.'/'.$row['uuid'].'.mp3')) {
+			if (file_exists($tmp_dir.'/'.$row['uuid'].'.mp3')) {
 				$tmp_name = $row['uuid'].".mp3";
 			}
-			if (file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
+			if (file_exists($tmp_dir.'/'.$row['uuid'].'_1.mp3')) {
+				$tmp_name = $row['uuid']."_1.mp3";
+			}
+			if (strlen($tmp_name) > 0 && file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
 				echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('../recordings/v_recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
 				echo 	$row['caller_id_name'].' ';
 				echo "	  </a>";
@@ -435,7 +435,7 @@ else {
 			}
 			echo "	</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
-			if (file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
+			if (strlen($tmp_name) > 0 && file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
 				echo "		<a href=\"../recordings/v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode("archive/".$tmp_year."/".$tmp_month."/".$tmp_day."/".$tmp_name)."\">\n";
 				echo 	$row['caller_id_number'].' ';
 				echo "	  </a>";
