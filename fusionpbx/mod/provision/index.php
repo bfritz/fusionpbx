@@ -30,6 +30,7 @@ require_once "includes/config.php";
 	$file_count = 0;
 	$row_count = 0;
 	$tmp_array = '';
+	$phone_template = '';
 
 //get any system -> variables defined in the 'provision;
 	$sql = "";
@@ -68,6 +69,9 @@ require_once "includes/config.php";
 
 //define variables from HTTP GET
 	$mac = $_GET['mac'];
+	if (strlen($_GET['template']) > 0) {
+		$phone_template = $_GET['template'];
+	}
 
 	if(empty($mac)){//check alternate MAC source
 		if($_SERVER['HTTP_USER_AGENT'][strlen($_SERVER['HTTP_USER_AGENT'])-17-1]==" ") {
@@ -85,17 +89,19 @@ require_once "includes/config.php";
 //check to see if the mac_address exists in v_hardware_phones
 	if (mac_exists_in_v_hardware_phones($db, $mac)) {
 		//get the phone_template
-			$sql = "SELECT phone_template, phone_vendor FROM v_hardware_phones ";
-			$sql .= "where v_id=:v_id ";
-			$sql .= "and phone_mac_address=:mac ";
-			$prepstatement2 = $db->prepare(check_sql($sql));
-			if ($prepstatement2) {
-				$prepstatement2->bindParam(':v_id', $v_id);
-				$prepstatement2->bindParam(':mac', $mac);
-				$prepstatement2->execute();
-				$row = $prepstatement2->fetch();
-				$phone_template = $row['phone_template'];
-				$phone_vendor = $row['phone_vendor'];
+			if (strlen($phone_template) == 0) {
+				$sql = "SELECT phone_template, phone_vendor FROM v_hardware_phones ";
+				$sql .= "where v_id=:v_id ";
+				$sql .= "and phone_mac_address=:mac ";
+				$prepstatement2 = $db->prepare(check_sql($sql));
+				if ($prepstatement2) {
+					$prepstatement2->bindParam(':v_id', $v_id);
+					$prepstatement2->bindParam(':mac', $mac);
+					$prepstatement2->execute();
+					$row = $prepstatement2->fetch();
+					$phone_template = $row['phone_template'];
+					$phone_vendor = $row['phone_vendor'];
+				}
 			}
 		//find a template that was defined on another phone and use that as the default.
 			if (strlen($phone_template) == 0) {
