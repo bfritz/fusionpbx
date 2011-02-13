@@ -69,6 +69,7 @@ if (count($_POST)>0) {
 		$v_htdocs_dir = check_str($_POST["v_htdocs_dir"]);
 		$v_log_dir = check_str($_POST["v_log_dir"]);
 		$v_extensions_dir = check_str($_POST["v_extensions_dir"]);
+		$v_gateways_dir = check_str($_POST["v_gateways_dir"]);
 		$v_dialplan_public_dir = check_str($_POST["v_dialplan_public_dir"]);
 		$v_dialplan_default_dir = check_str($_POST["v_dialplan_default_dir"]);
 		$v_mod_dir = check_str($_POST["v_mod_dir"]);
@@ -122,6 +123,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($v_htdocs_dir) == 0) { $msg .= "Please provide: htdocs Directory<br>\n"; }
 		if (strlen($v_log_dir) == 0) { $msg .= "Please provide: Log Directory<br>\n"; }
 		if (strlen($v_extensions_dir) == 0) { $msg .= "Please provide: Extensions Directory<br>\n"; }
+		if (strlen($v_gateways_dir) == 0) { $msg .= "Please provide: Gateways Directory<br>\n"; }
 		if (strlen($v_dialplan_public_dir) == 0) { $msg .= "Please provide: Dialplan Public Directory<br>\n"; }
 		if (strlen($v_dialplan_default_dir) == 0) { $msg .= "Please provide: Dialplan Default Directory<br>\n"; }
 		if (strlen($v_mod_dir) == 0) { $msg .= "Please provide: Mod Directory<br>\n"; }
@@ -155,7 +157,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_system_settings ";
 			$sql .= "(";
-			//$sql .= "v_id, ";
 			$sql .= "v_domain, ";
 			$sql .= "php_dir, ";
 			$sql .= "tmp_dir, ";
@@ -177,6 +178,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_htdocs_dir, ";
 			$sql .= "v_log_dir, ";
 			$sql .= "v_extensions_dir, ";
+			$sql .= "v_gateways_dir, ";
 			$sql .= "v_dialplan_public_dir, ";
 			$sql .= "v_dialplan_default_dir, ";
 			$sql .= "v_mod_dir, ";
@@ -194,7 +196,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			//$sql .= "'$v_id', ";
 			$sql .= "'$v_domain', ";
 			$sql .= "'$php_dir', ";
 			$sql .= "'$tmp_dir', ";
@@ -216,6 +217,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$v_htdocs_dir', ";
 			$sql .= "'$v_log_dir', ";
 			$sql .= "'$v_extensions_dir', ";
+			$sql .= "'$v_gateways_dir', ";
 			$sql .= "'$v_dialplan_public_dir', ";
 			$sql .= "'$v_dialplan_default_dir', ";
 			$sql .= "'$v_mod_dir', ";
@@ -267,6 +269,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_htdocs_dir = '$v_htdocs_dir', ";
 			$sql .= "v_log_dir = '$v_log_dir', ";
 			$sql .= "v_extensions_dir = '$v_extensions_dir', ";
+			$sql .= "v_gateways_dir = '$v_gateways_dir', ";
 			$sql .= "v_dialplan_public_dir = '$v_dialplan_public_dir', ";
 			$sql .= "v_dialplan_default_dir = '$v_dialplan_default_dir', ";
 			$sql .= "v_mod_dir = '$v_mod_dir', ";
@@ -330,6 +333,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$v_htdocs_dir = $row["v_htdocs_dir"];
 		$v_log_dir = $row["v_log_dir"];
 		$v_extensions_dir = $row["v_extensions_dir"];
+		$v_gateways_dir = $row["v_gateways_dir"];
 		$v_dialplan_public_dir = $row["v_dialplan_public_dir"];
 		$v_dialplan_default_dir = $row["v_dialplan_default_dir"];
 		$v_mod_dir = $row["v_mod_dir"];
@@ -351,6 +355,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 //set defaults if value is emtpy
 if (strlen($v_extensions_dir) == 0) { $v_extensions_dir = $v_conf_dir.'/directory/default'; }
+if (strlen($v_gateways_dir) == 0) { $v_gateways_dir = $v_conf_dir.'/sip_profiles/external'; }
 if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $v_conf_dir.'/dialplan/public'; }
 if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_dir.'/dialplan/default'; }
 
@@ -619,6 +624,17 @@ if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_di
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='v_extensions_dir' maxlength='255' value=\"$v_extensions_dir\">\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	Gateways Directory:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='v_gateways_dir' maxlength='255' value=\"$v_gateways_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

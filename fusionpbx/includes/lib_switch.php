@@ -207,6 +207,11 @@ function v_settings() {
 		$v_extensions_dir = str_replace ("{program_dir}", $program_dir, $v_extensions_dir);
 		$v_settings_array["v_extensions_dir"] = $v_extensions_dir;
 
+		$v_gateways_dir = $row["v_gateways_dir"];
+		if (strlen($v_gateways_dir) == 0) { $v_gateways_dir = $v_conf_dir.'/sip_profiles/external'; }
+		$v_gateways_dir = str_replace ("{program_dir}", $program_dir, $v_gateways_dir);
+		$v_settings_array["v_gateways_dir"] = $v_gateways_dir;
+
 		$v_dialplan_public_dir = $row["v_dialplan_public_dir"];
 		if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $v_conf_dir.'/dialplan/public'; }
 		$v_dialplan_public_dir = str_replace ("{program_dir}", $program_dir, $v_dialplan_public_dir);
@@ -1981,7 +1986,7 @@ function sync_package_v_gateways()
 	}
 
 	// delete all old gateways to prepare for new ones
-		if($dh = opendir($v_conf_dir."/sip_profiles/external/")) {
+		if($dh = opendir($v_gateways_dir."")) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -1990,7 +1995,7 @@ function sync_package_v_gateways()
 					} else {
 						//check if file extension is xml
 						if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
-							unlink($v_conf_dir."/sip_profiles/external/".$file);
+							unlink($v_gateways_dir."/".$file);
 						}
 					}
 				}
@@ -2007,7 +2012,7 @@ function sync_package_v_gateways()
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		if ($row['enabled'] != "false") {
-				$fout = fopen($v_conf_dir."/sip_profiles/external/v_".$row['gateway'].".xml","w");
+				$fout = fopen($v_gateways_dir."/v_".$row['gateway'].".xml","w");
 
 				$tmpxml .= "<include>\n";
 				$tmpxml .= "    <gateway name=\"" . $row['gateway'] . "\">\n";
