@@ -28,14 +28,6 @@ require_once "includes/config.php";
 require_once "includes/checkauth.php";
 require_once "includes/paging.php";
 
-//if (ifgroup("admin") || ifgroup("superadmin")) {
-//	//access granted
-//}
-//else {
-//	echo "access denied";
-//	exit;
-//}
-
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
@@ -47,7 +39,6 @@ require_once "includes/paging.php";
 
 //POST to PHP variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
 		$huntgroupextension = check_str($_POST["huntgroupextension"]);
 		$huntgroupname = check_str($_POST["huntgroupname"]);
 		$huntgrouptype = check_str($_POST["huntgrouptype"]);
@@ -66,6 +57,13 @@ require_once "includes/paging.php";
 		$hunt_group_user_list = trim($hunt_group_user_list);
 		$hunt_group_enabled = check_str($_POST["hunt_group_enabled"]);
 		$huntgroupdescr = check_str($_POST["huntgroupdescr"]);
+
+		//remove invalid characters
+		$huntgroupcidnameprefix = str_replace(":", "-", $huntgroupcidnameprefix);
+		$huntgroupcidnameprefix = str_replace("\"", "", $huntgroupcidnameprefix);
+		$huntgroupcidnameprefix = str_replace("@", "", $huntgroupcidnameprefix);
+		$huntgroupcidnameprefix = str_replace("\\", "", $huntgroupcidnameprefix);
+		$huntgroupcidnameprefix = str_replace("/", "", $huntgroupcidnameprefix);
 
 		//set default
 		if (strlen($huntgroupcallerannounce) == 0) { $huntgroupcallerannounce = "false"; }
@@ -164,7 +162,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update") {
 				$sql = "update v_hunt_group set ";
-				//$sql .= "v_id = '$v_id', ";
 				$sql .= "huntgroupextension = '$huntgroupextension', ";
 				$sql .= "huntgroupname = '$huntgroupname', ";
 				$sql .= "huntgrouptype = '$huntgrouptype', ";
@@ -464,7 +461,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='huntgroupcidnameprefix' maxlength='255' value=\"$huntgroupcidnameprefix\">\n";
 	echo "<br />\n";
-	echo "Set a prefix on the caller ID name. (optional)\n";
+	echo "Set a prefix on the caller ID name.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -475,7 +472,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='huntgrouppin' maxlength='255' value=\"$huntgrouppin\">\n";
 	echo "<br />\n";
-	echo "If this is provided then the caller will be required to enter the PIN number. (optional) \n";
+	echo "If this is provided then the caller will be required to enter the PIN number.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -580,112 +577,103 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-//---- begin: v_hunt_group_destinations ---------------------------
-if ($action == "update") {
+//list hunt group destinations
+	if ($action == "update") {
 
-	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
+		echo "<div align='center'>";
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
-	echo "<tr class='border'>\n";
-	echo "	<td align=\"center\">\n";
-	echo "      <br>";
-
-
-	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
-	echo "  <tr>\n";
-	echo "    <td align='left'><p><span class='vexpl'><span class='red'><strong>Destinations<br />\n";
-	echo "        </strong></span>\n";
-	echo "        The following destinations will be called.\n";
-	echo "       </span></p></td>\n";
-	echo " </tr>\n";
-	echo "</table>\n";
-	echo "<br />\n";
-
-	$sql = "";
-	$sql .= " select * from v_hunt_group_destinations ";
-	$sql .= " where v_id = '$v_id' ";
-	$sql .= " and hunt_group_id = '$hunt_group_id' ";
-	$sql .= " order by destinationorder asc";
-	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-
-	//$sql .= " limit $rowsperpage offset $offset ";
-	//echo $sql;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+		echo "<tr class='border'>\n";
+		echo "	<td align=\"center\">\n";
+		echo "      <br>";
 
 
-	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+		echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
+		echo "  <tr>\n";
+		echo "    <td align='left'><p><span class='vexpl'><span class='red'><strong>Destinations<br />\n";
+		echo "        </strong></span>\n";
+		echo "        The following destinations will be called.\n";
+		echo "       </span></p></td>\n";
+		echo " </tr>\n";
+		echo "</table>\n";
+		echo "<br />\n";
 
-	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
-	echo "<tr>\n";
-	echo "<th align='center'>Destination</th>\n";
-	echo "<th align='center'>Type</th>\n";
-	echo "<th align='center'>Profile</th>\n";
-	echo "<th align='center'>Order</th>\n";
-	echo "<th align='center'>Description</th>\n";
-	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_hunt_group_destinations_edit.php?id2=".$hunt_group_id."' alt='add'>$v_link_label_add</a>\n";
-	echo "</td>\n";
-	echo "<tr>\n";
-
-
-	if ($resultcount == 0) { //no results
-	}
-	else { //received results
-
-		foreach($result as $row) {
-			//print_r( $row );
-			echo "<tr >\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[destinationdata]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[destinationtype]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[destinationprofile]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[destinationorder]."</td>\n";
-			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[destinationdescr]."&nbsp;</td>\n";
-			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_hunt_group_destinations_edit.php?id=".$row[hunt_group_destination_id]."&id2=".$hunt_group_id."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_hunt_group_destinations_delete.php?id=".$row[hunt_group_destination_id]."&id2=".$hunt_group_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-			echo "   </td>\n";
-			echo "</tr>\n";
-
-			if ($c==0) { $c=1; } else { $c=0; }
-		} //end foreach
-		unset($sql, $result, $rowcount);
-	} //end if results
-
-	echo "<tr>\n";
-	echo "<td colspan='6'>\n";
-	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
-	echo "	<tr>\n";
-	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_hunt_group_destinations_edit.php?id2=".$hunt_group_id."' alt='add'>$v_link_label_add</a>\n";
-	echo "		</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-	echo "<br><br>";
+		$sql = "";
+		$sql .= " select * from v_hunt_group_destinations ";
+		$sql .= " where v_id = '$v_id' ";
+		$sql .= " and hunt_group_id = '$hunt_group_id' ";
+		$sql .= " order by destinationorder asc";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		$resultcount = count($result);
+		unset ($prepstatement, $sql);
 
 
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
+		$c = 0;
+		$rowstyle["0"] = "rowstyle0";
+		$rowstyle["1"] = "rowstyle1";
 
-} //end if update
-//---- end: v_hunt_group_destinations ---------------------------
+		echo "<div align='center'>\n";
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+
+		echo "<tr>\n";
+		echo "<th align='center'>Destination</th>\n";
+		echo "<th align='center'>Type</th>\n";
+		echo "<th align='center'>Profile</th>\n";
+		echo "<th align='center'>Order</th>\n";
+		echo "<th align='center'>Description</th>\n";
+		echo "<td align='right' width='42'>\n";
+		echo "	<a href='v_hunt_group_destinations_edit.php?id2=".$hunt_group_id."' alt='add'>$v_link_label_add</a>\n";
+		echo "</td>\n";
+		echo "<tr>\n";
+
+		if ($resultcount == 0) { //no results
+		}
+		else { //received results
+			foreach($result as $row) {
+				echo "<tr >\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[destinationdata]."</td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[destinationtype]."</td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[destinationprofile]."</td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[destinationorder]."</td>\n";
+				echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[destinationdescr]."&nbsp;</td>\n";
+				echo "   <td valign='top' align='right'>\n";
+				echo "		<a href='v_hunt_group_destinations_edit.php?id=".$row[hunt_group_destination_id]."&id2=".$hunt_group_id."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_hunt_group_destinations_delete.php?id=".$row[hunt_group_destination_id]."&id2=".$hunt_group_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "   </td>\n";
+				echo "</tr>\n";
+				if ($c==0) { $c=1; } else { $c=0; }
+			} //end foreach
+			unset($sql, $result, $rowcount);
+		} //end if results
+
+		echo "<tr>\n";
+		echo "<td colspan='6'>\n";
+		echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
+		echo "	<tr>\n";
+		echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
+		echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+		echo "		<td width='33.3%' align='right'>\n";
+		echo "			<a href='v_hunt_group_destinations_edit.php?id2=".$hunt_group_id."' alt='add'>$v_link_label_add</a>\n";
+		echo "		</td>\n";
+		echo "	</tr>\n";
+		echo "	</table>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "</table>";
+		echo "</div>";
+		echo "<br><br>";
+		echo "<br><br>";
+
+
+		echo "</td>";
+		echo "</tr>";
+		echo "</table>";
+		echo "</div>";
+		echo "<br><br>";
+	} //end if update
+
 require_once "includes/footer.php";
 ?>
