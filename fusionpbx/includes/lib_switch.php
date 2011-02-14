@@ -5278,7 +5278,6 @@ if (!function_exists('sync_package_v_call_center')) {
 		unset ($prepstatement, $sql);
 		if ($result_count > 0) { //found results
 			foreach($result as $row) {
-				//$v_id = $row["v_id"];
 				$call_center_queue_id = $row["call_center_queue_id"];
 				$queue_name = $row["queue_name"];
 				$queue_extension = $row["queue_extension"];
@@ -5294,6 +5293,7 @@ if (!function_exists('sync_package_v_call_center')) {
 				$queue_tier_rule_no_agent_no_wait = $row["queue_tier_rule_no_agent_no_wait"];
 				$queue_discard_abandoned_after = $row["queue_discard_abandoned_after"];
 				$queue_abandoned_resume_allowed = $row["queue_abandoned_resume_allowed"];
+				$queue_cid_prefix = $row["queue_cid_prefix"];
 				$queue_description = $row["queue_description"];
 
 				//replace space with an underscore
@@ -5343,15 +5343,21 @@ if (!function_exists('sync_package_v_call_center')) {
 								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 								$tag = 'action'; //condition, action, antiaction
+								$fieldtype = 'set';
+								$fielddata = 'caller_id_name='.$queue_cid_prefix.'${caller_id_name}';
+								$fieldorder = '002';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+								$tag = 'action'; //condition, action, antiaction
 								$fieldtype = 'system';
 								$fielddata = 'mkdir -p $${base_dir}/recordings/archive/${strftime(%Y)}/${strftime(%b)}/${strftime(%d)}/';
-								$fieldorder = '002';
+								$fieldorder = '003';
 								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 								$tag = 'action'; //condition, action, antiaction
 								$fieldtype = 'callcenter';
 								$fielddata = $queue_name."@".$v_domain;
-								$fieldorder = '003';
+								$fieldorder = '004';
 								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 						}
 						if ($action == 'update') {
@@ -5376,7 +5382,6 @@ if (!function_exists('sync_package_v_call_center')) {
 								$sql .= "and opt1name = 'call_center_queue_id' ";
 								$sql .= "and opt1value = '$call_center_queue_id' ";
 								//echo "sql: ".$sql."<br />";
-								//exit;
 								$db->query($sql);
 								unset($sql);
 
@@ -5389,9 +5394,20 @@ if (!function_exists('sync_package_v_call_center')) {
 								$sql .= "and fieldtype = 'destination_number' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 								//echo $sql."<br />";
-								//exit;
 								$db->query($sql);
 								unset($sql);
+
+								//update the action
+								$sql = "";
+								$sql = "update v_dialplan_includes_details set ";
+								$sql .= "fielddata = 'caller_id_name=".$queue_cid_prefix."\${caller_id_name}' ";
+								$sql .= "where v_id = '$v_id' ";
+								$sql .= "and tag = 'action' ";
+								$sql .= "and fieldtype = 'set' ";
+								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								$sql .= "and fielddata like '%{caller_id_name}%' ";
+								//echo $sql."<br />";
+								$db->query($sql);
 
 								//update the action
 								$sql = "";

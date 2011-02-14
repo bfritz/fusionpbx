@@ -60,7 +60,15 @@ else {
 		$queue_tier_rule_no_agent_no_wait = check_str($_POST["queue_tier_rule_no_agent_no_wait"]);
 		$queue_discard_abandoned_after = check_str($_POST["queue_discard_abandoned_after"]);
 		$queue_abandoned_resume_allowed = check_str($_POST["queue_abandoned_resume_allowed"]);
+		$queue_cid_prefix = check_str($_POST["queue_cid_prefix"]);
 		$queue_description = check_str($_POST["queue_description"]);
+
+		//remove invalid characters
+		$queue_cid_prefix = str_replace(":", "-", $queue_cid_prefix);
+		$queue_cid_prefix = str_replace("\"", "", $queue_cid_prefix);
+		$queue_cid_prefix = str_replace("@", "", $queue_cid_prefix);
+		$queue_cid_prefix = str_replace("\\", "", $queue_cid_prefix);
+		$queue_cid_prefix = str_replace("/", "", $queue_cid_prefix);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -87,6 +95,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($queue_tier_rule_no_agent_no_wait) == 0) { $msg .= "Please provide: Tier Rule No Agent No Wait<br>\n"; }
 		//if (strlen($queue_discard_abandoned_after) == 0) { $msg .= "Please provide: Discard Abandoned After<br>\n"; }
 		//if (strlen($queue_abandoned_resume_allowed) == 0) { $msg .= "Please provide: Abandoned Resume Allowed<br>\n"; }
+		//if (strlen($queue_cid_prefix) == 0) { $msg .= "Please provide: Caller ID Prefix<br>\n"; }
 		//if (strlen($queue_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
@@ -121,6 +130,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "queue_tier_rule_no_agent_no_wait, ";
 			$sql .= "queue_discard_abandoned_after, ";
 			$sql .= "queue_abandoned_resume_allowed, ";
+			$sql .= "queue_cid_prefix, ";
 			$sql .= "queue_description ";
 			$sql .= ")";
 			$sql .= "values ";
@@ -140,6 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$queue_tier_rule_no_agent_no_wait', ";
 			$sql .= "'$queue_discard_abandoned_after', ";
 			$sql .= "'$queue_abandoned_resume_allowed', ";
+			$sql .= "'$queue_cid_prefix', ";
 			$sql .= "'$queue_description' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
@@ -174,6 +185,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "queue_tier_rule_no_agent_no_wait = '$queue_tier_rule_no_agent_no_wait', ";
 			$sql .= "queue_discard_abandoned_after = '$queue_discard_abandoned_after', ";
 			$sql .= "queue_abandoned_resume_allowed = '$queue_abandoned_resume_allowed', ";
+			$sql .= "queue_cid_prefix = '$queue_cid_prefix', ";
 			$sql .= "queue_description = '$queue_description' ";
 			$sql .= "where call_center_queue_id = '$call_center_queue_id'";
 			$db->exec(check_sql($sql));
@@ -219,6 +231,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$queue_tier_rule_no_agent_no_wait = $row["queue_tier_rule_no_agent_no_wait"];
 			$queue_discard_abandoned_after = $row["queue_discard_abandoned_after"];
 			$queue_abandoned_resume_allowed = $row["queue_abandoned_resume_allowed"];
+			$queue_cid_prefix = $row["queue_cid_prefix"];
 			$queue_description = $row["queue_description"];
 			break; //limit to 1 row
 		}
@@ -527,6 +540,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	</select>\n";
 	echo "<br />\n";
 	echo "Set the abandoned resume allowed to true or false.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	CID Prefix:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "  <input class='formfld' type='text' name='queue_cid_prefix' maxlength='255' value='$queue_cid_prefix'>\n";
+	echo "<br />\n";
+	echo "Set a prefix on the caller ID name.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
