@@ -254,6 +254,10 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$switch_cmd .= "callcenter_config agent set status ".$username."@".$v_domain." '".$user_status."'";
 		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 
+	//update the user state
+		$cmd = "api callcenter_config agent set state ".$username."@".$v_domain." Waiting";
+		$response = event_socket_request($fp, $cmd);
+
 	//clear the template so it will rebuild in case the template was changed
 		$_SESSION["template_content"] = '';
 

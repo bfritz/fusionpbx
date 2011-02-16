@@ -46,37 +46,47 @@ else {
 		$username = trim(check_str($_GET["username"]));
 	}
 
+//authorized commands
+	if (stristr($action, 'user_status') == true) {
+		//authorized;
+	} elseif (stristr($action, 'callcenter_config') == true) {
+		//authorized;
+	} else {
+		//not found. this command is not authorized
+		echo "access denied";
+		exit;
+	}
 
-//GET to PHP variables
-if (count($_GET)>0) {
-	if ($action == "user_status") {
-		$user_status = $data;
-		$sql  = "update v_users set ";
-		$sql .= "user_status = '".trim($user_status, "'")."' ";
-		$sql .= "where v_id = '$v_id' ";
-		if (ifgroup("admin") || ifgroup("superadmin")) {
+//set the username
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		//use the username that was provided
+	}
+	else {
+		$username = $_SESSION['username'];
+	}
+
+//get to php variables
+	if (count($_GET)>0) {
+		if ($action == "user_status") {
+			$user_status = $data;
+			$sql  = "update v_users set ";
+			$sql .= "user_status = '".trim($user_status, "'")."' ";
+			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and username = '".$username."' ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
 		}
-		else {
-			$sql .= "and username = '".$_SESSION['username']."' ";
+
+		//fs cmd
+		if (strlen($switch_cmd) > 0) {
+			//setup the event socket connection
+				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+			//send the command
+				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+			//set the user state
+				$cmd = "api callcenter_config agent set state ".$username."@".$v_domain." Waiting";
+				$response = event_socket_request($fp, $cmd);
 		}
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
 	}
-
-	//fs cmd
-	if (strlen($switch_cmd) > 0) {
-
-		//setup the event socket connection
-			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-
-		//echo "<b>switch command:</b>\n";
-		//echo "<pre>\n";
-		//echo $switch_cmd;
-		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-		//echo "</pre>\n";
-	}
-
-}
 
 ?>

@@ -202,10 +202,14 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 			$sql .= "and username = '$username' ";
 		}
 
-	//update the user_status
+	//update the user status
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		$switch_cmd .= "callcenter_config agent set status ".$username."@".$v_domain." '".$user_status."'";
 		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+
+	//update the user state
+		$cmd = "api callcenter_config agent set state ".$_SESSION['username']."@".$v_domain." Waiting";
+		$response = event_socket_request($fp, $cmd);
 
 	$count = $db->exec(check_sql($sql));
 	if (strlen($groupmember) > 0) {

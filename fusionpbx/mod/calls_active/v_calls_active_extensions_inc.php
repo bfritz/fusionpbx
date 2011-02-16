@@ -245,7 +245,7 @@ require_once "includes/checkauth.php";
 			//echo "</tr>\n";
 
 			echo "<tr>\n";
-			echo "<th>Ext</th>\n";
+			echo "<th width='50px;'>Ext</th>\n";
 			if ($_SESSION['user_status_display'] == "false") {
 				//hide the user_status when it is set to false
 			}

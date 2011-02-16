@@ -54,9 +54,13 @@ require_once "includes/checkauth.php";
 			$_SESSION['user_extension_array'] = $user_extension_array;
 		}
 
+		echo "<table width='100%' border='0' cellpadding='5' cellspacing='0'>\n";
+		echo "<tr>\n";
+		echo "<td valign='top'>\n";
+
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";
-		echo "<th>Ext</th>\n";
+		echo "<th width='50px;'>Ext</th>\n";
 		if ($_SESSION['user_status_display'] == "false") {
 			//hide the user_status when it is set to false
 		}
@@ -297,6 +301,11 @@ require_once "includes/checkauth.php";
 		}
 
 		echo "</table>\n";
+
+		echo "</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+
 
 		echo "<span id='uuid_1' style='visibility:hidden;'>$uuid_1</span>\n";
 		echo "<span id='direction_1' style='visibility:hidden;'>$direction_1</span>\n";

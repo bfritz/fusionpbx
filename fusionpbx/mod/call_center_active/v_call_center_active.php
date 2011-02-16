@@ -325,7 +325,7 @@ echo "	<td valign='top' align='left' colspan='2'>\n";
 	echo "</table>\n";
 	echo "	</div>\n";
 
-	//add an agent to a tier
+	//add a tier which assigns an agent to a queue
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		echo "<div id=\"div_tier\" style=\"display:none\">\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
