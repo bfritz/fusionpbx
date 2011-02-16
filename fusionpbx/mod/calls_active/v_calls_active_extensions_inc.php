@@ -100,9 +100,6 @@ require_once "includes/checkauth.php";
 			$x++;
 		}
 		unset ($prepstatement, $x);
-		//echo "<pre>\n";
-		//print_r($user_array);
-		//echo "</pre>\n";
 	}
 
 //create the event socket connection
@@ -280,9 +277,6 @@ require_once "includes/checkauth.php";
 
 				$found_extension = false;
 				foreach ($xml as $tmp_row) {
-					if ($tmp_row->number == $extension) {
-						$found_extension = true;
-					}
 					$uuid = (string) $tmp_row->uuid;
 					//$direction = $tmp_row->direction;
 					//$sip_profile = $tmp_row->sip_profile;
@@ -319,7 +313,11 @@ require_once "includes/checkauth.php";
 					$valet_array[$uuid]['cid_name'] = $cid_name;
 					$valet_array[$uuid]['cid_num'] = $cid_num;
 					$valet_array[$uuid]['call_length'] = $call_length;
-					//$valet_array[$uuid]['zzz'] = $zzz;
+
+					if ($tmp_row->number == $extension) {
+						$found_extension = true;
+						break;
+					}
 				}
 
 				if ($found_extension) {
@@ -359,6 +357,41 @@ require_once "includes/checkauth.php";
 							}
 						}
 					}
+					if (ifgroup("admin") || ifgroup("superadmin")) {
+						if (strlen(($_GET['rows'])) == 0) {
+							if ($found_extension) {
+								echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+							}
+							else {
+								echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+							}
+							echo "".$dest."<br />\n";
+							echo "</td>\n";
+
+							if ($found_extension) {
+								echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+							}
+							else {
+								echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+							}
+							if ($application == "fifo") {
+								echo "queue &nbsp;\n";
+							}
+							else {
+								echo $application." &nbsp;\n";
+							}
+							echo "</td>\n";
+
+							if ($found_extension) {
+								echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+							}
+							else {
+								echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+							}
+							echo "".$secure."<br />\n";
+							echo "</td>\n";
+						}
+					}
 				}
 				else {
 					$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_light.gif');\"";
@@ -380,49 +413,24 @@ require_once "includes/checkauth.php";
 						}
 					}
 				}
-				if (ifgroup("admin") || ifgroup("superadmin")) {
-					if (strlen(($_GET['rows'])) == 0) {
-						if ($found_extension) {
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
-						}
-						else {
-							echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-						}
-						echo "".$dest."<br />\n";
-						echo "</td>\n";
 
-						if ($found_extension) {
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
-						}
-						else {
-							echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-						}
-						if ($application == "fifo") {
-							echo "queue &nbsp;\n";
-						}
-						else {
-							echo $application." &nbsp;\n";
-						}
-						echo "</td>\n";
-
-						if ($found_extension) {
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
-						}
-						else {
-							echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-						}
-						echo "".$secure."<br />\n";
-						echo "</td>\n";
-					}
-				}
 				if ($found_extension) {
 					echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+					echo "	".$effective_caller_id_name."<br />\n";
+					echo "</td>\n";
 				}
 				else {
+					if (ifgroup("admin") || ifgroup("superadmin")) {
+						if (strlen(($_GET['rows'])) == 0) {
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+							echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+						}
+					}
 					echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+					echo "</td>\n";
 				}
-				echo "".$effective_caller_id_name."<br />\n";
-				echo "</td>\n";
+
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					if (strlen(($_GET['rows'])) == 0) {
 						if ($found_extension) {
@@ -431,13 +439,10 @@ require_once "includes/checkauth.php";
 									//uuid_transfer c985c31b-7e5d-3844-8b3b-aa0835ff6db9 -bleg *9999 xml default
 									//document.getElementById('url').innerHTML='v_calls_exec.php?action=energy&direction=down&cmd='+prepare_cmd(escape('$uuid'));
 									echo "	<a href='javascript:void(0);' style='color: #444444;' onMouseover=\"document.getElementById('form_label').innerHTML='<strong>Transfer To</strong>';\" onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">transfer</a>&nbsp;\n";
-
 								//park
 									echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_park_cmd(escape('$uuid')));\">park</a>&nbsp;\n";
-
 								//hangup
 									echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to hangup this call?');if (confirm_response){send_cmd('v_calls_exec.php?cmd=uuid_kill%20'+(escape('$uuid')));}\">hangup</a>&nbsp;\n";
-
 								//record start/stop
 									$tmp_file = $v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d")."/".$uuid.".wav";
 									if (file_exists($tmp_file)) {
