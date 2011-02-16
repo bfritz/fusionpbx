@@ -414,12 +414,7 @@ require_once "includes/checkauth.php";
 					}
 				}
 
-				if ($found_extension) {
-					echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
-					echo "	".$effective_caller_id_name."<br />\n";
-					echo "</td>\n";
-				}
-				else {
+				if (!$found_extension) {
 					if (ifgroup("admin") || ifgroup("superadmin")) {
 						if (strlen(($_GET['rows'])) == 0) {
 							echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
@@ -427,9 +422,11 @@ require_once "includes/checkauth.php";
 							echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
 						}
 					}
-					echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
-					echo "</td>\n";
 				}
+
+				echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+				echo "	".$effective_caller_id_name."&nbsp;\n";
+				echo "</td>\n";
 
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					if (strlen(($_GET['rows'])) == 0) {
