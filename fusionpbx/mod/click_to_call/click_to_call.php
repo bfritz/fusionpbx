@@ -27,14 +27,9 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 include "root.php";
-if (!file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/includes/config.php")){
-	header("Location: ".PROJECT_PATH."/install.php");
-	exit;
-}
-
 require_once "includes/config.php";
-require_once "includes/header.php";
 require_once "includes/checkauth.php";
+require_once "includes/header.php";
 
 echo "<br />";
 echo "<div align='center'>\n";
@@ -52,23 +47,26 @@ while($row = $prepstatement->fetch()) {
 }
 
 if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])) {
-    //$src = str_replace(array('.', '(', ')', '-', ' '), '', $_REQUEST['src']);
-    //$src = ereg_replace('^(1|\+1)?([2-9][0-9]{2}[2-9][0-9]{6})$', '1\2', $src);
 	$src = $_REQUEST['src'];
 	$dest = $_REQUEST['dest'];
+	$src = str_replace(array('.', '(', ')', '-', ' '), '', $src);
+	$dest = str_replace(array('.', '(', ')', '-', ' '), '', $dest);
 	$cid_name = $_REQUEST['cid_name'];
 	$cid_number = $_REQUEST['cid_number'];
 	if (strlen($cid_number) == 0) { $cid_number = $src;}
 
 	//$switchcmd = "api originate /user/$dest@${domain} &transfer($src XML default)";
-	//$switchcmd = "api originate sofia/gateway/viatalk.com/$src &bridge(sofia/gateway/viatalk.com/$dest)";
 
-	//working
-	$switchcmd = "api originate {ignore_early_media=true,effective_caller_id_name=$cid_name,effective_caller_id_number=$cid_number}loopback/$src/default/XML &transfer($dest XML default)";
+	if (strlen($src) < 7) {
+		$source = "{ignore_early_media=true,effective_caller_id_name='$cid_name',effective_caller_id_number=$cid_number}loopback/$src/default/XML";
+	}
+	else {
+		$bridge_array = outbound_route_to_bridge ($src);
+		$source = "{ignore_early_media=true,effective_caller_id_name='$cid_name',effective_caller_id_number=$cid_number}".$bridge_array[0];
+	}
 
-	//working
-	//$switchcmd = "api originate {ignore_early_media=true}sofia/gateway/viatalk.com/$src &transfer($dest XML default)";
-    //echo $switchcmd;
+	$switchcmd = "api originate $source  &transfer($dest XML default)";
+	//echo $switchcmd;
 
 	//display the last command
 		echo "<div align='center'>\n";
@@ -91,7 +89,6 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 
 	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 	$switch_result = event_socket_request($fp, $switchcmd);
-	//$switch_result = eval($switchcmd);
 	echo "<pre>\n";
 	echo $switch_result;
 	echo "</pre>\n";
@@ -123,7 +120,7 @@ echo "<table border='0' width='100%' cellpadding='6' cellspacing='0'\n";
 echo "<tr><td class='vncellreq' width='40%'>Caller ID Name:</td><td class='vtable' align='left'><input name=\"cid_name\" value='$cid_name' class='formfld'></td></tr>\n";
 echo "<tr><td class='vncellreq'>Caller ID Number:</td><td class='vtable' align='left'><input name=\"cid_number\" value='$cid_number' class='formfld'></td></tr>\n";
 echo "<tr><td class='vncellreq'>Source Number:</td><td class='vtable' align='left'><input name=\"src\" value='$src' class='formfld'></td></tr>\n";
-echo "<tr><td class='vncellreq'>Destination Number:</td><td class='vtable' align='left'><input name=\"dest\" value='' class='formfld'></td></tr>\n";
+echo "<tr><td class='vncellreq'>Destination Number:</td><td class='vtable' align='left'><input name=\"dest\" value='$dest' class='formfld'></td></tr>\n";
 echo "<tr><td colspan='2' align='right'><input type=\"submit\" class='btn' value=\"Call\"></td></tr>";
 echo "</table>\n";
 echo "</form>";
