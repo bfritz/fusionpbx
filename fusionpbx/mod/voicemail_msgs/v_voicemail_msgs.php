@@ -145,8 +145,7 @@ echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
 echo "<tr class='border'>\n";
 echo "	<td align=\"center\">\n";
-echo "      <br>";
-
+echo "		<br>";
 
 echo "<table width='100%' border='0'>\n";
 echo "<tr>\n";
@@ -159,13 +158,11 @@ echo "Voicemails are listed, played, downloaded and deleted from this page. \n";
 if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "Voicemails for an extension are shown to the user(s) that have been assigned to an extension.\n";
 	echo "User accounts are created in the 'User Manager' and then are assigned on the 'Extensions' page. \n";
-	echo "<br />\n";
 }
 echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
 
-echo "<br />\n";
 
 $tmp_msg_header = '';
 $tmp_msg_header .= "<tr>\n";
@@ -197,15 +194,9 @@ if (count($mailbox_array) == 0) {
 else {
 
 	foreach($mailbox_array as $value) {
-		//print_r($value);
-		//$value['extension']
-		//$value['extension_id']
 		if (strlen($value['extension']) > 0) {
-
 			echo "<tr><td colspan='5' align='left'>\n";
 			echo "	<br />\n";
-			echo "	<br />\n";
-			//echo "	<a href='v_voicemail_msgs_password.php?id=$extension_id' alt='edit'><b>Mailbox: ".$value['extension']."</b></a>&nbsp;\n";
 			echo "	<b>Mailbox: ".$value['extension']."</b>&nbsp;\n";
 			echo "	\n";
 			echo "</td>\n";
@@ -216,27 +207,10 @@ else {
 
 			echo $tmp_msg_header;
 
-			//$sql = "";
-			//$sql .= " select * from voicemail_msgs ";
-			//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-			//$prepstatement = $db->prepare(check_sql($sql));
-			//$prepstatement->execute();
-			//$result = $prepstatement->fetchAll();
-			//$numrows = count($result);
-			//unset ($prepstatement, $result, $sql);
-
-			//$rowsperpage = 10;
-			//$param = "";
-			//$page = $_GET['page'];
-			//if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-			//list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-			//$offset = $rowsperpage * $page; 
-
 			$sql = "";
 			$sql .= " select * from voicemail_msgs ";
 			$sql .= " where username = '".$value['extension']."' ";
 			if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-			//$sql .= " limit $rowsperpage offset $offset ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
@@ -273,9 +247,7 @@ else {
 						$tmp_message_len = round(($tmp_message_len/60), 2). " min";
 					}
 
-					//print_r( $row );
 					echo "<tr >\n";
-
 					echo "   <td valign='top' class='".$rowstyle[$c]."' nowrap>";
 					echo date("j M Y g:i a",$row[created_epoch]);
 					echo "</td>\n";
@@ -312,28 +284,12 @@ else {
 			} //end if results
 		}
 	}
-
-	echo "<tr>\n";
-	echo "<td colspan='10'>\n";
-	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
-	echo "	<tr>\n";
-	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>\n";
-	//echo "			$pagingcontrols
-	echo "		</td>\n";
-	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	//echo "		<td width='33.3%' align='right'><input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_voicemail_msgs_edit.php'\" value='+'></td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
 }
 
 echo "</table>";
 echo "</div>";
 echo "<br><br>";
 echo "<br><br>";
-
 
 echo "</td>";
 echo "</tr>";

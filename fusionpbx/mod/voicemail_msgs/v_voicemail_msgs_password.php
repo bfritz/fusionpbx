@@ -148,7 +148,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_extensions set ";
-			//$sql .= "v_id = '$v_id', ";
 			//$sql .= "extension = '$extension', ";
 			//$sql .= "password = '$password', ";
 			//$sql .= "user_list = '$user_list', ";
@@ -161,7 +160,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
 			$sql .= "vm_mailto = '$vm_mailto', ";
 			$sql .= "vm_attach_file = '$vm_attach_file', ";
-			$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email', ";
+			$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email' ";
 			//$sql .= "user_context = '$user_context', ";
 			//$sql .= "callgroup = '$callgroup', ";
 			//$sql .= "auth_acl = '$auth_acl', ";
@@ -176,7 +175,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//syncrhonize configuration
 			sync_package_v_extensions();
-			
+
+			//clear the reload_xml message
+			$_SESSION["reload_xml"] = '';
+
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_voicemail_msgs.php\">\n";
 			echo "<div align='center'>\n";
@@ -185,11 +187,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 	   } //if ($action == "update")
-	} //if ($_POST["persistformvar"] != "true") { 
+	} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
+//pre-populate the form
 if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$extension_id = $_GET["id"];
 	$sql = "";
@@ -230,7 +232,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	require_once "includes/header.php";
 
-
 	echo "<script type=\"text/javascript\" language=\"JavaScript\">\n";
 	echo "\n";
 	echo "function enable_change(enable_over) {\n";
@@ -255,37 +256,26 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
-	echo "<tr class='border'>\n";
+	echo "<tr class=''>\n";
 	echo "	<td align=\"left\">\n";
-	echo "      <br>";
-
-
+	echo "		<br>";
 
 	echo "<form method='post' name='frm' action=''>\n";
-
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
-
 	echo "<tr>\n";
-	if ($action == "add") {
-		echo "<td width='30%' nowrap valign='top'><b>Extension Add</b></td>\n";
-	}
-	if ($action == "update") {
-		echo "<td width='30%' nowrap valign='top'><b>Extension Edit</b></td>\n";
-	}
-	echo "<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_voicemail_msgs.php'\" value='Back'><br /><br /></td>\n";
+	echo "	<td width='30%' nowrap valign='top'><b>Voicemail Settings</b></td>\n";
+	echo "	<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_voicemail_msgs.php'\" value='Back'><br /><br /></td>\n";
 	echo "</tr>\n";
-
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Voicemail Password:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='password' name='vm_password' maxlength='255' value='$vm_password'>\n";
+	echo "    <input class='formfld' type='password' name='vm_password' id='password' onfocus=\"document.getElementById('show_password').innerHTML = 'Password: '+document.getElementById('password').value;\" autocomplete='off' maxlength='50' value=\"$vm_password\">\n";
 	echo "<br />\n";
-	echo "Enter the voicemail password here.\n";
+	echo "<span onclick=\"document.getElementById('show_password').innerHTML = ''\">Enter the password here. </span><span id='show_password'></span>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
