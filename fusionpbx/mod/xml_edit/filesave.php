@@ -42,8 +42,8 @@ $handle = fopen($filename, 'wb') or die("Error!!");
 fwrite($handle, $content);
 fclose($handle);
 
-//echo "File Saved: \n $filename";
-//echo "\n\nContent: $content\n";
+//set the reload_xml value to true
+	$_SESSION["reload_xml"] = true;
 
 echo $content;
 
