@@ -88,6 +88,17 @@ if (strlen($id)>0) {
 	//synchronize the xml config
 		sync_package_v_dialplan_includes();
 
+	//rescan the external profile to look for new or stopped gateways
+		//create the event socket connection
+			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+			$tmp_cmd = 'api sofia profile external rescan';
+			$response = event_socket_request($fp, $tmp_cmd);
+			unset($tmp_cmd);
+			usleep(1000);
+		//close the connection
+			fclose($fp);
+		//clear the apply settings reminder
+			$_SESSION["reload_xml"] = false;
 }
 
 require_once "includes/header.php";

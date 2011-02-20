@@ -130,7 +130,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	//Add or update the database
+	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			$sql = "insert into v_gateways ";
@@ -245,7 +245,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				sync_package_v_dialplan_includes();
 
 		} //if ($action == "update")
-	} //if ($_POST["persistformvar"] != "true") { 
+
+		//rescan the external profile to look for new or stopped gateways
+			//create the event socket connection
+				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+				$tmp_cmd = 'api sofia profile external rescan';
+				$response = event_socket_request($fp, $tmp_cmd);
+				unset($tmp_cmd);
+				usleep(1000);
+			//close the connection
+				fclose($fp);
+			//clear the apply settings reminder
+				$_SESSION["reload_xml"] = false;
+	} //if ($_POST["persistformvar"] != "true")
 
 
 	if (strlen(trim($_POST['dialplan_expression']))> 0) {
