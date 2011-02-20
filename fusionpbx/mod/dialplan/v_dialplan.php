@@ -36,37 +36,48 @@ else {
 require_once "includes/header.php";
 
 if ($_GET['a'] == "default") {
-	//conf_mount_rw();
-	//exec("cp ".$v_conf_dir.".orig/dialplan/default.xml ".$v_conf_dir."/dialplan/default.xml");
-
-	//read default config file
-	$fd = fopen($v_conf_dir.".orig/dialplan/default.xml", "r");
-	$v_content = fread($fd, filesize($v_conf_dir.".orig/dialplan/default.xml"));
-	//echo $v_content;
+	//read the default config file
+	$fd = fopen($_SERVER["DOCUMENT_ROOT"]."/includes/templates/conf/dialplan/default.xml", "r");
+	$v_content = fread($fd, filesize($_SERVER["DOCUMENT_ROOT"]."/includes/templates/conf/dialplan/default.xml"));
 	fclose($fd);
 
-	//write the default config fget
-	$fd = fopen($v_conf_dir."/dialplan/default.xml", "w");
+	//open the dialplan xml file for writing
+	if (file_exists($v_conf_dir."/dialplan/$v_domain.xml")) {
+		$v_content = str_replace("{v_domain}", $v_domain, $v_content);
+		$fd = fopen($v_conf_dir."/dialplan/$v_domain.xml", "w");
+	}
+	else {
+		$v_content = str_replace("{v_domain}", "default", $v_content);
+		$fd = fopen($v_conf_dir."/dialplan/default.xml", "w");
+	}
 	fwrite($fd, $v_content);
 	fclose($fd);
 
 	$savemsg = "Default Restored";
-	//conf_mount_ro();
 }
 
 if ($_POST['a'] == "save") {
-	//conf_mount_rw();
 	$v_content = str_replace("\r","",$_POST['code']);
-	$fd = fopen($v_conf_dir."/dialplan/default.xml", "w");
+	if (file_exists($v_conf_dir."/dialplan/$v_domain.xml")) {
+		$fd = fopen($v_conf_dir."/dialplan/$v_domain.xml", "w");
+	}
+	else {
+		$fd = fopen($v_conf_dir."/dialplan/default.xml", "w");
+	}
 	fwrite($fd, $v_content);
 	fclose($fd);
 	$savemsg = "Saved";
-	//conf_mount_ro();
 }
 
 
-$fd = fopen($v_conf_dir."/dialplan/default.xml", "r");
-$v_content = fread($fd, filesize($v_conf_dir."/dialplan/default.xml"));
+if (file_exists($v_conf_dir."/dialplan/$v_domain.xml")) {
+	$fd = fopen($v_conf_dir."/dialplan/$v_domain.xml", "r");
+	$v_content = fread($fd, filesize($v_conf_dir."/dialplan/$v_domain.xml"));
+}
+else {
+	$fd = fopen($v_conf_dir."/dialplan/default.xml", "r");
+	$v_content = fread($fd, filesize($v_conf_dir."/dialplan/default.xml"));
+}
 fclose($fd);
 
 ?>
