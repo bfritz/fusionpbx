@@ -26,6 +26,26 @@
 include "root.php";
 require_once "includes/config.php";
 
+//if reloadxml then run reloadacl, and reloadxml
+	if ($_SESSION["reload_xml"]) {
+		if ($_SESSION['apply_settings'] == "true") {
+			//show the apply settings prompt
+		}
+		else {
+			//create the event socket connection
+				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+			//reload the access control list this also runs reloadxml
+				$tmp_cmd = 'api reloadacl';
+				$response = event_socket_request($fp, $tmp_cmd);
+				unset($tmp_cmd);
+				usleep(1000);
+			//close the connection
+				fclose($fp);
+			//clear the apply settings reminder
+				$_SESSION["reload_xml"] = false;
+		}
+	}
+
 //set a default template
 	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
 
