@@ -166,6 +166,13 @@ function phpservice_sync_package_php() {
 					$tmp = "#!/bin/sh\n";
 					$tmp .= "# This file was automatically generated\n";
 					$tmp .= "# by the PHP Service handler.\n";
+					$tmp .= "# \n";
+					$tmp .= "# Copy this script to the startup directory.\n";
+					$tmp .= "# cp -a ".$v_secure."/php_service_".$tmp_service_name.".sh ".$v_startup_script_dir."/php_service_".$tmp_service_name.".sh";
+					$tmp .= "# \n";
+					$tmp .= "# Usage: ./php_service_".$tmp_service_name.".sh {start|stop|restart}\n";
+					$tmp .= "# ".$v_startup_script_dir."/./php_service_".$tmp_service_name.".sh start";
+					$tmp .= "\n";
 					$tmp .= "\n";
 					$tmp .= "rc_start() {\n";
 					$tmp .= "	".$php_dir."/php ".$v_secure."/".$php_service_file." >> /var/log/php_service_".$tmp_service_name.".log &\n";
@@ -194,14 +201,13 @@ function phpservice_sync_package_php() {
 					$tmp .= "		exit 1\n";
 					$tmp .= "		;;\n";
 					$tmp .= "esac\n";
-					//$fout = fopen($tmp_dir."/php_service_".$tmp_service_name.".sh","w");
-					$fout = fopen($v_startup_script_dir."/php_service_".$tmp_service_name.".sh","w");
+					$fout = fopen($v_secure."/php_service_".$tmp_service_name.".sh","w");
 					fwrite($fout, $tmp);
 					unset($tmp);
 					fclose($fout);
 
 					//add execute permissions to the start script
-						chmod($v_startup_script_dir."/php_service_".$tmp_service_name.".sh", 0776);
+						chmod($v_secure."/php_service_".$tmp_service_name.".sh", 0755);
 
 					break;
 				default:
@@ -214,10 +220,14 @@ function phpservice_sync_package_php() {
 					$tmp .= "# /etc/init.d/".$tmp_service_name."\n";
 					$tmp .= "# This file was automatically generated\n";
 					$tmp .= "# by the PHP Service handler.\n";
+					$tmp .= "# \n";
+					$tmp .= "# Copy this script to the startup directory.\n";
+					$tmp .= "# cp -a ".$v_secure."/php_service_".$tmp_service_name.".sh ".$v_startup_script_dir."/php_service_".$tmp_service_name.".sh";
+					$tmp .= "# \n";
+					$tmp .= "# Usage: ./php_service_".$tmp_service_name.".sh {start|stop|restart}\n";
+					$tmp .= "# ".$v_startup_script_dir."/./php_service_".$tmp_service_name.".sh start";
 					$tmp .= "\n";
 					$tmp .= "\n";
-					//$tmp .= "# Some things that run always\n";
-					//$tmp .= "\n";
 					$tmp .= "rc_start() {\n";
 					$tmp .= "	".$php_dir."/php ".$v_secure."/".$php_service_file." >> /var/log/".tmp_service_name.".log &\n";
 					$tmp .= "}\n";
@@ -247,14 +257,13 @@ function phpservice_sync_package_php() {
 					$tmp .= "esac\n";
 					$tmp .= "\n";
 					$tmp .= "exit 0";
-					//$fout = fopen($tmp_dir."/php_service_".$tmp_service_name.".sh","w");
-					$fout = fopen($v_startup_script_dir."/php_service_".$tmp_service_name.".sh","w");
+					$fout = fopen($v_secure."/php_service_".$tmp_service_name.".sh","w");
 					fwrite($fout, $tmp);
 					unset($tmp);
 					fclose($fout);
 
 					//add execute permissions to the start script
-						chmod($v_startup_script_dir."/php_service_".$tmp_service_name.".sh", 0776);
+						chmod($v_secure."/php_service_".$tmp_service_name.".sh", 0755);
 				}
 		} //end if enabled
 	}
