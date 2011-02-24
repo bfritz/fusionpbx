@@ -39,44 +39,40 @@ require_once "includes/paging.php";
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
-$sql = "";
-$sql .= "select * from v_settings ";
-$sql .= "where v_id = '$v_id' ";
-$prepstatement = $db->prepare(check_sql($sql));
-$prepstatement->execute();
-$result = $prepstatement->fetchAll();
-foreach ($result as &$row) {
-	$event_socket_ip_address = $row["event_socket_ip_address"];
-	$event_socket_port = $row["event_socket_port"];
-	$event_socket_password = $row["event_socket_password"];
-	break; //limit to 1 row
-}
-
 if (strlen($_GET["a"]) > 0) {
 	if ($_GET["a"] == "stop") {
 		$module_name = $_GET["m"];
-		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		$cmd = "api unload $module_name";
-		$response = trim(event_socket_request($fp, $cmd));
-		$msg = '<strong>Unload Module:</strong><pre>'.$response.'</pre>';
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		if ($fp) {
+			$cmd = "api unload $module_name";
+			$response = trim(event_socket_request($fp, $cmd));
+			$msg = '<strong>Unload Module:</strong><pre>'.$response.'</pre>';
+		}
 	}
 	if ($_GET["a"] == "start") {
 		$module_name = $_GET["m"];
-		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		$cmd = "api load $module_name";
-		$response = trim(event_socket_request($fp, $cmd));
-		$msg = '<strong>Load Module:</strong><pre>'.$response.'</pre>';
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		if ($fp) {
+			$cmd = "api load $module_name";
+			$response = trim(event_socket_request($fp, $cmd));
+			$msg = '<strong>Load Module:</strong><pre>'.$response.'</pre>';
+		}
 	}
 }
 
 if (!function_exists('switch_module_active')) {
 	function switch_module_active($module_name) {
 		global $event_socket_ip_address, $event_socket_port, $event_socket_password;
-		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		$cmd = "api module_exists $module_name";
-		$response = trim(event_socket_request($fp, $cmd));
-		if ($response == "true") {
-			return true;
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		if ($fp) {
+			$cmd = "api module_exists $module_name";
+			$response = trim(event_socket_request($fp, $cmd));
+			if ($response == "true") {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;
@@ -121,7 +117,7 @@ if (!function_exists('switch_module_active')) {
 
 	$sql = "";
 	$sql .= " select * from v_modules ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where v_id = '1' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -138,7 +134,7 @@ if (!function_exists('switch_module_active')) {
 
 	$sql = "";
 	$sql .= " select * from v_modules ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where v_id = '1' ";
     if (strlen($orderby)> 0) { 
 		$sql .= "order by $orderby $order "; 
 	}
@@ -206,7 +202,6 @@ if (!function_exists('switch_module_active')) {
 				echo $tmp_module_header;
 			}
 
-			//print_r( $row );
 			echo "<tr >\n";
 			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["modulecat"]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["modulelabel"]."</td>\n";
@@ -253,12 +248,10 @@ if (!function_exists('switch_module_active')) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
@@ -266,11 +259,6 @@ if (!function_exists('switch_module_active')) {
 	echo "</div>";
 	echo "<br><br>";
 
-
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
+//show the footer
+	require_once "includes/footer.php";
 ?>

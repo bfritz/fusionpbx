@@ -35,36 +35,28 @@ else {
 }
 
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$module_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
+//determin the action add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$module_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+	}
 
-//POST to PHP variables
-if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
-	$modulelabel = check_str($_POST["modulelabel"]);
-	$modulename = check_str($_POST["modulename"]);
-	$moduledesc = check_str($_POST["moduledesc"]);
-	$modulecat = check_str($_POST["modulecat"]);
-	$moduleenabled = check_str($_POST["moduleenabled"]);
-	$moduledefaultenabled = check_str($_POST["moduledefaultenabled"]);
-}
+//set the http post variables to php variables
+	if (count($_POST)>0) {
+		$modulelabel = check_str($_POST["modulelabel"]);
+		$modulename = check_str($_POST["modulename"]);
+		$moduledesc = check_str($_POST["moduledesc"]);
+		$modulecat = check_str($_POST["modulecat"]);
+		$moduleenabled = check_str($_POST["moduleenabled"]);
+		$moduledefaultenabled = check_str($_POST["moduledefaultenabled"]);
+	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$module_id = check_str($_POST["module_id"]);
 	}
@@ -90,7 +82,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add") {
@@ -106,7 +97,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'1', ";
 				$sql .= "'$modulelabel', ";
 				$sql .= "'$modulename', ";
 				$sql .= "'$moduledesc', ";
@@ -136,8 +127,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "modulecat = '$modulecat', ";
 				$sql .= "moduleenabled = '$moduleenabled', ";
 				$sql .= "moduledefaultenabled = '$moduledefaultenabled' ";
-				$sql .= "where v_id = '$v_id'";
-				$sql .= "and module_id = '$module_id'";
+				$sql .= "where module_id = '$module_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -160,8 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$module_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_modules ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and module_id = '$module_id' ";
+		$sql .= "where module_id = '$module_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();

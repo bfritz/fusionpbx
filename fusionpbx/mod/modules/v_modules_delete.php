@@ -35,17 +35,16 @@ else {
 }
 
 if (count($_GET)>0) {
-    $id = $_GET["id"];
+	$id = $_GET["id"];
 }
 
 if (strlen($id)>0) {
-    $sql = "";
-    $sql .= "delete from v_modules ";
-	$sql .= "where v_id = '$v_id' ";
-    $sql .= "and module_id = '$id' ";
-    $prepstatement = $db->prepare(check_sql($sql));
-    $prepstatement->execute();
-    unset($sql);
+	$sql = "";
+	$sql .= "delete from v_modules ";
+	$sql .= "where module_id = '$id' ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	unset($sql);
 }
 
 require_once "includes/header.php";
@@ -53,7 +52,6 @@ echo "<meta http-equiv=\"refresh\" content=\"2;url=v_modules.php\">\n";
 echo "<div align='center'>\n";
 echo "Delete Complete\n";
 echo "</div>\n";
-
 require_once "includes/footer.php";
 return;
 
