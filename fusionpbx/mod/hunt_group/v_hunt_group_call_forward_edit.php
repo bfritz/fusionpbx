@@ -85,21 +85,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 		}
 
-	//get the event socket information
-		$sql = "";
-		$sql .= "select * from v_settings ";
-		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			$event_socket_ip_address = $row["event_socket_ip_address"];
-			$event_socket_port = $row["event_socket_port"];
-			$event_socket_password = $row["event_socket_password"];
-			break; //limit to 1 row
-		}
-		unset ($prepstatement);
-
 	//check for all required data
 		//if (strlen($call_forward_enabled) == 0) { $msg .= "Please provide: Call Forward<br>\n"; }
 		//if (strlen($call_forward_number) == 0) { $msg .= "Please provide: Number<br>\n"; }
@@ -348,20 +333,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//synchronize the xml config
 		sync_package_v_dialplan_includes();
 
-	//reloadxml
-		$cmd = 'api reloadxml';
-		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		$response = event_socket_request($fp, $cmd);
-		fclose($fp);
-
 	//redirect the user
 		require_once "includes/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"3;url=/mod/hunt_group/v_hunt_group_call_forward.php\">\n";
 		echo "<div align='center'>\n";
 		echo "Update Complete<br />\n";
-		//if (strlen($msg) > 0) {
-		//	echo "$msg \n";
-		//}
 		echo "</div>\n";
 		require_once "includes/footer.php";
 		return;

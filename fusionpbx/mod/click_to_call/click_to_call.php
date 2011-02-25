@@ -66,7 +66,6 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	}
 
 	$switchcmd = "api originate $source  &transfer($dest XML default)";
-	//echo $switchcmd;
 
 	//display the last command
 		echo "<div align='center'>\n";
@@ -87,11 +86,26 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 		//echo "<tr><td>Destination:</td><td>$dest</td></tr>\n";
 		//echo "</table>\n";
 
-	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-	$switch_result = event_socket_request($fp, $switchcmd);
-	echo "<pre>\n";
-	echo $switch_result;
-	echo "</pre>\n";
+	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+	if (!$fp) {
+		$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>"; 
+		echo "<div align='center'>\n";
+		echo "<table width='40%'>\n";
+		echo "<tr>\n";
+		echo "<th align='left'>Message</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+		echo "</div>\n";
+	}
+	else {
+		$switch_result = event_socket_request($fp, $switchcmd);
+		echo "<pre>\n";
+		echo $switch_result;
+		echo "</pre>\n";
+	}
 }
 
 echo "	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";

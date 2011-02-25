@@ -39,10 +39,10 @@ require_once "includes/paging.php";
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
+$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 if (strlen($_GET["a"]) > 0) {
 	if ($_GET["a"] == "stop") {
 		$module_name = $_GET["m"];
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
 			$cmd = "api unload $module_name";
 			$response = trim(event_socket_request($fp, $cmd));
@@ -51,7 +51,6 @@ if (strlen($_GET["a"]) > 0) {
 	}
 	if ($_GET["a"] == "start") {
 		$module_name = $_GET["m"];
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
 			$cmd = "api load $module_name";
 			$response = trim(event_socket_request($fp, $cmd));
@@ -62,7 +61,6 @@ if (strlen($_GET["a"]) > 0) {
 
 if (!function_exists('switch_module_active')) {
 	function switch_module_active($module_name) {
-		global $event_socket_ip_address, $event_socket_port, $event_socket_password;
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
 			$cmd = "api module_exists $module_name";

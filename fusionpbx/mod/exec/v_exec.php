@@ -192,27 +192,14 @@ if (count($_POST)>0) {
 
 	//fs cmd
 	if (strlen($switchcmd) > 0) {
-
-		$sql = "";
-		$sql .= "select * from v_settings ";
-		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			//$v_id = $row["v_id"];
-			$event_socket_ip_address = $row["event_socket_ip_address"];
-			$event_socket_port = $row["event_socket_port"];
-			$event_socket_password = $row["event_socket_password"];
-			break; //limit to 1 row
-		}
-
 		echo "<b>switch command:</b>\n";
 		echo "<pre>\n";
-		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		$switch_result = event_socket_request($fp, 'api '.$switchcmd);
-		//$switch_result = eval($switchcmd);
-		echo htmlentities($switch_result);
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		if ($fp) {
+			$switch_result = event_socket_request($fp, 'api '.$switchcmd);
+			//$switch_result = eval($switchcmd);
+			echo htmlentities($switch_result);
+		}
 		echo "</pre>\n";
 	}
 

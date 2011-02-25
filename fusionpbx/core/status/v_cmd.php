@@ -37,44 +37,31 @@ else {
 $cmd = $_GET['cmd'];
 $rdr = $_GET['rdr'];
 
-$sql = "";
-$sql .= "select * from v_settings ";
-$sql .= "where v_id = '$v_id' ";
-$prepstatement = $db->prepare(check_sql($sql));
-$prepstatement->execute();
-$result = $prepstatement->fetchAll();
-foreach ($result as &$row) {
-	$event_socket_ip_address = $row["event_socket_ip_address"];
-	$event_socket_port = $row["event_socket_port"];
-	$event_socket_password = $row["event_socket_password"];
-	break; //limit to 1 row
-}
-unset ($prepstatement);
-
 //create the event socket connection
-	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+	if ($fp) {
+		//if reloadxml then run reloadacl, reloadxml and rescan the external profile for new gateways
+			if ($cmd == "api reloadxml") {
+				//clear the apply settings reminder
+					$_SESSION["reload_xml"] = false;
 
-//if reloadxml then run reloadacl, reloadxml and rescan the external profile for new gateways
-	if ($cmd == "api reloadxml") {
-		//clear the apply settings reminder
-			$_SESSION["reload_xml"] = false;
+				//reload the access control list
+					$tmp_cmd = 'api reloadacl';
+					$response = event_socket_request($fp, $tmp_cmd);
+					unset($tmp_cmd);
 
-		//reload the access control list
-			$tmp_cmd = 'api reloadacl';
-			$response = event_socket_request($fp, $tmp_cmd);
-			unset($tmp_cmd);
+				//rescan the external profile to look for new or stopped gateways
+					$tmp_cmd = 'api sofia profile external rescan';
+					$response = event_socket_request($fp, $tmp_cmd);
+					unset($tmp_cmd);
+			}
 
-		//rescan the external profile to look for new or stopped gateways
-			$tmp_cmd = 'api sofia profile external rescan';
-			$response = event_socket_request($fp, $tmp_cmd);
-			unset($tmp_cmd);
+		//run the requested command
+			$response = event_socket_request($fp, $cmd);
+
+		//close the connection
+			fclose($fp);
 	}
-
-//run the requested command
-	$response = event_socket_request($fp, $cmd);
-
-//close the connection
-	fclose($fp);
 
 if ($rdr == "false") {
 	//redirect false

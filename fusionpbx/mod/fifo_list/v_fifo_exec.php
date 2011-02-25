@@ -47,27 +47,9 @@ if (count($_GET)>0) {
 
 	//fs cmd
 	if (strlen($switch_cmd) > 0) {
-
-	//get the event socket information
-		if (strlen($_SESSION['event_socket_ip_address']) == 0) {
-				$sql = "";
-				$sql .= "select * from v_settings ";
-				$sql .= "where v_id = '$v_id' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
-				foreach ($result as &$row) {
-					$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
-					$_SESSION['event_socket_port'] = $row["event_socket_port"];
-					$_SESSION['event_socket_password'] = $row["event_socket_password"];
-					break; //limit to 1 row
-				}
-		}
-
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		/*
 		if ($action == "energy") {
-			//conference 3001-markjcrane.dyndns.org energy 103
+			//conference 3001-example.dyndns.org energy 103
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 			$result_array = explode("=",$switch_result);
 			$tmp_value = $result_array[1];
@@ -95,15 +77,12 @@ if (count($_GET)>0) {
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
 		}
 		*/
-		
-		
-		//$switch_cmd = "";
-		//echo "<b>switch command:</b>\n";
-		//echo "<pre>\n";
-		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-		//$switch_result = eval($switch_cmd);
-		//echo htmlentities($switch_result);
-		//echo "</pre>\n";
+	//connect to the event socket
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+	//send the command over event socket
+		if ($fp) {
+			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+		}
 	}
 
 }

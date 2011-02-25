@@ -37,7 +37,6 @@ else {
 //set the max execution time to 1 hour
 	ini_set(max_execution_time,3600);
 
-
 function cmd_async($cmd) {
 	//windows
 	if (stristr(PHP_OS, 'WIN')) {
@@ -54,21 +53,6 @@ function cmd_async($cmd) {
 		exec ($cmd ." /dev/null 2>&1 &");
 	}
 }
-
-//get the event socket connection information
-	$sql = "";
-	$sql .= "select * from v_settings ";
-	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$event_socket_ip_address = $row["event_socket_ip_address"];
-		$event_socket_port = $row["event_socket_port"];
-		$event_socket_password = $row["event_socket_password"];
-		break; //limit to 1 row
-	}
-	unset ($prepstatement);
 
 //get the http get values and set as php variables
 	$groupid = $_GET["groupid"];
@@ -122,80 +106,100 @@ function cmd_async($cmd) {
 	$broadcast_name = str_replace(" ", "", $broadcast_name);
 	$broadcast_name = str_replace("'", "", $broadcast_name);
 
-//send the call broadcast
-	if (strlen($broadcast_phone_numbers) > 0) {
+//create the event socket connection
+	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 
-		$broadcast_phone_number_array = explode ("\n", $broadcast_phone_numbers);
-		$count = 1;
-		$sched_seconds = '3';
-		foreach ($broadcast_phone_number_array as $tmp_value) {
-			$tmp_value = str_replace(";", "|", $tmp_value);
-			$tmp_value_array = explode ("|", $tmp_value);
-
-			//make sure the phone numbers are correct
-				$phone1 = trim($tmp_value_array[0]);
-				$phone1 = str_replace("-", "", $phone1);
-				$phone1 = str_replace("(", "", $phone1);
-				$phone1 = str_replace(")", "", $phone1);
-				$phone1 = str_replace(" ", "", $phone1);
-				$phone1 = str_replace(".", "", $phone1);
-				if (strlen($phone1) == 10) {
-					$phone1 = "1".$phone1;
-				}
-
-			//schedule the call
-				$bridge_array = outbound_route_to_bridge ($phone1);
-				//print_r($bridge_array);
-
-				$channel_variables = "origination_caller_id_name='$broadcast_caller_id_name',origination_caller_id_number=$broadcast_caller_id_number";
-				$origination_url = "{".$channel_variables."}".$bridge_array[0]."";
-				$cmd = "sched_api +".$sched_seconds." none originate {ignore_early_media=true}".$origination_url." &transfer(".$broadcast_destination_data." XML default)";
-				//echo $cmd."<br />\n";
-
-				//method 1
-					$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-					$response = event_socket_request($fp, 'api '.$cmd);
-					fclose($fp);
-
-				//method 2
-					//cmd_async($bin_dir."/fs_cli -x \"".$cmd."\";");
-
-				//spread the calls out so that they are scheduled with different times
-					if (strlen($broadcast_concurrent_limit) > 0 && strlen($broadcast_timeout) > 0) {
-						if ($broadcast_concurrent_limit == $count) { 
-							$sched_seconds = $sched_seconds + $broadcast_timeout;
-							$count=0;
-						}
-					}
-				$count++;
-		}
-
+//get information over event socket
+	if (!$fp) {
 		require_once "includes/header.php";
-		//echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/mod/calls_active/v_calls_active.php\">\n";
+		$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>"; 
 		echo "<div align='center'>\n";
-		echo "<table width='50%'>\n";
+		echo "<table width='40%'>\n";
 		echo "<tr>\n";
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1' align='center'>\n";
-		echo "	<strong>Call Broadcast $broadcast_name has been started.</strong>\n";
-		echo "	<br /><br />\n";
-		echo "	<table width='100%'>\n";
-		echo "	<tr>\n";
-		echo "	<td align='center'>\n";
-		echo "		<a href='".PROJECT_PATH."/mod/calls_active/v_calls_active.php'>View Calls</a>\n";
-		echo "	</td>\n";
-		echo "	</table>\n";
-		echo "</td>\n";
+		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
-
 		require_once "includes/footer.php";
-		return;
 	}
+	else {
+		//send the call broadcast
+			if (strlen($broadcast_phone_numbers) > 0) {
+				$broadcast_phone_number_array = explode ("\n", $broadcast_phone_numbers);
+				$count = 1;
+				$sched_seconds = '3';
+				foreach ($broadcast_phone_number_array as $tmp_value) {
+					$tmp_value = str_replace(";", "|", $tmp_value);
+					$tmp_value_array = explode ("|", $tmp_value);
 
+					//make sure the phone numbers are correct
+						$phone1 = trim($tmp_value_array[0]);
+						$phone1 = str_replace("-", "", $phone1);
+						$phone1 = str_replace("(", "", $phone1);
+						$phone1 = str_replace(")", "", $phone1);
+						$phone1 = str_replace(" ", "", $phone1);
+						$phone1 = str_replace(".", "", $phone1);
+						if (strlen($phone1) == 10) {
+							$phone1 = "1".$phone1;
+						}
+
+					//schedule the call
+						$bridge_array = outbound_route_to_bridge ($phone1);
+
+						$channel_variables = "origination_caller_id_name='$broadcast_caller_id_name',origination_caller_id_number=$broadcast_caller_id_number";
+						$origination_url = "{".$channel_variables."}".$bridge_array[0]."";
+						$cmd = "sched_api +".$sched_seconds." none originate {ignore_early_media=true}".$origination_url." &transfer(".$broadcast_destination_data." XML default)";
+						//echo $cmd."<br />\n";
+
+					//if the event socket connection is lost then re-connect
+						if (!$fp) {
+							$fp = eventsocket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+						}
+
+					//method 1
+						$response = event_socket_request($fp, 'api '.$cmd);
+						fclose($fp);
+
+					//method 2
+						//cmd_async($bin_dir."/fs_cli -x \"".$cmd."\";");
+
+					//spread the calls out so that they are scheduled with different times
+						if (strlen($broadcast_concurrent_limit) > 0 && strlen($broadcast_timeout) > 0) {
+							if ($broadcast_concurrent_limit == $count) { 
+								$sched_seconds = $sched_seconds + $broadcast_timeout;
+								$count=0;
+							}
+						}
+					$count++;
+				}
+
+				require_once "includes/header.php";
+				//echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/mod/calls_active/v_calls_active.php\">\n";
+				echo "<div align='center'>\n";
+				echo "<table width='50%'>\n";
+				echo "<tr>\n";
+				echo "<th align='left'>Message</th>\n";
+				echo "</tr>\n";
+				echo "<tr>\n";
+				echo "<td class='rowstyle1' align='center'>\n";
+				echo "	<strong>Call Broadcast $broadcast_name has been started.</strong>\n";
+				echo "	<br /><br />\n";
+				echo "	<table width='100%'>\n";
+				echo "	<tr>\n";
+				echo "	<td align='center'>\n";
+				echo "		<a href='".PROJECT_PATH."/mod/calls_active/v_calls_active.php'>View Calls</a>\n";
+				echo "	</td>\n";
+				echo "	</table>\n";
+				echo "</td>\n";
+				echo "</tr>\n";
+				echo "</table>\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+			}
+	}
 
 /*
 //reserved for future use

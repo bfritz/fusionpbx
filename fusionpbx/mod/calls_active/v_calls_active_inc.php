@@ -37,22 +37,6 @@ else {
 //$conference_name = trim($_REQUEST["c"]);
 //$tmp_conference_name = str_replace("_", " ", $conference_name);
 
-//get the event socket information
-	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
-		$sql = "";
-		$sql .= "select * from v_settings ";
-		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
-			$_SESSION['event_socket_port'] = $row["event_socket_port"];
-			$_SESSION['event_socket_password'] = $row["event_socket_password"];
-			break; //limit to 1 row
-		}
-	}
-
 /*
 API CALL [show(channels as xml)] output:
 <result row_count="3">
@@ -124,75 +108,84 @@ API CALL [show(channels as xml)] output:
 
 $switch_cmd = 'show channels as xml';
 $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-$xml_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
-//echo $xml_str;
-
-try {
-	$xml = new SimpleXMLElement($xml_str);
+if (!$fp) {
+	$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>"; 
+	echo "<div align='center'>\n";
+	echo "<table width='40%'>\n";
+	echo "<tr>\n";
+	echo "<th align='left'>Message</th>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "</div>\n";
 }
-catch(Exception $e) {
-	//echo $e->getMessage();
-}
-//print_r($xml);
+else {
+	$xml_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
+	try {
+		$xml = new SimpleXMLElement($xml_str);
+	}
+	catch(Exception $e) {
+		//echo $e->getMessage();
+	}
 
-// begin the session
-session_start();
+	// begin the session
+	session_start();
 
-//get the extension information
-/*
-	//if (count($_SESSION['extension_array']) == 0) {
-		$sql = "";
-		$sql .= "select * from v_extensions ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "order by extension asc ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			$extension = $row["extension"];
-			//echo $extension;
-			$extension_array[$extension]['v_id'] = $row["v_id"];
-			$extension_array[$extension]['extension'] = $row["extension"];
+	//get the extension information
+	/*
+		//if (count($_SESSION['extension_array']) == 0) {
+			$sql = "";
+			$sql .= "select * from v_extensions ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "order by extension asc ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
+				$extension = $row["extension"];
+				//echo $extension;
+				$extension_array[$extension]['v_id'] = $row["v_id"];
+				$extension_array[$extension]['extension'] = $row["extension"];
 
-			//$extension_array[$extension]['password'] = $row["password"];
-			$extension_array[$extension]['user_list'] = $row["user_list"];
-			$extension_array[$extension]['mailbox'] = $row["mailbox"];
-			//$vm_password = $row["vm_password"];
-			//$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
-			//$_SESSION['extension_array'][$extension]['vm_password'] = $vm_password;
-			$extension_array[$extension]['accountcode'] = $row["accountcode"];
-			$extension_array[$extension]['effective_caller_id_name'] = $row["effective_caller_id_name"];
-			$extension_array[$extension]['effective_caller_id_number'] = $row["effective_caller_id_number"];
-			$extension_array[$extension]['outbound_caller_id_name'] = $row["outbound_caller_id_name"];
-			$extension_array[$extension]['outbound_caller_id_number'] = $row["outbound_caller_id_number"];
-			$extension_array[$extension]['vm_mailto'] = $row["vm_mailto"];
-			$extension_array[$extension]['vm_attach_file'] = $row["vm_attach_file"];
-			$extension_array[$extension]['vm_keep_local_after_email'] = $row["vm_keep_local_after_email"];
-			$extension_array[$extension]['user_context'] = $row["user_context"];
-			$extension_array[$extension]['callgroup'] = $row["callgroup"];
-			$extension_array[$extension]['auth_acl'] = $row["auth_acl"];
-			$extension_array[$extension]['cidr'] = $row["cidr"];
-			$extension_array[$extension]['sip_force_contact'] = $row["sip_force_contact"];
-			$extension_array[$extension]['enabled'] = $row["enabled"];
-			$extension_array[$extension]['description'] = $row["description"];
-			//break; //limit to 1 row
-		}
-		$_SESSION['extension_array'] = $extension_array;
-	//}
-	echo "<pre>\n";
-	print_r($_SESSION['extension_array']);
-	echo "</pre>\n";
-*/
-$c = 0;
-$rowstyle["0"] = "rowstyle0";
-$rowstyle["1"] = "rowstyle1";
-?><div id="cmd_reponse">
-</div>
+				//$extension_array[$extension]['password'] = $row["password"];
+				$extension_array[$extension]['user_list'] = $row["user_list"];
+				$extension_array[$extension]['mailbox'] = $row["mailbox"];
+				//$vm_password = $row["vm_password"];
+				//$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
+				//$_SESSION['extension_array'][$extension]['vm_password'] = $vm_password;
+				$extension_array[$extension]['accountcode'] = $row["accountcode"];
+				$extension_array[$extension]['effective_caller_id_name'] = $row["effective_caller_id_name"];
+				$extension_array[$extension]['effective_caller_id_number'] = $row["effective_caller_id_number"];
+				$extension_array[$extension]['outbound_caller_id_name'] = $row["outbound_caller_id_name"];
+				$extension_array[$extension]['outbound_caller_id_number'] = $row["outbound_caller_id_number"];
+				$extension_array[$extension]['vm_mailto'] = $row["vm_mailto"];
+				$extension_array[$extension]['vm_attach_file'] = $row["vm_attach_file"];
+				$extension_array[$extension]['vm_keep_local_after_email'] = $row["vm_keep_local_after_email"];
+				$extension_array[$extension]['user_context'] = $row["user_context"];
+				$extension_array[$extension]['callgroup'] = $row["callgroup"];
+				$extension_array[$extension]['auth_acl'] = $row["auth_acl"];
+				$extension_array[$extension]['cidr'] = $row["cidr"];
+				$extension_array[$extension]['sip_force_contact'] = $row["sip_force_contact"];
+				$extension_array[$extension]['enabled'] = $row["enabled"];
+				$extension_array[$extension]['description'] = $row["description"];
+				//break; //limit to 1 row
+			}
+			$_SESSION['extension_array'] = $extension_array;
+		//}
+		echo "<pre>\n";
+		print_r($_SESSION['extension_array']);
+		echo "</pre>\n";
+	*/
+	$c = 0;
+	$rowstyle["0"] = "rowstyle0";
+	$rowstyle["1"] = "rowstyle1";
 
-<?php
+	echo "<div id='cmd_reponse'>\n";
+	echo "</div>\n";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo "<td >\n";
 	//echo "	<strong>Count: $row_count</strong>\n";
@@ -201,7 +194,6 @@ $rowstyle["1"] = "rowstyle1";
 	echo "	&nbsp;\n";
 	echo "</td>\n";
 	echo "<td colspan='1' align='right'>\n";
-
 
 	/*
 	echo "	<strong>Tools:</strong> \n";
@@ -374,5 +366,5 @@ $rowstyle["1"] = "rowstyle1";
 		if ($c==0) { $c=1; } else { $c=0; }
 	}
 	echo "</table>\n";
-
+}
 ?>

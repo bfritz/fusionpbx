@@ -37,26 +37,16 @@ else {
 $cmd = $_GET['cmd'];
 $rdr = $_GET['rdr'];
 
-$sql = "";
-$sql .= "select * from v_settings ";
-$sql .= "where v_id = '$v_id' ";
-$prepstatement = $db->prepare(check_sql($sql));
-$prepstatement->execute();
-$result = $prepstatement->fetchAll();
-foreach ($result as &$row) {
-	$event_socket_ip_address = $row["event_socket_ip_address"];
-	$event_socket_port = $row["event_socket_port"];
-	$event_socket_password = $row["event_socket_password"];
-	break; //limit to 1 row
+//connect to event socket
+$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+if ($fp) {
+	$response = event_socket_request($fp, 'api reloadxml');
+	$response = event_socket_request($fp, $cmd);
+	fclose($fp);
 }
-unset ($prepstatement);
-
-
-$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-$response = event_socket_request($fp, 'api reloadxml');
-$response = event_socket_request($fp, $cmd);
-fclose($fp);
-
+else {
+	$response = '';
+}
 if ($rdr == "false") {
 	//redirect false
 	echo $response;

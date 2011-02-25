@@ -81,11 +81,14 @@ else {
 		if (strlen($switch_cmd) > 0) {
 			//setup the event socket connection
 				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-			//send the command
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-			//set the user state
-				$cmd = "api callcenter_config agent set state ".$username."@".$v_domain." Waiting";
-				$response = event_socket_request($fp, $cmd);
+			//ensure the connection exists
+				if ($fp) {
+					//send the command
+						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					//set the user state
+						$cmd = "api callcenter_config agent set state ".$username."@".$v_domain." Waiting";
+						$response = event_socket_request($fp, $cmd);
+				}
 		}
 	}
 

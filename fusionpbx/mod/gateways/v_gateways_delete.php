@@ -35,7 +35,7 @@ else {
 }
 
 if (count($_GET)>0) {
-    $id = $_GET["id"];
+	$id = $_GET["id"];
 }
 
 if (strlen($id)>0) {
@@ -59,13 +59,11 @@ if (strlen($id)>0) {
 		$prepstatement2->execute();
 		while($row2 = $prepstatement2->fetch()) {
 			$dialplan_include_id = $row2['dialplan_include_id'];
-			//echo "gateway_id: ".$gateway_id."<br />\n";
 
 			$sql = "";
 			$sql = "delete from v_dialplan_includes_details ";
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-			//echo "sql: ".$sql."<br />\n";
 			$db->query($sql);
 			unset($sql);
 
@@ -91,24 +89,28 @@ if (strlen($id)>0) {
 	//rescan the external profile to look for new or stopped gateways
 		//create the event socket connection
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-			$tmp_cmd = 'api sofia profile external rescan';
-			$response = event_socket_request($fp, $tmp_cmd);
-			unset($tmp_cmd);
+			if ($fp) {
+				//send the api commandover event socket
+					$tmp_cmd = 'api sofia profile external rescan';
+					$response = event_socket_request($fp, $tmp_cmd);
+					unset($tmp_cmd);
+				//close the connection
+					fclose($fp);
+			}
 			usleep(1000);
-		//close the connection
-			fclose($fp);
+
 		//clear the apply settings reminder
 			$_SESSION["reload_xml"] = false;
 }
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_gateways.php\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
+//redirect the users
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_gateways.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
 
-require_once "includes/footer.php";
-return;
+	require_once "includes/footer.php";
+	return;
 
 ?>
-

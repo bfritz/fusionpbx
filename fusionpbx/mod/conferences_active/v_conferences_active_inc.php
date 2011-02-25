@@ -34,70 +34,68 @@ else {
 	exit;
 }
 
-//get the event socket information
-	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
-		$sql = "";
-		$sql .= "select * from v_settings ";
-		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
-			$_SESSION['event_socket_port'] = $row["event_socket_port"];
-			$_SESSION['event_socket_password'] = $row["event_socket_password"];
-			break; //limit to 1 row
-		}
-	}
-
 $tmp_conference_name = str_replace("_", " ", $conference_name);
 
 $switch_cmd = 'conference xml_list';
 $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-$xml_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
-try {
-	$xml = new SimpleXMLElement($xml_str);
-}
-catch(Exception $e) {
-	//echo $e->getMessage();
-}
-
-$c = 0;
-$rowstyle["0"] = "rowstyle0";
-$rowstyle["1"] = "rowstyle1";
-
-echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-echo "<tr>\n";
-echo "<th>Name</th>\n";
-echo "<th>Member Count</th>\n";
-echo "<th>&nbsp;</th>\n";
-echo "</tr>\n";
-
-foreach ($xml->conference as $row) {
-	//print_r($row);
-
-	$name = $row['name'];
-	$member_count = $row['member-count'];
-
-	//$id = $row->members->member->id;
-	//$flag_can_hear = $row->members->member->flags->can_hear;
-	//$flag_can_speak = $row->members->member->flags->can_speak;
-	//$flag_talking = $row->members->member->flags->talking;
-	//$flag_has_video = $row->members->member->flags->has_video;
-	//$flag_has_floor = $row->members->member->flags->has_floor;
-	//$uuid = $row->members->member->uuid;
-	//$caller_id_name = $row->members->member->caller_id_name;
-	//$caller_id_name = str_replace("%20", " ", $caller_id_name);
-	//$caller_id_number = $row->members->member->caller_id_number;
-
+if (!$fp) {
+	$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>"; 
+	echo "<div align='center'>\n";
+	echo "<table width='40%'>\n";
 	echo "<tr>\n";
-	echo "<td valign='top' class='".$rowstyle[$c]."'>".$name."</td>\n";
-	echo "<td valign='top' class='".$rowstyle[$c]."'>".$member_count."</td>\n";
-	echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_conference_interactive.php?c=".$name."'>view</a></td>\n";
+	echo "<th align='left'>Message</th>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "</div>\n";
+}
+else {
+	$xml_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
+	try {
+		$xml = new SimpleXMLElement($xml_str);
+	}
+	catch(Exception $e) {
+		//echo $e->getMessage();
+	}
+
+	$c = 0;
+	$rowstyle["0"] = "rowstyle0";
+	$rowstyle["1"] = "rowstyle1";
+
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<tr>\n";
+	echo "<th>Name</th>\n";
+	echo "<th>Member Count</th>\n";
+	echo "<th>&nbsp;</th>\n";
 	echo "</tr>\n";
 
-	if ($c==0) { $c=1; } else { $c=0; }
-}
-echo "</table>\n";
+	foreach ($xml->conference as $row) {
+		//print_r($row);
 
+		$name = $row['name'];
+		$member_count = $row['member-count'];
+
+		//$id = $row->members->member->id;
+		//$flag_can_hear = $row->members->member->flags->can_hear;
+		//$flag_can_speak = $row->members->member->flags->can_speak;
+		//$flag_talking = $row->members->member->flags->talking;
+		//$flag_has_video = $row->members->member->flags->has_video;
+		//$flag_has_floor = $row->members->member->flags->has_floor;
+		//$uuid = $row->members->member->uuid;
+		//$caller_id_name = $row->members->member->caller_id_name;
+		//$caller_id_name = str_replace("%20", " ", $caller_id_name);
+		//$caller_id_number = $row->members->member->caller_id_number;
+
+		echo "<tr>\n";
+		echo "<td valign='top' class='".$rowstyle[$c]."'>".$name."</td>\n";
+		echo "<td valign='top' class='".$rowstyle[$c]."'>".$member_count."</td>\n";
+		echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_conference_interactive.php?c=".$name."'>view</a></td>\n";
+		echo "</tr>\n";
+
+		if ($c==0) { $c=1; } else { $c=0; }
+	}
+	echo "</table>\n";
+}
 ?>

@@ -153,20 +153,6 @@ if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_
 	$sip_uri = $_POST['sip_uri'];
 	$fax_id = $_POST["id"];
 
-	//get event socket connection information
-		$sql = "";
-		$sql .= "select * from v_settings ";
-		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			$event_socket_ip_address = $row["event_socket_ip_address"];
-			$event_socket_port = $row["event_socket_port"];
-			$event_socket_password = $row["event_socket_password"];
-			break; //limit to 1 row
-		}
-
 	//upload the file
 		move_uploaded_file($_FILES['fax_file']['tmp_name'], $dir_fax_temp.'/'.$_FILES['fax_file']['name']);
 
@@ -183,28 +169,20 @@ if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_
 		}
 
 	//send the fax
-		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		if ($provider_type == "gateway") {
-			$cmd = "api originate sofia/gateway/".$gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		if ($fp) {
+			if ($provider_type == "gateway") {
+				$cmd = "api originate sofia/gateway/".$gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+			}
+			if ($provider_type == "sip_uri") {
+				$sip_uri = str_replace("\$1", $fax_number, $sip_uri);
+				$cmd = "api originate $sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+			}
+			$response = event_socket_request($fp, $cmd);
+			$response = str_replace("\n", "", $response);
+			$uuid = str_replace("+OK ", "", $response);
+			fclose($fp);
 		}
-		if ($provider_type == "sip_uri") {
-			$sip_uri = str_replace("\$1", $fax_number, $sip_uri);
-			$cmd = "api originate $sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
-		}
-
-		$response = event_socket_request($fp, $cmd);
-		$response = str_replace("\n", "", $response);
-		$uuid = str_replace("+OK ", "", $response);
-		fclose($fp);
-
-		//if ($response >= 1) {
-		//	$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		//	$cmd = "api uuid_getvar ".$uuid." fax_result_text";
-		//	echo $cmd."\n";
-		//	$response = event_socket_request($fp, $cmd);
-		//	$response = trim($response);
-		//	fclose($fp);
-		//}
 
 	sleep(5);
 
