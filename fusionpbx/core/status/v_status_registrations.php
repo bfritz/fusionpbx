@@ -110,19 +110,23 @@ require_once "includes/checkauth.php";
 
 			if (count($xml->registrations->registration) > 0) {
 				foreach ($xml->registrations->registration as $row) {
-					echo "<tr>\n";
-					//<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'call-id'}."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'user'}."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'contact'}."&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'sip-auth-user'}."&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'agent'}."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'host'}."&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;<a href='http://".$row->{'network-ip'}."' target='_blank'>".$row->{'network-ip'}."</a>&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'network-port'}."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'sip-auth-realm'}."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'mwi-account'}."&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'status'}."&nbsp;</td>\n";
-					echo "</tr>\n";
+					$user_array = explode('@', $row->{'user'});
+					$domain_name = $user_array[1];
+					if ($domain_name == $v_domain) {
+						echo "<tr>\n";
+						//<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'call-id'}."&nbsp;</td>\n";
+						//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'user'}."&nbsp;</td>\n";
+						//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'contact'}."&nbsp;</td>\n";
+						echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'sip-auth-user'}."&nbsp;</td>\n";
+						echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'agent'}."&nbsp;</td>\n";
+						//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'host'}."&nbsp;</td>\n";
+						echo "	<td class='".$rowstyle[$c]."'>&nbsp;<a href='http://".$row->{'network-ip'}."' target='_blank'>".$row->{'network-ip'}."</a>&nbsp;</td>\n";
+						echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'network-port'}."&nbsp;</td>\n";
+						//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'sip-auth-realm'}."&nbsp;</td>\n";
+						//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'mwi-account'}."&nbsp;</td>\n";
+						echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'status'}."&nbsp;</td>\n";
+						echo "</tr>\n";
+					}
 					if ($c==0) { $c=1; } else { $c=0; }
 				}
 				echo "<tr>\n";
