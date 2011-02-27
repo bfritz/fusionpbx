@@ -59,7 +59,8 @@ $order = $_GET["order"];
 	echo "</tr></table>\n";
 
 	$sql = "";
-	$sql .= " select * from v_call_center_agent ";
+	$sql .= "select * from v_call_center_agent ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'agent_name';
 		$order = 'asc';
@@ -81,6 +82,7 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_call_center_agent ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'agent_name';
 		$order = 'asc';

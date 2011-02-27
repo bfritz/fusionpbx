@@ -41,7 +41,8 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_call_center_tier ";
-	$sql .= "where call_center_tier_id = '$id' ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and call_center_tier_id = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	unset($sql);

@@ -170,7 +170,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_call_center_queue set ";
-			$sql .= "v_id = '$v_id', ";
 			$sql .= "queue_name = '$queue_name', ";
 			$sql .= "queue_extension = '$queue_extension', ";
 			$sql .= "queue_strategy = '$queue_strategy', ";
@@ -187,7 +186,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "queue_abandoned_resume_allowed = '$queue_abandoned_resume_allowed', ";
 			$sql .= "queue_cid_prefix = '$queue_cid_prefix', ";
 			$sql .= "queue_description = '$queue_description' ";
-			$sql .= "where call_center_queue_id = '$call_center_queue_id'";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and call_center_queue_id = '$call_center_queue_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -211,12 +211,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$call_center_queue_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_center_queue ";
-		$sql .= "where call_center_queue_id = '$call_center_queue_id' ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and call_center_queue_id = '$call_center_queue_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			//$v_id = $row["v_id"];
 			$queue_name = $row["queue_name"];
 			$queue_extension = $row["queue_extension"];
 			$queue_strategy = $row["queue_strategy"];

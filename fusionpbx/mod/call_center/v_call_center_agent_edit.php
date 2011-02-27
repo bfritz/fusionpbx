@@ -142,7 +142,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_call_center_agent set ";
-			//$sql .= "v_id = '$v_id', ";
 			$sql .= "agent_name = '$agent_name', ";
 			$sql .= "agent_type = '$agent_type', ";
 			$sql .= "agent_call_timeout = '$agent_call_timeout', ";
@@ -152,7 +151,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "agent_wrap_up_time = '$agent_wrap_up_time', ";
 			$sql .= "agent_reject_delay_time = '$agent_reject_delay_time', ";
 			$sql .= "agent_busy_delay_time = '$agent_busy_delay_time' ";
-			$sql .= "where call_center_agent_id = '$call_center_agent_id'";
+			$sql .= "where v_id = '$v_id'";
+			$sql .= "and call_center_agent_id = '$call_center_agent_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -176,7 +176,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$call_center_agent_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_center_agent ";
-		$sql .= "where call_center_agent_id = '$call_center_agent_id' ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and call_center_agent_id = '$call_center_agent_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();

@@ -61,7 +61,8 @@ $order = $_GET["order"];
 	echo "</tr></table>\n";
 
 	$sql = "";
-	$sql .= " select * from v_call_center_queue ";
+	$sql .= "select * from v_call_center_queue ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'queue_name';
 		$order = 'asc';
@@ -82,7 +83,8 @@ $order = $_GET["order"];
 	$offset = $rows_per_page * $page; 
 
 	$sql = "";
-	$sql .= " select * from v_call_center_queue ";
+	$sql .= "select * from v_call_center_queue ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'queue_name';
 		$order = 'asc';

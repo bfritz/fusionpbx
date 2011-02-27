@@ -59,7 +59,8 @@ $order = $_GET["order"];
 	echo "</tr></table>\n";
 
 	$sql = "";
-	$sql .= " select * from v_call_center_tier ";
+	$sql .= "select * from v_call_center_tier ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'queue_name';
 		$order = 'asc';
@@ -80,7 +81,8 @@ $order = $_GET["order"];
 	$offset = $rows_per_page * $page; 
 
 	$sql = "";
-	$sql .= " select * from v_call_center_tier ";
+	$sql .= "select * from v_call_center_tier ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'queue_name';
 		$order = 'asc';
@@ -94,7 +96,6 @@ $order = $_GET["order"];
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
-
 
 	$c = 0;
 	$row_style["0"] = "rowstyle0";
@@ -110,7 +111,6 @@ $order = $_GET["order"];
 	echo thorderby('tier_position', 'Tier Position', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_call_center_tier_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_call_center_tier_edit.php'\" value='+'>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -118,7 +118,6 @@ $order = $_GET["order"];
 	}
 	else { //received results
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_name]."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_name]."</td>\n";
@@ -145,7 +144,6 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	echo "			<a href='v_call_center_tier_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_call_center_tier_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";

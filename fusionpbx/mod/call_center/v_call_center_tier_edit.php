@@ -55,13 +55,6 @@ else {
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$call_center_tier_id = check_str($_POST["call_center_tier_id"]);
 	}
@@ -150,12 +143,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$call_center_tier_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_center_tier ";
-		$sql .= "where call_center_tier_id = '$call_center_tier_id' ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and call_center_tier_id = '$call_center_tier_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			//$v_id = $row["v_id"];
 			$agent_name = $row["agent_name"];
 			$queue_name = $row["queue_name"];
 			$tier_level = $row["tier_level"];
