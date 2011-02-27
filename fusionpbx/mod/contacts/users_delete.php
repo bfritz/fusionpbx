@@ -34,27 +34,30 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	$id = $_GET["id"];
-}
+//get the id
+	if (count($_GET)>0) {
+		$id = $_GET["id"];
+	}
 
-if (strlen($id)>0) {
-	$sql = "";
-	$sql .= "delete from v_users ";
-	$sql .= "where id = '$id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	unset($sql);
-}
+//delete the user
+	if (strlen($id)>0) {
+		$sql = "";
+		$sql .= "delete from v_users ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and id = '$id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		unset($sql);
+	}
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=users.php\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
+//redirect the user
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=users.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
 
-require_once "includes/footer.php";
-return;
-
+//show the footer
+	require_once "includes/footer.php";
+	return;
 ?>
-

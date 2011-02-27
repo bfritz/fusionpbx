@@ -105,17 +105,6 @@ require_once "includes/checkauth.php";
 		}
 	}
 
-//check if the domain in the conference name matches the domain
-	$tmp_domain = substr($conference_name, -strlen($v_domain));
-	if ($tmp_domain != $v_domain) {
-		//domains do not match
-		echo "access denied";
-		exit;
-	}
-	else {
-		$tmp_conference_name = substr($conference_name, 0, strlen($conference_name) - strlen('-'.$v_domain));
-	}
-
 //replace the space with underscore
 	$tmp_conference_name = str_replace("_", " ", $conference_name);
 

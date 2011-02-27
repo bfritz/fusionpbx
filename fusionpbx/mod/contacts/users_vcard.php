@@ -40,11 +40,11 @@ if (count($_GET)>0) {
 	$id = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where id = '$id' ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
-	//print_r($result);
 	foreach ($result as &$row) {
 
 		$vc->data[display_name] = $row["userfirstname"]." ".$row["userlastname"];

@@ -36,30 +36,11 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
-$order = $_GET["order"];
-if (!function_exists('thorderby')) {
-	//html table header order by
-	function thorderby($fieldname, $columntitle, $orderby, $order) {
+//get the http values and set them as php variables
+	$orderby = $_GET["orderby"];
+	$order = $_GET["order"];
 
-		$html .= "<th class='' nowrap>&nbsp; &nbsp; ";
-		if (strlen($orderby)==0) {
-			$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-		}
-		else {
-			if ($order=="asc") {
-				$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-			}
-			else {
-				$html .= "<a href='?orderby=$fieldname&order=asc' title='descending'>$columntitle</a>";
-			}
-		}
-		$html .= "&nbsp; &nbsp; </th>";
-
-		return $html;
-	}
-}
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -67,25 +48,22 @@ if (!function_exists('thorderby')) {
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
 
-
 	echo "<table width='100%' border='0'><tr>\n";
 	echo "<td width='50%' nowrap='nowrap' align='left'><b>Contact List</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr></table>\n";
 
-
 	$sql = "";
-	$sql .= " select * from v_users ";
+	$sql .= "select * from v_users ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-
-
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$numrows = count($result);
 	unset ($prepstatement, $result, $sql);
 
-	$rowsperpage = 10;
+	$rowsperpage = 150;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
@@ -93,17 +71,15 @@ if (!function_exists('thorderby')) {
 	$offset = $rowsperpage * $page; 
 
 	$sql = "";
-	$sql .= " select * from v_users ";
+	$sql .= "select * from v_users ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-
-	$sql .= " limit $rowsperpage offset $offset ";
-
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
-
 
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
@@ -122,7 +98,6 @@ if (!function_exists('thorderby')) {
 	echo thorderby('userphone1', 'Phone', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='users_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='users_edit.php'\" value='+'>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -130,7 +105,6 @@ if (!function_exists('thorderby')) {
 	}
 	else { //received results
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			if (strlen($row[username]) == 0) {
 				echo "	<td valign='top' class='".$rowstyle[$c]."'>contact&nbsp;</td>\n";
@@ -156,7 +130,6 @@ if (!function_exists('thorderby')) {
 		unset($sql, $result, $rowcount);
 	} //end if results
 
-
 	echo "<tr>\n";
 	echo "<td colspan='8' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -164,20 +137,17 @@ if (!function_exists('thorderby')) {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "	<a href='users_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "			<input type='button' class='btn' name='' alt='add' onclick=\"window.location='users_edit.php'\" value='+'>\n";
+	echo "			<a href='users_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
@@ -185,11 +155,11 @@ if (!function_exists('thorderby')) {
 	echo "</div>";
 	echo "<br><br>";
 
-
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
+//show the footer
+	require_once "includes/footer.php";
+	unset ($resultcount);
+	unset ($result);
+	unset ($key);
+	unset ($val);
+	unset ($c);
 ?>
