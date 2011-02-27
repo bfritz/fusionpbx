@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -145,12 +145,12 @@ echo "<script type=\"text/javascript\">\n";
 echo "<!--\n";
 echo "function get_transfer_cmd(uuid) {\n";
 echo "	destination = document.getElementById('form_value').value;\n";
-echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg \"+destination+\" xml default\";\n";
+echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg \"+destination+\" xml ".$_SESSION['user_context']."\";\n";
 echo "	return escape(cmd);\n";
 echo "}\n";
 echo "\n";
 echo "function get_park_cmd(uuid) {\n";
-echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg *6000 xml default\";\n";
+echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg *6000 xml ".$_SESSION['user_context']."\";\n";
 echo "	return escape(cmd);\n";
 echo "}\n";
 echo "\n";

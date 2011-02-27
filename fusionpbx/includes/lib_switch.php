@@ -290,7 +290,7 @@ foreach($v_settings_array as $name => $value) {
 	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
 			$sql = "";
 			$sql .= "select * from v_settings ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where v_id = '1' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
@@ -305,26 +305,43 @@ foreach($v_settings_array as $name => $value) {
 
 //get the extensions that are assigned to this user
 	if (strlen($_SESSION['user_extension_list']) == 0) {
-		$_SESSION['user_extension_list'] = '';
-		$sql = "";
-		$sql .= " select extension from v_extensions ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and enabled = 'true' ";
-		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-		$sql .= "order by extension asc ";
-		$result = $db->query($sql)->fetchAll();
-		$x = 1;
-		foreach($result as $row) {
-			if (count($result) == $x) {
-				$_SESSION['user_extension_list'] .= $row['extension']."";
+		//get the user extension list
+			$_SESSION['user_extension_list'] = '';
+			$sql = "";
+			$sql .= "select extension, user_context from v_extensions ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and enabled = 'true' ";
+			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+			$sql .= "order by extension asc ";
+			$result = $db->query($sql)->fetchAll();
+			$x = 1;
+			foreach($result as $row) {
+				if (count($result) == $x) {
+					$_SESSION['user_extension_list'] .= $row['extension']."";
+				}
+				else {
+					$_SESSION['user_extension_list'] .= $row['extension']."|";
+				}
+				$_SESSION['user_context'] = $row["user_context"];
+				$x++;
 			}
-			else {
-				$_SESSION['user_extension_list'] .= $row['extension']."|";
+			$user_extension_list = $_SESSION['user_extension_list'];
+			$ext_array = explode("|",$user_extension_list);
+		//if no extension has been assigned then setting user_context will still need to be set
+			if (strlen($_SESSION['user_context']) == 0) {
+				$_SESSION['user_context'] = '';
+				$sql = "";
+				$sql .= "select user_context from v_extensions ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "limit 1 ";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+				$result = $prepstatement->fetchAll();
+				foreach ($result as &$row) {
+					$_SESSION['user_context'] = $row["user_context"];
+					break; //limit to 1 row
+				}
 			}
-			$x++;
-		}
-		$user_extension_list = $_SESSION['user_extension_list'];
-		$ext_array = explode("|",$user_extension_list);
 	}
 
 
@@ -451,9 +468,9 @@ function event_socket_create($host, $port, $password)
 			socket_set_blocking($fp,false);
 
 			if (!$fp) {
-				//invalid handle
-				echo "error number: ".$errno."<br />\n";
-				echo "error description: ".$errdesc."<br />\n";
+				//error "invalid handle<br />\n";
+				//echo "error number: ".$errno."<br />\n";
+				//echo "error description: ".$errdesc."<br />\n";
 			}
 			else {
 				//connected to the socket return the handle

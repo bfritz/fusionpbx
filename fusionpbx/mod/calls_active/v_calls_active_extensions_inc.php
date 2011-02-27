@@ -189,13 +189,20 @@ require_once "includes/checkauth.php";
 							$sql .= "where v_id = '$v_id' ";
 							$sql .= "and extension >= $tmp_min ";
 							$sql .= "and extension <= $tmp_max ";
+							$sql .= "and enabled = 'true' ";
+							
 						}
 						else {
 							$sql .= "or v_id = '$v_id' ";
 							$sql .= "and extension >= $tmp_min ";
 							$sql .= "and extension <= $tmp_max ";
+							$sql .= "and enabled = 'true' ";
 						}
 						$x++;
+					}
+					if (count($range_array) == 0) {
+						$sql .= "where v_id = '$v_id' ";
+						$sql .= "and enabled = 'true' ";
 					}
 					$sql .= "order by extension asc ";
 					$prepstatement = $db->prepare(check_sql($sql));
@@ -325,6 +332,7 @@ require_once "includes/checkauth.php";
 							$call_length = $call_length_hour.':'.$call_length_min.':'.$call_length_sec;
 
 							//valet park
+							$valet_array[$uuid]['context'] = $context;
 							$valet_array[$uuid]['cid_name'] = $cid_name;
 							$valet_array[$uuid]['cid_num'] = $cid_num;
 							$valet_array[$uuid]['call_length'] = $call_length;
@@ -554,12 +562,14 @@ require_once "includes/checkauth.php";
 					echo "</tr>\n";
 					foreach ($valet_array as $row) {
 						if (strlen($row['extension']) > 0) {
-							echo "<tr>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."' >*".$row['extension']."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['call_length']."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_name']."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_num']."</td>\n";
-							echo "</tr>\n";
+							if ($row['context'] == $v_domain || $row['context'] == "default") {
+								echo "<tr>\n";
+								echo "<td valign='top' class='".$rowstyle[$c]."' >*".$row['extension']."</td>\n";
+								echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['call_length']."</td>\n";
+								echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_name']."</td>\n";
+								echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_num']."</td>\n";
+								echo "</tr>\n";
+							}
 						}
 					}
 					echo "<table>\n";

@@ -25,15 +25,21 @@
 */
 
 include "root.php";
-session_start();
-$_SESSION["username"] = "";
-$_SESSION["permissions"] = "";
-$_SESSION["http_compression"] = "";
-$_SESSION['background_image'] = "";
-$_SESSION["template_name"] = "";
-$_SESSION["template_content"] = "";
-session_destroy();
-header("Location: ".PROJECT_PATH."/login.php");
-return;
+
+//clear the session variables
+	session_start();
+	$_SESSION["username"] = "";
+	$_SESSION["permissions"] = "";
+	$_SESSION["http_compression"] = "";
+	$_SESSION['background_image'] = "";
+	$_SESSION["template_name"] = "";
+	$_SESSION["template_content"] = "";
+	$_SESSION['user_extension_list'] = '';
+	$_SESSION['user_context'] = '';
+	session_destroy();
+
+//redirect the user to the login page
+	header("Location: ".PROJECT_PATH."/login.php");
+	return;
 
 ?>
