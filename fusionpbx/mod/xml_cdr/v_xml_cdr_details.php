@@ -34,7 +34,7 @@ else {
 	exit;
 }
 
-//get the http post,get values and set them to a variable
+//get the http values and set them to a variable
 	if (strlen($_REQUEST["uuid"]) > 0) {
 		$uuid = trim($_REQUEST["uuid"]);
 	}

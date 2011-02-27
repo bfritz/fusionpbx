@@ -36,25 +36,26 @@ else {
 
 require_once "includes/lib_cdr.php";
 
-if (count($_REQUEST)>0) {
-	$direction = $_REQUEST["direction"];
-	$caller_id_name = $_REQUEST["caller_id_name"];
-	$caller_id_number = $_REQUEST["caller_id_number"];
-	$destination_number = $_REQUEST["destination_number"];
-	$context = $_REQUEST["context"];
-	$start_stamp = $_REQUEST["start_stamp"];
-	$answer_stamp = $_REQUEST["answer_stamp"];
-	$end_stamp = $_REQUEST["end_stamp"];
-	$duration = $_REQUEST["duration"];
-	$billsec = $_REQUEST["billsec"];
-	$hangup_cause = $_REQUEST["hangup_cause"];
-	$uuid = $_REQUEST["uuid"];
-	$bridge_uuid = $_REQUEST["bridge_uuid"];
-	$read_codec = $_REQUEST["read_codec"];
-	$write_codec = $_REQUEST["write_codec"];
-	$remote_media_ip = $_REQUEST["remote_media_ip"];
-	$network_addr = $_REQUEST["network_addr"];
-}
+//get the http values and set them as a php variable
+	if (count($_REQUEST)>0) {
+		$direction = $_REQUEST["direction"];
+		$caller_id_name = $_REQUEST["caller_id_name"];
+		$caller_id_number = $_REQUEST["caller_id_number"];
+		$destination_number = $_REQUEST["destination_number"];
+		$context = $_REQUEST["context"];
+		$start_stamp = $_REQUEST["start_stamp"];
+		$answer_stamp = $_REQUEST["answer_stamp"];
+		$end_stamp = $_REQUEST["end_stamp"];
+		$duration = $_REQUEST["duration"];
+		$billsec = $_REQUEST["billsec"];
+		$hangup_cause = $_REQUEST["hangup_cause"];
+		$uuid = $_REQUEST["uuid"];
+		$bridge_uuid = $_REQUEST["bridge_uuid"];
+		$read_codec = $_REQUEST["read_codec"];
+		$write_codec = $_REQUEST["write_codec"];
+		$remote_media_ip = $_REQUEST["remote_media_ip"];
+		$network_addr = $_REQUEST["network_addr"];
+	}
 
 //get a list of assigned extensions for this user
 	$sql = "";
@@ -123,7 +124,6 @@ $prepstatement->execute();
 $result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
 $resultcount = count($result);
 
-
 header('Content-type: application/octet-binary');
 header('Content-Disposition: attachment; filename=cdr.csv');
 
@@ -141,10 +141,8 @@ foreach($result[0] as $key => $val) {
 }
 echo "\n";
 
-
 $x=0;
 while(true) {
-
 	$z = 0;
 	foreach($result[0] as $key => $val) {
 		if ($key != "xml_cdr") {

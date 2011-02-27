@@ -285,7 +285,7 @@ else {
 
 //get a list of assigned extensions for this user
 	$sql = "";
-	$sql .= " select * from v_extensions ";
+	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -482,5 +482,6 @@ else {
 	echo "<br><br>";
 	echo "<br><br>";
 
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>

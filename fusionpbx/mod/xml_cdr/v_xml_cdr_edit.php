@@ -45,51 +45,43 @@ else {
 	$action = "add";
 }
 
-
-//POST to PHP variables
-if (count($_POST)>0) {
-	$v_id = check_str($_POST["v_id"]);
-	$uuid = check_str($_POST["uuid"]);
-	$direction = check_str($_POST["direction"]);
-	$language = check_str($_POST["language"]);
-	$context = check_str($_POST["context"]);
-	$xml_cdr = check_str($_POST["xml_cdr"]);
-	$caller_id_name = check_str($_POST["caller_id_name"]);
-	$caller_id_number = check_str($_POST["caller_id_number"]);
-	$destination_number = check_str($_POST["destination_number"]);
-	$start_epoch = check_str($_POST["start_epoch"]);
-	$start_stamp = check_str($_POST["start_stamp"]);
-	$start_uepoch = check_str($_POST["start_uepoch"]);
-	$answer_stamp = check_str($_POST["answer_stamp"]);
-	$answer_epoch = check_str($_POST["answer_epoch"]);
-	$answer_uepoch = check_str($_POST["answer_uepoch"]);
-	$end_epoch = check_str($_POST["end_epoch"]);
-	$end_uepoch = check_str($_POST["end_uepoch"]);
-	$end_stamp = check_str($_POST["end_stamp"]);
-	$duration = check_str($_POST["duration"]);
-	$mduration = check_str($_POST["mduration"]);
-	$billsec = check_str($_POST["billsec"]);
-	$billmsec = check_str($_POST["billmsec"]);
-	$bridge_uuid = check_str($_POST["bridge_uuid"]);
-	$read_codec = check_str($_POST["read_codec"]);
-	$write_codec = check_str($_POST["write_codec"]);
-	$remote_media_ip = check_str($_POST["remote_media_ip"]);
-	$network_addr = check_str($_POST["network_addr"]);
-	$hangup_cause = check_str($_POST["hangup_cause"]);
-	$hangup_cause_q850 = check_str($_POST["hangup_cause_q850"]);
-}
+//get the http values and set them to a variable
+	if (count($_POST)>0) {
+		$v_id = check_str($_POST["v_id"]);
+		$uuid = check_str($_POST["uuid"]);
+		$direction = check_str($_POST["direction"]);
+		$language = check_str($_POST["language"]);
+		$context = check_str($_POST["context"]);
+		$xml_cdr = check_str($_POST["xml_cdr"]);
+		$caller_id_name = check_str($_POST["caller_id_name"]);
+		$caller_id_number = check_str($_POST["caller_id_number"]);
+		$destination_number = check_str($_POST["destination_number"]);
+		$start_epoch = check_str($_POST["start_epoch"]);
+		$start_stamp = check_str($_POST["start_stamp"]);
+		$start_uepoch = check_str($_POST["start_uepoch"]);
+		$answer_stamp = check_str($_POST["answer_stamp"]);
+		$answer_epoch = check_str($_POST["answer_epoch"]);
+		$answer_uepoch = check_str($_POST["answer_uepoch"]);
+		$end_epoch = check_str($_POST["end_epoch"]);
+		$end_uepoch = check_str($_POST["end_uepoch"]);
+		$end_stamp = check_str($_POST["end_stamp"]);
+		$duration = check_str($_POST["duration"]);
+		$mduration = check_str($_POST["mduration"]);
+		$billsec = check_str($_POST["billsec"]);
+		$billmsec = check_str($_POST["billmsec"]);
+		$bridge_uuid = check_str($_POST["bridge_uuid"]);
+		$read_codec = check_str($_POST["read_codec"]);
+		$write_codec = check_str($_POST["write_codec"]);
+		$remote_media_ip = check_str($_POST["remote_media_ip"]);
+		$network_addr = check_str($_POST["network_addr"]);
+		$hangup_cause = check_str($_POST["hangup_cause"]);
+		$hangup_cause_q850 = check_str($_POST["hangup_cause_q850"]);
+	}
 
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$xml_cdr_id = check_str($_POST["xml_cdr_id"]);
 	}
@@ -136,38 +128,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		}
-
-	$tmp = "\n";
-	$tmp .= "v_id: $v_id\n";
-	$tmp .= "UUID: $uuid\n";
-	$tmp .= "Direction: $direction\n";
-	$tmp .= "Language: $language\n";
-	$tmp .= "Context: $context\n";
-	$tmp .= "XML: $xml_cdr\n";
-	$tmp .= "CID Name: $caller_id_name\n";
-	$tmp .= "CID Number: $caller_id_number\n";
-	$tmp .= "Destination: $destination_number\n";
-	$tmp .= "Start Epoch: $start_epoch\n";
-	$tmp .= "Start: $start_stamp\n";
-	$tmp .= "Start Micro Epoch: $start_uepoch\n";
-	$tmp .= "Answer: $answer_stamp\n";
-	$tmp .= "Answer Epoch: $answer_epoch\n";
-	$tmp .= "Answer UEpoch: $answer_uepoch\n";
-	$tmp .= "End Epoch: $end_epoch\n";
-	$tmp .= "End UEpoch: $end_uepoch\n";
-	$tmp .= "End: $end_stamp\n";
-	$tmp .= "Duration: $duration\n";
-	$tmp .= "M Duration: $mduration\n";
-	$tmp .= "Bill Seconds: $billsec\n";
-	$tmp .= "Bill M Sec: $billmsec\n";
-	$tmp .= "Bridge UUID: $bridge_uuid\n";
-	$tmp .= "Read Codec: $read_codec\n";
-	$tmp .= "Write Codec: $write_codec\n";
-	$tmp .= "Remote Media IP: $remote_media_ip\n";
-	$tmp .= "Network Address: $network_addr\n";
-	$tmp .= "Hangup Cause: $hangup_cause\n";
-	$tmp .= "Hangup Cause q850: $hangup_cause_q850\n";
-
 
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
@@ -250,7 +210,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_xml_cdr set ";
-			$sql .= "v_id = '$v_id', ";
 			$sql .= "uuid = '$uuid', ";
 			$sql .= "direction = '$direction', ";
 			$sql .= "language = '$language', ";
@@ -279,7 +238,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "network_addr = '$network_addr', ";
 			$sql .= "hangup_cause = '$hangup_cause', ";
 			$sql .= "hangup_cause_q850 = '$hangup_cause_q850' ";
-			$sql .= "where xml_cdr_id = '$xml_cdr_id'";
+			$sql .= "where v_id = '$v_id'";
+			$sql .= "and xml_cdr_id = '$xml_cdr_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -291,69 +251,66 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		} //if ($action == "update")
-	} //if ($_POST["persistformvar"] != "true") { 
+	} //if ($_POST["persistformvar"] != "true")
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 */
 
 //pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$xml_cdr_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_xml_cdr ";
-	$sql .= "where xml_cdr_id = '$xml_cdr_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$uuid = $row["uuid"];
-		$direction = $row["direction"];
-		$language = $row["language"];
-		$context = $row["context"];
-		$xml_cdr = $row["xml_cdr"];
-		$caller_id_name = $row["caller_id_name"];
-		$caller_id_number = $row["caller_id_number"];
-		$destination_number = $row["destination_number"];
-		$start_epoch = $row["start_epoch"];
-		$start_stamp = $row["start_stamp"];
-		$start_uepoch = $row["start_uepoch"];
-		$answer_stamp = $row["answer_stamp"];
-		$answer_epoch = $row["answer_epoch"];
-		$answer_uepoch = $row["answer_uepoch"];
-		$end_epoch = $row["end_epoch"];
-		$end_uepoch = $row["end_uepoch"];
-		$end_stamp = $row["end_stamp"];
-		$duration = $row["duration"];
-		$mduration = $row["mduration"];
-		$billsec = $row["billsec"];
-		$billmsec = $row["billmsec"];
-		$bridge_uuid = $row["bridge_uuid"];
-		$read_codec = $row["read_codec"];
-		$write_codec = $row["write_codec"];
-		$remote_media_ip = $row["remote_media_ip"];
-		$network_addr = $row["network_addr"];
-		$hangup_cause = $row["hangup_cause"];
-		$hangup_cause_q850 = $row["hangup_cause_q850"];
-		break; //limit to 1 row
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$xml_cdr_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_xml_cdr ";
+		$sql .= "where xml_cdr_id = '$xml_cdr_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$v_id = $row["v_id"];
+			$uuid = $row["uuid"];
+			$direction = $row["direction"];
+			$language = $row["language"];
+			$context = $row["context"];
+			$xml_cdr = $row["xml_cdr"];
+			$caller_id_name = $row["caller_id_name"];
+			$caller_id_number = $row["caller_id_number"];
+			$destination_number = $row["destination_number"];
+			$start_epoch = $row["start_epoch"];
+			$start_stamp = $row["start_stamp"];
+			$start_uepoch = $row["start_uepoch"];
+			$answer_stamp = $row["answer_stamp"];
+			$answer_epoch = $row["answer_epoch"];
+			$answer_uepoch = $row["answer_uepoch"];
+			$end_epoch = $row["end_epoch"];
+			$end_uepoch = $row["end_uepoch"];
+			$end_stamp = $row["end_stamp"];
+			$duration = $row["duration"];
+			$mduration = $row["mduration"];
+			$billsec = $row["billsec"];
+			$billmsec = $row["billmsec"];
+			$bridge_uuid = $row["bridge_uuid"];
+			$read_codec = $row["read_codec"];
+			$write_codec = $row["write_codec"];
+			$remote_media_ip = $row["remote_media_ip"];
+			$network_addr = $row["network_addr"];
+			$hangup_cause = $row["hangup_cause"];
+			$hangup_cause_q850 = $row["hangup_cause_q850"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
-
+//show the header
 	require_once "includes/header.php";
 
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "	  <br>";
 
-
 	echo "<form method='post' name='frm' action=''>\n";
-
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
@@ -704,6 +661,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</table>";
 	echo "</div>";
 
-
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>

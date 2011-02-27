@@ -146,12 +146,10 @@ else {
 	echo "</table>";
 	echo "</form>";
 
-
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
-
 
 	require_once "includes/footer.php";
 

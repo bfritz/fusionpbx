@@ -26,7 +26,6 @@
 include "root.php";
 require_once "includes/config.php";
 
-
 //set debug
 	$debug = false; //true //false
 
@@ -39,27 +38,6 @@ function process_xml_cdr($db, $v_log_dir, $xml_string) {
 	//set global variable
 		global $v_id, $debug;
 
-	//determine where the xml cdr will be archived
-		$sql = "select * from v_vars ";
-		$sql .= "where v_id  = '$v_id' ";
-		$sql .= "and var_name = 'xml_cdr_archive' ";
-		$row = $db->query($sql)->fetch();
-		$var_value = trim($row["var_value"]);
-		switch ($var_value) {
-		case "dir":
-			$xml_cdr_archive = 'dir';
-			break;
-		case "db":
-			$xml_cdr_archive = 'db';
-			break;
-		case "none":
-			$xml_cdr_archive = 'none';
-			break;
-		default:
-			$xml_cdr_archive = 'dir';
-			break;
-		}
-
 	//parse the xml to get the call detail record info
 		try {
 			$xml = simplexml_load_string($xml_string);
@@ -69,7 +47,9 @@ function process_xml_cdr($db, $v_log_dir, $xml_string) {
 		}
 
 	//get the variables from the xml
+		//$v_id = check_str(urldecode($xml->variables->v_id));
 		$uuid = check_str(urldecode($xml->variables->uuid));
+		$domain_name = check_str(urldecode($xml->variables->domain_name));
 		$direction = check_str(urldecode($xml->channel_data->direction));
 		$default_language = check_str(urldecode($xml->variables->default_language));
 		$xml_string = check_str($xml_string);
@@ -104,6 +84,34 @@ function process_xml_cdr($db, $v_log_dir, $xml_string) {
 			$x++;
 		}
 		unset($x);
+
+	//find the v_id by using the domain
+		$sql = "";
+		$sql .= "select v_id from v_system_settings ";
+		$sql .= "where v_domain = '$domain_name' ";
+		$row = $db->query($sql)->fetch();
+		$v_id = $row['v_id'];
+
+	//determine where the xml cdr will be archived
+		$sql = "select * from v_vars ";
+		$sql .= "where v_id  = '$v_id' ";
+		$sql .= "and var_name = 'xml_cdr_archive' ";
+		$row = $db->query($sql)->fetch();
+		$var_value = trim($row["var_value"]);
+		switch ($var_value) {
+		case "dir":
+			$xml_cdr_archive = 'dir';
+			break;
+		case "db":
+			$xml_cdr_archive = 'db';
+			break;
+		case "none":
+			$xml_cdr_archive = 'none';
+			break;
+		default:
+			$xml_cdr_archive = 'dir';
+			break;
+		}
 
 	//archive the xml cdr string
 		if ($xml_cdr_archive == "dir") {
