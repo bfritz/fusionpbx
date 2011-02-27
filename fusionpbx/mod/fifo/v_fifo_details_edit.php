@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -34,7 +34,7 @@ else {
 	exit;
 }
 
-//action add or update
+//set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
 		$dialplan_includes_detail_id = check_str($_REQUEST["id"]);
@@ -47,7 +47,7 @@ else {
 		$dialplan_include_id = check_str($_REQUEST["id2"]);
 	}
 
-//get post and set variables
+//get http values and set them as php variables
 	if (count($_POST)>0) {
 		if (isset($_REQUEST["dialplan_include_id"])) {
 			$dialplan_include_id = check_str($_POST["dialplan_include_id"]);
@@ -61,7 +61,6 @@ else {
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
 	if ($action == "update") {
 		$dialplan_includes_detail_id = check_str($_POST["dialplan_includes_detail_id"]);
 	}
@@ -85,7 +84,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	//Add or update the database
+	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add") {
 				$sql = "insert into v_dialplan_includes_details ";
@@ -145,8 +144,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				require_once "includes/footer.php";
 				return;
 		   } //if ($action == "update")
-		} //if ($_POST["persistformvar"] != "true") { 
-
+		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
@@ -170,8 +168,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset ($prepstatement);
 	}
 
+//show the header
 	require_once "includes/header.php";
 
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
@@ -349,11 +349,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<b>Additional Information</b>\n";
 		echo "<br />\n";
 		echo "<br />\n";
-		echo "<a href='http://wiki.freeswitch.org/wiki/Dialplan_XML' target='_blank'>http://wiki.freeswitch.org/wiki/Dialplan_XML</a>";
+
 	}
 	?>
-	<br />
-	<br />
 	<b>Conditions</b>
 	<br />
 	<br />
@@ -386,14 +384,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	<br />
 	<br />
 	Actions are executed when the <b>condition matches</b>. Anti-Actions are executed when the <b>condition does NOT match</b>.
-	<?php
-	if ($v_path_show) {
-		echo "Additional information on applications for Actions and Anti-Actions.<br />\n";
-		echo "<a href='http://wiki.freeswitch.org/wiki/Modules#Applications' target='_blank'>http://wiki.freeswitch.org/wiki/Modules#Applications</a>\n";
-		echo "<br />\n";
-		echo "<a href='http://wiki.freeswitch.org/wiki/Dialplan_Functions' target='_blank'>http://wiki.freeswitch.org/wiki/Dialplan_Functions</a>\n";
-	}
-	?>
 	<br />
 	<br />
 	<br />
@@ -428,11 +418,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	<b>Param</b>
 	Example parameters by name and value
 	<br />
-	<?php
-	if ($v_path_show) {
-		echo "<a href='http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go' target='_blank'>http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go</a>\n";
-	}
-	?>
 	<ul>
 	<li><b>codec-ms</b> 20</li>
 	<li><b>codec-prefs</b> PCMU@20i</li>
@@ -462,6 +447,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>

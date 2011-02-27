@@ -36,8 +36,9 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
-$order = $_GET["order"];
+//get http values and set them as variables
+	$orderby = $_GET["orderby"];
+	$order = $_GET["order"];
 
 //find the queues from the dialplan include details
 
@@ -78,7 +79,7 @@ $order = $_GET["order"];
 		//}
 
 
-//begin the form
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
@@ -172,14 +173,12 @@ $order = $_GET["order"];
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
-
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo thorderby('extensionname', 'Extension Name', $orderby, $order);
 	echo thorderby('dialplanorder', 'Order', $orderby, $order);
@@ -190,19 +189,20 @@ $order = $_GET["order"];
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($resultcount == 0) {
+		//no results
 	}
 	else { //received results
-
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extensionname]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplanorder]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_fifo_edit.php?id=".$row[dialplan_include_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			if (ifgroup("superadmin")) {
+				echo "		<a href='v_fifo_edit.php?id=".$row[dialplan_include_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			}
 			echo "		<a href='v_fifo_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "   </td>\n";
 			echo "</tr>\n";
@@ -210,7 +210,6 @@ $order = $_GET["order"];
 		} //end foreach
 		unset($sql, $result, $rowcount);
 	} //end if results
-
 
 	echo "<tr>\n";
 	echo "<td colspan='5'>\n";
@@ -229,7 +228,6 @@ $order = $_GET["order"];
 	echo "<tr>\n";
 	echo "<td colspan='5' align='left'>\n";
 	echo "<br />\n";
-	//echo "<br />\n";
 	if ($v_path_show) {
 		echo $v_conf_dir."/dialplan/default/";
 	}
@@ -241,18 +239,17 @@ $order = $_GET["order"];
 	echo "<br><br>";
 	echo "<br><br>";
 
-
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 
-
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
+//show the footer
+	require_once "includes/footer.php";
+	unset ($resultcount);
+	unset ($result);
+	unset ($key);
+	unset ($val);
+	unset ($c);
 ?>

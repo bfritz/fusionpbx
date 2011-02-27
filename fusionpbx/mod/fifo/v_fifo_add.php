@@ -35,12 +35,11 @@ else {
 }
 require_once "includes/header.php";
 require_once "includes/paging.php";
-$orderby = $_GET["orderby"];
-$order = $_GET["order"];
 
-
-//get post and set as variables
+//get http values and set them as variables
 	if (count($_POST)>0) {
+		$orderby = $_GET["orderby"];
+		$order = $_GET["order"];
 		$extension_name = check_str($_POST["extension_name"]);
 		$queue_extension_number = check_str($_POST["queue_extension_number"]);
 		$agent_queue_extension_number = check_str($_POST["agent_queue_extension_number"]);
@@ -264,182 +263,182 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 } //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
+//show the content
+	echo "<div align='center'>";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
+	echo "<tr class=''>\n";
+	echo "	<td align=\"left\">\n";
+	echo "		<br>";
 
-echo "<div align='center'>";
-echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-echo "<tr class=''>\n";
-echo "	<td align=\"left\">\n";
-echo "		<br>";
+	echo "<form method='post' name='frm' action=''>\n";
+	echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+	echo "	<tr>\n";
+	echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\">\n";
+	echo "			<strong>Queues</strong>\n";
+	echo "			</span></span>\n";
+	echo "		</td>\n";
+	echo "		<td align='right'>\n";
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_fifo.php'\" value='Back'>\n";
+	echo "		</td>\n";
+	echo "	</tr>\n";
+	echo "	<tr>\n";
+	echo "		<td align='left' colspan='2'>\n";
+	echo "			<span class=\"vexpl\">\n";
+	echo "			In simple terms queues are holding patterns for callers to wait until until someone is available to take the call. Also known as FIFO Queues.\n";
+	echo "			</span>\n";
+	echo "		</td>\n";
+	echo "	</tr>\n";
+	echo "	</table>";
 
-echo "<form method='post' name='frm' action=''>\n";
-echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "	<tr>\n";
-echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\">\n";
-echo "			<strong>Queues</strong>\n";
-echo "			</span></span>\n";
-echo "		</td>\n";
-echo "		<td align='right'>\n";
-echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_fifo.php'\" value='Back'>\n";
-echo "		</td>\n";
-echo "	</tr>\n";
-echo "	<tr>\n";
-echo "		<td align='left' colspan='2'>\n";
-echo "			<span class=\"vexpl\">\n";
-echo "			In simple terms queues are holding patterns for callers to wait until until someone is available to take the call. Also known as FIFO Queues.\n";
-echo "			</span>\n";
-echo "		</td>\n";
-echo "	</tr>\n";
-echo "	</table>";
+	echo "<br />\n";
+	echo "<br />\n";
 
-echo "<br />\n";
-echo "<br />\n";
+	echo "	<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "	<tr>\n";
+	echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "		Queue Name:\n";
+	echo "	</td>\n";
+	echo "	<td class='vtable' align='left'>\n";
+	echo "		<input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
+	echo "		<br />\n";
+	echo "		The name the queue will be assigned.\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
 
-echo "	<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
-echo "	<tr>\n";
-echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "		Queue Name:\n";
-echo "	</td>\n";
-echo "	<td class='vtable' align='left'>\n";
-echo "		<input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
-echo "		<br />\n";
-echo "		The name the queue will be assigned.\n";
-echo "	</td>\n";
-echo "	</tr>\n";
+	echo "	<tr>\n";
+	echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	Extension Number:\n";
+	echo "	</td>\n";
+	echo "	<td class='vtable' align='left'>\n";
+	echo "		<input class='formfld' style='width: 60%;' type='text' name='queue_extension_number' maxlength='255' value=\"$queue_extension_number\">\n";
+	echo "		<br />\n";
+	echo "		The number that will be assinged to the queue.\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
 
-echo "	<tr>\n";
-echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "	Extension Number:\n";
-echo "	</td>\n";
-echo "	<td class='vtable' align='left'>\n";
-echo "		<input class='formfld' style='width: 60%;' type='text' name='queue_extension_number' maxlength='255' value=\"$queue_extension_number\">\n";
-echo "		<br />\n";
-echo "		The number that will be assinged to the queue.\n";
-echo "	</td>\n";
-echo "	</tr>\n";
+	//echo "<tr>\n";
+	//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	//echo "    Flags:\n";
+	//echo "</td>\n";
+	//echo "<td class='vtable' align='left'>\n";
+	//echo "    <input class='formfld' style='width: 60%;' type='text' name='flags' maxlength='255' value=\"$flags\">\n";
+	//echo "<br />\n";
+	//echo "Optional queue flags. examples: mute|deaf|waste|moderator\n";
+	//echo "</td>\n";
+	//echo "</tr>\n";
 
-//echo "<tr>\n";
-//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-//echo "    Flags:\n";
-//echo "</td>\n";
-//echo "<td class='vtable' align='left'>\n";
-//echo "    <input class='formfld' style='width: 60%;' type='text' name='flags' maxlength='255' value=\"$flags\">\n";
-//echo "<br />\n";
-//echo "Optional queue flags. examples: mute|deaf|waste|moderator\n";
-//echo "</td>\n";
-//echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Order:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "              <select name='dialplanorder' class='formfld' style='width: 60%;'>\n";
+	//echo "              <option></option>\n";
+	if (strlen(htmlspecialchars($dialplanorder))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($dialplanorder)."'>".htmlspecialchars($dialplanorder)."</option>\n";
+	}
+	$i=0;
+	while($i<=999) {
+		if (strlen($i) == 1) { echo "              <option value='00$i'>00$i</option>\n"; }
+		if (strlen($i) == 2) { echo "              <option value='0$i'>0$i</option>\n"; }
+		if (strlen($i) == 3) { echo "              <option value='$i'>$i</option>\n"; }
+		$i++;
+	}
+	echo "              </select>\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Order:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "              <select name='dialplanorder' class='formfld' style='width: 60%;'>\n";
-//echo "              <option></option>\n";
-if (strlen(htmlspecialchars($dialplanorder))> 0) {
-	echo "              <option selected='yes' value='".htmlspecialchars($dialplanorder)."'>".htmlspecialchars($dialplanorder)."</option>\n";
-}
-$i=0;
-while($i<=999) {
-	if (strlen($i) == 1) { echo "              <option value='00$i'>00$i</option>\n"; }
-	if (strlen($i) == 2) { echo "              <option value='0$i'>0$i</option>\n"; }
-	if (strlen($i) == 3) { echo "              <option value='$i'>$i</option>\n"; }
-	$i++;
-}
-echo "              </select>\n";
-echo "<br />\n";
-echo "\n";
-echo "</td>\n";
-echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Enabled:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
+	if ($enabled == "true") { 
+		echo "    <option value='true' selected='selected' >true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($enabled == "false") { 
+		echo "    <option value='false' selected='selected' >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Enabled:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
-if ($enabled == "true") { 
-	echo "    <option value='true' selected='selected' >true</option>\n";
-}
-else {
-	echo "    <option value='true'>true</option>\n";
-}
-if ($enabled == "false") { 
-	echo "    <option value='false' selected='selected' >false</option>\n";
-}
-else {
-	echo "    <option value='false'>false</option>\n";
-}
-echo "    </select>\n";
-echo "<br />\n";
-echo "\n";
-echo "</td>\n";
-echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Description:\n";
+	echo "</td>\n";
+	echo "<td colspan='4' class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<tr>\n";
-echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-echo "    Description:\n";
-echo "</td>\n";
-echo "<td colspan='4' class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
-echo "<br />\n";
-echo "\n";
-echo "</td>\n";
-echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='vtable' valign='top' align='left' nowrap>\n";
+	echo "	<br /><br />\n";
+	echo "	<b>Agent Details</b>\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    &nbsp\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<tr>\n";
-echo "<td class='vtable' valign='top' align='left' nowrap>\n";
-echo "	<br /><br />\n";
-echo "	<b>Agent Details</b>\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    &nbsp\n";
-echo "</td>\n";
-echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Queue Extension Number:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='agent_queue_extension_number' maxlength='255' value=\"$agent_queue_extension_number\">\n";
+	echo "<br />\n";
+	echo "The extension number for the Agent FIFO Queue. This is the holding pattern for agents wating to service calls in the caller FIFO queue.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<tr>\n";
-echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
-echo "    Queue Extension Number:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='agent_queue_extension_number' maxlength='255' value=\"$agent_queue_extension_number\">\n";
-echo "<br />\n";
-echo "The extension number for the Agent FIFO Queue. This is the holding pattern for agents wating to service calls in the caller FIFO queue.\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-echo "    Login/Logout Extension Number:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='agent_login_logout_extension_number' maxlength='255' value=\"$agent_login_logout_extension_number\">\n";
-echo "<br />\n";
-echo "Agents use this extension number to login or logout of the Queue. After logging into the agent will be ready to receive calls from the Queue. \n";
-echo "</td>\n";
-echo "</tr>\n";
-echo "</table>\n";
-
-
-echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
-echo "<tr>\n";
-echo "	<td colspan='5' align='right'>\n";
-if ($action == "update") {
-	echo "			<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
-}
-echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
-echo "	</td>\n";
-echo "</tr>";
-echo "</table>";
-
-echo "</form>";
-
-echo "</td>\n";
-echo "</tr>\n";
-echo "</table>\n";
-echo "</div>";
-
-echo "<br><br>";
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Login/Logout Extension Number:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='agent_login_logout_extension_number' maxlength='255' value=\"$agent_login_logout_extension_number\">\n";
+	echo "<br />\n";
+	echo "Agents use this extension number to login or logout of the Queue. After logging into the agent will be ready to receive calls from the Queue. \n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 
 
-require_once "includes/footer.php";
+	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<tr>\n";
+	echo "	<td colspan='5' align='right'>\n";
+	if ($action == "update") {
+		echo "			<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
+	}
+	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "	</td>\n";
+	echo "</tr>";
+	echo "</table>";
+
+	echo "</form>";
+
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "</div>";
+
+	echo "<br><br>";
+
+//show the footer
+	require_once "includes/footer.php";
 ?>
