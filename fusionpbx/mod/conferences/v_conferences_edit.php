@@ -65,7 +65,8 @@ $order = $_GET["order"];
 		//get the list of assigned conference numbers for this user
 			foreach ($conference_array as &$row) {
 				$sql = "select * from v_dialplan_includes_details ";
-				$sql .= "where dialplan_include_id = '".$row['dialplan_include_id']."' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' ";
 				$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
 				$tmp_row = $db->query($sql)->fetch();
 				if (strlen($tmp_row['dialplan_include_id']) > 0) {
@@ -285,7 +286,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "select * from v_dialplan_includes_details ";
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-			//echo $sql;
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
@@ -489,7 +489,7 @@ if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
-	$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; //$sqlwhereoptional = "where v_id = '$v_id'"; 
+	$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where v_id = '$v_id'"; 
 	echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
 	echo "<br />\n";
 	echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";
@@ -585,7 +585,6 @@ echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 echo "    Description:\n";
 echo "</td>\n";
 echo "<td colspan='4' class='vtable' align='left'>\n";
-//echo "    <textarea class='formfld' name='description' rows='4'>$description</textarea>\n";
 echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
 echo "<br />\n";
 echo "\n";
