@@ -27,7 +27,7 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -109,19 +109,6 @@ if ($_GET['a'] == "other") {
 */
 require_once "includes/header.php";
 
-$sql = "";
-$sql .= "select * from v_settings ";
-$sql .= "where v_id = '$v_id' ";
-$prepstatement = $db->prepare(check_sql($sql));
-$prepstatement->execute();
-$result = $prepstatement->fetchAll();
-foreach ($result as &$row) {
-	$event_socket_ip_address = $row["event_socket_ip_address"];
-	$event_socket_port = $row["event_socket_port"];
-	$event_socket_password = $row["event_socket_password"];
-	break; //limit to 1 row
-}
-
 $msg = $_GET["savemsg"];
 $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 if (!$fp) {
@@ -146,7 +133,6 @@ echo "<br /><br />\n\n";
 
 //sofia status
 	if ($fp) {
-		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 		$cmd = "api sofia xmlstatus";
 		$xml_response = trim(event_socket_request($fp, $cmd));
 		try {

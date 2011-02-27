@@ -88,7 +88,12 @@ require_once "includes/checkauth.php";
 			echo "	<b>Profile: ". $sip_profile_name."</b>\n";
 			echo "</td>\n";
 			echo "<td colspan='1' align='right'>\n";
-			echo "  <input type='button' class='btn' value='back' onclick=\"document.location.href='v_status.php';\" />\n";
+			if (ifgroup("superadmin")) {
+				echo "  <input type='button' class='btn' value='back' onclick=\"document.location.href='v_status.php';\" />\n";
+			}
+			else {
+				echo "&nbsp;\n";
+			}
 			echo "</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
