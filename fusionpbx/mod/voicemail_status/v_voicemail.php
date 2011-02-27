@@ -39,7 +39,7 @@ require_once "includes/paging.php";
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -126,8 +126,8 @@ $order = $_GET["order"];
 
 			$sql = "";
 			$sql .= "select count(*) as count from voicemail_msgs ";
-			$sql .= "where username = '".$row[extension]."' ";
-			//echo $sql;
+			$sql .= "where domain = '$v_domain' ";
+			$sql .= "and username = '".$row[extension]."' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
@@ -137,7 +137,6 @@ $order = $_GET["order"];
 			}
 			unset ($prepstatement);
 
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[extension]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[vm_mailto]."&nbsp;</td>\n";
@@ -195,11 +194,12 @@ echo "</table>";
 echo "</div>";
 echo "<br><br>";
 
-require "includes/config.php";
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
+//show the footer
+	require "includes/config.php";
+	require_once "includes/footer.php";
+	unset ($resultcount);
+	unset ($result);
+	unset ($key);
+	unset ($val);
 unset ($c);
 ?>

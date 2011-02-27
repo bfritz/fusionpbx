@@ -35,11 +35,10 @@ else {
 	exit;
 }
 
-//require("v_config.inc");
-
-$uuid = $_GET['uuid'];
-$type = $_GET['type']; //vm
-$desc = $_GET['desc'];
+//get the http get values
+	$uuid = $_GET['uuid'];
+	$type = $_GET['type']; //vm
+	$desc = $_GET['desc'];
 
 
 ?>
@@ -49,29 +48,28 @@ $desc = $_GET['desc'];
 <body link="#0000CC" vlink="#0000CC" alink="#0000CC">
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
-   <tr>
-     <td align='center'>
-      <b>voicemail: <?php echo$desc?></b>
-     </td>
-   </tr>
-   <tr>
-     <td align='center'>
-     <?php
+	<tr>
+		<td align='center'>
+			<b>voicemail: <?php echo$desc?></b>
+		</td>
+	</tr>
+	<tr>
+	<td align='center'>
+	<?php
+	$file_ext = substr($_GET['filename'], -3);
+	if ($file_ext == "wav") {
+		echo "<embed src=\"v_voicemail_msgs.php?a=download&type=".$type."&uuid=".$uuid."\" autostart=true width=200 height=40 name=\"sound".$uuid."\" enablejavascript=\"true\">\n";
+	 }
+	 if ($file_ext == "mp3") {
+		echo "<object type=\"application/x-shockwave-flash\" width=\"400\" height=\"17\" data=\"slim.swf?autoplay=true&song_title=".urlencode($uuid)."&song_url=".urlencode($v_relative_url."/v_voicemail_msgs.php?a=download&type=".$type."&uuid=".$uuid)."\">\n";
+		echo "<param name=\"movie\" value=\"slim.swf?autoplay=true&song_url=".urlencode($v_relative_url."/v_voicemail_msgs.php?a=download&type=".$type."&uuid=".$uuid)."\" />\n";
+		echo "<param name=\"quality\" value=\"high\"/>\n";
+		echo "<param name=\"bgcolor\" value=\"#E6E6E6\"/>\n";
+		echo "</object>\n";
+	}
 
-      $file_ext = substr($_GET['filename'], -3);
-      if ($file_ext == "wav") {
-        echo "<embed src=\"v_voicemail_msgs.php?a=download&type=".$type."&uuid=".$uuid."\" autostart=true width=200 height=40 name=\"sound".$uuid."\" enablejavascript=\"true\">\n";
-      }
-      if ($file_ext == "mp3") {
-        echo "<object type=\"application/x-shockwave-flash\" width=\"400\" height=\"17\" data=\"slim.swf?autoplay=true&song_title=".urlencode($uuid)."&song_url=".urlencode($v_relative_url."/v_voicemail_msgs.php?a=download&type=".$type."&uuid=".$uuid)."\">\n";
-        echo "<param name=\"movie\" value=\"slim.swf?autoplay=true&song_url=".urlencode($v_relative_url."/v_voicemail_msgs.php?a=download&type=".$type."&uuid=".$uuid)."\" />\n";
-        echo "<param name=\"quality\" value=\"high\"/>\n";
-        echo "<param name=\"bgcolor\" value=\"#E6E6E6\"/>\n";
-        echo "</object>\n";
-      }
-
-     ?>
-     </td>
+	?>
+	</td>
    </tr>
 </table>
 

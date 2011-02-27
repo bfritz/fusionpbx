@@ -34,59 +34,62 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	$uuid = $_GET["uuid"];
-}
+//get the http get values
+	if (count($_GET)>0) {
+		$uuid = $_GET["uuid"];
+	}
 
 //pdo voicemail database connection
 	include "includes/lib_pdo_vm.php";
 
-if (strlen($uuid)>0) {
+//delet the voicemail message
+	if (strlen($uuid)>0) {
+		$uuid = $_GET["uuid"];
+		$sql = "";
+		$sql .= "select * from voicemail_msgs ";
+		$sql .= "where domain = '$v_domain' ";
+		$sql .= "and uuid = '$uuid' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$created_epoch = $row["created_epoch"];
+			$read_epoch = $row["read_epoch"];
+			$username = $row["username"];
+			$domain = $row["domain"];
+			$uuid = $row["uuid"];
+			$cid_name = $row["cid_name"];
+			$cid_number = $row["cid_number"];
+			$in_folder = $row["in_folder"];
+			$file_path = $row["file_path"];
+			$message_len = $row["message_len"];
+			$flags = $row["flags"];
+			$read_flags = $row["read_flags"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 
-	$uuid = $_GET["uuid"];
-	$sql = "";
-	$sql .= "select * from voicemail_msgs ";
-	$sql .= "where uuid = '$uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$created_epoch = $row["created_epoch"];
-		$read_epoch = $row["read_epoch"];
-		$username = $row["username"];
-		$domain = $row["domain"];
-		$uuid = $row["uuid"];
-		$cid_name = $row["cid_name"];
-		$cid_number = $row["cid_number"];
-		$in_folder = $row["in_folder"];
-		$file_path = $row["file_path"];
-		$message_len = $row["message_len"];
-		$flags = $row["flags"];
-		$read_flags = $row["read_flags"];
-		break; //limit to 1 row
+		if  (file_exists($file_path)) {
+			unlink($file_path);
+		}
+
+		$sql = "";
+		$sql .= "delete from voicemail_msgs ";
+		$sql .= "where domain = '$v_domain' ";
+		$sql .= "and uuid = '$uuid' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		unset($sql);
 	}
-	unset ($prepstatement);
 
-	if  (file_exists($file_path)) {
-		unlink($file_path);
-	}
-
-	$sql = "";
-	$sql .= "delete from voicemail_msgs ";
-	$sql .= "where uuid = '$uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	unset($sql);
-}
-
-require "includes/config.php";
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_voicemail_msgs.php\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
-
-require_once "includes/footer.php";
-return;
+//redirect the user
+	require "includes/config.php";
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_voicemail_msgs.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
 ?>

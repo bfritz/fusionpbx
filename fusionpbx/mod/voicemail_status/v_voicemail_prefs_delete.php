@@ -41,28 +41,27 @@ if (count($_GET)>0) {
 //pdo voicemail database connection
 	include "includes/lib_pdo_vm.php";
 
-if (strlen($id)>0) {
-	$sql = "";
-	$sql .= "delete from voicemail_prefs ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and username = '$v_id' ";
-	//echo $sql;
-	$count = $db->exec(check_sql($sql));
-	//$sql .= "and extension_id = '$id' ";
-	//$prepstatement = $db->prepare(check_sql($sql));
-	//$prepstatement->execute();
-	unset($sql);
-}
+//delet the data
+	if (strlen($id)>0) {
+		$sql = "";
+		$sql .= "delete from voicemail_prefs ";
+		$sql .= "where domain = '$v_domain' ";
+		$sql .= "and username = '$v_id' ";
+		$count = $db->exec(check_sql($sql));
+		unset($sql);
+	}
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_voicemail.php\">\n";
-echo "<div align='center'>\n";
-echo "Voicemail Preferences set to default\n";
-echo "</div>\n";
+//redirect the user
+	require "includes/config.php";
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_voicemail.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Voicemail Preferences set to default\n";
+	echo "</div>\n";
 
-require "includes/config.php";
-require_once "includes/footer.php";
-return;
+	require "includes/config.php";
+	require_once "includes/footer.php";
+	return;
 
 ?>
 
