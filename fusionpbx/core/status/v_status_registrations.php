@@ -109,6 +109,7 @@ require_once "includes/checkauth.php";
 			echo "</tr>\n";
 
 			if (count($xml->registrations->registration) > 0) {
+				$registration_count = 0;
 				foreach ($xml->registrations->registration as $row) {
 					$user_array = explode('@', $row->{'user'});
 					$domain_name = $user_array[1];
@@ -117,7 +118,7 @@ require_once "includes/checkauth.php";
 						//<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'call-id'}."&nbsp;</td>\n";
 						//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'user'}."&nbsp;</td>\n";
 						//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'contact'}."&nbsp;</td>\n";
-						echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'sip-auth-user'}."&nbsp;</td>\n";
+						echo "	<td class='".$rowstyle[$c]."'>$registration_count &nbsp;".$row->{'sip-auth-user'}."&nbsp;</td>\n";
 						echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'agent'}."&nbsp;</td>\n";
 						//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'host'}."&nbsp;</td>\n";
 						echo "	<td class='".$rowstyle[$c]."'>&nbsp;<a href='http://".$row->{'network-ip'}."' target='_blank'>".$row->{'network-ip'}."</a>&nbsp;</td>\n";
@@ -126,12 +127,13 @@ require_once "includes/checkauth.php";
 						//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'mwi-account'}."&nbsp;</td>\n";
 						echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row->{'status'}."&nbsp;</td>\n";
 						echo "</tr>\n";
+						$registration_count++;
 					}
 					if ($c==0) { $c=1; } else { $c=0; }
 				}
 				echo "<tr>\n";
 				echo "<td colspan='5' align='right'>\n";
-				echo "	<b>".count($xml->registrations->registration)." registrations</b>\n";
+				echo "	<b>".$registration_count." registrations</b>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 			}
