@@ -63,12 +63,17 @@ $order = $_GET["order"];
 	echo "	<tr>\n";
 	echo "	<td align='left' colspan='2'>\n";
 	echo "		<span class=\"vexpl\">\n";
-	echo "			The dialplan is used to setup call destinations based on conditions and context.\n";
-	echo "			You can use the dialplan to send calls to gateways, auto attendants, external numbers,\n";
-	echo "			to scripts, or any destination.\n";
+	if (ifgroup("superadmin")) {
+		echo "			The dialplan is used to setup call destinations based on conditions and context.\n";
+		echo "			You can use the dialplan to send calls to gateways, auto attendants, external numbers,\n";
+		echo "			to scripts, or any destination.\n";
+	}
+	else {
+		echo "			The dialplan provides a view of some of the feature codes, as well as the IVR Menu, \n";
+		echo "			Conferences, Queues and other destinations.\n";
+	}
 	echo "		</span>\n";
 	echo "	</td>\n";
-	echo "\n";
 	echo "	</tr>\n";
 	echo "	</table>";
 
@@ -115,26 +120,29 @@ $order = $_GET["order"];
 	echo thorderby('dialplanorder', 'Order', $orderby, $order);
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
-	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_dialplan_includes_add.php' alt='add'>$v_link_label_add</a>\n";
-	echo "</td>\n";
+	if (ifgroup("superadmin")) {
+		echo "<td align='right' width='42'>\n";
+		echo "	<a href='v_dialplan_includes_add.php' alt='add'>$v_link_label_add</a>\n";
+		echo "</td>\n";
+	}
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($resultcount == 0) { 
+		//no results
 	}
 	else { //received results
-
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extensionname]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplanorder]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
-			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_dialplan_includes_edit.php?id=".$row[dialplan_include_id]."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_dialplan_includes_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-			echo "   </td>\n";
+			if (ifgroup("superadmin")) {
+				echo "   <td valign='top' align='right'>\n";
+				echo "		<a href='v_dialplan_includes_edit.php?id=".$row[dialplan_include_id]."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_dialplan_includes_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "   </td>\n";
+			}
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
@@ -149,7 +157,12 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_dialplan_includes_add.php' alt='add'>$v_link_label_add</a>\n";
+	if (ifgroup("superadmin")) {
+		echo "			<a href='v_dialplan_includes_add.php' alt='add'>$v_link_label_add</a>\n";
+	}
+	else {
+		echo "			&nbsp;";
+	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
