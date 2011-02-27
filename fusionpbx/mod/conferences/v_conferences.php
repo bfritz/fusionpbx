@@ -26,23 +26,17 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-//if (ifgroup("admin") || ifgroup("superadmin")) {
-	//access granted
-//}
-//else {
-//	echo "access denied";
-//	exit;
-//}
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
-$order = $_GET["order"];
+//get the http get values
+	$orderby = $_GET["orderby"];
+	$order = $_GET["order"];
 
 //find the conference extensions from the dialplan include details
 
 	//define the conference array
-		$conference_array = array ();
+	$conference_array = array ();
 
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes_details ";
@@ -54,31 +48,21 @@ $order = $_GET["order"];
 		//find the assigned users
 			$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
 	}
-	//echo $sql;
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$x = 0;
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$dialplan_include_id = $row["dialplan_include_id"];
-		//$tag = $row["tag"];
-		//$fieldorder = $row["fieldorder"];
 		$fieldtype = $row["fieldtype"];
-		//$fielddata = $row["fielddata"];
 		if (ifgroup("admin") || ifgroup("superadmin")) {
 			if ($fieldtype == "conference") {
-				//echo "dialplan_include_id: $dialplan_include_id<br />";
-				//echo "fielddata: $fielddata<br />";
 				$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
-				//print_r($row);
 				$x++;
 			}
 		}
 		else {
-			//echo "dialplan_include_id: $dialplan_include_id<br />";
-			//echo "fielddata: $fielddata<br />";
 			$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
-			//print_r($row);
 			$x++;
 		}
 	}
@@ -140,7 +124,6 @@ $order = $_GET["order"];
 			$x++;
 		}
 	}
-	//echo $sql; //exit;
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -184,7 +167,6 @@ $order = $_GET["order"];
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
-
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
@@ -213,7 +195,6 @@ $order = $_GET["order"];
 	if ($resultcount == 0) { //no results
 	}
 	else { //received results
-
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
@@ -256,7 +237,6 @@ $order = $_GET["order"];
 	echo "<tr>\n";
 	echo "<td colspan='5' align='left'>\n";
 	echo "<br />\n";
-	//echo "<br />\n";
 	if ($v_path_show) {
 		echo $v_dialplan_default_dir;
 	}
@@ -268,18 +248,17 @@ $order = $_GET["order"];
 	echo "<br><br>";
 	echo "<br><br>";
 
-
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 
-
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
+//show the footer
+	require_once "includes/footer.php";
+	unset ($resultcount);
+	unset ($result);
+	unset ($key);
+	unset ($val);
+	unset ($c);
 ?>

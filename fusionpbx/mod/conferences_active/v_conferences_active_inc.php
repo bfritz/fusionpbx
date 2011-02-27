@@ -72,29 +72,33 @@ else {
 	echo "</tr>\n";
 
 	foreach ($xml->conference as $row) {
-		//print_r($row);
+		//set the variables
+			$name = $row['name'];
+			$member_count = $row['member-count'];
+		//show the conferences that have a matching domain
+			$tmp_domain = substr($name, -strlen($v_domain));
+			if ($tmp_domain == $v_domain) {
+				$tmp_conference_name = substr($name, 0, strlen($name) - strlen('-'.$v_domain));
 
-		$name = $row['name'];
-		$member_count = $row['member-count'];
+				//$id = $row->members->member->id;
+				//$flag_can_hear = $row->members->member->flags->can_hear;
+				//$flag_can_speak = $row->members->member->flags->can_speak;
+				//$flag_talking = $row->members->member->flags->talking;
+				//$flag_has_video = $row->members->member->flags->has_video;
+				//$flag_has_floor = $row->members->member->flags->has_floor;
+				//$uuid = $row->members->member->uuid;
+				//$caller_id_name = $row->members->member->caller_id_name;
+				//$caller_id_name = str_replace("%20", " ", $caller_id_name);
+				//$caller_id_number = $row->members->member->caller_id_number;
 
-		//$id = $row->members->member->id;
-		//$flag_can_hear = $row->members->member->flags->can_hear;
-		//$flag_can_speak = $row->members->member->flags->can_speak;
-		//$flag_talking = $row->members->member->flags->talking;
-		//$flag_has_video = $row->members->member->flags->has_video;
-		//$flag_has_floor = $row->members->member->flags->has_floor;
-		//$uuid = $row->members->member->uuid;
-		//$caller_id_name = $row->members->member->caller_id_name;
-		//$caller_id_name = str_replace("%20", " ", $caller_id_name);
-		//$caller_id_number = $row->members->member->caller_id_number;
+				echo "<tr>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_conference_name."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$member_count."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_conference_interactive.php?c=".$name."'>view</a></td>\n";
+				echo "</tr>\n";
 
-		echo "<tr>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>".$name."</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>".$member_count."</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_conference_interactive.php?c=".$name."'>view</a></td>\n";
-		echo "</tr>\n";
-
-		if ($c==0) { $c=1; } else { $c=0; }
+				if ($c==0) { $c=1; } else { $c=0; }
+			}
 	}
 	echo "</table>\n";
 }

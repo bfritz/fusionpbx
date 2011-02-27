@@ -30,52 +30,59 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-if (count($_GET)>0) {
-	$switch_cmd = trim($_GET["cmd"]);
-	$action = trim($_GET["action"]);
-	$direction = trim($_GET["direction"]);
-}
+//get the http values and set them as php variables
+	if (count($_GET)>0) {
+		$switch_cmd = trim($_GET["cmd"]);
+		$action = trim($_GET["action"]);
+		$direction = trim($_GET["direction"]);
+	}
 
 if (count($_GET)>0) {
-
 	if (strlen($switch_cmd) > 0) {
+
+		//check if the domain is in the switch_cmd
+			if(stristr($switch_cmd, $v_domain) === FALSE) {
+				echo "access denied";
+				exit;
+			}
+
 		//connect to event socket
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-		if ($fp) {
-			if ($action == "energy") {
-				//conference 3001-example-domain.org energy 103
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-				$result_array = explode("=",$switch_result);
-				$tmp_value = $result_array[1];
-				if ($direction == "up") { $tmp_value = $tmp_value + 100; }
-				if ($direction == "down") { $tmp_value = $tmp_value - 100; }
-				//echo "energy $tmp_value<br />\n";
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
+			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+			if ($fp) {
+				if ($action == "energy") {
+					//conference 3001-example-domain.org energy 103
+					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					$result_array = explode("=",$switch_result);
+					$tmp_value = $result_array[1];
+					if ($direction == "up") { $tmp_value = $tmp_value + 100; }
+					if ($direction == "down") { $tmp_value = $tmp_value - 100; }
+					//echo "energy $tmp_value<br />\n";
+					$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
+				}
+				if ($action == "volume_in") {
+					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					$result_array = explode("=",$switch_result);
+					$tmp_value = $result_array[1];
+					if ($direction == "up") { $tmp_value = $tmp_value + 1; }
+					if ($direction == "down") { $tmp_value = $tmp_value - 1; }
+					//echo "volume $tmp_value<br />\n";
+					$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
+				}
+				if ($action == "volume_out") {
+					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					$result_array = explode("=",$switch_result);
+					$tmp_value = $result_array[1];
+					if ($direction == "up") { $tmp_value = $tmp_value + 1; }
+					if ($direction == "down") { $tmp_value = $tmp_value - 1; }
+					//echo "volume $tmp_value<br />\n";
+					$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
+				}
 			}
-			if ($action == "volume_in") {
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-				$result_array = explode("=",$switch_result);
-				$tmp_value = $result_array[1];
-				if ($direction == "up") { $tmp_value = $tmp_value + 1; }
-				if ($direction == "down") { $tmp_value = $tmp_value - 1; }
-				//echo "volume $tmp_value<br />\n";
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
-			}
-			if ($action == "volume_out") {
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-				$result_array = explode("=",$switch_result);
-				$tmp_value = $result_array[1];
-				if ($direction == "up") { $tmp_value = $tmp_value + 1; }
-				if ($direction == "down") { $tmp_value = $tmp_value - 1; }
-				//echo "volume $tmp_value<br />\n";
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
-			}
-		}
 
 		//send a command over event socket
-		if ($fp) {
-			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-		}
+			if ($fp) {
+				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+			}
 	}
 
 }

@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -34,31 +34,33 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	$id = $_GET["id"];
-	$dialplan_include_id = check_str($_REQUEST["id2"]);
-}
+//get the http get values
+	if (count($_GET)>0) {
+		$id = $_GET["id"];
+		$dialplan_include_id = check_str($_REQUEST["id2"]);
+	}
 
-if (strlen($id)>0) {
-	$sql = "";
-	$sql .= "delete from v_dialplan_includes_details ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and dialplan_includes_detail_id = '$id' ";
-	$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-	$db->query($sql);
-	unset($sql);
+//delete the conference
+	if (strlen($id)>0) {
+		$sql = "";
+		$sql .= "delete from v_dialplan_includes_details ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and dialplan_includes_detail_id = '$id' ";
+		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+		$db->query($sql);
+		unset($sql);
 
-	//synchronize the xml config
-	sync_package_v_dialplan_includes();
-}
+		//synchronize the xml config
+		sync_package_v_dialplan_includes();
+	}
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_conferences_edit.php?id=".$dialplan_include_id."\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
-
-require_once "includes/footer.php";
-return;
+//redirect the user
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_conferences_edit.php?id=".$dialplan_include_id."\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
 ?>

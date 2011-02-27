@@ -26,18 +26,24 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-//if (ifgroup("admin") || ifgroup("superadmin")) {
-	//access granted
-//}
-//else {
-//	echo "access denied";
-//	exit;
-//}
 
 $conference_name = trim($_REQUEST["c"]);
 $tmp_conference_name = str_replace("_", " ", $conference_name);
 
-require_once "includes/header.php";
+//check if the domain in the conference name matches the domain
+	$tmp_domain = substr($conference_name, -strlen($v_domain));
+	if ($tmp_domain != $v_domain) {
+		//domains do not match
+		echo "access denied";
+		exit;
+	}
+	else {
+		$tmp_conference_name = substr($conference_name, 0, strlen($conference_name) - strlen('-'.$v_domain));
+	}
+
+//show the header
+	require_once "includes/header.php";
+
 ?><script type="text/javascript">
 function loadXmlHttp(url, id) {
 	var f = this;

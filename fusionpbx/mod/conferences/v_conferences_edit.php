@@ -134,7 +134,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($action) > 0) {
 			$tmp_pin_number = ''; if (strlen($pin_number) > 0) { $tmp_pin_number = "+".$pin_number; }
 			$tmp_flags = ''; if (strlen($flags) > 0) { $tmp_flags = "+flags{".$flags."}"; }
-			$tmp_fielddata = $extension_name."@".$profile.$tmp_pin_number.$tmp_flags;
+			$tmp_fielddata = $extension_name.'-'.$v_domain."@".$profile.$tmp_pin_number.$tmp_flags;
 		}
 
 	if ($action == "add") {
@@ -397,7 +397,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$tmp_fielddata = substr($fielddata, $tmp_pos+1, strlen($fielddata));
 					$tmp_fielddata_array = explode("+",$tmp_fielddata);
 					foreach ($tmp_fielddata_array as &$tmp_row) {
-						//print_r($tmp_row);
 						if (is_numeric($tmp_row)) {
 							$pin_number = $tmp_row;
 						}
@@ -411,211 +410,211 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 	}
 
+//show the content
+	echo "<div align='center'>";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
-echo "<div align='center'>";
-echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
+	echo "<tr class='border'>\n";
+	echo "	<td align=\"left\">\n";
+	echo "		<br>";
 
-echo "<tr class='border'>\n";
-echo "	<td align=\"left\">\n";
-echo "		<br>";
+	echo "<form method='post' name='frm' action=''>\n";
+	echo "<div align='center'>\n";
 
-echo "<form method='post' name='frm' action=''>\n";
-echo "<div align='center'>\n";
+	echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+	echo "	<tr>\n";
+	echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\">\n";
+	echo "			<strong>Conferences</strong>\n";
+	echo "			</span></span>\n";
+	echo "		</td>\n";
+	echo "		<td align='right'>\n";
+	if (ifgroup("superadmin") && $action == "update") {
+		echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_conferences_edit_advanced.php?id=$dialplan_include_id'\" value='Advanced'>\n";
+	}
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_conferences.php'\" value='Back'>\n";
+	echo "		</td>\n";
+	echo "	</tr>\n";
+	echo "	<tr>\n";
+	echo "		<td align='left' colspan='2'>\n";
+	echo "			<span class=\"vexpl\">\n";
+	echo "			Conferences are used to setup conference rooms with a name, description, and an optional pin number.\n";
+	echo "			</span>\n";
+	echo "		</td>\n";
+	echo "	</tr>\n";
+	echo "	</table>";
 
-echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "	<tr>\n";
-echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\">\n";
-echo "			<strong>Conferences</strong>\n";
-echo "			</span></span>\n";
-echo "		</td>\n";
-echo "		<td align='right'>\n";
-if (ifgroup("superadmin") && $action == "update") {
-	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_conferences_edit_advanced.php?id=$dialplan_include_id'\" value='Advanced'>\n";
-}
-echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_conferences.php'\" value='Back'>\n";
-echo "		</td>\n";
-echo "	</tr>\n";
-echo "	<tr>\n";
-echo "		<td align='left' colspan='2'>\n";
-echo "			<span class=\"vexpl\">\n";
-echo "			Conferences is used to setup conference rooms with a name, description, and optional pin number.\n";
-echo "			</span>\n";
-echo "		</td>\n";
-echo "	</tr>\n";
-echo "	</table>";
+	echo "<br />\n";
+	echo "<br />\n";
 
-echo "<br />\n";
-echo "<br />\n";
+	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
-echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
-
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Conference Name:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
-echo "<br />\n";
-echo "The name the conference will be assigned.\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Extension Number:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_number' maxlength='255' value=\"$extension_number\">\n";
-echo "<br />\n";
-echo "The number that will be assinged to the conference.\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-echo "    PIN Number:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='pin_number' maxlength='255' value=\"$pin_number\">\n";
-echo "<br />\n";
-echo "Optional PIN number to secure access to the conference.\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-if (ifgroup("admin") || ifgroup("superadmin")) {
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "		User List:\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Conference Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
-	$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where v_id = '$v_id'"; 
-	echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
 	echo "<br />\n";
-	echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";
-	echo "<br />\n";
-	echo "<br />\n";
-	$user_list = str_replace("|", "\n", $user_list);
-	echo "		<textarea name=\"user_list\" id=\"user_list\" class=\"formfld\" cols=\"30\" rows=\"3\" style='width: 60%;' wrap=\"off\">$user_list</textarea>\n";
-	echo "		<br>\n";
-	echo "If a user is not in the select list it can be added manually to the user list and it will be created automatically.\n";
-	echo "<br />\n";
+	echo "The name the conference will be assigned.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-}
 
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Profile:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <select class='formfld' name='profile' style='width: 60%;'>\n";
-echo "    <option value=''></option>\n";
-if ($profile == "default") { echo "<option value='default' SELECTED >default</option>\n"; } else {	echo "<option value='default'>default</option>\n"; }
-if ($profile == "wideband") { echo "<option value='wideband' SELECTED >wideband</option>\n"; } else {	echo "<option value='wideband'>wideband</option>\n"; }
-if ($profile == "ultrawideband") { echo "<option value='ultrawideband' SELECTED >ultrawideband</option>\n"; } else {	echo "<option value='ultrawideband'>ultrawideband</option>\n"; }
-if ($profile == "cdquality") { echo "<option value='cdquality' SELECTED >cdquality</option>\n"; } else {	echo "<option value='cdquality'>cdquality</option>\n"; }
-echo "    </select>\n";
-echo "<br />\n";
-echo "Conference Profile is a collection of settings for the conference.\n";
-echo "</td>\n";
-echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Extension Number:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_number' maxlength='255' value=\"$extension_number\">\n";
+	echo "<br />\n";
+	echo "The number that will be assinged to the conference.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<tr>\n";
-echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-echo "    Flags:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='flags' maxlength='255' value=\"$flags\">\n";
-echo "<br />\n";
-echo "Optional conference flags. examples: mute|deaf|waste|moderator\n";
-echo "</td>\n";
-echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    PIN Number:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='pin_number' maxlength='255' value=\"$pin_number\">\n";
+	echo "<br />\n";
+	echo "Optional PIN number to secure access to the conference.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Order:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "              <select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
-//echo "              <option></option>\n";
-if (strlen(htmlspecialchars($dialplan_order))> 0) {
-	echo "              <option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
-}
-$i=0;
-while($i<=999) {
-	if (strlen($i) == 1) { echo "              <option value='00$i'>00$i</option>\n"; }
-	if (strlen($i) == 2) { echo "              <option value='0$i'>0$i</option>\n"; }
-	if (strlen($i) == 3) { echo "              <option value='$i'>$i</option>\n"; }
-	$i++;
-}
-echo "              </select>\n";
-echo "<br />\n";
-echo "\n";
-echo "</td>\n";
-echo "</tr>\n";
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "		User List:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
+		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where v_id = '$v_id'"; 
+		echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
+		echo "<br />\n";
+		echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";
+		echo "<br />\n";
+		echo "<br />\n";
+		$user_list = str_replace("|", "\n", $user_list);
+		echo "		<textarea name=\"user_list\" id=\"user_list\" class=\"formfld\" cols=\"30\" rows=\"3\" style='width: 60%;' wrap=\"off\">$user_list</textarea>\n";
+		echo "		<br>\n";
+		echo "If a user is not in the select list it can be added manually to the user list and it will be created automatically.\n";
+		echo "<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
 
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Enabled:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
-//echo "    <option value=''></option>\n";
-if ($enabled == "true") { 
-	echo "    <option value='true' SELECTED >true</option>\n";
-}
-else {
-	echo "    <option value='true'>true</option>\n";
-}
-if ($enabled == "false") { 
-	echo "    <option value='false' SELECTED >false</option>\n";
-}
-else {
-	echo "    <option value='false'>false</option>\n";
-}
-echo "    </select>\n";
-echo "<br />\n";
-echo "\n";
-echo "</td>\n";
-echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Profile:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='profile' style='width: 60%;'>\n";
+	echo "    <option value=''></option>\n";
+	if ($profile == "default") { echo "<option value='default' SELECTED >default</option>\n"; } else {	echo "<option value='default'>default</option>\n"; }
+	if ($profile == "wideband") { echo "<option value='wideband' SELECTED >wideband</option>\n"; } else {	echo "<option value='wideband'>wideband</option>\n"; }
+	if ($profile == "ultrawideband") { echo "<option value='ultrawideband' SELECTED >ultrawideband</option>\n"; } else {	echo "<option value='ultrawideband'>ultrawideband</option>\n"; }
+	if ($profile == "cdquality") { echo "<option value='cdquality' SELECTED >cdquality</option>\n"; } else {	echo "<option value='cdquality'>cdquality</option>\n"; }
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "Conference Profile is a collection of settings for the conference.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<tr>\n";
-echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-echo "    Description:\n";
-echo "</td>\n";
-echo "<td colspan='4' class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
-echo "<br />\n";
-echo "\n";
-echo "</td>\n";
-echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Flags:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='flags' maxlength='255' value=\"$flags\">\n";
+	echo "<br />\n";
+	echo "Optional conference flags. examples: mute|deaf|waste|moderator\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<tr>\n";
-echo "	<td colspan='5' align='right'>\n";
-if ($action == "update") {
-	echo "			<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
-}
-echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
-echo "	</td>\n";
-echo "</tr>";
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Order:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "              <select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
+	//echo "              <option></option>\n";
+	if (strlen(htmlspecialchars($dialplan_order))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
+	}
+	$i=0;
+	while($i<=999) {
+		if (strlen($i) == 1) { echo "              <option value='00$i'>00$i</option>\n"; }
+		if (strlen($i) == 2) { echo "              <option value='0$i'>0$i</option>\n"; }
+		if (strlen($i) == 3) { echo "              <option value='$i'>$i</option>\n"; }
+		$i++;
+	}
+	echo "              </select>\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "</table>";
-echo "</div>";
-echo "</form>";
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Enabled:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
+	//echo "    <option value=''></option>\n";
+	if ($enabled == "true") { 
+		echo "    <option value='true' SELECTED >true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($enabled == "false") { 
+		echo "    <option value='false' SELECTED >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "</td>\n";
-echo "</tr>";
-echo "</table>";
-echo "</div>";
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Description:\n";
+	echo "</td>\n";
+	echo "<td colspan='4' class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-echo "<br><br>";
+	echo "<tr>\n";
+	echo "	<td colspan='5' align='right'>\n";
+	if ($action == "update") {
+		echo "			<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
+	}
+	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "	</td>\n";
+	echo "</tr>";
 
+	echo "</table>";
+	echo "</div>";
+	echo "</form>";
 
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
+	echo "</td>\n";
+	echo "</tr>";
+	echo "</table>";
+	echo "</div>";
+
+	echo "<br><br>";
+
+//show the footer
+	require_once "includes/footer.php";
+	unset ($resultcount);
+	unset ($result);
+	unset ($key);
+	unset ($val);
+	unset ($c);
 ?>

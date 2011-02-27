@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -34,23 +34,20 @@ else {
 	exit;
 }
 
+//set the action as an add or an update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$dialplan_includes_detail_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+		$dialplan_include_id = check_str($_REQUEST["id2"]);
+	}
+	if (isset($_REQUEST["id2"])) {
+		$dialplan_include_id = check_str($_REQUEST["id2"]);
+	}
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$dialplan_includes_detail_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-	$dialplan_include_id = check_str($_REQUEST["id2"]);
-}
-
-if (isset($_REQUEST["id2"])) {
-	$dialplan_include_id = check_str($_REQUEST["id2"]);
-}
-
-
-//POST to PHP variables
+//get the http post values and set them as php variables
 if (count($_POST)>0) {
 	//$v_id = check_str($_POST["v_id"]);
 	if (isset($_REQUEST["dialplan_include_id"])) {
@@ -65,13 +62,6 @@ if (count($_POST)>0) {
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$dialplan_includes_detail_id = check_str($_POST["dialplan_includes_detail_id"]);
 	}
@@ -95,16 +85,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	//$tmp .= "v_id: $v_id\n";
-	$tmp .= "Tag: $tag\n";
-	$tmp .= "Order: $fieldorder\n";
-	$tmp .= "Type: $fieldtype\n";
-	$tmp .= "Data: $fielddata\n";
-
-
-
-	//Add or update the database
+	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add") {
 				$sql = "insert into v_dialplan_includes_details ";
@@ -165,45 +146,40 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				return;
 		   } //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true") { 
-
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$dialplan_includes_detail_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_dialplan_includes_details ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
-		$dialplan_include_id = $row["dialplan_include_id"];
-		$tag = $row["tag"];
-		$fieldorder = $row["fieldorder"];
-		$fieldtype = $row["fieldtype"];
-		$fielddata = $row["fielddata"];
-		break; //limit to 1 row
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$dialplan_includes_detail_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$dialplan_include_id = $row["dialplan_include_id"];
+			$tag = $row["tag"];
+			$fieldorder = $row["fieldorder"];
+			$fieldtype = $row["fieldtype"];
+			$fielddata = $row["fielddata"];
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
-
+//show the header
 	require_once "includes/header.php";
 
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
 
-
 	echo "<form method='post' name='frm' action=''>\n";
-
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
@@ -313,17 +289,17 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	}
 	$i=0;
 	while($i<=999) {
-	  if (strlen($i) == 1) {
-		echo "              <option value='00$i'>00$i</option>\n";
-	  }
-	  if (strlen($i) == 2) {
-		echo "              <option value='0$i'>0$i</option>\n";
-	  }
-	  if (strlen($i) == 3) {
-		echo "              <option value='$i'>$i</option>\n";
-	  }
+		if (strlen($i) == 1) {
+			echo "              <option value='00$i'>00$i</option>\n";
+		}
+		if (strlen($i) == 2) {
+			echo "              <option value='0$i'>0$i</option>\n";
+		}
+		if (strlen($i) == 3) {
+			echo "              <option value='$i'>$i</option>\n";
+		}
 
-	  $i++;
+		$i++;
 	}
 	echo "              </select>\n";
 
@@ -369,131 +345,103 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "    <table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "    <tr>\n";
 	echo "    <td align='left'>\n";
+?>
+	<b>Conditions</b>
+	<br />
+	<br />
+	Conditions are pattern matching tags that help decide if the current call should be processed in this extension or not. When matching conditions against the current call you have several <b>fields</b> that you can compare against.
+	<ul>
+		<li><b>context</b></li>
+		<li><b>rdnis</b> Redirected Number, the directory number to which the call was last presented.</li>
+		<li><b>destination_number</b> Called Number, the number this call is trying to reach (within a given context)</li>
+		<li><b>dialplan</b> Name of the dialplan module that are used, the name is provided by each dialplan module. Example: XML</li>
+		<li><b>caller_id_name</b> Name of the caller (provided by the User Agent that has called us).</li>
+		<li><b>caller_id_number</b> Directory Number of the party who called (callee) -- can be masked (hidden)</li>
+		<li><b>ani</b> Automatic Number Identification, the number of the calling party (callee) -- cannot be masked</li>
+		<li><b>ani2</b> The type of device placing the call [1]</li>
+		<li><b>uuid</b> Unique identifier of the current call? (looks like a GUID)</li>
+		<li><b>source</b> Name of the module that received the call (e.g. PortAudio)</li>
+		<li><b>chan_name</b> Name of the current channel (Example: PortAudio/1234). Give us examples when this one can be used.</li>
+		<li><b>network_addr</b> IP address of the signalling source for a VoIP call.</li>
+	</ul>
+	In addition to the above you can also do variables using the syntax ${variable} or api functions using the syntax %{api} {args}
+	<br />
+	<br />
+	Variables may be used in either the field or the expression, as follows
 
-	if ($v_path_show) {
-		echo "<br />\n";
-		echo "<br />\n";
-		echo "<b>Additional Information</b>\n";
-		echo "<br />\n";
-		echo "<br />\n";
-		echo "<a href='http://wiki.freeswitch.org/wiki/Dialplan_XML' target='_blank'>http://wiki.freeswitch.org/wiki/Dialplan_XML</a>";
-	}
-	  ?>
-	  <br />
-	  <br />
-	  <br />
-	  <br />
+	<br />
+	<br />
+	<br />
+	<br />
 
-	  <b>Conditions</b>
-	  <br />
-	  <br />
-	  Conditions are pattern matching tags that help decide if the current call should be processed in this extension or not. When matching conditions against the current call you have several <b>fields</b> that you can compare against.
-	  <ul>
-		  <li><b>context</b></li>
-		  <li><b>rdnis</b> Redirected Number, the directory number to which the call was last presented.</li>
-		  <li><b>destination_number</b> Called Number, the number this call is trying to reach (within a given context)</li>
-		  <li><b>dialplan</b> Name of the dialplan module that are used, the name is provided by each dialplan module. Example: XML</li>
-		  <li><b>caller_id_name</b> Name of the caller (provided by the User Agent that has called us).</li>
-		  <li><b>caller_id_number</b> Directory Number of the party who called (callee) -- can be masked (hidden)</li>
-		  <li><b>ani</b> Automatic Number Identification, the number of the calling party (callee) -- cannot be masked</li>
-		  <li><b>ani2</b> The type of device placing the call [1]</li>
-		  <li><b>uuid</b> Unique identifier of the current call? (looks like a GUID)</li>
-		  <li><b>source</b> Name of the module that received the call (e.g. PortAudio)</li>
-		  <li><b>chan_name</b> Name of the current channel (Example: PortAudio/1234). Give us examples when this one can be used.</li>
-		  <li><b>network_addr</b> IP address of the signalling source for a VoIP call.</li>
-	  </ul>
-	  In addition to the above you can also do variables using the syntax ${variable} or api functions using the syntax %{api} {args}
-	  <br />
-	  <br />
-	  Variables may be used in either the field or the expression, as follows
+	<b>Action and Anti-Actions</b>
+	<br />
+	<br />
+	Actions are executed when the <b>condition matches</b>. Anti-Actions are executed when the <b>condition does NOT match</b>.
+	<br />
+	<br />
+	<br />
+	The following is a partial list of <b>applications</b>.
+	<ul>
+	<li><b>answer</b> answer the call</li>
+	<li><b>bridge</b> bridge the call</li>
+	<li><b>cond</b></li>
+	<li><b>db</b> is a a runtime database either sqlite by default or odbc</li>
+	<li><b>global_set</b> allows setting of global vars similar to the ones found in vars.xml</li>
+	<li><b>group</b> allows grouping of several extensions for things like ring groups</li>
+	<li><b>expr</b></li>
+	<li><b>hangup</b> hangs up the call</li>
+	<li><b>info</b> sends call info to the console</li>
+	<li><b>javascript</b> run javascript .js files</li>
+	<li><b>playback</b></li>
+	<li><b>reject</b> reject the call</li>
+	<li><b>respond</b></li>
+	<li><b>ring_ready</b></li>
+	<li><b>set</b> set a variable</li>
+	<li><b>set_user</b></li>
+	<li><b>sleep</b></li>
+	<li><b>sofia_contact</b></li>
+	<li><b>transfer</b> transfer the call to another extension or number</li>
+	<li><b>voicemail</b> send the call to voicemail</li>
+	</ul>
 
-	  <br />
-	  <br />
-	  <br />
-	  <br />
+	<br />
+	<br />
 
-	  <b>Action and Anti-Actions</b>
-	  <br />
-	  <br />
-	  Actions are executed when the <b>condition matches</b>. Anti-Actions are executed when the <b>condition does NOT match</b>.
-	  <?php
-	  if ($v_path_show) {
-		  echo "Additional information on applications for Actions and Anti-Actions.<br />\n";
-		  echo "<a href='http://wiki.freeswitch.org/wiki/Modules#Applications' target='_blank'>http://wiki.freeswitch.org/wiki/Modules#Applications</a>\n";
-		  echo "<br />\n";
-		  echo "<a href='http://wiki.freeswitch.org/wiki/Dialplan_Functions' target='_blank'>http://wiki.freeswitch.org/wiki/Dialplan_Functions</a>\n";
-	  }
-	  ?>
-	  <br />
-	  <br />
-	  <br />
-	  The following is a partial list of <b>applications</b>.
-	  <ul>
-	  <li><b>answer</b> answer the call</li>
-	  <li><b>bridge</b> bridge the call</li>
-	  <li><b>cond</b></li>
-	  <li><b>db</b> is a a runtime database either sqlite by default or odbc</li>
-	  <li><b>global_set</b> allows setting of global vars similar to the ones found in vars.xml</li>
-	  <li><b>group</b> allows grouping of several extensions for things like ring groups</li>
-	  <li><b>expr</b></li>
-	  <li><b>hangup</b> hangs up the call</li>
-	  <li><b>info</b> sends call info to the console</li>
-	  <li><b>javascript</b> run javascript .js files</li>
-	  <li><b>playback</b></li>
-	  <li><b>reject</b> reject the call</li>
-	  <li><b>respond</b></li>
-	  <li><b>ring_ready</b></li>
-	  <li><b>set</b> set a variable</li>
-	  <li><b>set_user</b></li>
-	  <li><b>sleep</b></li>
-	  <li><b>sofia_contact</b></li>
-	  <li><b>transfer</b> transfer the call to another extension or number</li>
-	  <li><b>voicemail</b> send the call to voicemail</li>
-	  </ul>
+	<!--
+	<b>Param</b>
+	Example parameters by name and value
+	<br />
+	<ul>
+	<li><b>codec-ms</b> 20</li>
+	<li><b>codec-prefs</b> PCMU@20i</li>
+	<li><b>debug</b> 1</li>
+	<li><b>dialplan</b> XML</li>
+	<li><b>dtmf-duration</b> 100</li>
+	<li><b>rfc2833-pt</b>" 101</li>
+	<li><b>sip-port</b> 5060</li>
+	<li><b>use-rtp-timer</b> true</li>
+	</ul>
+	<br />
+	<br />
+	-->
 
-
-	  <br />
-	  <br />
-
-	  <!--
-	  <b>Param</b>
-	  Example parameters by name and value
-	  <br />
-	  <?php
-	  if ($v_path_show) {
-		echo "<a href='http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go' target='_blank'>http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go</a>\n";
-	  }
-	  ?>
-	  <ul>
-	  <li><b>codec-ms</b> 20</li>
-	  <li><b>codec-prefs</b> PCMU@20i</li>
-	  <li><b>debug</b> 1</li>
-	  <li><b>dialplan</b> XML</li>
-	  <li><b>dtmf-duration</b> 100</li>
-	  <li><b>rfc2833-pt</b>" 101</li>
-	  <li><b>sip-port</b> 5060</li>
-	  <li><b>use-rtp-timer</b> true</li>
-	  </ul>
-	  <br />
-	  <br />
-	  -->
-
-	  <br />
-	  <br />
-	  <br />
-	  <br />
-	  <br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
 
 	</td>
 	</tr>
 	</table>
 
-	<?php
+<?php
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
 
-
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>
