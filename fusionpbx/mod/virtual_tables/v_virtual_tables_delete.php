@@ -34,9 +34,10 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	$id = check_str($_GET["id"]);
-}
+//get the http get variable
+	if (count($_GET)>0) {
+		$id = check_str($_GET["id"]);
+	}
 
 //show the header
 	require_once "includes/header.php";
@@ -44,7 +45,8 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_virtual_tables ";
-	$sql .= "where virtual_table_id = '$id' ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and virtual_table_id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);

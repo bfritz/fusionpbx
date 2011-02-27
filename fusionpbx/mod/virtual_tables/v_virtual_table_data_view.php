@@ -82,9 +82,6 @@ if (strlen($_GET["id"]) > 0) {
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and virtual_table_id = '$virtual_table_id' ";
 	$sql .= "order by virtual_field_order asc ";
-	//echo "<pre>\n";
-	//echo $sql;
-	//echo "</pre>\n";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
 	$result_names = $prepstatement->fetchAll(PDO::FETCH_ASSOC);

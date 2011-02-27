@@ -34,7 +34,7 @@ else {
 	exit;
 }
 
-//Action add or update
+//set the action as an add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
 	$virtual_table_field_id = check_str($_REQUEST["id"]);
@@ -43,13 +43,13 @@ else {
 	$action = "add";
 }
 
-if (strlen($_GET["virtual_table_id"]) > 0) {
-	$virtual_table_id = check_str($_GET["virtual_table_id"]);
-}
+//get the http variables
+	if (strlen($_GET["virtual_table_id"]) > 0) {
+		$virtual_table_id = check_str($_GET["virtual_table_id"]);
+	}
 
-//POST to PHP variables
+//get the http post variables
 if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
 	$virtual_field_label = check_str($_POST["virtual_field_label"]);
 	$virtual_field_name = check_str($_POST["virtual_field_name"]);
 	$virtual_field_type = check_str($_POST["virtual_field_type"]);
@@ -65,13 +65,6 @@ if (count($_POST)>0) {
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$virtual_table_field_id = check_str($_POST["virtual_table_field_id"]);
 	}
@@ -100,7 +93,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		}
-
 
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
@@ -174,7 +166,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
-
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
@@ -191,7 +182,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			//$v_id = $row["v_id"];
 			$virtual_field_label = $row["virtual_field_label"];
 			$virtual_field_name = $row["virtual_field_name"];
 			$virtual_field_type = $row["virtual_field_type"];
@@ -544,6 +534,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>

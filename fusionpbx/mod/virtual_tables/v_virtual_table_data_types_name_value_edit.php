@@ -152,7 +152,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
 			$virtual_data_types_name = $row["virtual_data_types_name"];
 			$virtual_data_types_value = $row["virtual_data_types_value"];
 			break; //limit to 1 row

@@ -412,10 +412,10 @@ else {
 			while($row = $prepstatement->fetch()) {
 				//set the last last row id
 					if ($x==0) {
-				if (strlen($virtual_data_row_id) == 0) {
-					$virtual_data_row_id = $row['virtual_data_row_id'];
-				}
-				$first_virtual_data_row_id = $row['virtual_data_row_id'];
+						if (strlen($virtual_data_row_id) == 0) {
+							$virtual_data_row_id = $row['virtual_data_row_id'];
+						}
+						$first_virtual_data_row_id = $row['virtual_data_row_id'];
 					}
 				//get the data for the specific row id
 					if ($virtual_data_row_id == $row['virtual_data_row_id']) {
@@ -548,7 +548,7 @@ else {
 
 //begin the div and table that will hold the html form
 	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='3' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 //determine if a file should be uploaded
 	$sql = "SELECT * FROM v_virtual_table_fields ";
@@ -607,7 +607,7 @@ else {
 					//open a new row
 						echo "<td valign='top'>\n";
 					//start a table in the new row
-						echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
+						echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 				}
 
 			//display the fields

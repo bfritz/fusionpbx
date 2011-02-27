@@ -34,36 +34,29 @@ else {
 	exit;
 }
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$virtual_table_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
+//action add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$virtual_table_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+	}
 
-//POST to PHP variables
-if (count($_POST)>0) {
-	$virtual_table_category = check_str($_POST["virtual_table_category"]);
-	$virtual_table_label = check_str($_POST["virtual_table_label"]);
-	$virtual_table_name = check_str($_POST["virtual_table_name"]);
-	$virtual_table_auth = check_str($_POST["virtual_table_auth"]);
-	$virtual_table_captcha = check_str($_POST["virtual_table_captcha"]);
-	$virtual_table_parent_id = check_str($_POST["virtual_table_parent_id"]);
-	$virtual_table_desc = check_str($_POST["virtual_table_desc"]);
-}
+//get the http post variables
+	if (count($_POST)>0) {
+		$virtual_table_category = check_str($_POST["virtual_table_category"]);
+		$virtual_table_label = check_str($_POST["virtual_table_label"]);
+		$virtual_table_name = check_str($_POST["virtual_table_name"]);
+		$virtual_table_auth = check_str($_POST["virtual_table_auth"]);
+		$virtual_table_captcha = check_str($_POST["virtual_table_captcha"]);
+		$virtual_table_parent_id = check_str($_POST["virtual_table_parent_id"]);
+		$virtual_table_desc = check_str($_POST["virtual_table_desc"]);
+	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$virtual_table_id = check_str($_POST["virtual_table_id"]);
 	}
@@ -150,7 +143,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
-
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
@@ -158,7 +150,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$virtual_table_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_virtual_tables ";
-		$sql .= "where virtual_table_id = '$virtual_table_id' ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and virtual_table_id = '$virtual_table_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -355,6 +348,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>

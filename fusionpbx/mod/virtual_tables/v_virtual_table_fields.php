@@ -39,12 +39,12 @@ require_once "includes/paging.php";
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
-
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
@@ -65,7 +65,8 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_virtual_table_fields ";
-	$sql .= " where virtual_table_id = '$virtual_table_id' ";
+	$sql .= " where v_id = '$v_id' ";
+	$sql .= " and virtual_table_id = '$virtual_table_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -94,11 +95,11 @@ $order = $_GET["order"];
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($resultcount == 0) {
+		//no results
 	}
 	else { //received results
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[virtual_field_label]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[virtual_field_name]."</td>\n";
@@ -134,12 +135,10 @@ $order = $_GET["order"];
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
@@ -147,11 +146,11 @@ $order = $_GET["order"];
 	echo "</div>";
 	echo "<br><br>";
 
-
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
+//show the footer
+	require_once "includes/footer.php";
+	unset ($resultcount);
+	unset ($result);
+	unset ($key);
+	unset ($val);
+	unset ($c);
 ?>

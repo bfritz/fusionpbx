@@ -36,14 +36,16 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
-$order = $_GET["order"];
+//get the http values
+	$orderby = $_GET["orderby"];
+	$order = $_GET["order"];
+
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
-
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
@@ -57,10 +59,10 @@ $order = $_GET["order"];
 	echo "</tr>\n";
 	echo "</tr></table>\n";
 
-
 	//$sql = "";
 	//$sql .= " select * from v_virtual_table_data_types_name_value ";
-	//$sql .= " where virtual_table_field_id = '$virtual_table_field_id' ";
+	//$sql .= " where v_id = '$v_id' ";
+	//$sql .= " and virtual_table_field_id = '$virtual_table_field_id' ";
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$prepstatement = $db->prepare(check_sql($sql));
 	//$prepstatement->execute();
@@ -76,7 +78,8 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_virtual_table_data_types_name_value ";
-	$sql .= " where virtual_table_field_id = '$virtual_table_field_id' ";
+	$sql .= " where v_id = '$v_id' ";
+	$sql .= " and virtual_table_field_id = '$virtual_table_field_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -84,7 +87,6 @@ $order = $_GET["order"];
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
-
 
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
@@ -98,7 +100,6 @@ $order = $_GET["order"];
 	echo thorderby('virtual_data_types_value', 'Value', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_virtual_table_data_types_name_value_edit.php?virtual_table_id=".$row[virtual_table_id]."&virtual_table_field_id=".$row[virtual_table_field_id]."' alt='add'>$v_link_label_add</a>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_virtual_table_data_types_name_value_edit.php'\" value='+'>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -122,7 +123,6 @@ $order = $_GET["order"];
 		unset($sql, $result, $rowcount);
 	} //end if results
 
-
 	echo "<tr>\n";
 	echo "<td colspan='3' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -132,19 +132,16 @@ $order = $_GET["order"];
 	//echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	echo "			<a href='v_virtual_table_data_types_name_value_edit.php?virtual_table_id=".$row[virtual_table_id]."&virtual_table_field_id=".$row[virtual_table_field_id]."' alt='add'>$v_link_label_add</a>\n";
-	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_virtual_table_data_types_name_value_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
@@ -152,11 +149,11 @@ $order = $_GET["order"];
 	echo "</div>";
 	echo "<br><br>";
 
-
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
+//show the footer
+	require_once "includes/footer.php";
+	unset ($resultcount);
+	unset ($result);
+	unset ($key);
+	unset ($val);
+	unset ($c);
 ?>
