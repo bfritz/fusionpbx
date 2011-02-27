@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -52,7 +52,7 @@ $order = $_GET["order"];
 	echo "		</strong></span></span>\n";
 	echo "	</td>\n";
 	echo "	<td align='right'>\n";
-	//echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='v_conferences.php';\">\n";
+	echo "		&nbsp;\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -100,14 +100,12 @@ $order = $_GET["order"];
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
-
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo thorderby('extensionname', 'Extension Name', $orderby, $order);
 	echo thorderby('dialplanorder', 'Order', $orderby, $order);
@@ -118,10 +116,10 @@ $order = $_GET["order"];
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($resultcount == 0) {
+		//no results
 	}
 	else { //received results
-
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
@@ -138,7 +136,6 @@ $order = $_GET["order"];
 		} //end foreach
 		unset($sql, $result, $rowcount);
 	} //end if results
-
 
 	echo "<tr>\n";
 	echo "<td colspan='5'>\n";
@@ -157,25 +154,21 @@ $order = $_GET["order"];
 	echo "<tr>\n";
 	echo "<td colspan='5' align='left'>\n";
 	echo "<br />\n";
-	//echo "<br />\n";
 	if ($v_path_show) {
 		echo $v_dialplan_default_dir;
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
-
 
 require_once "includes/footer.php";
 unset ($resultcount);
