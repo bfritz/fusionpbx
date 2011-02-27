@@ -65,7 +65,8 @@ function cmd_async($cmd) {
 //get the call broadcast details from the database
 	$sql = "";
 	$sql .= "select * from v_call_broadcast ";
-	$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and call_broadcast_id = '$call_broadcast_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	while($row = $prepstatement->fetch()) {

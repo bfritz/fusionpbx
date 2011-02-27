@@ -34,40 +34,32 @@ else {
 	exit;
 }
 
+//set the action with add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$call_broadcast_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+	}
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$call_broadcast_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
-
-//POST to PHP variables
-if (count($_POST)>0) {
-	$broadcast_name = check_str($_POST["broadcast_name"]);
-	$broadcast_desc = check_str($_POST["broadcast_desc"]);
-	$broadcast_timeout = check_str($_POST["broadcast_timeout"]);
-	$broadcast_concurrent_limit = check_str($_POST["broadcast_concurrent_limit"]);
-	$recordingid = check_str($_POST["recordingid"]);
-	$broadcast_caller_id_name = check_str($_POST["broadcast_caller_id_name"]);
-	$broadcast_caller_id_number = check_str($_POST["broadcast_caller_id_number"]);
-	$broadcast_destination_type = check_str($_POST["broadcast_destination_type"]);
-	$broadcast_phone_numbers = check_str($_POST["broadcast_phone_numbers"]);
-	$broadcast_destination_data = check_str($_POST["broadcast_destination_data"]);
-}
+//get the http post variables and set them to php variables
+	if (count($_POST)>0) {
+		$broadcast_name = check_str($_POST["broadcast_name"]);
+		$broadcast_desc = check_str($_POST["broadcast_desc"]);
+		$broadcast_timeout = check_str($_POST["broadcast_timeout"]);
+		$broadcast_concurrent_limit = check_str($_POST["broadcast_concurrent_limit"]);
+		$recordingid = check_str($_POST["recordingid"]);
+		$broadcast_caller_id_name = check_str($_POST["broadcast_caller_id_name"]);
+		$broadcast_caller_id_number = check_str($_POST["broadcast_caller_id_number"]);
+		$broadcast_destination_type = check_str($_POST["broadcast_destination_type"]);
+		$broadcast_phone_numbers = check_str($_POST["broadcast_phone_numbers"]);
+		$broadcast_destination_data = check_str($_POST["broadcast_destination_data"]);
+	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$call_broadcast_id = check_str($_POST["call_broadcast_id"]);
 	}
@@ -101,6 +93,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_call_broadcast ";
 			$sql .= "(";
+			$sql .= "v_id, ";
 			$sql .= "broadcast_name, ";
 			$sql .= "broadcast_desc, ";
 			$sql .= "broadcast_timeout, ";
@@ -114,6 +107,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
+			$sql .= "'$v_id', ";
 			$sql .= "'$broadcast_name', ";
 			$sql .= "'$broadcast_desc', ";
 			$sql .= "'$broadcast_timeout', ";
@@ -149,7 +143,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "broadcast_destination_type = '$broadcast_destination_type', ";
 			$sql .= "broadcast_phone_numbers = '$broadcast_phone_numbers', ";
 			$sql .= "broadcast_destination_data = '$broadcast_destination_data' ";
-			$sql .= "where call_broadcast_id = '$call_broadcast_id'";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and call_broadcast_id = '$call_broadcast_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -162,16 +157,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
-
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
-
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$call_broadcast_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_broadcast ";
-		$sql .= "where call_broadcast_id = '$call_broadcast_id' ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and call_broadcast_id = '$call_broadcast_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		while($row = $prepstatement->fetch()) {

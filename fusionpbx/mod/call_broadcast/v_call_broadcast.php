@@ -36,9 +36,12 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
-$order = $_GET["order"];
 
+//get the http get variables and set them to php variables
+	$orderby = $_GET["orderby"];
+	$order = $_GET["order"];
+
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -52,7 +55,8 @@ $order = $_GET["order"];
 	echo "</tr></table>\n";
 
 	$sql = "";
-	$sql .= " select * from v_call_broadcast ";
+	$sql .= "select * from v_call_broadcast ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -68,7 +72,8 @@ $order = $_GET["order"];
 	$offset = $rowsperpage * $page; 
 
 	$sql = "";
-	$sql .= " select * from v_call_broadcast ";
+	$sql .= "select * from v_call_broadcast ";
+	$sql .= "where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -77,14 +82,12 @@ $order = $_GET["order"];
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
 
-
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo thorderby('broadcast_name', 'Name', $orderby, $order);
 	echo thorderby('broadcast_concurrent_limit', 'Concurrent Limit', $orderby, $order);
@@ -92,26 +95,25 @@ $order = $_GET["order"];
 	//echo thorderby('recordingid', 'Recording', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_call_broadcast_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_call_broadcast_edit.php'\" value='+'>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($resultcount == 0) {
+		//no results
 	}
 	else { //received results
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_name]."&nbsp;</td>\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_concurrent_limit]."&nbsp;</td>\n";
-		//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[recordingid]."</td>\n";
-		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_desc]."&nbsp;</td>\n";
-		echo "	<td valign='top' align='right'>\n";
-		echo "		<a href='v_call_broadcast_edit.php?id=".$row[call_broadcast_id]."' alt='edit'>$v_link_label_edit</a>\n";
-		echo "		<a href='v_call_broadcast_delete.php?id=".$row[call_broadcast_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-		//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_call_broadcast_edit.php?id=".$row[call_broadcast_id]."'\" value='e'>\n";
-		//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_call_broadcast_delete.php?id=".$row[call_broadcast_id]."' }\" value='x'>\n";
-		echo "	</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_name]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_concurrent_limit]."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[recordingid]."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[broadcast_desc]."&nbsp;</td>\n";
+			echo "	<td valign='top' align='right'>\n";
+			echo "		<a href='v_call_broadcast_edit.php?id=".$row[call_broadcast_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_call_broadcast_delete.php?id=".$row[call_broadcast_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_call_broadcast_edit.php?id=".$row[call_broadcast_id]."'\" value='e'>\n";
+			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_call_broadcast_delete.php?id=".$row[call_broadcast_id]."' }\" value='x'>\n";
+			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
@@ -127,7 +129,6 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	echo "	<a href='v_call_broadcast_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "			<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_call_broadcast_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
@@ -149,9 +150,4 @@ $order = $_GET["order"];
 
 
 require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
 ?>
