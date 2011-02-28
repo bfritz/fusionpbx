@@ -105,7 +105,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($vm_mailto) == 0) { $msg .= "Please provide: Voicemail Mail To<br>\n"; }
 		//if (strlen($vm_attach_file) == 0) { $msg .= "Please provide: Voicemail Attach File<br>\n"; }
 		//if (strlen($vm_keep_local_after_email) == 0) { $msg .= "Please provide: VM Keep Local After Email<br>\n"; }
-		if (strlen($user_context) == 0) { $msg .= "Please provide: User Context<br>\n"; }
+		//if (strlen($user_context) == 0) { $msg .= "Please provide: User Context<br>\n"; }
 		//if (strlen($toll_allow) == 0) { $msg .= "Please provide: Toll Allow<br>\n"; }
 		//if (strlen($callgroup) == 0) { $msg .= "Please provide: Call Group<br>\n"; }
 		//if (strlen($auth_acl) == 0) { $msg .= "Please provide: Auth ACL<br>\n"; }
@@ -126,13 +126,28 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
+	//set the default user context
+		if (ifgroup("superadmin")) {
+			//allow a user assigned to super admin to change the user_context
+		}
+		else {
+			//if the user_context was not set then set the default value
+			if (strlen($user_context) == 0) { 
+				if (count($_SESSION["domains"]) > 1) {
+					$user_context = $v_domain;
+				}
+				else {
+					$user_context = "default";
+				}
+			}
+		}
+
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 
 			$userfirstname='extension';$userlastname=$extension;$useremail='';
 			$user_list_array = explode("|", $user_list);
-			//print_r($user_list_array);
 			foreach($user_list_array as $tmp_user){ 
 				$user_password = generate_password();
 				user_add($tmp_user, $user_password, $userfirstname, $userlastname, $useremail);
@@ -698,21 +713,26 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    User Context:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	if ($action == "add") {
-		echo "    <input class='formfld' type='text' name='user_context' maxlength='255' value=\"default\">\n";
-	}
-	if ($action == "update") {
+	if (ifgroup("superadmin")) {
+		if (strlen($user_context) == 0) { 
+			if (count($_SESSION["domains"]) > 1) {
+				$user_context = $v_domain;
+			}
+			else {
+				$user_context = "default";
+			}
+		}
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "    User Context:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
 		echo "    <input class='formfld' type='text' name='user_context' maxlength='255' value=\"$user_context\">\n";
+		echo "<br />\n";
+		echo "Enter the user context here.\n";
+		echo "</td>\n";
+		echo "</tr>\n";
 	}
-	echo "<br />\n";
-	echo "Enter the user context here.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
 
 	//--- begin: showadvanced -----------------------
 	echo "<tr>\n";
