@@ -28,6 +28,7 @@ include "root.php";
 
 //clear the session variables
 	session_start();
+	$_SESSION['v_id'] = '';
 	$_SESSION["username"] = "";
 	$_SESSION["permissions"] = "";
 	$_SESSION["http_compression"] = "";

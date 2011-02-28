@@ -141,20 +141,6 @@ if (strlen($_SESSION["username"]) == 0) {
 		$v_path_show = false;
 	}
 
-//domain list
-	if (!is_array($_SESSION["domains"])) {
-		$sql = "select v_id, v_domain from v_system_settings ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach($result as $field) {
-			$_SESSION['domains'][$field['v_id']]['v_id'] = $field['v_id'];
-			$_SESSION['domains'][$field['v_id']]['domain'] = $field['v_domain'];
-		}
-		unset($prepstatement);
-	}
-
-
 //if (ifpermission("view")) {
 //    echo "true";
 //}

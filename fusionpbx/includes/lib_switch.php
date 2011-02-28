@@ -26,8 +26,6 @@
 include "root.php";
 require_once "includes/config.php";
 
-$v_id = '1';
-
 //preferences
 	$v_label_show = false;
 	$v_menu_tab_show = false;

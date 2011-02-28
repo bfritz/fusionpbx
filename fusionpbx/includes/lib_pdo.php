@@ -287,4 +287,34 @@ if ($db_type == "pgsql") {
 		die();
 	}
 } //end if db_type pgsql
+
+//domain list
+	if (!is_array($_SESSION["domains"])) {
+		$sql = "select v_id, v_domain, v_template_name from v_system_settings ";
+		$prepstatement = $db->prepare($sql);
+		$prepstatement->execute();
+		$result22 = $prepstatement->fetchAll();
+		foreach($result22 as $row) {
+			$_SESSION['domains'][$row['v_id']]['v_id'] = $row['v_id'];
+			$_SESSION['domains'][$row['v_id']]['domain'] = $row['v_domain'];
+			$_SESSION['domains'][$row['v_id']]['template_name'] = $row['v_template_name'];
+
+			//get v_id, and check for an assigned template 
+			if ($row['v_domain'] == $_SERVER['HTTP_HOST']) {
+				$_SESSION["v_id"] = $row["v_id"];
+				$_SESSION["template_name"] = $row["v_template_name"];
+				$_SESSION["v_template_name"] = $row["v_template_name"];
+			}
+		}
+		unset($prepstatement);
+	}
+
+//set the v_id variable from the session
+	if (strlen($_SESSION["v_id"]) > 0) { 
+		$v_id = $_SESSION["v_id"];
+	}
+	else {
+		$v_id = '1';
+	}
+
 ?>
