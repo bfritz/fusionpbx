@@ -33,7 +33,7 @@ else {
 	exit;
 }
 
-//action add or update
+//set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
 		$extension_id = check_str($_REQUEST["id"]);
@@ -42,7 +42,7 @@ else {
 		$action = "add";
 	}
 
-//http post to php variables
+//get the http values and set them as php variables
 	if (count($_POST)>0) {
 		$extension = check_str($_POST["extension"]);
 		$password = check_str($_POST["password"]);

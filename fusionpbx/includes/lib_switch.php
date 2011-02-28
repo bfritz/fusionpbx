@@ -2040,11 +2040,17 @@ function sync_package_v_gateways()
 				if (strlen($row['username']) > 0) {
 					$tmpxml .= "      <param name=\"username\" value=\"" . $row['username'] . "\"/>\n";
 				}
+				else {
+					$tmpxml .= "      <param name=\"username\" value=\"register:false\"/>\n";
+				}
 				if (strlen($row['auth_username']) > 0) {
 					$tmpxml .= "      <param name=\"auth-username\" value=\"" . $row['auth_username'] . "\"/>\n";
 				} 
 				if (strlen($row['password']) > 0) {
 					$tmpxml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
+				}
+				else {
+					$tmpxml .= "      <param name=\"password\" value=\"register:false\"/>\n";
 				}
 				if (strlen($row['realm']) > 0) {
 					$tmpxml .= "      <param name=\"realm\" value=\"" . $row['realm'] . "\"/>\n";

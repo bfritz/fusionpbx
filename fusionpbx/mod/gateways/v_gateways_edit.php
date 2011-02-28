@@ -34,58 +34,51 @@ else {
 	exit;
 }
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$gateway_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
+//add or update the database
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$gateway_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+	}
 
-//POST to PHP variables
-if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
-	$gateway = check_str($_POST["gateway"]);
-	$username = check_str($_POST["username"]);
-	$password = check_str($_POST["password"]);
-	$auth_username = check_str($_POST["auth_username"]);
-	$realm = check_str($_POST["realm"]);
-	$from_user = check_str($_POST["from_user"]);
-	$from_domain = check_str($_POST["from_domain"]);
-	$proxy = check_str($_POST["proxy"]);
-	$register_proxy = check_str($_POST["register_proxy"]);
-	$outbound_proxy = check_str($_POST["outbound_proxy"]);
-	$expire_seconds = check_str($_POST["expire_seconds"]);
-	$register = check_str($_POST["register"]);
-	$register_transport = check_str($_POST["register_transport"]);
-	$retry_seconds = check_str($_POST["retry_seconds"]);
-	$extension = check_str($_POST["extension"]);
-	$ping = check_str($_POST["ping"]);
-	$caller_id_in_from = check_str($_POST["caller_id_in_from"]);
-	$supress_cng = check_str($_POST["supress_cng"]);
-	$sip_cid_type = check_str($_POST["sip_cid_type"]);
-	$extension_in_contact = check_str($_POST["extension_in_contact"]);
-	$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
-	$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
-	$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
-	$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
-	$context = check_str($_POST["context"]);
-	$enabled = check_str($_POST["enabled"]);
-	$description = check_str($_POST["description"]);
+//get the http values and set them as php variables
+	if (count($_POST)>0) {
+		//$v_id = check_str($_POST["v_id"]);
+		$gateway = check_str($_POST["gateway"]);
+		$username = check_str($_POST["username"]);
+		$password = check_str($_POST["password"]);
+		$auth_username = check_str($_POST["auth_username"]);
+		$realm = check_str($_POST["realm"]);
+		$from_user = check_str($_POST["from_user"]);
+		$from_domain = check_str($_POST["from_domain"]);
+		$proxy = check_str($_POST["proxy"]);
+		$register_proxy = check_str($_POST["register_proxy"]);
+		$outbound_proxy = check_str($_POST["outbound_proxy"]);
+		$expire_seconds = check_str($_POST["expire_seconds"]);
+		$register = check_str($_POST["register"]);
+		$register_transport = check_str($_POST["register_transport"]);
+		$retry_seconds = check_str($_POST["retry_seconds"]);
+		$extension = check_str($_POST["extension"]);
+		$ping = check_str($_POST["ping"]);
+		$caller_id_in_from = check_str($_POST["caller_id_in_from"]);
+		$supress_cng = check_str($_POST["supress_cng"]);
+		$sip_cid_type = check_str($_POST["sip_cid_type"]);
+		$extension_in_contact = check_str($_POST["extension_in_contact"]);
+		$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
+		$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
+		$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
+		$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
+		$context = check_str($_POST["context"]);
+		$enabled = check_str($_POST["enabled"]);
+		$description = check_str($_POST["description"]);
 
-}
+	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$gateway_id = check_str($_POST["gateway_id"]);
 	}
@@ -93,8 +86,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($gateway) == 0) { $msg .= "Please provide: Gateway<br>\n"; }
-		if (strlen($username) == 0) { $msg .= "Please provide: Username<br>\n"; }
-		if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
+		if ($register == "true") {
+			if (strlen($username) == 0) { $msg .= "Please provide: Username<br>\n"; }
+			if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
+		}
 		//if (strlen($auth_username) == 0) { $msg .= "Please provide: Auth username<br>\n"; }
 		//if (strlen($realm) == 0) { $msg .= "Please provide: Realm<br>\n"; }
 		//if (strlen($from_user) == 0) { $msg .= "Please provide: From user<br>\n"; }
@@ -411,21 +406,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	}
 
-
-	if (isset($action)) {
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_gateways.php\">\n";
-		echo "<div align='center'>\n";
-		if ($action == "add") {
-			echo "Add Complete\n";
+	//redirect the user
+		if (isset($action)) {
+			require_once "includes/header.php";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_gateways.php\">\n";
+			echo "<div align='center'>\n";
+			if ($action == "add") {
+				echo "Add Complete\n";
+			}
+			if ($action == "update") {
+				echo "Edit Complete\n";
+			}
+			echo "</div>\n";
+			require_once "includes/footer.php";
+			return;
 		}
-		if ($action == "update") {
-			echo "Edit Complete\n";
-		}
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
-	} //if ($action == "update")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
@@ -472,10 +467,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset ($prepstatement);
 	}
 
-
+//show the header
 	require_once "includes/header.php";
 
-
+//show the content
 	echo "<script type=\"text/javascript\" language=\"JavaScript\">\n";
 	echo "\n";
 	echo "function enable_change(enable_over) {\n";
@@ -506,7 +501,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "      <br>";
 
 	echo "<form method='post' name='ifrm' action=''>\n";
-
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
@@ -533,7 +527,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "</td>\n";
 	echo "</tr>\n";
-
 
 	echo "<tr>\n";
 	echo "<td width=\"30%\" class='vncellreq' valign='top' align='left' nowrap>\n";
