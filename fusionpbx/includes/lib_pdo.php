@@ -293,8 +293,8 @@ if ($db_type == "pgsql") {
 		$sql = "select v_id, v_domain, v_template_name from v_system_settings ";
 		$prepstatement = $db->prepare($sql);
 		$prepstatement->execute();
-		$result22 = $prepstatement->fetchAll();
-		foreach($result22 as $row) {
+		$result = $prepstatement->fetchAll();
+		foreach($result as $row) {
 			$_SESSION['domains'][$row['v_id']]['v_id'] = $row['v_id'];
 			$_SESSION['domains'][$row['v_id']]['domain'] = $row['v_domain'];
 			$_SESSION['domains'][$row['v_id']]['template_name'] = $row['v_template_name'];
@@ -306,7 +306,7 @@ if ($db_type == "pgsql") {
 				$_SESSION["v_template_name"] = $row["v_template_name"];
 			}
 		}
-		unset($prepstatement);
+		unset($result, $prepstatement);
 	}
 
 //set the v_id variable from the session

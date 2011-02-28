@@ -40,7 +40,7 @@ $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
 
-//POST to PHP variables
+//get the http post values and set theme as php variables
 	if (count($_POST)>0) {
 		$extension_name = check_str($_POST["extension_name"]);
 		$gateway = check_str($_POST["gateway"]);
@@ -60,6 +60,7 @@ $order = $_GET["order"];
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($gateway_name) == 0) { $msg .= "Please provide: Gateway Name<br>\n"; }
 		//if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		//if (strlen($condition_field_1) == 0) { $msg .= "Please provide: Condition Field<br>\n"; }
 		//if (strlen($condition_expression_1) == 0) { $msg .= "Please provide: Condition Expression<br>\n"; }
@@ -100,117 +101,124 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$dialplan_expression = trim($dialplan_expression);
 			if (strlen($dialplan_expression)>0) {
 
+				if (count($_SESSION["domains"]) > 1) {
+					$tmp_gateway_name = $v_domain .'-'.$gateway_name;
+				}
+				else {
+					$tmp_gateway_name = $gateway_name;
+				}
+
 				switch ($dialplan_expression) {
 				case "^(\d{7})$":
-					$action_data = "sofia/gateway/".$gateway_name."/1".$default_area_code."\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/1".$default_area_code."\$1";
 					$label = "7 digits";
 					$abbrv = "7d";
 					break;
 				case "^(\d{8})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "8 digits";
 					$abbrv = "8d";
 					break;
 				case "^(\d{9})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "9 digits";
 					$abbrv = "9d";
 					break;
 				case "^(\d{10})$":
-					$action_data = "sofia/gateway/".$gateway_name."/1\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/1\$1";
 					$label = "10 digits";
 					$abbrv = "10d";
 					break;
 				case "^\+?(\d{11})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "11 digits";
 					$abbrv = "11d";
 					break;
 				case "^(\d{12})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "12 digits";
 					$abbrv = "12d";
 					break;
 				case "^(\d{13})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "13 digits";
 					$abbrv = "13d";
 					break;
 				case "^(\d{14})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "14 digits";
 					$abbrv = "14d";
 					break;
 				case "^(\d{15})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "International";
 					$abbrv = "15d";
 					break;
 				case "^311$":
-					$action_data = "sofia/gateway/".$gateway_name."/311";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/311";
 					$label = "311";
 					$abbrv = "311";
 					break;
 				case "^411$":
-					$action_data = "sofia/gateway/".$gateway_name."/411";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/411";
 					$label = "411";
 					$abbrv = "411";
 					break;
 				case "^911$":
-					$action_data = "sofia/gateway/".$gateway_name."/911";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/911";
 					$label = "911";
 					$abbrv = "911";
 					break;
 				case "^9(\d{3})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "dial 9, 3 digits";
 					$abbrv = "9.3d";
 					break;
 				case "^9(\d{4})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "dial 9, 4 digits";
 					$abbrv = "9.4d";
 					break;	
 				case "^9(\d{7})$":
-					$action_data = "sofia/gateway/".$gateway_name."/1".$default_area_code."\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/1".$default_area_code."\$1";
 					$label = "dial 9, 7 digits";
 					$abbrv = "9.7d";
 					break;
 				case "^9(\d{10})$":
-					$action_data = "sofia/gateway/".$gateway_name."/1\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/1\$1";
 					$label = "dial 9, 10 digits";
 					$abbrv = "9.10d";
 					break;
 				case "^9(\d{11})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "dial 9, 11 digits";
 					$abbrv = "9.11d";
 				case "^9(\d{12})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "dial 9, International";
 					$abbrv = "9.12d";
 					break;
 				case "^9(\d{13})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "dial 9, International";
 					$abbrv = "9.13d";
 					break;
 				case "^9(\d{14})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "dial 9, International";
 					break;
 				case "^9(\d{15})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "dial 9, International";
 					$abbrv = "9.15d";
 					break;
 				case "^1?(8(00|55|66|77|88)[2-9]\d{6})$":
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "toll free";
 					$abbrv = "tollfree";
 					break;
 				default:
-					$action_data = "sofia/gateway/".$gateway_name."/\$1";
+					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = $dialplan_expression;
 					$abbrv = filename_safe($dialplan_expression);
 					//echo "abbrv: $abbrv<br />\n";
@@ -308,55 +316,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		//synchronize the xml config
 			sync_package_v_dialplan_includes();
-
 	}
-/*
-	//add condition 1
-		$sql = "insert into v_dialplan_includes_details ";
-		$sql .= "(";
-		$sql .= "v_id, ";
-		$sql .= "dialplan_include_id, ";
-		$sql .= "tag, ";
-		$sql .= "fieldtype, ";
-		$sql .= "fielddata, ";
-		$sql .= "fieldorder ";
-		$sql .= ") ";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'$v_id', ";
-		$sql .= "'$dialplan_include_id', ";
-		$sql .= "'condition', ";
-		$sql .= "'$condition_field_1', ";
-		$sql .= "'$condition_expression_1', ";
-		$sql .= "'1' ";
-		$sql .= ")";
-		$db->exec(check_sql($sql));
-		unset($sql);
-
-	//add condition 2
-		if (strlen($condition_field_2) > 0) {
-			$sql = "insert into v_dialplan_includes_details ";
-			$sql .= "(";
-			$sql .= "v_id, ";
-			$sql .= "dialplan_include_id, ";
-			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
-			$sql .= ") ";
-			$sql .= "values ";
-			$sql .= "(";
-			$sql .= "'$v_id', ";
-			$sql .= "'$dialplan_include_id', ";
-			$sql .= "'condition', ";
-			$sql .= "'$condition_field_2', ";
-			$sql .= "'$condition_expression_2', ";
-			$sql .= "'2' ";
-			$sql .= ")";
-			$db->exec(check_sql($sql));
-			unset($sql);
-		}
-*/
 
 	//commit the atomic transaction
 		$count = $db->exec("COMMIT;"); //returns affected rows
@@ -364,14 +324,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//synchronize the xml config
 		sync_package_v_dialplan_includes();
 
-	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan_outbound.php\">\n";
-	echo "<div align='center'>\n";
-	echo "Update Complete\n";
-	echo "</div>\n";
-	require_once "includes/footer.php";
-	return;
-
+	//redirect the user
+		require_once "includes/header.php";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan_outbound.php\">\n";
+		echo "<div align='center'>\n";
+		echo "Update Complete\n";
+		echo "</div>\n";
+		require_once "includes/footer.php";
+		return;
 } //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 ?><script type="text/javascript">

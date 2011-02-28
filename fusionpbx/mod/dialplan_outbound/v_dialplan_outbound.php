@@ -66,13 +66,8 @@ $order = $_GET["order"];
 		//}
 	}
 	unset ($prepstatement);
-	//print_r($dialplan_array);
-	//foreach ($dialplan_array as &$row) {
-	//	echo "--".$row['dialplan_include_id']."--<br />\n";
-	//}
 
-
-//begin the form
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
@@ -180,7 +175,12 @@ $order = $_GET["order"];
 	echo thorderby('dialplanorder', 'Order', $orderby, $order);
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
-	echo "<td align='right' width='42'>\n";
+	if (ifgroup("superadmin")) {
+		echo "<td align='right' width='42'>\n";
+	}
+	else {
+		echo "<td align='right' width='21'>\n";
+	}
 	echo "	<a href='v_dialplan_outbound_add.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
@@ -197,7 +197,9 @@ $order = $_GET["order"];
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
-			echo "		<a href='v_dialplan_outbound_edit.php?id=".$row[dialplan_include_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			if (ifgroup("superadmin")) {
+				echo "		<a href='v_dialplan_outbound_edit.php?id=".$row[dialplan_include_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			}
 			echo "		<a href='v_dialplan_outbound_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "   </td>\n";
 			echo "</tr>\n";
