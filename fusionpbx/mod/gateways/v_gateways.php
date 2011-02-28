@@ -46,7 +46,12 @@ if ($fp) {
 		if ($_GET["a"] == "stop") {
 			$gateway_name = $_GET["gateway"];
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-			$cmd = "api sofia profile external killgw $gateway_name";
+			if (count($_SESSION["domains"]) > 1) {
+				$cmd = 'api sofia profile external killgw '.$v_domain.'-'.$gateway_name;
+			}
+			else {
+				$cmd = 'api sofia profile external killgw '.$gateway_name;
+			}
 			$response = trim(event_socket_request($fp, $cmd));
 			$msg = '<strong>Stop Gateway:</strong><pre>'.$response.'</pre>';
 		}
@@ -61,13 +66,13 @@ if ($fp) {
 
 	if (!function_exists('switch_gateway_status')) {
 		function switch_gateway_status($gateway_name, $result_type = 'xml') {
-			global $event_socket_ip_address, $event_socket_port, $event_socket_password;
+			global $v_domain;
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-			if ($result_type == "xml") {
-				$cmd = "api sofia xmlstatus gateway $gateway_name";
+			if (count($_SESSION["domains"]) > 1) {
+				$cmd = 'api sofia xmlstatus gateway '.$v_domain.'-'.$gateway_name;
 			}
 			else {
-				$cmd = "api sofia xmlstatus gateway $gateway_name";
+				$cmd = 'api sofia xmlstatus gateway '.$gateway_name;
 			}
 			return trim(event_socket_request($fp, $cmd));
 		}
@@ -160,25 +165,32 @@ else { //received results
 		echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row["context"]."</td>\n";
 
 		if ($fp) {
-			$response = switch_gateway_status($row["gateway"]);
-			if ($response == "Invalid Gateway!") {
-				//not running
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>Stopped</td>\n";
-				echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=start&gateway=".$row["gateway"]."' alt='start'>Start</a></td>\n";
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;</td>\n";
+			if ($row["enabled"] == "true") {
+				$response = switch_gateway_status($row["gateway"]);
+				if ($response == "Invalid Gateway!") {
+					//not running
+					echo "	<td valign='top' class='".$rowstyle[$c]."'>Stopped</td>\n";
+					echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=start&gateway=".$row["gateway"]."' alt='start'>Start</a></td>\n";
+					echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;</td>\n";
+				}
+				else {
+					//running
+					try {
+						$xml = new SimpleXMLElement($response);
+						$state = $xml->state;
+						echo "	<td valign='top' class='".$rowstyle[$c]."'>Running</td>\n";
+						echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=stop&gateway=".$row["gateway"]."' alt='stop'>Stop</a></td>\n";
+						echo "	<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
+					}
+					catch(Exception $e) {
+						//echo $e->getMessage();
+					}
+				}
 			}
 			else {
-				//running
-				try {
-					$xml = new SimpleXMLElement($response);
-					$state = $xml->state;
-					echo "	<td valign='top' class='".$rowstyle[$c]."'>Running</td>\n";
-					echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=stop&gateway=".$row["gateway"]."' alt='stop'>Stop</a></td>\n";
-					echo "	<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
-				}
-				catch(Exception $e) {
-					//echo $e->getMessage();
-				}
+				echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;</td>\n";
+				echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;</td>\n";
+				echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;</td>\n";
 			}
 		}
 

@@ -36,6 +36,7 @@ include "root.php";
 	$_SESSION["template_content"] = "";
 	$_SESSION['user_extension_list'] = '';
 	$_SESSION['user_context'] = '';
+	$_SESSION['domains'] = '';
 	session_destroy();
 
 //redirect the user to the login page

@@ -40,8 +40,10 @@ if (strlen($_SESSION["username"]) == 0) {
 	//clear the menu
 		$_SESSION["menu"] = "";
 
-	//clear the template
-		$_SESSION["template_content"] = '';
+	//clear the template only if the template has not been assigned by the superadmin
+		if (strlen($_SESSION["v_template_name"]) == 0) {
+			$_SESSION["template_content"] = '';
+		}
 
 	//if username from form is not provided then send to login.php
 		if (strlen(check_str($_POST["username"])) == 0) {
@@ -80,7 +82,10 @@ if (strlen($_SESSION["username"]) == 0) {
 		else {
 			$_SESSION["username"] = check_str($_POST["username"]);
 			foreach ($result as &$row) {
-				$_SESSION["template_name"] = $row["user_template_name"];
+				//allow the user to choose a template only if the template has not been assigned by the superadmin
+				if (strlen($_SESSION["v_template_name"]) == 0) {
+					$_SESSION["template_name"] = $row["user_template_name"];
+				}
 				break;
 			}
 			//echo "username: ".$_SESSION["username"]." and password are correct";
@@ -136,11 +141,23 @@ if (strlen($_SESSION["username"]) == 0) {
 		$v_path_show = false;
 	}
 
+//domain list
+	if (!is_array($_SESSION["domains"])) {
+		$sql = "select v_id, v_domain from v_system_settings ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach($result as $field) {
+			$_SESSION['domains'][$field['v_id']]['v_id'] = $field['v_id'];
+			$_SESSION['domains'][$field['v_id']]['domain'] = $field['v_domain'];
+		}
+		unset($prepstatement);
+	}
+
+
 //if (ifpermission("view")) {
 //    echo "true";
 //}
-
-
 
 //echo $exampledatareturned;
 /*

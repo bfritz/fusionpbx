@@ -2029,10 +2029,16 @@ function sync_package_v_gateways()
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		if ($row['enabled'] != "false") {
-				$fout = fopen($v_gateways_dir."/v_".$row['gateway'].".xml","w");
-
-				$tmpxml .= "<include>\n";
-				$tmpxml .= "    <gateway name=\"" . $row['gateway'] . "\">\n";
+				if (count($_SESSION["domains"]) > 1) {
+					$fout = fopen($v_gateways_dir."/v_".$v_domain .'-'.$row['gateway'].".xml","w");
+					$tmpxml .= "<include>\n";
+					$tmpxml .= "    <gateway name=\"" . $v_domain .'-'. $row['gateway'] . "\">\n";
+				}
+				else {
+					$fout = fopen($v_gateways_dir."/v_".$row['gateway'].".xml","w");
+					$tmpxml .= "<include>\n";
+					$tmpxml .= "    <gateway name=\"" . $row['gateway'] . "\">\n";
+				}
 				if (strlen($row['username']) > 0) {
 					$tmpxml .= "      <param name=\"username\" value=\"" . $row['username'] . "\"/>\n";
 				}
