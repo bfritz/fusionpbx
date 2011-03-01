@@ -281,14 +281,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$faxdescription' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
-//					unset($sql);
-$orig_sql = $sql;
+					unset($sql);
 
 					sync_package_v_fax();
 
 					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"10;url=v_fax.php\">\n";
-echo "sql: ".$orig_sql;
+					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
 					echo "<div align='center'>\n";
 					echo "Add Complete\n";
 					echo "</div>\n";
@@ -314,13 +312,12 @@ echo "sql: ".$orig_sql;
 					$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 				}
 				$db->exec(check_sql($sql));
-//				unset($sql);
+				unset($sql);
 
 				sync_package_v_fax();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"10;url=v_fax.php\">\n";
-echo $sql;
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
