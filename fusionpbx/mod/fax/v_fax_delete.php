@@ -34,27 +34,29 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	$id = check_str($_GET["id"]);
-}
+//get the http get value and set it as a php variable
+	if (count($_GET)>0) {
+		$id = check_str($_GET["id"]);
+	}
 
-if (strlen($id)>0) {
-    $sql = "";
-    $sql .= "delete from v_fax ";
-    $sql .= "where fax_id = '$id' ";
-    $prepstatement = $db->prepare(check_sql($sql));
-    $prepstatement->execute();
-    unset($sql);
-}
+//delete the fax extension
+	if (strlen($id)>0) {
+		$sql = "";
+		$sql .= "delete from v_fax ";
+		$sql .= "where fax_id = '$id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		unset($sql);
+	}
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
-
-require_once "includes/footer.php";
-return;
+//redirect the user
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
 ?>
 

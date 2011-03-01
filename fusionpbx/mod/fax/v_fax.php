@@ -26,20 +26,12 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-//if (ifgroup("admin") || ifgroup("superadmin")) {
-	//access granted
-//}
-//else {
-//	echo "access denied";
-//	exit;
-//}
-
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
-$order = $_GET["order"];
-
+//get the http get values and set them as php variables
+	$orderby = $_GET["orderby"];
+	$order = $_GET["order"];
 
 //show the content
 	echo "<div align='center'>";
@@ -49,32 +41,29 @@ $order = $_GET["order"];
 	echo "	<td align=\"center\">\n";
 	echo "      <br>";
 
-
 	echo "  	<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "      <tr>\n";
 	echo "        <td align='left'><p><span class=\"vexpl\"><span class=\"red\"><strong>FAX<br>\n";
 	echo "            </strong></span>\n";
 	echo "			To receive a FAX setup a fax extension and then direct the incoming FAX with a dedicated number or you can detect the FAX tone by using\n";
-	echo "";
-	if ($v_path_show) {
-		echo "<a href='http://wiki.freeswitch.org/wiki/Misc._Dialplan_Tools_tone_detect' target='_blank'>tone detection</a>\n";
-	}
-	else {
-		echo "tone detection\n";
-	}
 	echo "			on the Public tab.\n";
 	echo "            </p></td>\n";
 	echo "      </tr>\n";
 	echo "    </table>\n";
 	echo "    <br />";
 
-
 	$sql = "";
-	$sql .= " select * from v_fax ";
+	$sql .= "select * from v_fax ";
 	$sql .= "where v_id = '$v_id' ";
-	if (!ifgroup("admin") || !ifgroup("superadmin")) {
-		//$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
-		$sql .= "and fax_user_list like '%".$_SESSION["username"]."|%' ";
+	if (ifgroup("superadmin")) {
+		//show all fax extensions
+	}
+	else if (ifgroup("admin")) {
+		//show all fax extensions
+	}
+	else {
+		//show only assigned fax extensions
+		$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 	}
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -93,7 +82,13 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_fax ";
 	$sql .= "where v_id = '$v_id' ";
-	if (!ifgroup("admin") || !ifgroup("superadmin")) {
+	if (ifgroup("superadmin")) {
+		//show all fax extensions
+	}
+	else if (ifgroup("admin")) {
+		//show all fax extensions
+	}
+	else {
 		//$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 		$sql .= "and fax_user_list like '%".$_SESSION["username"]."|%' ";
 	}
@@ -105,7 +100,6 @@ $order = $_GET["order"];
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
 	unset ($prepstatement, $sql);
-
 
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
@@ -170,18 +164,17 @@ $order = $_GET["order"];
 	echo "<br><br>";
 	echo "<br><br>";
 
-
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 
-
-require_once "includes/footer.php";
-unset ($resultcount);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
+//show the footer
+	require_once "includes/footer.php";
+	unset ($resultcount);
+	unset ($result);
+	unset ($key);
+	unset ($val);
+	unset ($c);
 ?>

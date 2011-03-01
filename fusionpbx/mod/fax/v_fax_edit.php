@@ -26,65 +26,80 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if ($_GET['a'] == "del") {
-	$faxextension = check_str($_GET["faxextension"]);
-	if ($_GET['type'] == "fax_inbox") {
-		unlink($v_storage_dir.'/fax/'.$faxextension.'/inbox/'.$_GET['filename']);
-	}
-	if ($_GET['type'] == "fax_sent") {
-		unlink($v_storage_dir.'/fax/'.$faxextension.'/sent/'.$_GET['filename']);
-	}
-}
 
-if ($_GET['a'] == "download") {
+//set the fax directory
+	if (count($_SESSION["domains"]) > 1) {
+		$v_fax_dir = $v_storage_dir.'/fax/'.$v_domain;
+	}
+	else {
+		$v_fax_dir = $v_storage_dir.'/fax';
+	}
 
-	session_cache_limiter('public');
-	//test to see if it is in the inbox or sent directory.
-	if ($_GET['type'] == "fax_inbox") {
-		if (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
-			$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
+//delete a fax
+	if ($_GET['a'] == "del") {
+		$faxextension = check_str($_GET["faxextension"]);
+		if ($_GET['type'] == "fax_inbox") {
+			unlink($v_fax_dir.'/'.$faxextension.'/inbox/'.$_GET['filename']);
 		}
-	}else if ($_GET['type'] == "fax_sent") {
-		if  (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
-			$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'];
+		if ($_GET['type'] == "fax_sent") {
+			unlink($v_fax_dir.'/'.$faxextension.'/sent/'.$_GET['filename']);
 		}
 	}
-	//let's see if we found it.
-	if (strlen($tmp_faxdownload_file) > 0) {
-		$fd = fopen($tmp_faxdownload_file, "rb");
 
-		if ($_GET['t'] == "bin") {
-			header("Content-Type: application/force-download");
-			header("Content-Type: application/octet-stream");
-			header("Content-Type: application/download");
-			header("Content-Description: File Transfer");
-			header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
-		}
-		else {
-			$file_ext = substr($_GET['filename'], -3);
-			if ($file_ext == "tif") {
-			  header("Content-Type: image/tiff");
-			}else if ($file_ext == "png") {
-			  header("Content-Type: image/png");
-			}else if ($file_ext == "jpg") {
-			  header('Content-Type: image/jpeg');
-			}else if ($file_ext == "pdf") {
-			  header("Content-Type: application/pdf");
+//download a fax
+	if ($_GET['a'] == "download") {
+
+		session_cache_limiter('public');
+		//test to see if it is in the inbox or sent directory.
+		if ($_GET['type'] == "fax_inbox") {
+			if (file_exists($v_fax_dir.'/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
+				$tmp_faxdownload_file = "".$v_fax_dir.'/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
 			}
 		}
-		header('Accept-Ranges: bytes');
-		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-		header("Content-Length: " . filesize($tmp_faxdownload_file));
-		fpassthru($fd);
-	}else {
-		echo "File not found.";
+		else if ($_GET['type'] == "fax_sent") {
+			if  (file_exists($v_fax_dir.'/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
+				$tmp_faxdownload_file = "".$v_fax_dir.'/'.$_GET['ext'].'/sent/'.$_GET['filename'];
+			}
+		}
+		//let's see if we found it.
+		if (strlen($tmp_faxdownload_file) > 0) {
+			$fd = fopen($tmp_faxdownload_file, "rb");
+
+			if ($_GET['t'] == "bin") {
+				header("Content-Type: application/force-download");
+				header("Content-Type: application/octet-stream");
+				header("Content-Type: application/download");
+				header("Content-Description: File Transfer");
+				header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
+			}
+			else {
+				$file_ext = substr($_GET['filename'], -3);
+				if ($file_ext == "tif") {
+				  header("Content-Type: image/tiff");
+				}
+				else if ($file_ext == "png") {
+				  header("Content-Type: image/png");
+				}
+				else if ($file_ext == "jpg") {
+				  header('Content-Type: image/jpeg');
+				}
+				else if ($file_ext == "pdf") {
+				  header("Content-Type: application/pdf");
+				}
+			}
+			header('Accept-Ranges: bytes');
+			header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // date in the past
+			header("Content-Length: " . filesize($tmp_faxdownload_file));
+			fpassthru($fd);
+		}
+		else {
+			echo "File not found.";
+		}
+		exit;
 	}
 
-	exit;
-}
-
-//action add or update
+//set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
 		$fax_id = check_str($_REQUEST["id"]);
@@ -93,9 +108,8 @@ if ($_GET['a'] == "download") {
 		$action = "add";
 	}
 
-//POST to PHP variables
+//get the http post values and set them as php variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
 		$faxextension = check_str($_POST["faxextension"]);
 		$faxname = check_str($_POST["faxname"]);
 		$faxemail = check_str($_POST["faxemail"]);
@@ -114,18 +128,18 @@ if ($_GET['a'] == "download") {
 	clearstatcache(); 
 
 //set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
-	$dir_fax_inbox = $v_storage_dir.'/fax/'.$faxextension.'/inbox';
-	$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
-	$dir_fax_temp = $v_storage_dir.'/fax/'.$faxextension.'/temp';
+	$dir_fax_inbox = $v_fax_dir.'/'.$faxextension.'/inbox';
+	$dir_fax_sent = $v_fax_dir.'/'.$faxextension.'/sent';
+	$dir_fax_temp = $v_fax_dir.'/'.$faxextension.'/temp';
 
 //make sure the directories exist
 	if (!is_dir($v_storage_dir)) {
 		mkdir($v_storage_dir);
 		chmod($dir_fax_sent,0777);
 	}
-	if (!is_dir($v_storage_dir.'/fax/'.$faxextension)) {
-		mkdir($v_storage_dir.'/fax/'.$faxextension,0777,true);
-		chmod($v_storage_dir.'/fax/'.$faxextension,0777);
+	if (!is_dir($v_fax_dir.'/'.$faxextension)) {
+		mkdir($v_fax_dir.'/'.$faxextension,0777,true);
+		chmod($v_fax_dir.'/'.$faxextension,0777);
 	}
 	//if (!is_dir($dir_fax_inbox)) { 
 	//	mkdir($dir_fax_inbox,0777,true); 
@@ -141,72 +155,72 @@ if ($_GET['a'] == "download") {
 	//}
 
 //upload and send the fax
-if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_name'])) {
+	if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_name'])) {
 
-	$fax_number = $_POST['fax_number'];
-	$fax_name = $_FILES['fax_file']['name'];
-	$fax_name = str_replace(".tif", "", $fax_name);
-	$fax_name = str_replace(".tiff", "", $fax_name);
-	$fax_name = str_replace(".pdf", "", $fax_name);
-	$provider_type = $_POST['provider_type'];
-	$gateway = $_POST['gateway'];
-	$sip_uri = $_POST['sip_uri'];
-	$fax_id = $_POST["id"];
+		$fax_number = $_POST['fax_number'];
+		$fax_name = $_FILES['fax_file']['name'];
+		$fax_name = str_replace(".tif", "", $fax_name);
+		$fax_name = str_replace(".tiff", "", $fax_name);
+		$fax_name = str_replace(".pdf", "", $fax_name);
+		$provider_type = $_POST['provider_type'];
+		$gateway = $_POST['gateway'];
+		$sip_uri = $_POST['sip_uri'];
+		$fax_id = $_POST["id"];
 
-	//upload the file
-		move_uploaded_file($_FILES['fax_file']['tmp_name'], $dir_fax_temp.'/'.$_FILES['fax_file']['name']);
+		//upload the file
+			move_uploaded_file($_FILES['fax_file']['tmp_name'], $dir_fax_temp.'/'.$_FILES['fax_file']['name']);
 
-		$fax_file_extension = substr($dir_fax_temp.'/'.$_FILES['fax_file']['name'], -4);
-		if ($fax_file_extension == ".pdf") {
-			chdir($dir_fax_temp);
-			exec("gs -q -sDEVICE=tiffg3 -r204x98 -dNOPAUSE -sOutputFile=".$fax_name.".tif -- ".$fax_name.".pdf -c quit");
-			//exec("rm ".$dir_fax_temp.'/'.$fax_name.".pdf");
-		}
-		if ($fax_file_extension == ".tiff") {
-			chdir($dir_fax_temp);
-			exec("cp ".$dir_fax_temp.'/'.$fax_name.".tiff ".$dir_fax_temp.'/'.$fax_name.".tif");
-			exec("rm ".$dir_fax_temp.'/'.$fax_name.".tiff");
-		}
-
-	//send the fax
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-		if ($fp) {
-			if ($provider_type == "gateway") {
-				$cmd = "api originate sofia/gateway/".$gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+			$fax_file_extension = substr($dir_fax_temp.'/'.$_FILES['fax_file']['name'], -4);
+			if ($fax_file_extension == ".pdf") {
+				chdir($dir_fax_temp);
+				exec("gs -q -sDEVICE=tiffg3 -r204x98 -dNOPAUSE -sOutputFile=".$fax_name.".tif -- ".$fax_name.".pdf -c quit");
+				//exec("rm ".$dir_fax_temp.'/'.$fax_name.".pdf");
 			}
-			if ($provider_type == "sip_uri") {
-				$sip_uri = str_replace("\$1", $fax_number, $sip_uri);
-				$cmd = "api originate $sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+			if ($fax_file_extension == ".tiff") {
+				chdir($dir_fax_temp);
+				exec("cp ".$dir_fax_temp.'/'.$fax_name.".tiff ".$dir_fax_temp.'/'.$fax_name.".tif");
+				exec("rm ".$dir_fax_temp.'/'.$fax_name.".tiff");
 			}
-			$response = event_socket_request($fp, $cmd);
-			$response = str_replace("\n", "", $response);
-			$uuid = str_replace("+OK ", "", $response);
-			fclose($fp);
-		}
 
-	sleep(5);
+		//send the fax
+			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+			if ($fp) {
+				if ($provider_type == "gateway") {
+					$cmd = "api originate sofia/gateway/".$gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+				}
+				if ($provider_type == "sip_uri") {
+					$sip_uri = str_replace("\$1", $fax_number, $sip_uri);
+					$cmd = "api originate $sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+				}
+				$response = event_socket_request($fp, $cmd);
+				$response = str_replace("\n", "", $response);
+				$uuid = str_replace("+OK ", "", $response);
+				fclose($fp);
+			}
 
-	//copy the .tif to the sent directory
-		exec("cp ".$dir_fax_temp.'/'.$fax_name.".tif ".$dir_fax_sent.'/'.$fax_name.".tif");
+		sleep(5);
 
-	//convert the tif to pdf
-		chdir($dir_fax_sent);
-		exec("gs -q -sDEVICE=tiffg3 -r204x98 -dNOPAUSE -sOutputFile=".$fax_name.".pdf -- ".$fax_name.".tif -c quit");
+		//copy the .tif to the sent directory
+			exec("cp ".$dir_fax_temp.'/'.$fax_name.".tif ".$dir_fax_sent.'/'.$fax_name.".tif");
 
-	//delete the .tif from the temp directory
-		//exec("rm ".$dir_fax_temp.'/'.$fax_name.".tif");
-	
-	//convert the tif to pdf and png
-		chdir($dir_fax_sent);
-		//which tiff2pdf
-		if (is_file("/usr/local/bin/tiff2png")) {
-			exec("".bin_dir."/tiff2png ".$dir_fax_sent.$fax_name.".tif");
-			exec("".bin_dir."/tiff2pdf -f -o ".$fax_name.".pdf ".$dir_fax_sent.$fax_name.".tif");
-		}
+		//convert the tif to pdf
+			chdir($dir_fax_sent);
+			exec("gs -q -sDEVICE=tiffg3 -r204x98 -dNOPAUSE -sOutputFile=".$fax_name.".pdf -- ".$fax_name.".tif -c quit");
 
-	header("Location: v_fax_edit.php?id=".$fax_id."&msg=".$response);
-	exit;
-} //end upload and send fax
+		//delete the .tif from the temp directory
+			//exec("rm ".$dir_fax_temp.'/'.$fax_name.".tif");
+		
+		//convert the tif to pdf and png
+			chdir($dir_fax_sent);
+			//which tiff2pdf
+			if (is_file("/usr/local/bin/tiff2png")) {
+				exec("".bin_dir."/tiff2png ".$dir_fax_sent.$fax_name.".tif");
+				exec("".bin_dir."/tiff2pdf -f -o ".$fax_name.".pdf ".$dir_fax_sent.$fax_name.".tif");
+			}
+
+		header("Location: v_fax_edit.php?id=".$fax_id."&msg=".$response);
+		exit;
+	} //end upload and send fax
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
@@ -267,12 +281,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$faxdescription' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
-					unset($sql);
+//					unset($sql);
+$orig_sql = $sql;
 
 					sync_package_v_fax();
 
 					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
+					echo "<meta http-equiv=\"refresh\" content=\"10;url=v_fax.php\">\n";
+echo "sql: ".$orig_sql;
 					echo "<div align='center'>\n";
 					echo "Add Complete\n";
 					echo "</div>\n";
@@ -298,12 +314,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 				}
 				$db->exec(check_sql($sql));
-				unset($sql);
+//				unset($sql);
 
 				sync_package_v_fax();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"10;url=v_fax.php\">\n";
+echo $sql;
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -311,7 +328,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
-
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
@@ -321,7 +337,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_fax ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and fax_id = '$fax_id' ";
-		if (!ifgroup("admin") || !ifgroup("superadmin")) {
+		if (ifgroup("superadmin")) {
+			//show all fax extensions
+		}
+		else if (ifgroup("admin")) {
+			//show all fax extensions
+		}
+		else {
+			//show only assigned fax extensions
 			$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 		}
 		$prepstatement = $db->prepare(check_sql($sql));
@@ -343,13 +366,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$faxdescription = $row["faxdescription"];
 
 			//set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
-				$dir_fax_inbox = $v_storage_dir.'/fax/'.$faxextension.'/inbox';
-				$dir_fax_sent = $v_storage_dir.'/fax/'.$faxextension.'/sent';
+				$dir_fax_inbox = $v_fax_dir.'/'.$faxextension.'/inbox';
+				$dir_fax_sent = $v_fax_dir.'/'.$faxextension.'/sent';
 
 			//make sure the directories exist
-				if (!is_dir($v_storage_dir.'/fax/'.$faxextension)) {
-					mkdir($v_storage_dir.'/fax/'.$faxextension,0777,true);
-					chmod($v_storage_dir.'/fax/'.$faxextension,0777);
+				if (!is_dir($v_fax_dir.'/'.$faxextension)) {
+					mkdir($v_fax_dir.'/'.$faxextension,0777,true);
+					chmod($v_fax_dir.'/'.$faxextension,0777);
 				}
 				if (!is_dir($dir_fax_inbox)) { 
 					mkdir($dir_fax_inbox,0777,true); 
@@ -370,10 +393,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_GET['a'] == "del") {
 		$faxextension = check_str($_GET["faxextension"]);
 		if ($_GET['type'] == "fax_inbox") {
-			unlink($v_storage_dir.'/fax/'.$faxextension.'/inbox/'.$_GET['filename']);
+			unlink($v_fax_dir.'/'.$faxextension.'/inbox/'.$_GET['filename']);
 		}
 		if ($_GET['type'] == "fax_sent") {
-			unlink($v_storage_dir.'/fax/'.$faxextension.'/sent/'.$_GET['filename']);
+			unlink($v_fax_dir.'/'.$faxextension.'/sent/'.$_GET['filename']);
 		}
 	}
 
@@ -382,12 +405,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		session_cache_limiter('public');
 		//test to see if it is in the inbox or sent directory.
 			if ($_GET['type'] == "fax_inbox") {
-				if (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
-					$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
+				if (file_exists($v_fax_dir.'/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
+					$tmp_faxdownload_file = "".$v_fax_dir.'/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
 				}
 			}else if ($_GET['type'] == "fax_sent") {
-				if  (file_exists($v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
-					$tmp_faxdownload_file = "".$v_storage_dir.'/fax/'.$_GET['ext'].'/sent/'.$_GET['filename'];
+				if  (file_exists($v_fax_dir.'/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
+					$tmp_faxdownload_file = "".$v_fax_dir.'/'.$_GET['ext'].'/sent/'.$_GET['filename'];
 				}
 			}
 		//check to see if it was found.
@@ -674,7 +697,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<td align='right'>";
 
 	if ($v_path_show) {
-		echo "<b>location:</b>";
+		echo "<b>location:</b>&nbsp;";
 		echo $dir_fax_inbox."&nbsp; &nbsp; &nbsp;";
 	}
 
@@ -894,12 +917,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					echo "</tr>\n";
 					if ($c==0) { $c=1; } else { $c=0; }
 				} //check if the file is a .tif file
-
 			}
 		} //end while
 		closedir($handle);
 	}
-
 
 	echo "     <tr>\n";
 	echo "       <td class=\"list\" colspan=\"3\"></td>\n";
@@ -913,12 +934,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<br />\n";
 	echo "	<br />\n";
 
-
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
 
-
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>
