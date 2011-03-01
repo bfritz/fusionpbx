@@ -304,9 +304,20 @@ if ($db_type == "pgsql") {
 				$_SESSION["v_id"] = $row["v_id"];
 				$_SESSION["template_name"] = $row["v_template_name"];
 				$_SESSION["v_template_name"] = $row["v_template_name"];
+				$_SESSION["v_domain"] = $row['v_domain'];
 			}
 		}
 		unset($result, $prepstatement);
+	}
+
+//set the context
+	if (strlen($_SESSION["context"]) == 0) {
+		if (count($_SESSION["domains"]) > 1) {
+			$_SESSION["context"] = $_SESSION["v_domain"];
+		}
+		else {
+			$_SESSION["context"] = 'default';
+		}
 	}
 
 //set the v_id variable from the session

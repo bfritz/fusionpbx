@@ -38,6 +38,7 @@ include "root.php";
 	$_SESSION['user_extension_list'] = '';
 	$_SESSION['user_context'] = '';
 	$_SESSION['domains'] = '';
+	$_SESSION['context'] = '';
 	session_destroy();
 
 //redirect the user to the login page

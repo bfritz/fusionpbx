@@ -26,45 +26,52 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-
-require_once "includes/paging.php";
-require_once "includes/v_dialplan_entry_exists.php";
-
-$dir_music_on_hold_8000 = $v_sounds_dir.'/music/8000';
-ini_set(max_execution_time,7200);
-
-$orderby = $_GET["orderby"];
-$order = $_GET["order"];
-
-if ($_GET['a'] == "download") {
-	session_cache_limiter('public');
-	if ($_GET['type'] = "rec") {
-		if (file_exists($v_recordings_dir.'/'.base64_decode($_GET['filename']))) {
-			$fd = fopen($v_recordings_dir.'/'.base64_decode($_GET['filename']), "rb");
-			if ($_GET['t'] == "bin") {
-				header("Content-Type: application/force-download");
-				header("Content-Type: application/octet-stream");
-				header("Content-Type: application/download");
-				header("Content-Description: File Transfer");
-				header('Content-Disposition: attachment; filename="'.base64_decode($_GET['filename']).'"');
-			}
-			else {
-				$file_ext = substr(base64_decode($_GET['filename']), -3);
-				if ($file_ext == "wav") {
-					header("Content-Type: audio/x-wav");
-				}
-				if ($file_ext == "mp3") {
-					header("Content-Type: audio/mp3");
-				}
-			}
-			header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-			header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-			header("Content-Length: " . filesize($v_recordings_dir.'/'.base64_decode($_GET['filename'])));
-			fpassthru($fd);
-		}
-	}
+if (ifgroup("admin") || ifgroup("superadmin")) {
+	//access granted
+}
+else {
+	echo "access denied";
 	exit;
 }
+require_once "includes/paging.php";
+
+//set the max php execution time
+	ini_set(max_execution_time,7200);
+
+//get the http get values and set them as php variables
+	$orderby = $_GET["orderby"];
+	$order = $_GET["order"];
+
+//download the recordings
+	if ($_GET['a'] == "download") {
+		session_cache_limiter('public');
+		if ($_GET['type'] = "rec") {
+			if (file_exists($v_recordings_dir.'/'.base64_decode($_GET['filename']))) {
+				$fd = fopen($v_recordings_dir.'/'.base64_decode($_GET['filename']), "rb");
+				if ($_GET['t'] == "bin") {
+					header("Content-Type: application/force-download");
+					header("Content-Type: application/octet-stream");
+					header("Content-Type: application/download");
+					header("Content-Description: File Transfer");
+					header('Content-Disposition: attachment; filename="'.base64_decode($_GET['filename']).'"');
+				}
+				else {
+					$file_ext = substr(base64_decode($_GET['filename']), -3);
+					if ($file_ext == "wav") {
+						header("Content-Type: audio/x-wav");
+					}
+					if ($file_ext == "mp3") {
+						header("Content-Type: audio/mp3");
+					}
+				}
+				header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+				header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+				header("Content-Length: " . filesize($v_recordings_dir.'/'.base64_decode($_GET['filename'])));
+				fpassthru($fd);
+			}
+		}
+		exit;
+	}
 
 //check the permissions
 	if (ifgroup("admin") || ifgroup("superadmin")) {
@@ -75,23 +82,15 @@ if ($_GET['a'] == "download") {
 		exit;
 	}
 
-if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['ulfile']['tmp_name'])) {
-	if ($_POST['type'] == 'rec') {
-		move_uploaded_file($_FILES['ulfile']['tmp_name'], $v_recordings_dir.'/'.$_FILES['ulfile']['name']);
-		$savemsg = "Uploaded file to ".$v_recordings_dir."/". htmlentities($_FILES['ulfile']['name']);
-		//system('chmod -R 744 $v_recordings_dir*');
-		unset($_POST['txtCommand']);
+//upload the recording
+	if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['ulfile']['tmp_name'])) {
+		if ($_POST['type'] == 'rec') {
+			move_uploaded_file($_FILES['ulfile']['tmp_name'], $v_recordings_dir.'/'.$_FILES['ulfile']['name']);
+			$savemsg = "Uploaded file to ".$v_recordings_dir."/". htmlentities($_FILES['ulfile']['name']);
+			//system('chmod -R 744 $v_recordings_dir*');
+			unset($_POST['txtCommand']);
+		}
 	}
-}
-
-
-if ($_GET['act'] == "del") {
-	if ($_GET['type'] == 'moh') {
-		unlink($dir_music_on_hold_8000."/".base64_decode($_GET['filename']));
-		header("Location: v_recordings.php");
-		exit;
-	}
-}
 
 //build a list of recordings
 	$config_recording_list = '|';
@@ -111,52 +110,49 @@ if ($_GET['act'] == "del") {
 	}
 	unset ($prepstatement);
 
-if (is_dir($v_recordings_dir.'/')) {
-	if ($dh = opendir($v_recordings_dir.'/')) {
-		while (($file = readdir($dh)) !== false) {
+//add recordings to the database
+	if (is_dir($v_recordings_dir.'/')) {
+		if ($dh = opendir($v_recordings_dir.'/')) {
+			while (($file = readdir($dh)) !== false) {
+				if (filetype($v_recordings_dir."/".$file) == "file") {
+					if (strpos($config_recording_list, "|".$file) === false) {
+						//echo "The $file was not found<br/>";
+						//file not found add it to the database
+						$a_file = explode("\.", $file);
 
-			if (filetype($v_recordings_dir."/".$file) == "file") {
-				if (strpos($config_recording_list, "|".$file) === false) {
-					//echo "The $file was not found<br/>";
-					//file not found add it to the database
-					$a_file = explode("\.", $file);
+						$sql = "insert into v_recordings ";
+						$sql .= "(";
+						$sql .= "v_id, ";
+						$sql .= "filename, ";
+						$sql .= "recordingname, ";
+						//$sql .= "recordingid, ";
+						$sql .= "descr ";
+						$sql .= ")";
+						$sql .= "values ";
+						$sql .= "(";
+						$sql .= "'$v_id', ";
+						$sql .= "'$file', ";
+						$sql .= "'".$a_file[0]."', ";
+						//$sql .= "'".guid()."', ";
+						$sql .= "'auto' ";
+						$sql .= ")";
+						$db->exec(check_sql($sql));
+						unset($sql);
 
-					$sql = "insert into v_recordings ";
-					$sql .= "(";
-					$sql .= "v_id, ";
-					$sql .= "filename, ";
-					$sql .= "recordingname, ";
-					//$sql .= "recordingid, ";
-					$sql .= "descr ";
-					$sql .= ")";
-					$sql .= "values ";
-					$sql .= "(";
-					$sql .= "'$v_id', ";
-					$sql .= "'$file', ";
-					$sql .= "'".$a_file[0]."', ";
-					//$sql .= "'".guid()."', ";
-					$sql .= "'auto' ";
-					$sql .= ")";
-					$db->exec(check_sql($sql));
-					//echo $sql;
-					unset($sql);
-
-					//$recordingent = array();
-					//$recordingent['filename'] = $file;
-					//$recordingent['recordingname'] = $a_file[0];
-					//$recordingent['recordingid'] = guid();
-					//$recordingent['descr'] = 'Auto';
-
+						//$recordingent = array();
+						//$recordingent['filename'] = $file;
+						//$recordingent['recordingname'] = $a_file[0];
+						//$recordingent['recordingid'] = guid();
+						//$recordingent['descr'] = 'Auto';
+					}
+					else {
+						//echo "The $file was found.<br/>";
+					}
 				}
-				else {
-					//echo "The $file was found.<br/>";
-				}
-
 			}
+			closedir($dh);
 		}
-		closedir($dh);
 	}
-}
 
 //include the header
 	require_once "includes/header.php";
@@ -254,7 +250,8 @@ if (is_dir($v_recordings_dir.'/')) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($resultcount == 0) {
+		//no results
 	}
 	else { //received results
 		foreach($result as $row) {

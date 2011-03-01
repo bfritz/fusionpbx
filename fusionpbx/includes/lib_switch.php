@@ -711,21 +711,21 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$queue_name = str_replace('_${domain_name}@default', '', $queue_name);
 			$queue_extension = $row["queue_extension"];
 			if ($previous_call_center_name != $queue_name) {
-				if ("menu-exec-app:transfer ".$queue_extension." XML default" == $select_value || "transfer:".$queue_extension." XML default" == $select_value) {
+				if ("menu-exec-app:transfer ".$queue_extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$queue_extension." XML ".$_SESSION["context"] == $select_value) {
 					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:transfer ".$queue_extension." XML default' selected='selected'>".$queue_extension." ".$queue_name."</option>\n";
+						echo "		<option value='menu-exec-app:transfer ".$queue_extension." XML ".$_SESSION["context"]."' selected='selected'>".$queue_extension." ".$queue_name."</option>\n";
 					}
 					if ($select_type == "dialplan") {
-						echo "		<option value='transfer:".$queue_extension." XML default' selected='selected'>".$queue_extension." ".$queue_name."</option>\n";
+						echo "		<option value='transfer:".$queue_extension." XML ".$_SESSION["context"]."' selected='selected'>".$queue_extension." ".$queue_name."</option>\n";
 					}
 					$selection_found = true;
 				}
 				else {
 					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:transfer ".$queue_extension." XML default'>".$queue_extension." ".$queue_name."</option>\n";
+						echo "		<option value='menu-exec-app:transfer ".$queue_extension." XML ".$_SESSION["context"]."'>".$queue_extension." ".$queue_name."</option>\n";
 					}
 					if ($select_type == "dialplan") {
-						echo "		<option value='transfer:".$queue_extension." XML default'>".$queue_extension." ".$queue_name."</option>\n";
+						echo "		<option value='transfer:".$queue_extension." XML ".$_SESSION["context"]."'>".$queue_extension." ".$queue_name."</option>\n";
 					}
 				}
 				$previous_call_center_name = $queue_name;
@@ -798,12 +798,12 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		foreach ($result as &$row) {
 			$extension = $row["extension"];
 			$description = $row["description"];
-			if ("transfer ".$extension." XML default" == $select_value || "transfer:".$extension." XML default" == $select_value || "user/$extension" == $select_value) {
+			if ("transfer ".$extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value || "user/$extension" == $select_value) {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension." ".$description."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension." ".$description."</option>\n";
+					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
 					echo "		<option value='user/$extension' selected='selected'>".$extension." ".$description."</option>\n";
@@ -812,10 +812,10 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			}
 			else {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension." ".$description."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default'>".$extension." ".$description."</option>\n";
+					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
 					echo "		<option value='user/$extension'>".$extension." ".$description."</option>\n";
@@ -840,21 +840,21 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			foreach ($result as &$row) {
 				$fax_name = $row["faxname"];
 				$extension = $row["faxextension"];
-				if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
+				if ("transfer $extension XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension." ".$fax_name."</option>\n";
+						echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$fax_name."</option>\n";
 					}
 					if ($select_type == "dialplan") {
-						echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension." ".$fax_name."</option>\n";
+						echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$fax_name."</option>\n";
 					}
 					$selection_found = true;
 				}
 				else {
 					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension." ".$fax_name."</option>\n";
+						echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."'>".$extension." ".$fax_name."</option>\n";
 					}
 					if ($select_type == "dialplan") {
-						echo "		<option value='transfer:$extension XML default'>".$extension." ".$fax_name."</option>\n";
+						echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$fax_name."</option>\n";
 					}
 				}
 			}
@@ -907,20 +907,20 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					$option_label = $extension_number.' '.$extension_name;
 					if ($select_type == "ivr") {
 						if ("menu-exec-app:transfer ".$row["fielddata"] == $select_value) {
-							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML default' selected='selected'>".$option_label."</option>\n";
+							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 							$selection_found = true;
 						}
 						else {
-							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML default'>".$option_label."</option>\n";
+							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."'>".$option_label."</option>\n";
 						}
 					}
 					if ($select_type == "dialplan") {
 						if ("transfer:".$row["fielddata"] == $select_value) {
-							echo "		<option value='transfer:".$extension_number." XML default' selected='selected'>".$option_label."</option>\n";
+							echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 							$selection_found = true;
 						}
 						else {
-							echo "		<option value='transfer:".$extension_number." XML default'>".$option_label."</option>\n";
+							echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."'>".$option_label."</option>\n";
 						}
 					}
 				}
@@ -988,21 +988,21 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			//$v_id = $row["v_id"];
 			$extension = $row["huntgroupextension"];
 			$huntgroupname = $row["huntgroupname"];
-			if ("transfer $extension XML default" == $select_value || "transfer:".$extension." XML default" == $select_value) {
+			if ("transfer $extension XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default' selected='selected'>".$extension." ".$huntgroupname."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$huntgroupname."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default' selected='selected'>".$extension." ".$huntgroupname."</option>\n";
+					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$huntgroupname."</option>\n";
 				}
 				$selection_found = true;
 			}
 			else {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML default'>".$extension." ".$huntgroupname."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."'>".$extension." ".$huntgroupname."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML default'>".$extension." ".$huntgroupname."</option>\n";
+					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$huntgroupname."</option>\n";
 				}
 			}
 		}
@@ -1028,7 +1028,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$extension_name = $row["ivr_menu_name"];
 			$extension_label = $row["ivr_menu_name"];
 			$extension_name = str_replace(" ", "_", $extension_name);
-			if ("ivr:".$extension_name."" == $select_value || "ivr $extension_name" == $select_value || "transfer:".$extension." XML default" == $select_value) {
+			if ("ivr:".$extension_name."" == $select_value || "ivr $extension_name" == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 				if ($select_type == "ivr") {
 					echo "		<option value='menu-exec-app:ivr $extension_name' selected='selected'>".$extension." ".$extension_label."</option>\n";
 				}
@@ -2857,7 +2857,7 @@ function sync_package_v_hunt_group()
 							}
 							$tmp .=	"\n";
 							$tmp .=	"session:setAutoHangup(false);\n";
-							$tmp .=	"session:execute(\"transfer\", \"*\"..extension..\" XML default\");\n";
+							$tmp .=	"session:execute(\"transfer\", \"*\"..extension..\" XML ".$_SESSION["context"]."\");\n";
 							$tmp .=	"\n";
 						}
 
@@ -3917,7 +3917,7 @@ function sync_package_v_auto_attendant()
 			$tmp .= $tmpaction;
 			if ($row['aadirectdial'] == "true") {
 				$tmp .= "             else {\n";
-				$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML default\");\n";
+				$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML ".$_SESSION["context"]."\");\n";
 				//$tmp .= $tmpactiondefault;
 				$tmp .= "             }\n";
 			}
@@ -3968,7 +3968,7 @@ function sync_package_v_auto_attendant()
 			$tmp .= "          } \n";
 			//$tmp .= "          else if ( dtmf.digits.length == \"4\" ) {\n";
 			//$tmp .= "	                  //Transfer to the extension the caller\n";
-			//$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML default\");\n";
+			//$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML ".$_SESSION["context"]."\");\n";
 			//$tmp .= "          } else {\n";
 			//$tmp .= $tmpactiondefault;
 			//$tmp .= "          }\n";
@@ -4226,7 +4226,7 @@ function sync_package_v_auto_attendant()
 			$tmp .= $tmpantiaction;
 			if ($row['aadirectdial'] == "true") {
 				$tmp .= "             else {\n";
-				$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML default\");\n";	
+				$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML ".$_SESSION["context"]."\");\n";	
 				//$tmp .= $tmpantiactiondefault;
 				$tmp .= "             }\n";
 			}
@@ -4274,7 +4274,7 @@ function sync_package_v_auto_attendant()
 			$tmp .= "          } \n";
 			//$tmp .= "          else if ( dtmf.digits.length == \"3\" ) {\n";
 			//$tmp .= "                //Transfer to the extension the caller chose\n";
-			//$tmp .= "                session.execute(\"transfer\", dtmf.digits+\" XML default\"); \n";
+			//$tmp .= "                session.execute(\"transfer\", dtmf.digits+\" XML ".$_SESSION["context"]."\"); \n";
 			//$tmp .= "          }\n";
 			//$tmp .= "          else {\n";
 			//$tmp .= $tmpantiactiondefault;
@@ -4962,7 +4962,7 @@ if (!function_exists('sync_directory')) {
 		$tmp .= "	dtmf.digits = '';\n";
 		$tmp .= "\n";
 		$tmp .= "	if (\$result_count == 0) {\n";
-		$tmp .= "		//session.execute(\"transfer\", \"*347 XML default\");\n";
+		$tmp .= "		//session.execute(\"transfer\", \"*347 XML ".$_SESSION["context"]."\");\n";
 		$tmp .= "		directory_search(search_type);\n";
 		$tmp .= "		return;\n";
 		$tmp .= "	}\n";
@@ -4997,7 +4997,7 @@ if (!function_exists('sync_directory')) {
 		$tmp .= "		dtmf.digits = session.getDigits(1, \"#\", 3000);\n";
 		$tmp .= "		if (dtmf.digits == \"1\") {\n";
 		$tmp .= "			console_log( \"info\", \"directory: call transfered to: \" + result_array[i]['extension'] + \"\\n\" );\n";
-		$tmp .= "			session.execute(\"transfer\", result_array[i]['extension']+\" XML default\");\n";
+		$tmp .= "			session.execute(\"transfer\", result_array[i]['extension']+\" XML ".$_SESSION["context"]."\");\n";
 		$tmp .= "		}\n";
 		$tmp .= "\n";
 		$tmp .= "	}\n";
@@ -5269,7 +5269,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 					unset ($sub_prepstatement, $sub_row);
 
 					if ($ivr_menu_direct_dial == "true") {
-						$tmp .= "		<entry action=\"menu-exec-app\" digits=\"/(^\*\d{3,5}$|^\d{3,5}$)/\" param=\"transfer $1 XML default\"/>\n";
+						$tmp .= "		<entry action=\"menu-exec-app\" digits=\"/(^\*\d{3,5}$|^\d{3,5}$)/\" param=\"transfer $1 XML ".$_SESSION["context"]."\"/>\n";
 					}
 					$tmp .= "	</menu>";
 					//write the file
