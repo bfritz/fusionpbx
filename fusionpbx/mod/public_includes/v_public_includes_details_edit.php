@@ -27,7 +27,7 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	//access granted
 }
 else {
@@ -478,16 +478,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
     echo "    <br />\n";
     echo "    <br />\n";
     echo "    Actions are executed when the <b>condition matches</b>. Anti-Actions are executed when the <b>condition does NOT match</b>.\n";
-    echo "";
 
-    if ($v_path_show) {
-		echo "Additional information on applications for Actions and Anti-Actions.<br />\n";
-		echo "<a href='http://wiki.freeswitch.org/wiki/Modules#Applications' target='_blank'>http://wiki.freeswitch.org/wiki/Modules#Applications</a>\n";
-		//echo "<br />\n";
-    }
-
-    echo "    <br />\n";
-    echo "    <br />\n";
     echo "    <br />\n";
     echo "    The following is a partial list of <b>applications</b>.\n";
     echo "    <ul>\n";
@@ -521,10 +512,6 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
     echo "    <b>Param</b>\n";
     echo "    Example parameters by name and value<br />";
 
-
-    if ($v_path_show) {
-		echo "<a href='http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go' target='_blank'>http://wiki.freeswitch.org/wiki/Special:Search?search=param&go=Go</a>\n";
-    }
     echo "    <ul>\n";
     echo "    <li><b>codec-ms</b> 20</li>\n";
     echo "    <li><b>codec-prefs</b> PCMU@20i</li>\n";

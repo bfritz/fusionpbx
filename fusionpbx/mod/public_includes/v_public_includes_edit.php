@@ -28,7 +28,7 @@ require_once "includes/config.php";
 require_once "includes/checkauth.php";
 require_once "includes/paging.php";
 
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (ifgroup("superadmin")) {
 	//access granted
 }
 else {

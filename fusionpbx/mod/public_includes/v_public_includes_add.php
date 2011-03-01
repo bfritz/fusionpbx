@@ -36,11 +36,12 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
-$order = $_GET["order"];
+//get the http get values and set them as php variables
+	$orderby = $_GET["orderby"];
+	$order = $_GET["order"];
+	$action = $_GET["action"];
 
-
-//POST to PHP variables
+//get the http post values and set them as php variables
 	if (count($_POST)>0) {
 		$extension_name = check_str($_POST["extension_name"]);
 		$publicorder = check_str($_POST["publicorder"]);
@@ -66,6 +67,16 @@ $order = $_GET["order"];
 		//$action_application_2 = check_str($_POST["action_application_2"]);
 		//$action_data_2 = check_str($_POST["action_data_2"]);
 
+		if (!ifgroup("superadmin")) {
+			if (strlen($condition_field_1) == 0) { $condition_field_1 = "destination_number"; }
+			if (strlen($condition_expression_1) < 8) { $msg .= "The destination number must be 7 or more digits.<br>\n"; }
+			if (is_numeric($condition_expression_1)) { 
+				//the number is numeric 
+			}
+			else {
+				$msg .= "The destination number must be numeric.<br>\n";
+			}
+		}
 		$enabled = check_str($_POST["enabled"]);
 		$description = check_str($_POST["description"]);
 		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
@@ -373,6 +384,12 @@ echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Inbou
 echo "			</strong></span></span>\n";
 echo "		</td>\n";
 echo "		<td align='right'>\n";
+if (ifgroup("superadmin") && $action == "advanced") {
+	echo "			<input type='button' class='btn' name='' alt='basic' onclick=\"window.location='v_public_includes_add.php?action=basic'\" value='Basic'>\n";
+}
+else {
+	echo "			<input type='button' class='btn' name='' alt='advanced' onclick=\"window.location='v_public_includes_add.php?action=advanced'\" value='Advanced'>\n";
+}
 echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public_includes.php'\" value='Back'>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
@@ -399,7 +416,7 @@ echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
 echo "<br />\n";
-echo "\n";
+echo "Please enter an inbound route name.<br />\n";
 echo "</td>\n";
 echo "</tr>\n";
 
@@ -428,92 +445,113 @@ echo "</tr>\n";
 //echo "</td>\n";
 //echo "</tr>\n";
 
+if (ifgroup("superadmin") && $action == "advanced") {
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	Condition 1:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<table style='width: 60%;' border='0'>\n";
+	echo "	<tr>\n";
+	echo "	<td style='width: 62px;'>Field</td>\n";
+	echo "	<td style='width: 35%;'>\n";
+
+	echo "    <select class='formfld' name='condition_field_1' id='condition_field_1' onchange='type_onchange(\"condition_field_1\");' style='width:100%'>\n";
+	echo "    <option value=''></option>\n";
+	if (strlen($condition_field_1) > 0) {
+		echo "    <option value='$condition_field_1' selected>$condition_field_1</option>\n";
+	}
+	echo "    <option value='context'>context</option>\n";
+	echo "    <option value='username'>username</option>\n";
+	echo "    <option value='rdnis'>rdnis</option>\n";
+	echo "    <option value='destination_number'>destination_number</option>\n";
+	echo "    <option value='public'>public</option>\n";
+	echo "    <option value='caller_id_name'>caller_id_name</option>\n";
+	echo "    <option value='caller_id_number'>caller_id_number</option>\n";
+	echo "    <option value='ani'>ani</option>\n";
+	echo "    <option value='ani2'>ani2</option>\n";
+	echo "    <option value='uuid'>uuid</option>\n";
+	echo "    <option value='source'>source</option>\n";
+	echo "    <option value='chan_name'>chan_name</option>\n";
+	echo "    <option value='network_addr'>network_addr</option>\n";
+	echo "    </select><br />\n";
+
+	echo "	</td>\n";
+	echo "	<td style='width: 73px;'>&nbsp; Expression</td>\n";
+	echo "	<td>\n";
+	echo "		<input class='formfld' type='text' name='condition_expression_1' maxlength='255' style='width:100%' value=\"$condition_expression_1\">\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
+	echo "	</table>\n";
+	echo "	<div id='desc_condition_expression_1'></div>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Condition 2\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+
+	echo "	<table style='width: 60%;' border='0'>\n";
+	echo "	<tr>\n";
+	echo "	<td align='left' style='width: 62px;'>\n";
+	echo "		Field:\n";
+	echo "	</td>\n";
+	echo "	<td style='width: 35%;' align='left'>\n";
+	echo "    <select class='formfld' name='condition_field_2' id='condition_field_2' onchange='type_onchange(\"condition_field_2\");' style='width:100%'>\n";
+	echo "    <option value=''></option>\n";
+	if (strlen($condition_field_2) > 0) {
+		echo "    <option value='$condition_field_2' selected>$condition_field_2</option>\n";
+	}
+	echo "    <option value='context'>context</option>\n";
+	echo "    <option value='username'>username</option>\n";
+	echo "    <option value='rdnis'>rdnis</option>\n";
+	echo "    <option value='destination_number'>destination_number</option>\n";
+	echo "    <option value='public'>public</option>\n";
+	echo "    <option value='caller_id_name'>caller_id_name</option>\n";
+	echo "    <option value='caller_id_number'>caller_id_number</option>\n";
+	echo "    <option value='ani'>ani</option>\n";
+	echo "    <option value='ani2'>ani2</option>\n";
+	echo "    <option value='uuid'>uuid</option>\n";
+	echo "    <option value='source'>source</option>\n";
+	echo "    <option value='chan_name'>chan_name</option>\n";
+	echo "    <option value='network_addr'>network_addr</option>\n";
+	echo "    </select><br />\n";
+	echo "	</td>\n";
+	echo "	<td style='width: 73px;' align='left'>\n";
+	echo "		&nbsp; Expression:\n";
+	echo "	</td>\n";
+	echo "	<td>\n";
+	echo "		<input class='formfld' type='text' name='condition_expression_2' maxlength='255' style='width:100%' value=\"$condition_expression_2\">\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
+	echo "	</table>\n";
+	echo "	<div id='desc_condition_expression_2'></div>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+}
+else {
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Destination Number:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='condition_expression_1' maxlength='255' value=\"$condition_expression_1\">\n";
+	echo "<br />\n";
+	echo "Please enter the destination number. In North America this is usually a 10 or 11 digit number.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+}
+
 echo "<tr>\n";
 echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "	Condition 1:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-echo "	<table style='width: 60%;' border='0'>\n";
-echo "	<tr>\n";
-echo "	<td style='width: 62px;'>Field</td>\n";
-echo "	<td style='width: 35%;'>\n";
-echo "    <select class='formfld' name='condition_field_1' id='condition_field_1' onchange='type_onchange(\"condition_field_1\");' style='width:100%'>\n";
-echo "    <option value=''></option>\n";
-if (strlen($condition_field_1) > 0) {
-	echo "    <option value='$condition_field_1' selected>$condition_field_1</option>\n";
+if (ifgroup("superadmin") && $action=="advanced") {
+	echo "    Action 1:\n";
 }
-echo "    <option value='context'>context</option>\n";
-echo "    <option value='username'>username</option>\n";
-echo "    <option value='rdnis'>rdnis</option>\n";
-echo "    <option value='destination_number'>destination_number</option>\n";
-echo "    <option value='public'>public</option>\n";
-echo "    <option value='caller_id_name'>caller_id_name</option>\n";
-echo "    <option value='caller_id_number'>caller_id_number</option>\n";
-echo "    <option value='ani'>ani</option>\n";
-echo "    <option value='ani2'>ani2</option>\n";
-echo "    <option value='uuid'>uuid</option>\n";
-echo "    <option value='source'>source</option>\n";
-echo "    <option value='chan_name'>chan_name</option>\n";
-echo "    <option value='network_addr'>network_addr</option>\n";
-echo "    </select><br />\n";
-echo "	</td>\n";
-echo "	<td style='width: 73px;'>&nbsp; Expression</td>\n";
-echo "	<td>\n";
-echo "		<input class='formfld' type='text' name='condition_expression_1' maxlength='255' style='width:100%' value=\"$condition_expression_1\">\n";
-echo "	</td>\n";
-echo "	</tr>\n";
-echo "	</table>\n";
-echo "	<div id='desc_condition_expression_1'></div>\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-echo "	Condition 2\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
-
-echo "	<table style='width: 60%;' border='0'>\n";
-echo "	<tr>\n";
-echo "	<td align='left' style='width: 62px;'>\n";
-echo "		Field:\n";
-echo "	</td>\n";
-echo "	<td style='width: 35%;' align='left'>\n";
-echo "    <select class='formfld' name='condition_field_2' id='condition_field_2' onchange='type_onchange(\"condition_field_2\");' style='width:100%'>\n";
-echo "    <option value=''></option>\n";
-if (strlen($condition_field_2) > 0) {
-	echo "    <option value='$condition_field_2' selected>$condition_field_2</option>\n";
+else {
+	echo "    Action:\n";
 }
-echo "    <option value='context'>context</option>\n";
-echo "    <option value='username'>username</option>\n";
-echo "    <option value='rdnis'>rdnis</option>\n";
-echo "    <option value='destination_number'>destination_number</option>\n";
-echo "    <option value='public'>public</option>\n";
-echo "    <option value='caller_id_name'>caller_id_name</option>\n";
-echo "    <option value='caller_id_number'>caller_id_number</option>\n";
-echo "    <option value='ani'>ani</option>\n";
-echo "    <option value='ani2'>ani2</option>\n";
-echo "    <option value='uuid'>uuid</option>\n";
-echo "    <option value='source'>source</option>\n";
-echo "    <option value='chan_name'>chan_name</option>\n";
-echo "    <option value='network_addr'>network_addr</option>\n";
-echo "    </select><br />\n";
-echo "	</td>\n";
-echo "	<td style='width: 73px;' align='left'>\n";
-echo "		&nbsp; Expression:\n";
-echo "	</td>\n";
-echo "	<td>\n";
-echo "		<input class='formfld' type='text' name='condition_expression_2' maxlength='255' style='width:100%' value=\"$condition_expression_2\">\n";
-echo "	</td>\n";
-echo "	</tr>\n";
-echo "	</table>\n";
-echo "	<div id='desc_condition_expression_2'></div>\n";
-echo "</td>\n";
-echo "</tr>\n";
-
-echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-echo "    Action 1:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
@@ -571,65 +609,66 @@ echo "</tr>\n";
 echo "</td>\n";
 echo "</tr>\n";
 
-echo "<tr>\n";
-echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-echo "    Action 2:\n";
-echo "</td>\n";
-echo "<td class='vtable' align='left'>\n";
+if (ifgroup("superadmin") && $action=="advanced") {
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Action 2:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
 
-//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
-switch_select_destination("dialplan", "", "action_2", $action_2, "width: 60%;", "");
+	//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
+	switch_select_destination("dialplan", "", "action_2", $action_2, "width: 60%;", "");
 
-/*
-echo "	<table style='width: 60%;' border='0' >\n";
-echo "	<tr>\n";
-echo "	<td style='width: 62px;'>Application: </td>\n";
-echo "	<td style='width: 35%;'>\n";
-echo "    <select class='formfld' style='width:100%' id='action_application_2' name='action_application_2' onchange='type_onchange(\"action_application_2\");'>\n";
-echo "    <option value=''></option>\n";
-if (strlen($action_application_2) > 0) {
-	echo "    <option value='$action_application_2' selected>$action_application_2</option>\n";
+	/*
+	echo "	<table style='width: 60%;' border='0' >\n";
+	echo "	<tr>\n";
+	echo "	<td style='width: 62px;'>Application: </td>\n";
+	echo "	<td style='width: 35%;'>\n";
+	echo "    <select class='formfld' style='width:100%' id='action_application_2' name='action_application_2' onchange='type_onchange(\"action_application_2\");'>\n";
+	echo "    <option value=''></option>\n";
+	if (strlen($action_application_2) > 0) {
+		echo "    <option value='$action_application_2' selected>$action_application_2</option>\n";
+	}
+	echo "    <option value='answer'>answer</option>\n";
+	echo "    <option value='bridge'>bridge</option>\n";
+	echo "    <option value='cond'>cond</option>\n";
+	echo "    <option value='db'>db</option>\n";
+	echo "    <option value='global_set'>global_set</option>\n";
+	echo "    <option value='group'>group</option>\n";
+	echo "    <option value='expr'>expr</option>\n";
+	echo "    <option value='export'>export</option>\n";
+	echo "    <option value='hangup'>hangup</option>\n";
+	echo "    <option value='info'>info</option>\n";
+	echo "    <option value='javascript'>javascript</option>\n";
+	echo "    <option value='read'>read</option>\n";
+	echo "    <option value='reject'>reject</option>\n";
+	echo "    <option value='playback'>playback</option>\n";
+	echo "    <option value='reject'>reject</option>\n";
+	echo "    <option value='respond'>respond</option>\n";
+	echo "    <option value='ring_ready'>ring_ready</option>\n";
+	echo "    <option value='set'>set</option>\n";
+	echo "    <option value='set_user'>set_user</option>\n";
+	echo "    <option value='sleep'>sleep</option>\n";
+	echo "    <option value='sofia_contact'>sofia_contact</option>\n";
+	echo "    <option value='transfer'>transfer</option>\n";
+	echo "    <option value='voicemail'>voicemail</option>\n";
+	echo "    <option value='conference'>conference</option>\n";
+	echo "    <option value='conference_set_auto_outcall'>conference_set_auto_outcall</option>\n";
+	echo "    </select><br />\n";
+	echo "	</td>\n";
+	echo "	<td style='width: 73px;'>\n";
+	echo "		&nbsp; Data: \n";
+	echo "	</td>\n";
+	echo "	<td>\n";
+	echo "		<input class='formfld' style='width: 100%;' type='text' name='action_data_2' maxlength='255' value=\"$action_data_2\">\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
+	echo "	</table>\n";
+	echo "	<div id='desc_action_data_2'></div>\n";
+	*/
+	echo "</td>\n";
+	echo "</tr>\n";
 }
-echo "    <option value='answer'>answer</option>\n";
-echo "    <option value='bridge'>bridge</option>\n";
-echo "    <option value='cond'>cond</option>\n";
-echo "    <option value='db'>db</option>\n";
-echo "    <option value='global_set'>global_set</option>\n";
-echo "    <option value='group'>group</option>\n";
-echo "    <option value='expr'>expr</option>\n";
-echo "    <option value='export'>export</option>\n";
-echo "    <option value='hangup'>hangup</option>\n";
-echo "    <option value='info'>info</option>\n";
-echo "    <option value='javascript'>javascript</option>\n";
-echo "    <option value='read'>read</option>\n";
-echo "    <option value='reject'>reject</option>\n";
-echo "    <option value='playback'>playback</option>\n";
-echo "    <option value='reject'>reject</option>\n";
-echo "    <option value='respond'>respond</option>\n";
-echo "    <option value='ring_ready'>ring_ready</option>\n";
-echo "    <option value='set'>set</option>\n";
-echo "    <option value='set_user'>set_user</option>\n";
-echo "    <option value='sleep'>sleep</option>\n";
-echo "    <option value='sofia_contact'>sofia_contact</option>\n";
-echo "    <option value='transfer'>transfer</option>\n";
-echo "    <option value='voicemail'>voicemail</option>\n";
-echo "    <option value='conference'>conference</option>\n";
-echo "    <option value='conference_set_auto_outcall'>conference_set_auto_outcall</option>\n";
-echo "    </select><br />\n";
-echo "	</td>\n";
-echo "	<td style='width: 73px;'>\n";
-echo "		&nbsp; Data: \n";
-echo "	</td>\n";
-echo "	<td>\n";
-echo "		<input class='formfld' style='width: 100%;' type='text' name='action_data_2' maxlength='255' value=\"$action_data_2\">\n";
-echo "	</td>\n";
-echo "	</tr>\n";
-echo "	</table>\n";
-echo "	<div id='desc_action_data_2'></div>\n";
-*/
-echo "</td>\n";
-echo "</tr>\n";
-
 echo "<tr>\n";
 echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "    Order:\n";
