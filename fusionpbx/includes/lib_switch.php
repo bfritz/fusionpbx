@@ -2001,6 +2001,12 @@ function sync_package_v_gateways()
 	}
 
 	// delete all old gateways to prepare for new ones
+		if (count($_SESSION["domains"]) > 1) {
+			$v_needle = 'v_'.$v_domain.'_';
+		}
+		else {
+			$v_needle = 'v_';
+		}
 		if($dh = opendir($v_gateways_dir."")) {
 			$files = Array();
 			while($file = readdir($dh)) {
@@ -2009,7 +2015,7 @@ function sync_package_v_gateways()
 						//this is a directory do nothing
 					} else {
 						//check if file extension is xml
-						if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
+						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
 							unlink($v_gateways_dir."/".$file);
 						}
 					}
@@ -5033,7 +5039,12 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 		}
 
 		//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
-			$v_needle = 'v_';
+			if (count($_SESSION["domains"]) > 1) {
+				$v_needle = 'v_'.$v_domain.'_';
+			}
+			else {
+				$v_needle = 'v_';
+			}
 			if($dh = opendir($v_conf_dir."/ivr_menus/")) {
 				$files = Array();
 				while($file = readdir($dh)) {
@@ -5209,7 +5220,10 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 					} //end if strlen ivr_menu_id; add the IVR Menu to the dialplan
 
 				//add each IVR menu to the XML config
-					$tmp = "	<!-- $ivr_menu_desc -->\n";
+					$tmp = "<include>\n";
+					if (strlen($ivr_menu_desc) > 0) {
+						$tmp .= "	<!-- $ivr_menu_desc -->\n";
+					}
 					$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
 					if (stripos($ivr_menu_greet_long, 'mp3') !== false || stripos($ivr_menu_greet_long, 'wav') !== false) {
 						//found wav or mp3
@@ -5271,11 +5285,18 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 					if ($ivr_menu_direct_dial == "true") {
 						$tmp .= "		<entry action=\"menu-exec-app\" digits=\"/(^\*\d{3,5}$|^\d{3,5}$)/\" param=\"transfer $1 XML ".$_SESSION["context"]."\"/>\n";
 					}
-					$tmp .= "	</menu>";
+					$tmp .= "	</menu>\n";
+					$tmp .= "</include>\n";
+
 					//write the file
-					$fout = fopen($v_conf_dir."/ivr_menus/v_".$ivr_menu_name.".xml","w");
-					fwrite($fout, $tmp);
-					fclose($fout);
+						if (count($_SESSION["domains"]) > 1) {
+							$fout = fopen($v_conf_dir."/ivr_menus/v_".$v_domain."_".$ivr_menu_name.".xml","w");
+						}
+						else {
+							$fout = fopen($v_conf_dir."/ivr_menus/v_".$ivr_menu_name.".xml","w");
+						}
+						fwrite($fout, $tmp);
+						fclose($fout);
 			}
 		}
 		sync_package_v_dialplan_includes();

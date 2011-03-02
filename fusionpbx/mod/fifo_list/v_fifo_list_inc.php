@@ -83,14 +83,35 @@ if ($fp) {
 		}
 		unset($tmp_name, $tmp_value);
 
-		echo "<tr>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>".$name."</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>".$consumer_count."</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_count."</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>".$waiting_count."</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'>".$importance."</td>\n";
-		echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_fifo_interactive.php?c=".$name."'>view</a></td>\n";
-		echo "</tr>\n";
+		//remove the domain from name
+			$tmp_name = str_replace('_', ' ', $name);
+			$tmp_name_array = explode('@', $name);
+			$tmp_name = $tmp_name_array[0];
+
+		if (ifgroup("superadmin")) {
+			//show all fifo queues
+				echo "<tr>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_name."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$consumer_count."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_count."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$waiting_count."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$importance."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_fifo_interactive.php?c=".$name."'>view</a></td>\n";
+				echo "</tr>\n";
+		}
+		else {
+			//show only the fifo queues that match the v_domain
+				if (stripos($name, $v_domain) !== false) {
+					echo "<tr>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_name."</td>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."'>".$consumer_count."</td>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_count."</td>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."'>".$waiting_count."</td>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."'>".$importance."</td>\n";
+					echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_fifo_interactive.php?c=".$name."'>view</a></td>\n";
+					echo "</tr>\n";
+				}
+		}
 
 		if ($c==0) { $c=1; } else { $c=0; }
 	}

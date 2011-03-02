@@ -34,11 +34,27 @@ else {
 	exit;
 }
 
-$fifo_name = trim($_REQUEST["c"]);
-$tmp_fifo_name = str_replace('_', ' ', $fifo_name);
-//$tmp_fifo_name = str_replace('@', '', $tmp_fifo_name);
-require_once "includes/header.php";
-?><script type="text/javascript">
+//get the fifo_name from http and set it to a php variable
+	$fifo_name = trim($_REQUEST["c"]);
+
+//if not the user is not a member of the superadmin then restrict to viewing their own domain
+	if (!ifgroup("superadmin")) {
+		if (stripos($fifo_name, $v_domain) === false) {
+			echo "access denied";
+			exit;
+		}
+	}
+
+//remove the domain from fifo name
+	$tmp_fifo_name = str_replace('_', ' ', $fifo_name);
+	$tmp_fifo_array = explode('@', $tmp_fifo_name);
+	$tmp_fifo_name = $tmp_fifo_array[0];
+
+//show the header
+	require_once "includes/header.php";
+
+?>
+<script type="text/javascript">
 function loadXmlHttp(url, id) {
 	var f = this;
 	f.xmlHttp = null;

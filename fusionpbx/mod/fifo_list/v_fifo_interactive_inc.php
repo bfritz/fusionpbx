@@ -36,8 +36,14 @@ else {
 
 //set variables
 	$fifo_name = trim($_REQUEST["c"]);
-	$tmp_fifo_name = str_replace('_', ' ', $fifo_name);
-	$tmp_fifo_name = str_replace('@', '', $tmp_fifo_name);
+
+//if not the user is not a member of the superadmin then restrict to viewing their own domain
+	if (!ifgroup("superadmin")) {
+		if (stripos($fifo_name, $v_domain) === false) {
+			echo "access denied";
+			exit;
+		}
+	}
 
 //prepare and send the api command over event socket
 	$switch_cmd = 'fifo list_verbose '.$fifo_name.'';
