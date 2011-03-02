@@ -5318,7 +5318,6 @@ if (!function_exists('sync_package_v_call_center')) {
 
 		$sql = "";
 		$sql .= "select * from v_call_center_queue ";
-		$sql .= "where v_id = '$v_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -5354,8 +5353,7 @@ if (!function_exists('sync_package_v_call_center')) {
 
 						$sql = "";
 						$sql .= "select * from v_dialplan_includes ";
-						$sql .= "where v_id = '$v_id' ";
-						$sql .= "and opt1name = 'call_center_queue_id' ";
+						$sql .= "where opt1name = 'call_center_queue_id' ";
 						$sql .= "and opt1value = '".$row['call_center_queue_id']."' ";
 						$prepstatement2 = $db->prepare($sql);
 						$prepstatement2->execute();
@@ -5404,7 +5402,7 @@ if (!function_exists('sync_package_v_call_center')) {
 
 								$tag = 'action'; //condition, action, antiaction
 								$fieldtype = 'callcenter';
-								$fielddata = $queue_name."@".$v_domain;
+								$fielddata = $queue_name."@".$_SESSION['domains'][$v_id]['domain'];
 								$fieldorder = '004';
 								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 						}
@@ -5460,7 +5458,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = '".$queue_name."@".$v_domain."' ";
+								$sql .= "fielddata = '".$queue_name."@".$_SESSION['domains'][$v_id]['domain']."' ";
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'action' ";
 								$sql .= "and fieldtype = 'callcenter' ";
@@ -5485,13 +5483,12 @@ if (!function_exists('sync_package_v_call_center')) {
 				$v_queues = '';
 				$sql = "";
 				$sql .= "select * from v_call_center_queue ";
-				$sql .= "where v_id = '$v_id' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll();
 				$x=0;
 				foreach ($result as &$row) {
-					//$v_id = $row["v_id"];
+					$v_id = $row["v_id"];
 					$queue_name = $row["queue_name"];
 					$queue_extension = $row["queue_extension"];
 					$queue_strategy = $row["queue_strategy"];
@@ -5511,7 +5508,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						$v_queues .= "\n";
 						$v_queues .= "		";
 					}
-					$v_queues .= "<queue name=\"$queue_name@$v_domain\">\n";
+					$v_queues .= "<queue name=\"$queue_name@".$_SESSION['domains'][$v_id]['domain']."\">\n";
 					$v_queues .= "			<param name=\"strategy\" value=\"$queue_strategy\"/>\n";
 					$v_queues .= "			<param name=\"moh-sound\" value=\"$queue_moh_sound\"/>\n";
 					if (strlen($queue_record_template) > 0) {
@@ -5535,12 +5532,12 @@ if (!function_exists('sync_package_v_call_center')) {
 				$v_agents = '';
 				$sql = "";
 				$sql .= "select * from v_call_center_agent ";
-				$sql .= "where v_id = '$v_id' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll();
 				$x=0;
 				foreach ($result as &$row) {
+					$v_id = $row["v_id"];
 					$agent_name = $row["agent_name"];
 					$agent_type = $row["agent_type"];
 					$agent_call_timeout = $row["agent_call_timeout"];
@@ -5555,7 +5552,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						$v_agents .= "		";
 					}
 					$v_agents .= "		<agent ";
-					$v_agents .= "name=\"$agent_name@$v_domain\" ";
+					$v_agents .= "name=\"$agent_name@".$_SESSION['domains'][$v_id]['domain']."\" ";
 					$v_agents .= "type=\"$agent_type\" ";
 
 					if(stristr($agent_contact, '/gateway/') != FALSE) {
@@ -5564,7 +5561,7 @@ if (!function_exists('sync_package_v_call_center')) {
 					}
 					else {
 						//extensions
-						$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact@$v_domain\" ";
+						$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact@".$_SESSION['domains'][$v_id]['domain']."\" ";
 					}
 					$v_agents .= "status=\"$agent_status\" ";
 					$v_agents .= "max-no-answer=\"$agent_max_no_answer\" ";
@@ -5580,12 +5577,12 @@ if (!function_exists('sync_package_v_call_center')) {
 				$v_tiers = '';
 				$sql = "";
 				$sql .= "select * from v_call_center_tier ";
-				$sql .= "where v_id = '$v_id' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll();
 				$x=0;
 				foreach ($result as &$row) {
+					$v_id = $row["v_id"];
 					$agent_name = $row["agent_name"];
 					$queue_name = $row["queue_name"];
 					$tier_level = $row["tier_level"];
@@ -5594,7 +5591,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						$v_tiers .= "\n";
 						$v_tiers .= "		";
 					}
-					$v_tiers .= "<tier agent=\"$agent_name@$v_domain\" queue=\"$queue_name@$v_domain\" level=\"$tier_level\" position=\"$tier_position\"/>";
+					$v_tiers .= "<tier agent=\"$agent_name@".$_SESSION['domains'][$v_id]['domain']."\" queue=\"$queue_name@".$_SESSION['domains'][$v_id]['domain']."\" level=\"$tier_level\" position=\"$tier_position\"/>";
 					$x++;
 				}
 
