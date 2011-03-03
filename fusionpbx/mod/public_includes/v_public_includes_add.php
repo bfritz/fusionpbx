@@ -67,7 +67,10 @@ require_once "includes/paging.php";
 		//$action_application_2 = check_str($_POST["action_application_2"]);
 		//$action_data_2 = check_str($_POST["action_data_2"]);
 
-		if (!ifgroup("superadmin")) {
+		if (ifgroup("superadmin") && $action == "advanced") {
+			//allow users in the superadmin group advanced control
+		}
+		else {
 			if (strlen($condition_field_1) == 0) { $condition_field_1 = "destination_number"; }
 			if (strlen($condition_expression_1) < 8) { $msg .= "The destination number must be 7 or more digits.<br>\n"; }
 			if (is_numeric($condition_expression_1)) { 
