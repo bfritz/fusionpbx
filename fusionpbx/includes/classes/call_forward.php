@@ -154,10 +154,8 @@ include "root.php";
 				$sql = "delete from v_hunt_group_destinations where hunt_group_id = '$this->call_forward_id' ";
 				$db->exec(check_sql($sql));
 			//prepare the variables
-				if (extension_exists($this->call_forward_number)) {
-					$destination_data = $this->call_forward_number;
-					$destination_type = 'extension';
-				}
+				$destination_data = $this->call_forward_number;
+				$destination_type = 'extension';
 				$destination_profile = 'internal';
 				$destination_timeout = '';
 				$destination_order = '1';
@@ -193,7 +191,6 @@ include "root.php";
 					unset($sql);
 				}
 		} //end function
-
 	}
 
 ?>
