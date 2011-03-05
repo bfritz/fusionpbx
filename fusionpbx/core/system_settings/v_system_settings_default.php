@@ -34,7 +34,6 @@ else {
 	exit;
 }
 
-
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
@@ -46,7 +45,6 @@ else {
 
 //set the required directories
 	require_once "includes/lib_system_settings_default.php";
-
 
 //add to v_system settings
 	$action = "add";
@@ -75,6 +73,7 @@ else {
 		$sql .= "v_htdocs_dir, ";
 		$sql .= "v_log_dir, ";
 		$sql .= "v_extensions_dir, ";
+		$sql .= "v_gateways_dir, ";
 		$sql .= "v_dialplan_public_dir, ";
 		$sql .= "v_dialplan_default_dir, ";
 		$sql .= "v_mod_dir, ";
@@ -114,6 +113,7 @@ else {
 		$sql .= "'$v_htdocs_dir', ";
 		$sql .= "'$v_log_dir', ";
 		$sql .= "'$v_extensions_dir', ";
+		$sql .= "'$v_gateways_dir', ";
 		$sql .= "'$v_dialplan_public_dir', ";
 		$sql .= "'$v_dialplan_default_dir', ";
 		$sql .= "'$v_mod_dir', ";
@@ -156,6 +156,7 @@ else {
 	$sql .= "v_log_dir = '$v_log_dir', ";
 	$sql .= "v_mod_dir = '$v_mod_dir', ";
 	$sql .= "v_extensions_dir = '$v_extensions_dir', ";
+	$sql .= "v_gateways_dir = '$v_gateways_dir', ";
 	$sql .= "v_dialplan_public_dir = '$v_dialplan_public_dir', ";
 	$sql .= "v_dialplan_default_dir = '$v_dialplan_default_dir', ";
 	$sql .= "v_scripts_dir = '$v_scripts_dir', ";

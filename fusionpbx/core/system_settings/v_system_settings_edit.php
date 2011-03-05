@@ -360,7 +360,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update") {
 				//update the system settings
 					$sql = "update v_system_settings set ";
-					//$sql .= "v_id = '$v_id', ";
 					$sql .= "v_domain = '$v_domain', ";
 					$sql .= "v_server_protocol = '$v_server_protocol', ";
 					$sql .= "v_server_port = '$v_server_port', ";

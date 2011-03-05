@@ -95,6 +95,7 @@ else {
 	$v_log_dir = $install_v_dir.'/log';
 	$v_mod_dir = $install_v_dir.'/mod';
 	$v_extensions_dir = $v_conf_dir.'/directory/default';
+	$v_gateways_dir = $v_conf_dir.'/sip_profiles/external';
 	$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
 	$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
 	$v_scripts_dir = $install_v_dir.'/scripts';
@@ -127,6 +128,7 @@ else {
 					$v_log_dir = '/var/log/freeswitch';
 					$v_mod_dir = '/usr/local/lib/freeswitch/mod';
 					$v_extensions_dir = $v_conf_dir.'/directory/default';
+					$v_gateways_dir = $v_conf_dir.'/sip_profiles/external';
 					$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
 					$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
 					$v_scripts_dir = '/usr/local/etc/freeswitch/scripts';
