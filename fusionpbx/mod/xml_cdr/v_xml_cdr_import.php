@@ -36,7 +36,7 @@ require_once "includes/config.php";
 function process_xml_cdr($db, $v_log_dir, $xml_string) {
 
 	//set global variable
-		global $v_id, $debug;
+		global $debug;
 
 	//parse the xml to get the call detail record info
 		try {
@@ -47,7 +47,6 @@ function process_xml_cdr($db, $v_log_dir, $xml_string) {
 		}
 
 	//get the variables from the xml
-		//$v_id = check_str(urldecode($xml->variables->v_id));
 		$uuid = check_str(urldecode($xml->variables->uuid));
 		$domain_name = check_str(urldecode($xml->variables->domain_name));
 		$direction = check_str(urldecode($xml->channel_data->direction));
@@ -86,11 +85,13 @@ function process_xml_cdr($db, $v_log_dir, $xml_string) {
 		unset($x);
 
 	//find the v_id by using the domain
+		if (strlen($domain_name) == 0) { $domain_name = $_SERVER["HTTP_HOST"]; }
 		$sql = "";
 		$sql .= "select v_id from v_system_settings ";
-		$sql .= "where v_domain = '$domain_name' ";
+		$sql .= "where v_domain = '".$_SERVER["HTTP_HOST"]."' ";
 		$row = $db->query($sql)->fetch();
 		$v_id = $row['v_id'];
+		if (strlen($v_id) == 0) { $v_id = '1'; }
 
 	//determine where the xml cdr will be archived
 		$sql = "select * from v_vars ";
