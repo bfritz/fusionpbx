@@ -290,7 +290,7 @@ if ($db_type == "pgsql") {
 
 //domain list
 	if (!is_array($_SESSION["domains"])) {
-		$sql = "select v_id, v_domain, v_template_name from v_system_settings ";
+		$sql = "select * from v_system_settings ";
 		$prepstatement = $db->prepare($sql);
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
