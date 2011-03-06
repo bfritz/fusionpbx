@@ -47,7 +47,6 @@ require_once "includes/checkauth.php";
 			foreach ($result as &$row) {
 				$user_extension_array[$x]['extension_id'] = $row["extension_id"];
 				$user_extension_array[$x]['extension'] = $row["extension"];
-				//$user_extension_array[$x]['zzz'] = $row["zzz"];
 				$x++;
 			}
 			unset ($prepstatement, $x);
@@ -305,7 +304,6 @@ require_once "includes/checkauth.php";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
-
 
 		echo "<span id='uuid_1' style='visibility:hidden;'>$uuid_1</span>\n";
 		echo "<span id='direction_1' style='visibility:hidden;'>$direction_1</span>\n";

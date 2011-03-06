@@ -121,11 +121,28 @@ if (this.xmlHttp.readyState == 4 && (this.xmlHttp.status == 200 || !/^http/.test
 		cid_num_1 = "";
 	}
 
+	//get the user_status from the database
+		if (document.getElementById('db_user_status')) {
+			db_user_status = document.getElementById('db_user_status').innerHTML;
+		}
+	//get the agent_status from select list value
+		if (document.getElementById('agent_status')) {
+			agent_status = document.getElementById('agent_status').value;
+			//if the status from the db doesn't match the one from the select list then update the select
+			if (agent_status != db_user_status) {
+				//prepare teh variable to match the value of the select list
+					tmp_db_user_status = db_user_status.replace(" ", "_");
+					tmp_db_user_status = tmp_db_user_status.replace(" ", "_");
+					if (tmp_db_user_status == "Available_On_Demand") {
+						tmp_db_user_status == "Available (On Demand)";
+					}
+				//update the select list
+					document.getElementById('agent_status').value = tmp_db_user_status;
+			}
+		}
+
 	if (previous_uuid_1 != uuid_1) {
 		if (cid_num_1.length > 6) {
-				//$url = "http://fusionpbx.com/?cid_name={cid_name}&cid_num={cid_num}&uuid={uuid}";
-				//echo urlencode($url);
-				//alert('new call: '+uuid_1+'\n direction: '+direction_1+'\n cid_name: '+cid_name_1+'\n cid_num: '+cid_num_1+'\n url: '+url);
 				var new_url = url;
 				new_url = new_url.replace("{cid_name}", cid_name_1);
 				new_url = new_url.replace("{cid_num}", cid_num_1);

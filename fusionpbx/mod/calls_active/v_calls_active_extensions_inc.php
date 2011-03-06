@@ -96,6 +96,10 @@ require_once "includes/checkauth.php";
 			if (strlen($row["user_status"]) > 0) {
 				$user_array[$row["extension"]]['user_status'] = $row["user_status"];
 				$user_array[$row["extension"]]['username'] = $row["username"];
+				$username_array[$row["username"]]['user_status'] = $row["user_status"];
+				if ($row["username"] == $_SESSION["username"]) {
+					$user_status = $row["user_status"];
+				}
 			}
 			$x++;
 		}
@@ -190,7 +194,6 @@ require_once "includes/checkauth.php";
 							$sql .= "and extension >= $tmp_min ";
 							$sql .= "and extension <= $tmp_max ";
 							$sql .= "and enabled = 'true' ";
-							
 						}
 						else {
 							$sql .= "or v_id = '$v_id' ";
@@ -458,7 +461,7 @@ require_once "includes/checkauth.php";
 										//transfer
 											//uuid_transfer c985c31b-7e5d-3844-8b3b-aa0835ff6db9 -bleg *9999 xml default
 											//document.getElementById('url').innerHTML='v_calls_exec.php?action=energy&direction=down&cmd='+prepare_cmd(escape('$uuid'));
-											echo "	<a href='javascript:void(0);' style='color: #444444;' onMouseover=\"document.getElementById('form_label').innerHTML='<strong>Transfer To</strong>';\" onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">transfer</a>&nbsp;\n";
+											echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">transfer</a>&nbsp;\n";
 										//park
 											echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_park_cmd(escape('$uuid')));\">park</a>&nbsp;\n";
 										//hangup
@@ -473,7 +476,6 @@ require_once "includes/checkauth.php";
 												//start
 												echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_record_cmd(escape('$uuid'), 'active_extensions_', escape('$cid_num'))+'&uuid='+escape('$uuid')+'&action=record&action2=start&prefix=active_extensions_');\">start record</a>&nbsp;\n";
 											}
-
 										echo "	&nbsp;";
 									echo "</td>\n";
 								}
@@ -576,6 +578,13 @@ require_once "includes/checkauth.php";
 			}
 
 		echo "<br /><br />\n";
+
+		if ($user_status == "Available (On Demand)") {
+			$user_status = "Available_On_Demand";
+		}
+		$user_status = str_replace(" ", "_", $user_status);
+		echo "<span id='db_user_status' style='visibility:hidden;'>$user_status</span>\n";
+
 		echo "<div id='cmd_reponse'>\n";
 		echo "</div>\n";
 	}
