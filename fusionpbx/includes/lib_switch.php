@@ -2508,7 +2508,7 @@ function sync_package_v_hunt_group()
 		$tmp .= "\n";
 
 	//prepare for hunt group .lua files to be written. delete all hunt groups that are prefixed with huntgroup_ and have a file extension of .lua
-		$v_prefix = 'huntgroup_';
+		$v_prefix = 'v_huntgroup_';
 		if($dh = opendir($v_scripts_dir)) {
 			$files = Array();
 			while($file = readdir($dh)) {
@@ -2534,7 +2534,7 @@ function sync_package_v_hunt_group()
 
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
-		$sql .= "where v_id = '$v_id' ";
+		//$sql .= "where v_id = '$v_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -2552,6 +2552,7 @@ function sync_package_v_hunt_group()
 					//$row['huntgroupcallerannounce']
 					//$row['hunt_group_enabled']
 					//$row['huntgroupdescr']
+					$v_id = $row['v_id'];
 
 				//add each Hunt Group to the dialplan
 					if (strlen($row['hunt_group_id']) > 0) {
@@ -2597,7 +2598,7 @@ function sync_package_v_hunt_group()
 
 								$tag = 'action'; //condition, action, antiaction
 								$fieldtype = 'lua';
-								$fielddata = 'huntgroup_'.$row['huntgroupextension'].'.lua';
+								$fielddata = 'v_huntgroup_'.$_SESSION['domains'][$v_id]['domain'].'_'.$row['huntgroupextension'].'.lua';
 								$fieldorder = '001';
 								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 						}
@@ -2643,7 +2644,7 @@ function sync_package_v_hunt_group()
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = 'huntgroup_".$row['huntgroupextension'].".lua', ";
+								$sql .= "fielddata = 'v_huntgroup_".$_SESSION['domains'][$v_id]['domain']."_".$row['huntgroupextension'].".lua', ";
 								$sql .= "fieldtype = 'lua' ";
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'action' ";
@@ -3116,7 +3117,7 @@ function sync_package_v_hunt_group()
 					//write the hungroup lua script
 						if (strlen($row['huntgroupextension']) > 0) {
 							if ($row['hunt_group_enabled'] != "false") {
-								$huntgroupfilename = "huntgroup_".$row['huntgroupextension'].".lua";
+								$huntgroupfilename = "v_huntgroup_".$_SESSION['domains'][$v_id]['domain']."_".$row['huntgroupextension'].".lua";
 								//echo "location".$v_scripts_dir."/".$huntgroupfilename;
 								$fout = fopen($v_scripts_dir."/".$huntgroupfilename,"w");
 								fwrite($fout, $tmp);
