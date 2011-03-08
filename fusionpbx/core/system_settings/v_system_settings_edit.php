@@ -313,13 +313,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//if there are no items in the menu then add the default menu
 				$sql = "SELECT * FROM v_users where v_id = '$v_id' ";
-				$result = $db->query($sql)->fetchAll();
-				if (count($result) == 0) {
-					require_once "includes/classes/menu_restore.php";
-					$menu_restore = new menu_restore;
-					$menu_restore->v_id = $v_id;
-					$menu_restore->restore();
+				$prepstatement = $db->prepare(check_sql($sql));
+				if ($prepstatement) {
+					$prepstatement->execute();
+					$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+					if (count($result) == 0) {
+						require_once "includes/classes/menu_restore.php";
+						$menu_restore = new menu_restore;
+						$menu_restore->v_id = $v_id;
+						$menu_restore->restore();
+					}
 				}
+				unset($prepstatement, $result);
 
 			//if the are no groups add the default groups
 				$sql = "SELECT * FROM v_groups where v_id = '$v_id' ";

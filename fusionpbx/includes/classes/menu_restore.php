@@ -112,48 +112,53 @@ include "root.php";
 							$sql = "select * from v_menu ";
 							$sql .= "where v_id = '$v_id' ";
 							$sql .= "and menu_guid = '$menu_guid' ";
-							$result = $db->query($sql)->fetch();
-							if (count($result) == 0) {
-								//insert the default menu into the database
-									$sql = "insert into v_menu ";
-									$sql .= "(";
-									$sql .= "v_id, ";
-									$sql .= "menulanguage, ";
-									$sql .= "menutitle, ";
-									$sql .= "menustr, ";
-									$sql .= "menucategory, ";
-									$sql .= "menugroup, ";
-									$sql .= "menudesc, ";
-									$sql .= "menuorder, ";
-									$sql .= "menuadduser, ";
-									$sql .= "menuadddate, ";
-									$sql .= "menumoduser, ";
-									$sql .= "menumoddate, ";
-									$sql .= "menu_protected, ";
-									$sql .= "menu_guid, ";
-									$sql .= "menu_parent_guid ";
-									$sql .= ")";
-									$sql .= "values ";
-									$sql .= "(";
-									$sql .= "'$v_id', ";
-									$sql .= "'$menulanguage', ";
-									$sql .= "'$menutitle', ";
-									$sql .= "'$menustr', ";
-									$sql .= "'$menucategory', ";
-									$sql .= "'$menugroup', ";
-									$sql .= "'$menudesc', ";
-									$sql .= "'$menuorder', ";
-									$sql .= "'$menuadduser', ";
-									$sql .= "'$menuadddate', ";
-									$sql .= "'$menumoduser', ";
-									$sql .= "'$menumoddate', ";
-									$sql .= "'$menu_protected', ";
-									$sql .= "'$menu_guid', ";
-									$sql .= "'$menu_parent_guid' ";
-									$sql .= ")";
-									$db->exec(check_sql($sql));
-									unset($sql);
+							$prepstatement = $db->prepare(check_sql($sql));
+							if ($prepstatement) {
+								$prepstatement->execute();
+								$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+								if (count($result) == 0) {
+									//insert the default menu into the database
+										$sql = "insert into v_menu ";
+										$sql .= "(";
+										$sql .= "v_id, ";
+										$sql .= "menulanguage, ";
+										$sql .= "menutitle, ";
+										$sql .= "menustr, ";
+										$sql .= "menucategory, ";
+										$sql .= "menugroup, ";
+										$sql .= "menudesc, ";
+										$sql .= "menuorder, ";
+										$sql .= "menuadduser, ";
+										$sql .= "menuadddate, ";
+										$sql .= "menumoduser, ";
+										$sql .= "menumoddate, ";
+										$sql .= "menu_protected, ";
+										$sql .= "menu_guid, ";
+										$sql .= "menu_parent_guid ";
+										$sql .= ")";
+										$sql .= "values ";
+										$sql .= "(";
+										$sql .= "'$v_id', ";
+										$sql .= "'$menulanguage', ";
+										$sql .= "'$menutitle', ";
+										$sql .= "'$menustr', ";
+										$sql .= "'$menucategory', ";
+										$sql .= "'$menugroup', ";
+										$sql .= "'$menudesc', ";
+										$sql .= "'$menuorder', ";
+										$sql .= "'$menuadduser', ";
+										$sql .= "'$menuadddate', ";
+										$sql .= "'$menumoduser', ";
+										$sql .= "'$menumoddate', ";
+										$sql .= "'$menu_protected', ";
+										$sql .= "'$menu_guid', ";
+										$sql .= "'$menu_parent_guid' ";
+										$sql .= ")";
+										$db->exec(check_sql($sql));
+										unset($sql);
+								}
 							}
+							unset($prepstatement, $result);
 					}
 			} //end function
 	} //class
