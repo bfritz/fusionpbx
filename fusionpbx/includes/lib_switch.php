@@ -1912,7 +1912,7 @@ function sync_package_v_extensions()
 		$tmpxml .= "\n";
 		$tmpxml .= "<include>\n";
 		$tmpxml .= "	<!--the domain or ip (the right hand side of the @ in the addr-->\n";
-		$tmpxml .= "	<domain name=\"\$\${domain}\">\n";
+		$tmpxml .= "	<domain name=\"".$extension_dir_name."\">\n";
 		$tmpxml .= "		<params>\n";
 		$tmpxml .= "			<param name=\"dial-string\" value=\"{presence_id=\${dialed_user}@\${dialed_domain}}\${sofia_contact(\${dialed_user}@\${dialed_domain})}\"/>\n";
 		$tmpxml .= "		</params>\n";
