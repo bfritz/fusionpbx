@@ -109,13 +109,11 @@ include "root.php";
 							$menu_parent_guid = $row["menu_parent_guid"];
 
 						//if the guid is not currently in the db then add it
-							$sql = "select count(*) as count from v_menu ";
+							$sql = "select * from v_menu ";
 							$sql .= "where v_id = '$v_id' ";
 							$sql .= "and menu_guid = '$menu_guid' ";
 							$result = $db->query($sql)->fetch();
-							unset($sql);
-
-							if ($result['count'] == 0) {
+							if (count($result) == 0) {
 								//insert the default menu into the database
 									$sql = "insert into v_menu ";
 									$sql .= "(";

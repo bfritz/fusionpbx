@@ -156,101 +156,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	//if there are no items in the menu then add the default menu
-		$sql = "SELECT count(*) as count FROM v_users where v_id = '$v_id' ";
-		$row = $db->query($sql)->fetch();
-		if ($row['count'] == 0) {
-			require_once "includes/classes/menu_restore.php";
-			$menu_restore = new menu_restore;
-			$menu_restore->v_id = '$v_id';
-			$menu_restore->restore();
-		}
-
-	//if the are no groups add the default groups
-		$sql = "SELECT count(*) as count FROM v_groups where v_id = '$v_id' ";
-		$row = $db->query($sql)->fetch();
-		if ($row['count'] == 0) {
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'hidden','Hidden Group hides items in the menu');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'user','User Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'agent','Call Center Agent Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'admin','Administrator Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'superadmin','Super Administrator Group');"; $db->exec(check_sql($sql));
-		}
-
-	//if the extensions directory doesn't exist then create it
-		if (!is_dir($v_extensions_dir)) { mkdir($v_extensions_dir,0777,true); }
-
-	//if the dialplan default directory doesn't exist then create it
-		if (!is_dir($v_dialplan_default_dir)) { mkdir($v_dialplan_default_dir,0777,true); }
-
-	//if the recordings directory doesn't exist then create it
-		if (!is_dir($v_recordings_dir)) { mkdir($v_recordings_dir,0777,true); }
-
-	//if the recordings dialplan entry does not exist then add it
-		$sql = "select count(*) as count, dialplan_include_id from v_dialplan_includes_details ";
-		$sql .= "where fielddata like 'recordings.lua' ";
-		$sql .= "and v_id = '$v_id' ";
-		$row = $db->query($sql)->fetch();
-		if (count($row) == 0) {
-			//add the recordings dialplan entry
-				$sql = "INSERT INTO v_dialplan_includes (v_id, extensionname, extensioncontinue, dialplanorder, context, enabled, descr, opt1name, opt1value) VALUES(".$v_id.",'Recordings','',900,'default','true','*732 default system recordings tool','recordings',732);";
-				if ($db_type == "sqlite" || $db_type == "mysql" ) {
-					$db->exec(check_sql($sql));
-					$dialplan_include_id = $db->lastInsertId($id);
-				}
-				if ($db_type == "pgsql") {
-					$sql .= " RETURNING dialplan_include_id ";
-					$prepstatement = $db->prepare(check_sql($sql));
-					$prepstatement->execute();
-					$result = $prepstatement->fetchAll();
-					foreach ($result as &$row) {
-						$dialplan_include_id = $row["dialplan_include_id"];
-					}
-					unset($prepstatement, $result);
-				}
-			//add the recordings dialplan inclue entry
-				$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES (".$v_id.",".$dialplan_include_id.",NULL,'condition',0,'destination_number','^\\*732$|^\\*732673$','');"; $db->exec(check_sql($sql));
-				$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES (".$v_id.",".$dialplan_include_id.",NULL,'action',1,'set','recordings_dir=$v_recordings_dir','');"; $db->exec(check_sql($sql));
-				$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES (".$v_id.",".$dialplan_include_id.",NULL,'action',2,'set','pin_number=".generate_password(4, 1)."','');"; $db->exec(check_sql($sql));
-				$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES (".$v_id.",".$dialplan_include_id.",NULL,'action',3,'lua','recordings.lua','');"; $db->exec(check_sql($sql));
-		}
-		else {
-			//update the recordings dialplan entry
-				$dialplan_include_id = $row['dialplan_include_id'];
-				$sql = "update v_dialplan_includes_details set";
-				$sql .= "fielddata = 'recordings_dir=".$v_recordings_dir."' ";
-				$sql .= "and v_id = '$v_id' ";
-				$db->exec(check_sql($sql));
-		}
-
-	//if the disa dialplan entry does not exist then add it
-		$sql = "select count(*) as count, dialplan_include_id from v_dialplan_includes_details ";
-		$sql .= "where fielddata like 'disa.lua' ";
-		$sql .= "and v_id = '$v_id' ";
-		$row = $db->query($sql)->fetch();
-		if ($row['count'] == 0) {
-			//add the disa dialplan entry
-				$sql = "INSERT INTO v_dialplan_includes (v_id, extensionname, extensioncontinue, dialplanorder, context, enabled, descr, opt1name, opt1value) VALUES(".$v_id.",'DISA','',900,'default','true','*3472 Direct Inward System Access ','disa',3472);";
-				if ($db_type == "sqlite" || $db_type == "mysql" ) {
-					$db->exec(check_sql($sql));
-					$dialplan_include_id = $db->lastInsertId($id);
-				}
-				if ($db_type == "pgsql") {
-					$sql .= " RETURNING dialplan_include_id ";
-					$prepstatement = $db->prepare(check_sql($sql));
-					$prepstatement->execute();
-					$result = $prepstatement->fetchAll();
-					foreach ($result as &$row) {
-						$dialplan_include_id = $row["dialplan_include_id"];
-					}
-					unset($prepstatement, $result);
-				}
-			//add the recordings dialplan inclue entry
-				$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES(".$v_id.",".$dialplan_include_id.",NULL,'condition',0,'destination_number','^\\*3472$','');"; $db->exec(check_sql($sql));
-				$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES(".$v_id.",".$dialplan_include_id.",NULL,'action',1,'set','pin_number=".generate_password(6, 1)."','');"; $db->exec(check_sql($sql));
-				$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES(".$v_id.",".$dialplan_include_id.",NULL,'action',2,'lua','disa.lua','');"; $db->exec(check_sql($sql));
-		}
-
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add") {
@@ -341,20 +246,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$v_provisioning_http_dir', ";
 					$sql .= "'$v_template_name' ";
 					$sql .= ")";
-					$db->exec(check_sql($sql));
+					if ($db_type == "sqlite" || $db_type == "mysql" ) {
+							$db->exec(check_sql($sql));
+							$v_id = $db->lastInsertId($id);
+					}
+					if ($db_type == "pgsql") {
+							$sql .= " RETURNING v_id ";
+							$prepstatement = $db->prepare(check_sql($sql));
+							$prepstatement->execute();
+							$result = $prepstatement->fetchAll();
+							foreach ($result as &$row) {
+								$v_id = $row["v_id"];
+							}
+							unset($prepstatement, $result);
+					}
 					unset($sql);
-
-				//synchronize the xml config
-					sync_package_v_dialplan_includes();
-
-				//redirect the user
-					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_system_settings.php\">\n";
-					echo "<div align='center'>\n";
-					echo "Add Complete\n";
-					echo "</div>\n";
-					require_once "includes/footer.php";
-					return;
 			} //if ($action == "add")
 
 			if ($action == "update") {
@@ -403,16 +309,122 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "where v_id = '$v_id'";
 					$db->exec(check_sql($sql));
 					unset($sql);
-
-				//redirect the user
-					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_system_settings.php\">\n";
-					echo "<div align='center'>\n";
-					echo "Update Complete\n";
-					echo "</div>\n";
-					require_once "includes/footer.php";
-					return;
 			} //if ($action == "update")
+
+			//if there are no items in the menu then add the default menu
+				$sql = "SELECT * FROM v_users where v_id = '$v_id' ";
+				$result = $db->query($sql)->fetchAll();
+				if (count($result) == 0) {
+					require_once "includes/classes/menu_restore.php";
+					$menu_restore = new menu_restore;
+					$menu_restore->v_id = $v_id;
+					$menu_restore->restore();
+				}
+
+			//if the are no groups add the default groups
+				$sql = "SELECT * FROM v_groups where v_id = '$v_id' ";
+				$result = $db->query($sql)->fetch();
+				if (count($result) == 0) {
+					$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'hidden','Hidden Group hides items in the menu');"; $db->exec(check_sql($sql));
+					$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'user','User Group');"; $db->exec(check_sql($sql));
+					$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'agent','Call Center Agent Group');"; $db->exec(check_sql($sql));
+					$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'admin','Administrator Group');"; $db->exec(check_sql($sql));
+					$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'superadmin','Super Administrator Group');"; $db->exec(check_sql($sql));
+				}
+
+			//if the extensions directory doesn't exist then create it
+				if (!is_dir($v_extensions_dir)) { mkdir($v_extensions_dir,0777,true); }
+
+			//if the dialplan default directory doesn't exist then create it
+				if (!is_dir($v_dialplan_default_dir)) { mkdir($v_dialplan_default_dir,0777,true); }
+
+			//if the recordings directory doesn't exist then create it
+				if (!is_dir($v_recordings_dir)) { mkdir($v_recordings_dir,0777,true); }
+
+			//if the recordings dialplan entry does not exist then add it
+				$sql = "select dialplan_include_id from v_dialplan_includes_details ";
+				$sql .= "where fielddata like 'recordings.lua' ";
+				$sql .= "and v_id = '$v_id' ";
+				$result = $db->query($sql)->fetchAll();
+				if (count($result) == 0) {
+					//add the recordings dialplan entry
+						$sql = "INSERT INTO v_dialplan_includes (v_id, extensionname, extensioncontinue, dialplanorder, context, enabled, descr, opt1name, opt1value) VALUES(".$v_id.",'Recordings','',900,'default','true','*732 default system recordings tool','recordings',732);";
+						if ($db_type == "sqlite" || $db_type == "mysql" ) {
+							$db->exec(check_sql($sql));
+							$dialplan_include_id = $db->lastInsertId($id);
+						}
+						if ($db_type == "pgsql") {
+							$sql .= " RETURNING dialplan_include_id ";
+							$prepstatement = $db->prepare(check_sql($sql));
+							$prepstatement->execute();
+							$result = $prepstatement->fetchAll();
+							foreach ($result as &$row) {
+								$dialplan_include_id = $row["dialplan_include_id"];
+							}
+							unset($prepstatement, $result);
+						}
+					//add the recordings dialplan inclue entry
+						$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES (".$v_id.",".$dialplan_include_id.",NULL,'condition',0,'destination_number','^\\*732$|^\\*732673$','');"; $db->exec(check_sql($sql));
+						$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES (".$v_id.",".$dialplan_include_id.",NULL,'action',1,'set','recordings_dir=$v_recordings_dir','');"; $db->exec(check_sql($sql));
+						$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES (".$v_id.",".$dialplan_include_id.",NULL,'action',2,'set','pin_number=".generate_password(4, 1)."','');"; $db->exec(check_sql($sql));
+						$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES (".$v_id.",".$dialplan_include_id.",NULL,'action',3,'lua','recordings.lua','');"; $db->exec(check_sql($sql));
+				}
+				else {
+					//update the recordings dialplan entry
+						foreach ($result as &$row) {
+							$dialplan_include_id = $row['dialplan_include_id'];
+							$sql = "update v_dialplan_includes_details set";
+							$sql .= "fielddata = 'recordings_dir=".$v_recordings_dir."' ";
+							$sql .= "and v_id = '$v_id' ";
+							$db->exec(check_sql($sql));
+						}
+				}
+
+			//if the disa dialplan entry does not exist then add it
+				$sql = "select dialplan_include_id from v_dialplan_includes_details ";
+				$sql .= "where fielddata like 'disa.lua' ";
+				$sql .= "and v_id = '$v_id' ";
+				$result = $db->query($sql)->fetchAll();
+				if (count($result) == 0) {
+					//add the disa dialplan entry
+						$sql = "INSERT INTO v_dialplan_includes (v_id, extensionname, extensioncontinue, dialplanorder, context, enabled, descr, opt1name, opt1value) VALUES(".$v_id.",'DISA','',900,'default','true','*3472 Direct Inward System Access ','disa',3472);";
+						if ($db_type == "sqlite" || $db_type == "mysql" ) {
+							$db->exec(check_sql($sql));
+							$dialplan_include_id = $db->lastInsertId($id);
+						}
+						if ($db_type == "pgsql") {
+							$sql .= " RETURNING dialplan_include_id ";
+							$prepstatement = $db->prepare(check_sql($sql));
+							$prepstatement->execute();
+							$result = $prepstatement->fetchAll();
+							foreach ($result as &$row) {
+								$dialplan_include_id = $row["dialplan_include_id"];
+							}
+							unset($prepstatement, $result);
+						}
+					//add the recordings dialplan inclue entry
+						$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES(".$v_id.",".$dialplan_include_id.",NULL,'condition',0,'destination_number','^\\*3472$','');"; $db->exec(check_sql($sql));
+						$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES(".$v_id.",".$dialplan_include_id.",NULL,'action',1,'set','pin_number=".generate_password(6, 1)."','');"; $db->exec(check_sql($sql));
+						$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES(".$v_id.",".$dialplan_include_id.",NULL,'action',2,'lua','disa.lua','');"; $db->exec(check_sql($sql));
+				}
+
+			//synchronize the xml config
+				sync_package_v_dialplan_includes();
+
+			//redirect the user
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_system_settings.php\">\n";
+				echo "<div align='center'>\n";
+				if ($action == "add") {
+					echo "Add Complete\n";
+				}
+				if ($action == "update") {
+					echo "Update Complete\n";
+				}
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+
 		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
