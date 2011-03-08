@@ -191,7 +191,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "where fielddata like 'recordings.lua' ";
 		$sql .= "and v_id = '$v_id' ";
 		$row = $db->query($sql)->fetch();
-		if ($row['count'] == 0) {
+		if (count($row) == 0) {
 			//add the recordings dialplan entry
 				$sql = "INSERT INTO v_dialplan_includes (v_id, extensionname, extensioncontinue, dialplanorder, context, enabled, descr, opt1name, opt1value) VALUES(".$v_id.",'Recordings','',900,'default','true','*732 default system recordings tool','recordings',732);";
 				if ($db_type == "sqlite" || $db_type == "mysql" ) {
