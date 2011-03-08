@@ -312,7 +312,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			} //if ($action == "update")
 
 			//if there are no items in the menu then add the default menu
-				$sql = "SELECT * FROM v_users where v_id = '$v_id' ";
+				$sql = "SELECT * FROM v_menu where v_id = '$v_id' ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				if ($prepstatement) {
 					$prepstatement->execute();
