@@ -46,8 +46,14 @@ if ($_GET['a'] == "default") {
 			$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
 		}
 	//write the dialplan/default.xml file to the directory
-		if (strlen($v_provisioning_tftp_dir) > 0) {
-			$fh = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/'.$v_domain.'.xml',"w") or die("Unable to write to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/".$v_domain.".xml. Make sure the path exists and permissons are set correctly.");
+		if (count($_SESSION['domains']) < 2) {
+			$tmp_file_name = $v_conf_dir.'/dialplan/default.xml';
+		}
+		else {
+			$tmp_file_name = $v_conf_dir.'/dialplan/'.$v_domain.'.xml';
+		}
+		if (!file_exists($tmp_file_name)) {
+			$fh = fopen($tmp_file_name,'w') or die('Unable to write to '.$tmp_file_name.'. Make sure the path exists and permissons are set correctly.');
 			fwrite($fh, $file_contents);
 			fclose($fh);
 		}
