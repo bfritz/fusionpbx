@@ -200,7 +200,7 @@ echo "	<td align=\"center\">\n";
 			//print_r( $row );
 			echo "<tr >\n";
 			if (ifgroup("superadmin")) {
-				echo "	<td valign='top' class='".$row_style[$c]."'>".$_SESSION['array_domains'][$row['v_id']]['domain'] ."&nbsp;</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>".$_SESSION['domains'][$row['v_id']]['domain'] ."&nbsp;</td>\n";
 			}
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['username']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['userfirstname']."&nbsp;</td>\n";
