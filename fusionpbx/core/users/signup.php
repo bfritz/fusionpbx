@@ -299,7 +299,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 		echo "	<td class=\"vtable\">\n";
 		echo "		<select id='v_id' name='v_id' class='formfld' style=''>\n";
 		echo "		<option value=''></option>\n";
-		foreach($_SESSION['array_domains'] as $row) {
+		foreach($_SESSION['domains'] as $row) {
 			if ($row['v_id'] == $v_id) {
 				echo "	<option value='".$row['v_id']."' selected='selected'>".$row['domain']."</option>\n";
 			}
