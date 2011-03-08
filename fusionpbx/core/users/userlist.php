@@ -125,8 +125,13 @@ echo "	<td align=\"center\">\n";
 //get the user list from the database
 	$sql = "";
 	$sql .= " select * from v_users ";
-	$sql .= " where v_id = '$v_id' ";
-	$sql .= " and usercategory = 'user' ";
+	if (ifgroup("superadmin")) {
+		$sql .= " where usercategory = 'user' ";
+	}
+	else {
+		$sql .= " where v_id = '$v_id' ";
+		$sql .= " and usercategory = 'user' ";
+	}
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= " and $field_name = '$field_value' ";
 	}
@@ -145,8 +150,13 @@ echo "	<td align=\"center\">\n";
 
 	$sql = "";
 	$sql .= " select * from v_users ";
-	$sql .= " where v_id = '$v_id' ";
-	$sql .= " and usercategory = 'user' ";
+	if (ifgroup("superadmin")) {
+		$sql .= " where usercategory = 'user' ";
+	}
+	else {
+		$sql .= " where v_id = '$v_id' ";
+		$sql .= " and usercategory = 'user' ";
+	}
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= " and $field_name like '%$field_value%' ";
 	}
@@ -168,6 +178,9 @@ echo "	<td align=\"center\">\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
+	if (ifgroup("superadmin")) {
+		echo "<th>Domain</th>\n";
+	}
 	echo thorderby('username', 'Username', $orderby, $order);
 	echo thorderby('userfirstname', 'First Name', $orderby, $order);
 	echo thorderby('userlastname', 'Last Name', $orderby, $order);
@@ -186,6 +199,9 @@ echo "	<td align=\"center\">\n";
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
+			if (ifgroup("superadmin")) {
+				echo "	<td valign='top' class='".$row_style[$c]."'>".$_SESSION['array_domains'][$row['v_id']]['domain'] ."&nbsp;</td>\n";
+			}
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['username']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['userfirstname']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['userlastname']."&nbsp;</td>\n";

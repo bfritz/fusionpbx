@@ -35,6 +35,9 @@ else {
 	return;
 }
 
+if (ifgroup("superadmin")) {
+	$v_id = check_str($_POST["v_id"]);
+}
 $username = check_str($_POST["username"]);
 $password = check_str($_POST["password"]);
 $confirmpassword = check_str($_POST["confirmpassword"]);
@@ -287,12 +290,34 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	echo "<b>To sign up as a member, please fill out this form completely. All fields are required. </b><br>";
 	echo "<div class='borderlight' style='padding:10px;'>\n";
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
+
+	if (ifgroup("superadmin")) {
+		echo "	<tr>\n";
+		echo "	<td width='20%' class=\"vncellreq\" style='text-align: left;'>\n";
+		echo "		Domain: \n";
+		echo "	</td>\n";
+		echo "	<td class=\"vtable\">\n";
+		echo "		<select id='v_id' name='v_id' class='formfld' style=''>\n";
+		echo "		<option value=''></option>\n";
+		foreach($_SESSION['array_domains'] as $row) {
+			if ($row['v_id'] == $v_id) {
+				echo "	<option value='".$row['v_id']."' selected='selected'>".$row['domain']."</option>\n";
+			}
+			else {
+				echo "	<option value='".$row['v_id']."'>".$row['domain']."</option>\n";
+			}
+		}
+		echo "	</select>\n";
+		echo "	<br />\n";
+		//echo "	Select the domain.<br />\n";
+		echo "	</td>\n";
+		echo "	</tr>\n";
+	}
+
 	echo "	<tr>";
 	echo "		<td class='vncellreq' width='40%'>Username:</td>";
 	echo "		<td  class='vtable' width='60%'><input type='text' class='formfld' autocomplete='off' name='username' value='$username'></td>";
-	//echo "		<td>$username</td>";
 	echo "	</tr>";
-
 
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Password:</td>";
@@ -318,261 +343,8 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	echo "		<td class='vncellreq'>Email:</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='useremail' value='$useremail'></td>";
 	echo "	</tr>";
-	//echo "    </table>";
-	//echo "    </div>";
-	//echo "<br>";
-
-
-/*
-	echo "<b>Physical Address</b><br>";
-	echo "<div class='borderlight' style='padding:10px;'>\n";
-	echo "<table $tablewidth>";
-	echo "	<tr>";
-	echo "		<td width='40%'>Address 1:</td>";
-	echo "		<td width='60%'><input type='text' class='formfld' name='userphysicaladdress1' value='$userphysicaladdress1'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Address 2:</td>";
-	echo "		<td><input type='text' class='txt' name='userphysicaladdress2' value='$userphysicaladdress2'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>City:</td>";
-	echo "		<td><input type='text' class='txt' name='userphysicalcity' value='$userphysicalcity'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>State/Province:</td>";
-	echo "		<td>";
-	//echo "            <input type='text' class='txt' name='userphysicalstateprovince' value='$userphysicalstateprovince'>";
-	//---- Begin Select List --------------------
-	$sql = "SELECT * FROM v_states ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-
-	echo "<select name=\"userphysicalstateprovince\" class='txt'>\n";
-	echo "<option value=\"\"></option>\n";
-	$result = $prepstatement->fetchAll();
-	//$catcount = count($result);
-	foreach($result as $field) {
-	  if ($userbillingstateprovince == $field[abbrev]) {
-		echo "<option value='".$field[abbrev]."' selected>".$field[state]."</option>\n";
-	  }
-	  else {
-		echo "<option value='".$field[abbrev]."'>".$field[state]."</option>\n";
-	  }
-	}
-
-	echo "</select>";
-	unset($sql, $result);
-	//---- End Select List --------------------
-	echo "        </td>";
-	echo "        </td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Country:</td>";
-	echo "		<td><input type='text' class='txt' name='userphysicalcountry' value='$userphysicalcountry'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Postal Code:</td>";
-	echo "		<td><input type='text' class='txt' name='userphysicalpostalcode' value='$userphysicalpostalcode'></td>";
-	echo "	</tr>";
-	echo "    </table>";
-	echo "    </div>";
-	echo "<br>";
-
-	echo "<b>Mailing Address</b><br>";
-	echo "<div class='borderlight' style='padding:10px;'>\n";
-	echo "<table $tablewidth>";
-	echo "	<tr>";
-	echo "		<td width='40%'>Address 1:</td>";
-	echo "		<td width='60%'><input type='text' class='txt' name='usermailingaddress1' value='$usermailingaddress1'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Address 2:</td>";
-	echo "		<td><input type='text' class='txt' name='usermailingaddress2' value='$usermailingaddress2'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>City:</td>";
-	echo "		<td><input type='text' class='txt' name='usermailingcity' value='$usermailingcity'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>State/Province:</td>";
-	echo "		<td><input type='text' class='txt' name='usermailingstateprovince' value='$usermailingstateprovince'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Country:</td>";
-	echo "		<td><input type='text' class='txt' name='usermailingcountry' value='$usermailingcountry'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Postal Code:</td>";
-	echo "		<td><input type='text' class='txt' name='usermailingpostalcode' value='$usermailingpostalcode'></td>";
-	echo "	</tr>";
-	echo "    </table>";
-	echo "    </div>";
-	echo "<br>";
-
-	echo "<b>Billing Address</b><br>";
-	echo "<div class='borderlight' style='padding:10px;'>\n";
-	echo "<table $tablewidth>";
-	echo "	<tr>";
-	echo "		<td width='40%'>Address 1:</td>";
-	echo "		<td width='60%'><input type='text' class='txt' name='userbillingaddress1' value='$userbillingaddress1'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Address 2:</td>";
-	echo "		<td><input type='text' class='txt' name='userbillingaddress2' value='$userbillingaddress2'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>City:</td>";
-	echo "		<td><input type='text' class='txt' name='userbillingcity' value='$userbillingcity'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>State/Province:</td>";
-	echo "		<td>";
-	//echo "            <input type='text' class='txt' name='userbillingstateprovince' value='$userbillingstateprovince'>";
-	//---- Begin Select List --------------------
-	$sql = "SELECT * FROM v_states ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-
-	echo "<select name=\"userbillingstateprovince\" class='txt'>\n";
-	echo "<option value=\"\"></option>\n";
-	$result = $prepstatement->fetchAll();
-	//$catcount = count($result);
-	foreach($result as $field) {
-	  if ($userbillingstateprovince == $field[abbrev]) {
-		echo "<option value='".$field[abbrev]."' selected>".$field[state]."</option>\n";
-	  }
-	  else {
-		echo "<option value='".$field[abbrev]."'>".$field[state]."</option>\n";
-	  }
-	}
-
-	echo "</select>";
-	unset($sql, $result);
-	//---- End Select List --------------------
-	echo "        </td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Country:</td>";
-	echo "		<td><input type='text' class='txt' name='userbillingcountry' value='$userbillingcountry'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Postal Code:</td>";
-	echo "		<td><input type='text' class='txt' name='userbillingpostalcode' value='$userbillingpostalcode'></td>";
-	echo "	</tr>";
-	echo "    </table>";
-	echo "    </div>";
-	echo "<br>";
-
-	echo "<b>Shipping Address</b><br>";
-	echo "<div class='borderlight' style='padding:10px;'>\n";
-	echo "<table $tablewidth>";
-	echo "	<tr>";
-	echo "		<td width='40%'>Address 1:</td>";
-	echo "		<td width='60%'><input type='text' class='txt' name='usershippingaddress1' value='$usershippingaddress1'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Address 2:</td>";
-	echo "		<td><input type='text' class='txt' name='usershippingaddress2' value='$usershippingaddress2'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>City:</td>";
-	echo "		<td><input type='text' class='txt' name='usershippingcity' value='$usershippingcity'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>State/Province:</td>";
-	echo "		<td><input type='text' class='txt' name='usershippingstateprovince' value='$usershippingstateprovince'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Country:</td>";
-	echo "		<td><input type='text' class='txt' name='usershippingcountry' value='$usershippingcountry'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td>Postal Code:</td>";
-	echo "		<td><input type='text' class='txt' name='usershippingpostalcode' value='$usershippingpostalcode'></td>";
-	echo "	</tr>";
-	echo "    </table>";
-	echo "    </div>";
-	echo "<br>";
-*/
-
-	//echo "<b>Additional Info</b><br>";
-	//echo "<div class='borderlight' style='padding:10px;'>\n";
-	//echo "<table $tablewidth>";
-	//echo "	<tr>";
-	//echo "		<td width='40%'>Website:</td>";
-	//echo "		<td width='60%'><input type='text' class='txt' name='userurl' value='$userurl'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Phone 1:</td>";
-	//echo "		<td><input type='text' class='txt' name='userphone1' value='$userphone1'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Phone 1 Ext:</td>";
-	//echo "		<td><input type='text' class='txt' name='userphone1ext' value='$userphone1ext'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Phone 2:</td>";
-	//echo "		<td><input type='text' class='txt' name='userphone2' value='$userphone2'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Phone 2 Ext:</td>";
-	//echo "		<td><input type='text' class='txt' name='userphone2ext' value='$userphone2ext'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Mobile:</td>";
-	//echo "		<td><input type='text' class='txt' name='userphonemobile' value='$userphonemobile'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Emergency Mobile:</td>";
-	//echo "		<td><input type='text' class='txt' name='userphoneemergencymobile' value='$userphoneemergencymobile'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Fax:</td>";
-	//echo "		<td><input type='text' class='txt' name='userphonefax' value='$userphonefax'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Email:</td>";
-	//echo "		<td><input type='text' class='txt' name='useremail' value='$useremail'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Emergency Email:</td>";
-	//echo "		<td><input type='text' class='txt' name='useremailemergency' value='$useremailemergency'></td>";
-	//echo "	</tr>";
-
-	/*
-	//--- begin captcha ---
-	echo "	<tr>";
-	echo "        <td>&nbsp;</td>\n";
-	echo "		<td align='right'>\n";
-	echo "	    <br>\n";
-	echo "			<script language=\"JavaScript\" type=\"text/javascript\">\n";
-	echo "				function genNewCaptcha(imgObj) {\n";
-	echo "					var randnum = Math.floor((1-1000)*Math.random()+1000);\n";
-	echo "					imgObj.src='/includes/captcha/img.php?x=' + randnum;\n";
-	echo "				}\n";
-	echo "			</script>\n";
-	echo "			<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n";
-	echo "				<tr>\n";
-	echo "					<td align=\"left\" colspan=\"2\" style=\"font-size: 11px;\">Please enter the text you see from the image below...</td>\n";
-	echo "				</tr>\n";
-	echo "				<tr>\n";
-	echo "\n";
-	echo "					<td align=\"center\" valign=\"bottom\" width=\"50%\"><img id=\"captchaimg\" src=\"/includes/captcha/img.php\" onclick=\"genNewCaptcha(this); document.getElementById('captcha').focus();\" onmouseover=\"this.style.cursor='hand';\" alt=\"Click for a new image.\"></td>\n";
-	echo "					<td align=\"center\" valign=\"bottom\" width=\"50%\"><input type=\"text\" class=\"txt\" style=\"text-align: center;\" name=\"captcha\" id=\"captcha\" size=\"15\" style=\"margin-top: 15px;\"></td>\n";
-	echo "				</tr>\n";
-	echo "				<td align=\"left\" colspan=\"2\" style=\"font-size: 9px;\"><br>Can't read the image text?  Click the image for a new one.</td>\n";
-	echo "			</table>\n";
-
-	echo "  			<br>";
-	echo "        </td>";
-	echo "	</tr>";
-	//--- end captcha ---
-	*/
-
-
-	echo "    </table>";
-	echo "    </div>";
+	echo "</table>";
+	echo "</div>";
 
 	echo "<div class='' style='padding:10px;'>\n";
 	echo "<table $tablewidth>";

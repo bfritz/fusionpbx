@@ -45,6 +45,11 @@ else {
 		}
 	}
 
+//get the v_id
+	if (ifgroup("superadmin")) {
+		$v_id = check_str($_REQUEST["v_id"]);
+	}
+
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
@@ -130,6 +135,9 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$groupmember = check_str($_POST["groupmember"]);
 
 	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
+	if (ifgroup("superadmin")) {
+		if (strlen($v_id) == 0) { $msgerror .= "Please provide the domain.<br>\n"; }
+	}
 	if (strlen($username) == 0) { $msgerror .= "Please provide the username.<br>\n"; }
 	if ($password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
 	if (strlen($userfirstname) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
@@ -189,9 +197,12 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				}
 		}
 
-	//set the session theme for the active user
-		if ($_SESSION["username"] == $username) {
-			$_SESSION["template_name"] = $user_template_name;
+	//if the template has not been assigned by the superadmin
+		if (strlen($_SESSION["v_template_name"]) == 0) {
+			//set the session theme for the active user
+			if ($_SESSION["username"] == $username) {
+				$_SESSION["template_name"] = $user_template_name;
+			}
 		}
 
 	//sql update
@@ -280,8 +291,13 @@ else {
 	//allow admin access
 	if (ifgroup("admin")) {
 		if (strlen($id)> 0) {
-			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and id = '$id' ";
+			if (ifgroup("superadmin")) {
+				$sql .= "where id = '$id' ";
+			}
+			else {
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and id = '$id' ";
+			}
 		}
 		else {
 			$sql .= "where v_id = '$v_id' ";
@@ -298,6 +314,9 @@ else {
 	foreach ($result as &$row) {
 		if (ifgroup("admin")) {
 			$username = $row["username"];
+		}
+		if (ifgroup("superadmin")) {
+			$v_id = $row["v_id"];
 		}
 		$password = $row["password"];
 		$userfirstname = $row["userfirstname"];
@@ -345,38 +364,66 @@ else {
 	$groupmemberlist = groupmemberlist($db, $username);
 }
 
+	$tablewidth ='width="100%"';
 
 	require_once "includes/header.php";
+	echo "<form method='post' action=''>";
 	echo "<br />\n";
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr>\n";
-	echo "<td align='left' width='90%' nowrap><b>User Manager</b></td>\n";
 	echo "<td>\n";
-	echo "  <input type='button' class='btn' onclick=\"window.location='index.php'\" value='Back'>";
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "<td align='left' colspan='4'>\n";
-	echo "Edit user information and group membership. \n";
-	echo "<br />\n";
-	echo "<br />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "	<td align=\"left\">\n";
 
-	$tablewidth ='width="100%"';
-	echo "<form method='post' action=''>";
-	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
+	echo "<table $tablewidth cellpadding='3' cellspacing='0' border='0'>";
+	echo "<td align='left' width='90%' nowrap><b>User Manager</b></td>\n";
+	echo "<td nowrap='nowrap'>\n";
+	echo "	<input type='submit' name='submit' class='btn' value='Save'>";
+	echo "	<input type='button' class='btn' onclick=\"window.location='index.php'\" value='Back'>";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td align='left' colspan='2'>\n";
+	echo "	Edit user information and group membership. \n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+
+	echo "<br />\n";
+
+	echo "<table $tablewidth cellpadding='6' cellspacing='0' border='0'>";
+
 	echo "<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>User Info</th>\n";
 	echo "</tr>\n";
+
 	echo "	<tr>";
 	echo "		<td width='30%' class='vncellreq'>Username:</td>";
 	echo "		<td width='70%' class='vtable'>$username</td>";
 	echo "	</tr>";
+
+	if (ifgroup("superadmin")) {
+		echo "	<tr>\n";
+		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "		Domain: \n";
+		echo "	</td>\n";
+		echo "	<td class=\"vtable\">\n";
+		echo "		<select id='v_id' name='v_id' class='formfld' style=''>\n";
+		echo "		<option value=''></option>\n";
+		foreach($_SESSION['array_domains'] as $row) {
+			if ($row['v_id'] == $v_id) {
+				echo "	<option value='".$row['v_id']."' selected='selected'>".$row['domain']."</option>\n";
+			}
+			else {
+				echo "	<option value='".$row['v_id']."'>".$row['domain']."</option>\n";
+			}
+		}
+		echo "	</select>\n";
+		echo "	<br />\n";
+		//echo "	Select the domain.<br />\n";
+		echo "	</td>\n";
+		echo "	</tr>\n";
+	}
 
 	echo "	<tr>";
 	echo "		<td class='vncell'>Password:</td>";
@@ -420,7 +467,7 @@ else {
 			echo "<tr>\n";
 			echo "	<td class='vtable'>".$field['groupid']."</td>\n";
 			echo "	<td>\n";
-			echo "		<a href='usersupdate.php?id=".$id."&groupid=".$field['groupid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='usersupdate.php?id=".$id."&v_id=".$v_id."&groupid=".$field['groupid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 		}
@@ -661,37 +708,40 @@ else {
 		echo "	</td>\n";
 		echo "	</tr>\n";
 	}
-	echo "	<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		Template: \n";
-	echo "	</td>\n";
-	echo "	<td class=\"vtable\">\n";
-	echo "		<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
-	echo "		<option value=''></option>\n";
-	$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
-	if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
-		while (false !== ($dir_name = readdir($handle))) {
-			if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
-				$dir_label = str_replace('_', ' ', $dir_name);
-				$dir_label = str_replace('-', ' ', $dir_label);
-				if ($dir_name == $user_template_name) {
-					echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
-				}
-				else {
-					echo "		<option value='$dir_name'>$dir_label</option>\n";
+
+	//if the template has not been assigned by the superadmin
+	if (strlen($_SESSION["v_template_name"]) == 0) {
+		echo "	<tr>\n";
+		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "		Template: \n";
+		echo "	</td>\n";
+		echo "	<td class=\"vtable\">\n";
+		echo "		<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
+		echo "		<option value=''></option>\n";
+		$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
+		if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
+			while (false !== ($dir_name = readdir($handle))) {
+				if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
+					$dir_label = str_replace('_', ' ', $dir_name);
+					$dir_label = str_replace('-', ' ', $dir_label);
+					if ($dir_name == $user_template_name) {
+						echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
+					}
+					else {
+						echo "		<option value='$dir_name'>$dir_label</option>\n";
+					}
 				}
 			}
+			closedir($handle);
 		}
-		closedir($handle);
+		echo "	</select>\n";
+		echo "	<br />\n";
+		echo "	Select a template to set as the default and then press save.<br />\n";
+		echo "	</td>\n";
+		echo "	</tr>\n";
 	}
-	echo "	</select>\n";
-	echo "	<br />\n";
-	echo "	Select a template to set as the default and then press save.<br />\n";
-	echo "	</td>\n";
-	echo "	</tr>\n";
 	echo "    </table>";
 
-	echo "<br>";
 	echo "<br>";
 
 	echo "<div class='' style='padding:10px;'>\n";
@@ -704,12 +754,12 @@ else {
 	echo "		</td>";
 	echo "	</tr>";
 	echo "</table>";
-	echo "</form>";
 
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
+	echo "</form>";
 
 
   require_once "includes/footer.php";
