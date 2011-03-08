@@ -36,24 +36,23 @@ else {
 require_once "includes/header.php";
 
 if ($_GET['a'] == "default") {
-	//read the default config file
-	$fd = fopen($_SERVER["DOCUMENT_ROOT"]."/includes/templates/conf/dialplan/default.xml", "r");
-	$v_content = fread($fd, filesize($_SERVER["DOCUMENT_ROOT"]."/includes/templates/conf/dialplan/default.xml"));
-	fclose($fd);
-
-	//open the dialplan xml file for writing
-	if (file_exists($v_conf_dir."/dialplan/$v_domain.xml")) {
-		$v_content = str_replace("{v_domain}", $v_domain, $v_content);
-		$fd = fopen($v_conf_dir."/dialplan/$v_domain.xml", "w");
-	}
-	else {
-		$v_content = str_replace("{v_domain}", "default", $v_content);
-		$fd = fopen($v_conf_dir."/dialplan/default.xml", "w");
-	}
-	fwrite($fd, $v_content);
-	fclose($fd);
-
-	$savemsg = "Default Restored";
+	//get the contents of the dialplan/default.xml
+		$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/dialplan/default.xml");
+	//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
+		if (count($_SESSION['domains']) < 2) {
+			$file_contents = str_replace("{v_domain}", 'default', $file_contents);
+		}
+		else {
+			$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
+		}
+	//write the dialplan/default.xml file to the directory
+		if (strlen($v_provisioning_tftp_dir) > 0) {
+			$fh = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/'.$v_domain.'.xml',"w") or die("Unable to write to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/".$v_domain.".xml. Make sure the path exists and permissons are set correctly.");
+			fwrite($fh, $file_contents);
+			fclose($fh);
+		}
+	//set the message
+		$savemsg = "Default Restored";
 }
 
 if ($_POST['a'] == "save") {

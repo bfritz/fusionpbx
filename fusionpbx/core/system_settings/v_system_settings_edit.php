@@ -408,6 +408,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						$sql = "INSERT INTO v_dialplan_includes_details (v_id, dialplan_include_id, parent_id, tag, fieldorder, fieldtype, fielddata, fieldbreak) VALUES(".$v_id.",".$dialplan_include_id.",NULL,'action',2,'lua','disa.lua','');"; $db->exec(check_sql($sql));
 				}
 
+			//write the dialplan
+				//get the contents of the dialplan/default.xml
+					$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/dialplan/default.xml");
+				//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
+					if (count($_SESSION['domains']) < 2) {
+						$file_contents = str_replace("{v_domain}", 'default', $file_contents);
+					}
+					else {
+						$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
+					}
+				//write the dialplan/default.xml file to the directory
+					if (strlen($v_provisioning_tftp_dir) > 0) {
+						$fh = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/'.$v_domain.'.xml',"w") or die("Unable to write to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/".$v_domain.".xml. Make sure the path exists and permissons are set correctly.");
+						fwrite($fh, $file_contents);
+						fclose($fh);
+					}
+
 			//synchronize the xml config
 				sync_package_v_dialplan_includes();
 
