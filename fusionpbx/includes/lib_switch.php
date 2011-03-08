@@ -312,16 +312,21 @@ foreach($v_settings_array as $name => $value) {
 			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 			$sql .= "order by extension asc ";
 			$result = $db->query($sql)->fetchAll();
-			$x = 1;
-			foreach($result as $row) {
-				if (count($result) == $x) {
-					$_SESSION['user_extension_list'] .= $row['extension']."";
+			if (count($result) == 0) {
+				//no result found
+			}
+			else {
+				$x = 1;
+				foreach($result as $row) {
+					if (count($result) == $x) {
+						$_SESSION['user_extension_list'] .= $row['extension']."";
+					}
+					else {
+						$_SESSION['user_extension_list'] .= $row['extension']."|";
+					}
+					$_SESSION['user_context'] = $row["user_context"];
+					$x++;
 				}
-				else {
-					$_SESSION['user_extension_list'] .= $row['extension']."|";
-				}
-				$_SESSION['user_context'] = $row["user_context"];
-				$x++;
 			}
 			$user_extension_list = $_SESSION['user_extension_list'];
 			$ext_array = explode("|",$user_extension_list);
