@@ -704,7 +704,7 @@ else {
 		}
 		echo "		</select>\n";
 		echo "		<br />\n";
-		echo "		Select a template to set as the default and then press save.<br />\n";
+		echo "		Select a the user status.<br />\n";
 		echo "	</td>\n";
 		echo "	</tr>\n";
 	}

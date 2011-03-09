@@ -64,12 +64,7 @@ $order = $_GET["order"];
 	$sql .= " select * from v_ivr_menu_options ";
 	$sql .= " where v_id = '$v_id' ";
 	$sql .= " and ivr_menu_id = '$ivr_menu_id' ";
-	if (strlen($orderby)> 0) { 
-		$sql .= "order by ivr_menu_options_order $orderby $order "; 
-	}
-	else {
-		$sql .= "order by ivr_menu_options_digits, ivr_menu_options_order asc "; 
-	}
+	$sql .= "order by ivr_menu_options_order asc "; 
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -83,15 +78,10 @@ $order = $_GET["order"];
 	$offset = $rowsperpage * $page;
 
 	$sql = "";
-	$sql .= " select * from v_ivr_menu_options ";
-	$sql .= " where v_id = '$v_id' ";
-	$sql .= " and ivr_menu_id = '$ivr_menu_id' ";
-	if (strlen($orderby)> 0) { 
-		$sql .= "order by ivr_menu_options_order $orderby $order "; 
-	}
-	else {
-		$sql .= "order by ivr_menu_options_digits, ivr_menu_options_order asc "; 
-	}
+	$sql .= "select * from v_ivr_menu_options ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and ivr_menu_id = '$ivr_menu_id' ";
+	$sql .= "order by ivr_menu_options_order asc "; 
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -102,14 +92,12 @@ $order = $_GET["order"];
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
-
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('ivr_menu_options_digits', 'Option', $orderby, $order);
-	//echo thorderby('ivr_menu_options_action', 'Type', $orderby, $order);
-	echo thorderby('ivr_menu_options_param', 'Destination', $orderby, $order);
-	echo thorderby('ivr_menu_options_order', 'Order', $orderby, $order);
-	echo thorderby('ivr_menu_options_desc', 'Description', $orderby, $order);
+	echo "<th>Option</th>\n";
+	echo "<th>Destination</th>\n";
+	echo "<th>Order</th>\n";
+	echo "<th>Description</th>\n";
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_ivr_menu_options_edit.php?ivr_menu_id=".$row[ivr_menu_id]."' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
