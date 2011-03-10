@@ -52,10 +52,10 @@ require_once "includes/config.php";
 //if password was defined in the system -> variables page then require the password.
 	if (strlen($password) > 0) {
 		//deny access if the password doesn't match
-			if ($password != $_GET['password']) {
+			if ($password != $_REQUEST['password']) {
 				//Log the failed auth attempt to the system, to be available for fail2ban.
 				openlog('FusionPBX', LOG_NDELAY, LOG_AUTH);
-				syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt bad password for ".$_GET['mac']);
+				syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt bad password for ".$_REQUEST['mac']);
 				closelog();
 
 				usleep(rand(1000000,3500000));//1-3.5 seconds.
@@ -64,13 +64,19 @@ require_once "includes/config.php";
 			}
 	}
 
-//test URL without rewrite
-	//http://10.2.0.2/mod/provision/?mac=xx-xx-xx-xx-xx-xx&password=555555
+//send a request to a remote server to validate the MAC address and secret
+	if (strlen($_SERVER['auth_server']) > 0) {
+		$result = send_http_request($_SERVER['auth_server'], 'mac='.$_REQUEST['mac'].'&secret='.$_REQUEST['secret']);
+		if ($result == "false") {
+			echo "access denied";
+			exit;
+		}
+	}
 
 //define variables from HTTP GET
-	$mac = $_GET['mac'];
-	if (strlen($_GET['template']) > 0) {
-		$phone_template = $_GET['template'];
+	$mac = $_REQUEST['mac'];
+	if (strlen($_REQUEST['template']) > 0) {
+		$phone_template = $_REQUEST['template'];
 	}
 
 	if(empty($mac)){//check alternate MAC source
@@ -84,7 +90,7 @@ require_once "includes/config.php";
 	if (strlen($mac) == 12) { 
 		$mac = substr($mac, 0,2).'-'.substr($mac, 2,2).'-'.substr($mac, 4,2).'-'.substr($mac, 6,2).'-'.substr($mac, 8,2).'-'.substr($mac, 10,2);
 	}
-	$file = $_GET['file'];
+	$file = $_REQUEST['file'];
 
 //check to see if the mac_address exists in v_hardware_phones
 	if (mac_exists_in_v_hardware_phones($db, $mac)) {
