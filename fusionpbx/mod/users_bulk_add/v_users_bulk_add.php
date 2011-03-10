@@ -1,7 +1,4 @@
 <?php
-$dq = '"';
-$self = $_SERVER['PHP_SELF'];
-ini_set('auto_detect_line_endings', '1');
 /*
  FusionPBX
  Version: MPL 1.1
@@ -27,6 +24,10 @@ ini_set('auto_detect_line_endings', '1');
  Mark J Crane <markjcrane@fusionpbx.com>
  */
 
+$dq = '"';
+$self = $_SERVER['PHP_SELF'];
+ini_set('auto_detect_line_endings', '1');
+
 function get_v_ids(PDO $db) {
 	$query 				= sprintf("SELECT v_id, domain FROM v_system_settings;");
 	$stmt 				= $db->query($query);
@@ -41,11 +42,11 @@ function get_v_ids(PDO $db) {
 }
 
 function generate_insert_query($line, $places, $table, PDO $db, $v_ids) {
-	global $salt;
+	global $v_salt;
 	foreach ($places as $field => $place) {
 		$fields[] = $field;
 		if ($field == 'password') {
-			$values[] = $db->quote(md5($salt.$line[$place]));
+			$values[] = $db->quote(md5($v_salt.$line[$place]));
 		} else {
 			$values[] = $db->quote($line[$place]);
 		}
@@ -59,7 +60,7 @@ function generate_insert_query($line, $places, $table, PDO $db, $v_ids) {
 			// we'll assume that every user should be able to login
 			if (!in_array('password', $fields)){
 				$fields[] = 'password';
-				$values[] = $db->quote(md5($salt.$username));
+				$values[] = $db->quote(md5($v_salt.$username));
 			}
 			break;
 
