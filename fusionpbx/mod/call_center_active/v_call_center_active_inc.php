@@ -258,7 +258,7 @@ else {
 					echo "<td valign='top' class='".$rowstyle[$c]."'>".$calls_answered."</td>\n";
 					if (ifgroup("admin") || ifgroup("superadmin")) {
 						echo "<td valign='top' class='".$rowstyle[$c]."'>";
-						echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+agent+del+".$name."@".$v_domain."');}\">delete</a>&nbsp;\n";
+						echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+agent+del+".$name."');}\">delete</a>&nbsp;\n";
 						echo "</td>";
 					}
 					echo "</tr>\n";
@@ -317,7 +317,7 @@ else {
 						echo "<td valign='top' class='".$rowstyle[$c]."'>".$level."</td>\n";
 						echo "<td valign='top' class='".$rowstyle[$c]."'>".$position."</td>\n";
 						echo "<td valign='top' class='".$rowstyle[$c]."' style='text-align:right;'>";
-						echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+tier+del+".$queue."+".$agent."@".$v_domain."');}\">delete</a>&nbsp;\n";
+						echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+tier+del+".$queue."+".$agent."');}\">delete</a>&nbsp;\n";
 						echo "</td>";
 						echo "</tr>\n";
 

@@ -47,9 +47,11 @@ else {
 	}
 
 //authorized commands
-	if (stristr($action, 'user_status') == true) {
+	if (stristr($switch_cmd, 'user_status') == true) {
 		//authorized;
-	} elseif (stristr($action, 'callcenter_config') == true) {
+	} elseif (stristr($switch_cmd, 'callcenter_config') == true) {
+		//authorized;
+	} elseif (stristr($switch_cmd, 'eavesdrop') == true) {
 		//authorized;
 	} else {
 		//not found. this command is not authorized
