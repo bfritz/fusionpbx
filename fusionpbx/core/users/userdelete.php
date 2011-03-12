@@ -40,8 +40,13 @@ $id = check_str($_GET["id"]);
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and id = '$id' ";
+	if (ifgroup("superadmin")) {
+		$sql .= "where id = '$id' ";
+	}
+	else {
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and id = '$id' ";
+	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -54,8 +59,13 @@ $id = check_str($_GET["id"]);
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and id = '$id' ";
+	if (ifgroup("superadmin")) {
+		$sql .= "where id = '$id' ";
+	}
+	else {
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and id = '$id' ";
+	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -74,13 +84,15 @@ $id = check_str($_GET["id"]);
 		}
 	}
 
-
 //if (ifpermission("delete")) {
-
 	$sqldelete = "delete from v_users ";
-	$sqldelete .= "where v_id = '$v_id' ";
-	$sqldelete .= "and id = '$id' ";
-	//echo $sqldelete;
+	if (ifgroup("superadmin")) {
+		$sqldelete .= "where id = '$id' ";
+	}
+	else {
+		$sqldelete .= "where v_id = '$v_id' ";
+		$sqldelete .= "and id = '$id' ";
+	}
 	if (!$db->exec($sqldelete)) {
 		//echo $db->errorCode() . "<br>";
 		$info = $db->errorInfo();
