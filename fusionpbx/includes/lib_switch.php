@@ -1034,7 +1034,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$extension_label = $row["ivr_menu_name"];
 			$extension_name = str_replace(" ", "_", $extension_name);
 			if (count($_SESSION["domains"]) > 1) {
-				$extension_name = $v_domain.'-'.$extension_name;
+				$extension_name =  $_SESSION['domains'][$row['v_id']]['domain'].'-'.$extension_name;
 			}
 			if ("ivr:".$extension_name."" == $select_value || "ivr $extension_name" == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 				if ($select_type == "ivr") {
@@ -1078,7 +1078,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					$extension_label = $row["ivr_menu_name"];
 					$extension_name = str_replace(" ", "_", $extension_name);
 					if (count($_SESSION["domains"]) > 1) {
-						$extension_name = $v_domain.'-'.$extension_name;
+						$extension_name = $_SESSION['domains'][$row['v_id']]['domain'].'-'.$extension_name;
 					}
 					if ($extension_name == $select_value) {
 						echo "		<option value='menu-sub:$extension_name' selected='selected'>".$extension_label."</option>\n";
@@ -5168,7 +5168,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$tag = 'action'; //condition, action, antiaction
 								$fieldtype = 'ivr';
 								if (count($_SESSION["domains"]) > 1) {
-									$fielddata = $v_domain.'-'.$ivr_menu_name;
+									$fielddata = $_SESSION['domains'][$row['v_id']]['domain'].'-'.$ivr_menu_name;
 								}
 								else {
 									$fielddata = $ivr_menu_name;
@@ -5215,7 +5215,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
 								if (count($_SESSION["domains"]) > 1) {
-									$sql .= "fielddata = '".$v_domain."-".$ivr_menu_name."' ";
+									$sql .= "fielddata = '".$_SESSION['domains'][$row['v_id']]['domain']."-".$ivr_menu_name."' ";
 								}
 								else {
 									$sql .= "fielddata = '".$ivr_menu_name."' ";
@@ -5244,7 +5244,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 						$tmp .= "	<!-- $ivr_menu_desc -->\n";
 					}
 					if (count($_SESSION["domains"]) > 1) {
-						$tmp .= "	<menu name=\"".$v_domain."-".$ivr_menu_name."\"\n";
+						$tmp .= "	<menu name=\"".$_SESSION['domains'][$row['v_id']]['domain']."-".$ivr_menu_name."\"\n";
 					}
 					else {
 						$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
@@ -5314,7 +5314,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 
 					//write the file
 						if (count($_SESSION["domains"]) > 1) {
-							$fout = fopen($v_conf_dir."/ivr_menus/v_".$v_domain."_".$ivr_menu_name.".xml","w");
+							$fout = fopen($v_conf_dir."/ivr_menus/v_".$_SESSION['domains'][$row['v_id']]['domain']."_".$ivr_menu_name.".xml","w");
 						}
 						else {
 							$fout = fopen($v_conf_dir."/ivr_menus/v_".$ivr_menu_name.".xml","w");
