@@ -126,285 +126,133 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//add or update the database
-	if ($_POST["persistformvar"] != "true") {
-		if ($action == "add") {
-			$sql = "insert into v_gateways ";
-			$sql .= "(";
-			$sql .= "v_id, ";
-			$sql .= "gateway, ";
-			$sql .= "username, ";
-			$sql .= "password, ";
-			$sql .= "auth_username, ";
-			$sql .= "realm, ";
-			$sql .= "from_user, ";
-			$sql .= "from_domain, ";
-			$sql .= "proxy, ";
-			$sql .= "register_proxy, ";
-			$sql .= "outbound_proxy, ";
-			$sql .= "expire_seconds, ";
-			$sql .= "register, ";
-			$sql .= "register_transport, ";
-			$sql .= "retry_seconds, ";
-			$sql .= "extension, ";
-			$sql .= "ping, ";
-			$sql .= "caller_id_in_from, ";
-			$sql .= "supress_cng, ";
-			$sql .= "sip_cid_type, ";
-			$sql .= "extension_in_contact, ";
-			$sql .= "effective_caller_id_name, ";
-			$sql .= "effective_caller_id_number, ";
-			$sql .= "outbound_caller_id_name, ";
-			$sql .= "outbound_caller_id_number, ";
-			$sql .= "context, ";
-			$sql .= "enabled, ";
-			$sql .= "description ";
-			$sql .= ")";
-			$sql .= "values ";
-			$sql .= "(";
-			$sql .= "'$v_id', ";
-			$sql .= "'$gateway', ";
-			$sql .= "'$username', ";
-			$sql .= "'$password', ";
-			$sql .= "'$auth_username', ";
-			$sql .= "'$realm', ";
-			$sql .= "'$from_user', ";
-			$sql .= "'$from_domain', ";
-			$sql .= "'$proxy', ";
-			$sql .= "'$register_proxy', ";
-			$sql .= "'$outbound_proxy', ";
-			$sql .= "'$expire_seconds', ";
-			$sql .= "'$register', ";
-			$sql .= "'$register_transport', ";
-			$sql .= "'$retry_seconds', ";
-			$sql .= "'$extension', ";
-			$sql .= "'$ping', ";
-			$sql .= "'$caller_id_in_from', ";
-			$sql .= "'$supress_cng', ";
-			$sql .= "'$sip_cid_type', ";
-			$sql .= "'$extension_in_contact', ";
-			$sql .= "'$effective_caller_id_name', ";
-			$sql .= "'$effective_caller_id_number', ";
-			$sql .= "'$outbound_caller_id_name', ";
-			$sql .= "'$outbound_caller_id_number', ";
-			$sql .= "'$context', ";
-			$sql .= "'$enabled', ";
-			$sql .= "'$description' ";
-			$sql .= ")";
-			$db->exec(check_sql($sql));
-			unset($sql);
+		if ($_POST["persistformvar"] != "true") {
+			if ($action == "add") {
+				$sql = "insert into v_gateways ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "gateway, ";
+				$sql .= "username, ";
+				$sql .= "password, ";
+				$sql .= "auth_username, ";
+				$sql .= "realm, ";
+				$sql .= "from_user, ";
+				$sql .= "from_domain, ";
+				$sql .= "proxy, ";
+				$sql .= "register_proxy, ";
+				$sql .= "outbound_proxy, ";
+				$sql .= "expire_seconds, ";
+				$sql .= "register, ";
+				$sql .= "register_transport, ";
+				$sql .= "retry_seconds, ";
+				$sql .= "extension, ";
+				$sql .= "ping, ";
+				$sql .= "caller_id_in_from, ";
+				$sql .= "supress_cng, ";
+				$sql .= "sip_cid_type, ";
+				$sql .= "extension_in_contact, ";
+				$sql .= "effective_caller_id_name, ";
+				$sql .= "effective_caller_id_number, ";
+				$sql .= "outbound_caller_id_name, ";
+				$sql .= "outbound_caller_id_number, ";
+				$sql .= "context, ";
+				$sql .= "enabled, ";
+				$sql .= "description ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$gateway', ";
+				$sql .= "'$username', ";
+				$sql .= "'$password', ";
+				$sql .= "'$auth_username', ";
+				$sql .= "'$realm', ";
+				$sql .= "'$from_user', ";
+				$sql .= "'$from_domain', ";
+				$sql .= "'$proxy', ";
+				$sql .= "'$register_proxy', ";
+				$sql .= "'$outbound_proxy', ";
+				$sql .= "'$expire_seconds', ";
+				$sql .= "'$register', ";
+				$sql .= "'$register_transport', ";
+				$sql .= "'$retry_seconds', ";
+				$sql .= "'$extension', ";
+				$sql .= "'$ping', ";
+				$sql .= "'$caller_id_in_from', ";
+				$sql .= "'$supress_cng', ";
+				$sql .= "'$sip_cid_type', ";
+				$sql .= "'$extension_in_contact', ";
+				$sql .= "'$effective_caller_id_name', ";
+				$sql .= "'$effective_caller_id_number', ";
+				$sql .= "'$outbound_caller_id_name', ";
+				$sql .= "'$outbound_caller_id_number', ";
+				$sql .= "'$context', ";
+				$sql .= "'$enabled', ";
+				$sql .= "'$description' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-			//syncrhonize configuration
-				sync_package_v_gateways();
+				//syncrhonize configuration
+					sync_package_v_gateways();
 
-		} //if ($action == "add")
+			} //if ($action == "add")
 
-		if ($action == "update") {
-			$sql = "update v_gateways set ";
-			//$sql .= "v_id = '$v_id', ";
-			$sql .= "gateway = '$gateway', ";
-			$sql .= "username = '$username', ";
-			$sql .= "password = '$password', ";
-			$sql .= "auth_username = '$auth_username', ";
-			$sql .= "realm = '$realm', ";
-			$sql .= "from_user = '$from_user', ";
-			$sql .= "from_domain = '$from_domain', ";
-			$sql .= "proxy = '$proxy', ";
-			$sql .= "register_proxy = '$register_proxy', ";
-			$sql .= "outbound_proxy = '$outbound_proxy', ";
-			$sql .= "expire_seconds = '$expire_seconds', ";
-			$sql .= "register = '$register', ";
-			$sql .= "register_transport = '$register_transport', ";
-			$sql .= "retry_seconds = '$retry_seconds', ";
-			$sql .= "extension = '$extension', ";
-			$sql .= "ping = '$ping', ";
-			$sql .= "caller_id_in_from = '$caller_id_in_from', ";
-			$sql .= "supress_cng = '$supress_cng', ";
-			$sql .= "sip_cid_type = '$sip_cid_type', ";
-			$sql .= "extension_in_contact = '$extension_in_contact', ";
-			$sql .= "effective_caller_id_name = '$effective_caller_id_name', ";
-			$sql .= "effective_caller_id_number = '$effective_caller_id_number', ";
-			$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
-			$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
-			$sql .= "context = '$context', ";
-			$sql .= "enabled = '$enabled', ";
-			$sql .= "description = '$description' ";
-			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and gateway_id = '$gateway_id'";
-			$db->exec(check_sql($sql));
-			unset($sql);
+			if ($action == "update") {
+				$sql = "update v_gateways set ";
+				//$sql .= "v_id = '$v_id', ";
+				$sql .= "gateway = '$gateway', ";
+				$sql .= "username = '$username', ";
+				$sql .= "password = '$password', ";
+				$sql .= "auth_username = '$auth_username', ";
+				$sql .= "realm = '$realm', ";
+				$sql .= "from_user = '$from_user', ";
+				$sql .= "from_domain = '$from_domain', ";
+				$sql .= "proxy = '$proxy', ";
+				$sql .= "register_proxy = '$register_proxy', ";
+				$sql .= "outbound_proxy = '$outbound_proxy', ";
+				$sql .= "expire_seconds = '$expire_seconds', ";
+				$sql .= "register = '$register', ";
+				$sql .= "register_transport = '$register_transport', ";
+				$sql .= "retry_seconds = '$retry_seconds', ";
+				$sql .= "extension = '$extension', ";
+				$sql .= "ping = '$ping', ";
+				$sql .= "caller_id_in_from = '$caller_id_in_from', ";
+				$sql .= "supress_cng = '$supress_cng', ";
+				$sql .= "sip_cid_type = '$sip_cid_type', ";
+				$sql .= "extension_in_contact = '$extension_in_contact', ";
+				$sql .= "effective_caller_id_name = '$effective_caller_id_name', ";
+				$sql .= "effective_caller_id_number = '$effective_caller_id_number', ";
+				$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
+				$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
+				$sql .= "context = '$context', ";
+				$sql .= "enabled = '$enabled', ";
+				$sql .= "description = '$description' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and gateway_id = '$gateway_id'";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-			//syncrhonize configuration
-				sync_package_v_gateways();
+				//syncrhonize configuration
+					sync_package_v_gateways();
 
-			//synchronize the xml config
-				sync_package_v_dialplan_includes();
+				//synchronize the xml config
+					sync_package_v_dialplan_includes();
 
-		} //if ($action == "update")
+			} //if ($action == "update")
 
-		//rescan the external profile to look for new or stopped gateways
-			//create the event socket connection
-				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-				$tmp_cmd = 'api sofia profile external rescan';
-				$response = event_socket_request($fp, $tmp_cmd);
-				unset($tmp_cmd);
-				usleep(1000);
-			//close the connection
-				fclose($fp);
-			//clear the apply settings reminder
-				$_SESSION["reload_xml"] = false;
-	} //if ($_POST["persistformvar"] != "true")
-
-
-	if (strlen(trim($_POST['dialplan_expression']))> 0) {
-
-		if ($action == "update") {
-			$gateway_id = $_POST['gateway_id'];
-		}
-
-		$sql = "";
-		$sql .= "select * from v_settings ";
-		$sql .= "where v_id = '$v_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach ($result as &$row) {
-			$default_area_code = $row["default_area_code"];
-			break;
-		}
-
-		$tmp_array = explode("\n", $_POST['dialplan_expression']);
-
-		foreach($tmp_array as $dialplan_expression) {
-	
-			$dialplan_expression = trim($dialplan_expression);
-			if (strlen($dialplan_expression)>0) {
-
-				switch ($dialplan_expression) {
-				case "^(\d{7})$":
-					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
-					$label = "7 digits";
-					$abbrv = "7d";
-					break;
-				case "^(\d{8})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
-					$label = "8 digits";
-					$abbrv = "8d";
-					break;
-				case "^(\d{9})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
-					$label = "9 digits";
-					$abbrv = "9d";
-					break;
-				case "^(\d{10})$":
-					$action_data = "sofia/gateway/".$gateway."/1\$1";
-					$label = "10 digits";
-					$abbrv = "10d";
-					break;
-				case "^\+?(\d{11})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
-					$label = "11 digits";
-					$abbrv = "11d";
-					break;
-				case "^(\d{12})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
-					$label = "12 digits";
-					$abbrv = "12d";
-					break;
-				case "^311$":
-					$action_data = "sofia/gateway/".$gateway."/311";
-					$label = "311";
-					$abbrv = "311";
-					break;
-				case "^411$":
-					$action_data = "sofia/gateway/".$gateway."/411";
-					$label = "411";
-					$abbrv = "411";
-					break;
-				case "^911$":
-					$action_data = "sofia/gateway/".$gateway."/911";
-					$label = "911";
-					$abbrv = "911";
-					break;
-				case "^9(\d{3})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
-					$label = "dial 9, 3 digits";
-					$abbrv = "9.3d";
-					break;
-				case "^9(\d{4})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
-					$label = "dial 9, 4 digits";
-					$abbrv = "9.4d";
-					break;	
-				case "^9(\d{7})$":
-					$action_data = "sofia/gateway/".$gateway."/1".$default_area_code."\$1";
-					$label = "dial 9, 7 digits";
-					$abbrv = "9.7d";
-					break;
-				case "^9(\d{10})$":
-					$action_data = "sofia/gateway/".$gateway."/1\$1";
-					$label = "dial 9, 10 digits";
-					$abbrv = "9.10d";
-					break;
-				case "^9(\d{11})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
-					$label = "dial 9, 11 digits";
-					$abbrv = "9.11d";
-					break;
-				case "^1?(8(00|55|66|77|88)[2-9]\d{6})$":
-					$action_data = "sofia/gateway/".$gateway."/\$1";
-					$label = "toll free";
-					$abbrv = "tollfree";
-					break;
-				default:
-					$action_data = "sofia/gateway/".$gateway."/\$1";
-					$label = $dialplan_expression;
-					$abbrv = filename_safe($dialplan_expression);
-				}
-
-				$extensionname = $gateway.".".$abbrv;
-				$dialplanorder ='9002';
-				//$context = $context;
-				$enabled = 'true';
-				$descr = $label.' '.$gateway;
-				$opt1name = 'gateway_id';
-				$opt1value = $gateway_id;
-				$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
-
-				$tag = 'condition'; //condition, action, antiaction
-				$fieldtype = 'destination_number';
-				$fielddata = $dialplan_expression;
-				$fieldorder = '000';
-				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-				$tag = 'action'; //condition, action, antiaction
-				$fieldtype = 'set';
-				$fielddata = 'effective_caller_id_name=${outbound_caller_id_name}';
-				$fieldorder = '001';
-				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-				$tag = 'action'; //condition, action, antiaction
-				$fieldtype = 'set';
-				$fielddata = 'effective_caller_id_number=${outbound_caller_id_number}';
-				$fieldorder = '002';
-				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-				$tag = 'action'; //condition, action, antiaction
-				$fieldtype = 'bridge';
-				$fielddata = $action_data;
-				$fieldorder = '005';
-				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-
-				unset($label);
-				unset($abbrv);
-				unset($dialplan_expression);
-				unset($action_data);
-			} //if strlen
-		} //end for each
-
-		//synchronize the xml config
-			sync_package_v_dialplan_includes();
-
-	}
+			//rescan the external profile to look for new or stopped gateways
+				//create the event socket connection
+					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+					$tmp_cmd = 'api sofia profile external rescan';
+					$response = event_socket_request($fp, $tmp_cmd);
+					unset($tmp_cmd);
+					usleep(1000);
+				//close the connection
+					fclose($fp);
+				//clear the apply settings reminder
+					$_SESSION["reload_xml"] = false;
+		} //if ($_POST["persistformvar"] != "true")
 
 	//redirect the user
 		if (isset($action)) {
@@ -933,33 +781,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "  <td valign=\"top\" class=\"vncell\">Dialplan Expression</td>\n";
-	echo "  <td align='left' class=\"vtable\">";
-	echo "    <textarea name=\"dialplan_expression\" id=\"dialplan_expression\" class=\"formfld\" cols=\"30\" rows=\"4\" wrap=\"off\"></textarea>\n";
-	echo "    <br>\n";
-	echo "    <select name='dialplan_expression_select' id='dialplan_expression_select' onchange=\"document.getElementById('dialplan_expression').value += document.getElementById('dialplan_expression_select').value + '\\n';\" class='formfld'>\n";
-	echo "    <option></option>\n";
-	echo "    <option value='^(\\d{7})\$'>7 digits local</option>\n";
-	echo "    <option value='^(\\d{10})\$'>10 digits long distance</option>\n";
-	echo "    <option value='^\+?(\\d{11})\$'>11 digits long distance</option>\n";
-	echo "    <option value='^011(.*)\$'>011 International</option>\n";
-	echo "    <option value='^311\$'>311 information</option>\n";
-	echo "    <option value='^411\$'>411 information</option>\n";
-	echo "    <option value='^911\$'>911 emergency</option>\n";
-	echo "    <option value='^1?(8(00|55|66|77|88)[2-9]\\d{6})\$'>toll free</option>\n";
-	echo "    <option value='^9(\\d{3})\$'>Dial 9 then 3 digits</option>\n";
-	echo "    <option value='^9(\\d{4})\$'>Dial 9 then 4 digits</option>\n";
-	echo "    <option value='^9(\\d{7})\$'>Dial 9 then 7 digits</option>\n";
-	echo "    <option value='^9(\\d{10})\$'>Dial 9 then 10 digits</option>\n";
-	echo "    <option value='^9(\\d{11})\$'>Dial 9 then 11 digits</option>\n";
-	echo "    </select>\n";
-	echo "    <span class=\"vexpl\">\n";
-	echo "    <br />\n";
-	echo "    Shortcut to create the outbound dialplan entries for this Gateway. The entries are saved to and edited from the 'Dialplan' tab.\n";
-	echo "    </span></td>\n";
-	echo "</tr>";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
