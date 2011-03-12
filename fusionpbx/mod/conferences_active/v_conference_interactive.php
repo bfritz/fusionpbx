@@ -31,14 +31,20 @@ $conference_name = trim($_REQUEST["c"]);
 $tmp_conference_name = str_replace("_", " ", $conference_name);
 
 //check if the domain in the conference name matches the domain
-	$tmp_domain = substr($conference_name, -strlen($v_domain));
-	if ($tmp_domain != $v_domain) {
-		//domains do not match
-		echo "access denied";
-		exit;
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		//access granted
 	}
 	else {
-		$tmp_conference_name = substr($conference_name, 0, strlen($conference_name) - strlen('-'.$v_domain));
+		$tmp_domain = substr($conference_name, -strlen($v_domain));
+		echo $tmp_domain;
+		if ($tmp_domain != $v_domain) {
+			//domains do not match
+			echo " access denied";
+			exit;
+		}
+		else {
+			$tmp_conference_name = substr($conference_name, 0, strlen($conference_name) - strlen('-'.$v_domain));
+		}
 	}
 
 //show the header
@@ -109,7 +115,6 @@ var record_count = 0;
 
 <?php
 echo "<div align='center'>";
-
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 echo "	<tr>\n";
 echo "	<td align='left'><b>Interactive Conference</b><br>\n";
@@ -117,7 +122,6 @@ echo "		Use this to monitor and interact with the members of the <strong>$tmp_co
 echo "	</td>\n";
 echo "	</tr>\n";
 echo "</table>\n";
-
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 echo "	<tr class='border'>\n";
 echo "	<td align=\"left\">\n";
@@ -126,8 +130,8 @@ echo "		<div id=\"time_stamp\" style=\"visibility:hidden\">".date('Y-m-d-s')."</
 echo "	</td>";
 echo "	</tr>";
 echo "</table>";
-
 echo "</div>";
 
-require_once "includes/footer.php";
+//show the header
+	require_once "includes/footer.php";
 ?>

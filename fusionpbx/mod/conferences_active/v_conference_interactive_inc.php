@@ -31,11 +31,16 @@ require_once "includes/checkauth.php";
 	$conference_name = trim($_REQUEST["c"]);
 
 //check if the domain in the conference name matches the domain
-	$tmp_domain = substr($conference_name, -strlen($v_domain));
-	if ($tmp_domain != $v_domain) {
-		//domains do not match
-		echo "access denied";
-		exit;
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		//access granted
+	}
+	else {
+		$tmp_domain = substr($conference_name, -strlen($v_domain));
+		if ($tmp_domain != $v_domain) {
+			//domains do not match
+			echo "access denied";
+			exit;
+		}
 	}
 
 //find the conference extensions from the dialplan include details
@@ -259,5 +264,4 @@ require_once "includes/checkauth.php";
 		}
 		echo "</table>\n";
 	}
-
 ?>
