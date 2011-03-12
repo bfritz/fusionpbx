@@ -1033,6 +1033,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$extension_name = $row["ivr_menu_name"];
 			$extension_label = $row["ivr_menu_name"];
 			$extension_name = str_replace(" ", "_", $extension_name);
+			if (count($_SESSION["domains"]) > 1) {
+				$extension_name = $v_domain.'-'.$extension_name;
+			}
 			if ("ivr:".$extension_name."" == $select_value || "ivr $extension_name" == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 				if ($select_type == "ivr") {
 					echo "		<option value='menu-exec-app:ivr $extension_name' selected='selected'>".$extension." ".$extension_label."</option>\n";
@@ -1074,6 +1077,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					$extension_name = $row["ivr_menu_name"];
 					$extension_label = $row["ivr_menu_name"];
 					$extension_name = str_replace(" ", "_", $extension_name);
+					if (count($_SESSION["domains"]) > 1) {
+						$extension_name = $v_domain.'-'.$extension_name;
+					}
 					if ($extension_name == $select_value) {
 						echo "		<option value='menu-sub:$extension_name' selected='selected'>".$extension_label."</option>\n";
 						$selection_found = true;
@@ -5164,7 +5170,12 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 
 								$tag = 'action'; //condition, action, antiaction
 								$fieldtype = 'ivr';
-								$fielddata = $ivr_menu_name;
+								if (count($_SESSION["domains"]) > 1) {
+									$fielddata = $v_domain.'-'.$ivr_menu_name;
+								}
+								else {
+									$fielddata = $ivr_menu_name;
+								}
 								$fieldorder = '003';
 								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 						}
@@ -5189,8 +5200,6 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and opt1name = 'ivr_menu_id' ";
 								$sql .= "and opt1value = '$ivr_menu_id' ";
-								//echo "sql: ".$sql."<br />";
-								//exit;
 								$db->query($sql);
 								unset($sql);
 
@@ -5202,20 +5211,22 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$sql .= "and tag = 'condition' ";
 								$sql .= "and fieldtype = 'destination_number' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-								//echo $sql."<br />";
-								//exit;
 								$db->query($sql);
 								unset($sql);
 
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = '".$ivr_menu_name."' ";
+								if (count($_SESSION["domains"]) > 1) {
+									$sql .= "fielddata = '".$v_domain."-".$ivr_menu_name."' ";
+								}
+								else {
+									$sql .= "fielddata = '".$ivr_menu_name."' ";
+								}
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'action' ";
 								$sql .= "and fieldtype = 'ivr' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-								//echo $sql."<br />";
 								$db->query($sql);
 
 								unset($extensionname);
@@ -5235,7 +5246,12 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 					if (strlen($ivr_menu_desc) > 0) {
 						$tmp .= "	<!-- $ivr_menu_desc -->\n";
 					}
-					$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
+					if (count($_SESSION["domains"]) > 1) {
+						$tmp .= "	<menu name=\"".$v_domain."-".$ivr_menu_name."\"\n";
+					}
+					else {
+						$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
+					}
 					if (stripos($ivr_menu_greet_long, 'mp3') !== false || stripos($ivr_menu_greet_long, 'wav') !== false) {
 						//found wav or mp3
 						$tmp .= "		greet-long=\"".$ivr_menu_greet_long."\"\n";
