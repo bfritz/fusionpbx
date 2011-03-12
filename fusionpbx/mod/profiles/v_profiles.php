@@ -23,7 +23,6 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
-
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
@@ -35,64 +34,43 @@ else {
 	exit;
 }
 
-
 if ($_GET['a'] == "default") {
-	//conf_mount_rw();
-	//exec("cp ".$v_conf_dir.".orig/sip_profiles/".$_GET['f']." ".$v_conf_dir."/sip_profiles/".$_GET['f']);
-	
 	$fd = fopen($v_conf_dir.".orig/sip_profiles/".$_GET['f'], "r");
 	$v_content = fread($fd, filesize($v_conf_dir.".orig/sip_profiles/".$_GET['f']));
-	//echo $v_content;
 	fclose($fd);
-	
+
 	//write the default config fget
 	$fd = fopen($v_conf_dir."/sip_profiles/".$_GET['f'], "w");
 	fwrite($fd, $v_content);
 	fclose($fd);
-	
+
 	$savemsg = "Restore Default";
-	//conf_mount_ro();
 }
 
 if ($_POST['a'] == "save") {
-	//conf_mount_rw();
-	$v_content = ereg_replace("\r","",$_POST['code']);
+	$v_content = $_POST['code'];
 	$fd = fopen($v_conf_dir."/sip_profiles/".$_POST['f'], "w");
 	fwrite($fd, $v_content);
 	fclose($fd);
 	$savemsg = "Saved";
-	//conf_mount_ro();
 }
 
-	
 if ($_GET['a'] == "del") {
-    if ($_GET['type'] == 'profile') {
-        //if ($a_profiles[$_GET['id']]) {
-            //unset($a_extensions[$_GET['id']]);
-            //write_config();
-
-            unlink($v_conf_dir."/sip_profiles/".$_GET['f']);			
-            header("Location: v_profiles.php");
-            exit;
-        //}
-    }
+	if ($_GET['type'] == 'profile') {
+		unlink($v_conf_dir."/sip_profiles/".$_GET['f']);
+		header("Location: v_profiles.php");
+		exit;
+	}
 }
 
 require_once "includes/header.php";
 
-?>
-
-
-<?php
-//include("fbegin.inc");
-//if ($v_label_show) {
-//	echo "<p class=\"pgtitle\">$v_label: Profiles</p>\n";
-//}
-
 $c = 0;
 $rowstyle["0"] = "rowstyle0";
 $rowstyle["1"] = "rowstyle1";
-?><div align='center'>
+?>
+
+<div align='center'>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 	 <td class="tabcont" align='left'>
@@ -107,18 +85,15 @@ $rowstyle["1"] = "rowstyle1";
 		</tr>
 	</table>
 	<br />
-
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<!--<tr><td colspan='2'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>-->
 	<tr>
-	  <th width="25%" class="">Name</th>
-	  <th width="70%" class="">Description</th>
-	  <td width="5%" class="list"></td>
-	  </th>
+		<th width="25%" class="">Name</th>
+		<th width="70%" class="">Description</th>
+		<td width="5%" class="list"></td>
+		</th>
 	</tr>
-	<!--<tr><td colspan='2'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>-->
 
-	<?php
+<?php
 	foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$file){
 		if (substr($file, -4) == ".xml") {
 			echo "<tr>\n";
@@ -127,7 +102,6 @@ $rowstyle["1"] = "rowstyle1";
 			echo "&nbsp;\n";
 			echo "	</td>\n";
 			echo "	<td class='rowstylebg' ondblclick=\"document.location='v_profile_edit.php?f=".$file."\">\n";
-	
 			switch ($file) {
 			case "internal.xml":
 				echo "The Internal profile by default requires registration which is most often used for extensions. ";
@@ -154,7 +128,6 @@ $rowstyle["1"] = "rowstyle1";
 			default:
 				//echo "<font color='#FFFFFF'>default</font>&nbsp;";
 			}
-	
 			echo "	</td>\n";
 			echo "	<td valign='middle' nowrap class='list' valign='top'>\n";
 			echo "	  <table border='0' cellspacing='2' cellpadding='1'>\n";
@@ -165,17 +138,13 @@ $rowstyle["1"] = "rowstyle1";
 			echo "	 </table>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
-			//echo "<tr><td colspan='2'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
-	
 			if ($c==0) { $c=1; } else { $c=0; }
 			$i++;
 		}
 	}
-
-	?>
+?>
 	</table>
 </form>
-
 
 <?php
 if ($v_path_show) {
@@ -183,6 +152,7 @@ if ($v_path_show) {
 	echo $v_conf_dir."/sip_profiles\n";
 }
 ?>
+
 <br>
 <br>
 <br>
@@ -198,8 +168,7 @@ if ($v_path_show) {
 
 </div>
 
-
-
 <?php 
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>

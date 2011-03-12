@@ -53,8 +53,13 @@ else {
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and id = '$id' ";
+	if (ifgroup("superadmin")) {
+		$sql .= "where id = '$id' ";
+	}
+	else {
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and id = '$id' ";
+	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -92,6 +97,7 @@ else {
 	}
 
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
+	$v_id_orig = $_REQUEST["v_id_orig"];
 	$id = $_REQUEST["id"];
 	$password = check_str($_POST["password"]);
 	$confirmpassword = check_str($_POST["confirmpassword"]);
@@ -205,8 +211,24 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 			}
 		}
 
+	//if the user is moved to another domain then move the groups with them
+		if (ifgroup("superadmin")) {
+			if ($v_id != $v_id_orig) {
+				$sql = "update v_group_members ";
+				$sql .= "set v_id = '$v_id' ";
+				$sql .= "where v_id = '$v_id_orig' ";
+				if (!$db->exec($sql)) {
+					$info = $db->errorInfo();
+					print_r($info);
+				}
+			}
+		}
+
 	//sql update
 		$sql  = "update v_users set ";
+		if (ifgroup("superadmin")) {
+			$sql .= "v_id = '$v_id', ";
+		}
 		if (ifgroup("admin") && strlen($_POST["username"])> 0) {
 			$sql .= "username = '$username', ";
 		}
@@ -251,8 +273,13 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "user_template_name = '$user_template_name', ";
 		$sql .= "useremail = '$useremail' ";
 		if (strlen($id)> 0) {
-			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and id = $id ";
+			if (ifgroup("superadmin")) {
+				$sql .= "where id = $id ";
+			}
+			else {
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and id = $id ";
+			}
 		}
 		else {
 			$sql .= "where v_id = '$v_id' ";
@@ -421,6 +448,7 @@ else {
 		echo "	</select>\n";
 		echo "	<br />\n";
 		//echo "	Select the domain.<br />\n";
+		echo "		<input type='hidden' name='v_id_orig' value=\"$v_id\">\n";
 		echo "	</td>\n";
 		echo "	</tr>\n";
 	}

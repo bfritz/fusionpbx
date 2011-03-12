@@ -60,77 +60,70 @@ function sf() { document.forms[0].savetopath.focus(); }
 	});	
 </script>
 
-
 <div align='center'>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-	 <td class="tabcont" >
-
-<form action="v_profiles.php" method="post" name="iform" id="iform">
-
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td align='left'><p><span class="vexpl"><span class="red"><strong>Edit Profile<br>
-			</strong></span>
-			Use this to configure your SIP profiles.
-			<br />
-			<br />
-		</td>
-		<td align='right' valign='top'>Filename: <input type="text" name="f" value="<?php echo $_GET['f']; ?>" /><input type="submit" class='btn' value="save" /></td>
-	</tr>
+		<tr>
+			<td class="tabcont" >
 
+				<form action="v_profiles.php" method="post" name="iform" id="iform">
+					<table width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tr>
+						<td align='left'><p><span class="vexpl"><span class="red"><strong>Edit Profile<br>
+							</strong></span>
+							Use this to configure your SIP profiles.
+							<br />
+							<br />
+						</td>
+						<td align='right' valign='top'>Filename: <input type="text" name="f" value="<?php echo $_GET['f']; ?>" /><input type="submit" class='btn' value="save" /></td>
+					</tr>
 
-	<tr>
-	<td colspan='2' class='' valign='top' align='left' nowrap>
-		<textarea style="width:100%;" id="code" name="code" rows="35" class='txt'><?php echo htmlentities($v_content); ?></textarea>
-	<br />
-	<br />
-	</td>
-	</tr>
+					<tr>
+					<td colspan='2' class='' valign='top' align='left' nowrap>
+						<textarea style="width:100%;" id="code" name="code" rows="35" class='txt'><?php echo htmlentities($v_content); ?></textarea>
+					<br />
+					<br />
+					</td>
+					</tr>
 
+					<tr>
+						<td align='left'>
+						<?php
+						if ($v_path_show) {
+							echo "<b>location:</b> ".$v_conf_dir."/sip_profiles/".$_GET['f']."</td>";
+						}
+						?>
+						<td align='right'>
+							<input type="hidden" name="a" value="save" />
+							<?php
+							echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='v_profiles.php?a=default&f=".$_GET['f']."';\" />";
+							?>
+						</td>
+					</tr>
 
-	<tr>
-		<td align='left'>
-		<?php
-		if ($v_path_show) {
-			echo "<b>location:</b> ".$v_conf_dir."/sip_profiles/".$_GET['f']."</td>";
-		}
-		?>
-		<td align='right'>
-			<input type="hidden" name="a" value="save" />
-			<?php
-			echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='v_profiles.php?a=default&f=".$_GET['f']."';\" />";
-			?>
-		</td>
-	</tr>
+					<tr>
+					<td colspan='2'>
+						<br /><br /><br />
+						<br /><br /><br />
+						<br /><br /><br />
+						<br /><br /><br />
+						<br /><br /><br />
+						<br /><br /><br />
+						<br /><br /><br />
+						<br /><br /><br />
+						<br /><br /><br />
+						<br /><br /><br />
+					</td>
+					</tr>
 
-	<tr>
-	<td colspan='2'>
-		<br /><br /><br />
-		<br /><br /><br />
-		<br /><br /><br />
-		<br /><br /><br />
-		<br /><br /><br />
-		<br /><br /><br />
-		<br /><br /><br />
-		<br /><br /><br />
-		<br /><br /><br />
-		<br /><br /><br />
-	</td>
-	</tr>
+					</table>
+				</form>
 
+			</td>
+		</tr>
 	</table>
-
-</form>
-
-</td>
-</tr>
-</table>
-
 </div>
 
-
-
 <?php
+//show the footer
 	require_once "includes/footer.php";
 ?>
