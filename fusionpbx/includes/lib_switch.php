@@ -4649,13 +4649,11 @@ function sync_package_v_public_includes()
 	//loop through all the public includes aka inbound routes
 	$sql = "";
 	$sql .= "select * from v_public_includes ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and enabled = 'true' ";
+	$sql .= "where enabled = 'true' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-
 		$extensioncontinue = '';
 		if ($row['extensioncontinue'] == "true") {
 			$extensioncontinue = "continue=\"true\"";
@@ -4668,7 +4666,6 @@ function sync_package_v_public_includes()
 		$sql = "";
 		$sql .= " select * from v_public_includes_details ";
 		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
-		$sql .= " and v_id = $v_id ";
 		$sql .= " and tag = 'condition' ";
 		$sql .= " order by fieldorder asc";
 		$prepstatement2 = $db->prepare($sql);
@@ -4702,11 +4699,9 @@ function sync_package_v_public_includes()
 			unset($sql, $resultcount2, $result2, $rowcount2);
 		} //end if results
 
-
 		$sql = "";
 		$sql .= " select * from v_public_includes_details ";
 		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
-		$sql .= " and v_id = $v_id ";
 		$sql .= " and tag = 'action' ";
 		$sql .= " order by fieldorder asc";
 		$prepstatement2 = $db->prepare($sql);
@@ -4719,7 +4714,6 @@ function sync_package_v_public_includes()
 		else { //received results
 			$i = 0;
 			foreach($result2 as $ent) {
-				//print_r( $row );
 				if ($ent['tag'] == "action" && $row['publicincludeid'] == $ent['publicincludeid']) {
 					if (strlen($ent['fielddata']) > 0) {
 						$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
@@ -4736,7 +4730,6 @@ function sync_package_v_public_includes()
 		$sql = "";
 		$sql .= " select * from v_public_includes_details ";
 		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
-		$sql .= " and v_id = $v_id ";
 		$sql .= " and tag = 'anti-action' ";
 		$sql .= " order by fieldorder asc";
 		$prepstatement2 = $db->prepare($sql);
@@ -4749,7 +4742,6 @@ function sync_package_v_public_includes()
 		else { //received results
 			$i = 0;
 			foreach($result2 as $ent) {
-				//print_r( $row );
 				if ($ent['tag'] == "anti-action" && $row['publicincludeid'] == $ent['publicincludeid']) {
 					if (strlen($ent['fielddata']) > 0) {
 						$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
@@ -4775,7 +4767,12 @@ function sync_package_v_public_includes()
 		if (strlen($public_order) == 2) { $public_order = "0".$public_order; }
 		if (strlen($public_order) == 4) { $public_order = "999"; }
 		if (strlen($public_order) == 5) { $public_order = "999"; }
-		$public_include_filename = $public_order."_v_public_".$row['extensionname'].".xml";
+		if (count($_SESSION["domains"]) > 1) {
+			$public_include_filename = $public_order."_v_public_".$_SESSION['domains'][$row['v_id']]['domain'].'_'.$row['extensionname'].".xml";
+		}
+		else {
+			$public_include_filename = $public_order."_v_public_".$row['extensionname'].".xml";
+		}
 		$fout = fopen($v_dialplan_public_dir."/".$public_include_filename,"w");
 		fwrite($fout, $tmp);
 		fclose($fout);
