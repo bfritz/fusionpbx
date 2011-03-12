@@ -34,58 +34,48 @@ else {
 	exit;
 }
 
+//action add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$setting_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+	}
 
-//Action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$setting_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
-
-//POST to PHP variables
-if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
-	$numbering_plan = check_str($_POST["numbering_plan"]);
-	$default_gateway = check_str($_POST["default_gateway"]);
-	$default_area_code = check_str($_POST["default_area_code"]);
-	$event_socket_ip_address = check_str($_POST["event_socket_ip_address"]);
-	if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
-	$event_socket_port = check_str($_POST["event_socket_port"]);
-	$event_socket_password = check_str($_POST["event_socket_password"]);
-	$xml_rpc_http_port = check_str($_POST["xml_rpc_http_port"]);
-	$xml_rpc_auth_realm = check_str($_POST["xml_rpc_auth_realm"]);
-	$xml_rpc_auth_user = check_str($_POST["xml_rpc_auth_user"]);
-	$xml_rpc_auth_pass = check_str($_POST["xml_rpc_auth_pass"]);
-	$admin_pin = check_str($_POST["admin_pin"]);
-	$smtphost = check_str($_POST["smtphost"]);
-	$smtpsecure = check_str($_POST["smtpsecure"]);
-	$smtpauth = check_str($_POST["smtpauth"]);
-	$smtpusername = check_str($_POST["smtpusername"]);
-	$smtppassword = check_str($_POST["smtppassword"]);
-	$smtpfrom = check_str($_POST["smtpfrom"]);
-	$smtpfromname = check_str($_POST["smtpfromname"]);
-	$mod_shout_decoder = check_str($_POST["mod_shout_decoder"]);
-	$mod_shout_volume = check_str($_POST["mod_shout_volume"]);
-}
+//get the http values and set them as php variables
+	if (count($_POST)>0) {
+		$numbering_plan = check_str($_POST["numbering_plan"]);
+		$default_gateway = check_str($_POST["default_gateway"]);
+		$default_area_code = check_str($_POST["default_area_code"]);
+		$event_socket_ip_address = check_str($_POST["event_socket_ip_address"]);
+		if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
+		$event_socket_port = check_str($_POST["event_socket_port"]);
+		$event_socket_password = check_str($_POST["event_socket_password"]);
+		$xml_rpc_http_port = check_str($_POST["xml_rpc_http_port"]);
+		$xml_rpc_auth_realm = check_str($_POST["xml_rpc_auth_realm"]);
+		$xml_rpc_auth_user = check_str($_POST["xml_rpc_auth_user"]);
+		$xml_rpc_auth_pass = check_str($_POST["xml_rpc_auth_pass"]);
+		$admin_pin = check_str($_POST["admin_pin"]);
+		$smtphost = check_str($_POST["smtphost"]);
+		$smtpsecure = check_str($_POST["smtpsecure"]);
+		$smtpauth = check_str($_POST["smtpauth"]);
+		$smtpusername = check_str($_POST["smtpusername"]);
+		$smtppassword = check_str($_POST["smtppassword"]);
+		$smtpfrom = check_str($_POST["smtpfrom"]);
+		$smtpfromname = check_str($_POST["smtpfromname"]);
+		$mod_shout_decoder = check_str($_POST["mod_shout_decoder"]);
+		$mod_shout_volume = check_str($_POST["mod_shout_volume"]);
+	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$setting_id = check_str($_POST["setting_id"]);
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		//if (strlen($numbering_plan) == 0) { $msg .= "Please provide: Numbering Plan<br>\n"; }
 		//if (strlen($default_gateway) == 0) { $msg .= "Please provide: Default Gateway<br>\n"; }
 		//if (strlen($default_area_code) == 0) { $msg .= "Please provide: Default Area Code<br>\n"; }
@@ -118,126 +108,124 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 	
-	//Add or update the database
-	if ($_POST["persistformvar"] != "true") {
-		if ($action == "add") {
-			$sql = "insert into v_settings ";
-			$sql .= "(";
-			$sql .= "v_id, ";
-			$sql .= "numbering_plan, ";
-			$sql .= "default_gateway, ";
-			$sql .= "default_area_code, ";
-			$sql .= "event_socket_ip_address, ";
-			$sql .= "event_socket_port, ";
-			$sql .= "event_socket_password, ";
-			$sql .= "xml_rpc_http_port, ";
-			$sql .= "xml_rpc_auth_realm, ";
-			$sql .= "xml_rpc_auth_user, ";
-			$sql .= "xml_rpc_auth_pass, ";
-			$sql .= "admin_pin, ";
-			$sql .= "smtphost, ";
-			$sql .= "smtpsecure, ";
-			$sql .= "smtpauth, ";
-			$sql .= "smtpusername, ";
-			$sql .= "smtppassword, ";
-			$sql .= "smtpfrom, ";
-			$sql .= "smtpfromname, ";
-			$sql .= "mod_shout_decoder, ";
-			$sql .= "mod_shout_volume ";
-			$sql .= ")";
-			$sql .= "values ";
-			$sql .= "(";
-			$sql .= "'$v_id', ";
-			$sql .= "'$numbering_plan', ";
-			$sql .= "'$default_gateway', ";
-			$sql .= "'$default_area_code', ";
-			$sql .= "'$event_socket_ip_address', ";
-			$sql .= "'$event_socket_port', ";
-			$sql .= "'$event_socket_password', ";
-			$sql .= "'$xml_rpc_http_port', ";
-			$sql .= "'$xml_rpc_auth_realm', ";
-			$sql .= "'$xml_rpc_auth_user', ";
-			$sql .= "'$xml_rpc_auth_pass', ";
-			$sql .= "'$admin_pin', ";
-			$sql .= "'$smtphost', ";
-			$sql .= "'$smtpsecure', ";
-			$sql .= "'$smtpauth', ";
-			$sql .= "'$smtpusername', ";
-			$sql .= "'$smtppassword', ";
-			$sql .= "'$smtpfrom', ";
-			$sql .= "'$smtpfromname', ";
-			$sql .= "'$mod_shout_decoder', ";
-			$sql .= "'$mod_shout_volume' ";
-			$sql .= ")";
-			$db->exec(check_sql($sql));
-			unset($sql);
+	//add or update the database
+		if ($_POST["persistformvar"] != "true") {
+			if ($action == "add") {
+				$sql = "insert into v_settings ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "numbering_plan, ";
+				$sql .= "default_gateway, ";
+				$sql .= "default_area_code, ";
+				$sql .= "event_socket_ip_address, ";
+				$sql .= "event_socket_port, ";
+				$sql .= "event_socket_password, ";
+				$sql .= "xml_rpc_http_port, ";
+				$sql .= "xml_rpc_auth_realm, ";
+				$sql .= "xml_rpc_auth_user, ";
+				$sql .= "xml_rpc_auth_pass, ";
+				$sql .= "admin_pin, ";
+				$sql .= "smtphost, ";
+				$sql .= "smtpsecure, ";
+				$sql .= "smtpauth, ";
+				$sql .= "smtpusername, ";
+				$sql .= "smtppassword, ";
+				$sql .= "smtpfrom, ";
+				$sql .= "smtpfromname, ";
+				$sql .= "mod_shout_decoder, ";
+				$sql .= "mod_shout_volume ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'1', ";
+				$sql .= "'$numbering_plan', ";
+				$sql .= "'$default_gateway', ";
+				$sql .= "'$default_area_code', ";
+				$sql .= "'$event_socket_ip_address', ";
+				$sql .= "'$event_socket_port', ";
+				$sql .= "'$event_socket_password', ";
+				$sql .= "'$xml_rpc_http_port', ";
+				$sql .= "'$xml_rpc_auth_realm', ";
+				$sql .= "'$xml_rpc_auth_user', ";
+				$sql .= "'$xml_rpc_auth_pass', ";
+				$sql .= "'$admin_pin', ";
+				$sql .= "'$smtphost', ";
+				$sql .= "'$smtpsecure', ";
+				$sql .= "'$smtpauth', ";
+				$sql .= "'$smtpusername', ";
+				$sql .= "'$smtppassword', ";
+				$sql .= "'$smtpfrom', ";
+				$sql .= "'$smtpfromname', ";
+				$sql .= "'$mod_shout_decoder', ";
+				$sql .= "'$mod_shout_volume' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-		//synchronize settings
-		sync_package_v_settings();
+				//synchronize settings
+					sync_package_v_settings();
 
-			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings.php\">\n";
-			echo "<div align='center'>\n";
-			echo "Add Complete\n";
-			echo "</div>\n";
-			require_once "includes/footer.php";
-			return;
-		} //if ($action == "add")
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Add Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "add")
 
-		if ($action == "update") {
-			$sql = "update v_settings set ";
-			$sql .= "v_id = '$v_id', ";
-			$sql .= "numbering_plan = '$numbering_plan', ";
-			$sql .= "default_gateway = '$default_gateway', ";
-			$sql .= "default_area_code = '$default_area_code', ";
-			$sql .= "event_socket_ip_address = '$event_socket_ip_address', ";
-			$sql .= "event_socket_port = '$event_socket_port', ";
-			$sql .= "event_socket_password = '$event_socket_password', ";
-			$sql .= "xml_rpc_http_port = '$xml_rpc_http_port', ";
-			$sql .= "xml_rpc_auth_realm = '$xml_rpc_auth_realm', ";
-			$sql .= "xml_rpc_auth_user = '$xml_rpc_auth_user', ";
-			$sql .= "xml_rpc_auth_pass = '$xml_rpc_auth_pass', ";
-			$sql .= "admin_pin = '$admin_pin', ";
-			$sql .= "smtphost = '$smtphost', ";
-			$sql .= "smtpsecure = '$smtpsecure', ";
-			$sql .= "smtpauth = '$smtpauth', ";
-			$sql .= "smtpusername = '$smtpusername', ";
-			$sql .= "smtppassword = '$smtppassword', ";
-			$sql .= "smtpfrom = '$smtpfrom', ";
-			$sql .= "smtpfromname = '$smtpfromname', ";
-			$sql .= "mod_shout_decoder = '$mod_shout_decoder', ";
-			$sql .= "mod_shout_volume = '$mod_shout_volume' ";
-			$sql .= "where setting_id = '$setting_id' ";
-			$db->exec(check_sql($sql));
-			unset($sql);
+			if ($action == "update") {
+				$sql = "update v_settings set ";
+				$sql .= "v_id = '1', ";
+				$sql .= "numbering_plan = '$numbering_plan', ";
+				$sql .= "default_gateway = '$default_gateway', ";
+				$sql .= "default_area_code = '$default_area_code', ";
+				$sql .= "event_socket_ip_address = '$event_socket_ip_address', ";
+				$sql .= "event_socket_port = '$event_socket_port', ";
+				$sql .= "event_socket_password = '$event_socket_password', ";
+				$sql .= "xml_rpc_http_port = '$xml_rpc_http_port', ";
+				$sql .= "xml_rpc_auth_realm = '$xml_rpc_auth_realm', ";
+				$sql .= "xml_rpc_auth_user = '$xml_rpc_auth_user', ";
+				$sql .= "xml_rpc_auth_pass = '$xml_rpc_auth_pass', ";
+				$sql .= "admin_pin = '$admin_pin', ";
+				$sql .= "smtphost = '$smtphost', ";
+				$sql .= "smtpsecure = '$smtpsecure', ";
+				$sql .= "smtpauth = '$smtpauth', ";
+				$sql .= "smtpusername = '$smtpusername', ";
+				$sql .= "smtppassword = '$smtppassword', ";
+				$sql .= "smtpfrom = '$smtpfrom', ";
+				$sql .= "smtpfromname = '$smtpfromname', ";
+				$sql .= "mod_shout_decoder = '$mod_shout_decoder', ";
+				$sql .= "mod_shout_volume = '$mod_shout_volume' ";
+				$sql .= "where setting_id = '$setting_id' ";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-		//synchronize settings
-		sync_package_v_settings();
+				//synchronize settings
+					sync_package_v_settings();
 
-			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings.php\">\n";
-			echo "<div align='center'>\n";
-			echo "Update Complete\n";
-			echo "</div>\n";
-			require_once "includes/footer.php";
-			return;
-	   } //if ($action == "update")
-	} //if ($_POST["persistformvar"] != "true") { 
-	
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Update Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
+			} //if ($action == "update")
+		} //if ($_POST["persistformvar"] != "true")
 	} //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
-	
-	//Pre-populate the form
+
+//pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$setting_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_settings ";
 		$sql .= "where setting_id = '$setting_id' ";
-		$sql .= "and v_id = '$v_id' ";
+		$sql .= "and v_id = '1' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			//$v_id = $row["v_id"];
 			$numbering_plan = $row["numbering_plan"];
 			$default_gateway = $row["default_gateway"];
 			$default_area_code = $row["default_area_code"];
@@ -263,19 +251,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset ($prepstatement);
 	}
 
+//show the header
 	require_once "includes/header.php";
 
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
 
-
 	echo "<form method='post' name='frm' action=''>\n";
-
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 
@@ -300,16 +286,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Default Gateway:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='default_gateway' maxlength='255' value=\"$default_gateway\">\n";
-	echo "<br />\n";
-	echo " Enter the default gateway name here.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	//echo "<tr>\n";
+	//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	//echo "    Default Gateway:\n";
+	//echo "</td>\n";
+	//echo "<td class='vtable' align='left'>\n";
+	//echo "    <input class='formfld' type='text' name='default_gateway' maxlength='255' value=\"$default_gateway\">\n";
+	//echo "<br />\n";
+	//echo " Enter the default gateway name here.\n";
+	//echo "</td>\n";
+	//echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
@@ -400,7 +386,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Admin PIN Number:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -417,7 +403,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='smtphost' maxlength='255' value=\"$smtphost\">\n";
 	echo "<br />\n";
-	echo "Enter the SMTP host address. example: smtp.gmail.com:465\n";
+	echo "Enter the SMTP host address. TLS example: smtp.gmail.com:587\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -553,11 +539,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</form>";
 
-
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
 
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>
