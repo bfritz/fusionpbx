@@ -351,19 +351,34 @@ else {
 	if (strlen($orderby) == 0)  { $orderby  = "start_epoch"; }
 	if (strlen($order) == 0)  { $order  = "desc"; }
 
+//set the default
+	$num_rows = '0';
+
+//get the number of rows in the v_xml_cdr 
 	$sql = "";
 	$sql .= " select count(*) as num_rows from v_xml_cdr ";
 	$sql .= $sqlwhere;
-	$row = $db->query(check_sql($sql))->fetch(PDO::FETCH_ASSOC);
-	$num_rows = $row[num_rows];
-	unset ($row, $sql);
+	$prepstatement = $db->prepare(check_sql($sql));
+	if ($prepstatement) {
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+		if (count($result) > 0) {
+			$num_rows = $row[num_rows];
+		}
+		else {
+			$num_rows = '0';
+		}
+	}
+	unset($prepstatement, $result);
 
+//prepare to page the results
 	$rows_per_page = 100;
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
 	list($pagingcontrols, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page; 
 
+//get the results from the db
 	$sql = "";
 	$sql .= " select * from v_xml_cdr ";
 	$sql .= $sqlwhere;
@@ -379,6 +394,7 @@ else {
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
+//show the results
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	//echo thorderby('direction', 'Direction', $orderby, $order);
