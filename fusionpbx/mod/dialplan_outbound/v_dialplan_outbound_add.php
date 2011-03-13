@@ -227,7 +227,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 
 				$extension_name = $gateway_name.".".$abbrv;
-				$dialplanorder ='999';
+				if (strlen($dialplanorder) == 0) {
+					$dialplanorder ='999';
+				}
 				$context = 'default';
 				$enabled = 'true';
 				$opt1name = 'gateway_id';
