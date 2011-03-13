@@ -149,10 +149,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$label = "14 digits";
 					$abbrv = "14d";
 					break;
-				case "^(\d{15})$":
+				case "^(0\d{12,14})$":
 					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "International";
-					$abbrv = "15d";
+					$abbrv = "Intl";
 					break;
 				case "^311$":
 					$action_data = "sofia/gateway/".$tmp_gateway_name."/311";
@@ -193,6 +193,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "dial 9, 11 digits";
 					$abbrv = "9.11d";
+					break;
 				case "^9(\d{12})$":
 					$action_data = "sofia/gateway/".$tmp_gateway_name."/\$1";
 					$label = "dial 9, International";
