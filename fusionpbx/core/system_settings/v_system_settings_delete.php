@@ -34,27 +34,32 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	$id = check_str($_GET["id"]);
-}
+//get the id
+	if (count($_GET)>0) {
+		$id = check_str($_GET["id"]);
+	}
 
-if (strlen($id)>0) {
-    $sql = "";
-    $sql .= "delete from v_system_settings ";
-    $sql .= "where v_id = '$id' ";
-    $prepstatement = $db->prepare(check_sql($sql));
-    $prepstatement->execute();
-    unset($sql);
-}
+//delete the system_settings entry by the id
+	if (strlen($id)>0) {
+		$sql = "";
+		$sql .= "delete from v_system_settings ";
+		$sql .= "where v_id = '$id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		unset($sql);
+	}
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_system_settings.php\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
+//clear the domains session array so that it is updated
+	unset($_SESSION["domains"]);
 
-require_once "includes/footer.php";
-return;
+//redirect the user
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_system_settings.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
 ?>
 

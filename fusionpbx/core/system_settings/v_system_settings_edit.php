@@ -454,6 +454,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						fclose($fh);
 					}
 
+			//clear the domains session array so that it is updated
+				unset($_SESSION["domains"]);
+
 			//synchronize the xml config
 				sync_package_v_dialplan_includes();
 
@@ -536,11 +539,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 //set defaults if value is emtpy
-	if (strlen($v_extensions_dir) == 0) { $v_extensions_dir = $v_conf_dir.'/directory/default'; }
+	if (strlen($v_server_port) == 0) { $v_server_port = $_SERVER["SERVER_PORT"]; }
+	if (strlen($v_server_protocol) == 0) { 
+		if ($v_server_port == "80") { $v_server_protocol = "http"; }
+		if ($v_server_port == "443") { $v_server_protocol = "https"; }
+	}
 	if (strlen($v_gateways_dir) == 0) { $v_gateways_dir = $v_conf_dir.'/sip_profiles/external'; }
+	if (strlen($v_voicemail_dir) == 0) { $v_voicemail_dir = $v_storage_dir.'/voicemail'; }
 	if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $v_conf_dir.'/dialplan/public'; }
+	if (strlen($v_extensions_dir) == 0) { $v_extensions_dir = $v_conf_dir.'/directory/default'; }
 	if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_dir.'/dialplan/default'; }
-	if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_dir.'/dialplan/default'; }
+
+	
 
 //show the header
 	require_once "includes/header.php";
