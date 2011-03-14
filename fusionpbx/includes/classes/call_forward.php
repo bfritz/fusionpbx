@@ -153,10 +153,17 @@ include "root.php";
 			//delete related v_hunt_group_destinations
 				$sql = "delete from v_hunt_group_destinations where hunt_group_id = '$this->call_forward_id' ";
 				$db->exec(check_sql($sql));
+			//check whether the number is an extension or external number
+				if (strlen($this->call_forward_number) > 7) {
+					$destination_type = 'sip uri';
+					$destination_profile = '';
+				}
+				else {
+					$destination_type = 'extension';
+					$destination_profile = 'internal';
+				}
 			//prepare the variables
 				$destination_data = $this->call_forward_number;
-				$destination_type = 'extension';
-				$destination_profile = 'internal';
 				$destination_timeout = '';
 				$destination_order = '1';
 				$destination_enabled = 'true';
