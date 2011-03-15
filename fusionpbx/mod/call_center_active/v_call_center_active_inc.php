@@ -202,9 +202,6 @@ else {
 				echo "<th>Last Status Change</th>\n";
 				echo "<th>No Answer Count</th>\n";
 				echo "<th>Calls Answered</th>\n";
-				if (ifgroup("admin") || ifgroup("superadmin")) {
-					echo "<th>&nbsp;</th>\n";
-				}
 				echo "</tr>\n";
 
 				foreach ($result as $row) {
@@ -256,11 +253,6 @@ else {
 					echo "<td valign='top' class='".$rowstyle[$c]."'>".$last_status_change_length."</td>\n";
 					echo "<td valign='top' class='".$rowstyle[$c]."'>".$no_answer_count."</td>\n";
 					echo "<td valign='top' class='".$rowstyle[$c]."'>".$calls_answered."</td>\n";
-					if (ifgroup("admin") || ifgroup("superadmin")) {
-						echo "<td valign='top' class='".$rowstyle[$c]."'>";
-						echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+agent+del+".$name."');}\">delete</a>&nbsp;\n";
-						echo "</td>";
-					}
 					echo "</tr>\n";
 
 					if ($c==0) { $c=1; } else { $c=0; }
@@ -297,7 +289,6 @@ else {
 					echo "<th>State</th>\n";
 					echo "<th>Level</th>\n";
 					echo "<th>Position</th>\n";
-					echo "<th>&nbsp;</th>\n";
 					echo "</tr>\n";
 
 					foreach ($result as $row) {
@@ -316,9 +307,6 @@ else {
 						echo "<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
 						echo "<td valign='top' class='".$rowstyle[$c]."'>".$level."</td>\n";
 						echo "<td valign='top' class='".$rowstyle[$c]."'>".$position."</td>\n";
-						echo "<td valign='top' class='".$rowstyle[$c]."' style='text-align:right;'>";
-						echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=callcenter_config+tier+del+".$queue."+".$agent."');}\">delete</a>&nbsp;\n";
-						echo "</td>";
 						echo "</tr>\n";
 
 						if ($c==0) { $c=1; } else { $c=0; }
