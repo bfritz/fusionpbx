@@ -38,24 +38,48 @@ if (count($_GET)>0) {
 	$id = check_str($_GET["id"]);
 }
 
-if (strlen($id)>0) {
+//get the agent details
 	$sql = "";
-	$sql .= "delete from v_call_center_agent ";
+	$sql .= "select * from v_call_center_agent ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and call_center_agent_id = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	unset($sql);
-}
+	$result = $prep_statement->fetchAll();
+	foreach ($result as &$row) {
+		$agent_name = $row["agent_name"];
+		break; //limit to 1 row
+	}
+	unset ($prep_statement);
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_center_agent.php\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
+//delete the agent from the freeswitch
+	//setup the event socket connection
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+	//delete the agent over event socket
+		if ($fp) {
+			$cmd = "api callcenter_config agent del ".$agent_name."@".$_SESSION['domains'][$v_id]['domain'];
+			$response = event_socket_request($fp, $cmd);
+		}
 
-require_once "includes/footer.php";
-return;
+//delete the agent from the db
+	if (strlen($id)>0) {
+		$sql = "";
+		$sql .= "delete from v_call_center_agent ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and call_center_agent_id = '$id' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($sql);
+	}
+
+//redirect the user
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_center_agent.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
 ?>
 

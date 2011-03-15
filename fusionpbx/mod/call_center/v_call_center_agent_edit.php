@@ -96,48 +96,76 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
  		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 
+	//add the agent
+		//setup the event socket connection
+			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		//add the agent using event socket
+			if ($fp) {
+				//add the agent
+					$cmd = "api callcenter_config agent add ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." ".$agent_type;
+					$response = event_socket_request($fp, $cmd);
+					usleep(200);
+				//agent set contact
+					$cmd = "api callcenter_config agent set contact ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." [call_timeout=".$agent_call_timeout."]".$agent_contact;
+					$response = event_socket_request($fp, $cmd);
+					usleep(200);
+				//agent set status
+					$cmd = "api callcenter_config agent set status ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." '".$agent_status."'";
+					$response = event_socket_request($fp, $cmd);
+					usleep(200);
+				//agent set reject_delay_time
+					$cmd = "api callcenter_config agent set reject_delay_time ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." ".$agent_reject_delay_time;
+					$response = event_socket_request($fp, $cmd);
+					usleep(200);
+				//agent set busy_delay_time
+					$cmd = "api callcenter_config agent set busy_delay_time ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." ".$agent_busy_delay_time;
+					$response = event_socket_request($fp, $cmd);
+			}
+
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
-			$sql = "insert into v_call_center_agent ";
-			$sql .= "(";
-			$sql .= "v_id, ";
-			$sql .= "agent_name, ";
-			$sql .= "agent_type, ";
-			$sql .= "agent_call_timeout, ";
-			$sql .= "agent_contact, ";
-			$sql .= "agent_status, ";
-			$sql .= "agent_max_no_answer, ";
-			$sql .= "agent_wrap_up_time, ";
-			$sql .= "agent_reject_delay_time, ";
-			$sql .= "agent_busy_delay_time ";
-			$sql .= ")";
-			$sql .= "values ";
-			$sql .= "(";
-			$sql .= "'$v_id', ";
-			$sql .= "'$agent_name', ";
-			$sql .= "'$agent_type', ";
-			$sql .= "'$agent_call_timeout', ";
-			$sql .= "'$agent_contact', ";
-			$sql .= "'$agent_status', ";
-			$sql .= "'$agent_max_no_answer', ";
-			$sql .= "'$agent_wrap_up_time', ";
-			$sql .= "'$agent_reject_delay_time', ";
-			$sql .= "'$agent_busy_delay_time' ";
-			$sql .= ")";
-			$db->exec(check_sql($sql));
-			unset($sql);
+			//add the agent to the database
+				$sql = "insert into v_call_center_agent ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "agent_name, ";
+				$sql .= "agent_type, ";
+				$sql .= "agent_call_timeout, ";
+				$sql .= "agent_contact, ";
+				$sql .= "agent_status, ";
+				$sql .= "agent_max_no_answer, ";
+				$sql .= "agent_wrap_up_time, ";
+				$sql .= "agent_reject_delay_time, ";
+				$sql .= "agent_busy_delay_time ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$agent_name', ";
+				$sql .= "'$agent_type', ";
+				$sql .= "'$agent_call_timeout', ";
+				$sql .= "'$agent_contact', ";
+				$sql .= "'$agent_status', ";
+				$sql .= "'$agent_max_no_answer', ";
+				$sql .= "'$agent_wrap_up_time', ";
+				$sql .= "'$agent_reject_delay_time', ";
+				$sql .= "'$agent_busy_delay_time' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
 			//syncrhonize configuration
-			sync_package_v_call_center();
+				sync_package_v_call_center();
 
-			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_center_agent.php\">\n";
-			echo "<div align='center'>\n";
-			echo "Add Complete\n";
-			echo "</div>\n";
-			require_once "includes/footer.php";
-			return;
+			//redirect the user
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_center_agent.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Add Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
 		} //if ($action == "add")
 
 		if ($action == "update") {
@@ -168,7 +196,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true") 
-
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form

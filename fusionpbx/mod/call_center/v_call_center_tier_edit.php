@@ -45,7 +45,6 @@ else {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
 		$agent_name = check_str($_POST["agent_name"]);
 		$queue_name = check_str($_POST["queue_name"]);
 		$tier_level = check_str($_POST["tier_level"]);
@@ -77,6 +76,32 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/footer.php";
 			return;
 		}
+
+	//add the agent
+		//setup the event socket connection
+			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		//add the agent using event socket
+			if ($fp) {
+				//get the domain using the $v_id
+					$tmp_domain = $_SESSION['domains'][$v_id]['domain'];
+				//syntax
+					//callcenter_config tier add [queue_name] [agent_name] [level] [position]
+					//callcenter_config tier set state [queue_name] [agent_name] [state]
+					//callcenter_config tier set level [queue_name] [agent_name] [level]
+					//callcenter_config tier set position [queue_name] [agent_name] [position]
+				//add the agent
+					$cmd = "api callcenter_config tier add ".$queue_name."@".$tmp_domain." ".$agent_name."@".$tmp_domain." ".$tier_level." ".$tier_position;
+					$response = event_socket_request($fp, $cmd);
+					usleep(200);
+				//agent set level
+					$cmd = "api callcenter_config tier set level ".$queue_name."@".$tmp_domain." ".$agent_name."@".$tmp_domain." ".$tier_level;
+					$response = event_socket_request($fp, $cmd);
+					usleep(200);
+				//agent set position
+					$cmd = "api callcenter_config tier set position ".$queue_name."@".$tmp_domain." ".$agent_name."@".$tmp_domain." ".$tier_position;
+					$response = event_socket_request($fp, $cmd);
+					usleep(200);
+			}
 
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
