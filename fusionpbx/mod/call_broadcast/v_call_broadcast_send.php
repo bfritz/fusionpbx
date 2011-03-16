@@ -127,6 +127,9 @@ function cmd_async($cmd) {
 		require_once "includes/footer.php";
 	}
 	else {
+		//show the header
+			require_once "includes/header.php";
+
 		//send the call broadcast
 			if (strlen($broadcast_phone_numbers) > 0) {
 				$broadcast_phone_number_array = explode ("\n", $broadcast_phone_numbers);
@@ -147,13 +150,23 @@ function cmd_async($cmd) {
 							$phone1 = "1".$phone1;
 						}
 
-					//schedule the call
+					//get the correct gateway
 						$bridge_array = outbound_route_to_bridge ($phone1);
 
-						$channel_variables = "origination_caller_id_name='$broadcast_caller_id_name',origination_caller_id_number=$broadcast_caller_id_number";
+					//prepare the string
+						$channel_variables = "ignore_early_media=true,origination_caller_id_name='$broadcast_caller_id_name',origination_caller_id_number=$broadcast_caller_id_number";
 						$origination_url = "{".$channel_variables."}".$bridge_array[0]."";
-						$cmd = "sched_api +".$sched_seconds." none originate {ignore_early_media=true}".$origination_url." &transfer(".$broadcast_destination_data." XML default)";
-						//echo $cmd."<br />\n";
+
+					//get the context
+						if (count($_SESSION["domains"]) > 1) {
+							$context =  $_SESSION['domains'][$row['v_id']]['domain'];
+						}
+						else {
+							$context = "default";
+						}
+
+					//set the command
+						$cmd = "sched_api +".$sched_seconds." none originate ".$origination_url." ".$broadcast_destination_data." XML $context";
 
 					//if the event socket connection is lost then re-connect
 						if (!$fp) {
@@ -161,9 +174,8 @@ function cmd_async($cmd) {
 						}
 
 					//method 1
-						$response = event_socket_request($fp, 'api '.$cmd);
-						fclose($fp);
-
+						$response = trim(event_socket_request($fp, 'api '.$cmd));
+						
 					//method 2
 						//cmd_async($bin_dir."/fs_cli -x \"".$cmd."\";");
 
@@ -174,10 +186,11 @@ function cmd_async($cmd) {
 								$count=0;
 							}
 						}
+
 					$count++;
 				}
+				fclose($fp);
 
-				require_once "includes/header.php";
 				//echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/mod/calls_active/v_calls_active.php\">\n";
 				echo "<div align='center'>\n";
 				echo "<table width='50%'>\n";
@@ -198,8 +211,11 @@ function cmd_async($cmd) {
 				echo "</tr>\n";
 				echo "</table>\n";
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				
 			}
+
+		//show the footer
+			require_once "includes/footer.php";
 	}
 
 /*
