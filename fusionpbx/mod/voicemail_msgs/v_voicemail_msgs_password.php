@@ -166,19 +166,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//syncrhonize configuration
-			sync_package_v_extensions();
+				sync_package_v_extensions();
 
-			//clear the reload_xml message
-			$_SESSION["reload_xml"] = '';
+			//apply settings reminder
+				$_SESSION["reload_xml"] = true;
 
 			//redirect the user
-			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_voicemail_msgs.php\">\n";
-			echo "<div align='center'>\n";
-			echo "Update Complete\n";
-			echo "</div>\n";
-			require_once "includes/footer.php";
-			return;
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_voicemail_msgs.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Update Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
 	   } //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
