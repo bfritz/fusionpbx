@@ -30,23 +30,6 @@ require_once "includes/checkauth.php";
 $conference_name = trim($_REQUEST["c"]);
 $tmp_conference_name = str_replace("_", " ", $conference_name);
 
-//check if the domain in the conference name matches the domain
-	if (ifgroup("admin") || ifgroup("superadmin")) {
-		//access granted
-	}
-	else {
-		$tmp_domain = substr($conference_name, -strlen($v_domain));
-		echo $tmp_domain;
-		if ($tmp_domain != $v_domain) {
-			//domains do not match
-			echo " access denied";
-			exit;
-		}
-		else {
-			$tmp_conference_name = substr($conference_name, 0, strlen($conference_name) - strlen('-'.$v_domain));
-		}
-	}
-
 //show the header
 	require_once "includes/header.php";
 

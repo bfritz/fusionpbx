@@ -31,87 +31,81 @@ require_once "includes/checkauth.php";
 	$conference_name = trim($_REQUEST["c"]);
 
 //check if the domain in the conference name matches the domain
-	if (ifgroup("admin") || ifgroup("superadmin")) {
+	if (ifgroup("superadmin")) {
 		//access granted
 	}
 	else {
-		$tmp_domain = substr($conference_name, -strlen($v_domain));
-		if ($tmp_domain != $v_domain) {
-			//domains do not match
-			echo "access denied";
-			exit;
-		}
-	}
-
-//find the conference extensions from the dialplan include details
-	$sql = "";
-	$sql .= "select * from v_dialplan_includes_details ";
-	$sql .= "where v_id = '$v_id' ";
-	if (!ifgroup("admin") || !ifgroup("superadmin")) {
-		//find the assigned users
-			$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
-	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$x = 0;
-	$result = $prepstatement->fetchAll();
-	$conference_array = array ();
-	foreach ($result as &$row) {
-		$dialplan_include_id = $row["dialplan_include_id"];
-		//$tag = $row["tag"];
-		//$fieldorder = $row["fieldorder"];
-		$fieldtype = $row["fieldtype"];
-		//$fielddata = $row["fielddata"];
-		if (ifgroup("admin") || ifgroup("superadmin")) {
-			if ($fieldtype == "conference") {
-				$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
-				$x++;
+		//find the conference extensions from the dialplan include details
+			$sql = "";
+			$sql .= "select * from v_dialplan_includes_details ";
+			$sql .= "where v_id = '$v_id' ";
+			if (!ifgroup("admin") || !ifgroup("superadmin")) {
+				//find the assigned users
+					$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
 			}
-		}
-		else {
-			$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
-			$x++;
-		}
-	}
-	unset ($prepstatement);
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$x = 0;
+			$result = $prepstatement->fetchAll();
+			$conference_array = array ();
+			foreach ($result as &$row) {
+				$dialplan_include_id = $row["dialplan_include_id"];
+				//$tag = $row["tag"];
+				//$fieldorder = $row["fieldorder"];
+				$fieldtype = $row["fieldtype"];
+				//$fielddata = $row["fielddata"];
+				if (ifgroup("admin") || ifgroup("superadmin")) {
+					if ($fieldtype == "conference") {
+						$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+						$x++;
+					}
+				}
+				else {
+					$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+					$x++;
+				}
+			}
+			unset ($prepstatement);
 
-//find if the user is in the admin or superadmin group or has been assigned to this conference
-	if (ifgroup("admin") || ifgroup("superadmin")) {
-		//allow admin and superadmin access to all conference rooms
-	}
-	else {
-		//get the list of conference numbers the user is assigned to
-		$sql = "";
-		$sql .= " select * from v_dialplan_includes_details ";
-		$x = 0;
-		foreach ($conference_array as &$row) {
-			if ($x == 0) {
-				$sql .= "where v_id = '$v_id' \n";
-				$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
-				$sql .= "and fieldtype = 'conference' \n";
-				$sql .= "and fielddata like '".$conference_name."%' \n";
+		//find if the user is in the admin or superadmin group or has been assigned to this conference
+			if (ifgroup("admin") || ifgroup("superadmin")) {
+				//allow admin and superadmin access to all conference rooms
 			}
 			else {
-				$sql .= "or v_id = '$v_id' \n";
-				$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
-				$sql .= "and fieldtype = 'conference' \n";
-				$sql .= "and fielddata like '".$conference_name."%' \n";
+				//get the list of conference numbers the user is assigned to
+				$sql = "";
+				$sql .= " select * from v_dialplan_includes_details ";
+				$x = 0;
+				foreach ($conference_array as &$row) {
+					if ($x == 0) {
+						$sql .= "where v_id = '$v_id' \n";
+						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+						$sql .= "and fieldtype = 'conference' \n";
+						$sql .= "and fielddata like '".$conference_name."%' \n";
+					}
+					else {
+						$sql .= "or v_id = '$v_id' \n";
+						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+						$sql .= "and fieldtype = 'conference' \n";
+						$sql .= "and fielddata like '".$conference_name."%' \n";
+					}
+					$x++;
+				}
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+				$result = $prepstatement->fetchAll();
+				$result_count = count($result);
+				unset ($prepstatement, $sql);
+				if ($result_count == 0) { //no results
+					echo "access denied";
+					exit;
+				}
 			}
-			$x++;
-		}
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		$result_count = count($result);
-		unset ($prepstatement, $sql);
-		if ($result_count == 0) { //no results
-			echo "access denied";
-			exit;
-		}
 	}
 
 //replace the space with underscore
-	$tmp_conference_name = str_replace("_", " ", $conference_name);
+	$conference_name = str_replace("_", " ", $conference_name);
+	$conference_name = $conference_name.'-'.$_SESSION['domains'][$v_id]['domain'];
 
 //create the conference list command
 	$switch_cmd = 'conference '.$conference_name.' xml_list';

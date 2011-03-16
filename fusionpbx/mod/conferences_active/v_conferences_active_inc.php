@@ -94,7 +94,7 @@ else {
 				echo "<tr>\n";
 				echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_conference_name."</td>\n";
 				echo "<td valign='top' class='".$rowstyle[$c]."'>".$member_count."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_conference_interactive.php?c=".$name."'>view</a></td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_conference_interactive.php?c=".$tmp_conference_name."'>view</a></td>\n";
 				echo "</tr>\n";
 
 				if ($c==0) { $c=1; } else { $c=0; }
