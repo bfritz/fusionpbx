@@ -5168,7 +5168,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$tag = 'action'; //condition, action, antiaction
 								$fieldtype = 'ivr';
 								if (count($_SESSION["domains"]) > 1) {
-									$fielddata = $_SESSION['domains'][$row['v_id']]['domain'].'-'.$ivr_menu_name;
+									$fielddata = $_SESSION['domains'][$v_id]['domain'].'-'.$ivr_menu_name;
 								}
 								else {
 									$fielddata = $ivr_menu_name;
@@ -5215,7 +5215,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
 								if (count($_SESSION["domains"]) > 1) {
-									$sql .= "fielddata = '".$_SESSION['domains'][$row['v_id']]['domain']."-".$ivr_menu_name."' ";
+									$sql .= "fielddata = '".$_SESSION['domains'][$v_id]['domain']."-".$ivr_menu_name."' ";
 								}
 								else {
 									$sql .= "fielddata = '".$ivr_menu_name."' ";
@@ -5244,7 +5244,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 						$tmp .= "	<!-- $ivr_menu_desc -->\n";
 					}
 					if (count($_SESSION["domains"]) > 1) {
-						$tmp .= "	<menu name=\"".$_SESSION['domains'][$row['v_id']]['domain']."-".$ivr_menu_name."\"\n";
+						$tmp .= "	<menu name=\"".$_SESSION['domains'][$v_id]['domain']."-".$ivr_menu_name."\"\n";
 					}
 					else {
 						$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
