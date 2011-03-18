@@ -59,7 +59,6 @@ else {
 			$v_build_revision = check_str($_POST["v_build_revision"]);
 			$v_label = check_str($_POST["v_label"]);
 			$v_name = check_str($_POST["v_name"]);
-			$v_description = check_str($_POST["v_description"]);
 			$v_dir = check_str($_POST["v_dir"]);
 			$v_parent_dir = check_str($_POST["v_parent_dir"]);
 			$v_backup_dir = check_str($_POST["v_backup_dir"]);
@@ -87,6 +86,9 @@ else {
 			$v_provisioning_https_dir = check_str($_POST["v_provisioning_https_dir"]);
 			$v_provisioning_http_dir = check_str($_POST["v_provisioning_http_dir"]);
 			$v_template_name = check_str($_POST["v_template_name"]);
+			$v_time_zone = check_str($_POST["v_time_zone"]);
+			$v_description = check_str($_POST["v_description"]);
+			
 			if (strlen($v_template_name) > 0) {
 				$_SESSION["v_template_name"] = $v_template_name;
 				$_SESSION["template_name"] = $v_template_name;
@@ -143,6 +145,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($v_provisioning_https_dir) == 0) { $msg .= "Please provide: Provisioning HTTPS Directory<br>\n"; }
 		//if (strlen($v_provisioning_http_dir) == 0) { $msg .= "Please provide: Provisioning HTTP Directory<br>\n"; }
 		//if (strlen($v_template_name) == 0) { $msg .= "Please provide: Template Name<br>\n"; }
+		//if (strlen($v_time_zone) == 0) { $msg .= "Please provide: Time Zone<br>\n"; }
+		
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -174,7 +178,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "v_build_revision, ";
 					$sql .= "v_label, ";
 					$sql .= "v_name, ";
-					$sql .= "v_description, ";
 					$sql .= "v_dir, ";
 					$sql .= "v_parent_dir, ";
 					$sql .= "v_backup_dir, ";
@@ -201,7 +204,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "v_provisioning_ftp_dir, ";
 					$sql .= "v_provisioning_https_dir, ";
 					$sql .= "v_provisioning_http_dir, ";
-					$sql .= "v_template_name ";
+					$sql .= "v_template_name, ";
+					$sql .= "v_time_zone, ";
+					$sql .= "v_description ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
@@ -217,7 +222,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$v_build_revision', ";
 					$sql .= "'$v_label', ";
 					$sql .= "'$v_name', ";
-					$sql .= "'$v_description', ";
 					$sql .= "'$v_dir', ";
 					$sql .= "'$v_parent_dir', ";
 					$sql .= "'$v_backup_dir', ";
@@ -244,7 +248,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$v_provisioning_ftp_dir', ";
 					$sql .= "'$v_provisioning_https_dir', ";
 					$sql .= "'$v_provisioning_http_dir', ";
-					$sql .= "'$v_template_name' ";
+					$sql .= "'$v_template_name', ";					
+					$sql .= "'$v_time_zone', ";
+					$sql .= "'$v_description' ";
 					$sql .= ")";
 					if ($db_type == "sqlite" || $db_type == "mysql" ) {
 							$db->exec(check_sql($sql));
@@ -278,7 +284,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "v_build_revision = '$v_build_revision', ";
 					$sql .= "v_label = '$v_label', ";
 					$sql .= "v_name = '$v_name', ";
-					$sql .= "v_description = '$v_description', ";
 					$sql .= "v_dir = '$v_dir', ";
 					$sql .= "v_parent_dir = '$v_parent_dir', ";
 					$sql .= "v_backup_dir = '$v_backup_dir', ";
@@ -305,7 +310,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
 					$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
 					$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir', ";
-					$sql .= "v_template_name = '$v_template_name' ";
+					$sql .= "v_template_name = '$v_template_name', ";
+					$sql .= "v_time_zone = '$v_time_zone', ";
+					$sql .= "v_description = '$v_description' ";
 					$sql .= "where v_id = '$v_id'";
 					$db->exec(check_sql($sql));
 					unset($sql);
@@ -500,7 +507,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$v_build_revision = $row["v_build_revision"];
 			$v_label = $row["v_label"];
 			$v_name = $row["v_name"];
-			$v_description = $row["v_description"];
 			$v_dir = $row["v_dir"];
 			$v_parent_dir = $row["v_parent_dir"];
 			$v_backup_dir = $row["v_backup_dir"];
@@ -528,6 +534,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$v_provisioning_https_dir = $row["v_provisioning_https_dir"];
 			$v_provisioning_http_dir = $row["v_provisioning_http_dir"];
 			$v_template_name = $row["v_template_name"];
+			$v_time_zone = $row["v_time_zone"];
+			$v_description = $row["v_description"];
 			break; //limit to 1 row
 		}
 		unset ($prepstatement);
@@ -1001,7 +1009,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 	echo "		Template: \n";
 	echo "	</td>\n";
-	echo "	<td class=\"vtable\">\n";
+	echo "	<td class=\"vtable\" align='left'>\n";
 	echo "		<select id='v_template_name' name='v_template_name' class='formfld' style=''>\n";
 	echo "		<option value=''></option>\n";
 	$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
@@ -1025,15 +1033,50 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		Select a template to set as the default.<br />\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
+	
+	echo "	<tr>\n";
+	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+	echo "		Time Zone: \n";
+	echo "	</td>\n";
+	echo "	<td class=\"vtable\" align='left'>\n";
+	echo "		<select id='v_time_zone' name='v_time_zone' class='formfld' style=''>\n";
+	echo "		<option value=''></option>\n";
+	//$list = DateTimeZone::listAbbreviations();
+    $time_zone_identifiers = DateTimeZone::listIdentifiers();
+	$previous_category = '';
+	$x = 0;
+	foreach ($time_zone_identifiers as $key => $row) {
+		$tz = explode("/", $row);
+		$category = $tz[0];
+		if ($category != $previous_category) {
+			if ($x > 0) {
+				echo "		</optgroup>\n";
+			}
+			echo "		<optgroup label='".$category."'>\n";
+		}
+		if ($row == $v_time_zone) {
+			echo "			<option value='".$row."' selected='selected'>".$row."</option>\n";
+		}
+		else {
+			echo "			<option value='".$row."'>".$row."</option>\n";
+		}
+		$previous_category = $category;
+		$x++;
+	}
+	echo "		</select>\n";
+	echo "		<br />\n";
+	echo "		Select the default time zone.<br />\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Description:\n";
+	echo "		Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_description' maxlength='255' value=\"$v_description\">\n";
-	echo "<br />\n";
-	echo "\n";
+	echo "		<input class='formfld' type='text' name='v_description' maxlength='255' value=\"$v_description\">\n";
+	echo "		<br />\n";
+	echo "		Enter the description.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
