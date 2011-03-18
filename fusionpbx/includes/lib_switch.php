@@ -3012,13 +3012,12 @@ function sync_package_v_hunt_group()
 								$tmp_buffer = $tmpdata;
 							}
 							else {
-								$tmp_buffer .= "..\",\"..".$tmpdata;
+								$tmp_buffer .= "..\":_:\"..".$tmpdata;
 							}
 							$i++;
 						}
 					}
 					unset($i);
-					$delimiter = ",";
 					$tmp_application = $tmp_array[0]["application"];
 
 					if ($row['huntgrouptype'] == "simultaneous" || $row['huntgrouptype'] == "follow_me_simultaneous" || $row['huntgrouptype'] ==  "call_forward") {
