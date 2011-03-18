@@ -137,6 +137,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$userphonefax = check_str($_POST["userphonefax"]);
 	$user_status = check_str($_POST["user_status"]);
 	$user_template_name = check_str($_POST["user_template_name"]);
+	$user_time_zone = check_str($_POST["user_time_zone"]);
 	$useremail = check_str($_POST["useremail"]);
 	$groupmember = check_str($_POST["groupmember"]);
 
@@ -163,6 +164,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	//if (strlen($userphonefax) == 0) { $msgerror .= "Please provide a fax number.<br>\n"; }
 	//if (strlen($useremail) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
 	//if (strlen($useremailemergency) == 0) { $msgerror .= "Please provide an emergency email.<br>\n"; }
+	//if (strlen($user_time_zone) == 0) { $msgerror .= "Please provide an time zone.<br>\n"; }
 
 	if (strlen($msgerror) > 0) {
 		require_once "includes/header.php";
@@ -271,6 +273,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "userphonefax = '$userphonefax', ";
 		$sql .= "user_status = '$user_status', ";
 		$sql .= "user_template_name = '$user_template_name', ";
+		$sql .= "user_time_zone = '$user_time_zone', ";
 		$sql .= "useremail = '$useremail' ";
 		if (strlen($id)> 0) {
 			if (ifgroup("superadmin")) {
@@ -383,6 +386,7 @@ else {
 		$useremail = $row["useremail"];
 		$user_status = $row["user_status"];
 		$user_template_name = $row["user_template_name"];
+		$user_time_zone = $row["user_time_zone"];
 		break; //limit to 1 row
 	}
 
@@ -768,6 +772,42 @@ else {
 		echo "	</td>\n";
 		echo "	</tr>\n";
 	}
+
+	echo "	<tr>\n";
+	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+	echo "		Time Zone: \n";
+	echo "	</td>\n";
+	echo "	<td class=\"vtable\" align='left'>\n";
+	echo "		<select id='user_time_zone' name='user_time_zone' class='formfld' style=''>\n";
+	echo "		<option value=''></option>\n";
+	//$list = DateTimeZone::listAbbreviations();
+    $time_zone_identifiers = DateTimeZone::listIdentifiers();
+	$previous_category = '';
+	$x = 0;
+	foreach ($time_zone_identifiers as $key => $row) {
+		$tz = explode("/", $row);
+		$category = $tz[0];
+		if ($category != $previous_category) {
+			if ($x > 0) {
+				echo "		</optgroup>\n";
+			}
+			echo "		<optgroup label='".$category."'>\n";
+		}
+		if ($row == $user_time_zone) {
+			echo "			<option value='".$row."' selected='selected'>".$row."</option>\n";
+		}
+		else {
+			echo "			<option value='".$row."'>".$row."</option>\n";
+		}
+		$previous_category = $category;
+		$x++;
+	}
+	echo "		</select>\n";
+	echo "		<br />\n";
+	echo "		Select the default time zone.<br />\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
+
 	echo "    </table>";
 
 	echo "<br>";
