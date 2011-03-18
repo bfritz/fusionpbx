@@ -85,6 +85,10 @@ if (strlen($_SESSION["username"]) == 0) {
 				if (strlen($_SESSION["v_template_name"]) == 0) {
 					$_SESSION["template_name"] = $row["user_template_name"];
 				}
+				$_SESSION["user_time_zone"] = '';
+				if (strlen($row["user_time_zone"]) > 0) {
+					$_SESSION["user_time_zone"] = $row["user_time_zone"];
+				}
 				break;
 			}
 			//echo "username: ".$_SESSION["username"]." and password are correct";
@@ -134,6 +138,14 @@ if (strlen($_SESSION["username"]) == 0) {
 	//header("Location: ".$path);
 	//exit;
 }
+
+//set the time zone
+	if (strlen($_SESSION["user_time_zone"]) == 0) {
+		date_default_timezone_set($_SESSION["v_time_zone"]);
+	}
+	else {
+		date_default_timezone_set($_SESSION["user_time_zone"]);
+	}
 
 //hide the path unless logged in as a superadmin.
 	if (!ifgroup("superadmin")) {

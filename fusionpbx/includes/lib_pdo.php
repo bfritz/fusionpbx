@@ -305,6 +305,10 @@ if ($db_type == "pgsql") {
 				$_SESSION["template_name"] = $row["v_template_name"];
 				$_SESSION["v_template_name"] = $row["v_template_name"];
 				$_SESSION["v_domain"] = $row['v_domain'];
+				$_SESSION["v_time_zone"] = $row['v_time_zone'];
+				if (strlen($row["v_time_zone"]) > 0) {
+					date_default_timezone_set($_SESSION["v_time_zone"]);
+				}
 			}
 		}
 		unset($result, $prepstatement);

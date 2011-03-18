@@ -39,6 +39,8 @@ include "root.php";
 	$_SESSION['user_context'] = '';
 	$_SESSION['domains'] = '';
 	$_SESSION['context'] = '';
+	$_SESSION['v_time_zone'] = '';
+	$_SESSION['user_time_zone'] = '';
 	session_destroy();
 
 //redirect the user to the login page

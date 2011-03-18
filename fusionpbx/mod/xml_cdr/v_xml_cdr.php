@@ -417,6 +417,8 @@ else {
 			$tmp_month = date("M", strtotime($row['start_stamp']));
 			$tmp_day = date("d", strtotime($row['start_stamp']));
 
+			$tmp_start_epoch = date("h:i:s Y-m-d", $row['start_epoch']);
+
 			$hangup_cause = $row['hangup_cause'];
 			$hangup_cause = str_replace("_", " ", $hangup_cause);
 			$hangup_cause = strtolower($hangup_cause);
@@ -461,7 +463,7 @@ else {
 			}
 			echo "	</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['destination_number']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['start_stamp']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$tmp_start_epoch."</td>\n";
 			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['end_stamp']."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['duration']."</td>\n";
 			if (ifgroup("admin") || ifgroup("superadmin")) {
