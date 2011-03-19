@@ -102,7 +102,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if (strlen($dialplan_expression)>0) {
 
 				if (count($_SESSION["domains"]) > 1) {
-					$tmp_gateway_name = $v_domain .'-'.$gateway_name;
+					$tmp_gateway_name = $_SESSION['domains'][$v_id]['domain'] .'-'.$gateway_name;
 				}
 				else {
 					$tmp_gateway_name = $gateway_name;
@@ -319,6 +319,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		//synchronize the xml config
 			sync_package_v_dialplan_includes();
+		
+		//changes in the dialplan may affect routes in the hunt groups
+			sync_package_v_hunt_group();
 	}
 
 	//commit the atomic transaction
