@@ -4610,9 +4610,6 @@ function sync_package_v_dialplan_includes()
 
 	} //end while
 
-	//changes in the dialplan may affect routes in the hunt groups
-		sync_package_v_hunt_group();
-
 	//apply settings reminder
 		$_SESSION["reload_xml"] = true;
 }
