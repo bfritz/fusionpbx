@@ -630,14 +630,13 @@ function ListFiles($dir) {
 				}
 			}
 		}
-
 		closedir($dh);
 		return $files;
 	}
 }
 
 function switch_select_destination($select_type, $select_label, $select_name, $select_value, $select_style, $action='') {
-	//$select_type = 'ivr'; //$select_type='dialplan' //$select_type='call_center_contact'
+	//select_type can be ivr, dialplan, or call_center_contact
 	global $config, $db, $v_id;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -811,7 +810,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
-					echo "		<option value='user/$extension' selected='selected'>".$extension." ".$description."</option>\n";
+					echo "		<option value='user/$extension@".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				$selection_found = true;
 			}
@@ -823,7 +822,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
-					echo "		<option value='user/$extension'>".$extension." ".$description."</option>\n";
+					echo "		<option value='user/$extension@".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
 				}
 			}
 		}
