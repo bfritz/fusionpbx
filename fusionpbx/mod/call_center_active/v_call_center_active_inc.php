@@ -35,7 +35,7 @@ else {
 }
 
 //get the queue_name and set it as a variable
-	$queue_name = $_GET[queue_name];
+	$queue_name = $_GET[queue_name].'@'. $_SESSION['domains'][$v_id]['domain'];
 
 //convert the string to a named array
 	function str_to_named_array($tmp_str, $tmp_delimiter) {
@@ -88,17 +88,15 @@ else {
 	else {
 		//get the queue list
 			//send the event socket command and get the response
-				$switch_cmd = 'callcenter_config queue list '.$queue_name;
+				//callcenter_config queue list members [queue_name]
+				$switch_cmd = 'callcenter_config queue list members '.$queue_name;
 				$event_socket_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
 				$result = str_to_named_array($event_socket_str, '|');
-
-			//short queue name
-				$queue_name_array = explode('@', $queue_name);
 
 			//show the title
 				echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 				echo "  <tr>\n";
-				echo "	<td align='left'><b>".ucfirst($queue_name_array[0])." Queue</b><br />\n";
+				echo "	<td align='left'><b>".ucfirst($_GET[queue_name])." Queue</b><br />\n";
 				echo "		Shows a list of callers in the queue.<br />\n";
 				echo "	</td>\n";
 				echo "  </tr>\n";
@@ -187,7 +185,8 @@ else {
 				echo "<br />\n";
 
 			//send the event socket command and get the response
-				$switch_cmd = 'callcenter_config agent list';
+				//callcenter_config queue list agents [queue_name] [status] | 
+				$switch_cmd = 'callcenter_config queue list agents '.$queue_name;
 				$event_socket_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
 				$result = str_to_named_array($event_socket_str, '|');
 
@@ -206,12 +205,12 @@ else {
 
 				foreach ($result as $row) {
 					$name = $row['name'];
-					$name = str_replace('@'.$v_domain, '', $name);
+					//$name = str_replace('@'.$v_domain, '', $name);
 					//$system = $row['system'];
 					//$uuid = $row['uuid'];
 					//$type = $row['type'];
 					$contact = $row['contact'];
-					$contact = str_replace('@'.$v_domain, '', $contact);
+					//$contact = str_replace('@'.$v_domain, '', $contact);
 					$status = $row['status'];
 					$state = $row['state'];
 					$max_no_answer = $row['max_no_answer'];
@@ -226,7 +225,6 @@ else {
 					$calls_answered = $row['calls_answered'];
 					$talk_time = $row['talk_time'];
 					$ready_time = $row['ready_time'];
-
 
 					$last_offered_call_seconds = time() - $last_offered_call;
 					$last_offered_call_length_hour = floor($last_offered_call_seconds/3600);
@@ -277,7 +275,8 @@ else {
 					echo "<br />\n";
 
 				//send the event socket command and get the response
-					$switch_cmd = 'callcenter_config tier list '.$queue_name;
+					//callcenter_config queue list tiers [queue_name] | 
+					$switch_cmd = 'callcenter_config queue list tiers '.$queue_name;
 					$event_socket_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
 					$result = str_to_named_array($event_socket_str, '|');
 
@@ -296,7 +295,7 @@ else {
 						$queue = $row['queue'];
 						//$queue = str_replace('@'.$v_domain, '', $queue);
 						$agent = $row['agent'];
-						$agent = str_replace('@'.$v_domain, '', $agent);
+						//$agent = str_replace('@'.$v_domain, '', $agent);
 						$state = $row['state'];
 						$level = $row['level'];
 						$position = $row['position'];

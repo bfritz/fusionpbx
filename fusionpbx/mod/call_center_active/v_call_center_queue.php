@@ -39,19 +39,17 @@ require_once "includes/paging.php";
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
 
-
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
 	echo "<td width='50%' nowrap><b>Call Center Queue List</b></td>\n";
 	echo "<td width='50%' align='right'>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_call_center_agent.php'\" value='Agents'>\n";
-	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_call_center_tier.php'\" value='Tiers'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -61,9 +59,9 @@ $order = $_GET["order"];
 	echo "</tr>\n";
 	echo "</tr></table>\n";
 
-
 	$sql = "";
 	$sql .= " select * from v_call_center_queue ";
+	$sql .= " where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -79,6 +77,7 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_call_center_queue ";
+	$sql .= " where v_id = '$v_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -86,7 +85,6 @@ $order = $_GET["order"];
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
-
 
 	$c = 0;
 	$row_style["0"] = "rowstyle0";
@@ -120,7 +118,6 @@ $order = $_GET["order"];
 	}
 	else { //received results
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_name]."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_extension]."</td>\n";
@@ -136,7 +133,7 @@ $order = $_GET["order"];
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_discard_abandoned_after]."</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_abandoned_resume_allowed]."</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_tier_rule_wait_multiply_level]."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_description]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_description]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='".PROJECT_PATH."/mod/call_center_active/v_call_center_active.php?queue_name=".$row[queue_name]."' alt='edit'>$v_link_label_edit</a>\n";
 			//echo "		<a href='v_call_center_queue_delete.php?id=".$row[call_center_queue_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
@@ -149,7 +146,6 @@ $order = $_GET["order"];
 		unset($sql, $result, $row_count);
 	} //end if results
 
-
 	echo "<tr>\n";
 	echo "<td colspan='17' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -158,19 +154,16 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	//echo "			<a href='v_call_center_queue_edit.php' alt='add'>$v_link_label_add</a>\n";
-	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_call_center_queue_edit.php'\" value='+'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
@@ -178,11 +171,7 @@ $order = $_GET["order"];
 	echo "</div>";
 	echo "<br><br>";
 
+//show the footer
+	require_once "includes/footer.php";
 
-require_once "includes/footer.php";
-unset ($result_count);
-unset ($result);
-unset ($key);
-unset ($val);
-unset ($c);
 ?>
