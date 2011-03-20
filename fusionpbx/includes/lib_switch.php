@@ -109,12 +109,10 @@ function v_settings() {
 	$sql = "";
 	$sql .= "select * from v_system_settings ";
 	$sql .= "where v_id = '$v_id' ";
-	//echo "program_dir: ".$program_dir;
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-
 		//detected automatically with includes/lib_php.php
 		$v_settings_array["v_secure"] = $v_secure;
 
@@ -360,7 +358,6 @@ if ($db_type == "sqlite") {
 
 
 function build_menu() {
-
 	global $v_menu_tab_show;
 
 	if ($v_menu_tab_show) {
@@ -465,34 +462,31 @@ function guid() {
 //echo guid();
 
 
-function event_socket_create($host, $port, $password)
-{
-			$fp = fsockopen($host, $port, $errno, $errdesc, 3);
-			socket_set_blocking($fp,false);
+function event_socket_create($host, $port, $password){
+	$fp = fsockopen($host, $port, $errno, $errdesc, 3);
+	socket_set_blocking($fp,false);
 
-			if (!$fp) {
-				//error "invalid handle<br />\n";
-				//echo "error number: ".$errno."<br />\n";
-				//echo "error description: ".$errdesc."<br />\n";
+	if (!$fp) {
+		//error "invalid handle<br />\n";
+		//echo "error number: ".$errno."<br />\n";
+		//echo "error description: ".$errdesc."<br />\n";
+	}
+	else {
+		//connected to the socket return the handle
+		while (!feof($fp)) {
+			$buffer = fgets($fp, 1024);
+			usleep(100); //allow time for reponse
+			if (trim($buffer) == "Content-Type: auth/request") {
+				 fputs($fp, "auth $password\n\n");
+				 break;
 			}
-			else {
-				//connected to the socket return the handle
-				while (!feof($fp)) {
-					$buffer = fgets($fp, 1024);
-					usleep(100); //allow time for reponse
-					if (trim($buffer) == "Content-Type: auth/request") {
-						 fputs($fp, "auth $password\n\n");
-						 break;
-					}
-				}
-				return $fp;
-			}
-
+		}
+		return $fp;
+	}
 } //end function
 
 
-function event_socket_request($fp, $cmd)
-{
+function event_socket_request($fp, $cmd) {
 	if ($fp) {
 		fputs($fp, $cmd."\n\n");
 		usleep(100); //allow time for reponse
@@ -537,8 +531,7 @@ function event_socket_request($fp, $cmd)
 }
 
 
-function event_socket_request_cmd($cmd)
-{
+function event_socket_request_cmd($cmd) {
 	global $db, $v_id, $host;
   
 	$sql = "";
@@ -561,7 +554,6 @@ function event_socket_request_cmd($cmd)
 }
 
 function byte_convert( $bytes ) {
-
 	if ($bytes<=0) {
 		return '0 Byte';
 	}
@@ -573,8 +565,7 @@ function byte_convert( $bytes ) {
 	return round($bytes/pow($convention,$e),2).' '.$s[$e];
 }
 
-function lan_sip_profile()
-{
+function lan_sip_profile() {
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -613,9 +604,7 @@ function lan_sip_profile()
 }
 
 function ListFiles($dir) {
-
 	if($dh = opendir($dir)) {
-
 		$files = Array();
 		$inner_files = Array();
 
@@ -989,7 +978,6 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			echo "<optgroup label='Hunt Groups'>\n";
 		}
 		foreach ($result as &$row) {
-			//$v_id = $row["v_id"];
 			$extension = $row["huntgroupextension"];
 			$huntgroupname = $row["huntgroupname"];
 			if ("transfer $extension XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
@@ -1557,9 +1545,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	}
 }
 
-function sync_package_v_settings()
-{
-
+function sync_package_v_settings() {
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -1575,7 +1561,6 @@ function sync_package_v_settings()
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		//$v_id = $row["v_id"];
 		//$numbering_plan = $row["numbering_plan"];
 		//$default_gateway = $row["default_gateway"];
 		//$default_area_code = $row["default_area_code"];
@@ -1722,8 +1707,7 @@ function sync_package_v_settings()
 }
 
 
-function sync_package_v_dialplan()
-{
+function sync_package_v_dialplan() {
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -1732,9 +1716,7 @@ function sync_package_v_dialplan()
 }
 
 
-function sync_package_v_extensions()
-{
-
+function sync_package_v_extensions() {
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -1987,7 +1969,6 @@ function sync_package_v_extensions()
 }
 
 function filename_safe($filename) {
-
 	// Lower case
 	$filename = strtolower($filename);
 
@@ -2006,9 +1987,7 @@ function filename_safe($filename) {
 	return $result;
 }
 
-function sync_package_v_gateways()
-{
-
+function sync_package_v_gateways() {
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -2160,9 +2139,7 @@ function sync_package_v_gateways()
 }
 
 
-function sync_package_v_modules()
-{
-
+function sync_package_v_modules() {
 	global $config, $db, $v_id;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -2226,9 +2203,7 @@ function sync_package_v_modules()
 	//unset($cmd);
 }
 
-function sync_package_v_vars()
-{
-
+function sync_package_v_vars() {
 	global $config, $db, $v_id;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -2281,9 +2256,7 @@ function sync_package_v_vars()
 	//unset($cmd);
 }
 
-function sync_package_v_public()
-{
-
+function sync_package_v_public() {
 	//global $config;
 	//$v_settings_array = v_settings();
 	//foreach($v_settings_array as $name => $value) {
@@ -2316,11 +2289,9 @@ function sync_package_v_public()
   //$cmd = "api reloadxml";
   ////event_socket_request_cmd($cmd);
   //unset($cmd);
-
 }
 
-function sync_package_v_internal()
-{
+function sync_package_v_internal() {
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -2354,8 +2325,7 @@ function sync_package_v_internal()
 }
 
 
-function sync_package_v_external()
-{
+function sync_package_v_external() {
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -2493,8 +2463,7 @@ function extension_exists($extension) {
 	}
 }
 
-function sync_package_v_hunt_group()
-{
+function sync_package_v_hunt_group() {
 
 	//Hunt Group Lua Notes:
 		//get the domain
@@ -3146,9 +3115,7 @@ function sync_package_v_hunt_group()
 } //end huntgroup function lua
 
 
-function sync_package_v_fax()
-{
-
+function sync_package_v_fax() {
 	global $v_id, $db;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -3355,8 +3322,7 @@ function sync_package_v_fax()
 } //end fax function
 
 
-function get_recording_filename($id)
-{
+function get_recording_filename($id) {
 	global $v_id, $db;
 	$sql = "";
 	$sql .= "select * from v_recordings ";
@@ -3366,7 +3332,6 @@ function get_recording_filename($id)
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		//$v_id = $row["v_id"];
 		//$filename = $row["filename"];
 		//$recordingname = $row["recordingname"];
 		//$recordingid = $row["recordingid"];
@@ -3378,8 +3343,7 @@ function get_recording_filename($id)
 }
 
 
-function sync_package_v_auto_attendant()
-{
+function sync_package_v_auto_attendant() {
 	global $db, $v_id, $host;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -4091,7 +4055,6 @@ function sync_package_v_auto_attendant()
 			$tmp .= "           		if (dtmf.digits.length == 0) {\n";
 			//$tmp .= "           			console_log( "info", "time out option: " + dtmf.digits + "\n" );\n";
 
-
 			//find the timeout auto attendant options with the correct action
 				$sql = "";
 				$sql .= "select * from v_auto_attendant_options ";
@@ -4147,12 +4110,10 @@ function sync_package_v_auto_attendant()
 				} //end while
 				unset ($prepstatement2);
 
-
 			$tmp .= "           		}\n";
 			$tmp .= "           		else {\n";
 			$tmp .= "           			break; //dtmf found end the while loop\n";
 			$tmp .= "           		}\n";
-
 			$tmp .= "           	}\n";
 			$tmp .= "           }\n";
 			$tmp .= "         }\n";
@@ -4164,7 +4125,6 @@ function sync_package_v_auto_attendant()
 			$tmp .= "\n";
 			$tmp .= "         console_log( \"info\", \"Auto Attendant Digit Pressed: \" + dtmf.digits + \"\\n\" );\n";
 			$tmp .= "\n";
-
 
 			$tmpantiaction = "";
 			$tmp .= "         if ( dtmf.digits.length > \"0\" ) {\n\n";
@@ -4186,9 +4146,7 @@ function sync_package_v_auto_attendant()
 				$optiondescr = $row2["optiondescr"];
 
 				//find the correct auto attendant options with the correct action
-
 					if ($row2['optionaction'] == "anti-action") {
-
 						switch ($row2['optionnumber']) {
 						//case "t":
 						//		//break;
@@ -4392,9 +4350,7 @@ function v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fie
 	unset($sql);
 }
 
-function sync_package_v_dialplan_includes()
-{
-
+function sync_package_v_dialplan_includes() {
 	global $db, $v_id;
 
 	$v_settings_array = v_settings();
@@ -4430,12 +4386,6 @@ function sync_package_v_dialplan_includes()
 	foreach ($result as &$row) {
 		$tmp = "";
 		$tmp .= "\n";
-
-		//$row['dialplanincludeid'];
-		//$row['extensionname'];
-		//$row['extensioncontinue'];
-		//$row['context'];
-		//$row['enabled'];
 
 		$extensioncontinue = '';
 		if ($row['extensioncontinue'] == "true") {
@@ -4527,7 +4477,6 @@ function sync_package_v_dialplan_includes()
 			unset($sql, $resultcount2, $result2, $rowcount2);
 		} //end if results
 
-
 		$sql = "";
 		$sql .= " select * from v_dialplan_includes_details ";
 		$sql .= " where dialplan_include_id = '".$row['dialplan_include_id']."' ";
@@ -4607,7 +4556,6 @@ function sync_package_v_dialplan_includes()
 
 		unset($dialplan_include_filename);
 		unset($tmp);
-
 	} //end while
 
 	//apply settings reminder
@@ -4615,9 +4563,7 @@ function sync_package_v_dialplan_includes()
 }
 
 
-function sync_package_v_public_includes()
-{
-
+function sync_package_v_public_includes() {
 	global $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
@@ -5041,8 +4987,7 @@ if (!function_exists('sync_directory')) {
 } //end if function exists
 
 if (!function_exists('sync_package_v_ivr_menu')) {
-	function sync_package_v_ivr_menu()
-	{
+	function sync_package_v_ivr_menu() {
 		global $db, $v_id;
 
 		$v_settings_array = v_settings();
@@ -5329,8 +5274,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 }
 
 if (!function_exists('sync_package_v_call_center')) {
-	function sync_package_v_call_center()
-	{
+	function sync_package_v_call_center() {
 		global $db, $v_id;
 
 		$v_settings_array = v_settings();
@@ -5510,7 +5454,6 @@ if (!function_exists('sync_package_v_call_center')) {
 				$result = $prep_statement->fetchAll();
 				$x=0;
 				foreach ($result as &$row) {
-					$v_id = $row["v_id"];
 					$queue_name = $row["queue_name"];
 					$queue_extension = $row["queue_extension"];
 					$queue_strategy = $row["queue_strategy"];
@@ -5530,7 +5473,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						$v_queues .= "\n";
 						$v_queues .= "		";
 					}
-					$v_queues .= "<queue name=\"$queue_name@".$_SESSION['domains'][$v_id]['domain']."\">\n";
+					$v_queues .= "<queue name=\"$queue_name@".$_SESSION['domains'][$row["v_id"]]['domain']."\">\n";
 					$v_queues .= "			<param name=\"strategy\" value=\"$queue_strategy\"/>\n";
 					$v_queues .= "			<param name=\"moh-sound\" value=\"$queue_moh_sound\"/>\n";
 					if (strlen($queue_record_template) > 0) {
@@ -5559,7 +5502,6 @@ if (!function_exists('sync_package_v_call_center')) {
 				$result = $prep_statement->fetchAll();
 				$x=0;
 				foreach ($result as &$row) {
-					$v_id = $row["v_id"];
 					$agent_name = $row["agent_name"];
 					$agent_type = $row["agent_type"];
 					$agent_call_timeout = $row["agent_call_timeout"];
@@ -5574,7 +5516,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						$v_agents .= "		";
 					}
 					$v_agents .= "		<agent ";
-					$v_agents .= "name=\"$agent_name@".$_SESSION['domains'][$v_id]['domain']."\" ";
+					$v_agents .= "name=\"$agent_name@".$_SESSION['domains'][$row["v_id"]]['domain']."\" ";
 					$v_agents .= "type=\"$agent_type\" ";
 
 					if(stristr($agent_contact, '/gateway/') != FALSE) {
@@ -5583,7 +5525,7 @@ if (!function_exists('sync_package_v_call_center')) {
 					}
 					else {
 						//extensions
-						$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact@".$_SESSION['domains'][$v_id]['domain']."\" ";
+						$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact@".$_SESSION['domains'][$row["v_id"]]['domain']."\" ";
 					}
 					$v_agents .= "status=\"$agent_status\" ";
 					$v_agents .= "max-no-answer=\"$agent_max_no_answer\" ";
@@ -5604,7 +5546,6 @@ if (!function_exists('sync_package_v_call_center')) {
 				$result = $prep_statement->fetchAll();
 				$x=0;
 				foreach ($result as &$row) {
-					$v_id = $row["v_id"];
 					$agent_name = $row["agent_name"];
 					$queue_name = $row["queue_name"];
 					$tier_level = $row["tier_level"];
@@ -5613,7 +5554,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						$v_tiers .= "\n";
 						$v_tiers .= "		";
 					}
-					$v_tiers .= "<tier agent=\"$agent_name@".$_SESSION['domains'][$v_id]['domain']."\" queue=\"$queue_name@".$_SESSION['domains'][$v_id]['domain']."\" level=\"$tier_level\" position=\"$tier_position\"/>";
+					$v_tiers .= "<tier agent=\"$agent_name@".$_SESSION['domains'][$row["v_id"]]['domain']."\" queue=\"$queue_name@".$_SESSION['domains'][$row["v_id"]]['domain']."\" level=\"$tier_level\" position=\"$tier_position\"/>";
 					$x++;
 				}
 
@@ -5635,18 +5576,17 @@ if (!function_exists('sync_package_v_call_center')) {
 				fwrite($fout, $file_contents);
 				fclose($fout);
 
-			//syncrhonize configuration
+			//syncrhonize the configuration
 				sync_package_v_dialplan_includes();
-		}
 
-		//apply settings reminder
-			$_SESSION["reload_xml"] = true;
+			//apply settings reminder
+				$_SESSION["reload_xml"] = true;
+		}
 	}
 }
 
 if (!function_exists('switch_conf_xml')) {
 	function switch_conf_xml() {
-
 		//get the global variables
 			global $db, $v_id;
 

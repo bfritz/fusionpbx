@@ -113,97 +113,100 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
-			$sql = "insert into v_call_center_queue ";
-			$sql .= "(";
-			$sql .= "v_id, ";
-			$sql .= "queue_name, ";
-			$sql .= "queue_extension, ";
-			$sql .= "queue_strategy, ";
-			$sql .= "queue_moh_sound, ";
-			$sql .= "queue_record_template, ";
-			$sql .= "queue_time_base_score, ";
-			$sql .= "queue_max_wait_time, ";
-			$sql .= "queue_max_wait_time_with_no_agent, ";
-			$sql .= "queue_tier_rules_apply, ";
-			$sql .= "queue_tier_rule_wait_second, ";
-			$sql .= "queue_tier_rule_wait_multiply_level, ";
-			$sql .= "queue_tier_rule_no_agent_no_wait, ";
-			$sql .= "queue_discard_abandoned_after, ";
-			$sql .= "queue_abandoned_resume_allowed, ";
-			$sql .= "queue_cid_prefix, ";
-			$sql .= "queue_description ";
-			$sql .= ")";
-			$sql .= "values ";
-			$sql .= "(";
-			$sql .= "'$v_id', ";
-			$sql .= "'$queue_name', ";
-			$sql .= "'$queue_extension', ";
-			$sql .= "'$queue_strategy', ";
-			$sql .= "'$queue_moh_sound', ";
-			$sql .= "'$queue_record_template', ";
-			$sql .= "'$queue_time_base_score', ";
-			$sql .= "'$queue_max_wait_time', ";
-			$sql .= "'$queue_max_wait_time_with_no_agent', ";
-			$sql .= "'$queue_tier_rules_apply', ";
-			$sql .= "'$queue_tier_rule_wait_second', ";
-			$sql .= "'$queue_tier_rule_wait_multiply_level', ";
-			$sql .= "'$queue_tier_rule_no_agent_no_wait', ";
-			$sql .= "'$queue_discard_abandoned_after', ";
-			$sql .= "'$queue_abandoned_resume_allowed', ";
-			$sql .= "'$queue_cid_prefix', ";
-			$sql .= "'$queue_description' ";
-			$sql .= ")";
-			$db->exec(check_sql($sql));
-			unset($sql);
+			//add the call center queue
+				$sql = "insert into v_call_center_queue ";
+				$sql .= "(";
+				$sql .= "v_id, ";
+				$sql .= "queue_name, ";
+				$sql .= "queue_extension, ";
+				$sql .= "queue_strategy, ";
+				$sql .= "queue_moh_sound, ";
+				$sql .= "queue_record_template, ";
+				$sql .= "queue_time_base_score, ";
+				$sql .= "queue_max_wait_time, ";
+				$sql .= "queue_max_wait_time_with_no_agent, ";
+				$sql .= "queue_tier_rules_apply, ";
+				$sql .= "queue_tier_rule_wait_second, ";
+				$sql .= "queue_tier_rule_wait_multiply_level, ";
+				$sql .= "queue_tier_rule_no_agent_no_wait, ";
+				$sql .= "queue_discard_abandoned_after, ";
+				$sql .= "queue_abandoned_resume_allowed, ";
+				$sql .= "queue_cid_prefix, ";
+				$sql .= "queue_description ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$v_id', ";
+				$sql .= "'$queue_name', ";
+				$sql .= "'$queue_extension', ";
+				$sql .= "'$queue_strategy', ";
+				$sql .= "'$queue_moh_sound', ";
+				$sql .= "'$queue_record_template', ";
+				$sql .= "'$queue_time_base_score', ";
+				$sql .= "'$queue_max_wait_time', ";
+				$sql .= "'$queue_max_wait_time_with_no_agent', ";
+				$sql .= "'$queue_tier_rules_apply', ";
+				$sql .= "'$queue_tier_rule_wait_second', ";
+				$sql .= "'$queue_tier_rule_wait_multiply_level', ";
+				$sql .= "'$queue_tier_rule_no_agent_no_wait', ";
+				$sql .= "'$queue_discard_abandoned_after', ";
+				$sql .= "'$queue_abandoned_resume_allowed', ";
+				$sql .= "'$queue_cid_prefix', ";
+				$sql .= "'$queue_description' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-			//syncrhonize configuration
-			sync_package_v_call_center();
+			//syncrhonize the configuration
+				sync_package_v_call_center();
 
-			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_center_queue.php\">\n";
-			echo "<div align='center'>\n";
-			echo "Add Complete\n";
-			echo "</div>\n";
-			require_once "includes/footer.php";
-			return;
+			//redirect the user
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_center_queue.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Add Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
 		} //if ($action == "add")
 
 		if ($action == "update") {
-			$sql = "update v_call_center_queue set ";
-			$sql .= "queue_name = '$queue_name', ";
-			$sql .= "queue_extension = '$queue_extension', ";
-			$sql .= "queue_strategy = '$queue_strategy', ";
-			$sql .= "queue_moh_sound = '$queue_moh_sound', ";
-			$sql .= "queue_record_template = '$queue_record_template', ";
-			$sql .= "queue_time_base_score = '$queue_time_base_score', ";
-			$sql .= "queue_max_wait_time = '$queue_max_wait_time', ";
-			$sql .= "queue_max_wait_time_with_no_agent = '$queue_max_wait_time_with_no_agent', ";
-			$sql .= "queue_tier_rules_apply = '$queue_tier_rules_apply', ";
-			$sql .= "queue_tier_rule_wait_second = '$queue_tier_rule_wait_second', ";
-			$sql .= "queue_tier_rule_wait_multiply_level = '$queue_tier_rule_wait_multiply_level', ";
-			$sql .= "queue_tier_rule_no_agent_no_wait = '$queue_tier_rule_no_agent_no_wait', ";
-			$sql .= "queue_discard_abandoned_after = '$queue_discard_abandoned_after', ";
-			$sql .= "queue_abandoned_resume_allowed = '$queue_abandoned_resume_allowed', ";
-			$sql .= "queue_cid_prefix = '$queue_cid_prefix', ";
-			$sql .= "queue_description = '$queue_description' ";
-			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and call_center_queue_id = '$call_center_queue_id'";
-			$db->exec(check_sql($sql));
-			unset($sql);
+			//update the call center queue
+				$sql = "update v_call_center_queue set ";
+				$sql .= "queue_name = '$queue_name', ";
+				$sql .= "queue_extension = '$queue_extension', ";
+				$sql .= "queue_strategy = '$queue_strategy', ";
+				$sql .= "queue_moh_sound = '$queue_moh_sound', ";
+				$sql .= "queue_record_template = '$queue_record_template', ";
+				$sql .= "queue_time_base_score = '$queue_time_base_score', ";
+				$sql .= "queue_max_wait_time = '$queue_max_wait_time', ";
+				$sql .= "queue_max_wait_time_with_no_agent = '$queue_max_wait_time_with_no_agent', ";
+				$sql .= "queue_tier_rules_apply = '$queue_tier_rules_apply', ";
+				$sql .= "queue_tier_rule_wait_second = '$queue_tier_rule_wait_second', ";
+				$sql .= "queue_tier_rule_wait_multiply_level = '$queue_tier_rule_wait_multiply_level', ";
+				$sql .= "queue_tier_rule_no_agent_no_wait = '$queue_tier_rule_no_agent_no_wait', ";
+				$sql .= "queue_discard_abandoned_after = '$queue_discard_abandoned_after', ";
+				$sql .= "queue_abandoned_resume_allowed = '$queue_abandoned_resume_allowed', ";
+				$sql .= "queue_cid_prefix = '$queue_cid_prefix', ";
+				$sql .= "queue_description = '$queue_description' ";
+				$sql .= "where v_id = '$v_id' ";
+				$sql .= "and call_center_queue_id = '$call_center_queue_id'";
+				$db->exec(check_sql($sql));
+				unset($sql);
 
-			//syncrhonize configuration
-			sync_package_v_call_center();
+			//syncrhonize the configuration
+				sync_package_v_call_center();
 
-			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_center_queue.php\">\n";
-			echo "<div align='center'>\n";
-			echo "Update Complete\n";
-			echo "</div>\n";
-			require_once "includes/footer.php";
-			return;
+			//redirect the user
+				require_once "includes/header.php";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_center_queue.php\">\n";
+				echo "<div align='center'>\n";
+				echo "Update Complete\n";
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true") 
-
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
