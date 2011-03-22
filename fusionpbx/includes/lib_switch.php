@@ -2980,7 +2980,7 @@ function sync_package_v_hunt_group() {
 								$tmp_buffer = $tmpdata;
 							}
 							else {
-								$tmp_buffer .= "..\":_:\"..".$tmpdata;
+								$tmp_buffer .= "..\",\"..".$tmpdata;
 							}
 							$i++;
 						}
