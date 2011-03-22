@@ -146,9 +146,6 @@ function cmd_async($cmd) {
 						$phone1 = str_replace(")", "", $phone1);
 						$phone1 = str_replace(" ", "", $phone1);
 						$phone1 = str_replace(".", "", $phone1);
-						if (strlen($phone1) == 10) {
-							$phone1 = "1".$phone1;
-						}
 
 					//get the correct gateway
 						$bridge_array = outbound_route_to_bridge ($phone1);
@@ -248,9 +245,6 @@ require_once "includes/header.php";
 				$phone1 = str_replace(")", "", $phone1);
 				$phone1 = str_replace(" ", "", $phone1);
 				$phone1 = str_replace(".", "", $phone1);
-				if (strlen($phone1) == 10) {
-					$phone1 = "1".$phone1;
-				}
 
 			if ($gateway == "loopback") {
 				$cmd = $bin_dir."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone1."/default/XML ".$v_recordings_dir."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
@@ -337,12 +331,6 @@ require_once "includes/header.php";
 				$phone2 = str_replace(")", "", $phone2);
 				$phone2 = str_replace(" ", "", $phone2);
 				$phone2 = str_replace(".", "", $phone2);
-				if (strlen($phone1) == 10) {
-					$phone1 = "1".$phone1;
-				}
-				if (strlen($phone2) == 10) {
-					$phone2 = "1".$phone2;
-				}
 
 			//make the call
 				if (strlen($phone1)> 0) {
