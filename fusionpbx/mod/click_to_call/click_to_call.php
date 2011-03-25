@@ -46,12 +46,12 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 			$context = $_SESSION['context'];
 		}
 		else {
-			$context = "default";
+			$context = 'default';
 		}
 
 	//source should see the destination caller id
 		if (strlen($src) < 7) {
-			$source = "{origination_caller_id_name='$src_cid_name',origination_caller_id_number=$src_cid_number}sofia/internal/$src%".$context;
+			$source = "{origination_caller_id_name='$src_cid_name',origination_caller_id_number=$src_cid_number}sofia/internal/$src%".$_SESSION['domains'][$v_id]['domain'];
 		}
 		else {
 			$bridge_array = outbound_route_to_bridge ($src);
