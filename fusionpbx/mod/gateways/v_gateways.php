@@ -45,7 +45,6 @@ if ($fp) {
 	if (strlen($_GET["a"]) > 0) {
 		if ($_GET["a"] == "stop") {
 			$gateway_name = $_GET["gateway"];
-			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			if (count($_SESSION["domains"]) > 1) {
 				$cmd = 'api sofia profile external killgw '.$v_domain.'-'.$gateway_name;
 			}
@@ -57,7 +56,6 @@ if ($fp) {
 		}
 		if ($_GET["a"] == "start") {
 			$gateway_name = $_GET["gateway"];
-			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 			$cmd = "api sofia profile external rescan";
 			$response = trim(event_socket_request($fp, $cmd));
 			$msg = '<strong>Start Gateway:</strong><pre>'.$response.'</pre>';
