@@ -221,6 +221,7 @@ else {
 	echo "        </td>";
 	echo "	</tr>";
 
+	/*
 	echo "	<tr>\n";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 	echo "		Template: \n";
@@ -247,6 +248,7 @@ else {
 	echo "	Select a template to set as the default and then press save.<br />\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
+	*/
 
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Type:</td>";

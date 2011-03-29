@@ -104,7 +104,7 @@ $order = $_GET["order"];
 	echo "<tr>";
 	echo thorderby('rsstitle', 'Title', $orderby, $order);
 	echo thorderby('rsslink', 'Link', $orderby, $order);
-	echo thorderby('rsssubcategory', 'Template', $orderby, $order);
+	//echo thorderby('rsssubcategory', 'Template', $orderby, $order);
 	echo thorderby('rssgroup', 'Group', $orderby, $order);
 	echo thorderby('rssorder', 'Order', $orderby, $order);
 	if ($resultcount == 0) { //no results
@@ -126,7 +126,7 @@ $order = $_GET["order"];
 
 				echo "<td valign='top' nowrap class='".$rowstyle[$c]."'>&nbsp;".$row[rsstitle]."&nbsp;</td>";                
 				echo "<td valign='top' nowrap class='".$rowstyle[$c]."'>&nbsp;<a href='/index.php?c=".$row[rsslink]."'>".$row[rsslink]."</a>&nbsp;</td>";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[rsssubcategory]."&nbsp;</td>";
+				//echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[rsssubcategory]."&nbsp;</td>";
 				if (strlen($row[rssgroup]) > 0) {
 					echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[rssgroup]."</td>";
 				}
