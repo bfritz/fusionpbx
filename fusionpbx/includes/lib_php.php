@@ -47,23 +47,6 @@
 		$v_secure = str_replace("\\", "/", $v_secure);
 		$v_secure = realpath($v_secure);
 
-	//generate a random password with upper, lowercase and symbols
-		function generate_password($length = 10, $strength = 4) {
-			$password = '';
-			$charset = '';
-			if ($strength >= 1) { $charset .= "0123456789"; }
-			if ($strength >= 2) { $charset .= "abcdefghijkmnopqrstuvwxyz";	}
-			if ($strength >= 3) { $charset .= "ABCDEFGHIJKLMNPQRSTUVWXYZ";	}
-			if ($strength >= 4) { $charset .= "!!!!!^$%*?....."; }
-			srand((double)microtime() * rand(1000000, 9999999));
-			while ($length > 0) {
-					$password.= $charset[rand(0, strlen($charset)-1)];
-					$length--;
-			}
-			return $password;
-		}
-		//echo generate_password(4, 4);
-
 	//if magic quotes is enabled remove the slashes
 		if (get_magic_quotes_gpc()) {
 			$in = array(&$_GET, &$_POST, &$_COOKIE);
@@ -79,38 +62,24 @@
 			unset($in);
 		}
 
-	//tail php function for non posix systems
-		function tail($file, $num_to_get=10) {
-				$fp = fopen($file, 'r');
-				$position = filesize($file);
-				$chunklen = 4096;
-				if($position-$chunklen<=0) { 
-					fseek($fp,0); 
+	//get the list of installed apps from the core and mod directories
+		if (count($_SESSION['v_apps']) == 0) {
+			$app_dir[] = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/core';
+			$app_dir[] = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/mod';
+			$x=0;
+			foreach ($app_dir as &$dir) {
+				$dir_list = opendir($dir);
+				while (false !== ($file = readdir($dir_list))) {
+					if ($file != "." AND $file != ".."){
+						$new_path = $dir.'/'.$file;
+						$level = explode('/',$new_path);
+						include($new_path.'/v_config.php');
+						if ($x > 10000) { break; };
+						$x++;
+					}
 				}
-				else { 
-					fseek($fp, $position-$chunklen);
-				}
-				$data="";$ret="";$lc=0;
-				while($chunklen > 0)
-				{
-						$data = fread($fp, $chunklen);
-						$dl=strlen($data);
-						for($i=$dl-1;$i>=0;$i--){
-								if($data[$i]=="\n"){
-										if($lc==0 && $ret!="")$lc++;
-										$lc++;
-										if($lc>$num_to_get)return $ret;
-								}
-								$ret=$data[$i].$ret;
-						}
-						if($position-$chunklen<=0){
-								fseek($fp,0);
-								$chunklen=$chunklen-abs($position-$chunklen);
-						}else   fseek($fp, $position-$chunklen);
-						$position = $position - $chunklen;
-				}
-				fclose($fp);
-				return $ret;
+			}
+			$_SESSION['v_apps'] = $apps;
 		}
 
 ?>
