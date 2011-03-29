@@ -34,128 +34,20 @@ else {
 	return;
 }
 
-//remove the old menu
-	$sql  = "delete from v_menu ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and (menu_protected <> 'true' ";
-	$sql .= "or menu_protected is null ";
-	$sql .= "or menu_protected = '');";
-	$db->exec(check_sql($sql));
+//menu restore default
+	require_once "includes/classes/menu_restore.php";
+	$menu_restore = new menu_restore;
+	$menu_restore->v_id = $v_id;
+	$menu_restore->delete();
+	$menu_restore->restore();
 
-//load the default database into a sqlite memory database
-	$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/sqlite.sql';
-	$file_contents = file_get_contents($filename);
-	unset($filename);
-	try {
-		//$db_default = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilename); //sqlite 3
-		$db_default = new PDO('sqlite::memory:'); //sqlite 3
-		//$db_default->beginTransaction();
-	}
-	catch (PDOException $error) {
-		print "error: " . $error->getMessage() . "<br/>";
-		die();
-	}
+//unset the menu session variable
+	$_SESSION["menu"] = "";
 
-	//replace \r\n with \n then explode on \n
-		$file_contents = str_replace("\r\n", "\n", $file_contents);
+//unset the default template
+	$_SESSION["template_content"] = '';
 
-	//loop line by line through all the lines of sql code
-		$stringarray = explode("\n", $file_contents);
-		$x = 0;
-		foreach($stringarray as $sql) {
-			try {
-				$db_default->query($sql);
-			}
-			catch (PDOException $error) {
-				echo "error: " . $error->getMessage() . " sql: $sql<br/>";
-				//die();
-			}
-			$x++;
-		}
-		unset ($file_contents, $sql);
-		//$db_default->commit();
-
-//load the default menu into an array
-	$sql = "";
-	$sql .= "select * from v_menu ";
-	$sql .= "where v_id = '$v_id' ";
-	$prepstatement = $db_default->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$menu_array = $prepstatement->fetchAll();
-
-//use the menu array to restore the default menu
-	foreach ($menu_array as &$row) {
-		$menulanguage = $row["menulanguage"];
-		$menutitle = $row["menutitle"];
-		$menustr = $row["menustr"];
-		$menucategory = $row["menucategory"];
-		$menudesc = $row["menudesc"];
-		$menuorder = $row["menuorder"];
-		$menugroup = $row["menugroup"];
-		$menuadduser = $row["menuadduser"];
-		$menuadddate = $row["menuadddate"];
-		$menumoduser = $row["menumoduser"];
-		$menumoddate = $row["menumoddate"];
-		$menu_protected = $row["menu_protected"];
-		$menu_guid = $row["menu_guid"];
-		$menu_parent_guid = $row["menu_parent_guid"];
-
-		//if the guid is not currently in the db then add it
-			$sql = "select count(*) as count from v_menu ";
-			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and menu_guid = '$menu_guid' ";
-			$result = $db->query($sql)->fetch();
-			unset($sql);
-
-			if ($result['count'] == 0) {
-				//insert the default menu into the database
-					$sql = "insert into v_menu ";
-					$sql .= "(";
-					$sql .= "v_id, ";
-					$sql .= "menulanguage, ";
-					$sql .= "menutitle, ";
-					$sql .= "menustr, ";
-					$sql .= "menucategory, ";
-					$sql .= "menugroup, ";
-					$sql .= "menudesc, ";
-					$sql .= "menuorder, ";
-					$sql .= "menuadduser, ";
-					$sql .= "menuadddate, ";
-					$sql .= "menumoduser, ";
-					$sql .= "menumoddate, ";
-					$sql .= "menu_protected, ";
-					$sql .= "menu_guid, ";
-					$sql .= "menu_parent_guid ";
-					$sql .= ")";
-					$sql .= "values ";
-					$sql .= "(";
-					$sql .= "'$v_id', ";
-					$sql .= "'$menulanguage', ";
-					$sql .= "'$menutitle', ";
-					$sql .= "'$menustr', ";
-					$sql .= "'$menucategory', ";
-					$sql .= "'$menugroup', ";
-					$sql .= "'$menudesc', ";
-					$sql .= "'$menuorder', ";
-					$sql .= "'$menuadduser', ";
-					$sql .= "'$menuadddate', ";
-					$sql .= "'$menumoduser', ";
-					$sql .= "'$menumoddate', ";
-					$sql .= "'$menu_protected', ";
-					$sql .= "'$menu_guid', ";
-					$sql .= "'$menu_parent_guid' ";
-					$sql .= ")";
-					$db->exec(check_sql($sql));
-					unset($sql);
-			}
-	}
-
-	//unset the menu session variable
-		$_SESSION["menu"] = "";
-
-	//unset the default template
-		$_SESSION["template_content"] = '';
-
+//show a message to the user
 	require_once "includes/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_list.php\">\n";
 	echo "<div align='center'>\n";
