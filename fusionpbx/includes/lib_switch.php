@@ -117,6 +117,7 @@ function v_settings() {
 		$v_settings_array["v_secure"] = $v_secure;
 
 		$v_settings_array["v_domain"] = $row["v_domain"];
+		$v_settings_array["v_account_code"] = $row["v_account_code"];
 
 		$php_dir = $row["php_dir"];
 		$php_dir = str_replace ("{program_dir}", $program_dir, $php_dir);
@@ -1834,7 +1835,12 @@ function sync_package_v_extensions() {
 			$tmpxml .= "    </params>\n";
 			$tmpxml .= "    <variables>\n";
 			$tmpxml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
-			$tmpxml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
+			if (strlen($v_account_code) > 0) {
+				$tmpxml .= "      <variable name=\"accountcode\" value=\"" . $v_account_code . "\"/>\n";
+			}
+			else {
+				$tmpxml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
+			}
 			$tmpxml .= "      <variable name=\"user_context\" value=\"" . $row['user_context'] . "\"/>\n";
 			if (strlen($row['effective_caller_id_name']) > 0) {
 				$tmpxml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";

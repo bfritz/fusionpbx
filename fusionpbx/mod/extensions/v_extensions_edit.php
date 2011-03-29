@@ -491,7 +491,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td class='vtable' align='left'>\n";
 		echo "    <input class='formfld' type='text' name='accountcode' maxlength='255' value=\"$accountcode\">\n";
 		echo "<br />\n";
-		echo "Enter the account code here. Example: extension 1001 then accountcode 1001\n";
+		echo "Enter the account code here.\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
