@@ -48,6 +48,7 @@ else {
 		//get post variables
 			$v_id = check_str($_POST["v_id"]);
 			$v_domain = check_str($_POST["v_domain"]);
+			$v_account_code = check_str($_POST["v_account_code"]);
 			$v_server_protocol = check_str($_POST["v_server_protocol"]);
 			$v_server_port = check_str($_POST["v_server_port"]);
 			$php_dir = check_str($_POST["php_dir"]);
@@ -106,6 +107,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($v_domain) == 0) { $msg .= "Please provide: Domain<br>\n"; }
+		//if (strlen($v_account_code) == 0) { $msg .= "Please provide: Agent Code<br>\n"; }
 		//if (strlen($v_server_protocol) == 0) { $msg .= "Please provide: Web Server Protocol<br>\n"; }
 		//if (strlen($v_server_port) == 0) { $msg .= "Please provide: Web Server Port<br>\n"; }
 		if (strlen($php_dir) == 0) { $msg .= "Please provide: PHP Directory<br>\n"; }
@@ -167,6 +169,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql = "insert into v_system_settings ";
 					$sql .= "(";
 					$sql .= "v_domain, ";
+					$sql .= "v_account_code, ";
 					$sql .= "v_server_protocol, ";
 					$sql .= "v_server_port, ";
 					$sql .= "php_dir, ";
@@ -211,6 +214,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$v_domain', ";
+					$sql .= "'$v_account_code', ";
 					$sql .= "'$v_server_protocol', ";
 					$sql .= "'$v_server_port', ";
 					$sql .= "'$php_dir', ";
@@ -273,6 +277,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//update the system settings
 					$sql = "update v_system_settings set ";
 					$sql .= "v_domain = '$v_domain', ";
+					$sql .= "v_account_code = '$v_account_code', ";
 					$sql .= "v_server_protocol = '$v_server_protocol', ";
 					$sql .= "v_server_port = '$v_server_port', ";
 					$sql .= "php_dir = '$php_dir', ";
@@ -496,6 +501,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		foreach ($result as &$row) {
 			$v_id = $row["v_id"];
 			$v_domain = $row["v_domain"];
+			$v_account_code = $row["v_account_code"];
 			$v_server_protocol = $row["v_server_protocol"];
 			$v_server_port = $row["v_server_port"];
 			$php_dir = $row["php_dir"];
@@ -557,7 +563,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $v_conf_dir.'/dialplan/public'; }
 	if (strlen($v_extensions_dir) == 0) { $v_extensions_dir = $v_conf_dir.'/directory/default'; }
 	if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_dir.'/dialplan/default'; }
-
 	
 
 //show the header
@@ -593,6 +598,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='v_domain' maxlength='255' value=\"$v_domain\">\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	Account Code:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='v_account_code' maxlength='255' value=\"$v_account_code\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
