@@ -736,6 +736,57 @@ function format_string ($format, $data) {
 		);
 	} 
 
+//tail php function for non posix systems
+	function tail($file, $num_to_get=10) {
+			$fp = fopen($file, 'r');
+			$position = filesize($file);
+			$chunklen = 4096;
+			if($position-$chunklen<=0) { 
+				fseek($fp,0); 
+			}
+			else { 
+				fseek($fp, $position-$chunklen);
+			}
+			$data="";$ret="";$lc=0;
+			while($chunklen > 0)
+			{
+					$data = fread($fp, $chunklen);
+					$dl=strlen($data);
+					for($i=$dl-1;$i>=0;$i--){
+							if($data[$i]=="\n"){
+									if($lc==0 && $ret!="")$lc++;
+									$lc++;
+									if($lc>$num_to_get)return $ret;
+							}
+							$ret=$data[$i].$ret;
+					}
+					if($position-$chunklen<=0){
+							fseek($fp,0);
+							$chunklen=$chunklen-abs($position-$chunklen);
+					}else   fseek($fp, $position-$chunklen);
+					$position = $position - $chunklen;
+			}
+			fclose($fp);
+			return $ret;
+	}
+
+//generate a random password with upper, lowercase and symbols
+	function generate_password($length = 10, $strength = 4) {
+		$password = '';
+		$charset = '';
+		if ($strength >= 1) { $charset .= "0123456789"; }
+		if ($strength >= 2) { $charset .= "abcdefghijkmnopqrstuvwxyz";	}
+		if ($strength >= 3) { $charset .= "ABCDEFGHIJKLMNPQRSTUVWXYZ";	}
+		if ($strength >= 4) { $charset .= "!!!!!^$%*?....."; }
+		srand((double)microtime() * rand(1000000, 9999999));
+		while ($length > 0) {
+				$password.= $charset[rand(0, strlen($charset)-1)];
+				$length--;
+		}
+		return $password;
+	}
+	//echo generate_password(4, 4);
+
 //based on Wez Furlong do_post_request
 	if (!function_exists('send_http_request')) {
 		function send_http_request($url, $data, $method = "POST", $optional_headers = null) {
