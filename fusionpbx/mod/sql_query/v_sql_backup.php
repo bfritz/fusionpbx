@@ -59,7 +59,6 @@ else {
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		//print_r( $row );
 		$table_name = $row[0];
 
 		//get the table data

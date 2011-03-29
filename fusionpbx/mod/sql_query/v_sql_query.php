@@ -35,9 +35,13 @@ else {
 	exit;
 }
 
+//pdo voicemail database connection
+	//include "includes/lib_pdo_vm.php";
 
+//show the header
 	require_once "includes/header.php";
 
+//show the content
 	//edit area
 		echo "    <script language=\"javascript\" type=\"text/javascript\" src=\"".PROJECT_PATH."/includes/edit_area/edit_area_full.js\"></script>\n";
 		echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
@@ -136,6 +140,6 @@ else {
 
 	echo "<iframe id='frame' width='100%' height='400' FRAMEBORDER='0' name='frame' style='background-color : #FFFFFF;'></iframe>\n";
 
-
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>

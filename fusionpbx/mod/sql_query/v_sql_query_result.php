@@ -273,7 +273,6 @@ if (count($_POST)>0) {
 				echo "\r\n";
 
 				foreach ($result as &$row) {
-					//echo "VALUES ( ";
 					$x = 1;
 					foreach ($column_array as $column) {
 						if ($x < $column_array_count) {
@@ -287,7 +286,6 @@ if (count($_POST)>0) {
 					echo "\n";
 				}
 			}
-		//echo $tmp_footer;
 	}
 }
 
