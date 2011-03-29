@@ -1,0 +1,30 @@
+<?php
+	$apps[$x]['name'] = "Call Center";
+	$apps[$x]['guid'] = '95788E50-9500-079E-2807-FD530B0EA370';
+	$apps[$x]['category'] = 'PBX';
+	$apps[$x]['subcategory'] = '';
+	$apps[$x]['version'] = '';
+	$apps[$x]['menu'][0]['title']['en'] = 'Call Center';
+	$apps[$x]['menu'][0]['guid'] = '6C072B29-5B6C-49FC-008E-95E24C77DE99';
+	$apps[$x]['menu'][0]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+	$apps[$x]['menu'][0]['category'] = 'internal';
+	$apps[$x]['menu'][0]['path'] = '/mod/call_center/v_call_center_queue.php';
+	$apps[$x]['menu'][0]['groups'][] = 'agent';
+	$apps[$x]['menu'][0]['groups'][] = 'admin';
+	$apps[$x]['menu'][0]['groups'][] = 'superadmin';
+	$apps[$x]['permissions'][] = 'call_center_queues_view';
+	$apps[$x]['permissions'][] = 'call_center_queues_add';
+	$apps[$x]['permissions'][] = 'call_center_queues_edit';
+	$apps[$x]['permissions'][] = 'call_center_queues_delete';
+	$apps[$x]['permissions'][] = 'call_center_agents_view';
+	$apps[$x]['permissions'][] = 'call_center_agents_add';
+	$apps[$x]['permissions'][] = 'call_center_agents_edit';
+	$apps[$x]['permissions'][] = 'call_center_agents_delete';
+	$apps[$x]['permissions'][] = 'call_center_tiers_view';
+	$apps[$x]['permissions'][] = 'call_center_tiers_add';
+	$apps[$x]['permissions'][] = 'call_center_tiers_edit';
+	$apps[$x]['permissions'][] = 'call_center_tiers_delete';
+	$apps[$x]['license'] = 'Mozilla Public License 1.1';
+	$apps[$x]['url'] = 'http://www.fusionpbx.com';
+	$apps[$x]['description']['en'] = '';
+?>
