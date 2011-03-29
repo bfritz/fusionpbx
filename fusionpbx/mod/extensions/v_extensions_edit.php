@@ -84,7 +84,6 @@ else {
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
 	if ($action == "update") {
 		$extension_id = check_str($_POST["extension_id"]);
 	}
@@ -145,10 +144,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
-
 			$userfirstname='extension';$userlastname=$extension;$useremail='';
 			$user_list_array = explode("|", $user_list);
-			foreach($user_list_array as $tmp_user){ 
+			foreach($user_list_array as $tmp_user){
 				$user_password = generate_password();
 				user_add($tmp_user, $user_password, $userfirstname, $userlastname, $useremail);
 			}
