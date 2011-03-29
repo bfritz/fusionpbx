@@ -59,13 +59,6 @@ if (count($_POST)>0) {
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
-
-	////recommend moving this to the config.php file
-	$uploadtempdir = $_ENV["TEMP"]."\\";
-	ini_set('upload_tmp_dir', $uploadtempdir);
-	////$imagedir = $_ENV["TEMP"]."\\";
-	////$filedir = $_ENV["TEMP"]."\\";
-
 	if ($action == "update") {
 		$var_id = check_str($_POST["var_id"]);
 	}
@@ -105,7 +98,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'1', ";
 				$sql .= "'$var_name', ";
 				$sql .= "'$var_value', ";
 				$sql .= "'$var_cat', ";
@@ -139,7 +132,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "var_enabled = '$var_enabled', ";
 				$sql .= "var_order = '$var_order', ";
 				$sql .= "var_desc = '".base64_encode($var_desc)."' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where v_id = '1' ";
 				$sql .= "and var_id = '$var_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -161,27 +154,27 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
-//Pre-populate the form
-if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$var_id = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_vars ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and var_id = '$var_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$var_name = $row["var_name"];
-		$var_value = $row["var_value"];
-		$var_cat = $row["var_cat"];
-		$var_enabled = $row["var_enabled"];
-		$var_order = $row["var_order"];
-		$var_desc = base64_decode($row["var_desc"]);
-		break; //limit to 1 row
+//pre-populate the form
+	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+		$var_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_vars ";
+		$sql .= "where v_id = '1' ";
+		$sql .= "and var_id = '$var_id' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$var_name = $row["var_name"];
+			$var_value = $row["var_value"];
+			$var_cat = $row["var_cat"];
+			$var_enabled = $row["var_enabled"];
+			$var_order = $row["var_order"];
+			$var_desc = base64_decode($row["var_desc"]);
+			break; //limit to 1 row
+		}
+		unset ($prepstatement);
 	}
-	unset ($prepstatement);
-}
 
 
 	require_once "includes/header.php";
@@ -237,7 +230,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "	Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$tablename = 'v_vars';$fieldname = 'var_cat';$sqlwhereoptional = "where v_id = '$v_id'";$fieldcurrentvalue = $var_cat;
+	$tablename = 'v_vars';$fieldname = 'var_cat';$sqlwhereoptional = "where v_id = '1'";$fieldcurrentvalue = $var_cat;
 	echo htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
 	//echo "	<input class='formfld' type='text' name='var_cat' maxlength='255' value=\"$var_cat\">\n";
 	echo "<br />\n";

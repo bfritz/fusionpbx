@@ -38,28 +38,8 @@ else {
 
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
-if (!function_exists('thorderby')) {
-	//html table header order by
-	function thorderby($fieldname, $columntitle, $orderby, $order) {
 
-		$html .= "<th class='' nowrap>&nbsp; &nbsp; ";
-		if (strlen($orderby)==0) {
-			$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-		}
-		else {
-			if ($order=="asc") {
-				$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
-			}
-			else {
-				$html .= "<a href='?orderby=$fieldname&order=asc' title='descending'>$columntitle</a>";
-			}
-		}
-		$html .= "&nbsp; &nbsp; </th>";
-
-		return $html;
-	}
-}
-
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -74,11 +54,10 @@ if (!function_exists('thorderby')) {
 	echo "	</td>\n";
 	echo "  </tr>\n";
 	echo "</table>\n";
-	//echo "<br />";
 
 	//$sql = "";
 	//$sql .= "select * from v_vars ";
-	//$sql .= "where v_id = '$v_id' ";
+	//$sql .= "where v_id = '1' ";
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$prepstatement = $db->prepare(check_sql($sql));
 	//$prepstatement->execute();
@@ -95,7 +74,7 @@ if (!function_exists('thorderby')) {
 
 	$sql = "";
 	$sql .= "select * from v_vars ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where v_id = '1' ";
 	if (strlen($orderby)> 0) {
 		$sql .= "order by $orderby $order ";
 	}
@@ -103,7 +82,6 @@ if (!function_exists('thorderby')) {
 		$sql .= "order by var_cat, var_order asc ";
 	}
 	//$sql .= " limit $rowsperpage offset $offset ";
-
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
