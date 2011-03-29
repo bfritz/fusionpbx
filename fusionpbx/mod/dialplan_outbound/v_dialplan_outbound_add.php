@@ -283,31 +283,37 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$tag = 'condition'; //condition, action, antiaction
 				$fieldtype = 'destination_number';
 				$fielddata = $dialplan_expression;
-				$fieldorder = '000';
+				$fieldorder = '005';
+				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+
+				$tag = 'action'; //condition, action, antiaction
+				$fieldtype = 'set';
+				$fielddata = 'sip_h_X-accountcode=${accountcode}';
+				$fieldorder = '010';
 				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 				$tag = 'action'; //condition, action, antiaction
 				$fieldtype = 'set';
 				$fielddata = 'hangup_after_bridge=true';
-				$fieldorder = '002';
+				$fieldorder = '015';
 				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 				$tag = 'action'; //condition, action, antiaction
 				$fieldtype = 'set';
 				$fielddata = 'effective_caller_id_name=${outbound_caller_id_name}';
-				$fieldorder = '003';
+				$fieldorder = '020';
 				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 				$tag = 'action'; //condition, action, antiaction
 				$fieldtype = 'set';
 				$fielddata = 'effective_caller_id_number=${outbound_caller_id_number}';
-				$fieldorder = '004';
+				$fieldorder = '025';
 				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 				$tag = 'action'; //condition, action, antiaction
 				$fieldtype = 'bridge';
 				$fielddata = $action_data;
-				$fieldorder = '005';
+				$fieldorder = '030';
 				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
 				unset($label);
