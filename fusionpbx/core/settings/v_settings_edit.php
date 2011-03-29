@@ -85,7 +85,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($xml_rpc_auth_realm) == 0) { $msg .= "Please provide: XML RPC Auth Realm<br>\n"; }
 		//if (strlen($xml_rpc_auth_user) == 0) { $msg .= "Please provide: XML RPC Auth User<br>\n"; }
 		//if (strlen($xml_rpc_auth_pass) == 0) { $msg .= "Please provide: XML RPC Auth Password<br>\n"; }
-		if (strlen($admin_pin) == 0) { $msg .= "Please provide: Admin PIN Number<br>\n"; }
+		//if (strlen($admin_pin) == 0) { $msg .= "Please provide: Admin PIN Number<br>\n"; }
 		//if (strlen($smtphost) == 0) { $msg .= "Please provide: SMTP Host<br>\n"; }
 		//if (strlen($smtpsecure) == 0) { $msg .= "Please provide: SMTP Secure<br>\n"; }
 		//if (strlen($smtpauth) == 0) { $msg .= "Please provide: SMTP Auth<br>\n"; }
