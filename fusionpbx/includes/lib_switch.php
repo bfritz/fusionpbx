@@ -792,7 +792,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		foreach ($result as &$row) {
 			$extension = $row["extension"];
 			$description = $row["description"];
-			if ("transfer ".$extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value || "user/$extension" == $select_value) {
+			if ("transfer ".$extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value || "user/$extension@".$_SESSION["context"] == $select_value) {
 				if ($select_type == "ivr") {
 					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
@@ -5524,15 +5524,7 @@ if (!function_exists('sync_package_v_call_center')) {
 					$v_agents .= "		<agent ";
 					$v_agents .= "name=\"$agent_name@".$_SESSION['domains'][$row["v_id"]]['domain']."\" ";
 					$v_agents .= "type=\"$agent_type\" ";
-
-					if(stristr($agent_contact, '/gateway/') != FALSE) {
-						//gateway
-						$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact\" ";
-					}
-					else {
-						//extensions
-						$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact@".$_SESSION['domains'][$row["v_id"]]['domain']."\" ";
-					}
+					$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact\" ";
 					$v_agents .= "status=\"$agent_status\" ";
 					$v_agents .= "max-no-answer=\"$agent_max_no_answer\" ";
 					$v_agents .= "wrap-up-time=\"$agent_wrap_up_time\" ";
