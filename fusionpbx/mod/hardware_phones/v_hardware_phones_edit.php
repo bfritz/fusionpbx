@@ -24,141 +24,158 @@
 */
 require_once "root.php";
 require_once "includes/config.php";
-require_once "includes/checkauth.php";
-if (ifgroup("admin") || ifgroup("superadmin")) {
-	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
 
-//action add or update
-if (isset($_REQUEST["id"])) {
-	$action = "update";
-	$hardware_phone_id = check_str($_REQUEST["id"]);
-}
-else {
-	$action = "add";
-}
-
-//POST to PHP variables
-if (count($_POST)>0) {
-	$phone_mac_address = check_str($_POST["phone_mac_address"]);
-	$phone_mac_address = strtolower($phone_mac_address);
-	$phone_vendor = check_str($_POST["phone_vendor"]);
-	$phone_model = check_str($_POST["phone_model"]);
-	$phone_provision_enable = check_str($_POST["phone_provision_enable"]);
-	$phone_template = check_str($_POST["phone_template"]);
-	$phone_username = check_str($_POST["phone_username"]);
-	$phone_password = check_str($_POST["phone_password"]);
-	$phone_description = check_str($_POST["phone_description"]);
-}
-
-if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
-
-	$msg = '';
-
-	if ($action == "update") {
-		$hardware_phone_id = check_str($_POST["hardware_phone_id"]);
+//check permissions
+	require_once "includes/checkauth.php";
+	if (ifgroup("admin") || ifgroup("superadmin")) {
+		//access granted
+	}
+	else {
+		echo "access denied";
+		exit;
 	}
 
-	//check for all required data
-		if (strlen($phone_mac_address) == 0) { $msg .= "Please provide: MAC Address<br>\n"; }
-		//if (strlen($phone_vendor) == 0) { $msg .= "Please provide: Vendor<br>\n"; }
-		//if (strlen($phone_model) == 0) { $msg .= "Please provide: Model<br>\n"; }
-		//if (strlen($phone_provision_enable) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		//if (strlen($phone_template) == 0) { $msg .= "Please provide: Template<br>\n"; }
-		//if (strlen($phone_username) == 0) { $msg .= "Please provide: Username<br>\n"; }
-		//if (strlen($phone_password) == 0) { $msg .= "Please provide: Password<br>\n"; }
-		//if (strlen($phone_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
-		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/header.php";
-			require_once "includes/persistformvar.php";
-			echo "<div align='center'>\n";
-			echo "<table><tr><td>\n";
-			echo $msg."<br />";
-			echo "</td></tr></table>\n";
-			persistformvar($_POST);
-			echo "</div>\n";
-			require_once "includes/footer.php";
-			return;
+//action add or update
+	if (isset($_REQUEST["id"])) {
+		$action = "update";
+		$hardware_phone_id = check_str($_REQUEST["id"]);
+	}
+	else {
+		$action = "add";
+	}
+
+//get the http post values and set them to php variables
+	if (count($_POST)>0) {
+		$phone_mac_address = check_str($_POST["phone_mac_address"]);
+		$phone_mac_address = strtolower($phone_mac_address);
+		$phone_label = check_str($_POST["phone_label"]);
+		$phone_vendor = check_str($_POST["phone_vendor"]);
+		$phone_model = check_str($_POST["phone_model"]);
+		$phone_firmware_version = check_str($_POST["phone_firmware_version"]);
+		$phone_provision_enable = check_str($_POST["phone_provision_enable"]);
+		$phone_template = check_str($_POST["phone_template"]);
+		$phone_username = check_str($_POST["phone_username"]);
+		$phone_password = check_str($_POST["phone_password"]);
+		$phone_time_zone = check_str($_POST["phone_time_zone"]);
+		$phone_description = check_str($_POST["phone_description"]);
+	}
+
+//add or update the database
+	if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
+
+		$msg = '';
+		if ($action == "update") {
+			$hardware_phone_id = check_str($_POST["hardware_phone_id"]);
 		}
 
-	//add or update the database
-		if ($_POST["persistformvar"] != "true") {
-			if ($action == "add") {
-				$sql = "insert into v_hardware_phones ";
-				$sql .= "(";
-				$sql .= "v_id, ";
-				$sql .= "phone_mac_address, ";
-				$sql .= "phone_vendor, ";
-				$sql .= "phone_model, ";
-				$sql .= "phone_provision_enable, ";
-				$sql .= "phone_template, ";
-				$sql .= "phone_username, ";
-				$sql .= "phone_password, ";
-				$sql .= "phone_description ";
-				$sql .= ")";
-				$sql .= "values ";
-				$sql .= "(";
-				$sql .= "'$v_id', ";
-				$sql .= "'$phone_mac_address', ";
-				$sql .= "'$phone_vendor', ";
-				$sql .= "'$phone_model', ";
-				$sql .= "'$phone_provision_enable', ";
-				$sql .= "'$phone_template', ";
-				$sql .= "'$phone_username', ";
-				$sql .= "'$phone_password', ";
-				$sql .= "'$phone_description' ";
-				$sql .= ")";
-				$db->exec(check_sql($sql));
-				unset($sql);
-
-				//write the provision files
-					require_once "mod/provision/v_provision_write.php";
-
-				//redirect the user
-					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hardware_phones.php\">\n";
-					echo "<div align='center'>\n";
-					echo "Add Complete\n";
-					echo "</div>\n";
-					require_once "includes/footer.php";
-					return;
-			} //if ($action == "add")
-
-			if ($action == "update") {
-				$sql = "update v_hardware_phones set ";
-				$sql .= "phone_mac_address = '$phone_mac_address', ";
-				$sql .= "phone_vendor = '$phone_vendor', ";
-				$sql .= "phone_model = '$phone_model', ";
-				$sql .= "phone_provision_enable = '$phone_provision_enable', ";
-				$sql .= "phone_template = '$phone_template', ";
-				$sql .= "phone_username = '$phone_username', ";
-				$sql .= "phone_password = '$phone_password', ";
-				$sql .= "phone_description = '$phone_description' ";
-				$sql .= "where v_id = '$v_id' ";
-				$sql .= "and hardware_phone_id = '$hardware_phone_id'";
-				$db->exec(check_sql($sql));
-				unset($sql);
-
-				//write the provision files
-					require_once "mod/provision/v_provision_write.php";
-
-				//redirect the user
-					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hardware_phones.php\">\n";
-					echo "<div align='center'>\n";
-					echo "Update Complete\n";
-					echo "</div>\n";
-					require_once "includes/footer.php";
-					return;
+		//check for all required data
+			if (strlen($phone_mac_address) == 0) { $msg .= "Please provide: MAC Address<br>\n"; }
+			//if (strlen($phone_label) == 0) { $msg .= "Please provide: Label<br>\n"; }
+			//if (strlen($phone_vendor) == 0) { $msg .= "Please provide: Vendor<br>\n"; }
+			//if (strlen($phone_model) == 0) { $msg .= "Please provide: Model<br>\n"; }
+			//if (strlen($phone_firmware_version) == 0) { $msg .= "Please provide: Firmware Version<br>\n"; }
+			//if (strlen($phone_provision_enable) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
+			//if (strlen($phone_template) == 0) { $msg .= "Please provide: Template<br>\n"; }
+			//if (strlen($phone_username) == 0) { $msg .= "Please provide: Username<br>\n"; }
+			//if (strlen($phone_password) == 0) { $msg .= "Please provide: Password<br>\n"; }
+			//if (strlen($phone_time_zone) == 0) { $msg .= "Please provide: Time Zone<br>\n"; }
+			//if (strlen($phone_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
+			if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
+				require_once "includes/header.php";
+				require_once "includes/persistformvar.php";
+				echo "<div align='center'>\n";
+				echo "<table><tr><td>\n";
+				echo $msg."<br />";
+				echo "</td></tr></table>\n";
+				persistformvar($_POST);
+				echo "</div>\n";
+				require_once "includes/footer.php";
+				return;
 			}
 
-		} //if ($_POST["persistformvar"] != "true")
+		//add or update the database
+			if ($_POST["persistformvar"] != "true") {
+				if ($action == "add") {
+					//sql add
+						$sql = "insert into v_hardware_phones ";
+						$sql .= "(";
+						$sql .= "v_id, ";
+						$sql .= "phone_mac_address, ";
+						$sql .= "phone_label, ";
+						$sql .= "phone_vendor, ";
+						$sql .= "phone_model, ";
+						$sql .= "phone_firmware_version, ";						
+						$sql .= "phone_provision_enable, ";
+						$sql .= "phone_template, ";
+						$sql .= "phone_username, ";
+						$sql .= "phone_password, ";
+						$sql .= "phone_time_zone, ";
+						$sql .= "phone_description ";
+						$sql .= ")";
+						$sql .= "values ";
+						$sql .= "(";
+						$sql .= "'$v_id', ";
+						$sql .= "'$phone_mac_address', ";
+						$sql .= "'$phone_label', ";
+						$sql .= "'$phone_vendor', ";
+						$sql .= "'$phone_model', ";
+						$sql .= "'$phone_firmware_version', ";
+						$sql .= "'$phone_provision_enable', ";
+						$sql .= "'$phone_template', ";
+						$sql .= "'$phone_username', ";
+						$sql .= "'$phone_password', ";
+						$sql .= "'$phone_time_zone', ";
+						$sql .= "'$phone_description' ";
+						$sql .= ")";
+						$db->exec(check_sql($sql));
+						unset($sql);
 
-} //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
+					//write the provision files
+						require_once "mod/provision/v_provision_write.php";
+
+					//redirect the user
+						require_once "includes/header.php";
+						echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hardware_phones.php\">\n";
+						echo "<div align='center'>\n";
+						echo "Add Complete\n";
+						echo "</div>\n";
+						require_once "includes/footer.php";
+						return;
+				} //if ($action == "add")
+
+				if ($action == "update") {
+					//sql update
+						$sql = "update v_hardware_phones set ";
+						$sql .= "phone_mac_address = '$phone_mac_address', ";
+						$sql .= "phone_label = '$phone_label', ";
+						$sql .= "phone_vendor = '$phone_vendor', ";
+						$sql .= "phone_model = '$phone_model', ";
+						$sql .= "phone_firmware_version = '$phone_firmware_version', ";
+						$sql .= "phone_provision_enable = '$phone_provision_enable', ";
+						$sql .= "phone_template = '$phone_template', ";
+						$sql .= "phone_username = '$phone_username', ";
+						$sql .= "phone_password = '$phone_password', ";
+						$sql .= "phone_time_zone = '$phone_time_zone', ";
+						$sql .= "phone_description = '$phone_description' ";
+						$sql .= "where v_id = '$v_id' ";
+						$sql .= "and hardware_phone_id = '$hardware_phone_id'";
+						$db->exec(check_sql($sql));
+						unset($sql);
+
+					//write the provision files
+						require_once "mod/provision/v_provision_write.php";
+
+					//redirect the user
+						require_once "includes/header.php";
+						echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hardware_phones.php\">\n";
+						echo "<div align='center'>\n";
+						echo "Update Complete\n";
+						echo "</div>\n";
+						require_once "includes/footer.php";
+						return;
+				}
+			} //if ($_POST["persistformvar"] != "true")
+	} //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
@@ -173,12 +190,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		foreach ($result as &$row) {
 			$phone_mac_address = $row["phone_mac_address"];
 			$phone_mac_address = strtolower($phone_mac_address);
+			$phone_label = $row["phone_label"];
 			$phone_vendor = $row["phone_vendor"];
 			$phone_model = $row["phone_model"];
+			$phone_firmware_version = $row["phone_firmware_version"];
 			$phone_provision_enable = $row["phone_provision_enable"];
 			$phone_template = $row["phone_template"];
 			$phone_username = $row["phone_username"];
 			$phone_password = $row["phone_password"];
+			$phone_time_zone = $row["phone_time_zone"];
 			$phone_description = $row["phone_description"];
 			break; //limit to 1 row
 		}
@@ -224,6 +244,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<input class='formfld' type='text' name='phone_mac_address' maxlength='255' value=\"$phone_mac_address\">\n";
 	echo "<br />\n";
 	echo "Enter the MAC address.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Label:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='phone_label' maxlength='255' value=\"$phone_label\">\n";
+	echo "<br />\n";
+	echo "Enter the phone label.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -290,6 +321,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Firmware Version:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='phone_firmware_version' maxlength='255' value=\"$phone_firmware_version\">\n";
+	echo "<br />\n";
+	echo "Enter the firmware version.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 	/*
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
@@ -341,6 +383,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Time Zone:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='phone_time_zone' maxlength='255' value=\"$phone_time_zone\">\n";
+	echo "<br />\n";
+	echo "Enter the time zone.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -365,6 +418,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-
-require_once "includes/footer.php";
+//show the footer
+	require_once "includes/footer.php";
 ?>

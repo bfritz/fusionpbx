@@ -96,7 +96,7 @@ require_once "includes/config.php";
 	if (mac_exists_in_v_hardware_phones($db, $mac)) {
 		//get the phone_template
 			if (strlen($phone_template) == 0) {
-				$sql = "SELECT phone_template, phone_vendor FROM v_hardware_phones ";
+				$sql = "SELECT * FROM v_hardware_phones ";
 				$sql .= "where v_id=:v_id ";
 				$sql .= "and phone_mac_address=:mac ";
 				$prepstatement2 = $db->prepare(check_sql($sql));
@@ -105,13 +105,21 @@ require_once "includes/config.php";
 					$prepstatement2->bindParam(':mac', $mac);
 					$prepstatement2->execute();
 					$row = $prepstatement2->fetch();
-					$phone_template = $row['phone_template'];
-					$phone_vendor = $row['phone_vendor'];
+					$phone_label = $row["phone_label"];
+					$phone_vendor = $row["phone_vendor"];
+					$phone_model = $row["phone_model"];
+					$phone_firmware_version = $row["phone_firmware_version"];
+					$phone_provision_enable = $row["phone_provision_enable"];
+					$phone_template = $row["phone_template"];
+					$phone_username = $row["phone_username"];
+					$phone_password = $row["phone_password"];
+					$phone_time_zone = $row["phone_time_zone"];
+					$phone_description = $row["phone_description"];
 				}
 			}
 		//find a template that was defined on another phone and use that as the default.
 			if (strlen($phone_template) == 0) {
-				$sql = "SELECT phone_template, phone_vendor FROM v_hardware_phones ";
+				$sql = "SELECT * FROM v_hardware_phones ";
 				$sql .= "where v_id=:v_id ";
 				$sql .= "and phone_template like '%/%' ";
 				$prepstatement3 = $db->prepare(check_sql($sql));
@@ -120,8 +128,16 @@ require_once "includes/config.php";
 					$prepstatement3->bindParam(':mac', $mac);
 					$prepstatement3->execute();
 					$row = $prepstatement3->fetch();
-					$phone_template = $row['phone_template'];
-					$phone_vendor = $row['phone_vendor'];
+					$phone_label = $row["phone_label"];
+					$phone_vendor = $row["phone_vendor"];
+					$phone_model = $row["phone_model"];
+					$phone_firmware_version = $row["phone_firmware_version"];
+					$phone_provision_enable = $row["phone_provision_enable"];
+					$phone_template = $row["phone_template"];
+					$phone_username = $row["phone_username"];
+					$phone_password = $row["phone_password"];
+					$phone_time_zone = $row["phone_time_zone"];
+					$phone_description = $row["phone_description"];
 				}
 			}
 	}
@@ -302,6 +318,9 @@ require_once "includes/config.php";
 
 	//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 		$file_contents = str_replace("{v_mac}", $mac, $file_contents);
+		$file_contents = str_replace("{v_label}", $phone_label, $file_contents);
+		$file_contents = str_replace("{v_firmware_version}", $phone_firmware_version, $file_contents);
+		$file_contents = str_replace("{v_time_zone}", $phone_time_zone, $file_contents);
 		$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
 		$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
 		$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);

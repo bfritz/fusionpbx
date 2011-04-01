@@ -79,12 +79,15 @@ else {
 	foreach ($result as &$row) {
 		$phone_mac_address = $row["phone_mac_address"];
 		$phone_mac_address = strtolower($phone_mac_address);
+		$phone_label = $row["phone_label"];
 		$phone_vendor = $row["phone_vendor"];
 		$phone_model = $row["phone_model"];
+		$phone_firmware_version = $row["phone_firmware_version"];
 		$phone_provision_enable = $row["phone_provision_enable"];
 		$phone_template = $row["phone_template"];
 		$phone_username = $row["phone_username"];
 		$phone_password = $row["phone_password"];
+		$phone_time_zone = $row["phone_time_zone"];
 		$phone_description = $row["phone_description"];
 
 		//loop through the provision template directory
@@ -146,6 +149,9 @@ else {
 						//prepare the files
 							//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 								$file_contents = str_replace("{v_mac}", $phone_mac_address, $file_contents);
+								$file_contents = str_replace("{v_label}", $phone_label, $file_contents);
+								$file_contents = str_replace("{v_firmware_version}", $phone_firmware_version, $file_contents);
+								$file_contents = str_replace("{v_time_zone}", $phone_time_zone, $file_contents);
 								$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
 								$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
 								$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);
