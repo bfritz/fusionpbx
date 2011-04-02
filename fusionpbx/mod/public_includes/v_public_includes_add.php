@@ -162,7 +162,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'condition', ";
 		$sql .= "'context', ";
 		$sql .= "'public', ";
-		$sql .= "'0' ";
+		$sql .= "'1' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -184,7 +184,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'condition', ";
 		$sql .= "'$condition_field_1', ";
 		$sql .= "'$condition_expression_1', ";
-		$sql .= "'1' ";
+		$sql .= "'2' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -207,7 +207,55 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'condition', ";
 			$sql .= "'$condition_field_2', ";
 			$sql .= "'$condition_expression_2', ";
-			$sql .= "'2' ";
+			$sql .= "'3' ";
+			$sql .= ")";
+			$db->exec(check_sql($sql));
+			unset($sql);
+		}
+
+	//set domain
+		if (count($_SESSION["domains"]) > 1) {
+			$sql = "insert into v_public_includes_details ";
+			$sql .= "(";
+			$sql .= "v_id, ";
+			$sql .= "public_include_id, ";
+			$sql .= "tag, ";
+			$sql .= "fieldtype, ";
+			$sql .= "fielddata, ";
+			$sql .= "fieldorder ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$v_id', ";
+			$sql .= "'$public_include_id', ";
+			$sql .= "'action', ";
+			$sql .= "'set', ";
+			$sql .= "'domain=".$v_domain."', ";
+			$sql .= "'4' ";
+			$sql .= ")";
+			$db->exec(check_sql($sql));
+			unset($sql);
+		}
+
+	//set domain_name
+		if (count($_SESSION["domains"]) > 1) {
+			$sql = "insert into v_public_includes_details ";
+			$sql .= "(";
+			$sql .= "v_id, ";
+			$sql .= "public_include_id, ";
+			$sql .= "tag, ";
+			$sql .= "fieldtype, ";
+			$sql .= "fielddata, ";
+			$sql .= "fieldorder ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$v_id', ";
+			$sql .= "'$public_include_id', ";
+			$sql .= "'action', ";
+			$sql .= "'set', ";
+			$sql .= "'domain_name=\${domain}', ";
+			$sql .= "'5' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -230,7 +278,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'action', ";
 		$sql .= "'$action_application_1', ";
 		$sql .= "'$action_data_1', ";
-		$sql .= "'3' ";
+		$sql .= "'6' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -253,7 +301,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'action', ";
 			$sql .= "'$action_application_2', ";
 			$sql .= "'$action_data_2', ";
-			$sql .= "'4' ";
+			$sql .= "'7' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
