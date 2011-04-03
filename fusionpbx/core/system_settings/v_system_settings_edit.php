@@ -549,7 +549,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//clear values
 		if ($action == "add") {
-			$v_domain ='';
+			$v_domain = '';
+			$v_account_code = '';
 		}
 
 //set defaults if value is emtpy
