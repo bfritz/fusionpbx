@@ -563,7 +563,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 	.vtable {
 		position:relative; 
 		z-index:1;
-		padding:10px;
+		padding:7px;
 		color: 000;
 		/*
 		box-shadow:5px -5px 10px #700;
@@ -642,7 +642,7 @@ function confirmdelete(url) {
 	<table width='90%' class='border.disabled' border='0' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td align='left' valign='top' class='headermain' colspan='2' width='100%' height='70px;'>
-				<img src='<!--{project_path}-->/themes/enhanced/logo.png' />
+				<a href='/'><img src='<!--{project_path}-->/themes/enhanced/logo.png' /></a>
 			</td>
 		</tr>
 		<tr>
@@ -663,12 +663,13 @@ function confirmdelete(url) {
 					<tr>
 						<td class='main_content' align='left' valign='top' width='85%'>
 							<?php
+							/*
 							if ($_SESSION["reload_xml"]) {
-									if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
-										if(stristr($_SERVER["PHP_SELF"], "_edit") != FALSE) { 
-											//found
-										}
-										else {
+									if ($_SESSION['apply_settings'] == "true") {
+										//show the apply settings prompt
+									}
+									else {
+										if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/core/status/v_status.php") {
 											echo "<div align='center'>\n";
 											echo "<table border='0' width='400px'>\n";
 											echo "<tr>\n";
@@ -694,8 +695,10 @@ function confirmdelete(url) {
 											echo "</table>\n";
 											echo "</div>\n";
 										}
+									}
 								}
 							}
+							*/
 							?>
 							<!--{body}-->
 

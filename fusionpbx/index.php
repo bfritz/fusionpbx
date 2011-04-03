@@ -30,55 +30,11 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/includes/config.php"))
 }
 require_once "includes/config.php";
 require_once "includes/header.php";
-require_once "includes/checkauth.php";
+//require_once "includes/checkauth.php";
 
 echo "<br />";
 echo "<br />";
 
-//information
-	//echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
-	//echo "  <tr>\n";
-	//echo "	<td align='left'><b>Information</b><br>\n";
-	//echo "		The following links are for convenience access to the user account settings, and voicemail.<br />\n";
-	//echo "	</td>\n";
-	//echo "  </tr>\n";
-	//echo "</table>\n";
-	//echo "<br />\n";
-
-	echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
-	echo "<tr>\n";
-	echo "	<th class='th' colspan='2' align='left'>User Information&nbsp;</th>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		UserName: \n";
-	echo "	</td>\n";
-	echo "	<td class=\"rowstyle1\">\n";
-	echo "		<a href='".PROJECT_PATH."/mod/users/usersupdate.php'>".$_SESSION["username"]."</a> \n";
-	echo "	</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		Voicemail: \n";
-	echo "	</td>\n";
-	echo "	<td class=\"rowstyle1\">\n";
-	echo "		<a href='".PROJECT_PATH."/mod/voicemail_msgs/v_voicemail_msgs.php'>View Messages</a> \n";
-	echo "	</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-
-	echo "<br />\n";
-	echo "<br />\n";
-
-//call forward, follow me and dnd
-	$is_included = "true";
-	require_once "mod/calls/v_calls.php";
-
-//call forward, follow me and dnd
-	$is_included = "true";
-	require_once "mod/hunt_group/v_hunt_group_call_forward.php";
 
 require_once "includes/footer.php";
 ?>

@@ -512,7 +512,7 @@ function confirmdelete(url) {
 	<tr>
 	<td></td>
 	<td align='left' valign='middle' nowrap>
-		<img src='<!--{project_path}-->/themes/classic/logo.png' />
+		<a href='/'><img src='<!--{project_path}-->/themes/classic/logo.png' /></a>
 	</td>
 	</tr>
 	<tr>
