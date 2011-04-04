@@ -46,7 +46,8 @@ if (strlen($msg) > 0) {
 	echo "<br /><br />\n\n";
 }
 
-echo "<form name='login' METHOD=\"POST\" action=\"".PROJECT_PATH."/index.php\">\n";
+echo "<form name='login' METHOD=\"POST\" action=\"".PROJECT_PATH."/index2.php\">\n";
+echo "<input type='hidden' name='path' value='$path'>\n";
 echo "<table width='200' border='0'>\n";
 echo "<tr>\n";
 echo "<td align='left'>\n";

@@ -135,8 +135,13 @@ if (strlen($_SESSION["username"]) == 0) {
 	unset($sql, $result, $rowcount, $prepstatement);
 
 	//echo "running checkauth<br>";
-	//header("Location: ".$path);
-	//exit;
+	$path = check_str($_POST["path"]);
+	echo "running checkauth<br>";
+	if($path!="index.php") {
+		header("Location: ".$path);
+		//echo "$path";
+		die();
+		}
 }
 
 //set the time zone
