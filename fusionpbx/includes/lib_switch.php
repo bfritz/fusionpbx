@@ -812,7 +812,12 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
-					echo "		<option value='user/$extension@".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
+					if (count($_SESSION["domains"]) > 1) {
+						echo "		<option value='user/$extension@".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
+					}
+					else {
+						echo "		<option value='user/$extension'>".$extension." ".$description."</option>\n";
+					}
 				}
 			}
 		}
