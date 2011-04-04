@@ -195,13 +195,14 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				$sqlinsert .= "'".$_REQUEST["groupid"]."', ";
 				$sqlinsert .= "'$username' ";
 				$sqlinsert .= ")";
-				if (!$db->exec($sqlinsert)) {
-					//echo $db->errorCode() . "<br>";
-					$info = $db->errorInfo();
-					print_r($info);
-					// $info[0] == $db->errorCode() unified error code
-					// $info[1] is the driver specific error code
-					// $info[2] is the driver specific error string
+				if ($_REQUEST["groupid"] == "superadmin") {
+					//only a user in the superadmin group can add other users to that group
+					if (ifgroup("superadmin")) {
+						$db->exec($sqlinsert);
+					}
+				}
+				else {
+					$db->exec($sqlinsert);
 				}
 		}
 
@@ -516,7 +517,15 @@ else {
 	$result = $prepstatement->fetchAll();
 	//$catcount = count($result);
 	foreach($result as $field) {
-		echo "<option value='".$field['groupid']."'>".$field['groupid']."</option>\n";
+		if ($field['groupid'] == "superadmin") {
+			//only show the superadmin group to other users in the superadmin group
+			if (ifgroup("superadmin")) {
+				echo "<option value='".$field['groupid']."'>".$field['groupid']."</option>\n";
+			}		
+		}
+		else {
+			echo "<option value='".$field['groupid']."'>".$field['groupid']."</option>\n";
+		}
 	}
 	echo "</select>";
 	echo "<input type=\"submit\" class='btn' value=\"Add\">\n";
