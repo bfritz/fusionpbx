@@ -48,6 +48,7 @@ $order = $_GET["order"];
 		$gateway_id = $gateway_array[0];
 		$gateway_name = $gateway_array[1];
 		$dialplanorder = check_str($_POST["dialplanorder"]);
+		$dialplan_expression = check_str($_POST["dialplan_expression"]);
 		$condition_field_1 = check_str($_POST["condition_field_1"]);
 		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
 		$condition_field_2 = check_str($_POST["condition_field_2"]);
@@ -61,6 +62,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($gateway_name) == 0) { $msg .= "Please provide: Gateway Name<br>\n"; }
+		if (strlen($dialplan_expression) == 0) { $msg .= "Please provide: Dialplan Expression<br>\n"; }
 		//if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		//if (strlen($condition_field_1) == 0) { $msg .= "Please provide: Condition Field<br>\n"; }
 		//if (strlen($condition_expression_1) == 0) { $msg .= "Please provide: Condition Expression<br>\n"; }
