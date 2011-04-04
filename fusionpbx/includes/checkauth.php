@@ -136,7 +136,6 @@ if (strlen($_SESSION["username"]) == 0) {
 
 	//echo "running checkauth<br>";
 	$path = check_str($_POST["path"]);
-	echo "running checkauth<br>";
 	if($path!="index.php") {
 		header("Location: ".$path);
 		//echo "$path";
