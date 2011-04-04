@@ -717,7 +717,7 @@ if (!function_exists('builddbchildmenu2')) {
 										break;
 									case "external":
 										$menustr = str_replace ("<!--{project_path}-->", PROJECT_PATH, $menustr);
-										$menutags = "href='".PROJECT_PATH.$menustr."' target='_blank'";
+										$menutags = "href='".$menustr."' target='_blank'";
 										break;
 									case "email":
 										$menutags = "href='mailto:$menustr'";
