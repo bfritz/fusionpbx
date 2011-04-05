@@ -667,7 +667,12 @@ function confirmdelete(url) {
 	if ($db) {
 		$sql = "select * from v_menu ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and menustr like '".$php_self_dir."%' ";
+		if ($php_self_dir == "/") {
+			$sql .= "and menustr = '/index2.php' ";
+		}
+		else {
+			$sql .= "and menustr like '".$php_self_dir."%' ";
+		}
 		$sql .= "order by menuorder asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
