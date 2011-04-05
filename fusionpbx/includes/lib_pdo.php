@@ -295,21 +295,21 @@ if ($db_type == "pgsql") {
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach($result as $row) {
-			$_SESSION['domains'][$row['v_id']]['v_id'] = $row['v_id'];
-			$_SESSION['domains'][$row['v_id']]['domain'] = $row['v_domain'];
-			$_SESSION['domains'][$row['v_id']]['template_name'] = $row['v_template_name'];
-
+			//get the values from the db and set them as session variables
+				$_SESSION['domains'][$row['v_id']]['v_id'] = $row['v_id'];
+				$_SESSION['domains'][$row['v_id']]['domain'] = $row['v_domain'];
+				$_SESSION['domains'][$row['v_id']]['template_name'] = $row['v_template_name'];
 			//get v_id, and check for an assigned template 
-			if ($row['v_domain'] == $_SERVER['HTTP_HOST']) {
-				$_SESSION["v_id"] = $row["v_id"];
-				$_SESSION["template_name"] = $row["v_template_name"];
-				$_SESSION["v_template_name"] = $row["v_template_name"];
-				$_SESSION["v_domain"] = $row['v_domain'];
-				$_SESSION["v_time_zone"] = $row['v_time_zone'];
-				if (strlen($row["v_time_zone"]) > 0) {
-					date_default_timezone_set($_SESSION["v_time_zone"]);
+				if ($row['v_domain'] == $_SERVER['HTTP_HOST'] || $row['v_domain'] == 'www.'.$_SERVER['HTTP_HOST']) {
+					$_SESSION["v_id"] = $row["v_id"];
+					$_SESSION["template_name"] = $row["v_template_name"];
+					$_SESSION["v_template_name"] = $row["v_template_name"];
+					$_SESSION["v_domain"] = $row['v_domain'];
+					$_SESSION["v_time_zone"] = $row['v_time_zone'];
+					if (strlen($row["v_time_zone"]) > 0) {
+						date_default_timezone_set($_SESSION["v_time_zone"]);
+					}
 				}
-			}
 		}
 		unset($result, $prepstatement);
 	}
