@@ -26,7 +26,7 @@
 
 		$apps[$x]['permissions'][1]['name'] = 'zzz';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'zzz';
 		$apps[$x]['permissions'][2]['groups'][] = 'admin';

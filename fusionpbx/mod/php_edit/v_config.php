@@ -22,5 +22,5 @@
 		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][1]['name'] = 'php_editor_save';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 ?>

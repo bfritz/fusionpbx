@@ -25,7 +25,7 @@
 
 		$apps[$x]['permissions'][1]['name'] = 'call_forward_add';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'call_forward_edit';
 		$apps[$x]['permissions'][2]['groups'][] = 'admin';

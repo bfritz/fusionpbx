@@ -22,7 +22,7 @@
 		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][1]['name'] = 'sip_profiles_add';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'sip_profiles_edit';
 		$apps[$x]['permissions'][2]['groups'][] = 'superadmin';

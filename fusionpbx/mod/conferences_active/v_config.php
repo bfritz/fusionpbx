@@ -28,7 +28,7 @@
 		$apps[$x]['permissions'][1]['name'] = 'conferences_active_record';
 		$apps[$x]['permissions'][1]['groups'][] = 'user';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'conferences_active_lock';
 		$apps[$x]['permissions'][2]['groups'][] = 'user';

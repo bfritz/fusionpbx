@@ -28,7 +28,7 @@
 		$apps[$x]['permissions'][1]['name'] = 'calls_add';
 		$apps[$x]['permissions'][1]['groups'][] = 'user';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'calls_edit';
 		$apps[$x]['permissions'][2]['groups'][] = 'user';

@@ -26,6 +26,6 @@
 
 		$apps[$x]['permissions'][1]['name'] = 'soft_phone_dial';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 	*/
 ?>

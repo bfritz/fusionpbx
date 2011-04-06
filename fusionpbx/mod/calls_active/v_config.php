@@ -34,7 +34,7 @@
 
 		$apps[$x]['permissions'][1]['name'] = 'calls_active_transfer';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'calls_active_hangup';
 		$apps[$x]['permissions'][2]['groups'][] = 'admin';
@@ -54,7 +54,7 @@
 
 		$apps[$x]['permissions'][6]['name'] = 'extensions_active_transfer';
 		$apps[$x]['permissions'][6]['groups'][] = 'admin';
-		$apps[$x]['permissions'][6]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][6]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][7]['name'] = 'extensions_active_hangup';
 		$apps[$x]['permissions'][7]['groups'][] = 'admin';

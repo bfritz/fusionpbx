@@ -25,7 +25,7 @@
 
 		$apps[$x]['permissions'][1]['name'] = 'system_view_cpu';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'system_view_hdd';
 		$apps[$x]['permissions'][2]['groups'][] = 'admin';

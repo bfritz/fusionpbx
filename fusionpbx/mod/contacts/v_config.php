@@ -26,7 +26,7 @@
 
 		$apps[$x]['permissions'][1]['name'] = 'contacts_add';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'contacts_edit';
 		$apps[$x]['permissions'][2]['groups'][] = 'admin';

@@ -23,11 +23,11 @@
 		$apps[$x]['permissions'][0]['name'] = 'call_center_queues_view';
 		$apps[$x]['permissions'][0]['groups'][] = 'agent';
 		$apps[$x]['permissions'][0]['groups'][] = 'admin';
-		$apps[$x]['permissions'][0]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][1]['name'] = 'call_center_queues_add';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'call_center_queues_edit';
 		$apps[$x]['permissions'][2]['groups'][] = 'admin';

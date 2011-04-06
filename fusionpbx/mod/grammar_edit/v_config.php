@@ -24,5 +24,5 @@
 
 		$apps[$x]['permissions'][1]['name'] = 'grammar_save';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 ?>

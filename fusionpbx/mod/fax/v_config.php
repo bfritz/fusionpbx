@@ -27,7 +27,7 @@
 
 		$apps[$x]['permissions'][1]['name'] = 'fax_extension_add';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'fax_extension_edit';
 		$apps[$x]['permissions'][2]['groups'][] = 'user';

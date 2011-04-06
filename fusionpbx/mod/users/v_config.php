@@ -28,5 +28,5 @@
 		$apps[$x]['permissions'][1]['name'] = 'user_account_settings_edit';
 		$apps[$x]['permissions'][1]['groups'][] = 'user';
 		$apps[$x]['permissions'][1]['groups'][] = 'admin';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin'
+		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 ?>
