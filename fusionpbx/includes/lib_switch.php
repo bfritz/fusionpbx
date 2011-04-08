@@ -675,10 +675,10 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		echo "		<select name='".$select_name."' id='".$select_name."' class='formfld' style='".$select_style."' onchange='changeToInput".$select_name."(this);'>\n";
 		if (strlen($select_value) > 0) {
 			if ($select_type == "ivr") {
-				echo "		<option value='".$select_value."' selected='selected'>".$select_label." 2</option>\n";
+				echo "		<option value='".$select_value."' selected='selected'>".$select_label."</option>\n";
 			}
 			if ($select_type == "dialplan") {
-				echo "		<option value='".$action.":".$select_value."' selected='selected'>".$select_label." 2</option>\n";
+				echo "		<option value='".$action.":".$select_value."' selected='selected'>".$select_label."</option>\n";
 			}
 		}
 	}
@@ -792,7 +792,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		foreach ($result as &$row) {
 			$extension = $row["extension"];
 			$description = $row["description"];
-			if ("transfer ".$extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value || "user/$extension@".$_SESSION["context"] == $select_value) {
+			if ("transfer ".$extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value || "user/$extension@".$_SESSION['domains'][$v_id]['domain'] == $select_value) {
 				if ($select_type == "ivr") {
 					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
@@ -800,7 +800,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
-					echo "		<option value='user/$extension@".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
+					echo "		<option value='user/$extension@".$_SESSION['domains'][$v_id]['domain']."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				$selection_found = true;
 			}
@@ -812,12 +812,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
-					if (count($_SESSION["domains"]) > 1) {
-						echo "		<option value='user/$extension@".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
-					}
-					else {
-						echo "		<option value='user/$extension'>".$extension." ".$description."</option>\n";
-					}
+					echo "		<option value='user/$extension@".$_SESSION['domains'][$v_id]['domain']."'>".$extension." ".$description."</option>\n";
 				}
 			}
 		}
@@ -1399,117 +1394,123 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 
 	//other
-		if (ifgroup("superadmin") && $select_type == "dialplan") {
+		if (ifgroup("superadmin")) {
 			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
 				echo "<optgroup label='Other'>\n";
 			}
-				if ($select_type == "call_center_contact") {
-					echo "		<option value='[call_timeout=10]sofia/gateway/gateway_name/11231231234' selected='selected'>[call_timeout=10]sofia/gateway/gateway_name/11231231234</option>\n";
-				}
+				if ($select_type == "dialplan" || $select_type == "ivr") {
+					if ($select_value == "answer") {
+						echo "		<option value='answer' selected='selected'>answer</option>\n";
+					}
+					else {
+						echo "		<option value='answer'>answer</option>\n";
+					}
 
-				if ($select_value == "answer") {
-					echo "		<option value='answer' selected='selected'>answer</option>\n";
-				}
-				else {
-					echo "		<option value='answer'>answer</option>\n";
-				}
+					if ($select_value == "bridge") {
+						echo "		<option value='bridge:' selected='selected'>bridge</option>\n";
+					}
+					else {
+						echo "		<option value='bridge:'>bridge</option>\n";
+					}
 
-				if ($select_value == "bridge") {
-					echo "		<option value='bridge:' selected='selected'>bridge</option>\n";
-				}
-				else {
-					echo "		<option value='bridge:'>bridge</option>\n";
-				}
+					if ($select_value == "db") {
+						echo "		<option value='db:' selected='selected'>db</option>\n";
+					}
+					else {
+						echo "		<option value='db:'>db</option>\n";
+					}
 
-				if ($select_value == "db") {
-					echo "		<option value='db:' selected='selected'>db</option>\n";
-				}
-				else {
-					echo "		<option value='db:'>db</option>\n";
-				}
+					if ($select_value == "export") {
+						echo "		<option value='export:' selected='selected'>export</option>\n";
+					}
+					else {
+						echo "		<option value='export:'>export</option>\n";
+					}
 
-				if ($select_value == "export") {
-					echo "		<option value='export:' selected='selected'>export</option>\n";
-				}
-				else {
-					echo "		<option value='export:'>export</option>\n";
-				}
+					if ($select_value == "global_set") {
+						echo "		<option value='global_set:' selected='selected'>global_set</option>\n";
+					}
+					else {
+						echo "		<option value='global_set:'>global_set</option>\n";
+					}
 
-				if ($select_value == "global_set") {
-					echo "		<option value='global_set:' selected='selected'>global_set</option>\n";
-				}
-				else {
-					echo "		<option value='global_set:'>global_set</option>\n";
-				}
+					if ($select_value == "group") {
+						echo "		<option value='group:' selected='selected'>group</option>\n";
+					}
+					else {
+						echo "		<option value='group:'>group</option>\n";
+					}
 
-				if ($select_value == "group") {
-					echo "		<option value='group:' selected='selected'>group</option>\n";
-				}
-				else {
-					echo "		<option value='group:'>group</option>\n";
-				}
+					if ($select_value == "hangup") {
+						echo "		<option value='hangup' selected='selected'>hangup</option>\n";
+					}
+					else {
+						echo "		<option value='hangup'>hangup</option>\n";
+					}
 
-				if ($select_value == "hangup") {
-					echo "		<option value='hangup' selected='selected'>hangup</option>\n";
-				}
-				else {
-					echo "		<option value='hangup'>hangup</option>\n";
-				}
+					if ($select_value == "info") {
+						echo "		<option value='info' selected='selected'>info</option>\n";
+					}
+					else {
+						echo "		<option value='info'>info</option>\n";
+					}
 
-				if ($select_value == "info") {
-					echo "		<option value='info' selected='selected'>info</option>\n";
-				}
-				else {
-					echo "		<option value='info'>info</option>\n";
-				}
+					if ($select_value == "javascript") {
+						echo "		<option value='javascript:' selected='selected'>javascript</option>\n";
+					}
+					else {
+						echo "		<option value='javascript:'>javascript</option>\n";
+					}
 
-				if ($select_value == "javascript") {
-					echo "		<option value='javascript:' selected='selected'>javascript</option>\n";
-				}
-				else {
-					echo "		<option value='javascript:'>javascript</option>\n";
-				}
+					if ($select_value == "lua") {
+						echo "		<option value='lua:' selected='selected'>lua</option>\n";
+					}
+					else {
+						echo "		<option value='lua:'>lua</option>\n";
+					}
 
-				if ($select_value == "lua") {
-					echo "		<option value='lua:' selected='selected'>lua</option>\n";
-				}
-				else {
-					echo "		<option value='lua:'>lua</option>\n";
-				}
+					if ($select_value == "reject") {
+						echo "		<option value='reject' selected='selected'>reject</option>\n";
+					}
+					else {
+						echo "		<option value='reject'>reject</option>\n";
+					}
 
-				if ($select_value == "reject") {
-					echo "		<option value='reject' selected='selected'>reject</option>\n";
-				}
-				else {
-					echo "		<option value='reject'>reject</option>\n";
-				}
+					if ($select_value == "set") {
+						echo "		<option value='set:' selected='selected'>set</option>\n";
+					}
+					else {
+						echo "		<option value='set:'>set</option>\n";
+					}
 
-				if ($select_value == "set") {
-					echo "		<option value='set:' selected='selected'>set</option>\n";
-				}
-				else {
-					echo "		<option value='set:'>set</option>\n";
-				}
+					if ($select_value == "sleep") {
+						echo "		<option value='sleep:' selected='selected'>sleep</option>\n";
+					}
+					else {
+						echo "		<option value='sleep:'>sleep</option>\n";
+					}
 
-				if ($select_value == "sleep") {
-					echo "		<option value='sleep:' selected='selected'>sleep</option>\n";
-				}
-				else {
-					echo "		<option value='sleep:'>sleep</option>\n";
-				}
+					if ($select_value == "transfer") {
+						echo "		<option value='transfer:' selected='selected'>transfer</option>\n";
+					}
+					else {
+						echo "		<option value='transfer:'>transfer</option>\n";
+					}
 
-				if ($select_value == "transfer") {
-					echo "		<option value='transfer:' selected='selected'>transfer</option>\n";
+					if ($select_value == "other") {
+						echo "		<option value='' selected='selected'>other</option>\n";
+					}
+					else {
+						echo "		<option value=''>other</option>\n";
+					}
 				}
-				else {
-					echo "		<option value='transfer:'>transfer</option>\n";
-				}
-
-				if ($select_value == "other") {
-					echo "		<option value='' selected='selected'>other</option>\n";
-				}
-				else {
-					echo "		<option value=''>other</option>\n";
+				if (!$selection_found) {
+					if (strlen($select_label) > 0) {
+						echo "		<option value='".$select_value."' selected='selected'>".$select_label."</option>\n";
+					}
+					else {
+						echo "		<option value='".$select_value."' selected='selected'>".$select_value."</option>\n";
+					}
 				}
 			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
 				echo "</optgroup>\n";
