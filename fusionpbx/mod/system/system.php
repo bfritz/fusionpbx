@@ -39,6 +39,28 @@ require_once "includes/header.php";
 echo "<br />";
 echo "<br />";
 
+// OS Support
+//
+// For each section below wrap in an OS detection statement like:
+//	if (stristr(PHP_OS, 'Linux')) {}
+//
+// Some possibilites for PHP_OS...
+//
+//	CYGWIN_NT-5.1
+//	Darwin
+//	FreeBSD
+//	HP-UX
+//	IRIX64
+//	Linux
+//	NetBSD
+//	OpenBSD
+//	SunOS
+//	Unix
+//	WIN32
+//	WINNT
+//	Windows
+//
+
 //system information
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
 	echo "<tr>\n";
@@ -102,6 +124,7 @@ echo "<br />";
 
 //memory information
 	//linux
+	if (stristr(PHP_OS, 'Linux')) {
 		echo "<!--\n";
 		$shellcmd='free';
 		$shell_result = shell_exec($shellcmd);
@@ -127,8 +150,10 @@ echo "<br />";
 			echo "<br />";
 			echo "<br />";
 		}
+	}
 
 	//freebsd
+	if (stristr(PHP_OS, 'FreeBSD')) {
 		echo "<!--\n";
 		$shellcmd='sysctl vm.vmtotal';
 		$shell_result = shell_exec($shellcmd);
@@ -154,46 +179,48 @@ echo "<br />";
 			echo "<br />";
 			echo "<br />";
 		}
+	}
 
 //memory information
 	//linux
+	if (stristr(PHP_OS, 'Linux')) {
 		echo "<!--\n";
-		if(stristr(shell_exec('uname -r'), 'astlinux') === FALSE) {
-			$shellcmd="ps -e -o pcpu,cpu,nice,state,cputime,args --sort pcpu | sed '/^ 0.0 /d'";
-			$shell_result = shell_exec($shellcmd);
-			echo "-->\n";
-			if (strlen($shell_result) > 0) {
-				echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
-				echo "<tr>\n";
-				echo "	<th class='th' colspan='2' align='left' valign='top'>CPU Information</th>\n";
-				echo "</tr>\n";
-				echo "<tr>\n";
-				echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-				echo "	CPU Status:\n";
-				echo "	</td>\n";
-				echo "	<td class=\"rowstyle1\">\n";
-				echo "	<pre>\n";
+		$shellcmd="ps -e -o pcpu,cpu,nice,state,cputime,args --sort pcpu | sed '/^ 0.0 /d'";
+		$shell_result = shell_exec($shellcmd);
+		echo "-->\n";
+		if (strlen($shell_result) > 0) {
+			echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
+			echo "<tr>\n";
+			echo "	<th class='th' colspan='2' align='left' valign='top'>CPU Information</th>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+			echo "	CPU Status:\n";
+			echo "	</td>\n";
+			echo "	<td class=\"rowstyle1\">\n";
+			echo "	<pre>\n";
 
-				//$last_line = shell_exec($shellcmd, $shell_result);
-				//foreach ($shell_result as $value) {
-				//	echo substr($value, 0, 100);
-				//	echo "<br />";
-				//}
+			//$last_line = shell_exec($shellcmd, $shell_result);
+			//foreach ($shell_result as $value) {
+			//	echo substr($value, 0, 100);
+			//	echo "<br />";
+			//}
 
-				echo "$shell_result<br>";
+			echo "$shell_result<br>";
 
-				echo "</pre>\n";
-				unset($shell_result);
-				echo "	</td>\n";
-				echo "</tr>\n";
-				echo "</table>\n";
-				echo "<br />";
-				echo "<br />";
-				echo "<br />";
-			}
+			echo "</pre>\n";
+			unset($shell_result);
+			echo "	</td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
+			echo "<br />";
+			echo "<br />";
+			echo "<br />";
 		}
+	}
 
 	//freebsd
+	if (stristr(PHP_OS, 'FreeBSD')) {
 		echo "<!--\n";
 		$shellcmd='top';
 		$shell_result = shell_exec($shellcmd);
@@ -219,12 +246,31 @@ echo "<br />";
 			echo "<br />";
 			echo "<br />";
 		}
+	}
 
 //drive space
-	//disk_free_space returns the number of bytes available on the drive;
-	//1 kilobyte = 1024 byte
-	//1 megabyte = 1024 kilobyte
-	if (stristr(PHP_OS, 'WIN')) { 
+	if (stristr(PHP_OS, 'Linux') || stristr(PHP_OS, 'FreeBSD')) {
+		echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
+		echo "<tr>\n";
+		echo "	<th class='th' colspan='2' align='left'>Drive Information</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "		Drive Space: \n";
+		echo "	</td>\n";
+		echo "	<td class=\"rowstyle1\">\n";
+		echo "<pre>\n";
+		$shellcmd = 'df -h';
+		$shell_result = shell_exec($shellcmd);
+		echo "$shell_result<br>";
+		echo "</pre>\n";
+		echo "	</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+	} else if (stristr(PHP_OS, 'WIN')) {
+		//disk_free_space returns the number of bytes available on the drive;
+		//1 kilobyte = 1024 byte
+		//1 megabyte = 1024 kilobyte		
 		$driveletter = substr($_SERVER["DOCUMENT_ROOT"], 0, 2);
 		$disksize = round(disk_total_space($driveletter)/1024/1024, 2);
 		$disksizefree = round(disk_free_space($driveletter)/1024/1024, 2);
@@ -263,26 +309,6 @@ echo "<br />";
 		echo "</table>\n";
 		echo "\n";
 	}
-	else {
-		echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
-		echo "<tr>\n";
-		echo "	<th class='th' colspan='2' align='left'>Drive Information</th>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-		echo "		Drive Space: \n";
-		echo "	</td>\n";
-		echo "	<td class=\"rowstyle1\">\n";
-		echo "<pre>\n";
-		$shellcmd = 'df -h';
-		$shell_result = shell_exec($shellcmd);
-		echo "$shell_result<br>";
-		echo "</pre>\n";
-		echo "	</td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-	}
-
 	echo "<br />";
 	echo "<br />";
 	echo "<br />";
