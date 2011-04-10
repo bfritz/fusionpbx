@@ -3044,10 +3044,10 @@ function sync_package_v_hunt_group() {
 										$tmpdata = $tmp_row["data"];
 										if ($tmp_row["application"] == "voicemail") { $tmpdata = "*99".$tmpdata; }
 										if ($row['huntgroupcallerannounce'] == "true") {
-											$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_id_name, caller_id_number, caller_announce);\n";
+											$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_id_name, caller_id_number, caller_announce);\n";
 										}
 										else {
-											$tmp .= "	result = originate (session, ".$tmp_buffer.", extension, caller_id_name, caller_id_number);\n";
+											$tmp .= "	result = originate (session, ".$tmpdata.", extension, caller_id_name, caller_id_number);\n";
 										}
 									}
 								}
