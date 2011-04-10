@@ -60,8 +60,8 @@
 		$apps[$x]['permissions'][7]['groups'][] = 'admin';
 		$apps[$x]['permissions'][7]['groups'][] = 'superadmin';
 
-		$apps[$x]['permissions'][7]['name'] = 'conferences_active_deaf';
-		$apps[$x]['permissions'][7]['groups'][] = 'user';
-		$apps[$x]['permissions'][7]['groups'][] = 'admin';
-		$apps[$x]['permissions'][7]['groups'][] = 'superadmin';
+		$apps[$x]['permissions'][8]['name'] = 'conferences_active_deaf';
+		$apps[$x]['permissions'][8]['groups'][] = 'user';
+		$apps[$x]['permissions'][8]['groups'][] = 'admin';
+		$apps[$x]['permissions'][8]['groups'][] = 'superadmin';
 ?>
