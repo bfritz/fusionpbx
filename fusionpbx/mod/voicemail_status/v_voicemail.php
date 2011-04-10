@@ -146,7 +146,7 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[extension]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[vm_mailto]."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$count."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[enabled]."</td>\n";
+			echo "  <td valign='top' class='".$rowstyle[$c]."'>".($row[vm_enabled]?"true":"false")."</td>\n";
 			echo "	<td valign='top' class='rowstylebg' width='30%'>".$row[description]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			//echo "		<a href='v_extensions_edit.php?id=".$row[extension_id]."' alt='edit'>$v_link_label_edit</a>\n";

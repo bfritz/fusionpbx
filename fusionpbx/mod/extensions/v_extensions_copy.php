@@ -63,6 +63,7 @@ else {
 		$effective_caller_id_number = $row["effective_caller_id_number"];
 		$outbound_caller_id_name = $row["outbound_caller_id_name"];
 		$outbound_caller_id_number = $row["outbound_caller_id_number"];
+		$vm_enabled = $row["vm_enabled"];
 		$vm_mailto = $row["vm_mailto"];
 		$vm_attach_file = $row["vm_attach_file"];
 		$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
@@ -93,6 +94,7 @@ else {
 	$sql .= "effective_caller_id_number, ";
 	$sql .= "outbound_caller_id_name, ";
 	$sql .= "outbound_caller_id_number, ";
+	$sql .= "vm_enabled, ";
 	$sql .= "vm_mailto, ";
 	$sql .= "vm_attach_file, ";
 	$sql .= "vm_keep_local_after_email, ";
@@ -118,6 +120,7 @@ else {
 	$sql .= "'$effective_caller_id_number', ";
 	$sql .= "'$outbound_caller_id_name', ";
 	$sql .= "'$outbound_caller_id_number', ";
+	$sql .= "'$vm_enabled', ";
 	$sql .= "'$vm_mailto', ";
 	$sql .= "'$vm_attach_file', ";
 	$sql .= "'$vm_keep_local_after_email', ";

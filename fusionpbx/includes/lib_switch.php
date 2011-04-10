@@ -1810,6 +1810,16 @@ function sync_package_v_extensions() {
 			$tmpxml .= "    <params>\n";
 			$tmpxml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
 			$tmpxml .= "      <param name=\"vm-password\" value=\"" . $vm_password . "\"/>\n";
+			switch ($row['vm_enabled']) {
+			case "true":
+				$tmpxml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
+				break;
+			case "false":
+				$tmpxml .= "      <param name=\"vm-enabled\" value=\"false\"/>\n";
+				break;
+			default:
+				$tmpxml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
+			}
 			if (strlen($row['vm_mailto']) > 0) {
 				$tmpxml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
 

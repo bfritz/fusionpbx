@@ -228,6 +228,7 @@ require_once "includes/checkauth.php";
 							$extension_array[$extension]['effective_caller_id_number'] = $row["effective_caller_id_number"];
 							$extension_array[$extension]['outbound_caller_id_name'] = $row["outbound_caller_id_name"];
 							$extension_array[$extension]['outbound_caller_id_number'] = $row["outbound_caller_id_number"];
+							$extension_array[$extension]['vm_enabled'] = $row["vm_enabled"];
 							$extension_array[$extension]['vm_mailto'] = $row["vm_mailto"];
 							$extension_array[$extension]['vm_attach_file'] = $row["vm_attach_file"];
 							$extension_array[$extension]['vm_keep_local_after_email'] = $row["vm_keep_local_after_email"];

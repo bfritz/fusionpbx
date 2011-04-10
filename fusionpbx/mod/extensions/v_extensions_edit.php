@@ -66,6 +66,7 @@ else {
 		$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
 		$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
 		$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
+		$vm_enabled = check_str($_POST["vm_enabled"]);
 		$vm_mailto = check_str($_POST["vm_mailto"]);
 		$vm_attach_file = check_str($_POST["vm_attach_file"]);
 		$vm_keep_local_after_email = check_str($_POST["vm_keep_local_after_email"]);
@@ -168,6 +169,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "effective_caller_id_number, ";
 				$sql .= "outbound_caller_id_name, ";
 				$sql .= "outbound_caller_id_number, ";
+				$sql .= "vm_enabled, ";
 				$sql .= "vm_mailto, ";
 				$sql .= "vm_attach_file, ";
 				$sql .= "vm_keep_local_after_email, ";
@@ -196,6 +198,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$effective_caller_id_number', ";
 				$sql .= "'$outbound_caller_id_name', ";
 				$sql .= "'$outbound_caller_id_number', ";
+				$sql .= "'$vm_enabled', ";
 				$sql .= "'$vm_mailto', ";
 				$sql .= "'$vm_attach_file', ";
 				$sql .= "'$vm_keep_local_after_email', ";
@@ -256,6 +259,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "effective_caller_id_number = '$effective_caller_id_number', ";
 			$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
 			$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
+			$sql .= "vm_enabled = '$vm_enabled', ";
 			$sql .= "vm_mailto = '$vm_mailto', ";
 			$sql .= "vm_attach_file = '$vm_attach_file', ";
 			$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email', ";
@@ -317,6 +321,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$effective_caller_id_number = $row["effective_caller_id_number"];
 			$outbound_caller_id_name = $row["outbound_caller_id_name"];
 			$outbound_caller_id_number = $row["outbound_caller_id_number"];
+			$vm_enabled = $row["vm_enabled"];
 			$vm_mailto = $row["vm_mailto"];
 			$vm_attach_file = $row["vm_attach_file"];
 			$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
@@ -627,6 +632,31 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+	
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Voicemail Enabled:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='vm_enabled'>\n";
+	echo "    <option value=''></option>\n";
+	if ($vm_enabled == "true") { 
+		echo "    <option value='true' selected >true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($vm_enabled == "false") { 
+		echo "    <option value='false' selected >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "Enable/disable voicemail for this extension.\n";
+	echo "</td>\n";
+	echo "</tr>\n";	
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
