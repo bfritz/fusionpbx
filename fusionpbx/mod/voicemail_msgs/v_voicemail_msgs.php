@@ -113,7 +113,10 @@ else {
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
+	//superadmin can see all messages
+	if(!ifgroup("superadmin")) {
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	//$v_mailboxes = '';
@@ -269,7 +272,7 @@ else {
 						echo 	"</td>\n";
 						echo "   <td valign='top' align='center' nowrap>\n";
 						//echo "		<a href='v_voicemail_msgs_edit.php?id=".$row[voicemail_msg_id]."' alt='edit'>$v_link_label_edit</a>\n";
-						echo "		&nbsp;&nbsp;<a href='v_voicemail_msgs_delete.php?uuid=".$row[uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+						echo "		&nbsp;&nbsp;<a href='v_voicemail_msgs_delete.php?uuid=".$row[uuid]."' alt='delete message' title='delete message' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 						echo "   </td>\n";
 						echo "</tr>\n";
 
