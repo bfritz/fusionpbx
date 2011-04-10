@@ -2871,6 +2871,9 @@ function sync_package_v_hunt_group() {
 							$tmp .= "end\n";
 							$tmp .= "if effective_caller_id_name then\n";
 							$tmp .= "	session:setVariable(\"effective_caller_id_name\", \"".$row['huntgroupcidnameprefix']."\"..effective_caller_id_name);\n";
+							$tmp .= "elseif caller_id_name then\n";
+							$tmp .= "	--effective_caller_id_name missing, set to caller_id_name\n";
+							$tmp .= "	session:setVariable(\"effective_caller_id_name\", \"".$row['huntgroupcidnameprefix']."\"..caller_id_name);\n";							
 							$tmp .= "end\n";
 							$tmp .= "if outbound_caller_id_name then\n";
 							$tmp .= "	session:setVariable(\"outbound_caller_id_name\", \"".$row['huntgroupcidnameprefix']."\"..outbound_caller_id_name);\n";
