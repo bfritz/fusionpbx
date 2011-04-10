@@ -79,7 +79,10 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
+	//superadmin can see all messages
+	if(!ifgroup("superadmin")) {
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+	}	
 	if (strlen($orderby)> 0) { 
 		$sql .= "order by $orderby $order ";
 	}
@@ -102,7 +105,9 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
+	if(!ifgroup("superadmin")) {
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+	}
 	if (strlen($orderby)> 0) {
 		$sql .= "order by $orderby $order ";
 	}
