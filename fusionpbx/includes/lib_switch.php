@@ -2284,100 +2284,6 @@ function sync_package_v_public() {
 	//foreach($v_settings_array as $name => $value) {
 	//	$$name = $value;
 	//}
-
-  //using backup files rather than pfsense config.xml for this file
-  //$config['installedpackages']['freeswitchpublic']['config'][0]['public_xml'] = "";
-  
-  //if(strlen($config['installedpackages']['freeswitchpublic']['config'][0]['public_xml']) == 0) {
-  //    /* dialplan_public_xml not found in the pfsense config.xml get the default public.xml and save to config.xml. */
-  //    $filename = $v_conf_dir."/dialplan/public.xml";
-  //    $fout = fopen($filename,"r");
-  //    $tmpxml = fread($fout, filesize($filename));
-  //    $tmpxml = str_replace("<anti-action application=\"export\" data=\"domain_name=\${sip_req_host}\"/>", "<!--<anti-action application=\"export\" data=\"domain_name=\${sip_req_host}\"/>-->", $tmpxml);
-  //    $config['installedpackages']['freeswitchpublic']['config'][0]['public_xml'] = base64_encode($tmpxml);
-    
-  //    unset($filename, $tmpxml);
-  //    fclose($fout);
-  //}
-  //else {
-  //    /* found dialplan_public_xml in the pfsense config.xml save it to public.xml. */
-  //    $fout = fopen($v_conf_dir."/dialplan/public.xml","w");
-  //    $tmpxml = $config['installedpackages']['freeswitchpublic']['config'][0]['public_xml'];
-  //    fwrite($fout, base64_decode($tmpxml));
-  //    fclose($fout);
-  //    unset($tmpxml);
-  //}
-
-  //$cmd = "api reloadxml";
-  ////event_socket_request_cmd($cmd);
-  //unset($cmd);
-}
-
-function sync_package_v_internal() {
-	global $config;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
-		$$name = $value;
-	}
-
-	if(strlen($config['installedpackages']['freeswitchinternal']['config'][0]['internal_xml']) == 0) {
-		/* internal_xml not found in the pfsense config.xml get the internal.xml and save to config.xml. */
-		$filename = $v_conf_dir."/sip_profiles/internal.xml";
-		$fout = fopen($filename,"r");
-		$tmpxml = fread($fout, filesize($filename));
-		$config['installedpackages']['freeswitchinternal']['config'][0]['internal_xml'] = base64_encode($tmpxml);
-		unset($filename, $dialplan);
-		fclose($fout);
-	}
-	else {
-		/* found the internal_xml in the pfsense config.xml save it to internal.xml. */
-		$fout = fopen($v_conf_dir."/sip_profiles/internal.xml","w");
-		$tmpxml = $config['installedpackages']['freeswitchinternal']['config'][0]['internal_xml'];
-		fwrite($fout, base64_decode($tmpxml));
-		fclose($fout);
-		unset($tmpxml);
-	}
-
-	//apply settings reminder
-		$_SESSION["reload_xml"] = true;
-
-	//$cmd = "api reloadxml";
-	//event_socket_request_cmd($cmd);
-	//unset($cmd);
-}
-
-
-function sync_package_v_external() {
-	global $config;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
-		$$name = $value;
-	}
-
-	if(strlen($config['installedpackages']['freeswitchexternal']['config'][0]['external_xml']) == 0) {
-		/* external_xml not found in the pfsense config.xml get the external.xml and save to config.xml. */
-		$filename = $v_conf_dir."/sip_profiles/external.xml";
-		$fout = fopen($filename,"r");
-		$tmpxml = fread($fout, filesize($filename));
-		$config['installedpackages']['freeswitchexternal']['config'][0]['external_xml'] = base64_encode($tmpxml);
-		unset($filename, $dialplan);
-		fclose($fout);
-	}
-	else {
-		/* found the external_xml in the pfsense config.xml save it to external.xml. */
-		$fout = fopen($v_conf_dir."/sip_profiles/external.xml","w");
-		$tmpxml = $config['installedpackages']['freeswitchexternal']['config'][0]['external_xml'];
-		fwrite($fout, base64_decode($tmpxml));
-		fclose($fout);
-		unset($tmpxml);
-	}
-
-	//apply settings reminder
-		$_SESSION["reload_xml"] = true;
-
-	//$cmd = "api reloadxml";
-	//event_socket_request_cmd($cmd);
-	//unset($cmd);
 }
 
 function outbound_route_to_bridge ($destination_number) {
@@ -4616,138 +4522,138 @@ function sync_package_v_public_includes() {
 		}
 
 	//loop through all the public includes aka inbound routes
-	$sql = "";
-	$sql .= "select * from v_public_includes ";
-	$sql .= "where enabled = 'true' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	foreach ($result as &$row) {
-		$extensioncontinue = '';
-		if ($row['extensioncontinue'] == "true") {
-			$extensioncontinue = "continue=\"true\"";
-		}
-
-		$tmp = "";
-		$tmp .= "\n";
-		$tmp = "<extension name=\"".$row['extensionname']."\" $extensioncontinue>\n";
-
 		$sql = "";
-		$sql .= " select * from v_public_includes_details ";
-		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
-		$sql .= " and tag = 'condition' ";
-		$sql .= " order by fieldorder asc";
-		$prepstatement2 = $db->prepare($sql);
-		$prepstatement2->execute();
-		$result2 = $prepstatement2->fetchAll();
-		$resultcount2 = count($result2);
-		unset ($prepstatement2, $sql);
-		$i=1;
-		if ($resultcount2 == 0) {
-			//no results
-		}
-		else { //received results
-			foreach($result2 as $ent) {
-				if ($resultcount2 == 1) { //single condition
-					//start tag
-					$tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
-				}
-				else { //more than one condition
-					if ($i < $resultcount2) {
-						  //all tags should be self-closing except the last one
-						  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\"/>\n";
-					}
-					else {
-						//for the last tag use the start tag
-						  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
-					}
-				}
-				$i++;
-			} //end foreach
-			$conditioncount = $resultcount2;
-			unset($sql, $resultcount2, $result2, $rowcount2);
-		} //end if results
+		$sql .= "select * from v_public_includes ";
+		$sql .= "where enabled = 'true' ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$extensioncontinue = '';
+			if ($row['extensioncontinue'] == "true") {
+				$extensioncontinue = "continue=\"true\"";
+			}
 
-		$sql = "";
-		$sql .= " select * from v_public_includes_details ";
-		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
-		$sql .= " and tag = 'action' ";
-		$sql .= " order by fieldorder asc";
-		$prepstatement2 = $db->prepare($sql);
-		$prepstatement2->execute();
-		$result2 = $prepstatement2->fetchAll();
-		$resultcount2 = count($result2);
-		unset ($prepstatement2, $sql);
-		if ($resultcount2 == 0) { //no results
-		}
-		else { //received results
-			$i = 0;
-			foreach($result2 as $ent) {
-				if ($ent['tag'] == "action" && $row['publicincludeid'] == $ent['publicincludeid']) {
-					if (strlen($ent['fielddata']) > 0) {
-						$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
-					}
-					else {
-						$tmp .= "       <action application=\"".$ent['fieldtype']."\"/>\n";
-					}
-				}
-				$i++;
-			} //end foreach
-			unset($sql, $resultcount2, $result2, $rowcount2);
-		} //end if results
+			$tmp = "";
+			$tmp .= "\n";
+			$tmp = "<extension name=\"".$row['extensionname']."\" $extensioncontinue>\n";
 
-		$sql = "";
-		$sql .= " select * from v_public_includes_details ";
-		$sql .= " where public_include_id = '".$row['public_include_id']."' ";
-		$sql .= " and tag = 'anti-action' ";
-		$sql .= " order by fieldorder asc";
-		$prepstatement2 = $db->prepare($sql);
-		$prepstatement2->execute();
-		$result2 = $prepstatement2->fetchAll();
-		$resultcount2 = count($result2);
-		unset ($prepstatement2, $sql);
-		if ($resultcount2 == 0) { //no results
-		}
-		else { //received results
-			$i = 0;
-			foreach($result2 as $ent) {
-				if ($ent['tag'] == "anti-action" && $row['publicincludeid'] == $ent['publicincludeid']) {
-					if (strlen($ent['fielddata']) > 0) {
-						$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+			$sql = "";
+			$sql .= " select * from v_public_includes_details ";
+			$sql .= " where public_include_id = '".$row['public_include_id']."' ";
+			$sql .= " and tag = 'condition' ";
+			$sql .= " order by fieldorder asc";
+			$prepstatement2 = $db->prepare($sql);
+			$prepstatement2->execute();
+			$result2 = $prepstatement2->fetchAll();
+			$resultcount2 = count($result2);
+			unset ($prepstatement2, $sql);
+			$i=1;
+			if ($resultcount2 == 0) {
+				//no results
+			}
+			else { //received results
+				foreach($result2 as $ent) {
+					if ($resultcount2 == 1) { //single condition
+						//start tag
+						$tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
 					}
-					else {
-						$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\"/>\n";
+					else { //more than one condition
+						if ($i < $resultcount2) {
+							  //all tags should be self-closing except the last one
+							  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\"/>\n";
+						}
+						else {
+							//for the last tag use the start tag
+							  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
+						}
 					}
-				}
-				$i++;
-			} //end foreach
-			unset($sql, $resultcount2, $result2, $rowcount2);
-		} //end if results
+					$i++;
+				} //end foreach
+				$conditioncount = $resultcount2;
+				unset($sql, $resultcount2, $result2, $rowcount2);
+			} //end if results
 
-		if ($conditioncount > 0) {
-			$tmp .= "   </condition>\n";
-		}
-		unset ($conditioncount);
-		$tmp .= "</extension>\n";
+			$sql = "";
+			$sql .= " select * from v_public_includes_details ";
+			$sql .= " where public_include_id = '".$row['public_include_id']."' ";
+			$sql .= " and tag = 'action' ";
+			$sql .= " order by fieldorder asc";
+			$prepstatement2 = $db->prepare($sql);
+			$prepstatement2->execute();
+			$result2 = $prepstatement2->fetchAll();
+			$resultcount2 = count($result2);
+			unset ($prepstatement2, $sql);
+			if ($resultcount2 == 0) { //no results
+			}
+			else { //received results
+				$i = 0;
+				foreach($result2 as $ent) {
+					if ($ent['tag'] == "action" && $row['publicincludeid'] == $ent['publicincludeid']) {
+						if (strlen($ent['fielddata']) > 0) {
+							$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+						}
+						else {
+							$tmp .= "       <action application=\"".$ent['fieldtype']."\"/>\n";
+						}
+					}
+					$i++;
+				} //end foreach
+				unset($sql, $resultcount2, $result2, $rowcount2);
+			} //end if results
 
-		$public_order = $row['publicorder'];
-		if (strlen($public_order) == 0) { $public_order = "000".$public_order; }
-		if (strlen($public_order) == 1) { $public_order = "00".$public_order; }
-		if (strlen($public_order) == 2) { $public_order = "0".$public_order; }
-		if (strlen($public_order) == 4) { $public_order = "999"; }
-		if (strlen($public_order) == 5) { $public_order = "999"; }
-		if (count($_SESSION["domains"]) > 1) {
-			$public_include_filename = $public_order."_v_public_".$_SESSION['domains'][$row['v_id']]['domain'].'_'.$row['extensionname'].".xml";
-		}
-		else {
-			$public_include_filename = $public_order."_v_public_".$row['extensionname'].".xml";
-		}
-		$fout = fopen($v_dialplan_public_dir."/".$public_include_filename,"w");
-		fwrite($fout, $tmp);
-		fclose($fout);
+			$sql = "";
+			$sql .= " select * from v_public_includes_details ";
+			$sql .= " where public_include_id = '".$row['public_include_id']."' ";
+			$sql .= " and tag = 'anti-action' ";
+			$sql .= " order by fieldorder asc";
+			$prepstatement2 = $db->prepare($sql);
+			$prepstatement2->execute();
+			$result2 = $prepstatement2->fetchAll();
+			$resultcount2 = count($result2);
+			unset ($prepstatement2, $sql);
+			if ($resultcount2 == 0) { //no results
+			}
+			else { //received results
+				$i = 0;
+				foreach($result2 as $ent) {
+					if ($ent['tag'] == "anti-action" && $row['publicincludeid'] == $ent['publicincludeid']) {
+						if (strlen($ent['fielddata']) > 0) {
+							$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+						}
+						else {
+							$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\"/>\n";
+						}
+					}
+					$i++;
+				} //end foreach
+				unset($sql, $resultcount2, $result2, $rowcount2);
+			} //end if results
 
-		unset($public_include_filename);
-		unset($tmp);
+			if ($conditioncount > 0) {
+				$tmp .= "   </condition>\n";
+			}
+			unset ($conditioncount);
+			$tmp .= "</extension>\n";
+
+			$public_order = $row['publicorder'];
+			if (strlen($public_order) == 0) { $public_order = "000".$public_order; }
+			if (strlen($public_order) == 1) { $public_order = "00".$public_order; }
+			if (strlen($public_order) == 2) { $public_order = "0".$public_order; }
+			if (strlen($public_order) == 4) { $public_order = "999"; }
+			if (strlen($public_order) == 5) { $public_order = "999"; }
+			if (count($_SESSION["domains"]) > 1) {
+				$public_include_filename = $public_order."_v_public_".$_SESSION['domains'][$row['v_id']]['domain'].'_'.$row['extensionname'].".xml";
+			}
+			else {
+				$public_include_filename = $public_order."_v_public_".$row['extensionname'].".xml";
+			}
+			$fout = fopen($v_dialplan_public_dir."/".$public_include_filename,"w");
+			fwrite($fout, $tmp);
+			fclose($fout);
+
+			unset($public_include_filename);
+			unset($tmp);
 	} //end while
 	unset ($prepstatement);
 
@@ -5695,8 +5601,6 @@ if (!function_exists('sync_package_freeswitch')) {
 		sync_package_v_public();
 		sync_package_v_public_includes();
 		sync_package_v_vars();
-		sync_package_v_internal();
-		sync_package_v_external();
 		//sync_package_v_recordings();
 		sync_package_v_auto_attendant();
 		sync_package_v_hunt_group();
