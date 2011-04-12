@@ -56,6 +56,12 @@ include "root.php";
 		var $destination_type_5;
 		var $destination_timeout_5;
 
+		var $destination_profile = 'internal';
+		var $destination_timeout = '';
+		var $destination_order = 1;
+		var $destination_enabled = 'true';
+		var $destination_descr = 'follow me';
+
 		function follow_me_add() {
 			global $db;
 
@@ -119,7 +125,7 @@ include "root.php";
 				$db->exec(check_sql($sql));
 				$this->follow_me_id = $db->lastInsertId($id);
 			}
-			if ($db_type == "pgsql") {
+			if ($this->$db_type == "pgsql") {
 				$sql .= " RETURNING hunt_group_id ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
@@ -177,13 +183,6 @@ include "root.php";
 		function follow_me_destinations() {
 			global $db;
 
-			//set the variables
-				$destination_profile = 'internal';
-				$destination_timeout = '';
-				$destination_order = '1';
-				$destination_enabled = 'true';
-				$destination_descr = 'follow me';
-
 			//delete related v_hunt_group_destinations
 				$sql = "delete from v_hunt_group_destinations where hunt_group_id = '$this->follow_me_id' ";
 				$db->exec(check_sql($sql));
@@ -215,6 +214,7 @@ include "root.php";
 					$sql .= "'$this->destination_descr' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
+					$this->destination_order++;
 					unset($sql);
 				}
 				if (strlen($this->destination_data_2) > 0) {
@@ -243,6 +243,7 @@ include "root.php";
 					$sql .= "'$this->destination_descr' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
+					$this->destination_order++;
 					unset($sql);
 				}
 				if (strlen($this->destination_data_3) > 0) {
@@ -271,6 +272,7 @@ include "root.php";
 					$sql .= "'$this->destination_descr' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
+					$this->destination_order++;
 					unset($sql);
 				}
 				if (strlen($this->destination_data_4) > 0) {
@@ -299,6 +301,7 @@ include "root.php";
 					$sql .= "'$this->destination_descr' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
+					$this->destination_order++;
 					unset($sql);
 				}
 				if (strlen($this->destination_data_5) > 0) {
@@ -327,6 +330,7 @@ include "root.php";
 					$sql .= "'$this->destination_descr' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
+					$this->destination_order++;
 					unset($sql);
 				}
 		} //function
