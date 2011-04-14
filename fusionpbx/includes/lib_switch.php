@@ -5433,23 +5433,72 @@ if (!function_exists('sync_package_v_call_center')) {
 				$result = $prep_statement->fetchAll();
 				$x=0;
 				foreach ($result as &$row) {
-					$agent_name = $row["agent_name"];
-					$agent_type = $row["agent_type"];
-					$agent_call_timeout = $row["agent_call_timeout"];
-					$agent_contact = $row["agent_contact"];
-					$agent_status = $row["agent_status"];
-					$agent_max_no_answer = $row["agent_max_no_answer"];
-					$agent_wrap_up_time = $row["agent_wrap_up_time"];
-					$agent_reject_delay_time = $row["agent_reject_delay_time"];
-					$agent_busy_delay_time = $row["agent_busy_delay_time"];
-					if ($x > 0) {
-						$v_agents .= "\n";
-						$v_agents .= "		";
-					}
+					//get the values from the db and set as php variables
+						$agent_name = $row["agent_name"];
+						$agent_type = $row["agent_type"];
+						$agent_call_timeout = $row["agent_call_timeout"];
+						$agent_contact = $row["agent_contact"];
+						$agent_status = $row["agent_status"];
+						$agent_max_no_answer = $row["agent_max_no_answer"];
+						$agent_wrap_up_time = $row["agent_wrap_up_time"];
+						$agent_reject_delay_time = $row["agent_reject_delay_time"];
+						$agent_busy_delay_time = $row["agent_busy_delay_time"];
+						if ($x > 0) {
+							$v_agents .= "\n";
+							$v_agents .= "		";
+
+						}
+
+					//get and then set the complete agent_contact with the call_timeout and when necessary confirm
+						$tmp_confirm = "group_confirm_file=custom/press_1_to_accept_this_call.wav,group_confirm_key=1";
+						if(strstr($agent_contact, '}') === FALSE) {
+							//not found
+							if(stristr($agent_contact, 'sofia/gateway') === FALSE) {
+								//add the call_timeout
+								$tmp_agent_contact = "{call_timeout=".$agent_call_timeout."}".$agent_contact;
+							}
+							else {
+								//add the call_timeout and confirm
+								$tmp_agent_contact = $tmp_first.',call_timeout='.$agent_call_timeout.$tmp_last;
+								$tmp_agent_contact = "{".$tmp_confirm.",call_timeout=".$agent_call_timeout."}".$agent_contact;
+							}
+						}
+						else {
+							//found
+							if(stristr($agent_contact, 'sofia/gateway') === FALSE) {
+								//not found
+								if(stristr($agent_contact, 'call_timeout') === FALSE) {
+									//add the call_timeout
+									$tmp_pos = strrpos($agent_contact, "}");
+									$tmp_first = substr($agent_contact, 0, $tmp_pos);
+									$tmp_last = substr($agent_contact, $tmp_pos); 
+									$tmp_agent_contact = $tmp_first.',call_timeout='.$agent_call_timeout.$tmp_last;
+								}
+								else {
+									//the string has the call timeout
+									$tmp_agent_contact = $agent_contact;
+								}
+							}
+							else {
+								//found
+								$tmp_pos = strrpos($agent_contact, "}");
+								$tmp_first = substr($agent_contact, 0, $tmp_pos);
+								$tmp_last = substr($agent_contact, $tmp_pos);
+								if(stristr($agent_contact, 'call_timeout') === FALSE) {
+									//add the call_timeout and confirm
+									$tmp_agent_contact = $tmp_first.','.$tmp_confirm.',call_timeout='.$agent_call_timeout.$tmp_last;
+								}
+								else {
+									//add confirm
+									$tmp_agent_contact = $tmp_first.','.$tmp_confirm.$tmp_last;
+								}
+							}
+						}
+
 					$v_agents .= "		<agent ";
 					$v_agents .= "name=\"$agent_name@".$_SESSION['domains'][$row["v_id"]]['domain']."\" ";
 					$v_agents .= "type=\"$agent_type\" ";
-					$v_agents .= "contact=\"[call_timeout=$agent_call_timeout]$agent_contact\" ";
+					$v_agents .= "contact=\"$tmp_agent_contact\" ";
 					$v_agents .= "status=\"$agent_status\" ";
 					$v_agents .= "max-no-answer=\"$agent_max_no_answer\" ";
 					$v_agents .= "wrap-up-time=\"$agent_wrap_up_time\" ";

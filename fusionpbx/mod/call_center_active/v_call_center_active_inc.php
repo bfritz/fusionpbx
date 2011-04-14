@@ -153,8 +153,8 @@ else {
 				echo "<tr>\n";
 				echo "<td valign='top' class='".$rowstyle[$c]."'>".$joined_length."</td>\n";
 				//echo "<td valign='top' class='".$rowstyle[$c]."'>".$system_length."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_name."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_number."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_name."&nbsp;</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_number."&nbsp;</td>\n";
 				echo "<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					echo "<td valign='top' class='".$rowstyle[$c]."'>";
