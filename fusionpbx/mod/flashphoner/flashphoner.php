@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-	flashfoner.php
+	flashphoner.php
 	Copyright (C) 2008, 2009 Ken Rice
 	All rights reserved.
 

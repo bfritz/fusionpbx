@@ -11,7 +11,7 @@ function submitform()
 </script>
 
 <div>
-<form action="/flashfoner/phone.php" name="flashform">
+<form action="/flashphoner/phone.php" name="flashform">
 <select id="extension_id">
 <?php 
 foreach($extension_array as $row)
@@ -19,6 +19,6 @@ printf('<option value="%s">%s</option>'."\n", $row['extension_id'], $row['extens
 ?>
 </select>
 </form>
-<a href='javascript:var testvar = document.getElementById("extension_id").value; window.open("/flashfoner/phone.php?extension_id="+testvar, "FlashPhoner", "height=350, width=150");'>
+<a href='javascript:var testvar = document.getElementById("extension_id").value; window.open("/flashphoner/phone.php?extension_id="+testvar, "FlashPhoner", "height=350, width=150");'>
 <img src="phone.jpg" /><br /> Click here to Open Your Phone</a>
 <div>
