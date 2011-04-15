@@ -62,8 +62,6 @@ if ($x > 0) {
 	$sql = sprintf("INSERT INTO v_flashphone_auth (auth_key, hostaddr, createtime, username) values ('%s', '%s', now(), '%s')",
 			$key, $client_ip, $_SESSION["username"]);
 
-	echo "HERE!!!---|$sql|-----";
-
 	$db->exec(check_sql($sql));
 
 //	$prepstatement = $db->prepare(check_sql($sql));

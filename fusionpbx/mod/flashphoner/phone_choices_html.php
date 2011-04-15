@@ -19,6 +19,6 @@ printf('<option value="%s">%s</option>'."\n", $row['extension_id'], $row['extens
 ?>
 </select>
 </form>
-<a href='javascript:var testvar = document.getElementById("extension_id").value; window.open("/flashphoner/phone.php?extension_id="+testvar, "FlashPhoner", "height=350, width=150");'>
+<a href='javascript:var testvar = document.getElementById("extension_id").value; window.open("/flashphoner/phone.php?extension_id="+testvar, "FlashPhoner", "height=300, width=230");'>
 <img src="phone.jpg" /><br /> Click here to Open Your Phone</a>
 <div>
