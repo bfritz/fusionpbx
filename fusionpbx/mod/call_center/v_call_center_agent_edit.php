@@ -51,6 +51,7 @@ else {
 		$agent_contact = check_str($_POST["agent_contact"]);
 		$agent_status = check_str($_POST["agent_status"]);
 		$agent_logout = check_str($_POST["agent_logout"]);
+		$agent_no_answer_delay_time = check_str($_POST["agent_no_answer_delay_time"]);
 		$agent_max_no_answer = check_str($_POST["agent_max_no_answer"]);
 		$agent_wrap_up_time = check_str($_POST["agent_wrap_up_time"]);
 		$agent_reject_delay_time = check_str($_POST["agent_reject_delay_time"]);
@@ -73,6 +74,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($agent_contact) == 0) { $msg .= "Please provide: Contact<br>\n"; }
 		//if (strlen($agent_status) == 0) { $msg .= "Please provide: Status<br>\n"; }
 		//if (strlen($agent_logout) == 0) { $msg .= "Please provide: Logout<br>\n"; }
+		//if (strlen($agent_no_answer_delay_time) == 0) { $msg .= "Please provide: No Answer Delay Time<br>\n"; }
 		//if (strlen($agent_max_no_answer) == 0) { $msg .= "Please provide: Max No Answer<br>\n"; }
 		//if (strlen($agent_wrap_up_time) == 0) { $msg .= "Please provide: Wrap Up Time<br>\n"; }
 		//if (strlen($agent_reject_delay_time) == 0) { $msg .= "Please provide: Reject Delay Time<br>\n"; }
@@ -183,6 +185,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "agent_contact, ";
 				$sql .= "agent_status, ";
 				$sql .= "agent_logout, ";
+				$sql .= "agent_no_answer_delay_time, ";
 				$sql .= "agent_max_no_answer, ";
 				$sql .= "agent_wrap_up_time, ";
 				$sql .= "agent_reject_delay_time, ";
@@ -197,6 +200,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$agent_contact', ";
 				$sql .= "'$agent_status', ";
 				$sql .= "'$agent_logout', ";
+				$sql .= "'$agent_no_answer_delay_time', ";
 				$sql .= "'$agent_max_no_answer', ";
 				$sql .= "'$agent_wrap_up_time', ";
 				$sql .= "'$agent_reject_delay_time', ";
@@ -226,6 +230,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "agent_contact = '$agent_contact', ";
 			$sql .= "agent_status = '$agent_status', ";
 			$sql .= "agent_logout = '$agent_logout', ";
+			$sql .= "agent_no_answer_delay_time = '$agent_no_answer_delay_time', ";
 			$sql .= "agent_max_no_answer = '$agent_max_no_answer', ";
 			$sql .= "agent_wrap_up_time = '$agent_wrap_up_time', ";
 			$sql .= "agent_reject_delay_time = '$agent_reject_delay_time', ";
@@ -266,6 +271,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$agent_contact = $row["agent_contact"];
 			$agent_status = $row["agent_status"];
 			$agent_logout = $row["agent_logout"];
+			$agent_no_answer_delay_time = $row["agent_no_answer_delay_time"];
 			$agent_max_no_answer = $row["agent_max_no_answer"];
 			$agent_wrap_up_time = $row["agent_wrap_up_time"];
 			$agent_reject_delay_time = $row["agent_reject_delay_time"];
@@ -280,6 +286,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (strlen($agent_call_timeout) == 0) { $agent_call_timeout = 10; }
 	if (strlen($agent_max_no_answer) == 0) { $agent_max_no_answer = "3"; }
 	if (strlen($agent_wrap_up_time) == 0) { $agent_wrap_up_time = "10"; }
+	if (strlen($agent_no_answer_delay_time) == 0) { $agent_no_answer_delay_time = "10"; }
 	if (strlen($agent_reject_delay_time) == 0) { $agent_reject_delay_time = "10"; }
 	if (strlen($agent_busy_delay_time) == 0) { $agent_busy_delay_time = "60"; }
 
@@ -472,6 +479,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	No Answer Delay Time:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "  <input class='formfld' type='text' name='agent_no_answer_delay_time' maxlength='255' value='$agent_no_answer_delay_time'>\n";
+	echo "<br />\n";
+	echo "Enter the agent no answer delay time in seconds.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
@@ -488,6 +506,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-
-require_once "includes/footer.php";
+//footer
+	require_once "includes/footer.php";
 ?>
