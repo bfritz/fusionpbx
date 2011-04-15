@@ -8,6 +8,13 @@ function submitform()
     }
  document.flashform.submit();
 }
+
+function start_phone()
+{
+	var testvar = document.getElementById("extension_id").value; 
+	window.open("/flashphoner/phone.php?extension_id="+testvar, "FlashPhoner", "height=300, width=230");
+}
+
 </script>
 
 <div>
@@ -19,6 +26,6 @@ printf('<option value="%s">%s</option>'."\n", $row['extension_id'], $row['extens
 ?>
 </select>
 </form>
-<a href='javascript:var testvar = document.getElementById("extension_id").value; window.open("/flashphoner/phone.php?extension_id="+testvar, "FlashPhoner", "height=300, width=230");'>
+<a href='javascript:start_phone();'>
 <img src="phone.jpg" /><br /> Click here to Open Your Phone</a>
 <div>
