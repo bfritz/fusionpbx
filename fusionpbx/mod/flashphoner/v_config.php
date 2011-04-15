@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "FlashPhoner";
 		$apps[$x]['guid'] = 'FE45C76C-1A6E-0F0E-73DD-5B542AED2DD5';
-		$apps[$x]['category'] = ''Ph;
+		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

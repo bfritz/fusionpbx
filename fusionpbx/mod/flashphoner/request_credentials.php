@@ -35,17 +35,26 @@ $key = $_REQUEST['key'];
 $username = $_REQUEST['username'];
 
 // make sure they atleast have a KEY from before
-$sql = "select * from v_flashphone_auth where auth_key = '".urldecode($key)."' and hostaddr = '".$_SERVER['REMOTE_ADDR']."' and user_list like '%|".$username."|%'";
-	
-printf("<pre>%s</pre>", $sql);
+// $sql = "select * from v_flashphone_auth where auth_key = '".urldecode($key)."' and hostaddr = '".$_SERVER['REMOTE_ADDR']."' and username = '".$username."'";
+$sql = sprintf("select * from v_flashphone_auth where auth_key = '%s' and hostaddr = '%s' and username = '%s';",
+		urldecode($key),
+		$_SERVER['REMOTE_ADDR'],
+		$username);
 
-die();
+// echo "$sql\n";
+	
 $prepstatement = $db->prepare(check_sql($sql));
+if (!$prepstatement) {
+    echo "\nPDO::errorInfo():\n";
+    print_r($db->errorInfo());
+}
+
 $prepstatement->execute();
 $x = 0;
 $result = $prepstatement->fetchAll();
 
 // There is probably a better way to do this but this will work on anything
+
 foreach ($result as &$row) {
 	$auth_array[$x] = $row;
 	$x++;
@@ -56,7 +65,8 @@ if ($x < 1) {
 unset ($prepstatement);
 
 //get a list of assigned extensions for this user
-$sql = sprintf("select * from v_extensions where extension_id = '%s' and user_list like '%|%s|%'", $extension_id, $username);
+$sql = sprintf("select * from v_extensions where extension_id = '%s' and user_list like '%%|%s|%%'", $extension_id, $username);
+
 $prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 $x = 0;
