@@ -288,7 +288,7 @@ foreach($v_settings_array as $name => $value) {
 
 
 //get the extensions that are assigned to this user
-	if (strlen($_SESSION['user_extension_list']) == 0) {
+	if (strlen($_SESSION["username"]) > 0 && strlen($_SESSION['user_extension_list']) == 0) {
 		//get the user extension list
 			$_SESSION['user_extension_list'] = '';
 			$sql = "";
@@ -3085,7 +3085,7 @@ function sync_package_v_hunt_group() {
 							$tmp .= "	--timeout\n";
 							if ($row['huntgrouptype'] != 'dnd') {
 								$tmp .= "	originate_disposition = session:getVariable(\"originate_disposition\");\n";
-								$tmp .= "	if originate_disposition == \"NO_ANSWER\" or originate_disposition == \"ALLOTTED_TIMEOUT\" or originate_disposition == \"USER_NOT_REGISTERED\" or originate_disposition == \"SUBSCRIBER_ABSENT\" then\n";
+								$tmp .= "	if originate_disposition == \"NO_ANSWER\" or originate_disposition == \"USER_BUSY\" or originate_disposition == \"ALLOTTED_TIMEOUT\" or originate_disposition == \"USER_NOT_REGISTERED\" or originate_disposition == \"SUBSCRIBER_ABSENT\" then\n";
 							}
 							$tmp .= "			session:execute(\"".$huntgrouptimeouttype."\", \"".$huntgrouptimeoutdestination."\");\n";
 							if ($row['huntgrouptype'] != 'dnd') {
