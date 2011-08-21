@@ -936,7 +936,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<select id='v_time_zone' name='v_time_zone' class='formfld' style=''>\n";
 	echo "		<option value=''></option>\n";
 	//$list = DateTimeZone::listAbbreviations();
-    $time_zone_identifiers = DateTimeZone::listIdentifiers();
+    	$time_zone_identifiers = DateTimeZone::listIdentifiers();
 	$previous_category = '';
 	$x = 0;
 	foreach ($time_zone_identifiers as $key => $row) {
