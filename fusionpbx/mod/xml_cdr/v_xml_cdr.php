@@ -158,8 +158,8 @@ else {
 				echo "	</tr>\n";
 
 				echo "	<tr>\n";
-				echo "		<td>CID Name:</td>\n";
-				echo "		<td><input type='text' class='formfld' name='caller_id_name' style='width:100%' value='$caller_id_name'></td>\n";
+				echo "		<td align=\"left\">CID Name:</td>\n";
+				echo "		<td align=\"left\"><input type='text' class='formfld' name='caller_id_name' style='width:100%' value='$caller_id_name'></td>\n";
 				echo "	</tr>\n";
 
 				echo "</table>\n";
