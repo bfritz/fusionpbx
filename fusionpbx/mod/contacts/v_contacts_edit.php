@@ -166,7 +166,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true") 
-
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
@@ -206,9 +205,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<td align=\"left\">\n";
 	echo "		<br>";
 
-	echo "<form method='post' name='frm' action=''>\n";
 	echo "<div align='center'>\n";
-	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>Contact Add</b></td>\n";
@@ -226,16 +224,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align=\"left\" colspan='2'>\n";
 	echo "The contact is a list of individuals and organizations.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 
-	echo "<table border='0' width='100%'>\n";
+	echo "<table border='0' cellpadding='3' cellspacing='3' width='100%'>\n";
 	echo "<tr>\n";
-	echo "<td width='55%' class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td width='50%' class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 
+		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table border='0' width='100%'>\n";
 		echo "<tr>\n";
 		echo "	<td><strong>User Information</strong></td>\n";
@@ -446,7 +445,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</form>";
 
 	echo "</td>\n";
-	echo "<td width='45%' class='' valign='top' align='center' nowrap='nowrap'>\n";
+	echo "<td width='50%' class='' valign='top' align='center'>\n";
 		//echo "	<img src='v_contacts_vcard.php?id=$contact_id&type=image' width='90%'><br /><br />\n";
 
 		if ($action == "update") {
