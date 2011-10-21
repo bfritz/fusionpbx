@@ -154,7 +154,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$sql .= "effective_caller_id_number = '$effective_caller_id_number', ";
 			//$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
 			//$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
-			$sql .= "vm_enabled = '$vm_emabled', ";
+			$sql .= "vm_enabled = '$vm_enabled', ";
 			$sql .= "vm_mailto = '$vm_mailto', ";
 			$sql .= "vm_attach_file = '$vm_attach_file', ";
 			$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email' ";
