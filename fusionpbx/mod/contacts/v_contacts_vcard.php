@@ -67,16 +67,22 @@ if (count($_GET)>0) {
 		unset ($prep_statement);
 
 		$vcard->data['company'] = $org;
-		$vcard->data['display_name'] = $n_given." ".$n_family;
 		$vcard->data['first_name'] = $n_given;
 		$vcard->data['last_name'] = $n_family;
-		$vcard->data['nickname'] = $nickname;
-		$vcard->data['title'] = $title;
-		$vcard->data['role'] = $role;
 		$vcard->data['email1'] = $email;
 		$vcard->data['url'] = $url;
-		$vcard->data['timezone'] = $tz;
-		$vcard->data['note'] = $note;
+
+		if ($_GET['type'] == "image" || $_GET['type'] == "html") {
+			//don't add this to the QR code at this time
+		}
+		else {
+			$vcard->data['display_name'] = $n_given." ".$n_family;
+			$vcard->data['nickname'] = $nickname;
+			$vcard->data['title'] = $title;
+			$vcard->data['role'] = $role;
+			$vcard->data['timezone'] = $tz;
+			$vcard->data['note'] = $note;
+		}
 
 	//get the contact's telephone numbers
 		$sql = "";
@@ -94,33 +100,38 @@ if (count($_GET)>0) {
 		unset ($prep_statement);
 
 	//get the contact's addresses
-		$sql = "";
-		$sql .= "select * from v_contacts_adr ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and contact_id = '$contact_id' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
-		foreach ($result as &$row) {
-			$adr_type = $row["adr_type"];
-			$adr_street = $row["adr_street"];
-			$adr_extended = $row["adr_extended"];
-			$adr_locality = $row["adr_locality"];
-			$adr_region = $row["adr_region"];
-			$adr_postal_code = $row["adr_postal_code"];
-			$adr_country = $row["adr_country"];
-			$adr_latitude = $row["adr_latitude"];
-			$adr_longitude = $row["adr_longitude"];
-			$adr_type = strtolower(trim($adr_type));
-
-			//$vcard->data[$adr_type.'_address'] = $adr_street;
-			//$vcard->data[$adr_type.'_extended_address'] = $adr_extended;
-			//$vcard->data[$adr_type.'_city'] = $adr_locality;
-			//$vcard->data[$adr_type.'_state'] = $adr_region;
-			//$vcard->data[$adr_type.'_postal_code'] = $adr_postal_code;
-			//$vcard->data[$adr_type.'_country'] = $adr_country;
+		if ($_GET['type'] == "image" || $_GET['type'] == "html") {
+			//don't add this to the QR code at this time
 		}
-		unset ($prep_statement);
+		else {
+			$sql = "";
+			$sql .= "select * from v_contacts_adr ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and contact_id = '$contact_id' ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			foreach ($result as &$row) {
+				$adr_type = $row["adr_type"];
+				$adr_street = $row["adr_street"];
+				$adr_extended = $row["adr_extended"];
+				$adr_locality = $row["adr_locality"];
+				$adr_region = $row["adr_region"];
+				$adr_postal_code = $row["adr_postal_code"];
+				$adr_country = $row["adr_country"];
+				$adr_latitude = $row["adr_latitude"];
+				$adr_longitude = $row["adr_longitude"];
+				$adr_type = strtolower(trim($adr_type));
+
+				$vcard->data[$adr_type.'_address'] = $adr_street;
+				$vcard->data[$adr_type.'_extended_address'] = $adr_extended;
+				$vcard->data[$adr_type.'_city'] = $adr_locality;
+				$vcard->data[$adr_type.'_state'] = $adr_region;
+				$vcard->data[$adr_type.'_postal_code'] = $adr_postal_code;
+				$vcard->data[$adr_type.'_country'] = $adr_country;
+			}
+			unset ($prep_statement);
+		}
 
 	//download the vcard
 		if ($_GET['type'] == "download") {
@@ -135,7 +146,7 @@ if (count($_GET)>0) {
 		}
 
 	//show the vcard in an image qr code
-		if ($_GET['type'] == "image") {
+		if ($_GET['type'] == "image" || $_GET['type'] == "html") {
 			$vcard->build();
 			$content = $vcard->card;
 
@@ -150,12 +161,14 @@ if (count($_GET)>0) {
 
 			//get the qr object
 				$qr = QRCode::getMinimumQRCode($content, QR_ERROR_CORRECT_LEVEL_L);
+		}
 
-			//show the image
-				header("Content-type: image/png");
-				$im = $qr->createImage(5, 10);
-				imagepng($im);
-				imagedestroy($im);
+	//show the vcard as an png image
+		if ($_GET['type'] == "image") {
+			header("Content-type: image/png");
+			$im = $qr->createImage(5, 10);
+			imagepng($im);
+			imagedestroy($im);
 		}
 
 	//show the vcard in an html qr code
