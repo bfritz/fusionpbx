@@ -200,7 +200,8 @@ else {
 				echo "	\n";
 				echo "</td>\n";
 				echo "<td valign='bottom' align='right'>\n";
-				echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_voicemail_msgs_password.php?id=".$value['extension_id']."'\" value='settings'>\n";
+				echo "	<input type='button' class='btn' name='' alt='greetings' onclick=\"window.location='/mod/voicemail_greetings/v_voicemail_greetings.php?id=".$value['extension']."'\" value='Greetings'>\n";
+				echo "	<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='v_voicemail_msgs_password.php?id=".$value['extension_id']."'\" value='Settings'>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 
