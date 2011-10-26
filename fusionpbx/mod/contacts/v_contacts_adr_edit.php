@@ -259,7 +259,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='adr_extended' maxlength='255' value=\"$adr_extended\">\n";
 	echo "<br />\n";
-	echo "Enter teh extended address.\n";
+	echo "Enter the extended address.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
