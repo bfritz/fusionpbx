@@ -65,7 +65,7 @@ require_once "includes/paging.php";
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
 			// vm_fsdb_pref_greeting_set,<profile> <domain> <user> <slot> [file-path],vm_fsdb_pref_greeting_set,mod_voicemail
-			$switch_cmd = "vm_fsdb_pref_greeting_set default voip.fusionpbx.com ".$user_id." ".substr($_REQUEST['greeting'], -5, 1)." ".$v_greeting_dir."/".$_REQUEST['greeting'];
+			$switch_cmd = "vm_fsdb_pref_greeting_set default ".$_SESSION['domains'][$v_id]['domain']." ".$user_id." ".substr($_REQUEST['greeting'], -5, 1)." ".$v_greeting_dir."/".$_REQUEST['greeting'];
 			$greeting = trim(event_socket_request($fp, 'api '.$switch_cmd));
 		}
 	}
@@ -171,7 +171,7 @@ require_once "includes/paging.php";
 	}
 	if ($fp) {
 		// vm_prefs,[profile/]<user>@<domain>[|[name_path|greeting_path|password]],vm_prefs,mod_voicemail
-		$switch_cmd = "vm_prefs default/".$user_id."@voip.fusionpbx.com";
+		$switch_cmd = "vm_prefs default/".$user_id."@".$_SESSION['domains'][$v_id]['domain'];
 		$greeting = trim(event_socket_request($fp, 'api '.$switch_cmd));
 	}
 
@@ -219,7 +219,7 @@ require_once "includes/paging.php";
 	echo "		<td align='left' width='50%'>\n";
 	if ($v_path_show) {
 		echo "<b>location:</b> \n";
-		//usr/local/freeswitch/storage/voicemail/default/voip.fusionpbx.com/1004/greeting_2.wav 
+		//usr/local/freeswitch/storage/voicemail/default/".$_SESSION['domains'][$v_id]['domain']."/1004/greeting_2.wav 
 		echo $v_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$v_id]['domain'].'/'.$user_id;
 	}
 	echo "		</td>\n";
