@@ -26,16 +26,19 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/recaptchalib.php";
-require_once "includes/email_address_validator.php";
+//require_once "includes/email_address_validator.php";
 include "config.php";
 include "v_fields.php";
-
-$v_salt = 'e3.7d.12';
 
 # the response from reCAPTCHA
 $resp = null;
 # the error code from reCAPTCHA, if any
 $error = null;
+
+//if the salt array is not set then set a default
+if (count($v_salt) == 0) {
+	$v_salt[] = 'e3.7d.12';
+}
 
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
@@ -59,12 +62,13 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		}
 	}
 
+	//sanitize the http request array
 	foreach ($_REQUEST as $field => $data){
 		$request[$field] = check_str($data);
 	}
 
 	//username is already used.
-	if (strlen($username) != 0) {
+	if (strlen($request['username']) != 0) {
 		$sql = "SELECT * FROM v_users ";
 		$sql .= " where v_id = '$v_id' ";
 		$sql .= " and username = '" . $request['username'] . "' ";
@@ -81,12 +85,12 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	}
 
 	// email address atleast looks valid
-	if (!in_array('useremail', $error_fields)) {
-		$validator = new EmailAddressValidator;
-		if (!$validator->check_email_address($request['useremail'])) {
-			$msgerror .= "Please provide a VALID email address.<br>\n";
-		}
-	}
+	//if (!in_array('useremail', $error_fields)) {
+	//	$validator = new EmailAddressValidator;
+	//	if (!$validator->check_email_address($request['useremail'])) {
+	//		$msgerror .= "Please provide a VALID email address.<br>\n";
+	//	}
+	//}
 
 	if ($_POST["recaptcha_response_field"]) {
 		$resp = recaptcha_check_answer ($privatekey,
@@ -157,7 +161,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= "(";
 	$sql .= "'$v_id', ";
 	$sql .= "'" . $request['username'] . "', ";
-	$sql .= "'" . md5($v_salt.$request['password']) . "', ";
+	$sql .= "'".md5($v_salt[0].$request['password'])."', ";
 	$sql .= "'" . $request['userfirstname'] . "', ";
 	$sql .= "'" . $request['userlastname'] . "', ";
 	$sql .= "'" . $request['usercompanyname'] . "', ";
