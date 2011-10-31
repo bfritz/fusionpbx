@@ -2023,6 +2023,7 @@ function sync_package_v_extensions() {
 		$tmpxml .= "			<variable name=\"default_gateway\" value=\"\$\${default_provider}\"/>\n";
 		$tmpxml .= "			<variable name=\"default_areacode\" value=\"\$\${default_areacode}\"/>\n";
 		$tmpxml .= "			<variable name=\"transfer_fallback_extension\" value=\"operator\"/>\n";
+		$tmpxml .= "			<variable name=\"export_vars\" value=\"domain_name\"/>\n";
 		$tmpxml .= "		</variables>\n";
 		$tmpxml .= "\n";
 		$tmpxml .= "		<groups>\n";
