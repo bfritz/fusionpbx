@@ -189,6 +189,9 @@ else {
 		$sip_uri = $_POST['sip_uri'];
 		$fax_id = $_POST["id"];
 
+		$fax_caller_id_name = $_POST['fax_caller_id_name'];
+		$fax_caller_id_number = $_POST['fax_caller_id_number'];
+
 		//get the fax file extension
 			$fax_file_extension = substr($dir_fax_temp.'/'.$_FILES['fax_file']['name'], -4);
 
@@ -210,11 +213,11 @@ else {
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			if ($fp) {
 				if ($provider_type == "gateway") {
-					$cmd = "api originate sofia/gateway/".$gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+					$cmd = "api originate {origination_caller_id_name=".$fax_caller_id_name.",origination_caller_id_number=".$fax_caller_id_number."}sofia/gateway/".$gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 				}
 				if ($provider_type == "sip_uri") {
 					$sip_uri = str_replace("\$1", $fax_number, $sip_uri);
-					$cmd = "api originate $sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+					$cmd = "api originate {origination_caller_id_name=".$fax_caller_id_name.",origination_caller_id_number=".$fax_caller_id_number."}$sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 				}
 				$response = event_socket_request($fp, $cmd);
 				$response = str_replace("\n", "", $response);
@@ -377,7 +380,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		foreach ($result as &$row) {
 			//set database fields as variables
-				$v_id = $row["v_id"];
 				$fax_extension = $row["faxextension"];
 				$fax_name = $row["faxname"];
 				$fax_email = $row["faxemail"];
@@ -679,6 +681,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
+	echo "			<input type=\"hidden\" name=\"fax_caller_id_name\" value=\"".$fax_caller_id_name."\">\n";
+	echo "			<input type=\"hidden\" name=\"fax_caller_id_number\" value=\"".$fax_caller_id_number."\">\n";
 	echo "			<input type=\"hidden\" name=\"fax_extension\" value=\"".$fax_extension."\">\n";
 	echo "			<input type=\"hidden\" name=\"id\" value=\"".$fax_id."\">\n";
 	echo "			<input name=\"submit\" type=\"submit\" class=\"btn\" id=\"upload\" value=\"Send\">\n";
