@@ -23,169 +23,105 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
-if(!isset($_SERVER["DOCUMENT_ROOT"])) { $_SERVER["DOCUMENT_ROOT"]=substr($_SERVER['SCRIPT_FILENAME'] , 0 , -strlen($_SERVER['PHP_SELF'])+1 );}
 include "v_config_cli.php";
 
-ini_set('max_execution_time',900); //15 minutes
-ini_set('memory_limit', '96M');
-
-$fd = fopen("php://stdin", "r");
-$email = file_get_contents ("php://stdin");
-fclose($fd);
-
-if (file_exists('/tmp')) { $tmp_dir = '/tmp'; } else { $tmp_dir = ''; }
-$fp = fopen($tmp_dir."/voicemailtoemail.txt", "w");
-
-ob_end_clean();
-ob_start();
-
-//echo "raw message: \n".$email."\n";
-
-//if there is a carriage return remove it and standardize on line feed
-	$email = str_replace("\r\n", "\n", $email);
-
-//get main header and body
-	$tmparray = explode("\n\n", $email);
-	$mainheader = $tmparray[0];
-	$maincontent = substr($email, strlen($mainheader), strlen($email));
-
-//echo "main content:\n".$maincontent."\n";
-
-//get the boundary
-	$tmparray = explode("\n", $mainheader);
-	$contenttmp = $tmparray[1]; //Content-Type: multipart/mixed; boundary="XXXX_boundary_XXXX"
-	$tmparray = explode('; ', $contenttmp); //boundary="XXXX_boundary_XXXX"
-	$contenttmp = $tmparray[1];
-	$tmparray = explode('=', $contenttmp); //"XXXX_boundary_XXXX"
-	$boundary = $tmparray[1];
-	//$boundary = trim($boundary,'"');
-	$boundary = str_replace('"', '', $boundary);
-
-//echo "boundary: $boundary\n";
-
-
-//put the main headers into an array
-	$mainheaderarray = explode("\n", $mainheader);
-	//print_r($mainheaderarray);
-	foreach ($mainheaderarray as $val) {
-		$tmparray = explode(': ', $val);
-		//print_r($tmparray);
-		$var[$tmparray[0]] = trim($tmparray[1]);
+//set the include path
+	if(defined('STDIN')) {
+		$document_root = str_replace("\\", "/", $_SERVER["PHP_SELF"]);
+		preg_match("/^(.*)\/secure\/.*$/", $document_root, $matches);
+		$document_root = $matches[1];
+		set_include_path($document_root);
+		//require_once "includes/config.php";
+		$_SERVER["DOCUMENT_ROOT"] = $document_root;
 	}
 
-	$var['To'] = str_replace("<", "", $var['To']);
-	$var['To'] = str_replace(">", "", $var['To']);
+//set init settings
+	ini_set('max_execution_time',1800); //30 minutes
+	ini_set('memory_limit', '128M');
 
-	echo "To: ".$var['To']."\n";
-	echo "From: ".$var['From']."\n";
-	echo "Subject: ".$var['Subject']."\n";
-	//print_r($var);
-	echo "\n\n";
+//listen for standard input
+	$fd = fopen("php://stdin", "r");
+	$msg = file_get_contents ("php://stdin");
+	fclose($fd);
 
+//save output to 
+	if (file_exists('/tmp')) { $log_dir = '/tmp'; } else { $log_dir = ''; }
+	$fp = fopen($log_dir."/mailer-app.log", "w");
 
-// explode mime type multi-part into each part
-	$maincontent = str_replace($boundary."--", $boundary, $maincontent);
-	$tmparray = explode("--".$boundary, $maincontent);
+//prepare the output buffers
+	ob_end_clean();
+	ob_start();
 
-//echo "explode mime type:\n".print_r($tmparray)."\n";
+//testing show the raw email
+	//echo "Message: \n".$msg."\n";
 
-// loop through each mime part
-	$i=0;
-	foreach ($tmparray as $mimepart) {
+//define variables
+	$tmp_dir = '/tmp';
 
-		$mimearray = explode("\n\n", $mimepart);
-		$subheader = $mimearray[0];
-		$headermimearray = explode("\n", trim($subheader));
+//includes
+	require('includes/pop3/mime_parser.php');
+	require('includes/pop3/rfc822_addresses.php');
 
-		$x=0;
-		foreach ($headermimearray as $val) {
-			if(stristr($val, ':') === FALSE) {
-				$tmparray = explode('=', $val); //':' not found
-				if (trim($tmparray[0]) == "boundary") {
-					$subboundary = $tmparray[1];
-					$subboundary = trim($subboundary,'"');
-					//echo "subboundary: ".$subboundary."\n";
+//parse the email message
+	$mime=new mime_parser_class;
+	$mime->decode_bodies = 1;
+	$parameters=array(
+		//'File'=>$message_file,                         
+
+		// Read a message from a string instead of a file 
+		'Data'=>$msg,
+
+		// Save the message body parts to a directory     
+		// 'SaveBody'=>'/tmp',                            
+
+		// Do not retrieve or save message body parts     
+		//   'SkipBody'=>1,
+	);
+	$success=$mime->Decode($parameters, $decoded);
+
+	if(!$success) {
+		echo "MIME message decoding error: ".HtmlSpecialChars($mime->error)."\n";
+	}
+	else {
+		//get the headers
+			$subject = $decoded[0]["Headers"]["subject:"];
+			$from = $decoded[0]["Headers"]["from:"];
+			$reply_to = $decoded[0]["Headers"]["reply-to:"];
+			$to = $decoded[0]["Headers"]["to:"];
+			$date = $decoded[0]["Headers"]["date:"];
+
+		//get the body
+			$body = ''; //$parts_array["Parts"][0]["Headers"]["content-type:"];
+
+		//get the body
+			$body = '';
+			foreach($decoded[0]["Parts"] as $row) {
+				$content_type = $row['Headers']['content-type:'];
+				if (substr($content_type, 0, 21) == "multipart/alternative") {
+					$content_type = $row["Parts"][0]["Headers"]["content-type:"];
+					if (substr($content_type, 0, 9) == "text/html") { $body = $row["Parts"][0]["Body"]; }
+					if (substr($content_type, 0, 10) == "text/plain") { $body_plain = $row["Parts"][0]["Body"]; }
+					$content_type = $row["Parts"][1]["Headers"]["content-type:"];
+					if (substr($content_type, 0, 9) == "text/html") { $body = $row["Parts"][1]["Body"]; }
+					if (substr($content_type, 0, 10) == "text/plain") { $body_plain = $row["Parts"][1]["Body"]; }
+				}
+				else {
+					$content_type_array = explode(";", $content_type);
+					if ($content_type_array[0] == "text/plain") {
+						$body = $row["Body"];
+					}
 				}
 			}
-			else {
-				$tmparray = explode(':', $val); //':' found
-			}
-
-			//print_r($tmparray);
-			$var[trim($tmparray[0])] = trim($tmparray[1]);
-		}
-		//print_r($var);
-
-
-		$contenttypearray = explode(' ', $headermimearray[0]);
-		if ($contenttypearray[0] == "Content-Type:") {
-			$contenttype = trim($contenttypearray[1]);
-
-echo "type: ".$contenttype."\n";
-
-			switch ($contenttype) {
-			case "multipart/alternative;":
-
-				$content = trim(substr($mimepart, strlen($subheader), strlen($mimepart)));
-
-				$content = str_replace($subboundary."--", $subboundary, $content);
-				$tmpsubarray = explode("--".$subboundary, $content);
-					foreach ($tmpsubarray as $mimesubsubpart) {
-
-						$mimesubsubarray = explode("\n\n", $mimesubsubpart);
-						$subsubheader = $mimesubsubarray[0];
-
-						$headersubsubmimeearray = explode("\n", trim($subsubheader));
-						$subsubcontenttypearray = explode(' ', $headersubsubmimeearray[0]);
-						//echo "subsubcontenttypearray[0] ".$subsubcontenttypearray[0]."\n";
-
-						if ($subsubcontenttypearray[0] == "Content-Type:") {
-							$subsubcontenttype = trim($subsubcontenttypearray[1]);
-							switch ($subsubcontenttype) {
-							case "text/plain;":
-								$textplain = trim(substr($mimesubsubpart, strlen($subsubheader), strlen($mimesubsubpart)));
-								//echo "text/plain: $textplain\n";
-								break;
-							case "text/html;":
-								$texthtml = trim(substr($mimesubsubpart, strlen($subsubheader), strlen($mimesubsubpart)));
-								//echo "text/html: $texthtml\n";
-								break;
-							}
-						} //end if
-
-
-					} //end foreach
-
-					break;
-			case "audio/wav;":
-					$attachment_type = "audio/wav";
-					$attachment_ext = ".wav";
-					$attachment_str = trim(substr($mimepart, strlen($subheader), strlen($mimepart)));
-					//echo "\n*** begin wav ***\n".$attachment_str."\n*** end wav ***\n";
-				break;
-			case "audio/mp3;":
-					$attachment_type = "audio/mp3";
-					$attachment_ext = ".mp3";
-					$attachment_str = trim(substr($mimepart, strlen($subheader), strlen($mimepart)));
-					//echo "\n*** begin mp3 ***\n".$attachment_str."\n*** end mp3 ***\n";
-				break;
-			}//end switch
-		} //end if
-
-		$i++;
-
-	} //end foreach
-
+	}
 
 //send the email
-
 	include "class.phpmailer.php";
-	include "class.smtp.php"; // optional, gets called from within class.phpmailer.php if not already loaded
+	include "class.smtp.php";				// optional, gets called from within class.phpmailer.php if not already loaded
 	$mail = new PHPMailer();
 
-	$mail->IsSMTP();                  	// set mailer to use SMTP
+	$mail->IsSMTP();						// set mailer to use SMTP
 	if ($v_smtpauth == "true") {
-		$mail->SMTPAuth = $v_smtpauth;      // turn on/off SMTP authentication
+		$mail->SMTPAuth = $v_smtpauth;		// turn on/off SMTP authentication
 	}
 	$mail->Host   = $v_smtphost;
 	if (strlen($v_smtpsecure)>0) {
@@ -197,37 +133,66 @@ echo "type: ".$contenttype."\n";
 	}
 	$mail->SMTPDebug  = 2;
 
+//send context to the temp log
+	echo "Subject: ".$subject."\n";
+	echo "From: ".$from."\n";
+	echo "Reply-to: ".$reply_to."\n";
+	echo "To: ".$to."\n";
+	echo "Date: ".$date."\n";
+	//echo "Body: ".$body."\n";
 
+//add to, from, fromname, and subject to the email
 	$mail->From       = $v_smtpfrom;
 	$mail->FromName   = $v_smtpfromname;
-	$mail->Subject    = $var['Subject'];
-	$mail->AltBody    = $textplain;   // optional, comment out and test
-	$mail->MsgHTML($texthtml);
+	$mail->Subject    = $subject;
 
-
-	$v_to = $var['To'];
-	$v_to = str_replace(";", ",", $v_to);
-	$v_to_array = explode(",", $v_to);
-	if (count($v_to_array) == 0) {
-		$mail->AddAddress($var['To']);
+	$to = trim($to, "<> ");
+	$to = str_replace(";", ",", $to);
+	$to_array = explode(",", $to);
+	if (count($to_array) == 0) {
+		$mail->AddAddress($to);
 	}
 	else {
-		foreach($v_to_array as $v_to_row) {
-			if (strlen($v_to_row) > 0) {
-				echo "Add Address: $v_to_row\n";
-				$mail->AddAddress($v_to_row);
+		foreach($to_array as $to_row) {
+			if (strlen($to_row) > 0) {
+				echo "Add Address: $to_row\n";
+				$mail->AddAddress($to_row);
 			}
 		}
 	}
 
-	if (strlen($attachment_str) > 0) {
-			//$mail->AddAttachment($v_dir."/data/domain/example.wav");  // attachment
-			$filename='voicemail'.date('Ymds').$attachment_ext;
-			$encoding = "base64";
-			$mail->AddStringAttachment(base64_decode($attachment_str),$filename,$encoding,$attachment_type);
+//get the attachments and add to the email
+	if($success) {
+		foreach ($decoded[0][Parts] as &$parts_array) {
+			$content_type = $parts_array["Parts"][0]["Headers"]["content-type:"];
+				//image/tiff;name="testfax.tif" 
+				//text/plain; charset=ISO-8859-1; format=flowed
+			$content_transfer_encoding = $parts_array["Parts"][0]["Headers"]["content-transfer-encoding:"]; 
+				//base64
+				//7bit
+			$content_disposition = $parts_array["Parts"][0]["Headers"]["content-disposition"]; 
+				//inline;filename="testfax.tif"
+			$file = $parts_array["FileName"]; 
+				//testfax.tif
+			$filedisposition = $parts_array["FileDisposition"]; 
+				//inline
+			$bodypart = $parts_array["BodyPart"];
+			$bodylength = $parts_array["BodyLength"];
+			if (strlen($file) > 0) {
+				$file_ext = pathinfo($file, PATHINFO_EXTENSION);
+				$file_name = substr($file, 0, (strlen($file) - strlen($file_ext))-1 );
+				$encoding = "base64"; //base64_decode
+				//add an attachment
+					$mail->AddStringAttachment($parts_array["Body"],$file,$encoding,$file_ext);
+			}
+		}
 	}
-	unset($attachment_str);
 
+//add the body to the email
+	$mail->AltBody    = $body_plain;   // optional, comment out and test
+	$mail->MsgHTML($body);
+
+//send the email
 	if(!$mail->Send()) {
 		echo "Mailer Error: " . $mail->ErrorInfo;
 	}
@@ -235,12 +200,13 @@ echo "type: ".$contenttype."\n";
 		echo "Message sent!";
 	}
 
-//echo phpinfo();
+//get and save the output from the buffer
+	$content = ob_get_contents(); //get the output from the buffer
+	$content = str_replace("<br />", "", $content);
 
-$content = ob_get_contents(); //get the output from the buffer
-ob_end_clean(); //clean the buffer
+	ob_end_clean(); //clean the buffer
 
-fwrite($fp, $content);
-fclose($fp);
+	fwrite($fp, $content);
+	fclose($fp);
 
 ?>
