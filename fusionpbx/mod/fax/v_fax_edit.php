@@ -34,6 +34,51 @@ else {
 	exit;
 }
 
+//get the fax_extension and save it as a variable
+	if (strlen($_REQUEST["fax_extension"]) > 0) {
+		$fax_extension = $_REQUEST["fax_extension"];
+	}
+
+//pre-populate the form
+	if (count($_POST)>0 && strlen($_REQUEST["fax_extension"]) == 0 && $_POST["persistformvar"] != "true") {
+		$fax_id = $_GET["id"];
+		$sql = "";
+		$sql .= "select * from v_fax ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and fax_id = '$fax_id' ";
+		if (ifgroup("superadmin")) {
+			//show all fax extensions
+		}
+		else if (ifgroup("admin")) {
+			//show all fax extensions
+		}
+		else {
+			//show only assigned fax extensions
+			$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
+		}
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		if (count($result) == 0) {
+			echo "access denied";
+			exit;
+		}
+		foreach ($result as &$row) {
+			//set database fields as variables
+				$fax_extension = $row["faxextension"];
+				$fax_name = $row["faxname"];
+				$fax_email = $row["faxemail"];
+				$fax_pin_number = $row["fax_pin_number"];
+				$fax_caller_id_name = $row["fax_caller_id_name"];
+				$fax_caller_id_number = $row["fax_caller_id_number"];
+				$fax_user_list = $row["fax_user_list"];
+				$fax_description = $row["faxdescription"];
+			//limit to one row
+				break;
+		}
+		unset ($prepstatement);
+	}
+	
 //set the fax directory
 	if (count($_SESSION["domains"]) > 1) {
 		$v_fax_dir = $v_storage_dir.'/fax/'.$v_domain;
@@ -44,7 +89,6 @@ else {
 
 //delete a fax
 	if ($_GET['a'] == "del" && permission_exists('fax_inbox_delete')) {
-		$fax_extension = check_str($_GET["fax_extension"]);
 		if ($_GET['type'] == "fax_inbox") {
 			unlink($v_fax_dir.'/'.$fax_extension.'/inbox/'.$_GET['filename']);
 		}
@@ -105,7 +149,6 @@ else {
 	}
 
 //get the fax extension
-	$fax_extension = check_str($_REQUEST["fax_extension"]);
 	if (strlen($fax_extension) > 0) {
 		//set the fax directories. example /usr/local/freeswitch/storage/fax/329/inbox
 			$dir_fax_inbox = $v_fax_dir.'/'.$fax_extension.'/inbox';
@@ -353,46 +396,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
-
-//pre-populate the form
-	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$fax_id = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_fax ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and fax_id = '$fax_id' ";
-		if (ifgroup("superadmin")) {
-			//show all fax extensions
-		}
-		else if (ifgroup("admin")) {
-			//show all fax extensions
-		}
-		else {
-			//show only assigned fax extensions
-			$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
-		}
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		if (count($result) == 0) {
-			echo "access denied";
-			exit;
-		}
-		foreach ($result as &$row) {
-			//set database fields as variables
-				$fax_extension = $row["faxextension"];
-				$fax_name = $row["faxname"];
-				$fax_email = $row["faxemail"];
-				$fax_pin_number = $row["fax_pin_number"];
-				$fax_caller_id_name = $row["fax_caller_id_name"];
-				$fax_caller_id_number = $row["fax_caller_id_number"];
-				$fax_user_list = $row["fax_user_list"];
-				$fax_description = $row["faxdescription"];
-			//limit to one row
-				break;
-		}
-		unset ($prepstatement);
-	}
 
 //delete the fax
 	if ($_GET['a'] == "del") {
@@ -833,7 +836,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		</td>\n";
 		echo "		<td align='right'>\n";
 		if ($v_path_show) {
-			echo "<b>location:</b>\n";
+			echo "<b>location: </b>\n";
 			echo $dir_fax_sent."&nbsp; &nbsp; &nbsp;\n";
 		}
 		echo "		</td>\n";

@@ -43,21 +43,21 @@ require_once "includes/paging.php";
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
-	echo "      <br>";
+	echo "		<br>";
 
-	echo "  	<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-	echo "      <tr>\n";
-	echo "        <td align='left'><p><span class=\"vexpl\"><span class=\"red\"><strong>FAX<br>\n";
-	echo "            </strong></span>\n";
-	echo "			To receive a FAX setup a fax extension and then direct the incoming FAX with a dedicated number or you can detect the FAX tone by using\n";
-	echo "			on the Public tab.\n";
-	echo "            </p></td>\n";
-	echo "      </tr>\n";
-	echo "    </table>\n";
-	echo "    <br />";
+	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+	echo "			<tr>\n";
+	echo "				<td align='left'>\n";
+	echo "					<p><span class=\"vexpl\"><span class=\"red\"><strong>FAX<br></strong></span>\n";
+	echo "					To receive a FAX setup a fax extension and then direct the incoming FAX with a dedicated number or you can detect the FAX tone by using\n";
+	echo "					on the Public tab.\n";
+	echo "					</p>\n";
+	echo "				</td>\n";
+	echo "			</tr>\n";
+	echo "		</table>\n";
+	echo "		<br />";
 
 	$sql = "";
 	$sql .= "select * from v_fax ";
@@ -113,7 +113,6 @@ require_once "includes/paging.php";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo thorderby('faxextension', 'Extension', $orderby, $order);
 	echo thorderby('faxname', 'Name', $orderby, $order);
@@ -126,25 +125,21 @@ require_once "includes/paging.php";
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) {
-		//no results
-	}
-	else { //received results
+	if ($resultcount > 0) {
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[faxextension]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[faxname]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[faxemail]."&nbsp;</td>\n";
-			echo "   <td valign='top' class='rowstylebg' width='35%'>".$row[faxdescription]."</td>\n";
-			echo "   <td valign='top' align='right'>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['faxextension']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['faxname']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['faxemail']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='rowstylebg' width='35%'>".$row['faxdescription']."&nbsp;</td>\n";
+			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('fax_extension_edit')) {
-				echo "		<a href='v_fax_edit.php?id=".$row[fax_id]."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_fax_edit.php?id=".$row['fax_id']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('fax_extension_delete')) {
-				echo "		<a href='v_fax_delete.php?id=".$row[fax_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_fax_delete.php?id=".$row['fax_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
-			echo "   </td>\n";
+			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
