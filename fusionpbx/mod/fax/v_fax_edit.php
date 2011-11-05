@@ -40,7 +40,7 @@ else {
 	}
 
 //pre-populate the form
-	if (count($_POST)>0 && strlen($_REQUEST["fax_extension"]) == 0 && $_POST["persistformvar"] != "true") {
+	if (strlen($_GET['id']) > 0 && strlen($_REQUEST["fax_extension"]) == 0 && $_POST["persistformvar"] != "true") {
 		$fax_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_fax ";
