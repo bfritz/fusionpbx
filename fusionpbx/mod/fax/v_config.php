@@ -94,8 +94,11 @@
 		$apps[$x]['db'][0]['fields'][8]['name'] = 'fax_user_list';
 		$apps[$x]['db'][0]['fields'][8]['type'] = 'text';
 		$apps[$x]['db'][0]['fields'][8]['description'] = '';
-		$apps[$x]['db'][0]['fields'][9]['name'] = 'faxdescription';
-		$apps[$x]['db'][0]['fields'][9]['type'] = 'text';
+		$apps[$x]['db'][0]['fields'][9]['name'] = 'fax_forward_number';
+		$apps[$x]['db'][0]['fields'][9]['type'] = 'numeric';
 		$apps[$x]['db'][0]['fields'][9]['description'] = '';
+		$apps[$x]['db'][0]['fields'][10]['name'] = 'faxdescription';
+		$apps[$x]['db'][0]['fields'][10]['type'] = 'text';
+		$apps[$x]['db'][0]['fields'][10]['description'] = '';
 
 ?>

@@ -36,12 +36,12 @@ else {
 
 //get the fax_extension and save it as a variable
 	if (strlen($_REQUEST["fax_extension"]) > 0) {
-		$fax_extension = $_REQUEST["fax_extension"];
+		$fax_extension = check_str($_REQUEST["fax_extension"]);
 	}
 
 //pre-populate the form
 	if (strlen($_GET['id']) > 0 && strlen($_REQUEST["fax_extension"]) == 0 && $_POST["persistformvar"] != "true") {
-		$fax_id = $_GET["id"];
+		$fax_id = check_str($_GET["id"]);
 		$sql = "";
 		$sql .= "select * from v_fax ";
 		$sql .= "where v_id = '$v_id' ";
@@ -71,6 +71,7 @@ else {
 				$fax_pin_number = $row["fax_pin_number"];
 				$fax_caller_id_name = $row["fax_caller_id_name"];
 				$fax_caller_id_number = $row["fax_caller_id_number"];
+				$fax_forward_number = $row["fax_forward_number"];
 				$fax_user_list = $row["fax_user_list"];
 				$fax_description = $row["faxdescription"];
 			//limit to one row
@@ -78,7 +79,7 @@ else {
 		}
 		unset ($prepstatement);
 	}
-	
+
 //set the fax directory
 	if (count($_SESSION["domains"]) > 1) {
 		$v_fax_dir = $v_storage_dir.'/fax/'.$v_domain;
@@ -89,12 +90,18 @@ else {
 
 //delete a fax
 	if ($_GET['a'] == "del" && permission_exists('fax_inbox_delete')) {
+		$file_name = substr(check_str($_GET['filename']), 0, -4);
+		$file_ext = substr(check_str($_GET['filename']), -3);
 		if ($_GET['type'] == "fax_inbox") {
-			unlink($v_fax_dir.'/'.$fax_extension.'/inbox/'.$_GET['filename']);
+			unlink($v_fax_dir.'/'.$fax_extension.'/inbox/'.$file_name.".tif");
+			unlink($v_fax_dir.'/'.$fax_extension.'/inbox/'.$file_name.".pdf");
 		}
 		if ($_GET['type'] == "fax_sent") {
-			unlink($v_fax_dir.'/'.$fax_extension.'/sent/'.$_GET['filename']);
+			unlink($v_fax_dir.'/'.$fax_extension.'/sent/'.$file_name.".tif");
+			unlink($v_fax_dir.'/'.$fax_extension.'/sent/'.$file_name.".pdf");
 		}
+		unset($file_name);
+		unset($file_ext);
 	}
 
 //download a fax
@@ -102,13 +109,13 @@ else {
 		session_cache_limiter('public');
 		//test to see if it is in the inbox or sent directory.
 		if ($_GET['type'] == "fax_inbox") {
-			if (file_exists($v_fax_dir.'/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
-				$tmp_faxdownload_file = "".$v_fax_dir.'/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
+			if (file_exists($v_fax_dir.'/'.check_str($_GET['ext']).'/inbox/'.check_str($_GET['filename']))) {
+				$tmp_faxdownload_file = "".$v_fax_dir.'/'.check_str($_GET['ext']).'/inbox/'.check_str($_GET['filename']);
 			}
 		}
 		else if ($_GET['type'] == "fax_sent") {
-			if  (file_exists($v_fax_dir.'/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
-				$tmp_faxdownload_file = "".$v_fax_dir.'/'.$_GET['ext'].'/sent/'.$_GET['filename'];
+			if  (file_exists($v_fax_dir.'/'.check_str($_GET['ext']).'/sent/'.check_str($_GET['filename']))) {
+				$tmp_faxdownload_file = "".$v_fax_dir.'/'.check_str($_GET['ext']).'/sent/'.check_str($_GET['filename']);
 			}
 		}
 		//let's see if we found it.
@@ -119,10 +126,10 @@ else {
 				header("Content-Type: application/octet-stream");
 				header("Content-Type: application/download");
 				header("Content-Description: File Transfer");
-				header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
+				header('Content-Disposition: attachment; filename="'.check_str($_GET['filename']).'"');
 			}
 			else {
-				$file_ext = substr($_GET['filename'], -3);
+				$file_ext = substr(check_str($_GET['filename']), -3);
 				if ($file_ext == "tif") {
 				  header("Content-Type: image/tiff");
 				}
@@ -194,9 +201,13 @@ else {
 		$fax_pin_number = check_str($_POST["fax_pin_number"]);
 		$fax_caller_id_name = check_str($_POST["fax_caller_id_name"]);
 		$fax_caller_id_number = check_str($_POST["fax_caller_id_number"]);
+		$fax_forward_number = check_str($_POST["fax_forward_number"]);
+		if (strlen($fax_forward_number) > 0) {
+			$fax_forward_number = preg_replace("~[^0-9]~", "",$fax_forward_number);
+		}
 
 		//prepare the user list for the database
-		$fax_user_list = $_POST["fax_user_list"];
+		$fax_user_list = check_str(trim($_POST["fax_user_list"]));
 		if (strlen($fax_user_list) > 0) {
 			$fax_user_list_array = explode("\n", $fax_user_list);
 			if (count($fax_user_list_array) == 0) {
@@ -221,19 +232,24 @@ else {
 //upload and send the fax
 	if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_name'])) {
 
-		$fax_number = $_POST['fax_number'];
+		$fax_number = check_str($_POST['fax_number']);
+		if (strlen($fax_number) > 0) {
+			$fax_number = preg_replace("~[^0-9]~", "",$fax_number);
+		}
 		$fax_name = $_FILES['fax_file']['name'];
 		$fax_name = str_replace(" ", "_", $fax_name);
 		$fax_name = str_replace(".tif", "", $fax_name);
 		$fax_name = str_replace(".tiff", "", $fax_name);
 		$fax_name = str_replace(".pdf", "", $fax_name);
-		$provider_type = $_POST['provider_type'];
-		$gateway = $_POST['gateway'];
-		$sip_uri = $_POST['sip_uri'];
-		$fax_id = $_POST["id"];
+		$provider_type = check_str($_POST['provider_type']);
+		$fax_id = check_str($_POST["id"]);
 
-		$fax_caller_id_name = $_POST['fax_caller_id_name'];
-		$fax_caller_id_number = $_POST['fax_caller_id_number'];
+		$fax_caller_id_name = check_str($_POST['fax_caller_id_name']);
+		$fax_caller_id_number = check_str($_POST['fax_caller_id_number']);
+		$fax_forward_number = check_str($_POST['fax_forward_number']);
+		if (strlen($fax_forward_number) > 0) {
+			$fax_forward_number = preg_replace("~[^0-9]~", "",$fax_forward_number);
+		}
 
 		//get the fax file extension
 			$fax_file_extension = substr($dir_fax_temp.'/'.$_FILES['fax_file']['name'], -4);
@@ -255,12 +271,15 @@ else {
 		//send the fax
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			if ($fp) {
-				if ($provider_type == "gateway") {
-					$cmd = "api originate {origination_caller_id_name=".$fax_caller_id_name.",origination_caller_id_number=".$fax_caller_id_number."}sofia/gateway/".$gateway."/".$fax_number." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+				//{origination_caller_id_name=".$fax_caller_id_name.",origination_caller_id_number=".$fax_caller_id_number."}
+				$route_array = outbound_route_to_bridge($fax_number);
+				if (count($route_array) == 0) {
+					//send the internal call to the registered extension
+						$cmd = "api originate user/".$fax_number."@".$v_domain." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 				}
-				if ($provider_type == "sip_uri") {
-					$sip_uri = str_replace("\$1", $fax_number, $sip_uri);
-					$cmd = "api originate {origination_caller_id_name=".$fax_caller_id_name.",origination_caller_id_number=".$fax_caller_id_number."}$sip_uri &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+				else {
+					//send the external call
+						$cmd = "api originate ".$route_array[0]." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 				}
 				$response = event_socket_request($fp, $cmd);
 				$response = str_replace("\n", "", $response);
@@ -268,7 +287,8 @@ else {
 				fclose($fp);
 			}
 
-		sleep(5);
+		//wait for a few seconds
+			sleep(5);
 
 		//copy the .tif to the sent directory
 			exec("cp ".$dir_fax_temp.'/'.$fax_name.".tif ".$dir_fax_sent.'/'.$fax_name.".tif");
@@ -307,6 +327,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($fax_pin_number) == 0) { $msg .= "Please provide: Pin Number<br>\n"; }
 		//if (strlen($fax_caller_id_name) == 0) { $msg .= "Please provide: Caller ID Name<br>\n"; }
 		//if (strlen($fax_caller_id_number) == 0) { $msg .= "Please provide: Caller ID Number<br>\n"; }
+		//if (strlen($fax_forward_number) == 0) { $msg .= "Please provide: Forward Number<br>\n"; }
 		//if (strlen($fax_user_list) == 0) { $msg .= "Please provide: Assigned Users<br>\n"; }
 		//if (strlen($fax_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -334,6 +355,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "fax_pin_number, ";
 				$sql .= "fax_caller_id_name, ";
 				$sql .= "fax_caller_id_number, ";
+				$sql .= "fax_forward_number, ";
 				$sql .= "fax_user_list, ";
 				$sql .= "faxdescription ";
 				$sql .= ")";
@@ -346,6 +368,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$fax_pin_number', ";
 				$sql .= "'$fax_caller_id_name', ";
 				$sql .= "'$fax_caller_id_number', ";
+				$sql .= "'$fax_forward_number', ";
 				$sql .= "'$fax_user_list', ";
 				$sql .= "'$fax_description' ";
 				$sql .= ")";
@@ -372,6 +395,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "fax_pin_number = '$fax_pin_number', ";
 				$sql .= "fax_caller_id_name = '$fax_caller_id_name', ";
 				$sql .= "fax_caller_id_number = '$fax_caller_id_number', ";
+				$sql .= "fax_forward_number = '$fax_forward_number', ";
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					$sql .= "fax_user_list = '$fax_user_list', ";
 				}
@@ -401,10 +425,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_GET['a'] == "del") {
 		$fax_extension = check_str($_GET["fax_extension"]);
 		if ($_GET['type'] == "fax_inbox" && permission_exists('fax_inbox_delete')) {
-			unlink($v_fax_dir.'/'.$fax_extension.'/inbox/'.$_GET['filename']);
+			unlink($v_fax_dir.'/'.$fax_extension.'/inbox/'.check_str($_GET['filename']));
 		}
 		if ($_GET['type'] == "fax_sent" && permission_exists('fax_sent_delete')) {
-			unlink($v_fax_dir.'/'.$fax_extension.'/sent/'.$_GET['filename']);
+			unlink($v_fax_dir.'/'.$fax_extension.'/sent/'.check_str($_GET['filename']));
 		}
 	}
 
@@ -413,12 +437,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		session_cache_limiter('public');
 		//test to see if it is in the inbox or sent directory.
 			if ($_GET['type'] == "fax_inbox" && permission_exists('fax_inbox_view')) {
-				if (file_exists($v_fax_dir.'/'.$_GET['ext'].'/inbox/'.$_GET['filename'])) {
-					$tmp_faxdownload_file = "".$v_fax_dir.'/'.$_GET['ext'].'/inbox/'.$_GET['filename'];
+				if (file_exists($v_fax_dir.'/'.check_str($_GET['ext']).'/inbox/'.check_str($_GET['filename']))) {
+					$tmp_faxdownload_file = "".$v_fax_dir.'/'.check_str($_GET['ext']).'/inbox/'.check_str($_GET['filename']);
 				}
 			}else if ($_GET['type'] == "fax_sent" && permission_exists('fax_sent_view')) {
-				if  (file_exists($v_fax_dir.'/'.$_GET['ext'].'/sent/'.$_GET['filename'])) {
-					$tmp_faxdownload_file = "".$v_fax_dir.'/'.$_GET['ext'].'/sent/'.$_GET['filename'];
+				if  (file_exists($v_fax_dir.'/'.check_str($_GET['ext']).'/sent/'.check_str($_GET['filename']))) {
+					$tmp_faxdownload_file = "".$v_fax_dir.'/'.check_str($_GET['ext']).'/sent/'.check_str($_GET['filename']);
 				}
 			}
 		//check to see if it was found.
@@ -429,10 +453,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					header("Content-Type: application/octet-stream");
 					header("Content-Type: application/download");
 					header("Content-Description: File Transfer");
-					header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
+					header('Content-Disposition: attachment; filename="'.check_str($_GET['filename']).'"');
 				}
 				else {
-					$file_ext = substr($_GET['filename'], -3);
+					$file_ext = substr(check_str($_GET['filename']), -3);
 					if ($file_ext == "tif") {
 						header("Content-Type: image/tiff");
 					} else if ($file_ext == "png") {
@@ -546,6 +570,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	Forward Number:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='fax_forward_number' maxlength='255' value=\"".format_phone($fax_forward_number)."\">\n";
+	echo "<br />\n";
+	echo "Enter the forward number here. Used to forward the fax to a registered extension or external number.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
@@ -639,49 +674,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<script type=\"text/javascript\">\n";
-	echo "	function check_provider_type(sRef) {\n";
-	echo "		var val = sRef.value;\n";
-	echo "		if (val == 'gateway') {\n";
-	echo "			document.getElementById('gateway').style.display = 'inline';\n";
-	echo "			document.getElementById('sip_uri').style.display = 'none';\n";
-	echo "		}\n";
-	echo "		if (val == 'sip_uri') {\n";
-	echo "			document.getElementById('gateway').style.display = 'none';\n";
-	echo "			document.getElementById('sip_uri').style.display = 'inline';\n";
-	echo "		}\n";
-	echo "	}\n";
-	echo "</script>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    Provider:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-
-	echo "<table border='0' width='100%'>\n";
-	echo "<tr>\n";
-	echo "<td style='width:105px' nowrap>\n";
-	echo "	<select onchange=\"check_provider_type(this)\" name=\"provider_type\" class=\"formfld\" style='width:105px'>\n";
-	echo "	<option selected=\"true\" value='gateway'>Gateway</option>\n";
-	echo "	<option value='sip_uri'>SIP URI</option>\n";
-	echo "	</select>\n";
-	echo "</td>\n";
-	echo "<td width='left' width='40%' align='left' nowrap>\n";
-	echo "	<span id='gateway' style='display: inline;'>\n";
-	$tablename = 'v_gateways'; $fieldname = 'gateway'; $sqlwhereoptional = "where v_id = '$v_id'"; $fieldcurrentvalue = '$gateway'; $fieldstyle = '';
-	echo 	htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, "", $fieldstyle);
-	echo "	</span>\n";
-	echo "	<span id='sip_uri' style='display: none;'>\n";
-	echo "		<input type=\"text\" name=\"sip_uri\" class='formfld' style='' value=\"$sip_uri\">\n";
-	echo "	</span>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-
-	echo "	Select the gateway or use a SIP URI.\n";
-	echo "	</td>\n";
-	echo "</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	echo "			<input type=\"hidden\" name=\"fax_caller_id_name\" value=\"".$fax_caller_id_name."\">\n";
@@ -738,9 +730,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				if ($file != "." && $file != ".." && is_file($dir_fax_inbox.'/'.$file)) {
 					$tmp_filesize = filesize($dir_fax_inbox.'/'.$file);
 					$tmp_filesize = byte_convert($tmp_filesize);
-					$tmp_file_array = explode(".",$file);
-					$file_name = $tmp_file_array[0];
-					$file_ext = $tmp_file_array[count($tmp_file_array)-1];
+					$file_name = substr($file, 0, -4);
+					$file_ext = substr($file, -3);
 					if (strtolower($file_ext) == "tif") {
 						if (!file_exists($dir_fax_inbox.'/'.$file_name.".pdf")) {
 							//convert the tif to pdf

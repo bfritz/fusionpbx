@@ -37,8 +37,8 @@ require_once "includes/header.php";
 require_once "includes/paging.php";
 
 //get the http get values and set them as php variables
-	$orderby = $_GET["orderby"];
-	$order = $_GET["order"];
+	$orderby = check_str($_GET["orderby"]);
+	$order = check_str($_GET["order"]);
 
 //show the content
 	echo "<div align='center'>";
@@ -72,6 +72,7 @@ require_once "includes/paging.php";
 		//show only assigned fax extensions
 		$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 	}
+
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -81,13 +82,13 @@ require_once "includes/paging.php";
 
 	$rowsperpage = 150;
 	$param = "";
-	$page = $_GET['page'];
+	$page = check_str($_GET['page']);
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
 	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
 	$offset = $rowsperpage * $page;
 
 	$sql = "";
-	$sql .= " select * from v_fax ";
+	$sql .= "select * from v_fax ";
 	$sql .= "where v_id = '$v_id' ";
 	if (ifgroup("superadmin")) {
 		//show all fax extensions
