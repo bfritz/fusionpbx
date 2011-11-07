@@ -40,7 +40,7 @@ else {
 	}
 
 //pre-populate the form
-	if (strlen($_GET['id']) > 0 && strlen($_REQUEST["fax_extension"]) == 0 && $_POST["persistformvar"] != "true") {
+	if (strlen($_GET['id']) > 0 && $_POST["persistformvar"] != "true") {
 		$fax_id = check_str($_GET["id"]);
 		$sql = "";
 		$sql .= "select * from v_fax ";
@@ -271,15 +271,14 @@ else {
 		//send the fax
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			if ($fp) {
-				//{origination_caller_id_name=".$fax_caller_id_name.",origination_caller_id_number=".$fax_caller_id_number."}
 				$route_array = outbound_route_to_bridge($fax_number);
 				if (count($route_array) == 0) {
 					//send the internal call to the registered extension
-						$cmd = "api originate user/".$fax_number."@".$v_domain." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+						$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number."}user/".$fax_number."@".$v_domain." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 				}
 				else {
 					//send the external call
-						$cmd = "api originate ".$route_array[0]." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+						$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number."}".$route_array[0]." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 				}
 				$response = event_socket_request($fp, $cmd);
 				$response = str_replace("\n", "", $response);
@@ -355,7 +354,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "fax_pin_number, ";
 				$sql .= "fax_caller_id_name, ";
 				$sql .= "fax_caller_id_number, ";
-				$sql .= "fax_forward_number, ";
+				if (strlen($fax_forward_number) > 0) {
+					$sql .= "fax_forward_number, ";
+				}
 				$sql .= "fax_user_list, ";
 				$sql .= "faxdescription ";
 				$sql .= ")";
@@ -368,7 +369,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$fax_pin_number', ";
 				$sql .= "'$fax_caller_id_name', ";
 				$sql .= "'$fax_caller_id_number', ";
-				$sql .= "'$fax_forward_number', ";
+				if (strlen($fax_forward_number) > 0) {
+					$sql .= "'$fax_forward_number', ";
+				}
 				$sql .= "'$fax_user_list', ";
 				$sql .= "'$fax_description' ";
 				$sql .= ")";
@@ -395,7 +398,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "fax_pin_number = '$fax_pin_number', ";
 				$sql .= "fax_caller_id_name = '$fax_caller_id_name', ";
 				$sql .= "fax_caller_id_number = '$fax_caller_id_number', ";
-				$sql .= "fax_forward_number = '$fax_forward_number', ";
+				if (strlen($fax_forward_number) > 0) {
+					$sql .= "fax_forward_number = '$fax_forward_number', ";
+				}
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					$sql .= "fax_user_list = '$fax_user_list', ";
 				}
