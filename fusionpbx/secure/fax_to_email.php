@@ -62,6 +62,8 @@ if (defined('STDIN')) {
 		$fax_name = $_REQUEST["name"];
 		$fax_messages = $_REQUEST["messages"];
 		$fax_forward_number = $_REQUEST["forward"];
+		$caller_id_name = $_REQUEST["caller_id_name"];
+		$caller_id_number = $_REQUEST["caller_id_number"];
 		$fax_retry = $_REQUEST["retry"];
 	}
 	else {
@@ -86,6 +88,14 @@ if (defined('STDIN')) {
 		unset($tmp_array);
 
 		$tmp_array = explode("=", $_SERVER["argv"][6]);
+		$caller_id_name = $tmp_array[1];
+		unset($tmp_array);
+
+		$tmp_array = explode("=", $_SERVER["argv"][7]);
+		$caller_id_number = $tmp_array[1];
+		unset($tmp_array);
+
+		$tmp_array = explode("=", $_SERVER["argv"][8]);
 		$fax_retry = $tmp_array[1];
 		unset($tmp_array);
 	}
@@ -110,8 +120,8 @@ if (defined('STDIN')) {
 			//$fax_name = $row["faxname"];
 			//$fax_email = $row["faxemail"];
 			$fax_pin_number = $row["fax_pin_number"];
-			$fax_caller_id_name = $row["fax_caller_id_name"];
-			$fax_caller_id_number = $row["fax_caller_id_number"];
+			//$fax_caller_id_name = $row["fax_caller_id_name"];
+			//$fax_caller_id_number = $row["fax_caller_id_number"];
 			$fax_forward_number = $row["fax_forward_number"];
 			//$fax_user_list = $row["fax_user_list"];
 			$fax_description = $row["faxdescription"];
@@ -163,15 +173,14 @@ if (defined('STDIN')) {
 				$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 			//send the command with event socket
 				if ($fp) {
-					//{origination_caller_id_name=".$fax_caller_id_name.",origination_caller_id_number=".$fax_caller_id_number."}
 					$route_array = outbound_route_to_bridge($fax_forward_number);
 					if (count($route_array) == 0) {
 						//send the internal call to the registered extension
-							$cmd = "api originate user/".$fax_forward_number."@".$domain." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+							$cmd = "api originate {origination_caller_id_name='".$caller_id_name."',origination_caller_id_number=".$caller_id_number."}user/".$fax_forward_number."@".$domain." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 					}
 					else {
 						//send the external call
-							$cmd = "api originate ".$route_array[0]." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+							$cmd = "api originate {origination_caller_id_name='".$caller_id_name."',origination_caller_id_number=".$caller_id_number."}".$route_array[0]." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
 					}
 					$response = event_socket_request($fp, $cmd);
 					$response = str_replace("\n", "", $response);
