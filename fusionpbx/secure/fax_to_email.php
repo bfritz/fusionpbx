@@ -145,39 +145,40 @@ if (defined('STDIN')) {
 
 //forward the fax
 	if (strlen($fax_forward_number) > 0) {
-
-		//get the event socket information
-			$sql = "";
-			$sql .= "select * from v_settings ";
-			$sql .= "where v_id = '1' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
-			foreach ($result as &$row) {
-				$event_socket_ip_address = $row["event_socket_ip_address"];
-				$event_socket_port = $row["event_socket_port"];
-				$event_socket_password = $row["event_socket_password"];
-				break; //limit to 1 row
-			}
-		//create the event socket connection
-			$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		//send the command with event socket
-			if ($fp) {
-				//{origination_caller_id_name=".$fax_caller_id_name.",origination_caller_id_number=".$fax_caller_id_number."}
-				$route_array = outbound_route_to_bridge($fax_forward_number);
-				if (count($route_array) == 0) {
-					//send the internal call to the registered extension
-						$cmd = "api originate user/".$fax_forward_number."@".$domain." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+		if (file_exists($dir_fax_temp."/".$fax_name.".tif") {
+			//get the event socket information
+				$sql = "";
+				$sql .= "select * from v_settings ";
+				$sql .= "where v_id = '1' ";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
+				$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+				foreach ($result as &$row) {
+					$event_socket_ip_address = $row["event_socket_ip_address"];
+					$event_socket_port = $row["event_socket_port"];
+					$event_socket_password = $row["event_socket_password"];
+					break; //limit to 1 row
 				}
-				else {
-					//send the external call
-						$cmd = "api originate ".$route_array[0]." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+			//create the event socket connection
+				$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
+			//send the command with event socket
+				if ($fp) {
+					//{origination_caller_id_name=".$fax_caller_id_name.",origination_caller_id_number=".$fax_caller_id_number."}
+					$route_array = outbound_route_to_bridge($fax_forward_number);
+					if (count($route_array) == 0) {
+						//send the internal call to the registered extension
+							$cmd = "api originate user/".$fax_forward_number."@".$domain." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+					}
+					else {
+						//send the external call
+							$cmd = "api originate ".$route_array[0]." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+					}
+					$response = event_socket_request($fp, $cmd);
+					$response = str_replace("\n", "", $response);
+					$uuid = str_replace("+OK ", "", $response);
+					fclose($fp);
 				}
-				$response = event_socket_request($fp, $cmd);
-				$response = str_replace("\n", "", $response);
-				$uuid = str_replace("+OK ", "", $response);
-				fclose($fp);
-			}
+		}
 	}
 
 //open the file for writing
