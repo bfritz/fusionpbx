@@ -3282,7 +3282,7 @@ function sync_package_v_fax() {
 					$dialplanorder ='999';
 					$context = "default";
 					$enabled = 'true';
-					$descr = 'fax';
+					$descr = $row['faxdescription'];
 					$opt1name = 'faxid';
 					$opt1value = $row['fax_id'];
 					$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
@@ -3305,7 +3305,7 @@ function sync_package_v_fax() {
 					$fielddata .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
 					$fielddata .= "domain=".$v_domain." ";
 					$fielddata .= "caller_id_name='\\\\\\\${caller_id_name}' ";
-					$fielddata .= "caller_id_number='\\\\\\\${caller_id_number}' ";
+					$fielddata .= "caller_id_number=\\\\\\\${caller_id_number} ";
 
 					$fieldorder = '005';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
@@ -3371,7 +3371,7 @@ function sync_package_v_fax() {
 				$dialplanorder = $order;
 				$context = $context;
 				$enabled = $enabled;
-				$descr = $faxdescription;
+				$descr = $row['faxdescription'];
 
 				$sql = "";
 				$sql = "update v_dialplan_includes set ";
@@ -3383,7 +3383,6 @@ function sync_package_v_fax() {
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and opt1name = '$opt1name' ";
 				$sql .= "and opt1value = '$opt1value' ";
-				//echo "sql: ".$sql."<br />";
 				$db->query($sql);
 				unset($sql);
 
@@ -3420,22 +3419,22 @@ function sync_package_v_fax() {
 				$tag = 'action'; //condition, action, antiaction
 				$fieldtype = 'set';
 				$fielddata = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
-				$fielddata .= "email=".check_str($row['faxemail'])." ";
-				$fielddata .= "extension=".check_str($row['faxextension'])." ";
+				$fielddata .= "email=".$row['faxemail']." ";
+				$fielddata .= "extension=".$row['faxextension']." ";
 				$fielddata .= "name=\\\\\\\${last_fax} ";
 				$fielddata .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-				if (count($_SESSION["domains"]) > 1) {
-					$fielddata .= "domain=".$v_domain;
-				}
+				$fielddata .= "domain=".$v_domain." ";
+				$fielddata .= "caller_id_name='\\\\\\\${caller_id_name}' ";
+				$fielddata .= "caller_id_number=\\\\\\\${caller_id_number} ";
 				$sql = "";
 				$sql = "update v_dialplan_includes_details set ";
-				$sql .= "fielddata = '".$fielddata."' ";
+				$sql .= "fielddata = '".check_str($fielddata)."' ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and tag = 'action' ";
 				$sql .= "and fieldtype = 'set' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				$sql .= "and fielddata like 'api_hangup_hook=%' ";
-				$db->query($sql);
+				$db->query(check_sql($sql));
 
 				unset($extensionname);
 				unset($order);
