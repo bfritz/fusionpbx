@@ -3303,9 +3303,10 @@ function sync_package_v_fax() {
 					$fielddata .= "extension=".$row['faxextension']." ";
 					$fielddata .= "name=\\\\\\\${last_fax} ";
 					$fielddata .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-					if (count($_SESSION["domains"]) > 1) {
-						$fielddata .= "domain=".$v_domain;
-					}
+					$fielddata .= "domain=".$v_domain." ";
+					$fielddata .= "caller_id_name='\\\\\\\${caller_id_name}' ";
+					$fielddata .= "caller_id_number='\\\\\\\${caller_id_number}' ";
+
 					$fieldorder = '005';
 					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
 
