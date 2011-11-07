@@ -131,10 +131,8 @@ if (defined('STDIN')) {
 	unset ($prepstatement);
 
 //set the fax directory
-	if (strlen($domain) > 0) {
-		$dir_fax = $v_storage_dir.'/fax/'.$domain.'/'.$fax_extension.'/inbox';
-	}
-	else {
+	$dir_fax = $v_storage_dir.'/fax/'.$domain.'/'.$fax_extension.'/inbox';
+	if (!file_exists($dir_fax)) {
 		$dir_fax = $v_storage_dir.'/fax/'.$fax_extension.'/inbox';
 	}
 
@@ -155,7 +153,7 @@ if (defined('STDIN')) {
 
 //forward the fax
 	if (strlen($fax_forward_number) > 0) {
-		if (file_exists($dir_fax_temp."/".$fax_name.".tif")) {
+		if (file_exists($dir_fax."/".$fax_name.".tif")) {
 			//get the event socket information
 				$sql = "";
 				$sql .= "select * from v_settings ";
@@ -176,16 +174,23 @@ if (defined('STDIN')) {
 					$route_array = outbound_route_to_bridge($fax_forward_number);
 					if (count($route_array) == 0) {
 						//send the internal call to the registered extension
-							$cmd = "api originate {origination_caller_id_name='".$caller_id_name."',origination_caller_id_number=".$caller_id_number."}user/".$fax_forward_number."@".$domain." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+							$cmd = "api originate {origination_caller_id_name='".$caller_id_name."',origination_caller_id_number=".$caller_id_number."}user/".$fax_forward_number."@".$domain." &txfax(".$dir_fax."/".$fax_name.".tif)";
 					}
 					else {
 						//send the external call
-							$cmd = "api originate {origination_caller_id_name='".$caller_id_name."',origination_caller_id_number=".$caller_id_number."}".$route_array[0]." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
+							$cmd = "api originate {origination_caller_id_name='".$caller_id_name."',origination_caller_id_number=".$caller_id_number."}".$route_array[0]." &txfax(".$dir_fax."/".$fax_name.".tif)";
 					}
-					$response = event_socket_request($fp, $cmd);
-					$response = str_replace("\n", "", $response);
-					$uuid = str_replace("+OK ", "", $response);
-					fclose($fp);
+					//send info to the log
+						echo $cmd."\n";
+					//send the command to event socket
+						$response = event_socket_request($fp, $cmd);
+						$response = str_replace("\n", "", $response);
+					//send info to the log
+						echo $response."\n";
+					//get the uuid
+						$uuid = str_replace("+OK ", "", $response);
+					//close event socket
+						fclose($fp);
 				}
 		}
 	}
