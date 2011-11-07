@@ -36,18 +36,64 @@ else {
 
 //get the http get value and set it as a php variable
 	if (count($_GET)>0) {
-		$id = check_str($_GET["id"]);
+		$fax_id = check_str($_GET["id"]);
 	}
 
 //delete the fax extension
-	if (strlen($id)>0) {
-		$sql = "";
-		$sql .= "delete from v_fax ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and fax_id = '$id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		unset($sql);
+	if (strlen($fax_id)>0) {
+
+		//delete the fax entry
+			$sql = "";
+			$sql .= "delete from v_fax ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and fax_id = '$fax_id' ";
+			//echo $sql."<br>\n";
+			$db->query($sql);
+			unset($sql);
+
+		//get the dialplan info
+			$sql = "";
+			$sql .= "select * from v_dialplan_includes ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and opt1name = 'faxid' ";
+			$sql .= "and opt1value = '".$fax_id."' ";
+			//echo $sql."<br>\n";
+			$prepstatement2 = $db->prepare($sql);
+			$prepstatement2->execute();
+			while($row2 = $prepstatement2->fetch(PDO::FETCH_ASSOC)) {
+				$dialplan_include_id = $row2['dialplan_include_id'];
+				$extensionname = check_str($row2['extensionname']);
+				$order = $row2['order'];
+				$context = $row2['context'];
+				$enabled = $row2['enabled'];
+				$descr = check_str($row2['descr']);
+				$opt1name = $row2['opt1name'];
+				$opt1value = $row2['opt1value'];
+				$id = $i;
+				if (file_exists($v_dialplan_default_dir."/".$order."_".$extensionname.".xml")){
+					unlink($v_dialplan_default_dir."/".$order."_".$extensionname.".xml");
+				}
+				break; //limit to 1 row
+			}
+			unset ($sql, $prepstatement2);
+
+		//delete the dialplan entry
+			$sql = "";
+			$sql .= "delete from v_dialplan_includes ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+			//echo $sql."<br>\n";
+			$db->query($sql);
+			unset($sql);
+
+		//delete the dialplan details
+			$sql = "";
+			$sql .= "delete from v_dialplan_includes_details ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+			//echo $sql."<br>\n";
+			$db->query($sql);
+			unset($sql);
 	}
 
 //redirect the user
