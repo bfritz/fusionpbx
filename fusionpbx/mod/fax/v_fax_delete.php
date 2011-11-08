@@ -94,6 +94,9 @@ else {
 			//echo $sql."<br>\n";
 			$db->query($sql);
 			unset($sql);
+
+		//syncrhonize configuration
+			sync_package_v_fax()();
 	}
 
 //redirect the user
