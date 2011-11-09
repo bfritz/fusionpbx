@@ -96,7 +96,7 @@ else {
 			unset($sql);
 
 		//syncrhonize configuration
-			sync_package_v_fax()();
+			sync_package_v_fax();
 	}
 
 //redirect the user
