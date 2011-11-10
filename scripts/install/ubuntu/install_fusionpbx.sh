@@ -438,7 +438,7 @@ function www_permissions {
 	/bin/chmod -R o-rwx /usr/local/freeswitch/
 	#set FreeSWITCH directories full permissions for user/group with group sticky
 	/bin/echo "Setting group ID sticky for FreeSWITCH"
-	/usr/bin/find freeswitch -type d -exec /bin/chmod u=rwx,g=srx,o= {} \;
+	/usr/bin/find /usr/local/freeswitch -type d -exec /bin/chmod u=rwx,g=srx,o= {} \;
 	#make sure FreeSWITCH directories have group write
 	/bin/echo "Setting Group Write for FreeSWITCH files"
 	/usr/bin/find /usr/local/freeswitch -type f -exec /bin/chmod g+w {} \;
@@ -786,7 +786,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 	/usr/bin/apt-get -y install ssh vim git-core subversion build-essential \
 	autoconf automake libtool libncurses5 libncurses5-dev libjpeg62-dev ssh \
 	screen htop pkg-config bzip2 curl libtiff4-dev ntp \
-	libgnutls-dev libgnutls26 time
+	libgnutls-dev libgnutls26 time bison
 	#added libgnutls-dev libgnutls26 for dingaling...
 	
 	#add stuff for free_tdm/dahdi
