@@ -44,11 +44,18 @@ SETNONAT=n
 # if you do, set to no, and it will link /usr/local/freeswitch to /opt/freeswitch
 RMOPT=y
 
+# use freedtm/dahdi? y/n
+DO_DAHDI=n
+
 #below is a list of modules we want to add to provide functionality for FusionPBX
 #don't worry about the applications/mod_ format.  This script will find that in modules.conf
 #PAY ATTENTION TO THE SPACES POST AND PRE PARENTHESIS
 #  mod_shout removed
-modules_add=( ../../libs/freetdm/mod_freetdm mod_spandsp mod_dingaling mod_portaudio mod_callcenter mod_lcr mod_cidlookup mod_directory mod_flite mod_pocketsphinx mod_xml_rpc mod_xml_cdr mod_xml_curl mod_say_es )
+if [ $DO_DAHDI == "y" ]; then
+	modules_add=( ../../libs/freetdm/mod_freetdm mod_spandsp mod_dingaling mod_portaudio mod_callcenter mod_lcr mod_cidlookup mod_directory mod_flite mod_pocketsphinx mod_xml_rpc mod_xml_cdr mod_xml_curl mod_say_es )
+else
+	modules_add=( mod_spandsp mod_dingaling mod_portaudio mod_callcenter mod_lcr mod_cidlookup mod_directory mod_flite mod_pocketsphinx mod_xml_rpc mod_xml_cdr mod_xml_curl mod_say_es )
+fi
 
 #-------
 #DEFINES
@@ -790,11 +797,13 @@ if [ $INSFREESWITCH -eq 1 ]; then
 	screen htop pkg-config bzip2 curl libtiff4-dev ntp \
 	libgnutls-dev libgnutls26 time bison
 	#added libgnutls-dev libgnutls26 for dingaling...
-	
-	#add stuff for free_tdm/dahdi
-	apt-get -y install linux-headers-`uname -r`
-	#add the headers so dahdi can build the modules...
-	apt-get -y install dahdi
+
+if [ $DO_DAHDI == "y" ]; then
+		#add stuff for free_tdm/dahdi
+		apt-get -y install linux-headers-`uname -r`
+		#add the headers so dahdi can build the modules...
+		apt-get -y install dahdi
+	fi
 
 	LDRUN=0
 	/bin/echo -ne "Waiting on ldconfig to finish so bootstrap will work"
@@ -1231,8 +1240,11 @@ if [ $INSFREESWITCH -eq 1 ]; then
 	#fi
 
 	/usr/sbin/adduser freeswitch audio
-	#dialout for dahdi
-	/usr/sbin/adduser freeswitch dialout
+
+	if [ $DO_DAHDI == "y" ]; then
+		#dialout for dahdi
+		/usr/sbin/adduser freeswitch dialout
+	fi
 	
 	/bin/chown -R freeswitch:daemon /usr/local/freeswitch/
 	
@@ -2396,6 +2408,15 @@ fi
 if [ -e /tmp/install_fusion_status ]; then
 	/bin/rm /tmp/install_fusion_status
 fi
+
+/bin/echo "Checking to see if FreeSWITCH is running!"
+/usr/bin/pgrep freeswitch
+if [ $? -ne 0 ]; then
+	/etc/init.d/freeswitch start
+else
+	/bin/echo"    DONE!"
+fi
+
 
 exit 0
 
