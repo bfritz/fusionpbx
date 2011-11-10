@@ -673,8 +673,9 @@ case $1 in
 		/bin/echo
 		/bin/echo "    option2:"
 		/bin/echo "      user: option waits in certain places for the user to check for errors"
+		/bin/echo "            it is interactive and prompts you about what to install"
 		/bin/echo "      auto: tries an automatic install. Get a cup of coffee, this will"
-		/bin/echo "        take a while. FOR THE BRAVE!"
+		/bin/echo "            take a while. FOR THE BRAVE!"
 		/bin/echo 
 		/bin/echo "      EXAMPLE"
 		/bin/echo "         install_fusionpbx install-both user"
@@ -709,8 +710,9 @@ case $2 in
 		/bin/echo
 		/bin/echo "    option2:"
 		/bin/echo "      user: option waits in certain places for the user to check for errors"
+		/bin/echo "            it is interactive and prompts you about what to install"		
 		/bin/echo "      auto: tries an automatic install. Get a cup of coffee, this will"
-		/bin/echo "        take a while. FOR THE BRAVE!"
+		/bin/echo "            take a while. FOR THE BRAVE!"
 		/bin/echo 
 		/bin/echo "      EXAMPLE"
 		/bin/echo "         install_fusionpbx install-both user"
