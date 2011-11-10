@@ -1652,8 +1652,8 @@ if [ $INSFUSION -eq 1 ]; then
 		if [ ! -e /etc/apache2/sites-enabled/$GUI_NAME ]; then
 			#disable the default 000-default site
 			/usr/sbin/a2dissite default
-			#let's use a heredoc now, and do this the right way.
-			/bin/cat >> /etc/apache2/sites-available/$GUI_NAME  <<'DELIM'
+			#let's use a heredoc now, and do this the right way. #no 'quotes' with variables
+			/bin/cat >> /etc/apache2/sites-available/$GUI_NAME  <<DELIM
 <VirtualHost *:80>
 	ServerAdmin webmaster@localhost
 	ServerName $FQDN
