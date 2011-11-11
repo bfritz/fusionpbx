@@ -2419,24 +2419,3 @@ fi
 
 
 exit 0
-
-#for testing
-#create /tmp/install_fusion_status
-#/bin/echo "git_done" >> /tmp/install_fusion_status
-#/bin/echo "bootstrap_done" >> /tmp/install_fusion_status
-#/bin/echo "build_modules" >> /tmp/install_fusion_status
-#/bin/echo "config_done" >> /tmp/install_fusion_status
-#/bin/echo "compile_done" >> /tmp/install_fusion_status
-#/bin/echo "install_done" >> /tmp/install_fusion_status
-#/bin/echo "sounds_done" >> /tmp/install_fusion_status
-#/bin/echo "moh_done" >> /tmp/install_fusion_status
-#/bin/echo "enable_modules" >> /tmp/install_fusion_status
-
-
-#rm /etc/fail2ban/jail.local
-#rm /etc/fail2ban/filter.d/coltpbx
-#rm /etc/fail2ban/filter.d/freeswitch*
-#rm -R /var/www/coltpbx
-#rm /etc/nginx/sites-enabled/coltpbx
-#rm /etc/nginx/sites-availabe/coltpbx
-
