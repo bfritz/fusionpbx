@@ -2106,11 +2106,11 @@ DELIM
 		/bin/echo -ne "Installing PostgeSQL"
 		
 		if [ $POSTGRES9 == "9" ]; then
-			/bin/echo " version 9.0"
+			/bin/echo " version 9.1"
 			#add the ppa
 			/usr/bin/apt-add-repository ppa:pitti/postgresql
 			/usr/bin/apt-get update
-			/usr/bin/apt-get -y install postgresql-9.0 php5-pgsql
+			/usr/bin/apt-get -y install postgresql-9.1 php5-pgsql
 		else
 			/bin/echo " version 8.4"
 			/usr/bin/apt-get -y install postgresql php5-pgsql
