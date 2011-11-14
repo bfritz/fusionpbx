@@ -409,8 +409,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "auth_acl = '$auth_acl', ";
 			$sql .= "cidr = '$cidr', ";
 			$sql .= "sip_force_contact = '$sip_force_contact', ";
-			$sql .= "sip_force_expires = '$sip_force_expires', ";
-			$sql .= "nibble_account = '$nibble_account', ";
+			if (strlen($sip_force_expires) == 0) {
+				$sql .= "sip_force_expires = null, ";
+			}
+			else {
+				$sql .= "sip_force_expires = '$sip_force_expires', ";
+			}
+			if (strlen($nibble_account) == 0) {
+				$sql .= "nibble_account = null, ";
+			}
+			else {
+				$sql .= "nibble_account = '$nibble_account', ";
+			}
 			if (strlen($mwi_account) > 0) {
 				if (strpos($mwi_account, '@') === false) {
 					if (count($_SESSION["domains"]) > 1) {
