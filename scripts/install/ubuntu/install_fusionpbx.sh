@@ -587,6 +587,49 @@ function enable_modules {
 	#--------------
 }
 
+function freeswitch_logfiles {
+	/bin/echo
+	/bin/echo "logrotate not happy with FS: see http://wiki.fusionpbx.com/index.php?title=RotateFSLogs doing differently now..."
+	/bin/echo "       SEE: /etc/cron.daily/freeswitch_log_rotation"
+	/bin/cat > /etc/cron.daily/freeswitch_log_rotation <<'DELIM'
+#!/bin/bash
+# logrotate replacement script
+# put in /etc/cron.daily
+# don't forget to make it executable
+# you might consider changing /usr/local/freeswitch/conf/autoload_configs/logfile.conf.xml
+#  <param name="rollover" value="0"/>
+
+#number of days of logs to keep
+NUMBERDAYS=30
+FSPATH="/usr/local/freeswitch"
+
+$FSPATH/bin/fs_cli -x "fsctl send_sighup" |grep '+OK' >/tmp/rotateFSlogs
+if [ $? -eq 0 ]; then
+       #-cmin 2 could bite us (leave some files uncompressed, eg 11M auto-rotate). Maybe -1440 is better?
+       find $FSPATH/log/ -name "freeswitch.log.*" -cmin -2 -exec gzip {} \;
+       find $FSPATH/log/ -name "freeswitch.log.*.gz" -mtime +$NUMBERDAYS -exec /bin/rm {} \;
+       chown www-data.www-data $FSPATH/log/freeswitch.log
+       chmod 660 $FSPATH/log/freeswitch.log
+       logger FreeSWITCH Logs rotated
+       /bin/rm /tmp/rotateFSlogs
+else
+       logger FreeSWITCH Log Rotation Script FAILED
+       mail -s '$HOST FS Log Rotate Error' root < /tmp/rotateFSlogs
+       /bin/rm /tmp/rotateFSlogs
+fi
+DELIM
+
+	/bin/chmod 755 /etc/cron.daily/freeswitch_log_rotation
+	
+	/bin/echo "Now dropping 10MB limit from FreeSWITCH"
+	/bin/echo "  This is so the rotation/compression part of the cron script"
+	/bin/echo "  will work properly."
+	/bin/echo "  SEE: /usr/local/freeswitch/conf/autoload_configs/logfile.conf.xml"
+	
+	# <param name="rollover" value="10485760"/>
+	/bin/sed /usr/local/freeswitch/conf/autoload_configs/logfile.conf.xml -i -e s,\<param.*name\=\"rollover\".*value\=\"10485760\".*/\>,\<\!\-\-\<param\ name\=\"rollover\"\ value\=\"10485760\"/\>\ INSTALL_SCRIPT\-\-\>,g
+}
+
 case $1 in
 	fix-https)
 		nginxconfig
@@ -1329,56 +1372,9 @@ if [ $DO_DAHDI == "y" ]; then
 #	if [ -a /etc/logrotate.d/freeswitch ]; then
 	if [ -a /etc/cron.daily/freeswitch_log_rotation ]; then
 		/bin/echo "Logrotate for FreeSWITCH Already Done!"
-#	else
-#		/bin/cat > /etc/logrotate.d/freeswitch  <<DELIM
-#/usr/local/freeswitch/log/freeswitch.log {
-#        weekly
-#        missingok
-#        rotate 7
-#        #endscript
-#        compress
-#        notifempty
-#        #pesky permissions. default is world read
-#        create 660 freeswitch daemon
-#        #if you lack the sighup then the fs process dies during
-#        #the rotate (probably the first time it tries to log).
-#        postrotate
-#            /bin/rm -f /usr/local/freeswitch/log/freeswitch.log > /dev/null 2>&1
-#            /usr/local/freeswitch/bin/fs_cli -x "fsctl send_sighup" > /dev/null 2>&1
-#        endscript
-#}
-#DELIM
-		/bin/echo
-		/bin/echo "logrotate not happy with FS: see http://wiki.fusionpbx.com/index.php?title=RotateFSLogs doing differently now..."
-		/bin/echo "       SEE: /etc/cron.daily/freeswitch_log_rotation"
-		/bin/cat > /etc/cron.daily/freeswitch_log_rotation <<'DELIM'
-#!/bin/bash
-# logrotate replacement script
-# put in /etc/cron.daily
-# don't forget to make it executable
-# you might consider changing /usr/local/freeswitch/conf/autoload_configs/logfile.conf.xml
-#  <param name="rollover" value="0"/>
 
-#number of days of logs to keep
-NUMBERDAYS=30
-FSPATH="/usr/local/freeswitch"
-
-$FSPATH/bin/fs_cli -x "fsctl send_sighup" |grep '+OK' >/tmp/rotateFSlogs
-if [ $? -eq 0 ]; then
-       #-cmin 2 could bite us (leave some files uncompressed, eg 11M auto-rotate). Maybe -1440 is better?
-       find $FSPATH/log/ -name "freeswitch.log.*" -cmin -2 -exec gzip {} \;
-       find $FSPATH/log/ -name "freeswitch.log.*.gz" -mtime +$NUMBERDAYS -exec /bin/rm {} \;
-       chown www-data.www-data $FSPATH/log/freeswitch.log
-       chmod 660 $FSPATH/log/freeswitch.log
-       logger FreeSWITCH Logs rotated
-       /bin/rm /tmp/rotateFSlogs
-else
-       logger FreeSWITCH Log Rotation Script FAILED
-       mail -s '$HOST FS Log Rotate Error' root < /tmp/rotateFSlogs
-       /bin/rm /tmp/rotateFSlogs
-fi
-DELIM
-		/bin/chmod 755 /etc/cron.daily/freeswitch_log_rotation
+		#call log script creation function
+		freeswitch_logfiles
 	fi
 
 	#-----------------
@@ -2356,6 +2352,15 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 		/bin/echo
 		/bin/echo "Press Enter to continue (check for errors)"
 		read
+	fi
+	
+	#check for logrotate and change to cron.daily
+	if [ -a /etc/logrotate.d/freeswitch ]; then
+		/bin/echo "System configured for logrotate, changing"
+		/bin/echo "   to new way."
+		/bin/rm /etc/logrotate.d/freeswitch
+		/etc/init.d/logrotate restart
+		freeswitch_logfiles
 	fi
 fi
 #------------------------------------
