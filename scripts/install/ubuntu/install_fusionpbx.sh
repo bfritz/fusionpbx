@@ -60,6 +60,7 @@ fi
 #-------
 #DEFINES
 #-------
+VERSION="Version - using subversion, no longer keeping track. WAF License"
 # Modules_comp_default determined using
 #  grep -v ^$ /usr/src/freeswitch/modules.conf |grep -v ^# | tr '\n' ' '
 #  on FreeSWITCH version FreeSWITCH Version 1.0.head (git-8f2ee97 2010-12-05 17-19-28 -0600)
@@ -86,6 +87,8 @@ INST_FPBX=svn
 #INST_FPBX=tgz
 #full path required
 #TGZ_FILE="/home/coltpbx/fusionpbx-1.2.1.tar.gz"
+
+
 #---------
 #  NOTES
 #---------
@@ -96,148 +99,6 @@ INST_FPBX=svn
 #When you install ubuntu, you should select the "Manual package selection" option.  
 #This way we can keep the install to the bare minimum.  This script will install
 #everything you need (and nothing) - hopefully, you don't. Just quit tasksel
-
-#---------
-#CHANGELOG
-#---------
-VERSION="Version 4.4.0pre - 2011 April 12. WAF License"
-#v4.4.0pre 2011 April 12
-
-#BUGS: FS CHANGED!!! 2011-05-12
-#		Add libssl-dev
-#		currently mod_cidlookup, mod_xml_curl mod_xml_cdr busted
-
-#BUGS: FS isn't  started at end of install-both auto
-#BUGS: fix-https still throws usage help. check www-permissions too.
-#BUGS: Apache heredoc isn't escaping the variables. documentroot and servername wrong.
-#BUGS: dingaling still not compile right. let's change makefile and recompile module
-#ADD: zip compression to nginx
-#ADD: monit for freeswitch and nginx
-#add libssl-dev for secure sip.
-
-#	ADD mod_spandsp for fax and g722
-#		apt-get install libtiff4-dev
-#	Add NTP, maybe run sudo ntpdate ntp.ubuntu.com to make suer date is correct.
-# 		prevents make from dying (date in the future crap).
-#	BUGS: Had quotes around nginx config
-#			FS failed to start with script
-#			Fail2Ban FS-dos has freeswitch2 in jail.local
-#			Fail2ban not starting: 
-#			freeswitch-dos ports wrong in jail.local.
-#				build again and run fail2ban-client -d to test.
-#   Add Option to download FreeSWITCH compiled source as tar.gz for iso
-#   Added Option --fix-permissions
-#		checks FreeSWITCH init script 
-#	Added: upgrade-fusionpbx needs to fix permissions, since a FS upgrade kills them.
-#	FIXED Logrotate for nginx
-#		logfiles were: /var/log/fusionpbx_gui.*_log;
-#		logfiles now: /var/log/nginx/*.log
-#	Added: Fail2ban for FusionPBX failed login attempts
-#		Need information on attempts/rate/etc 
-#	Added: Fail2ban for FusionPBX on failed provision attempts
-#		Need information on attempts/rate/etc 
-#		Needs Testing!
-#	FIXED: RepeatedMsgReduction wasn't getting set correctly in rsyslog.conf
-#	Added Change Fail2ban on FreeSWITCH with attempts/rate/etc in config file (not default settings)
-#	Added: Option to download GIT from GitHub repository (It's faster), see DEFINES
-
-#	Make nginx/apache https by default
-#		iso needs to regenerate certificates post install, ideally with 10 year expirations. 
-#		apt-get install ssl-cert
-#		ln -s /etc/ssl/private/ssl-cert-snakeoil.key /etc/ssl/private/nginx.key
-#		ln -s /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/ssl/certs/nginx.crt
-#		ln -s /etc/ssl/certs/nginx.crt /var/www/fusionpbx/$HOSTNAME.crt
-#		/etc/init.d/nginx restart
-		
-#	FIXED nginx config to not block html files... Don't do block ~ .ht 
-#	Added FreeTDM, and Dahdi
-
-#v4.3.3 2011 January 31
-#	Added: smp compile support. Script works, make -j doesn't. see jira FS-3005
-#	Fixed: NGinx file size error
-#	Added: Remove Nginx/php/apache properly
-#		FIXED removing nginx removes gnome/x.
-#	Added: Postgres (seems good)
-#	Fixed: Set up apache properly (fusionpbx file instead of default, use heredoc)
-#   	TODO: look into setting up FS for mysql/pgsql
-#   	Fixed: sqlite http request issue for nginx/apache
-#   	Added: now doing ppa's the ubuntu way with apt-add-repository
-#   	Added: set up auto install for nginx/apache, mysql/postgresql/sqlite, setnonat.
-#	Added: now prompts for rm -Rf /opt (or variable for auto-install).
-#	There's a bug in either ppa-purge or apt-add-repository (likely latter).
-#	  if you install nginx, change your mind, install apache, change your mind again
-#	  and re-install nginx, the repository for nginx/php5-fpm gets removed proerly
-#	  [a '#' covers repo], but when re-enabling, the '#' gets replaced, and an 'n'
-#	  is left on a newline afterward, preventing update/install from that repo.
-#	Fixed: Checking for nginx/apache2 binary instead of init scripts for if[x] restart
-
-#v4.3.2.1 2011 January 1
-#	small problem when selecting nginx and sqlite. php5-fpm needed to restart
-#	 so FusionPBX could see the FreeSWITCH directory.
-#v4.3.2 2010 December 30
-#	logrotate was improperly setup. Needed to send sighup to fs_cli
-#	  Caused FS to die the first time it tried to log after rotation.
-#	php5-cli is a dependancy. required for voicemail to email, and fax to email.
-#	added an nginx/php-fpm option.  You can change a variable (for auto run)
-#	  or it will prompt you when you install fusionpbx in user mode
-#	mysql added as an option.
-#	problem with the way ubuntu logs ssh failures [fail2ban]
-#	  Failed password for root from 1.2.3.4 port 22 ssh2
-#	  last message repeated 5 times
-#	  SOLUTION: Turn off RepeatedMsgReduction in rsyslog.
-#	fail2ban: previous setup looked for freeswitch log in /var/log/freeswitch.log
-#	  log is actually /usr/local/freeswitch/log/freeswitch.log
-#	Tries to see if you're on a static IP address. If you are, it wants to start
-#	  FreeSWITCH with the -nonat option to save some time. Also a new variable
-#	TODO: Maybe probe cores and to the -b thing for quicker compile/bootstrap
-#	TODO: IPTABLES
-	
-#v4.3.1 2010 December 23
-#	look into make -j cores option
-#	made a state save file.  so if there's an error, don't re-bootstrap, configure, etc.
-#	  and remove it on a clean exit.
-#	requests for modules add/enable for ugrade-freeswitch. DONE
-#	mod dingaling needs libgnutls-dev libgnutls26 packages, and change: 
-#	  "--mode=relink gcc" --> "--mode=relink gcc -lgnutls" 
-#	  in /usr/src/freeswitch/src/mod/endpoints/mod_dingaling/mod_dingaling.la
-#	  appears to be an ubuntu problem....
-
-#v4.3 2010 December 22
-#	under case upgrade-freeswitch, variables were not set properly.  It upgraded fusionpbx.. fixed.
-#	done: fail2ban error fixed. removed associated text
-#	done: have install check for /etc/fail2ban. reinstall (as in from iso) duplicates some txt
-#	done: remove or fix fusionpbx upgrade code. it either needs to log in
-#	  and then update and run the schema upgrade. or get rid of it. Fixed by prompting the user
-#	  to open a browser window, and warn.
-#	done: get logrotate working... let's not fill the disk.
-#	stop/start freeswitch for an upgrade, and an install...
-
-#v4.2 2010 December 17
-#	made some changes so the text flows correctly now that we use curl
-#   to do install.php.  
-#   sent curl output to dev null..
-#   added apt-get update before we install apache since remastersys removes apt data
-#   stopping FS before FusionPBX install, and starting afteward.
-#   changed license to WAF v1
-
-#v4.1 2010 December 15
-#   changing cd sounds (48/32/16/8khz) down to hd sounds (16/8Kkhz)
-
-#v4 2010 December 14
-#   now install-fusion|install-freeswitch|upgrade...
-#   also adding curl commands to finish fusionpbx install.
-
-#v3 adding fail2ban et al.
-
-#v2 2010 December 07
-#   adds arrays to process the modules.  should make this much easier to edit.
-#	just make additions to modules_add
-#	This should work fine (even on a 2nd run).
-
-#v1 2010 December 06
-# was first cut 
-
-
 
 #---------
 #FUNCTIONS
@@ -2424,3 +2285,144 @@ fi
 
 
 exit 0
+
+---------
+#CHANGELOG
+#---------
+# vSVN, now using SVN.... November 2011
+
+#v4.4.0pre 2011 April 12
+
+#BUGS: FS CHANGED!!! 2011-05-12
+#		Add libssl-dev
+#		currently mod_cidlookup, mod_xml_curl mod_xml_cdr busted
+
+#BUGS: FS isn't  started at end of install-both auto
+#BUGS: fix-https still throws usage help. check www-permissions too.
+#BUGS: Apache heredoc isn't escaping the variables. documentroot and servername wrong.
+#BUGS: dingaling still not compile right. let's change makefile and recompile module
+#ADD: zip compression to nginx
+#ADD: monit for freeswitch and nginx
+#add libssl-dev for secure sip.
+
+#	ADD mod_spandsp for fax and g722
+#		apt-get install libtiff4-dev
+#	Add NTP, maybe run sudo ntpdate ntp.ubuntu.com to make suer date is correct.
+# 		prevents make from dying (date in the future crap).
+#	BUGS: Had quotes around nginx config
+#			FS failed to start with script
+#			Fail2Ban FS-dos has freeswitch2 in jail.local
+#			Fail2ban not starting: 
+#			freeswitch-dos ports wrong in jail.local.
+#				build again and run fail2ban-client -d to test.
+#   Add Option to download FreeSWITCH compiled source as tar.gz for iso
+#   Added Option --fix-permissions
+#		checks FreeSWITCH init script 
+#	Added: upgrade-fusionpbx needs to fix permissions, since a FS upgrade kills them.
+#	FIXED Logrotate for nginx
+#		logfiles were: /var/log/fusionpbx_gui.*_log;
+#		logfiles now: /var/log/nginx/*.log
+#	Added: Fail2ban for FusionPBX failed login attempts
+#		Need information on attempts/rate/etc 
+#	Added: Fail2ban for FusionPBX on failed provision attempts
+#		Need information on attempts/rate/etc 
+#		Needs Testing!
+#	FIXED: RepeatedMsgReduction wasn't getting set correctly in rsyslog.conf
+#	Added Change Fail2ban on FreeSWITCH with attempts/rate/etc in config file (not default settings)
+#	Added: Option to download GIT from GitHub repository (It's faster), see DEFINES
+
+#	Make nginx/apache https by default
+#		iso needs to regenerate certificates post install, ideally with 10 year expirations. 
+#		apt-get install ssl-cert
+#		ln -s /etc/ssl/private/ssl-cert-snakeoil.key /etc/ssl/private/nginx.key
+#		ln -s /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/ssl/certs/nginx.crt
+#		ln -s /etc/ssl/certs/nginx.crt /var/www/fusionpbx/$HOSTNAME.crt
+#		/etc/init.d/nginx restart
+		
+#	FIXED nginx config to not block html files... Don't do block ~ .ht 
+#	Added FreeTDM, and Dahdi
+
+#v4.3.3 2011 January 31
+#	Added: smp compile support. Script works, make -j doesn't. see jira FS-3005
+#	Fixed: NGinx file size error
+#	Added: Remove Nginx/php/apache properly
+#		FIXED removing nginx removes gnome/x.
+#	Added: Postgres (seems good)
+#	Fixed: Set up apache properly (fusionpbx file instead of default, use heredoc)
+#   	TODO: look into setting up FS for mysql/pgsql
+#   	Fixed: sqlite http request issue for nginx/apache
+#   	Added: now doing ppa's the ubuntu way with apt-add-repository
+#   	Added: set up auto install for nginx/apache, mysql/postgresql/sqlite, setnonat.
+#	Added: now prompts for rm -Rf /opt (or variable for auto-install).
+#	There's a bug in either ppa-purge or apt-add-repository (likely latter).
+#	  if you install nginx, change your mind, install apache, change your mind again
+#	  and re-install nginx, the repository for nginx/php5-fpm gets removed proerly
+#	  [a '#' covers repo], but when re-enabling, the '#' gets replaced, and an 'n'
+#	  is left on a newline afterward, preventing update/install from that repo.
+#	Fixed: Checking for nginx/apache2 binary instead of init scripts for if[x] restart
+
+#v4.3.2.1 2011 January 1
+#	small problem when selecting nginx and sqlite. php5-fpm needed to restart
+#	 so FusionPBX could see the FreeSWITCH directory.
+#v4.3.2 2010 December 30
+#	logrotate was improperly setup. Needed to send sighup to fs_cli
+#	  Caused FS to die the first time it tried to log after rotation.
+#	php5-cli is a dependancy. required for voicemail to email, and fax to email.
+#	added an nginx/php-fpm option.  You can change a variable (for auto run)
+#	  or it will prompt you when you install fusionpbx in user mode
+#	mysql added as an option.
+#	problem with the way ubuntu logs ssh failures [fail2ban]
+#	  Failed password for root from 1.2.3.4 port 22 ssh2
+#	  last message repeated 5 times
+#	  SOLUTION: Turn off RepeatedMsgReduction in rsyslog.
+#	fail2ban: previous setup looked for freeswitch log in /var/log/freeswitch.log
+#	  log is actually /usr/local/freeswitch/log/freeswitch.log
+#	Tries to see if you're on a static IP address. If you are, it wants to start
+#	  FreeSWITCH with the -nonat option to save some time. Also a new variable
+#	TODO: Maybe probe cores and to the -b thing for quicker compile/bootstrap
+#	TODO: IPTABLES
+	
+#v4.3.1 2010 December 23
+#	look into make -j cores option
+#	made a state save file.  so if there's an error, don't re-bootstrap, configure, etc.
+#	  and remove it on a clean exit.
+#	requests for modules add/enable for ugrade-freeswitch. DONE
+#	mod dingaling needs libgnutls-dev libgnutls26 packages, and change: 
+#	  "--mode=relink gcc" --> "--mode=relink gcc -lgnutls" 
+#	  in /usr/src/freeswitch/src/mod/endpoints/mod_dingaling/mod_dingaling.la
+#	  appears to be an ubuntu problem....
+
+#v4.3 2010 December 22
+#	under case upgrade-freeswitch, variables were not set properly.  It upgraded fusionpbx.. fixed.
+#	done: fail2ban error fixed. removed associated text
+#	done: have install check for /etc/fail2ban. reinstall (as in from iso) duplicates some txt
+#	done: remove or fix fusionpbx upgrade code. it either needs to log in
+#	  and then update and run the schema upgrade. or get rid of it. Fixed by prompting the user
+#	  to open a browser window, and warn.
+#	done: get logrotate working... let's not fill the disk.
+#	stop/start freeswitch for an upgrade, and an install...
+
+#v4.2 2010 December 17
+#	made some changes so the text flows correctly now that we use curl
+#   to do install.php.  
+#   sent curl output to dev null..
+#   added apt-get update before we install apache since remastersys removes apt data
+#   stopping FS before FusionPBX install, and starting afteward.
+#   changed license to WAF v1
+
+#v4.1 2010 December 15
+#   changing cd sounds (48/32/16/8khz) down to hd sounds (16/8Kkhz)
+
+#v4 2010 December 14
+#   now install-fusion|install-freeswitch|upgrade...
+#   also adding curl commands to finish fusionpbx install.
+
+#v3 adding fail2ban et al.
+
+#v2 2010 December 07
+#   adds arrays to process the modules.  should make this much easier to edit.
+#	just make additions to modules_add
+#	This should work fine (even on a 2nd run).
+
+#v1 2010 December 06
+# was first cut
