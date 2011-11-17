@@ -34,9 +34,6 @@ if (defined('STDIN')) {
 		set_include_path($document_root);
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
 }
-//else {
-	//exit;
-//}
 
 //include the config.php
 	if (!defined('STDIN')) { include "root.php"; }
@@ -137,13 +134,16 @@ if (defined('STDIN')) {
 	}
 
 //convert the tif to a pdf
+	//Ubuntu: apt-get install libtiff-tools
 	$fax_file_warning = "";
 	if (file_exists($dir_fax.'/'.$fax_name.".tif")) {
 		if (!file_exists($dir_fax.'/'.$fax_name.".pdf")) {
-			//echo "cd $dir_fax; /usr/bin/tiff2pdf -f -o ".$fax_name.".pdf ".$dir_fax.'/'.$fax_name.".tif\n";
 			$tmp_tiff2pdf = exec("which tiff2pdf");
+			if (strlen($tmp_tiff2pdf) == 0) {$tmp_tiff2pdf = "/usr/bin/tiff2pdf"; }
 			if (strlen($tmp_tiff2pdf) > 0) {
-				exec("cd ".$dir_fax."; ".$tmp_tiff2pdf." -f -o ".$fax_name.".pdf ".$dir_fax.'/'.$fax_name.".tif");
+				$cmd = "cd ".$dir_fax."; ".$tmp_tiff2pdf." -f -o ".$fax_name.".pdf ".$dir_fax.'/'.$fax_name.".tif";
+				echo $cmd."\n";
+				exec($cmd);
 			}
 		}
 	}
@@ -181,12 +181,13 @@ if (defined('STDIN')) {
 							$cmd = "api originate {origination_caller_id_name='".$caller_id_name."',origination_caller_id_number=".$caller_id_number."}".$route_array[0]." &txfax(".$dir_fax."/".$fax_name.".tif)";
 					}
 					//send info to the log
+						echo "fax forward\n";
 						echo $cmd."\n";
 					//send the command to event socket
 						$response = event_socket_request($fp, $cmd);
 						$response = str_replace("\n", "", $response);
 					//send info to the log
-						echo $response."\n";
+						echo "response: ".$response."\n";
 					//get the uuid
 						$uuid = str_replace("+OK ", "", $response);
 					//close event socket
@@ -195,11 +196,8 @@ if (defined('STDIN')) {
 		}
 	}
 
-//open the file for writing
-	$fp = fopen($tmp_dir."/fax_to_email.log", "w");
-
 //send the email
-	if (strlen($fax_email) > 0) {
+	if (strlen($fax_email) > 0 && file_exists($dir_fax."/".$fax_name.".tif")) {
 		//includes
 			include "class.phpmailer.php";
 			include "class.smtp.php"; // optional, gets called from within class.phpmailer.php if not already loaded
@@ -275,14 +273,6 @@ if (defined('STDIN')) {
 			}
 	}
 
-//get the output from the buffer
-	$content = ob_get_contents();
-//clean the buffer
-	ob_end_clean();
-//write the contents of the buffer
-	fwrite($fp, $content);
-	fclose($fp);
-
 //when sending an email the following files are created:
 	//     /usr/local/freeswitch/storage/fax
 	//        emailed_faxes.log - this is a log of all the faxes we have successfully emailed.  (note that we need to work out how to rotate this log)
@@ -295,7 +285,7 @@ if (defined('STDIN')) {
 	//        failed_fax_emails.sh - this is created when we have a email we need to re-send.  At the time it is created, an at job is created to execute it in 3 minutes time,
 	//            this allows us to try sending the email again at that time.  If the file exists but there is no at job this is because there are no longer any emails queued
 	//            as we have successfully sent them all.
-	if (strlen($fax_email) > 0) {
+	if (strlen($fax_email) > 0 && file_exists($dir_fax."/".$fax_name.".tif")) {
 		if (stristr(PHP_OS, 'WIN')) {
 			//not compatible with windows
 		}
@@ -303,27 +293,35 @@ if (defined('STDIN')) {
 			$fax_to_email_queue_dir = $v_storage_dir."/fax";
 			if ($email_status == 'ok') {
 				// log the success
-				$fp = fopen($fax_to_email_queue_dir."/emailed_faxes.log", "a");
-				fwrite($fp, $fax_name." received on ".$fax_extension." emailed to ".$fax_email." ".$fax_messages."\n");
-				fclose($fp);
+					$fp = fopen($fax_to_email_queue_dir."/emailed_faxes.log", "a");
+					fwrite($fp, $fax_name." received on ".$fax_extension." emailed to ".$fax_email." ".$fax_messages."\n");
+					fclose($fp);
 			} else {
 				// create an instruction log to email messages once the connection to the mail server has been restored
-				$fp = fopen($fax_to_email_queue_dir."/failed_fax_emails.log", "a");
-				fwrite($fp, $php_dir."/php ".$v_secure."/fax_to_email.php email=$fax_email extension=$fax_extension name=$fax_name messages='$fax_messages' retry=yes\n");
-				fclose($fp);
-
+					$fp = fopen($fax_to_email_queue_dir."/failed_fax_emails.log", "a");
+					fwrite($fp, $php_dir."/php ".$v_secure."/fax_to_email.php email=$fax_email extension=$fax_extension name=$fax_name messages='$fax_messages' retry=yes\n");
+					fclose($fp);
 				// create a script to do the delayed mailing
-				$fp = fopen($tmp_dir."/failed_fax_emails.sh", "w");
-				fwrite($fp, "rm ".$tmp_dir."/fax_email_retry.sh\n");
-				fwrite($fp, "mv ".$fax_to_email_queue_dir."/failed_fax_emails.log ".$tmp_dir."/fax_email_retry.sh\n");
-				fwrite($fp, "chmod 777 ".$tmp_dir."/fax_email_retry.sh\n");
-				fwrite($fp, $tmp_dir."/fax_email_retry.sh\n");
-				fclose($fp);
-				$tmp_response = exec("chmod 777 ".$tmp_dir."/failed_fax_emails.sh");
+					$fp = fopen($tmp_dir."/failed_fax_emails.sh", "w");
+					fwrite($fp, "rm ".$tmp_dir."/fax_email_retry.sh\n");
+					fwrite($fp, "mv ".$fax_to_email_queue_dir."/failed_fax_emails.log ".$tmp_dir."/fax_email_retry.sh\n");
+					fwrite($fp, "chmod 777 ".$tmp_dir."/fax_email_retry.sh\n");
+					fwrite($fp, $tmp_dir."/fax_email_retry.sh\n");
+					fclose($fp);
+					$tmp_response = exec("chmod 777 ".$tmp_dir."/failed_fax_emails.sh");
 				// note we use batch in order to execute when system load is low.  Alternatively this could be replaced with AT.
-				$tmp_response = exec("batch -f ".$tmp_dir."/failed_fax_emails.sh now + 3 minutes");
+					$tmp_response = exec("batch -f ".$tmp_dir."/failed_fax_emails.sh now + 3 minutes");
 			}
 		}
 	}
 
+//open the file for writing
+	$fp = fopen($tmp_dir."/fax_to_email.log", "w");
+//get the output from the buffer
+	$content = ob_get_contents();
+//clean the buffer
+	ob_end_clean();
+//write the contents of the buffer
+	fwrite($fp, $content);
+	fclose($fp);
 ?>
