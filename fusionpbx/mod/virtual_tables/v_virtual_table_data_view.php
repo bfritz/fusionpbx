@@ -144,11 +144,11 @@ if (strlen($_GET["id"]) > 0) {
 		}
 		$sql .= ")\n";
 	}
+	$sql .= "limit 20000\n";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
 	$result_values = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
 	foreach($result_values as $row) {
-
 		//set a php variable
 			$virtual_field_name = $row[virtual_field_name];
 			$virtual_data_row_id = $row[virtual_data_row_id];
@@ -202,6 +202,7 @@ if (strlen($_GET["id"]) > 0) {
 	unset ($prepstatement, $sql);
 
 //list the values from the array
+	$x = 0;
 	foreach($value_array as $array) {
 		//insert the data into the memory table
 			$sql = "insert into memory_table ";
@@ -235,6 +236,11 @@ if (strlen($_GET["id"]) > 0) {
 			//echo "$sql <br /><br />\n";
 			$db_memory->exec(check_sql($sql));
 			unset($sql);
+			unset($array);
+		//unset the row of data
+			unset($value_array[$x]);
+		//increment the value
+			$x++;
 	}
 
 //set the title and description of the virtual table
