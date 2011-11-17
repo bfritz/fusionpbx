@@ -699,9 +699,10 @@ if [ $INSFREESWITCH -eq 1 ]; then
 	/usr/bin/apt-get -y install ssh vim git-core subversion build-essential \
 	autoconf automake libtool libncurses5 libncurses5-dev libjpeg62-dev ssh \
 	screen htop pkg-config bzip2 curl libtiff4-dev ntp \
-	libgnutls-dev libgnutls26 time bison
+	time bison
 	#added libgnutls-dev libgnutls26 for dingaling...
-
+	#gnutls no longer required for dingaling (git around oct 17 per mailing list..)
+	# removed libgnutls-dev libgnutls26
 if [ $DO_DAHDI == "y" ]; then
 		#add stuff for free_tdm/dahdi
 		apt-get -y install linux-headers-`uname -r`
@@ -923,12 +924,14 @@ if [ $DO_DAHDI == "y" ]; then
 	else
 		#dingaling/ubuntu has an issue. let's edit the file...
 		#"--mode=relink gcc" --> "--mode=relink gcc -lgnutls" 
-		/bin/grep 'lgnutls' /usr/src/freeswitch/src/mod/endpoints/mod_dingaling/mod_dingaling.la > /dev/null
-		if [ $? -eq 0 ]; then
-			/bin/echo "dingaling fix already applied."
-		else
-			/bin/sed -i -e s,'--mode=relink gcc','--mode=relink gcc -lgnutls', /usr/src/freeswitch/src/mod/endpoints/mod_dingaling/mod_dingaling.la
-		fi
+		
+		#tls no longer required for dingaling, so this weird issue doesn't happen. now uses openssl.
+#		/bin/grep 'lgnutls' /usr/src/freeswitch/src/mod/endpoints/mod_dingaling/mod_dingaling.la > /dev/null
+#		if [ $? -eq 0 ]; then
+#			/bin/echo "dingaling fix already applied."
+#		else
+#			/bin/sed -i -e s,'--mode=relink gcc','--mode=relink gcc -lgnutls', /usr/src/freeswitch/src/mod/endpoints/mod_dingaling/mod_dingaling.la
+#		fi
 		cd /usr/src/freeswitch
 		if [ $CORES -gt 1 ]; then 
 			/bin/echo "  multicore processor detected. Installing with -j $CORES"
