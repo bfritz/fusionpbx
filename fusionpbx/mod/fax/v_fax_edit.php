@@ -271,19 +271,23 @@ else {
 		//send the fax
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			if ($fp) {
-				$route_array = outbound_route_to_bridge($fax_number);
-				if (count($route_array) == 0) {
-					//send the internal call to the registered extension
-						$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number."}user/".$fax_number."@".$v_domain." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
-				}
-				else {
-					//send the external call
-						$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number."}".$route_array[0]." &txfax(".$dir_fax_temp."/".$fax_name.".tif)";
-				}
-				$response = event_socket_request($fp, $cmd);
-				$response = str_replace("\n", "", $response);
-				$uuid = str_replace("+OK ", "", $response);
-				fclose($fp);
+				//prepare the fax originate command
+					$route_array = outbound_route_to_bridge($fax_number);
+					$fax_file = $dir_fax_temp."/".$fax_name.".tif";
+					if (count($route_array) == 0) {
+						//send the internal call to the registered extension
+							$fax_uri = "user/".$fax_number."@".$v_domain;
+					}
+					else {
+						//send the external call
+							$fax_uri = $route_array[0];
+					}
+					$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number.",fax_uri=$fax_uri,fax_file='".$fax_file."',fax_retry_attempts=1,fax_retry_limit=20,fax_retry_sleep=180,fax_verbose=true,fax_use_ecm=off,api_hangup_hook='lua fax_retry.lua'}$fax_uri &txfax('".$fax_file."')";
+				//send the command to event socket
+					$response = event_socket_request($fp, $cmd);
+					$response = str_replace("\n", "", $response);
+					$uuid = str_replace("+OK ", "", $response);
+					fclose($fp);
 			}
 
 		//wait for a few seconds
@@ -400,6 +404,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "fax_caller_id_number = '$fax_caller_id_number', ";
 				if (strlen($fax_forward_number) > 0) {
 					$sql .= "fax_forward_number = '$fax_forward_number', ";
+				}
+				else {
+					$sql .= "fax_forward_number = null, ";
 				}
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					$sql .= "fax_user_list = '$fax_user_list', ";
