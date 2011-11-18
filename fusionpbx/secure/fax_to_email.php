@@ -171,15 +171,18 @@ if (defined('STDIN')) {
 				$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
 			//send the command with event socket
 				if ($fp) {
-					$route_array = outbound_route_to_bridge($fax_forward_number);
-					if (count($route_array) == 0) {
-						//send the internal call to the registered extension
-							$cmd = "api originate {origination_caller_id_name='".$caller_id_name."',origination_caller_id_number=".$caller_id_number."}user/".$fax_forward_number."@".$domain." &txfax(".$dir_fax."/".$fax_name.".tif)";
-					}
-					else {
-						//send the external call
-							$cmd = "api originate {origination_caller_id_name='".$caller_id_name."',origination_caller_id_number=".$caller_id_number."}".$route_array[0]." &txfax(".$dir_fax."/".$fax_name.".tif)";
-					}
+					//prepare the fax originate command
+						$route_array = outbound_route_to_bridge($fax_forward_number);
+						$fax_file = $dir_fax."/".$fax_name.".tif";
+						if (count($route_array) == 0) {
+							//send the internal call to the registered extension
+								$fax_uri = "user/".$fax_number."@".$v_domain;
+						}
+						else {
+							//send the external call
+								$fax_uri = $route_array[0];
+						}
+						$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number.",fax_uri=$fax_uri,fax_file='".$fax_file."',fax_retry_attempts=1,fax_retry_limit=20,fax_retry_sleep=180,fax_verbose=true,fax_use_ecm=off,api_hangup_hook='lua fax_retry.lua'}$fax_uri &txfax('".$fax_file."')";
 					//send info to the log
 						echo "fax forward\n";
 						echo $cmd."\n";
