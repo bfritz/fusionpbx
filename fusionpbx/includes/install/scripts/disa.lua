@@ -77,11 +77,14 @@ if ( session:ready() ) then
 		if (pin_number) then
 			min_digits = string.len(pin_number);
 			max_digits = string.len(pin_number)+1;
-			digits = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
+			digits = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-please_enter_pin_followed_by_pound.wav", "", "\\d+");
 			if (digits == pin_number) then
 				--pin is correct
 			else
-				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/your_pin_number_is_incorect_goodbye.wav");
+				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-pin_or_extension_is-invalid.wav");
+                                session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-im_sorry.wav");
+                                session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/voicemail/vm-goodbye.wav");
+
 				session:hangup("NORMAL_CLEARING");
 				return;
 			end
@@ -92,7 +95,7 @@ if ( session:ready() ) then
 			destination_number = predefined_destination;
 		else
 			dtmf = ""; --clear dtmf digits to prepare for next dtmf request
-			destination_number = session:playAndGetDigits(digit_min_length, digit_max_length, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_phone_number.wav", "", "\\d+");
+			destination_number = session:playAndGetDigits(digit_min_length, digit_max_length, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-enter_destination_telephone_number.wav", "", "\\d+");
 			--if (string.len(destination_number) == 10) then destination_number = "1"..destination_number; end
 		end
 
@@ -130,7 +133,7 @@ if ( session:ready() ) then
 			if (gateway) then
 				gateway_table = explode(",",gateway);
 				for index,value in pairs(gateway_table) do
-					session:execute("bridge", "{continue_on_fail=true,hangup_after_bridge=true,effective_caller_id_name="..caller_id_name..",effective_caller_id_number="..caller_id_number.."}sofia/gateway/"..value.."/"..destination_number);
+					session:execute("bridge", "{continue_on_fail=true,hangup_after_bridge=true,origination_caller_id_name="..caller_id_name..",origination_caller_id_number="..caller_id_number.."}sofia/gateway/"..value.."/"..destination_number);
 				end
 			else
 				session:execute("set", "effective_caller_id_name="..caller_id_name);
