@@ -22,6 +22,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
 require_once "includes/config.php";
@@ -82,7 +83,7 @@ echo "<div align='center'>\n";
 
 echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 echo "<tr>\n";
-echo "<td align=\"left\" width='50%'>\n";
+echo "<td align=\"left\" width='100%'>\n";
 echo "	<b>Logs</b><br />\n";
 echo "</td>\n";
 echo "<td width='50%' align='right'>\n";
@@ -94,31 +95,177 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "<td colspan='2'>";
 
-echo "<br />\n\n";
-if (stristr(PHP_OS, 'WIN')) { 
-	//windows detected
-	//echo "<b>tail -n 1500 ".$v_log_dir."/".$v_name.".log</b><br />\n";
-	echo "<textarea id='log' name='log' style='width: 100%' rows='30' wrap='off'>\n";
-	echo tail($v_log_dir."/".$v_name.".log", 1500);
-	echo "</textarea>\n";
-}
-else {
-	//windows not detected
-	//echo "<b>tail -n 1500 ".$v_log_dir."/".$v_name.".log</b><br />\n";
-	echo "<textarea id='log' name='log' style='width: 100%' rows='30' style='' wrap='off'>\n";
-	echo shell_exec("tail -n 1500 ".$v_log_dir."/".$v_name.".log");
-	echo "</textarea>\n";
-}
-
-echo "</td>\n";
-echo "</tr>";
-
 if (permission_exists('log_path_view')) {
-	echo "<tr>\n";
-	echo "<td align=\"left\">\n";
-	echo $v_log_dir.'/'.$v_name.".log<br /><br />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	
+	$MAXEL = 3; //pattern2, pattern3|color2, color3 etc...
+
+	$user_filesize = '0';
+	$default_color = 'white';
+	$default_type = 'normal';
+	$default_font = 'monospace';
+	$background_color = 'black';
+	$default_fsize = '512000';
+	$logfile = "$v_log_dir/$v_name.log";
+
+	//put the color matches here...
+	$arr_filter[0]['pattern'] = '[NOTICE]';
+	$arr_filter[0]['color'] = 'cyan';
+	$arr_filter[0]['type'] = 'normal';
+	$arr_filter[0]['font'] = 'monospace';
+
+	$arr_filter[1]['pattern'] = '[INFO]';
+	$arr_filter[1]['color'] = 'chartreuse';
+	$arr_filter[1]['type'] = 'normal';
+	$arr_filter[1]['font'] = 'monospace';
+
+	$arr_filter[2]['pattern'] = 'Dialplan:';
+	$arr_filter[2]['color'] = 'burlywood';
+	$arr_filter[2]['type'] = 'normal';
+	$arr_filter[2]['font'] = 'monospace';
+	$arr_filter[2]['pattern2'] = 'Regex (PASS)';
+	$arr_filter[2]['color2'] = 'chartreuse';
+	$arr_filter[2]['pattern3'] = 'Regex (FAIL)';
+	$arr_filter[2]['color3'] = 'red';
+	
+	$arr_filter[3]['pattern'] = '[WARNING]';
+	$arr_filter[3]['color'] = 'fuchsia';
+	$arr_filter[3]['type'] = 'normal';
+	$arr_filter[3]['font'] = 'monospace';
+
+	$arr_filter[4]['pattern'] = '[ERROR]';
+	$arr_filter[4]['color'] = 'red';
+	$arr_filter[4]['type'] = 'bold';
+	$arr_filter[4]['font'] = 'monospace';
+
+	$arr_filter[5]['pattern'] = '[DEBUG]';
+	$arr_filter[5]['color'] = 'gold';
+	$arr_filter[5]['type'] = 'bold';
+	$arr_filter[5]['font'] = 'monospace';
+
+	$file_size = filesize($logfile);
+
+	echo "<body style=\"background-color:$background_color;color:$default_color;font-wieght:$default_type;font-family:$default_font\">";
+
+	echo "<table style=\"width: 100%\;\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">";
+	echo "<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">Adjust Log Display</th></tr>";
+	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\">";
+	
+	echo 'LogFile Size: ' . $file_size . ' bytes<br>';
+	
+	//user input here.
+	echo "Use below (in KiloBytes) to get the last KB of a logfile<br>";
+	echo "      Default is 512 KB<br>";
+	echo '</td>';
+	echo '<td style=\"text-align: left;\" class=\"rowstylebg;\" width=\"30%\">';
+	echo "<form action=\"v_log_viewer.php\" method=\"POST\">";
+	echo "<input type=\"text\" name=\"fs\">";
+	echo "<input type=\"submit\" name=\"submit\" value=\"reload\">";
+	echo '</td>';
+	echo '</tr></table><br>';
+	
+	echo "<table style=\"width: 100%\;\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">";
+	echo "<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">Syntax Highlighted Log Viewer</th></tr>";
+	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\">";
+	
+	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\">";
+
+	$user_filesize = '512000';
+	if (isset($_POST['submit'])) {
+		if (!is_numeric($_POST['fs'])){
+			echo "<font color=\"red\" face=\"bold\" size =\"5\">";
+			echo "Just what do you think you're doing, Dave?<br>";
+			echo "</font>";
+			//should generate log warning here...
+			$user_filesize='1000';
+		}
+		else {
+			$user_filesize = $_POST['fs'] * 1000;
+		}
+	}
+	echo "Getting last " . $user_filesize . " bytes.<br><HR>";
+
+	$file = fopen($logfile, "r") or exit("Unable to open file!");
+
+	//set pointer in file
+	if ($user_filesize >= '0') {
+		if ($user_filesize == '0'){
+			$user_filesize = $default_fsize;
+		}
+		if ( $file_size >= $user_filesize ){
+			//set an offset on fopen
+			$bytecount=$file_size-$user_filesize;
+			fseek($file, $bytecount);
+			//echo "opening at " . $bytecount . " bytes<br>";
+		}
+		else {
+			if ( $file_size >= $default_fsize ){
+				//set an offset on fopen
+				$bytecount=$file_size-$default_fsize;
+				fseek($file, $bytecount);
+				echo "opening at " . $bytecount . " bytes<br>";
+		}
+			else {
+				//just open the file
+				$bytecount='0';
+				fseek($file, 0);
+				echo "<br>opening entire file<br>";
+			}
+		}
+	}
+	else {
+		if ( $file_size >= $default_fsize ){
+			//set an offset on fopen
+			$bytecount=$file_size-$default_fsize;
+			fseek($file, $bytecount);
+			echo "opening at " . $bytecount . " bytes<br>";
+		}
+		else {
+			//just open the file
+			$bytecount='0';
+			fseek($file, 0);
+			echo "<br>opening entire file<br>";
+		}
+	}
+
+	//start processing
+	while(!feof($file))
+	{
+		$log_line = fgets($file);
+		$byte_count++;
+		$noprint = false;
+		foreach ($arr_filter as $v1) {
+			$pos = strpos($log_line, $v1['pattern']);
+			//echo "</br> POS is: '$pos'</br>";
+			if ($pos !== false){
+				//color adjustments on words in log line
+				for ($i=2; $i<=$MAXEL; $i++){
+					if (isset ($v1["pattern".$i])){
+						$log_line = str_replace($v1["pattern".$i], "<font color=\"{$v1["color".$i]}\">{$v1["pattern".$i]}</font>", $log_line);
+					}
+				}
+
+				echo "<font color=\"{$v1[color]}\" face=\"{$v1[font]}\">" ;
+				/* testing to see if style is what crashes firefox on large logfiles...
+				echo "<p style=\"font-weight: {$v1[type]};
+				color: {$v1[color]};
+				font-family:{$v1[font]};\">";*/
+				echo $log_line;
+				echo "</font><br>";
+				$noprint = true;
+			}
+		}
+		if ($noprint !== true){
+			//more firefox workaround...
+			//echo "<p style=\"background-color:$background_color;color:$default_color;font-wieght:$default_type;font-family:$default_font\">";
+			echo "<font color=\"$default_color\" face=\"$default_font\">" ;
+			echo $log_line;
+			//echo "</p>";	
+			echo "</font><br>";
+		}
+	}
+
+	fclose($file);
+	echo "</tr></td>";
 }
 
 echo "</table>\n";
