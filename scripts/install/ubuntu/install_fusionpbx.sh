@@ -2283,7 +2283,7 @@ fi
 if [ $? -ne 0 ]; then
 	/etc/init.d/freeswitch start
 else
-	/bin/echo"    DONE!"
+	/bin/echo "    DONE!"
 fi
 
 
