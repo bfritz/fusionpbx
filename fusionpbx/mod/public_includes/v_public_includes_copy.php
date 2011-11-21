@@ -113,11 +113,11 @@ else {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$v_id', ";
-			$sql .= "'$db_public_include_id', ";
-			$sql .= "'$tag', ";
-			$sql .= "'$fieldtype', ";
-			$sql .= "'$fielddata', ";
-			$sql .= "'$fieldorder' ";
+			$sql .= "'".check_str($db_public_include_id)."', ";
+			$sql .= "'".check_str($tag)."', ";
+			$sql .= "'".check_str($fieldtype)."', ";
+			$sql .= "'".check_str($fielddata)."', ";
+			$sql .= "'".check_str($fieldorder)."' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
