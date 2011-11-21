@@ -1771,6 +1771,19 @@ DELIM
 			/bin/echo "/etc/php5/fpm/php.ini already edited. Skipping..."
 		fi
 		
+		##Applying fix for cgi.fix_pathinfo
+		/bin/grep 'cgi\.fix_pathinfo=0' /etc/php5/fpm/php.ini > dev/null
+		if [ $? -ne 0 ]; then
+			/bin/sed -i -e s,';cgi\.fix_pathinfo=1','cgi\.fix_pathinfo=0', /etc/php5/fpm/php.ini
+			if [ $? -ne 0 ]; then
+				/bin/echo "ERROR: failed edit of /etc/php5/fpm/php.ini cgi.fix_pathinfo=0"
+				exit 1
+			fi
+		else
+			/bin/echo
+			/bin/echo "/etc/php5/fpm/php.ini already edited for cgi.fix_pathinfo. Skipping..."
+		fi
+		
 		#We don't need so many php children. 1 per core should be fine FOR NOW.
 		#/bin/sed -i -e s,"pm.max_children = 10","pm.max_children = 4", /etc/php5/fpm/php5-fpm.conf
 		
