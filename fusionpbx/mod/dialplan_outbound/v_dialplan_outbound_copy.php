@@ -113,11 +113,11 @@ else {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$v_id', ";
-				$sql .= "'$db_dialplan_include_id', ";
-				$sql .= "'$tag', ";
-				$sql .= "'$fieldorder', ";
-				$sql .= "'$fieldtype', ";
-				$sql .= "'$fielddata' ";
+				$sql .= "'".check_str($db_dialplan_include_id)."', ";
+				$sql .= "'".check_str($tag)."', ";
+				$sql .= "'".check_str($fieldorder)."', ";
+				$sql .= "'".check_str($fieldtype)."', ";
+				$sql .= "'".check_str($fielddata)."' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
