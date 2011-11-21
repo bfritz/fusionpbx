@@ -376,14 +376,18 @@ else
 					/bin/echo "removing old directory.  We'll need sudo password"
 					/usr/bin/sudo /bin/rm -R /var/www/fusionpbx
 					/bin/echo "running: sudo /usr/local/bin/install_fusionpbx install-fusionpbx user"
-					/usr/bin/sudo /usr/local/bin/install_fusionpbx install-fusionpbx user
+					/usr/bin/sudo cd /usr/src/ubuntu/
+					/usr/bin/sudo /usr/bin/svn update
+					/usr/bin/sudo chmod 755 /usr/src/ubuntu/install_fusionpbx.sh
+					/usr/bin/sudo /usr/local/bin/install_fusionpbx.sh install-fusionpbx user
 			
 			
 					/usr/bin/sudo /bin/rm /etc/fresh_fusion_install
 				;;
 			
 				*)
-					/bin/echo "OK. run install_fusionpbx for upgrade options..."
+					/bin/echo "OK. run install_fusionpbx.sh for upgrade options..."
+					/bin/echo "  You should also upgrade that script from svn (see wiki)"
 					/usr/bin/sudo /bin/rm /etc/fresh_fusion_install
 					/bin/echo "Thank you for Choosing FusionPBX"
 				;;
@@ -560,6 +564,15 @@ case "$YESNO" in
 esac
 
 /bin/echo
+/bin/echo "Setting up install_fusionpbx.sh as an svn pull"
+/bin/echo "  so we can upgrade the script post iso install,"
+/bin/echo "  before we pull down the latest fusionpbx."
+
+/bin/rm/install_fusionpbx*
+svn checkout https://fusionpbx.googlecode.com/svn/trunk/scripts/install/ubuntu/ /usr/src/
+chmod 755 /usr/src/ubuntu/install_fusionpbx.sh
+ln -s /usr/src/ubuntu/install_fusionpbx.sh /usr/local/bin/
+
 /bin/echo
 /bin/echo
 
