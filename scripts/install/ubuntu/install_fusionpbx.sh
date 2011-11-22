@@ -647,14 +647,14 @@ fi
 echo "Good, you are root."
 
 #check for 10.04 LTS Lucid
-lsb_release -a |grep -i lucid > /dev/null
+lsb_release -c |grep -i lucid > /dev/null
 #/bin/grep -i lucid /etc/lsb-release > /dev/null
 if [ $? -eq 0 ]; then
 	DISTRO=lucid
 	/bin/echo "Good, you're running Ubuntu 10.04 LTS codename Lucid"
 	/bin/echo
 else
-	lsb_release -a |grep -i sqeeze > /dev/null
+	lsb_release -c |grep -i sqeeze > /dev/null
 	if [ $? -eq 0 ]; then
 		DISTRO=squeeze
 		/bin/echo "OK you're running Debian Squeeze.  This script is known to work"
