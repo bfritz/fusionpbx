@@ -1772,7 +1772,7 @@ DELIM
 		fi
 		
 		##Applying fix for cgi.fix_pathinfo
-		/bin/grep 'cgi\.fix_pathinfo=0' /etc/php5/fpm/php.ini > dev/null
+		/bin/grep 'cgi\.fix_pathinfo=0' /etc/php5/fpm/php.ini > /dev/null
 		if [ $? -ne 0 ]; then
 			/bin/sed -i -e s,';cgi\.fix_pathinfo=1','cgi\.fix_pathinfo=0', /etc/php5/fpm/php.ini
 			if [ $? -ne 0 ]; then
