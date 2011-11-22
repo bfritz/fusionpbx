@@ -667,7 +667,7 @@ else
 		/bin/echo "This script was written for Ubuntu 10.04 LTS codename Lucid"
 		/bin/echo
 		/bin/echo "Your OS appears to be:"
-		/bin/cat /etc/lsb-release
+		lsb_release -a
 		read -p "Do you want to continue [y|n]? " CONTINUE
 	fi
 	case "$CONTINUE" in
