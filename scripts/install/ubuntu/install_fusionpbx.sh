@@ -654,7 +654,7 @@ if [ $? -eq 0 ]; then
 	/bin/echo "Good, you're running Ubuntu 10.04 LTS codename Lucid"
 	/bin/echo
 else
-	lsb_release -c |grep -i sqeeze > /dev/null
+	lsb_release -c |grep -i squeeze > /dev/null
 	if [ $? -eq 0 ]; then
 		DISTRO=squeeze
 		/bin/echo "OK you're running Debian Squeeze.  This script is known to work"
@@ -669,18 +669,19 @@ else
 		/bin/echo "Your OS appears to be:"
 		lsb_release -a
 		read -p "Do you want to continue [y|n]? " CONTINUE
-	fi
-	case "$CONTINUE" in
-	  [yY]*)
-	    /bin/echo "Ok, this doesn't always work..,"
-	    /bin/echo "  but we'll give it a go."
-	  ;;
 	
-	  *)
-		/bin/echo "Quitting."
-		exit 1
-	  ;;
-	esac
+		case "$CONTINUE" in
+		[yY]*)
+			/bin/echo "Ok, this doesn't always work..,"
+			/bin/echo "  but we'll give it a go."
+		;;
+	
+		*)
+			/bin/echo "Quitting."
+			exit 1
+		;;
+		esac
+	fi
 fi
 
 #check for internet connection
@@ -1723,10 +1724,12 @@ DELIM
 			else
 				/bin/echo "adding dotdeb repository for php5-fpm and nginx"
 				/bin/echo "deb http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list
-				/bin/wget http://www.dotdeb.org/dotdeb.gpgcat dotdeb.gpg | sudo apt-key add - 
-				/bin/rm dotdeb.gpg
+				/usr/bin/wget -O /tmp/dotdeb.gpg http://www.dotdeb.org/dotdeb.gpg 
+				/bin/cat /tmp/dotdeb.gpg | apt-key add - 
+				/bin/rm /tmp/dotdeb.gpg
 				/usr/bin/apt-get update
 			fi
+			
 		else
 			#add-apt-repository ppa:brianmercer/php  // apt-get -y install python-software-properties	
 			#Add php5-fpm ppa to the list
@@ -1790,12 +1793,12 @@ DELIM
 		#/bin/sed -i -e s,"upload_max_filesize = 2M","upload_max_filesize = 10M", /etc/php5/fpm/php.ini
 		
 		if [ $DISTRO = "squeeze" ]; then
-			PHPINIFILE = "/etc/php5/fpm/php.ini"
-			PHPCONFFILE = "/etc/php5/fpm/php-fpm.conf"
+			PHPINIFILE="/etc/php5/fpm/php.ini"
+			PHPCONFFILE="/etc/php5/fpm/php-fpm.conf"
 		else
-			PHPINIFILE = "/etc/php5/fpm/php.ini"
-			PHPCONFFILE = "/etc/php5/fpm/php5-fpm.conf"
-				
+			PHPINIFILE="/etc/php5/fpm/php.ini"
+			PHPCONFFILE="/etc/php5/fpm/php5-fpm.conf"
+		fi
 		/bin/grep 10M /etc/php5/fpm/php.ini > /dev/null
 		if [ $? -ne 0 ]; then
 			/bin/sed -i -e s,"upload_max_filesize = 2M","upload_max_filesize = 10M", $PHPINIFILE
