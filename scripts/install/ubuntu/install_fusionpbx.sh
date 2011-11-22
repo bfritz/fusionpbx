@@ -644,20 +644,30 @@ fi
 echo "Good, you are root."
 
 #check for 10.04 LTS Lucid
-/bin/grep -i lucid /etc/lsb-release > /dev/null
+lsb_release -a |grep -i lucid > /dev/null
+#/bin/grep -i lucid /etc/lsb-release > /dev/null
 if [ $? -eq 0 ]; then
 	/bin/echo "Good, you're running Ubuntu 10.04 LTS codename Lucid"
 	/bin/echo
 else
-	/bin/echo 
-	/bin/echo "This script was written for Ubuntu 10.04 LTS codename Lucid"
-	/bin/echo
-	/bin/echo "Your OS appears to be:"
-	/bin/cat /etc/lsb-release
-	read -p "Do you want to continue [y|n]? " CONTINUE
+	lsb_release -a |grep -i sqeeze > /dev/null
+	if [ $? -eq 0 ]; then
+		/bin/echo "OK you're running Debian Squeeze.  This script is known to work"
+		/bin/echo "   with apache and mysql|sqlite options"
+		/bin/echo "   Please consider providing feedback on repositories for nginx"
+		/bin/echo "   and php-fpm."
+		/bin/echo 
+		CONTINUE=YES
+	else
+		/bin/echo "This script was written for Ubuntu 10.04 LTS codename Lucid"
+		/bin/echo
+		/bin/echo "Your OS appears to be:"
+		/bin/cat /etc/lsb-release
+		read -p "Do you want to continue [y|n]? " CONTINUE
+	fi
 	case "$CONTINUE" in
 	  [yY]*)
-	    /bin/echo "Ok, this didn't work last time we tested on Ubuntu 10.10,"
+	    /bin/echo "Ok, this doesn't always work..,"
 	    /bin/echo "  but we'll give it a go."
 	  ;;
 	
