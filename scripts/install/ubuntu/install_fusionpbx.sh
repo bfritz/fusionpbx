@@ -47,6 +47,9 @@ RMOPT=y
 # use freedtm/dahdi? y/n
 DO_DAHDI=n
 
+# default distro
+DISTRO=lucid
+
 #below is a list of modules we want to add to provide functionality for FusionPBX
 #don't worry about the applications/mod_ format.  This script will find that in modules.conf
 #PAY ATTENTION TO THE SPACES POST AND PRE PARENTHESIS
@@ -647,11 +650,13 @@ echo "Good, you are root."
 lsb_release -a |grep -i lucid > /dev/null
 #/bin/grep -i lucid /etc/lsb-release > /dev/null
 if [ $? -eq 0 ]; then
+	DISTRO=lucid
 	/bin/echo "Good, you're running Ubuntu 10.04 LTS codename Lucid"
 	/bin/echo
 else
 	lsb_release -a |grep -i sqeeze > /dev/null
 	if [ $? -eq 0 ]; then
+		DISTRO=squeeze
 		/bin/echo "OK you're running Debian Squeeze.  This script is known to work"
 		/bin/echo "   with apache and mysql|sqlite options"
 		/bin/echo "   Please consider providing feedback on repositories for nginx"
@@ -1708,50 +1713,66 @@ DELIM
 						exit 1
 					;;
 				esac
-			
-
-			
-		fi
-	
-		#add-apt-repository ppa:brianmercer/php  // apt-get -y install python-software-properties	
-		#Add php5-fpm ppa to the list
-		/bin/grep brianmercer /etc/apt/sources.list > /dev/null
-		if [ $? -eq 0 ]; then
-			/bin/echo "php-fpm ppa already add the old way. Fixing"
-			/bin/sed -i -e s,'deb http://ppa.launchpad.net/brianmercer/php/ubuntu lucid main',, /etc/apt/sources.list
-			/usr/bin/apt-add-repository ppa:brianmercer/php
-		
-		elif [ ! -e /etc/apt/sources.list.d./brianmercer-php-lucid.list ]; then
-			/bin/echo "Adding PPA for php-fpm"
-			#/bin/echo "deb http://ppa.launchpad.net/brianmercer/php/ubuntu lucidmain" >> /etc/apt/sources.list
-			#/usr/bin/apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8D0DC64F
-			/usr/bin/apt-add-repository ppa:brianmercer/php
-			
-		else
-			/bin/echo "php-fpm ppa already added."
 		fi
 		
-		#Add NGINX-ppa to src list.
-		/bin/grep nginx /etc/apt/sources.list > /dev/null
-		if [ $? -ne 0 ]; then
-			/bin/echo "nginx ppa already add the old way. Fixing"
-			/bin/sed -i -e s,'deb http://ppa.launchpad.net/nginx/stable/ubuntu lucid main',, /etc/apt/sources.list
-			/usr/bin/apt-add-repository ppa:nginx/stable
-		
-		elif [ ! -e /etc/apt/sources.list.d./nginx-stable-lucid.list ]; then 
-			/bin/echo "Adding PPA for latest nginx"
-			/usr/bin/apt-add-repository ppa:nginx/stable
-			#/bin/echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu lucid main" >> /etc/apt/sources.list	
-			#/usr/bin/apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C
-
+		if [ $DISTRO = "squeeze" ]; then
+			#setup debian repos for nginx/php5-fpm
+			/bin/grep "deb http://packages.dotdeb.org squeeze all" /etc/apt/sources.list > /dev/null
+			if [ $? -eq 0 ]; then
+				/bin/echo "dotdeb repo already added for php5-fpm and nginx"
+			else
+				/bin/echo "adding dotdeb repository for php5-fpm and nginx"
+				/bin/echo "deb http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list
+				/bin/wget http://www.dotdeb.org/dotdeb.gpgcat dotdeb.gpg | sudo apt-key add - 
+				/bin/rm dotdeb.gpg
+				/usr/bin/apt-get update
+			fi
 		else
-			/bin/echo "nginx ppa already added"
+			#add-apt-repository ppa:brianmercer/php  // apt-get -y install python-software-properties	
+			#Add php5-fpm ppa to the list
+			/bin/grep brianmercer /etc/apt/sources.list > /dev/null
+			if [ $? -eq 0 ]; then
+				/bin/echo "php-fpm ppa already add the old way. Fixing"
+				/bin/sed -i -e s,'deb http://ppa.launchpad.net/brianmercer/php/ubuntu lucid main',, /etc/apt/sources.list
+				/usr/bin/apt-add-repository ppa:brianmercer/php
+			
+			elif [ ! -e /etc/apt/sources.list.d./brianmercer-php-lucid.list ]; then
+				/bin/echo "Adding PPA for php-fpm"
+				#/bin/echo "deb http://ppa.launchpad.net/brianmercer/php/ubuntu lucidmain" >> /etc/apt/sources.list
+				#/usr/bin/apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8D0DC64F
+				/usr/bin/apt-add-repository ppa:brianmercer/php
+			
+			else
+				/bin/echo "php-fpm ppa already added."
+			fi
+		
+			#Add NGINX-ppa to src list.
+			/bin/grep nginx /etc/apt/sources.list > /dev/null
+			if [ $? -ne 0 ]; then
+				/bin/echo "nginx ppa already add the old way. Fixing"
+				/bin/sed -i -e s,'deb http://ppa.launchpad.net/nginx/stable/ubuntu lucid main',, /etc/apt/sources.list
+				/usr/bin/apt-add-repository ppa:nginx/stable
+			
+			elif [ ! -e /etc/apt/sources.list.d./nginx-stable-lucid.list ]; then 
+				/bin/echo "Adding PPA for latest nginx"
+				/usr/bin/apt-add-repository ppa:nginx/stable
+				#/bin/echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu lucid main" >> /etc/apt/sources.list	
+				#/usr/bin/apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C
+
+			else
+				/bin/echo "nginx ppa already added"
+			fi
 		fi
 					
 		/usr/bin/apt-get update && /usr/bin/apt-get upgrade -y
 		/usr/bin/apt-get -y install nginx
 			#installs libgd2-noxpm libxslt1.1 nginx nginx-full
-		/usr/bin/apt-get -y install php5-fpm php5-common php5-gd php-pear php5-memcache php-apc
+		
+		if [ $DISTRO = "squeeze" ]; then
+			/usr/bin/apt-get -y install php5-fpm php5-common php5-gd php-pear php5-memcache php5-apc php5-sqlite
+		else
+			/usr/bin/apt-get -y install php5-fpm php5-common php5-gd php-pear php5-memcache php-apc
+		fi
 			#removes: libgd2-noxpm
 			#installs: fontconfig-config libevent-1.4-2 libfontconfig1 libgd2-xpm libt1-5 libxpm4 php-apc php-pear php5-fpm php5-gd php5-memcache ttf-dejavu-core
 		#Create your mysql root password. Give it to phpmyadmin.
@@ -1768,12 +1789,19 @@ DELIM
 		#Upload bigger files.
 		#/bin/sed -i -e s,"upload_max_filesize = 2M","upload_max_filesize = 10M", /etc/php5/fpm/php.ini
 		
+		if [ $DISTRO = "squeeze" ]; then
+			PHPINIFILE = "/etc/php5/fpm/php.ini"
+			PHPCONFFILE = "/etc/php5/fpm/php-fpm.conf"
+		else
+			PHPINIFILE = "/etc/php5/fpm/php.ini"
+			PHPCONFFILE = "/etc/php5/fpm/php5-fpm.conf"
+				
 		/bin/grep 10M /etc/php5/fpm/php.ini > /dev/null
 		if [ $? -ne 0 ]; then
-			/bin/sed -i -e s,"upload_max_filesize = 2M","upload_max_filesize = 10M", /etc/php5/fpm/php.ini
+			/bin/sed -i -e s,"upload_max_filesize = 2M","upload_max_filesize = 10M", $PHPINIFILE
 			if [ $? -ne 0 ]; then
 				#previous had an error
-				/bin/echo "ERROR: failed edit of /etc/php5/fpm/php.ini upload_max_filesize = 10M."
+				/bin/echo "ERROR: failed edit of $PHPINIFILE upload_max_filesize = 10M."
 				exit 1
 			fi
 		else
@@ -1782,9 +1810,9 @@ DELIM
 		fi
 		
 		##Applying fix for cgi.fix_pathinfo
-		/bin/grep 'cgi\.fix_pathinfo=0' /etc/php5/fpm/php.ini > /dev/null
+		/bin/grep 'cgi\.fix_pathinfo=0' $PHPINIFILE > /dev/null
 		if [ $? -ne 0 ]; then
-			/bin/sed -i -e s,';cgi\.fix_pathinfo=1','cgi\.fix_pathinfo=0', /etc/php5/fpm/php.ini
+			/bin/sed -i -e s,';cgi\.fix_pathinfo=1','cgi\.fix_pathinfo=0', $PHPINIFILE
 			if [ $? -ne 0 ]; then
 				/bin/echo "ERROR: failed edit of /etc/php5/fpm/php.ini cgi.fix_pathinfo=0"
 				exit 1
@@ -1797,9 +1825,9 @@ DELIM
 		#We don't need so many php children. 1 per core should be fine FOR NOW.
 		#/bin/sed -i -e s,"pm.max_children = 10","pm.max_children = 4", /etc/php5/fpm/php5-fpm.conf
 		
-		/bin/grep "pm.max_children = 4" /etc/php5/fpm/php5-fpm.conf > /dev/null
+		/bin/grep "pm.max_children = 4" $PHPCONFFILE > /dev/null
 		if [ $? -ne 0 ]; then
-			/bin/sed -i -e s,"pm.max_children = 10","pm.max_children = 4", /etc/php5/fpm/php5-fpm.conf
+			/bin/sed -i -e s,"pm.max_children = 10","pm.max_children = 4", $PHPCONFFILE
 			if [ $? -ne 0 ]; then
 				#previous had an error
 				/bin/echo "ERROR: failed edit of /etc/php5/fpm/php5-fpm.conf pm.max_children = 4"
