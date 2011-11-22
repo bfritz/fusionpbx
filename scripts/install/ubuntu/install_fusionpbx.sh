@@ -646,9 +646,28 @@ if [ $EUID -ne 0 ]; then
 fi
 echo "Good, you are root."
 
+if [ ! -s /usr/bin/lsb_release ]; then
+	/bin/echo "Tell your upstream distro to include lsb_release"
+	/bin/echo
+	apt-get upgrade && apt-get -y install lsb-release
+fi
+	
+#check for internet connection
+/usr/bin/wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
+if [ ! -s /tmp/index.google ];then
+	echo "No Internet connection. Exiting."
+	/bin/rm /tmp/index.google
+	exit 1
+else
+	echo "Internet connection is working, continuing!"
+	/bin/rm /tmp/index.google
+fi
+
+
 #check for 10.04 LTS Lucid
-lsb_release -c |grep -i lucid > /dev/null
+
 #/bin/grep -i lucid /etc/lsb-release > /dev/null
+lsb_release -c |grep -i lucid > /dev/null
 if [ $? -eq 0 ]; then
 	DISTRO=lucid
 	/bin/echo "Good, you're running Ubuntu 10.04 LTS codename Lucid"
@@ -658,7 +677,7 @@ else
 	if [ $? -eq 0 ]; then
 		DISTRO=squeeze
 		/bin/echo "OK you're running Debian Squeeze.  This script is known to work"
-		/bin/echo "   with apache and mysql|sqlite options"
+		/bin/echo "   with apache/nginx and mysql|sqlite|postgres8 options"
 		/bin/echo "   Please consider providing feedback on repositories for nginx"
 		/bin/echo "   and php-fpm."
 		/bin/echo 
@@ -684,16 +703,7 @@ else
 	fi
 fi
 
-#check for internet connection
-/usr/bin/wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
-if [ ! -s /tmp/index.google ];then
-	echo "No Internet connection. Exiting."
-	/bin/rm /tmp/index.google
-	exit 1
-else
-	echo "Internet connection is working, continuing!"
-	/bin/rm /tmp/index.google
-fi
+
 
 #----------------------
 #END ENVIRONMENT CHECKS
