@@ -1728,18 +1728,13 @@ DELIM
 		
 		if [ $DISTRO = "squeeze" ]; then
 			#setup debian repos for nginx/php5-fpm
-			#/bin/grep "deb http://packages.dotdeb.org squeeze all" /etc/apt/sources.list > /dev/null
-			#if [ $? -eq 0 ]; then
-				/bin/echo "dotdeb repo already added for php5-fpm and nginx"
-			#else
-				/bin/echo "adding dotdeb repository for php5-fpm and nginx"
-				/bin/echo "deb http://packages.dotdeb.org squeeze all" > /etc/apt/sources.list.d/squeeze-dotdeb.list
-				/usr/bin/wget -O /tmp/dotdeb.gpg http://www.dotdeb.org/dotdeb.gpg 
-				/bin/cat /tmp/dotdeb.gpg | apt-key add - 
-				/bin/rm /tmp/dotdeb.gpg
-				/usr/bin/apt-get update
-			#fi
-			
+			/bin/echo "adding dotdeb repository for php5-fpm and nginx"
+			/bin/echo "deb http://packages.dotdeb.org squeeze all" > /etc/apt/sources.list.d/squeeze-dotdeb.list
+			/usr/bin/wget -O /tmp/dotdeb.gpg http://www.dotdeb.org/dotdeb.gpg 
+			/bin/cat /tmp/dotdeb.gpg | apt-key add - 
+			/bin/rm /tmp/dotdeb.gpg
+			/usr/bin/apt-get update
+
 		else
 			#add-apt-repository ppa:brianmercer/php  // apt-get -y install python-software-properties	
 			#Add php5-fpm ppa to the list
@@ -1786,22 +1781,7 @@ DELIM
 		else
 			/usr/bin/apt-get -y install php5-fpm php5-common php5-gd php-pear php5-memcache php-apc
 		fi
-			#removes: libgd2-noxpm
-			#installs: fontconfig-config libevent-1.4-2 libfontconfig1 libgd2-xpm libt1-5 libxpm4 php-apc php-pear php5-fpm php5-gd php5-memcache ttf-dejavu-core
-		#Create your mysql root password. Give it to phpmyadmin.
-		#apt-get -y install mysql-server php5-mysql mysql-client  sqlite3 php5-sqlite
-		#no mysql
-		
 
-		#Want phpmyadmin?
-		#apt-get -y install phpmyadmin
-		#update auto-starts ###PHP5-fpm and nginx are wrong??
-		#/etc/init.d/apache2 stop
-		#update-rc.d -f apache2 remove
-
-		#Upload bigger files.
-		#/bin/sed -i -e s,"upload_max_filesize = 2M","upload_max_filesize = 10M", /etc/php5/fpm/php.ini
-		
 		if [ $DISTRO = "squeeze" ]; then
 			PHPINIFILE="/etc/php5/fpm/php.ini"
 			PHPCONFFILE="/etc/php5/fpm/php-fpm.conf"
@@ -2036,7 +2016,7 @@ DELIM
 				/bin/echo "Adding debian backports for postgres9.1"
 				/bin/echo "deb http://backports.debian.org/debian-backports squeeze-backports main" > /etc/apt/sources.list.d/squeeze-backports.list
 				/usr/bin/apt-get update
-				/usr/bin/apt-get -t squeeze-backports install postgresql-9.1 php5-pgsql
+				/usr/bin/apt-get -y -t squeeze-backports install postgresql-9.1 php5-pgsql
 			else
 				#add the ppa
 				/usr/bin/apt-add-repository ppa:pitti/postgresql
