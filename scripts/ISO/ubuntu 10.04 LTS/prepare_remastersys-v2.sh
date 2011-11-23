@@ -99,27 +99,39 @@ if [ $EUID -ne 0 ]; then
 fi
 echo "Good, you are root."
 
-/bin/grep -i lucid /etc/lsb-release > /dev/null
+#/bin/grep -i lucid /etc/lsb-release > /dev/null
+lsb_release -c |grep -i lucid > /dev/null
 if [ $? -eq 0 ]; then
 	/bin/echo "Good, you're running Ubuntu 10.04 LTS codename Lucid"
 	/bin/echo
 else
-	/bin/echo 
-	/bin/echo "This script was written for Ubuntu 10.04 LTS codename Lucid"
-	/bin/echo
-	/bin/echo "Your OS appears to be:"
-	/bin/cat /etc/lsb-release
-	read -p "Do you want to continue [y|n]? " CONTINUE
-	case "$CONTINUE" in
-	  [yY]*)
-	      /bin/echo "This is completely untested. Good Luck!"
-	      /bin/echo "Please let us know if it works."
-	  ;;
-	  *)
-	      /bin/echo "OK. Quitting"
-	      exit 1
-	  ;;
-	esac
+	lsb_release -c |grep -i squeeze > /dev/null
+	if [ $? -eq 0 ]; then
+		DISTRO=squeeze
+		/bin/echo "OK you're running Debian Squeeze.  This script is known to work"
+		/bin/echo "   with apache/nginx and mysql|sqlite|postgres8 options"
+		/bin/echo "   Please consider providing feedback on repositories for nginx"
+		/bin/echo "   and php-fpm."
+		/bin/echo 
+		CONTINUE=YES
+	else
+		/bin/echo 
+		/bin/echo "This script was written for Ubuntu 10.04 LTS codename Lucid"
+		/bin/echo
+		/bin/echo "Your OS appears to be:"
+		/bin/cat /etc/lsb-release
+		read -p "Do you want to continue [y|n]? " CONTINUE
+		case "$CONTINUE" in
+		  [yY]*)
+		      /bin/echo "This is completely untested. Good Luck!"
+		      /bin/echo "Please let us know if it works."
+		  ;;
+		  *)
+		      /bin/echo "OK. Quitting"
+		      exit 1
+		  ;;
+		esac
+	fi
 fi
 
 #check for internet connection
@@ -134,27 +146,31 @@ else
 fi
 
 
-if [ ! -e /usr/local/bin/install_fusionpbx ]; then 
-	ls /usr/local/bin/install_fusionpbx* > /dev/null
-	if [ $? -eq 0 ]; then 
-		/bin/echo "install_fusionpbx script needs to be renamed"
-		/bin/echo " to install_fusionpbx"
-		/bin/echo "  LEAVE OFF the vx.y.z.sh STUFF"
-		/bin/echo " exiting"
-		exit 1
-	fi
-fi
+#if [ ! -e /usr/local/bin/install_fusionpbx ]; then 
+#	ls /usr/local/bin/install_fusionpbx* > /dev/null
+#	if [ $? -eq 0 ]; then 
+#		/bin/echo "install_fusionpbx script needs to be renamed"
+#		/bin/echo " to install_fusionpbx"
+#		/bin/echo "  LEAVE OFF the vx.y.z.sh STUFF"
+#		/bin/echo " exiting"
+#		exit 1
+#	fi
+#fi
 
-/bin/grep remastersys /etc/apt/sources.list > /dev/null
-if [ $? -ne 0 ]; then
-	#add the following 
-	/bin/echo "add remastersys to sources"
-	/bin/echo "#for remastersys" >> /etc/apt/sources.list
-	/bin/echo "deb http://www.geekconnection.org/remastersys/repository karmic/" >> /etc/apt/sources.list
+if [ $DISTRO = "squeeze" ]; then
+	echo "add remastersys for deb to sources.list.d"
+	echo "deb http://www.geekconnection.org/remastersys/repository squeeze/" > /etc/apt/sources.list.d/remastersys.list
 else
-	/bin/echo "Remastersys already added to sources.list"
+#	/bin/grep remastersys /etc/apt/sources.list > /dev/null
+#	if [ $? -ne 0 ]; then
+#		#add the following 
+		/bin/echo "add remastersys to sources"
+#		/bin/echo "#for remastersys" >> /etc/apt/sources.list
+		/bin/echo "deb http://www.geekconnection.org/remastersys/repository karmic/" >> /etc/apt/sources.list.d/remastersys.list
+#	else
+#		/bin/echo "Remastersys already added to sources.list"
+#	fi
 fi
-
 /usr/bin/apt-get update
 #remastersys unauthenticated --force-yes
 /usr/bin/apt-get -y --force-yes install remastersys xinit
@@ -167,7 +183,21 @@ fi
 /bin/rm /usr/local/bin/motd_fusionpbx
 #else
 	/bin/echo "create motd"
+if [ $DISTRO = "squeeze" ]; then
+	MOTDFILE="/etc/motd.tail"
+	/bin/cat >> /etc/motd.tail <<'DELIM'
+Thank you for trying FusionPBX and FreeSWITCH
+Help: IRC #fusionpbx on FreeNode
+      www.fusionpbx.com
+The FreeSWITCH src was left off to save space.
+Git/build the latest by running
+  sudo install_fusionpbx install-freeswitch user
 
+Upgrade FusionPBX
+  sudo install_fusionpbx upgrade-fusionpbx user
+
+DELIM
+else
 	/bin/cat > /usr/local/bin/motd_fusionpbx <<'DELIM'
 #!/bin/bash
 # motd_fusionpbx
@@ -204,14 +234,13 @@ fi
 #/bin/echo "Donate to FreeSWITCH: http://bit.ly/donate_freeswitch"
 #/bin/echo
 DELIM
-#fi
-/bin/chmod 755 /usr/local/bin/motd_fusionpbx
-
-/bin/rm /etc/update-motd.d/99-z-motd-fusionpbx
-
-/bin/ln -s /usr/local/bin/motd_fusionpbx /etc/update-motd.d/99-z-motd-fusionpbx
-/bin/echo "motd linked"
-
+fi
+if [ $DISTRO != "squeeze" ]; then
+	/bin/chmod 755 /usr/local/bin/motd_fusionpbx
+	/bin/rm /etc/update-motd.d/99-z-motd-fusionpbx
+	/bin/ln -s /usr/local/bin/motd_fusionpbx /etc/update-motd.d/99-z-motd-fusionpbx
+	/bin/echo "motd linked"
+fi
 #/bin/echo "overwrite remastersys defaults"
 #/bin/tar -xzvf  remastersys_conf.tar.gz -C /etc/
 #/bin/echo "overwrite skel"
@@ -479,9 +508,11 @@ if [ -a /etc/remastersys/isolinux/splash.png.orig ]; then
 else
 	/bin/mv /etc/remastersys/isolinux/splash.png /etc/remastersys/isolinux/splash.png.orig
 fi
-
-wget http://sourceforge.net/projects/fusionpbxinstal/files/img/fusion_splash.png -O splash.png
-
+if [ $DISTRO = "squeeze" ]; then
+	wget http://sourceforge.net/projects/fusionpbxinstal/files/img/splash-screen-debian.png -O splash.png
+else
+	wget http://sourceforge.net/projects/fusionpbxinstal/files/img/splash-screen-ubuntu.png -O splash.png
+fi
 #set up gconf skel now...
 #this sets the background image for the desktop
 /bin/mkdir -p /etc/skel/.gconf/desktop/gnome/background
@@ -527,22 +558,42 @@ DELIM
 
 #set up /etc/remastersys.conf
 
-#32 bit or 64 bit
-/bin/uname -a | /bin/grep x86_64 > /dev/null
-if [ $? -eq 0 ]; then
-	/bin/echo "64 bit machine"
-	/bin/sed -i /etc/remastersys.conf \
-		-e s:^LIVEUSER=.*$:'LIVEUSER="fusionpbx"':g \
-		-e s:^LIVECDLABEL=.*$:'LIVECDLABEL="FusionPBX Ubuntu ISO 64 BIT"':g \
-		-e s:^CUSTOMISO=.*$:'CUSTOMISO="fusionpbx_ub_x86_64-beta-`date +%F`.iso"':g \
-		-e s,^LIVECDURL=.*$,'LIVECDURL="http://www.fusionpbx.com"',g 
-else	
-	/bin/echo "32 bit machine"
-	/bin/sed -i /etc/remastersys.conf \
-		-e s:^LIVEUSER=.*$:'LIVEUSER="fusionpbx"':g \
-		-e s:^LIVECDLABEL=.*$:'LIVECDLABEL="FusionPBX Ubuntu ISO 32 BIT"':g \
-		-e s:^CUSTOMISO=.*$:'CUSTOMISO="fusionpbx_ub_i386-beta-`date +%F`.iso"':g \
-		-e s,^LIVECDURL=.*$,'LIVECDURL="http://www.fusionpbx.com"',g 
+if [ $DISTRO = "squeeze" ]; then
+        #32 bit or 64 bit
+        /bin/uname -a | /bin/grep x86_64 > /dev/null
+        if [ $? -eq 0 ]; then
+                /bin/echo "64 bit machine"
+                /bin/sed -i /etc/remastersys.conf \
+                        -e s:^LIVEUSER=.*$:'LIVEUSER="fusionpbx"':g \
+                        -e s:^LIVECDLABEL=.*$:'LIVECDLABEL="FusionPBX Debian ISO 64 BIT"':g \
+                        -e s:^CUSTOMISO=.*$:'CUSTOMISO="fusionpbx_deb_x86_64-beta-`date +%F`.iso"':g \
+                        -e s,^LIVECDURL=.*$,'LIVECDURL="http://www.fusionpbx.com"',g
+        else
+                /bin/echo "32 bit machine"
+                /bin/sed -i /etc/remastersys.conf \
+                        -e s:^LIVEUSER=.*$:'LIVEUSER="fusionpbx"':g \
+                        -e s:^LIVECDLABEL=.*$:'LIVECDLABEL="FusionPBX Debian ISO 32 BIT"':g \
+                        -e s:^CUSTOMISO=.*$:'CUSTOMISO="fusionpbx_deb_i386-beta-`date +%F`.iso"':g \
+                        -e s,^LIVECDURL=.*$,'LIVECDURL="http://www.fusionpbx.com"',g
+        fi
+else
+	#32 bit or 64 bit
+	/bin/uname -a | /bin/grep x86_64 > /dev/null
+	if [ $? -eq 0 ]; then
+		/bin/echo "64 bit machine"
+		/bin/sed -i /etc/remastersys.conf \
+			-e s:^LIVEUSER=.*$:'LIVEUSER="fusionpbx"':g \
+			-e s:^LIVECDLABEL=.*$:'LIVECDLABEL="FusionPBX Ubuntu ISO 64 BIT"':g \
+			-e s:^CUSTOMISO=.*$:'CUSTOMISO="fusionpbx_ub_x86_64-beta-`date +%F`.iso"':g \
+			-e s,^LIVECDURL=.*$,'LIVECDURL="http://www.fusionpbx.com"',g 
+	else	
+		/bin/echo "32 bit machine"
+		/bin/sed -i /etc/remastersys.conf \
+			-e s:^LIVEUSER=.*$:'LIVEUSER="fusionpbx"':g \
+			-e s:^LIVECDLABEL=.*$:'LIVECDLABEL="FusionPBX Ubuntu ISO 32 BIT"':g \
+			-e s:^CUSTOMISO=.*$:'CUSTOMISO="fusionpbx_ub_i386-beta-`date +%F`.iso"':g \
+			-e s,^LIVECDURL=.*$,'LIVECDURL="http://www.fusionpbx.com"',g 
+	fi
 fi
 	
 /bin/echo "/usr/src/freeswitch is a very large directory."
