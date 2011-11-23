@@ -1728,17 +1728,17 @@ DELIM
 		
 		if [ $DISTRO = "squeeze" ]; then
 			#setup debian repos for nginx/php5-fpm
-			/bin/grep "deb http://packages.dotdeb.org squeeze all" /etc/apt/sources.list > /dev/null
-			if [ $? -eq 0 ]; then
+			#/bin/grep "deb http://packages.dotdeb.org squeeze all" /etc/apt/sources.list > /dev/null
+			#if [ $? -eq 0 ]; then
 				/bin/echo "dotdeb repo already added for php5-fpm and nginx"
-			else
+			#else
 				/bin/echo "adding dotdeb repository for php5-fpm and nginx"
-				/bin/echo "deb http://packages.dotdeb.org squeeze all" >> /etc/apt/sources.list
+				/bin/echo "deb http://packages.dotdeb.org squeeze all" > /etc/apt/sources.list.d/squeeze-dotdeb.list
 				/usr/bin/wget -O /tmp/dotdeb.gpg http://www.dotdeb.org/dotdeb.gpg 
 				/bin/cat /tmp/dotdeb.gpg | apt-key add - 
 				/bin/rm /tmp/dotdeb.gpg
 				/usr/bin/apt-get update
-			fi
+			#fi
 			
 		else
 			#add-apt-repository ppa:brianmercer/php  // apt-get -y install python-software-properties	
@@ -2031,10 +2031,18 @@ DELIM
 		
 		if [ $POSTGRES9 == "9" ]; then
 			/bin/echo " version 9.1"
-			#add the ppa
-			/usr/bin/apt-add-repository ppa:pitti/postgresql
-			/usr/bin/apt-get update
-			/usr/bin/apt-get -y install postgresql-9.1 php5-pgsql
+			if [ $DISTRO = "squeeze" ]; then
+				#add squeeze repo
+				/bin/echo "Adding debian backports for postgres9.1"
+				/bin/echo "deb http://backports.debian.org/debian-backports squeeze-backports main" > /etc/apt/sources.list.d/squeeze-backports.list
+				/usr/bin/apt-get update
+				/usr/bin/apt-get -t squeeze-backports install postgresql-9.1 php5-pgsql
+			else
+				#add the ppa
+				/usr/bin/apt-add-repository ppa:pitti/postgresql
+				/usr/bin/apt-get update
+				/usr/bin/apt-get -y install postgresql-9.1 php5-pgsql
+			fi
 		else
 			/bin/echo " version 8.4"
 			/usr/bin/apt-get -y install postgresql php5-pgsql
