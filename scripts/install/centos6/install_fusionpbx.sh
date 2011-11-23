@@ -248,8 +248,11 @@ chkconfig postgresql on
 # and finally lets fix up IPTables so things works correctly
 
 #Block 'friendly-scanner' AKA sipvicious
-iptables -I INPUT -j DROP -p udp --dport 5060 -m string --string "friendly-scanner" --algo bm
-iptables -I INPUT -j DROP -p udp --dport 5080 -m string --string "friendly-scanner" --algo bm
+iptables -I INPUT -p udp --dport 5060 -m string --string "friendly-scanner" --algo bm -j DROP
+iptables -I INPUT -p udp --dport 5080 -m string --string "friendly-scanner" --algo bm -j DROP
+
+#rate limit registrations to keep us from getting hammered on
+iptables -I INPUT -m string --string "REGISTER sip:" --algo bm --to 65 -m hashlimit --hashlimit 4/minute --hashlimit-burst 1 --hashlimit-mode srcip,dstport --hashlimit-name sip_r_limit -j ACCEPT
 
 # FreeSwitch ports internal SIP profile
 iptables -I INPUT -p udp -m udp --dport 5060 -j ACCEPT
