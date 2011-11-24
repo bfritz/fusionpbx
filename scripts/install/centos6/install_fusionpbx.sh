@@ -31,17 +31,27 @@
 #   The FreeSWITCH, FusionPBX and PostgreSQL Crews without them, none of this would be possible
 #  
 ###############################################
-VERSION = "0.1"
+VERSION="0.2"
 
-echo <<EOT
-This Script will install and do base line configs for FreeSWITCH, FusionPBX, Fail2Ban, Monit and PostgreSQL.
+cat <<EOT
+This Script will install and create base line configs for FreeSWITCH, FusionPBX, Fail2Ban, Monit and PostgreSQL.
 It is designed to run on a Centos6 Minimal Install. EPEL will also be temporarily Enabled to get a few packages
 not in the main Centos Repositories.
 
 As with anything you will want to review the configs after the installer to make sure they are what you want.
 
 This is Version $VERSION of this script.
+
 EOT
+
+read -r -p "Are you sure? [Y/n] " response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+    echo "Here we go..."
+else
+    echo "Aborting"
+    exit
+fi
 
 # Do a Yum Update to update the system and then install all other required modules 
 yum update -y
@@ -134,6 +144,7 @@ cat > /etc/monit.d/freeswitch <<EOT
    if failed permission 755 then unmonitor
    if failed uid root then unmonitor
    if failed gid root then unmonitor
+
 EOT
 
 #Add Fail2Ban configs for 
@@ -245,6 +256,37 @@ chkconfig postgresql on
 #disable epel repo for normal use. Leaving it enabled canhave unintended consequences
 /bin/sed -i -e s,'enabled=1','enabled=0', /etc/yum.repos.d/epel.repo
 
+#Make the Prompt Pretty and add a few aliases that come in handy
+cat >>~/.bashrc <<EOT
+export LESSCHARSET="latin1"
+export LESS="-R"
+export CHARSET="ISO-8859-1"
+export PS1='\n\[\033[01;31m\]\u@\h\[\033[01;36m\] [\d \@] \[\033[01;33m\] \w\n\[\033[00m\]<\#>:'
+export PS2="\[\033[1m\]> \[\033[0m\]"
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig
+export VISUAL=vim
+
+umask 022
+alias vi='vim'
+alias fstop='top -p `cat /usr/local/freeswitch/run/freeswitch.pid`'
+alias fsgdb='gdb /usr/local/freeswitch/bin/freeswitch `cat /usr/local/freeswitch/run/freeswitch.pid`'
+alias fscore='gdb /usr/local/freeswitch/bin/freeswitch `ls -rt core.* | tail -n1`'
+EOT
+
+#Add a screenrc with a status line, a big scroll back and ^\ as the metakey as to not screw with emacs users
+cat >> ~/.screenrc <<EOT
+hardstatus alwaysignore
+startup_message off
+escape ^\b
+defscrollback 8000
+
+# status line at the bottom
+hardstatus on
+hardstatus alwayslastline
+hardstatus string "%{.bW}%-w%{.rW}%f%n %t%{-}%+w %=%{..G}[%H %l] %{..Y} %m/%d %c "
+EOT
+
+
 # and finally lets fix up IPTables so things works correctly
 
 #Block 'friendly-scanner' AKA sipvicious
@@ -272,8 +314,9 @@ iptables -I INPUT -p tcp -m tcp --dport 443 -j ACCEPT
 #save the IPTables rules for later
 service iptables save
 
+
 LOCAL_IP=`ifconfig eth0 | head -n2 | tail -n1 | cut -d' ' -f12 | cut -c 6-`
-echo << EOT
+cat <<EOT
 As long as you didnt see errors by this point, PostgreSQL, FreeSWITCH, FusionPBX, Fail2Ban, and Monit should in installed.
 Point your browser to http://$LOCAL_IP/ and let the FusionPBX installer take it from there.
 
