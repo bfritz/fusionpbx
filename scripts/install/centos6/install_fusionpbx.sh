@@ -268,9 +268,9 @@ export VISUAL=vim
 
 umask 022
 alias vi='vim'
-alias fstop='top -p `cat /usr/local/freeswitch/run/freeswitch.pid`'
-alias fsgdb='gdb /usr/local/freeswitch/bin/freeswitch `cat /usr/local/freeswitch/run/freeswitch.pid`'
-alias fscore='gdb /usr/local/freeswitch/bin/freeswitch `ls -rt core.* | tail -n1`'
+alias fstop='top -p \`cat /usr/local/freeswitch/run/freeswitch.pid\`'
+alias fsgdb='gdb /usr/local/freeswitch/bin/freeswitch \`cat /usr/local/freeswitch/run/freeswitch.pid\`'
+alias fscore='gdb /usr/local/freeswitch/bin/freeswitch \`ls -rt core.* | tail -n1\`'
 EOT
 
 #Add a screenrc with a status line, a big scroll back and ^\ as the metakey as to not screw with emacs users
