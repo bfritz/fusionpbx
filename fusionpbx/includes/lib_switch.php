@@ -250,6 +250,10 @@ function v_settings() {
 		$v_provisioning_http_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_http_dir);
 		$v_settings_array["v_provisioning_http_dir"] = $v_provisioning_http_dir;
 
+		$v_menu_guid = $row["v_menu_guid"];
+		$v_menu_guid = str_replace ("{program_dir}", $program_dir, $v_menu_guid);
+		$v_settings_array["v_menu_guid"] = $v_menu_guid;
+
 		break; //limit to 1 row
 	}
 	unset ($prepstatement);
