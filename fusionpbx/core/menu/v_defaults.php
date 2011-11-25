@@ -25,71 +25,99 @@
 */
 
 //if there are no items in the menu then add the default menu
-	$sql = "SELECT * FROM v_menu where v_id = '$v_id' ";
+	$sql = "SELECT count(*) as count FROM v_menus ";
 	$prep_statement = $db->prepare(check_sql($sql));
-	if ($prep_statement) {
-		$prep_statement->execute();
-		$sub_result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-		if (count($sub_result) == 0) {
-			require_once "includes/classes/menu_restore.php";
-			$menu_restore = new menu_restore;
-			$menu_restore->db = $db;
-			$menu_restore->v_id = $v_id;
-			$menu_restore->restore();
-			unset($menu_restore);
-			if ($display_type == "text") {
-				echo "	Menu:			added\n";
-			}
-		}
-		else {
-			if ($display_type == "text") {
-				echo "	Menu:			no change\n";
-			}
-		}
-	}
-	unset($prep_statement, $sub_result);
-
-//if there are no groups listed in v_menu_groups then add the default groups
-	$sql = "";
-	$sql .= "select count(*) as count from v_menu_groups ";
-	$sql .= "where v_id = $v_id ";
-	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$sub_result = $prep_statement->fetch(PDO::FETCH_ASSOC);
 	unset ($prep_statement);
 	if ($sub_result['count'] > 0) {
 		if ($display_type == "text") {
-			echo "	Menu Groups:		no change\n";
+			echo "	Menu:			no change\n";
 		}
 	}
 	else {
-		if ($display_type == "text") {
-			echo "	Menu Groups:		added\n";
-		}
-		//no menu groups found add the defaults
-			$db->beginTransaction();
-			foreach($apps as $app) {
-				foreach ($app['menu'] as $sub_row) {
-					foreach ($sub_row['groups'] as $group) {
-						//add the record
-						$sql = "insert into v_menu_groups ";
-						$sql .= "(";
-						$sql .= "v_id, ";
-						$sql .= "menu_guid, ";
-						$sql .= "group_id ";
-						$sql .= ")";
-						$sql .= "values ";
-						$sql .= "(";
-						$sql .= "'$v_id', ";
-						$sql .= "'".$sub_row['guid']."', ";
-						$sql .= "'".$group."' ";
-						$sql .= ")";
-						$db->exec($sql);
-						unset($sql);
-					}
-				}
+		//create the guid
+			$menu_guid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
+		//set the defaults
+			$menu_name = 'default';
+			$menu_language = 'en';
+			$menu_desc = '';
+		//add the menu
+			$sql = "insert into v_menus ";
+			$sql .= "(";
+			$sql .= "menu_guid, ";
+			$sql .= "menu_name, ";
+			$sql .= "menu_language, ";
+			$sql .= "menu_desc ";
+			$sql .= ")";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'".$menu_guid."', ";
+			$sql .= "'$menu_name', ";
+			$sql .= "'$menu_language', ";
+			$sql .= "'$menu_desc' ";
+			$sql .= ")";
+			$db->exec(check_sql($sql));
+			unset($sql);
+		//add the menu items
+			require_once "includes/classes/menu.php";
+			$menu = new menu;
+			$menu->db = $db;
+			$menu->menu_guid = $menu_guid;
+			$menu->restore();
+			unset($menu);
+			if ($display_type == "text") {
+				echo "	Menu:			added\n";
 			}
-			$db->commit();
+		//assign all tenants to the default menu
+			$sql = "update v_system_settings ";
+			$sql .= "set v_menu_guid = '".$menu_guid."' ";
+			$db->exec(check_sql($sql));
+			unset($sql);
+	}
+	unset($prep_statement, $sub_result);
+
+//if there are no groups listed in v_menu_item_groups then add the default groups
+	$sql = "SELECT * FROM v_menus ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	$resultcount = count($result);
+	foreach($result as $field) {
+		//get the menu_guid
+			$menu_guid = $field['menu_guid'];
+		//check each menu to see if there are items in the menu assigned to it
+			$sql = "";
+			$sql .= "select count(*) as count from v_menu_item_groups ";
+			$sql .= "where menu_guid = '$menu_guid' ";
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			$sub_result = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			unset ($prep_statement);
+			if ($sub_result['count'] == 0) {
+				//no menu item groups found add the defaults
+					foreach($apps as $app) {
+						foreach ($app['menu'] as $sub_row) {
+							foreach ($sub_row['groups'] as $group) {
+								//add the record
+								$sql = "insert into v_menu_item_groups ";
+								$sql .= "(";
+								$sql .= "menu_guid, ";
+								$sql .= "menu_item_guid, ";
+								$sql .= "group_id ";
+								$sql .= ")";
+								$sql .= "values ";
+								$sql .= "(";
+								$sql .= "'$menu_guid', ";
+								$sql .= "'".$sub_row['guid']."', ";
+								$sql .= "'".$group."' ";
+								$sql .= ")";
+								$db->exec($sql);
+								unset($sql);
+							}
+						}
+					}
+			}
 	}
 
 ?>

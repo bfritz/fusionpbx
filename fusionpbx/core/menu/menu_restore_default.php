@@ -34,13 +34,17 @@ else {
 	return;
 }
 
+//get the http value and set as a php variable
+	$menu_id = check_str($_REQUEST["menu_id"]);
+	$menu_guid = check_str($_REQUEST["menu_guid"]);
+
 //menu restore default
-	require_once "includes/classes/menu_restore.php";
-	$menu_restore = new menu_restore;
-	$menu_restore->db = $db;
-	$menu_restore->v_id = $v_id;
-	$menu_restore->delete();
-	$menu_restore->restore();
+	require_once "includes/classes/menu.php";
+	$menu = new menu;
+	$menu->db = $db;
+	$menu->menu_guid = $menu_guid;
+	$menu->delete();
+	$menu->restore();
 
 //unset the menu session variable
 	$_SESSION["menu"] = "";
@@ -50,7 +54,7 @@ else {
 
 //show a message to the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_list.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=/core/menu/v_menus_edit.php?id=$menu_id\">\n";
 	echo "<div align='center'>\n";
 	echo "Restore Complete\n";
 	echo "</div>\n";

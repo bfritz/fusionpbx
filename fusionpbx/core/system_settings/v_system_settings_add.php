@@ -37,12 +37,14 @@ else {
 //get the defaults
 	$sql = "";
 	$sql .= "select * from v_system_settings ";
-	$sql .= "where v_id = '1' ";
+	$sql .= "order by v_id asc ";
+	$sql .= "limit 1 ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$v_template_name = $row["v_template_name"];
+		$v_menu_guid = $row["v_menu_guid"];
 		$v_time_zone = $row["v_time_zone"];
 		break; //limit to 1 row
 	}
@@ -90,6 +92,36 @@ else {
 	echo "\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	echo "	<tr>\n";
+	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+	echo "		Menu: \n";
+	echo "	</td>\n";
+	echo "	<td class=\"vtable\" align='left'>\n";
+	echo "		<select id='v_menu_guid' name='v_menu_guid' class='formfld' style=''>\n";
+	echo "		<option value=''></option>\n";
+	$sql = "";
+	$sql .= "select * from v_menus ";
+	$sql .= "where menu_guid = '".$v_menu_guid."' ";
+	$sql .= "order by menu_language, menu_name asc ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	foreach ($result as &$row) {
+		if ($v_menu_guid == $row["menu_guid"]) {
+			echo "		<option value='".$row["menu_guid"]."' selected='selected'>".$row["menu_language"]." - ".$row["menu_name"]."\n";
+		}
+		else {
+			echo "		<option value='".$row["menu_guid"]."'>".$row["menu_language"]." - ".$row["menu_name"]."</option>\n";
+		}
+	}
+	unset ($prep_statement);
+
+	echo "		</select>\n";
+	echo "		<br />\n";
+	echo "		Select the menu.<br />\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
 
 	echo "	<tr>\n";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";

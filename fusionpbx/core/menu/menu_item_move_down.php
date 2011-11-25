@@ -35,38 +35,51 @@ else {
 }
 
 //move down more than one level at a time
-//update v_menu set menuorder = (menuorder+1) where menuorder > 2 or menuorder = 2
+//update v_menu_items set menu_item_order = (menu_item_order+1) where menu_item_order > 2 or menu_item_order = 2
 
 if (count($_GET)>0) {
-	$menuid = check_str($_GET["menuid"]);
-	$menuorder = check_str($_GET["menuorder"]);
+	$menu_item_id = check_str($_GET["menu_item_id"]);
+	$menu_item_order = check_str($_GET["menu_item_order"]);
+	$menu_parent_guid = check_str($_GET["menu_parent_guid"]);
 
-	if ($menuorder != 1) {
+	$sql = "SELECT menu_item_order FROM v_menu_items ";
+	$sql .= "where v_id = '".$v_id."' ";
+	$sql .= "order by menu_item_order desc ";
+	$sql .= "limit 1 ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll();
+	foreach ($result as &$row) {
+		$highestmenu_item_order = $row[menu_item_order];
+	}
+	unset($prepstatement);
+
+	if ($menu_item_order != $highestmenu_item_order) {
 		//clear the menu session so it will rebuild with the update
-			$_SESSION["menu"] = ""; 
+			$_SESSION["menu"] = "";
 
-		//move the current item's order number down
-			$sql  = "update v_menu set ";
-			$sql .= "menuorder = (menuorder+1) "; //move down
+		//move the current item's order number up
+			$sql  = "update v_menu_items set ";
+			$sql .= "menu_item_order = (menu_item_order-1) "; //move down
 			$sql .= "where v_id = '".$v_id."' ";
-			$sql .= "and menuorder = ".($menuorder-1)." ";
+			$sql .= "and menu_item_order = ".($menu_item_order+1)." ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-		//move the selected item's order number up
-			$sql  = "update v_menu set ";
-			$sql .= "menuorder = (menuorder-1) "; //move up
+		//move the selected item's order number down
+			$sql  = "update v_menu_items set ";
+			$sql .= "menu_item_order = (menu_item_order+1) "; //move up
 			$sql .= "where v_id = '".$v_id."' ";
-			$sql .= "and menuid = '$menuid' ";
+			$sql .= "and menu_item_id = '$menu_item_id' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 	}
 
 	//redirect the user
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"1;url=menu_list.php?menuid=$menuid\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"1;url=menu_list.php?menu_item_id=$menu_item_id\">\n";
 		echo "<div align='center'>";
-		echo "Item Moved Up";
+		echo "Item Moved Down";
 		echo "</div>";
 		require_once "includes/footer.php";
 		return;

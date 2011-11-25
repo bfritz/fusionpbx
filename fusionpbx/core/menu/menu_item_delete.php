@@ -39,18 +39,20 @@ if (count($_GET)>0) {
 		$_SESSION["menu"] = "";
 
 	//get the id
-		$menuid = check_str($_GET["menuid"]);
+		$menu_id = check_str($_GET["menu_id"]);
+		$menu_guid = check_str($_GET["menu_guid"]);
+		$menu_item_id = check_str($_GET["menu_item_id"]);
 
 	//delete the item in the menu
-		$sql  = "delete from v_menu ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and menuid = '$menuid' ";
+		$sql  = "delete from v_menu_items ";
+		$sql .= "where menu_item_id = '$menu_item_id' ";
+		$sql .= "and menu_guid = '$menu_guid' ";
 		$db->exec(check_sql($sql));
 		unset($sql);
 
 	//redirect the user
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_list.php?menuid=$menuid\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_menus_edit.php?id=$menu_id&menu_id=$menu_id\">\n";
 		echo "<div align='center'>";
 		echo "Delete Completed";
 		echo "</div>";

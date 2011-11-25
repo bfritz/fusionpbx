@@ -37,40 +37,47 @@ else {
 //include the header
 	require_once "includes/header.php";
 
+//get the menu id and guid
+	$id = check_str($_REQUEST["id"]);
+	$menu_id = check_str($_REQUEST["menu_id"]);
+	$menu_guid = check_str($_REQUEST["menu_guid"]);
+	$menu_item_guid = check_str($_REQUEST['menu_item_guid']);
+	$group_id = check_str($_REQUEST['group_id']);
+
 //delete the group from the user
 	if ($_REQUEST["a"] == "delete" && permission_exists("menu_delete")) {
 		//delete the group from the users
 			$sql = "delete from v_menu_groups  ";
-			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and group_id = '".$_REQUEST['group_id']."' ";
-			$sql .= "and menu_group_id = '".$_REQUEST['id']."' ";
+			$sql .= "where menu_guid = '$menu_guid' ";
+			$sql .= "and group_id = '".$group_id."' ";
+			$sql .= "and menu_group_id = '".$id."' ";
 			$db->exec(check_sql($sql));
 	}
 
 //add a group to the menu
-	if (strlen($_REQUEST["group_id"]) > 0 && permission_exists('menu_add')) {
+	if (strlen($group_id) > 0 && permission_exists('menu_add')) {
 		//add the group to the menu
-			if (strlen($_REQUEST["menu_guid"]) > 0 && strlen($_REQUEST["group_id"]) > 0) {
+			if (strlen($menu_item_guid) > 0 && strlen($group_id) > 0) {
 				$sqlinsert = "insert into v_menu_groups ";
 				$sqlinsert .= "(";
-				$sqlinsert .= "v_id, ";
 				$sqlinsert .= "menu_guid, ";
+				$sqlinsert .= "menu_item_guid, ";
 				$sqlinsert .= "group_id ";
 				$sqlinsert .= ")";
 				$sqlinsert .= "values ";
 				$sqlinsert .= "(";
-				$sqlinsert .= "'$v_id', ";
-				$sqlinsert .= "'".$_REQUEST['menu_guid']."', ";
-				$sqlinsert .= "'".$_REQUEST['group_id']."' ";
+				$sqlinsert .= "'$menu_guid', ";
+				$sqlinsert .= "'".$menu_item_guid."', ";
+				$sqlinsert .= "'".$group_id."' ";
 				$sqlinsert .= ")";
 				$db->exec($sqlinsert);
 			}
 	}
 
 //action add or update
-	if (isset($_REQUEST["menuid"])) {
+	if (isset($_REQUEST["menu_item_id"])) {
 		$action = "update";
-		$menuid = check_str($_REQUEST["menuid"]);
+		$menu_item_id = check_str($_REQUEST["menu_item_id"]);
 	}
 	else {
 		$action = "add";
@@ -81,29 +88,30 @@ else {
 
 //get the HTTP POST variables and set them as PHP variables
 	if (count($_POST)>0) {
-		$menuid = check_str($_POST["menuid"]);
-		$menutitle = check_str($_POST["menutitle"]);
-		$menustr = check_str($_POST["menustr"]);
-		$menucategory = check_str($_POST["menucategory"]);
-		$menudesc = check_str($_POST["menudesc"]);
-		$menu_protected = check_str($_POST["menu_protected"]);
-		//$menu_guid = check_str($_POST["menu_guid"]);
-		$menu_parent_guid = check_str($_POST["menu_parent_guid"]);
-		$menuorder = check_str($_POST["menuorder"]);
+		$menu_id = check_str($_POST["menu_id"]);
+		$menu_item_id = check_str($_POST["menu_item_id"]);
+		$menu_item_title = check_str($_POST["menu_item_title"]);
+		$menu_item_str = check_str($_POST["menu_item_str"]);
+		$menu_item_category = check_str($_POST["menu_item_category"]);
+		$menu_item_desc = check_str($_POST["menu_item_desc"]);
+		$menu_item_protected = check_str($_POST["menu_item_protected"]);
+		//$menu_item_guid = check_str($_POST["menu_item_guid"]);
+		$menu_item_parent_guid = check_str($_POST["menu_item_parent_guid"]);
+		$menu_item_order = check_str($_POST["menu_item_order"]);
 	}
 
 //when a HTTP POST is available then process it
 	if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
-			$menuid = check_str($_POST["menuid"]);
+			$menu_item_id = check_str($_POST["menu_item_id"]);
 		}
 
 		//check for all required data
 			$msg = '';
-			if (strlen($menutitle) == 0) { $msg .= "Please provide: title<br>\n"; }
-			if (strlen($menucategory) == 0) { $msg .= "Please provide: category<br>\n"; }
-			//if (strlen($menustr) == 0) { $msg .= "Please provide: menustr<br>\n"; }
+			if (strlen($menu_item_title) == 0) { $msg .= "Please provide: title<br>\n"; }
+			if (strlen($menu_item_category) == 0) { $msg .= "Please provide: category<br>\n"; }
+			//if (strlen($menu_item_str) == 0) { $msg .= "Please provide: menu_item_str<br>\n"; }
 			if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 				require_once "includes/header.php";
 				require_once "includes/persistformvar.php";
@@ -120,52 +128,55 @@ else {
 		//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('menu_add')) {
-				$sql = "SELECT menuorder FROM v_menu ";
-				$sql .= "where v_id = '$v_id' ";
-				$sql .= "and menu_parent_guid  = '$menu_parent_guid' ";
-				$sql .= "order by menuorder desc ";
+				$sql = "SELECT menu_item_order FROM v_menu_items ";
+				$sql .= "where menu_guid = '$menu_guid' ";
+				$sql .= "and menu_item_parent_guid  = '$menu_item_parent_guid' ";
+				$sql .= "order by menu_item_order desc ";
 				$sql .= "limit 1 ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll();
 				foreach ($result as &$row) {
-					$highestmenuorder = $row[menuorder];
+					$highestmenu_item_order = $row[menu_item_order];
 				}
 				unset($prepstatement);
 
-				$sql = "insert into v_menu ";
+				$sql = "insert into v_menu_items ";
 				$sql .= "(";
-				$sql .= "v_id, ";
-				$sql .= "menutitle, ";
-				$sql .= "menustr, ";
-				$sql .= "menucategory, ";
-				$sql .= "menudesc, ";
-				$sql .= "menu_protected, ";
 				$sql .= "menu_guid, ";
-				$sql .= "menu_parent_guid, ";
-				$sql .= "menuorder, ";
-				$sql .= "menuadduser, ";
-				$sql .= "menuadddate ";
+				$sql .= "menu_item_title, ";
+				$sql .= "menu_item_str, ";
+				$sql .= "menu_item_category, ";
+				$sql .= "menu_item_desc, ";
+				$sql .= "menu_item_protected, ";
+				$sql .= "menu_item_guid, ";
+				$sql .= "menu_item_parent_guid, ";
+				$sql .= "menu_item_order, ";
+				$sql .= "menu_item_add_user, ";
+				$sql .= "menu_item_add_date ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
-				$sql .= "'$menutitle', ";
-				$sql .= "'$menustr', ";
-				$sql .= "'$menucategory', ";
-				$sql .= "'$menudesc', ";
-				$sql .= "'$menu_protected', ";
+				$sql .= "'$menu_guid', ";
+				$sql .= "'$menu_item_title', ";
+				$sql .= "'$menu_item_str', ";
+				$sql .= "'$menu_item_category', ";
+				$sql .= "'$menu_item_desc', ";
+				$sql .= "'$menu_item_protected', ";
 				$sql .= "'".guid()."', ";
-				$sql .= "'$menu_parent_guid', ";
-				$sql .= "'".($highestmenuorder+1)."', ";
+				$sql .= "'$menu_item_parent_guid', ";
+				$sql .= "'".($highestmenu_item_order+1)."', ";
 				$sql .= "'".$_SESSION["username"]."', ";
 				$sql .= "now() ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
+//working
+//http://voip.fusionpbx.com/core/menu/menu_item_edit.php?menu_id=1&menu_item_id=4&menu_guid=B4750C3F-2A86-B00D-B7D0-345C14ECA286
+
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_list.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?menu_id=$menu_id&menu_item_id=$menu_item_id&menu_guid=$menu_guid\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -174,22 +185,25 @@ else {
 			}
 
 			if ($action == "update" && permission_exists('menu_edit')) {
-				$sql  = "update v_menu set ";
-				$sql .= "menutitle = '$menutitle', ";
-				$sql .= "menustr = '$menustr', ";
-				$sql .= "menucategory = '$menucategory', ";
-				$sql .= "menudesc = '$menudesc', ";
-				$sql .= "menu_protected = '$menu_protected', ";
-				$sql .= "menu_parent_guid = '$menu_parent_guid', ";
-				$sql .= "menuorder = '$menuorder', ";
-				$sql .= "menumoduser = '".$_SESSION["username"]."', ";
-				$sql .= "menumoddate = now() ";
-				$sql .= "where v_id = '$v_id' ";
-				$sql .= "and menuid = '$menuid' ";
+				$sql  = "update v_menu_items set ";
+				$sql .= "menu_item_title = '$menu_item_title', ";
+				$sql .= "menu_item_str = '$menu_item_str', ";
+				$sql .= "menu_item_category = '$menu_item_category', ";
+				$sql .= "menu_item_desc = '$menu_item_desc', ";
+				$sql .= "menu_item_protected = '$menu_item_protected', ";
+				$sql .= "menu_item_parent_guid = '$menu_item_parent_guid', ";
+				$sql .= "menu_item_order = '$menu_item_order', ";
+				$sql .= "menu_item_mod_user = '".$_SESSION["username"]."', ";
+				$sql .= "menu_item_mod_date = now() ";
+				$sql .= "where menu_guid = '$menu_guid' ";
+				$sql .= "and menu_item_id = '$menu_item_id' ";
 				$count = $db->exec(check_sql($sql));
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_edit.php?id=$id&menuid=".$_REQUEST['menuid']."&menu_parent_guid=".$_REQUEST['menu_parent_guid']."\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?menu_id=$menu_id&menu_item_id=$menu_item_id&menu_guid=$menu_guid\">\n";
+
+				//echo "<meta http-equiv=\"refresh\" content=\"2;url=v_menu_item_edit.php?id=$menu_item_id&menu_id=$menu_id&menu_guid=$menu_guid\">\n";
+				//echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?id=$id&menu_item_id=".$_REQUEST['menu_item_id']."&menu_item_parent_guid=".$_REQUEST['menu_item_parent_guid']."\">\n";
 				echo "<div align='center'>\n";
 				echo "Edit Complete\n";
 				echo "</div>\n";
@@ -201,30 +215,30 @@ else {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$menuid = $_GET["menuid"];
+		$menu_item_id = $_GET["menu_item_id"];
 
 		$sql = "";
-		$sql .= "select * from v_menu ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and menuid = '$menuid' ";
+		$sql .= "select * from v_menu_items ";
+		$sql .= "where menu_guid = '$menu_guid' ";
+		$sql .= "and menu_item_id = '$menu_item_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$menu_guid = $row["menu_guid"];
-			$menutitle = $row["menutitle"];
-			$menustr = $row["menustr"];
-			$menucategory = $row["menucategory"];
-			$menudesc = $row["menudesc"];
-			$menu_protected = $row["menu_protected"];
-			$menu_parent_guid = $row["menu_parent_guid"];
-			$menuorder = $row["menuorder"];
-			$menuadduser = $row["menuadduser"];
-			$menuadddate = $row["menuadddate"];
-			//$menudeluser = $row["menudeluser"];
-			//$menudeldate = $row["menudeldate"];
-			$menumoduser = $row["menumoduser"];
-			$menumoddate = $row["menumoddate"];
+			$menu_item_guid = $row["menu_item_guid"];
+			$menu_item_title = $row["menu_item_title"];
+			$menu_item_str = $row["menu_item_str"];
+			$menu_item_category = $row["menu_item_category"];
+			$menu_item_desc = $row["menu_item_desc"];
+			$menu_item_protected = $row["menu_item_protected"];
+			$menu_item_parent_guid = $row["menu_item_parent_guid"];
+			$menu_item_order = $row["menu_item_order"];
+			$menu_item_add_user = $row["menu_item_add_user"];
+			$menu_item_add_date = $row["menu_item_add_date"];
+			//$menu_item_del_user = $row["menu_item_del_user"];
+			//$menu_item_del_date = $row["menu_item_del_date"];
+			$menu_item_mod_user = $row["menu_item_mod_user"];
+			$menu_item_mod_date = $row["menu_item_mod_date"];
 			break; //limit to 1 row
 		}
 	}
@@ -232,7 +246,7 @@ else {
 //show the content
 	require_once "includes/header.php";
 	echo "<div align='center'>";
-	echo "<table width='90%' border='0' cellpadding='0' cellspacing='2'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "		<br>";
@@ -241,26 +255,26 @@ else {
 	echo "<table width='100%' cellpadding='6' cellspacing='0'>";
 
 	echo "<tr>\n";
-	echo "<td width='30%' align='left' valign='top' nowrap><b>Menu Edit</b></td>\n";
-	echo "<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='menu_list.php'\" value='Back'><br /><br /></td>\n";
+	echo "<td width='30%' align='left' valign='top' nowrap><b>Menu Item Edit</b></td>\n";
+	echo "<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='back' onclick=\"window.history.back();\" value='Back'><br /><br /></td>\n";
 	echo "</tr>\n";
 
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Title:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='menutitle' value='$menutitle'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_title' value='$menu_item_title'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Link:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='menustr' value='$menustr'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_str' value='$menu_item_str'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Category:</td>";
 	echo "		<td class='vtable'>";
-	echo "            <select name=\"menucategory\" class='formfld'>\n";
+	echo "            <select name=\"menu_item_category\" class='formfld'>\n";
 	echo "            <option value=\"\"></option>\n";
-	if ($menucategory == "internal") { echo "<option value=\"internal\" selected>internal</option>\n"; } else { echo "<option value=\"internal\">internal</option>\n"; }
-	if ($menucategory == "external") { echo "<option value=\"external\" selected>external</option>\n"; } else { echo "<option value=\"external\">external</option>\n"; }
-	if ($menucategory == "email") { echo "<option value=\"email\" selected>email</option>\n"; } else { echo "<option value=\"email\">email</option>\n"; }
+	if ($menu_item_category == "internal") { echo "<option value=\"internal\" selected>internal</option>\n"; } else { echo "<option value=\"internal\">internal</option>\n"; }
+	if ($menu_item_category == "external") { echo "<option value=\"external\" selected>external</option>\n"; } else { echo "<option value=\"external\">external</option>\n"; }
+	if ($menu_item_category == "email") { echo "<option value=\"email\" selected>email</option>\n"; } else { echo "<option value=\"email\">email</option>\n"; }
 	echo "            </select>";
 	echo "        </td>";
 	echo "	</tr>";
@@ -268,20 +282,20 @@ else {
 	echo "	<tr>";
 	echo "		<td class='vncell'>Parent Menu:</td>";
 	echo "		<td class='vtable'>";
-	$sql = "SELECT * FROM v_menu ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "order by menutitle asc ";
+	$sql = "SELECT * FROM v_menu_items ";
+	$sql .= "where menu_guid = '$menu_guid' ";
+	$sql .= "order by menu_item_title asc ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
-	echo "<select name=\"menu_parent_guid\" class='formfld'>\n";
+	echo "<select name=\"menu_item_parent_guid\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
 	$result = $prepstatement->fetchAll();
 	foreach($result as $field) {
-			if ($menu_parent_guid == $field['menu_guid']) {
-				echo "<option value='".$field['menu_guid']."' selected>".$field['menutitle']."</option>\n";
+			if ($menu_item_parent_guid == $field['menu_item_guid']) {
+				echo "<option value='".$field['menu_item_guid']."' selected>".$field['menu_item_title']."</option>\n";
 			}
 			else {
-				echo "<option value='".$field['menu_guid']."'>".$field['menutitle']."</option>\n";
+				echo "<option value='".$field['menu_item_guid']."'>".$field['menu_item_title']."</option>\n";
 			}
 	}
 	echo "</select>";
@@ -294,12 +308,14 @@ else {
 	echo "		<td class='vtable'>";
 
 	echo "<table width='52%'>\n";
-	$sql = "SELECT * FROM v_menu_groups ";
-	$sql .= "where v_id=:v_id ";
-	$sql .= "and menu_guid=:menu_guid ";
+	$sql = "SELECT * FROM v_menu_item_groups ";
+	//$sql .= "where menu_guid = '$menu_guid' ";
+	//$sql .= "and menu_item_guid = '$menu_item_guid' ";
+	$sql .= "where menu_guid=:menu_guid ";
+	$sql .= "and menu_item_guid=:menu_item_guid ";
 	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->bindParam(':v_id', $v_id);
 	$prepstatement->bindParam(':menu_guid', $menu_guid);
+	$prepstatement->bindParam(':menu_item_guid', $menu_item_guid);
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
@@ -309,7 +325,7 @@ else {
 			echo "	<td class='vtable'>".$field['group_id']."</td>\n";
 			echo "	<td>\n";
 			if (permission_exists('group_member_delete') || ifgroup("superadmin")) {
-				echo "		<a href='menu_edit.php?id=".$field['menu_group_id']."&group_id=".$field['group_id']."&menuid=".$menuid."&menu_parent_guid=".$menu_parent_guid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='menu_item_edit.php?id=".$field['menu_group_id']."&menu_guid=".$field['menu_guid']."&group_id=".$field['group_id']."&menu_item_id=".$menu_item_id."&menu_item_parent_guid=".$menu_item_parent_guid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -347,15 +363,15 @@ else {
 	echo "    Protected:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='menu_protected'>\n";
+	echo "    <select class='formfld' name='menu_item_protected'>\n";
 	echo "    <option value=''></option>\n";
-	if ($menu_protected == "true") { 
+	if ($menu_item_protected == "true") { 
 		echo "    <option value='true' selected='selected' >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($menu_protected == "false") { 
+	if ($menu_item_protected == "false") { 
 		echo "    <option value='false' selected='selected' >false</option>\n";
 	}
 	else {
@@ -370,37 +386,37 @@ else {
 	if ($action == "update") {
 		echo "	<tr>";
 		echo "		<td class='vncell'>Menu Order:</td>";
-		echo "		<td class='vtable'><input type='text' class='formfld' name='menuorder' value='$menuorder'></td>";
+		echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_order' value='$menu_item_order'></td>";
 		echo "	</tr>";
 		//echo "	<tr>";
 		//echo "		<td class='vncell'>Added By:</td>";
-		//echo "		<td class='vtable'>$menuadduser &nbsp;</td>";
+		//echo "		<td class='vtable'>$menu_item_add_user &nbsp;</td>";
 		//echo "	</tr>";
 		//echo "	<tr>";
 		//echo "		<td class='vncell'>Add Date:</td>";
-		//echo "		<td class='vtable'>$menuadddate &nbsp;</td>";
+		//echo "		<td class='vtable'>$menu_item_add_date &nbsp;</td>";
 		//echo "	</tr>";
 		//echo "	<tr>";
-		//echo "		<td class='vncell'>Menudeluser:</td>";
-		//echo "		<td><input type='text' name='menudeluser' value='$menudeluser'></td>";
+		//echo "		<td class='vncell'>menu_item_del_user:</td>";
+		//echo "		<td><input type='text' name='menu_item_del_user' value='$menu_item_del_user'></td>";
 		//echo "	</tr>";
 		//echo "	<tr>";
-		//echo "		<td class='vncell'>Menudeldate:</td>";
-		//echo "		<td><input type='text' name='menudeldate' value='$menudeldate'></td>";
+		//echo "		<td class='vncell'>menu_item_del_date:</td>";
+		//echo "		<td><input type='text' name='menu_item_del_date' value='$menu_item_del_date'></td>";
 		//echo "	</tr>";
 		//echo "	<tr>";
 		//echo "		<td class='vncell'>Modified By:</td>";
-		//echo "		<td class='vtable'>$menumoduser &nbsp;</td>";
+		//echo "		<td class='vtable'>$menu_item_mod_user &nbsp;</td>";
 		//echo "	</tr>";
 		//echo "	<tr>";
 		//echo "		<td class='vncell'>Modified Date:</td>";
-		//echo "		<td class='vtable'>$menumoddate &nbsp;</td>";
+		//echo "		<td class='vtable'>$menu_item_mod_date &nbsp;</td>";
 		//echo "	</tr>";
 	}
 
 	echo "	<tr>";
 	echo "		<td class='vncell'>Description:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='menudesc' value='$menudesc'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_desc' value='$menu_item_desc'></td>";
 	echo "	</tr>";
 
 	if (permission_exists('menu_add') || permission_exists('menu_edit')) {
@@ -412,9 +428,10 @@ else {
 		echo "			</td>\n";
 		echo "			<td align='right'>";
 		if ($action == "update") {
-			echo "				<input type='hidden' name='menuid' value='$menuid'>";
+			echo "				<input type='hidden' name='menu_item_id' value='$menu_item_id'>";
 		}
-		echo "				<input type='hidden' name='menu_guid' value='$menu_guid'>";
+		echo "				<input type='hidden' name='menu_id' value='$menu_id'>";
+		echo "				<input type='hidden' name='menu_item_guid' value='$menu_item_guid'>";
 		echo "				<input type='submit' class='btn' name='submit' value='Save'>\n";
 		echo "			</td>";
 		echo "			</tr>";
