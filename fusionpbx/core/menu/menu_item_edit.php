@@ -47,7 +47,7 @@ else {
 //delete the group from the user
 	if ($_REQUEST["a"] == "delete" && permission_exists("menu_delete")) {
 		//delete the group from the users
-			$sql = "delete from v_menu_groups  ";
+			$sql = "delete from v_menu_item_groups  ";
 			$sql .= "where menu_guid = '$menu_guid' ";
 			$sql .= "and group_id = '".$group_id."' ";
 			$sql .= "and menu_group_id = '".$id."' ";
@@ -58,7 +58,7 @@ else {
 	if (strlen($group_id) > 0 && permission_exists('menu_add')) {
 		//add the group to the menu
 			if (strlen($menu_item_guid) > 0 && strlen($group_id) > 0) {
-				$sqlinsert = "insert into v_menu_groups ";
+				$sqlinsert = "insert into v_menu_item_groups ";
 				$sqlinsert .= "(";
 				$sqlinsert .= "menu_guid, ";
 				$sqlinsert .= "menu_item_guid, ";
@@ -200,7 +200,7 @@ else {
 				$count = $db->exec(check_sql($sql));
 
 				require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?menu_id=$menu_id&menu_item_id=$menu_item_id&menu_guid=$menu_guid\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?menu_id=$menu_id&menu_item_id=$menu_item_id&menu_guid=$menu_guid\">\n";
 
 				//echo "<meta http-equiv=\"refresh\" content=\"2;url=v_menu_item_edit.php?id=$menu_item_id&menu_id=$menu_id&menu_guid=$menu_guid\">\n";
 				//echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?id=$id&menu_item_id=".$_REQUEST['menu_item_id']."&menu_item_parent_guid=".$_REQUEST['menu_item_parent_guid']."\">\n";
@@ -309,8 +309,6 @@ else {
 
 	echo "<table width='52%'>\n";
 	$sql = "SELECT * FROM v_menu_item_groups ";
-	//$sql .= "where menu_guid = '$menu_guid' ";
-	//$sql .= "and menu_item_guid = '$menu_item_guid' ";
 	$sql .= "where menu_guid=:menu_guid ";
 	$sql .= "and menu_item_guid=:menu_item_guid ";
 	$prepstatement = $db->prepare(check_sql($sql));
