@@ -284,6 +284,8 @@ defscrollback 8000
 hardstatus on
 hardstatus alwayslastline
 hardstatus string "%{.bW}%-w%{.rW}%f%n %t%{-}%+w %=%{..G}[%H %l] %{..Y} %m/%d %c "
+
+termcapinfo xterm \'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l\'
 EOT
 
 
