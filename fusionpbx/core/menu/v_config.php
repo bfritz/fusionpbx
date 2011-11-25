@@ -17,7 +17,6 @@
 		//$apps[$x]['menu'][0]['path'] = '/core/menu/menu_list.php';
 		$apps[$x]['menu'][0]['path'] = '/core/menu/v_menus.php';
 
-		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][1]['title']['en'] = 'System';
@@ -68,19 +67,15 @@
 
 	//permission details
 		$apps[$x]['permissions'][0]['name'] = 'menu_view';
-		$apps[$x]['permissions'][0]['groups'][] = 'admin';
 		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][1]['name'] = 'menu_add';
-		$apps[$x]['permissions'][1]['groups'][] = 'admin';
 		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'menu_edit';
-		$apps[$x]['permissions'][2]['groups'][] = 'admin';
 		$apps[$x]['permissions'][2]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][3]['name'] = 'menu_delete';
-		$apps[$x]['permissions'][3]['groups'][] = 'admin';
 		$apps[$x]['permissions'][3]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][4]['name'] = 'menu_restore';
