@@ -889,12 +889,13 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		require "includes/config.php";
 
 	//menu restore default
-		require_once "includes/classes/menu_restore.php";
-		$menu_restore = new menu_restore;
-		$menu_restore->db = $db;
-		$menu_restore->v_id = $v_id;
-		$menu_restore->delete();
-		$menu_restore->restore();
+		$menu_guid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
+		require_once "includes/classes/menu.php";
+		$menu = new menu;
+		$menu->db = $db;
+		$menu->menu_guid = $menu_guid;
+		$menu->restore();
+		unset($menu);
 
 	//rename the default config files that are not needed
 		for ($i=1000; $i<1020; $i++) {
