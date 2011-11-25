@@ -82,16 +82,22 @@ class vcard {
 
 		$this->card = "BEGIN:VCARD\r\n";
 		$this->card .= "VERSION:3.0\r\n";
-		$this->card .= "CLASS:".$this->class."\r\n";
-		$this->card .= "PRODID:-//class_vcard from TroyWolf.com//NONSGML Version 1//EN\r\n";
+		//$this->card .= "CLASS:".$this->class."\r\n";
+		//$this->card .= "PRODID:-//class_vcard from TroyWolf.com//NONSGML Version 1//EN\r\n";
 		$this->card .= "REV:".$this->revision_date."\r\n";
 		$this->card .= "FN:".$this->data['display_name']."\r\n";
-		$this->card .= "N:"
-			.$this->data['last_name'].";"
-			.$this->data['first_name'].";"
-			.$this->data['additional_name'].";"
-			.$this->data['name_prefix'].";"
-			.$this->data['name_suffix']."\r\n";
+		$this->card .= "N:";
+		$this->card .= $this->data['last_name'].";";
+		$this->card .= $this->data['first_name'].";";
+		if (strlen($this->data['additional_name']) > 0) {
+			$this->card .= $this->data['additional_name'].";";
+		}
+		if (strlen($this->data['name_prefix']) > 0) {
+			$this->card .= $this->data['name_prefix'].";";
+		}
+		if (strlen($this->data['name_suffix']) > 0) {
+			$this->card .= $this->data['name_suffix']."\r\n";
+		}
 		if ($this->data['nickname']) { $this->card .= "NICKNAME:".$this->data['nickname']."\r\n"; }
 		if ($this->data['title']) { $this->card .= "TITLE:".$this->data['title']."\r\n"; }
 		if ($this->data['company']) { $this->card .= "ORG:".$this->data['company']; }
@@ -105,14 +111,29 @@ class vcard {
 		|| $this->data['work_state']
 		|| $this->data['work_postal_code']
 		|| $this->data['work_country']) {
-		$this->card .= "ADR;TYPE=work:"
-			.$this->data['work_po_box'].";"
-			.$this->data['work_extended_address'].";"
-			.$this->data['work_address'].";"
-			.$this->data['work_city'].";"
-			.$this->data['work_state'].";"
-			.$this->data['work_postal_code'].";"
-			.$this->data['work_country']."\r\n";
+			$this->card .= "ADR;TYPE=work:";
+			if (strlen($this->data['work_po_box']) > 0) {
+				$this->card .= $this->data['work_po_box'].";";
+			}
+			if (strlen($this->data['work_extended_address']) > 0) {
+				$this->card .= $this->data['work_extended_address'].";";
+			}
+			if (strlen($this->data['work_address']) > 0) {
+				$this->card .= $this->data['work_address'].";";
+			}
+			if (strlen($this->data['work_city']) > 0) {
+				$this->card .= $this->data['work_city'].";";
+			}
+			if (strlen($this->data['work_state']) > 0) {
+				$this->card .= $this->data['work_state'].";";
+			}
+			if (strlen($this->data['work_postal_code']) > 0) {
+				$this->card .= $this->data['work_postal_code'].";";
+			}
+			if (strlen($this->data['work_country']) > 0) {
+				$this->card .= $this->data['work_country']."";
+			}
+			$this->card .= "\r\n";
 		}
 		if ($this->data['home_po_box']
 		|| $this->data['home_extended_address']
@@ -121,14 +142,29 @@ class vcard {
 		|| $this->data['home_state']
 		|| $this->data['home_postal_code']
 		|| $this->data['home_country']) {
-		$this->card .= "ADR;TYPE=home:"
-			.$this->data['home_po_box'].";"
-			.$this->data['home_extended_address'].";"
-			.$this->data['home_address'].";"
-			.$this->data['home_city'].";"
-			.$this->data['home_state'].";"
-			.$this->data['home_postal_code'].";"
-			.$this->data['home_country']."\r\n";
+			$this->card .= "ADR;TYPE=home:";
+			if (strlen($this->data['home_po_box']) > 0) {
+				$this->card .= $this->data['home_po_box'].";";
+			}
+			if (strlen($this->data['home_extended_address']) > 0) {
+				$this->card .= $this->data['home_extended_address'].";";
+			}
+			if (strlen($this->data['home_address']) > 0) {
+				$this->card .= $this->data['home_address'].";";
+			}
+			if (strlen($this->data['home_city']) > 0) {
+				$this->card .= $this->data['home_city'].";";
+			}
+			if (strlen($this->data['home_state']) > 0) {
+				$this->card .= $this->data['home_state']."";
+			}
+			if (strlen($this->data['home_postal_code']) > 0) {
+				$this->card .= $this->data['home_postal_code'].";";
+			}
+			if (strlen($this->data['home_country']) > 0) {
+				$this->card .= $this->data['home_country'];
+			}
+			$this->card .= "\r\n";
 		}
 		if ($this->data['email1']) { $this->card .= "EMAIL;TYPE=internet,pref:".$this->data['email1']."\r\n"; }
 		if ($this->data['email2']) { $this->card .= "EMAIL;TYPE=internet:".$this->data['email2']."\r\n"; }
