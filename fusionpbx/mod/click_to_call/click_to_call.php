@@ -62,19 +62,19 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	//translate ringback
 		switch ($ringback) {
 			case "us-ring":
-				$ringback_value = '%(2000, 4000, 440.0, 480.0)';
+				$ringback_value = "'%(2000, 4000, 440.0, 480.0)'";
 				break;
 			case "uk-ring":
-				$ringback_value = '%(400,200,400,450);%(400,2200,400,450)';
+				$ringback_value = "'%(400,200,400,450);%(400,2200,400,450)'";
 				break;
 			case "fr-ring":
-				$ringback_value = '%(1500, 3500, 440.0, 0.0)';
+				$ringback_value = "'%(1500, 3500, 440.0, 0.0)'";
 				break;
 			case "rs-ring":
-				$ringback_value = '%(1000, 4000, 425.0, 0.0)';
+				$ringback_value = "'%(1000, 4000, 425.0, 0.0)'";
 				break;
 			case "music":
-				$ringback_value = 'local_stream://moh';
+				$ringback_value = "'local_stream://moh'";
 				break;
 			default:
 				$ringback = 'us-ring';
@@ -127,7 +127,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong>$src has called $dest</strong></td>\n";
+		echo "<td class='rowstyle1'><strong>$switch_cmd $src has called $dest</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -173,8 +173,10 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 //show html form
 	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
-	echo "	<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Click to Call\n";
-	echo "		</strong></span></span>\n";
+	echo "	<td align='left'>\n";
+	echo "		<span class=\"vexpl\" class=\"red\">\n";
+	echo "			<strong>Click to Call</strong>\n";
+	echo "		</span>\n";
 	echo "	</td>\n";
 	echo "	<td align='right'>\n";
 	echo "		&nbsp;\n";
