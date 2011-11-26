@@ -3380,13 +3380,15 @@ function sync_package_v_fax() {
 				$sql = "";
 				$sql = "update v_dialplan_includes set ";
 				$sql .= "extensionname = '$extensionname', ";
-				$sql .= "dialplanorder = '$dialplanorder', ";
+				if (strlen($dialplanorder) > 0) {
+					$sql .= "dialplanorder = '$dialplanorder', ";
+				}
 				$sql .= "context = '$context', ";
 				$sql .= "enabled = '$enabled', ";
 				$sql .= "descr = '$descr' ";
 				$sql .= "where v_id = '$v_id' ";
-				$sql .= "and opt1name = '$opt1name' ";
-				$sql .= "and opt1value = '$opt1value' ";
+				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+
 				$db->query($sql);
 				unset($sql);
 
@@ -3398,7 +3400,6 @@ function sync_package_v_fax() {
 				$sql .= "and tag = 'condition' ";
 				$sql .= "and fieldtype = 'destination_number' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-				//echo $sql."<br />";
 				$db->query($sql);
 				unset($sql);
 
@@ -3416,7 +3417,6 @@ function sync_package_v_fax() {
 				$sql .= "and tag = 'action' ";
 				$sql .= "and fieldtype = 'rxfax' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-				//echo $sql."<br />";
 				$db->query($sql);
 
 				//update the action
