@@ -755,31 +755,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		}
 		$db_tmp->commit();
 
-	//add the default groups to v_menu_groups
-		$db_tmp->beginTransaction();
-		foreach($apps as $app) {
-			foreach ($app['menu'] as $sub_row) {
-				foreach ($sub_row['groups'] as $group) {
-					//add the record
-					$sql = "insert into v_menu_groups ";
-					$sql .= "(";
-					$sql .= "v_id, ";
-					$sql .= "menu_guid, ";
-					$sql .= "group_id ";
-					$sql .= ")";
-					$sql .= "values ";
-					$sql .= "(";
-					$sql .= "'".$v_id."', ";
-					$sql .= "'".$sub_row['guid']."', ";
-					$sql .= "'".$group."' ";
-					$sql .= ")";
-					$db_tmp->exec($sql);
-					unset($sql);
-				}
-			}
-		}
-		$db_tmp->commit();
-
 	//unset the temporary database connection
 		unset($db_tmp);
 
