@@ -34,236 +34,45 @@ session_start();
 	//$_SESSION["menu"] = '';
 
 //build the menu if the session menu has no length
-if (strlen($_SESSION["menu"]) == 0) {
+	if (strlen($_SESSION["menu"]) == 0) {
+		$menuwidth = '110';
+		//echo "    <!-- http://www.seoconsultants.com/css/menus/horizontal/ -->\n";
+		//echo "    <!-- http://www.tanfa.co.uk/css/examples/css-dropdown-menus.asp -->";
 
-	$menuwidth = '110';
+		$v_menu = "";
+		$v_menu .= "    <!--[if IE]>\n";
+		$v_menu .= "    <style type=\"text/css\" media=\"screen\">\n";
+		$v_menu .= "    #menu{float:none;} /* This is required for IE to avoid positioning bug when placing content first in source. */\n";
+		$v_menu .= "    /* IE Menu CSS */\n";
+		$v_menu .= "    /* csshover.htc file version: V1.21.041022 - Available for download from: http://www.xs4all.nl/~peterned/csshover.html */\n";
+		$v_menu .= "    body{behavior:url(/includes/csshover.htc);\n";
+		$v_menu .= "    font-size:100%; /* to enable text resizing in IE */\n";
+		$v_menu .= "    }\n";
+		$v_menu .= "    #menu ul li{float:left;width:100%;}\n";
+		$v_menu .= "    #menu h2, #menu a{height:1%;font:bold arial,helvetica,sans-serif;}\n";
+		$v_menu .= "    </style>\n";
+		$v_menu .= "    <![endif]-->\n";
+		//$v_menu .= "    <style type=\"text/css\">@import url(\"/includes/menuh.css\");</style>\n";
+		$v_menu .= "\n";
 
-	//echo "    <!-- http://www.seoconsultants.com/css/menus/horizontal/ -->\n";
-	//echo "    <!-- http://www.tanfa.co.uk/css/examples/css-dropdown-menus.asp -->";
+		$v_menu .= "<!-- Begin CSS Horizontal Popout Menu -->\n";
+		$v_menu .= "<div id=\"menu\" style=\"position: relative; z-index:199; width:100%;\" align='left'>\n";
+		$v_menu .= "\n";
 
-	$v_menu = "";
-	$v_menu .= "    <!--[if IE]>\n";
-	$v_menu .= "    <style type=\"text/css\" media=\"screen\">\n";
-	$v_menu .= "    #menu{float:none;} /* This is required for IE to avoid positioning bug when placing content first in source. */\n";
-	$v_menu .= "    /* IE Menu CSS */\n";
-	$v_menu .= "    /* csshover.htc file version: V1.21.041022 - Available for download from: http://www.xs4all.nl/~peterned/csshover.html */\n";
-	$v_menu .= "    body{behavior:url(/includes/csshover.htc);\n";
-	$v_menu .= "    font-size:100%; /* to enable text resizing in IE */\n";
-	$v_menu .= "    }\n";
-	$v_menu .= "    #menu ul li{float:left;width:100%;}\n";
-	$v_menu .= "    #menu h2, #menu a{height:1%;font:bold arial,helvetica,sans-serif;}\n";
-	$v_menu .= "    </style>\n";
-	$v_menu .= "    <![endif]-->\n";
-	//$v_menu .= "    <style type=\"text/css\">@import url(\"/includes/menuh.css\");</style>\n";
-	$v_menu .= "\n";
+		require_once "includes/classes/menu.php";
+		$menu = new menu;
+		$menu->db = $db;
+		$menu->menu_guid = $_SESSION["v_menu_guid"];
+		$v_menu .= $menu->build_html("", "main");
+		unset($menu);
 
-	$v_menu .= "\n";
-	$v_menu .= "    <!-- End Grab This -->";
-
-	$v_menu .= "<!-- Begin CSS Horizontal Popout Menu -->\n";
-	$v_menu .= "<div id=\"menu\" style=\"position: relative; z-index:199; width:100%;\" align='left'>\n";
-	$v_menu .= "\n";
-
-	function build_db_menu($db, $sql, $menu_item_level) {
-		global $v_menu_guid;
-		$db_menu_full = '';
-
-		if (count($_SESSION['groups']) == 0) {
-			$_SESSION['groups'][0]['groupid'] = 'public';
-		}
-
-		if (strlen($sql) == 0) { //default sql for base of the menu
-			$sql = "select * from v_menu_items ";
-			$sql .= "where menu_guid = '$v_menu_guid' ";
-			$sql .= "and (menu_item_parent_guid = '' or menu_item_parent_guid is null) ";
-			$sql .= "and menu_item_guid in ";
-			$sql .= "(select menu_item_guid from v_menu_item_groups where menu_guid = '$v_menu_guid' ";
-			$sql .= "and ( ";
-			if (count($_SESSION['groups']) == 0) {
-				$sql .= "group_id = 'public' ";
-			}
-			else {
-				$x = 0;
-				foreach($_SESSION['groups'] as $row) {
-					if ($x == 0) {
-						$sql .= "group_id = '".$row['groupid']."' ";
-					}
-					else {
-						$sql .= "or group_id = '".$row['groupid']."' ";
-					}
-					$x++;
-				}
-			}
-			$sql .= ") ";
-			$sql .= "and menu_item_guid <> '' ";
-			$sql .= ") ";
-			$sql .= "order by menu_item_order asc ";
-		}
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
-
-		foreach($result as $field) {
-			$menu_item_id = $field['menu_item_id'];
-			$menu_item_title = $field['menu_item_title'];
-			$menu_item_str = $field['menu_item_str'];
-			$menu_item_category = $field['menu_item_category'];
-			$menu_item_desc = $field['menu_item_desc'];
-			$menu_item_guid = $field['menu_item_guid'];
-			$menu_item_parent_guid = $field['menu_item_parent_guid'];
-			$menu_item_order = $field['menu_item_order'];
-			$menu_item_language = $field['menu_item_language'];
-
-			$menu_tags = '';
-			switch ($menu_item_category) {
-				case "internal":
-					$menu_tags = "href='".PROJECT_PATH."$menu_item_str'";
-					break;
-				case "external":
-					if (substr($menu_item_str, 0,1) == "/") {
-						$menu_item_str = PROJECT_PATH . $menu_item_str;
-					}
-					$menu_tags = "href='$menu_item_str' target='_blank'";
-					break;
-				case "email":
-					$menu_tags = "href='mailto:$menu_item_str'";
-					break;
-			}
-
-			if ($menu_item_level == "main") {
-				$db_menu  = "<ul class='menu_main'>\n";
-				$db_menu .= "<li>\n";
-				if (strlen($_SESSION["username"]) == 0) {
-					$db_menu .= "<a $menu_tags style='padding: 0px 0px; border-style: none; background: none;'><h2 align='center' style=''>$menu_item_title</h2></a>\n";
-				}
-				else {
-					if ($menu_item_str == "/login.php" || $menu_item_str == "/users/signup.php") {
-						//hide login and sign-up when the user is logged in
-					}
-					else {
-						$db_menu .= "<a $menu_tags style='padding: 0px 0px; border-style: none; background: none;'><h2 align='center' style=''>$menu_item_title</h2></a>\n";
-					}
-				}
-			}
-
-			$menu_item_level = 0;
-			if (strlen($menu_item_guid) > 0) {
-				$db_menu .= build_db_child_menu($db, $menu_item_level, $menu_item_guid);
-			}
-
-			if ($menu_item_level == "main") {
-				$db_menu .= "</li>\n";
-				$db_menu .= "</ul>\n\n";
-			}
-
-			$db_menu_full .= $db_menu;
-
-		} //end for each
-
-		unset($menu_item_title);
-		unset($menu_item_strv);
-		unset($menu_item_category);
-		unset($menu_item_guid);
-		unset($menu_item_parent_guid);
-		unset($prep_statement, $sql, $result);
-
-		return $db_menu_full;
+		$v_menu .= "</div>\n";
+		$_SESSION["menu"] = $v_menu;
+	}
+	else {
+		//echo "from session";
 	}
 
-	function build_db_child_menu($db, $menu_item_level, $menu_item_guid) {
-		global $v_menu_guid;
-		$menu_item_level = $menu_item_level+1;
-
-		if (count($_SESSION['groups']) == 0) {
-			$_SESSION['groups'][0]['groupid'] = 'public';
-		}
-
-		$sql = "select * from v_menu_items ";
-		$sql .= "where menu_guid = '$v_menu_guid' ";
-		$sql .= "and menu_item_parent_guid = '$menu_item_guid' ";
-		$sql .= "and menu_item_guid in ";
-		$sql .= "(select menu_item_guid from v_menu_item_groups where menu_guid = '$v_menu_guid' ";
-		$sql .= "and ( ";
-		if (count($_SESSION['groups']) == 0) {
-			$sql .= "group_id = 'public' ";
-		}
-		else {
-			$x = 0;
-			foreach($_SESSION['groups'] as $row) {
-				if ($x == 0) {
-					$sql .= "group_id = '".$row['groupid']."' ";
-				}
-				else {
-					$sql .= "or group_id = '".$row['groupid']."' ";
-				}
-				$x++;
-			}
-		}
-		$sql .= ") ";
-		$sql .= ") ";
-		$sql .= "order by menu_item_order, menu_item_title asc ";
-		$prep_statement_2 = $db->prepare($sql);
-		$prep_statement_2->execute();
-		$result2 = $prep_statement_2->fetchAll();
-		if (count($result2) > 0) {
-			//child menu found
-			$db_menu_sub .= "<ul class='menu_sub'>\n";
-
-			foreach($result2 as $row) {
-				$menu_item_id = $row['menu_item_id'];
-				$menu_item_title = $row['menu_item_title'];
-				$menu_item_str = $row['menu_item_str'];
-				$menu_item_category = $row['menu_item_category'];
-				$menu_item_guid = $row['menu_item_guid'];
-				$menu_item_parent_guid = $row['menu_item_parent_guid'];
-
-				$menuatags = '';
-				switch ($menu_item_category) {
-					case "internal":
-						$menu_tags = "href='".PROJECT_PATH."$menu_item_str'";
-						break;
-					case "external":
-						if (substr($menu_item_str, 0,1) == "/") {
-							$menu_item_str = PROJECT_PATH . $menu_item_str;
-						}
-						$menu_tags = "href='$menu_item_str' target='_blank'";
-						break;
-					case "email":
-						$menu_tags = "href='mailto:$menu_item_str'";
-						break;
-				}
-
-				$db_menu_sub .= "<li>";
-
-				//get sub menu for children
-					if (strlen($menu_item_guid) > 0) {
-						$str_child_menu = build_db_child_menu($db, $menu_item_level, $menu_item_guid);
-					}
-
-				if (strlen($str_child_menu) > 1) {
-					$db_menu_sub .= "<a $menu_tags>$menu_item_title</a>";
-					$db_menu_sub .= $str_child_menu;
-					unset($str_child_menu);
-				}
-				else {
-					$db_menu_sub .= "<a $menu_tags>$menu_item_title</a>";
-				}
-				$db_menu_sub .= "</li>\n";
-			}
-			unset($sql, $result2);
-			$db_menu_sub .="</ul>\n";
-			return $db_menu_sub;
-		}
-		unset($prep_statement_2, $sql);
-	}
-
-	$v_menu .= build_db_menu($db, "", "main"); //display the menu
-	$v_menu .= "</div>\n";
-	$_SESSION["menu"] = $v_menu;
-}
-else {
-	//echo "from session";
-}
-
-//echo $_SESSION["menu"];
+//testing
+	//echo $_SESSION["menu"];
 ?>

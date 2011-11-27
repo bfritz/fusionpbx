@@ -44,7 +44,7 @@
 
 		//restore the menu
 			function restore() {
-				//set the variable
+				//set the variables
 					$db = $this->db;
 					$menu_guid = $this->menu_guid;
 
@@ -155,6 +155,205 @@
 				//save the changes to the database
 					$db->commit();
 			} //end function
+
+		//create the menu
+			function build_html($sql, $menu_item_level) {
+
+				$db = $this->db;
+				$v_menu_guid = $this->menu_guid;
+				$db_menu_full = '';
+
+				if (count($_SESSION['groups']) == 0) {
+					$_SESSION['groups'][0]['groupid'] = 'public';
+				}
+
+				if (strlen($sql) == 0) { //default sql for base of the menu
+					$sql = "select * from v_menu_items ";
+					$sql .= "where menu_guid = '$v_menu_guid' ";
+					$sql .= "and (menu_item_parent_guid = '' or menu_item_parent_guid is null) ";
+					$sql .= "and menu_item_guid in ";
+					$sql .= "(select menu_item_guid from v_menu_item_groups where menu_guid = '$v_menu_guid' ";
+					$sql .= "and ( ";
+					if (count($_SESSION['groups']) == 0) {
+						$sql .= "group_id = 'public' ";
+					}
+					else {
+						$x = 0;
+						foreach($_SESSION['groups'] as $row) {
+							if ($x == 0) {
+								$sql .= "group_id = '".$row['groupid']."' ";
+							}
+							else {
+								$sql .= "or group_id = '".$row['groupid']."' ";
+							}
+							$x++;
+						}
+					}
+					$sql .= ") ";
+					$sql .= "and menu_item_guid <> '' ";
+					$sql .= ") ";
+					$sql .= "order by menu_item_order asc ";
+				}
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
+
+				foreach($result as $field) {
+					$menu_item_id = $field['menu_item_id'];
+					$menu_item_title = $field['menu_item_title'];
+					$menu_item_str = $field['menu_item_str'];
+					$menu_item_category = $field['menu_item_category'];
+					$menu_item_desc = $field['menu_item_desc'];
+					$menu_item_guid = $field['menu_item_guid'];
+					$menu_item_parent_guid = $field['menu_item_parent_guid'];
+					$menu_item_order = $field['menu_item_order'];
+					$menu_item_language = $field['menu_item_language'];
+
+					$menu_tags = '';
+					switch ($menu_item_category) {
+						case "internal":
+							$menu_tags = "href='".PROJECT_PATH."$menu_item_str'";
+							break;
+						case "external":
+							if (substr($menu_item_str, 0,1) == "/") {
+								$menu_item_str = PROJECT_PATH . $menu_item_str;
+							}
+							$menu_tags = "href='$menu_item_str' target='_blank'";
+							break;
+						case "email":
+							$menu_tags = "href='mailto:$menu_item_str'";
+							break;
+					}
+
+					if ($menu_item_level == "main") {
+						$db_menu  = "<ul class='menu_main'>\n";
+						$db_menu .= "<li>\n";
+						if (strlen($_SESSION["username"]) == 0) {
+							$db_menu .= "<a $menu_tags style='padding: 0px 0px; border-style: none; background: none;'><h2 align='center' style=''>$menu_item_title</h2></a>\n";
+						}
+						else {
+							if ($menu_item_str == "/login.php" || $menu_item_str == "/users/signup.php") {
+								//hide login and sign-up when the user is logged in
+							}
+							else {
+								$db_menu .= "<a $menu_tags style='padding: 0px 0px; border-style: none; background: none;'><h2 align='center' style=''>$menu_item_title</h2></a>\n";
+							}
+						}
+					}
+
+					$menu_item_level = 0;
+					if (strlen($menu_item_guid) > 0) {
+						$db_menu .= $this->build_child_html($menu_item_level, $menu_item_guid);
+					}
+
+					if ($menu_item_level == "main") {
+						$db_menu .= "</li>\n";
+						$db_menu .= "</ul>\n\n";
+					}
+
+					$db_menu_full .= $db_menu;
+
+				} //end for each
+
+				unset($menu_item_title);
+				unset($menu_item_strv);
+				unset($menu_item_category);
+				unset($menu_item_guid);
+				unset($menu_item_parent_guid);
+				unset($prep_statement, $sql, $result);
+
+				return $db_menu_full;
+			}
+
+		//create the sub menus
+			function build_child_html($menu_item_level, $menu_item_guid) {
+
+				$db = $this->db;
+				$v_menu_guid = $this->menu_guid;
+				$menu_item_level = $menu_item_level+1;
+
+				if (count($_SESSION['groups']) == 0) {
+					$_SESSION['groups'][0]['groupid'] = 'public';
+				}
+
+				$sql = "select * from v_menu_items ";
+				$sql .= "where menu_guid = '$v_menu_guid' ";
+				$sql .= "and menu_item_parent_guid = '$menu_item_guid' ";
+				$sql .= "and menu_item_guid in ";
+				$sql .= "(select menu_item_guid from v_menu_item_groups where menu_guid = '$v_menu_guid' ";
+				$sql .= "and ( ";
+				if (count($_SESSION['groups']) == 0) {
+					$sql .= "group_id = 'public' ";
+				}
+				else {
+					$x = 0;
+					foreach($_SESSION['groups'] as $row) {
+						if ($x == 0) {
+							$sql .= "group_id = '".$row['groupid']."' ";
+						}
+						else {
+							$sql .= "or group_id = '".$row['groupid']."' ";
+						}
+						$x++;
+					}
+				}
+				$sql .= ") ";
+				$sql .= ") ";
+				$sql .= "order by menu_item_order, menu_item_title asc ";
+				$prep_statement_2 = $db->prepare($sql);
+				$prep_statement_2->execute();
+				$result2 = $prep_statement_2->fetchAll();
+				if (count($result2) > 0) {
+					//child menu found
+					$db_menu_sub .= "<ul class='menu_sub'>\n";
+
+					foreach($result2 as $row) {
+						$menu_item_id = $row['menu_item_id'];
+						$menu_item_title = $row['menu_item_title'];
+						$menu_item_str = $row['menu_item_str'];
+						$menu_item_category = $row['menu_item_category'];
+						$menu_item_guid = $row['menu_item_guid'];
+						$menu_item_parent_guid = $row['menu_item_parent_guid'];
+
+						$menuatags = '';
+						switch ($menu_item_category) {
+							case "internal":
+								$menu_tags = "href='".PROJECT_PATH."$menu_item_str'";
+								break;
+							case "external":
+								if (substr($menu_item_str, 0,1) == "/") {
+									$menu_item_str = PROJECT_PATH . $menu_item_str;
+								}
+								$menu_tags = "href='$menu_item_str' target='_blank'";
+								break;
+							case "email":
+								$menu_tags = "href='mailto:$menu_item_str'";
+								break;
+						}
+
+						$db_menu_sub .= "<li>";
+
+						//get sub menu for children
+							if (strlen($menu_item_guid) > 0) {
+								$str_child_menu = $this->build_child_html($menu_item_level, $menu_item_guid);
+							}
+
+						if (strlen($str_child_menu) > 1) {
+							$db_menu_sub .= "<a $menu_tags>$menu_item_title</a>";
+							$db_menu_sub .= $str_child_menu;
+							unset($str_child_menu);
+						}
+						else {
+							$db_menu_sub .= "<a $menu_tags>$menu_item_title</a>";
+						}
+						$db_menu_sub .= "</li>\n";
+					}
+					unset($sql, $result2);
+					$db_menu_sub .="</ul>\n";
+					return $db_menu_sub;
+				}
+				unset($prep_statement_2, $sql);
+			}
 	} //class
 
 ?>
