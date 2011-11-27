@@ -298,7 +298,7 @@ else {
 
 		//convert the tif to pdf
 			chdir($dir_fax_sent);
-			exec("gs -q -sDEVICE=tiffg3 -r204x98 -dNOPAUSE -sOutputFile=".$fax_name.".pdf -- ".$fax_name.".tif -c quit");
+			exec("gs -q -sDEVICE=tiffg3 -g1728x1078 -dNOPAUSE -sOutputFile=".$fax_name.".pdf -- ".$fax_name.".tif -c quit");
 
 		//delete the .tif from the temp directory
 			//exec("rm ".$dir_fax_temp.'/'.$fax_name.".tif");
@@ -380,42 +380,33 @@ else {
 //fax extension form
 	echo "<div align='center'>";
 	echo "<table border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "		<br>";
 
-	echo "<form method='post' name='frm' action=''>\n";
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
-	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap><b>Fax Add</b></td>\n";
-	}
-	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap><b>Fax Edit</b></td>\n";
-	}
-	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='v_fax_edit.php?id=$fax_id'\" value='Settings'>\n";
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_fax.php'\" value='Back'>\n";
-	echo "</td>\n";
+	echo "		<td align='left' width='30%'>\n";
+	echo "			<span class=\"vexpl\"><span class=\"red\"><strong>Fax Server</strong></span>\n";
+	echo "		</td>\n";
+	echo "		<td width='70%' align='right'>\n";
+	echo "			<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='v_fax_edit.php?id=$fax_id'\" value='Settings'>\n";
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_fax.php'\" value='Back'>\n";
+	echo "		</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
+	echo "</div>\n";
 
 	echo "<form action=\"\" method=\"POST\" enctype=\"multipart/form-data\" name=\"frmUpload\" onSubmit=\"\">\n";
 	echo "<div align='center'>\n";
-	echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-	echo "	<tr>\n";
-	echo "		<td align='left' width='30%'>\n";
-	echo "			<span class=\"vexpl\"><span class=\"red\"><strong>Send</strong></span>\n";
-	echo "		</td>\n";
-	echo "	</tr>\n";
+	echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"3\">\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='left'>\n";
 	//pkg_add -r ghostscript8-nox11; rehash
 	echo "			To send a fax you can upload a .tif file or if ghost script has been installed then you can also send a fax by uploading a PDF. \n";
 	echo "			When sending a fax you can view status of the transmission by viewing the logs from the Status tab or by watching the response from the console.\n";
-	echo "			<br />\n";
+	echo "			<br /><br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 
@@ -469,7 +460,7 @@ else {
 		echo "	<table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n";
 		echo "	<tr>\n";
 		echo "		<td align='left'>\n";
-		echo "			<span class=\"vexpl\"><span class=\"red\"><strong>Inbox</strong></span>\n";
+		echo "			<span class=\"vexpl\"><span class=\"red\"><strong>Inbox $fax_extension</strong></span>\n";
 		echo "		</td>\n";
 		echo "		<td align='right'>";
 		if ($v_path_show) {
@@ -695,7 +686,6 @@ else {
 		echo "       <td class=\"list\"></td>\n";
 		echo "     </tr>\n";
 		echo "     </table>\n";
-		echo "\n";
 		echo "\n";
 		echo "	<br />\n";
 		echo "	<br />\n";
