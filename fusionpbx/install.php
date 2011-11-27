@@ -952,7 +952,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 	//redirect to the login page
 		$msg = "install complete";
-		header("Location: ".PROJECT_PATH."/index2.php?msg=".urlencode($msg));
+		header("Location: ".PROJECT_PATH."/logout.php?msg=".urlencode($msg));
 }
 
 //set a default template
