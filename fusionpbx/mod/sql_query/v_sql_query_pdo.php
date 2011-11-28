@@ -24,25 +24,31 @@
  Mark J Crane <markjcrane@fusionpbx.com>
  */
  
+ //set the default values
+	if (strlen($dbfilepath) > 0) {
+		$db_path = $dbfilepath;
+		$db_name = $dbfilename;
+	}
+ 
 //get the db connection information
-	$sql = "";
-	$sql .= "select * from v_database_connections ";
-	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and database_connection_id = '".$_REQUEST['id']."' ";
-	$prep_statement = $db->prepare($sql);
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
-	foreach ($result as &$row) {
-		$db_type = $row["db_type"];
-		$db_host = $row["db_host"];
-		$db_port = $row["db_port"];
-		$db_name = $row["db_name"];
-		$db_username = $row["db_username"];
-		$db_password = $row["db_password"];
-		$db_path = $row["db_path"];
-		//$db_description = $row["db_description"];
-		//echo "			<option value='".$row["database_connection_id"]."'>".$row["db_host"]." - ".$row["db_name"]."</option>\n";
-		break;
+	if ($db) {
+		$sql = "";
+		$sql .= "select * from v_database_connections ";
+		$sql .= "where v_id = '$v_id' ";
+		$sql .= "and database_connection_id = '".$_REQUEST['id']."' ";
+		$prep_statement = $db->prepare($sql);
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		foreach ($result as &$row) {
+			$db_type = $row["db_type"];
+			$db_host = $row["db_host"];
+			$db_port = $row["db_port"];
+			$db_name = $row["db_name"];
+			$db_username = $row["db_username"];
+			$db_password = $row["db_password"];
+			$db_path = $row["db_path"];
+			break;
+		}
 	}
 	
 //unset the database connection
@@ -103,7 +109,6 @@ if ($db_type == "sqlite") {
 
 	if (!function_exists('phpnow')) {
 		function phpnow() {
-			//return date('r');
 			return date("Y-m-d H:i:s");
 		}
 	}
@@ -123,7 +128,7 @@ if ($db_type == "sqlite") {
 	if (!function_exists('phpsqlitedatatype')) {
 		function phpsqlitedatatype($string, $field) {
 
-			//--- Begin: Get String Between start and end characters -----
+			//get the string between the start and end characters
 			$start = '(';
 			$end = ')';
 			$ini = stripos($string,$start);
@@ -131,12 +136,10 @@ if ($db_type == "sqlite") {
 			$ini += strlen($start);
 			$len = stripos($string,$end,$ini) - $ini;
 			$string = substr($string,$ini,$len);
-			//--- End: Get String Between start and end characters -----
 
 			$strdatatype = '';
 			$stringarray = explode(',', $string);
 			foreach($stringarray as $lnvalue) {
-
 				//$strdatatype .= "-- ".$lnvalue ." ".strlen($lnvalue)." delim ".strrchr($lnvalue, " ")."---<br>";
 				//$delimpos = stripos($lnvalue, " ");
 				//$strdatatype .= substr($value,$delimpos,strlen($value))." --<br>";
@@ -156,14 +159,13 @@ if ($db_type == "sqlite") {
 		}
 	} //end function
 
-
 	//database connection
 	try {
 		//$db = new PDO('sqlite2:example.db'); //sqlite 2
 		//$db = new PDO('sqlite::memory:'); //sqlite 3
 		$db = new PDO('sqlite:'.realpath($db_path).'/'.$db_name); //sqlite 3
 
-		//Add additional functions to SQLite so that they are accessible inside SQL
+		//add additional functions to SQLite so that they are accessible inside SQL
 		//bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
 		$db->sqliteCreateFunction('md5', 'phpmd5', 1);
 		$db->sqliteCreateFunction('unix_timestamp', 'phpunix_timestamp', 1);
@@ -177,7 +179,6 @@ if ($db_type == "sqlite") {
 		die();
 	}
 } //end if db_type sqlite
-
 
 if ($db_type == "mysql") {
 	//database connection
@@ -212,7 +213,6 @@ if ($db_type == "mysql") {
 		die();
 	}
 } //end if db_type mysql
-
 
 if ($db_type == "pgsql") {
 	//database connection
