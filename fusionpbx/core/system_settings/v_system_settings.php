@@ -182,47 +182,6 @@ else {
 						}
 				}
 
-			//if there are no menu groups listed in v_menu_item_groups then add the default groups
-				$sql = "";
-				$sql .= "select count(*) as count from v_menu_item_groups ";
-				$sql .= "where menu_guid = ".$row['menu_guid']." ";
-				$prep_statement = $db->prepare($sql);
-				$prep_statement->execute();
-				$result = $prep_statement->fetch();
-				unset ($prep_statement);
-				if ($result['count'] > 0) {
-					if ($display_type == "text") {
-						echo "Menu Groups: 		no change\n";
-					}
-				}
-				else {
-					if ($display_type == "text") {
-						echo "Menu Groups: 		added\n";
-					}
-					//no menu groups found add the defaults
-						foreach($apps as $app) {
-							foreach ($app['menu'] as $sub_row) {
-								foreach ($sub_row['groups'] as $group) {
-									//add the record
-									$sql = "insert into v_menu_item_groups ";
-									$sql .= "(";
-									$sql .= "menu_guid, ";
-									$sql .= "menu_item_guid, ";
-									$sql .= "group_id ";
-									$sql .= ")";
-									$sql .= "values ";
-									$sql .= "(";
-									$sql .= "'".$_SESSION["v_menu_guid"]."', ";
-									$sql .= "'".$sub_row['guid']."', ";
-									$sql .= "'".$group."' ";
-									$sql .= ")";
-									$db->exec($sql);
-									unset($sql);
-								}
-							}
-						}
-				}
-
 			if (strlen($row['v_server_port']) == 0) { $row['v_server_port'] = '80'; }
 			switch ($row['v_server_port']) {
 				case "80":
