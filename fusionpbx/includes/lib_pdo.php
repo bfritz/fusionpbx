@@ -294,36 +294,71 @@ if ($db_type == "pgsql") {
 
 //domain list
 	if (!is_array($_SESSION["domains"])) {
-		$sql = "select * from v_system_settings ";
-		$prepstatement = $db->prepare($sql);
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		foreach($result as $row) {
-			//get the values from the db and set them as session variables
-				$_SESSION['domains'][$row['v_id']]['v_id'] = $row['v_id'];
-				$_SESSION['domains'][$row['v_id']]['domain'] = $row['v_domain'];
-				$_SESSION['domains'][$row['v_id']]['template_name'] = $row['v_template_name'];
-			//get the domain
-				$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
-			//get v_id, and check for an assigned template 
-				if ($row['v_domain'] == $domain_array[0] || $row['v_domain'] == 'www.'.$domain_array[0]) {
-					$_SESSION["v_id"] = $row["v_id"];
-					$_SESSION["template_name"] = $row["v_template_name"];
-					$_SESSION["v_template_name"] = $row["v_template_name"];
-					$_SESSION["v_domain"] = $row['v_domain'];
-					$_SESSION["v_menu_guid"] = $row['v_menu_guid'];
-					$_SESSION["v_time_zone"] = $row['v_time_zone'];
-					if (strlen($row["v_time_zone"]) > 0) {
-						//server time zone
-							$_SESSION["time_zone"]["system"] = date_default_timezone_get();
-						//domain time zone set in system settings
-							$_SESSION["time_zone"]["domain"] = $row['v_time_zone'];
-						//set the domain time zone as the default time zone
-							date_default_timezone_set($_SESSION["v_time_zone"]);
-					}
+		//get the count of the rows in v_system_settings
+			$sql = "";
+			$sql .= " select count(*) as num_rows from v_system_settings ";
+			$prepstatement = $db->prepare($sql);
+			if ($prepstatement) {
+				$prepstatement->execute();
+				$row = $prepstatement->fetch(PDO::FETCH_ASSOC);
+				if ($row['num_rows'] > 0) {
+					$num_rows = $row['num_rows'];
 				}
-		}
-		unset($result, $prepstatement);
+				else {
+					$num_rows = '0';
+				}
+			}
+			unset($prepstatement, $result);
+
+		//get the values from v_system_settings
+			$sql = "select * from v_system_settings ";
+			$prepstatement = $db->prepare($sql);
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			foreach($result as $row) {
+				//get the values from the db and set them as session variables
+					$_SESSION['domains'][$row['v_id']]['v_id'] = $row['v_id'];
+					$_SESSION['domains'][$row['v_id']]['domain'] = $row['v_domain'];
+					$_SESSION['domains'][$row['v_id']]['template_name'] = $row['v_template_name'];
+				//get the domain
+					$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
+				//get v_id, and check for an assigned template
+					if ($num_rows > 1) {
+						if ($row['v_domain'] == $domain_array[0] || $row['v_domain'] == 'www.'.$domain_array[0]) {
+							$_SESSION["v_id"] = $row["v_id"];
+							$_SESSION["template_name"] = $row["v_template_name"];
+							$_SESSION["v_template_name"] = $row["v_template_name"];
+							$_SESSION["v_domain"] = $row['v_domain'];
+							$_SESSION["v_menu_guid"] = $row['v_menu_guid'];
+							$_SESSION["v_time_zone"] = $row['v_time_zone'];
+							if (strlen($row["v_time_zone"]) > 0) {
+								//server time zone
+									$_SESSION["time_zone"]["system"] = date_default_timezone_get();
+								//domain time zone set in system settings
+									$_SESSION["time_zone"]["domain"] = $row['v_time_zone'];
+								//set the domain time zone as the default time zone
+									date_default_timezone_set($_SESSION["v_time_zone"]);
+							}
+						}
+					}
+					if ($num_rows == 1) {
+						$_SESSION["v_id"] = $row["v_id"];
+						$_SESSION["template_name"] = $row["v_template_name"];
+						$_SESSION["v_template_name"] = $row["v_template_name"];
+						$_SESSION["v_domain"] = $row['v_domain'];
+						$_SESSION["v_menu_guid"] = $row['v_menu_guid'];
+						$_SESSION["v_time_zone"] = $row['v_time_zone'];
+						if (strlen($row["v_time_zone"]) > 0) {
+							//server time zone
+								$_SESSION["time_zone"]["system"] = date_default_timezone_get();
+							//domain time zone set in system settings
+								$_SESSION["time_zone"]["domain"] = $row['v_time_zone'];
+							//set the domain time zone as the default time zone
+								date_default_timezone_set($_SESSION["v_time_zone"]);
+						}
+					}
+			}
+			unset($result, $prepstatement);
 	}
 
 //set the context
