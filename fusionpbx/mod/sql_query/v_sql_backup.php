@@ -125,6 +125,35 @@ else {
 				}
 			}
 
+		//set the auto increment id starting number
+			switch ($table_name) {
+				case "v_system_settings":
+					$auto_increment_name = 'v_id';
+					break;
+				case "v_users":
+					$auto_increment_name = 'id';
+					break;
+				case "v_groups":
+					$auto_increment_name = 'id';
+					break;
+				case "v_group_members":
+					$auto_increment_name = 'id';
+					break;
+				default:
+				   $auto_increment_name = $table_name;
+					//remove the v_ from the prefix
+						if (substr($auto_increment_name, 0, 2) == "v_") {
+							$auto_increment_name = substr($auto_increment_name, 2);
+						}
+					//remove the s from the postfix
+						if (substr($auto_increment_name, -1) == "s") {
+							$auto_increment_name = substr($auto_increment_name, 0, -1);
+						}
+					//add the _id as a postfix
+						$auto_increment_name = $auto_increment_name ."_id";
+			}
+			echo "SELECT setval('".$table_name."_".$auto_increment_name."_seq', (SELECT MAX(".$auto_increment_name.") FROM ".$table_name.")+1);\n";
+
 		unset($column_array);
 	}
 
