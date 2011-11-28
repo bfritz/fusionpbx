@@ -182,10 +182,10 @@ else {
 						}
 				}
 
-			//if there are no groups listed in v_menu_groups then add the default groups
+			//if there are no menu groups listed in v_menu_item_groups then add the default groups
 				$sql = "";
-				$sql .= "select count(*) as count from v_menu_groups ";
-				$sql .= "where v_id = ".$row['v_id']." ";
+				$sql .= "select count(*) as count from v_menu_item_groups ";
+				$sql .= "where menu_guid = ".$row['menu_guid']." ";
 				$prep_statement = $db->prepare($sql);
 				$prep_statement->execute();
 				$result = $prep_statement->fetch();
@@ -204,15 +204,15 @@ else {
 							foreach ($app['menu'] as $sub_row) {
 								foreach ($sub_row['groups'] as $group) {
 									//add the record
-									$sql = "insert into v_menu_groups ";
+									$sql = "insert into v_menu_item_groups ";
 									$sql .= "(";
-									$sql .= "v_id, ";
 									$sql .= "menu_guid, ";
+									$sql .= "menu_item_guid, ";
 									$sql .= "group_id ";
 									$sql .= ")";
 									$sql .= "values ";
 									$sql .= "(";
-									$sql .= "'".$row['v_id']."', ";
+									$sql .= "'".$_SESSION["v_menu_guid"]."', ";
 									$sql .= "'".$sub_row['guid']."', ";
 									$sql .= "'".$group."' ";
 									$sql .= ")";
