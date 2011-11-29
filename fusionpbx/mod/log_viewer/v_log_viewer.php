@@ -132,7 +132,7 @@ if (permission_exists('log_path_view')) {
 	$arr_filter[3]['type'] = 'normal';
 	$arr_filter[3]['font'] = 'monospace';
 
-	$arr_filter[4]['pattern'] = '[ERROR]';
+	$arr_filter[4]['pattern'] = '[ERR]';
 	$arr_filter[4]['color'] = 'red';
 	$arr_filter[4]['type'] = 'bold';
 	$arr_filter[4]['font'] = 'monospace';
