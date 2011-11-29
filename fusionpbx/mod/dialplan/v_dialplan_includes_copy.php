@@ -82,8 +82,21 @@ else {
 		$sql .= "'$enabled', ";
 		$sql .= "'$descr' ";
 		$sql .= ")";
-		$db->exec(check_sql($sql));
-		$db_dialplan_include_id = $db->lastInsertId($id);
+		if ($db_type == "sqlite" || $db_type == "mysql" ) {
+			$db->exec(check_sql($sql));
+			$db_dialplan_include_id = $db->lastInsertId($id);
+		}
+		if ($db_type == "pgsql") {
+			$sql .= " RETURNING dialplan_include_id ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
+				$db_dialplan_include_id = $row["dialplan_include_id"];
+			}
+			unset($prepstatement, $result);
+		}
+		//echo $sql."<br />\n";
 		unset($sql);
 
 	//get the the dialplan details
@@ -117,7 +130,7 @@ else {
 				$sql .= "'$v_id', ";
 				$sql .= "'".check_str($db_dialplan_include_id)."', ";
 				$sql .= "'".check_str($tag)."', ";
-				$sql .= "'".check_str($fieldorder).", ";
+				$sql .= "'".check_str($fieldorder)."', ";
 				$sql .= "'".check_str($fieldtype)."', ";
 				$sql .= "'".check_str($fielddata)."' ";
 				$sql .= ")";

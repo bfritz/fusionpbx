@@ -119,8 +119,20 @@ else {
 		$sql .= "'$ivr_menu_enabled', ";
 		$sql .= "'$ivr_menu_desc' ";
 		$sql .= ")";
-		$db->exec(check_sql($sql));
-		$db_ivr_menu_id = $db->lastInsertId($id);
+		if ($db_type == "sqlite" || $db_type == "mysql" ) {
+			$db->exec(check_sql($sql));
+			$db_ivr_menu_id = $db->lastInsertId($id);
+		}
+		if ($db_type == "pgsql") {
+			$sql .= " RETURNING ivr_menu_id ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
+				$db_ivr_menu_id = $row["ivr_menu_id"];
+			}
+			unset($prepstatement, $result);
+		}
 		unset($sql);
 
 	//get the the ivr menu options

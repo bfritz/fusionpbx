@@ -62,6 +62,7 @@ require_once "includes/paging.php";
 		$huntgroupcidnameprefix = $row["huntgroupcidnameprefix"];
 		$huntgrouppin = $row["huntgrouppin"];
 		$huntgroupcallerannounce = $row["huntgroupcallerannounce"];
+		$hunt_group_enabled = $row["hunt_group_enabled"];
 		$huntgroupdescr = "copy: ".$row["huntgroupdescr"];
 		break; //limit to 1 row
 	}
@@ -82,6 +83,7 @@ require_once "includes/paging.php";
 		$sql .= "huntgroupcidnameprefix, ";
 		$sql .= "huntgrouppin, ";
 		$sql .= "huntgroupcallerannounce, ";
+		$sql .= "hunt_group_enabled, ";
 		$sql .= "huntgroupdescr ";
 		$sql .= ")";
 		$sql .= "values ";
@@ -98,10 +100,23 @@ require_once "includes/paging.php";
 		$sql .= "'$huntgroupcidnameprefix', ";
 		$sql .= "'$huntgrouppin', ";
 		$sql .= "'$huntgroupcallerannounce', ";
+		$sql .= "'$hunt_group_enabled', ";
 		$sql .= "'$huntgroupdescr' ";
 		$sql .= ")";
-		$db->exec(check_sql($sql));
-		$db_hunt_group_id = $db->lastInsertId($id);
+		if ($db_type == "sqlite" || $db_type == "mysql" ) {
+			$db->exec(check_sql($sql));
+			$db_hunt_group_id = $db->lastInsertId($id);
+		}
+		if ($db_type == "pgsql") {
+			$sql .= " RETURNING hunt_group_id ";
+			$prepstatement = $db->prepare(check_sql($sql));
+			$prepstatement->execute();
+			$result = $prepstatement->fetchAll();
+			foreach ($result as &$row) {
+				$db_hunt_group_id = $row["hunt_group_id"];
+			}
+			unset($prepstatement, $result);
+		}
 		unset($sql);
 
 	//get the the dialplan details

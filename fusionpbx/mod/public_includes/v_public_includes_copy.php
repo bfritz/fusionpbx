@@ -80,8 +80,20 @@ else {
 	$sql .= "'$enabled', ";
 	$sql .= "'$descr' ";
 	$sql .= ")";
-	$db->exec(check_sql($sql));
-	$db_public_include_id = $db->lastInsertId($id);
+	if ($db_type == "sqlite" || $db_type == "mysql" ) {
+		$db->exec(check_sql($sql));
+		$db_public_include_id = $db->lastInsertId($id);
+	}
+	if ($db_type == "pgsql") {
+		$sql .= " RETURNING public_include_id ";
+		$prepstatement = $db->prepare(check_sql($sql));
+		$prepstatement->execute();
+		$result = $prepstatement->fetchAll();
+		foreach ($result as &$row) {
+			$db_public_include_id = $row["public_include_id"];
+		}
+		unset($prepstatement, $result);
+	}
 	unset($sql);
 
 //get the the public details
