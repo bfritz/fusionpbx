@@ -179,11 +179,34 @@ include "v_config_cli.php";
 			$bodypart = $parts_array["BodyPart"];
 			$bodylength = $parts_array["BodyLength"];
 			if (strlen($file) > 0) {
-				$file_ext = pathinfo($file, PATHINFO_EXTENSION);
-				$file_name = substr($file, 0, (strlen($file) - strlen($file_ext))-1 );
-				$encoding = "base64"; //base64_decode
+				//get the file information
+					$file_ext = pathinfo($file, PATHINFO_EXTENSION);
+					$file_name = substr($file, 0, (strlen($file) - strlen($file_ext))-1 );
+					$encoding = "base64"; //base64_decode
+
+					switch($file_ext){
+						case "wav":
+							$mime_type = "audio/x-wav";
+							break;
+						case "mp3":
+							$mime_type = "audio/x-mp3";
+							break;
+						case "pdf":
+							$mime_type = "application/pdf";
+							break;
+						case "tif":
+							$mime_type = "image/tiff";
+							break;
+						case "tiff":
+							$mime_type = "image/tiff";
+							break;
+						default:
+							$mime_type = "binary/octet-stream";
+							break;
+					}
+
 				//add an attachment
-					$mail->AddStringAttachment($parts_array["Body"],$file,$encoding,$file_ext);
+					$mail->AddStringAttachment($parts_array["Body"],$file,$encoding,$mime_type);
 			}
 		}
 	}
