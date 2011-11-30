@@ -62,23 +62,23 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	//translate ringback
 		switch ($ringback) {
 			case "us-ring":
-				$ringback_value = "'%(2000, 4000, 440.0, 480.0)'";
+				$ringback_value = "'%(2000,4000,440.0,480.0)'";
 				break;
 			case "uk-ring":
 				$ringback_value = "'%(400,200,400,450);%(400,2200,400,450)'";
 				break;
 			case "fr-ring":
-				$ringback_value = "'%(1500, 3500, 440.0, 0.0)'";
+				$ringback_value = "'%(1500,3500,440.0,0.0)'";
 				break;
 			case "rs-ring":
-				$ringback_value = "'%(1000, 4000, 425.0, 0.0)'";
+				$ringback_value = "'%(1000,4000,425.0,0.0)'";
 				break;
 			case "music":
 				$ringback_value = "'local_stream://moh'";
 				break;
 			default:
 				$ringback = 'us-ring';
-				$ringback_value = '%(2000, 4000, 440.0, 480.0)';
+				$ringback_value = '%(2000,4000,440.0,480.0)';
 		}
 
 	//source should see the destination caller id
