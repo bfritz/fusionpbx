@@ -117,8 +117,8 @@ if (count($_POST)>0) {
 	$ivr_menu_timeout_action = check_str($_POST["ivr_menu_timeout_action"]);
 	//$ivr_menu_timeout_action = "transfer:1001 XML default";
 	$timeout_action_array = explode(":", $ivr_menu_timeout_action);
-	$ivr_menu_timeout_application = array_shift($timeout_action_array);
-	$ivr_menu_timeout_data = join(':', $timeout_action_array);
+	$ivr_menu_exit_app = array_shift($timeout_action_array);
+	$ivr_menu_exit_data = join(':', $timeout_action_array);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -142,8 +142,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($ivr_menu_tts_voice) == 0) { $msg .= "Please provide: TTS Voice<br>\n"; }
 		if (strlen($ivr_menu_confirm_attempts) == 0) { $msg .= "Please provide: Confirm Attempts<br>\n"; }
 		if (strlen($ivr_menu_timeout) == 0) { $msg .= "Please provide: Timeout<br>\n"; }
-		//if (strlen($ivr_menu_timeout_application) == 0) { $msg .= "Please provide: Timeout Application<br>\n"; }
-		//if (strlen($ivr_menu_timeout_data) == 0) { $msg .= "Please provide: Timeout Data<br>\n"; }
+		//if (strlen($ivr_menu_exit_app) == 0) { $msg .= "Please provide: Timeout Application<br>\n"; }
+		//if (strlen($ivr_menu_exit_data) == 0) { $msg .= "Please provide: Timeout Data<br>\n"; }
 		if (strlen($ivr_menu_inter_digit_timeout) == 0) { $msg .= "Please provide: Inter Digit Timeout<br>\n"; }
 		if (strlen($ivr_menu_max_failures) == 0) { $msg .= "Please provide: Max Failures<br>\n"; }
 		if (strlen($ivr_menu_max_timeouts) == 0) { $msg .= "Please provide: Max Timeouts<br>\n"; }
@@ -182,8 +182,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "ivr_menu_tts_voice, ";
 				$sql .= "ivr_menu_confirm_attempts, ";
 				$sql .= "ivr_menu_timeout, ";
-				$sql .= "ivr_menu_timeout_application, ";
-				$sql .= "ivr_menu_timeout_data, ";
+				$sql .= "ivr_menu_exit_app, ";
+				$sql .= "ivr_menu_exit_data, ";
 				$sql .= "ivr_menu_inter_digit_timeout, ";
 				$sql .= "ivr_menu_max_failures, ";
 				$sql .= "ivr_menu_max_timeouts, ";
@@ -207,8 +207,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$ivr_menu_tts_voice', ";
 				$sql .= "'$ivr_menu_confirm_attempts', ";
 				$sql .= "'$ivr_menu_timeout', ";
-				$sql .= "'$ivr_menu_timeout_application', ";
-				$sql .= "'$ivr_menu_timeout_data', ";				
+				$sql .= "'$ivr_menu_exit_app', ";
+				$sql .= "'$ivr_menu_exit_data', ";				
 				$sql .= "'$ivr_menu_inter_digit_timeout', ";
 				$sql .= "'$ivr_menu_max_failures', ";
 				$sql .= "'$ivr_menu_max_timeouts', ";
@@ -247,8 +247,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "ivr_menu_tts_voice = '$ivr_menu_tts_voice', ";
 				$sql .= "ivr_menu_confirm_attempts = '$ivr_menu_confirm_attempts', ";
 				$sql .= "ivr_menu_timeout = '$ivr_menu_timeout', ";
-				$sql .= "ivr_menu_timeout_application = '$ivr_menu_timeout_application', ";
-				$sql .= "ivr_menu_timeout_data = '$ivr_menu_timeout_data', ";
+				$sql .= "ivr_menu_exit_app = '$ivr_menu_exit_app', ";
+				$sql .= "ivr_menu_exit_data = '$ivr_menu_exit_data', ";
 				$sql .= "ivr_menu_inter_digit_timeout = '$ivr_menu_inter_digit_timeout', ";
 				$sql .= "ivr_menu_max_failures = '$ivr_menu_max_failures', ";
 				$sql .= "ivr_menu_max_timeouts = '$ivr_menu_max_timeouts', ";
@@ -300,8 +300,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$ivr_menu_tts_voice = $row["ivr_menu_tts_voice"];
 			$ivr_menu_confirm_attempts = $row["ivr_menu_confirm_attempts"];
 			$ivr_menu_timeout = $row["ivr_menu_timeout"];
-			$ivr_menu_timeout_application = $row["ivr_menu_timeout_application"];
-			$ivr_menu_timeout_data = $row["ivr_menu_timeout_data"];
+			$ivr_menu_exit_app = $row["ivr_menu_exit_app"];
+			$ivr_menu_exit_data = $row["ivr_menu_exit_data"];
 			$ivr_menu_inter_digit_timeout = $row["ivr_menu_inter_digit_timeout"];
 			$ivr_menu_max_failures = $row["ivr_menu_max_failures"];
 			$ivr_menu_max_timeouts = $row["ivr_menu_max_timeouts"];
@@ -310,8 +310,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$ivr_menu_enabled = $row["ivr_menu_enabled"];
 			$ivr_menu_desc = $row["ivr_menu_desc"];
 			
-			if (strlen($ivr_menu_timeout_application) > 0) {
-				$ivr_menu_timeout_action = $ivr_menu_timeout_application.":".$ivr_menu_timeout_data;
+			if (strlen($ivr_menu_exit_app) > 0) {
+				$ivr_menu_timeout_action = $ivr_menu_exit_app.":".$ivr_menu_exit_data;
 			}
 
 			break; //limit to 1 row
