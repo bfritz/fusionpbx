@@ -718,19 +718,20 @@ function confirmdelete(url) {
 		}
 	}
 
-$menu_level = '0';
-if ($db) {
-	if (strlen($php_self_parent_guid) > 0) {
-		require_once "includes/classes/menu.php";
-		$menu = new menu;
-		$menu->db = $db;
-		$menu->menu_guid = $_SESSION["v_menu_guid"];
-		$sub_menu = $menu->build_child_html($menu_level, $php_self_parent_guid);
-		$sub_menu = str_replace("menu_sub", "menu_sub_vertical", $sub_menu);
-		echo $sub_menu;
-		unset($menu);
+//get the sub menu
+	$menu_level = '0';
+	if ($db) {
+		if (strlen($php_self_parent_guid) > 0) {
+			require_once "includes/classes/menu.php";
+			$menu = new menu;
+			$menu->db = $db;
+			$menu->menu_guid = $_SESSION["v_menu_guid"];
+			$sub_menu = $menu->build_child_html($menu_level, $php_self_parent_guid);
+			$sub_menu = str_replace("menu_sub", "menu_sub_vertical", $sub_menu);
+			echo $sub_menu;
+			unset($menu);
+		}
 	}
-}
 
 ?>
 
