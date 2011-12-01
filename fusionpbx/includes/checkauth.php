@@ -43,7 +43,7 @@ session_start();
 			}
 
 		//if the username from the form is not provided then send to login.php
-			if (strlen(check_str($_POST["username"])) == 0) {
+			if (strlen(check_str($_REQUEST["username"])) == 0) {
 				$strphpself = $_SERVER["PHP_SELF"];
 				$msg = "username required";
 				header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($strphpself)."&msg=".urlencode($msg));
@@ -57,8 +57,8 @@ session_start();
 			$sql .= "and password=:password ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->bindParam(':v_id', $v_id);
-			$prepstatement->bindParam(':username', check_str($_POST["username"]));
-			$prepstatement->bindParam(':password', md5($v_salt.check_str($_POST["password"])));
+			$prepstatement->bindParam(':username', check_str($_REQUEST["username"]));
+			$prepstatement->bindParam(':password', md5($v_salt.check_str($_REQUEST["password"])));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll(PDO::FETCH_NAMED);
 			$resultcount = count($result);
@@ -67,7 +67,7 @@ session_start();
 
 				//log the failed auth attempt to the system, to be available for fail2ban.
 				openlog('FusionPBX', LOG_NDELAY, LOG_AUTH);
-				syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] authentication failed for ".$_POST["username"]);
+				syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] authentication failed for ".$_REQUEST["username"]);
 				closelog();
 
 				$msg = "incorrect account information";
@@ -75,7 +75,7 @@ session_start();
 				exit;
 			}
 			else {
-				$_SESSION["username"] = check_str($_POST["username"]);
+				$_SESSION["username"] = check_str($_REQUEST["username"]);
 				foreach ($result as &$row) {
 					//allow the user to choose a template only if the template has not been assigned by the superadmin
 					if (strlen($_SESSION["v_template_name"]) == 0) {
@@ -129,10 +129,12 @@ session_start();
 			unset($sql, $prepstatementsub);
 
 		//redirect the user
-			$path = check_str($_POST["path"]);
-			if(isset($path) && !empty($path) && $path!="index2.php" && $path!="/install.php") {
-				header("Location: ".$path);
-				exit();
+			if (check_str($_REQUEST["rdr"]) == 'n'){
+				$path = check_str($_POST["path"]);
+				if(isset($path) && !empty($path) && $path!="index2.php" && $path!="/install.php") {
+					header("Location: ".$path);
+					exit();
+				}
 			}
 	}
 
