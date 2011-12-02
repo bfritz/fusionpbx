@@ -4,6 +4,12 @@
 		--if the call has been answered
 		--then send presence terminate, and delete from the database
 
+--connect to the database
+	--ODBC - data source name
+		--local dbh = freeswitch.Dbh("name","user","pass");
+	--FreeSWITCH core db
+		local dbh = freeswitch.Dbh("core:park");
+
 --get the argv values
 	script_name = argv[0];
 	uuid = argv[1];
@@ -12,10 +18,6 @@
 	park_timeout_type = argv[4];
 	park_timeout_seconds = argv[5];
 	park_timeout_destination = argv[6];
-
---connect to the database
-	--local dbh = freeswitch.Dbh("dsn","user","pass"); -- when using ODBC
-	local dbh = freeswitch.Dbh("core:park"); -- when using sqlite
 
 --prepare the api
 	api = freeswitch.API();

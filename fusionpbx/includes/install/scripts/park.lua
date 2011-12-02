@@ -14,6 +14,12 @@
 		--action	set		park_music=$${hold_music}
 		--action	lua		park.lua
 
+--connect to the database
+	--ODBC - data source name
+		--local dbh = freeswitch.Dbh("name","user","pass");
+	--FreeSWITCH core db
+		local dbh = freeswitch.Dbh("core:park");
+
 --get the session variables
 	sounds_dir = session:getVariable("sounds_dir");
 	park_direction = session:getVariable("park_direction");
@@ -26,19 +32,6 @@
 	park_timeout_destination = session:getVariable("park_timeout_destination");
 	park_timeout_seconds = session:getVariable("park_timeout_seconds");
 	park_music = session:getVariable("park_music");
-
---if park_timeout_seconds is not defined set the timeout to 5 minutes
-	if (not park_timeout_seconds) then
-		park_timeout_seconds = 300;
-	end
-
---if park_timeout_type is not defined set to transfer
-	if (not park_timeout_type) then
-		park_timeout_type = "transfer";
-	end
-
---prepare the api
-	api = freeswitch.API();
 
 --add the explode function
 	function explode ( seperator, str ) 
@@ -56,21 +49,33 @@
 		return s:gsub("^%s+", ""):gsub("%s+$", "")
 	end
 
+--if park_timeout_seconds is not defined set the timeout to 5 minutes
+	if (not park_timeout_seconds) then
+		park_timeout_seconds = 300;
+	end
+
+--if park_timeout_type is not defined set to transfer
+	if (not park_timeout_type) then
+		park_timeout_type = "transfer";
+	end
+
+--prepare the api
+	api = freeswitch.API();
+
 --answer the call
 	session:answer();
 
 --database
-	--connect to the database
-		--local dbh = freeswitch.Dbh("dsn","user","pass"); -- when using ODBC
-		local dbh = freeswitch.Dbh("core:park"); -- when using sqlite
-
 	--exits the script if we didn't connect properly
 		assert(dbh:connected());
 
 	--create the table if it doesn't exist
-		dbh:test_reactive("SELECT * FROM park",
-							"DROP TABLE park",
-							"CREATE TABLE park (id INTEGER PRIMARY KEY, lot TEXT, domain TEXT, uuid TEXT)");
+		--pgsql
+			dbh:test_reactive("SELECT * FROM park",	"",	"CREATE TABLE park (id SERIAL, lot TEXT, domain TEXT, uuid TEXT, CONSTRAINT park_pk PRIMARY KEY(id))");
+		--sqlite
+			dbh:test_reactive("SELECT * FROM park",	"",	"CREATE TABLE park (id INTEGER PRIMARY KEY, lot TEXT, domain TEXT, uuid TEXT)");
+		--mysql
+			dbh:test_reactive("SELECT * FROM park",	"",	"CREATE TABLE park (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, lot TEXT, domain TEXT, uuid TEXT)");
 
 	--if park_range is defined then loop through the range to find an available parking lot
 		if (park_range) then
