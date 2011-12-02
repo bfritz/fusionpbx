@@ -57,26 +57,7 @@ if (permission_exists('log_download')) {
 }
 
 require_once "includes/header.php";
-?>
 
-<script language="Javascript" type="text/javascript" src="<?php echo PROJECT_PATH ?>/includes/edit_area/edit_area_full.js"></script>
-<script language="Javascript" type="text/javascript">
-	// initialisation
-	editAreaLoader.init({
-		id: "log"	// id of the textarea to transform
-		,start_highlight: false
-		,allow_toggle: true
-		,display: "later"
-		,language: "en"
-		,syntax: "html"
-		,toolbar: "search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help"
-		,syntax_selection_allow: "css,html,js,php,xml,c,cpp,sql"
-		,show_line_colors: true
-	});
-</script>
-
-
-<?php
 
 echo "<br />\n";
 echo "<div align='center'>\n";
@@ -84,7 +65,7 @@ echo "<div align='center'>\n";
 echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 echo "<tr>\n";
 echo "<td align=\"left\" width='100%'>\n";
-echo "	<b>Logs</b><br />\n";
+echo "	<b>Log Viewer</b><br />\n";
 echo "</td>\n";
 echo "<td width='50%' align='right'>\n";
 if (permission_exists('log_download')) {
@@ -95,8 +76,8 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "<td colspan='2'>";
 
-if (permission_exists('log_path_view')) {
-	
+if (permission_exists('log_view')) {
+
 	$MAXEL = 3; //pattern2, pattern3|color2, color3 etc...
 
 	$user_filesize = '0';
@@ -105,7 +86,7 @@ if (permission_exists('log_path_view')) {
 	$default_font = 'monospace';
 	$background_color = 'black';
 	$default_fsize = '512000';
-	$logfile = "$v_log_dir/$v_name.log";
+	$log_file = "$v_log_dir/$v_name.log";
 
 	//put the color matches here...
 	$arr_filter[0]['pattern'] = '[NOTICE]';
@@ -126,7 +107,7 @@ if (permission_exists('log_path_view')) {
 	$arr_filter[2]['color2'] = 'chartreuse';
 	$arr_filter[2]['pattern3'] = 'Regex (FAIL)';
 	$arr_filter[2]['color3'] = 'red';
-	
+
 	$arr_filter[3]['pattern'] = '[WARNING]';
 	$arr_filter[3]['color'] = 'fuchsia';
 	$arr_filter[3]['type'] = 'normal';
@@ -142,35 +123,37 @@ if (permission_exists('log_path_view')) {
 	$arr_filter[5]['type'] = 'bold';
 	$arr_filter[5]['font'] = 'monospace';
 
-	$file_size = filesize($logfile);
+	$file_size = filesize($log_file);
 
-	echo "<body style=\"background-color:$background_color;color:$default_color;font-wieght:$default_type;font-family:$default_font\">";
+	if (isset($_POST['submit'])) {
+		if (strlen($_POST['fs']) == 0) { $_POST['fs'] = "512"; }
+	}
 
-	echo "<table style=\"width: 100%\;\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">";
-	echo "<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">Adjust Log Display</th></tr>";
-	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\">";
-	
-	echo 'LogFile Size: ' . $file_size . ' bytes<br>';
-	
+	echo "<table style=\"width: 100%\;\" width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
+	echo "	<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">Adjust Log Display</th></tr>\n";
+	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\" width=\"50%\">\n";
+
+	echo 'Log File Size: ' . $file_size . ' bytes<br>';
+
 	//user input here.
-	echo "Use below (in KiloBytes) to get the last KB of a logfile<br>";
-	echo "      Default is 512 KB<br>";
-	echo '</td>';
-	echo '<td style=\"text-align: left;\" class=\"rowstylebg;\" width=\"30%\">';
-	echo "<form action=\"v_log_viewer.php\" method=\"POST\">";
-	echo "<input type=\"text\" name=\"fs\">";
-	echo "<input type=\"submit\" name=\"submit\" value=\"reload\">";
-	echo '</td>';
-	echo '</tr></table><br>';
-	
-	echo "<table style=\"width: 100%\;\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">";
-	echo "<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">Syntax Highlighted Log Viewer</th></tr>";
-	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\">";
-	
+	echo "Set a number the input box to get the last Kilobytes of the log file.<br>\n";
+	echo "</td>\n";
+	echo "<td style=\"text-align: left;\" class=\"vtable;\" width=\"50%\" valign=\"bottom\">\n";
+	echo "	<br />\n";
+	echo "	<form action=\"v_log_viewer.php\" method=\"POST\">\n";
+	echo "		<input type=\"text\" class=\"formfld\" name=\"fs\" value=\"".$_POST['fs']."\">\n";
+	echo "		<input type=\"submit\" class=\"btn\" name=\"submit\" value=\"reload\">\n";
+	echo "	</form>\n";
+	echo "</td>\n";
+	echo "</tr></table><br>";
+
+	echo "<table style=\"width: 100%\;\" width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">";
+	echo "<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">Syntax Highlighted</th></tr>";
 	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\">";
 
 	$user_filesize = '512000';
 	if (isset($_POST['submit'])) {
+		if (strlen($_POST['fs']) == 0) { $_POST['fs'] = "512"; }
 		if (!is_numeric($_POST['fs'])){
 			echo "<font color=\"red\" face=\"bold\" size =\"5\">";
 			echo "Just what do you think you're doing, Dave?<br>";
@@ -182,9 +165,9 @@ if (permission_exists('log_path_view')) {
 			$user_filesize = $_POST['fs'] * 1000;
 		}
 	}
-	echo "Getting last " . $user_filesize . " bytes.<br><HR>";
+	echo "Viewing the last " . $user_filesize . " bytes of the log.<br><HR>";
 
-	$file = fopen($logfile, "r") or exit("Unable to open file!");
+	$file = fopen($log_file, "r") or exit("Unable to open file!");
 
 	//set pointer in file
 	if ($user_filesize >= '0') {
