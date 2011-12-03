@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (permission_exists('fax_extension_add') || permission_exists('fax_extension_edit')) {
+if (permission_exists('fax_extension_view')) {
 	//access granted
 }
 else {
@@ -391,7 +391,9 @@ else {
 	echo "			<span class=\"vexpl\"><span class=\"red\"><strong>Fax Server</strong></span>\n";
 	echo "		</td>\n";
 	echo "		<td width='70%' align='right'>\n";
-	echo "			<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='v_fax_edit.php?id=$fax_id'\" value='Settings'>\n";
+	if (permission_exists('fax_extension_add') || permission_exists('fax_extension_edit')) {
+		echo "			<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='v_fax_edit.php?id=$fax_id'\" value='Settings'>\n";
+	}
 	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_fax.php'\" value='Back'>\n";
 	echo "		</td>\n";
 	echo "</tr>\n";
@@ -451,10 +453,6 @@ else {
 	if (permission_exists('fax_inbox_view')) {
 		echo "\n";
 		echo "\n";
-		echo "\n";
-		echo "	<br />\n";
-		echo "	<br />\n";
-		echo "	<br />\n";
 		echo "	<br />\n";
 		echo "\n";
 		echo "	<table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n";
@@ -485,14 +483,38 @@ else {
 		echo "		<th width=\"10%\" class=\"listhdr\" nowrap>Size</td>\n";
 		echo "	</tr>";
 
+
 		if ($handle = opendir($dir_fax_inbox)) {
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_file($dir_fax_inbox.'/'.$file)) {
-					$tmp_filesize = filesize($dir_fax_inbox.'/'.$file);
-					$tmp_filesize = byte_convert($tmp_filesize);
-					$file_name = substr($file, 0, -4);
-					$file_ext = substr($file, -3);
-					if (strtolower($file_ext) == "tif") {
+			//build an array of the files in the inbox
+				$i = 0;
+				$files = array();
+				while (false !== ($file = readdir($handle))) {
+					if ($file != "." && $file != ".." && is_file($dir_fax_inbox.'/'.$file)) {
+						$file_path = $dir_fax_inbox.'/'.$file;
+						$modified = filemtime($file_path);
+						$index = $modified.$file;
+						$files[$index]['file'] = $file;
+						$files[$index]['name'] = substr($file, 0, -4);
+						$files[$index]['ext'] = substr($file, -3);
+						//$files[$index]['path'] = $file_path;
+						$files[$index]['size'] = filesize($file_path);
+						$files[$index]['size_bytes'] = byte_convert(filesize($file_path));
+						$files[$index]['modified'] = filemtime($file_path);
+						$file_name_array[$i++] = $index;
+					}
+				}
+				closedir($handle);
+			//order the index array
+				sort($file_name_array,SORT_STRING);
+
+			//loop through the file array
+				foreach($file_name_array as $i) {
+					if (strtolower($files[$i]['ext']) == "tif") {
+						$file = $files[$i]['file'];
+						$file_name = $files[$i]['name'];
+						$file_ext = $files[$i]['ext'];
+						$file_modified = $files[$i]['modified'];
+						$file_size_bytes = byte_convert($files[$i]['size']);
 						if (!file_exists($dir_fax_inbox.'/'.$file_name.".pdf")) {
 							//convert the tif to pdf
 								chdir($dir_fax_inbox);
@@ -516,7 +538,7 @@ else {
 						echo "<tr>\n";
 						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 						echo "	  <a href=\"v_fax_view.php?id=".$fax_id."&a=download&type=fax_inbox&t=bin&ext=".urlencode($fax_extension)."&filename=".urlencode($file)."\">\n";
-						echo "    	$file";
+						echo "    	$file_name";
 						echo "	  </a>";
 						echo "  </td>\n";
 
@@ -543,11 +565,11 @@ else {
 						//echo "  &nbsp;</td>\n";
 
 						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-						echo 		date ("F d Y H:i:s", filemtime($dir_fax_inbox.'/'.$file));
+						echo "		".date("F d Y H:i:s", $file_modified);
 						echo "  </td>\n";
 
 						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-						echo "	".$tmp_filesize;
+						echo "	".$file_size_bytes;
 						echo "  </td>\n";
 
 						echo "  <td valign=\"middle\" nowrap class=\"list\">\n";
@@ -562,8 +584,6 @@ else {
 						echo "</tr>\n";
 					}
 				}
-			}
-			closedir($handle);
 		}
 		echo "	<tr>\n";
 		echo "		<td class=\"list\" colspan=\"3\"></td>\n";
@@ -571,8 +591,6 @@ else {
 		echo "	</tr>\n";
 		echo "	</table>\n";
 		echo "\n";
-		echo "	<br />\n";
-		echo "	<br />\n";
 		echo "	<br />\n";
 		echo "	<br />\n";
 		echo "\n";
@@ -603,14 +621,37 @@ else {
 		echo "		</tr>";
 
 		if ($handle = opendir($dir_fax_sent)) {
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_file($dir_fax_sent.'/'.$file)) {
-					$tmp_filesize = filesize($dir_fax_sent.'/'.$file);
-					$tmp_filesize = byte_convert($tmp_filesize);
-					$tmp_file_array = explode(".",$file);
-					$file_name = $tmp_file_array[0];
-					$file_ext = $tmp_file_array[count($tmp_file_array)-1];
-					if (strtolower($file_ext) == "tif") {
+			//build an array of the files in the inbox
+				$i = 0;
+				$files = array();
+				while (false !== ($file = readdir($handle))) {
+					if ($file != "." && $file != ".." && is_file($dir_fax_sent.'/'.$file)) {
+						$file_path = $dir_fax_sent.'/'.$file;
+						$modified = filemtime($file_path);
+						$index = $modified.$file;
+						$files[$index]['file'] = $file;
+						$files[$index]['name'] = substr($file, 0, -4);
+						$files[$index]['ext'] = substr($file, -3);
+						//$files[$index]['path'] = $file_path;
+						$files[$index]['size'] = filesize($file_path);
+						$files[$index]['size_bytes'] = byte_convert(filesize($file_path));
+						$files[$index]['modified'] = filemtime($file_path);
+						$file_name_array[$i++] = $index;
+					}
+				}
+				closedir($handle);
+			//order the index array
+				sort($file_name_array,SORT_STRING);
+
+			//loop through the file array
+				foreach($file_name_array as $i) {
+					if (strtolower($files[$i]['ext']) == "tif") {
+						$file = $files[$i]['file'];
+						$file_name = $files[$i]['name'];
+						$file_ext = $files[$i]['ext'];
+						$file_modified = $files[$i]['modified'];
+						$file_size_bytes = byte_convert($files[$i]['size']);
+
 						if (!file_exists($dir_fax_sent.'/'.$file_name.".pdf")) {
 							//convert the tif to pdf
 								chdir($dir_fax_sent);
@@ -658,11 +699,11 @@ else {
 						//}
 						//echo "  </td>\n";
 						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
-						echo 		date ("F d Y H:i:s", filemtime($dir_fax_sent.'/'.$file));
+						echo "		".date("F d Y H:i:s", $file_modified);
 						echo "  </td>\n";
 
 						echo "  <td class=\"".$rowstyle[$c]."\" ondblclick=\"list\">\n";
-						echo "	".$tmp_filesize;
+						echo "	".$file_size_bytes;
 						echo "  </td>\n";
 
 						echo "  <td class='' valign=\"middle\" nowrap>\n";
@@ -678,8 +719,6 @@ else {
 						if ($c==0) { $c=1; } else { $c=0; }
 					} //check if the file is a .tif file
 				}
-			} //end while
-			closedir($handle);
 		}
 		echo "     <tr>\n";
 		echo "       <td class=\"list\" colspan=\"3\"></td>\n";
