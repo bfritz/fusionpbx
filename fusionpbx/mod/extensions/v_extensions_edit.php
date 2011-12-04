@@ -101,6 +101,7 @@ else {
 			$autogen_users = check_str($_POST["autogen_users"]);
 			$toll_allow = check_str($_POST["toll_allow"]);
 			$callgroup = check_str($_POST["callgroup"]);
+			$hold_music = check_str($_POST["hold_music"]);
 			$auth_acl = check_str($_POST["auth_acl"]);
 			$cidr = check_str($_POST["cidr"]);
 			$sip_force_contact = check_str($_POST["sip_force_contact"]);
@@ -138,6 +139,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($user_context) == 0) { $msg .= "Please provide: User Context<br>\n"; }
 		//if (strlen($toll_allow) == 0) { $msg .= "Please provide: Toll Allow<br>\n"; }
 		//if (strlen($callgroup) == 0) { $msg .= "Please provide: Call Group<br>\n"; }
+		//if (strlen($hold_music) == 0) { $msg .= "Please provide: Hold Music<br>\n"; }
 		//if (strlen($auth_acl) == 0) { $msg .= "Please provide: Auth ACL<br>\n"; }
 		//if (strlen($cidr) == 0) { $msg .= "Please provide: CIDR<br>\n"; }
 		//if (strlen($sip_force_contact) == 0) { $msg .= "Please provide: SIP Force Contact<br>\n"; }
@@ -236,6 +238,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "user_context, ";
 					$sql .= "toll_allow, ";
 					$sql .= "callgroup, ";
+					$sql .= "hold_music, ";
 					$sql .= "auth_acl, ";
 					$sql .= "cidr, ";
 					$sql .= "sip_force_contact, ";
@@ -279,6 +282,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$user_context', ";
 					$sql .= "'$toll_allow', ";
 					$sql .= "'$callgroup', ";
+					$sql .= "'$hold_music', ";
 					$sql .= "'$auth_acl', ";
 					$sql .= "'$cidr', ";
 					$sql .= "'$sip_force_contact', ";
@@ -406,6 +410,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "user_context = '$user_context', ";
 			$sql .= "toll_allow = '$toll_allow', ";
 			$sql .= "callgroup = '$callgroup', ";
+			$sql .= "hold_music = '$hold_music', ";
 			$sql .= "auth_acl = '$auth_acl', ";
 			$sql .= "cidr = '$cidr', ";
 			$sql .= "sip_force_contact = '$sip_force_contact', ";
@@ -505,6 +510,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$user_context = $row["user_context"];
 			$toll_allow = $row["toll_allow"];
 			$callgroup = $row["callgroup"];
+			$hold_music = $row["hold_music"];
 			$auth_acl = $row["auth_acl"];
 			$cidr = $row["cidr"];
 			$sip_force_contact = $row["sip_force_contact"];
@@ -558,10 +564,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td width='30%' nowrap align='left' valign='top'><b>Extension Add</b></td>\n";
+		echo "<td width='30%' nowrap='nowrap' align='left' valign='top'><b>Extension Add</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td width='30%' nowrap align='left' valign='top'><b>Extension Edit</b></td>\n";
+		echo "<td width='30%' nowrap='nowrap' align='left' valign='top'><b>Extension Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right' valign='top'>\n";
 	echo "	<input type='submit' name='submit' class='btn' value='Save'>\n";
@@ -572,7 +578,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Extension:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -583,7 +589,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Number Alias:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -595,7 +601,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	if ($action == "update") {
 		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "    Password:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -608,7 +614,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	if ($action == "add") {
 		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "    Range:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -650,7 +656,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "		User List:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -677,7 +683,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	if ($action == "update") {
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "    Voicemail Password:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -689,7 +695,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Account Code:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -700,7 +706,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Effective Caller ID Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -711,7 +717,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Effective Caller ID Number:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -722,7 +728,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Outbound Caller ID Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -733,7 +739,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Outbound Caller ID Number:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -744,7 +750,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Limit Max:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -755,7 +761,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Limit Destination:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -766,7 +772,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	Phone Provisioning:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -859,7 +865,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Voicemail Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -884,7 +890,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";	
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Voicemail Mail To:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -895,7 +901,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Voicemail Attach File:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -920,7 +926,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    VM Keep Local After Email:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -945,7 +951,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Toll Allow:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -956,7 +962,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Call Group:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -976,7 +982,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			}
 		}
 		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "    User Context:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -989,7 +995,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//--- begin: showadvanced -----------------------
 	echo "<tr>\n";
-	echo "<td style='padding: 0px;' colspan='2' class='' valign='top' align='left' nowrap>\n";
+	echo "<td style='padding: 0px;' colspan='2' class='' valign='top' align='left' nowrap='nowrap'>\n";
 
 	echo "	<div id=\"showadvancedbox\">\n";
 	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
@@ -1006,7 +1012,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 
 	echo "<tr>\n";
-	echo "<td width=\"30%\" class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td width=\"30%\" class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "    Hold Music:\n";
+	echo "</td>\n";
+	echo "<td width=\"70%\" class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='hold_music' maxlength='255' value=\"$hold_music\">\n";
+	echo "<br />\n";
+	echo "Enter the hold music here.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td width=\"30%\" class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Auth ACL:\n";
 	echo "</td>\n";
 	echo "<td width=\"70%\" class='vtable' align='left'>\n";
@@ -1017,7 +1034,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    CIDR:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -1028,7 +1045,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    SIP Force Contact:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -1053,7 +1070,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    SIP Force Expires:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -1064,7 +1081,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Nibblebill Account:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -1075,7 +1092,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    MWI Account:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -1086,7 +1103,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    SIP Bypass Media:\n";        echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='sip_bypass_media'>\n";
@@ -1123,7 +1140,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//--- end: showadvanced -----------------------
 
 	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -1148,7 +1165,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";

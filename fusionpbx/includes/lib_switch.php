@@ -1921,6 +1921,9 @@ function sync_package_v_extensions() {
 			}
 			$tmpxml .= "    </params>\n";
 			$tmpxml .= "    <variables>\n";
+			if (strlen($row['hold_music']) > 0) {
+				$tmpxml .= "      <variable name=\"hold_music\" value=\"" . $row['hold_music'] . "\"/>\n";
+			}
 			$tmpxml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
 			if (strlen($v_account_code) > 0) {
 				$tmpxml .= "      <variable name=\"accountcode\" value=\"" . $v_account_code . "\"/>\n";
