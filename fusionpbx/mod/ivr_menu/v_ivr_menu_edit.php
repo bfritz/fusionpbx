@@ -114,9 +114,9 @@ if (count($_POST)>0) {
 	$ivr_menu_enabled = check_str($_POST["ivr_menu_enabled"]);
 	$ivr_menu_desc = check_str($_POST["ivr_menu_desc"]);
 
-	$ivr_menu_timeout_action = check_str($_POST["ivr_menu_timeout_action"]);
-	//$ivr_menu_timeout_action = "transfer:1001 XML default";
-	$timeout_action_array = explode(":", $ivr_menu_timeout_action);
+	$ivr_menu_exit_action = check_str($_POST["ivr_menu_exit_action"]);
+	//$ivr_menu_exit_action = "transfer:1001 XML default";
+	$timeout_action_array = explode(":", $ivr_menu_exit_action);
 	$ivr_menu_exit_app = array_shift($timeout_action_array);
 	$ivr_menu_exit_data = join(':', $timeout_action_array);
 }
@@ -142,7 +142,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($ivr_menu_tts_voice) == 0) { $msg .= "Please provide: TTS Voice<br>\n"; }
 		if (strlen($ivr_menu_confirm_attempts) == 0) { $msg .= "Please provide: Confirm Attempts<br>\n"; }
 		if (strlen($ivr_menu_timeout) == 0) { $msg .= "Please provide: Timeout<br>\n"; }
-		//if (strlen($ivr_menu_exit_app) == 0) { $msg .= "Please provide: Timeout Application<br>\n"; }
+		//if (strlen($ivr_menu_exit_app) == 0) { $msg .= "Please provide: Exit Action<br>\n"; }
 		//if (strlen($ivr_menu_exit_data) == 0) { $msg .= "Please provide: Timeout Data<br>\n"; }
 		if (strlen($ivr_menu_inter_digit_timeout) == 0) { $msg .= "Please provide: Inter Digit Timeout<br>\n"; }
 		if (strlen($ivr_menu_max_failures) == 0) { $msg .= "Please provide: Max Failures<br>\n"; }
@@ -208,7 +208,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$ivr_menu_confirm_attempts', ";
 				$sql .= "'$ivr_menu_timeout', ";
 				$sql .= "'$ivr_menu_exit_app', ";
-				$sql .= "'$ivr_menu_exit_data', ";				
+				$sql .= "'$ivr_menu_exit_data', ";
 				$sql .= "'$ivr_menu_inter_digit_timeout', ";
 				$sql .= "'$ivr_menu_max_failures', ";
 				$sql .= "'$ivr_menu_max_timeouts', ";
@@ -309,9 +309,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$ivr_menu_direct_dial = $row["ivr_menu_direct_dial"];
 			$ivr_menu_enabled = $row["ivr_menu_enabled"];
 			$ivr_menu_desc = $row["ivr_menu_desc"];
-			
+
 			if (strlen($ivr_menu_exit_app) > 0) {
-				$ivr_menu_timeout_action = $ivr_menu_exit_app.":".$ivr_menu_exit_data;
+				$ivr_menu_exit_action = $ivr_menu_exit_app.":".$ivr_menu_exit_data;
 			}
 
 			break; //limit to 1 row
@@ -613,13 +613,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Timeout Application:\n";
+	echo "    Exit Action:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
-	switch_select_destination("dialplan", "", "ivr_menu_timeout_action", $ivr_menu_timeout_action, "", "");
+	switch_select_destination("dialplan", "", "ivr_menu_exit_action", $ivr_menu_exit_action, "", "");
 	echo "	<br />\n";
-	echo "	Select the timeout action to be performed if the IVR exits.\n";
+	echo "	Select the exit action to be performed if the IVR exits.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
