@@ -8,7 +8,7 @@
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
 		$apps[$x]['url'] = 'http://www.fusionpbx.com';
 		$apps[$x]['description']['en'] = 'The IVR Menu plays a recording or a pre-defined phrase that presents the caller with options to choose from. Each option has a corresponding destination. The destinations can be extensions, voicemail, IVR menus, hunt groups, FAX extensions, and more.';
-	
+
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'IVR Menu';
 		$apps[$x]['menu'][0]['guid'] = '72259497-A67B-E5AA-CAC2-0F2DCEF16308';
@@ -17,7 +17,7 @@
 		$apps[$x]['menu'][0]['path'] = '/mod/ivr_menu/v_ivr_menu.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
-	
+
 	//permission details
 		$apps[$x]['permissions'][0]['name'] = 'ivr_menu_view';
 		$apps[$x]['permissions'][0]['groups'][] = 'admin';
@@ -120,7 +120,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ivr_menu_digit_len';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
-		$z+
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ivr_menu_direct_dial';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
