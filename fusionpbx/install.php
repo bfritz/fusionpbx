@@ -25,25 +25,18 @@
 */
 include "root.php";
 require_once "includes/lib_functions.php";
-$v_id = '1';
 
 //set debug to true or false
 	$v_debug = false;
+
+//set the default id
+	$v_id = '1';
 
 //error reporting
 	ini_set('display_errors', '1');
 	//error_reporting (E_ALL); // Report everything
 	error_reporting (E_ALL ^ E_NOTICE); // Report everything
 	//error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
-
-//todolist: install.php save
-	//restore backup if the backup exists (reserved for next version)
-	//update button
-		//ini_set('default_socket_timeout', 120);
-		//$a = file_get_contents("http://fusionpbx.com");
-		//http://php.net/manual/en/function.file-get-contents.php
-		//extract tgz files with a php class
-			//http://www.phpclasses.org/browse/package/945.html
 
 //get the domain
 	$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
@@ -331,14 +324,26 @@ $v_id = '1';
 				if (is_dir('F:/fusionpbx/Program/php')) { $install_php_dir = 'F:/fusionpbx/Program/php'; }
 			}
 		}
-
+$msg = '';
+if ($_POST["install_step"] == "2" && count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
+	//check for all required data
+		if (strlen($admin_username) == 0) { $msg .= "Please provide the Admin Username<br>\n"; }
+		if (strlen($admin_password) == 0) {
+			$msg .= "Please provide the Admin Password<br>\n";
+		}
+		else {
+			if (strlen($admin_password) < 5) {
+				$msg .= "Please provide an Admin Password that is 5 or more characters.<br>\n"; 
+			}
+		}
+	//define the step to return to
+		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
+			$_POST["install_step"] = "";
+		}
+}
 if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
-
-	$msg = '';
 	//check for all required data
 		if (strlen($db_type) == 0) { $msg .= "Please provide the Database Type<br>\n"; }
-		if (strlen($admin_username) == 0) { $msg .= "Please provide the Admin Username<br>\n"; }
-		if (strlen($admin_password) == 0) { $msg .= "Please provide the Admin Password<br>\n"; }
 		if (PHP_OS == "FreeBSD" && file_exists('/usr/local/etc/freeswitch/conf')) {
 			//install_v_dir not required for the freebsd freeswitch port;
 		}
@@ -358,19 +363,26 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				//$msg .= "<b>Write access to ".$install_v_dir." and its sub-directories is required.</b><br />\n";
 			}
 		}
+	//define the step to return to
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/persistformvar.php";
-			echo "<br />\n";
-			echo "<br />\n";
-			echo "<div align='center'>\n";
-			echo "<table><tr><td>\n";
-			echo $msg."<br />";
-			echo "</td></tr></table>\n";
-			persistformvar($_POST);
-			echo "</div>\n";
-			exit;
+			$_POST["install_step"] = "2";
 		}
+}
+//show the error message if one exists
+	if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
+		require_once "includes/persistformvar.php";
+		echo "<br />\n";
+		echo "<br />\n";
+		echo "<div align='center'>\n";
+		echo "<table><tr><td>\n";
+		echo $msg."<br />";
+		echo "</td></tr></table>\n";
+		persistformvar($_POST);
+		echo "</div>\n";
+		exit;
+	}
 
+if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//create the sqlite database
 			if ($db_type == "sqlite") {
 				//sqlite database will be created when the config.php is loaded and only if the database file does not exist
@@ -967,6 +979,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		unset($sql, $prepstatementsub);
 
 	//make sure the database schema and installation have performed all necessary tasks
+		$display_results = false;
+		$display_type = 'none';
 		require_once "core/upgrade/upgrade_schema.php";
 
 	//synchronize the config with the saved settings
