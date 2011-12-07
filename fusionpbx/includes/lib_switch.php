@@ -6048,8 +6048,6 @@ if (!function_exists('sync_package_freeswitch')) {
 		sync_package_v_public();
 		sync_package_v_public_includes();
 		sync_package_v_vars();
-		//sync_package_v_recordings();
-		sync_package_v_auto_attendant();
 		sync_package_v_hunt_group();
 		sync_package_v_ivr_menu();
 		sync_package_v_call_center();
