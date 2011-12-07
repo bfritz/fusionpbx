@@ -76,6 +76,8 @@ $v_id = '1';
 
 //set php variables with data from http post
 	$db_type = $_POST["db_type"];
+	$admin_username = $_POST["admin_username"];
+	$admin_password = $_POST["admin_password"];
 	$db_filename = $_POST["db_filename"];
 	$db_host = $_POST["db_host"];
 	$db_port = $_POST["db_port"];
@@ -335,6 +337,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	$msg = '';
 	//check for all required data
 		if (strlen($db_type) == 0) { $msg .= "Please provide the Database Type<br>\n"; }
+		if (strlen($admin_username) == 0) { $msg .= "Please provide the Admin Username<br>\n"; }
+		if (strlen($admin_password) == 0) { $msg .= "Please provide the Admin Password<br>\n"; }
 		if (PHP_OS == "FreeBSD" && file_exists('/usr/local/etc/freeswitch/conf')) {
 			//install_v_dir not required for the freebsd freeswitch port;
 		}
@@ -680,6 +684,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
 		$install_v_backup_dir = str_replace("\\", "/", $install_v_backup_dir);
 
+		//salt used with the password to create a one way hash
+		$v_salt = generate_password('20', '4');
+
 		$sql = "update v_system_settings set ";
 		$sql .= "v_domain = '".$domain."', ";
 		$sql .= "php_dir = '$install_php_dir', ";
@@ -713,7 +720,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql .= "v_recordings_dir = '$v_recordings_dir', ";
 		$sql .= "v_sounds_dir = '$v_sounds_dir', ";
 		$sql .= "v_download_path = '$v_download_path', ";
-		$sql .= "v_template_name = '$install_v_template_name' ";
+		$sql .= "v_template_name = '$install_v_template_name', ";
+		$sql .= "v_salt = '$v_salt' ";
 		//$sql .= "v_provisioning_tftp_dir = '$v_provisioning_tftp_dir', ";
 		//$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
 		//$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
@@ -904,8 +912,28 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//write the switch.conf.xml file
 		switch_conf_xml();
 
+	//add the superadmin user account
+		user_add($admin_username, $admin_password, $userfirstname='', $userlastname='', $useremail='');
+
+	//add the user to the member group
+		$groupid = 'superadmin';
+		$sql = "insert into v_group_members ";
+		$sql .= "(";
+		$sql .= "v_id, ";
+		$sql .= "groupid, ";
+		$sql .= "username ";
+		$sql .= ")";
+		$sql .= "values ";
+		$sql .= "(";
+		$sql .= "'$v_id', ";
+		$sql .= "'$groupid', ";
+		$sql .= "'$admin_username' ";
+		$sql .= ")";
+		$db->exec(check_sql($sql));
+		unset($sql);
+
 	//login the user account
-		$_SESSION["username"] = 'superadmin';
+		$_SESSION["username"] = $admin_username;
 
 	//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
 		$sql = "SELECT * FROM v_group_members ";
@@ -1053,16 +1081,25 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "</td>\n";
 		echo "</tr>\n";
 
-		//echo "<tr>\n";
-		//echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		//echo "		Secure Directory:\n";
-		//echo "</td>\n";
-		//echo "<td class='vtable' align='left'>\n";
-		//echo "		<input class='formfld' type='text' name='install_secure_dir' maxlength='255' value=\"$install_secure_dir\"><br />\n";
-		//echo "		Path to the secure directory that contains PHP command line scripts.\n";
-		//echo "\n";
-		//echo "</td>\n";
-		//echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "	Username:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<input class='formfld' type='text' name='install_php_dir' maxlength='255' value=\"$admin_username\"><br />\n";
+		echo "	Enter the username to use when logging in with the browser.<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "	Password:\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<input class='formfld' type='text' name='install_php_dir' maxlength='255' value=\"$admin_password\"><br />\n";
+		echo "	Enter the password to use when logging in with the browser.<br />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
 
 		if (PHP_OS == "FreeBSD" && file_exists('/usr/local/etc/freeswitch/conf')) {
 			//install_v_dir not required for the freebsd freeswitch port;
@@ -1306,7 +1343,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "pgsql") {
 		if (strlen($db_host) == 0) { $db_host = 'localhost'; }
 		if (strlen($db_port) == 0) { $db_port = '5432'; }
-		if (strlen($db_create_username) == 0) { $db_create_username = 'pgsql'; }
 		//if (strlen($db_name) == 0) { $db_name = 'fusionpbx'; }
 
 		echo "<div id='page' align='center'>\n";

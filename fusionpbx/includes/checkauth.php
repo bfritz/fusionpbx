@@ -29,8 +29,9 @@ session_start();
 // set the salt for password hash generation
 // changing this string can cause existing users to no longer be able to log in,
 // unless you regenerate their passwords in the v_users table
-	$v_salt = 'e3.7d.12';
-
+	if (strlen($v_salt) == 0) {
+		$v_salt = 'e3.7d.12';
+	}
 
 //if the username session is not set the check username and password
 	if (strlen($_SESSION["username"]) == 0) {

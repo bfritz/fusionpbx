@@ -1000,6 +1000,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "		Salt:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "		<input class='formfld' type='text' name='v_salt' maxlength='255' value=\"$v_salt\">\n";
+	echo "		<br />\n";
+	echo "		Enter the salt.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "		Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";

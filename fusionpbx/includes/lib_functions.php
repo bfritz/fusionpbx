@@ -549,7 +549,7 @@
 
 	if (!function_exists('user_add')) {
 		function user_add($username, $password, $userfirstname='', $userlastname='', $useremail='') {
-			global $db, $v_id;
+			global $db, $v_id, $v_salt;
 			if (strlen($username) == 0) { return false; }
 			if (strlen($password) == 0) { return false; }
 			if (!user_exists($username)) {
@@ -573,7 +573,7 @@
 					$sql .= "(";
 					$sql .= "'$v_id', ";
 					$sql .= "'$username', ";
-					$sql .= "'".md5('e3.7d.12'.$password)."', ";
+					$sql .= "'".md5($v_salt.$password)."', ";
 					$sql .= "'$usertype', ";
 					$sql .= "'$usercategory', ";
 					if (strlen($userfirstname) > 0) { $sql .= "'$userfirstname', "; }

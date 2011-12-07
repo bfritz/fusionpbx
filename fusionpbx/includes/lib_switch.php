@@ -254,6 +254,8 @@ function v_settings() {
 		$v_menu_guid = str_replace ("{program_dir}", $program_dir, $v_menu_guid);
 		$v_settings_array["v_menu_guid"] = $v_menu_guid;
 
+		$v_settings_array["v_salt"] = $row["v_salt"];
+
 		break; //limit to 1 row
 	}
 	unset ($prep_statement);
