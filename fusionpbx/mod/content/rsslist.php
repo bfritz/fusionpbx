@@ -65,11 +65,9 @@ $order = $_GET["order"];
 
 
 	echo "<div align='center'>";
-	echo "<table border='0' width='95%' cellpadding='0' cellspacing='2'>\n";
-
+	echo "<table border='0' width='100%' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
-	//echo "      <br>";
 
 	echo "<table width='100%'>";
 	echo "<tr>";
