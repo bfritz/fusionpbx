@@ -1086,7 +1086,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "	Username:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='install_php_dir' maxlength='255' value=\"$admin_username\"><br />\n";
+		echo "	<input class='formfld' type='text' name='admin_username' maxlength='255' value=\"$admin_username\"><br />\n";
 		echo "	Enter the username to use when logging in with the browser.<br />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1096,7 +1096,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "	Password:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='install_php_dir' maxlength='255' value=\"$admin_password\"><br />\n";
+		echo "	<input class='formfld' type='text' name='admin_password' maxlength='255' value=\"$admin_password\"><br />\n";
 		echo "	Enter the password to use when logging in with the browser.<br />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1208,6 +1208,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
 		echo "			<input type='hidden' name='db_type' value='$db_type'>\n";
+		echo "			<input type='hidden' name='admin_username' value='$admin_username'>\n";
+		echo "			<input type='hidden' name='admin_password' value='$admin_password'>\n";
 		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
 		echo "			<input type='hidden' name='install_v_dir' value='$install_v_dir'>\n";
 		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
@@ -1223,7 +1225,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "</form>";
 		echo "</div>";
 	}
-
 
 // step 2, mysql
 	if ($_POST["install_step"] == "2" && $_POST["db_type"] == "mysql") {
@@ -1323,6 +1324,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
 		echo "			<input type='hidden' name='db_type' value='$db_type'>\n";
+		echo "			<input type='hidden' name='admin_username' value='$admin_username'>\n";
+		echo "			<input type='hidden' name='admin_password' value='$admin_password'>\n";
 		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
 		echo "			<input type='hidden' name='install_v_dir' value='$install_v_dir'>\n";
 		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
@@ -1435,6 +1438,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
 		echo "			<input type='hidden' name='db_type' value='$db_type'>\n";
+		echo "			<input type='hidden' name='admin_username' value='$admin_username'>\n";
+		echo "			<input type='hidden' name='admin_password' value='$admin_password'>\n";
 		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
 		echo "			<input type='hidden' name='install_v_dir' value='$install_v_dir'>\n";
 		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
@@ -1450,15 +1455,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "</form>";
 		echo "</div>";
 	}
-
-	echo "<br />\n";
-	echo "<br />\n";
-	echo "<br />\n";
-	echo "<br />\n";
-	echo "<br />\n";
-	echo "<br />\n";
-	echo "<br />\n";
-	echo "<br />\n";
 
 	echo "<br />\n";
 	echo "<br />\n";
