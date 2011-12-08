@@ -696,9 +696,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
 		$install_v_backup_dir = str_replace("\\", "/", $install_v_backup_dir);
 
-		//salt used with the password to create a one way hash
-		$v_salt = generate_password('20', '4');
-
 		$sql = "update v_system_settings set ";
 		$sql .= "v_domain = '".$domain."', ";
 		$sql .= "php_dir = '$install_php_dir', ";
@@ -732,8 +729,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql .= "v_recordings_dir = '$v_recordings_dir', ";
 		$sql .= "v_sounds_dir = '$v_sounds_dir', ";
 		$sql .= "v_download_path = '$v_download_path', ";
-		$sql .= "v_template_name = '$install_v_template_name', ";
-		$sql .= "v_salt = '$v_salt' ";
+		$sql .= "v_template_name = '$install_v_template_name' ";
 		//$sql .= "v_provisioning_tftp_dir = '$v_provisioning_tftp_dir', ";
 		//$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
 		//$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
@@ -753,23 +749,27 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//assign the default permissions to the groups
 		$db_tmp->beginTransaction();
 		foreach($apps as $app) {
-			foreach ($app['permissions'] as $row) {
-				foreach ($row['groups'] as $group) {
-					//add the record
-					$sql = "insert into v_group_permissions ";
-					$sql .= "(";
-					$sql .= "v_id, ";
-					$sql .= "permission_id, ";
-					$sql .= "group_id ";
-					$sql .= ")";
-					$sql .= "values ";
-					$sql .= "(";
-					$sql .= "'$v_id', ";
-					$sql .= "'".$row['name']."', ";
-					$sql .= "'".$group."' ";
-					$sql .= ")";
-					$db_tmp->exec(check_sql($sql));
-					unset($sql);
+			if ($app['permissions']) {
+				foreach ($app['permissions'] as $row) {
+					if ($app['groups']) {
+						foreach ($row['groups'] as $group) {
+							//add the record
+							$sql = "insert into v_group_permissions ";
+							$sql .= "(";
+							$sql .= "v_id, ";
+							$sql .= "permission_id, ";
+							$sql .= "group_id ";
+							$sql .= ")";
+							$sql .= "values ";
+							$sql .= "(";
+							$sql .= "'$v_id', ";
+							$sql .= "'".$row['name']."', ";
+							$sql .= "'".$group."' ";
+							$sql .= ")";
+							$db_tmp->exec(check_sql($sql));
+							unset($sql);
+						}
+					}
 				}
 			}
 		}
@@ -916,7 +916,25 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		if (!is_dir($v_recordings_dir.'')) { mkdir($v_recordings_dir.'',0777,true); }
 
 	//copy the files and directories from includes/install
-		include "includes/lib_install_copy.php";
+		require_once "includes/classes/install.php";
+		$install = new install;
+		$install->v_id = $v_id;
+		$install->v_domain = $domain;
+		$install->v_conf_dir = $v_conf_dir;
+		$install->v_scripts_dir = $v_scripts_dir;
+		$install->v_sounds_dir = $v_sounds_dir;
+		$install->v_recordings_dir = $v_recordings_dir;
+		$install->copy();
+		//print_r($install->result);
+
+	//create the dialplan/default.xml for single tenant or dialplan/domain.xml
+		require_once "includes/classes/dialplan.php";
+		$dialplan = new dialplan;
+		$dialplan->v_id = $v_id;
+		$dialplan->v_domain = $domain;
+		$dialplan->v_conf_dir = $v_conf_dir;
+		$dialplan->restore_advanced_xml();
+		//print_r($dialplan->result);
 
 	//write the xml_cdr.conf.xml file
 		xml_cdr_conf_xml();

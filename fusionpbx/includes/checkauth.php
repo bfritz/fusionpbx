@@ -26,13 +26,6 @@
 require_once "includes/config.php";
 session_start();
 
-// set the salt for password hash generation
-// changing this string can cause existing users to no longer be able to log in,
-// unless you regenerate their passwords in the v_users table
-	if (strlen($v_salt) == 0) {
-		$v_salt = 'e3.7d.12';
-	}
-
 //if the username session is not set the check username and password
 	if (strlen($_SESSION["username"]) == 0) {
 		//clear the menu
@@ -45,9 +38,9 @@ session_start();
 
 		//if the username from the form is not provided then send to login.php
 			if (strlen(check_str($_REQUEST["username"])) == 0) {
-				$strphpself = $_SERVER["PHP_SELF"];
+				$php_self = $_SERVER["PHP_SELF"];
 				$msg = "username required";
-				header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($strphpself)."&msg=".urlencode($msg));
+				header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($php_self)."&msg=".urlencode($msg));
 				exit;
 			}
 
@@ -55,60 +48,76 @@ session_start();
 			$sql = "select * from v_users ";
 			$sql .= "where v_id=:v_id ";
 			$sql .= "and username=:username ";
-			$sql .= "and password=:password ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->bindParam(':v_id', $v_id);
-			$prepstatement->bindParam(':username', check_str($_REQUEST["username"]));
-			$prepstatement->bindParam(':password', md5($v_salt.check_str($_REQUEST["password"])));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll(PDO::FETCH_NAMED);
-			$resultcount = count($result);
+			//$sql .= "and password=:password ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->bindParam(':v_id', $v_id);
+			$prep_statement->bindParam(':username', check_str($_REQUEST["username"]));
+			//$prep_statement->bindParam(':password', md5($v_salt.check_str($_REQUEST["password"])));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			if (count($result) == 0) {
-				$strphpself = $_SERVER["PHP_SELF"];
-
-				//log the failed auth attempt to the system, to be available for fail2ban.
-				openlog('FusionPBX', LOG_NDELAY, LOG_AUTH);
-				syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] authentication failed for ".$_REQUEST["username"]);
-				closelog();
-
-				$msg = "incorrect account information";
-				header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($strphpself)."&msg=".urlencode($msg));
-				exit;
+				$auth_failed = true;
 			}
 			else {
-				$_SESSION["username"] = check_str($_REQUEST["username"]);
 				foreach ($result as &$row) {
-					//allow the user to choose a template only if the template has not been assigned by the superadmin
-					if (strlen($_SESSION["v_template_name"]) == 0) {
-						$_SESSION["template_name"] = $row["user_template_name"];
-					}
-					$_SESSION["time_zone"]["user"] = '';
-					if (strlen($row["user_time_zone"]) > 0) {
-						//user defined time zone
-						$_SESSION["time_zone"]["user"] = $row["user_time_zone"];
-					}
-					// Add Customer ID To Session for easy of Access
-					if (strlen($row["customer_id"]) > 0) {
-						$_SESSION["customer_id"] = $row["customer_id"];
-					}
-					// Add User ID to Session.
-					$_SESSION['user_id'] = $row['id'];
-					break;
+					//get the salt from the database
+						$salt = $row["salt"];
+					//if salt is not defined then use the default salt for backwards compatibility
+						if (strlen($salt) == 0) {
+							$salt = 'e3.7d.12';
+						}
+					//compare the password provided by the user with the one in the database
+						if (md5($salt.check_str($_REQUEST["password"])) != $row["password"]) {
+							$auth_failed = true;
+						}
+					//end the loop
+						break;
 				}
-				//echo "username: ".$_SESSION["username"]." and password are correct";
 			}
+			if ($auth_failed) {
+				//log the failed auth attempt to the system, to be available for fail2ban.
+					openlog('FusionPBX', LOG_NDELAY, LOG_AUTH);
+					syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] authentication failed for ".$_REQUEST["username"]);
+					closelog();
+				//redirect the user to the login page
+					$php_self = $_SERVER["PHP_SELF"];
+					$msg = "incorrect account information";
+					header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($php_self)."&msg=".urlencode($msg));
+					exit;
+			}
+			$_SESSION["username"] = check_str($_REQUEST["username"]);
+			foreach ($result as &$row) {
+				//allow the user to choose a template only if the template has not been assigned by the superadmin
+				if (strlen($_SESSION["v_template_name"]) == 0) {
+					$_SESSION["template_name"] = $row["user_template_name"];
+				}
+				$_SESSION["time_zone"]["user"] = '';
+				if (strlen($row["user_time_zone"]) > 0) {
+					//user defined time zone
+					$_SESSION["time_zone"]["user"] = $row["user_time_zone"];
+				}
+				// Add Customer ID To Session for easy of Access
+				if (strlen($row["customer_id"]) > 0) {
+					$_SESSION["customer_id"] = $row["customer_id"];
+				}
+				// Add User ID to Session.
+				$_SESSION['user_id'] = $row['id'];
+				break;
+			}
+			//echo "username: ".$_SESSION["username"]." and password are correct";
+
 
 		//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
 			$sql = "SELECT * FROM v_group_members ";
 			$sql .= "where v_id=:v_id ";
 			$sql .= "and username=:username ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->bindParam(':v_id', $v_id);
-			$prepstatement->bindParam(':username', $_SESSION["username"]);
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll(PDO::FETCH_NAMED);
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->bindParam(':v_id', $v_id);
+			$prep_statement->bindParam(':username', $_SESSION["username"]);
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$_SESSION["groups"] = $result;
-			unset($sql, $rowcount, $prepstatement);
+			unset($sql, $rowcount, $prep_statement);
 
 		//get the permissions assigned to the groups that the user is a member of set the permissions in $_SESSION['permissions']
 			$x = 0;

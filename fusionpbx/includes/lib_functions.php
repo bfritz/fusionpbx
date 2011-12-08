@@ -553,14 +553,17 @@
 			if (strlen($username) == 0) { return false; }
 			if (strlen($password) == 0) { return false; }
 			if (!user_exists($username)) {
+				//salt used with the password to create a one way hash
+					$salt = generate_password('20', '4');
 				//add the user account
-					$usertype = 'Individual';
-					$usercategory = 'user';
+					$user_type = 'Individual';
+					$user_category = 'user';
 					$sql = "insert into v_users ";
 					$sql .= "(";
 					$sql .= "v_id, ";
 					$sql .= "username, ";
 					$sql .= "password, ";
+					$sql .= "salt, ";
 					$sql .= "usertype, ";
 					$sql .= "usercategory, ";
 					if (strlen($userfirstname) > 0) { $sql .= "userfirstname, "; }
@@ -573,9 +576,10 @@
 					$sql .= "(";
 					$sql .= "'$v_id', ";
 					$sql .= "'$username', ";
-					$sql .= "'".md5($v_salt.$password)."', ";
-					$sql .= "'$usertype', ";
-					$sql .= "'$usercategory', ";
+					$sql .= "'".md5($salt.$password)."', ";
+					$sql .= "'$salt', ";
+					$sql .= "'$user_type', ";
+					$sql .= "'$user_category', ";
 					if (strlen($userfirstname) > 0) { $sql .= "'$userfirstname', "; }
 					if (strlen($userlastname) > 0) { $sql .= "'$userlastname', "; }
 					if (strlen($useremail) > 0) { $sql .= "'$useremail', "; }
