@@ -142,11 +142,15 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$usertype = 'Individual';
 	$usercategory = 'user';
 
+	//salt used with the password to create a one way hash
+	$salt = generate_password('20', '4');
+
 	$sql = "insert into v_users ";
 	$sql .= "(";
 	$sql .= "v_id, ";
 	$sql .= "username, ";
 	$sql .= "password, ";
+	$sql .= "salt, ";
 	$sql .= "usertype, ";
 	$sql .= "usercategory, ";
 	$sql .= "userfirstname, ";
@@ -192,7 +196,8 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "(";
 	$sql .= "'$v_id', ";
 	$sql .= "'$username', ";
-	$sql .= "'".md5('e3.7d.12'.$password)."', ";
+	$sql .= "'".md5($salt.$password)."', ";
+	$sql .= "'".$salt."', ";
 	$sql .= "'$usertype', ";
 	$sql .= "'$usercategory', ";
 	$sql .= "'$userfirstname', ";

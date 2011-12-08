@@ -207,7 +207,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 			$sql .= "username = '$username', ";
 		}
 		if (strlen($password) > 0 && $confirmpassword == $password) {
-			$sql .= "password = '".md5($v_salt.$password)."', ";
+			//salt used with the password to create a one way hash
+				$salt = generate_password('20', '4');
+			//set the password
+				$sql .= "password = '".md5($salt.$password)."', ";
+				$sql .= "salt = '".$salt."', ";
 		}
 		$sql .= "userfirstname = '$userfirstname', ";
 		$sql .= "userlastname = '$userlastname', ";

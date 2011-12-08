@@ -35,11 +35,6 @@ $resp = null;
 # the error code from reCAPTCHA, if any
 $error = null;
 
-//if the salt array is not set then set a default
-if (count($v_salt) == 0) {
-	$v_salt[] = 'e3.7d.12';
-}
-
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 	$msgerror = '';
@@ -111,11 +106,15 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		goto showform;
 	}
 
+	//salt used with the password to create a one way hash
+	$salt = generate_password('20', '4');
+
 	$sql = "insert into v_users ";
 	$sql .= "(";
 	$sql .= "v_id, ";
 	$sql .= "username, ";
 	$sql .= "password, ";
+	$sql .= "salt, ";
 	$sql .= "userfirstname, ";
 	$sql .= "userlastname, ";
 	$sql .= "usercompanyname, ";
@@ -161,7 +160,8 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= "(";
 	$sql .= "'$v_id', ";
 	$sql .= "'" . $request['username'] . "', ";
-	$sql .= "'".md5($v_salt[0].$request['password'])."', ";
+	$sql .= "'".md5($salt.$request['password'])."', ";
+	$sql .= "'" . $salt . "', ";
 	$sql .= "'" . $request['userfirstname'] . "', ";
 	$sql .= "'" . $request['userlastname'] . "', ";
 	$sql .= "'" . $request['usercompanyname'] . "', ";
