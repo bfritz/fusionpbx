@@ -124,6 +124,24 @@ else {
 	}
 	unset($prepstatement, $result, $resultcount, $sql);
 
+//get the call time in the past hour
+	$sql = "";
+	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
+	$sql .= $sqlwhere;
+	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_hour)." AND ".time()." ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$resultcount = count($result);
+	unset ($prepstatement, $sql);
+	if ($resultcount > 0) {
+		foreach($result as $row) {
+			$call_seconds_hour .= $row['seconds'];
+		}
+	}
+	unset($prepstatement, $result, $resultcount, $sql);
+	if (strlen($call_seconds_hour) == 0) { $call_seconds_hour = 0; }
+
 //get the call volume in a day
 	$sql = "";
 	$sql .= " select count(*) as count from v_xml_cdr ";
@@ -141,6 +159,24 @@ else {
 	}
 	unset($prepstatement, $result, $resultcount, $sql);
 
+//get the call time in a day
+	$sql = "";
+	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
+	$sql .= $sqlwhere;
+	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_day)." AND ".time()." ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$resultcount = count($result);
+	unset ($prepstatement, $sql);
+	if ($resultcount > 0) {
+		foreach($result as $row) {
+			$call_seconds_day .= $row['seconds'];
+		}
+	}
+	unset($prepstatement, $result, $resultcount, $sql);
+	if (strlen($call_seconds_day) == 0) { $call_seconds_day = 0; }
+
 //get the call volume in a week
 	$sql = "";
 	$sql .= " select count(*) as count from v_xml_cdr ";
@@ -156,7 +192,25 @@ else {
 			$call_volume_week .= $row['count'];
 		}
 	}
-	unset($prepstatement, $result, $resultcount, $sql);	
+	unset($prepstatement, $result, $resultcount, $sql);
+
+//get the call time in a week
+	$sql = "";
+	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
+	$sql .= $sqlwhere;
+	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_week)." AND ".time()." ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$resultcount = count($result);
+	unset ($prepstatement, $sql);
+	if ($resultcount > 0) {
+		foreach($result as $row) {
+			$call_seconds_week .= $row['seconds'];
+		}
+	}
+	unset($prepstatement, $result, $resultcount, $sql);
+	if (strlen($call_seconds_week) == 0) { $call_seconds_week = 0; }
 
 //get the call volume in a month
 	$sql = "";
@@ -175,6 +229,24 @@ else {
 	}
 	unset($prepstatement, $result, $resultcount, $sql);	
 
+//get the call time in a month
+	$sql = "";
+	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
+	$sql .= $sqlwhere;
+	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_month)." AND ".time()." ";
+	$prepstatement = $db->prepare(check_sql($sql));
+	$prepstatement->execute();
+	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$resultcount = count($result);
+	unset ($prepstatement, $sql);
+	if ($resultcount > 0) {
+		foreach($result as $row) {
+			$call_seconds_month .= $row['seconds'];
+		}
+	}
+	unset($prepstatement, $result, $resultcount, $sql);
+	if (strlen($call_seconds_month) == 0) { $call_seconds_month = 0; }
+
 //set the style
 	$c = 0;
 	$rowstyle["0"] = "rowstyle0";
@@ -183,31 +255,36 @@ else {
 //show the results
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "	<th>Call Volume</th>\n";
-	echo "	<th>&nbsp;</th>\n";
+	echo "	<th>Time</th>\n";
+	echo "	<th>Volume</th>\n";
+	echo "	<th>Minutes</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr >\n";
 	echo "	<td valign='top' class='".$rowstyle[$c]."'>Hour</td>\n";
 	echo "	<td valign='top' class='".$rowstyle[$c]."'>".$call_volume_hour."</td>\n";
+	echo "	<td valign='top' class='".$rowstyle[$c]."'>".$call_seconds_hour."</td>\n";
 	echo "</tr >\n";
 	if ($c==0) { $c=1; } else { $c=0; }
-	
+
 	echo "<tr >\n";
 	echo "	<td valign='top' class='".$rowstyle[$c]."'>Day</td>\n";
 	echo "	<td valign='top' class='".$rowstyle[$c]."'>".$call_volume_day."</td>\n";
+	echo "	<td valign='top' class='".$rowstyle[$c]."'>".$call_seconds_day."</td>\n";
 	echo "</tr >\n";
 	if ($c==0) { $c=1; } else { $c=0; }
 
 	echo "<tr >\n";
 	echo "	<td valign='top' class='".$rowstyle[$c]."'>Week</td>\n";
 	echo "	<td valign='top' class='".$rowstyle[$c]."'>".$call_volume_week."</td>\n";
+	echo "	<td valign='top' class='".$rowstyle[$c]."'>".$call_seconds_week."</td>\n";
 	echo "</tr >\n";
 	if ($c==0) { $c=1; } else { $c=0; }
 
 	echo "<tr >\n";
 	echo "	<td valign='top' class='".$rowstyle[$c]."'>Month</td>\n";
 	echo "	<td valign='top' class='".$rowstyle[$c]."'>".$call_volume_month."</td>\n";
+	echo "	<td valign='top' class='".$rowstyle[$c]."'>".$call_seconds_month."</td>\n";
 	echo "</tr >\n";
 	if ($c==0) { $c=1; } else { $c=0; }
 

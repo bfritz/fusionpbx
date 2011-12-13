@@ -218,6 +218,10 @@
 		$apps[$x]['db'][0]['fields'][$y]['type'] = 'text';
 		$apps[$x]['db'][0]['fields'][$y]['description'] = 'agent type';
 		$y++;
+		$apps[$x]['db'][0]['fields'][$y]['name'] = 'waitsec';
+		$apps[$x]['db'][0]['fields'][$y]['type'] = 'numeric';
+		$apps[$x]['db'][0]['fields'][$y]['description'] = 'wait seconds';
+		$y++;
 		$apps[$x]['db'][0]['fields'][$y]['name'] = 'conference_name';
 		$apps[$x]['db'][0]['fields'][$y]['type'] = 'text';
 		$apps[$x]['db'][0]['fields'][$y]['description'] = 'conference name';

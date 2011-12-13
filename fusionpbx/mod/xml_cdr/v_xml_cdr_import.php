@@ -75,7 +75,7 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 			'bridge_uuid',
 			'digits_dialed',
 			'read_codec','read_rate','write_codec','write_rate','remote_media_ip','hangup_cause','hangup_cause_q850',
-			'cc_side','cc_member_uuid','cc_queue_joined_epoch','cc_queue','cc_member_session_uuid','cc_agent','cc_agent_type',
+			'cc_side','cc_member_uuid','cc_queue_joined_epoch','cc_queue','cc_member_session_uuid','cc_agent','cc_agent_type','waitsec',
 			'last_app','last_arg','sip_hangup_disposition',
 			'conference_name','conference_uuid','conference_member_id'
 			);
@@ -149,7 +149,7 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 
 	//determine where the xml cdr will be archived
 		$sql = "select * from v_vars ";
-		$sql .= "where v_id  = '$v_id' ";
+		$sql .= "where v_id  = '1' ";
 		$sql .= "and var_name = 'xml_cdr_archive' ";
 		$row = $db->query($sql)->fetch();
 		$var_value = trim($row["var_value"]);
