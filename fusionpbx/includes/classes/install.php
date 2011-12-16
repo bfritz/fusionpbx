@@ -75,7 +75,7 @@ include "root.php";
 		}
 
 		function copy_sounds() {
-			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/custom/8000';
+			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/en/us/callie/custom/8000';
 			$dst_dir = $this->v_sounds_dir.'/en/us/callie/custom/8000';
 			if ($handle = opendir($src_dir)) {
 				$i = 0;
@@ -95,7 +95,7 @@ include "root.php";
 				}
 			}
 
-			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/custom/16000';
+			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/en/us/callie/custom/16000';
 			$dst_dir = $this->v_sounds_dir.'/en/us/callie/custom/16000';
 			if ($handle = opendir($src_dir)) {
 				$i = 0;
