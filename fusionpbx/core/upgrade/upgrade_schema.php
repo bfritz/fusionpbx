@@ -54,6 +54,18 @@
 		$display_results = true;
 	}
 
+//copy the files and directories from includes/install
+	require_once "includes/classes/install.php";
+	$install = new install;
+	$install->v_id = $v_id;
+	$install->v_domain = $domain;
+	$install->v_conf_dir = $v_conf_dir;
+	$install->v_scripts_dir = $v_scripts_dir;
+	$install->v_sounds_dir = $v_sounds_dir;
+	$install->v_recordings_dir = $v_recordings_dir;
+	$install->copy();
+	//print_r($install->result);
+
 //load the default database into memory and compare it with the active database
 	require_once "includes/lib_schema.php";
 	db_upgrade_schema ($db, $db_type, $db_name, $display_results);

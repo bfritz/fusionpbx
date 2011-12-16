@@ -36,7 +36,6 @@ include "root.php";
 		var $v_recordings_dir;
 
 		function copy() {
-			$this->copy_conf();
 			$this->copy_scripts();
 			$this->copy_sounds();
 			$this->copy_swf();
@@ -44,6 +43,7 @@ include "root.php";
 
 		function copy_conf() {
 			//if the backup copy does not exist then make a copy of it
+			clearstatcache();
 			$src_dir = $v_conf_dir;
 			$dst_dir = $v_conf_dir.'.orig';
 			if (!is_dir($v_conf_dir.".orig")) { 
@@ -52,6 +52,7 @@ include "root.php";
 		}
 
 		function copy_scripts() {
+			clearstatcache();
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/scripts';
 			$dst_dir = $this->v_scripts_dir;
 			if ($handle = opendir($src_dir)) {
@@ -59,7 +60,7 @@ include "root.php";
 				$files = array();
 				while (false !== ($file = readdir($handle))) {
 					if ($file != "." && $file != ".." && is_file($src_dir.'/'.$file)) {
-						if (file_exists($dst_dir.'/'.$file) ) {
+						if (!file_exists($dst_dir.'/'.$file) ) {
 							//copy the file if it does not exist in the destination directory
 							if (copy($src_dir.'/'.$file, $dst_dir.'/'.$file)) {
 								$this->result['copy']['scripts'][] = "copied from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
@@ -75,6 +76,7 @@ include "root.php";
 		}
 
 		function copy_sounds() {
+			clearstatcache();
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/en/us/callie/custom/8000';
 			$dst_dir = $this->v_sounds_dir.'/en/us/callie/custom/8000';
 			if ($handle = opendir($src_dir)) {
@@ -82,7 +84,7 @@ include "root.php";
 				$files = array();
 				while (false !== ($file = readdir($handle))) {
 					if ($file != "." && $file != ".." && is_file($src_dir.'/'.$file)) {
-						if (file_exists($dst_dir.'/'.$file) ) {
+						if (!file_exists($dst_dir.'/'.$file) ) {
 							//copy the file if it does not exist in the destination directory
 							if (copy($src_dir.'/'.$file, $dst_dir.'/'.$file)) {
 								$this->result['copy']['sounds']['8000'][] = "copied from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
@@ -102,7 +104,7 @@ include "root.php";
 				$files = array();
 				while (false !== ($file = readdir($handle))) {
 					if ($file != "." && $file != ".." && is_file($src_dir.'/'.$file)) {
-						if (file_exists($dst_dir.'/'.$file) ) {
+						if (!file_exists($dst_dir.'/'.$file) ) {
 							//copy the file if it does not exist in the destination directory
 							if (copy($src_dir.'/'.$file, $dst_dir.'/'.$file)) {
 								$this->result['copy']['sounds']['16000'][] = "copied from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
@@ -117,6 +119,7 @@ include "root.php";
 		}
 
 		function copy_swf() {
+			clearstatcache();
 			$file = "slim.swf";
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/htdocs';
 			$dst_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/mod/recordings';

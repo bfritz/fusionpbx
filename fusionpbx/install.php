@@ -924,6 +924,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$install->v_scripts_dir = $v_scripts_dir;
 		$install->v_sounds_dir = $v_sounds_dir;
 		$install->v_recordings_dir = $v_recordings_dir;
+		$install->copy_conf();
 		$install->copy();
 		//print_r($install->result);
 
