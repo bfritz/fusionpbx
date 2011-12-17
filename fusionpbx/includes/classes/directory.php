@@ -326,7 +326,7 @@ include "root.php";
 				sync_package_v_extensions();
 		} //end function
 
-		function xml_save() {
+		function xml_save_all() {
 			global $db, $config;
 			$v_id = $this->v_id;
 			$v_domain = $this->v_domain;
@@ -422,38 +422,25 @@ include "root.php";
 					$tmp_xml .= "    <params>\n";
 					$tmp_xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
 					$tmp_xml .= "      <param name=\"vm-password\" value=\"" . $vm_password . "\"/>\n";
-					switch ($row['vm_enabled']) {
-					case "true":
-						$tmp_xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
-						break;
-					case "false":
-						$tmp_xml .= "      <param name=\"vm-enabled\" value=\"false\"/>\n";
-						break;
-					default:
+					if ($row['vm_enabled'] == "true" || $row['vm_enabled'] == "false") {
+						$tmp_xml .= "      <param name=\"vm-enabled\" value=\"".$row['vm_enabled']."\"/>\n";
+					}
+					else {
 						$tmp_xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
 					}
 					if (strlen($row['vm_mailto']) > 0) {
 						$tmp_xml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
-
-						switch ($row['vm_attach_file']) {
-						case "true":
-								$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
-								break;
-						case "false":
-								$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"false\"/>\n";
-								break;
-						default:
-								$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+						if ($row['vm_attach_file'] == "true" || $row['vm_attach_file'] == "false") {
+							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"".$row['vm_attach_file']."\"/>\n";
 						}
-						switch ($row['vm_keep_local_after_email']) {
-						case "true":
-								$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
-								break;
-						case "false":
-								$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"false\"/>\n";
-								break;
-						default:
-								$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
+						else {
+							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+						}
+						if ($row['vm_keep_local_after_email'] == "true" || $row['vm_keep_local_after_email'] == "false") {
+							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"".$row['vm_keep_local_after_email']."\"/>\n";
+						}
+						else {
+							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
 						}
 						$tmp_xml .= "      <param name=\"vm-mailto\" value=\"" . $row['vm_mailto'] . "\"/>\n";
 					}
