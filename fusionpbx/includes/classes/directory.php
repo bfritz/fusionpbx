@@ -399,6 +399,16 @@ include "root.php";
 				}
 				$vm_password = $row['vm_password'];
 				$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
+				
+				if(!in_array($row['vm_enabled'],array("false","true"))) {
+					$row['vm_enabled'] = "true";
+				}
+				if(!in_array($row['vm_attach_file'],array("false","true"))) {
+					$row['vm_attach_file'] = "true";
+				}
+				if(!in_array($row['vm_keep_local_after_email'],array("false","true"))) {
+					$row['vm_keep_local_after_email'] = "true";
+				}
 
 				if ($row['enabled'] != "false") {
 					//remove invalid characters from the file names
@@ -422,26 +432,11 @@ include "root.php";
 					$tmp_xml .= "    <params>\n";
 					$tmp_xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
 					$tmp_xml .= "      <param name=\"vm-password\" value=\"" . $vm_password . "\"/>\n";
-					if ($row['vm_enabled'] == "true" || $row['vm_enabled'] == "false") {
-						$tmp_xml .= "      <param name=\"vm-enabled\" value=\"".$row['vm_enabled']."\"/>\n";
-					}
-					else {
-						$tmp_xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
-					}
+					$tmp_xml .= "      <param name=\"vm-enabled\" value=\"".$row['vm_enabled']."\"/>\n";
 					if (strlen($row['vm_mailto']) > 0) {
 						$tmp_xml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
-						if ($row['vm_attach_file'] == "true" || $row['vm_attach_file'] == "false") {
-							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"".$row['vm_attach_file']."\"/>\n";
-						}
-						else {
-							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
-						}
-						if ($row['vm_keep_local_after_email'] == "true" || $row['vm_keep_local_after_email'] == "false") {
-							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"".$row['vm_keep_local_after_email']."\"/>\n";
-						}
-						else {
-							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
-						}
+						$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"".$row['vm_attach_file']."\"/>\n";
+						$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"".$row['vm_keep_local_after_email']."\"/>\n";
 						$tmp_xml .= "      <param name=\"vm-mailto\" value=\"" . $row['vm_mailto'] . "\"/>\n";
 					}
 					if (strlen($row['mwi_account']) > 0) {
