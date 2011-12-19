@@ -40,7 +40,7 @@ include "root.php";
 		var $effective_caller_id_number;
 		var $outbound_caller_id_name;
 		var $outbound_caller_id_number;
-		var $limit_max;
+		var $limit_max=5;
 		var $limit_destination;
 		var $vm_enabled=1;
 		var $vm_mailto;
