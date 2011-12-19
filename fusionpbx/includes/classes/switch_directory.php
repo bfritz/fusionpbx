@@ -26,7 +26,7 @@
 include "root.php";
 
 //define the directory class
-	class directory {
+	class fs_directory {
 		var $v_id;
 		var $v_domain;
 		var $db_type;
@@ -42,7 +42,7 @@ include "root.php";
 		var $outbound_caller_id_number;
 		var $limit_max;
 		var $limit_destination;
-		var $vm_enabled;
+		var $vm_enabled=1;
 		var $vm_mailto;
 		var $vm_attach_file;
 		var $vm_keep_local_after_email;
@@ -61,6 +61,8 @@ include "root.php";
 		var $sip_bypass_media;
 		var $enabled;
 		var $description;
+		private $_cidr;
+		private $_number_alias;
 
 		function sql_add() {
 			global $db;
@@ -326,6 +328,157 @@ include "root.php";
 				sync_package_v_extensions();
 		} //end function
 
+
+		function import_sql($data){
+			$count=count($data);
+			$keys=$values=SplFixedArray($count);
+			$keys=array_keys($data);
+			$values=array_values($data);
+			for($i=0;$i<$count;$i++){
+				$keys[$i]= str_replace("-", "_", $keys[$i]); 
+				$this->{$keys[$i]}=$values[$i];
+				
+			}//end for loop
+		}//ened import sql function
+
+
+
+		function set_bool(&$var,$default=null){
+			$var=strtolower($var);
+			if		($var==="true")  return;
+			elseif	($var==="false") return;
+			elseif	($var==true)  $var="true";
+			elseif	($var==false) $var="false";
+			elseif(!is_null($default)) {
+				$var=$default;
+				$this->set_bool($var);
+				}
+		}
+
+		function generate_xml($single=1){
+			//v_account_code!! How should we be passing this??
+			
+			if ($this->enabled== "false" || !$this->enabled) {
+				return false;//This the best way??
+			}
+			
+			
+			$this->vm_password = str_replace("#", "", $this->vm_password); //preserves leading zeros//**Generic Validation!
+			
+			/*if(!in_array($this->vm_enabled,array("false","true"))) {//**Generic Validation!
+				$this->vm_enabled = "true";
+			}
+			if(!in_array($this->vm_attach_file,array("false","true"))) {//**Generic Validation!
+				$this->vm_attach_file = "true";
+			}
+			if(!in_array($this->vm_keep_local_after_email,array("false","true"))) {//**Generic Validation!
+				$this->vm_keep_local_after_email = "true";
+			}
+			 */
+			$this->set_bool($this->vm_enabled,1);
+			$this->set_bool($this->vm_attach_file,1);
+			$this->set_bool($this->vm_keep_local_after_email,1);
+
+			//remove invalid characters from the file names //**Generic Validation!
+			$this->extension = str_replace(" ", "_", $this->extension);
+			$this->extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $this->extension);
+
+			/*if (!$extension_xml_condensed) { <--- what do I do with this??
+				$fout = fopen($v_extensions_dir."/v_".$extension.".xml","w");
+				$tmp_xml .= "<include>\n";
+			}*/
+			if (strlen($this->cidr)) {
+				$this->_cidr = " cidr=\"" . $this->cidr . "\"";
+			}
+			if (strlen($this->number_alias)) {
+				$this->_number_alias = " number-alias=\"".$this->number_alias."\"";
+			}
+			if($single)	$tmp_xml  = "<include>\n";
+			else		$tmp_xml  = "";
+			$tmp_xml .= "  <user id=\"".$this->extension."\"".$this->_cidr."".$this->_number_alias.">\n";
+			$tmp_xml .= "    <params>\n";
+			$tmp_xml .= "      <param name=\"password\" value=\"" . $this->password . "\"/>\n";
+			$tmp_xml .= "      <param name=\"vm-enabled\" value=\"".$this->vm_enabled."\"/>\n";
+			
+			
+			if ($this->vm_enabled=="true"){
+				$tmp_xml .= "      <param name=\"vm-password\" value=\"" . $this->vm_password . "\"/>\n";
+				if(strlen($this->vm_mailto)) {
+					$tmp_xml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
+					$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"".$this->vm_attach_file."\"/>\n";
+					$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"".$this->vm_keep_local_after_email."\"/>\n";
+					$tmp_xml .= "      <param name=\"vm-mailto\" value=\"" . $this->vm_mailto . "\"/>\n";
+				}
+			}
+			if (strlen($this->mwi_account)) {
+				$tmp_xml .= "      <param name=\"MWI-Account\" value=\"" . $this->mwi_account . "\"/>\n";
+			}
+			if (strlen($this->auth_acl)) {
+				$tmp_xml .= "      <param name=\"auth-acl\" value=\"" . $this->auth_acl . "\"/>\n";
+			}
+			$tmp_xml .= "    </params>\n";
+			
+			
+			$tmp_xml .= "    <variables>\n";
+			if (strlen($this->hold_music)) {
+				$tmp_xml .= "      <variable name=\"hold_music\" value=\"" . $this->hold_music . "\"/>\n";
+			}
+			if (strlen($this->toll_allow)){
+				$tmp_xml .= "      <variable name=\"toll_allow\" value=\"" . $this->toll_allow . "\"/>\n";
+			}
+			if (strlen($this->accountcode)){
+				$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $this->accountcode . "\"/>\n";
+			}
+			$tmp_xml .= "      <variable name=\"user_context\" value=\"" . $this->user_context . "\"/>\n";
+			if (strlen($this->effective_caller_id_name)) {
+				$tmp_xml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $this->effective_caller_id_name . "\"/>\n";
+			}
+			if (strlen($this->outbound_caller_id_number)) {
+				$tmp_xml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $this->effective_caller_id_number . "\"/>\n";
+			}
+			if (strlen($this->outbound_caller_id_name)) {
+				$tmp_xml .= "      <variable name=\"outbound_caller_id_name\" value=\"" . $this->outbound_caller_id_name . "\"/>\n";
+			}
+			if (strlen($this->outbound_caller_id_number)) {
+				$tmp_xml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $this->outbound_caller_id_number . "\"/>\n";
+			}
+			if (!strlen($this->limit_max)) {//**validation
+				$this->limit_max=5;
+			}
+			$tmp_xml .= "      <variable name=\"limit_max\" value=\"" . $this->limit_max . "\"/>\n";
+			if (strlen($this->limit_destination)) {
+				$tmp_xml .= "      <variable name=\"limit_destination\" value=\"" . $this->limit_destination . "\"/>\n";
+			}
+			if (strlen($this->sip_force_contact)) {
+				$tmp_xml .= "      <variable name=\"sip-force-contact\" value=\"" . $this->sip_force_contact . "\"/>\n";
+			}
+			if (strlen($this->sip_force_expires)) {
+				$tmp_xml .= "      <variable name=\"sip-force-expires\" value=\"" . $this->sip_force_expires . "\"/>\n";
+			}
+			if (strlen($this->nibble_account)) {
+				$tmp_xml .= "      <variable name=\"nibble_account\" value=\"" . $this->nibble_account . "\"/>\n";
+			}
+			switch ($this->sip_bypass_media) {
+				case "bypass-media":
+						$tmp_xml .= "      <variable name=\"bypass_media\" value=\"true\"/>\n";
+						break;
+				case "bypass-media-after-bridge":
+						$tmp_xml .= "      <variable name=\"bypass_media_after_bridge\" value=\"true\"/>\n";
+						break;
+				case "proxy-media":
+						$tmp_xml .= "      <variable name=\"proxy_media\" value=\"true\"/>\n";
+						break;
+			}
+
+			$tmp_xml .= "    </variables>\n";
+			$tmp_xml .= "  </user>\n";
+			if($single)	$tmp_xml .= "</include>\n";
+
+		return $tmp_xml;
+		}
+			
+			
+
 		function xml_save_all() {
 			global $db, $config;
 			$v_id = $this->v_id;
@@ -397,111 +550,17 @@ include "root.php";
 					}
 					$i++;
 				}
-				$vm_password = $row['vm_password'];
-				$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 				
-				if(!in_array($row['vm_enabled'],array("false","true"))) {
-					$row['vm_enabled'] = "true";
-				}
-				if(!in_array($row['vm_attach_file'],array("false","true"))) {
-					$row['vm_attach_file'] = "true";
-				}
-				if(!in_array($row['vm_keep_local_after_email'],array("false","true"))) {
-					$row['vm_keep_local_after_email'] = "true";
-				}
-
+				
 				if ($row['enabled'] != "false") {
-					//remove invalid characters from the file names
-					$extension = $row['extension'];
-					$extension = str_replace(" ", "_", $extension);
-					$extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension);
+					//$this->import_sql($row);//Do I need to be worried about ghost values? Maybe I should make a new object?
+					//if (strlen($v_account_code)) $this->accountcode=$v_account_code;
+					//$tmp_xml.=$this->generate_xml(1);
 
-					if (!$extension_xml_condensed) {
-						$fout = fopen($v_extensions_dir."/v_".$extension.".xml","w");
-						$tmp_xml .= "<include>\n";
-					}
-					$cidr = '';
-					if (strlen($row['cidr']) > 0) {
-						$cidr = " cidr=\"" . $row['cidr'] . "\"";
-					}
-					$number_alias = '';
-					if (strlen($row['number_alias']) > 0) {
-						$number_alias = " number-alias=\"".$row['number_alias']."\"";
-					}
-					$tmp_xml .= "  <user id=\"".$row['extension']."\"".$cidr."".$number_alias.">\n";
-					$tmp_xml .= "    <params>\n";
-					$tmp_xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
-					$tmp_xml .= "      <param name=\"vm-password\" value=\"" . $vm_password . "\"/>\n";
-					$tmp_xml .= "      <param name=\"vm-enabled\" value=\"".$row['vm_enabled']."\"/>\n";
-					if (strlen($row['vm_mailto']) > 0) {
-						$tmp_xml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
-						$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"".$row['vm_attach_file']."\"/>\n";
-						$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"".$row['vm_keep_local_after_email']."\"/>\n";
-						$tmp_xml .= "      <param name=\"vm-mailto\" value=\"" . $row['vm_mailto'] . "\"/>\n";
-					}
-					if (strlen($row['mwi_account']) > 0) {
-						$tmp_xml .= "      <param name=\"MWI-Account\" value=\"" . $row['mwi_account'] . "\"/>\n";
-					}
-					if (strlen($row['auth-acl']) > 0) {
-						$tmp_xml .= "      <param name=\"auth-acl\" value=\"" . $row['auth_acl'] . "\"/>\n";
-					}
-					$tmp_xml .= "    </params>\n";
-					$tmp_xml .= "    <variables>\n";
-					if (strlen($row['hold_music']) > 0) {
-						$tmp_xml .= "      <variable name=\"hold_music\" value=\"" . $row['hold_music'] . "\"/>\n";
-					}
-					$tmp_xml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
-					if (strlen($v_account_code) > 0) {
-						$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $v_account_code . "\"/>\n";
-					}
-					else {
-						$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
-					}
-					$tmp_xml .= "      <variable name=\"user_context\" value=\"" . $row['user_context'] . "\"/>\n";
-					if (strlen($row['effective_caller_id_name']) > 0) {
-						$tmp_xml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";
-					}
-					if (strlen($row['outbound_caller_id_number']) > 0) {
-						$tmp_xml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $row['effective_caller_id_number'] . "\"/>\n";
-					}
-					if (strlen($row['outbound_caller_id_name']) > 0) {
-						$tmp_xml .= "      <variable name=\"outbound_caller_id_name\" value=\"" . $row['outbound_caller_id_name'] . "\"/>\n";
-					}
-					if (strlen($row['outbound_caller_id_number']) > 0) {
-						$tmp_xml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $row['outbound_caller_id_number'] . "\"/>\n";
-					}
-					if (strlen($row['limit_max']) > 0) {
-						$tmp_xml .= "      <variable name=\"limit_max\" value=\"" . $row['limit_max'] . "\"/>\n";
-					}
-					else {
-						$tmp_xml .= "      <variable name=\"limit_max\" value=\"5\"/>\n";
-					}
-					if (strlen($row['limit_destination']) > 0) {
-						$tmp_xml .= "      <variable name=\"limit_destination\" value=\"" . $row['limit_destination'] . "\"/>\n";
-					}
-					if (strlen($row['sip_force_contact']) > 0) {
-						$tmp_xml .= "      <variable name=\"sip-force-contact\" value=\"" . $row['sip_force_contact'] . "\"/>\n";
-					}
-					if (strlen($row['sip_force_expires']) > 0) {
-						$tmp_xml .= "      <variable name=\"sip-force-expires\" value=\"" . $row['sip_force_expires'] . "\"/>\n";
-					}
-					if (strlen($row['nibble_account']) > 0) {
-						$tmp_xml .= "      <variable name=\"nibble_account\" value=\"" . $row['nibble_account'] . "\"/>\n";
-					}
-					switch ($row['sip_bypass_media']) {
-						case "bypass-media":
-								$tmp_xml .= "      <variable name=\"bypass_media\" value=\"true\"/>\n";
-								break;
-						case "bypass-media-after-bridge":
-								$tmp_xml .= "      <variable name=\"bypass_media_after_bridge\" value=\"true\"/>\n";
-								break;
-						case "proxy-media":
-								$tmp_xml .= "      <variable name=\"proxy_media\" value=\"true\"/>\n";
-								break;
-					}
-
-					$tmp_xml .= "    </variables>\n";
-					$tmp_xml .= "  </user>\n";
+					$one_row=new fs_directory;
+					$one_row->import_sql($row);//make a new object to flush ghost rows. And we can call this as static.
+					if (strlen($v_account_code)) $one_row->accountcode=$v_account_code;
+					$tmp_xml.=$one_row->generate_xml(false);
 
 					if (!$extension_xml_condensed) {
 						$tmp_xml .= "</include>\n";
