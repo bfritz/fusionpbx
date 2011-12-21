@@ -29,7 +29,6 @@
 		$document_root = str_replace("\\", "/", $_SERVER["PHP_SELF"]);
 		preg_match("/^(.*)\/mod\/.*$/", $document_root, $matches);
 		$document_root = $matches[1];
-		echo "document_root: ".$document_root."\n";
 		set_include_path($document_root);
 		require_once "includes/config.php";
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
@@ -40,13 +39,82 @@
 		exit;
 	}
 
+//determine where the xml cdr will be archived
+	$sql = "select * from v_vars ";
+	$sql .= "where v_id  = '1' ";
+	$sql .= "and var_name = 'xml_cdr_archive' ";
+	$row = $db->query($sql)->fetch();
+	$var_value = trim($row["var_value"]);
+	switch ($var_value) {
+	case "dir":
+			$xml_cdr_archive = 'dir';
+			break;
+	case "db":
+			$xml_cdr_archive = 'db';
+			break;
+	case "none":
+			$xml_cdr_archive = 'none';
+			break;
+	default:
+			$xml_cdr_archive = 'dir';
+			break;
+	}
+
 //get the list of installed apps from the core and mod directories
-		//$xml_cdr_list = glob($v_log_dir."/xml_cdr/archive/*/*/*/*.xml");
-		$xml_cdr_list = glob($v_log_dir."/xml_cdr/archive/2011/*/*/*.xml");
+	if ($xml_cdr_archive == "db") {
+		//get the xml cdr list
+			$sql = "";
+			$sql .= "select xml_cdr, uuid from v_xml_cdr ";
+			$sql .= "where waitsec is null ";
+			//$sql .= "limit 5000 ";
+		//start the transaction
+			$db->beginTransaction();
+		//loop through the results
+			$x = 0;
+			foreach ($db->query($sql,PDO::FETCH_ASSOC) as $row) {
+				//get the values from the db
+					$uuid = $row['uuid'];
+					$xml_string = $row['xml_cdr'];
+				//save each set of records and begin a new transaction
+					if ($x > 5000) {
+						//save the transaction
+							$db->commit();
+						//start the transaction
+							$db->beginTransaction();
+						//reset the count
+							$x = 0;
+					}	
+				//parse the xml to get the call detail record info
+					try {
+						$xml = simplexml_load_string($xml_string);
+					}
+					catch(Exception $e) {
+						echo $e->getMessage();
+					}
+				//get the values from the xml and set at variables
+					$uuid = urldecode($xml->variables->uuid);
+					$waitsec = urldecode($xml->variables->waitsec);
+				//update the database
+					if (strlen($waitsec) > 0) {
+						$sql = "";
+						$sql .= "update v_xml_cdr ";
+						$sql .= "set waitsec = '$waitsec' ";
+						$sql .= "where uuid = '$uuid' ";
+						echo $sql."\n";
+						$db->exec($sql);
+						$x++;
+					}				
+			}
+		//save the transaction
+			$db->commit();
+		//echo finished
+			echo "completed\n";
+	}
+	if ($xml_cdr_archive == "dir") { 
+		$xml_cdr_list = glob($v_log_dir."/xml_cdr/archive/*/*/*/*.xml");
 		echo "count: ".count($xml_cdr_list)."\n";
 		//print_r($xml_cdr_list);
 		$x = 0;
-		$z = 0;
 		//start the transaction
 			$db->beginTransaction();
 		//loop through the xml cdr records
@@ -72,27 +140,6 @@
 				//get the values from the xml and set at variables
 					$uuid = urldecode($xml->variables->uuid);
 					$waitsec = urldecode($xml->variables->waitsec);
-	
-				//get the count of the rows in v_xml_cdr
-					/*
-					$sql = "";
-					$sql .= "select count(*) as num_rows from v_xml_cdr ";
-					$sql .= "where uuid = '$uuid' ";
-					$sql .= "and waitsec is null ";
-					$prepstatement = $db->prepare($sql);
-					if ($prepstatement) {
-						$prepstatement->execute();
-						$row = $prepstatement->fetch(PDO::FETCH_ASSOC);
-						if ($row['num_rows'] > 0) {
-							$num_rows = $row['num_rows'];
-						}
-						else {
-							$num_rows = '0';
-						}
-					}
-					unset($prepstatement, $result);
-					*/
-	
 				//update the database
 					//if ($num_rows == "0" && strlen($waitsec) > 0) {
 					if (strlen($waitsec) > 0) {
@@ -104,9 +151,9 @@
 						$db->exec($sql);
 						$x++;
 					}
-				$z++;
 			}
 		//save the transaction
 			$db->commit();
 		//echo finished
 			echo "completed\n";
+	}
