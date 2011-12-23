@@ -38,19 +38,6 @@ if ( session:ready() ) then
 		if (not default_dialect) then default_dialect = 'us'; end
 		if (not default_voice) then default_voice = 'callie'; end
 
-	--set defaults
-		if (digit_min_length) then
-			--do nothing
-		else
-			digit_min_length = "2";
-		end
-
-		if (digit_max_length) then
-			--do nothing
-		else
-			digit_max_length = "11";
-		end
-
 	--if the pin number is provided then require it
 		if (pin_number) then
 			min_digits = string.len(pin_number);
