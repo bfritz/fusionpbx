@@ -26,45 +26,81 @@
 include "root.php";
 
 //define the directory class
-	class fs_directory {
-		var $v_id;
-		var $v_domain;
-		var $db_type;
-		var $extension;
-		var $number_alias;
-		var $password;
-		var $vm_password;
-		var $user_list;
-		var $accountcode;
-		var $effective_caller_id_name;
-		var $effective_caller_id_number;
-		var $outbound_caller_id_name;
-		var $outbound_caller_id_number;
-		var $limit_max=5;
-		var $limit_destination;
-		var $vm_enabled=1;
-		var $vm_mailto;
-		var $vm_attach_file;
-		var $vm_keep_local_after_email;
-		var $user_context;
-		var $range;
-		var $autogen_users;
-		var $toll_allow;
-		var $callgroup;
-		var $hold_music;
-		var $auth_acl;
-		var $cidr;
-		var $sip_force_contact;
-		var $sip_force_expires;
-		var $nibble_account;
-		var $mwi_account;
-		var $sip_bypass_media;
-		var $enabled;
-		var $description;
-		private $_cidr;
-		private $_number_alias;
+	class switch_directory {
+		public $v_id;
+		public $v_domain;
+		public $db_type;
+		public $extension;
+		public $number_alias;
+		public $password;
+		public $vm_password;
+		public $user_list;
+		public $accountcode;
+		public $effective_caller_id_name;
+		public $effective_caller_id_number;
+		public $outbound_caller_id_name;
+		public $outbound_caller_id_number;
+		public $limit_max=5;
+		public $limit_destination;
+		public $vm_enabled=1;
+		public $vm_mailto;
+		public $vm_attach_file;
+		public $vm_keep_local_after_email;
+		public $user_context;
+		public $range;
+		public $autogen_users;
+		public $toll_allow;
+		public $callgroup;
+		public $hold_music;
+		public $auth_acl;
+		public $cidr;
+		public $sip_force_contact;
+		public $sip_force_expires;
+		public $nibble_account;
+		public $mwi_account;
+		public $sip_bypass_media;
+		public $enabled;
+		public $description;
+		public $cidr;
+		public $number_alias;
 
-		function sql_add() {
+		// get v_id
+			public function get_v_id() {
+				return $this->v_id;
+			}
+		// set v_id
+			public function set_v_id($v_id){
+				$this->v_id = $v_id;
+			}
+
+		// get v_domain
+			public function get_v_domain() {
+				return $this->v_domain;
+			}
+		// set v_domain
+			public function set_v_domain($v_domain){
+				$this->v_domain = $v_domain;
+			}
+
+		// get db_type
+			public function get_db_type() {
+				return $this->db_type;
+			}
+		// set db_type
+			public function set_db_type($db_type){
+				$this->db_type = $db_type;
+			}
+
+		// get extension
+			public function get_extension() {
+				return $this->extension;
+			}
+		// set extension
+			public function set_extension($extension){
+				$this->extension = $extension;
+			}
+
+		public function add() {
 			global $db;
 			$v_id = $this->v_id;
 			$v_domain = $this->v_domain;
@@ -206,12 +242,9 @@ include "root.php";
 				$extension++;
 			}
 			$db->commit();
+		}
 
-			//syncrhonize configuration
-				sync_package_v_extensions();
-		} //end function
-
-		function sql_update() {
+		public function update() {
 			global $db;
 
 			$v_id = $this->v_id;
@@ -262,72 +295,82 @@ include "root.php";
 				$password = generate_password();
 			}
 
-			//sql update
-				$sql = "update v_extensions set ";
-				$sql .= "extension = '$extension', ";
-				$sql .= "number_alias = '$number_alias', ";
-				$sql .= "password = '$password', ";
-				$sql .= "user_list = '$user_list', ";
-				$sql .= "provisioning_list = '$provisioning_list', ";
-				if (strlen($vm_password) > 0) {
-					$sql .= "vm_password = '$vm_password', ";
-				}
-				else {
-					$sql .= "vm_password = 'user-choose', ";
-				}
-				$sql .= "accountcode = '$accountcode', ";
-				$sql .= "effective_caller_id_name = '$effective_caller_id_name', ";
-				$sql .= "effective_caller_id_number = '$effective_caller_id_number', ";
-				$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
-				$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
-				$sql .= "limit_max = '$limit_max', ";
-				$sql .= "limit_destination = '$limit_destination', ";
-				$sql .= "vm_enabled = '$vm_enabled', ";
-				$sql .= "vm_mailto = '$vm_mailto', ";
-				$sql .= "vm_attach_file = '$vm_attach_file', ";
-				$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email', ";
-				$sql .= "user_context = '$user_context', ";
-				$sql .= "toll_allow = '$toll_allow', ";
-				$sql .= "callgroup = '$callgroup', ";
-				$sql .= "hold_music = '$hold_music', ";
-				$sql .= "auth_acl = '$auth_acl', ";
-				$sql .= "cidr = '$cidr', ";
-				$sql .= "sip_force_contact = '$sip_force_contact', ";
-				if (strlen($sip_force_expires) == 0) {
-					$sql .= "sip_force_expires = null, ";
-				}
-				else {
-					$sql .= "sip_force_expires = '$sip_force_expires', ";
-				}
-				if (strlen($nibble_account) == 0) {
-					$sql .= "nibble_account = null, ";
-				}
-				else {
-					$sql .= "nibble_account = '$nibble_account', ";
-				}
-				if (strlen($mwi_account) > 0) {
-					if (strpos($mwi_account, '@') === false) {
-						if (count($_SESSION["domains"]) > 1) {
-							$mwi_account .= "@".$v_domain;
-						}
-						else {
-							$mwi_account .= "@\$\${domain}";
-						}
+			$sql = "update v_extensions set ";
+			$sql .= "extension = '$extension', ";
+			$sql .= "number_alias = '$number_alias', ";
+			$sql .= "password = '$password', ";
+			$sql .= "user_list = '$user_list', ";
+			$sql .= "provisioning_list = '$provisioning_list', ";
+			if (strlen($vm_password) > 0) {
+				$sql .= "vm_password = '$vm_password', ";
+			}
+			else {
+				$sql .= "vm_password = 'user-choose', ";
+			}
+			$sql .= "accountcode = '$accountcode', ";
+			$sql .= "effective_caller_id_name = '$effective_caller_id_name', ";
+			$sql .= "effective_caller_id_number = '$effective_caller_id_number', ";
+			$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
+			$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
+			$sql .= "limit_max = '$limit_max', ";
+			$sql .= "limit_destination = '$limit_destination', ";
+			$sql .= "vm_enabled = '$vm_enabled', ";
+			$sql .= "vm_mailto = '$vm_mailto', ";
+			$sql .= "vm_attach_file = '$vm_attach_file', ";
+			$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email', ";
+			$sql .= "user_context = '$user_context', ";
+			$sql .= "toll_allow = '$toll_allow', ";
+			$sql .= "callgroup = '$callgroup', ";
+			$sql .= "hold_music = '$hold_music', ";
+			$sql .= "auth_acl = '$auth_acl', ";
+			$sql .= "cidr = '$cidr', ";
+			$sql .= "sip_force_contact = '$sip_force_contact', ";
+			if (strlen($sip_force_expires) == 0) {
+				$sql .= "sip_force_expires = null, ";
+			}
+			else {
+				$sql .= "sip_force_expires = '$sip_force_expires', ";
+			}
+			if (strlen($nibble_account) == 0) {
+				$sql .= "nibble_account = null, ";
+			}
+			else {
+				$sql .= "nibble_account = '$nibble_account', ";
+			}
+			if (strlen($mwi_account) > 0) {
+				if (strpos($mwi_account, '@') === false) {
+					if (count($_SESSION["domains"]) > 1) {
+						$mwi_account .= "@".$v_domain;
+					}
+					else {
+						$mwi_account .= "@\$\${domain}";
 					}
 				}
-				$sql .= "mwi_account = '$mwi_account', ";
-				$sql .= "sip_bypass_media = '$sip_bypass_media', ";
-				$sql .= "enabled = '$enabled', ";
-				$sql .= "description = '$description' ";
+			}
+			$sql .= "mwi_account = '$mwi_account', ";
+			$sql .= "sip_bypass_media = '$sip_bypass_media', ";
+			$sql .= "enabled = '$enabled', ";
+			$sql .= "description = '$description' ";
+			$sql .= "where v_id = '$v_id' ";
+			$sql .= "and extension_id = '$extension_id'";
+			$db->exec(check_sql($sql));
+			unset($sql);
+		}
+
+		function delete() {
+			global $db;
+			$v_id = $this->v_id;
+			$extension_id = $this->extension_id;
+			if (strlen($extension_id)>0) {
+				$sql = "";
+				$sql .= "delete from v_extensions ";
 				$sql .= "where v_id = '$v_id' ";
-				$sql .= "and extension_id = '$extension_id'";
-				$db->exec(check_sql($sql));
+				$sql .= "and extension_id = '$extension_id' ";
+				$prepstatement = $db->prepare(check_sql($sql));
+				$prepstatement->execute();
 				unset($sql);
-
-			//syncrhonize configuration
-				sync_package_v_extensions();
-		} //end function
-
+			}
+		}
 
 		function import_sql($data){
 			$count=count($data);
@@ -336,12 +379,9 @@ include "root.php";
 			$values=array_values($data);
 			for($i=0;$i<$count;$i++){
 				$keys[$i]= str_replace("-", "_", $keys[$i]); 
-				$this->{$keys[$i]}=$values[$i];
-				
-			}//end for loop
-		}//ened import sql function
-
-
+				$this->{$keys[$i]}=$values[$i];			
+			}
+		}
 
 		function set_bool(&$var,$default=null){
 			$var=strtolower($var);
@@ -361,7 +401,6 @@ include "root.php";
 			if ($this->enabled== "false" || !$this->enabled) {
 				return false;//This the best way??
 			}
-			
 			
 			$this->vm_password = str_replace("#", "", $this->vm_password); //preserves leading zeros//**Generic Validation!
 			
@@ -388,19 +427,18 @@ include "root.php";
 				$tmp_xml .= "<include>\n";
 			}*/
 			if (strlen($this->cidr)) {
-				$this->_cidr = " cidr=\"" . $this->cidr . "\"";
+				$this->cidr = " cidr=\"" . $this->cidr . "\"";
 			}
 			if (strlen($this->number_alias)) {
-				$this->_number_alias = " number-alias=\"".$this->number_alias."\"";
+				$this->number_alias = " number-alias=\"".$this->number_alias."\"";
 			}
 			if($single)	$tmp_xml  = "<include>\n";
 			else		$tmp_xml  = "";
-			$tmp_xml .= "  <user id=\"".$this->extension."\"".$this->_cidr."".$this->_number_alias.">\n";
+			$tmp_xml .= "  <user id=\"".$this->extension."\"".$this->cidr."".$this->number_alias.">\n";
 			$tmp_xml .= "    <params>\n";
 			$tmp_xml .= "      <param name=\"password\" value=\"" . $this->password . "\"/>\n";
 			$tmp_xml .= "      <param name=\"vm-enabled\" value=\"".$this->vm_enabled."\"/>\n";
-			
-			
+
 			if ($this->vm_enabled=="true"){
 				$tmp_xml .= "      <param name=\"vm-password\" value=\"" . $this->vm_password . "\"/>\n";
 				if(strlen($this->vm_mailto)) {
@@ -417,7 +455,6 @@ include "root.php";
 				$tmp_xml .= "      <param name=\"auth-acl\" value=\"" . $this->auth_acl . "\"/>\n";
 			}
 			$tmp_xml .= "    </params>\n";
-			
 			
 			$tmp_xml .= "    <variables>\n";
 			if (strlen($this->hold_music)) {
@@ -469,15 +506,12 @@ include "root.php";
 						$tmp_xml .= "      <variable name=\"proxy_media\" value=\"true\"/>\n";
 						break;
 			}
-
 			$tmp_xml .= "    </variables>\n";
 			$tmp_xml .= "  </user>\n";
-			if($single)	$tmp_xml .= "</include>\n";
+			if($single) { $tmp_xml .= "</include>\n"; }
 
-		return $tmp_xml;
+			return $tmp_xml;
 		}
-			
-			
 
 		function xml_save_all() {
 			global $db, $config;
@@ -550,8 +584,7 @@ include "root.php";
 					}
 					$i++;
 				}
-				
-				
+
 				if ($row['enabled'] != "false") {
 					//$this->import_sql($row);//Do I need to be worried about ghost values? Maybe I should make a new object?
 					//if (strlen($v_account_code)) $this->accountcode=$v_account_code;
