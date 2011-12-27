@@ -74,13 +74,13 @@ require_once "includes/config.php";
 //get the parent id
 	$sql = "";
 	$sql .= "select * from v_menu_items ";
-	$sql .= "where menu_guid = '".$_SERVER["menu_guid"]."' ";
+	$sql .= "where menu_uuid = '".$_SERVER["menu_uuid"]."' ";
 	$sql .= "and menu_item_str = '".$_SERVER["SCRIPT_NAME"]."' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$_SESSION["menu_item_parent_guid"] = $row["menu_item_parent_guid"];
+		$_SESSION["menu_item_parent_uuid"] = $row["menu_item_parent_uuid"];
 		break;
 	}
 	unset($result);
