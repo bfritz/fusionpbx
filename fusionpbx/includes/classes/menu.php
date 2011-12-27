@@ -26,16 +26,16 @@
 
 //define the follow me class
 	class menu {
-		var $menu_guid;
+		var $menu_uuid;
 
 		//delete items in the menu that are not protected
 			function delete() {
 				//set the variable
 					$db = $this->db;
-					$menu_guid = $this->menu_guid;
+					$menu_uuid = $this->menu_uuid;
 				//remove the old menu
 					$sql  = "delete from v_menu_items ";
-					$sql .= "where menu_guid = '$menu_guid' ";
+					$sql .= "where menu_uuid = '$menu_uuid' ";
 					$sql .= "and (menu_item_protected <> 'true' ";
 					$sql .= "or menu_item_protected is null ";
 					$sql .= "or menu_item_protected = '');";
@@ -46,7 +46,7 @@
 			function restore() {
 				//set the variables
 					$db = $this->db;
-					$menu_guid = $this->menu_guid;
+					$menu_uuid = $this->menu_uuid;
 
 				//get the $apps array from the installed apps from the core and mod directories
 					$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
@@ -63,8 +63,8 @@
 							//set the variables
 								$menu_item_title = $menu['title']['en'];
 								$menu_item_language = 'en';
-								$menu_item_guid = $menu['guid'];
-								$menu_item_parent_guid = $menu['parent_guid'];
+								$menu_item_uuid = $menu['uuid'];
+								$menu_item_parent_uuid = $menu['parent_guid'];
 								$menu_item_category = $menu['category'];
 								$menu_item_path = $menu['path'];
 								$menu_item_order = $menu['order'];
@@ -73,10 +73,10 @@
 									$menu_item_order = 1;
 								}
 
-							//if the item guid is not currently in the db then add it
+							//if the item uuid is not currently in the db then add it
 								$sql = "select * from v_menu_items ";
-								$sql .= "where menu_guid = '$menu_guid' ";
-								$sql .= "and menu_item_guid = '$menu_item_guid' ";
+								$sql .= "where menu_uuid = '$menu_uuid' ";
+								$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
 								$prepstatement = $db->prepare(check_sql($sql));
 								if ($prepstatement) {
 									$prepstatement->execute();
@@ -85,29 +85,29 @@
 										//insert the default menu into the database
 											$sql = "insert into v_menu_items ";
 											$sql .= "(";
-											$sql .= "menu_guid, ";
+											$sql .= "menu_uuid, ";
 											//$sql .= "menu_item_language, ";
 											$sql .= "menu_item_title, ";
 											$sql .= "menu_item_str, ";
 											$sql .= "menu_item_category, ";
 											$sql .= "menu_item_desc, ";
 											$sql .= "menu_item_order, ";
-											$sql .= "menu_item_guid, ";
-											$sql .= "menu_item_parent_guid ";
+											$sql .= "menu_item_uuid, ";
+											$sql .= "menu_item_parent_uuid ";
 											$sql .= ") ";
 											$sql .= "values ";
 											$sql .= "(";
-											$sql .= "'$menu_guid', ";
+											$sql .= "'$menu_uuid', ";
 											//$sql .= "'$menu_item_language', ";
 											$sql .= "'$menu_item_title', ";
 											$sql .= "'$menu_item_path', ";
 											$sql .= "'$menu_item_category', ";
 											$sql .= "'$menu_item_desc', ";
 											$sql .= "'$menu_item_order', ";
-											$sql .= "'$menu_item_guid', ";
-											$sql .= "'$menu_item_parent_guid' ";
+											$sql .= "'$menu_item_uuid', ";
+											$sql .= "'$menu_item_parent_uuid' ";
 											$sql .= ")";
-											if ($menu_item_guid == $menu_item_parent_guid) {
+											if ($menu_item_uuid == $menu_item_parent_uuid) {
 												//echo $sql."<br />\n";
 											}
 											else {
@@ -119,10 +119,10 @@
 						}
 					}
 
-				//if there are no groups listed in v_menu_item_groups under menu_guid then add the default groups
+				//if there are no groups listed in v_menu_item_groups under menu_uuid then add the default groups
 					$sql = "";
 					$sql .= "select count(*) as count from v_menu_item_groups ";
-					$sql .= "where menu_guid = '$menu_guid' ";
+					$sql .= "where menu_uuid = '$menu_uuid' ";
 					$prep_statement = $db->prepare($sql);
 					$prep_statement->execute();
 					$sub_result = $prep_statement->fetch(PDO::FETCH_ASSOC);
@@ -135,14 +135,14 @@
 										//add the record
 										$sql = "insert into v_menu_item_groups ";
 										$sql .= "(";
-										$sql .= "menu_guid, ";
-										$sql .= "menu_item_guid, ";
+										$sql .= "menu_uuid, ";
+										$sql .= "menu_item_uuid, ";
 										$sql .= "group_id ";
 										$sql .= ")";
 										$sql .= "values ";
 										$sql .= "(";
-										$sql .= "'$menu_guid', ";
-										$sql .= "'".$sub_row['guid']."', ";
+										$sql .= "'$menu_uuid', ";
+										$sql .= "'".$sub_row['uuid']."', ";
 										$sql .= "'".$group."' ";
 										$sql .= ")";
 										$db->exec($sql);
@@ -160,7 +160,7 @@
 			function build_html($sql, $menu_item_level) {
 
 				$db = $this->db;
-				$v_menu_guid = $this->menu_guid;
+				$v_menu_uuid = $this->menu_uuid;
 				$db_menu_full = '';
 
 				if (count($_SESSION['groups']) == 0) {
@@ -169,10 +169,10 @@
 
 				if (strlen($sql) == 0) { //default sql for base of the menu
 					$sql = "select * from v_menu_items ";
-					$sql .= "where menu_guid = '$v_menu_guid' ";
-					$sql .= "and (menu_item_parent_guid = '' or menu_item_parent_guid is null) ";
-					$sql .= "and menu_item_guid in ";
-					$sql .= "(select menu_item_guid from v_menu_item_groups where menu_guid = '$v_menu_guid' ";
+					$sql .= "where menu_uuid = '$v_menu_uuid' ";
+					$sql .= "and (menu_item_parent_uuid = '' or menu_item_parent_uuid is null) ";
+					$sql .= "and menu_item_uuid in ";
+					$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '$v_menu_uuid' ";
 					$sql .= "and ( ";
 					if (count($_SESSION['groups']) == 0) {
 						$sql .= "group_id = 'public' ";
@@ -190,7 +190,7 @@
 						}
 					}
 					$sql .= ") ";
-					$sql .= "and menu_item_guid <> '' ";
+					$sql .= "and menu_item_uuid <> '' ";
 					$sql .= ") ";
 					$sql .= "order by menu_item_order asc ";
 				}
@@ -204,8 +204,8 @@
 					$menu_item_str = $field['menu_item_str'];
 					$menu_item_category = $field['menu_item_category'];
 					$menu_item_desc = $field['menu_item_desc'];
-					$menu_item_guid = $field['menu_item_guid'];
-					$menu_item_parent_guid = $field['menu_item_parent_guid'];
+					$menu_item_uuid = $field['menu_item_uuid'];
+					$menu_item_parent_uuid = $field['menu_item_parent_uuid'];
 					$menu_item_order = $field['menu_item_order'];
 					$menu_item_language = $field['menu_item_language'];
 
@@ -242,8 +242,8 @@
 					}
 
 					$menu_item_level = 0;
-					if (strlen($menu_item_guid) > 0) {
-						$db_menu .= $this->build_child_html($menu_item_level, $menu_item_guid);
+					if (strlen($menu_item_uuid) > 0) {
+						$db_menu .= $this->build_child_html($menu_item_level, $menu_item_uuid);
 					}
 
 					if ($menu_item_level == "main") {
@@ -258,18 +258,18 @@
 				unset($menu_item_title);
 				unset($menu_item_strv);
 				unset($menu_item_category);
-				unset($menu_item_guid);
-				unset($menu_item_parent_guid);
+				unset($menu_item_uuid);
+				unset($menu_item_parent_uuid);
 				unset($prep_statement, $sql, $result);
 
 				return $db_menu_full;
 			}
 
 		//create the sub menus
-			function build_child_html($menu_item_level, $menu_item_guid) {
+			function build_child_html($menu_item_level, $menu_item_uuid) {
 
 				$db = $this->db;
-				$v_menu_guid = $this->menu_guid;
+				$v_menu_uuid = $this->menu_uuid;
 				$menu_item_level = $menu_item_level+1;
 
 				if (count($_SESSION['groups']) == 0) {
@@ -277,10 +277,10 @@
 				}
 
 				$sql = "select * from v_menu_items ";
-				$sql .= "where menu_guid = '$v_menu_guid' ";
-				$sql .= "and menu_item_parent_guid = '$menu_item_guid' ";
-				$sql .= "and menu_item_guid in ";
-				$sql .= "(select menu_item_guid from v_menu_item_groups where menu_guid = '$v_menu_guid' ";
+				$sql .= "where menu_uuid = '$v_menu_uuid' ";
+				$sql .= "and menu_item_parent_uuid = '$menu_item_uuid' ";
+				$sql .= "and menu_item_uuid in ";
+				$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '$v_menu_uuid' ";
 				$sql .= "and ( ";
 				if (count($_SESSION['groups']) == 0) {
 					$sql .= "group_id = 'public' ";
@@ -312,8 +312,8 @@
 						$menu_item_title = $row['menu_item_title'];
 						$menu_item_str = $row['menu_item_str'];
 						$menu_item_category = $row['menu_item_category'];
-						$menu_item_guid = $row['menu_item_guid'];
-						$menu_item_parent_guid = $row['menu_item_parent_guid'];
+						$menu_item_uuid = $row['menu_item_uuid'];
+						$menu_item_parent_uuid = $row['menu_item_parent_uuid'];
 
 						$menuatags = '';
 						switch ($menu_item_category) {
@@ -334,8 +334,8 @@
 						$db_menu_sub .= "<li>";
 
 						//get sub menu for children
-							if (strlen($menu_item_guid) > 0) {
-								$str_child_menu = $this->build_child_html($menu_item_level, $menu_item_guid);
+							if (strlen($menu_item_uuid) > 0) {
+								$str_child_menu = $this->build_child_html($menu_item_level, $menu_item_uuid);
 							}
 
 						if (strlen($str_child_menu) > 1) {
