@@ -91,32 +91,96 @@ function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column
 		unset ($prepstatement);
 }
 
+function db_create_table ($apps, $db_type, $table) {
+	foreach ($apps as $x => &$app) {
+		foreach ($app['db'] as $y => $row) {
+			if ($row['table'] == $table) {
+				$sql = "CREATE TABLE " . $row['table'] . " (\n";
+				$field_count = 0;
+				foreach ($row['fields'] as $field) {
+					if ($field_count > 0 ) { $sql .= ",\n"; }
+					if (is_array($field['name'])) {
+						$sql .= $field['name']['text'] . " ";
+					}
+					else {
+						$sql .= $field['name'] . " ";
+					}
+					if (is_array($field['type'])) {
+						$sql .= $field['type'][$db_type];
+					}
+					else {
+						$sql .= $field['type'];
+					}
+					$field_count++;
+				}
+				$sql .= ");\n\n";
+				return $sql;
+			}
+		}
+	}
+}
 
+function db_insert_into ($apps, $db_type, $table) {
+	foreach ($apps as $x => &$app) {
+		foreach ($app['db'] as $y => $row) {
+			if ($row['table'] == $table) {
+				$sql = "INSERT INTO " . $row['table'] . " (";
+				$field_count = 0;
+				foreach ($row['fields'] as $field) {
+					if ($field_count > 0 ) { $sql .= ","; }
+					if (is_array($field['name'])) {
+						$sql .= $field['name']['text'];
+					}
+					else {
+						$sql .= $field['name'];
+					}
+					$field_count++;
+				}
+				$sql .= ")\n";
+				$sql .= "SELECT ";
+				$field_count = 0;
+				foreach ($row['fields'] as $field) {
+					if ($field_count > 0 ) { $sql .= ","; }
+					if (is_array($field['name'])) {
+						$sql .= $field['name']['text'];
+					}
+					else {
+						$sql .= $field['name'];
+					}
+					$field_count++;
+				}
+				$sql .= " FROM tmp_".$row['table'].";\n\n";	
+				return $sql;
+			}
+		}
+	}
+}
+	
 function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 	global $display_type;
 
 	//PHP PDO check if table or column exists
 		//check if table exists
-			// SELECT * FROM sqlite_master WHERE type='table' and name='v_cdr'
+			// SELECT * FROM sqlite_master WHERE type='table' AND name='v_cdr'
 		//check if column exists
-			// SELECT * FROM sqlite_master WHERE type='table' and name='v_cdr' and sql like '%caller_id_name TEXT,%'
+			// SELECT * FROM sqlite_master WHERE type='table' AND name='v_cdr' AND sql LIKE '%caller_id_name TEXT,%'
 		//aditional information
 			// http://www.sqlite.org/faq.html#q9
 
 		//postgresql
 			//list all tables in the database
-				// select tablename from pg_tables where schemaname='public';
+				// SELECT tablename FROM pg_tables WHERE schemaname='public';
 			//check if table exists
-				// select * from pg_tables where schemaname='public' and tablename = 'v_groups'
+				// SELECT * FROM pg_tables WHERE schemaname='public' AND tablename = 'v_groups'
 			//check if column exists
 				// SELECT attname FROM pg_attribute WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = 'v_cdr') AND attname = 'caller_id_name'; 
 		//mysql
 			//list all tables in the database
 				// SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = 'fusionpbx'
 			//check if table exists
-				// SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = 'fusionpbx' and TABLE_NAME = 'v_groups'
+				// SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = 'fusionpbx' AND TABLE_NAME = 'v_groups'
 			//check if column exists
-				// SELECT * FROM information_schema.COLUMNS where TABLE_SCHEMA = 'fusionpbx' and TABLE_NAME = 'v_cdr' and COLUMN_NAME = 'context'
+				// SELECT * FROM information_schema.COLUMNS where TABLE_SCHEMA = 'fusionpbx' AND TABLE_NAME = 'v_cdr' AND COLUMN_NAME = 'context'
 		//oracle
 			//check if table exists
 				// SELECT TABLE_NAME FROM ALL_TABLES
@@ -129,136 +193,139 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 			$x++;
 		}
 
-	//show the database type
-		if ($display_results && $display_type == "html") {
-			echo "<strong>Database Type: ".$db_type. "</strong><br /><br />";
-		}
-
-	//declare the variable(s)
-		$sql_update = '';
-
-	//list all tables
-		if ($display_results && $display_type == "html") {
-			echo "<table width='100%' border='0' cellpadding='20' cellspacing='0'>\n";
-			echo "<tr>\n";
-			echo "<th>Table</th>\n";
-			echo "<th>Exists</th>\n";
-			echo "<th>Details</th>\n";
-			echo "<tr>\n";
-		}
-
-		$var_id = $_GET["id"];
-
+	//update the app db array add exists true or false
 		$sql = '';
-		foreach ($apps as &$app) {
-			foreach ($app['db'] as $row) {
+		foreach ($apps as $x => &$app) {
+			foreach ($app['db'] as $y => &$row) {
 				$table_name = $row['table'];
-
-				if ($display_results && $display_type == "html") {
-					echo "<tr>\n";
-				}
-
-				//check if the table exists
-					if (db_table_exists($db, $db_type, $db_name, $table_name)) {
-						if ($display_results && $display_type == "html") {
-							echo "<td valign='top' class='rowstyle1'><strong>table</strong><br />$table_name</td>\n";
-							echo "<td valign='top' class='vncell' style=''>true</td>\n";
+				if (strlen(table_name) > 0) {
+					//check if the table exists
+						if (db_table_exists($db, $db_type, $db_name, $table_name)) {
+							$apps[$x]['db'][$y]['exists'] = 'true';
 						}
-						$field_count = 0;
-						foreach ($row['fields'] as $field) {
-							if ($field_count > 0 ) { $sql .= ",\n"; }
-							$sql .= $field['name'] . " ";
-							if (is_array($field['type'])) {
-								$sql .= $field['type'][$db_type];
+						else {
+							$apps[$x]['db'][$y]['exists'] = 'false';
+						}
+					//check if the column exists
+						foreach ($row['fields'] as $z => $field) {
+							if (is_array($field['name'])) {
+								$field_name = $field['name']['text'];
 							}
 							else {
-								$sql .= $field['type'];
+								$field_name = $field['name'];
 							}
-							$field_count++;
-						}
-
-						if (count($row['fields']) > 0) {
-							if ($display_results && $display_type == "html") {
-								echo "<td class='rowstyle1'>\n";
-							}
-							//show the list of columns
-								if ($display_results && $display_type == "html") {
-									echo "<table border='0' cellpadding='10' cellspacing='0'>\n";
-									echo "<tr>\n";
-									echo "<th>name</th>\n";
-									echo "<th>type</th>\n";
-									echo "<th>exists</th>\n";
-									echo "</tr>\n";
+							if (strlen(field_name) > 0) {
+								if (db_column_exists ($db, $db_type, $db_name, $table_name, $field_name)) {
+									//found
+									$apps[$x]['db'][$y]['fields'][$z]['exists'] = 'true';
 								}
-								foreach ($row['fields'] as $field) {
+								else {
+									//not found
+									$apps[$x]['db'][$y]['fields'][$z]['exists'] = 'false';
+								}
+							}
+							unset($field_name);
+						}
+					unset($table_name);
+				}
+			}
+		}
+
+	//prepare the variables
+		$sql_update = '';
+		$var_id = $_GET["id"];
+
+	//add missing tables and fields
+		foreach ($apps as $x => &$app) {
+			foreach ($app['db'] as $y => &$row) {
+				$table_name = $row['table'];
+				//check if the table exists
+					if ($row['exists'] == "true") {
+						if (count($row['fields']) > 0) {
+							foreach ($row['fields'] as $z => $field) {
+								//get the data type
 									if (is_array($field['type'])) {
 										$field_type = $field['type'][$db_type];
 									}
 									else {
 										$field_type = $field['type'];
 									}
-					
-									if ($display_results && $display_type == "html") {
-										echo "<tr>\n";
-										echo "<td class='rowstyle1' width='200'>".$field['name']."</td>\n";
-										echo "<td class='rowstyle1'>".$field_type."</td>\n";
-									}
-									if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name'])) {
-										if ($display_results && $display_type == "html") {
-											echo "<td class='rowstyle0' style=''>true</td>\n";
-											echo "<td>&nbsp;</td>\n";
+								//find missing fields and add them
+									if (is_array($field['name'])) {
+										if ($field['exists'] == "false" && $field['name']['deprecated'] == "false") {
+											$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']['text']." ".$field_type.";\n";
 										}
 									}
 									else {
-										$sql_update .= "alter table ".$table_name." add ".$field['name']." ".$field_type."; \n";
-										if ($display_results && $display_type == "html") {
-											echo "<td class='rowstyle1' style='background-color:#444444;color:#CCCCCC;'>false</td>\n";
-											echo "<td>&nbsp;</td>\n";
+										if ($field['exists'] == "false") {
+											$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']." ".$field_type.";\n";
 										}
 									}
-									if ($display_results && $display_type == "html") {
-										echo "</tr>\n";
+								//rename fields where the name has changed
+									if (is_array($field['name'])) {
+										if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
+											if ($db_type == "pgsql") {
+												$sql_update .= "ALTER TABLE ".$table_name." RENAME COLUMN ".$field['name']['deprecated']." to ".$field['name']['text'].";\n";
+											}
+											if ($db_type == "mysql") {
+												$sql_update .= "ALTER TABLE ".$table_name." CHANGE ".$field['name']['deprecated']." ".$field['name']['text']." ".$field_type.";\n";
+											}
+											if ($db_type == "sqlite") {
+												//a change has been made to the field name
+												$apps[$x]['db'][$y]['rebuild'] = 'true';
+											}
+										}
 									}
-								}
-								unset($column_array);
-							if ($display_results && $display_type == "html") {
-								echo "	</table>\n";
-								echo "</td>\n";
+								//change the data type if it has been changed
+									//if the data type in the app db array is different than the type in the database then change the data type
+									//if (db_column_data_type ($db, $db_type, $db_name, $table_name, $field['name']['deprecated']) != $field_type) {
+										//if ($db_type == "pgsql") {
+											//$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field['name']." TYPE ".$field_type.";\n";
+										//}
+										//if ($db_type == "mysql") {
+											//$sql_update .= "ALTER TABLE ".$table_name." modify ".$field['name']." ".$field_type.";\n";
+										//}
+										//if ($db_type == "sqlite") {
+											//a change has been made to the field type
+											//$apps[$x]['db'][$y]['rebuild'] = 'true';
+										//}
+									//}
 							}
+							unset($column_array);
 						}
 					}
 					else {
-						$sql = "CREATE TABLE " . $row['table'] . " (\n";
-						$field_count = 0;
-						foreach ($row['fields'] as $field) {
-							if ($field_count > 0 ) { $sql .= ",\n"; }
-							$sql .= $field['name'] . " ";
-							if (is_array($field['type'])) {
-								$sql .= $field['type'][$db_type];
-							}
-							else {
-								$sql .= $field['type'];
-							}
-							$field_count++;
-						}
-						$sql .= ");\n\n";
-						$sql_update .= $sql;
-						if ($display_results && $display_type == "html") {
-							echo "<td valign='top' class='rowstyle1'><strong>table</strong><br />$table_name</td>\n";
-							echo "<td valign='top' class='rowstyle1' style='background-color:#444444;color:#CCCCCC;'><strong>exists</strong><br />false</td>\n";
-							echo "<td valign='top' class='rowstyle1'>&nbsp;</td>\n";
-						}
+						//create table
+						$sql_update .= db_create_table($apps, $db_type, $row['table']);
 					}
-
-				if ($display_results && $display_type == "html") {
-					echo "</tr>\n";
+			}
+		}
+	//rebuild and populate the table
+		foreach ($apps as $x => &$app) {
+			foreach ($app['db'] as $y => &$row) {
+				$table_name = $row['table'];
+				if ($row['rebuild'] == "true") {
+					if ($db_type == "sqlite") {
+						//rename the table
+							$sql_update .= "ALTER TABLE ".$table_name." RENAME TO tmp_".$table_name.";\n";
+						//create the table
+							$sql_update .= db_create_table($apps, $db_type, $table_name);
+						//insert the data into the new table
+							$sql_update .= db_insert_into($apps, $db_type, $table_name);
+						//drop the old table
+							$sql_update .= "DROP TABLE tmp_".$table_name.";\n";
+					}
 				}
 			}
 		}
-		unset ($prepstatement);
-		if ($display_results) {
-			if (strlen($sql_update) > 0) {
-				if ($display_type == "html") {
+	//display results as html
+		if ($display_results && $display_type == "html") {
+			//show the database type
+				echo "<strong>Database Type: ".$db_type. "</strong><br /><br />";
+			//start the table
+				echo "<table width='100%' border='0' cellpadding='20' cellspacing='0'>\n";
+			//show the changes
+				if (strlen($sql_update) > 0) {
 					echo "<tr>\n";
 					echo "<td class='rowstyle1' colspan='3'>\n";
 					echo "<br />\n";
@@ -270,10 +337,76 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
-			}
-			if ($display_type == "html") {
+			//list all tables
+				echo "<tr>\n";
+				echo "<th>Table</th>\n";
+				echo "<th>Exists</th>\n";
+				echo "<th>Details</th>\n";
+				echo "<tr>\n";
+			//build the html while looping through the app db array
+				$sql = '';
+				foreach ($apps as &$app) {
+					foreach ($app['db'] as $row) {
+						$table_name = $row['table'];
+						echo "<tr>\n";
+
+						//check if the table exists
+							if ($row['exists'] == "true") {
+								echo "<td valign='top' class='rowstyle1'><strong>table</strong><br />$table_name</td>\n";
+								echo "<td valign='top' class='vncell' style=''>true</td>\n";
+
+								if (count($row['fields']) > 0) {
+									echo "<td class='rowstyle1'>\n";
+									//show the list of columns
+										echo "<table border='0' cellpadding='10' cellspacing='0'>\n";
+										echo "<tr>\n";
+										echo "<th>name</th>\n";
+										echo "<th>type</th>\n";
+										echo "<th>exists</th>\n";
+										echo "</tr>\n";
+										foreach ($row['fields'] as $field) {
+											if (is_array($field['name'])) {
+												$field_name = $field['name']['text'];
+											}
+											else {
+												$field_name = $field['name'];
+											}
+											if (is_array($field['type'])) {
+												$field_type = $field['type'][$db_type];
+											}
+											else {
+												$field_type = $field['type'];
+											}
+											echo "<tr>\n";
+											echo "<td class='rowstyle1' width='200'>".$field_name."</td>\n";
+											echo "<td class='rowstyle1'>".$field_type."</td>\n";
+											if ($field['exists'] == "true") {
+												echo "<td class='rowstyle0' style=''>true</td>\n";
+												echo "<td>&nbsp;</td>\n";
+											}
+											else {
+												echo "<td class='rowstyle1' style='background-color:#444444;color:#CCCCCC;'>false</td>\n";
+												echo "<td>&nbsp;</td>\n";
+											}
+											echo "</tr>\n";
+										}
+										unset($column_array);
+										echo "	</table>\n";
+										echo "</td>\n";
+								}
+							}
+							else {
+								echo "<td valign='top' class='rowstyle1'><strong>table</strong><br />$table_name</td>\n";
+								echo "<td valign='top' class='rowstyle1' style='background-color:#444444;color:#CCCCCC;'><strong>exists</strong><br />false</td>\n";
+								echo "<td valign='top' class='rowstyle1'>&nbsp;</td>\n";
+							}
+							echo "</tr>\n";
+					}
+				}
+				unset ($prepstatement);
+			//end the list of tables
 				echo "</table>\n";
-			}
+				echo "<br />\n";			
 		}
 
 		//loop line by line through all the lines of sql code
