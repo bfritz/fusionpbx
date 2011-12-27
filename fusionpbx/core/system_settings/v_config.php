@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "System Settings";
-		$apps[$x]['guid'] = '249F01D4-535F-E399-0018-59F9C88D4F52';
+		$apps[$x]['uuid'] = '249F01D4-535F-E399-0018-59F9C88D4F52';
 		$apps[$x]['category'] = 'Core';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -202,7 +202,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'v_menu_guid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'v_menu_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'v_menu_guid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
