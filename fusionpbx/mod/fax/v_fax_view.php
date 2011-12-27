@@ -65,15 +65,15 @@ else {
 		}
 		foreach ($result as &$row) {
 			//set database fields as variables
-				$fax_extension = $row["faxextension"];
-				$fax_name = $row["faxname"];
-				$fax_email = $row["faxemail"];
+				$fax_extension = $row["fax_extension"];
+				$fax_name = $row["fax_name"];
+				$fax_email = $row["fax_email"];
 				$fax_pin_number = $row["fax_pin_number"];
 				$fax_caller_id_name = $row["fax_caller_id_name"];
 				$fax_caller_id_number = $row["fax_caller_id_number"];
 				$fax_forward_number = $row["fax_forward_number"];
 				$fax_user_list = $row["fax_user_list"];
-				$fax_description = $row["faxdescription"];
+				$fax_description = $row["fax_description"];
 			//limit to one row
 				break;
 		}

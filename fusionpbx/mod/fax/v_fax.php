@@ -115,10 +115,10 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('faxextension', 'Extension', $orderby, $order);
-	echo thorderby('faxname', 'Name', $orderby, $order);
-	echo thorderby('faxemail', 'Email', $orderby, $order);
-	echo thorderby('faxdescription', 'Description', $orderby, $order);
+	echo thorderby('fax_extension', 'Extension', $orderby, $order);
+	echo thorderby('fax_name', 'Name', $orderby, $order);
+	echo thorderby('fax_email', 'Email', $orderby, $order);
+	echo thorderby('fax_description', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('fax_extension_add')) {
 		echo "	<a href='v_fax_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -129,10 +129,10 @@ require_once "includes/paging.php";
 	if ($resultcount > 0) {
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['faxextension']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['faxname']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['faxemail']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='rowstylebg' width='35%'>".$row['faxdescription']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['fax_extension']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['fax_name']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['fax_email']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='rowstylebg' width='35%'>".$row['fax_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('fax_extension_edit')) {
 				echo "		<a href='v_fax_view.php?id=".$row['fax_id']."' alt='edit'>$v_link_label_edit</a>\n";

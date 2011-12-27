@@ -158,9 +158,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "insert into v_fax ";
 				$sql .= "(";
 				$sql .= "v_id, ";
-				$sql .= "faxextension, ";
-				$sql .= "faxname, ";
-				$sql .= "faxemail, ";
+				$sql .= "fax_extension, ";
+				$sql .= "fax_name, ";
+				$sql .= "fax_email, ";
 				$sql .= "fax_pin_number, ";
 				$sql .= "fax_caller_id_name, ";
 				$sql .= "fax_caller_id_number, ";
@@ -168,7 +168,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "fax_forward_number, ";
 				}
 				$sql .= "fax_user_list, ";
-				$sql .= "faxdescription ";
+				$sql .= "fax_description ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
@@ -201,9 +201,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('fax_extension_edit')) {
 				$sql = "update v_fax set ";
-				$sql .= "faxextension = '$fax_extension', ";
-				$sql .= "faxname = '$fax_name', ";
-				$sql .= "faxemail = '$fax_email', ";
+				$sql .= "fax_extension = '$fax_extension', ";
+				$sql .= "fax_name = '$fax_name', ";
+				$sql .= "fax_email = '$fax_email', ";
 				$sql .= "fax_pin_number = '$fax_pin_number', ";
 				$sql .= "fax_caller_id_name = '$fax_caller_id_name', ";
 				$sql .= "fax_caller_id_number = '$fax_caller_id_number', ";
@@ -216,7 +216,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					$sql .= "fax_user_list = '$fax_user_list', ";
 				}
-				$sql .= "faxdescription = '$fax_description' ";
+				$sql .= "fax_description = '$fax_description' ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and fax_id = '$fax_id' ";
 				if (!(ifgroup("admin") || ifgroup("superadmin"))) {
@@ -264,15 +264,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		foreach ($result as &$row) {
 			//set database fields as variables
-				$fax_extension = $row["faxextension"];
-				$fax_name = $row["faxname"];
-				$fax_email = $row["faxemail"];
+				$fax_extension = $row["fax_extension"];
+				$fax_name = $row["fax_name"];
+				$fax_email = $row["fax_email"];
 				$fax_pin_number = $row["fax_pin_number"];
 				$fax_caller_id_name = $row["fax_caller_id_name"];
 				$fax_caller_id_number = $row["fax_caller_id_number"];
 				$fax_forward_number = $row["fax_forward_number"];
 				$fax_user_list = $row["fax_user_list"];
-				$fax_description = $row["faxdescription"];
+				$fax_description = $row["fax_description"];
 			//limit to one row
 				break;
 		}
