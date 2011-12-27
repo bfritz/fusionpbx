@@ -142,7 +142,12 @@ function db_insert_into ($apps, $db_type, $table) {
 				foreach ($row['fields'] as $field) {
 					if ($field_count > 0 ) { $sql .= ","; }
 					if (is_array($field['name'])) {
-						$sql .= $field['name']['text'];
+						if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
+							$sql .= $field['name']['deprecated'];
+						}
+						else {
+							$sql .= $field['name']['text'];
+						}
 					}
 					else {
 						$sql .= $field['name'];
