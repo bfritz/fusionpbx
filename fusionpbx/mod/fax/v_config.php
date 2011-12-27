@@ -112,7 +112,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fax_description';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'fax_description';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'faxdescription';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
