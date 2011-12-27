@@ -36,7 +36,7 @@ else {
 
 if (count($_GET)>0) {
 	$id = check_str($_GET["id"]);
-	$menu_guid = check_str($_GET["menu_guid"]);
+	$menu_uuid = check_str($_GET["menu_uuid"]);
 }
 
 if (strlen($id)>0) {
@@ -46,7 +46,7 @@ if (strlen($id)>0) {
 	//delete the menu
 		$sql = "";
 		$sql .= "delete from v_menus ";
-		$sql .= "where menu_guid = '$menu_guid' ";
+		$sql .= "where menu_uuid = '$menu_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($sql);
@@ -54,7 +54,7 @@ if (strlen($id)>0) {
 	//delete the items in the menu
 		$sql = "";
 		$sql .= "delete from v_menu_items ";
-		$sql .= "where menu_guid = '$menu_guid' ";
+		$sql .= "where menu_uuid = '$menu_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($sql);
@@ -62,7 +62,7 @@ if (strlen($id)>0) {
 	//delete the menu permissions
 		$sql = "";
 		$sql .= "delete from v_menu_item_groups ";
-		$sql .= "where menu_guid = '$menu_guid' ";
+		$sql .= "where menu_uuid = '$menu_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($sql);

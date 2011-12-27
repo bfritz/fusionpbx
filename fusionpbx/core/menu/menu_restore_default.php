@@ -36,13 +36,13 @@ else {
 
 //get the http value and set as a php variable
 	$menu_id = check_str($_REQUEST["menu_id"]);
-	$menu_guid = check_str($_REQUEST["menu_guid"]);
+	$menu_uuid = check_str($_REQUEST["menu_uuid"]);
 
 //menu restore default
 	require_once "includes/classes/menu.php";
 	$menu = new menu;
 	$menu->db = $db;
-	$menu->menu_guid = $menu_guid;
+	$menu->menu_uuid = $menu_uuid;
 	$menu->delete();
 	$menu->restore();
 

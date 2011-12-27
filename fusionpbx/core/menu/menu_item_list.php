@@ -36,14 +36,14 @@ else {
 
 $tmp_menu_item_order = 0;
 
-function build_db_child_menu_list ($db, $menu_item_level, $menu_item_guid, $c) {
-	global $menu_id, $menu_guid, $tmp_menu_item_order, $v_link_label_edit, $v_link_label_delete;
+function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
+	global $menu_id, $menu_uuid, $tmp_menu_item_order, $v_link_label_edit, $v_link_label_delete;
 
 	//check for sub menus
 		$menu_item_level = $menu_item_level+1;
 		$sql = "select * from v_menu_items ";
-		$sql .= "where menu_guid = '".$menu_guid."' ";
-		$sql .= "and menu_item_parent_guid = '".$menu_item_guid."' ";
+		$sql .= "where menu_uuid = '".$menu_uuid."' ";
+		$sql .= "and menu_item_parent_uuid = '".$menu_item_uuid."' ";
 		$sql .= "order by menu_item_order, menu_item_title asc ";
 
 		$prep_statement_2 = $db->prepare($sql);
@@ -62,8 +62,8 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_guid, $c) {
 					$menu_item_protected = $row2['menu_item_protected'];
 					$menu_item_protected = $row2['menu_item_protected'];
 					$menu_item_protected = $row2['menu_item_protected'];
-					$menu_item_guid = $row2['menu_item_guid'];
-					$menu_item_parent_guid = $row2['menu_item_parent_guid'];
+					$menu_item_uuid = $row2['menu_item_uuid'];
+					$menu_item_parent_uuid = $row2['menu_item_parent_uuid'];
 					$menu_item_order = $row2['menu_item_order'];
 					$menu_item_language = $row2['menu_item_language'];
 					$menu_item_title = $row2[menu_item_title];
@@ -71,8 +71,8 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_guid, $c) {
 				//get the groups that have been assigned to the menu
 					$sql = "";
 					$sql .= "select group_id from v_menu_item_groups ";
-					$sql .= "where menu_guid = '$menu_guid' ";
-					$sql .= "and menu_item_guid = '".$menu_item_guid."' ";
+					$sql .= "where menu_uuid = '$menu_uuid' ";
+					$sql .= "and menu_item_uuid = '".$menu_item_uuid."' ";
 					//echo $sql."<br/>";
 					$sub_prep_statement = $db->prepare(check_sql($sql));
 					$sub_prep_statement->execute();
@@ -140,17 +140,17 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_guid, $c) {
 
 					//echo "<td valign='top' align='center' class='".$rowstyle[$c]."'>";
 					//if (permission_exists('menu_edit')) {
-					//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_up.php?menu_guid=".$menu_guid."&menu_item_parent_guid=".$row2['menu_item_parent_guid']."&menu_item_id=".$row2[menu_item_id]."&menu_item_order=".$row2[menu_item_order]."'\" value='<' title='".$row2[menu_item_order].". Move Up'>";
-					//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_down.php?menu_guid=".$menu_guid."&menu_item_parent_guid=".$row2['menu_item_parent_guid']."&menu_item_id=".$row2[menu_item_id]."&menu_item_order=".$row2[menu_item_order]."'\" value='>' title='".$row2[menu_item_order].". Move Down'>";
+					//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_up.php?menu_uuid=".$menu_uuid."&menu_item_parent_uuid=".$row2['menu_item_parent_uuid']."&menu_item_id=".$row2[menu_item_id]."&menu_item_order=".$row2[menu_item_order]."'\" value='<' title='".$row2[menu_item_order].". Move Up'>";
+					//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_down.php?menu_uuid=".$menu_uuid."&menu_item_parent_uuid=".$row2['menu_item_parent_uuid']."&menu_item_id=".$row2[menu_item_id]."&menu_item_order=".$row2[menu_item_order]."'\" value='>' title='".$row2[menu_item_order].". Move Down'>";
 					//}
 					//echo "</td>";
 
 					echo "   <td valign='top' align='right' nowrap>\n";
 					if (permission_exists('menu_edit')) {
-						echo "		<a href='menu_item_edit.php?menu_id=".$menu_id."&menu_guid=".$menu_guid."&menu_item_id=".$row2[menu_item_id]."&menu_item_parent_guid=".$row2['menu_item_parent_guid']."' alt='edit'>$v_link_label_edit</a>\n";
+						echo "		<a href='menu_item_edit.php?menu_id=".$menu_id."&menu_uuid=".$menu_uuid."&menu_item_id=".$row2['menu_item_id']."&menu_item_parent_uuid=".$row2['menu_item_parent_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 					}
 					if (permission_exists('menu_delete')) {
-						echo "		<a href='menu_item_delete.php?menu_id=".$menu_id."&menu_guid=".$menu_guid."&menu_item_id=".$row2[menu_item_id]."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
+						echo "		<a href='menu_item_delete.php?menu_id=".$menu_id."&menu_uuid=".$menu_uuid."&menu_item_id=".$row2['menu_item_id']."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 					}
 					echo "   </td>\n";
 					echo "</tr>";
@@ -160,15 +160,15 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_guid, $c) {
 						$sql  = "update v_menu_items set ";
 						$sql .= "menu_item_title = '".$row2[menu_item_title]."', ";
 						$sql .= "menu_item_order = '".$tmp_menu_item_order."' ";
-						$sql .= "where menu_guid = '".$menu_guid."' ";
+						$sql .= "where menu_uuid = '".$menu_uuid."' ";
 						$sql .= "and menu_item_id = '".$row2[menu_item_id]."' ";
 						$count = $db->exec(check_sql($sql));
 					}
 					$tmp_menu_item_order++;
 
 				//check for additional sub menus
-					if (strlen($menu_item_guid)> 0) {
-						$c = build_db_child_menu_list($db, $menu_item_level, $menu_item_guid, $c);
+					if (strlen($menu_item_uuid)> 0) {
+						$c = build_db_child_menu_list($db, $menu_item_level, $menu_item_uuid, $c);
 					}
 
 				if ($c==0) { $c=1; } else { $c=0; }
@@ -201,10 +201,10 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= "select * from v_menu_items ";
-	$sql .= "where menu_guid = '".$menu_guid."' ";
-	$sql .= "and menu_item_parent_guid = '' ";
-	$sql .= "or menu_guid = '".$menu_guid."' ";
-	$sql .= "and menu_item_parent_guid is null ";
+	$sql .= "where menu_uuid = '".$menu_uuid."' ";
+	$sql .= "and menu_item_parent_uuid = '' ";
+	$sql .= "or menu_uuid = '".$menu_uuid."' ";
+	$sql .= "and menu_item_parent_uuid is null ";
 	if (strlen($order_by)> 0) {
 		$sql .= "order by $order_by $order ";
 	}
@@ -237,14 +237,14 @@ $order = $_GET["order"];
 		echo "<th nowrap width='70'>Order &nbsp; </th>";
 		echo "<td align='right' width='42'>\n";
 		if (permission_exists('menu_add')) {
-			echo "	<a href='menu_item_edit.php?menu_id=".$menu_id."&menu_guid=".$menu_guid."' alt='add'>$v_link_label_add</a>\n";
+			echo "	<a href='menu_item_edit.php?menu_id=".$menu_id."&menu_uuid=".$menu_uuid."' alt='add'>$v_link_label_add</a>\n";
 		}
 		echo "</td>\n";
 		echo "</tr>";
 
 		foreach($result as $row) {
 			//set the db values as php variables
-				$menu_item_guid = $row['menu_item_guid'];
+				$menu_item_uuid = $row['menu_item_uuid'];
 				$menu_item_category = $row['menu_item_category'];
 				$menu_item_title = $row['menu_item_title'];
 				$menu_item_str = $row['menu_item_str'];
@@ -253,8 +253,8 @@ $order = $_GET["order"];
 			//get the groups that have been assigned to the menu
 				$sql = "";
 				$sql .= "select group_id from v_menu_item_groups ";
-				$sql .= "where menu_guid = '$menu_guid' ";
-				$sql .= "and menu_item_guid = '$menu_item_guid' ";
+				$sql .= "where menu_uuid = '$menu_uuid' ";
+				$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
 				$sub_prep_statement = $db->prepare(check_sql($sql));
 				$sub_prep_statement->execute();
 				$sub_result = $sub_prep_statement->fetchAll();
@@ -294,8 +294,8 @@ $order = $_GET["order"];
 				//echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$menu_item_str."&nbsp;</td>";
 				echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$menu_item_category."&nbsp;</td>";
 				//echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[menu_item_desc]."</td>";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row[menu_item_parent_guid]."&nbsp;</td>";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row[menu_item_order]."&nbsp;</td>";
+				//echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row['menu_item_parent_uuid']."&nbsp;</td>";
+				//echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row['menu_item_order']."&nbsp;</td>";
 
 				if ($menu_item_protected == "true") {
 					echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp; <strong>yes</strong> &nbsp;</td>";
@@ -310,17 +310,17 @@ $order = $_GET["order"];
 
 				//echo "<td valign='top' align='center' nowrap class='".$rowstyle[$c]."'>";
 				//if (permission_exists('menu_edit')) {
-				//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_up.php?menu_guid=".$menu_guid."&menu_item_parent_guid=".$row['menu_item_parent_guid']."&menu_item_id=".$row['menu_item_id']."&menu_item_order=".$row['menu_item_order']."'\" value='<' title='".$row['menu_item_order'].". Move Up'>";
-				//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_down.php?menu_guid=".$menu_guid."&menu_item_parent_guid=".$row['menu_item_parent_guid']."&menu_item_id=".$row['menu_item_id']."&menu_item_order=".$row['menu_item_order']."'\" value='>' title='".$row['menu_item_order'].". Move Down'>";
+				//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_up.php?menu_uuid=".$menu_uuid."&menu_item_parent_uuid=".$row['menu_item_parent_uuid']."&menu_item_id=".$row['menu_item_id']."&menu_item_order=".$row['menu_item_order']."'\" value='<' title='".$row['menu_item_order'].". Move Up'>";
+				//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_down.php?menu_uuid=".$menu_uuid."&menu_item_parent_uuid=".$row['menu_item_parent_uuid']."&menu_item_id=".$row['menu_item_id']."&menu_item_order=".$row['menu_item_order']."'\" value='>' title='".$row['menu_item_order'].". Move Down'>";
 				//}
 				//echo "</td>";
 
 				echo "   <td valign='top' align='right' nowrap>\n";
 				if (permission_exists('menu_edit')) {
-					echo "		<a href='menu_item_edit.php?menu_id=".$menu_id."&menu_item_id=".$row['menu_item_id']."&menu_guid=".$menu_guid."' alt='edit'>$v_link_label_edit</a>\n";
+					echo "		<a href='menu_item_edit.php?menu_id=".$menu_id."&menu_item_id=".$row['menu_item_id']."&menu_uuid=".$menu_uuid."' alt='edit'>$v_link_label_edit</a>\n";
 				}
 				if (permission_exists('menu_delete')) {
-					echo "		<a href='menu_item_delete.php?menu_id=".$menu_id."&menu_item_id=".$row['menu_item_id']."&menu_guid=".$menu_guid."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
+					echo "		<a href='menu_item_delete.php?menu_id=".$menu_id."&menu_item_id=".$row['menu_item_id']."&menu_uuid=".$menu_uuid."' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 				}
 				echo "   </td>\n";
 				echo "</tr>";
@@ -328,9 +328,9 @@ $order = $_GET["order"];
 			//update the menu order
 				if ($row[menu_item_order] != $tmp_menu_item_order) {
 					$sql  = "update v_menu_items set ";
-					$sql .= "menu_item_title = '".$row[menu_item_title]."', ";
+					$sql .= "menu_item_title = '".$row['menu_item_title']."', ";
 					$sql .= "menu_item_order = '".$tmp_menu_item_order."' ";
-					$sql .= "where menu_guid = '".$menu_guid."' ";
+					$sql .= "where menu_uuid = '".$menu_uuid."' ";
 					$sql .= "and menu_item_id = '".$row[menu_item_id]."' ";
 					//$db->exec(check_sql($sql));
 				}
@@ -338,8 +338,8 @@ $order = $_GET["order"];
 
 			//check for sub menus
 				$menu_item_level = 0;
-				if (strlen($row['menu_item_guid']) > 0) {
-					$c = build_db_child_menu_list($db, $menu_item_level, $row['menu_item_guid'], $c);
+				if (strlen($row['menu_item_uuid']) > 0) {
+					$c = build_db_child_menu_list($db, $menu_item_level, $row['menu_item_uuid'], $c);
 				}
 
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -356,7 +356,7 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('menu_add')) {
-		echo "			<a href='menu_item_edit.php?menu_id=".$menu_id."&menu_guid=".$menu_guid."' alt='add'>$v_link_label_add</a>\n";
+		echo "			<a href='menu_item_edit.php?menu_id=".$menu_id."&menu_uuid=".$menu_uuid."' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Menu Manager";
-		$apps[$x]['guid'] = 'F4B3B3D2-6287-489C-2A00-64529E46F2D7';
+		$apps[$x]['uuid'] = 'F4B3B3D2-6287-489C-2A00-64529E46F2D7';
 		$apps[$x]['category'] = 'Core';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -90,7 +90,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer PRIMARY KEY';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'menu_guid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'menu_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'menu_guid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
@@ -116,15 +117,18 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'menu_guid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'menu_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'menu_guid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'menu_item_guid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'menu_item_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'menu_item_guid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'menu_item_parent_guid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'menu_item_parent_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'menu_item_parent_guid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
@@ -177,11 +181,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'menu_guid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'menu_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'menu_guid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'menu_item_guid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'menu_item_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'menu_item_guid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;

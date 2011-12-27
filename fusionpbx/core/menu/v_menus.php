@@ -118,14 +118,13 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['menu_desc']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_menus_edit.php?id=".$row['menu_id']."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_menus_delete.php?id=".$row['menu_id']."&menu_guid=".$row['menu_guid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='v_menus_delete.php?id=".$row['menu_id']."&menu_uuid=".$row['menu_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
-
 
 	echo "<tr>\n";
 	echo "<td colspan='5' align='left'>\n";

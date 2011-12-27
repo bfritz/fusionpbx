@@ -36,8 +36,8 @@
 		}
 	}
 	else {
-		//create the guid
-			$menu_guid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
+		//create the uuid
+			$menu_uuid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
 		//set the defaults
 			$menu_name = 'default';
 			$menu_language = 'en';
@@ -45,14 +45,14 @@
 		//add the menu
 			$sql = "insert into v_menus ";
 			$sql .= "(";
-			$sql .= "menu_guid, ";
+			$sql .= "menu_uuid, ";
 			$sql .= "menu_name, ";
 			$sql .= "menu_language, ";
 			$sql .= "menu_desc ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'".$menu_guid."', ";
+			$sql .= "'".$menu_uuid."', ";
 			$sql .= "'$menu_name', ";
 			$sql .= "'$menu_language', ";
 			$sql .= "'$menu_desc' ";
@@ -63,7 +63,7 @@
 			require_once "includes/classes/menu.php";
 			$menu = new menu;
 			$menu->db = $db;
-			$menu->menu_guid = $menu_guid;
+			$menu->menu_uuid = $menu_uuid;
 			$menu->restore();
 			unset($menu);
 			if ($display_type == "text") {
@@ -71,7 +71,7 @@
 			}
 		//assign all tenants to the default menu
 			$sql = "update v_system_settings ";
-			$sql .= "set v_menu_guid = '".$menu_guid."' ";
+			$sql .= "set v_menu_uuid = '".$menu_uuid."' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 	}
@@ -84,12 +84,12 @@
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
 	foreach($result as $field) {
-		//get the menu_guid
-			$menu_guid = $field['menu_guid'];
+		//get the menu_uuid
+			$menu_uuid = $field['menu_uuid'];
 		//check each menu to see if there are items in the menu assigned to it
 			$sql = "";
 			$sql .= "select count(*) as count from v_menu_item_groups ";
-			$sql .= "where menu_guid = '$menu_guid' ";
+			$sql .= "where menu_uuid = '$menu_uuid' ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
 			$sub_result = $prep_statement->fetch(PDO::FETCH_ASSOC);
@@ -102,14 +102,14 @@
 								//add the record
 								$sql = "insert into v_menu_item_groups ";
 								$sql .= "(";
-								$sql .= "menu_guid, ";
-								$sql .= "menu_item_guid, ";
+								$sql .= "menu_uuid, ";
+								$sql .= "menu_item_uuid, ";
 								$sql .= "group_id ";
 								$sql .= ")";
 								$sql .= "values ";
 								$sql .= "(";
-								$sql .= "'$menu_guid', ";
-								$sql .= "'".$sub_row['guid']."', ";
+								$sql .= "'$menu_uuid', ";
+								$sql .= "'".$sub_row['uuid']."', ";
 								$sql .= "'".$group."' ";
 								$sql .= ")";
 								$db->exec($sql);

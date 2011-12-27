@@ -45,7 +45,7 @@ else {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
-		$menu_guid = check_str($_POST["menu_guid"]);
+		$menu_uuid = check_str($_POST["menu_uuid"]);
 		$menu_name = check_str($_POST["menu_name"]);
 		$menu_language = check_str($_POST["menu_language"]);
 		$menu_desc = check_str($_POST["menu_desc"]);
@@ -59,7 +59,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($menu_guid) == 0) { $msg .= "Please provide: Menu GUID<br>\n"; }
+		//if (strlen($menu_uuid) == 0) { $msg .= "Please provide: Menu UUID<br>\n"; }
 		//if (strlen($menu_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($menu_language) == 0) { $msg .= "Please provide: Language<br>\n"; }
 		//if (strlen($menu_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
@@ -80,19 +80,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			//create a new unique id
-				$menu_guid = guid();
+				$menu_uuid = guid();
 
 			//start a new menu
 				$sql = "insert into v_menus ";
 				$sql .= "(";
-				$sql .= "menu_guid, ";
+				$sql .= "menu_uuid, ";
 				$sql .= "menu_name, ";
 				$sql .= "menu_language, ";
 				$sql .= "menu_desc ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'".$menu_guid."', ";
+				$sql .= "'".$menu_uuid."', ";
 				$sql .= "'$menu_name', ";
 				$sql .= "'$menu_language', ";
 				$sql .= "'$menu_desc' ";
@@ -104,7 +104,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				require_once "includes/classes/menu.php";
 				$menu = new menu;
 				$menu->db = $db;
-				$menu->menu_guid = $menu_guid;
+				$menu->menu_uuid = $menu_uuid;
 				$menu->restore();
 
 			//redirect the user back to the main menu
@@ -149,7 +149,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$menu_guid = $row["menu_guid"];
+			$menu_uuid = $row["menu_uuid"];
 			$menu_name = $row["menu_name"];
 			$menu_language = $row["menu_language"];
 			$menu_desc = $row["menu_desc"];
@@ -180,7 +180,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "<td width='70%' align='right'>\n";
 	if (permission_exists('menu_restore')) {
-		echo "	<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='menu_restore_default.php?menu_id=$menu_id&menu_guid=$menu_guid';\" />";
+		echo "	<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='menu_restore_default.php?menu_id=$menu_id&menu_uuid=$menu_uuid';\" />";
 	}
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_menus.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
