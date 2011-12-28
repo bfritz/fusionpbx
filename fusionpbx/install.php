@@ -888,7 +888,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		require_once "includes/classes/menu.php";
 		$menu = new menu;
 		$menu->db = $db;
-		$menu->menu_guid = $menu_guid;
+		$menu->menu_uuid = $menu_uuid;
 		$menu->restore();
 		unset($menu);
 
