@@ -884,7 +884,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		require "includes/config.php";
 
 	//menu restore default
-		$menu_guid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
+		$menu_uuid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
 		require_once "includes/classes/menu.php";
 		$menu = new menu;
 		$menu->db = $db;
