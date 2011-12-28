@@ -57,7 +57,12 @@ include "root.php";
 								$field_count = 0;
 								foreach ($row['fields'] as $field) {
 									if ($field_count > 0 ) { $sql .= ",\n"; }
-									$sql .= $field['name'] . " ";
+									if (is_array($field['name'])) {
+										$sql .= $field['name']['text'] . " ";
+									}
+									else {
+										$sql .= $field['name'] . " ";
+									}
 									if (is_array($field['type'])) {
 										$sql .= $field['type'][$this->db_type];
 									}
