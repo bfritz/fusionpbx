@@ -32,10 +32,9 @@
 			function delete() {
 				//set the variable
 					$db = $this->db;
-					$menu_uuid = $this->menu_uuid;
 				//remove the old menu
 					$sql  = "delete from v_menu_items ";
-					$sql .= "where menu_uuid = '$menu_uuid' ";
+					$sql .= "where menu_uuid = '".$this->menu_uuid."' ";
 					$sql .= "and (menu_item_protected <> 'true' ";
 					$sql .= "or menu_item_protected is null ";
 					$sql .= "or menu_item_protected = '');";
@@ -46,7 +45,6 @@
 			function restore() {
 				//set the variables
 					$db = $this->db;
-					$menu_uuid = $this->menu_uuid;
 
 				//get the $apps array from the installed apps from the core and mod directories
 					$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
@@ -64,7 +62,7 @@
 								$menu_item_title = $menu['title']['en'];
 								$menu_item_language = 'en';
 								$menu_item_uuid = $menu['uuid'];
-								$menu_item_parent_uuid = $menu['parent_guid'];
+								$menu_item_parent_uuid = $menu['parent_uuid'];
 								$menu_item_category = $menu['category'];
 								$menu_item_path = $menu['path'];
 								$menu_item_order = $menu['order'];
@@ -75,7 +73,7 @@
 
 							//if the item uuid is not currently in the db then add it
 								$sql = "select * from v_menu_items ";
-								$sql .= "where menu_uuid = '$menu_uuid' ";
+								$sql .= "where menu_uuid = '".$this->menu_uuid."' ";
 								$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
 								$prepstatement = $db->prepare(check_sql($sql));
 								if ($prepstatement) {
@@ -97,7 +95,7 @@
 											$sql .= ") ";
 											$sql .= "values ";
 											$sql .= "(";
-											$sql .= "'$menu_uuid', ";
+											$sql .= "'".$this->menu_uuid."', ";
 											//$sql .= "'$menu_item_language', ";
 											$sql .= "'$menu_item_title', ";
 											$sql .= "'$menu_item_path', ";
@@ -122,7 +120,7 @@
 				//if there are no groups listed in v_menu_item_groups under menu_uuid then add the default groups
 					$sql = "";
 					$sql .= "select count(*) as count from v_menu_item_groups ";
-					$sql .= "where menu_uuid = '$menu_uuid' ";
+					$sql .= "where menu_uuid = '".$this->menu_uuid."' ";
 					$prep_statement = $db->prepare($sql);
 					$prep_statement->execute();
 					$sub_result = $prep_statement->fetch(PDO::FETCH_ASSOC);
@@ -141,7 +139,7 @@
 										$sql .= ")";
 										$sql .= "values ";
 										$sql .= "(";
-										$sql .= "'$menu_uuid', ";
+										$sql .= "'".$this->menu_uuid."', ";
 										$sql .= "'".$sub_row['uuid']."', ";
 										$sql .= "'".$group."' ";
 										$sql .= ")";
@@ -160,7 +158,6 @@
 			function build_html($sql, $menu_item_level) {
 
 				$db = $this->db;
-				$v_menu_uuid = $this->menu_uuid;
 				$db_menu_full = '';
 
 				if (count($_SESSION['groups']) == 0) {
@@ -169,10 +166,10 @@
 
 				if (strlen($sql) == 0) { //default sql for base of the menu
 					$sql = "select * from v_menu_items ";
-					$sql .= "where menu_uuid = '$v_menu_uuid' ";
+					$sql .= "where menu_uuid = '".$this->menu_uuid."' ";
 					$sql .= "and (menu_item_parent_uuid = '' or menu_item_parent_uuid is null) ";
 					$sql .= "and menu_item_uuid in ";
-					$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '$v_menu_uuid' ";
+					$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '".$this->menu_uuid."' ";
 					$sql .= "and ( ";
 					if (count($_SESSION['groups']) == 0) {
 						$sql .= "group_id = 'public' ";
@@ -269,7 +266,6 @@
 			function build_child_html($menu_item_level, $menu_item_uuid) {
 
 				$db = $this->db;
-				$v_menu_uuid = $this->menu_uuid;
 				$menu_item_level = $menu_item_level+1;
 
 				if (count($_SESSION['groups']) == 0) {
@@ -277,10 +273,10 @@
 				}
 
 				$sql = "select * from v_menu_items ";
-				$sql .= "where menu_uuid = '$v_menu_uuid' ";
+				$sql .= "where menu_uuid = '".$this->menu_uuid."' ";
 				$sql .= "and menu_item_parent_uuid = '$menu_item_uuid' ";
 				$sql .= "and menu_item_uuid in ";
-				$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '$v_menu_uuid' ";
+				$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '".$this->menu_uuid."' ";
 				$sql .= "and ( ";
 				if (count($_SESSION['groups']) == 0) {
 					$sql .= "group_id = 'public' ";
