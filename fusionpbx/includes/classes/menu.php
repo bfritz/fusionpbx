@@ -75,10 +75,10 @@
 								$sql = "select * from v_menu_items ";
 								$sql .= "where menu_uuid = '".$this->menu_uuid."' ";
 								$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
-								$prepstatement = $db->prepare(check_sql($sql));
-								if ($prepstatement) {
-									$prepstatement->execute();
-									$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+								$prep_statement = $db->prepare(check_sql($sql));
+								if ($prep_statement) {
+									$prep_statement->execute();
+									$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 									if (count($result) == 0) {
 										//insert the default menu into the database
 											$sql = "insert into v_menu_items ";
