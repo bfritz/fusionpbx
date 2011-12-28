@@ -10,8 +10,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'System Settings';
-		$apps[$x]['menu'][0]['guid'] = '03055A51-F8A2-6BDE-2A40-9743B2A2891F';
-		$apps[$x]['menu'][0]['parent_guid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = '03055A51-F8A2-6BDE-2A40-9743B2A2891F';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/core/system_settings/v_system_settings.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
