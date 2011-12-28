@@ -297,10 +297,10 @@ if ($db_type == "pgsql") {
 		//get the count of the rows in v_system_settings
 			$sql = "";
 			$sql .= " select count(*) as num_rows from v_system_settings ";
-			$prepstatement = $db->prepare($sql);
-			if ($prepstatement) {
-				$prepstatement->execute();
-				$row = $prepstatement->fetch(PDO::FETCH_ASSOC);
+			$prep_statement = $db->prepare($sql);
+			if ($prep_statement) {
+				$prep_statement->execute();
+				$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 				if ($row['num_rows'] > 0) {
 					$num_rows = $row['num_rows'];
 				}
@@ -308,13 +308,13 @@ if ($db_type == "pgsql") {
 					$num_rows = '0';
 				}
 			}
-			unset($prepstatement, $result);
+			unset($prep_statement, $result);
 
 		//get the values from v_system_settings
 			$sql = "select * from v_system_settings ";
-			$prepstatement = $db->prepare($sql);
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
 			foreach($result as $row) {
 				//get the values from the db and set them as session variables
 					$_SESSION['domains'][$row['v_id']]['v_id'] = $row['v_id'];
@@ -358,7 +358,7 @@ if ($db_type == "pgsql") {
 						}
 					}
 			}
-			unset($result, $prepstatement);
+			unset($result, $prep_statement);
 	}
 
 //set the context
