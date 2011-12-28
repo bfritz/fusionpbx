@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Fax";
-		$apps[$x]['guid'] = '24108154-4AC3-1DB6-1551-4731703A4440';
+		$apps[$x]['uuid'] = '24108154-4AC3-1DB6-1551-4731703A4440';
 		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 	
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Fax Server';
-		$apps[$x]['menu'][0]['guid'] = '9C9642E4-2B9B-2785-18D0-6C0A4EDE2B2F';
-		$apps[$x]['menu'][0]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = '9C9642E4-2B9B-2785-18D0-6C0A4EDE2B2F';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/fax/v_fax.php';
 		$apps[$x]['menu'][0]['groups'][] = 'user';

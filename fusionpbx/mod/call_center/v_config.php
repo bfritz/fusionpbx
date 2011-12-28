@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Call Center";
-		$apps[$x]['guid'] = '95788E50-9500-079E-2807-FD530B0EA370';
+		$apps[$x]['uuid'] = '95788E50-9500-079E-2807-FD530B0EA370';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Call Center';
-		$apps[$x]['menu'][0]['guid'] = '6C072B29-5B6C-49FC-008E-95E24C77DE99';
-		$apps[$x]['menu'][0]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = '6C072B29-5B6C-49FC-008E-95E24C77DE99';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/call_center/v_call_center_queue.php';
 		$apps[$x]['menu'][0]['groups'][] = 'agent';
@@ -20,8 +20,8 @@
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][1]['title']['en'] = 'Agent Status';
-		$apps[$x]['menu'][1]['guid'] = '597C483A-51A9-F95A-8D54-EA7D87ADA2B8';
-		$apps[$x]['menu'][1]['parent_guid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
+		$apps[$x]['menu'][1]['uuid'] = '597C483A-51A9-F95A-8D54-EA7D87ADA2B8';
+		$apps[$x]['menu'][1]['parent_uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
 		$apps[$x]['menu'][1]['category'] = 'internal';
 		$apps[$x]['menu'][1]['path'] = '/mod/call_center/v_call_center_agent_status.php';
 		$apps[$x]['menu'][1]['groups'][] = 'agent_admin';

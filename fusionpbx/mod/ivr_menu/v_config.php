@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "IVR Menu";
-		$apps[$x]['guid'] = 'A5788E9B-58BC-BD1B-DF59-FFF5D51253AB';
+		$apps[$x]['uuid'] = 'A5788E9B-58BC-BD1B-DF59-FFF5D51253AB';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'IVR Menu';
-		$apps[$x]['menu'][0]['guid'] = '72259497-A67B-E5AA-CAC2-0F2DCEF16308';
-		$apps[$x]['menu'][0]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = '72259497-A67B-E5AA-CAC2-0F2DCEF16308';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/ivr_menu/v_ivr_menu.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

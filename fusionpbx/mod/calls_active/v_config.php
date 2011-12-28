@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Active Calls";
-		$apps[$x]['guid'] = 'EC8530A9-903A-469D-3717-281F798B9EF6';
+		$apps[$x]['uuid'] = 'EC8530A9-903A-469D-3717-281F798B9EF6';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,16 +11,16 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Active Calls';
-		$apps[$x]['menu'][0]['guid'] = 'EBA3D07F-DD5C-6B7B-6880-493B44113ADE';
-		$apps[$x]['menu'][0]['parent_guid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
+		$apps[$x]['menu'][0]['uuid'] = 'EBA3D07F-DD5C-6B7B-6880-493B44113ADE';
+		$apps[$x]['menu'][0]['parent_uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/calls_active/v_calls_active.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 	
 		$apps[$x]['menu'][1]['title']['en'] = 'Active Extensions';
-		$apps[$x]['menu'][1]['guid'] = '6DD85C19-CB6B-5CCA-BF32-499BBE936F79';
-		$apps[$x]['menu'][1]['parent_guid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
+		$apps[$x]['menu'][1]['uuid'] = '6DD85C19-CB6B-5CCA-BF32-499BBE936F79';
+		$apps[$x]['menu'][1]['parent_uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
 		$apps[$x]['menu'][1]['category'] = 'internal';
 		$apps[$x]['menu'][1]['path'] = '/mod/calls_active/v_calls_active_extensions.php';
 		$apps[$x]['menu'][1]['groups'][] = 'user';

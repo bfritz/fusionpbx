@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Provision Editor";
-		$apps[$x]['guid'] = 'A1FD4CAF-C3C2-AF10-9630-2F3C62050B02';
+		$apps[$x]['uuid'] = 'A1FD4CAF-C3C2-AF10-9630-2F3C62050B02';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Provision Editor';
-		$apps[$x]['menu'][0]['guid'] = '57773542-A565-1A29-605D-6535DA1A0870';
-		$apps[$x]['menu'][0]['parent_guid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = '57773542-A565-1A29-605D-6535DA1A0870';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
 		$apps[$x]['menu'][0]['category'] = 'external';
 		$apps[$x]['menu'][0]['path'] = '/mod/provision_editor/';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Hunt Group";
-		$apps[$x]['guid'] = '0610F841-2E27-4C5F-7926-08AB3AAD02E0';
+		$apps[$x]['uuid'] = '0610F841-2E27-4C5F-7926-08AB3AAD02E0';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Hunt Group';
-		$apps[$x]['menu'][0]['guid'] = '632F87DE-7F86-B68F-C629-4C2D2B3CE545';
-		$apps[$x]['menu'][0]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = '632F87DE-7F86-B68F-C629-4C2D2B3CE545';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/hunt_group/v_hunt_group.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

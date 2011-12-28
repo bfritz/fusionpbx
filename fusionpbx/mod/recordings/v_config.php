@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Recordings";
-		$apps[$x]['guid'] = '83913217-C7A2-9E90-925D-A866EB40B60E';
+		$apps[$x]['uuid'] = '83913217-C7A2-9E90-925D-A866EB40B60E';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Recordings';
-		$apps[$x]['menu'][0]['guid'] = 'E4290FD2-3CCC-A758-1714-660D38453104';
-		$apps[$x]['menu'][0]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = 'E4290FD2-3CCC-A758-1714-660D38453104';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/recordings/v_recordings.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

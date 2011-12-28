@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Call Center Active";
-		$apps[$x]['guid'] = '3F159F62-CA2D-41B8-B3F0-C5519CEBBC5A';
+		$apps[$x]['uuid'] = '3F159F62-CA2D-41B8-B3F0-C5519CEBBC5A';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Active Call Center';
-		$apps[$x]['menu'][0]['guid'] = '7FB0DD87-E984-9980-C512-2C76B887AEB2';
-		$apps[$x]['menu'][0]['parent_guid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
+		$apps[$x]['menu'][0]['uuid'] = '7FB0DD87-E984-9980-C512-2C76B887AEB2';
+		$apps[$x]['menu'][0]['parent_uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/call_center_active/v_call_center_queue.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

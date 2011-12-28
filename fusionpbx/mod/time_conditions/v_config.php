@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Time Conditions";
-		$apps[$x]['guid'] = '4B821450-926B-175A-AF93-A03C441818B1';
+		$apps[$x]['uuid'] = '4B821450-926B-175A-AF93-A03C441818B1';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Time Conditions';
-		$apps[$x]['menu'][0]['guid'] = '67AEDE56-8623-DF2D-6338-ECFBDE5825F7';
-		$apps[$x]['menu'][0]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = '67AEDE56-8623-DF2D-6338-ECFBDE5825F7';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/time_conditions/v_dialplan_includes.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

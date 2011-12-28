@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Outbound Routes";
-		$apps[$x]['guid'] = '8C914EC3-9FC0-8AB5-4CDA-6C9288BDC9A3';
+		$apps[$x]['uuid'] = '8C914EC3-9FC0-8AB5-4CDA-6C9288BDC9A3';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Outbound Routes';
-		$apps[$x]['menu'][0]['guid'] = '17E14094-1D57-1106-DB2A-A787D34015E9';
-		$apps[$x]['menu'][0]['parent_guid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
+		$apps[$x]['menu'][0]['uuid'] = '17E14094-1D57-1106-DB2A-A787D34015E9';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/dialplan_outbound/v_dialplan_outbound.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
