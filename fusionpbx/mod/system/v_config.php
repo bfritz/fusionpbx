@@ -38,27 +38,33 @@
 		$apps[$x]['permissions'][4]['name'] = 'system_view_backup';
 		$apps[$x]['permissions'][4]['groups'][] = 'superadmin';
 
-	// CREATE TABLE v_software 
-		$apps[$x]['db'][0]['table'] = 'v_software';
-		$apps[$x]['db'][0]['fields'][0]['name'] = 'id';
-		$apps[$x]['db'][0]['fields'][0]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][0]['fields'][0]['type']['sqlite'] = 'integer PRIMARY KEY';
-		$apps[$x]['db'][0]['fields'][0]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
-		$apps[$x]['db'][0]['fields'][0]['description'] = '';
-		$apps[$x]['db'][0]['fields'][1]['name'] = 'v_id';
-		$apps[$x]['db'][0]['fields'][1]['type'] = 'numeric';
-		$apps[$x]['db'][0]['fields'][1]['description'] = '';
-		$apps[$x]['db'][0]['fields'][2]['name'] = 'software';
-		$apps[$x]['db'][0]['fields'][2]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][2]['description'] = '';
-		$apps[$x]['db'][0]['fields'][3]['name'] = 'softwarename';
-		$apps[$x]['db'][0]['fields'][3]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][3]['description'] = '';
-		$apps[$x]['db'][0]['fields'][4]['name'] = 'softwareurl';
-		$apps[$x]['db'][0]['fields'][4]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][4]['description'] = '';
-		$apps[$x]['db'][0]['fields'][5]['name'] = 'softwareversion';
-		$apps[$x]['db'][0]['fields'][5]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][5]['description'] = '';
+	// CREATE TABLE v_software
+		$y = 0; //table array index
+		$z = 0; //field array index
+		$apps[$x]['db'][$y]['table'] = 'v_software';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'id';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer PRIMARY KEY';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'v_id';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'software_name';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'softwarename';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'software_url';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'softwareurl';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'software_version';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'softwareversion';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 
 ?>
