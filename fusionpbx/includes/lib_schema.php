@@ -48,9 +48,9 @@ function db_table_exists ($db, $db_type, $db_name, $table_name) {
 	if ($db_type == "mysql") {
 		$sql .= "SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = '$db_name' and TABLE_NAME = '$table_name' ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	if (count($result) > 0) {
 		return true; //table exists
 	}
@@ -74,21 +74,22 @@ function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column
 			//$sql .= "SELECT * FROM information_schema.COLUMNS where TABLE_SCHEMA = '$db_name' and TABLE_NAME = '$tmp_table_name' and COLUMN_NAME = '$tmp_column_name' ";
 			$sql .= "show columns from $tmp_table_name where field = '$tmp_column_name' ";
 		}
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		if (!$result) {
-			//return false;
+			return false;
 		}
 		if (count($result) > 0) {
-			//echo "table $tmp_table_name $tmp_column_name exists $result<br />\n";
+			//echo "table $tmp_table_name $tmp_column_name exist: true\n";
 			return true;
 		}
 		else {
-			//echo "table $tmp_table_name $tmp_column_name does not exist<br />\n";
+			//echo "table $tmp_table_name $tmp_column_name exist: false\n";
 			return false;
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 }
 
 function db_create_table ($apps, $db_type, $table) {
@@ -142,7 +143,7 @@ function db_insert_into ($apps, $db_type, $table) {
 				foreach ($row['fields'] as $field) {
 					if ($field_count > 0 ) { $sql .= ","; }
 					if (is_array($field['name'])) {
-						if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
+						if ($field['exists'] == "false") {
 							$sql .= $field['name']['deprecated'];
 						}
 						else {
@@ -408,7 +409,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 							echo "</tr>\n";
 					}
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 			//end the list of tables
 				echo "</table>\n";
 				echo "<br />\n";			
