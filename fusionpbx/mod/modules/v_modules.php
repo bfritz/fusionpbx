@@ -86,7 +86,7 @@ if (!function_exists('switch_module_exists')) {
 			$result = false;
 		//look for the module
 			foreach ($modules as &$row) {
-				if ($row['modulename'] == $module_name) {
+				if ($row['module_name'] == $module_name) {
 					$result = true;
 					break;
 				}
@@ -107,94 +107,94 @@ if (!function_exists('switch_module_info')) {
 		$mod['module_desc'] = '';
 		switch ($module_name) {
 			case "mod_distributor":
-				$mod['module_cat'] = 'Applications';
+				$mod['module_category'] = 'Applications';
 				$mod['module_desc'] = 'Round robin call distribution.';
 				break;
 			case "mod_say_ru":
 				$mod['module_label'] = 'Russian';
-				$mod['module_cat'] = 'Say';
+				$mod['module_category'] = 'Say';
 				break;
 			case "mod_cdr_sqlite":
 				$mod['module_label'] = 'CDR SQLite';
-				$mod['module_cat'] = 'Event Handlers';
+				$mod['module_category'] = 'Event Handlers';
 				$mod['module_desc'] = 'SQLite call detail record handler.';
 				break;
 			case "mod_pocketsphinx":
 				$mod['module_label'] = 'PocketSphinx';
-				$mod['module_cat'] = 'ASR / TTS';
+				$mod['module_category'] = 'ASR / TTS';
 				$mod['module_desc'] = 'Speech Recognition.';
 				break;
 			case "mod_tts_commandline":
 				$mod['module_label'] = 'TTS Commandline';
-				$mod['module_cat'] = 'ASR / TTS';
+				$mod['module_category'] = 'ASR / TTS';
 				$mod['module_desc'] = 'Commandline text to speech engine.';
 				break;
 			case "mod_dialplan_asterisk":
-				$mod['module_cat'] = 'Dialplan Interfaces';
+				$mod['module_category'] = 'Dialplan Interfaces';
 				$mod['module_desc'] = 'Allows Asterisk dialplans.';
 				break;
 			case "mod_spidermonkey_socket":
-				$mod['module_cat'] = 'Languages';
+				$mod['module_category'] = 'Languages';
 				$mod['module_desc'] = 'Javascript socket support.';
 				break;
 			case "mod_nibblebill":
-				$mod['module_cat'] = 'Applications';
+				$mod['module_category'] = 'Applications';
 				$mod['module_desc'] = 'Billing module.';
 				break;
 			case "mod_spidermonkey_core_db":
-				$mod['module_cat'] = 'Languages';
+				$mod['module_category'] = 'Languages';
 				$mod['module_desc'] = 'Javascript support for SQLite.';
 				break;
 			case "mod_curl":
-				$mod['module_cat'] = 'Applications';
+				$mod['module_category'] = 'Applications';
 				$mod['module_desc'] = 'Allows scripts to make HTTP requests and return responses in plain text or JSON.';
 				break;
 			case "mod_db":
 				$mod['module_label'] = 'DB';
-				$mod['module_cat'] = 'Applications';
+				$mod['module_category'] = 'Applications';
 				$mod['module_desc'] = 'Database key / value storage functionality, dialing and limit backend.';
 				$mod['module_enabled'] = 'true';
 				$mod['module_default_enabled'] = 'true';
 				break;
 			case "mod_avmd":
 				$mod['module_label'] = 'AVMD';
-				$mod['module_cat'] = 'Applications';
+				$mod['module_category'] = 'Applications';
 				$mod['module_desc'] = 'Advanced voicemail beep detection.';
 				break;
 			case "mod_spidermonkey_teletone":
-				$mod['module_cat'] = 'Languages';
+				$mod['module_category'] = 'Languages';
 				$mod['module_desc'] = 'Javascript teletone support.';
 				break;
 			case "mod_spidermonkey_curl":
-				$mod['module_cat'] = 'Languages';
+				$mod['module_category'] = 'Languages';
 				$mod['module_desc'] = 'Javascript curl support.';
 				break;
 			case "mod_lcr":
 				$mod['module_label'] = 'LCR';
-				$mod['module_cat'] = 'Applications';
+				$mod['module_category'] = 'Applications';
 				$mod['module_desc'] = 'Least cost routing.';
 				break;
 			case "mod_cluechoo":
-				$mod['module_cat'] = 'Applications';
+				$mod['module_category'] = 'Applications';
 				$mod['module_desc'] = 'A framework demo module.';
 				break;
 			case "mod_syslog":
 				$mod['module_label'] = 'Syslog';
-				$mod['module_cat'] = 'Loggers';
+				$mod['module_category'] = 'Loggers';
 				$mod['module_desc'] = 'Send logs to a remote syslog server.';
 				break;
 			case "mod_cidlookup":
 				$mod['module_label'] = 'CID Lookup';
-				$mod['module_cat'] = 'Applications';
+				$mod['module_category'] = 'Applications';
 				$mod['module_desc'] = 'Lookup caller id info.';
 				break;
 			case "mod_bv":
 				$mod['module_label'] = 'BV';
-				$mod['module_cat'] = 'Codecs';
+				$mod['module_category'] = 'Codecs';
 				$mod['module_desc'] = 'BroadVoice16 and BroadVoice32 audio codecs.';
 				break;
 			default:
-				$mod['module_cat'] = 'Auto';
+				$mod['module_category'] = 'Auto';
 		}
 		return $mod;
 	}
@@ -208,7 +208,7 @@ if (!function_exists('switch_module_info')) {
 		$sql .= "order by $orderby $order "; 
 	}
 	else {
-		$sql .= "order by modulecat,  modulelabel"; 
+		$sql .= "order by module_category,  module_label"; 
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -234,12 +234,12 @@ if (!function_exists('switch_module_info')) {
 						$sql = "insert into v_modules ";
 						$sql .= "(";
 						$sql .= "v_id, ";
-						$sql .= "modulelabel, ";
-						$sql .= "modulename, ";
-						$sql .= "moduledesc, ";
-						$sql .= "modulecat, ";
-						$sql .= "moduleenabled, ";
-						$sql .= "moduledefaultenabled ";
+						$sql .= "module_label, ";
+						$sql .= "module_name, ";
+						$sql .= "module_desc, ";
+						$sql .= "module_category, ";
+						$sql .= "module_enabled, ";
+						$sql .= "module_default_enabled ";
 						$sql .= ")";
 						$sql .= "values ";
 						$sql .= "(";
@@ -247,7 +247,7 @@ if (!function_exists('switch_module_info')) {
 						$sql .= "'".$mod['module_label']."', ";
 						$sql .= "'".$mod['module_name']."', ";
 						$sql .= "'".$mod['module_desc']."', ";
-						$sql .= "'".$mod['module_cat']."', ";
+						$sql .= "'".$mod['module_category']."', ";
 						$sql .= "'".$mod['module_enabled']."', ";
 						$sql .= "'".$mod['module_default_enabled']."' ";
 						$sql .= ")";
@@ -308,14 +308,14 @@ if (!function_exists('switch_module_info')) {
 
 	$tmp_module_header = "\n";
 	$tmp_module_header .= "<tr>\n";
-	//$tmp_module_header .= thorderby('modulecat', 'Module Category', $orderby, $order);
-	$tmp_module_header .= thorderby('modulelabel', 'Label', $orderby, $order);
-	//$tmp_module_header .= thorderby('modulename', 'Module Name', $orderby, $order);
-	$tmp_module_header .= thorderby('moduledesc', 'Description', $orderby, $order);
+	//$tmp_module_header .= thorderby('module_category', 'Module Category', $orderby, $order);
+	$tmp_module_header .= thorderby('module_label', 'Label', $orderby, $order);
+	//$tmp_module_header .= thorderby('module_name', 'Module Name', $orderby, $order);
+	$tmp_module_header .= thorderby('module_desc', 'Description', $orderby, $order);
 	$tmp_module_header .= "<th>Status</th>\n";
 	$tmp_module_header .= "<th>Action</th>\n";
-	$tmp_module_header .= thorderby('moduleenabled', 'Enabled', $orderby, $order);
-	//$tmp_module_header .= thorderby('moduledefaultenabled', 'Default Enabled', $orderby, $order);
+	$tmp_module_header .= thorderby('module_enabled', 'Enabled', $orderby, $order);
+	//$tmp_module_header .= thorderby('module_default_enabled', 'Default Enabled', $orderby, $order);
 	$tmp_module_header .= "<td align='right' width='42'>\n";
 	$tmp_module_header .= "	<a href='v_modules_edit.php' alt='add'>$v_link_label_add</a>\n";
 	$tmp_module_header .= "</td>\n";
@@ -325,11 +325,11 @@ if (!function_exists('switch_module_info')) {
 		//no results
 	}
 	else { //received results
-		$prevmodulecat = '';
+		$prev_module_category = '';
 		foreach($modules as $row) {
-			if ($prevmodulecat != $row["modulecat"]) {
+			if ($prev_module_category != $row["module_category"]) {
 				$c=0;
-				if (strlen($prevmodulecat) > 0) {
+				if (strlen($prev_module_category) > 0) {
 					echo "<tr>\n";
 					echo "<td colspan='6'>\n";
 					echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -350,30 +350,30 @@ if (!function_exists('switch_module_info')) {
 				echo "<tr><td colspan='4' align='left'>\n";
 				echo "	<br />\n";
 				echo "	<br />\n";
-				echo "	<b>".$row["modulecat"]."</b>&nbsp;</td></tr>\n";
+				echo "	<b>".$row["module_category"]."</b>&nbsp;</td></tr>\n";
 				echo $tmp_module_header;
 			}
 
 			echo "<tr >\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["modulecat"]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["modulelabel"]."</td>\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["modulename"]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["moduledesc"]."&nbsp;</td>\n";
-			if (switch_module_active($fp, $row["modulename"])) {
+			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_category"]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_label"]."</td>\n";
+			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_name"]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_desc"]."&nbsp;</td>\n";
+			if (switch_module_active($fp, $row["module_name"])) {
 				echo "   <td valign='top' class='".$rowstyle[$c]."'>Running</td>\n";
-				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=stop&m=".$row["modulename"]."' alt='stop'>Stop</a></td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=stop&m=".$row["module_name"]."' alt='stop'>Stop</a></td>\n";
 			}
 			else {
-				if ($row['moduleenabled']=="true") {
+				if ($row['module_enabled']=="true") {
 					echo "   <td valign='top' class='".$rowstyle[$c]."'><b>Stopped</b></td>\n";
 				}
 				else {
 					echo "   <td valign='top' class='".$rowstyle[$c]."'>Stopped $notice</td>\n";
 				}
-				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=start&m=".$row["modulename"]."' alt='start'>Start</a></td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=start&m=".$row["module_name"]."' alt='start'>Start</a></td>\n";
 			}
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["moduleenabled"]."</td>\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["moduledefaultenabled"]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_enabled"]."</td>\n";
+			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_default_enabled"]."</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('modules_edit')) {
 				echo "		<a href='v_modules_edit.php?id=".$row["module_id"]."' alt='edit'>$v_link_label_edit</a>\n";
@@ -384,7 +384,7 @@ if (!function_exists('switch_module_info')) {
 			echo "   </td>\n";
 			echo "</tr>\n";
 
-			$prevmodulecat = $row["modulecat"];
+			$prev_module_category = $row["module_category"];
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $modules, $rowcount);

@@ -45,12 +45,12 @@ else {
 
 //set the http post variables to php variables
 	if (count($_POST)>0) {
-		$modulelabel = check_str($_POST["modulelabel"]);
-		$modulename = check_str($_POST["modulename"]);
-		$moduledesc = check_str($_POST["moduledesc"]);
-		$modulecat = check_str($_POST["modulecat"]);
-		$moduleenabled = check_str($_POST["moduleenabled"]);
-		$moduledefaultenabled = check_str($_POST["moduledefaultenabled"]);
+		$module_label = check_str($_POST["module_label"]);
+		$module_name = check_str($_POST["module_name"]);
+		$module_desc = check_str($_POST["module_desc"]);
+		$module_category = check_str($_POST["module_category"]);
+		$module_enabled = check_str($_POST["module_enabled"]);
+		$module_default_enabled = check_str($_POST["module_default_enabled"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -62,12 +62,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
-		if (strlen($modulelabel) == 0) { $msg .= "Please provide: Label<br>\n"; }
-		if (strlen($modulename) == 0) { $msg .= "Please provide: Module Name<br>\n"; }
-		//if (strlen($moduledesc) == 0) { $msg .= "Please provide: Description<br>\n"; }
-		if (strlen($modulecat) == 0) { $msg .= "Please provide: Module Category<br>\n"; }
-		if (strlen($moduleenabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		if (strlen($moduledefaultenabled) == 0) { $msg .= "Please provide: Default Enabled<br>\n"; }
+		if (strlen($module_label) == 0) { $msg .= "Please provide: Label<br>\n"; }
+		if (strlen($module_name) == 0) { $msg .= "Please provide: Module Name<br>\n"; }
+		//if (strlen($module_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		if (strlen($module_category) == 0) { $msg .= "Please provide: Module Category<br>\n"; }
+		if (strlen($module_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
+		if (strlen($module_default_enabled) == 0) { $msg .= "Please provide: Default Enabled<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -87,22 +87,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "insert into v_modules ";
 				$sql .= "(";
 				$sql .= "v_id, ";
-				$sql .= "modulelabel, ";
-				$sql .= "modulename, ";
-				$sql .= "moduledesc, ";
-				$sql .= "modulecat, ";
-				$sql .= "moduleenabled, ";
-				$sql .= "moduledefaultenabled ";
+				$sql .= "module_label, ";
+				$sql .= "module_name, ";
+				$sql .= "module_desc, ";
+				$sql .= "module_category, ";
+				$sql .= "module_enabled, ";
+				$sql .= "module_default_enabled ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'1', ";
-				$sql .= "'$modulelabel', ";
-				$sql .= "'$modulename', ";
-				$sql .= "'$moduledesc', ";
-				$sql .= "'$modulecat', ";
-				$sql .= "'$moduleenabled', ";
-				$sql .= "'$moduledefaultenabled' ";
+				$sql .= "'$module_label', ";
+				$sql .= "'$module_name', ";
+				$sql .= "'$module_desc', ";
+				$sql .= "'$module_category', ";
+				$sql .= "'$module_enabled', ";
+				$sql .= "'$module_default_enabled' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -120,12 +120,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('modules_edit')) {
 				$sql = "update v_modules set ";
-				$sql .= "modulelabel = '$modulelabel', ";
-				$sql .= "modulename = '$modulename', ";
-				$sql .= "moduledesc = '$moduledesc', ";
-				$sql .= "modulecat = '$modulecat', ";
-				$sql .= "moduleenabled = '$moduleenabled', ";
-				$sql .= "moduledefaultenabled = '$moduledefaultenabled' ";
+				$sql .= "module_label = '$module_label', ";
+				$sql .= "module_name = '$module_name', ";
+				$sql .= "module_desc = '$module_desc', ";
+				$sql .= "module_category = '$module_category', ";
+				$sql .= "module_enabled = '$module_enabled', ";
+				$sql .= "module_default_enabled = '$module_default_enabled' ";
 				$sql .= "where module_id = '$module_id' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -154,12 +154,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
 			$v_id = $row["v_id"];
-			$modulelabel = $row["modulelabel"];
-			$modulename = $row["modulename"];
-			$moduledesc = $row["moduledesc"];
-			$modulecat = $row["modulecat"];
-			$moduleenabled = $row["moduleenabled"];
-			$moduledefaultenabled = $row["moduledefaultenabled"];
+			$module_label = $row["module_label"];
+			$module_name = $row["module_name"];
+			$module_desc = $row["module_desc"];
+			$module_category = $row["module_category"];
+			$module_enabled = $row["module_enabled"];
+			$module_default_enabled = $row["module_default_enabled"];
 			break; //limit to 1 row
 		}
 		unset ($prepstatement);
@@ -197,7 +197,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Label:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='modulelabel' maxlength='255' value=\"$modulelabel\">\n";
+	echo "    <input class='formfld' type='text' name='module_label' maxlength='255' value=\"$module_label\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -208,7 +208,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Module Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='modulename' maxlength='255' value=\"$modulename\">\n";
+	echo "    <input class='formfld' type='text' name='module_name' maxlength='255' value=\"$module_name\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -219,7 +219,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='moduledesc' maxlength='255' value=\"$moduledesc\">\n";
+	echo "    <input class='formfld' type='text' name='module_desc' maxlength='255' value=\"$module_desc\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -230,7 +230,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Module Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$tablename = 'v_modules';$fieldname = 'modulecat';$sqlwhereoptional = "where v_id = '$v_id'";$fieldcurrentvalue = $modulecat;
+	$tablename = 'v_modules';$fieldname = 'module_category';$sqlwhereoptional = "where v_id = '$v_id'";$fieldcurrentvalue = $module_category;
 	echo htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
 	echo "<br />\n";
 	echo "\n";
@@ -242,15 +242,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='moduleenabled'>\n";
+	echo "    <select class='formfld' name='module_enabled'>\n";
 	echo "    <option value=''></option>\n";
-	if ($moduleenabled == "true") { 
+	if ($module_enabled == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($moduleenabled == "false") { 
+	if ($module_enabled == "false") { 
 		echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {
@@ -267,15 +267,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Default Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='moduledefaultenabled'>\n";
+	echo "    <select class='formfld' name='module_default_enabled'>\n";
 	echo "    <option value=''></option>\n";
-	if ($moduledefaultenabled == "true") { 
+	if ($module_default_enabled == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($moduledefaultenabled == "false") { 
+	if ($module_default_enabled == "false") { 
 		echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {
@@ -303,6 +303,5 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-
-require_once "includes/footer.php";
+	require_once "includes/footer.php";
 ?>
