@@ -33,6 +33,7 @@ else {
 	echo "access denied";
 	exit;
 }
+
 require_once "includes/paging.php";
 
 //set the max php execution time
@@ -102,13 +103,9 @@ require_once "includes/paging.php";
 	}
 
 //upload the recording
-	if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['ulfile']['tmp_name']) && permission_exists('voicemail_greeting_upload')) {
-		if ($_POST['type'] == 'rec') {
-			move_uploaded_file($_FILES['ulfile']['tmp_name'], $v_voicemail_greetings_dir.'/'.$_FILES['ulfile']['name']);
-			$savemsg = "Uploaded file to ".$v_greeting_dir."/". htmlentities($_FILES['ulfile']['name']);
-			//system('chmod -R 744 $v_voicemail_greetings_dir*');
-			unset($_POST['txtCommand']);
-		}
+	if (($_POST['submit'] == "Save") && is_uploaded_file($_FILES['file']['tmp_name']) && permission_exists('voicemail_greeting_upload')) {
+		move_uploaded_file($_FILES['file']['tmp_name'], $v_voicemail_greetings_dir.'/'.$_FILES['file']['name']);
+		$savemsg = "Uploaded file to ".$v_greeting_dir."/". htmlentities($_FILES['file']['name']);
 	}
 
 //build a list of voicemail greetings
@@ -186,7 +183,7 @@ require_once "includes/paging.php";
 	echo "}\n";
 	echo "</script>";
 
-	echo "<form method='post' name='ifrm' action=''>\n";
+	echo "<form action=\"\" method=\"POST\" enctype=\"multipart/form-data\" name=\"ifrm\" onSubmit=\"\">\n";
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
@@ -199,7 +196,10 @@ require_once "includes/paging.php";
 	echo "			<strong>Voicemail Greetings:</strong><br>\n";
 	echo "		</td>";
 	echo "		<td width='50%' align='right'>\n";
-	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "			<label for=\"file\">File to Upload:</label>\n";
+	echo "			<input name=\"file\" type=\"file\" class=\"btn\" id=\"file\">\n";
+	echo "			<input name=\"submit\" type=\"submit\" class=\"btn\" id=\"upload\" value=\"Save\">\n";
+	echo "			&nbsp;&nbsp;&nbsp;\n";
 	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"javascript:history.back();\" value='Back'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
