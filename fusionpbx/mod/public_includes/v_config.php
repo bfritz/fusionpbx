@@ -50,10 +50,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'extension_number';
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
-		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'extension_continue';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'extensioncontinue';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
