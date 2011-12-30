@@ -249,24 +249,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and huntgroupextension = '$extension' ";
+		$sql .= "and hunt_group_extension = '$extension' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			if ($row["huntgrouptype"] == 'call_forward') {
+			if ($row["hunt_group_type"] == 'call_forward') {
 				$call_forward_action = "update";
 				$call_forward_id = $row["hunt_group_id"];
 			}
-			if ($row["huntgrouptype"] == 'follow_me_sequence') {
+			if ($row["hunt_group_type"] == 'follow_me_sequence') {
 				$follow_me_action = "update";
 				$follow_me_id = $row["hunt_group_id"];
 			}
-			if ($row["huntgrouptype"] == 'follow_me_simultaneous') {
+			if ($row["hunt_group_type"] == 'follow_me_simultaneous') {
 				$follow_me_action = "update";
 				$follow_me_id = $row["hunt_group_id"];
 			}
-			if ($row["huntgrouptype"] == 'dnd') {
+			if ($row["hunt_group_type"] == 'dnd') {
 				$dnd_action = "update";
 				$dnd_id = $row["hunt_group_id"];
 			}
@@ -385,45 +385,45 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	$sql = "";
 	$sql .= "select * from v_hunt_group ";
-	$sql .= "where huntgroupextension = '$extension' ";
+	$sql .= "where hunt_group_extension = '$extension' ";
 	$sql .= "and v_id = '$v_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$hunt_group_id = $row["hunt_group_id"];
-		$hunt_group_extension = $row["huntgroupextension"];
-		$huntgroup_name = $row["huntgroupname"];
-		$hunt_group_type = $row["huntgrouptype"];
-		$hunt_group_context = $row["huntgroupcontext"];
-		$hunt_group_timeout = $row["huntgrouptimeout"];
-		$hunt_group_timeout_destination = $row["huntgrouptimeoutdestination"];
-		$hunt_group_timeout_type = $row["huntgrouptimeouttype"];
-		$hunt_group_ring_back = $row["huntgroupringback"];
-		$hunt_group_cid_name_prefix = $row["huntgroupcidnameprefix"];
-		$hunt_group_pin = $row["huntgrouppin"];
+		$hunt_group_extension = $row["hunt_group_extension"];
+		$huntgroup_name = $row["hunt_group_name"];
+		$hunt_group_type = $row["hunt_group_type"];
+		$hunt_group_context = $row["hunt_group_context"];
+		$hunt_group_timeout = $row["hunt_group_timeout"];
+		$hunt_group_timeout_destination = $row["hunt_group_timeout_destination"];
+		$hunt_group_timeout_type = $row["hunt_group_time_out_type"];
+		$hunt_group_ring_back = $row["hunt_group_ringback"];
+		$hunt_group_cid_name_prefix = $row["hunt_group_cid_name_prefix"];
+		$hunt_group_pin = $row["hunt_group_pin"];
 		$hunt_group_call_prompt = $row["hunt_group_call_prompt"];
-		$huntgroup_caller_announce = $row["huntgroupcallerannounce"];
+		$huntgroup_caller_announce = $row["hunt_group_caller_announce"];
 		$hunt_group_user_list = $row["hunt_group_user_list"];
 		$hunt_group_enabled = $row["hunt_group_enabled"];
-		$hunt_group_descr = $row["huntgroupdescr"];
+		$hunt_group_descr = $row["hunt_group_descr"];
 
-		if ($row["huntgrouptype"] == 'call_forward') {
+		if ($row["hunt_group_type"] == 'call_forward') {
 			$call_forward_enabled = $hunt_group_enabled;
 		}
-		if ($row["huntgrouptype"] == 'follow_me_simultaneous') {
+		if ($row["hunt_group_type"] == 'follow_me_simultaneous') {
 			$follow_me_enabled = $hunt_group_enabled;
 			$follow_me_type = 'follow_me_simultaneous';
 		}
-		if ($row["huntgrouptype"] == 'follow_me_sequence') {
+		if ($row["hunt_group_type"] == 'follow_me_sequence') {
 			$follow_me_enabled = $hunt_group_enabled;
 			$follow_me_type = 'follow_me_sequence';
 		}
-		if ($row["huntgrouptype"] == 'dnd') {
+		if ($row["hunt_group_type"] == 'dnd') {
 			$dnd_enabled = $hunt_group_enabled;
 		}
 
-		if ($row["huntgrouptype"] == 'call_forward' || $row["huntgrouptype"] == 'follow_me_sequence' || $row["huntgrouptype"] == 'follow_me_simultaneous') {
+		if ($row["hunt_group_type"] == 'call_forward' || $row["hunt_group_type"] == 'follow_me_sequence' || $row["hunt_group_type"] == 'follow_me_simultaneous') {
 			$sql = "";
 			$sql .= "select * from v_hunt_group_destinations ";
 			$sql .= "where hunt_group_id = '$hunt_group_id' ";
@@ -432,30 +432,30 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$result2 = $prep_statement2->fetchAll();
 			$x=1;
 			foreach ($result2 as &$row2) {
-				if ($row["huntgrouptype"] == 'call_forward') {
-					if (strlen($row2["destinationdata"]) > 0) {
-						$call_forward_number = $row2["destinationdata"];
+				if ($row["hunt_group_type"] == 'call_forward') {
+					if (strlen($row2["destination_data"]) > 0) {
+						$call_forward_number = $row2["destination_data"];
 					}
 				}
-				if ($row["huntgrouptype"] == 'follow_me_sequence' || $row["huntgrouptype"] == 'follow_me_simultaneous') {
+				if ($row["hunt_group_type"] == 'follow_me_sequence' || $row["hunt_group_type"] == 'follow_me_simultaneous') {
 					if ($x == 1) {
-						$destination_data_1 = $row2["destinationdata"];
+						$destination_data_1 = $row2["destination_data"];
 						$destination_timeout_1 = $row2["destination_timeout"];
 					}
 					if ($x == 2) {
-						$destination_data_2 = $row2["destinationdata"];
+						$destination_data_2 = $row2["destination_data"];
 						$destination_timeout_2 = $row2["destination_timeout"];
 					}
 					if ($x == 3) {
-						$destination_data_3 = $row2["destinationdata"];
+						$destination_data_3 = $row2["destination_data"];
 						$destination_timeout_3 = $row2["destination_timeout"];
 					}
 					if ($x == 4) {
-						$destination_data_4 = $row2["destinationdata"];
+						$destination_data_4 = $row2["destination_data"];
 						$destination_timeout_4 = $row2["destination_timeout"];
 					}
 					if ($x == 5) {
-						$destination_data_5 = $row2["destinationdata"];
+						$destination_data_5 = $row2["destination_data"];
 						$destination_timeout_5 = $row2["destination_timeout"];
 					}
 					$x++;

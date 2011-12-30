@@ -62,10 +62,10 @@ echo "<br />\n";
 $sql = "";
 $sql .= " select count(*) as num_rows from v_hunt_group ";
 $sql .= "where v_id = '$v_id' ";
-$sql .= "and huntgrouptype <> 'dnd' ";
-$sql .= "and huntgrouptype <> 'call_forward' ";
-$sql .= "and huntgrouptype <> 'follow_me_simultaneous' ";
-$sql .= "and huntgrouptype <> 'follow_me_sequence' ";
+$sql .= "and hunt_group_type <> 'dnd' ";
+$sql .= "and hunt_group_type <> 'call_forward' ";
+$sql .= "and hunt_group_type <> 'follow_me_simultaneous' ";
+$sql .= "and hunt_group_type <> 'follow_me_sequence' ";
 $prepstatement = $db->prepare(check_sql($sql));
 if ($prepstatement) {
 	$prepstatement->execute();
@@ -91,15 +91,15 @@ $offset = $rows_per_page * $page;
 $sql = "";
 $sql .= " select * from v_hunt_group ";
 $sql .= "where v_id = '$v_id' ";
-$sql .= "and huntgrouptype <> 'dnd' ";
-$sql .= "and huntgrouptype <> 'call_forward' ";
-$sql .= "and huntgrouptype <> 'follow_me_simultaneous' ";
-$sql .= "and huntgrouptype <> 'follow_me_sequence' ";
+$sql .= "and hunt_group_type <> 'dnd' ";
+$sql .= "and hunt_group_type <> 'call_forward' ";
+$sql .= "and hunt_group_type <> 'follow_me_simultaneous' ";
+$sql .= "and hunt_group_type <> 'follow_me_sequence' ";
 if (strlen($orderby)> 0) {
 	$sql .= "order by $orderby $order ";
 }
 else {
-	$sql .= "order by huntgroupextension asc ";
+	$sql .= "order by hunt_group_extension asc ";
 }
 $sql .= " limit $rows_per_page offset $offset ";
 $prepstatement = $db->prepare(check_sql($sql));
@@ -116,10 +116,10 @@ echo "<div align='center'>\n";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 echo "<tr>\n";
-echo thorderby('huntgroupextension', 'Extension', $orderby, $order);
-echo thorderby('huntgroupname', 'Hunt Group Name', $orderby, $order);
-echo thorderby('huntgroupname', 'Enabled', $orderby, $order);
-echo thorderby('huntgroupdescr', 'Description', $orderby, $order);
+echo thorderby('hunt_group_extension', 'Extension', $orderby, $order);
+echo thorderby('hunt_group_name', 'Hunt Group Name', $orderby, $order);
+echo thorderby('hunt_group_name', 'Enabled', $orderby, $order);
+echo thorderby('hunt_group_descr', 'Description', $orderby, $order);
 echo "<td align='right' width='42'>\n";
 if (permission_exists('hunt_group_add')) {
 	echo "	<a href='v_hunt_group_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -133,10 +133,10 @@ if ($resultcount == 0) {
 else { //received results
 	foreach($result as $row) {
 		echo "<tr >\n";
-		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row['huntgroupextension']."</td>\n";
-		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row['huntgroupname']."</td>\n";
+		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row['hunt_group_extension']."</td>\n";
+		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row['hunt_group_name']."</td>\n";
 		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row['hunt_group_enabled']."</td>\n";
-		echo "   <td valign='top' class='rowstylebg' width='40%'>".$row['huntgroupdescr']."&nbsp;</td>\n";
+		echo "   <td valign='top' class='rowstylebg' width='40%'>".$row['hunt_group_descr']."&nbsp;</td>\n";
 		echo "   <td valign='top' align='right'>\n";
 		if (permission_exists('hunt_group_edit')) {
 			echo "		<a href='v_hunt_group_edit.php?id=".$row['hunt_group_id']."' alt='edit'>$v_link_label_edit</a>\n";

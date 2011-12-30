@@ -147,12 +147,12 @@ if (count($_GET)>0) {
 					//hunt_group information used to determine if this is an add or an update
 						$sql  = "select * from v_hunt_group ";
 						$sql .= "where v_id = '$v_id' ";
-						$sql .= "and huntgroupextension = '$extension' ";
+						$sql .= "and hunt_group_extension = '$extension' ";
 						$prepstatement2 = $db->prepare(check_sql($sql));
 						$prepstatement2->execute();
 						$result2 = $prepstatement2->fetchAll();
 						foreach ($result2 as &$row2) {
-							if ($row2["huntgrouptype"] == 'dnd') {
+							if ($row2["hunt_group_type"] == 'dnd') {
 								$dnd_action = "update";
 								$dnd_id = $row2["hunt_group_id"];
 							}

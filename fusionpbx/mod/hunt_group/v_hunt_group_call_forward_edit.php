@@ -73,7 +73,7 @@ function destination_select($select_name, $select_value, $select_default) {
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$hunt_group_id = $row["hunt_group_id"];
-		$hunt_group_extension = $row["huntgroupextension"];
+		$hunt_group_extension = $row["hunt_group_extension"];
 	}
 	unset ($prepstatement);
 
@@ -115,16 +115,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//call forward is enabled so disable the hunt group
 		if ($call_forward_enabled == "true") {
 			$sql = "update v_hunt_group set hunt_group_enabled = 'false' ";
-			$sql .= "where huntgroupextension = '$hunt_group_extension' ";
-			$sql .= "and (huntgrouptype = 'simultaneous' or huntgrouptype = 'sequentially') ";
+			$sql .= "where hunt_group_extension = '$hunt_group_extension' ";
+			$sql .= "and (hunt_group_type = 'simultaneous' or hunt_group_type = 'sequentially') ";
 			$db->exec(check_sql($sql));
 		}
 
 	//call forward is disabled so enable the hunt group
 		if ($call_forward_enabled == "false" || $call_forward_enabled == "") {
 			$sql = "update v_hunt_group set hunt_group_enabled = 'true' ";
-			$sql .= "where huntgroupextension = '$hunt_group_extension' ";
-			$sql .= "and (huntgrouptype = 'simultaneous' or huntgrouptype = 'sequentially') ";
+			$sql .= "where hunt_group_extension = '$hunt_group_extension' ";
+			$sql .= "and (hunt_group_type = 'simultaneous' or hunt_group_type = 'sequentially') ";
 			$db->exec(check_sql($sql));
 		}
 
@@ -134,9 +134,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//hunt_group information used to determine if this is an add or an update
 		$sql = "select * from v_hunt_group ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and huntgrouptype = 'call_forward' ";
-		$sql .= "and huntgroupextension in ( ";
-		$sql .= "select huntgroupextension from v_hunt_group ";
+		$sql .= "and hunt_group_type = 'call_forward' ";
+		$sql .= "and hunt_group_extension in ( ";
+		$sql .= "select hunt_group_extension from v_hunt_group ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and hunt_group_id = '$hunt_group_id' ";
 		if (!(permission_exists('hunt_group_add') || permission_exists('hunt_group_edit'))) {
@@ -147,7 +147,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			if ($row["huntgrouptype"] == 'call_forward') {
+			if ($row["hunt_group_type"] == 'call_forward') {
 				$call_forward_action = "update";
 				$call_forward_id = $row["hunt_group_id"];
 			}
@@ -173,21 +173,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_hunt_group ";
 			$sql .= "(";
 			$sql .= "v_id, ";
-			$sql .= "huntgroupextension, ";
-			$sql .= "huntgroupname, ";
-			$sql .= "huntgrouptype, ";
-			$sql .= "huntgroupcontext, ";
-			$sql .= "huntgrouptimeout, ";
-			$sql .= "huntgrouptimeoutdestination, ";
-			$sql .= "huntgrouptimeouttype, ";
-			$sql .= "huntgroupringback, ";
-			$sql .= "huntgroupcidnameprefix, ";
-			$sql .= "huntgrouppin, ";
+			$sql .= "hunt_group_extension, ";
+			$sql .= "hunt_group_name, ";
+			$sql .= "hunt_group_type, ";
+			$sql .= "hunt_group_context, ";
+			$sql .= "hunt_group_timeout, ";
+			$sql .= "hunt_group_timeout_destination, ";
+			$sql .= "hunt_group_time_out_type, ";
+			$sql .= "hunt_group_ringback, ";
+			$sql .= "hunt_group_cid_name_prefix, ";
+			$sql .= "hunt_group_pin, ";
 			$sql .= "hunt_group_call_prompt, ";
-			$sql .= "huntgroupcallerannounce, ";
+			$sql .= "hunt_group_caller_announce, ";
 			$sql .= "hunt_group_user_list, ";
 			$sql .= "hunt_group_enabled, ";
-			$sql .= "huntgroupdescr ";
+			$sql .= "hunt_group_descr ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
@@ -245,13 +245,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "(";
 		$sql .= "v_id, ";
 		$sql .= "hunt_group_id, ";
-		$sql .= "destinationdata, ";
-		$sql .= "destinationtype, ";
-		$sql .= "destinationprofile, ";
+		$sql .= "destination_data, ";
+		$sql .= "destination_type, ";
+		$sql .= "destination_profile, ";
 		$sql .= "destination_timeout, ";
-		$sql .= "destinationorder, ";
+		$sql .= "destination_order, ";
 		$sql .= "destination_enabled, ";
-		$sql .= "destinationdescr ";
+		$sql .= "destination_descr ";
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
@@ -271,21 +271,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	if ($call_forward_action == "update" && permission_exists('hunt_group_call_forward')) {
 		$sql = "update v_hunt_group set ";
-		$sql .= "huntgroupextension = '$hunt_group_extension', ";
-		$sql .= "huntgroupname = '$huntgroup_name', ";
-		$sql .= "huntgrouptype = '$hunt_group_type', ";
-		$sql .= "huntgroupcontext = '$hunt_group_context', ";
-		$sql .= "huntgrouptimeout = '$hunt_group_timeout', ";
-		$sql .= "huntgrouptimeoutdestination = '$hunt_group_timeout_destination', ";
-		$sql .= "huntgrouptimeouttype = '$hunt_group_timeout_type', ";
-		$sql .= "huntgroupringback = '$hunt_group_ring_back', ";
-		$sql .= "huntgroupcidnameprefix = '$hunt_group_cid_name_prefix', ";
-		$sql .= "huntgrouppin = '$hunt_group_pin', ";
+		$sql .= "hunt_group_extension = '$hunt_group_extension', ";
+		$sql .= "hunt_group_name = '$huntgroup_name', ";
+		$sql .= "hunt_group_type = '$hunt_group_type', ";
+		$sql .= "hunt_group_context = '$hunt_group_context', ";
+		$sql .= "hunt_group_timeout = '$hunt_group_timeout', ";
+		$sql .= "hunt_group_timeout_destination = '$hunt_group_timeout_destination', ";
+		$sql .= "hunt_group_time_out_type = '$hunt_group_timeout_type', ";
+		$sql .= "hunt_group_ringback = '$hunt_group_ring_back', ";
+		$sql .= "hunt_group_cid_name_prefix = '$hunt_group_cid_name_prefix', ";
+		$sql .= "hunt_group_pin = '$hunt_group_pin', ";
 		$sql .= "hunt_group_call_prompt = '$hunt_group_call_prompt', ";
-		$sql .= "huntgroupcallerannounce = '$huntgroup_caller_announce', ";
+		$sql .= "hunt_group_caller_announce = '$huntgroup_caller_announce', ";
 		$sql .= "hunt_group_user_list = '$hunt_group_user_list', ";
 		$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
-		$sql .= "huntgroupdescr = '$hunt_group_descr' ";
+		$sql .= "hunt_group_descr = '$hunt_group_descr' ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and hunt_group_id = '$call_forward_id'";
 		$db->exec(check_sql($sql));
@@ -314,13 +314,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "(";
 			$sql .= "v_id, ";
 			$sql .= "hunt_group_id, ";
-			$sql .= "destinationdata, ";
-			$sql .= "destinationtype, ";
-			$sql .= "destinationprofile, ";
+			$sql .= "destination_data, ";
+			$sql .= "destination_type, ";
+			$sql .= "destination_profile, ";
 			$sql .= "destination_timeout, ";
-			$sql .= "destinationorder, ";
+			$sql .= "destination_order, ";
 			$sql .= "destination_enabled, ";
-			$sql .= "destinationdescr ";
+			$sql .= "destination_descr ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
@@ -361,34 +361,34 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql = "";
 	$sql .= "select * from v_hunt_group ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and huntgrouptype = 'call_forward' ";
-	$sql .= "and huntgroupextension = '$hunt_group_extension' ";
+	$sql .= "and hunt_group_type = 'call_forward' ";
+	$sql .= "and hunt_group_extension = '$hunt_group_extension' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$hunt_group_id = $row["hunt_group_id"];
-		$hunt_group_extension = $row["huntgroupextension"];
-		$huntgroup_name = $row["huntgroupname"];
-		$hunt_group_type = $row["huntgrouptype"];
-		$hunt_group_context = $row["huntgroupcontext"];
-		$hunt_group_timeout = $row["huntgrouptimeout"];
-		$hunt_group_timeout_destination = $row["huntgrouptimeoutdestination"];
-		$hunt_group_timeout_type = $row["huntgrouptimeouttype"];
-		$hunt_group_ring_back = $row["huntgroupringback"];
-		$hunt_group_cid_name_prefix = $row["huntgroupcidnameprefix"];
-		$hunt_group_pin = $row["huntgrouppin"];
+		$hunt_group_extension = $row["hunt_group_extension"];
+		$huntgroup_name = $row["hunt_group_name"];
+		$hunt_group_type = $row["hunt_group_type"];
+		$hunt_group_context = $row["hunt_group_context"];
+		$hunt_group_timeout = $row["hunt_group_timeout"];
+		$hunt_group_timeout_destination = $row["hunt_group_timeout_destination"];
+		$hunt_group_timeout_type = $row["hunt_group_time_out_type"];
+		$hunt_group_ring_back = $row["hunt_group_ringback"];
+		$hunt_group_cid_name_prefix = $row["hunt_group_cid_name_prefix"];
+		$hunt_group_pin = $row["hunt_group_pin"];
 		$hunt_group_call_prompt = $row["hunt_group_call_prompt"];
-		$huntgroup_caller_announce = $row["huntgroupcallerannounce"];
+		$huntgroup_caller_announce = $row["hunt_group_caller_announce"];
 		$hunt_group_user_list = $row["hunt_group_user_list"];
 		$hunt_group_enabled = $row["hunt_group_enabled"];
-		$hunt_group_descr = $row["huntgroupdescr"];
+		$hunt_group_descr = $row["hunt_group_descr"];
 
-		if ($row["huntgrouptype"] == 'call_forward') {
+		if ($row["hunt_group_type"] == 'call_forward') {
 			$call_forward_enabled = $hunt_group_enabled;
 		}
 
-		if ($row["huntgrouptype"] == 'call_forward') {
+		if ($row["hunt_group_type"] == 'call_forward') {
 			$sql = "";
 			$sql .= "select * from v_hunt_group_destinations ";
 			$sql .= "where hunt_group_id = '$hunt_group_id' ";
@@ -397,9 +397,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$result2 = $prep_statement2->fetchAll();
 			$x=1;
 			foreach ($result2 as &$row2) {
-				if ($row["huntgrouptype"] == 'call_forward') {
-					if (strlen($row2["destinationdata"]) > 0) {
-						$call_forward_number = $row2["destinationdata"];
+				if ($row["hunt_group_type"] == 'call_forward') {
+					if (strlen($row2["destination_data"]) > 0) {
+						$call_forward_number = $row2["destination_data"];
 					}
 				}
 			}

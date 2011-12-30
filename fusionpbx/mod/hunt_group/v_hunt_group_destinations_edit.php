@@ -54,12 +54,12 @@ require_once "includes/checkauth.php";
 		if (isset($_POST["hunt_group_id"])) {
 			$hunt_group_id = check_str($_POST["hunt_group_id"]);
 		}
-		$destinationdata = check_str($_POST["destinationdata"]);
-		$destinationtype = check_str($_POST["destinationtype"]);
+		$destination_data = check_str($_POST["destination_data"]);
+		$destination_type = check_str($_POST["destination_type"]);
 		$destination_timeout = check_str($_POST["destination_timeout"]);
-		$destinationorder = check_str($_POST["destinationorder"]);
+		$destination_order = check_str($_POST["destination_order"]);
 		$destination_enabled = check_str($_POST["destination_enabled"]);
-		$destinationdescr = check_str($_POST["destinationdescr"]);
+		$destination_descr = check_str($_POST["destination_descr"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -71,12 +71,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
-		if (strlen($destinationdata) == 0) { $msg .= "Please provide: Destination<br>\n"; }
-		if (strlen($destinationtype) == 0) { $msg .= "Please provide: Type<br>\n"; }
+		if (strlen($destination_data) == 0) { $msg .= "Please provide: Destination<br>\n"; }
+		if (strlen($destination_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
 		//if (strlen($destination_timeout) == 0) { $msg .= "Please provide: Timeout<br>\n"; }
-		//if (strlen($destinationorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		//if (strlen($destination_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
 		//if (strlen($destination_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		//if (strlen($destinationdescr) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($destination_descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -97,23 +97,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "(";
 				$sql .= "v_id, ";
 				$sql .= "hunt_group_id, ";
-				$sql .= "destinationdata, ";
-				$sql .= "destinationtype, ";
+				$sql .= "destination_data, ";
+				$sql .= "destination_type, ";
 				$sql .= "destination_timeout, ";
-				$sql .= "destinationorder, ";
+				$sql .= "destination_order, ";
 				$sql .= "destination_enabled, ";
-				$sql .= "destinationdescr ";
+				$sql .= "destination_descr ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$v_id', ";
 				$sql .= "'$hunt_group_id', ";
-				$sql .= "'$destinationdata', ";
-				$sql .= "'$destinationtype', ";
+				$sql .= "'$destination_data', ";
+				$sql .= "'$destination_type', ";
 				$sql .= "'$destination_timeout', ";
-				$sql .= "'$destinationorder', ";
+				$sql .= "'$destination_order', ";
 				$sql .= "'$destination_enabled', ";
-				$sql .= "'$destinationdescr' ";
+				$sql .= "'$destination_descr' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -134,12 +134,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "update v_hunt_group_destinations set ";
 				$sql .= "v_id = '$v_id', ";
 				$sql .= "hunt_group_id = '$hunt_group_id', ";
-				$sql .= "destinationdata = '$destinationdata', ";
-				$sql .= "destinationtype = '$destinationtype', ";
+				$sql .= "destination_data = '$destination_data', ";
+				$sql .= "destination_type = '$destination_type', ";
 				$sql .= "destination_timeout = '$destination_timeout', ";
-				$sql .= "destinationorder = '$destinationorder', ";
+				$sql .= "destination_order = '$destination_order', ";
 				$sql .= "destination_enabled = '$destination_enabled', ";
-				$sql .= "destinationdescr = '$destinationdescr' ";
+				$sql .= "destination_descr = '$destination_descr' ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and hunt_group_destination_id = '$hunt_group_destination_id'";
 				$db->exec(check_sql($sql));
@@ -170,12 +170,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
 			$hunt_group_id = $row["hunt_group_id"];
-			$destinationdata = $row["destinationdata"];
-			$destinationtype = $row["destinationtype"];
+			$destination_data = $row["destination_data"];
+			$destination_type = $row["destination_type"];
 			$destination_timeout = $row["destination_timeout"];
-			$destinationorder = $row["destinationorder"];
+			$destination_order = $row["destination_order"];
 			$destination_enabled = $row["destination_enabled"];
-			$destinationdescr = $row["destinationdescr"];
+			$destination_descr = $row["destination_descr"];
 			break; //limit to 1 row
 		}
 		unset ($prepstatement);
@@ -212,7 +212,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Destination:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='destinationdata' maxlength='255' value=\"$destinationdata\">\n";
+	echo "    <input class='formfld' type='text' name='destination_data' maxlength='255' value=\"$destination_data\">\n";
 	echo "<br />\n";
 	echo "extension: 1001<br />\n";
 	echo "voicemail: 1001<br />\n";
@@ -228,21 +228,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Type:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "                <select name='destinationtype' class='formfld'>\n";
+	echo "                <select name='destination_type' class='formfld'>\n";
 	echo "                <option></option>\n";
-	if ($destinationtype == "extension") {
+	if ($destination_type == "extension") {
 		echo "                <option selected='yes'>extension</option>\n";
 	}
 	else {
 		echo "                <option>extension</option>\n";
 	}
-	if ($destinationtype == "voicemail") {
+	if ($destination_type == "voicemail") {
 		echo "                <option selected='yes'>voicemail</option>\n";
 	}
 	else {
 		echo "                <option>voicemail</option>\n";
 	}
-	if ($destinationtype == "sip uri") {
+	if ($destination_type == "sip uri") {
 		echo "                <option selected='yes'>sip uri</option>\n";
 	}
 	else {
@@ -280,10 +280,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='destinationorder' class='formfld'>\n";
+	echo "              <select name='destination_order' class='formfld'>\n";
 	//echo "              <option></option>\n";
-	if (strlen($destinationorder)> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($destinationorder)."'>".htmlspecialchars($destinationorder)."</option>\n";
+	if (strlen($destination_order)> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($destination_order)."'>".htmlspecialchars($destination_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=301) {
@@ -334,7 +334,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='destinationdescr' maxlength='255' value=\"$destinationdescr\">\n";
+	echo "    <input class='formfld' type='text' name='destination_descr' maxlength='255' value=\"$destination_descr\">\n";
 	echo "<br />\n";
 	echo "You may enter a description here for your reference (not parsed).\n";
 	echo "</td>\n";
