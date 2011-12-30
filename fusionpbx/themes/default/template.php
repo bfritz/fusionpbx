@@ -695,7 +695,7 @@ function confirmdelete(url) {
 //get the current page menu_parent_guid
 	if ($db) {
 		$sql = "select * from v_menu_items ";
-		$sql .= "where menu_guid = '".$_SESSION["v_menu_guid"]."' ";
+		$sql .= "where menu_uuid = '".$_SESSION["v_menu_uuid"]."' ";
 		if ($php_self_dir == "/") {
 			$sql .= "and menu_item_str = '/index2.php' ";
 		}
@@ -708,11 +708,11 @@ function confirmdelete(url) {
 		$result = $prep_statement->fetchAll();
 		$count = count($result);
 		foreach($result as $field) {
-			if (strlen($field['menu_item_parent_guid']) > 0) {
-				$php_self_parent_guid = $field['menu_item_parent_guid'];
+			if (strlen($field['menu_item_parent_uuid']) > 0) {
+				$php_self_parent_uuid = $field['menu_item_parent_uuid'];
 			}
 			else {
-				$php_self_parent_guid = $field['menu_item_guid'];
+				$php_self_parent_uuid = $field['menu_item_uuid'];
 			}
 			break;
 		}
@@ -721,12 +721,12 @@ function confirmdelete(url) {
 //get the sub menu
 	$menu_level = '0';
 	if ($db) {
-		if (strlen($php_self_parent_guid) > 0) {
+		if (strlen($php_self_parent_uuid) > 0) {
 			require_once "includes/classes/menu.php";
 			$menu = new menu;
 			$menu->db = $db;
-			$menu->menu_guid = $_SESSION["v_menu_guid"];
-			$sub_menu = $menu->build_child_html($menu_level, $php_self_parent_guid);
+			$menu->menu_uuid = $_SESSION["v_menu_uuid"];
+			$sub_menu = $menu->build_child_html($menu_level, $php_self_parent_uuid);
 			$sub_menu = str_replace("menu_sub", "menu_sub_vertical", $sub_menu);
 			echo $sub_menu;
 			unset($menu);
