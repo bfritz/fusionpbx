@@ -78,7 +78,9 @@ else {
 		//show the conferences that have a matching domain
 			$tmp_domain = substr($name, -strlen($v_domain));
 			if ($tmp_domain == $v_domain) {
-				$tmp_conference_name = substr($name, 0, strlen($name) - strlen('-'.$v_domain));
+				$conference_name = substr($name, 0, strlen($name) - strlen('-'.$v_domain));
+				$conference_display_name = str_replace("-", " ", $conference_name);
+				$conference_display_name = str_replace("_", " ", $conference_display_name);
 
 				//$id = $row->members->member->id;
 				//$flag_can_hear = $row->members->member->flags->can_hear;
@@ -92,9 +94,9 @@ else {
 				//$caller_id_number = $row->members->member->caller_id_number;
 
 				echo "<tr>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_conference_name."</td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'>".$conference_display_name."</td>\n";
 				echo "<td valign='top' class='".$rowstyle[$c]."'>".$member_count."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_conference_interactive.php?c=".$tmp_conference_name."'>view</a></td>\n";
+				echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_conference_interactive.php?c=".$conference_name."'>view</a></td>\n";
 				echo "</tr>\n";
 
 				if ($c==0) { $c=1; } else { $c=0; }

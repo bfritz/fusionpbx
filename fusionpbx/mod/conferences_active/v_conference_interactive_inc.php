@@ -111,7 +111,6 @@ else {
 	}
 
 //replace the space with underscore
-	$conference_name = str_replace("_", " ", $conference_name);
 	$conference_name = $conference_name.'-'.$_SESSION['domains'][$v_id]['domain'];
 
 //create the conference list command

@@ -98,6 +98,10 @@ $order = $_GET["order"];
 		$dialplan_order = check_str($_POST["dialplan_order"]);
 		$pin_number = check_str($_POST["pin_number"]);
 
+		//replace common characters that can cause problems
+		$extension_name = str_replace(" ", "-", $extension_name);
+		$extension_name = str_replace("'", "", $extension_name);
+
 		//prepare the user list for the database
 		$user_list = $_POST["user_list"];
 		if (strlen($user_list) > 0) {
@@ -388,6 +392,7 @@ $order = $_GET["order"];
 		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 		$row = $db->query($sql)->fetch();
 		$extension_name = $row['extensionname'];
+		$extension_name = str_replace("-", " ", $extension_name);
 		$context = $row['context'];
 		$dialplan_order = $row['dialplanorder'];
 		$enabled = $row['enabled'];

@@ -87,11 +87,13 @@ require_once "includes/paging.php";
 
 	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
-	echo "	<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Conferences\n";
-	echo "		</strong></span></span>\n";
+	echo "	<td align='left'>\n";
+	echo "		<span class=\"vexpl\"><span class=\"red\">\n";
+	echo "			<strong>Conferences</strong>\n";
+	echo "		</span></span>\n";
 	echo "	</td>\n";
 	echo "	<td align='right'>\n";
-	//echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='v_conferences.php';\">\n";
+	echo "		&nbsp;\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -103,7 +105,6 @@ require_once "includes/paging.php";
 	}
 	echo "		</span>\n";
 	echo "	</td>\n";
-	echo "\n";
 	echo "	</tr>\n";
 	echo "	</table>";
 
@@ -203,13 +204,14 @@ require_once "includes/paging.php";
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) {
-		//no results
-	}
-	else {
+	if ($resultcount > 0) {
 		foreach($result as $row) {
+			$extension_display_name = $row['extensionname'];
+			$extension_display_name = str_replace("-", " ", $extension_display_name);
+			$extension_display_name = str_replace("_", " ", $extension_display_name);
+
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['extensionname']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$extension_display_name."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='".PROJECT_PATH."/mod/conferences_active/v_conference_interactive.php?c=".$row['extensionname']."'>view</a></td>\n";
 			if (permission_exists('conferences_add')) {
 				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['dialplanorder']."</td>\n";
@@ -268,9 +270,5 @@ require_once "includes/paging.php";
 
 //show the footer
 	require_once "includes/footer.php";
-	unset ($resultcount);
-	unset ($result);
-	unset ($key);
-	unset ($val);
-	unset ($c);
+
 ?>
