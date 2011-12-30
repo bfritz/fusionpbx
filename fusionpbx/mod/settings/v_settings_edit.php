@@ -56,13 +56,13 @@ else {
 		$xml_rpc_auth_user = check_str($_POST["xml_rpc_auth_user"]);
 		$xml_rpc_auth_pass = check_str($_POST["xml_rpc_auth_pass"]);
 		$admin_pin = check_str($_POST["admin_pin"]);
-		$smtphost = check_str($_POST["smtphost"]);
-		$smtpsecure = check_str($_POST["smtpsecure"]);
-		$smtpauth = check_str($_POST["smtpauth"]);
-		$smtpusername = check_str($_POST["smtpusername"]);
-		$smtppassword = check_str($_POST["smtppassword"]);
-		$smtpfrom = check_str($_POST["smtpfrom"]);
-		$smtpfromname = check_str($_POST["smtpfromname"]);
+		$smtp_host = check_str($_POST["smtp_host"]);
+		$smtp_secure = check_str($_POST["smtp_secure"]);
+		$smtp_auth = check_str($_POST["smtp_auth"]);
+		$smtp_username = check_str($_POST["smtp_username"]);
+		$smtp_password = check_str($_POST["smtp_password"]);
+		$smtp_from = check_str($_POST["smtp_from"]);
+		$smtp_from_name = check_str($_POST["smtp_from_name"]);
 		$mod_shout_decoder = check_str($_POST["mod_shout_decoder"]);
 		$mod_shout_volume = check_str($_POST["mod_shout_volume"]);
 	}
@@ -84,13 +84,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($xml_rpc_auth_user) == 0) { $msg .= "Please provide: XML RPC Auth User<br>\n"; }
 		//if (strlen($xml_rpc_auth_pass) == 0) { $msg .= "Please provide: XML RPC Auth Password<br>\n"; }
 		//if (strlen($admin_pin) == 0) { $msg .= "Please provide: Admin PIN Number<br>\n"; }
-		//if (strlen($smtphost) == 0) { $msg .= "Please provide: SMTP Host<br>\n"; }
-		//if (strlen($smtpsecure) == 0) { $msg .= "Please provide: SMTP Secure<br>\n"; }
-		//if (strlen($smtpauth) == 0) { $msg .= "Please provide: SMTP Auth<br>\n"; }
-		//if (strlen($smtpusername) == 0) { $msg .= "Please provide: SMTP Username<br>\n"; }
-		//if (strlen($smtppassword) == 0) { $msg .= "Please provide: SMTP Password<br>\n"; }
-		//if (strlen($smtpfrom) == 0) { $msg .= "Please provide: SMTP From<br>\n"; }
-		//if (strlen($smtpfromname) == 0) { $msg .= "Please provide: SMTP From Name<br>\n"; }
+		//if (strlen($smtp_host) == 0) { $msg .= "Please provide: SMTP Host<br>\n"; }
+		//if (strlen($smtp_secure) == 0) { $msg .= "Please provide: SMTP Secure<br>\n"; }
+		//if (strlen($smtp_auth) == 0) { $msg .= "Please provide: SMTP Auth<br>\n"; }
+		//if (strlen($smtp_username) == 0) { $msg .= "Please provide: SMTP Username<br>\n"; }
+		//if (strlen($smtp_password) == 0) { $msg .= "Please provide: SMTP Password<br>\n"; }
+		//if (strlen($smtp_from) == 0) { $msg .= "Please provide: SMTP From<br>\n"; }
+		//if (strlen($smtp_from_name) == 0) { $msg .= "Please provide: SMTP From Name<br>\n"; }
 		//if (strlen($mod_shout_decoder) == 0) { $msg .= "Please provide: Mod Shout Decoder<br>\n"; }
 		//if (strlen($mod_shout_volume) == 0) { $msg .= "Please provide: Mod Shout Volume<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -122,13 +122,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "xml_rpc_auth_user, ";
 				$sql .= "xml_rpc_auth_pass, ";
 				$sql .= "admin_pin, ";
-				$sql .= "smtphost, ";
-				$sql .= "smtpsecure, ";
-				$sql .= "smtpauth, ";
-				$sql .= "smtpusername, ";
-				$sql .= "smtppassword, ";
-				$sql .= "smtpfrom, ";
-				$sql .= "smtpfromname, ";
+				$sql .= "smtp_host, ";
+				$sql .= "smtp_secure, ";
+				$sql .= "smtp_auth, ";
+				$sql .= "smtp_username, ";
+				$sql .= "smtp_password, ";
+				$sql .= "smtp_from, ";
+				$sql .= "smtp_from_name, ";
 				$sql .= "mod_shout_decoder, ";
 				$sql .= "mod_shout_volume ";
 				$sql .= ")";
@@ -145,13 +145,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$xml_rpc_auth_user', ";
 				$sql .= "'$xml_rpc_auth_pass', ";
 				$sql .= "'$admin_pin', ";
-				$sql .= "'$smtphost', ";
-				$sql .= "'$smtpsecure', ";
-				$sql .= "'$smtpauth', ";
-				$sql .= "'$smtpusername', ";
-				$sql .= "'$smtppassword', ";
-				$sql .= "'$smtpfrom', ";
-				$sql .= "'$smtpfromname', ";
+				$sql .= "'$smtp_host', ";
+				$sql .= "'$smtp_secure', ";
+				$sql .= "'$smtp_auth', ";
+				$sql .= "'$smtp_username', ";
+				$sql .= "'$smtp_password', ";
+				$sql .= "'$smtp_from', ";
+				$sql .= "'$smtp_from_name', ";
 				$sql .= "'$mod_shout_decoder', ";
 				$sql .= "'$mod_shout_volume' ";
 				$sql .= ")";
@@ -183,13 +183,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "xml_rpc_auth_user = '$xml_rpc_auth_user', ";
 				$sql .= "xml_rpc_auth_pass = '$xml_rpc_auth_pass', ";
 				$sql .= "admin_pin = '$admin_pin', ";
-				$sql .= "smtphost = '$smtphost', ";
-				$sql .= "smtpsecure = '$smtpsecure', ";
-				$sql .= "smtpauth = '$smtpauth', ";
-				$sql .= "smtpusername = '$smtpusername', ";
-				$sql .= "smtppassword = '$smtppassword', ";
-				$sql .= "smtpfrom = '$smtpfrom', ";
-				$sql .= "smtpfromname = '$smtpfromname', ";
+				$sql .= "smtp_host = '$smtp_host', ";
+				$sql .= "smtp_secure = '$smtp_secure', ";
+				$sql .= "smtp_auth = '$smtp_auth', ";
+				$sql .= "smtp_username = '$smtp_username', ";
+				$sql .= "smtp_password = '$smtp_password', ";
+				$sql .= "smtp_from = '$smtp_from', ";
+				$sql .= "smtp_from_name = '$smtp_from_name', ";
 				$sql .= "mod_shout_decoder = '$mod_shout_decoder', ";
 				$sql .= "mod_shout_volume = '$mod_shout_volume' ";
 				$sql .= "where setting_id = '$setting_id' ";
@@ -231,13 +231,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
 			$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
 			$admin_pin = $row["admin_pin"];
-			$smtphost = $row["smtphost"];
-			$smtpsecure = $row["smtpsecure"];
-			$smtpauth = $row["smtpauth"];
-			$smtpusername = $row["smtpusername"];
-			$smtppassword = $row["smtppassword"];
-			$smtpfrom = $row["smtpfrom"];
-			$smtpfromname = $row["smtpfromname"];
+			$smtp_host = $row["smtp_host"];
+			$smtp_secure = $row["smtp_secure"];
+			$smtp_auth = $row["smtp_auth"];
+			$smtp_username = $row["smtp_username"];
+			$smtp_password = $row["smtp_password"];
+			$smtp_from = $row["smtp_from"];
+			$smtp_from_name = $row["smtp_from_name"];
 			$mod_shout_decoder = $row["mod_shout_decoder"];
 			$mod_shout_volume = $row["mod_shout_volume"];
 			break; //limit to 1 row
@@ -384,7 +384,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    SMTP Host:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='smtphost' maxlength='255' value=\"$smtphost\">\n";
+	echo "    <input class='formfld' type='text' name='smtp_host' maxlength='255' value=\"$smtp_host\">\n";
 	echo "<br />\n";
 	echo "Enter the SMTP host address. TLS example: smtp.gmail.com:587\n";
 	echo "</td>\n";
@@ -395,21 +395,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    SMTP Secure:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='smtpsecure'>\n";
+	echo "    <select class='formfld' name='smtp_secure'>\n";
 	echo "    <option value=''></option>\n";
-	if ($smtpsecure == "none") { 
+	if ($smtp_secure == "none") { 
 	echo "    <option value='none' SELECTED >none</option>\n";
 	}
 	else {
 	echo "    <option value='none'>none</option>\n";
 	}
-	if ($smtpsecure == "tls") { 
+	if ($smtp_secure == "tls") { 
 	echo "    <option value='tls' SELECTED >tls</option>\n";
 	}
 	else {
 	echo "    <option value='tls'>tls</option>\n";
 	}
-	if ($smtpsecure == "ssl") { 
+	if ($smtp_secure == "ssl") { 
 	echo "    <option value='ssl' SELECTED >ssl</option>\n";
 	}
 	else {
@@ -426,15 +426,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    SMTP Auth:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='smtpauth'>\n";
+	echo "    <select class='formfld' name='smtp_auth'>\n";
 	echo "    <option value=''></option>\n";
-	if ($smtpauth == "true") { 
+	if ($smtp_auth == "true") { 
 	echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 	echo "    <option value='true'>true</option>\n";
 	}
-	if ($smtpauth == "false") { 
+	if ($smtp_auth == "false") { 
 	echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {
@@ -451,7 +451,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    SMTP Username:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='smtpusername' maxlength='255' value=\"$smtpusername\">\n";
+	echo "    <input class='formfld' type='text' name='smtp_username' maxlength='255' value=\"$smtp_username\">\n";
 	echo "<br />\n";
 	echo "Enter the SMTP authentication username.\n";
 	echo "</td>\n";
@@ -462,9 +462,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    SMTP Password:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='password' name='smtppassword' id='smtppassword' onfocus=\"document.getElementById('show_smtppassword').innerHTML = 'Password: '+document.getElementById('smtppassword').value;\" onblur=\"document.getElementById('show_smtppassword').innerHTML = ''\" maxlength='50' value=\"$smtppassword\">\n";
+	echo "    <input class='formfld' type='password' name='smtp_password' id='smtp_password' onfocus=\"document.getElementById('show_smtp_password').innerHTML = 'Password: '+document.getElementById('smtp_password').value;\" onblur=\"document.getElementById('show_smtp_password').innerHTML = ''\" maxlength='50' value=\"$smtp_password\">\n";
 	echo "<br />\n";
-	echo "Enter the SMTP authentication password. <span id='show_smtppassword'></span>\n";
+	echo "Enter the SMTP authentication password. <span id='show_smtp_password'></span>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -473,7 +473,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    SMTP From:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='smtpfrom' maxlength='255' value=\"$smtpfrom\">\n";
+	echo "    <input class='formfld' type='text' name='smtp_from' maxlength='255' value=\"$smtp_from\">\n";
 	echo "<br />\n";
 	echo "Enter the SMTP From email address.\n";
 	echo "</td>\n";
@@ -484,7 +484,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    SMTP From Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='smtpfromname' maxlength='255' value=\"$smtpfromname\">\n";
+	echo "    <input class='formfld' type='text' name='smtp_from_name' maxlength='255' value=\"$smtp_from_name\">\n";
 	echo "<br />\n";
 	echo "Enter the SMTP From Name.\n";
 	echo "</td>\n";

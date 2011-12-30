@@ -220,20 +220,20 @@ if (defined('STDIN')) {
 		//prepare the mail object
 			$mail = new PHPMailer();
 			$mail->IsSMTP(); // set mailer to use SMTP
-			if ($v_smtpauth == "true") {
-				$mail->SMTPAuth = $v_smtpauth; // turn on/off SMTP authentication
+			if ($v_smtp_auth == "true") {
+				$mail->SMTPAuth = $v_smtp_auth; // turn on/off SMTP authentication
 			}
-			$mail->Host   = $v_smtphost;
-			if (strlen($v_smtpsecure)>0) {
-				$mail->SMTPSecure = $v_smtpsecure;
+			$mail->Host   = $v_smtp_host;
+			if (strlen($v_smtp_secure)>0) {
+				$mail->SMTPSecure = $v_smtp_secure;
 			}
-			if ($v_smtpusername) {
-				$mail->Username = $v_smtpusername;
-				$mail->Password = $v_smtppassword;
+			if ($v_smtp_username) {
+				$mail->Username = $v_smtp_username;
+				$mail->Password = $v_smtp_password;
 			}
 			$mail->SMTPDebug  = 2;
-			$mail->From       = $v_smtpfrom;
-			$mail->FromName   = $v_smtpfromname;
+			$mail->From       = $v_smtp_from;
+			$mail->FromName   = $v_smtp_from_name;
 			$mail->Subject    = $tmp_subject;
 			$mail->AltBody    = $tmp_textplain;
 			$mail->MsgHTML($tmp_texthtml);
@@ -249,8 +249,8 @@ if (defined('STDIN')) {
 			}
 
 		//output to the log
-			echo "v_smtpfrom: $v_smtpfrom\n";
-			echo "v_smtpfromname: $v_smtpfromname\n";
+			echo "v_smtp_from: $v_smtp_from\n";
+			echo "v_smtp_from_name: $v_smtp_from_name\n";
 			echo "tmp_subject: $tmp_subject\n";
 
 		//add teh attachments

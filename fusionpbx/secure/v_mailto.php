@@ -120,16 +120,16 @@ include "v_config_cli.php";
 	$mail = new PHPMailer();
 
 	$mail->IsSMTP();						// set mailer to use SMTP
-	if ($v_smtpauth == "true") {
-		$mail->SMTPAuth = $v_smtpauth;		// turn on/off SMTP authentication
+	if ($v_smtp_auth == "true") {
+		$mail->SMTPAuth = $v_smtp_auth;		// turn on/off SMTP authentication
 	}
-	$mail->Host   = $v_smtphost;
-	if (strlen($v_smtpsecure)>0) {
-		$mail->SMTPSecure = $v_smtpsecure;
+	$mail->Host   = $v_smtp_host;
+	if (strlen($v_smtp_secure)>0) {
+		$mail->SMTPSecure = $v_smtp_secure;
 	}
-	if ($v_smtpusername) {
-		$mail->Username = $v_smtpusername;
-		$mail->Password = $v_smtppassword;
+	if ($v_smtp_username) {
+		$mail->Username = $v_smtp_username;
+		$mail->Password = $v_smtp_password;
 	}
 	$mail->SMTPDebug  = 2;
 
@@ -142,8 +142,8 @@ include "v_config_cli.php";
 	//echo "Body: ".$body."\n";
 
 //add to, from, fromname, and subject to the email
-	$mail->From       = $v_smtpfrom;
-	$mail->FromName   = $v_smtpfromname;
+	$mail->From       = $v_smtp_from;
+	$mail->FromName   = $v_smtp_from_name;
 	$mail->Subject    = $subject;
 
 	$to = trim($to, "<> ");

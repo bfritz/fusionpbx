@@ -1639,13 +1639,13 @@ function sync_package_v_settings() {
 		//$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
 		//$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
 		//$admin_pin = $row["admin_pin"];
-		//$smtphost = $row["smtphost"];
-		//$smtpsecure = $row["smtpsecure"];
-		//$smtpauth = $row["smtpauth"];
-		//$smtpusername = $row["smtpusername"];
-		//$smtppassword = $row["smtppassword"];
-		//$smtpfrom = $row["smtpfrom"];
-		//$smtpfromname = $row["smtpfromname"];
+		//$smtp_host = $row["smtp_host"];
+		//$smtp_secure = $row["smtp_secure"];
+		//$smtp_auth = $row["smtp_auth"];
+		//$smtp_username = $row["smtp_username"];
+		//$smtp_password = $row["smtp_password"];
+		//$smtp_from = $row["smtp_from"];
+		//$smtp_from_name = $row["smtp_from_name"];
 		//$mod_shout_decoder = $row["mod_shout_decoder"];
 		//$mod_shout_volume = $row["mod_shout_volume"];
 
@@ -1655,18 +1655,18 @@ function sync_package_v_settings() {
 		$tmpxml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
 		$tmpxml .= "\n";
 		$tmpxml .= "//set the email variables\n";
-		$tmpxml .= "	\$v_smtphost = \"".$row["smtphost"]."\";\n";
-		if ($row["smtpsecure"] == "none") {
-			$tmpxml .= "	\$v_smtpsecure = \"\";\n";
+		$tmpxml .= "	\$v_smtp_host = \"".$row["smtp_host"]."\";\n";
+		if ($row["smtp_secure"] == "none") {
+			$tmpxml .= "	\$v_smtp_secure = \"\";\n";
 		}
 		else {
-			$tmpxml .= "	\$v_smtpsecure = \"".$row["smtpsecure"]."\";\n";
+			$tmpxml .= "	\$v_smtp_secure = \"".$row["smtp_secure"]."\";\n";
 		}
-		$tmpxml .= "	\$v_smtpauth = \"".$row["smtpauth"]."\";\n";
-		$tmpxml .= "	\$v_smtpusername = \"".$row["smtpusername"]."\";\n";
-		$tmpxml .= "	\$v_smtppassword = \"".$row["smtppassword"]."\";\n";
-		$tmpxml .= "	\$v_smtpfrom = \"".$row["smtpfrom"]."\";\n";
-		$tmpxml .= "	\$v_smtpfromname = \"".$row["smtpfromname"]."\";\n";
+		$tmpxml .= "	\$v_smtp_auth = \"".$row["smtp_auth"]."\";\n";
+		$tmpxml .= "	\$v_smtp_username = \"".$row["smtp_username"]."\";\n";
+		$tmpxml .= "	\$v_smtp_password = \"".$row["smtp_password"]."\";\n";
+		$tmpxml .= "	\$v_smtp_from = \"".$row["smtp_from"]."\";\n";
+		$tmpxml .= "	\$v_smtp_from_name = \"".$row["smtp_from_name"]."\";\n";
 		$tmpxml .= "\n";
 		$tmpxml .= "//set system dir variables\n";
 		$tmpxml .= "	\$v_storage_dir = \"".$v_storage_dir."\";\n";
