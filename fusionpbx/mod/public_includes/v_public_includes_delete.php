@@ -49,17 +49,17 @@ if (strlen($id)>0) {
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$extension_name = $row["extension_name"];
-		$publicorder = $row["publicorder"];
+		$public_order = $row["public_order"];
 		//$enabled = $row["enabled"];
 		break; //limit to 1 row
 	}
 	unset ($prepstatement, $sql);
 
-	$publicincludefilename = $publicorder."_".$extension_name.".xml";
+	$publicincludefilename = $public_order."_".$extension_name.".xml";
 	if (file_exists($v_conf_dir."/dialplan/public/".$publicincludefilename)) {
 		unlink($v_conf_dir."/dialplan/public/".$publicincludefilename);
 	}
-	unset($publicincludefilename, $publicorder, $extension_name);
+	unset($publicincludefilename, $public_order, $extension_name);
 
 	//delete child data
 	$sql = "";

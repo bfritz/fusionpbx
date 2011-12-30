@@ -59,8 +59,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'dialplan_order';
-		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'dialplanorder';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'public_order';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'publicorder';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
@@ -112,7 +112,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'field_type';
-		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'field_type';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'fieldtype';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;

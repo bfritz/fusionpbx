@@ -86,7 +86,7 @@ $order = $_GET["order"];
 			$sql .= "(";
 			$sql .= "v_id, ";
 			$sql .= "extension_name, ";
-			$sql .= "publicorder, ";
+			$sql .= "public_order, ";
 			$sql .= "context, ";
 			$sql .= "enabled, ";
 			$sql .= "descr ";
@@ -373,7 +373,7 @@ function type_onchange(field_type) {
 	$sql = "";
 	$sql .= " select * from v_public_includes ";
 	$sql .= "where v_id = '$v_id' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder asc, extension_name asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by public_order asc, extension_name asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -390,7 +390,7 @@ function type_onchange(field_type) {
 	$sql = "";
 	$sql .= " select * from v_public_includes ";
 	$sql .= " where v_id = '$v_id' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder asc, extension_name asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by public_order asc, extension_name asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -407,7 +407,7 @@ function type_onchange(field_type) {
 
 	echo "<tr>\n";
 	echo thorderby('extension_name', 'Extension Name', $orderby, $order);
-	echo thorderby('publicorder', 'Order', $orderby, $order);
+	echo thorderby('public_order', 'Order', $orderby, $order);
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
 	if (ifgroup("superadmin")) {
@@ -429,7 +429,7 @@ function type_onchange(field_type) {
 		foreach($result as $row) {
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extension_name]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[publicorder]."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[public_order]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "	<td valign='top' class='rowstylebg' width='35%'>&nbsp;&nbsp;".$row[descr]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";

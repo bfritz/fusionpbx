@@ -49,7 +49,7 @@ else {
 		//$v_id = check_str($_POST["v_id"]);
 		$extension_name = check_str($_POST["extension_name"]);
 		$extension_continue = check_str($_POST["extension_continue"]);
-		$publicorder = check_str($_POST["publicorder"]);
+		$public_order = check_str($_POST["public_order"]);
 		$context = check_str($_POST["context"]);
 		$enabled = check_str($_POST["enabled"]);
 		$descr = check_str($_POST["descr"]);
@@ -65,7 +65,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
-		if (strlen($publicorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		if (strlen($public_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
 		if (strlen($extension_continue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
 		//if (strlen($context) == 0) { $msg .= "Please provide: Context<br>\n"; }
 		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
@@ -94,7 +94,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "(";
 			$sql .= "v_id, ";
 			$sql .= "extension_name, ";
-			$sql .= "publicorder, ";
+			$sql .= "public_order, ";
 			$sql .= "extension_continue, ";
 			$sql .= "context, ";
 			$sql .= "enabled, ";
@@ -104,7 +104,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "(";
 			$sql .= "'$v_id', ";
 			$sql .= "'$extension_name', ";
-			$sql .= "'$publicorder', ";
+			$sql .= "'$public_order', ";
 			$sql .= "'$extension_continue', ";
 			$sql .= "'default', ";
 			$sql .= "'$enabled', ";
@@ -135,21 +135,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
 				$orig_extension_name = $row["extension_name"];
-				$orig_publicorder = $row["publicorder"];
+				$orig_public_order = $row["public_order"];
 				//$enabled = $row["enabled"];
 				break; //limit to 1 row
 			}
 			unset ($prepstatement, $sql);
 
-			$publicincludefilename = $orig_publicorder."_".$orig_extension_name.".xml";
+			$publicincludefilename = $orig_public_order."_".$orig_extension_name.".xml";
 			if (file_exists($v_conf_dir."/dialplan/public/".$publicincludefilename)) {
 				unlink($v_conf_dir."/dialplan/public/".$publicincludefilename);
 			}
-			unset($publicincludefilename, $orig_publicorder, $orig_extension_name);
+			unset($publicincludefilename, $orig_public_order, $orig_extension_name);
 
 			$sql = "update v_public_includes set ";
 			$sql .= "extension_name = '$extension_name', ";
-			$sql .= "publicorder = '$publicorder', ";
+			$sql .= "public_order = '$public_order', ";
 			$sql .= "extension_continue = '$extension_continue', ";
 			$sql .= "context = '$context', ";
 			$sql .= "enabled = '$enabled', ";
@@ -186,7 +186,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		foreach ($result as &$row) {
 			//$v_id = $row["v_id"];
 			$extension_name = $row["extension_name"];
-			$publicorder = $row["publicorder"];
+			$public_order = $row["public_order"];
 			$extension_continue = $row["extension_continue"];
 			$context = $row["context"];
 			$enabled = $row["enabled"];
@@ -239,10 +239,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='publicorder' class='formfld'>\n";
+	echo "              <select name='public_order' class='formfld'>\n";
 	//echo "              <option></option>\n";
-	if (strlen(htmlspecialchars($publicorder))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($publicorder)."'>".htmlspecialchars($publicorder)."</option>\n";
+	if (strlen(htmlspecialchars($public_order))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($public_order)."'>".htmlspecialchars($public_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {
@@ -259,7 +259,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	  $i++;
 	}
 	echo "              </select>\n";
-	//echo "  <input class='formfld' type='text' name='publicorder' maxlength='255' value='$publicorder'>\n";
+	//echo "  <input class='formfld' type='text' name='public_order' maxlength='255' value='$public_order'>\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

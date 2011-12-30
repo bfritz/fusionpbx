@@ -50,7 +50,7 @@ else {
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$extension_name = $row["extension_name"];
-		$publicorder = $row["publicorder"];
+		$public_order = $row["public_order"];
 		$extension_continue = $row["extension_continue"];
 		$context = $row["context"];
 		$enabled = $row["enabled"];
@@ -64,7 +64,7 @@ else {
 	$sql .= "(";
 	$sql .= "v_id, ";
 	$sql .= "extension_name, ";
-	$sql .= "publicorder, ";
+	$sql .= "public_order, ";
 	$sql .= "extension_continue, ";
 	$sql .= "context, ";
 	$sql .= "enabled, ";
@@ -74,7 +74,7 @@ else {
 	$sql .= "(";
 	$sql .= "'$v_id', ";
 	$sql .= "'$extension_name', ";
-	$sql .= "'$publicorder', ";
+	$sql .= "'$public_order', ";
 	$sql .= "'$extension_continue', ";
 	$sql .= "'default', ";
 	$sql .= "'$enabled', ";

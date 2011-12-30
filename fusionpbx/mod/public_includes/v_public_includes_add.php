@@ -44,7 +44,7 @@ require_once "includes/paging.php";
 //get the http post values and set them as php variables
 	if (count($_POST)>0) {
 		$extension_name = check_str($_POST["extension_name"]);
-		$publicorder = check_str($_POST["publicorder"]);
+		$public_order = check_str($_POST["public_order"]);
 		$condition_field_1 = check_str($_POST["condition_field_1"]);
 		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
 		$condition_field_2 = check_str($_POST["condition_field_2"]);
@@ -120,7 +120,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "(";
 		$sql .= "v_id, ";
 		$sql .= "extension_name, ";
-		$sql .= "publicorder, ";
+		$sql .= "public_order, ";
 		$sql .= "context, ";
 		$sql .= "enabled, ";
 		$sql .= "descr ";
@@ -129,7 +129,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "(";
 		$sql .= "'$v_id', ";
 		$sql .= "'$extension_name', ";
-		$sql .= "'$publicorder', ";
+		$sql .= "'$public_order', ";
 		$sql .= "'default', ";
 		$sql .= "'$enabled', ";
 		$sql .= "'$description' ";
@@ -785,10 +785,10 @@ if (field_type == "action_application_2") {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='publicorder' class='formfld' style='width: 60%;'>\n";
+	echo "              <select name='public_order' class='formfld' style='width: 60%;'>\n";
 	//echo "              <option></option>\n";
-	if (strlen(htmlspecialchars($publicorder))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($publicorder)."'>".htmlspecialchars($publicorder)."</option>\n";
+	if (strlen(htmlspecialchars($public_order))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($public_order)."'>".htmlspecialchars($public_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {
