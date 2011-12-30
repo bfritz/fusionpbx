@@ -41,7 +41,7 @@ else {
 //get the http post values and set theme as php variables
 	if (count($_POST)>0) {
 		$extension_name = check_str($_POST["extension_name"]);
-		$dialplanorder = check_str($_POST["dialplanorder"]);
+		$dialplan_order = check_str($_POST["dialplan_order"]);
 		$dialplan_expression = check_str($_POST["dialplan_expression"]);
 		$prefix_number = check_str($_POST["prefix_number"]);
 		$condition_field_1 = check_str($_POST["condition_field_1"]);
@@ -388,25 +388,25 @@ else {
 					if ($gateway_3_type == "enum") {
 						$bridge_3_data .= "\${enum_auto_route}";
 					}
-					if (strlen($dialplanorder) == 0) {
-						$dialplanorder ='999';
+					if (strlen($dialplan_order) == 0) {
+						$dialplan_order ='999';
 					}
 					$context = 'default';
-					$opt1name = 'gateway_id';
-					$opt1value = $gateway_id;
+					$opt_1_name = 'gateway_id';
+					$opt_1_value = $gateway_id;
 					$extension_continue = 'false';
-					//$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $description, $opt1name, $opt1value);
+					//$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
 
 					//add the main dialplan include entry
 						$sql = "insert into v_dialplan_includes ";
 						$sql .= "(";
 						$sql .= "v_id, ";
-						$sql .= "extensionname, ";
-						$sql .= "dialplanorder, ";
-						$sql .= "extensioncontinue, ";
+						$sql .= "extension_name, ";
+						$sql .= "dialplan_order, ";
+						$sql .= "extension_continue, ";
 						$sql .= "context, ";
-						$sql .= "opt1name, ";
-						$sql .= "opt1value, ";
+						$sql .= "opt_1_name, ";
+						$sql .= "opt_1_value, ";
 						$sql .= "enabled, ";
 						$sql .= "descr ";
 						$sql .= ") ";
@@ -414,11 +414,11 @@ else {
 						$sql .= "(";
 						$sql .= "'$v_id', ";
 						$sql .= "'$extension_name', ";
-						$sql .= "'$dialplanorder', ";
+						$sql .= "'$dialplan_order', ";
 						$sql .= "'$extension_continue', ";
 						$sql .= "'$context', ";
-						$sql .= "'$opt1name', ";
-						$sql .= "'$opt1value', ";
+						$sql .= "'$opt_1_name', ";
+						$sql .= "'$opt_1_value', ";
 						$sql .= "'$enabled', ";
 						$sql .= "'$description' ";
 						$sql .= ")";
@@ -442,83 +442,83 @@ else {
 						unset($sql);
 
 					$tag = 'condition'; //condition, action, antiaction
-					$fieldtype = 'destination_number';
-					$fielddata = $dialplan_expression;
-					$fieldorder = '005';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'destination_number';
+					$field_data = $dialplan_expression;
+					$field_order = '005';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'sip_h_X-accountcode=${accountcode}';
-					$fieldorder = '010';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'sip_h_X-accountcode=${accountcode}';
+					$field_order = '010';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'call_direction=outbound';
-					$fieldorder = '015';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'call_direction=outbound';
+					$field_order = '015';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'hangup_after_bridge=true';
-					$fieldorder = '020';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'hangup_after_bridge=true';
+					$field_order = '020';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'effective_caller_id_name=${outbound_caller_id_name}';
-					$fieldorder = '025';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'effective_caller_id_name=${outbound_caller_id_name}';
+					$field_order = '025';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'effective_caller_id_number=${outbound_caller_id_number}';
-					$fieldorder = '030';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'effective_caller_id_number=${outbound_caller_id_number}';
+					$field_order = '030';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'inherit_codec=true';
-					$fieldorder = '035';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'inherit_codec=true';
+					$field_order = '035';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					if (strlen($bridge_2_data) > 0) {
 						$tag = 'action'; //condition, action, antiaction
-						$fieldtype = 'set';
-						$fielddata = 'continue_on_fail=true';
-						$fieldorder = '040';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						$field_type = 'set';
+						$field_data = 'continue_on_fail=true';
+						$field_order = '040';
+						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					}
 
 					if ($gateway_type == "enum" || $gateway_2_type == "enum") {
 						$tag = 'action'; //condition, action, antiaction
-						$fieldtype = 'enum';
-						$fielddata = $prefix_number."$1 e164.org";
-						$fieldorder = '045';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						$field_type = 'enum';
+						$field_data = $prefix_number."$1 e164.org";
+						$field_order = '045';
+						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					}
 
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'bridge';
-					$fielddata = $action_data;
-					$fieldorder = '050';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'bridge';
+					$field_data = $action_data;
+					$field_order = '050';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					if (strlen($bridge_2_data) > 0) {
 						$tag = 'action'; //condition, action, antiaction
-						$fieldtype = 'bridge';
-						$fielddata = $bridge_2_data;
-						$fieldorder = '055';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						$field_type = 'bridge';
+						$field_data = $bridge_2_data;
+						$field_order = '055';
+						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					}
 
 					if (strlen($bridge_3_data) > 0) {
 						$tag = 'action'; //condition, action, antiaction
-						$fieldtype = 'bridge';
-						$fielddata = $bridge_3_data;
-						$fieldorder = '060';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						$field_type = 'bridge';
+						$field_data = $bridge_3_data;
+						$field_order = '060';
+						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					}
 
 					unset($bridge_2_data);
@@ -1004,10 +1004,10 @@ function type_onchange(field_type) {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='dialplanorder' class='formfld' style='width: 60%;'>\n";
+	echo "              <select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
 	//echo "              <option></option>\n";
-	if (strlen(htmlspecialchars($dialplanorder))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($dialplanorder)."'>".htmlspecialchars($dialplanorder)."</option>\n";
+	if (strlen(htmlspecialchars($dialplan_order))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {

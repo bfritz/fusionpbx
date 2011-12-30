@@ -40,7 +40,7 @@ else {
 		$extension_id = check_str($_REQUEST["id"]);
 	}
 
-//get the v_dialplan_includes data 
+//get the v_extensions data 
 	$extension_id = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";

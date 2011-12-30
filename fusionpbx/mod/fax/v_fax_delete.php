@@ -55,23 +55,23 @@ else {
 			$sql = "";
 			$sql .= "select * from v_dialplan_includes ";
 			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and opt1name = 'faxid' ";
-			$sql .= "and opt1value = '".$fax_id."' ";
+			$sql .= "and opt_1_name = 'faxid' ";
+			$sql .= "and opt_1_value = '".$fax_id."' ";
 			//echo $sql."<br>\n";
 			$prepstatement2 = $db->prepare($sql);
 			$prepstatement2->execute();
 			while($row2 = $prepstatement2->fetch(PDO::FETCH_ASSOC)) {
 				$dialplan_include_id = $row2['dialplan_include_id'];
-				$extensionname = check_str($row2['extensionname']);
+				$extension_name = check_str($row2['extension_name']);
 				$order = $row2['order'];
 				$context = $row2['context'];
 				$enabled = $row2['enabled'];
 				$descr = check_str($row2['descr']);
-				$opt1name = $row2['opt1name'];
-				$opt1value = $row2['opt1value'];
+				$opt_1_name = $row2['opt_1_name'];
+				$opt_1_value = $row2['opt_1_value'];
 				$id = $i;
-				if (file_exists($v_dialplan_default_dir."/".$order."_".$extensionname.".xml")){
-					unlink($v_dialplan_default_dir."/".$order."_".$extensionname.".xml");
+				if (file_exists($v_dialplan_default_dir."/".$order."_".$extension_name.".xml")){
+					unlink($v_dialplan_default_dir."/".$order."_".$extension_name.".xml");
 				}
 				break; //limit to 1 row
 			}

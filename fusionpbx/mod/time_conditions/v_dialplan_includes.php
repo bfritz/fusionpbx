@@ -55,10 +55,10 @@ $order = $_GET["order"];
 		foreach ($result as &$row) {
 			$dialplan_include_id = $row["dialplan_include_id"];
 			//$tag = $row["tag"];
-			//$fieldorder = $row["fieldorder"];
-			$fieldtype = $row["fieldtype"];
-			$fielddata = $row["fielddata"];
-			switch ($row['fieldtype']) {
+			//$field_order = $row["field_order"];
+			$field_type = $row["field_type"];
+			$field_data = $row["field_data"];
+			switch ($row['field_type']) {
 			case "hour":
 				$time_array[$x]['dialplan_include_id'] = $dialplan_include_id;
 				$x++;
@@ -153,7 +153,7 @@ $order = $_GET["order"];
 			$x++;
 		}
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -188,7 +188,7 @@ $order = $_GET["order"];
 			$x++;
 		}
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -203,8 +203,8 @@ $order = $_GET["order"];
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('extensionname', 'Extension Name', $orderby, $order);
-	echo thorderby('dialplanorder', 'Order', $orderby, $order);
+	echo thorderby('extension_name', 'Extension Name', $orderby, $order);
+	echo thorderby('dialplan_order', 'Order', $orderby, $order);
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
@@ -221,8 +221,8 @@ $order = $_GET["order"];
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extensionname]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplanorder]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extension_name]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplan_order]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";

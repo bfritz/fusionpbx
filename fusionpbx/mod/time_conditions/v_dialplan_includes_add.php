@@ -44,7 +44,7 @@ $order = $_GET["order"];
 	if (count($_POST)>0) {
 		$extension_name = check_str($_POST["extension_name"]);
 		$extension_number = check_str($_POST["extension_number"]);
-		$dialplanorder = check_str($_POST["dialplanorder"]);
+		$dialplan_order = check_str($_POST["dialplan_order"]);
 		$condition_hour = check_str($_POST["condition_hour"]);
 		$condition_minute = check_str($_POST["condition_minute"]);
 		$condition_minute_of_day = check_str($_POST["condition_minute_of_day"]);
@@ -106,9 +106,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "insert into v_dialplan_includes ";
 		$sql .= "(";
 		$sql .= "v_id, ";
-		$sql .= "extensionname, ";
-		$sql .= "dialplanorder, ";
-		$sql .= "extensioncontinue, ";
+		$sql .= "extension_name, ";
+		$sql .= "dialplan_order, ";
+		$sql .= "extension_continue, ";
 		$sql .= "context, ";
 		$sql .= "enabled, ";
 		$sql .= "descr ";
@@ -117,7 +117,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "(";
 		$sql .= "'$v_id', ";
 		$sql .= "'$extension_name', ";
-		$sql .= "'$dialplanorder', ";
+		$sql .= "'$dialplan_order', ";
 		$sql .= "'false', ";
 		$sql .= "'default', ";
 		$sql .= "'$enabled', ";
@@ -146,9 +146,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -170,9 +170,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -192,9 +192,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -214,9 +214,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -236,9 +236,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -258,9 +258,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -280,9 +280,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -302,9 +302,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -324,9 +324,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -346,9 +346,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -368,9 +368,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -392,9 +392,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "v_id, ";
 		$sql .= "dialplan_include_id, ";
 		$sql .= "tag, ";
-		$sql .= "fieldtype, ";
-		$sql .= "fielddata, ";
-		$sql .= "fieldorder ";
+		$sql .= "field_type, ";
+		$sql .= "field_data, ";
+		$sql .= "field_order ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
@@ -415,9 +415,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "dialplan_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -742,15 +742,15 @@ echo "</tr>\n";
 //echo "    Continue:\n";
 //echo "</td>\n";
 //echo "<td class='vtable' align='left'>\n";
-//echo "    <select class='formfld' name='extensioncontinue' style='width: 60%;'>\n";
+//echo "    <select class='formfld' name='extension_continue' style='width: 60%;'>\n";
 //echo "    <option value=''></option>\n";
-//if ($extensioncontinue == "true") { 
+//if ($extension_continue == "true") { 
 //	echo "    <option value='true' SELECTED >true</option>\n";
 //}
 //else {
 //	echo "    <option value='true'>true</option>\n";
 //}
-//if ($extensioncontinue == "false") { 
+//if ($extension_continue == "false") { 
 //	echo "    <option value='false' SELECTED >false</option>\n";
 //}
 //else {
@@ -1064,10 +1064,10 @@ echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "    Order:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
-echo "              <select name='dialplanorder' class='formfld' style='width: 60%;'>\n";
+echo "              <select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
 //echo "              <option></option>\n";
-if (strlen(htmlspecialchars($dialplanorder))> 0) {
-	echo "              <option selected='yes' value='".htmlspecialchars($dialplanorder)."'>".htmlspecialchars($dialplanorder)."</option>\n";
+if (strlen(htmlspecialchars($dialplan_order))> 0) {
+	echo "              <option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
 }
 $i=0;
 while($i<=999) {

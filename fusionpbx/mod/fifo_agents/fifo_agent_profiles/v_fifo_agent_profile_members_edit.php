@@ -210,14 +210,14 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "<select name=\"fifo_name\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
 	foreach ($result as &$row) {
-		if ($row["fieldtype"] == "fifo") {
-			//if (strpos($row["fielddata"], '@${domain_name} in') !== false) {
-				//echo "rtrim(".$row["fielddata"].", ' in') == ".$fifo_name."<br />";
-				if (rtrim($row["fielddata"], " in") == $fifo_name) {
-					echo "		<option value='".rtrim($row["fielddata"], " in")."' selected='selected'>".rtrim($row["fielddata"], " in")."</option>\n";
+		if ($row["field_type"] == "fifo") {
+			//if (strpos($row["field_data"], '@${domain_name} in') !== false) {
+				//echo "rtrim(".$row["field_data"].", ' in') == ".$fifo_name."<br />";
+				if (rtrim($row["field_data"], " in") == $fifo_name) {
+					echo "		<option value='".rtrim($row["field_data"], " in")."' selected='selected'>".rtrim($row["field_data"], " in")."</option>\n";
 				}
 				else {
-					echo "		<option value='".rtrim($row["fielddata"], " in")."'>".rtrim($row["fielddata"], " in")."</option>\n";
+					echo "		<option value='".rtrim($row["field_data"], " in")."'>".rtrim($row["field_data"], " in")."</option>\n";
 				}
 			//}
 		}

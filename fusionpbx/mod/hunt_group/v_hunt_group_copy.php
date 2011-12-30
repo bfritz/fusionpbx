@@ -42,7 +42,7 @@ require_once "includes/paging.php";
 		$hunt_group_id = check_str($_REQUEST["id"]);
 	}
 
-//get the v_dialplan_includes data 
+//get the v_hunt_group data 
 	$sql = "";
 	$sql .= "select * from v_hunt_group ";
 	$sql .= "where hunt_group_id = '$hunt_group_id' ";
@@ -119,7 +119,7 @@ require_once "includes/paging.php";
 		}
 		unset($sql);
 
-	//get the the dialplan details
+	//get the the hunt group destinations
 		$sql = "";
 		$sql .= "select * from v_hunt_group_destinations ";
 		$sql .= "where v_id = '$v_id' ";

@@ -40,7 +40,7 @@ else {
 		$public_include_id = check_str($_REQUEST["id"]);
 	}
 
-//get the v_dialplan_includes data 
+//get the public includes data 
 	$sql = "";
 	$sql .= "select * from v_public_includes ";
 	$sql .= "where v_id = '$v_id' ";
@@ -49,9 +49,9 @@ else {
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$extensionname = $row["extensionname"];
+		$extension_name = $row["extension_name"];
 		$publicorder = $row["publicorder"];
-		$extensioncontinue = $row["extensioncontinue"];
+		$extension_continue = $row["extension_continue"];
 		$context = $row["context"];
 		$enabled = $row["enabled"];
 		$descr = 'copy: '.$row["descr"];
@@ -63,9 +63,9 @@ else {
 	$sql = "insert into v_public_includes ";
 	$sql .= "(";
 	$sql .= "v_id, ";
-	$sql .= "extensionname, ";
+	$sql .= "extension_name, ";
 	$sql .= "publicorder, ";
-	$sql .= "extensioncontinue, ";
+	$sql .= "extension_continue, ";
 	$sql .= "context, ";
 	$sql .= "enabled, ";
 	$sql .= "descr ";
@@ -73,9 +73,9 @@ else {
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$v_id', ";
-	$sql .= "'$extensionname', ";
+	$sql .= "'$extension_name', ";
 	$sql .= "'$publicorder', ";
-	$sql .= "'$extensioncontinue', ";
+	$sql .= "'$extension_continue', ";
 	$sql .= "'default', ";
 	$sql .= "'$enabled', ";
 	$sql .= "'$descr' ";
@@ -108,9 +108,9 @@ else {
 		$v_id = $row["v_id"];
 		$public_include_id = $row["public_include_id"];
 		$tag = $row["tag"];
-		$fieldtype = $row["fieldtype"];
-		$fielddata = $row["fielddata"];
-		$fieldorder = $row["fieldorder"];
+		$field_type = $row["field_type"];
+		$field_data = $row["field_data"];
+		$field_order = $row["field_order"];
 
 		//copy the public details
 			$sql = "insert into v_public_includes_details ";
@@ -118,18 +118,18 @@ else {
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$v_id', ";
 			$sql .= "'".check_str($db_public_include_id)."', ";
 			$sql .= "'".check_str($tag)."', ";
-			$sql .= "'".check_str($fieldtype)."', ";
-			$sql .= "'".check_str($fielddata)."', ";
-			$sql .= "'".check_str($fieldorder)."' ";
+			$sql .= "'".check_str($field_type)."', ";
+			$sql .= "'".check_str($field_data)."', ";
+			$sql .= "'".check_str($field_order)."' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);

@@ -51,9 +51,9 @@ else {
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$v_id = $row["v_id"];
-		$extensionname = $row["extensionname"];
-		$dialplanorder = $row["dialplanorder"];
-		$extensioncontinue = $row["extensioncontinue"];
+		$extension_name = $row["extension_name"];
+		$dialplan_order = $row["dialplan_order"];
+		$extension_continue = $row["extension_continue"];
 		$context = $row["context"];
 		$enabled = $row["enabled"];
 		$descr = "copy: ".$row["descr"];
@@ -65,9 +65,9 @@ else {
 		$sql = "insert into v_dialplan_includes ";
 		$sql .= "(";
 		$sql .= "v_id, ";
-		$sql .= "extensionname, ";
-		$sql .= "dialplanorder, ";
-		$sql .= "extensioncontinue, ";
+		$sql .= "extension_name, ";
+		$sql .= "dialplan_order, ";
+		$sql .= "extension_continue, ";
 		$sql .= "context, ";
 		$sql .= "enabled, ";
 		$sql .= "descr ";
@@ -75,9 +75,9 @@ else {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$v_id', ";
-		$sql .= "'$extensionname', ";
-		$sql .= "'$dialplanorder', ";
-		$sql .= "'$extensioncontinue', ";
+		$sql .= "'$extension_name', ";
+		$sql .= "'$dialplan_order', ";
+		$sql .= "'$extension_continue', ";
 		$sql .= "'$context', ";
 		$sql .= "'$enabled', ";
 		$sql .= "'$descr' ";
@@ -110,9 +110,9 @@ else {
 			$v_id = $row["v_id"];
 			//$dialplan_include_id = $row["dialplan_include_id"];
 			$tag = $row["tag"];
-			$fieldorder = $row["fieldorder"];
-			$fieldtype = $row["fieldtype"];
-			$fielddata = $row["fielddata"];
+			$field_order = $row["field_order"];
+			$field_type = $row["field_type"];
+			$field_data = $row["field_data"];
 
 			//copy the dialplan details
 				$sql = "insert into v_dialplan_includes_details ";
@@ -120,18 +120,18 @@ else {
 				$sql .= "v_id, ";
 				$sql .= "dialplan_include_id, ";
 				$sql .= "tag, ";
-				$sql .= "fieldorder, ";
-				$sql .= "fieldtype, ";
-				$sql .= "fielddata ";
+				$sql .= "field_order, ";
+				$sql .= "field_type, ";
+				$sql .= "field_data ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$v_id', ";
 				$sql .= "'".check_str($db_dialplan_include_id)."', ";
 				$sql .= "'".check_str($tag)."', ";
-				$sql .= "'".check_str($fieldorder)."', ";
-				$sql .= "'".check_str($fieldtype)."', ";
-				$sql .= "'".check_str($fielddata)."' ";
+				$sql .= "'".check_str($field_order)."', ";
+				$sql .= "'".check_str($field_type)."', ";
+				$sql .= "'".check_str($field_data)."' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);

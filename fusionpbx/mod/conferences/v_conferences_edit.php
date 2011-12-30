@@ -61,8 +61,8 @@ $order = $_GET["order"];
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
 				$tmp_dialplan_include_id = $row["dialplan_include_id"];
-				$fieldtype = $row["fieldtype"];
-				if ($fieldtype == "conference") {
+				$field_type = $row["field_type"];
+				if ($field_type == "conference") {
 					$conference_array[$x]['dialplan_include_id'] = $tmp_dialplan_include_id;
 					$x++;
 				}
@@ -74,7 +74,7 @@ $order = $_GET["order"];
 				$sql = "select * from v_dialplan_includes_details ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' ";
-				$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
+				$sql .= "and field_data like 'conference_user_list%' and field_data like '%|".$_SESSION['username']."|%' ";
 				$tmp_row = $db->query($sql)->fetch();
 				if (strlen($tmp_row['dialplan_include_id']) > 0) {
 					$conference_auth_array[$tmp_row['dialplan_include_id']] = $tmp_row['dialplan_include_id'];
@@ -157,7 +157,7 @@ $order = $_GET["order"];
 			if (strlen($action) > 0) {
 				$tmp_pin_number = ''; if (strlen($pin_number) > 0) { $tmp_pin_number = "+".$pin_number; }
 				$tmp_flags = ''; if (strlen($flags) > 0) { $tmp_flags = "+flags{".$flags."}"; }
-				$tmp_fielddata = $extension_name.'-'.$v_domain."@".$profile.$tmp_pin_number.$tmp_flags;
+				$tmp_field_data = $extension_name.'-'.$v_domain."@".$profile.$tmp_pin_number.$tmp_flags;
 			}
 
 		if ($action == "add" && permission_exists('conferences_add')) {
@@ -166,9 +166,9 @@ $order = $_GET["order"];
 				$sql = "insert into v_dialplan_includes ";
 				$sql .= "(";
 				$sql .= "v_id, ";
-				$sql .= "extensionname, ";
-				$sql .= "dialplanorder, ";
-				$sql .= "extensioncontinue, ";
+				$sql .= "extension_name, ";
+				$sql .= "dialplan_order, ";
+				$sql .= "extension_continue, ";
 				$sql .= "context, ";
 				$sql .= "enabled, ";
 				$sql .= "descr ";
@@ -206,9 +206,9 @@ $order = $_GET["order"];
 					$sql .= "v_id, ";
 					$sql .= "dialplan_include_id, ";
 					$sql .= "tag, ";
-					$sql .= "fieldtype, ";
-					$sql .= "fielddata, ";
-					$sql .= "fieldorder ";
+					$sql .= "field_type, ";
+					$sql .= "field_data, ";
+					$sql .= "field_order ";
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
@@ -228,9 +228,9 @@ $order = $_GET["order"];
 					$sql .= "v_id, ";
 					$sql .= "dialplan_include_id, ";
 					$sql .= "tag, ";
-					$sql .= "fieldtype, ";
-					$sql .= "fielddata, ";
-					$sql .= "fieldorder ";
+					$sql .= "field_type, ";
+					$sql .= "field_data, ";
+					$sql .= "field_order ";
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
@@ -250,9 +250,9 @@ $order = $_GET["order"];
 					$sql .= "v_id, ";
 					$sql .= "dialplan_include_id, ";
 					$sql .= "tag, ";
-					$sql .= "fieldtype, ";
-					$sql .= "fielddata, ";
-					$sql .= "fieldorder ";
+					$sql .= "field_type, ";
+					$sql .= "field_data, ";
+					$sql .= "field_order ";
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
@@ -272,9 +272,9 @@ $order = $_GET["order"];
 					$sql .= "v_id, ";
 					$sql .= "dialplan_include_id, ";
 					$sql .= "tag, ";
-					$sql .= "fieldtype, ";
-					$sql .= "fielddata, ";
-					$sql .= "fieldorder ";
+					$sql .= "field_type, ";
+					$sql .= "field_data, ";
+					$sql .= "field_order ";
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
@@ -282,21 +282,21 @@ $order = $_GET["order"];
 					$sql .= "'$dialplan_include_id', ";
 					$sql .= "'action', ";
 					$sql .= "'conference', ";
-					$sql .= "'".$tmp_fielddata."', ";
+					$sql .= "'".$tmp_field_data."', ";
 					$sql .= "'4' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					unset($sql);
-					unset($fielddata);
+					unset($field_data);
 			} //end if (strlen($dialplan_include_id) > 0)
 		} //if ($action == "add")
 
 		//update the data
 			if ($action == "update" && permission_exists('conferences_edit')) {
 				$sql = "update v_dialplan_includes set ";
-				$sql .= "extensionname = '$extension_name', ";
-				$sql .= "dialplanorder = '$dialplan_order', ";
-				//$sql .= "extensioncontinue = '$extensioncontinue', ";
+				$sql .= "extension_name = '$extension_name', ";
+				$sql .= "dialplan_order = '$dialplan_order', ";
+				//$sql .= "extension_continue = '$extension_continue', ";
 				$sql .= "context = '$context', ";
 				$sql .= "enabled = '$enabled', ";
 				$sql .= "descr = '$description' ";
@@ -314,12 +314,12 @@ $order = $_GET["order"];
 				$result = $prepstatement->fetchAll();
 				unset($prepstatement);
 				foreach ($result as $row) {
-					if ($row['fieldtype'] == "destination_number") {
+					if ($row['field_type'] == "destination_number") {
 						$sql = "update v_dialplan_includes_details set ";
 						//$sql .= "tag = '$tag', ";
-						//$sql .= "fieldtype = '$fieldtype', ";
-						$sql .= "fielddata = '^".$extension_number."$', ";
-						$sql .= "fieldorder = '".$row['fieldorder']."' ";
+						//$sql .= "field_type = '$field_type', ";
+						$sql .= "field_data = '^".$extension_number."$', ";
+						$sql .= "field_order = '".$row['field_order']."' ";
 						$sql .= "where v_id = '$v_id' ";
 						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 						$sql .= "and dialplan_includes_detail_id = '".$row['dialplan_includes_detail_id']."' ";
@@ -328,13 +328,13 @@ $order = $_GET["order"];
 						unset($sql);
 					}
 					if (permission_exists('conferences_add') && permission_exists('conferences_edit')) {
-						$fielddata_array = explode("=", $row['fielddata']);
-						if ($fielddata_array[0] == "conference_user_list") {
+						$field_data_array = explode("=", $row['field_data']);
+						if ($field_data_array[0] == "conference_user_list") {
 							$sql = "update v_dialplan_includes_details set ";
 							//$sql .= "tag = '$tag', ";
-							//$sql .= "fieldtype = '$fieldtype', ";
-							$sql .= "fielddata = 'conference_user_list=".$user_list."', ";
-							$sql .= "fieldorder = '".$row['fieldorder']."' ";
+							//$sql .= "field_type = '$field_type', ";
+							$sql .= "field_data = 'conference_user_list=".$user_list."', ";
+							$sql .= "field_order = '".$row['field_order']."' ";
 							$sql .= "where v_id = '$v_id' ";
 							$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 							$sql .= "and dialplan_includes_detail_id = '".$row['dialplan_includes_detail_id']."' ";
@@ -343,19 +343,19 @@ $order = $_GET["order"];
 							unset($sql);
 						}
 					}
-					if ($row['fieldtype'] == "conference") {
+					if ($row['field_type'] == "conference") {
 						$sql = "update v_dialplan_includes_details set ";
 						//$sql .= "tag = '$tag', ";
-						//$sql .= "fieldtype = '$fieldtype', ";
-						$sql .= "fielddata = '".$tmp_fielddata."', ";
-						$sql .= "fieldorder = '".$row['fieldorder']."' ";
+						//$sql .= "field_type = '$field_type', ";
+						$sql .= "field_data = '".$tmp_field_data."', ";
+						$sql .= "field_order = '".$row['field_order']."' ";
 						$sql .= "where v_id = '$v_id' ";
 						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 						$sql .= "and dialplan_includes_detail_id = '".$row['dialplan_includes_detail_id']."' ";
 						$db->exec(check_sql($sql));
 						//echo $sql."<br />\n";
 						unset($sql);
-						unset($fielddata);
+						unset($field_data);
 					}
 				}
 
@@ -391,10 +391,10 @@ $order = $_GET["order"];
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 		$row = $db->query($sql)->fetch();
-		$extension_name = $row['extensionname'];
+		$extension_name = $row['extension_name'];
 		$extension_name = str_replace("-", " ", $extension_name);
 		$context = $row['context'];
-		$dialplan_order = $row['dialplanorder'];
+		$dialplan_order = $row['dialplan_order'];
 		$enabled = $row['enabled'];
 		$description = $row['descr'];
 
@@ -406,21 +406,21 @@ $order = $_GET["order"];
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			if ($row['fieldtype'] == "destination_number") {
-				$extension_number = $row['fielddata'];
+			if ($row['field_type'] == "destination_number") {
+				$extension_number = $row['field_data'];
 				$extension_number = trim($extension_number, '^$');
 			}
-			$fielddata_array = explode("=", $row['fielddata']);
-			if ($fielddata_array[0] == "conference_user_list") {
-				$user_list = $fielddata_array[1];
+			$field_data_array = explode("=", $row['field_data']);
+			if ($field_data_array[0] == "conference_user_list") {
+				$user_list = $field_data_array[1];
 			}
-			if ($row['fieldtype'] == "conference") {
-				$fielddata = $row['fielddata'];
-				$tmp_pos = stripos($fielddata, "@");
+			if ($row['field_type'] == "conference") {
+				$field_data = $row['field_data'];
+				$tmp_pos = stripos($field_data, "@");
 				if ($tmp_pos !== false) {
-					$tmp_fielddata = substr($fielddata, $tmp_pos+1, strlen($fielddata));
-					$tmp_fielddata_array = explode("+",$tmp_fielddata);
-					foreach ($tmp_fielddata_array as &$tmp_row) {
+					$tmp_field_data = substr($field_data, $tmp_pos+1, strlen($field_data));
+					$tmp_field_data_array = explode("+",$tmp_field_data);
+					foreach ($tmp_field_data_array as &$tmp_row) {
 						if (is_numeric($tmp_row)) {
 							$pin_number = $tmp_row;
 						}
@@ -428,7 +428,7 @@ $order = $_GET["order"];
 							$flags = substr($tmp_row, 6, $tmp_row-1);
 						}
 					}
-					$profile = $tmp_fielddata_array[0];
+					$profile = $tmp_field_data_array[0];
 				}
 			}
 		}

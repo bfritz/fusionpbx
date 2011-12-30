@@ -54,9 +54,9 @@ else {
 			$public_include_id = check_str($_POST["public_include_id"]);
 		}
 		$tag = check_str($_POST["tag"]);
-		$fieldtype = check_str($_POST["fieldtype"]);
-		$fielddata = check_str($_POST["fielddata"]);
-		$fieldorder = check_str($_POST["fieldorder"]);
+		$field_type = check_str($_POST["field_type"]);
+		$field_data = check_str($_POST["field_data"]);
+		$field_order = check_str($_POST["field_order"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -70,9 +70,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
         if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
         if (strlen($public_include_id) == 0) { $msg .= "Please provide: public_include_id<br>\n"; }
         if (strlen($tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
-        if (strlen($fieldtype) == 0) { $msg .= "Please provide: Type<br>\n"; }
-        //if (strlen($fielddata) == 0) { $msg .= "Please provide: Data<br>\n"; }
-        if (strlen($fieldorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
+        if (strlen($field_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
+        //if (strlen($field_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
+        if (strlen($field_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
         if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
             require_once "includes/header.php";
             require_once "includes/persistformvar.php";
@@ -94,18 +94,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$v_id', ";
 			$sql .= "'$public_include_id', ";
 			$sql .= "'$tag', ";
-			$sql .= "'$fieldtype', ";
-			$sql .= "'$fielddata', ";
-			$sql .= "'$fieldorder' ";
+			$sql .= "'$field_type', ";
+			$sql .= "'$field_data', ";
+			$sql .= "'$field_order' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -127,9 +127,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$sql .= "v_id = '$v_id', ";
 			$sql .= "public_include_id = '$public_include_id', ";
 			$sql .= "tag = '$tag', ";
-			$sql .= "fieldtype = '$fieldtype', ";
-			$sql .= "fielddata = '$fielddata', ";
-			$sql .= "fieldorder = '$fieldorder' ";
+			$sql .= "field_type = '$field_type', ";
+			$sql .= "field_data = '$field_data', ";
+			$sql .= "field_order = '$field_order' ";
 			$sql .= "where public_includes_detail_id = '$public_includes_detail_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -162,9 +162,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$v_id = $row["v_id"];
 			$public_include_id = $row["public_include_id"];
 			$tag = $row["tag"];
-			$fieldtype = $row["fieldtype"];
-			$fielddata = $row["fielddata"];
-			$fieldorder = $row["fieldorder"];
+			$field_type = $row["field_type"];
+			$field_data = $row["field_data"];
+			$field_order = $row["field_order"];
 			break; //limit to 1 row
 		}
 		unset ($prepstatement);
@@ -208,24 +208,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
     function public_include_details_tag_onchange() {
         var tag = document.getElementById("form_tag").value;
         if (tag == "condition") {
-          document.getElementById("label_fieldtype").innerHTML = "Field";
-          document.getElementById("label_fielddata").innerHTML = "Expression";
+          document.getElementById("label_field_type").innerHTML = "Field";
+          document.getElementById("label_field_data").innerHTML = "Expression";
         }
         else if (tag == "action") {
-          document.getElementById("label_fieldtype").innerHTML = "Application";
-          document.getElementById("label_fielddata").innerHTML = "Data";
+          document.getElementById("label_field_type").innerHTML = "Application";
+          document.getElementById("label_field_data").innerHTML = "Data";
         }
         else if (tag == "anti-action") {
-          document.getElementById("label_fieldtype").innerHTML = "Application";
-          document.getElementById("label_fielddata").innerHTML = "Data";
+          document.getElementById("label_field_type").innerHTML = "Application";
+          document.getElementById("label_field_data").innerHTML = "Data";
         }
         else if (tag == "param") {
-          document.getElementById("label_fieldtype").innerHTML = "Name";
-          document.getElementById("label_fielddata").innerHTML = "Value";
+          document.getElementById("label_field_type").innerHTML = "Name";
+          document.getElementById("label_field_data").innerHTML = "Value";
         }
         if (tag == "") {
-          document.getElementById("label_fieldtype").innerHTML = "Type";
-          document.getElementById("label_fielddata").innerHTML = "Data";
+          document.getElementById("label_field_type").innerHTML = "Type";
+          document.getElementById("label_field_data").innerHTML = "Data";
         }
     }
     </script>
@@ -288,22 +288,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
     echo "</tr>\n";
 
     echo "<tr>\n";
-    echo "<td id='label_fieldtype' class='vncellreq' valign='top' align='left' nowrap>\n";
+    echo "<td id='label_field_type' class='vncellreq' valign='top' align='left' nowrap>\n";
     echo "    Type:\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "    <input class='formfld' type='text' name='fieldtype' maxlength='255' value=\"$fieldtype\">\n";
+    echo "    <input class='formfld' type='text' name='field_type' maxlength='255' value=\"$field_type\">\n";
     echo "<br />\n";
     echo "\n";
     echo "</td>\n";
     echo "</tr>\n";
 
     echo "<tr>\n";
-    echo "<td  id='label_fielddata' class='vncell' valign='top' align='left' nowrap>\n";
+    echo "<td  id='label_field_data' class='vncell' valign='top' align='left' nowrap>\n";
     echo "    Data:\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "    <input class='formfld' type='text' name='fielddata' maxlength='255' value=\"$fielddata\">\n";
+    echo "    <input class='formfld' type='text' name='field_data' maxlength='255' value=\"$field_data\">\n";
     echo "<br />\n";
     echo "\n";
     echo "</td>\n";
@@ -314,10 +314,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
     echo "    Order:\n";
     echo "</td>\n";
     echo "<td class='vtable' align='left'>\n";
-    echo "              <select name='fieldorder' class='formfld'>\n";
+    echo "              <select name='field_order' class='formfld'>\n";
     //echo "              <option></option>\n";
-    if (strlen(htmlspecialchars($fieldorder))> 0) {
-        echo "              <option selected='yes' value='".htmlspecialchars($fieldorder)."'>".htmlspecialchars($fieldorder)."</option>\n";
+    if (strlen(htmlspecialchars($field_order))> 0) {
+        echo "              <option selected='yes' value='".htmlspecialchars($field_order)."'>".htmlspecialchars($field_order)."</option>\n";
     }
     $i=0;
     while($i<=999) {

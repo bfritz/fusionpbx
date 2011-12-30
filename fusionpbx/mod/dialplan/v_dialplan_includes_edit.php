@@ -46,11 +46,11 @@ else {
 
 //get the http post values and set them as php variables
 	if (count($_POST)>0) {
-		$extensionname = check_str($_POST["extensionname"]);
+		$extension_name = check_str($_POST["extension_name"]);
 		$extension_number = check_str($_POST["extension_number"]);
-		$dialplanorder = check_str($_POST["dialplanorder"]);
-		$extensioncontinue = check_str($_POST["extensioncontinue"]);
-		if (strlen($extensioncontinue) == 0) { $extensioncontinue = "false"; }
+		$dialplan_order = check_str($_POST["dialplan_order"]);
+		$extension_continue = check_str($_POST["extension_continue"]);
+		if (strlen($extension_continue) == 0) { $extension_continue = "false"; }
 		$context = check_str($_POST["context"]);
 		$enabled = check_str($_POST["enabled"]);
 		$descr = check_str($_POST["descr"]);
@@ -65,9 +65,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
-		if (strlen($extensionname) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
-		if (strlen($dialplanorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
-		if (strlen($extensioncontinue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
+		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
+		if (strlen($dialplan_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		if (strlen($extension_continue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
 		//if (strlen($context) == 0) { $msg .= "Please provide: Context<br>\n"; }
 		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		//if (strlen($descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
@@ -85,8 +85,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//remove the invalid characters from the extension name
-		$extensionname = str_replace(" ", "_", $extensionname);
-		$extensionname = str_replace("/", "", $extensionname);
+		$extension_name = str_replace(" ", "_", $extension_name);
+		$extension_name = str_replace("/", "", $extension_name);
 
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
@@ -95,10 +95,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql = "insert into v_dialplan_includes ";
 					$sql .= "(";
 					$sql .= "v_id, ";
-					$sql .= "extensionname, ";
+					$sql .= "extension_name, ";
 					$sql .= "extension_number, ";
-					$sql .= "dialplanorder, ";
-					$sql .= "extensioncontinue, ";
+					$sql .= "dialplan_order, ";
+					$sql .= "extension_continue, ";
 					$sql .= "context, ";
 					$sql .= "enabled, ";
 					$sql .= "descr ";
@@ -106,10 +106,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$v_id', ";
-					$sql .= "'$extensionname', ";
+					$sql .= "'$extension_name', ";
 					$sql .= "'$extension_number', ";
-					$sql .= "'$dialplanorder', ";
-					$sql .= "'$extensioncontinue', ";
+					$sql .= "'$dialplan_order', ";
+					$sql .= "'$extension_continue', ";
 					$sql .= "'$context', ";
 					$sql .= "'$enabled', ";
 					$sql .= "'$descr' ";
@@ -134,10 +134,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//update the database
 					$sql = "update v_dialplan_includes set ";
 					$sql .= "v_id = '$v_id', ";
-					$sql .= "extensionname = '$extensionname', ";
+					$sql .= "extension_name = '$extension_name', ";
 					$sql .= "extension_number = '$extension_number', ";
-					$sql .= "dialplanorder = '$dialplanorder', ";
-					$sql .= "extensioncontinue = '$extensioncontinue', ";
+					$sql .= "dialplan_order = '$dialplan_order', ";
+					$sql .= "extension_continue = '$extension_continue', ";
 					$sql .= "context = '$context', ";
 					$sql .= "enabled = '$enabled', ";
 					$sql .= "descr = '$descr' ";
@@ -172,10 +172,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$extensionname = $row["extensionname"];
+			$extension_name = $row["extension_name"];
 			$extension_number = $row["extension_number"];
-			$dialplanorder = $row["dialplanorder"];
-			$extensioncontinue = $row["extensioncontinue"];
+			$dialplan_order = $row["dialplan_order"];
+			$extension_continue = $row["extension_continue"];
 			$context = $row["context"];
 			$enabled = $row["enabled"];
 			$descr = $row["descr"];
@@ -223,7 +223,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='extensionname' maxlength='255' value=\"".htmlspecialchars($extensionname)."\">\n";
+	echo "    <input class='formfld' type='text' name='extension_name' maxlength='255' value=\"".htmlspecialchars($extension_name)."\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -245,10 +245,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='dialplanorder' class='formfld'>\n";
+	echo "              <select name='dialplan_order' class='formfld'>\n";
 	//echo "              <option></option>\n";
-	if (strlen(htmlspecialchars($dialplanorder))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($dialplanorder)."'>".htmlspecialchars($dialplanorder)."</option>\n";
+	if (strlen(htmlspecialchars($dialplan_order))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {
@@ -265,7 +265,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	  $i++;
 	}
 	echo "              </select>\n";
-	//echo "  <input class='formfld' type='text' name='dialplanorder' maxlength='255' value='$dialplanorder'>\n";
+	//echo "  <input class='formfld' type='text' name='dialplan_order' maxlength='255' value='$dialplan_order'>\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -287,15 +287,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Continue:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='extensioncontinue'>\n";
+	echo "    <select class='formfld' name='extension_continue'>\n";
 	echo "    <option value=''></option>\n";
-	if ($extensioncontinue == "true") { 
+	if ($extension_continue == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($extensioncontinue == "false") { 
+	if ($extension_continue == "false") { 
 		echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {
@@ -381,7 +381,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= " select * from v_dialplan_includes_details ";
 		$sql .= " where v_id = '$v_id' ";
 		$sql .= " and dialplan_include_id = '$dialplan_include_id' ";
-		$sql .= " order by field_group asc, fieldorder asc";
+		$sql .= " order by field_group asc, field_order asc";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -483,9 +483,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					foreach($group as $row) {
 						echo "<tr >\n";
 						echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['tag']."</td>\n";
-						echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['fieldtype']."</td>\n";
-						echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".wordwrap($row['fielddata'],180,"<br>",1)."</td>\n";
-						echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['fieldorder']."</td>\n";
+						echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['field_type']."</td>\n";
+						echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".wordwrap($row['field_data'],180,"<br>",1)."</td>\n";
+						echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['field_order']."</td>\n";
 						//echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['field_group']."</td>\n";
 						echo "	<td valign='top' align='right' nowrap='nowrap'='nowrap='nowrap''>\n";
 						echo "		<a href='v_dialplan_includes_details_edit.php?id=".$row[dialplan_includes_detail_id]."&id2=".$dialplan_include_id."' alt='edit'>$v_link_label_edit</a>\n";

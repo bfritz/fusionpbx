@@ -48,7 +48,7 @@ else {
 			$sql .= "where v_id = '$v_id' ";
 			if (!(ifgroup("admin") || ifgroup("superadmin"))) {
 				//find the assigned users
-					$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
+					$sql .= "and field_data like 'conference_user_list%' and field_data like '%|".$_SESSION['username']."|%' ";
 			}
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
@@ -58,11 +58,11 @@ else {
 			foreach ($result as &$row) {
 				$dialplan_include_id = $row["dialplan_include_id"];
 				//$tag = $row["tag"];
-				//$fieldorder = $row["fieldorder"];
-				$fieldtype = $row["fieldtype"];
-				//$fielddata = $row["fielddata"];
+				//$field_order = $row["field_order"];
+				$field_type = $row["field_type"];
+				//$field_data = $row["field_data"];
 				if (ifgroup("admin") || ifgroup("superadmin")) {
-					if ($fieldtype == "conference") {
+					if ($field_type == "conference") {
 						$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
 						$x++;
 					}
@@ -87,14 +87,14 @@ else {
 					if ($x == 0) {
 						$sql .= "where v_id = '$v_id' \n";
 						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
-						$sql .= "and fieldtype = 'conference' \n";
-						$sql .= "and fielddata like '".$conference_name."%' \n";
+						$sql .= "and field_type = 'conference' \n";
+						$sql .= "and field_data like '".$conference_name."%' \n";
 					}
 					else {
 						$sql .= "or v_id = '$v_id' \n";
 						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
-						$sql .= "and fieldtype = 'conference' \n";
-						$sql .= "and fielddata like '".$conference_name."%' \n";
+						$sql .= "and field_type = 'conference' \n";
+						$sql .= "and field_data like '".$conference_name."%' \n";
 					}
 					$x++;
 				}

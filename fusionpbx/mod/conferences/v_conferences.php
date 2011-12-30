@@ -53,7 +53,7 @@ require_once "includes/paging.php";
 	}
 	else {
 		//find the assigned users
-			$sql .= "and fielddata like 'conference_user_list%' and fielddata like '%|".$_SESSION['username']."|%' ";
+			$sql .= "and field_data like 'conference_user_list%' and field_data like '%|".$_SESSION['username']."|%' ";
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -61,9 +61,9 @@ require_once "includes/paging.php";
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$dialplan_include_id = $row["dialplan_include_id"];
-		$fieldtype = $row["fieldtype"];
+		$field_type = $row["field_type"];
 		if (permission_exists('conferences_add') && permission_exists('conferences_edit')) {
-			if ($fieldtype == "conference") {
+			if ($field_type == "conference") {
 				$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
 				$x++;
 			}
@@ -136,7 +136,7 @@ require_once "includes/paging.php";
 		$sql .= "order by $orderby $order ";
 	}
 	else {
-		$sql .= "order by dialplanorder, extensionname asc ";
+		$sql .= "order by dialplan_order, extension_name asc ";
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -172,7 +172,7 @@ require_once "includes/paging.php";
 			$x++;
 		}
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -187,10 +187,10 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('extensionname', 'Conference Name', $orderby, $order);
+	echo thorderby('extension_name', 'Conference Name', $orderby, $order);
 	echo "<th>Tools</th>\n";
 	if (permission_exists('conferences_add')) {
-		echo thorderby('dialplanorder', 'Order', $orderby, $order);
+		echo thorderby('dialplan_order', 'Order', $orderby, $order);
 	}
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
@@ -206,15 +206,15 @@ require_once "includes/paging.php";
 
 	if ($resultcount > 0) {
 		foreach($result as $row) {
-			$extension_display_name = $row['extensionname'];
+			$extension_display_name = $row['extension_name'];
 			$extension_display_name = str_replace("-", " ", $extension_display_name);
 			$extension_display_name = str_replace("_", " ", $extension_display_name);
 
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$extension_display_name."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='".PROJECT_PATH."/mod/conferences_active/v_conference_interactive.php?c=".$row['extensionname']."'>view</a></td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='".PROJECT_PATH."/mod/conferences_active/v_conference_interactive.php?c=".$row['extension_name']."'>view</a></td>\n";
 			if (permission_exists('conferences_add')) {
-				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['dialplanorder']."</td>\n";
+				echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['dialplan_order']."</td>\n";
 			}
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['enabled']."</td>\n";
 			echo "	<td valign='top' class='rowstylebg' width='30%'>".$row['descr']."&nbsp;</td>\n";

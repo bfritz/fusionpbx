@@ -85,7 +85,7 @@ $order = $_GET["order"];
 			$sql = "insert into v_public_includes ";
 			$sql .= "(";
 			$sql .= "v_id, ";
-			$sql .= "extensionname, ";
+			$sql .= "extension_name, ";
 			$sql .= "publicorder, ";
 			$sql .= "context, ";
 			$sql .= "enabled, ";
@@ -122,9 +122,9 @@ $order = $_GET["order"];
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -144,9 +144,9 @@ $order = $_GET["order"];
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -167,9 +167,9 @@ $order = $_GET["order"];
 				$sql .= "v_id, ";
 				$sql .= "public_include_id, ";
 				$sql .= "tag, ";
-				$sql .= "fieldtype, ";
-				$sql .= "fielddata, ";
-				$sql .= "fieldorder ";
+				$sql .= "field_type, ";
+				$sql .= "field_data, ";
+				$sql .= "field_order ";
 				$sql .= ") ";
 				$sql .= "values ";
 				$sql .= "(";
@@ -190,9 +190,9 @@ $order = $_GET["order"];
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -213,9 +213,9 @@ $order = $_GET["order"];
 				$sql .= "v_id, ";
 				$sql .= "public_include_id, ";
 				$sql .= "tag, ";
-				$sql .= "fieldtype, ";
-				$sql .= "fielddata, ";
-				$sql .= "fieldorder ";
+				$sql .= "field_type, ";
+				$sql .= "field_data, ";
+				$sql .= "field_order ";
 				$sql .= ") ";
 				$sql .= "values ";
 				$sql .= "(";
@@ -373,7 +373,7 @@ function type_onchange(field_type) {
 	$sql = "";
 	$sql .= " select * from v_public_includes ";
 	$sql .= "where v_id = '$v_id' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder asc, extensionname asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder asc, extension_name asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -390,7 +390,7 @@ function type_onchange(field_type) {
 	$sql = "";
 	$sql .= " select * from v_public_includes ";
 	$sql .= " where v_id = '$v_id' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder asc, extensionname asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by publicorder asc, extension_name asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -406,7 +406,7 @@ function type_onchange(field_type) {
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('extensionname', 'Extension Name', $orderby, $order);
+	echo thorderby('extension_name', 'Extension Name', $orderby, $order);
 	echo thorderby('publicorder', 'Order', $orderby, $order);
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
@@ -428,7 +428,7 @@ function type_onchange(field_type) {
 	else { //received results
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extensionname]."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extension_name]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[publicorder]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "	<td valign='top' class='rowstylebg' width='35%'>&nbsp;&nbsp;".$row[descr]."</td>\n";

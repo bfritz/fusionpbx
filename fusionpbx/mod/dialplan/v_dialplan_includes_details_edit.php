@@ -53,10 +53,10 @@ else {
 			$dialplan_include_id = check_str($_POST["dialplan_include_id"]);
 		}
 		$tag = check_str($_POST["tag"]);
-		$fieldorder = check_str($_POST["fieldorder"]);
-		$fieldtype = check_str($_POST["fieldtype"]);
-		$fielddata = check_str($_POST["fielddata"]);
-		$fieldbreak = check_str($_POST["fieldbreak"]);
+		$field_order = check_str($_POST["field_order"]);
+		$field_type = check_str($_POST["field_type"]);
+		$field_data = check_str($_POST["field_data"]);
+		$field_break = check_str($_POST["field_break"]);
 		$field_inline = check_str($_POST["field_inline"]);
 		$field_group = check_str($_POST["field_group"]);
 	}
@@ -71,9 +71,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
 		if (strlen($tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
-		if (strlen($fieldorder) == 0) { $msg .= "Please provide: Order<br>\n"; }
-		//if (strlen($fieldtype) == 0) { $msg .= "Please provide: Type<br>\n"; }
-		//if (strlen($fielddata) == 0) { $msg .= "Please provide: Data<br>\n"; }
+		if (strlen($field_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		//if (strlen($field_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
+		//if (strlen($field_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -94,10 +94,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "(";
 				$sql .= "dialplan_include_id, ";
 				$sql .= "tag, ";
-				$sql .= "fieldorder, ";
-				$sql .= "fieldtype, ";
-				$sql .= "fielddata, ";
-				$sql .= "fieldbreak, ";
+				$sql .= "field_order, ";
+				$sql .= "field_type, ";
+				$sql .= "field_data, ";
+				$sql .= "field_break, ";
 				$sql .= "field_inline, ";
 				$sql .= "field_group, ";
 				$sql .= "v_id ";
@@ -106,10 +106,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "(";
 				$sql .= "'$dialplan_include_id', ";
 				$sql .= "'$tag', ";
-				$sql .= "'$fieldorder', ";
-				$sql .= "'$fieldtype', ";
-				$sql .= "'$fielddata', ";
-				$sql .= "'$fieldbreak', ";
+				$sql .= "'$field_order', ";
+				$sql .= "'$field_type', ";
+				$sql .= "'$field_data', ";
+				$sql .= "'$field_break', ";
 				$sql .= "'$field_inline', ";
 				if (strlen($field_group) == 0) {
 					$sql .= "null, ";
@@ -138,10 +138,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "update v_dialplan_includes_details set ";
 				$sql .= "dialplan_include_id = '$dialplan_include_id', ";
 				$sql .= "tag = '$tag', ";
-				$sql .= "fieldorder = '$fieldorder', ";
-				$sql .= "fieldtype = '$fieldtype', ";
-				$sql .= "fielddata = '$fielddata', ";
-				$sql .= "fieldbreak = '$fieldbreak', ";
+				$sql .= "field_order = '$field_order', ";
+				$sql .= "field_type = '$field_type', ";
+				$sql .= "field_data = '$field_data', ";
+				$sql .= "field_break = '$field_break', ";
 				$sql .= "field_inline = '$field_inline', ";
 				if (strlen($field_group) == 0) {
 					$sql .= "field_group = null ";
@@ -182,10 +182,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		foreach ($result as &$row) {
 			$dialplan_include_id = $row["dialplan_include_id"];
 			$tag = $row["tag"];
-			$fieldorder = $row["fieldorder"];
-			$fieldtype = $row["fieldtype"];
-			$fielddata = $row["fielddata"];
-			$fieldbreak = $row["fieldbreak"];
+			$field_order = $row["field_order"];
+			$field_type = $row["field_type"];
+			$field_data = $row["field_data"];
+			$field_break = $row["field_break"];
 			$field_inline = $row["field_inline"];
 			$field_group = $row["field_group"];
 			break; //limit to 1 row
@@ -222,24 +222,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	function public_include_details_tag_onchange() {
 		var tag = document.getElementById("form_tag").value;
 		if (tag == "condition") {
-		  document.getElementById("label_fieldtype").innerHTML = "Field";
-		  document.getElementById("label_fielddata").innerHTML = "Expression";
+		  document.getElementById("label_field_type").innerHTML = "Field";
+		  document.getElementById("label_field_data").innerHTML = "Expression";
 		}
 		else if (tag == "action") {
-		  document.getElementById("label_fieldtype").innerHTML = "Application";
-		  document.getElementById("label_fielddata").innerHTML = "Data";
+		  document.getElementById("label_field_type").innerHTML = "Application";
+		  document.getElementById("label_field_data").innerHTML = "Data";
 		}
 		else if (tag == "anti-action") {
-		  document.getElementById("label_fieldtype").innerHTML = "Application";
-		  document.getElementById("label_fielddata").innerHTML = "Data";
+		  document.getElementById("label_field_type").innerHTML = "Application";
+		  document.getElementById("label_field_data").innerHTML = "Data";
 		}
 		else if (tag == "param") {
-		  document.getElementById("label_fieldtype").innerHTML = "Name";
-		  document.getElementById("label_fielddata").innerHTML = "Value";
+		  document.getElementById("label_field_type").innerHTML = "Name";
+		  document.getElementById("label_field_data").innerHTML = "Value";
 		}
 		if (tag == "") {
-		  document.getElementById("label_fieldtype").innerHTML = "Type";
-		  document.getElementById("label_fielddata").innerHTML = "Data";
+		  document.getElementById("label_field_type").innerHTML = "Type";
+		  document.getElementById("label_field_data").innerHTML = "Data";
 		}
 	}
 	</script>
@@ -307,9 +307,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='fieldorder' class='formfld'>\n";
-	if (strlen($fieldorder)> 0) {
-		echo "              <option selected='selected' value='".htmlspecialchars($fieldorder)."'>".htmlspecialchars($fieldorder)."</option>\n";
+	echo "              <select name='field_order' class='formfld'>\n";
+	if (strlen($field_order)> 0) {
+		echo "              <option selected='selected' value='".htmlspecialchars($field_order)."'>".htmlspecialchars($field_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {
@@ -335,7 +335,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Type:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='fieldtype' maxlength='255' value=\"".htmlspecialchars($fieldtype)."\">\n";
+	echo "    <input class='formfld' type='text' name='field_type' maxlength='255' value=\"".htmlspecialchars($field_type)."\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -346,7 +346,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Data:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='fielddata' value=\"".htmlspecialchars($fielddata)."\">\n";
+	echo "    <input class='formfld' type='text' name='field_data' value=\"".htmlspecialchars($field_data)."\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -380,27 +380,27 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "    Break:\n";
 			echo "</td>\n";
 			echo "<td class='vtable' align='left'>\n";
-			echo "              <select name='fieldbreak' class='formfld'>\n";
+			echo "              <select name='field_break' class='formfld'>\n";
 			echo "              <option></option>\n";
-			if ($fieldbreak == "on-true") {
+			if ($field_break == "on-true") {
 				echo "              <option selected='selected' value='on-true'>on-true</option>\n";
 			}
 			else {
 				echo "              <option value='on-true'>on-true</option>\n";
 			}
-			if ($fieldbreak == "on-false") {
+			if ($field_break == "on-false") {
 				echo "              <option selected='selected' value='on-false'>on-false</option>\n";
 			}
 			else {
 				echo "              <option value='on-false'>on-false</option>\n";
 			}
-			if ($fieldbreak == "always") {
+			if ($field_break == "always") {
 				echo "              <option selected='selected' value='always'>always</option>\n";
 			}
 			else {
 				echo "              <option value='always'>always</option>\n";
 			}
-			if ($fieldbreak == "never") {
+			if ($field_break == "never") {
 				echo "              <option selected='selected' value='never'>never</option>\n";
 			}
 			else {

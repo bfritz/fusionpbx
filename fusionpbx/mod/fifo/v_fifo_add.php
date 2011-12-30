@@ -44,7 +44,7 @@ require_once "includes/paging.php";
 		$queue_extension_number = check_str($_POST["queue_extension_number"]);
 		$agent_queue_extension_number = check_str($_POST["agent_queue_extension_number"]);
 		$agent_login_logout_extension_number = check_str($_POST["agent_login_logout_extension_number"]);		
-		$dialplanorder = check_str($_POST["dialplanorder"]);
+		$dialplan_order = check_str($_POST["dialplan_order"]);
 		$pin_number = check_str($_POST["pin_number"]);
 		$profile = check_str($_POST["profile"]);
 		$flags = check_str($_POST["flags"]);
@@ -92,42 +92,42 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//	</condition>
 		//</extension>
 		//--------------------------------------------------------
-			$extensionname = $extension_name."_call_queue";
+			$extension_name = $extension_name."_call_queue";
 			$context = 'default';
-			//$opt1name = 'zzz_id';
-			//$opt1value = $row['zzz_id'];
-			$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $description, $opt1name, $opt1value);
+			//$opt_1_name = 'zzz_id';
+			//$opt_1_value = $row['zzz_id'];
+			$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
 			if (strlen($dialplan_include_id) > 0) {
 				//set the destination number
 					$tag = 'condition'; //condition, action, antiaction
-					$fieldtype = 'destination_number';
-					$fielddata = '^'.$queue_extension_number.'$';
-					$fieldorder = '000';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'destination_number';
+					$field_data = '^'.$queue_extension_number.'$';
+					$field_order = '000';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//set the hold music
 					//if (strlen($hold_music) > 0) {
 						$tag = 'action'; //condition, action, antiaction
-						$fieldtype = 'set';
-						$fielddata = 'fifo_music=$${hold_music}';
-						$fieldorder = '001';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						$field_type = 'set';
+						$field_data = 'fifo_music=$${hold_music}';
+						$field_order = '001';
+						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					//}
 				//action answer
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'answer';
-					$fielddata = '';
-					$fieldorder = '002';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'answer';
+					$field_data = '';
+					$field_order = '002';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//action fifo
 					//if (strlen($pin_number) > 0) { $pin_number = "+".$pin_number; }
 					//if (strlen($flags) > 0) { $flags = "+{".$flags."}"; }
 					//$queue_action_data = $extension_name."@\${domain_name}".$profile.$flags.$pin_number;
 					$queue_action_data = $extension_name."@\${domain_name} in";
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'fifo';
-					$fielddata = $queue_action_data;
-					$fieldorder = '003';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'fifo';
+					$field_data = $queue_action_data;
+					$field_order = '003';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 			}
 	} //end if queue_extension_number
 
@@ -144,42 +144,42 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//	</condition>
 		//</extension>
 		//--------------------------------------------------------
-			$extensionname = $extension_name."_agent_queue";
+			$extension_name = $extension_name."_agent_queue";
 			$context = 'default';
-			//$opt1name = 'zzz_id';
-			//$opt1value = $row['zzz_id'];
-			$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $description, $opt1name, $opt1value);
+			//$opt_1_name = 'zzz_id';
+			//$opt_1_value = $row['zzz_id'];
+			$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
 			if (strlen($dialplan_include_id) > 0) {
 				//set the destination number
 					$tag = 'condition'; //condition, action, antiaction
-					$fieldtype = 'destination_number';
-					$fielddata = '^'.$agent_queue_extension_number.'$';
-					$fieldorder = '000';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'destination_number';
+					$field_data = '^'.$agent_queue_extension_number.'$';
+					$field_order = '000';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//set the hold music
 					//if (strlen($hold_music) > 0) {
 						$tag = 'action'; //condition, action, antiaction
-						$fieldtype = 'set';
-						$fielddata = 'fifo_music=$${hold_music}';
-						$fieldorder = '001';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+						$field_type = 'set';
+						$field_data = 'fifo_music=$${hold_music}';
+						$field_order = '001';
+						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					//}
 				//action answer
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'answer';
-					$fielddata = '';
-					$fieldorder = '002';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'answer';
+					$field_data = '';
+					$field_order = '002';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//action fifo
 					//if (strlen($pin_number) > 0) { $pin_number = "+".$pin_number; }
 					//if (strlen($flags) > 0) { $flags = "+{".$flags."}"; }
 					//$queue_action_data = $extension_name."@\${domain_name}".$profile.$flags.$pin_number;
 					$queue_action_data = $extension_name."@\${domain_name} out wait";
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'fifo';
-					$fielddata = $queue_action_data;
-					$fieldorder = '003';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'fifo';
+					$field_data = $queue_action_data;
+					$field_order = '003';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 			}
 	}
 
@@ -196,54 +196,54 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//	</condition>
 		//</extension>
 		//--------------------------------------------------------
-			$extensionname = $extension_name."_agent_login_logout";
+			$extension_name = $extension_name."_agent_login_logout";
 			$context = 'default';
-			//$opt1name = 'zzz_id';
-			//$opt1value = $row['zzz_id'];
-			$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $description, $opt1name, $opt1value);
+			//$opt_1_name = 'zzz_id';
+			//$opt_1_value = $row['zzz_id'];
+			$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
 			if (strlen($dialplan_include_id) > 0) {
 				//set the destination number
 					$tag = 'condition'; //condition, action, antiaction
-					$fieldtype = 'destination_number';
-					$fielddata = '^'.$agent_login_logout_extension_number.'$';
-					$fieldorder = '000';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'destination_number';
+					$field_data = '^'.$agent_login_logout_extension_number.'$';
+					$field_order = '000';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//set the queue_name
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'queue_name='.$extension_name.'@\${domain_name}';
-					$fieldorder = '001';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'queue_name='.$extension_name.'@\${domain_name}';
+					$field_order = '001';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//set the fifo_simo
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'fifo_simo=1';
-					$fieldorder = '002';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'fifo_simo=1';
+					$field_order = '002';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//set the fifo_timeout
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'fifo_timeout=10';
-					$fieldorder = '003';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'fifo_timeout=10';
+					$field_order = '003';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//set the fifo_lag
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'fifo_lag=10';
-					$fieldorder = '004';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'fifo_lag=10';
+					$field_order = '004';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//set the pin_number
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'pin_number=';
-					$fieldorder = '005';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'pin_number=';
+					$field_order = '005';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				//action lua
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'lua';
-					$fielddata = 'fifo_member.lua';
-					$fieldorder = '006';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'lua';
+					$field_data = 'fifo_member.lua';
+					$field_order = '006';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 			}
 	}
 
@@ -322,9 +322,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='dialplanorder' class='formfld' style='width: 60%;'>\n";
-	if (strlen(htmlspecialchars($dialplanorder))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($dialplanorder)."'>".htmlspecialchars($dialplanorder)."</option>\n";
+	echo "              <select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
+	if (strlen(htmlspecialchars($dialplan_order))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {

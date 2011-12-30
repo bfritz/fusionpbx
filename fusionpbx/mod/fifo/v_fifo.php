@@ -56,17 +56,17 @@ require_once "includes/paging.php";
 		foreach ($result as &$row) {
 			$dialplan_include_id = $row["dialplan_include_id"];
 			//$tag = $row["tag"];
-			//$fieldorder = $row["fieldorder"];
-			$fieldtype = $row["fieldtype"];
-			$fielddata = $row["fielddata"];
-			if ($fieldtype == "fifo") {
+			//$field_order = $row["field_order"];
+			$field_type = $row["field_type"];
+			$field_data = $row["field_data"];
+			if ($field_type == "fifo") {
 				//echo "dialplan_include_id: $dialplan_include_id<br />";
-				//echo "fielddata: $fielddata<br />";
+				//echo "field_data: $field_data<br />";
 				$queue_array[$x]['dialplan_include_id'] = $dialplan_include_id;
 				$x++;
 			}
 			else {
-				if ($fielddata == "fifo_member.lua") {
+				if ($field_data == "fifo_member.lua") {
 					$queue_array[$x]['dialplan_include_id'] = $dialplan_include_id;
 					$x++;
 				}
@@ -128,7 +128,7 @@ require_once "includes/paging.php";
 			$x++;
 		}
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -163,7 +163,7 @@ require_once "includes/paging.php";
 			$x++;
 		}
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -178,8 +178,8 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('extensionname', 'Extension Name', $orderby, $order);
-	echo thorderby('dialplanorder', 'Order', $orderby, $order);
+	echo thorderby('extension_name', 'Extension Name', $orderby, $order);
+	echo thorderby('dialplan_order', 'Order', $orderby, $order);
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
@@ -189,14 +189,11 @@ require_once "includes/paging.php";
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) {
-		//no results
-	}
-	else { //received results
+	if ($resultcount > 0) {
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extensionname]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplanorder]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extension_name]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplan_order]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";

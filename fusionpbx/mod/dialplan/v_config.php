@@ -60,7 +60,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'extensionname';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'extension_name';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'extensionname';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
@@ -68,11 +69,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'extensioncontinue';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'extension_continue';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'extensioncontinue';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'dialplanorder';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'dialplan_order';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'dialplanorder';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
@@ -88,11 +91,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'opt1name';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'opt_1_name';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'opt1name';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'opt1value';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'opt_1_value';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'opt1value';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 
@@ -121,15 +126,18 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fieldtype';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'field_type';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'fieldtype';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fielddata';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'field_data';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'fielddata';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fieldbreak';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'field_break';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'fieldbreak';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
@@ -141,7 +149,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fieldorder';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'field_order';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'fieldorder';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 

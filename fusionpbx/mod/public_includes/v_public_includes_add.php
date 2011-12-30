@@ -119,7 +119,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "insert into v_public_includes ";
 		$sql .= "(";
 		$sql .= "v_id, ";
-		$sql .= "extensionname, ";
+		$sql .= "extension_name, ";
 		$sql .= "publicorder, ";
 		$sql .= "context, ";
 		$sql .= "enabled, ";
@@ -156,9 +156,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "v_id, ";
 		$sql .= "public_include_id, ";
 		$sql .= "tag, ";
-		$sql .= "fieldtype, ";
-		$sql .= "fielddata, ";
-		$sql .= "fieldorder ";
+		$sql .= "field_type, ";
+		$sql .= "field_data, ";
+		$sql .= "field_order ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
@@ -178,9 +178,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "v_id, ";
 		$sql .= "public_include_id, ";
 		$sql .= "tag, ";
-		$sql .= "fieldtype, ";
-		$sql .= "fielddata, ";
-		$sql .= "fieldorder ";
+		$sql .= "field_type, ";
+		$sql .= "field_data, ";
+		$sql .= "field_order ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
@@ -201,9 +201,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -225,9 +225,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -249,9 +249,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -273,9 +273,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -302,9 +302,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -326,9 +326,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "v_id, ";
 		$sql .= "public_include_id, ";
 		$sql .= "tag, ";
-		$sql .= "fieldtype, ";
-		$sql .= "fielddata, ";
-		$sql .= "fieldorder ";
+		$sql .= "field_type, ";
+		$sql .= "field_data, ";
+		$sql .= "field_order ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
@@ -349,9 +349,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "v_id, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
-			$sql .= "fieldtype, ";
-			$sql .= "fielddata, ";
-			$sql .= "fieldorder ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -536,15 +536,15 @@ if (field_type == "action_application_2") {
 	//echo "    Continue:\n";
 	//echo "</td>\n";
 	//echo "<td class='vtable' align='left'>\n";
-	//echo "    <select class='formfld' name='extensioncontinue' style='width: 60%;'>\n";
+	//echo "    <select class='formfld' name='extension_continue' style='width: 60%;'>\n";
 	//echo "    <option value=''></option>\n";
-	//if ($extensioncontinue == "true") { 
+	//if ($extension_continue == "true") { 
 	//	echo "    <option value='true' SELECTED >true</option>\n";
 	//}
 	//else {
 	//	echo "    <option value='true'>true</option>\n";
 	//}
-	//if ($extensioncontinue == "false") { 
+	//if ($extension_continue == "false") { 
 	//	echo "    <option value='false' SELECTED >false</option>\n";
 	//}
 	//else {

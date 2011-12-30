@@ -56,8 +56,8 @@
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and opt1name = 'recordings' ";
-	$sql .= "and (opt1value = '732' or opt1value = '732673') ";
+	$sql .= "and opt_1_name = 'recordings' ";
+	$sql .= "and (opt_1_value = '732' or opt_1_value = '732673') ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
@@ -69,50 +69,50 @@
 		if ($display_type == "text") {
 			echo "	Dialplan Recording: 	added\n";
 		}
-		$extensionname = 'Recordings';
-		$dialplanorder ='900';
+		$extension_name = 'Recordings';
+		$dialplan_order ='900';
 		$context = 'default';
 		$enabled = 'true';
 		$descr = '*732 default system recordings tool';
-		$opt1name = 'recordings';
-		$opt1value = '732';
-		$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+		$opt_1_name = 'recordings';
+		$opt_1_value = '732';
+		$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 		$tag = 'condition'; //condition, action, antiaction
-		$fieldtype = 'destination_number';
-		$fielddata = '^\*(732)$';
-		$fieldorder = '000';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'destination_number';
+		$field_data = '^\*(732)$';
+		$field_order = '000';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 		$tag = 'action'; //condition, action, antiaction
-		$fieldtype = 'set';
-		$fielddata = 'recordings_dir='.$v_recordings_dir;
-		$fieldorder = '001';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'set';
+		$field_data = 'recordings_dir='.$v_recordings_dir;
+		$field_order = '001';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 		$tag = 'action'; //condition, action, antiaction
-		$fieldtype = 'set';
-		$fielddata = 'recording_slots=true';
-		$fieldorder = '002';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'set';
+		$field_data = 'recording_slots=true';
+		$field_order = '002';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 		$tag = 'action'; //condition, action, antiaction
-		$fieldtype = 'set';
-		$fielddata = 'recording_prefix=recording';
-		$fieldorder = '003';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'set';
+		$field_data = 'recording_prefix=recording';
+		$field_order = '003';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 		$tag = 'action'; //condition, action, antiaction
-		$fieldtype = 'set';
-		$fielddata = 'pin_number='.generate_password(6, 1);
-		$fieldorder = '004';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'set';
+		$field_data = 'pin_number='.generate_password(6, 1);
+		$field_order = '004';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 		$tag = 'action'; //condition, action, antiaction
-		$fieldtype = 'lua';
-		$fielddata = 'recordings.lua';
-		$fieldorder = '005';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'lua';
+		$field_data = 'recordings.lua';
+		$field_order = '005';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 	}
 	else {
 		if ($display_type == "text") {
@@ -125,8 +125,8 @@
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and opt1name = 'disa' ";
-	$sql .= "and opt1value = '3472' ";
+	$sql .= "and opt_1_name = 'disa' ";
+	$sql .= "and opt_1_value = '3472' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
@@ -138,38 +138,38 @@
 		if ($display_type == "text") {
 			echo "	Dialplan DISA: 		added\n";
 		}
-		$extensionname = 'DISA';
-		$dialplanorder ='900';
+		$extension_name = 'DISA';
+		$dialplan_order ='900';
 		$context = $_SESSION['context'];
 		$enabled = 'false';
 		$descr = '*3472 Direct Inward System Access ';
-		$opt1name = 'disa';
-		$opt1value = '3472';
-		$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+		$opt_1_name = 'disa';
+		$opt_1_value = '3472';
+		$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 		$tag = 'condition'; //condition, action, antiaction
-		$fieldtype = 'destination_number';
-		$fielddata = '^\*(3472)$';
-		$fieldorder = '000';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'destination_number';
+		$field_data = '^\*(3472)$';
+		$field_order = '000';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 		$tag = 'action'; //condition, action, antiaction
-		$fieldtype = 'set';
-		$fielddata = 'pin_number='.generate_password(6, 1);
-		$fieldorder = '001';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'set';
+		$field_data = 'pin_number='.generate_password(6, 1);
+		$field_order = '001';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 		$tag = 'action'; //condition, action, antiaction
-		$fieldtype = 'set';
-		$fielddata = 'context='.$_SESSION['context'];
-		$fieldorder = '002';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'set';
+		$field_data = 'context='.$_SESSION['context'];
+		$field_order = '002';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 		$tag = 'action'; //condition, action, antiaction
-		$fieldtype = 'lua';
-		$fielddata = 'disa.lua';
-		$fieldorder = '003';
-		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+		$field_type = 'lua';
+		$field_data = 'disa.lua';
+		$field_order = '003';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 	}
 	else {
 		if ($display_type == "text") {

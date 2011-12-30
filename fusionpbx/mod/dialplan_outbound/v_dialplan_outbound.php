@@ -49,11 +49,11 @@ $order = $_GET["order"];
 		$sql .= "select * from v_dialplan_includes_details ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and (";
-		$sql .= "fielddata like '%sofia/gateway/%' ";
-		$sql .= "or fielddata like '%freetdm%' ";
-		$sql .= "or fielddata like '%openzap%' ";
-		$sql .= "or fielddata like '%dingaling%' ";
-		$sql .= "or fielddata like '%enum_auto_route%' ";
+		$sql .= "field_data like '%sofia/gateway/%' ";
+		$sql .= "or field_data like '%freetdm%' ";
+		$sql .= "or field_data like '%openzap%' ";
+		$sql .= "or field_data like '%dingaling%' ";
+		$sql .= "or field_data like '%enum_auto_route%' ";
 		$sql .= ") ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -62,9 +62,9 @@ $order = $_GET["order"];
 		foreach ($result as &$row) {
 			$dialplan_include_id = $row["dialplan_include_id"];
 			//$tag = $row["tag"];
-			//$fieldorder = $row["fieldorder"];
-			//$fieldtype = $row["fieldtype"];
-			//$fielddata = $row["fielddata"];
+			//$field_order = $row["field_order"];
+			//$field_type = $row["field_type"];
+			//$field_data = $row["field_data"];
 			$dialplan_array[$x]['dialplan_include_id'] = $dialplan_include_id;
 			$x++;
 		}
@@ -121,7 +121,7 @@ $order = $_GET["order"];
 			$x++;
 		}
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder, extensionname asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -156,7 +156,7 @@ $order = $_GET["order"];
 			$x++;
 		}
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplanorder asc, extensionname asc "; }
+	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -172,8 +172,8 @@ $order = $_GET["order"];
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('extensionname', 'Name', $orderby, $order);
-	echo thorderby('dialplanorder', 'Order', $orderby, $order);
+	echo thorderby('extension_name', 'Name', $orderby, $order);
+	echo thorderby('dialplan_order', 'Order', $orderby, $order);
 	echo thorderby('enabled', 'Enabled', $orderby, $order);
 	echo thorderby('descr', 'Description', $orderby, $order);
 	if (permission_exists('outbound_route_edit')) {
@@ -194,8 +194,8 @@ $order = $_GET["order"];
 	else { //received results
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extensionname]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplanorder]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extension_name]."</td>\n";
+			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplan_order]."</td>\n";
 			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";

@@ -41,7 +41,7 @@ $order = $_GET["order"];
 //POST to PHP variables
 	if (count($_POST)>0) {
 		$extension_name = check_str($_POST["extension_name"]);
-		$dialplanorder = check_str($_POST["dialplanorder"]);
+		$dialplan_order = check_str($_POST["dialplan_order"]);
 		$condition_field_1 = check_str($_POST["condition_field_1"]);
 		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
 		$condition_field_2 = check_str($_POST["condition_field_2"]);
@@ -95,43 +95,42 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$count = $db->exec("BEGIN;"); //returns affected rows
 
 	//add the entries to the dialplan
-			$extensionname = $extension_name."";
-			$context = 'default';
-			$opt1name = 'call_forward_id';
-			$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $description, $opt1name, $opt1value);
-			if (strlen($dialplan_include_id) > 0 && strlen($condition_expression_1) > 0) {
-				//add condition 1
+		$context = 'default';
+		$opt_1_name = 'call_forward_id';
+		$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+		if (strlen($dialplan_include_id) > 0 && strlen($condition_expression_1) > 0) {
+			//add condition 1
+				$tag = 'condition'; //condition, action, antiaction
+				$field_type = 'destination_number';
+				$field_data = '^'.$condition_expression_1.'$';
+				$field_order = '000';
+				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+			//add condition 2
+				if (strlen($condition_expression_2) > 0) {
 					$tag = 'condition'; //condition, action, antiaction
-					$fieldtype = 'destination_number';
-					$fielddata = '^'.$condition_expression_1.'$';
-					$fieldorder = '000';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-				//add condition 2
-					if (strlen($condition_expression_2) > 0) {
-						$tag = 'condition'; //condition, action, antiaction
-						$fieldtype = $condition_field_2;
-						$fielddata = '^'.$condition_expression_2.'$';
-						$fieldorder = '001';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-					}
-				//set action 1
-					if (strlen($action_application_1) > 0) {
-						$tag = 'action'; //condition, action, antiaction
-						$fieldtype = 'set';
-						$fieldtype = $action_application_1;
-						$fielddata = $action_data_1;
-						$fieldorder = '002';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-					}
-				//set action 2
-					if (strlen($action_application_2) > 0) {
-						$tag = 'action'; //condition, action, antiaction
-						$fieldtype = $action_application_2;
-						$fielddata = $action_data_2;
-						$fieldorder = '003';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
-					}
-			}
+					$field_type = $condition_field_2;
+					$field_data = '^'.$condition_expression_2.'$';
+					$field_order = '001';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+				}
+			//set action 1
+				if (strlen($action_application_1) > 0) {
+					$tag = 'action'; //condition, action, antiaction
+					$field_type = 'set';
+					$field_type = $action_application_1;
+					$field_data = $action_data_1;
+					$field_order = '002';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+				}
+			//set action 2
+				if (strlen($action_application_2) > 0) {
+					$tag = 'action'; //condition, action, antiaction
+					$field_type = $action_application_2;
+					$field_data = $action_data_2;
+					$field_order = '003';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+				}
+		}
 
 	//commit the atomic transaction
 		$count = $db->exec("COMMIT;"); //returns affected rows
@@ -373,10 +372,10 @@ if (field_type == "condition_field_2") {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='dialplanorder' class='formfld' style='width: 60%;'>\n";
+	echo "              <select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
 	//echo "              <option></option>\n";
-	if (strlen(htmlspecialchars($dialplanorder))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($dialplanorder)."'>".htmlspecialchars($dialplanorder)."</option>\n";
+	if (strlen(htmlspecialchars($dialplan_order))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {

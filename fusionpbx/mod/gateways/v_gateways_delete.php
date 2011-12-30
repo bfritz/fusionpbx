@@ -88,8 +88,8 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and opt1name = 'gateway_id' ";
-		$sql .= "and opt1value = '".$id."' ";
+		$sql .= "and opt_1_name = 'gateway_id' ";
+		$sql .= "and opt_1_value = '".$id."' ";
 		//echo "sql: ".$sql."<br />\n";
 		$prepstatement2 = $db->prepare($sql);
 		$prepstatement2->execute();
@@ -110,8 +110,8 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql = "delete from v_dialplan_includes ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and opt1name = 'gateway_id' ";
-		$sql .= "and opt1value = '$id' ";
+		$sql .= "and opt_1_name = 'gateway_id' ";
+		$sql .= "and opt_1_value = '$id' ";
 		//echo "sql: ".$sql."<br />\n";
 		$db->query($sql);
 		unset($sql);
