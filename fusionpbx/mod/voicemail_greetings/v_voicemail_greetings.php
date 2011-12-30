@@ -61,6 +61,24 @@ require_once "includes/paging.php";
 //set the greeting directory
 	$v_greeting_dir = $v_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$v_id]['domain'].'/'.$user_id;
 
+//upload the recording
+	if (($_POST['submit'] == "Save") && is_uploaded_file($_FILES['file']['tmp_name']) && permission_exists('recordings_upload')) {
+		if ($_POST['type'] == 'rec') {
+			for($i = 1; $i < 10; $i++){
+				$tmp_greeting = 'greeting_'.$i.'.wav';
+				if (!file_exists($v_greeting_dir.'/'.$tmp_greeting)) {
+					$_REQUEST['greeting'] = $tmp_greeting;
+					break;
+				}
+			}
+			unset($tmp_greeting);
+			if ($_REQUEST['greeting']) {
+				move_uploaded_file($_FILES['file']['tmp_name'], $v_greeting_dir.'/'.$_REQUEST['greeting']);
+				$save_msg = "Uploaded file to ".$v_greeting_dir."/".$_REQUEST['greeting'];
+			}
+		}
+	}
+
 //save the selected greeting
 	if ($_REQUEST['submit'] == "Save") {
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -100,12 +118,6 @@ require_once "includes/paging.php";
 			}
 		}
 		exit;
-	}
-
-//upload the recording
-	if (($_POST['submit'] == "Save") && is_uploaded_file($_FILES['file']['tmp_name']) && permission_exists('voicemail_greeting_upload')) {
-		move_uploaded_file($_FILES['file']['tmp_name'], $v_voicemail_greetings_dir.'/'.$_FILES['file']['name']);
-		$savemsg = "Uploaded file to ".$v_greeting_dir."/". htmlentities($_FILES['file']['name']);
 	}
 
 //build a list of voicemail greetings
@@ -175,6 +187,11 @@ require_once "includes/paging.php";
 //include the header
 	require_once "includes/header.php";
 
+//show the message
+	if (strlen($save_msg) > 0) {
+		echo "Message: ".$save_msg;
+	}
+
 //begin the content
 	echo "<script>\n";
 	echo "function EvalSound(soundobj) {\n";
@@ -198,6 +215,7 @@ require_once "includes/paging.php";
 	echo "		<td width='50%' align='right'>\n";
 	echo "			<label for=\"file\">File to Upload:</label>\n";
 	echo "			<input name=\"file\" type=\"file\" class=\"btn\" id=\"file\">\n";
+	echo "			<input name=\"type\" type=\"hidden\" value=\"rec\">\n";
 	echo "			<input name=\"submit\" type=\"submit\" class=\"btn\" id=\"upload\" value=\"Save\">\n";
 	echo "			&nbsp;&nbsp;&nbsp;\n";
 	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"javascript:history.back();\" value='Back'>\n";
