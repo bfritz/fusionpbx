@@ -45,16 +45,16 @@ else {
 
 //get the form value and set to php variables
 	if (count($_POST)>0) {
-		$filename = check_str($_POST["filename"]);
-		$recordingname = check_str($_POST["recordingname"]);
-		//$recordingid = check_str($_POST["recordingid"]);
-		$descr = check_str($_POST["descr"]);
+		$recording_filename = check_str($_POST["recording_filename"]);
+		$recording_name = check_str($_POST["recording_name"]);
+		//$recording_uuid = check_str($_POST["recording_uuid"]);
+		$recording_desc = check_str($_POST["recording_desc"]);
 
-		//clean the filename and recording name
-		$filename = str_replace(" ", "_", $filename);
-		$filename = str_replace("'", "", $filename);
-		$recordingname = str_replace(" ", "_", $recordingname);
-		$recordingname = str_replace("'", "", $recordingname);
+		//clean the recording filename and name
+		$recording_filename = str_replace(" ", "_", $recording_filename);
+		$recording_filename = str_replace("'", "", $recording_filename);
+		$recording_name = str_replace(" ", "_", $recording_name);
+		$recording_name = str_replace("'", "", $recording_name);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -66,10 +66,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
-		if (strlen($filename) == 0) { $msg .= "Please provide: Filename (download)<br>\n"; }
-		if (strlen($recordingname) == 0) { $msg .= "Please provide: Recording Name (play)<br>\n"; }
-		//if (strlen($recordingid) == 0) { $msg .= "Please provide: recordingid<br>\n"; }
-		//if (strlen($descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		if (strlen($recording_filename) == 0) { $msg .= "Please provide: Filename (download)<br>\n"; }
+		if (strlen($recording_name) == 0) { $msg .= "Please provide: Recording Name (play)<br>\n"; }
+		//if (strlen($recording_uuid) == 0) { $msg .= "Please provide: recording_uuid<br>\n"; }
+		//if (strlen($recording_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -89,18 +89,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_recordings ";
 			$sql .= "(";
 			$sql .= "v_id, ";
-			$sql .= "filename, ";
-			$sql .= "recordingname, ";
-			//$sql .= "recordingid, ";
-			$sql .= "descr ";
+			$sql .= "recording_filename, ";
+			$sql .= "recording_name, ";
+			//$sql .= "recording_uuid, ";
+			$sql .= "recording_desc ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$v_id', ";
-			$sql .= "'$filename', ";
-			$sql .= "'$recordingname', ";
-			//$sql .= "'$recordingid', ";
-			$sql .= "'$descr' ";
+			$sql .= "'$recording_filename', ";
+			$sql .= "'$recording_name', ";
+			//$sql .= "'$recording_uuid', ";
+			$sql .= "'$recording_desc' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -125,25 +125,25 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll();
 				foreach ($result as &$row) {
-					$filename_orig = $row["filename"];
+					$recording_filename_orig = $row["recording_filename"];
 					break; //limit to 1 row
 				}
 				unset ($prepstatement);
 
 			//if file name is not the same then rename the file
-				if ($filename != $filename_orig) {
-					//echo "orig: ".$v_recordings_dir.'/'.$filename_orig."<br />\n";
-					//echo "new: ".$v_recordings_dir.'/'.$filename."<br />\n";
-					rename($v_recordings_dir.'/'.$filename_orig, $v_recordings_dir.'/'.$filename);
+				if ($recording_filename != $recording_filename_orig) {
+					//echo "orig: ".$v_recordings_dir.'/'.$recording_filename_orig."<br />\n";
+					//echo "new: ".$v_recordings_dir.'/'.$recording_filename."<br />\n";
+					rename($v_recordings_dir.'/'.$recording_filename_orig, $v_recordings_dir.'/'.$recording_filename);
 				}
 
 			//update the database with the new data
 				$sql = "update v_recordings set ";
 				$sql .= "v_id = '$v_id', ";
-				$sql .= "filename = '$filename', ";
-				$sql .= "recordingname = '$recordingname', ";
-				//$sql .= "recordingid = '$recordingid', ";
-				$sql .= "descr = '$descr' ";
+				$sql .= "recording_filename = '$recording_filename', ";
+				$sql .= "recording_name = '$recording_name', ";
+				//$sql .= "recording_uuid = '$recording_uuid', ";
+				$sql .= "recording_desc = '$recording_desc' ";
 				$sql .= "where v_id = '$v_id'";
 				$sql .= "and recording_id = '$recording_id'";
 				$db->exec(check_sql($sql));
@@ -172,10 +172,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
 			$v_id = $row["v_id"];
-			$filename = $row["filename"];
-			$recordingname = $row["recordingname"];
-			//$recordingid = $row["recordingid"];
-			$descr = $row["descr"];
+			$recording_filename = $row["recording_filename"];
+			$recording_name = $row["recording_name"];
+			//$recording_uuid = $row["recording_uuid"];
+			$recording_desc = $row["recording_desc"];
 			break; //limit to 1 row
 		}
 		unset ($prepstatement);
@@ -211,7 +211,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Filename (download):\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='filename' maxlength='255' value=\"$filename\">\n";
+	echo "    <input class='formfld' type='text' name='recording_filename' maxlength='255' value=\"$recording_filename\">\n";
 	echo "<br />\n";
 	echo "Name of the file. example.wav\n";
 	echo "</td>\n";
@@ -222,7 +222,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Recording Name (play):\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='recordingname' maxlength='255' value=\"$recordingname\">\n";
+	echo "    <input class='formfld' type='text' name='recording_name' maxlength='255' value=\"$recording_name\">\n";
 	echo "<br />\n";
 	echo "Recording Name. example: recordingx\n";
 	echo "</td>\n";
@@ -230,10 +230,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//echo "<tr>\n";
 	//echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	//echo "    recordingid:\n";
+	//echo "    recording_uuid:\n";
 	//echo "</td>\n";
 	//echo "<td class='vtable' align='left'>\n";
-	//echo "    <input class='formfld' type='text' name='recordingid' maxlength='255' value=\"$recordingid\">\n";
+	//echo "    <input class='formfld' type='text' name='recording_uuid' maxlength='255' value=\"$recording_uuid\">\n";
 	//echo "<br />\n";
 	//echo "\n";
 	//echo "</td>\n";
@@ -244,7 +244,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='descr' maxlength='255' value=\"$descr\">\n";
+	echo "    <input class='formfld' type='text' name='recording_desc' maxlength='255' value=\"$recording_desc\">\n";
 	echo "<br />\n";
 	echo "You may enter a description here for your reference (not parsed).\n";
 	echo "</td>\n";

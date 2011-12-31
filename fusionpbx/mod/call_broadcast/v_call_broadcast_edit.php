@@ -49,7 +49,7 @@ else {
 		$broadcast_desc = check_str($_POST["broadcast_desc"]);
 		$broadcast_timeout = check_str($_POST["broadcast_timeout"]);
 		$broadcast_concurrent_limit = check_str($_POST["broadcast_concurrent_limit"]);
-		$recordingid = check_str($_POST["recordingid"]);
+		$recording_uuid = check_str($_POST["recording_uuid"]);
 		$broadcast_caller_id_name = check_str($_POST["broadcast_caller_id_name"]);
 		$broadcast_caller_id_number = check_str($_POST["broadcast_caller_id_number"]);
 		$broadcast_destination_type = check_str($_POST["broadcast_destination_type"]);
@@ -69,7 +69,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($broadcast_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		//if (strlen($broadcast_timeout) == 0) { $msg .= "Please provide: Timeout<br>\n"; }
 		//if (strlen($broadcast_concurrent_limit) == 0) { $msg .= "Please provide: Concurrent Limit<br>\n"; }
-		//if (strlen($recordingid) == 0) { $msg .= "Please provide: Recording<br>\n"; }
+		//if (strlen($recording_uuid) == 0) { $msg .= "Please provide: Recording<br>\n"; }
 		//if (strlen($broadcast_caller_id_name) == 0) { $msg .= "Please provide: Caller ID Name<br>\n"; }
 		//if (strlen($broadcast_caller_id_number) == 0) { $msg .= "Please provide: Caller ID Number<br>\n"; }
 		//if (strlen($broadcast_destination_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
@@ -98,7 +98,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "broadcast_desc, ";
 			$sql .= "broadcast_timeout, ";
 			$sql .= "broadcast_concurrent_limit, ";
-			$sql .= "recordingid, ";
+			$sql .= "recording_uuid, ";
 			$sql .= "broadcast_caller_id_name, ";
 			$sql .= "broadcast_caller_id_number, ";
 			$sql .= "broadcast_destination_type, ";
@@ -122,7 +122,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			else {
 				$sql .= "'$broadcast_concurrent_limit', ";
 			}
-			$sql .= "'$recordingid', ";
+			$sql .= "'$recording_uuid', ";
 			$sql .= "'$broadcast_caller_id_name', ";
 			$sql .= "'$broadcast_caller_id_number', ";
 			$sql .= "'$broadcast_destination_type', ";
@@ -157,7 +157,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			else {
 				$sql .= "broadcast_concurrent_limit = '$broadcast_concurrent_limit', ";
 			}
-			$sql .= "recordingid = '$recordingid', ";
+			$sql .= "recording_uuid = '$recording_uuid', ";
 			$sql .= "broadcast_caller_id_name = '$broadcast_caller_id_name', ";
 			$sql .= "broadcast_caller_id_number = '$broadcast_caller_id_number', ";
 			$sql .= "broadcast_destination_type = '$broadcast_destination_type', ";
@@ -193,7 +193,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$broadcast_desc = $row["broadcast_desc"];
 			$broadcast_timeout = $row["broadcast_timeout"];
 			$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
-			$recordingid = $row["recordingid"];
+			$recording_uuid = $row["recording_uuid"];
 			$broadcast_caller_id_name = $row["broadcast_caller_id_name"];
 			$broadcast_caller_id_number = $row["broadcast_caller_id_number"];
 			$broadcast_destination_type = $row["broadcast_destination_type"];
@@ -271,7 +271,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//echo "	Recording:\n";
 	//echo "</td>\n";
 	//echo "<td class='vtable' align='left'>\n";
-	//echo "		<select name='recordingid' class='formfld'>\n";
+	//echo "		<select name='recording_uuid' class='formfld'>\n";
 	//echo "		<option></option>\n";
 	//$sql = "";
 	//$sql .= "select * from v_recordings ";
@@ -279,7 +279,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//$prepstatement = $db->prepare(check_sql($sql));
 	//$prepstatement->execute();
 	//while($row = $prepstatement->fetch()) {
-	//	if ($recordingid == $row['recording_id']) {
+	//	if ($recording_uuid == $row['recording_id']) {
 	//		echo "		<option value='".$row['recording_id']."' selected='yes'>".$row['recordingname']."</option>\n";
 	//	}
 	//	else {
@@ -450,7 +450,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		while($row = $prepstatement->fetch()) {
-			if ($recordingid == $row['groupid']) {
+			if ($recording_uuid == $row['groupid']) {
 				echo "		<option value='".$row['groupid']."' selected='yes'>".$row['groupid']."</option>\n";
 			}
 			else {

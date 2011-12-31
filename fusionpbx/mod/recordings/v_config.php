@@ -50,26 +50,37 @@
 		$apps[$x]['permissions'][6]['groups'][] = 'superadmin';
 
 	//schema details
-		$apps[$x]['db'][0]['table'] = 'v_recordings';
-		$apps[$x]['db'][0]['fields'][0]['name'] = 'recording_id';
-		$apps[$x]['db'][0]['fields'][0]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][0]['fields'][0]['type']['sqlite'] = 'integer PRIMARY KEY';
-		$apps[$x]['db'][0]['fields'][0]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
-		$apps[$x]['db'][0]['fields'][0]['description'] = '';
-		$apps[$x]['db'][0]['fields'][1]['name'] = 'v_id';
-		$apps[$x]['db'][0]['fields'][1]['type'] = 'numeric';
-		$apps[$x]['db'][0]['fields'][1]['description'] = '';
-		$apps[$x]['db'][0]['fields'][2]['name'] = 'filename';
-		$apps[$x]['db'][0]['fields'][2]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][2]['description'] = '';
-		$apps[$x]['db'][0]['fields'][3]['name'] = 'recordingname';
-		$apps[$x]['db'][0]['fields'][3]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][3]['description'] = '';
-		$apps[$x]['db'][0]['fields'][4]['name'] = 'recordingid';
-		$apps[$x]['db'][0]['fields'][4]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][4]['description'] = '';
-		$apps[$x]['db'][0]['fields'][5]['name'] = 'descr';
-		$apps[$x]['db'][0]['fields'][5]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][5]['description'] = '';
+		$y = 0; //table array index
+		$z = 0; //field array index
+		$apps[$x]['db'][$y]['table'] = 'v_recordings';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'recording_id';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer PRIMARY KEY';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'v_id';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'recording_filename';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'filename';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'recording_name';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'recordingname';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'recording_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'recordingid';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'recording_desc';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'descr';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 
 ?>

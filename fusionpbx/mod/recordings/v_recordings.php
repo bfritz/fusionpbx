@@ -93,7 +93,7 @@ require_once "includes/paging.php";
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$config_recording_list .= $row['filename']."|";
+		$config_recording_list .= $row['recording_filename']."|";
 	}
 	unset ($prepstatement);
 
@@ -110,10 +110,10 @@ require_once "includes/paging.php";
 						$sql = "insert into v_recordings ";
 						$sql .= "(";
 						$sql .= "v_id, ";
-						$sql .= "filename, ";
-						$sql .= "recordingname, ";
+						$sql .= "recording_filename, ";
+						$sql .= "recording_name, ";
 						//$sql .= "recordingid, ";
-						$sql .= "descr ";
+						$sql .= "recording_desc ";
 						$sql .= ")";
 						$sql .= "values ";
 						$sql .= "(";
@@ -222,10 +222,10 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('filename', 'Filename (download)', $orderby, $order);
-	echo thorderby('recordingname', 'Recording Name (play)', $orderby, $order);
+	echo thorderby('recording_filename', 'Filename (download)', $orderby, $order);
+	echo thorderby('recording_name', 'Recording Name (play)', $orderby, $order);
 	echo "<th width=\"10%\" class=\"listhdr\" nowrap>Size</th>\n";
-	echo thorderby('descr', 'Description', $orderby, $order);
+	echo thorderby('recording_desc', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('recordings_add')) {
 		echo "	<a href='v_recordings_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -238,24 +238,24 @@ require_once "includes/paging.php";
 	}
 	else { //received results
 		foreach($result as $row) {
-			$tmp_filesize = filesize($v_recordings_dir.'/'.$row['filename']);
+			$tmp_filesize = filesize($v_recordings_dir.'/'.$row['recording_filename']);
 			$tmp_filesize = byte_convert($tmp_filesize);
 
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
-			echo "		<a href=\"v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode($row['filename'])."\">\n";
-			echo $row['filename'];
+			echo "		<a href=\"v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode($row['recording_filename'])."\">\n";
+			echo $row['recording_filename'];
 			echo "	  </a>";
 			echo "	</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
-			echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('v_recordings_play.php?a=download&type=moh&filename=".base64_encode($row['filename'])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
-			echo $row['recordingname'];
+			echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('v_recordings_play.php?a=download&type=moh&filename=".base64_encode($row['recording_filename'])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
+			echo $row['recording_name'];
 			echo "	  </a>";
 			echo 	"</td>\n";
 			echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
 			echo "	".$tmp_filesize;
 			echo "	</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."' width='30%'>".$row['descr']."</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."' width='30%'>".$row['recording_desc']."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('recordings_edit')) {
 				echo "		<a href='v_recordings_edit.php?id=".$row['recording_id']."' alt='edit'>$v_link_label_edit</a>\n";
