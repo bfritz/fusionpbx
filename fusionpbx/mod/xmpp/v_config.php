@@ -15,7 +15,6 @@
 		$apps[$x]['menu'][0]['parent_uuid'] = 'BC96D773-EE57-0CDD-C3AC-2D91ABA61B55';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/xmpp/v_xmpp.php';
-		$apps[$x]['menu'][0]['groups'][] = 'user';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
