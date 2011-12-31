@@ -36,18 +36,18 @@ else {
 }
 
 //move down more than one level at a time
-//update v_rss set rssorder = (rssorder+1) where rssorder > 2 or rssorder = 2
+//update v_rss set rss_order = (rss_order+1) where rss_order > 2 or rss_order = 2
 
 if (count($_GET)>0) {
-	$rssid = check_str($_GET["rssid"]);
-	$rssorder = check_str($_GET["rssorder"]);
-	if ($rssorder != 1) {
+	$rss_id = check_str($_GET["rss_id"]);
+	$rss_order = check_str($_GET["rss_order"]);
+	if ($rss_order != 1) {
 		//move the current item's order number down
 		$sql  = "update v_rss set ";
-		$sql .= "rssorder = (rssorder+1) "; //move down
+		$sql .= "rss_order = (rss_order+1) "; //move down
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and rssorder = ".($rssorder-1)." ";
-		$sql .= "and rsscategory  = '$rsscategory' ";
+		$sql .= "and rss_order = ".($rss_order-1)." ";
+		$sql .= "and rss_category  = '$rss_category' ";
 		//echo $sql."<br><br>";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -55,16 +55,16 @@ if (count($_GET)>0) {
 
 		//move the selected item's order number up
 		$sql  = "update v_rss set ";
-		$sql .= "rssorder = (rssorder-1) "; //move up
+		$sql .= "rss_order = (rss_order-1) "; //move up
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and rssid = '$rssid' ";
-		$sql .= "and rsscategory  = '$rsscategory' ";
+		$sql .= "and rss_id = '$rss_id' ";
+		$sql .= "and rss_category  = '$rss_category' ";
 		//echo $sql."<br><br>";
 		$db->exec(check_sql($sql));
 		unset($sql);
 	}
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"1;url=rsslist.php?rssid=$rssid\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"1;url=rsslist.php?rss_id=$rss_id\">\n";
 	echo "<div align='center'>";
 	echo "Item Moved Up";
 	echo "</div>";

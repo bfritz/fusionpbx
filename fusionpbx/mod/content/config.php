@@ -25,8 +25,8 @@
 */
 
 $moduletitle = 'Content';
-$rsscategory = 'content';
+$rss_category = 'content';
 
 $rsssubshow = 0; //1 = yes, 0 = no
-$rsssubtitle = 'Content';
+$rss_sub_title = 'Content';
 ?>

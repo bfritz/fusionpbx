@@ -37,35 +37,35 @@ else {
 
 
 //get data from the db
-$rssid = $_REQUEST["rssid"];
+$rss_id = $_REQUEST["rss_id"];
 
 $sql = "";
 $sql .= "select * from v_rss ";
 $sql .= "where v_id = '$v_id' ";
-$sql .= "and rssid = '$rssid' ";
+$sql .= "and rss_id = '$rss_id' ";
 //echo $sql;
 $prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 $result = $prepstatement->fetchAll();
 foreach ($result as &$row) {
-	$rsscategory = $row["rsscategory"];
-	$rsssubcategory = $row["rsssubcategory"];
-	$rsstitle = $row["rsstitle"];
-	$rsslink = $row["rsslink"];
-	$rssdesc = $row["rssdesc"];
-	$rssimg = $row["rssimg"];
-	$rssoptional1 = $row["rssoptional1"];
-	$rssoptional2 = $row["rssoptional2"];
-	$rssoptional3 = $row["rssoptional3"];
-	$rssoptional4 = $row["rssoptional4"];
-	$rssoptional5 = $row["rssoptional5"];
-	$rssadddate = $row["rssadddate"];
-	$rssadduser = $row["rssadduser"];
-	$rssgroup = $row["rssgroup"];
-	$rssorder = $row["rssorder"];
-	//$rssdesc = str_replace ("\r\n", "<br>", $rssdesc);
+	$rss_category = $row["rss_category"];
+	$rss_sub_category = $row["rss_sub_category"];
+	$rss_title = $row["rss_title"];
+	$rss_link = $row["rss_link"];
+	$rss_desc = $row["rss_desc"];
+	$rss_img = $row["rss_img"];
+	$rss_optional_1 = $row["rss_optional_1"];
+	$rss_optional_2 = $row["rss_optional_2"];
+	$rss_optional_3 = $row["rss_optional_3"];
+	$rss_optional_4 = $row["rss_optional_4"];
+	$rss_optional_5 = $row["rss_optional_5"];
+	$rss_add_date = $row["rss_add_date"];
+	$rss_add_user = $row["rss_add_user"];
+	$rss_group = $row["rss_group"];
+	$rss_order = $row["rss_order"];
+	//$rss_desc = str_replace ("\r\n", "<br>", $rss_desc);
 
-	echo $rssdesc;
+	echo $rss_desc;
 	//return;
 
 	break; //limit to 1 row

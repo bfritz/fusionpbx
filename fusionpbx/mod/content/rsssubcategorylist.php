@@ -77,84 +77,84 @@ else { //received results
 	echo "<tr>";
 	  echo "<th nowrap>&nbsp; &nbsp; ";
 	  if (strlen($orderby)==0) {
-		echo "<a href='?orderby=Rsssubcategoryid&order=desc' title='ascending'>Rsssubcategoryid</a>";
+		echo "<a href='?orderby=rss_sub_category_id&order=desc' title='ascending'>rss_sub_category_id</a>";
 	  }
 	  else {
 		if ($order=="asc") {
-			echo "<a href='?orderby=Rsssubcategoryid&order=desc' title='ascending'>Rsssubcategoryid</a>";
+			echo "<a href='?orderby=rss_sub_category_id&order=desc' title='ascending'>rss_sub_category_id</a>";
 		}
 		else {
-			echo "<a href='?orderby=Rsssubcategoryid&order=asc' title='descending'>Rsssubcategoryid</a>";
+			echo "<a href='?orderby=rss_sub_category_id&order=asc' title='descending'>rss_sub_category_id</a>";
 		}
 	  }
 	  echo "&nbsp; &nbsp; </th>";
 
 	  echo "<th nowrap>&nbsp; &nbsp; ";
 	  if (strlen($orderby)==0) {
-		echo "<a href='?orderby=Rsscategory&order=desc' title='ascending'>Rsscategory</a>";
+		echo "<a href='?orderby=rss_category&order=desc' title='ascending'>rss_category</a>";
 	  }
 	  else {
 		if ($order=="asc") {
-			echo "<a href='?orderby=Rsscategory&order=desc' title='ascending'>Rsscategory</a>";
+			echo "<a href='?orderby=rss_category&order=desc' title='ascending'>rss_category</a>";
 		}
 		else {
-			echo "<a href='?orderby=Rsscategory&order=asc' title='descending'>Rsscategory</a>";
+			echo "<a href='?orderby=rss_category&order=asc' title='descending'>rss_category</a>";
 		}
 	  }
 	  echo "&nbsp; &nbsp; </th>";
 
 	  echo "<th nowrap>&nbsp; &nbsp; ";
 	  if (strlen($orderby)==0) {
-		echo "<a href='?orderby=Rsssubcategory&order=desc' title='ascending'>Rsssubcategory</a>";
+		echo "<a href='?orderby=rss_sub_category&order=desc' title='ascending'>rss_sub_category</a>";
 	  }
 	  else {
 		if ($order=="asc") {
-			echo "<a href='?orderby=Rsssubcategory&order=desc' title='ascending'>Rsssubcategory</a>";
+			echo "<a href='?orderby=rss_sub_category&order=desc' title='ascending'>rss_sub_category</a>";
 		}
 		else {
-			echo "<a href='?orderby=Rsssubcategory&order=asc' title='descending'>Rsssubcategory</a>";
+			echo "<a href='?orderby=rss_sub_category&order=asc' title='descending'>rss_sub_category</a>";
 		}
 	  }
 	  echo "&nbsp; &nbsp; </th>";
 
 	  echo "<th nowrap>&nbsp; &nbsp; ";
 	  if (strlen($orderby)==0) {
-		echo "<a href='?orderby=Rsssubcategorydesc&order=desc' title='ascending'>Rsssubcategorydesc</a>";
+		echo "<a href='?orderby=rss_sub_category_desc&order=desc' title='ascending'>rss_sub_category_desc</a>";
 	  }
 	  else {
 		if ($order=="asc") {
-			echo "<a href='?orderby=Rsssubcategorydesc&order=desc' title='ascending'>Rsssubcategorydesc</a>";
+			echo "<a href='?orderby=rss_sub_category_desc&order=desc' title='ascending'>rss_sub_category_desc</a>";
 		}
 		else {
-			echo "<a href='?orderby=Rsssubcategorydesc&order=asc' title='descending'>Rsssubcategorydesc</a>";
+			echo "<a href='?orderby=rss_sub_category_desc&order=asc' title='descending'>rss_sub_category_desc</a>";
 		}
 	  }
 	  echo "&nbsp; &nbsp; </th>";
 
 	  echo "<th nowrap>&nbsp; &nbsp; ";
 	  if (strlen($orderby)==0) {
-		echo "<a href='?orderby=Rssadduser&order=desc' title='ascending'>Rssadduser</a>";
+		echo "<a href='?orderby=rss_add_user&order=desc' title='ascending'>rss_add_user</a>";
 	  }
 	  else {
 		if ($order=="asc") {
-			echo "<a href='?orderby=Rssadduser&order=desc' title='ascending'>Rssadduser</a>";
+			echo "<a href='?orderby=rss_add_user&order=desc' title='ascending'>rss_add_user</a>";
 		}
 		else {
-			echo "<a href='?orderby=Rssadduser&order=asc' title='descending'>Rssadduser</a>";
+			echo "<a href='?orderby=rss_add_user&order=asc' title='descending'>rss_add_user</a>";
 		}
 	  }
 	  echo "&nbsp; &nbsp; </th>";
 
 	  echo "<th nowrap>&nbsp; &nbsp; ";
 	  if (strlen($orderby)==0) {
-		echo "<a href='?orderby=Rssadddate&order=desc' title='ascending'>Rssadddate</a>";
+		echo "<a href='?orderby=rss_add_date&order=desc' title='ascending'>rss_add_date</a>";
 	  }
 	  else {
 		if ($order=="asc") {
-			echo "<a href='?orderby=Rssadddate&order=desc' title='ascending'>Rssadddate</a>";
+			echo "<a href='?orderby=rss_add_date&order=desc' title='ascending'>rss_add_date</a>";
 		}
 		else {
-			echo "<a href='?orderby=Rssadddate&order=asc' title='descending'>Rssadddate</a>";
+			echo "<a href='?orderby=rss_add_date&order=asc' title='descending'>rss_add_date</a>";
 		}
 	  }
 	  echo "&nbsp; &nbsp; </th>";
@@ -165,12 +165,12 @@ else { //received results
 	foreach($result as $row) {
 	//print_r( $row );
 		echo "<tr style='".$rowstyle[$c]."'>\n";
-			echo "<td valign='top'><a href='rsssubcategoryupdate.php?rsssubcategoryid=".$row[rsssubcategoryid]."'>".$row[rsssubcategoryid]."</a></td>";
-			echo "<td valign='top'>".$row[rsscategory]."</td>";
-			echo "<td valign='top'>".$row[rsssubcategory]."</td>";
-			echo "<td valign='top'>".$row[rsssubcategorydesc]."</td>";
-			echo "<td valign='top'>".$row[rssadduser]."</td>";
-			echo "<td valign='top'>".$row[rssadddate]."</td>";
+			echo "<td valign='top'><a href='rss_sub_categoryupdate.php?rss_sub_category_id=".$row[rss_sub_category_id]."'>".$row[rss_sub_category_id]."</a></td>";
+			echo "<td valign='top'>".$row[rss_category]."</td>";
+			echo "<td valign='top'>".$row[rss_sub_category]."</td>";
+			echo "<td valign='top'>".$row[rss_sub_category_desc]."</td>";
+			echo "<td valign='top'>".$row[rss_add_user]."</td>";
+			echo "<td valign='top'>".$row[rss_add_date]."</td>";
 		echo "</tr>";
 
 		echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
@@ -188,8 +188,8 @@ else { //received results
 } //end if results
 
 echo "</table>\n";
-echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubcategorysearch.php'\" value='Search'>&nbsp; &nbsp;\n";
-echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubcategoryadd.php'\" value='Add'>&nbsp; &nbsp;\n";
+echo "<input type='button' class='btn' name='' onclick=\"window.location='rss_sub_categorysearch.php'\" value='Search'>&nbsp; &nbsp;\n";
+echo "<input type='button' class='btn' name='' onclick=\"window.location='rss_sub_categoryadd.php'\" value='Add'>&nbsp; &nbsp;\n";
 echo "</div>";
 
 echo "<br><br>";

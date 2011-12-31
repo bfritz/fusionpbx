@@ -35,27 +35,27 @@ else {
 	exit;
 }
 
-$rssid = $_GET["rssid"];
+$rss_id = $_GET["rss_id"];
 
 if (count($_POST)>0 && $_POST["persistform"] == "0") {
-	$rsssubid = check_str($_POST["rsssubid"]);
-	$rssid = check_str($_POST["rssid"]);
-	$rsssubtitle = check_str($_POST["rsssubtitle"]);
-	$rsssublink = check_str($_POST["rsssublink"]);
-	$rsssubdesc = check_str($_POST["rsssubdesc"]);
-	$rsssuboptional1 = check_str($_POST["rsssuboptional1"]);
-	$rsssuboptional2 = check_str($_POST["rsssuboptional2"]);
-	$rsssuboptional3 = check_str($_POST["rsssuboptional3"]);
-	$rsssuboptional4 = check_str($_POST["rsssuboptional4"]);
-	$rsssuboptional5 = check_str($_POST["rsssuboptional5"]);
-	$rsssubadddate = check_str($_POST["rsssubadddate"]);
-	$rsssubadduser = check_str($_POST["rsssubadduser"]);
+	$rss_sub_id = check_str($_POST["rss_sub_id"]);
+	$rss_id = check_str($_POST["rss_id"]);
+	$rss_sub_title = check_str($_POST["rss_sub_title"]);
+	$rss_sub_link = check_str($_POST["rss_sub_link"]);
+	$rss_sub_desc = check_str($_POST["rss_sub_desc"]);
+	$rss_sub_optional_1 = check_str($_POST["rss_sub_optional_1"]);
+	$rss_sub_optional_2 = check_str($_POST["rss_sub_optional_2"]);
+	$rss_sub_optional_3 = check_str($_POST["rss_sub_optional_3"]);
+	$rss_sub_optional_4 = check_str($_POST["rss_sub_optional_4"]);
+	$rss_sub_optional_5 = check_str($_POST["rss_sub_optional_5"]);
+	$rss_sub_add_date = check_str($_POST["rss_sub_add_date"]);
+	$rss_sub_add_user = check_str($_POST["rss_sub_add_user"]);
 
 	$msg = '';
-	if (strlen($rssid) == 0) { $msg .= "Error missing rssid.<br>\n"; }
-	if (strlen($rsssubid) == 0) { $msg .= "Error missing rsssubid.<br>\n"; }
-	//if (strlen($rsssubtitle) == 0) { $msg .= "Please provide a title.<br>\n"; }
-	if (strlen($rsssubdesc) == 0) { $msg .= "Please provide a description.<br>\n"; }
+	if (strlen($rss_id) == 0) { $msg .= "Error missing rss_id.<br>\n"; }
+	if (strlen($rss_sub_id) == 0) { $msg .= "Error missing rss_sub_id.<br>\n"; }
+	//if (strlen($rss_sub_title) == 0) { $msg .= "Please provide a title.<br>\n"; }
+	if (strlen($rss_sub_desc) == 0) { $msg .= "Please provide a description.<br>\n"; }
 
 	if (strlen($msg) > 0) {
 		require_once "includes/persistform.php";
@@ -78,29 +78,28 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 		return;
 	}
 
-
 	//sql update
 	$sql  = "update v_rss_sub set ";
-	//$sql .= "rssid = '$rssid', ";
-	$sql .= "rsssubtitle = '$rsssubtitle', ";
-	$sql .= "rsssublink = '$rsssublink', ";
-	$sql .= "rsssubdesc = '$rsssubdesc', ";
-	$sql .= "rsssuboptional1 = '$rsssuboptional1', ";
-	$sql .= "rsssuboptional2 = '$rsssuboptional2', ";
-	$sql .= "rsssuboptional3 = '$rsssuboptional3', ";
-	$sql .= "rsssuboptional4 = '$rsssuboptional4', ";
-	$sql .= "rsssuboptional5 = '$rsssuboptional5' ";
-	//$sql .= "rsssubadddate = now(), ";
-	//$sql .= "rsssubadduser = '".$_SESSION["username"]."' ";
+	//$sql .= "rss_id = '$rss_id', ";
+	$sql .= "rss_sub_title = '$rss_sub_title', ";
+	$sql .= "rss_sub_link = '$rss_sub_link', ";
+	$sql .= "rss_sub_desc = '$rss_sub_desc', ";
+	$sql .= "rss_sub_optional_1 = '$rss_sub_optional_1', ";
+	$sql .= "rss_sub_optional_2 = '$rss_sub_optional_2', ";
+	$sql .= "rss_sub_optional_3 = '$rss_sub_optional_3', ";
+	$sql .= "rss_sub_optional_4 = '$rss_sub_optional_4', ";
+	$sql .= "rss_sub_optional_5 = '$rss_sub_optional_5' ";
+	//$sql .= "rss_sub_add_date = now(), ";
+	//$sql .= "rss_sub_add_user = '".$_SESSION["username"]."' ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and rsssubid = '$rsssubid' ";
-	//$sql .= "and rssid = '$rssid' ";
+	$sql .= "and rss_sub_id = '$rss_sub_id' ";
+	//$sql .= "and rss_id = '$rss_id' ";
 	$count = $db->exec(check_sql($sql));
 	//echo "Affected Rows: ".$count;
 
 	//edit: make sure the meta redirect url is correct 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsssublist.php?rssid=$rssid&rsssubid=$rsssubid\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsssublist.php?rss_id=$rss_id&rss_sub_id=$rss_sub_id\">\n";
 	echo "<div align='center'>";
 	echo "Update Complete";
 	echo "</div>";
@@ -109,99 +108,99 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 }
 else {
 	//get data from the db
-	$rsssubid = $_GET["rsssubid"];
+	$rss_sub_id = $_GET["rss_sub_id"];
 
 	$sql = "";
 	$sql .= "select * from v_rss_sub ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and rsssubid = '$rsssubid' ";
+	$sql .= "and rss_sub_id = '$rss_sub_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		//$rssid = $row["rssid"];
-		$rsssubtitle = $row["rsssubtitle"];
-		$rsssublink = $row["rsssublink"];
-		$rsssubdesc = $row["rsssubdesc"];
-		$rsssuboptional1 = $row["rsssuboptional1"];
-		$rsssuboptional2 = $row["rsssuboptional2"];
-		$rsssuboptional3 = $row["rsssuboptional3"];
-		$rsssuboptional4 = $row["rsssuboptional4"];
-		$rsssuboptional5 = $row["rsssuboptional5"];
-		$rsssubadddate = $row["rsssubadddate"];
-		$rsssubadduser = $row["rsssubadduser"];
+		//$rss_id = $row["rss_id"];
+		$rss_sub_title = $row["rss_sub_title"];
+		$rss_sub_link = $row["rss_sub_link"];
+		$rss_sub_desc = $row["rss_sub_desc"];
+		$rss_sub_optional_1 = $row["rss_sub_optional_1"];
+		$rss_sub_optional_2 = $row["rss_sub_optional_2"];
+		$rss_sub_optional_3 = $row["rss_sub_optional_3"];
+		$rss_sub_optional_4 = $row["rss_sub_optional_4"];
+		$rss_sub_optional_5 = $row["rss_sub_optional_5"];
+		$rss_sub_add_date = $row["rss_sub_add_date"];
+		$rss_sub_add_user = $row["rss_sub_add_user"];
 		break; //limit to 1 row
 	}
 }
 
+//show the header
 	require_once "includes/header.php";
 	require_once "includes/wysiwyg.php";
+
+//show the content
 	echo "<div align='center'>";
 	echo "<table border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
 
-
 	echo "<form method='post' action=''>";
 	echo "<table width='100%'>";
 	//echo "	<tr>";
-	//echo "		<td>Rssid:</td>";
-	//echo "		<td><input type='text' name='rssid' class='txt' value='$rssid'></td>";
+	//echo "		<td>rss_id:</td>";
+	//echo "		<td><input type='text' name='rss_id' class='txt' value='$rss_id'></td>";
 	//echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td nowrap>Sub Title:</td>";
-	echo "		<td width='100%'><input type='text' name='rsssubtitle' class='txt' value='$rsssubtitle'></td>";
+	echo "		<td width='100%'><input type='text' name='rss_sub_title' class='txt' value='$rss_sub_title'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td>Sub Link:</td>";
-	echo "		<td><input type='text' name='rsssublink' class='txt' value='$rsssublink'></td>";
+	echo "		<td><input type='text' name='rss_sub_link' class='txt' value='$rss_sub_link'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td valign='top'>Description:</td>";
 	echo "		<td>";
-	echo "            <textarea name='rsssubdesc' rows='12' class='txt'>$rsssubdesc</textarea>";
+	echo "            <textarea name='rss_sub_desc' rows='12' class='txt'>$rss_sub_desc</textarea>";
 	echo "        </td>";
 	echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Rsssuboptional1:</td>";
-	//echo "		<td><input type='text' name='rsssuboptional1' value='$rsssuboptional1'></td>";
+	//echo "		<td>rss_sub_optional_1:</td>";
+	//echo "		<td><input type='text' name='rss_sub_optional_1' value='$rss_sub_optional_1'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Rsssuboptional2:</td>";
-	//echo "		<td><input type='text' name='rsssuboptional2' value='$rsssuboptional2'></td>";
+	//echo "		<td>rss_sub_optional_2:</td>";
+	//echo "		<td><input type='text' name='rss_sub_optional_2' value='$rss_sub_optional_2'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Rsssuboptional3:</td>";
-	//echo "		<td><input type='text' name='rsssuboptional3' value='$rsssuboptional3'></td>";
+	//echo "		<td>rss_sub_optional_3:</td>";
+	//echo "		<td><input type='text' name='rss_sub_optional_3' value='$rss_sub_optional_3'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Rsssuboptional4:</td>";
-	//echo "		<td><input type='text' name='rsssuboptional4' value='$rsssuboptional4'></td>";
+	//echo "		<td>rss_sub_optional_4:</td>";
+	//echo "		<td><input type='text' name='rss_sub_optional_4' value='$rss_sub_optional_4'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td>Rsssuboptional5:</td>";
-	//echo "		<td><input type='text' name='rsssuboptional5' value='$rsssuboptional5'></td>";
+	//echo "		<td>rss_sub_optional_5:</td>";
+	//echo "		<td><input type='text' name='rss_sub_optional_5' value='$rss_sub_optional_5'></td>";
 	//echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
-	echo "		    <input type='hidden' name='rssid' value='$rssid'>";
+	echo "		    <input type='hidden' name='rss_id' value='$rss_id'>";
 	echo "		    <input type='hidden' name='persistform' value='0'>";
-	echo "          <input type='hidden' name='rsssubid' value='$rsssubid'>";
+	echo "          <input type='hidden' name='rss_sub_id' value='$rss_sub_id'>";
 	echo "          <input type='submit' name='submit' class='btn' value='Update'>";
 	echo "		</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</form>";
 
-
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
 
-
+//show the footer
   require_once "includes/footer.php";
 ?>

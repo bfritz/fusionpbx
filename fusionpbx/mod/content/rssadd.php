@@ -38,55 +38,55 @@ else {
 if (count($_POST)>0) {
 
 	//get the http values and set them as variables
-		$rsssubcategory = check_str($_POST["rsssubcategory"]);
-		$rsstitle = check_str($_POST["rsstitle"]);
-		$rsslink = check_str($_POST["rsslink"]);
-		$rssdesc = check_str($_POST["rssdesc"]);
-		$rssimg = check_str($_POST["rssimg"]);
-		$rssoptional1 = check_str($_POST["rssoptional1"]);
-		$rssoptional2 = check_str($_POST["rssoptional2"]);
-		$rssoptional3 = check_str($_POST["rssoptional3"]);
-		$rssoptional4 = check_str($_POST["rssoptional4"]);
-		$rssoptional5 = check_str($_POST["rssoptional5"]);
-		$rssgroup = check_str($_POST["rssgroup"]);
-		$rssorder = check_str($_POST["rssorder"]);
+		$rss_sub_category = check_str($_POST["rss_sub_category"]);
+		$rss_title = check_str($_POST["rss_title"]);
+		$rss_link = check_str($_POST["rss_link"]);
+		$rss_desc = check_str($_POST["rss_desc"]);
+		$rss_img = check_str($_POST["rss_img"]);
+		$rss_optional_1 = check_str($_POST["rss_optional_1"]);
+		$rss_optional_2 = check_str($_POST["rss_optional_2"]);
+		$rss_optional_3 = check_str($_POST["rss_optional_3"]);
+		$rss_optional_4 = check_str($_POST["rss_optional_4"]);
+		$rss_optional_5 = check_str($_POST["rss_optional_5"]);
+		$rss_group = check_str($_POST["rss_group"]);
+		$rss_order = check_str($_POST["rss_order"]);
 
 	//insert the data into the database
 		$sql = "insert into v_rss ";
 		$sql .= "(";
 		$sql .= "v_id, ";
-		$sql .= "rsscategory, ";
-		$sql .= "rsssubcategory, ";
-		$sql .= "rsstitle, ";
-		$sql .= "rsslink, ";
-		$sql .= "rssdesc, ";
-		$sql .= "rssimg, ";
-		$sql .= "rssoptional1, ";
-		$sql .= "rssoptional2, ";
-		$sql .= "rssoptional3, ";
-		$sql .= "rssoptional4, ";
-		$sql .= "rssoptional5, ";
-		$sql .= "rssgroup, ";
-		$sql .= "rssorder, ";
-		$sql .= "rssadddate, ";
-		$sql .= "rssadduser ";
+		$sql .= "rss_category, ";
+		$sql .= "rss_sub_category, ";
+		$sql .= "rss_title, ";
+		$sql .= "rss_link, ";
+		$sql .= "rss_desc, ";
+		$sql .= "rss_img, ";
+		$sql .= "rss_optional_1, ";
+		$sql .= "rss_optional_2, ";
+		$sql .= "rss_optional_3, ";
+		$sql .= "rss_optional_4, ";
+		$sql .= "rss_optional_5, ";
+		$sql .= "rss_group, ";
+		$sql .= "rss_order, ";
+		$sql .= "rss_add_date, ";
+		$sql .= "rss_add_user ";
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$v_id', ";
-		$sql .= "'$rsscategory', ";
-		$sql .= "'$rsssubcategory', ";
-		$sql .= "'$rsstitle', ";
-		$sql .= "'$rsslink', ";
-		$sql .= "'$rssdesc', ";
-		$sql .= "'$rssimg', ";
-		$sql .= "'$rssoptional1', ";
-		$sql .= "'$rssoptional2', ";
-		$sql .= "'$rssoptional3', ";
-		$sql .= "'$rssoptional4', ";
-		$sql .= "'$rssoptional5', ";
-		$sql .= "'$rssgroup', ";
-		$sql .= "'$rssorder', ";
+		$sql .= "'$rss_category', ";
+		$sql .= "'$rss_sub_category', ";
+		$sql .= "'$rss_title', ";
+		$sql .= "'$rss_link', ";
+		$sql .= "'$rss_desc', ";
+		$sql .= "'$rss_img', ";
+		$sql .= "'$rss_optional_1', ";
+		$sql .= "'$rss_optional_2', ";
+		$sql .= "'$rss_optional_3', ";
+		$sql .= "'$rss_optional_4', ";
+		$sql .= "'$rss_optional_5', ";
+		$sql .= "'$rss_group', ";
+		$sql .= "'$rss_order', ";
 		$sql .= "now(), ";
 		$sql .= "'".$_SESSION["username"]."' ";
 		$sql .= ")";
@@ -104,7 +104,7 @@ if (count($_POST)>0) {
 
 	require_once "includes/header.php";
 	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
-		if ($rssoptional1 == "text/html") {
+		if ($rss_optional_1 == "text/html") {
 			require_once "includes/wysiwyg.php";
 		}
 	}
@@ -115,7 +115,7 @@ if (count($_POST)>0) {
 
 			echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
 			echo "		editAreaLoader.init({\n";
-			echo "			id: \"rssdesc\" // id of the textarea to transform //, |, help\n";
+			echo "			id: \"rss_desc\" // id of the textarea to transform //, |, help\n";
 			echo "			,start_highlight: true\n";
 			echo "			,font_size: \"8\"\n";
 			echo "			,allow_toggle: false\n";
@@ -146,19 +146,19 @@ if (count($_POST)>0) {
 	echo "</tr>\n";
 	//echo "	<tr>";
 	//echo "		<td class='vncellreq'>Category:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='rsscategory' value='$rsscategory'></td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rss_category' value='$rss_category'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
 	//echo "		<td class='vncellreq' nowrap>Sub Category:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='rsssubcategory' value='$rsssubcategory'></td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rss_sub_category' value='$rss_sub_category'></td>";
 	//echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td width='30%' class='vncellreq' nowrap>Title:</td>";
-	echo "		<td width='70%' class='vtable' width='100%'><input type='text' class='formfld' name='rsstitle' value='$rsstitle'></td>";
+	echo "		<td width='70%' class='vtable' width='100%'><input type='text' class='formfld' name='rss_title' value='$rss_title'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Link:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='rsslink' value='$rsslink'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='rss_link' value='$rss_link'></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
@@ -172,12 +172,12 @@ if (count($_POST)>0) {
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 
-	echo "<select name=\"rssgroup\" class='formfld'>\n";
+	echo "<select name=\"rss_group\" class='formfld'>\n";
 	echo "<option value=\"\">public</option>\n";
 	$result = $prepstatement->fetchAll();
 	//$count = count($result);
 	foreach($result as $field) {
-			if ($rssgroup == $field[group_id]) {
+			if ($rss_group == $field[group_id]) {
 				echo "<option value='".$field[group_id]."' selected>".$field[group_id]."</option>\n";
 			}
 			else {
@@ -198,13 +198,13 @@ if (count($_POST)>0) {
 	echo "		Template: \n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\">\n";
-	echo "<select id='rsssubcategory' name='rsssubcategory' class='formfld' style=''>\n";
+	echo "<select id='rss_sub_category' name='rss_sub_category' class='formfld' style=''>\n";
 	echo "<option value=''></option>\n";
 	$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
 	if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
 		while (false !== ($file = readdir($handle))) {
 			if ($file != "." && $file != ".." && $file != ".svn" && is_dir($theme_dir.'/'.$file)) {
-				if ($file == $rsssubcategory) {
+				if ($file == $rss_sub_category) {
 					echo "<option value='$file' selected='selected'>$file</option>\n";
 				}
 				else {
@@ -224,11 +224,11 @@ if (count($_POST)>0) {
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Type:</td>";
 	echo "		<td class='vtable'>";
-	echo "            <select name=\"rssoptional1\" class='formfld'>\n";
-	if ($rssoptional1 == "text/html") { echo "<option value=\"text/html\" selected>text/html</option>\n"; }
+	echo "            <select name=\"rss_optional_1\" class='formfld'>\n";
+	if ($rss_optional_1 == "text/html") { echo "<option value=\"text/html\" selected>text/html</option>\n"; }
 	else { echo "<option value=\"text/html\">text/html</option>\n"; }
 
-	if ($rssoptional1 == "text/javascript") { echo "<option value=\"text/javascript\" selected>text/javascript</option>\n"; }
+	if ($rss_optional_1 == "text/javascript") { echo "<option value=\"text/javascript\" selected>text/javascript</option>\n"; }
 	else { echo "<option value=\"text/javascript\">text/javascript</option>\n"; }
 	echo "            </select>";
 	echo "        </td>";
@@ -239,9 +239,9 @@ if (count($_POST)>0) {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='rssorder' class='formfld'>\n";
-	if (strlen(htmlspecialchars($rssorder))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($rssorder)."'>".htmlspecialchars($rssorder)."</option>\n";
+	echo "              <select name='rss_order' class='formfld'>\n";
+	if (strlen(htmlspecialchars($rss_order))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($rss_order)."'>".htmlspecialchars($rss_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {
@@ -266,23 +266,23 @@ if (count($_POST)>0) {
 	echo "		<td  class='' colspan='2' align='left'>";
 	echo "            <strong>Content:</strong> ";
 	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
-		echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rssdesc'); return false;\">on/off</a><br>";
+		echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rss_desc'); return false;\">on/off</a><br>";
 	}
 	else {
-		echo "            <textarea name='rssdesc'  id='rssdesc' class='formfld' cols='20' style='width: 100%' rows='12' ></textarea>";
+		echo "            <textarea name='rss_desc'  id='rss_desc' class='formfld' cols='20' style='width: 100%' rows='12' ></textarea>";
 	}
 	echo "        </td>";
 	echo "	</tr>";
 	//echo "	<tr>";
 	//echo "		<td class='vncellreq'>Image:</td>";
-	//echo "		<td class='vtable'><input type='text' name='rssimg' value='$rssimg'></td>";
+	//echo "		<td class='vtable'><input type='text' name='rss_img' value='$rss_img'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
 	//echo "		<td class='vncellreq'>Priority:</td>";
 	//echo "		<td class='vtable'>";
-	//echo "            <input type='text' name='rssoptional1' value='$rssoptional1'>";
-	//echo "            <select name=\"rssoptional1\" class='formfld'>\n";
-	//echo "            <option value=\"$rssoptional1\">$rssoptional1</option>\n";
+	//echo "            <input type='text' name='rss_optional_1' value='$rss_optional_1'>";
+	//echo "            <select name=\"rss_optional_1\" class='formfld'>\n";
+	//echo "            <option value=\"$rss_optional_1\">$rss_optional_1</option>\n";
 	//echo "            <option value=\"\"></option>\n";
 	//echo "            <option value=\"low\">low</option>\n";
 	//echo "            <option value=\"med\">med</option>\n";
@@ -293,9 +293,9 @@ if (count($_POST)>0) {
 	//echo "	<tr>";
 	//echo "		<td class='vncellreq'>Status:</td>";
 	//echo "		<td class='vtable'>";
-	//echo "            <input type='text' name='rssoptional2' value='$rssoptional2'>";
-	//echo "            <select name=\"rssoptional2\" class=\"formfld\">\n";
-	//echo "            <option value=\"$rssoptional2\">$rssoptional2</option>\n";
+	//echo "            <input type='text' name='rss_optional_2' value='$rss_optional_2'>";
+	//echo "            <select name=\"rss_optional_2\" class=\"formfld\">\n";
+	//echo "            <option value=\"$rss_optional_2\">$rss_optional_2</option>\n";
 	//echo "            <option value=\"\"></option>\n";
 	//echo "            <option value=\"0\">0</option>\n";
 	//echo "            <option value=\"10\">10</option>\n";
@@ -313,19 +313,19 @@ if (count($_POST)>0) {
 	//echo "	</tr>";
 	//echo "	<tr>";
 	//echo "		<td class='vncellreq'>Optional 3:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='rssoptional3' value='$rssoptional3'></td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rss_optional_3' value='$rss_optional_3'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
 	//echo "		<td class='vncellreq'>Optional 4:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='rssoptional4' value='$rssoptional4'></td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rss_optional_4' value='$rss_optional_4'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td class='vncellreq'>Rssoptional5:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='rssoptional5' value='$rssoptional5'></td>";
+	//echo "		<td class='vncellreq'>rss_optional_5:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rss_optional_5' value='$rss_optional_5'></td>";
 	//echo "	</tr>";
 	//echo "	<tr>";
-	//echo "		<td class='vncellreq'>Rssadddate:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='rssadddate' value='$rssadddate'></td>";
+	//echo "		<td class='vncellreq'>rss_add_date:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='rss_add_date' value='$rss_add_date'></td>";
 	//echo "	</tr>";
 
 	echo "	<tr>";

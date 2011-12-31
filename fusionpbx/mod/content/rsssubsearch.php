@@ -37,18 +37,18 @@ else {
 
 
 if (count($_POST)>0) {
-	$rsssubid = check_str($_POST["rsssubid"]);
-	$rssid = check_str($_POST["rssid"]);
-	$rsssubtitle = check_str($_POST["rsssubtitle"]);
-	$rsssublink = check_str($_POST["rsssublink"]);
-	$rsssubdesc = check_str($_POST["rsssubdesc"]);
-	$rsssuboptional1 = check_str($_POST["rsssuboptional1"]);
-	$rsssuboptional2 = check_str($_POST["rsssuboptional2"]);
-	$rsssuboptional3 = check_str($_POST["rsssuboptional3"]);
-	$rsssuboptional4 = check_str($_POST["rsssuboptional4"]);
-	$rsssuboptional5 = check_str($_POST["rsssuboptional5"]);
-	$rsssubadddate = check_str($_POST["rsssubadddate"]);
-	$rsssubadduser = check_str($_POST["rsssubadduser"]);
+	$rss_sub_id = check_str($_POST["rss_sub_id"]);
+	$rss_id = check_str($_POST["rss_id"]);
+	$rss_sub_title = check_str($_POST["rss_sub_title"]);
+	$rss_sub_link = check_str($_POST["rss_sub_link"]);
+	$rss_sub_desc = check_str($_POST["rss_sub_desc"]);
+	$rss_sub_optional_1 = check_str($_POST["rss_sub_optional_1"]);
+	$rss_sub_optional_2 = check_str($_POST["rss_sub_optional_2"]);
+	$rss_sub_optional_3 = check_str($_POST["rss_sub_optional_3"]);
+	$rss_sub_optional_4 = check_str($_POST["rss_sub_optional_4"]);
+	$rss_sub_optional_5 = check_str($_POST["rss_sub_optional_5"]);
+	$rss_sub_add_date = check_str($_POST["rss_sub_add_date"]);
+	$rss_sub_add_user = check_str($_POST["rss_sub_add_user"]);
 
 
 	require_once "includes/header.php";
@@ -64,35 +64,35 @@ if (count($_POST)>0) {
 	$sql = "";
 	$sql .= "select * from v_rss_sub ";
 	$sql .= "where ";
-	if (strlen($v_id) > 0) { $sql .= "and rsssubid = '$v_id' "; }
-	if (strlen($rsssubid) > 0) { $sql .= "and rsssubid like '%$rsssubid%' "; }
-	if (strlen($rssid) > 0) { $sql .= "and rssid like '%$rssid%' "; }
-	if (strlen($rsssubtitle) > 0) { $sql .= "and rsssubtitle like '%$rsssubtitle%' "; }
-	if (strlen($rsssublink) > 0) { $sql .= "and rsssublink like '%$rsssublink%' "; }
-	if (strlen($rsssubdesc) > 0) { $sql .= "and rsssubdesc like '%$rsssubdesc%' "; }
-	if (strlen($rsssuboptional1) > 0) { $sql .= "and rsssuboptional1 like '%$rsssuboptional1%' "; }
-	if (strlen($rsssuboptional2) > 0) { $sql .= "and rsssuboptional2 like '%$rsssuboptional2%' "; }
-	if (strlen($rsssuboptional3) > 0) { $sql .= "and rsssuboptional3 like '%$rsssuboptional3%' "; }
-	if (strlen($rsssuboptional4) > 0) { $sql .= "and rsssuboptional4 like '%$rsssuboptional4%' "; }
-	if (strlen($rsssuboptional5) > 0) { $sql .= "and rsssuboptional5 like '%$rsssuboptional5%' "; }
-	if (strlen($rsssubadddate) > 0) { $sql .= "and rsssubadddate like '%$rsssubadddate%' "; }
-	if (strlen($rsssubadduser) > 0) { $sql .= "and rsssubadduser like '%$rsssubadduser%' "; }
-	$sql .= "and length(rsssubdeldate) = 0 ";
+	if (strlen($v_id) > 0) { $sql .= "and rss_sub_id = '$v_id' "; }
+	if (strlen($rss_sub_id) > 0) { $sql .= "and rss_sub_id like '%$rss_sub_id%' "; }
+	if (strlen($rss_id) > 0) { $sql .= "and rss_id like '%$rss_id%' "; }
+	if (strlen($rss_sub_title) > 0) { $sql .= "and rss_sub_title like '%$rss_sub_title%' "; }
+	if (strlen($rss_sub_link) > 0) { $sql .= "and rss_sub_link like '%$rss_sub_link%' "; }
+	if (strlen($rss_sub_desc) > 0) { $sql .= "and rss_sub_desc like '%$rss_sub_desc%' "; }
+	if (strlen($rss_sub_optional_1) > 0) { $sql .= "and rss_sub_optional_1 like '%$rss_sub_optional_1%' "; }
+	if (strlen($rss_sub_optional_2) > 0) { $sql .= "and rss_sub_optional_2 like '%$rss_sub_optional_2%' "; }
+	if (strlen($rss_sub_optional_3) > 0) { $sql .= "and rss_sub_optional_3 like '%$rss_sub_optional_3%' "; }
+	if (strlen($rss_sub_optional_4) > 0) { $sql .= "and rss_sub_optional_4 like '%$rss_sub_optional_4%' "; }
+	if (strlen($rss_sub_optional_5) > 0) { $sql .= "and rss_sub_optional_5 like '%$rss_sub_optional_5%' "; }
+	if (strlen($rss_sub_add_date) > 0) { $sql .= "and rss_sub_add_date like '%$rss_sub_add_date%' "; }
+	if (strlen($rss_sub_add_user) > 0) { $sql .= "and rss_sub_add_user like '%$rss_sub_add_user%' "; }
+	$sql .= "and length(rss_sub_del_date) = 0 ";
 	$sql .= "or ";
-	if (strlen($v_id) > 0) { $sql .= "and rsssubid = '$v_id' "; }
-	if (strlen($rsssubid) > 0) { $sql .= "and rsssubid like '%$rsssubid%' "; }
-	if (strlen($rssid) > 0) { $sql .= "and rssid like '%$rssid%' "; }
-	if (strlen($rsssubtitle) > 0) { $sql .= "and rsssubtitle like '%$rsssubtitle%' "; }
-	if (strlen($rsssublink) > 0) { $sql .= "and rsssublink like '%$rsssublink%' "; }
-	if (strlen($rsssubdesc) > 0) { $sql .= "and rsssubdesc like '%$rsssubdesc%' "; }
-	if (strlen($rsssuboptional1) > 0) { $sql .= "and rsssuboptional1 like '%$rsssuboptional1%' "; }
-	if (strlen($rsssuboptional2) > 0) { $sql .= "and rsssuboptional2 like '%$rsssuboptional2%' "; }
-	if (strlen($rsssuboptional3) > 0) { $sql .= "and rsssuboptional3 like '%$rsssuboptional3%' "; }
-	if (strlen($rsssuboptional4) > 0) { $sql .= "and rsssuboptional4 like '%$rsssuboptional4%' "; }
-	if (strlen($rsssuboptional5) > 0) { $sql .= "and rsssuboptional5 like '%$rsssuboptional5%' "; }
-	if (strlen($rsssubadddate) > 0) { $sql .= "and rsssubadddate like '%$rsssubadddate%' "; }
-	if (strlen($rsssubadduser) > 0) { $sql .= "and rsssubadduser like '%$rsssubadduser%' "; }
-	$sql .= "and rsssubdeldate is null ";
+	if (strlen($v_id) > 0) { $sql .= "and rss_sub_id = '$v_id' "; }
+	if (strlen($rss_sub_id) > 0) { $sql .= "and rss_sub_id like '%$rss_sub_id%' "; }
+	if (strlen($rss_id) > 0) { $sql .= "and rss_id like '%$rss_id%' "; }
+	if (strlen($rss_sub_title) > 0) { $sql .= "and rss_sub_title like '%$rss_sub_title%' "; }
+	if (strlen($rss_sub_link) > 0) { $sql .= "and rss_sub_link like '%$rss_sub_link%' "; }
+	if (strlen($rss_sub_desc) > 0) { $sql .= "and rss_sub_desc like '%$rss_sub_desc%' "; }
+	if (strlen($rss_sub_optional_1) > 0) { $sql .= "and rss_sub_optional_1 like '%$rss_sub_optional_1%' "; }
+	if (strlen($rss_sub_optional_2) > 0) { $sql .= "and rss_sub_optional_2 like '%$rss_sub_optional_2%' "; }
+	if (strlen($rss_sub_optional_3) > 0) { $sql .= "and rss_sub_optional_3 like '%$rss_sub_optional_3%' "; }
+	if (strlen($rss_sub_optional_4) > 0) { $sql .= "and rss_sub_optional_4 like '%$rss_sub_optional_4%' "; }
+	if (strlen($rss_sub_optional_5) > 0) { $sql .= "and rss_sub_optional_5 like '%$rss_sub_optional_5%' "; }
+	if (strlen($rss_sub_add_date) > 0) { $sql .= "and rss_sub_add_date like '%$rss_sub_add_date%' "; }
+	if (strlen($rss_sub_add_user) > 0) { $sql .= "and rss_sub_add_user like '%$rss_sub_add_user%' "; }
+	$sql .= "and rss_sub_del_date is null ";
 
 	$sql = trim($sql);
 	if (substr($sql, -5) == "where"){ $sql = substr($sql, 0, (strlen($sql)-5)); }
@@ -124,32 +124,32 @@ if (count($_POST)>0) {
 		  echo "<th nowrap>&nbsp; &nbsp; Id&nbsp; &nbsp; </th>";
 		  echo "<th nowrap>&nbsp; &nbsp; Title&nbsp; &nbsp; </th>";
 		  //echo "<th nowrap>&nbsp; &nbsp; Link&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Rsssubdesc&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Rsssuboptional1&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Rsssuboptional2&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Rsssuboptional3&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Rsssuboptional4&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Rsssuboptional5&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Rsssubadddate&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Rsssubadduser&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; rss_sub_desc&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; rss_sub_optional_1&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; rss_sub_optional_2&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; rss_sub_optional_3&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; rss_sub_optional_4&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; rss_sub_optional_5&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; rss_sub_add_date&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; rss_sub_add_user&nbsp; &nbsp; </th>";
 		echo "</tr>";
 		echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 
 		foreach($result as $row) {
 		//print_r( $row );
 			echo "<tr style='".$rowstyle[$c]."'>\n";
-				echo "<td valign='top'><a href='rsssubupdate.php?rsssubid=".$row[rsssubid]."'>".$row[rsssubid]."</a></td>";
-				echo "<td valign='top'>".$row[rssid]."</td>";
-				echo "<td valign='top'>".$row[rsssubtitle]."</td>";
-				//echo "<td valign='top'>".$row[rsssublink]."</td>";
-				//echo "<td valign='top'>".$row[rsssubdesc]."</td>";
-				//echo "<td valign='top'>".$row[rsssuboptional1]."</td>";
-				//echo "<td valign='top'>".$row[rsssuboptional2]."</td>";
-				//echo "<td valign='top'>".$row[rsssuboptional3]."</td>";
-				//echo "<td valign='top'>".$row[rsssuboptional4]."</td>";
-				//echo "<td valign='top'>".$row[rsssuboptional5]."</td>";
-				//echo "<td valign='top'>".$row[rsssubadddate]."</td>";
-				//echo "<td valign='top'>".$row[rsssubadduser]."</td>";
+				echo "<td valign='top'><a href='rsssubupdate.php?rss_sub_id=".$row[rss_sub_id]."'>".$row[rss_sub_id]."</a></td>";
+				echo "<td valign='top'>".$row[rss_id]."</td>";
+				echo "<td valign='top'>".$row[rss_sub_title]."</td>";
+				//echo "<td valign='top'>".$row[rss_sub_link]."</td>";
+				//echo "<td valign='top'>".$row[rss_sub_desc]."</td>";
+				//echo "<td valign='top'>".$row[rss_sub_optional_1]."</td>";
+				//echo "<td valign='top'>".$row[rss_sub_optional_2]."</td>";
+				//echo "<td valign='top'>".$row[rss_sub_optional_3]."</td>";
+				//echo "<td valign='top'>".$row[rss_sub_optional_4]."</td>";
+				//echo "<td valign='top'>".$row[rss_sub_optional_5]."</td>";
+				//echo "<td valign='top'>".$row[rss_sub_add_date]."</td>";
+				//echo "<td valign='top'>".$row[rss_sub_add_user]."</td>";
 			echo "</tr>";
 
 			echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
@@ -195,51 +195,51 @@ if (count($_POST)>0) {
 	echo "<table>";
 	  echo "	<tr>";
 	  echo "		<td>Sub ID:</td>";
-	  echo "		<td><input type='text' class='txt' name='rsssubid'></td>";
+	  echo "		<td><input type='text' class='txt' name='rss_sub_id'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>ID:</td>";
-	  echo "		<td><input type='text' class='txt' name='rssid'></td>";
+	  echo "		<td><input type='text' class='txt' name='rss_id'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>Sub Title:</td>";
-	  echo "		<td><input type='text' class='txt' name='rsssubtitle'></td>";
+	  echo "		<td><input type='text' class='txt' name='rss_sub_title'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>Sub Link:</td>";
-	  echo "		<td><input type='text' class='txt' name='rsssublink'></td>";
+	  echo "		<td><input type='text' class='txt' name='rss_sub_link'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>Sub Desc:</td>";
-	  echo "		<td><input type='text' class='txt' name='rsssubdesc'></td>";
+	  echo "		<td><input type='text' class='txt' name='rss_sub_desc'></td>";
 	  echo "	</tr>";
 	  //echo "	<tr>";
-	  //echo "		<td>Rsssuboptional1:</td>";
-	  //echo "		<td><input type='text' class='txt' name='rsssuboptional1'></td>";
+	  //echo "		<td>rss_sub_optional_1:</td>";
+	  //echo "		<td><input type='text' class='txt' name='rss_sub_optional_1'></td>";
 	  //echo "	</tr>";
 	  //echo "	<tr>";
-	  //echo "		<td>Rsssuboptional2:</td>";
-	  //echo "		<td><input type='text' class='txt' name='rsssuboptional2'></td>";
+	  //echo "		<td>rss_sub_optional_2:</td>";
+	  //echo "		<td><input type='text' class='txt' name='rss_sub_optional_2'></td>";
 	  //echo "	</tr>";
 	  //echo "	<tr>";
-	  //echo "		<td>Rsssuboptional3:</td>";
-	  //echo "		<td><input type='text' class='txt' name='rsssuboptional3'></td>";
+	  //echo "		<td>rss_sub_optional_3:</td>";
+	  //echo "		<td><input type='text' class='txt' name='rss_sub_optional_3'></td>";
 	  //echo "	</tr>";
 	  //echo "	<tr>";
-	  //echo "		<td>Rsssuboptional4:</td>";
-	  //echo "		<td><input type='text' class='txt' name='rsssuboptional4'></td>";
+	  //echo "		<td>rss_sub_optional_4:</td>";
+	  //echo "		<td><input type='text' class='txt' name='rss_sub_optional_4'></td>";
 	  //echo "	</tr>";
 	  //echo "	<tr>";
-	  //echo "		<td>Rsssuboptional5:</td>";
-	  //echo "		<td><input type='text' class='txt' name='rsssuboptional5'></td>";
+	  //echo "		<td>rss_sub_optional_5:</td>";
+	  //echo "		<td><input type='text' class='txt' name='rss_sub_optional_5'></td>";
 	  //echo "	</tr>";
 	  //echo "	<tr>";
-	  //echo "		<td>Rsssubadddate:</td>";
-	  //echo "		<td><input type='text' class='txt' name='rsssubadddate'></td>";
+	  //echo "		<td>rss_sub_add_date:</td>";
+	  //echo "		<td><input type='text' class='txt' name='rss_sub_add_date'></td>";
 	  //echo "	</tr>";
 	  //echo "	<tr>";
-	  //echo "		<td>Rsssubadduser:</td>";
-	  //echo "		<td><input type='text' class='txt' name='rsssubadduser'></td>";
+	  //echo "		<td>rss_sub_add_user:</td>";
+	  //echo "		<td><input type='text' class='txt' name='rss_sub_add_user'></td>";
 	  //echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'><input type='submit' name='submit' class='btn' value='Search'></td>";

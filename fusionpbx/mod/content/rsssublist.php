@@ -35,7 +35,7 @@ else {
 	exit;
 }
 
-$rssid = $_GET["rssid"];
+$rss_id = $_GET["rss_id"];
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
@@ -52,14 +52,14 @@ require_once "includes/header.php";
 	$sql = "";
 	$sql .= "select * from v_rss ";
 	$sql .= "where v_id = '$v_id'  ";
-	$sql .= "and rssid = '$rssid'  ";
-	$sql .= "and rsscategory = '$rsscategory' ";
-	$sql .= "and length(rssdeldate) = 0 ";	
+	$sql .= "and rss_id = '$rss_id'  ";
+	$sql .= "and rss_category = '$rss_category' ";
+	$sql .= "and length(rss_del_date) = 0 ";	
 	$sql .= "or v_id = '$v_id'  ";
-	$sql .= "and rssid = '$rssid'  ";
-	$sql .= "and rsscategory = '$rsscategory' ";
-	$sql .= "and rssdeldate is null  ";
-	$sql .= "order by rssid asc ";
+	$sql .= "and rss_id = '$rss_id'  ";
+	$sql .= "and rss_category = '$rss_category' ";
+	$sql .= "and rss_del_date is null  ";
+	$sql .= "order by rss_id asc ";
 
 	//echo $sql;
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -76,69 +76,69 @@ require_once "includes/header.php";
 			  //echo "<tr style='".$rowstyle[$c]."'>\n";
 			  //echo "<tr>";
 			  //echo "    <td valign='top'>Title</td>";
-			  //echo "    <td valign='top'><a href='rssupdate.php?rssid=".$row[rssid]."'>".$row[rssid]."</a></td>";
+			  //echo "    <td valign='top'><a href='rssupdate.php?rss_id=".$row[rss_id]."'>".$row[rss_id]."</a></td>";
 			  //echo "</tr>";
-			  //echo "<td valign='top'>".$row[rsscategory]."</td>";
+			  //echo "<td valign='top'>".$row[rss_category]."</td>";
 			  
 			  echo "<tr>";
 			  echo "    <td valign='top'>Title: &nbsp;</td>";
-			  echo "    <td valign='top'><b>".$row[rsstitle]."</b></td>";
+			  echo "    <td valign='top'><b>".$row[rss_title]."</b></td>";
 			  echo "    <td valign='top' align='right'>";
-			  echo "        <input type='button' class='btn' name='' onclick=\"window.location='rssupdate.php?rssid=".$row[rssid]."'\" value='Update'>";
+			  echo "        <input type='button' class='btn' name='' onclick=\"window.location='rssupdate.php?rss_id=".$row[rss_id]."'\" value='Update'>";
 			  echo "    </td>";
-			  $rssdesc = $row[rssdesc];
-			  //$rssdesc = str_replace ("\r\n", "<br>", $rssdesc);
-			  //$rssdesc = str_replace ("\n", "<br>", $rssdesc);
+			  $rss_desc = $row[rss_desc];
+			  //$rss_desc = str_replace ("\r\n", "<br>", $rss_desc);
+			  //$rss_desc = str_replace ("\n", "<br>", $rss_desc);
 			  echo "</tr>";              
 			  
 			  
 			  echo "<tr>";
 			  echo "    <td valign='top'>Template: &nbsp;</td>";
-			  echo "     <td valign='top'>".$row[rsssubcategory]."</td>";
+			  echo "     <td valign='top'>".$row[rss_sub_category]."</td>";
 			  echo "</tr>";
 
 			  echo "<tr>";
 			  echo "    <td valign='top'>Group: &nbsp;</td>";
-			  echo "     <td valign='top'>".$row[rssgroup]."</td>";
+			  echo "     <td valign='top'>".$row[rss_group]."</td>";
 			  echo "</tr>";
 			  
-			  if (strlen($row[rssorder]) > 0) {
+			  if (strlen($row[rss_order]) > 0) {
 				  echo "<tr>";
 				  echo "    <td valign='top'>Order: &nbsp;</td>";
-				  echo "     <td valign='top'>".$row[rssorder]."</td>";
+				  echo "     <td valign='top'>".$row[rss_order]."</td>";
 				  echo "</tr>";
 			  }
 
-			  //echo "<td valign='top'>".$row[rsslink]."</td>";
+			  //echo "<td valign='top'>".$row[rss_link]."</td>";
 			  echo "    <td valign='top'>Description: &nbsp;</td>";
-			  echo "    <td valign='top' colspan='2'>".$rssdesc."</td>";
-			  //echo "<td valign='top'>".$row[rssimg]."</td>";
+			  echo "    <td valign='top' colspan='2'>".$rss_desc."</td>";
+			  //echo "<td valign='top'>".$row[rss_img]."</td>";
 
 			  //echo "<tr>";
 			  //echo "    <td valign='top'>Priority: &nbsp;</td>";
-			  //echo "    <td valign='top' colspan='2'>".$row[rssoptional1]."</td>"; //priority
+			  //echo "    <td valign='top' colspan='2'>".$row[rss_optional_1]."</td>"; //priority
 			  //echo "</tr>";
 
 			  //echo "<tr>";
 			  //echo "    <td valign='top'>Status: &nbsp;</td>"; //completion status
 			  //echo "    <td valign='top' colspan='2'>";
-			  //echo      $row[rssoptional2];
-			  //if ($row[rssoptional2]=="100") {
+			  //echo      $row[rss_optional_2];
+			  //if ($row[rss_optional_2]=="100") {
 			  //    echo "Complete";
 			  //}
 			  //else {
-			  //    echo $row[rssoptional2]."%";
+			  //    echo $row[rss_optional_2]."%";
 			  //}
 			  //echo      "</td>"; //completion status
-			  //echo "<td valign='top'>".$row[rssoptional3]."</td>";
-			  //echo "<td valign='top'>".$row[rssoptional4]."</td>";
-			  //echo "<td valign='top'>".$row[rssoptional5]."</td>";
-			  //echo "<td valign='top'>".$row[rssadddate]."</td>";
-			  //echo "<td valign='top'>".$row[rssadduser]."</td>";
+			  //echo "<td valign='top'>".$row[rss_optional_3]."</td>";
+			  //echo "<td valign='top'>".$row[rss_optional_4]."</td>";
+			  //echo "<td valign='top'>".$row[rss_optional_5]."</td>";
+			  //echo "<td valign='top'>".$row[rss_add_date]."</td>";
+			  //echo "<td valign='top'>".$row[rss_add_user]."</td>";
 			  //echo "<tr>";
 			  //echo "    <td valign='top'>";
-			  //echo "      <a href='rsssublist.php?rssid=".$row[rssid]."'>Details</a>";
-			  //echo "        <input type='button' class='btn' name='' onclick=\"window.location='rsssublist.php?rssid=".$row[rssid]."'\" value='Details'>";
+			  //echo "      <a href='rsssublist.php?rss_id=".$row[rss_id]."'>Details</a>";
+			  //echo "        <input type='button' class='btn' name='' onclick=\"window.location='rsssublist.php?rss_id=".$row[rss_id]."'\" value='Details'>";
 			  //echo "    </td>";
 			  //echo "</tr>";
 
@@ -155,16 +155,16 @@ require_once "includes/header.php";
 	if ($rsssubshow == 1) {
 
 		echo "<br><br><br>";
-		echo "<b>$rsssubtitle</b><br>";
+		echo "<b>$rss_sub_title</b><br>";
 
 		$sql = "";
 		$sql .= "select * from v_rss_sub ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and rssid = '$rssid' ";
-		$sql .= "and length(rsssubdeldate) = 0 ";
+		$sql .= "and rss_id = '$rss_id' ";
+		$sql .= "and length(rss_sub_del_date) = 0 ";
 		$sql .= "or v_id = '$v_id' ";
-		$sql .= "and rssid = '$rssid' ";
-		$sql .= "and rsssubdeldate is null ";
+		$sql .= "and rss_id = '$rss_id' ";
+		$sql .= "and rss_sub_del_date is null ";
 		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 		//echo $sql;
 
@@ -190,168 +190,168 @@ require_once "includes/header.php";
 			/*
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssubid&order=desc' title='ascending'>Rsssubid</a>";
+				echo "<a href='?orderby=rss_sub_id&order=desc' title='ascending'>rss_sub_id</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssubid&order=desc' title='ascending'>Rsssubid</a>";
+					echo "<a href='?orderby=rss_sub_id&order=desc' title='ascending'>rss_sub_id</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssubid&order=asc' title='descending'>Rsssubid</a>";
+					echo "<a href='?orderby=rss_sub_id&order=asc' title='descending'>rss_sub_id</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rssid&order=desc' title='ascending'>Rssid</a>";
+				echo "<a href='?orderby=rss_id&order=desc' title='ascending'>rss_id</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rssid&order=desc' title='ascending'>Rssid</a>";
+					echo "<a href='?orderby=rss_id&order=desc' title='ascending'>rss_id</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rssid&order=asc' title='descending'>Rssid</a>";
+					echo "<a href='?orderby=rss_id&order=asc' title='descending'>rss_id</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssubtitle&order=desc' title='ascending'>Rsssubtitle</a>";
+				echo "<a href='?orderby=rss_sub_title&order=desc' title='ascending'>rss_sub_title</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssubtitle&order=desc' title='ascending'>Rsssubtitle</a>";
+					echo "<a href='?orderby=rss_sub_title&order=desc' title='ascending'>rss_sub_title</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssubtitle&order=asc' title='descending'>Rsssubtitle</a>";
+					echo "<a href='?orderby=rss_sub_title&order=asc' title='descending'>rss_sub_title</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssublink&order=desc' title='ascending'>Rsssublink</a>";
+				echo "<a href='?orderby=rss_sub_link&order=desc' title='ascending'>rss_sub_link</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssublink&order=desc' title='ascending'>Rsssublink</a>";
+					echo "<a href='?orderby=rss_sub_link&order=desc' title='ascending'>rss_sub_link</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssublink&order=asc' title='descending'>Rsssublink</a>";
+					echo "<a href='?orderby=rss_sub_link&order=asc' title='descending'>rss_sub_link</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssubdesc&order=desc' title='ascending'>Rsssubdesc</a>";
+				echo "<a href='?orderby=rss_sub_desc&order=desc' title='ascending'>rss_sub_desc</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssubdesc&order=desc' title='ascending'>Rsssubdesc</a>";
+					echo "<a href='?orderby=rss_sub_desc&order=desc' title='ascending'>rss_sub_desc</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssubdesc&order=asc' title='descending'>Rsssubdesc</a>";
+					echo "<a href='?orderby=rss_sub_desc&order=asc' title='descending'>rss_sub_desc</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssuboptional1&order=desc' title='ascending'>Rsssuboptional1</a>";
+				echo "<a href='?orderby=rss_sub_optional_1&order=desc' title='ascending'>rss_sub_optional_1</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssuboptional1&order=desc' title='ascending'>Rsssuboptional1</a>";
+					echo "<a href='?orderby=rss_sub_optional_1&order=desc' title='ascending'>rss_sub_optional_1</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssuboptional1&order=asc' title='descending'>Rsssuboptional1</a>";
+					echo "<a href='?orderby=rss_sub_optional_1&order=asc' title='descending'>rss_sub_optional_1</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssuboptional2&order=desc' title='ascending'>Rsssuboptional2</a>";
+				echo "<a href='?orderby=rss_sub_optional_2&order=desc' title='ascending'>rss_sub_optional_2</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssuboptional2&order=desc' title='ascending'>Rsssuboptional2</a>";
+					echo "<a href='?orderby=rss_sub_optional_2&order=desc' title='ascending'>rss_sub_optional_2</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssuboptional2&order=asc' title='descending'>Rsssuboptional2</a>";
+					echo "<a href='?orderby=rss_sub_optional_2&order=asc' title='descending'>rss_sub_optional_2</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssuboptional3&order=desc' title='ascending'>Rsssuboptional3</a>";
+				echo "<a href='?orderby=rss_sub_optional_3&order=desc' title='ascending'>rss_sub_optional_3</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssuboptional3&order=desc' title='ascending'>Rsssuboptional3</a>";
+					echo "<a href='?orderby=rss_sub_optional_3&order=desc' title='ascending'>rss_sub_optional_3</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssuboptional3&order=asc' title='descending'>Rsssuboptional3</a>";
+					echo "<a href='?orderby=rss_sub_optional_3&order=asc' title='descending'>rss_sub_optional_3</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssuboptional4&order=desc' title='ascending'>Rsssuboptional4</a>";
+				echo "<a href='?orderby=rss_sub_optional_4&order=desc' title='ascending'>rss_sub_optional_4</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssuboptional4&order=desc' title='ascending'>Rsssuboptional4</a>";
+					echo "<a href='?orderby=rss_sub_optional_4&order=desc' title='ascending'>rss_sub_optional_4</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssuboptional4&order=asc' title='descending'>Rsssuboptional4</a>";
+					echo "<a href='?orderby=rss_sub_optional_4&order=asc' title='descending'>rss_sub_optional_4</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssuboptional5&order=desc' title='ascending'>Rsssuboptional5</a>";
+				echo "<a href='?orderby=rss_sub_optional_5&order=desc' title='ascending'>rss_sub_optional_5</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssuboptional5&order=desc' title='ascending'>Rsssuboptional5</a>";
+					echo "<a href='?orderby=rss_sub_optional_5&order=desc' title='ascending'>rss_sub_optional_5</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssuboptional5&order=asc' title='descending'>Rsssuboptional5</a>";
+					echo "<a href='?orderby=rss_sub_optional_5&order=asc' title='descending'>rss_sub_optional_5</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssubadddate&order=desc' title='ascending'>Rsssubadddate</a>";
+				echo "<a href='?orderby=rss_sub_add_date&order=desc' title='ascending'>rss_sub_add_date</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssubadddate&order=desc' title='ascending'>Rsssubadddate</a>";
+					echo "<a href='?orderby=rss_sub_add_date&order=desc' title='ascending'>rss_sub_add_date</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssubadddate&order=asc' title='descending'>Rsssubadddate</a>";
+					echo "<a href='?orderby=rss_sub_add_date&order=asc' title='descending'>rss_sub_add_date</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=Rsssubadduser&order=desc' title='ascending'>Rsssubadduser</a>";
+				echo "<a href='?orderby=rss_sub_add_user&order=desc' title='ascending'>rss_sub_add_user</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=Rsssubadduser&order=desc' title='ascending'>Rsssubadduser</a>";
+					echo "<a href='?orderby=rss_sub_add_user&order=desc' title='ascending'>rss_sub_add_user</a>";
 				}
 				else {
-					echo "<a href='?orderby=Rsssubadduser&order=asc' title='descending'>Rsssubadduser</a>";
+					echo "<a href='?orderby=rss_sub_add_user&order=asc' title='descending'>rss_sub_add_user</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
@@ -363,42 +363,42 @@ require_once "includes/header.php";
 			foreach($result as $row) {
 			//print_r( $row );
 				echo "<tr style='".$rowstyle[$c]."'>\n";
-					//echo "<td valign='top'>".$rssid."</td>";
-					//echo "<td valign='top'>&nbsp;<b>".$row[rsssubtitle]."</b>&nbsp;</td>";
-					//echo "<td valign='top'>&nbsp;".$row[rsssublink]."&nbsp;</td>";
+					//echo "<td valign='top'>".$rss_id."</td>";
+					//echo "<td valign='top'>&nbsp;<b>".$row[rss_sub_title]."</b>&nbsp;</td>";
+					//echo "<td valign='top'>&nbsp;".$row[rss_sub_link]."&nbsp;</td>";
 					echo "<td valign='top' width='200'>";
-					echo "  <b>".$row[rsssubtitle]."</b>";
+					echo "  <b>".$row[rss_sub_title]."</b>";
 					echo "</td>";
 
-					echo "<td valign='top'>".$row[rsssubadddate]."</td>";
+					echo "<td valign='top'>".$row[rss_sub_add_date]."</td>";
 
-					//echo "<td valign='top'>".$row[rsssuboptional1]."</td>";
-					//echo "<td valign='top'>".$row[rsssuboptional2]."</td>";
-					//echo "<td valign='top'>".$row[rsssuboptional3]."</td>";
-					//echo "<td valign='top'>".$row[rsssuboptional4]."</td>";
-					//echo "<td valign='top'>".$row[rsssuboptional5]."</td>";
-					//echo "<td valign='top'>".$row[rsssubadduser]."</td>";
+					//echo "<td valign='top'>".$row[rss_sub_optional_1]."</td>";
+					//echo "<td valign='top'>".$row[rss_sub_optional_2]."</td>";
+					//echo "<td valign='top'>".$row[rss_sub_optional_3]."</td>";
+					//echo "<td valign='top'>".$row[rss_sub_optional_4]."</td>";
+					//echo "<td valign='top'>".$row[rss_sub_optional_5]."</td>";
+					//echo "<td valign='top'>".$row[rss_sub_add_user]."</td>";
 
 					echo "<td valign='top'>";
-					echo "  <input type='button' class='btn' name='' onclick=\"if (confirm('Are you sure you wish to continue?')) { window.location='rsssubdelete.php?rssid=".$row[rssid]."&rsssubid=".$row[rsssubid]."' }\" value='Delete'>";
+					echo "  <input type='button' class='btn' name='' onclick=\"if (confirm('Are you sure you wish to continue?')) { window.location='rsssubdelete.php?rss_id=".$row[rss_id]."&rss_sub_id=".$row[rss_sub_id]."' }\" value='Delete'>";
 					echo "</td>";
 
 					echo "<td valign='top' align='right'>";
 					echo "  &nbsp;";
-					echo "  <input type='button' class='btn' name='' onclick=\"window.location='rsssubupdate.php?rssid=".$rssid."&rsssubid=".$row[rsssubid]."'\" value='Update'>";
+					echo "  <input type='button' class='btn' name='' onclick=\"window.location='rsssubupdate.php?rss_id=".$rss_id."&rss_sub_id=".$row[rss_sub_id]."'\" value='Update'>";
 					echo "  &nbsp; \n";
-					//echo "  <a href='rsssubupdate.php?rssid=".$rssid."&rsssubid=".$row[rsssubid]."'>Update</a>&nbsp;";
+					//echo "  <a href='rsssubupdate.php?rss_id=".$rss_id."&rss_sub_id=".$row[rss_sub_id]."'>Update</a>&nbsp;";
 					echo "</td>";
 
 
-					$rsssubdesc = $row[rsssubdesc];
-					$rsssubdesc = str_replace ("\r\n", "<br>", $rsssubdesc);
-					$rsssubdesc = str_replace ("\n", "<br>", $rsssubdesc);
+					$rss_sub_desc = $row[rss_sub_desc];
+					$rss_sub_desc = str_replace ("\r\n", "<br>", $rss_sub_desc);
+					$rss_sub_desc = str_replace ("\n", "<br>", $rss_sub_desc);
 
 					echo "</tr>";
 					echo "<tr style='".$rowstyle[$c]."'>\n";
 					echo "<td valign='top' width='300' colspan='4'>";
-					echo "".$rsssubdesc."&nbsp;";
+					echo "".$rss_sub_desc."&nbsp;";
 					echo "</td>";
 
 					echo "</tr>";
@@ -428,7 +428,7 @@ require_once "includes/header.php";
 
 	//echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubsearch.php'\" value='Search'>&nbsp; &nbsp;\n";
 	if ($rsssubshow == 1) {
-		echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubadd.php?rssid=".$rssid."'\" value='Add $rsssubtitle'>&nbsp; &nbsp;\n";
+		echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubadd.php?rss_id=".$rss_id."'\" value='Add $rss_sub_title'>&nbsp; &nbsp;\n";
 	}
 	echo "</div>";
 

@@ -89,24 +89,24 @@ require_once "includes/config.php";
 	$sql = "";
 	$sql .= "select * from v_rss ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and rsscategory = 'content' ";
+	$sql .= "and rss_category = 'content' ";
 	if (strlen($content) == 0) {
-		$sql .= "and rsslink = '".$_SERVER["PHP_SELF"]."' ";
+		$sql .= "and rss_link = '".$_SERVER["PHP_SELF"]."' ";
 	}
 	else {
-		$sql .= "and rsslink = '".$content."' ";
+		$sql .= "and rss_link = '".$content."' ";
 	}
-	$sql .= "and length(rssdeldate) = 0 ";
+	$sql .= "and length(rss_del_date) = 0 ";
 	$sql .= "or v_id = '$v_id' ";
-	$sql .= "and rsscategory = 'content' ";
+	$sql .= "and rss_category = 'content' ";
 	if (strlen($content) == 0) {
-		$sql .= "and rsslink = '".$_SERVER["PHP_SELF"]."' ";
+		$sql .= "and rss_link = '".$_SERVER["PHP_SELF"]."' ";
 	}
 	else {
-		$sql .= "and rsslink = '".$content."' ";
+		$sql .= "and rss_link = '".$content."' ";
 	}
-	$sql .= "and rssdeldate is null ";
-	$sql .= "order by rssorder asc ";
+	$sql .= "and rss_del_date is null ";
+	$sql .= "order by rss_order asc ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -114,16 +114,16 @@ require_once "includes/config.php";
 
 	$customtitle = '';
 	foreach($result as $row) {
-		$template_rsssubcategory = $row[rsssubcategory];
-		if (strlen($row[rssgroup]) == 0) {
+		$template_rss_sub_category = $row[rss_sub_category];
+		if (strlen($row[rss_group]) == 0) {
 			//content is public
-			$content_from_db = &$row[rssdesc];
-			$customtitle = $row[rsstitle];
+			$content_from_db = &$row[rss_desc];
+			$customtitle = $row[rss_title];
 		}
 		else {
-			if (ifgroup($row[rssgroup])) { //viewable only to designated group
-				$content_from_db = &$row[rssdesc];
-				$customtitle = $row[rsstitle];
+			if (ifgroup($row[rss_group])) { //viewable only to designated group
+				$content_from_db = &$row[rss_desc];
+				$customtitle = $row[rss_title];
 			}
 		}
 	} //end foreach

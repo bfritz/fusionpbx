@@ -36,49 +36,49 @@ else {
 }
 
 if (count($_POST)>0) {
-	$rsssubcategoryid = check_str($_POST["rsssubcategoryid"]);
-	$rsscategory = check_str($_POST["rsscategory"]);
-	$rsssubcategory = check_str($_POST["rsssubcategory"]);
-	$rsssubcategorydesc = check_str($_POST["rsssubcategorydesc"]);
-	$rssadduser = check_str($_POST["rssadduser"]);
-	$rssadddate = check_str($_POST["rssadddate"]);
+	$rss_sub_category_id = check_str($_POST["rss_sub_category_id"]);
+	$rss_category = check_str($_POST["rss_category"]);
+	$rss_sub_category = check_str($_POST["rss_sub_category"]);
+	$rss_sub_category_desc = check_str($_POST["rss_sub_category_desc"]);
+	$rss_add_user = check_str($_POST["rss_add_user"]);
+	$rss_add_date = check_str($_POST["rss_add_date"]);
 
 	//sql update
 	$sql  = "update v_rss_sub_category set ";
-	$sql .= "rsscategory = '$rsscategory', ";
-	$sql .= "rsssubcategory = '$rsssubcategory', ";
-	$sql .= "rsssubcategorydesc = '$rsssubcategorydesc', ";
-	$sql .= "rssadduser = '$rssadduser', ";
-	$sql .= "rssadddate = '$rssadddate' ";
+	$sql .= "rss_category = '$rss_category', ";
+	$sql .= "rss_sub_category = '$rss_sub_category', ";
+	$sql .= "rss_sub_category_desc = '$rss_sub_category_desc', ";
+	$sql .= "rss_add_user = '$rss_add_user', ";
+	$sql .= "rss_add_date = '$rss_add_date' ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and rsssubcategoryid = '$rsssubcategoryid' ";
+	$sql .= "and rss_sub_category_id = '$rss_sub_category_id' ";
 	$count = $db->exec(check_sql($sql));
 	//echo "Affected Rows: ".$count;
 
 	//edit: make sure the meta redirect url is correct 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"5;url=rsssubcategorylist.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"5;url=rss_sub_categorylist.php\">\n";
 	echo "Update Complete";
 	require_once "includes/footer.php";
 	return;
 }
 else {
 	//get data from the db
-	$rsssubcategoryid = $_GET["rsssubcategoryid"];
+	$rss_sub_category_id = $_GET["rss_sub_category_id"];
 
 	$sql = "";
 	$sql .= "select * from v_rss_sub_category ";
 	$sql .= "where v_id = '$v_id' ";
-	$sql .= "and rsssubcategoryid = '$rsssubcategoryid' ";
+	$sql .= "and rss_sub_category_id = '$rss_sub_category_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$rsscategory = $row["rsscategory"];
-		$rsssubcategory = $row["rsssubcategory"];
-		$rsssubcategorydesc = $row["rsssubcategorydesc"];
-		$rssadduser = $row["rssadduser"];
-		$rssadddate = $row["rssadddate"];
+		$rss_category = $row["rss_category"];
+		$rss_sub_category = $row["rss_sub_category"];
+		$rss_sub_category_desc = $row["rss_sub_category_desc"];
+		$rss_add_user = $row["rss_add_user"];
+		$rss_add_date = $row["rss_add_date"];
 		break; //limit to 1 row
 	}
 }
@@ -95,28 +95,28 @@ echo "      <br>";
 echo "<form method='post' action=''>";
 echo "<table>";
 echo "	<tr>";
-echo "		<td>Rsscategory:</td>";
-echo "		<td><input type='text' name='rsscategory' value='$rsscategory'></td>";
+echo "		<td>rss_category:</td>";
+echo "		<td><input type='text' name='rss_category' value='$rss_category'></td>";
 echo "	</tr>";
 echo "	<tr>";
-echo "		<td>Rsssubcategory:</td>";
-echo "		<td><input type='text' name='rsssubcategory' value='$rsssubcategory'></td>";
+echo "		<td>rss_sub_category:</td>";
+echo "		<td><input type='text' name='rss_sub_category' value='$rss_sub_category'></td>";
 echo "	</tr>";
 echo "	<tr>";
-echo "		<td>Rsssubcategorydesc:</td>";
-echo "		<td><input type='text' name='rsssubcategorydesc' value='$rsssubcategorydesc'></td>";
+echo "		<td>rss_sub_category_desc:</td>";
+echo "		<td><input type='text' name='rss_sub_category_desc' value='$rss_sub_category_desc'></td>";
 echo "	</tr>";
 echo "	<tr>";
-echo "		<td>Rssadduser:</td>";
-echo "		<td><input type='text' name='rssadduser' value='$rssadduser'></td>";
+echo "		<td>rss_add_user:</td>";
+echo "		<td><input type='text' name='rss_add_user' value='$rss_add_user'></td>";
 echo "	</tr>";
 echo "	<tr>";
-echo "		<td>Rssadddate:</td>";
-echo "		<td><input type='text' name='rssadddate' value='$rssadddate'></td>";
+echo "		<td>rss_add_date:</td>";
+echo "		<td><input type='text' name='rss_add_date' value='$rss_add_date'></td>";
 echo "	</tr>";
 echo "	<tr>";
 echo "		<td colspan='2' align='right'>";
-echo "     <input type='hidden' name='rsssubcategoryid' value='$rsssubcategoryid'>";
+echo "     <input type='hidden' name='rss_sub_category_id' value='$rss_sub_category_id'>";
 echo "     <input type='submit' name='submit' value='Update'>";
 echo "		</td>";
 echo "	</tr>";

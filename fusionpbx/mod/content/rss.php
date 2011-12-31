@@ -50,8 +50,8 @@ $rsscssurl = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"];
 $rsscssurl = str_replace ("rss.php", "rss.css", $rsscssurl);
 $contenttype = $_GET["c"];
 //echo "contenttype $contenttype";
-if (strlen($_GET["rsscategory"]) > 0) {
-	$rsscategory = $_GET["rsscategory"];
+if (strlen($_GET["rss_category"]) > 0) {
+	$rss_category = $_GET["rss_category"];
 }
 if (strlen($contenttype) == 0) {
 	$contenttype = "rss"; //define default contenttype
@@ -84,11 +84,11 @@ if ($contenttype == "rss") {
 
 $sql = "";
 $sql .= "select * from v_rss ";
-$sql .= "where rsscategory = '$rsscategory' ";
-$sql .= "and length(rssdeldate) = 0  ";
-$sql .= "or rsscategory = '$rsscategory' ";
-$sql .= "and rssdeldate is null ";
-$sql .= "order by rssid asc ";
+$sql .= "where rss_category = '$rss_category' ";
+$sql .= "and length(rss_del_date) = 0  ";
+$sql .= "or rss_category = '$rss_category' ";
+$sql .= "and rss_del_date is null ";
+$sql .= "order by rss_id asc ";
 //echo $sql;
 $prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
@@ -98,23 +98,23 @@ $count = 0;
 $result = $prepstatement->fetchAll();
 foreach ($result as &$row) {
 
-	$rssid = $row["rssid"];
-	$rsstitle = $row["rsstitle"];
-	$rssdesc = $row["rssdesc"];
-	$rsslink = $row["rsslink"];
+	$rss_id = $row["rss_id"];
+	$rss_title = $row["rss_title"];
+	$rss_desc = $row["rss_desc"];
+	$rss_link = $row["rss_link"];
 
-	//$rssdesc = $row[rsssubdesc];
-	//$rssdesc = str_replace ("\r\n", "<br>", $rssdesc);
-	//$rssdesc = str_replace ("\n", "<br>", $rssdesc);
+	//$rss_desc = $row[rss_sub_desc];
+	//$rss_desc = str_replace ("\r\n", "<br>", $rss_desc);
+	//$rss_desc = str_replace ("\n", "<br>", $rss_desc);
 
 	if ($contenttype == "rss") {
-		$rsstitle = htmlentities($rsstitle);
-		$rssdesc  = htmlentities($rssdesc);
+		$rss_title = htmlentities($rss_title);
+		$rss_desc  = htmlentities($rss_desc);
 
 		echo "<item>\n";
-		echo "<title>".$rsstitle."</title>\n";
-		echo "<description>".$rssdesc."</description>\n";
-		echo "<link>".$rsslink."</link>\n";
+		echo "<title>".$rss_title."</title>\n";
+		echo "<description>".$rss_desc."</description>\n";
+		echo "<link>".$rss_link."</link>\n";
 		//echo "<pubDate>12 Mar 2007 19:38:06 GMT</pubDate>\n";
 		//echo "<guid isPermaLink='true'>http://www.google.com/log/123</guid>\n";
 		//echo "<comments>http://www.google.com/log/121#comments</comments>\n";
@@ -124,27 +124,27 @@ foreach ($result as &$row) {
 
 	}
 	else {
-		if (strlen($rsslink) > 0) {
-			echo "<b><a href='$rsslink'>".$rsstitle."</a></b><br>\n";
+		if (strlen($rss_link) > 0) {
+			echo "<b><a href='$rss_link'>".$rss_title."</a></b><br>\n";
 		}
 		else {
-			echo "<b>".$rsstitle."</b><br>\n";
+			echo "<b>".$rss_title."</b><br>\n";
 		}
-		echo "".$rssdesc."\n";
+		echo "".$rss_desc."\n";
 		echo "<br><br>";
 
 		if ($rsssubshow == 1) {
 		//--- Begin Sub List -------------------------------------------------------
 
 			echo "<br><br><br>";
-			echo "<b>$rsssubtitle</b><br>";
+			echo "<b>$rss_sub_title</b><br>";
 
 			$sql = "";
 			$sql .= "select * from v_rss_sub ";
-			$sql .= "where rssid = '$rssid'  ";
-			$sql .= "and length(rsssubdeldate) = 0  ";
-			$sql .= "or rssid = '$rssid' ";
-			$sql .= "and rsssubdeldate is null ";
+			$sql .= "where rss_id = '$rss_id'  ";
+			$sql .= "and length(rss_sub_del_date) = 0  ";
+			$sql .= "or rss_id = '$rss_id' ";
+			$sql .= "and rss_sub_del_date is null ";
 
 			if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 
@@ -170,37 +170,37 @@ foreach ($result as &$row) {
 				foreach($result2 as $row2) {
 				//print_r( $row );
 					echo "<tr style='".$rowstyle[$c]."'>\n";
-						//echo "<td valign='top'>".$rssid."</td>";
-						//echo "<td valign='top'>&nbsp;<b>".$row2[rsssubtitle]."</b>&nbsp;</td>";
-						//echo "<td valign='top'>&nbsp;".$row2[rsssublink]."&nbsp;</td>";
+						//echo "<td valign='top'>".$rss_id."</td>";
+						//echo "<td valign='top'>&nbsp;<b>".$row2[rss_sub_title]."</b>&nbsp;</td>";
+						//echo "<td valign='top'>&nbsp;".$row2[rss_sub_link]."&nbsp;</td>";
 						echo "<td valign='top' width='200'>";
-						echo "  <b>".$row2[rsssubtitle]."</b>";
+						echo "  <b>".$row2[rss_sub_title]."</b>";
 						echo "</td>";
 
-						echo "<td valign='top'>".$row2[rsssubadddate]."</td>";
+						echo "<td valign='top'>".$row2[rss_sub_add_date]."</td>";
 
-						//echo "<td valign='top'>".$row2[rsssuboptional1]."</td>";
-						//echo "<td valign='top'>".$row2[rsssuboptional2]."</td>";
-						//echo "<td valign='top'>".$row2[rsssuboptional3]."</td>";
-						//echo "<td valign='top'>".$row2[rsssuboptional4]."</td>";
-						//echo "<td valign='top'>".$row2[rsssuboptional5]."</td>";
-						//echo "<td valign='top'>".$row2[rsssubadduser]."</td>";
+						//echo "<td valign='top'>".$row2[rss_sub_optional_1]."</td>";
+						//echo "<td valign='top'>".$row2[rss_sub_optional_2]."</td>";
+						//echo "<td valign='top'>".$row2[rss_sub_optional_3]."</td>";
+						//echo "<td valign='top'>".$row2[rss_sub_optional_4]."</td>";
+						//echo "<td valign='top'>".$row2[rss_sub_optional_5]."</td>";
+						//echo "<td valign='top'>".$row2[rss_sub_add_user]."</td>";
 						echo "<td valign='top' align='right'>";
 						echo "  &nbsp;";
-						//echo "  <input type='button' class='btn' name='' onclick=\"window.location='rsssubupdate.php?rssid=".$rssid."&rsssubid=".$row2[rsssubid]."'\" value='Update'>";
+						//echo "  <input type='button' class='btn' name='' onclick=\"window.location='rsssubupdate.php?rss_id=".$rss_id."&rss_sub_id=".$row2[rss_sub_id]."'\" value='Update'>";
 						echo "  &nbsp; \n";
-						//echo "  <a href='rsssubupdate.php?rssid=".$rssid."&rsssubid=".$row2[rsssubid]."'>Update</a>&nbsp;";
+						//echo "  <a href='rsssubupdate.php?rss_id=".$rss_id."&rss_sub_id=".$row2[rss_sub_id]."'>Update</a>&nbsp;";
 						echo "</td>";
 
-						$rsssubdesc = $row2[rsssubdesc];
-						//$rsssubdesc = str_replace ("\r\n", "<br>", $rsssubdesc);
-						//$rsssubdesc = str_replace ("\n", "<br>", $rsssubdesc);
+						$rss_sub_desc = $row2[rss_sub_desc];
+						//$rss_sub_desc = str_replace ("\r\n", "<br>", $rss_sub_desc);
+						//$rss_sub_desc = str_replace ("\n", "<br>", $rss_sub_desc);
 
 
 						echo "</tr>";
 						echo "<tr style='".$rowstyle[$c]."'>\n";
 						echo "<td valign='top' width='300' colspan='3'>";
-						echo "".$rsssubdesc."&nbsp;";
+						echo "".$rss_sub_desc."&nbsp;";
 						echo "</td>";
 
 						echo "</tr>";

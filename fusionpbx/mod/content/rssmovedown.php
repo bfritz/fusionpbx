@@ -36,16 +36,16 @@ else {
 }
 
 //move down more than one level at a time
-//update v_rss set rssorder = (rssorder+1) where rssorder > 2 or rssorder = 2
+//update v_rss set rss_order = (rss_order+1) where rss_order > 2 or rss_order = 2
 
 if (count($_GET)>0) {
-	$rssid = check_str($_GET["rssid"]);
-	$rssorder = check_str($_GET["rssorder"]);
+	$rss_id = check_str($_GET["rss_id"]);
+	$rss_order = check_str($_GET["rss_order"]);
 
-	$sql = "SELECT rssorder FROM v_rss ";
+	$sql = "SELECT rss_order FROM v_rss ";
 	$sql .= "where v_id  = '$v_id' ";
-	$sql .= "and rsscategory  = '$rsscategory' ";
-	$sql .= "order by rssorder desc ";
+	$sql .= "and rss_category  = '$rss_category' ";
+	$sql .= "order by rss_order desc ";
 	$sql .= "limit 1 ";
 	//echo $sql."<br><br>";
 	//return;
@@ -54,33 +54,33 @@ if (count($_GET)>0) {
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		//print_r( $row );
-		$highestrssorder = $row[rssorder];
+		$highestrss_order = $row[rss_order];
 	}
 	unset($prepstatement);
 
-	if ($rssorder != $highestrssorder) {
+	if ($rss_order != $highestrss_order) {
 		//move the current item's order number up
 		$sql  = "update v_rss set ";
-		$sql .= "rssorder = (rssorder-1) "; //move down
+		$sql .= "rss_order = (rss_order-1) "; //move down
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and rssorder = ".($rssorder+1)." ";
-		$sql .= "and rsscategory  = '$rsscategory' ";
+		$sql .= "and rss_order = ".($rss_order+1)." ";
+		$sql .= "and rss_category  = '$rss_category' ";
 		//echo $sql."<br><br>";
 		$db->exec(check_sql($sql));
 		unset($sql);
 
 		//move the selected item's order number down
 		$sql  = "update v_rss set ";
-		$sql .= "rssorder = (rssorder+1) "; //move up
+		$sql .= "rss_order = (rss_order+1) "; //move up
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and rssid = '$rssid' ";
-		$sql .= "and rsscategory  = '$rsscategory' ";
+		$sql .= "and rss_id = '$rss_id' ";
+		$sql .= "and rss_category  = '$rss_category' ";
 		//echo $sql."<br><br>";
 		$db->exec(check_sql($sql));
 		unset($sql);
 	}
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"1;url=rsslist.php?rssid=$rssid\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"1;url=rsslist.php?rss_id=$rss_id\">\n";
 	echo "<div align='center'>";
 	echo "Item Moved Down";
 	echo "</div>";
