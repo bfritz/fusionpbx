@@ -73,11 +73,11 @@ else {
 //delete the group from the user
 	if ($_GET["a"] == "delete" && permission_exists("user_delete")) {
 		//set the variables
-			$groupid = check_str($_GET["groupid"]);
+			$group_id = check_str($_GET["group_id"]);
 		//delete the group from the users
 			$sql = "delete from v_group_members ";
 			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and groupid = '$groupid' ";
+			$sql .= "and group_id = '$group_id' ";
 			$sql .= "and username = '$username' ";
 			$db->exec(check_sql($sql));
 		//redirect the user
@@ -92,66 +92,66 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$id = $_REQUEST["id"];
 	$password = check_str($_POST["password"]);
 	$confirmpassword = check_str($_POST["confirmpassword"]);
-	$userfirstname = check_str($_POST["userfirstname"]);
-	$userlastname = check_str($_POST["userlastname"]);
-	$usercompanyname = check_str($_POST["usercompanyname"]);
-	$userphysicaladdress1 = check_str($_POST["userphysicaladdress1"]);
-	$userphysicaladdress2 = check_str($_POST["userphysicaladdress2"]);
-	$userphysicalcity = check_str($_POST["userphysicalcity"]);
-	$userphysicalstateprovince = check_str($_POST["userphysicalstateprovince"]);
-	$userphysicalcountry = check_str($_POST["userphysicalcountry"]);
-	$userphysicalpostalcode = check_str($_POST["userphysicalpostalcode"]);
-	$usermailingaddress1 = check_str($_POST["usermailingaddress1"]);
-	$usermailingaddress2 = check_str($_POST["usermailingaddress2"]);
-	$usermailingcity = check_str($_POST["usermailingcity"]);
-	$usermailingstateprovince = check_str($_POST["usermailingstateprovince"]);
-	$usermailingcountry = check_str($_POST["usermailingcountry"]);
-	$usermailingpostalcode = check_str($_POST["usermailingpostalcode"]);
-	$userbillingaddress1 = check_str($_POST["userbillingaddress1"]);
-	$userbillingaddress2 = check_str($_POST["userbillingaddress2"]);
-	$userbillingcity = check_str($_POST["userbillingcity"]);
-	$userbillingstateprovince = check_str($_POST["userbillingstateprovince"]);
-	$userbillingcountry = check_str($_POST["userbillingcountry"]);
-	$userbillingpostalcode = check_str($_POST["userbillingpostalcode"]);
-	$usershippingaddress1 = check_str($_POST["usershippingaddress1"]);
-	$usershippingaddress2 = check_str($_POST["usershippingaddress2"]);
-	$usershippingcity = check_str($_POST["usershippingcity"]);
-	$usershippingstateprovince = check_str($_POST["usershippingstateprovince"]);
-	$usershippingcountry = check_str($_POST["usershippingcountry"]);
-	$usershippingpostalcode = check_str($_POST["usershippingpostalcode"]);
-	$userurl = check_str($_POST["userurl"]);
-	$userphone1 = check_str($_POST["userphone1"]);
-	$userphone1ext = check_str($_POST["userphone1ext"]);
-	$userphone2 = check_str($_POST["userphone2"]);
-	$userphone2ext = check_str($_POST["userphone2ext"]);
-	$userphonemobile = check_str($_POST["userphonemobile"]);
-	$userphonefax = check_str($_POST["userphonefax"]);
+	$user_first_name = check_str($_POST["user_first_name"]);
+	$user_last_name = check_str($_POST["user_last_name"]);
+	$user_company_name = check_str($_POST["user_company_name"]);
+	$user_physical_address_1 = check_str($_POST["user_physical_address_1"]);
+	$user_physical_address_2 = check_str($_POST["user_physical_address_2"]);
+	$user_physical_city = check_str($_POST["user_physical_city"]);
+	$user_physical_state_province = check_str($_POST["user_physical_state_province"]);
+	$user_physical_country = check_str($_POST["user_physical_country"]);
+	$user_physical_postal_code = check_str($_POST["user_physical_postal_code"]);
+	$user_mailing_address_1 = check_str($_POST["user_mailing_address_1"]);
+	$user_mailing_address_2 = check_str($_POST["user_mailing_address_2"]);
+	$user_mailing_city = check_str($_POST["user_mailing_city"]);
+	$user_mailing_state_province = check_str($_POST["user_mailing_state_province"]);
+	$user_mailing_country = check_str($_POST["user_mailing_country"]);
+	$user_mailing_postal_code = check_str($_POST["user_mailing_postal_code"]);
+	$user_billing_address_1 = check_str($_POST["user_billing_address_1"]);
+	$user_billing_address_2 = check_str($_POST["user_billing_address_2"]);
+	$user_billing_city = check_str($_POST["user_billing_city"]);
+	$user_billing_state_province = check_str($_POST["user_billing_state_province"]);
+	$user_billing_country = check_str($_POST["user_billing_country"]);
+	$user_billing_postal_code = check_str($_POST["user_billing_postal_code"]);
+	$user_shipping_address_1 = check_str($_POST["user_shipping_address_1"]);
+	$user_shipping_address_2 = check_str($_POST["user_shipping_address_2"]);
+	$user_shipping_city = check_str($_POST["user_shipping_city"]);
+	$user_shipping_state_province = check_str($_POST["user_shipping_state_province"]);
+	$user_shipping_country = check_str($_POST["user_shipping_country"]);
+	$user_shipping_postal_code = check_str($_POST["user_shipping_postal_code"]);
+	$user_url = check_str($_POST["user_url"]);
+	$user_phone_1 = check_str($_POST["user_phone_1"]);
+	$user_phone_1_ext = check_str($_POST["user_phone_1_ext"]);
+	$user_phone_2 = check_str($_POST["user_phone_2"]);
+	$user_phone_2_ext = check_str($_POST["user_phone_2_ext"]);
+	$user_phone_mobile = check_str($_POST["user_phone_mobile"]);
+	$user_phone_fax = check_str($_POST["user_phone_fax"]);
 	$user_status = check_str($_POST["user_status"]);
 	$user_template_name = check_str($_POST["user_template_name"]);
 	$user_time_zone = check_str($_POST["user_time_zone"]);
-	$useremail = check_str($_POST["useremail"]);
+	$user_email = check_str($_POST["user_email"]);
 	$groupmember = check_str($_POST["groupmember"]);
 
 	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
 	if (strlen($username) == 0) { $msgerror .= "Please provide the username.<br>\n"; }
 	if ($password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
-	if (strlen($userfirstname) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
-	if (strlen($userlastname) == 0) { $msgerror .= "Please provide a last name $userlastname.<br>\n"; }
-	//if (strlen($usercompanyname) == 0) { $msgerror .= "Please provide a company name.<br>\n"; }
-	//if (strlen($userphysicaladdress1) == 0) { $msgerror .= "Please provide a address.<br>\n"; }
-	//if (strlen($userphysicaladdress2) == 0) { $msgerror .= "Please provide a userphysicaladdress2.<br>\n"; }
-	//if (strlen($userphysicalcity) == 0) { $msgerror .= "Please provide a city.<br>\n"; }
-	//if (strlen($userphysicalstateprovince) == 0) { $msgerror .= "Please provide a state.<br>\n"; }
-	//if (strlen($userphysicalcountry) == 0) { $msgerror .= "Please provide a country.<br>\n"; }
-	//if (strlen($userphysicalpostalcode) == 0) { $msgerror .= "Please provide a postal code.<br>\n"; }
-	//if (strlen($userurl) == 0) { $msgerror .= "Please provide a url.<br>\n"; }
-	//if (strlen($userphone1) == 0) { $msgerror .= "Please provide a phone number.<br>\n"; }
-	//if (strlen($userphone2) == 0) { $msgerror .= "Please provide a userphone2.<br>\n"; }
-	//if (strlen($userphonemobile) == 0) { $msgerror .= "Please provide a mobile number.<br>\n"; }
-	//if (strlen($userphoneemergencymobile) == 0) { $msgerror .= "Please provide a emergency mobile.<br>\n"; }
-	//if (strlen($userphonefax) == 0) { $msgerror .= "Please provide a fax number.<br>\n"; }
-	//if (strlen($useremail) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
-	//if (strlen($useremailemergency) == 0) { $msgerror .= "Please provide an emergency email.<br>\n"; }
+	if (strlen($user_first_name) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
+	if (strlen($user_last_name) == 0) { $msgerror .= "Please provide a last name $user_last_name.<br>\n"; }
+	//if (strlen($user_company_name) == 0) { $msgerror .= "Please provide a company name.<br>\n"; }
+	//if (strlen($user_physical_address_1) == 0) { $msgerror .= "Please provide a address.<br>\n"; }
+	//if (strlen($user_physical_address_2) == 0) { $msgerror .= "Please provide a user_physical_address_2.<br>\n"; }
+	//if (strlen($user_physical_city) == 0) { $msgerror .= "Please provide a city.<br>\n"; }
+	//if (strlen($user_physical_state_province) == 0) { $msgerror .= "Please provide a state.<br>\n"; }
+	//if (strlen($user_physical_country) == 0) { $msgerror .= "Please provide a country.<br>\n"; }
+	//if (strlen($user_physical_postal_code) == 0) { $msgerror .= "Please provide a postal code.<br>\n"; }
+	//if (strlen($user_url) == 0) { $msgerror .= "Please provide a url.<br>\n"; }
+	//if (strlen($user_phone_1) == 0) { $msgerror .= "Please provide a phone number.<br>\n"; }
+	//if (strlen($user_phone_2) == 0) { $msgerror .= "Please provide a user_phone_2.<br>\n"; }
+	//if (strlen($user_phone_mobile) == 0) { $msgerror .= "Please provide a mobile number.<br>\n"; }
+	//if (strlen($user_phone_emergency_mobile) == 0) { $msgerror .= "Please provide a emergency mobile.<br>\n"; }
+	//if (strlen($user_phone_fax) == 0) { $msgerror .= "Please provide a fax number.<br>\n"; }
+	//if (strlen($user_email) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
+	//if (strlen($user_email_emergency) == 0) { $msgerror .= "Please provide an emergency email.<br>\n"; }
 	//if (strlen($user_time_zone) == 0) { $msgerror .= "Please provide an time zone.<br>\n"; }
 
 	if (strlen($msgerror) > 0) {
@@ -169,20 +169,20 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	}
 
 	//assign the user to the group
-		if (strlen($_REQUEST["groupid"]) > 0) {
+		if (strlen($_REQUEST["group_id"]) > 0) {
 			$sqlinsert = "insert into v_group_members ";
 			$sqlinsert .= "(";
 			$sqlinsert .= "v_id, ";
-			$sqlinsert .= "groupid, ";
+			$sqlinsert .= "group_id, ";
 			$sqlinsert .= "username ";
 			$sqlinsert .= ")";
 			$sqlinsert .= "values ";
 			$sqlinsert .= "(";
 			$sqlinsert .= "'$v_id', ";
-			$sqlinsert .= "'".$_REQUEST["groupid"]."', ";
+			$sqlinsert .= "'".$_REQUEST["group_id"]."', ";
 			$sqlinsert .= "'$username' ";
 			$sqlinsert .= ")";
-			if ($_REQUEST["groupid"] == "superadmin") {
+			if ($_REQUEST["group_id"] == "superadmin") {
 				//only a user in the superadmin group can add other users to that group
 				if (ifgroup("superadmin")) {
 					$db->exec($sqlinsert);
@@ -213,44 +213,44 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				$sql .= "password = '".md5($salt.$password)."', ";
 				$sql .= "salt = '".$salt."', ";
 		}
-		$sql .= "userfirstname = '$userfirstname', ";
-		$sql .= "userlastname = '$userlastname', ";
-		$sql .= "usercompanyname = '$usercompanyname', ";
-		$sql .= "userphysicaladdress1 = '$userphysicaladdress1', ";
-		$sql .= "userphysicaladdress2 = '$userphysicaladdress2', ";
-		$sql .= "userphysicalcity = '$userphysicalcity', ";
-		$sql .= "userphysicalstateprovince = '$userphysicalstateprovince', ";
-		$sql .= "userphysicalcountry = '$userphysicalcountry', ";
-		$sql .= "userphysicalpostalcode = '$userphysicalpostalcode', ";
-		$sql .= "usermailingaddress1 = '$usermailingaddress1', ";
-		$sql .= "usermailingaddress2 = '$usermailingaddress2', ";
-		$sql .= "usermailingcity = '$usermailingcity', ";
-		$sql .= "usermailingstateprovince = '$usermailingstateprovince', ";
-		$sql .= "usermailingcountry = '$usermailingcountry', ";
-		$sql .= "usermailingpostalcode = '$usermailingpostalcode', ";
-		$sql .= "userbillingaddress1 = '$userbillingaddress1', ";
-		$sql .= "userbillingaddress2 = '$userbillingaddress2', ";
-		$sql .= "userbillingcity = '$userbillingcity', ";
-		$sql .= "userbillingstateprovince = '$userbillingstateprovince', ";
-		$sql .= "userbillingcountry = '$userbillingcountry', ";
-		$sql .= "userbillingpostalcode = '$userbillingpostalcode', ";
-		$sql .= "usershippingaddress1 = '$usershippingaddress1', ";
-		$sql .= "usershippingaddress2 = '$usershippingaddress2', ";
-		$sql .= "usershippingcity = '$usershippingcity', ";
-		$sql .= "usershippingstateprovince = '$usershippingstateprovince', ";
-		$sql .= "usershippingcountry = '$usershippingcountry', ";
-		$sql .= "usershippingpostalcode = '$usershippingpostalcode', ";
-		$sql .= "userurl = '$userurl', ";
-		$sql .= "userphone1 = '$userphone1', ";
-		$sql .= "userphone1ext = '$userphone1ext', ";
-		$sql .= "userphone2 = '$userphone2', ";
-		$sql .= "userphone2ext = '$userphone2ext', ";
-		$sql .= "userphonemobile = '$userphonemobile', ";
-		$sql .= "userphonefax = '$userphonefax', ";
+		$sql .= "user_first_name = '$user_first_name', ";
+		$sql .= "user_last_name = '$user_last_name', ";
+		$sql .= "user_company_name = '$user_company_name', ";
+		$sql .= "user_physical_address_1 = '$user_physical_address_1', ";
+		$sql .= "user_physical_address_2 = '$user_physical_address_2', ";
+		$sql .= "user_physical_city = '$user_physical_city', ";
+		$sql .= "user_physical_state_province = '$user_physical_state_province', ";
+		$sql .= "user_physical_country = '$user_physical_country', ";
+		$sql .= "user_physical_postal_code = '$user_physical_postal_code', ";
+		$sql .= "user_mailing_address_1 = '$user_mailing_address_1', ";
+		$sql .= "user_mailing_address_2 = '$user_mailing_address_2', ";
+		$sql .= "user_mailing_city = '$user_mailing_city', ";
+		$sql .= "user_mailing_state_province = '$user_mailing_state_province', ";
+		$sql .= "user_mailing_country = '$user_mailing_country', ";
+		$sql .= "user_mailing_postal_code = '$user_mailing_postal_code', ";
+		$sql .= "user_billing_address_1 = '$user_billing_address_1', ";
+		$sql .= "user_billing_address_2 = '$user_billing_address_2', ";
+		$sql .= "user_billing_city = '$user_billing_city', ";
+		$sql .= "user_billing_state_province = '$user_billing_state_province', ";
+		$sql .= "user_billing_country = '$user_billing_country', ";
+		$sql .= "user_billing_postal_code = '$user_billing_postal_code', ";
+		$sql .= "user_shipping_address_1 = '$user_shipping_address_1', ";
+		$sql .= "user_shipping_address_2 = '$user_shipping_address_2', ";
+		$sql .= "user_shipping_city = '$user_shipping_city', ";
+		$sql .= "user_shipping_state_province = '$user_shipping_state_province', ";
+		$sql .= "user_shipping_country = '$user_shipping_country', ";
+		$sql .= "user_shipping_postal_code = '$user_shipping_postal_code', ";
+		$sql .= "user_url = '$user_url', ";
+		$sql .= "user_phone_1 = '$user_phone_1', ";
+		$sql .= "user_phone_1_ext = '$user_phone_1_ext', ";
+		$sql .= "user_phone_2 = '$user_phone_2', ";
+		$sql .= "user_phone_2_ext = '$user_phone_2_ext', ";
+		$sql .= "user_phone_mobile = '$user_phone_mobile', ";
+		$sql .= "user_phone_fax = '$user_phone_fax', ";
 		$sql .= "user_status = '$user_status', ";
 		$sql .= "user_template_name = '$user_template_name', ";
 		$sql .= "user_time_zone = '$user_time_zone', ";
-		$sql .= "useremail = '$useremail' ";
+		$sql .= "user_email = '$user_email' ";
 		if (strlen($id)> 0) {
 			$sql .= "where v_id = '$v_id' ";
 			$sql .= "and id = $id ";
@@ -311,41 +311,41 @@ else {
 			$username = $row["username"];
 		}
 		$password = $row["password"];
-		$userfirstname = $row["userfirstname"];
-		$userlastname = $row["userlastname"];
-		$usercompanyname = $row["usercompanyname"];
-		$userphysicaladdress1 = $row["userphysicaladdress1"];
-		$userphysicaladdress2 = $row["userphysicaladdress2"];
-		$userphysicalcity = $row["userphysicalcity"];
-		$userphysicalstateprovince = $row["userphysicalstateprovince"];
-		$userphysicalcountry = $row["userphysicalcountry"];
-		$userphysicalpostalcode = $row["userphysicalpostalcode"];
-		$usermailingaddress1 = $row["usermailingaddress1"];
-		$usermailingaddress2 = $row["usermailingaddress2"];
-		$usermailingcity = $row["usermailingcity"];
-		$usermailingstateprovince = $row["usermailingstateprovince"];
-		$usermailingcountry = $row["usermailingcountry"];
-		$usermailingpostalcode = $row["usermailingpostalcode"];
-		$userbillingaddress1 = $row["userbillingaddress1"];
-		$userbillingaddress2 = $row["userbillingaddress2"];
-		$userbillingcity = $row["userbillingcity"];
-		$userbillingstateprovince = $row["userbillingstateprovince"];
-		$userbillingcountry = $row["userbillingcountry"];
-		$userbillingpostalcode = $row["userbillingpostalcode"];
-		$usershippingaddress1 = $row["usershippingaddress1"];
-		$usershippingaddress2 = $row["usershippingaddress2"];
-		$usershippingcity = $row["usershippingcity"];
-		$usershippingstateprovince = $row["usershippingstateprovince"];
-		$usershippingcountry = $row["usershippingcountry"];
-		$usershippingpostalcode = $row["usershippingpostalcode"];
-		$userurl = $row["userurl"];
-		$userphone1 = $row["userphone1"];
-		$userphone1ext = $row["userphone1ext"];
-		$userphone2 = $row["userphone2"];
-		$userphone2ext = $row["userphone2ext"];
-		$userphonemobile = $row["userphonemobile"];
-		$userphonefax = $row["userphonefax"];
-		$useremail = $row["useremail"];
+		$user_first_name = $row["user_first_name"];
+		$user_last_name = $row["user_last_name"];
+		$user_company_name = $row["user_company_name"];
+		$user_physical_address_1 = $row["user_physical_address_1"];
+		$user_physical_address_2 = $row["user_physical_address_2"];
+		$user_physical_city = $row["user_physical_city"];
+		$user_physical_state_province = $row["user_physical_state_province"];
+		$user_physical_country = $row["user_physical_country"];
+		$user_physical_postal_code = $row["user_physical_postal_code"];
+		$user_mailing_address_1 = $row["user_mailing_address_1"];
+		$user_mailing_address_2 = $row["user_mailing_address_2"];
+		$user_mailing_city = $row["user_mailing_city"];
+		$user_mailing_state_province = $row["user_mailing_state_province"];
+		$user_mailing_country = $row["user_mailing_country"];
+		$user_mailing_postal_code = $row["user_mailing_postal_code"];
+		$user_billing_address_1 = $row["user_billing_address_1"];
+		$user_billing_address_2 = $row["user_billing_address_2"];
+		$user_billing_city = $row["user_billing_city"];
+		$user_billing_state_province = $row["user_billing_state_province"];
+		$user_billing_country = $row["user_billing_country"];
+		$user_billing_postal_code = $row["user_billing_postal_code"];
+		$user_shipping_address_1 = $row["user_shipping_address_1"];
+		$user_shipping_address_2 = $row["user_shipping_address_2"];
+		$user_shipping_city = $row["user_shipping_city"];
+		$user_shipping_state_province = $row["user_shipping_state_province"];
+		$user_shipping_country = $row["user_shipping_country"];
+		$user_shipping_postal_code = $row["user_shipping_postal_code"];
+		$user_url = $row["user_url"];
+		$user_phone_1 = $row["user_phone_1"];
+		$user_phone_1_ext = $row["user_phone_1_ext"];
+		$user_phone_2 = $row["user_phone_2"];
+		$user_phone_2_ext = $row["user_phone_2_ext"];
+		$user_phone_mobile = $row["user_phone_mobile"];
+		$user_phone_fax = $row["user_phone_fax"];
+		$user_email = $row["user_email"];
 		$user_status = $row["user_status"];
 		$user_template_name = $row["user_template_name"];
 		$user_time_zone = $row["user_time_zone"];
@@ -407,15 +407,15 @@ else {
 
 	echo "	<tr>";
 	echo "		<td class='vncell'>First Name:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userfirstname' value=\"$userfirstname\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_first_name' value=\"$user_first_name\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Last Name:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userlastname' value=\"$userlastname\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_last_name' value=\"$user_last_name\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Company Name:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usercompanyname' value=\"$usercompanyname\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_company_name' value=\"$user_company_name\"></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
@@ -433,12 +433,12 @@ else {
 	$result = $prepstatement->fetchAll();
 	$resultcount = count($result);
 	foreach($result as $field) {
-		if (strlen($field['groupid']) > 0) {
+		if (strlen($field['group_id']) > 0) {
 			echo "<tr>\n";
-			echo "	<td class='vtable'>".$field['groupid']."</td>\n";
+			echo "	<td class='vtable'>".$field['group_id']."</td>\n";
 			echo "	<td>\n";
 			if (permission_exists('group_member_delete') || ifgroup("superadmin")) {
-				echo "		<a href='usersupdate.php?id=".$id."&v_id=".$v_id."&groupid=".$field['groupid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='usersupdate.php?id=".$id."&v_id=".$v_id."&group_id=".$field['group_id']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -451,18 +451,18 @@ else {
 	$sql .= "where v_id = '".$v_id."' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
-	echo "<select name=\"groupid\" class='frm'>\n";
+	echo "<select name=\"group_id\" class='frm'>\n";
 	echo "<option value=\"\"></option>\n";
 	$result = $prepstatement->fetchAll();
 	foreach($result as $field) {
-		if ($field['groupid'] == "superadmin") {
+		if ($field['group_id'] == "superadmin") {
 			//only show the superadmin group to other users in the superadmin group
 			if (ifgroup("superadmin")) {
-				echo "<option value='".$field['groupid']."'>".$field['groupid']."</option>\n";
+				echo "<option value='".$field['group_id']."'>".$field['group_id']."</option>\n";
 			}
 		}
 		else {
-			echo "<option value='".$field['groupid']."'>".$field['groupid']."</option>\n";
+			echo "<option value='".$field['group_id']."'>".$field['group_id']."</option>\n";
 		}
 	}
 	echo "</select>";
@@ -481,27 +481,27 @@ else {
 	echo "</tr>\n";
 	echo "	<tr>";
 	echo "		<td class='vncell' width='30%'>Address 1:</td>";
-	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='userphysicaladdress1' value=\"$userphysicaladdress1\"></td>";
+	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='user_physical_address_1' value=\"$user_physical_address_1\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Address 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphysicaladdress2' value=\"$userphysicaladdress2\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_address_2' value=\"$user_physical_address_2\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>City:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphysicalcity' value=\"$userphysicalcity\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_city' value=\"$user_physical_city\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>State/Province:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphysicalstateprovince' value=\"$userphysicalstateprovince\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_state_province' value=\"$user_physical_state_province\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Country:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphysicalcountry' value=\"$userphysicalcountry\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_country' value=\"$user_physical_country\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Postal Code:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphysicalpostalcode' value=\"$userphysicalpostalcode\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_postal_code' value=\"$user_physical_postal_code\"></td>";
 	echo "	</tr>";
 	echo "    </table>";
 
@@ -513,27 +513,27 @@ else {
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "	<tr>";
 	echo "		<td class='vncell' width='40%'>Address 1:</td>";
-	echo "		<td class='vtable' width='60%'><input type='text' class='formfld' name='usermailingaddress1' value='$usermailingaddress1'></td>";
+	echo "		<td class='vtable' width='60%'><input type='text' class='formfld' name='user_mailing_address_1' value='$user_mailing_address_1'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Address 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usermailingaddress2' value='$usermailingaddress2'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_address_2' value='$user_mailing_address_2'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>City:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usermailingcity' value='$usermailingcity'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_city' value='$user_mailing_city'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>State/Province:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usermailingstateprovince' value='$usermailingstateprovince'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_state_province' value='$user_mailing_state_province'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Country:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usermailingcountry' value='$usermailingcountry'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_country' value='$user_mailing_country'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Postal Code:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usermailingpostalcode' value='$usermailingpostalcode'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_postal_code' value='$user_mailing_postal_code'></td>";
 	echo "	</tr>";
 	echo "    </table>";
 
@@ -544,27 +544,27 @@ else {
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "	<tr>";
 	echo "		<td class='vncell' width='30%'>Address 1:</td>";
-	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='userbillingaddress1' value='$userbillingaddress1'></td>";
+	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='user_billing_address_1' value='$user_billing_address_1'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Address 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userbillingaddress2' value='$userbillingaddress2'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_address_2' value='$user_billing_address_2'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>City:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userbillingcity' value='$userbillingcity'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_city' value='$user_billing_city'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>State/Province:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userbillingstateprovince' value='$userbillingstateprovince'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_state_province' value='$user_billing_state_province'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Country:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userbillingcountry' value='$userbillingcountry'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_country' value='$user_billing_country'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Postal Code:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userbillingpostalcode' value='$userbillingpostalcode'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_postal_code' value='$user_billing_postal_code'></td>";
 	echo "	</tr>";
 	echo "    </table>";
 
@@ -575,27 +575,27 @@ else {
 	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "	<tr>";
 	echo "		<td class='vncell' width='30%'>Address 1:</td>";
-	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='usershippingaddress1' value='$usershippingaddress1'></td>";
+	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='user_shipping_address_1' value='$user_shipping_address_1'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Address 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usershippingaddress2' value='$usershippingaddress2'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_address_2' value='$user_shipping_address_2'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>City:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usershippingcity' value='$usershippingcity'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_city' value='$user_shipping_city'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>State/Province:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usershippingstateprovince' value='$usershippingstateprovince'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_state_province' value='$user_shipping_state_province'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Country:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usershippingcountry' value='$usershippingcountry'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_country' value='$user_shipping_country'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Postal Code:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='usershippingpostalcode' value='$usershippingpostalcode'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_postal_code' value='$user_shipping_postal_code'></td>";
 	echo "	</tr>";
 	echo "    </table>";
 
@@ -609,35 +609,35 @@ else {
 	echo "	</tr>\n";
 	echo "	<tr>";
 	echo "		<td class='vncell'width='30%'>Website:</td>";
-	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='userurl' value=\"$userurl\"></td>";
+	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='user_url' value=\"$user_url\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Phone 1:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphone1' value=\"$userphone1\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_1' value=\"$user_phone_1\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Phone 1 Ext:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphone1ext' value=\"$userphone1ext\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_1_ext' value=\"$user_phone_1_ext\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Phone 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphone2' value=\"$userphone2\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_2' value=\"$user_phone_2\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Phone 2 Ext:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphone2ext' value=\"$userphone2ext\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_2_ext' value=\"$user_phone_2_ext\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Mobile:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphonemobile' value=\"$userphonemobile\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_mobile' value=\"$user_phone_mobile\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Fax:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userphonefax' value=\"$userphonefax\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_fax' value=\"$user_phone_fax\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Email:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='useremail' value=\"$useremail\"></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_email' value=\"$user_email\"></td>";
 	echo "	</tr>";
 	if ($_SESSION['user_status_display'] == "false") {
 		//hide the user_status when it is set to false

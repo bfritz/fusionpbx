@@ -55,9 +55,9 @@ function cmd_async($cmd) {
 }
 
 //get the http get values and set as php variables
-	$groupid = $_GET["groupid"];
+	$group_id = $_GET["group_id"];
 	$call_broadcast_id = $_GET["call_broadcast_id"];
-	$usercategory = $_GET["usercategory"];
+	$user_category = $_GET["user_category"];
 	$gateway = $_GET["gateway"];
 	$phonetype1 = $_GET["phonetype1"];
 	$phonetype2 = $_GET["phonetype2"];
@@ -258,18 +258,18 @@ require_once "includes/header.php";
 		}
 
 
-	if (strlen($groupid) > 0) {
+	if (strlen($group_id) > 0) {
 		$sql = "";
 		$sql .= " select * from v_users as u, v_group_members as m ";
 		$sql .= " where u.username = m.username ";
-		$sql .= " and m.groupid = '".$groupid."' ";
-		$sql .= " and u.usercategory = '".$usercategory."' ";
+		$sql .= " and m.group_id = '".$group_id."' ";
+		$sql .= " and u.user_category = '".$user_category."' ";
 		//echo $sql."<br />";
 	}
 	else {
 		$sql = "";
 		$sql .= " select * from v_users as u ";
-		$sql .= " where u.usercategory = '".$usercategory."' ";
+		$sql .= " where u.user_category = '".$user_category."' ";
 		//echo $sql."<br />";
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -287,13 +287,13 @@ require_once "includes/header.php";
 
 	echo "<tr>\n";
 	//echo thorderby('username', 'Username', $orderby, $order);
-	echo thorderby('usertype', 'Type', $orderby, $order);
-	//echo thorderby('usercategory', 'Category', $orderby, $order);
-	echo thorderby('userfirstname', 'First Name', $orderby, $order);
-	echo thorderby('userlastname', 'Last Name', $orderby, $order);
-	echo thorderby('usercompanyname', 'Organization', $orderby, $order);
-	echo thorderby('userphone1', 'Phone1', $orderby, $order);
-	echo thorderby('userphone2', 'Phone2', $orderby, $order);
+	echo thorderby('user_type', 'Type', $orderby, $order);
+	//echo thorderby('user_category', 'Category', $orderby, $order);
+	echo thorderby('user_first_name', 'First Name', $orderby, $order);
+	echo thorderby('user_last_name', 'Last Name', $orderby, $order);
+	echo thorderby('user_company_name', 'Organization', $orderby, $order);
+	echo thorderby('user_phone_1', 'Phone1', $orderby, $order);
+	echo thorderby('user_phone_2', 'Phone2', $orderby, $order);
 	echo "<tr>\n";
 
 	if ($resultcount == 0) { //no results
@@ -303,22 +303,22 @@ require_once "includes/header.php";
 			//print_r( $row );
 			echo "<tr >\n";
 			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[username]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[usertype]."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[usercategory]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userfirstname]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userlastname]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[usercompanyname]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userphone1]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[userphone2]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_type]."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_category]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_first_name]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_last_name]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_company_name]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_phone_1]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_phone_2]."&nbsp;</td>\n";
 			echo "</tr>\n";
 
 			//if (strlen($gateway) > 0) {
-				if ($phonetype1 == "phone1" && strlen($row[userphone1]) > 0) { $phone1 = $row[userphone1]; }
-				if ($phonetype1 == "phone2" && strlen($row[userphone2]) > 0) { $phone1 = $row[userphone2]; }
-				if ($phonetype1 == "cell" && strlen($row[userphonemobile]) > 0) { $phone1 = $row[userphonemobile]; }
-				if ($phonetype2 == "phone1" && strlen($row[userphone2]) > 0) { $phone2 = $row[userphone2]; }
-				if ($phonetype2 == "phone2" && strlen($row[userphone2]) > 0) { $phone2 = $row[userphone2]; }
-				if ($phonetype2 == "cell" && strlen($row[userphonemobile]) > 0) { $phone2 = $row[userphonemobile]; }
+				if ($phonetype1 == "phone1" && strlen($row[user_phone_1]) > 0) { $phone1 = $row[user_phone_1]; }
+				if ($phonetype1 == "phone2" && strlen($row[user_phone_2]) > 0) { $phone1 = $row[user_phone_2]; }
+				if ($phonetype1 == "cell" && strlen($row[user_phone_mobile]) > 0) { $phone1 = $row[user_phone_mobile]; }
+				if ($phonetype2 == "phone1" && strlen($row[user_phone_2]) > 0) { $phone2 = $row[user_phone_2]; }
+				if ($phonetype2 == "phone2" && strlen($row[user_phone_2]) > 0) { $phone2 = $row[user_phone_2]; }
+				if ($phonetype2 == "cell" && strlen($row[user_phone_mobile]) > 0) { $phone2 = $row[user_phone_mobile]; }
 
 			//make sure the phone numbers are correct
 				$phone1 = str_replace("-", "", $phone1);

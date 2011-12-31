@@ -281,12 +281,12 @@ include "root.php";
 			$enabled = $this->enabled;
 			$description = $this->description;
 
-			$userfirstname='extension';$userlastname=$extension;$useremail='';
+			$user_first_name='extension';$user_last_name=$extension;$user_email='';
 			$user_list_array = explode("|", $user_list);
 			foreach($user_list_array as $tmp_user){
 				$user_password = generate_password();
 				if (strlen($tmp_user) > 0) {
-					user_add($tmp_user, $user_password, $userfirstname, $userlastname, $useremail);
+					user_add($tmp_user, $user_password, $user_first_name, $user_last_name, $user_email);
 				}
 			}
 			unset($tmp_user);

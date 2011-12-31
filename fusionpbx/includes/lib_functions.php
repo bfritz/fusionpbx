@@ -98,7 +98,7 @@
 			//search for the permission
 				if (count($_SESSION["groups"]) > 0) {
 					foreach($_SESSION["groups"] as $row) {
-						if ($row['groupid'] == $group) {
+						if ($row['group_id'] == $group) {
 							$result = true;
 							break;
 						}
@@ -141,7 +141,7 @@
 			$groupmemberlist = "||";
 			foreach($result as $field) {
 				//get the list of groups
-				$groupmemberlist .= $field[groupid]."||";
+				$groupmemberlist .= $field[group_id]."||";
 			}
 			unset($sql, $result, $rowcount);
 			return $groupmemberlist;
@@ -163,7 +163,7 @@
 		function superadminlist($db) {
 			global $v_id;
 			$sql = "select * from v_group_members ";
-			$sql .= "where groupid = 'superadmin' ";
+			$sql .= "where group_id = 'superadmin' ";
 			//echo $sql;
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
@@ -173,7 +173,7 @@
 			$strsuperadminlist = "||";
 			foreach($result as $field) {
 				//get the list of superadmins
-				$strsuperadminlist .= $field[groupid]."||";
+				$strsuperadminlist .= $field[group_id]."||";
 			}
 			unset($sql, $result, $rowcount);
 			return $strsuperadminlist;
@@ -548,7 +548,7 @@
 	}
 
 	if (!function_exists('user_add')) {
-		function user_add($username, $password, $userfirstname='', $userlastname='', $useremail='') {
+		function user_add($username, $password, $user_first_name='', $user_last_name='', $user_email='') {
 			global $db, $v_id, $v_salt;
 			if (strlen($username) == 0) { return false; }
 			if (strlen($password) == 0) { return false; }
@@ -564,13 +564,13 @@
 					$sql .= "username, ";
 					$sql .= "password, ";
 					$sql .= "salt, ";
-					$sql .= "usertype, ";
-					$sql .= "usercategory, ";
-					if (strlen($userfirstname) > 0) { $sql .= "userfirstname, "; }
-					if (strlen($userlastname) > 0) { $sql .= "userlastname, "; }
-					if (strlen($useremail) > 0) { $sql .= "useremail, "; }
-					$sql .= "useradddate, ";
-					$sql .= "useradduser ";
+					$sql .= "user_type, ";
+					$sql .= "user_category, ";
+					if (strlen($user_first_name) > 0) { $sql .= "user_first_name, "; }
+					if (strlen($user_last_name) > 0) { $sql .= "user_last_name, "; }
+					if (strlen($user_email) > 0) { $sql .= "user_email, "; }
+					$sql .= "user_add_date, ";
+					$sql .= "user_add_user ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
@@ -580,9 +580,9 @@
 					$sql .= "'$salt', ";
 					$sql .= "'$user_type', ";
 					$sql .= "'$user_category', ";
-					if (strlen($userfirstname) > 0) { $sql .= "'$userfirstname', "; }
-					if (strlen($userlastname) > 0) { $sql .= "'$userlastname', "; }
-					if (strlen($useremail) > 0) { $sql .= "'$useremail', "; }
+					if (strlen($user_first_name) > 0) { $sql .= "'$user_first_name', "; }
+					if (strlen($user_last_name) > 0) { $sql .= "'$user_last_name', "; }
+					if (strlen($user_email) > 0) { $sql .= "'$user_email', "; }
 					$sql .= "now(), ";
 					$sql .= "'".$_SESSION["username"]."' ";
 					$sql .= ")";
@@ -590,17 +590,17 @@
 					unset($sql);
 
 				//add the user to the member group
-					$groupid = 'user';
+					$group_id = 'user';
 					$sql = "insert into v_group_members ";
 					$sql .= "(";
 					$sql .= "v_id, ";
-					$sql .= "groupid, ";
+					$sql .= "group_id, ";
 					$sql .= "username ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$v_id', ";
-					$sql .= "'$groupid', ";
+					$sql .= "'$group_id', ";
 					$sql .= "'$username' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));

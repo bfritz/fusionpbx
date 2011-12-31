@@ -370,12 +370,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update" && permission_exists('extension_edit')) {
-			$userfirstname='extension';$userlastname=$extension;$useremail='';
+			$user_first_name='extension';$user_last_name=$extension;$user_email='';
 			$user_list_array = explode("|", $user_list);
 			foreach($user_list_array as $tmp_user){
 				$user_password = generate_password();
 				if (strlen($tmp_user) > 0) {
-					user_add($tmp_user, $user_password, $userfirstname, $userlastname, $useremail);
+					user_add($tmp_user, $user_password, $user_first_name, $user_last_name, $user_email);
 				}
 			}
 			unset($tmp_user);

@@ -37,21 +37,21 @@ else {
 //get the http values and set them as variables
 	$path = check_str($_GET["path"]);
 	$msg = check_str($_GET["msg"]);
-	$groupid = check_str($_POST["groupid"]);
-	$groupdesc = check_str($_POST["groupdesc"]);
+	$group_id = check_str($_POST["group_id"]);
+	$group_desc = check_str($_POST["group_desc"]);
 
-if (strlen($groupid) > 0) {
+if (strlen($group_id) > 0) {
 	$sqlinsert = "insert into v_groups ";
 	$sqlinsert .= "(";
 	$sqlinsert .= "v_id, ";
-	$sqlinsert .= "groupid, ";
-	$sqlinsert .= "groupdesc ";
+	$sqlinsert .= "group_id, ";
+	$sqlinsert .= "group_desc ";
 	$sqlinsert .= ")";
 	$sqlinsert .= "values ";
 	$sqlinsert .= "(";
 	$sqlinsert .= "'$v_id', ";
-	$sqlinsert .= "'$groupid', ";
-	$sqlinsert .= "'$groupdesc' ";
+	$sqlinsert .= "'$group_id', ";
+	$sqlinsert .= "'$group_desc' ";
 	$sqlinsert .= ")";
 	if (!$db->exec($sqlinsert)) {
 		//echo $db->errorCode() . "<br>";
@@ -98,7 +98,7 @@ if (strlen($groupid) > 0) {
 	echo "Group Name:\n";
 	echo "</td>\n";
 	echo "<td width='70%' align='left' class='vtable'>\n";
-	echo "  <input type=\"text\" class='formfld' name=\"groupid\">\n";
+	echo "  <input type=\"text\" class='formfld' name=\"group_id\">\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -107,7 +107,7 @@ if (strlen($groupid) > 0) {
 	echo "Description:\n";
 	echo "</td>\n";
 	echo "<td align='left' class='vtable'>\n";
-	echo "<textarea name='groupdesc' class='formfld'></textarea>\n";
+	echo "<textarea name='group_desc' class='formfld'></textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

@@ -177,11 +177,11 @@ if (count($_POST)>0) {
 	$result = $prepstatement->fetchAll();
 	//$count = count($result);
 	foreach($result as $field) {
-			if ($rssgroup == $field[groupid]) {
-				echo "<option value='".$field[groupid]."' selected>".$field[groupid]."</option>\n";
+			if ($rssgroup == $field[group_id]) {
+				echo "<option value='".$field[group_id]."' selected>".$field[group_id]."</option>\n";
 			}
 			else {
-				echo "<option value='".$field[groupid]."'>".$field[groupid]."</option>\n";
+				echo "<option value='".$field[group_id]."'>".$field[group_id]."</option>\n";
 			}
 	}
 

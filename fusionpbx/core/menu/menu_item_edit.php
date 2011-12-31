@@ -334,14 +334,14 @@ else {
 	echo "<option value=\"\"></option>\n";
 	$result = $prepstatement->fetchAll();
 	foreach($result as $field) {
-		if ($field['groupid'] == "superadmin") {
+		if ($field['group_id'] == "superadmin") {
 			//only show the superadmin group to other users in the superadmin group
 			if (ifgroup("superadmin")) {
-				echo "<option value='".$field['groupid']."'>".$field['groupid']."</option>\n";
+				echo "<option value='".$field['group_id']."'>".$field['group_id']."</option>\n";
 			}
 		}
 		else {
-			echo "<option value='".$field['groupid']."'>".$field['groupid']."</option>\n";
+			echo "<option value='".$field['group_id']."'>".$field['group_id']."</option>\n";
 		}
 	}
 	echo "</select>";

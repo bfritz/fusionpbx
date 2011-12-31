@@ -123,12 +123,12 @@ session_start();
 			$x = 0;
 			$sql = "select distinct(permission_id) from v_group_permissions ";
 			foreach($_SESSION["groups"] as $field) {
-				if (strlen($field['groupid']) > 0) {
+				if (strlen($field['group_id']) > 0) {
 					if ($x == 0) {
-						$sql .= "where (v_id = '".$v_id."' and group_id = '".$field['groupid']."') ";
+						$sql .= "where (v_id = '".$v_id."' and group_id = '".$field['group_id']."') ";
 					}
 					else {
-						$sql .= "or (v_id = '".$v_id."' and group_id = '".$field['groupid']."') ";
+						$sql .= "or (v_id = '".$v_id."' and group_id = '".$field['group_id']."') ";
 					}
 					$x++;
 				}

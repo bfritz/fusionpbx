@@ -167,36 +167,36 @@ if (!function_exists('sync_directory')) {
 						$prepstatement->execute();
 						$tmp_result = $prepstatement->fetchAll();
 						foreach ($tmp_result as &$row_tmp) {
-							$userfirstname = $row_tmp["userfirstname"];
-							$userlastname = $row_tmp["userlastname"];
-							if ($userfirstname == "na") { $userfirstname = ""; }
-							if ($userlastname == "na") { $userlastname = ""; }
-							if (strlen($userfirstname.$userlastname) == 0) {
+							$user_first_name = $row_tmp["user_first_name"];
+							$user_last_name = $row_tmp["user_last_name"];
+							if ($user_first_name == "na") { $user_first_name = ""; }
+							if ($user_last_name == "na") { $user_last_name = ""; }
+							if (strlen($user_first_name.$user_last_name) == 0) {
 								$name_array = explode (" ", $effective_caller_id_name);
-								$userfirstname = $name_array[0];
+								$user_first_name = $name_array[0];
 								if (count($name_array) > 1) {
-									$userlastname = $name_array[1];
+									$user_last_name = $name_array[1];
 								}
 							}
 							
 							break; //limit to 1 row
 						}
-						$f1 = phone_letter_to_number(substr($userfirstname, 0,1)); 
-						$f2 = phone_letter_to_number(substr($userfirstname, 1,1));
-						$f3 = phone_letter_to_number(substr($userfirstname, 2,1));
+						$f1 = phone_letter_to_number(substr($user_first_name, 0,1)); 
+						$f2 = phone_letter_to_number(substr($user_first_name, 1,1));
+						$f3 = phone_letter_to_number(substr($user_first_name, 2,1));
 
-						$l1 = phone_letter_to_number(substr($userlastname, 0,1)); 
-						$l2 = phone_letter_to_number(substr($userlastname, 1,1));
-						$l3 = phone_letter_to_number(substr($userlastname, 2,1));
+						$l1 = phone_letter_to_number(substr($user_last_name, 0,1)); 
+						$l2 = phone_letter_to_number(substr($user_last_name, 1,1));
+						$l3 = phone_letter_to_number(substr($user_last_name, 2,1));
 
-						//echo $sql." extension: $extension  firstname $userfirstname lastname $userlastname $tmp<br />";
+						//echo $sql." extension: $extension  firstname $user_first_name lastname $user_last_name $tmp<br />";
 
 						$tmp .= "	if (search_type == \"first_name\" && dtmf_search == \"".$f1.$f2.$f3."\" || search_type == \"last_name\" && dtmf_search == \"".$l1.$l2.$l3."\") {\n";
 						$tmp .= "		result_array[x]=new Array()\n";
-						$tmp .= "		result_array[x]['first_name'] =\"".$userfirstname."\";\n";
-						$tmp .= "		result_array[x]['last_name'] =\"".$userlastname."\";\n";
+						$tmp .= "		result_array[x]['first_name'] =\"".$user_first_name."\";\n";
+						$tmp .= "		result_array[x]['last_name'] =\"".$user_last_name."\";\n";
 						$tmp .= "		result_array[x]['extension'] = \"".$extension."\";\n";
-						$tmp .= "		//console_log( \"info\", \"found: ".$userfirstname." ".$userlastname."\\n\" );\n";
+						$tmp .= "		//console_log( \"info\", \"found: ".$user_first_name." ".$user_last_name."\\n\" );\n";
 						$tmp .= "		x++;\n";
 						$tmp .= "	}\n";
 					}

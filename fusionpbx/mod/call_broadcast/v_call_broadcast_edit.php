@@ -414,19 +414,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Category:\n";
 		echo "</td>\n";
 		echo "<td width='70%' class='vtable' align='left'>\n";
-		echo "		<select name='usercategory' class='formfld'>\n";
+		echo "		<select name='user_category' class='formfld'>\n";
 		echo "		<option></option>\n";
 		$sql = "";
-		$sql .= "select distinct(usercategory) as usercategory from v_users ";
+		$sql .= "select distinct(user_category) as user_category from v_users ";
 		//$sql .= "where v_id = '$v_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		while($row = $prepstatement->fetch()) {
-			if ($usercategory   == $row['usercategory']) {
-				echo "		<option value='".$row['usercategory']."' selected='yes'>".$row['usercategory']."</option>\n";
+			if ($user_category   == $row['user_category']) {
+				echo "		<option value='".$row['user_category']."' selected='yes'>".$row['user_category']."</option>\n";
 			}
 			else {
-				echo "		<option value='".$row['usercategory']."'>".$row['usercategory']."</option>\n";
+				echo "		<option value='".$row['user_category']."'>".$row['user_category']."</option>\n";
 			}
 		}
 		unset ($prepstatement);
@@ -442,7 +442,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Group:\n";
 		echo "</td>\n";
 		echo "<td width='70%' class='vtable' align='left'>\n";
-		echo "		<select name='groupid' class='formfld'>\n";
+		echo "		<select name='group_id' class='formfld'>\n";
 		echo "		<option></option>\n";
 		$sql = "";
 		$sql .= "select * from v_groups ";
@@ -450,11 +450,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		while($row = $prepstatement->fetch()) {
-			if ($recording_uuid == $row['groupid']) {
-				echo "		<option value='".$row['groupid']."' selected='yes'>".$row['groupid']."</option>\n";
+			if ($recording_uuid == $row['group_id']) {
+				echo "		<option value='".$row['group_id']."' selected='yes'>".$row['group_id']."</option>\n";
 			}
 			else {
-				echo "		<option value='".$row['groupid']."'>".$row['groupid']."</option>\n";
+				echo "		<option value='".$row['group_id']."'>".$row['group_id']."</option>\n";
 			}
 		}
 		unset ($prepstatement);

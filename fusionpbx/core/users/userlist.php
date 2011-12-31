@@ -61,47 +61,47 @@ echo "	<td align=\"center\">\n";
 	else {
 		echo "	<option value='username'>Username</option>\n";
 	}
-	if ($field_name == "userfirstname") {
-		echo "	<option value='userfirstname' selected='selected'>First Name</option>\n";
+	if ($field_name == "user_first_name") {
+		echo "	<option value='user_first_name' selected='selected'>First Name</option>\n";
 	}
 	else {
-		echo "	<option value='userfirstname'>First Name</option>\n";
+		echo "	<option value='user_first_name'>First Name</option>\n";
 	}
-	if ($field_name == "userlastname") {
-		echo "	<option value='userlastname' selected='selected'>Last Name</option>\n";
-	}
-	else {
-		echo "	<option value='userlastname'>Last Name</option>\n";
-	}
-	if ($field_name == "usercompanyname") {
-		echo "	<option value='usercompanyname' selected='selected'>Company</option>\n";
+	if ($field_name == "user_last_name") {
+		echo "	<option value='user_last_name' selected='selected'>Last Name</option>\n";
 	}
 	else {
-		echo "	<option value='usercompanyname'>Company</option>\n";
+		echo "	<option value='user_last_name'>Last Name</option>\n";
 	}
-	if ($field_name == "userphysicalcity") {
-		echo "	<option value='userphysicalcity' selected='selected'>City</option>\n";
-	}
-	else {
-		echo "	<option value='userphysicalcity'>City</option>\n";
-	}
-	if ($field_name == "userphone1") {
-		echo "	<option value='userphone1' selected='selected'>Phone</option>\n";
+	if ($field_name == "user_company_name") {
+		echo "	<option value='user_company_name' selected='selected'>Company</option>\n";
 	}
 	else {
-		echo "	<option value='userphone1'>Phone</option>\n";
+		echo "	<option value='user_company_name'>Company</option>\n";
 	}
-	if ($field_name == "userphonemobile") {
-		echo "	<option value='userphonemobile' selected='selected'>Mobile</option>\n";
-	}
-	else {
-		echo "	<option value='userphonemobile'>Mobile</option>\n";
-	}
-	if ($field_name == "useremail") {
-		echo "	<option value='useremail' selected='selected'>Email</option>\n";
+	if ($field_name == "user_physical_city") {
+		echo "	<option value='user_physical_city' selected='selected'>City</option>\n";
 	}
 	else {
-		echo "	<option value='useremail'>Email</option>\n";
+		echo "	<option value='user_physical_city'>City</option>\n";
+	}
+	if ($field_name == "user_phone_1") {
+		echo "	<option value='user_phone_1' selected='selected'>Phone</option>\n";
+	}
+	else {
+		echo "	<option value='user_phone_1'>Phone</option>\n";
+	}
+	if ($field_name == "user_phone_mobile") {
+		echo "	<option value='user_phone_mobile' selected='selected'>Mobile</option>\n";
+	}
+	else {
+		echo "	<option value='user_phone_mobile'>Mobile</option>\n";
+	}
+	if ($field_name == "user_email") {
+		echo "	<option value='user_email' selected='selected'>Email</option>\n";
+	}
+	else {
+		echo "	<option value='user_email'>Email</option>\n";
 	}
 	echo "	</select>\n";
 	echo "</td>\n";
@@ -124,7 +124,7 @@ echo "	<td align=\"center\">\n";
 	$sql = "";
 	$sql .= " select * from v_users ";
 	$sql .= " where v_id = '$v_id' ";
-	$sql .= " and usercategory = 'user' ";
+	$sql .= " and user_category = 'user' ";
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= " and $field_name = '$field_value' ";
 	}
@@ -144,7 +144,7 @@ echo "	<td align=\"center\">\n";
 	$sql = "";
 	$sql .= " select * from v_users ";
 	$sql .= " where v_id = '$v_id' ";
-	$sql .= " and usercategory = 'user' ";
+	$sql .= " and user_category = 'user' ";
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= " and $field_name like '%$field_value%' ";
 	}
@@ -172,11 +172,11 @@ echo "	<td align=\"center\">\n";
 
 	echo "<tr>\n";
 	echo thorderby('username', 'Username', $orderby, $order);
-	echo thorderby('userfirstname', 'First Name', $orderby, $order);
-	echo thorderby('userlastname', 'Last Name', $orderby, $order);
-	echo thorderby('usercompanyname', 'Company', $orderby, $order);
-	echo thorderby('userphysicalcity', 'City', $orderby, $order);
-	echo thorderby('useremail', 'Email', $orderby, $order);
+	echo thorderby('user_first_name', 'First Name', $orderby, $order);
+	echo thorderby('user_last_name', 'Last Name', $orderby, $order);
+	echo thorderby('user_company_name', 'Company', $orderby, $order);
+	echo thorderby('user_physical_city', 'City', $orderby, $order);
+	echo thorderby('user_email', 'Email', $orderby, $order);
 	//echo thorderby('user_template_name', 'Template', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('user_add')) {
@@ -192,11 +192,11 @@ echo "	<td align=\"center\">\n";
 		foreach($result as $row) {
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['username']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['userfirstname']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['userlastname']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['usercompanyname']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['userphysicalcity']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['useremail']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_first_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_last_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_company_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_physical_city']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_email']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_template_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('user_edit')) {

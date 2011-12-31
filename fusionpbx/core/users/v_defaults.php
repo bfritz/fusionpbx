@@ -33,11 +33,11 @@
 		$prep_statement->execute();
 		$sub_result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		if (count($sub_result) == 0) {
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'hidden','Hidden Group hides items in the menu');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'user','User Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'agent','Call Center Agent Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'admin','Administrator Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, groupid, groupdesc) VALUES ($v_id,'superadmin','Super Administrator Group');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'hidden','Hidden Group hides items in the menu');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'user','User Group');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'agent','Call Center Agent Group');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'admin','Administrator Group');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'superadmin','Super Administrator Group');"; $db->exec(check_sql($sql));
 		}
 	}
 	unset($prep_statement, $sub_result);

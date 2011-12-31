@@ -161,7 +161,7 @@
 				$db_menu_full = '';
 
 				if (count($_SESSION['groups']) == 0) {
-					$_SESSION['groups'][0]['groupid'] = 'public';
+					$_SESSION['groups'][0]['group_id'] = 'public';
 				}
 
 				if (strlen($sql) == 0) { //default sql for base of the menu
@@ -178,10 +178,10 @@
 						$x = 0;
 						foreach($_SESSION['groups'] as $row) {
 							if ($x == 0) {
-								$sql .= "group_id = '".$row['groupid']."' ";
+								$sql .= "group_id = '".$row['group_id']."' ";
 							}
 							else {
-								$sql .= "or group_id = '".$row['groupid']."' ";
+								$sql .= "or group_id = '".$row['group_id']."' ";
 							}
 							$x++;
 						}
@@ -269,7 +269,7 @@
 				$menu_item_level = $menu_item_level+1;
 
 				if (count($_SESSION['groups']) == 0) {
-					$_SESSION['groups'][0]['groupid'] = 'public';
+					$_SESSION['groups'][0]['group_id'] = 'public';
 				}
 
 				$sql = "select * from v_menu_items ";
@@ -285,10 +285,10 @@
 					$x = 0;
 					foreach($_SESSION['groups'] as $row) {
 						if ($x == 0) {
-							$sql .= "group_id = '".$row['groupid']."' ";
+							$sql .= "group_id = '".$row['group_id']."' ";
 						}
 						else {
-							$sql .= "or group_id = '".$row['groupid']."' ";
+							$sql .= "or group_id = '".$row['group_id']."' ";
 						}
 						$x++;
 					}

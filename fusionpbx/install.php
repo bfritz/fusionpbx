@@ -944,20 +944,20 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		switch_conf_xml();
 
 	//add the superadmin user account
-		user_add($admin_username, $admin_password, $userfirstname='', $userlastname='', $useremail='');
+		user_add($admin_username, $admin_password, $user_first_name='', $user_last_name='', $user_email='');
 
 	//add the user to the member group
-		$groupid = 'superadmin';
+		$group_id = 'superadmin';
 		$sql = "insert into v_group_members ";
 		$sql .= "(";
 		$sql .= "v_id, ";
-		$sql .= "groupid, ";
+		$sql .= "group_id, ";
 		$sql .= "username ";
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$v_id', ";
-		$sql .= "'$groupid', ";
+		$sql .= "'$group_id', ";
 		$sql .= "'$admin_username' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
@@ -982,12 +982,12 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$x = 0;
 		$sql = "select distinct(permission_id) from v_group_permissions ";
 		foreach($_SESSION["groups"] as $field) {
-			if (strlen($field['groupid']) > 0) {
+			if (strlen($field['group_id']) > 0) {
 				if ($x == 0) {
-					$sql .= "where (v_id = '".$v_id."' and group_id = '".$field['groupid']."') ";
+					$sql .= "where (v_id = '".$v_id."' and group_id = '".$field['group_id']."') ";
 				}
 				else {
-					$sql .= "or (v_id = '".$v_id."' and group_id = '".$field['groupid']."') ";
+					$sql .= "or (v_id = '".$v_id."' and group_id = '".$field['group_id']."') ";
 				}
 				$x++;
 			}

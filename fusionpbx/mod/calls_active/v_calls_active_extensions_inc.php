@@ -56,7 +56,7 @@ else {
 	$sql .= "from v_users as u, v_extensions as e ";
 	$sql .= "where e.v_id = '$v_id' ";
 	$sql .= "and u.v_id = '$v_id' ";
-	$sql .= "and u.usercategory = 'user' ";
+	$sql .= "and u.user_category = 'user' ";
 	if ($db_type == "sqlite") {
 		$sql .= "and e.user_list like '%|' || u.username || '|%' ";
 	}

@@ -35,20 +35,20 @@ else {
 }
 
 //requires a superadmin to delete superadmin group
-	if (!ifgroup("superadmin") && $_GET["groupid"] == "superadmin") {
+	if (!ifgroup("superadmin") && $_GET["group_id"] == "superadmin") {
 		echo "access denied";
 		return;
 	}
 
 //get the http values and set them as variables
-	$groupid = check_str($_GET["groupid"]);
+	$group_id = check_str($_GET["group_id"]);
 	$username = check_str($_GET["username"]);
 
 //delete the group membership
 	$sqldelete = "delete from v_group_members ";
 	$sqldelete .= "where v_id = '$v_id' ";
 	$sqldelete .= "and username = '$username' ";
-	$sqldelete .= "and groupid = '$groupid' ";
+	$sqldelete .= "and group_id = '$group_id' ";
 	if (!$db->exec($sqldelete)) {
 		//echo $db->errorCode() . "<br>";
 		$info = $db->errorInfo();
@@ -58,11 +58,11 @@ else {
 		// $info[2] is the driver specific error string
 	}
 	else {
-		//$logtype = 'group'; $logstatus='remove'; $logadduser=$_SESSION["username"]; $logdesc= "username: ".$username." removed from group: ".$groupid;
+		//$logtype = 'group'; $logstatus='remove'; $logadduser=$_SESSION["username"]; $logdesc= "username: ".$username." removed from group: ".$group_id;
 		//logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $_SERVER["REMOTE_ADDR"]);
 	}
 
 //redirect the user
-	header("Location: groupmembers.php?groupid=$groupid");
+	header("Location: groupmembers.php?group_id=$group_id");
 
 ?>

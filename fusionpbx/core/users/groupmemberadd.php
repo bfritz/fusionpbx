@@ -35,26 +35,26 @@ else {
 }
 
 //requires a superadmin to add a user to the superadmin group
-	if (!ifgroup("superadmin") && $_GET["groupid"] == "superadmin") {
+	if (!ifgroup("superadmin") && $_GET["group_id"] == "superadmin") {
 		echo "access denied";
 		return;
 	}
 
 //get the http values and set them as variables
-	$groupid = check_str($_POST["groupid"]);
+	$group_id = check_str($_POST["group_id"]);
 	$username = check_str($_POST["username"]);
 
-if (strlen($username) > 0  && strlen($groupid) > 0)   {
+if (strlen($username) > 0  && strlen($group_id) > 0)   {
 	$sqlinsert = "insert into v_group_members ";
 	$sqlinsert .= "(";
 	$sqlinsert .= "v_id, ";
-	$sqlinsert .= "groupid, ";
+	$sqlinsert .= "group_id, ";
 	$sqlinsert .= "username ";
 	$sqlinsert .= ")";
 	$sqlinsert .= "values ";
 	$sqlinsert .= "(";
 	$sqlinsert .= "'$v_id', ";
-	$sqlinsert .= "'$groupid', ";
+	$sqlinsert .= "'$group_id', ";
 	$sqlinsert .= "'$username' ";
 	$sqlinsert .= ")";
 	if (!$db->exec($sqlinsert)) {
@@ -67,12 +67,12 @@ if (strlen($username) > 0  && strlen($groupid) > 0)   {
 	}
 	else {
 		//log the success
-		//$logtype = 'group'; $logstatus='add'; $logadduser=$_SESSION["username"]; $logdesc= "username: ".$username." added to group: ".$groupid;
+		//$logtype = 'group'; $logstatus='add'; $logadduser=$_SESSION["username"]; $logdesc= "username: ".$username." added to group: ".$group_id;
 		//logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $_SERVER["REMOTE_ADDR"]);
 	}
 }
 
 //redirect the user
-	header("Location: groupmembers.php?groupid=$groupid");
+	header("Location: groupmembers.php?group_id=$group_id");
 
 ?>

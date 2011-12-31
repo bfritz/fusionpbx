@@ -38,43 +38,43 @@ else {
 $username = check_str($_POST["username"]);
 $password = check_str($_POST["password"]);
 $confirmpassword = check_str($_POST["confirmpassword"]);
-$userfirstname = check_str($_POST["userfirstname"]);
-$userlastname = check_str($_POST["userlastname"]);
-$usercompanyname = check_str($_POST["usercompanyname"]);
-$userphysicaladdress1 = check_str($_POST["userphysicaladdress1"]);
-$userphysicaladdress2 = check_str($_POST["userphysicaladdress2"]);
-$userphysicalcity = check_str($_POST["userphysicalcity"]);
-$userphysicalstateprovince = check_str($_POST["userphysicalstateprovince"]);
-$userphysicalcountry = check_str($_POST["userphysicalcountry"]);
-$userphysicalpostalcode = check_str($_POST["userphysicalpostalcode"]);
-$usermailingaddress1 = check_str($_POST["usermailingaddress1"]);
-$usermailingaddress2 = check_str($_POST["usermailingaddress2"]);
-$usermailingcity = check_str($_POST["usermailingcity"]);
-$usermailingstateprovince = check_str($_POST["usermailingstateprovince"]);
-$usermailingcountry = check_str($_POST["usermailingcountry"]);
-$usermailingpostalcode = check_str($_POST["usermailingpostalcode"]);
-$userbillingaddress1 = check_str($_POST["userbillingaddress1"]);
-$userbillingaddress2 = check_str($_POST["userbillingaddress2"]);
-$userbillingcity = check_str($_POST["userbillingcity"]);
-$userbillingstateprovince = check_str($_POST["userbillingstateprovince"]);
-$userbillingcountry = check_str($_POST["userbillingcountry"]);
-$userbillingpostalcode = check_str($_POST["userbillingpostalcode"]);
-$usershippingaddress1 = check_str($_POST["usershippingaddress1"]);
-$usershippingaddress2 = check_str($_POST["usershippingaddress2"]);
-$usershippingcity = check_str($_POST["usershippingcity"]);
-$usershippingstateprovince = check_str($_POST["usershippingstateprovince"]);
-$usershippingcountry = check_str($_POST["usershippingcountry"]);
-$usershippingpostalcode = check_str($_POST["usershippingpostalcode"]);
-$userurl = check_str($_POST["userurl"]);
-$userphone1 = check_str($_POST["userphone1"]);
-$userphone1ext = check_str($_POST["userphone1ext"]);
-$userphone2 = check_str($_POST["userphone2"]);
-$userphone2ext = check_str($_POST["userphone2ext"]);
-$userphonemobile = check_str($_POST["userphonemobile"]);
-//$userphoneemergencymobile = check_str($_POST["userphoneemergencymobile"]);
-$userphonefax = check_str($_POST["userphonefax"]);
-$useremail = check_str($_POST["useremail"]);
-$useremailemergency = check_str($_POST["useremailemergency"]);
+$user_first_name = check_str($_POST["user_first_name"]);
+$user_last_name = check_str($_POST["user_last_name"]);
+$user_company_name = check_str($_POST["user_company_name"]);
+$user_physical_address_1 = check_str($_POST["user_physical_address_1"]);
+$user_physical_address_2 = check_str($_POST["user_physical_address_2"]);
+$user_physical_city = check_str($_POST["user_physical_city"]);
+$user_physical_state_province = check_str($_POST["user_physical_state_province"]);
+$user_physical_country = check_str($_POST["user_physical_country"]);
+$user_physical_postal_code = check_str($_POST["user_physical_postal_code"]);
+$user_mailing_address_1 = check_str($_POST["user_mailing_address_1"]);
+$user_mailing_address_2 = check_str($_POST["user_mailing_address_2"]);
+$user_mailing_city = check_str($_POST["user_mailing_city"]);
+$user_mailing_state_province = check_str($_POST["user_mailing_state_province"]);
+$user_mailing_country = check_str($_POST["user_mailing_country"]);
+$user_mailing_postal_code = check_str($_POST["user_mailing_postal_code"]);
+$user_billing_address_1 = check_str($_POST["user_billing_address_1"]);
+$user_billing_address_2 = check_str($_POST["user_billing_address_2"]);
+$user_billing_city = check_str($_POST["user_billing_city"]);
+$user_billing_state_province = check_str($_POST["user_billing_state_province"]);
+$user_billing_country = check_str($_POST["user_billing_country"]);
+$user_billing_postal_code = check_str($_POST["user_billing_postal_code"]);
+$user_shipping_address_1 = check_str($_POST["user_shipping_address_1"]);
+$user_shipping_address_2 = check_str($_POST["user_shipping_address_2"]);
+$user_shipping_city = check_str($_POST["user_shipping_city"]);
+$user_shipping_state_province = check_str($_POST["user_shipping_state_province"]);
+$user_shipping_country = check_str($_POST["user_shipping_country"]);
+$user_shipping_postal_code = check_str($_POST["user_shipping_postal_code"]);
+$user_url = check_str($_POST["user_url"]);
+$user_phone_1 = check_str($_POST["user_phone_1"]);
+$user_phone_1_ext = check_str($_POST["user_phone_1_ext"]);
+$user_phone_2 = check_str($_POST["user_phone_2"]);
+$user_phone_2_ext = check_str($_POST["user_phone_2_ext"]);
+$user_phone_mobile = check_str($_POST["user_phone_mobile"]);
+//$user_phone_emergency_mobile = check_str($_POST["user_phone_emergency_mobile"]);
+$user_phone_fax = check_str($_POST["user_phone_fax"]);
+$user_email = check_str($_POST["user_email"]);
+$user_email_emergency = check_str($_POST["user_email_emergency"]);
 
 
 if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
@@ -108,23 +108,23 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 
 	if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
 	if ($password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
-	if (strlen($userfirstname) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
-	if (strlen($userlastname) == 0) { $msgerror .= "Please provide a last name $userlastname.<br>\n"; }
-	//if (strlen($usercompanyname) == 0) { $msgerror .= "Please provide a company name.<br>\n"; }
-	//if (strlen($userphysicaladdress1) == 0) { $msgerror .= "Please provide a address.<br>\n"; }
-	//if (strlen($userphysicaladdress2) == 0) { $msgerror .= "Please provide a userphysicaladdress2.<br>\n"; }
-	//if (strlen($userphysicalcity) == 0) { $msgerror .= "Please provide a city.<br>\n"; }
-	//if (strlen($userphysicalstateprovince) == 0) { $msgerror .= "Please provide a state.<br>\n"; }
-	//if (strlen($userphysicalcountry) == 0) { $msgerror .= "Please provide a country.<br>\n"; }
-	//if (strlen($userphysicalpostalcode) == 0) { $msgerror .= "Please provide a postal code.<br>\n"; }
-	//if (strlen($userurl) == 0) { $msgerror .= "Please provide a url.<br>\n"; }
-	//if (strlen($userphone1) == 0) { $msgerror .= "Please provide a phone number.<br>\n"; }
-	//if (strlen($userphone2) == 0) { $msgerror .= "Please provide a userphone2.<br>\n"; }
-	//if (strlen($userphonemobile) == 0) { $msgerror .= "Please provide a mobile number.<br>\n"; }
-	//if (strlen($userphoneemergencymobile) == 0) { $msgerror .= "Please provide a emergency mobile.<br>\n"; }
-	//if (strlen($userphonefax) == 0) { $msgerror .= "Please provide a fax number.<br>\n"; }
-	if (strlen($useremail) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
-	//if (strlen($useremailemergency) == 0) { $msgerror .= "Please provide an emergency email.<br>\n"; }
+	if (strlen($user_first_name) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
+	if (strlen($user_last_name) == 0) { $msgerror .= "Please provide a last name $user_last_name.<br>\n"; }
+	//if (strlen($user_company_name) == 0) { $msgerror .= "Please provide a company name.<br>\n"; }
+	//if (strlen($user_physical_address_1) == 0) { $msgerror .= "Please provide a address.<br>\n"; }
+	//if (strlen($user_physical_address_2) == 0) { $msgerror .= "Please provide a user_physical_address_2.<br>\n"; }
+	//if (strlen($user_physical_city) == 0) { $msgerror .= "Please provide a city.<br>\n"; }
+	//if (strlen($user_physical_state_province) == 0) { $msgerror .= "Please provide a state.<br>\n"; }
+	//if (strlen($user_physical_country) == 0) { $msgerror .= "Please provide a country.<br>\n"; }
+	//if (strlen($user_physical_postal_code) == 0) { $msgerror .= "Please provide a postal code.<br>\n"; }
+	//if (strlen($user_url) == 0) { $msgerror .= "Please provide a url.<br>\n"; }
+	//if (strlen($user_phone_1) == 0) { $msgerror .= "Please provide a phone number.<br>\n"; }
+	//if (strlen($user_phone_2) == 0) { $msgerror .= "Please provide a user_phone_2.<br>\n"; }
+	//if (strlen($user_phone_mobile) == 0) { $msgerror .= "Please provide a mobile number.<br>\n"; }
+	//if (strlen($user_phone_emergency_mobile) == 0) { $msgerror .= "Please provide a emergency mobile.<br>\n"; }
+	//if (strlen($user_phone_fax) == 0) { $msgerror .= "Please provide a fax number.<br>\n"; }
+	if (strlen($user_email) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
+	//if (strlen($user_email_emergency) == 0) { $msgerror .= "Please provide an emergency email.<br>\n"; }
 
 	if (strlen($msgerror) > 0) {
 		require_once "includes/header.php";
@@ -139,8 +139,8 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 		return;
 	}
 
-	$usertype = 'Individual';
-	$usercategory = 'user';
+	$user_type = 'Individual';
+	$user_category = 'user';
 
 	//salt used with the password to create a one way hash
 	$salt = generate_password('20', '4');
@@ -151,46 +151,46 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "username, ";
 	$sql .= "password, ";
 	$sql .= "salt, ";
-	$sql .= "usertype, ";
-	$sql .= "usercategory, ";
-	$sql .= "userfirstname, ";
-	$sql .= "userlastname, ";
-	$sql .= "usercompanyname, ";
-	$sql .= "userphysicaladdress1, ";
-	$sql .= "userphysicaladdress2, ";
-	$sql .= "userphysicalcity, ";
-	$sql .= "userphysicalstateprovince, ";
-	$sql .= "userphysicalcountry, ";
-	$sql .= "userphysicalpostalcode, ";
-	$sql .= "usermailingaddress1, ";
-	$sql .= "usermailingaddress2, ";
-	$sql .= "usermailingcity, ";
-	$sql .= "usermailingstateprovince, ";
-	$sql .= "usermailingcountry, ";
-	$sql .= "usermailingpostalcode, ";
-	$sql .= "userbillingaddress1, ";
-	$sql .= "userbillingaddress2, ";
-	$sql .= "userbillingcity, ";
-	$sql .= "userbillingstateprovince, ";
-	$sql .= "userbillingcountry, ";
-	$sql .= "userbillingpostalcode, ";
-	$sql .= "usershippingaddress1, ";
-	$sql .= "usershippingaddress2, ";
-	$sql .= "usershippingcity, ";
-	$sql .= "usershippingstateprovince, ";
-	$sql .= "usershippingcountry, ";
-	$sql .= "usershippingpostalcode, ";
-	$sql .= "userurl, ";
-	$sql .= "userphone1, ";
-	$sql .= "userphone1ext, ";
-	$sql .= "userphone2, ";
-	$sql .= "userphone2ext, ";
-	$sql .= "userphonemobile, ";
-	$sql .= "userphonefax, ";
-	$sql .= "useremail, ";
-	$sql .= "useremailemergency, ";
-	$sql .= "useradddate, ";
-	$sql .= "useradduser ";
+	$sql .= "user_type, ";
+	$sql .= "user_category, ";
+	$sql .= "user_first_name, ";
+	$sql .= "user_last_name, ";
+	$sql .= "user_company_name, ";
+	$sql .= "user_physical_address_1, ";
+	$sql .= "user_physical_address_2, ";
+	$sql .= "user_physical_city, ";
+	$sql .= "user_physical_state_province, ";
+	$sql .= "user_physical_country, ";
+	$sql .= "user_physical_postal_code, ";
+	$sql .= "user_mailing_address_1, ";
+	$sql .= "user_mailing_address_2, ";
+	$sql .= "user_mailing_city, ";
+	$sql .= "user_mailing_state_province, ";
+	$sql .= "user_mailing_country, ";
+	$sql .= "user_mailing_postal_code, ";
+	$sql .= "user_billing_address_1, ";
+	$sql .= "user_billing_address_2, ";
+	$sql .= "user_billing_city, ";
+	$sql .= "user_billing_state_province, ";
+	$sql .= "user_billing_country, ";
+	$sql .= "user_billing_postal_code, ";
+	$sql .= "user_shipping_address_1, ";
+	$sql .= "user_shipping_address_2, ";
+	$sql .= "user_shipping_city, ";
+	$sql .= "user_shipping_state_province, ";
+	$sql .= "user_shipping_country, ";
+	$sql .= "user_shipping_postal_code, ";
+	$sql .= "user_url, ";
+	$sql .= "user_phone_1, ";
+	$sql .= "user_phone_1_ext, ";
+	$sql .= "user_phone_2, ";
+	$sql .= "user_phone_2_ext, ";
+	$sql .= "user_phone_mobile, ";
+	$sql .= "user_phone_fax, ";
+	$sql .= "user_email, ";
+	$sql .= "user_email_emergency, ";
+	$sql .= "user_add_date, ";
+	$sql .= "user_add_user ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
@@ -198,44 +198,44 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "'$username', ";
 	$sql .= "'".md5($salt.$password)."', ";
 	$sql .= "'".$salt."', ";
-	$sql .= "'$usertype', ";
-	$sql .= "'$usercategory', ";
-	$sql .= "'$userfirstname', ";
-	$sql .= "'$userlastname', ";
-	$sql .= "'$usercompanyname', ";
-	$sql .= "'$userphysicaladdress1', ";
-	$sql .= "'$userphysicaladdress2', ";
-	$sql .= "'$userphysicalcity', ";
-	$sql .= "'$userphysicalstateprovince', ";
-	$sql .= "'$userphysicalcountry', ";
-	$sql .= "'$userphysicalpostalcode', ";
-	$sql .= "'$usermailingaddress1', ";
-	$sql .= "'$usermailingaddress2', ";
-	$sql .= "'$usermailingcity', ";
-	$sql .= "'$usermailingstateprovince', ";
-	$sql .= "'$usermailingcountry', ";
-	$sql .= "'$usermailingpostalcode', ";
-	$sql .= "'$userbillingaddress1', ";
-	$sql .= "'$userbillingaddress2', ";
-	$sql .= "'$userbillingcity', ";
-	$sql .= "'$userbillingstateprovince', ";
-	$sql .= "'$userbillingcountry', ";
-	$sql .= "'$userbillingpostalcode', ";
-	$sql .= "'$usershippingaddress1', ";
-	$sql .= "'$usershippingaddress2', ";
-	$sql .= "'$usershippingcity', ";
-	$sql .= "'$usershippingstateprovince', ";
-	$sql .= "'$usershippingcountry', ";
-	$sql .= "'$usershippingpostalcode', ";
-	$sql .= "'$userurl', ";
-	$sql .= "'$userphone1', ";
-	$sql .= "'$userphone1ext', ";
-	$sql .= "'$userphone2', ";
-	$sql .= "'$userphone2ext', ";
-	$sql .= "'$userphonemobile', ";
-	$sql .= "'$userphonefax', ";
-	$sql .= "'$useremail', ";
-	$sql .= "'$useremailemergency', ";
+	$sql .= "'$user_type', ";
+	$sql .= "'$user_category', ";
+	$sql .= "'$user_first_name', ";
+	$sql .= "'$user_last_name', ";
+	$sql .= "'$user_company_name', ";
+	$sql .= "'$user_physical_address_1', ";
+	$sql .= "'$user_physical_address_2', ";
+	$sql .= "'$user_physical_city', ";
+	$sql .= "'$user_physical_state_province', ";
+	$sql .= "'$user_physical_country', ";
+	$sql .= "'$user_physical_postal_code', ";
+	$sql .= "'$user_mailing_address_1', ";
+	$sql .= "'$user_mailing_address_2', ";
+	$sql .= "'$user_mailing_city', ";
+	$sql .= "'$user_mailing_state_province', ";
+	$sql .= "'$user_mailing_country', ";
+	$sql .= "'$user_mailing_postal_code', ";
+	$sql .= "'$user_billing_address_1', ";
+	$sql .= "'$user_billing_address_2', ";
+	$sql .= "'$user_billing_city', ";
+	$sql .= "'$user_billing_state_province', ";
+	$sql .= "'$user_billing_country', ";
+	$sql .= "'$user_billing_postal_code', ";
+	$sql .= "'$user_shipping_address_1', ";
+	$sql .= "'$user_shipping_address_2', ";
+	$sql .= "'$user_shipping_city', ";
+	$sql .= "'$user_shipping_state_province', ";
+	$sql .= "'$user_shipping_country', ";
+	$sql .= "'$user_shipping_postal_code', ";
+	$sql .= "'$user_url', ";
+	$sql .= "'$user_phone_1', ";
+	$sql .= "'$user_phone_1_ext', ";
+	$sql .= "'$user_phone_2', ";
+	$sql .= "'$user_phone_2_ext', ";
+	$sql .= "'$user_phone_mobile', ";
+	$sql .= "'$user_phone_fax', ";
+	$sql .= "'$user_email', ";
+	$sql .= "'$user_email_emergency', ";
 	$sql .= "now(), ";
 	$sql .= "'".$_SESSION["username"]."' ";
 	$sql .= ")";
@@ -246,17 +246,17 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	//$logtype = 'user'; $logstatus='add'; $logadduser=$_SESSION["username"]; $logdesc= "username: ".$username." user added.";
 	//logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $_SERVER["REMOTE_ADDR"]);
 
-	$groupid = 'user';
+	$group_id = 'user';
 	$sql = "insert into v_group_members ";
 	$sql .= "(";
 	$sql .= "v_id, ";
-	$sql .= "groupid, ";
+	$sql .= "group_id, ";
 	$sql .= "username ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$v_id', ";
-	$sql .= "'$groupid', ";
+	$sql .= "'$group_id', ";
 	$sql .= "'$username' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
@@ -310,19 +310,19 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>First Name:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userfirstname' value='$userfirstname'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_first_name' value='$user_first_name'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Last Name:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='userlastname' value='$userlastname'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_last_name' value='$user_last_name'></td>";
 	echo "	</tr>";
 	//echo "	<tr>";
 	//echo "		<td>Company Name:</td>";
-	//echo "		<td><input type='text' class='formfld' name='usercompanyname' value='$usercompanyname'></td>";
+	//echo "		<td><input type='text' class='formfld' name='user_company_name' value='$user_company_name'></td>";
 	//echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Email:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='useremail' value='$useremail'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='user_email' value='$user_email'></td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
