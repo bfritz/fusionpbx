@@ -269,11 +269,12 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 									}
 								//rename fields where the name has changed
 									if (is_array($field['name'])) {
-										if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
+										if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {						
 											if ($db_type == "pgsql") {
 												$sql_update .= "ALTER TABLE ".$table_name." RENAME COLUMN ".$field['name']['deprecated']." to ".$field['name']['text'].";\n";
 											}
 											if ($db_type == "mysql") {
+												$field_type = str_replace("AUTO_INCREMENT PRIMARY KEY", "", $field_type);
 												$sql_update .= "ALTER TABLE ".$table_name." CHANGE ".$field['name']['deprecated']." ".$field['name']['text']." ".$field_type.";\n";
 											}
 											if ($db_type == "sqlite") {
