@@ -65,9 +65,9 @@ else {
 				$sql = "";
 				$sql .= "select * from v_system_settings ";
 				$sql .= "where v_id = '$id' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$v_domain = $row["v_domain"];
 					$v_recordings_dir = $row["v_recordings_dir"];
@@ -77,7 +77,7 @@ else {
 					$v_scripts_dir = $row["v_scripts_dir"];
 					break; //limit to 1 row
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 			}
 
 		//delete the system_settings entry by the id and all child data
@@ -86,8 +86,17 @@ else {
 				foreach ($apps as &$app) {
 					foreach ($app['db'] as $row) {
 						$table_name = $row['table'];
-						$sql = "delete from $table_name where v_id = '$id' ";
-						$db->query($sql);
+						switch ($table_name) {
+							case "v_menus":
+								break;
+							case "v_menu_items":
+								break;
+							case "v_menu_item_groups":
+								break;
+							default:
+							  $sql = "delete from $table_name where v_id = '$id' ";
+							  $db->query($sql);
+						}
 					}
 				}
 				$db->commit();
