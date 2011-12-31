@@ -86,16 +86,11 @@ else {
 				foreach ($apps as &$app) {
 					foreach ($app['db'] as $row) {
 						$table_name = $row['table'];
-						switch ($table_name) {
-							case "v_menus":
-								break;
-							case "v_menu_items":
-								break;
-							case "v_menu_item_groups":
-								break;
-							default:
-							  $sql = "delete from $table_name where v_id = '$id' ";
-							  $db->query($sql);
+						foreach ($row['fields'] as $field) {
+							if ($field['name'] == "v_id") {
+								$sql = "delete from $table_name where v_id = '$id' ";
+								$db->query($sql);
+							}
 						}
 					}
 				}
