@@ -59,37 +59,57 @@ function db_table_exists ($db, $db_type, $db_name, $table_name) {
 	}
 }
 
+function db_sqlite_table_info($db, $table_name) {
+	$sql = "PRAGMA table_info(".$table_name.");";
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	return $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_sqlite_column_exists($table_info, $column_name) {
+	foreach ($table_info as $key => &$row) {
+		if ($row['name'] == $column_name) {
+			return true;
+		}
+	}
+	return $false;
+}
+
 function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column_name) {
 	global $display_type;
 
 	//check if the column exists
-		$sql = "";
 		if ($db_type == "sqlite") {
-			$sql .= "SELECT * FROM sqlite_master WHERE type='table' and name='$tmp_table_name' and sql like '%$tmp_column_name%' ";
+			$table_info = db_sqlite_table_info($db, $tmp_table_name);
+			if (db_sqlite_column_exists($table_info, $tmp_column_name)) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		if ($db_type == "pgsql") {
-			$sql .= "SELECT attname FROM pg_attribute WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = '$tmp_table_name') AND attname = '$tmp_column_name'; ";
+			$sql = "SELECT attname FROM pg_attribute WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = '$tmp_table_name') AND attname = '$tmp_column_name'; ";
 		}
 		if ($db_type == "mysql") {
 			//$sql .= "SELECT * FROM information_schema.COLUMNS where TABLE_SCHEMA = '$db_name' and TABLE_NAME = '$tmp_table_name' and COLUMN_NAME = '$tmp_column_name' ";
-			$sql .= "show columns from $tmp_table_name where field = '$tmp_column_name' ";
+			$sql = "show columns from $tmp_table_name where field = '$tmp_column_name' ";
 		}
-		
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
-		if (!$result) {
-			return false;
+		if ($sql) {
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			if (!$result) {
+				return false;
+			}
+			if (count($result) > 0) {
+				return true;
+			}
+			else {
+				return false;
+			}
+			unset ($prep_statement);
 		}
-		if (count($result) > 0) {
-			//echo "table $tmp_table_name $tmp_column_name exist: true\n";
-			return true;
-		}
-		else {
-			//echo "table $tmp_table_name $tmp_column_name exist: false\n";
-			return false;
-		}
-		unset ($prep_statement);
 }
 
 function db_create_table ($apps, $db_type, $table) {
