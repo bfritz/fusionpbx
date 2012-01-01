@@ -74,7 +74,7 @@ require_once "includes/paging.php";
 			unset($tmp_greeting);
 			if ($_REQUEST['greeting']) {
 				move_uploaded_file($_FILES['file']['tmp_name'], $v_greeting_dir.'/'.$_REQUEST['greeting']);
-				$save_msg = "Uploaded file to ".$v_greeting_dir."/".$_REQUEST['greeting'];
+				$save_msg = "Uploaded ".$_REQUEST['greeting'];
 			}
 		}
 	}
