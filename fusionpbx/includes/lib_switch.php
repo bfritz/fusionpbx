@@ -862,14 +862,14 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$sql = "";
 			$sql .= "select * from v_fax ";
 			$sql .= "where v_id = '$v_id' ";
-			$sql .= "order by faxextension asc ";
+			$sql .= "order by fax_extension asc ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 			echo "<optgroup label='FAX'>\n";
 			foreach ($result as &$row) {
-				$fax_name = $row["faxname"];
-				$extension = $row["faxextension"];
+				$fax_name = $row["fax_name"];
+				$extension = $row["fax_extension"];
 				if ("transfer $extension XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 					if ($select_type == "ivr") {
 						echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$fax_name."</option>\n";
