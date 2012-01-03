@@ -73,7 +73,7 @@
 		$dialplan_order ='900';
 		$context = 'default';
 		$enabled = 'true';
-		$descr = '*732 default system recordings tool';
+		$descr = '*732 Recordings';
 		$opt_1_name = 'recordings';
 		$opt_1_value = '732';
 		$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
@@ -126,7 +126,7 @@
 	$sql .= "select * from v_dialplan_includes ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and opt_1_name = 'disa' ";
-	$sql .= "and opt_1_value = '3472' ";
+	$sql .= "and (opt_1_value = '347' or opt_1_value = '3472') ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
@@ -174,6 +174,63 @@
 	else {
 		if ($display_type == "text") {
 			echo "	Dialplan DISA: 		no change\n";
+		}
+	}
+
+// add a wake up call dialplan entry if it doesn't exist
+	$v_wake_up_action = 'add';
+	$sql = "";
+	$sql .= "select * from v_dialplan_includes ";
+	$sql .= "where v_id = '$v_id' ";
+	$sql .= "and opt_1_name = 'wake up' ";
+	$sql .= "and opt_1_value = '923' ";
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
+		$v_wake_up_action = 'update';
+		break; //limit to 1 row
+	}
+	unset ($sql, $prep_statement);
+	if ($v_wake_up_action == 'add') {
+		if ($display_type == "text") {
+			echo "	Wake Up Calls: 	added\n";
+		}
+		$extension_name = 'Wake-Up';
+		$dialplan_order ='900';
+		$context = 'default';
+		$enabled = 'true';
+		$descr = '*923 Wake Up Calls';
+		$opt_1_name = 'wake up';
+		$opt_1_value = '923';
+		$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+
+		$tag = 'condition'; //condition, action, antiaction
+		$field_type = 'destination_number';
+		$field_data = '^\*(923)$';
+		$field_order = '000';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+
+		$tag = 'action'; //condition, action, antiaction
+		$field_type = 'set';
+		$field_data = 'pin_number='.generate_password(6, 1);
+		$field_order = '005';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+
+		$tag = 'action'; //condition, action, antiaction
+		$field_type = 'set';
+		$field_data = 'time_zone_offset=-7';
+		$field_order = '010';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+
+		$tag = 'action'; //condition, action, antiaction
+		$field_type = 'lua';
+		$field_data = 'wakeup.lua';
+		$field_order = '015';
+		v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+	}
+	else {
+		if ($display_type == "text") {
+			echo "	Wake Up Calls: 	no change\n";
 		}
 	}
 
