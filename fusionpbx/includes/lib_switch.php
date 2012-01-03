@@ -2111,37 +2111,19 @@ function filename_safe($filename) {
 }
 
 function sync_package_v_gateways() {
-	global $config;
+	global $db, $v_id, $config;
 	$v_settings_array = v_settings();
 	foreach($v_settings_array as $name => $value) {
 		$$name = $value;
 	}
 
-	// delete all old gateways to prepare for new ones
-		if (count($_SESSION["domains"]) > 1) {
-			$v_needle = 'v_'.$v_domain.'-';
-		}
-		else {
-			$v_needle = 'v_';
-		}
-		if($dh = opendir($v_gateways_dir."")) {
-			$files = Array();
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($dir . "/" . $file)) {
-						//this is a directory do nothing
-					} else {
-						//check if file extension is xml
-						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-							unlink($v_gateways_dir."/".$file);
-						}
-					}
-				}
+	// delete the gateways to prepare for new ones
+		foreach(glob($v_gateways_dir."/*", GLOB_ONLYDIR) as $dir) {
+			foreach (glob($dir."/v_*.xml") as $file) {
+				unlink($file);
 			}
-			closedir($dh);
 		}
 
-	global $db, $v_id;
 	$sql = "";
 	$sql .= "select * from v_gateways ";
 	$sql .= "where v_id = '$v_id' ";
@@ -2154,14 +2136,18 @@ function sync_package_v_gateways() {
 					$gateway = $row['gateway'];
 					$gateway = str_replace(" ", "_", $gateway);
 					$gateway = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $gateway);
-
+					$profile = $row['profile'];
+				//set the default profile
+					if (strlen($profile) == 0) {
+						$profile = "external";
+					}
 				if (count($_SESSION["domains"]) > 1) {
-					$fout = fopen($v_gateways_dir."/v_".$v_domain .'-'.$gateway.".xml","w");
+					$fout = fopen($v_gateways_dir."/".$profile."/v_".$v_domain .'-'.$gateway.".xml","w");
 					$tmpxml .= "<include>\n";
 					$tmpxml .= "    <gateway name=\"" . $v_domain .'-'. $gateway . "\">\n";
 				}
 				else {
-					$fout = fopen($v_gateways_dir."/v_".$gateway.".xml","w");
+					$fout = fopen($v_gateways_dir."/".$profile."/v_".$gateway.".xml","w");
 					$tmpxml .= "<include>\n";
 					$tmpxml .= "    <gateway name=\"" . $gateway . "\">\n";
 				}
