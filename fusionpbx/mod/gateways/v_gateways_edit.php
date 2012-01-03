@@ -77,6 +77,7 @@ else {
 		$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
 		$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
 		$context = check_str($_POST["context"]);
+		$profile = check_str($_POST["profile"]);
 		$enabled = check_str($_POST["enabled"]);
 		$description = check_str($_POST["description"]);
 	}
@@ -115,6 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($outbound_caller_id_name) == 0) { $msg .= "Please provide: Outbound Caller ID Name<br>\n"; }
 		//if (strlen($outbound_caller_id_number) == 0) { $msg .= "Please provide: Outbound Caller ID Number<br>\n"; }
 		if (strlen($context) == 0) { $msg .= "Please provide: Context<br>\n"; }
+		//if (strlen($profile) == 0) { $msg .= "Please provide: Profile<br>\n"; }
 		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		//if (strlen($description) == 0) { $msg .= "Please provide: Gateway Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -165,6 +167,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "outbound_caller_id_name, ";
 				$sql .= "outbound_caller_id_number, ";
 				$sql .= "context, ";
+				$sql .= "profile, ";				
 				$sql .= "enabled, ";
 				$sql .= "description ";
 				$sql .= ")";
@@ -196,6 +199,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$outbound_caller_id_name', ";
 				$sql .= "'$outbound_caller_id_number', ";
 				$sql .= "'$context', ";
+				$sql .= "'$profile', ";
 				$sql .= "'$enabled', ";
 				$sql .= "'$description' ";
 				$sql .= ")";
@@ -235,6 +239,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
 				$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
 				$sql .= "context = '$context', ";
+				$sql .= "profile = '$profile', ";
 				$sql .= "enabled = '$enabled', ";
 				$sql .= "description = '$description' ";
 				$sql .= "where v_id = '$v_id' ";
@@ -317,6 +322,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$outbound_caller_id_name = $row["outbound_caller_id_name"];
 			$outbound_caller_id_number = $row["outbound_caller_id_number"];
 			$context = $row["context"];
+			$profile = $row["profile"];
 			$enabled = $row["enabled"];
 			$description = $row["description"];
 			break; //limit to 1 row
@@ -752,7 +758,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	//--- end: showadvanced -----------------------
 
-
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    Context:\n";
@@ -762,6 +767,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <input class='formfld' type='text' name='context' maxlength='255' value=\"$context\">\n";
 	echo "<br />\n";
 	echo "Enter the context here.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Profile:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	if (strlen($profile) == 0) { $profile = "external"; }
+	echo "    <input class='formfld' type='text' name='profile' maxlength='255' value=\"$profile\">\n";
+	echo "<br />\n";
+	echo "Enter the profile here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
