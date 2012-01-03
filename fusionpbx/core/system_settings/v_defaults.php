@@ -28,7 +28,7 @@
 	if (substr($v_gateways_dir, -8) == "external") {
 		$v_gateways_dir = substr($v_gateways_dir, 0, (strlen($v_gateways_dir)-9));
 		$sql = "update v_system_settings set ";
-		$sql .= "v_gateways_dir = '$v_gateways_dir', ";
+		$sql .= "v_gateways_dir = '$v_gateways_dir' ";
 		$sql .= "where v_id = '$v_id'";
 		$db->exec($sql);
 		unset($sql);
