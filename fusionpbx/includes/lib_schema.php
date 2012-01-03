@@ -278,7 +278,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 									}
 								//find missing fields and add them
 									if (is_array($field['name'])) {
-										if ($field['exists'] == "false" && $field['name']['deprecated'] == "false") {
+										if ($field['exists'] == "false" && !db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
 											$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']['text']." ".$field_type.";\n";
 										}
 									}
@@ -289,7 +289,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 									}
 								//rename fields where the name has changed
 									if (is_array($field['name'])) {
-										if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {						
+										if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {					
 											if ($db_type == "pgsql") {
 												$sql_update .= "ALTER TABLE ".$table_name." RENAME COLUMN ".$field['name']['deprecated']." to ".$field['name']['text'].";\n";
 											}
