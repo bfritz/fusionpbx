@@ -15,10 +15,41 @@
     <key name="12" value="version"/>
   </cli-keybindings> 
   
+  <default-ptimes>
+    <!-- set this to override the 20ms assumption of various codecs in the sdp with no ptime defined -->
+    <!--<codec name="G729" ptime="40"/>-->
+  </default-ptimes>
+  
   <settings>
     <!--Colorize the Console -->
     <param name="colorize-console" value="true"/>
-    <!--Most channels to allow at once -->
+
+    <!-- Run the timer at 20ms by default and drop down as needed unless you set 1m-timer=true which was previous default -->
+    <!-- <param name="1ms-timer" value="true"/> -->
+
+    <!--
+    Set the Switch Name for HA environments.
+    When setting the switch name, it will override the system hostname for all DB and CURL requests
+    allowing cluster environments such as RHCS to have identical FreeSWITCH configurations but run
+    as different hostnames.
+    -->
+    <!-- <param name="switchname" value="freeswitch"/>-->
+
+    <!-- maximum number of simo db handles open -->
+    <param name="max-db-handles" value="50"/>
+    <!-- maximum number of seconds to wait for a new db handle before failing -->
+    <param name="db-handle-timeout" value="10"/>
+
+    <!-- minimum idle CPU before refusing calls -->
+    <!--<param name="min-idle-cpu" value="25"/>-->
+
+    <!--
+	Max number of sessions to allow at any given time.
+	
+	NOTICE: If you're driving 28 T1's in a single box you should set this to 644*2 or 1288
+	this will ensure you're able to use the entire DS3 without a problem.  Otherwise you'll
+	be 144 channels short of always filling that DS3 up which can translate into waste.
+    -->
     <param name="max-sessions" value="1000"/>
     <!--Most channels to create per second -->
     <param name="sessions-per-second" value="30"/>
@@ -81,8 +112,13 @@
     <!--<param name="rtp-end-port" value="32768"/>-->
     <param name="rtp-enable-zrtp" value="true"/>
     <!-- <param name="core-db-dsn" value="dsn:username:password" /> -->
+    <!-- Allow to specify the sqlite db at a different location (In this example, move it to ramdrive for better performance on most linux distro (note, you loose the data if you reboot)) -->
+    <!-- <param name="core-db-name" value="/dev/shm/core.db" /> -->
     <!-- The system will create all the db schemas automatically, set this to false to avoid this behaviour-->
     <!--<param name="auto-create-schemas" value="true"/>-->
+    <!-- <param name="core-dbtype" value="MSSQL"/> -->
+    <!-- Allow multiple registrations to the same account in the central registration table -->
+    <!-- <param name="multiple-registrations" value="true"/> -->
   </settings>
 
 </configuration>
