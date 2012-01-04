@@ -40,6 +40,9 @@ else {
 	$rowstyle["0"] = "rowstyle0";
 	$rowstyle["1"] = "rowstyle1";
 
+//set a default file size
+	if (strlen($_POST['fs']) == 0) { $_POST['fs'] = "32"; }
+
 if (permission_exists('log_download')) {
 	if ($_GET['a'] == "download") {
 		if ($_GET['t'] == "logs") {
@@ -58,23 +61,28 @@ if (permission_exists('log_download')) {
 
 require_once "includes/header.php";
 
-
 echo "<br />\n";
 echo "<div align='center'>\n";
 
 echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
-echo "<tr>\n";
-echo "<td align=\"left\" width='100%'>\n";
-echo "	<b>Log Viewer</b><br />\n";
-echo "</td>\n";
-echo "<td width='50%' align='right'>\n";
+echo "	<tr>\n";
+echo "		<td align=\"left\" valign='middle' width='100%'>\n";
+echo "			<b>Log Viewer</b><br />\n";
+echo "		</td>\n";
+echo "		<form action=\"v_log_viewer.php\" method=\"POST\">\n";
+echo "		<td width='145px' align='right' valign='middle' nowrap='nowrap'>\n";
+echo "				<input type=\"text\" class=\"formfld\" name=\"fs\" value=\"".$_POST['fs']."\">\n";
+echo "				<input type=\"submit\" class=\"btn\" name=\"submit\" value=\"reload\">\n";
+echo "		</td>\n";
+echo "		</form>\n";
+echo "		<td width='125px' align='right' valign='middle' nowrap='nowrap'>\n";
 if (permission_exists('log_download')) {
-	echo "  <input type='button' class='btn' value='download logs' onclick=\"document.location.href='v_log_viewer.php?a=download&t=logs';\" />\n";
+	echo "			<input type='button' class='btn' value='download logs' onclick=\"document.location.href='v_log_viewer.php?a=download&t=logs';\" />\n";
 }
-echo "</td>\n";
-echo "</tr>\n";
-echo "<tr>\n";
-echo "<td colspan='2'>";
+echo "		</td>\n";
+echo "	</tr>\n";
+echo "	<tr>\n";
+echo "		<td colspan='3'>";
 
 if (permission_exists('log_view')) {
 
@@ -126,34 +134,15 @@ if (permission_exists('log_view')) {
 	$file_size = filesize($log_file);
 
 	if (isset($_POST['submit'])) {
-		if (strlen($_POST['fs']) == 0) { $_POST['fs'] = "512"; }
+		if (strlen($_POST['fs']) == 0) { $_POST['fs'] = "32"; }
 	}
-
-	echo "<table style=\"width: 100%\;\" width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
-	echo "	<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">Adjust Log Display</th></tr>\n";
-	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\" width=\"50%\">\n";
-
-	echo 'Log File Size: ' . $file_size . ' bytes<br>';
-
-	//user input here.
-	echo "Set a number the input box to get the last Kilobytes of the log file.<br>\n";
-	echo "</td>\n";
-	echo "<td style=\"text-align: left;\" class=\"vtable;\" width=\"50%\" valign=\"bottom\">\n";
-	echo "	<br />\n";
-	echo "	<form action=\"v_log_viewer.php\" method=\"POST\">\n";
-	echo "		<input type=\"text\" class=\"formfld\" name=\"fs\" value=\"".$_POST['fs']."\">\n";
-	echo "		<input type=\"submit\" class=\"btn\" name=\"submit\" value=\"reload\">\n";
-	echo "	</form>\n";
-	echo "</td>\n";
-	echo "</tr></table><br>";
 
 	echo "<table style=\"width: 100%\;\" width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">";
 	echo "<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">Syntax Highlighted</th></tr>";
 	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\">";
 
-	$user_filesize = '512000';
+	$user_filesize = '32000';
 	if (isset($_POST['submit'])) {
-		if (strlen($_POST['fs']) == 0) { $_POST['fs'] = "512"; }
 		if (!is_numeric($_POST['fs'])){
 			echo "<font color=\"red\" face=\"bold\" size =\"5\">";
 			echo "Just what do you think you're doing, Dave?<br>";
@@ -165,7 +154,9 @@ if (permission_exists('log_view')) {
 			$user_filesize = $_POST['fs'] * 1000;
 		}
 	}
-	echo "Viewing the last " . $user_filesize . " bytes of the log.<br><HR>";
+
+	//echo "Log File Size: " . $file_size . " bytes. <br />";
+	echo "Viewing the last " . $user_filesize . " of " . $file_size . " bytes. <br /><hr />"; 
 
 	$file = fopen($log_file, "r") or exit("Unable to open file!");
 
@@ -188,7 +179,7 @@ if (permission_exists('log_view')) {
 				echo "opening at " . $bytecount . " bytes<br>";
 		}
 			else {
-				//just open the file
+				//open the file
 				$bytecount='0';
 				fseek($file, 0);
 				echo "<br>opening entire file<br>";
@@ -203,7 +194,7 @@ if (permission_exists('log_view')) {
 			echo "opening at " . $bytecount . " bytes<br>";
 		}
 		else {
-			//just open the file
+			//open the file
 			$bytecount='0';
 			fseek($file, 0);
 			echo "<br>opening entire file<br>";
