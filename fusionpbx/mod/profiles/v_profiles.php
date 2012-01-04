@@ -35,16 +35,16 @@ else {
 }
 
 if ($_GET['a'] == "default" && permission_exists('sip_profiles_edit')) {
-	$fd = fopen($v_conf_dir.".orig/sip_profiles/".$_GET['f'], "r");
-	$v_content = fread($fd, filesize($v_conf_dir.".orig/sip_profiles/".$_GET['f']));
-	fclose($fd);
+
+	//get the contents of the sip profile
+	$sip_profile = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/sip_profiles/'.$_GET['f']);
 
 	//write the default config fget
 	$fd = fopen($v_conf_dir."/sip_profiles/".$_GET['f'], "w");
-	fwrite($fd, $v_content);
+	fwrite($fd, $sip_profile);
 	fclose($fd);
 
-	$savemsg = "Restore Default";
+	$save_msg = "Restored ".$_GET['f'];
 }
 
 if ($_POST['a'] == "save" && permission_exists('sip_profiles_edit')) {
@@ -52,7 +52,7 @@ if ($_POST['a'] == "save" && permission_exists('sip_profiles_edit')) {
 	$fd = fopen($v_conf_dir."/sip_profiles/".$_POST['f'], "w");
 	fwrite($fd, $v_content);
 	fclose($fd);
-	$savemsg = "Saved";
+	$save_msg = "Saved ".$_POST['f'];
 }
 
 if ($_GET['a'] == "del" && permission_exists('sip_profiles_edit')) {
@@ -68,6 +68,22 @@ require_once "includes/header.php";
 $c = 0;
 $rowstyle["0"] = "rowstyle0";
 $rowstyle["1"] = "rowstyle1";
+
+if (strlen($save_msg) > 0) {
+	echo "<div align=\"center\">\n";
+	echo "	<table width=\"40%\">\n";
+	echo "		<tr>\n";
+	echo "			<th align=\"left\">Message</th>\n";
+	echo "		</tr>\n";
+	echo "		<tr>\n";
+	echo "			<td class=\"rowstyle1\">\n";
+	echo "				<strong>$save_msg</strong>\n";
+	echo "			</td>\n";
+	echo "		</tr>\n";
+	echo "	</table>\n";
+	echo "</div>\n";
+}
+
 ?>
 
 <div align='center'>
