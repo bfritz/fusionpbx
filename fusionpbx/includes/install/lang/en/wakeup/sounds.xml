@@ -12,7 +12,7 @@
 				<action function="play-file" data="custom/call.wav"/>
 				<action function="play-file" data="custom/enter.wav"/>
 				<action function="play-file" data="custom/a.wav"/>
-				<action function="play-file" data="custom/for.wav"/>
+				<action function="play-file" data="custom/4.wav"/>
 				<action function="play-file" data="custom/digit.wav"/>
 				<action function="play-file" data="custom/number.wav"/>
 
