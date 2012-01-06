@@ -43,20 +43,24 @@ $order = $_GET["order"];
 $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 if ($fp) {
 	if (strlen($_GET["a"]) > 0) {
+		$profile = $_GET["profile"];
+		if (strlen($profile) == 0) {
+			$profile = 'external';
+		}
 		if ($_GET["a"] == "stop") {
 			$gateway_name = $_GET["gateway"];
 			if (count($_SESSION["domains"]) > 1) {
-				$cmd = 'api sofia profile external killgw '.$v_domain.'-'.$gateway_name;
+				$cmd = 'api sofia profile '.$profile.' killgw '.$v_domain.'-'.$gateway_name;
 			}
 			else {
-				$cmd = 'api sofia profile external killgw '.$gateway_name;
+				$cmd = 'api sofia profile '.$profile.' killgw '.$gateway_name;
 			}
 			$response = trim(event_socket_request($fp, $cmd));
 			$msg = '<strong>Stop Gateway:</strong><pre>'.$response.'</pre>';
 		}
 		if ($_GET["a"] == "start") {
 			$gateway_name = $_GET["gateway"];
-			$cmd = "api sofia profile external rescan";
+			$cmd = 'api sofia profile '.$profile.' rescan';
 			$response = trim(event_socket_request($fp, $cmd));
 			$msg = '<strong>Start Gateway:</strong><pre>'.$response.'</pre>';
 		}
@@ -169,7 +173,7 @@ else { //received results
 				if ($response == "Invalid Gateway!") {
 					//not running
 					echo "	<td valign='top' class='".$rowstyle[$c]."'>Stopped</td>\n";
-					echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=start&gateway=".$row["gateway"]."' alt='start'>Start</a></td>\n";
+					echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=start&gateway=".$row["gateway"]."&profile=".$row["profile"]."' alt='start'>Start</a></td>\n";
 					echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;</td>\n";
 				}
 				else {
@@ -178,7 +182,7 @@ else { //received results
 						$xml = new SimpleXMLElement($response);
 						$state = $xml->state;
 						echo "	<td valign='top' class='".$rowstyle[$c]."'>Running</td>\n";
-						echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=stop&gateway=".$row["gateway"]."' alt='stop'>Stop</a></td>\n";
+						echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_gateways.php?a=stop&gateway=".$row["gateway"]."&profile=".$row["profile"]."' alt='stop'>Stop</a></td>\n";
 						echo "	<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
 					}
 					catch(Exception $e) {
