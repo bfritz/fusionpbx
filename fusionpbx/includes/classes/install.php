@@ -27,6 +27,7 @@ include "root.php";
 
 //define the install class
 	class install {
+
 		var $result;
 		var $v_id;
 		var $v_domain;
@@ -35,20 +36,86 @@ include "root.php";
 		var $v_sounds_dir;
 		var $v_recordings_dir;
 
+		function recursive_copy($src, $dst) {
+			$dir = opendir($src);
+			if (!$dir) {
+				throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
+			}
+			if (!is_dir($dst)) {
+				if (!mkdir($dst)) {
+					throw new Exception("recursive_copy() failed to create destination directory '".$dst."'");
+				}
+			}
+			while(false !== ($file = readdir($dir))) {
+				if (($file != '.') && ($file != '..')) {
+					if (is_dir($src.'/'.$file)) {
+						$this->recursive_copy($src.'/'.$file, $dst.'/'.$file);
+					}
+					else {
+						if (!file_exists($dst.'/'.$file)) {
+							//echo "copy(".$src."/".$file.", ".$dst."/".$file.");<br />\n";
+							copy($src.'/'.$file, $dst.'/'.$file);
+						}
+					}
+				}
+			}
+			closedir($dir);
+		}
+
+		function recursive_delete($dir) {
+			if (strlen($dir) > 0) {
+				foreach (glob($dir) as $file) {
+					if (is_dir($file)) {
+						rmdir($file);
+						$this->recursive_delete("$file/*");
+						//echo "rm dir: ".$file."\n";
+					} else {
+						//echo "delete file: ".$file."\n";
+						unlink($file);
+					}
+				}
+			}
+		}
+
 		function copy() {
 			$this->copy_scripts();
 			$this->copy_sounds();
 			$this->copy_swf();
+			$this->copy_phrases();
 		}
 
 		function copy_conf() {
-			//if the backup copy does not exist then make a copy of it
-			clearstatcache();
-			$src_dir = $v_conf_dir;
-			$dst_dir = $v_conf_dir.'.orig';
-			if (!is_dir($v_conf_dir.".orig")) { 
-				exec ('cp -RLp '.$src_dir.' '.$dst_dir);
-			}
+			//make a backup copy of the conf directory
+				clearstatcache();
+				$src_dir = $this->v_conf_dir;
+				$dst_dir = $this->v_conf_dir.'.orig';
+				if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
+					$this->recursive_copy($src_dir, $dst_dir);
+				}
+				else {
+					exec ('mv '.$src_dir.' '.$dst_dir);
+					//exec ('cp -RLp '.$src_dir.' '.$dst_dir);
+				}
+			//remove the conf directory
+				if (strlen($dst_dir)>0) {
+					if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
+						$this->recursive_delete($this->v_conf_dir);
+					}
+					//else {
+					//	exec ('rm -R '.$dst_dir);
+					//}
+				}
+			//copy includes/templates/conf to the freeswitch/conf dir
+				$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf";
+				$dst_dir = $this->v_conf_dir;
+				$this->recursive_copy($src_dir, $dst_dir);
+			//create the dialplan/default.xml for single tenant or dialplan/domain.xml
+				require_once "includes/classes/dialplan.php";
+				$dialplan = new dialplan;
+				$dialplan->v_id = $this->v_id;
+				$dialplan->v_domain = $this->v_domain;
+				$dialplan->v_conf_dir = $this->v_conf_dir;
+				$dialplan->restore_advanced_xml();
 		}
 
 		function copy_scripts() {
@@ -129,6 +196,13 @@ include "root.php";
 			else {
 				$this->result['copy']['swf'][] = "copy failed from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
 			}
+		}
+
+		function copy_phrases() {
+			clearstatcache();
+			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/lang";
+			$dst_dir = $this->v_conf_dir."/lang";
+			$this->recursive_copy($src_dir, $dst_dir);
 		}
 
 	}
