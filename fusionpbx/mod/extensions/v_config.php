@@ -34,6 +34,9 @@
 		$apps[$x]['permissions'][3]['name'] = 'extension_delete';
 		$apps[$x]['permissions'][3]['groups'][] = 'admin';
 		$apps[$x]['permissions'][3]['groups'][] = 'superadmin';
+		
+		$apps[$x]['permissions'][4]['name'] = 'extension_toll';
+		$apps[$x]['permissions'][4]['groups'][] = 'superadmin';
 
 	//schema details
 		$y = 0;

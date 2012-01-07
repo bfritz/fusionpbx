@@ -236,7 +236,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "vm_attach_file, ";
 					$sql .= "vm_keep_local_after_email, ";
 					$sql .= "user_context, ";
-					$sql .= "toll_allow, ";
+					if (permission_exists('extension_toll')) {
+						$sql .= "toll_allow, ";
+					}
 					$sql .= "callgroup, ";
 					$sql .= "hold_music, ";
 					$sql .= "auth_acl, ";
@@ -280,7 +282,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$vm_attach_file', ";
 					$sql .= "'$vm_keep_local_after_email', ";
 					$sql .= "'$user_context', ";
-					$sql .= "'$toll_allow', ";
+					if (permission_exists('extension_toll')) {
+						$sql .= "'$toll_allow', ";
+					}
 					$sql .= "'$callgroup', ";
 					$sql .= "'$hold_music', ";
 					$sql .= "'$auth_acl', ";
@@ -408,7 +412,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "vm_attach_file = '$vm_attach_file', ";
 			$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email', ";
 			$sql .= "user_context = '$user_context', ";
-			$sql .= "toll_allow = '$toll_allow', ";
+			if (permission_exists('extension_toll')) {
+				$sql .= "toll_allow = '$toll_allow', ";
+			}
 			$sql .= "callgroup = '$callgroup', ";
 			$sql .= "hold_music = '$hold_music', ";
 			$sql .= "auth_acl = '$auth_acl', ";
@@ -955,9 +961,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Toll Allow:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='toll_allow' maxlength='255' value=\"$toll_allow\">\n";
-	echo "<br />\n";
-	echo "Enter the toll allow value here. example: domestic,international,local\n";
+	if (permission_exists('extension_toll')) {
+		echo "    <input class='formfld' type='text' name='toll_allow' maxlength='255' value=\"$toll_allow\">\n";
+		echo "<br />\n";
+		echo "Enter the toll allow value here. example: domestic,international,local\n";
+	}
 	echo "</td>\n";
 	echo "</tr>\n";
 
