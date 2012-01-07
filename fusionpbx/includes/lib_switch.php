@@ -4631,6 +4631,9 @@ function sync_package_v_dialplan_includes() {
 				$current_count = 0;
 				$x = 0;
 				foreach($group as $ent) {
+					$close_condition_tag = true;
+					if(empty($ent))
+						$close_condition_tag = false;
 					$current_tag = $ent['tag'];
 					$c = 0;
 					if ($ent['tag'] == "condition") {
@@ -4743,7 +4746,8 @@ function sync_package_v_dialplan_includes() {
 						$previous_tag = $ent['tag'];
 					$i++;
 				} //end foreach
-				$tmp .= "   </condition>\n";
+				if($close_condition_tag == true)
+					$tmp .= "   </condition>\n";
 				$x++;
 			}
 			if ($condition_count > 0) {

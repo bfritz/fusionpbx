@@ -401,6 +401,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					}
 					$x++;
 				}
+			//regex
+				foreach($result as $row) {
+					if ($row['tag'] == "regex") {
+						$group = $row['field_group'];
+						foreach ($row as $key => $val) {
+							$details[$group][$x][$key] = $val;
+						}
+					}
+					$x++;
+				}
 			//actions
 				foreach($result as $row) {
 					if ($row['tag'] == "action") {

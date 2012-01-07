@@ -225,6 +225,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		  document.getElementById("label_field_type").innerHTML = "Field";
 		  document.getElementById("label_field_data").innerHTML = "Expression";
 		}
+		else if (tag == "regex") {
+		  document.getElementById("label_field_type").innerHTML = "Field";
+		  document.getElementById("label_field_data").innerHTML = "Expression";
+		}
 		else if (tag == "action") {
 		  document.getElementById("label_field_type").innerHTML = "Application";
 		  document.getElementById("label_field_data").innerHTML = "Data";
@@ -257,30 +261,42 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "                <option selected='yes'>condition</option>\n";
 		echo "                <option>action</option>\n";
 		echo "                <option>anti-action</option>\n";
+		echo "                <option>regex</option>\n";
+		//echo "                <option>param</option>\n";
+		break;
+	case "regex":
+		echo "                <option>condition</option>\n";
+		echo "                <option>action</option>\n";
+		echo "                <option>anti-action</option>\n";
+		echo "                <option selected='yes'>regex</option>\n";
 		//echo "                <option>param</option>\n";
 		break;
 	case "action":
 		echo "                <option>condition</option>\n";
 		echo "                <option selected='yes'>action</option>\n";
 		echo "                <option>anti-action</option>\n";
+		echo "                <option>regex</option>\n";
 		//echo "                <option>param</option>\n";
 		break;
 	case "anti-action":
 		echo "                <option>condition</option>\n";
 		echo "                <option>action</option>\n";
 		echo "                <option selected='yes'>anti-action</option>\n";
+		echo "                <option>regex</option>\n";
 		//echo "                <option>param</option>\n";
 		break;
 	case "param":
 		echo "                <option>condition</option>\n";
 		echo "                <option>action</option>\n";
 		echo "                <option>anti-action</option>\n";
+		echo "                <option>regex</option>\n";
 		//echo "                <option selected='yes'>param</option>\n";
 		break;
 	default:
 		echo "                <option>condition</option>\n";
 		echo "                <option>action</option>\n";
 		echo "                <option>anti-action</option>\n";
+		echo "                <option>regex</option>\n";
 		//echo "                <option>param</option>\n";
 	}
 	echo "                </select>\n";
@@ -545,6 +561,27 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	<br />
 	<br />
 	-->
+
+	<b>Regex</b>
+	<br />
+	<br />
+	If you need to compare two or more different fields on a single condition, then use the new regex syntax added on November 1, 2011:
+	<br />
+	<br />
+	Here's a quick example, for more details read <a href="http://wiki.freeswitch.org/wiki/Mod_dialplan_xml#Multiple_Conditions_.28Logical_OR.2C_XOR.29">this</a>.
+	<br />
+	<br />
+	<div style="border: 1px dotted #127cd9; width:95%;"><pre>  &lt;extension name=&quot;Regex OR example 1&quot; continue=&quot;true&quot;&gt;
+    &lt;condition regex=&quot;any&quot;&gt;
+      &lt;!-- If either of these is true then the subsequent actions are added to execute list --&gt;
+      &lt;regex field=&quot;caller_id_name&quot; expression=&quot;Some User&quot;/&gt;
+      &lt;regex field=&quot;caller_id_number&quot; expression=&quot;^1001$&quot;/&gt;
+      &lt;action application=&quot;log&quot; data=&quot;INFO At least one of the conditions matched!&quot;/&gt;
+      &lt;!-- If *none* of the regexes is true then the anti-actions are added to the execute list --&gt;
+      &lt;anti-action application=&quot;log&quot; data=&quot;WARNING None of the conditions matched!&quot;/&gt;
+      &lt;/condition&gt;
+  &lt;/extension&gt;</pre></div>
+
 
 	<br />
 	<br />
