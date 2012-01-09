@@ -253,6 +253,7 @@ else {
 
 		//get the fax file extension
 			$fax_file_extension = substr($dir_fax_temp.'/'.$_FILES['fax_file']['name'], -4);
+			if ($fax_file_extension == "tiff") { $fax_file_extension = ".tif"; }
 
 		//upload the file
 			move_uploaded_file($_FILES['fax_file']['tmp_name'], $dir_fax_temp.'/'.$fax_name.$fax_file_extension);
@@ -261,11 +262,6 @@ else {
 				chdir($dir_fax_temp);
 				exec("gs -q -sDEVICE=tiffg3 -r204x98 -dNOPAUSE -sOutputFile=".$fax_name.".tif -- ".$fax_name.".pdf -c quit");
 				//exec("rm ".$dir_fax_temp.'/'.$fax_name.".pdf");
-			}
-			if ($fax_file_extension == ".tiff") {
-				chdir($dir_fax_temp);
-				exec("cp ".$dir_fax_temp.'/'.$fax_name.".tiff ".$dir_fax_temp.'/'.$fax_name.".tif");
-				exec("rm ".$dir_fax_temp.'/'.$fax_name.".tiff");
 			}
 
 		//send the fax
