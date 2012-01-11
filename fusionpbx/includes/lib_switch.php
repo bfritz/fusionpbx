@@ -770,7 +770,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "order by fielddata asc ";
+		$sql .= "order by field_data asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$x = 0;
@@ -781,25 +781,25 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$previous_conference_name = "";
 		foreach ($result as &$row) {
 			//$tag = $row["tag"];
-			if ($row["fieldtype"] == "conference") {
-				$conference_name = $row["fielddata"];
+			if ($row["field_type"] == "conference") {
+				$conference_name = $row["field_data"];
 				$conference_name = str_replace('_${domain_name}@default', '', $conference_name);
 				if ($previous_conference_name != $conference_name) {
-					if ("menu-exec-app:conference ".$row["fielddata"] == $select_value || "conference:default ".$row["fielddata"] == $select_value) {
+					if ("menu-exec-app:conference ".$row["field_data"] == $select_value || "conference:default ".$row["field_data"] == $select_value) {
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:conference ".$row["fielddata"]."' selected='selected'>".$conference_name."</option>\n";
+							echo "		<option value='menu-exec-app:conference ".$row["field_data"]."' selected='selected'>".$conference_name."</option>\n";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='conference:".$row["fielddata"]."' selected='selected'>".$conference_name."</option>\n";
+							echo "		<option value='conference:".$row["field_data"]."' selected='selected'>".$conference_name."</option>\n";
 						}
 						$selection_found = true;
 					}
 					else {
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:conference ".$row["fielddata"]."'>".$conference_name."</option>\n";
+							echo "		<option value='menu-exec-app:conference ".$row["field_data"]."'>".$conference_name."</option>\n";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='conference:".$row["fielddata"]."'>".$conference_name."</option>\n";
+							echo "		<option value='conference:".$row["field_data"]."'>".$conference_name."</option>\n";
 						}
 					}
 					$previous_conference_name = $conference_name;
@@ -862,14 +862,14 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$sql = "";
 			$sql .= "select * from v_fax ";
 			$sql .= "where v_id = '$v_id' ";
-			$sql .= "order by faxextension asc ";
+			$sql .= "order by fax_extension asc ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 			echo "<optgroup label='FAX'>\n";
 			foreach ($result as &$row) {
-				$fax_name = $row["faxname"];
-				$extension = $row["faxextension"];
+				$fax_name = $row["fax_name"];
+				$extension = $row["fax_extension"];
 				if ("transfer $extension XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 					if ($select_type == "ivr") {
 						echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$fax_name."</option>\n";
@@ -896,7 +896,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
 		$sql .= "where v_id = '$v_id' ";
-		$sql .= "order by fielddata asc ";
+		$sql .= "order by field_data asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$x = 0;
@@ -906,15 +906,15 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 		foreach ($result as &$row) {
 			//$tag = $row["tag"];
-			if ($row["fieldtype"] == "fifo") {
-				if (strpos($row["fielddata"], '@${domain_name} in') !== false) {
+			if ($row["field_type"] == "fifo") {
+				if (strpos($row["field_data"], '@${domain_name} in') !== false) {
 					$dialplan_include_id = $row["dialplan_include_id"];
 					//get the extension number using the dialplan_include_id
-						$sql = "select fielddata as extension_number ";
+						$sql = "select field_data as extension_number ";
 						$sql .= "from v_dialplan_includes_details ";
 						$sql .= "where v_id = '$v_id' ";
 						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-						$sql .= "and fieldtype = 'destination_number' ";
+						$sql .= "and field_type = 'destination_number' ";
 						$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 						$extension_number = $tmp['extension_number'];
 						$extension_number = ltrim($extension_number, "^");
@@ -928,15 +928,15 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 						$sql .= "where v_id = '$v_id' ";
 						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 						$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
-						$extension_name = $tmp['extensionname'];
+						$extension_name = $tmp['extension_name'];
 						$extension_name = str_replace("_", " ", $extension_name);
 						unset($tmp);
 
-					$fifo_name = $row["fielddata"];
+					$fifo_name = $row["field_data"];
 					$fifo_name = str_replace('@${domain_name} in', '', $fifo_name);
 					$option_label = $extension_number.' '.$extension_name;
 					if ($select_type == "ivr") {
-						if ("menu-exec-app:transfer ".$row["fielddata"] == $select_value) {
+						if ("menu-exec-app:transfer ".$row["field_data"] == $select_value) {
 							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 							$selection_found = true;
 						}
@@ -945,7 +945,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 						}
 					}
 					if ($select_type == "dialplan") {
-						if ("transfer:".$row["fielddata"] == $select_value) {
+						if ("transfer:".$row["field_data"] == $select_value) {
 							echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 							$selection_found = true;
 						}
@@ -978,21 +978,21 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			unset ($prep_statement, $sql);
 			$tmp_selected = '';
 			foreach($result as $row) {
-				if ($row[gateway] == $select_value) {
+				if ($row['gateway'] == $select_value) {
 					$tmp_selected = "selected='selected'";
 				}
 					if ($select_type == "dialplan") {
-						echo "		<option value='bridge:sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>".$row[gateway]."</option>\n";
+						echo "		<option value='bridge:sofia/gateway/".$row['gateway']."/xxxxx' $tmp_selected>".$row['gateway']."</option>\n";
 					}
 					if ($select_type == "ivr") {
-						echo "		<option value='menu-exec-app:bridge sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>".$row[gateway]."</option>\n";
+						echo "		<option value='menu-exec-app:bridge sofia/gateway/".$row['gateway']."/xxxxx' $tmp_selected>".$row['gateway']."</option>\n";
 					}
 					if ($select_type == "call_center_contact") {
-						echo "		<option value='sofia/gateway/".$row[gateway]."/xxxxx' $tmp_selected>".$row[gateway]."</option>\n";
+						echo "		<option value='sofia/gateway/".$row['gateway']."/xxxxx' $tmp_selected>".$row['gateway']."</option>\n";
 					}
 					$tmp_selected = '';
 			}
-			unset($sql, $result, $rowcount);
+			unset($sql, $result);
 			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
 				echo "</optgroup>\n";
 			}
@@ -1003,11 +1003,11 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql .= "select * from v_hunt_group ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and ( ";
-		$sql .= "huntgrouptype = 'simultaneous' ";
-		$sql .= "or huntgrouptype = 'sequence' ";
-		$sql .= "or huntgrouptype = 'sequentially' ";
+		$sql .= "hunt_group_type = 'simultaneous' ";
+		$sql .= "or hunt_group_type = 'sequence' ";
+		$sql .= "or hunt_group_type = 'sequentially' ";
 		$sql .= ") ";
-		$sql .= "order by huntgroupextension asc ";
+		$sql .= "order by hunt_group_extension asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -1015,23 +1015,23 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			echo "<optgroup label='Hunt Groups'>\n";
 		}
 		foreach ($result as &$row) {
-			$extension = $row["huntgroupextension"];
-			$huntgroupname = $row["huntgroupname"];
+			$extension = $row["hunt_group_extension"];
+			$hunt_group_name = $row["hunt_group_name"];
 			if ("transfer $extension XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$huntgroupname."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$hunt_group_name."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$huntgroupname."</option>\n";
+					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$hunt_group_name."</option>\n";
 				}
 				$selection_found = true;
 			}
 			else {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."'>".$extension." ".$huntgroupname."</option>\n";
+					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."'>".$extension." ".$hunt_group_name."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$huntgroupname."</option>\n";
+					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$hunt_group_name."</option>\n";
 				}
 			}
 		}
@@ -1302,39 +1302,39 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach ($result as &$row) {
 			//$tag = $row["tag"];
-			switch ($row['fieldtype']) {
+			switch ($row['field_type']) {
 			case "hour":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			case "minute":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			case "minute-of-day":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			case "mday":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			case "mweek":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			case "mon":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			case "yday":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			case "year":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			case "wday":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			case "week":
-				$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			default:
-				//$time_array[$row['dialplan_include_id']] = $row['fieldtype'];
+				//$time_array[$row['dialplan_include_id']] = $row['field_type'];
 				break;
 			}
 		}
@@ -1344,11 +1344,11 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		foreach($time_array as $key=>$val) {    
 			$dialplan_include_id = $key;
 			//get the extension number using the dialplan_include_id
-				$sql = "select fielddata as extension_number ";
+				$sql = "select field_data as extension_number ";
 				$sql .= "from v_dialplan_includes_details ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-				$sql .= "and fieldtype = 'destination_number' ";
+				$sql .= "and field_type = 'destination_number' ";
 				$sql .= "order by extension_number asc ";
 				$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 				$extension_number = $tmp['extension_number'];
@@ -1363,13 +1363,13 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
-				$extension_name = $tmp['extensionname'];
+				$extension_name = $tmp['extension_name'];
 				$extension_name = str_replace("_", " ", $extension_name);
 				unset($tmp);
 
 				$option_label = $extension_number.' '.$extension_name;
 				if ($select_type == "ivr") {
-					if ("menu-exec-app:transfer ".$row["fielddata"]." XML ".$_SESSION["context"] == $select_value) {
+					if ("menu-exec-app:transfer ".$row["field_data"]." XML ".$_SESSION["context"] == $select_value) {
 						echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 						$selection_found = true;
 					}
@@ -1378,7 +1378,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					}
 				}
 				if ($select_type == "dialplan") {
-					if ("transfer:".$row["fielddata"] == $select_value) {
+					if ("transfer:".$row["field_data"] == $select_value) {
 						echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 						$selection_found = true;
 					}
@@ -1623,7 +1623,6 @@ function sync_package_v_settings() {
  
 	$sql = "";
 	$sql .= "select * from v_settings ";
-	$sql .= "where v_id = '1' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -1639,13 +1638,13 @@ function sync_package_v_settings() {
 		//$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
 		//$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
 		//$admin_pin = $row["admin_pin"];
-		//$smtphost = $row["smtphost"];
-		//$smtpsecure = $row["smtpsecure"];
-		//$smtpauth = $row["smtpauth"];
-		//$smtpusername = $row["smtpusername"];
-		//$smtppassword = $row["smtppassword"];
-		//$smtpfrom = $row["smtpfrom"];
-		//$smtpfromname = $row["smtpfromname"];
+		//$smtp_host = $row["smtp_host"];
+		//$smtp_secure = $row["smtp_secure"];
+		//$smtp_auth = $row["smtp_auth"];
+		//$smtp_username = $row["smtp_username"];
+		//$smtp_password = $row["smtp_password"];
+		//$smtp_from = $row["smtp_from"];
+		//$smtp_from_name = $row["smtp_from_name"];
 		//$mod_shout_decoder = $row["mod_shout_decoder"];
 		//$mod_shout_volume = $row["mod_shout_volume"];
 
@@ -1655,18 +1654,18 @@ function sync_package_v_settings() {
 		$tmpxml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
 		$tmpxml .= "\n";
 		$tmpxml .= "//set the email variables\n";
-		$tmpxml .= "	\$v_smtphost = \"".$row["smtphost"]."\";\n";
-		if ($row["smtpsecure"] == "none") {
-			$tmpxml .= "	\$v_smtpsecure = \"\";\n";
+		$tmpxml .= "	\$v_smtp_host = \"".$row["smtp_host"]."\";\n";
+		if ($row["smtp_secure"] == "none") {
+			$tmpxml .= "	\$v_smtp_secure = \"\";\n";
 		}
 		else {
-			$tmpxml .= "	\$v_smtpsecure = \"".$row["smtpsecure"]."\";\n";
+			$tmpxml .= "	\$v_smtp_secure = \"".$row["smtp_secure"]."\";\n";
 		}
-		$tmpxml .= "	\$v_smtpauth = \"".$row["smtpauth"]."\";\n";
-		$tmpxml .= "	\$v_smtpusername = \"".$row["smtpusername"]."\";\n";
-		$tmpxml .= "	\$v_smtppassword = \"".$row["smtppassword"]."\";\n";
-		$tmpxml .= "	\$v_smtpfrom = \"".$row["smtpfrom"]."\";\n";
-		$tmpxml .= "	\$v_smtpfromname = \"".$row["smtpfromname"]."\";\n";
+		$tmpxml .= "	\$v_smtp_auth = \"".$row["smtp_auth"]."\";\n";
+		$tmpxml .= "	\$v_smtp_username = \"".$row["smtp_username"]."\";\n";
+		$tmpxml .= "	\$v_smtp_password = \"".$row["smtp_password"]."\";\n";
+		$tmpxml .= "	\$v_smtp_from = \"".$row["smtp_from"]."\";\n";
+		$tmpxml .= "	\$v_smtp_from_name = \"".$row["smtp_from_name"]."\";\n";
 		$tmpxml .= "\n";
 		$tmpxml .= "//set system dir variables\n";
 		$tmpxml .= "	\$v_storage_dir = \"".$v_storage_dir."\";\n";
@@ -2319,7 +2318,6 @@ function sync_package_v_vars() {
 
 	$sql = "";
 	$sql .= "select * from v_vars ";
-	$sql .= "where v_id = '1' ";
 	$sql .= "order by var_cat, var_order asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -2385,11 +2383,11 @@ function outbound_route_to_bridge ($destination_number) {
 		$sql .= "select * from v_dialplan_includes_details ";
 		$sql .= "where v_id = '$v_id' ";
 		$sql .= "and (";
-		$sql .= "fielddata like '%sofia/gateway/%' ";
-		$sql .= "or fielddata like '%freetdm%' ";
-		$sql .= "or fielddata like '%openzap%' ";
-		$sql .= "or fielddata like '%dingaling%' ";
-		$sql .= "or fielddata like '%enum_auto_route%' ";
+		$sql .= "field_data like '%sofia/gateway/%' ";
+		$sql .= "or field_data like '%freetdm%' ";
+		$sql .= "or field_data like '%openzap%' ";
+		$sql .= "or field_data like '%dingaling%' ";
+		$sql .= "or field_data like '%enum_auto_route%' ";
 		$sql .= ") ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -2398,9 +2396,9 @@ function outbound_route_to_bridge ($destination_number) {
 		foreach ($result as &$row) {
 			$dialplan_include_id = $row["dialplan_include_id"];
 			//$tag = $row["tag"];
-			//$fieldorder = $row["fieldorder"];
-			//$fieldtype = $row["fieldtype"];
-			//$fielddata = $row["fielddata"];
+			//$field_order = $row["field_order"];
+			//$field_type = $row["field_type"];
+			//$field_data = $row["field_data"];
 			$dialplan_array[$x]['dialplan_include_id'] = $dialplan_include_id;
 			$x++;
 		}
@@ -2429,7 +2427,7 @@ function outbound_route_to_bridge ($destination_number) {
 			$x++;
 		}
 	}
-	$sql .= "order by dialplanorder asc ";
+	$sql .= "order by dialplan_order asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -2437,22 +2435,21 @@ function outbound_route_to_bridge ($destination_number) {
 	foreach ($result as &$row) {
 			$dialplan_include_id = $row['dialplan_include_id'];
 			$tag = $row["tag"];
-			$field_type = $row['fieldtype'];
-			$extension_continue = $row['extensioncontinue'];
+			$field_type = $row['field_type'];
+			$extension_continue = $row['extension_continue'];
 
 			//get the extension number using the dialplan_include_id
 					$sql = "select * ";
 					$sql .= "from v_dialplan_includes_details ";
 					$sql .= "where v_id = '$v_id' ";
 					$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-					$sql .= "order by fieldorder asc ";
+					$sql .= "order by field_order asc ";
 					$sub_result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 					$regex_match = false;
 					foreach ($sub_result as &$sub_row) {
 							if ($sub_row['tag'] == "condition") {
-									if ($sub_row['fieldtype'] == "destination_number") {
-											//print_r($sub_row);
-											$field_data = $sub_row['fielddata'];
+									if ($sub_row['field_type'] == "destination_number") {
+											$field_data = $sub_row['field_data'];
 											$pattern = '/'.$field_data.'/';
 											preg_match($pattern, $destination_number, $matches, PREG_OFFSET_CAPTURE);
 											if (count($matches) == 0) {
@@ -2465,16 +2462,14 @@ function outbound_route_to_bridge ($destination_number) {
 													$regex_match_3 = $matches[3][0];
 													$regex_match_4 = $matches[4][0];
 													$regex_match_5 = $matches[5][0];
-													//echo "regex_match_1: ".$regex_match_1;
-													//print_r($matches);
 											}
 									}
 							}
 					}
 					if ($regex_match) {
 							foreach ($sub_result as &$sub_row) {
-									$field_data = $sub_row['fielddata'];
-									if ($sub_row['tag'] == "action" && $sub_row['fieldtype'] == "bridge" && $field_data != "\${enum_auto_route}") {
+									$field_data = $sub_row['field_data'];
+									if ($sub_row['tag'] == "action" && $sub_row['field_type'] == "bridge" && $field_data != "\${enum_auto_route}") {
 											$field_data = str_replace("\$1", $regex_match_1, $field_data);
 											$field_data = str_replace("\$2", $regex_match_2, $field_data);
 											$field_data = str_replace("\$3", $regex_match_3, $field_data);
@@ -2484,7 +2479,7 @@ function outbound_route_to_bridge ($destination_number) {
 											$bridge_array[$x] = $field_data;
 											$x++;
 											if ($extension_continue == "false") {
-													break 2;
+												break 2;
 											}
 									}
 							}
@@ -2502,7 +2497,7 @@ function outbound_route_to_bridge ($destination_number) {
 function extension_exists($extension) {
 	global $db, $v_id;
 	$sql = "";
-	$sql .= " select * from v_extensions ";
+	$sql .= "select * from v_extensions ";
 	$sql .= "where v_id = '$v_id' ";
 	$sql .= "and extension = '$extension' ";
 	$sql .= "and enabled = 'true' ";
@@ -2575,17 +2570,17 @@ function sync_package_v_hunt_group() {
 		foreach ($result as &$row) {
 				//get the Hunt Group information such as the name and description
 					//$row['hunt_group_id']
-					//$row['huntgroupextension']
-					//$row['huntgroupname']
-					//$row['huntgrouptype']
-					//$row['huntgrouptimeout']
-					//$row['huntgroupcontext']
-					//$row['huntgroupringback']
-					//$row['huntgroupcidnameprefix']
-					//$row['huntgrouppin']
-					//$row['huntgroupcallerannounce']
+					//$row['hunt_group_extension']
+					//$row['hunt_group_name']
+					//$row['hunt_group_type']
+					//$row['hunt_group_timeout']
+					//$row['hunt_group_context']
+					//$row['hunt_group_ringback']
+					//$row['hunt_group_cid_name_prefix']
+					//$row['hunt_group_pin']
+					//$row['hunt_group_caller_announce']
 					//$row['hunt_group_enabled']
-					//$row['huntgroupdescr']
+					//$row['hunt_group_descr']
 					$v_id = $row['v_id'];
 
 				//add each Hunt Group to the dialplan
@@ -2596,9 +2591,8 @@ function sync_package_v_hunt_group() {
 						$sql = "";
 						$sql .= "select * from v_dialplan_includes ";
 						$sql .= "where v_id = '$v_id' ";
-						$sql .= "and opt1name = 'hunt_group_id' ";
-						$sql .= "and opt1value = '".$row['hunt_group_id']."' ";
-
+						$sql .= "and opt_1_name = 'hunt_group_id' ";
+						$sql .= "and opt_1_value = '".$row['hunt_group_id']."' ";
 						$prep_statement_2 = $db->prepare($sql);
 						$prep_statement_2->execute();
 						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
@@ -2610,9 +2604,9 @@ function sync_package_v_hunt_group() {
 
 						if ($action == 'add') {
 							//create huntgroup extension in the dialplan
-								$extensionname = check_str($row['huntgroupname']);
-								$dialplanorder ='999';
-								$context = $row['huntgroupcontext'];
+								$extension_name = check_str($row['hunt_group_name']);
+								$dialplan_order ='999';
+								$context = $row['hunt_group_context'];
 								if ($row['hunt_group_enabled'] == "false") {
 									$enabled = 'false';
 								}
@@ -2620,28 +2614,27 @@ function sync_package_v_hunt_group() {
 									$enabled = 'true';
 								}
 								$descr = 'huntgroup';
-								$opt1name = 'hunt_group_id';
-								$opt1value = $row['hunt_group_id'];
-								$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+								$opt_1_name = 'hunt_group_id';
+								$opt_1_value = $row['hunt_group_id'];
+								$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 								$tag = 'condition'; //condition, action, antiaction
-								$fieldtype = 'destination_number';
-								$fielddata = '^'.$row['huntgroupextension'].'$';
-								$fieldorder = '000';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+								$field_type = 'destination_number';
+								$field_data = '^'.$row['hunt_group_extension'].'$';
+								$field_order = '000';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 								$tag = 'action'; //condition, action, antiaction
-								$fieldtype = 'lua';
-								$fielddata = 'v_huntgroup_'.$_SESSION['domains'][$v_id]['domain'].'_'.$row['huntgroupextension'].'.lua';
-								$fieldorder = '001';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+								$field_type = 'lua';
+								$field_data = 'v_huntgroup_'.$_SESSION['domains'][$v_id]['domain'].'_'.$row['hunt_group_extension'].'.lua';
+								$field_order = '001';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 						}
 						if ($action == 'update') {
 							//update the huntgroup
-
-								$extensionname = check_str($row['huntgroupname']);
-								$dialplanorder = '999';
-								$context = $row['huntgroupcontext'];
+								$extension_name = check_str($row['hunt_group_name']);
+								$dialplan_order = '999';
+								$context = $row['hunt_group_context'];
 								if ($row['hunt_group_enabled'] == "false") {
 									$enabled = 'false';
 								}
@@ -2653,24 +2646,24 @@ function sync_package_v_hunt_group() {
 
 								$sql = "";
 								$sql = "update v_dialplan_includes set ";
-								$sql .= "extensionname = '$extensionname', ";
-								$sql .= "dialplanorder = '$dialplanorder', ";
+								$sql .= "extension_name = '$extension_name', ";
+								$sql .= "dialplan_order = '$dialplan_order', ";
 								$sql .= "context = '$context', ";
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where v_id = '$v_id' ";
-								$sql .= "and opt1name = 'hunt_group_id' ";
-								$sql .= "and opt1value = '$hunt_group_id' ";
+								$sql .= "and opt_1_name = 'hunt_group_id' ";
+								$sql .= "and opt_1_value = '$hunt_group_id' ";
 								$db->query($sql);
 								unset($sql);
 
 								//update the condition
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = '^".$row['huntgroupextension']."$' ";
+								$sql .= "field_data = '^".$row['hunt_group_extension']."$' ";
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'condition' ";
-								$sql .= "and fieldtype = 'destination_number' ";
+								$sql .= "and field_type = 'destination_number' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 								$db->query($sql);
 								unset($sql);
@@ -2678,20 +2671,20 @@ function sync_package_v_hunt_group() {
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = 'v_huntgroup_".$_SESSION['domains'][$v_id]['domain']."_".$row['huntgroupextension'].".lua', ";
-								$sql .= "fieldtype = 'lua' ";
+								$sql .= "field_data = 'v_huntgroup_".$_SESSION['domains'][$v_id]['domain']."_".$row['hunt_group_extension'].".lua', ";
+								$sql .= "field_type = 'lua' ";
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'action' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 								$db->query($sql);
 
-								unset($extensionname);
+								unset($extension_name);
 								unset($order);
 								unset($context);
 								unset($enabled);
 								unset($descr);
-								unset($opt1name);
-								unset($opt1value);
+								unset($opt_1_name);
+								unset($opt_1_value);
 						}
 						unset($action);
 
@@ -2702,8 +2695,8 @@ function sync_package_v_hunt_group() {
 							$sql = "";
 							$sql .= "select * from v_dialplan_includes ";
 							$sql .= "where v_id = '$v_id' ";
-							$sql .= "and opt1name = 'hunt_group_id_fifo' ";
-							$sql .= "and opt1value = '".$row['hunt_group_id']."' ";
+							$sql .= "and opt_1_name = 'hunt_group_id_fifo' ";
+							$sql .= "and opt_1_value = '".$row['hunt_group_id']."' ";
 							$prep_statement_2 = $db->prepare($sql);
 							$prep_statement_2->execute();
 							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
@@ -2714,74 +2707,73 @@ function sync_package_v_hunt_group() {
 							unset ($sql, $prep_statement_2);
 
 						if ($action == 'add') {
-
 							//create a fifo queue for each huntgroup
-							$extensionname = check_str($row['huntgroupname']).'.park';
-							$dialplanorder ='999';
-							$context = $row['huntgroupcontext'];
+							$extension_name = check_str($row['hunt_group_name']).'.park';
+							$dialplan_order ='999';
+							$context = $row['hunt_group_context'];
 							if ($row['hunt_group_enabled'] == "false") {
 								$enabled = 'false';
 							}
 							else {
 								$enabled = 'true';
 							}
-							$descr = 'fifo '.$row['huntgroupextension'];
-							$opt1name = 'hunt_group_id_fifo';
-							$opt1value = $row['hunt_group_id'];
-							$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+							$descr = 'fifo '.$row['hunt_group_extension'];
+							$opt_1_name = 'hunt_group_id_fifo';
+							$opt_1_value = $row['hunt_group_id'];
+							$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 							$tag = 'condition'; //condition, action, antiaction
-							$fieldtype = 'destination_number';
-							$fielddata = '^\*'.$row['huntgroupextension'].'$';
-							$fieldorder = '000';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+							$field_type = 'destination_number';
+							$field_data = '^\*'.$row['hunt_group_extension'].'$';
+							$field_order = '000';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'set';
-							$fielddata = 'fifo_music=$${hold_music}';
-							$fieldorder = '001';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+							$field_type = 'set';
+							$field_data = 'fifo_music=$${hold_music}';
+							$field_order = '001';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
-							$huntgrouptimeouttype = $row['huntgrouptimeouttype'];
-							$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
-							if ($huntgrouptimeouttype == "voicemail") { $huntgrouptimeoutdestination = '*99'.$huntgrouptimeoutdestination; }
-
-							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'set';
-							$fielddata = 'fifo_orbit_exten='.$huntgrouptimeoutdestination.':'.$row['huntgrouptimeout'];
-							$fieldorder = '002';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+							$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
+							$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
+							if ($hunt_group_timeout_type == "voicemail") { $hunt_group_timeout_destination = '*99'.$hunt_group_timeout_destination; }
 
 							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'fifo';
-							$fielddata = $row['huntgroupextension'].'@${domain_name} in';
-							$fieldorder = '003';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+							$field_type = 'set';
+							$field_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
+							$field_order = '002';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+
+							$tag = 'action'; //condition, action, antiaction
+							$field_type = 'fifo';
+							$field_data = $row['hunt_group_extension'].'@${domain_name} in';
+							$field_order = '003';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 						}
 						if ($action == 'update') {
 							//update the huntgroup fifo
-								$extensionname = $row['huntgroupname'].'.park';
-								$dialplanorder = '999';
-								$context = $row['huntgroupcontext'];
+								$extension_name = $row['hunt_group_name'].'.park';
+								$dialplan_order = '999';
+								$context = $row['hunt_group_context'];
 								if ($row['hunt_group_enabled'] == "false") {
 									$enabled = 'false';
 								}
 								else {
 									$enabled = 'true';
 								}
-								$descr = 'fifo '.$row['huntgroupextension'];
+								$descr = 'fifo '.$row['hunt_group_extension'];
 								$hunt_group_id = $row['hunt_group_id'];
 
 								$sql = "";
 								$sql = "update v_dialplan_includes set ";
-								$sql .= "extensionname = '$extensionname', ";
-								$sql .= "dialplanorder = '$dialplanorder', ";
+								$sql .= "extension_name = '$extension_name', ";
+								$sql .= "dialplan_order = '$dialplan_order', ";
 								$sql .= "context = '$context', ";
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where v_id = '$v_id' ";
-								$sql .= "and opt1name = 'hunt_group_id_fifo' ";
-								$sql .= "and opt1value = '$hunt_group_id' ";
+								$sql .= "and opt_1_name = 'hunt_group_id_fifo' ";
+								$sql .= "and opt_1_value = '$hunt_group_id' ";
 								$db->query($sql);
 								unset($sql);
 
@@ -2793,32 +2785,32 @@ function sync_package_v_hunt_group() {
 								unset($sql);
 
 								$tag = 'condition'; //condition, action, antiaction
-								$fieldtype = 'destination_number';
-								$fielddata = '^\*'.$row['huntgroupextension'].'$';
-								$fieldorder = '000';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+								$field_type = 'destination_number';
+								$field_data = '^\*'.$row['hunt_group_extension'].'$';
+								$field_order = '000';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 								$tag = 'action'; //condition, action, antiaction
-								$fieldtype = 'set';
-								$fielddata = 'fifo_music=$${hold_music}';
-								$fieldorder = '001';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+								$field_type = 'set';
+								$field_data = 'fifo_music=$${hold_music}';
+								$field_order = '001';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
-								$huntgrouptimeouttype = $row['huntgrouptimeouttype'];
-								$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
-								if ($huntgrouptimeouttype == "voicemail") { $huntgrouptimeoutdestination = '*99'.$huntgrouptimeoutdestination; }
-
-								$tag = 'action'; //condition, action, antiaction
-								$fieldtype = 'set';
-								$fielddata = 'fifo_orbit_exten='.$huntgrouptimeoutdestination.':'.$row['huntgrouptimeout'];
-								$fieldorder = '002';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+								$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
+								$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
+								if ($hunt_group_timeout_type == "voicemail") { $hunt_group_timeout_destination = '*99'.$hunt_group_timeout_destination; }
 
 								$tag = 'action'; //condition, action, antiaction
-								$fieldtype = 'fifo';
-								$fielddata = $row['huntgroupextension'].'@${domain_name} in';
-								$fieldorder = '003';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+								$field_type = 'set';
+								$field_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
+								$field_order = '002';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+
+								$tag = 'action'; //condition, action, antiaction
+								$field_type = 'fifo';
+								$field_data = $row['hunt_group_extension'].'@${domain_name} in';
+								$field_order = '003';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 						}
 
 						sync_package_v_dialplan_includes();
@@ -2829,7 +2821,7 @@ function sync_package_v_hunt_group() {
 					$tmp = "";
 					$tmp .= "\n";
 					$tmp .= "session:preAnswer();\n";
-					$tmp .= "extension = '".$row['huntgroupextension']."';\n";
+					$tmp .= "extension = '".$row['hunt_group_extension']."';\n";
 					$tmp .= "result = '';\n";
 					$tmp .= "timeoutpin = 7500;\n";
 					$tmp .= "sip_profile = 'internal';\n";
@@ -2869,9 +2861,9 @@ function sync_package_v_hunt_group() {
 					$tmp .= "\n";
 
 					//pin number requested from caller if provided
-						if (strlen($row['huntgrouppin']) > 0) {
-							$tmp .= "pin = '".$row['huntgrouppin']."';\n";
-							$tmp .= "digits = session:playAndGetDigits(".strlen($row['huntgrouppin']).", ".strlen($row['huntgrouppin']).", 3, 3000, \"#\", sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_enter_the_pin_number.wav\", \"\", \"\\\\d+\");\n";
+						if (strlen($row['hunt_group_pin']) > 0) {
+							$tmp .= "pin = '".$row['hunt_group_pin']."';\n";
+							$tmp .= "digits = session:playAndGetDigits(".strlen($row['hunt_group_pin']).", ".strlen($row['hunt_group_pin']).", 3, 3000, \"#\", sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_enter_the_pin_number.wav\", \"\", \"\\\\d+\");\n";
 							$tmp .= "\n";
 							$tmp .= "\n";
 							$tmp .= "if (digits == pin) then\n";
@@ -2880,8 +2872,8 @@ function sync_package_v_hunt_group() {
 						}
 
 					//caller announce requested from caller if provided
-						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
-							if ($row['huntgroupcallerannounce'] == "true") {
+						if ($row['hunt_group_caller_announce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+							if ($row['hunt_group_caller_announce'] == "true") {
 								$tmp .=	"function originate(domain_name, session, sipuri, extension, caller_id_name, caller_id_number, caller_announce) \n";
 							}
 							else {
@@ -2891,7 +2883,7 @@ function sync_package_v_hunt_group() {
 							$tmp .=	"	caller_id_name = string.gsub(caller_id_name, \" \", \"..\");\n";
 							//$tmp .=	"	--session:execute(\"luarun\", \"huntgroup_originate.lua \"..domain_name..\" \"..uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_id_name..\" \"..caller_id_number..\" \"..caller_announce);\n";
 							$tmp .=	"	api = freeswitch.API();\n";
-							if ($row['huntgroupcallerannounce'] == "true") {
+							if ($row['hunt_group_caller_announce'] == "true") {
 								$tmp .=	"	result = api:execute(\"luarun\", \"huntgroup_originate.lua \"..domain_name..\" \"..uuid..\" \"..sipuri..\" \"..extension..\" \"..caller_id_name..\" \"..caller_id_number..\" \"..caller_announce);\n";
 							}
 							else {
@@ -2900,7 +2892,7 @@ function sync_package_v_hunt_group() {
 							$tmp .=	"end";
 							$tmp .=	"\n";
 
-							if ($row['huntgroupcallerannounce'] == "true") {
+							if ($row['hunt_group_caller_announce'] == "true") {
 								$tmp .=	"caller_announce = \"".$tmp_dir."/\"..extension..\"_\"..uuid..\".wav\";\n";
 								$tmp .=	"session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/please_say_your_name_and_reason_for_calling.wav\");\n";
 								$tmp .=	"session:execute(\"gentones\", \"%(1000, 0, 640)\");\n";
@@ -2914,32 +2906,32 @@ function sync_package_v_hunt_group() {
 						}
 
 					//set caller id prefix
-						if (strlen($row['huntgroupcidnameprefix'])> 0) {
+						if (strlen($row['hunt_group_cid_name_prefix'])> 0) {
 							$tmp .= "if caller_id_name then\n";
-							$tmp .= "	session:setVariable(\"caller_id_name\", \"".$row['huntgroupcidnameprefix']."\"..caller_id_name);\n";
+							$tmp .= "	session:setVariable(\"caller_id_name\", \"".$row['hunt_group_cid_name_prefix']."\"..caller_id_name);\n";
 							$tmp .= "end\n";
 							$tmp .= "if effective_caller_id_name then\n";
-							$tmp .= "	session:setVariable(\"effective_caller_id_name\", \"".$row['huntgroupcidnameprefix']."\"..effective_caller_id_name);\n";
+							$tmp .= "	session:setVariable(\"effective_caller_id_name\", \"".$row['hunt_group_cid_name_prefix']."\"..effective_caller_id_name);\n";
 							$tmp .= "elseif caller_id_name then\n";
 							$tmp .= "	--effective_caller_id_name missing, set to caller_id_name\n";
-							$tmp .= "	session:setVariable(\"effective_caller_id_name\", \"".$row['huntgroupcidnameprefix']."\"..caller_id_name);\n";
+							$tmp .= "	session:setVariable(\"effective_caller_id_name\", \"".$row['hunt_group_cid_name_prefix']."\"..caller_id_name);\n";
 							$tmp .= "end\n";
 							$tmp .= "if outbound_caller_id_name then\n";
-							$tmp .= "	session:setVariable(\"outbound_caller_id_name\", \"".$row['huntgroupcidnameprefix']."\"..outbound_caller_id_name);\n";
+							$tmp .= "	session:setVariable(\"outbound_caller_id_name\", \"".$row['hunt_group_cid_name_prefix']."\"..outbound_caller_id_name);\n";
 							$tmp .= "end\n";
 						}
 
 					//set ring back
-						if (isset($row['huntgroupringback'])){
-							if ($row['huntgroupringback'] == "music"){
+						if (isset($row['hunt_group_ringback'])){
+							if ($row['hunt_group_ringback'] == "music"){
 								$tmp .= "session:execute(\"set\", \"ringback=\${hold_music}\");          --set to music\n";
 								$tmp .= "session:execute(\"set\", \"transfer_ringback=\${hold_music}\"); --set to music\n";
 							}
 							else {
-								$tmp .= "session:execute(\"set\", \"ringback=\$\${".$row['huntgroupringback']."}\"); --set to ringtone\n";
-								$tmp .= "session:execute(\"set\", \"transfer_ringback=\$\${".$row['huntgroupringback']."}\"); --set to ringtone\n";
+								$tmp .= "session:execute(\"set\", \"ringback=\$\${".$row['hunt_group_ringback']."}\"); --set to ringtone\n";
+								$tmp .= "session:execute(\"set\", \"transfer_ringback=\$\${".$row['hunt_group_ringback']."}\"); --set to ringtone\n";
 							}
-							if ($row['huntgroupringback'] == "ring"){
+							if ($row['hunt_group_ringback'] == "ring"){
 								$tmp .= "session:execute(\"set\", \"ringback=\$\${us-ring}\"); --set to ringtone\n";
 								$tmp .= "session:execute(\"set\", \"transfer_ringback=\$\${us-ring}\"); --set to ringtone\n";
 							}
@@ -2949,8 +2941,8 @@ function sync_package_v_hunt_group() {
 							$tmp .= "session:execute(\"set\", \"transfer_ringback=\${hold_music}\"); --set to ringtone\n";
 						}
 
-					if ($row['huntgrouptimeout'] > 0) {
-						//$tmp .= "session:setVariable(\"call_timeout\", \"".$row['huntgrouptimeout']."\");\n";
+					if ($row['hunt_group_timeout'] > 0) {
+						//$tmp .= "session:setVariable(\"call_timeout\", \"".$row['hunt_group_timeout']."\");\n";
 						$tmp .= "session:setVariable(\"continue_on_fail\", \"true\");\n";
 						$tmp .= "session:setVariable(\"ignore_early_media\", \"true\");\n";
 					}
@@ -2963,7 +2955,7 @@ function sync_package_v_hunt_group() {
 					$tmp .= "\n";
 
 					$tmp .= "--freeswitch.consoleLog( \"info\", \"action call now don't wait for dtmf\\n\" );\n";
-					if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+					if ($row['hunt_group_caller_announce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
 						//do nothing
 					}
 					else {
@@ -2978,55 +2970,55 @@ function sync_package_v_hunt_group() {
 					$sql .= "where hunt_group_id = '".$row['hunt_group_id']."' ";
 					$sql .= "and v_id = '$v_id' ";
 					//$sql .= "and destination_enabled = 'true' ";
-					$sql .= "order by destinationorder asc ";
+					$sql .= "order by destination_order asc ";
 					$prep_statement_2 = $db->prepare($sql);
 					$prep_statement_2->execute();
 					while($ent = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
 						//$ent['hunt_group_id']
-						//$ent['destinationdata']
-						//$ent['destinationtype']
-						//$ent['destinationprofile']
-						//$ent['destinationorder']
+						//$ent['destination_data']
+						//$ent['destination_type']
+						//$ent['destination_profile']
+						//$ent['destination_order']
 						//$ent['destination_enabled']
-						//$ent['destinationdescr']
+						//$ent['destination_descr']
 
 						$destination_timeout = $ent['destination_timeout'];
 						if (strlen($destination_timeout) == 0) {
-							if (strlen($row['huntgrouptimeout']) == 0) {
+							if (strlen($row['hunt_group_timeout']) == 0) {
 								$destination_timeout = '30';
 							}
 							else {
-								$destination_timeout = $row['huntgrouptimeout'];
+								$destination_timeout = $row['hunt_group_timeout'];
 							}
 						}
 
 						//set the default profile
-						if (strlen($ent['destinationdata']) == 0) { $ent['destinationdata'] = "internal"; }
+						if (strlen($ent['destination_data']) == 0) { $ent['destination_data'] = "internal"; }
 
-						if ($ent['destinationtype'] == "extension") {
-							//$tmp .= "	sofia_contact_".$ent['destinationdata']." = \"\${sofia_contact(".$ent['destinationprofile']."/".$ent['destinationdata']."@\"..domain_name..\")}\";\n";
+						if ($ent['destination_type'] == "extension") {
+							//$tmp .= "	sofia_contact_".$ent['destination_data']." = \"\${sofia_contact(".$ent['destination_profile']."/".$ent['destination_data']."@\"..domain_name..\")}\";\n";
 							$tmp_sub_array["application"] = "bridge";
 							$tmp_sub_array["type"] = "extension";
-							$tmp_sub_array["extension"] = $ent['destinationdata'];
-							//$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]\"..sofia_contact_".$ent['destinationdata'];
-							$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]user/".$ent['destinationdata']."@\"..domain_name";
+							$tmp_sub_array["extension"] = $ent['destination_data'];
+							//$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]\"..sofia_contact_".$ent['destination_data'];
+							$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]user/".$ent['destination_data']."@\"..domain_name";
 							$tmp_array[$i] = $tmp_sub_array;
 							unset($tmp_sub_array);
 						}
-						if ($ent['destinationtype'] == "voicemail") {
+						if ($ent['destination_type'] == "voicemail") {
 							$tmp_sub_array["application"] = "voicemail";
 							$tmp_sub_array["type"] = "voicemail";
-							$tmp .= "	session:execute(\"voicemail\", \"default \${domain_name} ".$ent['destinationdata']."\");\n";
+							$tmp .= "	session:execute(\"voicemail\", \"default \${domain_name} ".$ent['destination_data']."\");\n";
 							//$tmp_sub_array["application"] = "voicemail";
-							//$tmp_sub_array["data"] = "default \${domain_name} ".$ent['destinationdata'];
+							//$tmp_sub_array["data"] = "default \${domain_name} ".$ent['destination_data'];
 							//$tmp_array[$i] = $tmp_sub_array;
 							unset($tmp_sub_array);
 						}
-						if ($ent['destinationtype'] == "sip uri") {
+						if ($ent['destination_type'] == "sip uri") {
 							$tmp_sub_array["application"] = "bridge";
 							$tmp_sub_array["type"] = "sip uri";
-							//$destination_data = "{user=foo}loopback/".$ent['destinationdata']."/default/XML";
-							$bridge_array = outbound_route_to_bridge ($ent['destinationdata']);
+							//$destination_data = "{user=foo}loopback/".$ent['destination_data']."/default/XML";
+							$bridge_array = outbound_route_to_bridge ($ent['destination_data']);
 							$destination_data = $bridge_array[0];
 							$tmp_sub_array["application"] = "bridge";
 							$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]".$destination_data."\"";
@@ -3056,15 +3048,15 @@ function sync_package_v_hunt_group() {
 					unset($i);
 					$tmp_application = $tmp_array[0]["application"];
 
-					if ($row['huntgrouptype'] == "simultaneous" || $row['huntgrouptype'] == "follow_me_simultaneous" || $row['huntgrouptype'] ==  "call_forward") {
+					if ($row['hunt_group_type'] == "simultaneous" || $row['hunt_group_type'] == "follow_me_simultaneous" || $row['hunt_group_type'] ==  "call_forward") {
 						$tmp_switch = "simultaneous";
 					}
-					if ($row['huntgrouptype'] == "sequence" || $row['huntgrouptype'] == "follow_me_sequence" || $row['huntgrouptype'] ==  "sequentially") {
+					if ($row['hunt_group_type'] == "sequence" || $row['hunt_group_type'] == "follow_me_sequence" || $row['hunt_group_type'] ==  "sequentially") {
 						$tmp_switch = "sequence";
 					}
 					switch ($tmp_switch) {
 					case "simultaneous":
-						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+						if ($row['hunt_group_caller_announce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
 							$i = 0;
 							if (count($tmp_array) > 0) {
 								foreach ($tmp_array as $tmp_row) {
@@ -3077,7 +3069,7 @@ function sync_package_v_hunt_group() {
 											$tmp .= "if (extension_registered(domain_name, sip_profile, '".$tmp_row["extension"]."')) then\n";
 											$tmp .= "	";
 										}
-										if ($row['huntgroupcallerannounce'] == "true") {
+										if ($row['hunt_group_caller_announce'] == "true") {
 											$tmp .= "result = originate (domain_name, session, ".$tmpdata.", extension, caller_id_name, caller_id_number, caller_announce);\n";
 										}
 										else {
@@ -3101,7 +3093,7 @@ function sync_package_v_hunt_group() {
 						$tmp .= "\n";
 						$i = 0;
 						if (count($tmp_array) > 0) {
-							if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+							if ($row['hunt_group_caller_announce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
 								$i = 0;
 								if (count($tmp_array) > 0) {
 									foreach ($tmp_array as $tmp_row) {
@@ -3114,7 +3106,7 @@ function sync_package_v_hunt_group() {
 												$tmp .= "if (extension_registered(domain_name, sip_profile, '".$tmp_row["extension"]."')) then\n";
 												$tmp .= "	";
 											}
-											if ($row['huntgroupcallerannounce'] == "true") {
+											if ($row['hunt_group_caller_announce'] == "true") {
 												$tmp .= "result = originate (domain_name, session, ".$tmpdata.", extension, caller_id_name, caller_id_number, caller_announce);\n";
 											}
 											else {
@@ -3141,27 +3133,27 @@ function sync_package_v_hunt_group() {
 					unset($tmp_switch, $tmp_buffer, $tmp_array);
 
 					//set the timeout destination
-						$huntgrouptimeoutdestination = $row['huntgrouptimeoutdestination'];
-						if ($row['huntgrouptimeouttype'] == "extension") { $huntgrouptimeouttype = "transfer"; }
-						if ($row['huntgrouptimeouttype'] == "voicemail") { $huntgrouptimeouttype = "voicemail"; $huntgrouptimeoutdestination = "default \${domain_name} ".$huntgrouptimeoutdestination; }
-						if ($row['huntgrouptimeouttype'] == "sip uri") { $huntgrouptimeouttype = "bridge"; }
+						$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
+						if ($row['hunt_group_timeout_type'] == "extension") { $hunt_group_timeout_type = "transfer"; }
+						if ($row['hunt_group_timeout_type'] == "voicemail") { $hunt_group_timeout_type = "voicemail"; $hunt_group_timeout_destination = "default \${domain_name} ".$hunt_group_timeout_destination; }
+						if ($row['hunt_group_timeout_type'] == "sip uri") { $hunt_group_timeout_type = "bridge"; }
 						$tmp .= "\n";
-						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+						if ($row['hunt_group_caller_announce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
 							//do nothing
 						}
 						else {
 							$tmp .= "	--timeout\n";
-							if ($row['huntgrouptype'] != 'dnd') {
+							if ($row['hunt_group_type'] != 'dnd') {
 								$tmp .= "	originate_disposition = session:getVariable(\"originate_disposition\");\n";
 								$tmp .= "	if originate_disposition ~= \"SUCCESS\" then\n";
 							}
-							$tmp .= "			session:execute(\"".$huntgrouptimeouttype."\", \"".$huntgrouptimeoutdestination."\");\n";
-							if ($row['huntgrouptype'] != 'dnd') {
+							$tmp .= "			session:execute(\"".$hunt_group_timeout_type."\", \"".$hunt_group_timeout_destination."\");\n";
+							if ($row['hunt_group_type'] != 'dnd') {
 								$tmp .= "	end\n";
 							}
 						}
 
-						if ($row['huntgroupcallerannounce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
+						if ($row['hunt_group_caller_announce'] == "true" || $row['hunt_group_call_prompt'] == "true") {
 							//do nothing
 						}
 						else {
@@ -3169,7 +3161,7 @@ function sync_package_v_hunt_group() {
 						}
 						$tmp .= "\n";
 						//pin number requested from caller if provided
-						if (strlen($row['huntgrouppin']) > 0) {
+						if (strlen($row['hunt_group_pin']) > 0) {
 							$tmp .= "else \n";
 							$tmp .= "	session:streamFile(sounds_dir..\"/\"..default_language..\"/\"..default_dialect..\"/\"..default_voice..\"/custom/your_pin_number_is_incorect_goodbye.wav\");\n";
 							$tmp .= "	session:hangup();\n";
@@ -3186,18 +3178,18 @@ function sync_package_v_hunt_group() {
 						$tmp .= "\n";
 
 					//remove invalid characters from the file names
-						$huntgroup_extension = $row['huntgroupextension'];
+						$huntgroup_extension = $row['hunt_group_extension'];
 						$huntgroup_extension = str_replace(" ", "_", $huntgroup_extension);
 						$huntgroup_extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $huntgroup_extension);
 
 					//write the hungroup lua script
-						if (strlen($row['huntgroupextension']) > 0) {
+						if (strlen($row['hunt_group_extension']) > 0) {
 							if ($row['hunt_group_enabled'] != "false") {
-								$huntgroupfilename = "v_huntgroup_".$_SESSION['domains'][$v_id]['domain']."_".$huntgroup_extension.".lua";
-								//echo "location".$v_scripts_dir."/".$huntgroupfilename;
-								$fout = fopen($v_scripts_dir."/".$huntgroupfilename,"w");
+								$hunt_group_filename = "v_huntgroup_".$_SESSION['domains'][$v_id]['domain']."_".$huntgroup_extension.".lua";
+								//echo "location".$v_scripts_dir."/".$hunt_group_filename;
+								$fout = fopen($v_scripts_dir."/".$hunt_group_filename,"w");
 								fwrite($fout, $tmp);
-								unset($huntgroupfilename);
+								unset($hunt_group_filename);
 								fclose($fout);
 							}
 						}
@@ -3224,17 +3216,13 @@ function sync_package_v_fax() {
 	foreach ($result as &$row) {
 		//get the fax information such as the name and description
 			//$row['fax_id']
-			//$row['faxextension']
-			//$row['faxname']
-			//$row['faxemail']
+			//$row['fax_extension']
+			//$row['fax_name']
+			//$row['fax_email']
 			//$row['fax_pin_number']
 			//$row['fax_caller_id_name']
 			//$row['fax_caller_id_number']
-			//$row['faxdescription']
-
-		//add each fax extension to the dialplan
-			//$a_dialplan_includes          	= &$config['installedpackages']['freeswitchdialplanincludes']['config'];
-			//$a_dialplan_include_details 	= &$config['installedpackages']['freeswitchdialplanincludedetails']['config'];
+			//$row['fax_description']
 
 		//determine if the entry should be an add, or update to the dialplan 
 		if (strlen($row['fax_id']) > 0) {
@@ -3243,25 +3231,25 @@ function sync_package_v_fax() {
 			$sql = "";
 			$sql .= "select * from v_dialplan_includes ";
 			$sql .= "where v_id = '$v_id' ";
-			$sql .= "and opt1name = 'faxid' ";
-			$sql .= "and opt1value = '".$row['fax_id']."' ";
+			$sql .= "and opt_1_name = 'faxid' ";
+			$sql .= "and opt_1_value = '".$row['fax_id']."' ";
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
 			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
 				$action = 'update';
 
 				$dialplan_include_id = $row2['dialplan_include_id'];
-				$extensionname = check_str($row2['extensionname']);
+				$extension_name = check_str($row2['extension_name']);
 				$order = $row2['order'];
 				$context = $row2['context'];
 				$enabled = $row2['enabled'];
 				$descr = check_str($row2['descr']);
-				$opt1name = $row2['opt1name'];
-				$opt1value = $row2['opt1value'];
+				$opt_1_name = $row2['opt_1_name'];
+				$opt_1_value = $row2['opt_1_value'];
 				$id = $i;
 
-				if (file_exists($v_dialplan_default_dir."/".$order."_".$extensionname.".xml")){
-					unlink($v_dialplan_default_dir."/".$order."_".$extensionname.".xml");
+				if (file_exists($v_dialplan_default_dir."/".$order."_".$extension_name.".xml")){
+					unlink($v_dialplan_default_dir."/".$order."_".$extension_name.".xml");
 				}
 
 				break; //limit to 1 row
@@ -3271,109 +3259,109 @@ function sync_package_v_fax() {
 
 			if ($action == 'add') {
 				//$faxid = $row['fax_id'];
-				if (strlen($row['faxname']) > 0) {
+				if (strlen($row['fax_name']) > 0) {
 
 					//create auto attendant extension in the dialplan
-					$extensionname = $row['faxname'];
-					$dialplanorder ='999';
+					$extension_name = $row['fax_name'];
+					$dialplan_order ='999';
 					$context = "default";
 					$enabled = 'true';
-					$descr = $row['faxdescription'];
-					$opt1name = 'faxid';
-					$opt1value = $row['fax_id'];
-					$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+					$descr = $row['fax_description'];
+					$opt_1_name = 'faxid';
+					$opt_1_value = $row['fax_id'];
+					$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 					//<!-- default ${domain_name} -->
 					//<condition field="destination_number" expression="^\*9978$">
 					$tag = 'condition'; //condition, action, antiaction
-					$fieldtype = 'destination_number';
-					$fielddata = '^'.$row['faxextension'].'$';
-					$fieldorder = '000';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'destination_number';
+					$field_data = '^'.$row['fax_extension'].'$';
+					$field_order = '000';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
-					$fielddata .= "email=".$row['faxemail']." ";
-					$fielddata .= "extension=".$row['faxextension']." ";
-					$fielddata .= "name=\\\\\\\${last_fax} ";
-					$fielddata .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-					$fielddata .= "domain=".$v_domain." ";
-					$fielddata .= "caller_id_name='\\\\\\\${caller_id_name}' ";
-					$fielddata .= "caller_id_number=\\\\\\\${caller_id_number} ";
+					$field_type = 'set';
+					$field_data = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
+					$field_data .= "email=".$row['fax_email']." ";
+					$field_data .= "extension=".$row['fax_extension']." ";
+					$field_data .= "name=\\\\\\\${last_fax} ";
+					$field_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
+					$field_data .= "domain=".$v_domain." ";
+					$field_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
+					$field_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 
-					$fieldorder = '005';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_order = '005';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="answer" />
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'answer';
-					$fielddata = '';
-					$fieldorder = '010';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'answer';
+					$field_data = '';
+					$field_order = '010';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					////<action application="set" data="fax_enable_t38=true"/>
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'fax_enable_t38=true';
-					$fieldorder = '015';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'fax_enable_t38=true';
+					$field_order = '015';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					////<action application="set" data="fax_enable_t38_request=true"/>
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'fax_enable_t38_request=true';
-					$fieldorder = '020';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'fax_enable_t38_request=true';
+					$field_order = '020';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="playback" data="silence_stream://2000"/>
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'playback';
-					$fielddata = 'silence_stream://2000';
-					$fieldorder = '025';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'playback';
+					$field_data = 'silence_stream://2000';
+					$field_order = '025';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="set" data="last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}"/>
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'set';
-					$fielddata = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
-					$fieldorder = '030';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'set';
+					$field_data = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
+					$field_order = '030';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="rxfax" data="$v_storage_dir/fax/inbox/${last_fax}.tif"/>
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'rxfax';
+					$field_type = 'rxfax';
 					if (count($_SESSION["domains"]) > 1) {
-						$fielddata = $v_storage_dir.'/fax/'.$_SESSION['domains'][$row['v_id']]['domain'].'/'.$row['faxextension'].'/inbox/${last_fax}.tif';
+						$field_data = $v_storage_dir.'/fax/'.$_SESSION['domains'][$row['v_id']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
 					else {
-						$fielddata = $v_storage_dir.'/fax/'.$row['faxextension'].'/inbox/${last_fax}.tif';
+						$field_data = $v_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
-					$fieldorder = '035';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_order = '035';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="hangup"/>
 					$tag = 'action'; //condition, action, antiaction
-					$fieldtype = 'hangup';
-					$fielddata = '';
-					$fieldorder = '040';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+					$field_type = 'hangup';
+					$field_data = '';
+					$field_order = '040';
+					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 				}
 				//unset($fax_id);
 			}
 			if ($action == 'update') {
-				$extensionname = $row['faxname'];
-				$dialplanorder = $order;
+				$extension_name = $row['fax_name'];
+				$dialplan_order = $order;
 				$context = $context;
 				$enabled = $enabled;
-				$descr = $row['faxdescription'];
+				$descr = $row['fax_description'];
 
 				$sql = "";
 				$sql = "update v_dialplan_includes set ";
-				$sql .= "extensionname = '$extensionname', ";
-				if (strlen($dialplanorder) > 0) {
-					$sql .= "dialplanorder = '$dialplanorder', ";
+				$sql .= "extension_name = '$extension_name', ";
+				if (strlen($dialplan_order) > 0) {
+					$sql .= "dialplan_order = '$dialplan_order', ";
 				}
 				$sql .= "context = '$context', ";
 				$sql .= "enabled = '$enabled', ";
@@ -3387,66 +3375,64 @@ function sync_package_v_fax() {
 				//update the condition
 				$sql = "";
 				$sql = "update v_dialplan_includes_details set ";
-				$sql .= "fielddata = '^".$row['faxextension']."$' ";
+				$sql .= "field_data = '^".$row['fax_extension']."$' ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and tag = 'condition' ";
-				$sql .= "and fieldtype = 'destination_number' ";
+				$sql .= "and field_type = 'destination_number' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				$db->query($sql);
 				unset($sql);
 
 				//update the action
 				if (count($_SESSION["domains"]) > 1) {
-					$fielddata = $v_storage_dir.'/fax/'.$_SESSION['domains'][$row['v_id']]['domain'].'/'.$row['faxextension'].'/inbox/${last_fax}.tif';
+					$field_data = $v_storage_dir.'/fax/'.$_SESSION['domains'][$row['v_id']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 				}
 				else {
-					$fielddata = $v_storage_dir.'/fax/'.$row['faxextension'].'/inbox/${last_fax}.tif';
+					$field_data = $v_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 				}
 				$sql = "";
 				$sql = "update v_dialplan_includes_details set ";
-				$sql .= "fielddata = '".$fielddata."' ";
+				$sql .= "field_data = '".$field_data."' ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and tag = 'action' ";
-				$sql .= "and fieldtype = 'rxfax' ";
+				$sql .= "and field_type = 'rxfax' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				$db->query($sql);
 
 				//update the action
 				$tag = 'action'; //condition, action, antiaction
-				$fieldtype = 'set';
-				$fielddata = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
-				$fielddata .= "email=".$row['faxemail']." ";
-				$fielddata .= "extension=".$row['faxextension']." ";
-				$fielddata .= "name=\\\\\\\${last_fax} ";
-				$fielddata .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-				$fielddata .= "domain=".$v_domain." ";
-				$fielddata .= "caller_id_name='\\\\\\\${caller_id_name}' ";
-				$fielddata .= "caller_id_number=\\\\\\\${caller_id_number} ";
+				$field_type = 'set';
+				$field_data = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
+				$field_data .= "email=".$row['fax_email']." ";
+				$field_data .= "extension=".$row['fax_extension']." ";
+				$field_data .= "name=\\\\\\\${last_fax} ";
+				$field_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
+				$field_data .= "domain=".$v_domain." ";
+				$field_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
+				$field_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 				$sql = "";
 				$sql = "update v_dialplan_includes_details set ";
-				$sql .= "fielddata = '".check_str($fielddata)."' ";
+				$sql .= "field_data = '".check_str($field_data)."' ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and tag = 'action' ";
-				$sql .= "and fieldtype = 'set' ";
+				$sql .= "and field_type = 'set' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-				$sql .= "and fielddata like 'api_hangup_hook=%' ";
+				$sql .= "and field_data like 'api_hangup_hook=%' ";
 				$db->query(check_sql($sql));
 
-				unset($extensionname);
+				unset($extension_name);
 				unset($order);
 				unset($context);
 				unset($enabled);
 				unset($descr);
-				unset($opt1name);
-				unset($opt1value);
+				unset($opt_1_name);
+				unset($opt_1_value);
 				unset($id);
 			}
 
 			sync_package_v_dialplan_includes();
 			unset($dialplanincludeid);
-
 		} //end if strlen fax_id; add the fax to the dialplan
-
 	} //end if result
 
 	//apply settings reminder
@@ -3465,8 +3451,8 @@ function get_recording_filename($id) {
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
 		//$filename = $row["filename"];
-		//$recordingname = $row["recordingname"];
-		//$recordingid = $row["recordingid"];
+		//$recording_name = $row["recording_name"];
+		//$recording_id = $row["recording_id"];
 		//$descr = $row["descr"];
 		return $row["filename"];
 		break; //limit to 1 row
@@ -3520,8 +3506,8 @@ function sync_package_v_auto_attendant() {
 					$sql = "";
 					$sql .= "select * from v_dialplan_includes ";
 					$sql .= "where v_id = '$v_id' ";
-					$sql .= "and opt1name = 'auto_attendant_id' ";
-					$sql .= "and opt1value = '".$row['auto_attendant_id']."' ";
+					$sql .= "and opt_1_name = 'auto_attendant_id' ";
+					$sql .= "and opt_1_value = '".$row['auto_attendant_id']."' ";
 					$prep_statement_2 = $db->prepare($sql);
 					$prep_statement_2->execute();
 					while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
@@ -3535,32 +3521,32 @@ function sync_package_v_auto_attendant() {
 		if ($action == 'add') {
 
 			//create auto attendant extension in the dialplan
-				$extensionname = $row['aaextension'];
-				$dialplanorder ='999';
+				$extension_name = $row['aaextension'];
+				$dialplan_order ='999';
 				$context = $row['aacontext'];
 				$enabled = 'true';
 				$descr = 'auto attendant';
-				$opt1name = 'auto_attendant_id';
-				$opt1value = $row['auto_attendant_id'];
-				$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+				$opt_1_name = 'auto_attendant_id';
+				$opt_1_value = $row['auto_attendant_id'];
+				$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 				$tag = 'condition'; //condition, action, antiaction
-				$fieldtype = 'destination_number';
-				$fielddata = '^'.$row['aaextension'].'$';
-				$fieldorder = '000';
-				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				$field_type = 'destination_number';
+				$field_data = '^'.$row['aaextension'].'$';
+				$field_order = '000';
+				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 				$tag = 'action'; //condition, action, antiaction
-				$fieldtype = 'javascript';
-				$fielddata = 'autoattendant_'.$row['aaextension'].'.js';
-				$fieldorder = '001';
-				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+				$field_type = 'javascript';
+				$field_data = 'autoattendant_'.$row['aaextension'].'.js';
+				$field_order = '001';
+				v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 		}
 		if ($action == 'update') {
 
-				$extensionname = $row['aaextension'];
-				$dialplanorder = '999';
+				$extension_name = $row['aaextension'];
+				$dialplan_order = '999';
 				$context = $row['aacontext'];
 				$enabled = 'true';
 				$descr = 'auto attendant';
@@ -3569,14 +3555,14 @@ function sync_package_v_auto_attendant() {
 				//update the main dialplan entry
 				$sql = "";
 				$sql = "update v_dialplan_includes set ";
-				$sql .= "extensionname = '$extensionname', ";
-				$sql .= "dialplanorder = '$dialplanorder', ";
+				$sql .= "extension_name = '$extension_name', ";
+				$sql .= "dialplan_order = '$dialplan_order', ";
 				$sql .= "context = '$context', ";
 				$sql .= "enabled = '$enabled', ";
 				$sql .= "descr = '$descr' ";
 				$sql .= "where v_id = '$v_id' ";
-				$sql .= "and opt1name = 'auto_attendant_id' ";
-				$sql .= "and opt1value = '$auto_attendant_id' ";
+				$sql .= "and opt_1_name = 'auto_attendant_id' ";
+				$sql .= "and opt_1_value = '$auto_attendant_id' ";
 				//echo "sql: ".$sql."<br />";
 				//exit;
 				$db->query($sql);
@@ -3585,10 +3571,10 @@ function sync_package_v_auto_attendant() {
 				//update the condition
 				$sql = "";
 				$sql = "update v_dialplan_includes_details set ";
-				$sql .= "fielddata = '^".$row['aaextension']."$' ";
+				$sql .= "field_data = '^".$row['aaextension']."$' ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and tag = 'condition' ";
-				$sql .= "and fieldtype = 'destination_number' ";
+				$sql .= "and field_type = 'destination_number' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				//echo $sql."<br />";
 				$db->query($sql);
@@ -3597,23 +3583,23 @@ function sync_package_v_auto_attendant() {
 				//update the action
 				$sql = "";
 				$sql = "update v_dialplan_includes_details set ";
-				$sql .= "fielddata = 'autoattendant_".$row['aaextension'].".js' ";
+				$sql .= "field_data = 'autoattendant_".$row['aaextension'].".js' ";
 				$sql .= "where v_id = '$v_id' ";
 				$sql .= "and tag = 'action' ";
-				$sql .= "and fieldtype = 'javascript' ";
+				$sql .= "and field_type = 'javascript' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				//echo $sql."<br />";
 				$db->query($sql);
 
 				unset($sql);
 				unset($ent);
-				unset($extensionname);
-				unset($dialplanorder);
+				unset($extension_name);
+				unset($dialplan_order);
 				unset($context);
 				unset($enabled);
 				unset($descr);
-				unset($opt1name);
-				unset($opt1value);
+				unset($opt_1_name);
+				unset($opt_1_value);
 		}
 
 		sync_package_v_dialplan_includes();
@@ -4416,29 +4402,29 @@ function sync_package_v_auto_attendant() {
 } //end auto attendant function
 
 
-function v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value) {
+function v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value) {
 	global $db, $db_type;
 	$sql = "insert into v_dialplan_includes ";
 	$sql .= "(";
 	$sql .= "v_id, ";
-	$sql .= "extensionname, ";
-	$sql .= "dialplanorder, ";
+	$sql .= "extension_name, ";
+	$sql .= "dialplan_order, ";
 	$sql .= "context, ";
 	$sql .= "enabled, ";
 	$sql .= "descr, ";
-	$sql .= "opt1name, ";
-	$sql .= "opt1value ";
+	$sql .= "opt_1_name, ";
+	$sql .= "opt_1_value ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$v_id', ";
-	$sql .= "'$extensionname', ";
-	$sql .= "'$dialplanorder', ";
+	$sql .= "'$extension_name', ";
+	$sql .= "'$dialplan_order', ";
 	$sql .= "'$context', ";
 	$sql .= "'$enabled', ";
 	$sql .= "'$descr', ";
-	$sql .= "'$opt1name', ";
-	$sql .= "'$opt1value' ";
+	$sql .= "'$opt_1_name', ";
+	$sql .= "'$opt_1_value' ";
 	$sql .= ")";
 	if ($db_type == "sqlite" || $db_type == "mysql" ) {
 		$db->exec(check_sql($sql));
@@ -4458,25 +4444,25 @@ function v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context
 	return $dialplan_include_id;
 }
 
-function v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata) {
+function v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data) {
 	global $db;
 	$sql = "insert into v_dialplan_includes_details ";
 	$sql .= "(";
 	$sql .= "v_id, ";
 	$sql .= "dialplan_include_id, ";
 	$sql .= "tag, ";
-	$sql .= "fieldorder, ";
-	$sql .= "fieldtype, ";
-	$sql .= "fielddata ";
+	$sql .= "field_order, ";
+	$sql .= "field_type, ";
+	$sql .= "field_data ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$v_id', ";
 	$sql .= "'".check_str($dialplan_include_id)."', ";
 	$sql .= "'".check_str($tag)."', ";
-	$sql .= "'".check_str($fieldorder)."', ";
-	$sql .= "'".check_str($fieldtype)."', ";
-	$sql .= "'".check_str($fielddata)."' ";
+	$sql .= "'".check_str($field_order)."', ";
+	$sql .= "'".check_str($field_type)."', ";
+	$sql .= "'".check_str($field_data)."' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql);
@@ -4519,18 +4505,18 @@ function sync_package_v_dialplan_includes() {
 		$tmp = "";
 		$tmp .= "\n";
 
-		$extensioncontinue = '';
-		if ($row['extensioncontinue'] == "true") {
-			$extensioncontinue = "continue=\"true\"";
+		$extension_continue = '';
+		if ($row['extension_continue'] == "true") {
+			$extension_continue = "continue=\"true\"";
 		}
 
-		$tmp = "<extension name=\"".$row['extensionname']."\" $extensioncontinue>\n";
+		$tmp = "<extension name=\"".$row['extension_name']."\" $extension_continue>\n";
 
 		$sql = "";
 		$sql .= " select * from v_dialplan_includes_details ";
 		$sql .= " where dialplan_include_id = '".$row['dialplan_include_id']."' ";
 		$sql .= " and v_id = $v_id ";
-		$sql .= " order by field_group asc, fieldorder asc ";
+		$sql .= " order by field_group asc, field_order asc ";
 		$prep_statement_2 = $db->prepare($sql);
 		$prep_statement_2->execute();
 		$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
@@ -4549,7 +4535,7 @@ function sync_package_v_dialplan_includes() {
 						//get the group
 							$group = $row2['field_group'];
 						//get the generic type
-							switch ($row2['fieldtype']) {
+							switch ($row2['field_type']) {
 							case "hour":
 								$type = 'time';
 								break;
@@ -4586,12 +4572,12 @@ function sync_package_v_dialplan_includes() {
 
 						//add the conditions to the details array
 							$details[$group]['condition-'.$x]['tag'] = $row2['tag'];
-							$details[$group]['condition-'.$x]['fieldtype'] = $row2['fieldtype'];
+							$details[$group]['condition-'.$x]['field_type'] = $row2['field_type'];
 							$details[$group]['condition-'.$x]['dialplan_include_id'] = $row2['dialplan_include_id'];
-							$details[$group]['condition-'.$x]['fieldorder'] = $row2['fieldorder'];
-							$details[$group]['condition-'.$x]['field'][$y]['type'] = $row2['fieldtype'];
-							$details[$group]['condition-'.$x]['field'][$y]['data'] = $row2['fielddata'];
-							$details[$group]['condition-'.$x]['fieldbreak'] = $row2['fieldbreak'];
+							$details[$group]['condition-'.$x]['field_order'] = $row2['field_order'];
+							$details[$group]['condition-'.$x]['field'][$y]['type'] = $row2['field_type'];
+							$details[$group]['condition-'.$x]['field'][$y]['data'] = $row2['field_data'];
+							$details[$group]['condition-'.$x]['field_break'] = $row2['field_break'];
 							$details[$group]['condition-'.$x]['field_group'] = $row2['field_group'];
 							$details[$group]['condition-'.$x]['field_inline'] = $row2['field_inline'];
 							if ($type == "time") {
@@ -4638,7 +4624,7 @@ function sync_package_v_dialplan_includes() {
 					$c = 0;
 					if ($ent['tag'] == "condition") {
 						//get the generic type
-							switch ($ent['fieldtype']) {
+							switch ($ent['field_type']) {
 							case "hour":
 								$type = 'time';
 								break;
@@ -4688,8 +4674,8 @@ function sync_package_v_dialplan_includes() {
 
 						//get the condition break attribute
 							$condition_break = '';
-							if (strlen($ent['fieldbreak']) > 0) {
-								$condition_break = "break=\"".$ent['fieldbreak']."\" ";
+							if (strlen($ent['field_break']) > 0) {
+								$condition_break = "break=\"".$ent['field_break']."\" ";
 							}
 
 						//get the count
@@ -4726,20 +4712,20 @@ function sync_package_v_dialplan_includes() {
 							if (strlen($ent['field_inline']) > 0) {
 								$action_inline = "inline=\"".$ent['field_inline']."\"";
 							}
-							if (strlen($ent['fielddata']) > 0) {
-								$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\" $action_inline/>\n";
+							if (strlen($ent['field_data']) > 0) {
+								$tmp .= "       <action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\" $action_inline/>\n";
 							}
 							else {
-								$tmp .= "       <action application=\"".$ent['fieldtype']."\" $action_inline/>\n";
+								$tmp .= "       <action application=\"".$ent['field_type']."\" $action_inline/>\n";
 							}
 						}
 					//anti-actions
 						if ($ent['tag'] == "anti-action") {
-							if (strlen($ent['fielddata']) > 0) {
-								$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+							if (strlen($ent['field_data']) > 0) {
+								$tmp .= "       <anti-action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\"/>\n";
 							}
 							else {
-								$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\"/>\n";
+								$tmp .= "       <anti-action application=\"".$ent['field_type']."\"/>\n";
 							}
 						}
 					//set the previous tag
@@ -4756,7 +4742,7 @@ function sync_package_v_dialplan_includes() {
 		} //end if results
 		$tmp .= "</extension>\n";
 
-		$dialplan_order = $row['dialplanorder'];
+		$dialplan_order = $row['dialplan_order'];
 		if (strlen($dialplan_order) == 0) { $dialplan_order = "000".$dialplan_order; }
 		if (strlen($dialplan_order) == 1) { $dialplan_order = "00".$dialplan_order; }
 		if (strlen($dialplan_order) == 2) { $dialplan_order = "0".$dialplan_order; }
@@ -4764,7 +4750,7 @@ function sync_package_v_dialplan_includes() {
 		if (strlen($dialplan_order) == 5) { $dialplan_order = "999"; }
 
 		//remove invalid characters from the file names
-		$extension_name = $row['extensionname'];
+		$extension_name = $row['extension_name'];
 		$extension_name = str_replace(" ", "_", $extension_name);
 		$extension_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension_name);
 
@@ -4818,20 +4804,20 @@ function sync_package_v_public_includes() {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach ($result as &$row) {
-			$extensioncontinue = '';
-			if ($row['extensioncontinue'] == "true") {
-				$extensioncontinue = "continue=\"true\"";
+			$extension_continue = '';
+			if ($row['extension_continue'] == "true") {
+				$extension_continue = "continue=\"true\"";
 			}
 
 			$tmp = "";
 			$tmp .= "\n";
-			$tmp = "<extension name=\"".$row['extensionname']."\" $extensioncontinue>\n";
+			$tmp = "<extension name=\"".$row['extension_name']."\" $extension_continue>\n";
 
 			$sql = "";
 			$sql .= " select * from v_public_includes_details ";
 			$sql .= " where public_include_id = '".$row['public_include_id']."' ";
 			$sql .= " and tag = 'condition' ";
-			$sql .= " order by fieldorder asc";
+			$sql .= " order by field_order asc";
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
 			$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
@@ -4845,29 +4831,29 @@ function sync_package_v_public_includes() {
 				foreach($result2 as $ent) {
 					if ($resultcount2 == 1) { //single condition
 						//start tag
-						$tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
+						$tmp .= "   <condition field=\"".$ent['field_type']."\" expression=\"".$ent['field_data']."\">\n";
 					}
 					else { //more than one condition
 						if ($i < $resultcount2) {
 							  //all tags should be self-closing except the last one
-							  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\"/>\n";
+							  $tmp .= "   <condition field=\"".$ent['field_type']."\" expression=\"".$ent['field_data']."\"/>\n";
 						}
 						else {
 							//for the last tag use the start tag
-							  $tmp .= "   <condition field=\"".$ent['fieldtype']."\" expression=\"".$ent['fielddata']."\">\n";
+							  $tmp .= "   <condition field=\"".$ent['field_type']."\" expression=\"".$ent['field_data']."\">\n";
 						}
 					}
 					$i++;
 				} //end foreach
 				$conditioncount = $resultcount2;
-				unset($sql, $resultcount2, $result2, $rowcount2);
+				unset($sql, $resultcount2, $result2);
 			} //end if results
 
 			$sql = "";
 			$sql .= " select * from v_public_includes_details ";
 			$sql .= " where public_include_id = '".$row['public_include_id']."' ";
 			$sql .= " and tag = 'action' ";
-			$sql .= " order by fieldorder asc";
+			$sql .= " order by field_order asc";
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
 			$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
@@ -4878,24 +4864,24 @@ function sync_package_v_public_includes() {
 			else { //received results
 				$i = 0;
 				foreach($result2 as $ent) {
-					if ($ent['tag'] == "action" && $row['publicincludeid'] == $ent['publicincludeid']) {
-						if (strlen($ent['fielddata']) > 0) {
-							$tmp .= "       <action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					if ($ent['tag'] == "action" && $row['public_include_id'] == $ent['public_include_id']) {
+						if (strlen($ent['field_data']) > 0) {
+							$tmp .= "       <action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\"/>\n";
 						}
 						else {
-							$tmp .= "       <action application=\"".$ent['fieldtype']."\"/>\n";
+							$tmp .= "       <action application=\"".$ent['field_type']."\"/>\n";
 						}
 					}
 					$i++;
 				} //end foreach
-				unset($sql, $resultcount2, $result2, $rowcount2);
+				unset($sql, $resultcount2, $result2);
 			} //end if results
 
 			$sql = "";
 			$sql .= " select * from v_public_includes_details ";
 			$sql .= " where public_include_id = '".$row['public_include_id']."' ";
 			$sql .= " and tag = 'anti-action' ";
-			$sql .= " order by fieldorder asc";
+			$sql .= " order by field_order asc";
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
 			$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
@@ -4906,12 +4892,12 @@ function sync_package_v_public_includes() {
 			else { //received results
 				$i = 0;
 				foreach($result2 as $ent) {
-					if ($ent['tag'] == "anti-action" && $row['publicincludeid'] == $ent['publicincludeid']) {
-						if (strlen($ent['fielddata']) > 0) {
-							$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\" data=\"".$ent['fielddata']."\"/>\n";
+					if ($ent['tag'] == "anti-action" && $row['public_include_id'] == $ent['public_include_id']) {
+						if (strlen($ent['field_data']) > 0) {
+							$tmp .= "       <anti-action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\"/>\n";
 						}
 						else {
-							$tmp .= "       <anti-action application=\"".$ent['fieldtype']."\"/>\n";
+							$tmp .= "       <anti-action application=\"".$ent['field_type']."\"/>\n";
 						}
 					}
 					$i++;
@@ -4925,7 +4911,7 @@ function sync_package_v_public_includes() {
 			unset ($conditioncount);
 			$tmp .= "</extension>\n";
 
-			$public_order = $row['publicorder'];
+			$public_order = $row['public_order'];
 			if (strlen($public_order) == 0) { $public_order = "000".$public_order; }
 			if (strlen($public_order) == 1) { $public_order = "00".$public_order; }
 			if (strlen($public_order) == 2) { $public_order = "0".$public_order; }
@@ -4933,7 +4919,7 @@ function sync_package_v_public_includes() {
 			if (strlen($public_order) == 5) { $public_order = "999"; }
 
 			//remove invalid characters from the file names
-			$extension_name = $row['extensionname'];
+			$extension_name = $row['extension_name'];
 			$extension_name = str_replace(" ", "_", $extension_name);
 			$extension_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension_name);
 
@@ -5091,40 +5077,40 @@ if (!function_exists('sync_directory')) {
 						$prep_statement->execute();
 						$tmp_result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 						foreach ($tmp_result as &$row_tmp) {
-							$userfirstname = $row_tmp["userfirstname"];
-							$userlastname = $row_tmp["userlastname"];
-							if ($userfirstname == "na") { $userfirstname = ""; }
-							if ($userlastname == "na") { $userlastname = ""; }
-							if ($userfirstname == "admin") { $userfirstname = ""; }
-							if ($userlastname == "admin") { $userlastname = ""; }
-							if ($userfirstname == "superadmin") { $userfirstname = ""; }
-							if ($userlastname == "superadmin") { $userlastname = ""; }
-							if (strlen($userfirstname.$userlastname) == 0) {
+							$user_first_name = $row_tmp["user_first_name"];
+							$user_last_name = $row_tmp["user_last_name"];
+							if ($user_first_name == "na") { $user_first_name = ""; }
+							if ($user_last_name == "na") { $user_last_name = ""; }
+							if ($user_first_name == "admin") { $user_first_name = ""; }
+							if ($user_last_name == "admin") { $user_last_name = ""; }
+							if ($user_first_name == "superadmin") { $user_first_name = ""; }
+							if ($user_last_name == "superadmin") { $user_last_name = ""; }
+							if (strlen($user_first_name.$user_last_name) == 0) {
 								$name_array = explode (" ", $effective_caller_id_name);
-								$userfirstname = $name_array[0];
+								$user_first_name = $name_array[0];
 								if (count($name_array) > 1) {
-									$userlastname = $name_array[1];
+									$user_last_name = $name_array[1];
 								}
 							}
 							
 							break; //limit to 1 row
 						}
-						$f1 = phone_letter_to_number(substr($userfirstname, 0,1)); 
-						$f2 = phone_letter_to_number(substr($userfirstname, 1,1));
-						$f3 = phone_letter_to_number(substr($userfirstname, 2,1));
+						$f1 = phone_letter_to_number(substr($user_first_name, 0,1)); 
+						$f2 = phone_letter_to_number(substr($user_first_name, 1,1));
+						$f3 = phone_letter_to_number(substr($user_first_name, 2,1));
 
-						$l1 = phone_letter_to_number(substr($userlastname, 0,1)); 
-						$l2 = phone_letter_to_number(substr($userlastname, 1,1));
-						$l3 = phone_letter_to_number(substr($userlastname, 2,1));
+						$l1 = phone_letter_to_number(substr($user_last_name, 0,1)); 
+						$l2 = phone_letter_to_number(substr($user_last_name, 1,1));
+						$l3 = phone_letter_to_number(substr($user_last_name, 2,1));
 
-						//echo $sql." extension: $extension  firstname $userfirstname lastname $userlastname $tmp<br />";
+						//echo $sql." extension: $extension  first_name $user_first_name last_name $user_last_name $tmp<br />";
 
 						$tmp .= "	if (search_type == \"first_name\" && dtmf_search == \"".$f1.$f2.$f3."\" || search_type == \"last_name\" && dtmf_search == \"".$l1.$l2.$l3."\") {\n";
 						$tmp .= "		result_array[x]=new Array()\n";
-						$tmp .= "		result_array[x]['first_name'] =\"".$userfirstname."\";\n";
-						$tmp .= "		result_array[x]['last_name'] =\"".$userlastname."\";\n";
+						$tmp .= "		result_array[x]['first_name'] =\"".$user_first_name."\";\n";
+						$tmp .= "		result_array[x]['last_name'] =\"".$user_last_name."\";\n";
 						$tmp .= "		result_array[x]['extension'] = \"".$extension."\";\n";
-						$tmp .= "		//console_log( \"info\", \"found: ".$userfirstname." ".$userlastname."\\n\" );\n";
+						$tmp .= "		//console_log( \"info\", \"found: ".$user_first_name." ".$user_last_name."\\n\" );\n";
 						$tmp .= "		x++;\n";
 						$tmp .= "	}\n";
 					}
@@ -5282,8 +5268,8 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 							$sql = "";
 							$sql .= "select * from v_dialplan_includes ";
 							$sql .= "where v_id = '$v_id' ";
-							$sql .= "and opt1name = 'ivr_menu_id' ";
-							$sql .= "and opt1value = '".$row['ivr_menu_id']."' ";
+							$sql .= "and opt_1_name = 'ivr_menu_id' ";
+							$sql .= "and opt_1_value = '".$row['ivr_menu_id']."' ";
 							$prep_statement_2 = $db->prepare($sql);
 							$prep_statement_2->execute();
 							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
@@ -5303,76 +5289,76 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 							unset ($sql, $prep_statement_2);
 
 						//create the ivr menu dialplan extension
-							$extensionname = $ivr_menu_name;
-							$dialplanorder ='999';
+							$extension_name = $ivr_menu_name;
+							$dialplan_order ='999';
 							$context = $row['ivr_menu_context'];
 							$context = 'default';
 							$enabled = 'true';
 							$descr = $ivr_menu_desc;
 
 							if ($action  == "add") {
-								$opt1name = 'ivr_menu_id';
-								$opt1value = $row['ivr_menu_id'];
-								$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+								$opt_1_name = 'ivr_menu_id';
+								$opt_1_value = $row['ivr_menu_id'];
+								$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 							}
 							if ($action  == "update") {
 								$ivr_menu_id = $row['ivr_menu_id'];
 
 								$sql = "";
 								$sql = "update v_dialplan_includes set ";
-								$sql .= "extensionname = '$extensionname', ";
-								$sql .= "dialplanorder = '$dialplanorder', ";
+								$sql .= "extension_name = '$extension_name', ";
+								$sql .= "dialplan_order = '$dialplan_order', ";
 								$sql .= "context = '$context', ";
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where v_id = '$v_id' ";
-								$sql .= "and opt1name = 'ivr_menu_id' ";
-								$sql .= "and opt1value = '$ivr_menu_id' ";
+								$sql .= "and opt_1_name = 'ivr_menu_id' ";
+								$sql .= "and opt_1_value = '$ivr_menu_id' ";
 								$db->query($sql);
 								unset($sql);
 							}
 
 							$tag = 'condition'; //condition, action, antiaction
-							$fieldtype = 'destination_number';
-							$fielddata = '^'.$row['ivr_menu_extension'].'$';
-							$fieldorder = '005';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+							$field_type = 'destination_number';
+							$field_data = '^'.$row['ivr_menu_extension'].'$';
+							$field_order = '005';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'answer';
-							$fielddata = '';
-							$fieldorder = '010';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+							$field_type = 'answer';
+							$field_data = '';
+							$field_order = '010';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'sleep';
-							$fielddata = '1000';
-							$fieldorder = '015';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+							$field_type = 'sleep';
+							$field_data = '1000';
+							$field_order = '015';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'set';
-							$fielddata = 'hangup_after_bridge=true';
-							$fieldorder = '020';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+							$field_type = 'set';
+							$field_data = 'hangup_after_bridge=true';
+							$field_order = '020';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
-							$fieldtype = 'ivr';
+							$field_type = 'ivr';
 							if (count($_SESSION["domains"]) > 1) {
-								$fielddata = $_SESSION['domains'][$v_id]['domain'].'-'.$ivr_menu_name;
+								$field_data = $_SESSION['domains'][$v_id]['domain'].'-'.$ivr_menu_name;
 							}
 							else {
-								$fielddata = $ivr_menu_name;
+								$field_data = $ivr_menu_name;
 							}
-							$fieldorder = '025';
-							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+							$field_order = '025';
+							v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 							
 							if (strlen($ivr_menu_exit_app) > 0) {
 								$tag = 'action'; //condition, action, antiaction
-								$fieldtype = $ivr_menu_exit_app;
-								$fielddata = $ivr_menu_exit_data;
-								$fieldorder = '030';
-								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $fieldorder, $fieldtype, $fielddata);
+								$field_type = $ivr_menu_exit_app;
+								$field_data = $ivr_menu_exit_data;
+								$field_order = '030';
+								v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 							}
 
 						unset($action);
@@ -5525,8 +5511,8 @@ if (!function_exists('sync_package_v_call_center')) {
 
 						$sql = "";
 						$sql .= "select * from v_dialplan_includes ";
-						$sql .= "where opt1name = 'call_center_queue_id' ";
-						$sql .= "and opt1value = '".$row['call_center_queue_id']."' ";
+						$sql .= "where opt_1_name = 'call_center_queue_id' ";
+						$sql .= "and opt_1_value = '".$row['call_center_queue_id']."' ";
 						$prep_statement_2 = $db->prepare($sql);
 						$prep_statement_2->execute();
 						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
@@ -5539,15 +5525,15 @@ if (!function_exists('sync_package_v_call_center')) {
 						if ($action == 'add') {
 
 							//create queue entry in the dialplan
-								$extensionname = $queue_name;
-								$dialplanorder ='9';
+								$extension_name = $queue_name;
+								$dialplan_order ='9';
 								//$context = $row['queue_context'];
 								$context = 'default';
 								$enabled = 'true';
 								$descr = $queue_description;
-								$opt1name = 'call_center_queue_id';
-								$opt1value = $row['call_center_queue_id'];
-								$dialplan_include_id = v_dialplan_includes_add($v_id, $extensionname, $dialplanorder, $context, $enabled, $descr, $opt1name, $opt1value);
+								$opt_1_name = 'call_center_queue_id';
+								$opt_1_value = $row['call_center_queue_id'];
+								$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 
 								//group 1
@@ -5555,12 +5541,12 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan->v_id = $v_id;
 									$dialplan->dialplan_include_id = $dialplan_include_id;
 									$dialplan->tag = 'condition'; //condition, action, antiaction
-									$dialplan->fieldtype = '${caller_id_name}';
-									$dialplan->fielddata = '^([^#]+#)(.*)$';
-									$dialplan->fieldbreak = 'never';
+									$dialplan->field_type = '${caller_id_name}';
+									$dialplan->field_data = '^([^#]+#)(.*)$';
+									$dialplan->field_break = 'never';
 									$dialplan->field_inline = '';
 									$dialplan->field_group = '1';
-									$dialplan->fieldorder = '000';
+									$dialplan->field_order = '000';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -5568,12 +5554,12 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan->v_id = $v_id;
 									$dialplan->dialplan_include_id = $dialplan_include_id;
 									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->fieldtype = 'set';
-									$dialplan->fielddata = 'caller_id_name=$2';
-									$dialplan->fieldbreak = '';
+									$dialplan->field_type = 'set';
+									$dialplan->field_data = 'caller_id_name=$2';
+									$dialplan->field_break = '';
 									$dialplan->field_inline = '';
 									$dialplan->field_group = '1';
-									$dialplan->fieldorder = '001';
+									$dialplan->field_order = '001';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -5582,12 +5568,12 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan->v_id = $v_id;
 									$dialplan->dialplan_include_id = $dialplan_include_id;
 									$dialplan->tag = 'condition'; //condition, action, antiaction
-									$dialplan->fieldtype = 'destination_number';
-									$dialplan->fielddata = '^'.$row['queue_extension'].'$';
-									$dialplan->fieldbreak = '';
+									$dialplan->field_type = 'destination_number';
+									$dialplan->field_data = '^'.$row['queue_extension'].'$';
+									$dialplan->field_break = '';
 									$dialplan->field_inline = '';
 									$dialplan->field_group = '2';
-									$dialplan->fieldorder = '000';
+									$dialplan->field_order = '000';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -5595,12 +5581,12 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan->v_id = $v_id;
 									$dialplan->dialplan_include_id = $dialplan_include_id;
 									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->fieldtype = 'answer';
-									$dialplan->fielddata = '';
-									$dialplan->fieldbreak = '';
+									$dialplan->field_type = 'answer';
+									$dialplan->field_data = '';
+									$dialplan->field_break = '';
 									$dialplan->field_inline = '';
 									$dialplan->field_group = '2';
-									$dialplan->fieldorder = '001';
+									$dialplan->field_order = '001';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -5608,12 +5594,12 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan->v_id = $v_id;
 									$dialplan->dialplan_include_id = $dialplan_include_id;
 									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->fieldtype = 'set';
-									$dialplan->fielddata = 'hangup_after_bridge=true';
-									$dialplan->fieldbreak = '';
+									$dialplan->field_type = 'set';
+									$dialplan->field_data = 'hangup_after_bridge=true';
+									$dialplan->field_break = '';
 									$dialplan->field_inline = '';
 									$dialplan->field_group = '2';
-									$dialplan->fieldorder = '002';
+									$dialplan->field_order = '002';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -5621,12 +5607,12 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan->v_id = $v_id;
 									$dialplan->dialplan_include_id = $dialplan_include_id;
 									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->fieldtype = 'set';
-									$dialplan->fielddata = "caller_id_name=".$queue_cid_prefix."#\${caller_id_name}";
-									$dialplan->fieldbreak = '';
+									$dialplan->field_type = 'set';
+									$dialplan->field_data = "caller_id_name=".$queue_cid_prefix."#\${caller_id_name}";
+									$dialplan->field_break = '';
 									$dialplan->field_inline = '';
 									$dialplan->field_group = '2';
-									$dialplan->fieldorder = '003';
+									$dialplan->field_order = '003';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -5634,12 +5620,12 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan->v_id = $v_id;
 									$dialplan->dialplan_include_id = $dialplan_include_id;
 									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->fieldtype = 'system';
-									$dialplan->fielddata = 'mkdir -p $${base_dir}/recordings/archive/${strftime(%Y)}/${strftime(%b)}/${strftime(%d)}/';
-									$dialplan->fieldbreak = '';
+									$dialplan->field_type = 'system';
+									$dialplan->field_data = 'mkdir -p $${base_dir}/recordings/archive/${strftime(%Y)}/${strftime(%b)}/${strftime(%d)}/';
+									$dialplan->field_break = '';
 									$dialplan->field_inline = '';
 									$dialplan->field_group = '2';
-									$dialplan->fieldorder = '004';
+									$dialplan->field_order = '004';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -5647,12 +5633,12 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan->v_id = $v_id;
 									$dialplan->dialplan_include_id = $dialplan_include_id;
 									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->fieldtype = 'callcenter';
-									$dialplan->fielddata = $queue_name."@".$_SESSION['domains'][$v_id]['domain'];
-									$dialplan->fieldbreak = '';
+									$dialplan->field_type = 'callcenter';
+									$dialplan->field_data = $queue_name."@".$_SESSION['domains'][$v_id]['domain'];
+									$dialplan->field_break = '';
 									$dialplan->field_inline = '';
 									$dialplan->field_group = '2';
-									$dialplan->fieldorder = '005';
+									$dialplan->field_order = '005';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -5662,12 +5648,12 @@ if (!function_exists('sync_package_v_call_center')) {
 										$dialplan->v_id = $v_id;
 										$dialplan->dialplan_include_id = $dialplan_include_id;
 										$dialplan->tag = 'action'; //condition, action, antiaction
-										$dialplan->fieldtype = $action_array[0];
-										$dialplan->fielddata = substr($queue_timeout_action, strlen($action_array[0])+1, strlen($queue_timeout_action));
-										$dialplan->fieldbreak = '';
+										$dialplan->field_type = $action_array[0];
+										$dialplan->field_data = substr($queue_timeout_action, strlen($action_array[0])+1, strlen($queue_timeout_action));
+										$dialplan->field_break = '';
 										$dialplan->field_inline = '';
 										$dialplan->field_group = '2';
-										$dialplan->fieldorder = '006';
+										$dialplan->field_order = '006';
 										$dialplan->dialplan_detail_add();
 										unset($dialplan);
 									}
@@ -5676,20 +5662,20 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan->v_id = $v_id;
 									$dialplan->dialplan_include_id = $dialplan_include_id;
 									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->fieldtype = 'hangup';
-									$dialplan->fielddata = '';
-									$dialplan->fieldbreak = '';
+									$dialplan->field_type = 'hangup';
+									$dialplan->field_data = '';
+									$dialplan->field_break = '';
 									$dialplan->field_inline = '';
 									$dialplan->field_group = '2';
-									$dialplan->fieldorder = '007';
+									$dialplan->field_order = '007';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 						}
 						if ($action == 'update') {
 							//update the queue entry in the dialplan
 
-								$extensionname = $queue_name;
-								$dialplanorder = '9';
+								$extension_name = $queue_name;
+								$dialplan_order = '9';
 								//$context = $row['queue_context'];
 								$context = 'default';
 								$enabled = 'true';
@@ -5698,14 +5684,14 @@ if (!function_exists('sync_package_v_call_center')) {
 
 								$sql = "";
 								$sql = "update v_dialplan_includes set ";
-								$sql .= "extensionname = '$extensionname', ";
-								$sql .= "dialplanorder = '$dialplanorder', ";
+								$sql .= "extension_name = '$extension_name', ";
+								$sql .= "dialplan_order = '$dialplan_order', ";
 								$sql .= "context = '$context', ";
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where v_id = '$v_id' ";
-								$sql .= "and opt1name = 'call_center_queue_id' ";
-								$sql .= "and opt1value = '$call_center_queue_id' ";
+								$sql .= "and opt_1_name = 'call_center_queue_id' ";
+								$sql .= "and opt_1_value = '$call_center_queue_id' ";
 								//echo "sql: ".$sql."<br />";
 								$db->query($sql);
 								unset($sql);
@@ -5713,10 +5699,10 @@ if (!function_exists('sync_package_v_call_center')) {
 								//update the condition
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = '^".$row['queue_extension']."$' ";
+								$sql .= "field_data = '^".$row['queue_extension']."$' ";
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'condition' ";
-								$sql .= "and fieldtype = 'destination_number' ";
+								$sql .= "and field_type = 'destination_number' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 								//echo $sql."<br />";
 								$db->query($sql);
@@ -5725,33 +5711,33 @@ if (!function_exists('sync_package_v_call_center')) {
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = 'caller_id_name=".$queue_cid_prefix."\${caller_id_name}' ";
+								$sql .= "field_data = 'caller_id_name=".$queue_cid_prefix."\${caller_id_name}' ";
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'action' ";
-								$sql .= "and fieldtype = 'set' ";
+								$sql .= "and field_type = 'set' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
-								$sql .= "and fielddata like '%{caller_id_name}%' ";
+								$sql .= "and field_data like '%{caller_id_name}%' ";
 								//echo $sql."<br />";
 								$db->query($sql);
 
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_includes_details set ";
-								$sql .= "fielddata = '".$queue_name."@".$_SESSION['domains'][$v_id]['domain']."' ";
+								$sql .= "field_data = '".$queue_name."@".$_SESSION['domains'][$v_id]['domain']."' ";
 								$sql .= "where v_id = '$v_id' ";
 								$sql .= "and tag = 'action' ";
-								$sql .= "and fieldtype = 'callcenter' ";
+								$sql .= "and field_type = 'callcenter' ";
 								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 								//echo $sql."<br />";
 								$db->query($sql);
 
-								unset($extensionname);
+								unset($extension_name);
 								unset($order);
 								unset($context);
 								unset($enabled);
 								unset($descr);
-								unset($opt1name);
-								unset($opt1value);
+								unset($opt_1_name);
+								unset($opt_1_value);
 						}
 						unset($action);
 						unset($dialplanincludeid);
@@ -6036,7 +6022,6 @@ if (!function_exists('sync_package_freeswitch')) {
 		sync_package_v_public_includes();
 		sync_package_v_vars();
 		//sync_package_v_recordings();
-		sync_package_v_auto_attendant();
 		sync_package_v_hunt_group();
 		sync_package_v_ivr_menu();
 		sync_package_v_call_center();
