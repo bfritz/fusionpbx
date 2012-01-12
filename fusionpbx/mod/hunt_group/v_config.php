@@ -81,7 +81,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'hunt_group_time_out_type';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'hunt_group_timeout_type';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'huntgrouptimeouttype';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';

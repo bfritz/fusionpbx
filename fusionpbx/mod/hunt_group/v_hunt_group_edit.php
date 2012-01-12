@@ -54,7 +54,7 @@ require_once "includes/paging.php";
 		//$hunt_group_context = check_str($_POST["hunt_group_context"]);
 		$hunt_group_timeout = check_str($_POST["hunt_group_timeout"]);
 		$hunt_group_timeout_destination = check_str($_POST["hunt_group_timeout_destination"]);
-		$hunt_group_time_out_type = check_str($_POST["hunt_group_time_out_type"]);
+		$hunt_group_timeout_type = check_str($_POST["hunt_group_timeout_type"]);
 		$hunt_group_ringback = check_str($_POST["hunt_group_ringback"]);
 		$hunt_group_cid_name_prefix = check_str($_POST["hunt_group_cid_name_prefix"]);
 		$hunt_group_pin = check_str($_POST["hunt_group_pin"]);
@@ -106,7 +106,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($hunt_group_context) == 0) { $msg .= "Please provide: Context<br>\n"; }
 		if (strlen($hunt_group_timeout) == 0) { $msg .= "Please provide: Timeout<br>\n"; }
 		if (strlen($hunt_group_timeout_destination) == 0) { $msg .= "Please provide: Timeout Destination<br>\n"; }
-		if (strlen($hunt_group_time_out_type) == 0) { $msg .= "Please provide: Timeout Type<br>\n"; }
+		if (strlen($hunt_group_timeout_type) == 0) { $msg .= "Please provide: Timeout Type<br>\n"; }
 		if (strlen($hunt_group_ringback) == 0) { $msg .= "Please provide: Ring Back<br>\n"; }
 		//if (strlen($hunt_group_cid_name_prefix) == 0) { $msg .= "Please provide: CID Prefix<br>\n"; }
 		//if (strlen($hunt_group_pin) == 0) { $msg .= "Please provide: PIN<br>\n"; }
@@ -139,7 +139,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "hunt_group_context, ";
 				$sql .= "hunt_group_timeout, ";
 				$sql .= "hunt_group_timeout_destination, ";
-				$sql .= "hunt_group_time_out_type, ";
+				$sql .= "hunt_group_timeout_type, ";
 				$sql .= "hunt_group_ringback, ";
 				$sql .= "hunt_group_cid_name_prefix, ";
 				$sql .= "hunt_group_pin, ";
@@ -157,7 +157,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'default', ";
 				$sql .= "'$hunt_group_timeout', ";
 				$sql .= "'$hunt_group_timeout_destination', ";
-				$sql .= "'$hunt_group_time_out_type', ";
+				$sql .= "'$hunt_group_timeout_type', ";
 				$sql .= "'$hunt_group_ringback', ";
 				$sql .= "'$hunt_group_cid_name_prefix', ";
 				$sql .= "'$hunt_group_pin', ";
@@ -189,7 +189,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "hunt_group_context = 'default', ";
 				$sql .= "hunt_group_timeout = '$hunt_group_timeout', ";
 				$sql .= "hunt_group_timeout_destination = '$hunt_group_timeout_destination', ";
-				$sql .= "hunt_group_time_out_type = '$hunt_group_time_out_type', ";
+				$sql .= "hunt_group_timeout_type = '$hunt_group_timeout_type', ";
 				$sql .= "hunt_group_ringback = '$hunt_group_ringback', ";
 				$sql .= "hunt_group_cid_name_prefix = '$hunt_group_cid_name_prefix', ";
 				$sql .= "hunt_group_pin = '$hunt_group_pin', ";
@@ -239,7 +239,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$hunt_group_context = $row["hunt_group_context"];
 			$hunt_group_timeout = $row["hunt_group_timeout"];
 			$hunt_group_timeout_destination = $row["hunt_group_timeout_destination"];
-			$hunt_group_time_out_type = $row["hunt_group_time_out_type"];
+			$hunt_group_timeout_type = $row["hunt_group_timeout_type"];
 			$hunt_group_ringback = $row["hunt_group_ringback"];
 			$hunt_group_cid_name_prefix = $row["hunt_group_cid_name_prefix"];
 			$hunt_group_pin = $row["hunt_group_pin"];
@@ -391,21 +391,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	 Timeout Type:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	 <select class='formfld' name='hunt_group_time_out_type'>\n";
+	echo "	 <select class='formfld' name='hunt_group_timeout_type'>\n";
 	echo "	 <option value=''></option>\n";
-	if ($hunt_group_time_out_type == "extension") { 
+	if ($hunt_group_timeout_type == "extension") { 
 		echo "	 <option value='extension' SELECTED >extension</option>\n";
 	}
 	else {
 		echo "	 <option value='extension'>extension</option>\n";
 	}
-	if ($hunt_group_time_out_type == "voicemail") { 
+	if ($hunt_group_timeout_type == "voicemail") { 
 		echo "	 <option value='voicemail' SELECTED >voicemail</option>\n";
 	}
 	else {
 		echo "	 <option value='voicemail'>voicemail</option>\n";
 	}
-	if ($hunt_group_time_out_type == "sip uri") { 
+	if ($hunt_group_timeout_type == "sip uri") { 
 		echo "	 <option value='sip uri' SELECTED >sip uri</option>\n";
 	}
 	else {
