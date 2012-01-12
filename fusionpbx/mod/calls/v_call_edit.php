@@ -398,7 +398,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$hunt_group_context = $row["hunt_group_context"];
 		$hunt_group_timeout = $row["hunt_group_timeout"];
 		$hunt_group_timeout_destination = $row["hunt_group_timeout_destination"];
-		$hunt_group_timeout_type = $row["hunt_group_time_out_type"];
+		$hunt_group_timeout_type = $row["hunt_group_timeout_type"];
 		$hunt_group_ring_back = $row["hunt_group_ringback"];
 		$hunt_group_cid_name_prefix = $row["hunt_group_cid_name_prefix"];
 		$hunt_group_pin = $row["hunt_group_pin"];
