@@ -725,7 +725,9 @@ if [ $INSFREESWITCH -eq 1 ]; then
 	/usr/bin/apt-get -y install ssh vim git-core subversion build-essential \
 	autoconf automake libtool libncurses5 libncurses5-dev libjpeg62-dev ssh \
 	screen htop pkg-config bzip2 curl libtiff4-dev ntp \
-	time bison
+	time bison libssl-dev \
+	unixodbc libmyodbc unixodbc-dev 
+	
 	#added libgnutls-dev libgnutls26 for dingaling...
 	#gnutls no longer required for dingaling (git around oct 17 per mailing list..)
 	# removed libgnutls-dev libgnutls26
@@ -1517,7 +1519,7 @@ if [ $INSFUSION -eq 1 ]; then
 		/usr/bin/dpkg -i /var/cache/apt/archives/ppa-purge_0+bzr46.1~lucid1_all.deb
 	fi
 	
-	/usr/bin/apt-get -y install sqlite php5-cli php5-sqlite
+	/usr/bin/apt-get -y install sqlite php5-cli php5-sqlite php5-odbc
 
 	#-----------------
 	# Apache
