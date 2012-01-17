@@ -1510,7 +1510,7 @@ if [ $INSFUSION -eq 1 ]; then
 	#remastersys iso ditches the apt data. have to update
 	/usr/bin/apt-get update
 	#get reqs for both
-	/usr/bin/apt-get -y install python-software-properties subversion
+	/usr/bin/apt-get -y install python-software-properties subversion ghostscript
 	  #provides apt-add-repository
 	  #installs python-software-properties unattended-upgrades
 	  #/usr/bin/apt-get -y install ppa-purge #in backports. don't want that repo
@@ -1883,7 +1883,7 @@ DELIM
 	#/etc/init.d/freeswitch stop
 	
 	if [ $INST_FPBX == svn ]; then
-			/usr/bin/svn checkout http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+			/usr/bin/svn checkout  -r r1877 http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
         elif [ $INST_FPBX == tgz ]; then
 			/bin/tar -C $WWW_PATH -xzvf $TGZ_FILE
 	fi
