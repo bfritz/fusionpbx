@@ -64,7 +64,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($tel_type) == 0) { $msg .= "Please provide: Telephone Type.<br>\n"; }
 		//if (strlen($tel_number) == 0) { $msg .= "Please provide: Telephone Number<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -86,14 +86,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_contacts_tel ";
 			$sql .= "(";
 			$sql .= "contact_id, ";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "tel_type, ";
 			$sql .= "tel_number ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$contact_id', ";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$tel_type', ";
 			$sql .= "'$tel_number' ";
 			$sql .= ")";
@@ -114,7 +114,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "contact_id = '$contact_id', ";
 			$sql .= "tel_type = '$tel_type', ";
 			$sql .= "tel_number = '$tel_number' ";
-			$sql .= "where v_id = '$v_id'";
+			$sql .= "where domain_uuid = '$domain_uuid'";
 			$sql .= "and contacts_tel_id = '$contacts_tel_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -135,7 +135,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$contacts_tel_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contacts_tel ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and contacts_tel_id = '$contacts_tel_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

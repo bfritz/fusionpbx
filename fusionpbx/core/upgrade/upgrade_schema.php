@@ -57,7 +57,7 @@
 //copy the files and directories from includes/install
 	require_once "includes/classes/install.php";
 	$install = new install;
-	$install->v_id = $v_id;
+	$install->domain_uuid = $domain_uuid;
 	$install->v_domain = $domain;
 	$install->v_conf_dir = $v_conf_dir;
 	$install->v_scripts_dir = $v_scripts_dir;
@@ -87,7 +87,7 @@
 	$main_result = $v_prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($main_result as &$row) {
 		//get the values from database and set them as php variables
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$v_domain = $row["v_domain"];
 			$v_account_code = $row["v_account_code"];
 			$v_server_protocol = $row["v_server_protocol"];
@@ -132,11 +132,11 @@
 			$v_description = $row["v_description"];
 
 		//show the domain when display_type is set to text
-				if ($display_type == "text") {
-					echo "\n";
-					echo $v_domain;
-					echo "\n";
-				}
+			if ($display_type == "text") {
+				echo "\n";
+				echo $v_domain;
+				echo "\n";
+			}
 
 		//get the list of installed apps from the core and mod directories and execute the php code in v_defaults.php
 			$default_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_defaults.php");

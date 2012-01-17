@@ -27,7 +27,7 @@ include "root.php";
 
 //define the directory class
 	class switch_directory {
-		public $v_id;
+		public $domain_uuid;
 		public $v_domain;
 		public $db_type;
 		public $extension;
@@ -64,13 +64,13 @@ include "root.php";
 		public $cidr;
 		public $number_alias;
 
-		// get v_id
-			public function get_v_id() {
-				return $this->v_id;
+		// get domain_uuid
+			public function get_domain_uuid() {
+				return $this->domain_uuid;
 			}
-		// set v_id
-			public function set_v_id($v_id){
-				$this->v_id = $v_id;
+		// set domain_uuid
+			public function set_domain_uuid($domain_uuid){
+				$this->domain_uuid = $domain_uuid;
 			}
 
 		// get v_domain
@@ -102,7 +102,7 @@ include "root.php";
 
 		public function add() {
 			global $db;
-			$v_id = $this->v_id;
+			$domain_uuid = $this->domain_uuid;
 			$v_domain = $this->v_domain;
 			$extension = $this->extension;
 			$number_alias = $this->number_alias;
@@ -146,7 +146,7 @@ include "root.php";
 					$password = generate_password();
 					$sql = "insert into v_extensions ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "extension, ";
 					$sql .= "number_alias, ";
 					$sql .= "password, ";
@@ -186,7 +186,7 @@ include "root.php";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$extension', ";
 					$sql .= "'$number_alias', ";
 					$sql .= "'$password', ";
@@ -247,7 +247,7 @@ include "root.php";
 		public function update() {
 			global $db;
 
-			$v_id = $this->v_id;
+			$domain_uuid = $this->domain_uuid;
 			$v_domain = $this->v_domain;
 			$extension = $this->extension;
 			$number_alias = $this->number_alias;
@@ -351,7 +351,7 @@ include "root.php";
 			$sql .= "sip_bypass_media = '$sip_bypass_media', ";
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "description = '$description' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and extension_id = '$extension_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -359,12 +359,12 @@ include "root.php";
 
 		function delete() {
 			global $db;
-			$v_id = $this->v_id;
+			$domain_uuid = $this->domain_uuid;
 			$extension_id = $this->extension_id;
 			if (strlen($extension_id)>0) {
 				$sql = "";
 				$sql .= "delete from v_extensions ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and extension_id = '$extension_id' ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
@@ -515,7 +515,7 @@ include "root.php";
 
 		function xml_save_all() {
 			global $db, $config;
-			$v_id = $this->v_id;
+			$domain_uuid = $this->domain_uuid;
 			$v_domain = $this->v_domain;
 
 			//get the system settings paths and set them as variables
@@ -559,7 +559,7 @@ include "root.php";
 
 			$sql = "";
 			$sql .= "select * from v_extensions ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "order by callgroup asc ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();

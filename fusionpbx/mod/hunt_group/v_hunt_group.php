@@ -61,7 +61,7 @@ echo "<br />\n";
 //get the number of rows in v_hunt_group
 $sql = "";
 $sql .= " select count(*) as num_rows from v_hunt_group ";
-$sql .= "where v_id = '$v_id' ";
+$sql .= "where domain_uuid = '$domain_uuid' ";
 $sql .= "and hunt_group_type <> 'dnd' ";
 $sql .= "and hunt_group_type <> 'call_forward' ";
 $sql .= "and hunt_group_type <> 'follow_me_simultaneous' ";
@@ -90,7 +90,7 @@ $offset = $rows_per_page * $page;
 //get the hunt group list
 $sql = "";
 $sql .= " select * from v_hunt_group ";
-$sql .= "where v_id = '$v_id' ";
+$sql .= "where domain_uuid = '$domain_uuid' ";
 $sql .= "and hunt_group_type <> 'dnd' ";
 $sql .= "and hunt_group_type <> 'call_forward' ";
 $sql .= "and hunt_group_type <> 'follow_me_simultaneous' ";

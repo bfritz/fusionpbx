@@ -59,7 +59,7 @@ require_once "includes/paging.php";
 	}
 
 //set the greeting directory
-	$v_greeting_dir = $v_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$v_id]['domain'].'/'.$user_id;
+	$v_greeting_dir = $v_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain'].'/'.$user_id;
 
 //upload the recording
 	if (($_POST['submit'] == "Save") && is_uploaded_file($_FILES['file']['tmp_name']) && permission_exists('recordings_upload')) {
@@ -84,7 +84,7 @@ require_once "includes/paging.php";
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
 			// vm_fsdb_pref_greeting_set,<profile> <domain> <user> <slot> [file-path],vm_fsdb_pref_greeting_set,mod_voicemail
-			$switch_cmd = "vm_fsdb_pref_greeting_set default ".$_SESSION['domains'][$v_id]['domain']." ".$user_id." ".substr($_REQUEST['greeting'], -5, 1)." ".$v_greeting_dir."/".$_REQUEST['greeting'];
+			$switch_cmd = "vm_fsdb_pref_greeting_set default ".$_SESSION['domains'][$domain_uuid]['domain']." ".$user_id." ".substr($_REQUEST['greeting'], -5, 1)." ".$v_greeting_dir."/".$_REQUEST['greeting'];
 			$greeting = trim(event_socket_request($fp, 'api '.$switch_cmd));
 		}
 	}
@@ -125,7 +125,7 @@ require_once "includes/paging.php";
 	$i = 0;
 	$sql = "";
 	$sql .= "select * from v_voicemail_greetings ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_id = '$user_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -148,14 +148,14 @@ require_once "includes/paging.php";
 
 							$sql = "insert into v_voicemail_greetings ";
 							$sql .= "(";
-							$sql .= "v_id, ";
+							$sql .= "domain_uuid, ";
 							$sql .= "user_id, ";
 							$sql .= "greeting_name, ";
 							$sql .= "greeting_description ";
 							$sql .= ")";
 							$sql .= "values ";
 							$sql .= "(";
-							$sql .= "'$v_id', ";
+							$sql .= "'$domain_uuid', ";
 							$sql .= "'$user_id', ";
 							$sql .= "'".$a_file[0]."', ";
 							$sql .= "'' ";
@@ -180,7 +180,7 @@ require_once "includes/paging.php";
 	}
 	if ($fp) {
 		// vm_prefs,[profile/]<user>@<domain>[|[name_path|greeting_path|password]],vm_prefs,mod_voicemail
-		$switch_cmd = "vm_prefs default/".$user_id."@".$_SESSION['domains'][$v_id]['domain'];
+		$switch_cmd = "vm_prefs default/".$user_id."@".$_SESSION['domains'][$domain_uuid]['domain'];
 		$greeting = trim(event_socket_request($fp, 'api '.$switch_cmd));
 	}
 
@@ -237,8 +237,8 @@ require_once "includes/paging.php";
 	echo "		<td align='left' width='50%'>\n";
 	if ($v_path_show) {
 		echo "<b>location:</b> \n";
-		//usr/local/freeswitch/storage/voicemail/default/".$_SESSION['domains'][$v_id]['domain']."/1004/greeting_2.wav 
-		echo $v_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$v_id]['domain'].'/'.$user_id;
+		//usr/local/freeswitch/storage/voicemail/default/".$_SESSION['domains'][$domain_uuid]['domain']."/1004/greeting_2.wav 
+		echo $v_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain'].'/'.$user_id;
 	}
 	echo "		</td>\n";
 	echo "		<td valign=\"top\" class=\"label\">\n";
@@ -257,7 +257,7 @@ require_once "includes/paging.php";
 	//get the number of rows in v_extensions 
 		$sql = "";
 		$sql .= " select count(*) as num_rows from v_voicemail_greetings ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and user_id = '$user_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		if ($prepstatement) {
@@ -283,7 +283,7 @@ require_once "includes/paging.php";
 	//get the greetings list
 		$sql = "";
 		$sql .= "select * from v_voicemail_greetings ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and user_id = '$user_id' ";
 		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 		$sql .= " limit $rowsperpage offset $offset ";

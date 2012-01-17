@@ -49,7 +49,7 @@ else {
 
 //set the http values as variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
+		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		if (isset($_POST["public_include_id"])) {
 			$public_include_id = check_str($_POST["public_include_id"]);
 		}
@@ -67,7 +67,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
     }
 
     //check for all required data
-        if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+        if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
         if (strlen($public_include_id) == 0) { $msg .= "Please provide: public_include_id<br>\n"; }
         if (strlen($tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
         if (strlen($field_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
@@ -91,7 +91,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add" && permission_exists('public_includes_add')) {
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
@@ -100,7 +100,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$public_include_id', ";
 			$sql .= "'$tag', ";
 			$sql .= "'$field_type', ";
@@ -124,7 +124,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update" && permission_exists('public_includes_edit')) {
 			$sql = "update v_public_includes_details set ";
-			//$sql .= "v_id = '$v_id', ";
+			//$sql .= "domain_uuid = '$domain_uuid', ";
 			$sql .= "public_include_id = '$public_include_id', ";
 			$sql .= "tag = '$tag', ";
 			$sql .= "field_type = '$field_type', ";
@@ -154,12 +154,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_public_includes_details ";
 		$sql .= "where public_includes_detail_id = '$public_includes_detail_id' ";
-		$sql .= "and v_id = '$v_id' ";
+		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$public_include_id = $row["public_include_id"];
 			$tag = $row["tag"];
 			$field_type = $row["field_type"];

@@ -45,7 +45,7 @@ else {
 		//find the conference extensions from the dialplan include details
 			$sql = "";
 			$sql .= "select * from v_dialplan_includes_details ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			if (!(ifgroup("admin") || ifgroup("superadmin"))) {
 				//find the assigned users
 					$sql .= "and field_data like 'conference_user_list%' and field_data like '%|".$_SESSION['username']."|%' ";
@@ -85,13 +85,13 @@ else {
 				$x = 0;
 				foreach ($conference_array as &$row) {
 					if ($x == 0) {
-						$sql .= "where v_id = '$v_id' \n";
+						$sql .= "where domain_uuid = '$domain_uuid' \n";
 						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 						$sql .= "and field_type = 'conference' \n";
 						$sql .= "and field_data like '".$conference_name."%' \n";
 					}
 					else {
-						$sql .= "or v_id = '$v_id' \n";
+						$sql .= "or domain_uuid = '$domain_uuid' \n";
 						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 						$sql .= "and field_type = 'conference' \n";
 						$sql .= "and field_data like '".$conference_name."%' \n";
@@ -111,7 +111,7 @@ else {
 	}
 
 //replace the space with underscore
-	$conference_name = $conference_name.'-'.$_SESSION['domains'][$v_id]['domain'];
+	$conference_name = $conference_name.'-'.$_SESSION['domains'][$domain_uuid]['domain'];
 
 //create the conference list command
 	$switch_cmd = "conference '".$conference_name."' xml_list";

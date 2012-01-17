@@ -65,7 +65,7 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_virtual_table_fields ";
-	$sql .= " where v_id = '$v_id' ";
+	$sql .= " where domain_uuid = '$domain_uuid' ";
 	$sql .= " and virtual_table_id = '$virtual_table_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));

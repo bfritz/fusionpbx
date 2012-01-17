@@ -65,7 +65,7 @@ function cmd_async($cmd) {
 //get the call broadcast details from the database
 	$sql = "";
 	$sql .= "select * from v_call_broadcast ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and call_broadcast_id = '$call_broadcast_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -156,7 +156,7 @@ function cmd_async($cmd) {
 
 					//get the context
 						if (count($_SESSION["domains"]) > 1) {
-							$context =  $_SESSION['domains'][$row['v_id']]['domain'];
+							$context =  $_SESSION['domains'][$row['domain_uuid']]['domain'];
 						}
 						else {
 							$context = "default";

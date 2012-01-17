@@ -88,7 +88,7 @@ require_once "includes/config.php";
 //get the content
 	$sql = "";
 	$sql .= "select * from v_rss ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_category = 'content' ";
 	if (strlen($content) == 0) {
 		$sql .= "and rss_link = '".$_SERVER["PHP_SELF"]."' ";
@@ -97,7 +97,7 @@ require_once "includes/config.php";
 		$sql .= "and rss_link = '".$content."' ";
 	}
 	$sql .= "and length(rss_del_date) = 0 ";
-	$sql .= "or v_id = '$v_id' ";
+	$sql .= "or domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_category = 'content' ";
 	if (strlen($content) == 0) {
 		$sql .= "and rss_link = '".$_SERVER["PHP_SELF"]."' ";

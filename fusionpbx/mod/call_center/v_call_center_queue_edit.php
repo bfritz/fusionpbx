@@ -45,7 +45,7 @@ else {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
+		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		$queue_name = check_str($_POST["queue_name"]);
 		$queue_extension = check_str($_POST["queue_extension"]);
 		$queue_strategy = check_str($_POST["queue_strategy"]);
@@ -80,7 +80,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($queue_name) == 0) { $msg .= "Please provide: Queue Name<br>\n"; }
 		if (strlen($queue_extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		if (strlen($queue_strategy) == 0) { $msg .= "Please provide: Strategy<br>\n"; }
@@ -117,7 +117,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//add the call center queue
 				$sql = "insert into v_call_center_queue ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "queue_name, ";
 				$sql .= "queue_extension, ";
 				$sql .= "queue_strategy, ";
@@ -138,7 +138,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$queue_name', ";
 				$sql .= "'$queue_extension', ";
 				$sql .= "'$queue_strategy', ";
@@ -193,7 +193,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "queue_abandoned_resume_allowed = '$queue_abandoned_resume_allowed', ";
 				$sql .= "queue_cid_prefix = '$queue_cid_prefix', ";
 				$sql .= "queue_description = '$queue_description' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and call_center_queue_id = '$call_center_queue_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -218,7 +218,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$call_center_queue_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_center_queue ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_center_queue_id = '$call_center_queue_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

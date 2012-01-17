@@ -41,7 +41,7 @@ else {
 
 //get the xml cdr string from the database
 	$sql = "select * from v_xml_cdr ";
-	$sql .= "where v_id  = '$v_id' ";
+	$sql .= "where domain_uuid  = '$domain_uuid' ";
 	$sql .= "and uuid  = '$uuid' ";
 	$row = $db->query($sql)->fetch();
 	$start_stamp = trim($row["start_stamp"]);

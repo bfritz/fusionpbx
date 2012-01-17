@@ -317,15 +317,15 @@ if ($db_type == "pgsql") {
 			$result = $prep_statement->fetchAll();
 			foreach($result as $row) {
 				//get the values from the db and set them as session variables
-					$_SESSION['domains'][$row['v_id']]['v_id'] = $row['v_id'];
-					$_SESSION['domains'][$row['v_id']]['domain'] = $row['v_domain'];
-					$_SESSION['domains'][$row['v_id']]['template_name'] = $row['v_template_name'];
+					$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
+					$_SESSION['domains'][$row['domain_uuid']]['domain'] = $row['v_domain'];
+					$_SESSION['domains'][$row['domain_uuid']]['template_name'] = $row['v_template_name'];
 				//get the domain
 					$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
-				//get v_id, and check for an assigned template
+				//get domain_uuid, and check for an assigned template
 					if ($num_rows > 1) {
 						if ($row['v_domain'] == $domain_array[0] || $row['v_domain'] == 'www.'.$domain_array[0]) {
-							$_SESSION["v_id"] = $row["v_id"];
+							$_SESSION["domain_uuid"] = $row["domain_uuid"];
 							$_SESSION["template_name"] = $row["v_template_name"];
 							$_SESSION["v_template_name"] = $row["v_template_name"];
 							$_SESSION["v_domain"] = $row['v_domain'];
@@ -342,7 +342,7 @@ if ($db_type == "pgsql") {
 						}
 					}
 					if ($num_rows == 1) {
-						$_SESSION["v_id"] = $row["v_id"];
+						$_SESSION["domain_uuid"] = $row["domain_uuid"];
 						$_SESSION["template_name"] = $row["v_template_name"];
 						$_SESSION["v_template_name"] = $row["v_template_name"];
 						$_SESSION["v_domain"] = $row['v_domain'];
@@ -371,12 +371,12 @@ if ($db_type == "pgsql") {
 		}
 	}
 
-//set the v_id variable from the session
-	if (strlen($_SESSION["v_id"]) > 0) { 
-		$v_id = $_SESSION["v_id"];
+//set the domain_uuid variable from the session
+	if (strlen($_SESSION["domain_uuid"]) > 0) { 
+		$domain_uuid = $_SESSION["domain_uuid"];
 	}
 	else {
-		$v_id = '1';
+		$domain_uuid = '1';
 	}
 
 ?>

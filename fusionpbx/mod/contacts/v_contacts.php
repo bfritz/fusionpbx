@@ -67,14 +67,14 @@ require_once "includes/paging.php";
 	//prepare to page the results
 		$sql = "";
 		$sql .= " select count(*) as num_rows from v_contacts ";
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($search_all) > 0) {
 			if (is_numeric($search_all)) {
 				$sql .= "and contact_id in (select contact_id from v_contacts_tel where tel_number like '%".$search_all."%') \n";
 			}
 			else {
 				$sql .= "and contact_id in (\n";
-				$sql .= "	select contact_id from v_contacts where v_id = '$v_id' \n";
+				$sql .= "	select contact_id from v_contacts where domain_uuid = '$domain_uuid' \n";
 				$sql .= "	and (\n";
 				$sql .= "	org like '%".$search_all."%' or \n";
 				$sql .= "	n_given like '%".$search_all."%' or \n";
@@ -115,14 +115,14 @@ require_once "includes/paging.php";
 	//get the  list
 		$sql = "";
 		$sql .= " select * from v_contacts ";
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($search_all) > 0) {
 			if (is_numeric($search_all)) {
 				$sql .= "and contact_id in (select contact_id from v_contacts_tel where tel_number like '%".$search_all."%') \n";
 			}
 			else {
 				$sql .= "and contact_id in (\n";
-				$sql .= "	select contact_id from v_contacts where v_id = '$v_id' \n";
+				$sql .= "	select contact_id from v_contacts where domain_uuid = '$domain_uuid' \n";
 				$sql .= "	and (\n";
 				$sql .= "	org like '%".$search_all."%' or \n";
 				$sql .= "	n_given like '%".$search_all."%' or \n";

@@ -129,7 +129,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($fax_extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		if (strlen($fax_name) == 0) { $msg .= "Please provide: A file to Fax<br>\n"; }
 		//if (strlen($fax_email) == 0) { $msg .= "Please provide: Email<br>\n"; }
@@ -157,7 +157,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('fax_extension_add')) {
 				$sql = "insert into v_fax ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "fax_extension, ";
 				$sql .= "fax_name, ";
 				$sql .= "fax_email, ";
@@ -172,7 +172,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$fax_extension', ";
 				$sql .= "'$fax_name', ";
 				$sql .= "'$fax_email', ";
@@ -217,7 +217,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "fax_user_list = '$fax_user_list', ";
 				}
 				$sql .= "fax_description = '$fax_description' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and fax_id = '$fax_id' ";
 				if (!(ifgroup("admin") || ifgroup("superadmin"))) {
 					$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
@@ -243,7 +243,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$fax_id = check_str($_GET["id"]);
 		$sql = "";
 		$sql .= "select * from v_fax ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fax_id = '$fax_id' ";
 		if (ifgroup("superadmin")) {
 			//show all fax extensions
@@ -380,7 +380,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		$onchange = "document.getElementById('fax_user_list').value += document.getElementById('username').value + '\\n';";
-		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where v_id = '$v_id'"; 
+		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where domain_uuid = '$domain_uuid'"; 
 		echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
 		echo "<br />\n";
 		echo "Use the select list to add users to the user list. This will assign users to this extension.\n";

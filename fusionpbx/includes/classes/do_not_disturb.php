@@ -27,7 +27,7 @@ include "root.php";
 
 //define the dnd class
 	class do_not_disturb {
-		var $v_id;
+		var $domain_uuid;
 		var $dnd_id;
 		var $v_domain;
 		var $extension;
@@ -49,7 +49,7 @@ include "root.php";
 					$user_status = "Do Not Disturb";
 					$sql  = "update v_users set ";
 					$sql .= "user_status = '$user_status' ";
-					$sql .= "where v_id = '$v_id' ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and username = '".$_SESSION['username']."' ";
 					$prepstatement = $db->prepare(check_sql($sql));
 					$prepstatement->execute();
@@ -77,7 +77,7 @@ include "root.php";
 
 			$sql = "insert into v_hunt_group ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "hunt_group_extension, ";
 			$sql .= "hunt_group_name, ";
 			$sql .= "hunt_group_type, ";
@@ -96,7 +96,7 @@ include "root.php";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$this->v_id', ";
+			$sql .= "'$this->domain_uuid', ";
 			$sql .= "'$hunt_group_extension', ";
 			$sql .= "'$huntgroup_name', ";
 			$sql .= "'$hunt_group_type', ";
@@ -155,7 +155,7 @@ include "root.php";
 			//$sql .= "hunt_group_user_list = '$hunt_group_user_list', ";
 			$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 			$sql .= "hunt_group_descr = '$hunt_group_descr' ";
-			$sql .= "where v_id = '$this->v_id' ";
+			$sql .= "where domain_uuid = '$this->domain_uuid' ";
 			$sql .= "and hunt_group_id = '$this->dnd_id' ";
 			if ($this->debug) {
 				echo $sql."<br />";

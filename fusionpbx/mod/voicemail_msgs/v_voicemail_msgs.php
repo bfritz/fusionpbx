@@ -112,7 +112,7 @@ else {
 //get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= "select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	//superadmin can see all messages
 	if(!ifgroup("superadmin")) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";

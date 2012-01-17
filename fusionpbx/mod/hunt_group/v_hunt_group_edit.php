@@ -99,7 +99,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($hunt_group_extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		if (strlen($hunt_group_name) == 0) { $msg .= "Please provide: Hunt Group Name<br>\n"; }
 		if (strlen($hunt_group_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
@@ -132,7 +132,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('hunt_group_add')) {
 				$sql = "insert into v_hunt_group ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "hunt_group_extension, ";
 				$sql .= "hunt_group_name, ";
 				$sql .= "hunt_group_type, ";
@@ -150,7 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$hunt_group_extension', ";
 				$sql .= "'$hunt_group_name', ";
 				$sql .= "'$hunt_group_type', ";
@@ -199,7 +199,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 				$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 				$sql .= "hunt_group_descr = '$hunt_group_descr' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and hunt_group_id = '$hunt_group_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -227,7 +227,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
 		$sql .= "where hunt_group_id = '$hunt_group_id' ";
-		$sql .= "and v_id = '$v_id' ";
+		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .- "hunt_group_enabled = 'true' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -525,7 +525,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		$onchange = "document.getElementById('hunt_group_user_list').value += document.getElementById('username').value + '\\n';";
-		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where v_id = '$v_id' "; 
+		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where domain_uuid = '$domain_uuid' "; 
 		echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
 		echo "<br />\n";
 		echo "Use the select list to add users to the user list. This will assign users to this extension.\n";
@@ -621,7 +621,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		$sql = "";
 		$sql .= " select * from v_hunt_group_destinations ";
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and hunt_group_id = '$hunt_group_id' ";
 		$sql .= " order by destination_order, destination_data asc";
 		$prepstatement = $db->prepare(check_sql($sql));

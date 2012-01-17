@@ -66,7 +66,7 @@ if (count($_REQUEST)>0) {
 //get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= " select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -136,15 +136,15 @@ if (count($_REQUEST)>0) {
 		$sqlwhere = "where ";
 		if (count($extension_array) > 0) {
 			foreach($extension_array as $value) {
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and caller_id_number = '".$value['extension']."' ". $sqlwhereorig." \n"; } //source
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '*99".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
+				if ($value['extension'] > 0) { $sqlwhere .= "or domain_uuid = '$domain_uuid' and caller_id_number = '".$value['extension']."' ". $sqlwhereorig." \n"; } //source
+				if ($value['extension'] > 0) { $sqlwhere .= "or domain_uuid = '$domain_uuid' and destination_number = '".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
+				if ($value['extension'] > 0) { $sqlwhere .= "or domain_uuid = '$domain_uuid' and destination_number = '*99".$value['extension']."' ".$sqlwhereorig." \n"; } //destination
 			}
 		} //count($extension_array)
 	}
 	else {
 		//superadmin or admin
-		$sqlwhere = "where v_id = '$v_id' ".$sqlwhere;
+		$sqlwhere = "where domain_uuid = '$domain_uuid' ".$sqlwhere;
 	}
 	$sqlwhere = str_replace ("where or", "where", $sqlwhere);
 	$sqlwhere = str_replace ("where and", " and", $sqlwhere);

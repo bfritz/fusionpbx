@@ -43,7 +43,7 @@ if (count($_POST)>0) {
 
 //define the php class
 	class v_virtual_table_fields {
-		var $v_id;
+		var $domain_uuid;
 		var $virtual_table_id;
 		var $virtual_field_label;
 		var $virtual_field_name;
@@ -59,7 +59,7 @@ if (count($_POST)>0) {
 		function db_field_exists() {
 			global $db;
 			$sql = "select * from v_virtual_table_fields ";
-			$sql .= "where v_id = '$this->v_id' ";
+			$sql .= "where domain_uuid = '$this->domain_uuid' ";
 			$sql .= "and virtual_table_id ='$this->virtual_table_id' ";
 			$sql .= "and virtual_field_name = '$this->virtual_field_name' ";
 			$row = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
@@ -75,7 +75,7 @@ if (count($_POST)>0) {
 			global $db;
 			$sql = "insert into v_virtual_table_fields ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "virtual_table_id, ";
 			$sql .= "virtual_field_label, ";
 			$sql .= "virtual_field_name, ";
@@ -90,7 +90,7 @@ if (count($_POST)>0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$this->v_id', ";
+			$sql .= "'$this->domain_uuid', ";
 			$sql .= "'$this->virtual_table_id', ";
 			$sql .= "'$this->virtual_field_label', ";
 			$sql .= "'$this->virtual_field_name', ";
@@ -111,7 +111,7 @@ if (count($_POST)>0) {
 	}
 
 	class v_virtual_table_data {
-		var $v_id;
+		var $domain_uuid;
 		var $virtual_table_id;
 		var $virtual_data_row_id;
 		var $virtual_field_name;
@@ -123,11 +123,11 @@ if (count($_POST)>0) {
 			global $db;
 			$sql = "insert into v_virtual_table_data_row_id ";
 			$sql .= "(";
-			$sql .= "v_id ";
+			$sql .= "domain_uuid ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$this->v_id' ";
+			$sql .= "'$this->domain_uuid' ";
 			$sql .= ")";
 			$db->exec($sql);
 			unset($sql);
@@ -138,7 +138,7 @@ if (count($_POST)>0) {
 			global $db;
 			$sql = "insert into v_virtual_table_data ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "virtual_data_row_id, ";
 			$sql .= "virtual_table_id, ";
 			$sql .= "virtual_field_name, ";
@@ -148,7 +148,7 @@ if (count($_POST)>0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$this->v_id', ";
+			$sql .= "'$this->domain_uuid', ";
 			$sql .= "'$this->virtual_data_row_id', ";
 			$sql .= "'$this->virtual_table_id', ";
 			$sql .= "'$this->virtual_field_name', ";
@@ -169,7 +169,7 @@ if (count($_POST)>0) {
 			$sql .= "virtual_data_field_value = '$this->virtual_data_field_value', ";
 			$sql .= "virtual_data_add_user = '".$_SESSION["username"]."', ";
 			$sql .= "virtual_data_add_date = now() ";
-			$sql .= "where v_id = '$this->v_id' ";
+			$sql .= "where domain_uuid = '$this->domain_uuid' ";
 			$sql .= "and virtual_table_data_id = '$this->virtual_table_data_id' ";
 			$db->exec($sql);
 			$this->last_insert_id = $db->lastInsertId($id);
@@ -223,7 +223,7 @@ if (count($_POST)>0) {
 						$virtual_field_name = strtolower($virtual_field_name);
 
 						$fields = new v_virtual_table_fields;
-						$fields->v_id = $v_id;
+						$fields->domain_uuid = $domain_uuid;
 						$fields->virtual_table_id = $virtual_table_id;
 						$fields->virtual_field_label = $virtual_field_label;
 						$fields->virtual_field_name = $virtual_field_name;
@@ -255,7 +255,7 @@ if (count($_POST)>0) {
 								$virtual_field_value = $val;
 
 								$data = new v_virtual_table_data;
-								$data->v_id = $v_id;
+								$data->domain_uuid = $domain_uuid;
 								$data->virtual_table_id = $virtual_table_id;
 								if ($x == 0) {
 									$virtual_data_row_id = $data->db_unique_id();

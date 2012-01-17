@@ -29,7 +29,7 @@ include "root.php";
 	class install {
 
 		var $result;
-		var $v_id;
+		var $domain_uuid;
 		var $v_domain;
 		var $v_conf_dir;
 		var $v_scripts_dir;
@@ -112,7 +112,7 @@ include "root.php";
 			//create the dialplan/default.xml for single tenant or dialplan/domain.xml
 				require_once "includes/classes/dialplan.php";
 				$dialplan = new dialplan;
-				$dialplan->v_id = $this->v_id;
+				$dialplan->domain_uuid = $this->domain_uuid;
 				$dialplan->v_domain = $this->v_domain;
 				$dialplan->v_conf_dir = $this->v_conf_dir;
 				$dialplan->restore_advanced_xml();
@@ -210,7 +210,7 @@ include "root.php";
 //how to use the class
 	//include "includes/classes/install.php";
 	//$install = new install;
-	//$install->v_id = $v_id;
+	//$install->domain_uuid = $domain_uuid;
 	//$install->v_conf_dir = $v_conf_dir;
 	//$install->v_scripts_dir = $v_scripts_dir;
 	//$install->v_sounds_dir = $v_sounds_dir;

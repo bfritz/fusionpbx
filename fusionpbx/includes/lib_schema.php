@@ -23,8 +23,13 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
-//include "root.php";
+include "root.php";
 //require_once "includes/config.php";
+//require_once "includes/classes/database.php";
+//$db = new database;
+//$db->db = $db;
+//$db->db_type = $db_type;
+//$db->add();
 
 function db_table_exists_alternate ($db, $db_type, $table_name) {
 	$sql = "select count(*) from $table_name ";
@@ -59,11 +64,54 @@ function db_table_exists ($db, $db_type, $db_name, $table_name) {
 	}
 }
 
-function db_sqlite_table_info($db, $table_name) {
-	$sql = "PRAGMA table_info(".$table_name.");";
+function db_table_info($db, $db_name, $db_type, $table_name) {
+	if (strlen($table_name) == 0) { return false; }
+	if ($db_type == "sqlite") {
+		$sql = "PRAGMA table_info(".$table_name.");";
+	}
+	if ($db_type == "pgsql") {
+		$sql = "SELECT ordinal_position, ";
+		$sql .= "column_name, ";
+		$sql .= "data_type, ";
+		$sql .= "column_default, ";
+		$sql .= "is_nullable, ";
+		$sql .= "character_maximum_length, ";
+		$sql .= "numeric_precision ";
+		$sql .= "FROM information_schema.columns ";
+		$sql .= "WHERE table_name = '".$table_name."' ";
+		$sql .= "and table_catalog = '".$db_name."' ";
+		$sql .= "ORDER BY ordinal_position; ";
+	}
+	if ($db_type == "mysql") {
+		$sql = "describe ".$table_name.";";
+	}
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	return $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_data_type($db_type, $table_info, $column_name) {
+	if ($db_type == "sqlite") {
+		foreach ($table_info as $key => &$row) {
+			if ($row['name'] == $column_name) {
+				return $row['type'];
+			}
+		}
+	}
+	if ($db_type == "pgsql") {
+		foreach ($table_info as $key => &$row) {
+			if ($row['column_name'] == $column_name) {
+				return $row['data_type'];
+			}
+		}
+	}
+	if ($db_type == "mysql") {
+		foreach ($table_info as $key => &$row) {
+			if ($row['Field'] == $column_name) {
+				return $row['Type'];
+			}
+		}
+	}
 }
 
 function db_sqlite_column_exists($table_info, $column_name) {
@@ -75,41 +123,45 @@ function db_sqlite_column_exists($table_info, $column_name) {
 	return $false;
 }
 
-function db_column_exists ($db, $db_type, $db_name, $tmp_table_name, $tmp_column_name) {
+function db_column_exists ($db, $db_type, $db_name, $table_name, $column_name) {
 	global $display_type;
 
-	//check if the column exists
-		if ($db_type == "sqlite") {
-			$table_info = db_sqlite_table_info($db, $tmp_table_name);
-			if (db_sqlite_column_exists($table_info, $tmp_column_name)) {
-				return true;
-			}
-			else {
-				return false;
-			}
+	if ($db_type == "sqlite") {
+		$table_info = db_table_info($db, $db_name, $db_type, $table_name);
+		if (db_sqlite_column_exists($table_info, $column_name)) {
+			return true;
 		}
-		if ($db_type == "pgsql") {
-			$sql = "SELECT attname FROM pg_attribute WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = '$tmp_table_name') AND attname = '$tmp_column_name'; ";
+		else {
+			return false;
 		}
-		if ($db_type == "mysql") {
-			//$sql .= "SELECT * FROM information_schema.COLUMNS where TABLE_SCHEMA = '$db_name' and TABLE_NAME = '$tmp_table_name' and COLUMN_NAME = '$tmp_column_name' ";
-			$sql = "show columns from $tmp_table_name where field = '$tmp_column_name' ";
+	}
+	if ($db_type == "pgsql") {
+		$sql = "SELECT attname FROM pg_attribute WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = '$table_name') AND attname = '$column_name'; ";
+	}
+	if ($db_type == "mysql") {
+		//$sql .= "SELECT * FROM information_schema.COLUMNS where TABLE_SCHEMA = '$db_name' and TABLE_NAME = '$table_name' and COLUMN_NAME = '$column_name' ";
+		$sql = "show columns from $table_name where field = '$column_name' ";
+	}
+	if ($sql) {
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		if (!$result) {
+			return false;
 		}
-		if ($sql) {
-			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
-			if (!$result) {
-				return false;
-			}
-			if (count($result) > 0) {
-				return true;
-			}
-			else {
-				return false;
-			}
-			unset ($prep_statement);
+		if (count($result) > 0) {
+			return true;
 		}
+		else {
+			return false;
+		}
+		unset ($prep_statement);
+	}
+}
+
+function db_column_data_type ($db, $db_type, $db_name, $table_name, $column_name) {
+	$table_info = db_table_info($db, $db_name, $db_type, $table_name);
+	return db_data_type($db_type, $table_info, $column_name);
 }
 
 function db_create_table ($apps, $db_type, $table) {
@@ -181,7 +233,7 @@ function db_insert_into ($apps, $db_type, $table) {
 		}
 	}
 }
-	
+
 function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 	global $display_type;
 
@@ -276,6 +328,13 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 									else {
 										$field_type = $field['type'];
 									}
+								//get the field name
+									if (is_array($field['name'])) {
+										$field_name = $field['name']['text'];
+									}
+									else {
+										$field_name = $field['name'];
+									}
 								//find missing fields and add them
 									if (is_array($field['name'])) {
 										if ($field['exists'] == "false" && !db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
@@ -289,7 +348,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 									}
 								//rename fields where the name has changed
 									if (is_array($field['name'])) {
-										if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {					
+										if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
 											if ($db_type == "pgsql") {
 												$sql_update .= "ALTER TABLE ".$table_name." RENAME COLUMN ".$field['name']['deprecated']." to ".$field['name']['text'].";\n";
 											}
@@ -305,18 +364,36 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 									}
 								//change the data type if it has been changed
 									//if the data type in the app db array is different than the type in the database then change the data type
-									//if (db_column_data_type ($db, $db_type, $db_name, $table_name, $field['name']['deprecated']) != $field_type) {
-										//if ($db_type == "pgsql") {
-											//$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field['name']." TYPE ".$field_type.";\n";
-										//}
-										//if ($db_type == "mysql") {
-											//$sql_update .= "ALTER TABLE ".$table_name." modify ".$field['name']." ".$field_type.";\n";
-										//}
-										//if ($db_type == "sqlite") {
+									$db_field_type = db_column_data_type ($db, $db_type, $db_name, $table_name, $field_name);
+									if ($db_field_type != $field_type) {
+										if ($db_type == "pgsql") {
+											if (strtolower($field_type) == "uuid") {
+													$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field_name." TYPE uuid USING\n";
+													$sql_update .= "CAST(regexp_replace(".$field_name.", '([A-Z0-9]{4})([A-Z0-9]{12})', E'\\1-\\2')\n";
+													$sql_update .= "AS uuid);\n";
+											}
+											else {
+												if ($db_field_type = "integer" && strtolower($field_type) == "serial") {
+													//field type has not changed
+												} elseif ($db_field_type = "timestamp without time zone" && strtolower($field_type) == "timestamp") {
+													//field type has not changed
+												} elseif ($db_field_type = "character" && strtolower($field_type) == "char(1)") {
+													//field type has not changed
+												}
+												else {
+													$sql_update .= "-- $db_type, $db_name, $table_name, $field_name ".db_column_data_type ($db, $db_type, $db_name, $table_name, $field_name)."<br>";
+													$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field_name." TYPE ".$field_type.";\n";
+												}
+											}
+										}
+										if ($db_type == "mysql") {
+											$sql_update .= "ALTER TABLE ".$table_name." modify ".$field_name." ".$field_type.";\n";
+										}
+										if ($db_type == "sqlite") {
 											//a change has been made to the field type
-											//$apps[$x]['db'][$y]['rebuild'] = 'true';
-										//}
-									//}
+											$apps[$x]['db'][$y]['rebuild'] = 'true';
+										}
+									}
 							}
 							unset($column_array);
 						}
@@ -433,7 +510,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 				unset ($prep_statement);
 			//end the list of tables
 				echo "</table>\n";
-				echo "<br />\n";			
+				echo "<br />\n";
 		}
 
 		//loop line by line through all the lines of sql code
@@ -445,7 +522,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 				if ($display_type == "text") {
 					echo "	Schema:\n";
 				}
-				$db->beginTransaction();
+				//$db->beginTransaction();
 				$update_array = explode(";", $sql_update);
 				foreach($update_array as $sql) {
 					if (strlen(trim($sql))) {
@@ -462,7 +539,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 						}
 					}
 				}
-				$db->commit();
+				//$db->commit();
 				echo "\n";
 				unset ($file_contents, $sql_update, $sql);
 			}

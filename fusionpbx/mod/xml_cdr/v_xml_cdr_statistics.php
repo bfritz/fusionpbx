@@ -58,7 +58,7 @@ else {
 //get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= "select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -73,9 +73,9 @@ else {
 
 //show all call detail records to admin and superadmin. for everyone else show only the call details for extensions assigned to them
 	if (!ifgroup("admin") && !ifgroup("superadmin")) {
-		// select caller_id_number, destination_number from v_xml_cdr where v_id = '1' 
+		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '1' 
 		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
-		$sqlwhere = "where v_id = '$v_id' and ( ";
+		$sqlwhere = "where domain_uuid = '$domain_uuid' and ( ";
 		if (count($extension_array) > 0) {
 			$x = 0;
 			foreach($extension_array as $value) {
@@ -94,7 +94,7 @@ else {
 	}
 	else {
 		//superadmin or admin
-		$sqlwhere = "where v_id = '$v_id' ".$sqlwhere;
+		$sqlwhere = "where domain_uuid = '$domain_uuid' ".$sqlwhere;
 	}
 
 //create the sql query to get the xml cdr records

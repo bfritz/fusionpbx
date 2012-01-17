@@ -49,7 +49,7 @@ if (strlen($_GET["fifo_agent_profile_id"]) > 0) {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
+	//$domain_uuid = check_str($_POST["domain_uuid"]);
 	$fifo_agent_profile_id = check_str($_POST["fifo_agent_profile_id"]);
 	$fifo_name = check_str($_POST["fifo_name"]);
 	$agent_priority = check_str($_POST["agent_priority"]);
@@ -71,7 +71,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($fifo_agent_profile_id) == 0) { $msg .= "Please provide: fifo_agent_profile_id<br>\n"; }
 		//if (strlen($fifo_name) == 0) { $msg .= "Please provide: FIFO Name<br>\n"; }
 		//if (strlen($agent_priority) == 0) { $msg .= "Please provide: Agent Priority<br>\n"; }
@@ -94,7 +94,7 @@ if ($_POST["persistformvar"] != "true") {
 	if ($action == "add") {
 		$sql = "insert into v_fifo_agent_profile_members ";
 		$sql .= "(";
-		$sql .= "v_id, ";
+		$sql .= "domain_uuid, ";
 		$sql .= "fifo_agent_profile_id, ";
 		$sql .= "fifo_name, ";
 		$sql .= "agent_priority, ";
@@ -102,7 +102,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
-		$sql .= "'$v_id', ";
+		$sql .= "'$domain_uuid', ";
 		$sql .= "'$fifo_agent_profile_id', ";
 		$sql .= "'$fifo_name', ";
 		$sql .= "'$agent_priority', ";
@@ -126,7 +126,7 @@ if ($_POST["persistformvar"] != "true") {
 		$sql .= "fifo_name = '$fifo_name', ";
 		$sql .= "agent_priority = '$agent_priority', ";
 		$sql .= "agent_username = '$agent_username' ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fifo_agent_profile_member_id = '$fifo_agent_profile_member_id'";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -148,7 +148,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$fifo_agent_profile_member_id = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_fifo_agent_profile_members ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and fifo_agent_profile_member_id = '$fifo_agent_profile_member_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -202,7 +202,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	//generate the fifo name select list
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes_details ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$x = 0;
@@ -240,7 +240,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	//generate the user list
 		$sql = "SELECT * FROM v_users ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 

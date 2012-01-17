@@ -47,7 +47,7 @@ else {
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -200,11 +200,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "user_template_name = '$user_template_name', ";
 		$sql .= "user_email = '$user_email' ";
 		if (strlen($id)> 0) {
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and id = $id ";
 		}
 		else {
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '$username' ";
 		}
 		if (permission_exists("user_account_settings_edit")) {
@@ -222,7 +222,7 @@ else {
 
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and username = '$username' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

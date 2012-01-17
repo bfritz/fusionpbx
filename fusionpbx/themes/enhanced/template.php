@@ -654,14 +654,14 @@ function confirmdelete(url) {
 								$tmp_style = "style=\"opacity:0.7;\" ";
 								$tmp_style .= "onmouseover=\"this.style.opacity=1;\" ";
 								$tmp_style .= "onmouseout=\"this.style.opacity=0.7;\" ";
-								echo "		<select id='v_id' name='v_id' class='formfld' onchange=\"window.location='".PROJECT_PATH."/core/system_settings/v_system_settings.php?v_id='+this.value+'&domain_change=true';\" $tmp_style>\n";
+								echo "		<select id='domain_uuid' name='domain_uuid' class='formfld' onchange=\"window.location='".PROJECT_PATH."/core/system_settings/v_system_settings.php?domain_uuid='+this.value+'&domain_change=true';\" $tmp_style>\n";
 								echo "		<option value=''></option>\n";
 								foreach($_SESSION['domains'] as $row) {
-									if ($row['v_id'] == $v_id) {
-										echo "	<option value='".$row['v_id']."' selected='selected'>".$row['domain']."</option>\n";
+									if ($row['domain_uuid'] == $domain_uuid) {
+										echo "	<option value='".$row['domain_uuid']."' selected='selected'>".$row['domain']."</option>\n";
 									}
 									else {
-										echo "	<option value='".$row['v_id']."'>".$row['domain']."</option>\n";
+										echo "	<option value='".$row['domain_uuid']."'>".$row['domain']."</option>\n";
 									}
 								}
 								echo "	</select>\n";

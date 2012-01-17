@@ -46,11 +46,11 @@ session_start();
 
 		//check the username and password if they don't match then redirect back to login
 			$sql = "select * from v_users ";
-			$sql .= "where v_id=:v_id ";
+			$sql .= "where domain_uuid=:domain_uuid ";
 			$sql .= "and username=:username ";
 			//$sql .= "and password=:password ";
 			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->bindParam(':v_id', $v_id);
+			$prep_statement->bindParam(':domain_uuid', $domain_uuid);
 			$prep_statement->bindParam(':username', check_str($_REQUEST["username"]));
 			//$prep_statement->bindParam(':password', md5($v_salt.check_str($_REQUEST["password"])));
 			$prep_statement->execute();
@@ -109,10 +109,10 @@ session_start();
 
 		//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
 			$sql = "SELECT * FROM v_group_members ";
-			$sql .= "where v_id=:v_id ";
+			$sql .= "where domain_uuid=:domain_uuid ";
 			$sql .= "and username=:username ";
 			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->bindParam(':v_id', $v_id);
+			$prep_statement->bindParam(':domain_uuid', $domain_uuid);
 			$prep_statement->bindParam(':username', $_SESSION["username"]);
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -125,10 +125,10 @@ session_start();
 			foreach($_SESSION["groups"] as $field) {
 				if (strlen($field['group_id']) > 0) {
 					if ($x == 0) {
-						$sql .= "where (v_id = '".$v_id."' and group_id = '".$field['group_id']."') ";
+						$sql .= "where (domain_uuid = '".$domain_uuid."' and group_id = '".$field['group_id']."') ";
 					}
 					else {
-						$sql .= "or (v_id = '".$v_id."' and group_id = '".$field['group_id']."') ";
+						$sql .= "or (domain_uuid = '".$domain_uuid."' and group_id = '".$field['group_id']."') ";
 					}
 					$x++;
 				}

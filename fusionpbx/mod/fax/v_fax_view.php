@@ -44,7 +44,7 @@ else {
 		$fax_id = check_str($_GET["id"]);
 		$sql = "";
 		$sql .= "select * from v_fax ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fax_id = '$fax_id' ";
 		if (ifgroup("superadmin")) {
 			//show all fax extensions

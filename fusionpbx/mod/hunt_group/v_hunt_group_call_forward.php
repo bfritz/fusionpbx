@@ -54,7 +54,7 @@ if (permission_exists('hunt_group_call_forward')) {
 
 	$sql = "";
 	$sql .= "select * from v_hunt_group ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and hunt_group_type <> 'dnd' ";
 	$sql .= "and hunt_group_type <> 'call_forward' ";
 	$sql .= "and hunt_group_type <> 'follow_me_simultaneous' ";

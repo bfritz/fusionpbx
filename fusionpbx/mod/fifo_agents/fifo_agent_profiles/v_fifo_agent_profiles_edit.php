@@ -45,7 +45,7 @@ else {
 
 //POST to PHP variables
 if (count($_POST)>0) {
-	//$v_id = check_str($_POST["v_id"]);
+	//$domain_uuid = check_str($_POST["domain_uuid"]);
 	$profile_name = check_str($_POST["profile_name"]);
 	$profile_desc = check_str($_POST["profile_desc"]);
 }
@@ -65,7 +65,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($profile_name) == 0) { $msg .= "Please provide: Profile Name<br>\n"; }
 		if (strlen($profile_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -87,13 +87,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_fifo_agent_profiles ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "profile_name, ";
 			$sql .= "profile_desc ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$profile_name', ";
 			$sql .= "'$profile_desc' ";
 			$sql .= ")";
@@ -111,10 +111,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_fifo_agent_profiles set ";
-			$sql .= "v_id = '$v_id', ";
+			$sql .= "domain_uuid = '$domain_uuid', ";
 			$sql .= "profile_name = '$profile_name', ";
 			$sql .= "profile_desc = '$profile_desc' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and fifo_agent_profile_id = '$fifo_agent_profile_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -136,13 +136,13 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$fifo_agent_profile_id = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_fifo_agent_profiles ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and fifo_agent_profile_id = '$fifo_agent_profile_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
+		$domain_uuid = $row["domain_uuid"];
 		$profile_name = $row["profile_name"];
 		$profile_desc = $row["profile_desc"];
 		break; //limit to 1 row

@@ -42,7 +42,7 @@ else {
 //get the agent details
 	$sql = "";
 	$sql .= "select * from v_call_center_tier ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and call_center_tier_id = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -55,14 +55,14 @@ else {
 	unset ($prep_statement);
 
 //delete the agent from the freeswitch
-	//get the domain using the $v_id
-		$tmp_domain = $_SESSION['domains'][$v_id]['domain'];
+	//get the domain using the $domain_uuid
+		$tmp_domain = $_SESSION['domains'][$domain_uuid]['domain'];
 	//setup the event socket connection
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 	//delete the agent over event socket
 		if ($fp) {
 			//callcenter_config tier del [queue_name] [agent_name]
-			$cmd = "api callcenter_config tier del ".$queue_name."@".$tmp_domain." ".$agent_name."@".$_SESSION['domains'][$v_id]['domain'];
+			$cmd = "api callcenter_config tier del ".$queue_name."@".$tmp_domain." ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain'];
 			$response = event_socket_request($fp, $cmd);
 		}
 
@@ -70,7 +70,7 @@ else {
 	if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_call_center_tier ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_center_tier_id = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

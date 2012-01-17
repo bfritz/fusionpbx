@@ -33,9 +33,9 @@
 //get the db connection information
 	if ($db) {
 		$sql = "";
-		$sql .= "select * from v_database_connections ";
-		$sql .= "where v_id = '$v_id' ";
-		$sql .= "and database_connection_id = '".$_REQUEST['id']."' ";
+		$sql .= "select * from v_db ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and db_uuid = '".$_REQUEST['id']."' ";
 		$prep_statement = $db->prepare($sql);
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -50,7 +50,7 @@
 			break;
 		}
 	}
-	
+
 //unset the database connection
 	unset($db);
 
@@ -101,8 +101,8 @@ if ($db_type == "sqlite") {
 		}
 	}
 
-	if (!function_exists('phpunix_timestamp')) {
-		function phpunix_timestamp($string) {
+	if (!function_exists('php_unix_timestamp')) {
+		function php_unix_timestamp($string) {
 			return strtotime($string);
 		}
 	}
@@ -113,20 +113,20 @@ if ($db_type == "sqlite") {
 		}
 	}
 
-	if (!function_exists('phpleft')) {
-		function phpleft($string, $num) {
+	if (!function_exists('php_left')) {
+		function php_left($string, $num) {
 			return substr($string, 0, $num);
 		}
 	}
 
-	if (!function_exists('phpright')) {
-		function phpright($string, $num) {
+	if (!function_exists('php_right')) {
+		function php_right($string, $num) {
 			return substr($string, (strlen($string)-$num), strlen($string));
 		}
 	}
 
-	if (!function_exists('phpsqlitedatatype')) {
-		function phpsqlitedatatype($string, $field) {
+	if (!function_exists('php_sqlite_data_type')) {
+		function php_sqlite_data_type($string, $field) {
 
 			//get the string between the start and end characters
 			$start = '(';
@@ -137,25 +137,14 @@ if ($db_type == "sqlite") {
 			$len = stripos($string,$end,$ini) - $ini;
 			$string = substr($string,$ini,$len);
 
-			$strdatatype = '';
-			$stringarray = explode(',', $string);
-			foreach($stringarray as $lnvalue) {
-				//$strdatatype .= "-- ".$lnvalue ." ".strlen($lnvalue)." delim ".strrchr($lnvalue, " ")."---<br>";
-				//$delimpos = stripos($lnvalue, " ");
-				//$strdatatype .= substr($value,$delimpos,strlen($value))." --<br>";
-
+			$str_data_type = '';
+			$string_array = explode(',', $string);
+			foreach($string_array as $lnvalue) {
 				$fieldlistarray = explode (" ", $value);
-				//$strdatatype .= $value ."<br>";
-				//$strdatatype .= $fieldlistarray[0] ."<br>";
-				//echo $fieldarray[0]."<br>\n";
-				if ($fieldarray[0] == $field) {
-					//$strdatatype = $fieldarray[1]." ".$fieldarray[2]." ".$fieldarray[3]." ".$fieldarray[4]; //strdatatype
-				}
 				unset($fieldarray, $string, $field);
 			}
 
-			//$strdatatype = $string;
-			return $strdatatype;
+			return $str_data_type;
 		}
 	} //end function
 
@@ -168,11 +157,11 @@ if ($db_type == "sqlite") {
 		//add additional functions to SQLite so that they are accessible inside SQL
 		//bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
 		$db->sqliteCreateFunction('md5', 'phpmd5', 1);
-		$db->sqliteCreateFunction('unix_timestamp', 'phpunix_timestamp', 1);
+		$db->sqliteCreateFunction('unix_timestamp', 'php_unix_timestamp', 1);
 		$db->sqliteCreateFunction('now', 'phpnow', 0);
-		$db->sqliteCreateFunction('sqlitedatatype', 'phpsqlitedatatype', 2);
-		$db->sqliteCreateFunction('strleft', 'phpleft', 2);
-		$db->sqliteCreateFunction('strright', 'phpright', 2);
+		$db->sqliteCreateFunction('sqlitedatatype', 'php_sqlite_data_type', 2);
+		$db->sqliteCreateFunction('strleft', 'php_left', 2);
+		$db->sqliteCreateFunction('strright', 'php_right', 2);
 	}
 	catch (PDOException $error) {
 		print "error: " . $error->getMessage() . "<br/>";

@@ -60,7 +60,7 @@ if ($_SESSION['db_tables']['v_xmpp'] != 'valid') {
 //get a list of assigned extensions for this user
 $sql = "";
 $sql .= "select * from v_xmpp ";
-$sql .= "where v_id = '$v_id' ";
+$sql .= "where domain_uuid = '$domain_uuid' ";
 $prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
 $x = 0;

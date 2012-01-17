@@ -27,7 +27,7 @@ include "root.php";
 
 //define the follow me class
 	class schema {
-		public $v_id;
+		public $domain_uuid;
 		public $db;
 		public $apps;
 		public $db_type;

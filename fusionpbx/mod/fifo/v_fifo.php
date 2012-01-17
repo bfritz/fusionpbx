@@ -48,7 +48,7 @@ require_once "includes/paging.php";
 	//add data to the queue array
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$x = 0;
@@ -111,18 +111,18 @@ require_once "includes/paging.php";
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($queue_array) == 0) {
 		//when there are no queues then hide all dialplan entries
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
 		foreach ($queue_array as &$row) {
 			if ($x == 0) {
-				$sql .= " where v_id = '$v_id' \n";
+				$sql .= " where domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			else {
-				$sql .= " or v_id = '$v_id' \n";
+				$sql .= " or domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			$x++;
@@ -146,18 +146,18 @@ require_once "includes/paging.php";
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($queue_array) == 0) {
 		//when there are no queues then hide all dialplan entries
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
 		foreach ($queue_array as &$row) {
 			if ($x == 0) {
-				$sql .= " where v_id = '$v_id' \n";
+				$sql .= " where domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			else {
-				$sql .= " or v_id = '$v_id' \n";
+				$sql .= " or domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			$x++;

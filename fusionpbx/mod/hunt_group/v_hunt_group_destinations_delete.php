@@ -45,7 +45,7 @@ if (strlen($id)>0) {
 	//delete the data
 		$sql = "";
 		$sql .= "delete from v_hunt_group_destinations ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_destination_id = '$id' ";
 		$sql .= "and hunt_group_id = '$hunt_group_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));

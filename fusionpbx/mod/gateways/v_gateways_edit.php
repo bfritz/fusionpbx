@@ -51,7 +51,7 @@ else {
 
 //get the http values and set them as php variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
+		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		$gateway = check_str($_POST["gateway"]);
 		$username = check_str($_POST["username"]);
 		$password = check_str($_POST["password"]);
@@ -90,7 +90,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($gateway) == 0) { $msg .= "Please provide: Gateway<br>\n"; }
 		if ($register == "true") {
 			if (strlen($username) == 0) { $msg .= "Please provide: Username<br>\n"; }
@@ -141,7 +141,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('gateways_add')) {
 				$sql = "insert into v_gateways ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "gateway, ";
 				$sql .= "username, ";
 				$sql .= "password, ";
@@ -173,7 +173,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$gateway', ";
 				$sql .= "'$username', ";
 				$sql .= "'$password', ";
@@ -213,7 +213,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('gateways_edit')) {
 				$sql = "update v_gateways set ";
-				//$sql .= "v_id = '$v_id', ";
+				//$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "gateway = '$gateway', ";
 				$sql .= "username = '$username', ";
 				$sql .= "password = '$password', ";
@@ -242,7 +242,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "profile = '$profile', ";
 				$sql .= "enabled = '$enabled', ";
 				$sql .= "description = '$description' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and gateway_id = '$gateway_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -290,13 +290,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$gateway_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_gateways ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and gateway_id = '$gateway_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$gateway = $row["gateway"];
 			$username = $row["username"];
 			$password = $row["password"];

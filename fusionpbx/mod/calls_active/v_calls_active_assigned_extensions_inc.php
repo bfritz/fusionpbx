@@ -37,7 +37,7 @@ if (permission_exists('extensions_active_assigned_view')) {
 		if (count($_SESSION['user_extension_array']) == 0) {
 			$sql = "";
 			$sql .= "select * from v_extensions ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
@@ -77,7 +77,7 @@ if (permission_exists('extensions_active_assigned_view')) {
 		echo "<th>Options</th>\n";
 		echo "</tr>\n";
 		foreach ($_SESSION['extension_array'] as $row) {
-			$v_id = $row['v_id'];
+			$domain_uuid = $row['domain_uuid'];
 			$extension = $row['extension'];
 			$enabled = $row['enabled'];
 			$effective_caller_id_name = $row['effective_caller_id_name'];

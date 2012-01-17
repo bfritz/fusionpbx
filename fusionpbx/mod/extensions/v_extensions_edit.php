@@ -121,7 +121,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		//if (strlen($number_alias) == 0) { $msg .= "Please provide: Number Alias<br>\n"; }
 		//if (strlen($user_list) == 0) { $msg .= "Please provide: User List<br>\n"; }
@@ -217,7 +217,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$password = generate_password();
 					$sql = "insert into v_extensions ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "extension, ";
 					$sql .= "number_alias, ";
 					$sql .= "password, ";
@@ -259,7 +259,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$extension', ";
 					$sql .= "'$number_alias', ";
 					$sql .= "'$password', ";
@@ -446,7 +446,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "sip_bypass_media = '$sip_bypass_media', ";
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "description = '$description' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and extension_id = '$extension_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -488,7 +488,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$extension_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_extensions ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and extension_id = '$extension_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -667,7 +667,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
-	$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where v_id = '$v_id'"; 
+	$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where domain_uuid = '$domain_uuid'"; 
 	echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
 	echo "<br />\n";
 	echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";

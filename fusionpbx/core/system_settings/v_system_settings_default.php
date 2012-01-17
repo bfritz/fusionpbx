@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$v_id = check_str($_REQUEST["id"]);
+		$domain_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -169,7 +169,7 @@ else {
 		//$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
 		//$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
 		//$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir' ";
-		$sql .= "where v_id = '$v_id'";
+		$sql .= "where domain_uuid = '$domain_uuid'";
 		$db->exec($sql);
 		unset($sql);
 	}

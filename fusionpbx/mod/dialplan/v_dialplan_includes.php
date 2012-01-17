@@ -82,7 +82,7 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
-	$sql .= " where v_id = '$v_id' ";
+	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -99,7 +99,7 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_includes ";
-	$sql .= " where v_id = '$v_id' ";
+	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -135,7 +135,7 @@ $order = $_GET["order"];
 			if (strlen($row['extension_number']) == 0) {
 				$sql = "";
 				$sql .= "select * from v_dialplan_includes_details ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' ";
 				$sql .= "and field_type = 'destination_number' ";
 				$prep_statement = $db->prepare(check_sql($sql));
@@ -150,7 +150,7 @@ $order = $_GET["order"];
 					//update the extension number
 						$sql = "update v_dialplan_includes set ";
 						$sql .= "extension_number = '$extension_number', ";
-						$sql .= "where v_id = '$v_id' ";
+						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."'";
 						$db->exec($sql);
 						unset($sql);

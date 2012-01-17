@@ -88,7 +88,7 @@ require_once "includes/paging.php";
 	$i = 0;
 	$sql = "";
 	$sql .= "select * from v_recordings ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -109,7 +109,7 @@ require_once "includes/paging.php";
 
 						$sql = "insert into v_recordings ";
 						$sql .= "(";
-						$sql .= "v_id, ";
+						$sql .= "domain_uuid, ";
 						$sql .= "recording_filename, ";
 						$sql .= "recording_name, ";
 						//$sql .= "recordingid, ";
@@ -117,10 +117,10 @@ require_once "includes/paging.php";
 						$sql .= ")";
 						$sql .= "values ";
 						$sql .= "(";
-						$sql .= "'$v_id', ";
+						$sql .= "'$domain_uuid', ";
 						$sql .= "'$file', ";
 						$sql .= "'".$a_file[0]."', ";
-						//$sql .= "'".guid()."', ";
+						//$sql .= "'".uuid()."', ";
 						$sql .= "'auto' ";
 						$sql .= ")";
 						$db->exec(check_sql($sql));
@@ -190,7 +190,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= "select * from v_recordings ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -207,7 +207,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= "select * from v_recordings ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));

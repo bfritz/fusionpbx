@@ -40,7 +40,7 @@ else {
 
 require_once "includes/header.php";
 
-$v_domain = $_SESSION['domains'][$v_id]['domain'];
+$v_domain = $_SESSION['domains'][$domain_uuid]['domain'];
 
 //add or update the database
 if (isset($_REQUEST["id"])) {
@@ -56,7 +56,7 @@ if ($action == "update") {
 //get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= "select * from v_xmpp ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and xmpp_profile_id = '$profile_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -113,7 +113,7 @@ if (strlen($error) > 0) {
 if ($action == "add" && permission_exists('xmpp_add')) {
 	$sql = "";
 	$sql .= "insert into v_xmpp (";
- 	$sql .= "v_id, ";
+ 	$sql .= "domain_uuid, ";
  	$sql .= "profile_name, ";
  	$sql .= "username, ";
  	$sql .= "password, ";
@@ -133,7 +133,7 @@ if ($action == "add" && permission_exists('xmpp_add')) {
  	$sql .= "local_network_acl, ";
 	$sql .= "description ";
 	$sql .= ") values (";
- 	$sql .= "$v_id, ";
+ 	$sql .= "$domain_uuid, ";
  	$sql .= "'" . $request['profile_name'] . "', ";
  	$sql .= "'" . $request['profile_username'] . "', ";
  	$sql .= "'" . $request['profile_password'] . "', ";

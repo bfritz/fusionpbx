@@ -82,10 +82,10 @@ $order = $_GET["order"];
 
 	$sql = "";
 	$sql .= "select * from v_rss ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_category = '$rss_category' ";
 	$sql .= "and length(rss_del_date) = 0 ";
-	$sql .= "or v_id = '$v_id' ";
+	$sql .= "or domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_category = '$rss_category' ";
 	$sql .= "and rss_del_date is null ";
 	if (strlen($orderby)> 0) {

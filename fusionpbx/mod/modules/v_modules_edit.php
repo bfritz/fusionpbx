@@ -61,7 +61,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($module_label) == 0) { $msg .= "Please provide: Label<br>\n"; }
 		if (strlen($module_name) == 0) { $msg .= "Please provide: Module Name<br>\n"; }
 		//if (strlen($module_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
@@ -86,7 +86,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('modules_add')) {
 				$sql = "insert into v_modules ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "module_label, ";
 				$sql .= "module_name, ";
 				$sql .= "module_desc, ";
@@ -153,7 +153,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$module_label = $row["module_label"];
 			$module_name = $row["module_name"];
 			$module_desc = $row["module_desc"];
@@ -230,7 +230,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Module Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$tablename = 'v_modules';$fieldname = 'module_category';$sqlwhereoptional = "where v_id = '$v_id'";$fieldcurrentvalue = $module_category;
+	$tablename = 'v_modules';$fieldname = 'module_category';$sqlwhereoptional = "where domain_uuid = '$domain_uuid'";$fieldcurrentvalue = $module_category;
 	echo htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
 	echo "<br />\n";
 	echo "\n";

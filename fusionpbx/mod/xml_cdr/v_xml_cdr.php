@@ -240,7 +240,7 @@ else {
 				/*
 				$sql = "";
 				$sql .= "select distinct(hangup_cause) from v_xml_cdr ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
@@ -338,7 +338,7 @@ else {
 //get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= "select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -352,10 +352,10 @@ else {
 	unset ($prepstatement, $x);
 
 	//example sql
-		// select caller_id_number, destination_number from v_xml_cdr where v_id = '1' 
+		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '1' 
 		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
 	if (!ifgroup("admin") && !ifgroup("superadmin")) {
-		$sqlwhere = "where v_id = '$v_id' ";
+		$sqlwhere = "where domain_uuid = '$domain_uuid' ";
 		$sqlwhere .= "and ( ";
 		if (count($extension_array) > 0) {
 			$x = 0;
@@ -378,7 +378,7 @@ else {
 	}
 	else {
 		//superadmin or admin
-		$sqlwhere = "where v_id = '$v_id' ".$sqlwhere;
+		$sqlwhere = "where domain_uuid = '$domain_uuid' ".$sqlwhere;
 	}
 	//$sqlwhere = str_replace ("where or", "where", $sqlwhere);
 	//$sqlwhere = str_replace ("where and", " and", $sqlwhere);

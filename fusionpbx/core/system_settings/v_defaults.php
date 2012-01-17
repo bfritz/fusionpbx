@@ -29,7 +29,7 @@
 		$v_gateways_dir = substr($v_gateways_dir, 0, (strlen($v_gateways_dir)-9));
 		$sql = "update v_system_settings set ";
 		$sql .= "v_gateways_dir = '$v_gateways_dir' ";
-		$sql .= "where v_id = '$v_id'";
+		$sql .= "where domain_uuid = '$domain_uuid'";
 		$db->exec($sql);
 		unset($sql);
 	}

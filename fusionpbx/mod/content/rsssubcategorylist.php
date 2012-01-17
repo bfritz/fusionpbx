@@ -53,7 +53,7 @@ echo "      <br>";
 
 $sql = "";
 $sql .= "select * from v_rss_sub_category ";
-$sql .= "where v_id = '$v_id' ";
+$sql .= "where domain_uuid = '$domain_uuid' ";
 if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 
 $prepstatement = $db->prepare(check_sql($sql));

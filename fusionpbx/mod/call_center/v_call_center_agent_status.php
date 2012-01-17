@@ -51,7 +51,7 @@ require_once "includes/paging.php";
 						//set the user_status
 							$sql  = "update v_users set ";
 							$sql .= "user_status = '".$row['status']."' ";
-							$sql .= "where v_id = '$v_id' ";
+							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and username = '".$row['name']."' ";
 							$prepstatement = $db->prepare(check_sql($sql));
 							$prepstatement->execute();
@@ -60,10 +60,10 @@ require_once "includes/paging.php";
 								//set the default dnd action
 									$dnd_action = "add";
 								//set the call center status to Logged Out
-									$cmd = "api callcenter_config agent set status ".$row['name']."@".$_SESSION['domains'][$v_id]['domain']." 'Logged Out'";
+									$cmd = "api callcenter_config agent set status ".$row['name']."@".$_SESSION['domains'][$domain_uuid]['domain']." 'Logged Out'";
 							}
 							else {
-								$cmd = "api callcenter_config agent set status ".$row['name']."@".$_SESSION['domains'][$v_id]['domain']." '".$row['status']."'";
+								$cmd = "api callcenter_config agent set status ".$row['name']."@".$_SESSION['domains'][$domain_uuid]['domain']." '".$row['status']."'";
 							}
 							//echo $cmd."<br />\n";
 							$response = event_socket_request($fp, $cmd);
@@ -73,7 +73,7 @@ require_once "includes/paging.php";
 				//loop through the list of assigned extensions
 					$sql = "";
 					$sql .= "select * from v_extensions ";
-					$sql .= "where v_id = '$v_id' ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and user_list like '%|".$row['name']."|%' ";
 					$prepstatement = $db->prepare(check_sql($sql));
 					$prepstatement->execute();
@@ -83,7 +83,7 @@ require_once "includes/paging.php";
 						$extension = $sub_row["extension"];
 						//hunt_group information used to determine if this is an add or an update
 							$sql  = "select * from v_hunt_group ";
-							$sql .= "where v_id = '$v_id' ";
+							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and hunt_group_extension = '$extension' ";
 							$prepstatement2 = $db->prepare(check_sql($sql));
 							$prepstatement2->execute();
@@ -98,7 +98,7 @@ require_once "includes/paging.php";
 						//add or update dnd
 							$dnd = new do_not_disturb;
 							//$dnd->debug = false;
-							$dnd->v_id = $v_id;
+							$dnd->domain_uuid = $domain_uuid;
 							$dnd->dnd_id = $dnd_id;
 							$dnd->v_domain = $v_domain;
 							$dnd->extension = $extension;

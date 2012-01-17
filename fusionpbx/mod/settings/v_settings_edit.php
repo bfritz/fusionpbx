@@ -111,7 +111,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('settings_edit')) {
 				$sql = "insert into v_settings ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "numbering_plan, ";
 				$sql .= "default_gateway, ";
 				$sql .= "event_socket_ip_address, ";
@@ -172,7 +172,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('settings_edit')) {
 				$sql = "update v_settings set ";
-				$sql .= "v_id = '1', ";
+				$sql .= "domain_uuid = '1', ";
 				$sql .= "numbering_plan = '$numbering_plan', ";
 				$sql .= "default_gateway = '$default_gateway', ";
 				$sql .= "event_socket_ip_address = '$event_socket_ip_address', ";
@@ -216,7 +216,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_settings ";
 		$sql .= "where setting_id = '$setting_id' ";
-		$sql .= "and v_id = '1' ";
+		$sql .= "and domain_uuid = '1' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();

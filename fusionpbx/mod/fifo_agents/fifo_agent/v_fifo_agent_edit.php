@@ -39,7 +39,7 @@ else {
 
 //POST to PHP variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
+		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		$resolution_code = check_str($_POST["resolution_code"]);
 		$transaction_id = check_str($_POST["transaction_id"]);
 		$action_item = check_str($_POST["action_item"]);
@@ -57,8 +57,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($resolution_code) == 0) { $msg .= "Please provide: Resolution Code<br>\n"; }
 		//if (strlen($transaction_id) == 0) { $msg .= "Please provide: Transaction ID<br>\n"; }
 		//if (strlen($action_item) == 0) { $msg .= "Please provide: Action Item<br>\n"; }
@@ -92,7 +92,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				if (strlen($uuid) > 0) {
 					$sql = "insert into v_fifo_agent_call_logs ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "resolution_code, ";
 					$sql .= "transaction_id, ";
 					$sql .= "action_item, ";
@@ -103,7 +103,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$resolution_code', ";
 					$sql .= "'$transaction_id', ";
 					$sql .= "'$action_item', ";
@@ -118,7 +118,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//update the status
 				$sql = "update v_fifo_agents set ";
-				$sql .= "v_id = '$v_id', ";
+				$sql .= "domain_uuid = '$domain_uuid', ";
 				//$sql .= "fifo_name = '$fifo_name', ";
 				//$sql .= "agent_username = '$agent_username', ";
 				//$sql .= "agent_priority = '$agent_priority', ";
@@ -134,7 +134,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				if (strlen($agent_status) > 0) {
 					$sql = "insert into v_fifo_agent_status_logs ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "username, ";
 					$sql .= "agent_status, ";
 					$sql .= "uuid, ";
@@ -142,7 +142,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'".$_SESSION["username"]."', ";
 					$sql .= "'$agent_status', ";
 					$sql .= "'$uuid', ";
@@ -173,7 +173,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			//$fifo_name = $row["fifo_name"];
 			//$agent_username = $row["agent_username"];
 			//$agent_priority = $row["agent_priority"];
@@ -277,7 +277,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "<td class='vtable' align='left'>\n";
 			//generate the agent status select list
 				$sql = "SELECT var_name, var_value FROM v_vars ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and var_cat = 'Queues Agent Status' ";
 				$sql .= "and var_name not like 'system%' ";
 				$prepstatement = $db->prepare(check_sql($sql));

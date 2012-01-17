@@ -41,7 +41,7 @@ $rss_id = $_REQUEST["rss_id"];
 
 $sql = "";
 $sql .= "select * from v_rss ";
-$sql .= "where v_id = '$v_id' ";
+$sql .= "where domain_uuid = '$domain_uuid' ";
 $sql .= "and rss_id = '$rss_id' ";
 //echo $sql;
 $prepstatement = $db->prepare(check_sql($sql));

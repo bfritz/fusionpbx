@@ -119,7 +119,7 @@ if (count($_GET)>0) {
 		//update the v_users table with the status
 			$sql  = "update v_users set ";
 			$sql .= "user_status = '$user_status' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '".$username."' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
@@ -130,7 +130,7 @@ if (count($_GET)>0) {
 			//loop through the list of assigned extensions
 				$sql = "";
 				$sql .= "select * from v_extensions ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
@@ -146,7 +146,7 @@ if (count($_GET)>0) {
 
 					//hunt_group information used to determine if this is an add or an update
 						$sql  = "select * from v_hunt_group ";
-						$sql .= "where v_id = '$v_id' ";
+						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and hunt_group_extension = '$extension' ";
 						$prepstatement2 = $db->prepare(check_sql($sql));
 						$prepstatement2->execute();
@@ -161,7 +161,7 @@ if (count($_GET)>0) {
 
 					//add or update dnd
 						$dnd = new do_not_disturb;
-						$dnd->v_id = $v_id;
+						$dnd->domain_uuid = $domain_uuid;
 						$dnd->dnd_id = $dnd_id;
 						$dnd->v_domain = $v_domain;
 						$dnd->extension = $extension;

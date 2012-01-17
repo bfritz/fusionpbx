@@ -44,13 +44,13 @@ else {
 	$extension_id = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and extension_id = '$extension_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
+		$domain_uuid = $row["domain_uuid"];
 		$extension = $row["extension"];
 		$password = $row["password"];
 		$user_list = $row["user_list"];
@@ -83,7 +83,7 @@ else {
 	$password = generate_password();
 	$sql = "insert into v_extensions ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "extension, ";
 	$sql .= "password, ";
 	$sql .= "user_list, ";
@@ -109,7 +109,7 @@ else {
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$v_id', ";
+	$sql .= "'$domain_uuid', ";
 	$sql .= "'$extension', ";
 	$sql .= "'$password', ";
 	$sql .= "'$user_list', ";

@@ -139,7 +139,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_cdr ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "caller_id_name, ";
 			$sql .= "caller_id_number, ";
 			$sql .= "destination_number, ";
@@ -160,7 +160,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$caller_id_name', ";
 			$sql .= "'$caller_id_number', ";
 			$sql .= "'$destination_number', ";
@@ -211,7 +211,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "write_codec = '$write_codec', ";
 			$sql .= "remote_media_ip = '$remote_media_ip', ";
 			$sql .= "network_addr = '$network_addr' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and cdr_id = '$cdr_id' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -233,7 +233,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= " select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -260,14 +260,14 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		if (trim($sqlwhere) == "where") { $sqlwhere = ""; }
 		if (count($extension_array) > 0) {
 			foreach($extension_array as $value) {
-				if ($value['extension'] > 0) { $sqlwhere .= "where v_id = '$v_id' and caller_id_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //source
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id' and destination_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
-				if ($value['extension'] > 0) { $sqlwhere .= "or v_id = '$v_id'  and destination_number = '*99".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
+				if ($value['extension'] > 0) { $sqlwhere .= "where domain_uuid = '$domain_uuid' and caller_id_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //source
+				if ($value['extension'] > 0) { $sqlwhere .= "or domain_uuid = '$domain_uuid' and destination_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
+				if ($value['extension'] > 0) { $sqlwhere .= "or domain_uuid = '$domain_uuid'  and destination_number = '*99".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
 			}
 		} //count($extension_array)
 	}
 	else {
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and cdr_id = '$cdr_id' ";
 	}
 	$sqlwhere = str_replace ("where or", "where", $sqlwhere);

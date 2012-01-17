@@ -47,7 +47,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes_details ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (permission_exists('conferences_add') && permission_exists('conferences_edit')) {
 		//allow users with the conferences_add or conferences_edit permission to all conference rooms
 	}
@@ -115,18 +115,18 @@ require_once "includes/paging.php";
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($conference_array) == 0) {
 		//when there are no conferences do this to hide all remaining entries
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
 		foreach ($conference_array as &$row) {
 			if ($x == 0) {
-				$sql .= " where v_id = '$v_id' \n";
+				$sql .= " where domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			else {
-				$sql .= " or v_id = '$v_id' \n";
+				$sql .= " or domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			$x++;
@@ -155,18 +155,18 @@ require_once "includes/paging.php";
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($conference_array) == 0) {
 		//when there are no conferences do this to hide all remaining entries
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
 		foreach ($conference_array as &$row) {
 			if ($x == 0) {
-				$sql .= " where v_id = '$v_id' \n";
+				$sql .= " where domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			else {
-				$sql .= " or v_id = '$v_id' \n";
+				$sql .= " or domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			$x++;

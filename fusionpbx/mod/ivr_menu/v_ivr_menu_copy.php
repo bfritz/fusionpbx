@@ -43,7 +43,7 @@ else {
 //get the v_ivr_menu data 
 	$sql = "";
 	$sql .= "select * from v_ivr_menu ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and ivr_menu_id = '$ivr_menu_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -75,7 +75,7 @@ else {
 	//copy the v_ivr_menu
 		$sql = "insert into v_ivr_menu ";
 		$sql .= "(";
-		$sql .= "v_id, ";
+		$sql .= "domain_uuid, ";
 		$sql .= "ivr_menu_name, ";
 		$sql .= "ivr_menu_extension, ";
 		$sql .= "ivr_menu_greet_long, ";
@@ -98,7 +98,7 @@ else {
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
-		$sql .= "'$v_id', ";
+		$sql .= "'$domain_uuid', ";
 		$sql .= "'$ivr_menu_name', ";
 		$sql .= "'$ivr_menu_extension', ";
 		$sql .= "'$ivr_menu_greet_long', ";
@@ -139,7 +139,7 @@ else {
 		$sql = "";
 		$sql .= "select * from v_ivr_menu_options ";
 		$sql .= "where ivr_menu_id = '$ivr_menu_id' ";
-		$sql .= "and v_id = '$v_id' ";
+		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .= "order by ivr_menu_id asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -154,7 +154,7 @@ else {
 			//copy the ivr menu options
 				$sql = "insert into v_ivr_menu_options ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "ivr_menu_id, ";
 				$sql .= "ivr_menu_options_digits, ";
 				$sql .= "ivr_menu_options_action, ";
@@ -164,7 +164,7 @@ else {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$db_ivr_menu_id', ";
 				$sql .= "'$ivr_menu_options_digits', ";
 				$sql .= "'$ivr_menu_options_action', ";

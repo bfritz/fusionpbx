@@ -44,7 +44,7 @@ else {
 	if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_public_includes_details ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and public_includes_detail_id = '$id' ";
 		$sql .= "and public_include_id = '$public_include_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));

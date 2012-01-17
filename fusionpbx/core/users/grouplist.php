@@ -54,7 +54,7 @@ require_once "includes/config.php";
 	echo "</tr></table>";
 
 	$sql = "SELECT * FROM v_groups ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 

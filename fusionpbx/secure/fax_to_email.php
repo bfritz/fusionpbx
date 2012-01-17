@@ -106,7 +106,7 @@ if (defined('STDIN')) {
 //get the fax details from the database
 	$sql = "";
 	$sql .= "select * from v_fax ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and faxextension = '$fax_extension' ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
@@ -157,7 +157,7 @@ if (defined('STDIN')) {
 			//get the event socket information
 				$sql = "";
 				$sql .= "select * from v_settings ";
-				$sql .= "where v_id = '1' ";
+				$sql .= "where domain_uuid = '1' ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);

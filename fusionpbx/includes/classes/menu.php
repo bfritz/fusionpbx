@@ -36,8 +36,7 @@
 					$sql  = "delete from v_menu_items ";
 					$sql .= "where menu_uuid = '".$this->menu_uuid."' ";
 					$sql .= "and (menu_item_protected <> 'true' ";
-					$sql .= "or menu_item_protected is null ";
-					$sql .= "or menu_item_protected = '');";
+					$sql .= "or menu_item_protected is null); ";
 					$db->exec(check_sql($sql));
 			}
 
@@ -55,7 +54,7 @@
 					}
 
 				//use the app array to restore the default menu
-					$db->beginTransaction();
+					//$db->beginTransaction();
 					foreach ($apps as $row) {
 						foreach ($row['menu'] as $menu) {
 							//set the variables
@@ -88,10 +87,14 @@
 											$sql .= "menu_item_title, ";
 											$sql .= "menu_item_str, ";
 											$sql .= "menu_item_category, ";
-											$sql .= "menu_item_desc, ";
 											$sql .= "menu_item_order, ";
-											$sql .= "menu_item_uuid, ";
-											$sql .= "menu_item_parent_uuid ";
+											if (strlen($menu_item_uuid) > 0) {
+												$sql .= "menu_item_uuid, ";
+											}
+											if (strlen($menu_item_parent_uuid) > 0) {
+												$sql .= "menu_item_parent_uuid, ";
+											}
+											$sql .= "menu_item_desc ";
 											$sql .= ") ";
 											$sql .= "values ";
 											$sql .= "(";
@@ -100,10 +103,14 @@
 											$sql .= "'$menu_item_title', ";
 											$sql .= "'$menu_item_path', ";
 											$sql .= "'$menu_item_category', ";
-											$sql .= "'$menu_item_desc', ";
 											$sql .= "'$menu_item_order', ";
-											$sql .= "'$menu_item_uuid', ";
-											$sql .= "'$menu_item_parent_uuid' ";
+											if (strlen($menu_item_uuid) > 0) {
+												$sql .= "'$menu_item_uuid', ";
+											}
+											if (strlen($menu_item_parent_uuid) > 0) {
+												$sql .= "'$menu_item_parent_uuid', ";
+											}
+											$sql .= "'$menu_item_desc' ";
 											$sql .= ")";
 											if ($menu_item_uuid == $menu_item_parent_uuid) {
 												//echo $sql."<br />\n";
@@ -151,7 +158,7 @@
 					}
 
 				//save the changes to the database
-					$db->commit();
+					//$db->commit();
 			} //end function
 
 		//create the menu
@@ -167,7 +174,7 @@
 				if (strlen($sql) == 0) { //default sql for base of the menu
 					$sql = "select * from v_menu_items ";
 					$sql .= "where menu_uuid = '".$this->menu_uuid."' ";
-					$sql .= "and (menu_item_parent_uuid = '' or menu_item_parent_uuid is null) ";
+					$sql .= "and menu_item_parent_uuid is null ";
 					$sql .= "and menu_item_uuid in ";
 					$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '".$this->menu_uuid."' ";
 					$sql .= "and ( ";
@@ -187,7 +194,7 @@
 						}
 					}
 					$sql .= ") ";
-					$sql .= "and menu_item_uuid <> '' ";
+					$sql .= "and menu_item_uuid is not null ";
 					$sql .= ") ";
 					$sql .= "order by menu_item_order asc ";
 				}
@@ -298,12 +305,12 @@
 				$sql .= "order by menu_item_order, menu_item_title asc ";
 				$prep_statement_2 = $db->prepare($sql);
 				$prep_statement_2->execute();
-				$result2 = $prep_statement_2->fetchAll();
-				if (count($result2) > 0) {
+				$result_2 = $prep_statement_2->fetchAll();
+				if (count($result_2) > 0) {
 					//child menu found
 					$db_menu_sub .= "<ul class='menu_sub'>\n";
 
-					foreach($result2 as $row) {
+					foreach($result_2 as $row) {
 						$menu_item_id = $row['menu_item_id'];
 						$menu_item_title = $row['menu_item_title'];
 						$menu_item_str = $row['menu_item_str'];
@@ -311,7 +318,6 @@
 						$menu_item_uuid = $row['menu_item_uuid'];
 						$menu_item_parent_uuid = $row['menu_item_parent_uuid'];
 
-						$menuatags = '';
 						switch ($menu_item_category) {
 							case "internal":
 								$menu_tags = "href='".PROJECT_PATH."$menu_item_str'";
@@ -344,7 +350,7 @@
 						}
 						$db_menu_sub .= "</li>\n";
 					}
-					unset($sql, $result2);
+					unset($sql, $result_2);
 					$db_menu_sub .="</ul>\n";
 					return $db_menu_sub;
 				}

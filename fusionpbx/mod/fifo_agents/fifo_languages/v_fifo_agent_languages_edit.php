@@ -59,7 +59,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($username) == 0) { $msg .= "Please provide: Username<br>\n"; }
 		//if (strlen($language) == 0) { $msg .= "Please provide: Language<br>\n"; }
 		//if (strlen($proficiency) == 0) { $msg .= "Please provide: Proficiency<br>\n"; }
@@ -82,14 +82,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_fifo_agent_languages ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "username, ";
 			$sql .= "language, ";
 			$sql .= "proficiency ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$username', ";
 			$sql .= "'$language', ";
 			$sql .= "'$proficiency' ";
@@ -108,11 +108,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_fifo_agent_languages set ";
-			$sql .= "v_id = '$v_id', ";
+			$sql .= "domain_uuid = '$domain_uuid', ";
 			$sql .= "username = '$username', ";
 			$sql .= "language = '$language', ";
 			$sql .= "proficiency = '$proficiency' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and fifo_agent_language_id = '$fifo_agent_language_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -134,13 +134,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$fifo_agent_language_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_fifo_agent_languages ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fifo_agent_language_id = '$fifo_agent_language_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$username = $row["username"];
 			$language = $row["language"];
 			$proficiency = $row["proficiency"];
@@ -189,7 +189,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//generate the user list
 		$sql = "SELECT * FROM v_users ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 
@@ -220,7 +220,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//generate the language select list
 		$sql = "SELECT var_name, var_value FROM v_vars ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and var_cat = 'Languages' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

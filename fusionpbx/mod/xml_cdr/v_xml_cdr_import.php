@@ -121,10 +121,10 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 		$tmp_month = date("M", $tmp_time);
 		$tmp_day = date("d", $tmp_time);
 
-	//find the v_id by using the domain
+	//find the domain_uuid by using the domain
 		$domain = check_str(urldecode($xml->variables->{$domain}));
 		$sql = "";
-		$sql .= "select v_id, v_recordings_dir from v_system_settings ";
+		$sql .= "select domain_uuid, v_recordings_dir from v_system_settings ";
 		if (strlen($domain) == 0 && $context != 'public' && $context != 'default') {
 			$sql .= "where v_domain = '".$context."' ";
 		}
@@ -132,10 +132,10 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 			$sql .= "where v_domain = '".$domain."' ";
 		}
 		$row = $db->query($sql)->fetch();
-		$v_id = $row['v_id'];
+		$domain_uuid = $row['domain_uuid'];
 		$v_recordings_dir = $row['v_recordings_dir'];
-		if (strlen($v_id) == 0) { $v_id = '1'; }
-		$variables_named[]='v_id';
+		if (strlen($domain_uuid) == 0) { $domain_uuid = '1'; }
+		$variables_named[]='domain_uuid';
 
 	//check whether a recording exists
 		$recording_relative_path = '/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
@@ -149,7 +149,7 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 
 	//determine where the xml cdr will be archived
 		$sql = "select * from v_vars ";
-		$sql .= "where v_id  = '1' ";
+		$sql .= "where domain_uuid  = '1' ";
 		$sql .= "and var_name = 'xml_cdr_archive' ";
 		$row = $db->query($sql)->fetch();
 		$var_value = trim($row["var_value"]);

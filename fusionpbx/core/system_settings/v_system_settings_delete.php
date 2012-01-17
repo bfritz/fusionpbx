@@ -39,7 +39,7 @@ else {
 		$id = check_str($_GET["id"]);
 	}
 
-//allow delete for ids other than v_id = '1'
+//allow delete for ids other than domain_uuid = '1'
 	if ($id == "1") {
 		// id 1 is used for the system defaults and for some system wide tools do not allow it to be deleted.
 	}
@@ -64,7 +64,7 @@ else {
 			if (strlen($id)>0) {
 				$sql = "";
 				$sql .= "select * from v_system_settings ";
-				$sql .= "where v_id = '$id' ";
+				$sql .= "where domain_uuid = '$id' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll();
@@ -87,8 +87,8 @@ else {
 					foreach ($app['db'] as $row) {
 						$table_name = $row['table'];
 						foreach ($row['fields'] as $field) {
-							if ($field['name'] == "v_id") {
-								$sql = "delete from $table_name where v_id = '$id' ";
+							if ($field['name'] == "domain_uuid") {
+								$sql = "delete from $table_name where domain_uuid = '$id' ";
 								$db->query($sql);
 							}
 						}

@@ -46,14 +46,14 @@ else {
 	$agent_status = '0'; //login
 	$sql = "insert into v_fifo_agent_status_logs ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "username, ";
 	$sql .= "agent_status, ";
 	$sql .= "add_date ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$v_id', ";
+	$sql .= "'$domain_uuid', ";
 	$sql .= "'".$_SESSION["username"]."', ";
 	$sql .= "'$agent_status', ";
 	$sql .= "now() ";

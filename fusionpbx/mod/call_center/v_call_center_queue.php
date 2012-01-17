@@ -64,7 +64,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= "select * from v_call_center_queue ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'queue_name';
 		$order = 'asc';
@@ -86,7 +86,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= "select * from v_call_center_queue ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'queue_name';
 		$order = 'asc';

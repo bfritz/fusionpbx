@@ -59,7 +59,7 @@ else {
 //get virtual table information
 	$sql = "";
 	$sql .= "select * from v_virtual_tables ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and virtual_table_id = '$virtual_table_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -87,7 +87,7 @@ else {
 			$db_value_array = array();
 			$db_names .= "<tr>\n";
 			$sql = "select * from v_virtual_table_fields ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_id = '$virtual_table_id' ";
 			$sql .= "order by virtual_field_order asc ";
 			$prepstatement = $db->prepare($sql);
@@ -127,7 +127,7 @@ else {
 				$virtual_data_row_id = $unique_temp_id;
 			}
 			$sql = "select virtual_field_type, virtual_field_name from v_virtual_table_fields ";
-			$sql .= "where v_id  = '$v_id' ";
+			$sql .= "where domain_uuid  = '$domain_uuid' ";
 			$sql .= "and virtual_table_id  = '$virtual_table_id' ";
 			$sql .= "and virtual_field_name = '$virtual_field_name' ";
 			$prepstatement = $db->prepare($sql);
@@ -186,13 +186,13 @@ else {
 			if ($action == "add" && permission_exists('virtual_tables_data_add')) {
 				//get a unique id for the virtual_data_row_id
 					if ($i==1) {
-						$virtual_data_row_id = guid();
+						$virtual_data_row_id = uuid();
 					}
 
 				//insert the field data
 					$sql = "insert into v_virtual_table_data ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "virtual_data_row_id, ";
 					if(strlen($virtual_data_parent_row_id)>0) {
 						$sql .= "virtual_data_parent_row_id, ";
@@ -208,7 +208,7 @@ else {
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$virtual_data_row_id', ";
 					if(strlen($virtual_data_parent_row_id)>0) {
 						$sql .= "'$virtual_data_parent_row_id', ";
@@ -270,7 +270,7 @@ else {
 						default:
 							$sql_update .= "virtual_data_field_value = '$virtual_data_field_value' ";
 					}
-					$sql_update .= "where v_id = '$v_id' ";
+					$sql_update .= "where domain_uuid = '$domain_uuid' ";
 					$sql_update .= "and virtual_table_id = '$virtual_table_id' ";
 					if (strlen($virtual_table_parent_id) > 0) {
 						$sql_update .= "and virtual_table_parent_id = '$virtual_table_parent_id' ";
@@ -289,7 +289,7 @@ else {
 						//no value to update so insert new value
 						$sql = "insert into v_virtual_table_data ";
 						$sql .= "(";
-						$sql .= "v_id, ";
+						$sql .= "domain_uuid, ";
 						$sql .= "virtual_data_row_id, ";
 						if(strlen($virtual_data_parent_row_id)>0) {
 							$sql .= "virtual_data_parent_row_id, ";
@@ -303,7 +303,7 @@ else {
 						$sql .= ")";
 						$sql .= "values ";
 						$sql .= "(";
-						$sql .= "'$v_id', ";
+						$sql .= "'$domain_uuid', ";
 						$sql .= "'$virtual_data_row_id', ";
 						if(strlen($virtual_data_parent_row_id)>0) {
 							$sql .= "'$virtual_data_parent_row_id', ";
@@ -371,7 +371,7 @@ else {
 		//get the field values
 			$sql = "";
 			$sql .= "select * from v_virtual_table_data ";
-			$sql .= "where v_id = '".$v_id."' ";
+			$sql .= "where domain_uuid = '".$domain_uuid."' ";
 			if (strlen($search_all) == 0) {
 				$sql .= "and virtual_table_id = '$virtual_table_id' ";
 				if (strlen($virtual_data_parent_row_id) > 0) {
@@ -381,7 +381,7 @@ else {
 			else {
 				$sql .= "and virtual_data_row_id in (";
 				$sql .= "select virtual_data_row_id from v_virtual_table_data \n";
-				$sql .= "where v_id = '".$v_id."' ";
+				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "and virtual_table_id = '$virtual_table_id' ";
 				if (strlen($virtual_data_parent_row_id) > 0) {
 					$sql .= " and virtual_data_parent_row_id = '$virtual_data_parent_row_id' ";
@@ -552,10 +552,10 @@ else {
 
 //determine if a file should be uploaded
 	$sql = "SELECT * FROM v_virtual_table_fields ";
-	$sql .= "where v_id  = '$v_id ' ";
+	$sql .= "where domain_uuid  = '$domain_uuid ' ";
 	$sql .= "and virtual_table_id  = '$virtual_table_id ' ";
 	$sql .= "and virtual_field_type = 'uploadimage' ";
-	$sql .= "or v_id  = '$v_id ' ";
+	$sql .= "or domain_uuid  = '$domain_uuid ' ";
 	$sql .= "and virtual_table_id  = '$virtual_table_id ' ";
 	$sql .= "and virtual_field_type = 'upload_file' ";
 	$prepstatement = $db->prepare($sql);
@@ -571,7 +571,7 @@ else {
 //get the table fields and then display them
 	$sql = "";
 	$sql .= "select * from v_virtual_table_fields ";
-	$sql .= "where v_id  = '$v_id' ";
+	$sql .= "where domain_uuid  = '$domain_uuid' ";
 	$sql .= "and virtual_table_id  = '$virtual_table_id' ";
 	$sql .= "order by virtual_field_column asc, virtual_field_order asc ";
 	$prepstatement = $db->prepare($sql);
@@ -739,7 +739,7 @@ else {
 
 							$sqlselect = "SELECT virtual_data_types_name, virtual_data_types_value ";
 							$sqlselect .= "FROM v_virtual_table_data_types_name_value ";
-							$sqlselect .= "where v_id = '".$v_id."' ";
+							$sqlselect .= "where domain_uuid = '".$domain_uuid."' ";
 							$sqlselect .= "and virtual_table_field_id = '".$row[virtual_table_field_id]."' ";
 							$prepstatement2 = $db->prepare($sqlselect);
 							$prepstatement2->execute();
@@ -765,7 +765,7 @@ else {
 
 							$sqlselect = "SELECT virtual_data_types_name, virtual_data_types_value ";
 							$sqlselect .= "FROM v_virtual_table_data_types_name_value ";
-							$sqlselect .= "where v_id = '".$v_id."' ";
+							$sqlselect .= "where domain_uuid = '".$domain_uuid."' ";
 							$sqlselect .= "and virtual_table_field_id = '".$row[virtual_table_field_id]."' ";
 							$prepstatement2 = $db->prepare($sqlselect);
 							$prepstatement2->execute();
@@ -952,7 +952,7 @@ else {
 		//get the child virtual_table_id and use it to show the list of data
 			$sql = "";
 			$sql .= "select * from v_virtual_tables ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_parent_id = '$virtual_table_id' ";
 			$prepstatement = $db->prepare($sql);
 			$prepstatement->execute();

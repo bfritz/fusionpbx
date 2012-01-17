@@ -45,7 +45,7 @@ if (strlen($id)>0) {
 	//delete child data
 		$sql = "";
 		$sql .= "delete from v_hunt_group_destinations ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_id = '$id' ";
 		$db->query($sql);
 		unset($sql);
@@ -53,16 +53,16 @@ if (strlen($id)>0) {
 	//delete parent data
 		$sql = "";
 		$sql .= "delete from v_hunt_group ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_id = '$id' ";
-		$sql .= "and v_id = '$v_id' ";
+		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$db->query($sql);
 		unset($sql);
 
 	//delete the dialplan entries
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and opt_1_name = 'hunt_group_id' ";
 		$sql .= "and opt_1_value = '".$id."' ";
 		//echo "sql: ".$sql."<br />\n";
@@ -77,7 +77,7 @@ if (strlen($id)>0) {
 
 		$sql = "";
 		$sql = "delete from v_dialplan_includes_details ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 		//echo "sql: ".$sql."<br />\n";
 		$db->query($sql);
@@ -86,7 +86,7 @@ if (strlen($id)>0) {
 		//hunt group fifo
 			$sql = "";
 			$sql .= "select * from v_dialplan_includes ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'hunt_group_id_fifo' ";
 			$sql .= "and opt_1_value = '".$id."' ";
 			//echo "sql fifo: ".$sql."<br />\n";
@@ -101,7 +101,7 @@ if (strlen($id)>0) {
 
 			$sql = "";
 			$sql = "delete from v_dialplan_includes_details ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 			//echo "sql fifo: ".$sql."<br />\n";
 			$db->query($sql);
@@ -109,10 +109,10 @@ if (strlen($id)>0) {
 
 		$sql = "";
 		$sql = "delete from v_dialplan_includes ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and opt_1_name = 'hunt_group_id' ";
 		$sql .= "and opt_1_value = '$id' ";
-		$sql .= "or v_id = '$v_id' ";
+		$sql .= "or domain_uuid = '$domain_uuid' ";
 		$sql .= "and opt_1_name = 'hunt_group_id_fifo' ";
 		$sql .= "and opt_1_value = '$id' ";
 		//echo "sql: ".$sql."<br />\n";

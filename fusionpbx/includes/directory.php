@@ -43,7 +43,7 @@ if (!function_exists('phone_letter_to_number')) {
 if (!function_exists('sync_directory')) {
 	function sync_directory() {
 
-		global $v_id, $db;
+		global $domain_uuid, $db;
 		$v_settings_array = v_settings();
 		foreach($v_settings_array as $name => $value) {
 			$$name = $value;
@@ -143,7 +143,7 @@ if (!function_exists('sync_directory')) {
 		//get a list of extensions and the users assigned to them
 			$sql = "";
 			$sql .= " select * from v_extensions ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$x = 0;
@@ -161,7 +161,7 @@ if (!function_exists('sync_directory')) {
 					if (strlen($username) > 0) {
 						$sql = "";
 						$sql .= "select * from v_users ";
-						$sql .= "where v_id = '$v_id' ";
+						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and username = '$username' ";
 						$prepstatement = $db->prepare(check_sql($sql));
 						$prepstatement->execute();

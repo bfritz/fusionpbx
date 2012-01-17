@@ -42,9 +42,9 @@ else {
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach($result as $row) {
-		$_SESSION['domains'][$row['v_id']]['v_id'] = $row['v_id'];
-		$_SESSION['domains'][$row['v_id']]['domain'] = $row['v_domain'];
-		$_SESSION['domains'][$row['v_id']]['template_name'] = $row['v_template_name'];
+		$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
+		$_SESSION['domains'][$row['domain_uuid']]['domain'] = $row['v_domain'];
+		$_SESSION['domains'][$row['domain_uuid']]['template_name'] = $row['v_template_name'];
 	}
 	$num_rows = count($result);
 	unset($result, $prepstatement);
@@ -54,12 +54,12 @@ else {
 	$order = $_GET["order"];
 
 //change the tenant
-	if (strlen($_GET["v_id"]) > 0 && $_GET["domain_change"] == "true") {
-		//update the v_id and session variables
-			$v_id = $_GET["v_id"];
-			$_SESSION['v_id'] = $_SESSION['domains'][$v_id]['v_id'];
-			$_SESSION["v_domain"] = $_SESSION['domains'][$v_id]['domain'];
-			$_SESSION["v_template_name"] = $_SESSION['domains'][$v_id]['template_name'];
+	if (strlen($_GET["domain_uuid"]) > 0 && $_GET["domain_change"] == "true") {
+		//update the domain_uuid and session variables
+			$domain_uuid = $_GET["domain_uuid"];
+			$_SESSION['domain_uuid'] = $_SESSION['domains'][$domain_uuid]['domain_uuid'];
+			$_SESSION["v_domain"] = $_SESSION['domains'][$domain_uuid]['domain'];
+			$_SESSION["v_template_name"] = $_SESSION['domains'][$domain_uuid]['template_name'];
 		//clear the menu session so that it is regenerated for the current tenant
 			$_SESSION["menu"] = '';
 		//set the context
@@ -144,7 +144,7 @@ else {
 			//if there are no permissions listed in v_group_permissions then set the default permissions
 				$sql = "";
 				$sql .= "select count(*) as count from v_group_permissions ";
-				$sql .= "where v_id = ".$row['v_id']." ";
+				$sql .= "where domain_uuid = ".$row['domain_uuid']." ";
 				$prep_statement = $db->prepare($sql);
 				$prep_statement->execute();
 				$result = $prep_statement->fetch();
@@ -165,13 +165,13 @@ else {
 									//add the record
 									$sql = "insert into v_group_permissions ";
 									$sql .= "(";
-									$sql .= "v_id, ";
+									$sql .= "domain_uuid, ";
 									$sql .= "permission_id, ";
 									$sql .= "group_id ";
 									$sql .= ")";
 									$sql .= "values ";
 									$sql .= "(";
-									$sql .= "'".$row['v_id']."', ";
+									$sql .= "'".$row['domain_uuid']."', ";
 									$sql .= "'".$sub_row['name']."', ";
 									$sql .= "'".$group."' ";
 									$sql .= ")";
@@ -196,7 +196,7 @@ else {
 			}
 			echo "<tr >\n";
 			//echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='".$url."'>".$row['v_domain']."</a></td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_system_settings.php?id=".$row['v_id']."&domain=".$row['v_domain']."'>".$row['v_domain']."</a></td>\n";
+			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_system_settings.php?id=".$row['domain_uuid']."&domain=".$row['v_domain']."'>".$row['v_domain']."</a></td>\n";
 			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['v_package_version']."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['v_label']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['v_name']."</td>\n";
@@ -204,10 +204,10 @@ else {
 			echo "	<td valign='top' class='rowstylebg'>".$row['v_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('system_settings_edit')) {
-				echo "		<a href='v_system_settings_edit.php?id=".$row['v_id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_system_settings_edit.php?id=".$row['domain_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('system_settings_delete')) {
-				echo "		<a href='v_system_settings_delete.php?id=".$row['v_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_system_settings_delete.php?id=".$row['domain_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";

@@ -30,7 +30,7 @@ require_once "includes/lib_functions.php";
 	$v_debug = false;
 
 //set the default id
-	$v_id = '1';
+	$domain_uuid = '1';
 
 //error reporting
 	ini_set('display_errors', '1');
@@ -399,7 +399,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
 					$schema->db = $db_tmp;
-					$schema->v_id = $v_id;
+					$schema->domain_uuid = $domain_uuid;
 					$schema->db_type = $db_type;
 					$schema->add();
 
@@ -481,7 +481,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
 					$schema->db = $db_tmp;
-					$schema->v_id = $v_id;
+					$schema->domain_uuid = $domain_uuid;
 					$schema->db_type = $db_type;
 					$schema->add();
 
@@ -648,7 +648,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
 					$schema->db = $db_tmp;
-					$schema->v_id = $v_id;
+					$schema->domain_uuid = $domain_uuid;
 					$schema->db_type = $db_type;
 					$schema->add();
 
@@ -734,7 +734,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		//$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
 		//$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
 		//$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir' ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$db_tmp->exec($sql);
 		unset($sql);
 
@@ -756,13 +756,13 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 							//add the record
 							$sql = "insert into v_group_permissions ";
 							$sql .= "(";
-							$sql .= "v_id, ";
+							$sql .= "domain_uuid, ";
 							$sql .= "permission_id, ";
 							$sql .= "group_id ";
 							$sql .= ")";
 							$sql .= "values ";
 							$sql .= "(";
-							$sql .= "'$v_id', ";
+							$sql .= "'$domain_uuid', ";
 							$sql .= "'".$row['name']."', ";
 							$sql .= "'".$group."' ";
 							$sql .= ")";
@@ -918,7 +918,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//copy the files and directories from includes/install
 		require_once "includes/classes/install.php";
 		$install = new install;
-		$install->v_id = $v_id;
+		$install->domain_uuid = $domain_uuid;
 		$install->v_domain = $domain;
 		$install->v_conf_dir = $v_conf_dir;
 		$install->v_scripts_dir = $v_scripts_dir;
@@ -931,7 +931,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//create the dialplan/default.xml for single tenant or dialplan/domain.xml
 		require_once "includes/classes/dialplan.php";
 		$dialplan = new dialplan;
-		$dialplan->v_id = $v_id;
+		$dialplan->domain_uuid = $domain_uuid;
 		$dialplan->v_domain = $domain;
 		$dialplan->v_conf_dir = $v_conf_dir;
 		$dialplan->restore_advanced_xml();
@@ -950,13 +950,13 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$group_id = 'superadmin';
 		$sql = "insert into v_group_members ";
 		$sql .= "(";
-		$sql .= "v_id, ";
+		$sql .= "domain_uuid, ";
 		$sql .= "group_id, ";
 		$sql .= "username ";
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
-		$sql .= "'$v_id', ";
+		$sql .= "'$domain_uuid', ";
 		$sql .= "'$group_id', ";
 		$sql .= "'$admin_username' ";
 		$sql .= ")";
@@ -968,10 +968,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 	//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
 		$sql = "SELECT * FROM v_group_members ";
-		$sql .= "where v_id=:v_id ";
+		$sql .= "where domain_uuid=:domain_uuid ";
 		$sql .= "and username=:username ";
 		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->bindParam(':v_id', $v_id);
+		$prepstatement->bindParam(':domain_uuid', $domain_uuid);
 		$prepstatement->bindParam(':username', $_SESSION["username"]);
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll(PDO::FETCH_NAMED);
@@ -984,10 +984,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		foreach($_SESSION["groups"] as $field) {
 			if (strlen($field['group_id']) > 0) {
 				if ($x == 0) {
-					$sql .= "where (v_id = '".$v_id."' and group_id = '".$field['group_id']."') ";
+					$sql .= "where (domain_uuid = '".$domain_uuid."' and group_id = '".$field['group_id']."') ";
 				}
 				else {
-					$sql .= "or (v_id = '".$v_id."' and group_id = '".$field['group_id']."') ";
+					$sql .= "or (domain_uuid = '".$domain_uuid."' and group_id = '".$field['group_id']."') ";
 				}
 				$x++;
 			}

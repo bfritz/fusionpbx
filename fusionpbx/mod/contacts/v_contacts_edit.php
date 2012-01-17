@@ -66,7 +66,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($type) == 0) { $msg .= "Please provide: Type<br>\n"; }
 		//if (strlen($org) == 0) { $msg .= "Please provide: Organization<br>\n"; }
 		//if (strlen($n_given) == 0) { $msg .= "Please provide: First Name<br>\n"; }
@@ -98,7 +98,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_contacts ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "type, ";
 			$sql .= "org, ";
 			$sql .= "n_given, ";
@@ -113,7 +113,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$type', ";
 			$sql .= "'$org', ";
 			$sql .= "'$n_given', ";
@@ -140,7 +140,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_contacts set ";
-			$sql .= "v_id = '$v_id', ";
+			$sql .= "domain_uuid = '$domain_uuid', ";
 			$sql .= "type = '$type', ";
 			$sql .= "org = '$org', ";
 			$sql .= "n_given = '$n_given', ";
@@ -152,7 +152,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "url = '$url', ";
 			$sql .= "tz = '$tz', ";
 			$sql .= "note = '$note' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and contact_id = '$contact_id' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -173,7 +173,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$contact_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contacts ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and contact_id = '$contact_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

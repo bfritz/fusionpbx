@@ -42,7 +42,7 @@ if (strlen($id)>0) {
 
 	$sql = "";
 	$sql .= "select * from v_public_includes ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and public_include_id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -65,7 +65,7 @@ if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_public_includes_details ";
 	$sql .= "where public_include_id = '$id' ";
-	$sql .= "and v_id = '$v_id' ";
+	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
@@ -74,7 +74,7 @@ if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_public_includes ";
 	$sql .= "where public_include_id = '$id' ";
-	$sql .= "and v_id = '$v_id' ";
+	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);

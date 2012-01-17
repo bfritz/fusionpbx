@@ -39,7 +39,7 @@ else {
 
 //delete the group
 	$sqldelete = "delete from v_groups ";
-	$sqldelete .= "where v_id = '$v_id' ";
+	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
 	$sqldelete .= "and id = '$id' ";
 	if (!$db->exec($sqldelete)) {
 		//echo $db->errorCode() . "<br>";

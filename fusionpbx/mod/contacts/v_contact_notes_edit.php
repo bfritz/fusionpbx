@@ -63,7 +63,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		//if (strlen($notes) == 0) { $msg .= "Please provide: Notes<br>\n"; }
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($last_mod_date) == 0) { $msg .= "Please provide: Last Modified Date<br>\n"; }
 		//if (strlen($last_mod_user) == 0) { $msg .= "Please provide: Last Modified By<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -86,7 +86,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "(";
 			$sql .= "contact_id, ";
 			$sql .= "notes, ";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "last_mod_date, ";
 			$sql .= "last_mod_user ";
 			$sql .= ")";
@@ -94,7 +94,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "(";
 			$sql .= "'$contact_id', ";
 			$sql .= "'$notes', ";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "now(), ";
 			$sql .= "'".$_SESSION['username']."' ";
 			$sql .= ")";
@@ -116,7 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "notes = '$notes', ";
 			$sql .= "last_mod_date = now(), ";
 			$sql .= "last_mod_user = '".$_SESSION['username']."' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and contacts_note_id = '$contacts_note_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -138,7 +138,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$contacts_note_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contact_notes ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and contacts_note_id = '$contacts_note_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

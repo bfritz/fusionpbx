@@ -97,7 +97,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	}
 	else {
 		$sql = "SELECT * FROM v_users ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and username = '$username' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -147,7 +147,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 
 	$sql = "insert into v_users ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "username, ";
 	$sql .= "password, ";
 	$sql .= "salt, ";
@@ -194,7 +194,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$v_id', ";
+	$sql .= "'$domain_uuid', ";
 	$sql .= "'$username', ";
 	$sql .= "'".md5($salt.$password)."', ";
 	$sql .= "'".$salt."', ";
@@ -249,13 +249,13 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$group_id = 'user';
 	$sql = "insert into v_group_members ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "group_id, ";
 	$sql .= "username ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$v_id', ";
+	$sql .= "'$domain_uuid', ";
 	$sql .= "'$group_id', ";
 	$sql .= "'$username' ";
 	$sql .= ")";

@@ -50,7 +50,7 @@ else {
 
 //get the http post variables and set them to php variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
+		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		$ivr_menu_id = check_str($_POST["ivr_menu_id"]);
 		$ivr_menu_options_digits = check_str($_POST["ivr_menu_options_digits"]);
 		$ivr_menu_options_action = check_str($_POST["ivr_menu_options_action"]);
@@ -77,7 +77,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($ivr_menu_id) == 0) { $msg .= "Please provide: ivr_menu_id<br>\n"; }
 		if (strlen($ivr_menu_options_digits) == 0) { $msg .= "Please provide: Option<br>\n"; }
 		//if (strlen($ivr_menu_options_action) == 0) { $msg .= "Please provide: Type<br>\n"; }
@@ -102,7 +102,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('ivr_menu_add')) {
 				$sql = "insert into v_ivr_menu_options ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "ivr_menu_id, ";
 				$sql .= "ivr_menu_options_digits, ";
 				$sql .= "ivr_menu_options_action, ";
@@ -112,7 +112,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$ivr_menu_id', ";
 				$sql .= "'$ivr_menu_options_digits', ";
 				$sql .= "'$ivr_menu_options_action', ";
@@ -137,7 +137,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('ivr_menu_edit')) {
 				$sql = "update v_ivr_menu_options set ";
-				$sql .= "v_id = '$v_id', ";
+				$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "ivr_menu_id = '$ivr_menu_id', ";
 				$sql .= "ivr_menu_options_digits = '$ivr_menu_options_digits', ";
 				$sql .= "ivr_menu_options_action = '$ivr_menu_options_action', ";
@@ -168,12 +168,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_ivr_menu_options ";
 		$sql .= "where ivr_menu_option_id = '$ivr_menu_option_id' ";
-		$sql .= "and v_id = '$v_id' ";
+		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$ivr_menu_id = $row["ivr_menu_id"];
 			$ivr_menu_options_digits = $row["ivr_menu_options_digits"];
 			$ivr_menu_options_action = $row["ivr_menu_options_action"];

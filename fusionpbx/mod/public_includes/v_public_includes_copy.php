@@ -43,7 +43,7 @@ else {
 //get the public includes data 
 	$sql = "";
 	$sql .= "select * from v_public_includes ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and public_include_id = '$public_include_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -62,7 +62,7 @@ else {
 //copy the public
 	$sql = "insert into v_public_includes ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "extension_name, ";
 	$sql .= "public_order, ";
 	$sql .= "extension_continue, ";
@@ -72,7 +72,7 @@ else {
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$v_id', ";
+	$sql .= "'$domain_uuid', ";
 	$sql .= "'$extension_name', ";
 	$sql .= "'$public_order', ";
 	$sql .= "'$extension_continue', ";
@@ -100,12 +100,12 @@ else {
 	$sql = "";
 	$sql .= "select * from v_public_includes_details ";
 	$sql .= "where public_include_id = '$public_include_id' ";
-	$sql .= "and v_id = '$v_id' ";
+	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
+		$domain_uuid = $row["domain_uuid"];
 		$public_include_id = $row["public_include_id"];
 		$tag = $row["tag"];
 		$field_type = $row["field_type"];
@@ -115,7 +115,7 @@ else {
 		//copy the public details
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
@@ -124,7 +124,7 @@ else {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'".check_str($db_public_include_id)."', ";
 			$sql .= "'".check_str($tag)."', ";
 			$sql .= "'".check_str($field_type)."', ";

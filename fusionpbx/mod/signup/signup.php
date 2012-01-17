@@ -65,7 +65,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	//username is already used.
 	if (strlen($request['username']) != 0) {
 		$sql = "SELECT * FROM v_users ";
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and username = '" . $request['username'] . "' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -111,7 +111,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 	$sql = "insert into v_users ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "username, ";
 	$sql .= "password, ";
 	$sql .= "salt, ";
@@ -158,7 +158,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$v_id', ";
+	$sql .= "'$domain_uuid', ";
 	$sql .= "'" . $request['username'] . "', ";
 	$sql .= "'".md5($salt.$request['password'])."', ";
 	$sql .= "'" . $salt . "', ";
@@ -216,13 +216,13 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$group_id = 'user';
 	$sql = "insert into v_group_members ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "group_id, ";
 	$sql .= "username ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'" . $v_id . "', ";
+	$sql .= "'" . $domain_uuid . "', ";
 	$sql .= "'" . $group_id . "', ";
 	$sql .= "'" . $request['username']. "' ";
 	$sql .= ")";

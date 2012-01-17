@@ -58,7 +58,7 @@ function destination_select($select_name, $select_value, $select_default) {
 //get the extension number
 	$sql = "";
 	$sql .= "select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and extension_id = '$extension_id' ";
 	if (!(ifgroup("admin") || ifgroup("superadmin"))) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
@@ -248,7 +248,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//hunt_group information used to determine if this is an add or an update
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_extension = '$extension' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -282,7 +282,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (permission_exists('call_forward')) {
 			$call_forward = new call_forward;
 			$call_forward->call_forward_id = $call_forward_id;
-			$call_forward->v_id = $v_id;
+			$call_forward->domain_uuid = $domain_uuid;
 			$call_forward->db_type = $db_type;
 			$call_forward->extension = $extension;
 			$call_forward->call_forward_number = $call_forward_number;
@@ -302,7 +302,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//follow me config
 		if (permission_exists('follow_me')) {
 			$follow_me = new follow_me;
-			$follow_me->v_id = $v_id;
+			$follow_me->domain_uuid = $domain_uuid;
 			$follow_me->db_type = $db_type;
 			$follow_me->follow_me_id = $follow_me_id;
 			$follow_me->extension = $extension;
@@ -345,7 +345,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//do not disturb (dnd) config
 		if (permission_exists('do_not_disturb')) {
 			$dnd = new do_not_disturb;
-			$dnd->v_id = $v_id;
+			$dnd->domain_uuid = $domain_uuid;
 			$dnd->dnd_id = $dnd_id;
 			$dnd->v_domain = $v_domain;
 			$dnd->extension = $extension;
@@ -386,7 +386,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql = "";
 	$sql .= "select * from v_hunt_group ";
 	$sql .= "where hunt_group_extension = '$extension' ";
-	$sql .= "and v_id = '$v_id' ";
+	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();

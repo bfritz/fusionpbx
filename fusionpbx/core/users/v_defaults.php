@@ -26,18 +26,18 @@
 
 //if the are no groups add the default groups
 	$sql = "SELECT * FROM v_groups ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sub_result = $db->query($sql)->fetch();
 	$prep_statement = $db->prepare(check_sql($sql));
 	if ($prep_statement) {
 		$prep_statement->execute();
 		$sub_result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		if (count($sub_result) == 0) {
-			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'hidden','Hidden Group hides items in the menu');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'user','User Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'agent','Call Center Agent Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'admin','Administrator Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (v_id, group_id, group_desc) VALUES ($v_id,'superadmin','Super Administrator Group');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'hidden','Hidden Group hides items in the menu');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'user','User Group');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'agent','Call Center Agent Group');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'admin','Administrator Group');"; $db->exec(check_sql($sql));
+			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'superadmin','Super Administrator Group');"; $db->exec(check_sql($sql));
 		}
 	}
 	unset($prep_statement, $sub_result);
@@ -45,7 +45,7 @@
 //if there are no permissions listed in v_group_permissions then set the default permissions
 	$sql = "";
 	$sql .= "select count(*) as count from v_group_permissions ";
-	$sql .= "where v_id = $v_id ";
+	$sql .= "where domain_uuid = $domain_uuid ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$sub_result = $prep_statement->fetch(PDO::FETCH_ASSOC);
@@ -67,13 +67,13 @@
 					//add the record
 					$sql = "insert into v_group_permissions ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "permission_id, ";
 					$sql .= "group_id ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'".$sub_row['name']."', ";
 					$sql .= "'".$group."' ";
 					$sql .= ")";

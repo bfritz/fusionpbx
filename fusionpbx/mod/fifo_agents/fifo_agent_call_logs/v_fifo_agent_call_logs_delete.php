@@ -41,7 +41,7 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_fifo_agent_call_logs ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and fifo_agent_call_log_id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

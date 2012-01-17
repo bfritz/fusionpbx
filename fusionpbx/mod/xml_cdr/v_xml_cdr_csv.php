@@ -60,7 +60,7 @@ require_once "includes/lib_cdr.php";
 //get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= " select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -81,7 +81,7 @@ require_once "includes/lib_cdr.php";
 if (ifgroup("admin") || ifgroup("superadmin")) {
 	$sqlwhere = "where ";
 }
-if (strlen($v_id) > 0) { $sqlwhere .= "and v_id like '$v_id' "; }
+if (strlen($domain_uuid) > 0) { $sqlwhere .= "and domain_uuid like '$domain_uuid' "; }
 if (strlen($direction) > 0) { $sqlwhere .= "and caller_id_name like '%$direction%' "; }
 if (strlen($caller_id_name) > 0) { $sqlwhere .= "and caller_id_name like '%$caller_id_name%' "; }
 if (strlen($caller_id_number) > 0) { $sqlwhere .= "and caller_id_number like '%$caller_id_number%' "; }

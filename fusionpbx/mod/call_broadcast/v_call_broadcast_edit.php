@@ -93,7 +93,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add" && permission_exists('call_broadcast_add')) {
 			$sql = "insert into v_call_broadcast ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "broadcast_name, ";
 			$sql .= "broadcast_desc, ";
 			$sql .= "broadcast_timeout, ";
@@ -107,7 +107,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$broadcast_name', ";
 			$sql .= "'$broadcast_desc', ";
 			if (strlen($broadcast_timeout) == 0) {
@@ -163,7 +163,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "broadcast_destination_type = '$broadcast_destination_type', ";
 			$sql .= "broadcast_phone_numbers = '$broadcast_phone_numbers', ";
 			$sql .= "broadcast_destination_data = '$broadcast_destination_data' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and call_broadcast_id = '$call_broadcast_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -184,7 +184,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$call_broadcast_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_broadcast ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_broadcast_id = '$call_broadcast_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -275,7 +275,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//echo "		<option></option>\n";
 	//$sql = "";
 	//$sql .= "select * from v_recordings ";
-	//$sql .= "where v_id = '$v_id' ";
+	//$sql .= "where domain_uuid = '$domain_uuid' ";
 	//$prepstatement = $db->prepare(check_sql($sql));
 	//$prepstatement->execute();
 	//while($row = $prepstatement->fetch()) {
@@ -418,7 +418,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		<option></option>\n";
 		$sql = "";
 		$sql .= "select distinct(user_category) as user_category from v_users ";
-		//$sql .= "where v_id = '$v_id' ";
+		//$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		while($row = $prepstatement->fetch()) {
@@ -446,7 +446,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		<option></option>\n";
 		$sql = "";
 		$sql .= "select * from v_groups ";
-		//$sql .= "where v_id = '$v_id' ";
+		//$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		while($row = $prepstatement->fetch()) {
@@ -475,7 +475,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		<option></option>\n";
 		$sql = "";
 		$sql .= "select * from v_gateways ";
-		//$sql .= "where v_id = '$v_id' ";
+		//$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		while($row = $prepstatement->fetch()) {

@@ -203,7 +203,7 @@ if (!function_exists('switch_module_info')) {
 //get the list of modules
 	$sql = "";
 	$sql .= " select * from v_modules ";
-	$sql .= "where v_id = '1' ";
+	$sql .= "where domain_uuid = '1' ";
     if (strlen($orderby)> 0) { 
 		$sql .= "order by $orderby $order "; 
 	}
@@ -233,7 +233,7 @@ if (!function_exists('switch_module_info')) {
 					//insert the data
 						$sql = "insert into v_modules ";
 						$sql .= "(";
-						$sql .= "v_id, ";
+						$sql .= "domain_uuid, ";
 						$sql .= "module_label, ";
 						$sql .= "module_name, ";
 						$sql .= "module_desc, ";

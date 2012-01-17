@@ -46,7 +46,7 @@ else {
 //define the if group members function
 	function if_group_members($db, $group_id, $username) {
 		$sql = "select * from v_group_members ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and group_id = '$group_id' ";
 		$sql .= "and username = '$username' ";
 		$prepstatement = $db->prepare(check_sql($sql));
@@ -82,7 +82,7 @@ else {
 
 
 	$sql = "SELECT * FROM v_group_members ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and group_id = '$group_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -130,7 +130,7 @@ else {
 	echo "		<td width='60%' align='right'>";
 
 	$sql = "SELECT * FROM v_users ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "order by username ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

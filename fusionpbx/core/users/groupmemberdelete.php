@@ -46,7 +46,7 @@ else {
 
 //delete the group membership
 	$sqldelete = "delete from v_group_members ";
-	$sqldelete .= "where v_id = '$v_id' ";
+	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
 	$sqldelete .= "and username = '$username' ";
 	$sqldelete .= "and group_id = '$group_id' ";
 	if (!$db->exec($sqldelete)) {

@@ -62,7 +62,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($greeting_name) == 0) { $msg .= "Please provide: Greeting Name (play)<br>\n"; }
 		//if (strlen($greeting_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -83,13 +83,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add" && permission_exists('voicemail_greetings_add')) {
 			$sql = "insert into v_voicemail_greetings ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "greeting_name, ";
 			$sql .= "greeting_description ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$greeting_name', ";
 			$sql .= "'$greeting_description' ";
 			$sql .= ")";
@@ -110,7 +110,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "";
 				$sql .= "select * from v_voicemail_greetings ";
 				$sql .= "where greeting_id = '$greeting_id' ";
-				$sql .= "and v_id = '$v_id' ";
+				$sql .= "and domain_uuid = '$domain_uuid' ";
 				//echo "sql: ".$sql."<br />\n";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
@@ -132,7 +132,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "update v_voicemail_greetings set ";
 				$sql .= "greeting_name = '$greeting_name', ";
 				$sql .= "greeting_description = '$greeting_description' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and greeting_id = '$greeting_id' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -153,7 +153,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$greeting_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_voicemail_greetings ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and greeting_id = '$greeting_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

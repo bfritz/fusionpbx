@@ -43,7 +43,7 @@ else {
 //deny the user if not assigned to this mailboxes
 	$sql = "";
 	$sql .= " select * from v_extensions ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and extension_id = '$extension_id'";
 	//superadmin can see all messages
 	if(!ifgroup("superadmin")) {
@@ -66,7 +66,7 @@ else {
 
 //get the http post variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
+		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		$extension = check_str($_POST["extension"]);
 		$password = check_str($_POST["password"]);
 
@@ -104,7 +104,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		//if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
 		//if (strlen($user_list) == 0) { $msg .= "Please provide: User List<br>\n"; }
@@ -165,7 +165,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$sql .= "sip_force_contact = '$sip_force_contact', ";
 			//$sql .= "enabled = '$enabled', ";
 			//$sql .= "description = '$description' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and extension_id = '$extension_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -193,13 +193,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$extension_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_extensions ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and extension_id = '$extension_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$extension = $row["extension"];
 			$password = $row["password"];
 			$user_list = $row["user_list"];

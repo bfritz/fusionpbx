@@ -59,7 +59,7 @@ $order = $_GET["order"];
 
 	if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0 && permission_exists('public_includes_add')) {
 		//check for all required data
-			if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+			if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 			if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 			if (strlen($condition_field_1) == 0) { $msg .= "Please provide: Condition Field<br>\n"; }
 			if (strlen($condition_expression_1) == 0) { $msg .= "Please provide: Condition Expression<br>\n"; }
@@ -84,7 +84,7 @@ $order = $_GET["order"];
 		//add the main public include entry
 			$sql = "insert into v_public_includes ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "extension_name, ";
 			$sql .= "public_order, ";
 			$sql .= "context, ";
@@ -93,7 +93,7 @@ $order = $_GET["order"];
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$extension_name', ";
 			$sql .= "'0', ";
 			$sql .= "'default', ";
@@ -119,7 +119,7 @@ $order = $_GET["order"];
 		//add condition public context
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
@@ -128,7 +128,7 @@ $order = $_GET["order"];
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$public_include_id', ";
 			$sql .= "'condition', ";
 			$sql .= "'context', ";
@@ -141,7 +141,7 @@ $order = $_GET["order"];
 		//add condition 1
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
@@ -150,7 +150,7 @@ $order = $_GET["order"];
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$public_include_id', ";
 			$sql .= "'condition', ";
 			$sql .= "'$condition_field_1', ";
@@ -164,7 +164,7 @@ $order = $_GET["order"];
 			if (strlen($condition_field_2) > 0) {
 				$sql = "insert into v_public_includes_details ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "public_include_id, ";
 				$sql .= "tag, ";
 				$sql .= "field_type, ";
@@ -173,7 +173,7 @@ $order = $_GET["order"];
 				$sql .= ") ";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$public_include_id', ";
 				$sql .= "'condition', ";
 				$sql .= "'$condition_field_2', ";
@@ -187,7 +187,7 @@ $order = $_GET["order"];
 		//add action 1
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "public_include_id, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
@@ -196,7 +196,7 @@ $order = $_GET["order"];
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$public_include_id', ";
 			$sql .= "'action', ";
 			$sql .= "'$action_application_1', ";
@@ -210,7 +210,7 @@ $order = $_GET["order"];
 			if (strlen($action_application_2) > 0) {
 				$sql = "insert into v_public_includes_details ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "public_include_id, ";
 				$sql .= "tag, ";
 				$sql .= "field_type, ";
@@ -219,7 +219,7 @@ $order = $_GET["order"];
 				$sql .= ") ";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$public_include_id', ";
 				$sql .= "'action', ";
 				$sql .= "'$action_application_2', ";
@@ -372,7 +372,7 @@ function type_onchange(field_type) {
 
 	$sql = "";
 	$sql .= " select * from v_public_includes ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by public_order asc, extension_name asc "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -389,7 +389,7 @@ function type_onchange(field_type) {
 
 	$sql = "";
 	$sql .= " select * from v_public_includes ";
-	$sql .= " where v_id = '$v_id' ";
+	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by public_order asc, extension_name asc "; }
 	$sql .= " limit $rowsperpage offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));

@@ -41,7 +41,7 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "select * from v_php_service ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and php_service_id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -62,7 +62,7 @@ if (strlen($id)>0) {
 
 	$sql = "";
 	$sql .= "delete from v_php_service ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and php_service_id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

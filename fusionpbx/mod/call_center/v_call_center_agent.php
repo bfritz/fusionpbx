@@ -64,7 +64,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= "select * from v_call_center_agent ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'agent_name';
 		$order = 'asc';
@@ -86,7 +86,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= " select * from v_call_center_agent ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($orderby) == 0) {
 		$orderby = 'agent_name';
 		$order = 'asc';
@@ -110,7 +110,7 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	//echo thorderby('v_id', 'V_id', $orderby, $order);
+	//echo thorderby('domain_uuid', 'domain_uuid', $orderby, $order);
 	echo thorderby('agent_name', 'Agent Name', $orderby, $order);
 	echo thorderby('agent_type', 'Type', $orderby, $order);
 	echo thorderby('agent_call_timeout', 'Call Timeout', $orderby, $order);
@@ -132,7 +132,7 @@ require_once "includes/paging.php";
 	else { //received results
 		foreach($result as $row) {
 			echo "<tr >\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[v_id]."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[domain_uuid]."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_name]."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_type]."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_call_timeout]."&nbsp;</td>\n";

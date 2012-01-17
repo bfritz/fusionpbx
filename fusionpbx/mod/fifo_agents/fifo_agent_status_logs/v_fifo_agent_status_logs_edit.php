@@ -59,7 +59,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($username) == 0) { $msg .= "Please provide: Username<br>\n"; }
 		//if (strlen($agent_status) == 0) { $msg .= "Please provide: Status<br>\n"; }
 		//if (strlen($uuid) == 0) { $msg .= "Please provide: UUID<br>\n"; }
@@ -83,7 +83,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add") {
 				$sql = "insert into v_fifo_agent_status_logs ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "username, ";
 				$sql .= "agent_status, ";
 				$sql .= "uuid, ";
@@ -91,7 +91,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$username', ";
 				$sql .= "'$agent_status', ";
 				$sql .= "'$uuid', ";
@@ -111,12 +111,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update") {
 				$sql = "update v_fifo_agent_status_logs set ";
-				$sql .= "v_id = '$v_id', ";
+				$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "username = '$username', ";
 				$sql .= "agent_status = '$agent_status', ";
 				$sql .= "uuid = '$uuid', ";
 				$sql .= "add_date = '$add_date' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and fifo_agent_status_log_id = '$fifo_agent_status_log_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -139,13 +139,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$fifo_agent_status_log_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_fifo_agent_status_logs ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fifo_agent_status_log_id = '$fifo_agent_status_log_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$username = $row["username"];
 			$agent_status = $row["agent_status"];
 			$uuid = $row["uuid"];
@@ -189,10 +189,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	v_id:\n";
+	echo "	domain_uuid:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='v_id' maxlength='255' value='$v_id'>\n";
+	echo "  <input class='formfld' type='text' name='domain_uuid' maxlength='255' value='$domain_uuid'>\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

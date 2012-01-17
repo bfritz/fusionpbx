@@ -67,7 +67,7 @@ $svn_path = '/trunk/fusionpbx/';
 //set path_array
 	$sql = "";
 	$sql .= "select * from v_src ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -151,14 +151,14 @@ foreach ($svn_directory_tree as &$row) {
 			$sql ="";
 			$sql .= "insert into v_src ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "type, ";
 			$sql .= "last_mod, ";
 			$sql .= "path ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$xml_type', ";
 			$sql .= "'$xml_last_mod', ";
 			$sql .= "'$xml_relative_path' ";
@@ -172,7 +172,7 @@ foreach ($svn_directory_tree as &$row) {
 				$sql .= "update v_src set ";
 				$sql .= "type = '$xml_type', ";
 				$sql .= "last_mod = '$xml_last_mod' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and path = '$xml_relative_path' ";
 			}
 		}

@@ -59,7 +59,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($agent_name) == 0) { $msg .= "Please provide: Agent Name<br>\n"; }
 		//if (strlen($queue_name) == 0) { $msg .= "Please provide: Queue Name<br>\n"; }
 		//if (strlen($tier_level) == 0) { $msg .= "Please provide: Tier Level<br>\n"; }
@@ -82,8 +82,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		//add the agent using event socket
 			if ($fp) {
-				//get the domain using the $v_id
-					$tmp_domain = $_SESSION['domains'][$v_id]['domain'];
+				//get the domain using the $domain_uuid
+					$tmp_domain = $_SESSION['domains'][$domain_uuid]['domain'];
 				//syntax
 					//callcenter_config tier add [queue_name] [agent_name] [level] [position]
 					//callcenter_config tier set state [queue_name] [agent_name] [state]
@@ -108,7 +108,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_call_center_tier ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "agent_name, ";
 			$sql .= "queue_name, ";
 			$sql .= "tier_level, ";
@@ -116,7 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$agent_name', ";
 			$sql .= "'$queue_name', ";
 			$sql .= "'$tier_level', ";
@@ -139,7 +139,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_call_center_tier set ";
-			$sql .= "v_id = '$v_id', ";
+			$sql .= "domain_uuid = '$domain_uuid', ";
 			$sql .= "agent_name = '$agent_name', ";
 			$sql .= "queue_name = '$queue_name', ";
 			$sql .= "tier_level = '$tier_level', ";
@@ -167,7 +167,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$call_center_tier_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_center_tier ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_center_tier_id = '$call_center_tier_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -220,7 +220,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_users ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "order by username asc ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -254,7 +254,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_call_center_queue ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "order by queue_name asc ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

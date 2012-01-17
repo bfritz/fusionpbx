@@ -67,7 +67,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($agent_name) == 0) { $msg .= "Please provide: Agent Name<br>\n"; }
 		//if (strlen($agent_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
 		//if (strlen($agent_call_timeout) == 0) { $msg .= "Please provide: Call Timeout<br>\n"; }
@@ -141,7 +141,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//set the user_status
 		$sql  = "update v_users set ";
 		$sql .= "user_status = '".$agent_status."' ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and username = '".$agent_name."' ";
  		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -152,23 +152,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//add the agent using event socket
 			if ($fp) {
 				//add the agent
-					$cmd = "api callcenter_config agent add ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." ".$agent_type;
+					$cmd = "api callcenter_config agent add ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." ".$agent_type;
 					$response = event_socket_request($fp, $cmd);
 					usleep(200);
 				//agent set contact
-					$cmd = "api callcenter_config agent set contact ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." ".$tmp_agent_contact;
+					$cmd = "api callcenter_config agent set contact ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." ".$tmp_agent_contact;
 					$response = event_socket_request($fp, $cmd);
 					usleep(200);
 				//agent set status
-					$cmd = "api callcenter_config agent set status ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." '".$agent_status."'";
+					$cmd = "api callcenter_config agent set status ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." '".$agent_status."'";
 					$response = event_socket_request($fp, $cmd);
 					usleep(200);
 				//agent set reject_delay_time
-					$cmd = "api callcenter_config agent set reject_delay_time ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." ".$agent_reject_delay_time;
+					$cmd = "api callcenter_config agent set reject_delay_time ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." ".$agent_reject_delay_time;
 					$response = event_socket_request($fp, $cmd);
 					usleep(200);
 				//agent set busy_delay_time
-					$cmd = "api callcenter_config agent set busy_delay_time ".$agent_name."@".$_SESSION['domains'][$v_id]['domain']." ".$agent_busy_delay_time;
+					$cmd = "api callcenter_config agent set busy_delay_time ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." ".$agent_busy_delay_time;
 					$response = event_socket_request($fp, $cmd);
 			}
 
@@ -178,7 +178,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//add the agent to the database
 				$sql = "insert into v_call_center_agent ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "agent_name, ";
 				$sql .= "agent_type, ";
 				$sql .= "agent_call_timeout, ";
@@ -193,7 +193,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$agent_name', ";
 				$sql .= "'$agent_type', ";
 				$sql .= "'$agent_call_timeout', ";
@@ -235,7 +235,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "agent_wrap_up_time = '$agent_wrap_up_time', ";
 			$sql .= "agent_reject_delay_time = '$agent_reject_delay_time', ";
 			$sql .= "agent_busy_delay_time = '$agent_busy_delay_time' ";
-			$sql .= "where v_id = '$v_id'";
+			$sql .= "where domain_uuid = '$domain_uuid'";
 			$sql .= "and call_center_agent_id = '$call_center_agent_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -259,7 +259,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$call_center_agent_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_center_agent ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_center_agent_id = '$call_center_agent_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -326,7 +326,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_users ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "order by username asc ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

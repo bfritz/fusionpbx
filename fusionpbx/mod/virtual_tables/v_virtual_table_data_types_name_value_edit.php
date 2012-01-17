@@ -49,7 +49,7 @@ if (strlen($_GET["virtual_table_field_id"]) > 0) {
 
 //POST to PHP variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
+		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		$virtual_data_types_name = check_str($_POST["virtual_data_types_name"]);
 		$virtual_data_types_value = check_str($_POST["virtual_data_types_value"]);
 		$virtual_table_id = $_REQUEST["virtual_table_id"];
@@ -64,7 +64,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($virtual_table_id) == 0) { $msg .= "Please provide: virtual_table_id<br>\n"; }
 		if (strlen($virtual_table_field_id) == 0) { $msg .= "Please provide: virtual_table_field_id<br>\n"; }
 		if (strlen($virtual_data_types_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
@@ -87,7 +87,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add") {
 				$sql = "insert into v_virtual_table_data_types_name_value ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "virtual_table_id, ";
 				$sql .= "virtual_table_field_id, ";
 				$sql .= "virtual_data_types_name, ";
@@ -95,7 +95,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$virtual_table_id', ";
 				$sql .= "'$virtual_table_field_id', ";
 				$sql .= "'$virtual_data_types_name', ";
@@ -117,7 +117,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "update v_virtual_table_data_types_name_value set ";
 				$sql .= "virtual_data_types_name = '$virtual_data_types_name', ";
 				$sql .= "virtual_data_types_value = '$virtual_data_types_value' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and virtual_table_id = '$virtual_table_id' ";
 				$sql .= "and virtual_table_field_id = '$virtual_table_field_id' ";
 				$sql .= "and virtual_table_data_types_name_value_id = '$virtual_table_data_types_name_value_id' ";
@@ -142,7 +142,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$virtual_table_data_types_name_value_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_virtual_table_data_types_name_value ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		//$sql .= "and virtual_table_id = '$virtual_table_id' ";
 		$sql .= "and virtual_table_field_id = '$virtual_table_field_id' ";
 		$sql .= "and virtual_table_data_types_name_value_id = '$virtual_table_data_types_name_value_id' ";

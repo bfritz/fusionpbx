@@ -69,7 +69,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
 		if (strlen($field_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
 		//if (strlen($field_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
@@ -100,7 +100,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "field_break, ";
 				$sql .= "field_inline, ";
 				$sql .= "field_group, ";
-				$sql .= "v_id ";
+				$sql .= "domain_uuid ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
@@ -117,7 +117,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				else {
 					$sql .= "'$field_group', ";
 				}
-				$sql .= "'$v_id' ";
+				$sql .= "'$domain_uuid' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -149,7 +149,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				else {
 					$sql .= "field_group = '$field_group' ";
 				}
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -174,7 +174,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$dialplan_includes_detail_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_includes_detail_id = '$dialplan_includes_detail_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

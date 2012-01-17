@@ -45,7 +45,7 @@ if (count($_GET)>0) {
 	//get the contact's information
 		$sql = "";
 		$sql .= "select * from v_contacts ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and contact_id = '$contact_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -87,7 +87,7 @@ if (count($_GET)>0) {
 	//get the contact's telephone numbers
 		$sql = "";
 		$sql .= "select * from v_contacts_tel ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and contact_id = '$contact_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -106,7 +106,7 @@ if (count($_GET)>0) {
 		else {
 			$sql = "";
 			$sql .= "select * from v_contacts_adr ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and contact_id = '$contact_id' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();

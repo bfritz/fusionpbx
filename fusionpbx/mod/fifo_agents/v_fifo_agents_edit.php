@@ -69,7 +69,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($fifo_name) == 0) { $msg .= "Please provide: Queue Name<br>\n"; }
 		if (strlen($agent_username) == 0) { $msg .= "Please provide: Username<br>\n"; }
 		if (strlen($agent_priority) == 0) { $msg .= "Please provide: Agent Priority<br>\n"; }
@@ -95,7 +95,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_fifo_agents ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "fifo_name, ";
 			$sql .= "agent_username, ";
 			$sql .= "agent_priority, ";
@@ -106,7 +106,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$fifo_name', ";
 			$sql .= "'$agent_username', ";
 			$sql .= "'$agent_priority', ";
@@ -129,7 +129,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_fifo_agents set ";
-			$sql .= "v_id = '$v_id', ";
+			$sql .= "domain_uuid = '$domain_uuid', ";
 			$sql .= "fifo_name = '$fifo_name', ";
 			$sql .= "agent_username = '$agent_username', ";
 			$sql .= "agent_priority = '$agent_priority', ";
@@ -218,7 +218,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//generate the fifo name select list
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$x = 0;
@@ -255,7 +255,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//generate the user list
 		$sql = "SELECT * FROM v_users ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 
@@ -358,7 +358,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	//generate the agent status select list
 		$sql = "SELECT var_name, var_value FROM v_vars ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and var_cat = 'Queues Agent Status' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

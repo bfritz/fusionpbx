@@ -51,11 +51,11 @@ require_once "includes/header.php";
 	echo "      <b>$moduletitle Details</b>";
 	$sql = "";
 	$sql .= "select * from v_rss ";
-	$sql .= "where v_id = '$v_id'  ";
+	$sql .= "where domain_uuid = '$domain_uuid'  ";
 	$sql .= "and rss_id = '$rss_id'  ";
 	$sql .= "and rss_category = '$rss_category' ";
 	$sql .= "and length(rss_del_date) = 0 ";	
-	$sql .= "or v_id = '$v_id'  ";
+	$sql .= "or domain_uuid = '$domain_uuid'  ";
 	$sql .= "and rss_id = '$rss_id'  ";
 	$sql .= "and rss_category = '$rss_category' ";
 	$sql .= "and rss_del_date is null  ";
@@ -159,10 +159,10 @@ require_once "includes/header.php";
 
 		$sql = "";
 		$sql .= "select * from v_rss_sub ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and rss_id = '$rss_id' ";
 		$sql .= "and length(rss_sub_del_date) = 0 ";
-		$sql .= "or v_id = '$v_id' ";
+		$sql .= "or domain_uuid = '$domain_uuid' ";
 		$sql .= "and rss_id = '$rss_id' ";
 		$sql .= "and rss_sub_del_date is null ";
 		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }

@@ -98,8 +98,8 @@ else {
 	echo "			DB: <select name='sql_db'>\n";
 	echo "				<option value=''></option>\n";
 	$sql = "";
-	$sql .= "select * from v_database_connections ";
-	$sql .= "where v_id = '$v_id' ";	
+	$sql .= "select * from v_db ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -112,7 +112,7 @@ else {
 		//$db_password = $row["db_password"];
 		//$db_path = $row["db_path"];
 		//$db_description = $row["db_description"];
-		echo "			<option value='".$row["database_connection_id"]."'>".$row["db_host"]." - ".$row["db_name"]."</option>\n";
+		echo "			<option value='".$row["db_uuid"]."'>".$row["db_host"]." - ".$row["db_name"]."</option>\n";
 	}
 	unset ($prep_statement);
 	echo "			</select>\n";

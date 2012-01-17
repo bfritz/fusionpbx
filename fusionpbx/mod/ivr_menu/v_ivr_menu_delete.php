@@ -43,7 +43,7 @@ if (strlen($id)>0) {
 	//delete child data
 		$sql = "";
 		$sql .= "delete from v_ivr_menu_options ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and ivr_menu_id = '$id' ";
 		$db->query($sql);
 		unset($sql);
@@ -51,7 +51,7 @@ if (strlen($id)>0) {
 	//delete parent data
 		$sql = "";
 		$sql .= "delete from v_ivr_menu ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and ivr_menu_id = '$id' ";
 		$db->query($sql);
 		unset($sql);
@@ -59,7 +59,7 @@ if (strlen($id)>0) {
 	//delete the dialplan entries
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and opt_1_name = 'ivr_menu_id' ";
 		$sql .= "and opt_1_value = '".$id."' ";
 		$prepstatement2 = $db->prepare($sql);
@@ -74,7 +74,7 @@ if (strlen($id)>0) {
 		//delete the child dialplan information
 			$sql = "";
 			$sql = "delete from v_dialplan_includes_details ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 			//echo "sql: ".$sql."<br />\n";
 			$db->query($sql);
@@ -83,7 +83,7 @@ if (strlen($id)>0) {
 		//delete the parent dialplan information
 			$sql = "";
 			$sql .= "delete from v_dialplan_includes ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'ivr_menu_id' ";
 			$sql .= "and opt_1_value = '".$id."' ";
 			//echo "sql: ".$sql."<br />\n";

@@ -47,13 +47,13 @@ else {
 if (strlen($username) > 0  && strlen($group_id) > 0)   {
 	$sqlinsert = "insert into v_group_members ";
 	$sqlinsert .= "(";
-	$sqlinsert .= "v_id, ";
+	$sqlinsert .= "domain_uuid, ";
 	$sqlinsert .= "group_id, ";
 	$sqlinsert .= "username ";
 	$sqlinsert .= ")";
 	$sqlinsert .= "values ";
 	$sqlinsert .= "(";
-	$sqlinsert .= "'$v_id', ";
+	$sqlinsert .= "'$domain_uuid', ";
 	$sqlinsert .= "'$group_id', ";
 	$sqlinsert .= "'$username' ";
 	$sqlinsert .= ")";

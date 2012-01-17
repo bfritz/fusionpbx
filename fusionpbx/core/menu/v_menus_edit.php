@@ -80,7 +80,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			//create a new unique id
-				$menu_uuid = guid();
+				$menu_uuid = uuid();
 
 			//start a new menu
 				$sql = "insert into v_menus ";

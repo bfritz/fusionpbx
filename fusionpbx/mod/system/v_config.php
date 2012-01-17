@@ -38,18 +38,14 @@
 		$apps[$x]['permissions'][4]['name'] = 'system_view_backup';
 		$apps[$x]['permissions'][4]['groups'][] = 'superadmin';
 
-	// CREATE TABLE v_software
+	//schema details
 		$y = 0; //table array index
 		$z = 0; //field array index
 		$apps[$x]['db'][$y]['table'] = 'v_software';
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer PRIMARY KEY';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'v_id';
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'software_name';

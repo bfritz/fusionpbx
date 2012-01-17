@@ -63,7 +63,7 @@ function destination_select($select_name, $select_value, $select_default) {
 //hunt_group information used to determine if this is an add or an update
 	$sql = "";
 	$sql .= "select * from v_hunt_group ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and hunt_group_id = '$hunt_group_id' ";
 	if (!(permission_exists('hunt_group_add') || permission_exists('hunt_group_edit'))) {
 		$sql .= "and hunt_group_user_list like '%|".$_SESSION["username"]."|%' ";
@@ -133,11 +133,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//hunt_group information used to determine if this is an add or an update
 		$sql = "select * from v_hunt_group ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_type = 'call_forward' ";
 		$sql .= "and hunt_group_extension in ( ";
 		$sql .= "select hunt_group_extension from v_hunt_group ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_id = '$hunt_group_id' ";
 		if (!(permission_exists('hunt_group_add') || permission_exists('hunt_group_edit'))) {
 			$sql .= "and hunt_group_user_list like '%|".$_SESSION["username"]."|%' ";
@@ -172,7 +172,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($call_forward_action == "add" && permission_exists('hunt_group_add')) {
 			$sql = "insert into v_hunt_group ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "hunt_group_extension, ";
 			$sql .= "hunt_group_name, ";
 			$sql .= "hunt_group_type, ";
@@ -191,7 +191,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$hunt_group_extension', ";
 			$sql .= "'$huntgroup_name', ";
 			$sql .= "'$hunt_group_type', ";
@@ -243,7 +243,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		$sql = "insert into v_hunt_group_destinations ";
 		$sql .= "(";
-		$sql .= "v_id, ";
+		$sql .= "domain_uuid, ";
 		$sql .= "hunt_group_id, ";
 		$sql .= "destination_data, ";
 		$sql .= "destination_type, ";
@@ -255,7 +255,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
-		$sql .= "'$v_id', ";
+		$sql .= "'$domain_uuid', ";
 		$sql .= "'$call_forward_id', ";
 		$sql .= "'$destination_data', ";
 		$sql .= "'$destination_type', ";
@@ -286,7 +286,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "hunt_group_user_list = '$hunt_group_user_list', ";
 		$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 		$sql .= "hunt_group_descr = '$hunt_group_descr' ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_id = '$call_forward_id'";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -312,7 +312,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//insert the v_hunt_group_destinations
 			$sql = "insert into v_hunt_group_destinations ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "hunt_group_id, ";
 			$sql .= "destination_data, ";
 			$sql .= "destination_type, ";
@@ -324,7 +324,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$call_forward_id', ";
 			$sql .= "'$destination_data', ";
 			$sql .= "'$destination_type', ";
@@ -360,7 +360,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	$sql = "";
 	$sql .= "select * from v_hunt_group ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and hunt_group_type = 'call_forward' ";
 	$sql .= "and hunt_group_extension = '$hunt_group_extension' ";
 	$prepstatement = $db->prepare(check_sql($sql));

@@ -64,7 +64,7 @@ if (count($_POST)>0) {
 	$sql = "";
 	$sql .= "select * from v_rss_sub ";
 	$sql .= "where ";
-	if (strlen($v_id) > 0) { $sql .= "and rss_sub_id = '$v_id' "; }
+	if (strlen($domain_uuid) > 0) { $sql .= "and rss_sub_id = '$domain_uuid' "; }
 	if (strlen($rss_sub_id) > 0) { $sql .= "and rss_sub_id like '%$rss_sub_id%' "; }
 	if (strlen($rss_id) > 0) { $sql .= "and rss_id like '%$rss_id%' "; }
 	if (strlen($rss_sub_title) > 0) { $sql .= "and rss_sub_title like '%$rss_sub_title%' "; }
@@ -79,7 +79,7 @@ if (count($_POST)>0) {
 	if (strlen($rss_sub_add_user) > 0) { $sql .= "and rss_sub_add_user like '%$rss_sub_add_user%' "; }
 	$sql .= "and length(rss_sub_del_date) = 0 ";
 	$sql .= "or ";
-	if (strlen($v_id) > 0) { $sql .= "and rss_sub_id = '$v_id' "; }
+	if (strlen($domain_uuid) > 0) { $sql .= "and rss_sub_id = '$domain_uuid' "; }
 	if (strlen($rss_sub_id) > 0) { $sql .= "and rss_sub_id like '%$rss_sub_id%' "; }
 	if (strlen($rss_id) > 0) { $sql .= "and rss_id like '%$rss_id%' "; }
 	if (strlen($rss_sub_title) > 0) { $sql .= "and rss_sub_title like '%$rss_sub_title%' "; }

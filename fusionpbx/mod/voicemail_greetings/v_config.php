@@ -50,23 +50,45 @@
 		$apps[$x]['permissions'][6]['groups'][] = 'superadmin';
 
 	//schema details
-		$apps[$x]['db'][0]['table'] = 'v_voicemail_greetings';
-		$apps[$x]['db'][0]['fields'][0]['name'] = 'greeting_id';
-		$apps[$x]['db'][0]['fields'][0]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][0]['fields'][0]['type']['sqlite'] = 'integer PRIMARY KEY';
-		$apps[$x]['db'][0]['fields'][0]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
-		$apps[$x]['db'][0]['fields'][0]['description'] = '';
-		$apps[$x]['db'][0]['fields'][1]['name'] = 'v_id';
-		$apps[$x]['db'][0]['fields'][1]['type'] = 'numeric';
-		$apps[$x]['db'][0]['fields'][1]['description'] = '';
-		$apps[$x]['db'][0]['fields'][2]['name'] = 'user_id';
-		$apps[$x]['db'][0]['fields'][2]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][2]['description'] = '';
-		$apps[$x]['db'][0]['fields'][3]['name'] = 'greeting_name';
-		$apps[$x]['db'][0]['fields'][3]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][3]['description'] = '';
-		$apps[$x]['db'][0]['fields'][4]['name'] = 'greeting_description';
-		$apps[$x]['db'][0]['fields'][4]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][4]['description'] = '';
+		$y = 0; //table array index
+		$z = 0; //field array index
+		$apps[$x]['db'][$y]['table'] = 'v_voicemail_greetings';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'greeting_id';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'greeting_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'v_id';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_id';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'greeting_name';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'greeting_description';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 
 ?>

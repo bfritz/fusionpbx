@@ -51,7 +51,7 @@ if (count($_GET)>0) {
 		if (strlen($virtual_table_parent_id) == 0) {
 			$sql = "";
 			$sql .= "select * from v_virtual_tables ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_id = '$virtual_table_id' ";
 			$prepstatement = $db->prepare($sql);
 			$prepstatement->execute();
@@ -63,14 +63,14 @@ if (count($_GET)>0) {
 
 	//delete the child data
 		$sql = "delete from v_virtual_table_data ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and virtual_data_parent_row_id = '$virtual_data_row_id' ";
 		$db->exec(check_sql($sql));
 		unset($sql);
 
 	//delete the data
 		$sql = "delete from v_virtual_table_data ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and virtual_data_row_id = '$virtual_data_row_id' ";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -79,7 +79,7 @@ if (count($_GET)>0) {
 		//$sql  = "update v_virtual_table_data set ";
 		//$sql .= "virtual_data_del_date = now(), ";
 		//$sql .= "virtual_data_del_user = '".$_SESSION["username"]."' ";
-		//$sql .= "where v_id = '$v_id' ";
+		//$sql .= "where domain_uuid = '$domain_uuid' ";
 		//$sql .= "and virtual_data_row_id = '$virtual_data_row_id' ";
 		//$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);

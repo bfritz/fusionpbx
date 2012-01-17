@@ -163,7 +163,7 @@ else {
 				$sql .= "'$menu_item_category', ";
 				$sql .= "'$menu_item_desc', ";
 				$sql .= "'$menu_item_protected', ";
-				$sql .= "'".guid()."', ";
+				$sql .= "'".uuid()."', ";
 				$sql .= "'$menu_item_parent_uuid', ";
 				$sql .= "'".($highestmenu_item_order+1)."', ";
 				$sql .= "'".$_SESSION["username"]."', ";
@@ -327,7 +327,7 @@ else {
 
 	echo "<br />\n";
 	$sql = "SELECT * FROM v_groups ";
-	$sql .= "where v_id = '".$v_id."' ";
+	$sql .= "where domain_uuid = '".$domain_uuid."' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	echo "<select name=\"group_id\" class='frm'>\n";

@@ -63,7 +63,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($resolution_code) == 0) { $msg .= "Please provide: Resolution Code<br>\n"; }
 		//if (strlen($transaction_id) == 0) { $msg .= "Please provide: Transaction ID<br>\n"; }
 		//if (strlen($action_item) == 0) { $msg .= "Please provide: Action Item<br>\n"; }
@@ -89,7 +89,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_fifo_agent_call_logs ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "resolution_code, ";
 			$sql .= "transaction_id, ";
 			$sql .= "action_item, ";
@@ -100,7 +100,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$resolution_code', ";
 			$sql .= "'$transaction_id', ";
 			$sql .= "'$action_item', ";
@@ -130,7 +130,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "notes = '$notes', ";
 			$sql .= "add_user = '$add_user', ";
 			$sql .= "add_date = '$add_date' ";
-			$sql .= "where v_id = '$v_id'";
+			$sql .= "where domain_uuid = '$domain_uuid'";
 			$sql .= "and fifo_agent_call_log_id = '$fifo_agent_call_log_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -152,7 +152,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$fifo_agent_call_log_id = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_fifo_agent_call_logs ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and fifo_agent_call_log_id = '$fifo_agent_call_log_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

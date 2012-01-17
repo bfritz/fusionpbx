@@ -41,7 +41,7 @@
 
 //determine where the xml cdr will be archived
 	$sql = "select * from v_vars ";
-	$sql .= "where v_id  = '1' ";
+	$sql .= "where domain_uuid  = '1' ";
 	$sql .= "and var_name = 'xml_cdr_archive' ";
 	$row = $db->query($sql)->fetch();
 	$var_value = trim($row["var_value"]);

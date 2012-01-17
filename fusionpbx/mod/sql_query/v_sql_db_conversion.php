@@ -36,12 +36,9 @@ else {
 	exit;
 
 //show errors
-ini_set('display_errors', '1');
-//error_reporting (E_ALL); // Report everything
-
-//error_reporting (E_ALL ^ E_NOTICE); // Report everything
-error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
-
+	ini_set('display_errors', '1');
+	//error_reporting (E_ALL); // Report everything
+	error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
 
 //define the db file exists function
 	function db_field_exists ($tmp_array, $column) {
@@ -56,8 +53,8 @@ error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
 	//db_field_exists ($result_dest, $column)
 
 //destination info
-	//set the v_id
-		$dest_v_id = '1';
+	//set the domain_uuid
+		$dest_domain_uuid = '1';
 
 	//set the database type
 		$db_dest_type = 'mysql'; //sqlite, mysql, pgsql, others with a manually created PDO connection
@@ -71,9 +68,9 @@ error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
 		$db_port = '3306';
 		$db_name = 'fusionpbx';
 		$db_username = 'fusionpbx';
-		$db_password = '53m3Ed7zZe';
+		$db_password = '';
 		$db_create_username = 'root';
-		$db_create_password = '3raz3e7t';
+		$db_create_password = '';
 
 	//pgsql: database connection information
 		//$db_host = ''; //set the host only if the database is not local
@@ -83,10 +80,9 @@ error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
 		//$db_password = '';
 		//$db_create_username = '';
 		//$db_create_password = '';
-		
 
 	//load data into the database
-	
+
 		//create the sqlite database
 			if ($db_dest_type == "sqlite") {
 				//sqlite database will be created when the config.php is loaded and only if the database file does not exist
@@ -128,7 +124,7 @@ error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
 					$db_dest->commit();
 			}
 
-		//create the postgres database		
+		//create the postgres database
 			if ($db_dest_type == "pgsql") {
 				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/pgsql.sql';
 				$file_contents = file_get_contents($filename);
@@ -341,7 +337,6 @@ error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
 					unset ($file_contents, $sql);
 		}
 
-
 //get the list of tables
 	if ($db_dest_type == "sqlite") {
 		$sql = "SELECT name FROM sqlite_master ";
@@ -368,7 +363,6 @@ error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
 			$sql = 'delete from '.$table_name;
 			//$db_dest->query($sql);
 		}
-		
 
 	//add data into each table
 		foreach ($result_dest as &$row) {
@@ -472,16 +466,16 @@ error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
 								$x = 1;
 								foreach ($destination_column_array as $column) {
 									if ($x < $destination_column_array_count) {
-										//if ($column == "v_id") {
-										//	$sql .= "'".$dest_v_id."',";
+										//if ($column == "domain_uuid") {
+										//	$sql .= "'".$dest_domain_uuid."',";
 										//}
 										//else {
 											$sql .= "'".check_str($row[$column])."', ";
 										//}
 									}
 									else {
-										//if ($column == "v_id") {
-										//	$sql .= "'".$dest_v_id."'";
+										//if ($column == "domain_uuid") {
+										//	$sql .= "'".$dest_domain_uuid."'";
 										//}
 										//else {
 											$sql .= "'".check_str($row[$column])."'";

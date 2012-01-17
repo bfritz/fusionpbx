@@ -65,7 +65,7 @@ require_once "includes/paging.php";
 	//get the number of rows in v_extensions 
 		$sql = "";
 		$sql .= " select count(*) as num_rows from v_ivr_menu ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		if ($prepstatement) {
 			$prepstatement->execute();
@@ -90,7 +90,7 @@ require_once "includes/paging.php";
 	//get the list from the db
 		$sql = "";
 		$sql .= " select * from v_ivr_menu ";
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prepstatement = $db->prepare(check_sql($sql));

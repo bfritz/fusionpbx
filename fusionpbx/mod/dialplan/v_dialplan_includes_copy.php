@@ -44,13 +44,13 @@ else {
 	$dialplan_include_id = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
+		$domain_uuid = $row["domain_uuid"];
 		$extension_name = $row["extension_name"];
 		$dialplan_order = $row["dialplan_order"];
 		$extension_continue = $row["extension_continue"];
@@ -64,7 +64,7 @@ else {
 	//copy the dialplan
 		$sql = "insert into v_dialplan_includes ";
 		$sql .= "(";
-		$sql .= "v_id, ";
+		$sql .= "domain_uuid, ";
 		$sql .= "extension_name, ";
 		$sql .= "dialplan_order, ";
 		$sql .= "extension_continue, ";
@@ -74,7 +74,7 @@ else {
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
-		$sql .= "'$v_id', ";
+		$sql .= "'$domain_uuid', ";
 		$sql .= "'$extension_name', ";
 		$sql .= "'$dialplan_order', ";
 		$sql .= "'$extension_continue', ";
@@ -102,13 +102,13 @@ else {
 	//get the the dialplan details
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			//$dialplan_include_id = $row["dialplan_include_id"];
 			$tag = $row["tag"];
 			$field_order = $row["field_order"];
@@ -118,7 +118,7 @@ else {
 			//copy the dialplan details
 				$sql = "insert into v_dialplan_includes_details ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "dialplan_include_id, ";
 				$sql .= "tag, ";
 				$sql .= "field_order, ";
@@ -127,7 +127,7 @@ else {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'".check_str($db_dialplan_include_id)."', ";
 				$sql .= "'".check_str($tag)."', ";
 				$sql .= "'".check_str($field_order)."', ";

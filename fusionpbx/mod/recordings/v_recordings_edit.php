@@ -65,7 +65,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($recording_filename) == 0) { $msg .= "Please provide: Filename (download)<br>\n"; }
 		if (strlen($recording_name) == 0) { $msg .= "Please provide: Recording Name (play)<br>\n"; }
 		//if (strlen($recording_uuid) == 0) { $msg .= "Please provide: recording_uuid<br>\n"; }
@@ -88,7 +88,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add" && permission_exists('recordings_add')) {
 			$sql = "insert into v_recordings ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "recording_filename, ";
 			$sql .= "recording_name, ";
 			//$sql .= "recording_uuid, ";
@@ -96,7 +96,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$recording_filename', ";
 			$sql .= "'$recording_name', ";
 			//$sql .= "'$recording_uuid', ";
@@ -119,7 +119,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "";
 				$sql .= "select * from v_recordings ";
 				$sql .= "where recording_id = '$recording_id' ";
-				$sql .= "and v_id = '$v_id' ";
+				$sql .= "and domain_uuid = '$domain_uuid' ";
 				//echo "sql: ".$sql."<br />\n";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
@@ -139,12 +139,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//update the database with the new data
 				$sql = "update v_recordings set ";
-				$sql .= "v_id = '$v_id', ";
+				$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "recording_filename = '$recording_filename', ";
 				$sql .= "recording_name = '$recording_name', ";
 				//$sql .= "recording_uuid = '$recording_uuid', ";
 				$sql .= "recording_desc = '$recording_desc' ";
-				$sql .= "where v_id = '$v_id'";
+				$sql .= "where domain_uuid = '$domain_uuid'";
 				$sql .= "and recording_id = '$recording_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -165,13 +165,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$recording_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_recordings ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and recording_id = '$recording_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$recording_filename = $row["recording_filename"];
 			$recording_name = $row["recording_name"];
 			//$recording_uuid = $row["recording_uuid"];

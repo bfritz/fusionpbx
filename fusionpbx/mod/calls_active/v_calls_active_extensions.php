@@ -207,7 +207,7 @@ echo "	</td>\n";
 //get the user status when the page loads
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and username = '".$_SESSION['username']."' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

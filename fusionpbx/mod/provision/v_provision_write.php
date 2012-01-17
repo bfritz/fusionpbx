@@ -42,7 +42,7 @@ else {
 //get any system -> variables defined in the 'provision;
 	$sql = "";
 	$sql .= "select * from v_vars ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and var_enabled= 'true' ";
 	$sql .= "and var_cat = 'Provision' ";
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -59,7 +59,7 @@ else {
 //get the ftp and tftp directories
 	$sql = "";
 	$sql .= "select * from v_system_settings ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$provision_variables_array = $prepstatement->fetchAll();
@@ -72,7 +72,7 @@ else {
 //get the hardware phone list
 	$sql = "";
 	$sql .= "select * from v_hardware_phones ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -167,7 +167,7 @@ else {
 							$sql2 = "";
 							$sql2 .= "select * from v_extensions ";
 							$sql2 .= "where provisioning_list like '%$phone_mac_address%' ";
-							$sql2 .= "and v_id = '$v_id' ";
+							$sql2 .= "and domain_uuid = '$domain_uuid' ";
 							$prepstatement2 = $db->prepare(check_sql($sql2));
 							$prepstatement2->execute();
 							$result2 = $prepstatement2->fetchAll();

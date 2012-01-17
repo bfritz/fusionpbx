@@ -129,7 +129,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($ivr_menu_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($ivr_menu_extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		if (strlen($ivr_menu_greet_long) == 0) { $msg .= "Please provide: Greet Long<br>\n"; }
@@ -169,7 +169,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('ivr_menu_add')) {
 				$sql = "insert into v_ivr_menu ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "ivr_menu_name, ";
 				$sql .= "ivr_menu_extension, ";
 				$sql .= "ivr_menu_greet_long, ";
@@ -194,7 +194,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$ivr_menu_name', ";
 				$sql .= "'$ivr_menu_extension', ";
 				$sql .= "'$ivr_menu_greet_long', ";
@@ -234,7 +234,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('ivr_menu_edit')) {
 				$sql = "update v_ivr_menu set ";
-				$sql .= "v_id = '$v_id', ";
+				$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "ivr_menu_name = '$ivr_menu_name', ";
 				$sql .= "ivr_menu_extension = '$ivr_menu_extension', ";
 				$sql .= "ivr_menu_greet_long = '$ivr_menu_greet_long', ";
@@ -282,7 +282,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$ivr_menu_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_ivr_menu ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and ivr_menu_id = '$ivr_menu_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

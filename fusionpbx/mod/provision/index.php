@@ -35,7 +35,7 @@ require_once "includes/config.php";
 //get any system -> variables defined in the 'provision;
 	$sql = "";
 	$sql .= "select * from v_vars ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and var_enabled= 'true' ";
 	$sql .= "and var_cat = 'Provision' ";
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -97,11 +97,11 @@ require_once "includes/config.php";
 		//get the phone_template
 			if (strlen($phone_template) == 0) {
 				$sql = "SELECT * FROM v_hardware_phones ";
-				$sql .= "where v_id=:v_id ";
+				$sql .= "where domain_uuid=:domain_uuid ";
 				$sql .= "and phone_mac_address=:mac ";
 				$prepstatement2 = $db->prepare(check_sql($sql));
 				if ($prepstatement2) {
-					$prepstatement2->bindParam(':v_id', $v_id);
+					$prepstatement2->bindParam(':domain_uuid', $domain_uuid);
 					$prepstatement2->bindParam(':mac', $mac);
 					$prepstatement2->execute();
 					$row = $prepstatement2->fetch();
@@ -120,11 +120,11 @@ require_once "includes/config.php";
 		//find a template that was defined on another phone and use that as the default.
 			if (strlen($phone_template) == 0) {
 				$sql = "SELECT * FROM v_hardware_phones ";
-				$sql .= "where v_id=:v_id ";
+				$sql .= "where domain_uuid=:domain_uuid ";
 				$sql .= "and phone_template like '%/%' ";
 				$prepstatement3 = $db->prepare(check_sql($sql));
 				if ($prepstatement3) {
-					$prepstatement3->bindParam(':v_id', $v_id);
+					$prepstatement3->bindParam(':domain_uuid', $domain_uuid);
 					$prepstatement3->bindParam(':mac', $mac);
 					$prepstatement3->execute();
 					$row = $prepstatement3->fetch();
@@ -191,7 +191,7 @@ require_once "includes/config.php";
 		//the mac address does not exist in the table so add it
 			$sql = "insert into v_hardware_phones ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "phone_mac_address, ";
 			$sql .= "phone_vendor, ";
 			$sql .= "phone_model, ";
@@ -203,7 +203,7 @@ require_once "includes/config.php";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$mac', ";
 			$sql .= "'$phone_vendor', ";
 			$sql .= "'', ";
@@ -276,7 +276,7 @@ require_once "includes/config.php";
 		$sql = "";
 		$sql .= "select * from v_extensions ";
 		$sql .= "where provisioning_list like '%$mac%' ";
-		$sql .= "and v_id = '$v_id' ";
+		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -356,13 +356,13 @@ require_once "includes/config.php";
 
 
 function mac_exists_in_v_hardware_phones($db, $mac) {
-	global $v_id;
+	global $domain_uuid;
 	$sql = "SELECT count(*) as count FROM v_hardware_phones ";
-	$sql .= "where v_id=:v_id ";
+	$sql .= "where domain_uuid=:domain_uuid ";
 	$sql .= "and phone_mac_address=:mac ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	if ($prepstatement) {
-		$prepstatement->bindParam(':v_id', $v_id);
+		$prepstatement->bindParam(':domain_uuid', $domain_uuid);
 		$prepstatement->bindParam(':mac', $mac);
 		$prepstatement->execute();
 		$row = $prepstatement->fetch();

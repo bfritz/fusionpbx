@@ -128,7 +128,7 @@ else {
 		//set the auto increment id starting number
 			switch ($table_name) {
 				case "v_system_settings":
-					$auto_increment_name = 'v_id';
+					$auto_increment_name = 'domain_uuid';
 					break;
 				case "v_users":
 					$auto_increment_name = 'id';

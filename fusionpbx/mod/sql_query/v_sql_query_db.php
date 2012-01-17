@@ -1,4 +1,28 @@
 <?php
+/*
+	FusionPBX
+	Version: MPL 1.1
+
+	The contents of this file are subject to the Mozilla Public License Version
+	1.1 (the "License"); you may not use this file except in compliance with
+	the License. You may obtain a copy of the License at
+	http://www.mozilla.org/MPL/
+
+	Software distributed under the License is distributed on an "AS IS" basis,
+	WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+	for the specific language governing rights and limitations under the
+	License.
+
+	The Original Code is FusionPBX
+
+	The Initial Developer of the Original Code is
+	Mark J Crane <markjcrane@fusionpbx.com>
+	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	the Initial Developer. All Rights Reserved.
+
+	Contributor(s):
+	Mark J Crane <markjcrane@fusionpbx.com>
+*/
 require_once "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
@@ -13,7 +37,7 @@ require_once "includes/header.php";
 require_once "includes/paging.php";
 
 //get variables used to control the order
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //show the content
@@ -30,16 +54,15 @@ require_once "includes/paging.php";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td align=\"left\" colspan='2'>\n";
-	echo "			Select the database connection that to use.<br /><br />\n";
+	echo "			Select the database connection to use.<br /><br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
 
 	//prepare to page the results
 		$sql = "";
-		$sql .= " select count(*) as num_rows from v_database_connections ";
-		$sql .= " where v_id = '$v_id' ";
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+		$sql .= " select count(*) as num_rows from v_db ";
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 		$prep_statement->execute();
@@ -62,9 +85,8 @@ require_once "includes/paging.php";
 
 	//get the  list
 		$sql = "";
-		$sql .= " select * from v_database_connections ";
-		$sql .= " where v_id = '$v_id' ";
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+		$sql .= " select * from v_db ";
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -80,16 +102,16 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('db_type', 'Type', $orderby, $order);
-	echo thorderby('db_host', 'Host', $orderby, $order);
-	//echo thorderby('db_port', 'Port', $orderby, $order);
-	echo thorderby('db_name', 'Name', $orderby, $order);
-	//echo thorderby('db_username', 'Username', $orderby, $order);
-	//echo thorderby('db_password', 'Password', $orderby, $order);
-	//echo thorderby('db_path', 'Path', $orderby, $order);
-	echo thorderby('db_description', 'Description', $orderby, $order);
+	echo thorderby('db_type', 'Type', $order_by, $order);
+	echo thorderby('db_host', 'Host', $order_by, $order);
+	//echo thorderby('db_port', 'Port', $order_by, $order);
+	echo thorderby('db_name', 'Name', $order_by, $order);
+	//echo thorderby('db_username', 'Username', $order_by, $order);
+	//echo thorderby('db_password', 'Password', $order_by, $order);
+	//echo thorderby('db_path', 'Path', $order_by, $order);
+	echo thorderby('db_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='21'>\n";
-	//echo "	<a href='v_database_connections_edit.php' alt='add'>$v_link_label_add</a>\n";
+	//echo "	<a href='db_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -106,7 +128,7 @@ require_once "includes/paging.php";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_path']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='rowstylebg'>".$row['db_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_sql_query.php?id=".$row['database_connection_id']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_sql_query.php?id=".$row['db_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }

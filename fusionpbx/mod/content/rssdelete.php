@@ -43,7 +43,7 @@ if (count($_GET)>0) {
 	$sql  = "update v_rss set ";
 	$sql .= "rss_del_date = now(), ";
 	$sql .= "rss_del_user = '".$_SESSION["username"]."' ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_id = '$rss_id' ";
 	$sql .= "and rss_category  = '$rss_category' ";
 	$db->exec(check_sql($sql));

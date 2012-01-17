@@ -37,7 +37,7 @@ else {
 //get the defaults
 	$sql = "";
 	$sql .= "select * from v_system_settings ";
-	$sql .= "order by v_id asc ";
+	$sql .= "order by domain_uuid asc ";
 	$sql .= "limit 1 ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

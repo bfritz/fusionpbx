@@ -37,7 +37,7 @@ include "root.php";
 				var $db_name;
 				var $db_username;
 				var $db_password;
-				
+
 				if ($this->type == "sqlite") {
 					if (strlen($db_file_name) == 0) {
 						$server_name = $_SERVER["SERVER_NAME"];
@@ -182,7 +182,7 @@ include "root.php";
 				var $order_by;
 				var $limit;
 				var $offset;
-				
+
 				$sql = "";
 				$sql .= " select * from ".$this->table;
 				if ($this->where) {
@@ -201,23 +201,25 @@ include "root.php";
 					$this->result = $result;
 					$this->count = count($result);
 				}
-			}  
+			}
+
 			public function insert($named_array){
 				var $type;
 				var $connection;
 				$sql = "insert into ".$this->table;
 				$sql .= "(";
 				//loop through the filed names
-				//$sql .= "v_id, ";
+				//$sql .= "domain_uuid, ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				//loop through the values
-				//$sql .= "'$v_id', ";
+				//$sql .= "'$domain_uuid', ";
 				$sql .= ")";
 				$db->exec($sql);
 				unset($sql);
-			}  
+			}
+
 			public function delete(){
 				var $type;
 				var $connection;
@@ -281,11 +283,13 @@ include "root.php";
 					return md5($string);
 				}
 			}
+
 			if (!function_exists('php_unix_time_stamp')) {
 				private function php_unix_time_stamp($string) {
 					return strtotime($string);
 				}
 			}
+
 			if (!function_exists('php_now')) {
 				private function php_now() {
 					//return date('r');
@@ -304,6 +308,7 @@ include "root.php";
 					return substr($string, (strlen($string)-$num), strlen($string));
 				}
 			}
+
 		}
 	}
 ?>

@@ -37,7 +37,7 @@ else {
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$v_id = check_str($_REQUEST["id"]);
+		$domain_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -45,7 +45,7 @@ else {
 
 //set the http values to variables
 	if (count($_POST)>0) {
-		$v_id = check_str($_POST["v_id"]);
+		$domain_uuid = check_str($_POST["domain_uuid"]);
 		$v_domain = check_str($_POST["v_domain"]);
 		$v_account_code = check_str($_POST["v_account_code"]);
 		$v_server_protocol = check_str($_POST["v_server_protocol"]);
@@ -101,11 +101,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$preference_id = check_str($_POST["v_id"]);
+		$preference_id = check_str($_POST["domain_uuid"]);
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($v_domain) == 0) { $msg .= "Please provide: Domain<br>\n"; }
 		//if (strlen($v_account_code) == 0) { $msg .= "Please provide: Agent Code<br>\n"; }
 		//if (strlen($v_server_protocol) == 0) { $msg .= "Please provide: Web Server Protocol<br>\n"; }
@@ -261,15 +261,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= ")";
 					if ($db_type == "sqlite" || $db_type == "mysql" ) {
 							$db->exec(check_sql($sql));
-							$v_id = $db->lastInsertId($id);
+							$domain_uuid = $db->lastInsertId($id);
 					}
 					if ($db_type == "pgsql") {
-							$sql .= " RETURNING v_id ";
+							$sql .= " RETURNING domain_uuid ";
 							$prepstatement = $db->prepare(check_sql($sql));
 							$prepstatement->execute();
 							$result = $prepstatement->fetchAll();
 							foreach ($result as &$row) {
-								$v_id = $row["v_id"];
+								$domain_uuid = $row["domain_uuid"];
 							}
 							unset($prepstatement, $result);
 					}
@@ -322,7 +322,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "v_menu_uuid = '$v_menu_uuid', ";
 					$sql .= "v_time_zone = '$v_time_zone', ";
 					$sql .= "v_description = '$v_description' ";
-					$sql .= "where v_id = '$v_id'";
+					$sql .= "where domain_uuid = '$domain_uuid'";
 					$db->exec(check_sql($sql));
 					unset($sql);
 			} //if ($action == "update")
@@ -359,7 +359,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$preference_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_system_settings ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -470,7 +470,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td align='left' width='30%' nowrap><b>System Settings Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
-	echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='v_system_settings_default.php?id=".$v_id."';\" />";
+	echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='v_system_settings_default.php?id=".$domain_uuid."';\" />";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_system_settings.php'\" value='Back'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -1012,7 +1012,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<tr>\n";
 	echo "	<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='v_id' value='$v_id'>\n";
+		echo "			<input type='hidden' name='domain_uuid' value='$domain_uuid'>\n";
 	}
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "	</td>\n";

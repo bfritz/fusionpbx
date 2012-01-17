@@ -43,13 +43,13 @@ else {
 if (strlen($group_id) > 0) {
 	$sqlinsert = "insert into v_groups ";
 	$sqlinsert .= "(";
-	$sqlinsert .= "v_id, ";
+	$sqlinsert .= "domain_uuid, ";
 	$sqlinsert .= "group_id, ";
 	$sqlinsert .= "group_desc ";
 	$sqlinsert .= ")";
 	$sqlinsert .= "values ";
 	$sqlinsert .= "(";
-	$sqlinsert .= "'$v_id', ";
+	$sqlinsert .= "'$domain_uuid', ";
 	$sqlinsert .= "'$group_id', ";
 	$sqlinsert .= "'$group_desc' ";
 	$sqlinsert .= ")";

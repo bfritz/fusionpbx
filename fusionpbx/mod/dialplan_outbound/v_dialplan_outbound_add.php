@@ -129,7 +129,7 @@ else {
 			}
 
 		if (permission_exists('outbound_route_any_gateway')) {
-			//get the v_id for gateway
+			//get the domain_uuid for gateway
 				$sql = "";
 				$sql .= "select * from v_gateways ";
 				$sql .= "where gateway_id = '$gateway_id' ";
@@ -138,11 +138,11 @@ else {
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll();
 				foreach ($result as &$row) {
-					$gateway_v_id = $row["v_id"];
+					$gateway_domain_uuid = $row["domain_uuid"];
 					break;
 				}
 				unset ($prepstatement);
-			//get the v_id for gateway_2
+			//get the domain_uuid for gateway_2
 				$sql = "";
 				$sql .= "select * from v_gateways ";
 				$sql .= "where gateway_id = '$gateway_2_id' ";
@@ -151,11 +151,11 @@ else {
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll();
 				foreach ($result as &$row) {
-					$gateway_2_v_id = $row["v_id"];
+					$gateway_2_domain_uuid = $row["domain_uuid"];
 					break;
 				}
 				unset ($prepstatement);
-			//get the v_id for gateway_3
+			//get the domain_uuid for gateway_3
 				$sql = "";
 				$sql .= "select * from v_gateways ";
 				$sql .= "where gateway_id = '$gateway_3_id' ";
@@ -164,7 +164,7 @@ else {
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll();
 				foreach ($result as &$row) {
-					$gateway_3_v_id = $row["v_id"];
+					$gateway_3_domain_uuid = $row["domain_uuid"];
 					break;
 				}
 				unset ($prepstatement);
@@ -178,7 +178,7 @@ else {
 //process the http form values
 	if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//check for all required data
-			if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+			if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 			if (strlen($gateway) == 0) { $msg .= "Please provide: Gateway Name<br>\n"; }
 			//if (strlen($gateway_2) == 0) { $msg .= "Please provide: Alternat 1<br>\n"; }
 			//if (strlen($gateway_3) == 0) { $msg .= "Please provide: Alternat 2<br>\n"; }
@@ -213,25 +213,25 @@ else {
 				if (strlen($dialplan_expression)>0) {
 					if (count($_SESSION["domains"]) > 1) {
 						if (permission_exists('outbound_route_any_gateway')) {
-							$tmp_gateway_name = $_SESSION['domains'][$gateway_v_id]['domain'] .'-'.$gateway_name;
+							$tmp_gateway_name = $_SESSION['domains'][$gateway_domain_uuid]['domain'] .'-'.$gateway_name;
 						}
 						else {
-							$tmp_gateway_name = $_SESSION['domains'][$v_id]['domain'] .'-'.$gateway_name;
+							$tmp_gateway_name = $_SESSION['domains'][$domain_uuid]['domain'] .'-'.$gateway_name;
 						}
 						if (strlen($gateway_2_name) > 0) {
 							if (permission_exists('outbound_route_any_gateway')) {
-								$tmp_gateway_2_name = $_SESSION['domains'][$gateway_2_v_id]['domain'] .'-'.$gateway_2_name;
+								$tmp_gateway_2_name = $_SESSION['domains'][$gateway_2_domain_uuid]['domain'] .'-'.$gateway_2_name;
 							}
 							else {
-								$tmp_gateway_2_name = $_SESSION['domains'][$v_id]['domain'] .'-'.$gateway_2_name;
+								$tmp_gateway_2_name = $_SESSION['domains'][$domain_uuid]['domain'] .'-'.$gateway_2_name;
 							}
 						}
 						if (strlen($gateway_3_name) > 0) {
 							if (permission_exists('outbound_route_any_gateway')) {
-								$tmp_gateway_3_name = $_SESSION['domains'][$gateway_3_v_id]['domain'] .'-'.$gateway_3_name;
+								$tmp_gateway_3_name = $_SESSION['domains'][$gateway_3_domain_uuid]['domain'] .'-'.$gateway_3_name;
 							}
 							else {
-								$tmp_gateway_3_name = $_SESSION['domains'][$v_id]['domain'] .'-'.$gateway_3_name;
+								$tmp_gateway_3_name = $_SESSION['domains'][$domain_uuid]['domain'] .'-'.$gateway_3_name;
 							}
 						}
 					}
@@ -395,12 +395,12 @@ else {
 					$opt_1_name = 'gateway_id';
 					$opt_1_value = $gateway_id;
 					$extension_continue = 'false';
-					//$dialplan_include_id = v_dialplan_includes_add($v_id, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+					//$dialplan_include_id = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
 
 					//add the main dialplan include entry
 						$sql = "insert into v_dialplan_includes ";
 						$sql .= "(";
-						$sql .= "v_id, ";
+						$sql .= "domain_uuid, ";
 						$sql .= "extension_name, ";
 						$sql .= "dialplan_order, ";
 						$sql .= "extension_continue, ";
@@ -412,7 +412,7 @@ else {
 						$sql .= ") ";
 						$sql .= "values ";
 						$sql .= "(";
-						$sql .= "'$v_id', ";
+						$sql .= "'$domain_uuid', ";
 						$sql .= "'$extension_name', ";
 						$sql .= "'$dialplan_order', ";
 						$sql .= "'$extension_continue', ";
@@ -445,50 +445,50 @@ else {
 					$field_type = 'destination_number';
 					$field_data = $dialplan_expression;
 					$field_order = '005';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'sip_h_X-accountcode=${accountcode}';
 					$field_order = '010';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'call_direction=outbound';
 					$field_order = '015';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'hangup_after_bridge=true';
 					$field_order = '020';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'effective_caller_id_name=${outbound_caller_id_name}';
 					$field_order = '025';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'effective_caller_id_number=${outbound_caller_id_number}';
 					$field_order = '030';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'inherit_codec=true';
 					$field_order = '035';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					if (strlen($bridge_2_data) > 0) {
 						$tag = 'action'; //condition, action, antiaction
 						$field_type = 'set';
 						$field_data = 'continue_on_fail=true';
 						$field_order = '040';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+						v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					}
 
 					if ($gateway_type == "enum" || $gateway_2_type == "enum") {
@@ -496,21 +496,21 @@ else {
 						$field_type = 'enum';
 						$field_data = $prefix_number."$1 e164.org";
 						$field_order = '045';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+						v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					}
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'bridge';
 					$field_data = $action_data;
 					$field_order = '050';
-					v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 
 					if (strlen($bridge_2_data) > 0) {
 						$tag = 'action'; //condition, action, antiaction
 						$field_type = 'bridge';
 						$field_data = $bridge_2_data;
 						$field_order = '055';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+						v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					}
 
 					if (strlen($bridge_3_data) > 0) {
@@ -518,7 +518,7 @@ else {
 						$field_type = 'bridge';
 						$field_data = $bridge_3_data;
 						$field_order = '060';
-						v_dialplan_includes_details_add($v_id, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+						v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
 					}
 
 					unset($bridge_2_data);
@@ -662,10 +662,10 @@ function type_onchange(field_type) {
 	$sql = "";
 	$sql .= " select * from v_gateways ";
 	if (permission_exists('outbound_route_any_gateway')) {
-		$sql .= " order by v_id = '$v_id' ";
+		$sql .= " order by domain_uuid = '$domain_uuid' ";
 	}
 	else {
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -674,12 +674,12 @@ function type_onchange(field_type) {
 	echo "<select name=\"gateway\" id=\"gateway\" class=\"formfld\" $onchange style='width: 60%;'>\n";
 	echo "<option value=''></option>\n";
 	echo "<optgroup label='SIP Gateways'>";
-	$previous_v_id = '';
+	$previous_domain_uuid = '';
 	foreach($result as $row) {
 		if (permission_exists('outbound_route_any_gateway')) {
-			if ($previous_v_id != $row['v_id']) {
+			if ($previous_domain_uuid != $row['domain_uuid']) {
 				echo "</optgroup>";
-				echo "<optgroup label='&nbsp; &nbsp;".$_SESSION['domains'][$row['v_id']]['domain']."'>";
+				echo "<optgroup label='&nbsp; &nbsp;".$_SESSION['domains'][$row['domain_uuid']]['domain']."'>";
 			}
 			if ($row['gateway'] == $gateway_name) {
 				echo "<option value=\"".$row['gateway_id'].":".$row['gateway']."\" selected=\"selected\">&nbsp; &nbsp;".$row['gateway']."</option>\n";
@@ -696,7 +696,7 @@ function type_onchange(field_type) {
 				echo "<option value=\"".$row['gateway_id'].":".$row['gateway']."\">".$row['gateway']."</option>\n";
 			}
 		}
-		$previous_v_id = $row['v_id'];
+		$previous_domain_uuid = $row['domain_uuid'];
 	}
 	unset($sql, $result, $rowcount);
 	echo "</optgroup>";
@@ -720,10 +720,10 @@ function type_onchange(field_type) {
 	$sql = "";
 	$sql .= " select * from v_gateways ";
 	if (permission_exists('outbound_route_any_gateway')) {
-		$sql .= " order by v_id = '$v_id' ";
+		$sql .= " order by domain_uuid = '$domain_uuid' ";
 	}
 	else {
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -732,12 +732,12 @@ function type_onchange(field_type) {
 	echo "<select name=\"gateway_2\" id=\"gateway\" class=\"formfld\" $onchange style='width: 60%;'>\n";
 	echo "<option value=''></option>\n";
 	echo "<optgroup label='SIP Gateways'>";
-	$previous_v_id = '';
+	$previous_domain_uuid = '';
 	foreach($result as $row) {
 		if (permission_exists('outbound_route_any_gateway')) {
-			if ($previous_v_id != $row['v_id']) {
+			if ($previous_domain_uuid != $row['domain_uuid']) {
 				echo "</optgroup>";
-				echo "<optgroup label='&nbsp; &nbsp;".$_SESSION['domains'][$row['v_id']]['domain']."'>";
+				echo "<optgroup label='&nbsp; &nbsp;".$_SESSION['domains'][$row['domain_uuid']]['domain']."'>";
 			}
 			if ($row['gateway'] == $gateway_2_name) {
 				echo "<option value=\"".$row['gateway_id'].":".$row['gateway']."\" selected=\"selected\">&nbsp; &nbsp;".$row['gateway']."</option>\n";
@@ -754,9 +754,9 @@ function type_onchange(field_type) {
 				echo "<option value=\"".$row['gateway_id'].":".$row['gateway']."\">".$row['gateway']."</option>\n";
 			}
 		}
-		$previous_v_id = $row['v_id'];
+		$previous_domain_uuid = $row['domain_uuid'];
 	}
-	unset($sql, $result, $rowcount, $previous_v_id);
+	unset($sql, $result, $rowcount, $previous_domain_uuid);
 	echo "</optgroup>";
 	echo "<optgroup label='Additional Options'>";
 	echo "	<option value=\"enum\">enum</option>\n";
@@ -778,10 +778,10 @@ function type_onchange(field_type) {
 	$sql = "";
 	$sql .= " select * from v_gateways ";
 	if (permission_exists('outbound_route_any_gateway')) {
-		$sql .= " order by v_id = '$v_id' ";
+		$sql .= " order by domain_uuid = '$domain_uuid' ";
 	}
 	else {
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -790,12 +790,12 @@ function type_onchange(field_type) {
 	echo "<select name=\"gateway_3\" id=\"gateway\" class=\"formfld\" $onchange style='width: 60%;'>\n";
 	echo "<option value=''></option>\n";
 	echo "<optgroup label='SIP Gateways'>";
-	$previous_v_id = '';
+	$previous_domain_uuid = '';
 	foreach($result as $row) {
 		if (permission_exists('outbound_route_any_gateway')) {
-			if ($previous_v_id != $row['v_id']) {
+			if ($previous_domain_uuid != $row['domain_uuid']) {
 				echo "</optgroup>";
-				echo "<optgroup label='&nbsp; &nbsp;".$_SESSION['domains'][$row['v_id']]['domain']."'>";
+				echo "<optgroup label='&nbsp; &nbsp;".$_SESSION['domains'][$row['domain_uuid']]['domain']."'>";
 			}
 			if ($row['gateway'] == $gateway_3_name) {
 				echo "<option value=\"".$row['gateway_id'].":".$row['gateway']."\" selected=\"selected\">&nbsp; &nbsp;".$row['gateway']."</option>\n";
@@ -812,9 +812,9 @@ function type_onchange(field_type) {
 				echo "<option value=\"".$row['gateway_id'].":".$row['gateway']."\">".$row['gateway']."</option>\n";
 			}
 		}
-		$previous_v_id = $row['v_id'];
+		$previous_domain_uuid = $row['domain_uuid'];
 	}
-	unset($sql, $result, $rowcount, $previous_v_id);
+	unset($sql, $result, $rowcount, $previous_domain_uuid);
 	echo "</optgroup>";
 	echo "<optgroup label='Additional Options'>";
 	echo "	<option value=\"enum\">enum</option>\n";

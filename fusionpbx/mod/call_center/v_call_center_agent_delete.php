@@ -41,7 +41,7 @@ if (count($_GET)>0) {
 //get the agent details
 	$sql = "";
 	$sql .= "select * from v_call_center_agent ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and call_center_agent_id = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -57,7 +57,7 @@ if (count($_GET)>0) {
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 	//delete the agent over event socket
 		if ($fp) {
-			$cmd = "api callcenter_config agent del ".$agent_name."@".$_SESSION['domains'][$v_id]['domain'];
+			$cmd = "api callcenter_config agent del ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain'];
 			$response = event_socket_request($fp, $cmd);
 		}
 
@@ -65,7 +65,7 @@ if (count($_GET)>0) {
 	if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_call_center_agent ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_center_agent_id = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

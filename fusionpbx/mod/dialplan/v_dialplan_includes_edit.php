@@ -64,7 +64,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		if (strlen($dialplan_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
 		if (strlen($extension_continue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
@@ -94,7 +94,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//add the data into the database
 					$sql = "insert into v_dialplan_includes ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "extension_name, ";
 					$sql .= "extension_number, ";
 					$sql .= "dialplan_order, ";
@@ -105,7 +105,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$extension_name', ";
 					$sql .= "'$extension_number', ";
 					$sql .= "'$dialplan_order', ";
@@ -133,7 +133,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update" && permission_exists('dialplan_edit')) {
 				//update the database
 					$sql = "update v_dialplan_includes set ";
-					$sql .= "v_id = '$v_id', ";
+					$sql .= "domain_uuid = '$domain_uuid', ";
 					$sql .= "extension_name = '$extension_name', ";
 					$sql .= "extension_number = '$extension_number', ";
 					$sql .= "dialplan_order = '$dialplan_order', ";
@@ -141,7 +141,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "context = '$context', ";
 					$sql .= "enabled = '$enabled', ";
 					$sql .= "descr = '$descr' ";
-					$sql .= "where v_id = '$v_id' ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and dialplan_include_id = '$dialplan_include_id'";
 					$db->exec(check_sql($sql));
 					unset($sql);
@@ -166,7 +166,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$dialplan_include_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -379,7 +379,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		$sql = "";
 		$sql .= " select * from v_dialplan_includes_details ";
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and dialplan_include_id = '$dialplan_include_id' ";
 		$sql .= " order by field_group asc, field_order asc";
 		$prep_statement = $db->prepare(check_sql($sql));

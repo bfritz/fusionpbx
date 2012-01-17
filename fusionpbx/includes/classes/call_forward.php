@@ -27,7 +27,7 @@ include "root.php";
 
 //define the call_forward class
 	class call_forward {
-		var $v_id;
+		var $domain_uuid;
 		var $db_type;
 		var $call_forward_id;
 		var $extension;
@@ -52,7 +52,7 @@ include "root.php";
 
 			$sql = "insert into v_hunt_group ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "hunt_group_extension, ";
 			$sql .= "hunt_group_name, ";
 			$sql .= "hunt_group_type, ";
@@ -71,7 +71,7 @@ include "root.php";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$this->v_id', ";
+			$sql .= "'$this->domain_uuid', ";
 			$sql .= "'$hunt_group_extension', ";
 			$sql .= "'$huntgroup_name', ";
 			$sql .= "'$hunt_group_type', ";
@@ -141,7 +141,7 @@ include "root.php";
 			$sql .= "hunt_group_user_list = '$hunt_group_user_list', ";
 			$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 			$sql .= "hunt_group_descr = '$hunt_group_descr' ";
-			$sql .= "where v_id = '$this->v_id' ";
+			$sql .= "where domain_uuid = '$this->domain_uuid' ";
 			$sql .= "and hunt_group_id = '$this->call_forward_id' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -172,7 +172,7 @@ include "root.php";
 				if ($this->call_forward_id > 0) {
 					$sql = "insert into v_hunt_group_destinations ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "hunt_group_id, ";
 					$sql .= "destination_data, ";
 					$sql .= "destination_type, ";
@@ -184,7 +184,7 @@ include "root.php";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$this->v_id', ";
+					$sql .= "'$this->domain_uuid', ";
 					$sql .= "'$this->call_forward_id', ";
 					$sql .= "'$destination_data', ";
 					$sql .= "'$destination_type', ";

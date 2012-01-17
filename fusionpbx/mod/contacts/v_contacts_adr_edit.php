@@ -68,7 +68,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($adr_type) == 0) { $msg .= "Please provide: Address Type<br>\n"; }
 		//if (strlen($adr_street) == 0) { $msg .= "Please provide: Street Address<br>\n"; }
 		//if (strlen($adr_extended) == 0) { $msg .= "Please provide: Extended Address<br>\n"; }
@@ -97,7 +97,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_contacts_adr ";
 			$sql .= "(";
 			$sql .= "contact_id, ";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "adr_type, ";
 			$sql .= "adr_street, ";
 			$sql .= "adr_extended, ";
@@ -111,7 +111,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$contact_id', ";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$adr_type', ";
 			$sql .= "'$adr_street', ";
 			$sql .= "'$adr_extended', ";
@@ -146,7 +146,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "adr_country = '$adr_country', ";
 			$sql .= "adr_latitude = '$adr_latitude', ";
 			$sql .= "adr_longitude = '$adr_longitude' ";
-			$sql .= "where v_id = '$v_id'";
+			$sql .= "where domain_uuid = '$domain_uuid'";
 			$sql .= "and contacts_adr_id = '$contacts_adr_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -167,7 +167,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$contacts_adr_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contacts_adr ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and contacts_adr_id = '$contacts_adr_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

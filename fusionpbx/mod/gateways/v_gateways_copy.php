@@ -43,7 +43,7 @@ else {
 //get the data 
 	$sql = "";
 	$sql .= "select * from v_gateways ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and gateway_id = '$gateway_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -82,7 +82,7 @@ else {
 //copy the gateways
 	$sql = "insert into v_gateways ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "gateway, ";
 	$sql .= "username, ";
 	$sql .= "password, ";
@@ -112,7 +112,7 @@ else {
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$v_id', ";
+	$sql .= "'$domain_uuid', ";
 	$sql .= "'$gateway', ";
 	$sql .= "'$username', ";
 	$sql .= "'$password', ";

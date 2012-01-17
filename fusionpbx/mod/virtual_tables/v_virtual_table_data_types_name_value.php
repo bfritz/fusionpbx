@@ -61,7 +61,7 @@ require_once "includes/paging.php";
 
 	//$sql = "";
 	//$sql .= " select * from v_virtual_table_data_types_name_value ";
-	//$sql .= " where v_id = '$v_id' ";
+	//$sql .= " where domain_uuid = '$domain_uuid' ";
 	//$sql .= " and virtual_table_field_id = '$virtual_table_field_id' ";
 	//if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$prepstatement = $db->prepare(check_sql($sql));
@@ -78,7 +78,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= " select * from v_virtual_table_data_types_name_value ";
-	$sql .= " where v_id = '$v_id' ";
+	$sql .= " where domain_uuid = '$domain_uuid' ";
 	$sql .= " and virtual_table_field_id = '$virtual_table_field_id' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	//$sql .= " limit $rowsperpage offset $offset ";

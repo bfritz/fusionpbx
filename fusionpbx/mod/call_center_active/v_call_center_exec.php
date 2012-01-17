@@ -72,7 +72,7 @@ else {
 			$user_status = $data;
 			$sql  = "update v_users set ";
 			$sql .= "user_status = '".trim($user_status, "'")."' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '".$username."' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();

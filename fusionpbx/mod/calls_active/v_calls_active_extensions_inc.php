@@ -54,8 +54,8 @@ else {
 	$sql = "";
 	$sql .= "select e.extension, u.username, u.user_status, e.user_list ";
 	$sql .= "from v_users as u, v_extensions as e ";
-	$sql .= "where e.v_id = '$v_id' ";
-	$sql .= "and u.v_id = '$v_id' ";
+	$sql .= "where e.domain_uuid = '$domain_uuid' ";
+	$sql .= "and u.domain_uuid = '$domain_uuid' ";
 	$sql .= "and u.user_category = 'user' ";
 	if ($db_type == "sqlite") {
 		$sql .= "and e.user_list like '%|' || u.username || '|%' ";
@@ -255,13 +255,13 @@ else {
 						$tmp_min = $tmp_array[0];
 						$tmp_max = $tmp_array[1];
 						if ($x == 0) {
-							$sql .= "where v_id = '$v_id' ";
+							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and extension >= $tmp_min ";
 							$sql .= "and extension <= $tmp_max ";
 							$sql .= "and enabled = 'true' ";
 						}
 						else {
-							$sql .= "or v_id = '$v_id' ";
+							$sql .= "or domain_uuid = '$domain_uuid' ";
 							$sql .= "and extension >= $tmp_min ";
 							$sql .= "and extension <= $tmp_max ";
 							$sql .= "and enabled = 'true' ";
@@ -269,7 +269,7 @@ else {
 						$x++;
 					}
 					if (count($range_array) == 0) {
-						$sql .= "where v_id = '$v_id' ";
+						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and enabled = 'true' ";
 					}
 					$sql .= "order by extension asc ";
@@ -279,7 +279,7 @@ else {
 					foreach ($result as &$row) {
 						if ($row["enabled"] == "true") {
 							$extension = $row["extension"];
-							$extension_array[$extension]['v_id'] = $row["v_id"];
+							$extension_array[$extension]['domain_uuid'] = $row["domain_uuid"];
 							$extension_array[$extension]['extension'] = $row["extension"];
 
 							//$extension_array[$extension]['password'] = $row["password"];
@@ -347,7 +347,7 @@ else {
 					$x = 1;
 					
 					foreach ($_SESSION['extension_array'] as $row) {
-						$v_id = $row['v_id'];
+						$domain_uuid = $row['domain_uuid'];
 						$extension = $row['extension'];
 						$enabled = $row['enabled'];
 						$effective_caller_id_name = $row['effective_caller_id_name'];

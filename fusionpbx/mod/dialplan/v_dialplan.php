@@ -39,7 +39,7 @@ if ($_GET['a'] == "default" && permission_exists('dialplan_advanced_edit')) {
 	//create the dialplan/default.xml for single tenant or dialplan/domain.xml
 	require_once "includes/classes/dialplan.php";
 	$dialplan = new dialplan;
-	$dialplan->v_id = $v_id;
+	$dialplan->domain_uuid = $domain_uuid;
 	$dialplan->v_domain = $v_domain;
 	$dialplan->v_conf_dir = $v_conf_dir;
 	$dialplan->restore_advanced_xml();

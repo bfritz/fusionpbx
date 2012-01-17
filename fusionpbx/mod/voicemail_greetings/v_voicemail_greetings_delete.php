@@ -44,7 +44,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "select * from v_voicemail_greetings ";
 		$sql .= "where greeting_id = '$id' ";
-		$sql .= "and v_id = '$v_id' ";
+		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .= "and user_id = '$user_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -59,14 +59,14 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_voicemail_greetings ";
 		$sql .= "where greeting_id = '$id' ";
-		$sql .= "and v_id = '$v_id' ";
+		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .= "and user_id = '$user_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		unset($sql);
 
 	//set the greeting directory
-		$v_greeting_dir = $v_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$v_id]['domain'].'/'.$user_id;
+		$v_greeting_dir = $v_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain'].'/'.$user_id;
 
 	//delete the recording file
 		unlink($v_greeting_dir."/".$greeting_name);

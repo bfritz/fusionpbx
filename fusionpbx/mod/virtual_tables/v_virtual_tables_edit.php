@@ -62,7 +62,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($virtual_table_category) == 0) { $msg .= "Please provide: Table Category<br>\n"; }
 		//if (strlen($virtual_table_label) == 0) { $msg .= "Please provide: Label<br>\n"; }
 		if (strlen($virtual_table_name) == 0) { $msg .= "Please provide: Table Name<br>\n"; }
@@ -88,7 +88,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add") {
 				$sql = "insert into v_virtual_tables ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "virtual_table_category, ";
 				$sql .= "virtual_table_label, ";
 				$sql .= "virtual_table_name, ";
@@ -99,7 +99,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$virtual_table_category', ";
 				$sql .= "'$virtual_table_label', ";
 				$sql .= "'$virtual_table_name', ";
@@ -122,7 +122,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update") {
 				$sql = "update v_virtual_tables set ";
-				$sql .= "v_id = '$v_id', ";
+				$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "virtual_table_category = '$virtual_table_category', ";
 				$sql .= "virtual_table_label = '$virtual_table_label', ";
 				$sql .= "virtual_table_name = '$virtual_table_name', ";
@@ -150,7 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$virtual_table_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_virtual_tables ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and virtual_table_id = '$virtual_table_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -298,7 +298,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "			<option value=''></option>\n";
 	$sql = "";
 	$sql .= "select * from v_virtual_tables ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();

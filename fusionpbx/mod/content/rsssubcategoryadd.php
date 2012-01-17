@@ -45,7 +45,7 @@ if (count($_POST)>0) {
 
 	$sql = "insert into v_rss_sub_category ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "rss_category, ";
 	$sql .= "rss_sub_category, ";
 	$sql .= "rss_sub_category_desc, ";
@@ -54,7 +54,7 @@ if (count($_POST)>0) {
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$v_id', ";
+	$sql .= "'$domain_uuid', ";
 	$sql .= "'$rss_category', ";
 	$sql .= "'$rss_sub_category', ";
 	$sql .= "'$rss_sub_category_desc', ";

@@ -45,7 +45,7 @@ if (count($_GET)>0) {
 		//move the current item's order number down
 		$sql  = "update v_rss set ";
 		$sql .= "rss_order = (rss_order+1) "; //move down
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and rss_order = ".($rss_order-1)." ";
 		$sql .= "and rss_category  = '$rss_category' ";
 		//echo $sql."<br><br>";
@@ -56,7 +56,7 @@ if (count($_GET)>0) {
 		//move the selected item's order number up
 		$sql  = "update v_rss set ";
 		$sql .= "rss_order = (rss_order-1) "; //move up
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and rss_id = '$rss_id' ";
 		$sql .= "and rss_category  = '$rss_category' ";
 		//echo $sql."<br><br>";

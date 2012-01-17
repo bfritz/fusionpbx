@@ -48,7 +48,7 @@ if (count($_GET)>0) {
 		//move the current item's order number down
 			$sql  = "update v_menu_items set ";
 			$sql .= "menu_order = (menu_order+1) "; //move down
-			$sql .= "where v_id = '".$v_id."' ";
+			$sql .= "where domain_uuid = '".$domain_uuid."' ";
 			$sql .= "and menu_order = ".($menu_order-1)." ";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -56,7 +56,7 @@ if (count($_GET)>0) {
 		//move the selected item's order number up
 			$sql  = "update v_menu_items set ";
 			$sql .= "menu_order = (menu_order-1) "; //move up
-			$sql .= "where v_id = '".$v_id."' ";
+			$sql .= "where domain_uuid = '".$domain_uuid."' ";
 			$sql .= "and menu_item_id = '$menu_item_id' ";
 			$db->exec(check_sql($sql));
 			unset($sql);

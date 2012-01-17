@@ -91,7 +91,7 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 	$sql .= "rss_sub_optional_5 = '$rss_sub_optional_5' ";
 	//$sql .= "rss_sub_add_date = now(), ";
 	//$sql .= "rss_sub_add_user = '".$_SESSION["username"]."' ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_sub_id = '$rss_sub_id' ";
 	//$sql .= "and rss_id = '$rss_id' ";
 	$count = $db->exec(check_sql($sql));
@@ -112,7 +112,7 @@ else {
 
 	$sql = "";
 	$sql .= "select * from v_rss_sub ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_sub_id = '$rss_sub_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

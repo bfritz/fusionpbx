@@ -47,7 +47,7 @@ $order = $_GET["order"];
 	//get the outbound routes and set as the dialplan array
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and (";
 		$sql .= "field_data like '%sofia/gateway/%' ";
 		$sql .= "or field_data like '%freetdm%' ";
@@ -104,18 +104,18 @@ $order = $_GET["order"];
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($dialplan_array) == 0) {
 		//when there are no outbound routes do this to hide all remaining entries
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
 		foreach ($dialplan_array as &$row) {
 			if ($x == 0) {
-				$sql .= " where v_id = '$v_id' \n";
+				$sql .= " where domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			else {
-				$sql .= " or v_id = $v_id \n";
+				$sql .= " or domain_uuid = $domain_uuid \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			$x++;
@@ -139,18 +139,18 @@ $order = $_GET["order"];
 	$sql .= " select * from v_dialplan_includes ";
 	if (count($dialplan_array) == 0) {
 		//when there are no outbound routes do this to hide all remaining entries
-		$sql .= " where v_id = '$v_id' ";
+		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and context = 'hide' ";
 	}
 	else {
 		$x = 0;
 		foreach ($dialplan_array as &$row) {
 			if ($x == 0) {
-				$sql .= " where v_id = '$v_id' \n";
+				$sql .= " where domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			else {
-				$sql .= " or v_id = $v_id \n";
+				$sql .= " or domain_uuid = $domain_uuid \n";
 				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
 			}
 			$x++;

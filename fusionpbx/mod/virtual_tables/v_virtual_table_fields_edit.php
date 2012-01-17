@@ -70,7 +70,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($virtual_field_label) == 0) { $msg .= "Please provide: Label<br>\n"; }
 		if (strlen($virtual_field_name) == 0 && $virtual_field_type != "label") { $msg .= "Please provide: Name<br>\n"; }
 		if (strlen($virtual_field_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
@@ -99,7 +99,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add" && permission_exists('virtual_tables_add')) {
 			$sql = "insert into v_virtual_table_fields ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "virtual_table_id, ";
 			$sql .= "virtual_field_label, ";
 			$sql .= "virtual_field_name, ";
@@ -114,7 +114,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$virtual_table_id', ";
 			$sql .= "'$virtual_field_label', ";
 			$sql .= "'$virtual_field_name', ";
@@ -151,7 +151,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "virtual_field_order = '$virtual_field_order', ";
 			$sql .= "virtual_field_order_tab = '$virtual_field_order_tab', ";
 			$sql .= "virtual_field_desc = '$virtual_field_desc' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_id = '$virtual_table_id'";
 			$sql .= "and virtual_table_field_id = '$virtual_table_field_id' ";
 			$db->exec(check_sql($sql));
@@ -175,7 +175,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		$sql = "";
 		$sql .= "select * from v_virtual_table_fields ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and virtual_table_id = '$virtual_table_id' ";
 		$sql .= "and virtual_table_field_id = '$virtual_table_field_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));

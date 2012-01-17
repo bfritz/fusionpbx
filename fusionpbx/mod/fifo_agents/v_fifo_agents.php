@@ -124,7 +124,7 @@ $order = $_GET["order"];
 				//unset($_SESSION["array_agent_status"]);
 				if (!is_array($_SESSION["array_agent_status"])) {
 					$sql = "SELECT var_name, var_value FROM v_vars ";
-					$sql .= "where v_id = '$v_id' ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and var_cat = 'Queues Agent Status' ";
 					$prepstatement = $db->prepare(check_sql($sql));
 					$prepstatement->execute();

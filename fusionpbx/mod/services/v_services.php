@@ -48,7 +48,7 @@ if (strlen($_GET["a"]) > 0) {
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$v_id = $row["v_id"];
+		$domain_uuid = $row["domain_uuid"];
 		$v_service_name = $row["v_service_name"];
 		$v_service_type = $row["v_service_type"];
 		$v_service_data = $row["v_service_data"];

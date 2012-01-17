@@ -54,7 +54,7 @@ $order = $_GET["order"];
 	else {
 		//get the list of conference numbers the user is assigned to
 			$sql = "select * from v_dialplan_includes_details ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$x = 0;
@@ -72,7 +72,7 @@ $order = $_GET["order"];
 		//get the list of assigned conference numbers for this user
 			foreach ($conference_array as &$row) {
 				$sql = "select * from v_dialplan_includes_details ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' ";
 				$sql .= "and field_data like 'conference_user_list%' and field_data like '%|".$_SESSION['username']."|%' ";
 				$tmp_row = $db->query($sql)->fetch();
@@ -129,7 +129,7 @@ $order = $_GET["order"];
 //process the http post
 	if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//check for all required data
-			if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+			if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 			if (strlen($extension_name) == 0) { $msg .= "Please provide: Conference Name<br>\n"; }
 			if (strlen($extension_number) == 0) { $msg .= "Please provide: Extension Number<br>\n"; }
 			//if (strlen($pin_number) == 0) { $msg .= "Please provide: PIN Number<br>\n"; }
@@ -165,7 +165,7 @@ $order = $_GET["order"];
 			//add the main dialplan include entry
 				$sql = "insert into v_dialplan_includes ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "extension_name, ";
 				$sql .= "dialplan_order, ";
 				$sql .= "extension_continue, ";
@@ -175,7 +175,7 @@ $order = $_GET["order"];
 				$sql .= ") ";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$extension_name', ";
 				$sql .= "'$dialplan_order', ";
 				$sql .= "'false', ";
@@ -203,7 +203,7 @@ $order = $_GET["order"];
 				//add condition for the extension number
 					$sql = "insert into v_dialplan_includes_details ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_include_id, ";
 					$sql .= "tag, ";
 					$sql .= "field_type, ";
@@ -212,7 +212,7 @@ $order = $_GET["order"];
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$dialplan_include_id', ";
 					$sql .= "'condition', ";
 					$sql .= "'destination_number', ";
@@ -225,7 +225,7 @@ $order = $_GET["order"];
 				//add action answer
 					$sql = "insert into v_dialplan_includes_details ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_include_id, ";
 					$sql .= "tag, ";
 					$sql .= "field_type, ";
@@ -234,7 +234,7 @@ $order = $_GET["order"];
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$dialplan_include_id', ";
 					$sql .= "'action', ";
 					$sql .= "'answer', ";
@@ -247,7 +247,7 @@ $order = $_GET["order"];
 				//add action set
 					$sql = "insert into v_dialplan_includes_details ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_include_id, ";
 					$sql .= "tag, ";
 					$sql .= "field_type, ";
@@ -256,7 +256,7 @@ $order = $_GET["order"];
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$dialplan_include_id', ";
 					$sql .= "'action', ";
 					$sql .= "'set', ";
@@ -269,7 +269,7 @@ $order = $_GET["order"];
 				//add action conference
 					$sql = "insert into v_dialplan_includes_details ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_include_id, ";
 					$sql .= "tag, ";
 					$sql .= "field_type, ";
@@ -278,7 +278,7 @@ $order = $_GET["order"];
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$dialplan_include_id', ";
 					$sql .= "'action', ";
 					$sql .= "'conference', ";
@@ -300,14 +300,14 @@ $order = $_GET["order"];
 				$sql .= "context = '$context', ";
 				$sql .= "enabled = '$enabled', ";
 				$sql .= "descr = '$description' ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
 				$sql = "";
 				$sql .= "select * from v_dialplan_includes_details ";
-				$sql .= "where v_id = '$v_id' ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
@@ -320,7 +320,7 @@ $order = $_GET["order"];
 						//$sql .= "field_type = '$field_type', ";
 						$sql .= "field_data = '^".$extension_number."$', ";
 						$sql .= "field_order = '".$row['field_order']."' ";
-						$sql .= "where v_id = '$v_id' ";
+						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 						$sql .= "and dialplan_includes_detail_id = '".$row['dialplan_includes_detail_id']."' ";
 						//echo $sql."<br />\n";
@@ -335,7 +335,7 @@ $order = $_GET["order"];
 							//$sql .= "field_type = '$field_type', ";
 							$sql .= "field_data = 'conference_user_list=".$user_list."', ";
 							$sql .= "field_order = '".$row['field_order']."' ";
-							$sql .= "where v_id = '$v_id' ";
+							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 							$sql .= "and dialplan_includes_detail_id = '".$row['dialplan_includes_detail_id']."' ";
 							//echo $sql."<br />\n";
@@ -349,7 +349,7 @@ $order = $_GET["order"];
 						//$sql .= "field_type = '$field_type', ";
 						$sql .= "field_data = '".$tmp_field_data."', ";
 						$sql .= "field_order = '".$row['field_order']."' ";
-						$sql .= "where v_id = '$v_id' ";
+						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 						$sql .= "and dialplan_includes_detail_id = '".$row['dialplan_includes_detail_id']."' ";
 						$db->exec(check_sql($sql));
@@ -388,7 +388,7 @@ $order = $_GET["order"];
 
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 		$row = $db->query($sql)->fetch();
 		$extension_name = $row['extension_name'];
@@ -400,7 +400,7 @@ $order = $_GET["order"];
 
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -510,7 +510,7 @@ $order = $_GET["order"];
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
-		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where v_id = '$v_id'"; 
+		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where domain_uuid = '$domain_uuid'"; 
 		echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
 		echo "<br />\n";
 		echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";

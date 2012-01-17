@@ -31,26 +31,49 @@
 		$apps[$x]['permissions'][3]['groups'][] = 'superadmin';
 
 	//schema details
-		$apps[$x]['db'][0]['table'] = 'v_php_service';
-		$apps[$x]['db'][0]['fields'][0]['name'] = 'php_service_id';
-		$apps[$x]['db'][0]['fields'][0]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][0]['fields'][0]['type']['sqlite'] = 'integer PRIMARY KEY';
-		$apps[$x]['db'][0]['fields'][0]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
-		$apps[$x]['db'][0]['fields'][0]['description'] = '';
-		$apps[$x]['db'][0]['fields'][1]['name'] = 'service_name';
-		$apps[$x]['db'][0]['fields'][1]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][1]['description'] = '';
-		$apps[$x]['db'][0]['fields'][2]['name'] = 'v_id';
-		$apps[$x]['db'][0]['fields'][2]['type'] = 'numeric';
-		$apps[$x]['db'][0]['fields'][2]['description'] = '';
-		$apps[$x]['db'][0]['fields'][3]['name'] = 'service_script';
-		$apps[$x]['db'][0]['fields'][3]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][3]['description'] = '';
-		$apps[$x]['db'][0]['fields'][4]['name'] = 'service_enabled';
-		$apps[$x]['db'][0]['fields'][4]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][4]['description'] = '';
-		$apps[$x]['db'][0]['fields'][5]['name'] = 'service_description';
-		$apps[$x]['db'][0]['fields'][5]['type'] = 'text';
-		$apps[$x]['db'][0]['fields'][5]['description'] = '';
+		$y = 0; //table array index
+		$z = 0; //field array index
+		$apps[$x]['db'][$y]['table'] = 'v_php_service';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'php_service_id';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'php_service_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'v_id';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'service_name';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'service_script';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'service_enabled';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'service_description';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 
 ?>

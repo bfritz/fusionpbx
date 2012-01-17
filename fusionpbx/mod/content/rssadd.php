@@ -54,7 +54,7 @@ if (count($_POST)>0) {
 	//insert the data into the database
 		$sql = "insert into v_rss ";
 		$sql .= "(";
-		$sql .= "v_id, ";
+		$sql .= "domain_uuid, ";
 		$sql .= "rss_category, ";
 		$sql .= "rss_sub_category, ";
 		$sql .= "rss_title, ";
@@ -73,7 +73,7 @@ if (count($_POST)>0) {
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
-		$sql .= "'$v_id', ";
+		$sql .= "'$domain_uuid', ";
 		$sql .= "'$rss_category', ";
 		$sql .= "'$rss_sub_category', ";
 		$sql .= "'$rss_title', ";
@@ -168,7 +168,7 @@ if (count($_POST)>0) {
 
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_groups ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 

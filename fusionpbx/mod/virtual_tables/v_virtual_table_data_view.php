@@ -57,7 +57,7 @@ if (strlen($_GET["id"]) > 0) {
 //get the information about the virtual table by using the id
 	$sql = "";
 	$sql .= "select * from v_virtual_tables ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and virtual_table_id = '$virtual_table_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -79,7 +79,7 @@ if (strlen($_GET["id"]) > 0) {
 	$db_value_array = array();
 	$db_names .= "<tr>\n";
 	$sql = "select * from v_virtual_table_fields ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and virtual_table_id = '$virtual_table_id' ";
 	$sql .= "order by virtual_field_order asc ";
 	$prepstatement = $db->prepare($sql);
@@ -113,7 +113,7 @@ if (strlen($_GET["id"]) > 0) {
 //get the data
 	$sql = "";
 	$sql .= "select * from v_virtual_table_data ";
-	$sql .= "where v_id = '".$v_id."' ";
+	$sql .= "where domain_uuid = '".$domain_uuid."' ";
 	if (strlen($search_all) == 0) {
 		$sql .= "and virtual_table_id = '$virtual_table_id' ";
 		if (strlen($virtual_data_parent_row_id) > 0) {
@@ -123,7 +123,7 @@ if (strlen($_GET["id"]) > 0) {
 	else {
 		$sql .= "and virtual_data_row_id in (";
 		$sql .= "select virtual_data_row_id from v_virtual_table_data \n";
-		$sql .= "where v_id = '".$v_id."' ";
+		$sql .= "where domain_uuid = '".$domain_uuid."' ";
 		$sql .= "and virtual_table_id = '$virtual_table_id' ";
 		if (strlen($virtual_data_parent_row_id) == 0) {
 			$tmp_digits = preg_replace('{\D}', '', $search_all);
@@ -181,7 +181,7 @@ if (strlen($_GET["id"]) > 0) {
 	$sql .= "'virtual_data_parent_row_id' NUMERIC, ";
 	foreach($result_names as $row) {
 		if ($row["virtual_field_type"] != "label") {
-			if ($row["virtual_field_name"] != "v_id") {
+			if ($row["virtual_field_name"] != "domain_uuid") {
 				//$row["virtual_field_label"];
 				//$row["virtual_field_name"]
 				//$row["virtual_field_type"];
@@ -194,7 +194,7 @@ if (strlen($_GET["id"]) > 0) {
 			}
 		}
 	}
-	$sql .= "'v_id' NUMERIC ";
+	$sql .= "'domain_uuid' NUMERIC ";
 	$sql .= ");";
 	//echo "$sql<br /><br />\n";
 	$prepstatement = $db_memory->prepare($sql);
@@ -217,7 +217,7 @@ if (strlen($_GET["id"]) > 0) {
 				$virtual_field_name = $row["virtual_field_name"];
 				$sql .= "'$virtual_field_name', ";
 			}
-			$sql .= "'v_id' ";
+			$sql .= "'domain_uuid' ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
@@ -231,7 +231,7 @@ if (strlen($_GET["id"]) > 0) {
 				$virtual_field_name = $row["virtual_field_name"];
 				$sql .= "'".check_str($array[$virtual_field_name])."', ";
 			}
-			$sql .= "'$v_id' ";
+			$sql .= "'$domain_uuid' ";
 			$sql .= ");";
 			//echo "$sql <br /><br />\n";
 			$db_memory->exec(check_sql($sql));
@@ -283,7 +283,7 @@ if (strlen($_GET["id"]) > 0) {
 //list the data in the database
 	$sql = "";
 	$sql .= "select * from memory_table \n";
-	$sql .= "where v_id = '$v_id' \n";
+	$sql .= "where domain_uuid = '$domain_uuid' \n";
 	$sql .= "limit $rows_per_page offset $offset \n";
 	//$sql .= "order by virtual_field_order asc \n";
 	//echo "<pre>\n";

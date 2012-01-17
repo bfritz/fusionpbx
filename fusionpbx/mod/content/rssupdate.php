@@ -73,7 +73,7 @@ if (count($_POST)>0) {
 	//$sql .= "rss_add_date = '$rss_add_date', ";
 	$sql .= "rss_group = '$rss_group', ";
 	$sql .= "rss_order = '$rss_order' ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_id = '$rss_id' ";
 	$sql .= "and rss_category = '$rss_category' ";
 	//echo $sql;
@@ -98,7 +98,7 @@ else {
 
 	$sql = "";
 	$sql .= "select * from v_rss ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_id = '$rss_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -200,7 +200,7 @@ else {
 
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_groups ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 

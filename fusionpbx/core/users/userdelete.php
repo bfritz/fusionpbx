@@ -40,7 +40,7 @@ else {
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -54,7 +54,7 @@ else {
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -76,7 +76,7 @@ else {
 
 //delete the user
 	$sqldelete = "delete from v_users ";
-	$sqldelete .= "where v_id = '$v_id' ";
+	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
 	$sqldelete .= "and id = '$id' ";
 	if (!$db->exec($sqldelete)) {
 		//echo $db->errorCode() . "<br>";
@@ -89,7 +89,7 @@ else {
 
 //delete the groups the user is assigned to
 	$sqldelete = "delete from v_group_members ";
-	$sqldelete .= "where v_id = '$v_id' ";
+	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
 	$sqldelete .= "and username = '$username' ";
 	if (!$db->exec($sqldelete)) {
 		$info = $db->errorInfo();

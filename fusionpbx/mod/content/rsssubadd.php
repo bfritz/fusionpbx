@@ -52,7 +52,7 @@ if (count($_POST)>0) {
 
 	$sql = "insert into v_rss_sub ";
 	$sql .= "(";
-	$sql .= "v_id, ";
+	$sql .= "domain_uuid, ";
 	$sql .= "rss_id, ";
 	$sql .= "rss_sub_title, ";
 	$sql .= "rss_sub_link, ";
@@ -67,7 +67,7 @@ if (count($_POST)>0) {
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$v_id', ";
+	$sql .= "'$domain_uuid', ";
 	$sql .= "'$rss_id', ";
 	$sql .= "'$rss_sub_title', ";
 	$sql .= "'$rss_sub_link', ";

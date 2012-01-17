@@ -46,7 +46,7 @@ else {
 
 //set the http values as variables
 	if (count($_POST)>0) {
-		//$v_id = check_str($_POST["v_id"]);
+		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		$extension_name = check_str($_POST["extension_name"]);
 		$extension_continue = check_str($_POST["extension_continue"]);
 		$public_order = check_str($_POST["public_order"]);
@@ -63,7 +63,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		if (strlen($public_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
 		if (strlen($extension_continue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
@@ -92,7 +92,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add" && permission_exists('public_includes_add')) {
 			$sql = "insert into v_public_includes ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			$sql .= "domain_uuid, ";
 			$sql .= "extension_name, ";
 			$sql .= "public_order, ";
 			$sql .= "extension_continue, ";
@@ -102,7 +102,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			$sql .= "'$domain_uuid', ";
 			$sql .= "'$extension_name', ";
 			$sql .= "'$public_order', ";
 			$sql .= "'$extension_continue', ";
@@ -128,7 +128,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "update" && permission_exists('public_includes_edit')) {
 			$sql = "";
 			$sql .= "select * from v_public_includes ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and public_include_id = '$public_include_id' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
@@ -154,7 +154,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "context = '$context', ";
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "descr = '$descr' ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and public_include_id = '$public_include_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -178,13 +178,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$public_include_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_public_includes ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and public_include_id = '$public_include_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			//$v_id = $row["v_id"];
+			//$domain_uuid = $row["domain_uuid"];
 			$extension_name = $row["extension_name"];
 			$public_order = $row["public_order"];
 			$extension_continue = $row["extension_continue"];
@@ -394,7 +394,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "";
 			$sql .= " select * from v_public_includes_details ";
 			$sql .= " where public_include_id = '$public_include_id' ";
-			$sql .= " and v_id = $v_id ";
+			$sql .= " and domain_uuid = $domain_uuid ";
 			$sql .= " and tag = 'condition' ";
 			$sql .= " order by field_order asc";
 			$prepstatement = $db->prepare(check_sql($sql));
@@ -430,7 +430,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "";
 			$sql .= " select * from v_public_includes_details ";
 			$sql .= " where public_include_id = '$public_include_id' ";
-			$sql .= " and v_id = $v_id ";
+			$sql .= " and domain_uuid = $domain_uuid ";
 			$sql .= " and tag = 'action' ";
 			$sql .= " order by field_order asc";
 			$prepstatement = $db->prepare(check_sql($sql));
@@ -466,7 +466,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "";
 			$sql .= " select * from v_public_includes_details ";
 			$sql .= " where public_include_id = '$public_include_id' ";
-			$sql .= " and v_id = $v_id ";
+			$sql .= " and domain_uuid = $domain_uuid ";
 			$sql .= " and tag = 'anti-action' ";
 			$sql .= " order by field_order asc";
 			$prepstatement = $db->prepare(check_sql($sql));

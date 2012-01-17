@@ -50,7 +50,7 @@ else {
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and id = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -76,7 +76,7 @@ else {
 			$group_id = check_str($_GET["group_id"]);
 		//delete the group from the users
 			$sql = "delete from v_group_members ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and group_id = '$group_id' ";
 			$sql .= "and username = '$username' ";
 			$db->exec(check_sql($sql));
@@ -172,13 +172,13 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		if (strlen($_REQUEST["group_id"]) > 0) {
 			$sqlinsert = "insert into v_group_members ";
 			$sqlinsert .= "(";
-			$sqlinsert .= "v_id, ";
+			$sqlinsert .= "domain_uuid, ";
 			$sqlinsert .= "group_id, ";
 			$sqlinsert .= "username ";
 			$sqlinsert .= ")";
 			$sqlinsert .= "values ";
 			$sqlinsert .= "(";
-			$sqlinsert .= "'$v_id', ";
+			$sqlinsert .= "'$domain_uuid', ";
 			$sqlinsert .= "'".$_REQUEST["group_id"]."', ";
 			$sqlinsert .= "'$username' ";
 			$sqlinsert .= ")";
@@ -252,11 +252,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "user_time_zone = '$user_time_zone', ";
 		$sql .= "user_email = '$user_email' ";
 		if (strlen($id)> 0) {
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and id = $id ";
 		}
 		else {
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '$username' ";
 		}
 		$count = $db->exec(check_sql($sql));
@@ -291,16 +291,16 @@ else {
 	//allow admin access
 	if (ifgroup("admin") || ifgroup("superadmin")) {
 		if (strlen($id)> 0) {
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and id = '$id' ";
 		}
 		else {
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '$username' ";
 		}
 	}
 	else {
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '$username' ";
 	}
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -424,10 +424,10 @@ else {
 
 	echo "<table width='52%'>\n";
 	$sql = "SELECT * FROM v_group_members ";
-	$sql .= "where v_id=:v_id ";
+	$sql .= "where domain_uuid=:domain_uuid ";
 	$sql .= "and username=:username ";
 	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->bindParam(':v_id', $v_id);
+	$prepstatement->bindParam(':domain_uuid', $domain_uuid);
 	$prepstatement->bindParam(':username', $username);
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -438,7 +438,7 @@ else {
 			echo "	<td class='vtable'>".$field['group_id']."</td>\n";
 			echo "	<td>\n";
 			if (permission_exists('group_member_delete') || ifgroup("superadmin")) {
-				echo "		<a href='usersupdate.php?id=".$id."&v_id=".$v_id."&group_id=".$field['group_id']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='usersupdate.php?id=".$id."&domain_uuid=".$domain_uuid."&group_id=".$field['group_id']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -448,7 +448,7 @@ else {
 
 	echo "<br />\n";
 	$sql = "SELECT * FROM v_groups ";
-	$sql .= "where v_id = '".$v_id."' ";
+	$sql .= "where domain_uuid = '".$domain_uuid."' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	echo "<select name=\"group_id\" class='frm'>\n";

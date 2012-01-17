@@ -61,7 +61,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= "select * from v_fax ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (ifgroup("superadmin")) {
 		//show all fax extensions
 	}
@@ -89,7 +89,7 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= "select * from v_fax ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (ifgroup("superadmin")) {
 		//show all fax extensions
 	}

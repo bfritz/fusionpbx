@@ -88,7 +88,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('variables_add')) {
 				$sql = "insert into v_vars ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "var_name, ";
 				$sql .= "var_value, ";
 				$sql .= "var_cat, ";
@@ -133,7 +133,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "var_enabled = '$var_enabled', ";
 				$sql .= "var_order = '$var_order', ";
 				$sql .= "var_desc = '".base64_encode($var_desc)."' ";
-				$sql .= "where v_id = '1' ";
+				$sql .= "where domain_uuid = '1' ";
 				$sql .= "and var_id = '$var_id' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -161,7 +161,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$var_id = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_vars ";
-		$sql .= "where v_id = '1' ";
+		$sql .= "where domain_uuid = '1' ";
 		$sql .= "and var_id = '$var_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -229,7 +229,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$tablename = 'v_vars';$fieldname = 'var_cat';$sqlwhereoptional = "where v_id = '1'";$fieldcurrentvalue = $var_cat;
+	$tablename = 'v_vars';$fieldname = 'var_cat';$sqlwhereoptional = "where domain_uuid = '1'";$fieldcurrentvalue = $var_cat;
 	echo htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
 	//echo "	<input class='formfld' type='text' name='var_cat' maxlength='255' value=\"$var_cat\">\n";
 	echo "<br />\n";

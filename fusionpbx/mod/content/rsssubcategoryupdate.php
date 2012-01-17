@@ -50,7 +50,7 @@ if (count($_POST)>0) {
 	$sql .= "rss_sub_category_desc = '$rss_sub_category_desc', ";
 	$sql .= "rss_add_user = '$rss_add_user', ";
 	$sql .= "rss_add_date = '$rss_add_date' ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_sub_category_id = '$rss_sub_category_id' ";
 	$count = $db->exec(check_sql($sql));
 	//echo "Affected Rows: ".$count;
@@ -68,7 +68,7 @@ else {
 
 	$sql = "";
 	$sql .= "select * from v_rss_sub_category ";
-	$sql .= "where v_id = '$v_id' ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and rss_sub_category_id = '$rss_sub_category_id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();

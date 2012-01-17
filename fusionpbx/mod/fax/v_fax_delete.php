@@ -45,7 +45,7 @@ else {
 		//delete the fax entry
 			$sql = "";
 			$sql .= "delete from v_fax ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and fax_id = '$fax_id' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);
@@ -54,7 +54,7 @@ else {
 		//get the dialplan info
 			$sql = "";
 			$sql .= "select * from v_dialplan_includes ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'faxid' ";
 			$sql .= "and opt_1_value = '".$fax_id."' ";
 			//echo $sql."<br>\n";
@@ -80,7 +80,7 @@ else {
 		//delete the dialplan entry
 			$sql = "";
 			$sql .= "delete from v_dialplan_includes ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);
@@ -89,7 +89,7 @@ else {
 		//delete the dialplan details
 			$sql = "";
 			$sql .= "delete from v_dialplan_includes_details ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);

@@ -72,7 +72,7 @@ require "includes/lib_cdr.php";
 
 		//This is the buffer we want to do stuff with, maybe thow to a function?
 		$buf = substr($rbuf, 0, $i+1);
-		$buf = str_replace("{v_id}", $v_id, $buf);
+		$buf = str_replace("{domain_uuid}", $domain_uuid, $buf);
 		$totalsize = strlen($buf)+$totalsize;
 
 		$lnarray = explode ("\n", $buf);

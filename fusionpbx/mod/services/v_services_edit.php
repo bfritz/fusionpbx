@@ -61,7 +61,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($v_id) == 0) { $msg .= "Please provide: v_id<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($v_service_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($v_service_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
 		//if (strlen($v_service_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
@@ -86,7 +86,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('services_add')) {
 				$sql = "insert into v_services ";
 				$sql .= "(";
-				$sql .= "v_id, ";
+				$sql .= "domain_uuid, ";
 				$sql .= "v_service_name, ";
 				$sql .= "v_service_type, ";
 				$sql .= "v_service_data, ";
@@ -96,7 +96,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$v_id', ";
+				$sql .= "'$domain_uuid', ";
 				$sql .= "'$v_service_name', ";
 				$sql .= "'$v_service_type', ";
 				$sql .= "'$v_service_data', ";
@@ -124,7 +124,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "v_service_cmd_start = '$v_service_cmd_start', ";
 				$sql .= "v_service_cmd_stop = '$v_service_cmd_stop', ";
 				$sql .= "v_service_desc = '$v_service_desc' ";
-				$sql .= "where v_id = '$v_id'";
+				$sql .= "where domain_uuid = '$domain_uuid'";
 				$sql .= "and service_id = '$service_id'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -150,7 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$v_id = $row["v_id"];
+			$domain_uuid = $row["domain_uuid"];
 			$v_service_name = $row["v_service_name"];
 			$v_service_type = $row["v_service_type"];
 			$v_service_data = $row["v_service_data"];

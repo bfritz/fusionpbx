@@ -44,7 +44,7 @@ if (strlen($id)>0) {
 	//delete child data
 		$sql = "";
 		$sql .= "delete from v_dialplan_includes_details ";
-		$sql .= "where v_id = '$v_id' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_includes_detail_id = '$id' ";
 		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
 		$db->query($sql);

@@ -66,6 +66,32 @@
 		}
 	}
 
+	if (!function_exists('uuid')) {
+		function uuid() {
+			//uuid version 4
+			return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+				// 32 bits for "time_low"
+				mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+
+				// 16 bits for "time_mid"
+				mt_rand( 0, 0xffff ),
+
+				// 16 bits for "time_hi_and_version",
+				// four most significant bits holds version number 4
+				mt_rand( 0, 0x0fff ) | 0x4000,
+
+				// 16 bits, 8 bits for "clk_seq_hi_res",
+				// 8 bits for "clk_seq_low",
+				// two most significant bits holds zero and one for variant DCE1.1
+				mt_rand( 0, 0x3fff ) | 0x8000,
+
+				// 48 bits for "node"
+				mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+			);
+		}
+		//echo uuid();
+	}
+
 	if (!function_exists('recursive_copy')) {
 		function recursive_copy($src,$dst) {
 			$dir = opendir($src);
@@ -129,9 +155,9 @@
 
 	if (!function_exists('groupmemberlist')) {
 		function groupmemberlist($db, $username) {
-			global $v_id;
+			global $domain_uuid;
 			$sql = "select * from v_group_members ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '".$username."' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
@@ -161,7 +187,7 @@
 
 	if (!function_exists('superadminlist')) {
 		function superadminlist($db) {
-			global $v_id;
+			global $domain_uuid;
 			$sql = "select * from v_group_members ";
 			$sql .= "where group_id = 'superadmin' ";
 			//echo $sql;
@@ -195,7 +221,7 @@
 	if (!function_exists('htmlselectother')) {
 		function htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue) {
 			//html select other : build a select box from distinct items in db with option for other
-			global $v_id;
+			global $domain_uuid;
 
 			$html  = "<table width='50%' border='0' cellpadding='1' cellspacing='0'>\n";
 			$html .= "<tr>\n";
@@ -242,7 +268,7 @@
 	if (!function_exists('htmlselect')) {
 		function htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $fieldvalue = '', $style = '') {
 			//html select other : build a select box from distinct items in db with option for other
-			global $v_id;
+			global $domain_uuid;
 
 			if (strlen($fieldvalue) > 0) {
 			$html .= "<select id=\"".$fieldvalue."\" name=\"".$fieldvalue."\" class='formfld' style='".$style."'>\n";
@@ -287,13 +313,13 @@
 		return $html;
 		}
 	}
-	//$tablename = 'v_templates'; $fieldname = 'templatename'; $sqlwhereoptional = "where v_id = '$v_id' "; $fieldcurrentvalue = '';
+	//$tablename = 'v_templates'; $fieldname = 'templatename'; $sqlwhereoptional = "where domain_uuid = '$domain_uuid' "; $fieldcurrentvalue = '';
 	//echo htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
 
 	if (!function_exists('htmlselectonchange')) {
 		function htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange, $fieldvalue = '') {
 			//html select other : build a select box from distinct items in db with option for other
-			global $v_id;
+			global $domain_uuid;
 
 			$html .= "<select id=\"".$fieldname."\" name=\"".$fieldname."\" class='formfld' onchange=\"".$onchange."\">\n";
 			$html .= "<option value=''></option>\n";
@@ -366,7 +392,7 @@
 	if (!function_exists('logadd')) {
 		function logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $logadduserip) {
 			return; //this disables the function
-			global $v_id;
+			global $domain_uuid;
 
 			$sql = "insert into tbllogs ";
 			$sql .= "(";
@@ -530,9 +556,9 @@
 
 	if (!function_exists('user_exists')) {
 		function user_exists($username) {
-			global $db, $v_id;
+			global $db, $domain_uuid;
 			$sql = "select * from v_users ";
-			$sql .= "where v_id = '$v_id' ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '".$username."' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
@@ -549,7 +575,7 @@
 
 	if (!function_exists('user_add')) {
 		function user_add($username, $password, $user_first_name='', $user_last_name='', $user_email='') {
-			global $db, $v_id, $v_salt;
+			global $db, $domain_uuid, $v_salt;
 			if (strlen($username) == 0) { return false; }
 			if (strlen($password) == 0) { return false; }
 			if (!user_exists($username)) {
@@ -560,7 +586,7 @@
 					$user_category = 'user';
 					$sql = "insert into v_users ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "username, ";
 					$sql .= "password, ";
 					$sql .= "salt, ";
@@ -574,7 +600,7 @@
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$username', ";
 					$sql .= "'".md5($salt.$password)."', ";
 					$sql .= "'$salt', ";
@@ -593,13 +619,13 @@
 					$group_id = 'user';
 					$sql = "insert into v_group_members ";
 					$sql .= "(";
-					$sql .= "v_id, ";
+					$sql .= "domain_uuid, ";
 					$sql .= "group_id, ";
 					$sql .= "username ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$v_id', ";
+					$sql .= "'$domain_uuid', ";
 					$sql .= "'$group_id', ";
 					$sql .= "'$username' ";
 					$sql .= ")";
@@ -660,9 +686,9 @@ function format_string ($format, $data) {
 	function format_phone($phone_number) {
 		if (strlen($_SESSION["format_phone_array"]) == 0) {
 			$_SESSION["format_phone_array"] = ""; //clear the menu
-			global $v_id, $db;
+			global $domain_uuid, $db;
 			$sql = "select * from v_vars ";
-			$sql .= "where v_id  = '$v_id' ";
+			$sql .= "where domain_uuid  = '$domain_uuid' ";
 			$sql .= "and var_name = 'format_phone' ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
