@@ -185,7 +185,7 @@ require_once "includes/paging.php";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['tz']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['note']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_contacts_edit.php?id=".$row['contact_id']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_contacts_edit.php?id=".$row['contact_id']."&query_string=".urlencode($_SERVER["QUERY_STRING"])."' alt='edit'>$v_link_label_edit</a>\n";
 			echo "		<a href='v_contacts_delete.php?id=".$row['contact_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
