@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$contact_id = check_str($_REQUEST["id"]);
+		$contact_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -62,7 +62,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$contact_id = check_str($_POST["contact_id"]);
+		$contact_uuid = check_str($_POST["contact_uuid"]);
 	}
 
 	//check for all required data
@@ -153,7 +153,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "tz = '$tz', ";
 			$sql .= "note = '$note' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and contact_id = '$contact_id' ";
+			$sql .= "and contact_uuid = '$contact_uuid' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -170,11 +170,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$contact_id = $_GET["id"];
+		$contact_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contacts ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and contact_id = '$contact_id' ";
+		$sql .= "and contact_uuid = '$contact_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -215,10 +215,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>Contact Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='qr code' onclick=\"window.location='v_contacts_vcard.php?id=$contact_id&type=image'\" value='QR Code'>\n";
-	echo "	<input type='button' class='btn' name='' alt='vcard' onclick=\"window.location='v_contacts_vcard.php?id=$contact_id&type=download'\" value='vCard'>\n";
+	echo "	<input type='button' class='btn' name='' alt='qr code' onclick=\"window.location='v_contacts_vcard.php?id=$contact_uuid&type=image'\" value='QR Code'>\n";
+	echo "	<input type='button' class='btn' name='' alt='vcard' onclick=\"window.location='v_contacts_vcard.php?id=$contact_uuid&type=download'\" value='vCard'>\n";
 	if ($action == "update" && is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/mod/invoices')) {
-		echo "	<input type='button' class='btn' name='' alt='invoice' onclick=\"window.location='/mod/invoices/v_invoices.php?id=$contact_id'\" value='Invoices'>\n";
+		echo "	<input type='button' class='btn' name='' alt='invoice' onclick=\"window.location='/mod/invoices/v_invoices.php?id=$contact_uuid'\" value='Invoices'>\n";
 	}
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_contacts?".$_GET["query_string"]."'\" value='Back'>\n";
 	echo "</td>\n";
@@ -436,7 +436,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
 		if ($action == "update") {
-			echo "				<input type='hidden' name='contact_id' value='$contact_id'>\n";
+			echo "				<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
 		}
 		echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 		echo "		</td>\n";
@@ -446,7 +446,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "</td>\n";
 	echo "<td width='50%' class='' valign='top' align='center'>\n";
-		//echo "	<img src='v_contacts_vcard.php?id=$contact_id&type=image' width='90%'><br /><br />\n";
+		//echo "	<img src='v_contacts_vcard.php?id=$contact_uuid&type=image' width='90%'><br /><br />\n";
 
 		if ($action == "update") {
 			require "v_contacts_tel.php";

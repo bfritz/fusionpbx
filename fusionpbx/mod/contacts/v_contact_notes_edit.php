@@ -37,14 +37,14 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$contacts_note_id = check_str($_REQUEST["id"]);
+		$contacts_note_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
 	}
 
-if (strlen($_GET["contact_id"]) > 0) {
-	$contact_id = check_str($_GET["contact_id"]);
+if (strlen($_GET["contact_uuid"]) > 0) {
+	$contact_uuid = check_str($_GET["contact_uuid"]);
 }
 
 //get http post variables and set them to php variables
@@ -58,7 +58,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$contacts_note_id = check_str($_POST["contacts_note_id"]);
+		$contacts_note_uuid = check_str($_POST["contacts_note_uuid"]);
 	}
 
 	//check for all required data
@@ -84,7 +84,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			$sql = "insert into v_contact_notes ";
 			$sql .= "(";
-			$sql .= "contact_id, ";
+			$sql .= "contact_uuid, ";
 			$sql .= "notes, ";
 			$sql .= "domain_uuid, ";
 			$sql .= "last_mod_date, ";
@@ -92,7 +92,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$contact_id', ";
+			$sql .= "'$contact_uuid', ";
 			$sql .= "'$notes', ";
 			$sql .= "'$domain_uuid', ";
 			$sql .= "now(), ";
@@ -102,7 +102,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_contacts_edit.php?id=$contact_id\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_contacts_edit.php?id=$contact_uuid\">\n";
 			echo "<div align='center'>\n";
 			echo "Add Complete\n";
 			echo "</div>\n";
@@ -112,17 +112,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_contact_notes set ";
-			$sql .= "contact_id = '$contact_id', ";
+			$sql .= "contact_uuid = '$contact_uuid', ";
 			$sql .= "notes = '$notes', ";
 			$sql .= "last_mod_date = now(), ";
 			$sql .= "last_mod_user = '".$_SESSION['username']."' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and contacts_note_id = '$contacts_note_id'";
+			$sql .= "and contacts_note_uuid = '$contacts_note_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_contacts_edit.php?id=$contact_id\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_contacts_edit.php?id=$contact_uuid\">\n";
 			echo "<div align='center'>\n";
 			echo "Update Complete\n";
 			echo "</div>\n";
@@ -135,11 +135,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$contacts_note_id = $_GET["id"];
+		$contacts_note_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contact_notes ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and contacts_note_id = '$contacts_note_id' ";
+		$sql .= "and contacts_note_uuid = '$contacts_note_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -173,7 +173,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='15%' nowrap='nowrap'><b>Edit Notes</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_contacts_edit.php?id=$contact_id'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_contacts_edit.php?id=$contact_uuid'\" value='Back'></td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -188,9 +188,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "				<input type='hidden' name='contact_id' value='$contact_id'>\n";
+	echo "				<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='contacts_note_id' value='$contacts_note_id'>\n";
+		echo "				<input type='hidden' name='contacts_note_uuid' value='$contacts_note_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

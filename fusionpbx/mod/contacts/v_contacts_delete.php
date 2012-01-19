@@ -42,7 +42,7 @@ if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_contacts ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and contact_id = '$id' ";
+	$sql .= "and contact_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	unset($sql);

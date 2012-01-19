@@ -70,11 +70,11 @@ require_once "includes/paging.php";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($search_all) > 0) {
 			if (is_numeric($search_all)) {
-				$sql .= "and contact_id in (select contact_id from v_contacts_tel where tel_number like '%".$search_all."%') \n";
+				$sql .= "and contact_uuid in (select contact_uuid from v_contacts_tel where tel_number like '%".$search_all."%') \n";
 			}
 			else {
-				$sql .= "and contact_id in (\n";
-				$sql .= "	select contact_id from v_contacts where domain_uuid = '$domain_uuid' \n";
+				$sql .= "and contact_uuid in (\n";
+				$sql .= "	select contact_uuid from v_contacts where domain_uuid = '$domain_uuid' \n";
 				$sql .= "	and (\n";
 				$sql .= "	org like '%".$search_all."%' or \n";
 				$sql .= "	n_given like '%".$search_all."%' or \n";
@@ -118,11 +118,11 @@ require_once "includes/paging.php";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($search_all) > 0) {
 			if (is_numeric($search_all)) {
-				$sql .= "and contact_id in (select contact_id from v_contacts_tel where tel_number like '%".$search_all."%') \n";
+				$sql .= "and contact_uuid in (select contact_uuid from v_contacts_tel where tel_number like '%".$search_all."%') \n";
 			}
 			else {
-				$sql .= "and contact_id in (\n";
-				$sql .= "	select contact_id from v_contacts where domain_uuid = '$domain_uuid' \n";
+				$sql .= "and contact_uuid in (\n";
+				$sql .= "	select contact_uuid from v_contacts where domain_uuid = '$domain_uuid' \n";
 				$sql .= "	and (\n";
 				$sql .= "	org like '%".$search_all."%' or \n";
 				$sql .= "	n_given like '%".$search_all."%' or \n";
@@ -185,8 +185,8 @@ require_once "includes/paging.php";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['tz']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['note']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_contacts_edit.php?id=".$row['contact_id']."&query_string=".urlencode($_SERVER["QUERY_STRING"])."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_contacts_delete.php?id=".$row['contact_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='v_contacts_edit.php?id=".$row['contact_uuid']."&query_string=".urlencode($_SERVER["QUERY_STRING"])."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_contacts_delete.php?id=".$row['contact_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }

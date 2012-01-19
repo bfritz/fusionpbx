@@ -40,13 +40,13 @@ if (count($_GET)>0) {
 		$vcard = new vcard();
 
 	//get the contact id
-		$contact_id = $_GET["id"];
+		$contact_uuid = $_GET["id"];
 
 	//get the contact's information
 		$sql = "";
 		$sql .= "select * from v_contacts ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and contact_id = '$contact_id' ";
+		$sql .= "and contact_uuid = '$contact_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -88,7 +88,7 @@ if (count($_GET)>0) {
 		$sql = "";
 		$sql .= "select * from v_contacts_tel ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and contact_id = '$contact_id' ";
+		$sql .= "and contact_uuid = '$contact_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -107,7 +107,7 @@ if (count($_GET)>0) {
 			$sql = "";
 			$sql .= "select * from v_contacts_adr ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and contact_id = '$contact_id' ";
+			$sql .= "and contact_uuid = '$contact_uuid' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll();
