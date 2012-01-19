@@ -315,25 +315,33 @@ else {
 		}
 
 //build the sql where string
-	if (strlen($cdr_id) > 0) { $sqlwhere .= "and cdr_id like '%$cdr_id%' "; }
-	if (strlen($direction) > 0) { $sqlwhere .= "and direction like '%$direction%' "; }
-	if (strlen($caller_id_name) > 0) { $sqlwhere .= "and caller_id_name like '%$caller_id_name%' "; }
-	if (strlen($caller_id_number) > 0) { $sqlwhere .= "and caller_id_number like '%$caller_id_number%' "; }
-	if (strlen($destination_number) > 0) { $sqlwhere .= "and destination_number like '%$destination_number%' "; }
-	if (strlen($context) > 0) { $sqlwhere .= "and context like '%$context%' "; }
-	if (strlen($start_stamp) > 0) { $sqlwhere .= "and start_stamp like '%$start_stamp%' "; }
-	if (strlen($answer_stamp) > 0) { $sqlwhere .= "and answer_stamp like '%$answer_stamp%' "; }
-	if (strlen($end_stamp) > 0) { $sqlwhere .= "and end_stamp like '%$end_stamp%' "; }
-	if (strlen($duration) > 0) { $sqlwhere .= "and duration like '%$duration%' "; }
-	if (strlen($billsec) > 0) { $sqlwhere .= "and billsec like '%$billsec%' "; }
-	if (strlen($hangup_cause) > 0) { $sqlwhere .= "and hangup_cause like '%$hangup_cause%' "; }
-	if (strlen($uuid) > 0) { $sqlwhere .= "and uuid like '%$uuid%' "; }
-	if (strlen($bleg_uuid) > 0) { $sqlwhere .= "and bleg_uuid like '%$bleg_uuid%' "; }
-	if (strlen($accountcode) > 0) { $sqlwhere .= "and accountcode like '%$accountcode%' "; }
-	if (strlen($read_codec) > 0) { $sqlwhere .= "and read_codec like '%$read_codec%' "; }
-	if (strlen($write_codec) > 0) { $sqlwhere .= "and write_codec like '%$write_codec%' "; }
-	if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
-	if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
+	if (strlen($cdr_id) > 0) { $sql_where .= "and cdr_id like '%$cdr_id%' "; }
+	if (strlen($direction) > 0) { $sql_where .= "and direction like '%$direction%' "; }
+	if (strlen($caller_id_name) > 0) { $sql_where .= "and caller_id_name like '%$caller_id_name%' "; }
+	if (strlen($caller_id_number) > 0 && strlen($destination_number) > 0) {
+			$sql_where .= "and (";
+			$sql_where .= "caller_id_number = '$caller_id_number' ";
+			$sql_where .= "or destination_number = '$destination_number'";
+			$sql_where .= ") ";
+	}
+	else {
+		if (strlen($caller_id_number) > 0) { $sql_where .= "and caller_id_number like '%$caller_id_number%' "; }
+		if (strlen($destination_number) > 0) { $sql_where .= "and destination_number like '%$destination_number%' "; }
+	}
+	if (strlen($context) > 0) { $sql_where .= "and context like '%$context%' "; }
+	if (strlen($start_stamp) > 0) { $sql_where .= "and start_stamp like '%$start_stamp%' "; }
+	if (strlen($answer_stamp) > 0) { $sql_where .= "and answer_stamp like '%$answer_stamp%' "; }
+	if (strlen($end_stamp) > 0) { $sql_where .= "and end_stamp like '%$end_stamp%' "; }
+	if (strlen($duration) > 0) { $sql_where .= "and duration like '%$duration%' "; }
+	if (strlen($billsec) > 0) { $sql_where .= "and billsec like '%$billsec%' "; }
+	if (strlen($hangup_cause) > 0) { $sql_where .= "and hangup_cause like '%$hangup_cause%' "; }
+	if (strlen($uuid) > 0) { $sql_where .= "and uuid like '%$uuid%' "; }
+	if (strlen($bleg_uuid) > 0) { $sql_where .= "and bleg_uuid like '%$bleg_uuid%' "; }
+	if (strlen($accountcode) > 0) { $sql_where .= "and accountcode like '%$accountcode%' "; }
+	if (strlen($read_codec) > 0) { $sql_where .= "and read_codec like '%$read_codec%' "; }
+	if (strlen($write_codec) > 0) { $sql_where .= "and write_codec like '%$write_codec%' "; }
+	if (strlen($remote_media_ip) > 0) { $sql_where .= "and remote_media_ip like '%$remote_media_ip%' "; }
+	if (strlen($network_addr) > 0) { $sql_where .= "and network_addr like '%$network_addr%' "; }
 
 //get a list of assigned extensions for this user
 	$sql = "";
@@ -355,33 +363,33 @@ else {
 		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '1' 
 		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
 	if (!ifgroup("admin") && !ifgroup("superadmin")) {
-		$sqlwhere = "where domain_uuid = '$domain_uuid' ";
-		$sqlwhere .= "and ( ";
+		$sql_where = "where domain_uuid = '$domain_uuid' ";
+		$sql_where .= "and ( ";
 		if (count($extension_array) > 0) {
 			$x = 0;
 			foreach($extension_array as $value) {
 				if ($x==0) {
-					if ($value['extension'] > 0) { $sqlwhere .= "caller_id_number = '".$value['extension']."' \n"; } //source
+					if ($value['extension'] > 0) { $sql_where .= "caller_id_number = '".$value['extension']."' \n"; } //source
 				}
 				else {
-					if ($value['extension'] > 0) { $sqlwhere .= "or caller_id_number = '".$value['extension']."' \n"; } //source
+					if ($value['extension'] > 0) { $sql_where .= "or caller_id_number = '".$value['extension']."' \n"; } //source
 				}
-				if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '".$value['extension']."' \n"; } //destination
-				if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '*99".$value['extension']."' \n"; } //destination
+				if ($value['extension'] > 0) { $sql_where .= "or destination_number = '".$value['extension']."' \n"; } //destination
+				if ($value['extension'] > 0) { $sql_where .= "or destination_number = '*99".$value['extension']."' \n"; } //destination
 				$x++;
 			}
 		}
 		else {
-			$sqlwhere .= "destination_number = 'no extension assigned' \n"; //destination
+			$sql_where .= "destination_number = 'no extension assigned' \n"; //destination
 		}
-		$sqlwhere .= ") ";
+		$sql_where .= ") ";
 	}
 	else {
 		//superadmin or admin
-		$sqlwhere = "where domain_uuid = '$domain_uuid' ".$sqlwhere;
+		$sql_where = "where domain_uuid = '$domain_uuid' ".$sql_where;
 	}
-	//$sqlwhere = str_replace ("where or", "where", $sqlwhere);
-	//$sqlwhere = str_replace ("where and", " and", $sqlwhere);
+	//$sql_where = str_replace ("where or", "where", $sql_where);
+	//$sql_where = str_replace ("where and", " and", $sql_where);
 
 //set the param variable which is used with paging
 	$param = "";
@@ -413,7 +421,7 @@ else {
 //get the number of rows in the v_xml_cdr 
 	$sql = "";
 	$sql .= " select count(*) as num_rows from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	$prepstatement = $db->prepare(check_sql($sql));
 	if ($prepstatement) {
 		$prepstatement->execute();
@@ -437,7 +445,7 @@ else {
 //get the results from the db
 	$sql = "";
 	$sql .= " select * from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -567,7 +575,6 @@ else {
 		} //end foreach
 		unset($sql, $result, $rowcount);
 	} //end if results
-
 
 	echo "<tr>\n";
 	echo "<td colspan='11' align='left'>\n";
