@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$call_center_queue_id = check_str($_REQUEST["id"]);
+		$call_center_queue_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -76,7 +76,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$call_center_queue_id = check_str($_POST["call_center_queue_id"]);
+		$call_center_queue_uuid = check_str($_POST["call_center_queue_uuid"]);
 	}
 
 	//check for all required data
@@ -194,7 +194,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "queue_cid_prefix = '$queue_cid_prefix', ";
 				$sql .= "queue_description = '$queue_description' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and call_center_queue_id = '$call_center_queue_id'";
+				$sql .= "and call_center_queue_uuid = '$call_center_queue_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -215,11 +215,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$call_center_queue_id = $_GET["id"];
+		$call_center_queue_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_center_queue ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and call_center_queue_id = '$call_center_queue_id' ";
+		$sql .= "and call_center_queue_uuid = '$call_center_queue_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -612,7 +612,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='call_center_queue_id' value='$call_center_queue_id'>\n";
+		echo "				<input type='hidden' name='call_center_queue_uuid' value='$call_center_queue_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

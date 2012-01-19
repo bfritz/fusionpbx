@@ -42,7 +42,7 @@ if (count($_GET)>0) {
 	$sql = "";
 	$sql .= "select * from v_call_center_agent ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and call_center_agent_id = '$id' ";
+	$sql .= "and call_center_agent_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -66,7 +66,7 @@ if (count($_GET)>0) {
 		$sql = "";
 		$sql .= "delete from v_call_center_agent ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and call_center_agent_id = '$id' ";
+		$sql .= "and call_center_agent_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($sql);

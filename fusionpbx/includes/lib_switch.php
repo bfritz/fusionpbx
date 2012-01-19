@@ -5467,7 +5467,7 @@ if (!function_exists('sync_package_v_call_center')) {
 		unset ($prep_statement, $sql);
 		if ($result_count > 0) { //found results
 			foreach($result as $row) {
-				$call_center_queue_id = $row["call_center_queue_id"];
+				$call_center_queue_uuid = $row["call_center_queue_uuid"];
 				$queue_name = check_str($row["queue_name"]);
 				$queue_extension = $row["queue_extension"];
 				$queue_strategy = $row["queue_strategy"];
@@ -5490,14 +5490,14 @@ if (!function_exists('sync_package_v_call_center')) {
 					$queue_name = str_replace(" ", "_", $queue_name);
 
 				//add each Queue to the dialplan
-					if (strlen($row['call_center_queue_id']) > 0) {
+					if (strlen($row['call_center_queue_uuid']) > 0) {
 						$action = 'add'; //set default action to add
 						$i = 0;
 
 						$sql = "";
 						$sql .= "select * from v_dialplan_includes ";
-						$sql .= "where opt_1_name = 'call_center_queue_id' ";
-						$sql .= "and opt_1_value = '".$row['call_center_queue_id']."' ";
+						$sql .= "where opt_1_name = 'call_center_queue_uuid' ";
+						$sql .= "and opt_1_value = '".$row['call_center_queue_uuid']."' ";
 						$prep_statement_2 = $db->prepare($sql);
 						$prep_statement_2->execute();
 						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
@@ -5516,8 +5516,8 @@ if (!function_exists('sync_package_v_call_center')) {
 								$context = 'default';
 								$enabled = 'true';
 								$descr = $queue_description;
-								$opt_1_name = 'call_center_queue_id';
-								$opt_1_value = $row['call_center_queue_id'];
+								$opt_1_name = 'call_center_queue_uuid';
+								$opt_1_value = $row['call_center_queue_uuid'];
 								$dialplan_include_id = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 
@@ -5665,7 +5665,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								$context = 'default';
 								$enabled = 'true';
 								$descr = $queue_description;
-								$call_center_queue_id = $row['call_center_queue_id'];
+								$call_center_queue_uuid = $row['call_center_queue_uuid'];
 
 								$sql = "";
 								$sql = "update v_dialplan_includes set ";
@@ -5675,8 +5675,8 @@ if (!function_exists('sync_package_v_call_center')) {
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and opt_1_name = 'call_center_queue_id' ";
-								$sql .= "and opt_1_value = '$call_center_queue_id' ";
+								$sql .= "and opt_1_name = 'call_center_queue_uuid' ";
+								$sql .= "and opt_1_value = '$call_center_queue_uuid' ";
 								//echo "sql: ".$sql."<br />";
 								$db->query($sql);
 								unset($sql);
@@ -5726,7 +5726,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						}
 						unset($action);
 						unset($dialplanincludeid);
-					} //end if strlen call_center_queue_id; add the call center queue to the dialplan
+					} //end if strlen call_center_queue_uuid; add the call center queue to the dialplan
 			}
 
 			//prepare Queue XML string

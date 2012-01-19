@@ -43,7 +43,7 @@ else {
 	$sql = "";
 	$sql .= "select * from v_call_center_tier ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and call_center_tier_id = '$id' ";
+	$sql .= "and call_center_tier_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -71,7 +71,7 @@ else {
 		$sql = "";
 		$sql .= "delete from v_call_center_tier ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and call_center_tier_id = '$id' ";
+		$sql .= "and call_center_tier_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($sql);

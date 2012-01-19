@@ -42,7 +42,7 @@ if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_call_center_queue ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and call_center_queue_id = '$id' ";
+	$sql .= "and call_center_queue_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	unset($sql);

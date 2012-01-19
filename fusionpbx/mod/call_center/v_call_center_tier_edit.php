@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$call_center_tier_id = check_str($_REQUEST["id"]);
+		$call_center_tier_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -55,7 +55,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$call_center_tier_id = check_str($_POST["call_center_tier_id"]);
+		$call_center_tier_uuid = check_str($_POST["call_center_tier_uuid"]);
 	}
 
 	//check for all required data
@@ -144,7 +144,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "queue_name = '$queue_name', ";
 			$sql .= "tier_level = '$tier_level', ";
 			$sql .= "tier_position = '$tier_position' ";
-			$sql .= "where call_center_tier_id = '$call_center_tier_id'";
+			$sql .= "where call_center_tier_uuid = '$call_center_tier_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -164,11 +164,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$call_center_tier_id = $_GET["id"];
+		$call_center_tier_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_center_tier ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and call_center_tier_id = '$call_center_tier_id' ";
+		$sql .= "and call_center_tier_uuid = '$call_center_tier_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -416,7 +416,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='call_center_tier_id' value='$call_center_tier_id'>\n";
+		echo "				<input type='hidden' name='call_center_tier_uuid' value='$call_center_tier_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

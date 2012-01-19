@@ -136,9 +136,9 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_description]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='".PROJECT_PATH."/mod/call_center_active/v_call_center_active.php?queue_name=".$row[queue_name]."' alt='edit'>$v_link_label_edit</a>\n";
-			//echo "		<a href='v_call_center_queue_delete.php?id=".$row[call_center_queue_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-			//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_call_center_queue_edit.php?id=".$row[call_center_queue_id]."'\" value='e'>\n";
-			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_call_center_queue_delete.php?id=".$row[call_center_queue_id]."' }\" value='x'>\n";
+			//echo "		<a href='v_call_center_queue_delete.php?id=".$row[call_center_queue_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			//echo "		<input type='button' class='btn' name='' alt='edit' onclick=\"window.location='v_call_center_queue_edit.php?id=".$row[call_center_queue_uuid]."'\" value='e'>\n";
+			//echo "		<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Are you sure you want to delete this?')) { window.location='v_call_center_queue_delete.php?id=".$row[call_center_queue_uuid]."' }\" value='x'>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
