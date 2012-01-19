@@ -37,14 +37,14 @@ else {
 
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
-		$gateway_id = check_str($_REQUEST["id"]);
+		$gateway_uuid = check_str($_REQUEST["id"]);
 	}
 
 //get the data 
 	$sql = "";
 	$sql .= "select * from v_gateways ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and gateway_id = '$gateway_id' ";
+	$sql .= "and gateway_uuid = '$gateway_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();

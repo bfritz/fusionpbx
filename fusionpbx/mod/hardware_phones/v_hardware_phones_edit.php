@@ -38,7 +38,7 @@ require_once "includes/config.php";
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$hardware_phone_id = check_str($_REQUEST["id"]);
+		$hardware_phone_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -65,7 +65,7 @@ require_once "includes/config.php";
 
 		$msg = '';
 		if ($action == "update") {
-			$hardware_phone_id = check_str($_POST["hardware_phone_id"]);
+			$hardware_phone_uuid = check_str($_POST["hardware_phone_uuid"]);
 		}
 
 		//check for all required data
@@ -158,7 +158,7 @@ require_once "includes/config.php";
 						$sql .= "phone_time_zone = '$phone_time_zone', ";
 						$sql .= "phone_description = '$phone_description' ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and hardware_phone_id = '$hardware_phone_id'";
+						$sql .= "and hardware_phone_uuid = '$hardware_phone_uuid'";
 						$db->exec(check_sql($sql));
 						unset($sql);
 
@@ -179,11 +179,11 @@ require_once "includes/config.php";
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$hardware_phone_id = $_GET["id"];
+		$hardware_phone_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_hardware_phones ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and hardware_phone_id = '$hardware_phone_id' ";
+		$sql .= "and hardware_phone_uuid = '$hardware_phone_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -405,7 +405,7 @@ require_once "includes/config.php";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='hardware_phone_id' value='$hardware_phone_id'>\n";
+		echo "				<input type='hidden' name='hardware_phone_uuid' value='$hardware_phone_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

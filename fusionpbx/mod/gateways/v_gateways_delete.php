@@ -50,7 +50,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "select * from v_gateways ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and gateway_id = '$id' ";
+		$sql .= "and gateway_uuid = '$id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -80,7 +80,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_gateways ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and gateway_id = '$id' ";
+		$sql .= "and gateway_uuid = '$id' ";
 		$db->query($sql);
 		unset($sql);
 
@@ -88,18 +88,18 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'gateway_id' ";
+		$sql .= "and opt_1_name = 'gateway_uuid' ";
 		$sql .= "and opt_1_value = '".$id."' ";
 		//echo "sql: ".$sql."<br />\n";
 		$prepstatement2 = $db->prepare($sql);
 		$prepstatement2->execute();
 		while($row2 = $prepstatement2->fetch()) {
-			$dialplan_include_id = $row2['dialplan_include_id'];
+			$dialplan_include_uuid = $row2['dialplan_include_uuid'];
 
 			$sql = "";
 			$sql = "delete from v_dialplan_includes_details ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+			$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 			$db->query($sql);
 			unset($sql);
 
@@ -110,7 +110,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql = "delete from v_dialplan_includes ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'gateway_id' ";
+		$sql .= "and opt_1_name = 'gateway_uuid' ";
 		$sql .= "and opt_1_value = '$id' ";
 		//echo "sql: ".$sql."<br />\n";
 		$db->query($sql);

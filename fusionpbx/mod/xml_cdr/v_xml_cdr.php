@@ -353,7 +353,7 @@ else {
 	$x = 0;
 	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
-		$extension_array[$x]['extension_id'] = $row["extension_id"];
+		$extension_array[$x]['extension_uuid'] = $row["extension_uuid"];
 		$extension_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}

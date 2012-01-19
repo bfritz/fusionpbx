@@ -40,7 +40,7 @@ require_once "includes/paging.php";
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$hunt_group_id = check_str($_REQUEST["id"]);
+		$hunt_group_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -95,7 +95,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$hunt_group_id = check_str($_POST["hunt_group_id"]);
+		$hunt_group_uuid = check_str($_POST["hunt_group_uuid"]);
 	}
 
 	//check for all required data
@@ -200,7 +200,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 				$sql .= "hunt_group_descr = '$hunt_group_descr' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and hunt_group_id = '$hunt_group_id'";
+				$sql .= "and hunt_group_uuid = '$hunt_group_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -223,10 +223,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$hunt_group_id = $_GET["id"];
+		$hunt_group_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
-		$sql .= "where hunt_group_id = '$hunt_group_id' ";
+		$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .- "hunt_group_enabled = 'true' ";
 		$prepstatement = $db->prepare(check_sql($sql));
@@ -276,7 +276,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	</span>\n";
 	echo "</td>\n";
 	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_hunt_group_copy.php?id=".$hunt_group_id."';}\" value='Copy'>\n";
+	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_hunt_group_copy.php?id=".$hunt_group_uuid."';}\" value='Copy'>\n";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_hunt_group.php'\" value='Back'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -584,7 +584,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='hunt_group_id' value='$hunt_group_id'>\n";
+		echo "				<input type='hidden' name='hunt_group_uuid' value='$hunt_group_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";
@@ -622,7 +622,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= " select * from v_hunt_group_destinations ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and hunt_group_id = '$hunt_group_id' ";
+		$sql .= " and hunt_group_uuid = '$hunt_group_uuid' ";
 		$sql .= " order by destination_order, destination_data asc";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -646,7 +646,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<th align='center'>Description</th>\n";
 		echo "<td align='right' width='42'>\n";
 		if (permission_exists('hunt_group_add')) {
-			echo "	<a href='v_hunt_group_destinations_edit.php?id2=".$hunt_group_id."' alt='add'>$v_link_label_add</a>\n";
+			echo "	<a href='v_hunt_group_destinations_edit.php?id2=".$hunt_group_uuid."' alt='add'>$v_link_label_add</a>\n";
 		}
 		echo "</td>\n";
 		echo "<tr>\n";
@@ -664,10 +664,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "	<td valign='top' class='rowstylebg' width='30%'>".$row['destination_descr']."&nbsp;</td>\n";
 				echo "	<td valign='top' align='right'>\n";
 				if (permission_exists('hunt_group_edit')) {
-					echo "		<a href='v_hunt_group_destinations_edit.php?id=".$row['hunt_group_destination_id']."&id2=".$hunt_group_id."' alt='edit'>$v_link_label_edit</a>\n";
+					echo "		<a href='v_hunt_group_destinations_edit.php?id=".$row['hunt_group_destination_uuid']."&id2=".$hunt_group_uuid."' alt='edit'>$v_link_label_edit</a>\n";
 				}
 				if (permission_exists('hunt_group_delete')) {
-					echo "		<a href='v_hunt_group_destinations_delete.php?id=".$row['hunt_group_destination_id']."&id2=".$hunt_group_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+					echo "		<a href='v_hunt_group_destinations_delete.php?id=".$row['hunt_group_destination_uuid']."&id2=".$hunt_group_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 				}
 				echo "	</td>\n";
 				echo "</tr>\n";
@@ -684,7 +684,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 		echo "		<td width='33.3%' align='right'>\n";
 		if (permission_exists('hunt_group_add')) {
-			echo "			<a href='v_hunt_group_destinations_edit.php?id2=".$hunt_group_id."' alt='add'>$v_link_label_add</a>\n";
+			echo "			<a href='v_hunt_group_destinations_edit.php?id2=".$hunt_group_uuid."' alt='add'>$v_link_label_add</a>\n";
 		}
 		echo "		</td>\n";
 		echo "	</tr>\n";

@@ -37,7 +37,7 @@ else {
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$var_id = check_str($_REQUEST["id"]);
+		$var_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -60,7 +60,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$var_id = check_str($_POST["var_id"]);
+		$var_uuid = check_str($_POST["var_uuid"]);
 	}
 
 	//check for all required data
@@ -134,7 +134,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "var_order = '$var_order', ";
 				$sql .= "var_desc = '".base64_encode($var_desc)."' ";
 				$sql .= "where domain_uuid = '1' ";
-				$sql .= "and var_id = '$var_id' ";
+				$sql .= "and var_uuid = '$var_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -158,11 +158,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$var_id = $_GET["id"];
+		$var_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_vars ";
 		$sql .= "where domain_uuid = '1' ";
-		$sql .= "and var_id = '$var_id' ";
+		$sql .= "and var_uuid = '$var_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -305,7 +305,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='var_id' value='$var_id'>\n";
+		echo "				<input type='hidden' name='var_uuid' value='$var_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

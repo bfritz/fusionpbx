@@ -99,9 +99,9 @@ INSERT INTO v_modules VALUES(81,1,'Chinese','mod_say_zh','','Say','false','false
 INSERT INTO v_modules VALUES(82,1,'Valet Parking','mod_valet_parking',NULL,'Applications','true','true');
 INSERT INTO v_modules VALUES(83,1,'Directory','mod_directory',NULL,'Applications','true','true');
 INSERT INTO v_modules VALUES(84,1,'Call Center','mod_callcenter','Call Center','Applications','true','true');
-SELECT setval('v_modules_module_id_seq', (SELECT MAX(module_id) FROM v_modules)+1);
+SELECT setval('v_modules_module_uuid_seq', (SELECT MAX(module_uuid) FROM v_modules)+1);
 INSERT INTO v_settings (v_id, numbering_plan, default_gateway, event_socket_ip_address, event_socket_port, event_socket_password, xml_rpc_http_port, xml_rpc_auth_realm, xml_rpc_auth_user, xml_rpc_auth_pass, admin_pin, smtp_host, smtp_secure, smtp_auth, smtp_username, smtp_password, smtp_from, smtp_from_name, mod_shout_decoder, mod_shout_volume) VALUES (1,'US','','127.0.0.1',8021,'ClueCon',8787,'localhost','xmlrpc','7e4d3i',1234,'','none','','','','','Voicemail','i386',0.3);
-SELECT setval('v_settings_setting_id_seq', (SELECT MAX(setting_id) FROM v_settings)+1);
+SELECT setval('v_settings_setting_uuid_seq', (SELECT MAX(setting_uuid) FROM v_settings)+1);
 INSERT INTO v_system_settings (v_domain, v_account_code, v_server_protocol, v_server_port, php_dir, tmp_dir, bin_dir, v_startup_script_dir, v_package_version, v_build_version, v_build_revision, v_label, v_name, v_dir, v_parent_dir, v_backup_dir, v_web_dir, v_web_root, v_relative_url, v_conf_dir, v_db_dir, v_htdocs_dir, v_log_dir, v_extensions_dir, v_gateways_dir, v_dialplan_public_dir, v_dialplan_default_dir, v_mod_dir, v_scripts_dir, v_grammar_dir, v_storage_dir, v_voicemail_dir, v_recordings_dir, v_download_path, v_sounds_dir, v_provisioning_tftp_dir, v_provisioning_ftp_dir, v_provisioning_https_dir, v_provisioning_http_dir, v_template_name, v_time_zone, v_description) VALUES ('localhost','','','','{program_dir}/php','{program_dir}/temp','{program_dir}/FreeSWITCH','/','','1.0.6','Release','FreeSWITCH','freeswitch','{program_dir}/FreeSWITCH','{program_dir}','{program_dir}/backup','{program_dir}/www/localhost','{program_dir}/www/localhost','/','{program_dir}/FreeSWITCH/conf','{program_dir}/FreeSWITCH/db','{program_dir}/FreeSWITCH/htodcs','{program_dir}/FreeSWITCH/log','{program_dir}/FreeSWITCH/conf/directory/default','{program_dir}/FreeSWITCH/conf/sip_profiles','{program_dir}/FreeSWITCH/conf/dialplan/public','{program_dir}/FreeSWITCH/conf/dialplan/default','{program_dir}/modules','{program_dir}/FreeSWITCH/scripts','{program_dir}/FreeSWITCH/grammar','{program_dir}/FreeSWITCH/storage','{program_dir}/FreeSWITCH/storage/voicemail','{program_dir}/FreeSWITCH/recordings','http://fusionpbx.com/downloads/fusionpbx.tgz','{program_dir}/FreeSWITCH/sounds','','','','','','','');
 SELECT setval('v_system_settings_v_id_seq', (SELECT MAX(v_id) FROM v_system_settings)+1);
 INSERT INTO v_vars VALUES(1,1,'sound_prefix','$${base_dir}/sounds/en/us/callie','Sound','true',3,'U2V0cyB0aGUgc291bmQgZGlyZWN0b3J5Lg==');
@@ -140,7 +140,7 @@ INSERT INTO v_vars VALUES(1,33,'use_profile','internal','Defaults','true',31,'')
 INSERT INTO v_vars VALUES(1,34,'default_language','en','Defaults','true',32,'');
 INSERT INTO v_vars VALUES(1,35,'default_dialect','us','Defaults','true',33,'');
 INSERT INTO v_vars VALUES(1,36,'default_voice','callie','Defaults','true',34,'');
-SELECT setval('v_vars_var_id_seq', (SELECT MAX(var_id) FROM v_vars)+1);
+SELECT setval('v_vars_var_uuid_seq', (SELECT MAX(var_uuid) FROM v_vars)+1);
 CREATE INDEX index_billsec ON v_xml_cdr(billsec);
 CREATE INDEX index_caller_id_name ON v_xml_cdr(caller_id_name);
 CREATE INDEX index_destination_number ON v_xml_cdr(destination_number);

@@ -46,7 +46,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_hunt_group_destinations ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and hunt_group_id = '$id' ";
+		$sql .= "and hunt_group_uuid = '$id' ";
 		$db->query($sql);
 		unset($sql);
 
@@ -54,7 +54,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_hunt_group ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and hunt_group_id = '$id' ";
+		$sql .= "and hunt_group_uuid = '$id' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$db->query($sql);
 		unset($sql);
@@ -63,14 +63,14 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'hunt_group_id' ";
+		$sql .= "and opt_1_name = 'hunt_group_uuid' ";
 		$sql .= "and opt_1_value = '".$id."' ";
 		//echo "sql: ".$sql."<br />\n";
 		$prepstatement2 = $db->prepare($sql);
 		$prepstatement2->execute();
 		while($row2 = $prepstatement2->fetch()) {
-			$dialplan_include_id = $row2['dialplan_include_id'];
-			//echo "dialplan_include_id: ".$dialplan_include_id."<br />\n";
+			$dialplan_include_uuid = $row2['dialplan_include_uuid'];
+			//echo "dialplan_include_uuid: ".$dialplan_include_uuid."<br />\n";
 			break; //limit to 1 row
 		}
 		unset ($sql, $prepstatement2);
@@ -78,7 +78,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql = "delete from v_dialplan_includes_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+		$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 		//echo "sql: ".$sql."<br />\n";
 		$db->query($sql);
 		unset($sql);
@@ -87,14 +87,14 @@ if (strlen($id)>0) {
 			$sql = "";
 			$sql .= "select * from v_dialplan_includes ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and opt_1_name = 'hunt_group_id_fifo' ";
+			$sql .= "and opt_1_name = 'hunt_group_uuid_fifo' ";
 			$sql .= "and opt_1_value = '".$id."' ";
 			//echo "sql fifo: ".$sql."<br />\n";
 			$prepstatement2 = $db->prepare($sql);
 			$prepstatement2->execute();
 			while($row2 = $prepstatement2->fetch()) {
-				$dialplan_include_id = $row2['dialplan_include_id'];
-				//echo "dialplan_include_id fifo: ".$dialplan_include_id."<br />\n";
+				$dialplan_include_uuid = $row2['dialplan_include_uuid'];
+				//echo "dialplan_include_uuid fifo: ".$dialplan_include_uuid."<br />\n";
 				break; //limit to 1 row
 			}
 			unset ($sql, $prepstatement2);
@@ -102,7 +102,7 @@ if (strlen($id)>0) {
 			$sql = "";
 			$sql = "delete from v_dialplan_includes_details ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+			$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 			//echo "sql fifo: ".$sql."<br />\n";
 			$db->query($sql);
 			unset($sql);
@@ -110,10 +110,10 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql = "delete from v_dialplan_includes ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'hunt_group_id' ";
+		$sql .= "and opt_1_name = 'hunt_group_uuid' ";
 		$sql .= "and opt_1_value = '$id' ";
 		$sql .= "or domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'hunt_group_id_fifo' ";
+		$sql .= "and opt_1_name = 'hunt_group_uuid_fifo' ";
 		$sql .= "and opt_1_value = '$id' ";
 		//echo "sql: ".$sql."<br />\n";
 		$db->query($sql);

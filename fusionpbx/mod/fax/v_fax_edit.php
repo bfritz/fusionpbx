@@ -80,7 +80,7 @@ else {
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$fax_id = check_str($_REQUEST["id"]);
+		$fax_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -125,7 +125,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update" && permission_exists('fax_extension_edit')) {
-		$fax_id = check_str($_POST["fax_id"]);
+		$fax_uuid = check_str($_POST["fax_uuid"]);
 	}
 
 	//check for all required data
@@ -218,7 +218,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 				$sql .= "fax_description = '$fax_description' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and fax_id = '$fax_id' ";
+				$sql .= "and fax_uuid = '$fax_uuid' ";
 				if (!(ifgroup("admin") || ifgroup("superadmin"))) {
 					$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 				}
@@ -240,11 +240,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (strlen($_GET['id']) > 0 && $_POST["persistformvar"] != "true") {
-		$fax_id = check_str($_GET["id"]);
+		$fax_uuid = check_str($_GET["id"]);
 		$sql = "";
 		$sql .= "select * from v_fax ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and fax_id = '$fax_id' ";
+		$sql .= "and fax_uuid = '$fax_uuid' ";
 		if (ifgroup("superadmin")) {
 			//show all fax extensions
 		}
@@ -414,7 +414,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='fax_id' value='$fax_id'>\n";
+		echo "			<input type='hidden' name='fax_uuid' value='$fax_uuid'>\n";
 	}
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

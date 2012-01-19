@@ -37,15 +37,15 @@ else {
 
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
-		$extension_id = check_str($_REQUEST["id"]);
+		$extension_uuid = check_str($_REQUEST["id"]);
 	}
 
 //get the v_extensions data 
-	$extension_id = $_GET["id"];
+	$extension_uuid = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and extension_id = '$extension_id' ";
+	$sql .= "and extension_uuid = '$extension_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();

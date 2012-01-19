@@ -45,7 +45,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_dialplan_includes_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_include_id = '$id' ";
+		$sql .= "and dialplan_include_uuid = '$id' ";
 		//echo $sql;
 		$db->query($sql);
 		unset($sql);
@@ -54,7 +54,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_dialplan_includes ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_include_id = '$id' ";
+		$sql .= "and dialplan_include_uuid = '$id' ";
 		//echo $sql;
 		$db->query($sql);
 		unset($sql);

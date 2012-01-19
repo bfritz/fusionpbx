@@ -42,7 +42,7 @@ if (count($_GET)>0) {
 	//get the http get and set them as php variables
 		$virtual_data_row_id = check_str($_GET["virtual_data_row_id"]);
 		$virtual_data_parent_row_id = check_str($_GET["virtual_data_parent_row_id"]);
-		$virtual_table_id = check_str($_GET["virtual_table_id"]);
+		$virtual_table_uuid = check_str($_GET["virtual_table_uuid"]);
 
 	//show the results and redirect
 		require_once "includes/header.php";
@@ -52,7 +52,7 @@ if (count($_GET)>0) {
 			$sql = "";
 			$sql .= "select * from v_virtual_tables ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and virtual_table_id = '$virtual_table_id' ";
+			$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 			$prepstatement = $db->prepare($sql);
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
@@ -87,10 +87,10 @@ if (count($_GET)>0) {
 
 	//set the meta redirect
 		if (strlen($virtual_data_parent_row_id) == 0) {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_view.php?id=$virtual_table_id&virtual_data_row_id=$virtual_data_row_id\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_view.php?id=$virtual_table_uuid&virtual_data_row_id=$virtual_data_row_id\">\n";
 		}
 		else {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?virtual_table_id=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id\">\n";
 		}
 
 	//show a message to the user before the redirect

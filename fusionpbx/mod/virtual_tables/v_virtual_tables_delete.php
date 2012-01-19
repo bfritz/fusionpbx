@@ -46,7 +46,7 @@ if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_virtual_tables ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and virtual_table_id = '$id' ";
+	$sql .= "and virtual_table_uuid = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);

@@ -37,7 +37,7 @@ else {
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$recording_id = check_str($_REQUEST["id"]);
+		$recording_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -61,7 +61,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$recording_id = check_str($_POST["recording_id"]);
+		$recording_uuid = check_str($_POST["recording_uuid"]);
 	}
 
 	//check for all required data
@@ -118,7 +118,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//get the original filename
 				$sql = "";
 				$sql .= "select * from v_recordings ";
-				$sql .= "where recording_id = '$recording_id' ";
+				$sql .= "where recording_uuid = '$recording_uuid' ";
 				$sql .= "and domain_uuid = '$domain_uuid' ";
 				//echo "sql: ".$sql."<br />\n";
 				$prepstatement = $db->prepare(check_sql($sql));
@@ -145,7 +145,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//$sql .= "recording_uuid = '$recording_uuid', ";
 				$sql .= "recording_desc = '$recording_desc' ";
 				$sql .= "where domain_uuid = '$domain_uuid'";
-				$sql .= "and recording_id = '$recording_id'";
+				$sql .= "and recording_uuid = '$recording_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -162,11 +162,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$recording_id = $_GET["id"];
+		$recording_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_recordings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and recording_id = '$recording_id' ";
+		$sql .= "and recording_uuid = '$recording_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -252,7 +252,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='recording_id' value='$recording_id'>\n";
+		echo "				<input type='hidden' name='recording_uuid' value='$recording_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

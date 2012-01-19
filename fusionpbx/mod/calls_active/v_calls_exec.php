@@ -154,7 +154,7 @@ if (count($_GET)>0) {
 						foreach ($result2 as &$row2) {
 							if ($row2["hunt_group_type"] == 'dnd') {
 								$dnd_action = "update";
-								$dnd_id = $row2["hunt_group_id"];
+								$dnd_id = $row2["hunt_group_uuid"];
 							}
 						}
 						unset ($prepstatement2, $result, $row2);

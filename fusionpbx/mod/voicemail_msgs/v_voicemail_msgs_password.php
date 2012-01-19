@@ -37,14 +37,14 @@ else {
 //set the action as an add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$extension_id = check_str($_REQUEST["id"]);
+		$extension_uuid = check_str($_REQUEST["id"]);
 	}
 
 //deny the user if not assigned to this mailboxes
 	$sql = "";
 	$sql .= " select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and extension_id = '$extension_id'";
+	$sql .= "and extension_uuid = '$extension_uuid'";
 	//superadmin can see all messages
 	if(!ifgroup("superadmin")) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
@@ -100,7 +100,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$extension_id = check_str($_POST["extension_id"]);
+		$extension_uuid = check_str($_POST["extension_uuid"]);
 	}
 
 	//check for all required data
@@ -166,7 +166,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//$sql .= "enabled = '$enabled', ";
 			//$sql .= "description = '$description' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and extension_id = '$extension_id'";
+			$sql .= "and extension_uuid = '$extension_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -190,11 +190,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$extension_id = $_GET["id"];
+		$extension_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_extensions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and extension_id = '$extension_id' ";
+		$sql .= "and extension_uuid = '$extension_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -400,7 +400,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='extension_id' value='$extension_id'>\n";
+		echo "				<input type='hidden' name='extension_uuid' value='$extension_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

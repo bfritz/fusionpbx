@@ -35,7 +35,7 @@ else {
 }
 
 if (strlen($_GET["id"]) > 0) {
-	$virtual_table_id = check_str($_GET["id"]);
+	$virtual_table_uuid = check_str($_GET["id"]);
 	if (strlen($_GET["virtual_data_parent_row_id"])>0) {
 		$virtual_data_parent_row_id = $_GET["virtual_data_parent_row_id"];
 	}
@@ -58,7 +58,7 @@ if (strlen($_GET["id"]) > 0) {
 	$sql = "";
 	$sql .= "select * from v_virtual_tables ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and virtual_table_id = '$virtual_table_id' ";
+	$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
@@ -80,7 +80,7 @@ if (strlen($_GET["id"]) > 0) {
 	$db_names .= "<tr>\n";
 	$sql = "select * from v_virtual_table_fields ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and virtual_table_id = '$virtual_table_id' ";
+	$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 	$sql .= "order by virtual_field_order asc ";
 	$prepstatement = $db->prepare($sql);
 	$prepstatement->execute();
@@ -115,7 +115,7 @@ if (strlen($_GET["id"]) > 0) {
 	$sql .= "select * from v_virtual_table_data ";
 	$sql .= "where domain_uuid = '".$domain_uuid."' ";
 	if (strlen($search_all) == 0) {
-		$sql .= "and virtual_table_id = '$virtual_table_id' ";
+		$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 		if (strlen($virtual_data_parent_row_id) > 0) {
 			$sql .= " and virtual_data_parent_row_id = '$virtual_data_parent_row_id' ";
 		}
@@ -124,7 +124,7 @@ if (strlen($_GET["id"]) > 0) {
 		$sql .= "and virtual_data_row_id in (";
 		$sql .= "select virtual_data_row_id from v_virtual_table_data \n";
 		$sql .= "where domain_uuid = '".$domain_uuid."' ";
-		$sql .= "and virtual_table_id = '$virtual_table_id' ";
+		$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 		if (strlen($virtual_data_parent_row_id) == 0) {
 			$tmp_digits = preg_replace('{\D}', '', $search_all);
 			if (is_numeric($tmp_digits) && strlen($tmp_digits) > 5) {
@@ -155,7 +155,7 @@ if (strlen($_GET["id"]) > 0) {
 
 		//restructure the data by setting it the value_array
 			$value_array[$virtual_data_row_id][$virtual_field_name] = $row[virtual_data_field_value];
-			$value_array[$virtual_data_row_id]['virtual_table_id'] = $row[virtual_table_id];
+			$value_array[$virtual_data_row_id]['virtual_table_uuid'] = $row[virtual_table_uuid];
 			$value_array[$virtual_data_row_id]['virtual_data_row_id'] = $row[virtual_data_row_id];
 			$value_array[$virtual_data_row_id]['virtual_table_parent_id'] = $row[virtual_table_parent_id];
 			$value_array[$virtual_data_row_id]['virtual_data_parent_row_id'] = $row[virtual_data_parent_row_id];
@@ -175,7 +175,7 @@ if (strlen($_GET["id"]) > 0) {
 	$sql = "CREATE TABLE memory_table ";
 	$sql .= "(";
 	$sql .= "'id' INTEGER PRIMARY KEY, ";
-	$sql .= "'virtual_table_id' NUMERIC, ";
+	$sql .= "'virtual_table_uuid' NUMERIC, ";
 	$sql .= "'virtual_data_row_id' NUMERIC, ";
 	$sql .= "'virtual_table_parent_id' NUMERIC, ";
 	$sql .= "'virtual_data_parent_row_id' NUMERIC, ";
@@ -207,7 +207,7 @@ if (strlen($_GET["id"]) > 0) {
 		//insert the data into the memory table
 			$sql = "insert into memory_table ";
 			$sql .= "(";
-			$sql .= "'virtual_table_id', ";
+			$sql .= "'virtual_table_uuid', ";
 			$sql .= "'virtual_data_row_id', ";
 			$sql .= "'virtual_table_parent_id', ";
 			$sql .= "'virtual_data_parent_row_id', ";
@@ -221,7 +221,7 @@ if (strlen($_GET["id"]) > 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'".$array['virtual_table_id']."', ";
+			$sql .= "'".$array['virtual_table_uuid']."', ";
 			$sql .= "'".$array['virtual_data_row_id']."', ";
 			$sql .= "'".$array['virtual_table_parent_id']."', ";
 			$sql .= "'".$array['virtual_data_parent_row_id']."', ";
@@ -255,7 +255,7 @@ if (strlen($_GET["id"]) > 0) {
 		$search_all = str_replace("''", "'", $search_all);
 		echo "<form method='GET' name='frm_search' action=''>\n";
 		echo "	<input class='formfld' type='text' name='search_all' value=\"$search_all\">\n";
-		echo "	<input type='hidden' name='id' value='$virtual_table_id'>\n";
+		echo "	<input type='hidden' name='id' value='$virtual_table_uuid'>\n";
 		echo "	<input type='hidden' name='virtual_data_parent_row_id' value='$virtual_data_parent_row_id'>\n";
 		echo "	<input class='btn' type='submit' name='submit' value='Search All'>\n";
 		echo "</form>\n";
@@ -275,7 +275,7 @@ if (strlen($_GET["id"]) > 0) {
 		$param = "&id=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_row_id";
 	}
 	else {
-		$param = "&id=$virtual_table_id&virtual_data_row_id=$virtual_data_row_id";
+		$param = "&id=$virtual_table_uuid&virtual_data_row_id=$virtual_data_row_id";
 	}
 	list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page;
@@ -304,7 +304,7 @@ if (strlen($_GET["id"]) > 0) {
 	}
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('virtual_tables_data_add')) {
-		echo "	<a href='v_virtual_table_data_edit.php?virtual_table_id=".$virtual_table_id."&virtual_data_parent_row_id=$virtual_data_parent_row_id' alt='add'>$v_link_label_add</a>\n";
+		echo "	<a href='v_virtual_table_data_edit.php?virtual_table_uuid=".$virtual_table_uuid."&virtual_data_parent_row_id=$virtual_data_parent_row_id' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -358,14 +358,14 @@ if (strlen($_GET["id"]) > 0) {
 		echo "<td valign='top' align='right' nowrap='nowrap'>\n";
 		if (permission_exists('virtual_tables_data_edit')) {
 			if (strlen($virtual_data_parent_row_id) == 0) {
-				echo "	<a href='v_virtual_table_data_edit.php?virtual_table_id=".$row[virtual_table_id]."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_data_row_id=".$row['virtual_data_row_id']."&search_all=$search_all' alt='edit'>$v_link_label_edit</a>\n";
+				echo "	<a href='v_virtual_table_data_edit.php?virtual_table_uuid=".$row[virtual_table_uuid]."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_data_row_id=".$row['virtual_data_row_id']."&search_all=$search_all' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			else {
-				echo "	<a href='v_virtual_table_data_edit.php?virtual_table_id=".$row[virtual_table_id]."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_data_row_id=".$row['virtual_data_row_id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "	<a href='v_virtual_table_data_edit.php?virtual_table_uuid=".$row[virtual_table_uuid]."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_data_row_id=".$row['virtual_data_row_id']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 		}
 		if (permission_exists('virtual_tables_data_delete')) {
-			echo"	<a href='v_virtual_table_data_delete.php?virtual_data_row_id=".$row['virtual_data_row_id']."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_table_id=".$virtual_table_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo"	<a href='v_virtual_table_data_delete.php?virtual_data_row_id=".$row['virtual_data_row_id']."&virtual_data_parent_row_id=$virtual_data_parent_row_id&virtual_table_uuid=".$virtual_table_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 		}
 		echo "</td>\n";
 
@@ -382,7 +382,7 @@ if (strlen($_GET["id"]) > 0) {
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('virtual_tables_data_add')) {
-		echo "			<a href='v_virtual_table_data_edit.php?virtual_table_id=".$virtual_table_id."&virtual_data_parent_row_id=$virtual_data_parent_row_id' alt='add'>$v_link_label_add</a>\n";
+		echo "			<a href='v_virtual_table_data_edit.php?virtual_table_uuid=".$virtual_table_uuid."&virtual_data_parent_row_id=$virtual_data_parent_row_id' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

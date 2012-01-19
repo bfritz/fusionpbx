@@ -42,7 +42,7 @@ if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "select * from v_php_service ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and php_service_id = '$id' ";
+	$sql .= "and php_service_uuid = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -63,7 +63,7 @@ if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_php_service ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and php_service_id = '$id' ";
+	$sql .= "and php_service_uuid = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);

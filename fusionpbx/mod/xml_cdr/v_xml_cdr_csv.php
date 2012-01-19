@@ -69,9 +69,9 @@ require_once "includes/lib_cdr.php";
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
-		//$extension_id = $row["extension_id"];
+		//$extension_uuid = $row["extension_uuid"];
 		//$mailbox = $row["mailbox"];
-		$extension_array[$x]['extension_id'] = $row["extension_id"];
+		$extension_array[$x]['extension_uuid'] = $row["extension_uuid"];
 		$extension_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}

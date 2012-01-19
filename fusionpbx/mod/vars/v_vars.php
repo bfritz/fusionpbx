@@ -139,10 +139,10 @@ else {
 			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$var_desc."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('variables_edit')) {
-				echo "		<a href='v_vars_edit.php?id=".$row['var_id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_vars_edit.php?id=".$row['var_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('variables_delete')) {
-				echo "		<a href='v_vars_delete.php?id=".$row['var_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_vars_delete.php?id=".$row['var_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";

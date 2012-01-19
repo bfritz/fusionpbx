@@ -37,7 +37,7 @@ else {
 //determin the action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$module_id = check_str($_REQUEST["id"]);
+		$module_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -57,7 +57,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$module_id = check_str($_POST["module_id"]);
+		$module_uuid = check_str($_POST["module_uuid"]);
 	}
 
 	//check for all required data
@@ -126,7 +126,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "module_category = '$module_category', ";
 				$sql .= "module_enabled = '$module_enabled', ";
 				$sql .= "module_default_enabled = '$module_default_enabled' ";
-				$sql .= "where module_id = '$module_id' ";
+				$sql .= "where module_uuid = '$module_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -145,10 +145,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$module_id = $_GET["id"];
+		$module_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_modules ";
-		$sql .= "where module_id = '$module_id' ";
+		$sql .= "where module_uuid = '$module_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -289,7 +289,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='module_id' value='$module_id'>\n";
+		echo "				<input type='hidden' name='module_uuid' value='$module_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

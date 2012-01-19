@@ -56,19 +56,19 @@ else {
 			$result = $prepstatement->fetchAll();
 			$conference_array = array ();
 			foreach ($result as &$row) {
-				$dialplan_include_id = $row["dialplan_include_id"];
+				$dialplan_include_uuid = $row["dialplan_include_uuid"];
 				//$tag = $row["tag"];
 				//$field_order = $row["field_order"];
 				$field_type = $row["field_type"];
 				//$field_data = $row["field_data"];
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					if ($field_type == "conference") {
-						$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+						$conference_array[$x]['dialplan_include_uuid'] = $dialplan_include_uuid;
 						$x++;
 					}
 				}
 				else {
-					$conference_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+					$conference_array[$x]['dialplan_include_uuid'] = $dialplan_include_uuid;
 					$x++;
 				}
 			}
@@ -86,13 +86,13 @@ else {
 				foreach ($conference_array as &$row) {
 					if ($x == 0) {
 						$sql .= "where domain_uuid = '$domain_uuid' \n";
-						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+						$sql .= "and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 						$sql .= "and field_type = 'conference' \n";
 						$sql .= "and field_data like '".$conference_name."%' \n";
 					}
 					else {
 						$sql .= "or domain_uuid = '$domain_uuid' \n";
-						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+						$sql .= "and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 						$sql .= "and field_type = 'conference' \n";
 						$sql .= "and field_data like '".$conference_name."%' \n";
 					}

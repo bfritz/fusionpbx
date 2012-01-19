@@ -885,12 +885,12 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			//$tag = $row["tag"];
 			if ($row["field_type"] == "fifo") {
 				if (strpos($row["field_data"], '@${domain_name} in') !== false) {
-					$dialplan_include_id = $row["dialplan_include_id"];
-					//get the extension number using the dialplan_include_id
+					$dialplan_include_uuid = $row["dialplan_include_uuid"];
+					//get the extension number using the dialplan_include_uuid
 						$sql = "select field_data as extension_number ";
 						$sql .= "from v_dialplan_includes_details ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+						$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 						$sql .= "and field_type = 'destination_number' ";
 						$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 						$extension_number = $tmp['extension_number'];
@@ -899,11 +899,11 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 						$extension_number = rtrim($extension_number, "$");
 						unset($tmp);
 
-					//get the extension number using the dialplan_include_id
+					//get the extension number using the dialplan_include_uuid
 						$sql = "select * ";
 						$sql .= "from v_dialplan_includes ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+						$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 						$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 						$extension_name = $tmp['extension_name'];
 						$extension_name = str_replace("_", " ", $extension_name);
@@ -1281,37 +1281,37 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			//$tag = $row["tag"];
 			switch ($row['field_type']) {
 			case "hour":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			case "minute":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			case "minute-of-day":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			case "mday":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			case "mweek":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			case "mon":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			case "yday":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			case "year":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			case "wday":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			case "week":
-				$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			default:
-				//$time_array[$row['dialplan_include_id']] = $row['field_type'];
+				//$time_array[$row['dialplan_include_uuid']] = $row['field_type'];
 				break;
 			}
 		}
@@ -1319,12 +1319,12 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			echo "<optgroup label='Time Conditions'>\n";
 		}
 		foreach($time_array as $key=>$val) {    
-			$dialplan_include_id = $key;
-			//get the extension number using the dialplan_include_id
+			$dialplan_include_uuid = $key;
+			//get the extension number using the dialplan_include_uuid
 				$sql = "select field_data as extension_number ";
 				$sql .= "from v_dialplan_includes_details ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 				$sql .= "and field_type = 'destination_number' ";
 				$sql .= "order by extension_number asc ";
 				$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
@@ -1334,11 +1334,11 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$extension_number = rtrim($extension_number, "$");
 				unset($tmp);
 
-			//get the extension number using the dialplan_include_id
+			//get the extension number using the dialplan_include_uuid
 				$sql = "select * ";
 				$sql .= "from v_dialplan_includes ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 				$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 				$extension_name = $tmp['extension_name'];
 				$extension_name = str_replace("_", " ", $extension_name);
@@ -2379,12 +2379,12 @@ function outbound_route_to_bridge ($destination_number) {
 		$x = 0;
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$dialplan_include_id = $row["dialplan_include_id"];
+			$dialplan_include_uuid = $row["dialplan_include_uuid"];
 			//$tag = $row["tag"];
 			//$field_order = $row["field_order"];
 			//$field_type = $row["field_type"];
 			//$field_data = $row["field_data"];
-			$dialplan_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+			$dialplan_array[$x]['dialplan_include_uuid'] = $dialplan_include_uuid;
 			$x++;
 		}
 		unset ($prep_statement);
@@ -2401,12 +2401,12 @@ function outbound_route_to_bridge ($destination_number) {
 		foreach ($dialplan_array as &$row) {
 			if ($x == 0) {
 				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 				$sql .= "and enabled = 'true' ";
 			}
 			else {
 				$sql .= " or domain_uuid = $domain_uuid \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 				$sql .= "and enabled = 'true' ";
 			}
 			$x++;
@@ -2418,16 +2418,16 @@ function outbound_route_to_bridge ($destination_number) {
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	$x = 0;
 	foreach ($result as &$row) {
-			$dialplan_include_id = $row['dialplan_include_id'];
+			$dialplan_include_uuid = $row['dialplan_include_uuid'];
 			$tag = $row["tag"];
 			$field_type = $row['field_type'];
 			$extension_continue = $row['extension_continue'];
 
-			//get the extension number using the dialplan_include_id
+			//get the extension number using the dialplan_include_uuid
 					$sql = "select * ";
 					$sql .= "from v_dialplan_includes_details ";
 					$sql .= "where domain_uuid = '$domain_uuid' ";
-					$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+					$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 					$sql .= "order by field_order asc ";
 					$sub_result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 					$regex_match = false;
@@ -2554,7 +2554,7 @@ function sync_package_v_hunt_group() {
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach ($result as &$row) {
 				//get the Hunt Group information such as the name and description
-					//$row['hunt_group_id']
+					//$row['hunt_group_uuid']
 					//$row['hunt_group_extension']
 					//$row['hunt_group_name']
 					//$row['hunt_group_type']
@@ -2569,20 +2569,20 @@ function sync_package_v_hunt_group() {
 					$domain_uuid = $row['domain_uuid'];
 
 				//add each Hunt Group to the dialplan
-					if (strlen($row['hunt_group_id']) > 0) {
+					if (strlen($row['hunt_group_uuid']) > 0) {
 						$action = 'add'; //set default action to add
 						$i = 0;
 
 						$sql = "";
 						$sql .= "select * from v_dialplan_includes ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and opt_1_name = 'hunt_group_id' ";
-						$sql .= "and opt_1_value = '".$row['hunt_group_id']."' ";
+						$sql .= "and opt_1_name = 'hunt_group_uuid' ";
+						$sql .= "and opt_1_value = '".$row['hunt_group_uuid']."' ";
 						$prep_statement_2 = $db->prepare($sql);
 						$prep_statement_2->execute();
 						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
 							$action = 'update';
-							$dialplan_include_id = $row2['dialplan_include_id'];
+							$dialplan_include_uuid = $row2['dialplan_include_uuid'];
 							break; //limit to 1 row
 						}
 						unset ($sql, $prep_statement_2);
@@ -2599,21 +2599,21 @@ function sync_package_v_hunt_group() {
 									$enabled = 'true';
 								}
 								$descr = 'huntgroup';
-								$opt_1_name = 'hunt_group_id';
-								$opt_1_value = $row['hunt_group_id'];
-								$dialplan_include_id = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+								$opt_1_name = 'hunt_group_uuid';
+								$opt_1_value = $row['hunt_group_uuid'];
+								$dialplan_include_uuid = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 								$tag = 'condition'; //condition, action, antiaction
 								$field_type = 'destination_number';
 								$field_data = '^'.$row['hunt_group_extension'].'$';
 								$field_order = '000';
-								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 								$tag = 'action'; //condition, action, antiaction
 								$field_type = 'lua';
 								$field_data = 'v_huntgroup_'.$_SESSION['domains'][$domain_uuid]['domain'].'_'.$row['hunt_group_extension'].'.lua';
 								$field_order = '001';
-								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 						}
 						if ($action == 'update') {
 							//update the huntgroup
@@ -2627,7 +2627,7 @@ function sync_package_v_hunt_group() {
 									$enabled = 'true';
 								}
 								$descr = 'huntgroup';
-								$hunt_group_id = $row['hunt_group_id'];
+								$hunt_group_uuid = $row['hunt_group_uuid'];
 
 								$sql = "";
 								$sql = "update v_dialplan_includes set ";
@@ -2637,8 +2637,8 @@ function sync_package_v_hunt_group() {
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and opt_1_name = 'hunt_group_id' ";
-								$sql .= "and opt_1_value = '$hunt_group_id' ";
+								$sql .= "and opt_1_name = 'hunt_group_uuid' ";
+								$sql .= "and opt_1_value = '$hunt_group_uuid' ";
 								$db->query($sql);
 								unset($sql);
 
@@ -2649,7 +2649,7 @@ function sync_package_v_hunt_group() {
 								$sql .= "where domain_uuid = '$domain_uuid' ";
 								$sql .= "and tag = 'condition' ";
 								$sql .= "and field_type = 'destination_number' ";
-								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 								$db->query($sql);
 								unset($sql);
 
@@ -2660,7 +2660,7 @@ function sync_package_v_hunt_group() {
 								$sql .= "field_type = 'lua' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
 								$sql .= "and tag = 'action' ";
-								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 								$db->query($sql);
 
 								unset($extension_name);
@@ -2680,12 +2680,12 @@ function sync_package_v_hunt_group() {
 							$sql = "";
 							$sql .= "select * from v_dialplan_includes ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
-							$sql .= "and opt_1_name = 'hunt_group_id_fifo' ";
-							$sql .= "and opt_1_value = '".$row['hunt_group_id']."' ";
+							$sql .= "and opt_1_name = 'hunt_group_uuid_fifo' ";
+							$sql .= "and opt_1_value = '".$row['hunt_group_uuid']."' ";
 							$prep_statement_2 = $db->prepare($sql);
 							$prep_statement_2->execute();
 							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-								$dialplan_include_id = $row2['dialplan_include_id'];
+								$dialplan_include_uuid = $row2['dialplan_include_uuid'];
 								$action = 'update';
 								break; //limit to 1 row
 							}
@@ -2703,21 +2703,21 @@ function sync_package_v_hunt_group() {
 								$enabled = 'true';
 							}
 							$descr = 'fifo '.$row['hunt_group_extension'];
-							$opt_1_name = 'hunt_group_id_fifo';
-							$opt_1_value = $row['hunt_group_id'];
-							$dialplan_include_id = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+							$opt_1_name = 'hunt_group_uuid_fifo';
+							$opt_1_value = $row['hunt_group_uuid'];
+							$dialplan_include_uuid = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 							$tag = 'condition'; //condition, action, antiaction
 							$field_type = 'destination_number';
 							$field_data = '^\*'.$row['hunt_group_extension'].'$';
 							$field_order = '000';
-							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
 							$field_type = 'set';
 							$field_data = 'fifo_music=$${hold_music}';
 							$field_order = '001';
-							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 							$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
 							$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
@@ -2727,13 +2727,13 @@ function sync_package_v_hunt_group() {
 							$field_type = 'set';
 							$field_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
 							$field_order = '002';
-							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
 							$field_type = 'fifo';
 							$field_data = $row['hunt_group_extension'].'@${domain_name} in';
 							$field_order = '003';
-							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 						}
 						if ($action == 'update') {
 							//update the huntgroup fifo
@@ -2747,7 +2747,7 @@ function sync_package_v_hunt_group() {
 									$enabled = 'true';
 								}
 								$descr = 'fifo '.$row['hunt_group_extension'];
-								$hunt_group_id = $row['hunt_group_id'];
+								$hunt_group_uuid = $row['hunt_group_uuid'];
 
 								$sql = "";
 								$sql = "update v_dialplan_includes set ";
@@ -2757,15 +2757,15 @@ function sync_package_v_hunt_group() {
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and opt_1_name = 'hunt_group_id_fifo' ";
-								$sql .= "and opt_1_value = '$hunt_group_id' ";
+								$sql .= "and opt_1_name = 'hunt_group_uuid_fifo' ";
+								$sql .= "and opt_1_value = '$hunt_group_uuid' ";
 								$db->query($sql);
 								unset($sql);
 
 								$sql = "";
 								$sql = "delete from v_dialplan_includes_details ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 								$db->query($sql);
 								unset($sql);
 
@@ -2773,13 +2773,13 @@ function sync_package_v_hunt_group() {
 								$field_type = 'destination_number';
 								$field_data = '^\*'.$row['hunt_group_extension'].'$';
 								$field_order = '000';
-								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 								$tag = 'action'; //condition, action, antiaction
 								$field_type = 'set';
 								$field_data = 'fifo_music=$${hold_music}';
 								$field_order = '001';
-								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 								$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
 								$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
@@ -2789,18 +2789,18 @@ function sync_package_v_hunt_group() {
 								$field_type = 'set';
 								$field_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
 								$field_order = '002';
-								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 								$tag = 'action'; //condition, action, antiaction
 								$field_type = 'fifo';
 								$field_data = $row['hunt_group_extension'].'@${domain_name} in';
 								$field_order = '003';
-								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 						}
 
 						sync_package_v_dialplan_includes();
 						unset($dialplanincludeid);
-					} //end if strlen hunt_group_id; add the Hunt Group to the dialplan
+					} //end if strlen hunt_group_uuid; add the Hunt Group to the dialplan
 
 				//get the list of destinations then build the Hunt Group Lua
 					$tmp = "";
@@ -2952,14 +2952,14 @@ function sync_package_v_hunt_group() {
 					$i = 0;
 					$sql = "";
 					$sql .= "select * from v_hunt_group_destinations ";
-					$sql .= "where hunt_group_id = '".$row['hunt_group_id']."' ";
+					$sql .= "where hunt_group_uuid = '".$row['hunt_group_uuid']."' ";
 					$sql .= "and domain_uuid = '$domain_uuid' ";
 					//$sql .= "and destination_enabled = 'true' ";
 					$sql .= "order by destination_order asc ";
 					$prep_statement_2 = $db->prepare($sql);
 					$prep_statement_2->execute();
 					while($ent = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-						//$ent['hunt_group_id']
+						//$ent['hunt_group_uuid']
 						//$ent['destination_data']
 						//$ent['destination_type']
 						//$ent['destination_profile']
@@ -3200,7 +3200,7 @@ function sync_package_v_fax() {
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
 		//get the fax information such as the name and description
-			//$row['fax_id']
+			//$row['fax_uuid']
 			//$row['fax_extension']
 			//$row['fax_name']
 			//$row['fax_email']
@@ -3210,20 +3210,20 @@ function sync_package_v_fax() {
 			//$row['fax_description']
 
 		//determine if the entry should be an add, or update to the dialplan 
-		if (strlen($row['fax_id']) > 0) {
+		if (strlen($row['fax_uuid']) > 0) {
 			$action = 'add'; //set default action to add
 
 			$sql = "";
 			$sql .= "select * from v_dialplan_includes ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'faxid' ";
-			$sql .= "and opt_1_value = '".$row['fax_id']."' ";
+			$sql .= "and opt_1_value = '".$row['fax_uuid']."' ";
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
 			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
 				$action = 'update';
 
-				$dialplan_include_id = $row2['dialplan_include_id'];
+				$dialplan_include_uuid = $row2['dialplan_include_uuid'];
 				$extension_name = check_str($row2['extension_name']);
 				$order = $row2['order'];
 				$context = $row2['context'];
@@ -3243,7 +3243,7 @@ function sync_package_v_fax() {
 
 
 			if ($action == 'add') {
-				//$faxid = $row['fax_id'];
+				//$faxid = $row['fax_uuid'];
 				if (strlen($row['fax_name']) > 0) {
 
 					//create auto attendant extension in the dialplan
@@ -3253,8 +3253,8 @@ function sync_package_v_fax() {
 					$enabled = 'true';
 					$descr = $row['fax_description'];
 					$opt_1_name = 'faxid';
-					$opt_1_value = $row['fax_id'];
-					$dialplan_include_id = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+					$opt_1_value = $row['fax_uuid'];
+					$dialplan_include_uuid = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 					//<!-- default ${domain_name} -->
 					//<condition field="destination_number" expression="^\*9978$">
@@ -3262,7 +3262,7 @@ function sync_package_v_fax() {
 					$field_type = 'destination_number';
 					$field_data = '^'.$row['fax_extension'].'$';
 					$field_order = '000';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
 					$tag = 'action'; //condition, action, antiaction
@@ -3277,42 +3277,42 @@ function sync_package_v_fax() {
 					$field_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 
 					$field_order = '005';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="answer" />
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'answer';
 					$field_data = '';
 					$field_order = '010';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 					////<action application="set" data="fax_enable_t38=true"/>
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'fax_enable_t38=true';
 					$field_order = '015';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 					////<action application="set" data="fax_enable_t38_request=true"/>
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'fax_enable_t38_request=true';
 					$field_order = '020';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="playback" data="silence_stream://2000"/>
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'playback';
 					$field_data = 'silence_stream://2000';
 					$field_order = '025';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="set" data="last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}"/>
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
 					$field_order = '030';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="rxfax" data="$v_storage_dir/fax/inbox/${last_fax}.tif"/>
 					$tag = 'action'; //condition, action, antiaction
@@ -3324,16 +3324,16 @@ function sync_package_v_fax() {
 						$field_data = $v_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
 					$field_order = '035';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 					//<action application="hangup"/>
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'hangup';
 					$field_data = '';
 					$field_order = '040';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 				}
-				//unset($fax_id);
+				//unset($fax_uuid);
 			}
 			if ($action == 'update') {
 				$extension_name = $row['fax_name'];
@@ -3352,7 +3352,7 @@ function sync_package_v_fax() {
 				$sql .= "enabled = '$enabled', ";
 				$sql .= "descr = '$descr' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 
 				$db->query($sql);
 				unset($sql);
@@ -3364,7 +3364,7 @@ function sync_package_v_fax() {
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and tag = 'condition' ";
 				$sql .= "and field_type = 'destination_number' ";
-				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 				$db->query($sql);
 				unset($sql);
 
@@ -3381,7 +3381,7 @@ function sync_package_v_fax() {
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and tag = 'action' ";
 				$sql .= "and field_type = 'rxfax' ";
-				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 				$db->query($sql);
 
 				//update the action
@@ -3401,7 +3401,7 @@ function sync_package_v_fax() {
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and tag = 'action' ";
 				$sql .= "and field_type = 'set' ";
-				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 				$sql .= "and field_data like 'api_hangup_hook=%' ";
 				$db->query(check_sql($sql));
 
@@ -3417,7 +3417,7 @@ function sync_package_v_fax() {
 
 			sync_package_v_dialplan_includes();
 			unset($dialplanincludeid);
-		} //end if strlen fax_id; add the fax to the dialplan
+		} //end if strlen fax_uuid; add the fax to the dialplan
 	} //end if result
 
 	//apply settings reminder
@@ -3429,7 +3429,7 @@ function get_recording_filename($id) {
 	global $domain_uuid, $db;
 	$sql = "";
 	$sql .= "select * from v_recordings ";
-	$sql .= "where recording_id = '$id' ";
+	$sql .= "where recording_uuid = '$id' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -3437,7 +3437,7 @@ function get_recording_filename($id) {
 	foreach ($result as &$row) {
 		//$filename = $row["filename"];
 		//$recording_name = $row["recording_name"];
-		//$recording_id = $row["recording_id"];
+		//$recording_uuid = $row["recording_uuid"];
 		//$descr = $row["descr"];
 		return $row["filename"];
 		break; //limit to 1 row
@@ -3497,7 +3497,7 @@ function sync_package_v_auto_attendant() {
 					$prep_statement_2->execute();
 					while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
 						$action = 'update';
-						$dialplan_include_id = $row2['dialplan_include_id'];
+						$dialplan_include_uuid = $row2['dialplan_include_uuid'];
 						break; //limit to 1 row
 					}
 					unset ($sql, $prep_statement_2);
@@ -3513,19 +3513,19 @@ function sync_package_v_auto_attendant() {
 				$descr = 'auto attendant';
 				$opt_1_name = 'auto_attendant_id';
 				$opt_1_value = $row['auto_attendant_id'];
-				$dialplan_include_id = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+				$dialplan_include_uuid = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 				$tag = 'condition'; //condition, action, antiaction
 				$field_type = 'destination_number';
 				$field_data = '^'.$row['aaextension'].'$';
 				$field_order = '000';
-				v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+				v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 				$tag = 'action'; //condition, action, antiaction
 				$field_type = 'javascript';
 				$field_data = 'autoattendant_'.$row['aaextension'].'.js';
 				$field_order = '001';
-				v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+				v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 		}
 		if ($action == 'update') {
@@ -3560,7 +3560,7 @@ function sync_package_v_auto_attendant() {
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and tag = 'condition' ";
 				$sql .= "and field_type = 'destination_number' ";
-				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 				//echo $sql."<br />";
 				$db->query($sql);
 				unset($sql);
@@ -3572,7 +3572,7 @@ function sync_package_v_auto_attendant() {
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and tag = 'action' ";
 				$sql .= "and field_type = 'javascript' ";
-				$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+				$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 				//echo $sql."<br />";
 				$db->query($sql);
 
@@ -4413,28 +4413,28 @@ function v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order,
 	$sql .= ")";
 	if ($db_type == "sqlite" || $db_type == "mysql" ) {
 		$db->exec(check_sql($sql));
-		$dialplan_include_id = $db->lastInsertId($id);
+		$dialplan_include_uuid = $db->lastInsertId($id);
 	}
 	if ($db_type == "pgsql") {
-		$sql .= " RETURNING dialplan_include_id ";
+		$sql .= " RETURNING dialplan_include_uuid ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach ($result as &$row) {
-			$dialplan_include_id = $row["dialplan_include_id"];
+			$dialplan_include_uuid = $row["dialplan_include_uuid"];
 		}
 		unset($prep_statement, $result);
 	}
 	unset($sql);
-	return $dialplan_include_id;
+	return $dialplan_include_uuid;
 }
 
-function v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data) {
+function v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data) {
 	global $db;
 	$sql = "insert into v_dialplan_includes_details ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
-	$sql .= "dialplan_include_id, ";
+	$sql .= "dialplan_include_uuid, ";
 	$sql .= "tag, ";
 	$sql .= "field_order, ";
 	$sql .= "field_type, ";
@@ -4443,7 +4443,7 @@ function v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $ta
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
-	$sql .= "'".check_str($dialplan_include_id)."', ";
+	$sql .= "'".check_str($dialplan_include_uuid)."', ";
 	$sql .= "'".check_str($tag)."', ";
 	$sql .= "'".check_str($field_order)."', ";
 	$sql .= "'".check_str($field_type)."', ";
@@ -4499,7 +4499,7 @@ function sync_package_v_dialplan_includes() {
 
 		$sql = "";
 		$sql .= " select * from v_dialplan_includes_details ";
-		$sql .= " where dialplan_include_id = '".$row['dialplan_include_id']."' ";
+		$sql .= " where dialplan_include_uuid = '".$row['dialplan_include_uuid']."' ";
 		$sql .= " and domain_uuid = $domain_uuid ";
 		$sql .= " order by field_group asc, field_order asc ";
 		$prep_statement_2 = $db->prepare($sql);
@@ -4558,7 +4558,7 @@ function sync_package_v_dialplan_includes() {
 						//add the conditions to the details array
 							$details[$group]['condition-'.$x]['tag'] = $row2['tag'];
 							$details[$group]['condition-'.$x]['field_type'] = $row2['field_type'];
-							$details[$group]['condition-'.$x]['dialplan_include_id'] = $row2['dialplan_include_id'];
+							$details[$group]['condition-'.$x]['dialplan_include_uuid'] = $row2['dialplan_include_uuid'];
 							$details[$group]['condition-'.$x]['field_order'] = $row2['field_order'];
 							$details[$group]['condition-'.$x]['field'][$y]['type'] = $row2['field_type'];
 							$details[$group]['condition-'.$x]['field'][$y]['data'] = $row2['field_data'];
@@ -4800,7 +4800,7 @@ function sync_package_v_public_includes() {
 
 			$sql = "";
 			$sql .= " select * from v_public_includes_details ";
-			$sql .= " where public_include_id = '".$row['public_include_id']."' ";
+			$sql .= " where public_include_uuid = '".$row['public_include_uuid']."' ";
 			$sql .= " and tag = 'condition' ";
 			$sql .= " order by field_order asc";
 			$prep_statement_2 = $db->prepare($sql);
@@ -4836,7 +4836,7 @@ function sync_package_v_public_includes() {
 
 			$sql = "";
 			$sql .= " select * from v_public_includes_details ";
-			$sql .= " where public_include_id = '".$row['public_include_id']."' ";
+			$sql .= " where public_include_uuid = '".$row['public_include_uuid']."' ";
 			$sql .= " and tag = 'action' ";
 			$sql .= " order by field_order asc";
 			$prep_statement_2 = $db->prepare($sql);
@@ -4849,7 +4849,7 @@ function sync_package_v_public_includes() {
 			else { //received results
 				$i = 0;
 				foreach($result2 as $ent) {
-					if ($ent['tag'] == "action" && $row['public_include_id'] == $ent['public_include_id']) {
+					if ($ent['tag'] == "action" && $row['public_include_uuid'] == $ent['public_include_uuid']) {
 						if (strlen($ent['field_data']) > 0) {
 							$tmp .= "       <action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\"/>\n";
 						}
@@ -4864,7 +4864,7 @@ function sync_package_v_public_includes() {
 
 			$sql = "";
 			$sql .= " select * from v_public_includes_details ";
-			$sql .= " where public_include_id = '".$row['public_include_id']."' ";
+			$sql .= " where public_include_uuid = '".$row['public_include_uuid']."' ";
 			$sql .= " and tag = 'anti-action' ";
 			$sql .= " order by field_order asc";
 			$prep_statement_2 = $db->prepare($sql);
@@ -4877,7 +4877,7 @@ function sync_package_v_public_includes() {
 			else { //received results
 				$i = 0;
 				foreach($result2 as $ent) {
-					if ($ent['tag'] == "anti-action" && $row['public_include_id'] == $ent['public_include_id']) {
+					if ($ent['tag'] == "anti-action" && $row['public_include_uuid'] == $ent['public_include_uuid']) {
 						if (strlen($ent['field_data']) > 0) {
 							$tmp .= "       <anti-action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\"/>\n";
 						}
@@ -5218,7 +5218,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 		unset ($prep_statement, $sql);
 		if ($resultcount > 0) {
 			foreach($result as $row) {
-				$ivr_menu_id = $row["ivr_menu_id"];
+				$ivr_menu_uuid = $row["ivr_menu_uuid"];
 				$ivr_menu_name = check_str($row["ivr_menu_name"]);
 				$ivr_menu_extension = $row["ivr_menu_extension"];
 				$ivr_menu_greet_long = $row["ivr_menu_greet_long"];
@@ -5245,7 +5245,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 					$ivr_menu_name = str_replace(" ", "_", $ivr_menu_name);
 
 				//add each IVR Menu to the dialplan
-					if (strlen($row['ivr_menu_id']) > 0) {
+					if (strlen($row['ivr_menu_uuid']) > 0) {
 						$action = 'add'; //set default action to add
 						$i = 0;
 
@@ -5253,13 +5253,13 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 							$sql = "";
 							$sql .= "select * from v_dialplan_includes ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
-							$sql .= "and opt_1_name = 'ivr_menu_id' ";
-							$sql .= "and opt_1_value = '".$row['ivr_menu_id']."' ";
+							$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
+							$sql .= "and opt_1_value = '".$row['ivr_menu_uuid']."' ";
 							$prep_statement_2 = $db->prepare($sql);
 							$prep_statement_2->execute();
 							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
 								$action = 'update';
-								$dialplan_include_id = $row2['dialplan_include_id'];
+								$dialplan_include_uuid = $row2['dialplan_include_uuid'];
 								break; //limit to 1 row
 							}
 							unset ($sql, $prep_statement_2);
@@ -5268,7 +5268,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 							$sql = "";
 							$sql .= "delete from v_dialplan_includes_details ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
-							$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+							$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 							$prep_statement_2 = $db->prepare(check_sql($sql));
 							$prep_statement_2->execute();
 							unset ($sql, $prep_statement_2);
@@ -5282,12 +5282,12 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 							$descr = $ivr_menu_desc;
 
 							if ($action  == "add") {
-								$opt_1_name = 'ivr_menu_id';
-								$opt_1_value = $row['ivr_menu_id'];
-								$dialplan_include_id = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+								$opt_1_name = 'ivr_menu_uuid';
+								$opt_1_value = $row['ivr_menu_uuid'];
+								$dialplan_include_uuid = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 							}
 							if ($action  == "update") {
-								$ivr_menu_id = $row['ivr_menu_id'];
+								$ivr_menu_uuid = $row['ivr_menu_uuid'];
 
 								$sql = "";
 								$sql = "update v_dialplan_includes set ";
@@ -5297,8 +5297,8 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and opt_1_name = 'ivr_menu_id' ";
-								$sql .= "and opt_1_value = '$ivr_menu_id' ";
+								$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
+								$sql .= "and opt_1_value = '$ivr_menu_uuid' ";
 								$db->query($sql);
 								unset($sql);
 							}
@@ -5307,25 +5307,25 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 							$field_type = 'destination_number';
 							$field_data = '^'.$row['ivr_menu_extension'].'$';
 							$field_order = '005';
-							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
 							$field_type = 'answer';
 							$field_data = '';
 							$field_order = '010';
-							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
 							$field_type = 'sleep';
 							$field_data = '1000';
 							$field_order = '015';
-							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
 							$field_type = 'set';
 							$field_data = 'hangup_after_bridge=true';
 							$field_order = '020';
-							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 
 							$tag = 'action'; //condition, action, antiaction
 							$field_type = 'ivr';
@@ -5336,19 +5336,19 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$field_data = $ivr_menu_name;
 							}
 							$field_order = '025';
-							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+							v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 							
 							if (strlen($ivr_menu_exit_app) > 0) {
 								$tag = 'action'; //condition, action, antiaction
 								$field_type = $ivr_menu_exit_app;
 								$field_data = $ivr_menu_exit_data;
 								$field_order = '030';
-								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+								v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 							}
 
 						unset($action);
-						unset($dialplan_include_id);
-					} //end if strlen ivr_menu_id; add the IVR Menu to the dialplan
+						unset($dialplan_include_uuid);
+					} //end if strlen ivr_menu_uuid; add the IVR Menu to the dialplan
 
 				//add each IVR menu to the XML config
 					$tmp = "<include>\n";
@@ -5395,14 +5395,14 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 
 					$sub_sql = "";
 					$sub_sql .= "select * from v_ivr_menu_options ";
-					$sub_sql .= "where ivr_menu_id = '$ivr_menu_id' ";
+					$sub_sql .= "where ivr_menu_uuid = '$ivr_menu_uuid' ";
 					$sub_sql .= "and domain_uuid = '$domain_uuid' ";
 					$sub_sql .= "order by ivr_menu_options_order asc "; 
 					$sub_prepstatement = $db->prepare(check_sql($sub_sql));
 					$sub_prepstatement->execute();
 					$sub_result = $sub_prepstatement->fetchAll(PDO::FETCH_ASSOC);
 					foreach ($sub_result as &$sub_row) {
-						//$ivr_menu_id = $sub_row["ivr_menu_id"];
+						//$ivr_menu_uuid = $sub_row["ivr_menu_uuid"];
 						$ivr_menu_options_digits = $sub_row["ivr_menu_options_digits"];
 						$ivr_menu_options_action = $sub_row["ivr_menu_options_action"];
 						$ivr_menu_options_param = $sub_row["ivr_menu_options_param"];
@@ -5502,7 +5502,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						$prep_statement_2->execute();
 						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
 							$action = 'update';
-							$dialplan_include_id = $row2['dialplan_include_id'];
+							$dialplan_include_uuid = $row2['dialplan_include_uuid'];
 							break; //limit to 1 row
 						}
 						unset ($sql, $prep_statement_2);
@@ -5518,13 +5518,13 @@ if (!function_exists('sync_package_v_call_center')) {
 								$descr = $queue_description;
 								$opt_1_name = 'call_center_queue_uuid';
 								$opt_1_value = $row['call_center_queue_uuid'];
-								$dialplan_include_id = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+								$dialplan_include_uuid = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 
 								//group 1
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
-									$dialplan->dialplan_include_id = $dialplan_include_id;
+									$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 									$dialplan->tag = 'condition'; //condition, action, antiaction
 									$dialplan->field_type = '${caller_id_name}';
 									$dialplan->field_data = '^([^#]+#)(.*)$';
@@ -5537,7 +5537,7 @@ if (!function_exists('sync_package_v_call_center')) {
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
-									$dialplan->dialplan_include_id = $dialplan_include_id;
+									$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 									$dialplan->tag = 'action'; //condition, action, antiaction
 									$dialplan->field_type = 'set';
 									$dialplan->field_data = 'caller_id_name=$2';
@@ -5551,7 +5551,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								//group 2
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
-									$dialplan->dialplan_include_id = $dialplan_include_id;
+									$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 									$dialplan->tag = 'condition'; //condition, action, antiaction
 									$dialplan->field_type = 'destination_number';
 									$dialplan->field_data = '^'.$row['queue_extension'].'$';
@@ -5564,7 +5564,7 @@ if (!function_exists('sync_package_v_call_center')) {
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
-									$dialplan->dialplan_include_id = $dialplan_include_id;
+									$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 									$dialplan->tag = 'action'; //condition, action, antiaction
 									$dialplan->field_type = 'answer';
 									$dialplan->field_data = '';
@@ -5577,7 +5577,7 @@ if (!function_exists('sync_package_v_call_center')) {
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
-									$dialplan->dialplan_include_id = $dialplan_include_id;
+									$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 									$dialplan->tag = 'action'; //condition, action, antiaction
 									$dialplan->field_type = 'set';
 									$dialplan->field_data = 'hangup_after_bridge=true';
@@ -5590,7 +5590,7 @@ if (!function_exists('sync_package_v_call_center')) {
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
-									$dialplan->dialplan_include_id = $dialplan_include_id;
+									$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 									$dialplan->tag = 'action'; //condition, action, antiaction
 									$dialplan->field_type = 'set';
 									$dialplan->field_data = "caller_id_name=".$queue_cid_prefix."#\${caller_id_name}";
@@ -5603,7 +5603,7 @@ if (!function_exists('sync_package_v_call_center')) {
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
-									$dialplan->dialplan_include_id = $dialplan_include_id;
+									$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 									$dialplan->tag = 'action'; //condition, action, antiaction
 									$dialplan->field_type = 'system';
 									$dialplan->field_data = 'mkdir -p $${base_dir}/recordings/archive/${strftime(%Y)}/${strftime(%b)}/${strftime(%d)}/';
@@ -5616,7 +5616,7 @@ if (!function_exists('sync_package_v_call_center')) {
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
-									$dialplan->dialplan_include_id = $dialplan_include_id;
+									$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 									$dialplan->tag = 'action'; //condition, action, antiaction
 									$dialplan->field_type = 'callcenter';
 									$dialplan->field_data = $queue_name."@".$_SESSION['domains'][$domain_uuid]['domain'];
@@ -5631,7 +5631,7 @@ if (!function_exists('sync_package_v_call_center')) {
 										$action_array = explode(":",$queue_timeout_action);
 										$dialplan = new dialplan;
 										$dialplan->domain_uuid = $domain_uuid;
-										$dialplan->dialplan_include_id = $dialplan_include_id;
+										$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 										$dialplan->tag = 'action'; //condition, action, antiaction
 										$dialplan->field_type = $action_array[0];
 										$dialplan->field_data = substr($queue_timeout_action, strlen($action_array[0])+1, strlen($queue_timeout_action));
@@ -5645,7 +5645,7 @@ if (!function_exists('sync_package_v_call_center')) {
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
-									$dialplan->dialplan_include_id = $dialplan_include_id;
+									$dialplan->dialplan_include_uuid = $dialplan_include_uuid;
 									$dialplan->tag = 'action'; //condition, action, antiaction
 									$dialplan->field_type = 'hangup';
 									$dialplan->field_data = '';
@@ -5688,7 +5688,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								$sql .= "where domain_uuid = '$domain_uuid' ";
 								$sql .= "and tag = 'condition' ";
 								$sql .= "and field_type = 'destination_number' ";
-								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 								//echo $sql."<br />";
 								$db->query($sql);
 								unset($sql);
@@ -5700,7 +5700,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								$sql .= "where domain_uuid = '$domain_uuid' ";
 								$sql .= "and tag = 'action' ";
 								$sql .= "and field_type = 'set' ";
-								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 								$sql .= "and field_data like '%{caller_id_name}%' ";
 								//echo $sql."<br />";
 								$db->query($sql);
@@ -5712,7 +5712,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								$sql .= "where domain_uuid = '$domain_uuid' ";
 								$sql .= "and tag = 'action' ";
 								$sql .= "and field_type = 'callcenter' ";
-								$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+								$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 								//echo $sql."<br />";
 								$db->query($sql);
 

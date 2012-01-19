@@ -124,15 +124,15 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[extension]."</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>\n";
 			if (permission_exists('call_forward')) {
-				echo "		<a href='".PROJECT_PATH."/mod/calls/v_call_edit.php?id=".$row[extension_id]."&a=call_forward' alt='Call Forward'>Call Forward</a> \n";
+				echo "		<a href='".PROJECT_PATH."/mod/calls/v_call_edit.php?id=".$row[extension_uuid]."&a=call_forward' alt='Call Forward'>Call Forward</a> \n";
 				echo "		&nbsp;&nbsp;\n";
 			}
 			if (permission_exists('follow_me')) {
-				echo "		<a href='".PROJECT_PATH."/mod/calls/v_call_edit.php?id=".$row[extension_id]."&a=follow_me' alt='Follow Me'>Follow Me</a> \n";
+				echo "		<a href='".PROJECT_PATH."/mod/calls/v_call_edit.php?id=".$row[extension_uuid]."&a=follow_me' alt='Follow Me'>Follow Me</a> \n";
 				echo "		&nbsp;&nbsp;\n";
 			}
 			if (permission_exists('do_not_disturb')) {
-				echo "		<a href='".PROJECT_PATH."/mod/calls/v_call_edit.php?id=".$row[extension_id]."&a=do_not_disturb' alt='Do Not Disturb'>Do Not Disturb</a> \n";
+				echo "		<a href='".PROJECT_PATH."/mod/calls/v_call_edit.php?id=".$row[extension_uuid]."&a=do_not_disturb' alt='Do Not Disturb'>Do Not Disturb</a> \n";
 			}
 			echo "	</td>\n";
 			echo "	<td valign='top' class='rowstylebg' width='40%'>".$row[description]."&nbsp;</td>\n";

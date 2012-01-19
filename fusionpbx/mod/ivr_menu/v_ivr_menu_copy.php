@@ -37,14 +37,14 @@ else {
 
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
-		$ivr_menu_id = $_GET["id"];
+		$ivr_menu_uuid = $_GET["id"];
 	}
 
 //get the v_ivr_menu data 
 	$sql = "";
 	$sql .= "select * from v_ivr_menu ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and ivr_menu_id = '$ivr_menu_id' ";
+	$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -121,15 +121,15 @@ else {
 		$sql .= ")";
 		if ($db_type == "sqlite" || $db_type == "mysql" ) {
 			$db->exec(check_sql($sql));
-			$db_ivr_menu_id = $db->lastInsertId($id);
+			$db_ivr_menu_uuid = $db->lastInsertId($id);
 		}
 		if ($db_type == "pgsql") {
-			$sql .= " RETURNING ivr_menu_id ";
+			$sql .= " RETURNING ivr_menu_uuid ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
-				$db_ivr_menu_id = $row["ivr_menu_id"];
+				$db_ivr_menu_uuid = $row["ivr_menu_uuid"];
 			}
 			unset($prepstatement, $result);
 		}
@@ -138,9 +138,9 @@ else {
 	//get the the ivr menu options
 		$sql = "";
 		$sql .= "select * from v_ivr_menu_options ";
-		$sql .= "where ivr_menu_id = '$ivr_menu_id' ";
+		$sql .= "where ivr_menu_uuid = '$ivr_menu_uuid' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
-		$sql .= "order by ivr_menu_id asc ";
+		$sql .= "order by ivr_menu_uuid asc ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -155,7 +155,7 @@ else {
 				$sql = "insert into v_ivr_menu_options ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
-				$sql .= "ivr_menu_id, ";
+				$sql .= "ivr_menu_uuid, ";
 				$sql .= "ivr_menu_options_digits, ";
 				$sql .= "ivr_menu_options_action, ";
 				$sql .= "ivr_menu_options_param, ";
@@ -165,7 +165,7 @@ else {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
-				$sql .= "'$db_ivr_menu_id', ";
+				$sql .= "'$db_ivr_menu_uuid', ";
 				$sql .= "'$ivr_menu_options_digits', ";
 				$sql .= "'$ivr_menu_options_action', ";
 				$sql .= "'$ivr_menu_options_param', ";

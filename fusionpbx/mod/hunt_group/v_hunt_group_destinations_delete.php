@@ -38,7 +38,7 @@ require_once "includes/checkauth.php";
 
 if (count($_GET)>0) {
 	$id = $_GET["id"];
-	$hunt_group_id = check_str($_REQUEST["id2"]);
+	$hunt_group_uuid = check_str($_REQUEST["id2"]);
 }
 
 if (strlen($id)>0) {
@@ -46,8 +46,8 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_hunt_group_destinations ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and hunt_group_destination_id = '$id' ";
-		$sql .= "and hunt_group_id = '$hunt_group_id' ";
+		$sql .= "and hunt_group_destination_uuid = '$id' ";
+		$sql .= "and hunt_group_uuid = '$hunt_group_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		unset($sql);
@@ -57,7 +57,7 @@ if (strlen($id)>0) {
 
 //redirect the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_id."\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_uuid."\">\n";
 	echo "<div align='center'>\n";
 	echo "Delete Complete\n";
 	echo "</div>\n";

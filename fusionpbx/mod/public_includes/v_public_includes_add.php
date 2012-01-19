@@ -136,15 +136,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= ")";
 		if ($db_type == "sqlite" || $db_type == "mysql" ) {
 			$db->exec(check_sql($sql));
-			$public_include_id = $db->lastInsertId($id);
+			$public_include_uuid = $db->lastInsertId($id);
 		}
 		if ($db_type == "pgsql") {
-			$sql .= " RETURNING public_include_id ";
+			$sql .= " RETURNING public_include_uuid ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
-				$public_include_id = $row["public_include_id"];
+				$public_include_uuid = $row["public_include_uuid"];
 			}
 			unset($prepstatement, $result);
 		}
@@ -154,7 +154,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "insert into v_public_includes_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "public_include_id, ";
+		$sql .= "public_include_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -163,7 +163,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$public_include_id', ";
+		$sql .= "'$public_include_uuid', ";
 		$sql .= "'condition', ";
 		$sql .= "'context', ";
 		$sql .= "'public', ";
@@ -176,7 +176,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "insert into v_public_includes_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "public_include_id, ";
+		$sql .= "public_include_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -185,7 +185,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$public_include_id', ";
+		$sql .= "'$public_include_uuid', ";
 		$sql .= "'condition', ";
 		$sql .= "'$condition_field_1', ";
 		$sql .= "'$condition_expression_1', ";
@@ -199,7 +199,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_id, ";
+			$sql .= "public_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -208,7 +208,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_id', ";
+			$sql .= "'$public_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'$condition_field_2', ";
 			$sql .= "'$condition_expression_2', ";
@@ -223,7 +223,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_id, ";
+			$sql .= "public_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -232,7 +232,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_id', ";
+			$sql .= "'$public_include_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
 			$sql .= "'domain=".$v_domain."', ";
@@ -247,7 +247,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_id, ";
+			$sql .= "public_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -256,7 +256,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_id', ";
+			$sql .= "'$public_include_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
 			$sql .= "'domain_name=\${domain}', ";
@@ -271,7 +271,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_id, ";
+			$sql .= "public_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -280,7 +280,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_id', ";
+			$sql .= "'$public_include_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
 			$sql .= "'call_direction=inbound', ";
@@ -300,7 +300,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_id, ";
+			$sql .= "public_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -309,7 +309,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_id', ";
+			$sql .= "'$public_include_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'answer', ";
 			$sql .= "'', ";
@@ -324,7 +324,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "insert into v_public_includes_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "public_include_id, ";
+		$sql .= "public_include_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -333,7 +333,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$public_include_id', ";
+		$sql .= "'$public_include_uuid', ";
 		$sql .= "'action', ";
 		$sql .= "'$action_application_1', ";
 		$sql .= "'$action_data_1', ";
@@ -347,7 +347,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_id, ";
+			$sql .= "public_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -356,7 +356,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_id', ";
+			$sql .= "'$public_include_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'$action_application_2', ";
 			$sql .= "'$action_data_2', ";
@@ -843,7 +843,7 @@ if (field_type == "action_application_2") {
 	echo "<tr>\n";
 	echo "	<td colspan='5' align='right'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
+		echo "			<input type='hidden' name='dialplan_include_uuid' value='$dialplan_include_uuid'>\n";
 	}
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "	</td>\n";

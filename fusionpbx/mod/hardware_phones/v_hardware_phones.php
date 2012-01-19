@@ -119,10 +119,10 @@ else { //received results
 		echo "	<td valign='top' class='rowstylebg'>".$row[phone_description]."&nbsp;</td>\n";
 		echo "	<td valign='top' align='right'>\n";
 		if (permission_exists('phone_edit')) {
-			echo "		<a href='v_hardware_phones_edit.php?id=".$row[hardware_phone_id]."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_hardware_phones_edit.php?id=".$row[hardware_phone_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
 		}
 		if (permission_exists('phone_delete')) {
-			echo "		<a href='v_hardware_phones_delete.php?id=".$row[hardware_phone_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='v_hardware_phones_delete.php?id=".$row[hardware_phone_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 		}
 		echo "	</td>\n";
 		echo "</tr>\n";

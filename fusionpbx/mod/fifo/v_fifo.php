@@ -54,20 +54,20 @@ require_once "includes/paging.php";
 		$x = 0;
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$dialplan_include_id = $row["dialplan_include_id"];
+			$dialplan_include_uuid = $row["dialplan_include_uuid"];
 			//$tag = $row["tag"];
 			//$field_order = $row["field_order"];
 			$field_type = $row["field_type"];
 			$field_data = $row["field_data"];
 			if ($field_type == "fifo") {
-				//echo "dialplan_include_id: $dialplan_include_id<br />";
+				//echo "dialplan_include_uuid: $dialplan_include_uuid<br />";
 				//echo "field_data: $field_data<br />";
-				$queue_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+				$queue_array[$x]['dialplan_include_uuid'] = $dialplan_include_uuid;
 				$x++;
 			}
 			else {
 				if ($field_data == "fifo_member.lua") {
-					$queue_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+					$queue_array[$x]['dialplan_include_uuid'] = $dialplan_include_uuid;
 					$x++;
 				}
 			}
@@ -75,7 +75,7 @@ require_once "includes/paging.php";
 		unset ($prepstatement);
 		//print_r($queue_array);
 		//foreach ($queue_array as &$row) {
-		//	echo "--".$row['dialplan_include_id']."--<br />\n";
+		//	echo "--".$row['dialplan_include_uuid']."--<br />\n";
 		//}
 
 //show the content
@@ -119,11 +119,11 @@ require_once "includes/paging.php";
 		foreach ($queue_array as &$row) {
 			if ($x == 0) {
 				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 			}
 			else {
 				$sql .= " or domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 			}
 			$x++;
 		}
@@ -154,11 +154,11 @@ require_once "includes/paging.php";
 		foreach ($queue_array as &$row) {
 			if ($x == 0) {
 				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 			}
 			else {
 				$sql .= " or domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 			}
 			$x++;
 		}
@@ -198,10 +198,10 @@ require_once "includes/paging.php";
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('fifo_edit')) {
-				echo "		<a href='v_fifo_edit.php?id=".$row[dialplan_include_id]."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_fifo_edit.php?id=".$row[dialplan_include_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('fifo_delete')) {
-				echo "		<a href='v_fifo_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_fifo_delete.php?id=".$row[dialplan_include_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "   </td>\n";
 			echo "</tr>\n";

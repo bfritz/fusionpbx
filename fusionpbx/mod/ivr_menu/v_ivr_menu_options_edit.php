@@ -37,21 +37,21 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$ivr_menu_option_id = check_str($_REQUEST["id"]);
+		$ivr_menu_option_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
 	}
 
 //get the menu id
-	if (strlen($_GET["ivr_menu_id"]) > 0) {
-		$ivr_menu_id = check_str($_GET["ivr_menu_id"]);
+	if (strlen($_GET["ivr_menu_uuid"]) > 0) {
+		$ivr_menu_uuid = check_str($_GET["ivr_menu_uuid"]);
 	}
 
 //get the http post variables and set them to php variables
 	if (count($_POST)>0) {
 		//$domain_uuid = check_str($_POST["domain_uuid"]);
-		$ivr_menu_id = check_str($_POST["ivr_menu_id"]);
+		$ivr_menu_uuid = check_str($_POST["ivr_menu_uuid"]);
 		$ivr_menu_options_digits = check_str($_POST["ivr_menu_options_digits"]);
 		$ivr_menu_options_action = check_str($_POST["ivr_menu_options_action"]);
 		$ivr_menu_options_param = check_str($_POST["ivr_menu_options_param"]);
@@ -73,12 +73,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$ivr_menu_option_id = check_str($_POST["ivr_menu_option_id"]);
+		$ivr_menu_option_uuid = check_str($_POST["ivr_menu_option_uuid"]);
 	}
 
 	//check for all required data
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		//if (strlen($ivr_menu_id) == 0) { $msg .= "Please provide: ivr_menu_id<br>\n"; }
+		//if (strlen($ivr_menu_uuid) == 0) { $msg .= "Please provide: ivr_menu_uuid<br>\n"; }
 		if (strlen($ivr_menu_options_digits) == 0) { $msg .= "Please provide: Option<br>\n"; }
 		//if (strlen($ivr_menu_options_action) == 0) { $msg .= "Please provide: Type<br>\n"; }
 		//if (strlen($ivr_menu_options_param) == 0) { $msg .= "Please provide: Destination<br>\n"; }
@@ -103,7 +103,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "insert into v_ivr_menu_options ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
-				$sql .= "ivr_menu_id, ";
+				$sql .= "ivr_menu_uuid, ";
 				$sql .= "ivr_menu_options_digits, ";
 				$sql .= "ivr_menu_options_action, ";
 				$sql .= "ivr_menu_options_param, ";
@@ -113,7 +113,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
-				$sql .= "'$ivr_menu_id', ";
+				$sql .= "'$ivr_menu_uuid', ";
 				$sql .= "'$ivr_menu_options_digits', ";
 				$sql .= "'$ivr_menu_options_action', ";
 				$sql .= "'$ivr_menu_options_param', ";
@@ -127,7 +127,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				sync_package_v_ivr_menu();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_id\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_uuid\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -138,13 +138,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update" && permission_exists('ivr_menu_edit')) {
 				$sql = "update v_ivr_menu_options set ";
 				$sql .= "domain_uuid = '$domain_uuid', ";
-				$sql .= "ivr_menu_id = '$ivr_menu_id', ";
+				$sql .= "ivr_menu_uuid = '$ivr_menu_uuid', ";
 				$sql .= "ivr_menu_options_digits = '$ivr_menu_options_digits', ";
 				$sql .= "ivr_menu_options_action = '$ivr_menu_options_action', ";
 				$sql .= "ivr_menu_options_param = '$ivr_menu_options_param', ";
 				$sql .= "ivr_menu_options_order = '$ivr_menu_options_order', ";
 				$sql .= "ivr_menu_options_desc = '$ivr_menu_options_desc' ";
-				$sql .= "where ivr_menu_option_id = '$ivr_menu_option_id'";
+				$sql .= "where ivr_menu_option_uuid = '$ivr_menu_option_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -152,7 +152,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				sync_package_v_ivr_menu();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_id\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_uuid\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -164,17 +164,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$ivr_menu_option_id = $_GET["id"];
+		$ivr_menu_option_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_ivr_menu_options ";
-		$sql .= "where ivr_menu_option_id = '$ivr_menu_option_id' ";
+		$sql .= "where ivr_menu_option_uuid = '$ivr_menu_option_uuid' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
-			$ivr_menu_id = $row["ivr_menu_id"];
+			$ivr_menu_uuid = $row["ivr_menu_uuid"];
 			$ivr_menu_options_digits = $row["ivr_menu_options_digits"];
 			$ivr_menu_options_action = $row["ivr_menu_options_action"];
 			$ivr_menu_options_param = $row["ivr_menu_options_param"];
@@ -216,7 +216,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap='nowrap' align='left'><b>IVR Menu Option Edit</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_ivr_menu_edit.php?id=$ivr_menu_id'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_ivr_menu_edit.php?id=$ivr_menu_uuid'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2' align='left'>\n";
@@ -355,9 +355,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "			<input type='hidden' name='ivr_menu_id' value='$ivr_menu_id'>\n";
+	echo "			<input type='hidden' name='ivr_menu_uuid' value='$ivr_menu_uuid'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='ivr_menu_option_id' value='$ivr_menu_option_id'>\n";
+		echo "			<input type='hidden' name='ivr_menu_option_uuid' value='$ivr_menu_option_uuid'>\n";
 	}
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

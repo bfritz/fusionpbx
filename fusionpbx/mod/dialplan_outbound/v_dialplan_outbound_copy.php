@@ -37,15 +37,15 @@ else {
 
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
-		$dialplan_include_id = check_str($_REQUEST["id"]);
+		$dialplan_include_uuid = check_str($_REQUEST["id"]);
 	}
 
 //get the v_dialplan_includes data 
-	$dialplan_include_id = $_GET["id"];
+	$dialplan_include_uuid = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_dialplan_includes ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+	$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -84,15 +84,15 @@ else {
 		$sql .= ")";
 		if ($db_type == "sqlite" || $db_type == "mysql" ) {
 			$db->exec(check_sql($sql));
-			$db_dialplan_include_id = $db->lastInsertId($id);
+			$db_dialplan_include_uuid = $db->lastInsertId($id);
 		}
 		if ($db_type == "pgsql") {
-			$sql .= " RETURNING dialplan_include_id ";
+			$sql .= " RETURNING dialplan_include_uuid ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
-				$db_dialplan_include_id = $row["dialplan_include_id"];
+				$db_dialplan_include_uuid = $row["dialplan_include_uuid"];
 			}
 			unset($prepstatement, $result);
 		}
@@ -102,13 +102,13 @@ else {
 		$sql = "";
 		$sql .= "select * from v_dialplan_includes_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+		$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
-			//$dialplan_include_id = $row["dialplan_include_id"];
+			//$dialplan_include_uuid = $row["dialplan_include_uuid"];
 			$tag = $row["tag"];
 			$field_order = $row["field_order"];
 			$field_type = $row["field_type"];
@@ -118,7 +118,7 @@ else {
 				$sql = "insert into v_dialplan_includes_details ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
-				$sql .= "dialplan_include_id, ";
+				$sql .= "dialplan_include_uuid, ";
 				$sql .= "tag, ";
 				$sql .= "field_order, ";
 				$sql .= "field_type, ";
@@ -127,7 +127,7 @@ else {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
-				$sql .= "'".check_str($db_dialplan_include_id)."', ";
+				$sql .= "'".check_str($db_dialplan_include_uuid)."', ";
 				$sql .= "'".check_str($tag)."', ";
 				$sql .= "'".check_str($field_order)."', ";
 				$sql .= "'".check_str($field_type)."', ";

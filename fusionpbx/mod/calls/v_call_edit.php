@@ -52,14 +52,14 @@ function destination_select($select_name, $select_value, $select_default) {
 	echo "</select>\n";
 }
 
-//get the extension_id
-	$extension_id = $_REQUEST["id"];
+//get the extension_uuid
+	$extension_uuid = $_REQUEST["id"];
 
 //get the extension number
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and extension_id = '$extension_id' ";
+	$sql .= "and extension_uuid = '$extension_uuid' ";
 	if (!(ifgroup("admin") || ifgroup("superadmin"))) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}
@@ -256,19 +256,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		foreach ($result as &$row) {
 			if ($row["hunt_group_type"] == 'call_forward') {
 				$call_forward_action = "update";
-				$call_forward_id = $row["hunt_group_id"];
+				$call_forward_id = $row["hunt_group_uuid"];
 			}
 			if ($row["hunt_group_type"] == 'follow_me_sequence') {
 				$follow_me_action = "update";
-				$follow_me_id = $row["hunt_group_id"];
+				$follow_me_id = $row["hunt_group_uuid"];
 			}
 			if ($row["hunt_group_type"] == 'follow_me_simultaneous') {
 				$follow_me_action = "update";
-				$follow_me_id = $row["hunt_group_id"];
+				$follow_me_id = $row["hunt_group_uuid"];
 			}
 			if ($row["hunt_group_type"] == 'dnd') {
 				$dnd_action = "update";
-				$dnd_id = $row["hunt_group_id"];
+				$dnd_id = $row["hunt_group_uuid"];
 			}
 		}
 		unset ($prepstatement);
@@ -391,7 +391,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		$hunt_group_id = $row["hunt_group_id"];
+		$hunt_group_uuid = $row["hunt_group_uuid"];
 		$hunt_group_extension = $row["hunt_group_extension"];
 		$huntgroup_name = $row["hunt_group_name"];
 		$hunt_group_type = $row["hunt_group_type"];
@@ -426,7 +426,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($row["hunt_group_type"] == 'call_forward' || $row["hunt_group_type"] == 'follow_me_sequence' || $row["hunt_group_type"] == 'follow_me_simultaneous') {
 			$sql = "";
 			$sql .= "select * from v_hunt_group_destinations ";
-			$sql .= "where hunt_group_id = '$hunt_group_id' ";
+			$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 			$prep_statement2 = $db->prepare(check_sql($sql));
 			$prep_statement2->execute();
 			$result2 = $prep_statement2->fetchAll();
@@ -723,7 +723,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='id' value='$extension_id'>\n";
+		echo "				<input type='hidden' name='id' value='$extension_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

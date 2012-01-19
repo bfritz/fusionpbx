@@ -40,10 +40,10 @@ $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
 if (strlen($_GET["a"]) > 0) {
-	$service_id = $_GET["id"];
+	$service_uuid = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_services ";
-	$sql .= "where service_id = '$service_id' ";
+	$sql .= "where service_uuid = '$service_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -169,18 +169,18 @@ if (strlen($_GET["a"]) > 0) {
 			echo "</td>\n";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>\n";
 			if (is_process_running($pid)) {
-				echo "		<a href='v_services.php?id=".$row[service_id]."&a=stop' alt='stop'>Stop</a>";
+				echo "		<a href='v_services.php?id=".$row[service_uuid]."&a=stop' alt='stop'>Stop</a>";
 			}
 			else {
-				echo "		<a href='v_services.php?id=".$row[service_id]."&a=start' alt='start'>Start</a>";
+				echo "		<a href='v_services.php?id=".$row[service_uuid]."&a=start' alt='start'>Start</a>";
 			}
 			echo "</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('services_edit')) {
-				echo "		<a href='v_services_edit.php?id=".$row[service_id]."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_services_edit.php?id=".$row[service_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('services_delete')) {
-				echo "		<a href='v_services_delete.php?id=".$row[service_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_services_delete.php?id=".$row[service_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";

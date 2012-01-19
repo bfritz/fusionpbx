@@ -126,12 +126,12 @@ include "root.php";
 				$this->follow_me_id = $db->lastInsertId($id);
 			}
 			if ($this->db_type == "pgsql") {
-				$sql .= " RETURNING hunt_group_id ";
+				$sql .= " RETURNING hunt_group_uuid ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
 				$result = $prepstatement->fetchAll();
 				foreach ($result as &$row) {
-					$this->follow_me_id = $row["hunt_group_id"];
+					$this->follow_me_id = $row["hunt_group_uuid"];
 				}
 				unset($prepstatement, $result);
 			}
@@ -174,7 +174,7 @@ include "root.php";
 			$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 			$sql .= "hunt_group_descr = '$hunt_group_descr' ";
 			$sql .= "where domain_uuid = '$this->domain_uuid' ";
-			$sql .= "and hunt_group_id = '$this->follow_me_id'";
+			$sql .= "and hunt_group_uuid = '$this->follow_me_id'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 			$this->follow_me_destinations();
@@ -184,7 +184,7 @@ include "root.php";
 			global $db;
 
 			//delete related v_hunt_group_destinations
-				$sql = "delete from v_hunt_group_destinations where hunt_group_id = '$this->follow_me_id' ";
+				$sql = "delete from v_hunt_group_destinations where hunt_group_uuid = '$this->follow_me_id' ";
 				$db->exec(check_sql($sql));
 
 			//insert the v_hunt_group_destinations set destination_data_1
@@ -192,7 +192,7 @@ include "root.php";
 					$sql = "insert into v_hunt_group_destinations ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
-					$sql .= "hunt_group_id, ";
+					$sql .= "hunt_group_uuid, ";
 					$sql .= "destination_data, ";
 					$sql .= "destination_type, ";
 					$sql .= "destination_profile, ";
@@ -221,7 +221,7 @@ include "root.php";
 					$sql = "insert into v_hunt_group_destinations ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
-					$sql .= "hunt_group_id, ";
+					$sql .= "hunt_group_uuid, ";
 					$sql .= "destination_data, ";
 					$sql .= "destination_type, ";
 					$sql .= "destination_profile, ";
@@ -250,7 +250,7 @@ include "root.php";
 					$sql = "insert into v_hunt_group_destinations ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
-					$sql .= "hunt_group_id, ";
+					$sql .= "hunt_group_uuid, ";
 					$sql .= "destination_data, ";
 					$sql .= "destination_type, ";
 					$sql .= "destination_profile, ";
@@ -279,7 +279,7 @@ include "root.php";
 					$sql = "insert into v_hunt_group_destinations ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
-					$sql .= "hunt_group_id, ";
+					$sql .= "hunt_group_uuid, ";
 					$sql .= "destination_data, ";
 					$sql .= "destination_type, ";
 					$sql .= "destination_profile, ";
@@ -308,7 +308,7 @@ include "root.php";
 					$sql = "insert into v_hunt_group_destinations ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
-					$sql .= "hunt_group_id, ";
+					$sql .= "hunt_group_uuid, ";
 					$sql .= "destination_data, ";
 					$sql .= "destination_type, ";
 					$sql .= "destination_profile, ";

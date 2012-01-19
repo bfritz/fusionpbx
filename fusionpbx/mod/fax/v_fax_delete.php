@@ -36,17 +36,17 @@ else {
 
 //get the http get value and set it as a php variable
 	if (count($_GET)>0) {
-		$fax_id = check_str($_GET["id"]);
+		$fax_uuid = check_str($_GET["id"]);
 	}
 
 //delete the fax extension
-	if (strlen($fax_id)>0) {
+	if (strlen($fax_uuid)>0) {
 
 		//delete the fax entry
 			$sql = "";
 			$sql .= "delete from v_fax ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and fax_id = '$fax_id' ";
+			$sql .= "and fax_uuid = '$fax_uuid' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);
 			unset($sql);
@@ -56,12 +56,12 @@ else {
 			$sql .= "select * from v_dialplan_includes ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'faxid' ";
-			$sql .= "and opt_1_value = '".$fax_id."' ";
+			$sql .= "and opt_1_value = '".$fax_uuid."' ";
 			//echo $sql."<br>\n";
 			$prepstatement2 = $db->prepare($sql);
 			$prepstatement2->execute();
 			while($row2 = $prepstatement2->fetch(PDO::FETCH_ASSOC)) {
-				$dialplan_include_id = $row2['dialplan_include_id'];
+				$dialplan_include_uuid = $row2['dialplan_include_uuid'];
 				$extension_name = check_str($row2['extension_name']);
 				$order = $row2['order'];
 				$context = $row2['context'];
@@ -81,7 +81,7 @@ else {
 			$sql = "";
 			$sql .= "delete from v_dialplan_includes ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+			$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);
 			unset($sql);
@@ -90,7 +90,7 @@ else {
 			$sql = "";
 			$sql .= "delete from v_dialplan_includes_details ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+			$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);
 			unset($sql);

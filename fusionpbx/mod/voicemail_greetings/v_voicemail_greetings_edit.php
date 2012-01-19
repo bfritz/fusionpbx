@@ -37,7 +37,7 @@ else {
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$greeting_id = check_str($_REQUEST["id"]);
+		$greeting_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -58,7 +58,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$greeting_id = check_str($_POST["greeting_id"]);
+		$greeting_uuid = check_str($_POST["greeting_uuid"]);
 	}
 
 	//check for all required data
@@ -109,7 +109,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//get the original filename
 				$sql = "";
 				$sql .= "select * from v_voicemail_greetings ";
-				$sql .= "where greeting_id = '$greeting_id' ";
+				$sql .= "where greeting_uuid = '$greeting_uuid' ";
 				$sql .= "and domain_uuid = '$domain_uuid' ";
 				//echo "sql: ".$sql."<br />\n";
 				$prepstatement = $db->prepare(check_sql($sql));
@@ -133,7 +133,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "greeting_name = '$greeting_name', ";
 				$sql .= "greeting_description = '$greeting_description' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and greeting_id = '$greeting_id' ";
+				$sql .= "and greeting_uuid = '$greeting_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -150,11 +150,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$greeting_id = $_GET["id"];
+		$greeting_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_voicemail_greetings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and greeting_id = '$greeting_id' ";
+		$sql .= "and greeting_uuid = '$greeting_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -215,7 +215,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='greeting_id' value='$greeting_id'>\n";
+		echo "				<input type='hidden' name='greeting_uuid' value='$greeting_uuid'>\n";
 	}
 	echo "				<input type='hidden' name='user_id' value='$user_id'>\n";
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";

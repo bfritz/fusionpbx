@@ -279,11 +279,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//$prepstatement = $db->prepare(check_sql($sql));
 	//$prepstatement->execute();
 	//while($row = $prepstatement->fetch()) {
-	//	if ($recording_uuid == $row['recording_id']) {
-	//		echo "		<option value='".$row['recording_id']."' selected='yes'>".$row['recordingname']."</option>\n";
+	//	if ($recording_uuid == $row['recording_uuid']) {
+	//		echo "		<option value='".$row['recording_uuid']."' selected='yes'>".$row['recordingname']."</option>\n";
 	//	}
 	//	else {
-	//		echo "		<option value='".$row['recording_id']."'>".$row['recordingname']."</option>\n";
+	//		echo "		<option value='".$row['recording_uuid']."'>".$row['recordingname']."</option>\n";
 	//	}
 	//}
 	//unset ($prepstatement);

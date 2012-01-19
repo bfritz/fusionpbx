@@ -43,7 +43,7 @@ if (strlen($id)>0) {
 	//get the greeting filename
 		$sql = "";
 		$sql .= "select * from v_voicemail_greetings ";
-		$sql .= "where greeting_id = '$id' ";
+		$sql .= "where greeting_uuid = '$id' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .= "and user_id = '$user_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
@@ -58,7 +58,7 @@ if (strlen($id)>0) {
 	//delete recording from the database
 		$sql = "";
 		$sql .= "delete from v_voicemail_greetings ";
-		$sql .= "where greeting_id = '$id' ";
+		$sql .= "where greeting_uuid = '$id' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .= "and user_id = '$user_id' ";
 		$prepstatement = $db->prepare(check_sql($sql));

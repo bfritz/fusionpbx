@@ -91,7 +91,7 @@ require_once "includes/paging.php";
 							foreach ($result2 as &$row2) {
 								if ($row2["hunt_group_type"] == 'dnd') {
 									$dnd_action = "update";
-									$dnd_id = $row2["hunt_group_id"];
+									$dnd_id = $row2["hunt_group_uuid"];
 								}
 							}
 							unset ($prepstatement2, $result2, $row2);

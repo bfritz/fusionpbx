@@ -128,10 +128,10 @@ require_once "includes/paging.php";
 				echo "	<td valign='top' class='rowstylebg'>".$row['ivr_menu_desc']."&nbsp;</td>\n";
 				echo "	<td valign='top' align='right'>\n";
 				if (permission_exists('ivr_menu_edit')) {
-					echo "		<a href='v_ivr_menu_edit.php?id=".$row['ivr_menu_id']."' alt='edit'>$v_link_label_edit</a>\n";
+					echo "		<a href='v_ivr_menu_edit.php?id=".$row['ivr_menu_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 				}
 				if (permission_exists('ivr_menu_delete')) {
-					echo "		<a href='v_ivr_menu_delete.php?id=".$row['ivr_menu_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+					echo "		<a href='v_ivr_menu_delete.php?id=".$row['ivr_menu_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 				}
 				echo "	</td>\n";
 				echo "</tr>\n";

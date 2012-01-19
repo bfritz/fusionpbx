@@ -156,7 +156,7 @@ include "root.php";
 			$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 			$sql .= "hunt_group_descr = '$hunt_group_descr' ";
 			$sql .= "where domain_uuid = '$this->domain_uuid' ";
-			$sql .= "and hunt_group_id = '$this->dnd_id' ";
+			$sql .= "and hunt_group_uuid = '$this->dnd_id' ";
 			if ($this->debug) {
 				echo $sql."<br />";
 			}

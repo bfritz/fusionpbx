@@ -35,7 +35,7 @@ else {
 }
 
 if (count($_POST)>0) {
-	$virtual_table_id = trim($_REQUEST["id"]);
+	$virtual_table_uuid = trim($_REQUEST["id"]);
 	$data = trim($_POST["data"]);
 	$data_delimiter = trim($_POST["data_delimiter"]);
 	$data_enclosure = trim($_POST["data_enclosure"]);
@@ -44,7 +44,7 @@ if (count($_POST)>0) {
 //define the php class
 	class v_virtual_table_fields {
 		var $domain_uuid;
-		var $virtual_table_id;
+		var $virtual_table_uuid;
 		var $virtual_field_label;
 		var $virtual_field_name;
 		var $virtual_field_type;
@@ -60,7 +60,7 @@ if (count($_POST)>0) {
 			global $db;
 			$sql = "select * from v_virtual_table_fields ";
 			$sql .= "where domain_uuid = '$this->domain_uuid' ";
-			$sql .= "and virtual_table_id ='$this->virtual_table_id' ";
+			$sql .= "and virtual_table_uuid ='$this->virtual_table_uuid' ";
 			$sql .= "and virtual_field_name = '$this->virtual_field_name' ";
 			$row = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 			if (is_array($row)) {
@@ -76,7 +76,7 @@ if (count($_POST)>0) {
 			$sql = "insert into v_virtual_table_fields ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "virtual_table_id, ";
+			$sql .= "virtual_table_uuid, ";
 			$sql .= "virtual_field_label, ";
 			$sql .= "virtual_field_name, ";
 			$sql .= "virtual_field_type, ";
@@ -91,7 +91,7 @@ if (count($_POST)>0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$this->domain_uuid', ";
-			$sql .= "'$this->virtual_table_id', ";
+			$sql .= "'$this->virtual_table_uuid', ";
 			$sql .= "'$this->virtual_field_label', ";
 			$sql .= "'$this->virtual_field_name', ";
 			$sql .= "'$this->virtual_field_type', ";
@@ -112,12 +112,12 @@ if (count($_POST)>0) {
 
 	class v_virtual_table_data {
 		var $domain_uuid;
-		var $virtual_table_id;
+		var $virtual_table_uuid;
 		var $virtual_data_row_id;
 		var $virtual_field_name;
 		var $virtual_data_field_value;
 		var $last_insert_id;
-		var $virtual_table_data_id;
+		var $virtual_table_data_uuid;
 
 		function db_unique_id() {
 			global $db;
@@ -140,7 +140,7 @@ if (count($_POST)>0) {
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "virtual_data_row_id, ";
-			$sql .= "virtual_table_id, ";
+			$sql .= "virtual_table_uuid, ";
 			$sql .= "virtual_field_name, ";
 			$sql .= "virtual_data_field_value, ";
 			$sql .= "virtual_data_add_user, ";
@@ -150,7 +150,7 @@ if (count($_POST)>0) {
 			$sql .= "(";
 			$sql .= "'$this->domain_uuid', ";
 			$sql .= "'$this->virtual_data_row_id', ";
-			$sql .= "'$this->virtual_table_id', ";
+			$sql .= "'$this->virtual_table_uuid', ";
 			$sql .= "'$this->virtual_field_name', ";
 			$sql .= "'$this->virtual_data_field_value', ";
 			$sql .= "'".$_SESSION["username"]."', ";
@@ -170,7 +170,7 @@ if (count($_POST)>0) {
 			$sql .= "virtual_data_add_user = '".$_SESSION["username"]."', ";
 			$sql .= "virtual_data_add_date = now() ";
 			$sql .= "where domain_uuid = '$this->domain_uuid' ";
-			$sql .= "and virtual_table_data_id = '$this->virtual_table_data_id' ";
+			$sql .= "and virtual_table_data_uuid = '$this->virtual_table_data_uuid' ";
 			$db->exec($sql);
 			$this->last_insert_id = $db->lastInsertId($id);
 			unset($sql);
@@ -201,7 +201,7 @@ if (count($_POST)>0) {
 			echo "<tr>\n";
 			echo "<td width='30%' nowrap align='left' valign='top'><b>Import Results</b></td>\n";
 			echo "<td width='70%' align='right' valign='top'>\n";
-			echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_tables_import.php?id=$virtual_table_id'\" value='Back'>\n";
+			echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_tables_import.php?id=$virtual_table_uuid'\" value='Back'>\n";
 			echo "	<br /><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -224,7 +224,7 @@ if (count($_POST)>0) {
 
 						$fields = new v_virtual_table_fields;
 						$fields->domain_uuid = $domain_uuid;
-						$fields->virtual_table_id = $virtual_table_id;
+						$fields->virtual_table_uuid = $virtual_table_uuid;
 						$fields->virtual_field_label = $virtual_field_label;
 						$fields->virtual_field_name = $virtual_field_name;
 						$fields->virtual_field_type = 'text';
@@ -256,7 +256,7 @@ if (count($_POST)>0) {
 
 								$data = new v_virtual_table_data;
 								$data->domain_uuid = $domain_uuid;
-								$data->virtual_table_id = $virtual_table_id;
+								$data->virtual_table_uuid = $virtual_table_uuid;
 								if ($x == 0) {
 									$virtual_data_row_id = $data->db_unique_id();
 //									echo "id: ".$virtual_data_row_id."<br />\n";
@@ -297,7 +297,7 @@ if (count($_POST)>0) {
 	echo "<tr>\n";
 	echo "<td width='30%' nowrap align='left' valign='top'><b>Import</b></td>\n";
 	echo "<td width='70%' align='right' valign='top'>\n";
-	//echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_tables_import.php?id=$virtual_table_id'\" value='Back'>\n";
+	//echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_tables_import.php?id=$virtual_table_uuid'\" value='Back'>\n";
 	echo "	<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

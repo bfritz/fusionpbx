@@ -86,7 +86,7 @@ function recur_sounds_dir($dir) {
 //action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$ivr_menu_id = check_str($_REQUEST["id"]);
+	$ivr_menu_uuid = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
@@ -125,7 +125,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$ivr_menu_id = check_str($_POST["ivr_menu_id"]);
+		$ivr_menu_uuid = check_str($_POST["ivr_menu_uuid"]);
 	}
 
 	//check for all required data
@@ -256,7 +256,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "ivr_menu_direct_dial = '$ivr_menu_direct_dial', ";
 				$sql .= "ivr_menu_enabled = '$ivr_menu_enabled', ";
 				$sql .= "ivr_menu_desc = '$ivr_menu_desc' ";
-				$sql .= "where ivr_menu_id = '$ivr_menu_id'";
+				$sql .= "where ivr_menu_uuid = '$ivr_menu_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -279,11 +279,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$ivr_menu_id = $_GET["id"];
+		$ivr_menu_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_ivr_menu ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and ivr_menu_id = '$ivr_menu_id' ";
+		$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -372,7 +372,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td align='left' width='30%' nowrap='nowrap' align='left'><b>IVR Menu Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
-	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_ivr_menu_copy.php?id=".$ivr_menu_id."';}\" value='Copy'>\n";
+	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_ivr_menu_copy.php?id=".$ivr_menu_uuid."';}\" value='Copy'>\n";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_ivr_menu.php'\" value='Back'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -832,7 +832,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='ivr_menu_id' value='$ivr_menu_id'>\n";
+		echo "				<input type='hidden' name='ivr_menu_uuid' value='$ivr_menu_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

@@ -60,12 +60,12 @@ $order = $_GET["order"];
 		$x = 0;
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$dialplan_include_id = $row["dialplan_include_id"];
+			$dialplan_include_uuid = $row["dialplan_include_uuid"];
 			//$tag = $row["tag"];
 			//$field_order = $row["field_order"];
 			//$field_type = $row["field_type"];
 			//$field_data = $row["field_data"];
-			$dialplan_array[$x]['dialplan_include_id'] = $dialplan_include_id;
+			$dialplan_array[$x]['dialplan_include_uuid'] = $dialplan_include_uuid;
 			$x++;
 		}
 		unset ($prepstatement);
@@ -112,11 +112,11 @@ $order = $_GET["order"];
 		foreach ($dialplan_array as &$row) {
 			if ($x == 0) {
 				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 			}
 			else {
 				$sql .= " or domain_uuid = $domain_uuid \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 			}
 			$x++;
 		}
@@ -147,11 +147,11 @@ $order = $_GET["order"];
 		foreach ($dialplan_array as &$row) {
 			if ($x == 0) {
 				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 			}
 			else {
 				$sql .= " or domain_uuid = $domain_uuid \n";
-				$sql .= " and dialplan_include_id = '".$row['dialplan_include_id']."' \n";
+				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
 			}
 			$x++;
 		}
@@ -200,10 +200,10 @@ $order = $_GET["order"];
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('outbound_route_edit')) {
-				echo "		<a href='v_dialplan_outbound_edit.php?id=".$row[dialplan_include_id]."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_dialplan_outbound_edit.php?id=".$row[dialplan_include_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('outbound_route_delete')) {
-				echo "		<a href='v_dialplan_outbound_delete.php?id=".$row[dialplan_include_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_dialplan_outbound_delete.php?id=".$row[dialplan_include_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "   </td>\n";
 			echo "</tr>\n";

@@ -272,7 +272,7 @@ function phpservice_sync_package_php() {
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$php_service_id = check_str($_REQUEST["id"]);
+		$php_service_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -316,7 +316,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$php_service_id = check_str($_POST["php_service_id"]);
+		$php_service_uuid = check_str($_POST["php_service_uuid"]);
 	}
 
 	//check for all required data
@@ -378,7 +378,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "service_enabled = '$service_enabled', ";
 			$sql .= "service_description = '$service_description' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and php_service_id = '$php_service_id' ";
+			$sql .= "and php_service_uuid = '$php_service_uuid' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -398,11 +398,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$php_service_id = $_GET["id"];
+		$php_service_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_php_service ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and php_service_id = '$php_service_id' ";
+		$sql .= "and php_service_uuid = '$php_service_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -535,7 +535,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='php_service_id' value='$php_service_id'>\n";
+		echo "				<input type='hidden' name='php_service_uuid' value='$php_service_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

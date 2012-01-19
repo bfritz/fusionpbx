@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$service_id = check_str($_REQUEST["id"]);
+		$service_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -57,7 +57,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$service_id = check_str($_POST["service_id"]);
+		$service_uuid = check_str($_POST["service_uuid"]);
 	}
 
 	//check for all required data
@@ -125,7 +125,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "v_service_cmd_stop = '$v_service_cmd_stop', ";
 				$sql .= "v_service_desc = '$v_service_desc' ";
 				$sql .= "where domain_uuid = '$domain_uuid'";
-				$sql .= "and service_id = '$service_id'";
+				$sql .= "and service_uuid = '$service_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -142,10 +142,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$service_id = $_GET["id"];
+		$service_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_services ";
-		$sql .= "where service_id = '$service_id' ";
+		$sql .= "where service_uuid = '$service_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -273,7 +273,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='service_id' value='$service_id'>\n";
+		echo "				<input type='hidden' name='service_uuid' value='$service_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

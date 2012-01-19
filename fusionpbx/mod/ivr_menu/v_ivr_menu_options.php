@@ -63,7 +63,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select count(*) as num_rows from v_ivr_menu_options ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	$sql .= " and ivr_menu_id = '$ivr_menu_id' ";
+	$sql .= " and ivr_menu_uuid = '$ivr_menu_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	if ($prepstatement) {
 		$prepstatement->execute();
@@ -89,7 +89,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_ivr_menu_options ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and ivr_menu_id = '$ivr_menu_id' ";
+	$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
 	$sql .= "order by ivr_menu_options_digits, ivr_menu_options_order asc "; 
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -109,7 +109,7 @@ $order = $_GET["order"];
 	echo "<th>Description</th>\n";
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('ivr_menu_add')) {
-		echo "	<a href='v_ivr_menu_options_edit.php?ivr_menu_id=".$ivr_menu_id."' alt='add'>$v_link_label_add</a>\n";
+		echo "	<a href='v_ivr_menu_options_edit.php?ivr_menu_uuid=".$ivr_menu_uuid."' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "</td>\n";
 	echo "<tr>\n";
@@ -137,10 +137,10 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['ivr_menu_options_desc']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('ivr_menu_edit')) {
-				echo "		<a href='v_ivr_menu_options_edit.php?ivr_menu_id=".$row['ivr_menu_id']."&id=".$row['ivr_menu_option_id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_ivr_menu_options_edit.php?ivr_menu_uuid=".$row['ivr_menu_uuid']."&id=".$row['ivr_menu_option_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('ivr_menu_delete')) {
-				echo "		<a href='v_ivr_menu_options_delete.php?ivr_menu_id=".$row['ivr_menu_id']."&id=".$row['ivr_menu_option_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_ivr_menu_options_delete.php?ivr_menu_uuid=".$row['ivr_menu_uuid']."&id=".$row['ivr_menu_option_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -157,7 +157,7 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('ivr_menu_add')) {
-		echo "			<a href='v_ivr_menu_options_edit.php?ivr_menu_id=".$ivr_menu_id."' alt='add'>$v_link_label_add</a>\n";
+		echo "			<a href='v_ivr_menu_options_edit.php?ivr_menu_uuid=".$ivr_menu_uuid."' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

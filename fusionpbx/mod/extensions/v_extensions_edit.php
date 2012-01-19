@@ -36,7 +36,7 @@ else {
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$extension_id = check_str($_REQUEST["id"]);
+		$extension_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -117,7 +117,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$extension_id = check_str($_POST["extension_id"]);
+		$extension_uuid = check_str($_POST["extension_uuid"]);
 	}
 
 	//check for all required data
@@ -447,7 +447,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "description = '$description' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and extension_id = '$extension_id'";
+			$sql .= "and extension_uuid = '$extension_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -485,11 +485,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$extension_id = $_GET["id"];
+		$extension_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_extensions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and extension_id = '$extension_id' ";
+		$sql .= "and extension_uuid = '$extension_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -577,7 +577,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "<td width='70%' align='right' valign='top'>\n";
 	echo "	<input type='submit' name='submit' class='btn' value='Save'>\n";
-	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_extensions_copy.php?id=".$extension_id."';}\" value='Copy'>\n";
+	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_extensions_copy.php?id=".$extension_uuid."';}\" value='Copy'>\n";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_extensions.php'\" value='Back'>\n";
 	echo "	<br /><br />\n";
 	echo "</td>\n";
@@ -808,7 +808,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//$row[phone_model]
 		//$row[phone_provision_enable]
 		//$row[phone_description]
-		//$row[hardware_phone_id]
+		//$row[hardware_phone_uuid]
 	} //end foreach
 	unset($sql, $result, $rowcount);
 	echo "</select>\n";
@@ -1185,7 +1185,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='extension_id' value='$extension_id'>\n";
+		echo "				<input type='hidden' name='extension_uuid' value='$extension_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

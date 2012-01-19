@@ -36,7 +36,7 @@ else {
 
 if (count($_GET)>0) {
 	$id = $_GET["id"];
-	$dialplan_include_id = check_str($_REQUEST["id2"]);
+	$dialplan_include_uuid = check_str($_REQUEST["id2"]);
 }
 
 if (strlen($id)>0) {
@@ -44,8 +44,8 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_dialplan_includes_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_includes_detail_id = '$id' ";
-		$sql .= "and dialplan_include_id = '$dialplan_include_id' ";
+		$sql .= "and dialplan_includes_detail_uuid = '$id' ";
+		$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
 		$db->query($sql);
 		unset($sql);
 	//synchronize the xml config
@@ -54,7 +54,7 @@ if (strlen($id)>0) {
 
 //redirect the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo_edit.php?id=".$dialplan_include_id."\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo_edit.php?id=".$dialplan_include_uuid."\">\n";
 	echo "<div align='center'>\n";
 	echo "Delete Complete\n";
 	echo "</div>\n";

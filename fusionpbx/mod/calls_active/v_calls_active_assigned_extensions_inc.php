@@ -44,7 +44,7 @@ if (permission_exists('extensions_active_assigned_view')) {
 			$x = 0;
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
-				$user_extension_array[$x]['extension_id'] = $row["extension_id"];
+				$user_extension_array[$x]['extension_uuid'] = $row["extension_uuid"];
 				$user_extension_array[$x]['extension'] = $row["extension"];
 				$x++;
 			}

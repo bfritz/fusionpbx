@@ -39,20 +39,20 @@ require_once "includes/checkauth.php";
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$hunt_group_destination_id = check_str($_REQUEST["id"]);
+		$hunt_group_destination_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
 	}
 
 	if (isset($_REQUEST["id2"])) {
-		$hunt_group_id = check_str($_REQUEST["id2"]);
+		$hunt_group_uuid = check_str($_REQUEST["id2"]);
 	}
 
 //get the http values and set them as variables
 	if (count($_POST)>0) {
-		if (isset($_POST["hunt_group_id"])) {
-			$hunt_group_id = check_str($_POST["hunt_group_id"]);
+		if (isset($_POST["hunt_group_uuid"])) {
+			$hunt_group_uuid = check_str($_POST["hunt_group_uuid"]);
 		}
 		$destination_data = check_str($_POST["destination_data"]);
 		$destination_type = check_str($_POST["destination_type"]);
@@ -66,7 +66,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$hunt_group_destination_id = check_str($_POST["hunt_group_destination_id"]);
+		$hunt_group_destination_uuid = check_str($_POST["hunt_group_destination_uuid"]);
 	}
 
 	//check for all required data
@@ -96,7 +96,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "insert into v_hunt_group_destinations ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
-				$sql .= "hunt_group_id, ";
+				$sql .= "hunt_group_uuid, ";
 				$sql .= "destination_data, ";
 				$sql .= "destination_type, ";
 				$sql .= "destination_timeout, ";
@@ -107,7 +107,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
-				$sql .= "'$hunt_group_id', ";
+				$sql .= "'$hunt_group_uuid', ";
 				$sql .= "'$destination_data', ";
 				$sql .= "'$destination_type', ";
 				$sql .= "'$destination_timeout', ";
@@ -122,7 +122,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				sync_package_v_hunt_group();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_id."\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_uuid."\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -133,7 +133,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update" && permission_exists('hunt_group_edit')) {
 				$sql = "update v_hunt_group_destinations set ";
 				$sql .= "domain_uuid = '$domain_uuid', ";
-				$sql .= "hunt_group_id = '$hunt_group_id', ";
+				$sql .= "hunt_group_uuid = '$hunt_group_uuid', ";
 				$sql .= "destination_data = '$destination_data', ";
 				$sql .= "destination_type = '$destination_type', ";
 				$sql .= "destination_timeout = '$destination_timeout', ";
@@ -141,14 +141,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "destination_enabled = '$destination_enabled', ";
 				$sql .= "destination_descr = '$destination_descr' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and hunt_group_destination_id = '$hunt_group_destination_id'";
+				$sql .= "and hunt_group_destination_uuid = '$hunt_group_destination_uuid'";
 				$db->exec(check_sql($sql));
 
 				//synchronize the xml config
 				sync_package_v_hunt_group();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_id."\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group_edit.php?id=".$hunt_group_uuid."\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -160,16 +160,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$hunt_group_destination_id = $_GET["id"];
+		$hunt_group_destination_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_hunt_group_destinations ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and hunt_group_destination_id = '$hunt_group_destination_id' ";
+		$sql .= "and hunt_group_destination_uuid = '$hunt_group_destination_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$hunt_group_id = $row["hunt_group_id"];
+			$hunt_group_uuid = $row["hunt_group_uuid"];
 			$destination_data = $row["destination_data"];
 			$destination_type = $row["destination_type"];
 			$destination_timeout = $row["destination_timeout"];
@@ -204,7 +204,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap><b>Destination Edit</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_hunt_group_edit.php?id=".$hunt_group_id."'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_hunt_group_edit.php?id=".$hunt_group_uuid."'\" value='Back'></td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -342,9 +342,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "				<input type='hidden' name='hunt_group_id' value='$hunt_group_id'>\n";
+	echo "				<input type='hidden' name='hunt_group_uuid' value='$hunt_group_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='hunt_group_destination_id' value='$hunt_group_destination_id'>\n";
+		echo "				<input type='hidden' name='hunt_group_destination_uuid' value='$hunt_group_destination_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

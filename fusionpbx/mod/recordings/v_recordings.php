@@ -258,10 +258,10 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='".$rowstyle[$c]."' width='30%'>".$row['recording_desc']."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('recordings_edit')) {
-				echo "		<a href='v_recordings_edit.php?id=".$row['recording_id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_recordings_edit.php?id=".$row['recording_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('recordings_delete')) {
-				echo "		<a href='v_recordings_delete.php?id=".$row['recording_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_recordings_delete.php?id=".$row['recording_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";

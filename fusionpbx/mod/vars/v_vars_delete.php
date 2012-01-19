@@ -43,7 +43,7 @@ if (count($_GET)>0) {
 		$sql = "";
 		$sql .= "delete from v_vars ";
 		$sql .= "where domain_uuid = '1' ";
-		$sql .= "and var_id = '$id' ";
+		$sql .= "and var_uuid = '$id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		unset($sql);

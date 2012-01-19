@@ -144,7 +144,7 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='rowstylebg' width='30%'>".$row[description]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('voicemail_status_delete')) {
-				echo "		<a href='v_voicemail_prefs_delete.php?id=".$row[extension_id]."' alt='restore default preferences' title='restore default preferences' onclick=\"return confirm('Are you sure you want remove the voicemail name and greeting?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_voicemail_prefs_delete.php?id=".$row[extension_uuid]."' alt='restore default preferences' title='restore default preferences' onclick=\"return confirm('Are you sure you want remove the voicemail name and greeting?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";

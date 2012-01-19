@@ -352,7 +352,7 @@ include "root.php";
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "description = '$description' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and extension_id = '$extension_id'";
+			$sql .= "and extension_uuid = '$extension_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 		}
@@ -360,12 +360,12 @@ include "root.php";
 		function delete() {
 			global $db;
 			$domain_uuid = $this->domain_uuid;
-			$extension_id = $this->extension_id;
-			if (strlen($extension_id)>0) {
+			$extension_uuid = $this->extension_uuid;
+			if (strlen($extension_uuid)>0) {
 				$sql = "";
 				$sql .= "delete from v_extensions ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and extension_id = '$extension_id' ";
+				$sql .= "and extension_uuid = '$extension_uuid' ";
 				$prepstatement = $db->prepare(check_sql($sql));
 				$prepstatement->execute();
 				unset($sql);

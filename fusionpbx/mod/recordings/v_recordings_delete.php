@@ -42,7 +42,7 @@ if (strlen($id)>0) {
 	//get filename
 		$sql = "";
 		$sql .= "select * from v_recordings ";
-		$sql .= "where recording_id = '$id' ";
+		$sql .= "where recording_uuid = '$id' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -56,7 +56,7 @@ if (strlen($id)>0) {
 	//delete recording from the database
 		$sql = "";
 		$sql .= "delete from v_recordings ";
-		$sql .= "where recording_id = '$id' ";
+		$sql .= "where recording_uuid = '$id' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();

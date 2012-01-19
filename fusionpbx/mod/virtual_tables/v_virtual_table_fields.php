@@ -66,7 +66,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_virtual_table_fields ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	$sql .= " and virtual_table_id = '$virtual_table_id' ";
+	$sql .= " and virtual_table_uuid = '$virtual_table_uuid' ";
 	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -92,7 +92,7 @@ $order = $_GET["order"];
 	echo thorderby('virtual_field_desc', 'Description', $orderby, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('virtual_tables_view')) {
-		echo "	<a href='v_virtual_table_fields_edit.php?virtual_table_id=".$virtual_table_id."' alt='add'>$v_link_label_add</a>\n";
+		echo "	<a href='v_virtual_table_fields_edit.php?virtual_table_uuid=".$virtual_table_uuid."' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "</td>\n";
 	echo "<tr>\n";
@@ -113,10 +113,10 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_field_desc']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('virtual_tables_edit')) {
-				echo "		<a href='v_virtual_table_fields_edit.php?virtual_table_id=".$row['virtual_table_id']."&id=".$row['virtual_table_field_id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_virtual_table_fields_edit.php?virtual_table_uuid=".$row['virtual_table_uuid']."&id=".$row['virtual_table_field_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('virtual_tables_delete')) {
-				echo "		<a href='v_virtual_table_fields_delete.php?virtual_table_id=".$row['virtual_table_id']."&id=".$row['virtual_table_field_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_virtual_table_fields_delete.php?virtual_table_uuid=".$row['virtual_table_uuid']."&id=".$row['virtual_table_field_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -133,7 +133,7 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('virtual_tables_add')) {
-		echo "			<a href='v_virtual_table_fields_edit.php?virtual_table_id=".$virtual_table_id."' alt='add'>$v_link_label_add</a>\n";
+		echo "			<a href='v_virtual_table_fields_edit.php?virtual_table_uuid=".$virtual_table_uuid."' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

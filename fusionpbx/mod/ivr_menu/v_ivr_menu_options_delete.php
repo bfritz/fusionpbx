@@ -36,13 +36,13 @@ else {
 
 if (count($_GET)>0) {
 	$id = check_str($_GET["id"]);
-	$ivr_menu_id = check_str($_GET["ivr_menu_id"]);
+	$ivr_menu_uuid = check_str($_GET["ivr_menu_uuid"]);
 }
 
 if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_ivr_menu_options ";
-	$sql .= "where ivr_menu_option_id = '$id' ";
+	$sql .= "where ivr_menu_option_uuid = '$id' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	unset($sql);
@@ -52,7 +52,7 @@ if (strlen($id)>0) {
 }
 
 require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_id\">\n";
+echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_uuid\">\n";
 echo "<div align='center'>\n";
 echo "Delete Complete\n";
 echo "</div>\n";

@@ -125,15 +125,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= ")";
 		if ($db_type == "sqlite" || $db_type == "mysql" ) {
 			$db->exec(check_sql($sql));
-			$dialplan_include_id = $db->lastInsertId($id);
+			$dialplan_include_uuid = $db->lastInsertId($id);
 		}
 		if ($db_type == "pgsql") {
-			$sql .= " RETURNING dialplan_include_id ";
+			$sql .= " RETURNING dialplan_include_uuid ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
-				$dialplan_include_id = $row["dialplan_include_id"];
+				$dialplan_include_uuid = $row["dialplan_include_uuid"];
 			}
 			unset($prepstatement, $result);
 		}
@@ -144,7 +144,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -153,7 +153,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'destination_number', ";
 			$sql .= "'^$extension_number$', ";
@@ -168,7 +168,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -177,7 +177,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'wday', ";
 			$sql .= "'$condition_wday', ";
@@ -190,7 +190,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -199,7 +199,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'minute-of-day', ";
 			$sql .= "'$condition_minute_of_day', ";
@@ -212,7 +212,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -221,7 +221,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'mday', ";
 			$sql .= "'$condition_mday', ";
@@ -234,7 +234,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -243,7 +243,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'mweek', ";
 			$sql .= "'$condition_mweek', ";
@@ -256,7 +256,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -265,7 +265,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'mon', ";
 			$sql .= "'$condition_mon', ";
@@ -278,7 +278,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -287,7 +287,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'hour', ";
 			$sql .= "'$condition_hour', ";
@@ -300,7 +300,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -309,7 +309,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'minute', ";
 			$sql .= "'$condition_minute', ";
@@ -322,7 +322,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -331,7 +331,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'week', ";
 			$sql .= "'$condition_week', ";
@@ -344,7 +344,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -353,7 +353,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'yday', ";
 			$sql .= "'$condition_yday', ";
@@ -366,7 +366,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -375,7 +375,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'year', ";
 			$sql .= "'$condition_year', ";
@@ -390,7 +390,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "insert into v_dialplan_includes_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "dialplan_include_id, ";
+		$sql .= "dialplan_include_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -399,7 +399,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$dialplan_include_id', ";
+		$sql .= "'$dialplan_include_uuid', ";
 		$sql .= "'action', ";
 		$sql .= "'$action_application_1', ";
 		$sql .= "'$action_data_1', ";
@@ -413,7 +413,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_dialplan_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_id, ";
+			$sql .= "dialplan_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -422,7 +422,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_id', ";
+			$sql .= "'$dialplan_include_uuid', ";
 			$sql .= "'anti-action', ";
 			$sql .= "'$anti_action_application_1', ";
 			$sql .= "'$anti_action_data_1', ";
@@ -1121,7 +1121,7 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "	<td colspan='5' align='right'>\n";
 if ($action == "update") {
-	echo "			<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
+	echo "			<input type='hidden' name='dialplan_include_uuid' value='$dialplan_include_uuid'>\n";
 }
 echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 echo "	</td>\n";

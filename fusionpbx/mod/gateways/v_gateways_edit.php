@@ -38,7 +38,7 @@ else {
 	if (isset($_REQUEST["id"])) {
 		if (is_numeric($_REQUEST["id"])) {
 			$action = "update";
-			$gateway_id = check_str($_REQUEST["id"]);
+			$gateway_uuid = check_str($_REQUEST["id"]);
 		}
 		else {
 			echo "access denied";
@@ -86,7 +86,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$gateway_id = check_str($_POST["gateway_id"]);
+		$gateway_uuid = check_str($_POST["gateway_uuid"]);
 	}
 
 	//check for all required data
@@ -243,7 +243,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "enabled = '$enabled', ";
 				$sql .= "description = '$description' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and gateway_id = '$gateway_id'";
+				$sql .= "and gateway_uuid = '$gateway_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -287,11 +287,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$gateway_id = $_GET["id"];
+		$gateway_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_gateways ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and gateway_id = '$gateway_id' ";
+		$sql .= "and gateway_uuid = '$gateway_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -376,7 +376,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		</td>";
 	echo "		<td width='50%' align='right'>\n";
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
-	echo "			<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_gateways_copy.php?id=".$gateway_id."';}\" value='Copy'>\n";
+	echo "			<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_gateways_copy.php?id=".$gateway_uuid."';}\" value='Copy'>\n";
 	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_gateways.php'\" value='Back'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
@@ -820,7 +820,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='gateway_id' value='$gateway_id'>\n";
+		echo "				<input type='hidden' name='gateway_uuid' value='$gateway_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

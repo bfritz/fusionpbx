@@ -128,10 +128,10 @@ require_once "includes/paging.php";
 				echo "	<td valign='top' class='rowstylebg' width='30%'>".$row['description']."&nbsp;</td>\n";
 				echo "	<td valign='top' align='right'>\n";
 				if (permission_exists('extension_edit')) {
-					echo "		<a href='v_extensions_edit.php?id=".$row['extension_id']."' alt='edit'>$v_link_label_edit</a>\n";
+					echo "		<a href='v_extensions_edit.php?id=".$row['extension_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 				}
 				if (permission_exists('extension_delete')) {
-					echo "		<a href='v_extensions_delete.php?id=".$row['extension_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+					echo "		<a href='v_extensions_delete.php?id=".$row['extension_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 				}
 				echo "	</td>\n";
 				echo "</tr>\n";

@@ -124,9 +124,9 @@ else {
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["extension"].'|';
-		//$extension_id = $row["extension_id"]
+		//$extension_uuid = $row["extension_uuid"]
 		//$extension = $row["extension"]
-		$mailbox_array[$x]['extension_id'] = $row["extension_id"];
+		$mailbox_array[$x]['extension_uuid'] = $row["extension_uuid"];
 		$mailbox_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}
@@ -201,7 +201,7 @@ else {
 				echo "</td>\n";
 				echo "<td valign='bottom' align='right'>\n";
 				echo "	<input type='button' class='btn' name='' alt='greetings' onclick=\"window.location='/mod/voicemail_greetings/v_voicemail_greetings.php?id=".$value['extension']."'\" value='Greetings'>\n";
-				echo "	<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='v_voicemail_msgs_password.php?id=".$value['extension_id']."'\" value='Settings'>\n";
+				echo "	<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='v_voicemail_msgs_password.php?id=".$value['extension_uuid']."'\" value='Settings'>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 
@@ -233,10 +233,10 @@ else {
 					$prevextension = '';
 					foreach($result as $row) {
 
-						$extension_id = '';
+						$extension_uuid = '';
 						foreach($mailbox_array as $value) {
 							if ($value['extension'] == $row[username]) {
-								$extension_id = $value['extension_id'];
+								$extension_uuid = $value['extension_uuid'];
 								break;
 							}
 							$x++;

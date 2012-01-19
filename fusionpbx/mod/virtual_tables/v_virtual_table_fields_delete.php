@@ -37,7 +37,7 @@ else {
 //get the http values
 	if (count($_GET)>0) {
 		$id = check_str($_GET["id"]);
-		$virtual_table_id = check_str($_GET["virtual_table_id"]);
+		$virtual_table_uuid = check_str($_GET["virtual_table_uuid"]);
 	}
 
 //delete the data
@@ -45,7 +45,7 @@ else {
 		$sql = "";
 		$sql .= "delete from v_virtual_table_fields ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and virtual_table_field_id = '$id' ";
+		$sql .= "and virtual_table_field_uuid = '$id' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		unset($sql);
@@ -53,7 +53,7 @@ else {
 
 //redirect the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_tables_edit.php?id=$virtual_table_id\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_tables_edit.php?id=$virtual_table_uuid\">\n";
 	echo "<div align='center'>\n";
 	echo "Delete Complete\n";
 	echo "</div>\n";

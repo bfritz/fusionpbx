@@ -118,10 +118,10 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_table_desc']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('virtual_tables_edit')) {
-				echo "		<a href='v_virtual_tables_edit.php?id=".$row['virtual_table_id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_virtual_tables_edit.php?id=".$row['virtual_table_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('virtual_tables_delete')) {
-				echo "		<a href='v_virtual_tables_delete.php?id=".$row['virtual_table_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_virtual_tables_delete.php?id=".$row['virtual_table_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";

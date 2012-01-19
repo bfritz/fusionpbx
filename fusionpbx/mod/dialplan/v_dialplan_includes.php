@@ -136,7 +136,7 @@ $order = $_GET["order"];
 				$sql = "";
 				$sql .= "select * from v_dialplan_includes_details ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."' ";
+				$sql .= "and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' ";
 				$sql .= "and field_type = 'destination_number' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
@@ -151,7 +151,7 @@ $order = $_GET["order"];
 						$sql = "update v_dialplan_includes set ";
 						$sql .= "extension_number = '$extension_number', ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and dialplan_include_id = '".$row['dialplan_include_id']."'";
+						$sql .= "and dialplan_include_uuid = '".$row['dialplan_include_uuid']."'";
 						$db->exec($sql);
 						unset($sql);
 					break; //limit to 1 row
@@ -167,10 +167,10 @@ $order = $_GET["order"];
 			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row['descr']."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('dialplan_add')) {
-				echo "		<a href='v_dialplan_includes_edit.php?id=".$row['dialplan_include_id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_dialplan_includes_edit.php?id=".$row['dialplan_include_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('dialplan_edit')) {
-				echo "		<a href='v_dialplan_includes_delete.php?id=".$row['dialplan_include_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_dialplan_includes_delete.php?id=".$row['dialplan_include_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "   </td>\n";
 			echo "</tr>\n";

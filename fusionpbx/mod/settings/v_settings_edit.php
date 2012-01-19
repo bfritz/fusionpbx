@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$setting_id = check_str($_REQUEST["id"]);
+		$setting_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -71,7 +71,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$setting_id = check_str($_POST["setting_id"]);
+		$setting_uuid = check_str($_POST["setting_uuid"]);
 	}
 
 	//check for all required data
@@ -192,7 +192,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "smtp_from_name = '$smtp_from_name', ";
 				$sql .= "mod_shout_decoder = '$mod_shout_decoder', ";
 				$sql .= "mod_shout_volume = '$mod_shout_volume' ";
-				$sql .= "where setting_id = '$setting_id' ";
+				$sql .= "where setting_uuid = '$setting_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -212,10 +212,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$setting_id = $_GET["id"];
+		$setting_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_settings ";
-		$sql .= "where setting_id = '$setting_id' ";
+		$sql .= "where setting_uuid = '$setting_uuid' ";
 		$sql .= "and domain_uuid = '1' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
@@ -515,7 +515,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
 		if ($action == "update") {
-			echo "				<input type='hidden' name='setting_id' value='$setting_id'>\n";
+			echo "				<input type='hidden' name='setting_uuid' value='$setting_uuid'>\n";
 		}
 		echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 		echo "		</td>\n";

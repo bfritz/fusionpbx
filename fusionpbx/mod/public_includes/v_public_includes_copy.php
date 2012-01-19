@@ -37,14 +37,14 @@ else {
 
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
-		$public_include_id = check_str($_REQUEST["id"]);
+		$public_include_uuid = check_str($_REQUEST["id"]);
 	}
 
 //get the public includes data 
 	$sql = "";
 	$sql .= "select * from v_public_includes ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and public_include_id = '$public_include_id' ";
+	$sql .= "and public_include_uuid = '$public_include_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -82,15 +82,15 @@ else {
 	$sql .= ")";
 	if ($db_type == "sqlite" || $db_type == "mysql" ) {
 		$db->exec(check_sql($sql));
-		$db_public_include_id = $db->lastInsertId($id);
+		$db_public_include_uuid = $db->lastInsertId($id);
 	}
 	if ($db_type == "pgsql") {
-		$sql .= " RETURNING public_include_id ";
+		$sql .= " RETURNING public_include_uuid ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
-			$db_public_include_id = $row["public_include_id"];
+			$db_public_include_uuid = $row["public_include_uuid"];
 		}
 		unset($prepstatement, $result);
 	}
@@ -99,14 +99,14 @@ else {
 //get the the public details
 	$sql = "";
 	$sql .= "select * from v_public_includes_details ";
-	$sql .= "where public_include_id = '$public_include_id' ";
+	$sql .= "where public_include_uuid = '$public_include_uuid' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
 		$domain_uuid = $row["domain_uuid"];
-		$public_include_id = $row["public_include_id"];
+		$public_include_uuid = $row["public_include_uuid"];
 		$tag = $row["tag"];
 		$field_type = $row["field_type"];
 		$field_data = $row["field_data"];
@@ -116,7 +116,7 @@ else {
 			$sql = "insert into v_public_includes_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_id, ";
+			$sql .= "public_include_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -125,7 +125,7 @@ else {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'".check_str($db_public_include_id)."', ";
+			$sql .= "'".check_str($db_public_include_uuid)."', ";
 			$sql .= "'".check_str($tag)."', ";
 			$sql .= "'".check_str($field_type)."', ";
 			$sql .= "'".check_str($field_data)."', ";

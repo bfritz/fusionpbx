@@ -97,21 +97,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add the entries to the dialplan
 		$context = 'default';
 		$opt_1_name = 'call_forward_id';
-		$dialplan_include_id = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
-		if (strlen($dialplan_include_id) > 0 && strlen($condition_expression_1) > 0) {
+		$dialplan_include_uuid = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+		if (strlen($dialplan_include_uuid) > 0 && strlen($condition_expression_1) > 0) {
 			//add condition 1
 				$tag = 'condition'; //condition, action, antiaction
 				$field_type = 'destination_number';
 				$field_data = '^'.$condition_expression_1.'$';
 				$field_order = '000';
-				v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+				v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 			//add condition 2
 				if (strlen($condition_expression_2) > 0) {
 					$tag = 'condition'; //condition, action, antiaction
 					$field_type = $condition_field_2;
 					$field_data = '^'.$condition_expression_2.'$';
 					$field_order = '001';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 				}
 			//set action 1
 				if (strlen($action_application_1) > 0) {
@@ -120,7 +120,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$field_type = $action_application_1;
 					$field_data = $action_data_1;
 					$field_order = '002';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 				}
 			//set action 2
 				if (strlen($action_application_2) > 0) {
@@ -128,7 +128,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$field_type = $action_application_2;
 					$field_data = $action_data_2;
 					$field_order = '003';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_id, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
 				}
 		}
 
@@ -429,7 +429,7 @@ if (field_type == "condition_field_2") {
 	echo "<tr>\n";
 	echo "	<td colspan='5' align='right'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='dialplan_include_id' value='$dialplan_include_id'>\n";
+		echo "			<input type='hidden' name='dialplan_include_uuid' value='$dialplan_include_uuid'>\n";
 	}
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "	</td>\n";

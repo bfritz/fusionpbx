@@ -37,8 +37,8 @@ else {
 //get the http values
 	if (count($_GET)>0) {
 		$id = check_str($_GET["id"]);
-		$virtual_table_id = check_str($_GET["virtual_table_id"]);
-		$virtual_table_field_id = check_str($_GET["virtual_table_field_id"]);
+		$virtual_table_uuid = check_str($_GET["virtual_table_uuid"]);
+		$virtual_table_field_uuid = check_str($_GET["virtual_table_field_uuid"]);
 	}
 
 //delete the data
@@ -54,7 +54,7 @@ else {
 
 //redirect the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_fields_edit.php?virtual_table_id=$virtual_table_id&id=$virtual_table_field_id\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_fields_edit.php?virtual_table_uuid=$virtual_table_uuid&id=$virtual_table_field_uuid\">\n";
 	echo "<div align='center'>\n";
 	echo "Delete Complete\n";
 	echo "</div>\n";

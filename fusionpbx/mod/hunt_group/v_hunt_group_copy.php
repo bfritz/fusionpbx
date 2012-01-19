@@ -39,13 +39,13 @@ require_once "includes/paging.php";
 
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
-		$hunt_group_id = check_str($_REQUEST["id"]);
+		$hunt_group_uuid = check_str($_REQUEST["id"]);
 	}
 
 //get the v_hunt_group data 
 	$sql = "";
 	$sql .= "select * from v_hunt_group ";
-	$sql .= "where hunt_group_id = '$hunt_group_id' ";
+	$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
@@ -105,15 +105,15 @@ require_once "includes/paging.php";
 		$sql .= ")";
 		if ($db_type == "sqlite" || $db_type == "mysql" ) {
 			$db->exec(check_sql($sql));
-			$db_hunt_group_id = $db->lastInsertId($id);
+			$db_hunt_group_uuid = $db->lastInsertId($id);
 		}
 		if ($db_type == "pgsql") {
-			$sql .= " RETURNING hunt_group_id ";
+			$sql .= " RETURNING hunt_group_uuid ";
 			$prepstatement = $db->prepare(check_sql($sql));
 			$prepstatement->execute();
 			$result = $prepstatement->fetchAll();
 			foreach ($result as &$row) {
-				$db_hunt_group_id = $row["hunt_group_id"];
+				$db_hunt_group_uuid = $row["hunt_group_uuid"];
 			}
 			unset($prepstatement, $result);
 		}
@@ -123,13 +123,13 @@ require_once "includes/paging.php";
 		$sql = "";
 		$sql .= "select * from v_hunt_group_destinations ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and hunt_group_id = '$hunt_group_id' ";
+		$sql .= "and hunt_group_uuid = '$hunt_group_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
 		foreach ($result as &$row) {
 			//$domain_uuid = $row["domain_uuid"];
-			$hunt_group_id = $row["hunt_group_id"];
+			$hunt_group_uuid = $row["hunt_group_uuid"];
 			$destination_data = $row["destination_data"];
 			$destination_type = $row["destination_type"];
 			$destination_profile = $row["destination_profile"];
@@ -140,7 +140,7 @@ require_once "includes/paging.php";
 				$sql = "insert into v_hunt_group_destinations ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
-				$sql .= "hunt_group_id, ";
+				$sql .= "hunt_group_uuid, ";
 				$sql .= "destination_data, ";
 				$sql .= "destination_type, ";
 				$sql .= "destination_profile, ";
@@ -150,7 +150,7 @@ require_once "includes/paging.php";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
-				$sql .= "'$db_hunt_group_id', ";
+				$sql .= "'$db_hunt_group_uuid', ";
 				$sql .= "'$destination_data', ";
 				$sql .= "'$destination_type', ";
 				$sql .= "'$destination_profile', ";

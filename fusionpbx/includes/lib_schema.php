@@ -311,7 +311,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 
 	//prepare the variables
 		$sql_update = '';
-		$var_id = $_GET["id"];
+		$var_uuid = $_GET["id"];
 
 	//add missing tables and fields
 		foreach ($apps as $x => &$app) {

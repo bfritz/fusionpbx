@@ -135,10 +135,10 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='rowstylebg' width='35%'>".$row['fax_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('fax_extension_edit')) {
-				echo "		<a href='v_fax_view.php?id=".$row['fax_id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_fax_view.php?id=".$row['fax_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('fax_extension_delete')) {
-				echo "		<a href='v_fax_delete.php?id=".$row['fax_id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_fax_delete.php?id=".$row['fax_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";

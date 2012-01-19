@@ -132,10 +132,10 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='rowstylebg'>".$row[service_description]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('php_service_edit')) {
-				echo "		<a href='v_php_service_edit.php?id=".$row[php_service_id]."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_php_service_edit.php?id=".$row[php_service_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('php_service_delete')) {
-				echo "		<a href='v_php_service_delete.php?id=".$row[php_service_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_php_service_delete.php?id=".$row[php_service_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";

@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$virtual_table_id = check_str($_REQUEST["id"]);
+		$virtual_table_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -58,7 +58,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$virtual_table_id = check_str($_POST["virtual_table_id"]);
+		$virtual_table_uuid = check_str($_POST["virtual_table_uuid"]);
 	}
 
 	//check for all required data
@@ -130,7 +130,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "virtual_table_captcha = '$virtual_table_captcha', ";
 				$sql .= "virtual_table_parent_id = '$virtual_table_parent_id', ";
 				$sql .= "virtual_table_desc = '$virtual_table_desc' ";
-				$sql .= "where virtual_table_id = '$virtual_table_id'";
+				$sql .= "where virtual_table_uuid = '$virtual_table_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -147,11 +147,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$virtual_table_id = $_GET["id"];
+		$virtual_table_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_virtual_tables ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and virtual_table_id = '$virtual_table_id' ";
+		$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 		$prepstatement = $db->prepare(check_sql($sql));
 		$prepstatement->execute();
 		$result = $prepstatement->fetchAll();
@@ -190,9 +190,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>Virtual Table Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
-	if (strlen($row[virtual_table_id]) > 0) {
-		echo "		<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_virtual_table_data_view.php?id=".$row[virtual_table_id]."'\" value='view'>&nbsp;&nbsp;\n";
-		echo "		<input type='button' class='btn' name='' alt='import' onclick=\"window.location='v_virtual_tables_import.php?id=".$row[virtual_table_id]."'\" value='import'>&nbsp;&nbsp;\n";
+	if (strlen($row[virtual_table_uuid]) > 0) {
+		echo "		<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_virtual_table_data_view.php?id=".$row[virtual_table_uuid]."'\" value='view'>&nbsp;&nbsp;\n";
+		echo "		<input type='button' class='btn' name='' alt='import' onclick=\"window.location='v_virtual_tables_import.php?id=".$row[virtual_table_uuid]."'\" value='import'>&nbsp;&nbsp;\n";
 	}
 	include "export/index.php";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_tables.php'\" value='Back'>\n";
@@ -303,11 +303,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
-		if ($row["virtual_table_id"] == $virtual_table_parent_id) {
-			echo "			<option value='".$row["virtual_table_id"]."' selected>".$row["virtual_table_name"]."</option>\n";
+		if ($row["virtual_table_uuid"] == $virtual_table_parent_id) {
+			echo "			<option value='".$row["virtual_table_uuid"]."' selected>".$row["virtual_table_name"]."</option>\n";
 		}
 		else {
-			echo "			<option value='".$row["virtual_table_id"]."'>".$row["virtual_table_name"]."</option>\n";
+			echo "			<option value='".$row["virtual_table_uuid"]."'>".$row["virtual_table_name"]."</option>\n";
 		}
 	}
 	echo "			</select>\n";
@@ -330,7 +330,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='virtual_table_id' value='$virtual_table_id'>\n";
+		echo "				<input type='hidden' name='virtual_table_uuid' value='$virtual_table_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";
