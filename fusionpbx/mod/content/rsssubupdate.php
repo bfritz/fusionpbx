@@ -35,11 +35,11 @@ else {
 	exit;
 }
 
-$rss_id = $_GET["rss_id"];
+$rss_uuid = $_GET["rss_uuid"];
 
 if (count($_POST)>0 && $_POST["persistform"] == "0") {
-	$rss_sub_id = check_str($_POST["rss_sub_id"]);
-	$rss_id = check_str($_POST["rss_id"]);
+	$rss_sub_uuid = check_str($_POST["rss_sub_uuid"]);
+	$rss_uuid = check_str($_POST["rss_uuid"]);
 	$rss_sub_title = check_str($_POST["rss_sub_title"]);
 	$rss_sub_link = check_str($_POST["rss_sub_link"]);
 	$rss_sub_desc = check_str($_POST["rss_sub_desc"]);
@@ -52,8 +52,8 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 	$rss_sub_add_user = check_str($_POST["rss_sub_add_user"]);
 
 	$msg = '';
-	if (strlen($rss_id) == 0) { $msg .= "Error missing rss_id.<br>\n"; }
-	if (strlen($rss_sub_id) == 0) { $msg .= "Error missing rss_sub_id.<br>\n"; }
+	if (strlen($rss_uuid) == 0) { $msg .= "Error missing rss_uuid.<br>\n"; }
+	if (strlen($rss_sub_uuid) == 0) { $msg .= "Error missing rss_sub_uuid.<br>\n"; }
 	//if (strlen($rss_sub_title) == 0) { $msg .= "Please provide a title.<br>\n"; }
 	if (strlen($rss_sub_desc) == 0) { $msg .= "Please provide a description.<br>\n"; }
 
@@ -80,7 +80,7 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 
 	//sql update
 	$sql  = "update v_rss_sub set ";
-	//$sql .= "rss_id = '$rss_id', ";
+	//$sql .= "rss_uuid = '$rss_uuid', ";
 	$sql .= "rss_sub_title = '$rss_sub_title', ";
 	$sql .= "rss_sub_link = '$rss_sub_link', ";
 	$sql .= "rss_sub_desc = '$rss_sub_desc', ";
@@ -92,14 +92,14 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 	//$sql .= "rss_sub_add_date = now(), ";
 	//$sql .= "rss_sub_add_user = '".$_SESSION["username"]."' ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and rss_sub_id = '$rss_sub_id' ";
-	//$sql .= "and rss_id = '$rss_id' ";
+	$sql .= "and rss_sub_uuid = '$rss_sub_uuid' ";
+	//$sql .= "and rss_uuid = '$rss_uuid' ";
 	$count = $db->exec(check_sql($sql));
 	//echo "Affected Rows: ".$count;
 
 	//edit: make sure the meta redirect url is correct 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsssublist.php?rss_id=$rss_id&rss_sub_id=$rss_sub_id\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsssublist.php?rss_uuid=$rss_uuid&rss_sub_uuid=$rss_sub_uuid\">\n";
 	echo "<div align='center'>";
 	echo "Update Complete";
 	echo "</div>";
@@ -108,17 +108,17 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 }
 else {
 	//get data from the db
-	$rss_sub_id = $_GET["rss_sub_id"];
+	$rss_sub_uuid = $_GET["rss_sub_uuid"];
 
 	$sql = "";
 	$sql .= "select * from v_rss_sub ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and rss_sub_id = '$rss_sub_id' ";
+	$sql .= "and rss_sub_uuid = '$rss_sub_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
 	foreach ($result as &$row) {
-		//$rss_id = $row["rss_id"];
+		//$rss_uuid = $row["rss_uuid"];
 		$rss_sub_title = $row["rss_sub_title"];
 		$rss_sub_link = $row["rss_sub_link"];
 		$rss_sub_desc = $row["rss_sub_desc"];
@@ -147,8 +147,8 @@ else {
 	echo "<form method='post' action=''>";
 	echo "<table width='100%'>";
 	//echo "	<tr>";
-	//echo "		<td>rss_id:</td>";
-	//echo "		<td><input type='text' name='rss_id' class='txt' value='$rss_id'></td>";
+	//echo "		<td>rss_uuid:</td>";
+	//echo "		<td><input type='text' name='rss_uuid' class='txt' value='$rss_uuid'></td>";
 	//echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td nowrap>Sub Title:</td>";
@@ -187,9 +187,9 @@ else {
 
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
-	echo "		    <input type='hidden' name='rss_id' value='$rss_id'>";
+	echo "		    <input type='hidden' name='rss_uuid' value='$rss_uuid'>";
 	echo "		    <input type='hidden' name='persistform' value='0'>";
-	echo "          <input type='hidden' name='rss_sub_id' value='$rss_sub_id'>";
+	echo "          <input type='hidden' name='rss_sub_uuid' value='$rss_sub_uuid'>";
 	echo "          <input type='submit' name='submit' class='btn' value='Update'>";
 	echo "		</td>";
 	echo "	</tr>";

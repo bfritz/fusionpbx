@@ -37,20 +37,20 @@ else {
 
 
 if (count($_GET)>0) {
-	$rss_id = check_str($_GET["rss_id"]);
+	$rss_uuid = check_str($_GET["rss_uuid"]);
 
 	//mark the the item as deleted and who deleted it
 	$sql  = "update v_rss set ";
 	$sql .= "rss_del_date = now(), ";
 	$sql .= "rss_del_user = '".$_SESSION["username"]."' ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and rss_id = '$rss_id' ";
+	$sql .= "and rss_uuid = '$rss_uuid' ";
 	$sql .= "and rss_category  = '$rss_category' ";
 	$db->exec(check_sql($sql));
 	unset($sql);
 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsslist.php?rss_id=$rss_id\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsslist.php?rss_uuid=$rss_uuid\">\n";
 	echo "<div align='center'>";
 	echo "Delete Completed";
 	echo "</div>";

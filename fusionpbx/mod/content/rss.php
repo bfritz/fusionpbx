@@ -88,7 +88,7 @@ $sql .= "where rss_category = '$rss_category' ";
 $sql .= "and length(rss_del_date) = 0  ";
 $sql .= "or rss_category = '$rss_category' ";
 $sql .= "and rss_del_date is null ";
-$sql .= "order by rss_id asc ";
+$sql .= "order by rss_uuid asc ";
 //echo $sql;
 $prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();
@@ -98,7 +98,7 @@ $count = 0;
 $result = $prepstatement->fetchAll();
 foreach ($result as &$row) {
 
-	$rss_id = $row["rss_id"];
+	$rss_uuid = $row["rss_uuid"];
 	$rss_title = $row["rss_title"];
 	$rss_desc = $row["rss_desc"];
 	$rss_link = $row["rss_link"];
@@ -141,9 +141,9 @@ foreach ($result as &$row) {
 
 			$sql = "";
 			$sql .= "select * from v_rss_sub ";
-			$sql .= "where rss_id = '$rss_id'  ";
+			$sql .= "where rss_uuid = '$rss_uuid'  ";
 			$sql .= "and length(rss_sub_del_date) = 0  ";
-			$sql .= "or rss_id = '$rss_id' ";
+			$sql .= "or rss_uuid = '$rss_uuid' ";
 			$sql .= "and rss_sub_del_date is null ";
 
 			if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
@@ -170,7 +170,7 @@ foreach ($result as &$row) {
 				foreach($result2 as $row2) {
 				//print_r( $row );
 					echo "<tr style='".$rowstyle[$c]."'>\n";
-						//echo "<td valign='top'>".$rss_id."</td>";
+						//echo "<td valign='top'>".$rss_uuid."</td>";
 						//echo "<td valign='top'>&nbsp;<b>".$row2[rss_sub_title]."</b>&nbsp;</td>";
 						//echo "<td valign='top'>&nbsp;".$row2[rss_sub_link]."&nbsp;</td>";
 						echo "<td valign='top' width='200'>";
@@ -187,9 +187,9 @@ foreach ($result as &$row) {
 						//echo "<td valign='top'>".$row2[rss_sub_add_user]."</td>";
 						echo "<td valign='top' align='right'>";
 						echo "  &nbsp;";
-						//echo "  <input type='button' class='btn' name='' onclick=\"window.location='rsssubupdate.php?rss_id=".$rss_id."&rss_sub_id=".$row2[rss_sub_id]."'\" value='Update'>";
+						//echo "  <input type='button' class='btn' name='' onclick=\"window.location='rsssubupdate.php?rss_uuid=".$rss_uuid."&rss_sub_uuid=".$row2[rss_sub_uuid]."'\" value='Update'>";
 						echo "  &nbsp; \n";
-						//echo "  <a href='rsssubupdate.php?rss_id=".$rss_id."&rss_sub_id=".$row2[rss_sub_id]."'>Update</a>&nbsp;";
+						//echo "  <a href='rsssubupdate.php?rss_uuid=".$rss_uuid."&rss_sub_uuid=".$row2[rss_sub_uuid]."'>Update</a>&nbsp;";
 						echo "</td>";
 
 						$rss_sub_desc = $row2[rss_sub_desc];

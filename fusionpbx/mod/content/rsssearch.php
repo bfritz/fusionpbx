@@ -38,7 +38,7 @@ else {
 }
 
 if (count($_POST)>0) {
-	$rss_id = check_str($_POST["rss_id"]);
+	$rss_uuid = check_str($_POST["rss_uuid"]);
 	//$rss_category = check_str($_POST["rss_category"]); //defined in local config.php
 	$rss_sub_category = check_str($_POST["rss_sub_category"]);
 	$rss_title = check_str($_POST["rss_title"]);
@@ -68,7 +68,7 @@ if (count($_POST)>0) {
 	$sql = "";
 	$sql .= "select * from v_rss ";
 	$sql .= "where ";
-	if (strlen($rss_id) > 0) { $sql .= "and rss_id like '%$rss_id%' "; }
+	if (strlen($rss_uuid) > 0) { $sql .= "and rss_uuid like '%$rss_uuid%' "; }
 	if (strlen($rss_category) > 0) { $sql .= "and rss_category like '%$rss_category%' "; }
 	if (strlen($rss_sub_category) > 0) { $sql .= "and rss_sub_category like '%$rss_sub_category%' "; }
 	if (strlen($rss_title) > 0) { $sql .= "and rss_title like '%$rss_title%' "; }
@@ -84,7 +84,7 @@ if (count($_POST)>0) {
 	if (strlen($rss_add_user) > 0) { $sql .= "and rss_add_user like '%$rss_add_user%' "; }
 	$sql .= "and length(rss_del_date) = 0 ";
 	$sql .= "or ";
-	if (strlen($rss_id) > 0) { $sql .= "and rss_id like '%$rss_id%' "; }
+	if (strlen($rss_uuid) > 0) { $sql .= "and rss_uuid like '%$rss_uuid%' "; }
 	if (strlen($rss_category) > 0) { $sql .= "and rss_category like '%$rss_category%' "; }
 	if (strlen($rss_sub_category) > 0) { $sql .= "and rss_sub_category like '%$rss_sub_category%' "; }
 	if (strlen($rss_title) > 0) { $sql .= "and rss_title like '%$rss_title%' "; }
@@ -146,7 +146,7 @@ if (count($_POST)>0) {
 		foreach($result as $row) {
 		//print_r( $row );
 			echo "<tr style='".$rowstyle[$c]."'>\n";
-				echo "<td valign='top'><a href='rssupdate.php?rss_id=".$row[rss_id]."'>".$row[rss_id]."</a></td>";
+				echo "<td valign='top'><a href='rssupdate.php?rss_uuid=".$row[rss_uuid]."'>".$row[rss_uuid]."</a></td>";
 				echo "<td valign='top'>".$row[rss_category]."</td>";
 				echo "<td valign='top'>".$row[rss_sub_category]."</td>";
 				echo "<td valign='top'>".$row[rss_title]."</td>";
@@ -204,7 +204,7 @@ if (count($_POST)>0) {
 	echo "<table>";
 	echo "	<tr>";
 	echo "		<td>Id:</td>";
-	echo "		<td><input type='text' class='txt' name='rss_id'></td>";
+	echo "		<td><input type='text' class='txt' name='rss_uuid'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td>Category:</td>";

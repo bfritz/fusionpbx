@@ -35,10 +35,10 @@ else {
 	exit;
 }
 
-$rss_id = $_GET["rss_id"];
+$rss_uuid = $_GET["rss_uuid"];
 
 if (count($_POST)>0) {
-	$rss_id = check_str($_POST["rss_id"]);
+	$rss_uuid = check_str($_POST["rss_uuid"]);
 	$rss_sub_title = check_str($_POST["rss_sub_title"]);
 	$rss_sub_link = check_str($_POST["rss_sub_link"]);
 	$rss_sub_desc = check_str($_POST["rss_sub_desc"]);
@@ -53,7 +53,7 @@ if (count($_POST)>0) {
 	$sql = "insert into v_rss_sub ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
-	$sql .= "rss_id, ";
+	$sql .= "rss_uuid, ";
 	$sql .= "rss_sub_title, ";
 	$sql .= "rss_sub_link, ";
 	$sql .= "rss_sub_desc, ";
@@ -68,7 +68,7 @@ if (count($_POST)>0) {
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
-	$sql .= "'$rss_id', ";
+	$sql .= "'$rss_uuid', ";
 	$sql .= "'$rss_sub_title', ";
 	$sql .= "'$rss_sub_link', ";
 	$sql .= "'$rss_sub_desc', ";
@@ -84,7 +84,7 @@ if (count($_POST)>0) {
 	unset($sql);
 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsssublist.php?rss_id=$rss_id\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsssublist.php?rss_uuid=$rss_uuid\">\n";
 	echo "<div align='center'>";
 	echo "Add Complete";
 	echo "</div>";
@@ -154,7 +154,7 @@ if (count($_POST)>0) {
 	//echo "	<td><textarea name='example'></textarea></td>";
 	//echo "	</tr>";    echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
-	echo "		    <input type='hidden' name='rss_id' value='$rss_id'>";
+	echo "		    <input type='hidden' name='rss_uuid' value='$rss_uuid'>";
 	echo "          <input type='submit' name='submit' class='btn' value='Add'>";
 	echo "      </td>";
 	echo "	</tr>";

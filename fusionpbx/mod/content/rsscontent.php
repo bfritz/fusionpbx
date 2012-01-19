@@ -37,12 +37,12 @@ else {
 
 
 //get data from the db
-$rss_id = $_REQUEST["rss_id"];
+$rss_uuid = $_REQUEST["rss_uuid"];
 
 $sql = "";
 $sql .= "select * from v_rss ";
 $sql .= "where domain_uuid = '$domain_uuid' ";
-$sql .= "and rss_id = '$rss_id' ";
+$sql .= "and rss_uuid = '$rss_uuid' ";
 //echo $sql;
 $prepstatement = $db->prepare(check_sql($sql));
 $prepstatement->execute();

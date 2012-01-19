@@ -37,8 +37,8 @@ else {
 
 
 if (count($_POST)>0) {
-	$rss_sub_id = check_str($_POST["rss_sub_id"]);
-	$rss_id = check_str($_POST["rss_id"]);
+	$rss_sub_uuid = check_str($_POST["rss_sub_uuid"]);
+	$rss_uuid = check_str($_POST["rss_uuid"]);
 	$rss_sub_title = check_str($_POST["rss_sub_title"]);
 	$rss_sub_link = check_str($_POST["rss_sub_link"]);
 	$rss_sub_desc = check_str($_POST["rss_sub_desc"]);
@@ -64,9 +64,9 @@ if (count($_POST)>0) {
 	$sql = "";
 	$sql .= "select * from v_rss_sub ";
 	$sql .= "where ";
-	if (strlen($domain_uuid) > 0) { $sql .= "and rss_sub_id = '$domain_uuid' "; }
-	if (strlen($rss_sub_id) > 0) { $sql .= "and rss_sub_id like '%$rss_sub_id%' "; }
-	if (strlen($rss_id) > 0) { $sql .= "and rss_id like '%$rss_id%' "; }
+	if (strlen($domain_uuid) > 0) { $sql .= "and rss_sub_uuid = '$domain_uuid' "; }
+	if (strlen($rss_sub_uuid) > 0) { $sql .= "and rss_sub_uuid like '%$rss_sub_uuid%' "; }
+	if (strlen($rss_uuid) > 0) { $sql .= "and rss_uuid like '%$rss_uuid%' "; }
 	if (strlen($rss_sub_title) > 0) { $sql .= "and rss_sub_title like '%$rss_sub_title%' "; }
 	if (strlen($rss_sub_link) > 0) { $sql .= "and rss_sub_link like '%$rss_sub_link%' "; }
 	if (strlen($rss_sub_desc) > 0) { $sql .= "and rss_sub_desc like '%$rss_sub_desc%' "; }
@@ -79,9 +79,9 @@ if (count($_POST)>0) {
 	if (strlen($rss_sub_add_user) > 0) { $sql .= "and rss_sub_add_user like '%$rss_sub_add_user%' "; }
 	$sql .= "and length(rss_sub_del_date) = 0 ";
 	$sql .= "or ";
-	if (strlen($domain_uuid) > 0) { $sql .= "and rss_sub_id = '$domain_uuid' "; }
-	if (strlen($rss_sub_id) > 0) { $sql .= "and rss_sub_id like '%$rss_sub_id%' "; }
-	if (strlen($rss_id) > 0) { $sql .= "and rss_id like '%$rss_id%' "; }
+	if (strlen($domain_uuid) > 0) { $sql .= "and rss_sub_uuid = '$domain_uuid' "; }
+	if (strlen($rss_sub_uuid) > 0) { $sql .= "and rss_sub_uuid like '%$rss_sub_uuid%' "; }
+	if (strlen($rss_uuid) > 0) { $sql .= "and rss_uuid like '%$rss_uuid%' "; }
 	if (strlen($rss_sub_title) > 0) { $sql .= "and rss_sub_title like '%$rss_sub_title%' "; }
 	if (strlen($rss_sub_link) > 0) { $sql .= "and rss_sub_link like '%$rss_sub_link%' "; }
 	if (strlen($rss_sub_desc) > 0) { $sql .= "and rss_sub_desc like '%$rss_sub_desc%' "; }
@@ -138,8 +138,8 @@ if (count($_POST)>0) {
 		foreach($result as $row) {
 		//print_r( $row );
 			echo "<tr style='".$rowstyle[$c]."'>\n";
-				echo "<td valign='top'><a href='rsssubupdate.php?rss_sub_id=".$row[rss_sub_id]."'>".$row[rss_sub_id]."</a></td>";
-				echo "<td valign='top'>".$row[rss_id]."</td>";
+				echo "<td valign='top'><a href='rsssubupdate.php?rss_sub_uuid=".$row[rss_sub_uuid]."'>".$row[rss_sub_uuid]."</a></td>";
+				echo "<td valign='top'>".$row[rss_uuid]."</td>";
 				echo "<td valign='top'>".$row[rss_sub_title]."</td>";
 				//echo "<td valign='top'>".$row[rss_sub_link]."</td>";
 				//echo "<td valign='top'>".$row[rss_sub_desc]."</td>";
@@ -195,11 +195,11 @@ if (count($_POST)>0) {
 	echo "<table>";
 	  echo "	<tr>";
 	  echo "		<td>Sub ID:</td>";
-	  echo "		<td><input type='text' class='txt' name='rss_sub_id'></td>";
+	  echo "		<td><input type='text' class='txt' name='rss_sub_uuid'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>ID:</td>";
-	  echo "		<td><input type='text' class='txt' name='rss_id'></td>";
+	  echo "		<td><input type='text' class='txt' name='rss_uuid'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>Sub Title:</td>";

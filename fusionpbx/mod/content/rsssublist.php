@@ -35,7 +35,7 @@ else {
 	exit;
 }
 
-$rss_id = $_GET["rss_id"];
+$rss_uuid = $_GET["rss_uuid"];
 $orderby = $_GET["orderby"];
 $order = $_GET["order"];
 
@@ -52,14 +52,14 @@ require_once "includes/header.php";
 	$sql = "";
 	$sql .= "select * from v_rss ";
 	$sql .= "where domain_uuid = '$domain_uuid'  ";
-	$sql .= "and rss_id = '$rss_id'  ";
+	$sql .= "and rss_uuid = '$rss_uuid'  ";
 	$sql .= "and rss_category = '$rss_category' ";
 	$sql .= "and length(rss_del_date) = 0 ";	
 	$sql .= "or domain_uuid = '$domain_uuid'  ";
-	$sql .= "and rss_id = '$rss_id'  ";
+	$sql .= "and rss_uuid = '$rss_uuid'  ";
 	$sql .= "and rss_category = '$rss_category' ";
 	$sql .= "and rss_del_date is null  ";
-	$sql .= "order by rss_id asc ";
+	$sql .= "order by rss_uuid asc ";
 
 	//echo $sql;
 	$prepstatement = $db->prepare(check_sql($sql));
@@ -76,7 +76,7 @@ require_once "includes/header.php";
 			  //echo "<tr style='".$rowstyle[$c]."'>\n";
 			  //echo "<tr>";
 			  //echo "    <td valign='top'>Title</td>";
-			  //echo "    <td valign='top'><a href='rssupdate.php?rss_id=".$row[rss_id]."'>".$row[rss_id]."</a></td>";
+			  //echo "    <td valign='top'><a href='rssupdate.php?rss_uuid=".$row[rss_uuid]."'>".$row[rss_uuid]."</a></td>";
 			  //echo "</tr>";
 			  //echo "<td valign='top'>".$row[rss_category]."</td>";
 			  
@@ -84,7 +84,7 @@ require_once "includes/header.php";
 			  echo "    <td valign='top'>Title: &nbsp;</td>";
 			  echo "    <td valign='top'><b>".$row[rss_title]."</b></td>";
 			  echo "    <td valign='top' align='right'>";
-			  echo "        <input type='button' class='btn' name='' onclick=\"window.location='rssupdate.php?rss_id=".$row[rss_id]."'\" value='Update'>";
+			  echo "        <input type='button' class='btn' name='' onclick=\"window.location='rssupdate.php?rss_uuid=".$row[rss_uuid]."'\" value='Update'>";
 			  echo "    </td>";
 			  $rss_desc = $row[rss_desc];
 			  //$rss_desc = str_replace ("\r\n", "<br>", $rss_desc);
@@ -137,8 +137,8 @@ require_once "includes/header.php";
 			  //echo "<td valign='top'>".$row[rss_add_user]."</td>";
 			  //echo "<tr>";
 			  //echo "    <td valign='top'>";
-			  //echo "      <a href='rsssublist.php?rss_id=".$row[rss_id]."'>Details</a>";
-			  //echo "        <input type='button' class='btn' name='' onclick=\"window.location='rsssublist.php?rss_id=".$row[rss_id]."'\" value='Details'>";
+			  //echo "      <a href='rsssublist.php?rss_uuid=".$row[rss_uuid]."'>Details</a>";
+			  //echo "        <input type='button' class='btn' name='' onclick=\"window.location='rsssublist.php?rss_uuid=".$row[rss_uuid]."'\" value='Details'>";
 			  //echo "    </td>";
 			  //echo "</tr>";
 
@@ -160,10 +160,10 @@ require_once "includes/header.php";
 		$sql = "";
 		$sql .= "select * from v_rss_sub ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and rss_id = '$rss_id' ";
+		$sql .= "and rss_uuid = '$rss_uuid' ";
 		$sql .= "and length(rss_sub_del_date) = 0 ";
 		$sql .= "or domain_uuid = '$domain_uuid' ";
-		$sql .= "and rss_id = '$rss_id' ";
+		$sql .= "and rss_uuid = '$rss_uuid' ";
 		$sql .= "and rss_sub_del_date is null ";
 		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
 		//echo $sql;
@@ -190,28 +190,28 @@ require_once "includes/header.php";
 			/*
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_id&order=desc' title='ascending'>rss_sub_id</a>";
+				echo "<a href='?orderby=rss_sub_uuid&order=desc' title='ascending'>rss_sub_uuid</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_id&order=desc' title='ascending'>rss_sub_id</a>";
+					echo "<a href='?orderby=rss_sub_uuid&order=desc' title='ascending'>rss_sub_uuid</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_id&order=asc' title='descending'>rss_sub_id</a>";
+					echo "<a href='?orderby=rss_sub_uuid&order=asc' title='descending'>rss_sub_uuid</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_id&order=desc' title='ascending'>rss_id</a>";
+				echo "<a href='?orderby=rss_uuid&order=desc' title='ascending'>rss_uuid</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_id&order=desc' title='ascending'>rss_id</a>";
+					echo "<a href='?orderby=rss_uuid&order=desc' title='ascending'>rss_uuid</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_id&order=asc' title='descending'>rss_id</a>";
+					echo "<a href='?orderby=rss_uuid&order=asc' title='descending'>rss_uuid</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
@@ -363,7 +363,7 @@ require_once "includes/header.php";
 			foreach($result as $row) {
 			//print_r( $row );
 				echo "<tr style='".$rowstyle[$c]."'>\n";
-					//echo "<td valign='top'>".$rss_id."</td>";
+					//echo "<td valign='top'>".$rss_uuid."</td>";
 					//echo "<td valign='top'>&nbsp;<b>".$row[rss_sub_title]."</b>&nbsp;</td>";
 					//echo "<td valign='top'>&nbsp;".$row[rss_sub_link]."&nbsp;</td>";
 					echo "<td valign='top' width='200'>";
@@ -380,14 +380,14 @@ require_once "includes/header.php";
 					//echo "<td valign='top'>".$row[rss_sub_add_user]."</td>";
 
 					echo "<td valign='top'>";
-					echo "  <input type='button' class='btn' name='' onclick=\"if (confirm('Are you sure you wish to continue?')) { window.location='rsssubdelete.php?rss_id=".$row[rss_id]."&rss_sub_id=".$row[rss_sub_id]."' }\" value='Delete'>";
+					echo "  <input type='button' class='btn' name='' onclick=\"if (confirm('Are you sure you wish to continue?')) { window.location='rsssubdelete.php?rss_uuid=".$row[rss_uuid]."&rss_sub_uuid=".$row[rss_sub_uuid]."' }\" value='Delete'>";
 					echo "</td>";
 
 					echo "<td valign='top' align='right'>";
 					echo "  &nbsp;";
-					echo "  <input type='button' class='btn' name='' onclick=\"window.location='rsssubupdate.php?rss_id=".$rss_id."&rss_sub_id=".$row[rss_sub_id]."'\" value='Update'>";
+					echo "  <input type='button' class='btn' name='' onclick=\"window.location='rsssubupdate.php?rss_uuid=".$rss_uuid."&rss_sub_uuid=".$row[rss_sub_uuid]."'\" value='Update'>";
 					echo "  &nbsp; \n";
-					//echo "  <a href='rsssubupdate.php?rss_id=".$rss_id."&rss_sub_id=".$row[rss_sub_id]."'>Update</a>&nbsp;";
+					//echo "  <a href='rsssubupdate.php?rss_uuid=".$rss_uuid."&rss_sub_uuid=".$row[rss_sub_uuid]."'>Update</a>&nbsp;";
 					echo "</td>";
 
 
@@ -428,7 +428,7 @@ require_once "includes/header.php";
 
 	//echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubsearch.php'\" value='Search'>&nbsp; &nbsp;\n";
 	if ($rsssubshow == 1) {
-		echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubadd.php?rss_id=".$rss_id."'\" value='Add $rss_sub_title'>&nbsp; &nbsp;\n";
+		echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubadd.php?rss_uuid=".$rss_uuid."'\" value='Add $rss_sub_title'>&nbsp; &nbsp;\n";
 	}
 	echo "</div>";
 

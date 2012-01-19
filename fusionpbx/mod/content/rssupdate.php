@@ -37,7 +37,7 @@ else {
 
 
 if (count($_POST)>0) {
-	$rss_id = check_str($_POST["rss_id"]);
+	$rss_uuid = check_str($_POST["rss_uuid"]);
 	//$rss_category = check_str($_POST["rss_category"]); //defined in local config.php
 	$rss_sub_category = check_str($_POST["rss_sub_category"]);
 	$rss_title = check_str($_POST["rss_title"]);
@@ -74,7 +74,7 @@ if (count($_POST)>0) {
 	$sql .= "rss_group = '$rss_group', ";
 	$sql .= "rss_order = '$rss_order' ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and rss_id = '$rss_id' ";
+	$sql .= "and rss_uuid = '$rss_uuid' ";
 	$sql .= "and rss_category = '$rss_category' ";
 	//echo $sql;
 	//return;
@@ -94,12 +94,12 @@ if (count($_POST)>0) {
 }
 else {
 	//get data from the db
-	$rss_id = $_GET["rss_id"];
+	$rss_uuid = $_GET["rss_uuid"];
 
 	$sql = "";
 	$sql .= "select * from v_rss ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and rss_id = '$rss_id' ";
+	$sql .= "and rss_uuid = '$rss_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -369,7 +369,7 @@ else {
 	//echo "<input type=\"button\" value=\"Load\" onclick=\"document.getElementById('rss_desc').innerHTML = ajaxresponse;\" />";
 	//echo "<input type=\"button\" value=\"Load\" onclick=\"ajaxLoad('rss_desc', ajaxresponse);\" />";
 
-	echo "          <input type='hidden' name='rss_id' value='$rss_id'>";
+	echo "          <input type='hidden' name='rss_uuid' value='$rss_uuid'>";
 	echo "          <input type='submit' class='btn' name='submit' value='Save'>";
 	echo "		</td>";
 	echo "	</tr>";

@@ -39,7 +39,7 @@ else {
 //update v_rss set rss_order = (rss_order+1) where rss_order > 2 or rss_order = 2
 
 if (count($_GET)>0) {
-	$rss_id = check_str($_GET["rss_id"]);
+	$rss_uuid = check_str($_GET["rss_uuid"]);
 	$rss_order = check_str($_GET["rss_order"]);
 	if ($rss_order != 1) {
 		//move the current item's order number down
@@ -57,14 +57,14 @@ if (count($_GET)>0) {
 		$sql  = "update v_rss set ";
 		$sql .= "rss_order = (rss_order-1) "; //move up
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and rss_id = '$rss_id' ";
+		$sql .= "and rss_uuid = '$rss_uuid' ";
 		$sql .= "and rss_category  = '$rss_category' ";
 		//echo $sql."<br><br>";
 		$db->exec(check_sql($sql));
 		unset($sql);
 	}
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"1;url=rsslist.php?rss_id=$rss_id\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"1;url=rsslist.php?rss_uuid=$rss_uuid\">\n";
 	echo "<div align='center'>";
 	echo "Item Moved Up";
 	echo "</div>";

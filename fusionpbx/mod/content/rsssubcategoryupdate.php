@@ -36,7 +36,7 @@ else {
 }
 
 if (count($_POST)>0) {
-	$rss_sub_category_id = check_str($_POST["rss_sub_category_id"]);
+	$rss_sub_category_uuid = check_str($_POST["rss_sub_category_uuid"]);
 	$rss_category = check_str($_POST["rss_category"]);
 	$rss_sub_category = check_str($_POST["rss_sub_category"]);
 	$rss_sub_category_desc = check_str($_POST["rss_sub_category_desc"]);
@@ -51,7 +51,7 @@ if (count($_POST)>0) {
 	$sql .= "rss_add_user = '$rss_add_user', ";
 	$sql .= "rss_add_date = '$rss_add_date' ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and rss_sub_category_id = '$rss_sub_category_id' ";
+	$sql .= "and rss_sub_category_uuid = '$rss_sub_category_uuid' ";
 	$count = $db->exec(check_sql($sql));
 	//echo "Affected Rows: ".$count;
 
@@ -64,12 +64,12 @@ if (count($_POST)>0) {
 }
 else {
 	//get data from the db
-	$rss_sub_category_id = $_GET["rss_sub_category_id"];
+	$rss_sub_category_uuid = $_GET["rss_sub_category_uuid"];
 
 	$sql = "";
 	$sql .= "select * from v_rss_sub_category ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and rss_sub_category_id = '$rss_sub_category_id' ";
+	$sql .= "and rss_sub_category_uuid = '$rss_sub_category_uuid' ";
 	$prepstatement = $db->prepare(check_sql($sql));
 	$prepstatement->execute();
 	$result = $prepstatement->fetchAll();
@@ -116,7 +116,7 @@ echo "		<td><input type='text' name='rss_add_date' value='$rss_add_date'></td>";
 echo "	</tr>";
 echo "	<tr>";
 echo "		<td colspan='2' align='right'>";
-echo "     <input type='hidden' name='rss_sub_category_id' value='$rss_sub_category_id'>";
+echo "     <input type='hidden' name='rss_sub_category_uuid' value='$rss_sub_category_uuid'>";
 echo "     <input type='submit' name='submit' value='Update'>";
 echo "		</td>";
 echo "	</tr>";
