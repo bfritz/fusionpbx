@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -53,8 +53,8 @@ require_once "includes/paging.php";
 							$sql .= "user_status = '".$row['status']."' ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and username = '".$row['name']."' ";
-							$prepstatement = $db->prepare(check_sql($sql));
-							$prepstatement->execute();
+							$prep_statement = $db->prepare(check_sql($sql));
+							$prep_statement->execute();
 						//set the call center status
 							if ($row['status'] == "Do Not Disturb") {
 								//set the default dnd action
@@ -75,31 +75,31 @@ require_once "includes/paging.php";
 					$sql .= "select * from v_extensions ";
 					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and user_list like '%|".$row['name']."|%' ";
-					$prepstatement = $db->prepare(check_sql($sql));
-					$prepstatement->execute();
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
 					$x = 0;
-					$sub_result = $prepstatement->fetchAll(PDO::FETCH_NAMED);
+					$sub_result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 					foreach ($sub_result as &$sub_row) {
 						$extension = $sub_row["extension"];
 						//hunt_group information used to determine if this is an add or an update
 							$sql  = "select * from v_hunt_group ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and hunt_group_extension = '$extension' ";
-							$prepstatement2 = $db->prepare(check_sql($sql));
-							$prepstatement2->execute();
-							$result2 = $prepstatement2->fetchAll();
+							$prep_statement_2 = $db->prepare(check_sql($sql));
+							$prep_statement_2->execute();
+							$result2 = $prep_statement_2->fetchAll();
 							foreach ($result2 as &$row2) {
 								if ($row2["hunt_group_type"] == 'dnd') {
 									$dnd_action = "update";
-									$dnd_id = $row2["hunt_group_uuid"];
+									$dnd_uuid = $row2["hunt_group_uuid"];
 								}
 							}
-							unset ($prepstatement2, $result2, $row2);
+							unset ($prep_statement_2, $result2, $row2);
 						//add or update dnd
 							$dnd = new do_not_disturb;
 							//$dnd->debug = false;
 							$dnd->domain_uuid = $domain_uuid;
-							$dnd->dnd_id = $dnd_id;
+							$dnd->dnd_uuid = $dnd_uuid;
 							$dnd->v_domain = $v_domain;
 							$dnd->extension = $extension;
 							if ($row['status'] == "Do Not Disturb") {
@@ -120,7 +120,7 @@ require_once "includes/paging.php";
 							}
 							unset($dnd);
 					}
-					unset ($prepstatement);
+					unset ($prep_statement);
 			}
 		}
 	}
@@ -176,8 +176,8 @@ require_once "includes/paging.php";
 	echo "</tr></table>\n";
 
 	$c = 0;
-	$row_style["0"] = "rowstyle0";
-	$row_style["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<form method='post' name='frm' action=''>\n";
 	echo "<div align='center'>\n";

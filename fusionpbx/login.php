@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -39,7 +39,7 @@ if (strlen($msg) > 0) {
 	echo "<th align='left'>Message</th>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td class='rowstyle1'>\n";
+	echo "<td class='row_style1'>\n";
 
 	switch ($msg) {
 		case "username required":

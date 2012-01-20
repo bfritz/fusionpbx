@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -86,9 +86,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('variables_add')) {
+				$var_uuid = uuid();
 				$sql = "insert into v_vars ";
 				$sql .= "(";
-				$sql .= "domain_uuid, ";
+				$sql .= "var_uuid, ";
 				$sql .= "var_name, ";
 				$sql .= "var_value, ";
 				$sql .= "var_cat, ";
@@ -98,7 +99,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'1', ";
+				$sql .= "'$var_uuid', ";
 				$sql .= "'$var_name', ";
 				$sql .= "'$var_value', ";
 				$sql .= "'$var_cat', ";
@@ -133,8 +134,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "var_enabled = '$var_enabled', ";
 				$sql .= "var_order = '$var_order', ";
 				$sql .= "var_desc = '".base64_encode($var_desc)."' ";
-				$sql .= "where domain_uuid = '1' ";
-				$sql .= "and var_uuid = '$var_uuid' ";
+				$sql .= "where var_uuid = '$var_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -163,9 +163,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_vars ";
 		$sql .= "where domain_uuid = '1' ";
 		$sql .= "and var_uuid = '$var_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$var_name = $row["var_name"];
 			$var_value = $row["var_value"];
@@ -175,7 +175,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$var_desc = base64_decode($row["var_desc"]);
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //include header
@@ -229,8 +229,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$tablename = 'v_vars';$fieldname = 'var_cat';$sqlwhereoptional = "where domain_uuid = '1'";$fieldcurrentvalue = $var_cat;
-	echo htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
+	$table_name = 'v_vars';$field_name = 'var_cat';$sql_where_optional = "where domain_uuid = '1'";$field_current_value = $var_cat;
+	echo html_select_other($db, $table_name, $field_name, $sql_where_optional, $field_current_value);
 	//echo "	<input class='formfld' type='text' name='var_cat' maxlength='255' value=\"$var_cat\">\n";
 	echo "<br />\n";
 	echo "Enter the category here.\n";

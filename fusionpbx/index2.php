@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -54,7 +54,7 @@ echo "<br />";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 	echo "		UserName: \n";
 	echo "	</td>\n";
-	echo "	<td class=\"rowstyle1\">\n";
+	echo "	<td class=\"row_style1\">\n";
 	echo "		<a href='".PROJECT_PATH."/mod/users/usersupdate.php'>".$_SESSION["username"]."</a> \n";
 	echo "	</td>\n";
 	echo "</tr>\n";
@@ -63,7 +63,7 @@ echo "<br />";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 	echo "		Voicemail: \n";
 	echo "	</td>\n";
-	echo "	<td class=\"rowstyle1\">\n";
+	echo "	<td class=\"row_style1\">\n";
 	echo "		<a href='".PROJECT_PATH."/mod/voicemail_msgs/v_voicemail_msgs.php'>View Messages</a> \n";
 	echo "	</td>\n";
 	echo "</tr>\n";

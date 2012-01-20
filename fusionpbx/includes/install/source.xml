@@ -2689,42 +2689,42 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/dialplan/v_dialplan_includes.php</path> 
+		<path>/mod/dialplan/v_dialplan.php</path> 
 		<last_mod>Tue, 04 May 2010 01:28:42 GMT</last_mod> 
 		<md5>b1a0d09a3c629c9c70183cd92a1889f8</md5> 
 		<size>6568</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/dialplan/v_dialplan_includes_add.php</path> 
+		<path>/mod/dialplan/v_dialplan_add.php</path> 
 		<last_mod>Sat, 14 Aug 2010 07:01:10 GMT</last_mod> 
 		<md5>3d234f0355ce2c1b332ce504260d568e</md5> 
 		<size>26489</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/dialplan/v_dialplan_includes_delete.php</path> 
+		<path>/mod/dialplan/v_dialplan_delete.php</path> 
 		<last_mod>Sat, 01 May 2010 19:07:25 GMT</last_mod> 
 		<md5>70c98ad23504a24fa38c13c6ca8ee0b6</md5> 
 		<size>1830</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/dialplan/v_dialplan_includes_details_delete.php</path> 
+		<path>/mod/dialplan/v_dialplan_details_delete.php</path> 
 		<last_mod>Tue, 04 May 2010 01:29:47 GMT</last_mod> 
 		<md5>a731a9a1e8963c1a1aecd5f3bd0eafb2</md5> 
 		<size>1747</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/dialplan/v_dialplan_includes_details_edit.php</path> 
+		<path>/mod/dialplan/v_dialplan_details_edit.php</path> 
 		<last_mod>Sun, 23 May 2010 06:27:22 GMT</last_mod> 
 		<md5>fb41795185cfbec6470d738ef5a924e7</md5> 
 		<size>16312</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/dialplan/v_dialplan_includes_edit.php</path> 
+		<path>/mod/dialplan/v_dialplan_edit.php</path> 
 		<last_mod>Sat, 28 Aug 2010 18:50:00 GMT</last_mod> 
 		<md5>f5421ef8b178c5af04abab3f8c7adfd5</md5> 
 		<size>19521</size> 
@@ -3830,42 +3830,42 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/public_includes/v_public_includes.php</path> 
+		<path>/mod/public_includes/v_public.php</path> 
 		<last_mod>Thu, 08 Jul 2010 22:07:24 GMT</last_mod> 
 		<md5>f220ba931a587ce1f235f8807a72555e</md5> 
 		<size>17034</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/public_includes/v_public_includes_add.php</path> 
+		<path>/mod/public_includes/v_public_add.php</path> 
 		<last_mod>Sat, 14 Aug 2010 07:04:05 GMT</last_mod> 
 		<md5>ad75b8f2fe06a7e38cf0e161aa5814a3</md5> 
 		<size>26225</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/public_includes/v_public_includes_delete.php</path> 
+		<path>/mod/public_includes/v_public_delete.php</path> 
 		<last_mod>Sat, 06 Feb 2010 18:03:20 GMT</last_mod> 
 		<md5>48aac49ab1fc7d95e1acf1186559abe6</md5> 
 		<size>2769</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/public_includes/v_public_includes_details_delete.php</path> 
+		<path>/mod/public_includes/v_public_details_delete.php</path> 
 		<last_mod>Sat, 06 Feb 2010 18:03:20 GMT</last_mod> 
 		<md5>73c0fae3464189c82a535680d9d84ccf</md5> 
 		<size>1761</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/public_includes/v_public_includes_details_edit.php</path> 
+		<path>/mod/public_includes/v_public_details_edit.php</path> 
 		<last_mod>Sat, 28 Aug 2010 18:48:10 GMT</last_mod> 
 		<md5>7b7d55d8f0b815db485d435448c8a73b</md5> 
 		<size>22746</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/public_includes/v_public_includes_edit.php</path> 
+		<path>/mod/public_includes/v_public_edit.php</path> 
 		<last_mod>Sat, 28 Aug 2010 18:46:38 GMT</last_mod> 
 		<md5>9a8ed8625f859d394891d150012dbf64</md5> 
 		<size>19939</size> 
@@ -4299,42 +4299,42 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/time_conditions/v_dialplan_includes.php</path> 
+		<path>/mod/time_conditions/v_dialplan.php</path> 
 		<last_mod>Wed, 14 Jul 2010 19:37:55 GMT</last_mod> 
 		<md5>ecfbc50b3b4036755c675715d4e75ec0</md5> 
 		<size>9358</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/time_conditions/v_dialplan_includes_add.php</path> 
+		<path>/mod/time_conditions/v_dialplan_add.php</path> 
 		<last_mod>Thu, 15 Jul 2010 05:48:51 GMT</last_mod> 
 		<md5>88d76764c52f555967dd8009149da61a</md5> 
 		<size>41649</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/time_conditions/v_dialplan_includes_delete.php</path> 
+		<path>/mod/time_conditions/v_dialplan_delete.php</path> 
 		<last_mod>Sat, 10 Jul 2010 02:32:54 GMT</last_mod> 
 		<md5>70c98ad23504a24fa38c13c6ca8ee0b6</md5> 
 		<size>1830</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/time_conditions/v_dialplan_includes_details_delete.php</path> 
+		<path>/mod/time_conditions/v_dialplan_details_delete.php</path> 
 		<last_mod>Sat, 10 Jul 2010 02:32:55 GMT</last_mod> 
 		<md5>a731a9a1e8963c1a1aecd5f3bd0eafb2</md5> 
 		<size>1747</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/time_conditions/v_dialplan_includes_details_edit.php</path> 
+		<path>/mod/time_conditions/v_dialplan_details_edit.php</path> 
 		<last_mod>Tue, 13 Jul 2010 20:36:08 GMT</last_mod> 
 		<md5>9bd82d87d238bdb52d1cfb0ed2d74954</md5> 
 		<size>16305</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/time_conditions/v_dialplan_includes_edit.php</path> 
+		<path>/mod/time_conditions/v_dialplan_edit.php</path> 
 		<last_mod>Sat, 28 Aug 2010 18:47:14 GMT</last_mod> 
 		<md5>90dd319e7f235af7703119d79ea83976</md5> 
 		<size>19568</size> 

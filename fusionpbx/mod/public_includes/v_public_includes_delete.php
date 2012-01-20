@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -41,19 +41,19 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
 
 	$sql = "";
-	$sql .= "select * from v_public_includes ";
+	$sql .= "select * from v_public ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and public_include_uuid = '$id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$sql .= "and public_uuid = '$id' ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$extension_name = $row["extension_name"];
 		$public_order = $row["public_order"];
 		//$enabled = $row["enabled"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement, $sql);
+	unset ($prep_statement, $sql);
 
 	$publicincludefilename = $public_order."_".$extension_name.".xml";
 	if (file_exists($v_conf_dir."/dialplan/public/".$publicincludefilename)) {
@@ -63,29 +63,29 @@ if (strlen($id)>0) {
 
 	//delete child data
 	$sql = "";
-	$sql .= "delete from v_public_includes_details ";
-	$sql .= "where public_include_uuid = '$id' ";
+	$sql .= "delete from v_public_details ";
+	$sql .= "where public_uuid = '$id' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	unset($sql);
 
 	//delete parent data
 	$sql = "";
-	$sql .= "delete from v_public_includes ";
-	$sql .= "where public_include_uuid = '$id' ";
+	$sql .= "delete from v_public ";
+	$sql .= "where public_uuid = '$id' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	unset($sql);
 
 	//synchronize the xml config
-	sync_package_v_public_includes();
+	sync_package_v_public();
 }
 
 //redirect the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_includes.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public.php\">\n";
 	echo "<div align='center'>\n";
 	echo "Delete Complete\n";
 	echo "</div>\n";

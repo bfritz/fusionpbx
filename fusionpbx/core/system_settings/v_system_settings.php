@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -38,19 +38,19 @@ else {
 //domain list
 	unset ($_SESSION["domains"]);
 	$sql = "select * from v_system_settings ";
-	$prepstatement = $db->prepare($sql);
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach($result as $row) {
 		$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
 		$_SESSION['domains'][$row['domain_uuid']]['domain'] = $row['v_domain'];
 		$_SESSION['domains'][$row['domain_uuid']]['template_name'] = $row['v_template_name'];
 	}
 	$num_rows = count($result);
-	unset($result, $prepstatement);
+	unset($result, $prep_statement);
 
 //get http values and set them as variables
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //change the tenant
@@ -84,26 +84,26 @@ else {
 	echo "<table width='100%' border='0'>\n";
 	echo "</tr></table>\n";
 
-	$rowsperpage = 150;
+	$rows_per_page = 150;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($paging_controls, $rows_per_page, $tmp) = paging($num_rows, $param, $rowsperpage); 
+	list($paging_controls, $rows_per_page, $tmp) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page; 
 
 	$sql = "";
 	$sql .= " select * from v_system_settings ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
@@ -114,11 +114,11 @@ else {
 	echo "<td align='right' width='42'>&nbsp;</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo thorderby('v_domain', 'Domain', $orderby, $order);
-	//echo thorderby('v_package_version', 'Package Version', $orderby, $order);
-	echo thorderby('v_label', 'Label', $orderby, $order);
-	//echo thorderby('v_name', 'Name', $orderby, $order);
-	//echo thorderby('v_dir', 'Directory', $orderby, $order);
+	echo thorder_by('v_domain', 'Domain', $order_by, $order);
+	//echo thorder_by('v_package_version', 'Package Version', $order_by, $order);
+	echo thorder_by('v_label', 'Label', $order_by, $order);
+	//echo thorder_by('v_name', 'Name', $order_by, $order);
+	//echo thorder_by('v_dir', 'Directory', $order_by, $order);
 	echo "<th width='40%'>Description</th>\n";
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('system_settings_add')) {
@@ -127,7 +127,7 @@ else {
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) {
+	if ($result_count == 0) {
 		//no results found
 	}
 	else {
@@ -195,13 +195,13 @@ else {
 					break;
 			}
 			echo "<tr >\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='".$url."'>".$row['v_domain']."</a></td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_system_settings.php?id=".$row['domain_uuid']."&domain=".$row['v_domain']."'>".$row['v_domain']."</a></td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['v_package_version']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['v_label']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['v_name']."</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['v_dir']."</td>\n";
-			echo "	<td valign='top' class='rowstylebg'>".$row['v_description']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'><a href='".$url."'>".$row['v_domain']."</a></td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'><a href='v_system_settings.php?id=".$row['domain_uuid']."&domain=".$row['v_domain']."'>".$row['v_domain']."</a></td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['v_package_version']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['v_label']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['v_name']."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['v_dir']."</td>\n";
+			echo "	<td valign='top' class='row_stylebg'>".$row['v_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('system_settings_edit')) {
 				echo "		<a href='v_system_settings_edit.php?id=".$row['domain_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
@@ -213,7 +213,7 @@ else {
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 	echo "<tr>\n";
@@ -221,7 +221,7 @@ else {
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('system_settings_add')) {
 		echo "			<a href='v_system_settings_add.php' alt='add'>$v_link_label_add</a>\n";

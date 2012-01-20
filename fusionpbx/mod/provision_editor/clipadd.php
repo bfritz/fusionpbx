@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,30 +36,30 @@ else {
 require_once "config.php";
 
 if (count($_POST)>0) {
-	$clipname = check_str($_POST["clipname"]);
-	$clipfolder = check_str($_POST["clipfolder"]);
-	$cliptextstart = check_str($_POST["cliptextstart"]);
-	$cliptextend = check_str($_POST["cliptextend"]);
-	$clipdesc = check_str($_POST["clipdesc"]);
-	$cliporder = check_str($_POST["cliporder"]);
+	$clip_name = check_str($_POST["clip_name"]);
+	$clip_folder = check_str($_POST["clip_folder"]);
+	$clip_text_start = check_str($_POST["clip_text_start"]);
+	$clip_text_end = check_str($_POST["clip_text_end"]);
+	$clip_desc = check_str($_POST["clip_desc"]);
+	$clip_order = check_str($_POST["clip_order"]);
 
-	$sql = "insert into tblcliplibrary ";
+	$sql = "insert into v_clip_library ";
 	$sql .= "(";
-	$sql .= "clipname, ";
-	$sql .= "clipfolder, ";
-	$sql .= "cliptextstart, ";
-	$sql .= "cliptextend, ";
-	$sql .= "clipdesc, ";
-	$sql .= "cliporder ";
+	$sql .= "clip_name, ";
+	$sql .= "clip_folder, ";
+	$sql .= "clip_text_start, ";
+	$sql .= "clip_text_end, ";
+	$sql .= "clip_desc, ";
+	$sql .= "clip_order ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$clipname', ";
-	$sql .= "'$clipfolder', ";
-	$sql .= "'$cliptextstart', ";
-	$sql .= "'$cliptextend', ";
-	$sql .= "'$clipdesc', ";
-	$sql .= "'$cliporder' ";
+	$sql .= "'$clip_name', ";
+	$sql .= "'$clip_folder', ";
+	$sql .= "'$clip_text_start', ";
+	$sql .= "'$clip_text_end', ";
+	$sql .= "'$clip_desc', ";
+	$sql .= "'$clip_order' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql,$db);
@@ -82,29 +82,29 @@ if (count($_POST)>0) {
 	echo "<table width='100%' border='0'>";
 	echo "	<tr>";
 	echo "		<td>Name:</td>";
-	echo "		<td><input type='text' class='txt' name='clipname'></td>";
+	echo "		<td><input type='text' class='txt' name='clip_name'></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td>Folder:</td>";
-	echo "		<td><input type='text' class='txt' name='clipfolder'></td>";
+	echo "		<td><input type='text' class='txt' name='clip_folder'></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td colspan='2'>Before Selection:<br>";
-	echo "		  <textarea name='cliptextstart' class='txt'></textarea>";
+	echo "		  <textarea name='clip_text_start' class='txt'></textarea>";
 	echo "		</td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td colspan='2'>After Selection:<br>";
-	echo "		  <textarea name='cliptextend' class='txt'></textarea>";
+	echo "		  <textarea name='clip_text_end' class='txt'></textarea>";
 	echo "		</td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td colspan='2'>Notes:<br>";
-	echo "		  <textarea name='clipdesc' class='txt'></textarea>";
+	echo "		  <textarea name='clip_desc' class='txt'></textarea>";
 	echo "		</td>";
 	echo "	</tr>";
 

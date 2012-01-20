@@ -30,7 +30,7 @@ include "root.php";
 		class dialplan {
 			var $result;
 			var $domain_uuid;
-			var $dialplan_include_uuid;
+			var $dialplan_uuid;
 			var $tag;
 			var $field_order;
 			var $field_type;
@@ -59,10 +59,11 @@ include "root.php";
 
 			function dialplan_detail_add() {
 				global $db;
-				$sql = "insert into v_dialplan_includes_details ";
+				$dialplan_detail_uuid = uuid();
+				$sql = "insert into v_dialplan_details ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
-				$sql .= "dialplan_include_uuid, ";
+				$sql .= "dialplan_uuid, ";
 				$sql .= "tag, ";
 				$sql .= "field_order, ";
 				$sql .= "field_type, ";
@@ -74,7 +75,7 @@ include "root.php";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$this->domain_uuid', ";
-				$sql .= "'$this->dialplan_include_uuid', ";
+				$sql .= "'$this->dialplan_uuid', ";
 				$sql .= "'$this->tag', ";
 				$sql .= "'$this->field_order', ";
 				$sql .= "'$this->field_type', ";
@@ -95,7 +96,7 @@ include "root.php";
 			function dialplan_detail_update() {
 				global $db;
 				$sql = "";
-				$sql = "update v_dialplan_includes set ";
+				$sql = "update v_dialplan set ";
 				$sql .= "extension_name = '$this->extension_name', ";
 				$sql .= "dialplan_order = '$this->dialplan_order', ";
 				$sql .= "context = '$this->context', ";

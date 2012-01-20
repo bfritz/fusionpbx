@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -52,9 +52,11 @@ if (count($_POST)>0) {
 		$rss_order = check_str($_POST["rss_order"]);
 
 	//insert the data into the database
+		$rss_uuid = uuid();
 		$sql = "insert into v_rss ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
+		$sql .= "rss_uuid, ";
 		$sql .= "rss_category, ";
 		$sql .= "rss_sub_category, ";
 		$sql .= "rss_title, ";
@@ -74,6 +76,7 @@ if (count($_POST)>0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
+		$sql .= "'$rss_uuid', ";
 		$sql .= "'$rss_category', ";
 		$sql .= "'$rss_sub_category', ";
 		$sql .= "'$rss_title', ";
@@ -131,11 +134,8 @@ if (count($_POST)>0) {
 
 	echo "<div align='center'>";
 	echo "<table border='0' width='100%' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\" width='100%'>\n";
-	//echo "      <br>";
-
 
 	echo "<form method='post' action=''>";
 	echo "<table width='100%' cellpadding='6' cellspacing='0'>";
@@ -169,12 +169,12 @@ if (count($_POST)>0) {
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 
 	echo "<select name=\"rss_group\" class='formfld'>\n";
 	echo "<option value=\"\">public</option>\n";
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	//$count = count($result);
 	foreach($result as $field) {
 			if ($rss_group == $field[group_id]) {

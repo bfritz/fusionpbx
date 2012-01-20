@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -39,16 +39,16 @@ if (permission_exists('extensions_active_assigned_view')) {
 			$sql .= "select * from v_extensions ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
 			$x = 0;
-			$result = $prepstatement->fetchAll();
+			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row) {
 				$user_extension_array[$x]['extension_uuid'] = $row["extension_uuid"];
 				$user_extension_array[$x]['extension'] = $row["extension"];
 				$x++;
 			}
-			unset ($prepstatement, $x);
+			unset ($prep_statement, $x);
 			$_SESSION['user_extension_array'] = $user_extension_array;
 		}
 
@@ -118,22 +118,22 @@ if (permission_exists('extensions_active_assigned_view')) {
 							$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_active.gif');\"";
 						}
 						echo "<tr>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate>$extension</td>\n";
 						if ($_SESSION['user_status_display'] == "false") {
 							//hide the user_status when it is set to false
 						}
 						else {
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
+							echo "<td class='".$row_style[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
 						}
-						echo "<td class='".$rowstyle[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
 
 						if (strlen($url) == 0) {
 							$url = "/mod/contacts/v_contacts.php?search_all={cid_num}";
 						}
 						$url = str_replace ("{cid_num}", $cid_num, $url);
 						$url = str_replace ("{cid_name}", $cid_name, $url);
-						echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."' style='color: #444444;' target='_blank'>".$cid_name."</a></td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."' style='color: #444444;' target='_blank'>".$cid_num."</a></td>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate><a href='".$url."' style='color: #444444;' target='_blank'>".$cid_name."</a></td>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate><a href='".$url."' style='color: #444444;' target='_blank'>".$cid_num."</a></td>\n";
 
 						//get the active uuid list
 							if (strlen($uuid) > 1) {
@@ -151,7 +151,7 @@ if (permission_exists('extensions_active_assigned_view')) {
 								}
 							}
 
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate>\n";
 						if ($application == "valet_park") {
 							echo $valet_array[trim($uuid)]['extension']."\n";
 						}
@@ -159,7 +159,7 @@ if (permission_exists('extensions_active_assigned_view')) {
 							echo $dest."&nbsp;\n";
 						}
 						echo "</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate>\n";
 						if ($application == "fifo") {
 							echo "queue &nbsp;\n";
 						}
@@ -167,13 +167,13 @@ if (permission_exists('extensions_active_assigned_view')) {
 							echo $application."&nbsp;\n";
 						}
 						echo "</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate>\n";
 						echo "".$secure."&nbsp;\n";
 						echo "</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate>\n";
 						echo "".$effective_caller_id_name."&nbsp;\n";
 						echo "</td>\n";
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
 							//transfer
 								echo "	<a href='javascript:void(0);' style='color: #444444;' onMouseover=\"document.getElementById('form_label').innerHTML='<strong>Transfer To</strong>';\" onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">transfer</a>&nbsp;\n";
 							//park
@@ -197,29 +197,29 @@ if (permission_exists('extensions_active_assigned_view')) {
 					else {
 						$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_light.gif');\"";
 						echo "<tr>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate>$extension</td>\n";
 						if ($_SESSION['user_status_display'] == "false") {
 							//hide the user_status when it is set to false
 						}
 						else {
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
+							echo "<td class='".$row_style[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
 						}
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-						echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
+						echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
+						echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
 						echo "	&nbsp;";
 						echo "</td>\n";
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
 						echo "	&nbsp;";
 						echo "</td>\n";
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
 						echo "	&nbsp;";
 						echo "</td>\n";
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
 						echo "	&nbsp;";
 						echo "</td>\n";
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
 						echo "	&nbsp;";
 						echo "</td>\n";
 						echo "</tr>\n";

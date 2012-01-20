@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -90,12 +90,12 @@ $sql .= "or rss_category = '$rss_category' ";
 $sql .= "and rss_del_date is null ";
 $sql .= "order by rss_uuid asc ";
 //echo $sql;
-$prepstatement = $db->prepare(check_sql($sql));
-$prepstatement->execute();
+$prep_statement = $db->prepare(check_sql($sql));
+$prep_statement->execute();
 
 $lastcat = "";
 $count = 0;
-$result = $prepstatement->fetchAll();
+$result = $prep_statement->fetchAll();
 foreach ($result as &$row) {
 
 	$rss_uuid = $row["rss_uuid"];
@@ -146,22 +146,22 @@ foreach ($result as &$row) {
 			$sql .= "or rss_uuid = '$rss_uuid' ";
 			$sql .= "and rss_sub_del_date is null ";
 
-			if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+			if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 
-			$prepstatement2 = $db->prepare($sql);
-			$prepstatement2->execute();
-			$result2 = $prepstatement->fetchAll();
-			$resultcount2 = count($result2);
+			$prep_statement_2 = $db->prepare($sql);
+			$prep_statement_2->execute();
+			$result2 = $prep_statement->fetchAll();
+			$result_count2 = count($result2);
 
 			$c2 = 0;
-			$rowstyle["0"] = "background-color: #F5F5DC;";
-			$rowstyle["1"] = "background-color: #FFFFFF;";
+			$row_style["0"] = "background-color: #F5F5DC;";
+			$row_style["1"] = "background-color: #FFFFFF;";
 
 			echo "<div align='left'>\n";
 			//echo "      <b>Notes</b>";
 			echo "<table width='75%' border='1' cellpadding='1' cellspacing='1'>\n";
 			//echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
-			if ($resultcount == 0) { //no results
+			if ($result_count == 0) { //no results
 				echo "<tr><td>&nbsp;</td></tr>";
 			}
 			else { //received results
@@ -169,7 +169,7 @@ foreach ($result as &$row) {
 
 				foreach($result2 as $row2) {
 				//print_r( $row );
-					echo "<tr style='".$rowstyle[$c]."'>\n";
+					echo "<tr style='".$row_style[$c]."'>\n";
 						//echo "<td valign='top'>".$rss_uuid."</td>";
 						//echo "<td valign='top'>&nbsp;<b>".$row2[rss_sub_title]."</b>&nbsp;</td>";
 						//echo "<td valign='top'>&nbsp;".$row2[rss_sub_link]."&nbsp;</td>";
@@ -198,7 +198,7 @@ foreach ($result as &$row) {
 
 
 						echo "</tr>";
-						echo "<tr style='".$rowstyle[$c]."'>\n";
+						echo "<tr style='".$row_style[$c]."'>\n";
 						echo "<td valign='top' width='300' colspan='3'>";
 						echo "".$rss_sub_desc."&nbsp;";
 						echo "</td>";
@@ -210,7 +210,7 @@ foreach ($result as &$row) {
 					echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 					if ($c2==0) { $c2=1; } else { $c2=0; }
 				} //end foreach
-				unset($sql, $result, $rowcount);
+				unset($sql, $result, $row_count);
 
 				echo "</table>\n";
 				echo "</div>\n";

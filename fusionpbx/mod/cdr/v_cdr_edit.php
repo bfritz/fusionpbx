@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -113,28 +113,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	$tmp .= "CID Name: $caller_id_name\n";
-	$tmp .= "CID Number: $caller_id_number\n";
-	$tmp .= "Destination: $destination_number\n";
-	$tmp .= "Context: $context\n";
-	$tmp .= "Start: $start_stamp\n";
-	$tmp .= "Answer: $answer_stamp\n";
-	$tmp .= "End: $end_stamp\n";
-	$tmp .= "Duration: $duration\n";
-	$tmp .= "Bill Seconds: $billsec\n";
-	$tmp .= "Hangup Cause: $hangup_cause\n";
-	$tmp .= "UUID: $uuid\n";
-	$tmp .= "Bleg UUID: $bleg_uuid\n";
-	$tmp .= "Account Code: $accountcode\n";
-	$tmp .= "Read Codec: $read_codec\n";
-	$tmp .= "Write Codec: $write_codec\n";
-	$tmp .= "Remote Media IP: $remote_media_ip\n";
-	$tmp .= "Network Addr: $network_addr\n";
-
-
-
-	//Add or update the database
+	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			$sql = "insert into v_cdr ";
@@ -235,11 +214,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql .= " select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
 		//$extension_uuid = $row["extension_uuid"];
@@ -248,7 +227,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$extension_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}
-	unset ($prepstatement, $x);
+	unset ($prep_statement, $x);
 
 
 //pre-populate the form
@@ -273,9 +252,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sqlwhere = str_replace ("where or", "where", $sqlwhere);
 	$sqlwhere = str_replace ("where and", "where", $sqlwhere);
 	$sql .= $sqlwhere;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$caller_id_name = $row["caller_id_name"];
 		$caller_id_number = $row["caller_id_number"];
@@ -296,7 +275,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$network_addr = $row["network_addr"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 }
 
 

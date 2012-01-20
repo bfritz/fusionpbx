@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -147,15 +147,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and virtual_table_field_uuid = '$virtual_table_field_uuid' ";
 		$sql .= "and virtual_table_data_types_name_value_id = '$virtual_table_data_types_name_value_id' ";
 
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$virtual_data_types_name = $row["virtual_data_types_name"];
 			$virtual_data_types_value = $row["virtual_data_types_value"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header

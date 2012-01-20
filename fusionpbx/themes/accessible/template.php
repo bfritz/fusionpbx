@@ -200,7 +200,7 @@ INPUT.txt {
 	padding-bottom: 4px;*/
 }
 
-.rowstyle0 {
+.row_style0 {
 	background-image: url('<!--{project_path}-->/themes/accessible/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	/*background-color: #ECE9D8; */
@@ -213,12 +213,12 @@ INPUT.txt {
 	padding-left: 7px;
 }
 
-.rowstyle0 a:link{ color:#555555; }
-.rowstyle0 a:visited{ color:#555555; }
-.rowstyle0 a:hover{ color:#FFBF00; }
-.rowstyle0 a:active{ color:#FFBF00; }
+.row_style0 a:link{ color:#555555; }
+.row_style0 a:visited{ color:#555555; }
+.row_style0 a:hover{ color:#FFBF00; }
+.row_style0 a:active{ color:#FFBF00; }
 
-.rowstyle1 {
+.row_style1 {
 	border-bottom: 1px solid #999999;
 	background-color: #FFFFFF;
 	text-align: left;
@@ -228,7 +228,7 @@ INPUT.txt {
 	padding-left: 7px;
 }
 
-.rowstylebg {
+.row_stylebg {
 	border-bottom: 1px solid #999999;
 	background-color: #5F5F5F;
 	color: #FFFFFF;
@@ -483,7 +483,7 @@ if ($_SESSION["reload_xml"]) {
 				echo "<th align='left'>Message</th>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
-				echo "<td class='rowstyle1'>\n";
+				echo "<td class='row_style1'>\n";
 
 				echo "	<table width='100%' border='0'>\n";
 				echo "	<tr>\n";
@@ -506,18 +506,16 @@ if ($_SESSION["reload_xml"]) {
 }
 ?>
 <!--{body}-->
-
 </td>
 </tr>
 </table>
-
 
 </td>
 </tr>
 </table>
 
 <span class='smalltext'>
-<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2011. All Rights Reserved
+<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2012. All Rights Reserved
 </span>
 
 </td>
@@ -530,6 +528,5 @@ if ($_SESSION["reload_xml"]) {
 </table>
 
 <br>
-
 </body>
 </html>

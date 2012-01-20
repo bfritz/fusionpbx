@@ -18,7 +18,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -40,7 +40,7 @@ require_once "includes/paging.php";
 
 if ($_SESSION['db_tables']['v_xmpp'] != 'valid') {
 	if ($db_type == "pgsql") {
-		$sql = "select count(*) from pg_tables where schemaname='public' and tablename = 'v_xmpp'";
+		$sql = "select count(*) from pg_tables where schemaname='public' and table_name = 'v_xmpp'";
 	} elseif ($db_type == "mysql") {
 		$sql = "select count(*) as count from information_schema.tables where TABLE_SCHEMA='" . $db_name . "' and TABLE_NAME='roomlist';";
 	} elseif ($db_type == "sqlite") {
@@ -61,15 +61,15 @@ if ($_SESSION['db_tables']['v_xmpp'] != 'valid') {
 $sql = "";
 $sql .= "select * from v_xmpp ";
 $sql .= "where domain_uuid = '$domain_uuid' ";
-$prepstatement = $db->prepare(check_sql($sql));
-$prepstatement->execute();
+$prep_statement = $db->prepare(check_sql($sql));
+$prep_statement->execute();
 $x = 0;
-$result = $prepstatement->fetchAll();
+$result = $prep_statement->fetchAll();
 foreach ($result as &$row) {
 	$profiles_array[$x] = $row;
 	$x++;
 }
-unset ($prepstatement);
+unset ($prep_statement);
 
 //include the view
 include "profile_list.php";

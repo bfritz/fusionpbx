@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$contacts_note_uuid = check_str($_REQUEST["id"]);
+		$contact_note_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -58,7 +58,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$contacts_note_uuid = check_str($_POST["contacts_note_uuid"]);
+		$contact_note_uuid = check_str($_POST["contact_note_uuid"]);
 	}
 
 	//check for all required data
@@ -82,6 +82,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
+			$contact_note_uuid = uuid();
 			$sql = "insert into v_contact_notes ";
 			$sql .= "(";
 			$sql .= "contact_uuid, ";
@@ -117,7 +118,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "last_mod_date = now(), ";
 			$sql .= "last_mod_user = '".$_SESSION['username']."' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and contacts_note_uuid = '$contacts_note_uuid'";
+			$sql .= "and contact_note_uuid = '$contact_note_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -130,16 +131,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true") 
-
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$contacts_note_uuid = $_GET["id"];
+		$contact_note_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contact_notes ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and contacts_note_uuid = '$contacts_note_uuid' ";
+		$sql .= "and contact_note_uuid = '$contact_note_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -190,7 +190,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<td colspan='2' align='right'>\n";
 	echo "				<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='contacts_note_uuid' value='$contacts_note_uuid'>\n";
+		echo "				<input type='hidden' name='contact_note_uuid' value='$contact_note_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

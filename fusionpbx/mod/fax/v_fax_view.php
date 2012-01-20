@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -56,9 +56,9 @@ else {
 			//show only assigned fax extensions
 			$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 		}
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		if (count($result) == 0) {
 			echo "access denied";
 			exit;
@@ -77,7 +77,7 @@ else {
 			//limit to one row
 				break;
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //set the fax directory
@@ -467,8 +467,8 @@ else {
 		echo "\n";
 
 		$c = 0;
-		$rowstyle["0"] = "rowstyle0";
-		$rowstyle["1"] = "rowstyle1";
+		$row_style["0"] = "row_style0";
+		$row_style["1"] = "row_style1";
 
 		echo "	<div id=\"\">\n";
 		echo "	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -532,13 +532,13 @@ else {
 						//		}
 						//}
 						echo "<tr>\n";
-						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+						echo "  <td class='".$row_style[$c]."' ondblclick=\"\">\n";
 						echo "	  <a href=\"v_fax_view.php?id=".$fax_uuid."&a=download&type=fax_inbox&t=bin&ext=".urlencode($fax_extension)."&filename=".urlencode($file)."\">\n";
 						echo "    	$file_name";
 						echo "	  </a>";
 						echo "  </td>\n";
 
-						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+						echo "  <td class='".$row_style[$c]."' ondblclick=\"\">\n";
 						if (file_exists($dir_fax_inbox.'/'.$file_name.".pdf")) {
 							echo "	  <a href=\"v_fax_view.php?id=".$fax_uuid."&a=download&type=fax_inbox&t=bin&ext=".urlencode($fax_extension)."&filename=".urlencode($file_name).".pdf\">\n";
 							echo "    	PDF";
@@ -549,7 +549,7 @@ else {
 						}
 						echo "  </td>\n";
 
-						//echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+						//echo "  <td class='".$row_style[$c]."' ondblclick=\"\">\n";
 						//if (file_exists($dir_fax_inbox.'/'.$file_name.".jpg")) {
 						//	echo "	  <a href=\"v_fax_view.php?id=".$fax_uuid."&a=download&type=fax_inbox&t=jpg&ext=".$fax_extension."&filename=".$file_name.".jpg\" target=\"_blank\">\n";
 						//	echo "    	jpg";
@@ -560,11 +560,11 @@ else {
 						//}
 						//echo "  &nbsp;</td>\n";
 
-						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+						echo "  <td class='".$row_style[$c]."' ondblclick=\"\">\n";
 						echo "		".date("F d Y H:i:s", $file_modified);
 						echo "  </td>\n";
 
-						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+						echo "  <td class='".$row_style[$c]."' ondblclick=\"\">\n";
 						echo "	".$file_size_bytes;
 						echo "  </td>\n";
 
@@ -669,12 +669,12 @@ else {
 								//}
 						}
 						echo "<tr>\n";
-						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+						echo "  <td class='".$row_style[$c]."' ondblclick=\"\">\n";
 						echo "	  <a href=\"v_fax_view.php?id=".$fax_uuid."&a=download&type=fax_sent&t=bin&ext=".urlencode($fax_extension)."&filename=".urlencode($file)."\">\n";
 						echo "    	$file";
 						echo "	  </a>";
 						echo "  </td>\n";
-						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+						echo "  <td class='".$row_style[$c]."' ondblclick=\"\">\n";
 						if (file_exists($dir_fax_sent.'/'.$file_name.".pdf")) {
 							echo "	  <a href=\"v_fax_view.php?id=".$fax_uuid."&a=download&type=fax_sent&t=bin&ext=".urlencode($fax_extension)."&filename=".urlencode($file_name).".pdf\">\n";
 							echo "    	PDF";
@@ -684,7 +684,7 @@ else {
 							echo "&nbsp;\n";
 						}
 						echo "  </td>\n";
-						//echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+						//echo "  <td class='".$row_style[$c]."' ondblclick=\"\">\n";
 						//if (file_exists($dir_fax_sent.'/'.$file_name.".jpg")) {
 						//	echo "	  <a href=\"v_fax_view.php?id=".$fax_uuid."&a=download&type=fax_sent&t=jpg&ext=".$fax_extension."&filename=".$file_name.".jpg\" target=\"_blank\">\n";
 						//	echo "    	jpg";
@@ -694,11 +694,11 @@ else {
 						//	echo "&nbsp;\n";
 						//}
 						//echo "  </td>\n";
-						echo "  <td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+						echo "  <td class='".$row_style[$c]."' ondblclick=\"\">\n";
 						echo "		".date("F d Y H:i:s", $file_modified);
 						echo "  </td>\n";
 
-						echo "  <td class=\"".$rowstyle[$c]."\" ondblclick=\"list\">\n";
+						echo "  <td class=\"".$row_style[$c]."\" ondblclick=\"list\">\n";
 						echo "	".$file_size_bytes;
 						echo "  </td>\n";
 

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 if (strlen($_GET["a"]) > 0) {
@@ -44,9 +44,9 @@ if (strlen($_GET["a"]) > 0) {
 	$sql = "";
 	$sql .= "select * from v_services ";
 	$sql .= "where service_uuid = '$service_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$domain_uuid = $row["domain_uuid"];
 		$v_service_name = $row["v_service_name"];
@@ -57,7 +57,7 @@ if (strlen($_GET["a"]) > 0) {
 		$v_service_desc = $row["v_service_desc"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 	if ($_GET["a"] == "stop") {
 		$msg = 'Service: '.$v_service_name. ' stopping. ';
@@ -109,38 +109,38 @@ if (strlen($_GET["a"]) > 0) {
 
 	$sql = "";
 	$sql .= " select * from v_services ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$numrows = count($result);
-	unset ($prepstatement, $result, $sql);
-	$rowsperpage = 10;
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$num_rows = count($result);
+	unset ($prep_statement, $result, $sql);
+	$rows_per_page = 10;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page; 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+	$offset = $rows_per_page * $page; 
 
 	$sql = "";
 	$sql .= " select * from v_services ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('v_service_name', 'Name', $orderby, $order);
-	echo thorderby('v_service_desc', 'Description', $orderby, $order);
+	echo thorder_by('v_service_name', 'Name', $order_by, $order);
+	echo thorder_by('v_service_desc', 'Description', $order_by, $order);
 	echo "<th>Status</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<td align='right' width='42'>\n";
@@ -150,15 +150,15 @@ if (strlen($_GET["a"]) > 0) {
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) {
+	if ($result_count == 0) {
 		//no results
 	}
 	else { //received results
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[v_service_name]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[v_service_desc]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[v_service_name]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[v_service_desc]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
 			$pid = file_get_contents($row[v_service_data]);
 			if (is_process_running($pid)) {
 				echo "<strong>Running</strong>";
@@ -167,7 +167,7 @@ if (strlen($_GET["a"]) > 0) {
 				echo "<strong>Stopped</strong>";
 			}
 			echo "</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
 			if (is_process_running($pid)) {
 				echo "		<a href='v_services.php?id=".$row[service_uuid]."&a=stop' alt='stop'>Stop</a>";
 			}
@@ -186,7 +186,7 @@ if (strlen($_GET["a"]) > 0) {
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 	echo "<tr>\n";
@@ -194,7 +194,7 @@ if (strlen($_GET["a"]) > 0) {
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('services_add')) {
 		echo "			<a href='v_services_edit.php' alt='add'>$v_link_label_add</a>\n";

@@ -211,7 +211,7 @@ INPUT.txt {
 	padding-bottom: 4px;
 }
 
-.rowstyle0 {
+.row_style0 {
 	background-image: url('<!--{project_path}-->/themes/enhanced/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	color: #444444;
@@ -222,12 +222,12 @@ INPUT.txt {
 	padding-left: 7px;
 }
 
-.rowstyle0 a:link{ color:#444444; }
-.rowstyle0 a:visited{ color:#444444; }
-.rowstyle0 a:hover{ color:#444444; }
-.rowstyle0 a:active{ color:#444444; }
+.row_style0 a:link{ color:#444444; }
+.row_style0 a:visited{ color:#444444; }
+.row_style0 a:hover{ color:#444444; }
+.row_style0 a:active{ color:#444444; }
 
-.rowstyle1 {
+.row_style1 {
 	border-bottom: 1px solid #999999;
 	background-color: #FFFFFF;
 	text-align: left;
@@ -237,7 +237,7 @@ INPUT.txt {
 	padding-left: 7px;
 }
 
-.rowstylebg {
+.row_stylebg {
 	border-bottom: 1px solid #888888;
 	background-color: #5F5F5F;
 	color: #FFFFFF;
@@ -704,7 +704,7 @@ function confirmdelete(url) {
 											echo "<th align='left'>Message</th>\n";
 											echo "</tr>\n";
 											echo "<tr>\n";
-											echo "<td class='rowstyle1'>\n";
+											echo "<td class='row_style1'>\n";
 
 											echo "	<table width='100%' border='0'>\n";
 											echo "	<tr>\n";
@@ -757,7 +757,7 @@ function confirmdelete(url) {
 	<?php
 	if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
 		echo "<span class='smalltext'>\n";
-		echo "	<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2011. All Rights Reserved\n";
+		echo "	<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2012. All Rights Reserved\n";
 		echo "</span>\n";
 	}
 	else {
@@ -770,8 +770,6 @@ function confirmdelete(url) {
 	?>
 	</div>
 
-	<br />
-	<br />
-
+<br />
 </body>
 </html>

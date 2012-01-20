@@ -29,7 +29,7 @@ include "root.php";
 	class follow_me {
 		var $domain_uuid;
 		var $db_type;
-		var $follow_me_id;
+		var $follow_me_uuid;
 		var $extension;
 		var $follow_me_enabled;
 		var $follow_me_type;
@@ -64,9 +64,9 @@ include "root.php";
 
 		function follow_me_add() {
 			global $db;
-
+			$hunt_group_uuid = uuid();
 			$hunt_group_extension = $this->extension;
-			$huntgroup_name = 'follow_me_'.$this->extension;
+			$hunt_group_name = 'follow_me_'.$this->extension;
 			$hunt_group_type = $this->follow_me_type;
 			$hunt_group_context = 'default';
 			$hunt_group_timeout = $this->hunt_group_timeout;
@@ -83,6 +83,7 @@ include "root.php";
 			$sql = "insert into v_hunt_group ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
+			$sql .= "hunt_group_uuid, ";
 			$sql .= "hunt_group_extension, ";
 			$sql .= "hunt_group_name, ";
 			$sql .= "hunt_group_type, ";
@@ -102,8 +103,9 @@ include "root.php";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$this->domain_uuid', ";
+			$sql .= "'$hunt_group_uuid', ";
 			$sql .= "'$hunt_group_extension', ";
-			$sql .= "'$huntgroup_name', ";
+			$sql .= "'$hunt_group_name', ";
 			$sql .= "'$hunt_group_type', ";
 			$sql .= "'$hunt_group_context', ";
 			$sql .= "'$hunt_group_timeout', ";
@@ -121,20 +123,8 @@ include "root.php";
 			if ($v_debug) {
 				echo $sql."<br />";
 			}
-			if ($this->db_type == "sqlite" || $this->db_type == "mysql" ) {
-				$db->exec(check_sql($sql));
-				$this->follow_me_id = $db->lastInsertId($id);
-			}
-			if ($this->db_type == "pgsql") {
-				$sql .= " RETURNING hunt_group_uuid ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
-				foreach ($result as &$row) {
-					$this->follow_me_id = $row["hunt_group_uuid"];
-				}
-				unset($prepstatement, $result);
-			}
+			$db->exec(check_sql($sql));
+			$this->follow_me_uuid = $follow_me_uuid;
 			unset($sql);
 			$this->follow_me_destinations();
 		} //end function
@@ -143,7 +133,7 @@ include "root.php";
 			global $db;
 
 			$hunt_group_extension = $this->extension;
-			$huntgroup_name = 'follow_me_'.$this->extension;
+			$hunt_group_name = 'follow_me_'.$this->extension;
 			$hunt_group_type = $this->follow_me_type;
 			$hunt_group_context = 'default';
 			$hunt_group_timeout = $this->hunt_group_timeout;
@@ -159,7 +149,7 @@ include "root.php";
 
 			$sql = "update v_hunt_group set ";
 			$sql .= "hunt_group_extension = '$hunt_group_extension', ";
-			$sql .= "hunt_group_name = '$huntgroup_name', ";
+			$sql .= "hunt_group_name = '$hunt_group_name', ";
 			$sql .= "hunt_group_type = '$hunt_group_type', ";
 			$sql .= "hunt_group_context = '$hunt_group_context', ";
 			$sql .= "hunt_group_timeout = '$hunt_group_timeout', ";
@@ -174,7 +164,7 @@ include "root.php";
 			$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 			$sql .= "hunt_group_descr = '$hunt_group_descr' ";
 			$sql .= "where domain_uuid = '$this->domain_uuid' ";
-			$sql .= "and hunt_group_uuid = '$this->follow_me_id'";
+			$sql .= "and hunt_group_uuid = '$this->follow_me_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 			$this->follow_me_destinations();
@@ -184,7 +174,7 @@ include "root.php";
 			global $db;
 
 			//delete related v_hunt_group_destinations
-				$sql = "delete from v_hunt_group_destinations where hunt_group_uuid = '$this->follow_me_id' ";
+				$sql = "delete from v_hunt_group_destinations where hunt_group_uuid = '$this->follow_me_uuid' ";
 				$db->exec(check_sql($sql));
 
 			//insert the v_hunt_group_destinations set destination_data_1
@@ -204,7 +194,7 @@ include "root.php";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$this->domain_uuid', ";
-					$sql .= "'$this->follow_me_id', ";
+					$sql .= "'$this->follow_me_uuid', ";
 					$sql .= "'$this->destination_data_1', ";
 					$sql .= "'$this->destination_type_1', ";
 					$sql .= "'$this->destination_profile', ";
@@ -233,7 +223,7 @@ include "root.php";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$this->domain_uuid', ";
-					$sql .= "'$this->follow_me_id', ";
+					$sql .= "'$this->follow_me_uuid', ";
 					$sql .= "'$this->destination_data_2', ";
 					$sql .= "'$this->destination_type_2', ";
 					$sql .= "'$this->destination_profile', ";
@@ -262,7 +252,7 @@ include "root.php";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$this->domain_uuid', ";
-					$sql .= "'$this->follow_me_id', ";
+					$sql .= "'$this->follow_me_uuid', ";
 					$sql .= "'$this->destination_data_3', ";
 					$sql .= "'$this->destination_type_3', ";
 					$sql .= "'$this->destination_profile', ";
@@ -291,7 +281,7 @@ include "root.php";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$this->domain_uuid', ";
-					$sql .= "'$this->follow_me_id', ";
+					$sql .= "'$this->follow_me_uuid', ";
 					$sql .= "'$this->destination_data_4', ";
 					$sql .= "'$this->destination_type_4', ";
 					$sql .= "'$this->destination_profile', ";
@@ -320,7 +310,7 @@ include "root.php";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$this->domain_uuid', ";
-					$sql .= "'$this->follow_me_id', ";
+					$sql .= "'$this->follow_me_uuid', ";
 					$sql .= "'$this->destination_data_5', ";
 					$sql .= "'$this->destination_type_5', ";
 					$sql .= "'$this->destination_profile', ";

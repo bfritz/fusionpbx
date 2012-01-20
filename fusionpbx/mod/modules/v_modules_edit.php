@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -61,7 +61,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($module_label) == 0) { $msg .= "Please provide: Label<br>\n"; }
 		if (strlen($module_name) == 0) { $msg .= "Please provide: Module Name<br>\n"; }
 		//if (strlen($module_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
@@ -84,9 +83,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('modules_add')) {
+				$module_uuid = uuid();
 				$sql = "insert into v_modules ";
 				$sql .= "(";
-				$sql .= "domain_uuid, ";
+				$sql .= "module_uuid, ";
 				$sql .= "module_label, ";
 				$sql .= "module_name, ";
 				$sql .= "module_desc, ";
@@ -96,7 +96,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'1', ";
+				$sql .= "'$module_uuid', ";
 				$sql .= "'$module_label', ";
 				$sql .= "'$module_name', ";
 				$sql .= "'$module_desc', ";
@@ -149,11 +149,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_modules ";
 		$sql .= "where module_uuid = '$module_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$domain_uuid = $row["domain_uuid"];
 			$module_label = $row["module_label"];
 			$module_name = $row["module_name"];
 			$module_desc = $row["module_desc"];
@@ -162,7 +161,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$module_default_enabled = $row["module_default_enabled"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header
@@ -171,11 +170,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
-
 
 	echo "<form method='post' name='frm' action=''>\n";
 
@@ -230,8 +227,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Module Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$tablename = 'v_modules';$fieldname = 'module_category';$sqlwhereoptional = "where domain_uuid = '$domain_uuid'";$fieldcurrentvalue = $module_category;
-	echo htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
+	$table_name = 'v_modules';$field_name = 'module_category';$sql_where_optional = "where domain_uuid = '$domain_uuid'";$field_current_value = $module_category;
+	echo html_select_other($db, $table_name, $field_name, $sql_where_optional, $field_current_value);
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

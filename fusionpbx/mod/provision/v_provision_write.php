@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2008-2010 All Rights Reserved.
+	Copyright (C) 2008-2012 All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -45,9 +45,9 @@ else {
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and var_enabled= 'true' ";
 	$sql .= "and var_cat = 'Provision' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$provision_variables_array = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$provision_variables_array = $prep_statement->fetchAll();
 	foreach ($provision_variables_array as &$row) {
 		if ($row[var_name] == "password") {
 			$var_name = $row[var_name];
@@ -60,9 +60,9 @@ else {
 	$sql = "";
 	$sql .= "select * from v_system_settings ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$provision_variables_array = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$provision_variables_array = $prep_statement->fetchAll();
 	foreach ($provision_variables_array as &$row) {
 		$v_provisioning_tftp_dir = $row['v_provisioning_tftp_dir'];
 		$v_provisioning_ftp_dir = $row['v_provisioning_ftp_dir'];
@@ -73,9 +73,9 @@ else {
 	$sql = "";
 	$sql .= "select * from v_hardware_phones ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$phone_mac_address = $row["phone_mac_address"];
 		$phone_mac_address = strtolower($phone_mac_address);
@@ -168,9 +168,9 @@ else {
 							$sql2 .= "select * from v_extensions ";
 							$sql2 .= "where provisioning_list like '%$phone_mac_address%' ";
 							$sql2 .= "and domain_uuid = '$domain_uuid' ";
-							$prepstatement2 = $db->prepare(check_sql($sql2));
-							$prepstatement2->execute();
-							$result2 = $prepstatement2->fetchAll();
+							$prep_statement_2 = $db->prepare(check_sql($sql2));
+							$prep_statement_2->execute();
+							$result2 = $prep_statement_2->fetchAll();
 							foreach ($result2 as &$row2) {
 								$provisioning_list = $row2["provisioning_list"];
 								if (strlen($provisioning_list) > 1) {
@@ -190,7 +190,7 @@ else {
 											$file_contents = str_replace("{v_line".$line_number."_server_address}", $v_domain, $file_contents);
 											$file_contents = str_replace("{v_line".$line_number."_displayname}", $row2["extension"], $file_contents);
 											$file_contents = str_replace("{v_line".$line_number."_shortname}", $row2["extension"], $file_contents);
-											$file_contents = str_replace("{v_line".$line_number."_user_id}", $row2["extension"], $file_contents);
+											$file_contents = str_replace("{v_line".$line_number."_user_uuid}", $row2["extension"], $file_contents);
 											$file_contents = str_replace("{v_line".$line_number."_user_password}", $row2["password"], $file_contents);
 										}
 									}
@@ -215,14 +215,14 @@ else {
 									//$description = $row["description"]
 								}
 							}
-							unset ($prepstatement2);
+							unset ($prep_statement_2);
 
 						//cleanup any remaining variables
 							for ($i = 1; $i <= 100; $i++) {
 								$file_contents = str_replace("{v_line".$i."_server_address}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_displayname}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_shortname}", "", $file_contents);
-								$file_contents = str_replace("{v_line".$i."_user_id}", "", $file_contents);
+								$file_contents = str_replace("{v_line".$i."_user_uuid}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_user_password}", "", $file_contents);
 							}
 
@@ -246,5 +246,5 @@ else {
 			} //end for each
 			closedir($dir_list);
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 ?>

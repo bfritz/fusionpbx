@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -40,8 +40,8 @@ require_once "includes/v_dialplan_entry_exists.php";
 
 //define variables
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 if ($_GET['a'] == "download") {
 	if ($_GET['t'] == "cdrcsv") {
@@ -80,7 +80,7 @@ if (strlen($msg) > 0) {
 	echo "<th align='left'>Message</th>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+	echo "<td class='row_style1'><strong>$msg</strong></td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 	echo "</div>\n";
@@ -119,30 +119,30 @@ if (strlen($msg) > 0) {
 		foreach ($xml->profile as $row) {
 			//print_r($row);
 			echo "<tr>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->name."</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->type."</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->data."</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->state."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->name."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->type."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->data."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->state."</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		}
 		foreach ($xml->gateway as $row) {
 			//print_r($row);
 			echo "<tr>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->name."</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->type."</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->data."</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->state."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->name."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->type."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->data."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->state."</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		}
 		foreach ($xml->alias as $row) {
 			//print_r($row);
 			echo "<tr>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->name."</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->type."</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->data."</td>\n";
-			echo "	<td class='".$rowstyle[$c]."'>".$row->state."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->name."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->type."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->data."</td>\n";
+			echo "	<td class='".$row_style[$c]."'>".$row->state."</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		}

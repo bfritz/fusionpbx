@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -130,9 +130,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('hunt_group_add')) {
+				$hunt_group_uuid = uuid();
 				$sql = "insert into v_hunt_group ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
+				$sql .= "hunt_group_uuid, ";
 				$sql .= "hunt_group_extension, ";
 				$sql .= "hunt_group_name, ";
 				$sql .= "hunt_group_type, ";
@@ -151,6 +153,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
+				$sql .= "'$hunt_group_uuid', ";
 				$sql .= "'$hunt_group_extension', ";
 				$sql .= "'$hunt_group_name', ";
 				$sql .= "'$hunt_group_type', ";
@@ -208,7 +211,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				sync_package_v_hunt_group();
 
 				//synchronize the xml config
-				sync_package_v_dialplan_includes();
+				sync_package_v_dialplan();
 
 				require_once "includes/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group.php\">\n";
@@ -229,9 +232,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .- "hunt_group_enabled = 'true' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$hunt_group_extension = $row["hunt_group_extension"];
 			$hunt_group_name = $row["hunt_group_name"];
@@ -249,7 +252,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$hunt_group_descr = $row["hunt_group_descr"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header
@@ -525,8 +528,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		$onchange = "document.getElementById('hunt_group_user_list').value += document.getElementById('username').value + '\\n';";
-		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where domain_uuid = '$domain_uuid' "; 
-		echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
+		$table_name = 'v_users'; $field_name = 'username'; $field_current_value = ''; $sql_where_optional = "where domain_uuid = '$domain_uuid' "; 
+		echo htmlselectonchange($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
 		echo "<br />\n";
 		echo "Use the select list to add users to the user list. This will assign users to this extension.\n";
 		echo "<br />\n";
@@ -624,16 +627,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and hunt_group_uuid = '$hunt_group_uuid' ";
 		$sql .= " order by destination_order, destination_data asc";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		$resultcount = count($result);
-		unset ($prepstatement, $sql);
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		$result_count = count($result);
+		unset ($prep_statement, $sql);
 
 
 		$c = 0;
-		$rowstyle["0"] = "rowstyle0";
-		$rowstyle["1"] = "rowstyle1";
+		$row_style["0"] = "row_style0";
+		$row_style["1"] = "row_style1";
 
 		echo "<div align='center'>\n";
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
@@ -651,17 +654,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<tr>\n";
 
-		if ($resultcount == 0) {
+		if ($result_count == 0) {
 			//no results
 		}
 		else { //received results
 			foreach($result as $row) {
 				echo "<tr >\n";
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['destination_data']."</td>\n";
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['destination_type']."</td>\n";
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['destination_profile']."</td>\n";
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['destination_order']."</td>\n";
-				echo "	<td valign='top' class='rowstylebg' width='30%'>".$row['destination_descr']."&nbsp;</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['destination_data']."</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['destination_type']."</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['destination_profile']."</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['destination_order']."</td>\n";
+				echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['destination_descr']."&nbsp;</td>\n";
 				echo "	<td valign='top' align='right'>\n";
 				if (permission_exists('hunt_group_edit')) {
 					echo "		<a href='v_hunt_group_destinations_edit.php?id=".$row['hunt_group_destination_uuid']."&id2=".$hunt_group_uuid."' alt='edit'>$v_link_label_edit</a>\n";
@@ -673,7 +676,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			} //end foreach
-			unset($sql, $result, $rowcount);
+			unset($sql, $result, $row_count);
 		} //end if results
 
 		echo "<tr>\n";
@@ -681,7 +684,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 		echo "	<tr>\n";
 		echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-		echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+		echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 		echo "		<td width='33.3%' align='right'>\n";
 		if (permission_exists('hunt_group_add')) {
 			echo "			<a href='v_hunt_group_destinations_edit.php?id2=".$hunt_group_uuid."' alt='add'>$v_link_label_add</a>\n";

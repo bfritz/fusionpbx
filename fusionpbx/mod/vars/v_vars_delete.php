@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -42,10 +42,9 @@ if (count($_GET)>0) {
 	if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from v_vars ";
-		$sql .= "where domain_uuid = '1' ";
-		$sql .= "and var_uuid = '$id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$sql .= "where var_uuid = '$id' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 		unset($sql);
 
 		sync_package_v_vars();

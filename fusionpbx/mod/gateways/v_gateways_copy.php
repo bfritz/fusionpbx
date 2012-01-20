@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -45,9 +45,9 @@ else {
 	$sql .= "select * from v_gateways ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and gateway_uuid = '$gateway_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$gateway = $row["gateway"];
 		$username = $row["username"];
@@ -77,12 +77,14 @@ else {
 		$description = 'copy: '.$row["description"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 //copy the gateways
+	$gateway_uuid = uuid();
 	$sql = "insert into v_gateways ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
+	$sql .= "gateway_uuid, ";
 	$sql .= "gateway, ";
 	$sql .= "username, ";
 	$sql .= "password, ";
@@ -113,6 +115,7 @@ else {
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
+	$sql .= "'$gateway_uuid', ";
 	$sql .= "'$gateway', ";
 	$sql .= "'$username', ";
 	$sql .= "'$password', ";

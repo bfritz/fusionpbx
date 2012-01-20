@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$contacts_adr_uuid = check_str($_REQUEST["id"]);
+		$contact_adr_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -64,7 +64,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$contacts_adr_uuid = check_str($_POST["contacts_adr_uuid"]);
+		$contact_adr_uuid = check_str($_POST["contact_adr_uuid"]);
 	}
 
 	//check for all required data
@@ -94,10 +94,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
+			$contact_adr_uuid = uuid();
 			$sql = "insert into v_contacts_adr ";
 			$sql .= "(";
-			$sql .= "contact_uuid, ";
 			$sql .= "domain_uuid, ";
+			$sql .= "contact_uuid, ";
+			$sql .= "contact_adr_uuid, ";
 			$sql .= "adr_type, ";
 			$sql .= "adr_street, ";
 			$sql .= "adr_extended, ";
@@ -110,8 +112,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$contact_uuid', ";
 			$sql .= "'$domain_uuid', ";
+			$sql .= "'$contact_uuid', ";
+			$sql .= "'$contact_adr_uuid', ";
 			$sql .= "'$adr_type', ";
 			$sql .= "'$adr_street', ";
 			$sql .= "'$adr_extended', ";
@@ -147,7 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "adr_latitude = '$adr_latitude', ";
 			$sql .= "adr_longitude = '$adr_longitude' ";
 			$sql .= "where domain_uuid = '$domain_uuid'";
-			$sql .= "and contacts_adr_uuid = '$contacts_adr_uuid'";
+			$sql .= "and contact_adr_uuid = '$contact_adr_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -164,11 +167,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$contacts_adr_uuid = $_GET["id"];
+		$contact_adr_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contacts_adr ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and contacts_adr_uuid = '$contacts_adr_uuid' ";
+		$sql .= "and contact_adr_uuid = '$contact_adr_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -332,7 +335,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<td colspan='2' align='right'>\n";
 	echo "				<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='contacts_adr_uuid' value='$contacts_adr_uuid'>\n";
+		echo "				<input type='hidden' name='contact_adr_uuid' value='$contact_adr_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

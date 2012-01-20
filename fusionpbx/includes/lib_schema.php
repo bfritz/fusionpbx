@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -48,7 +48,7 @@ function db_table_exists ($db, $db_type, $db_name, $table_name) {
 		$sql .= "SELECT * FROM sqlite_master WHERE type='table' and name='$table_name' ";
 	}
 	if ($db_type == "pgsql") {
-		$sql .= "select * from pg_tables where schemaname='public' and tablename = '$table_name' ";
+		$sql .= "select * from pg_tables where schemaname='public' and table_name = '$table_name' ";
 	}
 	if ($db_type == "mysql") {
 		$sql .= "SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = '$db_name' and TABLE_NAME = '$table_name' ";
@@ -247,9 +247,9 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 
 		//postgresql
 			//list all tables in the database
-				// SELECT tablename FROM pg_tables WHERE schemaname='public';
+				// SELECT table_name FROM pg_tables WHERE schemaname='public';
 			//check if table exists
-				// SELECT * FROM pg_tables WHERE schemaname='public' AND tablename = 'v_groups'
+				// SELECT * FROM pg_tables WHERE schemaname='public' AND table_name = 'v_groups'
 			//check if column exists
 				// SELECT attname FROM pg_attribute WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = 'v_cdr') AND attname = 'caller_id_name'; 
 		//mysql
@@ -431,7 +431,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 			//show the changes
 				if (strlen($sql_update) > 0) {
 					echo "<tr>\n";
-					echo "<td class='rowstyle1' colspan='3'>\n";
+					echo "<td class='row_style1' colspan='3'>\n";
 					echo "<br />\n";
 					echo "<strong>SQL Changes:</strong><br />\n";
 					echo "<pre>\n";
@@ -456,11 +456,11 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 
 						//check if the table exists
 							if ($row['exists'] == "true") {
-								echo "<td valign='top' class='rowstyle1'><strong>table</strong><br />$table_name</td>\n";
+								echo "<td valign='top' class='row_style1'><strong>table</strong><br />$table_name</td>\n";
 								echo "<td valign='top' class='vncell' style=''>true</td>\n";
 
 								if (count($row['fields']) > 0) {
-									echo "<td class='rowstyle1'>\n";
+									echo "<td class='row_style1'>\n";
 									//show the list of columns
 										echo "<table border='0' cellpadding='10' cellspacing='0'>\n";
 										echo "<tr>\n";
@@ -482,14 +482,14 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 												$field_type = $field['type'];
 											}
 											echo "<tr>\n";
-											echo "<td class='rowstyle1' width='200'>".$field_name."</td>\n";
-											echo "<td class='rowstyle1'>".$field_type."</td>\n";
+											echo "<td class='row_style1' width='200'>".$field_name."</td>\n";
+											echo "<td class='row_style1'>".$field_type."</td>\n";
 											if ($field['exists'] == "true") {
-												echo "<td class='rowstyle0' style=''>true</td>\n";
+												echo "<td class='row_style0' style=''>true</td>\n";
 												echo "<td>&nbsp;</td>\n";
 											}
 											else {
-												echo "<td class='rowstyle1' style='background-color:#444444;color:#CCCCCC;'>false</td>\n";
+												echo "<td class='row_style1' style='background-color:#444444;color:#CCCCCC;'>false</td>\n";
 												echo "<td>&nbsp;</td>\n";
 											}
 											echo "</tr>\n";
@@ -500,9 +500,9 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 								}
 							}
 							else {
-								echo "<td valign='top' class='rowstyle1'><strong>table</strong><br />$table_name</td>\n";
-								echo "<td valign='top' class='rowstyle1' style='background-color:#444444;color:#CCCCCC;'><strong>exists</strong><br />false</td>\n";
-								echo "<td valign='top' class='rowstyle1'>&nbsp;</td>\n";
+								echo "<td valign='top' class='row_style1'><strong>table</strong><br />$table_name</td>\n";
+								echo "<td valign='top' class='row_style1' style='background-color:#444444;color:#CCCCCC;'><strong>exists</strong><br />false</td>\n";
+								echo "<td valign='top' class='row_style1'>&nbsp;</td>\n";
 							}
 							echo "</tr>\n";
 					}

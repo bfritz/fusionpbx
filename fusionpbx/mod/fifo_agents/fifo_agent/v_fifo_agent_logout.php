@@ -38,8 +38,8 @@ else {
 	$sql = "";
 	$sql .= "delete from v_fifo_agents ";
 	$sql .= "where agent_username = '".$_SESSION["username"]."' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	unset($sql);
 
 //agent status log login 

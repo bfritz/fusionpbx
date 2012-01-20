@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -39,7 +39,7 @@ require_once "includes/paging.php";
 	ini_set(max_execution_time,7200);
 
 //get the http get values and set them as php variables
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //download the recordings
@@ -89,13 +89,13 @@ require_once "includes/paging.php";
 	$sql = "";
 	$sql .= "select * from v_recordings ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$config_recording_list .= $row['recording_filename']."|";
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 //add recordings to the database
 	if (is_dir($v_recordings_dir.'/')) {
@@ -106,28 +106,25 @@ require_once "includes/paging.php";
 						//echo "The $file was not found<br/>";
 						//file not found add it to the database
 						$a_file = explode("\.", $file);
-
+						$recording_uuid = uuid();
 						$sql = "insert into v_recordings ";
 						$sql .= "(";
 						$sql .= "domain_uuid, ";
+						$sql .= "recording_uuid, ";
 						$sql .= "recording_filename, ";
 						$sql .= "recording_name, ";
-						//$sql .= "recordingid, ";
 						$sql .= "recording_desc ";
 						$sql .= ")";
 						$sql .= "values ";
 						$sql .= "(";
 						$sql .= "'$domain_uuid', ";
+						$sql .= "'$recording_uuid', ";
 						$sql .= "'$file', ";
 						$sql .= "'".$a_file[0]."', ";
-						//$sql .= "'".uuid()."', ";
 						$sql .= "'auto' ";
 						$sql .= ")";
 						$db->exec(check_sql($sql));
 						unset($sql);
-					}
-					else {
-						//echo "The $file was found.<br/>";
 					}
 				}
 			}
@@ -191,41 +188,41 @@ require_once "includes/paging.php";
 	$sql = "";
 	$sql .= "select * from v_recordings ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$numrows = count($result);
-	unset ($prepstatement, $result, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$num_rows = count($result);
+	unset ($prep_statement, $result, $sql);
 
-	$rowsperpage = 100;
+	$rows_per_page = 100;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page; 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+	$offset = $rows_per_page * $page; 
 
 	$sql = "";
 	$sql .= "select * from v_recordings ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('recording_filename', 'Filename (download)', $orderby, $order);
-	echo thorderby('recording_name', 'Recording Name (play)', $orderby, $order);
+	echo thorder_by('recording_filename', 'Filename (download)', $order_by, $order);
+	echo thorder_by('recording_name', 'Recording Name (play)', $order_by, $order);
 	echo "<th width=\"10%\" class=\"listhdr\" nowrap>Size</th>\n";
-	echo thorderby('recording_desc', 'Description', $orderby, $order);
+	echo thorder_by('recording_desc', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('recordings_add')) {
 		echo "	<a href='v_recordings_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -233,29 +230,26 @@ require_once "includes/paging.php";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if ($resultcount == 0) {
-		//no results
-	}
-	else { //received results
+	if ($result_count > 0) {
 		foreach($result as $row) {
 			$tmp_filesize = filesize($v_recordings_dir.'/'.$row['recording_filename']);
 			$tmp_filesize = byte_convert($tmp_filesize);
 
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			echo "		<a href=\"v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode($row['recording_filename'])."\">\n";
 			echo $row['recording_filename'];
 			echo "	  </a>";
 			echo "	</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('v_recordings_play.php?a=download&type=moh&filename=".base64_encode($row['recording_filename'])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
 			echo $row['recording_name'];
 			echo "	  </a>";
 			echo 	"</td>\n";
-			echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+			echo "	<td class='".$row_style[$c]."' ondblclick=\"\">\n";
 			echo "	".$tmp_filesize;
 			echo "	</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."' width='30%'>".$row['recording_desc']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."' width='30%'>".$row['recording_desc']."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('recordings_edit')) {
 				echo "		<a href='v_recordings_edit.php?id=".$row['recording_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
@@ -268,14 +262,14 @@ require_once "includes/paging.php";
 
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 	echo "</table>\n";
 
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('recordings_add')) {
 		echo "			<a href='v_recordings_edit.php' alt='add'>$v_link_label_add</a>\n";

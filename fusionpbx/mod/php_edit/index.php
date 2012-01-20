@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -38,7 +38,6 @@ echo "<html>\n";
 echo "<head>\n";
 echo "	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
 echo "	<title></title>";
-
 
 	echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 	echo "// Replaces all instances of the given substring.\n";
@@ -74,7 +73,6 @@ echo "	<title></title>";
 
 	echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 	echo "    function makeRequest(url, strpost) {\n";
-	//echo "        alert(url); \n";
 	echo "        var http_request = false;\n";
 	echo "\n";
 	echo "        if (window.XMLHttpRequest) { // Mozilla, Safari, ...\n";
@@ -195,51 +193,32 @@ echo "	<title></title>";
 		}
 
   	</script>
-
 </head>
-<?php
-//<body marginwidth="0" marginheight="0" style="margin: 0" onresize="elem = document.getElementById('edit1'); elem.style.height='100%';  elem.style.width='100%'; document.getElementById('toolbar').style.width='200px';">
-?><table border='0' style="height: 100%; width: 100%;">
-<tr>
-<td id='toolbar' valign='top' width='200' style="width: 200;" height='100%' nowrap='nowrap'>
-
-<IFRAME SRC='filelist.php' style='border: solid 1px #CCCCCC; height: 50%; width: 100%;' TITLE=''>
-<!-- File List: Requires IFRAME support -->
-</IFRAME>
-<IFRAME SRC='cliplist.php' style='border: solid 1px #CCCCCC; height: 50%; width: 100%;' TITLE=''>
-<!-- Clip List: Requires IFRAME support -->
-</IFRAME>
-</td>
-
-<td valign='top' width="100%" height='100%' style="height: 100%;">
-<?php
-	if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)) {
-		//IE doesn't work with the 100% width with the IFRAME
-		echo "<textarea id='edit1' wrap='off' style='height: 100%; width: 800px; white-space: nowrap;' name=''>\n";
-		echo "</textarea>\n";
-	}
-	else {
-		echo "<textarea id='edit1' wrap='off' style='height: 100%; width: 100%; white-space: nowrap;' name=''>\n";
-		echo "</textarea>\n";
-	}
-?>
-<input type='hidden' id='file' name='file' value='' />
-</td>
-</tr>
+<table border='0' style="height: 100%; width: 100%;">
+	<tr>
+		<td id='toolbar' valign='top' width='200' style="width: 200;" height='100%' nowrap='nowrap'>
+			<IFRAME SRC='filelist.php' style='border: solid 1px #CCCCCC; height: 50%; width: 100%;' TITLE=''>
+			<!-- File List: Requires IFRAME support -->
+			</IFRAME>
+			<IFRAME SRC='cliplist.php' style='border: solid 1px #CCCCCC; height: 50%; width: 100%;' TITLE=''>
+			<!-- Clip List: Requires IFRAME support -->
+			</IFRAME>
+			</td>
+			<td valign='top' width="100%" height='100%' style="height: 100%;">
+			<?php
+				if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)) {
+					//IE doesn't work with the 100% width with the IFRAME
+					echo "<textarea id='edit1' wrap='off' style='height: 100%; width: 800px; white-space: nowrap;' name=''>\n";
+					echo "</textarea>\n";
+				}
+				else {
+					echo "<textarea id='edit1' wrap='off' style='height: 100%; width: 100%; white-space: nowrap;' name=''>\n";
+					echo "</textarea>\n";
+				}
+			?>
+			<input type='hidden' id='file' name='file' value='' />
+		</td>
+	</tr>
 </table>
-
-<?php
-/*
-echo "    <p>Custom controls:<br />\n";
-echo "    	<input type='button' onclick='alert(editAreaLoader.getValue(\"edit1\"));' value='get value' />\n";
-echo "    	<input type='button' onclick='editAreaLoader.setValue(\"edit1\", \"new_value\");' value='set value' />\n";
-echo "    	<input type='button' onclick='test_getSelectionRange(\"edit1\");' value='getSelectionRange' />\n";
-echo "    	<input type='button' onclick='test_setSelectionRange(\"edit1\");' value='setSelectionRange' />\n";
-echo "    	<input type='button' onclick='test_getSelectedText(\"edit1\");' value='getSelectedText' />\n";
-echo "    	<input type='button' onclick='test_setSelectedText(\"edit1\");' value='setSelectedText' />\n";
-echo "    	<input type='button' onclick='editAreaLoader.insertTags(\"edit1\", \"[OPEN]\", \"[CLOSE]\");' value='insertTags' />\n";
-echo "    </p>";
-*/
-?>
 </body>
 </html>

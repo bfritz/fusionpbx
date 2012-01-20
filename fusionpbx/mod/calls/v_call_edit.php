@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -64,9 +64,9 @@ function destination_select($select_name, $select_value, $select_default) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}
 	$sql .= "and enabled = 'true' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	if (count($result)== 0) {
 		echo "access denied";
 		exit;
@@ -82,7 +82,7 @@ function destination_select($select_name, $select_value, $select_default) {
 			break; //limit to 1 row
 		}
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
@@ -250,28 +250,28 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_hunt_group ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_extension = '$extension' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			if ($row["hunt_group_type"] == 'call_forward') {
 				$call_forward_action = "update";
-				$call_forward_id = $row["hunt_group_uuid"];
+				$call_forward_uuid = $row["hunt_group_uuid"];
 			}
 			if ($row["hunt_group_type"] == 'follow_me_sequence') {
 				$follow_me_action = "update";
-				$follow_me_id = $row["hunt_group_uuid"];
+				$follow_me_uuid = $row["hunt_group_uuid"];
 			}
 			if ($row["hunt_group_type"] == 'follow_me_simultaneous') {
 				$follow_me_action = "update";
-				$follow_me_id = $row["hunt_group_uuid"];
+				$follow_me_uuid = $row["hunt_group_uuid"];
 			}
 			if ($row["hunt_group_type"] == 'dnd') {
 				$dnd_action = "update";
-				$dnd_id = $row["hunt_group_uuid"];
+				$dnd_uuid = $row["hunt_group_uuid"];
 			}
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 
 	//include the classes
 		include "includes/classes/call_forward.php";
@@ -281,7 +281,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//call forward config
 		if (permission_exists('call_forward')) {
 			$call_forward = new call_forward;
-			$call_forward->call_forward_id = $call_forward_id;
+			$call_forward->call_forward_uuid = $call_forward_uuid;
 			$call_forward->domain_uuid = $domain_uuid;
 			$call_forward->db_type = $db_type;
 			$call_forward->extension = $extension;
@@ -304,7 +304,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$follow_me = new follow_me;
 			$follow_me->domain_uuid = $domain_uuid;
 			$follow_me->db_type = $db_type;
-			$follow_me->follow_me_id = $follow_me_id;
+			$follow_me->follow_me_uuid = $follow_me_uuid;
 			$follow_me->extension = $extension;
 			$follow_me->follow_me_enabled = $follow_me_enabled;
 			$follow_me->follow_me_type = $follow_me_type;
@@ -346,7 +346,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (permission_exists('do_not_disturb')) {
 			$dnd = new do_not_disturb;
 			$dnd->domain_uuid = $domain_uuid;
-			$dnd->dnd_id = $dnd_id;
+			$dnd->dnd_uuid = $dnd_uuid;
 			$dnd->v_domain = $v_domain;
 			$dnd->extension = $extension;
 			$dnd->dnd_enabled = $dnd_enabled;
@@ -366,7 +366,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		sync_package_v_hunt_group();
 
 	//synchronize the xml config
-		sync_package_v_dialplan_includes();
+		sync_package_v_dialplan();
 
 	//redirect the user
 		require_once "includes/header.php";
@@ -387,9 +387,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql .= "select * from v_hunt_group ";
 	$sql .= "where hunt_group_extension = '$extension' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$hunt_group_uuid = $row["hunt_group_uuid"];
 		$hunt_group_extension = $row["hunt_group_extension"];
@@ -427,9 +427,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "";
 			$sql .= "select * from v_hunt_group_destinations ";
 			$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
-			$prep_statement2 = $db->prepare(check_sql($sql));
-			$prep_statement2->execute();
-			$result2 = $prep_statement2->fetchAll();
+			$prep_statement_2 = $db->prepare(check_sql($sql));
+			$prep_statement_2->execute();
+			$result2 = $prep_statement_2->fetchAll();
 			$x=1;
 			foreach ($result2 as &$row2) {
 				if ($row["hunt_group_type"] == 'call_forward') {
@@ -461,10 +461,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$x++;
 				}
 			}
-			unset ($prep_statement2);
+			unset ($prep_statement_2);
 		}
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 
 //show the content

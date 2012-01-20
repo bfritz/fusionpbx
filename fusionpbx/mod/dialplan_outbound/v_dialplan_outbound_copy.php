@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,18 +37,18 @@ else {
 
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
-		$dialplan_include_uuid = check_str($_REQUEST["id"]);
+		$dialplan_uuid = check_str($_REQUEST["id"]);
 	}
 
-//get the v_dialplan_includes data 
-	$dialplan_include_uuid = $_GET["id"];
+//get the v_dialplan data 
+	$dialplan_uuid = $_GET["id"];
 	$sql = "";
-	$sql .= "select * from v_dialplan_includes ";
+	$sql .= "select * from v_dialplan ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$domain_uuid = $row["domain_uuid"];
 		$extension_name = $row["extension_name"];
@@ -59,12 +59,14 @@ else {
 		$descr = "copy: ".$row["descr"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 	//copy the dialplan
-		$sql = "insert into v_dialplan_includes ";
+		$dialplan_uuid = uuid();
+		$sql = "insert into v_dialplan ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
+		$sql .= "dialplan_uuid, ";
 		$sql .= "extension_name, ";
 		$sql .= "dialplan_order, ";
 		$sql .= "extension_continue, ";
@@ -75,6 +77,7 @@ else {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
+		$sql .= "'$dialplan_uuid', ";
 		$sql .= "'$extension_name', ";
 		$sql .= "'$dialplan_order', ";
 		$sql .= "'$extension_continue', ";
@@ -82,43 +85,33 @@ else {
 		$sql .= "'$enabled', ";
 		$sql .= "'$descr' ";
 		$sql .= ")";
-		if ($db_type == "sqlite" || $db_type == "mysql" ) {
-			$db->exec(check_sql($sql));
-			$db_dialplan_include_uuid = $db->lastInsertId($id);
-		}
-		if ($db_type == "pgsql") {
-			$sql .= " RETURNING dialplan_include_uuid ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			foreach ($result as &$row) {
-				$db_dialplan_include_uuid = $row["dialplan_include_uuid"];
-			}
-			unset($prepstatement, $result);
-		}
+		$db->exec(check_sql($sql));
+		$dialplan_uuid = $db->lastInsertId($id);
 		unset($sql);
 
 	//get the the dialplan details
 		$sql = "";
-		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "select * from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
-			//$dialplan_include_uuid = $row["dialplan_include_uuid"];
+			//$dialplan_uuid = $row["dialplan_uuid"];
 			$tag = $row["tag"];
 			$field_order = $row["field_order"];
 			$field_type = $row["field_type"];
 			$field_data = $row["field_data"];
 
 			//copy the dialplan details
-				$sql = "insert into v_dialplan_includes_details ";
+				$dialplan_detail_uuid = uuid();
+				$sql = "insert into v_dialplan_details ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
-				$sql .= "dialplan_include_uuid, ";
+				$sql .= "dialplan_uuid, ";
+				$sql .= "dialplan_detail_uuid, ";
 				$sql .= "tag, ";
 				$sql .= "field_order, ";
 				$sql .= "field_type, ";
@@ -127,7 +120,8 @@ else {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
-				$sql .= "'".check_str($db_dialplan_include_uuid)."', ";
+				$sql .= "'".check_str($dialplan_uuid)."', ";
+				$sql .= "'".check_str($dialplan_detail_uuid)."', ";
 				$sql .= "'".check_str($tag)."', ";
 				$sql .= "'".check_str($field_order)."', ";
 				$sql .= "'".check_str($field_type)."', ";
@@ -136,10 +130,10 @@ else {
 				$db->exec(check_sql($sql));
 				unset($sql);
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 
 	//synchronize the xml config
-		sync_package_v_dialplan_includes();
+		sync_package_v_dialplan();
 
 	//redirect the user
 		require_once "includes/header.php";

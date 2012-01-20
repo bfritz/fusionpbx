@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -81,15 +81,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('voicemail_greetings_add')) {
+			$voicemail_greeting_uuid = uuid();
 			$sql = "insert into v_voicemail_greetings ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
+			$sql .= "voicemail_greeting_uuid, ";
 			$sql .= "greeting_name, ";
 			$sql .= "greeting_description ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
+			$sql .= "'$voicemail_greeting_uuid', ";
 			$sql .= "'$greeting_name', ";
 			$sql .= "'$greeting_description' ";
 			$sql .= ")";
@@ -112,14 +115,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "where greeting_uuid = '$greeting_uuid' ";
 				$sql .= "and domain_uuid = '$domain_uuid' ";
 				//echo "sql: ".$sql."<br />\n";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$greeting_name_orig = $row["greeting_name"];
 					break; //limit to 1 row
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 
 			//if file name is not the same then rename the file
 				if ($greeting_name != $greeting_name_orig) {
@@ -155,15 +158,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_voicemail_greetings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and greeting_uuid = '$greeting_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$greeting_name = $row["greeting_name"];
 			$greeting_description = $row["greeting_description"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header

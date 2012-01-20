@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -50,8 +50,8 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 		$prep_statement_2->execute();
 		$result2 = $prep_statement_2->fetchAll();
 
-		$rowstyle["0"] = "rowstyle1";
-		$rowstyle["1"] = "rowstyle1";
+		$row_style["0"] = "row_style1";
+		$row_style["1"] = "row_style1";
 
 		if (count($result2) > 0) {
 			if ($c == 0) { $c2 = 1; } else { $c2 = 0; }
@@ -107,7 +107,7 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 
 				//display the content of the list
 					echo "<tr'>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>";
+					echo "<td valign='top' class='".$row_style[$c]."'>";
 					echo "  <table cellpadding='0' cellspacing='0' border='0'>";
 					echo "  <tr>";
 					echo "      <td nowrap>";
@@ -123,22 +123,22 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 					echo "  </table>";
 					echo "</td>";
 					//echo "<td valign='top'>&nbsp;".$menu_item_str."&nbsp;</td>";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$group_list."&nbsp;</td>";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$menu_item_category."&nbsp;</td>";
+					echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$group_list."&nbsp;</td>";
+					echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_category."&nbsp;</td>";
 					//echo "<td valign='top'>".$row[menu_item_desc]."</td>";
 					//echo "<td valign='top'>&nbsp;".$row[menu_item_order]."&nbsp;</td>";
 					if ($menu_item_protected == "true") {
-						echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp; <strong>yes</strong> &nbsp;</td>";
+						echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; <strong>yes</strong> &nbsp;</td>";
 					}
 					else {
-						echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp; no &nbsp;</td>";
+						echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; no &nbsp;</td>";
 					}
-					echo "<td valign='top' align='center' nowrap class='".$rowstyle[$c]."'>";
+					echo "<td valign='top' align='center' nowrap class='".$row_style[$c]."'>";
 					echo "	&nbsp;";
 					//echo "  ".$row2[menu_item_order]."&nbsp;";
 					echo "</td>";
 
-					//echo "<td valign='top' align='center' class='".$rowstyle[$c]."'>";
+					//echo "<td valign='top' align='center' class='".$row_style[$c]."'>";
 					//if (permission_exists('menu_edit')) {
 					//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_up.php?menu_uuid=".$menu_uuid."&menu_item_parent_uuid=".$row2['menu_item_parent_uuid']."&menu_item_id=".$row2[menu_item_id]."&menu_item_order=".$row2[menu_item_order]."'\" value='<' title='".$row2[menu_item_order].". Move Up'>";
 					//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_down.php?menu_uuid=".$menu_uuid."&menu_item_parent_uuid=".$row2['menu_item_parent_uuid']."&menu_item_id=".$row2[menu_item_id]."&menu_item_order=".$row2[menu_item_order]."'\" value='>' title='".$row2[menu_item_order].". Move Down'>";
@@ -209,19 +209,19 @@ $order = $_GET["order"];
 	else {
 		$sql .= "order by menu_item_order asc ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle0";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style0";
 
 	echo "<div align='left'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
-	if ($resultcount == 0) {
+	if ($result_count == 0) {
 		//no results
 		echo "<tr><td>&nbsp;</td></tr>";
 	}
@@ -286,27 +286,27 @@ $order = $_GET["order"];
 				}
 
 			//display the content of the list
-				echo "<tr style='".$rowstyle[$c]."'>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp; ".$menu_item_title."&nbsp;</td>";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp; ".$group_list."&nbsp;</td>";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$menu_item_str."&nbsp;</td>";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$menu_item_category."&nbsp;</td>";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[menu_item_desc]."</td>";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row['menu_item_parent_uuid']."&nbsp;</td>";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row['menu_item_order']."&nbsp;</td>";
+				echo "<tr style='".$row_style[$c]."'>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; ".$menu_item_title."&nbsp;</td>";
+				echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; ".$group_list."&nbsp;</td>";
+				//echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_str."&nbsp;</td>";
+				echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_category."&nbsp;</td>";
+				//echo "<td valign='top' class='".$row_style[$c]."'>".$row[menu_item_desc]."</td>";
+				//echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$row['menu_item_parent_uuid']."&nbsp;</td>";
+				//echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$row['menu_item_order']."&nbsp;</td>";
 
 				if ($menu_item_protected == "true") {
-					echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp; <strong>yes</strong> &nbsp;</td>";
+					echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; <strong>yes</strong> &nbsp;</td>";
 				}
 				else {
-					echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp; no &nbsp;</td>";
+					echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; no &nbsp;</td>";
 				}
 
-				echo "<td valign='top' align='center' nowrap class='".$rowstyle[$c]."'>";
+				echo "<td valign='top' align='center' nowrap class='".$row_style[$c]."'>";
 				echo "  ".$row[menu_item_order]."&nbsp;";
 				echo "</td>";
 
-				//echo "<td valign='top' align='center' nowrap class='".$rowstyle[$c]."'>";
+				//echo "<td valign='top' align='center' nowrap class='".$row_style[$c]."'>";
 				//if (permission_exists('menu_edit')) {
 				//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_up.php?menu_uuid=".$menu_uuid."&menu_item_parent_uuid=".$row['menu_item_parent_uuid']."&menu_item_id=".$row['menu_item_id']."&menu_item_order=".$row['menu_item_order']."'\" value='<' title='".$row['menu_item_order'].". Move Up'>";
 				//	echo "  <input type='button' class='btn' name='' onclick=\"window.location='menu_item_move_down.php?menu_uuid=".$menu_uuid."&menu_item_parent_uuid=".$row['menu_item_parent_uuid']."&menu_item_id=".$row['menu_item_id']."&menu_item_order=".$row['menu_item_order']."'\" value='>' title='".$row['menu_item_order'].". Move Down'>";
@@ -342,7 +342,7 @@ $order = $_GET["order"];
 
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 
 	} //end if results
 

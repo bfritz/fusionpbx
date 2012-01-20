@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -44,8 +44,8 @@ if (count($_GET)>0) {
 		$sql .= "delete from v_extensions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and extension_uuid = '$id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 		unset($sql);
 
 		//syncrhonize configuration
@@ -62,7 +62,7 @@ if (count($_GET)>0) {
 	echo "			<th align='left'>Message</th>\n";
 	echo "		</tr>\n";
 	echo "		<tr>\n";
-	echo "			<td class='rowstyle1'><strong>Delete Complete</strong></td>\n";
+	echo "			<td class='row_style1'><strong>Delete Complete</strong></td>\n";
 	echo "		</tr>\n";
 	echo "	</table>\n";
 	echo "	<br />\n";

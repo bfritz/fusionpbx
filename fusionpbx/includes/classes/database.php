@@ -188,7 +188,7 @@ include "root.php";
 				if ($this->where) {
 					$sql .= $this->where." ";
 				}
-				if ($this->orderby) {
+				if ($this->order_by) {
 					$sql .= $this->order_by." ";
 				}
 				if ($this->limit) {
@@ -264,10 +264,10 @@ include "root.php";
 				if ($this->where) {
 					$sql .= $this->where." ";
 				}
-				$prepstatement = $this->connect->prepare(check_sql($sql));
-				if ($prepstatement) {
-					$prepstatement->execute();
-					$row = $prepstatement->fetch(PDO::FETCH_ASSOC);
+				$prep_statement = $this->connect->prepare(check_sql($sql));
+				if ($prep_statement) {
+					$prep_statement->execute();
+					$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 					if ($row['num_rows'] > 0) {
 						return $row['num_rows'];
 					}
@@ -275,7 +275,7 @@ include "root.php";
 						return = 0;
 					}
 				}
-				unset($prepstatement, $result);
+				unset($prep_statement, $result);
 			}
 
 			if (!function_exists('php_md5')) {

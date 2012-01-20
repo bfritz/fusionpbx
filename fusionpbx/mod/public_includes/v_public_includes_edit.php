@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -38,7 +38,7 @@ else {
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$public_include_uuid = check_str($_REQUEST["id"]);
+		$public_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -59,7 +59,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$public_include_uuid = check_str($_POST["public_include_uuid"]);
+		$public_uuid = check_str($_POST["public_uuid"]);
 	}
 
 	//check for all required data
@@ -90,7 +90,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('public_includes_add')) {
-			$sql = "insert into v_public_includes ";
+			$sql = "insert into v_public ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "extension_name, ";
@@ -114,10 +114,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//synchronize the xml config
-			sync_package_v_public_includes();
+			sync_package_v_public();
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_includes.php\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public.php\">\n";
 			echo "<div align='center'>\n";
 			echo "Add Complete\n";
 			echo "</div>\n";
@@ -127,19 +127,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update" && permission_exists('public_includes_edit')) {
 			$sql = "";
-			$sql .= "select * from v_public_includes ";
+			$sql .= "select * from v_public ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and public_include_uuid = '$public_include_uuid' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
+			$sql .= "and public_uuid = '$public_uuid' ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row) {
 				$orig_extension_name = $row["extension_name"];
 				$orig_public_order = $row["public_order"];
 				//$enabled = $row["enabled"];
 				break; //limit to 1 row
 			}
-			unset ($prepstatement, $sql);
+			unset ($prep_statement, $sql);
 
 			$publicincludefilename = $orig_public_order."_".$orig_extension_name.".xml";
 			if (file_exists($v_conf_dir."/dialplan/public/".$publicincludefilename)) {
@@ -147,7 +147,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			}
 			unset($publicincludefilename, $orig_public_order, $orig_extension_name);
 
-			$sql = "update v_public_includes set ";
+			$sql = "update v_public set ";
 			$sql .= "extension_name = '$extension_name', ";
 			$sql .= "public_order = '$public_order', ";
 			$sql .= "extension_continue = '$extension_continue', ";
@@ -155,15 +155,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "descr = '$descr' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and public_include_uuid = '$public_include_uuid'";
+			$sql .= "and public_uuid = '$public_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
 			//synchronize the xml config
-			sync_package_v_public_includes();
+			sync_package_v_public();
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_includes.php\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public.php\">\n";
 			echo "<div align='center'>\n";
 			echo "Update Complete\n";
 			echo "</div>\n";
@@ -175,14 +175,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$public_include_uuid = $_GET["id"];
+		$public_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_public_includes ";
+		$sql .= "select * from v_public ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and public_include_uuid = '$public_include_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$sql .= "and public_uuid = '$public_uuid' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			//$domain_uuid = $row["domain_uuid"];
 			$extension_name = $row["extension_name"];
@@ -193,7 +193,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$descr = $row["descr"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //include the header
@@ -218,8 +218,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td width='30%' align='left' nowrap><b>Public Include Update</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_public_includes_copy.php?id=".$public_include_uuid."';}\" value='Copy'>\n";
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public_includes.php'\" value='Back'>\n";
+	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_public_copy.php?id=".$public_uuid."';}\" value='Copy'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public.php'\" value='Back'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -340,7 +340,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='public_include_uuid' value='$public_include_uuid'>\n";
+		echo "				<input type='hidden' name='public_uuid' value='$public_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";
@@ -373,8 +373,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<br />\n";
 
 		$c = 0;
-		$rowstyle["0"] = "rowstyle0";
-		$rowstyle["1"] = "rowstyle1";
+		$row_style["0"] = "row_style0";
+		$row_style["1"] = "row_style1";
 
 		echo "<div align='center'>\n";
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
@@ -385,117 +385,117 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<th align='center'>Order</th>\n";
 		echo "<td align='right' width='42'>\n";
 		if (permission_exists('public_includes_add')) {
-			echo "	<a href='v_public_includes_details_edit.php?id2=".$public_include_uuid."' alt='add'>$v_link_label_add</a>\n";
+			echo "	<a href='v_public_details_edit.php?id2=".$public_uuid."' alt='add'>$v_link_label_add</a>\n";
 		}
 		echo "</td>\n";
 		echo "<tr>\n";
 
 		//list the conditions
 			$sql = "";
-			$sql .= " select * from v_public_includes_details ";
-			$sql .= " where public_include_uuid = '$public_include_uuid' ";
+			$sql .= " select * from v_public_details ";
+			$sql .= " where public_uuid = '$public_uuid' ";
 			$sql .= " and domain_uuid = $domain_uuid ";
 			$sql .= " and tag = 'condition' ";
 			$sql .= " order by field_order asc";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
-			unset ($prepstatement, $sql);
-			if ($resultcount == 0) {
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
+			unset ($prep_statement, $sql);
+			if ($result_count == 0) {
 				//no results
 			}
 			else { //received results
 				foreach($result as $row) {
 					echo "<tr >\n";
-					echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
-					echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
-					echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[field_data]."</td>\n";
-					echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[field_order]."</td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_data]."</td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_order]."</td>\n";
 					echo "   <td valign='top' align='right'>\n";
 					if (permission_exists('public_includes_edit')) {
-						echo "		<a href='v_public_includes_details_edit.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_include_uuid."' alt='edit'>$v_link_label_edit</a>\n";
+						echo "		<a href='v_public_details_edit.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_uuid."' alt='edit'>$v_link_label_edit</a>\n";
 					}
 					if (permission_exists('public_includes_delete')) {
-						echo "		<a href='v_public_includes_details_delete.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_include_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+						echo "		<a href='v_public_details_delete.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 					}
 					echo "   </td>\n";
 					echo "</tr>\n";
 					if ($c==0) { $c=1; } else { $c=0; }
 				} //end foreach
-				unset($sql, $result, $rowcount);
+				unset($sql, $result, $row_count);
 			} //end if results
 
 		//list the actions
 			$sql = "";
-			$sql .= " select * from v_public_includes_details ";
-			$sql .= " where public_include_uuid = '$public_include_uuid' ";
+			$sql .= " select * from v_public_details ";
+			$sql .= " where public_uuid = '$public_uuid' ";
 			$sql .= " and domain_uuid = $domain_uuid ";
 			$sql .= " and tag = 'action' ";
 			$sql .= " order by field_order asc";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
-			unset ($prepstatement, $sql);
-			if ($resultcount == 0) {
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
+			unset ($prep_statement, $sql);
+			if ($result_count == 0) {
 				//no results
 			}
 			else { //received results
 				foreach($result as $row) {
 					echo "<tr >\n";
-					echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
-					echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
-					echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[field_data]."</td>\n";
-					echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[field_order]."</td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_data]."</td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_order]."</td>\n";
 					echo "   <td valign='top' align='right'>\n";
 					if (permission_exists('public_includes_edit')) {
-						echo "		<a href='v_public_includes_details_edit.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_include_uuid."' alt='edit'>$v_link_label_edit</a>\n";
+						echo "		<a href='v_public_details_edit.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_uuid."' alt='edit'>$v_link_label_edit</a>\n";
 					}
 					if (permission_exists('public_includes_delete')) {
-						echo "		<a href='v_public_includes_details_delete.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_include_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+						echo "		<a href='v_public_details_delete.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 					}
 					echo "   </td>\n";
 					echo "</tr>\n";
 					if ($c==0) { $c=1; } else { $c=0; }
 				} //end foreach
-				unset($sql, $result, $rowcount);
+				unset($sql, $result, $row_count);
 			} //end if results
 
 		//list the anti-actions
 			$sql = "";
-			$sql .= " select * from v_public_includes_details ";
-			$sql .= " where public_include_uuid = '$public_include_uuid' ";
+			$sql .= " select * from v_public_details ";
+			$sql .= " where public_uuid = '$public_uuid' ";
 			$sql .= " and domain_uuid = $domain_uuid ";
 			$sql .= " and tag = 'anti-action' ";
 			$sql .= " order by field_order asc";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
-			unset ($prepstatement, $sql);
-			if ($resultcount == 0) {
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
+			unset ($prep_statement, $sql);
+			if ($result_count == 0) {
 				//no results
 			}
 			else { //received results
 				foreach($result as $row) {
 					echo "<tr >\n";
-					echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
-					echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
-					echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[field_data]."</td>\n";
-					echo "	<td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[field_order]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_data]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_order]."</td>\n";
 					echo "	<td valign='top' align='right'>\n";
 					if (permission_exists('public_includes_edit')) {
-						echo "		<a href='v_public_includes_details_edit.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_include_uuid."' alt='edit'>$v_link_label_edit</a>\n";
+						echo "		<a href='v_public_details_edit.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_uuid."' alt='edit'>$v_link_label_edit</a>\n";
 					}
 					if (permission_exists('public_includes_delete')) {
-						echo "		<a href='v_public_includes_details_delete.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_include_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+						echo "		<a href='v_public_details_delete.php?id=".$row[public_includes_detail_uuid]."&id2=".$public_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 					}
 					echo "	</td>\n";
 					echo "</tr>\n";
 					if ($c==0) { $c=1; } else { $c=0; }
 				} //end foreach
-				unset($sql, $result, $rowcount);
+				unset($sql, $result, $row_count);
 			} //end if results
 
 		echo "<tr>\n";
@@ -503,10 +503,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 		echo "	<tr>\n";
 		echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-		echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+		echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 		echo "		<td width='33.3%' align='right'>\n";
 		if (permission_exists('public_includes_add')) {
-			echo "			<a href='v_public_includes_details_edit.php?id2=".$public_include_uuid."' alt='add'>$v_link_label_add</a>\n";
+			echo "			<a href='v_public_details_edit.php?id2=".$public_uuid."' alt='add'>$v_link_label_add</a>\n";
 		}
 		echo "		</td>\n";
 		echo "	</tr>\n";

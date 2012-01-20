@@ -28,7 +28,7 @@ include "root.php";
 //define the dnd class
 	class do_not_disturb {
 		var $domain_uuid;
-		var $dnd_id;
+		var $dnd_uuid;
 		var $v_domain;
 		var $extension;
 		var $dnd_enabled;
@@ -51,13 +51,14 @@ include "root.php";
 					$sql .= "user_status = '$user_status' ";
 					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and username = '".$_SESSION['username']."' ";
-					$prepstatement = $db->prepare(check_sql($sql));
-					$prepstatement->execute();
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
 			}
 		} //function
 
 		function dnd_add() {
 			global $db;
+			$hunt_group_uuid = uuid();
 
 			$hunt_group_extension = $this->extension;
 			$huntgroup_name = 'dnd_'.$this->extension;
@@ -78,6 +79,7 @@ include "root.php";
 			$sql = "insert into v_hunt_group ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
+			$sql .= "hunt_group_uuid, ";
 			$sql .= "hunt_group_extension, ";
 			$sql .= "hunt_group_name, ";
 			$sql .= "hunt_group_type, ";
@@ -97,6 +99,7 @@ include "root.php";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$this->domain_uuid', ";
+			$sql .= "'$hunt_group_uuid', ";
 			$sql .= "'$hunt_group_extension', ";
 			$sql .= "'$huntgroup_name', ";
 			$sql .= "'$hunt_group_type', ";
@@ -156,7 +159,7 @@ include "root.php";
 			$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 			$sql .= "hunt_group_descr = '$hunt_group_descr' ";
 			$sql .= "where domain_uuid = '$this->domain_uuid' ";
-			$sql .= "and hunt_group_uuid = '$this->dnd_id' ";
+			$sql .= "and hunt_group_uuid = '$this->dnd_uuid' ";
 			if ($this->debug) {
 				echo $sql."<br />";
 			}

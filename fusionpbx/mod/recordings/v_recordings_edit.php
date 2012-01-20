@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -86,20 +86,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('recordings_add')) {
+			$recording_uuid = uuid();
 			$sql = "insert into v_recordings ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
+			$sql .= "recording_uuid, ";
 			$sql .= "recording_filename, ";
 			$sql .= "recording_name, ";
-			//$sql .= "recording_uuid, ";
 			$sql .= "recording_desc ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
+			$sql .= "'$recording_uuid', ";
 			$sql .= "'$recording_filename', ";
 			$sql .= "'$recording_name', ";
-			//$sql .= "'$recording_uuid', ";
 			$sql .= "'$recording_desc' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
@@ -121,14 +122,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "where recording_uuid = '$recording_uuid' ";
 				$sql .= "and domain_uuid = '$domain_uuid' ";
 				//echo "sql: ".$sql."<br />\n";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$recording_filename_orig = $row["recording_filename"];
 					break; //limit to 1 row
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 
 			//if file name is not the same then rename the file
 				if ($recording_filename != $recording_filename_orig) {
@@ -167,9 +168,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_recordings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and recording_uuid = '$recording_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$recording_filename = $row["recording_filename"];
@@ -178,7 +179,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$recording_desc = $row["recording_desc"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header

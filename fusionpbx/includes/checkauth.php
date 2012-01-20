@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -101,7 +101,7 @@ session_start();
 					$_SESSION["customer_id"] = $row["customer_id"];
 				}
 				// Add User ID to Session.
-				$_SESSION['user_id'] = $row['id'];
+				$_SESSION['user_uuid'] = $row['id'];
 				break;
 			}
 			//echo "username: ".$_SESSION["username"]." and password are correct";
@@ -117,7 +117,7 @@ session_start();
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$_SESSION["groups"] = $result;
-			unset($sql, $rowcount, $prep_statement);
+			unset($sql, $row_count, $prep_statement);
 
 		//get the permissions assigned to the groups that the user is a member of set the permissions in $_SESSION['permissions']
 			$x = 0;
@@ -133,10 +133,10 @@ session_start();
 					$x++;
 				}
 			}
-			$prepstatementsub = $db->prepare($sql);
-			$prepstatementsub->execute();
-			$_SESSION['permissions'] = $prepstatementsub->fetchAll(PDO::FETCH_NAMED);
-			unset($sql, $prepstatementsub);
+			$prep_statementsub = $db->prepare($sql);
+			$prep_statementsub->execute();
+			$_SESSION['permissions'] = $prep_statementsub->fetchAll(PDO::FETCH_NAMED);
+			unset($sql, $prep_statementsub);
 
 		//redirect the user
 			if (check_str($_REQUEST["rdr"]) !== 'n'){

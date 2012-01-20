@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -100,10 +100,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('ivr_menu_add')) {
+				$ivr_menu_option_uuid = uuid();
 				$sql = "insert into v_ivr_menu_options ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "ivr_menu_uuid, ";
+				$sql .= "ivr_menu_option_uuid, ";
 				$sql .= "ivr_menu_options_digits, ";
 				$sql .= "ivr_menu_options_action, ";
 				$sql .= "ivr_menu_options_param, ";
@@ -114,6 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'$ivr_menu_uuid', ";
+				$sql .= "'$ivr_menu_option_uuid', ";
 				$sql .= "'$ivr_menu_options_digits', ";
 				$sql .= "'$ivr_menu_options_action', ";
 				$sql .= "'$ivr_menu_options_param', ";
@@ -169,9 +172,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_ivr_menu_options ";
 		$sql .= "where ivr_menu_option_uuid = '$ivr_menu_option_uuid' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$ivr_menu_uuid = $row["ivr_menu_uuid"];
@@ -193,7 +196,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$ivr_menu_options_desc = $row["ivr_menu_options_desc"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //send the content to the browser

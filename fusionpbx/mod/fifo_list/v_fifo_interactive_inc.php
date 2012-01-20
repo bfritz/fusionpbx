@@ -56,7 +56,7 @@ else {
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+		echo "<td class='row_style1'><strong>$msg</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -80,8 +80,8 @@ else {
 
 		//set the alternating row styles
 			$c = 0;
-			$rowstyle["0"] = "rowstyle0";
-			$rowstyle["1"] = "rowstyle1";
+			$row_style["0"] = "row_style0";
+			$row_style["1"] = "row_style1";
 
 		//response div tag
 			echo "<div id='cmd_reponse'>\n";
@@ -180,24 +180,24 @@ else {
 				$fifo_duration_formatted = str_pad(intval(intval($fifo_duration/3600)),2,"0",STR_PAD_LEFT).":" . str_pad(intval(($fifo_duration / 60) % 60),2,"0",STR_PAD_LEFT).":" . str_pad(intval($fifo_duration % 60),2,"0",STR_PAD_LEFT) ;
 
 				echo "<tr>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$username &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$dialplan &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$caller_id_name &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$caller_id_number &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$default_language &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$ani &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$aniii &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$network_addr &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$destination_number &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$rdnis &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$uuid &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$source &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$context &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$chan_name &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$fifo_position &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$fifo_priority &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$fifo_status &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$fifo_duration_formatted &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$username &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$dialplan &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_name &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_number &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$default_language &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$ani &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$aniii &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$network_addr &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$destination_number &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$rdnis &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$uuid &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$source &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$context &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$chan_name &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$fifo_position &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$fifo_priority &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$fifo_status &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$fifo_duration_formatted &nbsp;</td>\n";
 				echo "</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -99,9 +99,9 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 		$sql = "SELECT * FROM v_users ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and username = '$username' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		if (count($prepstatement->fetchAll()) > 0) {
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		if (count($prep_statement->fetchAll()) > 0) {
 			$msgerror .= "Please choose a different Username.<br>\n";
 		}
 	}

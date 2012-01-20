@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -45,18 +45,18 @@ if (strlen($id)>0) {
 		$sql .= "delete from v_fifo_agent_profile_members ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fifo_agent_profile_id = '$id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		unset($sql, $prepstatement);
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($sql, $prep_statement);
 
 	//delete parent data
 		$sql = "";
 		$sql .= "delete from v_fifo_agent_profiles ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fifo_agent_profile_id = '$id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		unset($sql, $prepstatement);
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($sql, $prep_statement);
 }
 
 require_once "includes/header.php";

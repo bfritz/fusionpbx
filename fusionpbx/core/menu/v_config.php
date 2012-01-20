@@ -42,7 +42,7 @@
 		$apps[$x]['menu'][3]['uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
 		$apps[$x]['menu'][3]['parent_uuid'] = '';
 		$apps[$x]['menu'][3]['category'] = 'internal';
-		$apps[$x]['menu'][3]['path'] = '/mod/dialplan/v_dialplan_includes.php';
+		$apps[$x]['menu'][3]['path'] = '/mod/dialplan/v_dialplan.php';
 		$apps[$x]['menu'][3]['order'] = '2';
 		$apps[$x]['menu'][3]['groups'][] = 'admin';
 		$apps[$x]['menu'][3]['groups'][] = 'superadmin';

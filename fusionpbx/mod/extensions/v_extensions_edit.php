@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2008-2010 All Rights Reserved.
+	Copyright (C) 2008-2012 All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -214,10 +214,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 				else {
 					//extension does not exist add it
+					$extension_uuid = uuid();
 					$password = generate_password();
 					$sql = "insert into v_extensions ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
+					$sql .= "extension_uuid, ";
 					$sql .= "extension, ";
 					$sql .= "number_alias, ";
 					$sql .= "password, ";
@@ -260,6 +262,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$domain_uuid', ";
+					$sql .= "'$extension_uuid', ";
 					$sql .= "'$extension', ";
 					$sql .= "'$number_alias', ";
 					$sql .= "'$password', ";
@@ -314,7 +317,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$db->exec(check_sql($sql));
 					unset($sql);
 				}
-
 				$extension++;
 			}
 			$db->commit();
@@ -329,8 +331,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//prepare for alternating the row style
 				$c = 0;
-				$rowstyle["0"] = "rowstyle0";
-				$rowstyle["1"] = "rowstyle1";
+				$row_style["0"] = "row_style0";
+				$row_style["1"] = "row_style1";
 
 			//show the action and redirect the user
 				require_once "includes/header.php";
@@ -344,7 +346,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						echo "			<th align='left'>Message</th>\n";
 						echo "		</tr>\n";
 						echo "		<tr>\n";
-						echo "			<td class='rowstyle1'><strong>Add Complete</strong></td>\n";
+						echo "			<td class='row_style1'><strong>Add Complete</strong></td>\n";
 						echo "		</tr>\n";
 						echo "	</table>\n";
 						echo "	<br />\n";
@@ -361,8 +363,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						echo "		</tr>\n";
 						foreach($generated_users as $tmp_user){
 							echo "		<tr>\n";
-							echo "			<td valign='top' class='".$rowstyle[$c]."'>".$tmp_user['username']."</td>\n";
-							echo "			<td valign='top' class='".$rowstyle[$c]."'>".$tmp_user['password']."</td>\n";
+							echo "			<td valign='top' class='".$row_style[$c]."'>".$tmp_user['username']."</td>\n";
+							echo "			<td valign='top' class='".$row_style[$c]."'>".$tmp_user['password']."</td>\n";
 							echo "		</tr>\n";
 						}
 						if ($c==0) { $c=1; } else { $c=0; }
@@ -471,7 +473,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					echo "			<th align='left'>Message</th>\n";
 					echo "		</tr>\n";
 					echo "		<tr>\n";
-					echo "			<td class='rowstyle1'><strong>Update Complete</strong></td>\n";
+					echo "			<td class='row_style1'><strong>Update Complete</strong></td>\n";
 					echo "		</tr>\n";
 					echo "	</table>\n";
 					echo "<br />\n";
@@ -490,9 +492,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_extensions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and extension_uuid = '$extension_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$extension = $row["extension"];
 			$number_alias = $row["number_alias"];
@@ -528,7 +530,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$description = $row["description"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //set the defaults
@@ -547,14 +549,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "}\n";
 	echo "\n";
 	echo "function show_advanced_config() {\n";
-	echo "	document.getElementById(\"showadvancedbox\").innerHTML='';\n";
-	echo "	aodiv = document.getElementById('showadvanced');\n";
+	echo "	document.getElementById(\"show_advanced_box\").innerHTML='';\n";
+	echo "	aodiv = document.getElementById('show_advanced');\n";
 	echo "	aodiv.style.display = \"block\";\n";
 	echo "}\n";
 	echo "\n";
 	echo "function hide_advanced_config() {\n";
-	echo "	document.getElementById(\"showadvancedbox\").innerHTML='';\n";
-	echo "	aodiv = document.getElementById('showadvanced');\n";
+	echo "	document.getElementById(\"show_advanced_box\").innerHTML='';\n";
+	echo "	aodiv = document.getElementById('show_advanced');\n";
 	echo "	aodiv.style.display = \"none\";\n";
 	echo "}\n";
 	echo "</script>";
@@ -667,8 +669,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
-	$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where domain_uuid = '$domain_uuid'"; 
-	echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
+	$table_name = 'v_users'; $field_name = 'username'; $field_current_value = ''; $sql_where_optional = "where domain_uuid = '$domain_uuid'"; 
+	echo htmlselectonchange($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
 	echo "<br />\n";
 	echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";
 	echo "<br />\n";
@@ -788,11 +790,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$sql = "";
 	$sql .= " select * from v_hardware_phones ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 	echo "<select name=\"select_mac_address\" id=\"select_mac_address\" class=\"formfld\">\n";
 	echo "<option value=''></option>\n";
 
@@ -810,7 +812,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//$row[phone_description]
 		//$row[hardware_phone_uuid]
 	} //end foreach
-	unset($sql, $result, $rowcount);
+	unset($sql, $result, $row_count);
 	echo "</select>\n";
 	echo "<br />\n";
 	echo "Select a device to assign to this extension by its MAC addresses.\n";
@@ -1001,11 +1003,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</tr>\n";
 	}
 
-	//--- begin: showadvanced -----------------------
+	//--- begin: show_advanced -----------------------
 	echo "<tr>\n";
 	echo "<td style='padding: 0px;' colspan='2' class='' valign='top' align='left' nowrap='nowrap'>\n";
 
-	echo "	<div id=\"showadvancedbox\">\n";
+	echo "	<div id=\"show_advanced_box\">\n";
 	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "		<tr>\n";
 	echo "		<td width=\"30%\" valign=\"top\" class=\"vncell\">Show Advanced</td>\n";
@@ -1016,7 +1018,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		</table>\n";
 	echo "	</div>\n";
 
-	echo "	<div id=\"showadvanced\" style=\"display:none\">\n";
+	echo "	<div id=\"show_advanced\" style=\"display:none\">\n";
 	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 
 	echo "<tr>\n";
@@ -1145,7 +1147,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "</td>\n";
 	echo "</tr>\n";
-	//--- end: showadvanced -----------------------
+	//--- end: show_advanced -----------------------
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";

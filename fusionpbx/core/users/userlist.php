@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 //require_once "includes/header.php";
 	require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 $field_name = $_REQUEST["field_name"];
 $field_value = $_REQUEST["field_value"];
@@ -128,17 +128,17 @@ echo "	<td align=\"center\">\n";
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= " and $field_name = '$field_value' ";
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
-	$numrows = count($result);
+	$num_rows = count($result);
 	unset ($prep_statement, $result, $sql);
 	$rows_per_page = 200;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($paging_controls, $rows_per_page, $var3) = paging($numrows, $param, $rows_per_page); 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page; 
 
 	$sql = "";
@@ -148,8 +148,8 @@ echo "	<td align=\"center\">\n";
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= " and $field_name like '%$field_value%' ";
 	}
-	if (strlen($orderby)> 0) { 
-		$sql .= "order by $orderby $order "; 
+	if (strlen($order_by)> 0) { 
+		$sql .= "order by $order_by $order "; 
 	}
 	else {
 		$sql .= "order by username ";
@@ -163,21 +163,21 @@ echo "	<td align=\"center\">\n";
 
 //alternate the row style
 	$c = 0;
-	$row_style["0"] = "rowstyle0";
-	$row_style["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 //show the data
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('username', 'Username', $orderby, $order);
-	echo thorderby('user_first_name', 'First Name', $orderby, $order);
-	echo thorderby('user_last_name', 'Last Name', $orderby, $order);
-	echo thorderby('user_company_name', 'Company', $orderby, $order);
-	echo thorderby('user_physical_city', 'City', $orderby, $order);
-	echo thorderby('user_email', 'Email', $orderby, $order);
-	//echo thorderby('user_template_name', 'Template', $orderby, $order);
+	echo thorder_by('username', 'Username', $order_by, $order);
+	echo thorder_by('user_first_name', 'First Name', $order_by, $order);
+	echo thorder_by('user_last_name', 'Last Name', $order_by, $order);
+	echo thorder_by('user_company_name', 'Company', $order_by, $order);
+	echo thorder_by('user_physical_city', 'City', $order_by, $order);
+	echo thorder_by('user_email', 'Email', $order_by, $order);
+	//echo thorder_by('user_template_name', 'Template', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('user_add')) {
 		echo "	<a href='signup.php' alt='add'>$v_link_label_add</a>\n";

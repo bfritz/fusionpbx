@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -91,9 +91,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('call_broadcast_add')) {
+			$broadcast_uuid = uuid();
 			$sql = "insert into v_call_broadcast ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
+			$sql .= "broadcast_uuid, ";
 			$sql .= "broadcast_name, ";
 			$sql .= "broadcast_desc, ";
 			$sql .= "broadcast_timeout, ";
@@ -108,6 +110,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
+			$sql .= "'$broadcast_uuid', ";
 			$sql .= "'$broadcast_name', ";
 			$sql .= "'$broadcast_desc', ";
 			if (strlen($broadcast_timeout) == 0) {
@@ -186,9 +189,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_call_broadcast ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_broadcast_uuid = '$call_broadcast_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		while($row = $prep_statement->fetch()) {
 			$broadcast_name = $row["broadcast_name"];
 			$broadcast_desc = $row["broadcast_desc"];
 			$broadcast_timeout = $row["broadcast_timeout"];
@@ -201,7 +204,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$broadcast_destination_data = $row["broadcast_destination_data"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //begin header
@@ -276,9 +279,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//$sql = "";
 	//$sql .= "select * from v_recordings ";
 	//$sql .= "where domain_uuid = '$domain_uuid' ";
-	//$prepstatement = $db->prepare(check_sql($sql));
-	//$prepstatement->execute();
-	//while($row = $prepstatement->fetch()) {
+	//$prep_statement = $db->prepare(check_sql($sql));
+	//$prep_statement->execute();
+	//while($row = $prep_statement->fetch()) {
 	//	if ($recording_uuid == $row['recording_uuid']) {
 	//		echo "		<option value='".$row['recording_uuid']."' selected='yes'>".$row['recordingname']."</option>\n";
 	//	}
@@ -286,7 +289,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//		echo "		<option value='".$row['recording_uuid']."'>".$row['recordingname']."</option>\n";
 	//	}
 	//}
-	//unset ($prepstatement);
+	//unset ($prep_statement);
 	//echo "		</select>\n";
 	//echo "<br />\n";
 	//echo "Recording to play when the call is answered.<br />\n";
@@ -419,9 +422,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select distinct(user_category) as user_category from v_users ";
 		//$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		while($row = $prep_statement->fetch()) {
 			if ($user_category   == $row['user_category']) {
 				echo "		<option value='".$row['user_category']."' selected='yes'>".$row['user_category']."</option>\n";
 			}
@@ -429,7 +432,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "		<option value='".$row['user_category']."'>".$row['user_category']."</option>\n";
 			}
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 		echo "		</select>\n";
 		echo "<br />\n";
 		//echo "zzz.<br />\n";
@@ -447,9 +450,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_groups ";
 		//$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		while($row = $prep_statement->fetch()) {
 			if ($recording_uuid == $row['group_id']) {
 				echo "		<option value='".$row['group_id']."' selected='yes'>".$row['group_id']."</option>\n";
 			}
@@ -457,7 +460,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "		<option value='".$row['group_id']."'>".$row['group_id']."</option>\n";
 			}
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 		echo "		</select>\n";
 		echo "<br />\n";
 		//echo "zzz.<br />\n";
@@ -476,9 +479,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_gateways ";
 		//$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		while($row = $prepstatement->fetch()) {
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		while($row = $prep_statement->fetch()) {
 			if ($gateway == $row['gateway']) {
 				echo "		<option value='".$row['gateway']."' selected='yes'>".$row['gateway']."</option>\n";
 			}
@@ -486,7 +489,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "		<option value='".$row['gateway']."'>".$row['gateway']."</option>\n";
 			}
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 		echo "		<option value='loopback'>loopback</option>\n";
 		echo "		</select>\n";
 		echo "<br />\n";

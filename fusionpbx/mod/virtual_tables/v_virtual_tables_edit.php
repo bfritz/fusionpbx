@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -86,9 +86,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add") {
+				$virtual_table_uuid = uuid();
 				$sql = "insert into v_virtual_tables ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
+				$sql .= "virtual_table_uuid, ";
 				$sql .= "virtual_table_category, ";
 				$sql .= "virtual_table_label, ";
 				$sql .= "virtual_table_name, ";
@@ -100,6 +102,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
+				$sql .= "'$virtual_table_uuid', ";
 				$sql .= "'$virtual_table_category', ";
 				$sql .= "'$virtual_table_label', ";
 				$sql .= "'$virtual_table_name', ";
@@ -152,9 +155,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_virtual_tables ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$virtual_table_category = $row["virtual_table_category"];
 			$virtual_table_label = $row["virtual_table_label"];
@@ -165,7 +168,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$virtual_table_desc = $row["virtual_table_desc"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header

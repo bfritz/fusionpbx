@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -62,11 +62,11 @@ require_once "includes/lib_cdr.php";
 	$sql .= " select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
 		//$extension_uuid = $row["extension_uuid"];
@@ -75,7 +75,7 @@ require_once "includes/lib_cdr.php";
 		$extension_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}
-	unset ($prepstatement, $x);
+	unset ($prep_statement, $x);
 
 
 if (ifgroup("admin") || ifgroup("superadmin")) {
@@ -118,11 +118,11 @@ $sqlwhere = str_replace ("where and", "where", $sqlwhere);
 $sql = "";
 $sql .= "select * from v_xml_cdr ";
 $sql .= $sqlwhere;
-if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-$prepstatement = $db->prepare(check_sql($sql));
-$prepstatement->execute();
-$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
-$resultcount = count($result);
+if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+$prep_statement = $db->prepare(check_sql($sql));
+$prep_statement->execute();
+$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+$result_count = count($result);
 
 header('Content-type: application/octet-binary');
 header('Content-Disposition: attachment; filename=cdr.csv');
@@ -158,7 +158,7 @@ while(true) {
 	echo "\n";
 
 	++$x;
-	if ($x > ($resultcount-1)) {
+	if ($x > ($result_count-1)) {
 		break;
 	}
 	//$row++;

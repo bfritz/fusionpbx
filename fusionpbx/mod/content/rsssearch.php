@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -106,21 +106,21 @@ if (count($_POST)>0) {
 	$sql = str_replace ("where and", "where", $sql);
 	$sql = str_replace ("or and", "or", $sql);
 	//echo $sql;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
 
 	$c = 0;
-	$rowstyle["0"] = "background-color: #F5F5DC;";
-	$rowstyle["1"] = "background-color: #FFFFFF;";
+	$row_style["0"] = "background-color: #F5F5DC;";
+	$row_style["1"] = "background-color: #FFFFFF;";
 
 	echo "<b>Search Results</b><br>";
 	echo "<div align='left'>\n";
 	echo "<table border='0' cellpadding='1' cellspacing='1'>\n";
 	echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
-	if ($resultcount == 0) { //no results
+	if ($result_count == 0) { //no results
 		echo "<tr><td>&nbsp;</td></tr>";
 	}
 	else { //received results
@@ -145,7 +145,7 @@ if (count($_POST)>0) {
 
 		foreach($result as $row) {
 		//print_r( $row );
-			echo "<tr style='".$rowstyle[$c]."'>\n";
+			echo "<tr style='".$row_style[$c]."'>\n";
 				echo "<td valign='top'><a href='rssupdate.php?rss_uuid=".$row[rss_uuid]."'>".$row[rss_uuid]."</a></td>";
 				echo "<td valign='top'>".$row[rss_category]."</td>";
 				echo "<td valign='top'>".$row[rss_sub_category]."</td>";
@@ -164,7 +164,7 @@ if (count($_POST)>0) {
 
 			echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
-		} //end foreach        unset($sql, $result, $rowcount);
+		} //end foreach        unset($sql, $result, $row_count);
 
 		echo "</table>\n";
 		echo "</div>\n";
@@ -182,7 +182,7 @@ if (count($_POST)>0) {
 	echo "<br><br>";
 	require_once "includes/footer.php";
 
-	unset ($resultcount);
+	unset ($result_count);
 	unset ($result);
 	unset ($key);
 	unset ($val);

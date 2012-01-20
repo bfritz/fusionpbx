@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,17 +37,17 @@ else {
 
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
-		$public_include_uuid = check_str($_REQUEST["id"]);
+		$public_uuid = check_str($_REQUEST["id"]);
 	}
 
 //get the public includes data 
 	$sql = "";
-	$sql .= "select * from v_public_includes ";
+	$sql .= "select * from v_public ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and public_include_uuid = '$public_include_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$sql .= "and public_uuid = '$public_uuid' ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$extension_name = $row["extension_name"];
 		$public_order = $row["public_order"];
@@ -57,10 +57,10 @@ else {
 		$descr = 'copy: '.$row["descr"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 //copy the public
-	$sql = "insert into v_public_includes ";
+	$sql = "insert into v_public ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
 	$sql .= "extension_name, ";
@@ -82,41 +82,41 @@ else {
 	$sql .= ")";
 	if ($db_type == "sqlite" || $db_type == "mysql" ) {
 		$db->exec(check_sql($sql));
-		$db_public_include_uuid = $db->lastInsertId($id);
+		$db_public_uuid = $db->lastInsertId($id);
 	}
 	if ($db_type == "pgsql") {
-		$sql .= " RETURNING public_include_uuid ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$sql .= " RETURNING public_uuid ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$db_public_include_uuid = $row["public_include_uuid"];
+			$db_public_uuid = $row["public_uuid"];
 		}
-		unset($prepstatement, $result);
+		unset($prep_statement, $result);
 	}
 	unset($sql);
 
 //get the the public details
 	$sql = "";
-	$sql .= "select * from v_public_includes_details ";
-	$sql .= "where public_include_uuid = '$public_include_uuid' ";
+	$sql .= "select * from v_public_details ";
+	$sql .= "where public_uuid = '$public_uuid' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$domain_uuid = $row["domain_uuid"];
-		$public_include_uuid = $row["public_include_uuid"];
+		$public_uuid = $row["public_uuid"];
 		$tag = $row["tag"];
 		$field_type = $row["field_type"];
 		$field_data = $row["field_data"];
 		$field_order = $row["field_order"];
 
 		//copy the public details
-			$sql = "insert into v_public_includes_details ";
+			$sql = "insert into v_public_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_uuid, ";
+			$sql .= "public_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -125,7 +125,7 @@ else {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'".check_str($db_public_include_uuid)."', ";
+			$sql .= "'".check_str($db_public_uuid)."', ";
 			$sql .= "'".check_str($tag)."', ";
 			$sql .= "'".check_str($field_type)."', ";
 			$sql .= "'".check_str($field_data)."', ";
@@ -134,14 +134,14 @@ else {
 			$db->exec(check_sql($sql));
 			unset($sql);
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 //synchronize the xml config
-	sync_package_v_dialplan_includes();
+	sync_package_v_dialplan();
 
 //redirect the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_includes.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public.php\">\n";
 	echo "<div align='center'>\n";
 	echo "Copy Complete\n";
 	echo "</div>\n";

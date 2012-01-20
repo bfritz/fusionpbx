@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$contacts_tel_uuid = check_str($_REQUEST["id"]);
+		$contact_tel_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -60,7 +60,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$contacts_tel_uuid = check_str($_POST["contacts_tel_uuid"]);
+		$contact_tel_uuid = check_str($_POST["contact_tel_uuid"]);
 	}
 
 	//check for all required data
@@ -83,17 +83,20 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
+			$contact_tel_uuid = uuid();
 			$sql = "insert into v_contacts_tel ";
 			$sql .= "(";
-			$sql .= "contact_uuid, ";
 			$sql .= "domain_uuid, ";
+			$sql .= "contact_uuid, ";
+			$sql .= "contact_tel_uuid, ";
 			$sql .= "tel_type, ";
 			$sql .= "tel_number ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$contact_uuid', ";
 			$sql .= "'$domain_uuid', ";
+			$sql .= "'$contact_uuid', ";
+			$sql .= "'$contact_tel_uuid', ";
 			$sql .= "'$tel_type', ";
 			$sql .= "'$tel_number' ";
 			$sql .= ")";
@@ -115,7 +118,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "tel_type = '$tel_type', ";
 			$sql .= "tel_number = '$tel_number' ";
 			$sql .= "where domain_uuid = '$domain_uuid'";
-			$sql .= "and contacts_tel_uuid = '$contacts_tel_uuid'";
+			$sql .= "and contact_tel_uuid = '$contact_tel_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -132,11 +135,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$contacts_tel_uuid = $_GET["id"];
+		$contact_tel_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contacts_tel ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and contacts_tel_uuid = '$contacts_tel_uuid' ";
+		$sql .= "and contact_tel_uuid = '$contact_tel_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -299,7 +302,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<td colspan='2' align='right'>\n";
 	echo "				<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='contacts_tel_uuid' value='$contacts_tel_uuid'>\n";
+		echo "				<input type='hidden' name='contact_tel_uuid' value='$contact_tel_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2008-2010 
+	Copyright (C) 2008-2012 
 	All Rights Reserved.
 
 	Contributor(s):

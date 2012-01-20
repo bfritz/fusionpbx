@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 }
 
 $rss_uuid = $_GET["rss_uuid"];
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 require_once "includes/header.php";
@@ -62,18 +62,18 @@ require_once "includes/header.php";
 	$sql .= "order by rss_uuid asc ";
 
 	//echo $sql;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
 	echo "<table border='0' width='100%'>";
-	if ($resultcount == 0) { //no results
+	if ($result_count == 0) { //no results
 		echo "<tr><td>&nbsp;</td></tr>";
 	}
 	else { //received results
 		foreach($result as $row) {
 		  //print_r( $row );
-			  //echo "<tr style='".$rowstyle[$c]."'>\n";
+			  //echo "<tr style='".$row_style[$c]."'>\n";
 			  //echo "<tr>";
 			  //echo "    <td valign='top'>Title</td>";
 			  //echo "    <td valign='top'><a href='rssupdate.php?rss_uuid=".$row[rss_uuid]."'>".$row[rss_uuid]."</a></td>";
@@ -149,7 +149,7 @@ require_once "includes/header.php";
 		} //end foreach
 	}
 	echo "</table>";
-	unset($sql, $prepstatement, $result);
+	unset($sql, $prep_statement, $result);
 
 
 	if ($rsssubshow == 1) {
@@ -165,23 +165,23 @@ require_once "includes/header.php";
 		$sql .= "or domain_uuid = '$domain_uuid' ";
 		$sql .= "and rss_uuid = '$rss_uuid' ";
 		$sql .= "and rss_sub_del_date is null ";
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		//echo $sql;
 
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		$resultcount = count($result);
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		$result_count = count($result);
 
 		$c = 0;
-		$rowstyle["0"] = "background-color: #F5F5DC;";
-		$rowstyle["1"] = "background-color: #FFFFFF;";
+		$row_style["0"] = "background-color: #F5F5DC;";
+		$row_style["1"] = "background-color: #FFFFFF;";
 
 		echo "<div align='left'>\n";
 		echo "<table width='100%' border='0' cellpadding='1' cellspacing='1'>\n";
 		//echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
-		if ($resultcount == 0) { //no results
+		if ($result_count == 0) { //no results
 			echo "<tr><td>&nbsp;</td></tr>";
 		}
 		else { //received results
@@ -189,169 +189,169 @@ require_once "includes/header.php";
 			echo "<tr>";
 			/*
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_uuid&order=desc' title='ascending'>rss_sub_uuid</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_uuid&order=desc' title='ascending'>rss_sub_uuid</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_uuid&order=desc' title='ascending'>rss_sub_uuid</a>";
+					echo "<a href='?order_by=rss_sub_uuid&order=desc' title='ascending'>rss_sub_uuid</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_uuid&order=asc' title='descending'>rss_sub_uuid</a>";
+					echo "<a href='?order_by=rss_sub_uuid&order=asc' title='descending'>rss_sub_uuid</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_uuid&order=desc' title='ascending'>rss_uuid</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_uuid&order=desc' title='ascending'>rss_uuid</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_uuid&order=desc' title='ascending'>rss_uuid</a>";
+					echo "<a href='?order_by=rss_uuid&order=desc' title='ascending'>rss_uuid</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_uuid&order=asc' title='descending'>rss_uuid</a>";
+					echo "<a href='?order_by=rss_uuid&order=asc' title='descending'>rss_uuid</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_title&order=desc' title='ascending'>rss_sub_title</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_title&order=desc' title='ascending'>rss_sub_title</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_title&order=desc' title='ascending'>rss_sub_title</a>";
+					echo "<a href='?order_by=rss_sub_title&order=desc' title='ascending'>rss_sub_title</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_title&order=asc' title='descending'>rss_sub_title</a>";
+					echo "<a href='?order_by=rss_sub_title&order=asc' title='descending'>rss_sub_title</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_link&order=desc' title='ascending'>rss_sub_link</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_link&order=desc' title='ascending'>rss_sub_link</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_link&order=desc' title='ascending'>rss_sub_link</a>";
+					echo "<a href='?order_by=rss_sub_link&order=desc' title='ascending'>rss_sub_link</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_link&order=asc' title='descending'>rss_sub_link</a>";
+					echo "<a href='?order_by=rss_sub_link&order=asc' title='descending'>rss_sub_link</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_desc&order=desc' title='ascending'>rss_sub_desc</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_desc&order=desc' title='ascending'>rss_sub_desc</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_desc&order=desc' title='ascending'>rss_sub_desc</a>";
+					echo "<a href='?order_by=rss_sub_desc&order=desc' title='ascending'>rss_sub_desc</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_desc&order=asc' title='descending'>rss_sub_desc</a>";
+					echo "<a href='?order_by=rss_sub_desc&order=asc' title='descending'>rss_sub_desc</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_optional_1&order=desc' title='ascending'>rss_sub_optional_1</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_optional_1&order=desc' title='ascending'>rss_sub_optional_1</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_optional_1&order=desc' title='ascending'>rss_sub_optional_1</a>";
+					echo "<a href='?order_by=rss_sub_optional_1&order=desc' title='ascending'>rss_sub_optional_1</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_optional_1&order=asc' title='descending'>rss_sub_optional_1</a>";
+					echo "<a href='?order_by=rss_sub_optional_1&order=asc' title='descending'>rss_sub_optional_1</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_optional_2&order=desc' title='ascending'>rss_sub_optional_2</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_optional_2&order=desc' title='ascending'>rss_sub_optional_2</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_optional_2&order=desc' title='ascending'>rss_sub_optional_2</a>";
+					echo "<a href='?order_by=rss_sub_optional_2&order=desc' title='ascending'>rss_sub_optional_2</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_optional_2&order=asc' title='descending'>rss_sub_optional_2</a>";
+					echo "<a href='?order_by=rss_sub_optional_2&order=asc' title='descending'>rss_sub_optional_2</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_optional_3&order=desc' title='ascending'>rss_sub_optional_3</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_optional_3&order=desc' title='ascending'>rss_sub_optional_3</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_optional_3&order=desc' title='ascending'>rss_sub_optional_3</a>";
+					echo "<a href='?order_by=rss_sub_optional_3&order=desc' title='ascending'>rss_sub_optional_3</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_optional_3&order=asc' title='descending'>rss_sub_optional_3</a>";
+					echo "<a href='?order_by=rss_sub_optional_3&order=asc' title='descending'>rss_sub_optional_3</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_optional_4&order=desc' title='ascending'>rss_sub_optional_4</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_optional_4&order=desc' title='ascending'>rss_sub_optional_4</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_optional_4&order=desc' title='ascending'>rss_sub_optional_4</a>";
+					echo "<a href='?order_by=rss_sub_optional_4&order=desc' title='ascending'>rss_sub_optional_4</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_optional_4&order=asc' title='descending'>rss_sub_optional_4</a>";
+					echo "<a href='?order_by=rss_sub_optional_4&order=asc' title='descending'>rss_sub_optional_4</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_optional_5&order=desc' title='ascending'>rss_sub_optional_5</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_optional_5&order=desc' title='ascending'>rss_sub_optional_5</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_optional_5&order=desc' title='ascending'>rss_sub_optional_5</a>";
+					echo "<a href='?order_by=rss_sub_optional_5&order=desc' title='ascending'>rss_sub_optional_5</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_optional_5&order=asc' title='descending'>rss_sub_optional_5</a>";
+					echo "<a href='?order_by=rss_sub_optional_5&order=asc' title='descending'>rss_sub_optional_5</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_add_date&order=desc' title='ascending'>rss_sub_add_date</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_add_date&order=desc' title='ascending'>rss_sub_add_date</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_add_date&order=desc' title='ascending'>rss_sub_add_date</a>";
+					echo "<a href='?order_by=rss_sub_add_date&order=desc' title='ascending'>rss_sub_add_date</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_add_date&order=asc' title='descending'>rss_sub_add_date</a>";
+					echo "<a href='?order_by=rss_sub_add_date&order=asc' title='descending'>rss_sub_add_date</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
-			  if (strlen($orderby)==0) {
-				echo "<a href='?orderby=rss_sub_add_user&order=desc' title='ascending'>rss_sub_add_user</a>";
+			  if (strlen($order_by)==0) {
+				echo "<a href='?order_by=rss_sub_add_user&order=desc' title='ascending'>rss_sub_add_user</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?orderby=rss_sub_add_user&order=desc' title='ascending'>rss_sub_add_user</a>";
+					echo "<a href='?order_by=rss_sub_add_user&order=desc' title='ascending'>rss_sub_add_user</a>";
 				}
 				else {
-					echo "<a href='?orderby=rss_sub_add_user&order=asc' title='descending'>rss_sub_add_user</a>";
+					echo "<a href='?order_by=rss_sub_add_user&order=asc' title='descending'>rss_sub_add_user</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
@@ -362,7 +362,7 @@ require_once "includes/header.php";
 
 			foreach($result as $row) {
 			//print_r( $row );
-				echo "<tr style='".$rowstyle[$c]."'>\n";
+				echo "<tr style='".$row_style[$c]."'>\n";
 					//echo "<td valign='top'>".$rss_uuid."</td>";
 					//echo "<td valign='top'>&nbsp;<b>".$row[rss_sub_title]."</b>&nbsp;</td>";
 					//echo "<td valign='top'>&nbsp;".$row[rss_sub_link]."&nbsp;</td>";
@@ -396,7 +396,7 @@ require_once "includes/header.php";
 					$rss_sub_desc = str_replace ("\n", "<br>", $rss_sub_desc);
 
 					echo "</tr>";
-					echo "<tr style='".$rowstyle[$c]."'>\n";
+					echo "<tr style='".$row_style[$c]."'>\n";
 					echo "<td valign='top' width='300' colspan='4'>";
 					echo "".$rss_sub_desc."&nbsp;";
 					echo "</td>";
@@ -409,7 +409,7 @@ require_once "includes/header.php";
 
 				echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
-			} //end foreach        unset($sql, $result, $rowcount);
+			} //end foreach        unset($sql, $result, $row_count);
 
 
 
@@ -435,7 +435,7 @@ require_once "includes/header.php";
 	echo "<br><br>";
 	require_once "includes/footer.php";
 
-	unset ($resultcount);
+	unset ($result_count);
 	unset ($result);
 	unset ($key);
 	unset ($val);

@@ -160,9 +160,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_fifo_agents ";
 		$sql .= "where fifo_agent_id = '$fifo_agent_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$fifo_name = $row["fifo_name"];
 			$agent_username = $row["agent_username"];
@@ -173,7 +173,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$agent_contact_number = $row["agent_contact_number"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //send the content to the browser
@@ -217,12 +217,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		//generate the fifo name select list
 		$sql = "";
-		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "select * from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 		$x = 0;
-		$result = $prepstatement->fetchAll();
+		$result = $prep_statement->fetchAll();
 		echo "<select name=\"fifo_name\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
 		foreach ($result as &$row) {
@@ -239,7 +239,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			}
 		}
 		echo "</select>\n";
-		unset ($prepstatement);
+		unset ($prep_statement);
 
 	echo "<br />\n";
 	echo "Select the queue name.\n";
@@ -256,12 +256,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//generate the user list
 		$sql = "SELECT * FROM v_users ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 
 		echo "<select name=\"agent_username\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
-		$result = $prepstatement->fetchAll();
+		$result = $prep_statement->fetchAll();
 		foreach($result as $field) {
 			if ($agent_username == $field[username]) {
 				echo "<option value='".$field[username]."' selected='selected'>".$field[username]."</option>\n";
@@ -360,11 +360,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "SELECT var_name, var_value FROM v_vars ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and var_cat = 'Queues Agent Status' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 		echo "<select name=\"agent_status\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
-		$result = $prepstatement->fetchAll();
+		$result = $prep_statement->fetchAll();
 		foreach($result as $field) {
 			if ($field[var_value] == $agent_status) {
 				echo "<option value='".$field[var_value]."' selected='selected'>".$field[var_name]."</option>\n";

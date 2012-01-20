@@ -25,23 +25,23 @@
 <?php
 
 $c = 0;
-$rowstyle["0"] = "rowstyle0";
-$rowstyle["1"] = "rowstyle1";
+$row_style["0"] = "row_style0";
+$row_style["1"] = "row_style1";
 
 foreach($profiles_array as $profile){
 ?>
 <tr>
-	<td class='<?php echo $rowstyle[$c]; ?>'><?php echo $profile['profile_name']; ?>&nbsp;</td>
-	<td class='<?php echo $rowstyle[$c]; ?>'><?php echo $profile['context']; ?>&nbsp;</td>
-	<td class='<?php echo $rowstyle[$c]; ?>'><?php echo $profile['status']; ?>&nbsp;</td>
-	<td class='<?php echo $rowstyle[$c]; ?>'><?php echo $profile['enabled']; ?>&nbsp;</td>
-	<td class='<?php echo $rowstyle[$c]; ?>'><?php echo $profile['description']; ?>&nbsp;</td>
+	<td class='<?php echo $row_style[$c]; ?>'><?php echo $profile['profile_name']; ?>&nbsp;</td>
+	<td class='<?php echo $row_style[$c]; ?>'><?php echo $profile['context']; ?>&nbsp;</td>
+	<td class='<?php echo $row_style[$c]; ?>'><?php echo $profile['status']; ?>&nbsp;</td>
+	<td class='<?php echo $row_style[$c]; ?>'><?php echo $profile['enabled']; ?>&nbsp;</td>
+	<td class='<?php echo $row_style[$c]; ?>'><?php echo $profile['description']; ?>&nbsp;</td>
 	<td align='right' width='42'>
 		<?php if (permission_exists('xmpp_edit')) { ?>
-		<a href='v_profile_edit.php?id=<?php echo $profile['xmpp_profile_id']; ?>' alt='edit'><?php echo $v_link_label_edit; ?></a>
+		<a href='v_profile_edit.php?id=<?php echo $profile['xmpp_profile_uuid']; ?>' alt='edit'><?php echo $v_link_label_edit; ?></a>
 		<?php } ?>
 		<?php if (permission_exists('xmpp_delete')) { ?>
-		<a href='v_profile_delete.php?id=<?php echo $profile['xmpp_profile_id']; ?>' onclick="return confirm('Do you really want to delete this?')" 
+		<a href='v_profile_delete.php?id=<?php echo $profile['xmpp_profile_uuid']; ?>' onclick="return confirm('Do you really want to delete this?')" 
 			alt='delete'><?php echo $v_link_label_delete; ?></a>
 		<?php } ?>
 	</td>

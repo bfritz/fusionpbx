@@ -147,6 +147,7 @@ include "root.php";
 					$sql = "insert into v_extensions ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
+					$sql .= "extension_uuid, ";
 					$sql .= "extension, ";
 					$sql .= "number_alias, ";
 					$sql .= "password, ";
@@ -187,6 +188,7 @@ include "root.php";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$domain_uuid', ";
+					$sql .= "'$extension_uuid', ";
 					$sql .= "'$extension', ";
 					$sql .= "'$number_alias', ";
 					$sql .= "'$password', ";
@@ -366,8 +368,8 @@ include "root.php";
 				$sql .= "delete from v_extensions ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and extension_uuid = '$extension_uuid' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
 				unset($sql);
 			}
 		}
@@ -598,7 +600,7 @@ include "root.php";
 					if (!$extension_xml_condensed) {
 						$tmp_xml .= "</include>\n";
 						fwrite($fout, $tmp_xml);
-						unset($tmpxml);
+						unset($tmp_xml);
 						fclose($fout);
 					}
 				}
@@ -607,7 +609,7 @@ include "root.php";
 			if ($extension_xml_condensed) {
 				$tmp_xml .= "</include>\n";
 				fwrite($fout, $tmp_xml);
-				unset($tmpxml);
+				unset($tmp_xml);
 				fclose($fout);
 			}
 
@@ -695,7 +697,7 @@ include "root.php";
 			//write the xml file
 				$fout = fopen($extension_parent_dir."/".$extension_dir_name.".xml","w");
 				fwrite($fout, $tmp_xml);
-				unset($tmpxml);
+				unset($tmp_xml);
 				fclose($fout);
 
 			//syncrhonize the phone directory

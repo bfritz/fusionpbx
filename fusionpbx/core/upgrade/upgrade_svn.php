@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -68,15 +68,15 @@ $svn_path = '/trunk/fusionpbx/';
 	$sql = "";
 	$sql .= "select * from v_src ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$path = trim($row["path"]);
 		$path_array[$path][type] = $row["type"];
 		$path_array[$path][last_mod] = $row["last_mod"];
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 $svn  = new phpsvnclient($svn_url);
 //$svn_version = $svn->getVersion();
@@ -132,16 +132,16 @@ foreach ($svn_directory_tree as &$row) {
 		if ($display_results) {
 			if ($xml_type == 'file' && !$md5_match) {
 				echo "<tr>\n";
-				echo "<td class='rowstyle1'>$xml_type</td>\n";
-				echo "<td class='rowstyle1'>$xml_last_mod</td>\n";
-				echo "<td class='rowstyle1'>$xml_relative_path</td>\n";
-				echo "<td class='rowstyle1'>$exists</td>\n";
-				//echo "<td class='rowstyle1'>$xml_size</td>\n";
-				echo "<td class='rowstyle1'>$md5_file</td>\n";
-				echo "<td class='rowstyle1'>$md5_xml</td>\n";
-				echo "<td class='rowstyle1'>$md5_match </td>\n";
+				echo "<td class='row_style1'>$xml_type</td>\n";
+				echo "<td class='row_style1'>$xml_last_mod</td>\n";
+				echo "<td class='row_style1'>$xml_relative_path</td>\n";
+				echo "<td class='row_style1'>$exists</td>\n";
+				//echo "<td class='row_style1'>$xml_size</td>\n";
+				echo "<td class='row_style1'>$md5_file</td>\n";
+				echo "<td class='row_style1'>$md5_xml</td>\n";
+				echo "<td class='row_style1'>$md5_match </td>\n";
 				//file_get_contents($svn_url.$svn_path.$xml_relative_path);</td>\n";
-				echo "<td class='rowstyle1'>\n";
+				echo "<td class='row_style1'>\n";
 			}
 		}
 

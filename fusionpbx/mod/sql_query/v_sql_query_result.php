@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -71,7 +71,7 @@ if (count($_POST)>0) {
 	$tmp_header .= "	padding-left: 7px;\n";
 	$tmp_header .= "}\n";
 	$tmp_header .= "\n";
-	$tmp_header .= ".rowstyle0 {\n";
+	$tmp_header .= ".row_style0 {\n";
 	$tmp_header .= "	background-color: #EEEEEE;\n";
 	$tmp_header .= "	background-image: url(".PROJECT_PATH."'/themes/horizontal/background_cell.gif');\n";
 	$tmp_header .= "	border-bottom: 1px solid #999999;\n";
@@ -83,12 +83,12 @@ if (count($_POST)>0) {
 	$tmp_header .= "	padding-left: 7px;\n";
 	$tmp_header .= "}\n";
 	$tmp_header .= "\n";
-	$tmp_header .= ".rowstyle0 a:link{ color:#444444; }\n";
-	$tmp_header .= ".rowstyle0 a:visited{ color:#444444; }\n";
-	$tmp_header .= ".rowstyle0 a:hover{ color:#444444; }\n";
-	$tmp_header .= ".rowstyle0 a:active{ color:#444444; }\n";
+	$tmp_header .= ".row_style0 a:link{ color:#444444; }\n";
+	$tmp_header .= ".row_style0 a:visited{ color:#444444; }\n";
+	$tmp_header .= ".row_style0 a:hover{ color:#444444; }\n";
+	$tmp_header .= ".row_style0 a:active{ color:#444444; }\n";
 	$tmp_header .= "\n";
-	$tmp_header .= ".rowstyle1 {\n";
+	$tmp_header .= ".row_style1 {\n";
 	$tmp_header .= "	border-bottom: 1px solid #999999;\n";
 	$tmp_header .= "	background-color: #FFFFFF;\n";
 	$tmp_header .= "	color: #444444;\n";
@@ -111,8 +111,8 @@ if (count($_POST)>0) {
 		echo $tmp_header;
 
 		$c = 0;
-		$rowstyle["0"] = "rowstyle0";
-		$rowstyle["1"] = "rowstyle1";
+		$row_style["0"] = "row_style0";
+		$row_style["1"] = "row_style1";
 
 		$sql_array = explode(";", $sql_cmd);
 		reset($sql_array);
@@ -124,9 +124,9 @@ if (count($_POST)>0) {
 			if (strlen($sql) > 0) {
 				$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				try {
-					$prepstatement = $db->prepare(check_sql($sql));
-					$prepstatement->execute();
-					$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 					echo "<b>Results: ".count($result)."</b><br />";
 				}
 				catch(PDOException $e) {
@@ -153,7 +153,7 @@ if (count($_POST)>0) {
 					if ($x > 1000) { break; }
 					echo "<tr>\n";
 					foreach ($column_array as $column) {
-						echo "<td class='".$rowstyle[$c]."'>&nbsp;".$row[$column]."&nbsp;</td>";
+						echo "<td class='".$row_style[$c]."'>&nbsp;".$row[$column]."&nbsp;</td>";
 					}
 					echo "</tr>\n";
 					if ($c==0) { $c=1; } else { $c=0; }
@@ -176,10 +176,10 @@ if (count($_POST)>0) {
 		//get the table data
 			$sql = "select * from $table_name";
 			if (strlen($sql) > 0) {
-				$prepstatement = $db->prepare(check_sql($sql));
-				if ($prepstatement) { 
-					$prepstatement->execute();
-					$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+				$prep_statement = $db->prepare(check_sql($sql));
+				if ($prep_statement) { 
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 				}
 				else {
 					echo "<b>Error:</b>\n";
@@ -246,10 +246,10 @@ if (count($_POST)>0) {
 			$sql = trim($sql);
 			$sql = "select * from $table_name";
 			if (strlen($sql) > 0) {
-				$prepstatement = $db->prepare(check_sql($sql));
-				if ($prepstatement) { 
-					$prepstatement->execute();
-					$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+				$prep_statement = $db->prepare(check_sql($sql));
+				if ($prep_statement) { 
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 				}
 				else {
 					echo "<b>Error:</b>\n";

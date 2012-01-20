@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -354,9 +354,9 @@ else {
 		$sql = "show tables";
 	}
 	//get the default schema structure
-		$prepstatement = $db_dest->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result_dest = $prepstatement->fetchAll();
+		$prep_statement = $db_dest->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result_dest = $prep_statement->fetchAll();
 	//clean the content from the table
 		foreach ($result_dest as &$row) {
 			$table_name = $row[0];
@@ -385,11 +385,11 @@ else {
 					$tmp_sql = "show columns from $table_name;";
 				}
 				if (strlen($tmp_sql) > 0) {
-					$prepstatement2 = $db_dest->prepare(check_sql($tmp_sql));
-					//$prepstatement2 = $db->prepare(check_sql($tmp_sql));
-					if ($prepstatement2) {
-						$prepstatement2->execute();
-						$result2 = $prepstatement2->fetchAll(PDO::FETCH_ASSOC);
+					$prep_statement_2 = $db_dest->prepare(check_sql($tmp_sql));
+					//$prep_statement_2 = $db->prepare(check_sql($tmp_sql));
+					if ($prep_statement_2) {
+						$prep_statement_2->execute();
+						$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
 					}
 					else {
 						echo "<b>Error:</b>\n";
@@ -421,7 +421,7 @@ else {
 					*/
 					$destination_column_array_count = count($destination_column_array);
 				}
-				unset($prepstatement2, $result2);
+				unset($prep_statement_2, $result2);
 				//echo "<pre>\n";
 				//print_r($destination_column_array);
 				//echo "</pre>\n";
@@ -429,10 +429,10 @@ else {
 			//get the table source data
 				$tmp_sql = "select * from $table_name";
 				if (strlen($tmp_sql) > 0) {
-					$prepstatement2 = $db->prepare(check_sql($tmp_sql));
-					if ($prepstatement2) {
-						$prepstatement2->execute();
-						$result2 = $prepstatement2->fetchAll(PDO::FETCH_ASSOC);
+					$prep_statement_2 = $db->prepare(check_sql($tmp_sql));
+					if ($prep_statement_2) {
+						$prep_statement_2->execute();
+						$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
 					}
 					else {
 						echo "<b>Error:</b>\n";

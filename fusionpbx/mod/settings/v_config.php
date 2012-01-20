@@ -51,10 +51,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$y++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'default_gateway';
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
-		$y++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'event_socket_ip_address';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';

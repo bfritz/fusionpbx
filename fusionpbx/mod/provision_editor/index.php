@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -59,8 +59,6 @@ echo "	<title></title>";
 	echo "  // Get the index of any next matching substring.\n";
 	echo "  intIndexOfMatch = strText.indexOf( strTarget );\n";
 	echo "}\n";
-	//echo "// Return the updated string with ALL the target strings\n";
-	//echo "// replaced out with the new substring.\n";
 	echo "return( strText );\n";
 	echo "}\n";
 
@@ -102,34 +100,22 @@ echo "	<title></title>";
 	echo "        }\n";
 	echo "        http_request.open('POST', url, true);\n";
 	echo "\n";
-	echo "\n";
 	echo "        if (strpost.length == 0) {\n";
-	//echo "            alert('none');\n";
 	echo "            //http_request.send(null);\n";
 	echo "            http_request.send('name=value&foo=bar');\n";
 	echo "        }\n";
 	echo "        else {\n";
-	//echo "            alert(strpost);\n";
 	echo "            http_request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');\n";
-	//echo "            http_request.send('name=value&foo=bar');\n";
 	echo "            http_request.send(strpost);\n";
 	echo "        }\n";
-	echo "\n";
 	echo "    }\n";
 	echo "\n";
 	echo "    function returnContent(http_request) {\n";
 	echo "\n";
 	echo "        if (http_request.readyState == 4) {\n";
 	echo "            if (http_request.status == 200) {\n";
-
 	echo "                  parent.editAreaLoader.setValue('edit1', http_request.responseText); \n";
-	//echo "                alert(http_request.responseText);\n";
 	echo "\n";
-	//echo "                //var xmldoc = http_request.responseXML;\n";
-	//echo "                //var root_node = xmldoc.getElementsByTagName('doc').item(0);\n";
-	//echo "                //alert(xmldoc.getElementByID('fr1').value);\n";
-	//echo "                //alert(root_node.firstChild.data);\n";
-	//echo "\n";
 	echo "            }\n";
 	echo "            else {\n";
 	echo "                alert('There was a problem with the request.');\n";
@@ -159,10 +145,8 @@ echo "	<title></title>";
 
 		// callback functions
 		function my_save(id, content){
-            	makeRequest('filesave.php','file='+document.getElementById('file').value+'&content='+urlencode(content));
-		        parent.document.title=''+unescape(document.getElementById('file').value)+' :: Saved';
-		        //setTimeout("parent.document.title='<?=$applicationname?> - '+unescape(document.getElementById('file').value);", 5);
-		        //setTimeout("alert('test')", 5);
+			makeRequest('filesave.php','file='+document.getElementById('file').value+'&content='+urlencode(content));
+			parent.document.title=''+unescape(document.getElementById('file').value)+' :: Saved';
 		}
 
 		function my_load(elem){
@@ -194,18 +178,13 @@ echo "	<title></title>";
   	</script>
 
 </head>
-<?php
-//<body marginwidth="0" marginheight="0" style="margin: 0" onresize="elem = document.getElementById('edit1'); elem.style.height='100%';  elem.style.width='100%'; document.getElementById('toolbar').style.width='200px';">
-?><table border='0' style="height: 100%; width: 100%;">
+<table border='0' style="height: 100%; width: 100%;">
 <tr>
 <td id='toolbar' valign='top' width='200' style="width: 200;" height='100%' nowrap>
 
 <IFRAME SRC='filelist.php' style='border: solid 1px #CCCCCC; height: 100%; width: 100%;' WIDTH='100%' HEIGHT='100%' TITLE=''>
 <!-- File List: Requires IFRAME support -->
 </IFRAME>
-<!--<IFRAME SRC='cliplist.php' style='border: solid 1px #CCCCCC; height: 55%; width: 100%;' WIDTH='100%' HEIGHT='100%' TITLE=''>-->
-<!-- Clip List: Requires IFRAME support -->
-<!--</IFRAME>-->
 </td>
 
 <td valign='top' width="100%" height='100%' style="height: 100%;">
@@ -224,18 +203,5 @@ echo "	<title></title>";
 </td>
 </tr>
 </table>
-
-<?php
-/*
-echo "    <p>Custom controls:<br />\n";
-echo "    	<input type='button' onclick='alert(editAreaLoader.getValue(\"edit1\"));' value='get value' />\n";
-echo "    	<input type='button' onclick='editAreaLoader.setValue(\"edit1\", \"new_value\");' value='set value' />\n";
-echo "    	<input type='button' onclick='test_getSelectionRange(\"edit1\");' value='getSelectionRange' />\n";
-echo "    	<input type='button' onclick='test_setSelectionRange(\"edit1\");' value='setSelectionRange' />\n";
-echo "    	<input type='button' onclick='test_getSelectedText(\"edit1\");' value='getSelectedText' />\n";
-echo "    	<input type='button' onclick='test_setSelectedText(\"edit1\");' value='setSelectedText' />\n";
-echo "    	<input type='button' onclick='editAreaLoader.insertTags(\"edit1\", \"[OPEN]\", \"[CLOSE]\");' value='insertTags' />\n";
-echo "    </p>";
-*/
-?></body>
+</body>
 </html>

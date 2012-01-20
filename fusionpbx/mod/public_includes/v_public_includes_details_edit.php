@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -40,18 +40,18 @@ else {
 	}
 	else {
 		$action = "add";
-		$public_include_uuid = check_str($_REQUEST["id2"]);
+		$public_uuid = check_str($_REQUEST["id2"]);
 	}
 
 	if (isset($_REQUEST["id2"])) {
-		$public_include_uuid = check_str($_REQUEST["id2"]);
+		$public_uuid = check_str($_REQUEST["id2"]);
 	}
 
 //set the http values as variables
 	if (count($_POST)>0) {
 		//$domain_uuid = check_str($_POST["domain_uuid"]);
-		if (isset($_POST["public_include_uuid"])) {
-			$public_include_uuid = check_str($_POST["public_include_uuid"]);
+		if (isset($_POST["public_uuid"])) {
+			$public_uuid = check_str($_POST["public_uuid"]);
 		}
 		$tag = check_str($_POST["tag"]);
 		$field_type = check_str($_POST["field_type"]);
@@ -68,7 +68,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
     //check for all required data
         if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-        if (strlen($public_include_uuid) == 0) { $msg .= "Please provide: public_include_uuid<br>\n"; }
+        if (strlen($public_uuid) == 0) { $msg .= "Please provide: public_uuid<br>\n"; }
         if (strlen($tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
         if (strlen($field_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
         //if (strlen($field_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
@@ -89,10 +89,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('public_includes_add')) {
-			$sql = "insert into v_public_includes_details ";
+			$sql = "insert into v_public_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_uuid, ";
+			$sql .= "public_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -101,7 +101,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_uuid', ";
+			$sql .= "'$public_uuid', ";
 			$sql .= "'$tag', ";
 			$sql .= "'$field_type', ";
 			$sql .= "'$field_data', ";
@@ -111,10 +111,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//synchronize the xml config
-			sync_package_v_public_includes();
+			sync_package_v_public();
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_includes_edit.php?id=".$public_include_uuid."\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_edit.php?id=".$public_uuid."\">\n";
 			echo "<div align='center'>\n";
 			echo "Add Complete\n";
 			echo "</div>\n";
@@ -123,9 +123,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update" && permission_exists('public_includes_edit')) {
-			$sql = "update v_public_includes_details set ";
+			$sql = "update v_public_details set ";
 			//$sql .= "domain_uuid = '$domain_uuid', ";
-			$sql .= "public_include_uuid = '$public_include_uuid', ";
+			$sql .= "public_uuid = '$public_uuid', ";
 			$sql .= "tag = '$tag', ";
 			$sql .= "field_type = '$field_type', ";
 			$sql .= "field_data = '$field_data', ";
@@ -135,10 +135,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//synchronize the xml config
-			sync_package_v_public_includes();
+			sync_package_v_public();
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_includes_edit.php?id=".$public_include_uuid."\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_edit.php?id=".$public_uuid."\">\n";
 			echo "<div align='center'>\n";
 			echo "Update Complete\n";
 			echo "</div>\n";
@@ -152,22 +152,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$public_includes_detail_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_public_includes_details ";
+		$sql .= "select * from v_public_details ";
 		$sql .= "where public_includes_detail_uuid = '$public_includes_detail_uuid' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
-			$public_include_uuid = $row["public_include_uuid"];
+			$public_uuid = $row["public_uuid"];
 			$tag = $row["tag"];
 			$field_type = $row["field_type"];
 			$field_data = $row["field_data"];
 			$field_order = $row["field_order"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //include the header
@@ -190,15 +190,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
     if ($action == "update") {
         echo "<td align='left' width='30%' nowrap><b>Public Includes Detail Update</b></td>\n";
     }
-    echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public_includes_edit.php?id=".$public_include_uuid."'\" value='Back'></td>\n";
+    echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public_edit.php?id=".$public_uuid."'\" value='Back'></td>\n";
     echo "</tr>\n";
 
     //echo "<tr>\n";
     //echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-    //echo "    public_include_uuid:\n";
+    //echo "    public_uuid:\n";
     //echo "</td>\n";
     //echo "<td class='vtable' align='left'>\n";
-    //echo "  <input class='formfld' type='text' name='public_include_uuid' maxlength='255' value='$public_include_uuid'>\n";
+    //echo "  <input class='formfld' type='text' name='public_uuid' maxlength='255' value='$public_uuid'>\n";
     //echo "<br />\n";
     //echo "\n";
     //echo "</td>\n";
@@ -340,7 +340,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
     echo "</tr>\n";
     echo "	<tr>\n";
     echo "		<td colspan='2' align='right'>\n";
-    echo "				<input type='hidden' name='public_include_uuid' value='$public_include_uuid'>\n";
+    echo "				<input type='hidden' name='public_uuid' value='$public_uuid'>\n";
     if ($action == "update") {
         echo "				<input type='hidden' name='public_includes_detail_uuid' value='$public_includes_detail_uuid'>\n";
     }

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 //find the outbound routes from the dialplan include details
@@ -46,7 +46,7 @@ $order = $_GET["order"];
 
 	//get the outbound routes and set as the dialplan array
 		$sql = "";
-		$sql .= "select * from v_dialplan_includes_details ";
+		$sql .= "select * from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and (";
 		$sql .= "field_data like '%sofia/gateway/%' ";
@@ -55,20 +55,20 @@ $order = $_GET["order"];
 		$sql .= "or field_data like '%dingaling%' ";
 		$sql .= "or field_data like '%enum_auto_route%' ";
 		$sql .= ") ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 		$x = 0;
-		$result = $prepstatement->fetchAll();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$dialplan_include_uuid = $row["dialplan_include_uuid"];
+			$dialplan_uuid = $row["dialplan_uuid"];
 			//$tag = $row["tag"];
 			//$field_order = $row["field_order"];
 			//$field_type = $row["field_type"];
 			//$field_data = $row["field_data"];
-			$dialplan_array[$x]['dialplan_include_uuid'] = $dialplan_include_uuid;
+			$dialplan_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 			$x++;
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 
 //show the content
 	echo "<div align='center'>";
@@ -101,7 +101,7 @@ $order = $_GET["order"];
 	echo "	<br />";
 
 	$sql = "";
-	$sql .= " select * from v_dialplan_includes ";
+	$sql .= " select * from v_dialplan ";
 	if (count($dialplan_array) == 0) {
 		//when there are no outbound routes do this to hide all remaining entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
@@ -112,31 +112,31 @@ $order = $_GET["order"];
 		foreach ($dialplan_array as &$row) {
 			if ($x == 0) {
 				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
+				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 			}
 			else {
 				$sql .= " or domain_uuid = $domain_uuid \n";
-				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
+				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 			}
 			$x++;
 		}
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$numrows = count($result);
-	unset ($prepstatement, $result, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$num_rows = count($result);
+	unset ($prep_statement, $result, $sql);
 
-	$rowsperpage = 150;
+	$rows_per_page = 150;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page;
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+	$offset = $rows_per_page * $page;
 
 	$sql = "";
-	$sql .= " select * from v_dialplan_includes ";
+	$sql .= " select * from v_dialplan ";
 	if (count($dialplan_array) == 0) {
 		//when there are no outbound routes do this to hide all remaining entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
@@ -147,35 +147,35 @@ $order = $_GET["order"];
 		foreach ($dialplan_array as &$row) {
 			if ($x == 0) {
 				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
+				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 			}
 			else {
 				$sql .= " or domain_uuid = $domain_uuid \n";
-				$sql .= " and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
+				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 			}
 			$x++;
 		}
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
-	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
+	$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('extension_name', 'Name', $orderby, $order);
-	echo thorderby('dialplan_order', 'Order', $orderby, $order);
-	echo thorderby('enabled', 'Enabled', $orderby, $order);
-	echo thorderby('descr', 'Description', $orderby, $order);
+	echo thorder_by('extension_name', 'Name', $order_by, $order);
+	echo thorder_by('dialplan_order', 'Order', $order_by, $order);
+	echo thorder_by('enabled', 'Enabled', $order_by, $order);
+	echo thorder_by('descr', 'Description', $order_by, $order);
 	if (permission_exists('outbound_route_edit')) {
 		echo "<td align='right' width='42'>\n";
 	}
@@ -188,28 +188,28 @@ $order = $_GET["order"];
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) {
+	if ($result_count == 0) {
 		//no results
 	}
 	else { //received results
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[extension_name]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[dialplan_order]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
-			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[extension_name]."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_order]."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
+			echo "   <td valign='top' class='row_stylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('outbound_route_edit')) {
-				echo "		<a href='v_dialplan_outbound_edit.php?id=".$row[dialplan_include_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_dialplan_outbound_edit.php?id=".$row[dialplan_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('outbound_route_delete')) {
-				echo "		<a href='v_dialplan_outbound_delete.php?id=".$row[dialplan_include_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_dialplan_outbound_delete.php?id=".$row[dialplan_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "   </td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 	echo "<tr>\n";
@@ -217,7 +217,7 @@ $order = $_GET["order"];
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('outbound_route_add')) {
 		echo "			<a href='v_dialplan_outbound_add.php' alt='add'>$v_link_label_add</a>\n";

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -66,8 +66,8 @@ if ($_GET['a'] == "del" && permission_exists('sip_profiles_edit')) {
 require_once "includes/header.php";
 
 $c = 0;
-$rowstyle["0"] = "rowstyle0";
-$rowstyle["1"] = "rowstyle1";
+$row_style["0"] = "row_style0";
+$row_style["1"] = "row_style1";
 
 if (strlen($save_msg) > 0) {
 	echo "<div align=\"center\">\n";
@@ -76,7 +76,7 @@ if (strlen($save_msg) > 0) {
 	echo "			<th align=\"left\">Message</th>\n";
 	echo "		</tr>\n";
 	echo "		<tr>\n";
-	echo "			<td class=\"rowstyle1\">\n";
+	echo "			<td class=\"row_style1\">\n";
 	echo "				<strong>$save_msg</strong>\n";
 	echo "			</td>\n";
 	echo "		</tr>\n";
@@ -113,11 +113,11 @@ if (strlen($save_msg) > 0) {
 	foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$file){
 		if (substr($file, -4) == ".xml") {
 			echo "<tr>\n";
-			echo "	<td class='".$rowstyle[$c]."' ondblclick=\"document.location='v_profile_edit.php?f=".$file."'\";\" valign='middle'>\n";
+			echo "	<td class='".$row_style[$c]."' ondblclick=\"document.location='v_profile_edit.php?f=".$file."'\";\" valign='middle'>\n";
 			echo $file;
 			echo "&nbsp;\n";
 			echo "	</td>\n";
-			echo "	<td class='rowstylebg' ondblclick=\"document.location='v_profile_edit.php?f=".$file."\">\n";
+			echo "	<td class='row_stylebg' ondblclick=\"document.location='v_profile_edit.php?f=".$file."\">\n";
 			switch ($file) {
 			case "internal.xml":
 				echo "The Internal profile by default requires registration which is most often used for extensions. ";

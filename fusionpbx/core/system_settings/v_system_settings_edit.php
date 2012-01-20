@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -265,13 +265,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					}
 					if ($db_type == "pgsql") {
 							$sql .= " RETURNING domain_uuid ";
-							$prepstatement = $db->prepare(check_sql($sql));
-							$prepstatement->execute();
-							$result = $prepstatement->fetchAll();
+							$prep_statement = $db->prepare(check_sql($sql));
+							$prep_statement->execute();
+							$result = $prep_statement->fetchAll();
 							foreach ($result as &$row) {
 								$domain_uuid = $row["domain_uuid"];
 							}
-							unset($prepstatement, $result);
+							unset($prep_statement, $result);
 					}
 					unset($sql);
 			} //if ($action == "add")
@@ -360,9 +360,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_system_settings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$v_domain = $row["v_domain"];
 			$v_account_code = $row["v_account_code"];
@@ -409,7 +409,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$v_description = $row["v_description"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //clear values

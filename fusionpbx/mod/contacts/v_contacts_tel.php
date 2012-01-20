@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,7 +37,7 @@ require_once "includes/header.php";
 require_once "includes/paging.php";
 
 //get variables used to control the order
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //show the content
@@ -64,7 +64,7 @@ require_once "includes/paging.php";
 		$sql .= " select count(*) as num_rows from v_contacts_tel ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 		$prep_statement->execute();
@@ -82,7 +82,7 @@ require_once "includes/paging.php";
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
+		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 		$offset = $rows_per_page * $page; 
 
 	//get the contact list
@@ -90,7 +90,7 @@ require_once "includes/paging.php";
 		$sql .= " select * from v_contacts_tel ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -99,15 +99,15 @@ require_once "includes/paging.php";
 		unset ($prep_statement, $sql);
 
 	$c = 0;
-	$row_style["0"] = "rowstyle0";
-	$row_style["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('tel_type', 'Type', $orderby, $order);
-	echo thorderby('tel_number', 'Numbers', $orderby, $order);
+	echo thorder_by('tel_type', 'Type', $order_by, $order);
+	echo thorder_by('tel_number', 'Numbers', $order_by, $order);
 	echo "<th>Tools</th>\n";
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_contacts_tel_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
@@ -121,8 +121,8 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".format_phone($row['tel_number'])."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'><a href=\"/mod/xml_cdr/v_xml_cdr.php?caller_id_number=".$row['tel_number']."&destination_number=".$row['tel_number']."\">CDR</a>&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_contacts_tel_edit.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contacts_tel_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_contacts_tel_delete.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contacts_tel_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='v_contacts_tel_edit.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_tel_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_contacts_tel_delete.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_tel_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }

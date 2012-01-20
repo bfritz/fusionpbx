@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,24 +37,24 @@ else {
 //http values set as variables
 	if (count($_GET)>0) {
 		$id = $_GET["id"];
-		$public_include_uuid = check_str($_REQUEST["id2"]);
+		$public_uuid = check_str($_REQUEST["id2"]);
 	}
 
 //delete the data
 	if (strlen($id)>0) {
 		$sql = "";
-		$sql .= "delete from v_public_includes_details ";
+		$sql .= "delete from v_public_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and public_includes_detail_uuid = '$id' ";
-		$sql .= "and public_include_uuid = '$public_include_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$sql .= "and public_uuid = '$public_uuid' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 		unset($sql);
 	}
 
 //redirect the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_includes_edit.php?id=".$public_include_uuid."\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_edit.php?id=".$public_uuid."\">\n";
 	echo "<div align='center'>\n";
 	echo "Delete Complete\n";
 	echo "</div>\n";

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -53,7 +53,7 @@ function pkg_is_service_running($servicename)
 }
 */
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 //show the content
@@ -78,41 +78,41 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_php_service ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$numrows = count($result);
-	unset ($prepstatement, $result, $sql);
-	$rowsperpage = 10;
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$num_rows = count($result);
+	unset ($prep_statement, $result, $sql);
+	$rows_per_page = 10;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page; 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+	$offset = $rows_per_page * $page; 
 
 	$sql = "";
 	$sql .= " select * from v_php_service ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('service_name', 'Name', $orderby, $order);
-	//echo thorderby('service_group', 'Group', $orderby, $order);
-	echo thorderby('service_enabled', 'Enabled', $orderby, $order);
-	echo thorderby('service_description', 'Description', $orderby, $order);
+	echo thorder_by('service_name', 'Name', $order_by, $order);
+	//echo thorder_by('service_group', 'Group', $order_by, $order);
+	echo thorder_by('service_enabled', 'Enabled', $order_by, $order);
+	echo thorder_by('service_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('php_service_add')) {
 		echo "	<a href='v_php_service_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -120,16 +120,16 @@ $order = $_GET["order"];
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) {
+	if ($result_count == 0) {
 		//no results
 	}
 	else { //received results
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[service_name]."</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[service_group]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[service_enabled]."</td>\n";
-			echo "	<td valign='top' class='rowstylebg'>".$row[service_description]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[service_name]."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[service_group]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[service_enabled]."</td>\n";
+			echo "	<td valign='top' class='row_stylebg'>".$row[service_description]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('php_service_edit')) {
 				echo "		<a href='v_php_service_edit.php?id=".$row[php_service_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
@@ -141,7 +141,7 @@ $order = $_GET["order"];
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 	echo "<tr>\n";
@@ -149,7 +149,7 @@ $order = $_GET["order"];
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('php_service_add')) {
 		echo "			<a href='v_php_service_edit.php' alt='add'>$v_link_label_add</a>\n";

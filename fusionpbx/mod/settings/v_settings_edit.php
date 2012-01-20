@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -109,9 +109,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('settings_edit')) {
+				$setting_uuid = uuid();
 				$sql = "insert into v_settings ";
 				$sql .= "(";
-				$sql .= "domain_uuid, ";
+				$sql .= "setting_uuid, ";
 				$sql .= "numbering_plan, ";
 				$sql .= "default_gateway, ";
 				$sql .= "event_socket_ip_address, ";
@@ -134,7 +135,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'1', ";
+				$sql .= "'$setting_uuid', ";
 				$sql .= "'$numbering_plan', ";
 				$sql .= "'$default_gateway', ";
 				$sql .= "'$event_socket_ip_address', ";
@@ -172,7 +173,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('settings_edit')) {
 				$sql = "update v_settings set ";
-				$sql .= "domain_uuid = '1', ";
 				$sql .= "numbering_plan = '$numbering_plan', ";
 				$sql .= "default_gateway = '$default_gateway', ";
 				$sql .= "event_socket_ip_address = '$event_socket_ip_address', ";
@@ -216,10 +216,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_settings ";
 		$sql .= "where setting_uuid = '$setting_uuid' ";
-		$sql .= "and domain_uuid = '1' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$numbering_plan = $row["numbering_plan"];
 			$default_gateway = $row["default_gateway"];
@@ -242,7 +241,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$mod_shout_volume = $row["mod_shout_volume"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header
@@ -279,17 +278,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "Enter the numbering plan. example: US\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
-	//echo "<tr>\n";
-	//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	//echo "    Default Gateway:\n";
-	//echo "</td>\n";
-	//echo "<td class='vtable' align='left'>\n";
-	//echo "    <input class='formfld' type='text' name='default_gateway' maxlength='255' value=\"$default_gateway\">\n";
-	//echo "<br />\n";
-	//echo " Enter the default gateway name.\n";
-	//echo "</td>\n";
-	//echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";

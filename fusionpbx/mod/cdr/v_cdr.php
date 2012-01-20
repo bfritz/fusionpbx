@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -39,7 +39,7 @@ require_once "includes/paging.php";
 require_once "v_cdr_import.php";
 require "includes/lib_cdr.php";
 	
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 if (count($_REQUEST)>0) {
@@ -68,11 +68,11 @@ if (count($_REQUEST)>0) {
 	$sql .= " select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
 		//$extension_uuid = $row["extension_uuid"];
@@ -81,7 +81,7 @@ if (count($_REQUEST)>0) {
 		$extension_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}
-	unset ($prepstatement, $x);
+	unset ($prep_statement, $x);
 
 
 //call detail record list
@@ -152,17 +152,17 @@ if (count($_REQUEST)>0) {
 	$sql = "";
 	$sql .= " select * from v_cdr ";
 	$sql .= $sqlwhere;
-	if (strlen($orderby) == 0) {
+	if (strlen($order_by) == 0) {
 		$sql .= "order by cdr_id desc "; 
 	}
 	else {
-		$sql .= "order by $orderby $order "; 
+		$sql .= "order by $order_by $order "; 
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$numrows = count($result);
-	unset ($prepstatement, $result, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$num_rows = count($result);
+	unset ($prep_statement, $result, $sql);
 
 	$param = "";
 	$param .= "&caller_id_name=$caller_id_name";
@@ -183,34 +183,34 @@ if (count($_REQUEST)>0) {
 	$param .= "&remote_media_ip=$remote_media_ip";
 	$param .= "&network_addr=$network_addr";
 
-	$rowsperpage = 200;
+	$rows_per_page = 200;
 
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page; 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+	$offset = $rows_per_page * $page; 
 
 	$sql = "";
 	$sql .= " select * from v_cdr ";
 	$sql .= $sqlwhere;
-	if (strlen($orderby) == 0) {
+	if (strlen($order_by) == 0) {
 		$sql .= "order by cdr_id desc "; 
 	}
 	else {
-		$sql .= "order by $orderby $order "; 
+		$sql .= "order by $order_by $order "; 
 	}
-	$sql .= " limit $rowsperpage offset $offset ";
+	$sql .= " limit $rows_per_page offset $offset ";
 	//echo $sql;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	//search the call detail records
 	if (ifgroup("admin") || ifgroup("superadmin")) {
@@ -329,21 +329,21 @@ if (count($_REQUEST)>0) {
 
 	echo "<tr>\n";
 	echo "<th>Start</th>\n";
-	//echo thorderby('start_stamp', 'Start', $orderby, $order);
-	echo thorderby('caller_id_name', 'CID Name', $orderby, $order);
+	//echo thorder_by('start_stamp', 'Start', $order_by, $order);
+	echo thorder_by('caller_id_name', 'CID Name', $order_by, $order);
 	echo "<th>Source</th>\n";
-	//echo thorderby('caller_id_number', 'Source', $orderby, $order);
+	//echo thorder_by('caller_id_number', 'Source', $order_by, $order);
 	echo "<th>Destination</th>\n";
-	//echo thorderby('destination_number', 'Destination', $orderby, $order);
-	//echo thorderby('context', 'Context', $orderby, $order);
-	//echo thorderby('answer_stamp', 'Answer', $orderby, $order);
-	//echo thorderby('end_stamp', 'End', $orderby, $order);
+	//echo thorder_by('destination_number', 'Destination', $order_by, $order);
+	//echo thorder_by('context', 'Context', $order_by, $order);
+	//echo thorder_by('answer_stamp', 'Answer', $order_by, $order);
+	//echo thorder_by('end_stamp', 'End', $order_by, $order);
 	echo "<th>Duration</th>\n";
-	//echo thorderby('duration', 'Duration', $orderby, $order);
+	//echo thorder_by('duration', 'Duration', $order_by, $order);
 	echo "<th>Bill</th>\n";
-	//echo thorderby('billsec', 'Bill', $orderby, $order);
+	//echo thorder_by('billsec', 'Bill', $order_by, $order);
 	echo "<th>Status</th>\n";
-	//echo thorderby('hangup_cause', 'Status', $orderby, $order);
+	//echo thorder_by('hangup_cause', 'Status', $order_by, $order);
 
 
 	echo "<form method='post' action='v_cdr_csv.php'>";
@@ -372,25 +372,25 @@ if (count($_REQUEST)>0) {
 	echo "</form>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($result_count == 0) { //no results
 	}
 	else { //received results
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."' nowrap>&nbsp;".$row[start_stamp]."&nbsp;</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row[caller_id_name]."&nbsp;</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row[caller_id_number]."&nbsp;</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row[destination_number]."&nbsp;</td>\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$row[context]."&nbsp;</td>\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."' nowrap>&nbsp;".$row[answer_stamp]."&nbsp;</td>\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."' nowrap>&nbsp;".$row[end_stamp]."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."' nowrap>&nbsp;".$row[start_stamp]."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;".$row[caller_id_name]."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;".$row[caller_id_number]."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;".$row[destination_number]."&nbsp;</td>\n";
+			//echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;".$row[context]."&nbsp;</td>\n";
+			//echo "   <td valign='top' class='".$row_style[$c]."' nowrap>&nbsp;".$row[answer_stamp]."&nbsp;</td>\n";
+			//echo "   <td valign='top' class='".$row_style[$c]."' nowrap>&nbsp;".$row[end_stamp]."&nbsp;</td>\n";
 			$duration = $row[duration];
 			//if ($duration < 60) { $duration = $duration. " sec"; }
 			//if ($duration > 60) { $duration = round(($duration/60), 2). " min"; }
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;".$duration."&nbsp;</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."' nowrap>&nbsp;".$row[billsec]."&nbsp;</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."' nowrap>&nbsp;".strtolower($row[hangup_cause])."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;".$duration."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."' nowrap>&nbsp;".$row[billsec]."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."' nowrap>&nbsp;".strtolower($row[hangup_cause])."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			//echo "	<a href='v_cdr_edit.php?id=".$row[cdr_id]."' alt='add'>$v_link_label_view</a>\n";
 			echo "       <input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_cdr_edit.php?id=".$row[cdr_id]."'\" value='  >  '>\n";
@@ -399,7 +399,7 @@ if (count($_REQUEST)>0) {
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 
@@ -408,7 +408,7 @@ if (count($_REQUEST)>0) {
 	echo "   <table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "   <tr>\n";
 	echo "       <td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "       <td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "       <td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "       <td width='33.3%' align='right'>&nbsp;</td>\n";
 	//echo "       <td width='33.3%' align='right'><input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_cdr_edit.php'\" value='+'></td>\n";
 	echo "   </tr>\n";

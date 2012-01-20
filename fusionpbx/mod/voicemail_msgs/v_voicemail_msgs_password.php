@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -49,15 +49,15 @@ else {
 	if(!ifgroup("superadmin")) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	$v_mailboxes = '';
 	$x = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$x++;
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 	if ($x == 0) {
 		//user has not been assigned to this account
 		echo "access denied";
@@ -195,9 +195,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_extensions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and extension_uuid = '$extension_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$extension = $row["extension"];
@@ -224,7 +224,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$description = $row["description"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header
@@ -241,14 +241,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "}\n";
 	echo "\n";
 	echo "function show_advanced_config() {\n";
-	echo "	document.getElementById(\"showadvancedbox\").innerHTML='';\n";
-	echo "	aodiv = document.getElementById('showadvanced');\n";
+	echo "	document.getElementById(\"show_advanced_box\").innerHTML='';\n";
+	echo "	aodiv = document.getElementById('show_advanced');\n";
 	echo "	aodiv.style.display = \"block\";\n";
 	echo "}\n";
 	echo "\n";
 	echo "function hide_advanced_config() {\n";
-	echo "	document.getElementById(\"showadvancedbox\").innerHTML='';\n";
-	echo "	aodiv = document.getElementById('showadvanced');\n";
+	echo "	document.getElementById(\"show_advanced_box\").innerHTML='';\n";
+	echo "	aodiv = document.getElementById('show_advanced');\n";
 	echo "	aodiv.style.display = \"block\";\n";
 	echo "}\n";
 	echo "</script>";

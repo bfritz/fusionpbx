@@ -102,15 +102,15 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 						$sql .= "select * from v_extensions ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and extension = '$src' ";
-						$prepstatement = $db->prepare(check_sql($sql));
-						$prepstatement->execute();
-						$result = $prepstatement->fetchAll();
+						$prep_statement = $db->prepare(check_sql($sql));
+						$prep_statement->execute();
+						$result = $prep_statement->fetchAll();
 						foreach ($result as &$row) {
 							$dest_cid_name = $row["outbound_caller_id_name"];
 							$dest_cid_number = $row["outbound_caller_id_number"];
 							break; //limit to 1 row
 						}
-						unset ($prepstatement);
+						unset ($prep_statement);
 				}
 			}
 			$bridge_array = outbound_route_to_bridge ($dest);
@@ -127,7 +127,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong>$switch_cmd $src has called $dest</strong></td>\n";
+		echo "<td class='row_style1'><strong>$switch_cmd $src has called $dest</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -143,7 +143,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 				echo "	<th align='left'>Message</th>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
-				echo "	<td class='rowstyle1'><strong>$msg</strong></td>\n";
+				echo "	<td class='row_style1'><strong>$msg</strong></td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
 				echo "</div>\n";

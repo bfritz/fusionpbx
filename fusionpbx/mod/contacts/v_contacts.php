@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -40,7 +40,7 @@ require_once "includes/paging.php";
 	$search_all = $_GET["search_all"];
 
 //get variables used to control the order
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //show the content
@@ -91,7 +91,7 @@ require_once "includes/paging.php";
 				$sql .= ")\n";
 			}
 		}
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 		$prep_statement->execute();
@@ -109,7 +109,7 @@ require_once "includes/paging.php";
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
+		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 		$offset = $rows_per_page * $page; 
 
 	//get the  list
@@ -139,7 +139,7 @@ require_once "includes/paging.php";
 				$sql .= ")\n";
 			}
 		}
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -148,23 +148,23 @@ require_once "includes/paging.php";
 		unset ($prep_statement, $sql);
 
 	$c = 0;
-	$row_style["0"] = "rowstyle0";
-	$row_style["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('type', 'Type', $orderby, $order);
-	echo thorderby('org', 'Organization', $orderby, $order);
-	echo thorderby('n_given', 'First Name', $orderby, $order);
-	echo thorderby('n_family', 'Last Name', $orderby, $order);
-	echo thorderby('nickname', 'Nickname', $orderby, $order);
-	echo thorderby('title', 'Title', $orderby, $order);
-	echo thorderby('role', 'Role', $orderby, $order);
-	//echo thorderby('email', 'Email', $orderby, $order);
-	//echo thorderby('url', 'URL', $orderby, $order);
-	//echo thorderby('tz', 'Time Zone', $orderby, $order);
-	//echo thorderby('note', 'Notes', $orderby, $order);
+	echo thorder_by('type', 'Type', $order_by, $order);
+	echo thorder_by('org', 'Organization', $order_by, $order);
+	echo thorder_by('n_given', 'First Name', $order_by, $order);
+	echo thorder_by('n_family', 'Last Name', $order_by, $order);
+	echo thorder_by('nickname', 'Nickname', $order_by, $order);
+	echo thorder_by('title', 'Title', $order_by, $order);
+	echo thorder_by('role', 'Role', $order_by, $order);
+	//echo thorder_by('email', 'Email', $order_by, $order);
+	//echo thorder_by('url', 'URL', $order_by, $order);
+	//echo thorder_by('tz', 'Time Zone', $order_by, $order);
+	//echo thorder_by('note', 'Notes', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_contacts_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";

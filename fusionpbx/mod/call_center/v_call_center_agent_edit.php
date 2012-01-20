@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -143,8 +143,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "user_status = '".$agent_status."' ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and username = '".$agent_name."' ";
- 		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+ 		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 
 	//add the agent
 		//setup the event socket connection
@@ -176,9 +176,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			//add the agent to the database
+				$call_center_agent_uuid = uuid();
 				$sql = "insert into v_call_center_agent ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
+				$sql .= "call_center_agent_uuid, ";
 				$sql .= "agent_name, ";
 				$sql .= "agent_type, ";
 				$sql .= "agent_call_timeout, ";
@@ -194,6 +196,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
+				$sql .= "'$call_center_agent_uuid', ";
 				$sql .= "'$agent_name', ";
 				$sql .= "'$agent_type', ";
 				$sql .= "'$agent_call_timeout', ";
@@ -296,7 +299,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "	  <br>";
@@ -328,12 +330,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql = "SELECT * FROM v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "order by username asc ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 
 	echo "<select id=\"agent_name\" name=\"agent_name\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	//$catcount = count($result);
 	foreach($result as $field) {
 		if ($field[username] == $agent_name) {

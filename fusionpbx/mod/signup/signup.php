@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -67,9 +67,9 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql = "SELECT * FROM v_users ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and username = '" . $request['username'] . "' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		if (count($prepstatement->fetchAll()) > 0) {
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		if (count($prep_statement->fetchAll()) > 0) {
 			$msgerror .= "Please choose a different Username.<br>\n";
 		}
 	}
@@ -108,10 +108,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 	//salt used with the password to create a one way hash
 	$salt = generate_password('20', '4');
-
+	$user_uuid = uuid();
 	$sql = "insert into v_users ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
+	$sql .= "user_uuid, ";
 	$sql .= "username, ";
 	$sql .= "password, ";
 	$sql .= "salt, ";
@@ -159,6 +160,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
+	$sql .= "'$user_uuid', ";
 	$sql .= "'" . $request['username'] . "', ";
 	$sql .= "'".md5($salt.$request['password'])."', ";
 	$sql .= "'" . $salt . "', ";
@@ -218,12 +220,14 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
 	$sql .= "group_id, ";
+	$sql .= "user_uuid, ";
 	$sql .= "username ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'" . $domain_uuid . "', ";
 	$sql .= "'" . $group_id . "', ";
+	$sql .= "'" . $user_uuid . "', ";
 	$sql .= "'" . $request['username']. "' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));

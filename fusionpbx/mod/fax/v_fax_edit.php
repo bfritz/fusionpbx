@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -155,9 +155,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('fax_extension_add')) {
+				$fax_uuid = uuid();
 				$sql = "insert into v_fax ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
+				$sql .= "fax_uuid, ";
 				$sql .= "fax_extension, ";
 				$sql .= "fax_name, ";
 				$sql .= "fax_email, ";
@@ -173,6 +175,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
+				$sql .= "'$fax_uuid', ";
 				$sql .= "'$fax_extension', ";
 				$sql .= "'$fax_name', ";
 				$sql .= "'$fax_email', ";
@@ -255,9 +258,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//show only assigned fax extensions
 			$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 		}
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		if (count($result) == 0) {
 			echo "access denied";
 			exit;
@@ -276,7 +279,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//limit to one row
 				break;
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header
@@ -380,8 +383,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		$onchange = "document.getElementById('fax_user_list').value += document.getElementById('username').value + '\\n';";
-		$tablename = 'v_users'; $fieldname = 'username'; $fieldcurrentvalue = ''; $sqlwhereoptional = "where domain_uuid = '$domain_uuid'"; 
-		echo htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange);
+		$table_name = 'v_users'; $field_name = 'username'; $field_current_value = ''; $sql_where_optional = "where domain_uuid = '$domain_uuid'"; 
+		echo htmlselectonchange($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
 		echo "<br />\n";
 		echo "Use the select list to add users to the user list. This will assign users to this extension.\n";
 		echo "<br />\n";

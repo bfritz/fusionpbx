@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -154,9 +154,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_fifo_agent_call_logs ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and fifo_agent_call_log_id = '$fifo_agent_call_log_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$resolution_code = $row["resolution_code"];
 		$transaction_id = $row["transaction_id"];
@@ -167,7 +167,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$add_date = $row["add_date"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 }
 
 //begin the content

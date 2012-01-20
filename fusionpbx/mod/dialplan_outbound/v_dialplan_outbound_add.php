@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -134,40 +134,40 @@ else {
 				$sql .= "select * from v_gateways ";
 				$sql .= "where gateway_uuid = '$gateway_uuid' ";
 				$sql .= "and gateway = '$gateway_name' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$gateway_domain_uuid = $row["domain_uuid"];
 					break;
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 			//get the domain_uuid for gateway_2
 				$sql = "";
 				$sql .= "select * from v_gateways ";
 				$sql .= "where gateway_uuid = '$gateway_2_id' ";
 				$sql .= "and gateway = '$gateway_2_name' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$gateway_2_domain_uuid = $row["domain_uuid"];
 					break;
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 			//get the domain_uuid for gateway_3
 				$sql = "";
 				$sql .= "select * from v_gateways ";
 				$sql .= "where gateway_uuid = '$gateway_3_id' ";
 				$sql .= "and gateway = '$gateway_3_name' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$gateway_3_domain_uuid = $row["domain_uuid"];
 					break;
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 		}
 
 		$enabled = check_str($_POST["enabled"]);
@@ -395,12 +395,14 @@ else {
 					$opt_1_name = 'gateway_uuid';
 					$opt_1_value = $gateway_uuid;
 					$extension_continue = 'false';
-					//$dialplan_include_uuid = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+					//$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
 
 					//add the main dialplan include entry
-						$sql = "insert into v_dialplan_includes ";
+						$dialplan_uuid = uuid();
+						$sql = "insert into v_dialplan ";
 						$sql .= "(";
 						$sql .= "domain_uuid, ";
+						$sql .= "dialplan_uuid, ";
 						$sql .= "extension_name, ";
 						$sql .= "dialplan_order, ";
 						$sql .= "extension_continue, ";
@@ -413,6 +415,7 @@ else {
 						$sql .= "values ";
 						$sql .= "(";
 						$sql .= "'$domain_uuid', ";
+						$sql .= "'$dialplan_uuid', ";
 						$sql .= "'$extension_name', ";
 						$sql .= "'$dialplan_order', ";
 						$sql .= "'$extension_continue', ";
@@ -425,70 +428,57 @@ else {
 						if ($v_debug) {
 							echo $sql."<br />";
 						}
-						if ($db_type == "sqlite" || $db_type == "mysql" ) {
-							$db->exec(check_sql($sql));
-							$dialplan_include_uuid = $db->lastInsertId($id);
-						}
-						if ($db_type == "pgsql") {
-							$sql .= " RETURNING dialplan_include_uuid ";
-							$prepstatement = $db->prepare(check_sql($sql));
-							$prepstatement->execute();
-							$result = $prepstatement->fetchAll();
-							foreach ($result as &$row) {
-								$dialplan_include_uuid = $row["dialplan_include_uuid"];
-							}
-							unset($prepstatement, $result);
-						}
+						$db->exec(check_sql($sql));
 						unset($sql);
 
 					$tag = 'condition'; //condition, action, antiaction
 					$field_type = 'destination_number';
 					$field_data = $dialplan_expression;
 					$field_order = '005';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'sip_h_X-accountcode=${accountcode}';
 					$field_order = '010';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'call_direction=outbound';
 					$field_order = '015';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'hangup_after_bridge=true';
 					$field_order = '020';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'effective_caller_id_name=${outbound_caller_id_name}';
 					$field_order = '025';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'effective_caller_id_number=${outbound_caller_id_number}';
 					$field_order = '030';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = 'inherit_codec=true';
 					$field_order = '035';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
 					if (strlen($bridge_2_data) > 0) {
 						$tag = 'action'; //condition, action, antiaction
 						$field_type = 'set';
 						$field_data = 'continue_on_fail=true';
 						$field_order = '040';
-						v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 					}
 
 					if ($gateway_type == "enum" || $gateway_2_type == "enum") {
@@ -496,21 +486,21 @@ else {
 						$field_type = 'enum';
 						$field_data = $prefix_number."$1 e164.org";
 						$field_order = '045';
-						v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 					}
 
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'bridge';
 					$field_data = $action_data;
 					$field_order = '050';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
 					if (strlen($bridge_2_data) > 0) {
 						$tag = 'action'; //condition, action, antiaction
 						$field_type = 'bridge';
 						$field_data = $bridge_2_data;
 						$field_order = '055';
-						v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 					}
 
 					if (strlen($bridge_3_data) > 0) {
@@ -518,7 +508,7 @@ else {
 						$field_type = 'bridge';
 						$field_data = $bridge_3_data;
 						$field_order = '060';
-						v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 					}
 
 					unset($bridge_2_data);
@@ -531,7 +521,7 @@ else {
 			} //end for each
 
 			//synchronize the xml config
-				sync_package_v_dialplan_includes();
+				sync_package_v_dialplan();
 			
 			//changes in the dialplan may affect routes in the hunt groups
 				sync_package_v_hunt_group();
@@ -541,7 +531,7 @@ else {
 			$count = $db->exec("COMMIT;"); //returns affected rows
 
 		//synchronize the xml config
-			sync_package_v_dialplan_includes();
+			sync_package_v_dialplan();
 
 		//redirect the user
 			require_once "includes/header.php";
@@ -667,10 +657,10 @@ function type_onchange(field_type) {
 	else {
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	unset ($prepstatement, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	unset ($prep_statement, $sql);
 	echo "<select name=\"gateway\" id=\"gateway\" class=\"formfld\" $onchange style='width: 60%;'>\n";
 	echo "<option value=''></option>\n";
 	echo "<optgroup label='SIP Gateways'>";
@@ -698,7 +688,7 @@ function type_onchange(field_type) {
 		}
 		$previous_domain_uuid = $row['domain_uuid'];
 	}
-	unset($sql, $result, $rowcount);
+	unset($sql, $result, $row_count);
 	echo "</optgroup>";
 	echo "	<optgroup label='Additional Options'>";
 	echo "	<option value=\"enum\">enum</option>\n";
@@ -725,10 +715,10 @@ function type_onchange(field_type) {
 	else {
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	unset ($prepstatement, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	unset ($prep_statement, $sql);
 	echo "<select name=\"gateway_2\" id=\"gateway\" class=\"formfld\" $onchange style='width: 60%;'>\n";
 	echo "<option value=''></option>\n";
 	echo "<optgroup label='SIP Gateways'>";
@@ -756,7 +746,7 @@ function type_onchange(field_type) {
 		}
 		$previous_domain_uuid = $row['domain_uuid'];
 	}
-	unset($sql, $result, $rowcount, $previous_domain_uuid);
+	unset($sql, $result, $row_count, $previous_domain_uuid);
 	echo "</optgroup>";
 	echo "<optgroup label='Additional Options'>";
 	echo "	<option value=\"enum\">enum</option>\n";
@@ -783,10 +773,10 @@ function type_onchange(field_type) {
 	else {
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	unset ($prepstatement, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	unset ($prep_statement, $sql);
 	echo "<select name=\"gateway_3\" id=\"gateway\" class=\"formfld\" $onchange style='width: 60%;'>\n";
 	echo "<option value=''></option>\n";
 	echo "<optgroup label='SIP Gateways'>";
@@ -814,7 +804,7 @@ function type_onchange(field_type) {
 		}
 		$previous_domain_uuid = $row['domain_uuid'];
 	}
-	unset($sql, $result, $rowcount, $previous_domain_uuid);
+	unset($sql, $result, $row_count, $previous_domain_uuid);
 	echo "</optgroup>";
 	echo "<optgroup label='Additional Options'>";
 	echo "	<option value=\"enum\">enum</option>\n";
@@ -1061,7 +1051,7 @@ function type_onchange(field_type) {
 	echo "<tr>\n";
 	echo "	<td colspan='5' align='right'>\n";
 	if ($action == "update") {
-		echo "		<input type='hidden' name='dialplan_include_uuid' value='$dialplan_include_uuid'>\n";
+		echo "		<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 	}
 	echo "		<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "	</td>\n";

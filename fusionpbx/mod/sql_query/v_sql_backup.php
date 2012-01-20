@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -59,19 +59,19 @@ else {
 	if ($db_type == "mysql") {
 		$sql = "show tables";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$table_name = $row[0];
 
 		//get the table data
 			$sql = "select * from $table_name";
 			if (strlen($sql) > 0) {
-				$prepstatement2 = $db->prepare(check_sql($sql));
-				if ($prepstatement2) { 
-					$prepstatement2->execute();
-					$result2 = $prepstatement2->fetchAll(PDO::FETCH_ASSOC);
+				$prep_statement_2 = $db->prepare(check_sql($sql));
+				if ($prep_statement_2) { 
+					$prep_statement_2->execute();
+					$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
 				}
 				else {
 					echo "<b>Error:</b>\n";
@@ -82,8 +82,10 @@ else {
 
 				$x = 0;
 				foreach ($result2[0] as $key => $value) {
-					$column_array[$x] = $key;
-					$x++;
+					if ($row[$column] != "db") {
+						$column_array[$x] = $key;
+						$x++;
+					}
 				}
 
 				$column_array_count = count($column_array);
@@ -93,12 +95,12 @@ else {
 					$x = 1;
 					foreach ($column_array as $column) {
 						if ($x < $column_array_count) {
-							if (strlen($row[$column])> 0) {
+							if (strlen($row[$column]) > 0) {
 								$sql .= ''.$column.',';
 							}
 						}
 						else {
-							if (strlen($row[$column])> 0) {
+							if (strlen($row[$column]) > 0) {
 								$sql .= ''.$column.'';
 							}
 						}
@@ -124,35 +126,6 @@ else {
 					echo str_replace(",)", ")", $sql);
 				}
 			}
-
-		//set the auto increment id starting number
-			switch ($table_name) {
-				case "v_system_settings":
-					$auto_increment_name = 'domain_uuid';
-					break;
-				case "v_users":
-					$auto_increment_name = 'id';
-					break;
-				case "v_groups":
-					$auto_increment_name = 'id';
-					break;
-				case "v_group_members":
-					$auto_increment_name = 'id';
-					break;
-				default:
-				   $auto_increment_name = $table_name;
-					//remove the v_ from the prefix
-						if (substr($auto_increment_name, 0, 2) == "v_") {
-							$auto_increment_name = substr($auto_increment_name, 2);
-						}
-					//remove the s from the postfix
-						if (substr($auto_increment_name, -1) == "s") {
-							$auto_increment_name = substr($auto_increment_name, 0, -1);
-						}
-					//add the _id as a postfix
-						$auto_increment_name = $auto_increment_name ."_id";
-			}
-			echo "SELECT setval('".$table_name."_".$auto_increment_name."_seq', (SELECT MAX(".$auto_increment_name.") FROM ".$table_name.")+1);\n";
 
 		unset($column_array);
 	}

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 //show the content
@@ -58,8 +58,8 @@ $order = $_GET["order"];
 	echo "</tr>\n";
 	echo "</tr></table>\n";
 
-	if (strlen($orderby) == 0) { 
-		$orderby = 'virtual_field_order';
+	if (strlen($order_by) == 0) { 
+		$order_by = 'virtual_field_order';
 		$order = 'asc';
 	}
 
@@ -67,29 +67,29 @@ $order = $_GET["order"];
 	$sql .= " select * from v_virtual_table_fields ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	$sql .= " and virtual_table_uuid = '$virtual_table_uuid' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('virtual_field_label', 'Label', $orderby, $order);
-	echo thorderby('virtual_field_name', 'Name', $orderby, $order);
-	echo thorderby('virtual_field_type', 'Type', $orderby, $order);
-	echo thorderby('virtual_field_column', 'Column', $orderby, $order);
-	echo thorderby('virtual_field_required', 'Required', $orderby, $order);
-	echo thorderby('virtual_field_order', 'Field Order', $orderby, $order);
-	echo thorderby('virtual_field_order_tab', 'Tab Order', $orderby, $order);
-	echo thorderby('virtual_field_desc', 'Description', $orderby, $order);
+	echo thorder_by('virtual_field_label', 'Label', $order_by, $order);
+	echo thorder_by('virtual_field_name', 'Name', $order_by, $order);
+	echo thorder_by('virtual_field_type', 'Type', $order_by, $order);
+	echo thorder_by('virtual_field_column', 'Column', $order_by, $order);
+	echo thorder_by('virtual_field_required', 'Required', $order_by, $order);
+	echo thorder_by('virtual_field_order', 'Field Order', $order_by, $order);
+	echo thorder_by('virtual_field_order_tab', 'Tab Order', $order_by, $order);
+	echo thorder_by('virtual_field_desc', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('virtual_tables_view')) {
 		echo "	<a href='v_virtual_table_fields_edit.php?virtual_table_uuid=".$virtual_table_uuid."' alt='add'>$v_link_label_add</a>\n";
@@ -97,20 +97,20 @@ $order = $_GET["order"];
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) {
+	if ($result_count == 0) {
 		//no results
 	}
 	else { //received results
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_field_label']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_field_name']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_field_type']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_field_column']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_field_required']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_field_order']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_field_order_tab']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['virtual_field_desc']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_label']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_type']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_column']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_required']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_order']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_order_tab']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_desc']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('virtual_tables_edit')) {
 				echo "		<a href='v_virtual_table_fields_edit.php?virtual_table_uuid=".$row['virtual_table_uuid']."&id=".$row['virtual_table_field_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
@@ -122,7 +122,7 @@ $order = $_GET["order"];
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 	echo "<tr>\n";

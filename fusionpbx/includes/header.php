@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -76,9 +76,9 @@ require_once "includes/config.php";
 	$sql .= "select * from v_menu_items ";
 	$sql .= "where menu_uuid = '".$_SERVER["menu_uuid"]."' ";
 	$sql .= "and menu_item_str = '".$_SERVER["SCRIPT_NAME"]."' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$_SESSION["menu_item_parent_uuid"] = $row["menu_item_parent_uuid"];
 		break;
@@ -107,10 +107,10 @@ require_once "includes/config.php";
 	}
 	$sql .= "and rss_del_date is null ";
 	$sql .= "order by rss_order asc ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
 
 	$customtitle = '';
 	foreach($result as $row) {
@@ -127,7 +127,7 @@ require_once "includes/config.php";
 			}
 		}
 	} //end foreach
-	unset($sql, $result, $rowcount);
+	unset($sql, $result, $row_count);
 
 //start the output buffer
 	ob_start();

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -67,9 +67,9 @@ function cmd_async($cmd) {
 	$sql .= "select * from v_call_broadcast ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and call_broadcast_uuid = '$call_broadcast_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	while($row = $prep_statement->fetch()) {
 		$broadcast_name = $row["broadcast_name"];
 		$broadcast_desc = $row["broadcast_desc"];
 		$broadcast_timeout = $row["broadcast_timeout"];
@@ -91,7 +91,7 @@ function cmd_async($cmd) {
 		//}
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 	if (strlen($broadcast_caller_id_name) == 0) {
 		$broadcast_caller_id_name = "anonymous";
@@ -120,7 +120,7 @@ function cmd_async($cmd) {
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+		echo "<td class='row_style1'><strong>$msg</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -195,7 +195,7 @@ function cmd_async($cmd) {
 				echo "<th align='left'>Message</th>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
-				echo "<td class='rowstyle1' align='center'>\n";
+				echo "<td class='row_style1' align='center'>\n";
 				echo "	<strong>Call Broadcast $broadcast_name has been started.</strong>\n";
 				echo "	<br /><br />\n";
 				echo "	<table width='100%'>\n";
@@ -272,44 +272,44 @@ require_once "includes/header.php";
 		$sql .= " where u.user_category = '".$user_category."' ";
 		//echo $sql."<br />";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	//echo thorderby('username', 'Username', $orderby, $order);
-	echo thorderby('user_type', 'Type', $orderby, $order);
-	//echo thorderby('user_category', 'Category', $orderby, $order);
-	echo thorderby('user_first_name', 'First Name', $orderby, $order);
-	echo thorderby('user_last_name', 'Last Name', $orderby, $order);
-	echo thorderby('user_company_name', 'Organization', $orderby, $order);
-	echo thorderby('user_phone_1', 'Phone1', $orderby, $order);
-	echo thorderby('user_phone_2', 'Phone2', $orderby, $order);
+	//echo thorder_by('username', 'Username', $order_by, $order);
+	echo thorder_by('user_type', 'Type', $order_by, $order);
+	//echo thorder_by('user_category', 'Category', $order_by, $order);
+	echo thorder_by('user_first_name', 'First Name', $order_by, $order);
+	echo thorder_by('user_last_name', 'Last Name', $order_by, $order);
+	echo thorder_by('user_company_name', 'Organization', $order_by, $order);
+	echo thorder_by('user_phone_1', 'Phone1', $order_by, $order);
+	echo thorder_by('user_phone_2', 'Phone2', $order_by, $order);
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($result_count == 0) { //no results
 	}
 	else { //received results
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[username]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_type]."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_category]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_first_name]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_last_name]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_company_name]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_phone_1]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[user_phone_2]."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[username]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[user_type]."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[user_category]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[user_first_name]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[user_last_name]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[user_company_name]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[user_phone_1]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[user_phone_2]."&nbsp;</td>\n";
 			echo "</tr>\n";
 
 			//if (strlen($gateway) > 0) {
@@ -356,7 +356,7 @@ require_once "includes/header.php";
 
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 	echo "</table>";
@@ -372,7 +372,7 @@ require_once "includes/header.php";
 
 
 require_once "includes/footer.php";
-unset ($resultcount);
+unset ($result_count);
 unset ($result);
 unset ($key);
 unset ($val);

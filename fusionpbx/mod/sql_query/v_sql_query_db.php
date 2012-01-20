@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -80,7 +80,7 @@ require_once "includes/paging.php";
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
+		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 		$offset = $rows_per_page * $page; 
 
 	//get the  list
@@ -95,21 +95,21 @@ require_once "includes/paging.php";
 		unset ($prep_statement, $sql);
 
 	$c = 0;
-	$row_style["0"] = "rowstyle0";
-	$row_style["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('db_type', 'Type', $order_by, $order);
-	echo thorderby('db_host', 'Host', $order_by, $order);
-	//echo thorderby('db_port', 'Port', $order_by, $order);
-	echo thorderby('db_name', 'Name', $order_by, $order);
-	//echo thorderby('db_username', 'Username', $order_by, $order);
-	//echo thorderby('db_password', 'Password', $order_by, $order);
-	//echo thorderby('db_path', 'Path', $order_by, $order);
-	echo thorderby('db_description', 'Description', $order_by, $order);
+	echo thorder_by('db_type', 'Type', $order_by, $order);
+	echo thorder_by('db_host', 'Host', $order_by, $order);
+	//echo thorder_by('db_port', 'Port', $order_by, $order);
+	echo thorder_by('db_name', 'Name', $order_by, $order);
+	//echo thorder_by('db_username', 'Username', $order_by, $order);
+	//echo thorder_by('db_password', 'Password', $order_by, $order);
+	//echo thorder_by('db_path', 'Path', $order_by, $order);
+	echo thorder_by('db_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='21'>\n";
 	//echo "	<a href='db_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
@@ -126,7 +126,7 @@ require_once "includes/paging.php";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_username']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_password']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_path']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='rowstylebg'>".$row['db_description']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='row_stylebg'>".$row['db_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_sql_query.php?id=".$row['db_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			echo "	</td>\n";

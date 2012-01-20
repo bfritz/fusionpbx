@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -144,10 +144,10 @@ if (!function_exists('sync_directory')) {
 			$sql = "";
 			$sql .= " select * from v_extensions ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
 			$x = 0;
-			$result = $prepstatement->fetchAll();
+			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row) {
 				//print_r($row);
 				$extension = $row["extension"];
@@ -163,9 +163,9 @@ if (!function_exists('sync_directory')) {
 						$sql .= "select * from v_users ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and username = '$username' ";
-						$prepstatement = $db->prepare(check_sql($sql));
-						$prepstatement->execute();
-						$tmp_result = $prepstatement->fetchAll();
+						$prep_statement = $db->prepare(check_sql($sql));
+						$prep_statement->execute();
+						$tmp_result = $prep_statement->fetchAll();
 						foreach ($tmp_result as &$row_tmp) {
 							$user_first_name = $row_tmp["user_first_name"];
 							$user_last_name = $row_tmp["user_last_name"];
@@ -202,7 +202,7 @@ if (!function_exists('sync_directory')) {
 					}
 				}
 			}
-			unset ($prepstatement);
+			unset ($prep_statement);
 
 		$tmp .= "\n";
 		$tmp .= "\n";

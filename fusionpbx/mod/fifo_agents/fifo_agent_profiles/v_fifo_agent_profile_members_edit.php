@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -150,9 +150,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_fifo_agent_profile_members ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and fifo_agent_profile_member_id = '$fifo_agent_profile_member_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$fifo_agent_profile_id = $row["fifo_agent_profile_id"];
 		$fifo_name = $row["fifo_name"];
@@ -160,7 +160,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$agent_username = $row["agent_username"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 }
 
 
@@ -201,12 +201,12 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 	//generate the fifo name select list
 	$sql = "";
-	$sql .= "select * from v_dialplan_includes_details ";
+	$sql .= "select * from v_dialplan_details ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	$x = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	echo "<select name=\"fifo_name\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
 	foreach ($result as &$row) {
@@ -223,7 +223,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		}
 	}
 	echo "</select>\n";
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 
 	echo "<br />\n";
@@ -241,12 +241,12 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	//generate the user list
 		$sql = "SELECT * FROM v_users ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 
 		echo "<select name=\"agent_username\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
-		$result = $prepstatement->fetchAll();
+		$result = $prep_statement->fetchAll();
 		foreach($result as $field) {
 			if ($agent_username == $field[username]) {
 				echo "<option value='".$field[username]."' selected='selected'>".$field[username]."</option>\n";

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -136,9 +136,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_fifo_agent_languages ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fifo_agent_language_id = '$fifo_agent_language_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$username = $row["username"];
@@ -146,7 +146,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$proficiency = $row["proficiency"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //begin the content
@@ -190,12 +190,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//generate the user list
 		$sql = "SELECT * FROM v_users ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 
 		echo "<select name=\"username\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
-		$result = $prepstatement->fetchAll();
+		$result = $prep_statement->fetchAll();
 		foreach($result as $field) {
 			if ($username == $field[username]) {
 				echo "<option value='".$field[username]."' selected='selected'>".$field[username]."</option>\n";
@@ -222,11 +222,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "SELECT var_name, var_value FROM v_vars ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and var_cat = 'Languages' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 		echo "<select name=\"language\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
-		$result = $prepstatement->fetchAll();
+		$result = $prep_statement->fetchAll();
 		foreach($result as $field) {
 			if ($field[var_value] == $agent_status) {
 				echo "<option value='".$field[var_value]."' selected='selected'>".$field[var_name]."</option>\n";

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -46,7 +46,7 @@ if (!$fp) {
 	echo "<th align='left'>Message</th>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+	echo "<td class='row_style1'><strong>$msg</strong></td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 	echo "</div>\n";
@@ -61,8 +61,8 @@ else {
 	}
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
@@ -94,9 +94,9 @@ else {
 				//$caller_id_number = $row->members->member->caller_id_number;
 
 				echo "<tr>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$conference_display_name."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$member_count."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_conference_interactive.php?c=".$conference_name."'>view</a></td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>".$conference_display_name."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>".$member_count."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'><a href='v_conference_interactive.php?c=".$conference_name."'>view</a></td>\n";
 				echo "</tr>\n";
 
 				if ($c==0) { $c=1; } else { $c=0; }

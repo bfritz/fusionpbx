@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -41,8 +41,8 @@ require_once "includes/checkauth.php";
 
 //define variables
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 //create the event socket connection
 	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -58,7 +58,7 @@ require_once "includes/checkauth.php";
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+		echo "<td class='row_style1'><strong>$msg</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -153,19 +153,19 @@ require_once "includes/checkauth.php";
 				foreach ($registrations as $row) {
 					echo "<tr>\n";
 					if (count($_SESSION["domains"]) > 1) {
-						echo "<td class='".$rowstyle[$c]."'>&nbsp;".$row['domain']."&nbsp;</td>\n";
+						echo "<td class='".$row_style[$c]."'>&nbsp;".$row['domain']."&nbsp;</td>\n";
 					}
-					//<td class='".$rowstyle[$c]."'>&nbsp;".$row['call-id']."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row['user']."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row['contact']."&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row['sip-auth-user']."&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row['agent']."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row['host']."&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;<a href='http://".$row['network-ip']."' target='_blank'>".$row['network-ip']."</a>&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row['network-port']."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row['sip-auth-realm']."&nbsp;</td>\n";
-					//echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row['mwi-account']."&nbsp;</td>\n";
-					echo "	<td class='".$rowstyle[$c]."'>&nbsp;".$row['status']."&nbsp;</td>\n";
+					//<td class='".$row_style[$c]."'>&nbsp;".$row['call-id']."&nbsp;</td>\n";
+					//echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['user']."&nbsp;</td>\n";
+					//echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['contact']."&nbsp;</td>\n";
+					echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['sip-auth-user']."&nbsp;</td>\n";
+					echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['agent']."&nbsp;</td>\n";
+					//echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['host']."&nbsp;</td>\n";
+					echo "	<td class='".$row_style[$c]."'>&nbsp;<a href='http://".$row['network-ip']."' target='_blank'>".$row['network-ip']."</a>&nbsp;</td>\n";
+					echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['network-port']."&nbsp;</td>\n";
+					//echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['sip-auth-realm']."&nbsp;</td>\n";
+					//echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['mwi-account']."&nbsp;</td>\n";
+					echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['status']."&nbsp;</td>\n";
 					echo "</tr>\n";
 					if ($c==0) { $c=1; } else { $c=0; }
 				}

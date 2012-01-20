@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -44,35 +44,35 @@ else {
 	else {
 		//find the conference extensions from the dialplan include details
 			$sql = "";
-			$sql .= "select * from v_dialplan_includes_details ";
+			$sql .= "select * from v_dialplan_details ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			if (!(ifgroup("admin") || ifgroup("superadmin"))) {
 				//find the assigned users
 					$sql .= "and field_data like 'conference_user_list%' and field_data like '%|".$_SESSION['username']."|%' ";
 			}
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
 			$x = 0;
-			$result = $prepstatement->fetchAll();
+			$result = $prep_statement->fetchAll();
 			$conference_array = array ();
 			foreach ($result as &$row) {
-				$dialplan_include_uuid = $row["dialplan_include_uuid"];
+				$dialplan_uuid = $row["dialplan_uuid"];
 				//$tag = $row["tag"];
 				//$field_order = $row["field_order"];
 				$field_type = $row["field_type"];
 				//$field_data = $row["field_data"];
 				if (ifgroup("admin") || ifgroup("superadmin")) {
 					if ($field_type == "conference") {
-						$conference_array[$x]['dialplan_include_uuid'] = $dialplan_include_uuid;
+						$conference_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 						$x++;
 					}
 				}
 				else {
-					$conference_array[$x]['dialplan_include_uuid'] = $dialplan_include_uuid;
+					$conference_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 					$x++;
 				}
 			}
-			unset ($prepstatement);
+			unset ($prep_statement);
 
 		//find if the user is in the admin or superadmin group or has been assigned to this conference
 			if (ifgroup("admin") || ifgroup("superadmin")) {
@@ -81,28 +81,28 @@ else {
 			else {
 				//get the list of conference numbers the user is assigned to
 				$sql = "";
-				$sql .= " select * from v_dialplan_includes_details ";
+				$sql .= " select * from v_dialplan_details ";
 				$x = 0;
 				foreach ($conference_array as &$row) {
 					if ($x == 0) {
 						$sql .= "where domain_uuid = '$domain_uuid' \n";
-						$sql .= "and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
+						$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 						$sql .= "and field_type = 'conference' \n";
 						$sql .= "and field_data like '".$conference_name."%' \n";
 					}
 					else {
 						$sql .= "or domain_uuid = '$domain_uuid' \n";
-						$sql .= "and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' \n";
+						$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 						$sql .= "and field_type = 'conference' \n";
 						$sql .= "and field_data like '".$conference_name."%' \n";
 					}
 					$x++;
 				}
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
 				$result_count = count($result);
-				unset ($prepstatement, $sql);
+				unset ($prep_statement, $sql);
 				if ($result_count == 0) { //no results
 					echo "access denied";
 					exit;
@@ -126,7 +126,7 @@ else {
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+		echo "<td class='row_style1'><strong>$msg</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -145,8 +145,8 @@ else {
 		$locked = $xml->conference['locked'];
 
 		$c = 0;
-		$rowstyle["0"] = "rowstyle0";
-		$rowstyle["1"] = "rowstyle1";
+		$row_style["0"] = "row_style0";
+		$row_style["1"] = "row_style1";
 
 		echo "<div id='cmd_reponse'>\n";
 		echo "</div>\n";
@@ -204,41 +204,41 @@ else {
 			$caller_id_number = $row->caller_id_number;
 
 			echo "<tr>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."'>$id</td>\n";
-			//echo "<td valign='top' class='".$rowstyle[$c]."'>$uuid</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."'>$caller_id_name</td>\n";
-			echo "<td valign='top' class='".$rowstyle[$c]."'>$caller_id_number</td>\n";
+			echo "<td valign='top' class='".$row_style[$c]."'>$id</td>\n";
+			//echo "<td valign='top' class='".$row_style[$c]."'>$uuid</td>\n";
+			echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_name</td>\n";
+			echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_number</td>\n";
 			if ($flag_can_hear == "true") {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
 			}
 			else {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
 			}
 			if ($flag_can_speak == "true") {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
 			}
 			else {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
 			}
 			if ($flag_talking == "true") {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
 			}
 			else {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
 			}
 			if ($flag_has_video == "true") {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
 			}
 			else {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
 			}
 			if ($flag_has_floor == "true") {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>yes</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
 			}
 			else {
-				echo "<td valign='top' class='".$rowstyle[$c]."'>no</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
 			}
-			echo "<td valign='top' class='".$rowstyle[$c]."' style='text-align:right;'>\n";
+			echo "<td valign='top' class='".$row_style[$c]."' style='text-align:right;'>\n";
 			//energy
 				if (permission_exists('conferences_active_energy')) {
 					echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=energy&direction=up&cmd=conference%20".$conference_name."%20energy%20".$id."');\">+energy</a>&nbsp;\n";

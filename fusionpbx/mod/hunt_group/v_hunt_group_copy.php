@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -47,9 +47,9 @@ require_once "includes/paging.php";
 	$sql .= "select * from v_hunt_group ";
 	$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$hunt_group_extension = $row["hunt_group_extension"];
 		$hunt_group_name = $row["hunt_group_name"];
@@ -66,12 +66,13 @@ require_once "includes/paging.php";
 		$hunt_group_descr = "copy: ".$row["hunt_group_descr"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 	//copy the hunt group
 		$sql = "insert into v_hunt_group ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
+		$sql .= "hunt_group_uuid, ";
 		$sql .= "hunt_group_extension, ";
 		$sql .= "hunt_group_name, ";
 		$sql .= "hunt_group_type, ";
@@ -89,6 +90,7 @@ require_once "includes/paging.php";
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
+		$sql .= "'$hunt_group_uuid', ";
 		$sql .= "'$hunt_group_extension', ";
 		$sql .= "'$hunt_group_name', ";
 		$sql .= "'$hunt_group_type', ";
@@ -103,20 +105,7 @@ require_once "includes/paging.php";
 		$sql .= "'$hunt_group_enabled', ";
 		$sql .= "'$hunt_group_descr' ";
 		$sql .= ")";
-		if ($db_type == "sqlite" || $db_type == "mysql" ) {
-			$db->exec(check_sql($sql));
-			$db_hunt_group_uuid = $db->lastInsertId($id);
-		}
-		if ($db_type == "pgsql") {
-			$sql .= " RETURNING hunt_group_uuid ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			foreach ($result as &$row) {
-				$db_hunt_group_uuid = $row["hunt_group_uuid"];
-			}
-			unset($prepstatement, $result);
-		}
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 	//get the the hunt group destinations
@@ -124,11 +113,10 @@ require_once "includes/paging.php";
 		$sql .= "select * from v_hunt_group_destinations ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_uuid = '$hunt_group_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			//$domain_uuid = $row["domain_uuid"];
 			$hunt_group_uuid = $row["hunt_group_uuid"];
 			$destination_data = $row["destination_data"];
 			$destination_type = $row["destination_type"];
@@ -137,10 +125,12 @@ require_once "includes/paging.php";
 			$destination_descr = $row["destination_descr"];
 
 			//copy the hunt group destinations
+				$hunt_group_destination_uuid = uuid();
 				$sql = "insert into v_hunt_group_destinations ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "hunt_group_uuid, ";
+				$sql .= "hunt_group_destination_uuid, ";
 				$sql .= "destination_data, ";
 				$sql .= "destination_type, ";
 				$sql .= "destination_profile, ";
@@ -151,6 +141,7 @@ require_once "includes/paging.php";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'$db_hunt_group_uuid', ";
+				$sql .= "'$hunt_group_destination_uuid', ";
 				$sql .= "'$destination_data', ";
 				$sql .= "'$destination_type', ";
 				$sql .= "'$destination_profile', ";
@@ -160,7 +151,7 @@ require_once "includes/paging.php";
 				$db->exec(check_sql($sql));
 				unset($sql);
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 
 	//synchronize the xml config
 		sync_package_v_hunt_group();

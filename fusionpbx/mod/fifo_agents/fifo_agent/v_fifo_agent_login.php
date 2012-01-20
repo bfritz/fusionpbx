@@ -95,9 +95,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and fifo_agent_profile_id = '$fifo_agent_profile_id' ";
 				$sql .= "and agent_username = '$agent_username' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$fifo_agent_profile_member_id = $row["fifo_agent_profile_member_id"];
 					$fifo_agent_profile_id = $row["fifo_agent_profile_id"];
@@ -151,7 +151,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						unset($sql);
 
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 
 				require_once "includes/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fifo_agent_edit.php\">\n";
@@ -193,9 +193,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_fifo_agents ";
 		$sql .= "where fifo_agent_id = '$fifo_agent_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$fifo_name = $row["fifo_name"];
@@ -204,7 +204,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$agent_contact_number = $row["agent_contact_number"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 	*/
 
@@ -244,10 +244,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql .= "select * from v_fifo_agent_profiles ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	//$sql .= "and fifo_agent_profile_id = '$fifo_agent_profile_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	$x = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	echo "<select name=\"fifo_agent_profile_id\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
 	foreach ($result as &$row) {
@@ -262,7 +262,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 	}
 	echo "</select>\n";
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 
 	echo "<tr>\n";

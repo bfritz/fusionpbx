@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -65,9 +65,9 @@ function phpservice_sync_package_php() {
 	$sql = "";
 	$sql .= "select * from v_php_service ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$tmp_prepstatement = $db->prepare(check_sql($sql));
-	$tmp_prepstatement->execute();
-	$tmp_result = $tmp_prepstatement->fetchAll();
+	$tmp_prep_statement = $db->prepare(check_sql($sql));
+	$tmp_prep_statement->execute();
+	$tmp_result = $tmp_prep_statement->fetchAll();
 	foreach ($tmp_result as &$row) {
 		$service_name = $row["service_name"];
 		$tmp_service_name = str_replace(" ", "_", $service_name);
@@ -340,9 +340,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('php_service_add')) {
+			$php_service_uuid = uuid();
 			$sql = "insert into v_php_service ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
+			$sql .= "php_service_uuid, ";
 			$sql .= "service_name, ";
 			$sql .= "service_script, ";
 			$sql .= "service_enabled, ";
@@ -351,6 +353,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
+			$sql .= "'$php_service_uuid', ";
 			$sql .= "'$service_name', ";
 			$sql .= "'".base64_encode($service_script)."', ";
 			$sql .= "'$service_enabled', ";
@@ -403,9 +406,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_php_service ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and php_service_uuid = '$php_service_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$service_name = $row["service_name"];
 			$tmp_service_name = str_replace(" ", "_", $service_name);
@@ -414,7 +417,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$service_description = $row["service_description"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //include the header

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -108,9 +108,9 @@ if (defined('STDIN')) {
 	$sql .= "select * from v_fax ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and faxextension = '$fax_extension' ";
-	$prepstatement = $db->prepare($sql);
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
 		//set database fields as variables
 			//$fax_extension = $row["faxextension"];
@@ -125,7 +125,7 @@ if (defined('STDIN')) {
 		//limit to one row
 			break;
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 //set the fax directory
 	$dir_fax = $v_storage_dir.'/fax/'.$domain.'/'.$fax_extension.'/inbox';
@@ -158,9 +158,9 @@ if (defined('STDIN')) {
 				$sql = "";
 				$sql .= "select * from v_settings ";
 				$sql .= "where domain_uuid = '1' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 				foreach ($result as &$row) {
 					$event_socket_ip_address = $row["event_socket_ip_address"];
 					$event_socket_port = $row["event_socket_port"];

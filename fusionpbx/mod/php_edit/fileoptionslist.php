@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -261,7 +261,7 @@ function recur_dir($dir) {
     echo "<br><br>";
     require_once "footer.php";
 
-    unset ($resultcount);
+    unset ($result_count);
     unset ($result);
     unset ($key);
     unset ($val);

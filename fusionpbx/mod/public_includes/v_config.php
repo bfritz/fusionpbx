@@ -14,7 +14,7 @@
 		$apps[$x]['menu'][0]['uuid'] = 'B64B2BBF-F99B-B568-13DC-32170515A687';
 		$apps[$x]['menu'][0]['parent_uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/mod/public_includes/v_public_includes.php';
+		$apps[$x]['menu'][0]['path'] = '/mod/public_includes/v_public.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
@@ -34,7 +34,7 @@
 		$apps[$x]['permissions'][4]['groups'][] = 'superadmin';
 
 	//schema details
-		$apps[$x]['db'][$y]['table'] = 'v_public_includes';
+		$apps[$x]['db'][$y]['table'] = 'v_public';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'public_include_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
@@ -42,7 +42,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'public_include_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'public_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
@@ -100,7 +100,7 @@
 
 		$y = 1; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = 'v_public_includes_details';
+		$apps[$x]['db'][$y]['table'] = 'v_public_details';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'public_includes_detail_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
@@ -120,7 +120,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'public_include_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'public_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';

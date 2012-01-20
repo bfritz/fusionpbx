@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -88,9 +88,9 @@ require_once "includes/paging.php";
 	$sql .= " select * from v_group_permissions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and group_id = '$group_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$permission_id = $row["permission_id"];
 		$permissions_db[$permission_id] = "true";
@@ -207,8 +207,8 @@ require_once "includes/paging.php";
 	echo "<br />\n";
 
 	$c = 0;
-	$row_style["0"] = "rowstyle0";
-	$row_style["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='left'>\n";
 

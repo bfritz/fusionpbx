@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2008-2010 All Rights Reserved.
+	Copyright (C) 2008-2012 All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -97,9 +97,11 @@ require_once "includes/config.php";
 			if ($_POST["persistformvar"] != "true") {
 				if ($action == "add" && permission_exists('phone_add')) {
 					//sql add
+						$hardware_phone_uuid = uuid();
 						$sql = "insert into v_hardware_phones ";
 						$sql .= "(";
 						$sql .= "domain_uuid, ";
+						$sql .= "hardware_phone_uuid, ";
 						$sql .= "phone_mac_address, ";
 						$sql .= "phone_label, ";
 						$sql .= "phone_vendor, ";
@@ -115,6 +117,7 @@ require_once "includes/config.php";
 						$sql .= "values ";
 						$sql .= "(";
 						$sql .= "'$domain_uuid', ";
+						$sql .= "'$hardware_phone_uuid', ";
 						$sql .= "'$phone_mac_address', ";
 						$sql .= "'$phone_label', ";
 						$sql .= "'$phone_vendor', ";
@@ -184,9 +187,9 @@ require_once "includes/config.php";
 		$sql .= "select * from v_hardware_phones ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hardware_phone_uuid = '$hardware_phone_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$phone_mac_address = $row["phone_mac_address"];
 			$phone_mac_address = strtolower($phone_mac_address);
@@ -202,7 +205,7 @@ require_once "includes/config.php";
 			$phone_description = $row["phone_description"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //begin the content

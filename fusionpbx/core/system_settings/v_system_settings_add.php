@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -39,16 +39,16 @@ else {
 	$sql .= "select * from v_system_settings ";
 	$sql .= "order by domain_uuid asc ";
 	$sql .= "limit 1 ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$v_template_name = $row["v_template_name"];
 		$v_menu_guid = $row["v_menu_guid"];
 		$v_time_zone = $row["v_time_zone"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 //show the header
 	require_once "includes/header.php";

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -970,13 +970,13 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql = "SELECT * FROM v_group_members ";
 		$sql .= "where domain_uuid=:domain_uuid ";
 		$sql .= "and username=:username ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->bindParam(':domain_uuid', $domain_uuid);
-		$prepstatement->bindParam(':username', $_SESSION["username"]);
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll(PDO::FETCH_NAMED);
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->bindParam(':domain_uuid', $domain_uuid);
+		$prep_statement->bindParam(':username', $_SESSION["username"]);
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		$_SESSION["groups"] = $result;
-		unset($sql, $rowcount, $prepstatement);
+		unset($sql, $row_count, $prep_statement);
 
 	//get the permissions assigned to the groups that the user is a member of set the permissions in $_SESSION['permissions']
 		$x = 0;
@@ -992,10 +992,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				$x++;
 			}
 		}
-		$prepstatementsub = $db->prepare($sql);
-		$prepstatementsub->execute();
-		$_SESSION['permissions'] = $prepstatementsub->fetchAll(PDO::FETCH_NAMED);
-		unset($sql, $prepstatementsub);
+		$prep_statementsub = $db->prepare($sql);
+		$prep_statementsub->execute();
+		$_SESSION['permissions'] = $prep_statementsub->fetchAll(PDO::FETCH_NAMED);
+		unset($sql, $prep_statementsub);
 
 	//make sure the database schema and installation have performed all necessary tasks
 		$display_results = false;
@@ -1047,7 +1047,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong><ul>$installmsg</ul></strong></td>\n";
+		echo "<td class='row_style1'><strong><ul>$installmsg</ul></strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -1087,13 +1087,13 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "	<li>Step 1 is used for selecting the database engine to use. After making that section then ensure the paths are correct and then press next. </li> ";
 		echo "	<li>Step 2 requests the database specific settings. When finished press save. The installation will then complete the tasks required to do the install. </li></td>\n";
 		echo "	</ul>\n";
-		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes_edit.php?id=".$dialplan_include_uuid."'\" value='Back'></td>\n";
+		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_edit.php?id=".$dialplan_uuid."'\" value='Back'></td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
 		echo "<td align='left' width='30%' nowrap><b>Step 1</b></td>\n";
 		echo "<td width='70%' align='right'>&nbsp;</td>\n";
-		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes_edit.php?id=".$dialplan_include_uuid."'\" value='Back'></td>\n";
+		//echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_edit.php?id=".$dialplan_uuid."'\" value='Back'></td>\n";
 		echo "</tr>\n";
 
 		$db_type = $_POST["db_type"];

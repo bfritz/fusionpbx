@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -41,7 +41,7 @@ require_once "includes/paging.php";
 
 //get the http get values and set them as php variables
 	$user_id = check_str($_REQUEST["id"]);
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //allow admins, superadmins and users that are assigned to the extension to view the page
@@ -127,14 +127,14 @@ require_once "includes/paging.php";
 	$sql .= "select * from v_voicemail_greetings ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_id = '$user_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	$config_greeting_list = "|";
 	foreach ($result as &$row) {
 		$config_greeting_list .= $row['greeting_name']."|";
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 //add recordings to the database
 	if (is_dir($v_greeting_dir.'/')) {
@@ -145,10 +145,11 @@ require_once "includes/paging.php";
 						if (substr($file, 0, 8) == "greeting") {
 							//file not found add it to the database
 							$a_file = explode("\.", $file);
-
+							$voicemail_greeting_uuid = uuid();
 							$sql = "insert into v_voicemail_greetings ";
 							$sql .= "(";
 							$sql .= "domain_uuid, ";
+							$sql .= "voicemail_greeting_uuid, ";
 							$sql .= "user_id, ";
 							$sql .= "greeting_name, ";
 							$sql .= "greeting_description ";
@@ -156,6 +157,7 @@ require_once "includes/paging.php";
 							$sql .= "values ";
 							$sql .= "(";
 							$sql .= "'$domain_uuid', ";
+							$sql .= "'$voicemail_greeting_uuid', ";
 							$sql .= "'$user_id', ";
 							$sql .= "'".$a_file[0]."', ";
 							$sql .= "'' ";
@@ -259,10 +261,10 @@ require_once "includes/paging.php";
 		$sql .= " select count(*) as num_rows from v_voicemail_greetings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and user_id = '$user_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		if ($prepstatement) {
-			$prepstatement->execute();
-			$row = $prepstatement->fetch(PDO::FETCH_ASSOC);
+		$prep_statement = $db->prepare(check_sql($sql));
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 			if ($row['num_rows'] > 0) {
 				$num_rows = $row['num_rows'];
 			}
@@ -270,40 +272,40 @@ require_once "includes/paging.php";
 				$num_rows = '0';
 			}
 		}
-		unset($prepstatement, $result);
+		unset($prep_statement, $result);
 
 	//prepare to page the results
-		$rowsperpage = 100;
+		$rows_per_page = 100;
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($pagingcontrols, $rowsperpage, $var3) = paging($num_rows, $param, $rowsperpage); 
-		$offset = $rowsperpage * $page; 
+		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+		$offset = $rows_per_page * $page; 
 
 	//get the greetings list
 		$sql = "";
 		$sql .= "select * from v_voicemail_greetings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and user_id = '$user_id' ";
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-		$sql .= " limit $rowsperpage offset $offset ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		$resultcount = count($result);
-		unset ($prepstatement, $sql);
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+		$sql .= " limit $rows_per_page offset $offset ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		$result_count = count($result);
+		unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<th>Choose</th>\n";
-	echo thorderby('greeting_name', 'Name', $orderby, $order);
+	echo thorder_by('greeting_name', 'Name', $order_by, $order);
 	echo "<th align='right'>Download</th>\n";
 	echo "<th width=\"50px\" class=\"listhdr\" nowrap=\"nowrap\">Size</th>\n";
-	echo thorderby('greeting_description', 'Description', $orderby, $order);
+	echo thorder_by('greeting_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	//if (permission_exists('voicemail_greetings_add')) {
 	//	echo "	<a href='v_voicemail_greetings_edit.php?&user_id=".$user_id."' alt='add'>$v_link_label_add</a>\n";
@@ -311,13 +313,13 @@ require_once "includes/paging.php";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if ($resultcount > 0) {
+	if ($result_count > 0) {
 		foreach($result as $row) {
 			$tmp_filesize = filesize($v_greeting_dir.'/'.$row['greeting_name']);
 			$tmp_filesize = byte_convert($tmp_filesize);
 
 			echo "<tr >\n";
-			echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\" width='30px;' valign='top'>\n";
+			echo "	<td class='".$row_style[$c]."' ondblclick=\"\" width='30px;' valign='top'>\n";
 			if ($v_greeting_dir.'/'.$row['greeting_name'] == $greeting) {
 				echo "		<input type=\"radio\" name=\"greeting\" value=\"".$row['greeting_name']."\" checked=\"checked\">\n";
 			}
@@ -326,11 +328,11 @@ require_once "includes/paging.php";
 			}
 			echo "	</td>\n";
 
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			echo $row['greeting_name'];
 			echo 	"</td>\n";
 
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			echo "		<a href=\"v_voicemail_greetings.php?id=$user_id&a=download&type=rec&t=bin&filename=".base64_encode($row['greeting_name'])."\">\n";
 			echo "		download";
 			echo "		</a>";
@@ -340,11 +342,11 @@ require_once "includes/paging.php";
 			//echo "		</a>";
 			echo 	"</td>\n";
 
-			echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+			echo "	<td class='".$row_style[$c]."' ondblclick=\"\">\n";
 			echo "	".$tmp_filesize;
 			echo "	</td>\n";
 
-			echo "	<td valign='top' class='rowstylebg'>".$row['greeting_description']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='row_stylebg'>".$row['greeting_description']."&nbsp;</td>\n";
 
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('voicemail_greetings_edit')) {
@@ -358,14 +360,14 @@ require_once "includes/paging.php";
 
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 	echo "</table>\n";
 
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	//if (permission_exists('voicemail_greetings_add')) {
 	//	echo "			<a href='v_voicemail_greetings_edit.php?user_id=".$user_id."' alt='add'>$v_link_label_add</a>\n";

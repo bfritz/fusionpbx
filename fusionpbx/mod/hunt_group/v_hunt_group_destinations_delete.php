@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -48,8 +48,8 @@ if (strlen($id)>0) {
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_destination_uuid = '$id' ";
 		$sql .= "and hunt_group_uuid = '$hunt_group_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 		unset($sql);
 	//synchronize the xml config
 		sync_package_v_hunt_group();

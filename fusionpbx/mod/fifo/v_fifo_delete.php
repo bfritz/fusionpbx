@@ -43,24 +43,24 @@ if (strlen($id)>0) {
 
     //delete child data
 		$sql = "";
-		$sql .= "delete from v_dialplan_includes_details ";
+		$sql .= "delete from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_include_uuid = '$id' ";
+		$sql .= "and dialplan_uuid = '$id' ";
 		//echo $sql;
 		$db->query($sql);
 		unset($sql);
 
     //delete parent data
 		$sql = "";
-		$sql .= "delete from v_dialplan_includes ";
+		$sql .= "delete from v_dialplan ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_include_uuid = '$id' ";
+		$sql .= "and dialplan_uuid = '$id' ";
 		//echo $sql;
 		$db->query($sql);
 		unset($sql);
 
     //synchronize the xml config
-		sync_package_v_dialplan_includes();
+		sync_package_v_dialplan();
 
 }
 

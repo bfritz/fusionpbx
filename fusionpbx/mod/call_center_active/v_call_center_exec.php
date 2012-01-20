@@ -74,8 +74,8 @@ else {
 			$sql .= "user_status = '".trim($user_status, "'")."' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '".$username."' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
 		}
 
 		//fs cmd

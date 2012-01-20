@@ -18,7 +18,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -57,19 +57,19 @@ if ($action == "update") {
 	$sql = "";
 	$sql .= "select * from v_xmpp ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and xmpp_profile_id = '$profile_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$sql .= "and xmpp_profile_uuid = '$profile_id' ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 
 	$x = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$profiles_array[$x] = $row;
 		$x++;
 	}
 
 	$profile = $profiles_array[0];
-	unset ($prepstatement);
+	unset ($prep_statement);
 	$profile['profile_username'] = $profile['username'];
 	$profile['profile_password'] = $profile['password'];
 } else { 
@@ -111,9 +111,11 @@ if (strlen($error) > 0) {
 
 // Save New Entry
 if ($action == "add" && permission_exists('xmpp_add')) {
+	$xmpp_profile_uuid = uuid();
 	$sql = "";
 	$sql .= "insert into v_xmpp (";
  	$sql .= "domain_uuid, ";
+	$sql .= "xmpp_profile_uuid, ";
  	$sql .= "profile_name, ";
  	$sql .= "username, ";
  	$sql .= "password, ";
@@ -133,8 +135,9 @@ if ($action == "add" && permission_exists('xmpp_add')) {
  	$sql .= "local_network_acl, ";
 	$sql .= "description ";
 	$sql .= ") values (";
- 	$sql .= "$domain_uuid, ";
- 	$sql .= "'" . $request['profile_name'] . "', ";
+	$sql .= "'" . $domain_uuid . "', ";
+	$sql .= "'" . $xmpp_profile_uuid . "', ";
+	$sql .= "'" . $request['profile_name'] . "', ";
  	$sql .= "'" . $request['profile_username'] . "', ";
  	$sql .= "'" . $request['profile_password'] . "', ";
  	$sql .= "'" . $request['dialplan'] . "', ";
@@ -153,21 +156,11 @@ if ($action == "add" && permission_exists('xmpp_add')) {
  	$sql .= "'" . $request['local_network_acl'] . "', ";
 	$sql .= "'" . $request['description'] . "' ";
 	$sql .= ") ";
-	if ($db_type == "pgsql") {
-	 	$sql .= "RETURNING xmpp_profile_id;";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-        	$result = $prepstatement->fetchAll();
-		$xmpp_profile_id = $result[0]['xmpp_profile_id'];
-	} elseif ($db_type == "sqlite" || $db_type == "mysql" ) {
-                $db->exec(check_sql($sql));
-		$xmpp_profile_id = $db->lastInsertId();
-	}
+	$db->exec(check_sql($sql));
 
 	goto writeout;
-
-} elseif ($action == "update" && permission_exists('xmpp_edit')) {
-	// Update the new Records
+} 
+elseif ($action == "update" && permission_exists('xmpp_edit')) {
 	$sql = "";
 	$sql .= "UPDATE v_xmpp SET ";
 	$sql .= "profile_name = '" . $request['profile_name'] . "', ";
@@ -188,11 +181,11 @@ if ($action == "add" && permission_exists('xmpp_add')) {
 	$sql .= "candidate_acl = '" . $request['candidate_acl'] . "', ";
 	$sql .= "local_network_acl = '" . $request['local_network_acl'] . "', ";
 	$sql .= "description = '" . $request['description'] . "' ";
-	$sql .= "where xmpp_profile_id = " . $request['id'];
+	$sql .= "where xmpp_profile_uuid = " . $request['id'];
 	$db->exec(check_sql($sql));
-		
-	$xmpp_profile_id = $request['id'];
-	
+
+	$xmpp_profile_uuid = $request['id'];
+
 	goto writeout;
 } 
 
@@ -200,8 +193,7 @@ writeout:
 include "client_template.php";
 $xml = make_xmpp_xml($request);
 
-$filename = $v_conf_dir . "/jingle_profiles/" . "v_" . $v_domain . "_" . preg_replace("/[^A-Za-z0-9]/", "", $request['profile_name']) . "_" . $xmpp_profile_id . ".xml";
-
+$filename = $v_conf_dir . "/jingle_profiles/" . "v_" . $v_domain . "_" . preg_replace("/[^A-Za-z0-9]/", "", $request['profile_name']) . "_" . $xmpp_profile_uuid . ".xml";
 $fh = fopen($filename,"w") or die("WTF");
 fwrite($fh, $xml);
 unset($file_name);

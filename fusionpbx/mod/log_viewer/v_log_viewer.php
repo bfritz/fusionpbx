@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,8 +37,8 @@ else {
 
 //define variables
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 //set a default file size
 	if (strlen($_POST['fs']) == 0) { $_POST['fs'] = "32"; }
@@ -139,7 +139,7 @@ if (permission_exists('log_view')) {
 
 	echo "<table style=\"width: 100%\;\" width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">";
 	echo "<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">Syntax Highlighted</th></tr>";
-	echo "<tr><td style=\"text-align: left;\" class=\"rowstylebg\">";
+	echo "<tr><td style=\"text-align: left;\" class=\"row_stylebg\">";
 
 	$user_filesize = '32000';
 	if (isset($_POST['submit'])) {

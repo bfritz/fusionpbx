@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -45,9 +45,9 @@ else {
 	$sql .= "select * from v_ivr_menu ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$ivr_menu_name = $row["ivr_menu_name"];
 		$ivr_menu_extension = $row["ivr_menu_extension"];
@@ -70,12 +70,14 @@ else {
 		$ivr_menu_desc = 'copy: '.$row["ivr_menu_desc"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 	//copy the v_ivr_menu
+		$ivr_menu_uuid = uuid();
 		$sql = "insert into v_ivr_menu ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
+		$sql .= "ivr_menu_uuid, ";
 		$sql .= "ivr_menu_name, ";
 		$sql .= "ivr_menu_extension, ";
 		$sql .= "ivr_menu_greet_long, ";
@@ -99,6 +101,7 @@ else {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
+		$sql .= "'$ivr_menu_uuid', ";
 		$sql .= "'$ivr_menu_name', ";
 		$sql .= "'$ivr_menu_extension', ";
 		$sql .= "'$ivr_menu_greet_long', ";
@@ -119,20 +122,7 @@ else {
 		$sql .= "'$ivr_menu_enabled', ";
 		$sql .= "'$ivr_menu_desc' ";
 		$sql .= ")";
-		if ($db_type == "sqlite" || $db_type == "mysql" ) {
-			$db->exec(check_sql($sql));
-			$db_ivr_menu_uuid = $db->lastInsertId($id);
-		}
-		if ($db_type == "pgsql") {
-			$sql .= " RETURNING ivr_menu_uuid ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			foreach ($result as &$row) {
-				$db_ivr_menu_uuid = $row["ivr_menu_uuid"];
-			}
-			unset($prepstatement, $result);
-		}
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 	//get the the ivr menu options
@@ -141,9 +131,9 @@ else {
 		$sql .= "where ivr_menu_uuid = '$ivr_menu_uuid' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .= "order by ivr_menu_uuid asc ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$ivr_menu_options_digits = $row["ivr_menu_options_digits"];
 			$ivr_menu_options_action = $row["ivr_menu_options_action"];
@@ -152,10 +142,12 @@ else {
 			$ivr_menu_options_desc = $row["ivr_menu_options_desc"];
 
 			//copy the ivr menu options
+				$ivr_menu_option_uuid = uuid();
 				$sql = "insert into v_ivr_menu_options ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "ivr_menu_uuid, ";
+				$sql .= "ivr_menu_option_uuid, ";
 				$sql .= "ivr_menu_options_digits, ";
 				$sql .= "ivr_menu_options_action, ";
 				$sql .= "ivr_menu_options_param, ";
@@ -165,7 +157,8 @@ else {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
-				$sql .= "'$db_ivr_menu_uuid', ";
+				$sql .= "'$ivr_menu_uuid', ";
+				$sql .= "'$ivr_menu_option_uuid', ";
 				$sql .= "'$ivr_menu_options_digits', ";
 				$sql .= "'$ivr_menu_options_action', ";
 				$sql .= "'$ivr_menu_options_param', ";

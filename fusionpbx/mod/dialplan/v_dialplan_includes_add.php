@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 
@@ -101,9 +101,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$count = $db->exec("BEGIN;"); //returns affected rows
 
 	//add the main dialplan include entry
-		$sql = "insert into v_dialplan_includes ";
+		$dialplan_uuid = uuid();
+		$sql = "insert into v_dialplan ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
+		$sql .= "dialplan_uuid, ";
 		$sql .= "extension_name, ";
 		$sql .= "dialplan_order, ";
 		$sql .= "extension_continue, ";
@@ -114,6 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
+		$sql .= "'$dialplan_uuid', ";
 		$sql .= "'$extension_name', ";
 		$sql .= "'$dialplan_order', ";
 		$sql .= "'false', ";
@@ -121,27 +124,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$enabled', ";
 		$sql .= "'$description' ";
 		$sql .= ")";
-		if ($db_type == "sqlite" || $db_type == "mysql" ) {
-			$db->exec(check_sql($sql));
-			$dialplan_include_uuid = $db->lastInsertId($id);
-		}
-		if ($db_type == "pgsql") {
-			$sql .= " RETURNING dialplan_include_uuid ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			foreach ($result as &$row) {
-				$dialplan_include_uuid = $row["dialplan_include_uuid"];
-			}
-			unset($prepstatement, $result);
-		}
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 	//add condition 1
-		$sql = "insert into v_dialplan_includes_details ";
+		$dialplan_detail_uuid = uuid();
+		$sql = "insert into v_dialplan_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "dialplan_include_uuid, ";
+		$sql .= "dialplan_uuid, ";
+		$sql .= "dialplan_detail_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -150,7 +142,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$dialplan_include_uuid', ";
+		$sql .= "'$dialplan_uuid', ";
+		$sql .= "'$dialplan_detail_uuid', ";
 		$sql .= "'condition', ";
 		$sql .= "'$condition_field_1', ";
 		$sql .= "'$condition_expression_1', ";
@@ -161,10 +154,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add condition 2
 		if (strlen($condition_field_2) > 0) {
-			$sql = "insert into v_dialplan_includes_details ";
+			$dialplan_detail_uuid = uuid();
+			$sql = "insert into v_dialplan_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_uuid, ";
+			$sql .= "dialplan_uuid, ";
+			$sql .= "dialplan_detail_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -173,7 +168,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_uuid', ";
+			$sql .= "'$dialplan_uuid', ";
+			$sql .= "'$dialplan_detail_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'$condition_field_2', ";
 			$sql .= "'$condition_expression_2', ";
@@ -184,10 +180,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//add action 1
-		$sql = "insert into v_dialplan_includes_details ";
+		$dialplan_detail_uuid = uuid();
+		$sql = "insert into v_dialplan_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "dialplan_include_uuid, ";
+		$sql .= "dialplan_uuid, ";
+		$sql .= "dialplan_detail_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -196,7 +194,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$dialplan_include_uuid', ";
+		$sql .= "'$dialplan_uuid', ";
+		$sql .= "'$dialplan_detail_uuid', ";
 		$sql .= "'action', ";
 		$sql .= "'$action_application_1', ";
 		$sql .= "'$action_data_1', ";
@@ -207,10 +206,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add action 2
 		if (strlen($action_application_2) > 0) {
-			$sql = "insert into v_dialplan_includes_details ";
+			$dialplan_detail_uuid = uuid();
+			$sql = "insert into v_dialplan_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "dialplan_include_uuid, ";
+			$sql .= "dialplan_uuid, ";
+			$sql .= "dialplan_detail_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -219,7 +220,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$dialplan_include_uuid', ";
+			$sql .= "'$dialplan_uuid', ";
+			$sql .= "'$dialplan_detail_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'$action_application_2', ";
 			$sql .= "'$action_data_2', ";
@@ -233,10 +235,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$count = $db->exec("COMMIT;"); //returns affected rows
 
 	//synchronize the xml config
-		sync_package_v_dialplan_includes();
+		sync_package_v_dialplan();
 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan_includes.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan.php\">\n";
 	echo "<div align='center'>\n";
 	echo "Update Complete\n";
 	echo "</div>\n";
@@ -356,7 +358,7 @@ echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Dialp
 echo "			</strong></span></span>\n";
 echo "		</td>\n";
 echo "		<td align='right'>\n";
-echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_includes.php'\" value='Back'>\n";
+echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan.php'\" value='Back'>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
 echo "	<tr>\n";
@@ -706,7 +708,7 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "	<td colspan='5' align='right'>\n";
 if ($action == "update") {
-	echo "			<input type='hidden' name='dialplan_include_uuid' value='$dialplan_include_uuid'>\n";
+	echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 }
 echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 echo "	</td>\n";

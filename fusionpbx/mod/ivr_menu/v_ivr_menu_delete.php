@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -58,31 +58,31 @@ if (strlen($id)>0) {
 
 	//delete the dialplan entries
 		$sql = "";
-		$sql .= "select * from v_dialplan_includes ";
+		$sql .= "select * from v_dialplan ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
 		$sql .= "and opt_1_value = '".$id."' ";
-		$prepstatement2 = $db->prepare($sql);
-		$prepstatement2->execute();
-		while($row2 = $prepstatement2->fetch()) {
-			$dialplan_include_uuid = $row2['dialplan_include_uuid'];
-			//echo "dialplan_include_uuid: ".$dialplan_include_uuid."<br />\n";
+		$prep_statement_2 = $db->prepare($sql);
+		$prep_statement_2->execute();
+		while($row2 = $prep_statement_2->fetch()) {
+			$dialplan_uuid = $row2['dialplan_uuid'];
+			//echo "dialplan_uuid: ".$dialplan_uuid."<br />\n";
 			break; //limit to 1 row
 		}
-		unset ($sql, $prepstatement2);
+		unset ($sql, $prep_statement_2);
 
 		//delete the child dialplan information
 			$sql = "";
-			$sql = "delete from v_dialplan_includes_details ";
+			$sql = "delete from v_dialplan_details ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
+			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 			//echo "sql: ".$sql."<br />\n";
 			$db->query($sql);
 			unset($sql);
 
 		//delete the parent dialplan information
 			$sql = "";
-			$sql .= "delete from v_dialplan_includes ";
+			$sql .= "delete from v_dialplan ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
 			$sql .= "and opt_1_value = '".$id."' ";
@@ -94,7 +94,7 @@ if (strlen($id)>0) {
 		sync_package_v_ivr_menu();
 
 	//synchronize the xml config
-		sync_package_v_dialplan_includes();
+		sync_package_v_dialplan();
 }
 
 require_once "includes/header.php";

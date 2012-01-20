@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,7 +37,7 @@ if (ifgroup("superadmin")) {
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 	echo "	<a href='".PROJECT_PATH."/core/backup/backup.php'>download</a>	\n";
 	echo "	</td>\n";
-	echo "	<td class=\"rowstyle1\">\n";
+	echo "	<td class=\"row_style1\">\n";
 	echo "	<br />\n";
 	echo "To backup your application click on the download link and then choose  \n";
 	echo "a safe location on your computer to save the file. You may want to \n";

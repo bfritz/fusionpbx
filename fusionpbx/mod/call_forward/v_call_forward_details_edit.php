@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -38,23 +38,23 @@ else {
 //Action add or update
 if (isset($_REQUEST["id"])) {
 	$action = "update";
-	$dialplan_includes_detail_uuid = check_str($_REQUEST["id"]);
+	$dialplan_detail_uuid = check_str($_REQUEST["id"]);
 }
 else {
 	$action = "add";
-	$dialplan_include_uuid = check_str($_REQUEST["id2"]);
+	$dialplan_uuid = check_str($_REQUEST["id2"]);
 }
 
 if (isset($_REQUEST["id2"])) {
-	$dialplan_include_uuid = check_str($_REQUEST["id2"]);
+	$dialplan_uuid = check_str($_REQUEST["id2"]);
 }
 
 
 //POST to PHP variables
 if (count($_POST)>0) {
 	//$domain_uuid = check_str($_POST["domain_uuid"]);
-	if (isset($_REQUEST["dialplan_include_uuid"])) {
-		$dialplan_include_uuid = check_str($_POST["dialplan_include_uuid"]);
+	if (isset($_REQUEST["dialplan_uuid"])) {
+		$dialplan_uuid = check_str($_POST["dialplan_uuid"]);
 	}
 	$tag = check_str($_POST["tag"]);
 	$field_order = check_str($_POST["field_order"]);
@@ -73,7 +73,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	////$filedir = $_ENV["TEMP"]."\\";
 
 	if ($action == "update") {
-		$dialplan_includes_detail_uuid = check_str($_POST["dialplan_includes_detail_uuid"]);
+		$dialplan_detail_uuid = check_str($_POST["dialplan_detail_uuid"]);
 	}
 
 	//check for all required data
@@ -95,22 +95,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			return;
 		}
 
-	$tmp = "\n";
-	//$tmp .= "domain_uuid: $domain_uuid\n";
-	$tmp .= "Tag: $tag\n";
-	$tmp .= "Order: $field_order\n";
-	$tmp .= "Type: $field_type\n";
-	$tmp .= "Data: $field_data\n";
-
-
-
-	//Add or update the database
+	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add") {
-				$sql = "insert into v_dialplan_includes_details ";
+				$dialplan_uuid = uuid();
+				$sql = "insert into v_dialplan_details ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
-				$sql .= "dialplan_include_uuid, ";
+				$sql .= "dialplan_uuid, ";
 				$sql .= "tag, ";
 				$sql .= "field_order, ";
 				$sql .= "field_type, ";
@@ -119,7 +111,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
-				$sql .= "'$dialplan_include_uuid', ";
+				$sql .= "'$dialplan_uuid', ";
 				$sql .= "'$tag', ";
 				$sql .= "'$field_order', ";
 				$sql .= "'$field_type', ";
@@ -129,10 +121,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 				//synchronize the xml config
-				sync_package_v_dialplan_includes();
+				sync_package_v_dialplan();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_forward_edit.php?id=".$dialplan_include_uuid."\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_forward_edit.php?id=".$dialplan_uuid."\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -141,23 +133,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			} //if ($action == "add")
 
 			if ($action == "update") {
-				$sql = "update v_dialplan_includes_details set ";
+				$sql = "update v_dialplan_details set ";
 				$sql .= "domain_uuid = '$domain_uuid', ";
-				$sql .= "dialplan_include_uuid = '$dialplan_include_uuid', ";
+				$sql .= "dialplan_uuid = '$dialplan_uuid', ";
 				$sql .= "tag = '$tag', ";
 				$sql .= "field_order = '$field_order', ";
 				$sql .= "field_type = '$field_type', ";
 				$sql .= "field_data = '$field_data' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_includes_detail_uuid = '$dialplan_includes_detail_uuid'";
+				$sql .= "and dialplan_detail_uuid = '$dialplan_detail_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 				
 				//synchronize the xml config
-				sync_package_v_dialplan_includes();
+				sync_package_v_dialplan();
 				
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_forward_edit.php?id=".$dialplan_include_uuid."\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_forward_edit.php?id=".$dialplan_uuid."\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -170,23 +162,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //Pre-populate the form
 if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-	$dialplan_includes_detail_uuid = $_GET["id"];
+	$dialplan_detail_uuid = $_GET["id"];
 	$sql = "";
-	$sql .= "select * from v_dialplan_includes_details ";
+	$sql .= "select * from v_dialplan_details ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and dialplan_includes_detail_uuid = '$dialplan_includes_detail_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	while($row = $prepstatement->fetch()) {
+	$sql .= "and dialplan_detail_uuid = '$dialplan_detail_uuid' ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	while($row = $prep_statement->fetch()) {
 		$domain_uuid = $row["domain_uuid"];
-		$dialplan_include_uuid = $row["dialplan_include_uuid"];
+		$dialplan_uuid = $row["dialplan_uuid"];
 		$tag = $row["tag"];
 		$field_order = $row["field_order"];
 		$field_type = $row["field_type"];
 		$field_data = $row["field_data"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 }
 
 
@@ -213,7 +205,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap><b>Call Forward Detail Update</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_forward_edit.php?id=".$dialplan_include_uuid."'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_forward_edit.php?id=".$dialplan_uuid."'\" value='Back'></td>\n";
 	echo "</tr>\n";
 
 	?>
@@ -354,9 +346,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	echo "</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	echo "				<input type='hidden' name='dialplan_include_uuid' value='$dialplan_include_uuid'>\n";
+	echo "				<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='dialplan_includes_detail_uuid' value='$dialplan_includes_detail_uuid'>\n";
+		echo "				<input type='hidden' name='dialplan_detail_uuid' value='$dialplan_detail_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

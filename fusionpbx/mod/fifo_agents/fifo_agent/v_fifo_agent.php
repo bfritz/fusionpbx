@@ -37,7 +37,7 @@ require_once "includes/header.php";
 require_once "includes/paging.php";
 
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -66,52 +66,52 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_fifo_agents ";
 	$sql .= " where agent_username = '".$_SESSION["username"]."' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$numrows = count($result);
-	unset ($prepstatement, $result, $sql);
-	$rowsperpage = 10;
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$num_rows = count($result);
+	unset ($prep_statement, $result, $sql);
+	$rows_per_page = 10;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page; 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+	$offset = $rows_per_page * $page; 
 
 	$sql = "";
 	$sql .= " select * from v_fifo_agents ";
 	$sql .= " where agent_username = '".$_SESSION["username"]."' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	//$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	//$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('fifo_name', 'Queue Name', $orderby, $order);
-	echo thorderby('agent_username', 'Username', $orderby, $order);
-	echo thorderby('agent_priority', 'Agent Priority', $orderby, $order);
-	echo thorderby('agent_status', 'Status', $orderby, $order);
-	echo thorderby('agent_last_call', 'Last Call', $orderby, $order);
-	echo thorderby('agent_contact_number', 'Contact Number', $orderby, $order);
+	echo thorder_by('fifo_name', 'Queue Name', $order_by, $order);
+	echo thorder_by('agent_username', 'Username', $order_by, $order);
+	echo thorder_by('agent_priority', 'Agent Priority', $order_by, $order);
+	echo thorder_by('agent_status', 'Status', $order_by, $order);
+	echo thorder_by('agent_last_call', 'Last Call', $order_by, $order);
+	echo thorder_by('agent_contact_number', 'Contact Number', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	//echo "	<a href='v_fifo_agents_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($result_count == 0) { //no results
 	}
 	else { //received results
 		foreach($result as $row) {
@@ -132,12 +132,12 @@ $order = $_GET["order"];
 					$x++;
 				}
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[fifo_name]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[agent_username]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[agent_priority]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$agent_status_desc."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$agent_last_call_desc."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[agent_contact_number]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[fifo_name]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_username]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_priority]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$agent_status_desc."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$agent_last_call_desc."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_contact_number]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_fifo_agent_edit.php?id=".$row[fifo_agent_id]."' alt='edit'>$v_link_label_edit</a>\n";
 			//echo "		<a href='v_fifo_agents_delete.php?id=".$row[fifo_agent_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
@@ -145,7 +145,7 @@ $order = $_GET["order"];
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 
@@ -154,7 +154,7 @@ $order = $_GET["order"];
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	//echo "			<a href='v_fifo_agents_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
@@ -178,7 +178,7 @@ $order = $_GET["order"];
 
 
 require_once "includes/footer.php";
-unset ($resultcount);
+unset ($result_count);
 unset ($result);
 unset ($key);
 unset ($val);

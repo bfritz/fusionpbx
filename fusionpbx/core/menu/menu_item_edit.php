@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -133,13 +133,13 @@ else {
 				$sql .= "and menu_item_parent_uuid  = '$menu_item_parent_uuid' ";
 				$sql .= "order by menu_item_order desc ";
 				$sql .= "limit 1 ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$highestmenu_item_order = $row[menu_item_order];
 				}
-				unset($prepstatement);
+				unset($prep_statement);
 
 				$sql = "insert into v_menu_items ";
 				$sql .= "(";
@@ -215,9 +215,9 @@ else {
 		$sql .= "select * from v_menu_items ";
 		$sql .= "where menu_uuid = '$menu_uuid' ";
 		$sql .= "and menu_item_id = '$menu_item_id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$menu_item_uuid = $row["menu_item_uuid"];
 			$menu_item_title = $row["menu_item_title"];
@@ -279,11 +279,11 @@ else {
 	$sql = "SELECT * FROM v_menu_items ";
 	$sql .= "where menu_uuid = '$menu_uuid' ";
 	$sql .= "order by menu_item_title asc ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	echo "<select name=\"menu_item_parent_uuid\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach($result as $field) {
 			if ($menu_item_parent_uuid == $field['menu_item_uuid']) {
 				echo "<option value='".$field['menu_item_uuid']."' selected>".$field['menu_item_title']."</option>\n";
@@ -305,12 +305,12 @@ else {
 	$sql = "SELECT * FROM v_menu_item_groups ";
 	$sql .= "where menu_uuid=:menu_uuid ";
 	$sql .= "and menu_item_uuid=:menu_item_uuid ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->bindParam(':menu_uuid', $menu_uuid);
-	$prepstatement->bindParam(':menu_item_uuid', $menu_item_uuid);
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->bindParam(':menu_uuid', $menu_uuid);
+	$prep_statement->bindParam(':menu_item_uuid', $menu_item_uuid);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
 	foreach($result as $field) {
 		if (strlen($field['group_id']) > 0) {
 			echo "<tr>\n";
@@ -328,11 +328,11 @@ else {
 	echo "<br />\n";
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where domain_uuid = '".$domain_uuid."' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	echo "<select name=\"group_id\" class='frm'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach($result as $field) {
 		if ($field['group_id'] == "superadmin") {
 			//only show the superadmin group to other users in the superadmin group

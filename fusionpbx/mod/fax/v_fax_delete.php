@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -53,15 +53,15 @@ else {
 
 		//get the dialplan info
 			$sql = "";
-			$sql .= "select * from v_dialplan_includes ";
+			$sql .= "select * from v_dialplan ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'faxid' ";
 			$sql .= "and opt_1_value = '".$fax_uuid."' ";
 			//echo $sql."<br>\n";
-			$prepstatement2 = $db->prepare($sql);
-			$prepstatement2->execute();
-			while($row2 = $prepstatement2->fetch(PDO::FETCH_ASSOC)) {
-				$dialplan_include_uuid = $row2['dialplan_include_uuid'];
+			$prep_statement_2 = $db->prepare($sql);
+			$prep_statement_2->execute();
+			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
+				$dialplan_uuid = $row2['dialplan_uuid'];
 				$extension_name = check_str($row2['extension_name']);
 				$order = $row2['order'];
 				$context = $row2['context'];
@@ -75,22 +75,22 @@ else {
 				}
 				break; //limit to 1 row
 			}
-			unset ($sql, $prepstatement2);
+			unset ($sql, $prep_statement_2);
 
 		//delete the dialplan entry
 			$sql = "";
-			$sql .= "delete from v_dialplan_includes ";
+			$sql .= "delete from v_dialplan ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
+			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);
 			unset($sql);
 
 		//delete the dialplan details
 			$sql = "";
-			$sql .= "delete from v_dialplan_includes_details ";
+			$sql .= "delete from v_dialplan_details ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_include_uuid = '$dialplan_include_uuid' ";
+			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);
 			unset($sql);

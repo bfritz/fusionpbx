@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -47,7 +47,7 @@ else {
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+		echo "<td class='row_style1'><strong>$msg</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -62,8 +62,8 @@ else {
 
 		//set the alternating color for each row
 			$c = 0;
-			$rowstyle["0"] = "rowstyle0";
-			$rowstyle["1"] = "rowstyle1";
+			$row_style["0"] = "row_style0";
+			$row_style["1"] = "row_style1";
 
 		//show the results
 			echo "<div id='cmd_reponse'>\n";
@@ -115,33 +115,33 @@ else {
 					$cid_num = str_replace("+", "", $cid_num);
 
 				echo "<tr>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$id &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$uuid &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$direction &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$sip_profile &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$created &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$created_epoch &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$name &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_number."&nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$state &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$cid_name &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$cid_num &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$ip_addr &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$dest &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$id &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$uuid &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$direction &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$sip_profile &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$created &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$created_epoch &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$name &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>".$tmp_number."&nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$state &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$cid_name &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$cid_num &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$ip_addr &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$dest &nbsp;</td>\n";
 				if (strlen($application) > 0) {
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$application.":".$application_data." &nbsp;</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$application.":".$application_data." &nbsp;</td>\n";
 				}
 				else {
-					echo "<td valign='top' class='".$rowstyle[$c]."'>&nbsp;</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;</td>\n";
 				}
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$dialplan &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$context &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$read_codec:$read_rate / $write_codec:$write_rate &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$read_rate &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$write_codec &nbsp;</td>\n";
-				//echo "<td valign='top' class='".$rowstyle[$c]."'>$write_rate &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>$secure &nbsp;</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."' style='text-align:center;'>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$dialplan &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$context &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$read_codec:$read_rate / $write_codec:$write_rate &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$read_rate &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$write_codec &nbsp;</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$write_rate &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$secure &nbsp;</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."' style='text-align:center;'>\n";
 				//transfer
 					echo "	<a href='javascript:void(0);' onMouseover=\"document.getElementById('form_label').innerHTML='<strong>Transfer To</strong>';\" onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">xfer</a>&nbsp;\n";
 				//park

@@ -47,8 +47,8 @@ else {
 
 //define variables
 	$c = 0;
-	$rowstyle["0"] = "rowstyle1";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style1";
+	$row_style["1"] = "row_style1";
 
 //get the user status
 	$sql = "";
@@ -66,10 +66,10 @@ else {
 	if ($db_type == "mysql") {
 		$sql .= "and e.user_list like CONCAT('%|', u.username, '|%'); ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	$x = 0;
-	$result = $prepstatement->fetchAll(PDO::FETCH_NAMED);
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		if (strlen($row["user_status"]) > 0) {
 			$user_array[$row["extension"]]['username'] = $row["username"];
@@ -81,7 +81,7 @@ else {
 		}
 		$x++;
 	}
-	unset ($prepstatement, $x);
+	unset ($prep_statement, $x);
 
 //create the event socket connection
 	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -95,7 +95,7 @@ else {
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+		echo "<td class='row_style1'><strong>$msg</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -273,9 +273,9 @@ else {
 						$sql .= "and enabled = 'true' ";
 					}
 					$sql .= "order by extension asc ";
-					$prepstatement = $db->prepare(check_sql($sql));
-					$prepstatement->execute();
-					$result = $prepstatement->fetchAll(PDO::FETCH_NAMED);
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 					foreach ($result as &$row) {
 						if ($row["enabled"] == "true") {
 							$extension = $row["extension"];
@@ -383,14 +383,14 @@ else {
 								$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_active.gif');\"";
 							}
 							echo "<tr>\n";
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
+							echo "<td class='".$row_style[$c]."' $style_alternate>$extension</td>\n";
 							if ($_SESSION['user_status_display'] == "false") {
 								//hide the user_status when it is set to false
 							}
 							else {
-								echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
+								echo "<td class='".$row_style[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
 							}
-							echo "<td class='".$rowstyle[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
+							echo "<td class='".$row_style[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
 							if (ifgroup("admin") || ifgroup("superadmin")) {
 								if (strlen(($_GET['rows'])) == 0) {
 									if (strlen($url) == 0) {
@@ -398,16 +398,16 @@ else {
 									}
 									$url = str_replace ("{cid_num}", $cid_num, $url);
 									$url = str_replace ("{cid_name}", $cid_name, $url);
-									echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."' style='color: #444444;' target='_blank'>".$cid_name."</a></td>\n";
-									echo "<td class='".$rowstyle[$c]."' $style_alternate><a href='".$url."' style='color: #444444;' target='_blank'>".$cid_num."</a></td>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate><a href='".$url."' style='color: #444444;' target='_blank'>".$cid_name."</a></td>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate><a href='".$url."' style='color: #444444;' target='_blank'>".$cid_num."</a></td>\n";
 								}
 							}
 							if (ifgroup("admin") || ifgroup("superadmin")) {
 								if (strlen(($_GET['rows'])) == 0) {
-									echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate>\n";
 									echo "".$dest."<br />\n";
 									echo "</td>\n";
-									echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate>\n";
 									if ($application == "fifo") {
 										echo "queue &nbsp;\n";
 									}
@@ -415,7 +415,7 @@ else {
 										echo $application." &nbsp;\n";
 									}
 									echo "</td>\n";
-									echo "<td class='".$rowstyle[$c]."' $style_alternate>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate>\n";
 									echo "".$secure."<br />\n";
 									echo "</td>\n";
 								}
@@ -424,33 +424,33 @@ else {
 						else {
 							$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_light.gif');\"";
 							echo "<tr>\n";
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>$extension</td>\n";
+							echo "<td class='".$row_style[$c]."' $style_alternate>$extension</td>\n";
 							if ($_SESSION['user_status_display'] == "false") {
 								//hide the user_status when it is set to false
 							}
 							else {
-								echo "<td class='".$rowstyle[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
+								echo "<td class='".$row_style[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
 							}
-							echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+							echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
 							if (ifgroup("admin") || ifgroup("superadmin")) {
 								if (strlen(($_GET['rows'])) == 0) {
-									echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-									echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-									echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-									echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
-									echo "<td class='".$rowstyle[$c]."' $style_alternate>&nbsp;</td>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
+									echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
 								}
 							}
 						}
 
-						echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+						echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
 						echo "	".$effective_caller_id_name."&nbsp;\n";
 						echo "</td>\n";
 
 						if (ifgroup("admin") || ifgroup("superadmin")) {
 							if (strlen(($_GET['rows'])) == 0) {
 								if ($found_extension) {
-									echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+									echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
 										//transfer
 											echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"send_cmd('v_calls_exec.php?cmd='+get_transfer_cmd(escape('$uuid')));\">transfer</a>&nbsp;\n";
 										//park
@@ -471,7 +471,7 @@ else {
 									echo "</td>\n";
 								}
 								else {
-									echo "<td valign='top' class='".$rowstyle[$c]."' $style_alternate>\n";
+									echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
 									echo "	&nbsp;";
 									echo "</td>\n";
 								}
@@ -532,10 +532,10 @@ else {
 						if (strlen($row['extension']) > 0) {
 							if ($row['context'] == $v_domain || $row['context'] == "default") {
 								echo "<tr>\n";
-								echo "<td valign='top' class='".$rowstyle[$c]."' >*".$row['extension']."</td>\n";
-								echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['call_length']."</td>\n";
-								echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_name']."</td>\n";
-								echo "<td valign='top' class='".$rowstyle[$c]."' >".$row['cid_num']."</td>\n";
+								echo "<td valign='top' class='".$row_style[$c]."' >*".$row['extension']."</td>\n";
+								echo "<td valign='top' class='".$row_style[$c]."' >".$row['call_length']."</td>\n";
+								echo "<td valign='top' class='".$row_style[$c]."' >".$row['cid_name']."</td>\n";
+								echo "<td valign='top' class='".$row_style[$c]."' >".$row['cid_num']."</td>\n";
 								echo "</tr>\n";
 							}
 						}

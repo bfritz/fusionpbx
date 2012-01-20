@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -49,14 +49,14 @@ if (count($_GET)>0) {
 	$sql .= "limit 1 ";
 	//echo $sql."<br><br>";
 	//return;
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		//print_r( $row );
 		$highestrss_order = $row[rss_order];
 	}
-	unset($prepstatement);
+	unset($prep_statement);
 
 	if ($rss_order != $highestrss_order) {
 		//move the current item's order number up

@@ -169,9 +169,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_fifo_agents ";
 		$sql .= " where agent_username = '".$_SESSION["username"]."' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			//$fifo_name = $row["fifo_name"];
@@ -184,9 +184,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$login_status = true;
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
-
 
 //format the last call time
 	if ($agent_last_call == 0) {
@@ -280,11 +279,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and var_cat = 'Queues Agent Status' ";
 				$sql .= "and var_name not like 'system%' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
 				echo "<select name=\"agent_status\" class='formfld'>\n";
 				echo "<option value=\"\"></option>\n";
-				$result = $prepstatement->fetchAll();
+				$result = $prep_statement->fetchAll();
 				foreach($result as $field) {
 					if ($field[var_value] == $agent_status) {
 						echo "<option value='".$field[var_value]."' selected='selected'>".$field[var_name]."</option>\n";

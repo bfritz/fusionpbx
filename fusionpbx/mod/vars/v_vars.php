@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -38,7 +38,7 @@ else {
 	require_once "includes/header.php";
 
 //set http values as php variables
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //show the content
@@ -60,32 +60,32 @@ else {
 	$sql = "";
 	$sql .= "select * from v_vars ";
 	$sql .= "where domain_uuid = '1' ";
-	if (strlen($orderby)> 0) {
-		$sql .= "order by $orderby $order ";
+	if (strlen($order_by)> 0) {
+		$sql .= "order by $order_by $order ";
 	}
 	else {
 		$sql .= "order by var_cat, var_order asc ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	$tmp_var_header = '';
 	$tmp_var_header .= "<tr>\n";
-	$tmp_var_header .= thorderby('var_name', 'Name', $orderby, $order);
-	$tmp_var_header .= thorderby('var_value', 'Value', $orderby, $order);
-	//$tmp_var_header .= thorderby('var_cat', 'Category', $orderby, $order);
-	//$tmp_var_header .= thorderby('var_order', 'Order', $orderby, $order);
-	$tmp_var_header .= thorderby('var_enabled', 'Enabled', $orderby, $order);
+	$tmp_var_header .= thorder_by('var_name', 'Name', $order_by, $order);
+	$tmp_var_header .= thorder_by('var_value', 'Value', $order_by, $order);
+	//$tmp_var_header .= thorder_by('var_cat', 'Category', $order_by, $order);
+	//$tmp_var_header .= thorder_by('var_order', 'Order', $order_by, $order);
+	$tmp_var_header .= thorder_by('var_enabled', 'Enabled', $order_by, $order);
 	$tmp_var_header .= "<th>Description</th>\n";
 	$tmp_var_header .= "<td align='right' width='42'>\n";
 	if (permission_exists('variables_add')) {
@@ -94,7 +94,7 @@ else {
 	$tmp_var_header .= "</td>\n";
 	$tmp_var_header .= "<tr>\n";
 
-	if ($resultcount == 0) {
+	if ($result_count == 0) {
 		//no results
 	}
 	else { 
@@ -129,14 +129,14 @@ else {
 			}
 
 			echo "<tr >\n";
-			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".substr($row['var_name'],0,32)."</td>\n";
-			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".substr($var_value,0,30)."</td>\n";
-			//echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$row['var_cat']."</td>\n";
-			//echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$row['var_order']."</td>\n";
-			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$row['var_enabled']."</td>\n";
+			echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".substr($row['var_name'],0,32)."</td>\n";
+			echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".substr($var_value,0,30)."</td>\n";
+			//echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$row['var_cat']."</td>\n";
+			//echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$row['var_order']."</td>\n";
+			echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$row['var_enabled']."</td>\n";
 			$var_desc = str_replace("\n", "<br />", trim(substr(base64_decode($row['var_desc']),0,40)));
 			$var_desc = str_replace("   ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", $var_desc);
-			echo "	<td valign='top' align='left' class='".$rowstyle[$c]."'>".$var_desc."&nbsp;</td>\n";
+			echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$var_desc."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('variables_edit')) {
 				echo "		<a href='v_vars_edit.php?id=".$row['var_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
@@ -150,7 +150,7 @@ else {
 			$prev_var_cat = $row[var_cat];
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 	echo "<tr>\n";
@@ -158,7 +158,7 @@ else {
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('variables_add')) {
 		echo "			<a href='v_vars_edit.php' alt='add'>$v_link_label_add</a>\n";

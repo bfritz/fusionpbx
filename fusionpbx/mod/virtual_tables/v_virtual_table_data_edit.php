@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -61,9 +61,9 @@ else {
 	$sql .= "select * from v_virtual_tables ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$virtual_table_category = $row["virtual_table_category"];
 		$virtual_table_label = $row["virtual_table_label"];
@@ -74,7 +74,7 @@ else {
 		$virtual_table_desc = $row["virtual_table_desc"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 //process the data submitted to by the html form
 	if (count($_POST)>0) { //add
@@ -90,10 +90,10 @@ else {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 			$sql .= "order by virtual_field_order asc ";
-			$prepstatement = $db->prepare($sql);
-			$prepstatement->execute();
-			$result_names = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
-			$resultcount = count($result);
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			$result_names = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+			$result_count = count($result);
 			foreach($result_names as $row) {
 				$virtual_field_label = $row["virtual_field_label"];
 				$virtual_field_name = $row["virtual_field_name"];
@@ -115,7 +115,7 @@ else {
 				$name_array[$virtual_field_name]['virtual_field_order_tab'] = $row["virtual_field_order_tab"];
 				$name_array[$virtual_field_name]['virtual_field_desc'] = $row["virtual_field_desc"];
 			}
-			unset($sql, $prepstatement, $row);
+			unset($sql, $prep_statement, $row);
 			$fieldcount = count($name_array);
 
 		$i = 1;
@@ -130,9 +130,9 @@ else {
 			$sql .= "where domain_uuid  = '$domain_uuid' ";
 			$sql .= "and virtual_table_uuid  = '$virtual_table_uuid' ";
 			$sql .= "and virtual_field_name = '$virtual_field_name' ";
-			$prepstatement = $db->prepare($sql);
-			$prepstatement->execute();
-			while($row = $prepstatement->fetch()){
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			while($row = $prep_statement->fetch()){
 				$virtual_field_type = $row['virtual_field_type'];
 			}
 
@@ -407,10 +407,10 @@ else {
 			$row_id = '';
 			$row_id_found = false;
 			$next_row_id_found = false;
-			$prepstatement = $db->prepare($sql);
-			$prepstatement->execute();
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
 			$x=0;
-			while($row = $prepstatement->fetch()) {
+			while($row = $prep_statement->fetch()) {
 				//set the last last row id
 					if ($x==0) {
 						if (strlen($virtual_data_row_id) == 0) {
@@ -463,7 +463,7 @@ else {
 				else {
 					$n = $_GET["n"];
 				}
-			unset($sql, $prepstatement, $row);
+			unset($sql, $prep_statement, $row);
 	}
 
 //use this when the calendar is needed
@@ -558,9 +558,9 @@ else {
 	$sql .= "or domain_uuid  = '$domain_uuid ' ";
 	$sql .= "and virtual_table_uuid  = '$virtual_table_uuid ' ";
 	$sql .= "and virtual_field_type = 'upload_file' ";
-	$prepstatement = $db->prepare($sql);
-	$prepstatement->execute();
-	if (count($prepstatement->fetchAll()) > 0) {
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	if (count($prep_statement->fetchAll()) > 0) {
 		echo "<form method='post' name='frm' enctype='multipart/form-data' action=''>\n";
 		echo "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"104857600\" />\n";
 	}
@@ -574,15 +574,15 @@ else {
 	$sql .= "where domain_uuid  = '$domain_uuid' ";
 	$sql .= "and virtual_table_uuid  = '$virtual_table_uuid' ";
 	$sql .= "order by virtual_field_column asc, virtual_field_order asc ";
-	$prepstatement = $db->prepare($sql);
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
 
-	echo "<input type='hidden' name='rcount' value='$resultcount'>\n";
+	echo "<input type='hidden' name='rcount' value='$result_count'>\n";
 	echo "<input type='hidden' name='virtual_table_uuid' value='$virtual_table_uuid'>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($result_count == 0) { //no results
 		echo "<tr><td class='vncell'>&nbsp;</td></tr>\n";
 	}
 	else { //received results
@@ -741,20 +741,20 @@ else {
 							$sqlselect .= "FROM v_virtual_table_data_types_name_value ";
 							$sqlselect .= "where domain_uuid = '".$domain_uuid."' ";
 							$sqlselect .= "and virtual_table_field_uuid = '".$row[virtual_table_field_uuid]."' ";
-							$prepstatement2 = $db->prepare($sqlselect);
-							$prepstatement2->execute();
-							$result2 = $prepstatement2->fetchAll();
-							$resultcount2 = count($result2);
+							$prep_statement_2 = $db->prepare($sqlselect);
+							$prep_statement_2->execute();
+							$result2 = $prep_statement_2->fetchAll();
+							$result_count2 = count($result2);
 
 							echo "<table>";
-							if ($resultcount > 0) {
+							if ($result_count > 0) {
 								foreach($result2 as $row2) {
 										echo "<tr><td>".$row2["virtual_data_types_name"]."</td><td><input tabindex='".$row['virtual_field_order_tab']."' type='radio' name='".$x."field_value' value='".$row2["virtual_data_types_select_value"]."'";
 										if ($row2["virtual_data_types_value"] == $data_row[$row['virtual_field_name']]) { echo " checked>"; } else { echo ">"; }
 										echo "</td></tr>";
 								} //end foreach
 							} //end if results
-							unset($sqlselect, $result2, $resultcount2);
+							unset($sqlselect, $result2, $result_count2);
 							echo "</table>";
 							//echo "</select>\n";
 							echo "</td>\n";
@@ -767,21 +767,21 @@ else {
 							$sqlselect .= "FROM v_virtual_table_data_types_name_value ";
 							$sqlselect .= "where domain_uuid = '".$domain_uuid."' ";
 							$sqlselect .= "and virtual_table_field_uuid = '".$row[virtual_table_field_uuid]."' ";
-							$prepstatement2 = $db->prepare($sqlselect);
-							$prepstatement2->execute();
-							$result2 = $prepstatement2->fetchAll();
-							$resultcount2 = count($result2);
+							$prep_statement_2 = $db->prepare($sqlselect);
+							$prep_statement_2->execute();
+							$result2 = $prep_statement_2->fetchAll();
+							$result_count2 = count($result2);
 
 							echo "<select tabindex='".$row['virtual_field_order_tab']."' class='formfld' style='width:90%'  name='".$x."field_value'>\n";
 							echo "<option value=''></option>\n";
-							if ($resultcount > 0) {
+							if ($result_count > 0) {
 								foreach($result2 as $row2) {
 										echo "<option value=\"" . $row2["virtual_data_types_value"] . "\"";
 										if (strtolower($row2["virtual_data_types_value"]) == strtolower($data_row[$row['virtual_field_name']])) { echo " selected='selected' "; }
 										echo ">" . $row2["virtual_data_types_name"] . "</option>\n";
 								} //end foreach
 							} //end if results
-							unset($sqlselect, $result2, $resultcount2);
+							unset($sqlselect, $result2, $result_count2);
 							echo "</select>\n";
 							echo "</td>\n";
 							break;
@@ -954,9 +954,9 @@ else {
 			$sql .= "select * from v_virtual_tables ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_parent_id = '$virtual_table_uuid' ";
-			$prepstatement = $db->prepare($sql);
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row) {
 				echo "<tr class='border'>\n";
 				echo "	<td colspan='999' align=\"left\">\n";

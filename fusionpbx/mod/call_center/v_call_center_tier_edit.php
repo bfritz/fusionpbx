@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -106,9 +106,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
+			$call_center_tier_uuid = uuid();
 			$sql = "insert into v_call_center_tier ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
+			$sql .= "call_center_tier_uuid, ";
 			$sql .= "agent_name, ";
 			$sql .= "queue_name, ";
 			$sql .= "tier_level, ";
@@ -117,6 +119,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
+			$sql .= "'$call_center_tier_uuid', ";
 			$sql .= "'$agent_name', ";
 			$sql .= "'$queue_name', ";
 			$sql .= "'$tier_level', ";
@@ -222,12 +225,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql = "SELECT * FROM v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "order by username asc ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 
 	echo "<select id=\"agent_name\" name=\"agent_name\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	//$catcount = count($result);
 	foreach($result as $field) {
 		if ($field[username] == $agent_name) {
@@ -256,12 +259,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql = "SELECT * FROM v_call_center_queue ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "order by queue_name asc ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 
 	echo "<select id=\"queue_name\" name=\"queue_name\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	//$catcount = count($result);
 	foreach($result as $field) {
 		if ($field[queue_name] == $queue_name) {

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -55,7 +55,7 @@
 					echo "	Public Directory:	added domain\n";
 				}
 			//synch the xml files
-				sync_package_v_public_includes();
+				sync_package_v_public();
 		}
 	}
 
@@ -68,12 +68,12 @@
 		$file = $v_conf_dir."/dialplan/public/".$_SESSION['domains'][$domain_uuid]['domain'].".xml";
 		if (!file_exists($file)) {
 			$fout = fopen($file,"w");
-			$tmpxml = "<include>\n";
-			$tmpxml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$domain_uuid]['domain']."/*.xml\"/>\n";
-			$tmpxml .= "</include>\n";
-			fwrite($fout, $tmpxml);
+			$tmp_xml = "<include>\n";
+			$tmp_xml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$domain_uuid]['domain']."/*.xml\"/>\n";
+			$tmp_xml .= "</include>\n";
+			fwrite($fout, $tmp_xml);
 			fclose($fout);
-			unset($tmpxml,$file);
+			unset($tmp_xml,$file);
 		}
 	}
 

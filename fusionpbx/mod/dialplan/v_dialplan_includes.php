@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 //show the content
@@ -81,62 +81,62 @@ $order = $_GET["order"];
 	echo "	<br />";
 
 	$sql = "";
-	$sql .= " select * from v_dialplan_includes ";
+	$sql .= " select * from v_dialplan ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$numrows = count($result);
-	unset ($prepstatement, $result, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$num_rows = count($result);
+	unset ($prep_statement, $result, $sql);
 
-	$rowsperpage = 150;
+	$rows_per_page = 150;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page;
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+	$offset = $rows_per_page * $page;
 
 	$sql = "";
-	$sql .= " select * from v_dialplan_includes ";
+	$sql .= " select * from v_dialplan ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
-	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
+	$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('extension_name', 'Name', $orderby, $order);
-	echo thorderby('extension_number', 'Number', $orderby, $order);
-	echo thorderby('dialplan_order', 'Order', $orderby, $order);
-	echo thorderby('enabled', 'Enabled', $orderby, $order);
-	echo thorderby('descr', 'Description', $orderby, $order);
+	echo thorder_by('extension_name', 'Name', $order_by, $order);
+	echo thorder_by('extension_number', 'Number', $order_by, $order);
+	echo thorder_by('dialplan_order', 'Order', $order_by, $order);
+	echo thorder_by('enabled', 'Enabled', $order_by, $order);
+	echo thorder_by('descr', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('dialplan_add')) {
-		echo "	<a href='v_dialplan_includes_add.php' alt='add'>$v_link_label_add</a>\n";
+		echo "	<a href='v_dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { 
+	if ($result_count == 0) { 
 		//no results
 	}
 	else { //received results
 		foreach($result as $row) {
 			if (strlen($row['extension_number']) == 0) {
 				$sql = "";
-				$sql .= "select * from v_dialplan_includes_details ";
+				$sql .= "select * from v_dialplan_details ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_include_uuid = '".$row['dialplan_include_uuid']."' ";
+				$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' ";
 				$sql .= "and field_type = 'destination_number' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
@@ -148,10 +148,10 @@ $order = $_GET["order"];
 						$extension_number = str_replace("|", " ", $extension_number);
 						$row['extension_number'] = $extension_number;
 					//update the extension number
-						$sql = "update v_dialplan_includes set ";
+						$sql = "update v_dialplan set ";
 						$sql .= "extension_number = '$extension_number', ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and dialplan_include_uuid = '".$row['dialplan_include_uuid']."'";
+						$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."'";
 						$db->exec($sql);
 						unset($sql);
 					break; //limit to 1 row
@@ -160,23 +160,23 @@ $order = $_GET["order"];
 			}
 	
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['extension_name']."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['extension_number']."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['dialplan_order']."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>&nbsp;&nbsp;".$row['enabled']."</td>\n";
-			echo "   <td valign='top' class='rowstylebg' width='30%'>".$row['descr']."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['extension_name']."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['extension_number']."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_order']."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['enabled']."</td>\n";
+			echo "   <td valign='top' class='row_stylebg' width='30%'>".$row['descr']."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('dialplan_add')) {
-				echo "		<a href='v_dialplan_includes_edit.php?id=".$row['dialplan_include_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_dialplan_edit.php?id=".$row['dialplan_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('dialplan_edit')) {
-				echo "		<a href='v_dialplan_includes_delete.php?id=".$row['dialplan_include_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_dialplan_delete.php?id=".$row['dialplan_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "   </td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 
@@ -185,10 +185,10 @@ $order = $_GET["order"];
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('dialplan_add')) {
-		echo "			<a href='v_dialplan_includes_add.php' alt='add'>$v_link_label_add</a>\n";
+		echo "			<a href='v_dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
 	}
 	else {
 		echo "			&nbsp;";
@@ -222,7 +222,7 @@ $order = $_GET["order"];
 
 
 require_once "includes/footer.php";
-unset ($resultcount);
+unset ($result_count);
 unset ($result);
 unset ($key);
 unset ($val);

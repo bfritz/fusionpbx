@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -65,8 +65,8 @@ else {
 
 //alternate the color of the row
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 //create an event socket connection
 	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -80,7 +80,7 @@ else {
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'><strong>$msg</strong></td>\n";
+		echo "<td class='row_style1'><strong>$msg</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -154,13 +154,13 @@ else {
 					//get the extensions that are assigned to this user 
 					$user_extension_array = explode("|", $_SESSION['user_extension_list']);
 					echo "<tr>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$joined_length."</td>\n";
-					//echo "<td valign='top' class='".$rowstyle[$c]."'>".$system_length."</td>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_name."&nbsp;</td>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_number."&nbsp;</td>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$joined_length."</td>\n";
+					//echo "<td valign='top' class='".$row_style[$c]."'>".$system_length."</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$caller_name."&nbsp;</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$caller_number."&nbsp;</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$state."</td>\n";
 					if (ifgroup("admin") || ifgroup("superadmin")) {
-						echo "<td valign='top' class='".$rowstyle[$c]."'>";
+						echo "<td valign='top' class='".$row_style[$c]."'>";
 						echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=originate+user/".$user_extension_array[0]."+%26eavesdrop(".$uuid.")');}\">eavesdrop</a>&nbsp;\n";
 						echo "</td>";
 					}
@@ -277,17 +277,17 @@ else {
 							$last_status_change_length = $last_status_change_length_hour.':'.$last_status_change_length_min.':'.$last_status_change_length_sec;
 
 							echo "<tr>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$name."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$contact."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$status."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$state."</td>\n";
-							//echo "<td valign='top' class='".$rowstyle[$c]."'>".$last_offered_call_length."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$last_status_change_length."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$no_answer_count."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$calls_answered."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$tier_state."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$tier_level."</td>\n";
-							echo "<td valign='top' class='".$rowstyle[$c]."'>".$tier_position."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$name."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$contact."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$status."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$state."</td>\n";
+							//echo "<td valign='top' class='".$row_style[$c]."'>".$last_offered_call_length."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$last_status_change_length."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$no_answer_count."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$calls_answered."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$tier_state."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$tier_level."</td>\n";
+							echo "<td valign='top' class='".$row_style[$c]."'>".$tier_position."</td>\n";
 						}
 					}
 					echo "</tr>\n";

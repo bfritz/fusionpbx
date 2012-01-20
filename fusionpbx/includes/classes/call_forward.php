@@ -29,13 +29,15 @@ include "root.php";
 	class call_forward {
 		var $domain_uuid;
 		var $db_type;
-		var $call_forward_id;
+		var $call_forward_uuid;
 		var $extension;
 		var $call_forward_enabled;
 		var $call_forward_number;
 
 		function call_forward_add() {
 			global $db;
+			$call_forward_uuid = uuid();
+
 			$hunt_group_extension = $this->extension;
 			$huntgroup_name = 'call_forward_'.$this->extension;
 			$hunt_group_type = 'call_forward';
@@ -53,6 +55,7 @@ include "root.php";
 			$sql = "insert into v_hunt_group ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
+			$sql .= "hunt_group_uuid, ";
 			$sql .= "hunt_group_extension, ";
 			$sql .= "hunt_group_name, ";
 			$sql .= "hunt_group_type, ";
@@ -72,6 +75,7 @@ include "root.php";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$this->domain_uuid', ";
+			$sql .= "'".uuid()."', ";
 			$sql .= "'$hunt_group_extension', ";
 			$sql .= "'$huntgroup_name', ";
 			$sql .= "'$hunt_group_type', ";
@@ -91,20 +95,8 @@ include "root.php";
 			if ($v_debug) {
 				echo "add: ".$sql."<br />";
 			}
-			if ($this->db_type == "sqlite" || $this->db_type == "mysql" ) {
-				$db->exec(check_sql($sql));
-				$this->call_forward_id = $db->lastInsertId($id);
-			}
-			if ($this->db_type == "pgsql") {
-				$sql .= " RETURNING hunt_group_uuid ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
-				foreach ($result as &$row) {
-					$this->call_forward_id = $row["hunt_group_uuid"];
-				}
-				unset($prepstatement, $result);
-			}
+			$db->exec(check_sql($sql));
+			$this->call_forward_uuid = $call_forward_uuid;
 			unset($sql);
 			$this->call_forward_destination();
 		}
@@ -142,7 +134,7 @@ include "root.php";
 			$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 			$sql .= "hunt_group_descr = '$hunt_group_descr' ";
 			$sql .= "where domain_uuid = '$this->domain_uuid' ";
-			$sql .= "and hunt_group_uuid = '$this->call_forward_id' ";
+			$sql .= "and hunt_group_uuid = '$this->call_forward_uuid' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 			$this->call_forward_destination();
@@ -151,7 +143,7 @@ include "root.php";
 		function call_forward_destination() {
 			global $db;
 			//delete related v_hunt_group_destinations
-				$sql = "delete from v_hunt_group_destinations where hunt_group_uuid = '$this->call_forward_id' ";
+				$sql = "delete from v_hunt_group_destinations where hunt_group_uuid = '$this->call_forward_uuid' ";
 				$db->exec(check_sql($sql));
 			//check whether the number is an extension or external number
 				if (strlen($this->call_forward_number) > 7) {
@@ -169,7 +161,7 @@ include "root.php";
 				$destination_enabled = 'true';
 				$destination_descr = 'call forward';
 			//add the hunt group destination
-				if ($this->call_forward_id > 0) {
+				if ($this->call_forward_uuid > 0) {
 					$sql = "insert into v_hunt_group_destinations ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
@@ -185,7 +177,7 @@ include "root.php";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$this->domain_uuid', ";
-					$sql .= "'$this->call_forward_id', ";
+					$sql .= "'$this->call_forward_uuid', ";
 					$sql .= "'$destination_data', ";
 					$sql .= "'$destination_type', ";
 					$sql .= "'$destination_profile', ";

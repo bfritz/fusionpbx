@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -50,10 +50,12 @@ if (count($_POST)>0) {
 	$rss_sub_add_date = check_str($_POST["rss_sub_add_date"]);
 	$rss_sub_add_user = check_str($_POST["rss_sub_add_user"]);
 
+	$rss_sub_uuid = uuid();
 	$sql = "insert into v_rss_sub ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
 	$sql .= "rss_uuid, ";
+	$sql .= "rss_sub_uuid, ";
 	$sql .= "rss_sub_title, ";
 	$sql .= "rss_sub_link, ";
 	$sql .= "rss_sub_desc, ";
@@ -69,6 +71,7 @@ if (count($_POST)>0) {
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
 	$sql .= "'$rss_uuid', ";
+	$sql .= "'$rss_sub_uuid', ";
 	$sql .= "'$rss_sub_title', ";
 	$sql .= "'$rss_sub_link', ";
 	$sql .= "'$rss_sub_desc', ";

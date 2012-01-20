@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 //show the content
@@ -62,23 +62,23 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_call_center_queue ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
-	$numrows = count($result);
+	$num_rows = count($result);
 	unset ($prep_statement, $result, $sql);
 	$rows_per_page = 100;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($paging_controls, $rows_per_page, $var3) = paging($numrows, $param, $rows_per_page); 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page; 
 
 	$sql = "";
 	$sql .= " select * from v_call_center_queue ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -87,28 +87,28 @@ $order = $_GET["order"];
 	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$row_style["0"] = "rowstyle0";
-	$row_style["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('queue_name', 'Queue Name', $orderby, $order);
-	echo thorderby('queue_extension', 'Extension', $orderby, $order);
-	echo thorderby('queue_strategy', 'Strategy', $orderby, $order);
-	//echo thorderby('queue_moh_sound', 'Music On Hold', $orderby, $order);
-	//echo thorderby('queue_record_template', 'Record Template', $orderby, $order);
-	//echo thorderby('queue_time_base_score', 'Time Base Score', $orderby, $order);
-	//echo thorderby('queue_max_wait_time', 'Max Wait Time', $orderby, $order);
-	//echo thorderby('queue_max_wait_time_with_no_agent', 'Max Wait Time With No Agent', $orderby, $order);
-	//echo thorderby('queue_tier_rules_apply', 'Tier Rules Apply', $orderby, $order);
-	//echo thorderby('queue_tier_rule_wait_second', 'Tier Rule Wait Second', $orderby, $order);
-	//echo thorderby('queue_tier_rule_no_agent_no_wait', 'Tier Rule No Agent No Wait', $orderby, $order);
-	//echo thorderby('queue_discard_abandoned_after', 'Discard Abandoned After', $orderby, $order);
-	//echo thorderby('queue_abandoned_resume_allowed', 'Abandoned Resume Allowed', $orderby, $order);
-	//echo thorderby('queue_tier_rule_wait_multiply_level', 'Tier Rule Wait Multiply Level', $orderby, $order);
-	echo thorderby('queue_description', 'Description', $orderby, $order);
+	echo thorder_by('queue_name', 'Queue Name', $order_by, $order);
+	echo thorder_by('queue_extension', 'Extension', $order_by, $order);
+	echo thorder_by('queue_strategy', 'Strategy', $order_by, $order);
+	//echo thorder_by('queue_moh_sound', 'Music On Hold', $order_by, $order);
+	//echo thorder_by('queue_record_template', 'Record Template', $order_by, $order);
+	//echo thorder_by('queue_time_base_score', 'Time Base Score', $order_by, $order);
+	//echo thorder_by('queue_max_wait_time', 'Max Wait Time', $order_by, $order);
+	//echo thorder_by('queue_max_wait_time_with_no_agent', 'Max Wait Time With No Agent', $order_by, $order);
+	//echo thorder_by('queue_tier_rules_apply', 'Tier Rules Apply', $order_by, $order);
+	//echo thorder_by('queue_tier_rule_wait_second', 'Tier Rule Wait Second', $order_by, $order);
+	//echo thorder_by('queue_tier_rule_no_agent_no_wait', 'Tier Rule No Agent No Wait', $order_by, $order);
+	//echo thorder_by('queue_discard_abandoned_after', 'Discard Abandoned After', $order_by, $order);
+	//echo thorder_by('queue_abandoned_resume_allowed', 'Abandoned Resume Allowed', $order_by, $order);
+	//echo thorder_by('queue_tier_rule_wait_multiply_level', 'Tier Rule Wait Multiply Level', $order_by, $order);
+	echo thorder_by('queue_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	//echo "	<a href='v_call_center_queue_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";

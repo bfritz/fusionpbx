@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -43,15 +43,15 @@ if (strlen($id)>0) {
 	$sql .= "select * from v_php_service ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and php_service_uuid = '$id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$service_name = $row["service_name"];
 		$tmp_service_name = str_replace(" ", "_", $service_name);
 		break; //limit to 1 row
 	}
-	unset ($prepstatement, $result, $row);
+	unset ($prep_statement, $result, $row);
 
 	//delete the php service file
 		unlink($v_secure.'/php_service_'.$tmp_service_name.'.php');
@@ -64,8 +64,8 @@ if (strlen($id)>0) {
 	$sql .= "delete from v_php_service ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and php_service_uuid = '$id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	unset($sql);
 }
 

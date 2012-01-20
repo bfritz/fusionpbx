@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -39,7 +39,7 @@ require_once "includes/paging.php";
 $dir_music_on_hold_8000 = $v_sounds_dir.'/music/8000';
 ini_set(max_execution_time,7200);
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 if ($_GET['a'] == "download") {
@@ -158,8 +158,8 @@ if ($_GET['act'] == "del" && permission_exists('music_on_hold_delete')) {
 	echo "	</tr>";
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	if ($handle = opendir($dir_music_on_hold_8000)) {
 		while (false !== ($file = readdir($handle))) {
@@ -169,21 +169,21 @@ if ($_GET['act'] == "del" && permission_exists('music_on_hold_delete')) {
 				$tmp_filesize = byte_convert($tmp_filesize);
 
 				echo "<tr>\n";
-				echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+				echo "	<td class='".$row_style[$c]."' ondblclick=\"\">\n";
 				echo "		<a href=\"v_music_on_hold.php?a=download&type=moh&t=bin&filename=".base64_encode($file)."\">\n";
 				echo "		$file";
 				echo "		</a>";
 				echo "	</td>\n";
-				echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+				echo "	<td class='".$row_style[$c]."' ondblclick=\"\">\n";
 				echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('v_music_on_hold_play.php?a=download&type=moh&filename=".base64_encode($file)."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
 				$tmp_file_array = explode("\.",$file);
 				echo "		".$tmp_file_array[0];
 				echo "		</a>";
 				echo "	</td>\n";
-				echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+				echo "	<td class='".$row_style[$c]."' ondblclick=\"\">\n";
 				echo 		date ("F d Y H:i:s", filemtime($dir_music_on_hold_8000."/".$file));
 				echo "	</td>\n";
-				echo "	<td class='".$rowstyle[$c]."' ondblclick=\"\">\n";
+				echo "	<td class='".$row_style[$c]."' ondblclick=\"\">\n";
 				echo "	".$tmp_filesize;
 				echo "	</td>\n";
 				echo "	<td valign=\"middle\" width='22' nowrap class=\"list\">\n";

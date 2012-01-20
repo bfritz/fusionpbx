@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -47,9 +47,9 @@ else {
 		$sql .= "select * from voicemail_msgs ";
 		$sql .= "where domain = '$v_domain' ";
 		$sql .= "and uuid = '$uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$created_epoch = $row["created_epoch"];
 			$read_epoch = $row["read_epoch"];
@@ -64,7 +64,7 @@ else {
 			$read_flags = $row["read_flags"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 
 		if ($_GET['type'] = "vm") {
 			if  (file_exists($file_path)) {
@@ -106,7 +106,7 @@ else {
 	require_once "includes/paging.php";
 
 //get the http get values
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //get a list of assigned extensions for this user
@@ -117,11 +117,11 @@ else {
 	if(!ifgroup("superadmin")) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["extension"].'|';
 		//$extension_uuid = $row["extension_uuid"]
@@ -130,7 +130,7 @@ else {
 		$mailbox_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}
-	unset ($prepstatement, $x);
+	unset ($prep_statement, $x);
 	//$user_list = str_replace("\n", "|", "|".$user_list);
 	//echo "v_mailboxes $v_mailboxes<br />";
 	//$mailbox_array = explode ("|", $v_mailboxes);
@@ -166,20 +166,20 @@ else {
 
 	$tmp_msg_header = '';
 	$tmp_msg_header .= "<tr>\n";
-	$tmp_msg_header .= thorderby('created_epoch', 'Created', $orderby, $order);
-	//$tmp_msg_header .= thorderby('read_epoch', 'Read', $orderby, $order);
-	//$tmp_msg_header .= thorderby('username', 'Ext', $orderby, $order);
-	//$tmp_msg_header .= thorderby('domain', 'Domain', $orderby, $order);
-	//$tmp_msg_header .= thorderby('uuid', 'UUID', $orderby, $order);
-	$tmp_msg_header .= thorderby('cid_name', 'Caller ID Name', $orderby, $order);
-	$tmp_msg_header .= thorderby('cid_number', 'Caller ID Number', $orderby, $order);
-	$tmp_msg_header .= thorderby('in_folder', 'Folder', $orderby, $order);
+	$tmp_msg_header .= thorder_by('created_epoch', 'Created', $order_by, $order);
+	//$tmp_msg_header .= thorder_by('read_epoch', 'Read', $order_by, $order);
+	//$tmp_msg_header .= thorder_by('username', 'Ext', $order_by, $order);
+	//$tmp_msg_header .= thorder_by('domain', 'Domain', $order_by, $order);
+	//$tmp_msg_header .= thorder_by('uuid', 'UUID', $order_by, $order);
+	$tmp_msg_header .= thorder_by('cid_name', 'Caller ID Name', $order_by, $order);
+	$tmp_msg_header .= thorder_by('cid_number', 'Caller ID Number', $order_by, $order);
+	$tmp_msg_header .= thorder_by('in_folder', 'Folder', $order_by, $order);
 	//$tmp_msg_header .= "<th>Options</th>\n";
-	//$tmp_msg_header .= thorderby('file_path', 'File Path', $orderby, $order);
-	$tmp_msg_header .= thorderby('message_len', 'Length (play)', $orderby, $order);
+	//$tmp_msg_header .= thorder_by('file_path', 'File Path', $order_by, $order);
+	$tmp_msg_header .= thorder_by('message_len', 'Length (play)', $order_by, $order);
 	$tmp_msg_header .= "<th nowrap>Size (download)</th>\n";
-	//$tmp_msg_header .= thorderby('flags', 'Flags', $orderby, $order);
-	//$tmp_msg_header .= thorderby('read_flags', 'Read Flags', $orderby, $order);
+	//$tmp_msg_header .= thorder_by('flags', 'Flags', $order_by, $order);
+	//$tmp_msg_header .= thorder_by('read_flags', 'Read Flags', $order_by, $order);
 	$tmp_msg_header .= "<td align='right' width='22'>\n";
 	//$tmp_msg_header .= "  <input type='button' class='btn' name='' alt='add' onclick=\"window.location='voicemail_msgs_edit.php'\" value='+'>\n";
 	$tmp_msg_header .= "</td>\n";
@@ -216,18 +216,18 @@ else {
 				else {
 					$sql .= "where username = '".$value['extension']."' ";
 				}
-				if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll();
-				$resultcount = count($result);
-				unset ($prepstatement, $sql);
+				if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
+				$result_count = count($result);
+				unset ($prep_statement, $sql);
 
 				$c = 0;
-				$rowstyle["0"] = "rowstyle0";
-				$rowstyle["1"] = "rowstyle1";
+				$row_style["0"] = "row_style0";
+				$row_style["1"] = "row_style1";
 
-				if ($resultcount == 0) { //no results
+				if ($result_count == 0) { //no results
 				}
 				else { //received results
 					$prevextension = '';
@@ -262,24 +262,24 @@ else {
 						}
 
 						echo "<tr >\n";
-						echo "   <td valign='top' class='".$rowstyle[$c]."' $style nowrap=\"nowrap\">";
+						echo "   <td valign='top' class='".$row_style[$c]."' $style nowrap=\"nowrap\">";
 						echo date("j M Y g:i a",$row[created_epoch]);
 						echo "</td>\n";
-						//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[read_epoch]."</td>\n";
-						//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[username]."</td>\n";
-						//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[domain]."</td>\n";
-						//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row[uuid]."</td>\n";
-						echo "   <td valign='top' class='".$rowstyle[$c]."' $style nowrap=\"nowrap\">".$row[cid_name]."</td>\n";
-						echo "   <td valign='top' class='".$rowstyle[$c]."' $style>".$row[cid_number]."</td>\n";
-						echo "   <td valign='top' class='".$rowstyle[$c]."' $style>".$row[in_folder]."</td>\n";
-						echo "	<td valign='top' class='".$rowstyle[$c]."' $style>\n";
+						//echo "   <td valign='top' class='".$row_style[$c]."'>".$row[read_epoch]."</td>\n";
+						//echo "   <td valign='top' class='".$row_style[$c]."'>".$row[username]."</td>\n";
+						//echo "   <td valign='top' class='".$row_style[$c]."'>".$row[domain]."</td>\n";
+						//echo "   <td valign='top' class='".$row_style[$c]."'>".$row[uuid]."</td>\n";
+						echo "   <td valign='top' class='".$row_style[$c]."' $style nowrap=\"nowrap\">".$row[cid_name]."</td>\n";
+						echo "   <td valign='top' class='".$row_style[$c]."' $style>".$row[cid_number]."</td>\n";
+						echo "   <td valign='top' class='".$row_style[$c]."' $style>".$row[in_folder]."</td>\n";
+						echo "	<td valign='top' class='".$row_style[$c]."' $style>\n";
 						echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('v_voicemail_msgs_play.php?a=download&type=vm&uuid=".$row['uuid']."&id=".$row['username']."&ext=".$file_ext."&desc=".urlencode($row['cid_name']." ".$row['cid_number'])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
 						echo "		$tmp_message_len";
 						echo "		</a>";
 						echo "	</td>\n";
-						//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[flags]."&nbsp;</td>\n";
-						//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[read_flags]."</td>\n";
-						echo "	<td valign='top' class='".$rowstyle[$c]."'  $style nowrap=\"nowrap\">";
+						//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[flags]."&nbsp;</td>\n";
+						//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[read_flags]."</td>\n";
+						echo "	<td valign='top' class='".$row_style[$c]."'  $style nowrap=\"nowrap\">";
 						echo "		<a href=\"v_voicemail_msgs.php?a=download&type=vm&t=bin&uuid=".$row['uuid']."\">\n";
 						echo $tmp_filesize;
 						echo "		</a>";
@@ -294,7 +294,7 @@ else {
 						unset($tmp_message_len, $tmp_filesize);
 						if ($c==0) { $c=1; } else { $c=0; }
 					} //end foreach
-					unset($sql, $result, $rowcount);
+					unset($sql, $result, $row_count);
 				} //end if results
 			}
 		}
@@ -314,7 +314,7 @@ else {
 //show the footer
 	require "includes/config.php";
 	require_once "includes/footer.php";
-	unset ($resultcount);
+	unset ($result_count);
 	unset ($result);
 	unset ($key);
 	unset ($val);

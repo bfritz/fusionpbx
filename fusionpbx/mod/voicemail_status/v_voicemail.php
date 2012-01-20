@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 //show the content
@@ -57,18 +57,18 @@ $order = $_GET["order"];
 	echo "<br />";
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('extension', 'Extension', $orderby, $order);
-	echo thorderby('vm_mailto', 'Voicemail Mail To', $orderby, $order);
+	echo thorder_by('extension', 'Extension', $order_by, $order);
+	echo thorder_by('vm_mailto', 'Voicemail Mail To', $order_by, $order);
 	echo "<th>Messages</th>\n";
-	echo thorderby('enabled', 'Enabled', $orderby, $order);
-	echo thorderby('description', 'Description', $orderby, $order);
+	echo thorder_by('enabled', 'Enabled', $order_by, $order);
+	echo thorder_by('description', 'Description', $order_by, $order);
 	echo "<tr>\n";
 
 	$sql = "";
@@ -77,24 +77,24 @@ $order = $_GET["order"];
 	if(!ifgroup("superadmin")) {
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}	
-	if (strlen($orderby)> 0) { 
-		$sql .= "order by $orderby $order ";
+	if (strlen($order_by)> 0) { 
+		$sql .= "order by $order_by $order ";
 	}
 	else {
 		$sql .= "order by extension asc ";
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$numrows = count($result);
-	unset ($prepstatement, $result, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$num_rows = count($result);
+	unset ($prep_statement, $result, $sql);
 
-	$rowsperpage = 20;
+	$rows_per_page = 20;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
-	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page; 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+	$offset = $rows_per_page * $page; 
 
 	$sql = "";
 	$sql .= "select * from v_extensions ";
@@ -102,23 +102,23 @@ $order = $_GET["order"];
 	if(!ifgroup("superadmin")) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}
-	if (strlen($orderby)> 0) {
-		$sql .= "order by $orderby $order ";
+	if (strlen($order_by)> 0) {
+		$sql .= "order by $order_by $order ";
 	}
 	else {
 		$sql .= "order by extension asc ";
 	}
-	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	//pdo voicemail database connection
 		include "includes/lib_pdo_vm.php";
 
-	if ($resultcount == 0) {
+	if ($result_count == 0) {
 		//no results
 	}
 	else {
@@ -127,21 +127,21 @@ $order = $_GET["order"];
 			$sql .= "select count(*) as count from voicemail_msgs ";
 			$sql .= "where domain = '$v_domain' ";
 			$sql .= "and username = '".$row[extension]."' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row2) {
 				$count = $row2["count"];
 				break; //limit to 1 row
 			}
-			unset ($prepstatement);
+			unset ($prep_statement);
 
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[extension]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[vm_mailto]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$count."&nbsp;</td>\n";
-			echo "  <td valign='top' class='".$rowstyle[$c]."'>".($row[vm_enabled]?"true":"false")."</td>\n";
-			echo "	<td valign='top' class='rowstylebg' width='30%'>".$row[description]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[extension]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[vm_mailto]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$count."&nbsp;</td>\n";
+			echo "  <td valign='top' class='".$row_style[$c]."'>".($row[vm_enabled]?"true":"false")."</td>\n";
+			echo "	<td valign='top' class='row_stylebg' width='30%'>".$row[description]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('voicemail_status_delete')) {
 				echo "		<a href='v_voicemail_prefs_delete.php?id=".$row[extension_uuid]."' alt='restore default preferences' title='restore default preferences' onclick=\"return confirm('Are you sure you want remove the voicemail name and greeting?')\">$v_link_label_delete</a>\n";
@@ -152,7 +152,7 @@ $order = $_GET["order"];
 			unset($count);
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 echo "</table>";

@@ -63,8 +63,8 @@ if ($fp) {
 	*/
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
@@ -91,24 +91,24 @@ if ($fp) {
 		if (ifgroup("superadmin")) {
 			//show all fifo queues
 				echo "<tr>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_name."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$consumer_count."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_count."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$waiting_count."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'>".$importance."</td>\n";
-				echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_fifo_interactive.php?c=".$name."'>view</a></td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>".$tmp_name."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>".$consumer_count."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>".$caller_count."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>".$waiting_count."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>".$importance."</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'><a href='v_fifo_interactive.php?c=".$name."'>view</a></td>\n";
 				echo "</tr>\n";
 		}
 		else {
 			//show only the fifo queues that match the v_domain
 				if (stripos($name, $v_domain) !== false) {
 					echo "<tr>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_name."</td>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$consumer_count."</td>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$caller_count."</td>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$waiting_count."</td>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'>".$importance."</td>\n";
-					echo "<td valign='top' class='".$rowstyle[$c]."'><a href='v_fifo_interactive.php?c=".$name."'>view</a></td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$tmp_name."</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$consumer_count."</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$caller_count."</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$waiting_count."</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'>".$importance."</td>\n";
+					echo "<td valign='top' class='".$row_style[$c]."'><a href='v_fifo_interactive.php?c=".$name."'>view</a></td>\n";
 					echo "</tr>\n";
 				}
 		}

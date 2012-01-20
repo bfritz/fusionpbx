@@ -17,17 +17,17 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 
-function paging($numrows, $param, $rowsperpage) {
+function paging($num_rows, $param, $rows_per_page) {
 
-	if (strlen($rowsperpage)==0) {
-		$rowsperpage = "5"; //default number of rows per page
+	if (strlen($rows_per_page)==0) {
+		$rows_per_page = "5"; //default number of rows per page
 	}
 
 
@@ -40,10 +40,10 @@ function paging($numrows, $param, $rowsperpage) {
 	}
 
 	// counting the offset
-	$offset = ($pagenum - 1) * $rowsperpage;
+	$offset = ($pagenum - 1) * $rows_per_page;
 
 	// how many pages we have when using paging?
-	$maxpage = ceil($numrows/$rowsperpage);
+	$maxpage = ceil($num_rows/$rows_per_page);
 
 	// print the link to access each page
 	$self = $_SERVER['PHP_SELF'];
@@ -93,7 +93,7 @@ function paging($numrows, $param, $rowsperpage) {
 	else {
 		$returnearray[] = "";
 	}
-	$returnearray[] = $rowsperpage;
+	$returnearray[] = $rows_per_page;
 	$returnearray[] = $offset;
 
 	return $returnearray;

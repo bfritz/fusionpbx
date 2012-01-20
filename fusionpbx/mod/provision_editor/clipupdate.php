@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,21 +37,21 @@ require_once "config.php";
 
 if (count($_POST)>0) {
     $id = check_str($_POST["id"]);
-    $clipname = check_str($_POST["clipname"]);
-    $clipfolder = check_str($_POST["clipfolder"]);
-    $cliptextstart = check_str($_POST["cliptextstart"]);
-    $cliptextend = check_str($_POST["cliptextend"]);
-    $clipdesc = check_str($_POST["clipdesc"]);
-    $cliporder = check_str($_POST["cliporder"]);
+    $clip_name = check_str($_POST["clip_name"]);
+    $clip_folder = check_str($_POST["clip_folder"]);
+    $clip_text_start = check_str($_POST["clip_text_start"]);
+    $clip_text_end = check_str($_POST["clip_text_end"]);
+    $clip_desc = check_str($_POST["clip_desc"]);
+    $clip_order = check_str($_POST["clip_order"]);
 
     //sql update
-    $sql  = "update tblcliplibrary set ";
-    $sql .= "clipname = '$clipname', ";
-    $sql .= "clipfolder = '$clipfolder', ";
-    $sql .= "cliptextstart = '$cliptextstart', ";
-    $sql .= "cliptextend = '$cliptextend', ";
-    $sql .= "clipdesc = '$clipdesc', ";
-    $sql .= "cliporder = '$cliporder' ";
+    $sql  = "update v_clip_library set ";
+    $sql .= "clip_name = '$clip_name', ";
+    $sql .= "clip_folder = '$clip_folder', ";
+    $sql .= "clip_text_start = '$clip_text_start', ";
+    $sql .= "clip_text_end = '$clip_text_end', ";
+    $sql .= "clip_desc = '$clip_desc', ";
+    $sql .= "clip_order = '$clip_order' ";
     $sql .= "where id = '$id' ";
     $count = $db->exec(check_sql($sql));
     //echo "Affected Rows: ".$count;
@@ -69,19 +69,19 @@ else {
 		$id = $_GET["id"];
 
 		$sql = "";
-		$sql .= "select * from tblcliplibrary ";
+		$sql .= "select * from v_clip_library ";
 		$sql .= "where id = '$id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 
-		$result = $prepstatement->fetchAll();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$clipname = $row["clipname"];
-			$clipfolder = $row["clipfolder"];
-			$cliptextstart = $row["cliptextstart"];
-			$cliptextend = $row["cliptextend"];
-			$clipdesc = $row["clipdesc"];
-			$cliporder = $row["cliporder"];
+			$clip_name = $row["clip_name"];
+			$clip_folder = $row["clip_folder"];
+			$clip_text_start = $row["clip_text_start"];
+			$clip_text_end = $row["clip_text_end"];
+			$clip_desc = $row["clip_desc"];
+			$clip_order = $row["clip_order"];
 			break; //limit to 1 row
 		}
 		echo "</table>";
@@ -98,29 +98,29 @@ else {
 	echo "<table border='0' width='100%'>";
 	echo "	<tr>";
 	echo "		<td>Name:</td>";
-	echo "		<td><input type='text' class='txt' name='clipname' value='$clipname'></td>";
+	echo "		<td><input type='text' class='txt' name='clip_name' value='$clip_name'></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td>Folder:</td>";
-	echo "		<td><input type='text' class='txt'  name='clipfolder' value='$clipfolder'></td>";
+	echo "		<td><input type='text' class='txt'  name='clip_folder' value='$clip_folder'></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td colspan='2'>Before Selection:<br>";
-	echo "		  <textarea  class='txt' name='cliptextstart'>$cliptextstart</textarea>";
+	echo "		  <textarea  class='txt' name='clip_text_start'>$clip_text_start</textarea>";
 	echo "		</td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td colspan='2'>After Selection:<br>";
-	echo "		  <textarea  class='txt' name='cliptextend'>$cliptextend</textarea>";
+	echo "		  <textarea  class='txt' name='clip_text_end'>$clip_text_end</textarea>";
 	echo "		</td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td colspan='2'>Notes:<br>";
-	echo "		  <textarea  class='txt' name='clipdesc'>$clipdesc</textarea>";
+	echo "		  <textarea  class='txt' name='clip_desc'>$clip_desc</textarea>";
 	echo "		</td>";
 	echo "	</tr>";
 

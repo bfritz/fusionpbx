@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -35,17 +35,18 @@ else {
 	exit;
 }
 
-
 if (count($_POST)>0) {
+	$rss_sub_category_uuid = uuid();
 	$rss_category = check_str($_POST["rss_category"]);
 	$rss_sub_category = check_str($_POST["rss_sub_category"]);
 	$rss_sub_category_desc = check_str($_POST["rss_sub_category_desc"]);
 	$rss_add_user = check_str($_POST["rss_add_user"]);
 	$rss_add_date = check_str($_POST["rss_add_date"]);
-
+	
 	$sql = "insert into v_rss_sub_category ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
+	$sql .= "rss_sub_category_uuid, ";
 	$sql .= "rss_category, ";
 	$sql .= "rss_sub_category, ";
 	$sql .= "rss_sub_category_desc, ";
@@ -55,6 +56,7 @@ if (count($_POST)>0) {
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
+	$sql .= "'$rss_sub_category_uuid', ";
 	$sql .= "'$rss_category', ";
 	$sql .= "'$rss_sub_category', ";
 	$sql .= "'$rss_sub_category_desc', ";
@@ -74,7 +76,6 @@ if (count($_POST)>0) {
 require_once "includes/header.php";
 echo "<div align='center'>";
 echo "<table border='0' cellpadding='0' cellspacing='2'>\n";
-
 echo "<tr class='border'>\n";
 echo "	<td align=\"left\">\n";
 echo "      <br>";
@@ -82,7 +83,7 @@ echo "      <br>";
 echo "<form method='post' action=''>";
 echo "<table>";
 echo "	<tr>";
-echo "		<td>rss_category:</td>";
+echo "		<td>RSS Category:</td>";
 echo "		<td><input type='text' name='rss_category'></td>";
 echo "	</tr>";
 echo "	<tr>";
@@ -100,22 +101,17 @@ echo "	</tr>";
 echo "	<tr>";
 echo "		<td>rss_add_date:</td>";
 echo "		<td><input type='text' name='rss_add_date'></td>";
-echo "	</tr>";
-//echo "	<tr>";
-//echo "	<td>example:</td>";
-//echo "	<td><textarea name='example'></textarea></td>";
-//echo "	</tr>";    echo "	<tr>";
+echo "	</tr>\n";
+echo "	<tr>";
 echo "		<td colspan='2' align='right'><input type='submit' name='submit' value='Add'></td>";
 echo "	</tr>";
 echo "</table>";
 echo "</form>";
 
-
 echo "	</td>";
 echo "	</tr>";
 echo "</table>";
 echo "</div>";
-
 
 require_once "includes/footer.php";
 ?>

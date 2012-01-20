@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,7 +36,7 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -203,18 +203,17 @@ if (!function_exists('switch_module_info')) {
 //get the list of modules
 	$sql = "";
 	$sql .= " select * from v_modules ";
-	$sql .= "where domain_uuid = '1' ";
-    if (strlen($orderby)> 0) { 
-		$sql .= "order by $orderby $order "; 
+    if (strlen($order_by)> 0) { 
+		$sql .= "order by $order_by $order "; 
 	}
 	else {
 		$sql .= "order by module_category,  module_label"; 
 	}
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$modules = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$modules = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	$module_count = count($modules);
-	unset ($prepstatement, $sql);
+	unset ($prep_statement, $sql);
 
 //add missing modules for more module info see http://wiki.freeswitch.com/wiki/Modules
 	if ($handle = opendir($v_mod_dir)) {
@@ -231,9 +230,10 @@ if (!function_exists('switch_module_info')) {
 					//append the module label
 						$modules_new .= "<li>".$mod['module_label']."</li>\n";
 					//insert the data
+						$module_uuid = uuid();
 						$sql = "insert into v_modules ";
 						$sql .= "(";
-						$sql .= "domain_uuid, ";
+						$sql .= "module_uuid, ";
 						$sql .= "module_label, ";
 						$sql .= "module_name, ";
 						$sql .= "module_desc, ";
@@ -243,7 +243,7 @@ if (!function_exists('switch_module_info')) {
 						$sql .= ")";
 						$sql .= "values ";
 						$sql .= "(";
-						$sql .= "'1', ";
+						$sql .= "'".$mod['module_uuid']."', ";
 						$sql .= "'".$mod['module_label']."', ";
 						$sql .= "'".$mod['module_name']."', ";
 						$sql .= "'".$mod['module_desc']."', ";
@@ -274,7 +274,7 @@ if (!function_exists('switch_module_info')) {
 		echo "<th align='left'>Message</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='rowstyle1'>$msg</td>\n";
+		echo "<td class='row_style1'>$msg</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -300,22 +300,22 @@ if (!function_exists('switch_module_info')) {
 	echo "</table>\n";
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	$tmp_module_header = "\n";
 	$tmp_module_header .= "<tr>\n";
-	//$tmp_module_header .= thorderby('module_category', 'Module Category', $orderby, $order);
-	$tmp_module_header .= thorderby('module_label', 'Label', $orderby, $order);
-	//$tmp_module_header .= thorderby('module_name', 'Module Name', $orderby, $order);
-	$tmp_module_header .= thorderby('module_desc', 'Description', $orderby, $order);
+	//$tmp_module_header .= thorder_by('module_category', 'Module Category', $order_by, $order);
+	$tmp_module_header .= thorder_by('module_label', 'Label', $order_by, $order);
+	//$tmp_module_header .= thorder_by('module_name', 'Module Name', $order_by, $order);
+	$tmp_module_header .= thorder_by('module_desc', 'Description', $order_by, $order);
 	$tmp_module_header .= "<th>Status</th>\n";
 	$tmp_module_header .= "<th>Action</th>\n";
-	$tmp_module_header .= thorderby('module_enabled', 'Enabled', $orderby, $order);
-	//$tmp_module_header .= thorderby('module_default_enabled', 'Default Enabled', $orderby, $order);
+	$tmp_module_header .= thorder_by('module_enabled', 'Enabled', $order_by, $order);
+	//$tmp_module_header .= thorder_by('module_default_enabled', 'Default Enabled', $order_by, $order);
 	$tmp_module_header .= "<td align='right' width='42'>\n";
 	$tmp_module_header .= "	<a href='v_modules_edit.php' alt='add'>$v_link_label_add</a>\n";
 	$tmp_module_header .= "</td>\n";
@@ -355,25 +355,25 @@ if (!function_exists('switch_module_info')) {
 			}
 
 			echo "<tr >\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_category"]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_label"]."</td>\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_name"]."</td>\n";
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_desc"]."&nbsp;</td>\n";
+			//echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_category"]."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_label"]."</td>\n";
+			//echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_name"]."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_desc"]."&nbsp;</td>\n";
 			if (switch_module_active($fp, $row["module_name"])) {
-				echo "   <td valign='top' class='".$rowstyle[$c]."'>Running</td>\n";
-				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=stop&m=".$row["module_name"]."' alt='stop'>Stop</a></td>\n";
+				echo "   <td valign='top' class='".$row_style[$c]."'>Running</td>\n";
+				echo "   <td valign='top' class='".$row_style[$c]."'><a href='v_modules.php?a=stop&m=".$row["module_name"]."' alt='stop'>Stop</a></td>\n";
 			}
 			else {
 				if ($row['module_enabled']=="true") {
-					echo "   <td valign='top' class='".$rowstyle[$c]."'><b>Stopped</b></td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'><b>Stopped</b></td>\n";
 				}
 				else {
-					echo "   <td valign='top' class='".$rowstyle[$c]."'>Stopped $notice</td>\n";
+					echo "   <td valign='top' class='".$row_style[$c]."'>Stopped $notice</td>\n";
 				}
-				echo "   <td valign='top' class='".$rowstyle[$c]."'><a href='v_modules.php?a=start&m=".$row["module_name"]."' alt='start'>Start</a></td>\n";
+				echo "   <td valign='top' class='".$row_style[$c]."'><a href='v_modules.php?a=start&m=".$row["module_name"]."' alt='start'>Start</a></td>\n";
 			}
-			echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_enabled"]."</td>\n";
-			//echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row["module_default_enabled"]."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_enabled"]."</td>\n";
+			//echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_default_enabled"]."</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('modules_edit')) {
 				echo "		<a href='v_modules_edit.php?id=".$row["module_uuid"]."' alt='edit'>$v_link_label_edit</a>\n";
@@ -387,7 +387,7 @@ if (!function_exists('switch_module_info')) {
 			$prev_module_category = $row["module_category"];
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $modules, $rowcount);
+		unset($sql, $modules, $row_count);
 	} //end if results
 
 	echo "<tr>\n";
@@ -395,7 +395,7 @@ if (!function_exists('switch_module_info')) {
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('modules_add')) {
 		echo "			<a href='v_modules_edit.php' alt='add'>$v_link_label_add</a>\n";

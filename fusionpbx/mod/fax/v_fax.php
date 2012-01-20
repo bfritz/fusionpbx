@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,7 +37,7 @@ require_once "includes/header.php";
 require_once "includes/paging.php";
 
 //get the http get values and set them as php variables
-	$orderby = check_str($_GET["orderby"]);
+	$order_by = check_str($_GET["order_by"]);
 	$order = check_str($_GET["order"]);
 
 //show the content
@@ -73,19 +73,19 @@ require_once "includes/paging.php";
 		$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 	}
 
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$numrows = count($result);
-	unset ($prepstatement, $result, $sql);
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$num_rows = count($result);
+	unset ($prep_statement, $result, $sql);
 
-	$rowsperpage = 150;
+	$rows_per_page = 150;
 	$param = "";
 	$page = check_str($_GET['page']);
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($pagingcontrols, $rowsperpage, $var3) = paging($numrows, $param, $rowsperpage); 
-	$offset = $rowsperpage * $page;
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
+	$offset = $rows_per_page * $page;
 
 	$sql = "";
 	$sql .= "select * from v_fax ";
@@ -99,26 +99,26 @@ require_once "includes/paging.php";
 	else {
 		$sql .= "and fax_user_list like '%".$_SESSION["username"]."|%' ";
 	}
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 
-	$sql .= " limit $rowsperpage offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorderby('fax_extension', 'Extension', $orderby, $order);
-	echo thorderby('fax_name', 'Name', $orderby, $order);
-	echo thorderby('fax_email', 'Email', $orderby, $order);
-	echo thorderby('fax_description', 'Description', $orderby, $order);
+	echo thorder_by('fax_extension', 'Extension', $order_by, $order);
+	echo thorder_by('fax_name', 'Name', $order_by, $order);
+	echo thorder_by('fax_email', 'Email', $order_by, $order);
+	echo thorder_by('fax_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('fax_extension_add')) {
 		echo "	<a href='v_fax_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -126,13 +126,13 @@ require_once "includes/paging.php";
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount > 0) {
+	if ($result_count > 0) {
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['fax_extension']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['fax_name']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['fax_email']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='rowstylebg' width='35%'>".$row['fax_description']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['fax_extension']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['fax_name']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['fax_email']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='row_stylebg' width='35%'>".$row['fax_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('fax_extension_edit')) {
 				echo "		<a href='v_fax_view.php?id=".$row['fax_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
@@ -144,7 +144,7 @@ require_once "includes/paging.php";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 	echo "<tr>\n";
@@ -152,7 +152,7 @@ require_once "includes/paging.php";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('fax_extension_add')) {
 		echo "			<a href='v_fax_edit.php' alt='add'>$v_link_label_add</a>\n";

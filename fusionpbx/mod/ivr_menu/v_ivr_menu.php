@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,7 +37,7 @@ require_once "includes/header.php";
 require_once "includes/paging.php";
 
 //get the http values and set them as php variables
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //show the content
@@ -66,10 +66,10 @@ require_once "includes/paging.php";
 		$sql = "";
 		$sql .= " select count(*) as num_rows from v_ivr_menu ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		if ($prepstatement) {
-			$prepstatement->execute();
-			$row = $prepstatement->fetch(PDO::FETCH_ASSOC);
+		$prep_statement = $db->prepare(check_sql($sql));
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 			if ($row['num_rows'] > 0) {
 				$num_rows = $row['num_rows'];
 			}
@@ -77,40 +77,40 @@ require_once "includes/paging.php";
 				$num_rows = '0';
 			}
 		}
-		unset($prepstatement, $result);
+		unset($prep_statement, $result);
 
 	//prepare to page the results
 		$rows_per_page = 150;
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($pagingcontrols, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
+		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 		$offset = $rows_per_page * $page;
 
 	//get the list from the db
 		$sql = "";
 		$sql .= " select * from v_ivr_menu ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		$result_count = count($result);
-		unset ($prepstatement, $sql);
+		unset ($prep_statement, $sql);
 
 		$c = 0;
-		$row_style["0"] = "rowstyle0";
-		$row_style["1"] = "rowstyle1";
+		$row_style["0"] = "row_style0";
+		$row_style["1"] = "row_style1";
 
 		echo "<div align='center'>\n";
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";
-		echo thorderby('ivr_menu_name', 'Name', $orderby, $order);
-		echo thorderby('ivr_menu_extension', 'Extension', $orderby, $order);
-		echo thorderby('ivr_menu_direct_dial', 'Direct Dial', $orderby, $order);
-		echo thorderby('ivr_menu_enabled', 'Enabled', $orderby, $order);
-		echo thorderby('ivr_menu_desc', 'Description', $orderby, $order);
+		echo thorder_by('ivr_menu_name', 'Name', $order_by, $order);
+		echo thorder_by('ivr_menu_extension', 'Extension', $order_by, $order);
+		echo thorder_by('ivr_menu_direct_dial', 'Direct Dial', $order_by, $order);
+		echo thorder_by('ivr_menu_enabled', 'Enabled', $order_by, $order);
+		echo thorder_by('ivr_menu_desc', 'Description', $order_by, $order);
 		echo "<td align='right' width='42'>\n";
 		if (permission_exists('ivr_menu_add')) {
 			echo "	<a href='v_ivr_menu_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -125,7 +125,7 @@ require_once "includes/paging.php";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_extension']."</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_direct_dial']."</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_enabled']."</td>\n";
-				echo "	<td valign='top' class='rowstylebg'>".$row['ivr_menu_desc']."&nbsp;</td>\n";
+				echo "	<td valign='top' class='row_stylebg'>".$row['ivr_menu_desc']."&nbsp;</td>\n";
 				echo "	<td valign='top' align='right'>\n";
 				if (permission_exists('ivr_menu_edit')) {
 					echo "		<a href='v_ivr_menu_edit.php?id=".$row['ivr_menu_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
@@ -137,7 +137,7 @@ require_once "includes/paging.php";
 				echo "</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			} //end foreach
-			unset($sql, $result, $rowcount);
+			unset($sql, $result, $row_count);
 		} //end if results
 
 
@@ -146,7 +146,7 @@ require_once "includes/paging.php";
 		echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 		echo "	<tr>\n";
 		echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-		echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+		echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 		echo "		<td width='33.3%' align='right'>\n";
 		if (permission_exists('ivr_menu_add')) {
 			echo "			<a href='v_ivr_menu_edit.php' alt='add'>$v_link_label_add</a>\n";

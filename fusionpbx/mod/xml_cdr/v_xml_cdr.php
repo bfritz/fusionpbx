@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -46,7 +46,7 @@ else {
 
 //get post or get variables from http
 	if (count($_REQUEST)>0) {
-		$orderby = $_REQUEST["orderby"];
+		$order_by = $_REQUEST["order_by"];
 		$order = $_REQUEST["order"];
 		$cdr_id = $_REQUEST["cdr_id"];
 		$direction = $_REQUEST["direction"];
@@ -241,9 +241,9 @@ else {
 				$sql = "";
 				$sql .= "select distinct(hangup_cause) from v_xml_cdr ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
-				$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 				foreach ($result as &$row) {
 					if ($row["hangup_cause"] == $hangup_cause) {
 						echo "			<option value='".$row["hangup_cause"]."' selected='selected'>".$row["hangup_cause"]."</option>\n";
@@ -252,7 +252,7 @@ else {
 						echo "			<option value='".$row["hangup_cause"]."'>".$row["hangup_cause"]."</option>\n";
 					}
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 				*/
 				echo "			</select>\n";
 				echo "		</td>\n";
@@ -348,16 +348,16 @@ else {
 	$sql .= "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 	$x = 0;
-	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
 		$extension_array[$x]['extension_uuid'] = $row["extension_uuid"];
 		$extension_array[$x]['extension'] = $row["extension"];
 		$x++;
 	}
-	unset ($prepstatement, $x);
+	unset ($prep_statement, $x);
 
 	//example sql
 		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '1' 
@@ -412,7 +412,7 @@ else {
 	$param .= "&network_addr=$network_addr";
 
 //create the sql query to get the xml cdr records
-	if (strlen($orderby) == 0)  { $orderby  = "start_epoch"; }
+	if (strlen($order_by) == 0)  { $order_by  = "start_epoch"; }
 	if (strlen($order) == 0)  { $order  = "desc"; }
 
 //set the default
@@ -422,10 +422,10 @@ else {
 	$sql = "";
 	$sql .= " select count(*) as num_rows from v_xml_cdr ";
 	$sql .= $sql_where;
-	$prepstatement = $db->prepare(check_sql($sql));
-	if ($prepstatement) {
-		$prepstatement->execute();
-		$row = $prepstatement->fetch(PDO::FETCH_ASSOC);
+	$prep_statement = $db->prepare(check_sql($sql));
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 		if ($row['num_rows'] > 0) {
 			$num_rows = $row['num_rows'];
 		}
@@ -433,51 +433,51 @@ else {
 			$num_rows = '0';
 		}
 	}
-	unset($prepstatement, $result);
+	unset($prep_statement, $result);
 
 //prepare to page the results
 	$rows_per_page = 150;
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($pagingcontrols, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page; 
 
 //get the results from the db
 	$sql = "";
 	$sql .= " select * from v_xml_cdr ";
 	$sql .= $sql_where;
-	if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$sql .= " limit $rows_per_page offset $offset ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 //show the results
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	//echo thorderby('direction', 'Direction', $orderby, $order);
-	//echo thorderby('default_language', 'Language', $orderby, $order);
-	//echo thorderby('context', 'Context', $orderby, $order);
-	//echo thorderby('leg', 'Leg', $orderby, $order);
-	echo thorderby('caller_id_name', 'Name', $orderby, $order);
-	echo thorderby('caller_id_number', 'Number', $orderby, $order);
-	echo thorderby('destination_number', 'Destination', $orderby, $order);
-	echo thorderby('start_stamp', 'Start', $orderby, $order);
-	//echo thorderby('end_stamp', 'End', $orderby, $order);
-	echo thorderby('duration', 'Length', $orderby, $order);
+	//echo thorder_by('direction', 'Direction', $order_by, $order);
+	//echo thorder_by('default_language', 'Language', $order_by, $order);
+	//echo thorder_by('context', 'Context', $order_by, $order);
+	//echo thorder_by('leg', 'Leg', $order_by, $order);
+	echo thorder_by('caller_id_name', 'Name', $order_by, $order);
+	echo thorder_by('caller_id_number', 'Number', $order_by, $order);
+	echo thorder_by('destination_number', 'Destination', $order_by, $order);
+	echo thorder_by('start_stamp', 'Start', $order_by, $order);
+	//echo thorder_by('end_stamp', 'End', $order_by, $order);
+	echo thorder_by('duration', 'Length', $order_by, $order);
 	if (ifgroup("admin") || ifgroup("superadmin")) { 
-		echo thorderby('pdd_ms', 'PDD', $orderby, $order); 
+		echo thorder_by('pdd_ms', 'PDD', $order_by, $order); 
 	}
-	echo thorderby('hangup_cause', 'Status', $orderby, $order);
+	echo thorder_by('hangup_cause', 'Status', $order_by, $order);
 	echo "</tr>\n";
 
-	if ($resultcount == 0) {
+	if ($result_count == 0) {
 		//no results
 	}
 	else { //received results
@@ -498,11 +498,11 @@ else {
 			$hangup_cause = ucwords($hangup_cause);
 
 			echo "<tr >\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['direction']."</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['default_language']."</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['context']."</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['leg']."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['direction']."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['default_language']."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['context']."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['leg']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
 
 			$tmp_dir = $v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
 			$tmp_name = '';
@@ -530,7 +530,7 @@ else {
 				echo 	$row['caller_id_name'].' ';
 			}
 			echo "	</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			if (strlen($tmp_name) > 0 && file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
 				echo "		<a href=\"../recordings/v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode("archive/".$tmp_year."/".$tmp_month."/".$tmp_day."/".$tmp_name)."\">\n";
 				if (is_numeric($row['caller_id_number'])) {
@@ -551,29 +551,29 @@ else {
 			}
 			echo "	</td>\n";
 			if (is_numeric($row['destination_number'])) {
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>".format_phone($row['destination_number'])."</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>".format_phone($row['destination_number'])."</td>\n";
 			}
 			else {
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['destination_number']."</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['destination_number']."</td>\n";
 			}
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$tmp_start_epoch."</td>\n";
-			//echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row['end_stamp']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$tmp_start_epoch."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['end_stamp']."</td>\n";
 			
 			//If they cancelled, show the ring time, not the bill time.
 			$seconds = ($row['hangup_cause']=="ORIGINATOR_CANCEL") ? $row['duration'] : $row['billsec'];
 
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".gmdate("G:i:s", $seconds)."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".gmdate("G:i:s", $seconds)."</td>\n";
 			if (ifgroup("admin") || ifgroup("superadmin")) {
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>".number_format($row['pdd_ms']/1000,2)."s</td>\n";
-				echo "	<td valign='top' class='".$rowstyle[$c]."'><a href='v_xml_cdr_details.php?uuid=".$row['uuid']."'>".$hangup_cause."</a></td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>".number_format($row['pdd_ms']/1000,2)."s</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'><a href='v_xml_cdr_details.php?uuid=".$row['uuid']."'>".$hangup_cause."</a></td>\n";
 			}
 			else {
-				echo "	<td valign='top' class='".$rowstyle[$c]."'>".$hangup_cause."</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>".$hangup_cause."</td>\n";
 			}
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 	echo "<tr>\n";
@@ -581,7 +581,7 @@ else {
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' nowrap='nowrap'>&nbsp;</td>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";

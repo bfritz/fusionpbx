@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -49,10 +49,10 @@ else {
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and group_id = '$group_id' ";
 		$sql .= "and username = '$username' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		if (count($prepstatement->fetchAll()) == 0) { return true; } else { return false; }
-		unset ($sql, $prepstatement);
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		if (count($prep_statement->fetchAll()) == 0) { return true; } else { return false; }
+		unset ($sql, $prep_statement);
 	}
 	//$exampledatareturned = example("apples", 1);
 
@@ -61,8 +61,8 @@ else {
 
 //show the content
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='90%' border='0'><tr><td align='left'>\n";
@@ -84,8 +84,8 @@ else {
 	$sql = "SELECT * FROM v_group_members ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and group_id = '$group_id' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 
 	$strlist = "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	$strlist .= "<tr>\n";
@@ -97,13 +97,13 @@ else {
 	$strlist .= "</tr>\n";
 
 	$count = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$id = $row["id"];
 		$username = $row["username"];
 		$strlist .= "<tr'>";
-		$strlist .= "<td align=\"left\"  class='".$rowstyle[$c]."' nowrap> &nbsp; $username &nbsp; </td>\n";
-		$strlist .= "<td align=\"left\"  class='".$rowstyle[$c]."' nowrap> &nbsp; </td>\n";
+		$strlist .= "<td align=\"left\"  class='".$row_style[$c]."' nowrap> &nbsp; $username &nbsp; </td>\n";
+		$strlist .= "<td align=\"left\"  class='".$row_style[$c]."' nowrap> &nbsp; </td>\n";
 		$strlist .= "<td align=\"right\" nowrap>\n";
 		if (permission_exists('group_member_delete')) {
 			$strlist .= "	<a href='groupmemberdelete.php?username=$username&group_id=$group_id' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
@@ -132,12 +132,12 @@ else {
 	$sql = "SELECT * FROM v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "order by username ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 
 	echo "<select name=\"username\" style='width: 200px;' class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach($result as $field) {
 		$username = $field[username];
 		if (if_group_members($db, $group_id, $username)) {

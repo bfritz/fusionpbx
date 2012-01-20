@@ -42,7 +42,7 @@ require_once "includes/paging.php";
 //usleep(1000000);
 
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 
@@ -66,45 +66,45 @@ $order = $_GET["order"];
 	echo "</tr></table>\n";
 
 	//set the default order by and order asc, desc
-		if (strlen($orderby) == 0) { 
-			$orderby  = 'fifo_name';
+		if (strlen($order_by) == 0) { 
+			$order_by  = 'fifo_name';
 			$order = 'asc';
 		}
 
 	//run the sql queries
 		$sql = "";
 		$sql .= " select * from v_fifo_agents ";
-		if (strlen($orderby)> 0) { $sql .= "order by $orderby $order "; }
-		//$sql .= " limit $rowsperpage offset $offset ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
-		$resultcount = count($result);
-		unset ($prepstatement, $sql);
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+		//$sql .= " limit $rows_per_page offset $offset ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		$result_count = count($result);
+		unset ($prep_statement, $sql);
 
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('fifo_name', 'Queue Name', $orderby, $order);
-	echo thorderby('agent_username', 'Username', $orderby, $order);
-	echo thorderby('agent_priority', 'Agent Priority', $orderby, $order);
-	echo thorderby('agent_status', 'Status', $orderby, $order);
-	echo thorderby('agent_last_call', 'Last Call', $orderby, $order);
-	echo thorderby('agent_last_uuid', 'Last UUID', $orderby, $order);
-	echo thorderby('agent_contact_number', 'Contact Number', $orderby, $order);
+	echo thorder_by('fifo_name', 'Queue Name', $order_by, $order);
+	echo thorder_by('agent_username', 'Username', $order_by, $order);
+	echo thorder_by('agent_priority', 'Agent Priority', $order_by, $order);
+	echo thorder_by('agent_status', 'Status', $order_by, $order);
+	echo thorder_by('agent_last_call', 'Last Call', $order_by, $order);
+	echo thorder_by('agent_last_uuid', 'Last UUID', $order_by, $order);
+	echo thorder_by('agent_contact_number', 'Contact Number', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_fifo_agents_edit.php' alt='add'>$v_link_label_add</a>\n";
 	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_fifo_agents_edit.php'\" value='+'>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($resultcount == 0) { //no results
+	if ($result_count == 0) { //no results
 	}
 	else { //received results
 		foreach($result as $row) {
@@ -126,9 +126,9 @@ $order = $_GET["order"];
 					$sql = "SELECT var_name, var_value FROM v_vars ";
 					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and var_cat = 'Queues Agent Status' ";
-					$prepstatement = $db->prepare(check_sql($sql));
-					$prepstatement->execute();
-					$result = $prepstatement->fetchAll();
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll();
 					foreach($result as $field) {
 						$_SESSION["array_agent_status"][$field[var_value]] = $field[var_name];
 					}
@@ -138,13 +138,13 @@ $order = $_GET["order"];
 				$agent_status_desc = $_SESSION["array_agent_status"][$agent_status];
 
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[fifo_name]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[agent_username]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[agent_priority]."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$agent_status_desc."</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$agent_last_call_desc."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[agent_last_uuid]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$rowstyle[$c]."'>".$row[agent_contact_number]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[fifo_name]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_username]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_priority]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$agent_status_desc."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$agent_last_call_desc."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_last_uuid]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[agent_contact_number]."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_fifo_agents_edit.php?id=".$row[fifo_agent_id]."' alt='edit'>$v_link_label_edit</a>\n";
 			echo "		<a href='v_fifo_agents_delete.php?id=".$row[fifo_agent_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
@@ -154,7 +154,7 @@ $order = $_GET["order"];
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 
 
@@ -163,7 +163,7 @@ $order = $_GET["order"];
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	//echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+	//echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	echo "			<a href='v_fifo_agents_edit.php' alt='add'>$v_link_label_add</a>\n";
 	//echo "		<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_fifo_agents_edit.php'\" value='+'>\n";
@@ -198,7 +198,7 @@ $order = $_GET["order"];
 
 
 require_once "includes/footer.php";
-unset ($resultcount);
+unset ($result_count);
 unset ($result);
 unset ($key);
 unset ($val);

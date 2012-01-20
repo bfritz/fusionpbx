@@ -7,14 +7,14 @@ function enable_change(enable_over) {
 }
 
 function show_advanced_config() {
-  document.getElementById("showadvancedbox").innerHTML='';
-  aodiv = document.getElementById('showadvanced');
+  document.getElementById("show_advanced_box").innerHTML='';
+  aodiv = document.getElementById('show_advanced');
   aodiv.style.display = "block";
 }
 
 function hide_advanced_config() {
-  document.getElementById("showadvancedbox").innerHTML='';
-  aodiv = document.getElementById('showadvanced');
+  document.getElementById("show_advanced_box").innerHTML='';
+  aodiv = document.getElementById('show_advanced');
   aodiv.style.display = "block";
 }
 </script>
@@ -122,7 +122,7 @@ function hide_advanced_config() {
 
 	<tr>
 	<td style='padding: 0px;' colspan='2' class='' valign='top' align='left' nowrap='nowrap'> 
-		<div id="showadvancedbox"> 
+		<div id="show_advanced_box"> 
 			<table width="100%" border="0" cellpadding="6" cellspacing="0"> 
 				<tr> 
 					<td width="30%" valign="top" class="vncell">Show Advanced</td> 
@@ -132,7 +132,7 @@ function hide_advanced_config() {
 				</tr>
 			</table> 
 		</div>
-		<div id="showadvanced" style="display:none"> 
+		<div id="show_advanced" style="display:none"> 
 			<table width="100%" border="0" cellpadding="6" cellspacing="0"> 
 				<tr>
 					<td class='vncellreq' valign='top' align='left' nowrap='nowrap'> 
@@ -272,7 +272,7 @@ function hide_advanced_config() {
 	</tr> 
 	<tr> 
 		<td colspan='2' align='right'> 
-				<input type='hidden' name='profile_id' value='<?php echo $profile['xmpp_profile_id']; ?>'> 
+				<input type='hidden' name='profile_id' value='<?php echo $profile['xmpp_profile_uuid']; ?>'> 
 				<input type='submit' name='submit' class='btn' value='Save'> 
 		</td> 
 	</tr>

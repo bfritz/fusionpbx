@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2008-2010 All Rights Reserved.
+	Copyright (C) 2008-2012 All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -38,9 +38,9 @@ require_once "includes/config.php";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and var_enabled= 'true' ";
 	$sql .= "and var_cat = 'Provision' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$provision_variables_array = $prepstatement->fetchAll();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$provision_variables_array = $prep_statement->fetchAll();
 	foreach ($provision_variables_array as &$row) {
 		if ($row['var_name'] == "password") {
 			$var_name = $row['var_name'];
@@ -99,12 +99,12 @@ require_once "includes/config.php";
 				$sql = "SELECT * FROM v_hardware_phones ";
 				$sql .= "where domain_uuid=:domain_uuid ";
 				$sql .= "and phone_mac_address=:mac ";
-				$prepstatement2 = $db->prepare(check_sql($sql));
-				if ($prepstatement2) {
-					$prepstatement2->bindParam(':domain_uuid', $domain_uuid);
-					$prepstatement2->bindParam(':mac', $mac);
-					$prepstatement2->execute();
-					$row = $prepstatement2->fetch();
+				$prep_statement_2 = $db->prepare(check_sql($sql));
+				if ($prep_statement_2) {
+					$prep_statement_2->bindParam(':domain_uuid', $domain_uuid);
+					$prep_statement_2->bindParam(':mac', $mac);
+					$prep_statement_2->execute();
+					$row = $prep_statement_2->fetch();
 					$phone_label = $row["phone_label"];
 					$phone_vendor = $row["phone_vendor"];
 					$phone_model = $row["phone_model"];
@@ -122,12 +122,12 @@ require_once "includes/config.php";
 				$sql = "SELECT * FROM v_hardware_phones ";
 				$sql .= "where domain_uuid=:domain_uuid ";
 				$sql .= "and phone_template like '%/%' ";
-				$prepstatement3 = $db->prepare(check_sql($sql));
-				if ($prepstatement3) {
-					$prepstatement3->bindParam(':domain_uuid', $domain_uuid);
-					$prepstatement3->bindParam(':mac', $mac);
-					$prepstatement3->execute();
-					$row = $prepstatement3->fetch();
+				$prep_statement3 = $db->prepare(check_sql($sql));
+				if ($prep_statement3) {
+					$prep_statement3->bindParam(':domain_uuid', $domain_uuid);
+					$prep_statement3->bindParam(':mac', $mac);
+					$prep_statement3->execute();
+					$row = $prep_statement3->fetch();
 					$phone_label = $row["phone_label"];
 					$phone_vendor = $row["phone_vendor"];
 					$phone_model = $row["phone_model"];
@@ -189,9 +189,11 @@ require_once "includes/config.php";
 			unset($template_list);
 
 		//the mac address does not exist in the table so add it
+			$hardware_phone_uuid = uuid();
 			$sql = "insert into v_hardware_phones ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
+			$sql .= "hardware_phone_uuid, ";
 			$sql .= "phone_mac_address, ";
 			$sql .= "phone_vendor, ";
 			$sql .= "phone_model, ";
@@ -204,6 +206,7 @@ require_once "includes/config.php";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
+			$sql .= "'$hardware_phone_uuid', ";
 			$sql .= "'$mac', ";
 			$sql .= "'$phone_vendor', ";
 			$sql .= "'', ";
@@ -251,13 +254,13 @@ require_once "includes/config.php";
 	//set variables for testing
 		//$line1_displayname= "1001";
 		//$line1_shortname= "1001";
-		//$line1_user_id= "1001";
+		//$line1_user_uuid= "1001";
 		//$line1_user_password= "1234.";
 		//$line1_server_address= "10.2.0.2";
 		//$line2_server_address= "";
 		//$line2_displayname= "";
 		//$line2_shortname= "";
-		//$line2_user_id= "";
+		//$line2_user_uuid= "";
 		//$line2_user_password= "";
 		//$line2_server_address= "";
 		//$server1_address= "10.2.0.2";
@@ -277,9 +280,9 @@ require_once "includes/config.php";
 		$sql .= "select * from v_extensions ";
 		$sql .= "where provisioning_list like '%$mac%' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$provisioning_list = $row["provisioning_list"];
 			$provisioning_list_array = explode("|", $provisioning_list);
@@ -290,7 +293,7 @@ require_once "includes/config.php";
 					$file_contents = str_replace("{v_line".$line_number."_server_address}", $v_domain, $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["effective_caller_id_name"], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_shortname}", $row["extension"], $file_contents);
-					$file_contents = str_replace("{v_line".$line_number."_user_id}", $row["extension"], $file_contents);
+					$file_contents = str_replace("{v_line".$line_number."_user_uuid}", $row["extension"], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_user_password}", $row["password"], $file_contents);
 				}
 			}
@@ -314,7 +317,7 @@ require_once "includes/config.php";
 			//$enabled = $row["enabled"];
 			//$description = $row["description"];
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 
 	//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 		$file_contents = str_replace("{v_mac}", $mac, $file_contents);
@@ -332,7 +335,7 @@ require_once "includes/config.php";
 			$file_contents = str_replace("{v_line".$i."_server_address}", "", $file_contents);
 			$file_contents = str_replace("{v_line".$i."_displayname}", "", $file_contents);
 			$file_contents = str_replace("{v_line".$i."_shortname}", "", $file_contents);
-			$file_contents = str_replace("{v_line".$i."_user_id}", "", $file_contents);
+			$file_contents = str_replace("{v_line".$i."_user_uuid}", "", $file_contents);
 			$file_contents = str_replace("{v_line".$i."_user_password}", "", $file_contents);
 		}
 
@@ -354,18 +357,17 @@ require_once "includes/config.php";
 	}
 	echo $file_contents;
 
-
 function mac_exists_in_v_hardware_phones($db, $mac) {
 	global $domain_uuid;
 	$sql = "SELECT count(*) as count FROM v_hardware_phones ";
 	$sql .= "where domain_uuid=:domain_uuid ";
 	$sql .= "and phone_mac_address=:mac ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	if ($prepstatement) {
-		$prepstatement->bindParam(':domain_uuid', $domain_uuid);
-		$prepstatement->bindParam(':mac', $mac);
-		$prepstatement->execute();
-		$row = $prepstatement->fetch();
+	$prep_statement = $db->prepare(check_sql($sql));
+	if ($prep_statement) {
+		$prep_statement->bindParam(':domain_uuid', $domain_uuid);
+		$prep_statement->bindParam(':mac', $mac);
+		$prep_statement->execute();
+		$row = $prep_statement->fetch();
 		$count = $row['count'];
 		if ($row['count'] > 0) {
 			return true;
@@ -379,5 +381,4 @@ function mac_exists_in_v_hardware_phones($db, $mac) {
 	}
 }
 
-exit;
 ?>

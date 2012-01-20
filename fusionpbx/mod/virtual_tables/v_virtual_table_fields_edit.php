@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -97,10 +97,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('virtual_tables_add')) {
+			$virtual_table_field_uuid = uuid();
 			$sql = "insert into v_virtual_table_fields ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "virtual_table_uuid, ";
+			$sql .= "virtual_table_field_uuid, ";
 			$sql .= "virtual_field_label, ";
 			$sql .= "virtual_field_name, ";
 			$sql .= "virtual_field_type, ";
@@ -116,6 +118,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
 			$sql .= "'$virtual_table_uuid', ";
+			$sql .= "'$virtual_table_field_uuid', ";
 			$sql .= "'$virtual_field_label', ";
 			$sql .= "'$virtual_field_name', ";
 			$sql .= "'$virtual_field_type', ";
@@ -178,9 +181,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 		$sql .= "and virtual_table_field_uuid = '$virtual_table_field_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$virtual_field_label = $row["virtual_field_label"];
 			$virtual_field_name = $row["virtual_field_name"];
@@ -194,7 +197,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$virtual_field_desc = $row["virtual_field_desc"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header

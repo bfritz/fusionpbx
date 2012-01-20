@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -39,7 +39,7 @@ require_once "includes/checkauth.php";
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 echo "<div align='center'>";
@@ -66,10 +66,10 @@ $sql .= "and hunt_group_type <> 'dnd' ";
 $sql .= "and hunt_group_type <> 'call_forward' ";
 $sql .= "and hunt_group_type <> 'follow_me_simultaneous' ";
 $sql .= "and hunt_group_type <> 'follow_me_sequence' ";
-$prepstatement = $db->prepare(check_sql($sql));
-if ($prepstatement) {
-	$prepstatement->execute();
-	$row = $prepstatement->fetch(PDO::FETCH_ASSOC);
+$prep_statement = $db->prepare(check_sql($sql));
+if ($prep_statement) {
+	$prep_statement->execute();
+	$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 	if ($row['num_rows'] > 0) {
 		$num_rows = $row['num_rows'];
 	}
@@ -77,14 +77,14 @@ if ($prepstatement) {
 		$num_rows = '0';
 	}
 }
-unset($prepstatement, $result);
+unset($prep_statement, $result);
 
 //prepare to page the results
 $rows_per_page = 150;
 $param = "";
 $page = $_GET['page'];
 if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-list($pagingcontrols, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
+list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 $offset = $rows_per_page * $page; 
 
 //get the hunt group list
@@ -95,31 +95,31 @@ $sql .= "and hunt_group_type <> 'dnd' ";
 $sql .= "and hunt_group_type <> 'call_forward' ";
 $sql .= "and hunt_group_type <> 'follow_me_simultaneous' ";
 $sql .= "and hunt_group_type <> 'follow_me_sequence' ";
-if (strlen($orderby)> 0) {
-	$sql .= "order by $orderby $order ";
+if (strlen($order_by)> 0) {
+	$sql .= "order by $order_by $order ";
 }
 else {
 	$sql .= "order by hunt_group_extension asc ";
 }
 $sql .= " limit $rows_per_page offset $offset ";
-$prepstatement = $db->prepare(check_sql($sql));
-$prepstatement->execute();
-$result = $prepstatement->fetchAll();
-$resultcount = count($result);
-unset ($prepstatement, $sql);
+$prep_statement = $db->prepare(check_sql($sql));
+$prep_statement->execute();
+$result = $prep_statement->fetchAll();
+$result_count = count($result);
+unset ($prep_statement, $sql);
 
 $c = 0;
-$rowstyle["0"] = "rowstyle0";
-$rowstyle["1"] = "rowstyle1";
+$row_style["0"] = "row_style0";
+$row_style["1"] = "row_style1";
 
 echo "<div align='center'>\n";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 echo "<tr>\n";
-echo thorderby('hunt_group_extension', 'Extension', $orderby, $order);
-echo thorderby('hunt_group_name', 'Hunt Group Name', $orderby, $order);
-echo thorderby('hunt_group_name', 'Enabled', $orderby, $order);
-echo thorderby('hunt_group_descr', 'Description', $orderby, $order);
+echo thorder_by('hunt_group_extension', 'Extension', $order_by, $order);
+echo thorder_by('hunt_group_name', 'Hunt Group Name', $order_by, $order);
+echo thorder_by('hunt_group_name', 'Enabled', $order_by, $order);
+echo thorder_by('hunt_group_descr', 'Description', $order_by, $order);
 echo "<td align='right' width='42'>\n";
 if (permission_exists('hunt_group_add')) {
 	echo "	<a href='v_hunt_group_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -127,16 +127,16 @@ if (permission_exists('hunt_group_add')) {
 echo "</td>\n";
 echo "<tr>\n";
 
-if ($resultcount == 0) {
+if ($result_count == 0) {
 	//no results
 }
 else { //received results
 	foreach($result as $row) {
 		echo "<tr >\n";
-		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row['hunt_group_extension']."</td>\n";
-		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row['hunt_group_name']."</td>\n";
-		echo "   <td valign='top' class='".$rowstyle[$c]."'>".$row['hunt_group_enabled']."</td>\n";
-		echo "   <td valign='top' class='rowstylebg' width='40%'>".$row['hunt_group_descr']."&nbsp;</td>\n";
+		echo "   <td valign='top' class='".$row_style[$c]."'>".$row['hunt_group_extension']."</td>\n";
+		echo "   <td valign='top' class='".$row_style[$c]."'>".$row['hunt_group_name']."</td>\n";
+		echo "   <td valign='top' class='".$row_style[$c]."'>".$row['hunt_group_enabled']."</td>\n";
+		echo "   <td valign='top' class='row_stylebg' width='40%'>".$row['hunt_group_descr']."&nbsp;</td>\n";
 		echo "   <td valign='top' align='right'>\n";
 		if (permission_exists('hunt_group_edit')) {
 			echo "		<a href='v_hunt_group_edit.php?id=".$row['hunt_group_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
@@ -148,7 +148,7 @@ else { //received results
 		echo "</tr>\n";
 		if ($c==0) { $c=1; } else { $c=0; }
 	} //end foreach
-	unset($sql, $result, $rowcount);
+	unset($sql, $result, $row_count);
 } //end if results
 
 echo "<tr>\n";
@@ -156,7 +156,7 @@ echo "<td colspan='5'>\n";
 echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 echo "	<tr>\n";
 echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-echo "		<td width='33.3%' align='center' nowrap>$pagingcontrols</td>\n";
+echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 echo "		<td width='33.3%' align='right'>\n";
 if (permission_exists('hunt_group_add')) {
 	echo "			<a href='v_hunt_group_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -189,7 +189,7 @@ echo "<br><br>";
 
 
 require_once "includes/footer.php";
-unset ($resultcount);
+unset ($result_count);
 unset ($result);
 unset ($key);
 unset ($val);

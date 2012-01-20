@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -159,17 +159,17 @@
 			$sql = "select * from v_group_members ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '".$username."' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
 
 			$groupmemberlist = "||";
 			foreach($result as $field) {
 				//get the list of groups
 				$groupmemberlist .= $field[group_id]."||";
 			}
-			unset($sql, $result, $rowcount);
+			unset($sql, $result, $row_count);
 			return $groupmemberlist;
 		}
 	}
@@ -191,17 +191,17 @@
 			$sql = "select * from v_group_members ";
 			$sql .= "where group_id = 'superadmin' ";
 			//echo $sql;
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
 
 			$strsuperadminlist = "||";
 			foreach($result as $field) {
 				//get the list of superadmins
 				$strsuperadminlist .= $field[group_id]."||";
 			}
-			unset($sql, $result, $rowcount);
+			unset($sql, $result, $row_count);
 			return $strsuperadminlist;
 		}
 	}
@@ -218,45 +218,45 @@
 		}
 	}
 
-	if (!function_exists('htmlselectother')) {
-		function htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue) {
+	if (!function_exists('html_select_other')) {
+		function html_select_other($db, $table_name, $field_name, $sql_where_optional, $field_current_value) {
 			//html select other : build a select box from distinct items in db with option for other
 			global $domain_uuid;
 
 			$html  = "<table width='50%' border='0' cellpadding='1' cellspacing='0'>\n";
 			$html .= "<tr>\n";
-			$html .= "<td id=\"cell".$fieldname."1\" width='100%'>\n";
+			$html .= "<td id=\"cell".$field_name."1\" width='100%'>\n";
 			$html .= "\n";
-			$html .= "<select id=\"".$fieldname."\" name=\"".$fieldname."\" class='formfld' style='width: 100%;' onchange=\"if (document.getElementById('".$fieldname."').value == 'Other') { /*enabled*/ document.getElementById('".$fieldname."_other').style.width='95%'; document.getElementById('cell".$fieldname."2').width='70%'; document.getElementById('cell".$fieldname."1').width='30%'; document.getElementById('".$fieldname."_other').disabled = false; document.getElementById('".$fieldname."_other').className='txt'; document.getElementById('".$fieldname."_other').focus(); } else { /*disabled*/ document.getElementById('".$fieldname."_other').value = ''; document.getElementById('cell".$fieldname."1').width='95%'; document.getElementById('cell".$fieldname."2').width='5%'; document.getElementById('".$fieldname."_other').disabled = true; document.getElementById('".$fieldname."_other').className='frmdisabled' } \">\n";
+			$html .= "<select id=\"".$field_name."\" name=\"".$field_name."\" class='formfld' style='width: 100%;' onchange=\"if (document.getElementById('".$field_name."').value == 'Other') { /*enabled*/ document.getElementById('".$field_name."_other').style.width='95%'; document.getElementById('cell".$field_name."2').width='70%'; document.getElementById('cell".$field_name."1').width='30%'; document.getElementById('".$field_name."_other').disabled = false; document.getElementById('".$field_name."_other').className='txt'; document.getElementById('".$field_name."_other').focus(); } else { /*disabled*/ document.getElementById('".$field_name."_other').value = ''; document.getElementById('cell".$field_name."1').width='95%'; document.getElementById('cell".$field_name."2').width='5%'; document.getElementById('".$field_name."_other').disabled = true; document.getElementById('".$field_name."_other').className='frmdisabled' } \">\n";
 			$html .= "<option value=''></option>\n";
 
-			$sql = "SELECT distinct($fieldname) as $fieldname FROM $tablename $sqlwhereoptional ";
+			$sql = "SELECT distinct($field_name) as $field_name FROM $table_name $sql_where_optional ";
 			//echo $sql;
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
-			//echo $resultcount;
-			if ($resultcount > 0) { //if user account exists then show login
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
+			//echo $result_count;
+			if ($result_count > 0) { //if user account exists then show login
 				//print_r($result);
 				foreach($result as $field) {
-					if (strlen($field[$fieldname]) > 0) {
-						if ($fieldcurrentvalue == $field[$fieldname]) {
-							$html .= "<option value=\"".$field[$fieldname]."\" selected>".$field[$fieldname]."</option>\n";
+					if (strlen($field[$field_name]) > 0) {
+						if ($field_current_value == $field[$field_name]) {
+							$html .= "<option value=\"".$field[$field_name]."\" selected>".$field[$field_name]."</option>\n";
 						}
 						else {
-							$html .= "<option value=\"".$field[$fieldname]."\">".$field[$fieldname]."</option>\n";
+							$html .= "<option value=\"".$field[$field_name]."\">".$field[$field_name]."</option>\n";
 						}
 					}
 				}
 			}
-			unset($sql, $result, $resultcount);
+			unset($sql, $result, $result_count);
 
 			$html .= "<option value='Other'>Other</option>\n";
 			$html .= "</select>\n";
 			$html .= "</td>\n";
-			$html .= "<td id=\"cell".$fieldname."2\" width='5'>\n";
-			$html .= "<input id=\"".$fieldname."_other\" name=\"".$fieldname."_other\" value='' style='width: 5%;' disabled onload='document.getElementById('".$fieldname."_other').disabled = true;' type='text' class='frmdisabled'>\n";
+			$html .= "<td id=\"cell".$field_name."2\" width='5'>\n";
+			$html .= "<input id=\"".$field_name."_other\" name=\"".$field_name."_other\" value='' style='width: 5%;' disabled onload='document.getElementById('".$field_name."_other').disabled = true;' type='text' class='frmdisabled'>\n";
 			$html .= "</td>\n";
 			$html .= "</tr>\n";
 			$html .= "</table>";
@@ -266,115 +266,115 @@
 	}
 
 	if (!function_exists('htmlselect')) {
-		function htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $fieldvalue = '', $style = '') {
+		function htmlselect($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $fieldvalue = '', $style = '') {
 			//html select other : build a select box from distinct items in db with option for other
 			global $domain_uuid;
 
 			if (strlen($fieldvalue) > 0) {
 			$html .= "<select id=\"".$fieldvalue."\" name=\"".$fieldvalue."\" class='formfld' style='".$style."'>\n";
 			$html .= "<option value=\"\"></option>\n";
-				$sql = "SELECT distinct($fieldname) as $fieldname, $fieldvalue FROM $tablename $sqlwhereoptional order by $fieldname asc ";
+				$sql = "SELECT distinct($field_name) as $field_name, $fieldvalue FROM $table_name $sql_where_optional order by $field_name asc ";
 			}
 			else {
-				$html .= "<select id=\"".$fieldname."\" name=\"".$fieldname."\" class='formfld' style='".$style."'>\n";
+				$html .= "<select id=\"".$field_name."\" name=\"".$field_name."\" class='formfld' style='".$style."'>\n";
 				$html .= "<option value=\"\"></option>\n";
-				$sql = "SELECT distinct($fieldname) as $fieldname FROM $tablename $sqlwhereoptional ";
+				$sql = "SELECT distinct($field_name) as $field_name FROM $table_name $sql_where_optional ";
 			}
 
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
-			if ($resultcount > 0) { //if user account exists then show login
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
+			if ($result_count > 0) { //if user account exists then show login
 				foreach($result as $field) {
-					if (strlen($field[$fieldname]) > 0) {
-						if ($fieldcurrentvalue == $field[$fieldname]) {
+					if (strlen($field[$field_name]) > 0) {
+						if ($field_current_value == $field[$field_name]) {
 							if (strlen($fieldvalue) > 0) {
-								$html .= "<option value=\"".$field[$fieldvalue]."\" selected>".$field[$fieldname]."</option>\n";
+								$html .= "<option value=\"".$field[$fieldvalue]."\" selected>".$field[$field_name]."</option>\n";
 							}
 							else {
-								$html .= "<option value=\"".$field[$fieldname]."\" selected>".$field[$fieldname]."</option>\n";
+								$html .= "<option value=\"".$field[$field_name]."\" selected>".$field[$field_name]."</option>\n";
 							}
 						}
 						else {
 							if (strlen($fieldvalue) > 0) {
-								$html .= "<option value=\"".$field[$fieldvalue]."\">".$field[$fieldname]."</option>\n";
+								$html .= "<option value=\"".$field[$fieldvalue]."\">".$field[$field_name]."</option>\n";
 							}
 							else {
-								$html .= "<option value=\"".$field[$fieldname]."\">".$field[$fieldname]."</option>\n";
+								$html .= "<option value=\"".$field[$field_name]."\">".$field[$field_name]."</option>\n";
 							}
 						}
 					}
 				}
 			}
-			unset($sql, $result, $resultcount);
+			unset($sql, $result, $result_count);
 			$html .= "</select>\n";
 
 		return $html;
 		}
 	}
-	//$tablename = 'v_templates'; $fieldname = 'templatename'; $sqlwhereoptional = "where domain_uuid = '$domain_uuid' "; $fieldcurrentvalue = '';
-	//echo htmlselect($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
+	//$table_name = 'v_templates'; $field_name = 'templatename'; $sql_where_optional = "where domain_uuid = '$domain_uuid' "; $field_current_value = '';
+	//echo htmlselect($db, $table_name, $field_name, $sql_where_optional, $field_current_value);
 
 	if (!function_exists('htmlselectonchange')) {
-		function htmlselectonchange($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue, $onchange, $fieldvalue = '') {
+		function htmlselectonchange($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange, $fieldvalue = '') {
 			//html select other : build a select box from distinct items in db with option for other
 			global $domain_uuid;
 
-			$html .= "<select id=\"".$fieldname."\" name=\"".$fieldname."\" class='formfld' onchange=\"".$onchange."\">\n";
+			$html .= "<select id=\"".$field_name."\" name=\"".$field_name."\" class='formfld' onchange=\"".$onchange."\">\n";
 			$html .= "<option value=''></option>\n";
 
-			$sql = "SELECT distinct($fieldname) as $fieldname FROM $tablename $sqlwhereoptional order by $fieldname asc ";
+			$sql = "SELECT distinct($field_name) as $field_name FROM $table_name $sql_where_optional order by $field_name asc ";
 			//echo $sql;
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
-			//echo $resultcount;
-			if ($resultcount > 0) { //if user account exists then show login
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
+			//echo $result_count;
+			if ($result_count > 0) { //if user account exists then show login
 				//print_r($result);
 				foreach($result as $field) {
-					if (strlen($field[$fieldname]) > 0) {
-						if ($fieldcurrentvalue == $field[$fieldname]) {
+					if (strlen($field[$field_name]) > 0) {
+						if ($field_current_value == $field[$field_name]) {
 								if (strlen($fieldvalue) > 0) {
-									$html .= "<option value=\"".$field[$fieldvalue]."\" selected>".$field[$fieldname]."</option>\n";
+									$html .= "<option value=\"".$field[$fieldvalue]."\" selected>".$field[$field_name]."</option>\n";
 								}
 								else {
-									$html .= "<option value=\"".$field[$fieldname]."\" selected>".$field[$fieldname]."</option>\n";
+									$html .= "<option value=\"".$field[$field_name]."\" selected>".$field[$field_name]."</option>\n";
 								}
 						}
 						else {
 								if (strlen($fieldvalue) > 0) {
-									$html .= "<option value=\"".$field[$fieldvalue]."\">".$field[$fieldname]."</option>\n";
+									$html .= "<option value=\"".$field[$fieldvalue]."\">".$field[$field_name]."</option>\n";
 								}
 								else {
-									$html .= "<option value=\"".$field[$fieldname]."\">".$field[$fieldname]."</option>\n";
+									$html .= "<option value=\"".$field[$field_name]."\">".$field[$field_name]."</option>\n";
 								}
 						}
 					}
 				}
 			}
-			unset($sql, $result, $resultcount);
+			unset($sql, $result, $result_count);
 			$html .= "</select>\n";
 
 		return $html;
 		}
 	}
 
-	if (!function_exists('thorderby')) {
+	if (!function_exists('thorder_by')) {
 		//html table header order by
-		function thorderby($fieldname, $columntitle, $orderby, $order) {
+		function thorder_by($field_name, $columntitle, $order_by, $order) {
 
 			$html .= "<th nowrap>&nbsp; &nbsp; ";
-			if (strlen($orderby)==0) {
-				$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
+			if (strlen($order_by)==0) {
+				$html .= "<a href='?order_by=$field_name&order=desc' title='ascending'>$columntitle</a>";
 			}
 			else {
 				if ($order=="asc") {
-					$html .= "<a href='?orderby=$fieldname&order=desc' title='ascending'>$columntitle</a>";
+					$html .= "<a href='?order_by=$field_name&order=desc' title='ascending'>$columntitle</a>";
 				}
 				else {
-					$html .= "<a href='?orderby=$fieldname&order=asc' title='descending'>$columntitle</a>";
+					$html .= "<a href='?order_by=$field_name&order=asc' title='descending'>$columntitle</a>";
 				}
 			}
 			$html .= "&nbsp; &nbsp; </th>";
@@ -382,37 +382,36 @@
 		}
 	}
 	////example usage
-		//$tablename = 'tblcontacts'; $fieldname = 'contactcategory'; $sqlwhereoptional = "", $fieldcurrentvalue ='';
-		//echo htmlselectother($db, $tablename, $fieldname, $sqlwhereoptional, $fieldcurrentvalue);
+		//$table_name = 'tblcontacts'; $field_name = 'contactcategory'; $sql_where_optional = "", $field_current_value ='';
+		//echo html_select_other($db, $table_name, $field_name, $sql_where_optional, $field_current_value);
 	////  On the page that recieves the POST
 		//if (check_str($_POST["contactcategory"]) == "Other") { //echo "found: ".$contactcategory;
 		//  $contactcategory = check_str($_POST["contactcategoryother"]);
 		//}
 
-	if (!function_exists('logadd')) {
-		function logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $logadduserip) {
+	if (!function_exists('log-add')) {
+		function logadd($db, $log_type, $log_status, $log_desc, $log_add_user, $log_add_user_ip) {
 			return; //this disables the function
 			global $domain_uuid;
 
-			$sql = "insert into tbllogs ";
+			$sql = "insert into logs ";
 			$sql .= "(";
-			$sql .= "logtype, ";
-			$sql .= "logstatus, ";
-			$sql .= "logdesc, ";
-			$sql .= "logadduser, ";
-			$sql .= "logadduserip, ";
-			$sql .= "logadddate ";
+			$sql .= "log_type, ";
+			$sql .= "log_status, ";
+			$sql .= "log_desc, ";
+			$sql .= "log_add_user, ";
+			$sql .= "log_add_user_ip, ";
+			$sql .= "log_add_date ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$logtype', ";
-			$sql .= "'$logstatus', ";
-			$sql .= "'$logdesc', ";
-			$sql .= "'$logadduser', ";
-			$sql .= "'$logadduserip', ";
+			$sql .= "'$log_type', ";
+			$sql .= "'$log_status', ";
+			$sql .= "'$log_desc', ";
+			$sql .= "'$log_add_user', ";
+			$sql .= "'$log_add_user_ip', ";
 			$sql .= "now() ";
 			$sql .= ")";
-			//echo $sql;
 			$db->exec(check_sql($sql));
 			unset($sql);
 		}
@@ -560,11 +559,11 @@
 			$sql = "select * from v_users ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '".$username."' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
-			$resultcount = count($result);
-			if ($resultcount > 0) {
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
+			if ($result_count > 0) {
 				return true;
 			}
 			else {
@@ -576,6 +575,7 @@
 	if (!function_exists('user_add')) {
 		function user_add($username, $password, $user_first_name='', $user_last_name='', $user_email='') {
 			global $db, $domain_uuid, $v_salt;
+			$user_uuid = uuid();
 			if (strlen($username) == 0) { return false; }
 			if (strlen($password) == 0) { return false; }
 			if (!user_exists($username)) {
@@ -587,6 +587,7 @@
 					$sql = "insert into v_users ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
+					$sql .= "user_uuid, ";
 					$sql .= "username, ";
 					$sql .= "password, ";
 					$sql .= "salt, ";
@@ -601,6 +602,7 @@
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$domain_uuid', ";
+					$sql .= "'$user_uuid', ";
 					$sql .= "'$username', ";
 					$sql .= "'".md5($salt.$password)."', ";
 					$sql .= "'$salt', ";
@@ -690,13 +692,13 @@ function format_string ($format, $data) {
 			$sql = "select * from v_vars ";
 			$sql .= "where domain_uuid  = '$domain_uuid' ";
 			$sql .= "and var_name = 'format_phone' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row) {
 				$_SESSION["format_phone_array"][] = $row["var_value"];
 			}
-			unset ($prepstatement);
+			unset ($prep_statement);
 		}
 		foreach ($_SESSION["format_phone_array"] as &$format) {
 			$format_count = substr_count($format, 'x');

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2008-2010 All Rights Reserved.
+	Copyright (C) 2008-2012 All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -43,8 +43,8 @@ if (count($_GET)>0) {
 		$sql .= "delete from v_hardware_phones ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hardware_phone_uuid = '$id' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
 		unset($sql);
 	}
 

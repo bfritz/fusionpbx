@@ -121,8 +121,8 @@ if (count($_GET)>0) {
 			$sql .= "user_status = '$user_status' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '".$username."' ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
 
 		if (strlen($user_status) > 0) {
 			//include the dnd class
@@ -132,10 +132,10 @@ if (count($_GET)>0) {
 				$sql .= "select * from v_extensions ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-				$prepstatement = $db->prepare(check_sql($sql));
-				$prepstatement->execute();
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
 				$x = 0;
-				$result = $prepstatement->fetchAll();
+				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$extension = $row["extension"];
 
@@ -148,21 +148,21 @@ if (count($_GET)>0) {
 						$sql  = "select * from v_hunt_group ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and hunt_group_extension = '$extension' ";
-						$prepstatement2 = $db->prepare(check_sql($sql));
-						$prepstatement2->execute();
-						$result2 = $prepstatement2->fetchAll();
+						$prep_statement_2 = $db->prepare(check_sql($sql));
+						$prep_statement_2->execute();
+						$result2 = $prep_statement_2->fetchAll();
 						foreach ($result2 as &$row2) {
 							if ($row2["hunt_group_type"] == 'dnd') {
 								$dnd_action = "update";
-								$dnd_id = $row2["hunt_group_uuid"];
+								$dnd_uuid = $row2["hunt_group_uuid"];
 							}
 						}
-						unset ($prepstatement2, $result, $row2);
+						unset ($prep_statement_2, $result, $row2);
 
 					//add or update dnd
 						$dnd = new do_not_disturb;
 						$dnd->domain_uuid = $domain_uuid;
-						$dnd->dnd_id = $dnd_id;
+						$dnd->dnd_uuid = $dnd_uuid;
 						$dnd->v_domain = $v_domain;
 						$dnd->extension = $extension;
 						if ($user_status == "Do Not Disturb") {
@@ -185,14 +185,14 @@ if (count($_GET)>0) {
 						$dnd->dnd_status();
 						unset($dnd);
 				}
-				unset ($prepstatement);
+				unset ($prep_statement);
 		}
 
 		//synchronize the xml config
 			sync_package_v_hunt_group();
 
 		//synchronize the xml config
-			sync_package_v_dialplan_includes();
+			sync_package_v_dialplan();
 
 		//reloadxml
 			$cmd = 'api reloadxml';

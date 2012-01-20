@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -93,10 +93,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('hunt_group_add')) {
+				$hunt_group_destination_uuid = uuid();
 				$sql = "insert into v_hunt_group_destinations ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "hunt_group_uuid, ";
+				$sql .= "hunt_group_destination_uuid, ";
 				$sql .= "destination_data, ";
 				$sql .= "destination_type, ";
 				$sql .= "destination_timeout, ";
@@ -108,6 +110,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'$hunt_group_uuid', ";
+				$sql .= "'$hunt_group_destination_uuid', ";
 				$sql .= "'$destination_data', ";
 				$sql .= "'$destination_type', ";
 				$sql .= "'$destination_timeout', ";
@@ -165,9 +168,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_hunt_group_destinations ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_destination_uuid = '$hunt_group_destination_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$hunt_group_uuid = $row["hunt_group_uuid"];
 			$destination_data = $row["destination_data"];
@@ -178,7 +181,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$destination_descr = $row["destination_descr"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header

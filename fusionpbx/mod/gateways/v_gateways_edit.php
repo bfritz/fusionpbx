@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -139,9 +139,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('gateways_add')) {
+				$gateway_uuid = uuid();
 				$sql = "insert into v_gateways ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
+				$sql .= "gateway_uuid, ";
 				$sql .= "gateway, ";
 				$sql .= "username, ";
 				$sql .= "password, ";
@@ -174,6 +176,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
+				$sql .= "'$gateway_uuid', ";
 				$sql .= "'$gateway', ";
 				$sql .= "'$username', ";
 				$sql .= "'$password', ";
@@ -251,7 +254,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					sync_package_v_gateways();
 
 				//synchronize the xml config
-					sync_package_v_dialplan_includes();
+					sync_package_v_dialplan();
 
 			} //if ($action == "update")
 
@@ -292,9 +295,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_gateways ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and gateway_uuid = '$gateway_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$gateway = $row["gateway"];
@@ -327,7 +330,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$description = $row["description"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header
@@ -344,14 +347,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "}\n";
 	echo "\n";
 	echo "function show_advanced_config() {\n";
-	echo "	document.getElementById(\"showadvancedbox\").innerHTML='';\n";
-	echo "	aodiv = document.getElementById('showadvanced');\n";
+	echo "	document.getElementById(\"show_advanced_box\").innerHTML='';\n";
+	echo "	aodiv = document.getElementById('show_advanced');\n";
 	echo "	aodiv.style.display = \"block\";\n";
 	echo "}\n";
 	echo "\n";
 	echo "function hide_advanced_config() {\n";
-	echo "	document.getElementById(\"showadvancedbox\").innerHTML='';\n";
-	echo "	aodiv = document.getElementById('showadvanced');\n";
+	echo "	document.getElementById(\"show_advanced_box\").innerHTML='';\n";
+	echo "	aodiv = document.getElementById('show_advanced');\n";
 	echo "	aodiv.style.display = \"block\";\n";
 	echo "}\n";
 	echo "</script>";
@@ -517,11 +520,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	//--- begin: showadvanced -----------------------
+	//--- begin: show_advanced -----------------------
 	echo "<tr>\n";
 	echo "<td style='padding: 0px;' colspan='2' class='' valign='top' align='left' nowrap>\n";
 
-	echo "	<div id=\"showadvancedbox\">\n";
+	echo "	<div id=\"show_advanced_box\">\n";
 	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "		<tr>\n";
 	echo "		<td width=\"30%\" valign=\"top\" class=\"vncell\">Show Advanced</td>\n";
@@ -532,7 +535,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		</table>\n";
 	echo "	</div>\n";
 
-	echo "	<div id=\"showadvanced\" style=\"display:none\">\n";
+	echo "	<div id=\"show_advanced\" style=\"display:none\">\n";
 	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 
 	echo "<tr>\n";
@@ -756,7 +759,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "</td>\n";
 	echo "</tr>\n";
-	//--- end: showadvanced -----------------------
+	//--- end: show_advanced -----------------------
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";

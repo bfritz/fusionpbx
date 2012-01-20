@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -43,13 +43,13 @@ if (strlen($_GET["id"]) > 0) {
 }
 
 //used for changing the order
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];    
 
 //used to alternate colors when paging 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 //show the header
 	require_once "includes/header.php";
@@ -59,9 +59,9 @@ if (strlen($_GET["id"]) > 0) {
 	$sql .= "select * from v_virtual_tables ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
 		$virtual_table_category = $row["virtual_table_category"];
 		$virtual_table_label = $row["virtual_table_label"];
@@ -72,7 +72,7 @@ if (strlen($_GET["id"]) > 0) {
 		$virtual_table_desc = $row["virtual_table_desc"];
 		break; //limit to 1 row
 	}
-	unset ($prepstatement);
+	unset ($prep_statement);
 
 //get the field information
 	$db_field_name_array = array();
@@ -82,10 +82,10 @@ if (strlen($_GET["id"]) > 0) {
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 	$sql .= "order by virtual_field_order asc ";
-	$prepstatement = $db->prepare($sql);
-	$prepstatement->execute();
-	$result_names = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
-	$resultcount = count($result);
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result_names = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+	$result_count = count($result);
 	foreach($result_names as $row) {
 		$virtual_field_label = $row["virtual_field_label"];
 		$virtual_field_name = $row["virtual_field_name"];
@@ -107,7 +107,7 @@ if (strlen($_GET["id"]) > 0) {
 		$name_array[$virtual_field_name]['virtual_field_order_tab'] = $row["virtual_field_order_tab"];
 		$name_array[$virtual_field_name]['virtual_field_desc'] = $row["virtual_field_desc"];
 	}
-	unset($sql, $prepstatement, $row);
+	unset($sql, $prep_statement, $row);
 	$fieldcount = count($name_array);
 
 //get the data
@@ -145,9 +145,9 @@ if (strlen($_GET["id"]) > 0) {
 		$sql .= ")\n";
 	}
 	$sql .= "limit 20000\n";
-	$prepstatement = $db->prepare($sql);
-	$prepstatement->execute();
-	$result_values = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result_values = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach($result_values as $row) {
 		//set a php variable
 			$virtual_field_name = $row[virtual_field_name];
@@ -197,9 +197,9 @@ if (strlen($_GET["id"]) > 0) {
 	$sql .= "'domain_uuid' NUMERIC ";
 	$sql .= ");";
 	//echo "$sql<br /><br />\n";
-	$prepstatement = $db_memory->prepare($sql);
-	$prepstatement->execute();
-	unset ($prepstatement, $sql);
+	$prep_statement = $db_memory->prepare($sql);
+	$prep_statement->execute();
+	unset ($prep_statement, $sql);
 
 //list the values from the array
 	$x = 0;
@@ -277,7 +277,7 @@ if (strlen($_GET["id"]) > 0) {
 	else {
 		$param = "&id=$virtual_table_uuid&virtual_data_row_id=$virtual_data_row_id";
 	}
-	list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page;
 
 //list the data in the database
@@ -289,9 +289,9 @@ if (strlen($_GET["id"]) > 0) {
 	//echo "<pre>\n";
 	//echo $sql;
 	//echo "</pre>\n";
-	$prepstatement = $db_memory->prepare($sql);
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll(PDO::FETCH_ASSOC);
+	$prep_statement = $db_memory->prepare($sql);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 
 //begin the list
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
@@ -330,26 +330,26 @@ if (strlen($_GET["id"]) > 0) {
 				switch ($virtual_field_type) {
 					case "textarea":
 						$tmp_value = str_replace("\n", "<br />\n", $row[$virtual_field_name]);
-						echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_value."&nbsp;</td>\n";
+						echo "<td valign='top' class='".$row_style[$c]."'>".$tmp_value."&nbsp;</td>\n";
 						unset($tmp_value);
 						break;
 					case "email":
-						echo "<td valign='top' class='".$rowstyle[$c]."'><a href='mailto:".$row[$virtual_field_name]."'>".$row[$virtual_field_name]."</a>&nbsp;</td>\n";
+						echo "<td valign='top' class='".$row_style[$c]."'><a href='mailto:".$row[$virtual_field_name]."'>".$row[$virtual_field_name]."</a>&nbsp;</td>\n";
 						break;
 					case "phone":
 						$tmp_phone = $row[$virtual_field_name];
 						$tmp_phone = format_phone($tmp_phone);
-						echo "<td valign='top' class='".$rowstyle[$c]."'>".$tmp_phone."&nbsp;</td>\n";
+						echo "<td valign='top' class='".$row_style[$c]."'>".$tmp_phone."&nbsp;</td>\n";
 						break;
 					case "url":
 						$url = $row[$virtual_field_name];
 						if (substr($url,0,4) != "http") {
 							$url = 'http://'.$url;
 						}
-						echo "<td valign='top' class='".$rowstyle[$c]."'><a href='".$url."' target='_blank'>".$row[$virtual_field_name]."</a>&nbsp;</td>\n";
+						echo "<td valign='top' class='".$row_style[$c]."'><a href='".$url."' target='_blank'>".$row[$virtual_field_name]."</a>&nbsp;</td>\n";
 						break;
 					default:
-						echo "<td valign='top' class='".$rowstyle[$c]."'>".$row[$virtual_field_name]."&nbsp;</td>\n";
+						echo "<td valign='top' class='".$row_style[$c]."'>".$row[$virtual_field_name]."&nbsp;</td>\n";
 						break;
 				}
 			}

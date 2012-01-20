@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -36,12 +36,12 @@ else {
 
 if (count($_POST)>0) {
 	$id = $_POST["id"];
-	$clipname = $_POST["clipname"];
-	$clipfolder = $_POST["clipfolder"];
-	$cliptextstart = $_POST["cliptextstart"];
-	$cliptextend = $_POST["cliptextend"];
-	$clipdesc = $_POST["clipdesc"];
-	$cliporder = $_POST["cliporder"];
+	$clip_name = $_POST["clip_name"];
+	$clip_folder = $_POST["clip_folder"];
+	$clip_text_start = $_POST["clip_text_start"];
+	$clip_text_end = $_POST["clip_text_end"];
+	$clip_desc = $_POST["clip_desc"];
+	$clip_order = $_POST["clip_order"];
 
 	require_once "header.php";
 	echo "<div align='left'>";
@@ -52,64 +52,64 @@ if (count($_POST)>0) {
 	echo "      <br>";
 
 	$sql = "";
-	$sql .= "select * from tblcliplibrary ";
+	$sql .= "select * from v_clip_library ";
 	$sql .= "where ";
 	if (strlen($id) > 0) { $sql .= "and id like '%$id%' "; }
-	if (strlen($clipname) > 0) { $sql .= "and clipname like '%$clipname%' "; }
-	if (strlen($clipfolder) > 0) { $sql .= "and clipfolder like '%$clipfolder%' "; }
-	if (strlen($cliptextstart) > 0) { $sql .= "and cliptextstart like '%$cliptextstart%' "; }
-	if (strlen($cliptextend) > 0) { $sql .= "and cliptextend like '%$cliptextend%' "; }
-	if (strlen($clipdesc) > 0) { $sql .= "and clipdesc like '%$clipdesc%' "; }
-	if (strlen($cliporder) > 0) { $sql .= "and cliporder like '%$cliporder%' "; }
+	if (strlen($clip_name) > 0) { $sql .= "and clip_name like '%$clip_name%' "; }
+	if (strlen($clip_folder) > 0) { $sql .= "and clip_folder like '%$clip_folder%' "; }
+	if (strlen($clip_text_start) > 0) { $sql .= "and clip_text_start like '%$clip_text_start%' "; }
+	if (strlen($clip_text_end) > 0) { $sql .= "and clip_text_end like '%$clip_text_end%' "; }
+	if (strlen($clip_desc) > 0) { $sql .= "and clip_desc like '%$clip_desc%' "; }
+	if (strlen($clip_order) > 0) { $sql .= "and clip_order like '%$clip_order%' "; }
 
 
 	$sql = trim($sql);
 	if (substr($sql, -5) == "where"){ $sql = substr($sql, 0, (strlen($sql)-5)); }
 	$sql = str_replace ("where and", "where", $sql);
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
 
 	$c = 0;
-	$rowstyle["0"] = "background-color: #F5F5DC;";
-	$rowstyle["1"] = "background-color: #FFFFFF;";
+	$row_style["0"] = "background-color: #F5F5DC;";
+	$row_style["1"] = "background-color: #FFFFFF;";
 
 	echo "<div align='left'>\n";
 	echo "<table border='0' cellpadding='1' cellspacing='1'>\n";
 	echo "<tr><td colspan='1'><img src='/edit/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
-	if ($resultcount == 0) { //no results
+	if ($result_count == 0) { //no results
 		echo "<tr><td>&nbsp;</td></tr>";
 	}
 	else { //received results
 
 		echo "<tr>";
 		  //echo "<th nowrap>&nbsp; &nbsp; Id&nbsp; &nbsp; </th>";
-		  echo "<th nowrap>&nbsp; &nbsp; Clipname Search &nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Clipfolder&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Cliptextstart&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Cliptextend&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Clipdesc&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; Cliporder&nbsp; &nbsp; </th>";
+		  echo "<th nowrap>&nbsp; &nbsp; clip_name Search &nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; clip_folder&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; clip_text_start&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; clip_text_end&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; clip_desc&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; clip_order&nbsp; &nbsp; </th>";
 		echo "</tr>";
 		echo "<tr><td colspan='1'><img src='images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 
 		foreach($result as $row) {
 		//print_r( $row );
-			echo "<tr style='".$rowstyle[$c]."'>\n";
+			echo "<tr style='".$row_style[$c]."'>\n";
 				//echo "<td valign='top'><a href='update.php?id=".$row[id]."'>".$row[id]."</a></td>";
-				echo "<td valign='top'><a href='clipupdate.php?id=".$row[id]."'>".$row[clipname]."</a></td>";
-				//echo "<td valign='top'>".$row[clipfolder]."</td>";
-				//echo "<td valign='top'>".$row[cliptextstart]."</td>";
-				//echo "<td valign='top'>".$row[cliptextend]."</td>";
-				//echo "<td valign='top'>".$row[clipdesc]."</td>";
-				//echo "<td valign='top'>".$row[cliporder]."</td>";
+				echo "<td valign='top'><a href='clipupdate.php?id=".$row[id]."'>".$row[clip_name]."</a></td>";
+				//echo "<td valign='top'>".$row[clip_folder]."</td>";
+				//echo "<td valign='top'>".$row[clip_text_start]."</td>";
+				//echo "<td valign='top'>".$row[clip_text_end]."</td>";
+				//echo "<td valign='top'>".$row[clip_desc]."</td>";
+				//echo "<td valign='top'>".$row[clip_order]."</td>";
 			echo "</tr>";
 
 			echo "<tr><td colspan='1'><img src='images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
-		} //end foreach        unset($sql, $result, $rowcount);
+		} //end foreach        unset($sql, $result, $row_count);
 
 		echo "</table>\n";
 		echo "</div>\n";
@@ -127,7 +127,7 @@ if (count($_POST)>0) {
 	echo "<br><br>";
 	require_once "footer.php";
 
-	unset ($resultcount);
+	unset ($result_count);
 	unset ($result);
 	unset ($key);
 	unset ($val);
@@ -148,27 +148,27 @@ else {
 	echo "<table>";
 	  echo "	<tr>";
 	  echo "		<td>Name:</td>";
-	  echo "		<td><input type='text' class='txt' name='clipname'></td>";
+	  echo "		<td><input type='text' class='txt' name='clip_name'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>Folder:</td>";
-	  echo "		<td><input type='text' class='txt' name='clipfolder'></td>";
+	  echo "		<td><input type='text' class='txt' name='clip_folder'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>Start:</td>";
-	  echo "		<td><input type='text' class='txt' name='cliptextstart'></td>";
+	  echo "		<td><input type='text' class='txt' name='clip_text_start'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>End:</td>";
-	  echo "		<td><input type='text' class='txt' name='cliptextend'></td>";
+	  echo "		<td><input type='text' class='txt' name='clip_text_end'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
 	  echo "		<td>Desc:</td>";
-	  echo "		<td><input type='text' class='txt' name='clipdesc'></td>";
+	  echo "		<td><input type='text' class='txt' name='clip_desc'></td>";
 	  echo "	</tr>";
 	  //echo "	<tr>";
-	  //echo "		<td>Cliporder:</td>";
-	  //echo "		<td><input type='text' class='txt' name='cliporder'></td>";
+	  //echo "		<td>clip_order:</td>";
+	  //echo "		<td><input type='text' class='txt' name='clip_order'></td>";
 	  //echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'><input type='submit' name='submit' value='Search'></td>";

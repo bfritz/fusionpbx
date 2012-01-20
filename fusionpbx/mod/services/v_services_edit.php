@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -84,9 +84,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('services_add')) {
+				$service_uuid = uuid();
 				$sql = "insert into v_services ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
+				$sql .= "service_uuid, ";
 				$sql .= "v_service_name, ";
 				$sql .= "v_service_type, ";
 				$sql .= "v_service_data, ";
@@ -97,6 +99,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
+				$sql .= "'$service_uuid', ";
 				$sql .= "'$v_service_name', ";
 				$sql .= "'$v_service_type', ";
 				$sql .= "'$v_service_data', ";
@@ -146,9 +149,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql = "";
 		$sql .= "select * from v_services ";
 		$sql .= "where service_uuid = '$service_uuid' ";
-		$prepstatement = $db->prepare(check_sql($sql));
-		$prepstatement->execute();
-		$result = $prepstatement->fetchAll();
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$v_service_name = $row["v_service_name"];
@@ -159,7 +162,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$v_service_desc = $row["v_service_desc"];
 			break; //limit to 1 row
 		}
-		unset ($prepstatement);
+		unset ($prep_statement);
 	}
 
 //show the header

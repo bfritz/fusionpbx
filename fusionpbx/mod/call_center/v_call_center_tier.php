@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,7 +37,7 @@ require_once "includes/header.php";
 require_once "includes/paging.php";
 
 //get http variables and set as php variables
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
 //show the content
@@ -64,34 +64,34 @@ require_once "includes/paging.php";
 	$sql = "";
 	$sql .= "select * from v_call_center_tier ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby) == 0) {
-		$orderby = 'queue_name';
+	if (strlen($order_by) == 0) {
+		$order_by = 'queue_name';
 		$order = 'asc';
 	}
 	else {
-		$sql .= "order by $orderby $order ";
+		$sql .= "order by $order_by $order ";
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
-	$numrows = count($result);
+	$num_rows = count($result);
 	unset ($prep_statement, $result, $sql);
 	$rows_per_page = 100;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($paging_controls, $rows_per_page, $var3) = paging($numrows, $param, $rows_per_page); 
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page; 
 
 	$sql = "";
 	$sql .= "select * from v_call_center_tier ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (strlen($orderby) == 0) {
-		$orderby = 'queue_name';
+	if (strlen($order_by) == 0) {
+		$order_by = 'queue_name';
 		$order = 'asc';
 	}
 	else {
-		$sql .= "order by $orderby $order ";
+		$sql .= "order by $order_by $order ";
 	}
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -101,17 +101,17 @@ require_once "includes/paging.php";
 	unset ($prep_statement, $sql);
 
 	$c = 0;
-	$row_style["0"] = "rowstyle0";
-	$row_style["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorderby('agent_name', 'Agent Name', $orderby, $order);
-	echo thorderby('queue_name', 'Queue Name', $orderby, $order);
-	echo thorderby('tier_level', 'Tier Level', $orderby, $order);
-	echo thorderby('tier_position', 'Tier Position', $orderby, $order);
+	echo thorder_by('agent_name', 'Agent Name', $order_by, $order);
+	echo thorder_by('queue_name', 'Queue Name', $order_by, $order);
+	echo thorder_by('tier_level', 'Tier Level', $order_by, $order);
+	echo thorder_by('tier_position', 'Tier Position', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('call_center_tiers_add')) {
 		echo "	<a href='v_call_center_tier_edit.php' alt='add'>$v_link_label_add</a>\n";

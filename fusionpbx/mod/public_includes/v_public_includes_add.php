@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,7 +37,7 @@ require_once "includes/header.php";
 require_once "includes/paging.php";
 
 //get the http get values and set them as php variables
-	$orderby = $_GET["orderby"];
+	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 	$action = $_GET["action"];
 
@@ -116,7 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$count = $db->exec("BEGIN;"); //returns affected rows
 
 	//add the main public include entry
-		$sql = "insert into v_public_includes ";
+		$sql = "insert into v_public ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "extension_name, ";
@@ -136,25 +136,25 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= ")";
 		if ($db_type == "sqlite" || $db_type == "mysql" ) {
 			$db->exec(check_sql($sql));
-			$public_include_uuid = $db->lastInsertId($id);
+			$public_uuid = $db->lastInsertId($id);
 		}
 		if ($db_type == "pgsql") {
-			$sql .= " RETURNING public_include_uuid ";
-			$prepstatement = $db->prepare(check_sql($sql));
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
+			$sql .= " RETURNING public_uuid ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row) {
-				$public_include_uuid = $row["public_include_uuid"];
+				$public_uuid = $row["public_uuid"];
 			}
-			unset($prepstatement, $result);
+			unset($prep_statement, $result);
 		}
 		unset($sql);
 
 	//add condition public context
-		$sql = "insert into v_public_includes_details ";
+		$sql = "insert into v_public_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "public_include_uuid, ";
+		$sql .= "public_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -163,7 +163,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$public_include_uuid', ";
+		$sql .= "'$public_uuid', ";
 		$sql .= "'condition', ";
 		$sql .= "'context', ";
 		$sql .= "'public', ";
@@ -173,10 +173,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset($sql);
 
 	//add condition 1
-		$sql = "insert into v_public_includes_details ";
+		$sql = "insert into v_public_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "public_include_uuid, ";
+		$sql .= "public_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -185,7 +185,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$public_include_uuid', ";
+		$sql .= "'$public_uuid', ";
 		$sql .= "'condition', ";
 		$sql .= "'$condition_field_1', ";
 		$sql .= "'$condition_expression_1', ";
@@ -196,10 +196,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add condition 2
 		if (strlen($condition_field_2) > 0) {
-			$sql = "insert into v_public_includes_details ";
+			$sql = "insert into v_public_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_uuid, ";
+			$sql .= "public_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -208,7 +208,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_uuid', ";
+			$sql .= "'$public_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'$condition_field_2', ";
 			$sql .= "'$condition_expression_2', ";
@@ -220,10 +220,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//set domain
 		if (count($_SESSION["domains"]) > 1) {
-			$sql = "insert into v_public_includes_details ";
+			$sql = "insert into v_public_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_uuid, ";
+			$sql .= "public_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -232,7 +232,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_uuid', ";
+			$sql .= "'$public_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
 			$sql .= "'domain=".$v_domain."', ";
@@ -244,10 +244,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//set domain_name
 		if (count($_SESSION["domains"]) > 1) {
-			$sql = "insert into v_public_includes_details ";
+			$sql = "insert into v_public_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_uuid, ";
+			$sql .= "public_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -256,7 +256,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_uuid', ";
+			$sql .= "'$public_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
 			$sql .= "'domain_name=\${domain}', ";
@@ -268,10 +268,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//set call_direction
 		if (count($_SESSION["domains"]) > 1) {
-			$sql = "insert into v_public_includes_details ";
+			$sql = "insert into v_public_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_uuid, ";
+			$sql .= "public_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -280,7 +280,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_uuid', ";
+			$sql .= "'$public_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
 			$sql .= "'call_direction=inbound', ";
@@ -297,10 +297,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action_application_1 == "conference") { $tmp_app = true; }
 		if ($action_application_2 == "conference") { $tmp_app = true; }
 		if ($tmp_app) {
-			$sql = "insert into v_public_includes_details ";
+			$sql = "insert into v_public_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_uuid, ";
+			$sql .= "public_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -309,7 +309,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_uuid', ";
+			$sql .= "'$public_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'answer', ";
 			$sql .= "'', ";
@@ -321,10 +321,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset($tmp_app);
 
 	//add action 1
-		$sql = "insert into v_public_includes_details ";
+		$sql = "insert into v_public_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "public_include_uuid, ";
+		$sql .= "public_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -333,7 +333,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$public_include_uuid', ";
+		$sql .= "'$public_uuid', ";
 		$sql .= "'action', ";
 		$sql .= "'$action_application_1', ";
 		$sql .= "'$action_data_1', ";
@@ -344,10 +344,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add action 2
 		if (strlen($action_application_2) > 0) {
-			$sql = "insert into v_public_includes_details ";
+			$sql = "insert into v_public_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_include_uuid, ";
+			$sql .= "public_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -356,7 +356,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_include_uuid', ";
+			$sql .= "'$public_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'$action_application_2', ";
 			$sql .= "'$action_data_2', ";
@@ -370,11 +370,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$count = $db->exec("COMMIT;"); //returns affected rows
 
 	//synchronize the xml config
-		sync_package_v_public_includes();
+		sync_package_v_public();
 
 	//redirect the user
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public_includes.php\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public.php\">\n";
 		echo "<div align='center'>\n";
 		echo "Update Complete\n";
 		echo "</div>\n";
@@ -496,12 +496,12 @@ if (field_type == "action_application_2") {
 	echo "		</td>\n";
 	echo "		<td align='right'>\n";
 	if (permission_exists("public_includes_edit") && $action == "advanced") {
-		echo "			<input type='button' class='btn' name='' alt='basic' onclick=\"window.location='v_public_includes_add.php?action=basic'\" value='Basic'>\n";
+		echo "			<input type='button' class='btn' name='' alt='basic' onclick=\"window.location='v_public_add.php?action=basic'\" value='Basic'>\n";
 	}
 	else {
-		echo "			<input type='button' class='btn' name='' alt='advanced' onclick=\"window.location='v_public_includes_add.php?action=advanced'\" value='Advanced'>\n";
+		echo "			<input type='button' class='btn' name='' alt='advanced' onclick=\"window.location='v_public_add.php?action=advanced'\" value='Advanced'>\n";
 	}
-	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public_includes.php'\" value='Back'>\n";
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public.php'\" value='Back'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -843,7 +843,7 @@ if (field_type == "action_application_2") {
 	echo "<tr>\n";
 	echo "	<td colspan='5' align='right'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='dialplan_include_uuid' value='$dialplan_include_uuid'>\n";
+		echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 	}
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "	</td>\n";

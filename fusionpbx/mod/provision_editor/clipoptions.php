@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -39,7 +39,7 @@ require_once "header.php";
 echo "<div align='left'>";
 echo "<table border='0' style=\"height: 100%; width: 100%;\">\n";
 echo "<form method='post' name='frm' action=''>";
-echo "<tr><td colspan='2'><div id='selectedclip'>Selected Clip: <input type='text' name='clipname' id='clipname' value=''><input type='hidden' name='clipid' id='clipid' value=''></div></td></tr>\n";
+echo "<tr><td colspan='2'><div id='selectedclip'>Selected Clip: <input type='text' name='clip_name' id='clip_name' value=''><input type='hidden' name='clipid' id='clipid' value=''></div></td></tr>\n";
 echo "</form>";
 echo "<tr>\n";
 echo "<td valign='top' width='200' nowrap>";

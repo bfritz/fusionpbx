@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -53,9 +53,9 @@ if (count($_GET)>0) {
 			$sql .= "select * from v_virtual_tables ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
-			$prepstatement = $db->prepare($sql);
-			$prepstatement->execute();
-			$result = $prepstatement->fetchAll();
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row) {
 				$virtual_table_parent_id = $row["virtual_table_parent_id"];
 			}

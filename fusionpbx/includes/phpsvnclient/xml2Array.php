@@ -17,7 +17,7 @@ class xml2Array {
 	public function xmlParse($strInputXML) {
 		$this->resParser = xml_parser_create ();
 		xml_set_object($this->resParser,$this);
-		xml_set_element_handler($this->resParser, "tagOpen", "tagClosed");
+		xml_set_element_handler($this->resParser, "tag_open", "tagClosed");
 		xml_set_character_data_handler($this->resParser, "tagData");
        
 		$this->strXmlData = xml_parse($this->resParser,$strInputXML );
@@ -33,7 +33,7 @@ class xml2Array {
 		return $this->arrOutput[0];
 	}
 
-	private function tagOpen($parser, $name, $attrs) {
+	private function tag_open($parser, $name, $attrs) {
 		$tag=array("name"=>$name,"attrs"=>$attrs);
 		array_push($this->arrOutput,$tag);
 	}

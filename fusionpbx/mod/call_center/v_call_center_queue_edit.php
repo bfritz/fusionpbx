@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -115,9 +115,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			//add the call center queue
+				$call_center_queue_uuid = uuid();
 				$sql = "insert into v_call_center_queue ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
+				$sql .= "call_center_queue_uuid, ";
 				$sql .= "queue_name, ";
 				$sql .= "queue_extension, ";
 				$sql .= "queue_strategy, ";
@@ -139,6 +141,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
+				$sql .= "'$call_center_queue_uuid', ";
 				$sql .= "'$queue_name', ";
 				$sql .= "'$queue_extension', ";
 				$sql .= "'$queue_strategy', ";

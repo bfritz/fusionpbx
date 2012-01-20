@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -34,7 +34,7 @@ else {
 	exit;
 }
 require_once "includes/paging.php";
-$orderby = $_GET["orderby"];
+$order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 
@@ -96,22 +96,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add the entries to the dialplan
 		$context = 'default';
-		$opt_1_name = 'call_forward_id';
-		$dialplan_include_uuid = v_dialplan_includes_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
-		if (strlen($dialplan_include_uuid) > 0 && strlen($condition_expression_1) > 0) {
+		$opt_1_name = 'call_forward_uuid';
+		$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+		if (strlen($dialplan_uuid) > 0 && strlen($condition_expression_1) > 0) {
 			//add condition 1
 				$tag = 'condition'; //condition, action, antiaction
 				$field_type = 'destination_number';
 				$field_data = '^'.$condition_expression_1.'$';
 				$field_order = '000';
-				v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+				v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 			//add condition 2
 				if (strlen($condition_expression_2) > 0) {
 					$tag = 'condition'; //condition, action, antiaction
 					$field_type = $condition_field_2;
 					$field_data = '^'.$condition_expression_2.'$';
 					$field_order = '001';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 				}
 			//set action 1
 				if (strlen($action_application_1) > 0) {
@@ -120,7 +120,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$field_type = $action_application_1;
 					$field_data = $action_data_1;
 					$field_order = '002';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 				}
 			//set action 2
 				if (strlen($action_application_2) > 0) {
@@ -128,7 +128,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$field_type = $action_application_2;
 					$field_data = $action_data_2;
 					$field_order = '003';
-					v_dialplan_includes_details_add($domain_uuid, $dialplan_include_uuid, $tag, $field_order, $field_type, $field_data);
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 				}
 		}
 
@@ -136,7 +136,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$count = $db->exec("COMMIT;"); //returns affected rows
 
 	//synchronize the xml config
-		sync_package_v_dialplan_includes();
+		sync_package_v_dialplan();
 
 	//redirect the user
 		require_once "includes/header.php";
@@ -254,12 +254,12 @@ if (field_type == "condition_field_2") {
 	$sql = "";
 	$sql .= " select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
-	$result = $prepstatement->fetchAll();
-	$resultcount = count($result);
-	unset ($prepstatement, $sql);
-	if ($resultcount == 0) { //no results
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
+	if ($result_count == 0) { //no results
 	}
 	else { //received results
 		foreach($result as $row) {
@@ -271,7 +271,7 @@ if (field_type == "condition_field_2") {
 				echo "    <option value='".$row[extension]."'>".$row[extension]." ".$row[description]."</option>\n";
 			}
 		} //end foreach
-		unset($sql, $result, $rowcount);
+		unset($sql, $result, $row_count);
 	} //end if results
 	echo "    </select><br />\n";
 	echo "	</td>\n";
@@ -429,7 +429,7 @@ if (field_type == "condition_field_2") {
 	echo "<tr>\n";
 	echo "	<td colspan='5' align='right'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='dialplan_include_uuid' value='$dialplan_include_uuid'>\n";
+		echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 	}
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "	</td>\n";

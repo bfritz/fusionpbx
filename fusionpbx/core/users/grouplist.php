@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -55,12 +55,12 @@ require_once "includes/config.php";
 
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prepstatement = $db->prepare(check_sql($sql));
-	$prepstatement->execute();
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
 
 	$c = 0;
-	$rowstyle["0"] = "rowstyle0";
-	$rowstyle["1"] = "rowstyle1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	$strlist = "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	$strlist .= "<tr class='border'>\n";
@@ -76,7 +76,7 @@ require_once "includes/config.php";
 	$strlist .= "</tr>\n";
 
 	$count = 0;
-	$result = $prepstatement->fetchAll();
+	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$id = $row["id"];
 		$group_id = $row["group_id"];
@@ -90,10 +90,10 @@ require_once "includes/config.php";
 		}
 		else {
 			$strlist .= "<tr>";
-			$strlist .= "<td class='".$rowstyle[$c]."' align=\"left\" class='' nowrap> &nbsp; $group_id &nbsp; </td>\n";
-			$strlist .= "<td class='".$rowstyle[$c]."' align=\"left\" class='' nowrap> &nbsp;  $group_desc &nbsp; </td>\n";
+			$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp; $group_id &nbsp; </td>\n";
+			$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp;  $group_desc &nbsp; </td>\n";
 
-			$strlist .= "<td class='".$rowstyle[$c]."' align=\"center\" nowrap>\n";
+			$strlist .= "<td class='".$row_style[$c]."' align=\"center\" nowrap>\n";
 			if (permission_exists('group_add') || ifgroup("superadmin")) {
 				$strlist .= "&nbsp;<a class='' href='v_group_permissions.php?group_id=$group_id' title='Group Permissions'>Permissions</a>&nbsp;&nbsp;";
 			}
