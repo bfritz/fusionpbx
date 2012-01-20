@@ -53,7 +53,7 @@ $order = $_GET["order"];
 	echo "	</td>\n";
 	echo "	<td align='right'>\n";
 	if (permission_exists('dialplan_advanced_view')) {
-		echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='v_dialplan.php';\">\n";
+		echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='dialplan_advanced.php';\">\n";
 	}
 	else {
 		echo "&nbsp;\n";
@@ -81,7 +81,7 @@ $order = $_GET["order"];
 	echo "	<br />";
 
 	$sql = "";
-	$sql .= " select * from v_dialplan ";
+	$sql .= " select * from v_dialplans ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -98,7 +98,7 @@ $order = $_GET["order"];
 	$offset = $rows_per_page * $page;
 
 	$sql = "";
-	$sql .= " select * from v_dialplan ";
+	$sql .= " select * from v_dialplans ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
 	$sql .= " limit $rows_per_page offset $offset ";
@@ -122,7 +122,7 @@ $order = $_GET["order"];
 	echo thorder_by('descr', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('dialplan_add')) {
-		echo "	<a href='v_dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
+		echo "	<a href='dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "</td>\n";
 	echo "<tr>\n";
@@ -167,10 +167,10 @@ $order = $_GET["order"];
 			echo "   <td valign='top' class='row_stylebg' width='30%'>".$row['descr']."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('dialplan_add')) {
-				echo "		<a href='v_dialplan_edit.php?id=".$row['dialplan_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='dialplan_edit.php?id=".$row['dialplan_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('dialplan_edit')) {
-				echo "		<a href='v_dialplan_delete.php?id=".$row['dialplan_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='dialplan_delete.php?id=".$row['dialplan_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "   </td>\n";
 			echo "</tr>\n";
@@ -178,7 +178,6 @@ $order = $_GET["order"];
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
-
 
 	echo "<tr>\n";
 	echo "<td colspan='6'>\n";
@@ -188,7 +187,7 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('dialplan_add')) {
-		echo "			<a href='v_dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
+		echo "			<a href='dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
 	}
 	else {
 		echo "			&nbsp;";
@@ -213,13 +212,11 @@ $order = $_GET["order"];
 	echo "<br><br>";
 	echo "<br><br>";
 
-
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
-
 
 require_once "includes/footer.php";
 unset ($result_count);

@@ -93,7 +93,7 @@ function sf() { document.forms[0].savetopath.focus(); }
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
    <tr>
      <td class="" >
-		<form action="v_dialplan.php" method="post" name="iform" id="iform">
+		<form action="dialplans.php" method="post" name="iform" id="iform">
 			<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			  <tr>
 				<td align='left' width='100%'><span class="vexpl"><span class="red"><strong>Default Dialplan<br>
@@ -125,7 +125,7 @@ function sf() { document.forms[0].savetopath.focus(); }
 					<input type='hidden' name='a' value='save' />
 					<?php
 					if (permission_exists('dialplan_advanced_edit')) {
-						echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='v_dialplan.php?a=default&f=default.xml';\" />";
+						echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='dialplans.php?a=default&f=default.xml';\" />";
 					}
 					?>
 				</td>

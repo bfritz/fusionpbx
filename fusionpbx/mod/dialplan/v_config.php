@@ -14,7 +14,7 @@
 		$apps[$x]['menu'][0]['uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
 		$apps[$x]['menu'][0]['parent_uuid'] = '';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/mod/dialplan/v_dialplan.php';
+		$apps[$x]['menu'][0]['path'] = '/mod/dialplan/v_dialplans.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
@@ -22,7 +22,7 @@
 		$apps[$x]['menu'][1]['uuid'] = '52929FEE-81D3-4D94-50B7-64842D9393C2';
 		$apps[$x]['menu'][1]['parent_uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
 		$apps[$x]['menu'][1]['category'] = 'internal';
-		$apps[$x]['menu'][1]['path'] = '/mod/dialplan/v_dialplan.php';
+		$apps[$x]['menu'][1]['path'] = '/mod/dialplan/v_dialplans.php';
 		$apps[$x]['menu'][1]['groups'][] = 'admin';
 		$apps[$x]['menu'][1]['groups'][] = 'superadmin';
 
@@ -49,7 +49,7 @@
 	//schema details
 		$y = 0; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = 'v_dialplan'; //rename to v_dialplans
+		$apps[$x]['db'][$y]['table'] = 'v_dialplans'; //rename to v_dialplans
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'dialplan_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';

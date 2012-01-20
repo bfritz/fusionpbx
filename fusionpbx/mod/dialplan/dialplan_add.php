@@ -238,7 +238,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		sync_package_v_dialplan();
 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
 	echo "<div align='center'>\n";
 	echo "Update Complete\n";
 	echo "</div>\n";
@@ -358,7 +358,7 @@ echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Dialp
 echo "			</strong></span></span>\n";
 echo "		</td>\n";
 echo "		<td align='right'>\n";
-echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan.php'\" value='Back'>\n";
+echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php'\" value='Back'>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
 echo "	<tr>\n";
@@ -722,9 +722,7 @@ echo "</td>\n";
 echo "</tr>";
 echo "</table>";
 echo "</div>";
-
 echo "<br><br>";
-
 
 require_once "includes/footer.php";
 

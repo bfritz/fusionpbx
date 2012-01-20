@@ -125,7 +125,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				//redirect the user
 					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan.php\">\n";
+					echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
 					echo "<div align='center'>\n";
 					echo "Add Complete\n";
 					echo "</div>\n";
@@ -154,7 +154,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				//redirect the user
 					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan.php\">\n";
+					echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
 					echo "<div align='center'>\n";
 					echo "Update Complete\n";
 					echo "</div>\n";
@@ -168,7 +168,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$dialplan_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_dialplan ";
+		$sql .= "select * from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -206,8 +206,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo"			<span class=\"vexpl\"><strong>Dialplan</strong></span><br />\n";
 	echo "    </td>\n";
 	echo "    <td width='70%' align='right'>\n";
-	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='v_dialplan_copy.php?id=".$row[dialplan_uuid]."';}\" value='Copy'>\n";
-	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan.php'\" value='Back'>\n";
+	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='dialplan_copy.php?id=".$row[dialplan_uuid]."';}\" value='Copy'>\n";
+	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php'\" value='Back'>\n";
 	echo "	</td>\n";
 	echo "  </tr>\n";
 	echo "  <tr>\n";
@@ -450,7 +450,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "<th align='center'>Order</th>\n";
 			//echo "<th align='center'>Group</th>\n";
 			echo "<td align='right' width='42'>\n";
-			echo "	<a href='v_dialplan_details_edit.php?id2=".$dialplan_uuid."' alt='add'>$v_link_label_add</a>\n";
+			echo "	<a href='dialplan_details_edit.php?id2=".$dialplan_uuid."' alt='add'>$v_link_label_add</a>\n";
 			echo "</td>\n";
 			echo "<tr>\n";
 
@@ -468,7 +468,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						echo "		<td width='33.3%' nowrap='nowrap'>&nbsp;</td>\n";
 						echo "		<td width='33.3%' align='center' nowrap='nowrap'>$paging_controls</td>\n";
 						echo "		<td width='33.3%' align='right'>\n";
-						echo "			<a href='v_dialplan_details_edit.php?id2=".$dialplan_uuid."' alt='add'>$v_link_label_add</a>\n";
+						echo "			<a href='dialplan_details_edit.php?id2=".$dialplan_uuid."' alt='add'>$v_link_label_add</a>\n";
 						echo "		</td>\n";
 						echo "	</tr>\n";
 						echo "	</table>\n";
@@ -487,7 +487,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						echo "<th align='center'>Order</th>\n";
 						//echo "<th align='center'>Group</th>\n";
 						echo "<td align='right' width='42'>\n";
-						echo "	<a href='v_dialplan_details_edit.php?id2=".$dialplan_uuid."' alt='add'>$v_link_label_add</a>\n";
+						echo "	<a href='dialplan_details_edit.php?id2=".$dialplan_uuid."' alt='add'>$v_link_label_add</a>\n";
 						echo "</td>\n";
 						echo "<tr>\n";
 					}
@@ -500,8 +500,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['field_order']."</td>\n";
 						//echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['field_group']."</td>\n";
 						echo "	<td valign='top' align='right' nowrap='nowrap'='nowrap='nowrap''>\n";
-						echo "		<a href='v_dialplan_details_edit.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='edit'>$v_link_label_edit</a>\n";
-						echo "		<a href='v_dialplan_details_delete.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+						echo "		<a href='dialplan_details_edit.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='edit'>$v_link_label_edit</a>\n";
+						echo "		<a href='dialplan_details_delete.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 						echo "	</td>\n";
 						echo "</tr>\n";
 					}
@@ -519,7 +519,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "		<td width='33.3%' nowrap='nowrap'>&nbsp;</td>\n";
 			echo "		<td width='33.3%' align='center' nowrap='nowrap'>$paging_controls</td>\n";
 			echo "		<td width='33.3%' align='right'>\n";
-			echo "			<a href='v_dialplan_details_edit.php?id2=".$dialplan_uuid."' alt='add'>$v_link_label_add</a>\n";
+			echo "			<a href='dialplan_details_edit.php?id2=".$dialplan_uuid."' alt='add'>$v_link_label_add</a>\n";
 			echo "		</td>\n";
 			echo "	</tr>\n";
 			echo "	</table>\n";

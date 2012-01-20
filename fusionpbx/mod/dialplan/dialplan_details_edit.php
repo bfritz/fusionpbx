@@ -126,7 +126,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				sync_package_v_dialplan();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan_edit.php?id=".$dialplan_uuid."\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplan_edit.php?id=".$dialplan_uuid."\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -159,7 +159,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				require_once "includes/header.php";
 
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan_edit.php?id=".$dialplan_uuid."\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplan_edit.php?id=".$dialplan_uuid."\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -214,7 +214,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap><b>Dialplan Includes Detail Update</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan_edit.php?id=".$dialplan_uuid."'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplan_edit.php?id=".$dialplan_uuid."'\" value='Back'></td>\n";
 	echo "</tr>\n";
 
 	?>
@@ -581,7 +581,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
       &lt;anti-action application=&quot;log&quot; data=&quot;WARNING None of the conditions matched!&quot;/&gt;
       &lt;/condition&gt;
   &lt;/extension&gt;</pre></div>
-
 
 	<br />
 	<br />

@@ -54,7 +54,7 @@
 // add a recordings dialplan entry if it doesn't exist
 	$v_recording_action = 'add';
 	$sql = "";
-	$sql .= "select * from v_dialplan ";
+	$sql .= "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and opt_1_name = 'recordings' ";
 	$sql .= "and (opt_1_value = '732' or opt_1_value = '732673') ";
@@ -123,7 +123,7 @@
 // add a disa dialplan entry if it doesn't exist
 	$v_disa_action = 'add';
 	$sql = "";
-	$sql .= "select * from v_dialplan ";
+	$sql .= "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and opt_1_name = 'disa' ";
 	$sql .= "and (opt_1_value = '347' or opt_1_value = '3472') ";
@@ -180,7 +180,7 @@
 // add a wake up call dialplan entry if it doesn't exist
 	$v_wake_up_action = 'add';
 	$sql = "";
-	$sql .= "select * from v_dialplan ";
+	$sql .= "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and opt_1_name = 'wake up' ";
 	$sql .= "and opt_1_value = '923' ";
