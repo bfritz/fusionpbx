@@ -61,7 +61,7 @@ if (strlen($id)>0) {
 
 	//delete the dialplan entries
 		$sql = "";
-		$sql .= "select * from v_dialplan ";
+		$sql .= "select * from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and opt_1_name = 'hunt_group_uuid' ";
 		$sql .= "and opt_1_value = '".$id."' ";
@@ -85,7 +85,7 @@ if (strlen($id)>0) {
 
 		//hunt group fifo
 			$sql = "";
-			$sql .= "select * from v_dialplan ";
+			$sql .= "select * from v_dialplans ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'hunt_group_uuid_fifo' ";
 			$sql .= "and opt_1_value = '".$id."' ";
@@ -108,7 +108,7 @@ if (strlen($id)>0) {
 			unset($sql);
 
 		$sql = "";
-		$sql = "delete from v_dialplan ";
+		$sql = "delete from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and opt_1_name = 'hunt_group_uuid' ";
 		$sql .= "and opt_1_value = '$id' ";

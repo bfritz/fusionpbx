@@ -51,7 +51,7 @@ if (strlen($id)>0) {
 
     //delete parent data
 		$sql = "";
-		$sql .= "delete from v_dialplan ";
+		$sql .= "delete from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$id' ";
 		//echo $sql;
@@ -65,7 +65,7 @@ if (strlen($id)>0) {
 
 //redirect the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplans.php\">\n";
 	echo "<div align='center'>\n";
 	echo "Delete Complete\n";
 	echo "</div>\n";

@@ -50,7 +50,7 @@ if (strlen($id)>0) {
 
     //delete parent data
 		$sql = "";
-		$sql .= "delete from v_dialplan ";
+		$sql .= "delete from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$id' ";
 		$db->query($sql);

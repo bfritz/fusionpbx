@@ -384,7 +384,7 @@ $order = $_GET["order"];
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 		$sql = "";
-		$sql .= "select * from v_dialplan ";
+		$sql .= "select * from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$row = $db->query($sql)->fetch();

@@ -2682,14 +2682,14 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/dialplan/v_dialplan.php</path> 
+		<path>/mod/dialplan/v_dialplans.php</path> 
 		<last_mod>Sat, 01 May 2010 07:58:21 GMT</last_mod> 
 		<md5>a3be48af0b44ecfefa947281feaa8585</md5> 
 		<size>4431</size> 
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/dialplan/v_dialplan.php</path> 
+		<path>/mod/dialplan/v_dialplans.php</path> 
 		<last_mod>Tue, 04 May 2010 01:28:42 GMT</last_mod> 
 		<md5>b1a0d09a3c629c9c70183cd92a1889f8</md5> 
 		<size>6568</size> 
@@ -4299,7 +4299,7 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/time_conditions/v_dialplan.php</path> 
+		<path>/mod/time_conditions/v_dialplans.php</path> 
 		<last_mod>Wed, 14 Jul 2010 19:37:55 GMT</last_mod> 
 		<md5>ecfbc50b3b4036755c675715d4e75ec0</md5> 
 		<size>9358</size> 

@@ -53,7 +53,7 @@ else {
 
 		//get the dialplan info
 			$sql = "";
-			$sql .= "select * from v_dialplan ";
+			$sql .= "select * from v_dialplans ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'faxid' ";
 			$sql .= "and opt_1_value = '".$fax_uuid."' ";
@@ -79,7 +79,7 @@ else {
 
 		//delete the dialplan entry
 			$sql = "";
-			$sql .= "delete from v_dialplan ";
+			$sql .= "delete from v_dialplans ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 			//echo $sql."<br>\n";

@@ -366,11 +366,11 @@ function build_menu() {
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplans.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplans.php") { $menu_selected = true; }
 		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan_edit.php") { $menu_selected = true; }
 		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan_details_edit.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Dialplan"), $menu_selected, $v_relative_url."/v_dialplan.php");
+		$tab_array[] = array(gettext("Dialplan"), $menu_selected, $v_relative_url."/v_dialplans.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
@@ -901,7 +901,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 					//get the extension number using the dialplan_uuid
 						$sql = "select * ";
-						$sql .= "from v_dialplan ";
+						$sql .= "from v_dialplans ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 						$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
@@ -1336,7 +1336,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 			//get the extension number using the dialplan_uuid
 				$sql = "select * ";
-				$sql .= "from v_dialplan ";
+				$sql .= "from v_dialplans ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 				$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
@@ -2390,7 +2390,7 @@ function outbound_route_to_bridge ($destination_number) {
 		unset ($prep_statement);
 
 	$sql = "";
-	$sql .= "select * from v_dialplan ";
+	$sql .= "select * from v_dialplans ";
 	if (count($dialplan_array) == 0) {
 		//when there are no outbound routes do this to hide all remaining entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
@@ -2574,7 +2574,7 @@ function sync_package_v_hunt_group() {
 						$i = 0;
 
 						$sql = "";
-						$sql .= "select * from v_dialplan ";
+						$sql .= "select * from v_dialplans ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and opt_1_name = 'hunt_group_uuid' ";
 						$sql .= "and opt_1_value = '".$row['hunt_group_uuid']."' ";
@@ -2678,7 +2678,7 @@ function sync_package_v_hunt_group() {
 							$i = 0;
 
 							$sql = "";
-							$sql .= "select * from v_dialplan ";
+							$sql .= "select * from v_dialplans ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and opt_1_name = 'hunt_group_uuid_fifo' ";
 							$sql .= "and opt_1_value = '".$row['hunt_group_uuid']."' ";
@@ -3214,7 +3214,7 @@ function sync_package_v_fax() {
 			$action = 'add'; //set default action to add
 
 			$sql = "";
-			$sql .= "select * from v_dialplan ";
+			$sql .= "select * from v_dialplans ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'faxid' ";
 			$sql .= "and opt_1_value = '".$row['fax_uuid']."' ";
@@ -3489,7 +3489,7 @@ function sync_package_v_auto_attendant() {
 					$action = 'add'; //set default action to add
 
 					$sql = "";
-					$sql .= "select * from v_dialplan ";
+					$sql .= "select * from v_dialplans ";
 					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and opt_1_name = 'auto_attendant_id' ";
 					$sql .= "and opt_1_value = '".$row['auto_attendant_id']."' ";
@@ -4473,7 +4473,7 @@ function sync_package_v_dialplan() {
 		}
 
 	$sql = "";
-	$sql .= "select * from v_dialplan ";
+	$sql .= "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and enabled = 'true' ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -5244,7 +5244,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 
 						//get the dialplan include id
 							$sql = "";
-							$sql .= "select * from v_dialplan ";
+							$sql .= "select * from v_dialplans ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
 							$sql .= "and opt_1_value = '".$row['ivr_menu_uuid']."' ";
@@ -5488,7 +5488,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						$i = 0;
 
 						$sql = "";
-						$sql .= "select * from v_dialplan ";
+						$sql .= "select * from v_dialplans ";
 						$sql .= "where opt_1_name = 'call_center_queue_uuid' ";
 						$sql .= "and opt_1_value = '".$row['call_center_queue_uuid']."' ";
 						$prep_statement_2 = $db->prepare($sql);

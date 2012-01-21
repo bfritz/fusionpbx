@@ -159,7 +159,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$dialplan_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_dialplan ";
+		$sql .= "select * from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));

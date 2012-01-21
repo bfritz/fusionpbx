@@ -101,7 +101,7 @@ $order = $_GET["order"];
 	echo "	<br />";
 
 	$sql = "";
-	$sql .= " select * from v_dialplan ";
+	$sql .= " select * from v_dialplans ";
 	if (count($dialplan_array) == 0) {
 		//when there are no outbound routes do this to hide all remaining entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
@@ -136,7 +136,7 @@ $order = $_GET["order"];
 	$offset = $rows_per_page * $page;
 
 	$sql = "";
-	$sql .= " select * from v_dialplan ";
+	$sql .= " select * from v_dialplans ";
 	if (count($dialplan_array) == 0) {
 		//when there are no outbound routes do this to hide all remaining entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";

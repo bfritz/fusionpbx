@@ -71,7 +71,7 @@ $order = $_GET["order"];
 	echo "	<br />";
 
 	$sql = "";
-	$sql .= " select * from v_dialplan ";
+	$sql .= " select * from v_dialplans ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	$sql .= " and opt_1_name = 'call_forward_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
@@ -89,7 +89,7 @@ $order = $_GET["order"];
 	$offset = $rows_per_page * $page;
 
 	$sql = "";
-	$sql .= " select * from v_dialplan ";
+	$sql .= " select * from v_dialplans ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	$sql .= " and opt_1_name = 'call_forward_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }

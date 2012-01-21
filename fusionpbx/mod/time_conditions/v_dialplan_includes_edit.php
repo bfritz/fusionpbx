@@ -116,7 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				sync_package_v_dialplan();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplans.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -142,7 +142,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				sync_package_v_dialplan();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplan.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplans.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -156,7 +156,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$dialplan_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_dialplan ";
+		$sql .= "select * from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -192,7 +192,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <td align='left' width='30%'><p><span class=\"vexpl\"><span class=\"red\"><strong>Time Conditions<br />\n";
 	echo "        </strong></span>\n";
 	echo "    </td>\n";
-	echo "    <td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplan.php'\" value='Back'></td>\n";
+	echo "    <td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplans.php'\" value='Back'></td>\n";
 	echo "  </tr>\n";
 	echo "  <tr>\n";
 	echo "    <td align='left' colspan='2'>\n";

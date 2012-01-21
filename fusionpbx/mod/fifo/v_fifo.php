@@ -108,7 +108,7 @@ require_once "includes/paging.php";
 	echo "	<br />";
 
 	$sql = "";
-	$sql .= " select * from v_dialplan ";
+	$sql .= " select * from v_dialplans ";
 	if (count($queue_array) == 0) {
 		//when there are no queues then hide all dialplan entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
@@ -143,7 +143,7 @@ require_once "includes/paging.php";
 	$offset = $rows_per_page * $page;
 
 	$sql = "";
-	$sql .= " select * from v_dialplan ";
+	$sql .= " select * from v_dialplans ";
 	if (count($queue_array) == 0) {
 		//when there are no queues then hide all dialplan entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
