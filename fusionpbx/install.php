@@ -759,6 +759,55 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$x++;
 		}
 
+	//add the groups
+		$x = 0;
+		$tmp[$x]['group_name'] = 'superadmin';
+		$tmp[$x]['group_desc'] = 'Super Administrator Group';
+		$x++;
+		$tmp[$x]['group_name'] = 'admin';
+		$tmp[$x]['group_desc'] = 'Administrator Group';
+		$x++;
+		$tmp[$x]['group_name'] = 'user';
+		$tmp[$x]['group_desc'] = 'User Group';
+		$x++;
+		$tmp[$x]['group_name'] = 'public';
+		$tmp[$x]['group_desc'] = 'Public Group';
+		$x++;
+		$tmp[$x]['group_name'] = 'agent';
+		$tmp[$x]['group_desc'] = 'Call Center Agent Group';
+		foreach($tmp as $row) {
+			$sql = "insert into v_groups ";
+			$sql .= "(";
+			$sql .= "domain_uuid, ";
+			$sql .= "group_id, ";
+			$sql .= "group_desc ";
+			$sql .= ")";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$domain_uuid', ";
+			$sql .= "'".$row['group_name']."', ";
+			$sql .= "'".$row['group_desc']."' ";
+			$sql .= ")";
+			$db_tmp->exec(check_sql($sql));
+			unset($sql);
+		}
+
+	//add the user to the superadmin group
+		$sql = "insert into v_group_members ";
+		$sql .= "(";
+		$sql .= "domain_uuid, ";
+		$sql .= "username, ";
+		$sql .= "group_id ";
+		$sql .= ")";
+		$sql .= "values ";
+		$sql .= "(";
+		$sql .= "'$domain_uuid', ";
+		$sql .= "'".$admin_username."', ";
+		$sql .= "'superadmin' ";
+		$sql .= ")";
+		$db_tmp->exec(check_sql($sql));
+		unset($sql);
+
 	//assign the default permissions to the groups
 		$db_tmp->beginTransaction();
 		foreach($apps as $app) {

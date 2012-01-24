@@ -96,7 +96,7 @@
 		$apps[$x]['db'][$y]['table'] = 'v_group_members';
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer AUTOINCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
@@ -133,7 +133,7 @@
 		$apps[$x]['db'][$y]['table'] = 'v_group_permissions';
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'group_permission_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer AUTOINCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
@@ -162,7 +162,7 @@
 		$apps[$x]['db'][$y]['table'] = 'v_groups';
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer AUTOINCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
@@ -193,7 +193,7 @@
 		$apps[$x]['db'][$y]['table'] = 'v_users';
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer AUTOINCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;

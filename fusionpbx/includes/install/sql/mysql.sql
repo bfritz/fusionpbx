@@ -1,15 +1,3 @@
-INSERT INTO v_group_members VALUES(1,1,'user','admin');
-INSERT INTO v_group_members VALUES(2,1,'agent','admin');
-INSERT INTO v_group_members VALUES(3,1,'admin','admin');
-INSERT INTO v_group_members VALUES(4,1,'user','superadmin');
-INSERT INTO v_group_members VALUES(5,1,'agent','superadmin');
-INSERT INTO v_group_members VALUES(6,1,'admin','superadmin');
-INSERT INTO v_group_members VALUES(7,1,'superadmin','superadmin');
-INSERT INTO v_groups VALUES(1,1,'public','Public Group');
-INSERT INTO v_groups VALUES(2,1,'user','User Group');
-INSERT INTO v_groups VALUES(3,1,'agent','Call Center Agent Group');
-INSERT INTO v_groups VALUES(4,1,'admin','Administrator Group');
-INSERT INTO v_groups VALUES(5,1,'superadmin','Super Administrator Group');
 INSERT INTO v_modules VALUES(1,1,'Console','mod_console','Send logs to the console. ','Loggers','true','true');
 INSERT INTO v_modules VALUES(2,1,'Log File','mod_logfile','Send logs to the local file system. ','Loggers','true','true');
 INSERT INTO v_modules VALUES(3,1,'Syslog','mod_syslog','Send logs to a remote syslog server.','Loggers','false','false');
