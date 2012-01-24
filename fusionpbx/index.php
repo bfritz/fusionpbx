@@ -30,7 +30,6 @@ if (!file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/includes/config.php"))
 }
 require_once "includes/config.php";
 require_once "includes/header.php";
-//require_once "includes/checkauth.php";
 
 echo "<br />";
 echo "<br />";

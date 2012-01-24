@@ -76,6 +76,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'context';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'extension_name';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'extensionname';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
@@ -93,10 +97,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'dialplan_order';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'dialplanorder';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'context';
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'enabled';
