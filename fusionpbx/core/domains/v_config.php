@@ -15,8 +15,6 @@
 		$apps[$x]['menu'][$y]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][$y]['category'] = 'internal';
 		$apps[$x]['menu'][$y]['path'] = '/core/domains/v_domains.php';
-		//$apps[$x]['menu'][$y]['groups'][] = 'user';
-		//$apps[$x]['menu'][$y]['groups'][] = 'admin';
 		$apps[$x]['menu'][$y]['groups'][] = 'superadmin';
 
 	//permission details
@@ -60,12 +58,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
 		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_uuid';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_name';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';

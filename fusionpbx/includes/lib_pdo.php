@@ -310,6 +310,7 @@ if ($db_type == "pgsql") {
 			}
 			unset($prep_statement, $result);
 
+/*
 		//get the values from v_system_settings
 			$sql = "select * from v_system_settings ";
 			$prep_statement = $db->prepare($sql);
@@ -359,6 +360,7 @@ if ($db_type == "pgsql") {
 					}
 			}
 			unset($result, $prep_statement);
+*/
 	}
 
 //set the context

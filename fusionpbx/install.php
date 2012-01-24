@@ -30,7 +30,7 @@ require_once "includes/lib_functions.php";
 	$v_debug = false;
 
 //set the default id
-	$domain_uuid = '1';
+	$domain_uuid = uuid();
 
 //error reporting
 	ini_set('display_errors', '1');
@@ -679,9 +679,22 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			}
 
 	//set system settings paths
-		$v_package_version = '';
-		$v_build_version = '';
-		$v_build_revision = '';
+		$sql = "insert into v_domains ";
+		$sql .= "(";
+		$sql .= "domain_uuid, ";
+		$sql .= "domain_name, ";
+		$sql .= "domain_description ";
+		$sql .= ")";
+		$sql .= "values ";
+		$sql .= "(";
+		$sql .= "'$domain_uuid', ";
+		$sql .= "'".$domain."', ";
+		$sql .= "'' ";
+		$sql .= ")";
+		$db_tmp->exec(check_sql($sql));
+		unset($sql);
+
+/*
 		$v_label = '';
 		$v_name = 'freeswitch';
 		$v_web_dir = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
@@ -737,7 +750,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$db_tmp->exec($sql);
 		unset($sql);
-
+*/
 	//get the list of installed apps from the core and mod directories
 		$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
 		$x=0;
@@ -883,8 +896,31 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//include the new config.php file
 		require "includes/config.php";
 
-	//menu restore default
+	//create the uuid
 		$menu_uuid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
+	//set the defaults
+		$menu_name = 'default';
+		$menu_language = 'en';
+		$menu_desc = '';
+	//add the parent menu
+		$sql = "insert into v_menus ";
+		$sql .= "(";
+		$sql .= "menu_uuid, ";
+		$sql .= "menu_name, ";
+		$sql .= "menu_language, ";
+		$sql .= "menu_desc ";
+		$sql .= ")";
+		$sql .= "values ";
+		$sql .= "(";
+		$sql .= "'".$menu_uuid."', ";
+		$sql .= "'$menu_name', ";
+		$sql .= "'$menu_language', ";
+		$sql .= "'$menu_desc' ";
+		$sql .= ")";
+		$db->exec(check_sql($sql));
+		unset($sql);
+
+	//add the menu items
 		require_once "includes/classes/menu.php";
 		$menu = new menu;
 		$menu->db = $db;

@@ -74,6 +74,7 @@ require_once "includes/config.php";
 		$_SESSION["user_defined_variables"] = "set";
 	}
 
+/*
 function v_settings() {
 	global $db, $domain_uuid, $v_secure;
 
@@ -263,6 +264,7 @@ $v_settings_array = v_settings();
 foreach($v_settings_array as $name => $value) {
 	$$name = $value;
 }
+*/
 
 //create the recordings/archive/year/month/day directory structure
 	$v_recording_archive_dir = $v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d");
@@ -275,18 +277,17 @@ foreach($v_settings_array as $name => $value) {
 
 //get the event socket information
 	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
-			$sql = "";
-			$sql .= "select * from v_settings ";
-			$sql .= "where domain_uuid = '1' ";
-			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-			foreach ($result as &$row) {
-				$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
-				$_SESSION['event_socket_port'] = $row["event_socket_port"];
-				$_SESSION['event_socket_password'] = $row["event_socket_password"];
-				break; //limit to 1 row
-			}
+		$sql = "";
+		$sql .= "select * from v_settings ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+		foreach ($result as &$row) {
+			$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
+			$_SESSION['event_socket_port'] = $row["event_socket_port"];
+			$_SESSION['event_socket_password'] = $row["event_socket_password"];
+			break; //limit to 1 row
+		}
 	}
 
 
@@ -2330,14 +2331,6 @@ function sync_package_v_vars() {
 	//$cmd = "api reloadxml";
 	//event_socket_request_cmd($cmd);
 	//unset($cmd);
-}
-
-function sync_package_v_public() {
-	//global $config;
-	//$v_settings_array = v_settings();
-	//foreach($v_settings_array as $name => $value) {
-	//	$$name = $value;
-	//}
 }
 
 function outbound_route_to_bridge ($destination_number) {
