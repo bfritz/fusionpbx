@@ -26,18 +26,44 @@
 
 //if the are no groups add the default groups
 	$sql = "SELECT * FROM v_groups ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "WHERE domain_uuid = '$domain_uuid' ";
 	$sub_result = $db->query($sql)->fetch();
 	$prep_statement = $db->prepare(check_sql($sql));
 	if ($prep_statement) {
 		$prep_statement->execute();
 		$sub_result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		if (count($sub_result) == 0) {
-			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'hidden','Hidden Group hides items in the menu');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'user','User Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'agent','Call Center Agent Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'admin','Administrator Group');"; $db->exec(check_sql($sql));
-			$sql = "INSERT INTO v_groups (domain_uuid, group_id, group_desc) VALUES ($domain_uuid,'superadmin','Super Administrator Group');"; $db->exec(check_sql($sql));
+			$x = 0;
+			$tmp[$x]['group_name'] = 'superadmin';
+			$tmp[$x]['group_desc'] = 'Super Administrator Group';
+			$x++;
+			$tmp[$x]['group_name'] = 'admin';
+			$tmp[$x]['group_desc'] = 'Administrator Group';
+			$x++;
+			$tmp[$x]['group_name'] = 'user';
+			$tmp[$x]['group_desc'] = 'User Group';
+			$x++;
+			$tmp[$x]['group_name'] = 'public';
+			$tmp[$x]['group_desc'] = 'Public Group';
+			$x++;
+			$tmp[$x]['group_name'] = 'agent';
+			$tmp[$x]['group_desc'] = 'Call Center Agent Group';
+			foreach($tmp as $row) {
+				$sql = "insert into v_groups ";
+				$sql .= "(";
+				$sql .= "domain_uuid, ";
+				$sql .= "group_id, ";
+				$sql .= "group_desc ";
+				$sql .= ")";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'$domain_uuid', ";
+				$sql .= "'".$row['group_name']."', ";
+				$sql .= "'".$row['group_desc']."' ";
+				$sql .= ")";
+				$db_tmp->exec(check_sql($sql));
+				unset($sql);
+			}
 		}
 	}
 	unset($prep_statement, $sub_result);
@@ -45,7 +71,7 @@
 //if there are no permissions listed in v_group_permissions then set the default permissions
 	$sql = "";
 	$sql .= "select count(*) as count from v_group_permissions ";
-	$sql .= "where domain_uuid = $domain_uuid ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$sub_result = $prep_statement->fetch(PDO::FETCH_ASSOC);
