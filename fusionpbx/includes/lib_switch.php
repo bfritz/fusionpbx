@@ -1749,16 +1749,6 @@ function sync_package_v_settings() {
 	//unset($cmd);
 }
 
-
-function sync_package_v_dialplan() {
-	global $config;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
-		$$name = $value;
-	}
-}
-
-
 function sync_package_v_extensions() {
 	global $config;
 	$v_settings_array = v_settings();
