@@ -14,7 +14,7 @@
 		$apps[$x]['menu'][$y]['guid'] = '4FA7E90B-6D6C-12D4-712F-62857402B801';
 		$apps[$x]['menu'][$y]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][$y]['category'] = 'internal';
-		$apps[$x]['menu'][$y]['path'] = '/mod/domains/v_domains.php';
+		$apps[$x]['menu'][$y]['path'] = '/core/domains/v_domains.php';
 		//$apps[$x]['menu'][$y]['groups'][] = 'user';
 		//$apps[$x]['menu'][$y]['groups'][] = 'admin';
 		$apps[$x]['menu'][$y]['groups'][] = 'superadmin';

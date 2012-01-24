@@ -14,7 +14,7 @@
 		$apps[$x]['menu'][$y]['guid'] = 'F35EE905-1F30-7529-7420-35FC77E47882';
 		$apps[$x]['menu'][$y]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][$y]['category'] = 'internal';
-		$apps[$x]['menu'][$y]['path'] = '/mod/servers/v_servers.php';
+		$apps[$x]['menu'][$y]['path'] = '/core/servers/v_servers.php';
 		$apps[$x]['menu'][$y]['groups'][] = 'superadmin';
 
 	//permission details
