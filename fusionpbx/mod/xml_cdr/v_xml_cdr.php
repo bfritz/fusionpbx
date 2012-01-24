@@ -360,7 +360,7 @@ else {
 	unset ($prep_statement, $x);
 
 	//example sql
-		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '1' 
+		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '' 
 		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
 	if (!ifgroup("admin") && !ifgroup("superadmin")) {
 		$sql_where = "where domain_uuid = '$domain_uuid' ";

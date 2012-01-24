@@ -59,7 +59,6 @@ else {
 
 	$sql = "";
 	$sql .= "select * from v_vars ";
-	$sql .= "where domain_uuid = '1' ";
 	if (strlen($order_by)> 0) {
 		$sql .= "order by $order_by $order ";
 	}

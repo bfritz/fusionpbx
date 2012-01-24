@@ -378,7 +378,7 @@ if ($db_type == "pgsql") {
 		$domain_uuid = $_SESSION["domain_uuid"];
 	}
 	else {
-		$domain_uuid = '1';
+		$domain_uuid = uuid();
 	}
 
 ?>

@@ -73,7 +73,7 @@ else {
 
 //show all call detail records to admin and superadmin. for everyone else show only the call details for extensions assigned to them
 	if (!ifgroup("admin") && !ifgroup("superadmin")) {
-		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '1' 
+		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '' 
 		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
 		$sqlwhere = "where domain_uuid = '$domain_uuid' and ( ";
 		if (count($extension_array) > 0) {

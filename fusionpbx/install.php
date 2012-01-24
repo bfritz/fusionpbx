@@ -31,6 +31,7 @@ require_once "includes/lib_functions.php";
 
 //set the default id
 	$domain_uuid = uuid();
+	$_SESSION["domain_uuid"] = $domain_uuid;
 
 //error reporting
 	ini_set('display_errors', '1');

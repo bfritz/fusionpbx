@@ -157,7 +157,6 @@ if (defined('STDIN')) {
 			//get the event socket information
 				$sql = "";
 				$sql .= "select * from v_settings ";
-				$sql .= "where domain_uuid = '1' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);

@@ -161,8 +161,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$var_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_vars ";
-		$sql .= "where domain_uuid = '1' ";
-		$sql .= "and var_uuid = '$var_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -229,7 +227,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$table_name = 'v_vars';$field_name = 'var_cat';$sql_where_optional = "where domain_uuid = '1'";$field_current_value = $var_cat;
+	$table_name = 'v_vars';$field_name = 'var_cat';$sql_where_optional = "";$field_current_value = $var_cat;
 	echo html_select_other($db, $table_name, $field_name, $sql_where_optional, $field_current_value);
 	//echo "	<input class='formfld' type='text' name='var_cat' maxlength='255' value=\"$var_cat\">\n";
 	echo "<br />\n";
