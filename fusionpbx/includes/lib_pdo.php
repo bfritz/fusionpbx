@@ -24,6 +24,8 @@
  Mark J Crane <markjcrane@fusionpbx.com>
  Raymond Chandler <intralanman@gmail.com>
  */
+include "root.php";
+require_once "includes/lib_functions.php";
 
 //set defaults
 	if (strlen($dbtype) > 0) { 
@@ -310,38 +312,38 @@ if ($db_type == "pgsql") {
 			}
 			unset($prep_statement, $result);
 
-/*
-		//get the values from v_system_settings
-			$sql = "select * from v_system_settings ";
+		//get the values from v_domains
+			$sql = "select * from v_domains ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll();
 			foreach($result as $row) {
 				//get the values from the db and set them as session variables
 					$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
-					$_SESSION['domains'][$row['domain_uuid']]['domain'] = $row['v_domain'];
-					$_SESSION['domains'][$row['domain_uuid']]['template_name'] = $row['v_template_name'];
+					$_SESSION['domains'][$row['domain_uuid']]['domain'] = $row['domain_name'];
+					$_SESSION['domains'][$row['domain_uuid']]['template_name'] = "enhanced"; //$row['v_template_name']; //temporary
 				//get the domain
 					$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
 				//get domain_uuid, and check for an assigned template
 					if ($num_rows > 1) {
 						if ($row['v_domain'] == $domain_array[0] || $row['v_domain'] == 'www.'.$domain_array[0]) {
 							$_SESSION["domain_uuid"] = $row["domain_uuid"];
-							$_SESSION["template_name"] = $row["v_template_name"];
-							$_SESSION["v_template_name"] = $row["v_template_name"];
-							$_SESSION["v_domain"] = $row['v_domain'];
-							$_SESSION["v_menu_uuid"] = $row['v_menu_uuid'];
-							$_SESSION["v_time_zone"] = $row['v_time_zone'];
+//							$_SESSION["template_name"] = $row["v_template_name"];
+//							$_SESSION["v_template_name"] = $row["v_template_name"];
+							$_SESSION["v_domain"] = $row['domain_name'];
+//							$_SESSION["v_menu_uuid"] = $row['v_menu_uuid'];
+//							$_SESSION["v_time_zone"] = $row['v_time_zone'];
 							if (strlen($row["v_time_zone"]) > 0) {
 								//server time zone
-									$_SESSION["time_zone"]["system"] = date_default_timezone_get();
+//									$_SESSION["time_zone"]["system"] = date_default_timezone_get();
 								//domain time zone set in system settings
-									$_SESSION["time_zone"]["domain"] = $row['v_time_zone'];
+//									$_SESSION["time_zone"]["domain"] = $row['v_time_zone'];
 								//set the domain time zone as the default time zone
-									date_default_timezone_set($_SESSION["v_time_zone"]);
+//									date_default_timezone_set($_SESSION["v_time_zone"]);
 							}
 						}
 					}
+/*
 					if ($num_rows == 1) {
 						$_SESSION["domain_uuid"] = $row["domain_uuid"];
 						$_SESSION["template_name"] = $row["v_template_name"];
@@ -358,9 +360,9 @@ if ($db_type == "pgsql") {
 								date_default_timezone_set($_SESSION["v_time_zone"]);
 						}
 					}
+*/
 			}
 			unset($result, $prep_statement);
-*/
 	}
 
 //set the context

@@ -81,14 +81,15 @@
 
 //loop through all domains in v_system_settings
 	$sql = "";
-	$sql .= "select * from v_system_settings ";
+	$sql .= "select * from v_domains ";
 	$v_prep_statement = $db->prepare(check_sql($sql));
 	$v_prep_statement->execute();
 	$main_result = $v_prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($main_result as &$row) {
 		//get the values from database and set them as php variables
 			$domain_uuid = $row["domain_uuid"];
-			$v_domain = $row["v_domain"];
+			$v_domain = $row["domain_name"];
+			/*
 			$v_account_code = $row["v_account_code"];
 			$v_server_protocol = $row["v_server_protocol"];
 			$v_server_port = $row["v_server_port"];
@@ -130,6 +131,7 @@
 			$v_template_name = $row["v_template_name"];
 			$v_time_zone = $row["v_time_zone"];
 			$v_description = $row["v_description"];
+			*/
 
 		//show the domain when display_type is set to text
 			if ($display_type == "text") {
