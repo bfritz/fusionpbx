@@ -21,25 +21,25 @@
 		$y = 0;
 		$apps[$x]['permissions'][$y]['name'] = 'server_view';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		$y++
+		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'server_add';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		$y++
+		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'server_edit';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		$y++
+		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'server_delete';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		$y++
+		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'server_setting_view';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		$y++
+		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'server_setting_add';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		$y++
+		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'server_setting_edit';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		$y++
+		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'server_setting_delete';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 
