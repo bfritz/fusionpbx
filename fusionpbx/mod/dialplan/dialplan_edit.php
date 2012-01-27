@@ -243,6 +243,41 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "    Context:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='context' maxlength='255' value=\"$context\">\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "    Continue:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='extension_continue'>\n";
+	echo "    <option value=''></option>\n";
+	if ($extension_continue == "true") { 
+		echo "    <option value='true' SELECTED >true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($extension_continue == "false") { 
+		echo "    <option value='false' SELECTED >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Order:\n";
 	echo "</td>\n";
@@ -269,43 +304,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "              </select>\n";
 	//echo "  <input class='formfld' type='text' name='dialplan_order' maxlength='255' value='$dialplan_order'>\n";
 	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	//echo "<tr>\n";
-	//echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	//echo "    Context:\n";
-	//echo "</td>\n";
-	//echo "<td class='vtable' align='left'>\n";
-	//echo "    <input class='formfld' type='text' name='context' maxlength='255' value=\"$context\">\n";
-	//echo "<br />\n";
-	//echo "\n";
-	//echo "</td>\n";
-	//echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "    Continue:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='extension_continue'>\n";
-	echo "    <option value=''></option>\n";
-	if ($extension_continue == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
-	}
-	else {
-		echo "    <option value='true'>true</option>\n";
-	}
-	if ($extension_continue == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
-	}
-	else {
-		echo "    <option value='false'>false</option>\n";
-	}
-	echo "    </select>\n";
-	echo "<br />\n";
-	echo "Extension Continue in most cases this is false.\n";
+	//echo "Dialplans are processed from the lowest to the highest number.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
