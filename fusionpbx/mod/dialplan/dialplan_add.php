@@ -98,11 +98,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$extension_name = str_replace("/", "", $extension_name);
 
 	//start the atomic transaction
-		$count = $db->exec("BEGIN;"); //returns affected rows
+		$db->exec("BEGIN;"); //returns affected rows
 
 	//add the main dialplan include entry
 		$dialplan_uuid = uuid();
-		$sql = "insert into v_dialplan ";
+		$sql = "insert into v_dialplans ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "dialplan_uuid, ";
@@ -120,7 +120,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$extension_name', ";
 		$sql .= "'$dialplan_order', ";
 		$sql .= "'false', ";
-		$sql .= "'default', ";
+		$sql .= "'".$_SESSION['context']."', ";
 		$sql .= "'$enabled', ";
 		$sql .= "'$description' ";
 		$sql .= ")";
