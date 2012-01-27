@@ -27,11 +27,13 @@ include "root.php";
 require_once "includes/lib_functions.php";
 
 //set debug to true or false
-	$v_debug = false;
+	$v_debug = true;
 
-//set the default id
-	$domain_uuid = uuid();
-	$_SESSION["domain_uuid"] = $domain_uuid;
+//set the default domain_uuid
+	$_SESSION["domain_uuid"] = uuid();
+
+//add the menu uuid
+	$menu_uuid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
 
 //error reporting
 	ini_set('display_errors', '1');
@@ -67,6 +69,11 @@ require_once "includes/lib_functions.php";
 
 //set the max execution time to 1 hour
 	ini_set('max_execution_time',3600);
+
+//save an install log if debug is true
+	if ($v_debug) {
+		$fp = fopen("/tmp/install.log", "w");
+	}
 
 //set php variables with data from http post
 	$db_type = $_POST["db_type"];
@@ -396,11 +403,20 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						die();
 					}
 
+				//add additional functions to SQLite - bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
+					if (!function_exists('php_now')) {
+						function php_now() {
+							//return date('r');
+							return date("Y-m-d H:i:s");
+						}
+					}
+					$db_tmp->sqliteCreateFunction('now', 'php_now', 0);
+					
 				//add the database structure
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
 					$schema->db = $db_tmp;
-					$schema->domain_uuid = $domain_uuid;
+					$schema->domain_uuid = $_SESSION["domain_uuid"];
 					$schema->db_type = $db_type;
 					$schema->add();
 
@@ -482,7 +498,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
 					$schema->db = $db_tmp;
-					$schema->domain_uuid = $domain_uuid;
+					$schema->domain_uuid = $_SESSION["domain_uuid"];
 					$schema->db_type = $db_type;
 					$schema->add();
 
@@ -649,7 +665,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
 					$schema->db = $db_tmp;
-					$schema->domain_uuid = $domain_uuid;
+					$schema->domain_uuid = $_SESSION["domain_uuid"];
 					$schema->db_type = $db_type;
 					$schema->add();
 
@@ -667,6 +683,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						foreach($stringarray as $sql) {
 							if (strlen($sql) > 3) {
 								try {
+									if ($v_debug) {
+										fwrite($fp, $sql."\n");
+									}
 									$db_tmp->query($sql);
 								}
 								catch (PDOException $error) {
@@ -679,30 +698,84 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						unset ($file_contents, $sql);
 			}
 
-	//set system settings paths
+	//add the domain
 		$sql = "insert into v_domains ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "domain_name, ";
 		$sql .= "domain_description ";
-		$sql .= ")";
+		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
-		$sql .= "'$domain_uuid', ";
+		$sql .= "'".$_SESSION["domain_uuid"]."', ";
 		$sql .= "'".$domain."', ";
 		$sql .= "'' ";
-		$sql .= ")";
+		$sql .= ");";
+		if ($v_debug) {
+			fwrite($fp, $sql."\n");
+		}
 		$db_tmp->exec(check_sql($sql));
 		unset($sql);
 
-/*
-		$v_label = '';
-		$v_name = 'freeswitch';
+	//add the domain settings
+		$x = 0;
+		$tmp[$x]['name'] = 'v_menu_uuid';
+		$tmp[$x]['value'] = $menu_uuid;
+		$x++;
+		$tmp[$x]['name'] = 'v_time_zone';
+		$tmp[$x]['value'] = '';
+		$x++;
+		$tmp[$x]['name'] = 'v_template_name';
+		$tmp[$x]['value'] = $install_v_template_name;
+		$x++;
+		$tmp[$x]['name'] = 'v_account_code';
+		$tmp[$x]['value'] = '';
+		foreach($tmp as $row) {
+			$sql = "insert into v_domain_settings ";
+			$sql .= "(";
+			$sql .= "domain_uuid, ";
+			$sql .= "domain_setting_uuid, ";
+			$sql .= "domain_setting_name, ";
+			$sql .= "domain_setting_value ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'".$_SESSION["domain_uuid"]."', ";
+			$sql .= "'".uuid()."', ";
+			$sql .= "'".$row['name']."', ";
+			$sql .= "'".$row['value']."' ";
+			$sql .= ");";
+			if ($v_debug) {
+				fwrite($fp, $sql."\n");
+			}
+			$db_tmp->exec(check_sql($sql));
+			unset($sql);
+		}
+
+	//add the server
+		$server_uuid = uuid();
+		$sql = "insert into v_servers ";
+		$sql .= "(";
+		$sql .= "domain_uuid, ";
+		$sql .= "server_uuid, ";
+		$sql .= "server_name, ";
+		$sql .= ") ";
+		$sql .= "values ";
+		$sql .= "(";
+		$sql .= "'".$_SESSION["domain_uuid"]."', ";
+		$sql .= "'".$server_uuid."', ";
+		$sql .= "'".$domain."' ";
+		$sql .= ");";
+		if ($v_debug) {
+			fwrite($fp, $sql."\n");
+		}
+		$db_tmp->exec(check_sql($sql));
+		unset($sql);
+
+	//replace back slashes with forward slashes
 		$v_web_dir = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
 		$v_web_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
 		if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $v_relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $v_relative_url = '/'; }
-
-		//replace back slashes with forward slashes
 		$install_v_dir = str_replace("\\", "/", $install_v_dir);
 		$v_parent_dir = str_replace("\\", "/", $v_parent_dir);
 		$install_php_dir = str_replace("\\", "/", $install_php_dir);
@@ -710,48 +783,127 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
 		$install_v_backup_dir = str_replace("\\", "/", $install_v_backup_dir);
 
-		$sql = "update v_system_settings set ";
-		$sql .= "v_domain = '".$domain."', ";
-		$sql .= "php_dir = '$install_php_dir', ";
-		$sql .= "tmp_dir = '$install_tmp_dir', ";
-		$sql .= "bin_dir = '$v_bin_dir', ";
-		$sql .= "v_startup_script_dir = '$v_startup_script_dir', ";
-		$sql .= "v_package_version = '$v_package_version', ";
-		$sql .= "v_build_version = '$v_build_version', ";
-		$sql .= "v_build_revision = '$v_build_revision', ";
-		$sql .= "v_label = '$v_label', ";
-		$sql .= "v_name = '$v_name', ";
-		$sql .= "v_dir = '$install_v_dir', ";
-		$sql .= "v_parent_dir = '$v_parent_dir', ";
-		$sql .= "v_backup_dir = '$install_v_backup_dir', ";
-		$sql .= "v_web_dir = '$v_web_dir', ";
-		$sql .= "v_web_root = '$v_web_root', ";
-		$sql .= "v_relative_url = '$v_relative_url', ";
-		$sql .= "v_conf_dir = '$v_conf_dir', ";
-		$sql .= "v_db_dir = '$v_db_dir', ";
-		$sql .= "v_htdocs_dir = '$v_htdocs_dir', ";
-		$sql .= "v_log_dir = '$v_log_dir', ";
-		$sql .= "v_mod_dir = '$v_mod_dir', ";
-		$sql .= "v_extensions_dir = '$v_extensions_dir', ";
-		$sql .= "v_gateways_dir = '$v_gateways_dir', ";
-		$sql .= "v_dialplan_public_dir = '$v_dialplan_public_dir', ";
-		$sql .= "v_dialplan_default_dir = '$v_dialplan_default_dir', ";
-		$sql .= "v_scripts_dir = '$v_scripts_dir', ";
-		$sql .= "v_grammar_dir = '$v_grammar_dir', ";
-		$sql .= "v_storage_dir = '$v_storage_dir', ";
-		$sql .= "v_voicemail_dir = '$v_voicemail_dir', ";
-		$sql .= "v_recordings_dir = '$v_recordings_dir', ";
-		$sql .= "v_sounds_dir = '$v_sounds_dir', ";
-		$sql .= "v_download_path = '$v_download_path', ";
-		$sql .= "v_template_name = '$install_v_template_name' ";
-		//$sql .= "v_provisioning_tftp_dir = '$v_provisioning_tftp_dir', ";
-		//$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
-		//$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
-		//$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir' ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$db_tmp->exec($sql);
-		unset($sql);
-*/
+	//add the server settings
+		$x = 0;
+		$tmp[$x]['name'] = 'v_server_protocol';
+		$tmp[$x]['value'] = '';
+		$x++;
+		$tmp[$x]['name'] = 'v_server_port';
+		$tmp[$x]['value'] = '';
+		$x++;
+		$tmp[$x]['name'] = 'php_dir';
+		$tmp[$x]['value'] = $install_php_dir;
+		$x++;
+		$tmp[$x]['name'] = 'tmp_dir';
+		$tmp[$x]['value'] = $install_tmp_dir;
+		$x++;
+		$tmp[$x]['name'] = 'bin_dir';
+		$tmp[$x]['value'] = $v_bin_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_startup_script_dir';
+		$tmp[$x]['value'] = $v_startup_script_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_dir';
+		$tmp[$x]['value'] = $install_v_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_parent_dir';
+		$tmp[$x]['value'] = $v_parent_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_backup_dir';
+		$tmp[$x]['value'] = $install_v_backup_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_web_root';
+		$tmp[$x]['value'] = $v_web_root;
+		$x++;
+		$tmp[$x]['name'] = 'v_web_dir';
+		$tmp[$x]['value'] = $v_web_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_relative_url';
+		$tmp[$x]['value'] = $v_relative_url;
+		$x++;
+		$tmp[$x]['name'] = 'v_conf_dir';
+		$tmp[$x]['value'] = $v_conf_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_db_dir';
+		$tmp[$x]['value'] = $v_db_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_htdocs_dir';
+		$tmp[$x]['value'] = $v_htdocs_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_log_dir';
+		$tmp[$x]['value'] = $v_log_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_extensions_dir';
+		$tmp[$x]['value'] = $v_extensions_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_gateways_dir';
+		$tmp[$x]['value'] = $v_gateways_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_dialplan_public_dir';
+		$tmp[$x]['value'] = $v_dialplan_public_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_dialplan_default_dir';
+		$tmp[$x]['value'] = $v_dialplan_default_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_mod_dir';
+		$tmp[$x]['value'] = $v_mod_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_scripts_dir';
+		$tmp[$x]['value'] = $v_scripts_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_grammar_dir';
+		$tmp[$x]['value'] = $v_grammar_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_storage_dir';
+		$tmp[$x]['value'] = $v_storage_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_voicemail_dir';
+		$tmp[$x]['value'] = $v_voicemail_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_recordings_dir';
+		$tmp[$x]['value'] = $v_recordings_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_download_path';
+		$tmp[$x]['value'] = $v_download_path;
+		$x++;
+		$tmp[$x]['name'] = 'v_sounds_dir';
+		$tmp[$x]['value'] = $v_sounds_dir;
+		$x++;
+		$tmp[$x]['name'] = 'v_provisioning_tftp_dir';
+		$tmp[$x]['value'] = '';
+		$x++;
+		$tmp[$x]['name'] = 'v_provisioning_ftp_dir';
+		$tmp[$x]['value'] = '';
+		$x++;
+		$tmp[$x]['name'] = 'v_provisioning_https_dir';
+		$tmp[$x]['value'] = '';
+		$x++;
+		$tmp[$x]['name'] = 'v_provisioning_http_dir';
+		$tmp[$x]['value'] = '';
+		foreach($tmp as $row) {
+			$sql = "insert into v_server_settings ";
+			$sql .= "(";
+			$sql .= "domain_uuid, ";
+			$sql .= "server_uuid, ";
+			$sql .= "server_setting_uuid, ";
+			$sql .= "server_setting_name, ";
+			$sql .= "server_setting_value ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'".$_SESSION["domain_uuid"]."', ";
+			$sql .= "'".$server_uuid."', ";
+			$sql .= "'".uuid()."', ";
+			$sql .= "'".$row['name']."', ";
+			$sql .= "'".$row['value']."' ";
+			$sql .= ");";
+			if ($v_debug) {
+				fwrite($fp, $sql."\n");
+			}
+			$db_tmp->exec(check_sql($sql));
+			unset($sql);
+		}
+
 	//get the list of installed apps from the core and mod directories
 		$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
 		$x=0;
@@ -782,16 +934,57 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "domain_uuid, ";
 			$sql .= "group_id, ";
 			$sql .= "group_desc ";
-			$sql .= ")";
+			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$domain_uuid', ";
+			$sql .= "'".$_SESSION["domain_uuid"]."', ";
 			$sql .= "'".$row['group_name']."', ";
 			$sql .= "'".$row['group_desc']."' ";
-			$sql .= ")";
+			$sql .= ");";
+			if ($v_debug) {
+				fwrite($fp, $sql."\n");
+			}
 			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 		}
+
+	//add the superadmin user account
+		//prepare the values
+			$user_uuid = uuid();
+			$user_type = 'Individual';
+			$user_category = 'user';
+		//salt used with the password to create a one way hash
+			$salt = generate_password('20', '4');
+		//add the user account
+			$sql = "insert into v_users ";
+			$sql .= "(";
+			$sql .= "domain_uuid, ";
+			$sql .= "user_uuid, ";
+			$sql .= "username, ";
+			$sql .= "password, ";
+			$sql .= "salt, ";
+			$sql .= "user_type, ";
+			$sql .= "user_category, ";
+			$sql .= "user_add_date, ";
+			$sql .= "user_add_user ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'".$_SESSION["domain_uuid"]."', ";
+			$sql .= "'$user_uuid', ";
+			$sql .= "'".$admin_username."', ";
+			$sql .= "'".md5($salt.$admin_password)."', ";
+			$sql .= "'$salt', ";
+			$sql .= "'$user_type', ";
+			$sql .= "'$user_category', ";
+			$sql .= "now(), ";
+			$sql .= "'".$admin_username."' ";
+			$sql .= ");";
+			if ($v_debug) {
+				fwrite($fp, $sql."\n");
+			}
+			$db_tmp->exec(check_sql($sql));
+			unset($sql);
 
 	//add the user to the superadmin group
 		$sql = "insert into v_group_members ";
@@ -799,44 +992,53 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql .= "domain_uuid, ";
 		$sql .= "username, ";
 		$sql .= "group_id ";
-		$sql .= ")";
+		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
-		$sql .= "'$domain_uuid', ";
+		$sql .= "'".$_SESSION["domain_uuid"]."', ";
 		$sql .= "'".$admin_username."', ";
 		$sql .= "'superadmin' ";
-		$sql .= ")";
+		$sql .= ");";
+		if ($v_debug) {
+			fwrite($fp, $sql."\n");
+		}
 		$db_tmp->exec(check_sql($sql));
 		unset($sql);
 
 	//assign the default permissions to the groups
-		$db_tmp->beginTransaction();
+		//$db_tmp->beginTransaction();
 		foreach($apps as $app) {
 			if ($app['permissions']) {
 				foreach ($app['permissions'] as $row) {
-					if ($app['groups']) {
-						foreach ($row['groups'] as $group) {
-							//add the record
-							$sql = "insert into v_group_permissions ";
-							$sql .= "(";
-							$sql .= "domain_uuid, ";
-							$sql .= "permission_id, ";
-							$sql .= "group_id ";
-							$sql .= ")";
-							$sql .= "values ";
-							$sql .= "(";
-							$sql .= "'$domain_uuid', ";
-							$sql .= "'".$row['name']."', ";
-							$sql .= "'".$group."' ";
-							$sql .= ")";
-							$db_tmp->exec(check_sql($sql));
-							unset($sql);
+					if ($v_debug) {
+						fwrite($fp, "v_group_permissions\n");
+						fwrite($fp, json_encode($row)."\n\n");	
+					}
+
+					foreach ($row['groups'] as $group) {
+						//add the record
+						$sql = "insert into v_group_permissions ";
+						$sql .= "(";
+						$sql .= "domain_uuid, ";
+						$sql .= "permission_id, ";
+						$sql .= "group_id ";
+						$sql .= ") ";
+						$sql .= "values ";
+						$sql .= "(";
+						$sql .= "'".$_SESSION["domain_uuid"]."', ";
+						$sql .= "'".$row['name']."', ";
+						$sql .= "'".$group."' ";
+						$sql .= ");";
+						if ($v_debug) {
+							fwrite($fp, $sql."\n");
 						}
+						$db_tmp->exec(check_sql($sql));
+						unset($sql);
 					}
 				}
 			}
 		}
-		$db_tmp->commit();
+		//$db_tmp->commit();
 
 	//unset the temporary database connection
 		unset($db_tmp);
@@ -946,8 +1148,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//include the new config.php file
 		require "includes/config.php";
 
-	//create the uuid
-		$menu_uuid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
 	//set the defaults
 		$menu_name = 'default';
 		$menu_language = 'en';
@@ -959,14 +1159,17 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql .= "menu_name, ";
 		$sql .= "menu_language, ";
 		$sql .= "menu_desc ";
-		$sql .= ")";
+		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'".$menu_uuid."', ";
 		$sql .= "'$menu_name', ";
 		$sql .= "'$menu_language', ";
 		$sql .= "'$menu_desc' ";
-		$sql .= ")";
+		$sql .= ");";
+		if ($v_debug) {
+			fwrite($fp, $sql."\n");
+		}
 		$db->exec(check_sql($sql));
 		unset($sql);
 
@@ -1004,7 +1207,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//copy the files and directories from includes/install
 		require_once "includes/classes/install.php";
 		$install = new install;
-		$install->domain_uuid = $domain_uuid;
+		$install->domain_uuid = $_SESSION["domain_uuid"];
 		$install->v_domain = $domain;
 		$install->v_conf_dir = $v_conf_dir;
 		$install->v_scripts_dir = $v_scripts_dir;
@@ -1017,7 +1220,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//create the dialplan/default.xml for single tenant or dialplan/domain.xml
 		require_once "includes/classes/dialplan.php";
 		$dialplan = new dialplan;
-		$dialplan->domain_uuid = $domain_uuid;
+		$dialplan->domain_uuid = $_SESSION["domain_uuid"];
 		$dialplan->v_domain = $domain;
 		$dialplan->v_conf_dir = $v_conf_dir;
 		$dialplan->restore_advanced_xml();
@@ -1029,26 +1232,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//write the switch.conf.xml file
 		switch_conf_xml();
 
-	//add the superadmin user account
-		user_add($admin_username, $admin_password, $user_first_name='', $user_last_name='', $user_email='');
-
-	//add the user to the member group
-		$group_id = 'superadmin';
-		$sql = "insert into v_group_members ";
-		$sql .= "(";
-		$sql .= "domain_uuid, ";
-		$sql .= "group_id, ";
-		$sql .= "username ";
-		$sql .= ")";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'$domain_uuid', ";
-		$sql .= "'$group_id', ";
-		$sql .= "'$admin_username' ";
-		$sql .= ")";
-		$db->exec(check_sql($sql));
-		unset($sql);
-
 	//login the user account
 		$_SESSION["username"] = $admin_username;
 
@@ -1057,7 +1240,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql .= "where domain_uuid=:domain_uuid ";
 		$sql .= "and username=:username ";
 		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->bindParam(':domain_uuid', $domain_uuid);
+		$prep_statement->bindParam(':domain_uuid', $_SESSION["domain_uuid"]);
 		$prep_statement->bindParam(':username', $_SESSION["username"]);
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -1070,10 +1253,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		foreach($_SESSION["groups"] as $field) {
 			if (strlen($field['group_id']) > 0) {
 				if ($x == 0) {
-					$sql .= "where (domain_uuid = '".$domain_uuid."' and group_id = '".$field['group_id']."') ";
+					$sql .= "where (domain_uuid = '".$_SESSION["domain_uuid"]."' and group_id = '".$field['group_id']."') ";
 				}
 				else {
-					$sql .= "or (domain_uuid = '".$domain_uuid."' and group_id = '".$field['group_id']."') ";
+					$sql .= "or (domain_uuid = '".$_SESSION["domain_uuid"]."' and group_id = '".$field['group_id']."') ";
 				}
 				$x++;
 			}

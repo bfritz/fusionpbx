@@ -74,25 +74,51 @@ require_once "includes/config.php";
 		$_SESSION["user_defined_variables"] = "set";
 	}
 
-/*
 function v_settings() {
 	global $db, $domain_uuid, $v_secure;
 
-	$program_dir = '';
-	$docroot = $_SERVER["DOCUMENT_ROOT"];
-	$docroot = str_replace ("\\", "/", $docroot);
-	$docrootarray = explode("/", $docroot);
-	$docrootarraycount = count($docrootarray);
-	$x = 0;
-	foreach ($docrootarray as $value) {
-		$program_dir = $program_dir.$value."/";
-		if (($docrootarraycount-3) == $x) {
-		  break;
+	//get the program directory
+		$program_dir = '';
+		$doc_root = $_SERVER["DOCUMENT_ROOT"];
+		$doc_root = str_replace ("\\", "/", $doc_root);
+		$doc_root_array = explode("/", $doc_root);
+		$doc_root_array_count = count($doc_root_array);
+		$x = 0;
+		foreach ($doc_root_array as $value) {
+			$program_dir = $program_dir.$value."/";
+			if (($doc_root_array_count-3) == $x) {
+				break;
+			}
+			$x++;
 		}
-		$x++;
-	}
-	$program_dir = rtrim($program_dir, "/");
+		$program_dir = rtrim($program_dir, "/");
+	
+	//get the domains variables
+		$sql = "select * from v_domain_settings ";
+		$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+		$prep_statement = $db->prepare($sql);
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		foreach($result as $row) {
+			$name = $row['domain_setting_name'];
+			$_SESSION[$name] = $row['domain_setting_value'];
+			$$name = $row['domain_setting_value'];
+		}
 
+	//get the server variables
+		$sql = "select * from v_server_settings ";
+		$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+		$prep_statement = $db->prepare($sql);
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		foreach($result as $row) {
+			$name = $row['server_setting_name'];
+			$_SESSION[$name] = $row['server_setting_value'];
+			$v_settings_array[$name] = $row['server_setting_value'];
+			//$$name = $row['server_setting_value'];
+		}
+
+	/*
 	$sql = "";
 	$sql .= "select * from v_system_settings ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -257,14 +283,15 @@ function v_settings() {
 		break; //limit to 1 row
 	}
 	unset ($prep_statement);
+	*/
 	return $v_settings_array;
 }
 //update the settings
-$v_settings_array = v_settings();
+//$v_settings_array = v_settings();
 foreach($v_settings_array as $name => $value) {
 	$$name = $value;
 }
-*/
+
 
 //create the recordings/archive/year/month/day directory structure
 	$v_recording_archive_dir = $v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d");

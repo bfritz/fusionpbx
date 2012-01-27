@@ -79,7 +79,7 @@
 		$x++;
 	}
 
-//loop through all domains in v_system_settings
+//loop through all domains
 	$sql = "";
 	$sql .= "select * from v_domains ";
 	$v_prep_statement = $db->prepare(check_sql($sql));

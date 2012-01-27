@@ -131,7 +131,8 @@
 		$y = 1; //table array index
 		$z = 0; //field array index
 		$apps[$x]['db'][$y]['table'] = 'v_group_permissions';
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'group_permission_id';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'group_permission_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';

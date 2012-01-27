@@ -48,11 +48,9 @@ session_start();
 			$sql = "select * from v_users ";
 			$sql .= "where domain_uuid=:domain_uuid ";
 			$sql .= "and username=:username ";
-			//$sql .= "and password=:password ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->bindParam(':domain_uuid', $domain_uuid);
 			$prep_statement->bindParam(':username', check_str($_REQUEST["username"]));
-			//$prep_statement->bindParam(':password', md5($v_salt.check_str($_REQUEST["password"])));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			if (count($result) == 0) {
@@ -133,10 +131,10 @@ session_start();
 					$x++;
 				}
 			}
-			$prep_statementsub = $db->prepare($sql);
-			$prep_statementsub->execute();
-			$_SESSION['permissions'] = $prep_statementsub->fetchAll(PDO::FETCH_NAMED);
-			unset($sql, $prep_statementsub);
+			$prep_statement_sub = $db->prepare($sql);
+			$prep_statement_sub->execute();
+			$_SESSION['permissions'] = $prep_statement_sub->fetchAll(PDO::FETCH_NAMED);
+			unset($sql, $prep_statement_sub);
 
 		//redirect the user
 			if (check_str($_REQUEST["rdr"]) !== 'n'){

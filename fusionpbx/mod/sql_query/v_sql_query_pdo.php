@@ -31,6 +31,7 @@
 	}
  
 //get the db connection information
+/*
 	if ($db) {
 		$sql = "";
 		$sql .= "select * from v_db ";
@@ -50,6 +51,7 @@
 			break;
 		}
 	}
+*/
 
 //unset the database connection
 	unset($db);

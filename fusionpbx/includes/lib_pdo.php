@@ -154,31 +154,31 @@ if ($db_type == "sqlite") {
 
 	}
 
-	if (!function_exists('phpmd5')) {
-		function phpmd5($string) {
+	if (!function_exists('php_md5')) {
+		function php_md5($string) {
 			return md5($string);
 		}
 	}
-	if (!function_exists('phpunix_timestamp')) {
-		function phpunix_timestamp($string) {
+	if (!function_exists('php_unix_timestamp')) {
+		function php_unix_timestamp($string) {
 			return strtotime($string);
 		}
 	}
-	if (!function_exists('phpnow')) {
-		function phpnow() {
+	if (!function_exists('php_now')) {
+		function php_now() {
 			//return date('r');
 			return date("Y-m-d H:i:s");
 		}
 	}
 
-	if (!function_exists('phpleft')) {
-		function phpleft($string, $num) {
+	if (!function_exists('php_left')) {
+		function php_left($string, $num) {
 			return substr($string, 0, $num);
 		}
 	}
 
-	if (!function_exists('phpright')) {
-		function phpright($string, $num) {
+	if (!function_exists('php_right')) {
+		function php_right($string, $num) {
 			return substr($string, (strlen($string)-$num), strlen($string));
 		}
 	}
@@ -228,12 +228,12 @@ if ($db_type == "sqlite") {
 
 		//Add additional functions to SQLite so that they are accessible inside SQL
 		//bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
-		$db->sqliteCreateFunction('md5', 'phpmd5', 1);
-		$db->sqliteCreateFunction('unix_timestamp', 'phpunix_timestamp', 1);
-		$db->sqliteCreateFunction('now', 'phpnow', 0);
+		$db->sqliteCreateFunction('md5', 'php_md5', 1);
+		$db->sqliteCreateFunction('unix_timestamp', 'php_unix_timestamp', 1);
+		$db->sqliteCreateFunction('now', 'php_now', 0);
 		$db->sqliteCreateFunction('sqlitedatatype', 'phpsqlitedatatype', 2);
-		$db->sqliteCreateFunction('strleft', 'phpleft', 2);
-		$db->sqliteCreateFunction('strright', 'phpright', 2);
+		$db->sqliteCreateFunction('strleft', 'php_left', 2);
+		$db->sqliteCreateFunction('strright', 'php_right', 2);
 	}
 	catch (PDOException $error) {
 		print "error: " . $error->getMessage() . "<br/>";
@@ -298,7 +298,7 @@ if ($db_type == "pgsql") {
 	if (!is_array($_SESSION["domains"])) {
 		//get the count of the rows in v_system_settings
 			$sql = "";
-			$sql .= " select count(*) as num_rows from v_system_settings ";
+			$sql .= " select count(*) as num_rows from v_domains ";
 			$prep_statement = $db->prepare($sql);
 			if ($prep_statement) {
 				$prep_statement->execute();
@@ -312,6 +312,7 @@ if ($db_type == "pgsql") {
 			}
 			unset($prep_statement, $result);
 
+$_SESSION["v_menu_uuid"] = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
 		//get the values from v_domains
 			$sql = "select * from v_domains ";
 			$prep_statement = $db->prepare($sql);
@@ -328,9 +329,9 @@ if ($db_type == "pgsql") {
 					if ($num_rows > 1) {
 						if ($row['v_domain'] == $domain_array[0] || $row['v_domain'] == 'www.'.$domain_array[0]) {
 							$_SESSION["domain_uuid"] = $row["domain_uuid"];
+							$_SESSION["v_domain"] = $row['domain_name'];
 //							$_SESSION["template_name"] = $row["v_template_name"];
 //							$_SESSION["v_template_name"] = $row["v_template_name"];
-							$_SESSION["v_domain"] = $row['domain_name'];
 //							$_SESSION["v_menu_uuid"] = $row['v_menu_uuid'];
 //							$_SESSION["v_time_zone"] = $row['v_time_zone'];
 							if (strlen($row["v_time_zone"]) > 0) {
@@ -343,12 +344,14 @@ if ($db_type == "pgsql") {
 							}
 						}
 					}
-/*
+
 					if ($num_rows == 1) {
 						$_SESSION["domain_uuid"] = $row["domain_uuid"];
+						$_SESSION["v_domain"] = $row['domain_name'];
+						/*
 						$_SESSION["template_name"] = $row["v_template_name"];
 						$_SESSION["v_template_name"] = $row["v_template_name"];
-						$_SESSION["v_domain"] = $row['v_domain'];
+						
 						$_SESSION["v_menu_uuid"] = $row['v_menu_uuid'];
 						$_SESSION["v_time_zone"] = $row['v_time_zone'];
 						if (strlen($row["v_time_zone"]) > 0) {
@@ -359,10 +362,35 @@ if ($db_type == "pgsql") {
 							//set the domain time zone as the default time zone
 								date_default_timezone_set($_SESSION["v_time_zone"]);
 						}
+						*/
 					}
-*/
+
 			}
 			unset($result, $prep_statement);
+	}
+
+//get the domains variables
+	$sql = "select * from v_domain_settings ";
+	$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	foreach($result as $row) {
+		$name = $row['domain_setting_name'];
+		$_SESSION[$name] = $row['domain_setting_value'];
+		$$name = $row['domain_setting_value'];
+	}
+
+//get the server variables
+	$sql = "select * from v_server_settings ";
+	$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	foreach($result as $row) {
+		$name = $row['server_setting_name'];
+		$_SESSION[$name] = $row['server_setting_value'];
+		$$name = $row['server_setting_value'];
 	}
 
 //set the context
