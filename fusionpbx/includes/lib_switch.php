@@ -4383,7 +4383,7 @@ function sync_package_v_auto_attendant() {
 function v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value) {
 	global $db, $db_type;
 	$dialplan_uuid = uuid();
-	$sql = "insert into v_dialplan ";
+	$sql = "insert into v_dialplans ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
 	$sql .= "dialplan_uuid, ";
