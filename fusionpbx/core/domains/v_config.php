@@ -10,6 +10,7 @@
 		$apps[$x]['description']['en'] = '';
 
 	//menu details
+		$y = 0;
 		$apps[$x]['menu'][$y]['title']['en'] = 'Domains';
 		$apps[$x]['menu'][$y]['guid'] = '4FA7E90B-6D6C-12D4-712F-62857402B801';
 		$apps[$x]['menu'][$y]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
