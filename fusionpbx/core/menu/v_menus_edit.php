@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$menu_id = check_str($_REQUEST["id"]);
+		$menu_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -55,7 +55,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$menu_id = check_str($_POST["menu_id"]);
+		$menu_uuid = check_str($_POST["menu_uuid"]);
 	}
 
 	//check for all required data
@@ -123,7 +123,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "menu_name = '$menu_name', ";
 				$sql .= "menu_language = '$menu_language', ";
 				$sql .= "menu_desc = '$menu_desc' ";
-				$sql .= "where menu_id = '$menu_id'";
+				$sql .= "where menu_uuid = '$menu_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -141,10 +141,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$menu_id = $_GET["id"];
+		$menu_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_menus ";
-		$sql .= "where menu_id = '$menu_id' ";
+		$sql .= "where menu_uuid = '$menu_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -180,7 +180,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "<td width='70%' align='right'>\n";
 	if (permission_exists('menu_restore')) {
-		echo "	<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='menu_restore_default.php?menu_id=$menu_id&menu_uuid=$menu_uuid';\" />";
+		echo "	<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='menu_restore_default.php?menu_uuid=$menu_uuid&menu_uuid=$menu_uuid';\" />";
 	}
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_menus.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
@@ -225,7 +225,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='menu_id' value='$menu_id'>\n";
+		echo "				<input type='hidden' name='menu_uuid' value='$menu_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

@@ -38,9 +38,8 @@ if (count($_GET)>0) {
 	//clear the menu session so it will rebuild with the update
 		$_SESSION["menu"] = "";
 
-	//get the id
-		$menu_id = check_str($_GET["menu_id"]);
-		$menu_uuid = check_str($_GET["menu_uuid"]);
+	//get the menu uuid
+		$menu_uuid = check_str($_GET["id"]);
 		$menu_item_id = check_str($_GET["menu_item_id"]);
 
 	//delete the item in the menu
@@ -52,7 +51,7 @@ if (count($_GET)>0) {
 
 	//redirect the user
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_menus_edit.php?id=$menu_id&menu_id=$menu_id\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_menus_edit.php?id=$menu_uuid\">\n";
 		echo "<div align='center'>";
 		echo "Delete Completed";
 		echo "</div>";

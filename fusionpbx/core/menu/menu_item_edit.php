@@ -37,10 +37,8 @@ else {
 //include the header
 	require_once "includes/header.php";
 
-//get the menu id and uuid
-	$id = check_str($_REQUEST["id"]);
-	$menu_id = check_str($_REQUEST["menu_id"]);
-	$menu_uuid = check_str($_REQUEST["menu_uuid"]);
+//get the menu_uuid
+	$menu_uuid = check_str($_REQUEST["id"]);
 	$menu_item_uuid = check_str($_REQUEST['menu_item_uuid']);
 	$group_id = check_str($_REQUEST['group_id']);
 
@@ -75,9 +73,9 @@ else {
 	}
 
 //action add or update
-	if (isset($_REQUEST["menu_item_id"])) {
+	if (isset($_REQUEST["menu_item_uuid"])) {
 		$action = "update";
-		$menu_item_id = check_str($_REQUEST["menu_item_id"]);
+		$menu_item_uuid = check_str($_REQUEST["menu_item_uuid"]);
 	}
 	else {
 		$action = "add";
@@ -88,8 +86,8 @@ else {
 
 //get the HTTP POST variables and set them as PHP variables
 	if (count($_POST)>0) {
-		$menu_id = check_str($_POST["menu_id"]);
-		$menu_item_id = check_str($_POST["menu_item_id"]);
+		$menu_uuid = check_str($_POST["menu_uuid"]);
+		$menu_item_uuid = check_str($_POST["menu_item_uuid"]);
 		$menu_item_title = check_str($_POST["menu_item_title"]);
 		$menu_item_str = check_str($_POST["menu_item_str"]);
 		$menu_item_category = check_str($_POST["menu_item_category"]);
@@ -104,7 +102,7 @@ else {
 	if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
-			$menu_item_id = check_str($_POST["menu_item_id"]);
+			$menu_item_uuid = check_str($_POST["menu_item_uuid"]);
 		}
 
 		//check for all required data
@@ -137,7 +135,7 @@ else {
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
-					$highestmenu_item_order = $row[menu_item_order];
+					$highest_menu_item_order = $row[menu_item_order];
 				}
 				unset($prep_statement);
 
@@ -165,7 +163,7 @@ else {
 				$sql .= "'$menu_item_protected', ";
 				$sql .= "'".uuid()."', ";
 				$sql .= "'$menu_item_parent_uuid', ";
-				$sql .= "'".($highestmenu_item_order+1)."', ";
+				$sql .= "'".($highest_menu_item_order+1)."', ";
 				$sql .= "'".$_SESSION["username"]."', ";
 				$sql .= "now() ";
 				$sql .= ")";
@@ -173,7 +171,7 @@ else {
 				unset($sql);
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?menu_id=$menu_id&menu_item_id=$menu_item_id&menu_uuid=$menu_uuid\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?id=$menu_uuid&menu_item_uuid=$menu_item_uuid&menu_uuid=$menu_uuid\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -188,16 +186,21 @@ else {
 				$sql .= "menu_item_category = '$menu_item_category', ";
 				$sql .= "menu_item_desc = '$menu_item_desc', ";
 				$sql .= "menu_item_protected = '$menu_item_protected', ";
-				$sql .= "menu_item_parent_uuid = '$menu_item_parent_uuid', ";
+				if (strlen($menu_item_parent_uuid) == 0) {
+					$sql .= "menu_item_parent_uuid = null, ";
+				}
+				else {
+					$sql .= "menu_item_parent_uuid = '$menu_item_parent_uuid', ";
+				}
 				$sql .= "menu_item_order = '$menu_item_order', ";
 				$sql .= "menu_item_mod_user = '".$_SESSION["username"]."', ";
 				$sql .= "menu_item_mod_date = now() ";
 				$sql .= "where menu_uuid = '$menu_uuid' ";
-				$sql .= "and menu_item_id = '$menu_item_id' ";
+				$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
 				$count = $db->exec(check_sql($sql));
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?menu_id=$menu_id&menu_item_id=$menu_item_id&menu_uuid=$menu_uuid\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?id=$menu_uuid&menu_item_uuid=$menu_item_uuid&menu_uuid=$menu_uuid\">\n";
 				echo "<div align='center'>\n";
 				echo "Edit Complete\n";
 				echo "</div>\n";
@@ -209,12 +212,12 @@ else {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$menu_item_id = $_GET["menu_item_id"];
+		$menu_item_uuid = $_GET["menu_item_uuid"];
 
 		$sql = "";
 		$sql .= "select * from v_menu_items ";
 		$sql .= "where menu_uuid = '$menu_uuid' ";
-		$sql .= "and menu_item_id = '$menu_item_id' ";
+		$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -317,7 +320,7 @@ else {
 			echo "	<td class='vtable'>".$field['group_id']."</td>\n";
 			echo "	<td>\n";
 			if (permission_exists('group_member_delete') || ifgroup("superadmin")) {
-				echo "		<a href='menu_item_edit.php?id=".$field['menu_group_id']."&menu_uuid=".$field['menu_uuid']."&group_id=".$field['group_id']."&menu_item_id=".$menu_item_id."&menu_item_parent_uuid=".$menu_item_parent_uuid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='menu_item_edit.php?id=".$field['menu_group_id']."&menu_uuid=".$field['menu_uuid']."&group_id=".$field['group_id']."&menu_item_uuid=".$menu_item_uuid."&menu_item_parent_uuid=".$menu_item_parent_uuid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -420,9 +423,9 @@ else {
 		echo "			</td>\n";
 		echo "			<td align='right'>";
 		if ($action == "update") {
-			echo "				<input type='hidden' name='menu_item_id' value='$menu_item_id'>";
+			echo "				<input type='hidden' name='menu_item_uuid' value='$menu_item_uuid'>";
 		}
-		echo "				<input type='hidden' name='menu_id' value='$menu_id'>";
+		echo "				<input type='hidden' name='menu_uuid' value='$menu_uuid'>";
 		echo "				<input type='hidden' name='menu_item_uuid' value='$menu_item_uuid'>";
 		echo "				<input type='submit' class='btn' name='submit' value='Save'>\n";
 		echo "			</td>";
