@@ -193,7 +193,7 @@
 	unset ($sql, $prep_statement);
 	if ($v_wake_up_action == 'add') {
 		if ($display_type == "text") {
-			echo "	Wake Up Calls: 	added\n";
+			echo "	Wake Up Calls:		added\n";
 		}
 		$extension_name = 'Wake-Up';
 		$dialplan_order ='900';
@@ -230,7 +230,7 @@
 	}
 	else {
 		if ($display_type == "text") {
-			echo "	Wake Up Calls: 	no change\n";
+			echo "	Wake Up Calls: 		no change\n";
 		}
 	}
 

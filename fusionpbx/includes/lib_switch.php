@@ -4418,8 +4418,8 @@ function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order
 	$sql = "insert into v_dialplan_details ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
-	$sql .= "dialplan_detail_uuid, ";
 	$sql .= "dialplan_uuid, ";
+	$sql .= "dialplan_detail_uuid, ";
 	$sql .= "tag, ";
 	$sql .= "field_order, ";
 	$sql .= "field_type, ";
@@ -4489,101 +4489,103 @@ function sync_package_v_dialplan() {
 		$sql .= " and domain_uuid = $domain_uuid ";
 		$sql .= " order by field_group asc, field_order asc ";
 		$prep_statement_2 = $db->prepare($sql);
-		$prep_statement_2->execute();
-		$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
-		$result_count2 = count($result2);
-		unset ($prep_statement_2, $sql);
+		if ($prep_statement_2) {
+			$prep_statement_2->execute();
+			$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
+			$result_count2 = count($result2);
+			unset ($prep_statement_2, $sql);
 
-		//create a new array that is sorted into groups and put the tags in order conditions, actions, anti-actions
-			$details = '';
-			$previous_tag = '';
-			$details[$group]['condition_count'] = '';
-			//conditions
-				$x = 0;
-				$y = 0;
-				foreach($result2 as $row2) {
-					if ($row2['tag'] == "condition") {
-						//get the group
+			//create a new array that is sorted into groups and put the tags in order conditions, actions, anti-actions
+				$details = '';
+				$previous_tag = '';
+				$details[$group]['condition_count'] = '';
+				//conditions
+					$x = 0;
+					$y = 0;
+					foreach($result2 as $row2) {
+						if ($row2['tag'] == "condition") {
+							//get the group
+								$group = $row2['field_group'];
+							//get the generic type
+								switch ($row2['field_type']) {
+								case "hour":
+									$type = 'time';
+									break;
+								case "minute":
+									$type = 'time';
+									break;
+								case "minute-of-day":
+									$type = 'time';
+									break;
+								case "mday":
+									$type = 'time';
+									break;
+								case "mweek":
+									$type = 'time';
+									break;
+								case "mon":
+									$type = 'time';
+									break;
+								case "yday":
+									$type = 'time';
+									break;
+								case "year":
+									$type = 'time';
+									break;
+								case "wday":
+									$type = 'time';
+									break;
+								case "week":
+									$type = 'time';
+									break;
+								default:
+									$type = 'default';
+								}
+
+							//add the conditions to the details array
+								$details[$group]['condition-'.$x]['tag'] = $row2['tag'];
+								$details[$group]['condition-'.$x]['field_type'] = $row2['field_type'];
+								$details[$group]['condition-'.$x]['dialplan_uuid'] = $row2['dialplan_uuid'];
+								$details[$group]['condition-'.$x]['field_order'] = $row2['field_order'];
+								$details[$group]['condition-'.$x]['field'][$y]['type'] = $row2['field_type'];
+								$details[$group]['condition-'.$x]['field'][$y]['data'] = $row2['field_data'];
+								$details[$group]['condition-'.$x]['field_break'] = $row2['field_break'];
+								$details[$group]['condition-'.$x]['field_group'] = $row2['field_group'];
+								$details[$group]['condition-'.$x]['field_inline'] = $row2['field_inline'];
+								if ($type == "time") {
+									$y++;
+								}
+						}
+						if ($type == "default") {
+							$x++;
+							$y = 0;
+						}
+					}
+
+				//actions
+					$x = 0;
+					foreach($result2 as $row2) {
+						if ($row2['tag'] == "action") {
 							$group = $row2['field_group'];
-						//get the generic type
-							switch ($row2['field_type']) {
-							case "hour":
-								$type = 'time';
-								break;
-							case "minute":
-								$type = 'time';
-								break;
-							case "minute-of-day":
-								$type = 'time';
-								break;
-							case "mday":
-								$type = 'time';
-								break;
-							case "mweek":
-								$type = 'time';
-								break;
-							case "mon":
-								$type = 'time';
-								break;
-							case "yday":
-								$type = 'time';
-								break;
-							case "year":
-								$type = 'time';
-								break;
-							case "wday":
-								$type = 'time';
-								break;
-							case "week":
-								$type = 'time';
-								break;
-							default:
-								$type = 'default';
+							foreach ($row2 as $key => $val) {
+								$details[$group]['action-'.$x][$key] = $val;
 							}
-
-						//add the conditions to the details array
-							$details[$group]['condition-'.$x]['tag'] = $row2['tag'];
-							$details[$group]['condition-'.$x]['field_type'] = $row2['field_type'];
-							$details[$group]['condition-'.$x]['dialplan_uuid'] = $row2['dialplan_uuid'];
-							$details[$group]['condition-'.$x]['field_order'] = $row2['field_order'];
-							$details[$group]['condition-'.$x]['field'][$y]['type'] = $row2['field_type'];
-							$details[$group]['condition-'.$x]['field'][$y]['data'] = $row2['field_data'];
-							$details[$group]['condition-'.$x]['field_break'] = $row2['field_break'];
-							$details[$group]['condition-'.$x]['field_group'] = $row2['field_group'];
-							$details[$group]['condition-'.$x]['field_inline'] = $row2['field_inline'];
-							if ($type == "time") {
-								$y++;
-							}
-					}
-					if ($type == "default") {
+						}
 						$x++;
-						$y = 0;
 					}
-				}
-
-			//actions
-				$x = 0;
-				foreach($result2 as $row2) {
-					if ($row2['tag'] == "action") {
-						$group = $row2['field_group'];
-						foreach ($row2 as $key => $val) {
-							$details[$group]['action-'.$x][$key] = $val;
+				//anti-actions
+					$x = 0;
+					foreach($result2 as $row2) {
+						if ($row2['tag'] == "anti-action") {
+							$group = $row2['field_group'];
+							foreach ($row2 as $key => $val) {
+								$details[$group]['anti-action-'.$x][$key] = $val;
+							}
 						}
+						$x++;
 					}
-					$x++;
-				}
-			//anti-actions
-				$x = 0;
-				foreach($result2 as $row2) {
-					if ($row2['tag'] == "anti-action") {
-						$group = $row2['field_group'];
-						foreach ($row2 as $key => $val) {
-							$details[$group]['anti-action-'.$x][$key] = $val;
-						}
-					}
-					$x++;
-				}
-			unset($result2);
+				unset($result2);
+		}
 
 		$i=1;
 		if ($result_count2 > 0) { 

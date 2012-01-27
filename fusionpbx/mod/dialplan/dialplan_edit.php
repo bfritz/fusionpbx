@@ -93,7 +93,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add" && permission_exists('dialplan_add')) {
 				//add the data into the database
 					$dialplan_uuid = uuid();
-					$sql = "insert into v_dialplan ";
+					$sql = "insert into v_dialplans ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_uuid, ";
@@ -135,7 +135,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('dialplan_edit')) {
 				//update the database
-					$sql = "update v_dialplan set ";
+					$sql = "update v_dialplans set ";
 					$sql .= "domain_uuid = '$domain_uuid', ";
 					$sql .= "extension_name = '$extension_name', ";
 					$sql .= "extension_number = '$extension_number', ";
