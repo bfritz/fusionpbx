@@ -6001,19 +6001,19 @@ if (!function_exists('sync_package_freeswitch')) {
 	function sync_package_freeswitch() {
 		global $config;
 		sync_package_v_settings();
-		sync_package_v_dialplan();
-		sync_package_v_dialplan();
-		sync_package_v_extensions();
-		sync_package_v_gateways();
-		sync_package_v_modules();
-		sync_package_v_public();
-		sync_package_v_public();
-		sync_package_v_vars();
-		//sync_package_v_recordings();
-		sync_package_v_hunt_group();
-		sync_package_v_ivr_menu();
-		sync_package_v_call_center();
-		sync_package_v_fax();
+//		sync_package_v_dialplan();
+//		sync_package_v_dialplan();
+//		sync_package_v_extensions();
+//		sync_package_v_gateways();
+//		sync_package_v_modules();
+//		sync_package_v_public();
+//		sync_package_v_public();
+//		sync_package_v_vars();
+//		//sync_package_v_recordings();
+//		sync_package_v_hunt_group();
+//		sync_package_v_ivr_menu();
+//		sync_package_v_call_center();
+//		sync_package_v_fax();
 	}
 }
 

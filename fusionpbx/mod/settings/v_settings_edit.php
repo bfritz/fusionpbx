@@ -34,14 +34,8 @@ else {
 	exit;
 }
 
-//action add or update
-	if (isset($_REQUEST["id"])) {
-		$action = "update";
-		$setting_uuid = check_str($_REQUEST["id"]);
-	}
-	else {
-		$action = "add";
-	}
+//set the default action to update
+	$action = "update";
 
 //get the http values and set them as php variables
 	if (count($_POST)>0) {
@@ -69,12 +63,8 @@ else {
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
-	$msg = '';
-	if ($action == "update") {
-		$setting_uuid = check_str($_POST["setting_uuid"]);
-	}
-
 	//check for all required data
+		$msg = '';
 		//if (strlen($numbering_plan) == 0) { $msg .= "Please provide: Numbering Plan<br>\n"; }
 		//if (strlen($default_gateway) == 0) { $msg .= "Please provide: Default Gateway<br>\n"; }
 		if (strlen($event_socket_port) == 0) { $msg .= "Please provide: Event Socket Port<br>\n"; }
@@ -109,10 +99,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('settings_edit')) {
-				$setting_uuid = uuid();
 				$sql = "insert into v_settings ";
 				$sql .= "(";
-				$sql .= "setting_uuid, ";
 				$sql .= "numbering_plan, ";
 				$sql .= "default_gateway, ";
 				$sql .= "event_socket_ip_address, ";
@@ -135,7 +123,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$setting_uuid', ";
 				$sql .= "'$numbering_plan', ";
 				$sql .= "'$default_gateway', ";
 				$sql .= "'$event_socket_ip_address', ";
@@ -163,7 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					sync_package_v_settings();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings_edit.php?id=1\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings_edit.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -192,7 +179,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "smtp_from_name = '$smtp_from_name', ";
 				$sql .= "mod_shout_decoder = '$mod_shout_decoder', ";
 				$sql .= "mod_shout_volume = '$mod_shout_volume' ";
-				$sql .= "where setting_uuid = '$setting_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
@@ -200,7 +186,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					sync_package_v_settings();
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings_edit.php?id=1\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings_edit.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -212,10 +198,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$setting_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_settings ";
-		$sql .= "where setting_uuid = '$setting_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -502,10 +486,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (permission_exists('settings_edit')) {
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
-		if ($action == "update") {
-			echo "				<input type='hidden' name='setting_uuid' value='$setting_uuid'>\n";
-		}
-		echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
+		echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
 	}

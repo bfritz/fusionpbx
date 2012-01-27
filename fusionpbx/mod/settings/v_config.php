@@ -14,7 +14,7 @@
 		$apps[$x]['menu'][0]['uuid'] = '148EA42A-3711-3D64-181B-07A6A3C3ED60';
 		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6D56-6D3E-0B1A-D53A2BC10788';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/mod/settings/v_settings_edit.php?id=1';
+		$apps[$x]['menu'][0]['path'] = '/mod/settings/v_settings_edit.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 	
 	//permission details
@@ -33,13 +33,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
-		$y++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'setting_uuid';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$y++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'v_id';
