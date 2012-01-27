@@ -171,20 +171,25 @@ function db_create_table ($apps, $db_type, $table) {
 				$sql = "CREATE TABLE " . $row['table'] . " (\n";
 				$field_count = 0;
 				foreach ($row['fields'] as $field) {
-					if ($field_count > 0 ) { $sql .= ",\n"; }
-					if (is_array($field['name'])) {
-						$sql .= $field['name']['text'] . " ";
+					if ($field['deprecated'] == "true") {
+						//skip this row
 					}
 					else {
-						$sql .= $field['name'] . " ";
+						if ($field_count > 0 ) { $sql .= ",\n"; }
+						if (is_array($field['name'])) {
+							$sql .= $field['name']['text'] . " ";
+						}
+						else {
+							$sql .= $field['name'] . " ";
+						}
+						if (is_array($field['type'])) {
+							$sql .= $field['type'][$db_type];
+						}
+						else {
+							$sql .= $field['type'];
+						}
+						$field_count++;
 					}
-					if (is_array($field['type'])) {
-						$sql .= $field['type'][$db_type];
-					}
-					else {
-						$sql .= $field['type'];
-					}
-					$field_count++;
 				}
 				$sql .= ");\n\n";
 				return $sql;
@@ -200,32 +205,42 @@ function db_insert_into ($apps, $db_type, $table) {
 				$sql = "INSERT INTO " . $row['table'] . " (";
 				$field_count = 0;
 				foreach ($row['fields'] as $field) {
-					if ($field_count > 0 ) { $sql .= ","; }
-					if (is_array($field['name'])) {
-						$sql .= $field['name']['text'];
+					if ($field['deprecated'] == "true") {
+						//skip this field
 					}
 					else {
-						$sql .= $field['name'];
+						if ($field_count > 0 ) { $sql .= ","; }
+						if (is_array($field['name'])) {
+							$sql .= $field['name']['text'];
+						}
+						else {
+							$sql .= $field['name'];
+						}
+						$field_count++;
 					}
-					$field_count++;
 				}
 				$sql .= ")\n";
 				$sql .= "SELECT ";
 				$field_count = 0;
 				foreach ($row['fields'] as $field) {
-					if ($field_count > 0 ) { $sql .= ","; }
-					if (is_array($field['name'])) {
-						if ($field['exists'] == "false") {
-							$sql .= $field['name']['deprecated'];
-						}
-						else {
-							$sql .= $field['name']['text'];
-						}
+					if ($field['deprecated'] == "true") {
+						//skip this field
 					}
 					else {
-						$sql .= $field['name'];
+						if ($field_count > 0 ) { $sql .= ","; }
+						if (is_array($field['name'])) {
+							if ($field['exists'] == "false") {
+								$sql .= $field['name']['deprecated'];
+							}
+							else {
+								$sql .= $field['name']['text'];
+							}
+						}
+						else {
+							$sql .= $field['name'];
+						}
+						$field_count++;
 					}
-					$field_count++;
 				}
 				$sql .= " FROM tmp_".$row['table'].";\n\n";	
 				return $sql;
@@ -286,23 +301,28 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 						}
 					//check if the column exists
 						foreach ($row['fields'] as $z => $field) {
-							if (is_array($field['name'])) {
-								$field_name = $field['name']['text'];
+							if ($field['deprecated'] == "true") {
+								//skip this field
 							}
 							else {
-								$field_name = $field['name'];
-							}
-							if (strlen(field_name) > 0) {
-								if (db_column_exists ($db, $db_type, $db_name, $table_name, $field_name)) {
-									//found
-									$apps[$x]['db'][$y]['fields'][$z]['exists'] = 'true';
+								if (is_array($field['name'])) {
+									$field_name = $field['name']['text'];
 								}
 								else {
-									//not found
-									$apps[$x]['db'][$y]['fields'][$z]['exists'] = 'false';
+									$field_name = $field['name'];
 								}
+								if (strlen(field_name) > 0) {
+									if (db_column_exists ($db, $db_type, $db_name, $table_name, $field_name)) {
+										//found
+										$apps[$x]['db'][$y]['fields'][$z]['exists'] = 'true';
+									}
+									else {
+										//not found
+										$apps[$x]['db'][$y]['fields'][$z]['exists'] = 'false';
+									}
+								}
+								unset($field_name);
 							}
-							unset($field_name);
 						}
 					unset($table_name);
 				}
@@ -321,79 +341,84 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 					if ($row['exists'] == "true") {
 						if (count($row['fields']) > 0) {
 							foreach ($row['fields'] as $z => $field) {
-								//get the data type
-									if (is_array($field['type'])) {
-										$field_type = $field['type'][$db_type];
-									}
-									else {
-										$field_type = $field['type'];
-									}
-								//get the field name
-									if (is_array($field['name'])) {
-										$field_name = $field['name']['text'];
-									}
-									else {
-										$field_name = $field['name'];
-									}
-								//find missing fields and add them
-									if (is_array($field['name'])) {
-										if ($field['exists'] == "false" && !db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
-											$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']['text']." ".$field_type.";\n";
+								if ($field['deprecated'] == "true") {
+									//skip this field
+								}
+								else {
+									//get the data type
+										if (is_array($field['type'])) {
+											$field_type = $field['type'][$db_type];
 										}
-									}
-									else {
-										if ($field['exists'] == "false") {
-											$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']." ".$field_type.";\n";
+										else {
+											$field_type = $field['type'];
 										}
-									}
-								//rename fields where the name has changed
-									if (is_array($field['name'])) {
-										if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
+									//get the field name
+										if (is_array($field['name'])) {
+											$field_name = $field['name']['text'];
+										}
+										else {
+											$field_name = $field['name'];
+										}
+									//find missing fields and add them
+										if (is_array($field['name'])) {
+											if ($field['exists'] == "false" && !db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
+												$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']['text']." ".$field_type.";\n";
+											}
+										}
+										else {
+											if ($field['exists'] == "false") {
+												$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']." ".$field_type.";\n";
+											}
+										}
+									//rename fields where the name has changed
+										if (is_array($field['name'])) {
+											if (db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
+												if ($db_type == "pgsql") {
+													$sql_update .= "ALTER TABLE ".$table_name." RENAME COLUMN ".$field['name']['deprecated']." to ".$field['name']['text'].";\n";
+												}
+												if ($db_type == "mysql") {
+													$field_type = str_replace("AUTO_INCREMENT PRIMARY KEY", "", $field_type);
+													$sql_update .= "ALTER TABLE ".$table_name." CHANGE ".$field['name']['deprecated']." ".$field['name']['text']." ".$field_type.";\n";
+												}
+												if ($db_type == "sqlite") {
+													//a change has been made to the field name
+													$apps[$x]['db'][$y]['rebuild'] = 'true';
+												}
+											}
+										}
+									//change the data type if it has been changed
+										//if the data type in the app db array is different than the type in the database then change the data type
+										$db_field_type = db_column_data_type ($db, $db_type, $db_name, $table_name, $field_name);
+										if ($db_field_type != $field_type) {
 											if ($db_type == "pgsql") {
-												$sql_update .= "ALTER TABLE ".$table_name." RENAME COLUMN ".$field['name']['deprecated']." to ".$field['name']['text'].";\n";
+												if (strtolower($field_type) == "uuid") {
+														$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field_name." TYPE uuid USING\n";
+														$sql_update .= "CAST(regexp_replace(".$field_name.", '([A-Z0-9]{4})([A-Z0-9]{12})', E'\\1-\\2')\n";
+														$sql_update .= "AS uuid);\n";
+												}
+												else {
+													if ($db_field_type = "integer" && strtolower($field_type) == "serial") {
+														//field type has not changed
+													} elseif ($db_field_type = "timestamp without time zone" && strtolower($field_type) == "timestamp") {
+														//field type has not changed
+													} elseif ($db_field_type = "character" && strtolower($field_type) == "char(1)") {
+														//field type has not changed
+													}
+													else {
+														$sql_update .= "-- $db_type, $db_name, $table_name, $field_name ".db_column_data_type ($db, $db_type, $db_name, $table_name, $field_name)."<br>";
+														$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field_name." TYPE ".$field_type.";\n";
+													}
+												}
 											}
 											if ($db_type == "mysql") {
-												$field_type = str_replace("AUTO_INCREMENT PRIMARY KEY", "", $field_type);
-												$sql_update .= "ALTER TABLE ".$table_name." CHANGE ".$field['name']['deprecated']." ".$field['name']['text']." ".$field_type.";\n";
+												$sql_update .= "ALTER TABLE ".$table_name." modify ".$field_name." ".$field_type.";\n";
 											}
 											if ($db_type == "sqlite") {
-												//a change has been made to the field name
+												//a change has been made to the field type
 												$apps[$x]['db'][$y]['rebuild'] = 'true';
 											}
 										}
-									}
-								//change the data type if it has been changed
-									//if the data type in the app db array is different than the type in the database then change the data type
-									$db_field_type = db_column_data_type ($db, $db_type, $db_name, $table_name, $field_name);
-									if ($db_field_type != $field_type) {
-										if ($db_type == "pgsql") {
-											if (strtolower($field_type) == "uuid") {
-													$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field_name." TYPE uuid USING\n";
-													$sql_update .= "CAST(regexp_replace(".$field_name.", '([A-Z0-9]{4})([A-Z0-9]{12})', E'\\1-\\2')\n";
-													$sql_update .= "AS uuid);\n";
-											}
-											else {
-												if ($db_field_type = "integer" && strtolower($field_type) == "serial") {
-													//field type has not changed
-												} elseif ($db_field_type = "timestamp without time zone" && strtolower($field_type) == "timestamp") {
-													//field type has not changed
-												} elseif ($db_field_type = "character" && strtolower($field_type) == "char(1)") {
-													//field type has not changed
-												}
-												else {
-													$sql_update .= "-- $db_type, $db_name, $table_name, $field_name ".db_column_data_type ($db, $db_type, $db_name, $table_name, $field_name)."<br>";
-													$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field_name." TYPE ".$field_type.";\n";
-												}
-											}
-										}
-										if ($db_type == "mysql") {
-											$sql_update .= "ALTER TABLE ".$table_name." modify ".$field_name." ".$field_type.";\n";
-										}
-										if ($db_type == "sqlite") {
-											//a change has been made to the field type
-											$apps[$x]['db'][$y]['rebuild'] = 'true';
-										}
-									}
+								}
 							}
 							unset($column_array);
 						}

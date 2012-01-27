@@ -307,13 +307,15 @@ foreach($v_settings_array as $name => $value) {
 		$sql = "";
 		$sql .= "select * from v_settings ";
 		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-		foreach ($result as &$row) {
-			$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
-			$_SESSION['event_socket_port'] = $row["event_socket_port"];
-			$_SESSION['event_socket_password'] = $row["event_socket_password"];
-			break; //limit to 1 row
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+			foreach ($result as &$row) {
+				$_SESSION['event_socket_ip_address'] = $row["event_socket_ip_address"];
+				$_SESSION['event_socket_port'] = $row["event_socket_port"];
+				$_SESSION['event_socket_password'] = $row["event_socket_password"];
+				break; //limit to 1 row
+			}
 		}
 	}
 
@@ -1629,145 +1631,126 @@ function sync_package_v_settings() {
 	$sql = "";
 	$sql .= "select * from v_settings ";
 	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	foreach ($result as &$row) {
-		//$numbering_plan = $row["numbering_plan"];
-		//$default_gateway = $row["default_gateway"];
-		//$default_area_code = $row["default_area_code"];
-		//$event_socket_ip_address = $row["event_socket_ip_address"];
-		//$event_socket_port = $row["event_socket_port"];
-		//$event_socket_password = $row["event_socket_password"];
-		//$xml_rpc_http_port = $row["xml_rpc_http_port"];
-		//$xml_rpc_auth_realm = $row["xml_rpc_auth_realm"];
-		//$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
-		//$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
-		//$admin_pin = $row["admin_pin"];
-		//$smtp_host = $row["smtp_host"];
-		//$smtp_secure = $row["smtp_secure"];
-		//$smtp_auth = $row["smtp_auth"];
-		//$smtp_username = $row["smtp_username"];
-		//$smtp_password = $row["smtp_password"];
-		//$smtp_from = $row["smtp_from"];
-		//$smtp_from_name = $row["smtp_from_name"];
-		//$mod_shout_decoder = $row["mod_shout_decoder"];
-		//$mod_shout_volume = $row["mod_shout_volume"];
-
-		$fout = fopen($v_secure."/v_config_cli.php","w");
-		$tmp_xml = "<?php\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "//set the email variables\n";
-		$tmp_xml .= "	\$v_smtp_host = \"".$row["smtp_host"]."\";\n";
-		if ($row["smtp_secure"] == "none") {
-			$tmp_xml .= "	\$v_smtp_secure = \"\";\n";
-		}
-		else {
-			$tmp_xml .= "	\$v_smtp_secure = \"".$row["smtp_secure"]."\";\n";
-		}
-		$tmp_xml .= "	\$v_smtp_auth = \"".$row["smtp_auth"]."\";\n";
-		$tmp_xml .= "	\$v_smtp_username = \"".$row["smtp_username"]."\";\n";
-		$tmp_xml .= "	\$v_smtp_password = \"".$row["smtp_password"]."\";\n";
-		$tmp_xml .= "	\$v_smtp_from = \"".$row["smtp_from"]."\";\n";
-		$tmp_xml .= "	\$v_smtp_from_name = \"".$row["smtp_from_name"]."\";\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "//set system dir variables\n";
-		$tmp_xml .= "	\$v_storage_dir = \"".$v_storage_dir."\";\n";
-		$tmp_xml .= "	\$tmp_dir = \"".$tmp_dir."\";\n";
-		$tmp_xml .= "	\$php_dir = \"".$php_dir."\";\n";
-		$tmp_xml .= "	\$v_secure = \"".$v_secure."\";\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "?>";
-		fwrite($fout, $tmp_xml);
-		unset($tmp_xml);
-		fclose($fout);
-
-		$fout = fopen($v_conf_dir."/directory/default/default.xml","w");
-		$tmp_xml = "<include>\n";
-		$tmp_xml .= "  <user id=\"default\"> <!--if id is numeric mailbox param is not necessary-->\n";
-		$tmp_xml .= "    <variables>\n";
-		$tmp_xml .= "      <!--all variables here will be set on all inbound calls that originate from this user -->\n";
-		$tmp_xml .= "      <!-- set these to take advantage of a dialplan localized to this user -->\n";
-		$tmp_xml .= "      <variable name=\"numbering_plan\" value=\"" . $row['numbering_plan'] . "\"/>\n";
-		$tmp_xml .= "      <variable name=\"default_gateway\" value=\"" . $row['default_gateway'] . "\"/>\n";
-		$tmp_xml .= "      <variable name=\"default_area_code\" value=\"" . $row['default_area_code'] . "\"/>\n";
-		$tmp_xml .= "    </variables>\n";
-		$tmp_xml .= "  </user>\n";
-		$tmp_xml .= "</include>\n";
-		fwrite($fout, $tmp_xml);
-		unset($tmp_xml);
-		fclose($fout);
-
-		$event_socket_ip_address = $row['event_socket_ip_address'];
-		if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
-
-		$fout = fopen($v_conf_dir."/autoload_configs/event_socket.conf.xml","w");
-		$tmp_xml = "<configuration name=\"event_socket.conf\" description=\"Socket Client\">\n";
-		$tmp_xml .= "  <settings>\n";
-		$tmp_xml .= "    <param name=\"listen-ip\" value=\"" . $event_socket_ip_address . "\"/>\n";
-		$tmp_xml .= "    <param name=\"listen-port\" value=\"" . $row['event_socket_port'] . "\"/>\n";
-		$tmp_xml .= "    <param name=\"password\" value=\"" . $row['event_socket_password'] . "\"/>\n";
-		$tmp_xml .= "    <!--<param name=\"apply-inbound-acl\" value=\"lan\"/>-->\n";
-		$tmp_xml .= "  </settings>\n";
-		$tmp_xml .= "</configuration>";
-		fwrite($fout, $tmp_xml);
-		unset($tmp_xml, $event_socket_password);
-		fclose($fout);
-
-		$fout = fopen($v_conf_dir."/autoload_configs/xml_rpc.conf.xml","w");
-		$tmp_xml = "<configuration name=\"xml_rpc.conf\" description=\"XML RPC\">\n";
-		$tmp_xml .= "  <settings>\n";
-		$tmp_xml .= "    <!-- The port where you want to run the http service (default 8080) -->\n";
-		$tmp_xml .= "    <param name=\"http-port\" value=\"" . $row['xml_rpc_http_port'] . "\"/>\n";
-		$tmp_xml .= "    <!-- if all 3 of the following params exist all http traffic will require auth -->\n";
-		$tmp_xml .= "    <param name=\"auth-realm\" value=\"" . $row['xml_rpc_auth_realm'] . "\"/>\n";
-		$tmp_xml .= "    <param name=\"auth-user\" value=\"" . $row['xml_rpc_auth_user'] . "\"/>\n";
-		$tmp_xml .= "    <param name=\"auth-pass\" value=\"" . $row['xml_rpc_auth_pass'] . "\"/>\n";
-		$tmp_xml .= "  </settings>\n";
-		$tmp_xml .= "</configuration>\n";
-		fwrite($fout, $tmp_xml);
-		unset($tmp_xml);
-		fclose($fout);
-
-		//shout.conf.xml
-			$fout = fopen($v_conf_dir."/autoload_configs/shout.conf.xml","w");
-			$tmp_xml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
-			$tmp_xml .= "  <settings>\n";
-			$tmp_xml .= "    <!-- Don't change these unless you are insane -->\n";
-			$tmp_xml .= "    <param name=\"decoder\" value=\"" . $row['mod_shout_decoder'] . "\"/>\n";
-			$tmp_xml .= "    <param name=\"volume\" value=\"" . $row['mod_shout_volume'] . "\"/>\n";
-			$tmp_xml .= "    <!--<param name=\"outscale\" value=\"8192\"/>-->\n";
-			$tmp_xml .= "  </settings>\n";
-			$tmp_xml .= "</configuration>";
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+		foreach ($result as &$row) {
+			$fout = fopen($v_secure."/v_config_cli.php","w");
+			$tmp_xml = "<?php\n";
+			$tmp_xml .= "\n";
+			$tmp_xml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
+			$tmp_xml .= "\n";
+			$tmp_xml .= "//set the email variables\n";
+			$tmp_xml .= "	\$v_smtp_host = \"".$row["smtp_host"]."\";\n";
+			if ($row["smtp_secure"] == "none") {
+				$tmp_xml .= "	\$v_smtp_secure = \"\";\n";
+			}
+			else {
+				$tmp_xml .= "	\$v_smtp_secure = \"".$row["smtp_secure"]."\";\n";
+			}
+			$tmp_xml .= "	\$v_smtp_auth = \"".$row["smtp_auth"]."\";\n";
+			$tmp_xml .= "	\$v_smtp_username = \"".$row["smtp_username"]."\";\n";
+			$tmp_xml .= "	\$v_smtp_password = \"".$row["smtp_password"]."\";\n";
+			$tmp_xml .= "	\$v_smtp_from = \"".$row["smtp_from"]."\";\n";
+			$tmp_xml .= "	\$v_smtp_from_name = \"".$row["smtp_from_name"]."\";\n";
+			$tmp_xml .= "\n";
+			$tmp_xml .= "//set system dir variables\n";
+			$tmp_xml .= "	\$v_storage_dir = \"".$v_storage_dir."\";\n";
+			$tmp_xml .= "	\$tmp_dir = \"".$tmp_dir."\";\n";
+			$tmp_xml .= "	\$php_dir = \"".$php_dir."\";\n";
+			$tmp_xml .= "	\$v_secure = \"".$v_secure."\";\n";
+			$tmp_xml .= "\n";
+			$tmp_xml .= "?>";
 			fwrite($fout, $tmp_xml);
 			unset($tmp_xml);
 			fclose($fout);
 
-		//config.lua
-			$fout = fopen($v_scripts_dir."/config.lua","w");
-			$tmp = "--lua include\n\n";
-			$tmp .= "admin_pin = \"".$row["admin_pin"]."\";\n";
-			$tmp .= "sounds_dir = \"".$v_sounds_dir."\";\n";
-			$tmp .= "recordings_dir = \"".$v_recordings_dir."\";\n";
-			$tmp .= "tmp_dir = \"".$tmp_dir."\";\n";
-			fwrite($fout, $tmp);
-			unset($tmp);
+			$fout = fopen($v_conf_dir."/directory/default/default.xml","w");
+			$tmp_xml = "<include>\n";
+			$tmp_xml .= "  <user id=\"default\"> <!--if id is numeric mailbox param is not necessary-->\n";
+			$tmp_xml .= "    <variables>\n";
+			$tmp_xml .= "      <!--all variables here will be set on all inbound calls that originate from this user -->\n";
+			$tmp_xml .= "      <!-- set these to take advantage of a dialplan localized to this user -->\n";
+			$tmp_xml .= "      <variable name=\"numbering_plan\" value=\"" . $row['numbering_plan'] . "\"/>\n";
+			$tmp_xml .= "      <variable name=\"default_gateway\" value=\"" . $row['default_gateway'] . "\"/>\n";
+			$tmp_xml .= "      <variable name=\"default_area_code\" value=\"" . $row['default_area_code'] . "\"/>\n";
+			$tmp_xml .= "    </variables>\n";
+			$tmp_xml .= "  </user>\n";
+			$tmp_xml .= "</include>\n";
+			fwrite($fout, $tmp_xml);
+			unset($tmp_xml);
 			fclose($fout);
 
-		//config.js
-			$fout = fopen($v_scripts_dir."/config.js","w");
-			$tmp = "//javascript include\n\n";
-			$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
-			$tmp .= "var sounds_dir = \"".$v_sounds_dir."\";\n";
-			$tmp .= "var recordings_dir = \"".$v_recordings_dir."\";\n";
-			$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";
-			fwrite($fout, $tmp);
-			unset($tmp);
+			$event_socket_ip_address = $row['event_socket_ip_address'];
+			if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
+
+			$fout = fopen($v_conf_dir."/autoload_configs/event_socket.conf.xml","w");
+			$tmp_xml = "<configuration name=\"event_socket.conf\" description=\"Socket Client\">\n";
+			$tmp_xml .= "  <settings>\n";
+			$tmp_xml .= "    <param name=\"listen-ip\" value=\"" . $event_socket_ip_address . "\"/>\n";
+			$tmp_xml .= "    <param name=\"listen-port\" value=\"" . $row['event_socket_port'] . "\"/>\n";
+			$tmp_xml .= "    <param name=\"password\" value=\"" . $row['event_socket_password'] . "\"/>\n";
+			$tmp_xml .= "    <!--<param name=\"apply-inbound-acl\" value=\"lan\"/>-->\n";
+			$tmp_xml .= "  </settings>\n";
+			$tmp_xml .= "</configuration>";
+			fwrite($fout, $tmp_xml);
+			unset($tmp_xml, $event_socket_password);
 			fclose($fout);
-		break; //limit to 1 row
+
+			$fout = fopen($v_conf_dir."/autoload_configs/xml_rpc.conf.xml","w");
+			$tmp_xml = "<configuration name=\"xml_rpc.conf\" description=\"XML RPC\">\n";
+			$tmp_xml .= "  <settings>\n";
+			$tmp_xml .= "    <!-- The port where you want to run the http service (default 8080) -->\n";
+			$tmp_xml .= "    <param name=\"http-port\" value=\"" . $row['xml_rpc_http_port'] . "\"/>\n";
+			$tmp_xml .= "    <!-- if all 3 of the following params exist all http traffic will require auth -->\n";
+			$tmp_xml .= "    <param name=\"auth-realm\" value=\"" . $row['xml_rpc_auth_realm'] . "\"/>\n";
+			$tmp_xml .= "    <param name=\"auth-user\" value=\"" . $row['xml_rpc_auth_user'] . "\"/>\n";
+			$tmp_xml .= "    <param name=\"auth-pass\" value=\"" . $row['xml_rpc_auth_pass'] . "\"/>\n";
+			$tmp_xml .= "  </settings>\n";
+			$tmp_xml .= "</configuration>\n";
+			fwrite($fout, $tmp_xml);
+			unset($tmp_xml);
+			fclose($fout);
+
+			//shout.conf.xml
+				$fout = fopen($v_conf_dir."/autoload_configs/shout.conf.xml","w");
+				$tmp_xml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
+				$tmp_xml .= "  <settings>\n";
+				$tmp_xml .= "    <!-- Don't change these unless you are insane -->\n";
+				$tmp_xml .= "    <param name=\"decoder\" value=\"" . $row['mod_shout_decoder'] . "\"/>\n";
+				$tmp_xml .= "    <param name=\"volume\" value=\"" . $row['mod_shout_volume'] . "\"/>\n";
+				$tmp_xml .= "    <!--<param name=\"outscale\" value=\"8192\"/>-->\n";
+				$tmp_xml .= "  </settings>\n";
+				$tmp_xml .= "</configuration>";
+				fwrite($fout, $tmp_xml);
+				unset($tmp_xml);
+				fclose($fout);
+
+			//config.lua
+				$fout = fopen($v_scripts_dir."/config.lua","w");
+				$tmp = "--lua include\n\n";
+				$tmp .= "admin_pin = \"".$row["admin_pin"]."\";\n";
+				$tmp .= "sounds_dir = \"".$v_sounds_dir."\";\n";
+				$tmp .= "recordings_dir = \"".$v_recordings_dir."\";\n";
+				$tmp .= "tmp_dir = \"".$tmp_dir."\";\n";
+				fwrite($fout, $tmp);
+				unset($tmp);
+				fclose($fout);
+
+			//config.js
+				$fout = fopen($v_scripts_dir."/config.js","w");
+				$tmp = "//javascript include\n\n";
+				$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
+				$tmp .= "var sounds_dir = \"".$v_sounds_dir."\";\n";
+				$tmp .= "var recordings_dir = \"".$v_recordings_dir."\";\n";
+				$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";
+				fwrite($fout, $tmp);
+				unset($tmp);
+				fclose($fout);
+			break; //limit to 1 row
+		}
+		unset ($prep_statement);
 	}
-	unset ($prep_statement);
 
 	//apply settings reminder
 		$_SESSION["reload_xml"] = true;

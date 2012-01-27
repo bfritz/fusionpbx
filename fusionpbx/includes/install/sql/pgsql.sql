@@ -86,7 +86,7 @@ INSERT INTO v_modules VALUES(82,1,'Valet Parking','mod_valet_parking',NULL,'Appl
 INSERT INTO v_modules VALUES(83,1,'Directory','mod_directory',NULL,'Applications','true','true');
 INSERT INTO v_modules VALUES(84,1,'Call Center','mod_callcenter','Call Center','Applications','true','true');
 SELECT setval('v_modules_module_uuid_seq', (SELECT MAX(module_uuid) FROM v_modules)+1);
-INSERT INTO v_settings (numbering_plan, default_gateway, event_socket_ip_address, event_socket_port, event_socket_password, xml_rpc_http_port, xml_rpc_auth_realm, xml_rpc_auth_user, xml_rpc_auth_pass, admin_pin, smtp_host, smtp_secure, smtp_auth, smtp_username, smtp_password, smtp_from, smtp_from_name, mod_shout_decoder, mod_shout_volume) VALUES (1,'US','','127.0.0.1',8021,'ClueCon',8787,'localhost','xmlrpc','7e4d3i',1234,'','none','','','','','Voicemail','i386',0.3);
+INSERT INTO v_settings (numbering_plan, event_socket_ip_address, event_socket_port, event_socket_password, xml_rpc_http_port, xml_rpc_auth_realm, xml_rpc_auth_user, xml_rpc_auth_pass, admin_pin, smtp_host, smtp_secure, smtp_auth, smtp_username, smtp_password, smtp_from, smtp_from_name, mod_shout_decoder, mod_shout_volume) VALUES ('US','127.0.0.1',8021,'ClueCon',8787,'localhost','xmlrpc','7e4d3i',1234,'','none','','','','','Voicemail','i386',0.3);
 INSERT INTO v_vars VALUES(1,1,'sound_prefix','$${base_dir}/sounds/en/us/callie','Sound','true',3,'U2V0cyB0aGUgc291bmQgZGlyZWN0b3J5Lg==');
 INSERT INTO v_vars VALUES(1,2,'domain','$${local_ip_v4}','Domain','true',1,'U2V0cyB0aGUgZGVmYXVsdCBkb21haW4u');
 INSERT INTO v_vars VALUES(1,3,'domain_name','$${domain}','Domain','true',2,'');

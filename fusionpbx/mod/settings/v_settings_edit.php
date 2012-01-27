@@ -33,9 +33,31 @@ else {
 	echo "access denied";
 	exit;
 }
+	
+//get the number of rows in v_extensions 
+	$sql = "";
+	$sql .= " select count(*) as num_rows from v_settings ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$num_rows = 0;
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+		if ($row['num_rows'] > 0) {
+			$num_rows = $row['num_rows'];
+		}
+		else {
+			$num_rows = 0;
+		}
+	}
+	unset($prep_statement, $result);
 
-//set the default action to update
-	$action = "update";
+//set the action
+	if ($num_rows == 0) {
+		$action = "add";
+	}
+	else {
+		$action = "update";
+	}
 
 //get the http values and set them as php variables
 	if (count($_POST)>0) {
@@ -102,7 +124,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "insert into v_settings ";
 				$sql .= "(";
 				$sql .= "numbering_plan, ";
-				$sql .= "default_gateway, ";
 				$sql .= "event_socket_ip_address, ";
 				$sql .= "event_socket_port, ";
 				$sql .= "event_socket_password, ";
@@ -124,7 +145,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$numbering_plan', ";
-				$sql .= "'$default_gateway', ";
 				$sql .= "'$event_socket_ip_address', ";
 				$sql .= "'$event_socket_port', ";
 				$sql .= "'$event_socket_password', ";
@@ -161,7 +181,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update" && permission_exists('settings_edit')) {
 				$sql = "update v_settings set ";
 				$sql .= "numbering_plan = '$numbering_plan', ";
-				$sql .= "default_gateway = '$default_gateway', ";
 				$sql .= "event_socket_ip_address = '$event_socket_ip_address', ";
 				$sql .= "event_socket_port = '$event_socket_port', ";
 				$sql .= "event_socket_password = '$event_socket_password', ";
@@ -197,35 +216,36 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	} //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
-	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+	if ($_POST["persistformvar"] != "true") {
 		$sql = "";
 		$sql .= "select * from v_settings ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
-		foreach ($result as &$row) {
-			$numbering_plan = $row["numbering_plan"];
-			$default_gateway = $row["default_gateway"];
-			$event_socket_ip_address = $row["event_socket_ip_address"];
-			$event_socket_port = $row["event_socket_port"];
-			$event_socket_password = $row["event_socket_password"];
-			$xml_rpc_http_port = $row["xml_rpc_http_port"];
-			$xml_rpc_auth_realm = $row["xml_rpc_auth_realm"];
-			$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
-			$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
-			$admin_pin = $row["admin_pin"];
-			$smtp_host = $row["smtp_host"];
-			$smtp_secure = $row["smtp_secure"];
-			$smtp_auth = $row["smtp_auth"];
-			$smtp_username = $row["smtp_username"];
-			$smtp_password = $row["smtp_password"];
-			$smtp_from = $row["smtp_from"];
-			$smtp_from_name = $row["smtp_from_name"];
-			$mod_shout_decoder = $row["mod_shout_decoder"];
-			$mod_shout_volume = $row["mod_shout_volume"];
-			break; //limit to 1 row
+		$prep_statement = $db->prepare($sql);
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			foreach ($result as &$row) {
+				$numbering_plan = $row["numbering_plan"];
+				$event_socket_ip_address = $row["event_socket_ip_address"];
+				$event_socket_port = $row["event_socket_port"];
+				$event_socket_password = $row["event_socket_password"];
+				$xml_rpc_http_port = $row["xml_rpc_http_port"];
+				$xml_rpc_auth_realm = $row["xml_rpc_auth_realm"];
+				$xml_rpc_auth_user = $row["xml_rpc_auth_user"];
+				$xml_rpc_auth_pass = $row["xml_rpc_auth_pass"];
+				$admin_pin = $row["admin_pin"];
+				$smtp_host = $row["smtp_host"];
+				$smtp_secure = $row["smtp_secure"];
+				$smtp_auth = $row["smtp_auth"];
+				$smtp_username = $row["smtp_username"];
+				$smtp_password = $row["smtp_password"];
+				$smtp_from = $row["smtp_from"];
+				$smtp_from_name = $row["smtp_from_name"];
+				$mod_shout_decoder = $row["mod_shout_decoder"];
+				$mod_shout_volume = $row["mod_shout_volume"];
+				break; //limit to 1 row
+			}
+			unset ($prep_statement);
 		}
-		unset ($prep_statement);
 	}
 
 //show the header
