@@ -122,7 +122,7 @@ require_once "includes/paging.php";
 			foreach($result as $row) {
 				echo "<tr >\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_name']."</td>\n";
-				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_extension']."</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_extension']."&nbsp;</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_direct_dial']."</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_enabled']."</td>\n";
 				echo "	<td valign='top' class='row_stylebg'>".$row['ivr_menu_desc']."&nbsp;</td>\n";

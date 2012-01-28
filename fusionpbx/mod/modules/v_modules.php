@@ -59,215 +59,20 @@ if (strlen($_GET["a"]) > 0) {
 	}
 }
 
-if (!function_exists('switch_module_active')) {
-	function switch_module_active($fp, $module_name) {
-		if (!$fp) {
-			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-		}
-		if ($fp) {
-			$cmd = "api module_exists $module_name";
-			$response = trim(event_socket_request($fp, $cmd));
-			if ($response == "true") {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		else {
-			return false;
-		}
-	}
-}
-
-if (!function_exists('switch_module_exists')) {
-	function switch_module_exists($modules, $module_name) {
-		//set the default
-			$result = false;
-		//look for the module
-			foreach ($modules as &$row) {
-				if ($row['module_name'] == $module_name) {
-					$result = true;
-					break;
-				}
-			}
-		//return the result
-			return $result;
-	}
-}
-
-if (!function_exists('switch_module_info')) {
-	function switch_module_info($module_name) {
-		$module_label = substr($module_name, 4);
-		$module_label = ucwords(str_replace("_", " ", $module_label));
-		$mod['module_label'] = $module_label;
-		$mod['module_name'] = $module_name;
-		$mod['module_enabled'] = 'false';
-		$mod['module_default_enabled'] = 'false';
-		$mod['module_desc'] = '';
-		switch ($module_name) {
-			case "mod_distributor":
-				$mod['module_category'] = 'Applications';
-				$mod['module_desc'] = 'Round robin call distribution.';
-				break;
-			case "mod_say_ru":
-				$mod['module_label'] = 'Russian';
-				$mod['module_category'] = 'Say';
-				break;
-			case "mod_cdr_sqlite":
-				$mod['module_label'] = 'CDR SQLite';
-				$mod['module_category'] = 'Event Handlers';
-				$mod['module_desc'] = 'SQLite call detail record handler.';
-				break;
-			case "mod_pocketsphinx":
-				$mod['module_label'] = 'PocketSphinx';
-				$mod['module_category'] = 'ASR / TTS';
-				$mod['module_desc'] = 'Speech Recognition.';
-				break;
-			case "mod_tts_commandline":
-				$mod['module_label'] = 'TTS Commandline';
-				$mod['module_category'] = 'ASR / TTS';
-				$mod['module_desc'] = 'Commandline text to speech engine.';
-				break;
-			case "mod_dialplan_asterisk":
-				$mod['module_category'] = 'Dialplan Interfaces';
-				$mod['module_desc'] = 'Allows Asterisk dialplans.';
-				break;
-			case "mod_spidermonkey_socket":
-				$mod['module_category'] = 'Languages';
-				$mod['module_desc'] = 'Javascript socket support.';
-				break;
-			case "mod_nibblebill":
-				$mod['module_category'] = 'Applications';
-				$mod['module_desc'] = 'Billing module.';
-				break;
-			case "mod_spidermonkey_core_db":
-				$mod['module_category'] = 'Languages';
-				$mod['module_desc'] = 'Javascript support for SQLite.';
-				break;
-			case "mod_curl":
-				$mod['module_category'] = 'Applications';
-				$mod['module_desc'] = 'Allows scripts to make HTTP requests and return responses in plain text or JSON.';
-				break;
-			case "mod_db":
-				$mod['module_label'] = 'DB';
-				$mod['module_category'] = 'Applications';
-				$mod['module_desc'] = 'Database key / value storage functionality, dialing and limit backend.';
-				$mod['module_enabled'] = 'true';
-				$mod['module_default_enabled'] = 'true';
-				break;
-			case "mod_avmd":
-				$mod['module_label'] = 'AVMD';
-				$mod['module_category'] = 'Applications';
-				$mod['module_desc'] = 'Advanced voicemail beep detection.';
-				break;
-			case "mod_spidermonkey_teletone":
-				$mod['module_category'] = 'Languages';
-				$mod['module_desc'] = 'Javascript teletone support.';
-				break;
-			case "mod_spidermonkey_curl":
-				$mod['module_category'] = 'Languages';
-				$mod['module_desc'] = 'Javascript curl support.';
-				break;
-			case "mod_lcr":
-				$mod['module_label'] = 'LCR';
-				$mod['module_category'] = 'Applications';
-				$mod['module_desc'] = 'Least cost routing.';
-				break;
-			case "mod_cluechoo":
-				$mod['module_category'] = 'Applications';
-				$mod['module_desc'] = 'A framework demo module.';
-				break;
-			case "mod_syslog":
-				$mod['module_label'] = 'Syslog';
-				$mod['module_category'] = 'Loggers';
-				$mod['module_desc'] = 'Send logs to a remote syslog server.';
-				break;
-			case "mod_cidlookup":
-				$mod['module_label'] = 'CID Lookup';
-				$mod['module_category'] = 'Applications';
-				$mod['module_desc'] = 'Lookup caller id info.';
-				break;
-			case "mod_bv":
-				$mod['module_label'] = 'BV';
-				$mod['module_category'] = 'Codecs';
-				$mod['module_desc'] = 'BroadVoice16 and BroadVoice32 audio codecs.';
-				break;
-			default:
-				$mod['module_category'] = 'Auto';
-		}
-		return $mod;
-	}
-}
-
-//get the list of modules
-	$sql = "";
-	$sql .= " select * from v_modules ";
-    if (strlen($order_by)> 0) { 
-		$sql .= "order by $order_by $order "; 
-	}
-	else {
-		$sql .= "order by module_category,  module_label"; 
-	}
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$modules = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	$module_count = count($modules);
-	unset ($prep_statement, $sql);
-
-//add missing modules for more module info see http://wiki.freeswitch.com/wiki/Modules
-	if ($handle = opendir($v_mod_dir)) {
-		$modules_new = '';
-		$module_found = false;
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && substr($file, -3) == ".so") {
-				$module_name = substr($file, 0, -3);
-				if (!switch_module_exists($modules, $module_name)) {
-					//set module found to true
-						$module_found = true;
-					//get the module array
-						$mod = switch_module_info($module_name);
-					//append the module label
-						$modules_new .= "<li>".$mod['module_label']."</li>\n";
-					//insert the data
-						$module_uuid = uuid();
-						$sql = "insert into v_modules ";
-						$sql .= "(";
-						$sql .= "module_uuid, ";
-						$sql .= "module_label, ";
-						$sql .= "module_name, ";
-						$sql .= "module_desc, ";
-						$sql .= "module_category, ";
-						$sql .= "module_enabled, ";
-						$sql .= "module_default_enabled ";
-						$sql .= ")";
-						$sql .= "values ";
-						$sql .= "(";
-						$sql .= "'".$mod['module_uuid']."', ";
-						$sql .= "'".$mod['module_label']."', ";
-						$sql .= "'".$mod['module_name']."', ";
-						$sql .= "'".$mod['module_desc']."', ";
-						$sql .= "'".$mod['module_category']."', ";
-						$sql .= "'".$mod['module_enabled']."', ";
-						$sql .= "'".$mod['module_default_enabled']."' ";
-						$sql .= ")";
-						$db->exec(check_sql($sql));
-						unset($sql);
-				}
-			}
-		}
-		closedir($handle);
-		if ($module_found) {
-			sync_package_v_modules();
-			$msg = "<strong>Added New Modules:</strong><br />\n";
-			$msg .= "<ul>\n";
-			$msg .= $modules_new;
-			$msg .= "</ul>\n";
-		}
-	}
+//use the module class to get the list of modules from the db and add any missing modules
+	require_once "includes/classes/switch_modules.php";
+	$mod = new switch_modules;
+	$mod->db = $db;
+	$mod->v_mod_dir = $v_mod_dir;
+	$mod->get_modules();
+	$result = $mod->modules;
+	$module_count = count($result);
+	$mod->synch();
+	$msg = $mod->msg;
 
 //show the msg
 	if ($msg) {
+		sync_package_v_modules();
 		echo "<div align='center'>\n";
 		echo "<table width='40%'>\n";
 		echo "<tr>\n";
@@ -283,7 +88,6 @@ if (!function_exists('switch_module_info')) {
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
 	echo "      <br>";
@@ -305,28 +109,24 @@ if (!function_exists('switch_module_info')) {
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	$tmp_module_header = "\n";
 	$tmp_module_header .= "<tr>\n";
-	//$tmp_module_header .= thorder_by('module_category', 'Module Category', $order_by, $order);
-	$tmp_module_header .= thorder_by('module_label', 'Label', $order_by, $order);
-	//$tmp_module_header .= thorder_by('module_name', 'Module Name', $order_by, $order);
-	$tmp_module_header .= thorder_by('module_desc', 'Description', $order_by, $order);
+	//$tmp_module_header .= "<th>Module Category</th>\n";
+	$tmp_module_header .= "<th>Label</th>\n";
+	//$tmp_module_header .= "<th>Module Name</th>\n";
+	$tmp_module_header .= "<th>Description</th>\n";
 	$tmp_module_header .= "<th>Status</th>\n";
 	$tmp_module_header .= "<th>Action</th>\n";
-	$tmp_module_header .= thorder_by('module_enabled', 'Enabled', $order_by, $order);
-	//$tmp_module_header .= thorder_by('module_default_enabled', 'Default Enabled', $order_by, $order);
+	$tmp_module_header .= "<th>Enabled</th>\n";
+	//$tmp_module_header .= "<th>Default Enabled</th>\n";
 	$tmp_module_header .= "<td align='right' width='42'>\n";
 	$tmp_module_header .= "	<a href='v_modules_edit.php' alt='add'>$v_link_label_add</a>\n";
 	$tmp_module_header .= "</td>\n";
 	$tmp_module_header .= "<tr>\n";
 
-	if ($module_count == 0) {
-		//no results
-	}
-	else { //received results
+	if ($module_count > 0) {
 		$prev_module_category = '';
-		foreach($modules as $row) {
+		foreach($result as $row) {
 			if ($prev_module_category != $row["module_category"]) {
 				$c=0;
 				if (strlen($prev_module_category) > 0) {
@@ -346,7 +146,6 @@ if (!function_exists('switch_module_info')) {
 					echo "</td>\n";
 					echo "</tr>\n";
 				}
-
 				echo "<tr><td colspan='4' align='left'>\n";
 				echo "	<br />\n";
 				echo "	<br />\n";
@@ -359,7 +158,7 @@ if (!function_exists('switch_module_info')) {
 			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_label"]."</td>\n";
 			//echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_name"]."</td>\n";
 			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_desc"]."&nbsp;</td>\n";
-			if (switch_module_active($fp, $row["module_name"])) {
+			if ($mod->active($row["module_name"])) {
 				echo "   <td valign='top' class='".$row_style[$c]."'>Running</td>\n";
 				echo "   <td valign='top' class='".$row_style[$c]."'><a href='v_modules.php?a=stop&m=".$row["module_name"]."' alt='stop'>Stop</a></td>\n";
 			}
