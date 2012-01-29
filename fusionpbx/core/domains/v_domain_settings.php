@@ -75,8 +75,8 @@ require_once "includes/paging.php";
 		unset ($prep_statement, $sql);
 
 	$c = 0;
-	$row_style["0"] = "row_style_0";
-	$row_style["1"] = "row_style_1";
+	$row_style["0"] = "row_style0";
+	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
@@ -91,9 +91,7 @@ require_once "includes/paging.php";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_uuid']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_value']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
@@ -105,7 +103,6 @@ require_once "includes/paging.php";
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
-
 
 	echo "<tr>\n";
 	echo "<td colspan='4' align='left'>\n";

@@ -10,13 +10,12 @@
 		$apps[$x]['description']['en'] = '';
 
 	//menu details
-		$y = 0;
-		$apps[$x]['menu'][$y]['title']['en'] = 'Domains';
-		$apps[$x]['menu'][$y]['guid'] = '4FA7E90B-6D6C-12D4-712F-62857402B801';
-		$apps[$x]['menu'][$y]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
-		$apps[$x]['menu'][$y]['category'] = 'internal';
-		$apps[$x]['menu'][$y]['path'] = '/core/domains/v_domains.php';
-		$apps[$x]['menu'][$y]['groups'][] = 'superadmin';
+		$apps[$x]['menu'][0]['title']['en'] = 'Domains';
+		$apps[$x]['menu'][0]['uuid'] = '4FA7E90B-6D6C-12D4-712F-62857402B801';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['category'] = 'internal';
+		$apps[$x]['menu'][0]['path'] = '/core/domains/v_domains.php';
+		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
 		$y = 0;
