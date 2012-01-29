@@ -30,7 +30,6 @@
 	$mod->db = $db;
 	$mod->v_mod_dir = $v_mod_dir;
 	$mod->get_modules();
-	$result = $mod->modules;
 	$mod->synch();
 	$msg = $mod->msg;
 
