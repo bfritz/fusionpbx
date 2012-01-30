@@ -161,6 +161,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$var_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_vars ";
+		$sql .= "where var_uuid = '$var_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
