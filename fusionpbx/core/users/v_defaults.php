@@ -49,20 +49,22 @@
 			$tmp[$x]['group_name'] = 'agent';
 			$tmp[$x]['group_desc'] = 'Call Center Agent Group';
 			foreach($tmp as $row) {
-				$sql = "insert into v_groups ";
-				$sql .= "(";
-				$sql .= "domain_uuid, ";
-				$sql .= "group_id, ";
-				$sql .= "group_desc ";
-				$sql .= ")";
-				$sql .= "values ";
-				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
-				$sql .= "'".$row['group_name']."', ";
-				$sql .= "'".$row['group_desc']."' ";
-				$sql .= ")";
-				$db_tmp->exec(check_sql($sql));
-				unset($sql);
+				if (strlen($row['group_name']) > 0) {
+					$sql = "insert into v_groups ";
+					$sql .= "(";
+					$sql .= "domain_uuid, ";
+					$sql .= "group_id, ";
+					$sql .= "group_desc ";
+					$sql .= ")";
+					$sql .= "values ";
+					$sql .= "(";
+					$sql .= "'$domain_uuid', ";
+					$sql .= "'".$row['group_name']."', ";
+					$sql .= "'".$row['group_desc']."' ";
+					$sql .= ")";
+					$db->exec(check_sql($sql));
+					unset($sql);
+				}
 			}
 		}
 	}
