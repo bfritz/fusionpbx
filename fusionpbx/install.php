@@ -758,7 +758,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "server_uuid, ";
-		$sql .= "server_name, ";
+		$sql .= "server_name ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
