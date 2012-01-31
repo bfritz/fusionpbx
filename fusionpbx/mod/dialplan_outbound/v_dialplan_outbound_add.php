@@ -399,7 +399,7 @@ else {
 
 					//add the main dialplan include entry
 						$dialplan_uuid = uuid();
-						$sql = "insert into v_dialplan ";
+						$sql = "insert into v_dialplans ";
 						$sql .= "(";
 						$sql .= "domain_uuid, ";
 						$sql .= "dialplan_uuid, ";
@@ -864,120 +864,6 @@ function type_onchange(field_type) {
 	echo "    </span></td>\n";
 	echo "</tr>";
 
-	/*
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Condition 1:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<table style='width: 60%;' border='0'>\n";
-	echo "	<tr>\n";
-	echo "	<td style='width: 62px;'>Field</td>\n";
-	echo "	<td style='width: 35%;'>\n";
-	echo "    <select class='formfld' name='condition_field_1' id='condition_field_1' onchange='type_onchange(\"condition_field_1\");' style='width:100%'>\n";
-	echo "    <option value=''></option>\n";
-	if (strlen($condition_field_1) > 0) {
-		echo "    <option value='$condition_field_1' selected>$condition_field_1</option>\n";
-	}
-	echo "	<optgroup label='Field'>\n";
-	echo "		<option value='context'>context</option>\n";
-	echo "		<option value='username'>username</option>\n";
-	echo "		<option value='rdnis'>rdnis</option>\n";
-	echo "		<option value='destination_number'>destination_number</option>\n";
-	echo "		<option value='public'>public</option>\n";
-	echo "		<option value='caller_id_name'>caller_id_name</option>\n";
-	echo "		<option value='caller_id_number'>caller_id_number</option>\n";
-	echo "		<option value='ani'>ani</option>\n";
-	echo "		<option value='ani2'>ani2</option>\n";
-	echo "		<option value='uuid'>uuid</option>\n";
-	echo "		<option value='source'>source</option>\n";
-	echo "		<option value='chan_name'>chan_name</option>\n";
-	echo "		<option value='network_addr'>network_addr</option>\n";
-	echo "	</optgroup>\n";
-	echo "	<optgroup label='Time'>\n";
-	echo "		<option value='hour'>hour</option>\n";
-	echo "		<option value='minute'>minute</option>\n";
-	echo "		<option value='minute-of-day'>minute of day</option>\n";
-	echo "		<option value='mday'>day of month</option>\n";
-	echo "		<option value='mweek'>week of month</option>\n";
-	echo "		<option value='mon'>month</option>\n";
-	echo "		<option value='yday'>day of year</option>\n";
-	echo "		<option value='year'>year</option>\n";
-	echo "		<option value='wday'>day of week</option>\n";
-	echo "		<option value='week'>week</option>\n";
-	echo "	</optgroup>\n";
-	echo "    </select><br />\n";
-	echo "	</td>\n";
-	echo "	<td style='width: 73px;'>&nbsp; Expression</td>\n";
-	echo "	<td>\n";
-	echo "		<input class='formfld' type='text' name='condition_expression_1' maxlength='255' style='width:100%' value=\"$condition_expression_1\">\n";
-	echo "	</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "	<div id='desc_condition_expression_1'></div>\n";
-	echo "	The condition is optional. It is used to set additional conditons on the outbound route restricting the route to a more specific use. ";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Condition 2\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-
-	echo "	<table style='width: 60%;' border='0'>\n";
-	echo "	<tr>\n";
-	echo "	<td align='left' style='width: 62px;'>\n";
-	echo "		Field:\n";
-	echo "	</td>\n";
-	echo "	<td style='width: 35%;' align='left'>\n";
-	echo "    <select class='formfld' name='condition_field_2' id='condition_field_2' onchange='type_onchange(\"condition_field_2\");' style='width:100%'>\n";
-	echo "    <option value=''></option>\n";
-	if (strlen($condition_field_2) > 0) {
-		echo "    <option value='$condition_field_2' selected>$condition_field_2</option>\n";
-	}
-	echo "	<optgroup label='Field'>\n";
-	echo "		<option value='context'>context</option>\n";
-	echo "		<option value='username'>username</option>\n";
-	echo "		<option value='rdnis'>rdnis</option>\n";
-	echo "		<option value='destination_number'>destination_number</option>\n";
-	echo "		<option value='public'>public</option>\n";
-	echo "		<option value='caller_id_name'>caller_id_name</option>\n";
-	echo "		<option value='caller_id_number'>caller_id_number</option>\n";
-	echo "		<option value='ani'>ani</option>\n";
-	echo "		<option value='ani2'>ani2</option>\n";
-	echo "		<option value='uuid'>uuid</option>\n";
-	echo "		<option value='source'>source</option>\n";
-	echo "		<option value='chan_name'>chan_name</option>\n";
-	echo "		<option value='network_addr'>network_addr</option>\n";
-	echo "	</optgroup>\n";
-	echo "	<optgroup label='Time'>\n";
-	echo "		<option value='hour'>hour</option>\n";
-	echo "		<option value='minute'>minute</option>\n";
-	echo "		<option value='minute-of-day'>minute of day</option>\n";
-	echo "		<option value='mday'>day of month</option>\n";
-	echo "		<option value='mweek'>week of month</option>\n";
-	echo "		<option value='mon'>month</option>\n";
-	echo "		<option value='yday'>day of year</option>\n";
-	echo "		<option value='year'>year</option>\n";
-	echo "		<option value='wday'>day of week</option>\n";
-	echo "		<option value='week'>week</option>\n";
-	echo "	</optgroup>\n";
-	echo "	</select><br />\n";
-	echo "	</td>\n";
-	echo "	<td style='width: 73px;' align='left'>\n";
-	echo "		&nbsp; Expression:\n";
-	echo "	</td>\n";
-	echo "	<td>\n";
-	echo "		<input class='formfld' type='text' name='condition_expression_2' maxlength='255' style='width:100%' value=\"$condition_expression_2\">\n";
-	echo "	</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "	<div id='desc_condition_expression_2'></div>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	*/
-
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Prefix:\n";
@@ -1020,13 +906,13 @@ function type_onchange(field_type) {
 	echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
 	//echo "    <option value=''></option>\n";
 	if ($enabled == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+		echo "    <option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($enabled == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";

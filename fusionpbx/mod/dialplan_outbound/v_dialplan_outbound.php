@@ -115,7 +115,7 @@ $order = $_GET["order"];
 				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 			}
 			else {
-				$sql .= " or domain_uuid = $domain_uuid \n";
+				$sql .= " or domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 			}
 			$x++;
@@ -150,7 +150,7 @@ $order = $_GET["order"];
 				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 			}
 			else {
-				$sql .= " or domain_uuid = $domain_uuid \n";
+				$sql .= " or domain_uuid = '$domain_uuid' \n";
 				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
 			}
 			$x++;
