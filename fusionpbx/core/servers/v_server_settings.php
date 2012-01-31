@@ -78,7 +78,7 @@ require_once "includes/paging.php";
 		}
 
 	//prepare to page the results
-		$rows_per_page = 10;
+		$rows_per_page = 100;
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
@@ -106,10 +106,9 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('server_uuid', 'Server_uuid', $order_by, $order);
 	echo thorder_by('server_setting_category', 'Category', $order_by, $order);
-	echo thorder_by('server_setting_value', 'Value', $order_by, $order);
 	echo thorder_by('server_setting_name', 'Name', $order_by, $order);
+	echo thorder_by('server_setting_value', 'Value', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_server_settings_edit.php?server_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
@@ -117,13 +116,10 @@ require_once "includes/paging.php";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_uuid']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_uuid']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_setting_category']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_setting_value']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_setting_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_setting_value']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_server_settings_edit.php?server_uuid=".$row['server_uuid']."&id=".$row['server_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			echo "		<a href='v_server_settings_delete.php?server_uuid=".$row['server_uuid']."&id=".$row['server_setting_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
