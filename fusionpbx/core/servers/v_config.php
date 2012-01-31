@@ -10,12 +10,12 @@
 		$apps[$x]['description']['en'] = '';
 
 	//menu details
-		$apps[$x]['menu'][$y]['title']['en'] = 'Servers';
-		$apps[$x]['menu'][$y]['guid'] = 'F35EE905-1F30-7529-7420-35FC77E47882';
-		$apps[$x]['menu'][$y]['parent_guid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
-		$apps[$x]['menu'][$y]['category'] = 'internal';
-		$apps[$x]['menu'][$y]['path'] = '/core/servers/v_servers.php';
-		$apps[$x]['menu'][$y]['groups'][] = 'superadmin';
+		$apps[$x]['menu'][0]['title']['en'] = 'Servers';
+		$apps[$x]['menu'][0]['uuid'] = 'F35EE905-1F30-7529-7420-35FC77E47882';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['category'] = 'internal';
+		$apps[$x]['menu'][0]['path'] = '/core/servers/v_servers.php';
+		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
 		$y = 0;
@@ -97,6 +97,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_category';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the category.';
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_name';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the name.';
@@ -104,5 +108,5 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_value';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the value.';
-		$z++;
+
 ?>

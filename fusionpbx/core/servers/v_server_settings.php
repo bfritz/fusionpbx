@@ -49,20 +49,21 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' nowrap><b>Servers</b></td>\n";
+	echo "		<td width='50%' nowrap><b>Server Setting List</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2'>\n";
-	echo "			Servers Settings<br /><br />\n";
+	echo "			Server settings are assigned to Domains.<br /><br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
 
 	//prepare to page the results
 		$sql = "";
-		$sql .= " select count(*) as num_rows from v_servers ";
+		$sql .= " select count(*) as num_rows from v_server_settings ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql .= " and server_uuid = '$server_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
@@ -84,10 +85,11 @@ require_once "includes/paging.php";
 		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
 		$offset = $rows_per_page * $page; 
 
-	//get the  list
+	//get the server list
 		$sql = "";
-		$sql .= " select * from v_servers ";
+		$sql .= " select * from v_server_settings ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql .= " and server_uuid = '$server_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -104,10 +106,12 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('server_name', 'Server Name', $order_by, $order);
-	echo thorder_by('server_description', 'Description', $order_by, $order);
+	echo thorder_by('server_uuid', 'Server_uuid', $order_by, $order);
+	echo thorder_by('server_setting_category', 'Category', $order_by, $order);
+	echo thorder_by('server_setting_value', 'Value', $order_by, $order);
+	echo thorder_by('server_setting_name', 'Name', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_servers_edit.php' alt='add'>$v_link_label_add</a>\n";
+	echo "	<a href='v_server_settings_edit.php?server_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -115,11 +119,14 @@ require_once "includes/paging.php";
 		foreach($result as $row) {
 			//print_r( $row );
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_name']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_description']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_uuid']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_uuid']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_setting_category']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_setting_value']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['server_setting_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_servers_edit.php?id=".$row[server_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_servers_delete.php?id=".$row[server_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='v_server_settings_edit.php?server_uuid=".$row['server_uuid']."&id=".$row['server_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_server_settings_delete.php?server_uuid=".$row['server_uuid']."&id=".$row['server_setting_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -129,13 +136,13 @@ require_once "includes/paging.php";
 
 
 	echo "<tr>\n";
-	echo "<td colspan='3' align='left'>\n";
+	echo "<td colspan='6' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_servers_edit.php' alt='add'>$v_link_label_add</a>\n";
+	echo "			<a href='v_server_settings_edit.php?server_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
