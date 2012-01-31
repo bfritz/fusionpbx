@@ -157,7 +157,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 						//use the server's time zone to ensure it matches the time zone used by freeswitch
 							date_default_timezone_set($_SESSION['time_zone']['system']);
 						//create the api record command and send it over event socket
-							$switch_cmd = "api uuid_record ".$uuid." start ".$v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d")."/".$uuid.".wav";
+							$switch_cmd = "api uuid_record ".$uuid." start ".$switch_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d")."/".$uuid.".wav";
 							$result2 = trim(event_socket_request($fp, $switch_cmd));
 					}
 				}

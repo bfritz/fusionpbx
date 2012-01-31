@@ -56,8 +56,8 @@ if (strlen($id)>0) {
 	unset ($prep_statement, $sql);
 
 	$publicincludefilename = $public_order."_".$extension_name.".xml";
-	if (file_exists($v_conf_dir."/dialplan/public/".$publicincludefilename)) {
-		unlink($v_conf_dir."/dialplan/public/".$publicincludefilename);
+	if (file_exists($switch_conf_dir."/dialplan/public/".$publicincludefilename)) {
+		unlink($switch_conf_dir."/dialplan/public/".$publicincludefilename);
 	}
 	unset($publicincludefilename, $public_order, $extension_name);
 

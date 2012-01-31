@@ -128,9 +128,9 @@ if (defined('STDIN')) {
 	unset ($prep_statement);
 
 //set the fax directory
-	$dir_fax = $v_storage_dir.'/fax/'.$domain.'/'.$fax_extension.'/inbox';
+	$dir_fax = $switch_storage_dir.'/fax/'.$domain.'/'.$fax_extension.'/inbox';
 	if (!file_exists($dir_fax)) {
-		$dir_fax = $v_storage_dir.'/fax/'.$fax_extension.'/inbox';
+		$dir_fax = $switch_storage_dir.'/fax/'.$fax_extension.'/inbox';
 	}
 
 //convert the tif to a pdf
@@ -292,7 +292,7 @@ if (defined('STDIN')) {
 			//not compatible with windows
 		}
 		else {
-			$fax_to_email_queue_dir = $v_storage_dir."/fax";
+			$fax_to_email_queue_dir = $switch_storage_dir."/fax";
 			if ($email_status == 'ok') {
 				// log the success
 					$fp = fopen($fax_to_email_queue_dir."/emailed_faxes.log", "a");

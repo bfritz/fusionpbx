@@ -40,7 +40,7 @@ if ($_GET['a'] == "default" && permission_exists('sip_profiles_edit')) {
 	$sip_profile = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/sip_profiles/'.$_GET['f']);
 
 	//write the default config fget
-	$fd = fopen($v_conf_dir."/sip_profiles/".$_GET['f'], "w");
+	$fd = fopen($switch_conf_dir."/sip_profiles/".$_GET['f'], "w");
 	fwrite($fd, $sip_profile);
 	fclose($fd);
 
@@ -49,7 +49,7 @@ if ($_GET['a'] == "default" && permission_exists('sip_profiles_edit')) {
 
 if ($_POST['a'] == "save" && permission_exists('sip_profiles_edit')) {
 	$v_content = $_POST['code'];
-	$fd = fopen($v_conf_dir."/sip_profiles/".$_POST['f'], "w");
+	$fd = fopen($switch_conf_dir."/sip_profiles/".$_POST['f'], "w");
 	fwrite($fd, $v_content);
 	fclose($fd);
 	$save_msg = "Saved ".$_POST['f'];
@@ -57,7 +57,7 @@ if ($_POST['a'] == "save" && permission_exists('sip_profiles_edit')) {
 
 if ($_GET['a'] == "del" && permission_exists('sip_profiles_edit')) {
 	if ($_GET['type'] == 'profile') {
-		unlink($v_conf_dir."/sip_profiles/".$_GET['f']);
+		unlink($switch_conf_dir."/sip_profiles/".$_GET['f']);
 		header("Location: v_profiles.php");
 		exit;
 	}
@@ -110,7 +110,7 @@ if (strlen($save_msg) > 0) {
 	</tr>
 
 <?php
-	foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$file){
+	foreach (ListFiles($switch_conf_dir.'/sip_profiles') as $key=>$file){
 		if (substr($file, -4) == ".xml") {
 			echo "<tr>\n";
 			echo "	<td class='".$row_style[$c]."' ondblclick=\"document.location='v_profile_edit.php?f=".$file."'\";\" valign='middle'>\n";
@@ -169,7 +169,7 @@ if (strlen($save_msg) > 0) {
 <?php
 if ($v_path_show) {
 	echo "<br />\n";
-	echo $v_conf_dir."/sip_profiles\n";
+	echo $switch_conf_dir."/sip_profiles\n";
 }
 ?>
 

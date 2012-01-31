@@ -118,7 +118,7 @@ else {
 	//echo thorder_by('v_package_version', 'Package Version', $order_by, $order);
 	echo thorder_by('v_label', 'Label', $order_by, $order);
 	//echo thorder_by('v_name', 'Name', $order_by, $order);
-	//echo thorder_by('v_dir', 'Directory', $order_by, $order);
+	//echo thorder_by('switch_base_dir', 'Directory', $order_by, $order);
 	echo "<th width='40%'>Description</th>\n";
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('system_settings_add')) {
@@ -182,16 +182,16 @@ else {
 						}
 				}
 
-			if (strlen($row['v_server_port']) == 0) { $row['v_server_port'] = '80'; }
-			switch ($row['v_server_port']) {
+			if (strlen($row['server_port']) == 0) { $row['server_port'] = '80'; }
+			switch ($row['server_port']) {
 				case "80":
-					$url = strtolower($row['v_server_protocol']).'://'.$row['v_domain'];
+					$url = strtolower($row['server_protocol']).'://'.$row['v_domain'];
 					break;
 				case "443":
-					$url = strtolower($row['v_server_protocol']).'://'.$row['v_domain'];
+					$url = strtolower($row['server_protocol']).'://'.$row['v_domain'];
 					break;
 				default:
-					$url = strtolower($row['v_server_protocol']).'://'.$row['v_domain'].':'.$row['v_server_port'];
+					$url = strtolower($row['server_protocol']).'://'.$row['v_domain'].':'.$row['server_port'];
 					break;
 			}
 			echo "<tr >\n";
@@ -200,7 +200,7 @@ else {
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['v_package_version']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['v_label']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['v_name']."</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['v_dir']."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['switch_base_dir']."</td>\n";
 			echo "	<td valign='top' class='row_stylebg'>".$row['v_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('system_settings_edit')) {

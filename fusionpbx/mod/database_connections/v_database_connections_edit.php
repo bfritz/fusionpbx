@@ -13,7 +13,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$database_connection_id = check_str($_REQUEST["id"]);
+		$database_connection_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -45,7 +45,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$database_connection_id = check_str($_POST["database_connection_id"]);
+		$database_connection_uuid = check_str($_POST["database_connection_uuid"]);
 	}
 
 	//check for all required data
@@ -122,7 +122,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "db_password = '$db_password', ";
 			$sql .= "db_path = '$db_path', ";
 			$sql .= "db_description = '$db_description' ";
-			$sql .= "where database_connection_id = '$database_connection_id'";
+			$sql .= "where database_connection_uuid = '$database_connection_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -139,10 +139,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$database_connection_id = $_GET["id"];
+		$database_connection_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_database_connections ";
-		$sql .= "where database_connection_id = '$database_connection_id' ";
+		$sql .= "where database_connection_uuid = '$database_connection_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
@@ -300,7 +300,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='database_connection_id' value='$database_connection_id'>\n";
+		echo "				<input type='hidden' name='database_connection_uuid' value='$database_connection_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

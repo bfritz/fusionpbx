@@ -160,7 +160,7 @@ require_once "includes/paging.php";
 		echo "<td colspan='5' align='left'>\n";
 		echo "<br />\n";
 		if ($v_path_show) {
-			echo $v_extensions_dir."\n";
+			echo $switch_extensions_dir."\n";
 		}
 		echo "</td>\n";
 		echo "</tr>\n";

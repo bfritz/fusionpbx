@@ -70,11 +70,11 @@ else {
 				$result = $prep_statement->fetchAll();
 				foreach ($result as &$row) {
 					$v_domain = $row["v_domain"];
-					$v_recordings_dir = $row["v_recordings_dir"];
+					$switch_recordings_dir = $row["switch_recordings_dir"];
 					$v_dialplan_default_dir = $row["v_dialplan_default_dir"];
-					$v_extensions_dir = $row["v_extensions_dir"];
+					$switch_extensions_dir = $row["switch_extensions_dir"];
 					$v_dialplan_public_dir = $row["v_dialplan_public_dir"];
-					$v_scripts_dir = $row["v_scripts_dir"];
+					$switch_scripts_dir = $row["switch_scripts_dir"];
 					break; //limit to 1 row
 				}
 				unset ($prep_statement);
@@ -98,13 +98,13 @@ else {
 			}
 
 		//delete the extension
-			unlink($v_conf_dir.'/directory/'.$v_domain.'.xml');
-			if (strlen($v_extensions_dir) > 0) {
-				system("rm -rf ".$v_extensions_dir);
+			unlink($switch_conf_dir.'/directory/'.$v_domain.'.xml');
+			if (strlen($switch_extensions_dir) > 0) {
+				system("rm -rf ".$switch_extensions_dir);
 			}
 
 		//delete the gateways
-			if($dh = opendir($v_gateways_dir."")) {
+			if($dh = opendir($switch_gateways_dir."")) {
 				$files = Array();
 				while($file = readdir($dh)) {
 					if($file != "." && $file != ".." && $file[0] != '.') {
@@ -113,7 +113,7 @@ else {
 						} else {
 							//check if file extension is xml
 							if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-								unlink($v_gateways_dir."/".$file);
+								unlink($switch_gateways_dir."/".$file);
 							}
 						}
 					}
@@ -122,18 +122,18 @@ else {
 			}
 
 		//delete the dialplan
-			unlink($v_conf_dir.'/dialplan/'.$v_domain.'.xml');
+			unlink($switch_conf_dir.'/dialplan/'.$v_domain.'.xml');
 			if (strlen($v_dialplan_default_dir) > 0) {
 				system("rm -rf ".$v_dialplan_default_dir);
 			}
 
 		//delete the recordings
-			if (strlen($v_recordings_dir) > 0) {
-				system("rm -rf ".$v_recordings_dir);
+			if (strlen($switch_recordings_dir) > 0) {
+				system("rm -rf ".$switch_recordings_dir);
 			}
 
 		//delete the ivr menu
-			if($dh = opendir($v_conf_dir."/ivr_menus/")) {
+			if($dh = opendir($switch_conf_dir."/ivr_menus/")) {
 				$files = Array();
 				while($file = readdir($dh)) {
 					if($file != "." && $file != ".." && $file[0] != '.') {
@@ -142,7 +142,7 @@ else {
 						} else {
 							if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
 								//echo "file: $file<br />\n";
-								unlink($v_conf_dir."/ivr_menus/".$file);
+								unlink($switch_conf_dir."/ivr_menus/".$file);
 							}
 						}
 					}
@@ -158,7 +158,7 @@ else {
 
 		//delete the hunt group lua scripts
 			$v_prefix = 'v_huntgroup_'.$v_domain.'_';
-			if($dh = opendir($v_scripts_dir)) {
+			if($dh = opendir($switch_scripts_dir)) {
 				$files = Array();
 				while($file = readdir($dh)) {
 					if($file != "." && $file != ".." && $file[0] != '.') {
@@ -166,7 +166,7 @@ else {
 							//this is a directory
 						} else {
 							if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-4) == '.lua') {
-								unlink($v_scripts_dir.'/'.$file);
+								unlink($switch_scripts_dir.'/'.$file);
 							}
 						}
 					}

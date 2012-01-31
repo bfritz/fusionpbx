@@ -85,7 +85,6 @@ require_once "includes/paging.php";
 	//echo thorder_by('db_port', 'Port', $order_by, $order);
 	echo thorder_by('db_name', 'Name', $order_by, $order);
 	//echo thorder_by('db_username', 'Username', $order_by, $order);
-	//echo thorder_by('db_password', 'Password', $order_by, $order);
 	//echo thorder_by('db_path', 'Path', $order_by, $order);
 	echo thorder_by('db_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
@@ -95,26 +94,23 @@ require_once "includes/paging.php";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_type']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_host']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_port']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_name']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_username']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_password']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['db_path']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='row_stylebg'>".$row['db_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_database_connections_edit.php?id=".$row[database_connection_id]."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_database_connections_delete.php?id=".$row[database_connection_id]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='v_database_connections_edit.php?id=".$row['database_connection_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_database_connections_delete.php?id=".$row['database_connection_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
-
 
 	echo "<tr>\n";
 	echo "<td colspan='10' align='left'>\n";

@@ -327,7 +327,7 @@ echo "	return escape(cmd);\n";
 echo "}\n";
 echo "\n";
 echo "function get_record_cmd(uuid, prefix, name) {\n";
-echo "	cmd = \"uuid_record \"+uuid+\" start ".$v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d")."/\"+uuid+\".wav\";\n";
+echo "	cmd = \"uuid_record \"+uuid+\" start ".$switch_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d")."/\"+uuid+\".wav\";\n";
 echo "	return escape(cmd);\n";
 echo "}\n";
 echo "-->\n";

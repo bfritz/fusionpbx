@@ -44,7 +44,7 @@ require "includes/lib_cdr.php";
 
 //---- begin import cdr records -----------------------------------------------------------------------------------
 
-	$v_file = $v_log_dir."/cdr-csv/Master.csv";
+	$v_file = $switch_log_dir."/cdr-csv/Master.csv";
 	//echo filesize($v_file);
 	//Open file (DON'T USE a+ pointer will be wrong!)
 	$fh = fopen($v_file, 'r');

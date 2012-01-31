@@ -44,8 +44,8 @@ if (!function_exists('sync_directory')) {
 	function sync_directory() {
 
 		global $domain_uuid, $db;
-		$v_settings_array = v_settings();
-		foreach($v_settings_array as $name => $value) {
+		$settings_array = v_settings();
+		foreach($settings_array as $name => $value) {
 			$$name = $value;
 		}
 
@@ -267,7 +267,7 @@ if (!function_exists('sync_directory')) {
 		$tmp .= "";
 
 		//write the file
-		$fout = fopen($v_scripts_dir."/directory.js","w");
+		$fout = fopen($switch_scripts_dir."/directory.js","w");
 		fwrite($fout, $tmp);
 		fclose($fout);
 

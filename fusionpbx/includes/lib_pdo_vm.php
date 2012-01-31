@@ -27,7 +27,7 @@ include "root.php";
 require "includes/config.php";
 
 //get the contents of xml_cdr.conf.xml
-	$conf_xml_string = file_get_contents($v_conf_dir.'/autoload_configs/voicemail.conf.xml');
+	$conf_xml_string = file_get_contents($switch_conf_dir.'/autoload_configs/voicemail.conf.xml');
 
 //parse the xml to get the call detail record info
 	try {
@@ -56,7 +56,7 @@ require "includes/config.php";
 	try {
 		unset($db);
 		if (strlen($odbc_dsn) == 0) {
-			$db = new PDO('sqlite:'.$v_db_dir.'/voicemail_default.db'); //sqlite 3
+			$db = new PDO('sqlite:'.$switch_db_dir.'/voicemail_default.db'); //sqlite 3
 		}
 		else {
 			$db = new PDO("odbc:$odbc_dsn", "$odbc_db_user", "$odbc_db_pass");

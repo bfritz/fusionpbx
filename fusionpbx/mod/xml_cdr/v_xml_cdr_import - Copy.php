@@ -33,7 +33,7 @@ require_once "includes/config.php";
 	set_time_limit(3600);
 	ini_set('memory_limit', '256M');
 
-function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
+function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 
 	//set global variable
 		global $debug;
@@ -94,19 +94,19 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 	//find the domain_uuid by using the domain
 		if (strlen($domain_name) == 0) { $domain_name = $_SERVER["HTTP_HOST"]; }
 		$sql = "";
-		$sql .= "select domain_uuid, v_recordings_dir from v_system_settings ";
+		$sql .= "select domain_uuid, switch_recordings_dir from v_system_settings ";
 		$sql .= "where v_domain = '".$domain_name."' ";
 		$row = $db->query($sql)->fetch();
 		$domain_uuid = $row['domain_uuid'];
-		$v_recordings_dir = $row['v_recordings_dir'];
+		$switch_recordings_dir = $row['switch_recordings_dir'];
 		if (strlen($domain_uuid) == 0) { $domain_uuid = '1'; }
 
 	//check whether a recording exists
 		$recording_relative_path = '/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
-		if (file_exists($v_recordings_dir.$recording_relative_path.'/'.$uuid.'.wav')) {
+		if (file_exists($switch_recordings_dir.$recording_relative_path.'/'.$uuid.'.wav')) {
 			$recording_file = $recording_relative_path.'/'.$uuid.'.wav';
 		}
-		if (file_exists($v_recordings_dir.$recording_relative_path.'/'.$uuid.'.mp3')) {
+		if (file_exists($switch_recordings_dir.$recording_relative_path.'/'.$uuid.'.mp3')) {
 			$recording_file = $recording_relative_path.'/'.$uuid.'.mp3';
 		}
 
@@ -138,7 +138,7 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 				$tmp_year = date("Y", $tmp_time);
 				$tmp_month = date("M", $tmp_time);
 				$tmp_day = date("d", $tmp_time);
-				$tmp_dir = $v_log_dir.'/xml_cdr/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
+				$tmp_dir = $switch_log_dir.'/xml_cdr/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
 				mkdir($tmp_dir, 0777, true);
 				$tmp_file = $uuid.'.xml';
 				$fh = fopen($tmp_dir.'/'.$tmp_file, 'w');
@@ -242,7 +242,7 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 		//authentication for xml cdr http post
 			if (strlen($_SESSION["xml_cdr_username"]) == 0) {
 				//get the contents of xml_cdr.conf.xml
-					$conf_xml_string = file_get_contents($v_conf_dir.'/autoload_configs/xml_cdr.conf.xml');
+					$conf_xml_string = file_get_contents($switch_conf_dir.'/autoload_configs/xml_cdr.conf.xml');
 
 				//parse the xml to get the call detail record info
 					try {
@@ -288,12 +288,12 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 			}
 
 		//parse the xml and insert the data into the db
-			process_xml_cdr($db, $v_log_dir, $leg, $xml_string);
+			process_xml_cdr($db, $switch_log_dir, $leg, $xml_string);
 	}
 
 
 //check the filesystem for xml cdr records that were missed
-	$xml_cdr_dir = $v_log_dir.'/xml_cdr';
+	$xml_cdr_dir = $switch_log_dir.'/xml_cdr';
 	$dir_handle = opendir($xml_cdr_dir);
 	$x = 0;
 	while($file=readdir($dir_handle)) {
@@ -311,7 +311,7 @@ function process_xml_cdr($db, $v_log_dir, $leg, $xml_string) {
 					$xml_string = file_get_contents($xml_cdr_dir.'/'.$file);
 
 				//parse the xml and insert the data into the db
-					process_xml_cdr($db, $v_log_dir, $leg, $xml_string);
+					process_xml_cdr($db, $switch_log_dir, $leg, $xml_string);
 
 				//delete the file after it has been imported
 					unlink($xml_cdr_dir.'/'.$file);

@@ -65,7 +65,7 @@
 //if multiple domains then make sure that the dialplan/public/domain_name.xml file exists
 	if (count($_SESSION["domains"]) > 1) {
 		//make sure the public xml file includes the domain directory
-		$file = $v_conf_dir."/dialplan/public/".$_SESSION['domains'][$domain_uuid]['domain'].".xml";
+		$file = $switch_conf_dir."/dialplan/public/".$_SESSION['domains'][$domain_uuid]['domain'].".xml";
 		if (!file_exists($file)) {
 			$fout = fopen($file,"w");
 			$tmp_xml = "<include>\n";

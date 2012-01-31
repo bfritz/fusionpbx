@@ -41,31 +41,31 @@ if ($_GET['a'] == "default" && permission_exists('dialplan_advanced_edit')) {
 	$dialplan = new dialplan;
 	$dialplan->domain_uuid = $domain_uuid;
 	$dialplan->v_domain = $v_domain;
-	$dialplan->v_conf_dir = $v_conf_dir;
+	$dialplan->switch_conf_dir = $switch_conf_dir;
 	$dialplan->restore_advanced_xml();
 	//print_r($dialplan->result);
 }
 
 if ($_POST['a'] == "save" && permission_exists('dialplan_advanced_edit')) {
 	$v_content = str_replace("\r","",$_POST['code']);
-	if (file_exists($v_conf_dir."/dialplan/$v_domain.xml")) {
-		$fd = fopen($v_conf_dir."/dialplan/$v_domain.xml", "w");
+	if (file_exists($switch_conf_dir."/dialplan/$v_domain.xml")) {
+		$fd = fopen($switch_conf_dir."/dialplan/$v_domain.xml", "w");
 	}
 	else {
-		$fd = fopen($v_conf_dir."/dialplan/default.xml", "w");
+		$fd = fopen($switch_conf_dir."/dialplan/default.xml", "w");
 	}
 	fwrite($fd, $v_content);
 	fclose($fd);
 	$savemsg = "Saved";
 }
 
-if (file_exists($v_conf_dir."/dialplan/$v_domain.xml")) {
-	$fd = fopen($v_conf_dir."/dialplan/$v_domain.xml", "r");
-	$v_content = fread($fd, filesize($v_conf_dir."/dialplan/$v_domain.xml"));
+if (file_exists($switch_conf_dir."/dialplan/$v_domain.xml")) {
+	$fd = fopen($switch_conf_dir."/dialplan/$v_domain.xml", "r");
+	$v_content = fread($fd, filesize($switch_conf_dir."/dialplan/$v_domain.xml"));
 }
 else {
-	$fd = fopen($v_conf_dir."/dialplan/default.xml", "r");
-	$v_content = fread($fd, filesize($v_conf_dir."/dialplan/default.xml"));
+	$fd = fopen($switch_conf_dir."/dialplan/default.xml", "r");
+	$v_content = fread($fd, filesize($switch_conf_dir."/dialplan/default.xml"));
 }
 fclose($fd);
 
@@ -116,7 +116,7 @@ function sf() { document.forms[0].savetopath.focus(); }
 				<td align='left'>
 				<?php
 				if ($v_path_show) {
-					echo "<b>location:</b> ".$v_conf_dir."/dialplan/default.xml\n";
+					echo "<b>location:</b> ".$switch_conf_dir."/dialplan/default.xml\n";
 				}
 				?>
 				</td>

@@ -63,7 +63,7 @@ if (strlen($id)>0) {
 		unset($sql);
 
 	//delete the recording file
-		unlink($v_recordings_dir."/".$filename);
+		unlink($switch_recordings_dir."/".$filename);
 }
 
 //redirect the user

@@ -29,8 +29,8 @@ include "root.php";
 /*
 require_once "includes/classes/modules.php";
 $mod = new switch_modules;
-$mod->v_mod_dir = $v_mod_dir;
-echo $mod->v_mod_dir."\n";
+$mod->switch_mod_dir = $switch_mod_dir;
+echo $mod->switch_mod_dir."\n";
 //database connection object
 	$mod->db = $db;
 //get modules from the database
@@ -67,7 +67,7 @@ echo $mod->v_mod_dir."\n";
 //define the directory class
 	class switch_modules {
 		public $db;
-		public $v_mod_dir;
+		public $switch_mod_dir;
 		public $fp;
 		public $modules;
 		public $msg;
@@ -585,7 +585,7 @@ echo $mod->v_mod_dir."\n";
 
 		//add missing modules for more module info see http://wiki.freeswitch.com/wiki/Modules
 			public function synch() {
-				if ($handle = opendir($this->v_mod_dir)) {
+				if ($handle = opendir($this->switch_mod_dir)) {
 					$modules_new = '';
 					$module_found = false;
 					while (false !== ($file = readdir($handle))) {

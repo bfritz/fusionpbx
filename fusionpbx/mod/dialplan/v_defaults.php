@@ -35,13 +35,13 @@
 			//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 				$file_default_contents = str_replace("{v_domain}", 'default', $file_default_contents);
 			//set the file path
-				$file_path = $v_conf_dir.'/dialplan/default.xml';
+				$file_path = $switch_conf_dir.'/dialplan/default.xml';
 		}
 		else {
 			//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 				$file_default_contents = str_replace("{v_domain}", $v_domain, $file_default_contents);
 			//set the file path
-				$file_path = $v_conf_dir.'/dialplan/'.$v_domain.'.xml';
+				$file_path = $switch_conf_dir.'/dialplan/'.$v_domain.'.xml';
 		}
 
 	//write the default dialplan
@@ -86,7 +86,7 @@
 
 		$tag = 'action'; //condition, action, antiaction
 		$field_type = 'set';
-		$field_data = 'recordings_dir='.$v_recordings_dir;
+		$field_data = 'recordings_dir='.$switch_recordings_dir;
 		$field_order = '001';
 		v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 

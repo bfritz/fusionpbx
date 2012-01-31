@@ -425,7 +425,7 @@ include "root.php";
 			$this->extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $this->extension);
 
 			/*if (!$extension_xml_condensed) { <--- what do I do with this??
-				$fout = fopen($v_extensions_dir."/v_".$extension.".xml","w");
+				$fout = fopen($switch_extensions_dir."/v_".$extension.".xml","w");
 				$tmp_xml .= "<include>\n";
 			}*/
 			if (strlen($this->cidr)) {
@@ -521,13 +521,13 @@ include "root.php";
 			$v_domain = $this->v_domain;
 
 			//get the system settings paths and set them as variables
-				$v_settings_array = v_settings();
-				foreach($v_settings_array as $name => $value) {
+				$settings_array = v_settings();
+				foreach($settings_array as $name => $value) {
 					$$name = $value;
 				}
 
 			//determine the extensions parent directory
-				$v_extensions_dir_array = explode("/", $v_extensions_dir);
+				$v_extensions_dir_array = explode("/", $switch_extensions_dir);
 				$extension_parent_dir = "";
 				$x=1;
 				foreach ($v_extensions_dir_array as $tmp_dir) {
@@ -542,7 +542,7 @@ include "root.php";
 				$extension_parent_dir = rtrim($extension_parent_dir, "/");
 
 			// delete all old extensions to prepare for new ones
-				if($dh = opendir($v_extensions_dir)) {
+				if($dh = opendir($switch_extensions_dir)) {
 					$files = Array();
 					while($file = readdir($dh)) {
 						if($file != "." && $file != ".." && $file[0] != '.') {
@@ -551,7 +551,7 @@ include "root.php";
 							} else {
 								//check if file is an extension; verify the file numeric and the extension is xml
 								if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
-									unlink($v_extensions_dir."/".$file);
+									unlink($switch_extensions_dir."/".$file);
 								}
 							}
 						}
@@ -568,7 +568,7 @@ include "root.php";
 			$i = 0;
 			$extension_xml_condensed = false;
 			if ($extension_xml_condensed) {
-				$fout = fopen($v_extensions_dir."/v_extensions.xml","w");
+				$fout = fopen($switch_extensions_dir."/v_extensions.xml","w");
 				$tmp_xml = "<include>\n";
 			}
 			while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {

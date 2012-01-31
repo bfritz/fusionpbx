@@ -82,10 +82,10 @@ else {
 
 //set the fax directory
 	if (count($_SESSION["domains"]) > 1) {
-		$v_fax_dir = $v_storage_dir.'/fax/'.$v_domain;
+		$v_fax_dir = $switch_storage_dir.'/fax/'.$v_domain;
 	}
 	else {
-		$v_fax_dir = $v_storage_dir.'/fax';
+		$v_fax_dir = $switch_storage_dir.'/fax';
 	}
 
 //delete a fax
@@ -163,8 +163,8 @@ else {
 			$dir_fax_temp = $v_fax_dir.'/'.$fax_extension.'/temp';
 
 		//make sure the directories exist
-			if (!is_dir($v_storage_dir)) {
-				mkdir($v_storage_dir);
+			if (!is_dir($switch_storage_dir)) {
+				mkdir($switch_storage_dir);
 				chmod($dir_fax_sent,0774);
 			}
 			if (!is_dir($v_fax_dir.'/'.$fax_extension)) {
@@ -303,8 +303,8 @@ else {
 			chdir($dir_fax_sent);
 			//which tiff2pdf
 			if (is_file("/usr/local/bin/tiff2png")) {
-				exec("".bin_dir."/tiff2png ".$dir_fax_sent.$fax_name.".tif");
-				exec("".bin_dir."/tiff2pdf -f -o ".$fax_name.".pdf ".$dir_fax_sent.$fax_name.".tif");
+				exec("".switch_bin_dir."/tiff2png ".$dir_fax_sent.$fax_name.".tif");
+				exec("".switch_bin_dir."/tiff2pdf -f -o ".$fax_name.".pdf ".$dir_fax_sent.$fax_name.".tif");
 			}
 
 		header("Location: v_fax_view.php?id=".$fax_uuid."&msg=".$response);

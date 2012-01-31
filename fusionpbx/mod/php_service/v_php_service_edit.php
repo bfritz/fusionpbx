@@ -61,7 +61,7 @@ function byte_convert( $bytes ) {
 */
 
 function phpservice_sync_package_php() {
-	global $db, $domain_uuid, $v_startup_script_dir, $v_secure, $php_dir, $tmp_dir;
+	global $db, $domain_uuid, $startup_script_dir, $v_secure, $php_dir, $tmp_dir;
 	$sql = "";
 	$sql .= "select * from v_php_service ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -80,7 +80,7 @@ function phpservice_sync_package_php() {
 			//delete the php service file
 				unlink($v_secure.'/php_service_'.$tmp_service_name.'.php');
 			//delete the start up script
-				unlink($v_startup_script_dir.'/php_service_'.$tmp_service_name.'.sh');
+				unlink($startup_script_dir.'/php_service_'.$tmp_service_name.'.sh');
 			//delete the pid file
 				unlink($tmp_dir.'/php_service_'.$tmp_service_name.'.pid');
 		}
@@ -159,8 +159,8 @@ function phpservice_sync_package_php() {
 				switch (PHP_OS) {
 				case "FreeBSD":
 					// make sure the start up directory i set
-					if (strlen($v_startup_script_dir) > 0) {
-						$v_startup_script_dir = "/usr/local/etc/rc.d";
+					if (strlen($startup_script_dir) > 0) {
+						$startup_script_dir = "/usr/local/etc/rc.d";
 					}
 					$tmp = "";
 					$tmp = "#!/bin/sh\n";
@@ -168,10 +168,10 @@ function phpservice_sync_package_php() {
 					$tmp .= "# by the PHP Service handler.\n";
 					$tmp .= "# \n";
 					$tmp .= "# Copy this script to the startup directory.\n";
-					$tmp .= "# cp -a ".$v_secure."/php_service_".$tmp_service_name.".sh ".$v_startup_script_dir."/php_service_".$tmp_service_name.".sh";
+					$tmp .= "# cp -a ".$v_secure."/php_service_".$tmp_service_name.".sh ".$startup_script_dir."/php_service_".$tmp_service_name.".sh";
 					$tmp .= "# \n";
 					$tmp .= "# Usage: ./php_service_".$tmp_service_name.".sh {start|stop|restart}\n";
-					$tmp .= "# ".$v_startup_script_dir."/./php_service_".$tmp_service_name.".sh start";
+					$tmp .= "# ".$startup_script_dir."/./php_service_".$tmp_service_name.".sh start";
 					$tmp .= "\n";
 					$tmp .= "\n";
 					$tmp .= "rc_start() {\n";
@@ -197,7 +197,7 @@ function phpservice_sync_package_php() {
 					$tmp .= "		rc_start\n";
 					$tmp .= "		;;\n";
 					$tmp .= "	*)\n";
-					$tmp .= "		echo \"Usage: ".$v_startup_script_dir."/php_service_".$tmp_service_name.".sh {start|stop|restart}\"\n";
+					$tmp .= "		echo \"Usage: ".$startup_script_dir."/php_service_".$tmp_service_name.".sh {start|stop|restart}\"\n";
 					$tmp .= "		exit 1\n";
 					$tmp .= "		;;\n";
 					$tmp .= "esac\n";
@@ -212,8 +212,8 @@ function phpservice_sync_package_php() {
 					break;
 				default:
 					// make sure the start up directory i set
-					if (strlen($v_startup_script_dir) > 0) {
-						$v_startup_script_dir = "/etc/init.d";
+					if (strlen($startup_script_dir) > 0) {
+						$startup_script_dir = "/etc/init.d";
 					}
 					$tmp = "";
 					$tmp .= "#!/bin/sh\n";
@@ -222,10 +222,10 @@ function phpservice_sync_package_php() {
 					$tmp .= "# by the PHP Service handler.\n";
 					$tmp .= "# \n";
 					$tmp .= "# Copy this script to the startup directory.\n";
-					$tmp .= "# cp -a ".$v_secure."/php_service_".$tmp_service_name.".sh ".$v_startup_script_dir."/php_service_".$tmp_service_name.".sh";
+					$tmp .= "# cp -a ".$v_secure."/php_service_".$tmp_service_name.".sh ".$startup_script_dir."/php_service_".$tmp_service_name.".sh";
 					$tmp .= "# \n";
 					$tmp .= "# Usage: ./php_service_".$tmp_service_name.".sh {start|stop|restart}\n";
-					$tmp .= "# ".$v_startup_script_dir."/./php_service_".$tmp_service_name.".sh start";
+					$tmp .= "# ".$startup_script_dir."/./php_service_".$tmp_service_name.".sh start";
 					$tmp .= "\n";
 					$tmp .= "\n";
 					$tmp .= "rc_start() {\n";
@@ -251,7 +251,7 @@ function phpservice_sync_package_php() {
 					$tmp .= "		rc_start\n";
 					$tmp .= "		;;\n";
 					$tmp .= "	*)\n";
-					$tmp .= "		echo \"Usage: ".$v_startup_script_dir."/".$tmp_service_name.".sh {start|stop|restart}\"\n";
+					$tmp .= "		echo \"Usage: ".$startup_script_dir."/".$tmp_service_name.".sh {start|stop|restart}\"\n";
 					$tmp .= "		exit 1\n";
 					$tmp .= "		;;\n";
 					$tmp .= "esac\n";

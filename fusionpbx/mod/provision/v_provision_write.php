@@ -64,8 +64,8 @@ else {
 	$prep_statement->execute();
 	$provision_variables_array = $prep_statement->fetchAll();
 	foreach ($provision_variables_array as &$row) {
-		$v_provisioning_tftp_dir = $row['v_provisioning_tftp_dir'];
-		$v_provisioning_ftp_dir = $row['v_provisioning_ftp_dir'];
+		$provisioning_tftp_dir = $row['provisioning_tftp_dir'];
+		$provisioning_ftp_dir = $row['provisioning_ftp_dir'];
 		break;
 	}
 
@@ -230,14 +230,14 @@ else {
 							$file_name = str_replace("{v_mac}", $phone_mac_address, $file_name);
 
 						//write the configuration to the directory
-							if (strlen($v_provisioning_tftp_dir) > 0) {
-								$fh = fopen($v_provisioning_tftp_dir.'/'.$file_name,"w") or die("Unable to write to $v_provisioning_tftp_dir for provisioning. Make sure the path exists and permissons are set correctly.");
+							if (strlen($provisioning_tftp_dir) > 0) {
+								$fh = fopen($provisioning_tftp_dir.'/'.$file_name,"w") or die("Unable to write to $provisioning_tftp_dir for provisioning. Make sure the path exists and permissons are set correctly.");
 								fwrite($fh, $file_contents);
 								unset($file_name);
 								fclose($fh);
 							}
-							if (strlen($v_provisioning_ftp_dir) > 0) {
-								$fh = fopen($v_provisioning_ftp_dir.'/'.$file_name,"w") or die("Unable to write to $v_provisioning_ftp_dir for provisioning. Make sure the path exists and permissons are set correctly.");
+							if (strlen($provisioning_ftp_dir) > 0) {
+								$fh = fopen($provisioning_ftp_dir.'/'.$file_name,"w") or die("Unable to write to $provisioning_ftp_dir for provisioning. Make sure the path exists and permissons are set correctly.");
 								fwrite($fh, $file_contents);
 								unset($file_name);
 								fclose($fh);

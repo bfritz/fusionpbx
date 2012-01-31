@@ -40,12 +40,12 @@ else {
 //restore the default vars.xml
 if ($_GET['a'] == "default" && permission_exists('variables_edit')) {
 	//read default config file
-	$fd = fopen($v_conf_dir.".orig/vars.xml", "r");
-	$v_content = fread($fd, filesize($v_conf_dir.".orig/vars.xml"));
+	$fd = fopen($switch_conf_dir.".orig/vars.xml", "r");
+	$v_content = fread($fd, filesize($switch_conf_dir.".orig/vars.xml"));
 	fclose($fd);
 	
 	//write the default config fget
-	$fd = fopen($v_conf_dir."/vars.xml", "w");
+	$fd = fopen($switch_conf_dir."/vars.xml", "w");
 	fwrite($fd, $v_content);
 	fclose($fd);
 	$savemsg = "Default Restored";
@@ -54,15 +54,15 @@ if ($_GET['a'] == "default" && permission_exists('variables_edit')) {
 //save the vars.xml
 	if ($_POST['a'] == "save" && permission_exists('variables_edit')) {
 		$v_content = str_replace("\r","",$_POST['code']);
-		$fd = fopen($v_conf_dir."/vars.xml", "w");
+		$fd = fopen($switch_conf_dir."/vars.xml", "w");
 		fwrite($fd, $v_content);
 		fclose($fd);
 		$savemsg = "Saved";
 	}
 
 //get the contens of vars.xml
-	$fd = fopen($v_conf_dir."/vars.xml", "r");
-	$v_content = fread($fd, filesize($v_conf_dir."/vars.xml"));
+	$fd = fopen($switch_conf_dir."/vars.xml", "r");
+	$v_content = fread($fd, filesize($switch_conf_dir."/vars.xml"));
 	fclose($fd);
 
 //edit area
@@ -119,7 +119,7 @@ if ($_GET['a'] == "default" && permission_exists('variables_edit')) {
 				<td valign='top'>
 				<?php
 				if ($v_path_show) {
-					echo "<b>location:</b> ".$v_conf_dir."/vars.xml\n";
+					echo "<b>location:</b> ".$switch_conf_dir."/vars.xml\n";
 				}
 				?>
 				</td>

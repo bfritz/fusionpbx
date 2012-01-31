@@ -47,7 +47,7 @@ include "root.php";
 			var $opt_1_value;
 			var $descr;
 			var $v_domain;
-			var $v_conf_dir;
+			var $switch_conf_dir;
 
 			function dialplan_add() {
 				global $db;
@@ -112,7 +112,7 @@ include "root.php";
 
 			function restore_advanced_xml() {
 				$v_domain = $this->v_domain;
-				$v_conf_dir = $this->v_conf_dir;
+				$switch_conf_dir = $this->switch_conf_dir;
 				//get the contents of the dialplan/default.xml
 					$file_default_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/dialplan/default.xml';
 					$file_default_contents = file_get_contents($file_default_path);
@@ -121,13 +121,13 @@ include "root.php";
 						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 							$file_default_contents = str_replace("{v_domain}", 'default', $file_default_contents);
 						//set the file path
-							$file_path = $v_conf_dir.'/dialplan/default.xml';
+							$file_path = $switch_conf_dir.'/dialplan/default.xml';
 					}
 					else {
 						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 							$file_default_contents = str_replace("{v_domain}", $v_domain, $file_default_contents);
 						//set the file path
-							$file_path = $v_conf_dir.'/dialplan/'.$v_domain.'.xml';
+							$file_path = $switch_conf_dir.'/dialplan/'.$v_domain.'.xml';
 					}
 				//write the default dialplan
 					$fh = fopen($file_path,'w') or die('Unable to write to '.$file_path.'. Make sure the path exists and permissons are set correctly.');

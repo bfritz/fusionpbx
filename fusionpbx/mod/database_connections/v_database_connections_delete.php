@@ -17,7 +17,7 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_database_connections ";
-	$sql .= "where database_connection_id = '$id' ";
+	$sql .= "where database_connection_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	unset($sql);

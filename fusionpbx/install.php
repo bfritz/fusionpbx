@@ -92,14 +92,14 @@ require_once "includes/lib_functions.php";
 	$install_secure_dir = $_POST["install_secure_dir"];
 	$install_php_dir = $_POST["install_php_dir"];
 	$install_tmp_dir = $_POST["install_tmp_dir"];
-	$install_v_backup_dir = $_POST["install_v_backup_dir"];
-	$install_v_dir = $_POST["install_v_dir"];
+	$install_backup_dir = $_POST["install_backup_dir"];
+	$install_switch_base_dir = $_POST["install_switch_base_dir"];
 	$install_v_template_name = $_POST["install_v_template_name"];
 
 //clean up the values
-	if (strlen($install_v_dir) > 0) { 
-		$install_v_dir = realpath($install_v_dir);
-		$install_v_dir = str_replace("\\", "/", $install_v_dir);
+	if (strlen($install_switch_base_dir) > 0) { 
+		$install_switch_base_dir = realpath($install_switch_base_dir);
+		$install_switch_base_dir = str_replace("\\", "/", $install_switch_base_dir);
 	}
 
 	$install_php_dir = realpath($_POST["install_php_dir"]);
@@ -108,8 +108,8 @@ require_once "includes/lib_functions.php";
 	$install_tmp_dir = realpath($_POST["install_tmp_dir"]);
 	$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
 
-	$install_v_backup_dir = realpath($_POST["install_v_backup_dir"]);
-	$install_v_backup_dir = str_replace("\\", "/", $install_v_backup_dir);
+	$install_backup_dir = realpath($_POST["install_backup_dir"]);
+	$install_backup_dir = str_replace("\\", "/", $install_backup_dir);
 
 //set the default install_secure_dir
 	if (strlen($install_secure_dir) == 0) { //secure dir
@@ -133,43 +133,43 @@ require_once "includes/lib_functions.php";
 
 	//set the freeswitch bin directory
 		if (file_exists('/usr/local/freeswitch/bin')) {
-			$install_v_dir = '/usr/local/freeswitch';
-			$v_bin_dir = '/usr/local/freeswitch/bin';
-			$v_parent_dir = '/usr/local';
+			$install_switch_base_dir = '/usr/local/freeswitch';
+			$switch_bin_dir = '/usr/local/freeswitch/bin';
+			$parent_dir = '/usr/local';
 		}
 		if (file_exists('/opt/freeswitch')) {
-			$install_v_dir = '/opt/freeswitch';
-			$v_bin_dir = '/opt/freeswitch/bin';
-			$v_parent_dir = '/opt';
+			$install_switch_base_dir = '/opt/freeswitch';
+			$switch_bin_dir = '/opt/freeswitch/bin';
+			$parent_dir = '/opt';
 		}
 
 	//set the default startup script directory
 		if (file_exists('/usr/local/etc/rc.d')) {
-			$v_startup_script_dir = '/usr/local/etc/rc.d';
+			$startup_script_dir = '/usr/local/etc/rc.d';
 		}
 		if (file_exists('/etc/init.d')) {
-			$v_startup_script_dir = '/etc/init.d';
+			$startup_script_dir = '/etc/init.d';
 		}
 
 	//set the default directories
-		$v_bin_dir = $install_v_dir.'/bin'; //freeswitch bin directory
-		$v_conf_dir = $install_v_dir.'/conf';
-		$v_db_dir = $install_v_dir.'/db';
-		$v_htdocs_dir = $install_v_dir.'/htdocs';
-		$v_log_dir = $install_v_dir.'/log';
-		$v_mod_dir = $install_v_dir.'/mod';
-		$v_extensions_dir = $v_conf_dir.'/directory/default';
-		$v_gateways_dir = $v_conf_dir.'/sip_profiles';
-		$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
-		$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
-		$v_scripts_dir = $install_v_dir.'/scripts';
-		$v_grammar_dir = $install_v_dir.'/grammar';
-		$v_storage_dir = $install_v_dir.'/storage';
-		$v_voicemail_dir = $install_v_dir.'/storage/voicemail';
-		$v_recordings_dir = $install_v_dir.'/recordings';
-		$v_sounds_dir = $install_v_dir.'/sounds';
+		$switch_bin_dir = $install_switch_base_dir.'/bin'; //freeswitch bin directory
+		$switch_conf_dir = $install_switch_base_dir.'/conf';
+		$switch_db_dir = $install_switch_base_dir.'/db';
+		$switch_htdocs_dir = $install_switch_base_dir.'/htdocs';
+		$switch_log_dir = $install_switch_base_dir.'/log';
+		$switch_mod_dir = $install_switch_base_dir.'/mod';
+		$switch_extensions_dir = $switch_conf_dir.'/directory/default';
+		$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
+		$v_dialplan_public_dir = $switch_conf_dir.'/dialplan/public';
+		$switch_dialplan_dir = $switch_conf_dir.'/dialplan/default';
+		$switch_scripts_dir = $install_switch_base_dir.'/scripts';
+		$switch_grammar_dir = $install_switch_base_dir.'/grammar';
+		$switch_storage_dir = $install_switch_base_dir.'/storage';
+		$switch_voicemail_dir = $install_switch_base_dir.'/storage/voicemail';
+		$switch_recordings_dir = $install_switch_base_dir.'/recordings';
+		$switch_sounds_dir = $install_switch_base_dir.'/sounds';
 		$install_tmp_dir = realpath(sys_get_temp_dir());
-		$install_v_backup_dir = realpath(sys_get_temp_dir());
+		$install_backup_dir = realpath(sys_get_temp_dir());
 		$v_download_path = '';
 
 	//set specific alternative directories as required
@@ -184,22 +184,22 @@ require_once "includes/lib_functions.php";
 								if (!is_dir($db_filepath)) { mkdir($db_filepath,0777,true); }
 							}
 						//set the other default directories
-							$v_bin_dir = '/usr/local/bin'; //freeswitch bin directory
-							$v_conf_dir = '/usr/local/etc/freeswitch/conf';
-							$v_db_dir = '/var/db/freeswitch';
-							$v_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
-							$v_log_dir = '/var/log/freeswitch';
-							$v_mod_dir = '/usr/local/lib/freeswitch/mod';
-							$v_extensions_dir = $v_conf_dir.'/directory/default';
-							$v_gateways_dir = $v_conf_dir.'/sip_profiles/external';
-							$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
-							$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
-							$v_scripts_dir = '/usr/local/etc/freeswitch/scripts';
-							$v_grammar_dir = '/usr/local/etc/freeswitch/grammar';
-							$v_storage_dir = '/var/freeswitch';
-							$v_voicemail_dir = '/var/spool/freeswitch/voicemail';
-							$v_recordings_dir = '/var/freeswitch/recordings';
-							$v_sounds_dir = '/usr/local/share/freeswitch/sounds';
+							$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
+							$switch_conf_dir = '/usr/local/etc/freeswitch/conf';
+							$switch_db_dir = '/var/db/freeswitch';
+							$switch_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
+							$switch_log_dir = '/var/log/freeswitch';
+							$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
+							$switch_extensions_dir = $switch_conf_dir.'/directory/default';
+							$switch_gateways_dir = $switch_conf_dir.'/sip_profiles/external';
+							$v_dialplan_public_dir = $switch_conf_dir.'/dialplan/public';
+							$switch_dialplan_dir = $switch_conf_dir.'/dialplan/default';
+							$switch_scripts_dir = '/usr/local/etc/freeswitch/scripts';
+							$switch_grammar_dir = '/usr/local/etc/freeswitch/grammar';
+							$switch_storage_dir = '/var/freeswitch';
+							$switch_voicemail_dir = '/var/spool/freeswitch/voicemail';
+							$switch_recordings_dir = '/var/freeswitch/recordings';
+							$switch_sounds_dir = '/usr/local/share/freeswitch/sounds';
 				}
 				elseif (file_exists('/data/freeswitch')) {
 					//freebsd embedded 
@@ -209,22 +209,22 @@ require_once "includes/lib_functions.php";
 								if (!is_dir($db_filepath)) { mkdir($db_filepath,0777,true); }
 							}
 						//set the other default directories
-							$v_bin_dir = '/usr/local/bin'; //freeswitch bin directory
-							$v_conf_dir = '/usr/local/etc/freeswitch/conf';
-							$v_db_dir = '/data/freeswitch/db';
-							$v_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
-							$v_log_dir = '/data/freeswitch/log';
-							$v_mod_dir = '/usr/local/lib/freeswitch/mod';
-							$v_extensions_dir = $v_conf_dir.'/directory/default';
-							$v_gateways_dir = $v_conf_dir.'/sip_profiles/external';
-							$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
-							$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
-							$v_scripts_dir = '/usr/local/etc/freeswitch/scripts';
-							$v_grammar_dir = '/usr/local/etc/freeswitch/grammar';
-							$v_storage_dir = '/data/freeswitch';
-							$v_voicemail_dir = '/data/freeswitch/voicemail';
-							$v_recordings_dir = '/data/freeswitch/recordings';
-							$v_sounds_dir = '/data/freeswitch/sounds';
+							$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
+							$switch_conf_dir = '/usr/local/etc/freeswitch/conf';
+							$switch_db_dir = '/data/freeswitch/db';
+							$switch_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
+							$switch_log_dir = '/data/freeswitch/log';
+							$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
+							$switch_extensions_dir = $switch_conf_dir.'/directory/default';
+							$switch_gateways_dir = $switch_conf_dir.'/sip_profiles/external';
+							$v_dialplan_public_dir = $switch_conf_dir.'/dialplan/public';
+							$switch_dialplan_dir = $switch_conf_dir.'/dialplan/default';
+							$switch_scripts_dir = '/usr/local/etc/freeswitch/scripts';
+							$switch_grammar_dir = '/usr/local/etc/freeswitch/grammar';
+							$switch_storage_dir = '/data/freeswitch';
+							$switch_voicemail_dir = '/data/freeswitch/voicemail';
+							$switch_recordings_dir = '/data/freeswitch/recordings';
+							$switch_sounds_dir = '/data/freeswitch/sounds';
 				}
 				else {
 					//set the default db_filepath
@@ -234,7 +234,7 @@ require_once "includes/lib_functions.php";
 				}
 			break;
 		case "NetBSD":
-			$v_startup_script_dir = '';
+			$startup_script_dir = '';
 			$install_php_dir = '/usr/local/bin';
 
 			//set the default db_filepath
@@ -243,7 +243,7 @@ require_once "includes/lib_functions.php";
 				}
 			break;
 		case "OpenBSD":
-			$v_startup_script_dir = '';
+			$startup_script_dir = '';
 
 			//set the default db_filepath
 				if (strlen($db_filepath) == 0) { //secure dir
@@ -281,42 +281,42 @@ require_once "includes/lib_functions.php";
 		if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
 			if (substr($_SERVER["DOCUMENT_ROOT"], -3) == "www") {
 				//integrated installer
-				$install_v_dir = realpath($_SERVER["DOCUMENT_ROOT"]."/..");
-				$v_parent_dir = realpath($_SERVER["DOCUMENT_ROOT"]."/..");
+				$install_switch_base_dir = realpath($_SERVER["DOCUMENT_ROOT"]."/..");
+				$parent_dir = realpath($_SERVER["DOCUMENT_ROOT"]."/..");
 				$install_php_dir = realpath($_SERVER["PHPRC"]."/..");
-				$v_startup_script_dir = '';
+				$startup_script_dir = '';
 			} elseif (is_dir('C:/program files/FreeSWITCH')) {
-				$install_v_dir = 'C:/program files/FreeSWITCH';
-				$v_parent_dir = 'C:/program files';
-				$v_startup_script_dir = '';
+				$install_switch_base_dir = 'C:/program files/FreeSWITCH';
+				$parent_dir = 'C:/program files';
+				$startup_script_dir = '';
 			} elseif (is_dir('D:/program files/FreeSWITCH')) {
-				$install_v_dir = 'D:/program files/FreeSWITCH';
-				$v_parent_dir = 'D:/program files';
-				$v_startup_script_dir = '';
+				$install_switch_base_dir = 'D:/program files/FreeSWITCH';
+				$parent_dir = 'D:/program files';
+				$startup_script_dir = '';
 			} elseif (is_dir('E:/program files/FreeSWITCH')) {
-				$install_v_dir = 'E:/program files/FreeSWITCH';
-				$v_parent_dir = 'E:/program files';
-				$v_startup_script_dir = '';
+				$install_switch_base_dir = 'E:/program files/FreeSWITCH';
+				$parent_dir = 'E:/program files';
+				$startup_script_dir = '';
 			} elseif (is_dir('F:/program files/FreeSWITCH')) {
-				$install_v_dir = 'F:/program files/FreeSWITCH';
-				$v_parent_dir = 'F:/program files';
-				$v_startup_script_dir = '';
+				$install_switch_base_dir = 'F:/program files/FreeSWITCH';
+				$parent_dir = 'F:/program files';
+				$startup_script_dir = '';
 			} elseif (is_dir('C:/FreeSWITCH')) {
-				$install_v_dir = 'C:/FreeSWITCH';
-				$v_parent_dir = 'C:';
-				$v_startup_script_dir = '';
+				$install_switch_base_dir = 'C:/FreeSWITCH';
+				$parent_dir = 'C:';
+				$startup_script_dir = '';
 			} elseif (is_dir('D:/FreeSWITCH')) {
-				$install_v_dir = 'D:/FreeSWITCH';
-				$v_parent_dir = 'D:';
-				$v_startup_script_dir = '';
+				$install_switch_base_dir = 'D:/FreeSWITCH';
+				$parent_dir = 'D:';
+				$startup_script_dir = '';
 			} elseif (is_dir('E:/FreeSWITCH')) {
-				$install_v_dir = 'E:/FreeSWITCH';
-				$v_parent_dir = 'E:';
-				$v_startup_script_dir = '';
+				$install_switch_base_dir = 'E:/FreeSWITCH';
+				$parent_dir = 'E:';
+				$startup_script_dir = '';
 			} elseif (is_dir('F:/FreeSWITCH')) {
-				$install_v_dir = 'F:/FreeSWITCH';
-				$v_parent_dir = 'F:';
-				$v_startup_script_dir = '';
+				$install_switch_base_dir = 'F:/FreeSWITCH';
+				$parent_dir = 'F:';
+				$startup_script_dir = '';
 			} else {
 				if (is_dir('C:/PHP')) { $install_php_dir = 'C:/PHP'; }
 				if (is_dir('D:/PHP')) { $install_php_dir = 'D:/PHP'; }
@@ -353,22 +353,22 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//check for all required data
 		if (strlen($db_type) == 0) { $msg .= "Please provide the Database Type<br>\n"; }
 		if (PHP_OS == "FreeBSD" && file_exists('/usr/local/etc/freeswitch/conf')) {
-			//install_v_dir not required for the freebsd freeswitch port;
+			//install_switch_base_dir not required for the freebsd freeswitch port;
 		}
 		else {
-			if (strlen($install_v_dir) == 0) { $msg .= "Please provide the Switch Directory.<br>\n"; }
+			if (strlen($install_switch_base_dir) == 0) { $msg .= "Please provide the Switch Directory.<br>\n"; }
 		}
 		if (strlen($install_php_dir) == 0) { $msg .= "Please provide the PHP Directory.<br>\n"; }
 		if (strlen($install_tmp_dir) == 0) { $msg .= "Please provide the Temp Directory.<br>\n"; }
-		if (strlen($install_v_backup_dir) == 0) { $msg .= "Please provide the Backup Directory.<br>\n"; }
+		if (strlen($install_backup_dir) == 0) { $msg .= "Please provide the Backup Directory.<br>\n"; }
 		if (strlen($install_v_template_name) == 0) { $msg .= "Please provide the Theme.<br>\n"; }
 
-		if (!is_writable($install_v_dir."/conf/vars.xml")) {
+		if (!is_writable($install_switch_base_dir."/conf/vars.xml")) {
 			if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
 				//some windows operating systems report read only but are writable
 			}
 			else {
-				//$msg .= "<b>Write access to ".$install_v_dir." and its sub-directories is required.</b><br />\n";
+				//$msg .= "<b>Write access to ".$install_switch_base_dir." and its sub-directories is required.</b><br />\n";
 			}
 		}
 	//define the step to return to
@@ -720,15 +720,15 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//add the domain settings
 		$x = 0;
 		$tmp[$x]['name'] = 'v_menu_uuid';
-		$tmp[$x]['value'] = $menu_uuid;
+		$tmp[$x]['value'] = $menu_uuid; //menu_uuid
 		$x++;
-		$tmp[$x]['name'] = 'v_time_zone';
+		$tmp[$x]['name'] = 'v_time_zone'; //time_zone
 		$tmp[$x]['value'] = '';
 		$x++;
-		$tmp[$x]['name'] = 'v_template_name';
+		$tmp[$x]['name'] = 'v_template_name'; //template_name
 		$tmp[$x]['value'] = $install_v_template_name;
 		$x++;
-		$tmp[$x]['name'] = 'v_account_code';
+		$tmp[$x]['name'] = 'v_account_code'; //account_code
 		$tmp[$x]['value'] = '';
 		foreach($tmp as $row) {
 			$sql = "insert into v_domain_settings ";
@@ -773,22 +773,22 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		unset($sql);
 
 	//replace back slashes with forward slashes
-		$v_web_dir = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
-		$v_web_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
-		if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $v_relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $v_relative_url = '/'; }
-		$install_v_dir = str_replace("\\", "/", $install_v_dir);
-		$v_parent_dir = str_replace("\\", "/", $v_parent_dir);
+		$web_dir = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
+		$web_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
+		if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }
+		$install_switch_base_dir = str_replace("\\", "/", $install_switch_base_dir);
+		$parent_dir = str_replace("\\", "/", $parent_dir);
 		$install_php_dir = str_replace("\\", "/", $install_php_dir);
-		$v_startup_script_dir = str_replace("\\", "/", $v_startup_script_dir);
+		$startup_script_dir = str_replace("\\", "/", $startup_script_dir);
 		$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
-		$install_v_backup_dir = str_replace("\\", "/", $install_v_backup_dir);
+		$install_backup_dir = str_replace("\\", "/", $install_backup_dir);
 
 	//add the server settings
 		$x = 0;
-		$tmp[$x]['name'] = 'v_server_protocol';
+		$tmp[$x]['name'] = 'server_protocol';
 		$tmp[$x]['value'] = '';
 		$x++;
-		$tmp[$x]['name'] = 'v_server_port';
+		$tmp[$x]['name'] = 'server_port';
 		$tmp[$x]['value'] = '';
 		$x++;
 		$tmp[$x]['name'] = 'php_dir';
@@ -797,88 +797,82 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['name'] = 'tmp_dir';
 		$tmp[$x]['value'] = $install_tmp_dir;
 		$x++;
-		$tmp[$x]['name'] = 'bin_dir';
-		$tmp[$x]['value'] = $v_bin_dir;
+		$tmp[$x]['name'] = 'switch_bin_dir';
+		$tmp[$x]['value'] = $switch_bin_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_startup_script_dir';
-		$tmp[$x]['value'] = $v_startup_script_dir;
+		$tmp[$x]['name'] = 'startup_script_dir';
+		$tmp[$x]['value'] = $startup_script_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_dir';
-		$tmp[$x]['value'] = $install_v_dir;
+		$tmp[$x]['name'] = 'switch_base_dir';
+		$tmp[$x]['value'] = $install_switch_base_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_parent_dir';
-		$tmp[$x]['value'] = $v_parent_dir;
+		$tmp[$x]['name'] = 'parent_dir';
+		$tmp[$x]['value'] = $parent_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_backup_dir';
-		$tmp[$x]['value'] = $install_v_backup_dir;
+		$tmp[$x]['name'] = 'backup_dir';
+		$tmp[$x]['value'] = $install_backup_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_web_root';
-		$tmp[$x]['value'] = $v_web_root;
+		$tmp[$x]['name'] = 'web_root';
+		$tmp[$x]['value'] = $web_root;
 		$x++;
-		$tmp[$x]['name'] = 'v_web_dir';
-		$tmp[$x]['value'] = $v_web_dir;
+		$tmp[$x]['name'] = 'web_dir';
+		$tmp[$x]['value'] = $web_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_relative_url';
-		$tmp[$x]['value'] = $v_relative_url;
+		$tmp[$x]['name'] = 'relative_url';
+		$tmp[$x]['value'] = $relative_url;
 		$x++;
-		$tmp[$x]['name'] = 'v_conf_dir';
-		$tmp[$x]['value'] = $v_conf_dir;
+		$tmp[$x]['name'] = 'switch_conf_dir';
+		$tmp[$x]['value'] = $switch_conf_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_db_dir';
-		$tmp[$x]['value'] = $v_db_dir;
+		$tmp[$x]['name'] = 'switch_db_dir';
+		$tmp[$x]['value'] = $switch_db_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_htdocs_dir';
-		$tmp[$x]['value'] = $v_htdocs_dir;
+		$tmp[$x]['name'] = 'switch_htdocs_dir';
+		$tmp[$x]['value'] = $switch_htdocs_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_log_dir';
-		$tmp[$x]['value'] = $v_log_dir;
+		$tmp[$x]['name'] = 'switch_log_dir';
+		$tmp[$x]['value'] = $switch_log_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_extensions_dir';
-		$tmp[$x]['value'] = $v_extensions_dir;
+		$tmp[$x]['name'] = 'switch_extensions_dir';
+		$tmp[$x]['value'] = $switch_extensions_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_gateways_dir';
-		$tmp[$x]['value'] = $v_gateways_dir;
+		$tmp[$x]['name'] = 'switch_gateways_dir';
+		$tmp[$x]['value'] = $switch_gateways_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_dialplan_public_dir';
-		$tmp[$x]['value'] = $v_dialplan_public_dir;
+		$tmp[$x]['name'] = 'switch_dialplan_dir';
+		$tmp[$x]['value'] = $switch_dialplan_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_dialplan_default_dir';
-		$tmp[$x]['value'] = $v_dialplan_default_dir;
+		$tmp[$x]['name'] = 'switch_mod_dir';
+		$tmp[$x]['value'] = $switch_mod_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_mod_dir';
-		$tmp[$x]['value'] = $v_mod_dir;
+		$tmp[$x]['name'] = 'switch_scripts_dir';
+		$tmp[$x]['value'] = $switch_scripts_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_scripts_dir';
-		$tmp[$x]['value'] = $v_scripts_dir;
+		$tmp[$x]['name'] = 'switch_grammar_dir';
+		$tmp[$x]['value'] = $switch_grammar_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_grammar_dir';
-		$tmp[$x]['value'] = $v_grammar_dir;
+		$tmp[$x]['name'] = 'switch_storage_dir';
+		$tmp[$x]['value'] = $switch_storage_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_storage_dir';
-		$tmp[$x]['value'] = $v_storage_dir;
+		$tmp[$x]['name'] = 'switch_voicemail_dir';
+		$tmp[$x]['value'] = $switch_voicemail_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_voicemail_dir';
-		$tmp[$x]['value'] = $v_voicemail_dir;
+		$tmp[$x]['name'] = 'switch_recordings_dir';
+		$tmp[$x]['value'] = $switch_recordings_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_recordings_dir';
-		$tmp[$x]['value'] = $v_recordings_dir;
+		$tmp[$x]['name'] = 'switch_sounds_dir';
+		$tmp[$x]['value'] = $switch_sounds_dir;
 		$x++;
-		$tmp[$x]['name'] = 'v_download_path';
-		$tmp[$x]['value'] = $v_download_path;
-		$x++;
-		$tmp[$x]['name'] = 'v_sounds_dir';
-		$tmp[$x]['value'] = $v_sounds_dir;
-		$x++;
-		$tmp[$x]['name'] = 'v_provisioning_tftp_dir';
+		$tmp[$x]['name'] = 'provisioning_tftp_dir';
 		$tmp[$x]['value'] = '';
 		$x++;
-		$tmp[$x]['name'] = 'v_provisioning_ftp_dir';
+		$tmp[$x]['name'] = 'provisioning_ftp_dir';
 		$tmp[$x]['value'] = '';
 		$x++;
-		$tmp[$x]['name'] = 'v_provisioning_https_dir';
+		$tmp[$x]['name'] = 'provisioning_https_dir';
 		$tmp[$x]['value'] = '';
 		$x++;
-		$tmp[$x]['name'] = 'v_provisioning_http_dir';
+		$tmp[$x]['name'] = 'provisioning_http_dir';
 		$tmp[$x]['value'] = '';
 		foreach($tmp as $row) {
 			$sql = "insert into v_server_settings ";
@@ -1183,36 +1177,36 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 	//rename the default config files that are not needed
 		for ($i=1000; $i<1020; $i++) {
-			$file = $v_extensions_dir.'/'.$i; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
+			$file = $switch_extensions_dir.'/'.$i; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
 		}
-		$file = $v_extensions_dir.'/brian'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
-		$file = $v_extensions_dir.'/example.com'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
-		$file = $v_dialplan_default_dir.'/99999_enum'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
-		$file = $v_dialplan_default_dir.'/01_example.com'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
+		$file = $switch_extensions_dir.'/brian'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
+		$file = $switch_extensions_dir.'/example.com'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
+		$file = $switch_dialplan_dir.'/99999_enum'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
+		$file = $switch_dialplan_dir.'/01_example.com'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
 		$file = $v_dialplan_public_dir.'/00_inbound_did'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
 		unset($file);
 
 	//create the necessary directories
 		if (!is_dir($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
-		if (!is_dir($install_v_backup_dir)) { mkdir($install_v_backup_dir,0777,true); }
-		if (!is_dir($v_sounds_dir.'/en/us/callie/custom/8000')) { mkdir($v_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
-		if (!is_dir($v_sounds_dir.'/en/us/callie/custom/16000')) { mkdir($v_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
-		if (!is_dir($v_sounds_dir.'/en/us/callie/custom/32000')) { mkdir($v_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
-		if (!is_dir($v_sounds_dir.'/en/us/callie/custom/48000')) { mkdir($v_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
-		if (!is_dir($v_storage_dir.'/fax/')) { mkdir($v_storage_dir.'/fax',0777,true); }
-		if (!is_dir($v_log_dir.'')) { mkdir($v_log_dir.'',0777,true); }
-		if (!is_dir($v_sounds_dir.'')) { mkdir($v_sounds_dir.'',0777,true); }
-		if (!is_dir($v_recordings_dir.'')) { mkdir($v_recordings_dir.'',0777,true); }
+		if (!is_dir($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
+		if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/8000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
+		if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/16000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
+		if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/32000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
+		if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/48000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
+		if (!is_dir($switch_storage_dir.'/fax/')) { mkdir($switch_storage_dir.'/fax',0777,true); }
+		if (!is_dir($switch_log_dir.'')) { mkdir($switch_log_dir.'',0777,true); }
+		if (!is_dir($switch_sounds_dir.'')) { mkdir($switch_sounds_dir.'',0777,true); }
+		if (!is_dir($switch_recordings_dir.'')) { mkdir($switch_recordings_dir.'',0777,true); }
 
 	//copy the files and directories from includes/install
 		require_once "includes/classes/install.php";
 		$install = new install;
 		$install->domain_uuid = $_SESSION["domain_uuid"];
 		$install->v_domain = $domain;
-		$install->v_conf_dir = $v_conf_dir;
-		$install->v_scripts_dir = $v_scripts_dir;
-		$install->v_sounds_dir = $v_sounds_dir;
-		$install->v_recordings_dir = $v_recordings_dir;
+		$install->switch_conf_dir = $switch_conf_dir;
+		$install->switch_scripts_dir = $switch_scripts_dir;
+		$install->switch_sounds_dir = $switch_sounds_dir;
+		$install->switch_recordings_dir = $switch_recordings_dir;
 		$install->copy_conf();
 		$install->copy();
 		//print_r($install->result);
@@ -1222,7 +1216,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$dialplan = new dialplan;
 		$dialplan->domain_uuid = $_SESSION["domain_uuid"];
 		$dialplan->v_domain = $domain;
-		$dialplan->v_conf_dir = $v_conf_dir;
+		$dialplan->switch_conf_dir = $switch_conf_dir;
 		$dialplan->restore_advanced_xml();
 		//print_r($dialplan->result);
 
@@ -1299,8 +1293,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/header.php")) {
 		$installmsg .= "<li>Write access to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/ is required during the install.</li>\n";
 	}
-	if (strlen($install_v_dir) > 0) {
-		if (!is_writable($install_v_dir)) {
+	if (strlen($install_switch_base_dir) > 0) {
+		if (!is_writable($install_switch_base_dir)) {
 			$installmsg .= "<li>Write access to the 'FreeSWITCH Directory' and most of its sub directories is required.</li>\n";
 		}
 	}
@@ -1404,7 +1398,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "</tr>\n";
 
 		if (PHP_OS == "FreeBSD" && file_exists('/usr/local/etc/freeswitch/conf')) {
-			//install_v_dir not required for the freebsd freeswitch port;
+			//install_switch_base_dir not required for the freebsd freeswitch port;
 		}
 		else {
 			echo "<tr>\n";
@@ -1412,7 +1406,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			echo "	FreeSWITCH Directory:\n";
 			echo "</td>\n";
 			echo "<td class='vtable' align='left'>\n";
-			echo "	<input class='formfld' type='text' name='install_v_dir' maxlength='255' value=\"$install_v_dir\">\n";
+			echo "	<input class='formfld' type='text' name='install_switch_base_dir' maxlength='255' value=\"$install_switch_base_dir\">\n";
 			echo "<br />\n";
 			echo "Enter the FreeSWITCH directory path.\n";
 			echo "</td>\n";
@@ -1464,7 +1458,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
-		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
+		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='2'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
 		echo "		</td>\n";
@@ -1513,10 +1507,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "			<input type='hidden' name='admin_username' value='$admin_username'>\n";
 		echo "			<input type='hidden' name='admin_password' value='$admin_password'>\n";
 		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
-		echo "			<input type='hidden' name='install_v_dir' value='$install_v_dir'>\n";
+		echo "			<input type='hidden' name='install_switch_base_dir' value='$install_switch_base_dir'>\n";
 		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
-		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
+		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
 		echo "			<input type='hidden' name='install_v_template_name' value='$install_v_template_name'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
@@ -1629,10 +1623,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "			<input type='hidden' name='admin_username' value='$admin_username'>\n";
 		echo "			<input type='hidden' name='admin_password' value='$admin_password'>\n";
 		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
-		echo "			<input type='hidden' name='install_v_dir' value='$install_v_dir'>\n";
+		echo "			<input type='hidden' name='install_switch_base_dir' value='$install_switch_base_dir'>\n";
 		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
-		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
+		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
 		echo "			<input type='hidden' name='install_v_template_name' value='$install_v_template_name'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
@@ -1743,10 +1737,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "			<input type='hidden' name='admin_username' value='$admin_username'>\n";
 		echo "			<input type='hidden' name='admin_password' value='$admin_password'>\n";
 		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
-		echo "			<input type='hidden' name='install_v_dir' value='$install_v_dir'>\n";
+		echo "			<input type='hidden' name='install_switch_base_dir' value='$install_switch_base_dir'>\n";
 		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
-		echo "			<input type='hidden' name='install_v_backup_dir' value='$install_v_backup_dir'>\n";
+		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
 		echo "			<input type='hidden' name='install_v_template_name' value='$install_v_template_name'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Install'>\n";

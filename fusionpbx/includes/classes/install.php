@@ -31,10 +31,10 @@ include "root.php";
 		var $result;
 		var $domain_uuid;
 		var $v_domain;
-		var $v_conf_dir;
-		var $v_scripts_dir;
-		var $v_sounds_dir;
-		var $v_recordings_dir;
+		var $switch_conf_dir;
+		var $switch_scripts_dir;
+		var $switch_sounds_dir;
+		var $switch_recordings_dir;
 
 		function recursive_copy($src, $dst) {
 			$dir = opendir($src);
@@ -87,8 +87,8 @@ include "root.php";
 		function copy_conf() {
 			//make a backup copy of the conf directory
 				clearstatcache();
-				$src_dir = $this->v_conf_dir;
-				$dst_dir = $this->v_conf_dir.'.orig';
+				$src_dir = $this->switch_conf_dir;
+				$dst_dir = $this->switch_conf_dir.'.orig';
 				if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
 					$this->recursive_copy($src_dir, $dst_dir);
 				}
@@ -99,7 +99,7 @@ include "root.php";
 			//remove the conf directory
 				if (strlen($dst_dir)>0) {
 					if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
-						$this->recursive_delete($this->v_conf_dir);
+						$this->recursive_delete($this->switch_conf_dir);
 					}
 					//else {
 					//	exec ('rm -R '.$dst_dir);
@@ -107,21 +107,21 @@ include "root.php";
 				}
 			//copy includes/templates/conf to the freeswitch/conf dir
 				$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf";
-				$dst_dir = $this->v_conf_dir;
+				$dst_dir = $this->switch_conf_dir;
 				$this->recursive_copy($src_dir, $dst_dir);
 			//create the dialplan/default.xml for single tenant or dialplan/domain.xml
 				require_once "includes/classes/dialplan.php";
 				$dialplan = new dialplan;
 				$dialplan->domain_uuid = $this->domain_uuid;
 				$dialplan->v_domain = $this->v_domain;
-				$dialplan->v_conf_dir = $this->v_conf_dir;
+				$dialplan->switch_conf_dir = $this->switch_conf_dir;
 				$dialplan->restore_advanced_xml();
 		}
 
 		function copy_scripts() {
 			clearstatcache();
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/scripts';
-			$dst_dir = $this->v_scripts_dir;
+			$dst_dir = $this->switch_scripts_dir;
 			if ($handle = opendir($src_dir)) {
 				$i = 0;
 				$files = array();
@@ -145,7 +145,7 @@ include "root.php";
 		function copy_sounds() {
 			clearstatcache();
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/en/us/callie/custom/8000';
-			$dst_dir = $this->v_sounds_dir.'/en/us/callie/custom/8000';
+			$dst_dir = $this->switch_sounds_dir.'/en/us/callie/custom/8000';
 			if ($handle = opendir($src_dir)) {
 				$i = 0;
 				$files = array();
@@ -165,7 +165,7 @@ include "root.php";
 			}
 
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/en/us/callie/custom/16000';
-			$dst_dir = $this->v_sounds_dir.'/en/us/callie/custom/16000';
+			$dst_dir = $this->switch_sounds_dir.'/en/us/callie/custom/16000';
 			if ($handle = opendir($src_dir)) {
 				$i = 0;
 				$files = array();
@@ -201,7 +201,7 @@ include "root.php";
 		function copy_phrases() {
 			clearstatcache();
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/lang";
-			$dst_dir = $this->v_conf_dir."/lang";
+			$dst_dir = $this->switch_conf_dir."/lang";
 			$this->recursive_copy($src_dir, $dst_dir);
 		}
 
@@ -211,10 +211,10 @@ include "root.php";
 	//include "includes/classes/install.php";
 	//$install = new install;
 	//$install->domain_uuid = $domain_uuid;
-	//$install->v_conf_dir = $v_conf_dir;
-	//$install->v_scripts_dir = $v_scripts_dir;
-	//$install->v_sounds_dir = $v_sounds_dir;
-	//$install->v_recordings_dir = $v_recordings_dir;
+	//$install->switch_conf_dir = $switch_conf_dir;
+	//$install->switch_scripts_dir = $switch_scripts_dir;
+	//$install->switch_sounds_dir = $switch_sounds_dir;
+	//$install->switch_recordings_dir = $switch_recordings_dir;
 	//$install->copy();
 	//print_r($install->result);
 ?>

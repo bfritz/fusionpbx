@@ -504,7 +504,7 @@ else {
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['leg']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>";
 
-			$tmp_dir = $v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
+			$tmp_dir = $switch_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
 			$tmp_name = '';
 			if(!empty($row['recording_file']) && file_exists($row['recording_file'])){
 				$tmp_name=$row['recording_file'];
@@ -521,7 +521,7 @@ else {
 			elseif (file_exists($tmp_dir.'/'.$row['uuid'].'_1.mp3')) {
 				$tmp_name = $row['uuid']."_1.mp3";
 			}
-			if (strlen($tmp_name) > 0 && file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
+			if (strlen($tmp_name) > 0 && file_exists($switch_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
 				echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('../recordings/v_recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
 				echo 	$row['caller_id_name'].' ';
 				echo "	  </a>";
@@ -531,7 +531,7 @@ else {
 			}
 			echo "	</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>";
-			if (strlen($tmp_name) > 0 && file_exists($v_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
+			if (strlen($tmp_name) > 0 && file_exists($switch_recordings_dir.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
 				echo "		<a href=\"../recordings/v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode("archive/".$tmp_year."/".$tmp_month."/".$tmp_day."/".$tmp_name)."\">\n";
 				if (is_numeric($row['caller_id_number'])) {
 					echo 	format_phone($row['caller_id_number']).' ';

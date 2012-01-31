@@ -46,8 +46,8 @@ require_once "includes/paging.php";
 	if ($_GET['a'] == "download" && permission_exists('recordings_download')) {
 		session_cache_limiter('public');
 		if ($_GET['type'] = "rec") {
-			if (file_exists($v_recordings_dir.'/'.base64_decode($_GET['filename']))) {
-				$fd = fopen($v_recordings_dir.'/'.base64_decode($_GET['filename']), "rb");
+			if (file_exists($switch_recordings_dir.'/'.base64_decode($_GET['filename']))) {
+				$fd = fopen($switch_recordings_dir.'/'.base64_decode($_GET['filename']), "rb");
 				if ($_GET['t'] == "bin") {
 					header("Content-Type: application/force-download");
 					header("Content-Type: application/octet-stream");
@@ -66,7 +66,7 @@ require_once "includes/paging.php";
 				}
 				header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 				header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-				header("Content-Length: " . filesize($v_recordings_dir.'/'.base64_decode($_GET['filename'])));
+				header("Content-Length: " . filesize($switch_recordings_dir.'/'.base64_decode($_GET['filename'])));
 				fpassthru($fd);
 			}
 		}
@@ -76,9 +76,9 @@ require_once "includes/paging.php";
 //upload the recording
 	if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['ulfile']['tmp_name']) && permission_exists('recordings_upload')) {
 		if ($_POST['type'] == 'rec') {
-			move_uploaded_file($_FILES['ulfile']['tmp_name'], $v_recordings_dir.'/'.$_FILES['ulfile']['name']);
-			$savemsg = "Uploaded file to ".$v_recordings_dir."/". htmlentities($_FILES['ulfile']['name']);
-			//system('chmod -R 744 $v_recordings_dir*');
+			move_uploaded_file($_FILES['ulfile']['tmp_name'], $switch_recordings_dir.'/'.$_FILES['ulfile']['name']);
+			$savemsg = "Uploaded file to ".$switch_recordings_dir."/". htmlentities($_FILES['ulfile']['name']);
+			//system('chmod -R 744 $switch_recordings_dir*');
 			unset($_POST['txtCommand']);
 		}
 	}
@@ -98,10 +98,10 @@ require_once "includes/paging.php";
 	unset ($prep_statement);
 
 //add recordings to the database
-	if (is_dir($v_recordings_dir.'/')) {
-		if ($dh = opendir($v_recordings_dir.'/')) {
+	if (is_dir($switch_recordings_dir.'/')) {
+		if ($dh = opendir($switch_recordings_dir.'/')) {
 			while (($file = readdir($dh)) !== false) {
-				if (filetype($v_recordings_dir."/".$file) == "file") {
+				if (filetype($switch_recordings_dir."/".$file) == "file") {
 					if (strpos($config_recording_list, "|".$file) === false) {
 						//echo "The $file was not found<br/>";
 						//file not found add it to the database
@@ -170,7 +170,7 @@ require_once "includes/paging.php";
 	echo "		<td align='left' width='50%'>\n";
 	if ($v_path_show) {
 		echo "<b>location:</b> \n";
-		echo $v_recordings_dir;
+		echo $switch_recordings_dir;
 	}
 	echo "		</td>\n";
 	echo "		<td valign=\"top\" class=\"label\">\n";
@@ -232,7 +232,7 @@ require_once "includes/paging.php";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			$tmp_filesize = filesize($v_recordings_dir.'/'.$row['recording_filename']);
+			$tmp_filesize = filesize($switch_recordings_dir.'/'.$row['recording_filename']);
 			$tmp_filesize = byte_convert($tmp_filesize);
 
 			echo "<tr >\n";

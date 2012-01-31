@@ -25,6 +25,6 @@
 */
 
 //if the recordings directory doesn't exist then create it
-	if (!is_dir($v_recordings_dir)) { mkdir($v_recordings_dir,0777,true); }
+	if (!is_dir($switch_recordings_dir)) { mkdir($switch_recordings_dir,0777,true); }
 
 ?>

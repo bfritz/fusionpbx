@@ -457,22 +457,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "</optgroup>\n";
 		}
 	//recordings
-		if($dh = opendir($v_recordings_dir."/")) {
+		if($dh = opendir($switch_recordings_dir."/")) {
 			$tmp_selected = false;
 			$files = Array();
 			echo "<optgroup label='recordings'>\n";
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($v_recordings_dir . "/" . $file)) {
+					if(is_dir($switch_recordings_dir . "/" . $file)) {
 						//this is a directory
 					}
 					else {
-						if ($ivr_menu_greet_long == $v_recordings_dir."/".$file) {
+						if ($ivr_menu_greet_long == $switch_recordings_dir."/".$file) {
 							$tmp_selected = true;
-							echo "		<option value='".$v_recordings_dir."/".$file."' selected>".$file."</option>\n";
+							echo "		<option value='".$switch_recordings_dir."/".$file."' selected>".$file."</option>\n";
 						}
 						else {
-							echo "		<option value='".$v_recordings_dir."/".$file."'>".$file."</option>\n";
+							echo "		<option value='".$switch_recordings_dir."/".$file."'>".$file."</option>\n";
 						}
 					}
 				}
@@ -481,8 +481,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "</optgroup>\n";
 		}
 	//sounds
-		//$dir_path = $v_sounds_dir;
-		//recur_sounds_dir($v_sounds_dir);
+		//$dir_path = $switch_sounds_dir;
+		//recur_sounds_dir($switch_sounds_dir);
 		//echo "<optgroup label='sounds'>\n";
 		//foreach ($dir_array as $key => $value) {
 		//	if (strlen($value) > 0) {
@@ -501,8 +501,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (ifgroup("superadmin")) {
 			if (!$tmp_selected) {
 				echo "<optgroup label='selected'>\n";
-				if (file_exists($v_recordings_dir."/".$ivr_menu_greet_long)) {
-					echo "		<option value='".$v_recordings_dir."/".$ivr_menu_greet_long."' selected>".$ivr_menu_greet_long."</option>\n";
+				if (file_exists($switch_recordings_dir."/".$ivr_menu_greet_long)) {
+					echo "		<option value='".$switch_recordings_dir."/".$ivr_menu_greet_long."' selected>".$ivr_menu_greet_long."</option>\n";
 				} elseif (substr($ivr_menu_greet_long, -3) == "wav" || substr($ivr_menu_greet_long, -3) == "mp3") {
 					$tmp_dir = "\$\${sounds_dir}/\${default_language}/\${default_dialect}/\${default_voice}";
 					echo "		<option value='".$tmp_dir."/".$ivr_menu_greet_long."' selected>".$ivr_menu_greet_long."</option>\n";
@@ -539,22 +539,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "</optgroup>\n";
 		}
 	//recordings
-		if($dh = opendir($v_recordings_dir."/")) {
+		if($dh = opendir($switch_recordings_dir."/")) {
 			$tmp_selected = false;
 			$files = Array();
 			echo "<optgroup label='recordings'>\n";
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($v_recordings_dir . "/" . $file)) {
+					if(is_dir($switch_recordings_dir . "/" . $file)) {
 						//this is a directory
 					}
 					else {
-						if ($ivr_menu_greet_short == $v_recordings_dir."/".$file) {
+						if ($ivr_menu_greet_short == $switch_recordings_dir."/".$file) {
 							$tmp_selected = true;
-							echo "		<option value='".$v_recordings_dir."/".$file."' selected>".$file."</option>\n";
+							echo "		<option value='".$switch_recordings_dir."/".$file."' selected>".$file."</option>\n";
 						}
 						else {
-							echo "		<option value='".$v_recordings_dir."/".$file."'>".$file."</option>\n";
+							echo "		<option value='".$switch_recordings_dir."/".$file."'>".$file."</option>\n";
 						}
 					}
 				}
@@ -563,8 +563,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "</optgroup>\n";
 		}
 	//sounds
-		//$dir_path = $v_sounds_dir;
-		//recur_sounds_dir($v_sounds_dir);
+		//$dir_path = $switch_sounds_dir;
+		//recur_sounds_dir($switch_sounds_dir);
 		//echo "<optgroup label='sounds'>\n";
 		//foreach ($dir_array as $key => $value) {
 		//	if (strlen($value) > 0) {
@@ -583,8 +583,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (ifgroup("superadmin")) {
 			if (!$tmp_selected) {
 				echo "<optgroup label='selected'>\n";
-				if (file_exists($v_recordings_dir."/".$ivr_menu_greet_short)) {
-					echo "		<option value='".$v_recordings_dir."/".$ivr_menu_greet_short."' selected>".$ivr_menu_greet_short."</option>\n";
+				if (file_exists($switch_recordings_dir."/".$ivr_menu_greet_short)) {
+					echo "		<option value='".$switch_recordings_dir."/".$ivr_menu_greet_short."' selected>".$ivr_menu_greet_short."</option>\n";
 				} elseif (substr($ivr_menu_greet_short, -3) == "wav" || substr($ivr_menu_greet_short, -3) == "mp3") {
 					$tmp_dir = "\$\${sounds_dir}/\${default_language}/\${default_dialect}/\${default_voice}";
 					echo "		<option value='".$tmp_dir."/".$ivr_menu_greet_short."' selected>".$ivr_menu_greet_short."</option>\n";

@@ -25,10 +25,10 @@
 */
 
 //remove external from the end of the gateway path
-	if (substr($v_gateways_dir, -8) == "external") {
-		$v_gateways_dir = substr($v_gateways_dir, 0, (strlen($v_gateways_dir)-9));
+	if (substr($switch_gateways_dir, -8) == "external") {
+		$switch_gateways_dir = substr($switch_gateways_dir, 0, (strlen($switch_gateways_dir)-9));
 		$sql = "update v_system_settings set ";
-		$sql .= "v_gateways_dir = '$v_gateways_dir' ";
+		$sql .= "switch_gateways_dir = '$switch_gateways_dir' ";
 		$sql .= "where domain_uuid = '$domain_uuid'";
 		$db->exec($sql);
 		unset($sql);

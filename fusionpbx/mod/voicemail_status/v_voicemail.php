@@ -89,7 +89,7 @@ $order = $_GET["order"];
 	$num_rows = count($result);
 	unset ($prep_statement, $result, $sql);
 
-	$rows_per_page = 20;
+	$rows_per_page = 100;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
@@ -116,35 +116,35 @@ $order = $_GET["order"];
 	unset ($prep_statement, $sql);
 
 	//pdo voicemail database connection
-		include "includes/lib_pdo_vm.php";
+//		include "includes/lib_pdo_vm.php";
 
-	if ($result_count == 0) {
-		//no results
-	}
-	else {
+	if ($result_count > 0) {
 		foreach($result as $row) {
+//		echo "<pre>\n";
+//		print_r($row);
+//		echo "</pre>\n";
 			$sql = "";
 			$sql .= "select count(*) as count from voicemail_msgs ";
 			$sql .= "where domain = '$v_domain' ";
-			$sql .= "and username = '".$row[extension]."' ";
-			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
-			foreach ($result as &$row2) {
-				$count = $row2["count"];
-				break; //limit to 1 row
-			}
-			unset ($prep_statement);
+			$sql .= "and username = '".$row['extension']."' ";
+//			$prep_statement = $db->prepare(check_sql($sql));
+//			$prep_statement->execute();
+//			$result = $prep_statement->fetchAll();
+//			foreach ($result as &$row2) {
+//				$count = $row2["count"];
+//				break; //limit to 1 row
+//			}
+//			unset ($prep_statement);
 
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[extension]."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[vm_mailto]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['extension']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['vm_mailto']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$count."&nbsp;</td>\n";
-			echo "  <td valign='top' class='".$row_style[$c]."'>".($row[vm_enabled]?"true":"false")."</td>\n";
-			echo "	<td valign='top' class='row_stylebg' width='30%'>".$row[description]."&nbsp;</td>\n";
+			echo "  <td valign='top' class='".$row_style[$c]."'>".($row['vm_enabled']?"true":"false")."</td>\n";
+			echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('voicemail_status_delete')) {
-				echo "		<a href='v_voicemail_prefs_delete.php?id=".$row[extension_uuid]."' alt='restore default preferences' title='restore default preferences' onclick=\"return confirm('Are you sure you want remove the voicemail name and greeting?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_voicemail_prefs_delete.php?id=".$row['extension_uuid']."' alt='restore default preferences' title='restore default preferences' onclick=\"return confirm('Are you sure you want remove the voicemail name and greeting?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";

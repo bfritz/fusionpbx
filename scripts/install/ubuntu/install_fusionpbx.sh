@@ -2105,12 +2105,12 @@ DELIM
 			/etc/init.d/apache2 restart
 		fi
 		#with $GUI_NAME in there, it's really hosing things up and how.
-#		/usr/bin/curl -s -d "db_type=sqlite&install_v_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_v_backup_dir=%2Ftmp&install_step=2&submit=Next" http://localhost/install.php > /dev/null
-#		/usr/bin/curl -s -d "db_filename=$GUI_NAME.db&db_filepath=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&db_type=sqlite&install_secure_dir=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&install_v_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_v_backup_dir=%2Ftmp&install_step=3&submit=Next" http://localhost/install.php > /dev/null
+#		/usr/bin/curl -s -d "db_type=sqlite&install_switch_base_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_backup_dir=%2Ftmp&install_step=2&submit=Next" http://localhost/install.php > /dev/null
+#		/usr/bin/curl -s -d "db_filename=$GUI_NAME.db&db_filepath=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&db_type=sqlite&install_secure_dir=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&install_switch_base_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_backup_dir=%2Ftmp&install_step=3&submit=Next" http://localhost/install.php > /dev/null
 		
 		#do for https too!
-#		/usr/bin/curl -k -s -d "db_type=sqlite&install_v_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_v_backup_dir=%2Ftmp&install_step=2&submit=Next" https://localhost/install.php > /dev/null
-#		/usr/bin/curl -k -s -d "db_filename=$GUI_NAME.db&db_filepath=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&db_type=sqlite&install_secure_dir=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&install_v_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_v_backup_dir=%2Ftmp&install_step=3&submit=Next" https://localhost/install.php > /dev/null
+#		/usr/bin/curl -k -s -d "db_type=sqlite&install_switch_base_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_backup_dir=%2Ftmp&install_step=2&submit=Next" https://localhost/install.php > /dev/null
+#		/usr/bin/curl -k -s -d "db_filename=$GUI_NAME.db&db_filepath=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&db_type=sqlite&install_secure_dir=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&install_switch_base_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_backup_dir=%2Ftmp&install_step=3&submit=Next" https://localhost/install.php > /dev/null
 		
 		/bin/echo "FusionPBX install.php was done automatically"
 		/bin/echo "  when sqlite was selected. "

@@ -25,6 +25,6 @@
 */
 
 //if the extensions dir doesn't exist then create it
-	if (!is_dir($v_extensions_dir)) { mkdir($v_extensions_dir,0777,true); }
+	if (!is_dir($switch_extensions_dir)) { mkdir($switch_extensions_dir,0777,true); }
 
 ?>

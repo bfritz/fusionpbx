@@ -45,17 +45,17 @@ require_once "includes/v_dialplan_entry_exists.php";
 
 if ($_GET['a'] == "download") {
 	if ($_GET['t'] == "cdrcsv") {
-		$tmp = $v_log_dir.'/cdr-csv/';
+		$tmp = $switch_log_dir.'/cdr-csv/';
 		$filename = 'Master.csv';
 	}
 	if ($_GET['t'] == "backup") {
-		$tmp = $v_backup_dir.'/';
+		$tmp = $backup_dir.'/';
 		$filename = $v_name.'.bak.tgz';
-		if (!is_dir($v_backup_dir.'/')) {
-			exec("mkdir ".$v_backup_dir."/");
+		if (!is_dir($backup_dir.'/')) {
+			exec("mkdir ".$backup_dir."/");
 		}
-		chdir($v_parent_dir);
-		shell_exec('tar cvzf '.$v_backup_dir.'/'.$v_name.'.bak.tgz '.$v_name);
+		chdir($parent_dir);
+		shell_exec('tar cvzf '.$backup_dir.'/'.$v_name.'.bak.tgz '.$v_name);
 	}
 	session_cache_limiter('public');
 	$fd = fopen($tmp.$filename, "rb");
@@ -153,7 +153,7 @@ if (strlen($msg) > 0) {
 
 //sofia status profile
 	if (permission_exists('system_status_sofia_status_profile')) {
-		foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
+		foreach (ListFiles($switch_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
 			if (substr($sip_profile_file, -4) == ".xml") {
 				$sip_profile_name = str_replace(".xml", "", $sip_profile_file);
 				if ($fp) {

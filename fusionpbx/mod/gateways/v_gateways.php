@@ -233,7 +233,7 @@ echo "<tr>\n";
 echo "<td colspan='8' align='left'>\n";
 echo "<br />\n";
 if ($v_path_show) {
-	echo $v_conf_dir."/sip_profiles/external/\n";
+	echo $switch_conf_dir."/sip_profiles/external/\n";
 }
 echo "</td>\n";
 echo "</tr>\n";

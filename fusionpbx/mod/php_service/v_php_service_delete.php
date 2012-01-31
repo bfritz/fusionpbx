@@ -56,7 +56,7 @@ if (strlen($id)>0) {
 	//delete the php service file
 		unlink($v_secure.'/php_service_'.$tmp_service_name.'.php');
 	//delete the start up script
-		unlink($v_startup_script_dir.'/php_service_'.$tmp_service_name.'.sh');
+		unlink($startup_script_dir.'/php_service_'.$tmp_service_name.'.sh');
 	//delete the pid file
 		unlink($tmp_dir.'/php_service_'.$tmp_service_name.'.pid');
 

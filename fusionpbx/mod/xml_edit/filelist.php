@@ -237,7 +237,7 @@ function recur_dir($dir) {
 	//echo "</DIV></TD></TR></TABLE>\n";
 	//echo "</DIV></TD></TR></TABLE>\n";
 
-	echo recur_dir($v_conf_dir);
+	echo recur_dir($switch_conf_dir);
 
 	echo "</DIV></TD></TR></TABLE>\n";
 

@@ -69,43 +69,43 @@ else {
 
 //set the freeswitch bin directory
 	if (file_exists('/usr/local/freeswitch/bin')) {
-		$install_v_dir = '/usr/local/freeswitch';
-		$v_bin_dir = '/usr/local/freeswitch/bin';
-		$v_parent_dir = '/usr/local';
+		$install_switch_base_dir = '/usr/local/freeswitch';
+		$switch_bin_dir = '/usr/local/freeswitch/bin';
+		$parent_dir = '/usr/local';
 	}
 	if (file_exists('/opt/freeswitch')) {
-		$install_v_dir = '/opt/freeswitch';
-		$v_bin_dir = '/opt/freeswitch/bin';
-		$v_parent_dir = '/opt';
+		$install_switch_base_dir = '/opt/freeswitch';
+		$switch_bin_dir = '/opt/freeswitch/bin';
+		$parent_dir = '/opt';
 	}
 
 //set the default startup script directory
 	if (file_exists('/usr/local/etc/rc.d')) {
-		$v_startup_script_dir = '/usr/local/etc/rc.d';
+		$startup_script_dir = '/usr/local/etc/rc.d';
 	}
 	if (file_exists('/etc/init.d')) {
-		$v_startup_script_dir = '/etc/init.d';
+		$startup_script_dir = '/etc/init.d';
 	}
 
 //set the default directories
-	$v_bin_dir = $install_v_dir.'/bin'; //freeswitch bin directory
-	$v_conf_dir = $install_v_dir.'/conf';
-	$v_db_dir = $install_v_dir.'/db';
-	$v_htdocs_dir = $install_v_dir.'/htdocs';
-	$v_log_dir = $install_v_dir.'/log';
-	$v_mod_dir = $install_v_dir.'/mod';
-	$v_extensions_dir = $v_conf_dir.'/directory/default';
-	$v_gateways_dir = $v_conf_dir.'/sip_profiles/external';
-	$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
-	$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
-	$v_scripts_dir = $install_v_dir.'/scripts';
-	$v_grammar_dir = $install_v_dir.'/grammar';
-	$v_storage_dir = $install_v_dir.'/storage';
-	$v_voicemail_dir = $install_v_dir.'/storage/voicemail';
-	$v_recordings_dir = $install_v_dir.'/recordings';
-	$v_sounds_dir = $install_v_dir.'/sounds';
+	$switch_bin_dir = $install_switch_base_dir.'/bin'; //freeswitch bin directory
+	$switch_conf_dir = $install_switch_base_dir.'/conf';
+	$switch_db_dir = $install_switch_base_dir.'/db';
+	$switch_htdocs_dir = $install_switch_base_dir.'/htdocs';
+	$switch_log_dir = $install_switch_base_dir.'/log';
+	$switch_mod_dir = $install_switch_base_dir.'/mod';
+	$switch_extensions_dir = $switch_conf_dir.'/directory/default';
+	$switch_gateways_dir = $switch_conf_dir.'/sip_profiles/external';
+	$v_dialplan_public_dir = $switch_conf_dir.'/dialplan/public';
+	$v_dialplan_default_dir = $switch_conf_dir.'/dialplan/default';
+	$switch_scripts_dir = $install_switch_base_dir.'/scripts';
+	$switch_grammar_dir = $install_switch_base_dir.'/grammar';
+	$switch_storage_dir = $install_switch_base_dir.'/storage';
+	$switch_voicemail_dir = $install_switch_base_dir.'/storage/voicemail';
+	$switch_recordings_dir = $install_switch_base_dir.'/recordings';
+	$switch_sounds_dir = $install_switch_base_dir.'/sounds';
 	$install_tmp_dir = realpath(sys_get_temp_dir());
-	$install_v_backup_dir = realpath(sys_get_temp_dir());
+	$install_backup_dir = realpath(sys_get_temp_dir());
 	$v_download_path = '';
 
 //set specific alternative directories as required
@@ -121,22 +121,22 @@ else {
 					}
 
 				//set the other default directories
-					$v_bin_dir = '/usr/local/bin'; //freeswitch bin directory
-					$v_conf_dir = '/usr/local/etc/freeswitch/conf';
-					$v_db_dir = '/var/db/freeswitch';
-					$v_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
-					$v_log_dir = '/var/log/freeswitch';
-					$v_mod_dir = '/usr/local/lib/freeswitch/mod';
-					$v_extensions_dir = $v_conf_dir.'/directory/default';
-					$v_gateways_dir = $v_conf_dir.'/sip_profiles/external';
-					$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public';
-					$v_dialplan_default_dir = $v_conf_dir.'/dialplan/default';
-					$v_scripts_dir = '/usr/local/etc/freeswitch/scripts';
-					$v_grammar_dir = '/usr/local/etc/freeswitch/grammar';
-					$v_storage_dir = '/var/freeswitch';
-					$v_voicemail_dir = '/var/spool/freeswitch/voicemail';
-					$v_recordings_dir = '/var/freeswitch/recordings';
-					$v_sounds_dir = '/usr/local/share/freeswitch/sounds';
+					$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
+					$switch_conf_dir = '/usr/local/etc/freeswitch/conf';
+					$switch_db_dir = '/var/db/freeswitch';
+					$switch_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
+					$switch_log_dir = '/var/log/freeswitch';
+					$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
+					$switch_extensions_dir = $switch_conf_dir.'/directory/default';
+					$switch_gateways_dir = $switch_conf_dir.'/sip_profiles/external';
+					$v_dialplan_public_dir = $switch_conf_dir.'/dialplan/public';
+					$v_dialplan_default_dir = $switch_conf_dir.'/dialplan/default';
+					$switch_scripts_dir = '/usr/local/etc/freeswitch/scripts';
+					$switch_grammar_dir = '/usr/local/etc/freeswitch/grammar';
+					$switch_storage_dir = '/var/freeswitch';
+					$switch_voicemail_dir = '/var/spool/freeswitch/voicemail';
+					$switch_recordings_dir = '/var/freeswitch/recordings';
+					$switch_sounds_dir = '/usr/local/share/freeswitch/sounds';
 			}
 			else {
 				//set the default db_filepath
@@ -146,7 +146,7 @@ else {
 			}
 		break;
 	case "NetBSD":
-		$v_startup_script_dir = '';
+		$startup_script_dir = '';
 		$install_php_dir = '/usr/local/bin';
 
 		//set the default db_filepath
@@ -155,7 +155,7 @@ else {
 			}
 		break;
 	case "OpenBSD":
-		$v_startup_script_dir = '';
+		$startup_script_dir = '';
 
 		//set the default db_filepath
 			if (strlen($db_filepath) == 0) { //secure dir
@@ -193,44 +193,44 @@ else {
 	if (stristr(PHP_OS, 'WIN')) { 
 		//echo "windows: ".PHP_OS;
 		if (is_dir('C:/program files/FreeSWITCH')) {
-			$install_v_dir = 'C:/program files/FreeSWITCH';
-			$v_parent_dir = 'C:/program files';
-			$v_startup_script_dir = '';
+			$install_switch_base_dir = 'C:/program files/FreeSWITCH';
+			$parent_dir = 'C:/program files';
+			$startup_script_dir = '';
 		}
 		if (is_dir('D:/program files/FreeSWITCH')) {
-			$install_v_dir = 'D:/program files/FreeSWITCH';
-			$v_parent_dir = 'D:/program files';
-			$v_startup_script_dir = '';
+			$install_switch_base_dir = 'D:/program files/FreeSWITCH';
+			$parent_dir = 'D:/program files';
+			$startup_script_dir = '';
 		}
 		if (is_dir('E:/program files/FreeSWITCH')) {
-			$install_v_dir = 'E:/program files/FreeSWITCH';
-			$v_parent_dir = 'E:/program files';
-			$v_startup_script_dir = '';
+			$install_switch_base_dir = 'E:/program files/FreeSWITCH';
+			$parent_dir = 'E:/program files';
+			$startup_script_dir = '';
 		}
 		if (is_dir('F:/program files/FreeSWITCH')) {
-			$install_v_dir = 'F:/program files/FreeSWITCH';
-			$v_parent_dir = 'F:/program files';
-			$v_startup_script_dir = '';
+			$install_switch_base_dir = 'F:/program files/FreeSWITCH';
+			$parent_dir = 'F:/program files';
+			$startup_script_dir = '';
 		}
 		if (is_dir('C:/FreeSWITCH')) {
-			$install_v_dir = 'C:/FreeSWITCH';
-			$v_parent_dir = 'C:';
-			$v_startup_script_dir = '';
+			$install_switch_base_dir = 'C:/FreeSWITCH';
+			$parent_dir = 'C:';
+			$startup_script_dir = '';
 		}
 		if (is_dir('D:/FreeSWITCH')) {
-			$install_v_dir = 'D:/FreeSWITCH';
-			$v_parent_dir = 'D:';
-			$v_startup_script_dir = '';
+			$install_switch_base_dir = 'D:/FreeSWITCH';
+			$parent_dir = 'D:';
+			$startup_script_dir = '';
 		}
 		if (is_dir('E:/FreeSWITCH')) {
-			$install_v_dir = 'E:/FreeSWITCH';
-			$v_parent_dir = 'E:';
-			$v_startup_script_dir = '';
+			$install_switch_base_dir = 'E:/FreeSWITCH';
+			$parent_dir = 'E:';
+			$startup_script_dir = '';
 		}
 		if (is_dir('F:/FreeSWITCH')) {
-			$install_v_dir = 'F:/FreeSWITCH';
-			$v_parent_dir = 'F:';
-			$v_startup_script_dir = '';
+			$install_switch_base_dir = 'F:/FreeSWITCH';
+			$parent_dir = 'F:';
+			$startup_script_dir = '';
 		}
 		if (is_dir('C:/PHP')) { $install_php_dir = 'C:/PHP'; }
 		if (is_dir('D:/PHP')) { $install_php_dir = 'D:/PHP'; }
@@ -252,8 +252,8 @@ else {
 	$v_build_revision = 'Release';
 	$v_label = 'FusionPBX';
 	$v_name = 'freeswitch';
-	$v_web_dir = $_SERVER["DOCUMENT_ROOT"];
-	$v_web_root = $_SERVER["DOCUMENT_ROOT"];
-	if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $v_relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $v_relative_url = '/'; }
+	$web_dir = $_SERVER["DOCUMENT_ROOT"];
+	$web_root = $_SERVER["DOCUMENT_ROOT"];
+	if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }
 
 ?>

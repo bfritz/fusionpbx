@@ -102,7 +102,7 @@ function v_settings() {
 		foreach($result as $row) {
 			$name = $row['domain_setting_name'];
 			$_SESSION[$name] = $row['domain_setting_value'];
-			$$name = $row['domain_setting_value'];
+			$settings_array[$name] = $row['domain_setting_value'];
 		}
 
 	//get the server variables
@@ -114,191 +114,25 @@ function v_settings() {
 		foreach($result as $row) {
 			$name = $row['server_setting_name'];
 			$_SESSION[$name] = $row['server_setting_value'];
-			$v_settings_array[$name] = $row['server_setting_value'];
-			//$$name = $row['server_setting_value'];
+			$settings_array[$name] = $row['server_setting_value'];
 		}
 
-	/*
-	$sql = "";
-	$sql .= "select * from v_system_settings ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	foreach ($result as &$row) {
-		//detected automatically with includes/lib_php.php
-		$v_settings_array["v_secure"] = $v_secure;
-
-		$v_settings_array["v_domain"] = $row["v_domain"];
-		$v_settings_array["v_account_code"] = $row["v_account_code"];
-
-		$php_dir = $row["php_dir"];
-		$php_dir = str_replace ("{program_dir}", $program_dir, $php_dir);
-		$v_settings_array["php_dir"] = $php_dir;
-
-		if (file_exists($php_dir."/php")) {  $php_exe = "php"; }
-		if (file_exists($php_dir."/php.exe")) {  $php_exe = "php.exe"; }
-		$v_settings_array["php_exe"] = $php_exe;
-
-		$tmp_dir = $row["tmp_dir"];
-		$tmp_dir = str_replace ("{program_dir}", $program_dir, $tmp_dir);
-		$v_settings_array["tmp_dir"] = $tmp_dir;
-
-		$bin_dir = $row["bin_dir"];
-		$bin_dir = str_replace ("{program_dir}", $program_dir, $bin_dir);
-		$v_settings_array["bin_dir"] = $bin_dir;
-
-		$v_startup_script_dir = $row["v_startup_script_dir"];
-		$v_startup_script_dir = str_replace ("{program_dir}", $program_dir, $v_startup_script_dir);
-		$v_settings_array["v_startup_script_dir"] = $v_startup_script_dir;
-
-		$v_package_version = $row["v_package_version"];
-		$v_package_version = str_replace ("{program_dir}", $program_dir, $v_package_version);
-		$v_settings_array["v_package_version"] = $v_package_version;
-
-		$v_build_version = $row["v_build_version"];
-		$v_build_version = str_replace ("{program_dir}", $program_dir, $v_build_version);
-		$v_settings_array["v_build_version"] = $v_build_version;
-
-		$v_build_revision = $row["v_build_revision"];
-		$v_build_revision = str_replace ("{program_dir}", $program_dir, $v_build_revision);
-		$v_settings_array["v_build_revision"] = $v_build_revision;
-
-		$v_label = $row["v_label"];
-		$v_label = str_replace ("{program_dir}", $program_dir, $v_label);
-		$v_settings_array["v_label"] = $v_label;
-
-		$v_name = $row["v_name"];
-		$v_label = str_replace ("{program_dir}", $program_dir, $v_label);
-		$v_settings_array["v_name"] = $v_name;
-
-		$v_dir = $row["v_dir"];
-		$v_dir = str_replace ("{program_dir}", $program_dir, $v_dir);
-		$v_settings_array["v_dir"] = $v_dir;
-
-		$v_parent_dir = $row["v_parent_dir"];
-		$v_parent_dir = str_replace ("{program_dir}", $program_dir, $v_parent_dir);
-		$v_settings_array["v_parent_dir"] = $v_parent_dir;
-
-		$v_backup_dir = $row["v_backup_dir"];
-		$v_backup_dir = str_replace ("{program_dir}", $program_dir, $v_backup_dir);
-		$v_settings_array["v_backup_dir"] = $v_backup_dir;
-
-		$v_web_dir = $row["v_web_dir"];
-		$v_web_dir = str_replace ("{program_dir}", $program_dir, $v_web_dir);
-		$v_settings_array["v_web_dir"] = $v_web_dir;
-
-		$v_web_root = $row["v_web_root"];
-		$v_web_root = str_replace ("{program_dir}", $program_dir, $v_web_root);
-		$v_settings_array["v_web_root"] = $v_web_root;
-
-		$v_relative_url = $row["v_relative_url"];
-		$v_relative_url = str_replace ("{program_dir}", $program_dir, $v_relative_url);
-		$v_settings_array["v_relative_url"] = $v_relative_url;
-
-		$v_conf_dir = $row["v_conf_dir"];
-		$v_conf_dir = str_replace ("{program_dir}", $program_dir, $v_conf_dir);
-		$v_settings_array["v_conf_dir"] = $v_conf_dir;
-
-		$v_db_dir = $row["v_db_dir"];
-		$v_db_dir = str_replace ("{program_dir}", $program_dir, $v_db_dir);
-		$v_settings_array["v_db_dir"] = $v_db_dir;
-
-		$v_htdocs_dir = $row["v_htdocs_dir"];
-		$v_htdocs_dir = str_replace ("{program_dir}", $program_dir, $v_htdocs_dir);
-		$v_settings_array["v_htdocs_dir"] = $v_htdocs_dir;
-
-		$v_log_dir = $row["v_log_dir"];
-		$v_log_dir = str_replace ("{program_dir}", $program_dir, $v_log_dir);
-		$v_settings_array["v_log_dir"] = $v_log_dir;
-
-		$v_extensions_dir = $row["v_extensions_dir"];
-		if (strlen($v_extensions_dir) == 0) { $v_extensions_dir = $v_conf_dir.'/directory/default'; }
-		$v_extensions_dir = str_replace ("{program_dir}", $program_dir, $v_extensions_dir);
-		$v_settings_array["v_extensions_dir"] = $v_extensions_dir;
-
-		$v_gateways_dir = $row["v_gateways_dir"];
-		if (strlen($v_gateways_dir) == 0) { $v_gateways_dir = $v_conf_dir.'/sip_profiles/external'; }
-		$v_gateways_dir = str_replace ("{program_dir}", $program_dir, $v_gateways_dir);
-		$v_settings_array["v_gateways_dir"] = $v_gateways_dir;
-
-		$v_dialplan_public_dir = $row["v_dialplan_public_dir"];
-		if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $v_conf_dir.'/dialplan/public'; }
-		$v_dialplan_public_dir = str_replace ("{program_dir}", $program_dir, $v_dialplan_public_dir);
-		$v_settings_array["v_dialplan_public_dir"] = $v_dialplan_public_dir;
-
-		$v_dialplan_default_dir = $row["v_dialplan_default_dir"];
-		if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_dir.'/dialplan/default'; }
-		$v_dialplan_default_dir = str_replace ("{program_dir}", $program_dir, $v_dialplan_default_dir);
-		$v_settings_array["v_dialplan_default_dir"] = $v_dialplan_default_dir;
-
-		$v_mod_dir = $row["v_mod_dir"];
-		$v_mod_dir = str_replace ("{program_dir}", $program_dir, $v_mod_dir);
-		$v_settings_array["v_mod_dir"] = $v_mod_dir;
-
-		$v_scripts_dir = $row["v_scripts_dir"];
-		$v_scripts_dir = str_replace ("{program_dir}", $program_dir, $v_scripts_dir);
-		$v_settings_array["v_scripts_dir"] = $v_scripts_dir;
-
-		$v_grammar_dir = $row["v_grammar_dir"];
-		$v_grammar_dir = str_replace ("{program_dir}", $program_dir, $v_grammar_dir);
-		$v_settings_array["v_grammar_dir"] = $v_grammar_dir;
-
-		$v_storage_dir = $row["v_storage_dir"];
-		$v_storage_dir = str_replace ("{program_dir}", $program_dir, $v_storage_dir);
-		$v_settings_array["v_storage_dir"] = $v_storage_dir;
-
-		$v_recordings_dir = $row["v_recordings_dir"];
-		$v_recordings_dir = str_replace ("{program_dir}", $program_dir, $v_recordings_dir);
-		$v_settings_array["v_recordings_dir"] = $v_recordings_dir;
-
-		$v_sounds_dir = $row["v_sounds_dir"];
-		$v_sounds_dir = str_replace ("{program_dir}", $program_dir, $v_sounds_dir);
-		$v_settings_array["v_sounds_dir"] = $v_sounds_dir;
-
-		$v_download_path = $row["v_download_path"];
-		$v_download_path = str_replace ("{program_dir}", $program_dir, $v_download_path);
-		$v_settings_array["v_download_path"] = $v_download_path;
-
-		$v_provisioning_tftp_dir = $row["v_provisioning_tftp_dir"];
-		$v_provisioning_tftp_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_tftp_dir);
-		$v_settings_array["v_provisioning_tftp_dir"] = $v_provisioning_tftp_dir;
-
-		$v_provisioning_ftp_dir = $row["v_provisioning_ftp_dir"];
-		$v_provisioning_ftp_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_ftp_dir);
-		$v_settings_array["v_provisioning_ftp_dir"] = $v_provisioning_ftp_dir;
-
-		$v_provisioning_https_dir = $row["v_provisioning_https_dir"];
-		$v_provisioning_https_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_https_dir);
-		$v_settings_array["v_provisioning_https_dir"] = $v_provisioning_https_dir;
-
-		$v_provisioning_http_dir = $row["v_provisioning_http_dir"];
-		$v_provisioning_http_dir = str_replace ("{program_dir}", $program_dir, $v_provisioning_http_dir);
-		$v_settings_array["v_provisioning_http_dir"] = $v_provisioning_http_dir;
-
-		$v_menu_guid = $row["v_menu_guid"];
-		$v_menu_guid = str_replace ("{program_dir}", $program_dir, $v_menu_guid);
-		$v_settings_array["v_menu_guid"] = $v_menu_guid;
-
-		break; //limit to 1 row
-	}
-	unset ($prep_statement);
-	*/
-	return $v_settings_array;
+	//return the results
+		return $settings_array;
 }
 //update the settings
-//$v_settings_array = v_settings();
-foreach($v_settings_array as $name => $value) {
+//$settings_array = v_settings();
+foreach($settings_array as $name => $value) {
 	$$name = $value;
 }
 
 
 //create the recordings/archive/year/month/day directory structure
-	$v_recording_archive_dir = $v_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d");
+	$v_recording_archive_dir = $switch_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d");
 	if(!is_dir($v_recording_archive_dir)) {
 		mkdir($v_recording_archive_dir, 0764, true);
-		chmod($v_recordings_dir."/archive/".date("Y"), 0764);
-		chmod($v_recordings_dir."/archive/".date("Y")."/".date("M"), 0764);
+		chmod($switch_recordings_dir."/archive/".date("Y"), 0764);
+		chmod($switch_recordings_dir."/archive/".date("Y")."/".date("M"), 0764);
 		chmod($v_recording_archive_dir, 0764);
 	}
 
@@ -370,7 +204,7 @@ foreach($v_settings_array as $name => $value) {
 if ($db_type == "sqlite") {
 	//sqlite: check if call detail record (CDR) db file exists if not create it
 	if (!file_exists($dbfilepath.'/'.$server_name.'.cdr.db')) {
-		//echo "file does not exist: ".$v_db_dir.'/cdr.db';
+		//echo "file does not exist: ".$switch_db_dir.'/cdr.db';
 		if (copy($dbfilepath.'/cdr.clean.db', $dbfilepath.'/'.$server_name.'.cdr.db')) {
 			//echo "copy succeeded.\n";
 		}
@@ -383,7 +217,7 @@ function build_menu() {
 
 	if ($v_menu_tab_show) {
 		global $config;
-		//$v_relative_url = $config['installedpackages']['freeswitchsettings']['config'][0]['v_relative_url'];
+		//$relative_url = $config['installedpackages']['freeswitchsettings']['config'][0]['relative_url'];
 
 		//$script_name_array = split ("/", $_SERVER["SCRIPT_NAME"]);
 		//$script_name = $script_name_array[count($script_name_array)-1];
@@ -391,69 +225,69 @@ function build_menu() {
 
 		$tab_array = array();
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_settings.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Settings"), $menu_selected, $v_relative_url."/v_settings.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_settings.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Settings"), $menu_selected, $relative_url."/v_settings.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplans.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplans.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan_edit.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_dialplan_details_edit.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Dialplan"), $menu_selected, $v_relative_url."/v_dialplans.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_dialplans.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_dialplans.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_dialplan_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_dialplan_details_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Dialplan"), $menu_selected, $relative_url."/v_dialplans.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_extensions.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_extensions_edit.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Extensions"), $menu_selected, $v_relative_url."/v_extensions.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_extensions.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_extensions_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Extensions"), $menu_selected, $relative_url."/v_extensions.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_features.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_fax.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_fax_edit.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_hunt_group.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_hunt_group_edit.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_hunt_group_destinations.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_hunt_group_destinations_edit.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_auto_attendant.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_auto_attendant_edit.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_auto_attendant_options_edit.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_modules.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_recordings.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_recordings_edit.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Features"), $menu_selected, $v_relative_url."/v_features.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_features.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_fax.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_fax_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_hunt_group.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_hunt_group_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_hunt_group_destinations.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_hunt_group_destinations_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_auto_attendant.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_auto_attendant_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_auto_attendant_options_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_modules.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_recordings.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_recordings_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Features"), $menu_selected, $relative_url."/v_features.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_gateways.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_gateways_edit.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Gateways"), $menu_selected, $v_relative_url."/v_gateways.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_gateways.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_gateways_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Gateways"), $menu_selected, $relative_url."/v_gateways.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_profiles.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_profile_edit.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Profiles"), $menu_selected, $v_relative_url."/v_profiles.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_profiles.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_profile_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Profiles"), $menu_selected, $relative_url."/v_profiles.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_public.php") { $menu_selected = true; }	
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_public.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_public_edit.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_public_details_edit.php") { $menu_selected = true; }	
-		$tab_array[] = array(gettext("Public"), $menu_selected, $v_relative_url."/v_public.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_public.php") { $menu_selected = true; }	
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_public.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_public_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_public_details_edit.php") { $menu_selected = true; }	
+		$tab_array[] = array(gettext("Public"), $menu_selected, $relative_url."/v_public.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_status.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Status"), $menu_selected, $v_relative_url."/v_status.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_status.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Status"), $menu_selected, $relative_url."/v_status.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $v_relative_url."/v_vars.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Vars"), $menu_selected, $v_relative_url."/v_vars.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_vars.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Vars"), $menu_selected, $relative_url."/v_vars.php");
 		unset($menu_selected);
 
 		//display_top_tabs($tab_array);
@@ -566,24 +400,24 @@ function byte_convert( $bytes ) {
 
 function lan_sip_profile() {
 	global $config;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 	clearstatcache();
 
 	//if the lan directory does not exist then create it
-	if (!is_dir($v_conf_dir.'/sip_profiles/lan/')) {
-		exec("mkdir ".$v_conf_dir."/sip_profiles/lan/");
+	if (!is_dir($switch_conf_dir.'/sip_profiles/lan/')) {
+		exec("mkdir ".$switch_conf_dir."/sip_profiles/lan/");
 	}
 
 	//create the LAN profile if it doesn't exist
-	if (!file_exists($v_conf_dir.'/sip_profiles/lan.xml')) {
+	if (!file_exists($switch_conf_dir.'/sip_profiles/lan.xml')) {
 		$lan_ip = $config['interfaces']['lan']['ipaddr'];
 		if (strlen($lan_ip) > 0) {
-			exec("cp ".$v_conf_dir."/sip_profiles/internal.xml ".$v_conf_dir."/sip_profiles/lan.xml");
+			exec("cp ".$switch_conf_dir."/sip_profiles/internal.xml ".$switch_conf_dir."/sip_profiles/lan.xml");
 
-			$filename = $v_conf_dir."/sip_profiles/lan.xml";
+			$filename = $switch_conf_dir."/sip_profiles/lan.xml";
 			$handle = fopen($filename,"rb");
 			$contents = fread($handle, filesize($filename));
 			fclose($handle);
@@ -626,8 +460,8 @@ function ListFiles($dir) {
 function switch_select_destination($select_type, $select_label, $select_name, $select_value, $select_style, $action='') {
 	//select_type can be ivr, dialplan, or call_center_contact
 	global $config, $db, $domain_uuid;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
@@ -1264,31 +1098,31 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 	//recordings
 		if ($select_type == "dialplan" || $select_type == "ivr") {
-			if($dh = opendir($v_recordings_dir."/")) {
+			if($dh = opendir($switch_recordings_dir."/")) {
 				$tmp_selected = false;
 				$files = Array();
 				echo "<optgroup label='Recordings'>\n";
 				while($file = readdir($dh)) {
 					if($file != "." && $file != ".." && $file[0] != '.') {
-						if(is_dir($v_recordings_dir . "/" . $file)) {
+						if(is_dir($switch_recordings_dir . "/" . $file)) {
 							//this is a directory
 						}
 						else {
-							if ($ivr_menu_greet_long == $v_recordings_dir."/".$file) {
+							if ($ivr_menu_greet_long == $switch_recordings_dir."/".$file) {
 								$tmp_selected = true;
 								if ($select_type == "dialplan") {
-									echo "		<option value='playback:".$v_recordings_dir."/".$file."' selected>".$file."</option>\n";
+									echo "		<option value='playback:".$switch_recordings_dir."/".$file."' selected>".$file."</option>\n";
 								}
 								if ($select_type == "ivr") {
-									echo "		<option value='menu-exec-app:playback ".$v_recordings_dir."/".$file."' selected>".$file."</option>\n";
+									echo "		<option value='menu-exec-app:playback ".$switch_recordings_dir."/".$file."' selected>".$file."</option>\n";
 								}
 							}
 							else {
 								if ($select_type == "dialplan") {
-									echo "		<option value='playback:".$v_recordings_dir."/".$file."'>".$file."</option>\n";
+									echo "		<option value='playback:".$switch_recordings_dir."/".$file."'>".$file."</option>\n";
 								}
 								if ($select_type == "ivr") {
-									echo "		<option value='menu-exec-app:playback ".$v_recordings_dir."/".$file."'>".$file."</option>\n";
+									echo "		<option value='menu-exec-app:playback ".$switch_recordings_dir."/".$file."'>".$file."</option>\n";
 								}
 							}
 						}
@@ -1621,8 +1455,8 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 function sync_package_v_settings() {
 	global $config;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
@@ -1655,7 +1489,7 @@ function sync_package_v_settings() {
 			$tmp_xml .= "	\$v_smtp_from_name = \"".$row["smtp_from_name"]."\";\n";
 			$tmp_xml .= "\n";
 			$tmp_xml .= "//set system dir variables\n";
-			$tmp_xml .= "	\$v_storage_dir = \"".$v_storage_dir."\";\n";
+			$tmp_xml .= "	\$switch_storage_dir = \"".$switch_storage_dir."\";\n";
 			$tmp_xml .= "	\$tmp_dir = \"".$tmp_dir."\";\n";
 			$tmp_xml .= "	\$php_dir = \"".$php_dir."\";\n";
 			$tmp_xml .= "	\$v_secure = \"".$v_secure."\";\n";
@@ -1665,7 +1499,7 @@ function sync_package_v_settings() {
 			unset($tmp_xml);
 			fclose($fout);
 
-			$fout = fopen($v_conf_dir."/directory/default/default.xml","w");
+			$fout = fopen($switch_conf_dir."/directory/default/default.xml","w");
 			$tmp_xml = "<include>\n";
 			$tmp_xml .= "  <user id=\"default\"> <!--if id is numeric mailbox param is not necessary-->\n";
 			$tmp_xml .= "    <variables>\n";
@@ -1684,7 +1518,7 @@ function sync_package_v_settings() {
 			$event_socket_ip_address = $row['event_socket_ip_address'];
 			if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
 
-			$fout = fopen($v_conf_dir."/autoload_configs/event_socket.conf.xml","w");
+			$fout = fopen($switch_conf_dir."/autoload_configs/event_socket.conf.xml","w");
 			$tmp_xml = "<configuration name=\"event_socket.conf\" description=\"Socket Client\">\n";
 			$tmp_xml .= "  <settings>\n";
 			$tmp_xml .= "    <param name=\"listen-ip\" value=\"" . $event_socket_ip_address . "\"/>\n";
@@ -1697,7 +1531,7 @@ function sync_package_v_settings() {
 			unset($tmp_xml, $event_socket_password);
 			fclose($fout);
 
-			$fout = fopen($v_conf_dir."/autoload_configs/xml_rpc.conf.xml","w");
+			$fout = fopen($switch_conf_dir."/autoload_configs/xml_rpc.conf.xml","w");
 			$tmp_xml = "<configuration name=\"xml_rpc.conf\" description=\"XML RPC\">\n";
 			$tmp_xml .= "  <settings>\n";
 			$tmp_xml .= "    <!-- The port where you want to run the http service (default 8080) -->\n";
@@ -1713,7 +1547,7 @@ function sync_package_v_settings() {
 			fclose($fout);
 
 			//shout.conf.xml
-				$fout = fopen($v_conf_dir."/autoload_configs/shout.conf.xml","w");
+				$fout = fopen($switch_conf_dir."/autoload_configs/shout.conf.xml","w");
 				$tmp_xml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
 				$tmp_xml .= "  <settings>\n";
 				$tmp_xml .= "    <!-- Don't change these unless you are insane -->\n";
@@ -1727,22 +1561,22 @@ function sync_package_v_settings() {
 				fclose($fout);
 
 			//config.lua
-				$fout = fopen($v_scripts_dir."/config.lua","w");
+				$fout = fopen($switch_scripts_dir."/config.lua","w");
 				$tmp = "--lua include\n\n";
 				$tmp .= "admin_pin = \"".$row["admin_pin"]."\";\n";
-				$tmp .= "sounds_dir = \"".$v_sounds_dir."\";\n";
-				$tmp .= "recordings_dir = \"".$v_recordings_dir."\";\n";
+				$tmp .= "sounds_dir = \"".$switch_sounds_dir."\";\n";
+				$tmp .= "recordings_dir = \"".$switch_recordings_dir."\";\n";
 				$tmp .= "tmp_dir = \"".$tmp_dir."\";\n";
 				fwrite($fout, $tmp);
 				unset($tmp);
 				fclose($fout);
 
 			//config.js
-				$fout = fopen($v_scripts_dir."/config.js","w");
+				$fout = fopen($switch_scripts_dir."/config.js","w");
 				$tmp = "//javascript include\n\n";
 				$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
-				$tmp .= "var sounds_dir = \"".$v_sounds_dir."\";\n";
-				$tmp .= "var recordings_dir = \"".$v_recordings_dir."\";\n";
+				$tmp .= "var sounds_dir = \"".$switch_sounds_dir."\";\n";
+				$tmp .= "var recordings_dir = \"".$switch_recordings_dir."\";\n";
 				$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";
 				fwrite($fout, $tmp);
 				unset($tmp);
@@ -1762,14 +1596,14 @@ function sync_package_v_settings() {
 
 function sync_package_v_extensions() {
 	global $config;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
 	//determine the extensions parent directory
-		//$v_extensions_dir = str_replace("\\", "/", $file_contents);
-		$v_extensions_dir_array = explode("/", $v_extensions_dir);
+		//$switch_extensions_dir = str_replace("\\", "/", $file_contents);
+		$v_extensions_dir_array = explode("/", $switch_extensions_dir);
 		$extension_parent_dir = "";
 		$x=1;
 		foreach ($v_extensions_dir_array as $tmp_dir) {
@@ -1784,7 +1618,7 @@ function sync_package_v_extensions() {
 		$extension_parent_dir = rtrim($extension_parent_dir, "/");
 
 	// delete all old extensions to prepare for new ones
-		if($dh = opendir($v_extensions_dir)) {
+		if($dh = opendir($switch_extensions_dir)) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -1793,7 +1627,7 @@ function sync_package_v_extensions() {
 					} else {
 						//check if file is an extension; verify the file numeric and the extension is xml
 						if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
-							unlink($v_extensions_dir."/".$file);
+							unlink($switch_extensions_dir."/".$file);
 						}
 					}
 				}
@@ -1811,7 +1645,7 @@ function sync_package_v_extensions() {
 	$i = 0;
 	$extension_xml_condensed = false;
 	if ($extension_xml_condensed) {
-		$fout = fopen($v_extensions_dir."/v_extensions.xml","w");
+		$fout = fopen($switch_extensions_dir."/v_extensions.xml","w");
 		$tmp_xml = "<include>\n";
 	}
 	while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
@@ -1840,7 +1674,7 @@ function sync_package_v_extensions() {
 			$extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension);
 
 			if (!$extension_xml_condensed) {
-				$fout = fopen($v_extensions_dir."/v_".$extension.".xml","w");
+				$fout = fopen($switch_extensions_dir."/v_".$extension.".xml","w");
 				$tmp_xml .= "<include>\n";
 			}
 			$cidr = '';
@@ -2091,8 +1925,8 @@ function sync_package_v_gateways() {
 
 	global $db, $domain_uuid, $config;
 
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
@@ -2103,7 +1937,7 @@ function sync_package_v_gateways() {
 		else {
 			$v_needle = 'v_';
 		}
-		if($dh = opendir($v_gateways_dir."")) {
+		if($dh = opendir($switch_gateways_dir."")) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -2112,7 +1946,7 @@ function sync_package_v_gateways() {
 					} else {
 						//check if file extension is xml
 						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-							unlink($v_gateways_dir."/".$file);
+							unlink($switch_gateways_dir."/".$file);
 						}
 					}
 				}
@@ -2138,12 +1972,12 @@ function sync_package_v_gateways() {
 						$profile = "external";
 					}
 				if (count($_SESSION["domains"]) > 1) {
-					$fout = fopen($v_gateways_dir."/".$profile."/v_".$v_domain .'-'.$gateway.".xml","w");
+					$fout = fopen($switch_gateways_dir."/".$profile."/v_".$v_domain .'-'.$gateway.".xml","w");
 					$tmp_xml .= "<include>\n";
 					$tmp_xml .= "    <gateway name=\"" . $v_domain .'-'. $gateway . "\">\n";
 				}
 				else {
-					$fout = fopen($v_gateways_dir."/".$profile."/v_".$gateway.".xml","w");
+					$fout = fopen($switch_gateways_dir."/".$profile."/v_".$gateway.".xml","w");
 					$tmp_xml .= "<include>\n";
 					$tmp_xml .= "    <gateway name=\"" . $gateway . "\">\n";
 				}
@@ -2251,8 +2085,8 @@ function sync_package_v_gateways() {
 
 function sync_package_v_modules() {
 	global $config, $db, $domain_uuid;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
@@ -2279,7 +2113,7 @@ function sync_package_v_modules() {
 	$xml .= "	</modules>\n";
 	$xml .= "</configuration>";
 
-	$fout = fopen($v_conf_dir."/autoload_configs/modules.conf.xml","w");
+	$fout = fopen($switch_conf_dir."/autoload_configs/modules.conf.xml","w");
 	fwrite($fout, $xml);
 	unset($xml);
 	fclose($fout);
@@ -2294,12 +2128,12 @@ function sync_package_v_modules() {
 
 function sync_package_v_vars() {
 	global $config, $db, $domain_uuid;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
-	$fout = fopen($v_conf_dir."/vars.xml","w");
+	$fout = fopen($switch_conf_dir."/vars.xml","w");
 	$xml = '';
 
 	$sql = "";
@@ -2498,15 +2332,15 @@ function sync_package_v_hunt_group() {
 			//get the list of destinations then build the Hunt Group lua
 
 	global $config;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
 	//get the domain
 		global $db, $domain_uuid, $host;
-		$v_settings_array = v_settings();
-		foreach($v_settings_array as $name => $value) {
+		$settings_array = v_settings();
+		foreach($settings_array as $name => $value) {
 			$$name = $value;
 		}
 
@@ -2518,7 +2352,7 @@ function sync_package_v_hunt_group() {
 
 	//prepare for hunt group .lua files to be written. delete all hunt groups that are prefixed with huntgroup_ and have a file extension of .lua
 		$v_prefix = 'v_huntgroup_';
-		if($dh = opendir($v_scripts_dir)) {
+		if($dh = opendir($switch_scripts_dir)) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -2527,7 +2361,7 @@ function sync_package_v_hunt_group() {
 					} else {
 						if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-4) == '.lua') {
 							if ($file != "huntgroup_originate.lua") {
-								unlink($v_scripts_dir.'/'.$file);
+								unlink($switch_scripts_dir.'/'.$file);
 							}
 						}
 					}
@@ -3164,8 +2998,8 @@ function sync_package_v_hunt_group() {
 						if (strlen($row['hunt_group_extension']) > 0) {
 							if ($row['hunt_group_enabled'] != "false") {
 								$hunt_group_filename = "v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain']."_".$huntgroup_extension.".lua";
-								//echo "location".$v_scripts_dir."/".$hunt_group_filename;
-								$fout = fopen($v_scripts_dir."/".$hunt_group_filename,"w");
+								//echo "location".$switch_scripts_dir."/".$hunt_group_filename;
+								$fout = fopen($switch_scripts_dir."/".$hunt_group_filename,"w");
 								fwrite($fout, $tmp);
 								unset($hunt_group_filename);
 								fclose($fout);
@@ -3180,8 +3014,8 @@ function sync_package_v_hunt_group() {
 
 function sync_package_v_fax() {
 	global $domain_uuid, $db;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
@@ -3257,7 +3091,7 @@ function sync_package_v_fax() {
 					$field_order = '000';
 					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
-					//<action application="system" data="$v_scripts_dir/emailfax.sh USER DOMAIN $v_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
+					//<action application="system" data="$switch_scripts_dir/emailfax.sh USER DOMAIN $switch_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'set';
 					$field_data = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
@@ -3307,14 +3141,14 @@ function sync_package_v_fax() {
 					$field_order = '030';
 					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
-					//<action application="rxfax" data="$v_storage_dir/fax/inbox/${last_fax}.tif"/>
+					//<action application="rxfax" data="$switch_storage_dir/fax/inbox/${last_fax}.tif"/>
 					$tag = 'action'; //condition, action, antiaction
 					$field_type = 'rxfax';
 					if (count($_SESSION["domains"]) > 1) {
-						$field_data = $v_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+						$field_data = $switch_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
 					else {
-						$field_data = $v_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+						$field_data = $switch_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
 					$field_order = '035';
 					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
@@ -3363,10 +3197,10 @@ function sync_package_v_fax() {
 
 				//update the action
 				if (count($_SESSION["domains"]) > 1) {
-					$field_data = $v_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+					$field_data = $switch_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 				}
 				else {
-					$field_data = $v_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+					$field_data = $switch_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 				}
 				$sql = "";
 				$sql = "update v_dialplan_details set ";
@@ -3441,8 +3275,8 @@ function get_recording_filename($id) {
 
 function sync_package_v_auto_attendant() {
 	global $db, $domain_uuid, $host;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
@@ -3450,7 +3284,7 @@ function sync_package_v_auto_attendant() {
 
 	//prepare for auto attendant .js files to be written. delete all auto attendants that are prefixed with autoattendant_ and have a file extension of .js
 		$v_prefix = 'autoattendant_';
-		if($dh = opendir($v_scripts_dir)) {
+		if($dh = opendir($switch_scripts_dir)) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -3460,7 +3294,7 @@ function sync_package_v_auto_attendant() {
 						if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-3) == '.js') {
 							//echo "file: $file<br />\n";
 							//echo "extension: ".substr($file,-3)."<br />";
-							unlink($v_scripts_dir.'/'.$file);
+							unlink($switch_scripts_dir.'/'.$file);
 						}
 					}
 				}
@@ -3683,7 +3517,7 @@ function sync_package_v_auto_attendant() {
 		$tmp .= " function get_sofia_contact(extension,domain_name, profile){\n";
 		$tmp .= "	if (profile == \"auto\") {\n";
 		$i = 0;
-		foreach (ListFiles($v_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
+		foreach (ListFiles($switch_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
 			$sip_profile_name = str_replace(".xml", "", $sip_profile_file);
 			if ($i == 0) {
 			  $tmp .= "			profile = \"".$sip_profile_name."\";\n";
@@ -3795,7 +3629,7 @@ function sync_package_v_auto_attendant() {
 				//play the option recording if it exists
 				if (strlen($row2['optionrecording']) > 0) {
 					$option_recording_filename = get_recording_filename($row2['optionrecording']);
-					$tmp .= "    session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+					$tmp .= "    session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
 				}
 
 				$tmp .= "    session.execute(\"".$actiondirecttype."\", \"".$actiondirectdest."\"); //".$actiondirectdesc."\n";
@@ -3836,7 +3670,7 @@ function sync_package_v_auto_attendant() {
 			$tmp .= "\n";
 			$tmp .= "         digitmaxlength = 1;\n";
 			$tmp .= "         while (session.ready() && ! exit ) {\n";
-			$tmp .= "           session.streamFile( \"".$v_recordings_dir."/".$recording_action_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
+			$tmp .= "           session.streamFile( \"".$switch_recordings_dir."/".$recording_action_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
 			$tmp .= "           if (session.ready()) {\n";
 			$tmp .= "           	if (dtmf.digits.length == 0) {\n";
 			$tmp .= "           		dtmf.digits +=  session.getDigits(1, \"#\", ".($row['aatimeout']*1000)."); // ".$row['aatimeout']." seconds\n";
@@ -3866,7 +3700,7 @@ function sync_package_v_auto_attendant() {
 								//play the option recording if it exists
 								if (strlen($row2['optionrecording']) > 0) {
 									$option_recording_filename = get_recording_filename($row2['optionrecording']);
-									$tmp .= "                 	session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+									$tmp .= "                 	session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
 								}
 
 								$tmp .= "                 	session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
@@ -3959,7 +3793,7 @@ function sync_package_v_auto_attendant() {
 							//play the option recording if it was provided 
 							if (strlen($row2['optionrecording']) > 0) {
 								$option_recording_filename = get_recording_filename($row2['optionrecording']);
-								$tmpaction .= "                 session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+								$tmpaction .= "                 session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
 							}
 
 							$tmpaction .= "                 session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
@@ -4010,7 +3844,7 @@ function sync_package_v_auto_attendant() {
 					//play the option recording if it exists
 					if (strlen($actiondefaultrecording) > 0) {
 						$option_recording_filename = get_recording_filename($actiondefaultrecording);
-						$tmp .= "	                  session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+						$tmp .= "	                  session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
 					}
 
 					$tmp .= "	                  session.execute(\"".$actiondefaulttype."\", \"".$actiondefaultdest."\"); //".$actiondefaultdesc."\n";
@@ -4144,7 +3978,7 @@ function sync_package_v_auto_attendant() {
 			$tmp .= "\n";
 			$tmp .= "         digitmaxlength = 1;\n";
 			$tmp .= "         while (session.ready() && ! exit ) {\n";
-			$tmp .= "           session.streamFile( \"".$v_recordings_dir."/".$recording_antiaction_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
+			$tmp .= "           session.streamFile( \"".$switch_recordings_dir."/".$recording_antiaction_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
 			$tmp .= "           if (session.ready()) {\n";
 			$tmp .= "           	if (dtmf.digits.length == 0) {\n";
 			$tmp .= "           		dtmf.digits +=  session.getDigits(1, \"#\", ".($row['aatimeout']*1000)."); // ".$row['aatimeout']." seconds\n";
@@ -4173,7 +4007,7 @@ function sync_package_v_auto_attendant() {
 							//play the option recording if it exists
 							if (strlen($row2['optionrecording']) > 0) {
 								$option_recording_filename = get_recording_filename($row2['optionrecording']);
-								$tmp .= "                 	session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+								$tmp .= "                 	session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
 							}
 
 							$tmp .= "                 	session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
@@ -4261,7 +4095,7 @@ function sync_package_v_auto_attendant() {
 								//play the option recording if it was provided 
 								if (strlen($row2['optionrecording']) > 0) {
 									$option_recording_filename = get_recording_filename($row2['optionrecording']);
-									$tmpantiaction .= "             session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n\n";
+									$tmpantiaction .= "             session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n\n";
 								}
 
 								$tmpantiaction .= "                 session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
@@ -4313,7 +4147,7 @@ function sync_package_v_auto_attendant() {
 					//play the option recording if it exists
 					if (strlen($antiactiondefaultrecording) > 0) {
 						$option_recording_filename = get_recording_filename($antiactiondefaultrecording);
-						$tmp .= "	                  session.streamFile( \"".$v_recordings_dir."/".$option_recording_filename."\" );\n";
+						$tmp .= "	                  session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
 					}
 
 					$tmp .= "	                  session.execute(\"".$antiactiondefaulttype."\", \"".$antiactiondefaultdest."\"); //".$antiactiondefaultdesc."\n";
@@ -4366,7 +4200,7 @@ function sync_package_v_auto_attendant() {
 
 		if (strlen($row['aaextension']) > 0) {
 			$aafilename = "autoattendant_".$row['aaextension'].".js";
-			$fout = fopen($v_scripts_dir."/".$aafilename,"w");
+			$fout = fopen($switch_scripts_dir."/".$aafilename,"w");
 			fwrite($fout, $tmp);
 			unset($aafilename);
 			fclose($fout);
@@ -4442,8 +4276,8 @@ function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order
 function sync_package_v_dialplan() {
 	global $db, $domain_uuid;
 
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
@@ -4743,8 +4577,8 @@ function sync_package_v_dialplan() {
 
 function sync_package_v_public() {
 	global $config;
-	$v_settings_array = v_settings();
-	foreach($v_settings_array as $name => $value) {
+	$settings_array = v_settings();
+	foreach($settings_array as $name => $value) {
 		$$name = $value;
 	}
 
@@ -4930,8 +4764,8 @@ if (!function_exists('sync_directory')) {
 	function sync_directory() {
 
 		global $domain_uuid, $db;
-		$v_settings_array = v_settings();
-		foreach($v_settings_array as $name => $value) {
+		$settings_array = v_settings();
+		foreach($settings_array as $name => $value) {
 			$$name = $value;
 		}
 
@@ -5154,7 +4988,7 @@ if (!function_exists('sync_directory')) {
 		$tmp .= "";
 
 		//write the file
-			$fout = fopen($v_scripts_dir."/directory.js","w");
+			$fout = fopen($switch_scripts_dir."/directory.js","w");
 			fwrite($fout, $tmp);
 			fclose($fout);
 
@@ -5167,8 +5001,8 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 	function sync_package_v_ivr_menu() {
 		global $db, $domain_uuid;
 
-		$v_settings_array = v_settings();
-		foreach($v_settings_array as $name => $value) {
+		$settings_array = v_settings();
+		foreach($settings_array as $name => $value) {
 			$$name = $value;
 		}
 
@@ -5179,7 +5013,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 			else {
 				$v_needle = 'v_';
 			}
-			if($dh = opendir($v_conf_dir."/ivr_menus/")) {
+			if($dh = opendir($switch_conf_dir."/ivr_menus/")) {
 				$files = Array();
 				while($file = readdir($dh)) {
 					if($file != "." && $file != ".." && $file[0] != '.') {
@@ -5188,7 +5022,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 						} else {
 							if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
 								//echo "file: $file<br />\n";
-								unlink($v_conf_dir."/ivr_menus/".$file);
+								unlink($switch_conf_dir."/ivr_menus/".$file);
 							}
 						}
 					}
@@ -5418,10 +5252,10 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 
 					//write the file
 						if (count($_SESSION["domains"]) > 1) {
-							$fout = fopen($v_conf_dir."/ivr_menus/v_".$_SESSION['domains'][$row['domain_uuid']]['domain']."_".$ivr_menu_name.".xml","w");
+							$fout = fopen($switch_conf_dir."/ivr_menus/v_".$_SESSION['domains'][$row['domain_uuid']]['domain']."_".$ivr_menu_name.".xml","w");
 						}
 						else {
-							$fout = fopen($v_conf_dir."/ivr_menus/v_".$ivr_menu_name.".xml","w");
+							$fout = fopen($switch_conf_dir."/ivr_menus/v_".$ivr_menu_name.".xml","w");
 						}
 						fwrite($fout, $tmp);
 						fclose($fout);
@@ -5438,8 +5272,8 @@ if (!function_exists('sync_package_v_call_center')) {
 	function sync_package_v_call_center() {
 		global $db, $domain_uuid;
 
-		$v_settings_array = v_settings();
-		foreach($v_settings_array as $name => $value) {
+		$settings_array = v_settings();
+		foreach($settings_array as $name => $value) {
 			$$name = $value;
 		}
 
@@ -5887,7 +5721,7 @@ if (!function_exists('sync_package_v_call_center')) {
 				unset ($v_tiers);
 
 			//write the XML config file
-				$fout = fopen($v_conf_dir."/autoload_configs/callcenter.conf.xml","w");
+				$fout = fopen($switch_conf_dir."/autoload_configs/callcenter.conf.xml","w");
 				fwrite($fout, $file_contents);
 				fclose($fout);
 
@@ -5906,8 +5740,8 @@ if (!function_exists('switch_conf_xml')) {
 			global $db, $domain_uuid;
 
 		//get settings as array and convert them to a php variable
-			$v_settings_array = v_settings();
-			foreach($v_settings_array as $name => $value) {
+			$settings_array = v_settings();
+			foreach($settings_array as $name => $value) {
 				$$name = $value;
 			}
 
@@ -5935,7 +5769,7 @@ if (!function_exists('switch_conf_xml')) {
 			unset ($v_mailer_app_args);
 
 		//write the XML config file
-			$fout = fopen($v_conf_dir."/autoload_configs/switch.conf.xml","w");
+			$fout = fopen($switch_conf_dir."/autoload_configs/switch.conf.xml","w");
 			fwrite($fout, $file_contents);
 			fclose($fout);
 
@@ -5951,8 +5785,8 @@ if (!function_exists('xml_cdr_conf_xml')) {
 			global $db, $domain_uuid;
 
 		//get settings as array and convert them to a php variable
-			$v_settings_array = v_settings();
-			foreach($v_settings_array as $name => $value) {
+			$settings_array = v_settings();
+			foreach($settings_array as $name => $value) {
 				$$name = $value;
 			}
 
@@ -5973,7 +5807,7 @@ if (!function_exists('xml_cdr_conf_xml')) {
 			unset ($v_pass);
 
 		//write the XML config file
-			$fout = fopen($v_conf_dir."/autoload_configs/xml_cdr.conf.xml","w");
+			$fout = fopen($switch_conf_dir."/autoload_configs/xml_cdr.conf.xml","w");
 			fwrite($fout, $file_contents);
 			fclose($fout);
 
@@ -6003,7 +5837,7 @@ if (!function_exists('sync_package_freeswitch')) {
 }
 
 //include all the .php files in the /includes/mod/includes directory
-	//foreach (glob($v_web_dir."/includes/mod/includes/*.php") as $filename) {
+	//foreach (glob($web_dir."/includes/mod/includes/*.php") as $filename) {
 	//	require_once $filename;
 	//}
 ?>

@@ -10,16 +10,16 @@
 		$apps[$x]['description']['en'] = '';
 
 	//menu details
-		$apps[$x]['menu'][$y]['title']['en'] = 'DB Connections';
-		$apps[$x]['menu'][$y]['uuid'] = 'EBBD754D-CA74-D5B1-A77E-9206BA3ECC3F';
-		$apps[$x]['menu'][$y]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
-		$apps[$x]['menu'][$y]['category'] = 'internal';
-		$apps[$x]['menu'][$y]['path'] = '/mod/database_connections/v_database_connections.php';
-		$apps[$x]['menu'][$y]['groups'][] = 'superadmin';
+		$apps[$x]['menu'][0]['title']['en'] = 'DB Connections';
+		$apps[$x]['menu'][0]['uuid'] = 'EBBD754D-CA74-D5B1-A77E-9206BA3ECC3F';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['category'] = 'internal';
+		$apps[$x]['menu'][0]['path'] = '/mod/database_connections/v_database_connections.php';
+		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
-		$apps[$x]['permissions'][$y]['name'] = 'database_connection_view';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
+		$apps[$x]['permissions'][0]['name'] = 'database_connection_view';
+		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][1]['name'] = 'database_connection_add';
 		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
@@ -33,16 +33,24 @@
 	//schema details
 		$y = 0; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = 'v_database_connections';
-
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'database_connection_id';
+		$apps[$x]['db'][$y]['table'] = 'v_databases';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'database_connection_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer PRIMARY KEY';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'database_connection_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'v_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'db_type';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';

@@ -48,43 +48,43 @@ else {
 		$domain_uuid = check_str($_POST["domain_uuid"]);
 		$v_domain = check_str($_POST["v_domain"]);
 		$v_account_code = check_str($_POST["v_account_code"]);
-		$v_server_protocol = check_str($_POST["v_server_protocol"]);
-		$v_server_port = check_str($_POST["v_server_port"]);
+		$server_protocol = check_str($_POST["server_protocol"]);
+		$server_port = check_str($_POST["server_port"]);
 		$php_dir = check_str($_POST["php_dir"]);
 		$tmp_dir = check_str($_POST["tmp_dir"]);
-		$bin_dir = check_str($_POST["bin_dir"]);
-		$v_startup_script_dir = check_str($_POST["v_startup_script_dir"]);
+		$switch_bin_dir = check_str($_POST["switch_bin_dir"]);
+		$startup_script_dir = check_str($_POST["startup_script_dir"]);
 		$v_package_version = check_str($_POST["v_package_version"]);
 		$v_build_version = check_str($_POST["v_build_version"]);
 		$v_build_revision = check_str($_POST["v_build_revision"]);
 		$v_label = check_str($_POST["v_label"]);
 		$v_name = check_str($_POST["v_name"]);
-		$v_dir = check_str($_POST["v_dir"]);
-		$v_parent_dir = check_str($_POST["v_parent_dir"]);
-		$v_backup_dir = check_str($_POST["v_backup_dir"]);
-		$v_web_dir = check_str($_POST["v_web_dir"]);
-		$v_web_root = check_str($_POST["v_web_root"]);
-		$v_relative_url = check_str($_POST["v_relative_url"]);
-		$v_conf_dir = check_str($_POST["v_conf_dir"]);
-		$v_db_dir = check_str($_POST["v_db_dir"]);
-		$v_htdocs_dir = check_str($_POST["v_htdocs_dir"]);
-		$v_log_dir = check_str($_POST["v_log_dir"]);
-		$v_extensions_dir = check_str($_POST["v_extensions_dir"]);
-		$v_gateways_dir = check_str($_POST["v_gateways_dir"]);
+		$switch_base_dir = check_str($_POST["switch_base_dir"]);
+		$parent_dir = check_str($_POST["parent_dir"]);
+		$backup_dir = check_str($_POST["backup_dir"]);
+		$web_dir = check_str($_POST["web_dir"]);
+		$web_root = check_str($_POST["web_root"]);
+		$relative_url = check_str($_POST["relative_url"]);
+		$switch_conf_dir = check_str($_POST["switch_conf_dir"]);
+		$switch_db_dir = check_str($_POST["switch_db_dir"]);
+		$switch_htdocs_dir = check_str($_POST["switch_htdocs_dir"]);
+		$switch_log_dir = check_str($_POST["switch_log_dir"]);
+		$switch_extensions_dir = check_str($_POST["switch_extensions_dir"]);
+		$switch_gateways_dir = check_str($_POST["switch_gateways_dir"]);
 		$v_dialplan_public_dir = check_str($_POST["v_dialplan_public_dir"]);
 		$v_dialplan_default_dir = check_str($_POST["v_dialplan_default_dir"]);
-		$v_mod_dir = check_str($_POST["v_mod_dir"]);
-		$v_scripts_dir = check_str($_POST["v_scripts_dir"]);
-		$v_grammar_dir = check_str($_POST["v_grammar_dir"]);
-		$v_storage_dir = check_str($_POST["v_storage_dir"]);
-		$v_voicemail_dir = check_str($_POST["v_voicemail_dir"]);
-		$v_recordings_dir = check_str($_POST["v_recordings_dir"]);
-		$v_sounds_dir = check_str($_POST["v_sounds_dir"]);
+		$switch_mod_dir = check_str($_POST["switch_mod_dir"]);
+		$switch_scripts_dir = check_str($_POST["switch_scripts_dir"]);
+		$switch_grammar_dir = check_str($_POST["switch_grammar_dir"]);
+		$switch_storage_dir = check_str($_POST["switch_storage_dir"]);
+		$switch_voicemail_dir = check_str($_POST["switch_voicemail_dir"]);
+		$switch_recordings_dir = check_str($_POST["switch_recordings_dir"]);
+		$switch_sounds_dir = check_str($_POST["switch_sounds_dir"]);
 		$v_download_path = check_str($_POST["v_download_path"]);
-		$v_provisioning_tftp_dir = check_str($_POST["v_provisioning_tftp_dir"]);
-		$v_provisioning_ftp_dir = check_str($_POST["v_provisioning_ftp_dir"]);
-		$v_provisioning_https_dir = check_str($_POST["v_provisioning_https_dir"]);
-		$v_provisioning_http_dir = check_str($_POST["v_provisioning_http_dir"]);
+		$provisioning_tftp_dir = check_str($_POST["provisioning_tftp_dir"]);
+		$provisioning_ftp_dir = check_str($_POST["provisioning_ftp_dir"]);
+		$provisioning_https_dir = check_str($_POST["provisioning_https_dir"]);
+		$provisioning_http_dir = check_str($_POST["provisioning_http_dir"]);
 		$v_template_name = check_str($_POST["v_template_name"]);
 		$v_menu_uuid = check_str($_POST["v_menu_uuid"]);
 		$v_time_zone = check_str($_POST["v_time_zone"]);
@@ -108,44 +108,44 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($v_domain) == 0) { $msg .= "Please provide: Domain<br>\n"; }
 		//if (strlen($v_account_code) == 0) { $msg .= "Please provide: Agent Code<br>\n"; }
-		//if (strlen($v_server_protocol) == 0) { $msg .= "Please provide: Web Server Protocol<br>\n"; }
-		//if (strlen($v_server_port) == 0) { $msg .= "Please provide: Web Server Port<br>\n"; }
+		//if (strlen($server_protocol) == 0) { $msg .= "Please provide: Web Server Protocol<br>\n"; }
+		//if (strlen($server_port) == 0) { $msg .= "Please provide: Web Server Port<br>\n"; }
 		if (strlen($php_dir) == 0) { $msg .= "Please provide: PHP Directory<br>\n"; }
 		if (strlen($tmp_dir) == 0) { $msg .= "Please provide: Temp Directory<br>\n"; }
-		if (strlen($bin_dir) == 0) { $msg .= "Please provide: Bin Directory<br>\n"; }
-		if (strlen($v_startup_script_dir) == 0) { $msg .= "Please provide: Startup Script Directory<br>\n"; }
+		if (strlen($switch_bin_dir) == 0) { $msg .= "Please provide: Bin Directory<br>\n"; }
+		if (strlen($startup_script_dir) == 0) { $msg .= "Please provide: Startup Script Directory<br>\n"; }
 		//if (strlen($v_package_version) == 0) { $msg .= "Please provide: Package Version<br>\n"; }
 		//if (strlen($v_build_version) == 0) { $msg .= "Please provide: Build Version<br>\n"; }
 		//if (strlen($v_build_revision) == 0) { $msg .= "Please provide: Build Revision<br>\n"; }
 		//if (strlen($v_label) == 0) { $msg .= "Please provide: Label<br>\n"; }
 		if (strlen($v_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($v_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
-		//if (strlen($v_dir) == 0) { $msg .= "Please provide: FreeSWITCH Directory<br>\n"; }
-		//if (strlen($v_parent_dir) == 0) { $msg .= "Please provide: Parent Directory<br>\n"; }
-		if (strlen($v_backup_dir) == 0) { $msg .= "Please provide: Backup Directory<br>\n"; }
-		if (strlen($v_web_dir) == 0) { $msg .= "Please provide: Web Directory<br>\n"; }
-		if (strlen($v_web_root) == 0) { $msg .= "Please provide: Web Root<br>\n"; }
-		if (strlen($v_relative_url) == 0) { $msg .= "Please provide: Relative URL<br>\n"; }
-		//if (strlen($v_conf_dir) == 0) { $msg .= "Please provide: Conf Directory<br>\n"; }
-		//if (strlen($v_db_dir) == 0) { $msg .= "Please provide: Database Directory<br>\n"; }
-		if (strlen($v_htdocs_dir) == 0) { $msg .= "Please provide: htdocs Directory<br>\n"; }
-		if (strlen($v_log_dir) == 0) { $msg .= "Please provide: Log Directory<br>\n"; }
-		//if (strlen($v_extensions_dir) == 0) { $msg .= "Please provide: Extensions Directory<br>\n"; }
-		//if (strlen($v_gateways_dir) == 0) { $msg .= "Please provide: Gateways Directory<br>\n"; }
+		//if (strlen($switch_base_dir) == 0) { $msg .= "Please provide: FreeSWITCH Directory<br>\n"; }
+		//if (strlen($parent_dir) == 0) { $msg .= "Please provide: Parent Directory<br>\n"; }
+		if (strlen($backup_dir) == 0) { $msg .= "Please provide: Backup Directory<br>\n"; }
+		if (strlen($web_dir) == 0) { $msg .= "Please provide: Web Directory<br>\n"; }
+		if (strlen($web_root) == 0) { $msg .= "Please provide: Web Root<br>\n"; }
+		if (strlen($relative_url) == 0) { $msg .= "Please provide: Relative URL<br>\n"; }
+		//if (strlen($switch_conf_dir) == 0) { $msg .= "Please provide: Conf Directory<br>\n"; }
+		//if (strlen($switch_db_dir) == 0) { $msg .= "Please provide: Database Directory<br>\n"; }
+		if (strlen($switch_htdocs_dir) == 0) { $msg .= "Please provide: htdocs Directory<br>\n"; }
+		if (strlen($switch_log_dir) == 0) { $msg .= "Please provide: Log Directory<br>\n"; }
+		//if (strlen($switch_extensions_dir) == 0) { $msg .= "Please provide: Extensions Directory<br>\n"; }
+		//if (strlen($switch_gateways_dir) == 0) { $msg .= "Please provide: Gateways Directory<br>\n"; }
 		//if (strlen($v_dialplan_public_dir) == 0) { $msg .= "Please provide: Dialplan Public Directory<br>\n"; }
 		//if (strlen($v_dialplan_default_dir) == 0) { $msg .= "Please provide: Dialplan Default Directory<br>\n"; }
-		//if (strlen($v_mod_dir) == 0) { $msg .= "Please provide: Mod Directory<br>\n"; }
-		//if (strlen($v_scripts_dir) == 0) { $msg .= "Please provide: Scripts Directory<br>\n"; }
-		//if (strlen($v_grammar_dir) == 0) { $msg .= "Please provide: Grammar Directory<br>\n"; }
-		//if (strlen($v_storage_dir) == 0) { $msg .= "Please provide: Storage Directory<br>\n"; }
-		//if (strlen($v_voicemail_dir) == 0) { $msg .= "Please provide: Voicemail Directory<br>\n"; }
-		//if (strlen($v_recordings_dir) == 0) { $msg .= "Please provide: Recordings Directory<br>\n"; }
-		//if (strlen($v_sounds_dir) == 0) { $msg .= "Please provide: Sounds Directory<br>\n"; }
+		//if (strlen($switch_mod_dir) == 0) { $msg .= "Please provide: Mod Directory<br>\n"; }
+		//if (strlen($switch_scripts_dir) == 0) { $msg .= "Please provide: Scripts Directory<br>\n"; }
+		//if (strlen($switch_grammar_dir) == 0) { $msg .= "Please provide: Grammar Directory<br>\n"; }
+		//if (strlen($switch_storage_dir) == 0) { $msg .= "Please provide: Storage Directory<br>\n"; }
+		//if (strlen($switch_voicemail_dir) == 0) { $msg .= "Please provide: Voicemail Directory<br>\n"; }
+		//if (strlen($switch_recordings_dir) == 0) { $msg .= "Please provide: Recordings Directory<br>\n"; }
+		//if (strlen($switch_sounds_dir) == 0) { $msg .= "Please provide: Sounds Directory<br>\n"; }
 		//if (strlen($v_download_path) == 0) { $msg .= "Please provide: Download Path<br>\n"; }
-		//if (strlen($v_provisioning_tftp_dir) == 0) { $msg .= "Please provide: Provisioning TFTP Directory<br>\n"; }
-		//if (strlen($v_provisioning_ftp_dir) == 0) { $msg .= "Please provide: Provisioning FTP Directory<br>\n"; }
-		//if (strlen($v_provisioning_https_dir) == 0) { $msg .= "Please provide: Provisioning HTTPS Directory<br>\n"; }
-		//if (strlen($v_provisioning_http_dir) == 0) { $msg .= "Please provide: Provisioning HTTP Directory<br>\n"; }
+		//if (strlen($provisioning_tftp_dir) == 0) { $msg .= "Please provide: Provisioning TFTP Directory<br>\n"; }
+		//if (strlen($provisioning_ftp_dir) == 0) { $msg .= "Please provide: Provisioning FTP Directory<br>\n"; }
+		//if (strlen($provisioning_https_dir) == 0) { $msg .= "Please provide: Provisioning HTTPS Directory<br>\n"; }
+		//if (strlen($provisioning_http_dir) == 0) { $msg .= "Please provide: Provisioning HTTP Directory<br>\n"; }
 		//if (strlen($v_template_name) == 0) { $msg .= "Please provide: Template Name<br>\n"; }
 		if (strlen($v_menu_uuid) == 0) { $msg .= "Please provide: Menu<br>\n"; }
 		//if (strlen($v_time_zone) == 0) { $msg .= "Please provide: Time Zone<br>\n"; }
@@ -171,43 +171,43 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "(";
 					$sql .= "v_domain, ";
 					$sql .= "v_account_code, ";
-					$sql .= "v_server_protocol, ";
-					$sql .= "v_server_port, ";
+					$sql .= "server_protocol, ";
+					$sql .= "server_port, ";
 					$sql .= "php_dir, ";
 					$sql .= "tmp_dir, ";
-					$sql .= "bin_dir, ";
-					$sql .= "v_startup_script_dir, ";
+					$sql .= "switch_bin_dir, ";
+					$sql .= "startup_script_dir, ";
 					//$sql .= "v_package_version, ";
 					$sql .= "v_build_version, ";
 					$sql .= "v_build_revision, ";
 					$sql .= "v_label, ";
 					$sql .= "v_name, ";
-					$sql .= "v_dir, ";
-					$sql .= "v_parent_dir, ";
-					$sql .= "v_backup_dir, ";
-					$sql .= "v_web_dir, ";
-					$sql .= "v_web_root, ";
-					$sql .= "v_relative_url, ";
-					$sql .= "v_conf_dir, ";
-					$sql .= "v_db_dir, ";
-					$sql .= "v_htdocs_dir, ";
-					$sql .= "v_log_dir, ";
-					$sql .= "v_extensions_dir, ";
-					$sql .= "v_gateways_dir, ";
+					$sql .= "switch_base_dir, ";
+					$sql .= "parent_dir, ";
+					$sql .= "backup_dir, ";
+					$sql .= "web_dir, ";
+					$sql .= "web_root, ";
+					$sql .= "relative_url, ";
+					$sql .= "switch_conf_dir, ";
+					$sql .= "switch_db_dir, ";
+					$sql .= "switch_htdocs_dir, ";
+					$sql .= "switch_log_dir, ";
+					$sql .= "switch_extensions_dir, ";
+					$sql .= "switch_gateways_dir, ";
 					$sql .= "v_dialplan_public_dir, ";
 					$sql .= "v_dialplan_default_dir, ";
-					$sql .= "v_mod_dir, ";
-					$sql .= "v_scripts_dir, ";
-					$sql .= "v_grammar_dir, ";
-					$sql .= "v_storage_dir, ";
-					$sql .= "v_voicemail_dir, ";
-					$sql .= "v_recordings_dir, ";
+					$sql .= "switch_mod_dir, ";
+					$sql .= "switch_scripts_dir, ";
+					$sql .= "switch_grammar_dir, ";
+					$sql .= "switch_storage_dir, ";
+					$sql .= "switch_voicemail_dir, ";
+					$sql .= "switch_recordings_dir, ";
 					//$sql .= "v_download_path, ";
-					$sql .= "v_sounds_dir, ";
-					$sql .= "v_provisioning_tftp_dir, ";
-					$sql .= "v_provisioning_ftp_dir, ";
-					$sql .= "v_provisioning_https_dir, ";
-					$sql .= "v_provisioning_http_dir, ";
+					$sql .= "switch_sounds_dir, ";
+					$sql .= "provisioning_tftp_dir, ";
+					$sql .= "provisioning_ftp_dir, ";
+					$sql .= "provisioning_https_dir, ";
+					$sql .= "provisioning_http_dir, ";
 					$sql .= "v_template_name, ";
 					$sql .= "v_menu_uuid, ";
 					$sql .= "v_time_zone, ";
@@ -217,43 +217,43 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "(";
 					$sql .= "'$v_domain', ";
 					$sql .= "'$v_account_code', ";
-					$sql .= "'$v_server_protocol', ";
-					$sql .= "'$v_server_port', ";
+					$sql .= "'$server_protocol', ";
+					$sql .= "'$server_port', ";
 					$sql .= "'$php_dir', ";
 					$sql .= "'$tmp_dir', ";
-					$sql .= "'$bin_dir', ";
-					$sql .= "'$v_startup_script_dir', ";
+					$sql .= "'$switch_bin_dir', ";
+					$sql .= "'$startup_script_dir', ";
 					//$sql .= "'$v_package_version', ";
 					$sql .= "'$v_build_version', ";
 					$sql .= "'$v_build_revision', ";
 					$sql .= "'$v_label', ";
 					$sql .= "'$v_name', ";
-					$sql .= "'$v_dir', ";
-					$sql .= "'$v_parent_dir', ";
-					$sql .= "'$v_backup_dir', ";
-					$sql .= "'$v_web_dir', ";
-					$sql .= "'$v_web_root', ";
-					$sql .= "'$v_relative_url', ";
-					$sql .= "'$v_conf_dir', ";
-					$sql .= "'$v_db_dir', ";
-					$sql .= "'$v_htdocs_dir', ";
-					$sql .= "'$v_log_dir', ";
-					$sql .= "'$v_extensions_dir', ";
-					$sql .= "'$v_gateways_dir', ";
+					$sql .= "'$switch_base_dir', ";
+					$sql .= "'$parent_dir', ";
+					$sql .= "'$backup_dir', ";
+					$sql .= "'$web_dir', ";
+					$sql .= "'$web_root', ";
+					$sql .= "'$relative_url', ";
+					$sql .= "'$switch_conf_dir', ";
+					$sql .= "'$switch_db_dir', ";
+					$sql .= "'$switch_htdocs_dir', ";
+					$sql .= "'$switch_log_dir', ";
+					$sql .= "'$switch_extensions_dir', ";
+					$sql .= "'$switch_gateways_dir', ";
 					$sql .= "'$v_dialplan_public_dir', ";
 					$sql .= "'$v_dialplan_default_dir', ";
-					$sql .= "'$v_mod_dir', ";
-					$sql .= "'$v_scripts_dir', ";
-					$sql .= "'$v_grammar_dir', ";
-					$sql .= "'$v_storage_dir', ";
-					$sql .= "'$v_voicemail_dir', ";
-					$sql .= "'$v_recordings_dir', ";
+					$sql .= "'$switch_mod_dir', ";
+					$sql .= "'$switch_scripts_dir', ";
+					$sql .= "'$switch_grammar_dir', ";
+					$sql .= "'$switch_storage_dir', ";
+					$sql .= "'$switch_voicemail_dir', ";
+					$sql .= "'$switch_recordings_dir', ";
 					//$sql .= "'$v_download_path', ";
-					$sql .= "'$v_sounds_dir', ";
-					$sql .= "'$v_provisioning_tftp_dir', ";
-					$sql .= "'$v_provisioning_ftp_dir', ";
-					$sql .= "'$v_provisioning_https_dir', ";
-					$sql .= "'$v_provisioning_http_dir', ";
+					$sql .= "'$switch_sounds_dir', ";
+					$sql .= "'$provisioning_tftp_dir', ";
+					$sql .= "'$provisioning_ftp_dir', ";
+					$sql .= "'$provisioning_https_dir', ";
+					$sql .= "'$provisioning_http_dir', ";
 					$sql .= "'$v_template_name', ";
 					$sql .= "'$v_menu_uuid', ";
 					$sql .= "'$v_time_zone', ";
@@ -281,43 +281,43 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql = "update v_system_settings set ";
 					$sql .= "v_domain = '$v_domain', ";
 					$sql .= "v_account_code = '$v_account_code', ";
-					$sql .= "v_server_protocol = '$v_server_protocol', ";
-					$sql .= "v_server_port = '$v_server_port', ";
+					$sql .= "server_protocol = '$server_protocol', ";
+					$sql .= "server_port = '$server_port', ";
 					$sql .= "php_dir = '$php_dir', ";
 					$sql .= "tmp_dir = '$tmp_dir', ";
-					$sql .= "bin_dir = '$bin_dir', ";
-					$sql .= "v_startup_script_dir = '$v_startup_script_dir', ";
+					$sql .= "switch_bin_dir = '$switch_bin_dir', ";
+					$sql .= "startup_script_dir = '$startup_script_dir', ";
 					//$sql .= "v_package_version = '$v_package_version', ";
 					$sql .= "v_build_version = '$v_build_version', ";
 					$sql .= "v_build_revision = '$v_build_revision', ";
 					$sql .= "v_label = '$v_label', ";
 					$sql .= "v_name = '$v_name', ";
-					$sql .= "v_dir = '$v_dir', ";
-					$sql .= "v_parent_dir = '$v_parent_dir', ";
-					$sql .= "v_backup_dir = '$v_backup_dir', ";
-					$sql .= "v_web_dir = '$v_web_dir', ";
-					$sql .= "v_web_root = '$v_web_root', ";
-					$sql .= "v_relative_url = '$v_relative_url', ";
-					$sql .= "v_conf_dir = '$v_conf_dir', ";
-					$sql .= "v_db_dir = '$v_db_dir', ";
-					$sql .= "v_htdocs_dir = '$v_htdocs_dir', ";
-					$sql .= "v_log_dir = '$v_log_dir', ";
-					$sql .= "v_extensions_dir = '$v_extensions_dir', ";
-					$sql .= "v_gateways_dir = '$v_gateways_dir', ";
+					$sql .= "switch_base_dir = '$switch_base_dir', ";
+					$sql .= "parent_dir = '$parent_dir', ";
+					$sql .= "backup_dir = '$backup_dir', ";
+					$sql .= "web_dir = '$web_dir', ";
+					$sql .= "web_root = '$web_root', ";
+					$sql .= "relative_url = '$relative_url', ";
+					$sql .= "switch_conf_dir = '$switch_conf_dir', ";
+					$sql .= "switch_db_dir = '$switch_db_dir', ";
+					$sql .= "switch_htdocs_dir = '$switch_htdocs_dir', ";
+					$sql .= "switch_log_dir = '$switch_log_dir', ";
+					$sql .= "switch_extensions_dir = '$switch_extensions_dir', ";
+					$sql .= "switch_gateways_dir = '$switch_gateways_dir', ";
 					$sql .= "v_dialplan_public_dir = '$v_dialplan_public_dir', ";
 					$sql .= "v_dialplan_default_dir = '$v_dialplan_default_dir', ";
-					$sql .= "v_mod_dir = '$v_mod_dir', ";
-					$sql .= "v_scripts_dir = '$v_scripts_dir', ";
-					$sql .= "v_grammar_dir = '$v_grammar_dir', ";
-					$sql .= "v_storage_dir = '$v_storage_dir', ";
-					$sql .= "v_voicemail_dir = '$v_voicemail_dir', ";
-					$sql .= "v_recordings_dir = '$v_recordings_dir', ";
-					$sql .= "v_sounds_dir = '$v_sounds_dir', ";
+					$sql .= "switch_mod_dir = '$switch_mod_dir', ";
+					$sql .= "switch_scripts_dir = '$switch_scripts_dir', ";
+					$sql .= "switch_grammar_dir = '$switch_grammar_dir', ";
+					$sql .= "switch_storage_dir = '$switch_storage_dir', ";
+					$sql .= "switch_voicemail_dir = '$switch_voicemail_dir', ";
+					$sql .= "switch_recordings_dir = '$switch_recordings_dir', ";
+					$sql .= "switch_sounds_dir = '$switch_sounds_dir', ";
 					//$sql .= "v_download_path = '$v_download_path', ";
-					$sql .= "v_provisioning_tftp_dir = '$v_provisioning_tftp_dir', ";
-					$sql .= "v_provisioning_ftp_dir = '$v_provisioning_ftp_dir', ";
-					$sql .= "v_provisioning_https_dir = '$v_provisioning_https_dir', ";
-					$sql .= "v_provisioning_http_dir = '$v_provisioning_http_dir', ";
+					$sql .= "provisioning_tftp_dir = '$provisioning_tftp_dir', ";
+					$sql .= "provisioning_ftp_dir = '$provisioning_ftp_dir', ";
+					$sql .= "provisioning_https_dir = '$provisioning_https_dir', ";
+					$sql .= "provisioning_http_dir = '$provisioning_http_dir', ";
 					$sql .= "v_template_name = '$v_template_name', ";
 					$sql .= "v_menu_uuid = '$v_menu_uuid', ";
 					$sql .= "v_time_zone = '$v_time_zone', ";
@@ -366,43 +366,43 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		foreach ($result as &$row) {
 			$v_domain = $row["v_domain"];
 			$v_account_code = $row["v_account_code"];
-			$v_server_protocol = $row["v_server_protocol"];
-			$v_server_port = $row["v_server_port"];
+			$server_protocol = $row["server_protocol"];
+			$server_port = $row["server_port"];
 			$php_dir = $row["php_dir"];
 			$tmp_dir = $row["tmp_dir"];
-			$bin_dir = $row["bin_dir"];
-			$v_startup_script_dir = $row["v_startup_script_dir"];
+			$switch_bin_dir = $row["switch_bin_dir"];
+			$startup_script_dir = $row["startup_script_dir"];
 			$v_package_version = $row["v_package_version"];
 			$v_build_version = $row["v_build_version"];
 			$v_build_revision = $row["v_build_revision"];
 			$v_label = $row["v_label"];
 			$v_name = $row["v_name"];
-			$v_dir = $row["v_dir"];
-			$v_parent_dir = $row["v_parent_dir"];
-			$v_backup_dir = $row["v_backup_dir"];
-			$v_web_dir = $row["v_web_dir"];
-			$v_web_root = $row["v_web_root"];
-			$v_relative_url = $row["v_relative_url"];
-			$v_conf_dir = $row["v_conf_dir"];
-			$v_db_dir = $row["v_db_dir"];
-			$v_htdocs_dir = $row["v_htdocs_dir"];
-			$v_log_dir = $row["v_log_dir"];
-			$v_extensions_dir = $row["v_extensions_dir"];
-			$v_gateways_dir = $row["v_gateways_dir"];
+			$switch_base_dir = $row["switch_base_dir"];
+			$parent_dir = $row["parent_dir"];
+			$backup_dir = $row["backup_dir"];
+			$web_dir = $row["web_dir"];
+			$web_root = $row["web_root"];
+			$relative_url = $row["relative_url"];
+			$switch_conf_dir = $row["switch_conf_dir"];
+			$switch_db_dir = $row["switch_db_dir"];
+			$switch_htdocs_dir = $row["switch_htdocs_dir"];
+			$switch_log_dir = $row["switch_log_dir"];
+			$switch_extensions_dir = $row["switch_extensions_dir"];
+			$switch_gateways_dir = $row["switch_gateways_dir"];
 			$v_dialplan_public_dir = $row["v_dialplan_public_dir"];
 			$v_dialplan_default_dir = $row["v_dialplan_default_dir"];
-			$v_mod_dir = $row["v_mod_dir"];
-			$v_scripts_dir = $row["v_scripts_dir"];
-			$v_grammar_dir = $row["v_grammar_dir"];
-			$v_storage_dir = $row["v_storage_dir"];
-			$v_voicemail_dir = $row["v_voicemail_dir"];
-			$v_recordings_dir = $row["v_recordings_dir"];
-			$v_sounds_dir = $row["v_sounds_dir"];
+			$switch_mod_dir = $row["switch_mod_dir"];
+			$switch_scripts_dir = $row["switch_scripts_dir"];
+			$switch_grammar_dir = $row["switch_grammar_dir"];
+			$switch_storage_dir = $row["switch_storage_dir"];
+			$switch_voicemail_dir = $row["switch_voicemail_dir"];
+			$switch_recordings_dir = $row["switch_recordings_dir"];
+			$switch_sounds_dir = $row["switch_sounds_dir"];
 			$v_download_path = $row["v_download_path"];
-			$v_provisioning_tftp_dir = $row["v_provisioning_tftp_dir"];
-			$v_provisioning_ftp_dir = $row["v_provisioning_ftp_dir"];
-			$v_provisioning_https_dir = $row["v_provisioning_https_dir"];
-			$v_provisioning_http_dir = $row["v_provisioning_http_dir"];
+			$provisioning_tftp_dir = $row["provisioning_tftp_dir"];
+			$provisioning_ftp_dir = $row["provisioning_ftp_dir"];
+			$provisioning_https_dir = $row["provisioning_https_dir"];
+			$provisioning_http_dir = $row["provisioning_http_dir"];
 			$v_template_name = $row["v_template_name"];
 			$v_menu_uuid = $row["v_menu_uuid"];
 			$v_time_zone = $row["v_time_zone"];
@@ -419,27 +419,27 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 //set defaults if value is emtpy
-	if (strlen($v_server_port) == 0) { $v_server_port = $_SERVER["SERVER_PORT"]; }
-	if (strlen($v_server_protocol) == 0) { 
-		if ($v_server_port == "80") { $v_server_protocol = "http"; }
-		if ($v_server_port == "443") { $v_server_protocol = "https"; }
+	if (strlen($server_port) == 0) { $server_port = $_SERVER["SERVER_PORT"]; }
+	if (strlen($server_protocol) == 0) { 
+		if ($server_port == "80") { $server_protocol = "http"; }
+		if ($server_port == "443") { $server_protocol = "https"; }
 	}
-	if (strlen($v_gateways_dir) == 0) { $v_gateways_dir = $v_conf_dir.'/sip_profiles/external'; }
-	if (strlen($v_voicemail_dir) == 0) { $v_voicemail_dir = $v_storage_dir.'/voicemail'; }
-	if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $v_conf_dir.'/dialplan/public'; }
-	if (strlen($v_extensions_dir) == 0) { $v_extensions_dir = $v_conf_dir.'/directory/default'; }
-	if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $v_conf_dir.'/dialplan/default'; }
+	if (strlen($switch_gateways_dir) == 0) { $switch_gateways_dir = $switch_conf_dir.'/sip_profiles/external'; }
+	if (strlen($switch_voicemail_dir) == 0) { $switch_voicemail_dir = $switch_storage_dir.'/voicemail'; }
+	if (strlen($v_dialplan_public_dir) == 0) { $v_dialplan_public_dir = $switch_conf_dir.'/dialplan/public'; }
+	if (strlen($switch_extensions_dir) == 0) { $switch_extensions_dir = $switch_conf_dir.'/directory/default'; }
+	if (strlen($v_dialplan_default_dir) == 0) { $v_dialplan_default_dir = $switch_conf_dir.'/dialplan/default'; }
 	if ($action == "add") {
-		$v_extensions_dir = $v_conf_dir.'/directory/'.$_GET['v_domain'];
-		$v_dialplan_public_dir = $v_conf_dir.'/dialplan/public/'.$_GET['v_domain'];
-		$v_dialplan_default_dir = $v_conf_dir.'/dialplan/'.$_GET['v_domain'];
+		$switch_extensions_dir = $switch_conf_dir.'/directory/'.$_GET['v_domain'];
+		$v_dialplan_public_dir = $switch_conf_dir.'/dialplan/public/'.$_GET['v_domain'];
+		$v_dialplan_default_dir = $switch_conf_dir.'/dialplan/'.$_GET['v_domain'];
 
 		//remove the domain from the v_recordings dir if it is found
-		if  (substr($v_recordings_dir, -(strlen($_SESSION['v_domain']))) == $_SESSION['v_domain']) {
-			$v_recordings_dir = substr($v_recordings_dir, 0, -(strlen($_SESSION['v_domain']))-1);
+		if  (substr($switch_recordings_dir, -(strlen($_SESSION['v_domain']))) == $_SESSION['v_domain']) {
+			$switch_recordings_dir = substr($switch_recordings_dir, 0, -(strlen($_SESSION['v_domain']))-1);
 		}
 		//add the new domain to the end of the recordings path
-		$v_recordings_dir = $v_recordings_dir.'/'.$_GET['v_domain'];
+		$switch_recordings_dir = $switch_recordings_dir.'/'.$_GET['v_domain'];
 
 		$v_domain = $_GET['v_domain'];
 		$v_label = $_GET['v_label'];
@@ -513,7 +513,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Web Server Protocol:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_server_protocol' maxlength='255' value=\"$v_server_protocol\">\n";
+	echo "	<input class='formfld' type='text' name='server_protocol' maxlength='255' value=\"$server_protocol\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -524,7 +524,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Web Server Port:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_server_port' maxlength='255' value=\"$v_server_port\">\n";
+	echo "	<input class='formfld' type='text' name='server_port' maxlength='255' value=\"$server_port\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -557,7 +557,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    FreeSWITCH Bin Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='bin_dir' maxlength='255' value=\"$bin_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_bin_dir' maxlength='255' value=\"$switch_bin_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -568,7 +568,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Startup Script Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_startup_script_dir' maxlength='255' value=\"$v_startup_script_dir\">\n";
+	echo "    <input class='formfld' type='text' name='startup_script_dir' maxlength='255' value=\"$startup_script_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -623,7 +623,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    FreeSWITCH Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_dir' maxlength='255' value=\"$v_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_base_dir' maxlength='255' value=\"$switch_base_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -634,7 +634,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Parent Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_parent_dir' maxlength='255' value=\"$v_parent_dir\">\n";
+	echo "    <input class='formfld' type='text' name='parent_dir' maxlength='255' value=\"$parent_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -645,7 +645,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Backup Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_backup_dir' maxlength='255' value=\"$v_backup_dir\">\n";
+	echo "    <input class='formfld' type='text' name='backup_dir' maxlength='255' value=\"$backup_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -656,7 +656,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Web Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_web_dir' maxlength='255' value=\"$v_web_dir\">\n";
+	echo "    <input class='formfld' type='text' name='web_dir' maxlength='255' value=\"$web_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -667,7 +667,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Web Root:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_web_root' maxlength='255' value=\"$v_web_root\">\n";
+	echo "    <input class='formfld' type='text' name='web_root' maxlength='255' value=\"$web_root\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -678,7 +678,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Relative URL:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_relative_url' maxlength='255' value=\"$v_relative_url\">\n";
+	echo "    <input class='formfld' type='text' name='relative_url' maxlength='255' value=\"$relative_url\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -689,7 +689,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Conf Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_conf_dir' maxlength='255' value=\"$v_conf_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_conf_dir' maxlength='255' value=\"$switch_conf_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -700,7 +700,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Database Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_db_dir' maxlength='255' value=\"$v_db_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_db_dir' maxlength='255' value=\"$switch_db_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -711,7 +711,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    htdocs Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_htdocs_dir' maxlength='255' value=\"$v_htdocs_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_htdocs_dir' maxlength='255' value=\"$switch_htdocs_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -722,7 +722,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Log Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_log_dir' maxlength='255' value=\"$v_log_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_log_dir' maxlength='255' value=\"$switch_log_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -733,7 +733,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Mod Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_mod_dir' maxlength='255' value=\"$v_mod_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_mod_dir' maxlength='255' value=\"$switch_mod_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -744,7 +744,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Extensions Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_extensions_dir' maxlength='255' value=\"$v_extensions_dir\">\n";
+	echo "	<input class='formfld' type='text' name='switch_extensions_dir' maxlength='255' value=\"$switch_extensions_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -755,7 +755,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Gateways Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_gateways_dir' maxlength='255' value=\"$v_gateways_dir\">\n";
+	echo "	<input class='formfld' type='text' name='switch_gateways_dir' maxlength='255' value=\"$switch_gateways_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -788,7 +788,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Scripts Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_scripts_dir' maxlength='255' value=\"$v_scripts_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_scripts_dir' maxlength='255' value=\"$switch_scripts_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -799,7 +799,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Grammar Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_grammar_dir' maxlength='255' value=\"$v_grammar_dir\">\n";
+	echo "	<input class='formfld' type='text' name='switch_grammar_dir' maxlength='255' value=\"$switch_grammar_dir\">\n";
 	echo "<br />\n";
 	echo "Enter the grammar directory.\n";
 	echo "</td>\n";
@@ -810,7 +810,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Storage Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_storage_dir' maxlength='255' value=\"$v_storage_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_storage_dir' maxlength='255' value=\"$switch_storage_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -821,7 +821,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Voicemail Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_voicemail_dir' maxlength='255' value=\"$v_voicemail_dir\">\n";
+	echo "	<input class='formfld' type='text' name='switch_voicemail_dir' maxlength='255' value=\"$switch_voicemail_dir\">\n";
 	echo "<br />\n";
 	echo "Enter the voicemail directory.\n";
 	echo "</td>\n";
@@ -832,7 +832,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Recordings Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_recordings_dir' maxlength='255' value=\"$v_recordings_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_recordings_dir' maxlength='255' value=\"$switch_recordings_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -843,7 +843,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Sounds Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_sounds_dir' maxlength='255' value=\"$v_sounds_dir\">\n";
+	echo "    <input class='formfld' type='text' name='switch_sounds_dir' maxlength='255' value=\"$switch_sounds_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -865,7 +865,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Provisioning TFTP Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_provisioning_tftp_dir' maxlength='255' value=\"$v_provisioning_tftp_dir\">\n";
+	echo "    <input class='formfld' type='text' name='provisioning_tftp_dir' maxlength='255' value=\"$provisioning_tftp_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -876,7 +876,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Provisioning FTP Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_provisioning_ftp_dir' maxlength='255' value=\"$v_provisioning_ftp_dir\">\n";
+	echo "    <input class='formfld' type='text' name='provisioning_ftp_dir' maxlength='255' value=\"$provisioning_ftp_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -887,7 +887,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Provisioning HTTPS Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_provisioning_https_dir' maxlength='255' value=\"$v_provisioning_https_dir\">\n";
+	echo "    <input class='formfld' type='text' name='provisioning_https_dir' maxlength='255' value=\"$provisioning_https_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -898,7 +898,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Provisioning HTTP Directory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='v_provisioning_http_dir' maxlength='255' value=\"$v_provisioning_http_dir\">\n";
+	echo "    <input class='formfld' type='text' name='provisioning_http_dir' maxlength='255' value=\"$provisioning_http_dir\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

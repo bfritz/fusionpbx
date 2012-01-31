@@ -46,7 +46,7 @@ else {
 if (permission_exists('log_download')) {
 	if ($_GET['a'] == "download") {
 		if ($_GET['t'] == "logs") {
-			$tmp = $v_log_dir.'/';
+			$tmp = $switch_log_dir.'/';
 			$filename = $v_name.'.log';
 		}
 		session_cache_limiter('public');
@@ -94,7 +94,7 @@ if (permission_exists('log_view')) {
 	$default_font = 'monospace';
 	$background_color = 'black';
 	$default_fsize = '512000';
-	$log_file = "$v_log_dir/$v_name.log";
+	$log_file = "$switch_log_dir/$v_name.log";
 
 	//put the color matches here...
 	$arr_filter[0]['pattern'] = '[NOTICE]';

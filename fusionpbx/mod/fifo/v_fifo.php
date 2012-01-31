@@ -230,7 +230,7 @@ require_once "includes/paging.php";
 	echo "<td colspan='5' align='left'>\n";
 	echo "<br />\n";
 	if ($v_path_show) {
-		echo $v_conf_dir."/dialplan/default/";
+		echo $switch_conf_dir."/dialplan/default/";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
