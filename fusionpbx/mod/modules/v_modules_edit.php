@@ -227,7 +227,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Module Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$table_name = 'v_modules';$field_name = 'module_category';$sql_where_optional = "where domain_uuid = '$domain_uuid'";$field_current_value = $module_category;
+	$table_name = 'v_modules';$field_name = 'module_category';$sql_where_optional = "";$field_current_value = $module_category;
 	echo html_select_other($db, $table_name, $field_name, $sql_where_optional, $field_current_value);
 	echo "<br />\n";
 	echo "\n";
