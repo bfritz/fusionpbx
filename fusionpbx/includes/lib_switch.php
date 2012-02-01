@@ -1736,8 +1736,8 @@ function sync_package_v_extensions() {
 				$tmp_xml .= "      <variable name=\"hold_music\" value=\"" . $row['hold_music'] . "\"/>\n";
 			}
 			$tmp_xml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
-			if (strlen($v_account_code) > 0) {
-				$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $v_account_code . "\"/>\n";
+			if (strlen($switch_account_code) > 0) {
+				$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $switch_account_code . "\"/>\n";
 			}
 			else {
 				$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";

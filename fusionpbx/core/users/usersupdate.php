@@ -194,7 +194,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		}
 
 	//if the template has not been assigned by the superadmin
-		if (strlen($_SESSION["v_template_name"]) == 0) {
+		if (strlen($_SESSION["domain_template_name"]) == 0) {
 			//set the session theme for the active user
 			if ($_SESSION["username"] == $username) {
 				$_SESSION["template_name"] = $user_template_name;
@@ -689,7 +689,7 @@ else {
 	}
 
 	//if the template has not been assigned by the superadmin
-		if (strlen($_SESSION["v_template_name"]) == 0) {
+		if (strlen($_SESSION["domain_template_name"]) == 0) {
 			echo "	<tr>\n";
 			echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 			echo "		Template: \n";

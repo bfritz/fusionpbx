@@ -695,7 +695,7 @@ function confirmdelete(url) {
 //get the current page menu_parent_guid
 	if ($db) {
 		$sql = "select * from v_menu_items ";
-		$sql .= "where menu_uuid = '".$_SESSION["v_menu_uuid"]."' ";
+		$sql .= "where menu_uuid = '".$_SESSION["domain_menu_uuid"]."' ";
 		if ($php_self_dir == "/") {
 			$sql .= "and menu_item_str = '/index2.php' ";
 		}
@@ -725,7 +725,7 @@ function confirmdelete(url) {
 			require_once "includes/classes/menu.php";
 			$menu = new menu;
 			$menu->db = $db;
-			$menu->menu_uuid = $_SESSION["v_menu_uuid"];
+			$menu->menu_uuid = $_SESSION["domain_menu_uuid"];
 			$sub_menu = $menu->build_child_html($menu_level, $php_self_parent_uuid);
 			$sub_menu = str_replace("menu_sub", "menu_sub_vertical", $sub_menu);
 			echo $sub_menu;

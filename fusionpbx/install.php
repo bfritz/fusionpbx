@@ -719,16 +719,16 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 	//add the domain settings
 		$x = 0;
-		$tmp[$x]['name'] = 'v_menu_uuid';
+		$tmp[$x]['name'] = 'domain_menu_uuid';
 		$tmp[$x]['value'] = $menu_uuid; //menu_uuid
 		$x++;
-		$tmp[$x]['name'] = 'v_time_zone'; //time_zone
+		$tmp[$x]['name'] = 'domain_time_zone'; //time_zone
 		$tmp[$x]['value'] = '';
 		$x++;
-		$tmp[$x]['name'] = 'v_template_name'; //template_name
+		$tmp[$x]['name'] = 'domain_template_name'; //template_name
 		$tmp[$x]['value'] = $install_v_template_name;
 		$x++;
-		$tmp[$x]['name'] = 'v_account_code'; //account_code
+		$tmp[$x]['name'] = 'switch_account_code'; //account_code
 		$tmp[$x]['value'] = '';
 		foreach($tmp as $row) {
 			$sql = "insert into v_domain_settings ";

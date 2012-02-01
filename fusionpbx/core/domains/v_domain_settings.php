@@ -1,4 +1,28 @@
 <?php
+/*
+ FusionPBX
+ Version: MPL 1.1
+
+ The contents of this file are subject to the Mozilla Public License Version
+ 1.1 (the "License"); you may not use this file except in compliance with
+ the License. You may obtain a copy of the License at
+ http://www.mozilla.org/MPL/
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the
+ License.
+
+ The Original Code is FusionPBX
+
+ The Initial Developer of the Original Code is
+ Mark J Crane <markjcrane@fusionpbx.com>
+ Portions created by the Initial Developer are Copyright (C) 2008-2012
+ the Initial Developer. All Rights Reserved.
+
+ Contributor(s):
+ Mark J Crane <markjcrane@fusionpbx.com>
+*/
 require_once "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
@@ -25,7 +49,7 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' nowrap><b>Domain Setting List</b></td>\n";
+	echo "		<td width='50%' nowrap><b>Domain Settings</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -54,7 +78,7 @@ require_once "includes/paging.php";
 		}
 
 	//prepare to page the results
-		$rows_per_page = 10;
+		$rows_per_page = 100;
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
@@ -83,6 +107,7 @@ require_once "includes/paging.php";
 
 	echo "<tr>\n";
 	echo thorder_by('domain_setting_name', 'Name', $order_by, $order);
+	echo thorder_by('domain_setting_category', 'Category', $order_by, $order);
 	echo thorder_by('domain_setting_value', 'Value', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_domain_settings_edit.php?domain_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
@@ -93,6 +118,7 @@ require_once "includes/paging.php";
 		foreach($result as $row) {
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_category']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_value']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_domain_settings_edit.php?domain_uuid=".$row['domain_uuid']."&id=".$row['domain_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
@@ -105,7 +131,7 @@ require_once "includes/paging.php";
 	} //end if results
 
 	echo "<tr>\n";
-	echo "<td colspan='4' align='left'>\n";
+	echo "<td colspan='5' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";

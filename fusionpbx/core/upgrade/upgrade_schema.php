@@ -90,7 +90,7 @@
 			$domain_uuid = $row["domain_uuid"];
 			$v_domain = $row["domain_name"];
 			/*
-			$v_account_code = $row["v_account_code"];
+			$switch_account_code = $row["switch_account_code"];
 			$server_protocol = $row["server_protocol"];
 			$server_port = $row["server_port"];
 			$php_dir = $row["php_dir"];
@@ -128,8 +128,8 @@
 			$provisioning_ftp_dir = $row["provisioning_ftp_dir"];
 			$provisioning_https_dir = $row["provisioning_https_dir"];
 			$provisioning_http_dir = $row["provisioning_http_dir"];
-			$v_template_name = $row["v_template_name"];
-			$v_time_zone = $row["v_time_zone"];
+			$domain_template_name = $row["domain_template_name"];
+			$domain_time_zone = $row["domain_time_zone"];
 			$v_description = $row["v_description"];
 			*/
 

@@ -87,10 +87,15 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
 		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_setting_category';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the category.';
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_setting_name';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the name.';
 		$z++;
+
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_setting_value';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the value.';

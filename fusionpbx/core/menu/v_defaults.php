@@ -71,7 +71,7 @@
 			}
 		//assign all tenants to the default menu
 			$sql = "update v_system_settings ";
-			$sql .= "set v_menu_uuid = '".$menu_uuid."' ";
+			$sql .= "set domain_menu_uuid = '".$menu_uuid."' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 	}

@@ -32,7 +32,7 @@ session_start();
 			$_SESSION["menu"] = "";
 
 		//clear the template only if the template has not been assigned by the superadmin
-			if (strlen($_SESSION["v_template_name"]) == 0) {
+			if (strlen($_SESSION["domain_template_name"]) == 0) {
 				$_SESSION["template_content"] = '';
 			}
 
@@ -86,7 +86,7 @@ session_start();
 			$_SESSION["username"] = check_str($_REQUEST["username"]);
 			foreach ($result as &$row) {
 				//allow the user to choose a template only if the template has not been assigned by the superadmin
-				if (strlen($_SESSION["v_template_name"]) == 0) {
+				if (strlen($_SESSION["domain_template_name"]) == 0) {
 					$_SESSION["template_name"] = $row["user_template_name"];
 				}
 				$_SESSION["time_zone"]["user"] = '';
@@ -149,7 +149,7 @@ session_start();
 //set the time zone
 	if (strlen($_SESSION["time_zone"]["user"]) == 0) {
 		//set the domain time zone as the default time zone
-		date_default_timezone_set($_SESSION["v_time_zone"]);
+		date_default_timezone_set($_SESSION["domain_time_zone"]);
 	}
 	else {
 		//set the user defined time zone

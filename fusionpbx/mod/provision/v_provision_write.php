@@ -151,7 +151,7 @@ else {
 								$file_contents = str_replace("{v_mac}", $phone_mac_address, $file_contents);
 								$file_contents = str_replace("{v_label}", $phone_label, $file_contents);
 								$file_contents = str_replace("{v_firmware_version}", $phone_firmware_version, $file_contents);
-								$file_contents = str_replace("{v_time_zone}", $phone_time_zone, $file_contents);
+								$file_contents = str_replace("{domain_time_zone}", $phone_time_zone, $file_contents);
 								$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
 								$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
 								$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);

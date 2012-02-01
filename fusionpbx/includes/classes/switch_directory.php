@@ -398,7 +398,7 @@ include "root.php";
 		}
 
 		function generate_xml($single=1){
-			//v_account_code!! How should we be passing this??
+			//switch_account_code!! How should we be passing this??
 			
 			if ($this->enabled== "false" || !$this->enabled) {
 				return false;//This the best way??
@@ -589,12 +589,12 @@ include "root.php";
 
 				if ($row['enabled'] != "false") {
 					//$this->import_sql($row);//Do I need to be worried about ghost values? Maybe I should make a new object?
-					//if (strlen($v_account_code)) $this->accountcode=$v_account_code;
+					//if (strlen($switch_account_code)) $this->accountcode=$switch_account_code;
 					//$tmp_xml.=$this->generate_xml(1);
 
 					$one_row=new fs_directory;
 					$one_row->import_sql($row);//make a new object to flush ghost rows. And we can call this as static.
-					if (strlen($v_account_code)) $one_row->accountcode=$v_account_code;
+					if (strlen($switch_account_code)) $one_row->accountcode=$switch_account_code;
 					$tmp_xml.=$one_row->generate_xml(false);
 
 					if (!$extension_xml_condensed) {

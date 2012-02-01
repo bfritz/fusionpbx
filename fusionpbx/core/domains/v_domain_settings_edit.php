@@ -1,4 +1,28 @@
 <?php
+/*
+ FusionPBX
+ Version: MPL 1.1
+
+ The contents of this file are subject to the Mozilla Public License Version
+ 1.1 (the "License"); you may not use this file except in compliance with
+ the License. You may obtain a copy of the License at
+ http://www.mozilla.org/MPL/
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the
+ License.
+
+ The Original Code is FusionPBX
+
+ The Initial Developer of the Original Code is
+ Mark J Crane <markjcrane@fusionpbx.com>
+ Portions created by the Initial Developer are Copyright (C) 2008-2012
+ the Initial Developer. All Rights Reserved.
+
+ Contributor(s):
+ Mark J Crane <markjcrane@fusionpbx.com>
+*/
 require_once "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
@@ -25,6 +49,7 @@ if (strlen($_GET["domain_uuid"]) > 0) {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
+		$domain_setting_category = check_str($_POST["domain_setting_category"]);
 		$domain_setting_name = check_str($_POST["domain_setting_name"]);
 		$domain_setting_value = check_str($_POST["domain_setting_value"]);
 	}
@@ -38,6 +63,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
+		//if (strlen($domain_setting_category) == 0) { $msg .= "Please provide: Category<br>\n"; }
 		//if (strlen($domain_setting_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($domain_setting_value) == 0) { $msg .= "Please provide: Value<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -59,16 +85,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "insert into v_domain_settings ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
-				$sql .= "domain_uuid, ";
-				$sql .= "domain_uuid, ";
+				$sql .= "domain_setting_uuid, ";
+				$sql .= "domain_setting_category, ";
 				$sql .= "domain_setting_name, ";
 				$sql .= "domain_setting_value ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
-				$sql .= "'$domain_uuid', ";
-				$sql .= "'$domain_uuid', ";
+				$sql .= "'".uuid()."', ";
+				$sql .= "'$domain_setting_category', ";
 				$sql .= "'$domain_setting_name', ";
 				$sql .= "'$domain_setting_value' ";
 				$sql .= ")";
@@ -87,7 +113,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update") {
 				$sql = "update v_domain_settings set ";
 				$sql .= "domain_uuid = '$domain_uuid', ";
-				$sql .= "domain_uuid = '$domain_uuid', ";
+				$sql .= "domain_setting_category = '$domain_setting_category', ";
 				$sql .= "domain_setting_name = '$domain_setting_name', ";
 				$sql .= "domain_setting_value = '$domain_setting_value' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -117,6 +143,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
+			$domain_setting_category = $row["domain_setting_category"];
 			$domain_setting_name = $row["domain_setting_name"];
 			$domain_setting_value = $row["domain_setting_value"];
 			break; //limit to 1 row
@@ -150,6 +177,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
 	echo "Settings used for each domain.<br /><br />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	Category:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='domain_setting_category' maxlength='255' value=\"$domain_setting_category\">\n";
+	echo "<br />\n";
+	echo "Enter the category.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
