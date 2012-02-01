@@ -101,7 +101,6 @@ function v_settings() {
 		$result = $prep_statement->fetchAll();
 		foreach($result as $row) {
 			$name = $row['domain_setting_name'];
-			$_SESSION[$name] = $row['domain_setting_value'];
 			$settings_array[$name] = $row['domain_setting_value'];
 		}
 
@@ -113,7 +112,6 @@ function v_settings() {
 		$result = $prep_statement->fetchAll();
 		foreach($result as $row) {
 			$name = $row['server_setting_name'];
-			$_SESSION[$name] = $row['server_setting_value'];
 			$settings_array[$name] = $row['server_setting_value'];
 		}
 
