@@ -104,7 +104,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "domain_name = '$domain_name', ";
 				$sql .= "domain_description = '$domain_description' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and domain_uuid = '$domain_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 

@@ -112,7 +112,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update") {
 				$sql = "update v_domain_settings set ";
-				$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "domain_setting_category = '$domain_setting_category', ";
 				$sql .= "domain_setting_name = '$domain_setting_name', ";
 				$sql .= "domain_setting_value = '$domain_setting_value' ";
