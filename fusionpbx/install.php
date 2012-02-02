@@ -720,30 +720,35 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//add the domain settings
 		$x = 0;
 		$tmp[$x]['name'] = 'domain_menu_uuid';
-		$tmp[$x]['value'] = $menu_uuid; //menu_uuid
+		$tmp[$x]['value'] = $menu_uuid;
+		$tmp[$x]['category'] = 'system';
 		$x++;
-		$tmp[$x]['name'] = 'domain_time_zone'; //time_zone
-		$tmp[$x]['value'] = '';
+		$tmp[$x]['name'] = 'domain_time_zone';
+		$tmp[$x]['category'] = 'system';
 		$x++;
-		$tmp[$x]['name'] = 'domain_template_name'; //template_name
+		$tmp[$x]['name'] = 'domain_template_name';
 		$tmp[$x]['value'] = $install_v_template_name;
+		$tmp[$x]['category'] = 'system';
 		$x++;
-		$tmp[$x]['name'] = 'switch_account_code'; //account_code
+		$tmp[$x]['name'] = 'switch_account_code';
 		$tmp[$x]['value'] = '';
+		$tmp[$x]['category'] = 'switch';
 		foreach($tmp as $row) {
 			$sql = "insert into v_domain_settings ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "domain_setting_uuid, ";
 			$sql .= "domain_setting_name, ";
-			$sql .= "domain_setting_value ";
+			$sql .= "domain_setting_value, ";
+			$sql .= "domain_setting_category ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'".$_SESSION["domain_uuid"]."', ";
 			$sql .= "'".uuid()."', ";
 			$sql .= "'".$row['name']."', ";
-			$sql .= "'".$row['value']."' ";
+			$sql .= "'".$row['value']."', ";
+			$sql .= "'".$row['category']."' ";
 			$sql .= ");";
 			if ($v_debug) {
 				fwrite($fp, $sql."\n");
@@ -751,6 +756,17 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 		}
+
+	//replace back slashes with forward slashes
+		$web_dir = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
+		$web_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
+		if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }
+		$install_switch_base_dir = str_replace("\\", "/", $install_switch_base_dir);
+		$parent_dir = str_replace("\\", "/", $parent_dir);
+		$install_php_dir = str_replace("\\", "/", $install_php_dir);
+		$startup_script_dir = str_replace("\\", "/", $startup_script_dir);
+		$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
+		$install_backup_dir = str_replace("\\", "/", $install_backup_dir);
 
 	//add the server
 		$server_uuid = uuid();
@@ -772,108 +788,127 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$db_tmp->exec(check_sql($sql));
 		unset($sql);
 
-	//replace back slashes with forward slashes
-		$web_dir = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
-		$web_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
-		if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }
-		$install_switch_base_dir = str_replace("\\", "/", $install_switch_base_dir);
-		$parent_dir = str_replace("\\", "/", $parent_dir);
-		$install_php_dir = str_replace("\\", "/", $install_php_dir);
-		$startup_script_dir = str_replace("\\", "/", $startup_script_dir);
-		$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
-		$install_backup_dir = str_replace("\\", "/", $install_backup_dir);
-
 	//add the server settings
 		$x = 0;
 		$tmp[$x]['name'] = 'server_protocol';
 		$tmp[$x]['value'] = '';
+		$tmp[$x]['category'] = 'system';
 		$x++;
 		$tmp[$x]['name'] = 'server_port';
 		$tmp[$x]['value'] = '';
-		$x++;
-		$tmp[$x]['name'] = 'php_dir';
-		$tmp[$x]['value'] = $install_php_dir;
-		$x++;
-		$tmp[$x]['name'] = 'tmp_dir';
-		$tmp[$x]['value'] = $install_tmp_dir;
-		$x++;
-		$tmp[$x]['name'] = 'switch_bin_dir';
-		$tmp[$x]['value'] = $switch_bin_dir;
-		$x++;
-		$tmp[$x]['name'] = 'startup_script_dir';
-		$tmp[$x]['value'] = $startup_script_dir;
-		$x++;
-		$tmp[$x]['name'] = 'switch_base_dir';
-		$tmp[$x]['value'] = $install_switch_base_dir;
-		$x++;
-		$tmp[$x]['name'] = 'parent_dir';
-		$tmp[$x]['value'] = $parent_dir;
-		$x++;
-		$tmp[$x]['name'] = 'backup_dir';
-		$tmp[$x]['value'] = $install_backup_dir;
+		$tmp[$x]['category'] = 'system';
 		$x++;
 		$tmp[$x]['name'] = 'web_root';
 		$tmp[$x]['value'] = $web_root;
+		$tmp[$x]['category'] = 'system';
 		$x++;
 		$tmp[$x]['name'] = 'web_dir';
 		$tmp[$x]['value'] = $web_dir;
+		$tmp[$x]['category'] = 'system';
+		$x++;
+		$tmp[$x]['name'] = 'php_dir';
+		$tmp[$x]['value'] = $install_php_dir;
+		$tmp[$x]['category'] = 'system';
+		$x++;
+		$tmp[$x]['name'] = 'tmp_dir';
+		$tmp[$x]['value'] = $install_tmp_dir;
+		$tmp[$x]['category'] = 'system';
+		$x++;
+		$tmp[$x]['name'] = 'startup_script_dir';
+		$tmp[$x]['value'] = $startup_script_dir;
+		$tmp[$x]['category'] = 'system';
 		$x++;
 		$tmp[$x]['name'] = 'relative_url';
 		$tmp[$x]['value'] = $relative_url;
+		$tmp[$x]['category'] = 'system';
+		$x++;
+		$tmp[$x]['name'] = 'parent_dir';
+		$tmp[$x]['value'] = $parent_dir;
+		$tmp[$x]['category'] = 'system';
+		$x++;
+		$tmp[$x]['name'] = 'backup_dir';
+		$tmp[$x]['value'] = $install_backup_dir;
+		$tmp[$x]['category'] = 'system';
+		$x++;
+		$tmp[$x]['name'] = 'switch_bin_dir';
+		$tmp[$x]['value'] = $switch_bin_dir;
+		$tmp[$x]['category'] = 'switch';
+		$x++;
+		$tmp[$x]['name'] = 'switch_base_dir';
+		$tmp[$x]['value'] = $install_switch_base_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_conf_dir';
 		$tmp[$x]['value'] = $switch_conf_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_db_dir';
 		$tmp[$x]['value'] = $switch_db_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_htdocs_dir';
 		$tmp[$x]['value'] = $switch_htdocs_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_log_dir';
 		$tmp[$x]['value'] = $switch_log_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_extensions_dir';
 		$tmp[$x]['value'] = $switch_extensions_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_gateways_dir';
 		$tmp[$x]['value'] = $switch_gateways_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_dialplan_dir';
 		$tmp[$x]['value'] = $switch_dialplan_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_mod_dir';
 		$tmp[$x]['value'] = $switch_mod_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_scripts_dir';
 		$tmp[$x]['value'] = $switch_scripts_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_grammar_dir';
 		$tmp[$x]['value'] = $switch_grammar_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_storage_dir';
 		$tmp[$x]['value'] = $switch_storage_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_voicemail_dir';
 		$tmp[$x]['value'] = $switch_voicemail_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_recordings_dir';
 		$tmp[$x]['value'] = $switch_recordings_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'switch_sounds_dir';
 		$tmp[$x]['value'] = $switch_sounds_dir;
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'provisioning_tftp_dir';
 		$tmp[$x]['value'] = '';
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'provisioning_ftp_dir';
 		$tmp[$x]['value'] = '';
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'provisioning_https_dir';
 		$tmp[$x]['value'] = '';
+		$tmp[$x]['category'] = 'switch';
 		$x++;
 		$tmp[$x]['name'] = 'provisioning_http_dir';
 		$tmp[$x]['value'] = '';
+		$tmp[$x]['category'] = 'switch';
 		foreach($tmp as $row) {
 			$sql = "insert into v_server_settings ";
 			$sql .= "(";
@@ -881,7 +916,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "server_uuid, ";
 			$sql .= "server_setting_uuid, ";
 			$sql .= "server_setting_name, ";
-			$sql .= "server_setting_value ";
+			$sql .= "server_setting_value, ";
+			$sql .= "server_setting_category ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -889,7 +925,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "'".$server_uuid."', ";
 			$sql .= "'".uuid()."', ";
 			$sql .= "'".$row['name']."', ";
-			$sql .= "'".$row['value']."' ";
+			$sql .= "'".$row['value']."', ";
+			$sql .= "'".$row['category']."' ";
 			$sql .= ");";
 			if ($v_debug) {
 				fwrite($fp, $sql."\n");
