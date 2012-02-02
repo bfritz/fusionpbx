@@ -42,8 +42,7 @@ else {
 //get any system -> variables defined in the 'provision;
 	$sql = "";
 	$sql .= "select * from v_vars ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and var_enabled= 'true' ";
+	$sql .= "where var_enabled = 'true' ";
 	$sql .= "and var_cat = 'Provision' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -57,17 +56,10 @@ else {
 	}
 
 //get the ftp and tftp directories
-	$sql = "";
-	$sql .= "select * from v_system_settings ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$provision_variables_array = $prep_statement->fetchAll();
-	foreach ($provision_variables_array as &$row) {
-		$provisioning_tftp_dir = $row['provisioning_tftp_dir'];
-		$provisioning_ftp_dir = $row['provisioning_ftp_dir'];
-		break;
-	}
+	$provisioning_http_dir = $_SESSION['provisioning_http_dir '];
+	$provisioning_https_dir = $_SESSION['provisioning_https_dir '];
+	$provisioning_tftp_dir = $_SESSION['provisioning_tftp_dir'];
+	$provisioning_ftp_dir = $_SESSION['provisioning_ftp_dir'];
 
 //get the hardware phone list
 	$sql = "";
