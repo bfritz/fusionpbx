@@ -1,6 +1,6 @@
 <?php
 	//application details
-		$apps[$x]['name'] = 'DB Connections';
+		$apps[$x]['name'] = 'Databases';
 		$apps[$x]['uuid'] = '8D229B6D-1383-FCEC-74C6-4CE1682479E2';
 		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
@@ -10,24 +10,24 @@
 		$apps[$x]['description']['en'] = '';
 
 	//menu details
-		$apps[$x]['menu'][0]['title']['en'] = 'DB Connections';
+		$apps[$x]['menu'][0]['title']['en'] = 'Databases';
 		$apps[$x]['menu'][0]['uuid'] = 'EBBD754D-CA74-D5B1-A77E-9206BA3ECC3F';
 		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/mod/database_connections/v_database_connections.php';
+		$apps[$x]['menu'][0]['path'] = '/mod/database_connections/databases.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
-		$apps[$x]['permissions'][0]['name'] = 'database_connection_view';
+		$apps[$x]['permissions'][0]['name'] = 'database_view';
 		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 
-		$apps[$x]['permissions'][1]['name'] = 'database_connection_add';
+		$apps[$x]['permissions'][1]['name'] = 'database_add';
 		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
-		$apps[$x]['permissions'][2]['name'] = 'database_connection_edit';
+		$apps[$x]['permissions'][2]['name'] = 'database_edit';
 		$apps[$x]['permissions'][2]['groups'][] = 'superadmin';
 
-		$apps[$x]['permissions'][3]['name'] = 'database_connection_delete';
+		$apps[$x]['permissions'][3]['name'] = 'database_delete';
 		$apps[$x]['permissions'][3]['groups'][] = 'superadmin';
 
 	//schema details
