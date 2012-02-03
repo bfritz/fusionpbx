@@ -180,12 +180,7 @@ else {
 	if (permission_exists('exec_switch')) {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		if ($v_name == "freeswitch") {
-			echo "	Switch Command:\n";
-		}
-		else {
-			echo "	".ucfirst($v_name)." Command:\n";
-		}
+		echo "	Switch Command:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<textarea name='switch_cmd' id='switch_cmd' rows='2' class='txt' wrap='off'>$switch_cmd</textarea\n";

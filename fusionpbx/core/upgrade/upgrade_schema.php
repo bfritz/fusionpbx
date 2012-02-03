@@ -89,57 +89,12 @@
 		//get the values from database and set them as php variables
 			$domain_uuid = $row["domain_uuid"];
 			$v_domain = $row["domain_name"];
-			/*
-			$switch_account_code = $row["switch_account_code"];
-			$server_protocol = $row["server_protocol"];
-			$server_port = $row["server_port"];
-			$php_dir = $row["php_dir"];
-			$tmp_dir = $row["tmp_dir"];
-			$switch_bin_dir = $row["switch_bin_dir"];
-			$startup_script_dir = $row["startup_script_dir"];
-			$v_package_version = $row["v_package_version"];
-			$v_build_version = $row["v_build_version"];
-			$v_build_revision = $row["v_build_revision"];
-			$v_label = $row["v_label"];
-			$v_name = $row["v_name"];
-			$switch_base_dir = $row["switch_base_dir"];
-			$parent_dir = $row["parent_dir"];
-			$backup_dir = $row["backup_dir"];
-			$web_dir = $row["web_dir"];
-			$web_root = $row["web_root"];
-			$relative_url = $row["relative_url"];
-			$switch_conf_dir = $row["switch_conf_dir"];
-			$switch_db_dir = $row["switch_db_dir"];
-			$switch_htdocs_dir = $row["switch_htdocs_dir"];
-			$switch_log_dir = $row["switch_log_dir"];
-			$switch_extensions_dir = $row["switch_extensions_dir"];
-			$switch_gateways_dir = $row["switch_gateways_dir"];
-			$v_dialplan_public_dir = $row["v_dialplan_public_dir"];
-			$v_dialplan_default_dir = $row["v_dialplan_default_dir"];
-			$switch_mod_dir = $row["switch_mod_dir"];
-			$switch_scripts_dir = $row["switch_scripts_dir"];
-			$switch_grammar_dir = $row["switch_grammar_dir"];
-			$switch_storage_dir = $row["switch_storage_dir"];
-			$switch_voicemail_dir = $row["switch_voicemail_dir"];
-			$switch_recordings_dir = $row["switch_recordings_dir"];
-			$switch_sounds_dir = $row["switch_sounds_dir"];
-			$v_download_path = $row["v_download_path"];
-			$provisioning_tftp_dir = $row["provisioning_tftp_dir"];
-			$provisioning_ftp_dir = $row["provisioning_ftp_dir"];
-			$provisioning_https_dir = $row["provisioning_https_dir"];
-			$provisioning_http_dir = $row["provisioning_http_dir"];
-			$domain_template_name = $row["domain_template_name"];
-			$domain_time_zone = $row["domain_time_zone"];
-			$v_description = $row["v_description"];
-			*/
-
 		//show the domain when display_type is set to text
 			if ($display_type == "text") {
 				echo "\n";
 				echo $v_domain;
 				echo "\n";
 			}
-
 		//get the list of installed apps from the core and mod directories and execute the php code in v_defaults.php
 			$default_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_defaults.php");
 			foreach ($default_list as &$default_path) {

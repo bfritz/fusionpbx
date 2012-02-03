@@ -247,11 +247,6 @@ else {
 	}
 
 //set additional information
-	$v_package_version = '1.0.8';
-	$v_build_version = '1.0.6';
-	$v_build_revision = 'Release';
-	$v_label = 'FusionPBX';
-	$v_name = 'freeswitch';
 	$web_dir = $_SERVER["DOCUMENT_ROOT"];
 	$web_root = $_SERVER["DOCUMENT_ROOT"];
 	if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }

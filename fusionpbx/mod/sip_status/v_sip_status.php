@@ -50,12 +50,12 @@ if ($_GET['a'] == "download") {
 	}
 	if ($_GET['t'] == "backup") {
 		$tmp = $backup_dir.'/';
-		$filename = $v_name.'.bak.tgz';
+		$filename = 'backup.tgz';
 		if (!is_dir($backup_dir.'/')) {
 			exec("mkdir ".$backup_dir."/");
 		}
 		chdir($parent_dir);
-		shell_exec('tar cvzf '.$backup_dir.'/'.$v_name.'.bak.tgz '.$v_name);
+		shell_exec('tar cvzf '.$backup_dir.'/backup.tgz backup);
 	}
 	session_cache_limiter('public');
 	$fd = fopen($tmp.$filename, "rb");
