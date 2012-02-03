@@ -47,6 +47,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'software_name';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'softwarename';

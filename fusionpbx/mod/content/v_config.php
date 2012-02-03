@@ -46,6 +46,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'rss_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
@@ -173,6 +174,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'rss_sub_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
@@ -287,6 +289,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'rss_sub_category_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
