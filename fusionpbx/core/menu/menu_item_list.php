@@ -197,7 +197,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_menu_items ";
 	$sql .= "where menu_uuid = '".$menu_uuid."' ";
-	$sql .= "and (menu_item_parent_uuid is null or menu_item_parent_uuid = '') ";
+	$sql .= "and menu_item_parent_uuid is null ";
 	if (strlen($order_by)> 0) {
 		$sql .= "order by $order_by $order ";
 	}
