@@ -14,7 +14,7 @@
 		$apps[$x]['menu'][0]['uuid'] = '781EBBEC-A55A-9D60-F7BB-F54AB2EE4E7E';
 		$apps[$x]['menu'][0]['parent_uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/mod/log_viewer/v_log_viewer.php';
+		$apps[$x]['menu'][0]['path'] = '/mod/log_viewer/log_viewer.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
