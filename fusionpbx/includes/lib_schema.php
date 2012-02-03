@@ -48,7 +48,7 @@ function db_table_exists ($db, $db_type, $db_name, $table_name) {
 		$sql .= "SELECT * FROM sqlite_master WHERE type='table' and name='$table_name' ";
 	}
 	if ($db_type == "pgsql") {
-		$sql .= "select * from pg_tables where schemaname='public' and table_name = '$table_name' ";
+		$sql .= "select * from pg_tables where schemaname='public' and tablename = '$table_name' ";
 	}
 	if ($db_type == "mysql") {
 		$sql .= "SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = '$db_name' and TABLE_NAME = '$table_name' ";
@@ -291,7 +291,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 		foreach ($apps as $x => &$app) {
 			foreach ($app['db'] as $y => &$row) {
 				$table_name = $row['table'];
-				if (strlen(table_name) > 0) {
+				if (strlen($table_name) > 0) {
 					//check if the table exists
 						if (db_table_exists($db, $db_type, $db_name, $table_name)) {
 							$apps[$x]['db'][$y]['exists'] = 'true';
@@ -392,9 +392,9 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 										if ($db_field_type != $field_type) {
 											if ($db_type == "pgsql") {
 												if (strtolower($field_type) == "uuid") {
-														$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field_name." TYPE uuid USING\n";
-														$sql_update .= "CAST(regexp_replace(".$field_name.", '([A-Z0-9]{4})([A-Z0-9]{12})', E'\\1-\\2')\n";
-														$sql_update .= "AS uuid);\n";
+													$sql_update .= "ALTER TABLE ".$table_name." ALTER COLUMN ".$field_name." TYPE uuid USING\n";
+													$sql_update .= "CAST(regexp_replace(".$field_name.", '([A-Z0-9]{4})([A-Z0-9]{12})', E'\\1-\\2')\n";
+													$sql_update .= "AS uuid);\n";
 												}
 												else {
 													if ($db_field_type = "integer" && strtolower($field_type) == "serial") {
@@ -494,30 +494,35 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 										echo "<th>exists</th>\n";
 										echo "</tr>\n";
 										foreach ($row['fields'] as $field) {
-											if (is_array($field['name'])) {
-												$field_name = $field['name']['text'];
+											if ($field['deprecated'] == "true") {
+												//skip this field
 											}
 											else {
-												$field_name = $field['name'];
+												if (is_array($field['name'])) {
+													$field_name = $field['name']['text'];
+												}
+												else {
+													$field_name = $field['name'];
+												}
+												if (is_array($field['type'])) {
+													$field_type = $field['type'][$db_type];
+												}
+												else {
+													$field_type = $field['type'];
+												}
+												echo "<tr>\n";
+												echo "<td class='row_style1' width='200'>".$field_name."</td>\n";
+												echo "<td class='row_style1'>".$field_type."</td>\n";
+												if ($field['exists'] == "true") {
+													echo "<td class='row_style0' style=''>true</td>\n";
+													echo "<td>&nbsp;</td>\n";
+												}
+												else {
+													echo "<td class='row_style1' style='background-color:#444444;color:#CCCCCC;'>false</td>\n";
+													echo "<td>&nbsp;</td>\n";
+												}
+												echo "</tr>\n";
 											}
-											if (is_array($field['type'])) {
-												$field_type = $field['type'][$db_type];
-											}
-											else {
-												$field_type = $field['type'];
-											}
-											echo "<tr>\n";
-											echo "<td class='row_style1' width='200'>".$field_name."</td>\n";
-											echo "<td class='row_style1'>".$field_type."</td>\n";
-											if ($field['exists'] == "true") {
-												echo "<td class='row_style0' style=''>true</td>\n";
-												echo "<td>&nbsp;</td>\n";
-											}
-											else {
-												echo "<td class='row_style1' style='background-color:#444444;color:#CCCCCC;'>false</td>\n";
-												echo "<td>&nbsp;</td>\n";
-											}
-											echo "</tr>\n";
 										}
 										unset($column_array);
 										echo "	</table>\n";
