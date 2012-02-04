@@ -317,9 +317,10 @@ if ($db_type == "pgsql") {
 
 		//get the domain_uuid
 			$sql = "select * from v_domains ";
-			if ($num_rows > 1) {
+			if (strlen($_SERVER["HTTP_HOST"]) > 0 && $num_rows > 1) {
 				$sql .= "where domain_name = domain_array[0] ";
-				$sql .= "or domain_name = 'www.'.$domain_array[0]);";
+				$sql .= "or domain_name = 'www.'.$domain_array[0]) ";
+				$sql .= "limit 1 ";
 			}
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();

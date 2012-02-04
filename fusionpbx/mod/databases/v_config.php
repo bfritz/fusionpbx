@@ -14,7 +14,7 @@
 		$apps[$x]['menu'][0]['uuid'] = 'EBBD754D-CA74-D5B1-A77E-9206BA3ECC3F';
 		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/mod/database_connections/databases.php';
+		$apps[$x]['menu'][0]['path'] = '/mod/databases/databases.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details

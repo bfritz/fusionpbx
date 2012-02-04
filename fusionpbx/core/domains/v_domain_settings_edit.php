@@ -52,6 +52,8 @@ if (strlen($_GET["domain_uuid"]) > 0) {
 		$domain_setting_category = check_str($_POST["domain_setting_category"]);
 		$domain_setting_name = check_str($_POST["domain_setting_name"]);
 		$domain_setting_value = check_str($_POST["domain_setting_value"]);
+		$domain_setting_enabled = check_str($_POST["domain_setting_enabled"]);
+		$domain_setting_description = check_str($_POST["domain_setting_description"]);		
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -66,6 +68,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($domain_setting_category) == 0) { $msg .= "Please provide: Category<br>\n"; }
 		//if (strlen($domain_setting_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($domain_setting_value) == 0) { $msg .= "Please provide: Value<br>\n"; }
+		//if (strlen($domain_setting_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
+		//if (strlen($domain_setting_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -88,7 +92,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "domain_setting_uuid, ";
 				$sql .= "domain_setting_category, ";
 				$sql .= "domain_setting_name, ";
-				$sql .= "domain_setting_value ";
+				$sql .= "domain_setting_value, ";
+				$sql .= "domain_setting_enabled, ";
+				$sql .= "domain_setting_description ";	
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
@@ -96,7 +102,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'".uuid()."', ";
 				$sql .= "'$domain_setting_category', ";
 				$sql .= "'$domain_setting_name', ";
-				$sql .= "'$domain_setting_value' ";
+				$sql .= "'$domain_setting_value', ";
+				$sql .= "'$domain_setting_enabled', ";
+				$sql .= "'$domain_setting_description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -114,7 +122,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "update v_domain_settings set ";
 				$sql .= "domain_setting_category = '$domain_setting_category', ";
 				$sql .= "domain_setting_name = '$domain_setting_name', ";
-				$sql .= "domain_setting_value = '$domain_setting_value' ";
+				$sql .= "domain_setting_value = '$domain_setting_value', ";
+				$sql .= "domain_setting_enabled = '$domain_setting_enabled', ";
+				$sql .= "domain_setting_description = '$domain_setting_description' ";	
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and domain_setting_uuid = '$domain_setting_uuid'";
 				$db->exec(check_sql($sql));
@@ -145,6 +155,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$domain_setting_category = $row["domain_setting_category"];
 			$domain_setting_name = $row["domain_setting_name"];
 			$domain_setting_value = $row["domain_setting_value"];
+			$domain_setting_enabled = $row["domain_setting_enabled"];
+			$domain_setting_description = $row["domain_setting_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -156,7 +168,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "	  <br>";
@@ -285,6 +296,43 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "Enter the value.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    Enabled:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='var_enabled'>\n";
+	echo "    <option value=''></option>\n";
+	if ($var_enabled == "true") { 
+		echo "    <option value='true' SELECTED >true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($var_enabled == "false") { 
+		echo "    <option value='false' SELECTED >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "Choose to enable or disable the value.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	Description:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='domain_setting_description' maxlength='255' value=\"$domain_setting_description\">\n";
+	echo "<br />\n";
+	echo "Enter the description.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	echo "				<input type='hidden' name='domain_uuid' value='$domain_uuid'>\n";

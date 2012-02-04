@@ -110,5 +110,12 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_value';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the value.';
-
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_enabled';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_description';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 ?>
