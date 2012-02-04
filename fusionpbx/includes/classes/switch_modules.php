@@ -100,6 +100,15 @@ echo $mod->switch_mod_dir."\n";
 						$mod['module_label'] = 'CDR CSV';
 						$mod['module_category'] = 'Event Handlers';
 						$mod['module_desc'] = 'CSV call detail record handler.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
+					case "mod_cluechoo":
+						$mod['module_label'] = 'Cluechoo';
+						$mod['module_category'] = 'Applications';
+						$mod['module_desc'] = 'A framework demo module.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_commands":
 						$mod['module_label'] = 'Commands';
@@ -168,6 +177,13 @@ echo $mod->switch_mod_dir."\n";
 						$mod['module_label'] = 'FIFO';
 						$mod['module_category'] = 'Applications';
 						$mod['module_desc'] = 'FIFO provides custom call queues including call park.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_flite":
+						$mod['module_label'] = 'Flite';
+						$mod['module_category'] = 'Speech Recognition / Text to Speech';
+						$mod['module_desc'] = 'Text to Speech engine.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
@@ -343,8 +359,8 @@ echo $mod->switch_mod_dir."\n";
 						$mod['module_label'] = 'SpiderMonkey';
 						$mod['module_category'] = 'Languages';
 						$mod['module_desc'] = 'JavaScript support.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_tone_stream":
 						$mod['module_label'] = 'Tone Stream';
@@ -352,6 +368,13 @@ echo $mod->switch_mod_dir."\n";
 						$mod['module_desc'] = 'Generate tone streams.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_unimrcp":
+						$mod['module_label'] = 'MRCP';
+						$mod['module_category'] = 'Speech Recognition / Text to Speech';
+						$mod['module_desc'] = 'Media Resource Control Protocol.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_valet_parking":
 						$mod['module_label'] = 'Valet Parking';
@@ -405,6 +428,8 @@ echo $mod->switch_mod_dir."\n";
 						$mod['module_label'] = 'CDR SQLite';
 						$mod['module_category'] = 'Event Handlers';
 						$mod['module_desc'] = 'SQLite call detail record handler.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_park":
 						$mod['module_label'] = 'Park';
@@ -431,27 +456,29 @@ echo $mod->switch_mod_dir."\n";
 						$mod['module_label'] = 'Dialplan Asterisk';
 						$mod['module_category'] = 'Dialplan Interfaces';
 						$mod['module_desc'] = 'Allows Asterisk dialplans.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_spidermonkey_socket":
 						$mod['module_label'] = 'SpiderMonkey Socket';
 						$mod['module_category'] = 'Languages';
 						$mod['module_desc'] = 'Javascript socket support.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_nibblebill":
 						$mod['module_label'] = 'Nibblebill';
 						$mod['module_category'] = 'Applications';
 						$mod['module_desc'] = 'Billing module.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_spidermonkey_core_db":
 						$mod['module_label'] = 'SpiderMonkey Core DB';
 						$mod['module_category'] = 'Languages';
 						$mod['module_desc'] = 'Javascript support for SQLite.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_curl":
 						$mod['module_label'] = 'CURL';
@@ -478,15 +505,15 @@ echo $mod->switch_mod_dir."\n";
 						$mod['module_label'] = 'SpiderMonkey Teletone';
 						$mod['module_category'] = 'Languages';
 						$mod['module_desc'] = 'Javascript teletone support.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_spidermonkey_curl":
 						$mod['module_label'] = 'SpiderMonkey Curl';
 						$mod['module_category'] = 'Languages';
 						$mod['module_desc'] = 'Javascript curl support.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;			
 					case "mod_ladspa":
 						$mod['module_label'] = 'Ladspa';
@@ -499,13 +526,6 @@ echo $mod->switch_mod_dir."\n";
 						$mod['module_label'] = 'LCR';
 						$mod['module_category'] = 'Applications';
 						$mod['module_desc'] = 'Least cost routing.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_cluechoo":
-						$mod['module_label'] = 'Cluechoo';
-						$mod['module_category'] = 'Applications';
-						$mod['module_desc'] = 'A framework demo module.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
