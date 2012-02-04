@@ -97,7 +97,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the name.';
 		$z++;
-
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_setting_value';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the value.';

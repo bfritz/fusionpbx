@@ -119,7 +119,24 @@ require_once "includes/paging.php";
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_category']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_value']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
+			switch ($row['domain_setting_name']) {
+				case "domain_menu_uuid":
+					$sql = "";
+					$sql .= "select * from v_menus ";
+					$sql .= "where menu_uuid = '".$row['domain_setting_value']."' ";
+					$sub_prep_statement = $db->prepare(check_sql($sql));
+					$sub_prep_statement->execute();
+					$sub_result = $sub_prep_statement->fetchAll();
+					foreach ($sub_result as &$sub_row) {
+						echo $sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
+					}
+					break;
+				default:
+				   echo 		$row['domain_setting_value'];
+			}	
+			echo "		&nbsp;\n";
+			echo "	</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='v_domain_settings_edit.php?domain_uuid=".$row['domain_uuid']."&id=".$row['domain_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			echo "		<a href='v_domain_settings_delete.php?domain_uuid=".$row['domain_uuid']."&id=".$row['domain_setting_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";

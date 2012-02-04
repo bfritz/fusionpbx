@@ -62,7 +62,6 @@ require_once "includes/paging.php";
 	//prepare to page the results
 		$sql = "";
 		$sql .= " select count(*) as num_rows from v_domains ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
@@ -87,7 +86,6 @@ require_once "includes/paging.php";
 	//get the  list
 		$sql = "";
 		$sql .= " select * from v_domains ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));

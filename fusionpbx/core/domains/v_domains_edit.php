@@ -83,7 +83,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
+				$sql .= "'".uuid()."', ";
 				$sql .= "'$domain_name', ";
 				$sql .= "'$domain_description' ";
 				$sql .= ")";
