@@ -330,54 +330,12 @@ if ($db_type == "pgsql") {
 				$_SESSION["v_domain"] = $row['domain_name'];
 			}
 			unset($result, $prep_statement);
-
-		//get the domains variables
-			$sql = "select * from v_domain_settings ";
-			$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
-			$prep_statement = $db->prepare($sql);
-			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
-			foreach($result as $row) {
-				$name = $row['domain_setting_name'];
-				$_SESSION[$name] = $row['domain_setting_value'];
-			}
-
-		//get the server variables
-			$sql = "select * from v_server_settings ";
-			$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
-			$prep_statement = $db->prepare($sql);
-			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
-			foreach($result as $row) {
-				$name = $row['server_setting_name'];
-				$_SESSION[$name] = $row['server_setting_value'];
-			}
-	
-		//set the values from the session variables
-			$_SESSION["v_domain"] = $_SESSION["domain_name"];
-			$_SESSION["template_name"] = $_SESSION["domain_template_name"];
-			//$_SESSION["domain_template_name"] = $row["domain_template_name"];
-			//$_SESSION["domain_menu_uuid"] = $row['domain_menu_uuid'];
-			//$_SESSION["domain_time_zone"] = $row['domain_time_zone'];	
-			if ($num_rows > 1) {
-				$_SESSION['domains'][$_SESSION['domain_uuid']]['domain_uuid'] = $_SESSION['domain_uuid'];
-				$_SESSION['domains'][$_SESSION['domain_uuid']]['domain'] = $_SESSION['domain_name'];
-				$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain_template_name'];
-			}
-			$_SESSION["template_name"] = $_SESSION["domain_template_name"];
-			if (strlen($_SESSION["domain_time_zone"]) > 0) {
-				//server time zone
-					$_SESSION["time_zone"]["system"] = date_default_timezone_get();
-				//domain time zone set in system settings
-					$_SESSION["time_zone"]["domain"] = $_SESSION['domain_time_zone'];
-				//set the domain time zone as the default time zone
-					date_default_timezone_set($_SESSION["domain_time_zone"]);
-			}
 	}
 
 //get the domains variables
 	$sql = "select * from v_domain_settings ";
 	$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+	$sql .= "and domain_setting_enabled = 'true' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -390,6 +348,7 @@ if ($db_type == "pgsql") {
 //get the server variables
 	$sql = "select * from v_server_settings ";
 	$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+//	$sql .= "and server_setting_enabled = 'true' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -397,6 +356,27 @@ if ($db_type == "pgsql") {
 		$name = $row['server_setting_name'];
 		$_SESSION[$name] = $row['server_setting_value'];
 		$$name = $row['server_setting_value'];
+	}
+
+//set the values from the session variables
+	$_SESSION["v_domain"] = $_SESSION["domain_name"];
+	$_SESSION["template_name"] = $_SESSION["domain_template_name"];
+	//$_SESSION["domain_template_name"] = $row["domain_template_name"];
+	//$_SESSION["domain_menu_uuid"] = $row['domain_menu_uuid'];
+	//$_SESSION["domain_time_zone"] = $row['domain_time_zone'];	
+	if ($num_rows > 1) {
+		$_SESSION['domains'][$_SESSION['domain_uuid']]['domain_uuid'] = $_SESSION['domain_uuid'];
+		$_SESSION['domains'][$_SESSION['domain_uuid']]['domain'] = $_SESSION['domain_name'];
+		$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain_template_name'];
+	}
+	$_SESSION["template_name"] = $_SESSION["domain_template_name"];
+	if (strlen($_SESSION["domain_time_zone"]) > 0) {
+		//server time zone
+			$_SESSION["time_zone"]["system"] = date_default_timezone_get();
+		//domain time zone set in system settings
+			$_SESSION["time_zone"]["domain"] = $_SESSION['domain_time_zone'];
+		//set the domain time zone as the default time zone
+			date_default_timezone_set($_SESSION["domain_time_zone"]);
 	}
 
 //set the context

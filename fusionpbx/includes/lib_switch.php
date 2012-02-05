@@ -2136,19 +2136,13 @@ function sync_package_v_vars() {
 
 	$sql = "";
 	$sql .= "select * from v_vars ";
+	$sql .= "where var_enabled = 'true' ";
 	$sql .= "order by var_cat, var_order asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$prev_var_cat = '';
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
-		//$var_name = $row["var_name"];
-		//$var_value = $row["var_value"];
-		//$var_cat = $row["var_cat"];
-		//$var_order = $row["var_order"];
-		//$var_enabled = $row["var_enabled"];
-		//$var_desc = $row["var_desc"];
-
 		if ($row['var_cat'] != 'Provision') {
 			if ($prev_var_cat != $row['var_cat']) {
 				$xml .= "\n<!-- ".$row['var_cat']." -->\n";
@@ -2156,9 +2150,8 @@ function sync_package_v_vars() {
 					$xml .= "<!-- ".base64_decode($row['var_desc'])." -->\n";
 				}
 			}
-			if ($row['var_enabled'] == "true"){	$xml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row['var_name']."=".$row['var_value']."\"/>\n"; }
+			$xml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row['var_name']."=".$row['var_value']."\"/>\n";
 		}
-
 		$prev_var_cat = $row['var_cat'];
 	}
 	$xml .= "\n"; 
