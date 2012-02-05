@@ -95,24 +95,30 @@ function v_settings() {
 	
 	//get the domains variables
 		$sql = "select * from v_domain_settings ";
-		$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+		$sql .= "where domain_uuid = '".$domain_uuid."' ";
+		$sql .= "and domain_setting_enabled = 'true' ";
 		$prep_statement = $db->prepare($sql);
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
-		foreach($result as $row) {
-			$name = $row['domain_setting_name'];
-			$settings_array[$name] = $row['domain_setting_value'];
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			foreach($result as $row) {
+				$name = $row['domain_setting_name'];
+				$settings_array[$name] = $row['domain_setting_value'];
+			}
 		}
 
 	//get the server variables
 		$sql = "select * from v_server_settings ";
-		$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+		$sql .= "where domain_uuid = '".$domain_uuid."' ";
+		$sql .= "and domain_setting_enabled = 'true' ";
 		$prep_statement = $db->prepare($sql);
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
-		foreach($result as $row) {
-			$name = $row['server_setting_name'];
-			$settings_array[$name] = $row['server_setting_value'];
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			foreach($result as $row) {
+				$name = $row['server_setting_name'];
+				$settings_array[$name] = $row['server_setting_value'];
+			}
 		}
 
 	//return the results
@@ -2155,7 +2161,6 @@ function sync_package_v_vars() {
 		$prev_var_cat = $row['var_cat'];
 	}
 	$xml .= "\n"; 
-
 	fwrite($fout, $xml);
 	unset($xml);
 	fclose($fout);

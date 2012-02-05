@@ -33,8 +33,28 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+
+//change the tenant
+	if (strlen($_GET["domain_uuid"]) > 0 && $_GET["domain_change"] == "true") {
+		//update the v_id and session variables
+			$domain_uuid = $_GET["domain_uuid"];
+			$_SESSION['domain_uuid'] = $_SESSION['domains'][$domain_uuid]['domain_uuid'];
+			$_SESSION["v_domain"] = $_SESSION['domains'][$domain_uuid]['domain'];
+			$_SESSION["v_template_name"] = $_SESSION['domains'][$domain_uuid]['template_name'];
+		//clear the menu session so that it is regenerated for the current tenant
+			$_SESSION["menu"] = '';
+		//set the context
+			if (count($_SESSION["domains"]) > 1) {
+				$_SESSION["context"] = $_SESSION["v_domain"];
+			}
+			else {
+				$_SESSION["context"] = 'default';
+			}
+	}
+
+//includes
+	require_once "includes/header.php";
+	require_once "includes/paging.php";
 
 //get variables used to control the order
 	$order_by = $_GET["order_by"];

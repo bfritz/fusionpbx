@@ -317,17 +317,22 @@ if ($db_type == "pgsql") {
 
 		//get the domain_uuid
 			$sql = "select * from v_domains ";
-			if (strlen($_SERVER["HTTP_HOST"]) > 0 && $num_rows > 1) {
-				$sql .= "where domain_name = domain_array[0] ";
-				$sql .= "or domain_name = 'www.'.$domain_array[0]) ";
-				$sql .= "limit 1 ";
-			}
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll();
 			foreach($result as $row) {
-				$_SESSION["domain_uuid"] = $row["domain_uuid"];
-				$_SESSION["v_domain"] = $row['domain_name'];
+				if (count($result) == 0) {
+					$_SESSION["domain_uuid"] = $row["domain_uuid"];
+					$_SESSION["v_domain"] = $row['domain_name'];
+				}
+				else {
+					if ($row['domain_name'] == $domain_array[0] || $row['domain_name'] == 'www.'.$domain_array[0]) {
+						$_SESSION["domain_uuid"] = $row["domain_uuid"];
+						$_SESSION["v_domain"] = $row['domain_name'];
+					}
+					$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
+					$_SESSION['domains'][$row['domain_uuid']]['domain'] = $row['domain_name'];
+				}
 			}
 			unset($result, $prep_statement);
 	}
@@ -361,14 +366,10 @@ if ($db_type == "pgsql") {
 //set the values from the session variables
 	$_SESSION["v_domain"] = $_SESSION["domain_name"];
 	$_SESSION["template_name"] = $_SESSION["domain_template_name"];
+	$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain_template_name'];
 	//$_SESSION["domain_template_name"] = $row["domain_template_name"];
 	//$_SESSION["domain_menu_uuid"] = $row['domain_menu_uuid'];
 	//$_SESSION["domain_time_zone"] = $row['domain_time_zone'];	
-	if ($num_rows > 1) {
-		$_SESSION['domains'][$_SESSION['domain_uuid']]['domain_uuid'] = $_SESSION['domain_uuid'];
-		$_SESSION['domains'][$_SESSION['domain_uuid']]['domain'] = $_SESSION['domain_name'];
-		$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain_template_name'];
-	}
 	$_SESSION["template_name"] = $_SESSION["domain_template_name"];
 	if (strlen($_SESSION["domain_time_zone"]) > 0) {
 		//server time zone

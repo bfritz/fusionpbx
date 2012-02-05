@@ -121,13 +121,13 @@ include "root.php";
 						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 							$file_default_contents = str_replace("{v_domain}", 'default', $file_default_contents);
 						//set the file path
-							$file_path = $switch_dialplan_dir.'/dialplan/default.xml';
+							$file_path = $switch_dialplan_dir.'/default.xml';
 					}
 					else {
 						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 							$file_default_contents = str_replace("{v_domain}", $v_domain, $file_default_contents);
 						//set the file path
-							$file_path = $switch_dialplan_dir.'/dialplan/'.$v_domain.'.xml';
+							$file_path = $switch_dialplan_dir.'/'.$v_domain.'.xml';
 					}
 				//write the default dialplan
 					$fh = fopen($file_path,'w') or die('Unable to write to '.$file_path.'. Make sure the path exists and permissons are set correctly.');
@@ -136,6 +136,6 @@ include "root.php";
 				//set the message
 					$this->result['dialplan']['restore']['msg'] = "Default Restored";
 			}
-		} //class
+		}
 	}
 ?>
