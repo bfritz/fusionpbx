@@ -191,7 +191,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -202,7 +202,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -302,16 +302,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='var_enabled'>\n";
+	echo "    <select class='formfld' name='domain_setting_enabled'>\n";
 	echo "    <option value=''></option>\n";
-	if ($var_enabled == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+	if ($domain_setting_enabled == "true") { 
+		echo "    <option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($var_enabled == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+	if ($domain_setting_enabled == "false") { 
+		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";
