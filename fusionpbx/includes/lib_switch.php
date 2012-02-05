@@ -4274,20 +4274,9 @@ function sync_package_v_dialplan() {
 
 	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
 		$v_needle = 'v_dialplan_';
-		if($dh = opendir($v_dialplan_default_dir."/")) {
-			$files = Array();
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($dir . "/" . $file)) {
-						//this is a directory
-					} else {
-						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-							unlink($v_dialplan_default_dir."/".$file); //remove before final release
-						}
-					}
-				}
-			}
-			closedir($dh);
+		$dialplan_list = glob($switch_dialplan_dir . "/*/*v_dialplan*.xml");
+		foreach($dialplan_list as $name => $value) {
+			unlink($value);
 		}
 
 	$sql = "";
@@ -4553,7 +4542,7 @@ function sync_package_v_dialplan() {
 		$extension_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension_name);
 
 		$dialplan_filename = $dialplan_order."_v_dialplan_".$extension_name.".xml";
-		$fout = fopen($v_dialplan_default_dir."/".$dialplan_filename,"w");
+		$fout = fopen($v_dialplan_default_dir."/".$row['context']."/".$dialplan_filename,"w");
 		fwrite($fout, $tmp);
 		fclose($fout);
 
@@ -5811,7 +5800,6 @@ if (!function_exists('sync_package_freeswitch')) {
 	function sync_package_freeswitch() {
 		global $config;
 		sync_package_v_settings();
-//		sync_package_v_dialplan();
 //		sync_package_v_dialplan();
 //		sync_package_v_extensions();
 //		sync_package_v_gateways();
