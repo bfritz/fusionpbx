@@ -1212,17 +1212,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$menu->restore();
 		unset($menu);
 
-	//rename the default config files that are not needed
-		for ($i=1000; $i<1020; $i++) {
-			$file = $switch_extensions_dir.'/'.$i; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
-		}
-		$file = $switch_extensions_dir.'/brian'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
-		$file = $switch_extensions_dir.'/example.com'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
-		$file = $switch_dialplan_dir.'/99999_enum'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
-		$file = $switch_dialplan_dir.'/01_example.com'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
-		$file = $v_dialplan_public_dir.'/00_inbound_did'; if (file_exists($file.'.xml')) { rename($file.'.xml', $file.'.noload'); }
-		unset($file);
-
 	//create the necessary directories
 		if (!is_dir($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
 		if (!is_dir($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
@@ -1253,7 +1242,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$dialplan = new dialplan;
 		$dialplan->domain_uuid = $_SESSION["domain_uuid"];
 		$dialplan->v_domain = $domain;
-		$dialplan->switch_conf_dir = $switch_conf_dir;
+		$dialplan->switch_dialplan_dir = $switch_dialplan_dir;
 		$dialplan->restore_advanced_xml();
 		//print_r($dialplan->result);
 

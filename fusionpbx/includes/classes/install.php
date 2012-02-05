@@ -107,14 +107,14 @@ include "root.php";
 				}
 			//copy includes/templates/conf to the freeswitch/conf dir
 				$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf";
-				$dst_dir = $this->switch_conf_dir;
+				$dst_dir = $this->switch_dialplan_dir;
 				$this->recursive_copy($src_dir, $dst_dir);
 			//create the dialplan/default.xml for single tenant or dialplan/domain.xml
 				require_once "includes/classes/dialplan.php";
 				$dialplan = new dialplan;
 				$dialplan->domain_uuid = $this->domain_uuid;
 				$dialplan->v_domain = $this->v_domain;
-				$dialplan->switch_conf_dir = $this->switch_conf_dir;
+				$dialplan->switch_dialplan_dir = $this->switch_dialplan_dir;
 				$dialplan->restore_advanced_xml();
 		}
 
