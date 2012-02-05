@@ -4283,6 +4283,10 @@ function sync_package_v_dialplan() {
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
+		$dialplan_list = glob($switch_dialplan_dir . "/*/*_v_*.xml");
+		foreach($dialplan_list as $name => $value) {
+			unlink($value);
+		}
 
 	$sql = "";
 	$sql .= "select * from v_dialplans ";
@@ -4554,176 +4558,6 @@ function sync_package_v_dialplan() {
 		unset($dialplan_filename);
 		unset($tmp);
 	} //end while
-
-	//apply settings reminder
-		$_SESSION["reload_xml"] = true;
-}
-
-
-function sync_package_v_public() {
-	global $config;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
-
-	global $db, $domain_uuid;
-
-	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
-		$v_needle = '_v_';
-		if($dh = opendir($v_dialplan_public_dir."/")) {
-			$files = Array();
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($dir . "/" . $file)) {
-						//this is a directory
-					} else {
-						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-							unlink($v_dialplan_public_dir."/".$file);
-						}
-					}
-				}
-			}
-			closedir($dh);
-		}
-
-	//loop through all the public includes aka inbound routes
-		$sql = "";
-		$sql .= "select * from v_public ";
-		$sql .= "where domain_uuid = $domain_uuid ";
-		$sql .= "and enabled = 'true' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-		foreach ($result as &$row) {
-			$extension_continue = '';
-			if ($row['extension_continue'] == "true") {
-				$extension_continue = "continue=\"true\"";
-			}
-
-			$tmp = "";
-			$tmp .= "\n";
-			$tmp = "<extension name=\"".$row['extension_name']."\" $extension_continue>\n";
-
-			$sql = "";
-			$sql .= " select * from v_public_details ";
-			$sql .= " where public_uuid = '".$row['public_uuid']."' ";
-			$sql .= " and tag = 'condition' ";
-			$sql .= " order by field_order asc";
-			$prep_statement_2 = $db->prepare($sql);
-			$prep_statement_2->execute();
-			$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
-			$result_count2 = count($result2);
-			unset ($prep_statement_2, $sql);
-			$i=1;
-			if ($result_count2 == 0) {
-				//no results
-			}
-			else { //received results
-				foreach($result2 as $ent) {
-					if ($result_count2 == 1) { //single condition
-						//start tag
-						$tmp .= "   <condition field=\"".$ent['field_type']."\" expression=\"".$ent['field_data']."\">\n";
-					}
-					else { //more than one condition
-						if ($i < $result_count2) {
-							  //all tags should be self-closing except the last one
-							  $tmp .= "   <condition field=\"".$ent['field_type']."\" expression=\"".$ent['field_data']."\"/>\n";
-						}
-						else {
-							//for the last tag use the start tag
-							  $tmp .= "   <condition field=\"".$ent['field_type']."\" expression=\"".$ent['field_data']."\">\n";
-						}
-					}
-					$i++;
-				} //end foreach
-				$conditioncount = $result_count2;
-				unset($sql, $result_count2, $result2);
-			} //end if results
-
-			$sql = "";
-			$sql .= " select * from v_public_details ";
-			$sql .= " where public_uuid = '".$row['public_uuid']."' ";
-			$sql .= " and tag = 'action' ";
-			$sql .= " order by field_order asc";
-			$prep_statement_2 = $db->prepare($sql);
-			$prep_statement_2->execute();
-			$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
-			$result_count2 = count($result2);
-			unset ($prep_statement_2, $sql);
-			if ($result_count2 == 0) { //no results
-			}
-			else { //received results
-				$i = 0;
-				foreach($result2 as $ent) {
-					if ($ent['tag'] == "action" && $row['public_uuid'] == $ent['public_uuid']) {
-						if (strlen($ent['field_data']) > 0) {
-							$tmp .= "       <action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\"/>\n";
-						}
-						else {
-							$tmp .= "       <action application=\"".$ent['field_type']."\"/>\n";
-						}
-					}
-					$i++;
-				} //end foreach
-				unset($sql, $result_count2, $result2);
-			} //end if results
-
-			$sql = "";
-			$sql .= " select * from v_public_details ";
-			$sql .= " where public_uuid = '".$row['public_uuid']."' ";
-			$sql .= " and tag = 'anti-action' ";
-			$sql .= " order by field_order asc";
-			$prep_statement_2 = $db->prepare($sql);
-			$prep_statement_2->execute();
-			$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
-			$result_count2 = count($result2);
-			unset ($prep_statement_2, $sql);
-			if ($result_count2 == 0) { //no results
-			}
-			else { //received results
-				$i = 0;
-				foreach($result2 as $ent) {
-					if ($ent['tag'] == "anti-action" && $row['public_uuid'] == $ent['public_uuid']) {
-						if (strlen($ent['field_data']) > 0) {
-							$tmp .= "       <anti-action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\"/>\n";
-						}
-						else {
-							$tmp .= "       <anti-action application=\"".$ent['field_type']."\"/>\n";
-						}
-					}
-					$i++;
-				} //end foreach
-				unset($sql, $result_count2, $result2, $row_count2);
-			} //end if results
-
-			if ($conditioncount > 0) {
-				$tmp .= "   </condition>\n";
-			}
-			unset ($conditioncount);
-			$tmp .= "</extension>\n";
-
-			$public_order = $row['public_order'];
-			if (strlen($public_order) == 0) { $public_order = "000".$public_order; }
-			if (strlen($public_order) == 1) { $public_order = "00".$public_order; }
-			if (strlen($public_order) == 2) { $public_order = "0".$public_order; }
-			if (strlen($public_order) == 4) { $public_order = "999"; }
-			if (strlen($public_order) == 5) { $public_order = "999"; }
-
-			//remove invalid characters from the file names
-			$extension_name = $row['extension_name'];
-			$extension_name = str_replace(" ", "_", $extension_name);
-			$extension_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension_name);
-
-			$public_include_filename = $public_order."_v_".$extension_name.".xml";
-			$fout = fopen($v_dialplan_public_dir."/".$public_include_filename,"w");
-			fwrite($fout, $tmp);
-			fclose($fout);
-
-			unset($public_include_filename);
-			unset($tmp);
-	} //end while
-	unset ($prep_statement);
 
 	//apply settings reminder
 		$_SESSION["reload_xml"] = true;
@@ -5809,8 +5643,6 @@ if (!function_exists('sync_package_freeswitch')) {
 //		sync_package_v_extensions();
 //		sync_package_v_gateways();
 //		sync_package_v_modules();
-//		sync_package_v_public();
-//		sync_package_v_public();
 //		sync_package_v_vars();
 //		//sync_package_v_recordings();
 //		sync_package_v_hunt_group();
