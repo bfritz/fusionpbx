@@ -44,6 +44,7 @@ require_once "includes/paging.php";
 //get the http post values and set them as php variables
 	if (count($_POST)>0) {
 		$extension_name = check_str($_POST["extension_name"]);
+		$limit = check_str($_POST["limit"]);
 		$public_order = check_str($_POST["public_order"]);
 		$condition_field_1 = check_str($_POST["condition_field_1"]);
 		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
@@ -93,6 +94,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($condition_field_1) == 0) { $msg .= "Please provide: Condition Field<br>\n"; }
 		if (strlen($condition_expression_1) == 0) { $msg .= "Please provide: Condition Expression<br>\n"; }
 		if (strlen($action_application_1) == 0) { $msg .= "Please provide: Action Application<br>\n"; }
+		//if (strlen($limit) == 0) { $msg .= "Please provide: Limit<br>\n"; }
 		//if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
 		//if (strlen($description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -115,12 +117,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//start the atomic transaction
 		$count = $db->exec("BEGIN;"); //returns affected rows
 
-	//add the main public include entry
-		$sql = "insert into v_public ";
+	//add the main dialplan entry
+		$dialplan_uuid = uuid();
+		$sql = "insert into v_dialplans ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
+		$sql .= "dialplan_uuid, ";
 		$sql .= "extension_name, ";
-		$sql .= "public_order, ";
+		$sql .= "dialplan_order	, ";
 		$sql .= "context, ";
 		$sql .= "enabled, ";
 		$sql .= "descr ";
@@ -128,33 +132,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
+		$sql .= "'$dialplan_uuid', ";
 		$sql .= "'$extension_name', ";
 		$sql .= "'$public_order', ";
-		$sql .= "'default', ";
+		$sql .= "'public', ";
 		$sql .= "'$enabled', ";
 		$sql .= "'$description' ";
 		$sql .= ")";
-		if ($db_type == "sqlite" || $db_type == "mysql" ) {
-			$db->exec(check_sql($sql));
-			$public_uuid = $db->lastInsertId($id);
-		}
-		if ($db_type == "pgsql") {
-			$sql .= " RETURNING public_uuid ";
-			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
-			foreach ($result as &$row) {
-				$public_uuid = $row["public_uuid"];
-			}
-			unset($prep_statement, $result);
-		}
+		$db->exec(check_sql($sql));
 		unset($sql);
 
 	//add condition public context
-		$sql = "insert into v_public_details ";
+		$dialplan_detail_uuid = uuid();
+		$sql = "insert into v_dialplan_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "public_uuid, ";
+		$sql .= "dialplan_uuid, ";
+		$sql .= "dialplan_detail_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -163,7 +157,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$public_uuid', ";
+		$sql .= "'$dialplan_uuid', ";
+		$sql .= "'$dialplan_detail_uuid', ";
 		$sql .= "'condition', ";
 		$sql .= "'context', ";
 		$sql .= "'public', ";
@@ -173,10 +168,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset($sql);
 
 	//add condition 1
-		$sql = "insert into v_public_details ";
+		$dialplan_detail_uuid = uuid();
+		$sql = "insert into v_dialplan_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "public_uuid, ";
+		$sql .= "dialplan_uuid, ";
+		$sql .= "dialplan_detail_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -185,7 +182,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$public_uuid', ";
+		$sql .= "'$dialplan_uuid', ";
+		$sql .= "'$dialplan_detail_uuid', ";
 		$sql .= "'condition', ";
 		$sql .= "'$condition_field_1', ";
 		$sql .= "'$condition_expression_1', ";
@@ -196,10 +194,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add condition 2
 		if (strlen($condition_field_2) > 0) {
-			$sql = "insert into v_public_details ";
+			$dialplan_detail_uuid = uuid();
+			$sql = "insert into v_dialplan_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_uuid, ";
+			$sql .= "dialplan_uuid, ";
+			$sql .= "dialplan_detail_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -208,7 +208,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_uuid', ";
+			$sql .= "'$dialplan_uuid', ";
+			$sql .= "'$dialplan_detail_uuid', ";
 			$sql .= "'condition', ";
 			$sql .= "'$condition_field_2', ";
 			$sql .= "'$condition_expression_2', ";
@@ -220,10 +221,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//set domain
 		if (count($_SESSION["domains"]) > 1) {
-			$sql = "insert into v_public_details ";
+			$dialplan_detail_uuid = uuid();
+			$sql = "insert into v_dialplan_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_uuid, ";
+			$sql .= "dialplan_uuid, ";
+			$sql .= "dialplan_detail_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -232,7 +235,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_uuid', ";
+			$sql .= "'$dialplan_uuid', ";
+			$sql .= "'$dialplan_detail_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
 			$sql .= "'domain=".$v_domain."', ";
@@ -244,10 +248,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//set domain_name
 		if (count($_SESSION["domains"]) > 1) {
-			$sql = "insert into v_public_details ";
+			$dialplan_detail_uuid = uuid();
+			$sql = "insert into v_dialplan_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_uuid, ";
+			$sql .= "dialplan_uuid, ";
+			$sql .= "dialplan_detail_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -256,7 +262,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_uuid', ";
+			$sql .= "'$dialplan_uuid', ";
+			$sql .= "'$dialplan_detail_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
 			$sql .= "'domain_name=\${domain}', ";
@@ -268,10 +275,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//set call_direction
 		if (count($_SESSION["domains"]) > 1) {
-			$sql = "insert into v_public_details ";
+			$dialplan_detail_uuid = uuid();
+			$sql = "insert into v_dialplan_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_uuid, ";
+			$sql .= "dialplan_uuid, ";
+			$sql .= "dialplan_detail_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -280,11 +289,39 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_uuid', ";
+			$sql .= "'$dialplan_uuid', ";
+			$sql .= "'$dialplan_detail_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
 			$sql .= "'call_direction=inbound', ";
-			$sql .= "'50' ";
+			$sql .= "'60' ";
+			$sql .= ")";
+			$db->exec(check_sql($sql));
+			unset($sql);
+		}
+
+	//set limit
+		if (strlen($limit) > 0) {
+			$dialplan_detail_uuid = uuid();
+			$sql = "insert into v_dialplan_details ";
+			$sql .= "(";
+			$sql .= "domain_uuid, ";
+			$sql .= "dialplan_uuid, ";
+			$sql .= "dialplan_detail_uuid, ";
+			$sql .= "tag, ";
+			$sql .= "field_type, ";
+			$sql .= "field_data, ";
+			$sql .= "field_order ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$domain_uuid', ";
+			$sql .= "'$dialplan_uuid', ";
+			$sql .= "'$dialplan_detail_uuid', ";
+			$sql .= "'action', ";
+			$sql .= "'limit', ";
+			$sql .= "'db \${domain} inbound ".$limit." !USER_BUSY', ";
+			$sql .= "'70' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -297,10 +334,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action_application_1 == "conference") { $tmp_app = true; }
 		if ($action_application_2 == "conference") { $tmp_app = true; }
 		if ($tmp_app) {
-			$sql = "insert into v_public_details ";
+			$dialplan_detail_uuid = uuid();
+			$sql = "insert into v_dialplan_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_uuid, ";
+			$sql .= "dialplan_uuid, ";
+			$sql .= "dialplan_detail_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -309,11 +348,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_uuid', ";
+			$sql .= "'$dialplan_uuid', ";
+			$sql .= "'$dialplan_detail_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'answer', ";
 			$sql .= "'', ";
-			$sql .= "'60' ";
+			$sql .= "'80' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -321,10 +361,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset($tmp_app);
 
 	//add action 1
-		$sql = "insert into v_public_details ";
+		$dialplan_detail_uuid = uuid();
+		$sql = "insert into v_dialplan_details ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "public_uuid, ";
+		$sql .= "dialplan_uuid, ";
+		$sql .= "dialplan_detail_uuid, ";
 		$sql .= "tag, ";
 		$sql .= "field_type, ";
 		$sql .= "field_data, ";
@@ -333,21 +375,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
-		$sql .= "'$public_uuid', ";
+		$sql .= "'$dialplan_uuid', ";
+		$sql .= "'$dialplan_detail_uuid', ";
 		$sql .= "'action', ";
 		$sql .= "'$action_application_1', ";
 		$sql .= "'$action_data_1', ";
-		$sql .= "'70' ";
+		$sql .= "'90' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
 		unset($sql);
 
 	//add action 2
 		if (strlen($action_application_2) > 0) {
-			$sql = "insert into v_public_details ";
+			$dialplan_detail_uuid = uuid();
+			$sql = "insert into v_dialplan_details ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "public_uuid, ";
+			$sql .= "dialplan_uuid, ";
+			$sql .= "dialplan_detail_uuid, ";
 			$sql .= "tag, ";
 			$sql .= "field_type, ";
 			$sql .= "field_data, ";
@@ -356,11 +401,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$public_uuid', ";
+			$sql .= "'$dialplan_uuid', ";
+			$sql .= "'$dialplan_detail_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'$action_application_2', ";
 			$sql .= "'$action_data_2', ";
-			$sql .= "'80' ";
+			$sql .= "'100' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -370,11 +416,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$count = $db->exec("COMMIT;"); //returns affected rows
 
 	//synchronize the xml config
-		sync_package_v_public();
+		sync_package_v_dialplan();
 
 	//redirect the user
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_public.php\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?context=public\">\n";
 		echo "<div align='center'>\n";
 		echo "Update Complete\n";
 		echo "</div>\n";
@@ -386,94 +432,30 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 <script type="text/javascript">
 <!--
-function type_onchange(field_type) {
-var field_value = document.getElementById(field_type).value;
-
-//desc_action_data_1
-//desc_action_data_2
-
-if (field_type == "condition_field_1") {
-	if (field_value == "destination_number") {
-		document.getElementById("desc_condition_expression_1").innerHTML = "expression: 5551231234";
+	function type_onchange(field_type) {
+	var field_value = document.getElementById(field_type).value;
+	if (field_type == "condition_field_1") {
+		if (field_value == "destination_number") {
+			document.getElementById("desc_condition_expression_1").innerHTML = "expression: 5551231234";
+		}
+		else if (field_value == "zzz") {
+			document.getElementById("desc_condition_expression_1").innerHTML = "";
+		}
+		else {
+			document.getElementById("desc_condition_expression_1").innerHTML = "";
+		}
 	}
-	else if (field_value == "zzz") {
-		document.getElementById("desc_condition_expression_1").innerHTML = "";
+	if (field_type == "condition_field_2") {
+		if (field_value == "destination_number") {
+			document.getElementById("desc_condition_expression_2").innerHTML = "expression: 5551231234";
+		}
+		else if (field_value == "zzz") {
+			document.getElementById("desc_condition_expression_2").innerHTML = "";
+		}
+		else {
+			document.getElementById("desc_condition_expression_2").innerHTML = "";
+		}
 	}
-	else {
-		document.getElementById("desc_condition_expression_1").innerHTML = "";
-	}
-}
-if (field_type == "condition_field_2") {
-	if (field_value == "destination_number") {
-		document.getElementById("desc_condition_expression_2").innerHTML = "expression: 5551231234";
-	}
-	else if (field_value == "zzz") {
-		document.getElementById("desc_condition_expression_2").innerHTML = "";
-	}
-	else {
-		document.getElementById("desc_condition_expression_2").innerHTML = "";
-	}
-}
-/*
-if (field_type == "action_application_1") {
-	if (field_value == "transfer") {
-		document.getElementById("desc_action_data_1").innerHTML = "Transfer the call through the dialplan to the destination. data: 1001 XML default";
-	}
-	else if (field_value == "bridge") {
-		var tmp = "Bridge the call to a destination. <br />";
-		tmp += "sip uri (voicemail): sofia/internal/*98@${domain}<br />\n";
-		tmp += "sip uri (external number): sofia/gateway/gatewayname/12081231234<br />\n";
-		tmp += "sip uri (hunt group): sofia/internal/7002@${domain}<br />\n";
-		tmp += "sip uri (auto attendant): sofia/internal/5002@${domain}<br />\n";
-		//tmp += "sip uri (user): /user/1001@${domain}<br />\n";
-		document.getElementById("desc_action_data_1").innerHTML = tmp;
-	}
-	else if (field_value == "global_set") {
-		document.getElementById("desc_action_data_1").innerHTML = "Sets a global variable. data: var1=1234";
-	}
-	else if (field_value == "javascript") {
-		document.getElementById("desc_action_data_1").innerHTML = "Direct the call to a javascript file. data: disa.js";
-	}
-	else if (field_value == "set") {
-		document.getElementById("desc_action_data_1").innerHTML = "Sets a variable. data: var2=1234";
-	}
-	else if (field_value == "voicemail") {
-		document.getElementById("desc_action_data_1").innerHTML = "Send the call to voicemail. data: default ${domain} 1001";
-	}
-	else {
-		document.getElementById("desc_action_data_1").innerHTML = "";
-	}
-}
-if (field_type == "action_application_2") {
-	if (field_value == "transfer") {
-		document.getElementById("desc_action_data_2").innerHTML = "Transfer the call through the dialplan to the destination. data: 1001 XML default";
-	}
-	else if (field_value == "bridge") {
-		var tmp = "Bridge the call to a destination. <br />";
-		tmp += "sip uri (voicemail): sofia/internal/*98@${domain}<br />\n";
-		tmp += "sip uri (external number): sofia/gateway/gatewayname/12081231234<br />\n";
-		tmp += "sip uri (hunt group): sofia/internal/7002@${domain}<br />\n";
-		tmp += "sip uri (auto attendant): sofia/internal/5002@${domain}<br />\n";
-		//tmp += "sip uri (user): /user/1001@${domain}<br />\n";
-		document.getElementById("desc_action_data_2").innerHTML = tmp;
-	}
-	else if (field_value == "global_set") {
-		document.getElementById("desc_action_data_2").innerHTML = "Sets a global variable. data: var1=1234";
-	}
-	else if (field_value == "javascript") {
-		document.getElementById("desc_action_data_2").innerHTML = "Direct the call to a javascript file. data: disa.js";
-	}
-	else if (field_value == "set") {
-		document.getElementById("desc_action_data_2").innerHTML = "Sets a variable. data: var2=1234";
-	}
-	else if (field_value == "voicemail") {
-		document.getElementById("desc_action_data_2").innerHTML = "Send the call to voicemail. data: default ${domain} 1001";
-	}
-	else {
-		document.getElementById("desc_action_data_2").innerHTML = "";
-	}
-}
-*/
 -->
 </script>
 
@@ -496,12 +478,12 @@ if (field_type == "action_application_2") {
 	echo "		</td>\n";
 	echo "		<td align='right'>\n";
 	if (permission_exists("public_includes_edit") && $action == "advanced") {
-		echo "			<input type='button' class='btn' name='' alt='basic' onclick=\"window.location='v_public_add.php?action=basic'\" value='Basic'>\n";
+		echo "			<input type='button' class='btn' name='' alt='basic' onclick=\"window.location='dialplan_public_add.php?action=basic'\" value='Basic'>\n";
 	}
 	else {
-		echo "			<input type='button' class='btn' name='' alt='advanced' onclick=\"window.location='v_public_add.php?action=advanced'\" value='Advanced'>\n";
+		echo "			<input type='button' class='btn' name='' alt='advanced' onclick=\"window.location='dialplan_public_add.php?action=advanced'\" value='Advanced'>\n";
 	}
-	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_public.php'\" value='Back'>\n";
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?context=public'\" value='Back'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -530,31 +512,6 @@ if (field_type == "action_application_2") {
 	echo "Please enter an inbound route name.<br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
-	//echo "<tr>\n";
-	//echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	//echo "    Continue:\n";
-	//echo "</td>\n";
-	//echo "<td class='vtable' align='left'>\n";
-	//echo "    <select class='formfld' name='extension_continue' style='width: 60%;'>\n";
-	//echo "    <option value=''></option>\n";
-	//if ($extension_continue == "true") { 
-	//	echo "    <option value='true' SELECTED >true</option>\n";
-	//}
-	//else {
-	//	echo "    <option value='true'>true</option>\n";
-	//}
-	//if ($extension_continue == "false") { 
-	//	echo "    <option value='false' SELECTED >false</option>\n";
-	//}
-	//else {
-	//	echo "    <option value='false'>false</option>\n";
-	//}
-	//echo "    </select>\n";
-	//echo "<br />\n";
-	//echo "Extension Continue in most cases this is false. default: false\n";
-	//echo "</td>\n";
-	//echo "</tr>\n";
 
 	if (permission_exists("public_includes_edit") && $action == "advanced") {
 		echo "<tr>\n";
@@ -669,51 +626,6 @@ if (field_type == "action_application_2") {
 	//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
 	switch_select_destination("dialplan", "", "action_1", $action_1, "width: 60%;", "");
 
-	/*
-	echo "	<table style='width: 60%;' border='0' >\n";
-	echo "	<tr>\n";
-	echo "	<td style='width: 62px;'>Application: </td>\n";
-	echo "	<td style='width: 35%;'>\n";
-	echo "    <select class='formfld' style='width:100%' id='action_application_1' name='action_application_1' onchange='type_onchange(\"action_application_1\");'>\n";
-	echo "    <option value=''></option>\n";
-	if (strlen($action_application_1) > 0) {
-		echo "    <option value='$action_application_1' selected>$action_application_1</option>\n";
-	}
-	echo "    <option value='answer'>answer</option>\n";
-	echo "    <option value='bridge'>bridge</option>\n";
-	echo "    <option value='cond'>cond</option>\n";
-	echo "    <option value='db'>db</option>\n";
-	echo "    <option value='global_set'>global_set</option>\n";
-	echo "    <option value='group'>group</option>\n";
-	echo "    <option value='expr'>expr</option>\n";
-	echo "    <option value='hangup'>hangup</option>\n";
-	echo "    <option value='info'>info</option>\n";
-	echo "    <option value='javascript'>javascript</option>\n";
-	echo "    <option value='reject'>reject</option>\n";
-	echo "    <option value='playback'>playback</option>\n";
-	echo "    <option value='reject'>reject</option>\n";
-	echo "    <option value='respond'>respond</option>\n";
-	echo "    <option value='ring_ready'>ring_ready</option>\n";
-	echo "    <option value='set'>set</option>\n";
-	echo "    <option value='set_user'>set_user</option>\n";
-	echo "    <option value='sleep'>sleep</option>\n";
-	echo "    <option value='sofia_contact'>sofia_contact</option>\n";
-	echo "    <option value='transfer'>transfer</option>\n";
-	echo "    <option value='voicemail'>voicemail</option>\n";
-	echo "    <option value='conference'>conference</option>\n";
-	echo "    <option value='conference_set_auto_outcall'>conference_set_auto_outcall</option>\n";
-	echo "    </select><br />\n";
-	echo "	</td>\n";
-	echo "	<td style='width: 73px;'>\n";
-	echo "		&nbsp; Data: \n";
-	echo "	</td>\n";
-	echo "	<td>\n";
-	echo "		<input class='formfld' style='width: 100%;' type='text' name='action_data_1' maxlength='255' value=\"$action_data_1\">\n";
-	echo "	</td>\n";
-	echo "	</tr>\n";
-	echo "	</table>\n";
-	echo "	<div id='desc_action_data_1'></div>\n";
-	*/
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -730,63 +642,27 @@ if (field_type == "action_application_2") {
 		//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
 		switch_select_destination("dialplan", "", "action_2", $action_2, "width: 60%;", "");
 
-		/*
-		echo "	<table style='width: 60%;' border='0' >\n";
-		echo "	<tr>\n";
-		echo "	<td style='width: 62px;'>Application: </td>\n";
-		echo "	<td style='width: 35%;'>\n";
-		echo "    <select class='formfld' style='width:100%' id='action_application_2' name='action_application_2' onchange='type_onchange(\"action_application_2\");'>\n";
-		echo "    <option value=''></option>\n";
-		if (strlen($action_application_2) > 0) {
-			echo "    <option value='$action_application_2' selected>$action_application_2</option>\n";
-		}
-		echo "    <option value='answer'>answer</option>\n";
-		echo "    <option value='bridge'>bridge</option>\n";
-		echo "    <option value='cond'>cond</option>\n";
-		echo "    <option value='db'>db</option>\n";
-		echo "    <option value='global_set'>global_set</option>\n";
-		echo "    <option value='group'>group</option>\n";
-		echo "    <option value='expr'>expr</option>\n";
-		echo "    <option value='export'>export</option>\n";
-		echo "    <option value='hangup'>hangup</option>\n";
-		echo "    <option value='info'>info</option>\n";
-		echo "    <option value='javascript'>javascript</option>\n";
-		echo "    <option value='read'>read</option>\n";
-		echo "    <option value='reject'>reject</option>\n";
-		echo "    <option value='playback'>playback</option>\n";
-		echo "    <option value='reject'>reject</option>\n";
-		echo "    <option value='respond'>respond</option>\n";
-		echo "    <option value='ring_ready'>ring_ready</option>\n";
-		echo "    <option value='set'>set</option>\n";
-		echo "    <option value='set_user'>set_user</option>\n";
-		echo "    <option value='sleep'>sleep</option>\n";
-		echo "    <option value='sofia_contact'>sofia_contact</option>\n";
-		echo "    <option value='transfer'>transfer</option>\n";
-		echo "    <option value='voicemail'>voicemail</option>\n";
-		echo "    <option value='conference'>conference</option>\n";
-		echo "    <option value='conference_set_auto_outcall'>conference_set_auto_outcall</option>\n";
-		echo "    </select><br />\n";
-		echo "	</td>\n";
-		echo "	<td style='width: 73px;'>\n";
-		echo "		&nbsp; Data: \n";
-		echo "	</td>\n";
-		echo "	<td>\n";
-		echo "		<input class='formfld' style='width: 100%;' type='text' name='action_data_2' maxlength='255' value=\"$action_data_2\">\n";
-		echo "	</td>\n";
-		echo "	</tr>\n";
-		echo "	</table>\n";
-		echo "	<div id='desc_action_data_2'></div>\n";
-		*/
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Limit:\n";
+	echo "</td>\n";
+	echo "<td colspan='4' class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='limit' maxlength='255' value=\"$limit\">\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "              <select name='public_order' class='formfld' style='width: 60%;'>\n";
-	//echo "              <option></option>\n";
 	if (strlen(htmlspecialchars($public_order))> 0) {
 		echo "              <option selected='yes' value='".htmlspecialchars($public_order)."'>".htmlspecialchars($public_order)."</option>\n";
 	}
@@ -809,7 +685,6 @@ if (field_type == "action_application_2") {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
-	//echo "    <option value=''></option>\n";
 	if ($enabled == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
@@ -833,7 +708,6 @@ if (field_type == "action_application_2") {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td colspan='4' class='vtable' align='left'>\n";
-	//echo "    <textarea class='formfld' name='descr' rows='4'>$descr</textarea>\n";
 	echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
 	echo "<br />\n";
 	echo "\n";

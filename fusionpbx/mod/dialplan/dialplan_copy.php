@@ -40,7 +40,7 @@ else {
 		$dialplan_uuid = check_str($_REQUEST["id"]);
 	}
 
-//get the v_dialplan data 
+//get the dialplan data 
 	$dialplan_uuid = $_GET["id"];
 	$sql = "";
 	$sql .= "select * from v_dialplans ";
@@ -50,7 +50,7 @@ else {
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
-		$domain_uuid = $row["domain_uuid"];
+		$database_dialplan_uuid = $row["dialplan_uuid"];
 		$extension_name = $row["extension_name"];
 		$dialplan_order = $row["dialplan_order"];
 		$extension_continue = $row["extension_continue"];
@@ -63,7 +63,7 @@ else {
 
 	//copy the dialplan
 		$dialplan_uuid = uuid();
-		$sql = "insert into v_dialplan ";
+		$sql = "insert into v_dialplans ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "dialplan_uuid, ";
@@ -92,18 +92,18 @@ else {
 		$sql = "";
 		$sql .= "select * from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$sql .= "and dialplan_uuid = '$database_dialplan_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$domain_uuid = $row["domain_uuid"];
 			$tag = $row["tag"];
 			$field_order = $row["field_order"];
 			$field_type = $row["field_type"];
 			$field_data = $row["field_data"];
 
 			//copy the dialplan details
+				$dialplan_detail_uuid = uuid();
 				$sql = "insert into v_dialplan_details ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
@@ -134,7 +134,12 @@ else {
 
 	//redirect the user
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+		if ($context == "public") {
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?context=public\">\n";
+		}
+		else {
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+		}
 		echo "<div align='center'>\n";
 		echo "Copy Complete\n";
 		echo "</div>\n";

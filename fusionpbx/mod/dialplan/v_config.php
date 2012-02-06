@@ -26,6 +26,13 @@
 		$apps[$x]['menu'][1]['groups'][] = 'admin';
 		$apps[$x]['menu'][1]['groups'][] = 'superadmin';
 
+		$apps[$x]['menu'][0]['title']['en'] = 'Inbound Routes';
+		$apps[$x]['menu'][0]['uuid'] = 'B64B2BBF-F99B-B568-13DC-32170515A687';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
+		$apps[$x]['menu'][0]['category'] = 'internal';
+		$apps[$x]['menu'][0]['path'] = '/mod/dialplan/dialplans.php?context=public';
+		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
+
 	//permission details
 		$apps[$x]['permissions'][0]['name'] = 'dialplan_view';
 		$apps[$x]['permissions'][0]['groups'][] = 'admin';
@@ -49,7 +56,7 @@
 	//schema details
 		$y = 0; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = 'v_dialplans'; //rename to v_dialplans
+		$apps[$x]['db'][$y]['table'] = 'v_dialplans';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'dialplan_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';

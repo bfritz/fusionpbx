@@ -36,8 +36,10 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-$order_by = $_GET["order_by"];
-$order = $_GET["order"];
+//set the http values as php variables
+	$order_by = $_GET["order_by"];
+	$order = $_GET["order"];
+	$context = $_GET["context"];
 
 //show the content
 	echo "<div align='center'>";
@@ -48,11 +50,19 @@ $order = $_GET["order"];
 
 	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
-	echo "	<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Dialplan\n";
-	echo "		</strong></span></span>\n";
+	echo "	<td align='left'>\n";
+	echo "		<span class=\"vexpl\">\n";
+	if ($context == "public") {
+		echo "			<strong>Inbound Call Routing</strong>\n";
+	}
+	else {
+		echo "			<strong>Dialplan</strong>\n";
+	}
+	 	
+	echo "		</span>\n";
 	echo "	</td>\n";
 	echo "	<td align='right'>\n";
-	if (permission_exists('dialplan_advanced_view')) {
+	if (permission_exists('dialplan_advanced_view') && $context != 'public') {
 		echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='dialplan_advanced.php';\">\n";
 	}
 	else {
@@ -63,14 +73,22 @@ $order = $_GET["order"];
 	echo "	<tr>\n";
 	echo "	<td align='left' colspan='2'>\n";
 	echo "		<span class=\"vexpl\">\n";
-	if (ifgroup("superadmin")) {
-		echo "			The dialplan is used to setup call destinations based on conditions and context.\n";
-		echo "			You can use the dialplan to send calls to gateways, auto attendants, external numbers,\n";
-		echo "			to scripts, or any destination.\n";
+	if ($context == "public") {
+		echo "			The public dialplan is used to route incoming calls to destinations based on one \n";
+		echo "			or more conditions and context. It can send incoming calls to an auto attendant, \n";
+		echo "			huntgroup, extension, external number, or a script. Order is important when an \n";
+		echo "			anti-action is used or when there are multiple conditions that match. \n";
 	}
 	else {
-		echo "			The dialplan provides a view of some of the feature codes, as well as the IVR Menu, \n";
-		echo "			Conferences, Queues and other destinations.\n";
+		if (ifgroup("superadmin")) {
+			echo "			The dialplan is used to setup call destinations based on conditions and context.\n";
+			echo "			You can use the dialplan to send calls to gateways, auto attendants, external numbers,\n";
+			echo "			to scripts, or any destination.\n";
+		}
+		else {
+			echo "			The dialplan provides a view of some of the feature codes, as well as the IVR Menu, \n";
+			echo "			Conferences, Queues and other destinations.\n";
+		}
 	}
 	echo "		</span>\n";
 	echo "	</td>\n";
@@ -81,8 +99,14 @@ $order = $_GET["order"];
 	echo "	<br />";
 
 	$sql = "";
-	$sql .= " select * from v_dialplans ";
-	$sql .= " where domain_uuid = '$domain_uuid' ";
+	$sql .= "select * from v_dialplans ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
+	if ($context == "public") {
+		$sql .= "and context = 'public' ";
+	}
+	else {
+		$sql .= "and context <> 'public' ";
+	}
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -100,6 +124,12 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= " select * from v_dialplans ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
+	if ($context == "public") {
+		$sql .= "and context = 'public' ";
+	}
+	else {
+		$sql .= "and context <> 'public' ";
+	}
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -122,15 +152,17 @@ $order = $_GET["order"];
 	echo thorder_by('descr', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('dialplan_add')) {
-		echo "	<a href='dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
+		if ($context == "public") {
+			echo "	<a href='dialplan_public_add.php' alt='add'>$v_link_label_add</a>\n";
+		}
+		else {
+			echo "	<a href='dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
+		}
 	}
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($result_count == 0) { 
-		//no results
-	}
-	else { //received results
+	if ($result_count > 0) {
 		foreach($result as $row) {
 			if (strlen($row['extension_number']) == 0) {
 				$sql = "";
@@ -187,7 +219,12 @@ $order = $_GET["order"];
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('dialplan_add')) {
-		echo "			<a href='dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
+		if ($context == "public") {
+			echo "			<a href='dialplan_public_add.php' alt='add'>$v_link_label_add</a>\n";
+		}
+		else {
+			echo "			<a href='dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
+		}
 	}
 	else {
 		echo "			&nbsp;";

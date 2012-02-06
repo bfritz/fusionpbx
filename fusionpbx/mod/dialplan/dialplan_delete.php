@@ -35,37 +35,59 @@ else {
 }
 
 if (count($_GET)>0) {
-    $id = $_GET["id"];
+    $dialplan_uuid = check_str($_GET["id"]);
 }
 
-if (strlen($id)>0) {
+if (strlen($dialplan_uuid)>0) {
+	//get the dialplan data
+		$sql = "";
+		$sql .= "select * from v_dialplans ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		foreach ($result as &$row) {
+			$database_dialplan_uuid = $row["dialplan_uuid"];
+			$context = $row["context"];
+			break; //limit to 1 row
+		}
+		unset ($prep_statement);
 
-    //delete child data
+	//start the atomic transaction
+		$count = $db->exec("BEGIN;"); //returns affected rows
+
+	//delete child data
 		$sql = "";
 		$sql .= "delete from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_uuid = '$id' ";
-		//echo $sql;
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$db->query($sql);
 		unset($sql);
 
-    //delete parent data
+	//delete parent data
 		$sql = "";
 		$sql .= "delete from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_uuid = '$id' ";
-		//echo $sql;
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$db->query($sql);
 		unset($sql);
 
-    //synchronize the xml config
-		sync_package_v_dialplan();
+	//commit the atomic transaction
+		$count = $db->exec("COMMIT;");
 
+	//synchronize the xml config
+		sync_package_v_dialplan();
 }
 
 //redirect the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+	if ($context == "public") {
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?context=public\">\n";
+	}
+	else {
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+	}
 	echo "<div align='center'>\n";
 	echo "Delete Complete\n";
 	echo "</div>\n";

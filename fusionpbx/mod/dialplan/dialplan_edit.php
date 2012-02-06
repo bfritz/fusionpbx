@@ -206,8 +206,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo"			<span class=\"vexpl\"><strong>Dialplan</strong></span><br />\n";
 	echo "    </td>\n";
 	echo "    <td width='70%' align='right'>\n";
-	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='dialplan_copy.php?id=".$row[dialplan_uuid]."';}\" value='Copy'>\n";
-	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php'\" value='Back'>\n";
+	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='dialplan_copy.php?id=".$row['dialplan_uuid']."';}\" value='Copy'>\n";
+	if ($context == "public") {
+		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?context=public'\" value='Back'>\n";
+	}
+	else {
+		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php'\" value='Back'>\n";
+	}
 	echo "	</td>\n";
 	echo "  </tr>\n";
 	echo "  <tr>\n";
