@@ -23,7 +23,7 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
-
+/*
 //if the dialplan default directory doesn't exist then create it
 	if (!is_dir($v_dialplan_default_dir)) { mkdir($v_dialplan_default_dir,0777,true); }
 //write the dialplan/default.xml if it does not exist
@@ -238,4 +238,5 @@
 	if ($v_recording_action == 'add' || $v_disa_action == 'add') {
 		sync_package_v_dialplan();
 	}
+*/
 ?>

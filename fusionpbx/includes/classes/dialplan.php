@@ -32,7 +32,7 @@ include "root.php";
 			var $result;
 			var $domain_uuid;
 			var $dialplan_uuid;
-			var $v_domain;
+			var $domain;
 			var $switch_conf_dir;
 
 			//dialplans
@@ -114,7 +114,6 @@ include "root.php";
 			} //end function
 
 			function restore_advanced_xml() {
-				$v_domain = $this->v_domain;
 				$switch_dialplan_dir = $this->switch_dialplan_dir;
 				//get the contents of the dialplan/default.xml
 					$file_default_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/dialplan/default.xml';
@@ -128,9 +127,9 @@ include "root.php";
 					}
 					else {
 						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
-							$file_default_contents = str_replace("{v_domain}", $v_domain, $file_default_contents);
+							$file_default_contents = str_replace("{v_domain}", $this->domain, $file_default_contents);
 						//set the file path
-							$file_path = $switch_dialplan_dir.'/'.$v_domain.'.xml';
+							$file_path = $switch_dialplan_dir.'/'.$this->domain.'.xml';
 					}
 				//write the default dialplan
 					$fh = fopen($file_path,'w') or die('Unable to write to '.$file_path.'. Make sure the path exists and permissons are set correctly.');

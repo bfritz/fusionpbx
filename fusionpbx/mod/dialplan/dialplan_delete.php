@@ -55,7 +55,7 @@ if (strlen($dialplan_uuid)>0) {
 		unset ($prep_statement);
 
 	//start the atomic transaction
-		$count = $db->exec("BEGIN;"); //returns affected rows
+		$count = $db->exec("BEGIN;");
 
 	//delete child data
 		$sql = "";

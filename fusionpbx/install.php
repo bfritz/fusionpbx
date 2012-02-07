@@ -33,7 +33,7 @@ require_once "includes/lib_functions.php";
 	$_SESSION["domain_uuid"] = uuid();
 
 //add the menu uuid
-	$menu_uuid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
+	$menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286';
 
 //error reporting
 	ini_set('display_errors', '1');
@@ -722,17 +722,16 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['name'] = 'domain_menu_uuid';
 		$tmp[$x]['value'] = $menu_uuid;
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'domain_time_zone';
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'domain_template_name';
 		$tmp[$x]['value'] = $install_v_template_name;
 		$tmp[$x]['category'] = 'system';
-		$x++;
-		$tmp[$x]['name'] = 'switch_account_code';
-		$tmp[$x]['value'] = '';
-		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		foreach($tmp as $row) {
 			$sql = "insert into v_domain_settings ";
 			$sql .= "(";
@@ -740,7 +739,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "domain_setting_uuid, ";
 			$sql .= "domain_setting_name, ";
 			$sql .= "domain_setting_value, ";
-			$sql .= "domain_setting_category ";
+			$sql .= "domain_setting_category, ";
+			$sql .= "domain_setting_enabled ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -748,7 +748,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "'".uuid()."', ";
 			$sql .= "'".$row['name']."', ";
 			$sql .= "'".$row['value']."', ";
-			$sql .= "'".$row['category']."' ";
+			$sql .= "'".$row['category']."', ";
+			$sql .= "'".$row['enabled']."' ";	
 			$sql .= ");";
 			if ($v_debug) {
 				fwrite($fp, $sql."\n");
@@ -793,122 +794,152 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['name'] = 'server_protocol';
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'server_port';
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'web_root';
 		$tmp[$x]['value'] = $web_root;
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'web_dir';
 		$tmp[$x]['value'] = $web_dir;
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'php_dir';
 		$tmp[$x]['value'] = $install_php_dir;
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'tmp_dir';
 		$tmp[$x]['value'] = $install_tmp_dir;
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'startup_script_dir';
 		$tmp[$x]['value'] = $startup_script_dir;
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'relative_url';
 		$tmp[$x]['value'] = $relative_url;
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'parent_dir';
 		$tmp[$x]['value'] = $parent_dir;
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'backup_dir';
 		$tmp[$x]['value'] = $install_backup_dir;
 		$tmp[$x]['category'] = 'system';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_bin_dir';
 		$tmp[$x]['value'] = $switch_bin_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_base_dir';
 		$tmp[$x]['value'] = $install_switch_base_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_conf_dir';
 		$tmp[$x]['value'] = $switch_conf_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_db_dir';
 		$tmp[$x]['value'] = $switch_db_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_htdocs_dir';
 		$tmp[$x]['value'] = $switch_htdocs_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_log_dir';
 		$tmp[$x]['value'] = $switch_log_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_extensions_dir';
 		$tmp[$x]['value'] = $switch_extensions_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_gateways_dir';
 		$tmp[$x]['value'] = $switch_gateways_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_dialplan_dir';
 		$tmp[$x]['value'] = $switch_dialplan_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_mod_dir';
 		$tmp[$x]['value'] = $switch_mod_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_scripts_dir';
 		$tmp[$x]['value'] = $switch_scripts_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_grammar_dir';
 		$tmp[$x]['value'] = $switch_grammar_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_storage_dir';
 		$tmp[$x]['value'] = $switch_storage_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_voicemail_dir';
 		$tmp[$x]['value'] = $switch_voicemail_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_recordings_dir';
 		$tmp[$x]['value'] = $switch_recordings_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'switch_sounds_dir';
 		$tmp[$x]['value'] = $switch_sounds_dir;
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'provisioning_tftp_dir';
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'false';
 		$x++;
 		$tmp[$x]['name'] = 'provisioning_ftp_dir';
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'false';
 		$x++;
 		$tmp[$x]['name'] = 'provisioning_https_dir';
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'false';
 		$x++;
 		$tmp[$x]['name'] = 'provisioning_http_dir';
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'switch';
+		$tmp[$x]['enabled'] = 'false';
 		foreach($tmp as $row) {
 			$sql = "insert into v_server_settings ";
 			$sql .= "(";
@@ -917,7 +948,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "server_setting_uuid, ";
 			$sql .= "server_setting_name, ";
 			$sql .= "server_setting_value, ";
-			$sql .= "server_setting_category ";
+			$sql .= "server_setting_category, ";
+			$sql .= "server_setting_enabled ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -926,7 +958,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "'".uuid()."', ";
 			$sql .= "'".$row['name']."', ";
 			$sql .= "'".$row['value']."', ";
-			$sql .= "'".$row['category']."' ";
+			$sql .= "'".$row['category']."', ";
+			$sql .= "'".$row['enabled']."' ";
 			$sql .= ");";
 			if ($v_debug) {
 				fwrite($fp, $sql."\n");
@@ -934,6 +967,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 		}
+		unset($tmp);
 
 	//get the list of installed apps from the core and mod directories
 		$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
@@ -978,6 +1012,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 		}
+		unset($tmp);
 
 	//add the superadmin user account
 		//prepare the values
@@ -1212,6 +1247,14 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$menu->restore();
 		unset($menu);
 
+	//write the variables to the log
+		if ($v_debug) {
+			fwrite($fp, "switch_conf_dir: ".$switch_conf_dir."\n");
+			fwrite($fp, "switch_scripts_dir: ".$switch_scripts_dir."\n");
+			fwrite($fp, "switch_sounds_dir: ".$switch_sounds_dir."\n");
+			fwrite($fp, "switch_recordings_dir: ".$switch_recordings_dir."\n");
+		}
+
 	//create the necessary directories
 		if (!is_dir($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
 		if (!is_dir($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
@@ -1228,7 +1271,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		require_once "includes/classes/install.php";
 		$install = new install;
 		$install->domain_uuid = $_SESSION["domain_uuid"];
-		$install->v_domain = $domain;
+		$install->domain = $domain;
 		$install->switch_conf_dir = $switch_conf_dir;
 		$install->switch_scripts_dir = $switch_scripts_dir;
 		$install->switch_sounds_dir = $switch_sounds_dir;
@@ -1237,11 +1280,16 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$install->copy();
 		//print_r($install->result);
 
+		//copy includes/templates/conf to the freeswitch/conf dir
+		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf";
+		$dst_dir = $switch_conf_dir;
+		$install->recursive_copy($src_dir, $dst_dir);
+
 	//create the dialplan/default.xml for single tenant or dialplan/domain.xml
 		require_once "includes/classes/dialplan.php";
 		$dialplan = new dialplan;
 		$dialplan->domain_uuid = $_SESSION["domain_uuid"];
-		$dialplan->v_domain = $domain;
+		$dialplan->domain = $domain;
 		$dialplan->switch_dialplan_dir = $switch_dialplan_dir;
 		$dialplan->restore_advanced_xml();
 		//print_r($dialplan->result);

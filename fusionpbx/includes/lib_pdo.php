@@ -353,7 +353,7 @@ if ($db_type == "pgsql") {
 //get the server variables
 	$sql = "select * from v_server_settings ";
 	$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
-//	$sql .= "and server_setting_enabled = 'true' ";
+	$sql .= "and server_setting_enabled = 'true' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
