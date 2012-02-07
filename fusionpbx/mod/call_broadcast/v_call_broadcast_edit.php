@@ -92,7 +92,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('call_broadcast_add')) {
 			$broadcast_uuid = uuid();
-			$sql = "insert into v_call_broadcast ";
+			$sql = "insert into v_call_broadcasts ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "broadcast_uuid, ";
@@ -145,7 +145,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update" && permission_exists('call_broadcast_edit')) {
-			$sql = "update v_call_broadcast set ";
+			$sql = "update v_call_broadcasts set ";
 			$sql .= "broadcast_name = '$broadcast_name', ";
 			$sql .= "broadcast_desc = '$broadcast_desc', ";
 			if (strlen($broadcast_timeout) == 0) {
@@ -186,7 +186,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$call_broadcast_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_call_broadcast ";
+		$sql .= "select * from v_call_broadcasts ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_broadcast_uuid = '$call_broadcast_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));

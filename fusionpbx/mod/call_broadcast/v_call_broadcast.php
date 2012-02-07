@@ -55,7 +55,7 @@ require_once "includes/paging.php";
 	echo "</tr></table>\n";
 
 	$sql = "";
-	$sql .= "select * from v_call_broadcast ";
+	$sql .= "select * from v_call_broadcasts ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -72,7 +72,7 @@ require_once "includes/paging.php";
 	$offset = $rows_per_page * $page; 
 
 	$sql = "";
-	$sql .= "select * from v_call_broadcast ";
+	$sql .= "select * from v_call_broadcasts ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$sql .= " limit $rows_per_page offset $offset ";

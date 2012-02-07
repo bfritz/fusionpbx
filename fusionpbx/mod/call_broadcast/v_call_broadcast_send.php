@@ -64,7 +64,7 @@ function cmd_async($cmd) {
 
 //get the call broadcast details from the database
 	$sql = "";
-	$sql .= "select * from v_call_broadcast ";
+	$sql .= "select * from v_call_broadcasts ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and call_broadcast_uuid = '$call_broadcast_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
