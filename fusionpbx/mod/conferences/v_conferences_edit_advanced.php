@@ -86,7 +86,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('conferences_advanced_add')) {
 				$dialplan_uuid = uuid();
-				$sql = "insert into v_dialplan ";
+				$sql = "insert into v_dialplans ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "dialplan_uuid, ";
@@ -124,7 +124,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			} //if ($action == "add")
 
 			if ($action == "update" && permission_exists('conferences_advanced_view')) {
-				$sql = "update v_dialplan set ";
+				$sql = "update v_dialplans set ";
 				$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "dialplan_name = '$dialplan_name', ";
 				$sql .= "dialplan_order = '$dialplan_order', ";

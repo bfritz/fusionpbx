@@ -763,13 +763,13 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 						$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
-						$extension_name = $tmp['extension_name'];
-						$extension_name = str_replace("_", " ", $extension_name);
+						$dialplan_name = $tmp['dialplan_name'];
+						$dialplan_name = str_replace("_", " ", $dialplan_name);
 						unset($tmp);
 
 					$fifo_name = $row["field_data"];
 					$fifo_name = str_replace('@${domain_name} in', '', $fifo_name);
-					$option_label = $extension_number.' '.$extension_name;
+					$option_label = $extension_number.' '.$dialplan_name;
 					if ($select_type == "ivr") {
 						if ("menu-exec-app:transfer ".$row["field_data"] == $select_value) {
 							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
@@ -1198,11 +1198,11 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 				$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
-				$extension_name = $tmp['extension_name'];
-				$extension_name = str_replace("_", " ", $extension_name);
+				$dialplan_name = $tmp['dialplan_name'];
+				$dialplan_name = str_replace("_", " ", $dialplan_name);
 				unset($tmp);
 
-				$option_label = $extension_number.' '.$extension_name;
+				$option_label = $extension_number.' '.$dialplan_name;
 				if ($select_type == "ivr") {
 					if ("menu-exec-app:transfer ".$row["field_data"]." XML ".$_SESSION["context"] == $select_value) {
 						echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
@@ -2206,21 +2206,21 @@ function outbound_route_to_bridge ($destination_number) {
 	$sql .= "select * from v_dialplans ";
 	if (count($dialplan_array) == 0) {
 		//when there are no outbound routes do this to hide all remaining entries
-		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and context = 'hide' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and dialplan_context = 'hide' ";
 	}
 	else {
 		$x = 0;
 		foreach ($dialplan_array as &$row) {
 			if ($x == 0) {
-				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-				$sql .= "and enabled = 'true' ";
+				$sql .= "where domain_uuid = '$domain_uuid' \n";
+				$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
+				$sql .= "and dialplan_enabled = 'true' ";
 			}
 			else {
-				$sql .= " or domain_uuid = $domain_uuid \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-				$sql .= "and enabled = 'true' ";
+				$sql .= "or domain_uuid = $domain_uuid \n";
+				$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
+				$sql .= "and dialplan_enabled = 'true' ";
 			}
 			$x++;
 		}
@@ -2234,7 +2234,7 @@ function outbound_route_to_bridge ($destination_number) {
 			$dialplan_uuid = $row['dialplan_uuid'];
 			$tag = $row["tag"];
 			$field_type = $row['field_type'];
-			$extension_continue = $row['extension_continue'];
+			$dialplan_continue = $row['dialplan_continue'];
 
 			//get the extension number using the dialplan_uuid
 					$sql = "select * ";
@@ -2276,7 +2276,7 @@ function outbound_route_to_bridge ($destination_number) {
 											//echo "field_data: $field_data";
 											$bridge_array[$x] = $field_data;
 											$x++;
-											if ($extension_continue == "false") {
+											if ($dialplan_continue == "false") {
 												break 2;
 											}
 									}
@@ -2361,7 +2361,6 @@ function sync_package_v_hunt_group() {
 
 		$sql = "";
 		$sql .= "select * from v_hunt_group ";
-		//$sql .= "where domain_uuid = '$domain_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -2402,7 +2401,7 @@ function sync_package_v_hunt_group() {
 
 						if ($action == 'add') {
 							//create huntgroup extension in the dialplan
-								$extension_name = check_str($row['hunt_group_name']);
+								$dialplan_name = check_str($row['hunt_group_name']);
 								$dialplan_order ='999';
 								$context = $row['hunt_group_context'];
 								if ($row['hunt_group_enabled'] == "false") {
@@ -2414,7 +2413,7 @@ function sync_package_v_hunt_group() {
 								$descr = 'huntgroup';
 								$opt_1_name = 'hunt_group_uuid';
 								$opt_1_value = $row['hunt_group_uuid'];
-								$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 								$tag = 'condition'; //condition, action, antiaction
 								$field_type = 'destination_number';
@@ -2430,7 +2429,7 @@ function sync_package_v_hunt_group() {
 						}
 						if ($action == 'update') {
 							//update the huntgroup
-								$extension_name = check_str($row['hunt_group_name']);
+								$dialplan_name = check_str($row['hunt_group_name']);
 								$dialplan_order = '999';
 								$context = $row['hunt_group_context'];
 								if ($row['hunt_group_enabled'] == "false") {
@@ -2443,8 +2442,8 @@ function sync_package_v_hunt_group() {
 								$hunt_group_uuid = $row['hunt_group_uuid'];
 
 								$sql = "";
-								$sql = "update v_dialplan set ";
-								$sql .= "extension_name = '$extension_name', ";
+								$sql = "update v_dialplans set ";
+								$sql .= "dialplan_name = '$dialplan_name', ";
 								$sql .= "dialplan_order = '$dialplan_order', ";
 								$sql .= "context = '$context', ";
 								$sql .= "enabled = '$enabled', ";
@@ -2476,7 +2475,7 @@ function sync_package_v_hunt_group() {
 								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 								$db->query($sql);
 
-								unset($extension_name);
+								unset($dialplan_name);
 								unset($order);
 								unset($context);
 								unset($enabled);
@@ -2506,7 +2505,7 @@ function sync_package_v_hunt_group() {
 
 						if ($action == 'add') {
 							//create a fifo queue for each huntgroup
-							$extension_name = check_str($row['hunt_group_name']).'.park';
+							$dialplan_name = check_str($row['hunt_group_name']).'.park';
 							$dialplan_order ='999';
 							$context = $row['hunt_group_context'];
 							if ($row['hunt_group_enabled'] == "false") {
@@ -2518,7 +2517,7 @@ function sync_package_v_hunt_group() {
 							$descr = 'fifo '.$row['hunt_group_extension'];
 							$opt_1_name = 'hunt_group_uuid_fifo';
 							$opt_1_value = $row['hunt_group_uuid'];
-							$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+							$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 							$tag = 'condition'; //condition, action, antiaction
 							$field_type = 'destination_number';
@@ -2550,7 +2549,7 @@ function sync_package_v_hunt_group() {
 						}
 						if ($action == 'update') {
 							//update the huntgroup fifo
-								$extension_name = $row['hunt_group_name'].'.park';
+								$dialplan_name = $row['hunt_group_name'].'.park';
 								$dialplan_order = '999';
 								$context = $row['hunt_group_context'];
 								if ($row['hunt_group_enabled'] == "false") {
@@ -2563,8 +2562,8 @@ function sync_package_v_hunt_group() {
 								$hunt_group_uuid = $row['hunt_group_uuid'];
 
 								$sql = "";
-								$sql = "update v_dialplan set ";
-								$sql .= "extension_name = '$extension_name', ";
+								$sql = "update v_dialplans set ";
+								$sql .= "dialplan_name = '$dialplan_name', ";
 								$sql .= "dialplan_order = '$dialplan_order', ";
 								$sql .= "context = '$context', ";
 								$sql .= "enabled = '$enabled', ";
@@ -3037,7 +3036,7 @@ function sync_package_v_fax() {
 				$action = 'update';
 
 				$dialplan_uuid = $row2['dialplan_uuid'];
-				$extension_name = check_str($row2['extension_name']);
+				$dialplan_name = check_str($row2['dialplan_name']);
 				$order = $row2['order'];
 				$context = $row2['context'];
 				$enabled = $row2['enabled'];
@@ -3046,8 +3045,8 @@ function sync_package_v_fax() {
 				$opt_1_value = $row2['opt_1_value'];
 				$id = $i;
 
-				if (file_exists($v_dialplan_default_dir."/".$order."_".$extension_name.".xml")){
-					unlink($v_dialplan_default_dir."/".$order."_".$extension_name.".xml");
+				if (file_exists($v_dialplan_default_dir."/".$order."_".$dialplan_name.".xml")){
+					unlink($v_dialplan_default_dir."/".$order."_".$dialplan_name.".xml");
 				}
 
 				break; //limit to 1 row
@@ -3060,14 +3059,14 @@ function sync_package_v_fax() {
 				if (strlen($row['fax_name']) > 0) {
 
 					//create auto attendant extension in the dialplan
-					$extension_name = $row['fax_name'];
+					$dialplan_name = $row['fax_name'];
 					$dialplan_order ='999';
 					$context = "default";
 					$enabled = 'true';
 					$descr = $row['fax_description'];
 					$opt_1_name = 'faxid';
 					$opt_1_value = $row['fax_uuid'];
-					$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+					$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 					//<!-- default ${domain_name} -->
 					//<condition field="destination_number" expression="^\*9978$">
@@ -3149,15 +3148,15 @@ function sync_package_v_fax() {
 				//unset($fax_uuid);
 			}
 			if ($action == 'update') {
-				$extension_name = $row['fax_name'];
+				$dialplan_name = $row['fax_name'];
 				$dialplan_order = $order;
 				$context = $context;
 				$enabled = $enabled;
 				$descr = $row['fax_description'];
 
 				$sql = "";
-				$sql = "update v_dialplan set ";
-				$sql .= "extension_name = '$extension_name', ";
+				$sql = "update v_dialplans set ";
+				$sql .= "dialplan_name = '$dialplan_name', ";
 				if (strlen($dialplan_order) > 0) {
 					$sql .= "dialplan_order = '$dialplan_order', ";
 				}
@@ -3218,7 +3217,7 @@ function sync_package_v_fax() {
 				$sql .= "and field_data like 'api_hangup_hook=%' ";
 				$db->query(check_sql($sql));
 
-				unset($extension_name);
+				unset($dialplan_name);
 				unset($order);
 				unset($context);
 				unset($enabled);
@@ -3258,956 +3257,14 @@ function get_recording_filename($id) {
 	unset ($prep_statement);
 }
 
-
-function sync_package_v_auto_attendant() {
-	global $db, $domain_uuid, $host;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
-
-	$db->beginTransaction();
-
-	//prepare for auto attendant .js files to be written. delete all auto attendants that are prefixed with autoattendant_ and have a file extension of .js
-		$v_prefix = 'autoattendant_';
-		if($dh = opendir($switch_scripts_dir)) {
-			$files = Array();
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($dir . "/" . $file)) {
-						//this is a directory
-					} else {
-						if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-3) == '.js') {
-							//echo "file: $file<br />\n";
-							//echo "extension: ".substr($file,-3)."<br />";
-							unlink($switch_scripts_dir.'/'.$file);
-						}
-					}
-				}
-			}
-			closedir($dh);
-		}
-
-	//loop through all auto attendants
-
-	$sql = "";
-	$sql .= "select * from v_auto_attendant ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	foreach ($result as &$row) {
-		//add the auto attendant to the dialplan
-			if (strlen($row['auto_attendant_id']) > 0) {
-					$action = 'add'; //set default action to add
-
-					$sql = "";
-					$sql .= "select * from v_dialplans ";
-					$sql .= "where domain_uuid = '$domain_uuid' ";
-					$sql .= "and opt_1_name = 'auto_attendant_id' ";
-					$sql .= "and opt_1_value = '".$row['auto_attendant_id']."' ";
-					$prep_statement_2 = $db->prepare($sql);
-					$prep_statement_2->execute();
-					while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-						$action = 'update';
-						$dialplan_uuid = $row2['dialplan_uuid'];
-						break; //limit to 1 row
-					}
-					unset ($sql, $prep_statement_2);
-			}
-
-		if ($action == 'add') {
-
-			//create auto attendant extension in the dialplan
-				$extension_name = $row['aaextension'];
-				$dialplan_order ='999';
-				$context = $row['aacontext'];
-				$enabled = 'true';
-				$descr = 'auto attendant';
-				$opt_1_name = 'auto_attendant_id';
-				$opt_1_value = $row['auto_attendant_id'];
-				$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
-
-				$tag = 'condition'; //condition, action, antiaction
-				$field_type = 'destination_number';
-				$field_data = '^'.$row['aaextension'].'$';
-				$field_order = '000';
-				v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
-
-				$tag = 'action'; //condition, action, antiaction
-				$field_type = 'javascript';
-				$field_data = 'autoattendant_'.$row['aaextension'].'.js';
-				$field_order = '001';
-				v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
-
-		}
-		if ($action == 'update') {
-
-				$extension_name = $row['aaextension'];
-				$dialplan_order = '999';
-				$context = $row['aacontext'];
-				$enabled = 'true';
-				$descr = 'auto attendant';
-				$auto_attendant_id = $row['auto_attendant_id'];
-
-				//update the main dialplan entry
-				$sql = "";
-				$sql = "update v_dialplan set ";
-				$sql .= "extension_name = '$extension_name', ";
-				$sql .= "dialplan_order = '$dialplan_order', ";
-				$sql .= "context = '$context', ";
-				$sql .= "enabled = '$enabled', ";
-				$sql .= "descr = '$descr' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and opt_1_name = 'auto_attendant_id' ";
-				$sql .= "and opt_1_value = '$auto_attendant_id' ";
-				//echo "sql: ".$sql."<br />";
-				//exit;
-				$db->query($sql);
-				unset($sql);
-
-				//update the condition
-				$sql = "";
-				$sql = "update v_dialplan_details set ";
-				$sql .= "field_data = '^".$row['aaextension']."$' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and tag = 'condition' ";
-				$sql .= "and field_type = 'destination_number' ";
-				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-				//echo $sql."<br />";
-				$db->query($sql);
-				unset($sql);
-
-				//update the action
-				$sql = "";
-				$sql = "update v_dialplan_details set ";
-				$sql .= "field_data = 'autoattendant_".$row['aaextension'].".js' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and tag = 'action' ";
-				$sql .= "and field_type = 'javascript' ";
-				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-				//echo $sql."<br />";
-				$db->query($sql);
-
-				unset($sql);
-				unset($ent);
-				unset($extension_name);
-				unset($dialplan_order);
-				unset($context);
-				unset($enabled);
-				unset($descr);
-				unset($opt_1_name);
-				unset($opt_1_value);
-		}
-
-		sync_package_v_dialplan();
-		unset($dialplanincludeid);
-
-		// Build the auto attendant javascript
-		$recording_action_filename = get_recording_filename($row['recordingidaction']);
-		$recording_antiaction_filename = get_recording_filename($row['recordingidantiaction']);
-
-		$sql = "";
-		$sql .= "select * from v_settings ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prep_statement_2 = $db->prepare($sql);
-		$prep_statement_2->execute();
-		while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-			$event_socket_ip_address = $row2["event_socket_ip_address"];
-			$event_socket_port = $row2["event_socket_port"];
-			$event_socket_password = $row2["event_socket_password"];
-		}
-		unset ($prep_statement_2);
-
-		$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
-		$cmd = "api global_getvar domain";
-		$domain = trim(event_socket_request($fp, $cmd));
-
-		$tmp = ""; //make sure the variable starts with no value
-		$tmp .= "\n";
-		$tmp .= " var condition = true;\n";
-		$tmp .= "\n";
-		$tmp .= " var domain = \"".$domain."\"; //by default this is the ipv4 address of FreeSWITCH used for transfer to voicemail\n";
-		$tmp .= " var digitmaxlength = 0;\n";
-		$tmp .= " var objdate = new Date();\n";
-		$tmp .= "\n";
-		$tmp .= " var adjusthours = 0; //Adjust Server time that is set to GMT 7 hours\n";
-		$tmp .= " var adjustoperator = \"-\"; //+ or -\n";
-		$tmp .= "\n";
-		$tmp .= " if (adjustoperator == \"-\") {\n";
-		$tmp .= "   var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() - adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
-		$tmp .= " }\n";
-		$tmp .= " if (adjustoperator == \"+\") {\n";
-		$tmp .= "   var objdate2 = new Date(objdate.getFullYear(),objdate.getMonth(),objdate.getDate(),(objdate.getHours() + adjusthours),objdate.getMinutes(),objdate.getSeconds());\n";
-		$tmp .= " }\n";
-		$tmp .= "\n";
-		$tmp .= " var Hours = objdate2.getHours();\n";
-		$tmp .= " var Mins = objdate2.getMinutes();\n";
-		$tmp .= " var Seconds = objdate2.getSeconds();\n";
-		$tmp .= " var Month = objdate2.getMonth() + 1;\n";
-		$tmp .= " var Date = objdate2.getDate();\n";
-		$tmp .= " var Year = objdate2.getYear()\n";
-		$tmp .= " var Day = objdate2.getDay()+1;\n";
-		$tmp .= " var exit = false;\n";
-		$tmp .= "\n";
-		$tmp .= " dialed_extension = session.getVariable(\"dialed_extension\");\n";
-		$tmp .= " domain_name = session.getVariable(\"domain_name\");\n";
-		$tmp .= " domain = session.getVariable(\"domain\");\n";
-		$tmp .= " us_ring = session.getVariable(\"us-ring\");\n";
-		$tmp .= " caller_id_name = session.getVariable(\"caller_id_name\");\n";
-		$tmp .= " caller_id_number = session.getVariable(\"caller_id_number\");\n";
-		$tmp .= " effective_caller_id_name = session.getVariable(\"effective_caller_id_name\");\n";
-		$tmp .= " effective_caller_id_number = session.getVariable(\"effective_caller_id_number\");\n";
-		$tmp .= " outbound_caller_id_name = session.getVariable(\"outbound_caller_id_name\");\n";
-		$tmp .= " outbound_caller_id_number = session.getVariable(\"outbound_caller_id_number\");\n";
-		$tmp .= "\n";
-
-		//set caller id prefix
-		if (strlen($row['aacidnameprefix'])> 0) {
-			$tmp .= "session.execute(\"set\", \"caller_id_name=".$row['aacidnameprefix']."\"+caller_id_name);\n";
-			$tmp .= "session.execute(\"set\", \"effective_caller_id_name=".$row['aacidnameprefix']."\"+effective_caller_id_name);\n";
-			$tmp .= "session.execute(\"set\", \"outbound_caller_id_name=".$row['aacidnameprefix']."\"+outbound_caller_id_name);\n";
-		}
-		$tmp .= "\n";
-
-		$tmp .= "session.execute(\"set\", \"ignore_early_media=true\");\n";
-		$tmp .= " session.execute(\"set\", \"hangup_after_bridge=true\");\n";
-		$tmp .= " session.execute(\"set\", \"continue_on_fail=true\");\n";
-		if (strlen($row['aacalltimeout']) == 0){
-			$tmp .= " session.execute(\"set\", \"call_timeout=30\");\n"; //aacalltimeout
-			$tmp .= " session.execute(\"export\", \"call_timeout=30\");\n"; //aacalltimeout
-		}
-		else {
-			$tmp .= " session.execute(\"set\", \"call_timeout=".$row['aacalltimeout']."\");\n"; //aacalltimeout
-			$tmp .= " session.execute(\"export\", \"call_timeout=".$row['aacalltimeout']."\");\n"; //aacalltimeout
-		}
-
-		if (isset($row['aaringback'])){
-			if ($row['aaringback'] == "ring"){
-				$tmp .= " session.execute(\"set\", \"ringback=\"+us_ring);          //set to ringtone\n";
-				$tmp .= " session.execute(\"set\", \"transfer_ringback=\"+us_ring); //set to ringtone\n";
-			}
-			if ($row['aaringback'] == "music"){
-				$tmp .= " session.execute(\"set\", \"ringback=\${hold_music}\");          //set to ringtone\n";
-				$tmp .= " session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to ringtone\n";
-			}
-		}
-		else {
-			$tmp .= " session.execute(\"set\", \"ringback=\${hold_music}\");          //set to ringtone\n";
-			$tmp .= " session.execute(\"set\", \"transfer_ringback=\${hold_music}\"); //set to ringtone\n";
-		}
-		$tmp .= "\n";
-		$tmp .= "//console_log( \"info\", \"Auto Attendant Server Time is: \"+Hours+\":\"+Mins+\" \\n\" );\n";
-		$tmp .= "\n";
-
-		$tmp .= " function get_sofia_contact(extension,domain_name, profile){\n";
-		$tmp .= "	if (profile == \"auto\") {\n";
-		$i = 0;
-		foreach (ListFiles($switch_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
-			$sip_profile_name = str_replace(".xml", "", $sip_profile_file);
-			if ($i == 0) {
-			  $tmp .= "			profile = \"".$sip_profile_name."\";\n";
-			  $tmp .= "			session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
-			  $tmp .= "			sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
-			}
-			else {
-			  $tmp .= "\n";
-			  $tmp .= "			if (sofia_contact == \"error/user_not_registered\") {\n";
-			  $tmp .= "				profile = \"".$sip_profile_name."\";\n";
-			  $tmp .= "				session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
-			  $tmp .= "				sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
-			  $tmp .= "			}\n";
-			}
-			$i++;
-		}
-		unset ($i);
-		$tmp .= "	}\n";
-		$tmp .= "	else {\n";
-		$tmp .= "		session.execute(\"set\", \"sofia_contact_\"+extension+\"=\${sofia_contact(\"+profile+\"/\"+extension+\"@\"+domain_name+\")}\");\n";
-		$tmp .= "		sofia_contact = session.getVariable(\"sofia_contact_\"+extension);\n";
-		$tmp .= "	}\n";
-		$tmp .= "	console_log( \"info\", \"sofia_contact \"+profile+\": \"+sofia_contact+\".\\n\" );\n";
-		$tmp .= "	return sofia_contact;\n";
-		$tmp .= " }\n";
-		$tmp .= "\n";
-
-		$tmp .= " function mycb( session, type, obj, arg ) {\n";
-		$tmp .= "    try {\n";
-		$tmp .= "        if ( type == \"dtmf\" ) {\n";
-		$tmp .= "          console_log( \"info\", \"digit: \"+obj.digit+\"\\n\" );\n";
-		$tmp .= "          if ( obj.digit == \"#\" ) {\n";
-		$tmp .= "            //console_log( \"info\", \"detected pound sign.\\n\" );\n";
-		$tmp .= "            exit = true;\n";
-		$tmp .= "            return( false );\n";
-		$tmp .= "          }\n";
-		$tmp .= "\n";
-		$tmp .= "          dtmf.digits += obj.digit;\n";
-		$tmp .= "\n";
-		$tmp .= "          if ( dtmf.digits.length >= digitmaxlength ) {\n";
-		$tmp .= "            exit = true;\n";
-		$tmp .= "            return( false );\n";
-		$tmp .= "          }\n";
-		$tmp .= "        }\n";
-		$tmp .= "    } catch (e) {\n";
-		$tmp .= "        console_log( \"err\", e+\"\\n\" );\n";
-		$tmp .= "    }\n";
-		$tmp .= "    return( true );\n";
-		$tmp .= " } //end function mycb\n";
-
-		$tmp .= "\n";
-		//condition
-		$tmp .= $row['aaconditionjs'];
-		$tmp .= "\n";
-		$tmp .= "\n";
-
-		//$tmp .= " //condition = true; //debugging\n";
-
-		$actiondirect = false;
-		$actiondefault = false;
-		$actioncount = 0;
-
-		$sql = "";
-		$sql .= "select * from v_auto_attendant_options ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and auto_attendant_id = '".$row['auto_attendant_id']."' ";
-		//echo $sql;
-		$prep_statement_2 = $db->prepare($sql);
-		$prep_statement_2->execute();
-		while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-			//$auto_attendant_id = $row2["auto_attendant_id"];
-			//$optionaction = $row2["optionaction"];
-			//$optionnumber = $row2["optionnumber"];
-			//$optiontype = $row2["optiontype"];
-			//$optionprofile = $row2["optionprofile"];
-			//$optiondata = $row2["optiondata"];
-			//$optiondescr = $row2["optiondescr"];
-
-			if ($row2['optionaction'] == "action") {
-				$actioncount++;
-				if (strtolower($row2['optionnumber']) == "n") { //direct the call now don't wait for dtmf
-					//echo "now found\n";
-					$actiondirect = true;
-					$actiondirecttype = $row2['optiontype'];
-					$actiondirectprofile = $row2['optionprofile'];
-					$actiondirectdest = $row2['optiondata'];
-					$actiondirectdesc = $row2['optiondesc'];
-				}
-				if (strtolower($row2['optionnumber']) == "d") { //default option used when dtmf doesn't match any other option
-					//echo "default found\n";
-					$actiondefault = true;
-					$actiondefaulttype = $row2['optiontype'];
-					$actiondefaultprofile = $row2['optionprofile'];
-					$actiondefaultdest = $row2['optiondata'];
-					$actiondefaultdesc = $row2['optiondesc'];
-					$actiondefaultrecording = $row2['optionrecording'];
-				}
-			}
-		} //end while
-		unset ($prep_statement_2);
-
-		//$tmp .= "action count: ".$actioncount."<br />\n";
-		if ($actioncount > 0) {
-			if ($actiondirect) {
-				$tmp .= " if (condition) {\n";
-				$tmp .= "    //direct\n";
-				$tmp .= "    //console_log( \"info\", \"action direct\\n\" );\n";
-
-				//play the option recording if it exists
-				if (strlen($row2['optionrecording']) > 0) {
-					$option_recording_filename = get_recording_filename($row2['optionrecording']);
-					$tmp .= "    session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
-				}
-
-				$tmp .= "    session.execute(\"".$actiondirecttype."\", \"".$actiondirectdest."\"); //".$actiondirectdesc."\n";
-
-				//if ($actiondirecttype == "extension") {
-				//	$tmp .= "    sofia_contact_".$actiondirectdest." = get_sofia_contact(\"".$actiondirectdest."\",domain_name, \"".$actiondirectprofile."\");\n";
-				//	$tmp .= "    session.execute(\"bridge\", sofia_contact_".$actiondirectdest."); //".$actiondirectdest."\n";
-				//	if ($actiondirectprofile == "auto") {
-				//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$actiondirectdest."\");\n";
-				//	}
-				//	else {
-				//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$actiondirectdest."\");\n";
-				//	}
-				//}
-				//if ($actiondirecttype == "voicemail") {
-				//	if ($actiondirectprofile == "auto") {
-				//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$actiondirectdest."\");\n";
-				//	}
-				//	else {
-				//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$actiondirectdest."\");\n";
-				//	}
-				//}
-				//if ($actiondirecttype == "sip uri") {
-				//	$tmp .= "    session.execute(\"bridge\", \"".$actiondirectdest."\"); //".$actiondirectdest."\n";
-				//}
-			$tmp .= "}\n";
-
-		}
-		else {
-			$tmp .= " if (condition) {\n";
-			$tmp .= "    //action\n";
-			$tmp .= "\n";
-			$tmp .= "     //console_log( \"info\", \"action call now don't wait for dtmf\\n\" );\n";
-			$tmp .= "      var dtmf = new Object( );\n";
-			$tmp .= "     dtmf.digits = \"\";\n";
-			$tmp .= "     if ( session.ready( ) ) {\n";
-			$tmp .= "         session.answer( );\n";
-			$tmp .= "\n";
-			$tmp .= "         digitmaxlength = 1;\n";
-			$tmp .= "         while (session.ready() && ! exit ) {\n";
-			$tmp .= "           session.streamFile( \"".$switch_recordings_dir."/".$recording_action_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
-			$tmp .= "           if (session.ready()) {\n";
-			$tmp .= "           	if (dtmf.digits.length == 0) {\n";
-			$tmp .= "           		dtmf.digits +=  session.getDigits(1, \"#\", ".($row['aatimeout']*1000)."); // ".$row['aatimeout']." seconds\n";
-			$tmp .= "           		if (dtmf.digits.length == 0) {\n";
-
-			//$tmp .= "           			console_log( "info", "time out option: " + dtmf.digits + "\n" );\n";
-
-					//find the timeout auto attendant options with the correct action
-					$sql = "";
-					$sql .= "select * from v_auto_attendant_options ";
-					$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
-					$sql .= "and domain_uuid = '$domain_uuid' ";
-					$prep_statement_2 = $db->prepare($sql);
-					$prep_statement_2->execute();
-					while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-						//$auto_attendant_id = $row2["auto_attendant_id"];
-						//$optionaction = $row2["optionaction"];
-						//$optionnumber = $row2["optionnumber"];
-						//$optiontype = $row2["optiontype"];
-						//$optiondata = $row2["optiondata"];
-						//$optionprofile = $row2["optionprofile"];
-						//$optiondescr = $row2["optiondescr"];
-
-						if ($row2['optionaction'] == "action") {
-							if (strtolower($row2['optionnumber']) == "t") {
-
-								//play the option recording if it exists
-								if (strlen($row2['optionrecording']) > 0) {
-									$option_recording_filename = get_recording_filename($row2['optionrecording']);
-									$tmp .= "                 	session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
-								}
-
-								$tmp .= "                 	session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-
-								//if ($row2['optiontype'] == "extension") {
-								//	$tmp .= "                 	sofia_contact_".$row2['optiondata']." = get_sofia_contact(\"".$row2['optiondata']."\",domain_name, \"".$row2['optionprofile']."\");\n";
-								//	$tmp .= "                 	session.execute(\"bridge\", sofia_contact_".$row2['optiondata']."); //".$row2['optiondescr']."\n";
-								//	if ($row2['optionprofile'] == "auto") {
-								//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
-								//	}
-								//	else {
-								//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
-								//	}
-								//}
-								//if ($row2['optiontype'] == "voicemail") {
-								//	if ($row2['optionprofile'] == "auto") {
-								//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-								//	}
-								//	else {
-								//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-								//	}
-								//}
-								//if ($row2['optiontype'] == "sip uri") {
-								//	$tmp .= "                 	session.execute(\"bridge\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-								//}
-							}
-						} //end anti-action
-
-					} //end while
-					unset ($prep_statement_2);
-
-
-			$tmp .= "           		}\n";
-			$tmp .= "           		else {\n";
-			$tmp .= "           			break; //dtmf found end the while loop\n";
-			$tmp .= "           		}\n";
-			$tmp .= "           	}\n";
-			$tmp .= "           }\n";
-			$tmp .= "         }\n";
-			$tmp .= "\n";
-			$tmp .= "         //pickup the remaining digits\n";
-			//$tmp .= "         //http://wiki.freeswitch.org/wiki/Session_getDigits\n";
-			//$tmp .= "         //getDigits(length, terminators, timeout, digit_timeout, abs_timeout)\n";
-			//$tmp .= "       //dtmf.digits +=  session.getDigits(2, \"#\", 3000); //allow up to 3 digits\n";
-			$tmp .= "         dtmf.digits +=  session.getDigits(4, \"#\", 3000); //allow up to 5 digits\n";
-			$tmp .= "\n";
-			$tmp .= "\n";
-			//$tmp .= "         console_log( \"info\", \"Auto Attendant Digit Pressed: \" + dtmf.digits + \"\\n\" );\n";
-
-
-			//action
-			$tmpaction = "";
-
-			$tmp .= "         if ( dtmf.digits.length > \"0\" ) {\n\n";
-			$x = 0;
-
-			$sql = "";
-			$sql .= "select * from v_auto_attendant_options ";
-			$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
-			$sql .= "and domain_uuid = '$domain_uuid' ";
-			$prep_statement_2 = $db->prepare($sql);
-			$prep_statement_2->execute();
-			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-				//$auto_attendant_id = $row2["auto_attendant_id"];
-				//$optionaction = $row2["optionaction"];
-				//$optionnumber = $row2["optionnumber"];
-				//$optiontype = $row2["optiontype"];
-				//$optiondata = $row2["optiondata"];
-				//$optionprofile = $row2["optionprofile"];
-				//$optiondescr = $row2["optiondescr"];
-				$tmpactiondefault = "";
-
-				if ($row2['optionaction'] == "action") {
-					//$tmpaction .= "\n";
-
-					switch ($row2['optionnumber']) {
-					//case "t":
-					//		break;
-					//case "d":
-					//		break;
-					default:
-							//$tmpaction .= "             //console_log( \"info\", \"Auto Attendant Detected 1 digit \\n\" );\n";
-							if ($x == 0) {
-								$tmpaction .= "             if ( dtmf.digits == \"".$row2['optionnumber']."\" ) { //".$row2['optiondescr']."\n";
-							}
-							else {
-								$tmpaction .= "             else if ( dtmf.digits == \"".$row2['optionnumber']."\" ) { //".$row2['optiondescr']."\n";
-							}
-
-							//play the option recording if it was provided 
-							if (strlen($row2['optionrecording']) > 0) {
-								$option_recording_filename = get_recording_filename($row2['optionrecording']);
-								$tmpaction .= "                 session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
-							}
-
-							$tmpaction .= "                 session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-
-							//if ($row2['optiontype'] == "extension") {
-							//	$tmpaction .= "                 sofia_contact_".$row2['optiondata']." = get_sofia_contact(\"".$row2['optiondata']."\",domain_name, \"".$row2['optionprofile']."\");\n";
-							//	$tmpaction .= "                 session.execute(\"bridge\", sofia_contact_".$row2['optiondata']."); //".$row2['optiondescr']."\n";
-							//	if ($row2['optionprofile'] == "auto") {
-							//		$tmpaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
-							//	}
-							//	else {
-							//		$tmpaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-							//	}
-							//}
-							//if ($row2['optiontype'] == "voicemail") {
-							//	if ($row2['optionprofile'] == "auto") {
-							//		$tmpaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-							//	}
-							//	else {
-							//		$tmpaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-							//	}
-							//}
-							//if ($row2['optiontype'] == "sip uri") {
-							//	$tmpaction .= "                 session.execute(\"bridge\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-							//}
-
-							$tmpaction .= "             }\n";
-					}
-
-					$x++;
-				} //end auto_attendant_id
-
-			} //end while
-			unset ($prep_statement_2);
-
-			$tmp .= $tmpaction;
-			if ($row['aadirectdial'] == "true") {
-				$tmp .= "             else {\n";
-				$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML ".$_SESSION["context"]."\");\n";
-				//$tmp .= $tmpactiondefault;
-				$tmp .= "             }\n";
-			}
-			else {
-				if ($actiondefault) {
-					$tmp .= "             else {\n";
-					$tmp .= "	                  //console_log( \"info\", \"default option when there is no matching dtmf found\\n\" );\n";
-
-					//play the option recording if it exists
-					if (strlen($actiondefaultrecording) > 0) {
-						$option_recording_filename = get_recording_filename($actiondefaultrecording);
-						$tmp .= "	                  session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
-					}
-
-					$tmp .= "	                  session.execute(\"".$actiondefaulttype."\", \"".$actiondefaultdest."\"); //".$actiondefaultdesc."\n";
-
-					//if ($actiondefaulttype == "extension") {
-					//	$tmp .= "	                  sofia_contact_".$actiondefaultdest." = get_sofia_contact(\"".$actiondefaultdest."\",domain_name, \"".$actiondefaultprofile."\");\n";
-					//	$tmp .= "	                  session.execute(\"bridge\", sofia_contact_".$actiondefaultdest."); //".$actiondefaultdest."\n";
-					//	if ($actiondirectprofile == "auto") {
-					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$actiondefaultdest."\");\n";
-					//	}
-					//	else {
-					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$actiondefaultdest."\");\n";
-					//	}
-					//}
-					//if ($actiondefaulttype == "voicemail") {
-					//	if ($actiondirectprofile == "auto") {
-					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$actiondefaultdest."\");\n";
-					//	}
-					//	else {
-					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$actiondefaultdest."\");\n";
-					//	}
-					//}
-					//if ($actiondefaulttype == "sip uri") {
-					//	$tmp .= "	                  session.execute(\"bridge\", \"".$actiondefaultdest."\"); //".$actiondefaultdest."\n";
-					//}
-
-					$tmp .= "             }\n";
-
-				}
-			}
-
-			$tmp .= "\n";
-			unset($tmpaction);
-
-
-			$tmp .= "          } \n";
-			//$tmp .= "          else if ( dtmf.digits.length == \"4\" ) {\n";
-			//$tmp .= "	                  //Transfer to the extension the caller\n";
-			//$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML ".$_SESSION["context"]."\");\n";
-			//$tmp .= "          } else {\n";
-			//$tmp .= $tmpactiondefault;
-			//$tmp .= "          }\n";
-			$tmp .= "\n";
-			$tmp .= "     } //end if session.ready\n";
-			$tmp .= "\n";
-			$tmp .= " }\n"; //end if condition
-
-		   }	//if ($actiondirect)
-		} //actioncount
-
-		$antiactiondirect = false;
-		$antiactiondefault = false;
-		$antiactioncount = 0;
-
-		$sql = "";
-		$sql .= "select * from v_auto_attendant_options ";
-		$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
-		$sql .= "and domain_uuid = '$domain_uuid' ";
-		$prep_statement_2 = $db->prepare($sql);
-		$prep_statement_2->execute();
-		while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-			//$auto_attendant_id = $row2["auto_attendant_id"];
-			//$optionaction = $row2["optionaction"];
-			//$optionnumber = $row2["optionnumber"];
-			//$optiontype = $row2["optiontype"];
-			//$optionprofile = $row2["optionprofile"];
-			//$optiondata = $row2["optiondata"];
-			//$optiondescr = $row2["optiondescr"];
-
-			if ($row2['optionaction'] == "anti-action") {
-				$antiactioncount++;
-				if (strtolower($row2['optionnumber']) == "n") { //direct the call now don't wait for dtmf
-					$antiactiondirect = true;
-					$antiactiondirecttype = $row2['optiontype'];
-					$antiactiondirectdest = $row2['optiondata'];
-					$antiactiondirectdesc = $row2['optiondesc'];
-					$antiactiondirectprofile = $row2['optionprofile'];
-				}
-				if (strtolower($row2['optionnumber']) == "d") { //default option used when an dtmf doesn't match any option
-					$antiactiondefault = true;
-					$antiactiondefaulttype = $row2['optiontype'];
-					$antiactiondefaultdest = $row2['optiondata'];
-					$antiactiondefaultdesc = $row2['optiondesc'];
-					$antiactiondefaultrecording = $row2['optionrecording'];
-					$antiactiondefaultprofile = $row2['optionprofile'];
-				}
-			}
-		} //end while
-		unset ($prep_statement_2);
-		//$tmp .= "anti-action count: ".$antiactioncount."<br />\n";
-
-		if ($antiactioncount > 0) {
-		  if ($antiactiondirect) {
-			$tmp .= " else {\n";
-			$tmp .= "     //console_log( \"info\", \"anti-action call now don't wait for dtmf\\n\" );\n";
-
-			$tmp .= "     session.execute(\"".$antiactiondirecttype."\", \"".$antiactiondirectdest."\"); //".$antiactiondefaultdesc."\n";
-
-			//if ($antiactiondirecttype == "extension") {
-			//	$tmp .= "    sofia_contact_".$antiactiondirectdest." = get_sofia_contact(\"".$antiactiondirectdest."\",domain_name, \"".$antiactiondirectprofile."\");\n";
-			//	$tmp .= "    session.execute(\"bridge\", sofia_contact_".$antiactiondirectdest."); //".$antiactiondirectdest."\n";
-			//	if ($antiactiondirectprofile == "auto") {
-			//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$antiactiondirectdest."\");\n";
-			//	}
-			//	else {
-			//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$antiactiondirectdest."\");\n";
-			//	}
-			//}
-			//if ($antiactiondirecttype == "voicemail") {
-			//	if ($antiactiondirectprofile == "auto") {
-			//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$antiactiondirectdest."\");\n";
-			//	}
-			//	else {
-			//		$tmp .= "    session.execute(\"voicemail\", \"default \${domain} ".$antiactiondirectdest."\");\n";
-			//	}
-			//}
-			//if ($antiactiondirecttype == "sip uri") {
-			//	$tmp .= "    session.execute(\"bridge\", \"".$antiactiondirectdest."\"); //".$antiactiondirectdest."\n";
-			//}
-			$tmp .= "}\n";
-		}
-		else {
-			$tmp .= " else {\n";
-			$tmp .= "     //anti-action\n";
-			$tmp .= "     //console_log( \"info\", \"anti-action options\\n\" );\n";
-			$tmp .= "\n";
-			$tmp .= "     var dtmf = new Object( );\n";
-			$tmp .= "     dtmf.digits = \"\";\n";
-			$tmp .= "     if ( session.ready( ) ) {\n";
-			$tmp .= "         session.answer( );\n";
-			$tmp .= "\n";
-			$tmp .= "         digitmaxlength = 1;\n";
-			$tmp .= "         while (session.ready() && ! exit ) {\n";
-			$tmp .= "           session.streamFile( \"".$switch_recordings_dir."/".$recording_antiaction_filename."\", mycb, \"dtmf ".$row['aatimeout']."\" );\n";
-			$tmp .= "           if (session.ready()) {\n";
-			$tmp .= "           	if (dtmf.digits.length == 0) {\n";
-			$tmp .= "           		dtmf.digits +=  session.getDigits(1, \"#\", ".($row['aatimeout']*1000)."); // ".$row['aatimeout']." seconds\n";
-			$tmp .= "           		if (dtmf.digits.length == 0) {\n";
-			//$tmp .= "           			console_log( "info", "time out option: " + dtmf.digits + "\n" );\n";
-
-			//find the timeout auto attendant options with the correct action
-				$sql = "";
-				$sql .= "select * from v_auto_attendant_options ";
-				$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
-				$sql .= "and domain_uuid = '$domain_uuid' ";
-				$prep_statement_2 = $db->prepare($sql);
-				$prep_statement_2->execute();
-				while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-					$auto_attendant_id = $row2["auto_attendant_id"];
-					$optionaction = $row2["optionaction"];
-					$optionnumber = $row2["optionnumber"];
-					$optiontype = $row2["optiontype"];
-					$optionprofile = $row2["optionprofile"];
-					$optiondata = $row2["optiondata"];
-					$optiondescr = $row2["optiondescr"];
-
-					if ($row2['optionaction'] == "anti-action") {
-						 if (strtolower($row2['optionnumber']) == "t") {
-
-							//play the option recording if it exists
-							if (strlen($row2['optionrecording']) > 0) {
-								$option_recording_filename = get_recording_filename($row2['optionrecording']);
-								$tmp .= "                 	session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
-							}
-
-							$tmp .= "                 	session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-
-							//if ($row2['optiontype'] == "extension") {
-							//	$tmp .= "                 	sofia_contact_".$row2['optiondata']." = get_sofia_contact(\"".$row2['optiondata']."\",domain_name, \"".$row2['optionprofile']."\");\n";
-							//	$tmp .= "                 	session.execute(\"bridge\", sofia_contact_".$row2['optiondata']."); //".$row2['optiondescr']."\n";
-							//	if ($row2['optionprofile'] == "auto") {
-							//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
-							//	}
-							//	else {
-							//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
-							//	}
-							//}
-							//if ($row2['optiontype'] == "voicemail") {
-							//	if ($row2['optionprofile'] == "auto") {
-							//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-							//	}
-							//	else {
-							//		$tmp .= "                 	session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-							//	}
-							//}
-							//if ($row2['optiontype'] == "sip uri") {
-							//	$tmp .= "                 	session.execute(\"bridge\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-							//}
-						 }
-
-					} //end anti-action
-
-				} //end while
-				unset ($prep_statement_2);
-
-			$tmp .= "           		}\n";
-			$tmp .= "           		else {\n";
-			$tmp .= "           			break; //dtmf found end the while loop\n";
-			$tmp .= "           		}\n";
-			$tmp .= "           	}\n";
-			$tmp .= "           }\n";
-			$tmp .= "         }\n";
-			$tmp .= "\n";
-			$tmp .= "         //pickup the remaining digits\n";
-			$tmp .= "         //http://wiki.freeswitch.org/wiki/Session_getDigits\n";
-			$tmp .= "         //getDigits(length, terminators, timeout, digit_timeout, abs_timeout)\n";
-			$tmp .= "         dtmf.digits +=  session.getDigits(4, \"#\", 3000);\n";
-			$tmp .= "\n";
-			$tmp .= "         console_log( \"info\", \"Auto Attendant Digit Pressed: \" + dtmf.digits + \"\\n\" );\n";
-			$tmp .= "\n";
-
-			$tmpantiaction = "";
-			$tmp .= "         if ( dtmf.digits.length > \"0\" ) {\n\n";
-
-			$x = 0;
-			$sql = "";
-			$sql .= "select * from v_auto_attendant_options ";
-			$sql .= "where auto_attendant_id = '".$row['auto_attendant_id']."' ";
-			$sql .= "and domain_uuid = '$domain_uuid' ";
-			$prep_statement_2 = $db->prepare($sql);
-			$prep_statement_2->execute();
-			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-				$auto_attendant_id = $row2["auto_attendant_id"];
-				$optionaction = $row2["optionaction"];
-				$optionnumber = $row2["optionnumber"];
-				$optiontype = $row2["optiontype"];
-				$optionprofile = $row2["optionprofile"];
-				$optiondata = $row2["optiondata"];
-				$optiondescr = $row2["optiondescr"];
-
-				//find the correct auto attendant options with the correct action
-					if ($row2['optionaction'] == "anti-action") {
-						switch ($row2['optionnumber']) {
-						//case "t":
-						//		//break;
-						//case "d":
-						//		//break;
-						default:
-								//$tmpantiaction .= "             //console_log( \"info\", \"Auto Attendant Detected 1 digit \\n\" );\n";
-
-								if ($x == 0) {
-									$tmpantiaction .= "             if ( dtmf.digits == \"".$row2['optionnumber']."\" ) { //".$row2['optiondescr']."\n";
-								}
-								else {
-									$tmpantiaction .= "             else if ( dtmf.digits == \"".$row2['optionnumber']."\" ) { //".$row2['optiondescr']."\n";
-								}
-
-								//play the option recording if it was provided 
-								if (strlen($row2['optionrecording']) > 0) {
-									$option_recording_filename = get_recording_filename($row2['optionrecording']);
-									$tmpantiaction .= "             session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n\n";
-								}
-
-								$tmpantiaction .= "                 session.execute(\"".$row2['optiontype']."\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-
-								//if ($row2['optiontype'] == "extension") {
-								//	$tmpantiaction .= "                 sofia_contact_".$row2['optiondata']." = get_sofia_contact(\"".$row2['optiondata']."\",domain_name, \"".$row2['optionprofile']."\");\n";
-								//	$tmpantiaction .= "                 session.execute(\"bridge\", sofia_contact_".$row2['optiondata']."); //".$row2['optiondescr']."\n";
-								//	if ($row2['optionprofile'] == "auto") {
-								//		$tmpantiaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
-								//	}
-								//	else {
-								//		$tmpantiaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\");\n";
-								//	}
-								//}
-								//if ($row2['optiontype'] == "voicemail") {
-								//	if ($row2['optionprofile'] == "auto") {
-								//		$tmpantiaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-								//	}
-								//	else {
-								//		$tmpantiaction .= "                 session.execute(\"voicemail\", \"default \${domain} ".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-								//	}
-								//}
-								//if ($row2['optiontype'] == "sip uri") {
-								//	$tmpantiaction .= "                 session.execute(\"bridge\", \"".$row2['optiondata']."\"); //".$row2['optiondescr']."\n";
-								//}
-
-								$tmpantiaction .= "             }\n";
-
-						} //end switch
-
-						  $x++;
-					} //end anti-action
-
-			} //end while
-			unset ($prep_statement_2);
-
-			$tmp .= $tmpantiaction;
-			if ($row['aadirectdial'] == "true") {
-				$tmp .= "             else {\n";
-				$tmp .= "	                  session.execute(\"transfer\", dtmf.digits+\" XML ".$_SESSION["context"]."\");\n";	
-				//$tmp .= $tmpantiactiondefault;
-				$tmp .= "             }\n";
-			}
-			else {
-				if ($antiactiondefault) {
-					$tmp .= "             else {\n";
-					$tmp .= "	                  //console_log( \"info\", \"default option used when dtmf doesn't match any other option\\n\" );\n";
-
-					//play the option recording if it exists
-					if (strlen($antiactiondefaultrecording) > 0) {
-						$option_recording_filename = get_recording_filename($antiactiondefaultrecording);
-						$tmp .= "	                  session.streamFile( \"".$switch_recordings_dir."/".$option_recording_filename."\" );\n";
-					}
-
-					$tmp .= "	                  session.execute(\"".$antiactiondefaulttype."\", \"".$antiactiondefaultdest."\"); //".$antiactiondefaultdesc."\n";
-
-					//if ($antiactiondefaulttype == "extension") {
-					//	$tmp .= "	                  sofia_contact_".$antiactiondefaultdest." = get_sofia_contact(\"".$antiactiondefaultdest."\",domain_name, \"".$actiondirectprofile."\");\n";
-					//	$tmp .= "	                  session.execute(\"bridge\", sofia_contact_".$antiactiondefaultdest."); //".$antiactiondefaultdest."\n";
-					//	if ($actiondirectprofile == "auto") {
-					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$antiactiondefaultdest."\");\n";
-					//	}
-					//	else {
-					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$antiactiondefaultdest."\");\n";
-					//	}
-					//}
-					//if ($antiactiondefaulttype == "voicemail") {
-					//	if ($actiondirectprofile == "auto") {
-					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$antiactiondefaultdest."\");\n";
-					//	}
-					//	else {
-					//		$tmp .= "	                  session.execute(\"voicemail\", \"default \${domain} ".$antiactiondefaultdest."\");\n";
-					//	}
-					//}
-					//if ($antiactiondefaulttype == "sip uri") {
-					//	$tmp .= "	                  session.execute(\"bridge\", \"".$antiactiondefaultdest."\"); //".$antiactiondefaultdest."\n";
-					//}
-
-					$tmp .= "             }\n";
-				}
-			}
-			$tmp .= "\n";
-			unset($tmpantiaction);
-
-			$tmp .= "          } \n";
-			//$tmp .= "          else if ( dtmf.digits.length == \"3\" ) {\n";
-			//$tmp .= "                //Transfer to the extension the caller chose\n";
-			//$tmp .= "                session.execute(\"transfer\", dtmf.digits+\" XML ".$_SESSION["context"]."\"); \n";
-			//$tmp .= "          }\n";
-			//$tmp .= "          else {\n";
-			//$tmp .= $tmpantiactiondefault;
-			//$tmp .= "          }\n";
-			$tmp .= "\n";
-			$tmp .= "     } //end if session.ready\n";
-			$tmp .= "\n";
-			$tmp .=  " } //end if condition";
-		
-		   }	//if ($antiactiondirect)
-		} //antiactioncount
-		unset($tmpactiondefault);
-		unset($tmpantiactiondefault);
-
-		if (strlen($row['aaextension']) > 0) {
-			$aafilename = "autoattendant_".$row['aaextension'].".js";
-			$fout = fopen($switch_scripts_dir."/".$aafilename,"w");
-			fwrite($fout, $tmp);
-			unset($aafilename);
-			fclose($fout);
-		}
-
-	} //end while
-	$db->commit();
-
-	//apply settings reminder
-		$_SESSION["reload_xml"] = true;
-} //end auto attendant function
-
-
-function v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value) {
+function v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value) {
 	global $db, $db_type;
 	$dialplan_uuid = uuid();
 	$sql = "insert into v_dialplans ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
 	$sql .= "dialplan_uuid, ";
-	$sql .= "extension_name, ";
+	$sql .= "dialplan_name, ";
 	$sql .= "dialplan_order, ";
 	$sql .= "context, ";
 	$sql .= "enabled, ";
@@ -4219,7 +3276,7 @@ function v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
 	$sql .= "'$dialplan_uuid', ";
-	$sql .= "'$extension_name', ";
+	$sql .= "'$dialplan_name', ";
 	$sql .= "'$dialplan_order', ";
 	$sql .= "'$context', ";
 	$sql .= "'$enabled', ";
@@ -4289,12 +3346,12 @@ function sync_package_v_dialplan() {
 		$tmp = "";
 		$tmp .= "\n";
 
-		$extension_continue = '';
-		if ($row['extension_continue'] == "true") {
-			$extension_continue = "continue=\"true\"";
+		$dialplan_continue = '';
+		if ($row['dialplan_continue'] == "true") {
+			$dialplan_continue = "continue=\"true\"";
 		}
 
-		$tmp = "<extension name=\"".$row['extension_name']."\" $extension_continue>\n";
+		$tmp = "<extension name=\"".$row['dialplan_name']."\" $dialplan_continue>\n";
 
 		$sql = "";
 		$sql .= " select * from v_dialplan_details ";
@@ -4536,11 +3593,11 @@ function sync_package_v_dialplan() {
 		if (strlen($dialplan_order) == 5) { $dialplan_order = "999"; }
 
 		//remove invalid characters from the file names
-		$extension_name = $row['extension_name'];
-		$extension_name = str_replace(" ", "_", $extension_name);
-		$extension_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension_name);
+		$dialplan_name = $row['dialplan_name'];
+		$dialplan_name = str_replace(" ", "_", $dialplan_name);
+		$dialplan_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $dialplan_name);
 
-		$dialplan_filename = $dialplan_order."_v_dialplan_".$extension_name.".xml";
+		$dialplan_filename = $dialplan_order."_v_dialplan_".$dialplan_name.".xml";
 		$fout = fopen($v_dialplan_default_dir."/".$row['context']."/".$dialplan_filename,"w");
 		fwrite($fout, $tmp);
 		fclose($fout);
@@ -4905,7 +3962,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 							unset ($sql, $prep_statement_2);
 
 						//create the ivr menu dialplan extension
-							$extension_name = $ivr_menu_name;
+							$dialplan_name = $ivr_menu_name;
 							$dialplan_order ='999';
 							$context = $row['ivr_menu_context'];
 							$context = 'default';
@@ -4915,14 +3972,14 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 							if ($action  == "add") {
 								$opt_1_name = 'ivr_menu_uuid';
 								$opt_1_value = $row['ivr_menu_uuid'];
-								$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 							}
 							if ($action  == "update") {
 								$ivr_menu_uuid = $row['ivr_menu_uuid'];
 
 								$sql = "";
-								$sql = "update v_dialplan set ";
-								$sql .= "extension_name = '$extension_name', ";
+								$sql = "update v_dialplans set ";
+								$sql .= "dialplan_name = '$dialplan_name', ";
 								$sql .= "dialplan_order = '$dialplan_order', ";
 								$sql .= "context = '$context', ";
 								$sql .= "enabled = '$enabled', ";
@@ -5141,7 +4198,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						if ($action == 'add') {
 
 							//create queue entry in the dialplan
-								$extension_name = $queue_name;
+								$dialplan_name = $queue_name;
 								$dialplan_order ='9';
 								//$context = $row['queue_context'];
 								$context = 'default';
@@ -5149,7 +4206,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								$descr = $queue_description;
 								$opt_1_name = 'call_center_queue_uuid';
 								$opt_1_value = $row['call_center_queue_uuid'];
-								$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
 
 								//group 1
@@ -5290,7 +4347,7 @@ if (!function_exists('sync_package_v_call_center')) {
 						if ($action == 'update') {
 							//update the queue entry in the dialplan
 
-								$extension_name = $queue_name;
+								$dialplan_name = $queue_name;
 								$dialplan_order = '9';
 								//$context = $row['queue_context'];
 								$context = 'default';
@@ -5299,8 +4356,8 @@ if (!function_exists('sync_package_v_call_center')) {
 								$call_center_queue_uuid = $row['call_center_queue_uuid'];
 
 								$sql = "";
-								$sql = "update v_dialplan set ";
-								$sql .= "extension_name = '$extension_name', ";
+								$sql = "update v_dialplans set ";
+								$sql .= "dialplan_name = '$dialplan_name', ";
 								$sql .= "dialplan_order = '$dialplan_order', ";
 								$sql .= "context = '$context', ";
 								$sql .= "enabled = '$enabled', ";
@@ -5347,7 +4404,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								//echo $sql."<br />";
 								$db->query($sql);
 
-								unset($extension_name);
+								unset($dialplan_name);
 								unset($order);
 								unset($context);
 								unset($enabled);

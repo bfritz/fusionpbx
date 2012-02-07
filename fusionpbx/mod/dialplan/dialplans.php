@@ -180,7 +180,7 @@ require_once "includes/paging.php";
 						$dialplan_number = str_replace("|", " ", $dialplan_number);
 						$row['dialplan_number'] = $dialplan_number;
 					//update the extension number
-						$sql = "update v_dialplan set ";
+						$sql = "update v_dialplans set ";
 						$sql .= "dialplan_number = '$dialplan_number', ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."'";

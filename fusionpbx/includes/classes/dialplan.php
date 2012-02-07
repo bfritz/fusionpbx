@@ -36,12 +36,12 @@ include "root.php";
 			var $switch_conf_dir;
 
 			//dialplans
-			var $extension_name;
+			var $dialplan_name;
 			var $extension_continue;
 			var $dialplan_order;
 			var $context;
 			var $enabled;
-			var $descr;
+			var $description;
 
 			//dialplan_details
 			var $tag;
@@ -99,15 +99,15 @@ include "root.php";
 			function dialplan_detail_update() {
 				global $db;
 				$sql = "";
-				$sql = "update v_dialplan set ";
-				$sql .= "extension_name = '$this->extension_name', ";
+				$sql = "update v_dialplans set ";
+				$sql .= "dialplan_name = '$this->dialplan_name', ";
 				$sql .= "dialplan_order = '$this->dialplan_order', ";
-				$sql .= "context = '$this->context', ";
-				$sql .= "enabled = '$this->enabled', ";
-				$sql .= "descr = '$this->descr' ";
+				$sql .= "dialplan_context = '$this->context', ";
+				$sql .= "dialplan_enabled = '$this->enabled', ";
+				$sql .= "dialplan_description = '$this->description' ";
 				$sql .= "where domain_uuid = '$this->domain_uuid' ";
-				$sql .= "and opt_1_name = '$this->opt_1_name' ";
-				$sql .= "and opt_1_value = '$this->opt_1_value' ";
+				//$sql .= "and opt_1_name = '$this->opt_1_name' ";
+				//$sql .= "and opt_1_value = '$this->opt_1_value' ";
 				//echo "sql: ".$sql."<br />";
 				$db->query($sql);
 				unset($sql);

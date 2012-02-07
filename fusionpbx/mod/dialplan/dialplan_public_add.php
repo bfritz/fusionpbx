@@ -84,7 +84,7 @@ require_once "includes/paging.php";
 		}
 		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
 		$dialplan_description = check_str($_POST["dialplan_description"]);
-		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to dialplan_enabled
+		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to enabled
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {

@@ -37,10 +37,9 @@ require_once "includes/paging.php";
 $order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
-
 //POST to PHP variables
 	if (count($_POST)>0) {
-		$extension_name = check_str($_POST["extension_name"]);
+		$dialplan_name = check_str($_POST["dialplan_name"]);
 		$dialplan_order = check_str($_POST["dialplan_order"]);
 		$condition_field_1 = check_str($_POST["condition_field_1"]);
 		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
@@ -64,20 +63,20 @@ $order = $_GET["order"];
 		//$action_application_2 = check_str($_POST["action_application_2"]);
 		//$action_data_2 = check_str($_POST["action_data_2"]);
 
-		$enabled = check_str($_POST["enabled"]);
-		$description = check_str($_POST["description"]);
-		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
+		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
+		$dialplan_description = check_str($_POST["dialplan_description"]);
+		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to enabled
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
+		if (strlen($dialplan_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		//if (strlen($condition_field_1) == 0) { $msg .= "Please provide: Condition Field<br>\n"; }
 		if (strlen($condition_expression_1) == 0) { $msg .= "Please provide: Condition Expression<br>\n"; }
 		if (strlen($action_application_1) == 0) { $msg .= "Please provide: Action Application<br>\n"; }
-		//if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
-		//if (strlen($description) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($dialplan_enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
+		//if (strlen($dialplan_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -95,9 +94,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$count = $db->exec("BEGIN;"); //returns affected rows
 
 	//add the entries to the dialplan
-		$context = 'default';
+		$dialplan_context = 'default';
 		$opt_1_name = 'call_forward_uuid';
-		$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $opt_1_name, $opt_1_value);
 		if (strlen($dialplan_uuid) > 0 && strlen($condition_expression_1) > 0) {
 			//add condition 1
 				$tag = 'condition'; //condition, action, antiaction
@@ -228,7 +227,7 @@ if (field_type == "condition_field_2") {
 	echo "    Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_name' maxlength='255' value=\"$dialplan_name\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -265,10 +264,10 @@ if (field_type == "condition_field_2") {
 		foreach($result as $row) {
 			//print_r( $row );
 			if ($condition_expression_1 == "^".$row[extension]."$") {
-				echo "    <option value='".$row[extension]."' selected>".$row[extension]." ".$row[description]."</option>\n";
+				echo "    <option value='".$row[extension]."' selected>".$row[extension]." ".$row[dialplan_description]."</option>\n";
 			}
 			else {
-				echo "    <option value='".$row[extension]."'>".$row[extension]." ".$row[description]."</option>\n";
+				echo "    <option value='".$row[extension]."'>".$row[extension]." ".$row[dialplan_description]."</option>\n";
 			}
 		} //end foreach
 		unset($sql, $result, $row_count);
@@ -395,15 +394,15 @@ if (field_type == "condition_field_2") {
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
+	echo "    <select class='formfld' name='dialplan_enabled' style='width: 60%;'>\n";
 	//echo "    <option value=''></option>\n";
-	if ($enabled == "true") { 
+	if ($dialplan_enabled == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($enabled == "false") { 
+	if ($dialplan_enabled == "false") { 
 		echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {
@@ -420,7 +419,7 @@ if (field_type == "condition_field_2") {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td colspan='4' class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

@@ -123,7 +123,7 @@ $order = $_GET["order"];
 		$flags = check_str($_POST["flags"]);
 		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
 		$description = check_str($_POST["description"]);
-		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to dialplan_enabled
+		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to enabled
 	}
 
 //process the http post
@@ -163,7 +163,7 @@ $order = $_GET["order"];
 
 			//add the main dialplan include entry
 				$dialplan_uuid = uuid();
-				$sql = "insert into v_dialplan ";
+				$sql = "insert into v_dialplans ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "dialplan_uuid, ";
@@ -289,7 +289,7 @@ $order = $_GET["order"];
 
 		//update the data
 			if ($action == "update" && permission_exists('conferences_edit')) {
-				$sql = "update v_dialplan set ";
+				$sql = "update v_dialplans set ";
 				$sql .= "dialplan_name = '$dialplan_name', ";
 				$sql .= "dialplan_order = '$dialplan_order', ";
 				//$sql .= "dialplan_continue = '$dialplan_continue', ";

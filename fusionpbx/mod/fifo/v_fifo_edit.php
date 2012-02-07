@@ -89,7 +89,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('fifo_add')) {
 				$dialplan_uuid = uuid();
-				$sql = "insert into v_dialplan ";
+				$sql = "insert into v_dialplans ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "dialplan_uuid, ";

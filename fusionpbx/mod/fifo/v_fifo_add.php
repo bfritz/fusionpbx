@@ -48,9 +48,9 @@ require_once "includes/paging.php";
 		$pin_number = check_str($_POST["pin_number"]);
 		$profile = check_str($_POST["profile"]);
 		$flags = check_str($_POST["flags"]);
-		$enabled = check_str($_POST["enabled"]);
-		$description = check_str($_POST["description"]);
-		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
+		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
+		$dialplan_description = check_str($_POST["dialplan_description"]);
+		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to enabled
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -63,8 +63,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($pin_number) == 0) { $msg .= "Please provide: PIN Number<br>\n"; }
 		//if (strlen($profile) == 0) { $msg .= "Please provide: profile<br>\n"; }
 		//if (strlen($flags) == 0) { $msg .= "Please provide: Flags<br>\n"; }
-		//if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
-		//if (strlen($description) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($dialplan_enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
+		//if (strlen($dialplan_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -93,10 +93,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//</extension>
 		//--------------------------------------------------------
 			$extension_name = $extension_name."_call_queue";
-			$context = 'default';
-			//$opt_1_name = 'zzz_id';
-			//$opt_1_value = $row['zzz_id'];
-			$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+			$dialplan_context = 'default';
+			$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $opt_1_name, $opt_1_value);
 			if (strlen($dialplan_uuid) > 0) {
 				//set the destination number
 					$tag = 'condition'; //condition, action, antiaction
@@ -145,10 +143,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//</extension>
 		//--------------------------------------------------------
 			$extension_name = $extension_name."_agent_queue";
-			$context = 'default';
-			//$opt_1_name = 'zzz_id';
-			//$opt_1_value = $row['zzz_id'];
-			$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+			$dialplan_context = 'default';
+			$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $opt_1_name, $opt_1_value);
 			if (strlen($dialplan_uuid) > 0) {
 				//set the destination number
 					$tag = 'condition'; //condition, action, antiaction
@@ -197,10 +193,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//</extension>
 		//--------------------------------------------------------
 			$extension_name = $extension_name."_agent_login_logout";
-			$context = 'default';
-			//$opt_1_name = 'zzz_id';
-			//$opt_1_value = $row['zzz_id'];
-			$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+			$dialplan_context = 'default';
+			$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $opt_1_name, $opt_1_value);
 			if (strlen($dialplan_uuid) > 0) {
 				//set the destination number
 					$tag = 'condition'; //condition, action, antiaction
@@ -344,14 +338,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
-	if ($enabled == "true") { 
+	echo "    <select class='formfld' name='dialplan_enabled' style='width: 60%;'>\n";
+	if ($dialplan_enabled == "true") { 
 		echo "    <option value='true' selected='selected' >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($enabled == "false") { 
+	if ($dialplan_enabled == "false") { 
 		echo "    <option value='false' selected='selected' >false</option>\n";
 	}
 	else {
@@ -368,7 +362,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td colspan='4' class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -425,7 +419,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "</table>\n";
 	echo "</div>";
-
 	echo "<br><br>";
 
 //show the footer

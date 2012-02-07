@@ -172,7 +172,7 @@ else {
 
 		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
 		$dialplan_description = check_str($_POST["dialplan_description"]);
-		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to dialplan_enabled
+		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to enabled
 	}
 
 //process the http form values
