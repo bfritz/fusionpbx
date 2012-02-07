@@ -234,11 +234,11 @@ function build_menu() {
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_dialplans.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_dialplans.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_dialplan_edit.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_dialplan_details_edit.php") { $menu_selected = true; }
-		$tab_array[] = array(gettext("Dialplan"), $menu_selected, $relative_url."/v_dialplans.php");
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/dialplans.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/dialplans.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/dialplan_edit.php") { $menu_selected = true; }
+		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/dialplan_details_edit.php") { $menu_selected = true; }
+		$tab_array[] = array(gettext("Dialplan"), $menu_selected, $relative_url."/dialplans.php");
 		unset($menu_selected);
 
 		$menu_selected = false;
@@ -277,14 +277,6 @@ function build_menu() {
 		unset($menu_selected);
 
 		$menu_selected = false;
-		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_public.php") { $menu_selected = true; }	
-		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_public.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_public_edit.php") { $menu_selected = true; }
-		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_public_details_edit.php") { $menu_selected = true; }	
-		$tab_array[] = array(gettext("Public"), $menu_selected, $relative_url."/v_public.php");
-		unset($menu_selected);
-
-		$menu_selected = false;
 		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_status.php") { $menu_selected = true; }
 		$tab_array[] = array(gettext("Status"), $menu_selected, $relative_url."/v_status.php");
 		unset($menu_selected);
@@ -293,8 +285,6 @@ function build_menu() {
 		if ($_SERVER["SCRIPT_NAME"] == $relative_url."/v_vars.php") { $menu_selected = true; }
 		$tab_array[] = array(gettext("Vars"), $menu_selected, $relative_url."/v_vars.php");
 		unset($menu_selected);
-
-		//display_top_tabs($tab_array);
 	}
 }
 

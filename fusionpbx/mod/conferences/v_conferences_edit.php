@@ -93,14 +93,14 @@ $order = $_GET["order"];
 
 //http post to php variables
 	if (count($_POST)>0) {
-		$extension_name = check_str($_POST["extension_name"]);
-		$extension_number = check_str($_POST["extension_number"]);
+		$dialplan_name = check_str($_POST["dialplan_name"]);
+		$dialplan_number = check_str($_POST["dialplan_number"]);
 		$dialplan_order = check_str($_POST["dialplan_order"]);
 		$pin_number = check_str($_POST["pin_number"]);
 
 		//replace common characters that can cause problems
-		$extension_name = str_replace(" ", "-", $extension_name);
-		$extension_name = str_replace("'", "", $extension_name);
+		$dialplan_name = str_replace(" ", "-", $dialplan_name);
+		$dialplan_name = str_replace("'", "", $dialplan_name);
 
 		//prepare the user list for the database
 		$user_list = $_POST["user_list"];
@@ -121,21 +121,20 @@ $order = $_GET["order"];
 
 		$profile = check_str($_POST["profile"]);
 		$flags = check_str($_POST["flags"]);
-		$enabled = check_str($_POST["enabled"]);
+		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
 		$description = check_str($_POST["description"]);
-		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
+		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to dialplan_enabled
 	}
 
 //process the http post
 	if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//check for all required data
-			if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-			if (strlen($extension_name) == 0) { $msg .= "Please provide: Conference Name<br>\n"; }
-			if (strlen($extension_number) == 0) { $msg .= "Please provide: Extension Number<br>\n"; }
+			if (strlen($dialplan_name) == 0) { $msg .= "Please provide: Conference Name<br>\n"; }
+			if (strlen($dialplan_number) == 0) { $msg .= "Please provide: Extension Number<br>\n"; }
 			//if (strlen($pin_number) == 0) { $msg .= "Please provide: PIN Number<br>\n"; }
 			if (strlen($profile) == 0) { $msg .= "Please provide: profile<br>\n"; }
 			//if (strlen($flags) == 0) { $msg .= "Please provide: Flags<br>\n"; }
-			if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
+			if (strlen($dialplan_enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
 			//if (strlen($description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 			if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 				require_once "includes/header.php";
@@ -157,7 +156,7 @@ $order = $_GET["order"];
 			if (strlen($action) > 0) {
 				$tmp_pin_number = ''; if (strlen($pin_number) > 0) { $tmp_pin_number = "+".$pin_number; }
 				$tmp_flags = ''; if (strlen($flags) > 0) { $tmp_flags = "+flags{".$flags."}"; }
-				$tmp_field_data = $extension_name.'-'.$v_domain."@".$profile.$tmp_pin_number.$tmp_flags;
+				$tmp_field_data = $dialplan_name.'-'.$v_domain."@".$profile.$tmp_pin_number.$tmp_flags;
 			}
 
 		if ($action == "add" && permission_exists('conferences_add')) {
@@ -168,22 +167,22 @@ $order = $_GET["order"];
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "dialplan_uuid, ";
-				$sql .= "extension_name, ";
+				$sql .= "dialplan_name, ";
 				$sql .= "dialplan_order, ";
-				$sql .= "extension_continue, ";
-				$sql .= "context, ";
-				$sql .= "enabled, ";
-				$sql .= "descr ";
+				$sql .= "dialplan_continue, ";
+				$sql .= "dialplan_context, ";
+				$sql .= "dialplan_enabled, ";
+				$sql .= "dialplan_description ";
 				$sql .= ") ";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'$dialplan_uuid', ";
-				$sql .= "'$extension_name', ";
+				$sql .= "'$dialplan_name', ";
 				$sql .= "'$dialplan_order', ";
 				$sql .= "'false', ";
 				$sql .= "'default', ";
-				$sql .= "'$enabled', ";
+				$sql .= "'$dialplan_enabled', ";
 				$sql .= "'$description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
@@ -207,7 +206,7 @@ $order = $_GET["order"];
 					$sql .= "'$dialplan_detail_uuid', ";
 					$sql .= "'condition', ";
 					$sql .= "'destination_number', ";
-					$sql .= "'^".$extension_number."$', ";
+					$sql .= "'^".$dialplan_number."$', ";
 					$sql .= "'1' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
@@ -291,12 +290,12 @@ $order = $_GET["order"];
 		//update the data
 			if ($action == "update" && permission_exists('conferences_edit')) {
 				$sql = "update v_dialplan set ";
-				$sql .= "extension_name = '$extension_name', ";
+				$sql .= "dialplan_name = '$dialplan_name', ";
 				$sql .= "dialplan_order = '$dialplan_order', ";
-				//$sql .= "extension_continue = '$extension_continue', ";
-				$sql .= "context = '$context', ";
-				$sql .= "enabled = '$enabled', ";
-				$sql .= "descr = '$description' ";
+				//$sql .= "dialplan_continue = '$dialplan_continue', ";
+				$sql .= "dialplan_context = '$dialplan_context', ";
+				$sql .= "dialplan_enabled = '$dialplan_enabled', ";
+				$sql .= "dialplan_description = '$description' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_uuid = '$dialplan_uuid'";
 				$db->exec(check_sql($sql));
@@ -315,7 +314,7 @@ $order = $_GET["order"];
 						$sql = "update v_dialplan_details set ";
 						//$sql .= "tag = '$tag', ";
 						//$sql .= "field_type = '$field_type', ";
-						$sql .= "field_data = '^".$extension_number."$', ";
+						$sql .= "field_data = '^".$dialplan_number."$', ";
 						$sql .= "field_order = '".$row['field_order']."' ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
@@ -388,12 +387,12 @@ $order = $_GET["order"];
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$row = $db->query($sql)->fetch();
-		$extension_name = $row['extension_name'];
-		$extension_name = str_replace("-", " ", $extension_name);
-		$context = $row['context'];
+		$dialplan_name = $row['dialplan_name'];
+		$dialplan_name = str_replace("-", " ", $dialplan_name);
+		$dialplan_context = $row['dialplan_context'];
 		$dialplan_order = $row['dialplan_order'];
-		$enabled = $row['enabled'];
-		$description = $row['descr'];
+		$dialplan_enabled = $row['dialplan_enabled'];
+		$description = $row['dialplan_description'];
 
 		$sql = "";
 		$sql .= "select * from v_dialplan_details ";
@@ -404,8 +403,8 @@ $order = $_GET["order"];
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			if ($row['field_type'] == "destination_number") {
-				$extension_number = $row['field_data'];
-				$extension_number = trim($extension_number, '^$');
+				$dialplan_number = $row['field_data'];
+				$dialplan_number = trim($dialplan_number, '^$');
 			}
 			$field_data_array = explode("=", $row['field_data']);
 			if ($field_data_array[0] == "conference_user_list") {
@@ -472,7 +471,7 @@ $order = $_GET["order"];
 	echo "    Conference Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_name' maxlength='255' value=\"$dialplan_name\">\n";
 	echo "<br />\n";
 	echo "The name the conference will be assigned.\n";
 	echo "</td>\n";
@@ -483,7 +482,7 @@ $order = $_GET["order"];
 	echo "    Extension Number:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_number' maxlength='255' value=\"$extension_number\">\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_number' maxlength='255' value=\"$dialplan_number\">\n";
 	echo "<br />\n";
 	echo "The number that will be assinged to the conference.\n";
 	echo "</td>\n";
@@ -585,14 +584,14 @@ $order = $_GET["order"];
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
-	if ($enabled == "true") { 
+	echo "    <select class='formfld' name='dialplan_enabled' style='width: 60%;'>\n";
+	if ($dialplan_enabled == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($enabled == "false") { 
+	if ($dialplan_enabled == "false") { 
 		echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {

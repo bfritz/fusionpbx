@@ -42,6 +42,9 @@ else {
 //delete the fax extension
 	if (strlen($fax_uuid)>0) {
 
+		//start the atomic transaction
+			$count = $db->exec("BEGIN;");
+
 		//delete the fax entry
 			$sql = "";
 			$sql .= "delete from v_fax ";
@@ -57,21 +60,15 @@ else {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and opt_1_name = 'faxid' ";
 			$sql .= "and opt_1_value = '".$fax_uuid."' ";
-			//echo $sql."<br>\n";
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
 			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
 				$dialplan_uuid = $row2['dialplan_uuid'];
-				$extension_name = check_str($row2['extension_name']);
-				$order = $row2['order'];
-				$context = $row2['context'];
-				$enabled = $row2['enabled'];
-				$descr = check_str($row2['descr']);
-				$opt_1_name = $row2['opt_1_name'];
-				$opt_1_value = $row2['opt_1_value'];
-				$id = $i;
-				if (file_exists($v_dialplan_default_dir."/".$order."_".$extension_name.".xml")){
-					unlink($v_dialplan_default_dir."/".$order."_".$extension_name.".xml");
+				$dialplan_name = check_str($row2['dialplan_name']);
+				$dialplan_order = $row2['dialplan_order'];
+				$dialplan_context = $row2['dialplan_context'];
+				if (file_exists($v_dialplan_default_dir."/".$dialplan_context."/".$dialplan_order."_".$dialplan_name.".xml")){
+					unlink($v_dialplan_default_dir."/".$dialplan_context."/".$dialplan_order."_".$dialplan_name.".xml");
 				}
 				break; //limit to 1 row
 			}
@@ -94,6 +91,9 @@ else {
 			//echo $sql."<br>\n";
 			$db->query($sql);
 			unset($sql);
+
+		//commit the atomic transaction
+			$count = $db->exec("COMMIT;");
 
 		//syncrhonize configuration
 			sync_package_v_fax();

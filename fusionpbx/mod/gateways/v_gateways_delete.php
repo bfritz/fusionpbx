@@ -76,6 +76,9 @@ if (strlen($id)>0) {
 				unset($tmp_cmd);
 		}
 
+	//start the atomic transaction
+		$count = $db->exec("BEGIN;");
+
 	//delete gateway
 		$sql = "";
 		$sql .= "delete from v_gateways ";
@@ -115,6 +118,9 @@ if (strlen($id)>0) {
 		//echo "sql: ".$sql."<br />\n";
 		$db->query($sql);
 		unset($sql);
+
+	//commit the atomic transaction
+		$count = $db->exec("COMMIT;");
 
 	//syncrhonize configuration
 		sync_package_v_gateways();

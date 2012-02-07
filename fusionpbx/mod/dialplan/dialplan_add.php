@@ -42,7 +42,7 @@ $order = $_GET["order"];
 
 //POST to PHP variables
 	if (count($_POST)>0) {
-		$extension_name = check_str($_POST["extension_name"]);
+		$dialplan_name = check_str($_POST["dialplan_name"]);
 		$dialplan_order = check_str($_POST["dialplan_order"]);
 		$condition_field_1 = check_str($_POST["condition_field_1"]);
 		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
@@ -74,7 +74,7 @@ $order = $_GET["order"];
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
+		if (strlen($dialplan_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		if (strlen($condition_field_1) == 0) { $msg .= "Please provide: Condition Field<br>\n"; }
 		if (strlen($condition_expression_1) == 0) { $msg .= "Please provide: Condition Expression<br>\n"; }
 		if (strlen($action_application_1) == 0) { $msg .= "Please provide: Action Application<br>\n"; }
@@ -94,8 +94,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//remove the invalid characters from the extension name
-		$extension_name = str_replace(" ", "_", $extension_name);
-		$extension_name = str_replace("/", "", $extension_name);
+		$dialplan_name = str_replace(" ", "_", $dialplan_name);
+		$dialplan_name = str_replace("/", "", $dialplan_name);
 
 	//start the atomic transaction
 		$db->exec("BEGIN;"); //returns affected rows
@@ -106,10 +106,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "dialplan_uuid, ";
-		$sql .= "extension_name, ";
+		$sql .= "dialplan_name, ";
 		$sql .= "dialplan_order, ";
 		$sql .= "extension_continue, ";
-		$sql .= "context, ";
+		$sql .= "dialplan_context, ";
 		$sql .= "enabled, ";
 		$sql .= "descr ";
 		$sql .= ") ";
@@ -117,7 +117,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
 		$sql .= "'$dialplan_uuid', ";
-		$sql .= "'$extension_name', ";
+		$sql .= "'$dialplan_name', ";
 		$sql .= "'$dialplan_order', ";
 		$sql .= "'false', ";
 		$sql .= "'".$_SESSION['context']."', ";
@@ -382,7 +382,7 @@ echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "    Name:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
+echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_name' maxlength='255' value=\"$dialplan_name\">\n";
 echo "<br />\n";
 echo "\n";
 echo "</td>\n";

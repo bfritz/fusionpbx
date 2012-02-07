@@ -69,14 +69,14 @@
 		if ($display_type == "text") {
 			echo "	Dialplan Recording: 	added\n";
 		}
-		$extension_name = 'Recordings';
+		$dialplan_name = 'Recordings';
 		$dialplan_order ='900';
-		$context = 'default';
-		$enabled = 'true';
-		$descr = '*732 Recordings';
+		$dialplan_context = 'default';
+		$dialplan_enabled = 'true';
+		$dialplan_description = '*732 Recordings';
 		$opt_1_name = 'recordings';
 		$opt_1_value = '732';
-		$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $opt_1_name, $opt_1_value);
 
 		$tag = 'condition'; //condition, action, antiaction
 		$field_type = 'destination_number';
@@ -138,14 +138,14 @@
 		if ($display_type == "text") {
 			echo "	Dialplan DISA: 		added\n";
 		}
-		$extension_name = 'DISA';
+		$dialplan_name = 'DISA';
 		$dialplan_order ='900';
-		$context = $_SESSION['context'];
-		$enabled = 'false';
-		$descr = '*3472 Direct Inward System Access ';
+		$dialplan_context = $_SESSION['dialplan_context'];
+		$dialplan_enabled = 'false';
+		$dialplan_description = '*3472 Direct Inward System Access ';
 		$opt_1_name = 'disa';
 		$opt_1_value = '3472';
-		$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $opt_1_name, $opt_1_value);
 
 		$tag = 'condition'; //condition, action, antiaction
 		$field_type = 'destination_number';
@@ -161,7 +161,7 @@
 
 		$tag = 'action'; //condition, action, antiaction
 		$field_type = 'set';
-		$field_data = 'context='.$_SESSION['context'];
+		$field_data = 'dialplan_context='.$_SESSION['dialplan_context'];
 		$field_order = '002';
 		v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
 
@@ -195,14 +195,14 @@
 		if ($display_type == "text") {
 			echo "	Wake Up Calls:		added\n";
 		}
-		$extension_name = 'Wake-Up';
+		$dialplan_name = 'Wake-Up';
 		$dialplan_order ='900';
-		$context = 'default';
-		$enabled = 'true';
-		$descr = '*923 Wake Up Calls';
+		$dialplan_context = 'default';
+		$dialplan_enabled = 'true';
+		$dialplan_description = '*923 Wake Up Calls';
 		$opt_1_name = 'wake up';
 		$opt_1_value = '923';
-		$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
+		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $opt_1_name, $opt_1_value);
 
 		$tag = 'condition'; //condition, action, antiaction
 		$field_type = 'destination_number';

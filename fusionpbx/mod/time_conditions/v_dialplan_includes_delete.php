@@ -40,12 +40,14 @@ if (count($_GET)>0) {
 
 if (strlen($id)>0) {
 
+	//start the atomic transaction
+		$count = $db->exec("BEGIN;");
+
     //delete child data
 		$sql = "";
 		$sql .= "delete from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$id' ";
-		//echo $sql;
 		$db->query($sql);
 		unset($sql);
 
@@ -54,13 +56,14 @@ if (strlen($id)>0) {
 		$sql .= "delete from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$id' ";
-		//echo $sql;
 		$db->query($sql);
 		unset($sql);
 
+	//commit the atomic transaction
+		$count = $db->exec("COMMIT;");
+
     //synchronize the xml config
 		sync_package_v_dialplan();
-
 }
 
 //redirect the user

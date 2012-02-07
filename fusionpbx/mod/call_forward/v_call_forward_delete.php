@@ -40,6 +40,9 @@ if (count($_GET)>0) {
 
 if (strlen($id)>0) {
 
+	//start the atomic transaction
+		$count = $db->exec("BEGIN;"); //returns affected rows
+
     //delete child data
 		$sql = "";
 		$sql .= "delete from v_dialplan_details ";
@@ -56,9 +59,11 @@ if (strlen($id)>0) {
 		$db->query($sql);
 		unset($sql);
 
+	//commit the atomic transaction
+		$count = $db->exec("COMMIT;");
+
     //synchronize the xml config
 		sync_package_v_dialplan();
-
 }
 
 require_once "includes/header.php";
@@ -66,7 +71,6 @@ echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_forward.php\">\n";
 echo "<div align='center'>\n";
 echo "Delete Complete\n";
 echo "</div>\n";
-
 require_once "includes/footer.php";
 return;
 

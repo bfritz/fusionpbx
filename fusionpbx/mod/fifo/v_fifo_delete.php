@@ -41,6 +41,9 @@ else {
 
 if (strlen($id)>0) {
 
+	//start the atomic transaction
+		$count = $db->exec("BEGIN;");
+
     //delete child data
 		$sql = "";
 		$sql .= "delete from v_dialplan_details ";
@@ -59,9 +62,11 @@ if (strlen($id)>0) {
 		$db->query($sql);
 		unset($sql);
 
+	//commit the atomic transaction
+		$count = $db->exec("COMMIT;");
+
     //synchronize the xml config
 		sync_package_v_dialplan();
-
 }
 
 //redirect the user

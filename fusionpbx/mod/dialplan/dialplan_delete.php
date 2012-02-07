@@ -49,7 +49,7 @@ if (strlen($dialplan_uuid)>0) {
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$database_dialplan_uuid = $row["dialplan_uuid"];
-			$context = $row["context"];
+			$dialplan_context = $row["dialplan_context"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -82,8 +82,8 @@ if (strlen($dialplan_uuid)>0) {
 
 //redirect the user
 	require_once "includes/header.php";
-	if ($context == "public") {
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?context=public\">\n";
+	if ($dialplan_context == "public") {
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?dialplan_context=public\">\n";
 	}
 	else {
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";

@@ -74,9 +74,6 @@ require_once "includes/paging.php";
 		}
 	}
 	unset ($prep_statement);
-	//foreach ($conference_array as &$row) {
-	//	echo "--".$row['dialplan_uuid']."--<br />\n";
-	//}
 
 //begin the form
 	echo "<div align='center'>";
@@ -116,7 +113,7 @@ require_once "includes/paging.php";
 	if (count($conference_array) == 0) {
 		//when there are no conferences do this to hide all remaining entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and context = 'hide' ";
+		$sql .= " and dialplan_context = 'hide' ";
 	}
 	else {
 		$x = 0;
@@ -136,7 +133,7 @@ require_once "includes/paging.php";
 		$sql .= "order by $order_by $order ";
 	}
 	else {
-		$sql .= "order by dialplan_order, extension_name asc ";
+		$sql .= "order by dialplan_order, dialplan_name asc ";
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -156,7 +153,7 @@ require_once "includes/paging.php";
 	if (count($conference_array) == 0) {
 		//when there are no conferences do this to hide all remaining entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and context = 'hide' ";
+		$sql .= " and dialplan_context = 'hide' ";
 	}
 	else {
 		$x = 0;
@@ -172,7 +169,7 @@ require_once "includes/paging.php";
 			$x++;
 		}
 	}
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, dialplan_name asc "; }
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -187,13 +184,13 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('extension_name', 'Conference Name', $order_by, $order);
+	echo thorder_by('dialplan_name', 'Conference Name', $order_by, $order);
 	echo "<th>Tools</th>\n";
 	if (permission_exists('conferences_add')) {
 		echo thorder_by('dialplan_order', 'Order', $order_by, $order);
 	}
-	echo thorder_by('enabled', 'Enabled', $order_by, $order);
-	echo thorder_by('descr', 'Description', $order_by, $order);
+	echo thorder_by('dialplan_enabled', 'Enabled', $order_by, $order);
+	echo thorder_by('dialplan_description', 'Description', $order_by, $order);
 	if (permission_exists('conferences_add')) {
 		echo "<td align='right' width='42'>\n";
 		echo "	<a href='v_conferences_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -206,18 +203,18 @@ require_once "includes/paging.php";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			$extension_display_name = $row['extension_name'];
-			$extension_display_name = str_replace("-", " ", $extension_display_name);
-			$extension_display_name = str_replace("_", " ", $extension_display_name);
+			$dialplan_display_name = $row['dialplan_name'];
+			$dialplan_display_name = str_replace("-", " ", $dialplan_display_name);
+			$dialplan_display_name = str_replace("_", " ", $dialplan_display_name);
 
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$extension_display_name."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'><a href='".PROJECT_PATH."/mod/conferences_active/v_conference_interactive.php?c=".$row['extension_name']."'>view</a></td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$dialplan_display_name."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'><a href='".PROJECT_PATH."/mod/conferences_active/v_conference_interactive.php?c=".$row['dialplan_name']."'>view</a></td>\n";
 			if (permission_exists('conferences_add')) {
 				echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_order']."</td>\n";
 			}
-			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['enabled']."</td>\n";
-			echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['descr']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_enabled']."</td>\n";
+			echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['dialplan_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('conferences_edit')) {
 				echo "		<a href='v_conferences_edit.php?id=".$row['dialplan_uuid']."' alt='edit'>$v_link_label_edit</a>\n";

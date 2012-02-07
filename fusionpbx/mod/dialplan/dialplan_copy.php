@@ -51,12 +51,12 @@ else {
 	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$database_dialplan_uuid = $row["dialplan_uuid"];
-		$extension_name = $row["extension_name"];
+		$dialplan_name = $row["dialplan_name"];
 		$dialplan_order = $row["dialplan_order"];
-		$extension_continue = $row["extension_continue"];
-		$context = $row["context"];
-		$enabled = $row["enabled"];
-		$descr = "copy: ".$row["descr"];
+		$dialplan_continue = $row["dialplan_continue"];
+		$dialplan_context = $row["dialplan_context"];
+		$dialplan_enabled = $row["dialplan_enabled"];
+		$dialplan_description = "copy: ".$row["dialplan_description"];
 		break; //limit to 1 row
 	}
 	unset ($prep_statement);
@@ -67,23 +67,23 @@ else {
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "dialplan_uuid, ";
-		$sql .= "extension_name, ";
+		$sql .= "dialplan_name, ";
 		$sql .= "dialplan_order, ";
-		$sql .= "extension_continue, ";
-		$sql .= "context, ";
-		$sql .= "enabled, ";
-		$sql .= "descr ";
+		$sql .= "dialplan_continue, ";
+		$sql .= "dialplan_context, ";
+		$sql .= "dialplan_enabled, ";
+		$sql .= "dialplan_description ";
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
 		$sql .= "'$dialplan_uuid', ";
-		$sql .= "'$extension_name', ";
+		$sql .= "'$dialplan_name', ";
 		$sql .= "'$dialplan_order', ";
-		$sql .= "'$extension_continue', ";
-		$sql .= "'$context', ";
-		$sql .= "'$enabled', ";
-		$sql .= "'$descr' ";
+		$sql .= "'$dialplan_continue', ";
+		$sql .= "'$dialplan_context', ";
+		$sql .= "'$dialplan_enabled', ";
+		$sql .= "'$dialplan_description' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -134,8 +134,8 @@ else {
 
 	//redirect the user
 		require_once "includes/header.php";
-		if ($context == "public") {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?context=public\">\n";
+		if ($dialplan_context == "public") {
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?dialplan_context=public\">\n";
 		}
 		else {
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";

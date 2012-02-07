@@ -35,7 +35,6 @@ else {
 	exit;
 }
 
-
 //set the action as an add or as an update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
@@ -47,13 +46,12 @@ else {
 
 //set the http post as a php variable
 	if (count($_POST)>0) {
-		//$domain_uuid = check_str($_POST["domain_uuid"]);
-		$extension_name = check_str($_POST["extension_name"]);
+		$dialplan_name = check_str($_POST["dialplan_name"]);
 		$dialplan_order = check_str($_POST["dialplan_order"]);
-		$extension_continue = check_str($_POST["extension_continue"]);
-		$context = check_str($_POST["context"]);
-		$enabled = check_str($_POST["enabled"]);
-		$descr = check_str($_POST["descr"]);
+		$dialplan_continue = check_str($_POST["dialplan_continue"]);
+		$dialplan_context = check_str($_POST["dialplan_context"]);
+		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
+		$dialplan_description = check_str($_POST["dialplan_description"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -65,12 +63,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
+		if (strlen($dialplan_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		if (strlen($dialplan_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
-		if (strlen($extension_continue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
-		//if (strlen($context) == 0) { $msg .= "Please provide: Context<br>\n"; }
-		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		//if (strlen($descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		if (strlen($dialplan_continue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
+		//if (strlen($dialplan_context) == 0) { $msg .= "Please provide: Context<br>\n"; }
+		if (strlen($dialplan_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
+		//if (strlen($dialplan_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -92,23 +90,25 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "dialplan_uuid, ";
-				$sql .= "extension_name, ";
+				$sql .= "app_uuid, ";
+				$sql .= "dialplan_name, ";
 				$sql .= "dialplan_order, ";
-				$sql .= "extension_continue, ";
-				$sql .= "context, ";
-				$sql .= "enabled, ";
-				$sql .= "descr ";
+				$sql .= "dialplan_continue, ";
+				$sql .= "dialplan_context, ";
+				$sql .= "dialplan_enabled, ";
+				$sql .= "dialplan_description ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'$dialplan_uuid', ";
-				$sql .= "'$extension_name', ";
+				$sql .= "'30BCDE30-37ED-5B84-EC8E-866C7293C443', ";
+				$sql .= "'$dialplan_name', ";
 				$sql .= "'$dialplan_order', ";
-				$sql .= "'$extension_continue', ";
-				$sql .= "'$context', ";
-				$sql .= "'$enabled', ";
-				$sql .= "'$descr' ";
+				$sql .= "'$dialplan_continue', ";
+				$sql .= "'$dialplan_context', ";
+				$sql .= "'$dialplan_enabled', ";
+				$sql .= "'$dialplan_description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -128,12 +128,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update") {
 				$sql = "update v_dialplan set ";
 				$sql .= "domain_uuid = '$domain_uuid', ";
-				$sql .= "extension_name = '$extension_name', ";
+				$sql .= "dialplan_name = '$dialplan_name', ";
 				$sql .= "dialplan_order = '$dialplan_order', ";
-				$sql .= "extension_continue = '$extension_continue', ";
-				$sql .= "context = '$context', ";
-				$sql .= "enabled = '$enabled', ";
-				$sql .= "descr = '$descr' ";
+				$sql .= "dialplan_continue = '$dialplan_continue', ";
+				$sql .= "dialplan_context = '$dialplan_context', ";
+				$sql .= "dialplan_enabled = '$dialplan_enabled', ";
+				$sql .= "dialplan_description = '$dialplan_description' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_uuid = '$dialplan_uuid'";
 				$db->exec(check_sql($sql));
@@ -164,12 +164,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
-			$extension_name = $row["extension_name"];
+			$dialplan_name = $row["dialplan_name"];
 			$dialplan_order = $row["dialplan_order"];
-			$extension_continue = $row["extension_continue"];
-			$context = $row["context"];
-			$enabled = $row["enabled"];
-			$descr = $row["descr"];
+			$dialplan_continue = $row["dialplan_continue"];
+			$dialplan_context = $row["dialplan_context"];
+			$dialplan_enabled = $row["dialplan_enabled"];
+			$dialplan_description = $row["dialplan_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement, $result);
@@ -181,7 +181,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
@@ -211,7 +210,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='extension_name' maxlength='255' value=\"$extension_name\">\n";
+	echo "    <input class='formfld' type='text' name='dialplan_name' maxlength='255' value=\"$dialplan_name\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -248,31 +247,31 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	//echo "<tr>\n";
-	//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	//echo "    Context:\n";
-	//echo "</td>\n";
-	//echo "<td class='vtable' align='left'>\n";
-	//echo "    <input class='formfld' type='text' name='context' maxlength='255' value=\"$context\">\n";
-	//echo "<br />\n";
-	//echo "\n";
-	//echo "</td>\n";
-	//echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Context:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='dialplan_context' maxlength='255' value=\"$dialplan_context\">\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    Continue:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='extension_continue'>\n";
+	echo "    <select class='formfld' name='dialplan_continue'>\n";
 	echo "    <option value=''></option>\n";
-	if ($extension_continue == "true") { 
+	if ($dialplan_continue == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($extension_continue == "false") { 
+	if ($dialplan_continue == "false") { 
 		echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {
@@ -289,15 +288,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='enabled'>\n";
+	echo "    <select class='formfld' name='dialplan_enabled'>\n";
 	echo "    <option value=''></option>\n";
-	if ($enabled == "true") { 
+	if ($dialplan_enabled == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($enabled == "false") { 
+	if ($dialplan_enabled == "false") { 
 		echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {
@@ -314,7 +313,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <textarea class='formfld' name='descr' rows='4'>$descr</textarea>\n";
+	echo "    <textarea class='formfld' name='dialplan_description' rows='4'>$dialplan_description</textarea>\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -330,26 +329,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</form>";
 
-
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
 
-//---- begin: v_dialplan_details ---------------------------
+//dialplan details
 if ($action == "update") {
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
 	echo "      <br>";
 
-
-	//echo "<table width='100%' border='0'><tr>\n";
-	//echo "<td width='50%' nowrap><b>Conditions and Actions</b></td>\n";
-	//echo "<td width='50%' align='right'>&nbsp;</td>\n";
-	//echo "</tr></table>\n";
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "  <tr>\n";
 	echo "    <td align='left'><p><span class=\"vexpl\"><span class=\"red\"><strong>Conditions and Actions<br />\n";
@@ -362,15 +354,12 @@ if ($action == "update") {
 	echo "</table>";
 	echo "<br />\n";
 
-
 	$sql = "";
 	$sql .= " select * from v_dialplan_details ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	$sql .= " and dialplan_uuid = '$dialplan_uuid' ";
 	$sql .= " and tag = 'condition' ";
 	$sql .= " order by field_order asc";
-	//if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-	//echo $sql;
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -393,13 +382,8 @@ if ($action == "update") {
 	echo "	<a href='v_call_forward_details_edit.php?id2=".$dialplan_uuid."' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
-
-	if ($result_count == 0) { //no results
-	}
-	else { //received results
-
+	if ($result_count > 0) {
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
@@ -414,8 +398,6 @@ if ($action == "update") {
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
-
-	//--------------------------------------------------------------------------
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_details ";
@@ -423,25 +405,13 @@ if ($action == "update") {
 	$sql .= " and dialplan_uuid = '$dialplan_uuid' ";
 	$sql .= " and tag = 'action' ";
 	$sql .= " order by field_order asc";
-	//if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-	//$sql .= " limit $rows_per_page offset $offset ";
-	//echo $sql;
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
-
-	//$c = 0;
-	//$row_style["0"] = "row_style0";
-	//$row_style["1"] = "row_style1";
-
-	if ($result_count == 0) { //no results
-	}
-	else { //received results
-		//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
+	if ($result_count > 0) {
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
@@ -452,13 +422,10 @@ if ($action == "update") {
 			echo "		<a href='v_call_forward_details_delete.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
-			//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%'' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
-
-	//--------------------------------------------------------------------------
 
 	$sql = "";
 	$sql .= " select * from v_dialplan_details ";
@@ -466,25 +433,13 @@ if ($action == "update") {
 	$sql .= " and dialplan_uuid = '$dialplan_uuid' ";
 	$sql .= " and tag = 'anti-action' ";
 	$sql .= " order by field_order asc";
-	//if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-	//$sql .= " limit $rows_per_page offset $offset ";
-	//echo $sql;
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
-
-	//$c = 0;
-	//$row_style["0"] = "row_style0";
-	//$row_style["1"] = "row_style1";
-
-	if ($result_count == 0) { //no results
-	}
-	else { //received results
-		//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
+	if ($result_count > 0) {
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
@@ -495,7 +450,6 @@ if ($action == "update") {
 			echo "		<a href='v_call_forward_details_delete.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
-			//echo "<tr><td colspan='4'><img src='/images/spacer.gif' width='100%'' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $row_count);
@@ -515,12 +469,10 @@ if ($action == "update") {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
@@ -528,6 +480,6 @@ if ($action == "update") {
 	echo "</div>";
 	echo "<br><br>";
 } //end if update
-//---- end: v_dialplan_details ---------------------------
+
 require_once "includes/footer.php";
 ?>

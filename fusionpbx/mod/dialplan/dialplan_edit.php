@@ -46,14 +46,14 @@ else {
 
 //get the http post values and set them as php variables
 	if (count($_POST)>0) {
-		$extension_name = check_str($_POST["extension_name"]);
-		$extension_number = check_str($_POST["extension_number"]);
+		$dialplan_name = check_str($_POST["dialplan_name"]);
+		$dialplan_number = check_str($_POST["dialplan_number"]);
 		$dialplan_order = check_str($_POST["dialplan_order"]);
-		$extension_continue = check_str($_POST["extension_continue"]);
-		if (strlen($extension_continue) == 0) { $extension_continue = "false"; }
-		$context = check_str($_POST["context"]);
-		$enabled = check_str($_POST["enabled"]);
-		$descr = check_str($_POST["descr"]);
+		$dialplan_continue = check_str($_POST["dialplan_continue"]);
+		if (strlen($dialplan_continue) == 0) { $dialplan_continue = "false"; }
+		$dialplan_context = check_str($_POST["dialplan_context"]);
+		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
+		$dialplan_description = check_str($_POST["dialplan_description"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -65,12 +65,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
+		if (strlen($dialplan_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		if (strlen($dialplan_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
-		if (strlen($extension_continue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
-		if (strlen($context) == 0) { $msg .= "Please provide: Context<br>\n"; }
-		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		//if (strlen($descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		if (strlen($dialplan_continue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
+		if (strlen($dialplan_context) == 0) { $msg .= "Please provide: Context<br>\n"; }
+		if (strlen($dialplan_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
+		//if (strlen($dialplan_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -85,8 +85,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//remove the invalid characters from the extension name
-		$extension_name = str_replace(" ", "_", $extension_name);
-		$extension_name = str_replace("/", "", $extension_name);
+		$dialplan_name = str_replace(" ", "_", $dialplan_name);
+		$dialplan_name = str_replace("/", "", $dialplan_name);
 
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
@@ -97,25 +97,25 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_uuid, ";
-					$sql .= "extension_name, ";
-					$sql .= "extension_number, ";
+					$sql .= "dialplan_name, ";
+					$sql .= "dialplan_number, ";
 					$sql .= "dialplan_order, ";
-					$sql .= "extension_continue, ";
-					$sql .= "context, ";
-					$sql .= "enabled, ";
-					$sql .= "descr ";
+					$sql .= "dialplan_continue, ";
+					$sql .= "dialplan_context, ";
+					$sql .= "dialplan_enabled, ";
+					$sql .= "dialplan_description ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$domain_uuid', ";
 					$sql .= "'$dialplan_uuid', ";
-					$sql .= "'$extension_name', ";
-					$sql .= "'$extension_number', ";
+					$sql .= "'$dialplan_name', ";
+					$sql .= "'$dialplan_number', ";
 					$sql .= "'$dialplan_order', ";
-					$sql .= "'$extension_continue', ";
-					$sql .= "'$context', ";
-					$sql .= "'$enabled', ";
-					$sql .= "'$descr' ";
+					$sql .= "'$dialplan_continue', ";
+					$sql .= "'$dialplan_context', ";
+					$sql .= "'$dialplan_enabled', ";
+					$sql .= "'$dialplan_description' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					unset($sql);
@@ -137,13 +137,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//update the database
 					$sql = "update v_dialplans set ";
 					$sql .= "domain_uuid = '$domain_uuid', ";
-					$sql .= "extension_name = '$extension_name', ";
-					$sql .= "extension_number = '$extension_number', ";
+					$sql .= "dialplan_name = '$dialplan_name', ";
+					$sql .= "dialplan_number = '$dialplan_number', ";
 					$sql .= "dialplan_order = '$dialplan_order', ";
-					$sql .= "extension_continue = '$extension_continue', ";
-					$sql .= "context = '$context', ";
-					$sql .= "enabled = '$enabled', ";
-					$sql .= "descr = '$descr' ";
+					$sql .= "dialplan_continue = '$dialplan_continue', ";
+					$sql .= "dialplan_context = '$dialplan_context', ";
+					$sql .= "dialplan_enabled = '$dialplan_enabled', ";
+					$sql .= "dialplan_description = '$dialplan_description' ";
 					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and dialplan_uuid = '$dialplan_uuid'";
 					$db->exec(check_sql($sql));
@@ -175,13 +175,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$extension_name = $row["extension_name"];
-			$extension_number = $row["extension_number"];
+			$dialplan_name = $row["dialplan_name"];
+			$dialplan_number = $row["dialplan_number"];
 			$dialplan_order = $row["dialplan_order"];
-			$extension_continue = $row["extension_continue"];
-			$context = $row["context"];
-			$enabled = $row["enabled"];
-			$descr = $row["descr"];
+			$dialplan_continue = $row["dialplan_continue"];
+			$dialplan_context = $row["dialplan_context"];
+			$dialplan_enabled = $row["dialplan_enabled"];
+			$dialplan_description = $row["dialplan_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -207,8 +207,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    </td>\n";
 	echo "    <td width='70%' align='right'>\n";
 	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='dialplan_copy.php?id=".$row['dialplan_uuid']."';}\" value='Copy'>\n";
-	if ($context == "public") {
-		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?context=public'\" value='Back'>\n";
+	if ($dialplan_context == "public") {
+		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?dialplan_context=public'\" value='Back'>\n";
 	}
 	else {
 		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php'\" value='Back'>\n";
@@ -230,7 +230,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='extension_name' maxlength='255' value=\"".htmlspecialchars($extension_name)."\">\n";
+	echo "    <input class='formfld' type='text' name='dialplan_name' maxlength='255' value=\"".htmlspecialchars($dialplan_name)."\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -241,7 +241,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Number:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='extension_number' maxlength='255' value=\"".htmlspecialchars($extension_number)."\">\n";
+	echo "    <input class='formfld' type='text' name='dialplan_number' maxlength='255' value=\"".htmlspecialchars($dialplan_number)."\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -252,7 +252,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Context:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='context' maxlength='255' value=\"$context\">\n";
+	echo "    <input class='formfld' type='text' name='dialplan_context' maxlength='255' value=\"$dialplan_context\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -263,15 +263,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Continue:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='extension_continue'>\n";
+	echo "    <select class='formfld' name='dialplan_continue'>\n";
 	echo "    <option value=''></option>\n";
-	if ($extension_continue == "true") { 
+	if ($dialplan_continue == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($extension_continue == "false") { 
+	if ($dialplan_continue == "false") { 
 		echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {
@@ -318,15 +318,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='enabled'>\n";
+	echo "    <select class='formfld' name='dialplan_enabled'>\n";
 	echo "    <option value=''></option>\n";
-	if ($enabled == "true") { 
+	if ($dialplan_enabled == "true") { 
 		echo "    <option value='true' SELECTED >true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($enabled == "false") { 
+	if ($dialplan_enabled == "false") { 
 		echo "    <option value='false' SELECTED >false</option>\n";
 	}
 	else {
@@ -343,7 +343,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <textarea class='formfld' name='descr' rows='4'>".htmlspecialchars($descr)."</textarea>\n";
+	echo "    <textarea class='formfld' name='dialplan_description' rows='4'>".htmlspecialchars($dialplan_description)."</textarea>\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

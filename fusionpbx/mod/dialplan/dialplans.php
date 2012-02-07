@@ -39,7 +39,7 @@ require_once "includes/paging.php";
 //set the http values as php variables
 	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
-	$context = $_GET["context"];
+	$dialplan_context = $_GET["dialplan_context"];
 
 //show the content
 	echo "<div align='center'>";
@@ -52,7 +52,7 @@ require_once "includes/paging.php";
 	echo "	<tr>\n";
 	echo "	<td align='left'>\n";
 	echo "		<span class=\"vexpl\">\n";
-	if ($context == "public") {
+	if ($dialplan_context == "public") {
 		echo "			<strong>Inbound Call Routing</strong>\n";
 	}
 	else {
@@ -62,7 +62,7 @@ require_once "includes/paging.php";
 	echo "		</span>\n";
 	echo "	</td>\n";
 	echo "	<td align='right'>\n";
-	if (permission_exists('dialplan_advanced_view') && $context != 'public') {
+	if (permission_exists('dialplan_advanced_view') && $dialplan_context != 'public') {
 		echo "		<input type='button' class='btn' value='advanced' onclick=\"document.location.href='dialplan_advanced.php';\">\n";
 	}
 	else {
@@ -73,7 +73,7 @@ require_once "includes/paging.php";
 	echo "	<tr>\n";
 	echo "	<td align='left' colspan='2'>\n";
 	echo "		<span class=\"vexpl\">\n";
-	if ($context == "public") {
+	if ($dialplan_context == "public") {
 		echo "			The public dialplan is used to route incoming calls to destinations based on one \n";
 		echo "			or more conditions and context. It can send incoming calls to an auto attendant, \n";
 		echo "			huntgroup, extension, external number, or a script. Order is important when an \n";
@@ -101,13 +101,13 @@ require_once "includes/paging.php";
 	$sql = "";
 	$sql .= "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if ($context == "public") {
-		$sql .= "and context = 'public' ";
+	if ($dialplan_context == "public") {
+		$sql .= "and dialplan_context = 'public' ";
 	}
 	else {
-		$sql .= "and context <> 'public' ";
+		$sql .= "and dialplan_context <> 'public' ";
 	}
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, dialplan_name asc "; }
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -124,13 +124,13 @@ require_once "includes/paging.php";
 	$sql = "";
 	$sql .= " select * from v_dialplans ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	if ($context == "public") {
-		$sql .= "and context = 'public' ";
+	if ($dialplan_context == "public") {
+		$sql .= "and dialplan_context = 'public' ";
 	}
 	else {
-		$sql .= "and context <> 'public' ";
+		$sql .= "and dialplan_context <> 'public' ";
 	}
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, extension_name asc "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, dialplan_name asc "; }
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -145,14 +145,14 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('extension_name', 'Name', $order_by, $order);
-	echo thorder_by('extension_number', 'Number', $order_by, $order);
+	echo thorder_by('dialplan_name', 'Name', $order_by, $order);
+	echo thorder_by('dialplan_number', 'Number', $order_by, $order);
 	echo thorder_by('dialplan_order', 'Order', $order_by, $order);
-	echo thorder_by('enabled', 'Enabled', $order_by, $order);
-	echo thorder_by('descr', 'Description', $order_by, $order);
+	echo thorder_by('dialplan_enabled', 'Enabled', $order_by, $order);
+	echo thorder_by('dialplan_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('dialplan_add')) {
-		if ($context == "public") {
+		if ($dialplan_context == "public") {
 			echo "	<a href='dialplan_public_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 		else {
@@ -164,7 +164,7 @@ require_once "includes/paging.php";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			if (strlen($row['extension_number']) == 0) {
+			if (strlen($row['dialplan_number']) == 0) {
 				$sql = "";
 				$sql .= "select * from v_dialplan_details ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -176,12 +176,12 @@ require_once "includes/paging.php";
 				foreach ($tmp_result as &$tmp) {
 					//prepare the extension number
 						preg_match_all('/[\|0-9\*]/',$tmp["field_data"], $tmp_match);
-						$extension_number = implode("",$tmp_match[0]);
-						$extension_number = str_replace("|", " ", $extension_number);
-						$row['extension_number'] = $extension_number;
+						$dialplan_number = implode("",$tmp_match[0]);
+						$dialplan_number = str_replace("|", " ", $dialplan_number);
+						$row['dialplan_number'] = $dialplan_number;
 					//update the extension number
 						$sql = "update v_dialplan set ";
-						$sql .= "extension_number = '$extension_number', ";
+						$sql .= "dialplan_number = '$dialplan_number', ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."'";
 						$db->exec($sql);
@@ -192,11 +192,11 @@ require_once "includes/paging.php";
 			}
 	
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['extension_name']."</td>\n";
-			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['extension_number']."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_name']."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_number']."</td>\n";
 			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_order']."</td>\n";
-			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['enabled']."</td>\n";
-			echo "   <td valign='top' class='row_stylebg' width='30%'>".$row['descr']."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_enabled']."</td>\n";
+			echo "   <td valign='top' class='row_stylebg' width='30%'>".$row['dialplan_description']."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('dialplan_add')) {
 				echo "		<a href='dialplan_edit.php?id=".$row['dialplan_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
@@ -219,7 +219,7 @@ require_once "includes/paging.php";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('dialplan_add')) {
-		if ($context == "public") {
+		if ($dialplan_context == "public") {
 			echo "			<a href='dialplan_public_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 		else {

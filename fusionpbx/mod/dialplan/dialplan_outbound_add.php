@@ -40,7 +40,7 @@ else {
 
 //get the http post values and set theme as php variables
 	if (count($_POST)>0) {
-		$extension_name = check_str($_POST["extension_name"]);
+		$dialplan_name = check_str($_POST["dialplan_name"]);
 		$dialplan_order = check_str($_POST["dialplan_order"]);
 		$dialplan_expression = check_str($_POST["dialplan_expression"]);
 		$prefix_number = check_str($_POST["prefix_number"]);
@@ -170,9 +170,9 @@ else {
 				unset ($prep_statement);
 		}
 
-		$enabled = check_str($_POST["enabled"]);
-		$description = check_str($_POST["description"]);
-		if (strlen($enabled) == 0) { $enabled = "true"; } //set default to enabled
+		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
+		$dialplan_description = check_str($_POST["dialplan_description"]);
+		if (strlen($dialplan_enabled) == 0) { $dialplan_enabled = "true"; } //set default to dialplan_enabled
 	}
 
 //process the http form values
@@ -183,10 +183,10 @@ else {
 			//if (strlen($gateway_2) == 0) { $msg .= "Please provide: Alternat 1<br>\n"; }
 			//if (strlen($gateway_3) == 0) { $msg .= "Please provide: Alternat 2<br>\n"; }
 			if (strlen($dialplan_expression) == 0) { $msg .= "Please provide: Dialplan Expression<br>\n"; }
-			//if (strlen($extension_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
+			//if (strlen($dialplan_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 			//if (strlen($condition_field_1) == 0) { $msg .= "Please provide: Condition Field<br>\n"; }
 			//if (strlen($condition_expression_1) == 0) { $msg .= "Please provide: Condition Expression<br>\n"; }
-			//if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
+			//if (strlen($dialplan_enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
 			//if (strlen($description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 			if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 				require_once "includes/header.php";
@@ -338,7 +338,7 @@ else {
 					}
 
 					if ($gateway_type == "gateway") {
-						$extension_name = $gateway_name.".".$abbrv;
+						$dialplan_name = $gateway_name.".".$abbrv;
 						$action_data = "sofia/gateway/".$tmp_gateway_name."/".$prefix_number."\$1";
 					}
 					if (strlen($gateway_2_name) > 0 && $gateway_2_type == "gateway") {
@@ -350,7 +350,7 @@ else {
 						$bridge_3_data .= "sofia/gateway/".$tmp_gateway_3_name."/".$prefix_number."\$1";
 					}
 					if ($gateway_type == "freetdm") {
-						$extension_name = "freetdm.".$abbrv;
+						$dialplan_name = "freetdm.".$abbrv;
 						$action_data = $gateway."/1/a/".$prefix_number."\$1";
 					}
 					if ($gateway_2_type == "freetdm") {
@@ -362,7 +362,7 @@ else {
 						$bridge_3_data .= $gateway_3."/1/a/".$prefix_number."\$1";
 					}
 					if ($gateway_type == "xmpp") {
-						$extension_name = "xmpp.".$abbrv;
+						$dialplan_name = "xmpp.".$abbrv;
 						$action_data = "dingaling/gtalk/+".$prefix_number."\$1@voice.google.com";
 					}
 					if ($gateway_2_type == "xmpp") {
@@ -375,10 +375,10 @@ else {
 					}
 					if ($gateway_type == "enum") {
 						if (strlen($bridge_2_data) == 0) {
-							$extension_name = "enum.".$abbrv;
+							$dialplan_name = "enum.".$abbrv;
 						}
 						else {
-							$extension_name = $extension_2_name;
+							$dialplan_name = $extension_2_name;
 						}
 						$action_data = "\${enum_auto_route}";
 					}
@@ -391,11 +391,9 @@ else {
 					if (strlen($dialplan_order) == 0) {
 						$dialplan_order ='999';
 					}
-					$context = 'default';
-					$opt_1_name = 'gateway_uuid';
-					$opt_1_value = $gateway_uuid;
-					$extension_continue = 'false';
-					//$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $context, $enabled, $description, $opt_1_name, $opt_1_value);
+					$dialplan_context = 'default';
+					$dialplan_continue = 'false';
+					//$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $description);
 
 					//add the main dialplan include entry
 						$dialplan_uuid = uuid();
@@ -403,27 +401,23 @@ else {
 						$sql .= "(";
 						$sql .= "domain_uuid, ";
 						$sql .= "dialplan_uuid, ";
-						$sql .= "extension_name, ";
+						$sql .= "dialplan_name, ";
 						$sql .= "dialplan_order, ";
-						$sql .= "extension_continue, ";
-						$sql .= "context, ";
-						$sql .= "opt_1_name, ";
-						$sql .= "opt_1_value, ";
-						$sql .= "enabled, ";
-						$sql .= "descr ";
+						$sql .= "dialplan_continue, ";
+						$sql .= "dialplan_context, ";
+						$sql .= "dialplan_enabled, ";
+						$sql .= "dialplan_description ";
 						$sql .= ") ";
 						$sql .= "values ";
 						$sql .= "(";
 						$sql .= "'$domain_uuid', ";
 						$sql .= "'$dialplan_uuid', ";
-						$sql .= "'$extension_name', ";
+						$sql .= "'$dialplan_name', ";
 						$sql .= "'$dialplan_order', ";
-						$sql .= "'$extension_continue', ";
-						$sql .= "'$context', ";
-						$sql .= "'$opt_1_name', ";
-						$sql .= "'$opt_1_value', ";
-						$sql .= "'$enabled', ";
-						$sql .= "'$description' ";
+						$sql .= "'$dialplan_continue', ";
+						$sql .= "'$dialplan_context', ";
+						$sql .= "'$dialplan_enabled', ";
+						$sql .= "'$dialplan_description' ";
 						$sql .= ")";
 						if ($v_debug) {
 							echo $sql."<br />";
@@ -903,15 +897,15 @@ function type_onchange(field_type) {
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='enabled' style='width: 60%;'>\n";
+	echo "    <select class='formfld' name='dialplan_enabled' style='width: 60%;'>\n";
 	//echo "    <option value=''></option>\n";
-	if ($enabled == "true") { 
+	if ($dialplan_enabled == "true") { 
 		echo "    <option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($enabled == "false") { 
+	if ($dialplan_enabled == "false") { 
 		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
@@ -928,7 +922,7 @@ function type_onchange(field_type) {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td colspan='4' class='vtable' align='left'>\n";
-	echo "    <input class='formfld' style='width: 60%;' type='text' name='description' maxlength='255' value=\"$description\">\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
 	echo "<br />\n";
 	echo "Enter a description for the outbound route.\n";
 	echo "</td>\n";

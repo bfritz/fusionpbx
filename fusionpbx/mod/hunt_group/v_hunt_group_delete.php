@@ -42,6 +42,9 @@ if (count($_GET)>0) {
 
 if (strlen($id)>0) {
 
+	//start the atomic transaction
+		$count = $db->exec("BEGIN;");
+
 	//delete child data
 		$sql = "";
 		$sql .= "delete from v_hunt_group_destinations ";
@@ -118,6 +121,9 @@ if (strlen($id)>0) {
 		//echo "sql: ".$sql."<br />\n";
 		$db->query($sql);
 		unset($sql);
+
+	//commit the atomic transaction
+		$count = $db->exec("COMMIT;");
 
 	//synchronize the xml config
 		sync_package_v_hunt_group();

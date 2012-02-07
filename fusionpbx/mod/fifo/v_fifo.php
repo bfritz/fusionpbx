@@ -73,10 +73,6 @@ require_once "includes/paging.php";
 			}
 		}
 		unset ($prep_statement);
-		//print_r($queue_array);
-		//foreach ($queue_array as &$row) {
-		//	echo "--".$row['dialplan_uuid']."--<br />\n";
-		//}
 
 //show the content
 	echo "<div align='center'>";
@@ -112,7 +108,7 @@ require_once "includes/paging.php";
 	if (count($queue_array) == 0) {
 		//when there are no queues then hide all dialplan entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and context = 'hide' ";
+		$sql .= " and dialplan_context = 'hide' ";
 	}
 	else {
 		$x = 0;
@@ -128,7 +124,7 @@ require_once "includes/paging.php";
 			$x++;
 		}
 	}
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, dialplan_name asc "; }
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -147,7 +143,7 @@ require_once "includes/paging.php";
 	if (count($queue_array) == 0) {
 		//when there are no queues then hide all dialplan entries
 		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and context = 'hide' ";
+		$sql .= " and dialplan_context = 'hide' ";
 	}
 	else {
 		$x = 0;
@@ -163,7 +159,7 @@ require_once "includes/paging.php";
 			$x++;
 		}
 	}
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, extension_name asc "; }
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, dialplan_name asc "; }
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -178,10 +174,10 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('extension_name', 'Extension Name', $order_by, $order);
+	echo thorder_by('dialplan_name', 'Extension Name', $order_by, $order);
 	echo thorder_by('dialplan_order', 'Order', $order_by, $order);
-	echo thorder_by('enabled', 'Enabled', $order_by, $order);
-	echo thorder_by('descr', 'Description', $order_by, $order);
+	echo thorder_by('dialplan_enabled', 'Enabled', $order_by, $order);
+	echo thorder_by('dialplan_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('fifo_add')) {
 		echo "	<a href='v_fifo_add.php' alt='add'>$v_link_label_add</a>\n";
@@ -192,16 +188,16 @@ require_once "includes/paging.php";
 	if ($result_count > 0) {
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[extension_name]."</td>\n";
-			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_order]."</td>\n";
-			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[enabled]."</td>\n";
-			echo "   <td valign='top' class='row_stylebg' width='30%'>".$row[descr]."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_name']."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_order']."</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_enabled']."</td>\n";
+			echo "   <td valign='top' class='row_stylebg' width='30%'>".$row['dialplan_description']."&nbsp;</td>\n";
 			echo "   <td valign='top' align='right'>\n";
 			if (permission_exists('fifo_edit')) {
-				echo "		<a href='v_fifo_edit.php?id=".$row[dialplan_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_fifo_edit.php?id=".$row['dialplan_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('fifo_delete')) {
-				echo "		<a href='v_fifo_delete.php?id=".$row[dialplan_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_fifo_delete.php?id=".$row['dialplan_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "   </td>\n";
 			echo "</tr>\n";
