@@ -28,9 +28,22 @@ include "root.php";
 //define the dialplan class
 	if (!class_exists('dialplan')) {
 		class dialplan {
+			//variables
 			var $result;
 			var $domain_uuid;
 			var $dialplan_uuid;
+			var $v_domain;
+			var $switch_conf_dir;
+
+			//dialplans
+			var $extension_name;
+			var $extension_continue;
+			var $dialplan_order;
+			var $context;
+			var $enabled;
+			var $descr;
+
+			//dialplan_details
 			var $tag;
 			var $field_order;
 			var $field_type;
@@ -38,16 +51,6 @@ include "root.php";
 			var $field_break;
 			var $field_inline;
 			var $field_group;
-			var $extension_name;
-			var $extension_continue;
-			var $dialplan_order;
-			var $context;
-			var $enabled;
-			var $opt_1_name;
-			var $opt_1_value;
-			var $descr;
-			var $v_domain;
-			var $switch_conf_dir;
 
 			function dialplan_add() {
 				global $db;
