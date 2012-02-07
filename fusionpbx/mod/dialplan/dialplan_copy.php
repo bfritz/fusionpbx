@@ -97,10 +97,10 @@ else {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$tag = $row["tag"];
-			$field_order = $row["field_order"];
-			$field_type = $row["field_type"];
-			$field_data = $row["field_data"];
+			$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			$dialplan_detail_order = $row["dialplan_detail_order"];
+			$dialplan_detail_type = $row["dialplan_detail_type"];
+			$dialplan_detail_data = $row["dialplan_detail_data"];
 
 			//copy the dialplan details
 				$dialplan_detail_uuid = uuid();
@@ -109,20 +109,20 @@ else {
 				$sql .= "domain_uuid, ";
 				$sql .= "dialplan_uuid, ";
 				$sql .= "dialplan_detail_uuid, ";
-				$sql .= "tag, ";
-				$sql .= "field_order, ";
-				$sql .= "field_type, ";
-				$sql .= "field_data ";
+				$sql .= "dialplan_detail_tag, ";
+				$sql .= "dialplan_detail_order, ";
+				$sql .= "dialplan_detail_type, ";
+				$sql .= "dialplan_detail_data ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'".check_str($dialplan_uuid)."', ";
 				$sql .= "'".check_str($dialplan_detail_uuid)."', ";
-				$sql .= "'".check_str($tag)."', ";
-				$sql .= "'".check_str($field_order)."', ";
-				$sql .= "'".check_str($field_type)."', ";
-				$sql .= "'".check_str($field_data)."' ";
+				$sql .= "'".check_str($dialplan_detail_tag)."', ";
+				$sql .= "'".check_str($dialplan_detail_order)."', ";
+				$sql .= "'".check_str($dialplan_detail_type)."', ";
+				$sql .= "'".check_str($dialplan_detail_data)."' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);

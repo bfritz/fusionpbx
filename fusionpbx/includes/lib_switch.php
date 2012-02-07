@@ -605,7 +605,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "order by field_data asc ";
+		$sql .= "order by dialplan_detail_data asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$x = 0;
@@ -615,26 +615,26 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 		$previous_conference_name = "";
 		foreach ($result as &$row) {
-			//$tag = $row["tag"];
-			if ($row["field_type"] == "conference") {
-				$conference_name = $row["field_data"];
+			//$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			if ($row["dialplan_detail_type"] == "conference") {
+				$conference_name = $row["dialplan_detail_data"];
 				$conference_name = str_replace('_${domain_name}@default', '', $conference_name);
 				if ($previous_conference_name != $conference_name) {
-					if ("menu-exec-app:conference ".$row["field_data"] == $select_value || "conference:default ".$row["field_data"] == $select_value) {
+					if ("menu-exec-app:conference ".$row["dialplan_detail_data"] == $select_value || "conference:default ".$row["dialplan_detail_data"] == $select_value) {
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:conference ".$row["field_data"]."' selected='selected'>".$conference_name."</option>\n";
+							echo "		<option value='menu-exec-app:conference ".$row["dialplan_detail_data"]."' selected='selected'>".$conference_name."</option>\n";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='conference:".$row["field_data"]."' selected='selected'>".$conference_name."</option>\n";
+							echo "		<option value='conference:".$row["dialplan_detail_data"]."' selected='selected'>".$conference_name."</option>\n";
 						}
 						$selection_found = true;
 					}
 					else {
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:conference ".$row["field_data"]."'>".$conference_name."</option>\n";
+							echo "		<option value='menu-exec-app:conference ".$row["dialplan_detail_data"]."'>".$conference_name."</option>\n";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='conference:".$row["field_data"]."'>".$conference_name."</option>\n";
+							echo "		<option value='conference:".$row["dialplan_detail_data"]."'>".$conference_name."</option>\n";
 						}
 					}
 					$previous_conference_name = $conference_name;
@@ -731,7 +731,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$sql = "";
 		$sql .= "select * from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "order by field_data asc ";
+		$sql .= "order by dialplan_detail_data asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$x = 0;
@@ -740,16 +740,16 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			echo "<optgroup label='FIFO'>\n";
 		}
 		foreach ($result as &$row) {
-			//$tag = $row["tag"];
-			if ($row["field_type"] == "fifo") {
-				if (strpos($row["field_data"], '@${domain_name} in') !== false) {
+			//$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			if ($row["dialplan_detail_type"] == "fifo") {
+				if (strpos($row["dialplan_detail_data"], '@${domain_name} in') !== false) {
 					$dialplan_uuid = $row["dialplan_uuid"];
 					//get the extension number using the dialplan_uuid
-						$sql = "select field_data as extension_number ";
+						$sql = "select dialplan_detail_data as extension_number ";
 						$sql .= "from v_dialplan_details ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-						$sql .= "and field_type = 'destination_number' ";
+						$sql .= "and dialplan_detail_type = 'destination_number' ";
 						$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 						$extension_number = $tmp['extension_number'];
 						$extension_number = ltrim($extension_number, "^");
@@ -767,11 +767,11 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 						$dialplan_name = str_replace("_", " ", $dialplan_name);
 						unset($tmp);
 
-					$fifo_name = $row["field_data"];
+					$fifo_name = $row["dialplan_detail_data"];
 					$fifo_name = str_replace('@${domain_name} in', '', $fifo_name);
 					$option_label = $extension_number.' '.$dialplan_name;
 					if ($select_type == "ivr") {
-						if ("menu-exec-app:transfer ".$row["field_data"] == $select_value) {
+						if ("menu-exec-app:transfer ".$row["dialplan_detail_data"] == $select_value) {
 							echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 							$selection_found = true;
 						}
@@ -780,7 +780,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 						}
 					}
 					if ($select_type == "dialplan") {
-						if ("transfer:".$row["field_data"] == $select_value) {
+						if ("transfer:".$row["dialplan_detail_data"] == $select_value) {
 							echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 							$selection_found = true;
 						}
@@ -1136,40 +1136,40 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$x = 0;
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach ($result as &$row) {
-			//$tag = $row["tag"];
-			switch ($row['field_type']) {
+			//$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			switch ($row['dialplan_detail_type']) {
 			case "hour":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			case "minute":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			case "minute-of-day":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			case "mday":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			case "mweek":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			case "mon":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			case "yday":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			case "year":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			case "wday":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			case "week":
-				$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			default:
-				//$time_array[$row['dialplan_uuid']] = $row['field_type'];
+				//$time_array[$row['dialplan_uuid']] = $row['dialplan_detail_type'];
 				break;
 			}
 		}
@@ -1179,11 +1179,11 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		foreach($time_array as $key=>$val) {    
 			$dialplan_uuid = $key;
 			//get the extension number using the dialplan_uuid
-				$sql = "select field_data as extension_number ";
+				$sql = "select dialplan_detail_data as extension_number ";
 				$sql .= "from v_dialplan_details ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-				$sql .= "and field_type = 'destination_number' ";
+				$sql .= "and dialplan_detail_type = 'destination_number' ";
 				$sql .= "order by extension_number asc ";
 				$tmp = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 				$extension_number = $tmp['extension_number'];
@@ -1204,7 +1204,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 				$option_label = $extension_number.' '.$dialplan_name;
 				if ($select_type == "ivr") {
-					if ("menu-exec-app:transfer ".$row["field_data"]." XML ".$_SESSION["context"] == $select_value) {
+					if ("menu-exec-app:transfer ".$row["dialplan_detail_data"]." XML ".$_SESSION["context"] == $select_value) {
 						echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 						$selection_found = true;
 					}
@@ -1213,7 +1213,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					}
 				}
 				if ($select_type == "dialplan") {
-					if ("transfer:".$row["field_data"] == $select_value) {
+					if ("transfer:".$row["dialplan_detail_data"] == $select_value) {
 						echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 						$selection_found = true;
 					}
@@ -2181,11 +2181,11 @@ function outbound_route_to_bridge ($destination_number) {
 		$sql .= "select * from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and (";
-		$sql .= "field_data like '%sofia/gateway/%' ";
-		$sql .= "or field_data like '%freetdm%' ";
-		$sql .= "or field_data like '%openzap%' ";
-		$sql .= "or field_data like '%dingaling%' ";
-		$sql .= "or field_data like '%enum_auto_route%' ";
+		$sql .= "dialplan_detail_data like '%sofia/gateway/%' ";
+		$sql .= "or dialplan_detail_data like '%freetdm%' ";
+		$sql .= "or dialplan_detail_data like '%openzap%' ";
+		$sql .= "or dialplan_detail_data like '%dingaling%' ";
+		$sql .= "or dialplan_detail_data like '%enum_auto_route%' ";
 		$sql .= ") ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -2193,10 +2193,10 @@ function outbound_route_to_bridge ($destination_number) {
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$dialplan_uuid = $row["dialplan_uuid"];
-			//$tag = $row["tag"];
-			//$field_order = $row["field_order"];
-			//$field_type = $row["field_type"];
-			//$field_data = $row["field_data"];
+			//$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			//$dialplan_detail_order = $row["dialplan_detail_order"];
+			//$dialplan_detail_type = $row["dialplan_detail_type"];
+			//$dialplan_detail_data = $row["dialplan_detail_data"];
 			$dialplan_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 			$x++;
 		}
@@ -2232,8 +2232,8 @@ function outbound_route_to_bridge ($destination_number) {
 	$x = 0;
 	foreach ($result as &$row) {
 			$dialplan_uuid = $row['dialplan_uuid'];
-			$tag = $row["tag"];
-			$field_type = $row['field_type'];
+			$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			$dialplan_detail_type = $row['dialplan_detail_type'];
 			$dialplan_continue = $row['dialplan_continue'];
 
 			//get the extension number using the dialplan_uuid
@@ -2241,14 +2241,14 @@ function outbound_route_to_bridge ($destination_number) {
 					$sql .= "from v_dialplan_details ";
 					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-					$sql .= "order by field_order asc ";
+					$sql .= "order by dialplan_detail_order asc ";
 					$sub_result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 					$regex_match = false;
 					foreach ($sub_result as &$sub_row) {
-							if ($sub_row['tag'] == "condition") {
-									if ($sub_row['field_type'] == "destination_number") {
-											$field_data = $sub_row['field_data'];
-											$pattern = '/'.$field_data.'/';
+							if ($sub_row['dialplan_detail_tag'] == "condition") {
+									if ($sub_row['dialplan_detail_type'] == "destination_number") {
+											$dialplan_detail_data = $sub_row['dialplan_detail_data'];
+											$pattern = '/'.$dialplan_detail_data.'/';
 											preg_match($pattern, $destination_number, $matches, PREG_OFFSET_CAPTURE);
 											if (count($matches) == 0) {
 													$regex_match = false;
@@ -2266,15 +2266,15 @@ function outbound_route_to_bridge ($destination_number) {
 					}
 					if ($regex_match) {
 							foreach ($sub_result as &$sub_row) {
-									$field_data = $sub_row['field_data'];
-									if ($sub_row['tag'] == "action" && $sub_row['field_type'] == "bridge" && $field_data != "\${enum_auto_route}") {
-											$field_data = str_replace("\$1", $regex_match_1, $field_data);
-											$field_data = str_replace("\$2", $regex_match_2, $field_data);
-											$field_data = str_replace("\$3", $regex_match_3, $field_data);
-											$field_data = str_replace("\$4", $regex_match_4, $field_data);
-											$field_data = str_replace("\$5", $regex_match_5, $field_data);
-											//echo "field_data: $field_data";
-											$bridge_array[$x] = $field_data;
+									$dialplan_detail_data = $sub_row['dialplan_detail_data'];
+									if ($sub_row['dialplan_detail_tag'] == "action" && $sub_row['dialplan_detail_type'] == "bridge" && $dialplan_detail_data != "\${enum_auto_route}") {
+											$dialplan_detail_data = str_replace("\$1", $regex_match_1, $dialplan_detail_data);
+											$dialplan_detail_data = str_replace("\$2", $regex_match_2, $dialplan_detail_data);
+											$dialplan_detail_data = str_replace("\$3", $regex_match_3, $dialplan_detail_data);
+											$dialplan_detail_data = str_replace("\$4", $regex_match_4, $dialplan_detail_data);
+											$dialplan_detail_data = str_replace("\$5", $regex_match_5, $dialplan_detail_data);
+											//echo "dialplan_detail_data: $dialplan_detail_data";
+											$bridge_array[$x] = $dialplan_detail_data;
 											$x++;
 											if ($dialplan_continue == "false") {
 												break 2;
@@ -2415,17 +2415,17 @@ function sync_package_v_hunt_group() {
 								$opt_1_value = $row['hunt_group_uuid'];
 								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
-								$tag = 'condition'; //condition, action, antiaction
-								$field_type = 'destination_number';
-								$field_data = '^'.$row['hunt_group_extension'].'$';
-								$field_order = '000';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+								$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+								$dialplan_detail_type = 'destination_number';
+								$dialplan_detail_data = '^'.$row['hunt_group_extension'].'$';
+								$dialplan_detail_order = '000';
+								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-								$tag = 'action'; //condition, action, antiaction
-								$field_type = 'lua';
-								$field_data = 'v_huntgroup_'.$_SESSION['domains'][$domain_uuid]['domain'].'_'.$row['hunt_group_extension'].'.lua';
-								$field_order = '001';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+								$dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan_detail_type = 'lua';
+								$dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domains'][$domain_uuid]['domain'].'_'.$row['hunt_group_extension'].'.lua';
+								$dialplan_detail_order = '001';
+								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 						}
 						if ($action == 'update') {
 							//update the huntgroup
@@ -2457,10 +2457,10 @@ function sync_package_v_hunt_group() {
 								//update the condition
 								$sql = "";
 								$sql = "update v_dialplan_details set ";
-								$sql .= "field_data = '^".$row['hunt_group_extension']."$' ";
+								$sql .= "dialplan_detail_data = '^".$row['hunt_group_extension']."$' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and tag = 'condition' ";
-								$sql .= "and field_type = 'destination_number' ";
+								$sql .= "and dialplan_detail_tag = 'condition' ";
+								$sql .= "and dialplan_detail_type = 'destination_number' ";
 								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 								$db->query($sql);
 								unset($sql);
@@ -2468,10 +2468,10 @@ function sync_package_v_hunt_group() {
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_details set ";
-								$sql .= "field_data = 'v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain']."_".$row['hunt_group_extension'].".lua', ";
-								$sql .= "field_type = 'lua' ";
+								$sql .= "dialplan_detail_data = 'v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain']."_".$row['hunt_group_extension'].".lua', ";
+								$sql .= "dialplan_detail_type = 'lua' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and tag = 'action' ";
+								$sql .= "and dialplan_detail_tag = 'action' ";
 								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 								$db->query($sql);
 
@@ -2519,33 +2519,33 @@ function sync_package_v_hunt_group() {
 							$opt_1_value = $row['hunt_group_uuid'];
 							$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $opt_1_name, $opt_1_value);
 
-							$tag = 'condition'; //condition, action, antiaction
-							$field_type = 'destination_number';
-							$field_data = '^\*'.$row['hunt_group_extension'].'$';
-							$field_order = '000';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+							$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+							$dialplan_detail_type = 'destination_number';
+							$dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
+							$dialplan_detail_order = '000';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-							$tag = 'action'; //condition, action, antiaction
-							$field_type = 'set';
-							$field_data = 'fifo_music=$${hold_music}';
-							$field_order = '001';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+							$dialplan_detail_tag = 'action'; //condition, action, antiaction
+							$dialplan_detail_type = 'set';
+							$dialplan_detail_data = 'fifo_music=$${hold_music}';
+							$dialplan_detail_order = '001';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 							$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
 							$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
 							if ($hunt_group_timeout_type == "voicemail") { $hunt_group_timeout_destination = '*99'.$hunt_group_timeout_destination; }
 
-							$tag = 'action'; //condition, action, antiaction
-							$field_type = 'set';
-							$field_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
-							$field_order = '002';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+							$dialplan_detail_tag = 'action'; //condition, action, antiaction
+							$dialplan_detail_type = 'set';
+							$dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
+							$dialplan_detail_order = '002';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-							$tag = 'action'; //condition, action, antiaction
-							$field_type = 'fifo';
-							$field_data = $row['hunt_group_extension'].'@${domain_name} in';
-							$field_order = '003';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+							$dialplan_detail_tag = 'action'; //condition, action, antiaction
+							$dialplan_detail_type = 'fifo';
+							$dialplan_detail_data = $row['hunt_group_extension'].'@${domain_name} in';
+							$dialplan_detail_order = '003';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 						}
 						if ($action == 'update') {
 							//update the huntgroup fifo
@@ -2581,33 +2581,33 @@ function sync_package_v_hunt_group() {
 								$db->query($sql);
 								unset($sql);
 
-								$tag = 'condition'; //condition, action, antiaction
-								$field_type = 'destination_number';
-								$field_data = '^\*'.$row['hunt_group_extension'].'$';
-								$field_order = '000';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+								$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+								$dialplan_detail_type = 'destination_number';
+								$dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
+								$dialplan_detail_order = '000';
+								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-								$tag = 'action'; //condition, action, antiaction
-								$field_type = 'set';
-								$field_data = 'fifo_music=$${hold_music}';
-								$field_order = '001';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+								$dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan_detail_type = 'set';
+								$dialplan_detail_data = 'fifo_music=$${hold_music}';
+								$dialplan_detail_order = '001';
+								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 								$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
 								$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
 								if ($hunt_group_timeout_type == "voicemail") { $hunt_group_timeout_destination = '*99'.$hunt_group_timeout_destination; }
 
-								$tag = 'action'; //condition, action, antiaction
-								$field_type = 'set';
-								$field_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
-								$field_order = '002';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+								$dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan_detail_type = 'set';
+								$dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
+								$dialplan_detail_order = '002';
+								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-								$tag = 'action'; //condition, action, antiaction
-								$field_type = 'fifo';
-								$field_data = $row['hunt_group_extension'].'@${domain_name} in';
-								$field_order = '003';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+								$dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan_detail_type = 'fifo';
+								$dialplan_detail_data = $row['hunt_group_extension'].'@${domain_name} in';
+								$dialplan_detail_order = '003';
+								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 						}
 
 						sync_package_v_dialplan();
@@ -3070,80 +3070,80 @@ function sync_package_v_fax() {
 
 					//<!-- default ${domain_name} -->
 					//<condition field="destination_number" expression="^\*9978$">
-					$tag = 'condition'; //condition, action, antiaction
-					$field_type = 'destination_number';
-					$field_data = '^'.$row['fax_extension'].'$';
-					$field_order = '000';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+					$dialplan_detail_type = 'destination_number';
+					$dialplan_detail_data = '^'.$row['fax_extension'].'$';
+					$dialplan_detail_order = '000';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="system" data="$switch_scripts_dir/emailfax.sh USER DOMAIN $switch_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
-					$field_data .= "email=".$row['fax_email']." ";
-					$field_data .= "extension=".$row['fax_extension']." ";
-					$field_data .= "name=\\\\\\\${last_fax} ";
-					$field_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-					$field_data .= "domain=".$v_domain." ";
-					$field_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
-					$field_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
+					$dialplan_detail_data .= "email=".$row['fax_email']." ";
+					$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
+					$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
+					$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
+					$dialplan_detail_data .= "domain=".$v_domain." ";
+					$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
+					$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 
-					$field_order = '005';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_order = '005';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="answer" />
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'answer';
-					$field_data = '';
-					$field_order = '010';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'answer';
+					$dialplan_detail_data = '';
+					$dialplan_detail_order = '010';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					////<action application="set" data="fax_enable_t38=true"/>
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = 'fax_enable_t38=true';
-					$field_order = '015';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = 'fax_enable_t38=true';
+					$dialplan_detail_order = '015';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					////<action application="set" data="fax_enable_t38_request=true"/>
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = 'fax_enable_t38_request=true';
-					$field_order = '020';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = 'fax_enable_t38_request=true';
+					$dialplan_detail_order = '020';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="playback" data="silence_stream://2000"/>
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'playback';
-					$field_data = 'silence_stream://2000';
-					$field_order = '025';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'playback';
+					$dialplan_detail_data = 'silence_stream://2000';
+					$dialplan_detail_order = '025';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="set" data="last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}"/>
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
-					$field_order = '030';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
+					$dialplan_detail_order = '030';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="rxfax" data="$switch_storage_dir/fax/inbox/${last_fax}.tif"/>
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'rxfax';
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'rxfax';
 					if (count($_SESSION["domains"]) > 1) {
-						$field_data = $switch_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+						$dialplan_detail_data = $switch_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
 					else {
-						$field_data = $switch_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+						$dialplan_detail_data = $switch_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
-					$field_order = '035';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_order = '035';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="hangup"/>
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'hangup';
-					$field_data = '';
-					$field_order = '040';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'hangup';
+					$dialplan_detail_data = '';
+					$dialplan_detail_order = '040';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 				}
 				//unset($fax_uuid);
 			}
@@ -3172,49 +3172,49 @@ function sync_package_v_fax() {
 				//update the condition
 				$sql = "";
 				$sql = "update v_dialplan_details set ";
-				$sql .= "field_data = '^".$row['fax_extension']."$' ";
+				$sql .= "dialplan_detail_data = '^".$row['fax_extension']."$' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and tag = 'condition' ";
-				$sql .= "and field_type = 'destination_number' ";
+				$sql .= "and dialplan_detail_tag = 'condition' ";
+				$sql .= "and dialplan_detail_type = 'destination_number' ";
 				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 				$db->query($sql);
 				unset($sql);
 
 				//update the action
 				if (count($_SESSION["domains"]) > 1) {
-					$field_data = $switch_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+					$dialplan_detail_data = $switch_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 				}
 				else {
-					$field_data = $switch_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+					$dialplan_detail_data = $switch_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 				}
 				$sql = "";
 				$sql = "update v_dialplan_details set ";
-				$sql .= "field_data = '".$field_data."' ";
+				$sql .= "dialplan_detail_data = '".$dialplan_detail_data."' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and tag = 'action' ";
-				$sql .= "and field_type = 'rxfax' ";
+				$sql .= "and dialplan_detail_tag = 'action' ";
+				$sql .= "and dialplan_detail_type = 'rxfax' ";
 				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 				$db->query($sql);
 
 				//update the action
-				$tag = 'action'; //condition, action, antiaction
-				$field_type = 'set';
-				$field_data = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
-				$field_data .= "email=".$row['fax_email']." ";
-				$field_data .= "extension=".$row['fax_extension']." ";
-				$field_data .= "name=\\\\\\\${last_fax} ";
-				$field_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-				$field_data .= "domain=".$v_domain." ";
-				$field_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
-				$field_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
+				$dialplan_detail_tag = 'action'; //condition, action, antiaction
+				$dialplan_detail_type = 'set';
+				$dialplan_detail_data = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
+				$dialplan_detail_data .= "email=".$row['fax_email']." ";
+				$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
+				$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
+				$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
+				$dialplan_detail_data .= "domain=".$v_domain." ";
+				$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
+				$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 				$sql = "";
 				$sql = "update v_dialplan_details set ";
-				$sql .= "field_data = '".check_str($field_data)."' ";
+				$sql .= "dialplan_detail_data = '".check_str($dialplan_detail_data)."' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and tag = 'action' ";
-				$sql .= "and field_type = 'set' ";
+				$sql .= "and dialplan_detail_tag = 'action' ";
+				$sql .= "and dialplan_detail_type = 'set' ";
 				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-				$sql .= "and field_data like 'api_hangup_hook=%' ";
+				$sql .= "and dialplan_detail_data like 'api_hangup_hook=%' ";
 				$db->query(check_sql($sql));
 
 				unset($dialplan_name);
@@ -3289,7 +3289,7 @@ function v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context,
 	return $dialplan_uuid;
 }
 
-function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data) {
+function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data) {
 	global $db;
 	$dialplan_detail_uuid = uuid();
 	$sql = "insert into v_dialplan_details ";
@@ -3297,20 +3297,20 @@ function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order
 	$sql .= "domain_uuid, ";
 	$sql .= "dialplan_uuid, ";
 	$sql .= "dialplan_detail_uuid, ";
-	$sql .= "tag, ";
-	$sql .= "field_order, ";
-	$sql .= "field_type, ";
-	$sql .= "field_data ";
+	$sql .= "dialplan_detail_tag, ";
+	$sql .= "dialplan_detail_order, ";
+	$sql .= "dialplan_detail_type, ";
+	$sql .= "dialplan_detail_data ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
 	$sql .= "'".check_str($dialplan_uuid)."', ";
 	$sql .= "'".check_str($dialplan_detail_uuid)."', ";
-	$sql .= "'".check_str($tag)."', ";
-	$sql .= "'".check_str($field_order)."', ";
-	$sql .= "'".check_str($field_type)."', ";
-	$sql .= "'".check_str($field_data)."' ";
+	$sql .= "'".check_str($dialplan_detail_tag)."', ";
+	$sql .= "'".check_str($dialplan_detail_order)."', ";
+	$sql .= "'".check_str($dialplan_detail_type)."', ";
+	$sql .= "'".check_str($dialplan_detail_data)."' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql);
@@ -3357,7 +3357,7 @@ function sync_package_v_dialplan() {
 		$sql .= " select * from v_dialplan_details ";
 		$sql .= " where dialplan_uuid = '".$row['dialplan_uuid']."' ";
 		$sql .= " and domain_uuid = $domain_uuid ";
-		$sql .= " order by field_group asc, field_order asc ";
+		$sql .= " order by dialplan_detail_group asc, dialplan_detail_order asc ";
 		$prep_statement_2 = $db->prepare($sql);
 		if ($prep_statement_2) {
 			$prep_statement_2->execute();
@@ -3373,11 +3373,11 @@ function sync_package_v_dialplan() {
 					$x = 0;
 					$y = 0;
 					foreach($result2 as $row2) {
-						if ($row2['tag'] == "condition") {
+						if ($row2['dialplan_detail_tag'] == "condition") {
 							//get the group
-								$group = $row2['field_group'];
+								$group = $row2['dialplan_detail_group'];
 							//get the generic type
-								switch ($row2['field_type']) {
+								switch ($row2['dialplan_detail_type']) {
 								case "hour":
 									$type = 'time';
 									break;
@@ -3413,15 +3413,15 @@ function sync_package_v_dialplan() {
 								}
 
 							//add the conditions to the details array
-								$details[$group]['condition-'.$x]['tag'] = $row2['tag'];
-								$details[$group]['condition-'.$x]['field_type'] = $row2['field_type'];
+								$details[$group]['condition-'.$x]['dialplan_detail_tag'] = $row2['dialplan_detail_tag'];
+								$details[$group]['condition-'.$x]['dialplan_detail_type'] = $row2['dialplan_detail_type'];
 								$details[$group]['condition-'.$x]['dialplan_uuid'] = $row2['dialplan_uuid'];
-								$details[$group]['condition-'.$x]['field_order'] = $row2['field_order'];
-								$details[$group]['condition-'.$x]['field'][$y]['type'] = $row2['field_type'];
-								$details[$group]['condition-'.$x]['field'][$y]['data'] = $row2['field_data'];
-								$details[$group]['condition-'.$x]['field_break'] = $row2['field_break'];
-								$details[$group]['condition-'.$x]['field_group'] = $row2['field_group'];
-								$details[$group]['condition-'.$x]['field_inline'] = $row2['field_inline'];
+								$details[$group]['condition-'.$x]['dialplan_detail_order'] = $row2['dialplan_detail_order'];
+								$details[$group]['condition-'.$x]['field'][$y]['type'] = $row2['dialplan_detail_type'];
+								$details[$group]['condition-'.$x]['field'][$y]['data'] = $row2['dialplan_detail_data'];
+								$details[$group]['condition-'.$x]['dialplan_detail_break'] = $row2['dialplan_detail_break'];
+								$details[$group]['condition-'.$x]['dialplan_detail_group'] = $row2['dialplan_detail_group'];
+								$details[$group]['condition-'.$x]['dialplan_detail_inline'] = $row2['dialplan_detail_inline'];
 								if ($type == "time") {
 									$y++;
 								}
@@ -3435,8 +3435,8 @@ function sync_package_v_dialplan() {
 				//actions
 					$x = 0;
 					foreach($result2 as $row2) {
-						if ($row2['tag'] == "action") {
-							$group = $row2['field_group'];
+						if ($row2['dialplan_detail_tag'] == "action") {
+							$group = $row2['dialplan_detail_group'];
 							foreach ($row2 as $key => $val) {
 								$details[$group]['action-'.$x][$key] = $val;
 							}
@@ -3446,8 +3446,8 @@ function sync_package_v_dialplan() {
 				//anti-actions
 					$x = 0;
 					foreach($result2 as $row2) {
-						if ($row2['tag'] == "anti-action") {
-							$group = $row2['field_group'];
+						if ($row2['dialplan_detail_tag'] == "anti-action") {
+							$group = $row2['dialplan_detail_group'];
 							foreach ($row2 as $key => $val) {
 								$details[$group]['anti-action-'.$x][$key] = $val;
 							}
@@ -3463,11 +3463,11 @@ function sync_package_v_dialplan() {
 				$current_count = 0;
 				$x = 0;
 				foreach($group as $ent) {
-					$current_tag = $ent['tag'];
+					$current_tag = $ent['dialplan_detail_tag'];
 					$c = 0;
-					if ($ent['tag'] == "condition") {
+					if ($ent['dialplan_detail_tag'] == "condition") {
 						//get the generic type
-							switch ($ent['field_type']) {
+							switch ($ent['dialplan_detail_type']) {
 							case "hour":
 								$type = 'time';
 								break;
@@ -3517,23 +3517,23 @@ function sync_package_v_dialplan() {
 
 						//get the condition break attribute
 							$condition_break = '';
-							if (strlen($ent['field_break']) > 0) {
-								$condition_break = "break=\"".$ent['field_break']."\" ";
+							if (strlen($ent['dialplan_detail_break']) > 0) {
+								$condition_break = "break=\"".$ent['dialplan_detail_break']."\" ";
 							}
 
 						//get the count
 							$count = 0;
 							foreach($details as $group2) {
 								foreach($group2 as $ent2) {
-									if ($ent2['field_group'] == $ent['field_group'] && $ent2['tag'] == "condition") {
+									if ($ent2['dialplan_detail_group'] == $ent['dialplan_detail_group'] && $ent2['dialplan_detail_tag'] == "condition") {
 										$count++;
 									}
 								}
 							}
 
-						//use the correct type of tag open or self closed
+						//use the correct type of dialplan_detail_tag open or self closed
 							if ($count == 1) { //single condition
-								//start tag
+								//start dialplan_detail_tag
 								$tmp .= "   <condition ".$condition_attribute."".$condition_expression."".$condition_break.">\n";
 							}
 							else { //more than one condition
@@ -3543,36 +3543,36 @@ function sync_package_v_dialplan() {
 									$tmp .= "   <condition ".$condition_attribute."".$condition_expression."".$condition_break."/>\n";
 								}
 								else {
-									//for the last tag use the start tag
+									//for the last dialplan_detail_tag use the start dialplan_detail_tag
 									$tmp .= "   <condition ".$condition_attribute."".$condition_expression."".$condition_break.">\n";
 								}
 							}
 					}
 					//actions
-						if ($ent['tag'] == "action") {
+						if ($ent['dialplan_detail_tag'] == "action") {
 							//get the action inline attribute
 							$action_inline = '';
-							if (strlen($ent['field_inline']) > 0) {
-								$action_inline = "inline=\"".$ent['field_inline']."\"";
+							if (strlen($ent['dialplan_detail_inline']) > 0) {
+								$action_inline = "inline=\"".$ent['dialplan_detail_inline']."\"";
 							}
-							if (strlen($ent['field_data']) > 0) {
-								$tmp .= "       <action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\" $action_inline/>\n";
+							if (strlen($ent['dialplan_detail_data']) > 0) {
+								$tmp .= "       <action application=\"".$ent['dialplan_detail_type']."\" data=\"".$ent['dialplan_detail_data']."\" $action_inline/>\n";
 							}
 							else {
-								$tmp .= "       <action application=\"".$ent['field_type']."\" $action_inline/>\n";
+								$tmp .= "       <action application=\"".$ent['dialplan_detail_type']."\" $action_inline/>\n";
 							}
 						}
 					//anti-actions
-						if ($ent['tag'] == "anti-action") {
-							if (strlen($ent['field_data']) > 0) {
-								$tmp .= "       <anti-action application=\"".$ent['field_type']."\" data=\"".$ent['field_data']."\"/>\n";
+						if ($ent['dialplan_detail_tag'] == "anti-action") {
+							if (strlen($ent['dialplan_detail_data']) > 0) {
+								$tmp .= "       <anti-action application=\"".$ent['dialplan_detail_type']."\" data=\"".$ent['dialplan_detail_data']."\"/>\n";
 							}
 							else {
-								$tmp .= "       <anti-action application=\"".$ent['field_type']."\"/>\n";
+								$tmp .= "       <anti-action application=\"".$ent['dialplan_detail_type']."\"/>\n";
 							}
 						}
-					//set the previous tag
-						$previous_tag = $ent['tag'];
+					//set the previous dialplan_detail_tag
+						$previous_tag = $ent['dialplan_detail_tag'];
 					$i++;
 				} //end foreach
 				$tmp .= "   </condition>\n";
@@ -3991,47 +3991,47 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								unset($sql);
 							}
 
-							$tag = 'condition'; //condition, action, antiaction
-							$field_type = 'destination_number';
-							$field_data = '^'.$row['ivr_menu_extension'].'$';
-							$field_order = '005';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+							$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+							$dialplan_detail_type = 'destination_number';
+							$dialplan_detail_data = '^'.$row['ivr_menu_extension'].'$';
+							$dialplan_detail_order = '005';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-							$tag = 'action'; //condition, action, antiaction
-							$field_type = 'answer';
-							$field_data = '';
-							$field_order = '010';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+							$dialplan_detail_tag = 'action'; //condition, action, antiaction
+							$dialplan_detail_type = 'answer';
+							$dialplan_detail_data = '';
+							$dialplan_detail_order = '010';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-							$tag = 'action'; //condition, action, antiaction
-							$field_type = 'sleep';
-							$field_data = '1000';
-							$field_order = '015';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+							$dialplan_detail_tag = 'action'; //condition, action, antiaction
+							$dialplan_detail_type = 'sleep';
+							$dialplan_detail_data = '1000';
+							$dialplan_detail_order = '015';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-							$tag = 'action'; //condition, action, antiaction
-							$field_type = 'set';
-							$field_data = 'hangup_after_bridge=true';
-							$field_order = '020';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+							$dialplan_detail_tag = 'action'; //condition, action, antiaction
+							$dialplan_detail_type = 'set';
+							$dialplan_detail_data = 'hangup_after_bridge=true';
+							$dialplan_detail_order = '020';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-							$tag = 'action'; //condition, action, antiaction
-							$field_type = 'ivr';
+							$dialplan_detail_tag = 'action'; //condition, action, antiaction
+							$dialplan_detail_type = 'ivr';
 							if (count($_SESSION["domains"]) > 1) {
-								$field_data = $_SESSION['domains'][$domain_uuid]['domain'].'-'.$ivr_menu_name;
+								$dialplan_detail_data = $_SESSION['domains'][$domain_uuid]['domain'].'-'.$ivr_menu_name;
 							}
 							else {
-								$field_data = $ivr_menu_name;
+								$dialplan_detail_data = $ivr_menu_name;
 							}
-							$field_order = '025';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+							$dialplan_detail_order = '025';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 							
 							if (strlen($ivr_menu_exit_app) > 0) {
-								$tag = 'action'; //condition, action, antiaction
-								$field_type = $ivr_menu_exit_app;
-								$field_data = $ivr_menu_exit_data;
-								$field_order = '030';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+								$dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan_detail_type = $ivr_menu_exit_app;
+								$dialplan_detail_data = $ivr_menu_exit_data;
+								$dialplan_detail_order = '030';
+								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 							}
 
 						unset($action);
@@ -4213,26 +4213,26 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
 									$dialplan->dialplan_uuid = $dialplan_uuid;
-									$dialplan->tag = 'condition'; //condition, action, antiaction
-									$dialplan->field_type = '${caller_id_name}';
-									$dialplan->field_data = '^([^#]+#)(.*)$';
-									$dialplan->field_break = 'never';
-									$dialplan->field_inline = '';
-									$dialplan->field_group = '1';
-									$dialplan->field_order = '000';
+									$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = '${caller_id_name}';
+									$dialplan->dialplan_detail_data = '^([^#]+#)(.*)$';
+									$dialplan->dialplan_detail_break = 'never';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '1';
+									$dialplan->dialplan_detail_order = '000';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
 									$dialplan->dialplan_uuid = $dialplan_uuid;
-									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->field_type = 'set';
-									$dialplan->field_data = 'caller_id_name=$2';
-									$dialplan->field_break = '';
-									$dialplan->field_inline = '';
-									$dialplan->field_group = '1';
-									$dialplan->field_order = '001';
+									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = 'set';
+									$dialplan->dialplan_detail_data = 'caller_id_name=$2';
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '1';
+									$dialplan->dialplan_detail_order = '001';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -4240,78 +4240,78 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
 									$dialplan->dialplan_uuid = $dialplan_uuid;
-									$dialplan->tag = 'condition'; //condition, action, antiaction
-									$dialplan->field_type = 'destination_number';
-									$dialplan->field_data = '^'.$row['queue_extension'].'$';
-									$dialplan->field_break = '';
-									$dialplan->field_inline = '';
-									$dialplan->field_group = '2';
-									$dialplan->field_order = '000';
+									$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = 'destination_number';
+									$dialplan->dialplan_detail_data = '^'.$row['queue_extension'].'$';
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '2';
+									$dialplan->dialplan_detail_order = '000';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
 									$dialplan->dialplan_uuid = $dialplan_uuid;
-									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->field_type = 'answer';
-									$dialplan->field_data = '';
-									$dialplan->field_break = '';
-									$dialplan->field_inline = '';
-									$dialplan->field_group = '2';
-									$dialplan->field_order = '001';
+									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = 'answer';
+									$dialplan->dialplan_detail_data = '';
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '2';
+									$dialplan->dialplan_detail_order = '001';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
 									$dialplan->dialplan_uuid = $dialplan_uuid;
-									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->field_type = 'set';
-									$dialplan->field_data = 'hangup_after_bridge=true';
-									$dialplan->field_break = '';
-									$dialplan->field_inline = '';
-									$dialplan->field_group = '2';
-									$dialplan->field_order = '002';
+									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = 'set';
+									$dialplan->dialplan_detail_data = 'hangup_after_bridge=true';
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '2';
+									$dialplan->dialplan_detail_order = '002';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
 									$dialplan->dialplan_uuid = $dialplan_uuid;
-									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->field_type = 'set';
-									$dialplan->field_data = "caller_id_name=".$queue_cid_prefix."#\${caller_id_name}";
-									$dialplan->field_break = '';
-									$dialplan->field_inline = '';
-									$dialplan->field_group = '2';
-									$dialplan->field_order = '003';
+									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = 'set';
+									$dialplan->dialplan_detail_data = "caller_id_name=".$queue_cid_prefix."#\${caller_id_name}";
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '2';
+									$dialplan->dialplan_detail_order = '003';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
 									$dialplan->dialplan_uuid = $dialplan_uuid;
-									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->field_type = 'system';
-									$dialplan->field_data = 'mkdir -p $${base_dir}/recordings/archive/${strftime(%Y)}/${strftime(%b)}/${strftime(%d)}/';
-									$dialplan->field_break = '';
-									$dialplan->field_inline = '';
-									$dialplan->field_group = '2';
-									$dialplan->field_order = '004';
+									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = 'system';
+									$dialplan->dialplan_detail_data = 'mkdir -p $${base_dir}/recordings/archive/${strftime(%Y)}/${strftime(%b)}/${strftime(%d)}/';
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '2';
+									$dialplan->dialplan_detail_order = '004';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
 									$dialplan->dialplan_uuid = $dialplan_uuid;
-									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->field_type = 'callcenter';
-									$dialplan->field_data = $queue_name."@".$_SESSION['domains'][$domain_uuid]['domain'];
-									$dialplan->field_break = '';
-									$dialplan->field_inline = '';
-									$dialplan->field_group = '2';
-									$dialplan->field_order = '005';
+									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = 'callcenter';
+									$dialplan->dialplan_detail_data = $queue_name."@".$_SESSION['domains'][$domain_uuid]['domain'];
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '2';
+									$dialplan->dialplan_detail_order = '005';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 
@@ -4320,13 +4320,13 @@ if (!function_exists('sync_package_v_call_center')) {
 										$dialplan = new dialplan;
 										$dialplan->domain_uuid = $domain_uuid;
 										$dialplan->dialplan_uuid = $dialplan_uuid;
-										$dialplan->tag = 'action'; //condition, action, antiaction
-										$dialplan->field_type = $action_array[0];
-										$dialplan->field_data = substr($queue_timeout_action, strlen($action_array[0])+1, strlen($queue_timeout_action));
-										$dialplan->field_break = '';
-										$dialplan->field_inline = '';
-										$dialplan->field_group = '2';
-										$dialplan->field_order = '006';
+										$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+										$dialplan->dialplan_detail_type = $action_array[0];
+										$dialplan->dialplan_detail_data = substr($queue_timeout_action, strlen($action_array[0])+1, strlen($queue_timeout_action));
+										$dialplan->dialplan_detail_break = '';
+										$dialplan->dialplan_detail_inline = '';
+										$dialplan->dialplan_detail_group = '2';
+										$dialplan->dialplan_detail_order = '006';
 										$dialplan->dialplan_detail_add();
 										unset($dialplan);
 									}
@@ -4334,13 +4334,13 @@ if (!function_exists('sync_package_v_call_center')) {
 									$dialplan = new dialplan;
 									$dialplan->domain_uuid = $domain_uuid;
 									$dialplan->dialplan_uuid = $dialplan_uuid;
-									$dialplan->tag = 'action'; //condition, action, antiaction
-									$dialplan->field_type = 'hangup';
-									$dialplan->field_data = '';
-									$dialplan->field_break = '';
-									$dialplan->field_inline = '';
-									$dialplan->field_group = '2';
-									$dialplan->field_order = '007';
+									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+									$dialplan->dialplan_detail_type = 'hangup';
+									$dialplan->dialplan_detail_data = '';
+									$dialplan->dialplan_detail_break = '';
+									$dialplan->dialplan_detail_inline = '';
+									$dialplan->dialplan_detail_group = '2';
+									$dialplan->dialplan_detail_order = '007';
 									$dialplan->dialplan_detail_add();
 									unset($dialplan);
 						}
@@ -4372,10 +4372,10 @@ if (!function_exists('sync_package_v_call_center')) {
 								//update the condition
 								$sql = "";
 								$sql = "update v_dialplan_details set ";
-								$sql .= "field_data = '^".$row['queue_extension']."$' ";
+								$sql .= "dialplan_detail_data = '^".$row['queue_extension']."$' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and tag = 'condition' ";
-								$sql .= "and field_type = 'destination_number' ";
+								$sql .= "and dialplan_detail_tag = 'condition' ";
+								$sql .= "and dialplan_detail_type = 'destination_number' ";
 								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 								//echo $sql."<br />";
 								$db->query($sql);
@@ -4384,22 +4384,22 @@ if (!function_exists('sync_package_v_call_center')) {
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_details set ";
-								$sql .= "field_data = 'caller_id_name=".$queue_cid_prefix."\${caller_id_name}' ";
+								$sql .= "dialplan_detail_data = 'caller_id_name=".$queue_cid_prefix."\${caller_id_name}' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and tag = 'action' ";
-								$sql .= "and field_type = 'set' ";
+								$sql .= "and dialplan_detail_tag = 'action' ";
+								$sql .= "and dialplan_detail_type = 'set' ";
 								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-								$sql .= "and field_data like '%{caller_id_name}%' ";
+								$sql .= "and dialplan_detail_data like '%{caller_id_name}%' ";
 								//echo $sql."<br />";
 								$db->query($sql);
 
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_details set ";
-								$sql .= "field_data = '".$queue_name."@".$_SESSION['domains'][$domain_uuid]['domain']."' ";
+								$sql .= "dialplan_detail_data = '".$queue_name."@".$_SESSION['domains'][$domain_uuid]['domain']."' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and tag = 'action' ";
-								$sql .= "and field_type = 'callcenter' ";
+								$sql .= "and dialplan_detail_tag = 'action' ";
+								$sql .= "and dialplan_detail_type = 'callcenter' ";
 								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 								//echo $sql."<br />";
 								$db->query($sql);

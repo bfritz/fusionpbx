@@ -137,10 +137,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -164,10 +164,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -189,10 +189,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -214,10 +214,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -239,10 +239,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -264,10 +264,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -289,10 +289,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -314,10 +314,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -339,10 +339,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -364,10 +364,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -389,10 +389,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -415,10 +415,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "domain_uuid, ";
 		$sql .= "dialplan_uuid, ";
 		$sql .= "dialplan_detail_uuid, ";
-		$sql .= "tag, ";
-		$sql .= "field_type, ";
-		$sql .= "field_data, ";
-		$sql .= "field_order ";
+		$sql .= "dialplan_detail_tag, ";
+		$sql .= "dialplan_detail_type, ";
+		$sql .= "dialplan_detail_data, ";
+		$sql .= "dialplan_detail_order ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
@@ -441,10 +441,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -639,12 +639,12 @@ function template_onchange(tmp_object) {
 	}
 }
 
-function type_onchange(field_type) {
-	var field_value = document.getElementById(field_type).value;
+function type_onchange(dialplan_detail_type) {
+	var field_value = document.getElementById(dialplan_detail_type).value;
 	//desc_action_data_1
 	//desc_anti_action_data
 
-	if (field_type == "action_application_1") {
+	if (dialplan_detail_type == "action_application_1") {
 		if (field_value == "transfer") {
 			document.getElementById("desc_action_data_1").innerHTML = "Transfer the call through the dialplan to the destination. data: 1001 XML default";
 		}
@@ -673,7 +673,7 @@ function type_onchange(field_type) {
 			document.getElementById("desc_action_data_1").innerHTML = "";
 		}
 	}
-	if (field_type == "anti_action_application_1") {
+	if (dialplan_detail_type == "anti_action_application_1") {
 		if (field_value == "transfer") {
 			document.getElementById("desc_anti_action_data_1").innerHTML = "Transfer the call through the dialplan to the destination. data: 1001 XML default";
 		}

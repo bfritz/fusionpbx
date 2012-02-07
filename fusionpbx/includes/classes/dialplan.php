@@ -37,20 +37,20 @@ include "root.php";
 
 			//dialplans
 			var $dialplan_name;
-			var $extension_continue;
+			var $dialplan_continue;
 			var $dialplan_order;
 			var $context;
 			var $enabled;
 			var $description;
 
 			//dialplan_details
-			var $tag;
-			var $field_order;
-			var $field_type;
-			var $field_data;
-			var $field_break;
-			var $field_inline;
-			var $field_group;
+			var $dialplan_detail_tag;
+			var $dialplan_detail_order;
+			var $dialplan_detail_type;
+			var $dialplan_detail_data;
+			var $dialplan_detail_break;
+			var $dialplan_detail_inline;
+			var $dialplan_detail_group;
 
 			function dialplan_add() {
 				global $db;
@@ -67,29 +67,29 @@ include "root.php";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "dialplan_uuid, ";
-				$sql .= "tag, ";
-				$sql .= "field_order, ";
-				$sql .= "field_type, ";
-				$sql .= "field_data, ";
-				$sql .= "field_break, ";
-				$sql .= "field_inline, ";
-				$sql .= "field_group ";
+				$sql .= "dialplan_detail_tag, ";
+				$sql .= "dialplan_detail_order, ";
+				$sql .= "dialplan_detail_type, ";
+				$sql .= "dialplan_detail_data, ";
+				$sql .= "dialplan_detail_break, ";
+				$sql .= "dialplan_detail_inline, ";
+				$sql .= "dialplan_detail_group ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$this->domain_uuid', ";
 				$sql .= "'$this->dialplan_uuid', ";
-				$sql .= "'$this->tag', ";
-				$sql .= "'$this->field_order', ";
-				$sql .= "'$this->field_type', ";
-				$sql .= "'$this->field_data', ";
-				$sql .= "'$this->field_break', ";
-				$sql .= "'$this->field_inline', ";
-				if (strlen($this->field_group) == 0) {
+				$sql .= "'$this->dialplan_detail_tag', ";
+				$sql .= "'$this->dialplan_detail_order', ";
+				$sql .= "'$this->dialplan_detail_type', ";
+				$sql .= "'$this->dialplan_detail_data', ";
+				$sql .= "'$this->dialplan_detail_break', ";
+				$sql .= "'$this->dialplan_detail_inline', ";
+				if (strlen($this->dialplan_detail_group) == 0) {
 					$sql .= "null ";
 				}
 				else {
-					$sql .= "'$this->field_group' ";
+					$sql .= "'$this->dialplan_detail_group' ";
 				}
 				$sql .= ")";
 				$db->exec(check_sql($sql));

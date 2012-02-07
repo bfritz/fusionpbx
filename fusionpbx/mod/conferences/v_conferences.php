@@ -53,7 +53,7 @@ require_once "includes/paging.php";
 	}
 	else {
 		//find the assigned users
-			$sql .= "and field_data like 'conference_user_list%' and field_data like '%|".$_SESSION['username']."|%' ";
+			$sql .= "and dialplan_detail_data like 'conference_user_list%' and dialplan_detail_data like '%|".$_SESSION['username']."|%' ";
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -61,9 +61,9 @@ require_once "includes/paging.php";
 	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$dialplan_uuid = $row["dialplan_uuid"];
-		$field_type = $row["field_type"];
+		$dialplan_detail_type = $row["dialplan_detail_type"];
 		if (permission_exists('conferences_add') && permission_exists('conferences_edit')) {
-			if ($field_type == "conference") {
+			if ($dialplan_detail_type == "conference") {
 				$conference_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 				$x++;
 			}

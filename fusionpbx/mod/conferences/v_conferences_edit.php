@@ -61,8 +61,8 @@ $order = $_GET["order"];
 			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row) {
 				$tmp_dialplan_uuid = $row["dialplan_uuid"];
-				$field_type = $row["field_type"];
-				if ($field_type == "conference") {
+				$dialplan_detail_type = $row["dialplan_detail_type"];
+				if ($dialplan_detail_type == "conference") {
 					$conference_array[$x]['dialplan_uuid'] = $tmp_dialplan_uuid;
 					$x++;
 				}
@@ -74,7 +74,7 @@ $order = $_GET["order"];
 				$sql = "select * from v_dialplan_details ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' ";
-				$sql .= "and field_data like 'conference_user_list%' and field_data like '%|".$_SESSION['username']."|%' ";
+				$sql .= "and dialplan_detail_data like 'conference_user_list%' and dialplan_detail_data like '%|".$_SESSION['username']."|%' ";
 				$tmp_row = $db->query($sql)->fetch();
 				if (strlen($tmp_row['dialplan_uuid']) > 0) {
 					$conference_auth_array[$tmp_row['dialplan_uuid']] = $tmp_row['dialplan_uuid'];
@@ -194,10 +194,10 @@ $order = $_GET["order"];
 					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_uuid, ";
 					$sql .= "dialplan_detail_uuid, ";
-					$sql .= "tag, ";
-					$sql .= "field_type, ";
-					$sql .= "field_data, ";
-					$sql .= "field_order ";
+					$sql .= "dialplan_detail_tag, ";
+					$sql .= "dialplan_detail_type, ";
+					$sql .= "dialplan_detail_data, ";
+					$sql .= "dialplan_detail_order ";
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
@@ -218,10 +218,10 @@ $order = $_GET["order"];
 					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_uuid, ";
 					$sql .= "dialplan_detail_uuid, ";
-					$sql .= "tag, ";
-					$sql .= "field_type, ";
-					$sql .= "field_data, ";
-					$sql .= "field_order ";
+					$sql .= "dialplan_detail_tag, ";
+					$sql .= "dialplan_detail_type, ";
+					$sql .= "dialplan_detail_data, ";
+					$sql .= "dialplan_detail_order ";
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
@@ -242,10 +242,10 @@ $order = $_GET["order"];
 					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_uuid, ";
 					$sql .= "dialplan_detail_uuid, ";
-					$sql .= "tag, ";
-					$sql .= "field_type, ";
-					$sql .= "field_data, ";
-					$sql .= "field_order ";
+					$sql .= "dialplan_detail_tag, ";
+					$sql .= "dialplan_detail_type, ";
+					$sql .= "dialplan_detail_data, ";
+					$sql .= "dialplan_detail_order ";
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
@@ -266,10 +266,10 @@ $order = $_GET["order"];
 					$sql .= "domain_uuid, ";
 					$sql .= "dialplan_uuid, ";
 					$sql .= "dialplan_detail_uuid, ";
-					$sql .= "tag, ";
-					$sql .= "field_type, ";
-					$sql .= "field_data, ";
-					$sql .= "field_order ";
+					$sql .= "dialplan_detail_tag, ";
+					$sql .= "dialplan_detail_type, ";
+					$sql .= "dialplan_detail_data, ";
+					$sql .= "dialplan_detail_order ";
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
@@ -283,7 +283,7 @@ $order = $_GET["order"];
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					unset($sql);
-					unset($field_data);
+					unset($dialplan_detail_data);
 			} //end if (strlen($dialplan_uuid) > 0)
 		} //if ($action == "add")
 
@@ -310,12 +310,12 @@ $order = $_GET["order"];
 				$result = $prep_statement->fetchAll();
 				unset($prep_statement);
 				foreach ($result as $row) {
-					if ($row['field_type'] == "destination_number") {
+					if ($row['dialplan_detail_type'] == "destination_number") {
 						$sql = "update v_dialplan_details set ";
-						//$sql .= "tag = '$tag', ";
-						//$sql .= "field_type = '$field_type', ";
-						$sql .= "field_data = '^".$dialplan_number."$', ";
-						$sql .= "field_order = '".$row['field_order']."' ";
+						//$sql .= "dialplan_detail_tag = '$dialplan_detail_tag', ";
+						//$sql .= "dialplan_detail_type = '$dialplan_detail_type', ";
+						$sql .= "dialplan_detail_data = '^".$dialplan_number."$', ";
+						$sql .= "dialplan_detail_order = '".$row['dialplan_detail_order']."' ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 						$sql .= "and dialplan_detail_uuid = '".$row['dialplan_detail_uuid']."' ";
@@ -324,13 +324,13 @@ $order = $_GET["order"];
 						unset($sql);
 					}
 					if (permission_exists('conferences_add') && permission_exists('conferences_edit')) {
-						$field_data_array = explode("=", $row['field_data']);
+						$field_data_array = explode("=", $row['dialplan_detail_data']);
 						if ($field_data_array[0] == "conference_user_list") {
 							$sql = "update v_dialplan_details set ";
-							//$sql .= "tag = '$tag', ";
-							//$sql .= "field_type = '$field_type', ";
-							$sql .= "field_data = 'conference_user_list=".$user_list."', ";
-							$sql .= "field_order = '".$row['field_order']."' ";
+							//$sql .= "dialplan_detail_tag = '$dialplan_detail_tag', ";
+							//$sql .= "dialplan_detail_type = '$dialplan_detail_type', ";
+							$sql .= "dialplan_detail_data = 'conference_user_list=".$user_list."', ";
+							$sql .= "dialplan_detail_order = '".$row['dialplan_detail_order']."' ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 							$sql .= "and dialplan_detail_uuid = '".$row['dialplan_detail_uuid']."' ";
@@ -339,19 +339,19 @@ $order = $_GET["order"];
 							unset($sql);
 						}
 					}
-					if ($row['field_type'] == "conference") {
+					if ($row['dialplan_detail_type'] == "conference") {
 						$sql = "update v_dialplan_details set ";
-						//$sql .= "tag = '$tag', ";
-						//$sql .= "field_type = '$field_type', ";
-						$sql .= "field_data = '".$tmp_field_data."', ";
-						$sql .= "field_order = '".$row['field_order']."' ";
+						//$sql .= "dialplan_detail_tag = '$dialplan_detail_tag', ";
+						//$sql .= "dialplan_detail_type = '$dialplan_detail_type', ";
+						$sql .= "dialplan_detail_data = '".$tmp_field_data."', ";
+						$sql .= "dialplan_detail_order = '".$row['dialplan_detail_order']."' ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 						$sql .= "and dialplan_detail_uuid = '".$row['dialplan_detail_uuid']."' ";
 						$db->exec(check_sql($sql));
 						//echo $sql."<br />\n";
 						unset($sql);
-						unset($field_data);
+						unset($dialplan_detail_data);
 					}
 				}
 
@@ -402,19 +402,19 @@ $order = $_GET["order"];
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			if ($row['field_type'] == "destination_number") {
-				$dialplan_number = $row['field_data'];
+			if ($row['dialplan_detail_type'] == "destination_number") {
+				$dialplan_number = $row['dialplan_detail_data'];
 				$dialplan_number = trim($dialplan_number, '^$');
 			}
-			$field_data_array = explode("=", $row['field_data']);
+			$field_data_array = explode("=", $row['dialplan_detail_data']);
 			if ($field_data_array[0] == "conference_user_list") {
 				$user_list = $field_data_array[1];
 			}
-			if ($row['field_type'] == "conference") {
-				$field_data = $row['field_data'];
-				$tmp_pos = stripos($field_data, "@");
+			if ($row['dialplan_detail_type'] == "conference") {
+				$dialplan_detail_data = $row['dialplan_detail_data'];
+				$tmp_pos = stripos($dialplan_detail_data, "@");
 				if ($tmp_pos !== false) {
-					$tmp_field_data = substr($field_data, $tmp_pos+1, strlen($field_data));
+					$tmp_field_data = substr($dialplan_detail_data, $tmp_pos+1, strlen($dialplan_detail_data));
 					$tmp_field_data_array = explode("+",$tmp_field_data);
 					foreach ($tmp_field_data_array as &$tmp_row) {
 						if (is_numeric($tmp_row)) {

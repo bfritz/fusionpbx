@@ -53,10 +53,10 @@ else {
 		if (isset($_REQUEST["dialplan_uuid"])) {
 			$dialplan_uuid = check_str($_POST["dialplan_uuid"]);
 		}
-		$tag = check_str($_POST["tag"]);
-		$field_order = check_str($_POST["field_order"]);
-		$field_type = check_str($_POST["field_type"]);
-		$field_data = check_str($_POST["field_data"]);
+		$dialplan_detail_tag = check_str($_POST["dialplan_detail_tag"]);
+		$dialplan_detail_order = check_str($_POST["dialplan_detail_order"]);
+		$dialplan_detail_type = check_str($_POST["dialplan_detail_type"]);
+		$dialplan_detail_data = check_str($_POST["dialplan_detail_data"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -68,10 +68,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		if (strlen($tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
-		if (strlen($field_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
-		//if (strlen($field_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
-		//if (strlen($field_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
+		if (strlen($dialplan_detail_tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
+		if (strlen($dialplan_detail_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		//if (strlen($dialplan_detail_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
+		//if (strlen($dialplan_detail_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -94,20 +94,20 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "domain_uuid, ";
 				$sql .= "dialplan_uuid, ";
 				$sql .= "dialplan_detail_uuid, ";
-				$sql .= "tag, ";
-				$sql .= "field_order, ";
-				$sql .= "field_type, ";
-				$sql .= "field_data ";
+				$sql .= "dialplan_detail_tag, ";
+				$sql .= "dialplan_detail_order, ";
+				$sql .= "dialplan_detail_type, ";
+				$sql .= "dialplan_detail_data ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'$dialplan_uuid', ";
 				$sql .= "'$dialplan_detail_uuid', ";
-				$sql .= "'$tag', ";
-				$sql .= "'$field_order', ";
-				$sql .= "'$field_type', ";
-				$sql .= "'$field_data' ";
+				$sql .= "'$dialplan_detail_tag', ";
+				$sql .= "'$dialplan_detail_order', ";
+				$sql .= "'$dialplan_detail_type', ";
+				$sql .= "'$dialplan_detail_data' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -128,10 +128,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "update v_dialplan_details set ";
 				$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "dialplan_uuid = '$dialplan_uuid', ";
-				$sql .= "tag = '$tag', ";
-				$sql .= "field_order = '$field_order', ";
-				$sql .= "field_type = '$field_type', ";
-				$sql .= "field_data = '$field_data' ";
+				$sql .= "dialplan_detail_tag = '$dialplan_detail_tag', ";
+				$sql .= "dialplan_detail_order = '$dialplan_detail_order', ";
+				$sql .= "dialplan_detail_type = '$dialplan_detail_type', ";
+				$sql .= "dialplan_detail_data = '$dialplan_detail_data' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_detail_uuid = '$dialplan_detail_uuid'";
 				$db->exec(check_sql($sql));
@@ -163,10 +163,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$dialplan_uuid = $row["dialplan_uuid"];
-			$tag = $row["tag"];
-			$field_order = $row["field_order"];
-			$field_type = $row["field_type"];
-			$field_data = $row["field_data"];
+			$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			$dialplan_detail_order = $row["dialplan_detail_order"];
+			$dialplan_detail_type = $row["dialplan_detail_type"];
+			$dialplan_detail_data = $row["dialplan_detail_data"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -198,24 +198,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	?>
 	<script type="text/javascript">
 	function public_include_details_tag_onchange() {
-		var tag = document.getElementById("form_tag").value;
-		if (tag == "condition") {
+		var dialplan_detail_tag = document.getElementById("form_tag").value;
+		if (dialplan_detail_tag == "condition") {
 			document.getElementById("label_field_type").innerHTML = "Field";
 			document.getElementById("label_field_data").innerHTML = "Expression";
 		}
-		else if (tag == "action") {
+		else if (dialplan_detail_tag == "action") {
 			document.getElementById("label_field_type").innerHTML = "Application";
 			document.getElementById("label_field_data").innerHTML = "Data";
 		}
-		else if (tag == "anti-action") {
+		else if (dialplan_detail_tag == "anti-action") {
 			document.getElementById("label_field_type").innerHTML = "Application";
 			document.getElementById("label_field_data").innerHTML = "Data";
 		}
-		else if (tag == "param") {
+		else if (dialplan_detail_tag == "param") {
 			document.getElementById("label_field_type").innerHTML = "Name";
 			document.getElementById("label_field_data").innerHTML = "Value";
 		}
-		if (tag == "") {
+		if (dialplan_detail_tag == "") {
 			document.getElementById("label_field_type").innerHTML = "Type";
 			document.getElementById("label_field_data").innerHTML = "Data";
 		}
@@ -227,9 +227,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Tag:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "                <select name='tag' class='formfld' id='form_tag' onchange='public_include_details_tag_onchange();'>\n";
+	echo "                <select name='dialplan_detail_tag' class='formfld' id='form_tag' onchange='public_include_details_tag_onchange();'>\n";
 	echo "                <option></option>\n";
-	switch (htmlspecialchars($tag)) {
+	switch (htmlspecialchars($dialplan_detail_tag)) {
 	case "condition":
 		echo "                <option selected='yes'>condition</option>\n";
 		echo "                <option>action</option>\n";
@@ -273,7 +273,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//param
 		//name
 		//value
-	//echo "    <input class='formfld' type='text' name='tag' maxlength='255' value=\"$tag\">\n";
+	//echo "    <input class='formfld' type='text' name='dialplan_detail_tag' maxlength='255' value=\"$dialplan_detail_tag\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -284,10 +284,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='field_order' class='formfld'>\n";
+	echo "              <select name='dialplan_detail_order' class='formfld'>\n";
 	//echo "              <option></option>\n";
-	if (strlen(htmlspecialchars($field_order))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($field_order)."'>".htmlspecialchars($field_order)."</option>\n";
+	if (strlen(htmlspecialchars($dialplan_detail_order))> 0) {
+		echo "              <option selected='yes' value='".htmlspecialchars($dialplan_detail_order)."'>".htmlspecialchars($dialplan_detail_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {
@@ -314,7 +314,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Type:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='field_type' maxlength='255' value=\"$field_type\">\n";
+	echo "    <input class='formfld' type='text' name='dialplan_detail_type' maxlength='255' value=\"$dialplan_detail_type\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -325,7 +325,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Data:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='field_data' maxlength='255' value=\"$field_data\">\n";
+	echo "    <input class='formfld' type='text' name='dialplan_detail_data' maxlength='255' value=\"$dialplan_detail_data\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

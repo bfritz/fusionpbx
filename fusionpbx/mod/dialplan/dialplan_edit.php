@@ -376,8 +376,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "    <td align='left'><p><span class=\"vexpl\"><span class=\"red\"><strong>Conditions and Actions<br />\n";
 		echo "        </strong></span>\n";
 		echo "        The following conditions, actions and anti-actions are used in the dialplan to direct \n";
-		echo "        call flow. Each is processed in order until you reach the action tag which tells what action to perform. \n";
-		echo "        You are not limited to only one condition or action tag for a given extension.\n";
+		echo "        call flow. Each is processed in order until you reach the action dialplan_detail_tag which tells what action to perform. \n";
+		echo "        You are not limited to only one condition or action dialplan_detail_tag for a given extension.\n";
 		echo "        </span></p></td>\n";
 		echo "  </tr>\n";
 		echo "</table>";
@@ -387,7 +387,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= " select * from v_dialplan_details ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and dialplan_uuid = '$dialplan_uuid' ";
-		$sql .= " order by field_group asc, field_order asc";
+		$sql .= " order by dialplan_detail_group asc, dialplan_detail_order asc";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -399,8 +399,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$details = '';
 			//conditions
 				foreach($result as $row) {
-					if ($row['tag'] == "condition") {
-						$group = $row['field_group'];
+					if ($row['dialplan_detail_tag'] == "condition") {
+						$group = $row['dialplan_detail_group'];
 						foreach ($row as $key => $val) {
 							$details[$group][$x][$key] = $val;
 						}
@@ -409,8 +409,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 			//regex
 				foreach($result as $row) {
-					if ($row['tag'] == "regex") {
-						$group = $row['field_group'];
+					if ($row['dialplan_detail_tag'] == "regex") {
+						$group = $row['dialplan_detail_group'];
 						foreach ($row as $key => $val) {
 							$details[$group][$x][$key] = $val;
 						}
@@ -419,8 +419,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 			//actions
 				foreach($result as $row) {
-					if ($row['tag'] == "action") {
-						$group = $row['field_group'];
+					if ($row['dialplan_detail_tag'] == "action") {
+						$group = $row['dialplan_detail_group'];
 						foreach ($row as $key => $val) {
 							$details[$group][$x][$key] = $val;
 						}
@@ -429,8 +429,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 			//anti-actions
 				foreach($result as $row) {
-					if ($row['tag'] == "anti-action") {
-						$group = $row['field_group'];
+					if ($row['dialplan_detail_tag'] == "anti-action") {
+						$group = $row['dialplan_detail_group'];
 						foreach ($row as $key => $val) {
 							$details[$group][$x][$key] = $val;
 						}
@@ -498,11 +498,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 					foreach($group as $row) {
 						echo "<tr >\n";
-						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['tag']."</td>\n";
-						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['field_type']."</td>\n";
-						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".wordwrap($row['field_data'],180,"<br>",1)."</td>\n";
-						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['field_order']."</td>\n";
-						//echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['field_group']."</td>\n";
+						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_detail_tag']."</td>\n";
+						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_detail_type']."</td>\n";
+						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".wordwrap($row['dialplan_detail_data'],180,"<br>",1)."</td>\n";
+						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_detail_order']."</td>\n";
+						//echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_detail_group']."</td>\n";
 						echo "	<td valign='top' align='right' nowrap='nowrap'='nowrap='nowrap''>\n";
 						echo "		<a href='dialplan_details_edit.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='edit'>$v_link_label_edit</a>\n";
 						echo "		<a href='dialplan_details_delete.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";

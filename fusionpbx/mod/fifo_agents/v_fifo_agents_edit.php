@@ -226,14 +226,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<select name=\"fifo_name\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
 		foreach ($result as &$row) {
-			if ($row["field_type"] == "fifo") {
-				//if (strpos($row["field_data"], '@${domain_name} in') !== false) {
-					//echo "rtrim(".$row["field_data"].", ' in') == ".$fifo_name."<br />";
-					if (rtrim($row["field_data"], " in") == $fifo_name) {
-						echo "		<option value='".rtrim($row["field_data"], " in")."' selected='selected'>".rtrim($row["field_data"], " in")."</option>\n";
+			if ($row["dialplan_detail_type"] == "fifo") {
+				//if (strpos($row["dialplan_detail_data"], '@${domain_name} in') !== false) {
+					//echo "rtrim(".$row["dialplan_detail_data"].", ' in') == ".$fifo_name."<br />";
+					if (rtrim($row["dialplan_detail_data"], " in") == $fifo_name) {
+						echo "		<option value='".rtrim($row["dialplan_detail_data"], " in")."' selected='selected'>".rtrim($row["dialplan_detail_data"], " in")."</option>\n";
 					}
 					else {
-						echo "		<option value='".rtrim($row["field_data"], " in")."'>".rtrim($row["field_data"], " in")."</option>\n";
+						echo "		<option value='".rtrim($row["dialplan_detail_data"], " in")."'>".rtrim($row["dialplan_detail_data"], " in")."</option>\n";
 					}
 				//}
 			}

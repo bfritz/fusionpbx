@@ -55,18 +55,18 @@ require_once "includes/paging.php";
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$dialplan_uuid = $row["dialplan_uuid"];
-			//$tag = $row["tag"];
-			//$field_order = $row["field_order"];
-			$field_type = $row["field_type"];
-			$field_data = $row["field_data"];
-			if ($field_type == "fifo") {
+			//$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			//$dialplan_detail_order = $row["dialplan_detail_order"];
+			$dialplan_detail_type = $row["dialplan_detail_type"];
+			$dialplan_detail_data = $row["dialplan_detail_data"];
+			if ($dialplan_detail_type == "fifo") {
 				//echo "dialplan_uuid: $dialplan_uuid<br />";
-				//echo "field_data: $field_data<br />";
+				//echo "dialplan_detail_data: $dialplan_detail_data<br />";
 				$queue_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 				$x++;
 			}
 			else {
-				if ($field_data == "fifo_member.lua") {
+				if ($dialplan_detail_data == "fifo_member.lua") {
 					$queue_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 					$x++;
 				}

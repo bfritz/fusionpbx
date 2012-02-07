@@ -351,8 +351,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "    <td align='left'><p><span class=\"vexpl\"><span class=\"red\"><strong>Conditions and Actions<br />\n";
 			echo "        </strong></span>\n";
 			echo "        The following conditions, actions and anti-actions are used in the dialplan to direct \n";
-			echo "        call flow. Each is processed in order until you reach the action tag which tells what action to perform. \n";
-			echo "        You are not limited to only one condition or action tag for a given extension.\n";
+			echo "        call flow. Each is processed in order until you reach the action dialplan_detail_tag which tells what action to perform. \n";
+			echo "        You are not limited to only one condition or action dialplan_detail_tag for a given extension.\n";
 			echo "        </span></p></td>\n";
 			echo "  </tr>\n";
 			echo "</table>";
@@ -362,8 +362,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= " select * from v_dialplan_details ";
 			$sql .= " where domain_uuid = '$domain_uuid' ";
 			$sql .= " and dialplan_uuid = '$dialplan_uuid' ";
-			$sql .= " and tag = 'condition' ";
-			$sql .= " order by field_order asc";
+			$sql .= " and dialplan_detail_tag = 'condition' ";
+			$sql .= " order by dialplan_detail_order asc";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll();
@@ -392,10 +392,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($result_count > 0) {
 				foreach($result as $row) {
 					echo "<tr >\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_data]."</td>\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_order]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_tag]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_type]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_data]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_order]."</td>\n";
 					echo "	<td valign='top' align='right'>\n";
 					if (permission_exists('fifo_edit')) {
 						echo "		<a href='v_fifo_details_edit.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='edit'>$v_link_label_edit</a>\n";
@@ -410,13 +410,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql, $result, $row_count);
 			} //end if results
 
-		//v_dialplan_details tag: action
+		//v_dialplan_details dialplan_detail_tag: action
 			$sql = "";
 			$sql .= " select * from v_dialplan_details ";
 			$sql .= " where domain_uuid = '$domain_uuid' ";
 			$sql .= " and dialplan_uuid = '$dialplan_uuid' ";
-			$sql .= " and tag = 'action' ";
-			$sql .= " order by field_order asc";
+			$sql .= " and dialplan_detail_tag = 'action' ";
+			$sql .= " order by dialplan_detail_order asc";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll();
@@ -425,10 +425,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($result_count > 0) {
 				foreach($result as $row) {
 					echo "<tr >\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_data]."</td>\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_order]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_tag]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_type]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_data]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_order]."</td>\n";
 					echo "	<td valign='top' align='right'>\n";
 					if (permission_exists('fifo_edit')) {
 						echo "		<a href='v_fifo_details_edit.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='edit'>$v_link_label_edit</a>\n";
@@ -443,13 +443,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql, $result, $row_count);
 			} //end if results
 
-		//v_dialplan_details tag: anti-action
+		//v_dialplan_details dialplan_detail_tag: anti-action
 			$sql = "";
 			$sql .= " select * from v_dialplan_details ";
 			$sql .= " where domain_uuid = '$domain_uuid' ";
 			$sql .= " and dialplan_uuid = '$dialplan_uuid' ";
-			$sql .= " and tag = 'anti-action' ";
-			$sql .= " order by field_order asc";
+			$sql .= " and dialplan_detail_tag = 'anti-action' ";
+			$sql .= " order by dialplan_detail_order asc";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll();
@@ -461,10 +461,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			else { //received results
 				foreach($result as $row) {
 					echo "<tr >\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[tag]."</td>\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_type]."</td>\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_data]."</td>\n";
-					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[field_order]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_tag]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_type]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_data]."</td>\n";
+					echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row[dialplan_detail_order]."</td>\n";
 					echo "	<td valign='top' align='right'>\n";
 					if (permission_exists('fifo_edit')) {
 						echo "		<a href='v_fifo_details_edit.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='edit'>$v_link_label_edit</a>\n";

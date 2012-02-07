@@ -99,35 +99,35 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $opt_1_name, $opt_1_value);
 		if (strlen($dialplan_uuid) > 0 && strlen($condition_expression_1) > 0) {
 			//add condition 1
-				$tag = 'condition'; //condition, action, antiaction
-				$field_type = 'destination_number';
-				$field_data = '^'.$condition_expression_1.'$';
-				$field_order = '000';
-				v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+				$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+				$dialplan_detail_type = 'destination_number';
+				$dialplan_detail_data = '^'.$condition_expression_1.'$';
+				$dialplan_detail_order = '000';
+				v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 			//add condition 2
 				if (strlen($condition_expression_2) > 0) {
-					$tag = 'condition'; //condition, action, antiaction
-					$field_type = $condition_field_2;
-					$field_data = '^'.$condition_expression_2.'$';
-					$field_order = '001';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+					$dialplan_detail_type = $condition_field_2;
+					$dialplan_detail_data = '^'.$condition_expression_2.'$';
+					$dialplan_detail_order = '001';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 				}
 			//set action 1
 				if (strlen($action_application_1) > 0) {
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_type = $action_application_1;
-					$field_data = $action_data_1;
-					$field_order = '002';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_type = $action_application_1;
+					$dialplan_detail_data = $action_data_1;
+					$dialplan_detail_order = '002';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 				}
 			//set action 2
 				if (strlen($action_application_2) > 0) {
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = $action_application_2;
-					$field_data = $action_data_2;
-					$field_order = '003';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = $action_application_2;
+					$dialplan_detail_data = $action_data_2;
+					$dialplan_detail_order = '003';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 				}
 		}
 
@@ -154,13 +154,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 <script type="text/javascript">
 <!--
-function type_onchange(field_type) {
-var field_value = document.getElementById(field_type).value;
+function type_onchange(dialplan_detail_type) {
+var field_value = document.getElementById(dialplan_detail_type).value;
 
 //desc_action_data_1
 //desc_action_data_2
 
-if (field_type == "condition_field_1") {
+if (dialplan_detail_type == "condition_field_1") {
 	if (field_value == "destination_number") {
 		document.getElementById("desc_condition_expression_1").innerHTML = "expression: ^12081231234$";
 	}
@@ -171,7 +171,7 @@ if (field_type == "condition_field_1") {
 		document.getElementById("desc_condition_expression_1").innerHTML = "";
 	}
 }
-if (field_type == "condition_field_2") {
+if (dialplan_detail_type == "condition_field_2") {
 	if (field_value == "destination_number") {
 		document.getElementById("desc_condition_expression_2").innerHTML = "expression: ^12081231234$";
 	}

@@ -425,84 +425,84 @@ else {
 						$db->exec(check_sql($sql));
 						unset($sql);
 
-					$tag = 'condition'; //condition, action, antiaction
-					$field_type = 'destination_number';
-					$field_data = $dialplan_expression;
-					$field_order = '005';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+					$dialplan_detail_type = 'destination_number';
+					$dialplan_detail_data = $dialplan_expression;
+					$dialplan_detail_order = '005';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = 'sip_h_X-accountcode=${accountcode}';
-					$field_order = '010';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = 'sip_h_X-accountcode=${accountcode}';
+					$dialplan_detail_order = '010';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = 'call_direction=outbound';
-					$field_order = '015';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = 'call_direction=outbound';
+					$dialplan_detail_order = '015';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = 'hangup_after_bridge=true';
-					$field_order = '020';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = 'hangup_after_bridge=true';
+					$dialplan_detail_order = '020';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = 'effective_caller_id_name=${outbound_caller_id_name}';
-					$field_order = '025';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = 'effective_caller_id_name=${outbound_caller_id_name}';
+					$dialplan_detail_order = '025';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = 'effective_caller_id_number=${outbound_caller_id_number}';
-					$field_order = '030';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = 'effective_caller_id_number=${outbound_caller_id_number}';
+					$dialplan_detail_order = '030';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'set';
-					$field_data = 'inherit_codec=true';
-					$field_order = '035';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'set';
+					$dialplan_detail_data = 'inherit_codec=true';
+					$dialplan_detail_order = '035';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					if (strlen($bridge_2_data) > 0) {
-						$tag = 'action'; //condition, action, antiaction
-						$field_type = 'set';
-						$field_data = 'continue_on_fail=true';
-						$field_order = '040';
-						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'set';
+						$dialplan_detail_data = 'continue_on_fail=true';
+						$dialplan_detail_order = '040';
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 					}
 
 					if ($gateway_type == "enum" || $gateway_2_type == "enum") {
-						$tag = 'action'; //condition, action, antiaction
-						$field_type = 'enum';
-						$field_data = $prefix_number."$1 e164.org";
-						$field_order = '045';
-						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'enum';
+						$dialplan_detail_data = $prefix_number."$1 e164.org";
+						$dialplan_detail_order = '045';
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 					}
 
-					$tag = 'action'; //condition, action, antiaction
-					$field_type = 'bridge';
-					$field_data = $action_data;
-					$field_order = '050';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'bridge';
+					$dialplan_detail_data = $action_data;
+					$dialplan_detail_order = '050';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					if (strlen($bridge_2_data) > 0) {
-						$tag = 'action'; //condition, action, antiaction
-						$field_type = 'bridge';
-						$field_data = $bridge_2_data;
-						$field_order = '055';
-						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'bridge';
+						$dialplan_detail_data = $bridge_2_data;
+						$dialplan_detail_order = '055';
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 					}
 
 					if (strlen($bridge_3_data) > 0) {
-						$tag = 'action'; //condition, action, antiaction
-						$field_type = 'bridge';
-						$field_data = $bridge_3_data;
-						$field_order = '060';
-						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $tag, $field_order, $field_type, $field_data);
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'bridge';
+						$dialplan_detail_data = $bridge_3_data;
+						$dialplan_detail_order = '060';
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 					}
 
 					unset($bridge_2_data);
@@ -540,10 +540,10 @@ else {
 
 <script type="text/javascript">
 <!--
-function type_onchange(field_type) {
-	var field_value = document.getElementById(field_type).value;
+function type_onchange(dialplan_detail_type) {
+	var field_value = document.getElementById(dialplan_detail_type).value;
 
-	if (field_type == "condition_field_1") {
+	if (dialplan_detail_type == "condition_field_1") {
 		if (field_value == "destination_number") {
 			document.getElementById("desc_condition_expression_1").innerHTML = "expression: ^12081231234$";
 		}
@@ -554,7 +554,7 @@ function type_onchange(field_type) {
 			document.getElementById("desc_condition_expression_1").innerHTML = "";
 		}
 	}
-	if (field_type == "condition_field_2") {
+	if (dialplan_detail_type == "condition_field_2") {
 		if (field_value == "destination_number") {
 			document.getElementById("desc_condition_expression_2").innerHTML = "expression: ^12081231234$";
 		}

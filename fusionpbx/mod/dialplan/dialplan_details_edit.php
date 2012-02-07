@@ -52,13 +52,13 @@ else {
 		if (isset($_REQUEST["dialplan_uuid"])) {
 			$dialplan_uuid = check_str($_POST["dialplan_uuid"]);
 		}
-		$tag = check_str($_POST["tag"]);
-		$field_order = check_str($_POST["field_order"]);
-		$field_type = check_str($_POST["field_type"]);
-		$field_data = check_str($_POST["field_data"]);
-		$field_break = check_str($_POST["field_break"]);
-		$field_inline = check_str($_POST["field_inline"]);
-		$field_group = check_str($_POST["field_group"]);
+		$dialplan_detail_tag = check_str($_POST["dialplan_detail_tag"]);
+		$dialplan_detail_order = check_str($_POST["dialplan_detail_order"]);
+		$dialplan_detail_type = check_str($_POST["dialplan_detail_type"]);
+		$dialplan_detail_data = check_str($_POST["dialplan_detail_data"]);
+		$dialplan_detail_break = check_str($_POST["dialplan_detail_break"]);
+		$dialplan_detail_inline = check_str($_POST["dialplan_detail_inline"]);
+		$dialplan_detail_group = check_str($_POST["dialplan_detail_group"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -70,10 +70,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		if (strlen($tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
-		if (strlen($field_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
-		//if (strlen($field_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
-		//if (strlen($field_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
+		if (strlen($dialplan_detail_tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
+		if (strlen($dialplan_detail_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		//if (strlen($dialplan_detail_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
+		//if (strlen($dialplan_detail_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -93,29 +93,29 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "insert into v_dialplan_details ";
 				$sql .= "(";
 				$sql .= "dialplan_uuid, ";
-				$sql .= "tag, ";
-				$sql .= "field_order, ";
-				$sql .= "field_type, ";
-				$sql .= "field_data, ";
-				$sql .= "field_break, ";
-				$sql .= "field_inline, ";
-				$sql .= "field_group, ";
+				$sql .= "dialplan_detail_tag, ";
+				$sql .= "dialplan_detail_order, ";
+				$sql .= "dialplan_detail_type, ";
+				$sql .= "dialplan_detail_data, ";
+				$sql .= "dialplan_detail_break, ";
+				$sql .= "dialplan_detail_inline, ";
+				$sql .= "dialplan_detail_group, ";
 				$sql .= "domain_uuid ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$dialplan_uuid', ";
-				$sql .= "'$tag', ";
-				$sql .= "'$field_order', ";
-				$sql .= "'$field_type', ";
-				$sql .= "'$field_data', ";
-				$sql .= "'$field_break', ";
-				$sql .= "'$field_inline', ";
-				if (strlen($field_group) == 0) {
+				$sql .= "'$dialplan_detail_tag', ";
+				$sql .= "'$dialplan_detail_order', ";
+				$sql .= "'$dialplan_detail_type', ";
+				$sql .= "'$dialplan_detail_data', ";
+				$sql .= "'$dialplan_detail_break', ";
+				$sql .= "'$dialplan_detail_inline', ";
+				if (strlen($dialplan_detail_group) == 0) {
 					$sql .= "null, ";
 				}
 				else {
-					$sql .= "'$field_group', ";
+					$sql .= "'$dialplan_detail_group', ";
 				}
 				$sql .= "'$domain_uuid' ";
 				$sql .= ")";
@@ -137,17 +137,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update" && permission_exists('dialplan_edit')) {
 				$sql = "update v_dialplan_details set ";
 				$sql .= "dialplan_uuid = '$dialplan_uuid', ";
-				$sql .= "tag = '$tag', ";
-				$sql .= "field_order = '$field_order', ";
-				$sql .= "field_type = '$field_type', ";
-				$sql .= "field_data = '$field_data', ";
-				$sql .= "field_break = '$field_break', ";
-				$sql .= "field_inline = '$field_inline', ";
-				if (strlen($field_group) == 0) {
-					$sql .= "field_group = null ";
+				$sql .= "dialplan_detail_tag = '$dialplan_detail_tag', ";
+				$sql .= "dialplan_detail_order = '$dialplan_detail_order', ";
+				$sql .= "dialplan_detail_type = '$dialplan_detail_type', ";
+				$sql .= "dialplan_detail_data = '$dialplan_detail_data', ";
+				$sql .= "dialplan_detail_break = '$dialplan_detail_break', ";
+				$sql .= "dialplan_detail_inline = '$dialplan_detail_inline', ";
+				if (strlen($dialplan_detail_group) == 0) {
+					$sql .= "dialplan_detail_group = null ";
 				}
 				else {
-					$sql .= "field_group = '$field_group' ";
+					$sql .= "dialplan_detail_group = '$dialplan_detail_group' ";
 				}
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and dialplan_detail_uuid = '$dialplan_detail_uuid'";
@@ -181,13 +181,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$dialplan_uuid = $row["dialplan_uuid"];
-			$tag = $row["tag"];
-			$field_order = $row["field_order"];
-			$field_type = $row["field_type"];
-			$field_data = $row["field_data"];
-			$field_break = $row["field_break"];
-			$field_inline = $row["field_inline"];
-			$field_group = $row["field_group"];
+			$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			$dialplan_detail_order = $row["dialplan_detail_order"];
+			$dialplan_detail_type = $row["dialplan_detail_type"];
+			$dialplan_detail_data = $row["dialplan_detail_data"];
+			$dialplan_detail_break = $row["dialplan_detail_break"];
+			$dialplan_detail_inline = $row["dialplan_detail_inline"];
+			$dialplan_detail_group = $row["dialplan_detail_group"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -220,28 +220,28 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	?>
 	<script type="text/javascript">
 	function public_include_details_tag_onchange() {
-		var tag = document.getElementById("form_tag").value;
-		if (tag == "condition") {
+		var dialplan_detail_tag = document.getElementById("form_tag").value;
+		if (dialplan_detail_tag == "condition") {
 		  document.getElementById("label_field_type").innerHTML = "Field";
 		  document.getElementById("label_field_data").innerHTML = "Expression";
 		}
-		else if (tag == "regex") {
+		else if (dialplan_detail_tag == "regex") {
 		  document.getElementById("label_field_type").innerHTML = "Field";
 		  document.getElementById("label_field_data").innerHTML = "Expression";
 		}
-		else if (tag == "action") {
+		else if (dialplan_detail_tag == "action") {
 		  document.getElementById("label_field_type").innerHTML = "Application";
 		  document.getElementById("label_field_data").innerHTML = "Data";
 		}
-		else if (tag == "anti-action") {
+		else if (dialplan_detail_tag == "anti-action") {
 		  document.getElementById("label_field_type").innerHTML = "Application";
 		  document.getElementById("label_field_data").innerHTML = "Data";
 		}
-		else if (tag == "param") {
+		else if (dialplan_detail_tag == "param") {
 		  document.getElementById("label_field_type").innerHTML = "Name";
 		  document.getElementById("label_field_data").innerHTML = "Value";
 		}
-		if (tag == "") {
+		if (dialplan_detail_tag == "") {
 		  document.getElementById("label_field_type").innerHTML = "Type";
 		  document.getElementById("label_field_data").innerHTML = "Data";
 		}
@@ -254,9 +254,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Tag:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "                <select name='tag' class='formfld' id='form_tag' onchange='public_include_details_tag_onchange();'>\n";
+	echo "                <select name='dialplan_detail_tag' class='formfld' id='form_tag' onchange='public_include_details_tag_onchange();'>\n";
 	echo "                <option></option>\n";
-	switch ($tag) {
+	switch ($dialplan_detail_tag) {
 	case "condition":
 		echo "                <option selected='yes'>condition</option>\n";
 		echo "                <option>action</option>\n";
@@ -312,7 +312,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//param
 		//name
 		//value
-	//echo "    <input class='formfld' type='text' name='tag' maxlength='255' value=\"$tag\">\n";
+	//echo "    <input class='formfld' type='text' name='dialplan_detail_tag' maxlength='255' value=\"$dialplan_detail_tag\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -323,9 +323,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='field_order' class='formfld'>\n";
-	if (strlen($field_order)> 0) {
-		echo "              <option selected='selected' value='".htmlspecialchars($field_order)."'>".htmlspecialchars($field_order)."</option>\n";
+	echo "              <select name='dialplan_detail_order' class='formfld'>\n";
+	if (strlen($dialplan_detail_order)> 0) {
+		echo "              <option selected='selected' value='".htmlspecialchars($dialplan_detail_order)."'>".htmlspecialchars($dialplan_detail_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {
@@ -351,7 +351,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Type:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='field_type' maxlength='255' value=\"".htmlspecialchars($field_type)."\">\n";
+	echo "    <input class='formfld' type='text' name='dialplan_detail_type' maxlength='255' value=\"".htmlspecialchars($dialplan_detail_type)."\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -362,7 +362,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Data:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='field_data' value=\"".htmlspecialchars($field_data)."\">\n";
+	echo "    <input class='formfld' type='text' name='dialplan_detail_data' value=\"".htmlspecialchars($dialplan_detail_data)."\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
@@ -373,10 +373,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Group:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='field_group' class='formfld'>\n";
+	echo "              <select name='dialplan_detail_group' class='formfld'>\n";
 	echo "              <option></option>\n";
-	if (strlen($field_group)> 0) {
-		echo "              <option selected='selected' value='".htmlspecialchars($field_group)."'>".htmlspecialchars($field_group)."</option>\n";
+	if (strlen($dialplan_detail_group)> 0) {
+		echo "              <option selected='selected' value='".htmlspecialchars($dialplan_detail_group)."'>".htmlspecialchars($dialplan_detail_group)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {
@@ -390,33 +390,33 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	if ($action == "update") {
-		if ($tag == "condition") {
+		if ($dialplan_detail_tag == "condition") {
 			echo "<tr>\n";
 			echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 			echo "    Break:\n";
 			echo "</td>\n";
 			echo "<td class='vtable' align='left'>\n";
-			echo "              <select name='field_break' class='formfld'>\n";
+			echo "              <select name='dialplan_detail_break' class='formfld'>\n";
 			echo "              <option></option>\n";
-			if ($field_break == "on-true") {
+			if ($dialplan_detail_break == "on-true") {
 				echo "              <option selected='selected' value='on-true'>on-true</option>\n";
 			}
 			else {
 				echo "              <option value='on-true'>on-true</option>\n";
 			}
-			if ($field_break == "on-false") {
+			if ($dialplan_detail_break == "on-false") {
 				echo "              <option selected='selected' value='on-false'>on-false</option>\n";
 			}
 			else {
 				echo "              <option value='on-false'>on-false</option>\n";
 			}
-			if ($field_break == "always") {
+			if ($dialplan_detail_break == "always") {
 				echo "              <option selected='selected' value='always'>always</option>\n";
 			}
 			else {
 				echo "              <option value='always'>always</option>\n";
 			}
-			if ($field_break == "never") {
+			if ($dialplan_detail_break == "never") {
 				echo "              <option selected='selected' value='never'>never</option>\n";
 			}
 			else {
@@ -429,21 +429,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "</tr>\n";
 		}
 
-		if ($tag == "action") {
+		if ($dialplan_detail_tag == "action") {
 			echo "<tr>\n";
 			echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 			echo "    Inline:\n";
 			echo "</td>\n";
 			echo "<td class='vtable' align='left'>\n";
-			echo "              <select name='field_inline' class='formfld'>\n";
+			echo "              <select name='dialplan_detail_inline' class='formfld'>\n";
 			echo "              <option></option>\n";
-			if ($field_inline == "true") {
+			if ($dialplan_detail_inline == "true") {
 				echo "              <option selected='selected' value='true'>true</option>\n";
 			}
 			else {
 				echo "              <option value='true'>true</option>\n";
 			}
-			if ($field_inline == "false") {
+			if ($dialplan_detail_inline == "false") {
 				echo "              <option selected='selected' value='false'>false</option>\n";
 			}
 			else {

@@ -134,10 +134,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "domain_uuid, ";
 		$sql .= "dialplan_uuid, ";
 		$sql .= "dialplan_detail_uuid, ";
-		$sql .= "tag, ";
-		$sql .= "field_type, ";
-		$sql .= "field_data, ";
-		$sql .= "field_order ";
+		$sql .= "dialplan_detail_tag, ";
+		$sql .= "dialplan_detail_type, ";
+		$sql .= "dialplan_detail_data, ";
+		$sql .= "dialplan_detail_order ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
@@ -160,10 +160,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -186,10 +186,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "domain_uuid, ";
 		$sql .= "dialplan_uuid, ";
 		$sql .= "dialplan_detail_uuid, ";
-		$sql .= "tag, ";
-		$sql .= "field_type, ";
-		$sql .= "field_data, ";
-		$sql .= "field_order ";
+		$sql .= "dialplan_detail_tag, ";
+		$sql .= "dialplan_detail_type, ";
+		$sql .= "dialplan_detail_data, ";
+		$sql .= "dialplan_detail_order ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
@@ -212,10 +212,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "dialplan_uuid, ";
 			$sql .= "dialplan_detail_uuid, ";
-			$sql .= "tag, ";
-			$sql .= "field_type, ";
-			$sql .= "field_data, ";
-			$sql .= "field_order ";
+			$sql .= "dialplan_detail_tag, ";
+			$sql .= "dialplan_detail_type, ";
+			$sql .= "dialplan_detail_data, ";
+			$sql .= "dialplan_detail_order ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
@@ -248,9 +248,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 ?><script type="text/javascript">
 <!--
-function type_onchange(field_type) {
-	var field_value = document.getElementById(field_type).value;
-	if (field_type == "condition_field_1") {
+function type_onchange(dialplan_detail_type) {
+	var field_value = document.getElementById(dialplan_detail_type).value;
+	if (dialplan_detail_type == "condition_field_1") {
 		if (field_value == "destination_number") {
 			document.getElementById("desc_condition_expression_1").innerHTML = "expression: ^12081231234$";
 		}
@@ -261,7 +261,7 @@ function type_onchange(field_type) {
 			document.getElementById("desc_condition_expression_1").innerHTML = "";
 		}
 	}
-	if (field_type == "condition_field_2") {
+	if (dialplan_detail_type == "condition_field_2") {
 		if (field_value == "destination_number") {
 			document.getElementById("desc_condition_expression_2").innerHTML = "expression: ^12081231234$";
 		}

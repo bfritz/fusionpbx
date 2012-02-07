@@ -54,11 +54,11 @@ $order = $_GET["order"];
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$dialplan_uuid = $row["dialplan_uuid"];
-			//$tag = $row["tag"];
-			//$field_order = $row["field_order"];
-			$field_type = $row["field_type"];
-			$field_data = $row["field_data"];
-			switch ($row['field_type']) {
+			//$dialplan_detail_tag = $row["dialplan_detail_tag"];
+			//$dialplan_detail_order = $row["dialplan_detail_order"];
+			$dialplan_detail_type = $row["dialplan_detail_type"];
+			$dialplan_detail_data = $row["dialplan_detail_data"];
+			switch ($row['dialplan_detail_type']) {
 			case "hour":
 				$time_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 				$x++;

@@ -48,7 +48,7 @@ else {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			if (!(ifgroup("admin") || ifgroup("superadmin"))) {
 				//find the assigned users
-					$sql .= "and field_data like 'conference_user_list%' and field_data like '%|".$_SESSION['username']."|%' ";
+					$sql .= "and dialplan_detail_data like 'conference_user_list%' and dialplan_detail_data like '%|".$_SESSION['username']."|%' ";
 			}
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
@@ -57,12 +57,12 @@ else {
 			$conference_array = array ();
 			foreach ($result as &$row) {
 				$dialplan_uuid = $row["dialplan_uuid"];
-				//$tag = $row["tag"];
-				//$field_order = $row["field_order"];
-				$field_type = $row["field_type"];
-				//$field_data = $row["field_data"];
+				//$dialplan_detail_tag = $row["dialplan_detail_tag"];
+				//$dialplan_detail_order = $row["dialplan_detail_order"];
+				$dialplan_detail_type = $row["dialplan_detail_type"];
+				//$dialplan_detail_data = $row["dialplan_detail_data"];
 				if (ifgroup("admin") || ifgroup("superadmin")) {
-					if ($field_type == "conference") {
+					if ($dialplan_detail_type == "conference") {
 						$conference_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 						$x++;
 					}
@@ -87,14 +87,14 @@ else {
 					if ($x == 0) {
 						$sql .= "where domain_uuid = '$domain_uuid' \n";
 						$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-						$sql .= "and field_type = 'conference' \n";
-						$sql .= "and field_data like '".$conference_name."%' \n";
+						$sql .= "and dialplan_detail_type = 'conference' \n";
+						$sql .= "and dialplan_detail_data like '".$conference_name."%' \n";
 					}
 					else {
 						$sql .= "or domain_uuid = '$domain_uuid' \n";
 						$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-						$sql .= "and field_type = 'conference' \n";
-						$sql .= "and field_data like '".$conference_name."%' \n";
+						$sql .= "and dialplan_detail_type = 'conference' \n";
+						$sql .= "and dialplan_detail_data like '".$conference_name."%' \n";
 					}
 					$x++;
 				}
