@@ -131,7 +131,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('hunt_group_add')) {
 				$hunt_group_uuid = uuid();
-				$sql = "insert into v_hunt_group ";
+				$sql = "insert into v_hunt_groups ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "hunt_group_uuid, ";
@@ -185,7 +185,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			} //if ($action == "add")
 
 			if ($action == "update" && permission_exists('hunt_group_edit')) {
-				$sql = "update v_hunt_group set ";
+				$sql = "update v_hunt_groups set ";
 				$sql .= "hunt_group_extension = '$hunt_group_extension', ";
 				$sql .= "hunt_group_name = '$hunt_group_name', ";
 				$sql .= "hunt_group_type = '$hunt_group_type', ";
@@ -228,7 +228,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$hunt_group_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_hunt_group ";
+		$sql .= "select * from v_hunt_groups ";
 		$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .- "hunt_group_enabled = 'true' ";

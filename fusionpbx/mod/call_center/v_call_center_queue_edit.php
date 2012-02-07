@@ -116,7 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			//add the call center queue
 				$call_center_queue_uuid = uuid();
-				$sql = "insert into v_call_center_queue ";
+				$sql = "insert into v_call_center_queues ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "call_center_queue_uuid, ";
@@ -178,7 +178,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			//update the call center queue
-				$sql = "update v_call_center_queue set ";
+				$sql = "update v_call_center_queues set ";
 				$sql .= "queue_name = '$queue_name', ";
 				$sql .= "queue_extension = '$queue_extension', ";
 				$sql .= "queue_strategy = '$queue_strategy', ";
@@ -220,7 +220,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$call_center_queue_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_call_center_queue ";
+		$sql .= "select * from v_call_center_queues ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_center_queue_uuid = '$call_center_queue_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));

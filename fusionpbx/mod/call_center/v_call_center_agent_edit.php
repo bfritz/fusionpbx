@@ -177,7 +177,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "add") {
 			//add the agent to the database
 				$call_center_agent_uuid = uuid();
-				$sql = "insert into v_call_center_agent ";
+				$sql = "insert into v_call_center_agents ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "call_center_agent_uuid, ";
@@ -226,7 +226,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update") {
-			$sql = "update v_call_center_agent set ";
+			$sql = "update v_call_center_agents set ";
 			$sql .= "agent_name = '$agent_name', ";
 			$sql .= "agent_type = '$agent_type', ";
 			$sql .= "agent_call_timeout = '$agent_call_timeout', ";
@@ -261,7 +261,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$call_center_agent_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_call_center_agent ";
+		$sql .= "select * from v_call_center_agents ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_center_agent_uuid = '$call_center_agent_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));

@@ -40,9 +40,9 @@ else {
 		$ivr_menu_uuid = $_GET["id"];
 	}
 
-//get the v_ivr_menu data 
+//get the v_ivr_menus data 
 	$sql = "";
-	$sql .= "select * from v_ivr_menu ";
+	$sql .= "select * from v_ivr_menus ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -72,9 +72,9 @@ else {
 	}
 	unset ($prep_statement);
 
-	//copy the v_ivr_menu
+	//copy the v_ivr_menus
 		$ivr_menu_uuid = uuid();
-		$sql = "insert into v_ivr_menu ";
+		$sql = "insert into v_ivr_menus ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "ivr_menu_uuid, ";

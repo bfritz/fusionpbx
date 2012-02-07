@@ -53,7 +53,7 @@ if (permission_exists('hunt_group_call_forward')) {
 	}
 
 	$sql = "";
-	$sql .= "select * from v_hunt_group ";
+	$sql .= "select * from v_hunt_groups ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and hunt_group_type <> 'dnd' ";
 	$sql .= "and hunt_group_type <> 'call_forward' ";

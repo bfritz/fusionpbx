@@ -62,7 +62,7 @@ function destination_select($select_name, $select_value, $select_default) {
 
 //hunt_group information used to determine if this is an add or an update
 	$sql = "";
-	$sql .= "select * from v_hunt_group ";
+	$sql .= "select * from v_hunt_groups ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and hunt_group_uuid = '$hunt_group_uuid' ";
 	if (!(permission_exists('hunt_group_add') || permission_exists('hunt_group_edit'))) {
@@ -114,7 +114,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//call forward is enabled so disable the hunt group
 		if ($call_forward_enabled == "true") {
-			$sql = "update v_hunt_group set hunt_group_enabled = 'false' ";
+			$sql = "update v_hunt_groups set hunt_group_enabled = 'false' ";
 			$sql .= "where hunt_group_extension = '$hunt_group_extension' ";
 			$sql .= "and (hunt_group_type = 'simultaneous' or hunt_group_type = 'sequentially') ";
 			$db->exec(check_sql($sql));
@@ -122,7 +122,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//call forward is disabled so enable the hunt group
 		if ($call_forward_enabled == "false" || $call_forward_enabled == "") {
-			$sql = "update v_hunt_group set hunt_group_enabled = 'true' ";
+			$sql = "update v_hunt_groups set hunt_group_enabled = 'true' ";
 			$sql .= "where hunt_group_extension = '$hunt_group_extension' ";
 			$sql .= "and (hunt_group_type = 'simultaneous' or hunt_group_type = 'sequentially') ";
 			$db->exec(check_sql($sql));
@@ -132,11 +132,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$call_forward_action = "add";
 
 	//hunt_group information used to determine if this is an add or an update
-		$sql = "select * from v_hunt_group ";
+		$sql = "select * from v_hunt_groups ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_type = 'call_forward' ";
 		$sql .= "and hunt_group_extension in ( ";
-		$sql .= "select hunt_group_extension from v_hunt_group ";
+		$sql .= "select hunt_group_extension from v_hunt_groups ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_uuid = '$hunt_group_uuid' ";
 		if (!(permission_exists('hunt_group_add') || permission_exists('hunt_group_edit'))) {
@@ -171,7 +171,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($call_forward_action == "add" && permission_exists('hunt_group_add')) {
 			$call_forward_uuid = uuid();
-			$sql = "insert into v_hunt_group ";
+			$sql = "insert into v_hunt_groups ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "hunt_group_uuid, ";
@@ -263,7 +263,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	} //if ($call_forward_action == "add")
 
 	if ($call_forward_action == "update" && permission_exists('hunt_group_call_forward')) {
-		$sql = "update v_hunt_group set ";
+		$sql = "update v_hunt_groups set ";
 		$sql .= "hunt_group_extension = '$hunt_group_extension', ";
 		$sql .= "hunt_group_name = '$huntgroup_name', ";
 		$sql .= "hunt_group_type = '$hunt_group_type', ";
@@ -352,7 +352,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	$sql = "";
-	$sql .= "select * from v_hunt_group ";
+	$sql .= "select * from v_hunt_groups ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and hunt_group_type = 'call_forward' ";
 	$sql .= "and hunt_group_extension = '$hunt_group_extension' ";

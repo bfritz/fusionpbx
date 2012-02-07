@@ -53,7 +53,7 @@ if (strlen($id)>0) {
 
 	//delete parent data
 		$sql = "";
-		$sql .= "delete from v_ivr_menu ";
+		$sql .= "delete from v_ivr_menus ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and ivr_menu_uuid = '$id' ";
 		$db->query($sql);

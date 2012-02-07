@@ -55,7 +55,7 @@ if (strlen($id)>0) {
 
 	//delete parent data
 		$sql = "";
-		$sql .= "delete from v_hunt_group ";
+		$sql .= "delete from v_hunt_groups ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_uuid = '$id' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";

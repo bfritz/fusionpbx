@@ -82,7 +82,7 @@ require_once "includes/paging.php";
 					foreach ($sub_result as &$sub_row) {
 						$extension = $sub_row["extension"];
 						//hunt_group information used to determine if this is an add or an update
-							$sql  = "select * from v_hunt_group ";
+							$sql  = "select * from v_hunt_groups ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and hunt_group_extension = '$extension' ";
 							$prep_statement_2 = $db->prepare(check_sql($sql));

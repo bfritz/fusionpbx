@@ -44,7 +44,7 @@ require_once "includes/paging.php";
 
 //get the v_hunt_group data 
 	$sql = "";
-	$sql .= "select * from v_hunt_group ";
+	$sql .= "select * from v_hunt_groups ";
 	$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -69,7 +69,7 @@ require_once "includes/paging.php";
 	unset ($prep_statement);
 
 	//copy the hunt group
-		$sql = "insert into v_hunt_group ";
+		$sql = "insert into v_hunt_groups ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "hunt_group_uuid, ";

@@ -168,7 +168,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('ivr_menu_add')) {
 				$ivr_menu_uuid = uuid();
-				$sql = "insert into v_ivr_menu ";
+				$sql = "insert into v_ivr_menus ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "ivr_menu_uuid, ";
@@ -236,7 +236,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			} //if ($action == "add")
 
 			if ($action == "update" && permission_exists('ivr_menu_edit')) {
-				$sql = "update v_ivr_menu set ";
+				$sql = "update v_ivr_menus set ";
 				$sql .= "domain_uuid = '$domain_uuid', ";
 				$sql .= "ivr_menu_name = '$ivr_menu_name', ";
 				$sql .= "ivr_menu_extension = '$ivr_menu_extension', ";
@@ -284,7 +284,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$ivr_menu_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_ivr_menu ";
+		$sql .= "select * from v_ivr_menus ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));

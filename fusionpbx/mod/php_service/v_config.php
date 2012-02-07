@@ -33,7 +33,7 @@
 	//schema details
 		$y = 0; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = 'v_php_service';
+		$apps[$x]['db'][$y]['table'] = 'v_php_services';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'php_service_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';

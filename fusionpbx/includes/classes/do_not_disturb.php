@@ -76,7 +76,7 @@ include "root.php";
 			$hunt_group_enabled = $this->dnd_enabled;
 			$hunt_group_descr = 'dnd '.$this->extension;
 
-			$sql = "insert into v_hunt_group ";
+			$sql = "insert into v_hunt_groups ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "hunt_group_uuid, ";
@@ -142,7 +142,7 @@ include "root.php";
 			$hunt_group_enabled = $this->dnd_enabled;
 			$hunt_group_descr = 'dnd '.$this->extension;
 
-			$sql = "update v_hunt_group set ";
+			$sql = "update v_hunt_groups set ";
 			$sql .= "hunt_group_extension = '$hunt_group_extension', ";
 			$sql .= "hunt_group_name = '$huntgroup_name', ";
 			$sql .= "hunt_group_type = '$hunt_group_type', ";

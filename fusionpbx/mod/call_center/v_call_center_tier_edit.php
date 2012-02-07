@@ -107,7 +107,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			$call_center_tier_uuid = uuid();
-			$sql = "insert into v_call_center_tier ";
+			$sql = "insert into v_call_center_tiers ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "call_center_tier_uuid, ";
@@ -141,7 +141,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update") {
-			$sql = "update v_call_center_tier set ";
+			$sql = "update v_call_center_tiers set ";
 			$sql .= "domain_uuid = '$domain_uuid', ";
 			$sql .= "agent_name = '$agent_name', ";
 			$sql .= "queue_name = '$queue_name', ";
@@ -169,7 +169,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$call_center_tier_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_call_center_tier ";
+		$sql .= "select * from v_call_center_tiers ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and call_center_tier_uuid = '$call_center_tier_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -256,7 +256,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 
 	//---- Begin Select List --------------------
-	$sql = "SELECT * FROM v_call_center_queue ";
+	$sql = "SELECT * FROM v_call_center_queues ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "order by queue_name asc ";
 	$prep_statement = $db->prepare(check_sql($sql));

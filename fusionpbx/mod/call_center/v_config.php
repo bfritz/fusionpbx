@@ -83,7 +83,7 @@
 	//schema details
 		$y = 0; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = 'v_call_center_agent';
+		$apps[$x]['db'][$y]['table'] = 'v_call_center_agents';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'call_center_agent_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
@@ -295,7 +295,7 @@
 
 		$y = 2; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = 'v_call_center_queue';
+		$apps[$x]['db'][$y]['table'] = 'v_call_center_queues';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'call_center_queue_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
@@ -393,7 +393,7 @@
 
 		$y = 3; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = 'v_call_center_tier';
+		$apps[$x]['db'][$y]['table'] = 'v_call_center_tiers';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'call_center_tier_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';

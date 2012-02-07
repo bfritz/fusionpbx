@@ -60,7 +60,7 @@ $order = $_GET["order"];
 	echo "</tr></table>\n";
 
 	$sql = "";
-	$sql .= " select * from v_call_center_queue ";
+	$sql .= " select * from v_call_center_queues ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -76,7 +76,7 @@ $order = $_GET["order"];
 	$offset = $rows_per_page * $page; 
 
 	$sql = "";
-	$sql .= " select * from v_call_center_queue ";
+	$sql .= " select * from v_call_center_queues ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$sql .= " limit $rows_per_page offset $offset ";

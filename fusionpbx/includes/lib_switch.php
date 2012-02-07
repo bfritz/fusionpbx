@@ -516,7 +516,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 	//list call center queues
 		$sql = "";
-		$sql .= "select * from v_call_center_queue ";
+		$sql .= "select * from v_call_center_queues ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "order by queue_name asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -835,7 +835,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 	//list hunt groups
 		$sql = "";
-		$sql .= "select * from v_hunt_group ";
+		$sql .= "select * from v_hunt_groups ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and ( ";
 		$sql .= "hunt_group_type = 'simultaneous' ";
@@ -877,7 +877,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 	//list ivr menus
 		$sql = "";
-		$sql .= "select * from v_ivr_menu ";
+		$sql .= "select * from v_ivr_menus ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and ivr_menu_enabled = 'true' ";
 		$sql .= "order by ivr_menu_extension asc ";
@@ -922,7 +922,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		if ($select_type == "ivr") {
 			//list sub ivr menu
 				$sql = "";
-				$sql .= "select * from v_ivr_menu ";
+				$sql .= "select * from v_ivr_menus ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and ivr_menu_enabled = 'true' ";
 				$sql .= "order by ivr_menu_name asc ";
@@ -2360,7 +2360,7 @@ function sync_package_v_hunt_group() {
 		$x = 0;
 
 		$sql = "";
-		$sql .= "select * from v_hunt_group ";
+		$sql .= "select * from v_hunt_groups ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -3897,7 +3897,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 			}
 
 		$sql = "";
-		$sql .= " select * from v_ivr_menu ";
+		$sql .= " select * from v_ivr_menus ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -4147,7 +4147,7 @@ if (!function_exists('sync_package_v_call_center')) {
 		include "includes/classes/dialplan.php";
 
 		$sql = "";
-		$sql .= "select * from v_call_center_queue ";
+		$sql .= "select * from v_call_center_queues ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -4420,7 +4420,7 @@ if (!function_exists('sync_package_v_call_center')) {
 			//prepare Queue XML string
 				$v_queues = '';
 				$sql = "";
-				$sql .= "select * from v_call_center_queue ";
+				$sql .= "select * from v_call_center_queues ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -4468,7 +4468,7 @@ if (!function_exists('sync_package_v_call_center')) {
 			//prepare Agent XML string
 				$v_agents = '';
 				$sql = "";
-				$sql .= "select * from v_call_center_agent ";
+				$sql .= "select * from v_call_center_agents ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -4555,7 +4555,7 @@ if (!function_exists('sync_package_v_call_center')) {
 			//prepare Tier XML string
 				$v_tiers = '';
 				$sql = "";
-				$sql .= "select * from v_call_center_tier ";
+				$sql .= "select * from v_call_center_tiers ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);

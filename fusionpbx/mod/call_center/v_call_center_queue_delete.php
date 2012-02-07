@@ -40,7 +40,7 @@ if (count($_GET)>0) {
 
 if (strlen($id)>0) {
 	$sql = "";
-	$sql .= "delete from v_call_center_queue ";
+	$sql .= "delete from v_call_center_queues ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and call_center_queue_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));

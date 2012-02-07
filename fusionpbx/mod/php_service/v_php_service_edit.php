@@ -60,10 +60,10 @@ function byte_convert( $bytes ) {
 }
 */
 
-function phpservice_sync_package_php() {
+function php_services_sync_package_php() {
 	global $db, $domain_uuid, $startup_script_dir, $v_secure, $php_dir, $tmp_dir;
 	$sql = "";
-	$sql .= "select * from v_php_service ";
+	$sql .= "select * from v_php_services ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$tmp_prep_statement = $db->prepare(check_sql($sql));
 	$tmp_prep_statement->execute();
@@ -341,7 +341,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('php_service_add')) {
 			$php_service_uuid = uuid();
-			$sql = "insert into v_php_service ";
+			$sql = "insert into v_php_services ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "php_service_uuid, ";
@@ -363,7 +363,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//create the php service files
-				phpservice_sync_package_php();
+				php_services_sync_package_php();
 
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_php_service.php\">\n";
@@ -375,7 +375,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update" && permission_exists('php_service_edit')) {
-			$sql = "update v_php_service set ";
+			$sql = "update v_php_services set ";
 			$sql .= "service_name = '$service_name', ";
 			$sql .= "service_script = '".base64_encode($service_script)."', ";
 			$sql .= "service_enabled = '$service_enabled', ";
@@ -386,7 +386,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//create the php service files
-				phpservice_sync_package_php();
+				php_services_sync_package_php();
 
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_php_service.php\">\n";
@@ -403,7 +403,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$php_service_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_php_service ";
+		$sql .= "select * from v_php_services ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and php_service_uuid = '$php_service_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
