@@ -58,7 +58,6 @@ if (defined('STDIN')) {
 		$fax_extension = $_REQUEST["extension"];
 		$fax_name = $_REQUEST["name"];
 		$fax_messages = $_REQUEST["messages"];
-		$fax_forward_number = $_REQUEST["forward"];
 		$caller_id_name = $_REQUEST["caller_id_name"];
 		$caller_id_number = $_REQUEST["caller_id_number"];
 		$fax_retry = $_REQUEST["retry"];
@@ -105,15 +104,27 @@ if (defined('STDIN')) {
 
 //get the fax details from the database
 	$sql = "";
+	$sql .= "select * from v_domains ";
+	$sql .= "where domain_name = '".$domain."' ";
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+	foreach ($result as &$row) {
+		$domain_uuid = $row["domain_uuid"];
+		break;
+	}
+	unset ($prep_statement);
+
+//get the fax details from the database
+	$sql = "";
 	$sql .= "select * from v_fax ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and faxextension = '$fax_extension' ";
+	$sql .= "and fax_extension = '$fax_extension' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
 		//set database fields as variables
-			//$fax_extension = $row["faxextension"];
 			//$fax_name = $row["faxname"];
 			//$fax_email = $row["faxemail"];
 			$fax_pin_number = $row["fax_pin_number"];
@@ -121,7 +132,7 @@ if (defined('STDIN')) {
 			//$fax_caller_id_number = $row["fax_caller_id_number"];
 			$fax_forward_number = $row["fax_forward_number"];
 			//$fax_user_list = $row["fax_user_list"];
-			$fax_description = $row["faxdescription"];
+			$fax_description = $row["fax_description"];
 		//limit to one row
 			break;
 	}
@@ -175,7 +186,7 @@ if (defined('STDIN')) {
 						$fax_file = $dir_fax."/".$fax_name.".tif";
 						if (count($route_array) == 0) {
 							//send the internal call to the registered extension
-								$fax_uri = "user/".$fax_number."@".$v_domain;
+								$fax_uri = "user/".$fax_forward_number."@".$domain;
 						}
 						else {
 							//send the external call
@@ -206,15 +217,15 @@ if (defined('STDIN')) {
 
 		//prepare the message
 			$tmp_subject = "Fax Received: ".$fax_name;
-			$tmp_textplain  = "\nFax Received:\n";
-			$tmp_textplain .= "Name: ".$fax_name."\n";
-			$tmp_textplain .= "Extension: ".$fax_extension."\n";
-			$tmp_textplain .= "Messages: ".$fax_messages."\n";
-			$tmp_textplain .= $fax_file_warning."\n";
+			$tmp_text_plain  = "\nFax Received:\n";
+			$tmp_text_plain .= "Name: ".$fax_name."\n";
+			$tmp_text_plain .= "Extension: ".$fax_extension."\n";
+			$tmp_text_plain .= "Messages: ".$fax_messages."\n";
+			$tmp_text_plain .= $fax_file_warning."\n";
 			if ($fax_retry == 'yes') {
-				$tmp_textplain .= "This message arrived earlier and has been queued until now due to email server issues.\n";
+				$tmp_text_plain .= "This message arrived earlier and has been queued until now due to email server issues.\n";
 			}
-			$tmp_texthtml = $tmp_textplain;
+			$tmp_text_html = $tmp_text_plain;
 
 		//prepare the mail object
 			$mail = new PHPMailer();
@@ -234,8 +245,8 @@ if (defined('STDIN')) {
 			$mail->From       = $v_smtp_from;
 			$mail->FromName   = $v_smtp_from_name;
 			$mail->Subject    = $tmp_subject;
-			$mail->AltBody    = $tmp_textplain;
-			$mail->MsgHTML($tmp_texthtml);
+			$mail->AltBody    = $tmp_text_plain;
+			$mail->MsgHTML($tmp_text_html);
 
 			$tmp_to = $fax_email;
 			$tmp_to = str_replace(";", ",", $tmp_to);
