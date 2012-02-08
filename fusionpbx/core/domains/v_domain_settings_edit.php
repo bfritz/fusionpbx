@@ -50,6 +50,7 @@ if (strlen($_GET["domain_uuid"]) > 0) {
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
 		$domain_setting_category = check_str($_POST["domain_setting_category"]);
+		$domain_setting_subcategory = check_str($_POST["domain_setting_subcategory"]);
 		$domain_setting_name = check_str($_POST["domain_setting_name"]);
 		$domain_setting_value = check_str($_POST["domain_setting_value"]);
 		$domain_setting_enabled = check_str($_POST["domain_setting_enabled"]);
@@ -66,6 +67,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($domain_setting_category) == 0) { $msg .= "Please provide: Category<br>\n"; }
+		//if (strlen($domain_setting_subcategory) == 0) { $msg .= "Please provide: Subcategory<br>\n"; }
 		//if (strlen($domain_setting_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($domain_setting_value) == 0) { $msg .= "Please provide: Value<br>\n"; }
 		//if (strlen($domain_setting_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
@@ -91,6 +93,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "domain_uuid, ";
 				$sql .= "domain_setting_uuid, ";
 				$sql .= "domain_setting_category, ";
+				$sql .= "domain_setting_subcategory, ";
 				$sql .= "domain_setting_name, ";
 				$sql .= "domain_setting_value, ";
 				$sql .= "domain_setting_enabled, ";
@@ -101,6 +104,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'".uuid()."', ";
 				$sql .= "'$domain_setting_category', ";
+				$sql .= "'$domain_setting_subcategory', ";
 				$sql .= "'$domain_setting_name', ";
 				$sql .= "'$domain_setting_value', ";
 				$sql .= "'$domain_setting_enabled', ";
@@ -121,6 +125,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update") {
 				$sql = "update v_domain_settings set ";
 				$sql .= "domain_setting_category = '$domain_setting_category', ";
+				$sql .= "domain_setting_subcategory = '$domain_setting_subcategory', ";
 				$sql .= "domain_setting_name = '$domain_setting_name', ";
 				$sql .= "domain_setting_value = '$domain_setting_value', ";
 				$sql .= "domain_setting_enabled = '$domain_setting_enabled', ";
@@ -153,6 +158,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_setting_category = $row["domain_setting_category"];
+			$domain_setting_subcategory = $row["domain_setting_subcategory"];
 			$domain_setting_name = $row["domain_setting_name"];
 			$domain_setting_value = $row["domain_setting_value"];
 			$domain_setting_enabled = $row["domain_setting_enabled"];
@@ -196,6 +202,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='domain_setting_category' maxlength='255' value=\"$domain_setting_category\">\n";
+	echo "<br />\n";
+	echo "Enter the category.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	Subcategory:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='domain_setting_subcategory' maxlength='255' value=\"$domain_setting_subcategory\">\n";
 	echo "<br />\n";
 	echo "Enter the category.\n";
 	echo "</td>\n";
