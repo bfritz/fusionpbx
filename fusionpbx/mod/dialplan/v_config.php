@@ -71,7 +71,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['text'] = 'app_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'app_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
