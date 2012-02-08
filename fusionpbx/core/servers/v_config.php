@@ -1,4 +1,5 @@
 <?php
+/*
 	//application details
 		$apps[$x]['name'] = 'Servers';
 		$apps[$x]['guid'] = '0F390134-071E-83D7-A79A-EBB7AE139D71';
@@ -47,18 +48,6 @@
 		$y = 0; //table array index
 		$z = 0; //field array index
 		$apps[$x]['db'][$y]['table'] = 'v_servers';
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'id';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
-		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_uuid';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
-		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
@@ -76,19 +65,6 @@
 
 		$y = 1; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['table'] = 'v_server_settings';
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'id';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'integer';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'INT NOT NULL AUTO_INCREMENT';
-		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_uuid';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
-		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
@@ -118,4 +94,5 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_description';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+*/
 ?>
