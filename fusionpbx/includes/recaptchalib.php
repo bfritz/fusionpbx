@@ -196,11 +196,11 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
  * gets a URL where the user can sign up for reCAPTCHA. If your application
  * has a configuration page where you enter a key, you should provide a link
  * using this function.
- * @param string $domain The domain where the page is hosted
- * @param string $appname The name of your application
+ * @param string $domain_name The domain where the page is hosted
+ * @param string $app_name The name of your application
  */
-function recaptcha_get_signup_url ($domain = null, $appname = null) {
-	return "https://www.google.com/recaptcha/admin/create?" .  _recaptcha_qsencode (array ('domains' => $domain, 'app' => $appname));
+function recaptcha_get_signup_url ($domain_name = null, $app_name = null) {
+	return "https://www.google.com/recaptcha/admin/create?" .  _recaptcha_qsencode (array ('domains' => $domain_name, 'app' => $app_name));
 }
 
 function _recaptcha_aes_pad($val) {
@@ -272,6 +272,5 @@ function recaptcha_mailhide_html($pubkey, $privkey, $email) {
 		"' onclick=\"window.open('" . htmlentities ($url) . "', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;\" title=\"Reveal this e-mail address\">...</a>@" . htmlentities ($emailparts [1]);
 
 }
-
 
 ?>

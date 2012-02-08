@@ -121,20 +121,20 @@ function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 		$tmp_month = date("M", $tmp_time);
 		$tmp_day = date("d", $tmp_time);
 
-	//find the domain_uuid by using the domain
-		$domain = check_str(urldecode($xml->variables->{$domain}));
+	//find the domain_uuid by using the domain_name
+		$domain_name = check_str(urldecode($xml->variables->{$domain}));
 		$sql = "";
 		$sql .= "select domain_uuid, switch_recordings_dir from v_system_settings ";
-		if (strlen($domain) == 0 && $context != 'public' && $context != 'default') {
-			$sql .= "where v_domain = '".$context."' ";
+		if (strlen($domain_name) == 0 && $context != 'public' && $context != 'default') {
+			$sql .= "where domain_name = '".$context."' ";
 		}
 		else {
-			$sql .= "where v_domain = '".$domain."' ";
+			$sql .= "where domain_name = '".$domain_name."' ";
 		}
 		$row = $db->query($sql)->fetch();
 		$domain_uuid = $row['domain_uuid'];
-		$switch_recordings_dir = $row['switch_recordings_dir'];
-		if (strlen($domain_uuid) == 0) { $domain_uuid = '1'; }
+		//$switch_recordings_dir = $row['switch_recordings_dir'];
+		//if (strlen($domain_uuid) == 0) { $domain_uuid = '1'; }
 		$variables_named[]='domain_uuid';
 
 	//check whether a recording exists

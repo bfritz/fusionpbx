@@ -70,7 +70,7 @@ else {
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$id = $_POST["id"];
 	$password = check_str($_POST["password"]);
-	$confirmpassword = check_str($_POST["confirmpassword"]);
+	$confirm_password = check_str($_POST["confirm_password"]);
 	$user_first_name = check_str($_POST["user_first_name"]);
 	$user_last_name = check_str($_POST["user_last_name"]);
 	$user_company_name = check_str($_POST["user_company_name"]);
@@ -110,7 +110,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$groupmember = check_str($_POST["groupmember"]);
 
 	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
-	if ($password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
+	if ($password != $confirm_password) { $msgerror .= "Passwords did not match.<br>\n"; }
 	//if (strlen($user_first_name) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
 	//if (strlen($user_last_name) == 0) { $msgerror .= "Please provide a last name $user_last_name.<br>\n"; }
 	//if (strlen($user_company_name) == 0) { $msgerror .= "Please provide a company name.<br>\n"; }
@@ -144,11 +144,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	}
 
 	//if the template has not been assigned by the superadmin
-		if (strlen($_SESSION["domain_template_name"]) == 0) {
+		if (strlen($_SESSION['domain']['template_name']) == 0) {
 			//set the session theme for the user
-				$_SESSION["template_name"] = $user_template_name;
+				$_SESSION['template_name'] = $user_template_name;
 			//clear the template so it will rebuild in case the template was changed
-				$_SESSION["template_content"] = '';
+				$_SESSION['template_content'] = '';
 		}
 
 	//sql update
@@ -156,7 +156,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		if (ifgroup("admin") && strlen($_POST["username"])> 0) {
 			$sql .= "username = '$username', ";
 		}
-		if (strlen($password) > 0 && $confirmpassword == $password) {
+		if (strlen($password) > 0 && $confirm_password == $password) {
 			//salt used with the password to create a one way hash
 				$salt = generate_password('20', '4');
 			//set the password
@@ -308,7 +308,7 @@ else {
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Confirm Password:</td>";
-	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirmpassword' value=\"\"></td>";
+	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirm_password' value=\"\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>First Name:</td>";
@@ -493,7 +493,7 @@ else {
 	echo "	</tr>";
 
 	//if the template has not been assigned by the superadmin
-	if (strlen($_SESSION["domain_template_name"]) == 0) {
+	if (strlen($_SESSION['domain']['template_name']) == 0) {
 		echo "	<tr>\n";
 		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 		echo "		Template: \n";

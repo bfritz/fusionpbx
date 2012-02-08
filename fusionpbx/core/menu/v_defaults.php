@@ -37,7 +37,7 @@
 	}
 	else {
 		//create the uuid
-			$menu_uuid = 'B4750C3F-2A86-B00D-B7D0-345C14ECA286';
+			$menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286';
 		//set the defaults
 			$menu_name = 'default';
 			$menu_language = 'en';
@@ -69,11 +69,6 @@
 			if ($display_type == "text") {
 				echo "	Menu:			added\n";
 			}
-		//assign all tenants to the default menu
-			$sql = "update v_system_settings ";
-			$sql .= "set domain_menu_uuid = '".$menu_uuid."' ";
-			$db->exec(check_sql($sql));
-			unset($sql);
 	}
 	unset($prep_statement, $sub_result);
 

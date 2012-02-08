@@ -217,81 +217,77 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Value:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-			switch ($row['domain_setting_name']) {
-				case "domain_menu_uuid":
-					echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
-					echo "		<option value=''></option>\n";
-					$sql = "";
-					$sql .= "select * from v_menus ";
-					$sql .= "order by menu_language, menu_name asc ";
-					$sub_prep_statement = $db->prepare(check_sql($sql));
-					$sub_prep_statement->execute();
-					$sub_result = $sub_prep_statement->fetchAll();
-					foreach ($sub_result as $sub_row) {
-						if (strtolower($row['domain_setting_value']) == strtolower($sub_row["menu_uuid"])) {
-							echo "		<option value='".$sub_row["menu_uuid"]."' selected='selected'>".$sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
-						}
-						else {
-							echo "		<option value='".$sub_row["menu_uuid"]."'>".$sub_row["menu_language"]." - ".$sub_row["menu_name"]."</option>\n";
-						}
+	if ($row['domain_setting_category'] == "domain" && $row['domain_setting_name'] == "menu_uuid" ) {
+		echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
+		echo "		<option value=''></option>\n";
+		$sql = "";
+		$sql .= "select * from v_menus ";
+		$sql .= "order by menu_language, menu_name asc ";
+		$sub_prep_statement = $db->prepare(check_sql($sql));
+		$sub_prep_statement->execute();
+		$sub_result = $sub_prep_statement->fetchAll();
+		foreach ($sub_result as $sub_row) {
+			if (strtolower($row['domain_setting_value']) == strtolower($sub_row["menu_uuid"])) {
+				echo "		<option value='".$sub_row["menu_uuid"]."' selected='selected'>".$sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
+			}
+			else {
+				echo "		<option value='".$sub_row["menu_uuid"]."'>".$sub_row["menu_language"]." - ".$sub_row["menu_name"]."</option>\n";
+			}
+		}
+		unset ($sub_prep_statement);
+		echo "		</select>\n";
+	} elseif ($row['domain_setting_category'] == "domain" && $row['domain_setting_name'] == "template_name" ) {
+		echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
+		echo "		<option value=''></option>\n";
+		//add all the themes to the list
+		$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
+		if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
+			while (false !== ($dir_name = readdir($handle))) {
+				if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
+					$dir_label = str_replace('_', ' ', $dir_name);
+					$dir_label = str_replace('-', ' ', $dir_label);
+					if ($dir_name == $row['domain_setting_value']) {
+						echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
 					}
-					unset ($sub_prep_statement);
-					echo "		</select>\n";
-					break;
+					else {
+						echo "		<option value='$dir_name'>$dir_label</option>\n";
+					}
+				}
+			}
+			closedir($handle);
+		}
+		echo "		</select>\n";
+	} elseif ($row['domain_setting_category'] == "domain" && $row['domain_setting_name'] == "time_zone" ) {
+			echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
+			echo "		<option value=''></option>\n";
+			//$list = DateTimeZone::listAbbreviations();
+			$time_zone_identifiers = DateTimeZone::listIdentifiers();
+			$previous_category = '';
+			$x = 0;
+			foreach ($time_zone_identifiers as $key => $val) {
+				$tz = explode("/", $val);
+				$category = $tz[0];
+				if ($category != $previous_category) {
+					if ($x > 0) {
+						echo "		</optgroup>\n";
+					}
+					echo "		<optgroup label='".$category."'>\n";
+				}
+				if ($val == $row['domain_setting_value']) {
+					echo "			<option value='".$val."' selected='selected'>".$val."</option>\n";
+				}
+				else {
+					echo "			<option value='".$val."'>".$val."</option>\n";
+				}
+				$previous_category = $category;
+				$x++;
+			}
+			echo "		</select>\n";
+			break;
+	} else {
+			echo "	<input class='formfld' type='text' name='domain_setting_value' maxlength='255' value=\"$domain_setting_value\">\n";
+	}	
 
-				case "domain_template_name":
-					echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
-					echo "		<option value=''></option>\n";
-					//add all the themes to the list
-					$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
-					if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
-						while (false !== ($dir_name = readdir($handle))) {
-							if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
-								$dir_label = str_replace('_', ' ', $dir_name);
-								$dir_label = str_replace('-', ' ', $dir_label);
-								if ($dir_name == $row['domain_setting_value']) {
-									echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
-								}
-								else {
-									echo "		<option value='$dir_name'>$dir_label</option>\n";
-								}
-							}
-						}
-						closedir($handle);
-					}
-					echo "		</select>\n";
-					break;
-				case "domain_time_zone":
-					echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
-					echo "		<option value=''></option>\n";
-					//$list = DateTimeZone::listAbbreviations();
-					$time_zone_identifiers = DateTimeZone::listIdentifiers();
-					$previous_category = '';
-					$x = 0;
-					foreach ($time_zone_identifiers as $key => $val) {
-						$tz = explode("/", $val);
-						$category = $tz[0];
-						if ($category != $previous_category) {
-							if ($x > 0) {
-								echo "		</optgroup>\n";
-							}
-							echo "		<optgroup label='".$category."'>\n";
-						}
-						if ($val == $row['domain_setting_value']) {
-							echo "			<option value='".$val."' selected='selected'>".$val."</option>\n";
-						}
-						else {
-							echo "			<option value='".$val."'>".$val."</option>\n";
-						}
-						$previous_category = $category;
-						$x++;
-					}
-					echo "		</select>\n";
-					break;
-				default:
-					echo "	<input class='formfld' type='text' name='domain_setting_value' maxlength='255' value=\"$domain_setting_value\">\n";
-			}	
-	
 	echo "<br />\n";
 	echo "Enter the value.\n";
 	echo "</td>\n";

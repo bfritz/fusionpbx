@@ -53,7 +53,7 @@ if (defined('STDIN')) {
 //get the parameters and save them as variables
 	$php_version = substr(phpversion(), 0, 1);
 	if ($php_version == '4') {
-		$domain = $_REQUEST["domain"];
+		$domain_name = $_REQUEST["domain"];
 		$fax_email = $_REQUEST["email"];
 		$fax_extension = $_REQUEST["extension"];
 		$fax_name = $_REQUEST["name"];
@@ -105,7 +105,7 @@ if (defined('STDIN')) {
 //get the fax details from the database
 	$sql = "";
 	$sql .= "select * from v_domains ";
-	$sql .= "where domain_name = '".$domain."' ";
+	$sql .= "where domain_name = '".$domain_name."' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -125,8 +125,8 @@ if (defined('STDIN')) {
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
 		//set database fields as variables
-			//$fax_name = $row["faxname"];
-			//$fax_email = $row["faxemail"];
+			//$fax_name = $row["fax_name"];
+			//$fax_email = $row["fax_email"];
 			$fax_pin_number = $row["fax_pin_number"];
 			//$fax_caller_id_name = $row["fax_caller_id_name"];
 			//$fax_caller_id_number = $row["fax_caller_id_number"];

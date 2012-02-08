@@ -127,20 +127,18 @@ require_once "includes/paging.php";
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
-			switch ($row['domain_setting_name']) {
-				case "domain_menu_uuid":
-					$sql = "";
-					$sql .= "select * from v_menus ";
-					$sql .= "where menu_uuid = '".$row['domain_setting_value']."' ";
-					$sub_prep_statement = $db->prepare(check_sql($sql));
-					$sub_prep_statement->execute();
-					$sub_result = $sub_prep_statement->fetchAll();
-					foreach ($sub_result as &$sub_row) {
-						echo $sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
-					}
-					break;
-				default:
-				   echo 		$row['domain_setting_value'];
+			if ($row['domain_setting_category'] == "domain" && $row['domain_setting_name'] == "menu_uuid" ) {
+				$sql = "";
+				$sql .= "select * from v_menus ";
+				$sql .= "where menu_uuid = '".$row['domain_setting_value']."' ";
+				$sub_prep_statement = $db->prepare(check_sql($sql));
+				$sub_prep_statement->execute();
+				$sub_result = $sub_prep_statement->fetchAll();
+				foreach ($sub_result as &$sub_row) {
+					echo $sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
+				}
+			} else {
+				echo 		$row['domain_setting_value'];
 			}	
 			echo "		&nbsp;\n";
 			echo "	</td>\n";

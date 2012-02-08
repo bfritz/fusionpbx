@@ -43,7 +43,7 @@ else {
 	$id = $_GET['id'];
 
 //get the domain from the domains array
-	$domain = $_SESSION['domains'][$domain_uuid]['domain'];
+	$domain_name = $_SESSION['domains'][$domain_uuid]['domain'];
 	
 //create the event socket connection
 	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -84,7 +84,7 @@ else {
 	<td align='center'>
 	<?php
 	//mark voicemail as read
-		$cmd = "api vm_read " .$id."@".$domain." read ".$uuid;
+		$cmd = "api vm_read " .$id."@".$domain_name." read ".$uuid;
 		$response = trim(event_socket_request($fp, $cmd));
 		if (strcmp($response,"+OK")==0) {
 			$msg = "Complete";
@@ -108,6 +108,5 @@ else {
 	</td>
    </tr>
 </table>
-
 </body>
 </html>

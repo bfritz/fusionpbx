@@ -43,7 +43,7 @@ require_once "includes/lib_functions.php";
 
 //get the domain
 	$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
-	$domain = $domain_array[0];
+	$domain_name = $domain_array[0];
 
 //make sure the sys_get_temp_dir exists 
 	if ( !function_exists('sys_get_temp_dir')) {
@@ -698,66 +698,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						unset ($file_contents, $sql);
 			}
 
-	//add the domain
-		$sql = "insert into v_domains ";
-		$sql .= "(";
-		$sql .= "domain_uuid, ";
-		$sql .= "domain_name, ";
-		$sql .= "domain_description ";
-		$sql .= ") ";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'".$_SESSION["domain_uuid"]."', ";
-		$sql .= "'".$domain."', ";
-		$sql .= "'' ";
-		$sql .= ");";
-		if ($v_debug) {
-			fwrite($fp, $sql."\n");
-		}
-		$db_tmp->exec(check_sql($sql));
-		unset($sql);
-
-	//add the domain settings
-		$x = 0;
-		$tmp[$x]['name'] = 'domain_menu_uuid';
-		$tmp[$x]['value'] = $menu_uuid;
-		$tmp[$x]['category'] = 'system';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'domain_time_zone';
-		$tmp[$x]['category'] = 'system';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'domain_template_name';
-		$tmp[$x]['value'] = $install_v_template_name;
-		$tmp[$x]['category'] = 'system';
-		$tmp[$x]['enabled'] = 'true';
-		foreach($tmp as $row) {
-			$sql = "insert into v_domain_settings ";
-			$sql .= "(";
-			$sql .= "domain_uuid, ";
-			$sql .= "domain_setting_uuid, ";
-			$sql .= "domain_setting_name, ";
-			$sql .= "domain_setting_value, ";
-			$sql .= "domain_setting_category, ";
-			$sql .= "domain_setting_enabled ";
-			$sql .= ") ";
-			$sql .= "values ";
-			$sql .= "(";
-			$sql .= "'".$_SESSION["domain_uuid"]."', ";
-			$sql .= "'".uuid()."', ";
-			$sql .= "'".$row['name']."', ";
-			$sql .= "'".$row['value']."', ";
-			$sql .= "'".$row['category']."', ";
-			$sql .= "'".$row['enabled']."' ";	
-			$sql .= ");";
-			if ($v_debug) {
-				fwrite($fp, $sql."\n");
-			}
-			$db_tmp->exec(check_sql($sql));
-			unset($sql);
-		}
-
 	//replace back slashes with forward slashes
 		$web_dir = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
 		$web_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
@@ -769,19 +709,18 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
 		$install_backup_dir = str_replace("\\", "/", $install_backup_dir);
 
-	//add the server
-		$server_uuid = uuid();
-		$sql = "insert into v_servers ";
+	//add the domain
+		$sql = "insert into v_domains ";
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
-		$sql .= "server_uuid, ";
-		$sql .= "server_name ";
+		$sql .= "domain_name, ";
+		$sql .= "domain_description ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'".$_SESSION["domain_uuid"]."', ";
-		$sql .= "'".$server_uuid."', ";
-		$sql .= "'".$domain."' ";
+		$sql .= "'".$domain_name."', ";
+		$sql .= "'' ";
 		$sql .= ");";
 		if ($v_debug) {
 			fwrite($fp, $sql."\n");
@@ -789,8 +728,22 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$db_tmp->exec(check_sql($sql));
 		unset($sql);
 
-	//add the server settings
+	//add the domain settings
 		$x = 0;
+		$tmp[$x]['name'] = 'menu_uuid';
+		$tmp[$x]['value'] = $menu_uuid;
+		$tmp[$x]['category'] = 'domain';
+		$tmp[$x]['enabled'] = 'true';
+		$x++;
+		$tmp[$x]['name'] = 'time_zone';
+		$tmp[$x]['category'] = 'domain';
+		$tmp[$x]['enabled'] = 'true';
+		$x++;
+		$tmp[$x]['name'] = 'template_name';
+		$tmp[$x]['value'] = $install_v_template_name;
+		$tmp[$x]['category'] = 'domain';
+		$tmp[$x]['enabled'] = 'true';
+		$x++;
 		$tmp[$x]['name'] = 'server_protocol';
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'system';
@@ -941,25 +894,23 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['category'] = 'switch';
 		$tmp[$x]['enabled'] = 'false';
 		foreach($tmp as $row) {
-			$sql = "insert into v_server_settings ";
+			$sql = "insert into v_domain_settings ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "server_uuid, ";
-			$sql .= "server_setting_uuid, ";
-			$sql .= "server_setting_name, ";
-			$sql .= "server_setting_value, ";
-			$sql .= "server_setting_category, ";
-			$sql .= "server_setting_enabled ";
+			$sql .= "domain_setting_uuid, ";
+			$sql .= "domain_setting_name, ";
+			$sql .= "domain_setting_value, ";
+			$sql .= "domain_setting_category, ";
+			$sql .= "domain_setting_enabled ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'".$_SESSION["domain_uuid"]."', ";
-			$sql .= "'".$server_uuid."', ";
 			$sql .= "'".uuid()."', ";
 			$sql .= "'".$row['name']."', ";
 			$sql .= "'".$row['value']."', ";
 			$sql .= "'".$row['category']."', ";
-			$sql .= "'".$row['enabled']."' ";
+			$sql .= "'".$row['enabled']."' ";	
 			$sql .= ");";
 			if ($v_debug) {
 				fwrite($fp, $sql."\n");
@@ -967,7 +918,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 		}
-		unset($tmp);
 
 	//get the list of installed apps from the core and mod directories
 		$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
@@ -1271,7 +1221,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		require_once "includes/classes/install.php";
 		$install = new install;
 		$install->domain_uuid = $_SESSION["domain_uuid"];
-		$install->domain = $domain;
+		$install->domain = $domain_name;
 		$install->switch_conf_dir = $switch_conf_dir;
 		$install->switch_scripts_dir = $switch_scripts_dir;
 		$install->switch_sounds_dir = $switch_sounds_dir;
@@ -1289,7 +1239,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		require_once "includes/classes/dialplan.php";
 		$dialplan = new dialplan;
 		$dialplan->domain_uuid = $_SESSION["domain_uuid"];
-		$dialplan->domain = $domain;
+		$dialplan->domain = $domain_name;
 		$dialplan->switch_dialplan_dir = $switch_dialplan_dir;
 		$dialplan->restore_advanced_xml();
 		//print_r($dialplan->result);

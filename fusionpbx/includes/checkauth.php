@@ -32,7 +32,7 @@ session_start();
 			$_SESSION["menu"] = "";
 
 		//clear the template only if the template has not been assigned by the superadmin
-			if (strlen($_SESSION["domain_template_name"]) == 0) {
+			if (strlen($_SESSION['domain']['template_name']) == 0) {
 				$_SESSION["template_content"] = '';
 			}
 
@@ -86,7 +86,7 @@ session_start();
 			$_SESSION["username"] = check_str($_REQUEST["username"]);
 			foreach ($result as &$row) {
 				//allow the user to choose a template only if the template has not been assigned by the superadmin
-				if (strlen($_SESSION["domain_template_name"]) == 0) {
+				if (strlen($_SESSION['domain']['template_name']) == 0) {
 					$_SESSION["template_name"] = $row["user_template_name"];
 				}
 				$_SESSION["time_zone"]["user"] = '';
@@ -94,16 +94,11 @@ session_start();
 					//user defined time zone
 					$_SESSION["time_zone"]["user"] = $row["user_time_zone"];
 				}
-				// Add Customer ID To Session for easy of Access
-				if (strlen($row["customer_id"]) > 0) {
-					$_SESSION["customer_id"] = $row["customer_id"];
-				}
-				// Add User ID to Session.
-				$_SESSION['user_uuid'] = $row['id'];
+				// add the user_uuid to the session
+				$_SESSION['user_uuid'] = $row['user_uuid'];
 				break;
 			}
 			//echo "username: ".$_SESSION["username"]." and password are correct";
-
 
 		//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
 			$sql = "SELECT * FROM v_group_members ";
@@ -149,7 +144,7 @@ session_start();
 //set the time zone
 	if (strlen($_SESSION["time_zone"]["user"]) == 0) {
 		//set the domain time zone as the default time zone
-		date_default_timezone_set($_SESSION["domain_time_zone"]);
+		date_default_timezone_set($_SESSION['domain']['time_zone']);
 	}
 	else {
 		//set the user defined time zone

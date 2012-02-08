@@ -346,8 +346,10 @@ if ($db_type == "pgsql") {
 	$result = $prep_statement->fetchAll();
 	foreach($result as $row) {
 		$name = $row['domain_setting_name'];
-		$_SESSION[$name] = $row['domain_setting_value'];
-		$$name = $row['domain_setting_value'];
+		$category = $row['domain_setting_category'];
+		$_SESSION[$category][$name] = $row['domain_setting_value'];
+		$domain[$name] = $row['domain_setting_value'];
+		//$$name = $row['domain_setting_value'];
 	}
 
 //get the server variables
@@ -359,25 +361,24 @@ if ($db_type == "pgsql") {
 	$result = $prep_statement->fetchAll();
 	foreach($result as $row) {
 		$name = $row['server_setting_name'];
-		$_SESSION[$name] = $row['server_setting_value'];
-		$$name = $row['server_setting_value'];
+		$category = $row['server_setting_category'];
+		$_SESSION[$category][$name] = $row['server_setting_value'];
+		$domain[$name] = $row['server_setting_value'];
+		//$$name = $row['server_setting_value'];
 	}
 
 //set the values from the session variables
-	$_SESSION["v_domain"] = $_SESSION["domain_name"];
-	$_SESSION["template_name"] = $_SESSION["domain_template_name"];
-	$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain_template_name'];
-	//$_SESSION["domain_template_name"] = $row["domain_template_name"];
-	//$_SESSION["domain_menu_uuid"] = $row['domain_menu_uuid'];
-	//$_SESSION["domain_time_zone"] = $row['domain_time_zone'];	
-	$_SESSION["template_name"] = $_SESSION["domain_template_name"];
-	if (strlen($_SESSION["domain_time_zone"]) > 0) {
+	$_SESSION['v_domain'] = $_SESSION['domain_name'];
+	$_SESSION['template_name'] = $_SESSION['domain']['template_name'];
+	$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain']['template_name'];
+	$_SESSION['template_name'] = $_SESSION['domain']['template_name'];
+	if (strlen($_SESSION['domain']['time_zone']) > 0) {
 		//server time zone
-			$_SESSION["time_zone"]["system"] = date_default_timezone_get();
+			$_SESSION['time_zone']['system'] = date_default_timezone_get();
 		//domain time zone set in system settings
-			$_SESSION["time_zone"]["domain"] = $_SESSION['domain_time_zone'];
+			$_SESSION['time_zone']['domain'] = $_SESSION['domain']['time_zone'];
 		//set the domain time zone as the default time zone
-			date_default_timezone_set($_SESSION["domain_time_zone"]);
+			date_default_timezone_set($_SESSION['domain']['time_zone']);
 	}
 
 //set the context
