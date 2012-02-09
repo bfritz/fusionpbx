@@ -64,7 +64,7 @@ require_once "includes/config.php";
 
 	$strlist = "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	$strlist .= "<tr class='border'>\n";
-	$strlist .= "	<th align=\"left\" nowrap> &nbsp; Group ID &nbsp; </th>\n";
+	$strlist .= "	<th align=\"left\" nowrap> &nbsp; Group Name &nbsp; </th>\n";
 	$strlist .= "	<th align=\"left\" nowrap> &nbsp; Group Description &nbsp; </th>\n";
 	$strlist .= "	<th align=\"center\" nowrap>&nbsp;</th>\n";
 
@@ -80,6 +80,7 @@ require_once "includes/config.php";
 	foreach ($result as &$row) {
 		$id = $row["id"];
 		$group_name = $row["group_name"];
+		$group_uuid = $row["group_uuid"];
 		$group_desc = $row["group_desc"];
 		if (strlen($group_name) == 0) { $group_name = "&nbsp;"; }
 		if (strlen($group_desc) == 0) { $group_desc = "&nbsp;"; }
@@ -103,7 +104,7 @@ require_once "includes/config.php";
 			$strlist .= "</td>\n";
 
 			$strlist .= "<td align=\"right\" nowrap>\n";
-			$strlist .= "<a href='groupdelete.php?id=$id' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
+			$strlist .= "<a href='groupdelete.php?id=$group_uuid' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 
 			$strlist .= "</td>\n";
 			$strlist .= "</tr>\n";
