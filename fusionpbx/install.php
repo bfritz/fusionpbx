@@ -135,12 +135,10 @@ require_once "includes/lib_functions.php";
 		if (file_exists('/usr/local/freeswitch/bin')) {
 			$install_switch_base_dir = '/usr/local/freeswitch';
 			$switch_bin_dir = '/usr/local/freeswitch/bin';
-			$parent_dir = '/usr/local';
 		}
 		if (file_exists('/opt/freeswitch')) {
 			$install_switch_base_dir = '/opt/freeswitch';
 			$switch_bin_dir = '/opt/freeswitch/bin';
-			$parent_dir = '/opt';
 		}
 
 	//set the default startup script directory
@@ -279,40 +277,31 @@ require_once "includes/lib_functions.php";
 			if (substr($_SERVER["DOCUMENT_ROOT"], -3) == "www") {
 				//integrated installer
 				$install_switch_base_dir = realpath($_SERVER["DOCUMENT_ROOT"]."/..");
-				$parent_dir = realpath($_SERVER["DOCUMENT_ROOT"]."/..");
 				$install_php_dir = realpath($_SERVER["PHPRC"]."/..");
 				$startup_script_dir = '';
 			} elseif (is_dir('C:/program files/FreeSWITCH')) {
 				$install_switch_base_dir = 'C:/program files/FreeSWITCH';
-				$parent_dir = 'C:/program files';
 				$startup_script_dir = '';
 			} elseif (is_dir('D:/program files/FreeSWITCH')) {
 				$install_switch_base_dir = 'D:/program files/FreeSWITCH';
-				$parent_dir = 'D:/program files';
 				$startup_script_dir = '';
 			} elseif (is_dir('E:/program files/FreeSWITCH')) {
 				$install_switch_base_dir = 'E:/program files/FreeSWITCH';
-				$parent_dir = 'E:/program files';
 				$startup_script_dir = '';
 			} elseif (is_dir('F:/program files/FreeSWITCH')) {
 				$install_switch_base_dir = 'F:/program files/FreeSWITCH';
-				$parent_dir = 'F:/program files';
 				$startup_script_dir = '';
 			} elseif (is_dir('C:/FreeSWITCH')) {
 				$install_switch_base_dir = 'C:/FreeSWITCH';
-				$parent_dir = 'C:';
 				$startup_script_dir = '';
 			} elseif (is_dir('D:/FreeSWITCH')) {
 				$install_switch_base_dir = 'D:/FreeSWITCH';
-				$parent_dir = 'D:';
 				$startup_script_dir = '';
 			} elseif (is_dir('E:/FreeSWITCH')) {
 				$install_switch_base_dir = 'E:/FreeSWITCH';
-				$parent_dir = 'E:';
 				$startup_script_dir = '';
 			} elseif (is_dir('F:/FreeSWITCH')) {
 				$install_switch_base_dir = 'F:/FreeSWITCH';
-				$parent_dir = 'F:';
 				$startup_script_dir = '';
 			} else {
 				if (is_dir('C:/PHP')) { $install_php_dir = 'C:/PHP'; }
@@ -696,9 +685,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			}
 
 	//replace back slashes with forward slashes
-		if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }
 		$install_switch_base_dir = str_replace("\\", "/", $install_switch_base_dir);
-		$parent_dir = str_replace("\\", "/", $parent_dir);
 		$install_php_dir = str_replace("\\", "/", $install_php_dir);
 		$startup_script_dir = str_replace("\\", "/", $startup_script_dir);
 		$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
@@ -745,13 +732,13 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['name'] = 'protocol';
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'web';
-		$tmp[$x]['subcategory'] = '';
+		$tmp[$x]['subcategory'] = 'server';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'port';
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'web';
-		$tmp[$x]['subcategory'] = '';
+		$tmp[$x]['subcategory'] = 'server';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'directory';
@@ -770,18 +757,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['value'] = $startup_script_dir;
 		$tmp[$x]['category'] = 'server';
 		$tmp[$x]['subcategory'] = 'startup_script';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'relative_url';
-		$tmp[$x]['value'] = $relative_url;
-		$tmp[$x]['category'] = 'server';
-		$tmp[$x]['subcategory'] = '';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'parent_dir';
-		$tmp[$x]['value'] = $parent_dir;
-		$tmp[$x]['category'] = 'server';
-		$tmp[$x]['subcategory'] = 'parent';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'directory';

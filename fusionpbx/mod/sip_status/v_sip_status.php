@@ -54,8 +54,9 @@ if ($_GET['a'] == "download") {
 		if (!is_dir($backup_dir.'/')) {
 			exec("mkdir ".$backup_dir."/");
 		}
+		$parent_dir = realpath($_SESSION['switch']['base']['directory']."/..");
 		chdir($parent_dir);
-		shell_exec('tar cvzf '.$backup_dir.'/backup.tgz backup);
+		shell_exec('tar cvzf freeswitch '.$backup_dir.'/backup.tgz');
 	}
 	session_cache_limiter('public');
 	$fd = fopen($tmp.$filename, "rb");

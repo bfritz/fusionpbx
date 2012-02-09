@@ -221,11 +221,7 @@ function build_menu() {
 
 	if ($v_menu_tab_show) {
 		global $config;
-		//$relative_url = $config['installedpackages']['freeswitchsettings']['config'][0]['relative_url'];
-
-		//$script_name_array = split ("/", $_SERVER["SCRIPT_NAME"]);
-		//$script_name = $script_name_array[count($script_name_array)-1];
-		//echo "script_name: ".$script_name."<br />";
+		if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }
 
 		$tab_array = array();
 		$menu_selected = false;
@@ -1596,20 +1592,7 @@ function sync_package_v_extensions() {
 	}
 
 	//determine the extensions parent directory
-		//$switch_extensions_dir = str_replace("\\", "/", $file_contents);
-		$v_extensions_dir_array = explode("/", $switch_extensions_dir);
-		$extension_parent_dir = "";
-		$x=1;
-		foreach ($v_extensions_dir_array as $tmp_dir) {
-			if (count($v_extensions_dir_array) > $x) {
-				$extension_parent_dir .= $tmp_dir."/";
-			}
-			else {
-				$extension_dir_name = $tmp_dir; 
-			}
-			$x++;
-		}
-		$extension_parent_dir = rtrim($extension_parent_dir, "/");
+		$extension_parent_dir = realpath($switch_extensions_dir."/..");
 
 	// delete all old extensions to prepare for new ones
 		if($dh = opendir($switch_extensions_dir)) {

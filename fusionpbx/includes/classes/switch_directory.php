@@ -527,19 +527,7 @@ include "root.php";
 				}
 
 			//determine the extensions parent directory
-				$v_extensions_dir_array = explode("/", $switch_extensions_dir);
-				$extension_parent_dir = "";
-				$x=1;
-				foreach ($v_extensions_dir_array as $tmp_dir) {
-					if (count($v_extensions_dir_array) > $x) {
-						$extension_parent_dir .= $tmp_dir."/";
-					}
-					else {
-						$extension_dir_name = $tmp_dir; 
-					}
-					$x++;
-				}
-				$extension_parent_dir = rtrim($extension_parent_dir, "/");
+				$extension_parent_dir = realpath($switch_extensions_dir."/..");
 
 			// delete all old extensions to prepare for new ones
 				if($dh = opendir($switch_extensions_dir)) {

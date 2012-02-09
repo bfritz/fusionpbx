@@ -194,42 +194,34 @@ else {
 		//echo "windows: ".PHP_OS;
 		if (is_dir('C:/program files/FreeSWITCH')) {
 			$install_switch_base_dir = 'C:/program files/FreeSWITCH';
-			$parent_dir = 'C:/program files';
 			$startup_script_dir = '';
 		}
 		if (is_dir('D:/program files/FreeSWITCH')) {
 			$install_switch_base_dir = 'D:/program files/FreeSWITCH';
-			$parent_dir = 'D:/program files';
 			$startup_script_dir = '';
 		}
 		if (is_dir('E:/program files/FreeSWITCH')) {
 			$install_switch_base_dir = 'E:/program files/FreeSWITCH';
-			$parent_dir = 'E:/program files';
 			$startup_script_dir = '';
 		}
 		if (is_dir('F:/program files/FreeSWITCH')) {
 			$install_switch_base_dir = 'F:/program files/FreeSWITCH';
-			$parent_dir = 'F:/program files';
 			$startup_script_dir = '';
 		}
 		if (is_dir('C:/FreeSWITCH')) {
 			$install_switch_base_dir = 'C:/FreeSWITCH';
-			$parent_dir = 'C:';
 			$startup_script_dir = '';
 		}
 		if (is_dir('D:/FreeSWITCH')) {
 			$install_switch_base_dir = 'D:/FreeSWITCH';
-			$parent_dir = 'D:';
 			$startup_script_dir = '';
 		}
 		if (is_dir('E:/FreeSWITCH')) {
 			$install_switch_base_dir = 'E:/FreeSWITCH';
-			$parent_dir = 'E:';
 			$startup_script_dir = '';
 		}
 		if (is_dir('F:/FreeSWITCH')) {
 			$install_switch_base_dir = 'F:/FreeSWITCH';
-			$parent_dir = 'F:';
 			$startup_script_dir = '';
 		}
 		if (is_dir('C:/PHP')) { $install_php_dir = 'C:/PHP'; }
@@ -245,8 +237,5 @@ else {
 		if (is_dir('E:/fusionpbx/Program/php')) { $install_php_dir = 'E:/fusionpbx/Program/php'; }
 		if (is_dir('F:/fusionpbx/Program/php')) { $install_php_dir = 'F:/fusionpbx/Program/php'; }
 	}
-
-//set additional information
-	if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }
 
 ?>
