@@ -55,12 +55,6 @@ else {
 		}
 	}
 
-//get the ftp and tftp directories
-	$provisioning_http_dir = $_SESSION['provisioning_http_dir '];
-	$provisioning_https_dir = $_SESSION['provisioning_https_dir '];
-	$provisioning_tftp_dir = $_SESSION['provisioning_tftp_dir'];
-	$provisioning_ftp_dir = $_SESSION['provisioning_ftp_dir'];
-
 //get the hardware phone list
 	$sql = "";
 	$sql .= "select * from v_hardware_phones ";
@@ -222,17 +216,15 @@ else {
 							$file_name = str_replace("{v_mac}", $phone_mac_address, $file_name);
 
 						//write the configuration to the directory
-							if (strlen($provisioning_tftp_dir) > 0) {
-								$fh = fopen($provisioning_tftp_dir.'/'.$file_name,"w") or die("Unable to write to $provisioning_tftp_dir for provisioning. Make sure the path exists and permissons are set correctly.");
-								fwrite($fh, $file_contents);
-								unset($file_name);
-								fclose($fh);
-							}
-							if (strlen($provisioning_ftp_dir) > 0) {
-								$fh = fopen($provisioning_ftp_dir.'/'.$file_name,"w") or die("Unable to write to $provisioning_ftp_dir for provisioning. Make sure the path exists and permissons are set correctly.");
-								fwrite($fh, $file_contents);
-								unset($file_name);
-								fclose($fh);
+						
+							if (strlen($_SESSION['switch']['provision']['directory']) > 0) {
+								$dir_array = explode(";", $_SESSION['switch']['provision']['directory']);
+								foreach($dir_array as $directory) {
+									$fh = fopen($directory.'/'.$file_name,"w") or die("Unable to write to $directory for provisioning. Make sure the path exists and permissons are set correctly.");
+									fwrite($fh, $file_contents);
+									unset($file_name);
+									fclose($fh);
+								}
 							}
 					}
 			} //end for each
