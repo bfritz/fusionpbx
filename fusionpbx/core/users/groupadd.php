@@ -44,12 +44,14 @@ if (strlen($group_name) > 0) {
 	$sqlinsert = "insert into v_groups ";
 	$sqlinsert .= "(";
 	$sqlinsert .= "domain_uuid, ";
+	$sqlinsert .= "group_uuid, ";
 	$sqlinsert .= "group_name, ";
 	$sqlinsert .= "group_desc ";
 	$sqlinsert .= ")";
 	$sqlinsert .= "values ";
 	$sqlinsert .= "(";
 	$sqlinsert .= "'$domain_uuid', ";
+	$sqlinsert .= "'".uuid()."', ";
 	$sqlinsert .= "'$group_name', ";
 	$sqlinsert .= "'$group_desc' ";
 	$sqlinsert .= ")";

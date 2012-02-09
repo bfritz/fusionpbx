@@ -78,7 +78,6 @@ require_once "includes/config.php";
 	$count = 0;
 	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
-		$id = $row["id"];
 		$group_name = $row["group_name"];
 		$group_uuid = $row["group_uuid"];
 		$group_desc = $row["group_desc"];
