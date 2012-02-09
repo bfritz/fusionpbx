@@ -114,7 +114,7 @@ require_once "includes/paging.php";
 				echo "	<br />\n";
 				echo "	<b>".ucfirst($row['domain_setting_category'])."</b>&nbsp;</td></tr>\n";
 				echo "<tr>\n";
-				echo thorder_by('domain_setting_subcategory', 'Name', $order_by, $order);
+				//echo thorder_by('domain_setting_subcategory', 'Name', $order_by, $order);
 				echo thorder_by('domain_setting_name', 'Name', $order_by, $order);
 				echo thorder_by('domain_setting_value', 'Value', $order_by, $order);
 				echo thorder_by('domain_setting_enabled', 'Enabled', $order_by, $order);
@@ -122,11 +122,10 @@ require_once "includes/paging.php";
 				echo "<td align='right' width='42'>\n";
 				echo "	<a href='v_domain_settings_edit.php?domain_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 				echo "</td>\n";
-				echo "<tr>\n";
+				echo "</tr>\n";
 			}
-
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_subcategory']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_subcategory']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_setting_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
 			if ($row['domain_setting_category'] == "domain" && $row['domain_setting_name'] == "menu_uuid" ) {
