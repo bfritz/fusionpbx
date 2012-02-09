@@ -66,7 +66,7 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 					$menu_item_str = $row2[menu_item_str];
 				//get the groups that have been assigned to the menu
 					$sql = "";
-					$sql .= "select group_id from v_menu_item_groups ";
+					$sql .= "select group_name from v_menu_item_groups ";
 					$sql .= "where menu_uuid = '$menu_uuid' ";
 					$sql .= "and menu_item_uuid = '".$menu_item_uuid."' ";
 					$sub_prep_statement = $db->prepare(check_sql($sql));
@@ -76,10 +76,10 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 					$x = 0;
 					foreach ($sub_result as &$sub_row) {
 						if ($x == 0) {
-							$group_list = $sub_row["group_id"];
+							$group_list = $sub_row["group_name"];
 						}
 						else {
-							$group_list .= ", ".$sub_row["group_id"];
+							$group_list .= ", ".$sub_row["group_name"];
 						}
 						$x++;
 					}
@@ -245,7 +245,7 @@ $order = $_GET["order"];
 
 			//get the groups that have been assigned to the menu
 				$sql = "";
-				$sql .= "select group_id from v_menu_item_groups ";
+				$sql .= "select group_name from v_menu_item_groups ";
 				$sql .= "where menu_uuid = '$menu_uuid' ";
 				$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
 				$sub_prep_statement = $db->prepare(check_sql($sql));
@@ -255,10 +255,10 @@ $order = $_GET["order"];
 				$x = 0;
 				foreach ($sub_result as &$sub_row) {
 					if ($x == 0) {
-						$group_list = $sub_row["group_id"];
+						$group_list = $sub_row["group_name"];
 					}
 					else {
-						$group_list .= ", ".$sub_row["group_id"];
+						$group_list .= ", ".$sub_row["group_name"];
 					}
 					$x++;
 				}

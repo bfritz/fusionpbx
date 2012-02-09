@@ -53,7 +53,7 @@
 					$sql = "insert into v_groups ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
-					$sql .= "group_id, ";
+					$sql .= "group_name, ";
 					$sql .= "group_desc ";
 					$sql .= ")";
 					$sql .= "values ";
@@ -97,7 +97,7 @@
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
 					$sql .= "permission_id, ";
-					$sql .= "group_id ";
+					$sql .= "group_name ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";

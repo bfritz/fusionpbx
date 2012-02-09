@@ -116,12 +116,12 @@ session_start();
 			$x = 0;
 			$sql = "select distinct(permission_id) from v_group_permissions ";
 			foreach($_SESSION["groups"] as $field) {
-				if (strlen($field['group_id']) > 0) {
+				if (strlen($field['group_name']) > 0) {
 					if ($x == 0) {
-						$sql .= "where (domain_uuid = '".$domain_uuid."' and group_id = '".$field['group_id']."') ";
+						$sql .= "where (domain_uuid = '".$domain_uuid."' and group_name = '".$field['group_name']."') ";
 					}
 					else {
-						$sql .= "or (domain_uuid = '".$domain_uuid."' and group_id = '".$field['group_id']."') ";
+						$sql .= "or (domain_uuid = '".$domain_uuid."' and group_name = '".$field['group_name']."') ";
 					}
 					$x++;
 				}

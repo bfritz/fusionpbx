@@ -124,7 +124,7 @@
 			//search for the permission
 				if (count($_SESSION["groups"]) > 0) {
 					foreach($_SESSION["groups"] as $row) {
-						if ($row['group_id'] == $group) {
+						if ($row['group_name'] == $group) {
 							$result = true;
 							break;
 						}
@@ -167,7 +167,7 @@
 			$groupmemberlist = "||";
 			foreach($result as $field) {
 				//get the list of groups
-				$groupmemberlist .= $field[group_id]."||";
+				$groupmemberlist .= $field[group_name]."||";
 			}
 			unset($sql, $result, $row_count);
 			return $groupmemberlist;
@@ -189,7 +189,7 @@
 		function superadminlist($db) {
 			global $domain_uuid;
 			$sql = "select * from v_group_members ";
-			$sql .= "where group_id = 'superadmin' ";
+			$sql .= "where group_name = 'superadmin' ";
 			//echo $sql;
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
@@ -199,7 +199,7 @@
 			$strsuperadminlist = "||";
 			foreach($result as $field) {
 				//get the list of superadmins
-				$strsuperadminlist .= $field[group_id]."||";
+				$strsuperadminlist .= $field[group_name]."||";
 			}
 			unset($sql, $result, $row_count);
 			return $strsuperadminlist;
@@ -618,17 +618,17 @@
 					unset($sql);
 
 				//add the user to the member group
-					$group_id = 'user';
+					$group_name = 'user';
 					$sql = "insert into v_group_members ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
-					$sql .= "group_id, ";
+					$sql .= "group_name, ";
 					$sql .= "username ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$domain_uuid', ";
-					$sql .= "'$group_id', ";
+					$sql .= "'$group_name', ";
 					$sql .= "'$username' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));

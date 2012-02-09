@@ -209,11 +209,11 @@ else {
 	$result = $prep_statement->fetchAll();
 	//$count = count($result);
 	foreach($result as $field) {
-			if ($rss_group == $field[group_id]) {
-				echo "<option value='".$field[group_id]."' selected>".$field[group_id]."</option>\n";
+			if ($rss_group == $field[group_name]) {
+				echo "<option value='".$field[group_name]."' selected>".$field[group_name]."</option>\n";
 			}
 			else {
-				echo "<option value='".$field[group_id]."'>".$field[group_id]."</option>\n";
+				echo "<option value='".$field[group_name]."'>".$field[group_name]."</option>\n";
 			}
 	}
 

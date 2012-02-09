@@ -142,7 +142,7 @@
 										$sql .= "(";
 										$sql .= "menu_uuid, ";
 										$sql .= "menu_item_uuid, ";
-										$sql .= "group_id ";
+										$sql .= "group_name ";
 										$sql .= ")";
 										$sql .= "values ";
 										$sql .= "(";
@@ -168,7 +168,7 @@
 				$db_menu_full = '';
 
 				if (count($_SESSION['groups']) == 0) {
-					$_SESSION['groups'][0]['group_id'] = 'public';
+					$_SESSION['groups'][0]['group_name'] = 'public';
 				}
 
 				if (strlen($sql) == 0) { //default sql for base of the menu
@@ -179,16 +179,16 @@
 					$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '".$this->menu_uuid."' ";
 					$sql .= "and ( ";
 					if (count($_SESSION['groups']) == 0) {
-						$sql .= "group_id = 'public' ";
+						$sql .= "group_name = 'public' ";
 					}
 					else {
 						$x = 0;
 						foreach($_SESSION['groups'] as $row) {
 							if ($x == 0) {
-								$sql .= "group_id = '".$row['group_id']."' ";
+								$sql .= "group_name = '".$row['group_name']."' ";
 							}
 							else {
-								$sql .= "or group_id = '".$row['group_id']."' ";
+								$sql .= "or group_name = '".$row['group_name']."' ";
 							}
 							$x++;
 						}
@@ -276,7 +276,7 @@
 				$menu_item_level = $menu_item_level+1;
 
 				if (count($_SESSION['groups']) == 0) {
-					$_SESSION['groups'][0]['group_id'] = 'public';
+					$_SESSION['groups'][0]['group_name'] = 'public';
 				}
 
 				$sql = "select * from v_menu_items ";
@@ -286,16 +286,16 @@
 				$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '".$this->menu_uuid."' ";
 				$sql .= "and ( ";
 				if (count($_SESSION['groups']) == 0) {
-					$sql .= "group_id = 'public' ";
+					$sql .= "group_name = 'public' ";
 				}
 				else {
 					$x = 0;
 					foreach($_SESSION['groups'] as $row) {
 						if ($x == 0) {
-							$sql .= "group_id = '".$row['group_id']."' ";
+							$sql .= "group_name = '".$row['group_name']."' ";
 						}
 						else {
-							$sql .= "or group_id = '".$row['group_id']."' ";
+							$sql .= "or group_name = '".$row['group_name']."' ";
 						}
 						$x++;
 					}

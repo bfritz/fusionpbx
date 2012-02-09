@@ -218,7 +218,6 @@ require_once "includes/lib_functions.php";
 			break;
 		case "NetBSD":
 			$startup_script_dir = '';
-s
 			//set the default db_filepath
 				if (strlen($db_filepath) == 0) { //secure dir
 					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
@@ -238,26 +237,26 @@ s
 					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 				}
 		}
-		/*
-		* CYGWIN_NT-5.1
-		* Darwin
-		* FreeBSD
-		* HP-UX
-		* IRIX64
-		* Linux
-		* NetBSD
-		* OpenBSD
-		* SunOS
-		* Unix
-		* WIN32
-		* WINNT
-		* Windows
-		* CYGWIN_NT-5.1
-		* IRIX64
-		* SunOS
-		* HP-UX
-		* OpenBSD (not in Wikipedia)
-		*/
+		//
+		// CYGWIN_NT-5.1
+		// Darwin
+		// FreeBSD
+		// HP-UX
+		// IRIX64
+		// Linux
+		// NetBSD
+		// OpenBSD
+		// SunOS
+		// Unix
+		// WIN32
+		// WINNT
+		// Windows
+		// CYGWIN_NT-5.1
+		// IRIX64
+		// SunOS
+		// HP-UX
+		// OpenBSD (not in Wikipedia)
+
 
 	//set the dir defaults for windows
 		if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
@@ -681,6 +680,12 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$db_tmp->exec(check_sql($sql));
 		unset($sql);
 
+	//get the web server protocol
+		//$install_server_protocol = $_SERVER["SERVER_PORT"];
+		//$server_protocol_array = explode('/', $_SERVER["SERVER_PROTOCOL"]);
+		//$install_server_protocol = strtolower($server_protocol[0]);
+		//unset($server_protocol_array);
+		
 	//add the domain settings
 		$x = 0;
 		$tmp[$x]['name'] = 'uuid';
@@ -689,27 +694,15 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['subcategory'] = 'menu';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
-		$tmp[$x]['name'] = 'time_zone';
+		$tmp[$x]['name'] = 'name';
 		$tmp[$x]['category'] = 'domain';
-		$tmp[$x]['subcategory'] = '';
+		$tmp[$x]['subcategory'] = 'time_zone';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'name';
 		$tmp[$x]['value'] = $install_template_name;
 		$tmp[$x]['category'] = 'domain';
 		$tmp[$x]['subcategory'] = 'template';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'protocol';
-		$tmp[$x]['value'] = '';
-		$tmp[$x]['category'] = 'web';
-		$tmp[$x]['subcategory'] = 'server';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'port';
-		$tmp[$x]['value'] = '';
-		$tmp[$x]['category'] = 'web';
-		$tmp[$x]['subcategory'] = 'server';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'directory';
@@ -859,6 +852,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 		}
+		unset($tmp);
 
 	//get the list of installed apps from the core and mod directories
 		$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
@@ -888,12 +882,14 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql = "insert into v_groups ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "group_id, ";
+			$sql .= "group_uuid, ";
+			$sql .= "group_name, ";
 			$sql .= "group_desc ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'".$_SESSION["domain_uuid"]."', ";
+			$sql .= "'".uuid()."', ";
 			$sql .= "'".$row['group_name']."', ";
 			$sql .= "'".$row['group_desc']."' ";
 			$sql .= ");";
@@ -942,7 +938,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "username, ";
-		$sql .= "group_id ";
+		$sql .= "group_name ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
@@ -972,7 +968,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$sql .= "(";
 						$sql .= "domain_uuid, ";
 						$sql .= "permission_id, ";
-						$sql .= "group_id ";
+						$sql .= "group_name ";
 						$sql .= ") ";
 						$sql .= "values ";
 						$sql .= "(";
@@ -1204,12 +1200,12 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$x = 0;
 		$sql = "select distinct(permission_id) from v_group_permissions ";
 		foreach($_SESSION["groups"] as $field) {
-			if (strlen($field['group_id']) > 0) {
+			if (strlen($field['group_name']) > 0) {
 				if ($x == 0) {
-					$sql .= "where (domain_uuid = '".$_SESSION["domain_uuid"]."' and group_id = '".$field['group_id']."') ";
+					$sql .= "where (domain_uuid = '".$_SESSION["domain_uuid"]."' and group_name = '".$field['group_name']."') ";
 				}
 				else {
-					$sql .= "or (domain_uuid = '".$_SESSION["domain_uuid"]."' and group_id = '".$field['group_id']."') ";
+					$sql .= "or (domain_uuid = '".$_SESSION["domain_uuid"]."' and group_name = '".$field['group_name']."') ";
 				}
 				$x++;
 			}

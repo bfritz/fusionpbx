@@ -73,11 +73,11 @@ else {
 //delete the group from the user
 	if ($_GET["a"] == "delete" && permission_exists("user_delete")) {
 		//set the variables
-			$group_id = check_str($_GET["group_id"]);
+			$group_name = check_str($_GET["group_name"]);
 		//delete the group from the users
 			$sql = "delete from v_group_members ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and group_id = '$group_id' ";
+			$sql .= "and group_name = '$group_name' ";
 			$sql .= "and username = '$username' ";
 			$db->exec(check_sql($sql));
 		//redirect the user
@@ -169,20 +169,20 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	}
 
 	//assign the user to the group
-		if (strlen($_REQUEST["group_id"]) > 0) {
+		if (strlen($_REQUEST["group_name"]) > 0) {
 			$sqlinsert = "insert into v_group_members ";
 			$sqlinsert .= "(";
 			$sqlinsert .= "domain_uuid, ";
-			$sqlinsert .= "group_id, ";
+			$sqlinsert .= "group_name, ";
 			$sqlinsert .= "username ";
 			$sqlinsert .= ")";
 			$sqlinsert .= "values ";
 			$sqlinsert .= "(";
 			$sqlinsert .= "'$domain_uuid', ";
-			$sqlinsert .= "'".$_REQUEST["group_id"]."', ";
+			$sqlinsert .= "'".$_REQUEST["group_name"]."', ";
 			$sqlinsert .= "'$username' ";
 			$sqlinsert .= ")";
-			if ($_REQUEST["group_id"] == "superadmin") {
+			if ($_REQUEST["group_name"] == "superadmin") {
 				//only a user in the superadmin group can add other users to that group
 				if (ifgroup("superadmin")) {
 					$db->exec($sqlinsert);
@@ -433,12 +433,12 @@ else {
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
 	foreach($result as $field) {
-		if (strlen($field['group_id']) > 0) {
+		if (strlen($field['group_name']) > 0) {
 			echo "<tr>\n";
-			echo "	<td class='vtable'>".$field['group_id']."</td>\n";
+			echo "	<td class='vtable'>".$field['group_name']."</td>\n";
 			echo "	<td>\n";
 			if (permission_exists('group_member_delete') || ifgroup("superadmin")) {
-				echo "		<a href='usersupdate.php?id=".$id."&domain_uuid=".$domain_uuid."&group_id=".$field['group_id']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='usersupdate.php?id=".$id."&domain_uuid=".$domain_uuid."&group_name=".$field['group_name']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -451,18 +451,18 @@ else {
 	$sql .= "where domain_uuid = '".$domain_uuid."' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	echo "<select name=\"group_id\" class='frm'>\n";
+	echo "<select name=\"group_name\" class='frm'>\n";
 	echo "<option value=\"\"></option>\n";
 	$result = $prep_statement->fetchAll();
 	foreach($result as $field) {
-		if ($field['group_id'] == "superadmin") {
+		if ($field['group_name'] == "superadmin") {
 			//only show the superadmin group to other users in the superadmin group
 			if (ifgroup("superadmin")) {
-				echo "<option value='".$field['group_id']."'>".$field['group_id']."</option>\n";
+				echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
 			}
 		}
 		else {
-			echo "<option value='".$field['group_id']."'>".$field['group_id']."</option>\n";
+			echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
 		}
 	}
 	echo "</select>";

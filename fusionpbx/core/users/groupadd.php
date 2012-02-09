@@ -37,20 +37,20 @@ else {
 //get the http values and set them as variables
 	$path = check_str($_GET["path"]);
 	$msg = check_str($_GET["msg"]);
-	$group_id = check_str($_POST["group_id"]);
+	$group_name = check_str($_POST["group_name"]);
 	$group_desc = check_str($_POST["group_desc"]);
 
-if (strlen($group_id) > 0) {
+if (strlen($group_name) > 0) {
 	$sqlinsert = "insert into v_groups ";
 	$sqlinsert .= "(";
 	$sqlinsert .= "domain_uuid, ";
-	$sqlinsert .= "group_id, ";
+	$sqlinsert .= "group_name, ";
 	$sqlinsert .= "group_desc ";
 	$sqlinsert .= ")";
 	$sqlinsert .= "values ";
 	$sqlinsert .= "(";
 	$sqlinsert .= "'$domain_uuid', ";
-	$sqlinsert .= "'$group_id', ";
+	$sqlinsert .= "'$group_name', ";
 	$sqlinsert .= "'$group_desc' ";
 	$sqlinsert .= ")";
 	if (!$db->exec($sqlinsert)) {
@@ -98,7 +98,7 @@ if (strlen($group_id) > 0) {
 	echo "Group Name:\n";
 	echo "</td>\n";
 	echo "<td width='70%' align='left' class='vtable'>\n";
-	echo "  <input type=\"text\" class='formfld' name=\"group_id\">\n";
+	echo "  <input type=\"text\" class='formfld' name=\"group_name\">\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

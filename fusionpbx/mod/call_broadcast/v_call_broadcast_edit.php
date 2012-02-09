@@ -445,7 +445,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Group:\n";
 		echo "</td>\n";
 		echo "<td width='70%' class='vtable' align='left'>\n";
-		echo "		<select name='group_id' class='formfld'>\n";
+		echo "		<select name='group_name' class='formfld'>\n";
 		echo "		<option></option>\n";
 		$sql = "";
 		$sql .= "select * from v_groups ";
@@ -453,11 +453,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		while($row = $prep_statement->fetch()) {
-			if ($recording_uuid == $row['group_id']) {
-				echo "		<option value='".$row['group_id']."' selected='yes'>".$row['group_id']."</option>\n";
+			if ($recording_uuid == $row['group_name']) {
+				echo "		<option value='".$row['group_name']."' selected='yes'>".$row['group_name']."</option>\n";
 			}
 			else {
-				echo "		<option value='".$row['group_id']."'>".$row['group_id']."</option>\n";
+				echo "		<option value='".$row['group_name']."'>".$row['group_name']."</option>\n";
 			}
 		}
 		unset ($prep_statement);

@@ -113,7 +113,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'group_id';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'group_name';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'groupid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
@@ -156,7 +156,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'group_id';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'group_name';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 
@@ -177,12 +177,19 @@
 		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'group_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'v_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'group_id';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'group_name';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'groupid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';

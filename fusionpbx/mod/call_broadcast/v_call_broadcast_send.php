@@ -55,7 +55,7 @@ function cmd_async($cmd) {
 }
 
 //get the http get values and set as php variables
-	$group_id = $_GET["group_id"];
+	$group_name = $_GET["group_name"];
 	$call_broadcast_uuid = $_GET["call_broadcast_uuid"];
 	$user_category = $_GET["user_category"];
 	$gateway = $_GET["gateway"];
@@ -258,11 +258,11 @@ require_once "includes/header.php";
 		}
 
 
-	if (strlen($group_id) > 0) {
+	if (strlen($group_name) > 0) {
 		$sql = "";
 		$sql .= " select * from v_users as u, v_group_members as m ";
 		$sql .= " where u.username = m.username ";
-		$sql .= " and m.group_id = '".$group_id."' ";
+		$sql .= " and m.group_name = '".$group_name."' ";
 		$sql .= " and u.user_category = '".$user_category."' ";
 		//echo $sql."<br />";
 	}

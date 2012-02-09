@@ -40,33 +40,33 @@ else {
 //get the menu_uuid
 	$menu_uuid = check_str($_REQUEST["id"]);
 	$menu_item_uuid = check_str($_REQUEST['menu_item_uuid']);
-	$group_id = check_str($_REQUEST['group_id']);
+	$group_name = check_str($_REQUEST['group_name']);
 
 //delete the group from the user
 	if ($_REQUEST["a"] == "delete" && permission_exists("menu_delete")) {
 		//delete the group from the users
 			$sql = "delete from v_menu_item_groups  ";
 			$sql .= "where menu_uuid = '$menu_uuid' ";
-			$sql .= "and group_id = '".$group_id."' ";
-			$sql .= "and menu_group_id = '".$id."' ";
+			$sql .= "and group_name = '".$group_name."' ";
+			$sql .= "and menu_group_name = '".$id."' ";
 			$db->exec(check_sql($sql));
 	}
 
 //add a group to the menu
-	if (strlen($group_id) > 0 && permission_exists('menu_add')) {
+	if (strlen($group_name) > 0 && permission_exists('menu_add')) {
 		//add the group to the menu
-			if (strlen($menu_item_uuid) > 0 && strlen($group_id) > 0) {
+			if (strlen($menu_item_uuid) > 0 && strlen($group_name) > 0) {
 				$sqlinsert = "insert into v_menu_item_groups ";
 				$sqlinsert .= "(";
 				$sqlinsert .= "menu_uuid, ";
 				$sqlinsert .= "menu_item_uuid, ";
-				$sqlinsert .= "group_id ";
+				$sqlinsert .= "group_name ";
 				$sqlinsert .= ")";
 				$sqlinsert .= "values ";
 				$sqlinsert .= "(";
 				$sqlinsert .= "'$menu_uuid', ";
 				$sqlinsert .= "'".$menu_item_uuid."', ";
-				$sqlinsert .= "'".$group_id."' ";
+				$sqlinsert .= "'".$group_name."' ";
 				$sqlinsert .= ")";
 				$db->exec($sqlinsert);
 			}
@@ -315,12 +315,12 @@ else {
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
 	foreach($result as $field) {
-		if (strlen($field['group_id']) > 0) {
+		if (strlen($field['group_name']) > 0) {
 			echo "<tr>\n";
-			echo "	<td class='vtable'>".$field['group_id']."</td>\n";
+			echo "	<td class='vtable'>".$field['group_name']."</td>\n";
 			echo "	<td>\n";
 			if (permission_exists('group_member_delete') || ifgroup("superadmin")) {
-				echo "		<a href='menu_item_edit.php?id=".$field['menu_group_id']."&menu_uuid=".$field['menu_uuid']."&group_id=".$field['group_id']."&menu_item_uuid=".$menu_item_uuid."&menu_item_parent_uuid=".$menu_item_parent_uuid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='menu_item_edit.php?id=".$field['menu_group_name']."&menu_uuid=".$field['menu_uuid']."&group_name=".$field['group_name']."&menu_item_uuid=".$menu_item_uuid."&menu_item_parent_uuid=".$menu_item_parent_uuid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -333,18 +333,18 @@ else {
 	$sql .= "where domain_uuid = '".$domain_uuid."' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	echo "<select name=\"group_id\" class='frm'>\n";
+	echo "<select name=\"group_name\" class='frm'>\n";
 	echo "<option value=\"\"></option>\n";
 	$result = $prep_statement->fetchAll();
 	foreach($result as $field) {
-		if ($field['group_id'] == "superadmin") {
+		if ($field['group_name'] == "superadmin") {
 			//only show the superadmin group to other users in the superadmin group
 			if (ifgroup("superadmin")) {
-				echo "<option value='".$field['group_id']."'>".$field['group_id']."</option>\n";
+				echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
 			}
 		}
 		else {
-			echo "<option value='".$field['group_id']."'>".$field['group_id']."</option>\n";
+			echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
 		}
 	}
 	echo "</select>";

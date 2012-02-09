@@ -99,7 +99,7 @@
 								$sql .= "(";
 								$sql .= "menu_uuid, ";
 								$sql .= "menu_item_uuid, ";
-								$sql .= "group_id ";
+								$sql .= "group_name ";
 								$sql .= ")";
 								$sql .= "values ";
 								$sql .= "(";

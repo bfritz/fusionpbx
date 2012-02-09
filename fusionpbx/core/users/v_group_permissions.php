@@ -65,7 +65,7 @@ require_once "includes/paging.php";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
 					$sql .= "permission_id, ";
-					$sql .= "group_id ";
+					$sql .= "group_name ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
@@ -81,13 +81,13 @@ require_once "includes/paging.php";
 	}
 
 //get the http values and set them as php variables
-	$group_id = $_REQUEST['group_id'];
+	$group_name = $_REQUEST['group_name'];
 	
 //get the permissions assigned to this group
 	$sql = "";
 	$sql .= " select * from v_group_permissions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and group_id = '$group_id' ";
+	$sql .= "and group_name = '$group_name' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -152,7 +152,7 @@ require_once "includes/paging.php";
 						//delete the record
 							$sql = "delete from v_group_permissions ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
-							$sql .= "and group_id = '$group_id' ";
+							$sql .= "and group_name = '$group_name' ";
 							$sql .= "and permission_id = '$permission' ";
 							$db->exec(check_sql($sql));
 							unset($sql);
@@ -165,13 +165,13 @@ require_once "includes/paging.php";
 							$sql .= "(";
 							$sql .= "domain_uuid, ";
 							$sql .= "permission_id, ";
-							$sql .= "group_id ";
+							$sql .= "group_name ";
 							$sql .= ")";
 							$sql .= "values ";
 							$sql .= "(";
 							$sql .= "'$domain_uuid', ";
 							$sql .= "'$permission', ";
-							$sql .= "'$group_id' ";
+							$sql .= "'$group_name' ";
 							$sql .= ")";
 							$db->exec(check_sql($sql));
 							unset($sql);
@@ -192,7 +192,7 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' align=\"left\" nowrap=\"nowrap\"><b>Group Permission List for $group_id</b></td>\n";
+	echo "<td width='50%' align=\"left\" nowrap=\"nowrap\"><b>Group Permission List for $group_name</b></td>\n";
 	echo "<td width='50%' align=\"right\">\n";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='grouplist.php'\" value='Back'> ";
 	echo "</td>\n";

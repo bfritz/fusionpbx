@@ -246,17 +246,17 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	//$logtype = 'user'; $logstatus='add'; $logadduser=$_SESSION["username"]; $logdesc= "username: ".$username." user added.";
 	//logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $_SERVER["REMOTE_ADDR"]);
 
-	$group_id = 'user';
+	$group_name = 'user';
 	$sql = "insert into v_group_members ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
-	$sql .= "group_id, ";
+	$sql .= "group_name, ";
 	$sql .= "username ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
-	$sql .= "'$group_id', ";
+	$sql .= "'$group_name', ";
 	$sql .= "'$username' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));

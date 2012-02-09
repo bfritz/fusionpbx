@@ -35,19 +35,19 @@ else {
 }
 
 //requires a superadmin to view members of the superadmin group
-	if (!ifgroup("superadmin") && $_GET["group_id"] == "superadmin") {
+	if (!ifgroup("superadmin") && $_GET["group_name"] == "superadmin") {
 		echo "access denied";
 		return;
 	}
 
 //get the http value and set as a variable
-	$group_id = $_GET["group_id"];
+	$group_name = $_GET["group_name"];
 
 //define the if group members function
-	function if_group_members($db, $group_id, $username) {
+	function if_group_members($db, $group_name, $username) {
 		$sql = "select * from v_group_members ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and group_id = '$group_id' ";
+		$sql .= "and group_name = '$group_name' ";
 		$sql .= "and username = '$username' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -71,7 +71,7 @@ else {
 	echo "<table width='100%' cellpadding='6' cellspacing='1'>\n";
 	echo "	<tr>\n";
 	echo "		<td align='left'>\n";
-	echo "			<span  class=\"\" height='50'>Member list for <b>$group_id</b></span>";
+	echo "			<span  class=\"\" height='50'>Member list for <b>$group_name</b></span>";
 	echo "		</td>\n";
 	echo "		<td align='right' nowrap='nowrap'>\n";
 	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='grouplist.php'\" value='Back'>";
@@ -83,7 +83,7 @@ else {
 
 	$sql = "SELECT * FROM v_group_members ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and group_id = '$group_id' ";
+	$sql .= "and group_name = '$group_name' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 
@@ -106,7 +106,7 @@ else {
 		$strlist .= "<td align=\"left\"  class='".$row_style[$c]."' nowrap> &nbsp; </td>\n";
 		$strlist .= "<td align=\"right\" nowrap>\n";
 		if (permission_exists('group_member_delete')) {
-			$strlist .= "	<a href='groupmemberdelete.php?username=$username&group_id=$group_id' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
+			$strlist .= "	<a href='groupmemberdelete.php?username=$username&group_name=$group_name' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 		}
 		$strlist .= "</td>\n";
 		$strlist .= "</tr>\n";
@@ -140,7 +140,7 @@ else {
 	$result = $prep_statement->fetchAll();
 	foreach($result as $field) {
 		$username = $field[username];
-		if (if_group_members($db, $group_id, $username)) {
+		if (if_group_members($db, $group_name, $username)) {
 			echo "<option value='".$field[username]."'>".$field[username]."</option>\n";
 		}
 	}
@@ -150,7 +150,7 @@ else {
 	echo "		</td>";
 	echo "		<td align='right'>";
 	if (permission_exists('group_member_add')) {
-		echo "          <input type='hidden' name='group_id' value='$group_id'>";
+		echo "          <input type='hidden' name='group_name' value='$group_name'>";
 		echo "          <input type='submit' class='btn' value='Add Member'>";
 	}
 	echo "      </td>";
