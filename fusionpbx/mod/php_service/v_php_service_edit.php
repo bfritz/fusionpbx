@@ -61,7 +61,7 @@ function byte_convert( $bytes ) {
 */
 
 function php_services_sync_package_php() {
-	global $db, $domain_uuid, $startup_script_dir, $v_secure, $php_dir, $tmp_dir;
+	global $db, $domain_uuid, $startup_script_dir, $v_secure, $tmp_dir;
 	$sql = "";
 	$sql .= "select * from v_php_services ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -175,7 +175,7 @@ function php_services_sync_package_php() {
 					$tmp .= "\n";
 					$tmp .= "\n";
 					$tmp .= "rc_start() {\n";
-					$tmp .= "	".$php_dir."/php ".$v_secure."/".$php_service_file." >> /var/log/php_service_".$tmp_service_name.".log &\n";
+					$tmp .= "	".PHP_BINDIR."/php ".$v_secure."/".$php_service_file." >> /var/log/php_service_".$tmp_service_name.".log &\n";
 					$tmp .= "}\n";
 					$tmp .= "\n";
 					$tmp .= "rc_stop() {\n";
@@ -229,7 +229,7 @@ function php_services_sync_package_php() {
 					$tmp .= "\n";
 					$tmp .= "\n";
 					$tmp .= "rc_start() {\n";
-					$tmp .= "	".$php_dir."/php ".$v_secure."/".$php_service_file." >> /var/log/".tmp_service_name.".log &\n";
+					$tmp .= "	".PHP_BINDIR."/php ".$v_secure."/".$php_service_file." >> /var/log/".tmp_service_name.".log &\n";
 					$tmp .= "}\n";
 					$tmp .= "\n";
 					$tmp .= "rc_stop() {\n";

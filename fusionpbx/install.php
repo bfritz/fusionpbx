@@ -90,7 +90,6 @@ require_once "includes/lib_functions.php";
 	$db_filepath = $_POST["db_filepath"];
 	$install_step = $_POST["install_step"];
 	$install_secure_dir = $_POST["install_secure_dir"];
-	$install_php_dir = $_POST["install_php_dir"];
 	$install_tmp_dir = $_POST["install_tmp_dir"];
 	$install_backup_dir = $_POST["install_backup_dir"];
 	$install_switch_base_dir = $_POST["install_switch_base_dir"];
@@ -101,9 +100,6 @@ require_once "includes/lib_functions.php";
 		$install_switch_base_dir = realpath($install_switch_base_dir);
 		$install_switch_base_dir = str_replace("\\", "/", $install_switch_base_dir);
 	}
-
-	$install_php_dir = realpath($_POST["install_php_dir"]);
-	$install_php_dir = str_replace("\\", "/", $install_php_dir);
 
 	$install_tmp_dir = realpath($_POST["install_tmp_dir"]);
 	$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
@@ -122,14 +118,6 @@ require_once "includes/lib_functions.php";
 	}
 
 //set the required directories
-
-	//set the php bin directory
-		if (file_exists('/usr/local/bin/php') || file_exists('/usr/local/bin/php5')) {
-			$install_php_dir = '/usr/local/bin';
-		}
-		if (file_exists('/usr/bin/php') || file_exists('/usr/bin/php5')) {
-			$install_php_dir = '/usr/bin';
-		}
 
 	//set the freeswitch bin directory
 		if (file_exists('/usr/local/freeswitch/bin')) {
@@ -230,8 +218,7 @@ require_once "includes/lib_functions.php";
 			break;
 		case "NetBSD":
 			$startup_script_dir = '';
-			$install_php_dir = '/usr/local/bin';
-
+s
 			//set the default db_filepath
 				if (strlen($db_filepath) == 0) { //secure dir
 					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
@@ -277,7 +264,6 @@ require_once "includes/lib_functions.php";
 			if (substr($_SERVER["DOCUMENT_ROOT"], -3) == "www") {
 				//integrated installer
 				$install_switch_base_dir = realpath($_SERVER["DOCUMENT_ROOT"]."/..");
-				$install_php_dir = realpath($_SERVER["PHPRC"]."/..");
 				$startup_script_dir = '';
 			} elseif (is_dir('C:/program files/FreeSWITCH')) {
 				$install_switch_base_dir = 'C:/program files/FreeSWITCH';
@@ -303,19 +289,6 @@ require_once "includes/lib_functions.php";
 			} elseif (is_dir('F:/FreeSWITCH')) {
 				$install_switch_base_dir = 'F:/FreeSWITCH';
 				$startup_script_dir = '';
-			} else {
-				if (is_dir('C:/PHP')) { $install_php_dir = 'C:/PHP'; }
-				if (is_dir('D:/PHP')) { $install_php_dir = 'D:/PHP'; }
-				if (is_dir('E:/PHP')) { $install_php_dir = 'E:/PHP'; }
-				if (is_dir('F:/PHP')) { $install_php_dir = 'F:/PHP'; }
-				if (is_dir('C:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'C:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-				if (is_dir('D:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'D:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-				if (is_dir('E:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'E:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-				if (is_dir('F:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'F:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-				if (is_dir('C:/fusionpbx/Program/php')) { $install_php_dir = 'C:/fusionpbx/Program/php'; }
-				if (is_dir('D:/fusionpbx/Program/php')) { $install_php_dir = 'D:/fusionpbx/Program/php'; }
-				if (is_dir('E:/fusionpbx/Program/php')) { $install_php_dir = 'E:/fusionpbx/Program/php'; }
-				if (is_dir('F:/fusionpbx/Program/php')) { $install_php_dir = 'F:/fusionpbx/Program/php'; }
 			}
 		}
 $msg = '';
@@ -344,7 +317,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		else {
 			if (strlen($install_switch_base_dir) == 0) { $msg .= "Please provide the Switch Directory.<br>\n"; }
 		}
-		if (strlen($install_php_dir) == 0) { $msg .= "Please provide the PHP Directory.<br>\n"; }
 		if (strlen($install_tmp_dir) == 0) { $msg .= "Please provide the Temp Directory.<br>\n"; }
 		if (strlen($install_backup_dir) == 0) { $msg .= "Please provide the Backup Directory.<br>\n"; }
 		if (strlen($install_template_name) == 0) { $msg .= "Please provide the Theme.<br>\n"; }
@@ -686,7 +658,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 	//replace back slashes with forward slashes
 		$install_switch_base_dir = str_replace("\\", "/", $install_switch_base_dir);
-		$install_php_dir = str_replace("\\", "/", $install_php_dir);
 		$startup_script_dir = str_replace("\\", "/", $startup_script_dir);
 		$install_tmp_dir = str_replace("\\", "/", $install_tmp_dir);
 		$install_backup_dir = str_replace("\\", "/", $install_backup_dir);
@@ -739,12 +710,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['value'] = '';
 		$tmp[$x]['category'] = 'web';
 		$tmp[$x]['subcategory'] = 'server';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'directory';
-		$tmp[$x]['value'] = $install_php_dir;
-		$tmp[$x]['category'] = 'server';
-		$tmp[$x]['subcategory'] = 'php';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'directory';
@@ -1412,16 +1377,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			echo "</tr>\n";
 		}
 
-		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "	PHP Directory:\n";
-		echo "</td>\n";
-		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='install_php_dir' maxlength='255' value=\"$install_php_dir\"><br />\n";
-		echo "	Enter the path to PHP's bin or executable directory.<br />\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-
 		echo "	<tr>\n";
 		echo "	<td width='20%' class=\"vncellreq\" style='text-align: left;'>\n";
 		echo "		Theme: \n";
@@ -1507,7 +1462,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "			<input type='hidden' name='admin_password' value='$admin_password'>\n";
 		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
 		echo "			<input type='hidden' name='install_switch_base_dir' value='$install_switch_base_dir'>\n";
-		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
@@ -1623,7 +1577,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "			<input type='hidden' name='admin_password' value='$admin_password'>\n";
 		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
 		echo "			<input type='hidden' name='install_switch_base_dir' value='$install_switch_base_dir'>\n";
-		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
@@ -1737,7 +1690,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "			<input type='hidden' name='admin_password' value='$admin_password'>\n";
 		echo "			<input type='hidden' name='install_secure_dir' value='$install_secure_dir'>\n";
 		echo "			<input type='hidden' name='install_switch_base_dir' value='$install_switch_base_dir'>\n";
-		echo "			<input type='hidden' name='install_php_dir' value='$install_php_dir'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";

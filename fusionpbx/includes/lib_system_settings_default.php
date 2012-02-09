@@ -59,14 +59,6 @@ else {
 		$install_secure_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 	}
 
-//set the php bin directory
-	if (file_exists('/usr/local/bin/php') || file_exists('/usr/local/bin/php5')) {
-		$install_php_dir = '/usr/local/bin';
-	}
-	if (file_exists('/usr/bin/php') || file_exists('/usr/bin/php5')) {
-		$install_php_dir = '/usr/bin';
-	}
-
 //set the freeswitch bin directory
 	if (file_exists('/usr/local/freeswitch/bin')) {
 		$install_switch_base_dir = '/usr/local/freeswitch';
@@ -147,8 +139,6 @@ else {
 		break;
 	case "NetBSD":
 		$startup_script_dir = '';
-		$install_php_dir = '/usr/local/bin';
-
 		//set the default db_filepath
 			if (strlen($db_filepath) == 0) { //secure dir
 				$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
@@ -224,18 +214,6 @@ else {
 			$install_switch_base_dir = 'F:/FreeSWITCH';
 			$startup_script_dir = '';
 		}
-		if (is_dir('C:/PHP')) { $install_php_dir = 'C:/PHP'; }
-		if (is_dir('D:/PHP')) { $install_php_dir = 'D:/PHP'; }
-		if (is_dir('E:/PHP')) { $install_php_dir = 'E:/PHP'; }
-		if (is_dir('F:/PHP')) { $install_php_dir = 'F:/PHP'; }
-		if (is_dir('C:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'C:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-		if (is_dir('D:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'D:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-		if (is_dir('E:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'E:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-		if (is_dir('F:/FreeSWITCH/wamp/bin/php/php5.3.0')) { $install_php_dir = 'F:/FreeSWITCH/wamp/bin/php/php5.3.0'; }
-		if (is_dir('C:/fusionpbx/Program/php')) { $install_php_dir = 'C:/fusionpbx/Program/php'; }
-		if (is_dir('D:/fusionpbx/Program/php')) { $install_php_dir = 'D:/fusionpbx/Program/php'; }
-		if (is_dir('E:/fusionpbx/Program/php')) { $install_php_dir = 'E:/fusionpbx/Program/php'; }
-		if (is_dir('F:/fusionpbx/Program/php')) { $install_php_dir = 'F:/fusionpbx/Program/php'; }
 	}
 
 ?>

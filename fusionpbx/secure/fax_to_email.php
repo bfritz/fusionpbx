@@ -312,7 +312,7 @@ if (defined('STDIN')) {
 			} else {
 				// create an instruction log to email messages once the connection to the mail server has been restored
 					$fp = fopen($fax_to_email_queue_dir."/failed_fax_emails.log", "a");
-					fwrite($fp, $php_dir."/php ".$v_secure."/fax_to_email.php email=$fax_email extension=$fax_extension name=$fax_name messages='$fax_messages' retry=yes\n");
+					fwrite($fp, PHP_BINDIR."/php ".$v_secure."/fax_to_email.php email=$fax_email extension=$fax_extension name=$fax_name messages='$fax_messages' retry=yes\n");
 					fclose($fp);
 				// create a script to do the delayed mailing
 					$fp = fopen($tmp_dir."/failed_fax_emails.sh", "w");

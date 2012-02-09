@@ -194,7 +194,7 @@ include "client_template.php";
 $xml = make_xmpp_xml($request);
 
 $filename = $switch_conf_dir . "/jingle_profiles/" . "v_" . $domain_name . "_" . preg_replace("/[^A-Za-z0-9]/", "", $request['profile_name']) . "_" . $xmpp_profile_uuid . ".xml";
-$fh = fopen($filename,"w") or die("WTF");
+$fh = fopen($filename,"w") or die("Unable to open the file");
 fwrite($fh, $xml);
 unset($file_name);
 fclose($fh);

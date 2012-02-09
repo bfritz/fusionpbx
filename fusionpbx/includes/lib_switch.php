@@ -1481,7 +1481,6 @@ function sync_package_v_settings() {
 			$tmp_xml .= "//set system dir variables\n";
 			$tmp_xml .= "	\$switch_storage_dir = \"".$switch_storage_dir."\";\n";
 			$tmp_xml .= "	\$tmp_dir = \"".$tmp_dir."\";\n";
-			$tmp_xml .= "	\$php_dir = \"".$php_dir."\";\n";
 			$tmp_xml .= "	\$v_secure = \"".$v_secure."\";\n";
 			$tmp_xml .= "\n";
 			$tmp_xml .= "?>";
@@ -3062,7 +3061,7 @@ function sync_package_v_fax() {
 					//<action application="system" data="$switch_scripts_dir/emailfax.sh USER DOMAIN $switch_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
-					$dialplan_detail_data = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
+					$dialplan_detail_data = "api_hangup_hook=system ".PHP_BINDIR."/".$php_exe." ".$v_secure."/fax_to_email.php ";
 					$dialplan_detail_data .= "email=".$row['fax_email']." ";
 					$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
 					$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
@@ -3182,7 +3181,7 @@ function sync_package_v_fax() {
 				//update the action
 				$dialplan_detail_tag = 'action'; //condition, action, antiaction
 				$dialplan_detail_type = 'set';
-				$dialplan_detail_data = "api_hangup_hook=system ".$php_dir."/".$php_exe." ".$v_secure."/fax_to_email.php ";
+				$dialplan_detail_data = "api_hangup_hook=system ".PHP_BINDIR."/".$php_exe." ".$v_secure."/fax_to_email.php ";
 				$dialplan_detail_data .= "email=".$row['fax_email']." ";
 				$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
 				$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
@@ -4598,14 +4597,14 @@ if (!function_exists('switch_conf_xml')) {
 			$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/autoload_configs/switch.conf.xml");
 
 		//prepare the php variables
-			if (file_exists($php_dir.'/php')) { $php_bin = 'php'; }
-			if (file_exists($php_dir.'/php.exe')) { $php_bin = 'php.exe'; }
+			if (file_exists(PHP_BINDIR.'/php')) { $php_bin = 'php'; }
+			if (file_exists(PHP_BINDIR.'/php.exe')) { $php_bin = 'php.exe'; }
 			if (stristr(PHP_OS, 'WIN')) {
-				$v_mailer_app = $php_dir."/".$php_bin."";
+				$v_mailer_app = PHP_BINDIR."/".$php_bin."";
 				$v_mailer_app_args = "".$v_secure."/v_mailto.php -t";
 			}
 			else {
-				$v_mailer_app = $php_dir."/".$php_bin." ".$v_secure."/v_mailto.php";
+				$v_mailer_app = PHP_BINDIR."/".$php_bin." ".$v_secure."/v_mailto.php";
 				$v_mailer_app_args = "-t";
 			}
 
