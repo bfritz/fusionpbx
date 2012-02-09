@@ -347,9 +347,15 @@ if ($db_type == "pgsql") {
 	foreach($result as $row) {
 		$name = $row['domain_setting_name'];
 		$category = $row['domain_setting_category'];
-		$_SESSION[$category][$name] = $row['domain_setting_value'];
-		$domain[$name] = $row['domain_setting_value'];
-		//$$name = $row['domain_setting_value'];
+		$subcategory = $row['domain_setting_subcategory'];	
+		if (strlen($subcategory) == 0) {
+			$$category[$name] = $row['domain_setting_value'];
+			$_SESSION[$category][$name] = $row['domain_setting_value'];
+		}
+		else {
+			$$category[$subcategory][$name] = $row['domain_setting_value'];
+			$_SESSION[$category][$subcategory][$name] = $row['domain_setting_value'];
+		}
 	}
 
 //get the server variables
@@ -362,8 +368,15 @@ if ($db_type == "pgsql") {
 	foreach($result as $row) {
 		$name = $row['server_setting_name'];
 		$category = $row['server_setting_category'];
-		$_SESSION[$category][$name] = $row['server_setting_value'];
-		$domain[$name] = $row['server_setting_value'];
+		//$subcategory = $row['server_setting_subcategory'];
+		//if (strlen($subcategory) == 0) {
+			$$category[$name] = $row['server_setting_value'];
+			$_SESSION[$category][$name] = $row['server_setting_value'];
+		//}
+		//else {
+		//	$$category[$subcategory][$name] = $row['server_setting_value'];
+		//	$_SESSION[$category][$subcategory][$name] = $row['server_setting_value'];
+		//}
 		//$$name = $row['server_setting_value'];
 	}
 
