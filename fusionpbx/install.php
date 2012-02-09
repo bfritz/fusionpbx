@@ -1170,11 +1170,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$install->recursive_copy($src_dir, $dst_dir);
 		//print_r($install->result);
 
-		//copy includes/templates/conf to the freeswitch/conf dir
-		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf";
-		$dst_dir = $switch_conf_dir;
-		$install->recursive_copy($src_dir, $dst_dir);
-
 	//create the dialplan/default.xml for single tenant or dialplan/domain.xml
 		require_once "includes/classes/dialplan.php";
 		$dialplan = new dialplan;

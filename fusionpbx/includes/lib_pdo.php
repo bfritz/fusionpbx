@@ -361,13 +361,13 @@ if ($db_type == "pgsql") {
 //set the values from the session variables
 	$_SESSION['v_domain'] = $_SESSION['domain_name'];
 	$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain']['template']['name'];
-	if (strlen($_SESSION['domain']['time_zone']) > 0) {
+	if (strlen($_SESSION['domain']['time_zone']['name']) > 0) {
 		//server time zone
 			$_SESSION['time_zone']['system'] = date_default_timezone_get();
 		//domain time zone set in system settings
-			$_SESSION['time_zone']['domain'] = $_SESSION['domain']['time_zone'];
+			$_SESSION['time_zone']['domain'] = $_SESSION['domain']['time_zone']['name'];
 		//set the domain time zone as the default time zone
-			date_default_timezone_set($_SESSION['domain']['time_zone']);
+			date_default_timezone_set($_SESSION['domain']['time_zone']['name']);
 	}
 
 //set the context

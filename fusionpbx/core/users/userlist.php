@@ -61,42 +61,6 @@ echo "	<td align=\"center\">\n";
 	else {
 		echo "	<option value='username'>Username</option>\n";
 	}
-	if ($field_name == "user_first_name") {
-		echo "	<option value='user_first_name' selected='selected'>First Name</option>\n";
-	}
-	else {
-		echo "	<option value='user_first_name'>First Name</option>\n";
-	}
-	if ($field_name == "user_last_name") {
-		echo "	<option value='user_last_name' selected='selected'>Last Name</option>\n";
-	}
-	else {
-		echo "	<option value='user_last_name'>Last Name</option>\n";
-	}
-	if ($field_name == "user_company_name") {
-		echo "	<option value='user_company_name' selected='selected'>Company</option>\n";
-	}
-	else {
-		echo "	<option value='user_company_name'>Company</option>\n";
-	}
-	if ($field_name == "user_physical_city") {
-		echo "	<option value='user_physical_city' selected='selected'>City</option>\n";
-	}
-	else {
-		echo "	<option value='user_physical_city'>City</option>\n";
-	}
-	if ($field_name == "user_phone_1") {
-		echo "	<option value='user_phone_1' selected='selected'>Phone</option>\n";
-	}
-	else {
-		echo "	<option value='user_phone_1'>Phone</option>\n";
-	}
-	if ($field_name == "user_phone_mobile") {
-		echo "	<option value='user_phone_mobile' selected='selected'>Mobile</option>\n";
-	}
-	else {
-		echo "	<option value='user_phone_mobile'>Mobile</option>\n";
-	}
 	if ($field_name == "user_email") {
 		echo "	<option value='user_email' selected='selected'>Email</option>\n";
 	}
@@ -124,7 +88,6 @@ echo "	<td align=\"center\">\n";
 	$sql = "";
 	$sql .= " select * from v_users ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	$sql .= " and user_category = 'user' ";
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= " and $field_name = '$field_value' ";
 	}
@@ -144,7 +107,6 @@ echo "	<td align=\"center\">\n";
 	$sql = "";
 	$sql .= " select * from v_users ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	$sql .= " and user_category = 'user' ";
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= " and $field_name like '%$field_value%' ";
 	}
@@ -172,10 +134,6 @@ echo "	<td align=\"center\">\n";
 
 	echo "<tr>\n";
 	echo thorder_by('username', 'Username', $order_by, $order);
-	echo thorder_by('user_first_name', 'First Name', $order_by, $order);
-	echo thorder_by('user_last_name', 'Last Name', $order_by, $order);
-	echo thorder_by('user_company_name', 'Company', $order_by, $order);
-	echo thorder_by('user_physical_city', 'City', $order_by, $order);
 	echo thorder_by('user_email', 'Email', $order_by, $order);
 	//echo thorder_by('user_template_name', 'Template', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
@@ -185,19 +143,11 @@ echo "	<td align=\"center\">\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($result_count == 0) {
-		//no results
-	}
-	else {
+	if ($result_count > 0) {
 		foreach($result as $row) {
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['username']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_first_name']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_last_name']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_company_name']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_physical_city']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_email']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_template_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('user_edit')) {
 				echo "		<a href='usersupdate.php?id=".$row['id']."' alt='edit'>$v_link_label_edit</a>\n";
