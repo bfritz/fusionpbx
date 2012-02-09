@@ -358,28 +358,6 @@ if ($db_type == "pgsql") {
 		}
 	}
 
-//get the server variables
-	$sql = "select * from v_server_settings ";
-	$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
-	$sql .= "and server_setting_enabled = 'true' ";
-	$prep_statement = $db->prepare($sql);
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
-	foreach($result as $row) {
-		$name = $row['server_setting_name'];
-		$category = $row['server_setting_category'];
-		//$subcategory = $row['server_setting_subcategory'];
-		//if (strlen($subcategory) == 0) {
-			$$category[$name] = $row['server_setting_value'];
-			$_SESSION[$category][$name] = $row['server_setting_value'];
-		//}
-		//else {
-		//	$$category[$subcategory][$name] = $row['server_setting_value'];
-		//	$_SESSION[$category][$subcategory][$name] = $row['server_setting_value'];
-		//}
-		//$$name = $row['server_setting_value'];
-	}
-
 //set the values from the session variables
 	$_SESSION['v_domain'] = $_SESSION['domain_name'];
 	$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain']['template']['name'];
