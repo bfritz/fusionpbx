@@ -234,7 +234,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Value:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	if ($row['domain_setting_category'] == "domain" && $row['domain_setting_name'] == "menu_uuid" ) {
+	$category = $row['domain_setting_category'];
+	$subcategory = $row['domain_setting_subcategory'];
+	$name = $row['domain_setting_name'];
+	if ($category == "domain" && $subcategory == "menu" && $name == "uuid" ) {
 		echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
 		echo "		<option value=''></option>\n";
 		$sql = "";
@@ -253,7 +256,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		unset ($sub_prep_statement);
 		echo "		</select>\n";
-	} elseif ($row['domain_setting_category'] == "domain" && $row['domain_setting_name'] == "template_name" ) {
+	} elseif ($category == "domain" && $subcategory == "template" && $name == "name" ) {
 		echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
 		echo "		<option value=''></option>\n";
 		//add all the themes to the list
@@ -274,7 +277,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			closedir($handle);
 		}
 		echo "		</select>\n";
-	} elseif ($row['domain_setting_category'] == "domain" && $row['domain_setting_name'] == "time_zone" ) {
+	} elseif ($category'] == "domain" && $subcategory == "time" && $name == "zone" ) {
 			echo "		<select id='domain_setting_value' name='domain_setting_value' class='formfld' style=''>\n";
 			echo "		<option value=''></option>\n";
 			//$list = DateTimeZone::listAbbreviations();

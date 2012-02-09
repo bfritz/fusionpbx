@@ -4700,7 +4700,7 @@ if (!function_exists('sync_package_freeswitch')) {
 }
 
 //include all the .php files in the /includes/mod/includes directory
-	//foreach (glob($web_dir."/includes/mod/includes/*.php") as $filename) {
+	//foreach (glob($_SERVER["DOCUMENT_ROOT"]."/includes/mod/includes/*.php") as $filename) {
 	//	require_once $filename;
 	//}
 ?>

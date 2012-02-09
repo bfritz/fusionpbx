@@ -94,12 +94,11 @@ function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 	//find the domain_uuid by using the domain
 		if (strlen($domain_name) == 0) { $domain_name = $_SERVER["HTTP_HOST"]; }
 		$sql = "";
-		$sql .= "select domain_uuid, switch_recordings_dir from v_system_settings ";
-		$sql .= "where v_domain = '".$domain_name."' ";
+		$sql .= "select domain_uuid from v_domains ";
+		$sql .= "where domain_name = '".$domain_name."' ";
 		$row = $db->query($sql)->fetch();
 		$domain_uuid = $row['domain_uuid'];
-		$switch_recordings_dir = $row['switch_recordings_dir'];
-		if (strlen($domain_uuid) == 0) { $domain_uuid = '1'; }
+		//$switch_recordings_dir = $row['switch_recordings_dir'];
 
 	//check whether a recording exists
 		$recording_relative_path = '/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;

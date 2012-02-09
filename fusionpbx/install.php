@@ -94,7 +94,7 @@ require_once "includes/lib_functions.php";
 	$install_tmp_dir = $_POST["install_tmp_dir"];
 	$install_backup_dir = $_POST["install_backup_dir"];
 	$install_switch_base_dir = $_POST["install_switch_base_dir"];
-	$install_v_template_name = $_POST["install_v_template_name"];
+	$install_template_name = $_POST["install_template_name"];
 
 //clean up the values
 	if (strlen($install_switch_base_dir) > 0) { 
@@ -358,7 +358,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		if (strlen($install_php_dir) == 0) { $msg .= "Please provide the PHP Directory.<br>\n"; }
 		if (strlen($install_tmp_dir) == 0) { $msg .= "Please provide the Temp Directory.<br>\n"; }
 		if (strlen($install_backup_dir) == 0) { $msg .= "Please provide the Backup Directory.<br>\n"; }
-		if (strlen($install_v_template_name) == 0) { $msg .= "Please provide the Theme.<br>\n"; }
+		if (strlen($install_template_name) == 0) { $msg .= "Please provide the Theme.<br>\n"; }
 
 		if (!is_writable($install_switch_base_dir."/conf/vars.xml")) {
 			if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
@@ -696,8 +696,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			}
 
 	//replace back slashes with forward slashes
-		$web_dir = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
-		$web_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
 		if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }
 		$install_switch_base_dir = str_replace("\\", "/", $install_switch_base_dir);
 		$parent_dir = str_replace("\\", "/", $parent_dir);
@@ -739,7 +737,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'template_name';
-		$tmp[$x]['value'] = $install_v_template_name;
+		$tmp[$x]['value'] = $install_template_name;
 		$tmp[$x]['category'] = 'domain';
 		$tmp[$x]['subcategory'] = '';
 		$tmp[$x]['enabled'] = 'true';
@@ -752,18 +750,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$x++;
 		$tmp[$x]['name'] = 'web_port'; //server_port
 		$tmp[$x]['value'] = '';
-		$tmp[$x]['category'] = 'server';
-		$tmp[$x]['subcategory'] = '';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'web_root';
-		$tmp[$x]['value'] = $web_root;
-		$tmp[$x]['category'] = 'server';
-		$tmp[$x]['subcategory'] = '';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'web_dir';
-		$tmp[$x]['value'] = $web_dir;
 		$tmp[$x]['category'] = 'server';
 		$tmp[$x]['subcategory'] = '';
 		$tmp[$x]['enabled'] = 'true';
@@ -982,8 +968,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//add the superadmin user account
 		//prepare the values
 			$user_uuid = uuid();
-			$user_type = 'Individual';
-			$user_category = 'user';
 		//salt used with the password to create a one way hash
 			$salt = generate_password('20', '4');
 		//add the user account
@@ -994,8 +978,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "username, ";
 			$sql .= "password, ";
 			$sql .= "salt, ";
-			$sql .= "user_type, ";
-			$sql .= "user_category, ";
 			$sql .= "user_add_date, ";
 			$sql .= "user_add_user ";
 			$sql .= ") ";
@@ -1006,8 +988,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "'".$admin_username."', ";
 			$sql .= "'".md5($salt.$admin_password)."', ";
 			$sql .= "'$salt', ";
-			$sql .= "'$user_type', ";
-			$sql .= "'$user_category', ";
 			$sql .= "now(), ";
 			$sql .= "'".$admin_username."' ";
 			$sql .= ");";
@@ -1319,10 +1299,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 }
 
 //set a default template
-	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'enhanced'; }
+	if (strlen($_SESSION['domain']['template']['name']) == 0) { $_SESSION['domain']['template']['name'] = 'enhanced'; }
 
 //get the contents of the template and save it to the template variable
-	$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$_SESSION["template_name"].'/template.php');
+	$template = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/'.$_SESSION['domain']['template']['name'].'/template.php');
 
 //buffer the content
 	ob_end_clean(); //clean the buffer
@@ -1467,10 +1447,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "		Theme: \n";
 		echo "	</td>\n";
 		echo "	<td class=\"vtable\" align='left'>\n";
-		echo "		<select id='install_v_template_name' name='install_v_template_name' class='formfld' style=''>\n";
+		echo "		<select id='install_template_name' name='install_template_name' class='formfld' style=''>\n";
 		echo "		<option value=''></option>\n";
 		//set the default theme
-			$install_v_template_name = "enhanced";
+			$install_template_name = "enhanced";
 		//add all the themes to the list
 			$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
 			if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
@@ -1478,7 +1458,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
 						$dir_label = str_replace('_', ' ', $dir_name);
 						$dir_label = str_replace('-', ' ', $dir_label);
-						if ($dir_name == $install_v_template_name) {
+						if ($dir_name == $install_template_name) {
 							echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
 						}
 						else {
@@ -1551,7 +1531,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
-		echo "			<input type='hidden' name='install_v_template_name' value='$install_v_template_name'>\n";
+		echo "			<input type='hidden' name='install_template_name' value='$install_template_name'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
@@ -1667,7 +1647,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
-		echo "			<input type='hidden' name='install_v_template_name' value='$install_v_template_name'>\n";
+		echo "			<input type='hidden' name='install_template_name' value='$install_template_name'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Next'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
@@ -1781,7 +1761,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='3'>\n";
-		echo "			<input type='hidden' name='install_v_template_name' value='$install_v_template_name'>\n";
+		echo "			<input type='hidden' name='install_template_name' value='$install_template_name'>\n";
 		echo "			<input type='submit' name='submit' class='btn' value='Install'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";

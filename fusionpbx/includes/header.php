@@ -47,20 +47,20 @@ require_once "includes/config.php";
 	}
 
 //set a default template
-	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
+	if (strlen($_SESSION['domain']['template']['name']) == 0) { $_SESSION['domain']['template']['name'] = 'default'; }
 
 //set a default template
 	$v_template_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
-	if (strlen($_SESSION["template_name"])==0) {
+	if (strlen($_SESSION['domain']['template']['name'])==0) {
 		//get the contents of the template and save it to the template variable
-		$template_full_path = $v_template_path.'/'.$_SESSION["template_name"].'/template.php';
+		$template_full_path = $v_template_path.'/'.$_SESSION['domain']['template']['name'].'/template.php';
 		if (!file_exists($template_full_path)) {
-			$_SESSION["template_name"] = 'default';
+			$_SESSION['domain']['template']['name'] = 'default';
 		}
 	}
 
 //start the output buffer
-	include $v_template_path.'/'.$_SESSION["template_name"].'/config.php';
+	include $v_template_path.'/'.$_SESSION['domain']['template']['name'].'/config.php';
 
 //start the output buffer
 	ob_start();
@@ -74,7 +74,7 @@ require_once "includes/config.php";
 //get the parent id
 	$sql = "";
 	$sql .= "select * from v_menu_items ";
-	$sql .= "where menu_uuid = '".$_SERVER["menu_uuid"]."' ";
+	$sql .= "where menu_uuid = '".$_SERVER['domain']['menu']['uuid']."' ";
 	$sql .= "and menu_item_str = '".$_SERVER["SCRIPT_NAME"]."' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();

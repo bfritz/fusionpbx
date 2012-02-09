@@ -31,7 +31,7 @@ require_once "includes/config.php";
 	ob_end_clean(); //clean the buffer
 
 //set a default template
-	if (strlen($_SESSION["template_name"]) == 0) { $_SESSION["template_name"] = 'default'; }
+	if (strlen($_SESSION['domain']['template']['name']) == 0) { $_SESSION['domain']['template']['name'] = 'default'; }
 
 //set a default template
 	if (strlen($_SESSION["template_content"])==0) { //build template if session template has no length
@@ -41,7 +41,7 @@ require_once "includes/config.php";
 				//get the contents of the template and save it to the template variable
 				$template_full_path = $v_template_path.'/'.$template_rss_sub_category.'/template.php';
 				if (!file_exists($template_full_path)) {
-					$_SESSION["template_name"] = 'default';
+					$_SESSION['domain']['template']['name'] = 'default';
 					$template_full_path = $v_template_path.'/default/template.php';
 				}
 				$template = file_get_contents($template_full_path);
@@ -49,9 +49,9 @@ require_once "includes/config.php";
 		}
 		else {
 			//get the contents of the template and save it to the template variable
-				$template_full_path = $v_template_path.'/'.$_SESSION["template_name"].'/template.php';
+				$template_full_path = $v_template_path.'/'.$_SESSION['domain']['template']['name'].'/template.php';
 				if (!file_exists($template_full_path)) {
-					$_SESSION["template_name"] = 'default';
+					$_SESSION['domain']['template']['name'] = 'default';
 					$template_full_path = $v_template_path.'/default/template.php';
 				}
 				$template = file_get_contents($template_full_path);

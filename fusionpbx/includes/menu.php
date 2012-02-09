@@ -62,7 +62,7 @@ session_start();
 		require_once "includes/classes/menu.php";
 		$menu = new menu;
 		$menu->db = $db;
-		$menu->menu_uuid = $_SESSION["domain"]["menu_uuid"];
+		$menu->menu_uuid = $_SESSION['domain']['menu']['uuid'];
 		$v_menu .= $menu->build_html("", "main");
 		unset($menu);
 

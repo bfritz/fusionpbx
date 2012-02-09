@@ -349,11 +349,11 @@ if ($db_type == "pgsql") {
 		$category = $row['domain_setting_category'];
 		$subcategory = $row['domain_setting_subcategory'];	
 		if (strlen($subcategory) == 0) {
-			$$category[$name] = $row['domain_setting_value'];
+			//$$category[$name] = $row['domain_setting_value'];
 			$_SESSION[$category][$name] = $row['domain_setting_value'];
 		}
 		else {
-			$$category[$subcategory][$name] = $row['domain_setting_value'];
+			//$$category[$subcategory][$name] = $row['domain_setting_value'];
 			$_SESSION[$category][$subcategory][$name] = $row['domain_setting_value'];
 		}
 	}
@@ -382,9 +382,7 @@ if ($db_type == "pgsql") {
 
 //set the values from the session variables
 	$_SESSION['v_domain'] = $_SESSION['domain_name'];
-	$_SESSION['template_name'] = $_SESSION['domain']['template_name'];
-	$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain']['template_name'];
-	$_SESSION['template_name'] = $_SESSION['domain']['template_name'];
+	$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain']['template']['name'];
 	if (strlen($_SESSION['domain']['time_zone']) > 0) {
 		//server time zone
 			$_SESSION['time_zone']['system'] = date_default_timezone_get();

@@ -45,7 +45,7 @@ if (count($_GET)>0) {
 	if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "delete from voicemail_prefs ";
-		$sql .= "where domain = '$v_domain' ";
+		$sql .= "where domain = '".$_SESSION['domains'][$domain_uuid]['domain']."' ";
 		$sql .= "and username = '$domain_uuid' ";
 		$count = $db->exec(check_sql($sql));
 		unset($sql);

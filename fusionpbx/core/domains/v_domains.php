@@ -39,8 +39,9 @@ else {
 		//update the v_id and session variables
 			$domain_uuid = $_GET["domain_uuid"];
 			$_SESSION['domain_uuid'] = $_SESSION['domains'][$domain_uuid]['domain_uuid'];
+			$_SESSION["domain_name"] = $_SESSION['domains'][$domain_uuid]['domain'];
 			$_SESSION["v_domain"] = $_SESSION['domains'][$domain_uuid]['domain'];
-			$_SESSION["v_template_name"] = $_SESSION['domains'][$domain_uuid]['template_name'];
+			$_SESSION['domain']['template']['name'] = $_SESSION['domains'][$domain_uuid]['template_name'];
 		//clear the menu session so that it is regenerated for the current tenant
 			$_SESSION["menu"] = '';
 		//set the context

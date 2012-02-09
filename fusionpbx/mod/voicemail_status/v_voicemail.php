@@ -125,7 +125,7 @@ $order = $_GET["order"];
 //		echo "</pre>\n";
 			$sql = "";
 			$sql .= "select count(*) as count from voicemail_msgs ";
-			$sql .= "where domain = '$v_domain' ";
+			$sql .= "where domain = '".$_SESSION['domains'][$domain_uuid]['domain']."' ";
 			$sql .= "and username = '".$row['extension']."' ";
 //			$prep_statement = $db->prepare(check_sql($sql));
 //			$prep_statement->execute();

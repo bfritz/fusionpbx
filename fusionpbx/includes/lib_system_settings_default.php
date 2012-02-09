@@ -247,8 +247,6 @@ else {
 	}
 
 //set additional information
-	$web_dir = $_SERVER["DOCUMENT_ROOT"];
-	$web_root = $_SERVER["DOCUMENT_ROOT"];
 	if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){ $relative_url = $_SERVER["DOCUMENT_ROOT"].'/fusionpbx'; } else { $relative_url = '/'; }
 
 ?>

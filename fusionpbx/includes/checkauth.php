@@ -32,7 +32,7 @@ session_start();
 			$_SESSION["menu"] = "";
 
 		//clear the template only if the template has not been assigned by the superadmin
-			if (strlen($_SESSION['domain']['template_name']) == 0) {
+			if (strlen($_SESSION['domain']['template']['name']) == 0) {
 				$_SESSION["template_content"] = '';
 			}
 
@@ -86,8 +86,8 @@ session_start();
 			$_SESSION["username"] = check_str($_REQUEST["username"]);
 			foreach ($result as &$row) {
 				//allow the user to choose a template only if the template has not been assigned by the superadmin
-				if (strlen($_SESSION['domain']['template_name']) == 0) {
-					$_SESSION["template_name"] = $row["user_template_name"];
+				if (strlen($_SESSION['domain']['template']['name']) == 0) {
+					$_SESSION['domain']['template']['name'] = $row["user_template_name"];
 				}
 				$_SESSION["time_zone"]["user"] = '';
 				if (strlen($row["user_time_zone"]) > 0) {

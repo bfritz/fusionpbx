@@ -40,7 +40,7 @@ else {
 
 require_once "includes/header.php";
 
-$v_domain = $_SESSION['domains'][$domain_uuid]['domain'];
+$domain_name = $_SESSION['domains'][$domain_uuid]['domain'];
 
 //add or update the database
 if (isset($_REQUEST["id"])) {
@@ -74,7 +74,7 @@ if ($action == "update") {
 	$profile['profile_password'] = $profile['password'];
 } else { 
  	$profile['dialplan'] = "XML";
-	$profile['context'] = $v_domain;
+	$profile['context'] = $domain_name;
 	$profile['rtp_ip'] = '$${local_ip_v4}';
 	$profile['ext_rtp_ip'] = '$${external_rtp_ip}';
  	$profile['auto_login'] = "true";
@@ -193,7 +193,7 @@ writeout:
 include "client_template.php";
 $xml = make_xmpp_xml($request);
 
-$filename = $switch_conf_dir . "/jingle_profiles/" . "v_" . $v_domain . "_" . preg_replace("/[^A-Za-z0-9]/", "", $request['profile_name']) . "_" . $xmpp_profile_uuid . ".xml";
+$filename = $switch_conf_dir . "/jingle_profiles/" . "v_" . $domain_name . "_" . preg_replace("/[^A-Za-z0-9]/", "", $request['profile_name']) . "_" . $xmpp_profile_uuid . ".xml";
 $fh = fopen($filename,"w") or die("WTF");
 fwrite($fh, $xml);
 unset($file_name);

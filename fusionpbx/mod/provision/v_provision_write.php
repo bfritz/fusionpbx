@@ -106,26 +106,26 @@ else {
 					$level = explode('/',$new_path);
 					if (is_dir($new_path)) { 
 						//$mod_array[] = array(
-								//'level'=>count($level)-1,
-								//'path'=>$new_path,
-								//'name'=>end($level),
-								//'type'=>'dir',
-								//'mod_time'=>filemtime($new_path),
-								//'size'=>'');
-								//$mod_array[] = recur_dir($new_path);
+							//'level'=>count($level)-1,
+							//'path'=>$new_path,
+							//'name'=>end($level),
+							//'type'=>'dir',
+							//'mod_time'=>filemtime($new_path),
+							//'size'=>'');
+							//$mod_array[] = recur_dir($new_path);
 						$dir_name = end($level);
 						//$file_list .=  "$dir_name\n";
 						//$dir_list .= recur_dir($new_path);
 					}
 					else {
 						//$mod_array[] = array(
-								//'level'=>count($level)-1,
-								//'path'=>$new_path,
-								//'name'=>end($level),
-								//'type'=>'dir',
-								//'mod_time'=>filemtime($new_path),
-								//'size'=>'');
-								//$mod_array[] = recur_dir($new_path);
+							//'level'=>count($level)-1,
+							//'path'=>$new_path,
+							//'name'=>end($level),
+							//'type'=>'dir',
+							//'mod_time'=>filemtime($new_path),
+							//'size'=>'');
+							//$mod_array[] = recur_dir($new_path);
 						$file_name = end($level);
 						$file_size = round(filesize($new_path)/1024, 2);
 
@@ -167,7 +167,6 @@ else {
 											//echo "mac address: ".$prov_row_array[0]."<br />";
 											//echo "line_number: ".$prov_row_array[1]."<br />";
 											if ($prov_row_array[0] == $phone_mac_address) {
-												//print_r($prov_row_array);
 												$line_number = $prov_row_array[1];
 												//echo "prov_row: ".$prov_row."<br />";
 												//echo "line_number: ".$line_number."<br />";
@@ -216,7 +215,6 @@ else {
 							$file_name = str_replace("{v_mac}", $phone_mac_address, $file_name);
 
 						//write the configuration to the directory
-						
 							if (strlen($_SESSION['switch']['provision']['directory']) > 0) {
 								$dir_array = explode(";", $_SESSION['switch']['provision']['directory']);
 								foreach($dir_array as $directory) {
