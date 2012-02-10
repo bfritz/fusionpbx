@@ -87,7 +87,7 @@ else {
 	$switch_log_dir = $install_switch_base_dir.'/log';
 	$switch_mod_dir = $install_switch_base_dir.'/mod';
 	$switch_extensions_dir = $switch_conf_dir.'/directory/default';
-	$switch_gateways_dir = $switch_conf_dir.'/sip_profiles/external';
+	$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
 	$v_dialplan_public_dir = $switch_conf_dir.'/dialplan/public';
 	$v_dialplan_default_dir = $switch_conf_dir.'/dialplan/default';
 	$switch_scripts_dir = $install_switch_base_dir.'/scripts';
@@ -120,9 +120,8 @@ else {
 					$switch_log_dir = '/var/log/freeswitch';
 					$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
 					$switch_extensions_dir = $switch_conf_dir.'/directory/default';
-					$switch_gateways_dir = $switch_conf_dir.'/sip_profiles/external';
-					$v_dialplan_public_dir = $switch_conf_dir.'/dialplan/public';
-					$v_dialplan_default_dir = $switch_conf_dir.'/dialplan/default';
+					$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
+					$switch_dialplan_dir = $switch_conf_dir.'/dialplan';
 					$switch_scripts_dir = '/usr/local/etc/freeswitch/scripts';
 					$switch_grammar_dir = '/usr/local/etc/freeswitch/grammar';
 					$switch_storage_dir = '/var/freeswitch';

@@ -1913,7 +1913,7 @@ function sync_package_v_gateways() {
 		else {
 			$v_needle = 'v_';
 		}
-		if($dh = opendir($switch_gateways_dir."")) {
+		if($dh = opendir($_SESSION['switch']['gateways']['directory']."")) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -1922,7 +1922,7 @@ function sync_package_v_gateways() {
 					} else {
 						//check if file extension is xml
 						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-							unlink($switch_gateways_dir."/".$file);
+							unlink($_SESSION['switch']['gateways']['directory']."/".$file);
 						}
 					}
 				}
@@ -1948,12 +1948,12 @@ function sync_package_v_gateways() {
 						$profile = "external";
 					}
 				if (count($_SESSION["domains"]) > 1) {
-					$fout = fopen($switch_gateways_dir."/".$profile."/v_".$v_domain .'-'.$gateway.".xml","w");
+					$fout = fopen($_SESSION['switch']['gateways']['directory']."/".$profile."/v_".$v_domain .'-'.$gateway.".xml","w");
 					$tmp_xml .= "<include>\n";
 					$tmp_xml .= "    <gateway name=\"" . $v_domain .'-'. $gateway . "\">\n";
 				}
 				else {
-					$fout = fopen($switch_gateways_dir."/".$profile."/v_".$gateway.".xml","w");
+					$fout = fopen($_SESSION['switch']['gateways']['directory']."/".$profile."/v_".$gateway.".xml","w");
 					$tmp_xml .= "<include>\n";
 					$tmp_xml .= "    <gateway name=\"" . $gateway . "\">\n";
 				}
