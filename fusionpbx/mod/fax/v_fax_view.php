@@ -46,10 +46,10 @@ else {
 		$sql .= "select * from v_fax ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fax_uuid = '$fax_uuid' ";
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			//show all fax extensions
 		}
-		else if (ifgroup("admin")) {
+		else if (if_group("admin")) {
 			//show all fax extensions
 		}
 		else {

@@ -183,12 +183,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$ivr_menu_options_param = $row["ivr_menu_options_param"];
 
 			//if admin show only the param
-				if (ifgroup("admin")) {
+				if (if_group("admin")) {
 					$ivr_menu_options_label = $ivr_menu_options_param;
 				}
 
 			//if superadmin show both the action and param
-				if (ifgroup("superadmin")) {
+				if (if_group("superadmin")) {
 					$ivr_menu_options_label = $ivr_menu_options_action.':'.$ivr_menu_options_param;
 				}
 
@@ -239,7 +239,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	/*
-	if (ifgroup("superadmin")) {
+	if (if_group("superadmin")) {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 		echo "	Type:\n";

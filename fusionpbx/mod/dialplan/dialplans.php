@@ -80,7 +80,7 @@ require_once "includes/paging.php";
 		echo "			anti-action is used or when there are multiple conditions that match. \n";
 	}
 	else {
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			echo "			The dialplan is used to setup call destinations based on conditions and context.\n";
 			echo "			You can use the dialplan to send calls to gateways, auto attendants, external numbers,\n";
 			echo "			to scripts, or any destination.\n";

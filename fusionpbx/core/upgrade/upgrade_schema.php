@@ -38,7 +38,7 @@
 		include "root.php";
 		require_once "includes/config.php";
 		require_once "includes/checkauth.php";
-		if (permission_exists('upgrade_schema') || ifgroup("superadmin")) {
+		if (permission_exists('upgrade_schema') || if_group("superadmin")) {
 			//echo "access granted";
 		}
 		else {

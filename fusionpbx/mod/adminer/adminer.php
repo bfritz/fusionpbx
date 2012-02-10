@@ -5,7 +5,7 @@
 		require_once "includes/config.php";
 		require_once "includes/checkauth.php";
 	//only allow users in the superadmin group to use this feature
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			//echo "access granted";
 		}
 		else {

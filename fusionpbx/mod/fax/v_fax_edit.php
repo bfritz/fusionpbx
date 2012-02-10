@@ -216,13 +216,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				else {
 					$sql .= "fax_forward_number = null, ";
 				}
-				if (ifgroup("admin") || ifgroup("superadmin")) {
+				if (if_group("admin") || if_group("superadmin")) {
 					$sql .= "fax_user_list = '$fax_user_list', ";
 				}
 				$sql .= "fax_description = '$fax_description' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and fax_uuid = '$fax_uuid' ";
-				if (!(ifgroup("admin") || ifgroup("superadmin"))) {
+				if (!(if_group("admin") || if_group("superadmin"))) {
 					$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
 				}
 				$db->exec(check_sql($sql));
@@ -248,10 +248,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "select * from v_fax ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and fax_uuid = '$fax_uuid' ";
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			//show all fax extensions
 		}
-		else if (ifgroup("admin")) {
+		else if (if_group("admin")) {
 			//show all fax extensions
 		}
 		else {
@@ -376,7 +376,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if (ifgroup("admin") || ifgroup("superadmin")) {
+	if (if_group("admin") || if_group("superadmin")) {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 		echo "		User List:\n";
@@ -384,7 +384,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td class='vtable' align='left'>\n";
 		$onchange = "document.getElementById('fax_user_list').value += document.getElementById('username').value + '\\n';";
 		$table_name = 'v_users'; $field_name = 'username'; $field_current_value = ''; $sql_where_optional = "where domain_uuid = '$domain_uuid'"; 
-		echo htmlselectonchange($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
+		echo html_select_on_change($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
 		echo "<br />\n";
 		echo "Use the select list to add users to the user list. This will assign users to this extension.\n";
 		echo "<br />\n";

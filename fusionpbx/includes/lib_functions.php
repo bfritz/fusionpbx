@@ -117,8 +117,8 @@
 		}
 	}
 
-	if (!function_exists('ifgroup')) {
-		function ifgroup($group) {
+	if (!function_exists('if_group')) {
+		function if_group($group) {
 			//set default false
 				$result = false;
 			//search for the permission
@@ -153,8 +153,8 @@
 		}
 	}
 
-	if (!function_exists('groupmemberlist')) {
-		function groupmemberlist($db, $username) {
+	if (!function_exists('group_members')) {
+		function group_members($db, $username) {
 			global $domain_uuid;
 			$sql = "select * from v_group_members ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -164,19 +164,19 @@
 			$result = $prep_statement->fetchAll();
 			$result_count = count($result);
 
-			$groupmemberlist = "||";
+			$group_members = "||";
 			foreach($result as $field) {
 				//get the list of groups
-				$groupmemberlist .= $field[group_name]."||";
+				$group_members .= $field[group_name]."||";
 			}
 			unset($sql, $result, $row_count);
-			return $groupmemberlist;
+			return $group_members;
 		}
 	}
 
-	if (!function_exists('ifgroupmember')) {
-		function ifgroupmember($groupmemberlist, $group) {
-			if (stripos($groupmemberlist, "||".$group."||") === false) {
+	if (!function_exists('if_group_member')) {
+		function if_group_member($group_members, $group) {
+			if (stripos($group_members, "||".$group."||") === false) {
 				return false; //group does not exist
 			}
 			else {
@@ -185,8 +185,8 @@
 		}
 	}
 
-	if (!function_exists('superadminlist')) {
-		function superadminlist($db) {
+	if (!function_exists('superadmin_list')) {
+		function superadmin_list($db) {
 			global $domain_uuid;
 			$sql = "select * from v_group_members ";
 			$sql .= "where group_name = 'superadmin' ";
@@ -196,20 +196,20 @@
 			$result = $prep_statement->fetchAll();
 			$result_count = count($result);
 
-			$strsuperadminlist = "||";
+			$strsuperadmin_list = "||";
 			foreach($result as $field) {
 				//get the list of superadmins
-				$strsuperadminlist .= $field[group_name]."||";
+				$strsuperadmin_list .= $field[group_name]."||";
 			}
 			unset($sql, $result, $row_count);
-			return $strsuperadminlist;
+			return $strsuperadmin_list;
 		}
 	}
-	//superadminlist($db);
+	//superadmin_list($db);
 
-	if (!function_exists('ifsuperadmin')) {
-		function ifsuperadmin($superadminlist, $username) {
-			if (stripos($superadminlist, "||".$username."||") === false) {
+	if (!function_exists('if_superadmin')) {
+		function if_superadmin($superadmin_list, $username) {
+			if (stripos($superadmin_list, "||".$username."||") === false) {
 				return false; //username does not exist
 			}
 			else {
@@ -265,15 +265,15 @@
 		}
 	}
 
-	if (!function_exists('htmlselect')) {
-		function htmlselect($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $fieldvalue = '', $style = '') {
+	if (!function_exists('html_select')) {
+		function html_select($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $field_value = '', $style = '') {
 			//html select other : build a select box from distinct items in db with option for other
 			global $domain_uuid;
 
-			if (strlen($fieldvalue) > 0) {
-			$html .= "<select id=\"".$fieldvalue."\" name=\"".$fieldvalue."\" class='formfld' style='".$style."'>\n";
+			if (strlen($field_value) > 0) {
+			$html .= "<select id=\"".$field_value."\" name=\"".$field_value."\" class='formfld' style='".$style."'>\n";
 			$html .= "<option value=\"\"></option>\n";
-				$sql = "SELECT distinct($field_name) as $field_name, $fieldvalue FROM $table_name $sql_where_optional order by $field_name asc ";
+				$sql = "SELECT distinct($field_name) as $field_name, $field_value FROM $table_name $sql_where_optional order by $field_name asc ";
 			}
 			else {
 				$html .= "<select id=\"".$field_name."\" name=\"".$field_name."\" class='formfld' style='".$style."'>\n";
@@ -289,16 +289,16 @@
 				foreach($result as $field) {
 					if (strlen($field[$field_name]) > 0) {
 						if ($field_current_value == $field[$field_name]) {
-							if (strlen($fieldvalue) > 0) {
-								$html .= "<option value=\"".$field[$fieldvalue]."\" selected>".$field[$field_name]."</option>\n";
+							if (strlen($field_value) > 0) {
+								$html .= "<option value=\"".$field[$field_value]."\" selected>".$field[$field_name]."</option>\n";
 							}
 							else {
 								$html .= "<option value=\"".$field[$field_name]."\" selected>".$field[$field_name]."</option>\n";
 							}
 						}
 						else {
-							if (strlen($fieldvalue) > 0) {
-								$html .= "<option value=\"".$field[$fieldvalue]."\">".$field[$field_name]."</option>\n";
+							if (strlen($field_value) > 0) {
+								$html .= "<option value=\"".$field[$field_value]."\">".$field[$field_name]."</option>\n";
 							}
 							else {
 								$html .= "<option value=\"".$field[$field_name]."\">".$field[$field_name]."</option>\n";
@@ -314,10 +314,10 @@
 		}
 	}
 	//$table_name = 'v_templates'; $field_name = 'templatename'; $sql_where_optional = "where domain_uuid = '$domain_uuid' "; $field_current_value = '';
-	//echo htmlselect($db, $table_name, $field_name, $sql_where_optional, $field_current_value);
+	//echo html_select($db, $table_name, $field_name, $sql_where_optional, $field_current_value);
 
-	if (!function_exists('htmlselectonchange')) {
-		function htmlselectonchange($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange, $fieldvalue = '') {
+	if (!function_exists('html_select_on_change')) {
+		function html_select_on_change($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange, $field_value = '') {
 			//html select other : build a select box from distinct items in db with option for other
 			global $domain_uuid;
 
@@ -336,16 +336,16 @@
 				foreach($result as $field) {
 					if (strlen($field[$field_name]) > 0) {
 						if ($field_current_value == $field[$field_name]) {
-								if (strlen($fieldvalue) > 0) {
-									$html .= "<option value=\"".$field[$fieldvalue]."\" selected>".$field[$field_name]."</option>\n";
+								if (strlen($field_value) > 0) {
+									$html .= "<option value=\"".$field[$field_value]."\" selected>".$field[$field_name]."</option>\n";
 								}
 								else {
 									$html .= "<option value=\"".$field[$field_name]."\" selected>".$field[$field_name]."</option>\n";
 								}
 						}
 						else {
-								if (strlen($fieldvalue) > 0) {
-									$html .= "<option value=\"".$field[$fieldvalue]."\">".$field[$field_name]."</option>\n";
+								if (strlen($field_value) > 0) {
+									$html .= "<option value=\"".$field[$field_value]."\">".$field[$field_name]."</option>\n";
 								}
 								else {
 									$html .= "<option value=\"".$field[$field_name]."\">".$field[$field_name]."</option>\n";
@@ -389,8 +389,8 @@
 		//  $contactcategory = check_str($_POST["contactcategoryother"]);
 		//}
 
-	if (!function_exists('log-add')) {
-		function logadd($db, $log_type, $log_status, $log_desc, $log_add_user, $log_add_user_ip) {
+	if (!function_exists('log_add')) {
+		function log_add($db, $log_type, $log_status, $log_desc, $log_add_user, $log_add_user_ip) {
 			return; //this disables the function
 			global $domain_uuid;
 
@@ -416,8 +416,8 @@
 			unset($sql);
 		}
 	}
-	//$logtype = ''; $logstatus=''; $logadduser=''; $logdesc='';
-	//logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $_SERVER["REMOTE_ADDR"]);
+	//$log_type = ''; $log_status=''; $log_add_user=''; $log_desc='';
+	//log_add($db, $log_type, $log_status, $log_desc, $log_add_user, $_SERVER["REMOTE_ADDR"]);
 
 	if (!function_exists('get_ext')) {
 		function get_ext($filename) {
@@ -441,8 +441,8 @@
 		//echo "ext: ".get_ext('test.txt');
 	}
 
-	if (!function_exists('fileupload')) {
-			function fileupload($field = '', $file_type = '', $dest_dir = '') {
+	if (!function_exists('file_upload')) {
+			function file_upload($field = '', $file_type = '', $dest_dir = '') {
 
 					$uploadtempdir = $_ENV["TEMP"]."\\";
 					ini_set('upload_tmp_dir', $uploadtempdir);

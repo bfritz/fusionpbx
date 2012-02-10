@@ -38,7 +38,7 @@
 		include "root.php";
 		require_once "includes/config.php";
 		require_once "includes/checkauth.php";
-		if (permission_exists('upgrade_schema') || permission_exists('upgrade_svn') || ifgroup("superadmin")) {
+		if (permission_exists('upgrade_schema') || permission_exists('upgrade_svn') || if_group("superadmin")) {
 			//echo "access granted";
 		}
 		else {

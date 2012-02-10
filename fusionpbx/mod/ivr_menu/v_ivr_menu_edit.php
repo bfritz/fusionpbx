@@ -412,7 +412,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 
-	if (ifgroup("superadmin")) {
+	if (if_group("superadmin")) {
 		echo "<script>\n";
 		echo "var Objs;\n";
 		echo "\n";
@@ -441,7 +441,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</script>\n";
 		echo "\n";
 	}
-	if (ifgroup("superadmin")) {
+	if (if_group("superadmin")) {
 		echo "		<select name='ivr_menu_greet_long' class='formfld' onchange='changeToInput(this);'>\n";
 	}
 	else {
@@ -449,7 +449,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "		<option></option>\n";
 	//misc optgroup
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			echo "<optgroup label='misc'>\n";
 			echo "		<option value='phrase:'>phrase:</option>\n";
 			echo "		<option value='say:'>say:</option>\n";
@@ -498,7 +498,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//}
 		//echo "</optgroup>\n";
 	//select
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			if (!$tmp_selected) {
 				echo "<optgroup label='selected'>\n";
 				if (file_exists($_SESSION['switch']['recordings']['dir']."/".$ivr_menu_greet_long)) {
@@ -531,7 +531,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<select name='ivr_menu_greet_short' class='formfld' onchange='changeToInput(this);'\">\n";
 	echo "		<option></option>\n";
 	//misc
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			echo "<optgroup label='misc'>\n";
 			echo "		<option value='phrase:'>phrase:</option>\n";
 			echo "		<option value='say:'>say:</option>\n";
@@ -580,7 +580,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//}
 		//echo "</optgroup>\n";
 	//select
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			if (!$tmp_selected) {
 				echo "<optgroup label='selected'>\n";
 				if (file_exists($_SESSION['switch']['recordings']['dir']."/".$ivr_menu_greet_short)) {

@@ -27,7 +27,7 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
-if (ifgroup("superadmin")) {
+if (if_group("superadmin")) {
 
 	$fh = fopen($dbfilepath.'/'.$dbfilename, 'r+b');
 	$contents = fread($fh, filesize($dbfilepath.'/'.$dbfilename));

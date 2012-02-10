@@ -59,7 +59,7 @@ else {
 	}
 
 //set the username
-	if (ifgroup("admin") || ifgroup("superadmin")) {
+	if (if_group("admin") || if_group("superadmin")) {
 		//use the username that was provided
 	}
 	else {

@@ -78,7 +78,7 @@ if (count($_REQUEST)>0) {
 	unset ($prep_statement, $x);
 
 
-if (ifgroup("admin") || ifgroup("superadmin")) {
+if (if_group("admin") || if_group("superadmin")) {
 	$sqlwhere = "where ";
 }
 if (strlen($domain_uuid) > 0) { $sqlwhere .= "and domain_uuid like '$domain_uuid' "; }
@@ -100,7 +100,7 @@ if (strlen($read_codec) > 0) { $sqlwhere .= "and read_codec like '%$read_codec%'
 if (strlen($write_codec) > 0) { $sqlwhere .= "and write_codec like '%$write_codec%' "; }
 if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
 if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
-if (!ifgroup("admin") && !ifgroup("superadmin")) {
+if (!if_group("admin") && !if_group("superadmin")) {
 	if (trim($sqlwhere) == "where") { $sqlwhere = ""; }
 	//disable member search
 	//$sqlwhereorig = $sqlwhere;

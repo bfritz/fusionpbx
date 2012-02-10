@@ -319,7 +319,7 @@ else {
 			echo "<tr>\n";
 			echo "	<td class='vtable'>".$field['group_name']."</td>\n";
 			echo "	<td>\n";
-			if (permission_exists('group_member_delete') || ifgroup("superadmin")) {
+			if (permission_exists('group_member_delete') || if_group("superadmin")) {
 				echo "		<a href='menu_item_edit.php?id=".$field['menu_group_name']."&menu_uuid=".$field['menu_uuid']."&group_name=".$field['group_name']."&menu_item_uuid=".$menu_item_uuid."&menu_item_parent_uuid=".$menu_item_parent_uuid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
@@ -339,7 +339,7 @@ else {
 	foreach($result as $field) {
 		if ($field['group_name'] == "superadmin") {
 			//only show the superadmin group to other users in the superadmin group
-			if (ifgroup("superadmin")) {
+			if (if_group("superadmin")) {
 				echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
 			}
 		}

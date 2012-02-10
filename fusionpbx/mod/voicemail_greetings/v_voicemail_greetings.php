@@ -45,7 +45,7 @@ require_once "includes/paging.php";
 	$order = $_GET["order"];
 
 //allow admins, superadmins and users that are assigned to the extension to view the page
-	if (ifgroup("superadmin") || ifgroup("admin")) {
+	if (if_group("superadmin") || if_group("admin")) {
 		//access granted
 	}
 	else {

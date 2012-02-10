@@ -610,7 +610,7 @@ function type_onchange(dialplan_detail_type) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	
-	if (ifgroup("superadmin")) {
+	if (if_group("superadmin")) {
 		echo "<script>\n";
 		echo "var Objs;\n";
 		echo "\n";
@@ -641,7 +641,7 @@ function type_onchange(dialplan_detail_type) {
 	}
 
 	//set the onchange
-	if (ifgroup("superadmin")) { $onchange = "onchange='changeToInput(this);'"; } else { $onchange = ''; }
+	if (if_group("superadmin")) { $onchange = "onchange='changeToInput(this);'"; } else { $onchange = ''; }
 
 	$sql = "";
 	$sql .= " select * from v_gateways ";

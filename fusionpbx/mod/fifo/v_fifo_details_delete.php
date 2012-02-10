@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (ifgroup("fifo_delete")) {
+if (if_group("fifo_delete")) {
 	//access granted
 }
 else {

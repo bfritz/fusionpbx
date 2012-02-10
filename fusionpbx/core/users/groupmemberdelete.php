@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (permission_exists('group_member_delete') || ifgroup("superadmin")) {
+if (permission_exists('group_member_delete') || if_group("superadmin")) {
 	//access allowed
 }
 else {
@@ -35,7 +35,7 @@ else {
 }
 
 //requires a superadmin to delete superadmin group
-	if (!ifgroup("superadmin") && $_GET["group_name"] == "superadmin") {
+	if (!if_group("superadmin") && $_GET["group_name"] == "superadmin") {
 		echo "access denied";
 		return;
 	}
@@ -58,8 +58,8 @@ else {
 		// $info[2] is the driver specific error string
 	}
 	else {
-		//$logtype = 'group'; $logstatus='remove'; $logadduser=$_SESSION["username"]; $logdesc= "username: ".$username." removed from group: ".$group_name;
-		//logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $_SERVER["REMOTE_ADDR"]);
+		//$log_type = 'group'; $log_status='remove'; $log_add_user=$_SESSION["username"]; $log_desc= "username: ".$username." removed from group: ".$group_name;
+		//log_add($db, $log_type, $log_status, $log_desc, $log_add_user, $_SERVER["REMOTE_ADDR"]);
 	}
 
 //redirect the user

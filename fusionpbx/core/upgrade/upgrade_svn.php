@@ -40,7 +40,7 @@ if (!isset($display_results)) {
 
 if (strlen($_SERVER['HTTP_USER_AGENT']) > 0) {
 	require_once "includes/checkauth.php";
-	if (permission_exists('upgrade_svn') || ifgroup("superadmin")) {
+	if (permission_exists('upgrade_svn') || if_group("superadmin")) {
 		//echo "access granted";
 	}
 	else {

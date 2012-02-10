@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (permission_exists('group_member_add') || ifgroup("superadmin")) {
+if (permission_exists('group_member_add') || if_group("superadmin")) {
 	//access allowed
 }
 else {
@@ -35,7 +35,7 @@ else {
 }
 
 //requires a superadmin to add a user to the superadmin group
-	if (!ifgroup("superadmin") && $_GET["group_name"] == "superadmin") {
+	if (!if_group("superadmin") && $_GET["group_name"] == "superadmin") {
 		echo "access denied";
 		return;
 	}
@@ -67,8 +67,8 @@ if (strlen($username) > 0  && strlen($group_name) > 0)   {
 	}
 	else {
 		//log the success
-		//$logtype = 'group'; $logstatus='add'; $logadduser=$_SESSION["username"]; $logdesc= "username: ".$username." added to group: ".$group_name;
-		//logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $_SERVER["REMOTE_ADDR"]);
+		//$log_type = 'group'; $log_status='add'; $log_add_user=$_SESSION["username"]; $log_desc= "username: ".$username." added to group: ".$group_name;
+		//log_add($db, $log_type, $log_status, $log_desc, $log_add_user, $_SERVER["REMOTE_ADDR"]);
 	}
 }
 

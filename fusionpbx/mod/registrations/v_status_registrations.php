@@ -28,7 +28,7 @@ require_once "includes/config.php";
 require_once "includes/checkauth.php";
 
 //check permissions
-	if (permission_exists("registrations_domain") || permission_exists("registrations_all") || ifgroup("superadmin")) {
+	if (permission_exists("registrations_domain") || permission_exists("registrations_all") || if_group("superadmin")) {
 		//access granted
 	}
 	else {

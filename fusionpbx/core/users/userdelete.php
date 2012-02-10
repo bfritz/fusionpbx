@@ -66,9 +66,9 @@ else {
 	unset ($prep_statement);
 
 //required to be a superadmin to delete a member of the superadmin group
-	$superadminlist = superadminlist($db);
-	if (ifsuperadmin($superadminlist, $username)) {
-		if (!ifgroup("superadmin")) { 
+	$superadmin_list = superadmin_list($db);
+	if (if_superadmin($superadmin_list, $username)) {
+		if (!if_group("superadmin")) { 
 			echo "access denied";
 			return;
 		}

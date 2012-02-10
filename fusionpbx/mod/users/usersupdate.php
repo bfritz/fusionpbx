@@ -59,9 +59,9 @@ else {
 	unset ($prep_statement);
 
 //required to be a superadmin to update an account that is a member of the superadmin group
-	$superadminlist = superadminlist($db);
-	if (ifsuperadmin($superadminlist, $username)) {
-		if (!ifgroup("superadmin")) { 
+	$superadmin_list = superadmin_list($db);
+	if (if_superadmin($superadmin_list, $username)) {
+		if (!if_group("superadmin")) { 
 			echo "access denied";
 			return;
 		}
@@ -153,7 +153,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 	//sql update
 		$sql  = "update v_users set ";
-		if (ifgroup("admin") && strlen($_POST["username"])> 0) {
+		if (if_group("admin") && strlen($_POST["username"])> 0) {
 			$sql .= "username = '$username', ";
 		}
 		if (strlen($password) > 0 && $confirm_password == $password) {
@@ -228,7 +228,7 @@ else {
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
-		if (ifgroup("admin")) {
+		if (if_group("admin")) {
 			$username = $row["username"];
 		}
 		$password = $row["password"];
@@ -272,9 +272,9 @@ else {
 	}
 
 	//get the groups the user is a member of
-	//groupmemberlist function defined in config.php
-	$groupmemberlist = groupmemberlist($db, $username);
-	//echo "groupmemberlist $groupmemberlist";
+	//group_members function defined in config.php
+	$group_members = group_members($db, $username);
+	//echo "group_members $group_members";
 
 }
 

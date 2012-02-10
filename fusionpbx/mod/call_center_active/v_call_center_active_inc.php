@@ -110,7 +110,7 @@ else {
 			echo "<th>Name</th>\n";
 			echo "<th>Number</th>\n";
 			echo "<th>Status</th>\n";
-			if (ifgroup("admin") || ifgroup("superadmin")) {
+			if (if_group("admin") || if_group("superadmin")) {
 				echo "<th>Options</th>\n";
 			}
 			echo "</tr>\n";
@@ -159,7 +159,7 @@ else {
 					echo "<td valign='top' class='".$row_style[$c]."'>".$caller_name."&nbsp;</td>\n";
 					echo "<td valign='top' class='".$row_style[$c]."'>".$caller_number."&nbsp;</td>\n";
 					echo "<td valign='top' class='".$row_style[$c]."'>".$state."</td>\n";
-					if (ifgroup("admin") || ifgroup("superadmin")) {
+					if (if_group("admin") || if_group("superadmin")) {
 						echo "<td valign='top' class='".$row_style[$c]."'>";
 						echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=originate+user/".$user_extension_array[0]."+%26eavesdrop(".$uuid.")');}\">eavesdrop</a>&nbsp;\n";
 						echo "</td>";

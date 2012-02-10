@@ -46,7 +46,7 @@ else {
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and extension_uuid = '$extension_uuid'";
 	//superadmin can see all messages
-	if(!ifgroup("superadmin")) {
+	if(!if_group("superadmin")) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}
 	$prep_statement = $db->prepare(check_sql($sql));

@@ -130,7 +130,7 @@ if (count($_REQUEST)>0) {
 	if (strlen($write_codec) > 0) { $sqlwhere .= "and write_codec like '%$write_codec%' "; }
 	if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
 	if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
-	if (!ifgroup("admin") && !ifgroup("superadmin")) {
+	if (!if_group("admin") && !if_group("superadmin")) {
 		//disable member search
 		//$sqlwhereorig = $sqlwhere;
 		$sqlwhere = "where ";
@@ -213,7 +213,7 @@ if (count($_REQUEST)>0) {
 	$row_style["1"] = "row_style1";
 
 	//search the call detail records
-	if (ifgroup("admin") || ifgroup("superadmin")) {
+	if (if_group("admin") || if_group("superadmin")) {
 		echo "<div align='center'>\n";
 
 		echo "<form method='post' action=''>";

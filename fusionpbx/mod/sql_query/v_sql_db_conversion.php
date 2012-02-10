@@ -28,7 +28,7 @@ require_once "includes/config.php";
 require_once "includes/checkauth.php";
 require_once "includes/lib_schema.php";
 
-if (ifgroup("superadmin")) {
+if (if_group("superadmin")) {
 	//access granted
 }
 else {

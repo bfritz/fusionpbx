@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (permission_exists('settings_view') || ifgroup("superadmin")) {
+if (permission_exists('settings_view') || if_group("superadmin")) {
 	//access granted
 }
 else {

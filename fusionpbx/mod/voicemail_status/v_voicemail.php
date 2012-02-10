@@ -74,7 +74,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if(!ifgroup("superadmin")) {
+	if(!if_group("superadmin")) {
 	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}	
 	if (strlen($order_by)> 0) { 
@@ -99,7 +99,7 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if(!ifgroup("superadmin")) {
+	if(!if_group("superadmin")) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}
 	if (strlen($order_by)> 0) {

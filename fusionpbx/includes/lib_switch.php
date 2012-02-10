@@ -449,7 +449,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	//select_type can be ivr, dialplan, or call_center_contact
 	global $config, $db, $domain_uuid;
 
-	if (ifgroup("superadmin")) {
+	if (if_group("superadmin")) {
 		echo "<script>\n";
 		echo "var Objs;\n";
 		echo "\n";
@@ -487,7 +487,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	//default selection found to false
 		$selection_found = false;
 
-	if (ifgroup("superadmin")) {
+	if (if_group("superadmin")) {
 		echo "		<select name='".$select_name."' id='".$select_name."' class='formfld' style='".$select_style."' onchange='changeToInput".$select_name."(this);'>\n";
 		if (strlen($select_value) > 0) {
 			if ($select_type == "ivr") {
@@ -787,7 +787,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		unset ($prep_statement);
 
 	//gateways
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
 				echo "<optgroup label='Gateways'>\n";
 			}
@@ -1255,7 +1255,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 
 	//other
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
 				echo "<optgroup label='Other'>\n";
 			}
@@ -1432,7 +1432,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		unset ($prep_statement, $extension);
 
 	echo "		</select>\n";
-	if (ifgroup("superadmin")) {
+	if (if_group("superadmin")) {
 		echo "<input type='button' id='btn_select_to_input_".$select_name."' class='btn' name='' alt='back' onclick='changeToInput".$select_name."(document.getElementById(\"".$select_name."\"));this.style.visibility = \"hidden\";' value='<'>";
 	}
 }

@@ -28,7 +28,7 @@ require_once "includes/config.php";
 
 //check the permissions
 	require_once "includes/checkauth.php";
-	if (ifgroup("admin") || ifgroup("superadmin")) {
+	if (if_group("admin") || if_group("superadmin")) {
 		//access allowed
 	}
 	else {
@@ -85,7 +85,7 @@ require_once "includes/config.php";
 		if (strlen($group_desc) == 0) { $group_desc = "&nbsp;"; }
 		$group_desc = wordwrap($group_desc, 50, "<br />\n");
 
-		if (!ifgroup("superadmin") && $group_name == "superadmin") {
+		if (!if_group("superadmin") && $group_name == "superadmin") {
 			//hide the superadmin group from non superadmin's
 		}
 		else {
@@ -94,10 +94,10 @@ require_once "includes/config.php";
 			$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp;  $group_desc &nbsp; </td>\n";
 
 			$strlist .= "<td class='".$row_style[$c]."' align=\"center\" nowrap>\n";
-			if (permission_exists('group_add') || ifgroup("superadmin")) {
+			if (permission_exists('group_add') || if_group("superadmin")) {
 				$strlist .= "&nbsp;<a class='' href='v_group_permissions.php?group_name=$group_name' title='Group Permissions'>Permissions</a>&nbsp;&nbsp;";
 			}
-			if (permission_exists('group_member_view') || ifgroup("superadmin")) {
+			if (permission_exists('group_member_view') || if_group("superadmin")) {
 				$strlist .= "&nbsp;<a class='' href='groupmembers.php?group_name=$group_name' title='Group Members'>Members</a>&nbsp;";
 			}
 			$strlist .= "</td>\n";

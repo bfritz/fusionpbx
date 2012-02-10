@@ -159,7 +159,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//set the default user context
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			//allow a user assigned to super admin to change the user_context
 		}
 		else {
@@ -670,7 +670,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
 	$table_name = 'v_users'; $field_name = 'username'; $field_current_value = ''; $sql_where_optional = "where domain_uuid = '$domain_uuid'"; 
-	echo htmlselectonchange($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
+	echo html_select_on_change($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
 	echo "<br />\n";
 	echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";
 	echo "<br />\n";
@@ -982,7 +982,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if (ifgroup("superadmin")) {
+	if (if_group("superadmin")) {
 		if (strlen($user_context) == 0) { 
 			if (count($_SESSION["domains"]) > 1) {
 				$user_context = $v_domain;

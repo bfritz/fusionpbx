@@ -152,7 +152,7 @@ session_start();
 	}
 
 //hide the path unless logged in as a superadmin.
-	if (!ifgroup("superadmin")) {
+	if (!if_group("superadmin")) {
 		$v_path_show = false;
 	}
 

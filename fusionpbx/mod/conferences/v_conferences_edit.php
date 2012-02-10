@@ -507,7 +507,7 @@ $order = $_GET["order"];
 		echo "<td class='vtable' align='left'>\n";
 		$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
 		$table_name = 'v_users'; $field_name = 'username'; $field_current_value = ''; $sql_where_optional = "where domain_uuid = '$domain_uuid'"; 
-		echo htmlselectonchange($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
+		echo html_select_on_change($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
 		echo "<br />\n";
 		echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";
 		echo "<br />\n";

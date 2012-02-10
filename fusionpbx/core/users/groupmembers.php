@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (permission_exists('group_members_view') || ifgroup("superadmin")) {
+if (permission_exists('group_members_view') || if_group("superadmin")) {
 	//access allowed
 }
 else {
@@ -35,7 +35,7 @@ else {
 }
 
 //requires a superadmin to view members of the superadmin group
-	if (!ifgroup("superadmin") && $_GET["group_name"] == "superadmin") {
+	if (!if_group("superadmin") && $_GET["group_name"] == "superadmin") {
 		echo "access denied";
 		return;
 	}

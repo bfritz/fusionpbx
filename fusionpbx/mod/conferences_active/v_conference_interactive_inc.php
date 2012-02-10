@@ -38,7 +38,7 @@ else {
 	$conference_name = trim($_REQUEST["c"]);
 
 //check if the domain in the conference name matches the domain
-	if (ifgroup("superadmin")) {
+	if (if_group("superadmin")) {
 		//access granted
 	}
 	else {
@@ -46,7 +46,7 @@ else {
 			$sql = "";
 			$sql .= "select * from v_dialplan_details ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			if (!(ifgroup("admin") || ifgroup("superadmin"))) {
+			if (!(if_group("admin") || if_group("superadmin"))) {
 				//find the assigned users
 					$sql .= "and dialplan_detail_data like 'conference_user_list%' and dialplan_detail_data like '%|".$_SESSION['username']."|%' ";
 			}
@@ -61,7 +61,7 @@ else {
 				//$dialplan_detail_order = $row["dialplan_detail_order"];
 				$dialplan_detail_type = $row["dialplan_detail_type"];
 				//$dialplan_detail_data = $row["dialplan_detail_data"];
-				if (ifgroup("admin") || ifgroup("superadmin")) {
+				if (if_group("admin") || if_group("superadmin")) {
 					if ($dialplan_detail_type == "conference") {
 						$conference_array[$x]['dialplan_uuid'] = $dialplan_uuid;
 						$x++;
@@ -75,7 +75,7 @@ else {
 			unset ($prep_statement);
 
 		//find if the user is in the admin or superadmin group or has been assigned to this conference
-			if (ifgroup("admin") || ifgroup("superadmin")) {
+			if (if_group("admin") || if_group("superadmin")) {
 				//allow admin and superadmin access to all conference rooms
 			}
 			else {

@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (permission_exists('group_delete') || ifgroup("superadmin")) {
+if (permission_exists('group_delete') || if_group("superadmin")) {
 	//access allowed
 }
 else {

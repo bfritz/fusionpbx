@@ -68,7 +68,7 @@ require_once "includes/paging.php";
 		//$action_application_2 = check_str($_POST["action_application_2"]);
 		//$action_data_2 = check_str($_POST["action_data_2"]);
 
-		if (ifgroup("superadmin") && $action == "advanced") {
+		if (if_group("superadmin") && $action == "advanced") {
 			//allow users in the superadmin group advanced control
 		}
 		else {

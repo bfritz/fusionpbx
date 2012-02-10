@@ -88,7 +88,7 @@ if ($fp) {
 			$tmp_name_array = explode('@', $name);
 			$tmp_name = $tmp_name_array[0];
 
-		if (ifgroup("superadmin")) {
+		if (if_group("superadmin")) {
 			//show all fifo queues
 				echo "<tr>\n";
 				echo "<td valign='top' class='".$row_style[$c]."'>".$tmp_name."</td>\n";

@@ -212,8 +212,8 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	unset($sql);
 
 	//log the success
-	//$logtype = 'user'; $logstatus='add'; $logadduser=$_SESSION["username"]; $logdesc= "username: ".$username." user added.";
-	//logadd($db, $logtype, $logstatus, $logdesc, $logadduser, $_SERVER["REMOTE_ADDR"]);
+	//$log_type = 'user'; $log_status='add'; $log_add_user=$_SESSION["username"]; $log_desc= "username: ".$username." user added.";
+	//log_add($db, $log_type, $log_status, $log_desc, $log_add_user, $_SERVER["REMOTE_ADDR"]);
 
 	$group_name = 'user';
 	$sql = "insert into v_group_members ";

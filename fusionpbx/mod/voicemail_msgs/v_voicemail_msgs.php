@@ -114,7 +114,7 @@ else {
 	$sql .= "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	//superadmin can see all messages
-	if(!ifgroup("superadmin")) {
+	if(!if_group("superadmin")) {
 		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -156,7 +156,7 @@ else {
 	echo "<tr>\n";
 	echo "<td colspan='2' align='left'>\n";
 	echo "Voicemails are listed, played, downloaded and deleted from this page. \n";
-	if (ifgroup("admin") || ifgroup("superadmin")) {
+	if (if_group("admin") || if_group("superadmin")) {
 		echo "Voicemails for an extension are shown to the user(s) that have been assigned to an extension.\n";
 		echo "User accounts are created in the 'User Manager' and then are assigned on the 'Extensions' page. \n";
 	}

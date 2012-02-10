@@ -328,7 +328,7 @@ else {
 						echo "<th>Status</th>\n";
 					}
 					echo "<th>Time</th>\n";
-					if (ifgroup("admin") || ifgroup("superadmin")) {
+					if (if_group("admin") || if_group("superadmin")) {
 						if (strlen(($_GET['rows'])) == 0) {
 							echo "<th>CID Name</th>\n";
 							echo "<th>CID Number</th>\n";
@@ -338,7 +338,7 @@ else {
 						}
 					}
 					echo "<th>Name</th>\n";
-					if (ifgroup("admin") || ifgroup("superadmin")) {
+					if (if_group("admin") || if_group("superadmin")) {
 						if (strlen(($_GET['rows'])) == 0) {
 							echo "<th>Options</th>\n";
 						}
@@ -391,7 +391,7 @@ else {
 								echo "<td class='".$row_style[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
 							}
 							echo "<td class='".$row_style[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
-							if (ifgroup("admin") || ifgroup("superadmin")) {
+							if (if_group("admin") || if_group("superadmin")) {
 								if (strlen(($_GET['rows'])) == 0) {
 									if (strlen($url) == 0) {
 										$url = "/mod/contacts/v_contacts.php?search_all={cid_num}";
@@ -402,7 +402,7 @@ else {
 									echo "<td class='".$row_style[$c]."' $style_alternate><a href='".$url."' style='color: #444444;' target='_blank'>".$cid_num."</a></td>\n";
 								}
 							}
-							if (ifgroup("admin") || ifgroup("superadmin")) {
+							if (if_group("admin") || if_group("superadmin")) {
 								if (strlen(($_GET['rows'])) == 0) {
 									echo "<td class='".$row_style[$c]."' $style_alternate>\n";
 									echo "".$dest."<br />\n";
@@ -432,7 +432,7 @@ else {
 								echo "<td class='".$row_style[$c]."' $style_alternate>".$user_array[$extension]['user_status']."&nbsp;</td>\n";
 							}
 							echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
-							if (ifgroup("admin") || ifgroup("superadmin")) {
+							if (if_group("admin") || if_group("superadmin")) {
 								if (strlen(($_GET['rows'])) == 0) {
 									echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
 									echo "<td class='".$row_style[$c]."' $style_alternate>&nbsp;</td>\n";
@@ -447,7 +447,7 @@ else {
 						echo "	".$effective_caller_id_name."&nbsp;\n";
 						echo "</td>\n";
 
-						if (ifgroup("admin") || ifgroup("superadmin")) {
+						if (if_group("admin") || if_group("superadmin")) {
 							if (strlen(($_GET['rows'])) == 0) {
 								if ($found_extension) {
 									echo "<td valign='top' class='".$row_style[$c]."' $style_alternate>\n";
@@ -496,7 +496,7 @@ else {
 								echo "<th>Status</th>\n";
 							}
 							echo "<th>Time</th>\n";
-							if (ifgroup("admin") || ifgroup("superadmin")) {
+							if (if_group("admin") || if_group("superadmin")) {
 								if ($_GET['rows'] == 0) {
 									echo "<th>CID Name</th>\n";
 									echo "<th>CID Number</th>\n";
@@ -506,7 +506,7 @@ else {
 								}
 							}
 							echo "<th>Name</th>\n";
-							if (ifgroup("admin") || ifgroup("superadmin")) {
+							if (if_group("admin") || if_group("superadmin")) {
 								if ($_GET['rows'] == 0) {
 									echo "<th>Options</th>\n";
 								}

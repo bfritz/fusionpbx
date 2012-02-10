@@ -104,16 +104,16 @@ function php_services_sync_package_php() {
 
 				//$tmp .= "//require_once(\"config.inc\");\n";
 				//$tmp .= "//global \$config;\n";
-				//$tmp .= "//\$syslogaddress = \$config['syslog']['remoteserver'];\n";
-				//$tmp .= "\$syslogaddress = \"127.0.0.1\";\n";
+				//$tmp .= "//\$sys_log_address = \$config['syslog']['remoteserver'];\n";
+				//$tmp .= "\$sys_log_address = \"127.0.0.1\";\n";
 				//$tmp .= "\$syslogport = 514;\n";
-				//$tmp .= "echo \"syslog server: \".\$syslogaddress.\"\\n\";\n";
+				//$tmp .= "echo \"syslog server: \".\$sys_log_address.\"\\n\";\n";
 				//$tmp .= "\n";
 				//$tmp .= "\n";
 				//$tmp .= "\n";
-				//$tmp .= "function send_to_syslog(\$syslogaddress, \$syslogport, \$syslogmsg) {\n";
+				//$tmp .= "function send_to_syslog(\$sys_log_address, \$syslogport, \$syslogmsg) {\n";
 				//$tmp .= "\n";
-				//$tmp .= "  \$fp = fsockopen(\"udp://\".\$syslogaddress, \$syslogport, \$errno, \$errstr);\n";
+				//$tmp .= "  \$fp = fsockopen(\"udp://\".\$sys_log_address, \$syslogport, \$errno, \$errstr);\n";
 				//$tmp .= "  if (!\$fp) {\n";
 				//$tmp .= "      //echo \"ERROR: \$errno - \$errstr<br />\\n\";\n";
 				//$tmp .= "  } else {\n";

@@ -124,7 +124,7 @@ else {
 	echo "</table>\n";
 
 	//search the call detail records
-		if (ifgroup("admin") || ifgroup("superadmin")) {
+		if (if_group("admin") || if_group("superadmin")) {
 			echo "<form method='post' action=''>\n";
 			echo "<table width='95%' cellpadding='3' border='0'>\n";
 			echo "<tr>\n";
@@ -362,7 +362,7 @@ else {
 	//example sql
 		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '' 
 		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
-	if (!ifgroup("admin") && !ifgroup("superadmin")) {
+	if (!if_group("admin") && !if_group("superadmin")) {
 		$sql_where = "where domain_uuid = '$domain_uuid' ";
 		$sql_where .= "and ( ";
 		if (count($extension_array) > 0) {
@@ -471,7 +471,7 @@ else {
 	echo thorder_by('start_stamp', 'Start', $order_by, $order);
 	//echo thorder_by('end_stamp', 'End', $order_by, $order);
 	echo thorder_by('duration', 'Length', $order_by, $order);
-	if (ifgroup("admin") || ifgroup("superadmin")) { 
+	if (if_group("admin") || if_group("superadmin")) { 
 		echo thorder_by('pdd_ms', 'PDD', $order_by, $order); 
 	}
 	echo thorder_by('hangup_cause', 'Status', $order_by, $order);
@@ -563,7 +563,7 @@ else {
 			$seconds = ($row['hangup_cause']=="ORIGINATOR_CANCEL") ? $row['duration'] : $row['billsec'];
 
 			echo "	<td valign='top' class='".$row_style[$c]."'>".gmdate("G:i:s", $seconds)."</td>\n";
-			if (ifgroup("admin") || ifgroup("superadmin")) {
+			if (if_group("admin") || if_group("superadmin")) {
 				echo "	<td valign='top' class='".$row_style[$c]."'>".number_format($row['pdd_ms']/1000,2)."s</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'><a href='v_xml_cdr_details.php?uuid=".$row['uuid']."'>".$hangup_cause."</a></td>\n";
 			}

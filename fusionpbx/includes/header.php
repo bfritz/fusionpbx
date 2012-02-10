@@ -121,7 +121,7 @@ require_once "includes/config.php";
 			$customtitle = $row[rss_title];
 		}
 		else {
-			if (ifgroup($row[rss_group])) { //viewable only to designated group
+			if (if_group($row[rss_group])) { //viewable only to designated group
 				$content_from_db = &$row[rss_desc];
 				$customtitle = $row[rss_title];
 			}

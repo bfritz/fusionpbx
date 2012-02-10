@@ -38,7 +38,7 @@ else {
 	$fifo_name = trim($_REQUEST["c"]);
 
 //if not the user is not a member of the superadmin then restrict to viewing their own domain
-	if (!ifgroup("superadmin")) {
+	if (!if_group("superadmin")) {
 		if (stripos($fifo_name, $v_domain) === false) {
 			echo "access denied";
 			exit;

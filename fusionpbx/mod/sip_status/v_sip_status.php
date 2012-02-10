@@ -29,7 +29,7 @@ require_once "includes/checkauth.php";
 
 if (permission_exists('system_status_sofia_status')
 	|| permission_exists('system_status_sofia_status_profile')
-	|| ifgroup("superadmin")) {
+	|| if_group("superadmin")) {
 	//access granted
 }
 else {
