@@ -56,7 +56,7 @@ require "includes/config.php";
 	try {
 		unset($db);
 		if (strlen($odbc_dsn) == 0) {
-			$db = new PDO('sqlite:'.$switch_db_dir.'/voicemail_default.db'); //sqlite 3
+			$db = new PDO('sqlite:'.$_SESSION['switch']['db']['dir'].'/voicemail_default.db'); //sqlite 3
 		}
 		else {
 			$db = new PDO("odbc:$odbc_dsn", "$odbc_db_user", "$odbc_db_pass");

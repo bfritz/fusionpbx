@@ -83,7 +83,6 @@ else {
 	$switch_bin_dir = $install_switch_base_dir.'/bin'; //freeswitch bin directory
 	$switch_conf_dir = $install_switch_base_dir.'/conf';
 	$switch_db_dir = $install_switch_base_dir.'/db';
-	$switch_htdocs_dir = $install_switch_base_dir.'/htdocs';
 	$switch_log_dir = $install_switch_base_dir.'/log';
 	$switch_mod_dir = $install_switch_base_dir.'/mod';
 	$switch_extensions_dir = $switch_conf_dir.'/directory/default';
@@ -115,7 +114,6 @@ else {
 					$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
 					$switch_conf_dir = '/usr/local/etc/freeswitch/conf';
 					$switch_db_dir = '/var/db/freeswitch';
-					$switch_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
 					$switch_log_dir = '/var/log/freeswitch';
 					$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
 					$switch_extensions_dir = $switch_conf_dir.'/directory/default';

@@ -36,7 +36,7 @@ else {
 
 require_once "includes/paging.php";
 
-$dir_music_on_hold_8000 = $switch_sounds_dir.'/music/8000';
+$dir_music_on_hold_8000 = $_SESSION['switch']['sounds']['dir'].'/music/8000';
 ini_set(max_execution_time,7200);
 
 $order_by = $_GET["order_by"];

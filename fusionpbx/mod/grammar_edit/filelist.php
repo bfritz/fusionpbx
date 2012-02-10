@@ -219,7 +219,7 @@ function recur_dir($dir) {
 	echo "\n";
 	echo "		<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><a href='javascript:void(0);' onclick=\"if (typeof(clipwin)!='undefined') { clipwin.close(); } clipwin = window.open('fileoptions.php?folder=".urlencode($_SERVER["DOCUMENT_ROOT"])."','null','left=20,top=20,width=310,height=300,toolbar=0,resizable=0');\" style='text-decoration:none;' title=''><IMG SRC=\"images/folder.gif\" border='0'> Files </a><DIV style=''>\n"; //display:none
 
-	echo recur_dir($switch_grammar_dir);
+	echo recur_dir($_SESSION['switch']['grammar']['dir']);
 
 	echo "</div></td></tr></table>\n";
 	echo "</td>\n";

@@ -133,9 +133,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//if file name is not the same then rename the file
 				if ($recording_filename != $recording_filename_orig) {
-					//echo "orig: ".$switch_recordings_dir.'/'.$recording_filename_orig."<br />\n";
-					//echo "new: ".$switch_recordings_dir.'/'.$recording_filename."<br />\n";
-					rename($switch_recordings_dir.'/'.$recording_filename_orig, $switch_recordings_dir.'/'.$recording_filename);
+					//echo "orig: ".$_SESSION['switch']['recordings']['dir'].'/'.$recording_filename_orig."<br />\n";
+					//echo "new: ".$_SESSION['switch']['recordings']['dir'].'/'.$recording_filename."<br />\n";
+					rename($_SESSION['switch']['recordings']['dir'].'/'.$recording_filename_orig, $_SESSION['switch']['recordings']['dir'].'/'.$recording_filename);
 				}
 
 			//update the database with the new data

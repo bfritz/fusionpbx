@@ -226,7 +226,7 @@ function recur_dir($dir) {
 
     echo "\n";    
     echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><IMG SRC=\"images/folder.gif\" border='0'> Files <DIV style=''>\n"; //display:none
-	echo recur_dir($switch_grammar_dir);
+	echo recur_dir($_SESSION['switch']['grammar']['dir']);
     echo "</DIV></TD></TR></TABLE>\n";
 
     echo "</td>\n";

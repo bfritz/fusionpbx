@@ -238,7 +238,7 @@ function recur_dir($dir) {
 	//echo "</DIV></TD></TR></TABLE>\n";
 
 	//echo recur_dir($_SERVER["DOCUMENT_ROOT"]);
-	echo recur_dir($switch_scripts_dir);
+	echo recur_dir($_SESSION['switch']['scripts']['dir']);
 
 	echo "</DIV></TD></TR></TABLE>\n";
 

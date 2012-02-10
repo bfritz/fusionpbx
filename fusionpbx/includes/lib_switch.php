@@ -134,11 +134,11 @@ foreach($settings_array as $name => $value) {
 
 
 //create the recordings/archive/year/month/day directory structure
-	$v_recording_archive_dir = $switch_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d");
+	$v_recording_archive_dir = $_SESSION['switch']['recordings']['dir']."/archive/".date("Y")."/".date("M")."/".date("d");
 	if(!is_dir($v_recording_archive_dir)) {
 		mkdir($v_recording_archive_dir, 0764, true);
-		chmod($switch_recordings_dir."/archive/".date("Y"), 0764);
-		chmod($switch_recordings_dir."/archive/".date("Y")."/".date("M"), 0764);
+		chmod($_SESSION['switch']['recordings']['dir']."/archive/".date("Y"), 0764);
+		chmod($_SESSION['switch']['recordings']['dir']."/archive/".date("Y")."/".date("M"), 0764);
 		chmod($v_recording_archive_dir, 0764);
 	}
 
@@ -210,7 +210,7 @@ foreach($settings_array as $name => $value) {
 if ($db_type == "sqlite") {
 	//sqlite: check if call detail record (CDR) db file exists if not create it
 	if (!file_exists($dbfilepath.'/'.$server_name.'.cdr.db')) {
-		//echo "file does not exist: ".$switch_db_dir.'/cdr.db';
+		//echo "file does not exist: ".$_SESSION['switch']['db']['dir'].'/cdr.db';
 		if (copy($dbfilepath.'/cdr.clean.db', $dbfilepath.'/'.$server_name.'.cdr.db')) {
 			//echo "copy succeeded.\n";
 		}
@@ -1082,31 +1082,31 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 	//recordings
 		if ($select_type == "dialplan" || $select_type == "ivr") {
-			if($dh = opendir($switch_recordings_dir."/")) {
+			if($dh = opendir($_SESSION['switch']['recordings']['dir']."/")) {
 				$tmp_selected = false;
 				$files = Array();
 				echo "<optgroup label='Recordings'>\n";
 				while($file = readdir($dh)) {
 					if($file != "." && $file != ".." && $file[0] != '.') {
-						if(is_dir($switch_recordings_dir . "/" . $file)) {
+						if(is_dir($_SESSION['switch']['recordings']['dir'] . "/" . $file)) {
 							//this is a directory
 						}
 						else {
-							if ($ivr_menu_greet_long == $switch_recordings_dir."/".$file) {
+							if ($ivr_menu_greet_long == $_SESSION['switch']['recordings']['dir']."/".$file) {
 								$tmp_selected = true;
 								if ($select_type == "dialplan") {
-									echo "		<option value='playback:".$switch_recordings_dir."/".$file."' selected>".$file."</option>\n";
+									echo "		<option value='playback:".$_SESSION['switch']['recordings']['dir']."/".$file."' selected>".$file."</option>\n";
 								}
 								if ($select_type == "ivr") {
-									echo "		<option value='menu-exec-app:playback ".$switch_recordings_dir."/".$file."' selected>".$file."</option>\n";
+									echo "		<option value='menu-exec-app:playback ".$_SESSION['switch']['recordings']['dir']."/".$file."' selected>".$file."</option>\n";
 								}
 							}
 							else {
 								if ($select_type == "dialplan") {
-									echo "		<option value='playback:".$switch_recordings_dir."/".$file."'>".$file."</option>\n";
+									echo "		<option value='playback:".$_SESSION['switch']['recordings']['dir']."/".$file."'>".$file."</option>\n";
 								}
 								if ($select_type == "ivr") {
-									echo "		<option value='menu-exec-app:playback ".$switch_recordings_dir."/".$file."'>".$file."</option>\n";
+									echo "		<option value='menu-exec-app:playback ".$_SESSION['switch']['recordings']['dir']."/".$file."'>".$file."</option>\n";
 								}
 							}
 						}
@@ -1467,7 +1467,7 @@ function sync_package_v_settings() {
 			$tmp_xml .= "	\$v_smtp_from_name = \"".$row["smtp_from_name"]."\";\n";
 			$tmp_xml .= "\n";
 			$tmp_xml .= "//set system dir variables\n";
-			$tmp_xml .= "	\$switch_storage_dir = \"".$switch_storage_dir."\";\n";
+			$tmp_xml .= "	\$switch_storage_dir = \"".$_SESSION['switch']['storage']['dir']."\";\n";
 			$tmp_xml .= "	\$tmp_dir = \"".$tmp_dir."\";\n";
 			$tmp_xml .= "	\$v_secure = \"".$v_secure."\";\n";
 			$tmp_xml .= "\n";
@@ -1538,22 +1538,22 @@ function sync_package_v_settings() {
 				fclose($fout);
 
 			//config.lua
-				$fout = fopen($switch_scripts_dir."/config.lua","w");
+				$fout = fopen($_SESSION['switch']['scripts']['dir']."/config.lua","w");
 				$tmp = "--lua include\n\n";
 				$tmp .= "admin_pin = \"".$row["admin_pin"]."\";\n";
-				$tmp .= "sounds_dir = \"".$switch_sounds_dir."\";\n";
-				$tmp .= "recordings_dir = \"".$switch_recordings_dir."\";\n";
+				$tmp .= "sounds_dir = \"".$_SESSION['switch']['sounds']['dir']."\";\n";
+				$tmp .= "recordings_dir = \"".$_SESSION['switch']['recordings']['dir']."\";\n";
 				$tmp .= "tmp_dir = \"".$tmp_dir."\";\n";
 				fwrite($fout, $tmp);
 				unset($tmp);
 				fclose($fout);
 
 			//config.js
-				$fout = fopen($switch_scripts_dir."/config.js","w");
+				$fout = fopen($_SESSION['switch']['scripts']['dir']."/config.js","w");
 				$tmp = "//javascript include\n\n";
 				$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
-				$tmp .= "var sounds_dir = \"".$switch_sounds_dir."\";\n";
-				$tmp .= "var recordings_dir = \"".$switch_recordings_dir."\";\n";
+				$tmp .= "var sounds_dir = \"".$_SESSION['switch']['sounds']['dir']."\";\n";
+				$tmp .= "var recordings_dir = \"".$_SESSION['switch']['recordings']['dir']."\";\n";
 				$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";
 				fwrite($fout, $tmp);
 				unset($tmp);
@@ -2283,7 +2283,7 @@ function sync_package_v_hunt_group() {
 
 	//prepare for hunt group .lua files to be written. delete all hunt groups that are prefixed with huntgroup_ and have a file extension of .lua
 		$v_prefix = 'v_huntgroup_';
-		if($dh = opendir($switch_scripts_dir)) {
+		if($dh = opendir($_SESSION['switch']['scripts']['dir'])) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -2292,7 +2292,7 @@ function sync_package_v_hunt_group() {
 					} else {
 						if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-4) == '.lua') {
 							if ($file != "huntgroup_originate.lua") {
-								unlink($switch_scripts_dir.'/'.$file);
+								unlink($_SESSION['switch']['scripts']['dir'].'/'.$file);
 							}
 						}
 					}
@@ -2928,8 +2928,8 @@ function sync_package_v_hunt_group() {
 						if (strlen($row['hunt_group_extension']) > 0) {
 							if ($row['hunt_group_enabled'] != "false") {
 								$hunt_group_filename = "v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain']."_".$huntgroup_extension.".lua";
-								//echo "location".$switch_scripts_dir."/".$hunt_group_filename;
-								$fout = fopen($switch_scripts_dir."/".$hunt_group_filename,"w");
+								//echo "location".$_SESSION['switch']['scripts']['dir']."/".$hunt_group_filename;
+								$fout = fopen($_SESSION['switch']['scripts']['dir']."/".$hunt_group_filename,"w");
 								fwrite($fout, $tmp);
 								unset($hunt_group_filename);
 								fclose($fout);
@@ -3017,7 +3017,7 @@ function sync_package_v_fax() {
 					$dialplan_detail_order = '000';
 					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-					//<action application="system" data="$switch_scripts_dir/emailfax.sh USER DOMAIN $switch_storage_dir/fax/inbox/9872/${last_fax}.tif"/>
+					//<action application="system" data="$switch_scripts_dir/emailfax.sh USER DOMAIN {$_SESSION['switch']['scripts']['dir']}/fax/inbox/9872/${last_fax}.tif"/>
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = "api_hangup_hook=system ".PHP_BINDIR."/".$php_exe." ".$v_secure."/fax_to_email.php ";
@@ -3071,10 +3071,10 @@ function sync_package_v_fax() {
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'rxfax';
 					if (count($_SESSION["domains"]) > 1) {
-						$dialplan_detail_data = $switch_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+						$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
 					else {
-						$dialplan_detail_data = $switch_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+						$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
 					$dialplan_detail_order = '035';
 					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
@@ -3123,10 +3123,10 @@ function sync_package_v_fax() {
 
 				//update the action
 				if (count($_SESSION["domains"]) > 1) {
-					$dialplan_detail_data = $switch_storage_dir.'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+					$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 				}
 				else {
-					$dialplan_detail_data = $switch_storage_dir.'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+					$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 				}
 				$sql = "";
 				$sql = "update v_dialplan_details set ";

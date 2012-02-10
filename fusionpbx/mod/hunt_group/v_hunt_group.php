@@ -171,7 +171,7 @@ if ($v_path_show) {
 	echo "<tr>\n";
 	echo "<td align='left' colspan='4'>\n";
 	echo "<br />\n";
-	echo $switch_scripts_dir."\n";
+	echo $_SESSION['switch']['scripts']['dir']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }

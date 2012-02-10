@@ -141,7 +141,6 @@ require_once "includes/lib_functions.php";
 		$switch_bin_dir = $install_switch_base_dir.'/bin'; //freeswitch bin directory
 		$switch_conf_dir = $install_switch_base_dir.'/conf';
 		$switch_db_dir = $install_switch_base_dir.'/db';
-		$switch_htdocs_dir = $install_switch_base_dir.'/htdocs';
 		$switch_log_dir = $install_switch_base_dir.'/log';
 		$switch_mod_dir = $install_switch_base_dir.'/mod';
 		$switch_extensions_dir = $switch_conf_dir.'/directory/default';
@@ -172,7 +171,6 @@ require_once "includes/lib_functions.php";
 							$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
 							$switch_conf_dir = '/usr/local/etc/freeswitch/conf';
 							$switch_db_dir = '/var/db/freeswitch';
-							$switch_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
 							$switch_log_dir = '/var/log/freeswitch';
 							$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
 							$switch_extensions_dir = $switch_conf_dir.'/directory/default';
@@ -196,7 +194,6 @@ require_once "includes/lib_functions.php";
 							$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
 							$switch_conf_dir = '/usr/local/etc/freeswitch/conf';
 							$switch_db_dir = '/data/freeswitch/db';
-							$switch_htdocs_dir = '/usr/local/www/freeswitch/htdocs';
 							$switch_log_dir = '/data/freeswitch/log';
 							$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
 							$switch_extensions_dir = $switch_conf_dir.'/directory/default';
@@ -745,12 +742,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['value'] = $switch_db_dir;
 		$tmp[$x]['category'] = 'switch';
 		$tmp[$x]['subcategory'] = 'db';
-		$tmp[$x]['enabled'] = 'true';
-		$x++;
-		$tmp[$x]['name'] = 'dir';
-		$tmp[$x]['value'] = $switch_htdocs_dir;
-		$tmp[$x]['category'] = 'switch';
-		$tmp[$x]['subcategory'] = 'htdocs';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'dir';

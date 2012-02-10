@@ -60,9 +60,9 @@
 	$install->domain_uuid = $domain_uuid;
 	$install->v_domain = $domain;
 	$install->switch_conf_dir = $_SESSION['switch']['conf']['dir'];
-	$install->switch_scripts_dir = $switch_scripts_dir;
-	$install->switch_sounds_dir = $switch_sounds_dir;
-	$install->switch_recordings_dir = $switch_recordings_dir;
+	$install->switch_scripts_dir = $_SESSION['switch']['scripts']['dir'];
+	$install->switch_sounds_dir = $_SESSION['switch']['sounds']['dir'];
+	$install->switch_recordings_dir = $_SESSION['switch']['recordings']['dir'];
 	$install->copy();
 	//print_r($install->result);
 

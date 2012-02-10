@@ -45,7 +45,7 @@ require_once "includes/v_dialplan_entry_exists.php";
 
 if ($_GET['a'] == "download") {
 	if ($_GET['t'] == "cdrcsv") {
-		$tmp = $switch_log_dir.'/cdr-csv/';
+		$tmp = $_SESSION['switch']['log']['dir'].'/cdr-csv/';
 		$filename = 'Master.csv';
 	}
 	if ($_GET['t'] == "backup") {

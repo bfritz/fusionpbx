@@ -267,7 +267,7 @@ if (!function_exists('sync_directory')) {
 		$tmp .= "";
 
 		//write the file
-		$fout = fopen($switch_scripts_dir."/directory.js","w");
+		$fout = fopen($_SESSION['switch']['scripts']['dir']."/directory.js","w");
 		fwrite($fout, $tmp);
 		fclose($fout);
 

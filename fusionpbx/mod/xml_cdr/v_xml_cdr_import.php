@@ -53,7 +53,7 @@
 //set pdo attribute that enables exception handling
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
+function process_xml_cdr($db, $leg, $xml_string) {
 	//set global variable
 		global $debug;
 
@@ -124,7 +124,7 @@ function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 	//find the domain_uuid by using the domain_name
 		$domain_name = check_str(urldecode($xml->variables->{$domain}));
 		$sql = "";
-		$sql .= "select domain_uuid, switch_recordings_dir from v_system_settings ";
+		$sql .= "select domain_uuid from v_domains ";
 		if (strlen($domain_name) == 0 && $context != 'public' && $context != 'default') {
 			$sql .= "where domain_name = '".$context."' ";
 		}
@@ -139,10 +139,10 @@ function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 
 	//check whether a recording exists
 		$recording_relative_path = '/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
-		if (file_exists($switch_recordings_dir.$recording_relative_path.'/'.$uuid.'.wav')) {
+		if (file_exists($_SESSION['switch']['recordings']['dir'].$recording_relative_path.'/'.$uuid.'.wav')) {
 			$recording_file = $recording_relative_path.'/'.$uuid.'.wav';
 		}
-		elseif (file_exists($switch_recordings_dir.$recording_relative_path.'/'.$uuid.'.mp3')) {
+		elseif (file_exists($_SESSION['switch']['recordings']['dir'].$recording_relative_path.'/'.$uuid.'.mp3')) {
 			$recording_file = $recording_relative_path.'/'.$uuid.'.mp3';
 		}
 		if(isset($recording_file) && !empty($recording_file)) $variables_named[]='recording_file';
@@ -198,7 +198,7 @@ function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 				$db->exec(check_sql($sql));
 			}
 			catch(PDOException $e) {
-				$tmp_dir = $switch_log_dir.'/xml_cdr/failed/';
+				$tmp_dir = $_SESSION['switch']['log']['dir'].'/xml_cdr/failed/';
 				if(!file_exists($tmp_dir)) {
 					mkdir($tmp_dir, 0777, true);
 				}
@@ -218,7 +218,7 @@ function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 					$tmp_year = date("Y", $tmp_time);
 					$tmp_month = date("M", $tmp_time);
 					$tmp_day = date("d", $tmp_time);
-					$tmp_dir = $switch_log_dir.'/xml_cdr/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
+					$tmp_dir = $_SESSION['switch']['log']['dir'].'/xml_cdr/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
 					if(!file_exists($tmp_dir)) {
 						mkdir($tmp_dir, 0777, true);
 					}
@@ -291,11 +291,11 @@ function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 			}
 
 		//parse the xml and insert the data into the db
-			process_xml_cdr($db, $switch_log_dir, $leg, $xml_string);
+			process_xml_cdr($db, $leg, $xml_string);
 	}
 
 //check the filesystem for xml cdr records that were missed
-	$xml_cdr_dir = $switch_log_dir.'/xml_cdr';
+	$xml_cdr_dir = $_SESSION['switch']['log']['dir'].'/xml_cdr';
 	$dir_handle = opendir($xml_cdr_dir);
 	$x = 0;
 	while($file=readdir($dir_handle)) {
@@ -313,7 +313,7 @@ function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 					$xml_string = file_get_contents($xml_cdr_dir.'/'.$file);
 
 				//parse the xml and insert the data into the db
-					process_xml_cdr($db, $switch_log_dir, $leg, $xml_string);
+					process_xml_cdr($db, $leg, $xml_string);
 
 				//delete the file after it has been imported
 					unlink($xml_cdr_dir.'/'.$file);

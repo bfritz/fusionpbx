@@ -59,7 +59,7 @@ require_once "includes/paging.php";
 	}
 
 //set the greeting directory
-	$v_greeting_dir = $switch_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain'].'/'.$user_id;
+	$v_greeting_dir = $_SESSION['switch']['storage']['dir'].'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain'].'/'.$user_id;
 
 //upload the recording
 	if (($_POST['submit'] == "Save") && is_uploaded_file($_FILES['file']['tmp_name']) && permission_exists('recordings_upload')) {
@@ -240,7 +240,7 @@ require_once "includes/paging.php";
 	if ($v_path_show) {
 		echo "<b>location:</b> \n";
 		//usr/local/freeswitch/storage/voicemail/default/".$_SESSION['domains'][$domain_uuid]['domain']."/1004/greeting_2.wav 
-		echo $switch_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain'].'/'.$user_id;
+		echo $_SESSION['switch']['storage']['dir'].'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain'].'/'.$user_id;
 	}
 	echo "		</td>\n";
 	echo "		<td valign=\"top\" class=\"label\">\n";

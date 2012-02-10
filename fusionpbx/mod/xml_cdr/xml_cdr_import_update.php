@@ -111,7 +111,7 @@
 			echo "completed\n";
 	}
 	if ($xml_cdr_archive == "dir") { 
-		$xml_cdr_list = glob($switch_log_dir."/xml_cdr/archive/*/*/*/*.xml");
+		$xml_cdr_list = glob($_SESSION['switch']['log']['dir']."/xml_cdr/archive/*/*/*/*.xml");
 		echo "count: ".count($xml_cdr_list)."\n";
 		//print_r($xml_cdr_list);
 		$x = 0;

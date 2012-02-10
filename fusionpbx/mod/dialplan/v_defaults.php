@@ -86,7 +86,7 @@
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'recordings_dir='.$switch_recordings_dir;
+		$dialplan_detail_data = 'recordings_dir='.$_SESSION['switch']['recordings']['dir'];
 		$dialplan_detail_order = '001';
 		v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 

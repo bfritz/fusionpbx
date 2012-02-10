@@ -41,10 +41,10 @@ else {
 
 //set the fax directory
 	if (count($_SESSION["domains"]) > 1) {
-		$v_fax_dir = $switch_storage_dir.'/fax/'.$v_domain;
+		$v_fax_dir = $_SESSION['switch']['storage']['dir'].'/fax/'.$v_domain;
 	}
 	else {
-		$v_fax_dir = $switch_storage_dir.'/fax';
+		$v_fax_dir = $_SESSION['switch']['storage']['dir'].'/fax';
 	}
 
 //get the fax extension
@@ -55,8 +55,8 @@ else {
 			$dir_fax_temp = $v_fax_dir.'/'.$fax_extension.'/temp';
 
 		//make sure the directories exist
-			if (!is_dir($switch_storage_dir)) {
-				mkdir($switch_storage_dir);
+			if (!is_dir($_SESSION['switch']['storage']['dir'])) {
+				mkdir($_SESSION['switch']['storage']['dir']);
 				chmod($dir_fax_sent,0774);
 			}
 			if (!is_dir($v_fax_dir.'/'.$fax_extension)) {

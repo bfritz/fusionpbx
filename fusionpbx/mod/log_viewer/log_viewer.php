@@ -46,7 +46,7 @@ else {
 if (permission_exists('log_download')) {
 	if ($_GET['a'] == "download") {
 		if ($_GET['t'] == "logs") {
-			$tmp = $switch_log_dir.'/';
+			$tmp = $_SESSION['switch']['log']['dir'].'/';
 			$filename = 'freeswitch.log';
 		}
 		session_cache_limiter('public');
@@ -94,7 +94,7 @@ if (permission_exists('log_view')) {
 	$default_font = 'monospace';
 	$background_color = 'black';
 	$default_fsize = '512000';
-	$log_file = "$switch_log_dir/freeswitch.log";
+	$log_file = $_SESSION['switch']['log']['dir']."/freeswitch.log";
 
 	//put the color matches here...
 	$arr_filter[0]['pattern'] = '[NOTICE]';

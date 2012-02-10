@@ -66,7 +66,7 @@ if (strlen($id)>0) {
 		unset($sql);
 
 	//set the greeting directory
-		$v_greeting_dir = $switch_storage_dir.'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain'].'/'.$user_id;
+		$v_greeting_dir = $_SESSION['switch']['storage']['dir'].'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain'].'/'.$user_id;
 
 	//delete the recording file
 		unlink($v_greeting_dir."/".$greeting_name);

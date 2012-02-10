@@ -149,7 +149,7 @@ else {
 				//hangup
 					echo "	<a href='javascript:void(0);' onclick=\"confirm_response = confirm('Do you really want to hangup this call?');if (confirm_response){send_cmd('v_calls_exec.php?cmd=uuid_kill%20'+(escape('$uuid')));}\">hangup</a>&nbsp;\n";
 				//record start/stop
-					$tmp_dir = $switch_recordings_dir."/archive/".date("Y")."/".date("M")."/".date("d");
+					$tmp_dir = $_SESSION['switch']['recordings']['dir']."/archive/".date("Y")."/".date("M")."/".date("d");
 					mkdir($tmp_dir, 0777, true);
 					$tmp_file = $tmp_dir."/".$uuid.".wav";
 					if (file_exists($tmp_file)) {
