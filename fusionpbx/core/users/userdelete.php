@@ -41,7 +41,7 @@ else {
 	$sql = "";
 	$sql .= "select * from v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and id = '$id' ";
+	$sql .= "and user_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -55,7 +55,7 @@ else {
 	$sql = "";
 	$sql .= "select * from v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and id = '$id' ";
+	$sql .= "and user_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -77,7 +77,7 @@ else {
 //delete the user
 	$sqldelete = "delete from v_users ";
 	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
-	$sqldelete .= "and id = '$id' ";
+	$sqldelete .= "and user_uuid = '$id' ";
 	if (!$db->exec($sqldelete)) {
 		//echo $db->errorCode() . "<br>";
 		$info = $db->errorInfo();

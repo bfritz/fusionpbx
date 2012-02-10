@@ -150,10 +150,10 @@ echo "	<td align=\"center\">\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_email']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('user_edit')) {
-				echo "		<a href='usersupdate.php?id=".$row['id']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='usersupdate.php?id=".$row['user_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('user_delete')) {
-				echo "		<a href='userdelete.php?id=".$row['id']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='userdelete.php?id=".$row['user_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
