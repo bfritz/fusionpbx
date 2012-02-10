@@ -96,7 +96,7 @@
 					$sql = "insert into v_group_permissions ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
-					$sql .= "permission_id, ";
+					$sql .= "permission_name, ";
 					$sql .= "group_name ";
 					$sql .= ")";
 					$sql .= "values ";

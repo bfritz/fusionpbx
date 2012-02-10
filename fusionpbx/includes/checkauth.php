@@ -114,7 +114,7 @@ session_start();
 
 		//get the permissions assigned to the groups that the user is a member of set the permissions in $_SESSION['permissions']
 			$x = 0;
-			$sql = "select distinct(permission_id) from v_group_permissions ";
+			$sql = "select distinct(permission_name) from v_group_permissions ";
 			foreach($_SESSION["groups"] as $field) {
 				if (strlen($field['group_name']) > 0) {
 					if ($x == 0) {

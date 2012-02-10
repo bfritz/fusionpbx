@@ -64,7 +64,7 @@ require_once "includes/paging.php";
 					$sql = "insert into v_group_permissions ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
-					$sql .= "permission_id, ";
+					$sql .= "permission_name, ";
 					$sql .= "group_name ";
 					$sql .= ")";
 					$sql .= "values ";
@@ -92,8 +92,8 @@ require_once "includes/paging.php";
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
-		$permission_id = $row["permission_id"];
-		$permissions_db[$permission_id] = "true";
+		$permission_name = $row["permission_name"];
+		$permissions_db[$permission_name] = "true";
 	}
 //show the db checklist
 	//echo "<pre>";
@@ -153,7 +153,7 @@ require_once "includes/paging.php";
 							$sql = "delete from v_group_permissions ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
 							$sql .= "and group_name = '$group_name' ";
-							$sql .= "and permission_id = '$permission' ";
+							$sql .= "and permission_name = '$permission' ";
 							$db->exec(check_sql($sql));
 							unset($sql);
 						//set the permission to false in the permissions_db_checklist
@@ -164,7 +164,7 @@ require_once "includes/paging.php";
 							$sql = "insert into v_group_permissions ";
 							$sql .= "(";
 							$sql .= "domain_uuid, ";
-							$sql .= "permission_id, ";
+							$sql .= "permission_name, ";
 							$sql .= "group_name ";
 							$sql .= ")";
 							$sql .= "values ";

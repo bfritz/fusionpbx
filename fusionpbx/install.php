@@ -958,7 +958,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$sql = "insert into v_group_permissions ";
 						$sql .= "(";
 						$sql .= "domain_uuid, ";
-						$sql .= "permission_id, ";
+						$sql .= "permission_name, ";
 						$sql .= "group_name ";
 						$sql .= ") ";
 						$sql .= "values ";
@@ -1189,7 +1189,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 	//get the permissions assigned to the groups that the user is a member of set the permissions in $_SESSION['permissions']
 		$x = 0;
-		$sql = "select distinct(permission_id) from v_group_permissions ";
+		$sql = "select distinct(permission_name) from v_group_permissions ";
 		foreach($_SESSION["groups"] as $field) {
 			if (strlen($field['group_name']) > 0) {
 				if ($x == 0) {

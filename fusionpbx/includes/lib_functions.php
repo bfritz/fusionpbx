@@ -142,7 +142,7 @@
 			//search for the permission
 				if (count($_SESSION["permissions"]) > 0) {
 					foreach($_SESSION["permissions"] as $row) {
-						if ($row['permission_id'] == $permission) {
+						if ($row['permission_name'] == $permission) {
 							$result = true;
 							break;
 						}
