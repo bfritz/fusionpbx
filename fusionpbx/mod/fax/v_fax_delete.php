@@ -67,8 +67,8 @@ else {
 				$dialplan_name = check_str($row2['dialplan_name']);
 				$dialplan_order = $row2['dialplan_order'];
 				$dialplan_context = $row2['dialplan_context'];
-				if (file_exists($v_dialplan_default_dir."/".$dialplan_context."/".$dialplan_order."_".$dialplan_name.".xml")){
-					unlink($v_dialplan_default_dir."/".$dialplan_context."/".$dialplan_order."_".$dialplan_name.".xml");
+				if (file_exists($_SESSION['switch']['dialplan']['directory']."/".$dialplan_context."/".$dialplan_order."_".$dialplan_name.".xml")){
+					unlink($_SESSION['switch']['dialplan']['directory']."/".$dialplan_context."/".$dialplan_order."_".$dialplan_name.".xml");
 				}
 				break; //limit to 1 row
 			}

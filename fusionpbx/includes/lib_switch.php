@@ -3020,8 +3020,8 @@ function sync_package_v_fax() {
 				$opt_1_value = $row2['opt_1_value'];
 				$id = $i;
 
-				if (file_exists($v_dialplan_default_dir."/".$order."_".$dialplan_name.".xml")){
-					unlink($v_dialplan_default_dir."/".$order."_".$dialplan_name.".xml");
+				if (file_exists($_SESSION['switch']['dialplan']['directory']."/".$order."_".$dialplan_name.".xml")){
+					unlink($_SESSION['switch']['dialplan']['directory']."/".$order."_".$dialplan_name.".xml");
 				}
 
 				break; //limit to 1 row
@@ -3294,18 +3294,13 @@ function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_t
 function sync_package_v_dialplan() {
 	global $db, $domain_uuid;
 
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
-
 	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
 		$v_needle = 'v_dialplan_';
-		$dialplan_list = glob($switch_dialplan_dir . "/*/*v_dialplan*.xml");
+		$dialplan_list = glob($_SESSION['switch']['dialplan']['directory'] . "/*/*v_dialplan*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
-		$dialplan_list = glob($switch_dialplan_dir . "/*/*_v_*.xml");
+		$dialplan_list = glob($_SESSION['switch']['dialplan']['directory'] . "/*/*_v_*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
@@ -3573,7 +3568,7 @@ function sync_package_v_dialplan() {
 		$dialplan_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $dialplan_name);
 
 		$dialplan_filename = $dialplan_order."_v_dialplan_".$dialplan_name.".xml";
-		$fout = fopen($v_dialplan_default_dir."/".$row['context']."/".$dialplan_filename,"w");
+		$fout = fopen($_SESSION['switch']['dialplan']['directory']."/".$row['context']."/".$dialplan_filename,"w");
 		fwrite($fout, $tmp);
 		fclose($fout);
 

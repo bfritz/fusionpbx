@@ -255,7 +255,7 @@ $order = $_GET["order"];
 	echo "<td colspan='5' align='left'>\n";
 	echo "<br />\n";
 	if ($v_path_show) {
-		echo $v_dialplan_default_dir;
+		echo $_SESSION['switch']['dialplan']['directory'];
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
