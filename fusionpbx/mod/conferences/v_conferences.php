@@ -249,7 +249,7 @@ require_once "includes/paging.php";
 	echo "<td colspan='5' align='left'>\n";
 	echo "<br />\n";
 	if ($v_path_show) {
-		echo $_SESSION['switch']['dialplan']['directory'];
+		echo $_SESSION['switch']['dialplan']['dir'];
 	}
 	echo "</td>\n";
 	echo "</tr>\n";

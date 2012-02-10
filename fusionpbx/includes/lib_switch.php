@@ -1588,10 +1588,10 @@ function sync_package_v_extensions() {
 		global $config;
 
 	//determine the extensions parent directory
-		$extension_parent_dir = realpath($_SESSION['switch']['extensions']['directory']."/..");
+		$extension_parent_dir = realpath($_SESSION['switch']['extensions']['dir']."/..");
 
 	// delete all old extensions to prepare for new ones
-		if($dh = opendir($_SESSION['switch']['extensions']['directory'])) {
+		if($dh = opendir($_SESSION['switch']['extensions']['dir'])) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -1600,7 +1600,7 @@ function sync_package_v_extensions() {
 					} else {
 						//check if file is an extension; verify the file numeric and the extension is xml
 						if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
-							unlink($_SESSION['switch']['extensions']['directory']."/".$file);
+							unlink($_SESSION['switch']['extensions']['dir']."/".$file);
 						}
 					}
 				}
@@ -1618,7 +1618,7 @@ function sync_package_v_extensions() {
 	$i = 0;
 	$extension_xml_condensed = false;
 	if ($extension_xml_condensed) {
-		$fout = fopen($_SESSION['switch']['extensions']['directory']."/v_extensions.xml","w");
+		$fout = fopen($_SESSION['switch']['extensions']['dir']."/v_extensions.xml","w");
 		$tmp_xml = "<include>\n";
 	}
 	while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
@@ -1647,7 +1647,7 @@ function sync_package_v_extensions() {
 			$extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension);
 
 			if (!$extension_xml_condensed) {
-				$fout = fopen($_SESSION['switch']['extensions']['directory']."/v_".$extension.".xml","w");
+				$fout = fopen($_SESSION['switch']['extensions']['dir']."/v_".$extension.".xml","w");
 				$tmp_xml .= "<include>\n";
 			}
 			$cidr = '';
@@ -1906,7 +1906,7 @@ function sync_package_v_gateways() {
 		else {
 			$v_needle = 'v_';
 		}
-		if($dh = opendir($_SESSION['switch']['gateways']['directory']."")) {
+		if($dh = opendir($_SESSION['switch']['gateways']['dir']."")) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -1915,7 +1915,7 @@ function sync_package_v_gateways() {
 					} else {
 						//check if file extension is xml
 						if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-							unlink($_SESSION['switch']['gateways']['directory']."/".$file);
+							unlink($_SESSION['switch']['gateways']['dir']."/".$file);
 						}
 					}
 				}
@@ -1941,12 +1941,12 @@ function sync_package_v_gateways() {
 						$profile = "external";
 					}
 				if (count($_SESSION["domains"]) > 1) {
-					$fout = fopen($_SESSION['switch']['gateways']['directory']."/".$profile."/v_".$v_domain .'-'.$gateway.".xml","w");
+					$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$v_domain .'-'.$gateway.".xml","w");
 					$tmp_xml .= "<include>\n";
 					$tmp_xml .= "    <gateway name=\"" . $v_domain .'-'. $gateway . "\">\n";
 				}
 				else {
-					$fout = fopen($_SESSION['switch']['gateways']['directory']."/".$profile."/v_".$gateway.".xml","w");
+					$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$gateway.".xml","w");
 					$tmp_xml .= "<include>\n";
 					$tmp_xml .= "    <gateway name=\"" . $gateway . "\">\n";
 				}
@@ -3020,8 +3020,8 @@ function sync_package_v_fax() {
 				$opt_1_value = $row2['opt_1_value'];
 				$id = $i;
 
-				if (file_exists($_SESSION['switch']['dialplan']['directory']."/".$order."_".$dialplan_name.".xml")){
-					unlink($_SESSION['switch']['dialplan']['directory']."/".$order."_".$dialplan_name.".xml");
+				if (file_exists($_SESSION['switch']['dialplan']['dir']."/".$order."_".$dialplan_name.".xml")){
+					unlink($_SESSION['switch']['dialplan']['dir']."/".$order."_".$dialplan_name.".xml");
 				}
 
 				break; //limit to 1 row
@@ -3296,11 +3296,11 @@ function sync_package_v_dialplan() {
 
 	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
 		$v_needle = 'v_dialplan_';
-		$dialplan_list = glob($_SESSION['switch']['dialplan']['directory'] . "/*/*v_dialplan*.xml");
+		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/*/*v_dialplan*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
-		$dialplan_list = glob($_SESSION['switch']['dialplan']['directory'] . "/*/*_v_*.xml");
+		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/*/*_v_*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
@@ -3568,7 +3568,7 @@ function sync_package_v_dialplan() {
 		$dialplan_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $dialplan_name);
 
 		$dialplan_filename = $dialplan_order."_v_dialplan_".$dialplan_name.".xml";
-		$fout = fopen($_SESSION['switch']['dialplan']['directory']."/".$row['context']."/".$dialplan_filename,"w");
+		$fout = fopen($_SESSION['switch']['dialplan']['dir']."/".$row['context']."/".$dialplan_filename,"w");
 		fwrite($fout, $tmp);
 		fclose($fout);
 

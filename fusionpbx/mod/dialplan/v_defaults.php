@@ -25,7 +25,7 @@
 */
 /*
 //if the dialplan default directory doesn't exist then create it
-	if (!is_dir($_SESSION['switch']['dialplan']['directory'])) { mkdir($_SESSION['switch']['dialplan']['directory'],0777,true); }
+	if (!is_dir($_SESSION['switch']['dialplan']['dir'])) { mkdir($_SESSION['switch']['dialplan']['dir'],0777,true); }
 //write the dialplan/default.xml if it does not exist
 	//get the contents of the dialplan/default.xml
 		$file_default_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/dialplan/default.xml';

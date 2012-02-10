@@ -29,7 +29,7 @@ include "root.php";
 /*
 require_once "includes/classes/modules.php";
 $mod = new switch_modules;
-$mod->dir = $_SESSION['switch']['mod']['directory'];
+$mod->dir = $_SESSION['switch']['mod']['dir'];
 echo $mod->dir."\n";
 //database connection object
 	$mod->db = $db;
