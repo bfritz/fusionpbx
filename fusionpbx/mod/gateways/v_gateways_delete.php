@@ -34,17 +34,9 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	if (is_numeric($_GET["id"])) {
+if (strlen($_GET["id"])>0) {
+	//set the variable
 		$id = $_GET["id"];
-	}
-	else {
-		echo "access denied";
-		exit;
-	}
-}
-
-if (strlen($id)>0) {
 
 	//get the gateway name
 		$sql = "";
@@ -76,9 +68,6 @@ if (strlen($id)>0) {
 				unset($tmp_cmd);
 		}
 
-	//start the atomic transaction
-		$count = $db->exec("BEGIN;");
-
 	//delete gateway
 		$sql = "";
 		$sql .= "delete from v_gateways ";
@@ -86,41 +75,6 @@ if (strlen($id)>0) {
 		$sql .= "and gateway_uuid = '$id' ";
 		$db->query($sql);
 		unset($sql);
-
-	//delete the dialplan entries
-		$sql = "";
-		$sql .= "select * from v_dialplans ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'gateway_uuid' ";
-		$sql .= "and opt_1_value = '".$id."' ";
-		//echo "sql: ".$sql."<br />\n";
-		$prep_statement_2 = $db->prepare($sql);
-		$prep_statement_2->execute();
-		while($row2 = $prep_statement_2->fetch()) {
-			$dialplan_uuid = $row2['dialplan_uuid'];
-
-			$sql = "";
-			$sql = "delete from v_dialplan_details ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-			$db->query($sql);
-			unset($sql);
-
-			//break; //limit to 1 row
-		}
-		unset ($sql, $prep_statement_2);
-
-		$sql = "";
-		$sql = "delete from v_dialplans ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'gateway_uuid' ";
-		$sql .= "and opt_1_value = '$id' ";
-		//echo "sql: ".$sql."<br />\n";
-		$db->query($sql);
-		unset($sql);
-
-	//commit the atomic transaction
-		$count = $db->exec("COMMIT;");
 
 	//syncrhonize configuration
 		sync_package_v_gateways();
@@ -153,7 +107,6 @@ if (strlen($id)>0) {
 	echo "<div align='center'>\n";
 	echo "Delete Complete\n";
 	echo "</div>\n";
-
 	require_once "includes/footer.php";
 	return;
 

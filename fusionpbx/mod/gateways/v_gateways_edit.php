@@ -36,14 +36,8 @@ else {
 
 //add or update the database
 	if (isset($_REQUEST["id"])) {
-		if (is_numeric($_REQUEST["id"])) {
-			$action = "update";
-			$gateway_uuid = check_str($_REQUEST["id"]);
-		}
-		else {
-			echo "access denied";
-			exit;
-		}
+		$action = "update";
+		$gateway_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
