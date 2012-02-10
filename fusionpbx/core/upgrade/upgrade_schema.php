@@ -59,7 +59,7 @@
 	$install = new install;
 	$install->domain_uuid = $domain_uuid;
 	$install->v_domain = $domain;
-	$install->switch_conf_dir = $switch_conf_dir;
+	$install->switch_conf_dir = $_SESSION['switch']['conf']['dir'];
 	$install->switch_scripts_dir = $switch_scripts_dir;
 	$install->switch_sounds_dir = $switch_sounds_dir;
 	$install->switch_recordings_dir = $switch_recordings_dir;

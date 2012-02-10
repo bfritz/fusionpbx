@@ -34,8 +34,8 @@ else {
 	exit;
 }
 
-$fd = fopen($switch_conf_dir."/sip_profiles/".$_GET['f'], "r");
-$v_content = fread($fd, filesize($switch_conf_dir."/sip_profiles/".$_GET['f']));
+$fd = fopen($_SESSION['switch']['conf']['dir']."/sip_profiles/".$_GET['f'], "r");
+$v_content = fread($fd, filesize($_SESSION['switch']['conf']['dir']."/sip_profiles/".$_GET['f']));
 fclose($fd);
 
 require_once "includes/header.php";
@@ -89,7 +89,7 @@ function sf() { document.forms[0].savetopath.focus(); }
 						<td align='left'>
 						<?php
 						if ($v_path_show) {
-							echo "<b>location:</b> ".$switch_conf_dir."/sip_profiles/".$_GET['f']."</td>";
+							echo "<b>location:</b> ".$_SESSION['switch']['conf']['dir']."/sip_profiles/".$_GET['f']."</td>";
 						}
 						?>
 						<td align='right'>

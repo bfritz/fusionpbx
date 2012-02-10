@@ -27,7 +27,7 @@ include "root.php";
 require "includes/config.php";
 
 //get the contents of xml_cdr.conf.xml
-	$conf_xml_string = file_get_contents($switch_conf_dir.'/autoload_configs/voicemail.conf.xml');
+	$conf_xml_string = file_get_contents($_SESSION['switch']['conf']['dir'].'/autoload_configs/voicemail.conf.xml');
 
 //parse the xml to get the call detail record info
 	try {

@@ -116,7 +116,7 @@ function sf() { document.forms[0].savetopath.focus(); }
 				<td align='left'>
 				<?php
 				if ($v_path_show) {
-					echo "<b>location:</b> ".$switch_conf_dir."/dialplan/default.xml\n";
+					echo "<b>location:</b> ".$_SESSION['switch']['conf']['dir']."/dialplan/default.xml\n";
 				}
 				?>
 				</td>

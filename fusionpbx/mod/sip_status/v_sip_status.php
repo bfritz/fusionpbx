@@ -154,7 +154,7 @@ if (strlen($msg) > 0) {
 
 //sofia status profile
 	if (permission_exists('system_status_sofia_status_profile')) {
-		foreach (ListFiles($switch_conf_dir.'/sip_profiles') as $key=>$sip_profile_file){
+		foreach (ListFiles($_SESSION['switch']['conf']['dir'].'/sip_profiles') as $key=>$sip_profile_file){
 			if (substr($sip_profile_file, -4) == ".xml") {
 				$sip_profile_name = str_replace(".xml", "", $sip_profile_file);
 				if ($fp) {

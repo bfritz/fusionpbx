@@ -245,7 +245,7 @@ function process_xml_cdr($db, $switch_log_dir, $leg, $xml_string) {
 		//authentication for xml cdr http post
 			if (strlen($_SESSION["xml_cdr_username"]) == 0) {
 				//get the contents of xml_cdr.conf.xml
-					$conf_xml_string = file_get_contents($switch_conf_dir.'/autoload_configs/xml_cdr.conf.xml');
+					$conf_xml_string = file_get_contents($_SESSION['switch']['conf']['dir'].'/autoload_configs/xml_cdr.conf.xml');
 
 				//parse the xml to get the call detail record info
 					try {

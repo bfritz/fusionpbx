@@ -25,10 +25,10 @@
 */
 
 //make sure that prefix-a-leg is set to true in the xml_cdr.conf.xml file
-	$file_contents = file_get_contents($switch_conf_dir."/autoload_configs/xml_cdr.conf.xml");
+	$file_contents = file_get_contents($_SESSION['switch']['conf']['dir']."/autoload_configs/xml_cdr.conf.xml");
 	$file_contents_new = str_replace("param name=\"prefix-a-leg\" value=\"false\"/", "param name=\"prefix-a-leg\" value=\"true\"/", $file_contents);
 	if ($file_contents != $file_contents_new) {
-		$fout = fopen($switch_conf_dir."/autoload_configs/xml_cdr.conf.xml","w");
+		$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/xml_cdr.conf.xml","w");
 		fwrite($fout, $file_contents_new);
 		fclose($fout);
 		if ($display_type == "text") {

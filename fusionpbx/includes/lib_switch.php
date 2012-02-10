@@ -74,6 +74,7 @@ require_once "includes/config.php";
 		$_SESSION["user_defined_variables"] = "set";
 	}
 
+/*
 function v_settings() {
 	global $db, $domain_uuid, $v_secure;
 
@@ -129,6 +130,7 @@ function v_settings() {
 foreach($settings_array as $name => $value) {
 	$$name = $value;
 }
+*/
 
 
 //create the recordings/archive/year/month/day directory structure
@@ -390,24 +392,20 @@ function byte_convert( $bytes ) {
 
 function lan_sip_profile() {
 	global $config;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
 	clearstatcache();
 
 	//if the lan directory does not exist then create it
-	if (!is_dir($switch_conf_dir.'/sip_profiles/lan/')) {
-		exec("mkdir ".$switch_conf_dir."/sip_profiles/lan/");
+	if (!is_dir($_SESSION['switch']['conf']['dir'].'/sip_profiles/lan/')) {
+		exec("mkdir ".$_SESSION['switch']['conf']['dir']."/sip_profiles/lan/");
 	}
 
 	//create the LAN profile if it doesn't exist
-	if (!file_exists($switch_conf_dir.'/sip_profiles/lan.xml')) {
+	if (!file_exists($_SESSION['switch']['conf']['dir'].'/sip_profiles/lan.xml')) {
 		$lan_ip = $config['interfaces']['lan']['ipaddr'];
 		if (strlen($lan_ip) > 0) {
-			exec("cp ".$switch_conf_dir."/sip_profiles/internal.xml ".$switch_conf_dir."/sip_profiles/lan.xml");
+			exec("cp ".$_SESSION['switch']['conf']['dir']."/sip_profiles/internal.xml ".$_SESSION['switch']['conf']['dir']."/sip_profiles/lan.xml");
 
-			$filename = $switch_conf_dir."/sip_profiles/lan.xml";
+			$filename = $_SESSION['switch']['conf']['dir']."/sip_profiles/lan.xml";
 			$handle = fopen($filename,"rb");
 			$contents = fread($handle, filesize($filename));
 			fclose($handle);
@@ -450,10 +448,6 @@ function ListFiles($dir) {
 function switch_select_destination($select_type, $select_label, $select_name, $select_value, $select_style, $action='') {
 	//select_type can be ivr, dialplan, or call_center_contact
 	global $config, $db, $domain_uuid;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
 
 	if (ifgroup("superadmin")) {
 		echo "<script>\n";
@@ -1444,13 +1438,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 }
 
 function sync_package_v_settings() {
-	global $config;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
-
-	global $db, $domain_uuid, $host;
+	global $db, $domain_uuid, $host, $config;
  
 	$sql = "";
 	$sql .= "select * from v_settings ";
@@ -1488,7 +1476,7 @@ function sync_package_v_settings() {
 			unset($tmp_xml);
 			fclose($fout);
 
-			$fout = fopen($switch_conf_dir."/directory/default/default.xml","w");
+			$fout = fopen($_SESSION['switch']['conf']['dir']."/directory/default/default.xml","w");
 			$tmp_xml = "<include>\n";
 			$tmp_xml .= "  <user id=\"default\"> <!--if id is numeric mailbox param is not necessary-->\n";
 			$tmp_xml .= "    <variables>\n";
@@ -1507,7 +1495,7 @@ function sync_package_v_settings() {
 			$event_socket_ip_address = $row['event_socket_ip_address'];
 			if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
 
-			$fout = fopen($switch_conf_dir."/autoload_configs/event_socket.conf.xml","w");
+			$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/event_socket.conf.xml","w");
 			$tmp_xml = "<configuration name=\"event_socket.conf\" description=\"Socket Client\">\n";
 			$tmp_xml .= "  <settings>\n";
 			$tmp_xml .= "    <param name=\"listen-ip\" value=\"" . $event_socket_ip_address . "\"/>\n";
@@ -1520,7 +1508,7 @@ function sync_package_v_settings() {
 			unset($tmp_xml, $event_socket_password);
 			fclose($fout);
 
-			$fout = fopen($switch_conf_dir."/autoload_configs/xml_rpc.conf.xml","w");
+			$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/xml_rpc.conf.xml","w");
 			$tmp_xml = "<configuration name=\"xml_rpc.conf\" description=\"XML RPC\">\n";
 			$tmp_xml .= "  <settings>\n";
 			$tmp_xml .= "    <!-- The port where you want to run the http service (default 8080) -->\n";
@@ -1536,7 +1524,7 @@ function sync_package_v_settings() {
 			fclose($fout);
 
 			//shout.conf.xml
-				$fout = fopen($switch_conf_dir."/autoload_configs/shout.conf.xml","w");
+				$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/shout.conf.xml","w");
 				$tmp_xml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
 				$tmp_xml .= "  <settings>\n";
 				$tmp_xml .= "    <!-- Don't change these unless you are insane -->\n";
@@ -2054,10 +2042,6 @@ function sync_package_v_gateways() {
 
 function sync_package_v_modules() {
 	global $config, $db, $domain_uuid;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
 
 	$xml = "";
 	$xml .= "<configuration name=\"modules.conf\" description=\"Modules\">\n";
@@ -2082,7 +2066,7 @@ function sync_package_v_modules() {
 	$xml .= "	</modules>\n";
 	$xml .= "</configuration>";
 
-	$fout = fopen($switch_conf_dir."/autoload_configs/modules.conf.xml","w");
+	$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/modules.conf.xml","w");
 	fwrite($fout, $xml);
 	unset($xml);
 	fclose($fout);
@@ -2097,12 +2081,8 @@ function sync_package_v_modules() {
 
 function sync_package_v_vars() {
 	global $config, $db, $domain_uuid;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
 
-	$fout = fopen($switch_conf_dir."/vars.xml","w");
+	$fout = fopen($_SESSION['switch']['conf']['dir']."/vars.xml","w");
 	$xml = '';
 
 	$sql = "";
@@ -2292,18 +2272,8 @@ function sync_package_v_hunt_group() {
 			//add each Hunt Group to the dialplan
 			//get the list of destinations then build the Hunt Group lua
 
-	global $config;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
-
 	//get the domain
-		global $db, $domain_uuid, $host;
-		$settings_array = v_settings();
-		foreach($settings_array as $name => $value) {
-			$$name = $value;
-		}
+		global $db, $domain_uuid, $host, $config;
 
 		$tmp = "";
 		$tmp .= "\n";
@@ -2974,10 +2944,6 @@ function sync_package_v_hunt_group() {
 
 function sync_package_v_fax() {
 	global $domain_uuid, $db;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
 
 	$sql = "";
 	$sql .= "select * from v_fax ";
@@ -3600,10 +3566,6 @@ if (!function_exists('sync_directory')) {
 	function sync_directory() {
 
 		global $domain_uuid, $db;
-		$settings_array = v_settings();
-		foreach($settings_array as $name => $value) {
-			$$name = $value;
-		}
 
 		$tmp = "include(\"config.js\");\n";
 		$tmp .= "//var sounds_dir\n";
@@ -3837,11 +3799,6 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 	function sync_package_v_ivr_menu() {
 		global $db, $domain_uuid;
 
-		$settings_array = v_settings();
-		foreach($settings_array as $name => $value) {
-			$$name = $value;
-		}
-
 		//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
 			if (count($_SESSION["domains"]) > 1) {
 				$v_needle = 'v_'.$v_domain.'_';
@@ -3849,7 +3806,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 			else {
 				$v_needle = 'v_';
 			}
-			if($dh = opendir($switch_conf_dir."/ivr_menus/")) {
+			if($dh = opendir($_SESSION['switch']['conf']['dir']."/ivr_menus/")) {
 				$files = Array();
 				while($file = readdir($dh)) {
 					if($file != "." && $file != ".." && $file[0] != '.') {
@@ -3858,7 +3815,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 						} else {
 							if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
 								//echo "file: $file<br />\n";
-								unlink($switch_conf_dir."/ivr_menus/".$file);
+								unlink($_SESSION['switch']['conf']['dir']."/ivr_menus/".$file);
 							}
 						}
 					}
@@ -4088,10 +4045,10 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 
 					//write the file
 						if (count($_SESSION["domains"]) > 1) {
-							$fout = fopen($switch_conf_dir."/ivr_menus/v_".$_SESSION['domains'][$row['domain_uuid']]['domain']."_".$ivr_menu_name.".xml","w");
+							$fout = fopen($_SESSION['switch']['conf']['dir']."/ivr_menus/v_".$_SESSION['domains'][$row['domain_uuid']]['domain']."_".$ivr_menu_name.".xml","w");
 						}
 						else {
-							$fout = fopen($switch_conf_dir."/ivr_menus/v_".$ivr_menu_name.".xml","w");
+							$fout = fopen($_SESSION['switch']['conf']['dir']."/ivr_menus/v_".$ivr_menu_name.".xml","w");
 						}
 						fwrite($fout, $tmp);
 						fclose($fout);
@@ -4107,11 +4064,6 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 if (!function_exists('sync_package_v_call_center')) {
 	function sync_package_v_call_center() {
 		global $db, $domain_uuid;
-
-		$settings_array = v_settings();
-		foreach($settings_array as $name => $value) {
-			$$name = $value;
-		}
 
 		//include the classes
 		include "includes/classes/dialplan.php";
@@ -4557,7 +4509,7 @@ if (!function_exists('sync_package_v_call_center')) {
 				unset ($v_tiers);
 
 			//write the XML config file
-				$fout = fopen($switch_conf_dir."/autoload_configs/callcenter.conf.xml","w");
+				$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/callcenter.conf.xml","w");
 				fwrite($fout, $file_contents);
 				fclose($fout);
 
@@ -4574,12 +4526,6 @@ if (!function_exists('switch_conf_xml')) {
 	function switch_conf_xml() {
 		//get the global variables
 			global $db, $domain_uuid;
-
-		//get settings as array and convert them to a php variable
-			$settings_array = v_settings();
-			foreach($settings_array as $name => $value) {
-				$$name = $value;
-			}
 
 		//get the contents of the template
 			$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/autoload_configs/switch.conf.xml");
@@ -4605,7 +4551,7 @@ if (!function_exists('switch_conf_xml')) {
 			unset ($v_mailer_app_args);
 
 		//write the XML config file
-			$fout = fopen($switch_conf_dir."/autoload_configs/switch.conf.xml","w");
+			$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/switch.conf.xml","w");
 			fwrite($fout, $file_contents);
 			fclose($fout);
 
@@ -4619,12 +4565,6 @@ if (!function_exists('xml_cdr_conf_xml')) {
 
 		//get the global variables
 			global $db, $domain_uuid;
-
-		//get settings as array and convert them to a php variable
-			$settings_array = v_settings();
-			foreach($settings_array as $name => $value) {
-				$$name = $value;
-			}
 
 		//get the contents of the template
 			$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/autoload_configs/xml_cdr.conf.xml");
@@ -4643,7 +4583,7 @@ if (!function_exists('xml_cdr_conf_xml')) {
 			unset ($v_pass);
 
 		//write the XML config file
-			$fout = fopen($switch_conf_dir."/autoload_configs/xml_cdr.conf.xml","w");
+			$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/xml_cdr.conf.xml","w");
 			fwrite($fout, $file_contents);
 			fclose($fout);
 
