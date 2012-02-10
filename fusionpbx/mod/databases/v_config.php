@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = 'Databases';
-		$apps[$x]['uuid'] = '8D229B6D-1383-FCEC-74C6-4CE1682479E2';
+		$apps[$x]['uuid'] = '8d229b6d-1383-fcec-74c6-4ce1682479e2';
 		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Databases';
-		$apps[$x]['menu'][0]['uuid'] = 'EBBD754D-CA74-D5B1-A77E-9206BA3ECC3F';
-		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = 'ebbd754d-ca74-d5b1-a77e-9206ba3ecc3f';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/databases/databases.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

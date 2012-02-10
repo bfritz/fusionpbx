@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "SIP Status";
-		$apps[$x]['uuid'] = 'CACA8695-9CA7-B058-56E7-4EA94EA1C0E8';
+		$apps[$x]['uuid'] = 'caca8695-9ca7-b058-56e7-4ea94ea1c0e8';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'SIP Status';
-		$apps[$x]['menu'][0]['uuid'] = 'B7AEA9F7-D3CF-711F-828E-46E56E2E5328';
-		$apps[$x]['menu'][0]['parent_uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
+		$apps[$x]['menu'][0]['uuid'] = 'b7aea9f7-d3cf-711f-828e-46e56e2e5328';
+		$apps[$x]['menu'][0]['parent_uuid'] = '0438b504-8613-7887-c420-c837ffb20cb1';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/sip_status/v_sip_status.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

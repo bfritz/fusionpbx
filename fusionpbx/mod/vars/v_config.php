@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Variables";
-		$apps[$x]['uuid'] = '54E08402-C1B8-0A9D-A30A-F569FC174DD8';
+		$apps[$x]['uuid'] = '54e08402-c1b8-0a9d-a30a-f569fc174dd8';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Variables';
-		$apps[$x]['menu'][0]['uuid'] = '7A4E9EC5-24B9-7200-89B8-D70BF8AFDD8F';
-		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6D56-6D3E-0B1A-D53A2BC10788';
+		$apps[$x]['menu'][0]['uuid'] = '7a4e9ec5-24b9-7200-89b8-d70bf8afdd8f';
+		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6d56-6d3e-0b1a-d53a2bc10788';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/vars/v_vars.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

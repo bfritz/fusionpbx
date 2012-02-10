@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "SQL Query";
-		$apps[$x]['uuid'] = 'A8B8CA29-083D-FB9B-5552-CC272DE18EA6';
+		$apps[$x]['uuid'] = 'a8b8ca29-083d-fb9b-5552-cc272de18ea6';
 		$apps[$x]['category'] = 'System';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'SQL Query';
-		$apps[$x]['menu'][0]['uuid'] = 'A894FED7-5A17-F695-C3DE-E32CE58B3794';
-		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = 'a894fed7-5a17-f695-c3de-e32ce58b3794';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/sql_query/v_sql_query.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

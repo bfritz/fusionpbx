@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "XML CDR";
-		$apps[$x]['uuid'] = '4A085C51-7635-FF03-F67B-86E834422848';
+		$apps[$x]['uuid'] = '4a085c51-7635-ff03-f67b-86e834422848';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,7 +11,7 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Apps';
-		$apps[$x]['menu'][0]['uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][0]['parent_uuid'] = '';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/xml_cdr/v_xml_cdr.php';
@@ -21,8 +21,8 @@
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 	
 		$apps[$x]['menu'][1]['title']['en'] = 'Call Detail Records';
-		$apps[$x]['menu'][1]['uuid'] = '8F80E71A-31A5-6432-47A0-7F5A7B271F05';
-		$apps[$x]['menu'][1]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][1]['uuid'] = '8f80e71a-31a5-6432-47a0-7f5a7b271f05';
+		$apps[$x]['menu'][1]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][1]['category'] = 'internal';
 		$apps[$x]['menu'][1]['path'] = '/mod/xml_cdr/v_xml_cdr.php';
 		$apps[$x]['menu'][1]['groups'][] = 'user';

@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Log Viewer";
-		$apps[$x]['uuid'] = '159A2724-77E1-2782-9366-DB08B3750E06';
+		$apps[$x]['uuid'] = '159a2724-77e1-2782-9366-db08b3750e06';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Log Viewer';
-		$apps[$x]['menu'][0]['uuid'] = '781EBBEC-A55A-9D60-F7BB-F54AB2EE4E7E';
-		$apps[$x]['menu'][0]['parent_uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
+		$apps[$x]['menu'][0]['uuid'] = '781ebbec-a55a-9d60-f7bb-f54ab2ee4e7e';
+		$apps[$x]['menu'][0]['parent_uuid'] = '0438b504-8613-7887-c420-c837ffb20cb1';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/log_viewer/log_viewer.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

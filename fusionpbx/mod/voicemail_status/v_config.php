@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Voicemail Status";
-		$apps[$x]['uuid'] = '9ECD085E-8C0E-92F6-E727-E90F6BB57773';
+		$apps[$x]['uuid'] = '9ecd085e-8c0e-92f6-e727-e90f6bb57773';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Voicemail Status';
-		$apps[$x]['menu'][0]['uuid'] = 'FF4CCD3D-E295-7875-04B4-54EB0C74ADC5';
-		$apps[$x]['menu'][0]['parent_uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
+		$apps[$x]['menu'][0]['uuid'] = 'ff4ccd3d-e295-7875-04b4-54eb0c74adc5';
+		$apps[$x]['menu'][0]['parent_uuid'] = '0438b504-8613-7887-c420-c837ffb20cb1';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/voicemail_status/v_voicemail.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

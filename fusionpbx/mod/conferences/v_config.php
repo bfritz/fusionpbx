@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Conferences";
-		$apps[$x]['uuid'] = 'B81412E8-7253-91F4-E48E-42FC2C9A38D9';
+		$apps[$x]['uuid'] = 'b81412e8-7253-91f4-e48e-42fc2c9a38d9';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Conferences';
-		$apps[$x]['menu'][0]['uuid'] = '9F2A8C08-3E65-C41C-A716-3B53D42BC4D4';
-		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = '9f2a8c08-3e65-c41c-a716-3b53d42bc4d4';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/conferences/v_conferences.php';
 		$apps[$x]['menu'][0]['groups'][] = 'user';

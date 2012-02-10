@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Voicemail Messages";
-		$apps[$x]['uuid'] = '789EA83B-4063-5076-55BA-2F7D63AFA86B';
+		$apps[$x]['uuid'] = '789ea83b-4063-5076-55ba-2f7d63afa86b';
 		$apps[$x]['category'] = 'voicemail';
 		$apps[$x]['subcategory'] = 'PBX';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Voicemail';
-		$apps[$x]['menu'][0]['uuid'] = 'E10D5672-0F82-6E5D-5022-A02AC8545198';
-		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = 'e10d5672-0f82-6e5d-5022-a02ac8545198';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/voicemail_msgs/v_voicemail_msgs.php';
 		$apps[$x]['menu'][0]['groups'][] = 'user';

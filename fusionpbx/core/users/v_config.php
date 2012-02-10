@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "User Manager";
-		$apps[$x]['uuid'] = '112124B3-95C2-5352-7E9D-D14C0B88F207';
+		$apps[$x]['uuid'] = '112124b3-95c2-5352-7e9d-d14c0b88f207';
 		$apps[$x]['category'] = 'Core';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,7 +11,7 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Login';
-		$apps[$x]['menu'][0]['uuid'] = 'C85BF816-B88D-40FA-8634-11B456928AFA';
+		$apps[$x]['menu'][0]['uuid'] = 'c85bf816-b88d-40fa-8634-11b456928afa';
 		$apps[$x]['menu'][0]['parent_uuid'] = '';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/login.php';
@@ -19,8 +19,8 @@
 		$apps[$x]['menu'][0]['order'] = '99';
 
 		$apps[$x]['menu'][1]['title']['en'] = 'Logout';
-		$apps[$x]['menu'][1]['uuid'] = '0D29E9F4-0C9B-9D8D-CD2D-454899DC9BC4';
-		$apps[$x]['menu'][1]['parent_uuid'] = '02194288-6D56-6D3E-0B1A-D53A2BC10788';
+		$apps[$x]['menu'][1]['uuid'] = '0d29e9f4-0c9b-9d8d-cd2d-454899dc9bc4';
+		$apps[$x]['menu'][1]['parent_uuid'] = '02194288-6d56-6d3e-0b1a-d53a2bc10788';
 		$apps[$x]['menu'][1]['category'] = 'internal';
 		$apps[$x]['menu'][1]['path'] = '/logout.php';
 		$apps[$x]['menu'][1]['groups'][] = 'user';
@@ -28,16 +28,16 @@
 		$apps[$x]['menu'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][2]['title']['en'] = 'User Manager';
-		$apps[$x]['menu'][2]['uuid'] = '0D57CC1E-1874-47B9-7DDD-FE1F57CEC99B';
-		$apps[$x]['menu'][2]['parent_uuid'] = 'BC96D773-EE57-0CDD-C3AC-2D91ABA61B55';
+		$apps[$x]['menu'][2]['uuid'] = '0d57cc1e-1874-47b9-7ddd-fe1f57cec99b';
+		$apps[$x]['menu'][2]['parent_uuid'] = 'bc96d773-ee57-0cdd-c3ac-2d91aba61b55';
 		$apps[$x]['menu'][2]['category'] = 'internal';
 		$apps[$x]['menu'][2]['path'] = '/core/users/index.php';
 		$apps[$x]['menu'][2]['groups'][] = 'admin';
 		$apps[$x]['menu'][2]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][3]['title']['en'] = 'Group Manager';
-		$apps[$x]['menu'][3]['uuid'] = '3B4ACC6D-827B-F537-BF21-0093D94FFEC7';
-		$apps[$x]['menu'][3]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][3]['uuid'] = '3b4acc6d-827b-f537-bf21-0093d94ffec7';
+		$apps[$x]['menu'][3]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][3]['category'] = 'internal';
 		$apps[$x]['menu'][3]['path'] = '/core/users/grouplist.php';
 		$apps[$x]['menu'][3]['groups'][] = 'superadmin';

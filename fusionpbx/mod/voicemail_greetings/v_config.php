@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Voicemail Greetings";
-		$apps[$x]['uuid'] = 'E4B4FBEE-9E4D-8E46-3810-91BA663DB0C2';
+		$apps[$x]['uuid'] = 'e4b4fbee-9e4d-8e46-3810-91ba663db0c2';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		//$apps[$x]['menu'][0]['title']['en'] = 'Voicemail Greetings';
-		//$apps[$x]['menu'][0]['uuid'] = '71197938-224B-3A90-C076-3979CABB3EE9';
-		//$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		//$apps[$x]['menu'][0]['uuid'] = '71197938-224b-3a90-c076-3979cabb3ee9';
+		//$apps[$x]['menu'][0]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		//$apps[$x]['menu'][0]['category'] = 'internal';
 		//$apps[$x]['menu'][0]['path'] = '/mod/voicemail_greetings/v_voicemail_greetings.php';
 		//$apps[$x]['menu'][0]['groups'][] = 'admin';

@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "PHP Editor";
-		$apps[$x]['uuid'] = '0A36722F-EEE1-889E-BAA9-2CE05B09E365';
+		$apps[$x]['uuid'] = '0a36722f-eee1-889e-baa9-2ce05b09e365';
 		$apps[$x]['category'] = 'System';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'PHP Editor';
-		$apps[$x]['menu'][0]['uuid'] = 'EAE1F2D6-789B-807C-CC26-44501E848693';
-		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = 'eae1f2d6-789b-807c-cc26-44501e848693';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][0]['category'] = 'external';
 		$apps[$x]['menu'][0]['path'] = '/mod/php_edit/index.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

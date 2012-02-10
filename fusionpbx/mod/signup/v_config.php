@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Sign Up";
-		$apps[$x]['uuid'] = 'D308E9C6-D907-5BA7-B3BE-6D3E09CF01AA';
+		$apps[$x]['uuid'] = 'd308e9c6-d907-5ba7-b3be-6d3e09cf01aa';
 		$apps[$x]['category'] = 'System';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,7 +11,7 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Sign Up';
-		$apps[$x]['menu'][0]['uuid'] = 'A8F49F02-9BFB-65FF-4CD3-85DC3354E4C1';
+		$apps[$x]['menu'][0]['uuid'] = 'a8f49f02-9bfb-65ff-4cd3-85dc3354e4c1';
 		$apps[$x]['menu'][0]['parent_uuid'] = '';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/users/usersupdate.php';

@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "FIFO";
-		$apps[$x]['uuid'] = '16589224-C876-AEB3-F59F-523A1C0801F7';
+		$apps[$x]['uuid'] = '16589224-c876-aeb3-f59f-523a1c0801f7';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Queues';
-		$apps[$x]['menu'][0]['uuid'] = 'C535AC0B-1DA1-0F9C-4653-7934C6F4732C';
-		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = 'c535ac0b-1da1-0f9c-4653-7934c6f4732c';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/fifo/v_fifo.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

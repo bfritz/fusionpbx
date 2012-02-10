@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Content Manager";
-		$apps[$x]['guid'] = '892C8D0B-BFA5-1BDF-E090-A974DA7A7C5E';
+		$apps[$x]['guid'] = '892c8d0b-bfa5-1bdf-e090-a974da7a7c5e';
 		$apps[$x]['category'] = 'System';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Content Manager';
-		$apps[$x]['menu'][0]['guid'] = '90397352-395C-40F6-2087-887144ABC06D';
-		$apps[$x]['menu'][0]['parent_guid'] = '02194288-6D56-6D3E-0B1A-D53A2BC10788';
+		$apps[$x]['menu'][0]['guid'] = '90397352-395c-40f6-2087-887144abc06d';
+		$apps[$x]['menu'][0]['parent_guid'] = '02194288-6d56-6d3e-0b1a-d53a2bc10788';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/content/rsslist.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Upgrade Schema";
-		$apps[$x]['uuid'] = '8B1D7EB5-1009-052C-E1A8-D1F4887A3F5C';
+		$apps[$x]['uuid'] = '8b1d7eb5-1009-052c-e1a8-d1f4887a3f5c';
 		$apps[$x]['category'] = 'Core';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -10,8 +10,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Upgrade Schema';
-		$apps[$x]['menu'][0]['uuid'] = '8C826E92-BE3C-0944-669A-24E5B915D562';
-		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = '8c826e92-be3c-0944-669a-24e5b915d562';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/core/upgrade/upgrade_schema.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

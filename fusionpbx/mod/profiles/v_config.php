@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "SIP Profiles";
-		$apps[$x]['uuid'] = '5414B2D9-FD7C-F4FA-3C31-EECC387BD1E4';
+		$apps[$x]['uuid'] = '5414b2d9-fd7c-f4fa-3c31-eecc387bd1e4';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'SIP Profiles';
-		$apps[$x]['menu'][0]['uuid'] = '3FE562D4-B9D2-74D2-7DEF-BFF4707831E2';
-		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = '3fe562d4-b9d2-74d2-7def-bff4707831e2';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/profiles/v_profiles.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

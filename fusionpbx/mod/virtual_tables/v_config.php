@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Virtual Tables";
-		$apps[$x]['uuid'] = '8E98D409-8134-D33C-BE70-FCEE63D67A64';
+		$apps[$x]['uuid'] = '8e98d409-8134-d33c-be70-fcee63d67a64';
 		$apps[$x]['category'] = 'System';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Virtual Tables';
-		$apps[$x]['menu'][0]['uuid'] = '6BE94B46-2126-947F-2365-0BEA23651A6B';
-		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = '6be94b46-2126-947f-2365-0bea23651a6b';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/virtual_tables/v_virtual_tables.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

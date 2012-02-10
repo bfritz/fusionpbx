@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Menu Manager";
-		$apps[$x]['uuid'] = 'F4B3B3D2-6287-489C-2A00-64529E46F2D7';
+		$apps[$x]['uuid'] = 'f4b3b3d2-6287-489c-2a00-64529e46f2d7';
 		$apps[$x]['category'] = 'Core';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Menu Manager';
-		$apps[$x]['menu'][0]['uuid'] = 'DA3A9AB4-C28E-EA8D-50CC-E8405AC8E76E';
-		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6D56-6D3E-0B1A-D53A2BC10788';
+		$apps[$x]['menu'][0]['uuid'] = 'da3a9ab4-c28e-ea8d-50cc-e8405ac8e76e';
+		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6d56-6d3e-0b1a-d53a2bc10788';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		//$apps[$x]['menu'][0]['path'] = '/core/menu/menu_list.php';
 		$apps[$x]['menu'][0]['path'] = '/core/menu/v_menus.php';
@@ -20,7 +20,7 @@
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][1]['title']['en'] = 'System';
-		$apps[$x]['menu'][1]['uuid'] = '02194288-6D56-6D3E-0B1A-D53A2BC10788';
+		$apps[$x]['menu'][1]['uuid'] = '02194288-6d56-6d3e-0b1a-d53a2bc10788';
 		$apps[$x]['menu'][1]['parent_uuid'] = '';
 		$apps[$x]['menu'][1]['category'] = 'internal';
 		$apps[$x]['menu'][1]['path'] = '/index2.php';
@@ -30,7 +30,7 @@
 		$apps[$x]['menu'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][2]['title']['en'] = 'Accounts';
-		$apps[$x]['menu'][2]['uuid'] = 'BC96D773-EE57-0CDD-C3AC-2D91ABA61B55';
+		$apps[$x]['menu'][2]['uuid'] = 'bc96d773-ee57-0cdd-c3ac-2d91aba61b55';
 		$apps[$x]['menu'][2]['parent_uuid'] = '';
 		$apps[$x]['menu'][2]['category'] = 'internal';
 		$apps[$x]['menu'][2]['path'] = '/mod/extensions/v_extensions.php';
@@ -39,7 +39,7 @@
 		$apps[$x]['menu'][2]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][3]['title']['en'] = 'Dialplan';
-		$apps[$x]['menu'][3]['uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
+		$apps[$x]['menu'][3]['uuid'] = 'b94e8bd9-9eb5-e427-9c26-ff7a6c21552a';
 		$apps[$x]['menu'][3]['parent_uuid'] = '';
 		$apps[$x]['menu'][3]['category'] = 'internal';
 		$apps[$x]['menu'][3]['path'] = '/mod/dialplan/dialplans.php';
@@ -48,7 +48,7 @@
 		$apps[$x]['menu'][3]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][4]['title']['en'] = 'Status';
-		$apps[$x]['menu'][4]['uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
+		$apps[$x]['menu'][4]['uuid'] = '0438b504-8613-7887-c420-c837ffb20cb1';
 		$apps[$x]['menu'][4]['parent_uuid'] = '';
 		$apps[$x]['menu'][4]['category'] = 'internal';
 		$apps[$x]['menu'][4]['path'] = '/mod/calls_active/v_calls_active_extensions.php';
@@ -58,7 +58,7 @@
 		$apps[$x]['menu'][4]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][5]['title']['en'] = 'Advanced';
-		$apps[$x]['menu'][5]['uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][5]['uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][5]['parent_uuid'] = '';
 		$apps[$x]['menu'][5]['category'] = 'internal';
 		$apps[$x]['menu'][5]['path'] = '/mod/exec/v_exec.php';

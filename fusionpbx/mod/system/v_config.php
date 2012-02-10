@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "System";
-		$apps[$x]['uuid'] = 'B7EF56FD-57C5-D4E8-BB4B-7887EEDE2E78';
+		$apps[$x]['uuid'] = 'b7ef56fd-57c5-d4e8-bb4b-7887eede2e78';
 		$apps[$x]['category'] = 'System';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'System Status';
-		$apps[$x]['menu'][0]['uuid'] = '5243E0D2-0E8B-277A-912E-9D8B5FCDB41D';
-		$apps[$x]['menu'][0]['parent_uuid'] = '0438B504-8613-7887-C420-C837FFB20CB1';
+		$apps[$x]['menu'][0]['uuid'] = '5243e0d2-0e8b-277a-912e-9d8b5fcdb41d';
+		$apps[$x]['menu'][0]['parent_uuid'] = '0438b504-8613-7887-c420-c837ffb20cb1';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/system/system.php';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';

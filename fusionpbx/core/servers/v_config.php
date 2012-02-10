@@ -2,7 +2,7 @@
 /*
 	//application details
 		$apps[$x]['name'] = 'Servers';
-		$apps[$x]['guid'] = '0F390134-071E-83D7-A79A-EBB7AE139D71';
+		$apps[$x]['guid'] = '0f390134-071e-83d7-a79a-ebb7ae139d71';
 		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -12,8 +12,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Servers';
-		$apps[$x]['menu'][0]['uuid'] = 'F35EE905-1F30-7529-7420-35FC77E47882';
-		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = 'f35ee905-1f30-7529-7420-35fc77e47882';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/core/servers/v_servers.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

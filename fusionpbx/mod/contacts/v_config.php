@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = 'Contacts';
-		$apps[$x]['uuid'] = '04481E0E-A478-C559-ADAD-52BD4174574C';
+		$apps[$x]['uuid'] = '04481e0e-a478-c559-adad-52bd4174574c';
 		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][$y]['title']['en'] = 'Contacts';
-		$apps[$x]['menu'][$y]['uuid'] = 'F14E6AB6-6565-D4E6-CBAD-A51D2E3E8EC6';
-		$apps[$x]['menu'][$y]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][$y]['uuid'] = 'f14e6ab6-6565-d4e6-cbad-a51d2e3e8ec6';
+		$apps[$x]['menu'][$y]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][$y]['category'] = 'internal';
 		$apps[$x]['menu'][$y]['path'] = '/mod/contacts/v_contacts.php';
 		//$apps[$x]['menu'][$y]['groups'][] = 'user';

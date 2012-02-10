@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Grammar Editor";
-		$apps[$x]['uuid'] = '2D5DB509-433D-1751-1740-EED43862B85F';
+		$apps[$x]['uuid'] = '2d5db509-433d-1751-1740-eed43862b85f';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Grammar Editor';
-		$apps[$x]['menu'][0]['uuid'] = 'C3DB739E-89F9-0FA2-44CE-0F4C2FF43B1A';
-		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = 'c3db739e-89f9-0fa2-44ce-0f4c2ff43b1a';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][0]['category'] = 'external';
 		$apps[$x]['menu'][0]['path'] = '/mod/grammar_edit/index.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

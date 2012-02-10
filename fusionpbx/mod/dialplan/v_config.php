@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Dialplan Manager";
-		$apps[$x]['uuid'] = '742714E5-8CDF-32FD-462C-CBE7E3D655DB';
+		$apps[$x]['uuid'] = '742714e5-8cdf-32fd-462c-cbe7e3d655db';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,7 +11,7 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Dialplan';
-		$apps[$x]['menu'][0]['uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
+		$apps[$x]['menu'][0]['uuid'] = 'b94e8bd9-9eb5-e427-9c26-ff7a6c21552a';
 		$apps[$x]['menu'][0]['parent_uuid'] = '';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/dialplan/dialplans.php';
@@ -19,16 +19,16 @@
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][1]['title']['en'] = 'Dialplan Manager';
-		$apps[$x]['menu'][1]['uuid'] = '52929FEE-81D3-4D94-50B7-64842D9393C2';
-		$apps[$x]['menu'][1]['parent_uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
+		$apps[$x]['menu'][1]['uuid'] = '52929fee-81d3-4d94-50b7-64842d9393c2';
+		$apps[$x]['menu'][1]['parent_uuid'] = 'b94e8bd9-9eb5-e427-9c26-ff7a6c21552a';
 		$apps[$x]['menu'][1]['category'] = 'internal';
 		$apps[$x]['menu'][1]['path'] = '/mod/dialplan/dialplans.php';
 		$apps[$x]['menu'][1]['groups'][] = 'admin';
 		$apps[$x]['menu'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['menu'][0]['title']['en'] = 'Inbound Routes';
-		$apps[$x]['menu'][0]['uuid'] = 'B64B2BBF-F99B-B568-13DC-32170515A687';
-		$apps[$x]['menu'][0]['parent_uuid'] = 'B94E8BD9-9EB5-E427-9C26-FF7A6C21552A';
+		$apps[$x]['menu'][0]['uuid'] = 'b64b2bbf-f99b-b568-13dc-32170515a687';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'b94e8bd9-9eb5-e427-9c26-ff7a6c21552a';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/dialplan/dialplans.php?context=public';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Settings";
-		$apps[$x]['uuid'] = 'B6B1B2E5-4BA5-044C-8A5C-18709A15EB60';
+		$apps[$x]['uuid'] = 'b6b1b2e5-4ba5-044c-8a5c-18709a15eb60';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Settings';
-		$apps[$x]['menu'][0]['uuid'] = '148EA42A-3711-3D64-181B-07A6A3C3ED60';
-		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6D56-6D3E-0B1A-D53A2BC10788';
+		$apps[$x]['menu'][0]['uuid'] = '148ea42a-3711-3d64-181b-07a6a3c3ed60';
+		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6d56-6d3e-0b1a-d53a2bc10788';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/settings/v_settings_edit.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

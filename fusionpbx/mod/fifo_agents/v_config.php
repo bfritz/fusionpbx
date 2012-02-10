@@ -2,7 +2,7 @@
 	/*
 	//application details
 		$apps[$x]['name'] = "FIFO Agents";
-		$apps[$x]['uuid'] = '3B1D4007-6ECA-DBCA-EE5C-DF0263C10583';
+		$apps[$x]['uuid'] = '3b1d4007-6eca-dbca-ee5c-df0263c10583';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';

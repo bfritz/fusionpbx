@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "CDR CSV";
-		$apps[$x]['uuid'] = '08CAAF75-E30B-8B58-E4AD-D9CC76BA2F92';
+		$apps[$x]['uuid'] = '08caaf75-e30b-8b58-e4ad-d9cc76ba2f92';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'CDR CSV';
-		$apps[$x]['menu'][0]['uuid'] = '57D6BEA3-EDD3-13C8-E841-CC4CD852B905';
-		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = '57d6bea3-edd3-13c8-e841-cc4cd852b905';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/cdr/v_cdr.php';
 		$apps[$x]['menu'][0]['groups'][] = 'hidden';

@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Modules";
-		$apps[$x]['uuid'] = '5EB9CBA1-8CB6-5D21-E36A-775475F16B5E';
+		$apps[$x]['uuid'] = '5eb9cba1-8cb6-5d21-e36a-775475f16b5e';
 		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Modules';
-		$apps[$x]['menu'][0]['uuid'] = '49FDB4E1-5417-0E7A-84B3-EB77F5263EA7';
-		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6D56-6D3E-0B1A-D53A2BC10788';
+		$apps[$x]['menu'][0]['uuid'] = '49fdb4e1-5417-0e7a-84b3-eb77f5263ea7';
+		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6d56-6d3e-0b1a-d53a2bc10788';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/mod/modules/v_modules.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = 'Domains';
-		$apps[$x]['guid'] = 'B31E723A-BF70-670C-A49B-470D2A232F71';
+		$apps[$x]['guid'] = 'b31e723a-bf70-670c-a49b-470d2a232f71';
 		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Domains';
-		$apps[$x]['menu'][0]['uuid'] = '4FA7E90B-6D6C-12D4-712F-62857402B801';
-		$apps[$x]['menu'][0]['parent_uuid'] = '594D99C5-6128-9C88-CA35-4B33392CEC0F';
+		$apps[$x]['menu'][0]['uuid'] = '4fa7e90b-6d6c-12d4-712f-62857402b801';
+		$apps[$x]['menu'][0]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/core/domains/v_domains.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

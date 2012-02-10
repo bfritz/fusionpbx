@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = "Calls";
-		$apps[$x]['uuid'] = '19806921-E8ED-DCFF-B325-DD3E5DA4959D';
+		$apps[$x]['uuid'] = '19806921-e8ed-dcff-b325-dd3e5da4959d';
 		$apps[$x]['category'] = 'PBX';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
