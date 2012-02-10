@@ -28,7 +28,7 @@
 	require_once "includes/classes/switch_modules.php";
 	$mod = new switch_modules;
 	$mod->db = $db;
-	$mod->switch_mod_dir = $switch_mod_dir;
+	$mod->dir = $_SESSION['switch']['mod']['directory'];
 	$mod->get_modules();
 	$mod->synch();
 	$msg = $mod->msg;
