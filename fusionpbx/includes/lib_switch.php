@@ -1584,17 +1584,14 @@ function sync_package_v_settings() {
 }
 
 function sync_package_v_extensions() {
-	global $config;
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
+	//declare global variables
+		global $config;
 
 	//determine the extensions parent directory
-		$extension_parent_dir = realpath($switch_extensions_dir."/..");
+		$extension_parent_dir = realpath($_SESSION['switch']['extensions']['directory']."/..");
 
 	// delete all old extensions to prepare for new ones
-		if($dh = opendir($switch_extensions_dir)) {
+		if($dh = opendir($_SESSION['switch']['extensions']['directory'])) {
 			$files = Array();
 			while($file = readdir($dh)) {
 				if($file != "." && $file != ".." && $file[0] != '.') {
@@ -1603,7 +1600,7 @@ function sync_package_v_extensions() {
 					} else {
 						//check if file is an extension; verify the file numeric and the extension is xml
 						if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
-							unlink($switch_extensions_dir."/".$file);
+							unlink($_SESSION['switch']['extensions']['directory']."/".$file);
 						}
 					}
 				}
@@ -1621,7 +1618,7 @@ function sync_package_v_extensions() {
 	$i = 0;
 	$extension_xml_condensed = false;
 	if ($extension_xml_condensed) {
-		$fout = fopen($switch_extensions_dir."/v_extensions.xml","w");
+		$fout = fopen($_SESSION['switch']['extensions']['directory']."/v_extensions.xml","w");
 		$tmp_xml = "<include>\n";
 	}
 	while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
@@ -1650,7 +1647,7 @@ function sync_package_v_extensions() {
 			$extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension);
 
 			if (!$extension_xml_condensed) {
-				$fout = fopen($switch_extensions_dir."/v_".$extension.".xml","w");
+				$fout = fopen($_SESSION['switch']['extensions']['directory']."/v_".$extension.".xml","w");
 				$tmp_xml .= "<include>\n";
 			}
 			$cidr = '';
@@ -1899,12 +1896,8 @@ function filename_safe($filename) {
 
 function sync_package_v_gateways() {
 
-	global $db, $domain_uuid, $config;
-
-	$settings_array = v_settings();
-	foreach($settings_array as $name => $value) {
-		$$name = $value;
-	}
+	//declare the global variables
+		global $db, $domain_uuid, $config;
 
 	// delete all old gateways to prepare for new ones
 		if (count($_SESSION["domains"]) > 1) {

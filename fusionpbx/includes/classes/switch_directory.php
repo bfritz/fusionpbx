@@ -425,7 +425,7 @@ include "root.php";
 			$this->extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $this->extension);
 
 			/*if (!$extension_xml_condensed) { <--- what do I do with this??
-				$fout = fopen($switch_extensions_dir."/v_".$extension.".xml","w");
+				$fout = fopen($_SESSION['switch']['extensions']['directory']."/v_".$extension.".xml","w");
 				$tmp_xml .= "<include>\n";
 			}*/
 			if (strlen($this->cidr)) {
@@ -527,10 +527,10 @@ include "root.php";
 				}
 
 			//determine the extensions parent directory
-				$extension_parent_dir = realpath($switch_extensions_dir."/..");
+				$extension_parent_dir = realpath($_SESSION['switch']['extensions']['directory']."/..");
 
 			// delete all old extensions to prepare for new ones
-				if($dh = opendir($switch_extensions_dir)) {
+				if($dh = opendir($_SESSION['switch']['extensions']['directory'])) {
 					$files = Array();
 					while($file = readdir($dh)) {
 						if($file != "." && $file != ".." && $file[0] != '.') {
@@ -539,7 +539,7 @@ include "root.php";
 							} else {
 								//check if file is an extension; verify the file numeric and the extension is xml
 								if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
-									unlink($switch_extensions_dir."/".$file);
+									unlink($_SESSION['switch']['extensions']['directory']."/".$file);
 								}
 							}
 						}
@@ -556,7 +556,7 @@ include "root.php";
 			$i = 0;
 			$extension_xml_condensed = false;
 			if ($extension_xml_condensed) {
-				$fout = fopen($switch_extensions_dir."/v_extensions.xml","w");
+				$fout = fopen($_SESSION['switch']['extensions']['directory']."/v_extensions.xml","w");
 				$tmp_xml = "<include>\n";
 			}
 			while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {

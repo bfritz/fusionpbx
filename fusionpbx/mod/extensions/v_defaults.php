@@ -25,6 +25,6 @@
 */
 
 //if the extensions dir doesn't exist then create it
-	if (!is_dir($switch_extensions_dir)) { mkdir($switch_extensions_dir,0777,true); }
+	if (!is_dir($_SESSION['switch']['extensions']['directory'])) { mkdir($_SESSION['switch']['extensions']['directory'],0777,true); }
 
 ?>
