@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Dialplan Manager";
 		$apps[$x]['uuid'] = '742714e5-8cdf-32fd-462c-cbe7e3d655db';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
@@ -25,13 +25,6 @@
 		$apps[$x]['menu'][1]['path'] = '/mod/dialplan/dialplans.php';
 		$apps[$x]['menu'][1]['groups'][] = 'admin';
 		$apps[$x]['menu'][1]['groups'][] = 'superadmin';
-
-		$apps[$x]['menu'][0]['title']['en'] = 'Inbound Routes';
-		$apps[$x]['menu'][0]['uuid'] = 'b64b2bbf-f99b-b568-13dc-32170515a687';
-		$apps[$x]['menu'][0]['parent_uuid'] = 'b94e8bd9-9eb5-e427-9c26-ff7a6c21552a';
-		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/mod/dialplan/dialplans.php?context=public';
-		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
 		$apps[$x]['permissions'][0]['name'] = 'dialplan_view';
