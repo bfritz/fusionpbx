@@ -141,7 +141,7 @@ else {
 	foreach($result as $field) {
 		$username = $field[username];
 		if (if_group_members($db, $group_name, $username)) {
-			echo "<option value='".$field[username]."'>".$field[username]."</option>\n";
+			echo "<option value='".$field['username']."'>".$field['username']."</option>\n";
 		}
 	}
 	echo "</select>";

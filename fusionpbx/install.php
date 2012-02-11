@@ -927,12 +927,14 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//add the user to the superadmin group
 		$sql = "insert into v_group_members ";
 		$sql .= "(";
+		$sql .= "group_member_uuid, ";
 		$sql .= "domain_uuid, ";
 		$sql .= "username, ";
 		$sql .= "group_name ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
+		$sql .= "'".uuid()."', ";
 		$sql .= "'".$_SESSION["domain_uuid"]."', ";
 		$sql .= "'".$admin_username."', ";
 		$sql .= "'superadmin' ";
@@ -957,12 +959,14 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						//add the record
 						$sql = "insert into v_group_permissions ";
 						$sql .= "(";
+						$sql .= "group_permission_uuid, ";
 						$sql .= "domain_uuid, ";
 						$sql .= "permission_name, ";
 						$sql .= "group_name ";
 						$sql .= ") ";
 						$sql .= "values ";
 						$sql .= "(";
+						$sql .= "'".uuid()."' ";
 						$sql .= "'".$_SESSION["domain_uuid"]."', ";
 						$sql .= "'".$row['name']."', ";
 						$sql .= "'".$group."' ";
