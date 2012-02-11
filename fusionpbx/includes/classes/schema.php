@@ -56,20 +56,25 @@ include "root.php";
 								$sql = "CREATE TABLE " . $row['table'] . " (\n";
 								$field_count = 0;
 								foreach ($row['fields'] as $field) {
-									if ($field_count > 0 ) { $sql .= ",\n"; }
-									if (is_array($field['name'])) {
-										$sql .= $field['name']['text'] . " ";
+									if ($field['deprecated'] == "true") {
+										//skip this field
 									}
 									else {
-										$sql .= $field['name'] . " ";
+										if ($field_count > 0 ) { $sql .= ",\n"; }
+										if (is_array($field['name'])) {
+											$sql .= $field['name']['text'] . " ";
+										}
+										else {
+											$sql .= $field['name'] . " ";
+										}
+										if (is_array($field['type'])) {
+											$sql .= $field['type'][$this->db_type];
+										}
+										else {
+											$sql .= $field['type'];
+										}
+										$field_count++;
 									}
-									if (is_array($field['type'])) {
-										$sql .= $field['type'][$this->db_type];
-									}
-									else {
-										$sql .= $field['type'];
-									}
-									$field_count++;
 								}
 								$sql .= ");";
 							//execute the sql query
