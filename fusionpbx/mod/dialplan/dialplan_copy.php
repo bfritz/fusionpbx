@@ -53,6 +53,7 @@ else {
 	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$database_dialplan_uuid = $row["dialplan_uuid"];
+		$app_uuid = $row["app_uuid"];
 		$dialplan_name = $row["dialplan_name"];
 		$dialplan_order = $row["dialplan_order"];
 		$dialplan_continue = $row["dialplan_continue"];
@@ -69,6 +70,7 @@ else {
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "dialplan_uuid, ";
+		$sql .= "app_uuid, ";
 		$sql .= "dialplan_name, ";
 		$sql .= "dialplan_order, ";
 		$sql .= "dialplan_continue, ";
@@ -80,6 +82,7 @@ else {
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
 		$sql .= "'$dialplan_uuid', ";
+		$sql .= "'$app_uuid', ";
 		$sql .= "'$dialplan_name', ";
 		$sql .= "'$dialplan_order', ";
 		$sql .= "'$dialplan_continue', ";

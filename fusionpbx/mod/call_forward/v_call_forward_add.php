@@ -95,8 +95,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add the entries to the dialplan
 		$dialplan_context = 'default';
-		$opt_1_name = 'call_forward_uuid';
-		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $opt_1_name, $opt_1_value);
+		$app_uuid = '30bcde30-37ed-5b84-ec8e-866c7293c443';
+		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 		if (strlen($dialplan_uuid) > 0 && strlen($condition_expression_1) > 0) {
 			//add condition 1
 				$dialplan_detail_tag = 'condition'; //condition, action, antiaction

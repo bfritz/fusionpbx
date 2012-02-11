@@ -393,7 +393,8 @@ else {
 					}
 					$dialplan_context = 'default';
 					$dialplan_continue = 'false';
-					//$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $description);
+					$app_uuid = '8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3';
+					//$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 					//add the main dialplan include entry
 						$dialplan_uuid = uuid();
@@ -413,7 +414,7 @@ else {
 						$sql .= "(";
 						$sql .= "'$domain_uuid', ";
 						$sql .= "'$dialplan_uuid', ";
-						$sql .= "'8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3', ";
+						$sql .= "'$app_uuid', ";
 						$sql .= "'$dialplan_name', ";
 						$sql .= "'$dialplan_order', ";
 						$sql .= "'$dialplan_continue', ";
