@@ -816,6 +816,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['subcategory'] = 'provision';
 		$tmp[$x]['enabled'] = 'false';
 		$x++;
+		$db_tmp->beginTransaction();
 		foreach($tmp as $row) {
 			$sql = "insert into v_domain_settings ";
 			$sql .= "(";
@@ -843,6 +844,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 		}
+		$db_tmp->commit();
 		unset($tmp);
 
 	//get the list of installed apps from the core and mod directories
@@ -869,6 +871,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$x++;
 		$tmp[$x]['group_name'] = 'agent';
 		$tmp[$x]['group_desc'] = 'Call Center Agent Group';
+		$db_tmp->beginTransaction();
 		foreach($tmp as $row) {
 			$sql = "insert into v_groups ";
 			$sql .= "(";
@@ -890,6 +893,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 		}
+		$db_tmp->commit();
 		unset($tmp);
 
 	//add the superadmin user account
@@ -946,7 +950,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		unset($sql);
 
 	//assign the default permissions to the groups
-		//$db_tmp->beginTransaction();
+		$db_tmp->beginTransaction();
 		foreach($apps as $app) {
 			if ($app['permissions']) {
 				foreach ($app['permissions'] as $row) {
@@ -966,7 +970,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						$sql .= ") ";
 						$sql .= "values ";
 						$sql .= "(";
-						$sql .= "'".uuid()."' ";
+						$sql .= "'".uuid()."', ";
 						$sql .= "'".$_SESSION["domain_uuid"]."', ";
 						$sql .= "'".$row['name']."', ";
 						$sql .= "'".$group."' ";
