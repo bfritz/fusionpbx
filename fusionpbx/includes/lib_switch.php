@@ -2333,8 +2333,7 @@ function sync_package_v_hunt_group() {
 						$sql = "";
 						$sql .= "select * from v_dialplans ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and opt_1_name = 'hunt_group_uuid' ";
-						$sql .= "and opt_1_value = '".$row['hunt_group_uuid']."' ";
+						$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
 						$prep_statement_2 = $db->prepare($sql);
 						$prep_statement_2->execute();
 						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
@@ -2393,8 +2392,7 @@ function sync_package_v_hunt_group() {
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and opt_1_name = 'hunt_group_uuid' ";
-								$sql .= "and opt_1_value = '$hunt_group_uuid' ";
+								$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
 								$db->query($sql);
 								unset($sql);
 
@@ -2424,8 +2422,7 @@ function sync_package_v_hunt_group() {
 								unset($context);
 								unset($enabled);
 								unset($descr);
-								unset($opt_1_name);
-								unset($opt_1_value);
+								unset($dialplan_uuid);
 						}
 						unset($action);
 
@@ -2436,8 +2433,7 @@ function sync_package_v_hunt_group() {
 							$sql = "";
 							$sql .= "select * from v_dialplans ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";
-							$sql .= "and opt_1_name = 'hunt_group_uuid_fifo' ";
-							$sql .= "and opt_1_value = '".$row['hunt_group_uuid']."' ";
+							$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 							$prep_statement_2 = $db->prepare($sql);
 							$prep_statement_2->execute();
 							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
@@ -2965,8 +2961,7 @@ function sync_package_v_fax() {
 			$sql = "";
 			$sql .= "select * from v_dialplans ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and opt_1_name = 'faxid' ";
-			$sql .= "and opt_1_value = '".$row['fax_uuid']."' ";
+			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
 			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
@@ -2978,8 +2973,6 @@ function sync_package_v_fax() {
 				$context = $row2['context'];
 				$enabled = $row2['enabled'];
 				$descr = check_str($row2['descr']);
-				$opt_1_name = $row2['opt_1_name'];
-				$opt_1_value = $row2['opt_1_value'];
 				$id = $i;
 
 				if (file_exists($_SESSION['switch']['dialplan']['dir']."/".$order."_".$dialplan_name.".xml")){
@@ -3158,8 +3151,7 @@ function sync_package_v_fax() {
 				unset($context);
 				unset($enabled);
 				unset($descr);
-				unset($opt_1_name);
-				unset($opt_1_value);
+				unset($dialplan_uuid);
 				unset($id);
 			}
 
@@ -3863,20 +3855,20 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 						$action = 'add'; //set default action to add
 						$i = 0;
 
-						//get the dialplan include id
-							$sql = "";
-							$sql .= "select * from v_dialplans ";
-							$sql .= "where domain_uuid = '$domain_uuid' ";
-							$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
-							$sql .= "and opt_1_value = '".$row['ivr_menu_uuid']."' ";
-							$prep_statement_2 = $db->prepare($sql);
-							$prep_statement_2->execute();
-							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-								$action = 'update';
-								$dialplan_uuid = $row2['dialplan_uuid'];
-								break; //limit to 1 row
-							}
-							unset ($sql, $prep_statement_2);
+						//get the dialplan include uuid
+//							$sql = "";
+//							$sql .= "select * from v_dialplans ";
+//							$sql .= "where domain_uuid = '$domain_uuid' ";
+//							//$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
+//							//$sql .= "and opt_1_value = '".$row['ivr_menu_uuid']."' ";
+//							$prep_statement_2 = $db->prepare($sql);
+//							$prep_statement_2->execute();
+//							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
+//								$action = 'update';
+//								$dialplan_uuid = $row2['dialplan_uuid'];
+//								break; //limit to 1 row
+//							}
+//							unset ($sql, $prep_statement_2);
 
 						//delete the dialplan details
 							$sql = "";
@@ -3910,8 +3902,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
-								$sql .= "and opt_1_value = '$ivr_menu_uuid' ";
+								$sql .= "where dialplan_uuid = '$dialplan_uuid' ";
 								$db->query($sql);
 								unset($sql);
 							}
@@ -4102,18 +4093,18 @@ if (!function_exists('sync_package_v_call_center')) {
 						$action = 'add'; //set default action to add
 						$i = 0;
 
-						$sql = "";
-						$sql .= "select * from v_dialplans ";
-						$sql .= "where opt_1_name = 'call_center_queue_uuid' ";
-						$sql .= "and opt_1_value = '".$row['call_center_queue_uuid']."' ";
-						$prep_statement_2 = $db->prepare($sql);
-						$prep_statement_2->execute();
-						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-							$action = 'update';
-							$dialplan_uuid = $row2['dialplan_uuid'];
-							break; //limit to 1 row
-						}
-						unset ($sql, $prep_statement_2);
+//						$sql = "";
+//						$sql .= "select * from v_dialplans ";
+//						$sql .= "where opt_1_name = 'call_center_queue_uuid' ";
+//						$sql .= "and opt_1_value = '".$row['call_center_queue_uuid']."' ";
+//						$prep_statement_2 = $db->prepare($sql);
+//						$prep_statement_2->execute();
+//						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
+//							$action = 'update';
+//							$dialplan_uuid = $row2['dialplan_uuid'];
+//							break; //limit to 1 row
+//						}
+//						unset ($sql, $prep_statement_2);
 
 						if ($action == 'add') {
 							//create queue entry in the dialplan
@@ -4279,8 +4270,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								$sql .= "enabled = '$enabled', ";
 								$sql .= "descr = '$descr' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and opt_1_name = 'call_center_queue_uuid' ";
-								$sql .= "and opt_1_value = '$call_center_queue_uuid' ";
+								$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
 								//echo "sql: ".$sql."<br />";
 								$db->query($sql);
 								unset($sql);
@@ -4325,8 +4315,7 @@ if (!function_exists('sync_package_v_call_center')) {
 								unset($context);
 								unset($enabled);
 								unset($descr);
-								unset($opt_1_name);
-								unset($opt_1_value);
+								unset($dialplan_uuid);
 						}
 						unset($action);
 						unset($dialplanincludeid);

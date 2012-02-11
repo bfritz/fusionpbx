@@ -58,12 +58,10 @@ else {
 			$sql = "";
 			$sql .= "select * from v_dialplans ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and opt_1_name = 'faxid' ";
-			$sql .= "and opt_1_value = '".$fax_uuid."' ";
+			$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
 			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-				$dialplan_uuid = $row2['dialplan_uuid'];
 				$dialplan_name = check_str($row2['dialplan_name']);
 				$dialplan_order = $row2['dialplan_order'];
 				$dialplan_context = $row2['dialplan_context'];

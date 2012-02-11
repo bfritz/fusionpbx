@@ -53,11 +53,11 @@
 
 // add a recordings dialplan entry if it doesn't exist
 	$v_recording_action = 'add';
+	$app_uuid = '430737df-5385-42d1-b933-22600d3fb79e';
 	$sql = "";
 	$sql .= "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and opt_1_name = 'recordings' ";
-	$sql .= "and (opt_1_value = '732' or opt_1_value = '732673') ";
+	$sql .= "and app_uuid = '$app_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
@@ -74,7 +74,6 @@
 		$dialplan_context = 'default';
 		$dialplan_enabled = 'true';
 		$dialplan_description = '*732 Recordings';
-		$app_uuid = '430737df-5385-42d1-b933-22600d3fb79e';
 		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 		$dialplan_detail_tag = 'condition'; //condition, action, antiaction
@@ -121,11 +120,11 @@
 
 // add a disa dialplan entry if it doesn't exist
 	$v_disa_action = 'add';
+	$app_uuid = '3ade2d9a-f55d-4240-bb60-b4a3ab36951c';
 	$sql = "";
 	$sql .= "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and opt_1_name = 'disa' ";
-	$sql .= "and (opt_1_value = '347' or opt_1_value = '3472') ";
+	$sql .= "and app_uuid = '$app_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
@@ -142,7 +141,6 @@
 		$dialplan_context = $_SESSION['dialplan_context'];
 		$dialplan_enabled = 'false';
 		$dialplan_description = '*3472 Direct Inward System Access ';
-		$app_uuid = '3ade2d9a-f55d-4240-bb60-b4a3ab36951c';
 		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 		$dialplan_detail_tag = 'condition'; //condition, action, antiaction
@@ -177,11 +175,11 @@
 
 // add a wake up call dialplan entry if it doesn't exist
 	$v_wake_up_action = 'add';
+	$app_uuid = 'e27abe68-41c0-4188-bb0f-67d93de0c610';
 	$sql = "";
 	$sql .= "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and opt_1_name = 'wake up' ";
-	$sql .= "and opt_1_value = '923' ";
+	$sql .= "and app_uuid = '$app_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
@@ -198,7 +196,6 @@
 		$dialplan_context = 'default';
 		$dialplan_enabled = 'true';
 		$dialplan_description = '*923 Wake Up Calls';
-		$app_uuid = 'e27abe68-41c0-4188-bb0f-67d93de0c610';
 		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 		$dialplan_detail_tag = 'condition'; //condition, action, antiaction

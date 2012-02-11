@@ -63,8 +63,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "select * from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
-		$sql .= "and opt_1_value = '".$id."' ";
+		$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
 		$prep_statement_2 = $db->prepare($sql);
 		$prep_statement_2->execute();
 		while($row2 = $prep_statement_2->fetch()) {

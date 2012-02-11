@@ -66,8 +66,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql .= "select * from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'hunt_group_uuid' ";
-		$sql .= "and opt_1_value = '".$id."' ";
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		//echo "sql: ".$sql."<br />\n";
 		$prep_statement_2 = $db->prepare($sql);
 		$prep_statement_2->execute();
@@ -90,8 +89,7 @@ if (strlen($id)>0) {
 			$sql = "";
 			$sql .= "select * from v_dialplans ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and opt_1_name = 'hunt_group_uuid_fifo' ";
-			$sql .= "and opt_1_value = '".$id."' ";
+			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 			//echo "sql fifo: ".$sql."<br />\n";
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
@@ -113,11 +111,7 @@ if (strlen($id)>0) {
 		$sql = "";
 		$sql = "delete from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'hunt_group_uuid' ";
-		$sql .= "and opt_1_value = '$id' ";
-		$sql .= "or domain_uuid = '$domain_uuid' ";
-		$sql .= "and opt_1_name = 'hunt_group_uuid_fifo' ";
-		$sql .= "and opt_1_value = '$id' ";
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		//echo "sql: ".$sql."<br />\n";
 		$db->query($sql);
 		unset($sql);
