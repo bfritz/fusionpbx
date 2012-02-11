@@ -360,14 +360,19 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 											$field_name = $field['name'];
 										}
 									//find missing fields and add them
-										if (is_array($field['name'])) {
-											if ($field['exists'] == "false" && !db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
-												$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']['text']." ".$field_type.";\n";
-											}
+										if ($field['deprecated'] == "true") {
+											//skip this row
 										}
 										else {
-											if ($field['exists'] == "false") {
-												$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']." ".$field_type.";\n";
+											if (is_array($field['name'])) {
+												if ($field['exists'] == "false" && !db_column_exists ($db, $db_type, $db_name, $table_name, $field['name']['deprecated'])) {
+													$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']['text']." ".$field_type.";\n";
+												}
+											}
+											else {
+												if ($field['exists'] == "false") {
+													$sql_update .= "ALTER TABLE ".$table_name." ADD ".$field['name']." ".$field_type.";\n";
+												}
 											}
 										}
 									//rename fields where the name has changed
