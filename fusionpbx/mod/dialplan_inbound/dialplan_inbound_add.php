@@ -26,7 +26,7 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (permission_exists('public_includes_add')) {
+if (permission_exists('inbound_route_add')) {
 	//access granted
 }
 else {
@@ -123,6 +123,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "(";
 		$sql .= "domain_uuid, ";
 		$sql .= "dialplan_uuid, ";
+		$sql .= "app_uuid, ";
 		$sql .= "dialplan_name, ";
 		$sql .= "dialplan_order	, ";
 		$sql .= "dialplan_context, ";
@@ -133,6 +134,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "(";
 		$sql .= "'$domain_uuid', ";
 		$sql .= "'$dialplan_uuid', ";
+		$sql .= "'c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4', ";
 		$sql .= "'$dialplan_name', ";
 		$sql .= "'$public_order', ";
 		$sql .= "'public', ";
@@ -420,7 +422,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//redirect the user
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?dialplan_context=public\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=/mod/dialplan/dialplans.php?app_uuid=c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4\">\n";
 		echo "<div align='center'>\n";
 		echo "Update Complete\n";
 		echo "</div>\n";
@@ -477,13 +479,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "			</strong></span></span>\n";
 	echo "		</td>\n";
 	echo "		<td align='right'>\n";
-	if (permission_exists("public_includes_edit") && $action == "advanced") {
-		echo "			<input type='button' class='btn' name='' alt='basic' onclick=\"window.location='dialplan_public_add.php?action=basic'\" value='Basic'>\n";
+	if (permission_exists("inbound_route_edit") && $action == "advanced") {
+		echo "			<input type='button' class='btn' name='' alt='basic' onclick=\"window.location='dialplan_inbound_add.php?action=basic'\" value='Basic'>\n";
 	}
 	else {
-		echo "			<input type='button' class='btn' name='' alt='advanced' onclick=\"window.location='dialplan_public_add.php?action=advanced'\" value='Advanced'>\n";
+		echo "			<input type='button' class='btn' name='' alt='advanced' onclick=\"window.location='dialplan_inbound_add.php?action=advanced'\" value='Advanced'>\n";
 	}
-	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?dialplan_context=public'\" value='Back'>\n";
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='/mod/dialplan/dialplans.php?app_uuid=c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4'\" value='Back'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -513,7 +515,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if (permission_exists("public_includes_edit") && $action == "advanced") {
+	if (permission_exists("inbound_route_edit") && $action == "advanced") {
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "	Condition 1:\n";
@@ -614,7 +616,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	if (permission_exists("public_includes_edit") && $action=="advanced") {
+	if (permission_exists("inbound_route_edit") && $action=="advanced") {
 		echo "    Action 1:\n";
 	}
 	else {
@@ -632,7 +634,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if (permission_exists("public_includes_edit") && $action=="advanced") {
+	if (permission_exists("inbound_route_edit") && $action=="advanced") {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 		echo "    Action 2:\n";

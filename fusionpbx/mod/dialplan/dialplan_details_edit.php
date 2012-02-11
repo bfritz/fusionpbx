@@ -26,7 +26,12 @@
 include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
-if (permission_exists('dialplan_add') || permission_exists('dialplan_edit')) {
+if (permission_exists('dialplan_add') 
+	|| permission_exists('dialplan_edit') 
+	|| permission_exists('inbound_route_add') 
+	|| permission_exists('inbound_route_edit')
+	|| permission_exists('outbound_route_add') 
+	|| permission_exists('outbound_route_edit')) {
 	//access granted
 }
 else {

@@ -27,7 +27,9 @@ include "root.php";
 require_once "includes/config.php";
 require_once "includes/checkauth.php";
 require_once "includes/paging.php";
-if (permission_exists('dialplan_add')) {
+if (permission_exists('dialplan_add') 
+	|| permission_exists('inbound_route_add') 
+	|| permission_exists('outbound_route_add')) {
 	//access granted
 }
 else {

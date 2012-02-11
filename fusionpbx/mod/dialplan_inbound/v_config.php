@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Inbound Routes";
 		$apps[$x]['uuid'] = 'c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
