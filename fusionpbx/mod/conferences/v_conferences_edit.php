@@ -162,6 +162,7 @@ $order = $_GET["order"];
 		if ($action == "add" && permission_exists('conferences_add')) {
 
 			//add the main dialplan include entry
+				$dialplan_context = $_SESSION['context'];
 				$dialplan_uuid = uuid();
 				$sql = "insert into v_dialplans ";
 				$sql .= "(";

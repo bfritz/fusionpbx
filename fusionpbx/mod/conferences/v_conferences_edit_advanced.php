@@ -85,6 +85,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//Add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('conferences_advanced_add')) {
+				$dialplan_context = $_SESSION['context'];
 				$dialplan_uuid = uuid();
 				$sql = "insert into v_dialplans ";
 				$sql .= "(";

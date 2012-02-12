@@ -2347,7 +2347,7 @@ function sync_package_v_hunt_group() {
 							//create huntgroup extension in the dialplan
 								$dialplan_name = check_str($row['hunt_group_name']);
 								$dialplan_order ='999';
-								$dialplan_context = $row['hunt_group_context'];
+								$dialplan_context = $_SESSION['context'];
 								if ($row['hunt_group_enabled'] == "false") {
 									$dialplan_enabled = 'false';
 								}
@@ -2447,7 +2447,7 @@ function sync_package_v_hunt_group() {
 							//create a fifo queue for each huntgroup
 							$dialplan_name = check_str($row['hunt_group_name']).'.park';
 							$dialplan_order ='999';
-							$dialplan_context = $row['hunt_group_context'];
+							$dialplan_context = $_SESSION['context'];
 							if ($row['hunt_group_enabled'] == "false") {
 								$dialplan_enabled = 'false';
 							}
@@ -2991,7 +2991,7 @@ function sync_package_v_fax() {
 					//create an extension in the dialplan
 					$dialplan_name = $row['fax_name'];
 					$dialplan_order ='999';
-					$context = "default";
+					$dialplan_context = $_SESSION['context'];
 					$enabled = 'true';
 					$descr = $row['fax_description'];
 					$app_uuid = '24108154-4ac3-1db6-1551-4731703a4440';
@@ -3882,14 +3882,13 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 						//create the ivr menu dialplan extension
 							$dialplan_name = $ivr_menu_name;
 							$dialplan_order ='999';
-							$context = $row['ivr_menu_context'];
-							$context = 'default';
-							$enabled = 'true';
-							$descr = $ivr_menu_desc;
+							$dialplan_context = $_SESSION['context'];
+							$dialplan_enabled = 'true';
+							$dialplan_description = $ivr_menu_desc;
 
 							if ($action  == "add") {
 								$app_uuid = 'a5788e9b-58bc-bd1b-df59-fff5d51253ab';
-								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $app_uuid);
+								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 							}
 							if ($action  == "update") {
 								$ivr_menu_uuid = $row['ivr_menu_uuid'];
@@ -3898,9 +3897,9 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 								$sql = "update v_dialplans set ";
 								$sql .= "dialplan_name = '$dialplan_name', ";
 								$sql .= "dialplan_order = '$dialplan_order', ";
-								$sql .= "context = '$context', ";
-								$sql .= "enabled = '$enabled', ";
-								$sql .= "descr = '$descr' ";
+								$sql .= "dialplan_context = '$dialplan_context', ";
+								$sql .= "dialplan_enabled = '$dialplan_enabled', ";
+								$sql .= "dialplan_description = '$dialplan_description' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
 								$sql .= "where dialplan_uuid = '$dialplan_uuid' ";
 								$db->query($sql);
@@ -4110,11 +4109,11 @@ if (!function_exists('sync_package_v_call_center')) {
 							//create queue entry in the dialplan
 								$dialplan_name = $queue_name;
 								$dialplan_order ='9';
-								$context = 'default';
-								$enabled = 'true';
-								$descr = $queue_description;
+								$dialplan_context = $_SESSION['context'];
+								$dialplan_enabled = 'true';
+								$dialplan_description = $queue_description;
 								$app_uuid = '95788e50-9500-079e-2807-fd530b0ea370';
-								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $app_uuid);
+								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 								//group 1
 									$dialplan = new dialplan;

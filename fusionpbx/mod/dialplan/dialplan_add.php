@@ -101,6 +101,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$db->exec("BEGIN;"); //returns affected rows
 
 	//add the main dialplan include entry
+		$dialplan_context = $_SESSION['context'];
 		$dialplan_uuid = uuid();
 		$sql = "insert into v_dialplans ";
 		$sql .= "(";

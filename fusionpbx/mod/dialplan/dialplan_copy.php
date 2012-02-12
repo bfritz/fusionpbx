@@ -65,6 +65,7 @@ else {
 	unset ($prep_statement);
 
 	//copy the dialplan
+		$dialplan_context = $_SESSION['context'];
 		$dialplan_uuid = uuid();
 		$sql = "insert into v_dialplans ";
 		$sql .= "(";

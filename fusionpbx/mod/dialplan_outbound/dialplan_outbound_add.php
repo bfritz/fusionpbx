@@ -391,7 +391,7 @@ else {
 					if (strlen($dialplan_order) == 0) {
 						$dialplan_order ='999';
 					}
-					$dialplan_context = 'default';
+					$dialplan_context = $_SESSION['context'];
 					$dialplan_continue = 'false';
 					$app_uuid = '8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3';
 					//$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);

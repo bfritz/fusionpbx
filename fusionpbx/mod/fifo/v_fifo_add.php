@@ -93,7 +93,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//</extension>
 		//--------------------------------------------------------
 			$extension_name = $extension_name."_call_queue";
-			$dialplan_context = 'default';
+			$dialplan_context = $_SESSION['context'];
 			$app_uuid = '16589224-c876-aeb3-f59f-523a1c0801f7';
 			$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 			if (strlen($dialplan_uuid) > 0) {
@@ -144,7 +144,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//</extension>
 		//--------------------------------------------------------
 			$extension_name = $extension_name."_agent_queue";
-			$dialplan_context = 'default';
+			$dialplan_context = $_SESSION['context'];
 			$app_uuid = '16589224-c876-aeb3-f59f-523a1c0801f7';
 			$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 			if (strlen($dialplan_uuid) > 0) {
@@ -195,7 +195,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//</extension>
 		//--------------------------------------------------------
 			$extension_name = $extension_name."_agent_login_logout";
-			$dialplan_context = 'default';
+			$dialplan_context = $_SESSION['context'];
 			$app_uuid = '16589224-c876-aeb3-f59f-523a1c0801f7';
 			$dialplan_uuid = v_dialplan_add($domain_uuid, $extension_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 			if (strlen($dialplan_uuid) > 0) {
