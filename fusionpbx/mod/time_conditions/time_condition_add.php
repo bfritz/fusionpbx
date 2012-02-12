@@ -470,7 +470,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		sync_package_v_dialplan();
 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_dialplans.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=/mod/dialplan/dialplans.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1\">\n";
 	echo "<div align='center'>\n";
 	echo "Update Complete\n";
 	echo "</div>\n";
