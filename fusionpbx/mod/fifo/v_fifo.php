@@ -40,40 +40,6 @@ require_once "includes/paging.php";
 	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
-//find the queues from the dialplan include details
-
-	//define the queue array
-		$queue_array = array ();
-
-	//add data to the queue array
-		$sql = "";
-		$sql .= "select * from v_dialplan_details ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$x = 0;
-		$result = $prep_statement->fetchAll();
-		foreach ($result as &$row) {
-			$dialplan_uuid = $row["dialplan_uuid"];
-			//$dialplan_detail_tag = $row["dialplan_detail_tag"];
-			//$dialplan_detail_order = $row["dialplan_detail_order"];
-			$dialplan_detail_type = $row["dialplan_detail_type"];
-			$dialplan_detail_data = $row["dialplan_detail_data"];
-			if ($dialplan_detail_type == "fifo") {
-				//echo "dialplan_uuid: $dialplan_uuid<br />";
-				//echo "dialplan_detail_data: $dialplan_detail_data<br />";
-				$queue_array[$x]['dialplan_uuid'] = $dialplan_uuid;
-				$x++;
-			}
-			else {
-				if ($dialplan_detail_data == "fifo_member.lua") {
-					$queue_array[$x]['dialplan_uuid'] = $dialplan_uuid;
-					$x++;
-				}
-			}
-		}
-		unset ($prep_statement);
-
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -103,34 +69,26 @@ require_once "includes/paging.php";
 	echo "	<br />";
 	echo "	<br />";
 
+//get the number of rows in the dialplan
 	$sql = "";
-	$sql .= " select * from v_dialplans ";
-	if (count($queue_array) == 0) {
-		//when there are no queues then hide all dialplan entries
-		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and dialplan_context = 'hide' ";
-	}
-	else {
-		$x = 0;
-		foreach ($queue_array as &$row) {
-			if ($x == 0) {
-				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-			}
-			else {
-				$sql .= " or domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-			}
-			$x++;
-		}
-	}
+	$sql .= " select count(*) as num_rows from v_dialplans ";
+	$sql .= " where domain_uuid = '$domain_uuid' ";
+	$sql .= " and app_uuid = '16589224-c876-aeb3-f59f-523a1c0801f7' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, dialplan_name asc "; }
 	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
-	$num_rows = count($result);
-	unset ($prep_statement, $result, $sql);
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+		if ($row['num_rows'] > 0) {
+			$num_rows = $row['num_rows'];
+		}
+		else {
+			$num_rows = '0';
+		}
+	}
+	unset($prep_statement, $result);
 
+//paging prep	
 	$rows_per_page = 20;
 	$param = "";
 	$page = $_GET['page'];
@@ -138,27 +96,11 @@ require_once "includes/paging.php";
 	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page;
 
+//get the dialplans
 	$sql = "";
 	$sql .= " select * from v_dialplans ";
-	if (count($queue_array) == 0) {
-		//when there are no queues then hide all dialplan entries
-		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and dialplan_context = 'hide' ";
-	}
-	else {
-		$x = 0;
-		foreach ($queue_array as &$row) {
-			if ($x == 0) {
-				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-			}
-			else {
-				$sql .= " or domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-			}
-			$x++;
-		}
-	}
+	$sql .= " where domain_uuid = '$domain_uuid' ";
+	$sql .= " and app_uuid = '16589224-c876-aeb3-f59f-523a1c0801f7' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, dialplan_name asc "; }
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));

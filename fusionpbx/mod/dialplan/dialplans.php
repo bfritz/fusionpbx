@@ -110,21 +110,28 @@ require_once "includes/paging.php";
 	echo "	<br />";
 	echo "	<br />";
 
+	//get the number of rows in the dialplan
 	$sql = "";
-	$sql .= "select * from v_dialplans ";
+	$sql .= " select count(*) as num_rows from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if ($dialplan_context == "public") {
-		$sql .= "and dialplan_context = 'public' ";
+	if (strlen($app_uuid) == 0) {
+		$sql .= "and app_uuid <> 'c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4' ";
 	}
 	else {
-		$sql .= "and dialplan_context <> 'public' ";
+		$sql .= "and app_uuid = '".$app_uuid."' ";
 	}
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, dialplan_name asc "; }
 	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
-	$num_rows = count($result);
-	unset ($prep_statement, $result, $sql);
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+		if ($row['num_rows'] > 0) {
+			$num_rows = $row['num_rows'];
+		}
+		else {
+			$num_rows = '0';
+		}
+	}
+	unset($prep_statement, $result);
 
 	$rows_per_page = 150;
 	$param = "";
@@ -136,7 +143,10 @@ require_once "includes/paging.php";
 	$sql = "";
 	$sql .= " select * from v_dialplans ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
-	if (strlen($app_uuid) > 0) {
+	if (strlen($app_uuid) == 0) {
+		$sql .= "and app_uuid <> 'c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4' ";
+	}
+	else {
 		$sql .= "and app_uuid = '".$app_uuid."' ";
 	}
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order asc, dialplan_name asc "; }
@@ -180,6 +190,7 @@ require_once "includes/paging.php";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
+			$app_uuid = $row['app_uuid'];
 			if (strlen($row['dialplan_number']) == 0) {
 				$sql = "";
 				$sql .= "select * from v_dialplan_details ";
