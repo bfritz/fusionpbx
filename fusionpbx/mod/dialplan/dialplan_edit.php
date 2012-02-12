@@ -32,7 +32,9 @@ if (permission_exists('dialplan_add')
 	|| permission_exists('inbound_route_add') 
 	|| permission_exists('inbound_route_edit')
 	|| permission_exists('outbound_route_add') 
-	|| permission_exists('outbound_route_edit')) {
+	|| permission_exists('outbound_route_edit')
+	|| permission_exists('time_conditions_add') 
+	|| permission_exists('time_conditions_edit')) {
 	//access granted
 }
 else {
@@ -133,7 +135,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				//redirect the user
 					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+					if (strlen($app_uuid) == 0) {
+						echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+					}
+					else {
+						echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+					}
 					echo "<div align='center'>\n";
 					echo "Add Complete\n";
 					echo "</div>\n";
@@ -162,7 +169,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				//redirect the user
 					require_once "includes/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+					if (strlen($app_uuid) == 0) {
+						echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+					}
+					else {
+						echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+					}
 					echo "<div align='center'>\n";
 					echo "Update Complete\n";
 					echo "</div>\n";
@@ -215,11 +227,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    </td>\n";
 	echo "    <td width='70%' align='right'>\n";
 	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='dialplan_copy.php?id=".$row['dialplan_uuid']."';}\" value='Copy'>\n";
-	if ($dialplan_context == "public") {
-		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?dialplan_context=public'\" value='Back'>\n";
+	if (strlen($app_uuid) == 0) {
+		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php'\" value='Back'>\n";
 	}
 	else {
-		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php'\" value='Back'>\n";
+		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?app_uuid=$app_uuid'\" value='Back'>\n";
 	}
 	echo "	</td>\n";
 	echo "  </tr>\n";
@@ -274,13 +286,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <select class='formfld' name='dialplan_continue'>\n";
 	echo "    <option value=''></option>\n";
 	if ($dialplan_continue == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+		echo "    <option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($dialplan_continue == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";
@@ -315,9 +327,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	  $i++;
 	}
 	echo "              </select>\n";
-	//echo "  <input class='formfld' type='text' name='dialplan_order' maxlength='255' value='$dialplan_order'>\n";
 	echo "<br />\n";
-	//echo "Dialplans are processed from the lowest to the highest number.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
