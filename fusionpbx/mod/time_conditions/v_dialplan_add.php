@@ -102,6 +102,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//start the atomic transaction
 		$count = $db->exec("BEGIN;"); //returns affected rows
 
+
 	//add the main dialplan include entry
 		$dialplan_uuid = uuid();
 		$sql = "insert into v_dialplans ";
@@ -124,7 +125,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$dialplan_name', ";
 		$sql .= "'$dialplan_order', ";
 		$sql .= "'false', ";
-		$sql .= "'$_SESSION['context']', ";
+		$sql .= "'".$_SESSION['context']."', ";
 		$sql .= "'$dialplan_enabled', ";
 		$sql .= "'$dialplan_description' ";
 		$sql .= ")";
