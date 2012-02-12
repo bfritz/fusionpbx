@@ -40,41 +40,6 @@ require_once "includes/paging.php";
 	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
-//find the conference extensions from the dialplan include details
-
-	//define the conference array
-	$conference_array = array ();
-
-	$sql = "";
-	$sql .= "select * from v_dialplan_details ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (permission_exists('conferences_add') && permission_exists('conferences_edit')) {
-		//allow users with the conferences_add or conferences_edit permission to all conference rooms
-	}
-	else {
-		//find the assigned users
-			$sql .= "and dialplan_detail_data like 'conference_user_list%' and dialplan_detail_data like '%|".$_SESSION['username']."|%' ";
-	}
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$x = 0;
-	$result = $prep_statement->fetchAll();
-	foreach ($result as &$row) {
-		$dialplan_uuid = $row["dialplan_uuid"];
-		$dialplan_detail_type = $row["dialplan_detail_type"];
-		if (permission_exists('conferences_add') && permission_exists('conferences_edit')) {
-			if ($dialplan_detail_type == "conference") {
-				$conference_array[$x]['dialplan_uuid'] = $dialplan_uuid;
-				$x++;
-			}
-		}
-		else {
-			$conference_array[$x]['dialplan_uuid'] = $dialplan_uuid;
-			$x++;
-		}
-	}
-	unset ($prep_statement);
-
 //begin the form
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -110,25 +75,8 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= " select * from v_dialplans ";
-	if (count($conference_array) == 0) {
-		//when there are no conferences do this to hide all remaining entries
-		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and dialplan_context = 'hide' ";
-	}
-	else {
-		$x = 0;
-		foreach ($conference_array as &$row) {
-			if ($x == 0) {
-				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-			}
-			else {
-				$sql .= " or domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-			}
-			$x++;
-		}
-	}
+	$sql .= " where domain_uuid = '$domain_uuid' \n";
+	$sql .= " and app_uuid = 'b81412e8-7253-91f4-e48e-42fc2c9a38d9' \n";
 	if (strlen($order_by)> 0) {
 		$sql .= "order by $order_by $order ";
 	}
@@ -150,25 +98,8 @@ require_once "includes/paging.php";
 
 	$sql = "";
 	$sql .= " select * from v_dialplans ";
-	if (count($conference_array) == 0) {
-		//when there are no conferences do this to hide all remaining entries
-		$sql .= " where domain_uuid = '$domain_uuid' ";
-		$sql .= " and dialplan_context = 'hide' ";
-	}
-	else {
-		$x = 0;
-		foreach ($conference_array as &$row) {
-			if ($x == 0) {
-				$sql .= " where domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-			}
-			else {
-				$sql .= " or domain_uuid = '$domain_uuid' \n";
-				$sql .= " and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-			}
-			$x++;
-		}
-	}
+	$sql .= " where domain_uuid = '$domain_uuid' \n";
+	$sql .= " and app_uuid = 'b81412e8-7253-91f4-e48e-42fc2c9a38d9' \n";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; } else { $sql .= "order by dialplan_order, dialplan_name asc "; }
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
