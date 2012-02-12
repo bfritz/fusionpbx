@@ -59,6 +59,9 @@ require_once "includes/paging.php";
 	elseif ($app_uuid == "8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3") {
 		echo "			<strong>Outbound Routes</strong>\n";
 	}
+	elseif ($app_uuid == "4b821450-926b-175a-af93-a03c441818b1") {
+		echo "			<strong>Time Conditions</strong>\n";
+	}
 	else {
 		echo "			<strong>Dialplan</strong>\n";
 	}
@@ -89,6 +92,12 @@ require_once "includes/paging.php";
 		//outbound routes
 		echo "			Route outbound calls to gateways, tdm, enum and more. \n";
 		echo "			When a call matches the conditions the call to outbound routes . \n";
+	}
+	elseif ($app_uuid == "4b821450-926b-175a-af93-a03c441818b1") {
+		//time conditions
+		echo "			Time conditions route calls based on time conditions. You can  \n";
+		echo "			use time conditions to send calls to an IVR Menu, External numbers, \n";
+		echo "			Scripts, or other destinations.  \n";
 	}
 	else {
 		//dialplan
@@ -180,6 +189,11 @@ require_once "includes/paging.php";
 			echo "			<a href='/mod/dialplan_outbound/dialplan_outbound_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 	}
+	elseif ($app_uuid == "4b821450-926b-175a-af93-a03c441818b1") {
+		if (permission_exists('time_conditions_add')) {
+			echo "			<a href='/mod/time_conditions/time_condition_add.php' alt='add'>$v_link_label_add</a>\n";
+		}
+	}
 	else {
 		if (permission_exists('dialplan_add')) {
 			echo "			<a href='dialplan_add.php' alt='add'>$v_link_label_add</a>\n";
@@ -240,6 +254,14 @@ require_once "includes/paging.php";
 					echo "		<a href='dialplan_delete.php?id=".$row['dialplan_uuid']."&app_uuid=$app_uuid' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 				}
 			}
+			elseif ($app_uuid == "4b821450-926b-175a-af93-a03c441818b1") {
+				if (permission_exists('time_conditions_edit')) {
+					echo "		<a href='dialplan_edit.php?id=".$row['dialplan_uuid']."&app_uuid=$app_uuid' alt='edit'>$v_link_label_edit</a>\n";
+				}
+				if (permission_exists('time_conditions_delete')) {
+					echo "		<a href='dialplan_delete.php?id=".$row['dialplan_uuid']."&app_uuid=$app_uuid' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				}
+			}
 			else {
 				if (permission_exists('dialplan_edit')) {
 					echo "		<a href='dialplan_edit.php?id=".$row['dialplan_uuid']."&app_uuid=$app_uuid' alt='edit'>$v_link_label_edit</a>\n";
@@ -271,6 +293,11 @@ require_once "includes/paging.php";
 	elseif ($app_uuid == "8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3") {
 		if (permission_exists('outbound_route_add')) {
 			echo "			<a href='/mod/dialplan_outbound/dialplan_outbound_add.php' alt='add'>$v_link_label_add</a>\n";
+		}
+	}
+	elseif ($app_uuid == "4b821450-926b-175a-af93-a03c441818b1") {
+		if (permission_exists('time_conditions_add')) {
+			echo "			<a href='/mod/time_conditions/time_condition_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 	}
 	else {
