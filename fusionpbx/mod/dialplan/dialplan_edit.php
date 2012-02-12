@@ -51,6 +51,9 @@ else {
 		$action = "add";
 	}
 
+//get the app uuid
+	$app_uuid = check_str($_REQUEST["app_uuid"]);
+
 //get the http post values and set them as php variables
 	if (count($_POST)>0) {
 		$dialplan_name = check_str($_POST["dialplan_name"]);
