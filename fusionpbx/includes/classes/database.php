@@ -34,6 +34,7 @@ include "root.php";
 			public $table;
 			public $where; //array
 			public $order_by; //array
+			public $order_type;
 			public $limit;
 			public $offset;
 			public $fields;
@@ -231,7 +232,20 @@ include "root.php";
 						}
 					}
 					if ($this->order_by) {
-						$sql .= $this->order_by." ";
+						$sql .= "order by ";
+						$i = 1;
+						foreach($this->order_by as $row) {
+							if (count($this->order_by) == $i) {
+								$sql .= $row['name']." ";
+							}
+							else {
+								$sql .= $row['name'].", ";
+							}
+							$i++;
+						}
+						if ($this->order_type) {
+							$sql .= $this->order_type." ";
+						}
 					}
 					if ($this->limit) {
 						$sql .= " limit ".$this->limit." offset ".$this->offset." ";
@@ -393,17 +407,19 @@ include "root.php";
 //example usage
 /*
 require_once "includes/classes/database.php";
-$where[$x]['name'] = 'domain_uuid';
-$where[$x]['value'] = $_SESSION["domain_uuid"];
-$where[$x]['operator'] = '=';
 $database = new database;
 $database->domain_uuid = $_SESSION["domain_uuid"];
 $database->type = $db_type;
 $database->table = "v_extensions";
+$where[0]['name'] = 'domain_uuid';
+$where[0]['value'] = $_SESSION["domain_uuid"];
+$where[0]['operator'] = '=';
 $database->where = $where;
+$order_by[0]['name'] = 'extension';
+$database->order_by = $order_by;
+$database->order_type = 'desc';
 $database->limit = '2';
-$database->offset = '40';
-//$database->order_by = $order_by;
+$database->offset = '0';
 $database->select();
 print_r($database->result);
 */
