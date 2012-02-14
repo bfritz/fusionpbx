@@ -28,7 +28,7 @@ include "root.php";
 //define the database class
 	if (!class_exists('database')) {
 		class database {
-			public $db;
+			private $db;
 			public $result;
 			public $type;
 			public $table;
@@ -37,6 +37,7 @@ include "root.php";
 			public $limit;
 			public $offset;
 			public $fields;
+			public $count;
 
 			public function connect() {
 				//include config.php
@@ -68,7 +69,7 @@ include "root.php";
 					if (strlen($dbfilename) > 0) { 
 						$db_name = $dbfilename; 
 					}
-				
+					
 				if ($db_type == "sqlite") {
 					if (strlen($db_name) == 0) {
 						$server_name = $_SERVER["SERVER_NAME"];
@@ -80,9 +81,7 @@ include "root.php";
 					else {
 						$db_name_short = $db_name;
 					}
-
-					$file_path = $v_secure;
-					$db_path = $v_secure;
+					$db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 					$db_path = realpath($db_path);
 					if (file_exists($db_path.'/'.$db_name)) {
 						//echo "main file exists<br>";
@@ -131,16 +130,15 @@ include "root.php";
 					try {
 						//$db = new PDO('sqlite2:example.db'); //sqlite 2
 						//$db = new PDO('sqlite::memory:'); //sqlite 3
-						$db = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
+						$this->db = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
 
-						//Add additional functions to SQLite so that they are accessible inside SQL
+						//add additional functions to SQLite so that they are accessible inside SQL
 						//bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
-						$db->sqliteCreateFunction('md5', 'php_md5', 1);
-						$db->sqliteCreateFunction('unix_timestamp', 'php_unix_time_stamp', 1);
-						$db->sqliteCreateFunction('now', 'php_now', 0);
-						$db->sqliteCreateFunction('str_left', 'php_left', 2);
-						$db->sqliteCreateFunction('str_right', 'php_right', 2);
-						$this->db = $db;
+						$this->db->sqliteCreateFunction('md5', 'php_md5', 1);
+						$this->db->sqliteCreateFunction('unix_timestamp', 'php_unix_time_stamp', 1);
+						$this->db->sqliteCreateFunction('now', 'php_now', 0);
+						$this->db->sqliteCreateFunction('str_left', 'php_left', 2);
+						$this->db->sqliteCreateFunction('str_right', 'php_right', 2);
 					}
 					catch (PDOException $error) {
 						print "error: " . $error->getMessage() . "<br/>";
@@ -206,145 +204,167 @@ include "root.php";
 			//}
 
 			public function select() {
-				//var $type;
-				//var $connection;
-				//var $table;
-				//var $where;
-				//var $order_by;
-				//var $limit;
-				//var $offset;
+				//connect;
+				//table;
+				//where;
+				//order_by;
+				//limit;
+				//offset;
 
-				$sql = "";
-				$sql .= " select * from ".$this->table." ";
-				if ($this->where) {
-					$i = 0;
-					foreach($this->where as $row) {
-						if ($i == 0) {
-							$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
-						}
-						else {
-							$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
-						}
-						$i++;
+				//connect to the database if needed
+					if (!$this->db) {
+						$this->connect();
 					}
-				}
-				if ($this->order_by) {
-					$sql .= $this->order_by." ";
-				}
-				if ($this->limit) {
-					$sql .= " limit ".$this->limit." offset ".$this->offset." ";
-				}
-				$prep_statement = $this->db->prepare($sql);
-				if ($prep_statement) {
-					$prep_statement->execute();
-					$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-					$this->result = $result;
-					$this->count = count($result);
-				}
+				//get data from the database
+					$sql = "";
+					$sql .= " select * from ".$this->table." ";
+					if ($this->where) {
+						$i = 0;
+						foreach($this->where as $row) {
+							if ($i == 0) {
+								$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+							}
+							else {
+								$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+							}
+							$i++;
+						}
+					}
+					if ($this->order_by) {
+						$sql .= $this->order_by." ";
+					}
+					if ($this->limit) {
+						$sql .= " limit ".$this->limit." offset ".$this->offset." ";
+					}
+					$prep_statement = $this->db->prepare($sql);
+					if ($prep_statement) {
+						$prep_statement->execute();
+						$this->result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+					}
 			}
 
 			public function add(){
-				$sql = "insert into ".$this->table;
-				$sql .= "(";
-				foreach($this->fields as $row) {
+				//connect to the database if needed
+					if (!$this->db) {
+						$this->connect();
+					}
+				//add data to the database
+					$sql = "insert into ".$this->table;
+					$sql .= "(";
+					foreach($this->fields as $row) {
+							if ($i == 0) {
+								$sql .= $row['name'].", ";
+							}
+							else {
+								$sql .= $row['name'].", ";
+							}
+							$i++;
+					}
+					$sql .= ") ";
+					$sql .= "values ";
+					$sql .= "(";
+					foreach($this->fields as $row) {
 						if ($i == 0) {
-							$sql .= $row['name'].", ";
+							$sql .= "'".$row['value']."', ";
 						}
 						else {
-							$sql .= $row['name'].", ";
+							$sql .= "'".$row['value']."', ";
 						}
 						$i++;
-				}
-				$sql .= ") ";
-				$sql .= "values ";
-				$sql .= "(";
-				foreach($this->fields as $row) {
-					if ($i == 0) {
-						$sql .= "'".$row['value']."', ";
 					}
-					else {
-						$sql .= "'".$row['value']."', ";
-					}
-					$i++;
-				}
-				$sql .= ")";
-				$db->exec($sql);
-				unset($sql);
+					$sql .= ")";
+					$db->exec($sql);
+					unset($sql);
 			}
 
 			public function update() {
-				$sql = "update ".$this->table." set ";
-				$i = 0;
-				foreach($this->fields as $row) {
-					if ($i == 0) {
-						$sql .= $row['name']." = '".$row['value']."', ";
+				//connect to the database if needed
+					if (!$this->db) {
+						$this->connect();
 					}
-					else {
-						$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+				//udate the database
+					$sql = "update ".$this->table." set ";
+					$i = 0;
+					foreach($this->fields as $row) {
+						if ($i == 0) {
+							$sql .= $row['name']." = '".$row['value']."', ";
+						}
+						else {
+							$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+						}
+						$i++;
 					}
-					$i++;
-				}
-				$i = 0;
-				foreach($this->where as $row) {
-					if ($i == 0) {
-						$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+					$i = 0;
+					foreach($this->where as $row) {
+						if ($i == 0) {
+							$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+						}
+						else {
+							$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+						}
+						$i++;
 					}
-					else {
-						$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
-					}
-					$i++;
-				}
-				$db->exec(check_sql($sql));
-				unset($sql);
+					$db->exec(check_sql($sql));
+					unset($sql);
 			}
 
 			public function delete(){
-				$sql = "";
-				$sql .= "delete from ".$this->table." ";
-				if ($this->where) {
-					$i = 0;
-					foreach($this->where as $row) {
-						if ($i == 0) {
-							$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
-						}
-						else {
-							$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
-						}
-						$i++;
+				//connect to the database if needed
+					if (!$this->db) {
+						$this->connect();
 					}
-				}
-				$prep_statement = $this->connection->prepare($sql);
-				$prep_statement->execute();
-				unset($sql);
+				//delete from the database
+					$sql = "";
+					$sql .= "delete from ".$this->table." ";
+					if ($this->where) {
+						$i = 0;
+						foreach($this->where as $row) {
+							if ($i == 0) {
+								$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+							}
+							else {
+								$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+							}
+							$i++;
+						}
+					}
+					$prep_statement = $this->db->prepare($sql);
+					$prep_statement->execute();
+					unset($sql);
 			}
 
 			public function count() {
-				$sql = "";
-				$sql .= " select count(*) as num_rows from ".$this->table;
-				if ($this->where) {
-					$i = 0;
-					foreach($this->where as $row) {
-						if ($i == 0) {
-							$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+				//connect to the database if needed
+					if (!$this->db) {
+						$this->connect();
+					}
+				//get the number of rows
+					$sql = "";
+					$sql .= " select count(*) as num_rows from ".$this->table;
+					if ($this->where) {
+						$i = 0;
+						foreach($this->where as $row) {
+							if ($i == 0) {
+								$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+							}
+							else {
+								$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+							}
+							$i++;
+						}
+					}
+					$prep_statement = $this->db->prepare(check_sql($sql));
+					if ($prep_statement) {
+						$prep_statement->execute();
+						$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+						if ($row['num_rows'] > 0) {
+							$this->result = $row['num_rows'];
 						}
 						else {
-							$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+							$this->result = 0;
 						}
-						$i++;
 					}
-				}
-				$prep_statement = $this->db->prepare(check_sql($sql));
-				if ($prep_statement) {
-					$prep_statement->execute();
-					$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
-					if ($row['num_rows'] > 0) {
-						$this->result = $row['num_rows'];
-					}
-					else {
-						$this->result = 0;
-					}
-				}
-				unset($prep_statement, $result);
+					unset($prep_statement);
 			}
 
 			private function php_md5($string) {
@@ -377,8 +397,6 @@ $where[$x]['name'] = 'domain_uuid';
 $where[$x]['value'] = $_SESSION["domain_uuid"];
 $where[$x]['operator'] = '=';
 $database = new database;
-//$database->db = $db;
-$database->connect();
 $database->domain_uuid = $_SESSION["domain_uuid"];
 $database->type = $db_type;
 $database->table = "v_extensions";
@@ -387,7 +405,6 @@ $database->limit = '2';
 $database->offset = '40';
 //$database->order_by = $order_by;
 $database->select();
-//$database->count();
 print_r($database->result);
 */
 ?>
