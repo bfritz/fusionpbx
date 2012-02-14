@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require "includes/config.php";
+require "includes/require.php";
 require_once "includes/checkauth.php";
 if (permission_exists('voicemail_status_delete')) {
 	//access granted
@@ -52,13 +52,13 @@ if (count($_GET)>0) {
 	}
 
 //redirect the user
-	require "includes/config.php";
+	require "includes/require.php";
 	require_once "includes/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_voicemail.php\">\n";
 	echo "<div align='center'>\n";
 	echo "Voicemail Preferences set to default\n";
 	echo "</div>\n";
-	require "includes/config.php";
+	require "includes/require.php";
 	require_once "includes/footer.php";
 	return;
 

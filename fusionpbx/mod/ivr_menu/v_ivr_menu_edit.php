@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 require_once "includes/checkauth.php";
 if (permission_exists('ivr_menu_add') || permission_exists('ivr_menu_edit')) {
 	//access granted
@@ -166,117 +166,92 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
-			if ($action == "add" && permission_exists('ivr_menu_add')) {
-				$ivr_menu_uuid = uuid();
-				$sql = "insert into v_ivr_menus ";
-				$sql .= "(";
-				$sql .= "domain_uuid, ";
-				$sql .= "ivr_menu_uuid, ";
-				$sql .= "ivr_menu_name, ";
-				$sql .= "ivr_menu_extension, ";
-				$sql .= "ivr_menu_greet_long, ";
-				$sql .= "ivr_menu_greet_short, ";
-				$sql .= "ivr_menu_invalid_sound, ";
-				$sql .= "ivr_menu_exit_sound, ";
-				$sql .= "ivr_menu_confirm_macro, ";
-				$sql .= "ivr_menu_confirm_key, ";
-				$sql .= "ivr_menu_tts_engine, ";
-				$sql .= "ivr_menu_tts_voice, ";
-				$sql .= "ivr_menu_confirm_attempts, ";
-				$sql .= "ivr_menu_timeout, ";
-				$sql .= "ivr_menu_exit_app, ";
-				$sql .= "ivr_menu_exit_data, ";
-				$sql .= "ivr_menu_inter_digit_timeout, ";
-				$sql .= "ivr_menu_max_failures, ";
-				$sql .= "ivr_menu_max_timeouts, ";
-				$sql .= "ivr_menu_digit_len, ";
-				$sql .= "ivr_menu_direct_dial, ";
-				$sql .= "ivr_menu_enabled, ";
-				$sql .= "ivr_menu_desc ";
-				$sql .= ")";
-				$sql .= "values ";
-				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
-				$sql .= "'$ivr_menu_uuid', ";
-				$sql .= "'$ivr_menu_name', ";
-				$sql .= "'$ivr_menu_extension', ";
-				$sql .= "'$ivr_menu_greet_long', ";
-				$sql .= "'$ivr_menu_greet_short', ";
-				$sql .= "'$ivr_menu_invalid_sound', ";
-				$sql .= "'$ivr_menu_exit_sound', ";
-				$sql .= "'$ivr_menu_confirm_macro', ";
-				$sql .= "'$ivr_menu_confirm_key', ";
-				$sql .= "'$ivr_menu_tts_engine', ";
-				$sql .= "'$ivr_menu_tts_voice', ";
-				$sql .= "'$ivr_menu_confirm_attempts', ";
-				$sql .= "'$ivr_menu_timeout', ";
-				$sql .= "'$ivr_menu_exit_app', ";
-				$sql .= "'$ivr_menu_exit_data', ";
-				$sql .= "'$ivr_menu_inter_digit_timeout', ";
-				$sql .= "'$ivr_menu_max_failures', ";
-				$sql .= "'$ivr_menu_max_timeouts', ";
-				$sql .= "'$ivr_menu_digit_len', ";
-				$sql .= "'$ivr_menu_direct_dial', ";
-				$sql .= "'$ivr_menu_enabled', ";
-				$sql .= "'$ivr_menu_desc' ";
-				$sql .= ")";
-				$db->exec(check_sql($sql));
-				unset($sql);
+			//set the app_uuid
+				$app_uuid = 'a5788e9b-58bc-bd1b-df59-fff5d51253ab';
+			//create the ivr menu dialplan extension
+				$dialplan_name = $ivr_menu_name;
+				$dialplan_order ='999';
+				$dialplan_context = $_SESSION['context'];
+				$dialplan_enabled = $ivr_menu_enabled;
+				$dialplan_description = $ivr_menu_desc;
+			//add the data
+				if ($action == "add" && permission_exists('ivr_menu_add')) {
 
-				//synchronize the xml config
-				sync_package_v_ivr_menu();
 
-				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu.php\">\n";
-				echo "<div align='center'>\n";
-				echo "Add Complete\n";
-				echo "</div>\n";
-				require_once "includes/footer.php";
-				return;
-			} //if ($action == "add")
+				} //if ($action == "add")
+			//update the data
+				if ($action == "update" && permission_exists('ivr_menu_edit')) {
 
-			if ($action == "update" && permission_exists('ivr_menu_edit')) {
-				$sql = "update v_ivr_menus set ";
-				$sql .= "domain_uuid = '$domain_uuid', ";
-				$sql .= "ivr_menu_name = '$ivr_menu_name', ";
-				$sql .= "ivr_menu_extension = '$ivr_menu_extension', ";
-				$sql .= "ivr_menu_greet_long = '$ivr_menu_greet_long', ";
-				$sql .= "ivr_menu_greet_short = '$ivr_menu_greet_short', ";
-				$sql .= "ivr_menu_invalid_sound = '$ivr_menu_invalid_sound', ";
-				$sql .= "ivr_menu_exit_sound = '$ivr_menu_exit_sound', ";
-				$sql .= "ivr_menu_confirm_macro = '$ivr_menu_confirm_macro', ";
-				$sql .= "ivr_menu_confirm_key = '$ivr_menu_confirm_key', ";
-				$sql .= "ivr_menu_tts_engine = '$ivr_menu_tts_engine', ";
-				$sql .= "ivr_menu_tts_voice = '$ivr_menu_tts_voice', ";
-				$sql .= "ivr_menu_confirm_attempts = '$ivr_menu_confirm_attempts', ";
-				$sql .= "ivr_menu_timeout = '$ivr_menu_timeout', ";
-				$sql .= "ivr_menu_exit_app = '$ivr_menu_exit_app', ";
-				$sql .= "ivr_menu_exit_data = '$ivr_menu_exit_data', ";
-				$sql .= "ivr_menu_inter_digit_timeout = '$ivr_menu_inter_digit_timeout', ";
-				$sql .= "ivr_menu_max_failures = '$ivr_menu_max_failures', ";
-				$sql .= "ivr_menu_max_timeouts = '$ivr_menu_max_timeouts', ";
-				$sql .= "ivr_menu_digit_len = '$ivr_menu_digit_len', ";
-				$sql .= "ivr_menu_direct_dial = '$ivr_menu_direct_dial', ";
-				$sql .= "ivr_menu_enabled = '$ivr_menu_enabled', ";
-				$sql .= "ivr_menu_desc = '$ivr_menu_desc' ";
-				$sql .= "where ivr_menu_uuid = '$ivr_menu_uuid'";
-				$db->exec(check_sql($sql));
-				unset($sql);
 
-				//synchronize the xml config
-				sync_package_v_ivr_menu();
+				} //if ($action == "update")
 
-				//synchronize the xml config
-				sync_package_v_dialplan();
+				if (($action == "add" && permission_exists('ivr_menu_add')) || ($action == "update" && permission_exists('ivr_menu_edit'))) {
+					//add the dialplan details
+						$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+						$dialplan_detail_type = 'destination_number';
+						$dialplan_detail_data = '^'.$ivr_menu_extension.'$';
+						$dialplan_detail_order = '005';
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
-				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu.php\">\n";
-				echo "<div align='center'>\n";
-				echo "Update Complete\n";
-				echo "</div>\n";
-				require_once "includes/footer.php";
-				return;
-			} //if ($action == "update")
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'answer';
+						$dialplan_detail_data = '';
+						$dialplan_detail_order = '010';
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'sleep';
+						$dialplan_detail_data = '1000';
+						$dialplan_detail_order = '015';
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'set';
+						$dialplan_detail_data = 'hangup_after_bridge=true';
+						$dialplan_detail_order = '020';
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'ivr';
+						if (count($_SESSION["domains"]) > 1) {
+							$dialplan_detail_data = $_SESSION['domains'][$domain_uuid]['domain'].'-'.$ivr_menu_name;
+						}
+						else {
+							$dialplan_detail_data = $ivr_menu_name;
+						}
+						$dialplan_detail_order = '025';
+						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+						
+						if (strlen($ivr_menu_exit_app) > 0) {
+							$dialplan_detail_tag = 'action'; //condition, action, antiaction
+							$dialplan_detail_type = $ivr_menu_exit_app;
+							$dialplan_detail_data = $ivr_menu_exit_data;
+							$dialplan_detail_order = '030';
+							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+						}
+						unset($action);
+						unset($dialplan_uuid);
+
+					//synchronize the xml config
+						sync_package_v_ivr_menu();
+
+					//synchronize the xml config
+						sync_package_v_dialplan();
+
+					//redirect the user
+						require_once "includes/header.php";
+						echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu.php\">\n";
+						echo "<div align='center'>\n";
+						if ($action == "add") {
+							echo "Add Complete\n";
+						}
+						if ($action == "update") {
+							echo "Update Complete\n";
+						}
+						echo "</div>\n";
+						require_once "includes/footer.php";
+						return;
+				}
 		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 

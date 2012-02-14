@@ -31,7 +31,7 @@ include "v_config_cli.php";
 		preg_match("/^(.*)\/secure\/.*$/", $document_root, $matches);
 		$document_root = $matches[1];
 		set_include_path($document_root);
-		//require_once "includes/config.php";
+		//require_once "includes/require.php";
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
 	}
 

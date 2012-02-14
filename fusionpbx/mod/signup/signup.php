@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 require_once "includes/recaptchalib.php";
 //require_once "includes/email_address_validator.php";
 include "config.php";

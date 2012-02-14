@@ -26,7 +26,7 @@
 return; //disable
 
 include "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 require_once "includes/checkauth.php";
 if (permission_exists('content_view')) {
 	//access granted

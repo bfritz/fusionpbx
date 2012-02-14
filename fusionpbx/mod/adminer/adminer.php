@@ -2,7 +2,7 @@
 //customization - begin
 	//includes
 		include "root.php";
-		require_once "includes/config.php";
+		require_once "includes/require.php";
 		require_once "includes/checkauth.php";
 	//only allow users in the superadmin group to use this feature
 		if (if_group("superadmin")) {

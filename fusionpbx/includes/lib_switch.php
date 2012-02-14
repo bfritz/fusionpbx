@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 
 //preferences
 	$v_label_show = false;
@@ -1166,7 +1166,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		if ($select_type == "dialplan" || $select_type == "ivr") {
 			echo "<optgroup label='Time Conditions'>\n";
 		}
-		foreach($time_array as $key=>$val) {    
+		foreach($time_array as $key=>$val) {
 			$dialplan_uuid = $key;
 			//get the extension number using the dialplan_uuid
 				$sql = "select dialplan_detail_data as extension_number ";
@@ -2324,107 +2324,12 @@ function sync_package_v_hunt_group() {
 					//$row['hunt_group_enabled']
 					//$row['hunt_group_descr']
 					$domain_uuid = $row['domain_uuid'];
+					$dialplan_uuid = $row['dialplan_uuid'];
 
 				//add each Hunt Group to the dialplan
 					if (strlen($row['hunt_group_uuid']) > 0) {
 						$action = 'add'; //set default action to add
 						$i = 0;
-
-						$sql = "";
-						$sql .= "select * from v_dialplans ";
-						$sql .= "where domain_uuid = '$domain_uuid' ";
-						$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
-						$prep_statement_2 = $db->prepare($sql);
-						$prep_statement_2->execute();
-						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-							$action = 'update';
-							$dialplan_uuid = $row2['dialplan_uuid'];
-							break; //limit to 1 row
-						}
-						unset ($sql, $prep_statement_2);
-
-						if ($action == 'add') {
-							//create huntgroup extension in the dialplan
-								$dialplan_name = check_str($row['hunt_group_name']);
-								$dialplan_order ='999';
-								$dialplan_context = $_SESSION['context'];
-								if ($row['hunt_group_enabled'] == "false") {
-									$dialplan_enabled = 'false';
-								}
-								else {
-									$dialplan_enabled = 'true';
-								}
-								$dialplan_description = 'huntgroup';
-								$app_uuid = '0610f841-2e27-4c5f-7926-08ab3aad02e0';
-								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
-
-								$dialplan_detail_tag = 'condition'; //condition, action, antiaction
-								$dialplan_detail_type = 'destination_number';
-								$dialplan_detail_data = '^'.$row['hunt_group_extension'].'$';
-								$dialplan_detail_order = '000';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-								$dialplan_detail_tag = 'action'; //condition, action, antiaction
-								$dialplan_detail_type = 'lua';
-								$dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domains'][$domain_uuid]['domain'].'_'.$row['hunt_group_extension'].'.lua';
-								$dialplan_detail_order = '001';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-						}
-						if ($action == 'update') {
-							//update the huntgroup
-								$dialplan_name = check_str($row['hunt_group_name']);
-								$dialplan_order = '999';
-								$context = $row['hunt_group_context'];
-								if ($row['hunt_group_enabled'] == "false") {
-									$enabled = 'false';
-								}
-								else {
-									$enabled = 'true';
-								}
-								$descr = 'huntgroup';
-								$hunt_group_uuid = $row['hunt_group_uuid'];
-
-								$sql = "";
-								$sql = "update v_dialplans set ";
-								$sql .= "dialplan_name = '$dialplan_name', ";
-								$sql .= "dialplan_order = '$dialplan_order', ";
-								$sql .= "context = '$context', ";
-								$sql .= "enabled = '$enabled', ";
-								$sql .= "descr = '$descr' ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
-								$db->query($sql);
-								unset($sql);
-
-								//update the condition
-								$sql = "";
-								$sql = "update v_dialplan_details set ";
-								$sql .= "dialplan_detail_data = '^".$row['hunt_group_extension']."$' ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and dialplan_detail_tag = 'condition' ";
-								$sql .= "and dialplan_detail_type = 'destination_number' ";
-								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-								$db->query($sql);
-								unset($sql);
-
-								//update the action
-								$sql = "";
-								$sql = "update v_dialplan_details set ";
-								$sql .= "dialplan_detail_data = 'v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain']."_".$row['hunt_group_extension'].".lua', ";
-								$sql .= "dialplan_detail_type = 'lua' ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and dialplan_detail_tag = 'action' ";
-								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-								$db->query($sql);
-
-								unset($dialplan_name);
-								unset($order);
-								unset($context);
-								unset($enabled);
-								unset($descr);
-								unset($dialplan_uuid);
-						}
-						unset($action);
 
 						//check whether the fifo queue exists already
 							$action = 'add'; //set default action to add
@@ -3824,6 +3729,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 		unset ($prep_statement, $sql);
 		if ($result_count > 0) {
 			foreach($result as $row) {
+				$dialplan_uuid = $row["dialplan_uuid"];
 				$ivr_menu_uuid = $row["ivr_menu_uuid"];
 				$ivr_menu_name = check_str($row["ivr_menu_name"]);
 				$ivr_menu_extension = $row["ivr_menu_extension"];
@@ -3849,109 +3755,6 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 
 				//replace space with an underscore
 					$ivr_menu_name = str_replace(" ", "_", $ivr_menu_name);
-
-				//add each IVR Menu to the dialplan
-					if (strlen($row['ivr_menu_uuid']) > 0) {
-						$action = 'add'; //set default action to add
-						$i = 0;
-
-						//get the dialplan include uuid
-//							$sql = "";
-//							$sql .= "select * from v_dialplans ";
-//							$sql .= "where domain_uuid = '$domain_uuid' ";
-//							//$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
-//							//$sql .= "and opt_1_value = '".$row['ivr_menu_uuid']."' ";
-//							$prep_statement_2 = $db->prepare($sql);
-//							$prep_statement_2->execute();
-//							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-//								$action = 'update';
-//								$dialplan_uuid = $row2['dialplan_uuid'];
-//								break; //limit to 1 row
-//							}
-//							unset ($sql, $prep_statement_2);
-
-						//delete the dialplan details
-							$sql = "";
-							$sql .= "delete from v_dialplan_details ";
-							$sql .= "where domain_uuid = '$domain_uuid' ";
-							$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-							$prep_statement_2 = $db->prepare(check_sql($sql));
-							$prep_statement_2->execute();
-							unset ($sql, $prep_statement_2);
-
-						//create the ivr menu dialplan extension
-							$dialplan_name = $ivr_menu_name;
-							$dialplan_order ='999';
-							$dialplan_context = $_SESSION['context'];
-							$dialplan_enabled = 'true';
-							$dialplan_description = $ivr_menu_desc;
-
-							if ($action  == "add") {
-								$app_uuid = 'a5788e9b-58bc-bd1b-df59-fff5d51253ab';
-								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
-							}
-							if ($action  == "update") {
-								$ivr_menu_uuid = $row['ivr_menu_uuid'];
-
-								$sql = "";
-								$sql = "update v_dialplans set ";
-								$sql .= "dialplan_name = '$dialplan_name', ";
-								$sql .= "dialplan_order = '$dialplan_order', ";
-								$sql .= "dialplan_context = '$dialplan_context', ";
-								$sql .= "dialplan_enabled = '$dialplan_enabled', ";
-								$sql .= "dialplan_description = '$dialplan_description' ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "where dialplan_uuid = '$dialplan_uuid' ";
-								$db->query($sql);
-								unset($sql);
-							}
-
-							$dialplan_detail_tag = 'condition'; //condition, action, antiaction
-							$dialplan_detail_type = 'destination_number';
-							$dialplan_detail_data = '^'.$row['ivr_menu_extension'].'$';
-							$dialplan_detail_order = '005';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-							$dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan_detail_type = 'answer';
-							$dialplan_detail_data = '';
-							$dialplan_detail_order = '010';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-							$dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan_detail_type = 'sleep';
-							$dialplan_detail_data = '1000';
-							$dialplan_detail_order = '015';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-							$dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan_detail_type = 'set';
-							$dialplan_detail_data = 'hangup_after_bridge=true';
-							$dialplan_detail_order = '020';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-							$dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan_detail_type = 'ivr';
-							if (count($_SESSION["domains"]) > 1) {
-								$dialplan_detail_data = $_SESSION['domains'][$domain_uuid]['domain'].'-'.$ivr_menu_name;
-							}
-							else {
-								$dialplan_detail_data = $ivr_menu_name;
-							}
-							$dialplan_detail_order = '025';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-							
-							if (strlen($ivr_menu_exit_app) > 0) {
-								$dialplan_detail_tag = 'action'; //condition, action, antiaction
-								$dialplan_detail_type = $ivr_menu_exit_app;
-								$dialplan_detail_data = $ivr_menu_exit_data;
-								$dialplan_detail_order = '030';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-							}
-
-						unset($action);
-						unset($dialplan_uuid);
-					} //end if strlen ivr_menu_uuid; add the IVR Menu to the dialplan
 
 				//add each IVR menu to the XML config
 					$tmp = "<include>\n";

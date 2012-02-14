@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 require_once "includes/checkauth.php";
 require_once "includes/paging.php";
 
@@ -130,96 +130,175 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('hunt_group_add')) {
-				$hunt_group_uuid = uuid();
-				$sql = "insert into v_hunt_groups ";
-				$sql .= "(";
-				$sql .= "domain_uuid, ";
-				$sql .= "hunt_group_uuid, ";
-				$sql .= "hunt_group_extension, ";
-				$sql .= "hunt_group_name, ";
-				$sql .= "hunt_group_type, ";
-				$sql .= "hunt_group_context, ";
-				$sql .= "hunt_group_timeout, ";
-				$sql .= "hunt_group_timeout_destination, ";
-				$sql .= "hunt_group_timeout_type, ";
-				$sql .= "hunt_group_ringback, ";
-				$sql .= "hunt_group_cid_name_prefix, ";
-				$sql .= "hunt_group_pin, ";
-				$sql .= "hunt_group_caller_announce, ";
-				$sql .= "hunt_group_user_list, ";
-				$sql .= "hunt_group_enabled, ";
-				$sql .= "hunt_group_descr ";
-				$sql .= ")";
-				$sql .= "values ";
-				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
-				$sql .= "'$hunt_group_uuid', ";
-				$sql .= "'$hunt_group_extension', ";
-				$sql .= "'$hunt_group_name', ";
-				$sql .= "'$hunt_group_type', ";
-				$sql .= "'default', ";
-				$sql .= "'$hunt_group_timeout', ";
-				$sql .= "'$hunt_group_timeout_destination', ";
-				$sql .= "'$hunt_group_timeout_type', ";
-				$sql .= "'$hunt_group_ringback', ";
-				$sql .= "'$hunt_group_cid_name_prefix', ";
-				$sql .= "'$hunt_group_pin', ";
-				$sql .= "'$hunt_group_caller_announce', ";
-				$sql .= "'$hunt_group_user_list', ";
-				$sql .= "'$hunt_group_enabled', ";
-				$sql .= "'$hunt_group_descr' ";
-				$sql .= ")";
-				$db->exec(check_sql($sql));
-				unset($sql);
+				//add to the table
+					$hunt_group_uuid = uuid();
+					$sql = "insert into v_hunt_groups ";
+					$sql .= "(";
+					$sql .= "domain_uuid, ";
+					$sql .= "hunt_group_uuid, ";
+					$sql .= "hunt_group_extension, ";
+					$sql .= "hunt_group_name, ";
+					$sql .= "hunt_group_type, ";
+					$sql .= "hunt_group_context, ";
+					$sql .= "hunt_group_timeout, ";
+					$sql .= "hunt_group_timeout_destination, ";
+					$sql .= "hunt_group_timeout_type, ";
+					$sql .= "hunt_group_ringback, ";
+					$sql .= "hunt_group_cid_name_prefix, ";
+					$sql .= "hunt_group_pin, ";
+					$sql .= "hunt_group_caller_announce, ";
+					$sql .= "hunt_group_user_list, ";
+					$sql .= "hunt_group_enabled, ";
+					$sql .= "hunt_group_descr ";
+					$sql .= ")";
+					$sql .= "values ";
+					$sql .= "(";
+					$sql .= "'$domain_uuid', ";
+					$sql .= "'$hunt_group_uuid', ";
+					$sql .= "'$hunt_group_extension', ";
+					$sql .= "'$hunt_group_name', ";
+					$sql .= "'$hunt_group_type', ";
+					$sql .= "'default', ";
+					$sql .= "'$hunt_group_timeout', ";
+					$sql .= "'$hunt_group_timeout_destination', ";
+					$sql .= "'$hunt_group_timeout_type', ";
+					$sql .= "'$hunt_group_ringback', ";
+					$sql .= "'$hunt_group_cid_name_prefix', ";
+					$sql .= "'$hunt_group_pin', ";
+					$sql .= "'$hunt_group_caller_announce', ";
+					$sql .= "'$hunt_group_user_list', ";
+					$sql .= "'$hunt_group_enabled', ";
+					$sql .= "'$hunt_group_descr' ";
+					$sql .= ")";
+					$db->exec(check_sql($sql));
+					unset($sql);
+
+				//create huntgroup extension in the dialplan
+					$dialplan_name = check_str($row['hunt_group_name']);
+					$dialplan_order ='999';
+					$dialplan_context = $_SESSION['context'];
+					if ($row['hunt_group_enabled'] == "false") {
+						$dialplan_enabled = 'false';
+					}
+					else {
+						$dialplan_enabled = 'true';
+					}
+					$dialplan_description = 'huntgroup';
+					$app_uuid = '0610f841-2e27-4c5f-7926-08ab3aad02e0';
+					$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+
+					$dialplan_detail_tag = 'condition'; //condition, action, antiaction
+					$dialplan_detail_type = 'destination_number';
+					$dialplan_detail_data = '^'.$row['hunt_group_extension'].'$';
+					$dialplan_detail_order = '000';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+
+					$dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan_detail_type = 'lua';
+					$dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domains'][$domain_uuid]['domain'].'_'.$row['hunt_group_extension'].'.lua';
+					$dialplan_detail_order = '001';
+					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 				//synchronize the xml config
-				sync_package_v_hunt_group();
+					sync_package_v_hunt_group();
 
-				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group.php\">\n";
-				echo "<div align='center'>\n";
-				echo "Add Complete\n";
-				echo "</div>\n";
-				require_once "includes/footer.php";
-				return;
+				//synchronize the xml config
+					sync_package_v_dialplan();
+
+				//redirect the user
+					require_once "includes/header.php";
+					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group.php\">\n";
+					echo "<div align='center'>\n";
+					echo "Add Complete\n";
+					echo "</div>\n";
+					require_once "includes/footer.php";
+					return;
 			} //if ($action == "add")
 
 			if ($action == "update" && permission_exists('hunt_group_edit')) {
-				$sql = "update v_hunt_groups set ";
-				$sql .= "hunt_group_extension = '$hunt_group_extension', ";
-				$sql .= "hunt_group_name = '$hunt_group_name', ";
-				$sql .= "hunt_group_type = '$hunt_group_type', ";
-				$sql .= "hunt_group_context = 'default', ";
-				$sql .= "hunt_group_timeout = '$hunt_group_timeout', ";
-				$sql .= "hunt_group_timeout_destination = '$hunt_group_timeout_destination', ";
-				$sql .= "hunt_group_timeout_type = '$hunt_group_timeout_type', ";
-				$sql .= "hunt_group_ringback = '$hunt_group_ringback', ";
-				$sql .= "hunt_group_cid_name_prefix = '$hunt_group_cid_name_prefix', ";
-				$sql .= "hunt_group_pin = '$hunt_group_pin', ";
-				$sql .= "hunt_group_caller_announce = '$hunt_group_caller_announce', ";
-				if (if_group("admin") || if_group("superadmin")) {
-					$sql .= "hunt_group_user_list = '$hunt_group_user_list', ";
-				}
-				$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
-				$sql .= "hunt_group_descr = '$hunt_group_descr' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and hunt_group_uuid = '$hunt_group_uuid'";
-				$db->exec(check_sql($sql));
-				unset($sql);
+				//update the table
+					$sql = "update v_hunt_groups set ";
+					$sql .= "hunt_group_extension = '$hunt_group_extension', ";
+					$sql .= "hunt_group_name = '$hunt_group_name', ";
+					$sql .= "hunt_group_type = '$hunt_group_type', ";
+					$sql .= "hunt_group_context = 'default', ";
+					$sql .= "hunt_group_timeout = '$hunt_group_timeout', ";
+					$sql .= "hunt_group_timeout_destination = '$hunt_group_timeout_destination', ";
+					$sql .= "hunt_group_timeout_type = '$hunt_group_timeout_type', ";
+					$sql .= "hunt_group_ringback = '$hunt_group_ringback', ";
+					$sql .= "hunt_group_cid_name_prefix = '$hunt_group_cid_name_prefix', ";
+					$sql .= "hunt_group_pin = '$hunt_group_pin', ";
+					$sql .= "hunt_group_caller_announce = '$hunt_group_caller_announce', ";
+					if (if_group("admin") || if_group("superadmin")) {
+						$sql .= "hunt_group_user_list = '$hunt_group_user_list', ";
+					}
+					$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
+					$sql .= "hunt_group_descr = '$hunt_group_descr' ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "and hunt_group_uuid = '$hunt_group_uuid'";
+					$db->exec(check_sql($sql));
+					unset($sql);
+
+				//update the dialplan entry
+					$dialplan_name = check_str($row['hunt_group_name']);
+					$dialplan_order = '999';
+					$context = $row['hunt_group_context'];
+					if ($row['hunt_group_enabled'] == "false") {
+						$enabled = 'false';
+					}
+					else {
+						$enabled = 'true';
+					}
+					$descr = 'huntgroup';
+					$hunt_group_uuid = $row['hunt_group_uuid'];
+
+					$sql = "";
+					$sql = "update v_dialplans set ";
+					$sql .= "dialplan_name = '$dialplan_name', ";
+					$sql .= "dialplan_order = '$dialplan_order', ";
+					$sql .= "context = '$context', ";
+					$sql .= "enabled = '$enabled', ";
+					$sql .= "descr = '$descr' ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
+					$db->query($sql);
+					unset($sql);
+
+					//update the condition
+					$sql = "";
+					$sql = "update v_dialplan_details set ";
+					$sql .= "dialplan_detail_data = '^".$row['hunt_group_extension']."$' ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "and dialplan_detail_tag = 'condition' ";
+					$sql .= "and dialplan_detail_type = 'destination_number' ";
+					$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+					$db->query($sql);
+					unset($sql);
+
+					//update the action
+					$sql = "";
+					$sql = "update v_dialplan_details set ";
+					$sql .= "dialplan_detail_data = 'v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain']."_".$row['hunt_group_extension'].".lua', ";
+					$sql .= "dialplan_detail_type = 'lua' ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "and dialplan_detail_tag = 'action' ";
+					$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+					$db->query($sql);
 
 				//synchronize the xml config
-				sync_package_v_hunt_group();
+					sync_package_v_hunt_group();
 
 				//synchronize the xml config
-				sync_package_v_dialplan();
+					sync_package_v_dialplan();
 
-				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group.php\">\n";
-				echo "<div align='center'>\n";
-				echo "Update Complete\n";
-				echo "</div>\n";
-				require_once "includes/footer.php";
-				return;
+				//rediret the user
+					require_once "includes/header.php";
+					echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hunt_group.php\">\n";
+					echo "<div align='center'>\n";
+					echo "Update Complete\n";
+					echo "</div>\n";
+					require_once "includes/footer.php";
+					return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)

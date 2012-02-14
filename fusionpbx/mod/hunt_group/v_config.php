@@ -55,6 +55,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'dialplan_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'hunt_group_extension';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'huntgroupextension';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';

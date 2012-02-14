@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 require_once "includes/checkauth.php";
 if (permission_exists('ivr_menu_delete')) {
 	//access granted
@@ -61,4 +61,3 @@ require_once "includes/footer.php";
 return;
 
 ?>
-

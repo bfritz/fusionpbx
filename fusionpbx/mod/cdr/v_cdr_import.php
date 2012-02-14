@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require "includes/config.php";
+require "includes/require.php";
 if(php_sapi_name() == 'cli') {
 	//allow access for command line interface
 }

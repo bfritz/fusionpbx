@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require "includes/config.php";
+require "includes/require.php";
 require_once "includes/checkauth.php";
 if (permission_exists('voicemail_status_view')) {
 	//access granted
@@ -167,6 +167,6 @@ echo "</div>";
 echo "<br><br>";
 
 //show the footer
-	require "includes/config.php";
+	require "includes/require.php";
 	require_once "includes/footer.php";
 ?>

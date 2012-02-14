@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-include "includes/config.php";
+include "includes/require.php";
 session_start();
 
 //define the variable

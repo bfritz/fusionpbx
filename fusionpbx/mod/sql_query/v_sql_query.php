@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 require_once "includes/checkauth.php";
 if (permission_exists('sql_query_execute')) {
 	//access granted
@@ -166,6 +166,6 @@ else {
 	echo "<iframe id='frame' width='100%' height='400' FRAMEBORDER='0' name='frame' style='background-color : #FFFFFF;'></iframe>\n";
 
 //show the footer
-	include "includes/config.php";
+	include "includes/require.php";
 	require_once "includes/footer.php";
 ?>

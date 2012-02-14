@@ -37,7 +37,7 @@ if (defined('STDIN')) {
 
 //include the config.php
 	if (!defined('STDIN')) { include "root.php"; }
-	require_once "includes/config.php";
+	require_once "includes/require.php";
 
 //set php ini values
 	ini_set(max_execution_time,900); //15 minutes

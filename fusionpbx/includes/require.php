@@ -24,34 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('call_center_queues_add') || permission_exists('call_center_queues_edit')) {
-	//access granted
-}
-else {
-	echo "access denied";
-	exit;
-}
-
-$cmd = $_GET['cmd'];
-$rdr = $_GET['rdr'];
-
-//connect to event socket
-$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-if ($fp) {
-	$response = event_socket_request($fp, 'api reloadxml');
-	$response = event_socket_request($fp, $cmd);
-	fclose($fp);
-}
-else {
-	$response = '';
-}
-if ($rdr == "false") {
-	//redirect false
-	echo $response;
-}
-else {
-	header("Location: v_call_center_queue.php?savemsg=".urlencode($response));
-}
+include "includes/config.php";
+require_once "includes/lib_php.php";
+require "includes/lib_pdo.php";
+require_once "includes/lib_functions.php";
+require_once "includes/lib_switch.php";
 ?>

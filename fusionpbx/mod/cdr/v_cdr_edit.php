@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require "includes/config.php";
+require "includes/require.php";
 require_once "includes/checkauth.php";
 if (permission_exists('cdr_csv_view')) {
 	//access granted
@@ -100,7 +100,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($remote_media_ip) == 0) { $msg .= "Please provide: Remote Media IP<br>\n"; }
 		//if (strlen($network_addr) == 0) { $msg .= "Please provide: Network Addr<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require "includes/config.php";
+			require "includes/require.php";
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
 			echo "<div align='center'>\n";
@@ -161,7 +161,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require "includes/config.php";
+			require "includes/require.php";
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_cdr.php\">\n";
 			echo "<div align='center'>\n";
@@ -195,7 +195,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require "includes/config.php";
+			require "includes/require.php";
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_cdr.php\">\n";
 			echo "<div align='center'>\n";
@@ -279,7 +279,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 }
 
 
-require "includes/config.php";
+require "includes/require.php";
 require_once "includes/header.php";
 
 
@@ -510,6 +510,6 @@ echo "	</tr>";
 echo "</table>";
 echo "</div>";
 
-require "includes/config.php";
+require "includes/require.php";
 require_once "includes/footer.php";
 ?>

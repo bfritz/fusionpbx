@@ -28,32 +28,63 @@ include "root.php";
 //define the database class
 	if (!class_exists('database')) {
 		class database {
-			var $result;
-			var $type;
+			public $db;
+			public $result;
+			public $type;
+			public $table;
+			public $where; //array
+			public $order_by; //array
+			public $limit;
+			public $offset;
+			public $fields;
 
 			public function connect() {
-				var $db_host
-				var $db_port;
-				var $db_name;
-				var $db_username;
-				var $db_password;
+				//include config.php
+					include "root.php";
+					include "includes/config.php";
 
-				if ($this->type == "sqlite") {
-					if (strlen($db_file_name) == 0) {
+				//set defaults
+					if (strlen($dbtype) > 0) { 
+						$db_type = $dbtype; 
+					}
+					if (strlen($dbhost) > 0) { 
+						$db_host = $dbhost; 
+					}
+					if (strlen($dbport) > 0) { 
+						$db_port = $dbport; 
+					}
+					if (strlen($dbname) > 0) { 
+						$db_name = $dbname; 
+					}
+					if (strlen($dbusername) > 0) { 
+						$db_username = $dbusername; 
+					}
+					if (strlen($dbpassword) > 0) { 
+						$db_password = $dbpassword; 
+					}
+					if (strlen($dbfilepath) > 0) { 
+						$db_path = $dbfilepath; 
+					}
+					if (strlen($dbfilename) > 0) { 
+						$db_name = $dbfilename; 
+					}
+				
+				if ($db_type == "sqlite") {
+					if (strlen($db_name) == 0) {
 						$server_name = $_SERVER["SERVER_NAME"];
 						$server_name = str_replace ("www.", "", $server_name);
-						$server_name = str_replace ("example.net", "example.com", $server_name);
-						$db_file_name_short = $server_name;
-						$db_file_name = $server_name.'.db';
+						//$server_name = str_replace ("example.net", "example.com", $server_name);
+						$db_name_short = $server_name;
+						$db_name = $server_name.'.db';
 					}
 					else {
-						$db_file_name_short = $db_file_name;
+						$db_name_short = $db_name;
 					}
 
 					$file_path = $v_secure;
-					$db_file_path = $v_secure;
-					$db_file_path = realpath($db_file_path);
-					if (file_exists($db_file_path.'/'.$db_file_name)) {
+					$db_path = $v_secure;
+					$db_path = realpath($db_path);
+					if (file_exists($db_path.'/'.$db_name)) {
 						//echo "main file exists<br>";
 					}
 					else {
@@ -61,9 +92,9 @@ include "root.php";
 						$file_contents = file_get_contents($file_name);
 						try {
 							//$db = new PDO('sqlite2:example.db'); //sqlite 2
-							//$dbimg = new PDO('sqlite::memory:'); //sqlite 3
-							$db_sql = new PDO('sqlite:'.$db_file_path.'/'.$db_file_name); //sqlite 3
-							$db_sql->beginTransaction();
+							//$db = new PDO('sqlite::memory:'); //sqlite 3
+							$db = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
+							$db->beginTransaction();
 						}
 						catch (PDOException $error) {
 							print "error: " . $error->getMessage() . "<br/>";
@@ -78,7 +109,7 @@ include "root.php";
 						$x = 0;
 						foreach($stringarray as $sql) {
 							try {
-								$db_sql->query($sql);
+								$db->query($sql);
 							}
 							catch (PDOException $error) {
 								echo "error: " . $error->getMessage() . " sql: $sql<br/>";
@@ -86,21 +117,21 @@ include "root.php";
 							$x++;
 						}
 						unset ($file_contents, $sql);
-						$db_sql->commit();
+						$db->commit();
 
-						if (is_writable($db_file_path.'/'.$db_file_name)) {
+						if (is_writable($db_path.'/'.$db_name)) {
 							//is writable - use database in current location
 						}
 						else { 
 							//not writable
-							echo "The database ".$db_file_path."/".$db_file_name." is not writeable.";
+							echo "The database ".$db_path."/".$db_name." is not writeable.";
 							exit;
 						}
 					}
 					try {
 						//$db = new PDO('sqlite2:example.db'); //sqlite 2
 						//$db = new PDO('sqlite::memory:'); //sqlite 3
-						$db = new PDO('sqlite:'.$db_file_path.'/'.$db_file_name); //sqlite 3
+						$db = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
 
 						//Add additional functions to SQLite so that they are accessible inside SQL
 						//bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
@@ -109,7 +140,7 @@ include "root.php";
 						$db->sqliteCreateFunction('now', 'php_now', 0);
 						$db->sqliteCreateFunction('str_left', 'php_left', 2);
 						$db->sqliteCreateFunction('str_right', 'php_right', 2);
-						return $db;
+						$this->db = $db;
 					}
 					catch (PDOException $error) {
 						print "error: " . $error->getMessage() . "<br/>";
@@ -117,7 +148,7 @@ include "root.php";
 					}
 				}
 
-				if ($this->type == "mysql") {
+				if ($db_type == "mysql") {
 					try {
 						//required for mysql_real_escape_string
 							if (function_exists(mysql_connect)) {
@@ -143,7 +174,7 @@ include "root.php";
 									));
 								}
 							}
-							return $db;
+							$this->db = $db;
 					}
 					catch (PDOException $error) {
 						print "error: " . $error->getMessage() . "<br/>";
@@ -151,7 +182,7 @@ include "root.php";
 					}
 				}
 
-				if ($this->type == "pgsql") {
+				if ($db_type == "pgsql") {
 					//database connection
 					try {
 						if (strlen($this->db_host) > 0) {
@@ -166,7 +197,7 @@ include "root.php";
 						print "error: " . $error->getMessage() . "<br/>";
 						die();
 					}
-					return $db;
+					$this->db = $db;
 				}
 			}
 
@@ -175,140 +206,188 @@ include "root.php";
 			//}
 
 			public function select() {
-				var $type;
-				var $connection;
-				var $table;
-				var $where;
-				var $order_by;
-				var $limit;
-				var $offset;
+				//var $type;
+				//var $connection;
+				//var $table;
+				//var $where;
+				//var $order_by;
+				//var $limit;
+				//var $offset;
 
 				$sql = "";
-				$sql .= " select * from ".$this->table;
+				$sql .= " select * from ".$this->table." ";
 				if ($this->where) {
-					$sql .= $this->where." ";
+					$i = 0;
+					foreach($this->where as $row) {
+						if ($i == 0) {
+							$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+						}
+						else {
+							$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+						}
+						$i++;
+					}
 				}
 				if ($this->order_by) {
 					$sql .= $this->order_by." ";
 				}
 				if ($this->limit) {
-					$sql .= " limit $limit offset $offset ";
+					$sql .= " limit ".$this->limit." offset ".$this->offset." ";
 				}
-				$prep_statement = $db->prepare($sql);
+				$prep_statement = $this->db->prepare($sql);
 				if ($prep_statement) {
 					$prep_statement->execute();
-					$result = $prep_statement->fetchAll();
+					$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 					$this->result = $result;
 					$this->count = count($result);
 				}
 			}
 
-			public function insert($named_array){
-				var $type;
-				var $connection;
+			public function add(){
 				$sql = "insert into ".$this->table;
 				$sql .= "(";
-				//loop through the filed names
-				//$sql .= "domain_uuid, ";
-				$sql .= ")";
+				foreach($this->fields as $row) {
+						if ($i == 0) {
+							$sql .= $row['name'].", ";
+						}
+						else {
+							$sql .= $row['name'].", ";
+						}
+						$i++;
+				}
+				$sql .= ") ";
 				$sql .= "values ";
 				$sql .= "(";
-				//loop through the values
-				//$sql .= "'$domain_uuid', ";
+				foreach($this->fields as $row) {
+					if ($i == 0) {
+						$sql .= "'".$row['value']."', ";
+					}
+					else {
+						$sql .= "'".$row['value']."', ";
+					}
+					$i++;
+				}
 				$sql .= ")";
 				$db->exec($sql);
 				unset($sql);
 			}
 
-			public function delete(){
-				var $type;
-				var $connection;
-				var $where;
-				if ($this->type == "pdo") {
-					$sql = "";
-					$sql .= "delete from ".$this->table." ";
-					if ($this->where) {
-						$sql .= $this->where;
-					}
-					$prep_statement = $this->connection->prepare($sql);
-					$prep_statement->execute();
-					unset($sql);
-				}
-			}
-
 			public function update() {
-				var $type;
-				var $connection;
-				var $table;
-				var $where;
-
 				$sql = "update ".$this->table." set ";
-				//loop through the filed name and value pairs
-				//$sql .= "zzz = '$zzz', ";
-
-				if ($this->where) {
-					$sql .= $this->where;
+				$i = 0;
+				foreach($this->fields as $row) {
+					if ($i == 0) {
+						$sql .= $row['name']." = '".$row['value']."', ";
+					}
+					else {
+						$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+					}
+					$i++;
+				}
+				$i = 0;
+				foreach($this->where as $row) {
+					if ($i == 0) {
+						$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+					}
+					else {
+						$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+					}
+					$i++;
 				}
 				$db->exec(check_sql($sql));
 				unset($sql);
 			}
 
-			public function count() {
-				var $type;
-				var $connection;
-				var $table;
-				var $where;
+			public function delete(){
+				$sql = "";
+				$sql .= "delete from ".$this->table." ";
+				if ($this->where) {
+					$i = 0;
+					foreach($this->where as $row) {
+						if ($i == 0) {
+							$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+						}
+						else {
+							$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+						}
+						$i++;
+					}
+				}
+				$prep_statement = $this->connection->prepare($sql);
+				$prep_statement->execute();
+				unset($sql);
+			}
 
+			public function count() {
 				$sql = "";
 				$sql .= " select count(*) as num_rows from ".$this->table;
 				if ($this->where) {
-					$sql .= $this->where." ";
+					$i = 0;
+					foreach($this->where as $row) {
+						if ($i == 0) {
+							$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+						}
+						else {
+							$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+						}
+						$i++;
+					}
 				}
-				$prep_statement = $this->connect->prepare(check_sql($sql));
+				$prep_statement = $this->db->prepare(check_sql($sql));
 				if ($prep_statement) {
 					$prep_statement->execute();
 					$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 					if ($row['num_rows'] > 0) {
-						return $row['num_rows'];
+						$this->result = $row['num_rows'];
 					}
 					else {
-						return = 0;
+						$this->result = 0;
 					}
 				}
 				unset($prep_statement, $result);
 			}
 
-			if (!function_exists('php_md5')) {
-				private function php_md5($string) {
-					return md5($string);
-				}
+			private function php_md5($string) {
+				return md5($string);
 			}
 
-			if (!function_exists('php_unix_time_stamp')) {
-				private function php_unix_time_stamp($string) {
-					return strtotime($string);
-				}
+			private function php_unix_time_stamp($string) {
+				return strtotime($string);
 			}
 
-			if (!function_exists('php_now')) {
-				private function php_now() {
-					//return date('r');
-					return date("Y-m-d H:i:s");
-				}
+			private function php_now() {
+				//return date('r');
+				return date("Y-m-d H:i:s");
 			}
 
-			if (!function_exists('php_left')) {
-				private function php_left($string, $num) {
-					return substr($string, 0, $num);
-				}
+			private function php_left($string, $num) {
+				return substr($string, 0, $num);
 			}
 
-			if (!function_exists('php_right')) {
-				private function php_right($string, $num) {
-					return substr($string, (strlen($string)-$num), strlen($string));
-				}
+			private function php_right($string, $num) {
+				return substr($string, (strlen($string)-$num), strlen($string));
 			}
-
 		}
 	}
+	
+//example usage
+/*
+require_once "includes/classes/database.php";
+$where[$x]['name'] = 'domain_uuid';
+$where[$x]['value'] = $_SESSION["domain_uuid"];
+$where[$x]['operator'] = '=';
+$database = new database;
+//$database->db = $db;
+$database->connect();
+$database->domain_uuid = $_SESSION["domain_uuid"];
+$database->type = $db_type;
+$database->table = "v_extensions";
+$database->where = $where;
+$database->limit = '2';
+$database->offset = '40';
+//$database->order_by = $order_by;
+$database->select();
+//$database->count();
+print_r($database->result);
+*/
 ?>

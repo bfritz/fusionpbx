@@ -31,7 +31,7 @@
 */
 
 include "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 require_once "includes/phpsvnclient/phpsvnclient.php";
 
 if (!isset($display_results)) {

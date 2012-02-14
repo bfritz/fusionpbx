@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require "includes/config.php";
+require "includes/require.php";
 require_once "includes/checkauth.php";
 if (permission_exists('cdr_csv_view')) {
 	//access granted
@@ -429,6 +429,6 @@ if (count($_REQUEST)>0) {
 	echo "</div>";
 	echo "<br><br>";
 
-require "includes/config.php";
+require "includes/require.php";
 require_once "includes/footer.php";
 ?>

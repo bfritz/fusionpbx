@@ -46,6 +46,12 @@ require_once "includes/lib_functions.php";
 	if (strlen($dbpassword) > 0) { 
 		$db_password = $dbpassword; 
 	}
+	if (strlen($dbfilepath) > 0) { 
+		$db_path = $dbfilepath; 
+	}
+	if (strlen($dbfilename) > 0) { 
+		$db_name = $dbfilename; 
+	}
 
 if (!function_exists('get_db_field_names')) {
 	function get_db_field_names($db, $table, $db_name='fusionpbx') {
@@ -89,23 +95,23 @@ if (!function_exists('get_db_field_names')) {
 
 if ($db_type == "sqlite") {
 
-	if (strlen($dbfilename) == 0) {
+	if (strlen($db_name) == 0) {
 		//if (strlen($_SERVER["SERVER_NAME"]) == 0) { $_SERVER["SERVER_NAME"] = "http://localhost"; }
 		$server_name = $_SERVER["SERVER_NAME"];
 		$server_name = str_replace ("www.", "", $server_name);
 		$server_name = str_replace ("example.net", "example.com", $server_name);
 		//$server_name = str_replace (".", "_", $server_name);
-		$dbfilenameshort = $server_name;
-		$dbfilename = $server_name.'.db';
+		$db_name_short = $server_name;
+		$db_name = $server_name.'.db';
 	}
 	else {
-		$dbfilenameshort = $dbfilename;
+		$db_name_short = $db_name;
 	}
 
 	$filepath = $v_secure;
-	$dbfilepath = $v_secure;
-	$dbfilepath = realpath($dbfilepath);
-	if (file_exists($dbfilepath.'/'.$dbfilename)) {
+	$db_path = $v_secure;
+	$db_path = realpath($db_path);
+	if (file_exists($db_path.'/'.$db_name)) {
 		//echo "main file exists<br>";
 	}
 	else {
@@ -116,7 +122,7 @@ if ($db_type == "sqlite") {
 		try {
 			//$db = new PDO('sqlite2:example.db'); //sqlite 2
 			//$dbimg = new PDO('sqlite::memory:'); //sqlite 3
-			$db_sql = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilename); //sqlite 3
+			$db_sql = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
 			$db_sql->beginTransaction();
 		}
 		catch (PDOException $error) {
@@ -144,11 +150,11 @@ if ($db_type == "sqlite") {
 		$db_sql->commit();
 		//--- end: create the sqlite db -----------------------------------------
 
-		if (is_writable($dbfilepath.'/'.$dbfilename)) { //is writable
+		if (is_writable($db_path.'/'.$db_name)) { //is writable
 			//use database in current location
 		}
 		else { //not writable
-			echo "The database ".$dbfilepath."/".$dbfilename." is not writeable.";
+			echo "The database ".$db_path."/".$db_name." is not writeable.";
 			exit;
 		}
 
@@ -224,7 +230,7 @@ if ($db_type == "sqlite") {
 	try {
 		//$db = new PDO('sqlite2:example.db'); //sqlite 2
 		//$db = new PDO('sqlite::memory:'); //sqlite 3
-		$db = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilename); //sqlite 3
+		$db = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
 
 		//Add additional functions to SQLite so that they are accessible inside SQL
 		//bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )

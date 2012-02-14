@@ -25,7 +25,7 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 require_once "includes/checkauth.php";
 if (permission_exists('log_view')) {
 	//access granted

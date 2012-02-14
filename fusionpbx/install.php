@@ -79,7 +79,7 @@ require_once "includes/lib_functions.php";
 	$db_type = $_POST["db_type"];
 	$admin_username = $_POST["admin_username"];
 	$admin_password = $_POST["admin_password"];
-	$db_filename = $_POST["db_filename"];
+	$db_name = $_POST["db_name"];
 	$db_host = $_POST["db_host"];
 	$db_port = $_POST["db_port"];
 	$db_name = $_POST["db_name"];
@@ -87,7 +87,7 @@ require_once "includes/lib_functions.php";
 	$db_password = $_POST["db_password"];
 	$db_create_username = $_POST["db_create_username"];
 	$db_create_password = $_POST["db_create_password"];
-	$db_filepath = $_POST["db_filepath"];
+	$db_path = $_POST["db_path"];
 	$install_step = $_POST["install_step"];
 	$install_secure_dir = $_POST["install_secure_dir"];
 	$install_tmp_dir = $_POST["install_tmp_dir"];
@@ -112,9 +112,9 @@ require_once "includes/lib_functions.php";
 		$install_secure_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 	}
 
-//set the default db_filename
+//set the default db_name
 	if ($db_type == "sqlite") {
-		if (strlen($db_filename) == 0) { $db_filename = "fusionpbx.db"; }
+		if (strlen($db_name) == 0) { $db_name = "fusionpbx.db"; }
 	}
 
 //set the required directories
@@ -162,10 +162,10 @@ require_once "includes/lib_functions.php";
 			//if the freebsd port is installed use the following paths by default.
 				if (file_exists('/var/db/freeswitch')) {
 					//freebsd port
-						//set the default db_filepath
-							if (strlen($db_filepath) == 0) { //secure dir
-								$db_filepath = '/var/db/fusionpbx';
-								if (!is_dir($db_filepath)) { mkdir($db_filepath,0777,true); }
+						//set the default db_path
+							if (strlen($db_path) == 0) { //secure dir
+								$db_path = '/var/db/fusionpbx';
+								if (!is_dir($db_path)) { mkdir($db_path,0777,true); }
 							}
 						//set the other default directories
 							$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
@@ -185,10 +185,10 @@ require_once "includes/lib_functions.php";
 				}
 				elseif (file_exists('/data/freeswitch')) {
 					//freebsd embedded 
-						//set the default db_filepath
-							if (strlen($db_filepath) == 0) { //secure dir
-								$db_filepath = '/data/db/fusionpbx';
-								if (!is_dir($db_filepath)) { mkdir($db_filepath,0777,true); }
+						//set the default db_path
+							if (strlen($db_path) == 0) { //secure dir
+								$db_path = '/data/db/fusionpbx';
+								if (!is_dir($db_path)) { mkdir($db_path,0777,true); }
 							}
 						//set the other default directories
 							$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
@@ -207,31 +207,31 @@ require_once "includes/lib_functions.php";
 							$switch_sounds_dir = '/data/freeswitch/sounds';
 				}
 				else {
-					//set the default db_filepath
-						if (strlen($db_filepath) == 0) { //secure dir
-							$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+					//set the default db_path
+						if (strlen($db_path) == 0) { //secure dir
+							$db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 						}
 				}
 			break;
 		case "NetBSD":
 			$startup_script_dir = '';
-			//set the default db_filepath
-				if (strlen($db_filepath) == 0) { //secure dir
-					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+			//set the default db_path
+				if (strlen($db_path) == 0) { //secure dir
+					$db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 				}
 			break;
 		case "OpenBSD":
 			$startup_script_dir = '';
 
-			//set the default db_filepath
-				if (strlen($db_filepath) == 0) { //secure dir
-					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+			//set the default db_path
+				if (strlen($db_path) == 0) { //secure dir
+					$db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 				}
 			break;
 		default:
-			//set the default db_filepath
-				if (strlen($db_filepath) == 0) { //secure dir
-					$db_filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+			//set the default db_path
+				if (strlen($db_path) == 0) { //secure dir
+					$db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 				}
 		}
 		//
@@ -349,7 +349,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			if ($db_type == "sqlite") {
 				//sqlite database will be created when the config.php is loaded and only if the database file does not exist
 					try {
-						$db_tmp = new PDO('sqlite:'.$db_filepath.'/'.$db_filename); //sqlite 3
+						$db_tmp = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
 						//$db_tmp = new PDO('sqlite::memory:'); //sqlite 3
 					}
 					catch (PDOException $error) {
@@ -984,7 +984,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				}
 			}
 		}
-		//$db_tmp->commit();
+		$db_tmp->commit();
 
 	//unset the temporary database connection
 		unset($db_tmp);
@@ -1027,9 +1027,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp_config .= "		\$db_type = '".$db_type."'; //sqlite, mysql, pgsql, others with a manually created PDO connection\n";
 		$tmp_config .= "\n";
 		if ($db_type == "sqlite") {
-			$tmp_config .= "	//sqlite: the dbfilename and dbfilepath are automatically assigned however the values can be overidden by setting the values here.\n";
-			$tmp_config .= "		\$dbfilename = '".$db_filename."'; //host name/ip address + '.db' is the default database filename\n";
-			$tmp_config .= "		\$dbfilepath = '".$db_filepath."'; //the path is determined by a php variable\n";
+			$tmp_config .= "	//sqlite: the db_name and db_path are automatically assigned however the values can be overidden by setting the values here.\n";
+			$tmp_config .= "		\$db_name = '".$db_name."'; //host name/ip address + '.db' is the default database filename\n";
+			$tmp_config .= "		\$db_path = '".$db_path."'; //the path is determined by a php variable\n";
 		}
 		$tmp_config .= "\n";
 		$tmp_config .= "	//mysql: database connection information\n";
@@ -1075,15 +1075,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp_config .= "		//error_reporting (E_ALL ^ E_NOTICE); // Report everything\n";
 		$tmp_config .= "		error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings";
 		$tmp_config .= "\n";
-		$tmp_config .= "//-----------------------------------------------------\n";
-		$tmp_config .= "// warning: do not edit below this line\n";
-		$tmp_config .= "//-----------------------------------------------------\n";
-		$tmp_config .= "\n";
-		$tmp_config .= "	require_once \"includes/lib_php.php\";\n";
-		$tmp_config .= "	require \"includes/lib_pdo.php\";\n";
-		$tmp_config .= "	require_once \"includes/lib_functions.php\";\n";
-		$tmp_config .= "	require_once \"includes/lib_switch.php\";\n";
-		$tmp_config .= "\n";
 		$tmp_config .= "?>";
 
 		$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php","w");
@@ -1092,7 +1083,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		fclose($fout);
 
 	//include the new config.php file
-		require "includes/config.php";
+		require "includes/require.php";
 
 	//set the defaults
 		$menu_name = 'default';
@@ -1429,7 +1420,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "	Database Filename:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='db_filename' maxlength='255' value=\"$db_filename\"><br />\n";
+		echo "	<input class='formfld' type='text' name='db_name' maxlength='255' value=\"$db_name\"><br />\n";
 		echo "	Default: fusiopbx.db. If the field is left empty then the file name is determined by the host or IP address.\n";
 		echo "\n";
 		echo "</td>\n";
@@ -1440,7 +1431,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "	Database Directory:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='db_filepath' maxlength='255' value=\"$db_filepath\"><br />\n";
+		echo "	<input class='formfld' type='text' name='db_path' maxlength='255' value=\"$db_path\"><br />\n";
 		echo "	Set the path to the database directory.\n";
 		echo "</td>\n";
 		echo "</tr>\n";

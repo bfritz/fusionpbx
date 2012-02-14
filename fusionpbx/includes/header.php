@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/config.php";
+require_once "includes/require.php";
 
 //if reloadxml then run reloadacl, and reloadxml
 	if ($_SESSION["reload_xml"]) {
