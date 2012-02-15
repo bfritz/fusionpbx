@@ -34,30 +34,34 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	$id = check_str($_GET["id"]);
-	$ivr_menu_uuid = check_str($_GET["ivr_menu_uuid"]);
-}
+//set the http values as variables
+	if (count($_GET)>0) {
+		$id = check_str($_GET["id"]);
+		$ivr_menu_uuid = check_str($_GET["ivr_menu_uuid"]);
+	}
 
-if (strlen($id)>0) {
-	$sql = "";
-	$sql .= "delete from v_ivr_menu_options ";
-	$sql .= "where ivr_menu_option_uuid = '$id' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	unset($sql);
+//delete the ivr menu option
+	if (strlen($id)>0) {
+		//include the ivr menu class
+			require_once "includes/classes/database.php";
+			require_once "includes/classes/switch_ivr_menu.php";
+			$ivr = new switch_ivr_menu;
+			$ivr->domain_uuid = $_SESSION["domain_uuid"];
+			$ivr->ivr_menu_uuid = $ivr_menu_uuid;
+			$ivr->ivr_menu_option_uuid = $id;
+			$ivr->delete();
 
-	//synchronize the xml config
-	sync_package_v_ivr_menu();
-}
+		//synchronize the xml config
+			sync_package_v_ivr_menu();
+	}
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_uuid\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
-
-require_once "includes/footer.php";
-return;
+//redirect the user
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu_edit.php?id=$ivr_menu_uuid\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
 ?>

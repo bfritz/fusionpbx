@@ -99,32 +99,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
+			//create the object
+				require_once "includes/classes/database.php";
+				require_once "includes/classes/switch_ivr_menu.php";
+				$ivr = new switch_ivr_menu;
+				$ivr->domain_uuid = $_SESSION["domain_uuid"];
+				$ivr->ivr_menu_uuid = $ivr_menu_uuid;
+				$ivr->ivr_menu_option_uuid = $ivr_menu_option_uuid;
+				$ivr->ivr_menu_options_digits = $ivr_menu_options_digits;
+				$ivr->ivr_menu_options_action = $ivr_menu_options_action;
+				$ivr->ivr_menu_options_param = $ivr_menu_options_param;
+				$ivr->ivr_menu_options_order = $ivr_menu_options_order;
+				$ivr->ivr_menu_options_desc = $ivr_menu_options_desc;
+
 			if ($action == "add" && permission_exists('ivr_menu_add')) {
 				$ivr_menu_option_uuid = uuid();
-				$sql = "insert into v_ivr_menu_options ";
-				$sql .= "(";
-				$sql .= "domain_uuid, ";
-				$sql .= "ivr_menu_uuid, ";
-				$sql .= "ivr_menu_option_uuid, ";
-				$sql .= "ivr_menu_options_digits, ";
-				$sql .= "ivr_menu_options_action, ";
-				$sql .= "ivr_menu_options_param, ";
-				$sql .= "ivr_menu_options_order, ";
-				$sql .= "ivr_menu_options_desc ";
-				$sql .= ")";
-				$sql .= "values ";
-				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
-				$sql .= "'$ivr_menu_uuid', ";
-				$sql .= "'$ivr_menu_option_uuid', ";
-				$sql .= "'$ivr_menu_options_digits', ";
-				$sql .= "'$ivr_menu_options_action', ";
-				$sql .= "'$ivr_menu_options_param', ";
-				$sql .= "'$ivr_menu_options_order', ";
-				$sql .= "'$ivr_menu_options_desc' ";
-				$sql .= ")";
-				$db->exec(check_sql($sql));
-				unset($sql);
+				$ivr->ivr_menu_option_uuid = $ivr_menu_option_uuid;
+				$ivr->add();
 
 				//synchronize the xml config
 				sync_package_v_ivr_menu();
@@ -139,17 +130,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			} //if ($action == "add")
 
 			if ($action == "update" && permission_exists('ivr_menu_edit')) {
-				$sql = "update v_ivr_menu_options set ";
-				$sql .= "domain_uuid = '$domain_uuid', ";
-				$sql .= "ivr_menu_uuid = '$ivr_menu_uuid', ";
-				$sql .= "ivr_menu_options_digits = '$ivr_menu_options_digits', ";
-				$sql .= "ivr_menu_options_action = '$ivr_menu_options_action', ";
-				$sql .= "ivr_menu_options_param = '$ivr_menu_options_param', ";
-				$sql .= "ivr_menu_options_order = '$ivr_menu_options_order', ";
-				$sql .= "ivr_menu_options_desc = '$ivr_menu_options_desc' ";
-				$sql .= "where ivr_menu_option_uuid = '$ivr_menu_option_uuid'";
-				$db->exec(check_sql($sql));
-				unset($sql);
+				$ivr->ivr_menu_option_uuid = $ivr_menu_option_uuid;
+				$ivr->update();
 
 				//synchronize the xml config
 				sync_package_v_ivr_menu();

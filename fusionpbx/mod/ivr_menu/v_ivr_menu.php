@@ -62,22 +62,17 @@ require_once "includes/paging.php";
 		echo "</tr>\n";
 		echo "</table>\n";
 
-	//get the number of rows in v_extensions 
-		$sql = "";
-		$sql .= " select count(*) as num_rows from v_ivr_menus ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		if ($prep_statement) {
-			$prep_statement->execute();
-			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
-			if ($row['num_rows'] > 0) {
-				$num_rows = $row['num_rows'];
-			}
-			else {
-				$num_rows = '0';
-			}
-		}
-		unset($prep_statement, $result);
+	//get the count
+		require_once "includes/classes/database.php";
+		require_once "includes/classes/switch_ivr_menu.php";
+		$ivr = new switch_ivr_menu;
+		$ivr->domain_uuid = $_SESSION["domain_uuid"];
+		$ivr->table = "v_ivr_menus";
+		$where[0]['name'] = 'domain_uuid';
+		$where[0]['value'] = $_SESSION["domain_uuid"];
+		$where[0]['operator'] = '=';
+		$ivr->where = $where;
+		$num_rows = $ivr->count();
 
 	//prepare to page the results
 		$rows_per_page = 150;
@@ -88,14 +83,11 @@ require_once "includes/paging.php";
 		$offset = $rows_per_page * $page;
 
 	//get the list from the db
-		$sql = "";
-		$sql .= " select * from v_ivr_menus ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
-		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-		$sql .= " limit $rows_per_page offset $offset ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		if (strlen($order_by)> 0) { 
+			$ivr->order_by = $order_by;
+			$ivr->order_type = $order;
+		}
+		$result = $ivr->find();
 		$result_count = count($result);
 		unset ($prep_statement, $sql);
 
@@ -157,12 +149,10 @@ require_once "includes/paging.php";
 		echo "</td>\n";
 		echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";

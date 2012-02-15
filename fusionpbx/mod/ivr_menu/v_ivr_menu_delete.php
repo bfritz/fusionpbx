@@ -40,59 +40,13 @@ if (count($_GET)>0) {
 
 if (strlen($id)>0) {
 
-	//start the atomic transaction
-		$count = $db->exec("BEGIN;");
-
-	//delete child data
-		$sql = "";
-		$sql .= "delete from v_ivr_menu_options ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and ivr_menu_uuid = '$id' ";
-		$db->query($sql);
-		unset($sql);
-
-	//delete parent data
-		$sql = "";
-		$sql .= "delete from v_ivr_menus ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and ivr_menu_uuid = '$id' ";
-		$db->query($sql);
-		unset($sql);
-
-	//delete the dialplan entries
-		$sql = "";
-		$sql .= "select * from v_dialplans ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
-		$prep_statement_2 = $db->prepare($sql);
-		$prep_statement_2->execute();
-		while($row2 = $prep_statement_2->fetch()) {
-			$dialplan_uuid = $row2['dialplan_uuid'];
-			break; //limit to 1 row
-		}
-		unset ($sql, $prep_statement_2);
-
-		//delete the child dialplan information
-			$sql = "";
-			$sql = "delete from v_dialplan_details ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-			//echo "sql: ".$sql."<br />\n";
-			$db->query($sql);
-			unset($sql);
-
-		//delete the parent dialplan information
-			$sql = "";
-			$sql .= "delete from v_dialplans ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and opt_1_name = 'ivr_menu_uuid' ";
-			$sql .= "and opt_1_value = '".$id."' ";
-			//echo "sql: ".$sql."<br />\n";
-			$db->query($sql);
-			unset ($sql);
-
-	//commit the atomic transaction
-		$count = $db->exec("COMMIT;");
+	//include the ivr menu class
+		require_once "includes/classes/database.php";
+		require_once "includes/classes/switch_ivr_menu.php";
+		$ivr = new switch_ivr_menu;
+		$ivr->domain_uuid = $_SESSION["domain_uuid"];
+		$ivr->ivr_menu_uuid = $id;
+		$ivr->delete();
 
 	//synchronize the xml config
 		sync_package_v_ivr_menu();
