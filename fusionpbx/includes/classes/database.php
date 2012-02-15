@@ -70,12 +70,11 @@ include "root.php";
 					if (strlen($dbfilename) > 0) { 
 						$db_name = $dbfilename; 
 					}
-					
+
 				if ($db_type == "sqlite") {
 					if (strlen($db_name) == 0) {
 						$server_name = $_SERVER["SERVER_NAME"];
 						$server_name = str_replace ("www.", "", $server_name);
-						//$server_name = str_replace ("example.net", "example.com", $server_name);
 						$db_name_short = $server_name;
 						$db_name = $server_name.'.db';
 					}
@@ -204,7 +203,7 @@ include "root.php";
 			//	return null;
 			//}
 
-			public function select() {
+			public function find() {
 				//connect;
 				//table;
 				//where;
@@ -253,7 +252,10 @@ include "root.php";
 					$prep_statement = $this->db->prepare($sql);
 					if ($prep_statement) {
 						$prep_statement->execute();
-						$this->result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+						return $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+					}
+					else {
+						return false;
 					}
 			}
 
@@ -265,29 +267,32 @@ include "root.php";
 				//add data to the database
 					$sql = "insert into ".$this->table;
 					$sql .= "(";
-					foreach($this->fields as $row) {
-							if ($i == 0) {
-								$sql .= $row['name'].", ";
-							}
-							else {
-								$sql .= $row['name'].", ";
-							}
-							$i++;
+					$i = 1;
+					foreach($this->fields as $name => $value) {
+						if (count($this->fields) == $i) {
+							$sql .= $name." ";
+						}
+						else {
+							$sql .= $name.", ";
+						}
+						$i++;
 					}
 					$sql .= ") ";
 					$sql .= "values ";
 					$sql .= "(";
-					foreach($this->fields as $row) {
-						if ($i == 0) {
-							$sql .= "'".$row['value']."', ";
+					$i = 1;
+					foreach($this->fields as $name => $value) {
+						if (count($this->fields) == $i) {
+							$sql .= "'".$value."' ";
 						}
 						else {
-							$sql .= "'".$row['value']."', ";
+							$sql .= "'".$value."', ";
 						}
 						$i++;
 					}
 					$sql .= ")";
-					$db->exec($sql);
+					$this->db->exec($sql);
+					unset($this->fields);
 					unset($sql);
 			}
 
@@ -298,13 +303,13 @@ include "root.php";
 					}
 				//udate the database
 					$sql = "update ".$this->table." set ";
-					$i = 0;
-					foreach($this->fields as $row) {
-						if ($i == 0) {
-							$sql .= $row['name']." = '".$row['value']."', ";
+					$i = 1;
+					foreach($this->fields as $name => $value) {
+						if (count($this->fields) == $i) {
+							$sql .= $name." = '".$value."' ";
 						}
 						else {
-							$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
+							$sql .= $name." = '".$value."', ";
 						}
 						$i++;
 					}
@@ -318,7 +323,9 @@ include "root.php";
 						}
 						$i++;
 					}
-					$db->exec(check_sql($sql));
+					$this->db->exec(check_sql($sql));
+					unset($this->fields);
+					unset($this->where);
 					unset($sql);
 			}
 
@@ -342,9 +349,11 @@ include "root.php";
 							$i++;
 						}
 					}
+					//echo $sql."<br>\n";
 					$prep_statement = $this->db->prepare($sql);
 					$prep_statement->execute();
 					unset($sql);
+					unset($this->where);
 			}
 
 			public function count() {
@@ -367,6 +376,7 @@ include "root.php";
 							$i++;
 						}
 					}
+					unset($this->where);
 					$prep_statement = $this->db->prepare(check_sql($sql));
 					if ($prep_statement) {
 						$prep_statement->execute();
@@ -403,24 +413,35 @@ include "root.php";
 			}
 		}
 	}
-	
+
 //example usage
 /*
-require_once "includes/classes/database.php";
-$database = new database;
-$database->domain_uuid = $_SESSION["domain_uuid"];
-$database->type = $db_type;
-$database->table = "v_extensions";
-$where[0]['name'] = 'domain_uuid';
-$where[0]['value'] = $_SESSION["domain_uuid"];
-$where[0]['operator'] = '=';
-$database->where = $where;
-$order_by[0]['name'] = 'extension';
-$database->order_by = $order_by;
-$database->order_type = 'desc';
-$database->limit = '2';
-$database->offset = '0';
-$database->select();
-print_r($database->result);
+//find
+	require_once "includes/classes/database.php";
+	$database = new database;
+	$database->domain_uuid = $_SESSION["domain_uuid"];
+	$database->type = $db_type;
+	$database->table = "v_extensions";
+	$where[0]['name'] = 'domain_uuid';
+	$where[0]['value'] = $_SESSION["domain_uuid"];
+	$where[0]['operator'] = '=';
+	$database->where = $where;
+	$order_by[0]['name'] = 'extension';
+	$database->order_by = $order_by;
+	$database->order_type = 'desc';
+	$database->limit = '2';
+	$database->offset = '0';
+	$database->find();
+	print_r($database->result);
+//insert
+	require_once "includes/classes/database.php";
+	$database = new database;
+	$database->domain_uuid = $_SESSION["domain_uuid"];
+	$database->type = $db_type;
+	$database->table = "v_ivr_menus";
+	$fields[0]['name'] = 'domain_uuid';
+	$fields[0]['value'] = $_SESSION["domain_uuid"];
+	$database->add();
+	print_r($database->result);
 */
 ?>
