@@ -693,12 +693,14 @@ function format_string ($format, $data) {
 			$sql .= "where domain_uuid  = '$domain_uuid' ";
 			$sql .= "and var_name = 'format_phone' ";
 			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
-			foreach ($result as &$row) {
-				$_SESSION["format_phone_array"][] = $row["var_value"];
+			if ($prep_statement) {
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
+				foreach ($result as &$row) {
+					$_SESSION["format_phone_array"][] = $row["var_value"];
+				}
+				unset ($prep_statement);
 			}
-			unset ($prep_statement);
 		}
 		foreach ($_SESSION["format_phone_array"] as &$format) {
 			$format_count = substr_count($format, 'x');
