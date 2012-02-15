@@ -35,12 +35,10 @@ require_once "includes/require.php";
 			//create the event socket connection
 				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			//reload the access control list this also runs reloadxml
-				$tmp_cmd = 'api reloadacl';
+				$tmp_cmd = 'api reloadxml';
 				$response = event_socket_request($fp, $tmp_cmd);
 				unset($tmp_cmd);
 				usleep(1000);
-			//close the connection
-				fclose($fp);
 			//clear the apply settings reminder
 				$_SESSION["reload_xml"] = false;
 		}

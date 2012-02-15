@@ -99,7 +99,6 @@ if ($db_type == "sqlite") {
 		//if (strlen($_SERVER["SERVER_NAME"]) == 0) { $_SERVER["SERVER_NAME"] = "http://localhost"; }
 		$server_name = $_SERVER["SERVER_NAME"];
 		$server_name = str_replace ("www.", "", $server_name);
-		$server_name = str_replace ("example.net", "example.com", $server_name);
 		//$server_name = str_replace (".", "_", $server_name);
 		$db_name_short = $server_name;
 		$db_name = $server_name.'.db';
@@ -121,7 +120,7 @@ if ($db_type == "sqlite") {
 		$file_contents = file_get_contents($filename);
 		try {
 			//$db = new PDO('sqlite2:example.db'); //sqlite 2
-			//$dbimg = new PDO('sqlite::memory:'); //sqlite 3
+			//$db = new PDO('sqlite::memory:'); //sqlite 3
 			$db_sql = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
 			$db_sql->beginTransaction();
 		}
