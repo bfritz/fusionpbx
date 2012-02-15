@@ -27,152 +27,268 @@ include "root.php";
 
 //define the directory class
 	class switch_ivr_menu {
-		//set the variables
-			public $db;
-			public $domain_uuid;
-			public $domain_name;
-			public $dialplan_uuid;
-			public $ivr_menu_uuid;
-			public $ivr_menu_name;
-			public $ivr_menu_extension;
-			public $ivr_menu_greet_long;
-			public $ivr_menu_greet_short;
-			public $ivr_menu_invalid_sound;
-			public $ivr_menu_exit_sound;
-			public $ivr_menu_confirm_macro;
-			public $ivr_menu_confirm_key;
-			public $ivr_menu_tts_engine;
-			public $ivr_menu_tts_voice;
-			public $ivr_menu_confirm_attempts;
-			public $ivr_menu_timeout;
-			public $ivr_menu_exit_app;
-			public $ivr_menu_exit_data;
-			public $ivr_menu_inter_digit_timeout;
-			public $ivr_menu_max_failures;
-			public $ivr_menu_max_timeouts;
-			public $ivr_menu_digit_len;
-			public $ivr_menu_direct_dial;
-			public $ivr_menu_enabled;
-			public $ivr_menu_desc;
-			public $ivr_menu_option_uuid;
-			public $ivr_menu_options_digits;
-			public $ivr_menu_options_action;
-			public $ivr_menu_options_param;
-			public $ivr_menu_options_order;
-			public $ivr_menu_options_desc;
+		public $db;
+		public $domain_uuid;
+		public $domain_name;
+		public $dialplan_uuid;
+		public $ivr_menu_uuid;
+		public $ivr_menu_name;
+		public $ivr_menu_extension;
+		public $ivr_menu_greet_long;
+		public $ivr_menu_greet_short;
+		public $ivr_menu_invalid_sound;
+		public $ivr_menu_exit_sound;
+		public $ivr_menu_confirm_macro;
+		public $ivr_menu_confirm_key;
+		public $ivr_menu_tts_engine;
+		public $ivr_menu_tts_voice;
+		public $ivr_menu_confirm_attempts;
+		public $ivr_menu_timeout;
+		public $ivr_menu_exit_app;
+		public $ivr_menu_exit_data;
+		public $ivr_menu_inter_digit_timeout;
+		public $ivr_menu_max_failures;
+		public $ivr_menu_max_timeouts;
+		public $ivr_menu_digit_len;
+		public $ivr_menu_direct_dial;
+		public $ivr_menu_enabled;
+		public $ivr_menu_desc;
+		public $ivr_menu_option_uuid;
+		public $ivr_menu_options_digits;
+		public $ivr_menu_options_action;
+		public $ivr_menu_options_param;
+		public $ivr_menu_options_order;
+		public $ivr_menu_options_desc;
 
-		// set and get domain_uuid
-			public function get_domain_uuid() {
-				return $this->domain_uuid;
+		public function __construct() {
+			require_once "includes/classes/database.php";
+			$this->app_uuid = 'a5788e9b-58bc-bd1b-df59-fff5d51253ab';
+		}
+
+		public function __destruct() {
+			foreach ($this as $key => $value) {
+				unset($this->$key);
 			}
-			public function set_domain_uuid($domain_uuid){
-				$this->domain_uuid = $domain_uuid;
+		}
+
+		public function get_domain_uuid() {
+			return $this->domain_uuid;
+		}
+		public function set_domain_uuid($domain_uuid){
+			$this->domain_uuid = $domain_uuid;
+		}
+
+		public function get_fields($table) {
+			//get the $apps array from the installed apps from the core and mod directories
+				$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
+				$x=0;
+				foreach ($config_list as &$config_path) {
+					include($config_path);
+					$x++;
+				}
+
+			//update the app db array add exists true or false
+				$sql = '';
+				foreach ($apps as $x => &$app) {
+					foreach ($app['db'] as $y => &$row) {
+						if ($row['table'] == $table) {
+							//check if the column exists
+								foreach ($row['fields'] as $z => $field) {
+									if ($field['deprecated'] == "true") {
+										//skip this field
+									}
+									else {
+										if (is_array($field['name'])) {
+											$field_name = $field['name']['text'];
+										}
+										else {
+											$field_name = $field['name'];
+										}
+										if (strlen(field_name) > 0) {
+											$fields[$z]['name'] = $field_name;
+										}
+										unset($field_name);
+									}
+								}
+						}
+					}
+				}
+			return $fields;
+		}
+
+		public function count() {
+			$database = new database;
+			$database->domain_uuid = $this->domain_uuid;
+			$database->table = "v_ivr_menus";
+			$database->where[0]['name'] = 'domain_uuid';
+			$database->where[0]['value'] = $this->domain_uuid;
+			$database->where[0]['operator'] = '=';
+			return $database->count();
+		}
+
+		public function find() {
+			$database = new database;
+			$database->table = "v_ivr_menus";
+			$database->where[0]['name'] = 'domain_uuid';
+			$database->where[0]['value'] = $this->domain_uuid;
+			$database->where[0]['operator'] = '=';
+			if ($this->ivr_menu_uuid) {
+				$database->where[1]['name'] = 'ivr_menu_uuid';
+				$database->where[1]['value'] = $this->ivr_menu_uuid;
+				$database->where[1]['operator'] = '=';
 			}
+			if ($this->ivr_menu_option_uuid) {
+				$database->where[2]['name'] = 'ivr_menu_uuid';
+				$database->where[2]['value'] = $this->ivr_menu_uuid;
+				$database->where[2]['operator'] = '=';
+			}
+			if ($this->order_by) {
+				$database->order_by = $this->order_by;
+			}
+			if ($this->order_type) {
+				$database->order_type = $this->order_type;
+			}
+			return $database->find();
+		}
 
 		public function add() {
 
-			//set the app_uuid
-				$app_uuid = 'a5788e9b-58bc-bd1b-df59-fff5d51253ab';
-
 			//add the ivr menu
 				if (strlen($this->ivr_menu_options_action) == 0) {
-					//create the ivr menu dialplan extension
-						$dialplan_name = $this->ivr_menu_name;
-						$dialplan_order ='999';
-						$dialplan_context = $_SESSION['context'];
-						$dialplan_enabled = $this->ivr_menu_enabled;
-						$dialplan_description = $this->ivr_menu_desc;
 
-					//add the dialplan entry
-						$this->dialplan_uuid = v_dialplan_add($this->domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+					if (strlen($this->ivr_menu_extension) > 0) {
+						//add the dialplan
+							$database = new database;
+							$database->table = "v_dialplans";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_name'] = $this->ivr_menu_name;
+							$database->fields['dialplan_order'] = '333';
+							$database->fields['dialplan_context'] = $_SESSION['context'];
+							$database->fields['dialplan_enabled'] = $this->ivr_menu_enabled;
+							$database->fields['dialplan_description'] = $this->ivr_menu_desc;
+							$database->fields['app_uuid'] = $this->app_uuid;
+							$database->add();
+
+						//add the dialplan details
+							$detail_data = '^'.$this->ivr_menu_extension.'$';
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'condition'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'destination_number';
+							$database->fields['dialplan_detail_data'] = $detail_data;
+							$database->fields['dialplan_detail_order'] = '005';
+							$database->add();
+
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'answer';
+							$database->fields['dialplan_detail_data'] = '';
+							$database->fields['dialplan_detail_order'] = '010';
+							$database->add();
+
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'sleep';
+							$database->fields['dialplan_detail_data'] = '1000';
+							$database->fields['dialplan_detail_order'] = '015';
+							$database->add();
+
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'set';
+							$database->fields['dialplan_detail_data'] = 'hangup_after_bridge=true';
+							$database->fields['dialplan_detail_order'] = '020';
+							$database->add();
+
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'ivr';
+							if (count($_SESSION["domains"]) > 1) {
+								$database->fields['dialplan_detail_data'] = $_SESSION['domain_name'].'-'.$this->ivr_menu_name;
+							}
+							else {
+								$database->fields['dialplan_detail_data'] = $this->ivr_menu_name;
+							}
+							$database->fields['dialplan_detail_order'] = '025';
+							$database->add();
+
+							if (strlen($this->ivr_menu_exit_app) > 0) {
+								$database->table = "v_dialplan_details";
+								$database->fields['domain_uuid'] = $this->domain_uuid;
+								$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+								$database->fields['dialplan_detail_uuid'] = uuid();
+								$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+								$database->fields['dialplan_detail_type'] = $this->ivr_menu_exit_app;
+								$database->fields['dialplan_detail_data'] = $this->ivr_menu_exit_data;
+								$database->fields['dialplan_detail_order'] = '030';
+								$database->add();
+							}
+						}
 
 					//add the ivr menu
 						$ivr_menu_uuid = uuid();
-						$sql = "insert into v_ivr_menus ";
-						$sql .= "(";
-						$sql .= "domain_uuid, ";
-						$sql .= "dialplan_uuid, ";
-						$sql .= "ivr_menu_uuid, ";
-						$sql .= "ivr_menu_name, ";
-						$sql .= "ivr_menu_extension, ";
-						$sql .= "ivr_menu_greet_long, ";
-						$sql .= "ivr_menu_greet_short, ";
-						$sql .= "ivr_menu_invalid_sound, ";
-						$sql .= "ivr_menu_exit_sound, ";
-						$sql .= "ivr_menu_confirm_macro, ";
-						$sql .= "ivr_menu_confirm_key, ";
-						$sql .= "ivr_menu_tts_engine, ";
-						$sql .= "ivr_menu_tts_voice, ";
-						$sql .= "ivr_menu_confirm_attempts, ";
-						$sql .= "ivr_menu_timeout, ";
-						$sql .= "ivr_menu_exit_app, ";
-						$sql .= "ivr_menu_exit_data, ";
-						$sql .= "ivr_menu_inter_digit_timeout, ";
-						$sql .= "ivr_menu_max_failures, ";
-						$sql .= "ivr_menu_max_timeouts, ";
-						$sql .= "ivr_menu_digit_len, ";
-						$sql .= "ivr_menu_direct_dial, ";
-						$sql .= "ivr_menu_enabled, ";
-						$sql .= "ivr_menu_desc ";
-						$sql .= ")";
-						$sql .= "values ";
-						$sql .= "(";
-						$sql .= "'".$this->domain_uuid."', ";
-						$sql .= "'".$this->dialplan_uuid."', ";
-						$sql .= "'".$this->ivr_menu_uuid."', ";
-						$sql .= "'".$this->ivr_menu_name."', ";
-						$sql .= "'".$this->ivr_menu_extension."', ";
-						$sql .= "'".$this->ivr_menu_greet_long."', ";
-						$sql .= "'".$this->ivr_menu_greet_short."', ";
-						$sql .= "'".$this->ivr_menu_invalid_sound."', ";
-						$sql .= "'".$this->ivr_menu_exit_sound."', ";
-						$sql .= "'".$this->ivr_menu_confirm_macro."', ";
-						$sql .= "'".$this->ivr_menu_confirm_key."', ";
-						$sql .= "'".$this->ivr_menu_tts_engine."', ";
-						$sql .= "'".$this->ivr_menu_tts_voice."', ";
-						$sql .= "'".$this->ivr_menu_confirm_attempts."', ";
-						$sql .= "'".$this->ivr_menu_timeout."', ";
-						$sql .= "'".$this->ivr_menu_exit_app."', ";
-						$sql .= "'".$this->ivr_menu_exit_data."', ";
-						$sql .= "'".$this->ivr_menu_inter_digit_timeout."', ";
-						$sql .= "'".$this->ivr_menu_max_failures."', ";
-						$sql .= "'".$this->ivr_menu_max_timeouts."', ";
-						$sql .= "'".$this->ivr_menu_digit_len."', ";
-						$sql .= "'".$this->ivr_menu_direct_dial."', ";
-						$sql .= "'".$this->ivr_menu_enabled."', ";
-						$sql .= "'".$this->ivr_menu_desc."' ";
-						$sql .= ")";
-						$this->db->exec(check_sql($sql));
-						unset($sql);
+						$database = new database;
+						$database->table = "v_ivr_menus";
+						$database->fields['domain_uuid'] = $this->domain_uuid;
+						if (strlen($this->ivr_menu_extension) > 0) {
+							$database->fields['ivr_menu_extension'] = $this->ivr_menu_extension;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+						}
+						$database->fields['ivr_menu_uuid'] = $this->ivr_menu_uuid;
+						$database->fields['ivr_menu_name'] = $this->ivr_menu_name;
+						$database->fields['ivr_menu_greet_long'] = $this->ivr_menu_greet_long;
+						$database->fields['ivr_menu_greet_short'] = $this->ivr_menu_greet_short;
+						$database->fields['ivr_menu_invalid_sound'] = $this->ivr_menu_invalid_sound;
+						$database->fields['ivr_menu_confirm_macro'] = $this->ivr_menu_confirm_macro;
+						$database->fields['ivr_menu_confirm_key'] = $this->ivr_menu_confirm_key;
+						$database->fields['ivr_menu_tts_engine'] = $this->ivr_menu_tts_engine;
+						$database->fields['ivr_menu_tts_voice'] = $this->ivr_menu_tts_voice;
+						$database->fields['ivr_menu_confirm_attempts'] = $this->ivr_menu_confirm_attempts;
+						$database->fields['ivr_menu_timeout'] = $this->ivr_menu_timeout;
+						$database->fields['ivr_menu_exit_app'] = $this->ivr_menu_exit_app;
+						$database->fields['ivr_menu_exit_data'] = $this->ivr_menu_exit_data;
+						$database->fields['ivr_menu_inter_digit_timeout'] = $this->ivr_menu_inter_digit_timeout;
+						$database->fields['ivr_menu_max_failures'] = $this->ivr_menu_max_failures;
+						$database->fields['ivr_menu_max_timeouts'] = $this->ivr_menu_max_timeouts;
+						$database->fields['ivr_menu_max_timeouts'] = $this->ivr_menu_max_timeouts;
+						$database->fields['ivr_menu_digit_len'] = $this->ivr_menu_digit_len;
+						$database->fields['ivr_menu_digit_len'] = $this->ivr_menu_digit_len;
+						$database->fields['ivr_menu_direct_dial'] = $this->ivr_menu_direct_dial;
+						$database->fields['ivr_menu_direct_dial'] = $this->ivr_menu_direct_dial;
+						$database->fields['ivr_menu_enabled'] = $this->ivr_menu_enabled;
+						$database->fields['ivr_menu_desc'] = $this->ivr_menu_desc;
+						$database->add();
 				}
-			
-			//add the ivr menu option			
+
+			//add the ivr menu option
 				if (strlen($this->ivr_menu_options_action) > 0) {
-					$ivr_menu_option_uuid = uuid();
-					$sql = "insert into v_ivr_menu_options ";
-					$sql .= "(";
-					$sql .= "domain_uuid, ";
-					$sql .= "ivr_menu_uuid, ";
-					$sql .= "ivr_menu_option_uuid, ";
-					$sql .= "ivr_menu_options_digits, ";
-					$sql .= "ivr_menu_options_action, ";
-					$sql .= "ivr_menu_options_param, ";
-					$sql .= "ivr_menu_options_order, ";
-					$sql .= "ivr_menu_options_desc ";
-					$sql .= ")";
-					$sql .= "values ";
-					$sql .= "(";
-					$sql .= "'".$this->domain_uuid."', ";
-					$sql .= "'".$this->ivr_menu_uuid."', ";
-					$sql .= "'".$this->ivr_menu_option_uuid."', ";
-					$sql .= "'".$this->ivr_menu_options_digits."', ";
-					$sql .= "'".$this->ivr_menu_options_action."', ";
-					$sql .= "'".$this->ivr_menu_options_param."', ";
-					$sql .= "'".$this->ivr_menu_options_order."', ";
-					$sql .= "'".$this->ivr_menu_options_desc."' ";
-					$sql .= ")";
-					$this->db->exec(check_sql($sql));
-					unset($sql);
+					$ivr_menu_uuid = uuid();
+					$database = new database;
+					$database->table = "v_ivr_menu_options";
+					$database->fields['domain_uuid'] = $this->domain_uuid;
+					$database->fields['ivr_menu_uuid'] = $this->ivr_menu_uuid;
+					$database->fields['ivr_menu_option_uuid'] = $this->ivr_menu_option_uuid;
+					$database->fields['ivr_menu_options_digits'] = $this->ivr_menu_options_digits;
+					$database->fields['ivr_menu_options_action'] = $this->ivr_menu_options_action;
+					$database->fields['ivr_menu_options_param'] = $this->ivr_menu_options_param;
+					$database->fields['ivr_menu_options_order'] = $this->ivr_menu_options_order;
+					$database->fields['ivr_menu_options_desc'] = $this->ivr_menu_options_desc;
+					$database->add();
 				}
 		}
 
@@ -180,156 +296,304 @@ include "root.php";
 
 			//udate the ivr menu
 				if (strlen($this->ivr_menu_options_action) == 0) {
-					//create the ivr menu dialplan extension
-						$dialplan_name = $this->ivr_menu_name;
-						$dialplan_order ='999';
-						$dialplan_context = $_SESSION['context'];
-						$dialplan_enabled = $this->ivr_menu_enabled;
-						$dialplan_description = $this->ivr_menu_desc;
-
-					//update the database
-						$sql = "update v_ivr_menus set ";
-						$sql .= "domain_uuid = '".$this->domain_uuid."', ";
-						$sql .= "ivr_menu_name = '".$this->ivr_menu_name."', ";
-						$sql .= "ivr_menu_extension = '".$this->ivr_menu_extension."', ";
-						$sql .= "ivr_menu_greet_long = '".$this->ivr_menu_greet_long."', ";
-						$sql .= "ivr_menu_greet_short = '".$this->ivr_menu_greet_short."', ";
-						$sql .= "ivr_menu_invalid_sound = '".$this->ivr_menu_invalid_sound."', ";
-						$sql .= "ivr_menu_exit_sound = '".$this->ivr_menu_exit_sound."', ";
-						$sql .= "ivr_menu_confirm_macro = '".$this->ivr_menu_confirm_macro."', ";
-						$sql .= "ivr_menu_confirm_key = '".$this->ivr_menu_confirm_key."', ";
-						$sql .= "ivr_menu_tts_engine = '".$this->ivr_menu_tts_engine."', ";
-						$sql .= "ivr_menu_tts_voice = '".$this->ivr_menu_tts_voice."', ";
-						$sql .= "ivr_menu_confirm_attempts = '".$this->ivr_menu_confirm_attempts."', ";
-						$sql .= "ivr_menu_timeout = '".$this->ivr_menu_timeout."', ";
-						$sql .= "ivr_menu_exit_app = '".$this->ivr_menu_exit_app."', ";
-						$sql .= "ivr_menu_exit_data = '".$this->ivr_menu_exit_data."', ";
-						$sql .= "ivr_menu_inter_digit_timeout = '".$this->ivr_menu_inter_digit_timeout."', ";
-						$sql .= "ivr_menu_max_failures = '".$this->ivr_menu_max_failures."', ";
-						$sql .= "ivr_menu_max_timeouts = '".$this->ivr_menu_max_timeouts."', ";
-						$sql .= "ivr_menu_digit_len = '".$this->ivr_menu_digit_len."', ";
-						$sql .= "ivr_menu_direct_dial = '".$this->ivr_menu_direct_dial."', ";
-						$sql .= "ivr_menu_enabled = '".$this->ivr_menu_enabled."', ";
-						$sql .= "ivr_menu_desc = '".$this->ivr_menu_desc."' ";
-						$sql .= "where domain_uuid = '".$this->domain_uuid."' ";
-						$sql .= "and ivr_menu_uuid = '".$this->ivr_menu_uuid."' ";
-						$this->db->exec(check_sql($sql));
-						unset($sql);
-
-					//get the dialplan_uuid
-						$sql = "";
-						$sql .= "select * from v_ivr_menus ";
-						$sql .= "where domain_uuid = '".$this->domain_uuid."' ";
-						$sql .= "and ivr_menu_uuid = '".$ivr_menu_uuid."' ";
-						$prep_statement = $this->db->prepare(check_sql($sql));
-						$prep_statement->execute();
-						$result = $prep_statement->fetchAll();
-						foreach ($result as &$row) {				
-							$dialplan_uuid = $row["dialplan_uuid"];
+					//get the dialplan uuid
+						$database = new database;
+						$database->table = "v_ivr_menus";
+						$database->where[0]['name'] = 'domain_uuid';
+						$database->where[0]['value'] = $this->domain_uuid;
+						$database->where[0]['operator'] = '=';
+						$database->where[1]['name'] = 'ivr_menu_uuid';
+						$database->where[1]['value'] = $this->ivr_menu_uuid;
+						$database->where[1]['operator'] = '=';
+						$result = $database->find();
+						foreach($result as $row) {
+							$this->dialplan_uuid = $row['dialplan_uuid'];
 						}
-						unset ($prep_statement);
 
-					//update the dialplan
-						$sql = "";
-						$sql = "update v_dialplans set ";
-						$sql .= "dialplan_name = '".$dialplan_name."', ";
-						$sql .= "dialplan_order = '".$dialplan_order."', ";
-						$sql .= "dialplan_context = '".$dialplan_context."', ";
-						$sql .= "dialplan_enabled = '".$dialplan_enabled."', ";
-						$sql .= "dialplan_description = '".$dialplan_description."' ";
-						$sql .= "where domain_uuid = '".$domain_uuid."' ";
-						$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
-						$this->db->query($sql);
-						unset($sql);
+					//if the extension number is empty and the dialplan exists then delete the dialplan
+						if (strlen($this->ivr_menu_extension) == 0) {
+							if (strlen($this->dialplan_uuid) > 0) {
+								//delete dialplan entry
+									$database = new database;
+									$database->table = "v_dialplan_details";
+									$database->where[0]['name'] = 'domain_uuid';
+									$database->where[0]['value'] = $this->domain_uuid;
+									$database->where[0]['operator'] = '=';
+									$database->where[1]['name'] = 'dialplan_uuid';
+									$database->where[1]['value'] = $this->dialplan_uuid;
+									$database->where[1]['operator'] = '=';
+									$database->delete();
+
+								//delete the child dialplan information
+									$database = new database;
+									$database->table = "v_dialplans";
+									$database->where[0]['name'] = 'domain_uuid';
+									$database->where[0]['value'] = $this->domain_uuid;
+									$database->where[0]['operator'] = '=';
+									$database->where[1]['name'] = 'dialplan_uuid';
+									$database->where[1]['value'] = $this->dialplan_uuid;
+									$database->where[1]['operator'] = '=';
+									$database->delete();
+								//update the table to remove the dialplan_uuid
+									$this->dialplan_uuid = '';
+							}
+						}
+
+					//update the ivr menu
+						$ivr_menu_uuid = uuid();
+						$database = new database;
+						$database->table = "v_ivr_menus";
+						$database->fields['ivr_menu_uuid'] = $this->ivr_menu_uuid;
+						$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+						$database->fields['ivr_menu_name'] = $this->ivr_menu_name;
+						$database->fields['ivr_menu_extension'] = $this->ivr_menu_extension;
+						$database->fields['ivr_menu_greet_long'] = $this->ivr_menu_greet_long;
+						$database->fields['ivr_menu_greet_short'] = $this->ivr_menu_greet_short;
+						$database->fields['ivr_menu_invalid_sound'] = $this->ivr_menu_invalid_sound;
+						$database->fields['ivr_menu_confirm_macro'] = $this->ivr_menu_confirm_macro;
+						$database->fields['ivr_menu_confirm_key'] = $this->ivr_menu_confirm_key;
+						$database->fields['ivr_menu_tts_engine'] = $this->ivr_menu_tts_engine;
+						$database->fields['ivr_menu_tts_voice'] = $this->ivr_menu_tts_voice;
+						$database->fields['ivr_menu_confirm_attempts'] = $this->ivr_menu_confirm_attempts;
+						$database->fields['ivr_menu_timeout'] = $this->ivr_menu_timeout;
+						$database->fields['ivr_menu_exit_app'] = $this->ivr_menu_exit_app;
+						$database->fields['ivr_menu_exit_data'] = $this->ivr_menu_exit_data;
+						$database->fields['ivr_menu_inter_digit_timeout'] = $this->ivr_menu_inter_digit_timeout;
+						$database->fields['ivr_menu_max_failures'] = $this->ivr_menu_max_failures;
+						$database->fields['ivr_menu_max_timeouts'] = $this->ivr_menu_max_timeouts;
+						$database->fields['ivr_menu_max_timeouts'] = $this->ivr_menu_max_timeouts;
+						$database->fields['ivr_menu_digit_len'] = $this->ivr_menu_digit_len;
+						$database->fields['ivr_menu_digit_len'] = $this->ivr_menu_digit_len;
+						$database->fields['ivr_menu_direct_dial'] = $this->ivr_menu_direct_dial;
+						$database->fields['ivr_menu_direct_dial'] = $this->ivr_menu_direct_dial;
+						$database->fields['ivr_menu_enabled'] = $this->ivr_menu_enabled;
+						$database->fields['ivr_menu_desc'] = $this->ivr_menu_desc;
+						$database->where[0]['name'] = 'domain_uuid';
+						$database->where[0]['value'] = $this->domain_uuid;
+						$database->where[0]['operator'] = '=';
+						$database->where[1]['name'] = 'ivr_menu_uuid';
+						$database->where[1]['value'] = $this->ivr_menu_uuid;
+						$database->where[1]['operator'] = '=';
+						$database->update();
+
+					if (strlen($this->ivr_menu_extension) > 0) {
+						//update the dialplan
+							$database = new database;
+							$database->table = "v_dialplans";
+							$database->fields['dialplan_name'] = $this->ivr_menu_name;
+							$database->fields['dialplan_order'] = '333';
+							$database->fields['dialplan_context'] = $_SESSION['context'];
+							$database->fields['dialplan_enabled'] = $this->ivr_menu_enabled;
+							$database->fields['dialplan_description'] = $this->ivr_menu_desc;
+							$database->fields['app_uuid'] = $this->app_uuid;
+							if ($this->dialplan_uuid) {
+								$database->where[0]['name'] = 'domain_uuid';
+								$database->where[0]['value'] = $this->domain_uuid;
+								$database->where[0]['operator'] = '=';
+								$database->where[1]['name'] = 'dialplan_uuid';
+								$database->where[1]['value'] = $this->dialplan_uuid;
+								$database->where[1]['operator'] = '=';
+								$database->update();
+							}
+							else {
+								$this->dialplan_uuid = uuid();
+								$database->fields['domain_uuid'] = $this->domain_uuid;
+								$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+								$database->add();
+							}
+
+						//delete the old dialplan details to prepare for new details 
+							$database = new database;
+							$database->table = "v_dialplan_details";
+							$database->where[0]['name'] = 'domain_uuid';
+							$database->where[0]['value'] = $this->domain_uuid;
+							$database->where[0]['operator'] = '=';
+							$database->where[1]['name'] = 'dialplan_uuid';
+							$database->where[1]['value'] = $this->dialplan_uuid;
+							$database->where[1]['operator'] = '=';
+							$database->delete();
+
+						//add the dialplan details
+							$detail_data = '^'.$this->ivr_menu_extension.'$';
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'condition'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'destination_number';
+							$database->fields['dialplan_detail_data'] = $detail_data;
+							$database->fields['dialplan_detail_order'] = '005';
+							$database->add();
+
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'answer';
+							$database->fields['dialplan_detail_data'] = '';
+							$database->fields['dialplan_detail_order'] = '010';
+							$database->add();
+
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'sleep';
+							$database->fields['dialplan_detail_data'] = '1000';
+							$database->fields['dialplan_detail_order'] = '015';
+							$database->add();
+
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'set';
+							$database->fields['dialplan_detail_data'] = 'hangup_after_bridge=true';
+							$database->fields['dialplan_detail_order'] = '020';
+							$database->add();
+
+							$database->table = "v_dialplan_details";
+							$database->fields['domain_uuid'] = $this->domain_uuid;
+							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+							$database->fields['dialplan_detail_uuid'] = uuid();
+							$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+							$database->fields['dialplan_detail_type'] = 'ivr';
+							if (count($_SESSION["domains"]) > 1) {
+								$database->fields['dialplan_detail_data'] = $_SESSION['domain_name'].'-'.$this->ivr_menu_name;
+							}
+							else {
+								$database->fields['dialplan_detail_data'] = $this->ivr_menu_name;
+							}
+							$database->fields['dialplan_detail_order'] = '025';
+							$database->add();
+
+							if (strlen($this->ivr_menu_exit_app) > 0) {
+								$database->table = "v_dialplan_details";
+								$database->fields['domain_uuid'] = $this->domain_uuid;
+								$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
+								$database->fields['dialplan_detail_uuid'] = uuid();
+								$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
+								$database->fields['dialplan_detail_type'] = $this->ivr_menu_exit_app;
+								$database->fields['dialplan_detail_data'] = $this->ivr_menu_exit_data;
+								$database->fields['dialplan_detail_order'] = '030';
+								$database->add();
+							}
+					}
 				}
 			
 			//update the ivr menu option
 				if (strlen($this->ivr_menu_options_action) > 0) {
-					$sql = "update v_ivr_menu_options set ";
-					$sql .= "domain_uuid = '".$this->domain_uuid."', ";
-					$sql .= "ivr_menu_uuid = '".$this->ivr_menu_uuid."', ";
-					$sql .= "ivr_menu_options_digits = '".$this->ivr_menu_options_digits."', ";
-					$sql .= "ivr_menu_options_action = '".$this->ivr_menu_options_action."', ";
-					$sql .= "ivr_menu_options_param = '".$this->ivr_menu_options_param."', ";
-					$sql .= "ivr_menu_options_order = '".$this->ivr_menu_options_order."', ";
-					$sql .= "ivr_menu_options_desc = '".$this->ivr_menu_options_desc."' ";
-					$sql .= "where ivr_menu_option_uuid = '".$this->ivr_menu_option_uuid."' ";
-					$this->db->exec(check_sql($sql));
-					unset($sql);
+					$database = new database;
+					$database->table = "v_ivr_menu_options";
+					$database->fields['ivr_menu_options_digits'] = $this->ivr_menu_options_digits;
+					$database->fields['ivr_menu_options_action'] = $this->ivr_menu_options_action;
+					$database->fields['ivr_menu_options_param'] = $this->ivr_menu_options_param;
+					$database->fields['ivr_menu_options_order'] = $this->ivr_menu_options_order;
+					$database->fields['ivr_menu_options_desc'] = $this->ivr_menu_options_desc;
+					$database->where[0]['name'] = 'domain_uuid';
+					$database->where[0]['value'] = $this->domain_uuid;
+					$database->where[0]['operator'] = '=';
+					$database->where[1]['name'] = 'ivr_menu_uuid';
+					$database->where[1]['value'] = $this->ivr_menu_uuid;
+					$database->where[1]['operator'] = '=';
+					$database->where[2]['name'] = 'ivr_menu_option_uuid';
+					$database->where[2]['value'] = $this->ivr_menu_option_uuid;
+					$database->where[2]['operator'] = '=';
+					$database->update();
 				}
 		}
 
 		function delete() {
-			//start the atomic transaction
-				$count = $this->db->exec("BEGIN;");
+			//create the database object
+				$database = new database;
+
+			//start the transaction
+				//$count = $database->db->exec("BEGIN;");
 
 			//delete the ivr menu option
 				if (strlen($this->ivr_menu_option_uuid) > 0) {
-					$sql = "";
-					$sql .= "delete from v_ivr_menu_options ";
-					$sql .= "where domain_uuid = '".$this->domain_uuid."' ";
-					$sql .= "and ivr_menu_option_uuid = '".$this->ivr_menu_option_uuid."' ";
-					$prep_statement = $this->db->prepare(check_sql($sql));
-					$prep_statement->execute();
-					unset($sql);
+					$database->table = "v_ivr_menu_options";
+					$database->where[0]['name'] = 'domain_uuid';
+					$database->where[0]['value'] = $this->domain_uuid;
+					$database->where[0]['operator'] = '=';
+					$database->where[1]['name'] = 'ivr_menu_option_uuid';
+					$database->where[1]['value'] = $this->ivr_menu_option_uuid;
+					$database->where[1]['operator'] = '=';
+					$database->delete();
+					unset($this->ivr_menu_option_uuid);
 				}
 
 			//delete the ivr menu
 				if (strlen($this->ivr_menu_option_uuid) == 0) {
-					//delete the dialplan entries
-						$sql = "";
-						$sql .= "select * from v_ivr_menus ";
-						$sql .= "where domain_uuid = '".$this->domain_uuid."' ";
-						$sql .= "and ivr_menu_uuid = '".$this->ivr_menu_uuid."' ";
-						$prep_statement = $this->db->prepare($sql);
-						$prep_statement->execute();
-						while($row2 = $prep_statement->fetch()) {
-							$dialplan_uuid = $row2['dialplan_uuid'];
-							break;
+					//select the dialplan entries
+						$database->table = "v_ivr_menus";
+						$database->where[0]['name'] = 'domain_uuid';
+						$database->where[0]['value'] = $this->domain_uuid;
+						$database->where[0]['operator'] = '=';
+						$database->where[1]['name'] = 'ivr_menu_uuid';
+						$database->where[1]['value'] = $this->ivr_menu_uuid;
+						$database->where[1]['operator'] = '=';
+						$result = $database->find();
+						foreach($result as $row) {
+							$this->dialplan_uuid = $row['dialplan_uuid'];
+							//delete the child dialplan information
+								$database->table = "v_dialplan_details";
+								$database->where[0]['name'] = 'domain_uuid';
+								$database->where[0]['value'] = $this->domain_uuid;
+								$database->where[0]['operator'] = '=';
+								$database->where[1]['name'] = 'dialplan_uuid';
+								$database->where[1]['value'] = $this->dialplan_uuid;
+								$database->where[1]['operator'] = '=';
+								$database->delete();
+							//delete the dialplan information
+								$database->table = "v_dialplans";
+								$database->where[0]['name'] = 'domain_uuid';
+								$database->where[0]['value'] = $this->domain_uuid;
+								$database->where[0]['operator'] = '=';
+								$database->where[1]['name'] = 'dialplan_uuid';
+								$database->where[1]['value'] = $this->dialplan_uuid;
+								$database->where[1]['operator'] = '=';
+								$database->delete();
 						}
-						unset ($sql, $prep_statement);
 
-					//delete child data
-						$sql = "";
-						$sql .= "delete from v_ivr_menu_options ";
-						$sql .= "where domain_uuid = '".$this->domain_uuid."' ";
-						$sql .= "and ivr_menu_uuid = '".$this->ivr_menu_uuid."' ";
-						$this->db->query($sql);
-						unset($sql);
+						//delete child data
+							$database->table = "v_ivr_menu_options";
+							$database->where[0]['name'] = 'domain_uuid';
+							$database->where[0]['value'] = $this->domain_uuid;
+							$database->where[0]['operator'] = '=';
+							$database->where[1]['name'] = 'ivr_menu_uuid';
+							$database->where[1]['value'] = $this->ivr_menu_uuid;
+							$database->where[1]['operator'] = '=';
+							$database->delete();
 
-					//delete parent data
-						$sql = "";
-						$sql .= "delete from v_ivr_menus ";
-						$sql .= "where domain_uuid = '".$this->domain_uuid."' ";
-						$sql .= "and ivr_menu_uuid = '".$this->ivr_menu_uuid."' ";
-						$this->db->query($sql);
-						unset($sql);
-
-					//delete the child dialplan information
-						$sql = "";
-						$sql = "delete from v_dialplan_details ";
-						$sql .= "where domain_uuid = '".$this->domain_uuid."' ";
-						$sql .= "and dialplan_uuid = '".$this->dialplan_uuid."' ";
-						$this->db->query($sql);
-						unset($sql);
+						//delete parent data
+							$database->table = "v_ivr_menus";
+							$database->where[0]['name'] = 'domain_uuid';
+							$database->where[0]['value'] = $this->domain_uuid;
+							$database->where[0]['operator'] = '=';
+							$database->where[1]['name'] = 'ivr_menu_uuid';
+							$database->where[1]['value'] = $this->ivr_menu_uuid;
+							$database->where[1]['operator'] = '=';
+							$database->delete();
 
 					//commit the transaction
-						$count = $this->db->exec("COMMIT;");
+						//$count = $database->db->exec("COMMIT;");
 				}
 		}
 
 		function get_xml(){
-
 			return $xml;
 		}
 
 		function save_xml($xml){
-
 			return $xml;
 		}
+
 		function xml_save_all() {
-			
 		}
-	} //class
+	}
 
 ?>
