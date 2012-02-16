@@ -483,7 +483,7 @@ include "root.php";
 							}
 					}
 				}
-			
+
 			//update the ivr menu option
 				if (strlen($this->ivr_menu_options_action) > 0) {
 					$database = new database;

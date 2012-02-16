@@ -249,6 +249,7 @@ include "root.php";
 					if ($this->limit) {
 						$sql .= " limit ".$this->limit." offset ".$this->offset." ";
 					}
+					//echo $sql;
 					$prep_statement = $this->db->prepare($sql);
 					if ($prep_statement) {
 						$prep_statement->execute();
@@ -306,10 +307,20 @@ include "root.php";
 					$i = 1;
 					foreach($this->fields as $name => $value) {
 						if (count($this->fields) == $i) {
-							$sql .= $name." = '".$value."' ";
+							if (strlen($name) > 0 && $value == null) {
+								$sql .= $name." = null ";
+							}
+							else {
+								$sql .= $name." = '".$value."' ";
+							}
 						}
 						else {
-							$sql .= $name." = '".$value."', ";
+							if (strlen($name) > 0 && $value == null) {
+								$sql .= $name." = null, ";
+							}
+							else {
+								$sql .= $name." = '".$value."', ";
+							}
 						}
 						$i++;
 					}
