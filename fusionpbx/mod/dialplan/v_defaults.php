@@ -74,7 +74,8 @@
 		$dialplan_context = $_SESSION['context'];
 		$dialplan_enabled = 'true';
 		$dialplan_description = '*732 Recordings';
-		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+		$dialplan_uuid = uuid();
+		v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 		$dialplan_detail_tag = 'condition'; //condition, action, antiaction
 		$dialplan_detail_type = 'destination_number';
@@ -141,7 +142,8 @@
 		$dialplan_context = $_SESSION['context'];
 		$dialplan_enabled = 'false';
 		$dialplan_description = '*3472 Direct Inward System Access ';
-		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+		$dialplan_uuid = uuid();
+		v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 		$dialplan_detail_tag = 'condition'; //condition, action, antiaction
 		$dialplan_detail_type = 'destination_number';
@@ -196,7 +198,8 @@
 		$dialplan_context = $_SESSION['context'];
 		$dialplan_enabled = 'true';
 		$dialplan_description = '*923 Wake Up Calls';
-		$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+		$dialplan_uuid = uuid();
+		v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 		$dialplan_detail_tag = 'condition'; //condition, action, antiaction
 		$dialplan_detail_type = 'destination_number';

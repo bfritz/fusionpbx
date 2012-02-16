@@ -2361,7 +2361,8 @@ function sync_package_v_hunt_group() {
 							}
 							$dialplan_description = 'fifo '.$row['hunt_group_extension'];
 							$app_uuid = '0610f841-2e27-4c5f-7926-08ab3aad02e0';
-							$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+							$dialplan_uuid = uuid();
+							v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 							$dialplan_detail_tag = 'condition'; //condition, action, antiaction
 							$dialplan_detail_type = 'destination_number';
@@ -2900,7 +2901,16 @@ function sync_package_v_fax() {
 					$enabled = 'true';
 					$descr = $row['fax_description'];
 					$app_uuid = '24108154-4ac3-1db6-1551-4731703a4440';
-					$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $app_uuid);
+					$dialplan_uuid = uuid();
+					v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $app_uuid);
+
+					//add the dialplan_uuid to the fax
+					$sql = "update v_fax set ";
+					$sql .= "dialplan_uuid = '$dialplan_uuid', ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "and fax_uuid = '".$row['fax_uuid']."' ";
+					$db->exec(check_sql($sql));
+					unset($sql);
 
 					//<!-- default ${domain_name} -->
 					//<condition field="destination_number" expression="^\*9978$">
@@ -3090,9 +3100,8 @@ function get_recording_filename($id) {
 	unset ($prep_statement);
 }
 
-function v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid) {
+function v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid) {
 	global $db, $db_type;
-	$dialplan_uuid = uuid();
 	$sql = "insert into v_dialplans ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
@@ -3121,7 +3130,6 @@ function v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql);
-	return $dialplan_uuid;
 }
 
 function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data) {
@@ -3916,7 +3924,16 @@ if (!function_exists('sync_package_v_call_center')) {
 								$dialplan_enabled = 'true';
 								$dialplan_description = $queue_description;
 								$app_uuid = '95788e50-9500-079e-2807-fd530b0ea370';
-								$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+								$dialplan_uuid = uuid();
+								v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+
+								//add the dialplan_uuid to the call center table
+								$sql = "update v_call_center_queues set ";
+								$sql .= "dialplan_uuid = '$dialplan_uuid', ";
+								$sql .= "where domain_uuid = '$domain_uuid' ";
+								$sql .= "and call_center_queue_uuid = '".$row['call_center_queue_uuid']."' ";
+								$db->exec(check_sql($sql));
+								unset($sql);
 
 								//group 1
 									$dialplan = new dialplan;

@@ -56,6 +56,18 @@ else {
 
 		//get the dialplan info
 			$sql = "";
+			$sql .= "select * from v_fax ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql .= "and fax_uuid = '$fax_uuid' ";
+			$prep_statement_2 = $db->prepare($sql);
+			$prep_statement_2->execute();
+			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
+				$dialplan_uuid = check_str($row2['dialplan_uuid']);
+			}
+
+		//get the dialplan info
+			/*
+			$sql = "";
 			$sql .= "select * from v_dialplans ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
@@ -71,6 +83,7 @@ else {
 				break; //limit to 1 row
 			}
 			unset ($sql, $prep_statement_2);
+			*/
 
 		//delete the dialplan entry
 			$sql = "";

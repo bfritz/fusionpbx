@@ -131,10 +131,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add" && permission_exists('hunt_group_add')) {
 				//add to the table
+					$dialplan_uuid = uuid();
 					$hunt_group_uuid = uuid();
 					$sql = "insert into v_hunt_groups ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
+					$sql .= "dialplan_uuid, ";
 					$sql .= "hunt_group_uuid, ";
 					$sql .= "hunt_group_extension, ";
 					$sql .= "hunt_group_name, ";
@@ -154,6 +156,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$domain_uuid', ";
+					$sql .= "'$dialplan_uuid', ";
 					$sql .= "'$hunt_group_uuid', ";
 					$sql .= "'$hunt_group_extension', ";
 					$sql .= "'$hunt_group_name', ";
@@ -185,7 +188,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					}
 					$dialplan_description = 'huntgroup';
 					$app_uuid = '0610f841-2e27-4c5f-7926-08ab3aad02e0';
-					$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+					v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 					$dialplan_detail_tag = 'condition'; //condition, action, antiaction
 					$dialplan_detail_type = 'destination_number';
