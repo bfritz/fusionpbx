@@ -3060,7 +3060,7 @@ function sync_package_v_fax() {
 				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 				$sql .= "and dialplan_detail_data like 'api_hangup_hook=%' ";
 				$db->query(check_sql($sql));
-*/
+
 				unset($dialplan_name);
 				unset($order);
 				unset($context);
@@ -3069,7 +3069,7 @@ function sync_package_v_fax() {
 				unset($dialplan_uuid);
 				unset($id);
 			}
-
+*/
 			sync_package_v_dialplan();
 			unset($dialplanincludeid);
 		} //end if strlen fax_uuid; add the fax to the dialplan
