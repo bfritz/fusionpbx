@@ -31,12 +31,12 @@ if (permission_exists("user_account_settings_view")) {
 }
 else {
 	echo "access denied";
-	exit;
+	return;
 }
 
 //get data from the db
-	if (strlen($_GET["id"])> 0) {
-		$id = $_GET["id"];
+	if (strlen($_REQUEST["id"])> 0) {
+		$id = $_REQUEST["id"];
 	}
 	else {
 		if (strlen($_SESSION["username"]) > 0) {
@@ -48,7 +48,7 @@ else {
 	$sql = "";
 	$sql .= "select * from v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and id = '$id' ";
+	$sql .= "and user_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -68,66 +68,20 @@ else {
 	}
 
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
-	$id = $_POST["id"];
+	$id = $_REQUEST["id"];
 	$password = check_str($_POST["password"]);
 	$confirm_password = check_str($_POST["confirm_password"]);
-	$user_first_name = check_str($_POST["user_first_name"]);
-	$user_last_name = check_str($_POST["user_last_name"]);
-	$user_company_name = check_str($_POST["user_company_name"]);
-	$user_physical_address_1 = check_str($_POST["user_physical_address_1"]);
-	$user_physical_address_2 = check_str($_POST["user_physical_address_2"]);
-	$user_physical_city = check_str($_POST["user_physical_city"]);
-	$user_physical_state_province = check_str($_POST["user_physical_state_province"]);
-	$user_physical_country = check_str($_POST["user_physical_country"]);
-	$user_physical_postal_code = check_str($_POST["user_physical_postal_code"]);
-	$user_mailing_address_1 = check_str($_POST["user_mailing_address_1"]);
-	$user_mailing_address_2 = check_str($_POST["user_mailing_address_2"]);
-	$user_mailing_city = check_str($_POST["user_mailing_city"]);
-	$user_mailing_state_province = check_str($_POST["user_mailing_state_province"]);
-	$user_mailing_country = check_str($_POST["user_mailing_country"]);
-	$user_mailing_postal_code = check_str($_POST["user_mailing_postal_code"]);
-	$user_billing_address_1 = check_str($_POST["user_billing_address_1"]);
-	$user_billing_address_2 = check_str($_POST["user_billing_address_2"]);
-	$user_billing_city = check_str($_POST["user_billing_city"]);
-	$user_billing_state_province = check_str($_POST["user_billing_state_province"]);
-	$user_billing_country = check_str($_POST["user_billing_country"]);
-	$user_billing_postal_code = check_str($_POST["user_billing_postal_code"]);
-	$user_shipping_address_1 = check_str($_POST["user_shipping_address_1"]);
-	$user_shipping_address_2 = check_str($_POST["user_shipping_address_2"]);
-	$user_shipping_city = check_str($_POST["user_shipping_city"]);
-	$user_shipping_state_province = check_str($_POST["user_shipping_state_province"]);
-	$user_shipping_country = check_str($_POST["user_shipping_country"]);
-	$user_shipping_postal_code = check_str($_POST["user_shipping_postal_code"]);
-	$user_url = check_str($_POST["user_url"]);
-	$user_phone_1 = check_str($_POST["user_phone_1"]);
-	$user_phone_1_ext = check_str($_POST["user_phone_1_ext"]);
-	$user_phone_2 = check_str($_POST["user_phone_2"]);
-	$user_phone_2_ext = check_str($_POST["user_phone_2_ext"]);
-	$user_phone_mobile = check_str($_POST["user_phone_mobile"]);
-	$user_phone_fax = check_str($_POST["user_phone_fax"]);
+	$user_status = check_str($_POST["user_status"]);
 	$user_template_name = check_str($_POST["user_template_name"]);
+	$user_time_zone = check_str($_POST["user_time_zone"]);
 	$user_email = check_str($_POST["user_email"]);
-	$groupmember = check_str($_POST["groupmember"]);
+	$group_member = check_str($_POST["group_member"]);
 
 	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
+	if (strlen($username) == 0) { $msgerror .= "Please provide the username.<br>\n"; }
 	if ($password != $confirm_password) { $msgerror .= "Passwords did not match.<br>\n"; }
-	//if (strlen($user_first_name) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
-	//if (strlen($user_last_name) == 0) { $msgerror .= "Please provide a last name $user_last_name.<br>\n"; }
-	//if (strlen($user_company_name) == 0) { $msgerror .= "Please provide a company name.<br>\n"; }
-	//if (strlen($user_physical_address_1) == 0) { $msgerror .= "Please provide a address.<br>\n"; }
-	//if (strlen($user_physical_address_2) == 0) { $msgerror .= "Please provide a user_physical_address_2.<br>\n"; }
-	//if (strlen($user_physical_city) == 0) { $msgerror .= "Please provide a city.<br>\n"; }
-	//if (strlen($user_physical_state_province) == 0) { $msgerror .= "Please provide a state.<br>\n"; }
-	//if (strlen($user_physical_country) == 0) { $msgerror .= "Please provide a country.<br>\n"; }
-	//if (strlen($user_physical_postal_code) == 0) { $msgerror .= "Please provide a postal code.<br>\n"; }
-	//if (strlen($user_url) == 0) { $msgerror .= "Please provide a url.<br>\n"; }
-	//if (strlen($user_phone_1) == 0) { $msgerror .= "Please provide a phone number.<br>\n"; }
-	//if (strlen($user_phone_2) == 0) { $msgerror .= "Please provide a user_phone_2.<br>\n"; }
-	//if (strlen($user_phone_mobile) == 0) { $msgerror .= "Please provide a mobile number.<br>\n"; }
-	//if (strlen($user_phone_emergency_mobile) == 0) { $msgerror .= "Please provide a emergency mobile.<br>\n"; }
-	//if (strlen($user_phone_fax) == 0) { $msgerror .= "Please provide a fax number.<br>\n"; }
 	//if (strlen($user_email) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
-	//if (strlen($user_email_emergency) == 0) { $msgerror .= "Please provide an emergency email.<br>\n"; }
+	//if (strlen($user_time_zone) == 0) { $msgerror .= "Please provide an time zone.<br>\n"; }
 
 	if (strlen($msgerror) > 0) {
 		require_once "includes/header.php";
@@ -145,10 +99,10 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 	//if the template has not been assigned by the superadmin
 		if (strlen($_SESSION['domain']['template']['name']) == 0) {
-			//set the session theme for the user
-				$_SESSION['template_name'] = $user_template_name;
-			//clear the template so it will rebuild in case the template was changed
-				$_SESSION['template_content'] = '';
+			//set the session theme for the active user
+			if ($_SESSION["username"] == $username) {
+				$_SESSION['domain']['template']['name'] = $user_template_name;
+			}
 		}
 
 	//sql update
@@ -163,45 +117,13 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				$sql .= "password = '".md5($salt.$password)."', ";
 				$sql .= "salt = '".$salt."', ";
 		}
-		$sql .= "user_first_name = '$user_first_name', ";
-		$sql .= "user_last_name = '$user_last_name', ";
-		$sql .= "user_company_name = '$user_company_name', ";
-		$sql .= "user_physical_address_1 = '$user_physical_address_1', ";
-		$sql .= "user_physical_address_2 = '$user_physical_address_2', ";
-		$sql .= "user_physical_city = '$user_physical_city', ";
-		$sql .= "user_physical_state_province = '$user_physical_state_province', ";
-		$sql .= "user_physical_country = '$user_physical_country', ";
-		$sql .= "user_physical_postal_code = '$user_physical_postal_code', ";
-		$sql .= "user_mailing_address_1 = '$user_mailing_address_1', ";
-		$sql .= "user_mailing_address_2 = '$user_mailing_address_2', ";
-		$sql .= "user_mailing_city = '$user_mailing_city', ";
-		$sql .= "user_mailing_state_province = '$user_mailing_state_province', ";
-		$sql .= "user_mailing_country = '$user_mailing_country', ";
-		$sql .= "user_mailing_postal_code = '$user_mailing_postal_code', ";
-		$sql .= "user_billing_address_1 = '$user_billing_address_1', ";
-		$sql .= "user_billing_address_2 = '$user_billing_address_2', ";
-		$sql .= "user_billing_city = '$user_billing_city', ";
-		$sql .= "user_billing_state_province = '$user_billing_state_province', ";
-		$sql .= "user_billing_country = '$user_billing_country', ";
-		$sql .= "user_billing_postal_code = '$user_billing_postal_code', ";
-		$sql .= "user_shipping_address_1 = '$user_shipping_address_1', ";
-		$sql .= "user_shipping_address_2 = '$user_shipping_address_2', ";
-		$sql .= "user_shipping_city = '$user_shipping_city', ";
-		$sql .= "user_shipping_state_province = '$user_shipping_state_province', ";
-		$sql .= "user_shipping_country = '$user_shipping_country', ";
-		$sql .= "user_shipping_postal_code = '$user_shipping_postal_code', ";
-		$sql .= "user_url = '$user_url', ";
-		$sql .= "user_phone_1 = '$user_phone_1', ";
-		$sql .= "user_phone_1_ext = '$user_phone_1_ext', ";
-		$sql .= "user_phone_2 = '$user_phone_2', ";
-		$sql .= "user_phone_2_ext = '$user_phone_2_ext', ";
-		$sql .= "user_phone_mobile = '$user_phone_mobile', ";
-		$sql .= "user_phone_fax = '$user_phone_fax', ";
-		$sql .= "user_template_name = '$user_template_name', ";
+		$sql .= "user_status = '$user_status', ";
+//		$sql .= "user_template_name = '$user_template_name', ";
+		$sql .= "user_time_zone = '$user_time_zone', ";
 		$sql .= "user_email = '$user_email' ";
 		if (strlen($id)> 0) {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and id = $id ";
+			$sql .= "and user_uuid = '$id' ";
 		}
 		else {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -210,6 +132,18 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		if (permission_exists("user_account_settings_edit")) {
 			$count = $db->exec(check_sql($sql));
 		}
+
+	//update the user_status
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		$switch_cmd .= "callcenter_config agent set status ".$username."@".$v_domain." '".$user_status."'";
+		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+
+	//update the user state
+		$cmd = "api callcenter_config agent set state ".$username."@".$v_domain." Waiting";
+		$response = event_socket_request($fp, $cmd);
+
+	//clear the template so it will rebuild in case the template was changed
+		$_SESSION["template_content"] = '';
 
 	//redirect the browser
 		require_once "includes/header.php";
@@ -232,71 +166,52 @@ else {
 			$username = $row["username"];
 		}
 		$password = $row["password"];
-		$user_first_name = $row["user_first_name"];
-		$user_last_name = $row["user_last_name"];
-		$user_company_name = $row["user_company_name"];
-		$user_physical_address_1 = $row["user_physical_address_1"];
-		$user_physical_address_2 = $row["user_physical_address_2"];
-		$user_physical_city = $row["user_physical_city"];
-		$user_physical_state_province = $row["user_physical_state_province"];
-		$user_physical_country = $row["user_physical_country"];
-		$user_physical_postal_code = $row["user_physical_postal_code"];
-		$user_mailing_address_1 = $row["user_mailing_address_1"];
-		$user_mailing_address_2 = $row["user_mailing_address_2"];
-		$user_mailing_city = $row["user_mailing_city"];
-		$user_mailing_state_province = $row["user_mailing_state_province"];
-		$user_mailing_country = $row["user_mailing_country"];
-		$user_mailing_postal_code = $row["user_mailing_postal_code"];
-		$user_billing_address_1 = $row["user_billing_address_1"];
-		$user_billing_address_2 = $row["user_billing_address_2"];
-		$user_billing_city = $row["user_billing_city"];
-		$user_billing_state_province = $row["user_billing_state_province"];
-		$user_billing_country = $row["user_billing_country"];
-		$user_billing_postal_code = $row["user_billing_postal_code"];
-		$user_shipping_address_1 = $row["user_shipping_address_1"];
-		$user_shipping_address_2 = $row["user_shipping_address_2"];
-		$user_shipping_city = $row["user_shipping_city"];
-		$user_shipping_state_province = $row["user_shipping_state_province"];
-		$user_shipping_country = $row["user_shipping_country"];
-		$user_shipping_postal_code = $row["user_shipping_postal_code"];
-		$user_url = $row["user_url"];
-		$user_phone_1 = $row["user_phone_1"];
-		$user_phone_1_ext = $row["user_phone_1_ext"];
-		$user_phone_2 = $row["user_phone_2"];
-		$user_phone_2_ext = $row["user_phone_2_ext"];
-		$user_phone_mobile = $row["user_phone_mobile"];
-		$user_phone_fax = $row["user_phone_fax"];
 		$user_email = $row["user_email"];
+		$user_status = $row["user_status"];
 		$user_template_name = $row["user_template_name"];
+		$user_time_zone = $row["user_time_zone"];
 		break; //limit to 1 row
 	}
 
 	//get the groups the user is a member of
 	//group_members function defined in config.php
 	$group_members = group_members($db, $username);
-	//echo "group_members $group_members";
-
 }
 
 //include the header
 	require_once "includes/header.php";
 
 //show the content
+	$table_width ='width="100%"';
+	echo "<form method='post' action=''>";
+	echo "<br />\n";
+
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr>\n";
-	echo "	<td align=\"left\">\n";
-	echo "      <br>";
+	echo "<td>\n";
 
-	$tablewidth ='width="100%"';
-	echo "<form method='post' action=''>";
+	echo "<table $table_width cellpadding='3' cellspacing='0' border='0'>";
+	echo "<td align='left' width='90%' nowrap><b>Account Settings</b></td>\n";
+	echo "<td nowrap='nowrap'>\n";
+	echo "	<input type='submit' name='submit' class='btn' value='Save'>";
+	echo "	<input type='button' class='btn' onclick=\"window.location='index.php'\" value='Back'>";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td align='left' colspan='2'>\n";
+	echo "	Edit account information. \n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 
-	echo "<br>";
-	echo "<div class='' style='padding:10px;'>\n";
-	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
+	echo "<br />\n";
+
+	echo "<table $table_width cellpadding='6' cellspacing='0' border='0'>";
 	echo "<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>User Info</th>\n";
 	echo "</tr>\n";
+
 	echo "	<tr>";
 	echo "		<td width='30%' class='vncellreq'>Username:</td>";
 	echo "		<td width='70%' class='vtable'>$username</td>";
@@ -310,226 +225,161 @@ else {
 	echo "		<td class='vncell'>Confirm Password:</td>";
 	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirm_password' value=\"\"></td>";
 	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>First Name:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_first_name' value=\"$user_first_name\"></td>";
+
+	//echo "	<tr>";
+	//echo "		<td class='vncell'>First Name:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='user_first_name' value=\"$user_first_name\"></td>";
+	//echo "	</tr>";
+	//echo "	<tr>";
+	//echo "		<td class='vncell'>Last Name:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='user_last_name' value=\"$user_last_name\"></td>";
+	//echo "	</tr>";
+	//echo "	<tr>";
+	//echo "		<td class='vncell'>Company Name:</td>";
+	//echo "		<td class='vtable'><input type='text' class='formfld' name='user_company_name' value=\"$user_company_name\"></td>";
+	//echo "	</tr>";
+
+
+
+
+
+	echo "		</td>";
 	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Last Name:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_last_name' value=\"$user_last_name\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Company Name:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_company_name' value=\"$user_company_name\"></td>";
-	echo "	</tr>";
-	echo "    </table>";
-	echo "    </div>";
+	echo "</table>";
+	echo "<br>";
 	echo "<br>";
 
-	echo "<div class='' style='padding:10px;'>\n";
-	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
-	echo "<tr>\n";
-	echo "	<th class='th' colspan='2' align='left'>Physical Address</th>\n";
-	echo "</tr>\n";
-	echo "	<tr>";
-	echo "		<td class='vncell' width='30%'>Address 1:</td>";
-	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='user_physical_address_1' value=\"$user_physical_address_1\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Address 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_address_2' value=\"$user_physical_address_2\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>City:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_city' value=\"$user_physical_city\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>State/Province:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_state_province' value=\"$user_physical_state_province\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Country:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_country' value=\"$user_physical_country\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Postal Code:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_physical_postal_code' value=\"$user_physical_postal_code\"></td>";
-	echo "	</tr>";
-	echo "    </table>";
-	echo "    </div>";
-	echo "<br>";
-
-	/*
-	echo "<b>Mailing Address</b><br>";
-	echo "<div class='' style='padding:10px;'>\n";
-	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
-	echo "	<tr>";
-	echo "		<td class='vncell' width='40%'>Address 1:</td>";
-	echo "		<td class='vtable' width='60%'><input type='text' class='formfld' name='user_mailing_address_1' value='$user_mailing_address_1'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Address 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_address_2' value='$user_mailing_address_2'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>City:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_city' value='$user_mailing_city'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>State/Province:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_state_province' value='$user_mailing_state_province'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Country:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_country' value='$user_mailing_country'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Postal Code:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_mailing_postal_code' value='$user_mailing_postal_code'></td>";
-	echo "	</tr>";
-	echo "    </table>";
-	echo "    </div>";
-	echo "<br>";
-
-	echo "<b>Billing Address</b><br>";
-	echo "<div class='' style='padding:10px;'>\n";
-	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
-	echo "	<tr>";
-	echo "		<td class='vncell' width='30%'>Address 1:</td>";
-	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='user_billing_address_1' value='$user_billing_address_1'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Address 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_address_2' value='$user_billing_address_2'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>City:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_city' value='$user_billing_city'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>State/Province:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_state_province' value='$user_billing_state_province'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Country:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_country' value='$user_billing_country'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Postal Code:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_billing_postal_code' value='$user_billing_postal_code'></td>";
-	echo "	</tr>";
-	echo "    </table>";
-	echo "    </div>";
-	echo "<br>";
-
-	echo "<b>Shipping Address</b><br>";
-	echo "<div class='' style='padding:10px;'>\n";
-	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
-	echo "	<tr>";
-	echo "		<td class='vncell' width='30%'>Address 1:</td>";
-	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='user_shipping_address_1' value='$user_shipping_address_1'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Address 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_address_2' value='$user_shipping_address_2'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>City:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_city' value='$user_shipping_city'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>State/Province:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_state_province' value='$user_shipping_state_province'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Country:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_country' value='$user_shipping_country'></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Postal Code:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_shipping_postal_code' value='$user_shipping_postal_code'></td>";
-	echo "	</tr>";
-	echo "    </table>";
-	echo "    </div>";
-	echo "<br>";
-	*/
-
-	echo "<div class='' style='padding:10px;'>\n";
-	echo "<table $tablewidth cellpadding='6' cellspacing='0'>";
+	echo "<table $table_width cellpadding='6' cellspacing='0'>";
 	echo "	<tr>\n";
 	echo "	<th class='th' colspan='2' align='left'>Additional Info</th>\n";
 	echo "	</tr>\n";
-	echo "	<tr>";
-	echo "		<td class='vncell'width='30%'>Website:</td>";
-	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' name='user_url' value=\"$user_url\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Phone 1:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_1' value=\"$user_phone_1\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Phone 1 Ext:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_1_ext' value=\"$user_phone_1_ext\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Phone 2:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_2' value=\"$user_phone_2\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Phone 2 Ext:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_2_ext' value=\"$user_phone_2_ext\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Mobile:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_mobile' value=\"$user_phone_mobile\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Fax:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_phone_fax' value=\"$user_phone_fax\"></td>";
-	echo "	</tr>";
-	echo "	<tr>";
-	echo "		<td class='vncell'>Email:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='user_email' value=\"$user_email\"></td>";
-	echo "	</tr>";
 
-	//if the template has not been assigned by the superadmin
-	if (strlen($_SESSION['domain']['template']['name']) == 0) {
+	echo "	<tr>";
+	echo "		<td width='30%' class='vncell'>Email:</td>";
+	echo "		<td width='70%' class='vtable'><input type='text' class='formfld' name='user_email' value=\"$user_email\"></td>";
+	echo "	</tr>";
+	if ($_SESSION['user_status_display'] == "false") {
+		//hide the user_status when it is set to false
+	}
+	else {
 		echo "	<tr>\n";
 		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-		echo "		Template: \n";
+		echo "		Status:\n";
 		echo "	</td>\n";
 		echo "	<td class=\"vtable\">\n";
-		echo "		<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
+		$cmd = "'/mod/calls_active/v_calls_exec.php?cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$v_domain."+'+this.value";
+		echo "		<select id='user_status' name='user_status' class='formfld' style='' onchange=\"send_cmd($cmd);\">\n";
 		echo "		<option value=''></option>\n";
-		$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
-		if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
-			while (false !== ($dir_name = readdir($handle))) {
-				if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
-					$dir_label = str_replace('_', ' ', $dir_name);
-					$dir_label = str_replace('-', ' ', $dir_label);
-					if ($dir_name == $user_template_name) {
-						echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
-					}
-					else {
-						echo "		<option value='$dir_name'>$dir_label</option>\n";
-					}
-				}
-			}
-			closedir($handle);
+		if ($user_status == "Available") {
+			echo "		<option value='Available' selected='selected'>Available</option>\n";
+		}
+		else {
+			echo "		<option value='Available'>Available</option>\n";
+		}
+		if ($user_status == "Available (On Demand)") {
+			echo "		<option value='Available (On Demand)' selected='selected'>Available (On Demand)</option>\n";
+		}
+		else {
+			echo "		<option value='Available (On Demand)'>Available (On Demand)</option>\n";
+		}
+		if ($user_status == "Logged Out") {
+			echo "		<option value='Logged Out' selected='selected'>Logged Out</option>\n";
+		}
+		else {
+			echo "		<option value='Logged Out'>Logged Out</option>\n";
+		}
+		if ($user_status == "On Break") {
+			echo "		<option value='On Break' selected='selected'>On Break</option>\n";
+		}
+		else {
+			echo "		<option value='On Break'>On Break</option>\n";
+		}
+		if ($user_status == "Do Not Disturb") {
+			echo "		<option value='Do Not Disturb' selected='selected'>Do Not Disturb</option>\n";
+		}
+		else {
+			echo "		<option value='Do Not Disturb'>Do Not Disturb</option>\n";
 		}
 		echo "		</select>\n";
 		echo "		<br />\n";
-		echo "		Select a template to set as the default and then press save.<br />\n";
+		echo "		Select a the user status.<br />\n";
 		echo "	</td>\n";
 		echo "	</tr>\n";
 	}
 
-	echo "    </table>";
-	echo "    </div>";
+	//if the template has not been assigned by the superadmin
+		/*
+		if (strlen($_SESSION['domain']['template']['name']) == 0) {
+			echo "	<tr>\n";
+			echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+			echo "		Template: \n";
+			echo "	</td>\n";
+			echo "	<td class=\"vtable\">\n";
+			echo "		<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
+			echo "		<option value=''></option>\n";
+			$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
+			if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
+				while (false !== ($dir_name = readdir($handle))) {
+					if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
+						$dir_label = str_replace('_', ' ', $dir_name);
+						$dir_label = str_replace('-', ' ', $dir_label);
+						if ($dir_name == $user_template_name) {
+							echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
+						}
+						else {
+							echo "		<option value='$dir_name'>$dir_label</option>\n";
+						}
+					}
+				}
+				closedir($handle);
+			}
+			echo "	</select>\n";
+			echo "	<br />\n";
+			echo "	Select a template to set as the default and then press save.<br />\n";
+			echo "	</td>\n";
+			echo "	</tr>\n";
+		}
+		*/
+	echo "	<tr>\n";
+	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+	echo "		Time Zone: \n";
+	echo "	</td>\n";
+	echo "	<td class=\"vtable\" align='left'>\n";
+	echo "		<select id='user_time_zone' name='user_time_zone' class='formfld' style=''>\n";
+	echo "		<option value=''></option>\n";
+	//$list = DateTimeZone::listAbbreviations();
+    $time_zone_identifiers = DateTimeZone::listIdentifiers();
+	$previous_category = '';
+	$x = 0;
+	foreach ($time_zone_identifiers as $key => $row) {
+		$tz = explode("/", $row);
+		$category = $tz[0];
+		if ($category != $previous_category) {
+			if ($x > 0) {
+				echo "		</optgroup>\n";
+			}
+			echo "		<optgroup label='".$category."'>\n";
+		}
+		if ($row == $user_time_zone) {
+			echo "			<option value='".$row."' selected='selected'>".$row."</option>\n";
+		}
+		else {
+			echo "			<option value='".$row."'>".$row."</option>\n";
+		}
+		$previous_category = $category;
+		$x++;
+	}
+	echo "		</select>\n";
+	echo "		<br />\n";
+	echo "		Select the default time zone.<br />\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
+
+	echo "	</table>";
 	echo "<br>";
 
 	echo "<div class='' style='padding:10px;'>\n";
-	echo "<table $tablewidth>";
+	echo "<table $table_width>";
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
 	echo "			<input type='hidden' name='id' value=\"$id\">";
@@ -538,13 +388,14 @@ else {
 	echo "		</td>";
 	echo "	</tr>";
 	echo "</table>";
-	echo "</form>";
 
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
+	echo "</form>";
 
 //include the footer
 	require_once "includes/footer.php";
+
 ?>

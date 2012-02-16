@@ -91,16 +91,16 @@ else {
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$id = $_REQUEST["id"];
 	$password = check_str($_POST["password"]);
-	$confirmpassword = check_str($_POST["confirmpassword"]);
+	$confirm_password = check_str($_POST["confirm_password"]);
 	$user_status = check_str($_POST["user_status"]);
 	$user_template_name = check_str($_POST["user_template_name"]);
 	$user_time_zone = check_str($_POST["user_time_zone"]);
 	$user_email = check_str($_POST["user_email"]);
-	$groupmember = check_str($_POST["groupmember"]);
+	$group_member = check_str($_POST["group_member"]);
 
 	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
 	if (strlen($username) == 0) { $msgerror .= "Please provide the username.<br>\n"; }
-	if ($password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
+	if ($password != $confirm_password) { $msgerror .= "Passwords did not match.<br>\n"; }
 	//if (strlen($user_email) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
 	//if (strlen($user_time_zone) == 0) { $msgerror .= "Please provide an time zone.<br>\n"; }
 
@@ -156,7 +156,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		if (if_group("admin") && strlen($_POST["username"])> 0) {
 			$sql .= "username = '$username', ";
 		}
-		if (strlen($password) > 0 && $confirmpassword == $password) {
+		if (strlen($password) > 0 && $confirm_password == $password) {
 			//salt used with the password to create a one way hash
 				$salt = generate_password('20', '4');
 			//set the password
@@ -169,7 +169,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "user_email = '$user_email' ";
 		if (strlen($id)> 0) {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and user_uuid = $id ";
+			$sql .= "and user_uuid = '$id' ";
 		}
 		else {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -189,7 +189,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	//clear the template so it will rebuild in case the template was changed
 		$_SESSION["template_content"] = '';
 
-	//redirect the user
+	//redirect the browser
 		require_once "includes/header.php";
 		if (if_group("admin")) {
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$id\">\n";
@@ -208,7 +208,7 @@ else {
 	if (if_group("admin") || if_group("superadmin")) {
 		if (strlen($id)> 0) {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and id = '$id' ";
+			$sql .= "and user_uuid = '$id' ";
 		}
 		else {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -284,7 +284,7 @@ else {
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>Confirm Password:</td>";
-	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirmpassword' value=\"\"></td>";
+	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirm_password' value=\"\"></td>";
 	echo "	</tr>";
 
 	//echo "	<tr>";
@@ -490,7 +490,7 @@ else {
 	echo "<table $table_width>";
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
-	echo "			<input type='hidden' name='id' value=\"$user_uuid\">";
+	echo "			<input type='hidden' name='id' value=\"$id\">";
 	echo "			<input type='hidden' name='username' value=\"$username\">";
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>";
 	echo "		</td>";
