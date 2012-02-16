@@ -26,7 +26,7 @@
 require_once "root.php";
 require_once "includes/require.php";
 require_once "includes/checkauth.php";
-if (if_group("admin") || if_group("superadmin")) {
+if (if_group("superadmin")) {
 	//access granted
 }
 else {
@@ -86,8 +86,8 @@ require_once "includes/paging.php";
 
 	//get the  list
 		$sql = "";
-		$sql .= " select * from v_databasess ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql .= " select * from v_databases ";
+		//$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));

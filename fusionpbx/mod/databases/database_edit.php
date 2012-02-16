@@ -26,7 +26,7 @@
 require_once "root.php";
 require_once "includes/require.php";
 require_once "includes/checkauth.php";
-if (if_group("admin") || if_group("superadmin")) {
+if (if_group("superadmin")) {
 	//access granted
 }
 else {
@@ -97,9 +97,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
-			$sql = "into v_databases ";
+			$database_uuid = uuid();
+			$sql = "insert into v_databases ";
 			$sql .= "(";
-			$sql .= "v_id, ";
+			//$sql .= "domain_uuid, ";
+			$sql .= "database_uuid, ";
 			$sql .= "database_type, ";
 			$sql .= "database_host, ";
 			$sql .= "database_port, ";
@@ -111,7 +113,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$v_id', ";
+			//$sql .= "'$domain_uuid', ";
+			$sql .= "'$database_uuid', ";
 			$sql .= "'$database_type', ";
 			$sql .= "'$database_host', ";
 			$sql .= "'$database_port', ";
@@ -135,7 +138,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_databases set ";
-			$sql .= "v_id = '$v_id', ";
 			$sql .= "database_type = '$database_type', ";
 			$sql .= "database_host = '$database_host', ";
 			$sql .= "database_port = '$database_port', ";
@@ -144,7 +146,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "database_password = '$database_password', ";
 			$sql .= "database_path = '$database_path', ";
 			$sql .= "database_description = '$database_description' ";
-			$sql .= "where database_uuid = '$database_uuid'";
+			$sql .= "where database_uuid = '$database_uuid' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -181,7 +183,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		unset ($prep_statement);
 	}
-
 
 //show the header
 	require_once "includes/header.php";
