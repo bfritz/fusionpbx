@@ -690,8 +690,7 @@ function format_string ($format, $data) {
 			$_SESSION["format_phone_array"] = ""; //clear the menu
 			global $domain_uuid, $db;
 			$sql = "select * from v_vars ";
-			$sql .= "where domain_uuid  = '$domain_uuid' ";
-			$sql .= "and var_name = 'format_phone' ";
+			$sql .= "where var_name = 'format_phone' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			if ($prep_statement) {
 				$prep_statement->execute();
