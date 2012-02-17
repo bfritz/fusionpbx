@@ -65,55 +65,79 @@ function process_xml_cdr($db, $leg, $xml_string) {
 			echo $e->getMessage();
 		}
 
-	//get the variables from the xml & build a list of variable to save:
-	//This is an array where the variable in the xml_cdr is THE SAME as the column name.
-	$variables_named=array('uuid','domain_name','accountcode','default_language',
-			'start_epoch','start_stamp',
-			'answer_stamp','answer_epoch','end_epoch',
-			'end_stamp',
-			'duration','mduration','billsec','billmsec',
-			'bridge_uuid',
-			'digits_dialed',
-			'read_codec','read_rate','write_codec','write_rate','remote_media_ip','hangup_cause','hangup_cause_q850',
-			'cc_side','cc_member_uuid','cc_queue_joined_epoch','cc_queue','cc_member_session_uuid','cc_agent','cc_agent_type','waitsec',
-			'last_app','last_arg','sip_hangup_disposition',
-			'conference_name','conference_uuid','conference_member_id'
-			);
-		//set the $variable so we can use it.
-		foreach($variables_named as $var){
-			${$var} = check_str(urldecode($xml->variables->{$var}));
-		}//end get the variables from the xml loop.
+	//prepare the database object
+		require_once "includes/classes/database.php";
+		$database = new database;
+		$database->table = "v_xml_cdr";
 
-	//Add the other variables that are going to processed, rather than pulling the actual name from the XML.
-	//Pull data from the actual callflow.
+		//misc
+			$uuid = check_str(urldecode($xml->variables->uuid));
+			$database->fields['uuid'] = $uuid;
+			$database->fields['accountcode'] = check_str(urldecode($xml->variables->accountcode));
+			$database->fields['default_language'] = check_str(urldecode($xml->variables->default_language));
+			$database->fields['bridge_uuid'] = check_str(urldecode($xml->variables->bridge_uuid));
+			$database->fields['digits_dialed'] = check_str(urldecode($xml->variables->digits_dialed));
+			$database->fields['sip_hangup_disposition'] = check_str(urldecode($xml->variables->sip_hangup_disposition));
+		//time
+			$database->fields['start_epoch'] = check_str(urldecode($xml->variables->start_epoch));
+			$start_stamp = check_str(urldecode($xml->variables->start_stamp));
+			$database->fields['start_stamp'] = $start_stamp;
+			$database->fields['answer_stamp'] = check_str(urldecode($xml->variables->answer_stamp));
+			$database->fields['answer_epoch'] = check_str(urldecode($xml->variables->answer_epoch));
+			$database->fields['end_epoch'] = check_str(urldecode($xml->variables->end_epoch));
+			$database->fields['end_stamp'] = check_str(urldecode($xml->variables->end_stamp));
+			$database->fields['duration'] = check_str(urldecode($xml->variables->duration));
+			$database->fields['mduration'] = check_str(urldecode($xml->variables->mduration));
+			$database->fields['billsec'] = check_str(urldecode($xml->variables->billsec));
+			$database->fields['billmsec'] = check_str(urldecode($xml->variables->billmsec));
+		//codecs
+			$database->fields['read_codec'] = check_str(urldecode($xml->variables->read_codec));
+			$database->fields['read_rate'] = check_str(urldecode($xml->variables->read_rate));
+			$database->fields['write_codec'] = check_str(urldecode($xml->variables->write_codec));
+			$database->fields['write_rate'] = check_str(urldecode($xml->variables->write_rate));
+			$database->fields['remote_media_ip'] = check_str(urldecode($xml->variables->remote_media_ip));
+			$database->fields['hangup_cause'] = check_str(urldecode($xml->variables->hangup_cause));
+			$database->fields['hangup_cause_q850'] = check_str(urldecode($xml->variables->hangup_cause_q850));
+		//call center
+			$database->fields['cc_side'] = check_str(urldecode($xml->variables->cc_side));
+			$database->fields['cc_member_uuid'] = check_str(urldecode($xml->variables->cc_member_uuid));
+			$database->fields['cc_queue_joined_epoch'] = check_str(urldecode($xml->variables->cc_queue_joined_epoch));
+			$database->fields['cc_queue'] = check_str(urldecode($xml->variables->cc_queue));
+			$database->fields['cc_member_session_uuid'] = check_str(urldecode($xml->variables->cc_member_session_uuid));
+			$database->fields['cc_agent'] = check_str(urldecode($xml->variables->cc_agent));
+			$database->fields['cc_agent_type'] = check_str(urldecode($xml->variables->cc_agent_type));
+			$database->fields['waitsec'] = check_str(urldecode($xml->variables->waitsec));
+		//app info
+			$database->fields['last_app'] = check_str(urldecode($xml->variables->last_app));
+			$database->fields['last_arg'] = check_str(urldecode($xml->variables->last_arg));
+		//conference
+			$database->fields['conference_name'] = check_str(urldecode($xml->variables->conference_name));
+			$database->fields['conference_uuid'] = check_str(urldecode($xml->variables->conference_uuid));
+			$database->fields['conference_member_id'] = check_str(urldecode($xml->variables->conference_member_id));
+
+	//get the values from the callflow.
 		$x = 0;
 		foreach ($xml->callflow as $row) {
 			if ($x == 0) {
-				$destination_number = check_str(urldecode($row->caller_profile->destination_number));
 				$context = check_str(urldecode($row->caller_profile->context));
-				$network_addr = check_str(urldecode($row->caller_profile->network_addr));
+				$database->fields['destination_number'] = check_str(urldecode($row->caller_profile->destination_number));
+				$database->fields['context'] = $context;
+				$database->fields['network_addr'] = check_str(urldecode($row->caller_profile->network_addr));
 			}
-			$caller_id_name = check_str(urldecode($row->caller_profile->caller_id_name));
-			$caller_id_number = check_str(urldecode($row->caller_profile->caller_id_number));
+			$database->fields['caller_id_name'] = check_str(urldecode($row->caller_profile->caller_id_name));
+			$database->fields['caller_id_number'] = check_str(urldecode($row->caller_profile->caller_id_number));
 			$x++;
 		}
 		unset($x);
-		$variables_named[] = 'destination_number';
-		$variables_named[] = 'context';
-		$variables_named[] = 'network_addr';
-		$variables_named[] = 'caller_id_name';
-		$variables_named[] = 'caller_id_number';
 
-	//Store the call leg.
-	$variables_named[]='leg';
+	//store the call leg
+		$database->fields['caller_id_number'] = $leg;
 
-	//Store the call direction.
-		$variables_named[] = 'direction';
-		$direction = check_str(urldecode($xml->variables->call_direction));
+	//store the call direction.
+		$database->fields['direction'] = check_str(urldecode($xml->variables->call_direction));
 
-	//Store PDD, Post Dial Delay, in milliseconds.
-		$variables_named[] = 'pdd_ms';
-		$pdd_ms = check_str(urldecode($xml->variables->progress_mediamsec) + urldecode($xml->variables->progressmsec));
+	//store post dial delay, in milliseconds.
+		$database->fields['pdd_ms'] = check_str(urldecode($xml->variables->progress_mediamsec) + urldecode($xml->variables->progressmsec));
 
 	//get break down the date to year, month and day
 		$tmp_time = strtotime($start_stamp);
@@ -122,9 +146,8 @@ function process_xml_cdr($db, $leg, $xml_string) {
 		$tmp_day = date("d", $tmp_time);
 
 	//find the domain_uuid by using the domain_name
-		$domain_name = check_str(urldecode($xml->variables->{$domain}));
-		$sql = "";
-		$sql .= "select domain_uuid from v_domains ";
+		$domain_name = check_str(urldecode($xml->variables->domain));
+		$sql = "select domain_uuid from v_domains ";
 		if (strlen($domain_name) == 0 && $context != 'public' && $context != 'default') {
 			$sql .= "where domain_name = '".$context."' ";
 		}
@@ -134,8 +157,15 @@ function process_xml_cdr($db, $leg, $xml_string) {
 		$row = $db->query($sql)->fetch();
 		$domain_uuid = $row['domain_uuid'];
 		//$switch_recordings_dir = $row['switch_recordings_dir'];
-		//if (strlen($domain_uuid) == 0) { $domain_uuid = '1'; }
-		$variables_named[]='domain_uuid';
+		if (strlen($domain_uuid) == 0) {
+			$sql = "select domain_name, domain_uuid from v_domains ";
+			$row = $db->query($sql)->fetch();
+			$domain_uuid = $row['domain_uuid'];
+			if (strlen($domain_name) == 0) { $domain_name = $uuid." ".$row['domain_name']; }
+		}
+		$database->domain_uuid = $domain_uuid;
+		$database->fields['domain_uuid'] = $domain_uuid;
+		$database->fields['domain_name'] = $domain_name;
 
 	//check whether a recording exists
 		$recording_relative_path = '/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
@@ -145,12 +175,13 @@ function process_xml_cdr($db, $leg, $xml_string) {
 		elseif (file_exists($_SESSION['switch']['recordings']['dir'].$recording_relative_path.'/'.$uuid.'.mp3')) {
 			$recording_file = $recording_relative_path.'/'.$uuid.'.mp3';
 		}
-		if(isset($recording_file) && !empty($recording_file)) $variables_named[]='recording_file';
+		if(isset($recording_file) && !empty($recording_file)) { 
+			$database->fields['recording_file'] = $recording_file;
+		}
 
 	//determine where the xml cdr will be archived
 		$sql = "select * from v_vars ";
-		$sql .= "where domain_uuid  = '1' ";
-		$sql .= "and var_name = 'xml_cdr_archive' ";
+		$sql .= "where var_name = 'xml_cdr_archive' ";
 		$row = $db->query($sql)->fetch();
 		$var_value = trim($row["var_value"]);
 		switch ($var_value) {
@@ -168,34 +199,23 @@ function process_xml_cdr($db, $leg, $xml_string) {
 			break;
 		}
 
-	//if xml_cdr_archive is set to DB, then insert it.
+	//if xml_cdr_archive is set to db then insert it.
 		if ($xml_cdr_archive == "db") {
-			$xml_cdr = check_str($xml_string);
-			$variables_named[]='xml_cdr';
+			$database->fields['xml_cdr'] = check_str($xml_string);
 		}
 
 	//insert xml_cdr into the db
-		//build the insert string
-		$count=count($variables_named);
-		$name=$value='';
-		for($i=0;$i<$count;$i++){
-			if (strlen(${$variables_named[$i]}) > 0) {
-				$name	.= $variables_named[$i].",";
-				$values	.= "'".${$variables_named[$i]}."',";
-			}
-			//if($i+1<$count) {$name	.=",";$values	.=",";}
-			}
-		$sql = 'insert into v_xml_cdr ('.substr($name,0,-1).') values ('.substr($values,0,-1).')';//substr to strip the extra , off the end.
+		$database->add();
 
 	//insert the values
 		if (strlen($uuid) > 0) {
 			if ($debug) {
-				$time5_insert=microtime(true);
-				echo $sql."<br />\n";
+				$time5_insert = microtime(true);
+				//echo $sql."<br />\n";
 			}
 			try {
 				$error = "false";
-				$db->exec(check_sql($sql));
+				//$db->exec(check_sql($sql));
 			}
 			catch(PDOException $e) {
 				$tmp_dir = $_SESSION['switch']['log']['dir'].'/xml_cdr/failed/';
@@ -267,13 +287,12 @@ function process_xml_cdr($db, $leg, $xml_string) {
 
 			//check for the correct username and password
 				if ($_SESSION["xml_cdr_username"] == $_SERVER["PHP_AUTH_USER"] && $_SESSION["xml_cdr_password"] == $_SERVER["PHP_AUTH_PW"]) {
-					//echo "access granted 2<br />\n";
+					//echo "access granted<br />\n";
 				}
 				else {
 					echo "access denied<br />\n";
 					return;
 				}
-
 			//loop through all attribues
 				//foreach($xml->settings->param[1]->attributes() as $a => $b) {
 				//		echo $a,'="',$b,"\"<br />\n";
