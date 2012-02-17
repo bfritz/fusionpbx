@@ -3176,7 +3176,7 @@ function sync_package_v_dialplan() {
 	$sql = "";
 	$sql .= "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and enabled = 'true' ";
+	$sql .= "and dialplan_enabled = 'true' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	if ($prep_statement) {
 		$prep_statement->execute();
@@ -3195,7 +3195,7 @@ function sync_package_v_dialplan() {
 			$sql = "";
 			$sql .= " select * from v_dialplan_details ";
 			$sql .= " where dialplan_uuid = '".$row['dialplan_uuid']."' ";
-			$sql .= " and domain_uuid = $domain_uuid ";
+			$sql .= " and domain_uuid = '".$domain_uuid."' ";
 			$sql .= " order by dialplan_detail_group asc, dialplan_detail_order asc ";
 			$prep_statement_2 = $db->prepare($sql);
 			if ($prep_statement_2) {
@@ -3437,7 +3437,9 @@ function sync_package_v_dialplan() {
 			$dialplan_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $dialplan_name);
 
 			$dialplan_filename = $dialplan_order."_v_dialplan_".$dialplan_name.".xml";
-			$fout = fopen($_SESSION['switch']['dialplan']['dir']."/".$row['context']."/".$dialplan_filename,"w");
+			if (strlen($row['dialplan_context']) > 0) {
+				$fout = fopen($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename,"w");
+			}
 			fwrite($fout, $tmp);
 			fclose($fout);
 
