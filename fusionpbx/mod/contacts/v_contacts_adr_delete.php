@@ -41,7 +41,7 @@ if (count($_GET)>0) {
 
 if (strlen($id)>0) {
 	$sql = "";
-	$sql .= "delete from v_contacts_adr ";
+	$sql .= "delete from v_contact_adr ";
 	$sql .= "where contact_adr_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();

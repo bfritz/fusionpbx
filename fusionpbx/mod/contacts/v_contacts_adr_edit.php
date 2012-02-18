@@ -95,7 +95,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			$contact_adr_uuid = uuid();
-			$sql = "insert into v_contacts_adr ";
+			$sql = "insert into v_contact_adr ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "contact_uuid, ";
@@ -138,7 +138,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update") {
-			$sql = "update v_contacts_adr set ";
+			$sql = "update v_contact_adr set ";
 			$sql .= "contact_uuid = '$contact_uuid', ";
 			$sql .= "adr_type = '$adr_type', ";
 			$sql .= "adr_street = '$adr_street', ";
@@ -169,7 +169,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$contact_adr_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_contacts_adr ";
+		$sql .= "select * from v_contact_adr ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and contact_adr_uuid = '$contact_adr_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));

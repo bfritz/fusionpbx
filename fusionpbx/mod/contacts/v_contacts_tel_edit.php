@@ -84,7 +84,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
 			$contact_tel_uuid = uuid();
-			$sql = "insert into v_contacts_tel ";
+			$sql = "insert into v_contact_tel ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "contact_uuid, ";
@@ -113,7 +113,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update") {
-			$sql = "update v_contacts_tel set ";
+			$sql = "update v_contact_tel set ";
 			$sql .= "contact_uuid = '$contact_uuid', ";
 			$sql .= "tel_type = '$tel_type', ";
 			$sql .= "tel_number = '$tel_number' ";
@@ -137,7 +137,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$contact_tel_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_contacts_tel ";
+		$sql .= "select * from v_contact_tel ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and contact_tel_uuid = '$contact_tel_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));

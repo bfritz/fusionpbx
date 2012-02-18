@@ -119,8 +119,8 @@ require_once "includes/paging.php";
 	}
 	else {
 		foreach($result as $row) {
-			$notes = $row['notes'];
-			//$notes = str_replace("\n","<br />",$notes);
+			$contact_note = $row['contact_note'];
+			//$contact_note = str_replace("\n","<br />",$contact_note);
 
 			echo "<tr>\n";
 			echo "<th>\n";
@@ -135,7 +135,7 @@ require_once "includes/paging.php";
 			echo "<tr>\n";
 
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'><br />".$notes."&nbsp;<br /><br /></td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'><br />".$contact_note."&nbsp;<br /><br /></td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['last_mod_date']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['last_mod_user']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";

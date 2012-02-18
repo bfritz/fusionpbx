@@ -49,7 +49,7 @@ if (strlen($_GET["contact_uuid"]) > 0) {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
-		$notes = check_str($_POST["notes"]);
+		$contact_note = check_str($_POST["contact_note"]);
 		$last_mod_date = check_str($_POST["last_mod_date"]);
 		$last_mod_user = check_str($_POST["last_mod_user"]);
 	}
@@ -62,7 +62,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		//if (strlen($notes) == 0) { $msg .= "Please provide: Notes<br>\n"; }
+		//if (strlen($contact_note) == 0) { $msg .= "Please provide: Notes<br>\n"; }
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($last_mod_date) == 0) { $msg .= "Please provide: Last Modified Date<br>\n"; }
 		//if (strlen($last_mod_user) == 0) { $msg .= "Please provide: Last Modified By<br>\n"; }
@@ -86,7 +86,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "insert into v_contact_notes ";
 			$sql .= "(";
 			$sql .= "contact_uuid, ";
-			$sql .= "notes, ";
+			$sql .= "contact_note, ";
 			$sql .= "domain_uuid, ";
 			$sql .= "last_mod_date, ";
 			$sql .= "last_mod_user ";
@@ -94,7 +94,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$contact_uuid', ";
-			$sql .= "'$notes', ";
+			$sql .= "'$contact_note', ";
 			$sql .= "'$domain_uuid', ";
 			$sql .= "now(), ";
 			$sql .= "'".$_SESSION['username']."' ";
@@ -114,7 +114,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "update") {
 			$sql = "update v_contact_notes set ";
 			$sql .= "contact_uuid = '$contact_uuid', ";
-			$sql .= "notes = '$notes', ";
+			$sql .= "contact_note = '$contact_note', ";
 			$sql .= "last_mod_date = now(), ";
 			$sql .= "last_mod_user = '".$_SESSION['username']."' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -144,7 +144,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$notes = $row["notes"];
+			$contact_note = $row["contact_note"];
 			$last_mod_date = $row["last_mod_date"];
 			$last_mod_user = $row["last_mod_user"];
 			break; //limit to 1 row
@@ -181,7 +181,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Notes:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <textarea class='formfld' type='text' rows=\"20\" style=\"width: 100%\" name='notes'>$notes</textarea>\n";
+	echo "  <textarea class='formfld' type='text' rows=\"20\" style=\"width: 100%\" name='contact_note'>$contact_note</textarea>\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

@@ -70,7 +70,7 @@ require_once "includes/paging.php";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($search_all) > 0) {
 			if (is_numeric($search_all)) {
-				$sql .= "and contact_uuid in (select contact_uuid from v_contacts_tel where tel_number like '%".$search_all."%') \n";
+				$sql .= "and contact_uuid in (select contact_uuid from v_contact_tel where tel_number like '%".$search_all."%') \n";
 			}
 			else {
 				$sql .= "and contact_uuid in (\n";
@@ -118,7 +118,7 @@ require_once "includes/paging.php";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		if (strlen($search_all) > 0) {
 			if (is_numeric($search_all)) {
-				$sql .= "and contact_uuid in (select contact_uuid from v_contacts_tel where tel_number like '%".$search_all."%') \n";
+				$sql .= "and contact_uuid in (select contact_uuid from v_contact_tel where tel_number like '%".$search_all."%') \n";
 			}
 			else {
 				$sql .= "and contact_uuid in (\n";

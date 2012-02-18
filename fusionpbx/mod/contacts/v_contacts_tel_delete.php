@@ -41,7 +41,7 @@ if (count($_GET)>0) {
 
 if (strlen($id)>0) {
 	$sql = "";
-	$sql .= "delete from v_contacts_tel ";
+	$sql .= "delete from v_contact_tel ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and contact_tel_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));

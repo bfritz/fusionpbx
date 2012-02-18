@@ -61,7 +61,7 @@ require_once "includes/paging.php";
 
 	//prepare to page the results
 		$sql = "";
-		$sql .= " select count(*) as num_rows from v_contacts_adr ";
+		$sql .= " select count(*) as num_rows from v_contact_adr ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
@@ -87,7 +87,7 @@ require_once "includes/paging.php";
 
 	//get the contact list
 		$sql = "";
-		$sql .= " select * from v_contacts_adr ";
+		$sql .= " select * from v_contact_adr ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
@@ -117,7 +117,7 @@ require_once "includes/paging.php";
 	//echo th_order_by('adr_longitude', 'Longitude', $order_by, $order);
 	echo "<th>Tools</th>\n";
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_contacts_adr_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
+	echo "	<a href='v_contact_adr_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -138,8 +138,8 @@ require_once "includes/paging.php";
 			echo "		<a href=\"http://maps.google.com/maps?q=".urlencode($map_query)."&hl=en\" target=\"_blank\">Map</a>&nbsp;\n";
 			echo "	</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_contacts_adr_edit.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_adr_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_contacts_adr_delete.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_adr_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='v_contact_adr_edit.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_adr_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_contact_adr_delete.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_adr_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -154,7 +154,7 @@ require_once "includes/paging.php";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_contacts_adr_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
+	echo "			<a href='v_contact_adr_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";

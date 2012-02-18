@@ -114,7 +114,7 @@
 		$z++;
 
 		$y = 1; //table array index
-		$apps[$x]['db'][$y]['table'] = 'v_contacts_adr';
+		$apps[$x]['db'][$y]['table'] = 'v_contact_adr';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'contacts_adr_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
@@ -191,7 +191,7 @@
 		$z++;
 
 		$y = 2; //table array index
-		$apps[$x]['db'][$y]['table'] = 'v_contacts_tel';
+		$apps[$x]['db'][$y]['table'] = 'v_contact_tel';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'id';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'contacts_tel_id';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'serial';
@@ -278,7 +278,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'notes';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'contact_note';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'notes';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
