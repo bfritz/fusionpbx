@@ -92,21 +92,30 @@ if ( session:ready() ) then
 
 	api = freeswitch.API();
 	for index,value in pairs(extension_table) do
-		extension_status = "show channels like "..value.."@"..domain_name;
-		reply = api:executeString(extension_status);
-		reply = trim(reply);
-		if (reply == "0 total.") then
-			--freeswitch.consoleLog("NOTICE", "extension "..value.." available\n");
-			if (value == sip_from_user) then
-				--this extension is the caller that initated the page
-			else
-				cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..value.."@"..domain_name.." conference:page@page+flags{mute} inline";
-				api:executeString(cmd_string);
-			end
-			--freeswitch.consoleLog("NOTICE", "cmd_string "..cmd_string.."\n");
+		if (string.find(value, "-") == nill) then
+			value = value..'-'..value;
+		end
+		sub_table = explode("-",value);
+		for extension=sub_table[1],sub_table[2] do
+			--extension_exists = "user_exists id "..extension.."@"..domain_name;
+			--reply = trim(api:executeString(extension_exists));
+			--if (reply == "true") then
+				extension_status = "show channels like "..extension.."@"..domain_name;
+				reply = trim(api:executeString(extension_status));
+				if (reply == "0 total.") then
+					--freeswitch.consoleLog("NOTICE", "extension "..extension.." available\n");
+					if (extension == sip_from_user) then
+						--this extension is the caller that initated the page
+					else
+						cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..extension.."@"..domain_name.." conference:page@page+flags{mute} inline";
+						api:executeString(cmd_string);
+					end
+					--freeswitch.consoleLog("NOTICE", "cmd_string "..cmd_string.."\n");
+				else
+					--call status busy
+				end
+			--end
 
-		else
-			--call status busy
 		end
 	end
 
