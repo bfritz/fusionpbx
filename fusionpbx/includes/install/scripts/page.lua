@@ -1,4 +1,4 @@
---	intercom.lua
+--	page.lua
 --	Part of FusionPBX
 --	Copyright (C) 2010 Mark J Crane <markjcrane@fusionpbx.com>
 --	All rights reserved.
