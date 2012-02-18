@@ -116,10 +116,10 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('dialplan_name', 'Extension Name', $order_by, $order);
-	echo thorder_by('dialplan_order', 'Order', $order_by, $order);
-	echo thorder_by('dialplan_enabled', 'Enabled', $order_by, $order);
-	echo thorder_by('dialplan_description', 'Description', $order_by, $order);
+	echo th_order_by('dialplan_name', 'Extension Name', $order_by, $order);
+	echo th_order_by('dialplan_order', 'Order', $order_by, $order);
+	echo th_order_by('dialplan_enabled', 'Enabled', $order_by, $order);
+	echo th_order_by('dialplan_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('fifo_add')) {
 		echo "	<a href='v_fifo_add.php' alt='add'>$v_link_label_add</a>\n";

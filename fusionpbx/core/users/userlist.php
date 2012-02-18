@@ -133,9 +133,9 @@ echo "	<td align=\"center\">\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('username', 'Username', $order_by, $order);
-	echo thorder_by('user_email', 'Email', $order_by, $order);
-	//echo thorder_by('user_template_name', 'Template', $order_by, $order);
+	echo th_order_by('username', 'Username', $order_by, $order);
+	echo th_order_by('user_email', 'Email', $order_by, $order);
+	//echo th_order_by('user_template_name', 'Template', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('user_add')) {
 		echo "	<a href='signup.php' alt='add'>$v_link_label_add</a>\n";

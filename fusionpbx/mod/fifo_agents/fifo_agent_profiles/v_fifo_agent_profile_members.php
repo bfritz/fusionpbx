@@ -92,9 +92,9 @@ $order = $_GET["order"];
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('fifo_name', 'FIFO Name', $order_by, $order);
-	echo thorder_by('agent_username', 'Agent', $order_by, $order);
-	echo thorder_by('agent_priority', 'Agent Priority', $order_by, $order);
+	echo th_order_by('fifo_name', 'FIFO Name', $order_by, $order);
+	echo th_order_by('agent_username', 'Agent', $order_by, $order);
+	echo th_order_by('agent_priority', 'Agent Priority', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_fifo_agent_profile_members_edit.php?fifo_agent_profile_id=".$row[fifo_agent_profile_id]."' alt='add'>$v_link_label_add</a>\n";
 	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_fifo_agent_profile_members_edit.php'\" value='+'>\n";

@@ -89,10 +89,10 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('broadcast_name', 'Name', $order_by, $order);
-	echo thorder_by('broadcast_concurrent_limit', 'Concurrent Limit', $order_by, $order);
-	echo thorder_by('broadcast_desc', 'Description', $order_by, $order);
-	//echo thorder_by('recordingid', 'Recording', $order_by, $order);
+	echo th_order_by('broadcast_name', 'Name', $order_by, $order);
+	echo th_order_by('broadcast_concurrent_limit', 'Concurrent Limit', $order_by, $order);
+	echo th_order_by('broadcast_desc', 'Description', $order_by, $order);
+	//echo th_order_by('recordingid', 'Recording', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('call_broadcast_add')) {
 		echo "	<a href='v_call_broadcast_edit.php' alt='add'>$v_link_label_add</a>\n";

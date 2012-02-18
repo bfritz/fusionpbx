@@ -123,8 +123,8 @@ else {
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('domain_name', 'Domain', $order_by, $order);
-	echo thorder_by('domain_description', 'Description', $order_by, $order);
+	echo th_order_by('domain_name', 'Domain', $order_by, $order);
+	echo th_order_by('domain_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_domains_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";

@@ -219,10 +219,10 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('recording_filename', 'Filename (download)', $order_by, $order);
-	echo thorder_by('recording_name', 'Recording Name (play)', $order_by, $order);
+	echo th_order_by('recording_filename', 'Filename (download)', $order_by, $order);
+	echo th_order_by('recording_name', 'Recording Name (play)', $order_by, $order);
 	echo "<th width=\"10%\" class=\"listhdr\" nowrap>Size</th>\n";
-	echo thorder_by('recording_desc', 'Description', $order_by, $order);
+	echo th_order_by('recording_desc', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('recordings_add')) {
 		echo "	<a href='v_recordings_edit.php' alt='add'>$v_link_label_add</a>\n";

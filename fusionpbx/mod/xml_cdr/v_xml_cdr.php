@@ -461,20 +461,20 @@ else {
 //show the results
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	//echo thorder_by('direction', 'Direction', $order_by, $order);
-	//echo thorder_by('default_language', 'Language', $order_by, $order);
-	//echo thorder_by('context', 'Context', $order_by, $order);
-	//echo thorder_by('leg', 'Leg', $order_by, $order);
-	echo thorder_by('caller_id_name', 'Name', $order_by, $order);
-	echo thorder_by('caller_id_number', 'Number', $order_by, $order);
-	echo thorder_by('destination_number', 'Destination', $order_by, $order);
-	echo thorder_by('start_stamp', 'Start', $order_by, $order);
-	//echo thorder_by('end_stamp', 'End', $order_by, $order);
-	echo thorder_by('duration', 'Length', $order_by, $order);
+	//echo th_order_by('direction', 'Direction', $order_by, $order);
+	//echo th_order_by('default_language', 'Language', $order_by, $order);
+	//echo th_order_by('context', 'Context', $order_by, $order);
+	//echo th_order_by('leg', 'Leg', $order_by, $order);
+	echo th_order_by('caller_id_name', 'Name', $order_by, $order);
+	echo th_order_by('caller_id_number', 'Number', $order_by, $order);
+	echo th_order_by('destination_number', 'Destination', $order_by, $order);
+	echo th_order_by('start_stamp', 'Start', $order_by, $order);
+	//echo th_order_by('end_stamp', 'End', $order_by, $order);
+	echo th_order_by('duration', 'Length', $order_by, $order);
 	if (if_group("admin") || if_group("superadmin")) { 
-		echo thorder_by('pdd_ms', 'PDD', $order_by, $order); 
+		echo th_order_by('pdd_ms', 'PDD', $order_by, $order); 
 	}
-	echo thorder_by('hangup_cause', 'Status', $order_by, $order);
+	echo th_order_by('hangup_cause', 'Status', $order_by, $order);
 	echo "</tr>\n";
 
 	if ($result_count == 0) {

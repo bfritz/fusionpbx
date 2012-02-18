@@ -109,10 +109,10 @@ $order = $_GET["order"];
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('service_name', 'Name', $order_by, $order);
-	//echo thorder_by('service_group', 'Group', $order_by, $order);
-	echo thorder_by('service_enabled', 'Enabled', $order_by, $order);
-	echo thorder_by('service_description', 'Description', $order_by, $order);
+	echo th_order_by('service_name', 'Name', $order_by, $order);
+	//echo th_order_by('service_group', 'Group', $order_by, $order);
+	echo th_order_by('service_enabled', 'Enabled', $order_by, $order);
+	echo th_order_by('service_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('php_service_add')) {
 		echo "	<a href='v_php_service_edit.php' alt='add'>$v_link_label_add</a>\n";

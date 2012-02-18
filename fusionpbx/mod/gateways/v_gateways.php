@@ -142,15 +142,15 @@ $row_style["1"] = "row_style1";
 echo "<div align='center'>\n";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 echo "<tr>\n";
-echo thorder_by('gateway', 'Gateway', $order_by, $order);
-echo thorder_by('context', 'Context', $order_by, $order);
+echo th_order_by('gateway', 'Gateway', $order_by, $order);
+echo th_order_by('context', 'Context', $order_by, $order);
 if ($fp) {
 	echo "<th>Status</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<th>State</th>\n";
 }
-echo thorder_by('enabled', 'Enabled', $order_by, $order);
-echo thorder_by('description', 'Gateway Description', $order_by, $order);
+echo th_order_by('enabled', 'Enabled', $order_by, $order);
+echo th_order_by('description', 'Gateway Description', $order_by, $order);
 echo "<td align='right' width='42'>\n";
 if (permission_exists('gateways_add')) {
 	echo "	<a href='v_gateways_edit.php' alt='add'>$v_link_label_add</a>\n";

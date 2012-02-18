@@ -116,10 +116,10 @@ echo "<div align='center'>\n";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 echo "<tr>\n";
-echo thorder_by('hunt_group_extension', 'Extension', $order_by, $order);
-echo thorder_by('hunt_group_name', 'Hunt Group Name', $order_by, $order);
-echo thorder_by('hunt_group_name', 'Enabled', $order_by, $order);
-echo thorder_by('hunt_group_descr', 'Description', $order_by, $order);
+echo th_order_by('hunt_group_extension', 'Extension', $order_by, $order);
+echo th_order_by('hunt_group_name', 'Hunt Group Name', $order_by, $order);
+echo th_order_by('hunt_group_name', 'Enabled', $order_by, $order);
+echo th_order_by('hunt_group_descr', 'Description', $order_by, $order);
 echo "<td align='right' width='42'>\n";
 if (permission_exists('hunt_group_add')) {
 	echo "	<a href='v_hunt_group_edit.php' alt='add'>$v_link_label_add</a>\n";

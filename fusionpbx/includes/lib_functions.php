@@ -361,9 +361,9 @@
 		}
 	}
 
-	if (!function_exists('thorder_by')) {
+	if (!function_exists('th_order_by')) {
 		//html table header order by
-		function thorder_by($field_name, $columntitle, $order_by, $order) {
+		function th_order_by($field_name, $columntitle, $order_by, $order) {
 
 			$html .= "<th nowrap>&nbsp; &nbsp; ";
 			if (strlen($order_by)==0) {

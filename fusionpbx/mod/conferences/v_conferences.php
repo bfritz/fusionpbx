@@ -115,13 +115,13 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('dialplan_name', 'Conference Name', $order_by, $order);
+	echo th_order_by('dialplan_name', 'Conference Name', $order_by, $order);
 	echo "<th>Tools</th>\n";
 	if (permission_exists('conferences_add')) {
-		echo thorder_by('dialplan_order', 'Order', $order_by, $order);
+		echo th_order_by('dialplan_order', 'Order', $order_by, $order);
 	}
-	echo thorder_by('dialplan_enabled', 'Enabled', $order_by, $order);
-	echo thorder_by('dialplan_description', 'Description', $order_by, $order);
+	echo th_order_by('dialplan_enabled', 'Enabled', $order_by, $order);
+	echo th_order_by('dialplan_description', 'Description', $order_by, $order);
 	if (permission_exists('conferences_add')) {
 		echo "<td align='right' width='42'>\n";
 		echo "	<a href='v_conferences_edit.php' alt='add'>$v_link_label_add</a>\n";

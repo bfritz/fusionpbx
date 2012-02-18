@@ -35,9 +35,9 @@ else {
 	exit;
 }
 
-if (!function_exists('thorder_by')) {
+if (!function_exists('th_order_by')) {
 	//html table header order by
-	function thorder_by($field_name, $columntitle, $order_by, $order) {
+	function th_order_by($field_name, $columntitle, $order_by, $order) {
 
 		$html .= "<th nowrap>&nbsp; &nbsp; ";
 		if (strlen($order_by)==0) {
@@ -107,11 +107,11 @@ $order = $_GET["order"];
 	echo "<div align='left'>\n";
 	echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
 	echo "<tr>";
-	echo thorder_by('rss_title', 'Title', $order_by, $order);
-	echo thorder_by('rss_link', 'Link', $order_by, $order);
-	//echo thorder_by('rss_sub_category', 'Template', $order_by, $order);
-	echo thorder_by('rss_group', 'Group', $order_by, $order);
-	echo thorder_by('rss_order', 'Order', $order_by, $order);
+	echo th_order_by('rss_title', 'Title', $order_by, $order);
+	echo th_order_by('rss_link', 'Link', $order_by, $order);
+	//echo th_order_by('rss_sub_category', 'Template', $order_by, $order);
+	echo th_order_by('rss_group', 'Group', $order_by, $order);
+	echo th_order_by('rss_order', 'Order', $order_by, $order);
 	if ($result_count == 0) { //no results
 		echo "<td align='right' width='21'>\n";
 	}

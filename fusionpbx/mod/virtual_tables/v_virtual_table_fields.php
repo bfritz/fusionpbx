@@ -82,14 +82,14 @@ $order = $_GET["order"];
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('virtual_field_label', 'Label', $order_by, $order);
-	echo thorder_by('virtual_field_name', 'Name', $order_by, $order);
-	echo thorder_by('virtual_field_type', 'Type', $order_by, $order);
-	echo thorder_by('virtual_field_column', 'Column', $order_by, $order);
-	echo thorder_by('virtual_field_required', 'Required', $order_by, $order);
-	echo thorder_by('virtual_field_order', 'Field Order', $order_by, $order);
-	echo thorder_by('virtual_field_order_tab', 'Tab Order', $order_by, $order);
-	echo thorder_by('virtual_field_desc', 'Description', $order_by, $order);
+	echo th_order_by('virtual_field_label', 'Label', $order_by, $order);
+	echo th_order_by('virtual_field_name', 'Name', $order_by, $order);
+	echo th_order_by('virtual_field_type', 'Type', $order_by, $order);
+	echo th_order_by('virtual_field_column', 'Column', $order_by, $order);
+	echo th_order_by('virtual_field_required', 'Required', $order_by, $order);
+	echo th_order_by('virtual_field_order', 'Field Order', $order_by, $order);
+	echo th_order_by('virtual_field_order_tab', 'Tab Order', $order_by, $order);
+	echo th_order_by('virtual_field_desc', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('virtual_tables_view')) {
 		echo "	<a href='v_virtual_table_fields_edit.php?virtual_table_uuid=".$virtual_table_uuid."' alt='add'>$v_link_label_add</a>\n";

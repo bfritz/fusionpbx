@@ -110,16 +110,16 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	//echo thorder_by('domain_uuid', 'domain_uuid', $order_by, $order);
-	echo thorder_by('agent_name', 'Agent Name', $order_by, $order);
-	echo thorder_by('agent_type', 'Type', $order_by, $order);
-	echo thorder_by('agent_call_timeout', 'Call Timeout', $order_by, $order);
-	echo thorder_by('agent_contact', 'Contact', $order_by, $order);
-	echo thorder_by('agent_max_no_answer', 'Max No Answer', $order_by, $order);
-	echo thorder_by('agent_status', 'Status', $order_by, $order);
-	//echo thorder_by('agent_wrap_up_time', 'Wrap Up Time', $order_by, $order);
-	//echo thorder_by('agent_reject_delay_time', 'Reject Delay Time', $order_by, $order);
-	//echo thorder_by('agent_busy_delay_time', 'Busy Delay Time', $order_by, $order);
+	//echo th_order_by('domain_uuid', 'domain_uuid', $order_by, $order);
+	echo th_order_by('agent_name', 'Agent Name', $order_by, $order);
+	echo th_order_by('agent_type', 'Type', $order_by, $order);
+	echo th_order_by('agent_call_timeout', 'Call Timeout', $order_by, $order);
+	echo th_order_by('agent_contact', 'Contact', $order_by, $order);
+	echo th_order_by('agent_max_no_answer', 'Max No Answer', $order_by, $order);
+	echo th_order_by('agent_status', 'Status', $order_by, $order);
+	//echo th_order_by('agent_wrap_up_time', 'Wrap Up Time', $order_by, $order);
+	//echo th_order_by('agent_reject_delay_time', 'Reject Delay Time', $order_by, $order);
+	//echo th_order_by('agent_busy_delay_time', 'Busy Delay Time', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('call_center_agents_add')) {
 		echo "	<a href='v_call_center_agent_edit.php' alt='add'>$v_link_label_add</a>\n";

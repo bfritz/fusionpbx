@@ -139,8 +139,8 @@ if (strlen($_GET["a"]) > 0) {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('v_service_name', 'Name', $order_by, $order);
-	echo thorder_by('v_service_desc', 'Description', $order_by, $order);
+	echo th_order_by('v_service_name', 'Name', $order_by, $order);
+	echo th_order_by('v_service_desc', 'Description', $order_by, $order);
 	echo "<th>Status</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<td align='right' width='42'>\n";

@@ -302,10 +302,10 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<th>Choose</th>\n";
-	echo thorder_by('greeting_name', 'Name', $order_by, $order);
+	echo th_order_by('greeting_name', 'Name', $order_by, $order);
 	echo "<th align='right'>Download</th>\n";
 	echo "<th width=\"50px\" class=\"listhdr\" nowrap=\"nowrap\">Size</th>\n";
-	echo thorder_by('greeting_description', 'Description', $order_by, $order);
+	echo th_order_by('greeting_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	//if (permission_exists('voicemail_greetings_add')) {
 	//	echo "	<a href='v_voicemail_greetings_edit.php?&user_id=".$user_id."' alt='add'>$v_link_label_add</a>\n";

@@ -173,11 +173,11 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('dialplan_name', 'Name', $order_by, $order);
-	echo thorder_by('dialplan_number', 'Number', $order_by, $order);
-	echo thorder_by('dialplan_order', 'Order', $order_by, $order);
-	echo thorder_by('dialplan_enabled', 'Enabled', $order_by, $order);
-	echo thorder_by('dialplan_description', 'Description', $order_by, $order);
+	echo th_order_by('dialplan_name', 'Name', $order_by, $order);
+	echo th_order_by('dialplan_number', 'Number', $order_by, $order);
+	echo th_order_by('dialplan_order', 'Order', $order_by, $order);
+	echo th_order_by('dialplan_enabled', 'Enabled', $order_by, $order);
+	echo th_order_by('dialplan_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if ($app_uuid == "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4") {
 		if (permission_exists('inbound_route_add')) {

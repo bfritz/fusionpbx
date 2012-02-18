@@ -108,10 +108,10 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('agent_name', 'Agent Name', $order_by, $order);
-	echo thorder_by('queue_name', 'Queue Name', $order_by, $order);
-	echo thorder_by('tier_level', 'Tier Level', $order_by, $order);
-	echo thorder_by('tier_position', 'Tier Position', $order_by, $order);
+	echo th_order_by('agent_name', 'Agent Name', $order_by, $order);
+	echo th_order_by('queue_name', 'Queue Name', $order_by, $order);
+	echo th_order_by('tier_level', 'Tier Level', $order_by, $order);
+	echo th_order_by('tier_position', 'Tier Position', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('call_center_tiers_add')) {
 		echo "	<a href='v_call_center_tier_edit.php' alt='add'>$v_link_label_add</a>\n";

@@ -80,11 +80,11 @@ else {
 
 	$tmp_var_header = '';
 	$tmp_var_header .= "<tr>\n";
-	$tmp_var_header .= thorder_by('var_name', 'Name', $order_by, $order);
-	$tmp_var_header .= thorder_by('var_value', 'Value', $order_by, $order);
-	//$tmp_var_header .= thorder_by('var_cat', 'Category', $order_by, $order);
-	//$tmp_var_header .= thorder_by('var_order', 'Order', $order_by, $order);
-	$tmp_var_header .= thorder_by('var_enabled', 'Enabled', $order_by, $order);
+	$tmp_var_header .= th_order_by('var_name', 'Name', $order_by, $order);
+	$tmp_var_header .= th_order_by('var_value', 'Value', $order_by, $order);
+	//$tmp_var_header .= th_order_by('var_cat', 'Category', $order_by, $order);
+	//$tmp_var_header .= th_order_by('var_order', 'Order', $order_by, $order);
+	$tmp_var_header .= th_order_by('var_enabled', 'Enabled', $order_by, $order);
 	$tmp_var_header .= "<th>Description</th>\n";
 	$tmp_var_header .= "<td align='right' width='42'>\n";
 	if (permission_exists('variables_add')) {

@@ -93,12 +93,12 @@ $row_style["1"] = "row_style1";
 echo "<div align='center'>\n";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 echo "<tr>\n";
-echo thorder_by('phone_mac_address', 'MAC Address', $order_by, $order);
-echo thorder_by('phone_template', 'Template', $order_by, $order);
-echo thorder_by('phone_vendor', 'Vendor', $order_by, $order);
-//echo thorder_by('phone_model', 'Model', $order_by, $order);
-echo thorder_by('phone_provision_enable', 'Enabled', $order_by, $order);
-echo thorder_by('phone_description', 'Description', $order_by, $order);
+echo th_order_by('phone_mac_address', 'MAC Address', $order_by, $order);
+echo th_order_by('phone_template', 'Template', $order_by, $order);
+echo th_order_by('phone_vendor', 'Vendor', $order_by, $order);
+//echo th_order_by('phone_model', 'Model', $order_by, $order);
+echo th_order_by('phone_provision_enable', 'Enabled', $order_by, $order);
+echo th_order_by('phone_description', 'Description', $order_by, $order);
 echo "<td align='right' width='42'>\n";
 if (permission_exists('phone_add')) {
 	echo "	<a href='v_hardware_phones_edit.php' alt='add'>$v_link_label_add</a>\n";

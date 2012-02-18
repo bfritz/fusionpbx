@@ -94,10 +94,10 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('virtual_table_label', 'Label', $order_by, $order);
-	echo thorder_by('virtual_table_name', 'Table Name', $order_by, $order);
-	echo thorder_by('virtual_table_auth', 'Authentication', $order_by, $order);
-	echo thorder_by('virtual_table_desc', 'Description', $order_by, $order);
+	echo th_order_by('virtual_table_label', 'Label', $order_by, $order);
+	echo th_order_by('virtual_table_name', 'Table Name', $order_by, $order);
+	echo th_order_by('virtual_table_auth', 'Authentication', $order_by, $order);
+	echo th_order_by('virtual_table_desc', 'Description', $order_by, $order);
 	//echo "<th align='center'>View</th>\n";
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('virtual_tables_add')) {

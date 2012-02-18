@@ -329,21 +329,21 @@ if (count($_REQUEST)>0) {
 
 	echo "<tr>\n";
 	echo "<th>Start</th>\n";
-	//echo thorder_by('start_stamp', 'Start', $order_by, $order);
-	echo thorder_by('caller_id_name', 'CID Name', $order_by, $order);
+	//echo th_order_by('start_stamp', 'Start', $order_by, $order);
+	echo th_order_by('caller_id_name', 'CID Name', $order_by, $order);
 	echo "<th>Source</th>\n";
-	//echo thorder_by('caller_id_number', 'Source', $order_by, $order);
+	//echo th_order_by('caller_id_number', 'Source', $order_by, $order);
 	echo "<th>Destination</th>\n";
-	//echo thorder_by('destination_number', 'Destination', $order_by, $order);
-	//echo thorder_by('context', 'Context', $order_by, $order);
-	//echo thorder_by('answer_stamp', 'Answer', $order_by, $order);
-	//echo thorder_by('end_stamp', 'End', $order_by, $order);
+	//echo th_order_by('destination_number', 'Destination', $order_by, $order);
+	//echo th_order_by('context', 'Context', $order_by, $order);
+	//echo th_order_by('answer_stamp', 'Answer', $order_by, $order);
+	//echo th_order_by('end_stamp', 'End', $order_by, $order);
 	echo "<th>Duration</th>\n";
-	//echo thorder_by('duration', 'Duration', $order_by, $order);
+	//echo th_order_by('duration', 'Duration', $order_by, $order);
 	echo "<th>Bill</th>\n";
-	//echo thorder_by('billsec', 'Bill', $order_by, $order);
+	//echo th_order_by('billsec', 'Bill', $order_by, $order);
 	echo "<th>Status</th>\n";
-	//echo thorder_by('hangup_cause', 'Status', $order_by, $order);
+	//echo th_order_by('hangup_cause', 'Status', $order_by, $order);
 
 
 	echo "<form method='post' action='v_cdr_csv.php'>";

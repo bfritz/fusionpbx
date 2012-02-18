@@ -102,9 +102,9 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('menu_name', 'Name', $order_by, $order);
-	echo thorder_by('menu_language', 'Language', $order_by, $order);
-	echo thorder_by('menu_desc', 'Description', $order_by, $order);
+	echo th_order_by('menu_name', 'Name', $order_by, $order);
+	echo th_order_by('menu_language', 'Language', $order_by, $order);
+	echo th_order_by('menu_desc', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_menus_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";

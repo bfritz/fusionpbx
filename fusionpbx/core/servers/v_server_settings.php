@@ -106,9 +106,9 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('server_setting_category', 'Category', $order_by, $order);
-	echo thorder_by('server_setting_name', 'Name', $order_by, $order);
-	echo thorder_by('server_setting_value', 'Value', $order_by, $order);
+	echo th_order_by('server_setting_category', 'Category', $order_by, $order);
+	echo th_order_by('server_setting_name', 'Name', $order_by, $order);
+	echo th_order_by('server_setting_value', 'Value', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_server_settings_edit.php?server_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";

@@ -100,12 +100,12 @@ $order = $_GET["order"];
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('fifo_name', 'Queue Name', $order_by, $order);
-	echo thorder_by('agent_username', 'Username', $order_by, $order);
-	echo thorder_by('agent_priority', 'Agent Priority', $order_by, $order);
-	echo thorder_by('agent_status', 'Status', $order_by, $order);
-	echo thorder_by('agent_last_call', 'Last Call', $order_by, $order);
-	echo thorder_by('agent_contact_number', 'Contact Number', $order_by, $order);
+	echo th_order_by('fifo_name', 'Queue Name', $order_by, $order);
+	echo th_order_by('agent_username', 'Username', $order_by, $order);
+	echo th_order_by('agent_priority', 'Agent Priority', $order_by, $order);
+	echo th_order_by('agent_status', 'Status', $order_by, $order);
+	echo th_order_by('agent_last_call', 'Last Call', $order_by, $order);
+	echo th_order_by('agent_contact_number', 'Contact Number', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	//echo "	<a href='v_fifo_agents_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";

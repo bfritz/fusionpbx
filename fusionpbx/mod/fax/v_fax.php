@@ -114,10 +114,10 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo thorder_by('fax_extension', 'Extension', $order_by, $order);
-	echo thorder_by('fax_name', 'Name', $order_by, $order);
-	echo thorder_by('fax_email', 'Email', $order_by, $order);
-	echo thorder_by('fax_description', 'Description', $order_by, $order);
+	echo th_order_by('fax_extension', 'Extension', $order_by, $order);
+	echo th_order_by('fax_name', 'Name', $order_by, $order);
+	echo th_order_by('fax_email', 'Email', $order_by, $order);
+	echo th_order_by('fax_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('fax_extension_add')) {
 		echo "	<a href='v_fax_edit.php' alt='add'>$v_link_label_add</a>\n";

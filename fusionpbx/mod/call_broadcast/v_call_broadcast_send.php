@@ -286,14 +286,14 @@ require_once "includes/header.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	//echo thorder_by('username', 'Username', $order_by, $order);
-	echo thorder_by('user_type', 'Type', $order_by, $order);
-	//echo thorder_by('user_category', 'Category', $order_by, $order);
-	echo thorder_by('user_first_name', 'First Name', $order_by, $order);
-	echo thorder_by('user_last_name', 'Last Name', $order_by, $order);
-	echo thorder_by('user_company_name', 'Organization', $order_by, $order);
-	echo thorder_by('user_phone_1', 'Phone1', $order_by, $order);
-	echo thorder_by('user_phone_2', 'Phone2', $order_by, $order);
+	//echo th_order_by('username', 'Username', $order_by, $order);
+	echo th_order_by('user_type', 'Type', $order_by, $order);
+	//echo th_order_by('user_category', 'Category', $order_by, $order);
+	echo th_order_by('user_first_name', 'First Name', $order_by, $order);
+	echo th_order_by('user_last_name', 'Last Name', $order_by, $order);
+	echo th_order_by('user_company_name', 'Organization', $order_by, $order);
+	echo th_order_by('user_phone_1', 'Phone1', $order_by, $order);
+	echo th_order_by('user_phone_2', 'Phone2', $order_by, $order);
 	echo "<tr>\n";
 
 	if ($result_count == 0) { //no results

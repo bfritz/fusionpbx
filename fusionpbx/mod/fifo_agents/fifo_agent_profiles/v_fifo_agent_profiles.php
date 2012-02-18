@@ -89,8 +89,8 @@ $order = $_GET["order"];
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('profile_name', 'Profile Name', $order_by, $order);
-	echo thorder_by('profile_desc', 'Description', $order_by, $order);
+	echo th_order_by('profile_name', 'Profile Name', $order_by, $order);
+	echo th_order_by('profile_desc', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_fifo_agent_profiles_edit.php' alt='add'>$v_link_label_add</a>\n";
 	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_fifo_agent_profiles_edit.php'\" value='+'>\n";

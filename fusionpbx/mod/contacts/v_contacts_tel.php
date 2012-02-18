@@ -106,8 +106,8 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('tel_type', 'Type', $order_by, $order);
-	echo thorder_by('tel_number', 'Numbers', $order_by, $order);
+	echo th_order_by('tel_type', 'Type', $order_by, $order);
+	echo th_order_by('tel_number', 'Numbers', $order_by, $order);
 	echo "<th>Tools</th>\n";
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_contacts_tel_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";

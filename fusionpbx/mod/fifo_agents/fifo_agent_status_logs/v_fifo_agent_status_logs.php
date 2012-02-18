@@ -108,10 +108,10 @@ $order = $_GET["order"];
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo thorder_by('username', 'Username', $order_by, $order);
-	echo thorder_by('agent_status', 'Status', $order_by, $order);
-	echo thorder_by('uuid', 'UUID', $order_by, $order);
-	echo thorder_by('add_date', 'Add Date', $order_by, $order);
+	echo th_order_by('username', 'Username', $order_by, $order);
+	echo th_order_by('agent_status', 'Status', $order_by, $order);
+	echo th_order_by('uuid', 'UUID', $order_by, $order);
+	echo th_order_by('add_date', 'Add Date', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	echo "	<a href='v_fifo_agent_status_logs_edit.php' alt='add'>$v_link_label_add</a>\n";
 	//echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_fifo_agent_status_logs_edit.php'\" value='+'>\n";
