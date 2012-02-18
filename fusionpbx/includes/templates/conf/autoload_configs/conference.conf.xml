@@ -205,5 +205,22 @@
       <param name="comfort-noise" value="true"/>
     </profile>
 
+    <profile name="page">
+      <param name="domain" value="${domain}"/>
+      <param name="rate" value="8000"/>
+      <param name="interval" value="20"/>
+      <param name="energy-level" value="300"/>
+      <!--<param name="sound-prefix" value="$${sounds_dir}/en/us/callie"/>-->
+      <param name="muted-sound" value="conference/conf-muted.wav"/>
+      <param name="unmuted-sound" value="conference/conf-unmuted.wav"/>
+      <param name="kicked-sound" value="conference/conf-kicked.wav"/>
+      <param name="locked-sound" value="conference/conf-locked.wav"/>
+      <param name="is-locked-sound" value="conference/conf-is-locked.wav"/>
+      <param name="is-unlocked-sound" value="conference/conf-is-unlocked.wav"/>
+      <param name="caller-id-name" value="$${outbound_caller_name}"/>
+      <param name="caller-id-number" value="$${outbound_caller_id}"/>
+      <param name="comfort-noise" value="true"/>
+    </profile>
+
   </profiles>
 </configuration>
