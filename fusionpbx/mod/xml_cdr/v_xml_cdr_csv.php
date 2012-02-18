@@ -86,14 +86,14 @@ if (strlen($direction) > 0) { $sql_where .= "and caller_id_name like '%$directio
 if (strlen($caller_id_name) > 0) { $sql_where .= "and caller_id_name like '%$caller_id_name%' "; }
 if (strlen($caller_id_number) > 0) { $sql_where .= "and caller_id_number like '%$caller_id_number%' "; }
 if (strlen($destination_number) > 0) { $sql_where .= "and destination_number like '%$destination_number%' "; }
-if (strlen($context) > 0) { $sql_where .= "and context like '%$context%' "; }
+if (strlen($context) > 0) { $sql_where .= "and context = '$context' "; }
 if (strlen($start_stamp) > 0) { $sql_where .= "and start_stamp like '%$start_stamp%' "; }
 if (strlen($answer_stamp) > 0) { $sql_where .= "and answer_stamp like '%$answer_stamp%' "; }
 if (strlen($end_stamp) > 0) { $sql_where .= "and end_stamp like '%$end_stamp%' "; }
 if (strlen($duration) > 0) { $sql_where .= "and duration like '%$duration%' "; }
 if (strlen($billsec) > 0) { $sql_where .= "and billsec like '%$billsec%' "; }
 if (strlen($hangup_cause) > 0) { $sql_where .= "and hangup_cause like '%$hangup_cause%' "; }
-if (strlen($uuid) > 0) { $sql_where .= "and uuid like '%$uuid%' "; }
+if (strlen($uuid) > 0) { $sql_where .= "and uuid = '$uuid' "; }
 if (strlen($bridge_uuid) > 0) { $sql_where .= "and bridge_uuid like '%$bridge_uuid%' "; }
 if (strlen($read_codec) > 0) { $sql_where .= "and read_codec like '%$read_codec%' "; }
 if (strlen($write_codec) > 0) { $sql_where .= "and write_codec like '%$write_codec%' "; }
