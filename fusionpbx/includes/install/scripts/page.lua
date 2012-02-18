@@ -98,9 +98,9 @@ if ( session:ready() ) then
 		if (reply == "0 total.") then
 			--freeswitch.consoleLog("NOTICE", "extension "..value.." available\n");
 			if (value == sip_from_user) then
-				--this extension is the caller that initated the intercom
+				--this extension is the caller that initated the page
 			else
-				cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..value.."@"..domain_name.." conference:intercom@default+flags{mute} inline";
+				cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..value.."@"..domain_name.." conference:page@page+flags{mute} inline";
 				api:executeString(cmd_string);
 			end
 			--freeswitch.consoleLog("NOTICE", "cmd_string "..cmd_string.."\n");
@@ -113,6 +113,6 @@ if ( session:ready() ) then
 	--session:execute("info");
 
 	--send main call to the conference room
-		session:execute("conference", "intercom@default+flags{endconf}");
+		session:execute("conference", "page@page+flags{endconf}");
 
 end
