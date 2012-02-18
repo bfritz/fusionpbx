@@ -236,12 +236,12 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql = "";
 	$sql .= "select * from v_cdr ";	
 	if (!(if_group("admin") || if_group("superadmin"))) {
-		if (trim($sqlwhere) == "where") { $sqlwhere = ""; }
+		if (trim($sql_where) == "where") { $sql_where = ""; }
 		if (count($extension_array) > 0) {
 			foreach($extension_array as $value) {
-				if ($value['extension'] > 0) { $sqlwhere .= "where domain_uuid = '$domain_uuid' and caller_id_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //source
-				if ($value['extension'] > 0) { $sqlwhere .= "or domain_uuid = '$domain_uuid' and destination_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
-				if ($value['extension'] > 0) { $sqlwhere .= "or domain_uuid = '$domain_uuid'  and destination_number = '*99".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
+				if ($value['extension'] > 0) { $sql_where .= "where domain_uuid = '$domain_uuid' and caller_id_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //source
+				if ($value['extension'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid' and destination_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
+				if ($value['extension'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid'  and destination_number = '*99".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
 			}
 		} //count($extension_array)
 	}
@@ -249,9 +249,9 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and cdr_id = '$cdr_id' ";
 	}
-	$sqlwhere = str_replace ("where or", "where", $sqlwhere);
-	$sqlwhere = str_replace ("where and", "where", $sqlwhere);
-	$sql .= $sqlwhere;
+	$sql_where = str_replace ("where or", "where", $sql_where);
+	$sql_where = str_replace ("where and", "where", $sql_where);
+	$sql .= $sql_where;
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
