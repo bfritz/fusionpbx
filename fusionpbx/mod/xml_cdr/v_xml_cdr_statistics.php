@@ -75,26 +75,26 @@ else {
 	if (!if_group("admin") && !if_group("superadmin")) {
 		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '' 
 		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
-		$sqlwhere = "where domain_uuid = '$domain_uuid' and ( ";
+		$sql_where = "where domain_uuid = '$domain_uuid' and ( ";
 		if (count($extension_array) > 0) {
 			$x = 0;
 			foreach($extension_array as $value) {
 				if ($x==0) {
-					if ($value['extension'] > 0) { $sqlwhere .= "caller_id_number = '".$value['extension']."' \n"; } //source
+					if ($value['extension'] > 0) { $sql_where .= "caller_id_number = '".$value['extension']."' \n"; } //source
 				}
 				else {
-					if ($value['extension'] > 0) { $sqlwhere .= "or caller_id_number = '".$value['extension']."' \n"; } //source
+					if ($value['extension'] > 0) { $sql_where .= "or caller_id_number = '".$value['extension']."' \n"; } //source
 				}
-				if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '".$value['extension']."' \n"; } //destination
-				if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '*99".$value['extension']."' \n"; } //destination
+				if ($value['extension'] > 0) { $sql_where .= "or destination_number = '".$value['extension']."' \n"; } //destination
+				if ($value['extension'] > 0) { $sql_where .= "or destination_number = '*99".$value['extension']."' \n"; } //destination
 				$x++;
 			}
 		}
-		$sqlwhere .= ") ";
+		$sql_where .= ") ";
 	}
 	else {
 		//superadmin or admin
-		$sqlwhere = "where domain_uuid = '$domain_uuid' ".$sqlwhere;
+		$sql_where = "where domain_uuid = '$domain_uuid' ".$sql_where;
 	}
 
 //create the sql query to get the xml cdr records
@@ -110,7 +110,7 @@ else {
 //get the call volume in the past hour
 	$sql = "";
 	$sql .= " select count(*) as count from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_hour)." AND ".time()." ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -127,7 +127,7 @@ else {
 //get the call time in the past hour
 	$sql = "";
 	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_hour)." AND ".time()." ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -145,7 +145,7 @@ else {
 //get the call volume in a day
 	$sql = "";
 	$sql .= " select count(*) as count from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_day)." AND ".time()." ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -162,7 +162,7 @@ else {
 //get the call time in a day
 	$sql = "";
 	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_day)." AND ".time()." ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -180,7 +180,7 @@ else {
 //get the call volume in a week
 	$sql = "";
 	$sql .= " select count(*) as count from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_week)." AND ".time()." ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -197,7 +197,7 @@ else {
 //get the call time in a week
 	$sql = "";
 	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_week)." AND ".time()." ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -215,7 +215,7 @@ else {
 //get the call volume in a month
 	$sql = "";
 	$sql .= " select count(*) as count from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_month)." AND ".time()." ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -232,7 +232,7 @@ else {
 //get the call time in a month
 	$sql = "";
 	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
-	$sql .= $sqlwhere;
+	$sql .= $sql_where;
 	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_month)." AND ".time()." ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();

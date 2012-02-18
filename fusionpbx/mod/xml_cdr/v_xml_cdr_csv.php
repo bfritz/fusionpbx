@@ -79,45 +79,45 @@ require_once "includes/lib_cdr.php";
 
 
 if (if_group("admin") || if_group("superadmin")) {
-	$sqlwhere = "where ";
+	$sql_where = "where ";
 }
-if (strlen($domain_uuid) > 0) { $sqlwhere .= "and domain_uuid like '$domain_uuid' "; }
-if (strlen($direction) > 0) { $sqlwhere .= "and caller_id_name like '%$direction%' "; }
-if (strlen($caller_id_name) > 0) { $sqlwhere .= "and caller_id_name like '%$caller_id_name%' "; }
-if (strlen($caller_id_number) > 0) { $sqlwhere .= "and caller_id_number like '%$caller_id_number%' "; }
-if (strlen($destination_number) > 0) { $sqlwhere .= "and destination_number like '%$destination_number%' "; }
-if (strlen($context) > 0) { $sqlwhere .= "and context like '%$context%' "; }
-if (strlen($start_stamp) > 0) { $sqlwhere .= "and start_stamp like '%$start_stamp%' "; }
-if (strlen($answer_stamp) > 0) { $sqlwhere .= "and answer_stamp like '%$answer_stamp%' "; }
-if (strlen($end_stamp) > 0) { $sqlwhere .= "and end_stamp like '%$end_stamp%' "; }
-if (strlen($duration) > 0) { $sqlwhere .= "and duration like '%$duration%' "; }
-if (strlen($billsec) > 0) { $sqlwhere .= "and billsec like '%$billsec%' "; }
-if (strlen($hangup_cause) > 0) { $sqlwhere .= "and hangup_cause like '%$hangup_cause%' "; }
-if (strlen($uuid) > 0) { $sqlwhere .= "and uuid like '%$uuid%' "; }
-if (strlen($bridge_uuid) > 0) { $sqlwhere .= "and bridge_uuid like '%$bridge_uuid%' "; }
-if (strlen($read_codec) > 0) { $sqlwhere .= "and read_codec like '%$read_codec%' "; }
-if (strlen($write_codec) > 0) { $sqlwhere .= "and write_codec like '%$write_codec%' "; }
-if (strlen($remote_media_ip) > 0) { $sqlwhere .= "and remote_media_ip like '%$remote_media_ip%' "; }
-if (strlen($network_addr) > 0) { $sqlwhere .= "and network_addr like '%$network_addr%' "; }
+if (strlen($domain_uuid) > 0) { $sql_where .= "and domain_uuid = '$domain_uuid' "; }
+if (strlen($direction) > 0) { $sql_where .= "and caller_id_name like '%$direction%' "; }
+if (strlen($caller_id_name) > 0) { $sql_where .= "and caller_id_name like '%$caller_id_name%' "; }
+if (strlen($caller_id_number) > 0) { $sql_where .= "and caller_id_number like '%$caller_id_number%' "; }
+if (strlen($destination_number) > 0) { $sql_where .= "and destination_number like '%$destination_number%' "; }
+if (strlen($context) > 0) { $sql_where .= "and context like '%$context%' "; }
+if (strlen($start_stamp) > 0) { $sql_where .= "and start_stamp like '%$start_stamp%' "; }
+if (strlen($answer_stamp) > 0) { $sql_where .= "and answer_stamp like '%$answer_stamp%' "; }
+if (strlen($end_stamp) > 0) { $sql_where .= "and end_stamp like '%$end_stamp%' "; }
+if (strlen($duration) > 0) { $sql_where .= "and duration like '%$duration%' "; }
+if (strlen($billsec) > 0) { $sql_where .= "and billsec like '%$billsec%' "; }
+if (strlen($hangup_cause) > 0) { $sql_where .= "and hangup_cause like '%$hangup_cause%' "; }
+if (strlen($uuid) > 0) { $sql_where .= "and uuid like '%$uuid%' "; }
+if (strlen($bridge_uuid) > 0) { $sql_where .= "and bridge_uuid like '%$bridge_uuid%' "; }
+if (strlen($read_codec) > 0) { $sql_where .= "and read_codec like '%$read_codec%' "; }
+if (strlen($write_codec) > 0) { $sql_where .= "and write_codec like '%$write_codec%' "; }
+if (strlen($remote_media_ip) > 0) { $sql_where .= "and remote_media_ip like '%$remote_media_ip%' "; }
+if (strlen($network_addr) > 0) { $sql_where .= "and network_addr like '%$network_addr%' "; }
 if (!if_group("admin") && !if_group("superadmin")) {
-	if (trim($sqlwhere) == "where") { $sqlwhere = ""; }
+	if (trim($sql_where) == "where") { $sql_where = ""; }
 	//disable member search
-	//$sqlwhereorig = $sqlwhere;
-	$sqlwhere = "where ";
+	//$sql_whereorig = $sql_where;
+	$sql_where = "where ";
 	if (count($extension_array) > 0) {
 		foreach($extension_array as $value) {
-			if ($value['extension'] > 0) { $sqlwhere .= "or caller_id_number = '".$value['extension']."' ". $sqlwhereorig; } //source
-			if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '".$value['extension']."' ".$sqlwhereorig; } //destination
-			if ($value['extension'] > 0) { $sqlwhere .= "or destination_number = '*99".$value['extension']."' ".$sqlwhereorig; } //destination
+			if ($value['extension'] > 0) { $sql_where .= "or caller_id_number = '".$value['extension']."' ". $sql_whereorig; } //source
+			if ($value['extension'] > 0) { $sql_where .= "or destination_number = '".$value['extension']."' ".$sql_whereorig; } //destination
+			if ($value['extension'] > 0) { $sql_where .= "or destination_number = '*99".$value['extension']."' ".$sql_whereorig; } //destination
 		}
 	} //count($extension_array)
 }
-$sqlwhere = str_replace ("where or", "where", $sqlwhere);
-$sqlwhere = str_replace ("where and", "where", $sqlwhere);
+$sql_where = str_replace ("where or", "where", $sql_where);
+$sql_where = str_replace ("where and", "where", $sql_where);
 
 $sql = "";
 $sql .= "select * from v_xml_cdr ";
-$sql .= $sqlwhere;
+$sql .= $sql_where;
 if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 $prep_statement = $db->prepare(check_sql($sql));
 $prep_statement->execute();
