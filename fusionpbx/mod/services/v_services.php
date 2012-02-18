@@ -49,23 +49,23 @@ if (strlen($_GET["a"]) > 0) {
 	$result = $prep_statement->fetchAll();
 	foreach ($result as &$row) {
 		$domain_uuid = $row["domain_uuid"];
-		$v_service_name = $row["v_service_name"];
-		$v_service_type = $row["v_service_type"];
-		$v_service_data = $row["v_service_data"];
-		$v_service_cmd_start = $row["v_service_cmd_start"];
-		$v_service_cmd_stop = $row["v_service_cmd_stop"];
-		$v_service_desc = $row["v_service_desc"];
+		$service_name = $row["service_name"];
+		$service_type = $row["service_type"];
+		$service_data = $row["service_data"];
+		$service_cmd_start = $row["service_cmd_start"];
+		$service_cmd_stop = $row["service_cmd_stop"];
+		$service_description = $row["service_description"];
 		break; //limit to 1 row
 	}
 	unset ($prep_statement);
 
 	if ($_GET["a"] == "stop") {
-		$msg = 'Service: '.$v_service_name. ' stopping. ';
-		shell_exec($v_service_cmd_stop);
+		$msg = 'Service: '.$service_name. ' stopping. ';
+		shell_exec($service_cmd_stop);
 	}
 	if ($_GET["a"] == "start") {
-		$msg = 'Service: '.$v_service_name. ' starting. ';
-		shell_exec($v_service_cmd_start);
+		$msg = 'Service: '.$service_name. ' starting. ';
+		shell_exec($service_cmd_start);
 	}
 
 	require_once "includes/header.php";
@@ -139,8 +139,8 @@ if (strlen($_GET["a"]) > 0) {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo th_order_by('v_service_name', 'Name', $order_by, $order);
-	echo th_order_by('v_service_desc', 'Description', $order_by, $order);
+	echo th_order_by('service_name', 'Name', $order_by, $order);
+	echo th_order_by('service_description', 'Description', $order_by, $order);
 	echo "<th>Status</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<td align='right' width='42'>\n";
@@ -156,10 +156,10 @@ if (strlen($_GET["a"]) > 0) {
 	else { //received results
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[v_service_name]."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[v_service_desc]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[service_name]."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[service_description]."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
-			$pid = file_get_contents($row[v_service_data]);
+			$pid = file_get_contents($row[service_data]);
 			if (is_process_running($pid)) {
 				echo "<strong>Running</strong>";
 			}

@@ -45,12 +45,12 @@ else {
 
 //get http post and set it to php variables
 	if (count($_POST)>0) {
-		$v_service_name = check_str($_POST["v_service_name"]);
-		$v_service_type = check_str($_POST["v_service_type"]);
-		$v_service_data = check_str($_POST["v_service_data"]);
-		$v_service_cmd_start = check_str($_POST["v_service_cmd_start"]);
-		$v_service_cmd_stop = check_str($_POST["v_service_cmd_stop"]);
-		$v_service_desc = check_str($_POST["v_service_desc"]);
+		$service_name = check_str($_POST["service_name"]);
+		$service_type = check_str($_POST["service_type"]);
+		$service_data = check_str($_POST["service_data"]);
+		$service_cmd_start = check_str($_POST["service_cmd_start"]);
+		$service_cmd_stop = check_str($_POST["service_cmd_stop"]);
+		$service_description = check_str($_POST["service_description"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -62,12 +62,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		if (strlen($v_service_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
-		//if (strlen($v_service_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
-		//if (strlen($v_service_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
-		//if (strlen($v_service_cmd_start) == 0) { $msg .= "Please provide: Start Command<br>\n"; }
-		//if (strlen($v_service_cmd_stop) == 0) { $msg .= "Please provide: Stop Command<br>\n"; }
-		//if (strlen($v_service_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		if (strlen($service_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
+		//if (strlen($service_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
+		//if (strlen($service_data) == 0) { $msg .= "Please provide: Data<br>\n"; }
+		//if (strlen($service_cmd_start) == 0) { $msg .= "Please provide: Start Command<br>\n"; }
+		//if (strlen($service_cmd_stop) == 0) { $msg .= "Please provide: Stop Command<br>\n"; }
+		//if (strlen($service_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -89,23 +89,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "service_uuid, ";
-				$sql .= "v_service_name, ";
-				$sql .= "v_service_type, ";
-				$sql .= "v_service_data, ";
-				$sql .= "v_service_cmd_start, ";
-				$sql .= "v_service_cmd_stop, ";
-				$sql .= "v_service_desc ";
+				$sql .= "service_name, ";
+				$sql .= "service_type, ";
+				$sql .= "service_data, ";
+				$sql .= "service_cmd_start, ";
+				$sql .= "service_cmd_stop, ";
+				$sql .= "service_description ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'$service_uuid', ";
-				$sql .= "'$v_service_name', ";
-				$sql .= "'$v_service_type', ";
-				$sql .= "'$v_service_data', ";
-				$sql .= "'$v_service_cmd_start', ";
-				$sql .= "'$v_service_cmd_stop', ";
-				$sql .= "'$v_service_desc' ";
+				$sql .= "'$service_name', ";
+				$sql .= "'$service_type', ";
+				$sql .= "'$service_data', ";
+				$sql .= "'$service_cmd_start', ";
+				$sql .= "'$service_cmd_stop', ";
+				$sql .= "'$service_description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -121,12 +121,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update" && permission_exists('services_edit')) {
 				$sql = "update v_services set ";
-				$sql .= "v_service_name = '$v_service_name', ";
-				$sql .= "v_service_type = '$v_service_type', ";
-				$sql .= "v_service_data = '$v_service_data', ";
-				$sql .= "v_service_cmd_start = '$v_service_cmd_start', ";
-				$sql .= "v_service_cmd_stop = '$v_service_cmd_stop', ";
-				$sql .= "v_service_desc = '$v_service_desc' ";
+				$sql .= "service_name = '$service_name', ";
+				$sql .= "service_type = '$service_type', ";
+				$sql .= "service_data = '$service_data', ";
+				$sql .= "service_cmd_start = '$service_cmd_start', ";
+				$sql .= "service_cmd_stop = '$service_cmd_stop', ";
+				$sql .= "service_description = '$service_description' ";
 				$sql .= "where domain_uuid = '$domain_uuid'";
 				$sql .= "and service_uuid = '$service_uuid'";
 				$db->exec(check_sql($sql));
@@ -154,12 +154,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
-			$v_service_name = $row["v_service_name"];
-			$v_service_type = $row["v_service_type"];
-			$v_service_data = $row["v_service_data"];
-			$v_service_cmd_start = $row["v_service_cmd_start"];
-			$v_service_cmd_stop = $row["v_service_cmd_stop"];
-			$v_service_desc = $row["v_service_desc"];
+			$service_name = $row["service_name"];
+			$service_type = $row["service_type"];
+			$service_data = $row["service_data"];
+			$service_cmd_start = $row["service_cmd_start"];
+			$service_cmd_stop = $row["service_cmd_stop"];
+			$service_description = $row["service_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -198,7 +198,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_service_name' maxlength='255' value=\"$v_service_name\">\n";
+	echo "	<input class='formfld' type='text' name='service_name' maxlength='255' value=\"$service_name\">\n";
 	echo "<br />\n";
 	echo "Enter the service name.\n";
 	echo "</td>\n";
@@ -209,15 +209,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Type:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<select class='formfld' name='v_service_type'>\n";
+	echo "	<select class='formfld' name='service_type'>\n";
 	echo "	<option value=''></option>\n";
-	if ($v_service_type == "pid_file") { 
+	if ($service_type == "pid_file") { 
 		echo "	<option value='pid_file' SELECTED >pid file</option>\n";
 	}
 	else {
 		echo "	<option value='pid_file'>pid file</option>\n";
 	}
-	if ($v_service_type == "php") { 
+	if ($service_type == "php") { 
 		echo "	<option value='php' SELECTED >php</option>\n";
 	}
 	else {
@@ -234,8 +234,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Data:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_service_data' maxlength='255' value=\"$v_service_data\">\n";
-	//echo "	<textarea class='formfld' name='v_service_data' rows='4'>$v_service_data</textarea>\n";
+	echo "	<input class='formfld' type='text' name='service_data' maxlength='255' value=\"$service_data\">\n";
+	//echo "	<textarea class='formfld' name='service_data' rows='4'>$service_data</textarea>\n";
 	echo "<br />\n";
 	echo "Enter the service data.\n";
 	echo "</td>\n";
@@ -246,7 +246,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Start Command:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_service_cmd_start' maxlength='255' value=\"$v_service_cmd_start\">\n";
+	echo "	<input class='formfld' type='text' name='service_cmd_start' maxlength='255' value=\"$service_cmd_start\">\n";
 	echo "<br />\n";
 	echo "Enter the command to  start the service.\n";
 	echo "</td>\n";
@@ -257,7 +257,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Stop Command:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='v_service_cmd_stop' maxlength='255' value=\"$v_service_cmd_stop\">\n";
+	echo "	<input class='formfld' type='text' name='service_cmd_stop' maxlength='255' value=\"$service_cmd_stop\">\n";
 	echo "<br />\n";
 	echo "Enter the command to  stop the service.\n";
 	echo "</td>\n";
@@ -268,7 +268,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<textarea class='formfld' name='v_service_desc' rows='4'>$v_service_desc</textarea>\n";
+	echo "	<textarea class='formfld' name='service_description' rows='4'>$service_description</textarea>\n";
 	echo "<br />\n";
 	echo "Enter the service description.\n";
 	echo "</td>\n";
