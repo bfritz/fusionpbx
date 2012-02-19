@@ -178,7 +178,7 @@ include "root.php";
 			clearstatcache();
 			$file = "slim.swf";
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/htdocs';
-			$dst_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/mod/recordings';
+			$dst_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/app/recordings';
 			if (copy($src_dir.'/'.$file, $dst_dir.'/'.$file)) {
 				$this->result['copy']['swf'][] = "copied from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
 			}

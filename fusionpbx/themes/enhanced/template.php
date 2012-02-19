@@ -697,7 +697,7 @@ function confirmdelete(url) {
 										//show the apply settings prompt
 									}
 									else {
-										if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/mod/sip_status/v_sip_status.php") {
+										if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/app/sip_status/v_sip_status.php") {
 											echo "<div align='center'>\n";
 											echo "<table border='0' width='400px'>\n";
 											echo "<tr>\n";
@@ -713,7 +713,7 @@ function confirmdelete(url) {
 											echo "			Apply the changes in order for them to take effect. \n";
 											echo "	</td>\n";
 											echo "	<td align='right'>\n";
-											echo "		<input type='button' class='btn' value='Apply Settings' onclick=\"document.location.href='".PROJECT_PATH."/mod/sip_status/v_cmd.php?cmd=api+reloadxml';\" />\n";
+											echo "		<input type='button' class='btn' value='Apply Settings' onclick=\"document.location.href='".PROJECT_PATH."/app/sip_status/v_cmd.php?cmd=api+reloadxml';\" />\n";
 											echo "	</td>\n";
 											echo "	</tr>\n";
 											echo "	</table>\n";

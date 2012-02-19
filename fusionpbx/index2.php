@@ -55,7 +55,7 @@ echo "<br />";
 	echo "		UserName: \n";
 	echo "	</td>\n";
 	echo "	<td class=\"row_style1\">\n";
-	echo "		<a href='".PROJECT_PATH."/mod/users/usersupdate.php'>".$_SESSION["username"]."</a> \n";
+	echo "		<a href='".PROJECT_PATH."/app/users/usersupdate.php'>".$_SESSION["username"]."</a> \n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 
@@ -64,7 +64,7 @@ echo "<br />";
 	echo "		Voicemail: \n";
 	echo "	</td>\n";
 	echo "	<td class=\"row_style1\">\n";
-	echo "		<a href='".PROJECT_PATH."/mod/voicemail_msgs/v_voicemail_msgs.php'>View Messages</a> \n";
+	echo "		<a href='".PROJECT_PATH."/app/voicemail_msgs/v_voicemail_msgs.php'>View Messages</a> \n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";

@@ -375,7 +375,7 @@ else {
 		echo "		Status:\n";
 		echo "	</td>\n";
 		echo "	<td class=\"vtable\">\n";
-		$cmd = "'/mod/calls_active/v_calls_exec.php?cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$v_domain."+'+this.value";
+		$cmd = "'/app/calls_active/v_calls_exec.php?cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$v_domain."+'+this.value";
 		echo "		<select id='user_status' name='user_status' class='formfld' style='' onchange=\"send_cmd($cmd);\">\n";
 		echo "		<option value=''></option>\n";
 		if ($user_status == "Available") {
