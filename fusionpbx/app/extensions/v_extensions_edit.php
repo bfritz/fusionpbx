@@ -124,7 +124,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		//if (strlen($number_alias) == 0) { $msg .= "Please provide: Number Alias<br>\n"; }
-		//if (strlen($user_list) == 0) { $msg .= "Please provide: User List<br>\n"; }
 		//if (strlen($vm_password) == 0) { $msg .= "Please provide: Voicemail Password<br>\n"; }
 		//if (strlen($accountcode) == 0) { $msg .= "Please provide: Account Code<br>\n"; }
 		//if (strlen($effective_caller_id_name) == 0) { $msg .= "Please provide: Effective Caller ID Name<br>\n"; }
@@ -177,14 +176,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('extension_add')) {
-			$user_first_name = 'extension';
 			$user_email = '';
 			if ($autogen_users == "true") {
 				$auto_user = $extension;
 				for ($i=1; $i<=$range; $i++){
 					$user_last_name = $auto_user;
 					$user_password = generate_password();
-					user_add($auto_user, $user_password, $user_first_name, $user_last_name, $user_email);
+					user_add($auto_user, $user_password, $user_email);
 					$generated_users[$i]['username'] = $auto_user;
 					$generated_users[$i]['password'] = $user_password;
 					$auto_user++;
@@ -195,9 +193,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				foreach($user_list_array as $auto_user){
 					if (strlen($auto_user) > 0) {
 						if (!user_exists($auto_user)) {
-							$user_last_name = $extension;
 							$user_password = generate_password();
-							user_add($auto_user, $user_password, $user_first_name, $user_last_name, $user_email);
+							user_add($auto_user, $user_password, $user_email);
 							$generated_users[$i]['username'] = $auto_user;
 							$generated_users[$i]['password'] = $user_password;
 							$i++;
@@ -376,12 +373,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update" && permission_exists('extension_edit')) {
-			$user_first_name='extension';$user_last_name=$extension;$user_email='';
 			$user_list_array = explode("|", $user_list);
 			foreach($user_list_array as $tmp_user){
 				$user_password = generate_password();
 				if (strlen($tmp_user) > 0) {
-					user_add($tmp_user, $user_password, $user_first_name, $user_last_name, $user_email);
+					user_add($tmp_user, $user_password, $user_email);
 				}
 			}
 			unset($tmp_user);

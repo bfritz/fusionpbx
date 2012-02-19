@@ -573,7 +573,7 @@
 	}
 
 	if (!function_exists('user_add')) {
-		function user_add($username, $password, $user_first_name='', $user_last_name='', $user_email='') {
+		function user_add($username, $password, $user_email='') {
 			global $db, $domain_uuid, $v_salt;
 			$user_uuid = uuid();
 			if (strlen($username) == 0) { return false; }
@@ -591,10 +591,6 @@
 					$sql .= "username, ";
 					$sql .= "password, ";
 					$sql .= "salt, ";
-					$sql .= "user_type, ";
-					$sql .= "user_category, ";
-					if (strlen($user_first_name) > 0) { $sql .= "user_first_name, "; }
-					if (strlen($user_last_name) > 0) { $sql .= "user_last_name, "; }
 					if (strlen($user_email) > 0) { $sql .= "user_email, "; }
 					$sql .= "user_add_date, ";
 					$sql .= "user_add_user ";
@@ -606,10 +602,6 @@
 					$sql .= "'$username', ";
 					$sql .= "'".md5($salt.$password)."', ";
 					$sql .= "'$salt', ";
-					$sql .= "'$user_type', ";
-					$sql .= "'$user_category', ";
-					if (strlen($user_first_name) > 0) { $sql .= "'$user_first_name', "; }
-					if (strlen($user_last_name) > 0) { $sql .= "'$user_last_name', "; }
 					if (strlen($user_email) > 0) { $sql .= "'$user_email', "; }
 					$sql .= "now(), ";
 					$sql .= "'".$_SESSION["username"]."' ";
