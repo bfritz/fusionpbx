@@ -192,7 +192,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$i = 0;
 				foreach($user_list_array as $auto_user){
 					if (strlen($auto_user) > 0) {
-						if (!user_exists($auto_user)) {
+						if (!username_exists($auto_user)) {
 							$user_password = generate_password();
 							user_add($auto_user, $user_password, $user_email);
 							$generated_users[$i]['username'] = $auto_user;

@@ -97,7 +97,7 @@ if ( session:ready() ) then
 		end
 		sub_table = explode("-",value);
 		for extension=sub_table[1],sub_table[2] do
-			--extension_exists = "user_exists id "..extension.."@"..domain_name;
+			--extension_exists = "username_exists id "..extension.."@"..domain_name;
 			--reply = trim(api:executeString(extension_exists));
 			--if (reply == "true") then
 				extension_status = "show channels like "..extension.."@"..domain_name;

@@ -553,8 +553,8 @@
 	}
 	//echo realpath(sys_get_temp_dir());
 
-	if (!function_exists('user_exists')) {
-		function user_exists($username) {
+	if (!function_exists('username_exists')) {
+		function username_exists($username) {
 			global $db, $domain_uuid;
 			$sql = "select * from v_users ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -578,7 +578,7 @@
 			$user_uuid = uuid();
 			if (strlen($username) == 0) { return false; }
 			if (strlen($password) == 0) { return false; }
-			if (!user_exists($username)) {
+			if (!username_exists($username)) {
 				//salt used with the password to create a one way hash
 					$salt = generate_password('20', '4');
 				//add the user account
@@ -625,7 +625,7 @@
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					unset($sql);
-			} //end if !user_exists
+			} //end if !username_exists
 		} //end function definition
 	} //end function_exists
 
