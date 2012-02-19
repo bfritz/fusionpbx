@@ -220,7 +220,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "extension, ";
 					$sql .= "number_alias, ";
 					$sql .= "password, ";
-					$sql .= "user_list, ";
 					$sql .= "provisioning_list, ";
 					$sql .= "vm_password, ";
 					$sql .= "accountcode, ";
@@ -263,11 +262,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$extension', ";
 					$sql .= "'$number_alias', ";
 					$sql .= "'$password', ";
-					if ($autogen_users == "true") { 
-						$sql .= "'|".$extension."|', ";
-					} else {
-						$sql .= "'$user_list', ";
-					}
 					$sql .= "'$provisioning_list', ";
 					$sql .= "'user-choose', ";
 					$sql .= "'$accountcode', ";
