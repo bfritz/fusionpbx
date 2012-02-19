@@ -101,7 +101,7 @@ session_start();
 			//echo "username: ".$_SESSION["username"]." and password are correct";
 
 		//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
-			$sql = "SELECT * FROM v_group_members ";
+			$sql = "SELECT * FROM v_group_users ";
 			$sql .= "where domain_uuid=:domain_uuid ";
 			$sql .= "and username=:username ";
 			$prep_statement = $db->prepare(check_sql($sql));

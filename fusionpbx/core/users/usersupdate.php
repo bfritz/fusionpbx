@@ -75,7 +75,7 @@ else {
 		//set the variables
 			$group_name = check_str($_GET["group_name"]);
 		//delete the group from the users
-			$sql = "delete from v_group_members ";
+			$sql = "delete from v_group_users ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and group_name = '$group_name' ";
 			$sql .= "and username = '$username' ";
@@ -120,7 +120,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 	//assign the user to the group
 		if (strlen($_REQUEST["group_name"]) > 0) {
-			$sqlinsert = "insert into v_group_members ";
+			$sqlinsert = "insert into v_group_users ";
 			$sqlinsert .= "(";
 			$sqlinsert .= "domain_uuid, ";
 			$sqlinsert .= "group_name, ";
@@ -305,7 +305,7 @@ else {
 	echo "		<td class='vtable'>";
 
 	echo "<table width='52%'>\n";
-	$sql = "SELECT * FROM v_group_members ";
+	$sql = "SELECT * FROM v_group_users ";
 	$sql .= "where domain_uuid=:domain_uuid ";
 	$sql .= "and username=:username ";
 	$prep_statement = $db->prepare(check_sql($sql));

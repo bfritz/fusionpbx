@@ -45,7 +45,7 @@ else {
 	$username = check_str($_POST["username"]);
 
 if (strlen($username) > 0  && strlen($group_name) > 0)   {
-	$sqlinsert = "insert into v_group_members ";
+	$sqlinsert = "insert into v_group_users ";
 	$sqlinsert .= "(";
 	$sqlinsert .= "domain_uuid, ";
 	$sqlinsert .= "group_name, ";

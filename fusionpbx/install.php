@@ -929,9 +929,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			unset($sql);
 
 	//add the user to the superadmin group
-		$sql = "insert into v_group_members ";
+		$sql = "insert into v_group_users ";
 		$sql .= "(";
-		$sql .= "group_member_uuid, ";
+		$sql .= "group_user_uuid, ";
 		$sql .= "domain_uuid, ";
 		$sql .= "username, ";
 		$sql .= "group_name ";
@@ -1175,7 +1175,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$_SESSION["username"] = $admin_username;
 
 	//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
-		$sql = "SELECT * FROM v_group_members ";
+		$sql = "SELECT * FROM v_group_users ";
 		$sql .= "where domain_uuid=:domain_uuid ";
 		$sql .= "and username=:username ";
 		$prep_statement = $db->prepare(check_sql($sql));

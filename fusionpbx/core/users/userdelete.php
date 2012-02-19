@@ -88,7 +88,7 @@ else {
 	}
 
 //delete the groups the user is assigned to
-	$sqldelete = "delete from v_group_members ";
+	$sqldelete = "delete from v_group_users ";
 	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
 	$sqldelete .= "and username = '$username' ";
 	if (!$db->exec($sqldelete)) {

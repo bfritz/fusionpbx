@@ -156,7 +156,7 @@
 	if (!function_exists('group_members')) {
 		function group_members($db, $username) {
 			global $domain_uuid;
-			$sql = "select * from v_group_members ";
+			$sql = "select * from v_group_users ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and username = '".$username."' ";
 			$prep_statement = $db->prepare(check_sql($sql));
@@ -188,7 +188,7 @@
 	if (!function_exists('superadmin_list')) {
 		function superadmin_list($db) {
 			global $domain_uuid;
-			$sql = "select * from v_group_members ";
+			$sql = "select * from v_group_users ";
 			$sql .= "where group_name = 'superadmin' ";
 			//echo $sql;
 			$prep_statement = $db->prepare(check_sql($sql));
@@ -619,7 +619,7 @@
 
 				//add the user to the member group
 					$group_name = 'user';
-					$sql = "insert into v_group_members ";
+					$sql = "insert into v_group_users ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
 					$sql .= "group_name, ";

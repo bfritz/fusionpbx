@@ -260,7 +260,7 @@ require_once "includes/header.php";
 
 	if (strlen($group_name) > 0) {
 		$sql = "";
-		$sql .= " select * from v_users as u, v_group_members as m ";
+		$sql .= " select * from v_users as u, v_group_users as m ";
 		$sql .= " where u.username = m.username ";
 		$sql .= " and m.group_name = '".$group_name."' ";
 		$sql .= " and u.user_category = '".$user_category."' ";
