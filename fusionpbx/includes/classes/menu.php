@@ -46,7 +46,7 @@
 					$db = $this->db;
 
 				//get the $apps array from the installed apps from the core and mod directories
-					$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
+					$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_config.php");
 					$x=0;
 					foreach ($config_list as &$config_path) {
 						include($config_path);
@@ -260,7 +260,7 @@
 				} //end for each
 
 				unset($menu_item_title);
-				unset($menu_item_strv);
+				unset($menu_item_str);
 				unset($menu_item_category);
 				unset($menu_item_uuid);
 				unset($menu_item_parent_uuid);

@@ -27,7 +27,7 @@
 function sql_tables($db_type) {
 	$x = 0;
 
-	include "v_config.php";
+	include "app_config.php";
 	$sql = "";
 
 	foreach ($apps[$x]['db'] as $new_db) {

@@ -279,7 +279,7 @@ function db_upgrade_schema ($db, $db_type, $db_name, $display_results) {
 				// SELECT TABLE_NAME FROM ALL_TABLES
 
 	//get the $apps array from the installed apps from the core and mod directories
-		$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
+		$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_config.php");
 		$x=0;
 		foreach ($config_list as &$config_path) {
 			include($config_path);

@@ -72,7 +72,7 @@
 	unset($apps);
 
 //get the list of installed apps from the core and mod directories
-	$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_config.php");
+	$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_config.php");
 	$x=0;
 	foreach ($config_list as &$config_path) {
 		include($config_path);
@@ -95,8 +95,8 @@
 				echo $v_domain;
 				echo "\n";
 			}
-		//get the list of installed apps from the core and mod directories and execute the php code in v_defaults.php
-			$default_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/v_defaults.php");
+		//get the list of installed apps from the core and mod directories and execute the php code in app_defaults.php
+			$default_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_defaults.php");
 			foreach ($default_list as &$default_path) {
 				include($default_path);
 			}
