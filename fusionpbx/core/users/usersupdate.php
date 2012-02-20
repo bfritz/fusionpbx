@@ -179,11 +179,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 	//update the user_status
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-		$switch_cmd .= "callcenter_config agent set status ".$username."@".$v_domain." '".$user_status."'";
+		$switch_cmd .= "callcenter_config agent set status ".$username."@".$domain_name." '".$user_status."'";
 		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 
 	//update the user state
-		$cmd = "api callcenter_config agent set state ".$username."@".$v_domain." Waiting";
+		$cmd = "api callcenter_config agent set state ".$username."@".$domain_name." Waiting";
 		$response = event_socket_request($fp, $cmd);
 
 	//clear the template so it will rebuild in case the template was changed
@@ -375,7 +375,7 @@ else {
 		echo "		Status:\n";
 		echo "	</td>\n";
 		echo "	<td class=\"vtable\">\n";
-		$cmd = "'/app/calls_active/v_calls_exec.php?cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$v_domain."+'+this.value";
+		$cmd = "'/app/calls_active/v_calls_exec.php?cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$domain_name."+'+this.value";
 		echo "		<select id='user_status' name='user_status' class='formfld' style='' onchange=\"send_cmd($cmd);\">\n";
 		echo "		<option value=''></option>\n";
 		if ($user_status == "Available") {

@@ -347,7 +347,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$dnd = new do_not_disturb;
 			$dnd->domain_uuid = $domain_uuid;
 			$dnd->dnd_uuid = $dnd_uuid;
-			$dnd->v_domain = $v_domain;
+			$dnd->domain_name = $domain_name;
 			$dnd->extension = $extension;
 			$dnd->dnd_enabled = $dnd_enabled;
 			if ($dnd_enabled == "true") {

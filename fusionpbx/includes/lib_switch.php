@@ -564,21 +564,21 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$call_group_array = explode(",", $call_groups);
 			foreach ($call_group_array as $call_group) {
 				if ($previous_call_group_name != $call_group) {
-					if ("menu-exec-app:bridge group/".$call_group."@".$v_domain == $select_value || "bridge:group/".$call_group."@".$v_domain == $select_value) {
+					if ("menu-exec-app:bridge group/".$call_group."@".$domain_name == $select_value || "bridge:group/".$call_group."@".$domain_name == $select_value) {
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$v_domain."' selected='selected'>".$call_group."</option>\n";
+							echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$domain_name."' selected='selected'>".$call_group."</option>\n";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='bridge:group/".$call_group."@".$v_domain."' selected='selected'>".$call_group."</option>\n";
+							echo "		<option value='bridge:group/".$call_group."@".$domain_name."' selected='selected'>".$call_group."</option>\n";
 						}
 						$selection_found = true;
 					}
 					else {
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$v_domain."'>".$call_group."</option>\n";
+							echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$domain_name."'>".$call_group."</option>\n";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='bridge:group/".$call_group."@".$v_domain."'>".$call_group."</option>\n";
+							echo "		<option value='bridge:group/".$call_group."@".$domain_name."'>".$call_group."</option>\n";
 						}
 					}
 					$previous_call_group_name = $call_group;
@@ -1889,7 +1889,7 @@ function sync_package_v_gateways() {
 
 	// delete all old gateways to prepare for new ones
 		if (count($_SESSION["domains"]) > 1) {
-			$v_needle = 'v_'.$v_domain.'-';
+			$v_needle = 'v_'.$domain_name.'-';
 		}
 		else {
 			$v_needle = 'v_';
@@ -1929,9 +1929,9 @@ function sync_package_v_gateways() {
 						$profile = "external";
 					}
 				if (count($_SESSION["domains"]) > 1) {
-					$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$v_domain .'-'.$gateway.".xml","w");
+					$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$domain_name .'-'.$gateway.".xml","w");
 					$tmp_xml .= "<include>\n";
-					$tmp_xml .= "    <gateway name=\"" . $v_domain .'-'. $gateway . "\">\n";
+					$tmp_xml .= "    <gateway name=\"" . $domain_name .'-'. $gateway . "\">\n";
 				}
 				else {
 					$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$gateway.".xml","w");
@@ -2928,7 +2928,7 @@ function sync_package_v_fax() {
 					$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
 					$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
 					$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-					$dialplan_detail_data .= "domain=".$v_domain." ";
+					$dialplan_detail_data .= "domain=".$domain_name." ";
 					$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
 					$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 
@@ -3048,7 +3048,7 @@ function sync_package_v_fax() {
 				$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
 				$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
 				$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-				$dialplan_detail_data .= "domain=".$v_domain." ";
+				$dialplan_detail_data .= "domain=".$domain_name." ";
 				$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
 				$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 				$sql = "";
@@ -3707,7 +3707,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 
 		//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
 			if (count($_SESSION["domains"]) > 1) {
-				$v_needle = 'v_'.$v_domain.'_';
+				$v_needle = 'v_'.$domain_name.'_';
 			}
 			else {
 				$v_needle = 'v_';
@@ -4375,7 +4375,7 @@ if (!function_exists('xml_cdr_conf_xml')) {
 
 		//replace the values in the template
 			$file_contents = str_replace("{v_http_protocol}", "http", $file_contents);
-			$file_contents = str_replace("{v_domain}", "127.0.0.1", $file_contents);
+			$file_contents = str_replace("{domain_name}", "127.0.0.1", $file_contents);
 			$file_contents = str_replace("{v_project_path}", PROJECT_PATH, $file_contents);
 
 			$v_user = generate_password();

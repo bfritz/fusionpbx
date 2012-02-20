@@ -87,7 +87,7 @@ else {
 					//send the command
 						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 					//set the user state
-						$cmd = "api callcenter_config agent set state ".$username."@".$v_domain." Waiting";
+						$cmd = "api callcenter_config agent set state ".$username."@".$domain_name." Waiting";
 						$response = event_socket_request($fp, $cmd);
 				}
 		}

@@ -28,7 +28,7 @@ include "root.php";
 //define the directory class
 	class switch_directory {
 		public $domain_uuid;
-		public $v_domain;
+		public $domain_name;
 		public $db_type;
 		public $extension;
 		public $number_alias;
@@ -73,13 +73,13 @@ include "root.php";
 				$this->domain_uuid = $domain_uuid;
 			}
 
-		// get v_domain
-			public function get_v_domain() {
-				return $this->v_domain;
+		// get domain_name
+			public function get_domain_name() {
+				return $this->domain_name;
 			}
-		// set v_domain
-			public function set_v_domain($v_domain){
-				$this->v_domain = $v_domain;
+		// set domain_name
+			public function set_domain_name($domain_name){
+				$this->domain_name = $domain_name;
 			}
 
 		// get db_type
@@ -103,7 +103,7 @@ include "root.php";
 		public function add() {
 			global $db;
 			$domain_uuid = $this->domain_uuid;
-			$v_domain = $this->v_domain;
+			$domain_name = $this->domain_name;
 			$extension = $this->extension;
 			$number_alias = $this->number_alias;
 			$password = $this->password;
@@ -226,7 +226,7 @@ include "root.php";
 					if (strlen($mwi_account) > 0) {
 						if (strpos($mwi_account, '@') === false) {
 							if (count($_SESSION["domains"]) > 1) {
-								$mwi_account .= "@".$v_domain;
+								$mwi_account .= "@".$domain_name;
 							}
 							else {
 								$mwi_account .= "@\$\${domain}";
@@ -250,7 +250,7 @@ include "root.php";
 			global $db;
 
 			$domain_uuid = $this->domain_uuid;
-			$v_domain = $this->v_domain;
+			$domain_name = $this->domain_name;
 			$extension = $this->extension;
 			$number_alias = $this->number_alias;
 			$password = $this->password;
@@ -341,7 +341,7 @@ include "root.php";
 			if (strlen($mwi_account) > 0) {
 				if (strpos($mwi_account, '@') === false) {
 					if (count($_SESSION["domains"]) > 1) {
-						$mwi_account .= "@".$v_domain;
+						$mwi_account .= "@".$domain_name;
 					}
 					else {
 						$mwi_account .= "@\$\${domain}";
@@ -517,7 +517,7 @@ include "root.php";
 		function xml_save_all() {
 			global $db, $config;
 			$domain_uuid = $this->domain_uuid;
-			$v_domain = $this->v_domain;
+			$domain_name = $this->domain_name;
 
 			//get the system settings paths and set them as variables
 				$settings_array = v_settings();

@@ -29,7 +29,7 @@ include "root.php";
 	class do_not_disturb {
 		var $domain_uuid;
 		var $dnd_uuid;
-		var $v_domain;
+		var $domain_name;
 		var $extension;
 		var $dnd_enabled;
 
@@ -41,7 +41,7 @@ include "root.php";
 					$user_status = "Logged Out";
 					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 					if ($fp) {
-						$switch_cmd .= "callcenter_config agent set status ".$_SESSION['username']."@".$v_domain." '".$user_status."'";
+						$switch_cmd .= "callcenter_config agent set status ".$_SESSION['username']."@".$domain_name." '".$user_status."'";
 						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 					}
 

@@ -117,7 +117,7 @@ else {
 					}
 				} else {
 					$tmp = explode('@',$row["name"]);
-					if ($tmp[1] == $v_domain) {
+					if ($tmp[1] == $domain_name) {
 						//get the extension status from the call center agent list
 						preg_match('/user\/(\d{2,7})/', $row['contact'], $matches);
 						$extension = $matches[1];
@@ -206,7 +206,7 @@ else {
 						if (count($_SESSION["domains"]) > 1) {
 							//unset domains that are not related to this tenant
 							$temp_array = explode("@", $channels_array[$x]['presence_id']);
-							if ($temp_array[1] != $v_domain) {
+							if ($temp_array[1] != $domain_name) {
 								unset($channels_array[$x]);
 							}
 						}
@@ -530,7 +530,7 @@ else {
 					echo "</tr>\n";
 					foreach ($valet_array as $row) {
 						if (strlen($row['extension']) > 0) {
-							if ($row['context'] == $v_domain || $row['context'] == "default") {
+							if ($row['context'] == $domain_name || $row['context'] == "default") {
 								echo "<tr>\n";
 								echo "<td valign='top' class='".$row_style[$c]."' >*".$row['extension']."</td>\n";
 								echo "<td valign='top' class='".$row_style[$c]."' >".$row['call_length']."</td>\n";

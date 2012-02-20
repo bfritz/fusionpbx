@@ -33,15 +33,15 @@
 	//prepare the file contents and the path
 		if (count($_SESSION['domains']) < 2) {
 			//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
-				$file_default_contents = str_replace("{v_domain}", 'default', $file_default_contents);
+				$file_default_contents = str_replace("{domain_name}", 'default', $file_default_contents);
 			//set the file path
 				$file_path = $_SESSION['switch']['conf']['dir'].'/dialplan/default.xml';
 		}
 		else {
 			//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
-				$file_default_contents = str_replace("{v_domain}", $v_domain, $file_default_contents);
+				$file_default_contents = str_replace("{domain_name}", $domain_name, $file_default_contents);
 			//set the file path
-				$file_path = $_SESSION['switch']['conf']['dir'].'/dialplan/'.$v_domain.'.xml';
+				$file_path = $_SESSION['switch']['conf']['dir'].'/dialplan/'.$domain_name.'.xml';
 		}
 
 	//write the default dialplan

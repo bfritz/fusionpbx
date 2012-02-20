@@ -290,7 +290,7 @@ require_once "includes/require.php";
 				$prov_row_array = explode(":", $prov_row);
 				if ($prov_row_array[0] == $mac) {
 					$line_number = $prov_row_array[1];
-					$file_contents = str_replace("{v_line".$line_number."_server_address}", $v_domain, $file_contents);
+					$file_contents = str_replace("{v_line".$line_number."_server_address}", $domain_name, $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["effective_caller_id_name"], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_shortname}", $row["extension"], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_user_uuid}", $row["extension"], $file_contents);
@@ -324,7 +324,7 @@ require_once "includes/require.php";
 		$file_contents = str_replace("{v_label}", $phone_label, $file_contents);
 		$file_contents = str_replace("{v_firmware_version}", $phone_firmware_version, $file_contents);
 		$file_contents = str_replace("{domain_time_zone}", $phone_time_zone, $file_contents);
-		$file_contents = str_replace("{v_domain}", $v_domain, $file_contents);
+		$file_contents = str_replace("{domain_name}", $domain_name, $file_contents);
 		$file_contents = str_replace("{v_project_path}", PROJECT_PATH, $file_contents);
 		$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
 		$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);

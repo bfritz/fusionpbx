@@ -100,8 +100,8 @@ if ($fp) {
 				echo "</tr>\n";
 		}
 		else {
-			//show only the fifo queues that match the v_domain
-				if (stripos($name, $v_domain) !== false) {
+			//show only the fifo queues that match the domain_name
+				if (stripos($name, $domain_name) !== false) {
 					echo "<tr>\n";
 					echo "<td valign='top' class='".$row_style[$c]."'>".$tmp_name."</td>\n";
 					echo "<td valign='top' class='".$row_style[$c]."'>".$consumer_count."</td>\n";

@@ -328,12 +328,12 @@ if ($db_type == "pgsql") {
 			foreach($result as $row) {
 				if (count($result) == 0) {
 					$_SESSION["domain_uuid"] = $row["domain_uuid"];
-					$_SESSION["v_domain"] = $row['domain_name'];
+					$_SESSION["domain_name"] = $row['domain_name'];
 				}
 				else {
 					if ($row['domain_name'] == $domain_array[0] || $row['domain_name'] == 'www.'.$domain_array[0]) {
 						$_SESSION["domain_uuid"] = $row["domain_uuid"];
-						$_SESSION["v_domain"] = $row['domain_name'];
+						$_SESSION["domain_name"] = $row['domain_name'];
 					}
 					$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
 					$_SESSION['domains'][$row['domain_uuid']]['domain'] = $row['domain_name'];
@@ -364,7 +364,7 @@ if ($db_type == "pgsql") {
 	}
 
 //set the values from the session variables
-	$_SESSION['v_domain'] = $_SESSION['domain_name'];
+	$_SESSION['domain_name'] = $_SESSION['domain_name'];
 	$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain']['template']['name'];
 	if (strlen($_SESSION['domain']['time_zone']['name']) > 0) {
 		//server time zone
@@ -378,7 +378,7 @@ if ($db_type == "pgsql") {
 //set the context
 	if (strlen($_SESSION["context"]) == 0) {
 		if (count($_SESSION["domains"]) > 1) {
-			$_SESSION["context"] = $_SESSION["v_domain"];
+			$_SESSION["context"] = $_SESSION["domain_name"];
 		}
 		else {
 			$_SESSION["context"] = 'default';

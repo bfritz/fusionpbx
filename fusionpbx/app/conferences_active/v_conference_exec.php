@@ -48,7 +48,7 @@ if (count($_GET)>0) {
 	if (strlen($switch_cmd) > 0) {
 
 		//check if the domain is in the switch_cmd
-			if(stristr($switch_cmd, $v_domain) === FALSE) {
+			if(stristr($switch_cmd, $domain_name) === FALSE) {
 				echo "access denied";
 				exit;
 			}

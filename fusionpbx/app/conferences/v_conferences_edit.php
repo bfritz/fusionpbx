@@ -156,7 +156,7 @@ $order = $_GET["order"];
 			if (strlen($action) > 0) {
 				$tmp_pin_number = ''; if (strlen($pin_number) > 0) { $tmp_pin_number = "+".$pin_number; }
 				$tmp_flags = ''; if (strlen($flags) > 0) { $tmp_flags = "+flags{".$flags."}"; }
-				$tmp_field_data = $dialplan_name.'-'.$v_domain."@".$profile.$tmp_pin_number.$tmp_flags;
+				$tmp_field_data = $dialplan_name.'-'.$domain_name."@".$profile.$tmp_pin_number.$tmp_flags;
 			}
 
 		if ($action == "add" && permission_exists('conferences_add')) {

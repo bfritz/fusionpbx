@@ -28,7 +28,7 @@
 -->
 <flat-profile>
   <!-- provisioning config -->
-  <Profile_Rule>http://{v_domain}{v_project_path}/mod/provision/?mac=$MA</Profile_Rule>
+  <Profile_Rule>http://{domain_name}{v_project_path}/mod/provision/?mac=$MA</Profile_Rule>
   <Resync_Periodic>7200</Resync_Periodic>
   <Resync_On_Reset>yes</Resync_On_Reset>
   <Resync_Error_Retry_Delay>10</Resync_Error_Retry_Delay>
@@ -37,13 +37,13 @@
   <!-- network config -->
   <DHCP>yes</DHCP> <!-- for WAN port -->
   <!--
-  <Primary_NTP_Server>{v_domain}</Primary_NTP_Server>
+  <Primary_NTP_Server>{domain_name}</Primary_NTP_Server>
   <Secondary_NTP_Server>pool.ntp.org</Secondary_NTP_Server>
   -->
 
   <!-- remote logging - valid debug levels are 0, 1, 2 and 3
-  <Syslog_Server>{v_domain}</Syslog_Server>
-  <Debug_Server>{v_domain}</Debug_Server>
+  <Syslog_Server>{domain_name}</Syslog_Server>
+  <Debug_Server>{domain_name}</Debug_Server>
   <Debug_Level>2</Debug_Level>
   -->
 
@@ -68,7 +68,7 @@
 
 
   <!-- SIP settings -->
-  <Proxy_1_>{v_domain}</Proxy_1_>
+  <Proxy_1_>{domain_name}</Proxy_1_>
   <SIP_Port_1_>5060</SIP_Port_1_>
   <Use_Outbound_Proxy_1_>no</Use_Outbound_Proxy_1_>
   <!-- only allow proxy IP to connect

@@ -41,7 +41,7 @@ else {
 
 //set the fax directory
 	if (count($_SESSION["domains"]) > 1) {
-		$v_fax_dir = $_SESSION['switch']['storage']['dir'].'/fax/'.$v_domain;
+		$v_fax_dir = $_SESSION['switch']['storage']['dir'].'/fax/'.$domain_name;
 	}
 	else {
 		$v_fax_dir = $_SESSION['switch']['storage']['dir'].'/fax';

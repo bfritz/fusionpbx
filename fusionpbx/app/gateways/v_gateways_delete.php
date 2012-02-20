@@ -59,7 +59,7 @@ if (strlen($_GET["id"])>0) {
 		if ($fp) {
 			//send the api gateway stop command over event socket
 				if (count($_SESSION["domains"]) > 1) {
-					$tmp_cmd = 'api sofia profile external killgw '.$v_domain.'-'.$gateway;
+					$tmp_cmd = 'api sofia profile external killgw '.$domain_name.'-'.$gateway;
 				}
 				else {
 					$tmp_cmd = 'api sofia profile external killgw '.$gateway;

@@ -229,7 +229,7 @@ else {
 	echo "			&nbsp;";
 	echo "			<strong>Status</strong>&nbsp;\n";
 	$cmd = "'v_calls_exec.php?action=user_status&data='+this.value+'";
-	$cmd .= "&cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$v_domain."+'+this.value";
+	$cmd .= "&cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$domain_name."+'+this.value";
 	echo "			<select id='agent_status' name='agent_status' class='formfld' style='width:125px' nowrap='nowrap' onchange=\"send_cmd($cmd);\">\n";
 	echo "				<option value='                '></option>\n";
 	if ($user_status == "Available") {

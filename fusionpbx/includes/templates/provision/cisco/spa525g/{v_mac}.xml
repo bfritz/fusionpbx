@@ -70,7 +70,7 @@
   <Resync_Trigger_1 ua="na"></Resync_Trigger_1>
   <Resync_Trigger_2 ua="na"></Resync_Trigger_2>
   <Resync_Fails_On_FNF ua="na">Yes</Resync_Fails_On_FNF>
-  <Profile_Rule ua="na">http://{v_domain}{v_project_path}/mod/provision/?mac=$MA</Profile_Rule>
+  <Profile_Rule ua="na">http://{domain_name}{v_project_path}/mod/provision/?mac=$MA</Profile_Rule>
   <Profile_Rule_B ua="na"></Profile_Rule_B>
   <Profile_Rule_C ua="na"></Profile_Rule_C>
   <Profile_Rule_D ua="na"></Profile_Rule_D>
@@ -308,7 +308,7 @@
 
   <!-- Proxy and Registration -->
 
-  <Proxy_1_ ua="na">{v_domain}</Proxy_1_>
+  <Proxy_1_ ua="na">{domain_name}</Proxy_1_>
   <Outbound_Proxy_1_ ua="na"></Outbound_Proxy_1_>
   <Use_Outbound_Proxy_1_ ua="na">No</Use_Outbound_Proxy_1_>
   <Use_OB_Proxy_In_Dialog_1_ ua="na">Yes</Use_OB_Proxy_In_Dialog_1_>
@@ -430,7 +430,7 @@
 
   <!-- Proxy and Registration -->
 
-  <Proxy_2_ ua="na">{v_domain}</Proxy_2_>
+  <Proxy_2_ ua="na">{domain_name}</Proxy_2_>
   <Outbound_Proxy_2_ ua="na"></Outbound_Proxy_2_>
   <Use_Outbound_Proxy_2_ ua="na">No</Use_Outbound_Proxy_2_>
   <Use_OB_Proxy_In_Dialog_2_ ua="na">Yes</Use_OB_Proxy_In_Dialog_2_>
@@ -552,7 +552,7 @@
 
   <!-- Proxy and Registration -->
 
-  <Proxy_3_ ua="na">{v_domain}</Proxy_3_>
+  <Proxy_3_ ua="na">{domain_name}</Proxy_3_>
   <Outbound_Proxy_3_ ua="na"></Outbound_Proxy_3_>
   <Use_Outbound_Proxy_3_ ua="na">No</Use_Outbound_Proxy_3_>
   <Use_OB_Proxy_In_Dialog_3_ ua="na">Yes</Use_OB_Proxy_In_Dialog_3_>
@@ -674,7 +674,7 @@
 
   <!-- Proxy and Registration -->
 
-  <Proxy_4_ ua="na">{v_domain}</Proxy_4_>
+  <Proxy_4_ ua="na">{domain_name}</Proxy_4_>
   <Outbound_Proxy_4_ ua="na"></Outbound_Proxy_4_>
   <Use_Outbound_Proxy_4_ ua="na">No</Use_Outbound_Proxy_4_>
   <Use_OB_Proxy_In_Dialog_4_ ua="na">Yes</Use_OB_Proxy_In_Dialog_4_>
@@ -797,7 +797,7 @@
   <!-- Proxy and Registration -->
 
   <Proxy_5_ ua="na"></Proxy_5_>
-  <Outbound_Proxy_5_ ua="na">{v_domain}</Outbound_Proxy_5_>
+  <Outbound_Proxy_5_ ua="na">{domain_name}</Outbound_Proxy_5_>
   <Use_Outbound_Proxy_5_ ua="na">No</Use_Outbound_Proxy_5_>
   <Use_OB_Proxy_In_Dialog_5_ ua="na">Yes</Use_OB_Proxy_In_Dialog_5_>
   <Register_5_ ua="na">Yes</Register_5_>
