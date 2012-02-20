@@ -45,7 +45,7 @@
 					closedir($dh);
 				}
 			//add the domain to the public dir path
-				$v_dialplan_public_dir = $v_dialplan_public_dir.'/'.$_SESSION['domains'][$v_id]['domain'];
+				$v_dialplan_public_dir = $v_dialplan_public_dir.'/'.$_SESSION['domains'][$domain_uuid]['domain'];
 				$sql .= "update v_system_settings set ";
 				$sql .= "v_dialplan_public_dir = '".$v_dialplan_public_dir."' ";
 				$sql .= "where v_id = '$v_id' ";
@@ -65,11 +65,11 @@
 //if multiple domains then make sure that the dialplan/public/domain_name.xml file exists
 	if (count($_SESSION["domains"]) > 1) {
 		//make sure the public xml file includes the domain directory
-		$file = $v_conf_dir."/dialplan/public/".$_SESSION['domains'][$v_id]['domain'].".xml";
+		$file = $v_conf_dir."/dialplan/public/".$_SESSION['domains'][$domain_uuid]['domain'].".xml";
 		if (!file_exists($file)) {
 			$fout = fopen($file,"w");
 			$tmpxml = "<include>\n";
-			$tmpxml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$v_id]['domain']."/*.xml\"/>\n";
+			$tmpxml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$domain_uuid]['domain']."/*.xml\"/>\n";
 			$tmpxml .= "</include>\n";
 			fwrite($fout, $tmpxml);
 			fclose($fout);

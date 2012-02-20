@@ -60,10 +60,10 @@ require_once "includes/paging.php";
 								//set the default dnd action
 									$dnd_action = "add";
 								//set the call center status to Logged Out
-									$cmd = "api callcenter_config agent set status ".$row['name']."@".$_SESSION['domains'][$domain_uuid]['domain']." 'Logged Out'";
+									$cmd = "api callcenter_config agent set status ".$row['name']."@".$_SESSION['domains'][$domain_uuid]['domain_name']." 'Logged Out'";
 							}
 							else {
-								$cmd = "api callcenter_config agent set status ".$row['name']."@".$_SESSION['domains'][$domain_uuid]['domain']." '".$row['status']."'";
+								$cmd = "api callcenter_config agent set status ".$row['name']."@".$_SESSION['domains'][$domain_uuid]['domain_name']." '".$row['status']."'";
 							}
 							//echo $cmd."<br />\n";
 							$response = event_socket_request($fp, $cmd);

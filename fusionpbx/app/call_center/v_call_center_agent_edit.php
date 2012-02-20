@@ -152,23 +152,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//add the agent using event socket
 			if ($fp) {
 				//add the agent
-					$cmd = "api callcenter_config agent add ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." ".$agent_type;
+					$cmd = "api callcenter_config agent add ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain_name']." ".$agent_type;
 					$response = event_socket_request($fp, $cmd);
 					usleep(200);
 				//agent set contact
-					$cmd = "api callcenter_config agent set contact ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." ".$tmp_agent_contact;
+					$cmd = "api callcenter_config agent set contact ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain_name']." ".$tmp_agent_contact;
 					$response = event_socket_request($fp, $cmd);
 					usleep(200);
 				//agent set status
-					$cmd = "api callcenter_config agent set status ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." '".$agent_status."'";
+					$cmd = "api callcenter_config agent set status ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain_name']." '".$agent_status."'";
 					$response = event_socket_request($fp, $cmd);
 					usleep(200);
 				//agent set reject_delay_time
-					$cmd = "api callcenter_config agent set reject_delay_time ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." ".$agent_reject_delay_time;
+					$cmd = "api callcenter_config agent set reject_delay_time ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain_name']." ".$agent_reject_delay_time;
 					$response = event_socket_request($fp, $cmd);
 					usleep(200);
 				//agent set busy_delay_time
-					$cmd = "api callcenter_config agent set busy_delay_time ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain']." ".$agent_busy_delay_time;
+					$cmd = "api callcenter_config agent set busy_delay_time ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain_name']." ".$agent_busy_delay_time;
 					$response = event_socket_request($fp, $cmd);
 			}
 

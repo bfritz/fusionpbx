@@ -57,7 +57,7 @@ if (count($_GET)>0) {
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 	//delete the agent over event socket
 		if ($fp) {
-			$cmd = "api callcenter_config agent del ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain'];
+			$cmd = "api callcenter_config agent del ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain_name'];
 			$response = event_socket_request($fp, $cmd);
 		}
 

@@ -35,7 +35,7 @@ else {
 }
 
 //get the queue_name and set it as a variable
-	$queue_name = $_GET[queue_name].'@'. $_SESSION['domains'][$domain_uuid]['domain'];
+	$queue_name = $_GET[queue_name].'@'. $_SESSION['domains'][$domain_uuid]['domain_name'];
 
 //convert the string to a named array
 	function str_to_named_array($tmp_str, $tmp_delimiter) {

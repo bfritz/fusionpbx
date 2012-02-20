@@ -56,13 +56,13 @@ else {
 
 //delete the agent from the freeswitch
 	//get the domain using the $domain_uuid
-		$tmp_domain = $_SESSION['domains'][$domain_uuid]['domain'];
+		$tmp_domain = $_SESSION['domains'][$domain_uuid]['domain_name'];
 	//setup the event socket connection
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 	//delete the agent over event socket
 		if ($fp) {
 			//callcenter_config tier del [queue_name] [agent_name]
-			$cmd = "api callcenter_config tier del ".$queue_name."@".$tmp_domain." ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain'];
+			$cmd = "api callcenter_config tier del ".$queue_name."@".$tmp_domain." ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain_name'];
 			$response = event_socket_request($fp, $cmd);
 		}
 

@@ -83,7 +83,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//add the agent using event socket
 			if ($fp) {
 				//get the domain using the $domain_uuid
-					$tmp_domain = $_SESSION['domains'][$domain_uuid]['domain'];
+					$tmp_domain = $_SESSION['domains'][$domain_uuid]['domain_name'];
 				//syntax
 					//callcenter_config tier add [queue_name] [agent_name] [level] [position]
 					//callcenter_config tier set state [queue_name] [agent_name] [state]
