@@ -342,7 +342,25 @@ if ($db_type == "pgsql") {
 			unset($result, $prep_statement);
 	}
 
-//get the domains variables
+//get the global settings
+	$sql = "select * from v_global_settings ";
+	$sql .= "where global_setting_enabled = 'true' ";
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll();
+	foreach($result as $row) {
+		$name = $row['global_setting_name'];
+		$category = $row['global_setting_category'];
+		$subcategory = $row['global_setting_subcategory'];	
+		if (strlen($subcategory) == 0) {
+			$_SESSION[$category][$name] = $row['global_setting_value'];
+		}
+		else {
+			$_SESSION[$category][$subcategory][$name] = $row['global_setting_value'];
+		}
+	}
+
+//get the domains settings
 	$sql = "select * from v_domain_settings ";
 	$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
 	$sql .= "and domain_setting_enabled = 'true' ";
@@ -364,8 +382,6 @@ if ($db_type == "pgsql") {
 	}
 
 //set the values from the session variables
-	$_SESSION['domain_name'] = $_SESSION['domain_name'];
-	$_SESSION['domains'][$_SESSION['domain_uuid']]['template_name'] = $_SESSION['domain']['template']['name'];
 	if (strlen($_SESSION['domain']['time_zone']['name']) > 0) {
 		//server time zone
 			$_SESSION['time_zone']['system'] = date_default_timezone_get();

@@ -683,7 +683,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		//$install_server_protocol = strtolower($server_protocol[0]);
 		//unset($server_protocol_array);
 		
-	//add the domain settings
+	//add the global settings
 		$x = 0;
 		$tmp[$x]['name'] = 'uuid';
 		$tmp[$x]['value'] = $menu_uuid;
@@ -815,6 +815,49 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$tmp[$x]['category'] = 'switch';
 		$tmp[$x]['subcategory'] = 'provision';
 		$tmp[$x]['enabled'] = 'false';
+		$x++;
+		$db_tmp->beginTransaction();
+		foreach($tmp as $row) {
+			$sql = "insert into v_global_settings ";
+			$sql .= "(";
+			$sql .= "global_setting_uuid, ";
+			$sql .= "global_setting_name, ";
+			$sql .= "global_setting_value, ";
+			$sql .= "global_setting_category, ";
+			$sql .= "global_setting_subcategory, ";
+			$sql .= "global_setting_enabled ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'".uuid()."', ";
+			$sql .= "'".$row['name']."', ";
+			$sql .= "'".$row['value']."', ";
+			$sql .= "'".$row['category']."', ";
+			$sql .= "'".$row['subcategory']."', ";
+			$sql .= "'".$row['enabled']."' ";	
+			$sql .= ");";
+			if ($v_debug) {
+				fwrite($fp, $sql."\n");
+			}
+			$db_tmp->exec(check_sql($sql));
+			unset($sql);
+		}
+		$db_tmp->commit();
+		unset($tmp);
+
+	//add domain settings
+		$x = 0;
+		$tmp[$x]['name'] = 'uuid';
+		$tmp[$x]['value'] = $menu_uuid;
+		$tmp[$x]['category'] = 'domain';
+		$tmp[$x]['subcategory'] = 'menu';
+		$tmp[$x]['enabled'] = 'true';
+		$x++;
+		$tmp[$x]['name'] = 'name';
+		$tmp[$x]['value'] = $install_template_name;
+		$tmp[$x]['category'] = 'domain';
+		$tmp[$x]['subcategory'] = 'template';
+		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$db_tmp->beginTransaction();
 		foreach($tmp as $row) {
@@ -1342,22 +1385,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "</td>\n";
 		echo "</tr>\n";
 
-		if (PHP_OS == "FreeBSD" && file_exists('/usr/local/etc/freeswitch/conf')) {
-			//install_switch_base_dir not required for the freebsd freeswitch port;
-		}
-		else {
-			echo "<tr>\n";
-			echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-			echo "	FreeSWITCH Directory:\n";
-			echo "</td>\n";
-			echo "<td class='vtable' align='left'>\n";
-			echo "	<input class='formfld' type='text' name='install_switch_base_dir' maxlength='255' value=\"$install_switch_base_dir\">\n";
-			echo "<br />\n";
-			echo "Enter the FreeSWITCH directory path.\n";
-			echo "</td>\n";
-			echo "</tr>\n";
-		}
-
 		echo "	<tr>\n";
 		echo "	<td width='20%' class=\"vncellreq\" style='text-align: left;'>\n";
 		echo "		Theme: \n";
@@ -1392,6 +1419,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
+		echo "			<input type='hidden' name='install_switch_base_dir' value='$install_switch_base_dir'>\n";
 		echo "			<input type='hidden' name='install_tmp_dir' value='$install_tmp_dir'>\n";
 		echo "			<input type='hidden' name='install_backup_dir' value='$install_backup_dir'>\n";
 		echo "			<input type='hidden' name='install_step' value='2'>\n";

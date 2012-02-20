@@ -33,28 +33,8 @@ else {
 	echo "access denied";
 	exit;
 }
-
-//change the tenant
-	if (strlen($_GET["domain_uuid"]) > 0 && $_GET["domain_change"] == "true") {
-		//update the v_id and session variables
-			$domain_uuid = $_GET["domain_uuid"];
-			$_SESSION['domain_uuid'] = $_SESSION['domains'][$domain_uuid]['domain_uuid'];
-			$_SESSION["domain_name"] = $_SESSION['domains'][$domain_uuid]['domain_name'];
-			$_SESSION['domain']['template']['name'] = $_SESSION['domains'][$domain_uuid]['template_name'];
-		//clear the menu session so that it is regenerated for the current tenant
-			$_SESSION["menu"] = '';
-		//set the context
-			if (count($_SESSION["domains"]) > 1) {
-				$_SESSION["context"] = $_SESSION["v_domain"];
-			}
-			else {
-				$_SESSION["context"] = 'default';
-			}
-	}
-
-//includes
-	require_once "includes/header.php";
-	require_once "includes/paging.php";
+require_once "includes/header.php";
+require_once "includes/paging.php";
 
 //get variables used to control the order
 	$order_by = $_GET["order_by"];
@@ -69,19 +49,19 @@ else {
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' nowrap><b>Domain List</b></td>\n";
+	echo "		<td width='50%' nowrap><b>Global Settings</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2'>\n";
-	echo "			Control the list of domains to manage.<br /><br />\n";
+	echo "			Settings used for all domains.<br /><br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
 
 	//prepare to page the results
 		$sql = "";
-		$sql .= " select count(*) as num_rows from v_domains ";
+		$sql .= " select count(*) as num_rows from v_global_settings ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
@@ -96,16 +76,16 @@ else {
 		}
 
 	//prepare to page the results
-		$rows_per_page = 10;
+		$rows_per_page = 100;
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
 		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
 		$offset = $rows_per_page * $page; 
 
-	//get the  list
+	//get the domain list
 		$sql = "";
-		$sql .= " select * from v_domains ";
+		$sql .= " select * from v_global_settings ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -121,38 +101,69 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
-	echo "<tr>\n";
-	echo th_order_by('domain_name', 'Domain', $order_by, $order);
-	echo th_order_by('domain_description', 'Description', $order_by, $order);
-	echo "<td align='right' width='42'>\n";
-	echo "	<a href='domains_edit.php' alt='add'>$v_link_label_add</a>\n";
-	echo "</td>\n";
-	echo "<tr>\n";
-
 	if ($result_count > 0) {
+		$previous_category = '';
 		foreach($result as $row) {
+			if ($previous_category != $row['global_setting_category']) {
+				echo "<tr><td colspan='4' align='left'>\n";
+				echo "	<br />\n";
+				echo "	<br />\n";
+				echo "	<b>".ucfirst($row['global_setting_category'])."</b>&nbsp;</td></tr>\n";
+				echo "<tr>\n";
+				echo th_order_by('global_setting_subcategory', 'Category', $order_by, $order);
+				echo th_order_by('global_setting_name', 'Name', $order_by, $order);
+				echo th_order_by('global_setting_value', 'Value', $order_by, $order);
+				echo th_order_by('global_setting_enabled', 'Enabled', $order_by, $order);
+				echo th_order_by('global_setting_description', 'Description', $order_by, $order);
+				echo "<td align='right' width='42'>\n";
+				echo "	<a href='global_settings_edit.php' alt='add'>$v_link_label_add</a>\n";
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_name']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_description']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_subcategory']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
+
+			$category = $row['global_setting_category'];
+			$subcategory = $row['global_setting_subcategory'];
+			$name = $row['global_setting_name'];
+			if ($category == "domain" && $subcategory == "menu" && $name == "uuid" ) {
+				$sql = "";
+				$sql .= "select * from v_menus ";
+				$sql .= "where menu_uuid = '".$row['global_setting_value']."' ";
+				$sub_prep_statement = $db->prepare(check_sql($sql));
+				$sub_prep_statement->execute();
+				$sub_result = $sub_prep_statement->fetchAll();
+				foreach ($sub_result as &$sub_row) {
+					echo $sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
+				}
+			} else {
+				echo 		$row['global_setting_value'];
+			}	
+			echo "		&nbsp;\n";
+			echo "	</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_enabled']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='domains_edit.php?id=".$row['domain_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='domains_delete.php?id=".$row['domain_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='global_settings_edit.php?id=".$row['global_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='global_settings_delete.php?id=".$row['global_setting_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
+			$previous_category = $row['global_setting_category'];
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
 
-
 	echo "<tr>\n";
-	echo "<td colspan='3' align='left'>\n";
+	echo "<td colspan='6' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='domains_edit.php' alt='add'>$v_link_label_add</a>\n";
+	echo "			<a href='global_settings_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";

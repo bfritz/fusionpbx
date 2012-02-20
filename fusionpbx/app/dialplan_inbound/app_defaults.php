@@ -26,10 +26,10 @@
 
 //if there are multiple domains then update the public dir path to include the domain
 	if (count($_SESSION["domains"]) > 1) {
-		if (substr($v_dialplan_public_dir, -7) == "/public") {
+		if (is_dir($_SESSION['switch']['dialplan']['dir'].'/public')) {
 			//clear out the old xml files
 				$v_needle = '_v_';
-				if($dh = opendir($v_dialplan_public_dir."/")) {
+				if($dh = opendir($_SESSION['switch']['dialplan']['dir'].'/public')) {
 					$files = Array();
 					while($file = readdir($dh)) {
 						if($file != "." && $file != ".." && $file[0] != '.') {
@@ -37,22 +37,12 @@
 								//this is a directory
 							} else {
 								if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-									unlink($v_dialplan_public_dir."/".$file);
+									unlink($_SESSION['switch']['dialplan']['dir'].'/public/'.$file);
 								}
 							}
 						}
 					}
 					closedir($dh);
-				}
-			//add the domain to the public dir path
-				$v_dialplan_public_dir = $v_dialplan_public_dir.'/'.$_SESSION['domains'][$domain_uuid]['domain'];
-				$sql .= "update v_system_settings set ";
-				$sql .= "v_dialplan_public_dir = '".$v_dialplan_public_dir."' ";
-				$sql .= "where v_id = '$v_id' ";
-				$db->exec($sql);
-				unset($sql);
-				if ($display_type == "text") {
-					echo "	Public Directory:	added domain\n";
 				}
 			//synch the xml files
 				sync_package_v_public_includes();
@@ -60,12 +50,12 @@
 	}
 
 //if the public directory doesn't exist then create it
-	if (!is_dir($v_dialplan_public_dir)) { mkdir($v_dialplan_public_dir,0777,true); }
+	if (!is_dir($_SESSION['switch']['dialplan']['dir'].'/public') { mkdir($_SESSION['switch']['dialplan']['dir'].'/public',0777,true); }
 
 //if multiple domains then make sure that the dialplan/public/domain_name.xml file exists
 	if (count($_SESSION["domains"]) > 1) {
 		//make sure the public xml file includes the domain directory
-		$file = $v_conf_dir."/dialplan/public/".$_SESSION['domains'][$domain_uuid]['domain'].".xml";
+		$file = $_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$domain_uuid]['domain'].".xml";
 		if (!file_exists($file)) {
 			$fout = fopen($file,"w");
 			$tmpxml = "<include>\n";
