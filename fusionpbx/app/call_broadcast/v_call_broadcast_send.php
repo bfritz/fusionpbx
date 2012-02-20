@@ -156,7 +156,7 @@ function cmd_async($cmd) {
 
 					//get the context
 						if (count($_SESSION["domains"]) > 1) {
-							$context =  $_SESSION['domains'][$row['domain_uuid']]['domain'];
+							$context =  $_SESSION['domains'][$row['domain_uuid']]['domain_name'];
 						}
 						else {
 							$context = "default";

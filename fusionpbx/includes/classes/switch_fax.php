@@ -191,7 +191,7 @@ include "root.php";
 						$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
 						$database->fields['dialplan_detail_type'] = 'rxfax';
 						if (count($_SESSION["domains"]) > 1) {
-							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$this->fax_extension.'/inbox/${last_fax}.tif';
+							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain_name'].'/'.$this->fax_extension.'/inbox/${last_fax}.tif';
 						}
 						else {
 							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$this->fax_extension.'/inbox/${last_fax}.tif';
@@ -428,7 +428,7 @@ include "root.php";
 						$database->fields['dialplan_detail_tag'] = 'action'; //condition, action, antiaction
 						$database->fields['dialplan_detail_type'] = 'rxfax';
 						if (count($_SESSION["domains"]) > 1) {
-							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$this->fax_extension.'/inbox/${last_fax}.tif';
+							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain_name'].'/'.$this->fax_extension.'/inbox/${last_fax}.tif';
 						}
 						else {
 							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$this->fax_extension.'/inbox/${last_fax}.tif';

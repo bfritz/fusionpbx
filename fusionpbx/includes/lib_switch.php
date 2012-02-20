@@ -883,7 +883,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$extension_label = $row["ivr_menu_name"];
 			$extension_name = str_replace(" ", "_", $extension_name);
 			if (count($_SESSION["domains"]) > 1) {
-				$extension_name =  $_SESSION['domains'][$row['domain_uuid']]['domain'].'-'.$extension_name;
+				$extension_name =  $_SESSION['domains'][$row['domain_uuid']]['domain_name'].'-'.$extension_name;
 			}
 			if ("ivr:".$extension_name."" == $select_value || "ivr $extension_name" == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 				if ($select_type == "ivr") {
@@ -927,7 +927,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					$extension_label = $row["ivr_menu_name"];
 					$extension_name = str_replace(" ", "_", $extension_name);
 					if (count($_SESSION["domains"]) > 1) {
-						$extension_name = $_SESSION['domains'][$row['domain_uuid']]['domain'].'-'.$extension_name;
+						$extension_name = $_SESSION['domains'][$row['domain_uuid']]['domain_name'].'-'.$extension_name;
 					}
 					if ($extension_name == $select_value) {
 						echo "		<option value='menu-sub:$extension_name' selected='selected'>".$extension_label."</option>\n";
@@ -2974,7 +2974,7 @@ function sync_package_v_fax() {
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'rxfax';
 					if (count($_SESSION["domains"]) > 1) {
-						$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+						$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain_name'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
 					else {
 						$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
@@ -3026,7 +3026,7 @@ function sync_package_v_fax() {
 
 				//update the action
 				if (count($_SESSION["domains"]) > 1) {
-					$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
+					$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain_name'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 				}
 				else {
 					$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
@@ -3846,7 +3846,7 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 
 					//write the file
 						if (count($_SESSION["domains"]) > 1) {
-							$fout = fopen($_SESSION['switch']['conf']['dir']."/ivr_menus/v_".$_SESSION['domains'][$row['domain_uuid']]['domain']."_".$ivr_menu_name.".xml","w");
+							$fout = fopen($_SESSION['switch']['conf']['dir']."/ivr_menus/v_".$_SESSION['domains'][$row['domain_uuid']]['domain_name']."_".$ivr_menu_name.".xml","w");
 						}
 						else {
 							$fout = fopen($_SESSION['switch']['conf']['dir']."/ivr_menus/v_".$ivr_menu_name.".xml","w");
