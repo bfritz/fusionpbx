@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 
-$moduletitle = 'Content';
+$module_title = 'Content';
 $rss_category = 'content';
 
-$rsssubshow = 0; //1 = yes, 0 = no
+$rss_sub_show = 0; //1 = yes, 0 = no
 $rss_sub_title = 'Content';
 ?>

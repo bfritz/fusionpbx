@@ -48,7 +48,7 @@ require_once "includes/header.php";
 	echo "	<td align=\"left\">\n";
 
 	echo "      <br>";
-	echo "      <b>$moduletitle Details</b>";
+	echo "      <b>$module_title Details</b>";
 	$sql = "";
 	$sql .= "select * from v_rss ";
 	$sql .= "where domain_uuid = '$domain_uuid'  ";
@@ -152,7 +152,7 @@ require_once "includes/header.php";
 	unset($sql, $prep_statement, $result);
 
 
-	if ($rsssubshow == 1) {
+	if ($rss_sub_show == 1) {
 
 		echo "<br><br><br>";
 		echo "<b>$rss_sub_title</b><br>";
@@ -427,7 +427,7 @@ require_once "includes/header.php";
 	echo "</table>\n";
 
 	//echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubsearch.php'\" value='Search'>&nbsp; &nbsp;\n";
-	if ($rsssubshow == 1) {
+	if ($rss_sub_show == 1) {
 		echo "<input type='button' class='btn' name='' onclick=\"window.location='rsssubadd.php?rss_uuid=".$rss_uuid."'\" value='Add $rss_sub_title'>&nbsp; &nbsp;\n";
 	}
 	echo "</div>";

@@ -37,45 +37,45 @@ else {
 }
 
 //include module specific information
-if (strlen($modconfigpath)==0) {
+if (strlen($mod_config_path)==0) {
 	include "config.php";
 }
 else {
-	//$modconfigpath = "/news"; //examples
-	//$modconfigpath = "/app/news"; //examples
-	include $modconfigpath.'/config.php';
+	//$mod_config_path = "/news"; //examples
+	//$mod_config_path = "/app/news"; //examples
+	include $mod_config_path.'/config.php';
 }
 
-$rsscssurl = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"];
-$rsscssurl = str_replace ("rss.php", "rss.css", $rsscssurl);
-$contenttype = $_GET["c"];
-//echo "contenttype $contenttype";
+$rss_css_url = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"];
+$rss_css_url = str_replace ("rss.php", "rss.css", $rss_css_url);
+$content_type = $_GET["c"];
+//echo "contenttype $content_type";
 if (strlen($_GET["rss_category"]) > 0) {
 	$rss_category = $_GET["rss_category"];
 }
-if (strlen($contenttype) == 0) {
-	$contenttype = "rss"; //define default contenttype
+if (strlen($content_type) == 0) {
+	$content_type = "rss"; //define default contenttype
 }
-if ($contenttype == "html") {
+if ($content_type == "html") {
 	session_start();
 }
-//echo $rsscssurl;
+//echo $rss_css_url;
 //exit;
 
-if ($contenttype == "rss") {
+if ($content_type == "rss") {
 	header('Content-Type: text/xml');
 	echo '<?xml version="1.0"  ?'.'>';
-	echo '<?xml-stylesheet type="text/css" href="'.$rsscssurl.'" ?'.'>';
+	echo '<?xml-stylesheet type="text/css" href="'.$rss_css_url.'" ?'.'>';
 	//echo '<?xml-stylesheet type="text/css" href="http://'.$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"].'" ?'.'>';
 	//echo "\n";
 	echo "<rss version=\"2.0\">\n";
 	echo "<channel>\n";
 
-	echo "<title>$moduletitle RSS Feed</title>\n";
+	echo "<title>$module_title RSS Feed</title>\n";
 	//echo "<link>http://www.xul.fr/</link>\n";
 	echo "<description>Task List for RSS...</description>\n";
 	echo "<language>en-US</language>\n";
-	//echo "<copyright>copyright AH Digital FX Studios, 2006</copyright>\n";
+	//echo "<copyright></copyright>\n";
 	//echo "<image>\n";
 	//echo "    <url>http://www.xul.fr/xul-icon.gif</url>\n";
 	//echo "    <link>http://www.xul.fr/index.html</link>\n";
@@ -89,11 +89,10 @@ $sql .= "and length(rss_del_date) = 0  ";
 $sql .= "or rss_category = '$rss_category' ";
 $sql .= "and rss_del_date is null ";
 $sql .= "order by rss_uuid asc ";
-//echo $sql;
 $prep_statement = $db->prepare(check_sql($sql));
 $prep_statement->execute();
 
-$lastcat = "";
+$last_cat = "";
 $count = 0;
 $result = $prep_statement->fetchAll();
 foreach ($result as &$row) {
@@ -107,7 +106,7 @@ foreach ($result as &$row) {
 	//$rss_desc = str_replace ("\r\n", "<br>", $rss_desc);
 	//$rss_desc = str_replace ("\n", "<br>", $rss_desc);
 
-	if ($contenttype == "rss") {
+	if ($content_type == "rss") {
 		$rss_title = htmlentities($rss_title);
 		$rss_desc  = htmlentities($rss_desc);
 
@@ -133,7 +132,7 @@ foreach ($result as &$row) {
 		echo "".$rss_desc."\n";
 		echo "<br><br>";
 
-		if ($rsssubshow == 1) {
+		if ($rss_sub_show == 1) {
 		//--- Begin Sub List -------------------------------------------------------
 
 			echo "<br><br><br>";
@@ -164,11 +163,10 @@ foreach ($result as &$row) {
 			if ($result_count == 0) { //no results
 				echo "<tr><td>&nbsp;</td></tr>";
 			}
-			else { //received results
+			else {
 				echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 
 				foreach($result2 as $row2) {
-				//print_r( $row );
 					echo "<tr style='".$row_style[$c]."'>\n";
 						//echo "<td valign='top'>".$rss_uuid."</td>";
 						//echo "<td valign='top'>&nbsp;<b>".$row2[rss_sub_title]."</b>&nbsp;</td>";
@@ -203,8 +201,6 @@ foreach ($result as &$row) {
 						echo "".$rss_sub_desc."&nbsp;";
 						echo "</td>";
 
-						echo "</tr>";
-
 					echo "</tr>";
 
 					echo "<tr><td colspan='100%'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
@@ -234,16 +230,15 @@ foreach ($result as &$row) {
 	//echo "<link>".$row["favurl"]."</link>\n";
 	//echo "</item>\n";
 
-	//$lastcat = $row["favcat"];
+	//$last_cat = $row["favcat"];
 	$count++;
 
 }
 
-if ($contenttype == "rss") {
+if ($content_type == "rss") {
 	echo "</channel>\n";
 	echo "\n";
 	echo "</rss>\n";
 }
-
 
 ?>

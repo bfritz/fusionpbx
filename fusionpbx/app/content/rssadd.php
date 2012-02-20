@@ -330,7 +330,7 @@ if (count($_POST)>0) {
 
 	echo "	<tr>";
 	echo "		<td class='' colspan='2' align='right'>";
-	echo "          <input type='submit' class='btn' name='submit' value='Add $moduletitle'>\n";
+	echo "          <input type='submit' class='btn' name='submit' value='Add $module_title'>\n";
 	echo "      </td>";
 	echo "	</tr>";
 	echo "</table>";
