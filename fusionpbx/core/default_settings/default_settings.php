@@ -61,7 +61,7 @@ require_once "includes/paging.php";
 
 	//prepare to page the results
 		$sql = "";
-		$sql .= " select count(*) as num_rows from v_global_settings ";
+		$sql .= " select count(*) as num_rows from v_default_settings ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
@@ -85,7 +85,7 @@ require_once "includes/paging.php";
 
 	//get the domain list
 		$sql = "";
-		$sql .= " select * from v_global_settings ";
+		$sql .= " select * from v_default_settings ";
 		if (strlen($order_by) == 0) {
 			$sql .= "order by global_setting_category, global_setting_subcategory asc ";
 		}
@@ -120,7 +120,7 @@ require_once "includes/paging.php";
 				echo th_order_by('global_setting_enabled', 'Enabled', $order_by, $order);
 				echo th_order_by('global_setting_description', 'Description', $order_by, $order);
 				echo "<td align='right' width='42'>\n";
-				echo "	<a href='global_settings_edit.php' alt='add'>$v_link_label_add</a>\n";
+				echo "	<a href='default_settings_edit.php' alt='add'>$v_link_label_add</a>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 			}
@@ -150,8 +150,8 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_enabled']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='global_settings_edit.php?id=".$row['global_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='global_settings_delete.php?id=".$row['global_setting_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='default_settings_edit.php?id=".$row['global_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='default_settings_delete.php?id=".$row['global_setting_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			$previous_category = $row['global_setting_category'];
@@ -167,7 +167,7 @@ require_once "includes/paging.php";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='global_settings_edit.php' alt='add'>$v_link_label_add</a>\n";
+	echo "			<a href='default_settings_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";

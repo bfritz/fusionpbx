@@ -818,7 +818,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$x++;
 		$db_tmp->beginTransaction();
 		foreach($tmp as $row) {
-			$sql = "insert into v_global_settings ";
+			$sql = "insert into v_default_settings ";
 			$sql .= "(";
 			$sql .= "global_setting_uuid, ";
 			$sql .= "global_setting_name, ";

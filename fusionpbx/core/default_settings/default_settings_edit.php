@@ -83,7 +83,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
 			if ($action == "add") {
-				$sql = "insert into v_global_settings ";
+				$sql = "insert into v_default_settings ";
 				$sql .= "(";
 				$sql .= "global_setting_uuid, ";
 				$sql .= "global_setting_category, ";
@@ -116,7 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			} //if ($action == "add")
 
 			if ($action == "update") {
-				$sql = "update v_global_settings set ";
+				$sql = "update v_default_settings set ";
 				$sql .= "global_setting_category = '$global_setting_category', ";
 				$sql .= "global_setting_subcategory = '$global_setting_subcategory', ";
 				$sql .= "global_setting_name = '$global_setting_name', ";
@@ -142,7 +142,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$global_setting_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_global_settings ";
+		$sql .= "select * from v_default_settings ";
 		$sql .= "where global_setting_uuid = '$global_setting_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

@@ -342,21 +342,21 @@ if ($db_type == "pgsql") {
 			unset($result, $prep_statement);
 	}
 
-//get the global settings
-	$sql = "select * from v_global_settings ";
-	$sql .= "where global_setting_enabled = 'true' ";
+//get the default settings
+	$sql = "select * from v_default_settings ";
+	$sql .= "where default_setting_enabled = 'true' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
 	foreach($result as $row) {
-		$name = $row['global_setting_name'];
-		$category = $row['global_setting_category'];
-		$subcategory = $row['global_setting_subcategory'];	
+		$name = $row['default_setting_name'];
+		$category = $row['default_setting_category'];
+		$subcategory = $row['default_setting_subcategory'];	
 		if (strlen($subcategory) == 0) {
-			$_SESSION[$category][$name] = $row['global_setting_value'];
+			$_SESSION[$category][$name] = $row['default_setting_value'];
 		}
 		else {
-			$_SESSION[$category][$subcategory][$name] = $row['global_setting_value'];
+			$_SESSION[$category][$subcategory][$name] = $row['default_setting_value'];
 		}
 	}
 
