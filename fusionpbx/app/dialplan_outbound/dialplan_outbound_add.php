@@ -532,7 +532,7 @@ else {
 
 		//redirect the user
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=/mod/dialplan/dialplans.php?app_uuid=8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=/app/dialplan/dialplans.php?app_uuid=8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3\">\n";
 			echo "<div align='center'>\n";
 			echo "Update Complete\n";
 			echo "</div>\n";
