@@ -683,7 +683,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		//$install_server_protocol = strtolower($server_protocol[0]);
 		//unset($server_protocol_array);
 		
-	//add the global settings
+	//add the default settings
 		$x = 0;
 		$tmp[$x]['name'] = 'uuid';
 		$tmp[$x]['value'] = $menu_uuid;
@@ -820,12 +820,12 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		foreach($tmp as $row) {
 			$sql = "insert into v_default_settings ";
 			$sql .= "(";
-			$sql .= "global_setting_uuid, ";
-			$sql .= "global_setting_name, ";
-			$sql .= "global_setting_value, ";
-			$sql .= "global_setting_category, ";
-			$sql .= "global_setting_subcategory, ";
-			$sql .= "global_setting_enabled ";
+			$sql .= "default_setting_uuid, ";
+			$sql .= "default_setting_name, ";
+			$sql .= "default_setting_value, ";
+			$sql .= "default_setting_category, ";
+			$sql .= "default_setting_subcategory, ";
+			$sql .= "default_setting_enabled ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
