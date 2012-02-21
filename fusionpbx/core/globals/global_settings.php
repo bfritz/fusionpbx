@@ -86,7 +86,12 @@ require_once "includes/paging.php";
 	//get the domain list
 		$sql = "";
 		$sql .= " select * from v_global_settings ";
-		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+		if (strlen($order_by) == 0) {
+			$sql .= "order by global_setting_category, global_setting_subcategory asc ";
+		}
+		else {
+			$sql .= "order by $order_by $order ";
+		}
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -106,7 +111,6 @@ require_once "includes/paging.php";
 		foreach($result as $row) {
 			if ($previous_category != $row['global_setting_category']) {
 				echo "<tr><td colspan='4' align='left'>\n";
-				echo "	<br />\n";
 				echo "	<br />\n";
 				echo "	<b>".ucfirst($row['global_setting_category'])."</b>&nbsp;</td></tr>\n";
 				echo "<tr>\n";
