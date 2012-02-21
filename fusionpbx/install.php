@@ -991,7 +991,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		}
 		$db_tmp->exec(check_sql($sql));
 		unset($sql);
-print_r($apps);
+
 	//assign the default permissions to the groups
 		$db_tmp->beginTransaction();
 		foreach($apps as $app) {
