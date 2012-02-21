@@ -95,7 +95,7 @@ require_once "includes/require.php";
 
 			$strlist .= "<td class='".$row_style[$c]."' align=\"center\" nowrap>\n";
 			if (permission_exists('group_add') || if_group("superadmin")) {
-				$strlist .= "&nbsp;<a class='' href='v_group_permissions.php?group_name=$group_name' title='Group Permissions'>Permissions</a>&nbsp;&nbsp;";
+				$strlist .= "&nbsp;<a class='' href='group_permissions.php?group_name=$group_name' title='Group Permissions'>Permissions</a>&nbsp;&nbsp;";
 			}
 			if (permission_exists('group_member_view') || if_group("superadmin")) {
 				$strlist .= "&nbsp;<a class='' href='groupmembers.php?group_name=$group_name' title='Group Members'>Members</a>&nbsp;";
