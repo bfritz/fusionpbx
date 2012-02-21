@@ -162,7 +162,7 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/core/status/v_cmd.php</path> 
+		<path>/core/status/cmd.php</path> 
 		<last_mod>Sat, 06 Feb 2010 18:02:13 GMT</last_mod> 
 		<md5>2305b689a2e50df316552fca238c371d</md5> 
 		<size>1786</size> 
@@ -2038,7 +2038,7 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/includes/v_cmd.php</path> 
+		<path>/includes/cmd.php</path> 
 		<last_mod>Sat, 06 Feb 2010 18:17:54 GMT</last_mod> 
 		<md5>3041c90a77039729bb041c0679a0c80e</md5> 
 		<size>1788</size> 

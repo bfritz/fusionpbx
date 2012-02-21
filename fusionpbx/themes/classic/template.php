@@ -585,7 +585,7 @@ if ($_SESSION["reload_xml"]) {
 				echo "			Apply the changes in order for them to take effect. \n";
 				echo "	</td>\n";
 				echo "	<td align='right'>\n";
-				echo "		<input type='button' class='btn' value='Apply Settings' onclick=\"document.location.href='".PROJECT_PATH."/app/sip_status/v_cmd.php?cmd=api+reloadxml';\" />\n";
+				echo "		<input type='button' class='btn' value='Apply Settings' onclick=\"document.location.href='".PROJECT_PATH."/app/sip_status/cmd.php?cmd=api+reloadxml';\" />\n";
 				echo "	</td>\n";
 				echo "	</tr>\n";
 				echo "	</table>\n";
