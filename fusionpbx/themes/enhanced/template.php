@@ -697,7 +697,7 @@ function confirmdelete(url) {
 										//show the apply settings prompt
 									}
 									else {
-										if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/app/sip_status/v_sip_status.php") {
+										if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/app/sip_status/sip_status.php") {
 											echo "<div align='center'>\n";
 											echo "<table border='0' width='400px'>\n";
 											echo "<tr>\n";
