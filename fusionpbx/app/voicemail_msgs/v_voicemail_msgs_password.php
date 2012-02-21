@@ -88,7 +88,7 @@ else {
 		$vm_attach_file = check_str($_POST["vm_attach_file"]);
 		$vm_keep_local_after_email = check_str($_POST["vm_keep_local_after_email"]);
 		$user_context = check_str($_POST["user_context"]);
-		$callgroup = check_str($_POST["callgroup"]);
+		$call_group = check_str($_POST["call_group"]);
 		$auth_acl = check_str($_POST["auth_acl"]);
 		$cidr = check_str($_POST["cidr"]);
 		$sip_force_contact = check_str($_POST["sip_force_contact"]);
@@ -120,7 +120,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($vm_attach_file) == 0) { $msg .= "Please provide: Voicemail Attach File<br>\n"; }
 		//if (strlen($vm_keep_local_after_email) == 0) { $msg .= "Please provide: VM Keep Local After Email<br>\n"; }
 		//if (strlen($user_context) == 0) { $msg .= "Please provide: User Context<br>\n"; }
-		//if (strlen($callgroup) == 0) { $msg .= "Please provide: Call Group<br>\n"; }
+		//if (strlen($call_group) == 0) { $msg .= "Please provide: Call Group<br>\n"; }
 		//if (strlen($auth_acl) == 0) { $msg .= "Please provide: Auth ACL<br>\n"; }
 		//if (strlen($cidr) == 0) { $msg .= "Please provide: CIDR<br>\n"; }
 		//if (strlen($sip_force_contact) == 0) { $msg .= "Please provide: SIP Force Contact<br>\n"; }
@@ -159,7 +159,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "vm_attach_file = '$vm_attach_file', ";
 			$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email' ";
 			//$sql .= "user_context = '$user_context', ";
-			//$sql .= "callgroup = '$callgroup', ";
+			//$sql .= "call_group = '$call_group', ";
 			//$sql .= "auth_acl = '$auth_acl', ";
 			//$sql .= "cidr = '$cidr', ";
 			//$sql .= "sip_force_contact = '$sip_force_contact', ";
@@ -216,7 +216,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$vm_attach_file = $row["vm_attach_file"];
 			$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
 			$user_context = $row["user_context"];
-			$callgroup = $row["callgroup"];
+			$call_group = $row["call_group"];
 			$auth_acl = $row["auth_acl"];
 			$cidr = $row["cidr"];
 			$sip_force_contact = $row["sip_force_contact"];

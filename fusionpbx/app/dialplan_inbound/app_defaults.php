@@ -50,7 +50,7 @@
 	}
 
 //if the public directory doesn't exist then create it
-	if (!is_dir($_SESSION['switch']['dialplan']['dir'].'/public') { mkdir($_SESSION['switch']['dialplan']['dir'].'/public',0777,true); }
+	if (!is_dir($_SESSION['switch']['dialplan']['dir'].'/public')) { mkdir($_SESSION['switch']['dialplan']['dir'].'/public',0777,true); }
 
 //if multiple domains then make sure that the dialplan/public/domain_name.xml file exists
 	if (count($_SESSION["domains"]) > 1) {

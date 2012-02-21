@@ -84,7 +84,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_list';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
-		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'provisioning_list';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
@@ -150,7 +149,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'callgroup';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'call_group';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'callgroup';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;

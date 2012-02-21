@@ -192,7 +192,7 @@ else {
 									//$vm_attach_file = $row["vm_attach_file"];
 									//$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
 									//$user_context = $row["user_context"];
-									//$callgroup = $row["callgroup"];
+									//$call_group = $row["call_group"];
 									//$auth_acl = $row["auth_acl"];
 									//$cidr = $row["cidr"];
 									//$sip_force_contact = $row["sip_force_contact"];

@@ -30,6 +30,7 @@
 	//get the contents of the dialplan/default.xml
 		$file_default_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/dialplan/default.xml';
 		$file_default_contents = file_get_contents($file_default_path);
+
 	//prepare the file contents and the path
 		if (count($_SESSION['domains']) == 1) {
 			//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number

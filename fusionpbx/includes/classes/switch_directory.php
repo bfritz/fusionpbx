@@ -50,7 +50,7 @@ include "root.php";
 		public $range;
 		public $autogen_users;
 		public $toll_allow;
-		public $callgroup;
+		public $call_group;
 		public $hold_music;
 		public $auth_acl;
 		public $cidr;
@@ -124,7 +124,7 @@ include "root.php";
 			$vm_keep_local_after_email = $this->vm_keep_local_after_email;
 			$user_context = $this->user_context;
 			$toll_allow = $this->toll_allow;
-			$callgroup = $this->callgroup;
+			$call_group = $this->call_group;
 			$hold_music = $this->hold_music;
 			$auth_acl = $this->auth_acl;
 			$cidr = $this->cidr;
@@ -167,7 +167,7 @@ include "root.php";
 					$sql .= "vm_keep_local_after_email, ";
 					$sql .= "user_context, ";
 					$sql .= "toll_allow, ";
-					$sql .= "callgroup, ";
+					$sql .= "call_group, ";
 					$sql .= "hold_music, ";
 					$sql .= "auth_acl, ";
 					$sql .= "cidr, ";
@@ -212,7 +212,7 @@ include "root.php";
 					$sql .= "'$vm_keep_local_after_email', ";
 					$sql .= "'$user_context', ";
 					$sql .= "'$toll_allow', ";
-					$sql .= "'$callgroup', ";
+					$sql .= "'$call_group', ";
 					$sql .= "'$hold_music', ";
 					$sql .= "'$auth_acl', ";
 					$sql .= "'$cidr', ";
@@ -271,7 +271,7 @@ include "root.php";
 			$vm_keep_local_after_email = $this->vm_keep_local_after_email;
 			$user_context = $this->user_context;
 			$toll_allow = $this->toll_allow;
-			$callgroup = $this->callgroup;
+			$call_group = $this->call_group;
 			$hold_music = $this->hold_music;
 			$auth_acl = $this->auth_acl;
 			$cidr = $this->cidr;
@@ -321,7 +321,7 @@ include "root.php";
 			$sql .= "vm_keep_local_after_email = '$vm_keep_local_after_email', ";
 			$sql .= "user_context = '$user_context', ";
 			$sql .= "toll_allow = '$toll_allow', ";
-			$sql .= "callgroup = '$callgroup', ";
+			$sql .= "call_group = '$call_group', ";
 			$sql .= "hold_music = '$hold_music', ";
 			$sql .= "auth_acl = '$auth_acl', ";
 			$sql .= "cidr = '$cidr', ";
@@ -549,7 +549,7 @@ include "root.php";
 			$sql = "";
 			$sql .= "select * from v_extensions ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "order by callgroup asc ";
+			$sql .= "order by call_group asc ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$i = 0;
@@ -559,16 +559,16 @@ include "root.php";
 				$tmp_xml = "<include>\n";
 			}
 			while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
-				$callgroup = $row['callgroup'];
-				$callgroup = str_replace(";", ",", $callgroup);
-				$tmp_array = explode(",", $callgroup);
-				foreach ($tmp_array as &$tmp_callgroup) {
-					if (strlen($tmp_callgroup) > 0) {
-						if (strlen($callgroups_array[$tmp_callgroup]) == 0) {
-							$callgroups_array[$tmp_callgroup] = $row['extension'];
+				$call_group = $row['call_group'];
+				$call_group = str_replace(";", ",", $call_group);
+				$tmp_array = explode(",", $call_group);
+				foreach ($tmp_array as &$tmp_call_group) {
+					if (strlen($tmp_call_group) > 0) {
+						if (strlen($call_group_array[$tmp_call_group]) == 0) {
+							$call_group_array[$tmp_call_group] = $row['extension'];
 						}
 						else {
-							$callgroups_array[$tmp_callgroup] = $callgroups_array[$tmp_callgroup].','.$row['extension'];
+							$call_group_array[$tmp_call_group] = $call_group_array[$tmp_call_group].','.$row['extension'];
 						}
 					}
 					$i++;
@@ -647,13 +647,13 @@ include "root.php";
 				$tmp_xml .= "			</users>\n";
 				$tmp_xml .= "			</group>\n";
 				$tmp_xml .= "\n";
-				$previous_callgroup = "";
-				foreach ($callgroups_array as $key => $value) {
-					$callgroup = $key;
+				$previous_call_group = "";
+				foreach ($call_group_array as $key => $value) {
+					$call_group = $key;
 					$extension_list = $value;
-					if (strlen($callgroup) > 0) {
-						if ($previous_callgroup != $callgroup) {
-							$tmp_xml .= "			<group name=\"$callgroup\">\n";
+					if (strlen($call_group) > 0) {
+						if ($previous_call_group != $call_group) {
+							$tmp_xml .= "			<group name=\"$call_group\">\n";
 							$tmp_xml .= "				<users>\n";
 							$tmp_xml .= "					<!--\n";
 							$tmp_xml .= "					type=\"pointer\" is a pointer so you can have the\n";
@@ -668,9 +668,9 @@ include "root.php";
 							$tmp_xml .= "			</group>\n";
 							$tmp_xml .= "\n";
 						}
-						$previous_callgroup = $callgroup;
+						$previous_call_group = $call_group;
 					}
-					unset($callgroup);
+					unset($call_group);
 				}
 				$tmp_xml .= "		</groups>\n";
 				$tmp_xml .= "\n";

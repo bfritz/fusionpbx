@@ -100,7 +100,7 @@ else {
 			$range = check_str($_POST["range"]);
 			$autogen_users = check_str($_POST["autogen_users"]);
 			$toll_allow = check_str($_POST["toll_allow"]);
-			$callgroup = check_str($_POST["callgroup"]);
+			$call_group = check_str($_POST["call_group"]);
 			$hold_music = check_str($_POST["hold_music"]);
 			$auth_acl = check_str($_POST["auth_acl"]);
 			$cidr = check_str($_POST["cidr"]);
@@ -137,7 +137,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($vm_keep_local_after_email) == 0) { $msg .= "Please provide: VM Keep Local After Email<br>\n"; }
 		//if (strlen($user_context) == 0) { $msg .= "Please provide: User Context<br>\n"; }
 		//if (strlen($toll_allow) == 0) { $msg .= "Please provide: Toll Allow<br>\n"; }
-		//if (strlen($callgroup) == 0) { $msg .= "Please provide: Call Group<br>\n"; }
+		//if (strlen($call_group) == 0) { $msg .= "Please provide: Call Group<br>\n"; }
 		//if (strlen($hold_music) == 0) { $msg .= "Please provide: Hold Music<br>\n"; }
 		//if (strlen($auth_acl) == 0) { $msg .= "Please provide: Auth ACL<br>\n"; }
 		//if (strlen($cidr) == 0) { $msg .= "Please provide: CIDR<br>\n"; }
@@ -237,7 +237,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					if (permission_exists('extension_toll')) {
 						$sql .= "toll_allow, ";
 					}
-					$sql .= "callgroup, ";
+					$sql .= "call_group, ";
 					$sql .= "hold_music, ";
 					$sql .= "auth_acl, ";
 					$sql .= "cidr, ";
@@ -279,7 +279,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					if (permission_exists('extension_toll')) {
 						$sql .= "'$toll_allow', ";
 					}
-					$sql .= "'$callgroup', ";
+					$sql .= "'$call_group', ";
 					$sql .= "'$hold_music', ";
 					$sql .= "'$auth_acl', ";
 					$sql .= "'$cidr', ";
@@ -407,7 +407,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if (permission_exists('extension_toll')) {
 				$sql .= "toll_allow = '$toll_allow', ";
 			}
-			$sql .= "callgroup = '$callgroup', ";
+			$sql .= "call_group = '$call_group', ";
 			$sql .= "hold_music = '$hold_music', ";
 			$sql .= "auth_acl = '$auth_acl', ";
 			$sql .= "cidr = '$cidr', ";
@@ -507,7 +507,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
 			$user_context = $row["user_context"];
 			$toll_allow = $row["toll_allow"];
-			$callgroup = $row["callgroup"];
+			$call_group = $row["call_group"];
 			$hold_music = $row["hold_music"];
 			$auth_acl = $row["auth_acl"];
 			$cidr = $row["cidr"];
@@ -966,7 +966,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Call Group:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='callgroup' maxlength='255' value=\"$callgroup\">\n";
+	echo "    <input class='formfld' type='text' name='call_group' maxlength='255' value=\"$call_group\">\n";
 	echo "<br />\n";
 	echo "Enter the user call group here. Groups available by default: sales, support, billing\n";
 	echo "</td>\n";

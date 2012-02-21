@@ -69,7 +69,7 @@ else {
 		$vm_keep_local_after_email = $row["vm_keep_local_after_email"];
 		$user_context = $row["user_context"];
 		$toll_allow = $row["toll_allow"];
-		$callgroup = $row["callgroup"];
+		$call_group = $row["call_group"];
 		$auth_acl = $row["auth_acl"];
 		$cidr = $row["cidr"];
 		$sip_force_contact = $row["sip_force_contact"];
@@ -102,7 +102,7 @@ else {
 	$sql .= "vm_keep_local_after_email, ";
 	$sql .= "user_context, ";
 	$sql .= "toll_allow, ";
-	$sql .= "callgroup, ";
+	$sql .= "call_group, ";
 	$sql .= "auth_acl, ";
 	$sql .= "cidr, ";
 	$sql .= "sip_force_contact, ";
@@ -129,7 +129,7 @@ else {
 	$sql .= "'$vm_keep_local_after_email', ";
 	$sql .= "'$user_context', ";
 	$sql .= "'$toll_allow', ";
-	$sql .= "'$callgroup', ";
+	$sql .= "'$call_group', ";
 	$sql .= "'$auth_acl', ";
 	$sql .= "'$cidr', ";
 	$sql .= "'$sip_force_contact', ";

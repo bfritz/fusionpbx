@@ -107,7 +107,7 @@ require_once "includes/paging.php";
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";
 		echo th_order_by('extension', 'Extension', $order_by, $order);
-		echo th_order_by('callgroup', 'Call Group', $order_by, $order);
+		echo th_order_by('call_group', 'Call Group', $order_by, $order);
 		echo th_order_by('vm_mailto', 'Voicemail Mail To', $order_by, $order);
 		echo th_order_by('enabled', 'Enabled', $order_by, $order);
 		echo th_order_by('description', 'Description', $order_by, $order);
@@ -122,7 +122,7 @@ require_once "includes/paging.php";
 			foreach($result as $row) {
 				echo "<tr >\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['extension']."</td>\n";
-				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['callgroup']."&nbsp;</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['call_group']."&nbsp;</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['vm_mailto']."&nbsp;</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['enabled']."</td>\n";
 				echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['description']."&nbsp;</td>\n";

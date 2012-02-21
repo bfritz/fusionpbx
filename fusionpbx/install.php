@@ -143,7 +143,7 @@ require_once "includes/lib_functions.php";
 		$switch_db_dir = $install_switch_base_dir.'/db';
 		$switch_log_dir = $install_switch_base_dir.'/log';
 		$switch_mod_dir = $install_switch_base_dir.'/mod';
-		$switch_extensions_dir = $switch_conf_dir.'/directory/default';
+		$switch_extensions_dir = $switch_conf_dir.'/directory';
 		$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
 		$switch_dialplan_dir = $switch_conf_dir.'/dialplan';
 		$switch_scripts_dir = $install_switch_base_dir.'/scripts';
@@ -173,7 +173,7 @@ require_once "includes/lib_functions.php";
 							$switch_db_dir = '/var/db/freeswitch';
 							$switch_log_dir = '/var/log/freeswitch';
 							$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
-							$switch_extensions_dir = $switch_conf_dir.'/directory/default';
+							$switch_extensions_dir = $switch_conf_dir.'/directory';
 							$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
 							$switch_dialplan_dir = $switch_conf_dir.'/dialplan';
 							$switch_scripts_dir = '/usr/local/etc/freeswitch/scripts';
@@ -196,7 +196,7 @@ require_once "includes/lib_functions.php";
 							$switch_db_dir = '/data/freeswitch/db';
 							$switch_log_dir = '/data/freeswitch/log';
 							$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
-							$switch_extensions_dir = $switch_conf_dir.'/directory/default';
+							$switch_extensions_dir = $switch_conf_dir.'/directory';
 							$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
 							$switch_dialplan_dir = $switch_conf_dir.'/dialplan';
 							$switch_scripts_dir = '/usr/local/etc/freeswitch/scripts';
@@ -991,7 +991,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		}
 		$db_tmp->exec(check_sql($sql));
 		unset($sql);
-
+print_r($apps);
 	//assign the default permissions to the groups
 		$db_tmp->beginTransaction();
 		foreach($apps as $app) {

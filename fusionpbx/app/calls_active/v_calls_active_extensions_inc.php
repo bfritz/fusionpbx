@@ -298,7 +298,7 @@ else {
 							$extension_array[$extension]['vm_attach_file'] = $row["vm_attach_file"];
 							$extension_array[$extension]['vm_keep_local_after_email'] = $row["vm_keep_local_after_email"];
 							$extension_array[$extension]['user_context'] = $row["user_context"];
-							$extension_array[$extension]['callgroup'] = $row["callgroup"];
+							$extension_array[$extension]['call_group'] = $row["call_group"];
 							$extension_array[$extension]['auth_acl'] = $row["auth_acl"];
 							$extension_array[$extension]['cidr'] = $row["cidr"];
 							$extension_array[$extension]['sip_force_contact'] = $row["sip_force_contact"];

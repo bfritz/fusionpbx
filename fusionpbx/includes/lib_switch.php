@@ -168,7 +168,7 @@ foreach($settings_array as $name => $value) {
 			$sql .= "select extension, user_context from v_extensions ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and enabled = 'true' ";
-			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+//			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
 			$sql .= "order by extension asc ";
 			$result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 			if (count($result) == 0) {
@@ -548,9 +548,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 	//list call groups
 		$sql = "";
-		$sql .= "select distinct(callgroup) from v_extensions ";
+		$sql .= "select distinct(call_group) from v_extensions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "order by callgroup asc ";
+		$sql .= "order by call_group asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$x = 0;
@@ -560,7 +560,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 		$previous_call_group_name = "";
 		foreach ($result as &$row) {
-			$call_groups = $row["callgroup"];
+			$call_groups = $row["call_group"];
 			$call_group_array = explode(",", $call_groups);
 			foreach ($call_group_array as $call_group) {
 				if ($previous_call_group_name != $call_group) {
@@ -1573,197 +1573,174 @@ function sync_package_v_settings() {
 
 function sync_package_v_extensions() {
 	//declare global variables
-		global $config;
+		global $config, $db, $domain_uuid;
 
-	//determine the extensions parent directory
-		$extension_parent_dir = realpath($_SESSION['switch']['extensions']['dir']."/..");
+	//delete all old extensions to prepare for new ones
+		$dialplan_list = glob($_SESSION['switch']['extensions']['dir'] . "/*/v_*.xml");
+		foreach($dialplan_list as $name => $value) {
+			unlink($value);
+		}
 
-	// delete all old extensions to prepare for new ones
-		if($dh = opendir($_SESSION['switch']['extensions']['dir'])) {
-			$files = Array();
-			while($file = readdir($dh)) {
-				if($file != "." && $file != ".." && $file[0] != '.') {
-					if(is_dir($dir . "/" . $file)) {
-						//this is a directory do nothing
-					} else {
-						//check if file is an extension; verify the file numeric and the extension is xml
-						if (substr($file,0,2) == 'v_' && substr($file,-4) == '.xml') {
-							unlink($_SESSION['switch']['extensions']['dir']."/".$file);
-						}
+	//write the xml files
+		$sql = "";
+		$sql .= "select * from v_extensions ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "order by call_group asc ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$i = 0;
+		$extension_xml_condensed = false;
+
+		while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
+			$call_group = $row['call_group'];
+			$call_group = str_replace(";", ",", $call_group);
+			$tmp_array = explode(",", $call_group);
+			foreach ($tmp_array as &$tmp_call_group) {
+				if (strlen($tmp_call_group) > 0) {
+					if (strlen($call_group_array[$tmp_call_group]) == 0) {
+						$call_group_array[$tmp_call_group] = $row['extension'];
+					}
+					else {
+						$call_group_array[$tmp_call_group] = $call_group_array[$tmp_call_group].','.$row['extension'];
 					}
 				}
+				$i++;
 			}
-			closedir($dh);
-		}
+			$vm_password = $row['vm_password'];
+			$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 
-	global $db, $domain_uuid;
-	$sql = "";
-	$sql .= "select * from v_extensions ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "order by callgroup asc ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$i = 0;
-	$extension_xml_condensed = false;
-	if ($extension_xml_condensed) {
-		$fout = fopen($_SESSION['switch']['extensions']['dir']."/v_extensions.xml","w");
-		$tmp_xml = "<include>\n";
-	}
-	while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
-		$callgroup = $row['callgroup'];
-		$callgroup = str_replace(";", ",", $callgroup);
-		$tmp_array = explode(",", $callgroup);
-		foreach ($tmp_array as &$tmp_callgroup) {
-			if (strlen($tmp_callgroup) > 0) {
-				if (strlen($callgroups_array[$tmp_callgroup]) == 0) {
-					$callgroups_array[$tmp_callgroup] = $row['extension'];
+			//echo "enabled: ".$row['enabled'];
+			if ($row['enabled'] != "false") {
+				//remove invalid characters from the file names
+				$extension = $row['extension'];
+				$extension = str_replace(" ", "_", $extension);
+				$extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension);
+
+				$tmp_xml .= "<include>\n";
+				$cidr = '';
+				if (strlen($row['cidr']) > 0) {
+					$cidr = " cidr=\"" . $row['cidr'] . "\"";
+				}
+				$number_alias = '';
+				if (strlen($row['number_alias']) > 0) {
+					$number_alias = " number-alias=\"".$row['number_alias']."\"";
+				}
+				$tmp_xml .= "  <user id=\"".$row['extension']."\"".$cidr."".$number_alias.">\n";
+				$tmp_xml .= "    <params>\n";
+				$tmp_xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
+				$tmp_xml .= "      <param name=\"vm-password\" value=\"" . $vm_password . "\"/>\n";
+				switch ($row['vm_enabled']) {
+				case "true":
+					$tmp_xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
+					break;
+				case "false":
+					$tmp_xml .= "      <param name=\"vm-enabled\" value=\"false\"/>\n";
+					break;
+				default:
+					$tmp_xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
+				}
+				if (strlen($row['vm_mailto']) > 0) {
+					$tmp_xml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
+
+					switch ($row['vm_attach_file']) {
+					case "true":
+							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+							break;
+					case "false":
+							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"false\"/>\n";
+							break;
+					default:
+							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+					}
+					switch ($row['vm_keep_local_after_email']) {
+					case "true":
+							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
+							break;
+					case "false":
+							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"false\"/>\n";
+							break;
+					default:
+							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
+					}
+					$tmp_xml .= "      <param name=\"vm-mailto\" value=\"" . $row['vm_mailto'] . "\"/>\n";
+				}
+				if (strlen($row['mwi_account']) > 0) {
+					$tmp_xml .= "      <param name=\"MWI-Account\" value=\"" . $row['mwi_account'] . "\"/>\n";
+				}
+				if (strlen($row['auth-acl']) > 0) {
+					$tmp_xml .= "      <param name=\"auth-acl\" value=\"" . $row['auth_acl'] . "\"/>\n";
+				}
+				$tmp_xml .= "    </params>\n";
+				$tmp_xml .= "    <variables>\n";
+				if (strlen($row['hold_music']) > 0) {
+					$tmp_xml .= "      <variable name=\"hold_music\" value=\"" . $row['hold_music'] . "\"/>\n";
+				}
+				$tmp_xml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
+				if (strlen($switch_account_code) > 0) {
+					$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $switch_account_code . "\"/>\n";
 				}
 				else {
-					$callgroups_array[$tmp_callgroup] = $callgroups_array[$tmp_callgroup].','.$row['extension'];
+					$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
 				}
-			}
-			$i++;
-		}
-		$vm_password = $row['vm_password'];
-		$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
-
-		//echo "enabled: ".$row['enabled'];
-		if ($row['enabled'] != "false") {
-			//remove invalid characters from the file names
-			$extension = $row['extension'];
-			$extension = str_replace(" ", "_", $extension);
-			$extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension);
-
-			if (!$extension_xml_condensed) {
-				$fout = fopen($_SESSION['switch']['extensions']['dir']."/v_".$extension.".xml","w");
-				$tmp_xml .= "<include>\n";
-			}
-			$cidr = '';
-			if (strlen($row['cidr']) > 0) {
-				$cidr = " cidr=\"" . $row['cidr'] . "\"";
-			}
-			$number_alias = '';
-			if (strlen($row['number_alias']) > 0) {
-				$number_alias = " number-alias=\"".$row['number_alias']."\"";
-			}
-			$tmp_xml .= "  <user id=\"".$row['extension']."\"".$cidr."".$number_alias.">\n";
-			$tmp_xml .= "    <params>\n";
-			$tmp_xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
-			$tmp_xml .= "      <param name=\"vm-password\" value=\"" . $vm_password . "\"/>\n";
-			switch ($row['vm_enabled']) {
-			case "true":
-				$tmp_xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
-				break;
-			case "false":
-				$tmp_xml .= "      <param name=\"vm-enabled\" value=\"false\"/>\n";
-				break;
-			default:
-				$tmp_xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
-			}
-			if (strlen($row['vm_mailto']) > 0) {
-				$tmp_xml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
-
-				switch ($row['vm_attach_file']) {
-				case "true":
-						$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
-						break;
-				case "false":
-						$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"false\"/>\n";
-						break;
-				default:
-						$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+				$tmp_xml .= "      <variable name=\"user_context\" value=\"" . $row['user_context'] . "\"/>\n";
+				if (strlen($row['effective_caller_id_name']) > 0) {
+					$tmp_xml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";
 				}
-				switch ($row['vm_keep_local_after_email']) {
-				case "true":
-						$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
-						break;
-				case "false":
-						$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"false\"/>\n";
-						break;
-				default:
-						$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
+				if (strlen($row['outbound_caller_id_number']) > 0) {
+					$tmp_xml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $row['effective_caller_id_number'] . "\"/>\n";
 				}
-				$tmp_xml .= "      <param name=\"vm-mailto\" value=\"" . $row['vm_mailto'] . "\"/>\n";
-			}
-			if (strlen($row['mwi_account']) > 0) {
-				$tmp_xml .= "      <param name=\"MWI-Account\" value=\"" . $row['mwi_account'] . "\"/>\n";
-			}
-			if (strlen($row['auth-acl']) > 0) {
-				$tmp_xml .= "      <param name=\"auth-acl\" value=\"" . $row['auth_acl'] . "\"/>\n";
-			}
-			$tmp_xml .= "    </params>\n";
-			$tmp_xml .= "    <variables>\n";
-			if (strlen($row['hold_music']) > 0) {
-				$tmp_xml .= "      <variable name=\"hold_music\" value=\"" . $row['hold_music'] . "\"/>\n";
-			}
-			$tmp_xml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
-			if (strlen($switch_account_code) > 0) {
-				$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $switch_account_code . "\"/>\n";
-			}
-			else {
-				$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
-			}
-			$tmp_xml .= "      <variable name=\"user_context\" value=\"" . $row['user_context'] . "\"/>\n";
-			if (strlen($row['effective_caller_id_name']) > 0) {
-				$tmp_xml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";
-			}
-			if (strlen($row['outbound_caller_id_number']) > 0) {
-				$tmp_xml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $row['effective_caller_id_number'] . "\"/>\n";
-			}
-			if (strlen($row['outbound_caller_id_name']) > 0) {
-				$tmp_xml .= "      <variable name=\"outbound_caller_id_name\" value=\"" . $row['outbound_caller_id_name'] . "\"/>\n";
-			}
-			if (strlen($row['outbound_caller_id_number']) > 0) {
-				$tmp_xml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $row['outbound_caller_id_number'] . "\"/>\n";
-			}
-			if (strlen($row['limit_max']) > 0) {
-				$tmp_xml .= "      <variable name=\"limit_max\" value=\"" . $row['limit_max'] . "\"/>\n";
-			}
-			else {
-				$tmp_xml .= "      <variable name=\"limit_max\" value=\"5\"/>\n";
-			}
-			if (strlen($row['limit_destination']) > 0) {
-				$tmp_xml .= "      <variable name=\"limit_destination\" value=\"" . $row['limit_destination'] . "\"/>\n";
-			}
-			if (strlen($row['sip_force_contact']) > 0) {
-				$tmp_xml .= "      <variable name=\"sip-force-contact\" value=\"" . $row['sip_force_contact'] . "\"/>\n";
-			}
-			if (strlen($row['sip_force_expires']) > 0) {
-				$tmp_xml .= "      <variable name=\"sip-force-expires\" value=\"" . $row['sip_force_expires'] . "\"/>\n";
-			}
-			if (strlen($row['nibble_account']) > 0) {
-				$tmp_xml .= "      <variable name=\"nibble_account\" value=\"" . $row['nibble_account'] . "\"/>\n";
-			}
-			switch ($row['sip_bypass_media']) {
-				case "bypass-media":
-						$tmp_xml .= "      <variable name=\"bypass_media\" value=\"true\"/>\n";
-						break;
-				case "bypass-media-after-bridge":
-						$tmp_xml .= "      <variable name=\"bypass_media_after_bridge\" value=\"true\"/>\n";
-						break;
-				case "proxy-media":
-						$tmp_xml .= "      <variable name=\"proxy_media\" value=\"true\"/>\n";
-						break;
-			}
+				if (strlen($row['outbound_caller_id_name']) > 0) {
+					$tmp_xml .= "      <variable name=\"outbound_caller_id_name\" value=\"" . $row['outbound_caller_id_name'] . "\"/>\n";
+				}
+				if (strlen($row['outbound_caller_id_number']) > 0) {
+					$tmp_xml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $row['outbound_caller_id_number'] . "\"/>\n";
+				}
+				if (strlen($row['limit_max']) > 0) {
+					$tmp_xml .= "      <variable name=\"limit_max\" value=\"" . $row['limit_max'] . "\"/>\n";
+				}
+				else {
+					$tmp_xml .= "      <variable name=\"limit_max\" value=\"5\"/>\n";
+				}
+				if (strlen($row['limit_destination']) > 0) {
+					$tmp_xml .= "      <variable name=\"limit_destination\" value=\"" . $row['limit_destination'] . "\"/>\n";
+				}
+				if (strlen($row['sip_force_contact']) > 0) {
+					$tmp_xml .= "      <variable name=\"sip-force-contact\" value=\"" . $row['sip_force_contact'] . "\"/>\n";
+				}
+				if (strlen($row['sip_force_expires']) > 0) {
+					$tmp_xml .= "      <variable name=\"sip-force-expires\" value=\"" . $row['sip_force_expires'] . "\"/>\n";
+				}
+				if (strlen($row['nibble_account']) > 0) {
+					$tmp_xml .= "      <variable name=\"nibble_account\" value=\"" . $row['nibble_account'] . "\"/>\n";
+				}
+				switch ($row['sip_bypass_media']) {
+					case "bypass-media":
+							$tmp_xml .= "      <variable name=\"bypass_media\" value=\"true\"/>\n";
+							break;
+					case "bypass-media-after-bridge":
+							$tmp_xml .= "      <variable name=\"bypass_media_after_bridge\" value=\"true\"/>\n";
+							break;
+					case "proxy-media":
+							$tmp_xml .= "      <variable name=\"proxy_media\" value=\"true\"/>\n";
+							break;
+				}
 
-			$tmp_xml .= "    </variables>\n";
-			$tmp_xml .= "  </user>\n";
+				$tmp_xml .= "    </variables>\n";
+				$tmp_xml .= "  </user>\n";
 
-			if (!$extension_xml_condensed) {
+				$fout = fopen($_SESSION['switch']['extensions']['dir']."/".$row['user_context']."/v_".$extension.".xml","w");
 				$tmp_xml .= "</include>\n";
 				fwrite($fout, $tmp_xml);
 				unset($tmp_xml);
 				fclose($fout);
 			}
 		}
-	}
-	unset ($prep_statement);
-	if ($extension_xml_condensed) {
-		$tmp_xml .= "</include>\n";
-		fwrite($fout, $tmp_xml);
-		unset($tmp_xml);
-		fclose($fout);
-	}
+		unset ($prep_statement);
+
+	//prepare extension 
+		$extension_dir_path = realpath($_SESSION['switch']['extensions']['dir'];
+		$extension_dir_name = str_replace(" ", "_", $extension_dir_name);
+		$extension_dir_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension_dir_name);
 
 	//define the group members
 		$tmp_xml = "<!--\n";
@@ -1812,13 +1789,13 @@ function sync_package_v_extensions() {
 		$tmp_xml .= "			</users>\n";
 		$tmp_xml .= "			</group>\n";
 		$tmp_xml .= "\n";
-		$previous_callgroup = "";
-		foreach ($callgroups_array as $key => $value) {
-			$callgroup = $key;
+		$previous_call_group = "";
+		foreach ($call_group_array as $key => $value) {
+			$call_group = $key;
 			$extension_list = $value;
-			if (strlen($callgroup) > 0) {
-				if ($previous_callgroup != $callgroup) {
-					$tmp_xml .= "			<group name=\"$callgroup\">\n";
+			if (strlen($call_group) > 0) {
+				if ($previous_call_group != $call_group) {
+					$tmp_xml .= "			<group name=\"$call_group\">\n";
 					$tmp_xml .= "				<users>\n";
 					$tmp_xml .= "					<!--\n";
 					$tmp_xml .= "					type=\"pointer\" is a pointer so you can have the\n";
@@ -1833,21 +1810,17 @@ function sync_package_v_extensions() {
 					$tmp_xml .= "			</group>\n";
 					$tmp_xml .= "\n";
 				}
-				$previous_callgroup = $callgroup;
+				$previous_call_group = $call_group;
 			}
-			unset($callgroup);
+			unset($call_group);
 		}
 		$tmp_xml .= "		</groups>\n";
 		$tmp_xml .= "\n";
 		$tmp_xml .= "	</domain>\n";
 		$tmp_xml .= "</include>";
 
-	//remove invalid characters from the file names
-		$extension_dir_name = str_replace(" ", "_", $extension_dir_name);
-		$extension_dir_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension_dir_name);
-
 	//write the xml file
-		$fout = fopen($extension_parent_dir."/".$extension_dir_name.".xml","w");
+		$fout = fopen($extension_dir_path."/".$extension_dir_name.".xml","w");
 		fwrite($fout, $tmp_xml);
 		unset($tmp_xml);
 		fclose($fout);
