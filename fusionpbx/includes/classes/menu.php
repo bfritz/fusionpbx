@@ -85,7 +85,7 @@
 											$sql .= "menu_uuid, ";
 											//$sql .= "menu_item_language, ";
 											$sql .= "menu_item_title, ";
-											$sql .= "menu_item_str, ";
+											$sql .= "menu_item_link, ";
 											$sql .= "menu_item_category, ";
 											$sql .= "menu_item_order, ";
 											if (strlen($menu_item_uuid) > 0) {
@@ -205,7 +205,7 @@
 				foreach($result as $field) {
 					$menu_item_id = $field['menu_item_id'];
 					$menu_item_title = $field['menu_item_title'];
-					$menu_item_str = $field['menu_item_str'];
+					$menu_item_link = $field['menu_item_link'];
 					$menu_item_category = $field['menu_item_category'];
 					$menu_item_desc = $field['menu_item_desc'];
 					$menu_item_uuid = $field['menu_item_uuid'];
@@ -216,16 +216,16 @@
 					$menu_tags = '';
 					switch ($menu_item_category) {
 						case "internal":
-							$menu_tags = "href='".PROJECT_PATH."$menu_item_str'";
+							$menu_tags = "href='".PROJECT_PATH."$menu_item_link'";
 							break;
 						case "external":
-							if (substr($menu_item_str, 0,1) == "/") {
-								$menu_item_str = PROJECT_PATH . $menu_item_str;
+							if (substr($menu_item_link, 0,1) == "/") {
+								$menu_item_link = PROJECT_PATH . $menu_item_link;
 							}
-							$menu_tags = "href='$menu_item_str' target='_blank'";
+							$menu_tags = "href='$menu_item_link' target='_blank'";
 							break;
 						case "email":
-							$menu_tags = "href='mailto:$menu_item_str'";
+							$menu_tags = "href='mailto:$menu_item_link'";
 							break;
 					}
 
@@ -236,7 +236,7 @@
 							$db_menu .= "<a $menu_tags style='padding: 0px 0px; border-style: none; background: none;'><h2 align='center' style=''>$menu_item_title</h2></a>\n";
 						}
 						else {
-							if ($menu_item_str == "/login.php" || $menu_item_str == "/users/signup.php") {
+							if ($menu_item_link == "/login.php" || $menu_item_link == "/users/signup.php") {
 								//hide login and sign-up when the user is logged in
 							}
 							else {
@@ -260,7 +260,7 @@
 				} //end for each
 
 				unset($menu_item_title);
-				unset($menu_item_str);
+				unset($menu_item_link);
 				unset($menu_item_category);
 				unset($menu_item_uuid);
 				unset($menu_item_parent_uuid);
@@ -313,23 +313,23 @@
 					foreach($result_2 as $row) {
 						$menu_item_id = $row['menu_item_id'];
 						$menu_item_title = $row['menu_item_title'];
-						$menu_item_str = $row['menu_item_str'];
+						$menu_item_link = $row['menu_item_link'];
 						$menu_item_category = $row['menu_item_category'];
 						$menu_item_uuid = $row['menu_item_uuid'];
 						$menu_item_parent_uuid = $row['menu_item_parent_uuid'];
 
 						switch ($menu_item_category) {
 							case "internal":
-								$menu_tags = "href='".PROJECT_PATH."$menu_item_str'";
+								$menu_tags = "href='".PROJECT_PATH."$menu_item_link'";
 								break;
 							case "external":
-								if (substr($menu_item_str, 0,1) == "/") {
-									$menu_item_str = PROJECT_PATH . $menu_item_str;
+								if (substr($menu_item_link, 0,1) == "/") {
+									$menu_item_link = PROJECT_PATH . $menu_item_link;
 								}
-								$menu_tags = "href='$menu_item_str' target='_blank'";
+								$menu_tags = "href='$menu_item_link' target='_blank'";
 								break;
 							case "email":
-								$menu_tags = "href='mailto:$menu_item_str'";
+								$menu_tags = "href='mailto:$menu_item_link'";
 								break;
 						}
 

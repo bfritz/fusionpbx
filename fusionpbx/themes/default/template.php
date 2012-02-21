@@ -697,10 +697,10 @@ function confirmdelete(url) {
 		$sql = "select * from v_menu_items ";
 		$sql .= "where menu_uuid = '".$_SESSION['domain']['menu']['uuid']."' ";
 		if ($php_self_dir == "/") {
-			$sql .= "and menu_item_str = '/index2.php' ";
+			$sql .= "and menu_item_link = '/index2.php' ";
 		}
 		else {
-			$sql .= "and menu_item_str like '".$php_self_dir."%' ";
+			$sql .= "and menu_item_link like '".$php_self_dir."%' ";
 		}
 		$sql .= "order by menu_item_order asc ";
 		$prep_statement = $db->prepare(check_sql($sql));

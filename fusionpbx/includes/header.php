@@ -73,7 +73,7 @@ require_once "includes/require.php";
 	$sql = "";
 	$sql .= "select * from v_menu_items ";
 	$sql .= "where menu_uuid = '".$_SERVER['domain']['menu']['uuid']."' ";
-	$sql .= "and menu_item_str = '".$_SERVER["SCRIPT_NAME"]."' ";
+	$sql .= "and menu_item_link = '".$_SERVER["SCRIPT_NAME"]."' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();

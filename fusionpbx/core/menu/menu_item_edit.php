@@ -89,7 +89,7 @@ else {
 		$menu_uuid = check_str($_POST["menu_uuid"]);
 		$menu_item_uuid = check_str($_POST["menu_item_uuid"]);
 		$menu_item_title = check_str($_POST["menu_item_title"]);
-		$menu_item_str = check_str($_POST["menu_item_str"]);
+		$menu_item_link = check_str($_POST["menu_item_link"]);
 		$menu_item_category = check_str($_POST["menu_item_category"]);
 		$menu_item_desc = check_str($_POST["menu_item_desc"]);
 		$menu_item_protected = check_str($_POST["menu_item_protected"]);
@@ -109,7 +109,7 @@ else {
 			$msg = '';
 			if (strlen($menu_item_title) == 0) { $msg .= "Please provide: title<br>\n"; }
 			if (strlen($menu_item_category) == 0) { $msg .= "Please provide: category<br>\n"; }
-			//if (strlen($menu_item_str) == 0) { $msg .= "Please provide: menu_item_str<br>\n"; }
+			//if (strlen($menu_item_link) == 0) { $msg .= "Please provide: menu_item_link<br>\n"; }
 			if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 				require_once "includes/header.php";
 				require_once "includes/persistformvar.php";
@@ -143,7 +143,7 @@ else {
 				$sql .= "(";
 				$sql .= "menu_uuid, ";
 				$sql .= "menu_item_title, ";
-				$sql .= "menu_item_str, ";
+				$sql .= "menu_item_link, ";
 				$sql .= "menu_item_category, ";
 				$sql .= "menu_item_desc, ";
 				$sql .= "menu_item_protected, ";
@@ -157,7 +157,7 @@ else {
 				$sql .= "(";
 				$sql .= "'$menu_uuid', ";
 				$sql .= "'$menu_item_title', ";
-				$sql .= "'$menu_item_str', ";
+				$sql .= "'$menu_item_link', ";
 				$sql .= "'$menu_item_category', ";
 				$sql .= "'$menu_item_desc', ";
 				$sql .= "'$menu_item_protected', ";
@@ -182,7 +182,7 @@ else {
 			if ($action == "update" && permission_exists('menu_edit')) {
 				$sql  = "update v_menu_items set ";
 				$sql .= "menu_item_title = '$menu_item_title', ";
-				$sql .= "menu_item_str = '$menu_item_str', ";
+				$sql .= "menu_item_link = '$menu_item_link', ";
 				$sql .= "menu_item_category = '$menu_item_category', ";
 				$sql .= "menu_item_desc = '$menu_item_desc', ";
 				$sql .= "menu_item_protected = '$menu_item_protected', ";
@@ -224,7 +224,7 @@ else {
 		foreach ($result as &$row) {
 			$menu_item_uuid = $row["menu_item_uuid"];
 			$menu_item_title = $row["menu_item_title"];
-			$menu_item_str = $row["menu_item_str"];
+			$menu_item_link = $row["menu_item_link"];
 			$menu_item_category = $row["menu_item_category"];
 			$menu_item_desc = $row["menu_item_desc"];
 			$menu_item_protected = $row["menu_item_protected"];
@@ -262,7 +262,7 @@ else {
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Link:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_str' value='$menu_item_str'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_link' value='$menu_item_link'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Category:</td>";

@@ -63,7 +63,7 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 					$menu_item_order = $row2['menu_item_order'];
 					$menu_item_language = $row2['menu_item_language'];
 					$menu_item_title = $row2[menu_item_title];
-					$menu_item_str = $row2[menu_item_str];
+					$menu_item_link = $row2[menu_item_link];
 				//get the groups that have been assigned to the menu
 					$sql = "";
 					$sql .= "select group_name from v_menu_item_groups ";
@@ -87,16 +87,16 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 				//display the main body of the list
 					switch ($menu_item_category) {
 						case "internal":
-							$menu_item_title = "<a href='".PROJECT_PATH."$menu_item_str'>$menu_item_title</a>";
+							$menu_item_title = "<a href='".PROJECT_PATH."$menu_item_link'>$menu_item_title</a>";
 							break;
 						case "external":
-							if (substr($menu_item_str, 0,1) == "/") {
-								$menu_item_str = PROJECT_PATH . $menu_item_str;
+							if (substr($menu_item_link, 0,1) == "/") {
+								$menu_item_link = PROJECT_PATH . $menu_item_link;
 							}
-							$menu_item_title = "<a href='$menu_item_str' target='_blank'>$menu_item_title</a>";
+							$menu_item_title = "<a href='$menu_item_link' target='_blank'>$menu_item_title</a>";
 							break;
 						case "email":
-							$menu_item_title = "<a href='mailto:$menu_item_str'>$menu_item_title</a>";
+							$menu_item_title = "<a href='mailto:$menu_item_link'>$menu_item_title</a>";
 							break;
 					}
 
@@ -117,7 +117,7 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 					echo "  </tr>";
 					echo "  </table>";
 					echo "</td>";
-					//echo "<td valign='top'>&nbsp;".$menu_item_str."&nbsp;</td>";
+					//echo "<td valign='top'>&nbsp;".$menu_item_link."&nbsp;</td>";
 					echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$group_list."&nbsp;</td>";
 					echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_category."&nbsp;</td>";
 					//echo "<td valign='top'>".$row[menu_item_desc]."</td>";
@@ -240,7 +240,7 @@ $order = $_GET["order"];
 				$menu_item_uuid = $row['menu_item_uuid'];
 				$menu_item_category = $row['menu_item_category'];
 				$menu_item_title = $row['menu_item_title'];
-				$menu_item_str = $row['menu_item_str'];
+				$menu_item_link = $row['menu_item_link'];
 				$menu_item_protected = $row['menu_item_protected'];
 
 			//get the groups that have been assigned to the menu
@@ -267,16 +267,16 @@ $order = $_GET["order"];
 			//add the type link based on the typd of the menu
 				switch ($menu_item_category) {
 					case "internal":
-						$menu_item_title = "<a href='".PROJECT_PATH."$menu_item_str'>$menu_item_title</a>";
+						$menu_item_title = "<a href='".PROJECT_PATH."$menu_item_link'>$menu_item_title</a>";
 						break;
 					case "external":
-						if (substr($menu_item_str, 0,1) == "/") {
-							$menu_item_str = PROJECT_PATH . $menu_item_str;
+						if (substr($menu_item_link, 0,1) == "/") {
+							$menu_item_link = PROJECT_PATH . $menu_item_link;
 						}
-						$menu_item_title = "<a href='$menu_item_str' target='_blank'>$menu_item_title</a>";
+						$menu_item_title = "<a href='$menu_item_link' target='_blank'>$menu_item_title</a>";
 						break;
 					case "email":
-						$menu_item_title = "<a href='mailto:$menu_item_str'>$menu_item_title</a>";
+						$menu_item_title = "<a href='mailto:$menu_item_link'>$menu_item_title</a>";
 						break;
 				}
 
@@ -284,7 +284,7 @@ $order = $_GET["order"];
 				echo "<tr style='".$row_style[$c]."'>\n";
 				echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; ".$menu_item_title."&nbsp;</td>";
 				echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; ".$group_list."&nbsp;</td>";
-				//echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_str."&nbsp;</td>";
+				//echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_link."&nbsp;</td>";
 				echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_category."&nbsp;</td>";
 				//echo "<td valign='top' class='".$row_style[$c]."'>".$row[menu_item_desc]."</td>";
 				//echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$row['menu_item_parent_uuid']."&nbsp;</td>";

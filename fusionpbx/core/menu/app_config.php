@@ -152,7 +152,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'menu_item_str';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'menu_item_link';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'menu_item_str';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
