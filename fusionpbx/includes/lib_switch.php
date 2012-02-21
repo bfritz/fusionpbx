@@ -1738,7 +1738,7 @@ function sync_package_v_extensions() {
 		unset ($prep_statement);
 
 	//prepare extension 
-		$extension_dir_path = realpath($_SESSION['switch']['extensions']['dir'];
+		$extension_dir_path = realpath($_SESSION['switch']['extensions']['dir']);
 		$extension_dir_name = str_replace(" ", "_", $extension_dir_name);
 		$extension_dir_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension_dir_name);
 
