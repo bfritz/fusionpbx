@@ -53,7 +53,7 @@ else {
 
 //show a message to the user
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=/core/menu/v_menus_edit.php?id=$menu_uuid\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=/core/menu/menu_edit.php?id=$menu_uuid\">\n";
 	echo "<div align='center'>\n";
 	echo "Restore Complete\n";
 	echo "</div>\n";

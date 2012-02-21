@@ -15,7 +15,7 @@
 		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6d56-6d3e-0b1a-d53a2bc10788';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		//$apps[$x]['menu'][0]['path'] = '/core/menu/menu_list.php';
-		$apps[$x]['menu'][0]['path'] = '/core/menu/v_menus.php';
+		$apps[$x]['menu'][0]['path'] = '/core/menu/menu.php';
 
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 

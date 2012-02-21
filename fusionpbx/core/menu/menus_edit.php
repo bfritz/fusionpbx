@@ -109,7 +109,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//redirect the user back to the main menu
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_menus.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -129,7 +129,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//redirect the user back to the main menu
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_menus.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -182,7 +182,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (permission_exists('menu_restore')) {
 		echo "	<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='menu_restore_default.php?menu_uuid=$menu_uuid&menu_uuid=$menu_uuid';\" />";
 	}
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_menus.php'\" value='Back'></td>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='menu.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";

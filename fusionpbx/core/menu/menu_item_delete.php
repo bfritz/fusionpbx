@@ -51,7 +51,7 @@ if (count($_GET)>0) {
 
 	//redirect the user
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_menus_edit.php?id=$menu_uuid\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_edit.php?id=$menu_uuid\">\n";
 		echo "<div align='center'>";
 		echo "Delete Completed";
 		echo "</div>";
