@@ -36,7 +36,6 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/v_dialplan_entry_exists.php";
 
 //define variables
 	$c = 0;
