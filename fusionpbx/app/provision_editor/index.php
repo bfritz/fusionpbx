@@ -34,7 +34,7 @@ else {
 	exit;
 }
 
-require_once "mod/xml_edit/config.php";
+require_once "app/xml_edit/config.php";
 echo "<html>\n";
 echo "<head>\n";
 echo "	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";

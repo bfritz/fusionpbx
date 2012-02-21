@@ -134,7 +134,7 @@ require_once "includes/require.php";
 						unset($sql);
 
 					//write the provision files
-						require_once "mod/provision/v_provision_write.php";
+						require_once "app/provision/v_provision_write.php";
 
 					//redirect the user
 						require_once "includes/header.php";
@@ -166,7 +166,7 @@ require_once "includes/require.php";
 						unset($sql);
 
 					//write the provision files
-						require_once "mod/provision/v_provision_write.php";
+						require_once "app/provision/v_provision_write.php";
 
 					//redirect the user
 						require_once "includes/header.php";

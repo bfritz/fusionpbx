@@ -33,8 +33,8 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "mod/xml_edit/config.php";
-require_once "mod/xml_edit/header.php";
+require_once "app/xml_edit/config.php";
+require_once "app/xml_edit/header.php";
 
 function isfile($filename) {
 	//if (@filesize($filename) > 0) { return true; } else { return false; }

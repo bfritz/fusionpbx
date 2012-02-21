@@ -75,13 +75,13 @@ echo "<br />";
 //call forward, follow me and dnd
 	if (permission_exists('follow_me') || permission_exists('call_forward') || permission_exists('do_not_disturb')) {
 		$is_included = "true";
-		require_once "mod/calls/v_calls.php";
+		require_once "app/calls/v_calls.php";
 	}
 
 //call forward, follow me and dnd
 	if (permission_exists('hunt_group_call_forward')) {
 		$is_included = "true";
-		require_once "mod/hunt_group/v_hunt_group_call_forward.php";
+		require_once "app/hunt_group/v_hunt_group_call_forward.php";
 	}
 
 //show the footer
