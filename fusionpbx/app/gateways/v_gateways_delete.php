@@ -48,9 +48,19 @@ if (strlen($_GET["id"])>0) {
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
 			$gateway = $row["gateway"];
+			$profile = $row["profile"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
+
+	//delete the xml file
+		if (count($_SESSION["domains"]) > 1) {
+			$gateway_xml_file = $_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$domain_name .'-'.$gateway.".xml";
+		}
+		else {
+			$gateway_xml_file = $_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$gateway.".xml";
+		}
+		unlink($gateway_xml_file);
 
 	//create the event socket connection and stop the gateway
 		if (!$fp) {
