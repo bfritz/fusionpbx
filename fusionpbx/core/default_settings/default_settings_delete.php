@@ -41,7 +41,7 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_default_settings ";
-	$sql .= "where global_setting_uuid = '$id' ";
+	$sql .= "where default_setting_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	unset($sql);

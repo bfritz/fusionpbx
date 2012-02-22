@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$global_setting_uuid = check_str($_REQUEST["id"]);
+		$default_setting_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -45,28 +45,28 @@ else {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
-		$global_setting_category = check_str($_POST["global_setting_category"]);
-		$global_setting_subcategory = check_str($_POST["global_setting_subcategory"]);
-		$global_setting_name = check_str($_POST["global_setting_name"]);
-		$global_setting_value = check_str($_POST["global_setting_value"]);
-		$global_setting_enabled = check_str($_POST["global_setting_enabled"]);
-		$global_setting_description = check_str($_POST["global_setting_description"]);		
+		$default_setting_category = check_str($_POST["default_setting_category"]);
+		$default_setting_subcategory = check_str($_POST["default_setting_subcategory"]);
+		$default_setting_name = check_str($_POST["default_setting_name"]);
+		$default_setting_value = check_str($_POST["default_setting_value"]);
+		$default_setting_enabled = check_str($_POST["default_setting_enabled"]);
+		$default_setting_description = check_str($_POST["default_setting_description"]);		
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$global_setting_uuid = check_str($_POST["global_setting_uuid"]);
+		$default_setting_uuid = check_str($_POST["default_setting_uuid"]);
 	}
 
 	//check for all required data
-		//if (strlen($global_setting_category) == 0) { $msg .= "Please provide: Category<br>\n"; }
-		//if (strlen($global_setting_subcategory) == 0) { $msg .= "Please provide: Subcategory<br>\n"; }
-		//if (strlen($global_setting_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
-		//if (strlen($global_setting_value) == 0) { $msg .= "Please provide: Value<br>\n"; }
-		//if (strlen($global_setting_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		//if (strlen($global_setting_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($default_setting_category) == 0) { $msg .= "Please provide: Category<br>\n"; }
+		//if (strlen($default_setting_subcategory) == 0) { $msg .= "Please provide: Subcategory<br>\n"; }
+		//if (strlen($default_setting_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
+		//if (strlen($default_setting_value) == 0) { $msg .= "Please provide: Value<br>\n"; }
+		//if (strlen($default_setting_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
+		//if (strlen($default_setting_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -85,29 +85,29 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "add") {
 				$sql = "insert into v_default_settings ";
 				$sql .= "(";
-				$sql .= "global_setting_uuid, ";
-				$sql .= "global_setting_category, ";
-				$sql .= "global_setting_subcategory, ";
-				$sql .= "global_setting_name, ";
-				$sql .= "global_setting_value, ";
-				$sql .= "global_setting_enabled, ";
-				$sql .= "global_setting_description ";	
+				$sql .= "default_setting_uuid, ";
+				$sql .= "default_setting_category, ";
+				$sql .= "default_setting_subcategory, ";
+				$sql .= "default_setting_name, ";
+				$sql .= "default_setting_value, ";
+				$sql .= "default_setting_enabled, ";
+				$sql .= "default_setting_description ";	
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'".uuid()."', ";
-				$sql .= "'$global_setting_category', ";
-				$sql .= "'$global_setting_subcategory', ";
-				$sql .= "'$global_setting_name', ";
-				$sql .= "'$global_setting_value', ";
-				$sql .= "'$global_setting_enabled', ";
-				$sql .= "'$global_setting_description' ";
+				$sql .= "'$default_setting_category', ";
+				$sql .= "'$default_setting_subcategory', ";
+				$sql .= "'$default_setting_name', ";
+				$sql .= "'$default_setting_value', ";
+				$sql .= "'$default_setting_enabled', ";
+				$sql .= "'$default_setting_description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=global_settings.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=default_settings.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
@@ -117,18 +117,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			if ($action == "update") {
 				$sql = "update v_default_settings set ";
-				$sql .= "global_setting_category = '$global_setting_category', ";
-				$sql .= "global_setting_subcategory = '$global_setting_subcategory', ";
-				$sql .= "global_setting_name = '$global_setting_name', ";
-				$sql .= "global_setting_value = '$global_setting_value', ";
-				$sql .= "global_setting_enabled = '$global_setting_enabled', ";
-				$sql .= "global_setting_description = '$global_setting_description' ";	
-				$sql .= "where global_setting_uuid = '$global_setting_uuid'";
+				$sql .= "default_setting_category = '$default_setting_category', ";
+				$sql .= "default_setting_subcategory = '$default_setting_subcategory', ";
+				$sql .= "default_setting_name = '$default_setting_name', ";
+				$sql .= "default_setting_value = '$default_setting_value', ";
+				$sql .= "default_setting_enabled = '$default_setting_enabled', ";
+				$sql .= "default_setting_description = '$default_setting_description' ";	
+				$sql .= "where default_setting_uuid = '$default_setting_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=global_settings.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=default_settings.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
@@ -140,20 +140,20 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$global_setting_uuid = $_GET["id"];
+		$default_setting_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_default_settings ";
-		$sql .= "where global_setting_uuid = '$global_setting_uuid' ";
+		$sql .= "where default_setting_uuid = '$default_setting_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$global_setting_category = $row["global_setting_category"];
-			$global_setting_subcategory = $row["global_setting_subcategory"];
-			$global_setting_name = $row["global_setting_name"];
-			$global_setting_value = $row["global_setting_value"];
-			$global_setting_enabled = $row["global_setting_enabled"];
-			$global_setting_description = $row["global_setting_description"];
+			$default_setting_category = $row["default_setting_category"];
+			$default_setting_subcategory = $row["default_setting_subcategory"];
+			$default_setting_name = $row["default_setting_name"];
+			$default_setting_value = $row["default_setting_value"];
+			$default_setting_enabled = $row["default_setting_enabled"];
+			$default_setting_description = $row["default_setting_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -179,7 +179,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>Global Setting Edit</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='global_settings.php'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='default_settings.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
@@ -192,7 +192,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Category:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='global_setting_category' maxlength='255' value=\"$global_setting_category\">\n";
+	echo "	<input class='formfld' type='text' name='default_setting_category' maxlength='255' value=\"$default_setting_category\">\n";
 	echo "<br />\n";
 	echo "Enter the category.\n";
 	echo "</td>\n";
@@ -203,7 +203,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Subcategory:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='global_setting_subcategory' maxlength='255' value=\"$global_setting_subcategory\">\n";
+	echo "	<input class='formfld' type='text' name='default_setting_subcategory' maxlength='255' value=\"$default_setting_subcategory\">\n";
 	echo "<br />\n";
 	echo "Enter the category.\n";
 	echo "</td>\n";
@@ -214,7 +214,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='global_setting_name' maxlength='255' value=\"$global_setting_name\">\n";
+	echo "	<input class='formfld' type='text' name='default_setting_name' maxlength='255' value=\"$default_setting_name\">\n";
 	echo "<br />\n";
 	echo "Enter the name.\n";
 	echo "</td>\n";
@@ -225,11 +225,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Value:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	$category = $row['global_setting_category'];
-	$subcategory = $row['global_setting_subcategory'];
-	$name = $row['global_setting_name'];
+	$category = $row['default_setting_category'];
+	$subcategory = $row['default_setting_subcategory'];
+	$name = $row['default_setting_name'];
 	if ($category == "domain" && $subcategory == "menu" && $name == "uuid" ) {
-		echo "		<select id='global_setting_value' name='global_setting_value' class='formfld' style=''>\n";
+		echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
 		echo "		<option value=''></option>\n";
 		$sql = "";
 		$sql .= "select * from v_menus ";
@@ -238,7 +238,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sub_prep_statement->execute();
 		$sub_result = $sub_prep_statement->fetchAll();
 		foreach ($sub_result as $sub_row) {
-			if (strtolower($row['global_setting_value']) == strtolower($sub_row["menu_uuid"])) {
+			if (strtolower($row['default_setting_value']) == strtolower($sub_row["menu_uuid"])) {
 				echo "		<option value='".$sub_row["menu_uuid"]."' selected='selected'>".$sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
 			}
 			else {
@@ -248,7 +248,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset ($sub_prep_statement);
 		echo "		</select>\n";
 	} elseif ($category == "domain" && $subcategory == "template" && $name == "name" ) {
-		echo "		<select id='global_setting_value' name='global_setting_value' class='formfld' style=''>\n";
+		echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
 		echo "		<option value=''></option>\n";
 		//add all the themes to the list
 		$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
@@ -257,7 +257,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
 					$dir_label = str_replace('_', ' ', $dir_name);
 					$dir_label = str_replace('-', ' ', $dir_label);
-					if ($dir_name == $row['global_setting_value']) {
+					if ($dir_name == $row['default_setting_value']) {
 						echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
 					}
 					else {
@@ -269,7 +269,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		echo "		</select>\n";
 	} elseif ($category == "domain" && $subcategory == "time" && $name == "zone" ) {
-			echo "		<select id='global_setting_value' name='global_setting_value' class='formfld' style=''>\n";
+			echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
 			echo "		<option value=''></option>\n";
 			//$list = DateTimeZone::listAbbreviations();
 			$time_zone_identifiers = DateTimeZone::listIdentifiers();
@@ -284,7 +284,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					}
 					echo "		<optgroup label='".$category."'>\n";
 				}
-				if ($val == $row['global_setting_value']) {
+				if ($val == $row['default_setting_value']) {
 					echo "			<option value='".$val."' selected='selected'>".$val."</option>\n";
 				}
 				else {
@@ -296,7 +296,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "		</select>\n";
 			break;
 	} else {
-			echo "	<input class='formfld' type='text' name='global_setting_value' maxlength='255' value=\"$global_setting_value\">\n";
+			echo "	<input class='formfld' type='text' name='default_setting_value' maxlength='255' value=\"$default_setting_value\">\n";
 	}
 	echo "<br />\n";
 	echo "Enter the value.\n";
@@ -308,15 +308,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Enabled:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='global_setting_enabled'>\n";
+	echo "    <select class='formfld' name='default_setting_enabled'>\n";
 	echo "    <option value=''></option>\n";
-	if ($global_setting_enabled == "true") { 
+	if ($default_setting_enabled == "true") { 
 		echo "    <option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
-	if ($global_setting_enabled == "false") { 
+	if ($default_setting_enabled == "false") { 
 		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
@@ -333,7 +333,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='global_setting_description' maxlength='255' value=\"$global_setting_description\">\n";
+	echo "	<input class='formfld' type='text' name='default_setting_description' maxlength='255' value=\"$default_setting_description\">\n";
 	echo "<br />\n";
 	echo "Enter the description.\n";
 	echo "</td>\n";
@@ -342,7 +342,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='global_setting_uuid' value='$global_setting_uuid'>\n";
+		echo "				<input type='hidden' name='default_setting_uuid' value='$default_setting_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";

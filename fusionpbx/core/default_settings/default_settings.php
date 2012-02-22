@@ -87,7 +87,7 @@ require_once "includes/paging.php";
 		$sql = "";
 		$sql .= " select * from v_default_settings ";
 		if (strlen($order_by) == 0) {
-			$sql .= "order by global_setting_category, global_setting_subcategory asc ";
+			$sql .= "order by default_setting_category, default_setting_subcategory asc ";
 		}
 		else {
 			$sql .= "order by $order_by $order ";
@@ -109,33 +109,33 @@ require_once "includes/paging.php";
 	if ($result_count > 0) {
 		$previous_category = '';
 		foreach($result as $row) {
-			if ($previous_category != $row['global_setting_category']) {
+			if ($previous_category != $row['default_setting_category']) {
 				echo "<tr><td colspan='4' align='left'>\n";
 				echo "	<br />\n";
-				echo "	<b>".ucfirst($row['global_setting_category'])."</b>&nbsp;</td></tr>\n";
+				echo "	<b>".ucfirst($row['default_setting_category'])."</b>&nbsp;</td></tr>\n";
 				echo "<tr>\n";
-				echo th_order_by('global_setting_subcategory', 'Category', $order_by, $order);
-				echo th_order_by('global_setting_name', 'Name', $order_by, $order);
-				echo th_order_by('global_setting_value', 'Value', $order_by, $order);
-				echo th_order_by('global_setting_enabled', 'Enabled', $order_by, $order);
-				echo th_order_by('global_setting_description', 'Description', $order_by, $order);
+				echo th_order_by('default_setting_subcategory', 'Category', $order_by, $order);
+				echo th_order_by('default_setting_name', 'Name', $order_by, $order);
+				echo th_order_by('default_setting_value', 'Value', $order_by, $order);
+				echo th_order_by('default_setting_enabled', 'Enabled', $order_by, $order);
+				echo th_order_by('default_setting_description', 'Description', $order_by, $order);
 				echo "<td align='right' width='42'>\n";
 				echo "	<a href='default_settings_edit.php' alt='add'>$v_link_label_add</a>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
 			}
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_subcategory']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['default_setting_subcategory']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['default_setting_name']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
 
-			$category = $row['global_setting_category'];
-			$subcategory = $row['global_setting_subcategory'];
-			$name = $row['global_setting_name'];
+			$category = $row['default_setting_category'];
+			$subcategory = $row['default_setting_subcategory'];
+			$name = $row['default_setting_name'];
 			if ($category == "domain" && $subcategory == "menu" && $name == "uuid" ) {
 				$sql = "";
 				$sql .= "select * from v_menus ";
-				$sql .= "where menu_uuid = '".$row['global_setting_value']."' ";
+				$sql .= "where menu_uuid = '".$row['default_setting_value']."' ";
 				$sub_prep_statement = $db->prepare(check_sql($sql));
 				$sub_prep_statement->execute();
 				$sub_result = $sub_prep_statement->fetchAll();
@@ -143,18 +143,18 @@ require_once "includes/paging.php";
 					echo $sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
 				}
 			} else {
-				echo 		$row['global_setting_value'];
+				echo 		$row['default_setting_value'];
 			}	
 			echo "		&nbsp;\n";
 			echo "	</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_enabled']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['global_setting_description']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['default_setting_enabled']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['default_setting_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='default_settings_edit.php?id=".$row['global_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='default_settings_delete.php?id=".$row['global_setting_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='default_settings_edit.php?id=".$row['default_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='default_settings_delete.php?id=".$row['default_setting_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
-			$previous_category = $row['global_setting_category'];
+			$previous_category = $row['default_setting_category'];
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $row_count);
