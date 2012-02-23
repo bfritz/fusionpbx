@@ -44,8 +44,6 @@
 					}
 					closedir($dh);
 				}
-			//synch the xml files
-				sync_package_v_public_includes();
 		}
 	}
 

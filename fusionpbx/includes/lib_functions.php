@@ -572,6 +572,52 @@
 		}
 	}
 
+	if (!function_exists('add_extension_user')) {
+		function add_extension_user($extension_uuid, $username) {
+			global $db, $domain_uuid;
+			//get the user_uuid by using the username
+				$sql = "";
+				$sql .= "select * from v_users ";
+				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "and username = '$username' ";
+				echo $sql."\n";
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll();
+				unset($prep_statement);
+				foreach ($result as &$row) {
+					//check if the user_uuid exists in v_extension_users
+						$sql = "select * from v_extension_users ";
+						$sql .= "where domain_uuid = '$domain_uuid' ";
+						$sql .= "and user_uuid = '".$row["user_uuid"]."' ";
+						echo $sql."\n";
+						$prep_statement = $db->prepare(check_sql($sql));
+						$prep_statement->execute();
+						$extension_users_result = $prep_statement->fetchAll();
+						unset($prep_statement);
+					//assign the extension to the user
+						if (count($extension_users_result) == 0) {
+							$sql = "insert into v_extension_users ";
+							$sql .= "(";
+							$sql .= "domain_uuid, ";
+							$sql .= "extension_uuid, ";
+							$sql .= "user_uuid, ";
+							$sql .= ")";
+							$sql .= "values ";
+							$sql .= "(";
+							$sql .= "'$domain_uuid', ";
+							$sql .= "'$extension_uuid', ";
+							$sql .= "'".$row["user_uuid"]."', ";
+							$sql .= ")";
+							echo $sql."\n";
+							$db->exec(check_sql($sql));
+							unset($sql);
+						}
+				}
+				unset ($result);
+		}
+	}
+
 	if (!function_exists('user_add')) {
 		function user_add($username, $password, $user_email='') {
 			global $db, $domain_uuid, $v_salt;

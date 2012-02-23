@@ -205,6 +205,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'extension_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';

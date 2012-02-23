@@ -187,22 +187,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$generated_users[$i]['password'] = $user_password;
 					$auto_user++;
 				}
+				unset($auto_user);
 			} else {
 				$user_list_array = explode("|", $user_list);
 				$i = 0;
-				foreach($user_list_array as $auto_user){
-					if (strlen($auto_user) > 0) {
-						if (!username_exists($auto_user)) {
+				foreach($user_list_array as $user){
+					if (strlen($user) > 0) {
+						if (!username_exists($user)) {
 							$user_password = generate_password();
-							user_add($auto_user, $user_password, $user_email);
-							$generated_users[$i]['username'] = $auto_user;
+							user_add($user, $user_password, $user_email);
+							$generated_users[$i]['username'] = $user;
 							$generated_users[$i]['password'] = $user_password;
 							$i++;
 						}
 					}
 				}
+				unset($user);
 			}
-			unset($auto_user);
 
 			$db->beginTransaction();
 			for ($i=1; $i<=$range; $i++) {
