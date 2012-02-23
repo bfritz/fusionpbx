@@ -46,7 +46,15 @@ if (count($_GET)>0) {
 		$sql .= "and extension_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		unset($sql);
+		unset($prep_statement, $sql);
+
+		$sql = "";
+		$sql .= "delete from v_extension_users ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and extension_uuid = '$id' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($prep_statement, $sql);
 
 		//syncrhonize configuration
 		save_extension_xml();

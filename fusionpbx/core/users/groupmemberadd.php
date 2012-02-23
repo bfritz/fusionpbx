@@ -45,19 +45,19 @@ else {
 	$username = check_str($_POST["username"]);
 
 if (strlen($username) > 0  && strlen($group_name) > 0)   {
-	$sqlinsert = "insert into v_group_users ";
-	$sqlinsert .= "(";
-	$sqlinsert .= "domain_uuid, ";
-	$sqlinsert .= "group_name, ";
-	$sqlinsert .= "username ";
-	$sqlinsert .= ")";
-	$sqlinsert .= "values ";
-	$sqlinsert .= "(";
-	$sqlinsert .= "'$domain_uuid', ";
-	$sqlinsert .= "'$group_name', ";
-	$sqlinsert .= "'$username' ";
-	$sqlinsert .= ")";
-	if (!$db->exec($sqlinsert)) {
+	$sql_insert = "insert into v_group_users ";
+	$sql_insert .= "(";
+	$sql_insert .= "domain_uuid, ";
+	$sql_insert .= "group_name, ";
+	$sql_insert .= "username ";
+	$sql_insert .= ")";
+	$sql_insert .= "values ";
+	$sql_insert .= "(";
+	$sql_insert .= "'$domain_uuid', ";
+	$sql_insert .= "'$group_name', ";
+	$sql_insert .= "'$username' ";
+	$sql_insert .= ")";
+	if (!$db->exec($sql_insert)) {
 		//echo $db->errorCode() . "<br>";
 		$info = $db->errorInfo();
 		print_r($info);

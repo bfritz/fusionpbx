@@ -49,23 +49,6 @@ else {
 			$number_alias = check_str($_POST["number_alias"]);
 			$password = check_str($_POST["password"]);
 
-		//prepare the user list for the database
-			$user_list = $_POST["user_list"];
-			if (strlen($user_list) > 0) {
-				$user_list_array = explode("\n", $user_list);
-				if (count($user_list_array) == 0) {
-					$user_list = '';
-				}
-				else {
-					$user_list = '|';
-					foreach($user_list_array as $user){
-						if(strlen(trim($user)) > 0) {
-							$user_list .= check_str(trim($user))."|";
-						}
-					}
-				}
-			}
-
 		//prepare the provisioning list for the database
 			$provisioning_list = $_POST["provisioning_list"];
 			if (strlen($provisioning_list) > 0) {
@@ -111,6 +94,54 @@ else {
 			$sip_bypass_media = check_str($_POST["sip_bypass_media"]);
 			$enabled = check_str($_POST["enabled"]);
 			$description = check_str($_POST["description"]);
+	}
+
+//delete the user from the v_extension_users
+	if ($_GET["a"] == "delete" && permission_exists("user_delete")) {
+		//set the variables
+			$user_uuid = check_str($_REQUEST["user_uuid"]);
+			$extension_uuid = check_str($_REQUEST["id"]);
+		//delete the group from the users
+			$sql = "delete from v_extension_users ";
+			$sql .= "where domain_uuid = '".$domain_uuid."' ";
+			$sql .= "and extension_uuid = '".$extension_uuid."' ";
+			$sql .= "and user_uuid = '".$user_uuid."' ";
+			$db->exec(check_sql($sql));
+		//redirect the browser
+			require_once "includes/header.php";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_extensions_edit.php?id=$extension_uuid\">\n";
+			echo "<div align='center'>Delete Complete</div>";
+			require_once "includes/footer.php";
+			return;
+	}
+
+//assign the extension to the user
+	if (strlen($_REQUEST["user_uuid"]) > 0 && strlen($_REQUEST["id"]) > 0 && $_GET["a"] != "delete") {
+		//set the variables
+			$user_uuid = check_str($_REQUEST["user_uuid"]);
+			$extension_uuid = check_str($_REQUEST["id"]);
+		//assign the user to the extension
+			$sql_insert = "insert into v_extension_users ";
+			$sql_insert .= "(";
+			$sql_insert .= "extension_user_uuid, ";
+			$sql_insert .= "domain_uuid, ";
+			$sql_insert .= "extension_uuid, ";
+			$sql_insert .= "user_uuid ";
+			$sql_insert .= ")";
+			$sql_insert .= "values ";
+			$sql_insert .= "(";
+			$sql_insert .= "'".uuid()."', ";
+			$sql_insert .= "'$domain_uuid', ";
+			$sql_insert .= "'".$extension_uuid."', ";
+			$sql_insert .= "'".$user_uuid."' ";
+			$sql_insert .= ")";
+			$db->exec($sql_insert);
+		//redirect the browser
+			require_once "includes/header.php";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_extensions_edit.php?id=$extension_uuid\">\n";
+			echo "<div align='center'>Delete Complete</div>";
+			require_once "includes/footer.php";
+			return;
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -188,21 +219,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$auto_user++;
 				}
 				unset($auto_user);
-			} else {
-				$user_list_array = explode("|", $user_list);
-				$i = 0;
-				foreach($user_list_array as $user){
-					if (strlen($user) > 0) {
-						if (!username_exists($user)) {
-							$user_password = generate_password();
-							user_add($user, $user_password, $user_email);
-							$generated_users[$i]['username'] = $user;
-							$generated_users[$i]['password'] = $user_password;
-							$i++;
-						}
-					}
-				}
-				unset($user);
 			}
 
 			$db->beginTransaction();
@@ -368,14 +384,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update" && permission_exists('extension_edit')) {
-			$user_list_array = explode("|", $user_list);
-			foreach($user_list_array as $tmp_user){
-				$user_password = generate_password();
-				if (strlen($tmp_user) > 0) {
-					user_add($tmp_user, $user_password, $user_email);
-				}
-			}
-			unset($tmp_user);
 
 			if (strlen($password) == 0) {
 				$password = generate_password();
@@ -385,7 +393,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "extension = '$extension', ";
 			$sql .= "number_alias = '$number_alias', ";
 			$sql .= "password = '$password', ";
-			$sql .= "user_list = '$user_list', ";
 			$sql .= "provisioning_list = '$provisioning_list', ";
 			if (strlen($vm_password) > 0) {
 				$sql .= "vm_password = '$vm_password', ";
@@ -490,7 +497,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$extension = $row["extension"];
 			$number_alias = $row["number_alias"];
 			$password = $row["password"];
-			$user_list = trim($row["user_list"]);
 			$provisioning_list = $row["provisioning_list"];
 			$provisioning_list = strtolower($provisioning_list);
 			$vm_password = $row["vm_password"];
@@ -654,33 +660,51 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</tr>\n";
 	}
 
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "		User List:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	$onchange = "document.getElementById('user_list').value += document.getElementById('username').value + '\\n';";
-	$table_name = 'v_users'; $field_name = 'username'; $field_current_value = ''; $sql_where_optional = "where domain_uuid = '$domain_uuid'"; 
-	echo html_select_on_change($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
-	echo "<br />\n";
-	echo "Use the select list to add users to the userlist. This will assign users to this extension.\n";
-	echo "<br />\n";
-	echo "<br />\n";
-	//replace the vertical bar with a line feed to display in the textarea
-	$user_list = trim($user_list, "|");
-	$user_list_array = explode("|", $user_list);
-	$user_list = '';
-	foreach($user_list_array as $user){
-		$user_list .= trim($user)."\n";
-	}
-	echo "		<textarea name=\"user_list\" id=\"user_list\" class=\"formfld\" cols=\"30\" rows=\"3\" wrap=\"off\">$user_list</textarea>\n";
-	echo "		<br>\n";
-	echo "If a user is not in the select list it can be added manually to the user list and it will be created automatically.\n";
-	echo "<br />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
 	if ($action == "update") {
+		echo "	<tr>";
+		echo "		<td class='vncell' valign='top'>User List:</td>";
+		echo "		<td class='vtable'>";
+
+		echo "<table width='52%'>\n";
+		$sql = "SELECT * FROM v_extension_users as e, v_users as u ";
+		$sql .= "where e.user_uuid = u.user_uuid  ";
+		$sql .= "and e.domain_uuid=:domain_uuid ";
+		$sql .= "and e.extension_uuid=:extension_uuid ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->bindParam(':domain_uuid', $domain_uuid);
+		$prep_statement->bindParam(':extension_uuid', $extension_uuid);
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll();
+		$result_count = count($result);
+		foreach($result as $field) {
+			if (strlen($field['user_uuid']) > 0) {
+				echo "<tr>\n";
+				echo "	<td class='vtable'>".$field['username']."</td>\n";
+				echo "	<td>\n";
+				echo "		<a href='v_extensions_edit.php?id=".$extension_uuid."&domain_uuid=".$domain_uuid."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "	</td>\n";
+				echo "</tr>\n";
+			}
+		}
+		echo "</table>\n";
+
+		echo "<br />\n";
+		$sql = "SELECT * FROM v_users ";
+		$sql .= "where domain_uuid = '".$domain_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		echo "<select name=\"user_uuid\" class='frm'>\n";
+		echo "<option value=\"\"></option>\n";
+		$result = $prep_statement->fetchAll();
+		foreach($result as $field) {
+			echo "<option value='".$field['user_uuid']."'>".$field['username']."</option>\n";
+		}
+		echo "</select>";
+		echo "<input type=\"submit\" class='btn' value=\"Add\">\n";
+		unset($sql, $result);
+		echo "		</td>";
+		echo "	</tr>";
+
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "    Voicemail Password:\n";

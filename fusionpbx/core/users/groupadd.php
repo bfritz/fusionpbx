@@ -41,21 +41,21 @@ else {
 	$group_desc = check_str($_POST["group_desc"]);
 
 if (strlen($group_name) > 0) {
-	$sqlinsert = "insert into v_groups ";
-	$sqlinsert .= "(";
-	$sqlinsert .= "domain_uuid, ";
-	$sqlinsert .= "group_uuid, ";
-	$sqlinsert .= "group_name, ";
-	$sqlinsert .= "group_desc ";
-	$sqlinsert .= ")";
-	$sqlinsert .= "values ";
-	$sqlinsert .= "(";
-	$sqlinsert .= "'$domain_uuid', ";
-	$sqlinsert .= "'".uuid()."', ";
-	$sqlinsert .= "'$group_name', ";
-	$sqlinsert .= "'$group_desc' ";
-	$sqlinsert .= ")";
-	if (!$db->exec($sqlinsert)) {
+	$sql_insert = "insert into v_groups ";
+	$sql_insert .= "(";
+	$sql_insert .= "domain_uuid, ";
+	$sql_insert .= "group_uuid, ";
+	$sql_insert .= "group_name, ";
+	$sql_insert .= "group_desc ";
+	$sql_insert .= ")";
+	$sql_insert .= "values ";
+	$sql_insert .= "(";
+	$sql_insert .= "'$domain_uuid', ";
+	$sql_insert .= "'".uuid()."', ";
+	$sql_insert .= "'$group_name', ";
+	$sql_insert .= "'$group_desc' ";
+	$sql_insert .= ")";
+	if (!$db->exec($sql_insert)) {
 		//echo $db->errorCode() . "<br>";
 		$info = $db->errorInfo();
 		print_r($info);

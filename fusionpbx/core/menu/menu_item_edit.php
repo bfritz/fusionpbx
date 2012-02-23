@@ -56,19 +56,19 @@ else {
 	if (strlen($group_name) > 0 && permission_exists('menu_add')) {
 		//add the group to the menu
 			if (strlen($menu_item_uuid) > 0 && strlen($group_name) > 0) {
-				$sqlinsert = "insert into v_menu_item_groups ";
-				$sqlinsert .= "(";
-				$sqlinsert .= "menu_uuid, ";
-				$sqlinsert .= "menu_item_uuid, ";
-				$sqlinsert .= "group_name ";
-				$sqlinsert .= ")";
-				$sqlinsert .= "values ";
-				$sqlinsert .= "(";
-				$sqlinsert .= "'$menu_uuid', ";
-				$sqlinsert .= "'".$menu_item_uuid."', ";
-				$sqlinsert .= "'".$group_name."' ";
-				$sqlinsert .= ")";
-				$db->exec($sqlinsert);
+				$sql_insert = "insert into v_menu_item_groups ";
+				$sql_insert .= "(";
+				$sql_insert .= "menu_uuid, ";
+				$sql_insert .= "menu_item_uuid, ";
+				$sql_insert .= "group_name ";
+				$sql_insert .= ")";
+				$sql_insert .= "values ";
+				$sql_insert .= "(";
+				$sql_insert .= "'$menu_uuid', ";
+				$sql_insert .= "'".$menu_item_uuid."', ";
+				$sql_insert .= "'".$group_name."' ";
+				$sql_insert .= ")";
+				$db->exec($sql_insert);
 			}
 	}
 

@@ -120,26 +120,26 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 	//assign the user to the group
 		if (strlen($_REQUEST["group_name"]) > 0) {
-			$sqlinsert = "insert into v_group_users ";
-			$sqlinsert .= "(";
-			$sqlinsert .= "domain_uuid, ";
-			$sqlinsert .= "group_name, ";
-			$sqlinsert .= "username ";
-			$sqlinsert .= ")";
-			$sqlinsert .= "values ";
-			$sqlinsert .= "(";
-			$sqlinsert .= "'$domain_uuid', ";
-			$sqlinsert .= "'".$_REQUEST["group_name"]."', ";
-			$sqlinsert .= "'$username' ";
-			$sqlinsert .= ")";
+			$sql_insert = "insert into v_group_users ";
+			$sql_insert .= "(";
+			$sql_insert .= "domain_uuid, ";
+			$sql_insert .= "group_name, ";
+			$sql_insert .= "username ";
+			$sql_insert .= ")";
+			$sql_insert .= "values ";
+			$sql_insert .= "(";
+			$sql_insert .= "'$domain_uuid', ";
+			$sql_insert .= "'".$_REQUEST["group_name"]."', ";
+			$sql_insert .= "'$username' ";
+			$sql_insert .= ")";
 			if ($_REQUEST["group_name"] == "superadmin") {
 				//only a user in the superadmin group can add other users to that group
 				if (if_group("superadmin")) {
-					$db->exec($sqlinsert);
+					$db->exec($sql_insert);
 				}
 			}
 			else {
-				$db->exec($sqlinsert);
+				$db->exec($sql_insert);
 			}
 		}
 
