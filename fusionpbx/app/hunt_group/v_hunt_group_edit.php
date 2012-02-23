@@ -203,10 +203,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 				//synchronize the xml config
-					sync_package_v_hunt_group();
+					save_hunt_group_xml();
 
 				//synchronize the xml config
-					sync_package_v_dialplan();
+					save_dialplan_xml();
 
 				//redirect the user
 					require_once "includes/header.php";
@@ -289,10 +289,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$db->query($sql);
 
 				//synchronize the xml config
-					sync_package_v_hunt_group();
+					save_hunt_group_xml();
 
 				//synchronize the xml config
-					sync_package_v_dialplan();
+					save_dialplan_xml();
 
 				//rediret the user
 					require_once "includes/header.php";

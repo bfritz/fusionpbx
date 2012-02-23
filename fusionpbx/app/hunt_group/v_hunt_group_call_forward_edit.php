@@ -332,10 +332,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	} //if ($call_forward_action == "update")
 
 	//synchronize the xml config
-		sync_package_v_hunt_group();
+		save_hunt_group_xml();
 
 	//synchronize the xml config
-		sync_package_v_dialplan();
+		save_dialplan_xml();
 
 	//redirect the user
 		require_once "includes/header.php";

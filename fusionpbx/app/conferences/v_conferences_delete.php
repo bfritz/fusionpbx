@@ -60,7 +60,7 @@ if (strlen($id)>0) {
 		unset($sql);
 
 	//synchronize the xml config
-		sync_package_v_dialplan();
+		save_dialplan_xml();
 
 }
 

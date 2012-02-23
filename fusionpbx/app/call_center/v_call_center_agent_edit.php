@@ -213,7 +213,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 			//syncrhonize configuration
-				sync_package_v_call_center();
+				save_call_center_xml();
 
 			//redirect the user
 				require_once "includes/header.php";
@@ -244,7 +244,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//syncrhonize configuration
-			sync_package_v_call_center();
+			save_call_center_xml();
 
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_call_center_agent.php\">\n";

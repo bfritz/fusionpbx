@@ -167,7 +167,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 				//synchronize settings
-					sync_package_v_settings();
+					save_setting_xml();
 
 				require_once "includes/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings_edit.php\">\n";
@@ -202,7 +202,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 				//synchronize settings
-					sync_package_v_settings();
+					save_setting_xml();
 
 				require_once "includes/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_settings_edit.php\">\n";

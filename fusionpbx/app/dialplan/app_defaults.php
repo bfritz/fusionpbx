@@ -234,7 +234,7 @@
 
 // synchronize the dialplan
 	if ($v_recording_action == 'add' || $v_disa_action == 'add') {
-		sync_package_v_dialplan();
+		save_dialplan_xml();
 	}
 
 ?>

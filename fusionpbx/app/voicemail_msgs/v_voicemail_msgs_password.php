@@ -171,7 +171,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//syncrhonize configuration
-				sync_package_v_extensions();
+				save_extension_xml();
 
 			//apply settings reminder
 				$_SESSION["reload_xml"] = true;

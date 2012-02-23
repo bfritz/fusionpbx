@@ -137,7 +137,7 @@ else {
 		unset ($prep_statement);
 
 	//synchronize the xml config
-		sync_package_v_dialplan();
+		save_dialplan_xml();
 
 	//redirect the user
 		require_once "includes/header.php";

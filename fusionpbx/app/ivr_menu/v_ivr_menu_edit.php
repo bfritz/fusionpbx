@@ -203,10 +203,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$ivr->add();
 
 					//synchronize the xml config
-						sync_package_v_ivr_menu();
+						save_ivr_menu_xml();
 
 					//synchronize the xml config
-						sync_package_v_dialplan();
+						save_dialplan_xml();
 
 					//redirect the user
 						require_once "includes/header.php";
@@ -223,10 +223,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$ivr->update();
 
 					//synchronize the xml config
-						sync_package_v_ivr_menu();
+						save_ivr_menu_xml();
 
 					//synchronize the xml config
-						sync_package_v_dialplan();
+						save_dialplan_xml();
 
 					//redirect the user
 						require_once "includes/header.php";

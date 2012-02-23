@@ -72,7 +72,7 @@ if (strlen($_GET["a"]) > 0) {
 
 //show the msg
 	if ($msg) {
-		sync_package_v_modules();
+		save_module_xml();
 		echo "<div align='center'>\n";
 		echo "<table width='40%'>\n";
 		echo "<tr>\n";

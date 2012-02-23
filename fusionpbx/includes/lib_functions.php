@@ -601,13 +601,13 @@
 							$sql .= "(";
 							$sql .= "domain_uuid, ";
 							$sql .= "extension_uuid, ";
-							$sql .= "user_uuid, ";
-							$sql .= ")";
+							$sql .= "user_uuid ";
+							$sql .= ") ";
 							$sql .= "values ";
 							$sql .= "(";
 							$sql .= "'$domain_uuid', ";
 							$sql .= "'$extension_uuid', ";
-							$sql .= "'".$row["user_uuid"]."', ";
+							$sql .= "'".$row["user_uuid"]."' ";
 							$sql .= ")";
 							echo $sql."\n";
 							$db->exec(check_sql($sql));

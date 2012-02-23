@@ -140,7 +140,7 @@ else {
 	unset($sql);
 
 //synchronize the xml config
-	sync_package_v_extensions();
+	save_extension_xml();
 
 //redirect the user
 	require_once "includes/header.php";

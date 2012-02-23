@@ -80,7 +80,7 @@ if (strlen($dialplan_uuid)>0) {
 		$count = $db->exec("COMMIT;");
 
 	//synchronize the xml config
-		sync_package_v_dialplan();
+		save_dialplan_xml();
 }
 
 //redirect the user

@@ -364,7 +364,7 @@ $order = $_GET["order"];
 			$count = $db->exec("COMMIT;"); //returns affected rows
 
 		//synchronize the xml config
-			sync_package_v_dialplan();
+			save_dialplan_xml();
 
 		require_once "includes/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_conferences.php\">\n";

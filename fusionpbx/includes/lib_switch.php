@@ -1437,7 +1437,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 	}
 }
 
-function sync_package_v_settings() {
+function save_setting_xml() {
 	global $db, $domain_uuid, $host, $config;
  
 	$sql = "";
@@ -1571,7 +1571,7 @@ function sync_package_v_settings() {
 	//unset($cmd);
 }
 
-function sync_package_v_extensions() {
+function save_extension_xml() {
 	//declare global variables
 		global $config, $db, $domain_uuid;
 
@@ -1855,7 +1855,7 @@ function filename_safe($filename) {
 	return $result;
 }
 
-function sync_package_v_gateways() {
+function save_gateway_xml() {
 
 	//declare the global variables
 		global $db, $domain_uuid, $config;
@@ -2013,7 +2013,7 @@ function sync_package_v_gateways() {
 }
 
 
-function sync_package_v_modules() {
+function save_module_xml() {
 	global $config, $db, $domain_uuid;
 
 	$xml = "";
@@ -2052,7 +2052,7 @@ function sync_package_v_modules() {
 	//unset($cmd);
 }
 
-function sync_package_v_vars() {
+function save_var_xml() {
 	global $config, $db, $domain_uuid;
 
 	$fout = fopen($_SESSION['switch']['conf']['dir']."/vars.xml","w");
@@ -2236,7 +2236,7 @@ function extension_exists($extension) {
 	}
 }
 
-function sync_package_v_hunt_group() {
+function save_hunt_group_xml() {
 
 	//Hunt Group Lua Notes:
 		//get the domain
@@ -2426,7 +2426,7 @@ function sync_package_v_hunt_group() {
 								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 						}
 
-						sync_package_v_dialplan();
+						save_dialplan_xml();
 						unset($dialplanincludeid);
 					} //end if strlen hunt_group_uuid; add the Hunt Group to the dialplan
 
@@ -2813,7 +2813,7 @@ function sync_package_v_hunt_group() {
 } //end huntgroup function lua
 
 
-function sync_package_v_fax() {
+function save_fax_xml() {
 	global $domain_uuid, $db;
 
 	$sql = "";
@@ -3043,7 +3043,7 @@ function sync_package_v_fax() {
 				unset($id);
 			}
 */
-			sync_package_v_dialplan();
+			save_dialplan_xml();
 			unset($dialplanincludeid);
 		} //end if strlen fax_uuid; add the fax to the dialplan
 	} //end if result
@@ -3132,7 +3132,7 @@ function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_t
 	unset($sql);
 }
 
-function sync_package_v_dialplan() {
+function save_dialplan_xml() {
 	global $db, $domain_uuid;
 
 	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
@@ -3674,8 +3674,8 @@ if (!function_exists('sync_directory')) {
 	} //end sync_directory
 } //end if function exists
 
-if (!function_exists('sync_package_v_ivr_menu')) {
-	function sync_package_v_ivr_menu() {
+if (!function_exists('save_ivr_menu_xml')) {
+	function save_ivr_menu_xml() {
 		global $db, $domain_uuid;
 
 		//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
@@ -3828,15 +3828,15 @@ if (!function_exists('sync_package_v_ivr_menu')) {
 						fclose($fout);
 			}
 		}
-		sync_package_v_dialplan();
+		save_dialplan_xml();
 
 		//apply settings reminder
 			$_SESSION["reload_xml"] = true;
 	}
 }
 
-if (!function_exists('sync_package_v_call_center')) {
-	function sync_package_v_call_center() {
+if (!function_exists('save_call_center_xml')) {
+	function save_call_center_xml() {
 		global $db, $domain_uuid;
 
 		//include the classes
@@ -4291,7 +4291,7 @@ if (!function_exists('sync_package_v_call_center')) {
 				fclose($fout);
 
 			//syncrhonize the configuration
-				sync_package_v_dialplan();
+				save_dialplan_xml();
 
 			//apply settings reminder
 				$_SESSION["reload_xml"] = true;
@@ -4369,25 +4369,19 @@ if (!function_exists('xml_cdr_conf_xml')) {
 	}
 }
 
-if (!function_exists('sync_package_freeswitch')) {
-	function sync_package_freeswitch() {
-		global $config;
-		sync_package_v_settings();
-//		sync_package_v_dialplan();
-//		sync_package_v_extensions();
-//		sync_package_v_gateways();
-//		sync_package_v_modules();
-//		sync_package_v_vars();
-//		//sync_package_v_recordings();
-//		sync_package_v_hunt_group();
-//		sync_package_v_ivr_menu();
-//		sync_package_v_call_center();
-//		sync_package_v_fax();
+if (!function_exists('save_switch_xml')) {
+	function save_switch_xml() {
+		save_setting_xml();
+//		save_dialplan_xml();
+//		save_extension_xml();
+//		save_gateway_xml();
+//		save_module_xml();
+//		save_var_xml();
+//		save_hunt_group_xml();
+//		save_ivr_menu_xml();
+//		save_call_center_xml();
+//		save_fax_xml();
 	}
 }
 
-//include all the .php files in the /includes/mod/includes directory
-	//foreach (glob($_SERVER["DOCUMENT_ROOT"]."/includes/mod/includes/*.php") as $filename) {
-	//	require_once $filename;
-	//}
 ?>

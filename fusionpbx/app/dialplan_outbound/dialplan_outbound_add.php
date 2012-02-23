@@ -518,17 +518,17 @@ else {
 			} //end for each
 
 			//synchronize the xml config
-				sync_package_v_dialplan();
+				save_dialplan_xml();
 			
 			//changes in the dialplan may affect routes in the hunt groups
-				sync_package_v_hunt_group();
+				save_hunt_group_xml();
 		}
 
 		//commit the atomic transaction
 			$count = $db->exec("COMMIT;"); //returns affected rows
 
 		//synchronize the xml config
-			sync_package_v_dialplan();
+			save_dialplan_xml();
 
 		//redirect the user
 			require_once "includes/header.php";

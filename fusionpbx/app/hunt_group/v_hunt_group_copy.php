@@ -154,7 +154,7 @@ require_once "includes/paging.php";
 		unset ($prep_statement);
 
 	//synchronize the xml config
-		sync_package_v_hunt_group();
+		save_hunt_group_xml();
 
 	//redirect the user
 		require_once "includes/header.php";

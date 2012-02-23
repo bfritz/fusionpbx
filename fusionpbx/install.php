@@ -1254,7 +1254,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		require_once "core/upgrade/upgrade_schema.php";
 
 	//synchronize the config with the saved settings
-		sync_package_freeswitch();
+		save_switch_xml();
 
 	//do not show the apply settings reminder on the login page
 		$_SESSION["reload_xml"] = false;

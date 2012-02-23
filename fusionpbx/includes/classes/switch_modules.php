@@ -647,7 +647,7 @@ echo $mod->dir."\n";
 					}
 					closedir($handle);
 					if ($module_found) {
-						//sync_package_v_modules();
+						//save_module_xml();
 						$msg = "<strong>Added New Modules:</strong><br />\n";
 						$msg .= "<ul>\n";
 						$msg .= $modules_new;

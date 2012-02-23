@@ -34,6 +34,6 @@
 	$msg = $mod->msg;
 
 // synchronize the modules
-	sync_package_v_modules();
+	save_module_xml();
 
 ?>

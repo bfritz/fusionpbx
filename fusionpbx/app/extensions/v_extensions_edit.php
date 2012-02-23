@@ -314,7 +314,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->commit();
 
 			//syncrhonize configuration
-				sync_package_v_extensions();
+				save_extension_xml();
 
 			//write the provision files
 				if (strlen($provisioning_list)>0) {
@@ -445,7 +445,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			//syncrhonize configuration
-				sync_package_v_extensions();
+				save_extension_xml();
 
 			//write the provision files
 				if (strlen($provisioning_list)>0) {

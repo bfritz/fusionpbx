@@ -467,7 +467,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$count = $db->exec("COMMIT;"); //returns affected rows
 
 	//synchronize the xml config
-		sync_package_v_dialplan();
+		save_dialplan_xml();
 
 	require_once "includes/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=/app/dialplan/dialplans.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1\">\n";

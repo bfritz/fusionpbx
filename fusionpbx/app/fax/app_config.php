@@ -171,7 +171,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
 		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
-
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';

@@ -47,7 +47,7 @@ if (count($_GET)>0) {
 		$prep_statement->execute();
 		unset($sql);
 
-		sync_package_v_vars();
+		save_var_xml();
 	}
 
 //redirect the user

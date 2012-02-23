@@ -87,10 +87,10 @@ if (strlen($_GET["id"])>0) {
 		unset($sql);
 
 	//syncrhonize configuration
-		sync_package_v_gateways();
+		save_gateway_xml();
 
 	//synchronize the xml config
-		sync_package_v_dialplan();
+		save_dialplan_xml();
 
 	//rescan the external profile to look for new or stopped gateways
 		//create the event socket connection and send a command

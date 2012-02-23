@@ -204,7 +204,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 				//syncrhonize configuration
-					sync_package_v_gateways();
+					save_gateway_xml();
 
 			} //if ($action == "add")
 
@@ -245,10 +245,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 				//syncrhonize configuration
-					sync_package_v_gateways();
+					save_gateway_xml();
 
 				//synchronize the xml config
-					sync_package_v_dialplan();
+					save_dialplan_xml();
 
 			} //if ($action == "update")
 

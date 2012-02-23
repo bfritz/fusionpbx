@@ -49,7 +49,7 @@ if (count($_GET)>0) {
 		unset($sql);
 
 		//syncrhonize configuration
-		sync_package_v_extensions();
+		save_extension_xml();
 	}
 
 //redirect the user

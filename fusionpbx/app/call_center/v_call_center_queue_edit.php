@@ -164,7 +164,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 			//syncrhonize the configuration
-				sync_package_v_call_center();
+				save_call_center_xml();
 
 			//redirect the user
 				require_once "includes/header.php";
@@ -202,7 +202,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 			//syncrhonize the configuration
-				sync_package_v_call_center();
+				save_call_center_xml();
 
 			//redirect the user
 				require_once "includes/header.php";

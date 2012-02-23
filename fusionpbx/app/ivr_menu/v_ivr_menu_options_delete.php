@@ -52,7 +52,7 @@ else {
 			$ivr->delete();
 
 		//synchronize the xml config
-			sync_package_v_ivr_menu();
+			save_ivr_menu_xml();
 	}
 
 //redirect the user

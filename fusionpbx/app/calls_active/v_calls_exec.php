@@ -189,10 +189,10 @@ if (count($_GET)>0) {
 		}
 
 		//synchronize the xml config
-			sync_package_v_hunt_group();
+			save_hunt_group_xml();
 
 		//synchronize the xml config
-			sync_package_v_dialplan();
+			save_dialplan_xml();
 
 		//reloadxml
 			$cmd = 'api reloadxml';

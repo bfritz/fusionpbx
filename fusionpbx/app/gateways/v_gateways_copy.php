@@ -147,7 +147,7 @@ else {
 	unset($sql);
 
 //synchronize the xml config
-	sync_package_v_gateways();
+	save_gateway_xml();
 
 //redirect the user
 	require_once "includes/header.php";

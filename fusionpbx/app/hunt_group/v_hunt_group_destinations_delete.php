@@ -52,7 +52,7 @@ if (strlen($id)>0) {
 		$prep_statement->execute();
 		unset($sql);
 	//synchronize the xml config
-		sync_package_v_hunt_group();
+		save_hunt_group_xml();
 }
 
 //redirect the user

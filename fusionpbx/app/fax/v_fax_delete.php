@@ -107,7 +107,7 @@ else {
 			$count = $db->exec("COMMIT;");
 
 		//syncrhonize configuration
-			sync_package_v_fax();
+			save_fax_xml();
 	}
 
 //redirect the user
