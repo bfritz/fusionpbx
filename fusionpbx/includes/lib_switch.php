@@ -161,51 +161,38 @@ foreach($settings_array as $name => $value) {
 
 
 //get the extensions that are assigned to this user
-	if (strlen($_SESSION["username"]) > 0 && strlen($_SESSION['user_extension_list']) == 0) {
+	if (strlen($_SESSION["username"]) > 0 && count($_SESSION['user']['extension']) == 0) {
 		//get the user extension list
 			$_SESSION['user_extension_list'] = '';
+			unset($_SESSION['user']['extension']);
 			$sql = "";
-			$sql .= "select extension, user_context from v_extensions ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql .= "select e.extension, e.user_context, e.extension_uuid from v_extensions as e, v_extension_users as u ";
+			$sql .= "where e.domain_uuid = '$domain_uuid' ";
+			$sql .= "and e.extension_uuid = u.extension_uuid ";
+			$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
 			$sql .= "and enabled = 'true' ";
-//			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-			$sql .= "order by extension asc ";
+			$sql .= "order by e.extension asc ";
 			$result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-			if (count($result) == 0) {
-				//no result found
-			}
-			else {
+			if (count($result) > 0) {
 				$x = 1;
 				foreach($result as $row) {
-					if (count($result) == $x) {
-						$_SESSION['user_extension_list'] .= $row['extension']."";
-					}
-					else {
-						$_SESSION['user_extension_list'] .= $row['extension']."|";
-					}
+					//$_SESSION['user_extension_list'] .= $row['extension']."";
+					$_SESSION['user']['extension'][] = $row['extension'];
 					$_SESSION['user_context'] = $row["user_context"];
-					$x++;
 				}
 			}
-			$user_extension_list = $_SESSION['user_extension_list'];
-			$ext_array = explode("|",$user_extension_list);
+//			$user_extension_list = $_SESSION['user_extension_list'];
+//			$ext_array = explode("|",$user_extension_list);
 		//if no extension has been assigned then setting user_context will still need to be set
 			if (strlen($_SESSION['user_context']) == 0) {
-				$_SESSION['user_context'] = '';
-				$sql = "";
-				$sql .= "select user_context from v_extensions ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "limit 1 ";
-				$prep_statement = $db->prepare(check_sql($sql));
-				$prep_statement->execute();
-				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-				foreach ($result as &$row) {
-					$_SESSION['user_context'] = $row["user_context"];
-					break; //limit to 1 row
+				if (count($_SESSION['domains']) == 1) {
+					$_SESSION['user_context'] = "default";
+				}
+				else {
+					$_SESSION['user_context'] = $_SESSION['domain_name'];
 				}
 			}
 	}
-
 
 if ($db_type == "sqlite") {
 	//sqlite: check if call detail record (CDR) db file exists if not create it

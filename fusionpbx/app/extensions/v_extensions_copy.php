@@ -53,7 +53,6 @@ else {
 		$domain_uuid = $row["domain_uuid"];
 		$extension = $row["extension"];
 		$password = $row["password"];
-		$user_list = $row["user_list"];
 		$provisioning_list = $row["provisioning_list"];
 		$provisioning_list = strtolower($provisioning_list);
 		$vm_password = $row["vm_password"];
@@ -88,7 +87,6 @@ else {
 	$sql .= "extension_uuid, ";
 	$sql .= "extension, ";
 	$sql .= "password, ";
-	$sql .= "user_list, ";
 	$sql .= "provisioning_list, ";
 	$sql .= "vm_password, ";
 	$sql .= "accountcode, ";
@@ -115,7 +113,6 @@ else {
 	$sql .= "'$extension_uuid', ";
 	$sql .= "'$extension', ";
 	$sql .= "'$password', ";
-	$sql .= "'$user_list', ";
 	$sql .= "'$provisioning_list', ";
 	$sql .= "'#".generate_password(4, 1)."', ";
 	$sql .= "'$extension', ";
