@@ -46,16 +46,16 @@ else {
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
 		$type = check_str($_POST["type"]);
-		$org = check_str($_POST["org"]);
-		$n_given = check_str($_POST["n_given"]);
-		$n_family = check_str($_POST["n_family"]);
-		$nickname = check_str($_POST["nickname"]);
-		$title = check_str($_POST["title"]);
-		$role = check_str($_POST["role"]);
-		$email = check_str($_POST["email"]);
-		$url = check_str($_POST["url"]);
-		$tz = check_str($_POST["tz"]);
-		$note = check_str($_POST["note"]);
+		$contact_organization = check_str($_POST["contact_organization"]);
+		$contact_name_given = check_str($_POST["contact_name_given"]);
+		$contact_name_family = check_str($_POST["contact_name_family"]);
+		$contact_nickname = check_str($_POST["contact_nickname"]);
+		$contact_title = check_str($_POST["contact_title"]);
+		$contact_role = check_str($_POST["contact_role"]);
+		$contact_email = check_str($_POST["contact_email"]);
+		$contact_url = check_str($_POST["contact_url"]);
+		$contact_time_zone = check_str($_POST["contact_time_zone"]);
+		$contact_note = check_str($_POST["contact_note"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -67,19 +67,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		//if (strlen($type) == 0) { $msg .= "Please provide: Type<br>\n"; }
-		//if (strlen($org) == 0) { $msg .= "Please provide: Organization<br>\n"; }
-		//if (strlen($n_given) == 0) { $msg .= "Please provide: First Name<br>\n"; }
-		//if (strlen($n_family) == 0) { $msg .= "Please provide: Last Name<br>\n"; }
-		//if (strlen($nickname) == 0) { $msg .= "Please provide: Nickname<br>\n"; }
-		//if (strlen($title) == 0) { $msg .= "Please provide: Title<br>\n"; }
-		//if (strlen($role) == 0) { $msg .= "Please provide: Role<br>\n"; }
+		//if (strlen($contact_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
+		//if (strlen($contact_organization) == 0) { $msg .= "Please provide: Organization<br>\n"; }
+		//if (strlen($contact_name_given) == 0) { $msg .= "Please provide: First Name<br>\n"; }
+		//if (strlen($contact_name_family) == 0) { $msg .= "Please provide: Last Name<br>\n"; }
+		//if (strlen($contact_nickname) == 0) { $msg .= "Please provide: Nickname<br>\n"; }
+		//if (strlen($contact_title) == 0) { $msg .= "Please provide: Title<br>\n"; }
+		//if (strlen($contact_role) == 0) { $msg .= "Please provide: Role<br>\n"; }
 		//if (strlen($) == 0) { $msg .= "Please provide: Contact Information<br>\n"; }
-		//if (strlen($email) == 0) { $msg .= "Please provide: Email<br>\n"; }
-		//if (strlen($url) == 0) { $msg .= "Please provide: URL<br>\n"; }
+		//if (strlen($contact_email) == 0) { $msg .= "Please provide: Email<br>\n"; }
+		//if (strlen($contact_url) == 0) { $msg .= "Please provide: URL<br>\n"; }
 		//if (strlen($) == 0) { $msg .= "Please provide: Additional Information<br>\n"; }
-		//if (strlen($tz) == 0) { $msg .= "Please provide: Time Zone<br>\n"; }
-		//if (strlen($note) == 0) { $msg .= "Please provide: Notes<br>\n"; }
+		//if (strlen($contact_time_zone) == 0) { $msg .= "Please provide: Time Zone<br>\n"; }
+		//if (strlen($contact_note) == 0) { $msg .= "Please provide: Notes<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -101,39 +101,39 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "contact_uuid, ";
-			$sql .= "type, ";
-			$sql .= "org, ";
-			$sql .= "n_given, ";
-			$sql .= "n_family, ";
-			$sql .= "nickname, ";
-			$sql .= "title, ";
-			$sql .= "role, ";
-			$sql .= "email, ";
-			$sql .= "url, ";
-			$sql .= "tz, ";
-			$sql .= "note ";
+			$sql .= "contact_type, ";
+			$sql .= "contact_organization, ";
+			$sql .= "contact_name_given, ";
+			$sql .= "contact_name_family, ";
+			$sql .= "contact_nickname, ";
+			$sql .= "contact_title, ";
+			$sql .= "contact_role, ";
+			$sql .= "contact_email, ";
+			$sql .= "contact_url, ";
+			$sql .= "contact_time_zone, ";
+			$sql .= "contact_note ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
 			$sql .= "'$contact_uuid', ";
-			$sql .= "'$type', ";
-			$sql .= "'$org', ";
-			$sql .= "'$n_given', ";
-			$sql .= "'$n_family', ";
-			$sql .= "'$nickname', ";
-			$sql .= "'$title', ";
-			$sql .= "'$role', ";
-			$sql .= "'$email', ";
-			$sql .= "'$url', ";
-			$sql .= "'$tz', ";
-			$sql .= "'$note' ";
+			$sql .= "'$contact_type', ";
+			$sql .= "'$contact_organization', ";
+			$sql .= "'$contact_name_given', ";
+			$sql .= "'$contact_name_family', ";
+			$sql .= "'$contact_nickname', ";
+			$sql .= "'$contact_title', ";
+			$sql .= "'$contact_role', ";
+			$sql .= "'$contact_email', ";
+			$sql .= "'$contact_url', ";
+			$sql .= "'$contact_time_zone', ";
+			$sql .= "'$contact_note' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_contacts.php\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;contact_url=v_contacts.php\">\n";
 			echo "<div align='center'>\n";
 			echo "Add Complete\n";
 			echo "</div>\n";
@@ -144,24 +144,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "update") {
 			$sql = "update v_contacts set ";
 			$sql .= "domain_uuid = '$domain_uuid', ";
-			$sql .= "type = '$type', ";
-			$sql .= "org = '$org', ";
-			$sql .= "n_given = '$n_given', ";
-			$sql .= "n_family = '$n_family', ";
-			$sql .= "nickname = '$nickname', ";
-			$sql .= "title = '$title', ";
-			$sql .= "role = '$role', ";
-			$sql .= "email = '$email', ";
-			$sql .= "url = '$url', ";
-			$sql .= "tz = '$tz', ";
-			$sql .= "note = '$note' ";
+			$sql .= "contact_type = '$contact_type', ";
+			$sql .= "contact_organization = '$contact_organization', ";
+			$sql .= "contact_name_given = '$contact_name_given', ";
+			$sql .= "contact_name_family = '$contact_name_family', ";
+			$sql .= "contact_nickname = '$contact_nickname', ";
+			$sql .= "contact_title = '$contact_title', ";
+			$sql .= "contact_role = '$contact_role', ";
+			$sql .= "contact_email = '$contact_email', ";
+			$sql .= "contact_url = '$contact_url', ";
+			$sql .= "contact_time_zone = '$contact_time_zone', ";
+			$sql .= "contact_note = '$contact_note' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and contact_uuid = '$contact_uuid' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_contacts.php\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;contact_url=v_contacts.php\">\n";
 			echo "<div align='center'>\n";
 			echo "Update Complete\n";
 			echo "</div>\n";
@@ -182,17 +182,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$type = $row["type"];
-			$org = $row["org"];
-			$n_given = $row["n_given"];
-			$n_family = $row["n_family"];
-			$nickname = $row["nickname"];
-			$title = $row["title"];
-			$role = $row["role"];
-			$email = $row["email"];
-			$url = $row["url"];
-			$tz = $row["tz"];
-			$note = $row["note"];
+			$contact_type = $row["contact_type"];
+			$contact_organization = $row["contact_organization"];
+			$contact_name_given = $row["contact_name_given"];
+			$contact_name_family = $row["contact_name_family"];
+			$contact_nickname = $row["contact_nickname"];
+			$contact_title = $row["contact_title"];
+			$contact_role = $row["contact_role"];
+			$contact_email = $row["contact_email"];
+			$contact_url = $row["contact_url"];
+			$contact_time_zone = $row["contact_time_zone"];
+			$contact_note = $row["contact_note"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -228,7 +228,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align=\"left\" colspan='2'>\n";
-	echo "The contact is a list of individuals and organizations.<br /><br />\n";
+	echo "The contact is a list of individuals and contact_organizations.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -249,63 +249,63 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Type:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<select class='formfld' style='width:85%;' name='type'>\n";
+		echo "	<select class='formfld' style='width:85%;' name='contact_type'>\n";
 		echo "	<option value=''></option>\n";
-		if ($type == "customer") { 
+		if ($contact_type == "customer") { 
 			echo "	<option value='customer' selected='selected' >Customer</option>\n";
 		}
 		else {
 			echo "	<option value='customer'>Customer</option>\n";
 		}
-		if ($type == "contractor") { 
+		if ($contact_type == "contractor") { 
 			echo "	<option value='contractor' selected='selected' >Contractor</option>\n";
 		}
 		else {
 			echo "	<option value='contractor'>Contractor</option>\n";
 		}
-		if ($type == "friend") { 
+		if ($contact_type == "friend") { 
 			echo "	<option value='friend' selected='selected' >Friend</option>\n";
 		}
 		else {
 			echo "	<option value='friend'>Friend</option>\n";
 		}
-		if ($type == "lead") { 
+		if ($contact_type == "lead") { 
 			echo "	<option value='lead' selected='selected' >Lead</option>\n";
 		}
 		else {
 			echo "	<option value='lead'>Lead</option>\n";
 		}
-		if ($type == "member") { 
+		if ($contact_type == "member") { 
 			echo "	<option value='member' selected='selected' >Member</option>\n";
 		}
 		else {
 			echo "	<option value='member'>Member</option>\n";
 		}
-		if ($type == "family") { 
+		if ($contact_type == "family") { 
 			echo "	<option value='family' selected='selected' >Family</option>\n";
 		}
 		else {
 			echo "	<option value='family'>Family</option>\n";
 		}
-		if ($type == "subscriber") { 
+		if ($contact_type == "subscriber") { 
 			echo "	<option value='subscriber' selected='selected' >Subscriber</option>\n";
 		}
 		else {
 			echo "	<option value='subscriber'>Subscriber</option>\n";
 		}
-		if ($type == "supplier") { 
+		if ($contact_type == "supplier") { 
 			echo "	<option value='supplier' selected='selected' >Supplier</option>\n";
 		}
 		else {
 			echo "	<option value='supplier'>Supplier</option>\n";
 		}
-		if ($type == "provider") { 
+		if ($contact_type == "provider") { 
 			echo "	<option value='provider' selected='selected' >Provider</option>\n";
 		}
 		else {
 			echo "	<option value='provider'>Provider</option>\n";
 		}
-		if ($type == "volunteer") { 
+		if ($contact_type == "volunteer") { 
 			echo "	<option value='volunteer' selected='selected' >Volunteer</option>\n";
 		}
 		else {
@@ -322,7 +322,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Organization:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' style='width:85%;' type='text' name='org' maxlength='255' value=\"$org\">\n";
+		echo "	<input class='formfld' style='width:85%;' type='text' name='contact_organization' maxlength='255' value=\"$contact_organization\">\n";
 		echo "<br />\n";
 		echo "Enter the organization.\n";
 		echo "</td>\n";
@@ -333,7 +333,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	First Name:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' style='width:85%;' type='text' name='n_given' maxlength='255' value=\"$n_given\">\n";
+		echo "	<input class='formfld' style='width:85%;' type='text' name='contact_name_given' maxlength='255' value=\"$contact_name_given\">\n";
 		echo "<br />\n";
 		echo "Enter the given name.\n";
 		echo "</td>\n";
@@ -344,7 +344,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Last Name:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' style='width:85%;' type='text' name='n_family' maxlength='255' value=\"$n_family\">\n";
+		echo "	<input class='formfld' style='width:85%;' type='text' name='contact_name_family' maxlength='255' value=\"$contact_name_family\">\n";
 		echo "<br />\n";
 		echo "Enter the family name.\n";
 		echo "</td>\n";
@@ -355,7 +355,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Nickname:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' style='width:85%;' type='text' name='nickname' maxlength='255' value=\"$nickname\">\n";
+		echo "	<input class='formfld' style='width:85%;' type='text' name='contact_nickname' maxlength='255' value=\"$contact_nickname\">\n";
 		echo "<br />\n";
 		echo "Enter the nickname.\n";
 		echo "</td>\n";
@@ -366,7 +366,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Title:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' style='width:85%;' type='text' name='title' maxlength='255' value=\"$title\">\n";
+		echo "	<input class='formfld' style='width:85%;' type='text' name='contact_title' maxlength='255' value=\"$contact_title\">\n";
 		echo "<br />\n";
 		echo "Enter the title.\n";
 		echo "</td>\n";
@@ -377,7 +377,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Role:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' style='width:85%;' type='text' name='role' maxlength='255' value=\"$role\">\n";
+		echo "	<input class='formfld' style='width:85%;' type='text' name='contact_role' maxlength='255' value=\"$contact_role\">\n";
 		echo "<br />\n";
 		echo "Enter the role.\n";
 		echo "</td>\n";
@@ -393,7 +393,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Email:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' style='width:85%;' type='text' name='email' maxlength='255' value=\"$email\">\n";
+		echo "	<input class='formfld' style='width:85%;' type='text' name='contact_email' maxlength='255' value=\"$contact_email\">\n";
 		echo "<br />\n";
 		echo "Enter the email address.\n";
 		echo "</td>\n";
@@ -404,7 +404,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	URL:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "  <input class='formfld' style='width:85%;' type='text' name='url' maxlength='255' value='$url'>\n";
+		echo "  <input class='formfld' style='width:85%;' type='text' name='contact_url' maxlength='255' value='$contact_url'>\n";
 		echo "<br />\n";
 		echo "Enter the website address.\n";
 		echo "</td>\n";
@@ -420,7 +420,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Time Zone:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' style='width:85%;' type='text' name='tz' maxlength='255' value=\"$tz\">\n";
+		echo "	<input class='formfld' style='width:85%;' type='text' name='contact_time_zone' maxlength='255' value=\"$contact_time_zone\">\n";
 		echo "<br />\n";
 		echo "Enter the time zone.\n";
 		echo "</td>\n";
@@ -431,7 +431,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	Notes:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "  <input class='formfld' style='width:85%;' type='text' name='note' maxlength='255' value='$note'>\n";
+		echo "  <input class='formfld' style='width:85%;' type='text' name='contact_note' maxlength='255' value='$contact_note'>\n";
 		echo "<br />\n";
 		echo "Enter the notes.\n";
 		echo "</td>\n";
@@ -450,10 +450,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td width='50%' class='' valign='top' align='center'>\n";
 		//echo "	<img src='v_contacts_vcard.php?id=$contact_uuid&type=image' width='90%'><br /><br />\n";
-
 		if ($action == "update") {
-			require "v_contact_tel.php";
-			require "v_contact_adr.php";
+			require "v_contact_phones.php";
+			require "v_contact_addresses.php";
 			require "v_contact_notes.php";
 			//echo "<br/><br/>\n";
 		}

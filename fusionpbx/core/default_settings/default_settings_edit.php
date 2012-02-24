@@ -276,8 +276,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$previous_category = '';
 			$x = 0;
 			foreach ($time_zone_identifiers as $key => $val) {
-				$tz = explode("/", $val);
-				$category = $tz[0];
+				$time_zone = explode("/", $val);
+				$category = $time_zone[0];
 				if ($category != $previous_category) {
 					if ($x > 0) {
 						echo "		</optgroup>\n";

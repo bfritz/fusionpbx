@@ -460,8 +460,8 @@ else {
 	$previous_category = '';
 	$x = 0;
 	foreach ($time_zone_identifiers as $key => $row) {
-		$tz = explode("/", $row);
-		$category = $tz[0];
+		$time_zone = explode("/", $row);
+		$category = $time_zone[0];
 		if ($category != $previous_category) {
 			if ($x > 0) {
 				echo "		</optgroup>\n";

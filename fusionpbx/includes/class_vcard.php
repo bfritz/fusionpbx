@@ -98,7 +98,7 @@ class vcard {
 		if (strlen($this->data['name_suffix']) > 0) {
 			$this->card .= $this->data['name_suffix']."\r\n";
 		}
-		if ($this->data['nickname']) { $this->card .= "NICKNAME:".$this->data['nickname']."\r\n"; }
+		if ($this->data['nickname']) { $this->card .= "NICKNAME:".$this->data['contact_nickname']."\r\n"; }
 		if ($this->data['title']) { $this->card .= "TITLE:".$this->data['title']."\r\n"; }
 		if ($this->data['company']) { $this->card .= "ORG:".$this->data['company']; }
 		if ($this->data['department']) { $this->card .= ";".$this->data['department']; }

@@ -61,7 +61,7 @@ require_once "includes/paging.php";
 
 	//prepare to page the results
 		$sql = "";
-		$sql .= " select count(*) as num_rows from v_contact_adr ";
+		$sql .= " select count(*) as num_rows from v_contact_addresses ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
@@ -87,7 +87,7 @@ require_once "includes/paging.php";
 
 	//get the contact list
 		$sql = "";
-		$sql .= " select * from v_contact_adr ";
+		$sql .= " select * from v_contact_addresses ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
@@ -106,40 +106,40 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo th_order_by('adr_type', 'Type', $order_by, $order);
-	//echo th_order_by('adr_street', 'Street Address', $order_by, $order);
-	//echo th_order_by('adr_extended', 'Extended Address', $order_by, $order);
-	echo th_order_by('adr_locality', 'City', $order_by, $order);
-	echo th_order_by('adr_region', 'Region', $order_by, $order);
-	//echo th_order_by('adr_postal_code', 'Postal Code', $order_by, $order);
-	echo th_order_by('adr_country', 'Country', $order_by, $order);
-	//echo th_order_by('adr_latitude', 'Latitude', $order_by, $order);
-	//echo th_order_by('adr_longitude', 'Longitude', $order_by, $order);
+	echo th_order_by('address_type', 'Type', $order_by, $order);
+	//echo th_order_by('address_street', 'Street Address', $order_by, $order);
+	//echo th_order_by('address_extended', 'Extended Address', $order_by, $order);
+	echo th_order_by('address_locality', 'City', $order_by, $order);
+	echo th_order_by('address_region', 'Region', $order_by, $order);
+	//echo th_order_by('address_postal_code', 'Postal Code', $order_by, $order);
+	echo th_order_by('address_country', 'Country', $order_by, $order);
+	//echo th_order_by('address_latitude', 'Latitude', $order_by, $order);
+	//echo th_order_by('address_longitude', 'Longitude', $order_by, $order);
 	echo "<th>Tools</th>\n";
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_contact_adr_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
+	echo "	<a href='v_contact_addresses_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			$map_query = $row['adr_street']." ".$row['adr_extended'].", ".$row['adr_locality'].", ".$row['adr_region'].", ".$row['adr_region'].", ".$row['adr_postal_code'];
+			$map_query = $row['address_street']." ".$row['address_extended'].", ".$row['address_locality'].", ".$row['address_region'].", ".$row['address_region'].", ".$row['address_postal_code'];
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['adr_type']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['adr_street']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['adr_extended']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['adr_locality']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['adr_region']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['adr_postal_code']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['adr_country']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['adr_latitude']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['adr_longitude']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_type']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_street']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_extended']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_locality']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_region']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_postal_code']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_country']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_latitude']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_longitude']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
-			echo "		<a href=\"http://maps.google.com/maps?q=".urlencode($map_query)."&hl=en\" target=\"_blank\">Map</a>&nbsp;\n";
+			echo "		<a href=\"http://maps.google.com/maps?q=".contact_urlencode($map_query)."&hl=en\" target=\"_blank\">Map</a>&nbsp;\n";
 			echo "	</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_contact_adr_edit.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_adr_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_contact_adr_delete.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_adr_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='v_contact_addresses_edit.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_address_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='v_contact_addresses_delete.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_address_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -154,7 +154,7 @@ require_once "includes/paging.php";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_contact_adr_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
+	echo "			<a href='v_contact_addresses_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";

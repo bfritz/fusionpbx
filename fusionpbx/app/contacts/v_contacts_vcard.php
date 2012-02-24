@@ -51,51 +51,51 @@ if (count($_GET)>0) {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$type = $row["type"];
-			$org = $row["org"];
-			$n_given = $row["n_given"];
-			$n_family = $row["n_family"];
-			$nickname = $row["nickname"];
-			$title = $row["title"];
-			$role = $row["role"];
-			$email = $row["email"];
-			$url = $row["url"];
-			$tz = $row["tz"];
-			$note = $row["note"];
+			$contact_type = $row["contact_type"];
+			$contact_organization = $row["contact_organization"];
+			$contact_name_given = $row["contact_name_given"];
+			$contact_name_family = $row["contact_name_family"];
+			$contact_nickname = $row["contact_nickname"];
+			$contact_title = $row["contact_title"];
+			$contact_role = $row["contact_role"];
+			$contact_email = $row["contact_email"];
+			$contact_url = $row["contact_url"];
+			$contact_time_zone = $row["contact_time_zone"];
+			$contact_note = $row["contact_note"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
 
-		$vcard->data['company'] = $org;
-		$vcard->data['first_name'] = $n_given;
-		$vcard->data['last_name'] = $n_family;
-		$vcard->data['email1'] = $email;
-		$vcard->data['url'] = $url;
+		$vcard->data['company'] = $contact_organization;
+		$vcard->data['first_name'] = $contact_name_given;
+		$vcard->data['last_name'] = $contact_name_family;
+		$vcard->data['contact_email1'] = $contact_email;
+		$vcard->data['contact_url'] = $contact_url;
 
 		if ($_GET['type'] == "image" || $_GET['type'] == "html") {
 			//don't add this to the QR code at this time
 		}
 		else {
-			$vcard->data['display_name'] = $n_given." ".$n_family;
-			$vcard->data['nickname'] = $nickname;
-			$vcard->data['title'] = $title;
-			$vcard->data['role'] = $role;
-			$vcard->data['timezone'] = $tz;
-			$vcard->data['note'] = $note;
+			$vcard->data['display_name'] = $contact_name_given." ".$contact_name_family;
+			$vcard->data['contact_nickname'] = $contact_nickname;
+			$vcard->data['contact_title'] = $contact_title;
+			$vcard->data['contact_role'] = $contact_role;
+			$vcard->data['timezone'] = $contact_time_zone;
+			$vcard->data['contact_note'] = $contact_note;
 		}
 
 	//get the contact's telephone numbers
 		$sql = "";
-		$sql .= "select * from v_contact_tel ";
+		$sql .= "select * from v_contact_phones ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and contact_uuid = '$contact_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$tel_type = $row["tel_type"];
-			$tel_number = $row["tel_number"];
-			$vcard->data[$tel_type.'_tel'] = $tel_number;
+			$phone_type = $row["phone_type"];
+			$phone_number = $row["phone_number"];
+			$vcard->data[$phone_type.'_tel'] = $phone_number;
 		}
 		unset ($prep_statement);
 
@@ -105,30 +105,30 @@ if (count($_GET)>0) {
 		}
 		else {
 			$sql = "";
-			$sql .= "select * from v_contact_adr ";
+			$sql .= "select * from v_contact_addresses ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and contact_uuid = '$contact_uuid' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll();
 			foreach ($result as &$row) {
-				$adr_type = $row["adr_type"];
-				$adr_street = $row["adr_street"];
-				$adr_extended = $row["adr_extended"];
-				$adr_locality = $row["adr_locality"];
-				$adr_region = $row["adr_region"];
-				$adr_postal_code = $row["adr_postal_code"];
-				$adr_country = $row["adr_country"];
-				$adr_latitude = $row["adr_latitude"];
-				$adr_longitude = $row["adr_longitude"];
-				$adr_type = strtolower(trim($adr_type));
+				$address_type = $row["address_type"];
+				$address_street = $row["address_street"];
+				$address_extended = $row["address_extended"];
+				$address_locality = $row["address_locality"];
+				$address_region = $row["address_region"];
+				$address_postal_code = $row["address_postal_code"];
+				$address_country = $row["address_country"];
+				$address_latitude = $row["address_latitude"];
+				$address_longitude = $row["address_longitude"];
+				$address_type = strtolower(trim($address_type));
 
-				$vcard->data[$adr_type.'_address'] = $adr_street;
-				$vcard->data[$adr_type.'_extended_address'] = $adr_extended;
-				$vcard->data[$adr_type.'_city'] = $adr_locality;
-				$vcard->data[$adr_type.'_state'] = $adr_region;
-				$vcard->data[$adr_type.'_postal_code'] = $adr_postal_code;
-				$vcard->data[$adr_type.'_country'] = $adr_country;
+				$vcard->data[$address_type.'_address'] = $address_street;
+				$vcard->data[$address_type.'_extended_address'] = $address_extended;
+				$vcard->data[$address_type.'_city'] = $address_locality;
+				$vcard->data[$address_type.'_state'] = $address_region;
+				$vcard->data[$address_type.'_postal_code'] = $address_postal_code;
+				$vcard->data[$address_type.'_country'] = $address_country;
 			}
 			unset ($prep_statement);
 		}
@@ -193,7 +193,7 @@ home_state
 home_postal_code
 home_country
 pager_tel
-email2
+contact_email2
 photo
 birthday
 sort_string

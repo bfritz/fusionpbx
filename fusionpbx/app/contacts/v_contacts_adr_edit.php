@@ -37,7 +37,7 @@ else {
 //action add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$contact_adr_uuid = check_str($_REQUEST["id"]);
+		$contact_address_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -49,35 +49,35 @@ if (strlen($_GET["contact_uuid"]) > 0) {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
-		$adr_type = check_str($_POST["adr_type"]);
-		$adr_street = check_str($_POST["adr_street"]);
-		$adr_extended = check_str($_POST["adr_extended"]);
-		$adr_locality = check_str($_POST["adr_locality"]);
-		$adr_region = check_str($_POST["adr_region"]);
-		$adr_postal_code = check_str($_POST["adr_postal_code"]);
-		$adr_country = check_str($_POST["adr_country"]);
-		$adr_latitude = check_str($_POST["adr_latitude"]);
-		$adr_longitude = check_str($_POST["adr_longitude"]);
+		$address_type = check_str($_POST["address_type"]);
+		$address_street = check_str($_POST["address_street"]);
+		$address_extended = check_str($_POST["address_extended"]);
+		$address_locality = check_str($_POST["address_locality"]);
+		$address_region = check_str($_POST["address_region"]);
+		$address_postal_code = check_str($_POST["address_postal_code"]);
+		$address_country = check_str($_POST["address_country"]);
+		$address_latitude = check_str($_POST["address_latitude"]);
+		$address_longitude = check_str($_POST["address_longitude"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$contact_adr_uuid = check_str($_POST["contact_adr_uuid"]);
+		$contact_address_uuid = check_str($_POST["contact_address_uuid"]);
 	}
 
 	//check for all required data
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		//if (strlen($adr_type) == 0) { $msg .= "Please provide: Address Type<br>\n"; }
-		//if (strlen($adr_street) == 0) { $msg .= "Please provide: Street Address<br>\n"; }
-		//if (strlen($adr_extended) == 0) { $msg .= "Please provide: Extended Address<br>\n"; }
-		//if (strlen($adr_locality) == 0) { $msg .= "Please provide: City<br>\n"; }
-		//if (strlen($adr_region) == 0) { $msg .= "Please provide: State / Province<br>\n"; }
-		//if (strlen($adr_postal_code) == 0) { $msg .= "Please provide: Postal Code<br>\n"; }
-		//if (strlen($adr_country) == 0) { $msg .= "Please provide: Country<br>\n"; }
-		//if (strlen($adr_latitude) == 0) { $msg .= "Please provide: Latitude<br>\n"; }
-		//if (strlen($adr_longitude) == 0) { $msg .= "Please provide: Longitude<br>\n"; }
+		//if (strlen($address_type) == 0) { $msg .= "Please provide: Address Type<br>\n"; }
+		//if (strlen($address_street) == 0) { $msg .= "Please provide: Street Address<br>\n"; }
+		//if (strlen($address_extended) == 0) { $msg .= "Please provide: Extended Address<br>\n"; }
+		//if (strlen($address_locality) == 0) { $msg .= "Please provide: City<br>\n"; }
+		//if (strlen($address_region) == 0) { $msg .= "Please provide: State / Province<br>\n"; }
+		//if (strlen($address_postal_code) == 0) { $msg .= "Please provide: Postal Code<br>\n"; }
+		//if (strlen($address_country) == 0) { $msg .= "Please provide: Country<br>\n"; }
+		//if (strlen($address_latitude) == 0) { $msg .= "Please provide: Latitude<br>\n"; }
+		//if (strlen($address_longitude) == 0) { $msg .= "Please provide: Longitude<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -94,42 +94,42 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add") {
-			$contact_adr_uuid = uuid();
-			$sql = "insert into v_contact_adr ";
+			$contact_address_uuid = uuid();
+			$sql = "insert into v_contact_addresses ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "contact_uuid, ";
-			$sql .= "contact_adr_uuid, ";
-			$sql .= "adr_type, ";
-			$sql .= "adr_street, ";
-			$sql .= "adr_extended, ";
-			$sql .= "adr_locality, ";
-			$sql .= "adr_region, ";
-			$sql .= "adr_postal_code, ";
-			$sql .= "adr_country, ";
-			$sql .= "adr_latitude, ";
-			$sql .= "adr_longitude ";
+			$sql .= "contact_address_uuid, ";
+			$sql .= "address_type, ";
+			$sql .= "address_street, ";
+			$sql .= "address_extended, ";
+			$sql .= "address_locality, ";
+			$sql .= "address_region, ";
+			$sql .= "address_postal_code, ";
+			$sql .= "address_country, ";
+			$sql .= "address_latitude, ";
+			$sql .= "address_longitude ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
 			$sql .= "'$contact_uuid', ";
-			$sql .= "'$contact_adr_uuid', ";
-			$sql .= "'$adr_type', ";
-			$sql .= "'$adr_street', ";
-			$sql .= "'$adr_extended', ";
-			$sql .= "'$adr_locality', ";
-			$sql .= "'$adr_region', ";
-			$sql .= "'$adr_postal_code', ";
-			$sql .= "'$adr_country', ";
-			$sql .= "'$adr_latitude', ";
-			$sql .= "'$adr_longitude' ";
+			$sql .= "'$contact_address_uuid', ";
+			$sql .= "'$address_type', ";
+			$sql .= "'$address_street', ";
+			$sql .= "'$address_extended', ";
+			$sql .= "'$address_locality', ";
+			$sql .= "'$address_region', ";
+			$sql .= "'$address_postal_code', ";
+			$sql .= "'$address_country', ";
+			$sql .= "'$address_latitude', ";
+			$sql .= "'$address_longitude' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_contacts_edit.php?id=$contact_uuid\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;contact_url=v_contacts_edit.php?id=$contact_uuid\">\n";
 			echo "<div align='center'>\n";
 			echo "Add Complete\n";
 			echo "</div>\n";
@@ -138,24 +138,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		} //if ($action == "add")
 
 		if ($action == "update") {
-			$sql = "update v_contact_adr set ";
+			$sql = "update v_contact_addresses set ";
 			$sql .= "contact_uuid = '$contact_uuid', ";
-			$sql .= "adr_type = '$adr_type', ";
-			$sql .= "adr_street = '$adr_street', ";
-			$sql .= "adr_extended = '$adr_extended', ";
-			$sql .= "adr_locality = '$adr_locality', ";
-			$sql .= "adr_region = '$adr_region', ";
-			$sql .= "adr_postal_code = '$adr_postal_code', ";
-			$sql .= "adr_country = '$adr_country', ";
-			$sql .= "adr_latitude = '$adr_latitude', ";
-			$sql .= "adr_longitude = '$adr_longitude' ";
+			$sql .= "address_type = '$address_type', ";
+			$sql .= "address_street = '$address_street', ";
+			$sql .= "address_extended = '$address_extended', ";
+			$sql .= "address_locality = '$address_locality', ";
+			$sql .= "address_region = '$address_region', ";
+			$sql .= "address_postal_code = '$address_postal_code', ";
+			$sql .= "address_country = '$address_country', ";
+			$sql .= "address_latitude = '$address_latitude', ";
+			$sql .= "address_longitude = '$address_longitude' ";
 			$sql .= "where domain_uuid = '$domain_uuid'";
-			$sql .= "and contact_adr_uuid = '$contact_adr_uuid'";
+			$sql .= "and contact_address_uuid = '$contact_address_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_contacts_edit.php?id=$contact_uuid\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;contact_url=v_contacts_edit.php?id=$contact_uuid\">\n";
 			echo "<div align='center'>\n";
 			echo "Update Complete\n";
 			echo "</div>\n";
@@ -167,24 +167,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$contact_adr_uuid = $_GET["id"];
+		$contact_address_uuid = $_GET["id"];
 		$sql = "";
-		$sql .= "select * from v_contact_adr ";
+		$sql .= "select * from v_contact_addresses ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and contact_adr_uuid = '$contact_adr_uuid' ";
+		$sql .= "and contact_address_uuid = '$contact_address_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$adr_type = $row["adr_type"];
-			$adr_street = $row["adr_street"];
-			$adr_extended = $row["adr_extended"];
-			$adr_locality = $row["adr_locality"];
-			$adr_region = $row["adr_region"];
-			$adr_postal_code = $row["adr_postal_code"];
-			$adr_country = $row["adr_country"];
-			$adr_latitude = $row["adr_latitude"];
-			$adr_longitude = $row["adr_longitude"];
+			$address_type = $row["address_type"];
+			$address_street = $row["address_street"];
+			$address_extended = $row["address_extended"];
+			$address_locality = $row["address_locality"];
+			$address_region = $row["address_region"];
+			$address_postal_code = $row["address_postal_code"];
+			$address_country = $row["address_country"];
+			$address_latitude = $row["address_latitude"];
+			$address_longitude = $row["address_longitude"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -224,15 +224,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Address Type:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<select class='formfld' name='adr_type'>\n";
+	echo "	<select class='formfld' name='address_type'>\n";
 	echo "	<option value=''></option>\n";
-	if ($adr_type == "Home") { 
+	if ($address_type == "Home") { 
 		echo "	<option value='Home' SELECTED >home</option>\n";
 	}
 	else {
 		echo "	<option value='Home'>home</option>\n";
 	}
-	if ($adr_type == "Work") { 
+	if ($address_type == "Work") { 
 		echo "	<option value='Work' SELECTED >work</option>\n";
 	}
 	else {
@@ -249,7 +249,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Street Address:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='adr_street' maxlength='255' value=\"$adr_street\">\n";
+	echo "	<input class='formfld' type='text' name='address_street' maxlength='255' value=\"$address_street\">\n";
 	echo "<br />\n";
 	echo "Enter the street address.\n";
 	echo "</td>\n";
@@ -260,7 +260,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Extended Address:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='adr_extended' maxlength='255' value=\"$adr_extended\">\n";
+	echo "	<input class='formfld' type='text' name='address_extended' maxlength='255' value=\"$address_extended\">\n";
 	echo "<br />\n";
 	echo "Enter the extended address.\n";
 	echo "</td>\n";
@@ -271,7 +271,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	City:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='adr_locality' maxlength='255' value=\"$adr_locality\">\n";
+	echo "	<input class='formfld' type='text' name='address_locality' maxlength='255' value=\"$address_locality\">\n";
 	echo "<br />\n";
 	echo "Enter the city.\n";
 	echo "</td>\n";
@@ -282,7 +282,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Region:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='adr_region' maxlength='255' value=\"$adr_region\">\n";
+	echo "	<input class='formfld' type='text' name='address_region' maxlength='255' value=\"$address_region\">\n";
 	echo "<br />\n";
 	echo "Enter the state or province.\n";
 	echo "</td>\n";
@@ -293,7 +293,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Postal Code:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='adr_postal_code' maxlength='255' value=\"$adr_postal_code\">\n";
+	echo "	<input class='formfld' type='text' name='address_postal_code' maxlength='255' value=\"$address_postal_code\">\n";
 	echo "<br />\n";
 	echo "Enter the postal code.\n";
 	echo "</td>\n";
@@ -304,7 +304,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Country:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='adr_country' maxlength='255' value=\"$adr_country\">\n";
+	echo "	<input class='formfld' type='text' name='address_country' maxlength='255' value=\"$address_country\">\n";
 	echo "<br />\n";
 	echo "Enter the country.\n";
 	echo "</td>\n";
@@ -315,7 +315,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Latitude:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='adr_latitude' maxlength='255' value=\"$adr_latitude\">\n";
+	echo "	<input class='formfld' type='text' name='address_latitude' maxlength='255' value=\"$address_latitude\">\n";
 	echo "<br />\n";
 	echo "Enter the latitude\n";
 	echo "</td>\n";
@@ -326,7 +326,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Longitude:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='adr_longitude' maxlength='255' value=\"$adr_longitude\">\n";
+	echo "	<input class='formfld' type='text' name='address_longitude' maxlength='255' value=\"$address_longitude\">\n";
 	echo "<br />\n";
 	echo "Enter the longitude\n";
 	echo "</td>\n";
@@ -335,7 +335,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<td colspan='2' align='right'>\n";
 	echo "				<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='contact_adr_uuid' value='$contact_adr_uuid'>\n";
+		echo "				<input type='hidden' name='contact_address_uuid' value='$contact_address_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
 	echo "		</td>\n";
