@@ -61,7 +61,20 @@ function destination_select($select_name, $select_value, $select_default) {
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and extension_uuid = '$extension_uuid' ";
 	if (!(if_group("admin") || if_group("superadmin"))) {
-		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+		if (count($_SESSION['user']['extension']) > 0) {
+			$sql .= "and (";
+			$x = 0;
+			foreach($_SESSION['user']['extension'] as $row) {
+				if ($x > 0) { $sql .= "or "; }
+				$sql .= "extension = '".$row['user']."' ";
+				$x++;
+			}
+			$sql .= ")";
+		}
+		else {
+			//hide any results when a user has not been assigned an extension
+			$sql .= "and extension = 'disabled' ";
+		}
 	}
 	$sql .= "and enabled = 'true' ";
 	$prep_statement = $db->prepare(check_sql($sql));

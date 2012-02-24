@@ -45,9 +45,21 @@ else {
 	$sql .= " select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and extension_uuid = '$extension_uuid'";
-	//superadmin can see all messages
-	if(!if_group("superadmin")) {
-		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+	if (!(if_group("admin") || if_group("superadmin"))) {
+		if (count($_SESSION['user']['extension']) > 0) {
+			$sql .= "and (";
+			$x = 0;
+			foreach($_SESSION['user']['extension'] as $row) {
+				if ($x > 0) { $sql .= "or "; }
+				$sql .= "extension = '".$row['user']."' ";
+				$x++;
+			}
+			$sql .= ")";
+		}
+		else {
+			//hide any results when a user has not been assigned an extension
+			$sql .= "and extension = 'disabled' ";
+		}
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -69,12 +81,6 @@ else {
 		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		$extension = check_str($_POST["extension"]);
 		$password = check_str($_POST["password"]);
-
-		$user_list = check_str($_POST["user_list"]."|");
-		$user_list = str_replace("\n", "|", "|".$user_list);
-		$user_list = str_replace("\r", "", $user_list);
-		$user_list = str_replace(" ", "", $user_list);
-		$user_list = str_replace("||", "|", $user_list);
 
 		$mailbox = check_str($_POST["mailbox"]);
 		$vm_password = check_str($_POST["vm_password"]);
@@ -107,7 +113,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		//if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
-		//if (strlen($user_list) == 0) { $msg .= "Please provide: User List<br>\n"; }
 		//if (strlen($mailbox) == 0) { $msg .= "Please provide: Mailbox<br>\n"; }
 		if (strlen($vm_password) == 0) { $msg .= "Please provide: Voicemail Password<br>\n"; }
 		//if (strlen($accountcode) == 0) { $msg .= "Please provide: Account Code<br>\n"; }
@@ -146,7 +151,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql = "update v_extensions set ";
 			//$sql .= "extension = '$extension', ";
 			//$sql .= "password = '$password', ";
-			//$sql .= "user_list = '$user_list', ";
 			//$sql .= "mailbox = '$mailbox', ";
 			$sql .= "vm_password = '#$vm_password', ";
 			//$sql .= "accountcode = '$accountcode', ";
@@ -202,7 +206,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$domain_uuid = $row["domain_uuid"];
 			$extension = $row["extension"];
 			$password = $row["password"];
-			$user_list = $row["user_list"];
 			$mailbox = $row["mailbox"];
 			$vm_password = $row["vm_password"];
 			$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros

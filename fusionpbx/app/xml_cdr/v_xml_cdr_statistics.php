@@ -55,38 +55,22 @@ else {
 	echo "</tr>\n";
 	echo "</table>\n";
 
-//get a list of assigned extensions for this user
-	$sql = "";
-	$sql .= "select * from v_extensions ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$x = 0;
-	$result = $prep_statement->fetchAll();
-	foreach ($result as &$row) {
-		$extension_array[$x]['extension_uuid'] = $row["extension_uuid"];
-		$extension_array[$x]['extension'] = $row["extension"];
-		$x++;
-	}
-	unset ($prep_statement, $x);
-
 //show all call detail records to admin and superadmin. for everyone else show only the call details for extensions assigned to them
 	if (!if_group("admin") && !if_group("superadmin")) {
 		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '' 
 		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
 		$sql_where = "where domain_uuid = '$domain_uuid' and ( ";
-		if (count($extension_array) > 0) {
+		if (count($_SESSION['user']['extension']) > 0) {
 			$x = 0;
-			foreach($extension_array as $value) {
+			foreach($_SESSION['user']['extension'] as $row) {
 				if ($x==0) {
-					if ($value['extension'] > 0) { $sql_where .= "caller_id_number = '".$value['extension']."' \n"; } //source
+					if ($row['user'] > 0) { $sql_where .= "caller_id_number = '".$row['user']."' \n"; } //source
 				}
 				else {
-					if ($value['extension'] > 0) { $sql_where .= "or caller_id_number = '".$value['extension']."' \n"; } //source
+					if ($row['user'] > 0) { $sql_where .= "or caller_id_number = '".$row['user']."' \n"; } //source
 				}
-				if ($value['extension'] > 0) { $sql_where .= "or destination_number = '".$value['extension']."' \n"; } //destination
-				if ($value['extension'] > 0) { $sql_where .= "or destination_number = '*99".$value['extension']."' \n"; } //destination
+				if ($row['user'] > 0) { $sql_where .= "or destination_number = '".$row['user']."' \n"; } //destination
+				if ($row['user'] > 0) { $sql_where .= "or destination_number = '*99".$row['user']."' \n"; } //destination
 				$x++;
 			}
 		}

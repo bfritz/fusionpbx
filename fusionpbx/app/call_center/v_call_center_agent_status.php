@@ -71,16 +71,8 @@ require_once "includes/paging.php";
 					}
 
 				//loop through the list of assigned extensions
-					$sql = "";
-					$sql .= "select * from v_extensions ";
-					$sql .= "where domain_uuid = '$domain_uuid' ";
-					$sql .= "and user_list like '%|".$row['name']."|%' ";
-					$prep_statement = $db->prepare(check_sql($sql));
-					$prep_statement->execute();
-					$x = 0;
-					$sub_result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-					foreach ($sub_result as &$sub_row) {
-						$extension = $sub_row["extension"];
+					foreach ($_SESSION['user']['extension'] as &$sub_row) {
+						$extension = $sub_row["user"];
 						//hunt_group information used to determine if this is an add or an update
 							$sql  = "select * from v_hunt_groups ";
 							$sql .= "where domain_uuid = '$domain_uuid' ";

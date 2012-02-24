@@ -174,10 +174,11 @@ foreach($settings_array as $name => $value) {
 			$sql .= "order by e.extension asc ";
 			$result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 			if (count($result) > 0) {
-				$x = 1;
+				$x = 0;
 				foreach($result as $row) {
 					//$_SESSION['user_extension_list'] .= $row['extension']."";
-					$_SESSION['user']['extension'][] = $row['extension'];
+					$_SESSION['user']['extension'][$x]['user'] = $row['extension'];
+					$_SESSION['user']['extension'][$x]['extension_uuid'] = $row['extension_uuid'];
 					$_SESSION['user_context'] = $row["user_context"];
 				}
 			}
@@ -3526,7 +3527,7 @@ if (!function_exists('sync_directory')) {
 
 		//get a list of extensions and the users assigned to them
 			$sql = "";
-			$sql .= " select * from v_extensions ";
+			$sql .= "select * from v_extensions ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
@@ -3535,9 +3536,9 @@ if (!function_exists('sync_directory')) {
 			foreach ($result as &$row) {
 				$extension = $row["extension"];
 				$effective_caller_id_name = $row["effective_caller_id_name"];
-				$user_list = $row["user_list"];
-				$user_list = trim($user_list, "|");
-				$username_array = explode ("|", $user_list);
+				//$user_list = $row["user_list"];
+				//$user_list = trim($user_list, "|");
+				//$username_array = explode ("|", $user_list);
 				foreach ($username_array as &$username) {
 					if (strlen($username) > 0) {
 						$sql = "";

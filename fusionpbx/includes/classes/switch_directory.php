@@ -34,7 +34,6 @@ include "root.php";
 		public $number_alias;
 		public $password;
 		public $vm_password;
-		public $user_list;
 		public $accountcode;
 		public $effective_caller_id_name;
 		public $effective_caller_id_number;
@@ -108,7 +107,6 @@ include "root.php";
 			$number_alias = $this->number_alias;
 			$password = $this->password;
 			$autogen_users = $this->autogen_users;
-			$user_list = $this->user_list;
 			$provisioning_list = $this->provisioning_list;
 			$vm_password = $this->vm_password;
 			$accountcode = $this->accountcode;
@@ -151,7 +149,6 @@ include "root.php";
 					$sql .= "extension, ";
 					$sql .= "number_alias, ";
 					$sql .= "password, ";
-					$sql .= "user_list, ";
 					$sql .= "provisioning_list, ";
 					$sql .= "vm_password, ";
 					$sql .= "accountcode, ";
@@ -192,11 +189,6 @@ include "root.php";
 					$sql .= "'$extension', ";
 					$sql .= "'$number_alias', ";
 					$sql .= "'$password', ";
-					if ($autogen_users == "true") { 
-						$sql .= "'|".$extension."|', ";
-					} else {
-						$sql .= "'$user_list', ";
-					}
 					$sql .= "'$provisioning_list', ";
 					$sql .= "'user-choose', ";
 					$sql .= "'$accountcode', ";
@@ -255,7 +247,6 @@ include "root.php";
 			$number_alias = $this->number_alias;
 			$password = $this->password;
 			$autogen_users = $this->autogen_users;
-			$user_list = $this->user_list;
 			$provisioning_list = $this->provisioning_list;
 			$vm_password = $this->vm_password;
 			$accountcode = $this->accountcode;
@@ -283,14 +274,14 @@ include "root.php";
 			$enabled = $this->enabled;
 			$description = $this->description;
 
-			$user_list_array = explode("|", $user_list);
-			foreach($user_list_array as $tmp_user){
-				$user_password = generate_password();
-				if (strlen($tmp_user) > 0) {
-					user_add($tmp_user, $user_password, $user_email);
-				}
-			}
-			unset($tmp_user);
+			//$user_list_array = explode("|", $user_list);
+			//foreach($user_list_array as $tmp_user){
+			//	$user_password = generate_password();
+			//	if (strlen($tmp_user) > 0) {
+			//		user_add($tmp_user, $user_password, $user_email);
+			//	}
+			//}
+			//unset($tmp_user);
 
 			if (strlen($password) == 0) {
 				$password = generate_password();
@@ -300,7 +291,6 @@ include "root.php";
 			$sql .= "extension = '$extension', ";
 			$sql .= "number_alias = '$number_alias', ";
 			$sql .= "password = '$password', ";
-			$sql .= "user_list = '$user_list', ";
 			$sql .= "provisioning_list = '$provisioning_list', ";
 			if (strlen($vm_password) > 0) {
 				$sql .= "vm_password = '$vm_password', ";

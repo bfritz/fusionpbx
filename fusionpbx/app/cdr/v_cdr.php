@@ -63,27 +63,6 @@ if (count($_REQUEST)>0) {
 	$network_addr = $_REQUEST["network_addr"];
 }
 
-//get a list of assigned extensions for this user
-	$sql = "";
-	$sql .= " select * from v_extensions ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	//$v_mailboxes = '';
-	$x = 0;
-	$result = $prep_statement->fetchAll();
-	foreach ($result as &$row) {
-		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
-		//$extension_uuid = $row["extension_uuid"];
-		//$mailbox = $row["mailbox"];
-		$extension_array[$x]['extension_uuid'] = $row["extension_uuid"];
-		$extension_array[$x]['extension'] = $row["extension"];
-		$x++;
-	}
-	unset ($prep_statement, $x);
-
-
 //call detail record list
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -91,7 +70,6 @@ if (count($_REQUEST)>0) {
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
 	echo "      <br>";
-
 
 	echo "<table width='100%' border='0'><tr>\n";
 	echo "<td align='left' width='50%' nowrap><b>Call Detail Records</b></td>\n";
@@ -131,16 +109,14 @@ if (count($_REQUEST)>0) {
 	if (strlen($remote_media_ip) > 0) { $sql_where .= "and remote_media_ip like '%$remote_media_ip%' "; }
 	if (strlen($network_addr) > 0) { $sql_where .= "and network_addr like '%$network_addr%' "; }
 	if (!if_group("admin") && !if_group("superadmin")) {
-		//disable member search
-		//$sql_whereorig = $sql_where;
 		$sql_where = "where ";
-		if (count($extension_array) > 0) {
-			foreach($extension_array as $value) {
-				if ($value['extension'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid' and caller_id_number = '".$value['extension']."' ". $sql_whereorig." \n"; } //source
-				if ($value['extension'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid' and destination_number = '".$value['extension']."' ".$sql_whereorig." \n"; } //destination
-				if ($value['extension'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid' and destination_number = '*99".$value['extension']."' ".$sql_whereorig." \n"; } //destination
+		if (count($_SESSION['user']['extension']) > 0) {
+			foreach ($_SESSION['user']['extension'] as &$row) {
+				if ($row['user'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid' and caller_id_number = '".$row['user']."' ". $sql_where_orig." \n"; } //source
+				if ($row['user'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid' and destination_number = '".$row['user']."' ".$sql_where_orig." \n"; } //destination
+				if ($row['user'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid' and destination_number = '*99".$row['user']."' ".$sql_where_orig." \n"; } //destination
 			}
-		} //count($extension_array)
+		}
 	}
 	else {
 		//superadmin or admin

@@ -109,35 +109,6 @@ else {
 	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
-//get a list of assigned extensions for this user
-	$sql = "";
-	$sql .= "select * from v_extensions ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	//superadmin can see all messages
-	if(!if_group("superadmin")) {
-		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	}
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	//$v_mailboxes = '';
-	$x = 0;
-	$result = $prep_statement->fetchAll();
-	foreach ($result as &$row) {
-		//$v_mailboxes = $v_mailboxes.$row["extension"].'|';
-		//$extension_uuid = $row["extension_uuid"]
-		//$extension = $row["extension"]
-		$mailbox_array[$x]['extension_uuid'] = $row["extension_uuid"];
-		$mailbox_array[$x]['extension'] = $row["extension"];
-		$x++;
-	}
-	unset ($prep_statement, $x);
-	//$user_list = str_replace("\n", "|", "|".$user_list);
-	//echo "v_mailboxes $v_mailboxes<br />";
-	//$mailbox_array = explode ("|", $v_mailboxes);
-	//echo "<pre>\n";
-	//print_r($mailbox_array);
-	//echo "</pre>\n";
-
 //pdo voicemail database connection
 	include "includes/lib_pdo_vm.php";
 
@@ -188,19 +159,19 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
 
-	if (count($mailbox_array) == 0) {
+	if (count($_SESSION['user']['extension']) == 0) {
 		echo $tmp_msg_header;
 	}
 	else {
-		foreach($mailbox_array as $value) {
-			if (strlen($value['extension']) > 0) {
+		foreach ($_SESSION['user']['extension'] as $value) {
+			if (strlen($value['user']) > 0) {
 				echo "<tr><td colspan='5' align='left'>\n";
 				echo "	<br />\n";
-				echo "	<b>Mailbox: ".$value['extension']."</b>&nbsp;\n";
+				echo "	<b>Mailbox: ".$value['user']."</b>&nbsp;\n";
 				echo "	\n";
 				echo "</td>\n";
 				echo "<td valign='bottom' align='right'>\n";
-				echo "	<input type='button' class='btn' name='' alt='greetings' onclick=\"window.location='/app/voicemail_greetings/v_voicemail_greetings.php?id=".$value['extension']."'\" value='Greetings'>\n";
+				echo "	<input type='button' class='btn' name='' alt='greetings' onclick=\"window.location='/app/voicemail_greetings/v_voicemail_greetings.php?id=".$value['user']."'\" value='Greetings'>\n";
 				echo "	<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='v_voicemail_msgs_password.php?id=".$value['extension_uuid']."'\" value='Settings'>\n";
 				echo "</td>\n";
 				echo "</tr>\n";
@@ -211,10 +182,10 @@ else {
 				$sql .= "select * from voicemail_msgs ";
 				if (count($_SESSION['domains']) > 1) {
 					$sql .= "where domain = '$domain_name' ";
-					$sql .= "and username = '".$value['extension']."' ";
+					$sql .= "and username = '".$value['user']."' ";
 				}
 				else {
-					$sql .= "where username = '".$value['extension']."' ";
+					$sql .= "where username = '".$value['user']."' ";
 				}
 				if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 				$prep_statement = $db->prepare(check_sql($sql));
@@ -227,15 +198,13 @@ else {
 				$row_style["0"] = "row_style0";
 				$row_style["1"] = "row_style1";
 
-				if ($result_count == 0) { //no results
-				}
-				else { //received results
+				if ($result_count > 0) {
 					$prevextension = '';
 					foreach($result as $row) {
 
 						$extension_uuid = '';
-						foreach($mailbox_array as $value) {
-							if ($value['extension'] == $row[username]) {
+						foreach($_SESSION['user']['extension'] as $value) {
+							if ($value['user'] == $row['username']) {
 								$extension_uuid = $value['extension_uuid'];
 								break;
 							}
@@ -263,15 +232,15 @@ else {
 
 						echo "<tr >\n";
 						echo "   <td valign='top' class='".$row_style[$c]."' $style nowrap=\"nowrap\">";
-						echo date("j M Y g:i a",$row[created_epoch]);
+						echo date("j M Y g:i a",$row['created_epoch']);
 						echo "</td>\n";
 						//echo "   <td valign='top' class='".$row_style[$c]."'>".$row[read_epoch]."</td>\n";
 						//echo "   <td valign='top' class='".$row_style[$c]."'>".$row[username]."</td>\n";
 						//echo "   <td valign='top' class='".$row_style[$c]."'>".$row[domain]."</td>\n";
 						//echo "   <td valign='top' class='".$row_style[$c]."'>".$row[uuid]."</td>\n";
-						echo "   <td valign='top' class='".$row_style[$c]."' $style nowrap=\"nowrap\">".$row[cid_name]."</td>\n";
-						echo "   <td valign='top' class='".$row_style[$c]."' $style>".$row[cid_number]."</td>\n";
-						echo "   <td valign='top' class='".$row_style[$c]."' $style>".$row[in_folder]."</td>\n";
+						echo "   <td valign='top' class='".$row_style[$c]."' $style nowrap=\"nowrap\">".$row['cid_name']."</td>\n";
+						echo "   <td valign='top' class='".$row_style[$c]."' $style>".$row['cid_number']."</td>\n";
+						echo "   <td valign='top' class='".$row_style[$c]."' $style>".$row['in_folder']."</td>\n";
 						echo "	<td valign='top' class='".$row_style[$c]."' $style>\n";
 						echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('v_voicemail_msgs_play.php?a=download&type=vm&uuid=".$row['uuid']."&id=".$row['username']."&ext=".$file_ext."&desc=".urlencode($row['cid_name']." ".$row['cid_number'])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
 						echo "		$tmp_message_len";

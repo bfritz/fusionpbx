@@ -128,16 +128,8 @@ if (count($_GET)>0) {
 			//include the dnd class
 				include "includes/classes/do_not_disturb.php";
 			//loop through the list of assigned extensions
-				$sql = "";
-				$sql .= "select * from v_extensions ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-				$prep_statement = $db->prepare(check_sql($sql));
-				$prep_statement->execute();
-				$x = 0;
-				$result = $prep_statement->fetchAll();
-				foreach ($result as &$row) {
-					$extension = $row["extension"];
+				foreach ($_SESSION['user']['extension'] as &$row) {
+					$extension = $row["user"];
 
 					//set the default action
 						if ($user_status == "Do Not Disturb") {

@@ -298,7 +298,6 @@ require_once "includes/require.php";
 				}
 			}
 
-			//$user_list = $row["user_list"];
 			//$vm_password = $row["vm_password"];
 			//$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 			//$accountcode = $row["accountcode"];

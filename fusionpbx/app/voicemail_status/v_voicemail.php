@@ -74,9 +74,22 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if(!if_group("superadmin")) {
-	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	}	
+	if (!(if_group("admin") || if_group("superadmin"))) {
+		if (count($_SESSION['user']['extension']) > 0) {
+			$sql .= "and (";
+			$x = 0;
+			foreach($_SESSION['user']['extension'] as $row) {
+				if ($x > 0) { $sql .= "or "; }
+				$sql .= "extension = '".$row['user']."' ";
+				$x++;
+			}
+			$sql .= ")";
+		}
+		else {
+			//hide any results when a user has not been assigned an extension
+			$sql .= "and extension = 'disabled' ";
+		}
+	}
 	if (strlen($order_by)> 0) { 
 		$sql .= "order by $order_by $order ";
 	}
@@ -99,8 +112,21 @@ $order = $_GET["order"];
 	$sql = "";
 	$sql .= "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if(!if_group("superadmin")) {
-		$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
+	if (!(if_group("admin") || if_group("superadmin"))) {
+		if (count($_SESSION['user']['extension']) > 0) {
+			$sql .= "and (";
+			$x = 0;
+			foreach($_SESSION['user']['extension'] as $row) {
+				if ($x > 0) { $sql .= "or "; }
+				$sql .= "extension = '".$row['user']."' ";
+				$x++;
+			}
+			$sql .= ")";
+		}
+		else {
+			//hide any results when a user has not been assigned an extension
+			$sql .= "and extension = 'disabled' ";
+		}
 	}
 	if (strlen($order_by)> 0) {
 		$sql .= "order by $order_by $order ";

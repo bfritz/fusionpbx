@@ -33,25 +33,6 @@ if (permission_exists('extensions_active_assigned_view')) {
 			$url = $_GET['url'];
 		}
 
-	//get a list of assigned extensions for this user
-		if (count($_SESSION['user_extension_array']) == 0) {
-			$sql = "";
-			$sql .= "select * from v_extensions ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			$x = 0;
-			$result = $prep_statement->fetchAll();
-			foreach ($result as &$row) {
-				$user_extension_array[$x]['extension_uuid'] = $row["extension_uuid"];
-				$user_extension_array[$x]['extension'] = $row["extension"];
-				$x++;
-			}
-			unset ($prep_statement, $x);
-			$_SESSION['user_extension_array'] = $user_extension_array;
-		}
-
 		echo "<table width='100%' border='0' cellpadding='5' cellspacing='0'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
@@ -82,8 +63,8 @@ if (permission_exists('extensions_active_assigned_view')) {
 			$enabled = $row['enabled'];
 			$effective_caller_id_name = $row['effective_caller_id_name'];
 
-			foreach ($_SESSION['user_extension_array'] as &$user_row) {
-				if ($extension == $user_row['extension']) {
+			foreach ($_SESSION['user']['extension'] as &$user_row) {
+				if ($extension == $user_row['user']) {
 					$found_extension = false;
 					$x = 1;
 

@@ -208,28 +208,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 */
 
-
-//get a list of assigned extensions for this user
-	$sql = "";
-	$sql .= " select * from v_extensions ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and user_list like '%|".$_SESSION["username"]."|%' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	//$v_mailboxes = '';
-	$x = 0;
-	$result = $prep_statement->fetchAll();
-	foreach ($result as &$row) {
-		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
-		//$extension_uuid = $row["extension_uuid"];
-		//$mailbox = $row["mailbox"];
-		$extension_array[$x]['extension_uuid'] = $row["extension_uuid"];
-		$extension_array[$x]['extension'] = $row["extension"];
-		$x++;
-	}
-	unset ($prep_statement, $x);
-
-
 //pre-populate the form
 if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$cdr_id = $_GET["id"];
@@ -237,13 +215,13 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "select * from v_cdr ";	
 	if (!(if_group("admin") || if_group("superadmin"))) {
 		if (trim($sql_where) == "where") { $sql_where = ""; }
-		if (count($extension_array) > 0) {
-			foreach($extension_array as $value) {
-				if ($value['extension'] > 0) { $sql_where .= "where domain_uuid = '$domain_uuid' and caller_id_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //source
-				if ($value['extension'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid' and destination_number = '".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
-				if ($value['extension'] > 0) { $sql_where .= "or domain_uuid = '$domain_uuid'  and destination_number = '*99".$value['extension']."' and cdr_id = '$cdr_id' "; } //destination
+		if (count($_SESSION['user']['extension']) > 0) {
+			foreach ($_SESSION['user']['extension'] as &$row) {
+				if ($row['user'] > 0) { $sql_where .= "or caller_id_number = '".$row['user']."' ". $sql_where_orig; } //source
+				if ($row['user'] > 0) { $sql_where .= "or destination_number = '".$row['user']."' ".$sql_where_orig; } //destination
+				if ($row['user'] > 0) { $sql_where .= "or destination_number = '*99".$row['user']."' ".$sql_where_orig; } //destination
 			}
-		} //count($extension_array)
+		}
 	}
 	else {
 		$sql .= "where domain_uuid = '$domain_uuid' ";

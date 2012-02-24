@@ -65,9 +65,9 @@ $order = $_GET["order"];
 		if (count($_SESSION['user']['extension']) > 0) {
 			$sql .= "and (";
 			$x = 0;
-			foreach($_SESSION['user']['extension'] as $extension) {
+			foreach($_SESSION['user']['extension'] as $row) {
 				if ($x > 0) { $sql .= "or "; }
-				$sql .= "extension = '".$extension."' ";
+				$sql .= "extension = '".$row['user']."' ";
 				$x++;
 			}
 			$sql .= ")";
@@ -104,15 +104,15 @@ $order = $_GET["order"];
 		if (count($_SESSION['user']['extension']) > 0) {
 			$sql .= "and (";
 			$x = 0;
-			foreach($_SESSION['user']['extension'] as $extension) {
+			foreach($_SESSION['user']['extension'] as $row) {
 				if ($x > 0) { $sql .= "or "; }
-				$sql .= "extension = '".$extension."' ";
+				$sql .= "extension = '".$row['user']."' ";
 				$x++;
 			}
 			$sql .= ")";
 		}
 		else {
-			//used to hide any results when a user has not been assigned an extension
+			//hide any results when a user has not been assigned an extension
 			$sql .= "and extension = 'disabled' ";
 		}
 	}

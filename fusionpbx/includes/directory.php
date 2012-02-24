@@ -152,10 +152,10 @@ if (!function_exists('sync_directory')) {
 				//print_r($row);
 				$extension = $row["extension"];
 				$effective_caller_id_name = $row["effective_caller_id_name"];
-				$user_list = $row["user_list"];
-				$user_list = trim($user_list, "|");
+				//$user_list = $row["user_list"];
+				//$user_list = trim($user_list, "|");
 				//echo $user_list."<br />\n";
-				$username_array = explode ("|", $user_list);
+				//$username_array = explode ("|", $user_list);
 				//print_r($username_array);
 				foreach ($username_array as &$username) {
 					if (strlen($username) > 0) {

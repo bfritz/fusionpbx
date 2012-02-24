@@ -52,19 +52,26 @@ else {
 
 //get the user status
 	$sql = "";
-	$sql .= "select e.extension, u.username, u.user_status, e.user_list ";
+	$sql .= "select e.extension, u.username, u.user_status ";
 	$sql .= "from v_users as u, v_extensions as e ";
 	$sql .= "where e.domain_uuid = '$domain_uuid' ";
 	$sql .= "and u.domain_uuid = '$domain_uuid' ";
 	$sql .= "and u.user_category = 'user' ";
-	if ($db_type == "sqlite") {
-		$sql .= "and e.user_list like '%|' || u.username || '|%' ";
-	}
-	if ($db_type == "pgsql") {
-		$sql .= "and e.user_list like '%|' || u.username || '|%' ";
-	}
-	if ($db_type == "mysql") {
-		$sql .= "and e.user_list like CONCAT('%|', u.username, '|%'); ";
+	if (!(if_group("admin") || if_group("superadmin"))) {
+		if (count($_SESSION['user']['extension']) > 0) {
+			$sql .= "and (";
+			$x = 0;
+			foreach($_SESSION['user']['extension'] as $row) {
+				if ($x > 0) { $sql .= "or "; }
+				$sql .= "e.extension = '".$row['user']."' ";
+				$x++;
+			}
+			$sql .= ")";
+		}
+		else {
+			//hide any results when a user has not been assigned an extension
+			$sql .= "and extension = 'disabled' ";
+		}
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -283,7 +290,6 @@ else {
 							$extension_array[$extension]['extension'] = $row["extension"];
 
 							//$extension_array[$extension]['password'] = $row["password"];
-							$extension_array[$extension]['user_list'] = $row["user_list"];
 							$extension_array[$extension]['mailbox'] = $row["mailbox"];
 							//$vm_password = $row["vm_password"];
 							//$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
