@@ -109,7 +109,7 @@ if (permission_exists('extensions_active_assigned_view')) {
 						echo "<td class='".$row_style[$c]."' $style_alternate width='20px;'>".$call_length."</td>\n";
 
 						if (strlen($url) == 0) {
-							$url = "/app/contacts/v_contacts.php?search_all={cid_num}";
+							$url = "/app/contacts/contacts.php?search_all={cid_num}";
 						}
 						$url = str_replace ("{cid_num}", $cid_num, $url);
 						$url = str_replace ("{cid_name}", $cid_name, $url);

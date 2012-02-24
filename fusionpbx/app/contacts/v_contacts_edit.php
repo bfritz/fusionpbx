@@ -133,7 +133,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;contact_url=v_contacts.php\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;contact_url=contacts.php\">\n";
 			echo "<div align='center'>\n";
 			echo "Add Complete\n";
 			echo "</div>\n";
@@ -161,7 +161,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;contact_url=v_contacts.php\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;contact_url=contacts.php\">\n";
 			echo "<div align='center'>\n";
 			echo "Update Complete\n";
 			echo "</div>\n";
@@ -218,8 +218,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>Contact Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='qr code' onclick=\"window.location='v_contacts_vcard.php?id=$contact_uuid&type=image'\" value='QR Code'>\n";
-	echo "	<input type='button' class='btn' name='' alt='vcard' onclick=\"window.location='v_contacts_vcard.php?id=$contact_uuid&type=download'\" value='vCard'>\n";
+	echo "	<input type='button' class='btn' name='' alt='qr code' onclick=\"window.location='contacts_vcard.php?id=$contact_uuid&type=image'\" value='QR Code'>\n";
+	echo "	<input type='button' class='btn' name='' alt='vcard' onclick=\"window.location='contacts_vcard.php?id=$contact_uuid&type=download'\" value='vCard'>\n";
 	if ($action == "update" && is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/app/invoices')) {
 		echo "	<input type='button' class='btn' name='' alt='invoice' onclick=\"window.location='/app/invoices/v_invoices.php?id=$contact_uuid'\" value='Invoices'>\n";
 	}
@@ -449,11 +449,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "</td>\n";
 	echo "<td width='50%' class='' valign='top' align='center'>\n";
-		//echo "	<img src='v_contacts_vcard.php?id=$contact_uuid&type=image' width='90%'><br /><br />\n";
+		//echo "	<img src='contacts_vcard.php?id=$contact_uuid&type=image' width='90%'><br /><br />\n";
 		if ($action == "update") {
-			require "v_contact_phones.php";
-			require "v_contact_addresses.php";
-			require "v_contact_notes.php";
+			require "contact_phones.php";
+			require "contact_addresses.php";
+			require "contact_notes.php";
 			//echo "<br/><br/>\n";
 		}
 

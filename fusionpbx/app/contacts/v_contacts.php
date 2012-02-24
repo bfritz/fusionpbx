@@ -166,7 +166,7 @@ require_once "includes/paging.php";
 	//echo th_order_by('contact_time_zone', 'Time Zone', $order_by, $order);
 	//echo th_order_by('contact_note', 'Notes', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='v_contacts_edit.php' alt='add'>$v_link_label_add</a>\n";
+	echo "	<a href='contacts_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -185,8 +185,8 @@ require_once "includes/paging.php";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['contact_time_zone']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['contact_note']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='v_contacts_edit.php?id=".$row['contact_uuid']."&query_string=".contact_urlencode($_SERVER["QUERY_STRING"])."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='v_contacts_delete.php?id=".$row['contact_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "		<a href='contacts_edit.php?id=".$row['contact_uuid']."&query_string=".contact_urlencode($_SERVER["QUERY_STRING"])."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='contacts_delete.php?id=".$row['contact_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -201,7 +201,7 @@ require_once "includes/paging.php";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='v_contacts_edit.php' alt='add'>$v_link_label_add</a>\n";
+	echo "			<a href='contacts_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
