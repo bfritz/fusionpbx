@@ -39,13 +39,41 @@ if (count($_GET)>0) {
 }
 
 if (strlen($id)>0) {
-	$sql = "";
-	$sql .= "delete from v_contacts ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and contact_uuid = '$id' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	unset($sql);
+	//delete a contact
+		$sql = "";
+		$sql .= "delete from v_contacts ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and contact_uuid = '$id' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($sql);
+
+	//delete addresses
+		$sql = "";
+		$sql .= "delete from v_contact_addresses ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and contact_uuid = '$id' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($sql);
+
+	//delete phones
+		$sql = "";
+		$sql .= "delete from v_contact_phones ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and contact_uuid = '$id' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($sql);
+
+	//delete notes
+		$sql = "";
+		$sql .= "delete from v_contact_notes ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and contact_uuid = '$id' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($sql);
 }
 
 require_once "includes/header.php";
