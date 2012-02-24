@@ -45,7 +45,7 @@ else {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
-		$type = check_str($_POST["type"]);
+		$contact_type = check_str($_POST["contact_type"]);
 		$contact_organization = check_str($_POST["contact_organization"]);
 		$contact_name_given = check_str($_POST["contact_name_given"]);
 		$contact_name_family = check_str($_POST["contact_name_family"]);
