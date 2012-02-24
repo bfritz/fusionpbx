@@ -135,7 +135,7 @@ require_once "includes/paging.php";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_latitude']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['address_longitude']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
-			echo "		<a href=\"http://maps.google.com/maps?q=".contact_urlencode($map_query)."&hl=en\" target=\"_blank\">Map</a>&nbsp;\n";
+			echo "		<a href=\"http://maps.google.com/maps?q=".urlencode($map_query)."&hl=en\" target=\"_blank\">Map</a>&nbsp;\n";
 			echo "	</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			echo "		<a href='contact_addresses_edit.php?contact_uuid=".$row['contact_uuid']."&id=".$row['contact_address_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
