@@ -46,7 +46,7 @@ if (strlen($id)>0) {
 		$sql .= "and contact_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		unset($sql);
+		unset($prep_statement, $sql);
 
 	//delete addresses
 		$sql = "";
@@ -55,7 +55,7 @@ if (strlen($id)>0) {
 		$sql .= "and contact_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		unset($sql);
+		unset($prep_statement, $sql);
 
 	//delete phones
 		$sql = "";
@@ -64,7 +64,7 @@ if (strlen($id)>0) {
 		$sql .= "and contact_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		unset($sql);
+		unset($prep_statement, $sql);
 
 	//delete notes
 		$sql = "";
@@ -73,7 +73,7 @@ if (strlen($id)>0) {
 		$sql .= "and contact_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		unset($sql);
+		unset($prep_statement, $sql);
 }
 
 require_once "includes/header.php";
