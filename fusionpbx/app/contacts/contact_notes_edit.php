@@ -85,6 +85,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$contact_note_uuid = uuid();
 			$sql = "insert into v_contact_notes ";
 			$sql .= "(";
+			$sql .= "contact_note_uuid, ";
 			$sql .= "contact_uuid, ";
 			$sql .= "contact_note, ";
 			$sql .= "domain_uuid, ";
@@ -93,6 +94,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
+			$sql .= "'$contact_note_uuid', ";
 			$sql .= "'$contact_uuid', ";
 			$sql .= "'$contact_note', ";
 			$sql .= "'$domain_uuid', ";
