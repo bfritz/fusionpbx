@@ -56,7 +56,6 @@ else {
 	$sql .= "from v_users as u, v_extensions as e ";
 	$sql .= "where e.domain_uuid = '$domain_uuid' ";
 	$sql .= "and u.domain_uuid = '$domain_uuid' ";
-	$sql .= "and u.user_category = 'user' ";
 	if (!(if_group("admin") || if_group("superadmin"))) {
 		if (count($_SESSION['user']['extension']) > 0) {
 			$sql .= "and (";
