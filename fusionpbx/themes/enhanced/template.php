@@ -605,7 +605,6 @@ function confirmdelete(url) {
 </head>
 <body>
 	<?php
-
 	//get a random background image
 		$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/enhanced/images/backgrounds';
 		$dir_list = opendir($dir);
@@ -658,10 +657,10 @@ function confirmdelete(url) {
 								echo "		<option value=''></option>\n";
 								foreach($_SESSION['domains'] as $row) {
 									if ($row['domain_uuid'] == $domain_uuid) {
-										echo "	<option value='".$row['domain_uuid']."' selected='selected'>".$row['domain']."</option>\n";
+										echo "	<option value='".$row['domain_uuid']."' selected='selected'>".$row['domain_name']."</option>\n";
 									}
 									else {
-										echo "	<option value='".$row['domain_uuid']."'>".$row['domain']."</option>\n";
+										echo "	<option value='".$row['domain_uuid']."'>".$row['domain_name']."</option>\n";
 									}
 								}
 								echo "	</select>\n";
