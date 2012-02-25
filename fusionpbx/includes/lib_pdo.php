@@ -393,6 +393,15 @@ if ($db_type == "pgsql") {
 					date_default_timezone_set($_SESSION['domain']['time_zone']['name']);
 			}
 
+		//recordings add the domain to the path if there is more than one domains
+			if (count($_SESSION["domains"]) > 1) {
+				if (strlen($_SESSION['switch']['recordings']['dir']) > 0) {
+					if (substr($_SESSION['switch']['recordings']['dir'], -strlen($_SESSION["domain_name"])) != $_SESSION["domain_name"]) {
+						$_SESSION['switch']['recordings']['dir'] = $_SESSION['switch']['recordings']['dir'].'/'.$_SESSION["domain_name"];
+					}
+				}
+			}
+
 		//set the context
 			if (strlen($_SESSION["context"]) == 0) {
 				if (count($_SESSION["domains"]) > 1) {
