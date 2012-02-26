@@ -11,7 +11,7 @@
 -->
 <!-- http://wiki.freeswitch.org/wiki/Dialplan_XML -->
 <include>
-<context name="{domain_name}">
+<context name="{v_domain}">
 
 	<extension name="unloop">
 		<condition field="${unroll_loops}" expression="^true$"/>
@@ -280,7 +280,7 @@
 		</condition>
 	</extension>
 
-	<X-PRE-PROCESS cmd="include" data="{domain_name}/*.xml"/>
+	<X-PRE-PROCESS cmd="include" data="{v_domain}/*.xml"/>
 
 	<extension name="group_dial_sales">
 		<condition field="destination_number" expression="^\*2000$">

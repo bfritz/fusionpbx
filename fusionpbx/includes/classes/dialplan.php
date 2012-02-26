@@ -120,13 +120,13 @@ include "root.php";
 				//prepare the file contents and the path
 					if (count($_SESSION['domains']) < 2) {
 						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
-							$file_default_contents = str_replace("{domain_name}", 'default', $file_default_contents);
+							$file_default_contents = str_replace("{v_domain}", 'default', $file_default_contents);
 						//set the file path
 							$file_path = $switch_dialplan_dir.'/default.xml';
 					}
 					else {
 						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
-							$file_default_contents = str_replace("{domain_name}", $this->domain, $file_default_contents);
+							$file_default_contents = str_replace("{v_domain}", $this->domain, $file_default_contents);
 						//set the file path
 							$file_path = $switch_dialplan_dir.'/'.$this->domain.'.xml';
 					}
