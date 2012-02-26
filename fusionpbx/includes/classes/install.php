@@ -42,7 +42,7 @@ include "root.php";
 				throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
 			}
 			if (!is_dir($dst)) {
-				if (!mkdir($dst)) {
+				if (!mkdir($dst, 0755, true)) {
 					throw new Exception("recursive_copy() failed to create destination directory '".$dst."'");
 				}
 			}

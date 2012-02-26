@@ -358,13 +358,13 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					}
 
 				//add additional functions to SQLite - bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
-					if (!function_exists('php_now')) {
-						function php_now() {
+					//if (!function_exists('php_now')) {
+					//	function php_now() {
 							//return date('r');
-							return date("Y-m-d H:i:s");
-						}
-					}
-					$db_tmp->sqliteCreateFunction('now', 'php_now', 0);
+					//		return date("Y-m-d H:i:s");
+					//	}
+					//}
+					//$db_tmp->sqliteCreateFunction('now', 'php_now', 0);
 					
 				//add the database structure
 					require_once "includes/classes/schema.php";
@@ -1001,28 +1001,29 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						fwrite($fp, "v_group_permissions\n");
 						fwrite($fp, json_encode($row)."\n\n");	
 					}
-
-					foreach ($row['groups'] as $group) {
-						//add the record
-						$sql = "insert into v_group_permissions ";
-						$sql .= "(";
-						$sql .= "group_permission_uuid, ";
-						$sql .= "domain_uuid, ";
-						$sql .= "permission_name, ";
-						$sql .= "group_name ";
-						$sql .= ") ";
-						$sql .= "values ";
-						$sql .= "(";
-						$sql .= "'".uuid()."', ";
-						$sql .= "'".$_SESSION["domain_uuid"]."', ";
-						$sql .= "'".$row['name']."', ";
-						$sql .= "'".$group."' ";
-						$sql .= ");";
-						if ($v_debug) {
-							fwrite($fp, $sql."\n");
+					if ($row['groups']) {
+						foreach ($row['groups'] as $group) {
+							//add the record
+							$sql = "insert into v_group_permissions ";
+							$sql .= "(";
+							$sql .= "group_permission_uuid, ";
+							$sql .= "domain_uuid, ";
+							$sql .= "permission_name, ";
+							$sql .= "group_name ";
+							$sql .= ") ";
+							$sql .= "values ";
+							$sql .= "(";
+							$sql .= "'".uuid()."', ";
+							$sql .= "'".$_SESSION["domain_uuid"]."', ";
+							$sql .= "'".$row['name']."', ";
+							$sql .= "'".$group."' ";
+							$sql .= ");";
+							if ($v_debug) {
+								fwrite($fp, $sql."\n");
+							}
+							$db_tmp->exec(check_sql($sql));
+							unset($sql);
 						}
-						$db_tmp->exec(check_sql($sql));
-						unset($sql);
 					}
 				}
 			}
