@@ -33,8 +33,36 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+
+//restore the dialplan
+	if ($_GET['a'] == "default" && permission_exists('dialplan_advanced_edit')) {
+		//create the dialplan/default.xml for single tenant or dialplan/domain.xml
+		require_once "includes/classes/dialplan.php";
+		$dialplan = new dialplan;
+		$dialplan->domain_uuid = $domain_uuid;
+		$dialplan->domain = $v_domain;
+		$dialplan->switch_dialplan_dir = $_SESSION['switch']['dialplan']['dir'];
+		$dialplan->restore_advanced_xml();
+		//print_r($dialplan->result);
+	}
+
+//save the dialplan
+	if ($_POST['a'] == "save" && permission_exists('dialplan_advanced_edit')) {
+		$v_content = str_replace("\r","",$_POST['code']);
+		if (file_exists($_SESSION['switch']['dialplan']['dir']."/$v_domain.xml")) {
+			$fd = fopen($_SESSION['switch']['dialplan']['dir']."/$v_domain.xml", "w");
+		}
+		else {
+			$fd = fopen($_SESSION['switch']['dialplan']['dir']."/default.xml", "w");
+		}
+		fwrite($fd, $v_content);
+		fclose($fd);
+		$savemsg = "Saved";
+	}
+
+//includes
+	require_once "includes/header.php";
+	require_once "includes/paging.php";
 
 //set the http values as php variables
 	$order_by = $_GET["order_by"];
