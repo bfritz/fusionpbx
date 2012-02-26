@@ -89,12 +89,62 @@
 		//get the values from database and set them as php variables
 			$domain_uuid = $row["domain_uuid"];
 			$domain_name = $row["domain_name"];
+
 		//show the domain when display_type is set to text
 			if ($display_type == "text") {
 				echo "\n";
 				echo $domain_name;
 				echo "\n";
 			}
+
+		//get the default settings
+			$sql = "select * from v_default_settings ";
+			$sql .= "where default_setting_enabled = 'true' ";
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			foreach($result as $row) {
+				$name = $row['default_setting_name'];
+				$category = $row['default_setting_category'];
+				$subcategory = $row['default_setting_subcategory'];	
+				if (strlen($subcategory) == 0) {
+					$_SESSION[$category][$name] = $row['default_setting_value'];
+				}
+				else {
+					$_SESSION[$category][$subcategory][$name] = $row['default_setting_value'];
+				}
+			}
+
+		//get the domains settings
+			$sql = "select * from v_domain_settings ";
+			$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+			$sql .= "and domain_setting_enabled = 'true' ";
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			foreach($result as $row) {
+				$name = $row['domain_setting_name'];
+				$category = $row['domain_setting_category'];
+				$subcategory = $row['domain_setting_subcategory'];	
+				if (strlen($subcategory) == 0) {
+					//$$category[$name] = $row['domain_setting_value'];
+					$_SESSION[$category][$name] = $row['domain_setting_value'];
+				}
+				else {
+					//$$category[$subcategory][$name] = $row['domain_setting_value'];
+					$_SESSION[$category][$subcategory][$name] = $row['domain_setting_value'];
+				}
+			}
+
+		//recordings add the domain to the path if there is more than one domains
+			if (count($_SESSION["domains"]) > 1) {
+				if (strlen($_SESSION['switch']['recordings']['dir']) > 0) {
+					if (substr($_SESSION['switch']['recordings']['dir'], -strlen($domain_name)) != $domain_name) {
+						$_SESSION['switch']['recordings']['dir'] = $_SESSION['switch']['recordings']['dir'].'/'.$domain_name;
+					}
+				}
+			}
+
 		//get the list of installed apps from the core and mod directories and execute the php code in app_defaults.php
 			$default_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_defaults.php");
 			foreach ($default_list as &$default_path) {
@@ -103,6 +153,10 @@
 
 	} //end the loop
 	unset ($v_prep_statement);
+
+//clear the session variables
+	unset($_SESSION['domain']);
+	unset($_SESSION['switch']);
 
 if ($display_results && $display_type == "html") {
 	echo "<br />\n";
