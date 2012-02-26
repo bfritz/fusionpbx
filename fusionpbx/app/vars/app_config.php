@@ -79,7 +79,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'var_desc';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'var_description';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'var_desc';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 

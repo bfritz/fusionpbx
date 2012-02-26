@@ -74,7 +74,7 @@ include "root.php";
 			$huntgroup_caller_announce = 'false';
 			//$hunt_group_user_list = '';
 			$hunt_group_enabled = $this->dnd_enabled;
-			$hunt_group_descr = 'dnd '.$this->extension;
+			$hunt_group_description = 'dnd '.$this->extension;
 
 			$sql = "insert into v_hunt_groups ";
 			$sql .= "(";
@@ -94,7 +94,7 @@ include "root.php";
 			$sql .= "hunt_group_caller_announce, ";
 			//$sql .= "hunt_group_user_list, ";
 			$sql .= "hunt_group_enabled, ";
-			$sql .= "hunt_group_descr ";
+			$sql .= "hunt_group_description ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
@@ -114,7 +114,7 @@ include "root.php";
 			$sql .= "'$huntgroup_caller_announce', ";
 			//$sql .= "'$hunt_group_user_list', ";
 			$sql .= "'$hunt_group_enabled', ";
-			$sql .= "'$hunt_group_descr' ";
+			$sql .= "'$hunt_group_description' ";
 			$sql .= ")";
 			if ($this->debug) {
 				echo $sql."<br />";
@@ -140,7 +140,7 @@ include "root.php";
 			$huntgroup_caller_announce = 'false';
 			//$hunt_group_user_list = '';
 			$hunt_group_enabled = $this->dnd_enabled;
-			$hunt_group_descr = 'dnd '.$this->extension;
+			$hunt_group_description = 'dnd '.$this->extension;
 
 			$sql = "update v_hunt_groups set ";
 			$sql .= "hunt_group_extension = '$hunt_group_extension', ";
@@ -157,7 +157,7 @@ include "root.php";
 			$sql .= "hunt_group_caller_announce = 'false', ";
 			//$sql .= "hunt_group_user_list = '$hunt_group_user_list', ";
 			$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
-			$sql .= "hunt_group_descr = '$hunt_group_descr' ";
+			$sql .= "hunt_group_description = '$hunt_group_description' ";
 			$sql .= "where domain_uuid = '$this->domain_uuid' ";
 			$sql .= "and hunt_group_uuid = '$this->dnd_uuid' ";
 			if ($this->debug) {

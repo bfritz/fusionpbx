@@ -113,7 +113,7 @@ if (count($_POST)>0) {
 	$ivr_menu_digit_len = check_str($_POST["ivr_menu_digit_len"]);
 	$ivr_menu_direct_dial = check_str($_POST["ivr_menu_direct_dial"]);
 	$ivr_menu_enabled = check_str($_POST["ivr_menu_enabled"]);
-	$ivr_menu_desc = check_str($_POST["ivr_menu_desc"]);
+	$ivr_menu_description = check_str($_POST["ivr_menu_description"]);
 
 	$ivr_menu_exit_action = check_str($_POST["ivr_menu_exit_action"]);
 	//$ivr_menu_exit_action = "transfer:1001 XML default";
@@ -151,7 +151,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($ivr_menu_digit_len) == 0) { $msg .= "Please provide: Digit Length<br>\n"; }
 		if (strlen($ivr_menu_direct_dial) == 0) { $msg .= "Please provide: Direct Dial<br>\n"; }
 		if (strlen($ivr_menu_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		//if (strlen($ivr_menu_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($ivr_menu_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -194,7 +194,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$ivr->ivr_menu_direct_dial = $ivr_menu_direct_dial;
 				$ivr->ivr_menu_direct_dial = $ivr_menu_direct_dial;
 				$ivr->ivr_menu_enabled = $ivr_menu_enabled;
-				$ivr->ivr_menu_desc = $ivr_menu_desc;
+				$ivr->ivr_menu_description = $ivr_menu_description;
 
 			//add the data
 				if ($action == "add" && permission_exists('ivr_menu_add')) {
@@ -270,7 +270,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$ivr_menu_digit_len = $row["ivr_menu_digit_len"];
 			$ivr_menu_direct_dial = $row["ivr_menu_direct_dial"];
 			$ivr_menu_enabled = $row["ivr_menu_enabled"];
-			$ivr_menu_desc = $row["ivr_menu_desc"];
+			$ivr_menu_description = $row["ivr_menu_description"];
 
 			if (strlen($ivr_menu_exit_app) > 0) {
 				$ivr_menu_exit_action = $ivr_menu_exit_app.":".$ivr_menu_exit_data;
@@ -787,7 +787,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='ivr_menu_desc' maxlength='255' value=\"$ivr_menu_desc\">\n";
+	echo "	<input class='formfld' type='text' name='ivr_menu_description' maxlength='255' value=\"$ivr_menu_description\">\n";
 	echo "<br />\n";
 	echo "Enter a description.\n";
 	echo "</td>\n";

@@ -91,7 +91,7 @@ require_once "includes/paging.php";
 	echo "<tr>\n";
 	echo th_order_by('broadcast_name', 'Name', $order_by, $order);
 	echo th_order_by('broadcast_concurrent_limit', 'Concurrent Limit', $order_by, $order);
-	echo th_order_by('broadcast_desc', 'Description', $order_by, $order);
+	echo th_order_by('broadcast_description', 'Description', $order_by, $order);
 	//echo th_order_by('recordingid', 'Recording', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('call_broadcast_add')) {
@@ -109,7 +109,7 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[broadcast_name]."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[broadcast_concurrent_limit]."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[recordingid]."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[broadcast_desc]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[broadcast_description]."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('call_broadcast_edit')) {
 				echo "		<a href='v_call_broadcast_edit.php?id=".$row[call_broadcast_uuid]."' alt='edit'>$v_link_label_edit</a>\n";

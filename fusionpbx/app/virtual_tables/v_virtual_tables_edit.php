@@ -51,7 +51,7 @@ else {
 		$virtual_table_auth = check_str($_POST["virtual_table_auth"]);
 		$virtual_table_captcha = check_str($_POST["virtual_table_captcha"]);
 		$virtual_table_parent_id = check_str($_POST["virtual_table_parent_id"]);
-		$virtual_table_desc = check_str($_POST["virtual_table_desc"]);
+		$virtual_table_description = check_str($_POST["virtual_table_description"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -69,7 +69,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($virtual_table_auth) == 0) { $msg .= "Please provide: Authentication<br>\n"; }
 		//if (strlen($virtual_table_captcha) == 0) { $msg .= "Please provide: Captcha<br>\n"; }
 		//if (strlen($virtual_table_parent_id) == 0) { $msg .= "Please provide: Parent Table<br>\n"; }
-		//if (strlen($virtual_table_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($virtual_table_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -97,7 +97,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "virtual_table_auth, ";
 				$sql .= "virtual_table_captcha, ";
 				$sql .= "virtual_table_parent_id, ";
-				$sql .= "virtual_table_desc ";
+				$sql .= "virtual_table_description ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
@@ -109,7 +109,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$virtual_table_auth', ";
 				$sql .= "'$virtual_table_captcha', ";
 				$sql .= "'$virtual_table_parent_id', ";
-				$sql .= "'$virtual_table_desc' ";
+				$sql .= "'$virtual_table_description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -132,7 +132,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "virtual_table_auth = '$virtual_table_auth', ";
 				$sql .= "virtual_table_captcha = '$virtual_table_captcha', ";
 				$sql .= "virtual_table_parent_id = '$virtual_table_parent_id', ";
-				$sql .= "virtual_table_desc = '$virtual_table_desc' ";
+				$sql .= "virtual_table_description = '$virtual_table_description' ";
 				$sql .= "where virtual_table_uuid = '$virtual_table_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -165,7 +165,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$virtual_table_auth = $row["virtual_table_auth"];
 			$virtual_table_captcha = $row["virtual_table_captcha"];
 			$virtual_table_parent_id = $row["virtual_table_parent_id"];
-			$virtual_table_desc = $row["virtual_table_desc"];
+			$virtual_table_description = $row["virtual_table_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -325,7 +325,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<textarea class='formfld' name='virtual_table_desc' rows='4'>$virtual_table_desc</textarea>\n";
+	echo "	<textarea class='formfld' name='virtual_table_description' rows='4'>$virtual_table_description</textarea>\n";
 	echo "<br />\n";
 	echo "Enter a description.\n";
 	echo "</td>\n";

@@ -52,7 +52,7 @@ foreach ($result as &$row) {
 	$rss_sub_category = $row["rss_sub_category"];
 	$rss_title = $row["rss_title"];
 	$rss_link = $row["rss_link"];
-	$rss_desc = $row["rss_desc"];
+	$rss_description = $row["rss_description"];
 	$rss_img = $row["rss_img"];
 	$rss_optional_1 = $row["rss_optional_1"];
 	$rss_optional_2 = $row["rss_optional_2"];
@@ -63,9 +63,9 @@ foreach ($result as &$row) {
 	$rss_add_user = $row["rss_add_user"];
 	$rss_group = $row["rss_group"];
 	$rss_order = $row["rss_order"];
-	//$rss_desc = str_replace ("\r\n", "<br>", $rss_desc);
+	//$rss_description = str_replace ("\r\n", "<br>", $rss_description);
 
-	echo $rss_desc;
+	echo $rss_description;
 	//return;
 
 	break; //limit to 1 row

@@ -139,7 +139,7 @@ $order = $_GET["order"];
 					echo "<td valign='top' class='".$row_style[$c]."'>public</td>";
 				}
 
-				//echo "<td valign='top'>".$row[rss_desc]."</td>";
+				//echo "<td valign='top'>".$row[rss_description]."</td>";
 				//echo "<td valign='top'>".$row[rss_img]."</td>";
 				//echo "<td valign='top'>&nbsp;".$row[rss_optional_1]."&nbsp;</td>"; //priority
 

@@ -71,7 +71,7 @@ function cmd_async($cmd) {
 	$prep_statement->execute();
 	while($row = $prep_statement->fetch()) {
 		$broadcast_name = $row["broadcast_name"];
-		$broadcast_desc = $row["broadcast_desc"];
+		$broadcast_description = $row["broadcast_description"];
 		$broadcast_timeout = $row["broadcast_timeout"];
 		$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
 		$recordingid = $row["recordingid"];

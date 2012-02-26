@@ -54,7 +54,7 @@ if (count($_POST)>0) {
 		var $virtual_field_required;
 		var $virtual_field_order;
 		var $virtual_field_order_tab;
-		var $virtual_field_desc;
+		var $virtual_field_description;
 
 		function db_field_exists() {
 			global $db;
@@ -86,7 +86,7 @@ if (count($_POST)>0) {
 			$sql .= "virtual_field_required, ";
 			$sql .= "virtual_field_order, ";
 			$sql .= "virtual_field_order_tab, ";
-			$sql .= "virtual_field_desc ";
+			$sql .= "virtual_field_description ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
@@ -101,7 +101,7 @@ if (count($_POST)>0) {
 			$sql .= "'$this->virtual_field_required', ";
 			$sql .= "'$this->virtual_field_order', ";
 			$sql .= "'$this->virtual_field_order_tab', ";
-			$sql .= "'$this->virtual_field_desc' ";
+			$sql .= "'$this->virtual_field_description' ";
 			$sql .= ")";
 			if (!$this->db_field_exists()) { 
 				$db->exec(check_sql($sql));
@@ -234,7 +234,7 @@ if (count($_POST)>0) {
 						$fields->virtual_field_required = 'yes';
 						$fields->virtual_field_order = $x;
 						$fields->virtual_field_order_tab = $x;
-						$fields->virtual_field_desc = $virtual_field_label;
+						$fields->virtual_field_description = $virtual_field_label;
 						$fields->db_insert();
 						unset($fields);
 						$x++;

@@ -59,7 +59,7 @@ if (count($_POST)>0) {
 	$virtual_field_required = check_str($_POST["virtual_field_required"]);
 	$virtual_field_order = check_str($_POST["virtual_field_order"]);
 	$virtual_field_order_tab = check_str($_POST["virtual_field_order_tab"]);
-	$virtual_field_desc = check_str($_POST["virtual_field_desc"]);
+	$virtual_field_description = check_str($_POST["virtual_field_description"]);
 }
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -80,7 +80,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($virtual_field_required) == 0) { $msg .= "Please provide: Required<br>\n"; }
 		if (strlen($virtual_field_order) == 0) { $msg .= "Please provide: Field Order<br>\n"; }
 		if (strlen($virtual_field_order_tab) == 0) { $msg .= "Please provide: Tab Order<br>\n"; }
-		//if (strlen($virtual_field_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($virtual_field_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -112,7 +112,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "virtual_field_required, ";
 			$sql .= "virtual_field_order, ";
 			$sql .= "virtual_field_order_tab, ";
-			$sql .= "virtual_field_desc ";
+			$sql .= "virtual_field_description ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
@@ -128,7 +128,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$virtual_field_required', ";
 			$sql .= "'$virtual_field_order', ";
 			$sql .= "'$virtual_field_order_tab', ";
-			$sql .= "'$virtual_field_desc' ";
+			$sql .= "'$virtual_field_description' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -153,7 +153,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "virtual_field_required = '$virtual_field_required', ";
 			$sql .= "virtual_field_order = '$virtual_field_order', ";
 			$sql .= "virtual_field_order_tab = '$virtual_field_order_tab', ";
-			$sql .= "virtual_field_desc = '$virtual_field_desc' ";
+			$sql .= "virtual_field_description = '$virtual_field_description' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_uuid = '$virtual_table_uuid'";
 			$sql .= "and virtual_table_field_uuid = '$virtual_table_field_uuid' ";
@@ -194,7 +194,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$virtual_field_required = $row["virtual_field_required"];
 			$virtual_field_order = $row["virtual_field_order"];
 			$virtual_field_order_tab = $row["virtual_field_order_tab"];
-			$virtual_field_desc = $row["virtual_field_desc"];
+			$virtual_field_description = $row["virtual_field_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -512,7 +512,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='virtual_field_desc' maxlength='255' value=\"$virtual_field_desc\">\n";
+	echo "	<input class='formfld' type='text' name='virtual_field_description' maxlength='255' value=\"$virtual_field_description\">\n";
 	echo "<br />\n";
 	echo "Enter the description.\n";
 	echo "</td>\n";

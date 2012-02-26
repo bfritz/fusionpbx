@@ -119,7 +119,7 @@ echo "<tr>\n";
 echo th_order_by('hunt_group_extension', 'Extension', $order_by, $order);
 echo th_order_by('hunt_group_name', 'Hunt Group Name', $order_by, $order);
 echo th_order_by('hunt_group_name', 'Enabled', $order_by, $order);
-echo th_order_by('hunt_group_descr', 'Description', $order_by, $order);
+echo th_order_by('hunt_group_description', 'Description', $order_by, $order);
 echo "<td align='right' width='42'>\n";
 if (permission_exists('hunt_group_add')) {
 	echo "	<a href='v_hunt_group_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -136,7 +136,7 @@ else { //received results
 		echo "   <td valign='top' class='".$row_style[$c]."'>".$row['hunt_group_extension']."</td>\n";
 		echo "   <td valign='top' class='".$row_style[$c]."'>".$row['hunt_group_name']."</td>\n";
 		echo "   <td valign='top' class='".$row_style[$c]."'>".$row['hunt_group_enabled']."</td>\n";
-		echo "   <td valign='top' class='row_stylebg' width='40%'>".$row['hunt_group_descr']."&nbsp;</td>\n";
+		echo "   <td valign='top' class='row_stylebg' width='40%'>".$row['hunt_group_description']."&nbsp;</td>\n";
 		echo "   <td valign='top' align='right'>\n";
 		if (permission_exists('hunt_group_edit')) {
 			echo "		<a href='v_hunt_group_edit.php?id=".$row['hunt_group_uuid']."' alt='edit'>$v_link_label_edit</a>\n";

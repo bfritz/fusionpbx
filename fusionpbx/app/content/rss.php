@@ -99,20 +99,20 @@ foreach ($result as &$row) {
 
 	$rss_uuid = $row["rss_uuid"];
 	$rss_title = $row["rss_title"];
-	$rss_desc = $row["rss_desc"];
+	$rss_description = $row["rss_description"];
 	$rss_link = $row["rss_link"];
 
-	//$rss_desc = $row[rss_sub_desc];
-	//$rss_desc = str_replace ("\r\n", "<br>", $rss_desc);
-	//$rss_desc = str_replace ("\n", "<br>", $rss_desc);
+	//$rss_description = $row[rss_sub_description];
+	//$rss_description = str_replace ("\r\n", "<br>", $rss_description);
+	//$rss_description = str_replace ("\n", "<br>", $rss_description);
 
 	if ($content_type == "rss") {
 		$rss_title = htmlentities($rss_title);
-		$rss_desc  = htmlentities($rss_desc);
+		$rss_description  = htmlentities($rss_description);
 
 		echo "<item>\n";
 		echo "<title>".$rss_title."</title>\n";
-		echo "<description>".$rss_desc."</description>\n";
+		echo "<description>".$rss_description."</description>\n";
 		echo "<link>".$rss_link."</link>\n";
 		//echo "<pubDate>12 Mar 2007 19:38:06 GMT</pubDate>\n";
 		//echo "<guid isPermaLink='true'>http://www.google.com/log/123</guid>\n";
@@ -129,7 +129,7 @@ foreach ($result as &$row) {
 		else {
 			echo "<b>".$rss_title."</b><br>\n";
 		}
-		echo "".$rss_desc."\n";
+		echo "".$rss_description."\n";
 		echo "<br><br>";
 
 		if ($rss_sub_show == 1) {
@@ -190,15 +190,15 @@ foreach ($result as &$row) {
 						//echo "  <a href='rsssubupdate.php?rss_uuid=".$rss_uuid."&rss_sub_uuid=".$row2[rss_sub_uuid]."'>Update</a>&nbsp;";
 						echo "</td>";
 
-						$rss_sub_desc = $row2[rss_sub_desc];
-						//$rss_sub_desc = str_replace ("\r\n", "<br>", $rss_sub_desc);
-						//$rss_sub_desc = str_replace ("\n", "<br>", $rss_sub_desc);
+						$rss_sub_description = $row2[rss_sub_description];
+						//$rss_sub_description = str_replace ("\r\n", "<br>", $rss_sub_description);
+						//$rss_sub_description = str_replace ("\n", "<br>", $rss_sub_description);
 
 
 						echo "</tr>";
 						echo "<tr style='".$row_style[$c]."'>\n";
 						echo "<td valign='top' width='300' colspan='3'>";
-						echo "".$rss_sub_desc."&nbsp;";
+						echo "".$rss_sub_description."&nbsp;";
 						echo "</td>";
 
 					echo "</tr>";

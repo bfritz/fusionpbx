@@ -86,9 +86,9 @@ require_once "includes/header.php";
 			  echo "    <td valign='top' align='right'>";
 			  echo "        <input type='button' class='btn' name='' onclick=\"window.location='rssupdate.php?rss_uuid=".$row[rss_uuid]."'\" value='Update'>";
 			  echo "    </td>";
-			  $rss_desc = $row[rss_desc];
-			  //$rss_desc = str_replace ("\r\n", "<br>", $rss_desc);
-			  //$rss_desc = str_replace ("\n", "<br>", $rss_desc);
+			  $rss_description = $row[rss_description];
+			  //$rss_description = str_replace ("\r\n", "<br>", $rss_description);
+			  //$rss_description = str_replace ("\n", "<br>", $rss_description);
 			  echo "</tr>";              
 			  
 			  
@@ -111,7 +111,7 @@ require_once "includes/header.php";
 
 			  //echo "<td valign='top'>".$row[rss_link]."</td>";
 			  echo "    <td valign='top'>Description: &nbsp;</td>";
-			  echo "    <td valign='top' colspan='2'>".$rss_desc."</td>";
+			  echo "    <td valign='top' colspan='2'>".$rss_description."</td>";
 			  //echo "<td valign='top'>".$row[rss_img]."</td>";
 
 			  //echo "<tr>";
@@ -246,14 +246,14 @@ require_once "includes/header.php";
 
 			  echo "<th nowrap>&nbsp; &nbsp; ";
 			  if (strlen($order_by)==0) {
-				echo "<a href='?order_by=rss_sub_desc&order=desc' title='ascending'>rss_sub_desc</a>";
+				echo "<a href='?order_by=rss_sub_description&order=desc' title='ascending'>rss_sub_description</a>";
 			  }
 			  else {
 				if ($order=="asc") {
-					echo "<a href='?order_by=rss_sub_desc&order=desc' title='ascending'>rss_sub_desc</a>";
+					echo "<a href='?order_by=rss_sub_description&order=desc' title='ascending'>rss_sub_description</a>";
 				}
 				else {
-					echo "<a href='?order_by=rss_sub_desc&order=asc' title='descending'>rss_sub_desc</a>";
+					echo "<a href='?order_by=rss_sub_description&order=asc' title='descending'>rss_sub_description</a>";
 				}
 			  }
 			  echo "&nbsp; &nbsp; </th>";
@@ -391,14 +391,14 @@ require_once "includes/header.php";
 					echo "</td>";
 
 
-					$rss_sub_desc = $row[rss_sub_desc];
-					$rss_sub_desc = str_replace ("\r\n", "<br>", $rss_sub_desc);
-					$rss_sub_desc = str_replace ("\n", "<br>", $rss_sub_desc);
+					$rss_sub_description = $row[rss_sub_description];
+					$rss_sub_description = str_replace ("\r\n", "<br>", $rss_sub_description);
+					$rss_sub_description = str_replace ("\n", "<br>", $rss_sub_description);
 
 					echo "</tr>";
 					echo "<tr style='".$row_style[$c]."'>\n";
 					echo "<td valign='top' width='300' colspan='4'>";
-					echo "".$rss_sub_desc."&nbsp;";
+					echo "".$rss_sub_description."&nbsp;";
 					echo "</td>";
 
 					echo "</tr>";

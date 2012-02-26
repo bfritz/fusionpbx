@@ -90,7 +90,7 @@ $order = $_GET["order"];
 	$sql .= "select * from v_ivr_menu_options ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
-	$sql .= "order by ivr_menu_options_digits, ivr_menu_options_order asc "; 
+	$sql .= "order by ivr_menu_option_digits, ivr_menu_option_order asc "; 
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll();
@@ -119,22 +119,22 @@ $order = $_GET["order"];
 	}
 	else { //received results
 		foreach($result as $row) {
-			$ivr_menu_options_param = $row['ivr_menu_options_param'];
-			if (strlen(trim($ivr_menu_options_param)) == 0) {
-				$ivr_menu_options_param = $row['ivr_menu_options_action'];
+			$ivr_menu_option_param = $row['ivr_menu_option_param'];
+			if (strlen(trim($ivr_menu_option_param)) == 0) {
+				$ivr_menu_option_param = $row['ivr_menu_option_action'];
 			}
-			$ivr_menu_options_param = str_replace("menu-", "", $ivr_menu_options_param);
-			$ivr_menu_options_param = str_replace("XML", "", $ivr_menu_options_param);
-			$ivr_menu_options_param = str_replace("\${domain_name}", "", $ivr_menu_options_param);
-			$ivr_menu_options_param = str_replace("\${domain}", "", $ivr_menu_options_param);
-			$ivr_menu_options_param = ucfirst(trim($ivr_menu_options_param));
+			$ivr_menu_option_param = str_replace("menu-", "", $ivr_menu_option_param);
+			$ivr_menu_option_param = str_replace("XML", "", $ivr_menu_option_param);
+			$ivr_menu_option_param = str_replace("\${domain_name}", "", $ivr_menu_option_param);
+			$ivr_menu_option_param = str_replace("\${domain}", "", $ivr_menu_option_param);
+			$ivr_menu_option_param = ucfirst(trim($ivr_menu_option_param));
 
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_options_digits']."</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_options_action']."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$ivr_menu_options_param."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_options_order']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_options_desc']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_option_digits']."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_option_action']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$ivr_menu_option_param."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_option_order']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_option_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('ivr_menu_edit')) {
 				echo "		<a href='v_ivr_menu_options_edit.php?ivr_menu_uuid=".$row['ivr_menu_uuid']."&id=".$row['ivr_menu_option_uuid']."' alt='edit'>$v_link_label_edit</a>\n";

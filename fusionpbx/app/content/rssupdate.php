@@ -42,14 +42,14 @@ if (count($_POST)>0) {
 	$rss_sub_category = check_str($_POST["rss_sub_category"]);
 	$rss_title = check_str($_POST["rss_title"]);
 	$rss_link = check_str($_POST["rss_link"]);
-	$rss_desc = check_str($_POST["rss_desc"]);
+	$rss_description = check_str($_POST["rss_description"]);
 	$rss_group = check_str($_POST["rss_group"]);
 	$rss_order = check_str($_POST["rss_order"]);
 
-	//$rss_desc = str_replace ("<br />\r\n<br />", "<br />", $rss_desc);
-	//$rss_desc = str_replace ("<br />\n<br />", "<br />", $rss_desc);
-	//$rss_desc = str_replace ("<p>", "", $rss_desc);
-	//$rss_desc = str_replace ("</p>", "<br />", $rss_desc);
+	//$rss_description = str_replace ("<br />\r\n<br />", "<br />", $rss_description);
+	//$rss_description = str_replace ("<br />\n<br />", "<br />", $rss_description);
+	//$rss_description = str_replace ("<p>", "", $rss_description);
+	//$rss_description = str_replace ("</p>", "<br />", $rss_description);
 
 	$rss_img = check_str($_POST["rss_img"]);
 	$rss_optional_1 = check_str($_POST["rss_optional_1"]);
@@ -63,7 +63,7 @@ if (count($_POST)>0) {
 	$sql .= "rss_sub_category = '$rss_sub_category', ";
 	$sql .= "rss_title = '$rss_title', ";
 	$sql .= "rss_link = '$rss_link', ";
-	$sql .= "rss_desc = '$rss_desc', ";
+	$sql .= "rss_description = '$rss_description', ";
 	$sql .= "rss_img = '$rss_img', ";
 	$sql .= "rss_optional_1 = '$rss_optional_1', ";
 	$sql .= "rss_optional_2 = '$rss_optional_2', ";
@@ -109,10 +109,10 @@ else {
 		$rss_optional_1 = $row["rss_optional_1"];
 		$rss_title = $row["rss_title"];
 		$rss_link = $row["rss_link"];
-		$rss_desc = $row["rss_desc"];
+		$rss_description = $row["rss_description"];
 
 		if ($rss_optional_1 == "text/html") { //type
-			$rss_desc = htmlentities($rss_desc);
+			$rss_description = htmlentities($rss_description);
 		}
 
 		$rss_img = $row["rss_img"];
@@ -124,9 +124,9 @@ else {
 		$rss_add_user = $row["rss_add_user"];
 		$rss_group = $row["rss_group"];
 		$rss_order = $row["rss_order"];
-		//$rss_desc = str_replace ("\r\n", "<br>", $rss_desc);
+		//$rss_description = str_replace ("\r\n", "<br>", $rss_description);
 
-		//echo $rss_desc;
+		//echo $rss_description;
 		//return;
 
 		break; //limit to 1 row
@@ -146,7 +146,7 @@ else {
 
 			echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
 			echo "		editAreaLoader.init({\n";
-			echo "			id: \"rss_desc\" // id of the textarea to transform //, |, help\n";
+			echo "			id: \"rss_description\" // id of the textarea to transform //, |, help\n";
 			echo "			,start_highlight: true\n";
 			echo "			,font_size: \"8\"\n";
 			echo "			,allow_toggle: false\n";
@@ -299,12 +299,12 @@ else {
 	echo "            <strong>Content:</strong> ";
 	if ($rss_optional_1 == "text/html") {
 		if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
-			echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rss_desc'); return false;\">on/off</a><br>";
+			echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rss_description'); return false;\">on/off</a><br>";
 		}
-		echo "            <textarea name='rss_desc'  id='rss_desc' class='formfld' cols='20' style='width: 100%' rows='12' >$rss_desc</textarea>";
+		echo "            <textarea name='rss_description'  id='rss_description' class='formfld' cols='20' style='width: 100%' rows='12' >$rss_description</textarea>";
 	}
 	if ($rss_optional_1 == "text/javascript") {
-		echo "            <textarea name='rss_desc'  id='rss_desc' class='formfld' cols='20' style='width: 100%' rows='12' ></textarea>";
+		echo "            <textarea name='rss_description'  id='rss_description' class='formfld' cols='20' style='width: 100%' rows='12' ></textarea>";
 	}
 	echo "        </td>";
 	echo "	</tr>";
@@ -366,8 +366,8 @@ else {
 
 	echo "	<tr>";
 	echo "		<td class='' colspan='2' align='right'>";
-	//echo "<input type=\"button\" value=\"Load\" onclick=\"document.getElementById('rss_desc').innerHTML = ajaxresponse;\" />";
-	//echo "<input type=\"button\" value=\"Load\" onclick=\"ajaxLoad('rss_desc', ajaxresponse);\" />";
+	//echo "<input type=\"button\" value=\"Load\" onclick=\"document.getElementById('rss_description').innerHTML = ajaxresponse;\" />";
+	//echo "<input type=\"button\" value=\"Load\" onclick=\"ajaxLoad('rss_description', ajaxresponse);\" />";
 
 	echo "          <input type='hidden' name='rss_uuid' value='$rss_uuid'>";
 	echo "          <input type='submit' class='btn' name='submit' value='Save'>";
@@ -378,7 +378,7 @@ else {
 
 	if ($rss_optional_1 == "text/javascript") {
 		echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-		echo "  document.getElementById('rss_desc').innerHTML = ajaxresponse;\n";
+		echo "  document.getElementById('rss_description').innerHTML = ajaxresponse;\n";
 		echo "</script>\n";
 	}
 

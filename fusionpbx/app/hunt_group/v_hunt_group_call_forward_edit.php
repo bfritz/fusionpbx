@@ -167,7 +167,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$huntgroup_caller_announce = 'false';
 		$hunt_group_user_list = '';
 		$hunt_group_enabled = $call_forward_enabled;
-		$hunt_group_descr = 'call forward '.$hunt_group_extension;
+		$hunt_group_description = 'call forward '.$hunt_group_extension;
 
 		if ($call_forward_action == "add" && permission_exists('hunt_group_add')) {
 			$call_forward_uuid = uuid();
@@ -189,7 +189,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "hunt_group_caller_announce, ";
 			$sql .= "hunt_group_user_list, ";
 			$sql .= "hunt_group_enabled, ";
-			$sql .= "hunt_group_descr ";
+			$sql .= "hunt_group_description ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
@@ -209,7 +209,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$huntgroup_caller_announce', ";
 			$sql .= "'$hunt_group_user_list', ";
 			$sql .= "'$hunt_group_enabled', ";
-			$sql .= "'$hunt_group_descr' ";
+			$sql .= "'$hunt_group_description' ";
 			$sql .= ")";
 			if ($v_debug) {
 				echo $sql."<br />";
@@ -229,7 +229,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$destination_timeout = '';
 		$destination_order = '1';
 		$destination_enabled = 'true';
-		$destination_descr = 'call forward';
+		$destination_description = 'call forward';
 
 		$hunt_group_destination_uuid = uuid();
 		$sql = "insert into v_hunt_group_destinations ";
@@ -243,7 +243,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "destination_timeout, ";
 		$sql .= "destination_order, ";
 		$sql .= "destination_enabled, ";
-		$sql .= "destination_descr ";
+		$sql .= "destination_description ";
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
@@ -256,7 +256,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$destination_timeout', ";
 		$sql .= "'$destination_order', ";
 		$sql .= "'$destination_enabled', ";
-		$sql .= "'$destination_descr' ";
+		$sql .= "'$destination_description' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -278,7 +278,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "hunt_group_caller_announce = '$huntgroup_caller_announce', ";
 		$sql .= "hunt_group_user_list = '$hunt_group_user_list', ";
 		$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
-		$sql .= "hunt_group_descr = '$hunt_group_descr' ";
+		$sql .= "hunt_group_description = '$hunt_group_description' ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_uuid = '$call_forward_uuid'";
 		$db->exec(check_sql($sql));
@@ -296,7 +296,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$destination_timeout = '';
 			$destination_order = '1';
 			$destination_enabled = 'true';
-			$destination_descr = 'call forward';
+			$destination_description = 'call forward';
 
 		//delete related v_hunt_group_destinations
 			$sql = "delete from v_hunt_group_destinations where hunt_group_uuid = '$call_forward_uuid' ";
@@ -313,7 +313,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "destination_timeout, ";
 			$sql .= "destination_order, ";
 			$sql .= "destination_enabled, ";
-			$sql .= "destination_descr ";
+			$sql .= "destination_description ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
@@ -325,7 +325,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$destination_timeout', ";
 			$sql .= "'$destination_order', ";
 			$sql .= "'$destination_enabled', ";
-			$sql .= "'$destination_descr' ";
+			$sql .= "'$destination_description' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -375,7 +375,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$huntgroup_caller_announce = $row["hunt_group_caller_announce"];
 		$hunt_group_user_list = $row["hunt_group_user_list"];
 		$hunt_group_enabled = $row["hunt_group_enabled"];
-		$hunt_group_descr = $row["hunt_group_descr"];
+		$hunt_group_description = $row["hunt_group_description"];
 
 		if ($row["hunt_group_type"] == 'call_forward') {
 			$call_forward_enabled = $hunt_group_enabled;

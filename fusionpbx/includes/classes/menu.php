@@ -65,7 +65,7 @@
 								$menu_item_category = $menu['category'];
 								$menu_item_path = $menu['path'];
 								$menu_item_order = $menu['order'];
-								$menu_item_desc = $menu['desc'];
+								$menu_item_description = $menu['desc'];
 								if (strlen($menu_item_order) == 0) {
 									$menu_item_order = 1;
 								}
@@ -94,7 +94,7 @@
 											if (strlen($menu_item_parent_uuid) > 0) {
 												$sql .= "menu_item_parent_uuid, ";
 											}
-											$sql .= "menu_item_desc ";
+											$sql .= "menu_item_description ";
 											$sql .= ") ";
 											$sql .= "values ";
 											$sql .= "(";
@@ -110,7 +110,7 @@
 											if (strlen($menu_item_parent_uuid) > 0) {
 												$sql .= "'$menu_item_parent_uuid', ";
 											}
-											$sql .= "'$menu_item_desc' ";
+											$sql .= "'$menu_item_description' ";
 											$sql .= ")";
 											if ($menu_item_uuid == $menu_item_parent_uuid) {
 												//echo $sql."<br />\n";
@@ -207,7 +207,7 @@
 					$menu_item_title = $field['menu_item_title'];
 					$menu_item_link = $field['menu_item_link'];
 					$menu_item_category = $field['menu_item_category'];
-					$menu_item_desc = $field['menu_item_desc'];
+					$menu_item_description = $field['menu_item_description'];
 					$menu_item_uuid = $field['menu_item_uuid'];
 					$menu_item_parent_uuid = $field['menu_item_parent_uuid'];
 					$menu_item_order = $field['menu_item_order'];

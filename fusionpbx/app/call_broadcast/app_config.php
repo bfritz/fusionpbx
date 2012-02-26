@@ -74,7 +74,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'broadcast_desc';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'broadcast_description';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'broadcast_desc';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;

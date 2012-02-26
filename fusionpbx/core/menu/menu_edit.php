@@ -48,7 +48,7 @@ else {
 		$menu_uuid = check_str($_POST["menu_uuid"]);
 		$menu_name = check_str($_POST["menu_name"]);
 		$menu_language = check_str($_POST["menu_language"]);
-		$menu_desc = check_str($_POST["menu_desc"]);
+		$menu_description = check_str($_POST["menu_description"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -62,7 +62,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($menu_uuid) == 0) { $msg .= "Please provide: Menu UUID<br>\n"; }
 		//if (strlen($menu_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
 		//if (strlen($menu_language) == 0) { $msg .= "Please provide: Language<br>\n"; }
-		//if (strlen($menu_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($menu_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -88,14 +88,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "menu_uuid, ";
 				$sql .= "menu_name, ";
 				$sql .= "menu_language, ";
-				$sql .= "menu_desc ";
+				$sql .= "menu_description ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'".$menu_uuid."', ";
 				$sql .= "'$menu_name', ";
 				$sql .= "'$menu_language', ";
-				$sql .= "'$menu_desc' ";
+				$sql .= "'$menu_description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -122,7 +122,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "update v_menus set ";
 				$sql .= "menu_name = '$menu_name', ";
 				$sql .= "menu_language = '$menu_language', ";
-				$sql .= "menu_desc = '$menu_desc' ";
+				$sql .= "menu_description = '$menu_description' ";
 				$sql .= "where menu_uuid = '$menu_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -152,7 +152,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$menu_uuid = $row["menu_uuid"];
 			$menu_name = $row["menu_name"];
 			$menu_language = $row["menu_language"];
-			$menu_desc = $row["menu_desc"];
+			$menu_description = $row["menu_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -217,7 +217,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='menu_desc' maxlength='255' value=\"$menu_desc\">\n";
+	echo "	<input class='formfld' type='text' name='menu_description' maxlength='255' value=\"$menu_description\">\n";
 	echo "<br />\n";
 	echo "Enter the description.\n";
 	echo "</td>\n";

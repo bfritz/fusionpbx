@@ -157,7 +157,7 @@ if (strlen($_GET["a"]) > 0) {
 			//echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_category"]."</td>\n";
 			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_label"]."</td>\n";
 			//echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_name"]."</td>\n";
-			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_desc"]."&nbsp;</td>\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_description"]."&nbsp;</td>\n";
 			if ($mod->active($row["module_name"])) {
 				echo "   <td valign='top' class='".$row_style[$c]."'>Running</td>\n";
 				echo "   <td valign='top' class='".$row_style[$c]."'><a href='v_modules.php?a=stop&m=".$row["module_name"]."' alt='stop'>Stop</a></td>\n";

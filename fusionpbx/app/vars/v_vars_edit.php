@@ -53,7 +53,7 @@ else {
 		}
 		$var_enabled = check_str($_POST["var_enabled"]);
 		$var_order = check_str($_POST["var_order"]);
-		$var_desc = check_str($_POST["var_desc"]);
+		$var_description = check_str($_POST["var_description"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -69,7 +69,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($var_cat) == 0) { $msg .= "Please provide: Category<br>\n"; }
 		if (strlen($var_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		if (strlen($var_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
-		//if (strlen($var_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($var_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -95,7 +95,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "var_cat, ";
 				$sql .= "var_enabled, ";
 				$sql .= "var_order, ";
-				$sql .= "var_desc ";
+				$sql .= "var_description ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
@@ -105,7 +105,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$var_cat', ";
 				$sql .= "'$var_enabled', ";
 				$sql .= "'$var_order', ";
-				$sql .= "'".base64_encode($var_desc)."' ";
+				$sql .= "'".base64_encode($var_description)."' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -133,7 +133,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "var_cat = '$var_cat', ";
 				$sql .= "var_enabled = '$var_enabled', ";
 				$sql .= "var_order = '$var_order', ";
-				$sql .= "var_desc = '".base64_encode($var_desc)."' ";
+				$sql .= "var_description = '".base64_encode($var_description)."' ";
 				$sql .= "where var_uuid = '$var_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -171,7 +171,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$var_cat = $row["var_cat"];
 			$var_enabled = $row["var_enabled"];
 			$var_order = $row["var_order"];
-			$var_desc = base64_decode($row["var_desc"]);
+			$var_description = base64_decode($row["var_description"]);
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -296,7 +296,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<textarea class='formfld' name='var_desc' rows='17'>$var_desc</textarea>\n";
+	echo "	<textarea class='formfld' name='var_description' rows='17'>$var_description</textarea>\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

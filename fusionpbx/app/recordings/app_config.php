@@ -90,7 +90,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'recording_desc';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'recording_description';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'descr';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';

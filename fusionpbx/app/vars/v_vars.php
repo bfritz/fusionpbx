@@ -133,9 +133,9 @@ else {
 			//echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$row['var_cat']."</td>\n";
 			//echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$row['var_order']."</td>\n";
 			echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$row['var_enabled']."</td>\n";
-			$var_desc = str_replace("\n", "<br />", trim(substr(base64_decode($row['var_desc']),0,40)));
-			$var_desc = str_replace("   ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", $var_desc);
-			echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$var_desc."&nbsp;</td>\n";
+			$var_description = str_replace("\n", "<br />", trim(substr(base64_decode($row['var_description']),0,40)));
+			$var_description = str_replace("   ", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", $var_description);
+			echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$var_description."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('variables_edit')) {
 				echo "		<a href='v_vars_edit.php?id=".$row['var_uuid']."' alt='edit'>$v_link_label_edit</a>\n";

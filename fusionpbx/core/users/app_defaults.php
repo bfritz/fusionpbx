@@ -35,32 +35,32 @@
 		if (count($sub_result) == 0) {
 			$x = 0;
 			$tmp[$x]['group_name'] = 'superadmin';
-			$tmp[$x]['group_desc'] = 'Super Administrator Group';
+			$tmp[$x]['group_description'] = 'Super Administrator Group';
 			$x++;
 			$tmp[$x]['group_name'] = 'admin';
-			$tmp[$x]['group_desc'] = 'Administrator Group';
+			$tmp[$x]['group_description'] = 'Administrator Group';
 			$x++;
 			$tmp[$x]['group_name'] = 'user';
-			$tmp[$x]['group_desc'] = 'User Group';
+			$tmp[$x]['group_description'] = 'User Group';
 			$x++;
 			$tmp[$x]['group_name'] = 'public';
-			$tmp[$x]['group_desc'] = 'Public Group';
+			$tmp[$x]['group_description'] = 'Public Group';
 			$x++;
 			$tmp[$x]['group_name'] = 'agent';
-			$tmp[$x]['group_desc'] = 'Call Center Agent Group';
+			$tmp[$x]['group_description'] = 'Call Center Agent Group';
 			foreach($tmp as $row) {
 				if (strlen($row['group_name']) > 0) {
 					$sql = "insert into v_groups ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
 					$sql .= "group_name, ";
-					$sql .= "group_desc ";
+					$sql .= "group_description ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$domain_uuid', ";
 					$sql .= "'".$row['group_name']."', ";
-					$sql .= "'".$row['group_desc']."' ";
+					$sql .= "'".$row['group_description']."' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					unset($sql);

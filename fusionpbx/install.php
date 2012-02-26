@@ -901,19 +901,19 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//add the groups
 		$x = 0;
 		$tmp[$x]['group_name'] = 'superadmin';
-		$tmp[$x]['group_desc'] = 'Super Administrator Group';
+		$tmp[$x]['group_description'] = 'Super Administrator Group';
 		$x++;
 		$tmp[$x]['group_name'] = 'admin';
-		$tmp[$x]['group_desc'] = 'Administrator Group';
+		$tmp[$x]['group_description'] = 'Administrator Group';
 		$x++;
 		$tmp[$x]['group_name'] = 'user';
-		$tmp[$x]['group_desc'] = 'User Group';
+		$tmp[$x]['group_description'] = 'User Group';
 		$x++;
 		$tmp[$x]['group_name'] = 'public';
-		$tmp[$x]['group_desc'] = 'Public Group';
+		$tmp[$x]['group_description'] = 'Public Group';
 		$x++;
 		$tmp[$x]['group_name'] = 'agent';
-		$tmp[$x]['group_desc'] = 'Call Center Agent Group';
+		$tmp[$x]['group_description'] = 'Call Center Agent Group';
 		$db_tmp->beginTransaction();
 		foreach($tmp as $row) {
 			$sql = "insert into v_groups ";
@@ -921,14 +921,14 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "domain_uuid, ";
 			$sql .= "group_uuid, ";
 			$sql .= "group_name, ";
-			$sql .= "group_desc ";
+			$sql .= "group_description ";
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'".$_SESSION["domain_uuid"]."', ";
 			$sql .= "'".uuid()."', ";
 			$sql .= "'".$row['group_name']."', ";
-			$sql .= "'".$row['group_desc']."' ";
+			$sql .= "'".$row['group_description']."' ";
 			$sql .= ");";
 			if ($v_debug) {
 				fwrite($fp, $sql."\n");
@@ -1131,21 +1131,21 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//set the defaults
 		$menu_name = 'default';
 		$menu_language = 'en';
-		$menu_desc = '';
+		$menu_description = '';
 	//add the parent menu
 		$sql = "insert into v_menus ";
 		$sql .= "(";
 		$sql .= "menu_uuid, ";
 		$sql .= "menu_name, ";
 		$sql .= "menu_language, ";
-		$sql .= "menu_desc ";
+		$sql .= "menu_description ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'".$menu_uuid."', ";
 		$sql .= "'$menu_name', ";
 		$sql .= "'$menu_language', ";
-		$sql .= "'$menu_desc' ";
+		$sql .= "'$menu_description' ";
 		$sql .= ");";
 		if ($v_debug) {
 			fwrite($fp, $sql."\n");

@@ -113,7 +113,7 @@ require_once "includes/paging.php";
 						$sql .= "recording_uuid, ";
 						$sql .= "recording_filename, ";
 						$sql .= "recording_name, ";
-						$sql .= "recording_desc ";
+						$sql .= "recording_description ";
 						$sql .= ")";
 						$sql .= "values ";
 						$sql .= "(";
@@ -222,7 +222,7 @@ require_once "includes/paging.php";
 	echo th_order_by('recording_filename', 'Filename (download)', $order_by, $order);
 	echo th_order_by('recording_name', 'Recording Name (play)', $order_by, $order);
 	echo "<th width=\"10%\" class=\"listhdr\" nowrap>Size</th>\n";
-	echo th_order_by('recording_desc', 'Description', $order_by, $order);
+	echo th_order_by('recording_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('recordings_add')) {
 		echo "	<a href='v_recordings_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -249,7 +249,7 @@ require_once "includes/paging.php";
 			echo "	<td class='".$row_style[$c]."' ondblclick=\"\">\n";
 			echo "	".$tmp_filesize;
 			echo "	</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."' width='30%'>".$row['recording_desc']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."' width='30%'>".$row['recording_description']."</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('recordings_edit')) {
 				echo "		<a href='v_recordings_edit.php?id=".$row['recording_uuid']."' alt='edit'>$v_link_label_edit</a>\n";

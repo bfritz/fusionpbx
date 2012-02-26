@@ -52,21 +52,21 @@ else {
 	if (count($_POST)>0) {
 		//$domain_uuid = check_str($_POST["domain_uuid"]);
 		$ivr_menu_uuid = check_str($_POST["ivr_menu_uuid"]);
-		$ivr_menu_options_digits = check_str($_POST["ivr_menu_options_digits"]);
-		$ivr_menu_options_action = check_str($_POST["ivr_menu_options_action"]);
-		$ivr_menu_options_param = check_str($_POST["ivr_menu_options_param"]);
-		$ivr_menu_options_order = check_str($_POST["ivr_menu_options_order"]);
-		$ivr_menu_options_desc = check_str($_POST["ivr_menu_options_desc"]);
+		$ivr_menu_option_digits = check_str($_POST["ivr_menu_option_digits"]);
+		$ivr_menu_option_action = check_str($_POST["ivr_menu_option_action"]);
+		$ivr_menu_option_param = check_str($_POST["ivr_menu_option_param"]);
+		$ivr_menu_option_order = check_str($_POST["ivr_menu_option_order"]);
+		$ivr_menu_option_description = check_str($_POST["ivr_menu_option_description"]);
 
-		//set the default ivr_menu_options_action
-			if (strlen($ivr_menu_options_action) == 0) {
-				$ivr_menu_options_action = "menu-exec-app";
+		//set the default ivr_menu_option_action
+			if (strlen($ivr_menu_option_action) == 0) {
+				$ivr_menu_option_action = "menu-exec-app";
 			}
 
 		//seperate the action and the param
-			$options_array = explode(":", $ivr_menu_options_param);
-			$ivr_menu_options_action = array_shift($options_array);
-			$ivr_menu_options_param = join(':', $options_array);
+			$options_array = explode(":", $ivr_menu_option_param);
+			$ivr_menu_option_action = array_shift($options_array);
+			$ivr_menu_option_param = join(':', $options_array);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -79,11 +79,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		//if (strlen($ivr_menu_uuid) == 0) { $msg .= "Please provide: ivr_menu_uuid<br>\n"; }
-		if (strlen($ivr_menu_options_digits) == 0) { $msg .= "Please provide: Option<br>\n"; }
-		//if (strlen($ivr_menu_options_action) == 0) { $msg .= "Please provide: Type<br>\n"; }
-		//if (strlen($ivr_menu_options_param) == 0) { $msg .= "Please provide: Destination<br>\n"; }
-		if (strlen($ivr_menu_options_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
-		//if (strlen($ivr_menu_options_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		if (strlen($ivr_menu_option_digits) == 0) { $msg .= "Please provide: Option<br>\n"; }
+		//if (strlen($ivr_menu_option_action) == 0) { $msg .= "Please provide: Type<br>\n"; }
+		//if (strlen($ivr_menu_option_param) == 0) { $msg .= "Please provide: Destination<br>\n"; }
+		if (strlen($ivr_menu_option_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
+		//if (strlen($ivr_menu_option_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -106,11 +106,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$ivr->domain_uuid = $_SESSION["domain_uuid"];
 				$ivr->ivr_menu_uuid = $ivr_menu_uuid;
 				$ivr->ivr_menu_option_uuid = $ivr_menu_option_uuid;
-				$ivr->ivr_menu_options_digits = $ivr_menu_options_digits;
-				$ivr->ivr_menu_options_action = $ivr_menu_options_action;
-				$ivr->ivr_menu_options_param = $ivr_menu_options_param;
-				$ivr->ivr_menu_options_order = $ivr_menu_options_order;
-				$ivr->ivr_menu_options_desc = $ivr_menu_options_desc;
+				$ivr->ivr_menu_option_digits = $ivr_menu_option_digits;
+				$ivr->ivr_menu_option_action = $ivr_menu_option_action;
+				$ivr->ivr_menu_option_param = $ivr_menu_option_param;
+				$ivr->ivr_menu_option_order = $ivr_menu_option_order;
+				$ivr->ivr_menu_option_description = $ivr_menu_option_description;
 
 			if ($action == "add" && permission_exists('ivr_menu_add')) {
 				$ivr_menu_option_uuid = uuid();
@@ -160,22 +160,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$ivr_menu_uuid = $row["ivr_menu_uuid"];
-			$ivr_menu_options_digits = $row["ivr_menu_options_digits"];
-			$ivr_menu_options_action = $row["ivr_menu_options_action"];
-			$ivr_menu_options_param = $row["ivr_menu_options_param"];
+			$ivr_menu_option_digits = $row["ivr_menu_option_digits"];
+			$ivr_menu_option_action = $row["ivr_menu_option_action"];
+			$ivr_menu_option_param = $row["ivr_menu_option_param"];
 
 			//if admin show only the param
 				if (if_group("admin")) {
-					$ivr_menu_options_label = $ivr_menu_options_param;
+					$ivr_menu_options_label = $ivr_menu_option_param;
 				}
 
 			//if superadmin show both the action and param
 				if (if_group("superadmin")) {
-					$ivr_menu_options_label = $ivr_menu_options_action.':'.$ivr_menu_options_param;
+					$ivr_menu_options_label = $ivr_menu_option_action.':'.$ivr_menu_option_param;
 				}
 
-			$ivr_menu_options_order = $row["ivr_menu_options_order"];
-			$ivr_menu_options_desc = $row["ivr_menu_options_desc"];
+			$ivr_menu_option_order = $row["ivr_menu_option_order"];
+			$ivr_menu_option_description = $row["ivr_menu_option_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -214,7 +214,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Option:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "  <input class='formfld' type='text' name='ivr_menu_options_digits' maxlength='255' value='$ivr_menu_options_digits'>\n";
+	echo "  <input class='formfld' type='text' name='ivr_menu_option_digits' maxlength='255' value='$ivr_menu_option_digits'>\n";
 	echo "<br />\n";
 	echo "Any number between 1-5 digits or regular expressions.\n";
 	echo "</td>\n";
@@ -228,44 +228,44 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 
-		echo "		<select name='ivr_menu_options_action' class='formfld'>\n";
+		echo "		<select name='ivr_menu_option_action' class='formfld'>\n";
 		echo "		<option></option>\n";
-		if (strlen($ivr_menu_options_action) == 0) {
+		if (strlen($ivr_menu_option_action) == 0) {
 			echo "		<option value='menu-exec-app' selected='selected'>menu-exec-app</option>\n";
 		}
 		else {
-			if ($ivr_menu_options_action == "menu-exec-app") {
+			if ($ivr_menu_option_action == "menu-exec-app") {
 				echo "		<option value='menu-exec-app' selected='selected'>menu-exec-app</option>\n";
 			}
 			else {
 				echo "		<option value='menu-exec-app'>menu-exec-app</option>\n";
 			}
 		}
-		if ($ivr_menu_options_action == "menu-sub") {
+		if ($ivr_menu_option_action == "menu-sub") {
 			echo "		<option value='menu-sub' selected='selected'>menu-sub</option>\n";
 		}
 		else {
 			echo "		<option value='menu-sub'>menu-sub</option>\n";
 		}
-		if ($ivr_menu_options_action == "menu-exec-app") {
+		if ($ivr_menu_option_action == "menu-exec-app") {
 			echo "		<option value='menu-exec-app' selected='selected'>menu-exec-app</option>\n";
 		}
 		else {
 			echo "		<option value='menu-exec-app'>menu-exec-app</option>\n";
 		}
-		if ($ivr_menu_options_action == "menu-top") {
+		if ($ivr_menu_option_action == "menu-top") {
 			echo "		<option value='menu-top' selected='selected'>menu-top</option>\n";
 		}
 		else {
 			echo "		<option value='menu-top'>menu-top</option>\n";
 		}
-		if ($ivr_menu_options_action == "menu-playback") {
+		if ($ivr_menu_option_action == "menu-playback") {
 			echo "		<option value='menu-playback' selected='selected'>menu-playback</option>\n";
 		}
 		else {
 			echo "		<option value='menu-playback'>menu-playback</option>\n";
 		}
-		if ($ivr_menu_options_action == "menu-exit") {
+		if ($ivr_menu_option_action == "menu-exit") {
 			echo "		<option value='menu-exit' selected='selected'>menu-exit</option>\n";
 		}
 		else {
@@ -288,10 +288,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//switch_select_destination($select_type, $select_label, $select_name, $select_value, $select_style, $action='')
 	$tmp_select_value = '';
-	if (strlen($ivr_menu_options_action.$ivr_menu_options_param) > 0) {
-		$tmp_select_value = $ivr_menu_options_action.':'.$ivr_menu_options_param;
+	if (strlen($ivr_menu_option_action.$ivr_menu_option_param) > 0) {
+		$tmp_select_value = $ivr_menu_option_action.':'.$ivr_menu_option_param;
 	}
-	switch_select_destination("ivr", $ivr_menu_options_label, "ivr_menu_options_param", $tmp_select_value, "", $ivr_menu_options_action);
+	switch_select_destination("ivr", $ivr_menu_options_label, "ivr_menu_option_param", $tmp_select_value, "", $ivr_menu_option_action);
 	unset($tmp_select_value);
 
 	echo "<br />\n";
@@ -304,10 +304,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Order:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<select name='ivr_menu_options_order' class='formfld'>\n";
+	echo "	<select name='ivr_menu_option_order' class='formfld'>\n";
 	//echo "	<option></option>\n";
-	if (strlen(htmlspecialchars($ivr_menu_options_order))> 0) {
-		echo "	<option selected='yes' value='".htmlspecialchars($ivr_menu_options_order)."'>".htmlspecialchars($ivr_menu_options_order)."</option>\n";
+	if (strlen(htmlspecialchars($ivr_menu_option_order))> 0) {
+		echo "	<option selected='yes' value='".htmlspecialchars($ivr_menu_option_order)."'>".htmlspecialchars($ivr_menu_option_order)."</option>\n";
 	}
 	$i=0;
 	while($i<=999) {
@@ -333,7 +333,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='ivr_menu_options_desc' maxlength='255' value=\"$ivr_menu_options_desc\">\n";
+	echo "	<input class='formfld' type='text' name='ivr_menu_option_description' maxlength='255' value=\"$ivr_menu_option_description\">\n";
 	echo "<br />\n";
 	echo "Enter a description here for your reference.\n";
 	echo "</td>\n";

@@ -52,13 +52,13 @@ include "root.php";
 		public $ivr_menu_digit_len;
 		public $ivr_menu_direct_dial;
 		public $ivr_menu_enabled;
-		public $ivr_menu_desc;
+		public $ivr_menu_description;
 		public $ivr_menu_option_uuid;
-		public $ivr_menu_options_digits;
-		public $ivr_menu_options_action;
-		public $ivr_menu_options_param;
-		public $ivr_menu_options_order;
-		public $ivr_menu_options_desc;
+		public $ivr_menu_option_digits;
+		public $ivr_menu_option_action;
+		public $ivr_menu_option_param;
+		public $ivr_menu_option_order;
+		public $ivr_menu_option_description;
 
 		public function __construct() {
 			require_once "includes/classes/database.php";
@@ -154,7 +154,7 @@ include "root.php";
 		public function add() {
 
 			//add the ivr menu
-				if (strlen($this->ivr_menu_options_action) == 0) {
+				if (strlen($this->ivr_menu_option_action) == 0) {
 
 					if (strlen($this->ivr_menu_extension) > 0) {
 						//add the dialplan
@@ -166,7 +166,7 @@ include "root.php";
 							$database->fields['dialplan_order'] = '333';
 							$database->fields['dialplan_context'] = $_SESSION['context'];
 							$database->fields['dialplan_enabled'] = $this->ivr_menu_enabled;
-							$database->fields['dialplan_description'] = $this->ivr_menu_desc;
+							$database->fields['dialplan_description'] = $this->ivr_menu_description;
 							$database->fields['app_uuid'] = $this->app_uuid;
 							$database->add();
 
@@ -271,23 +271,23 @@ include "root.php";
 						$database->fields['ivr_menu_direct_dial'] = $this->ivr_menu_direct_dial;
 						$database->fields['ivr_menu_direct_dial'] = $this->ivr_menu_direct_dial;
 						$database->fields['ivr_menu_enabled'] = $this->ivr_menu_enabled;
-						$database->fields['ivr_menu_desc'] = $this->ivr_menu_desc;
+						$database->fields['ivr_menu_description'] = $this->ivr_menu_description;
 						$database->add();
 				}
 
 			//add the ivr menu option
-				if (strlen($this->ivr_menu_options_action) > 0) {
+				if (strlen($this->ivr_menu_option_action) > 0) {
 					$ivr_menu_uuid = uuid();
 					$database = new database;
 					$database->table = "v_ivr_menu_options";
 					$database->fields['domain_uuid'] = $this->domain_uuid;
 					$database->fields['ivr_menu_uuid'] = $this->ivr_menu_uuid;
 					$database->fields['ivr_menu_option_uuid'] = $this->ivr_menu_option_uuid;
-					$database->fields['ivr_menu_options_digits'] = $this->ivr_menu_options_digits;
-					$database->fields['ivr_menu_options_action'] = $this->ivr_menu_options_action;
-					$database->fields['ivr_menu_options_param'] = $this->ivr_menu_options_param;
-					$database->fields['ivr_menu_options_order'] = $this->ivr_menu_options_order;
-					$database->fields['ivr_menu_options_desc'] = $this->ivr_menu_options_desc;
+					$database->fields['ivr_menu_option_digits'] = $this->ivr_menu_option_digits;
+					$database->fields['ivr_menu_option_action'] = $this->ivr_menu_option_action;
+					$database->fields['ivr_menu_option_param'] = $this->ivr_menu_option_param;
+					$database->fields['ivr_menu_option_order'] = $this->ivr_menu_option_order;
+					$database->fields['ivr_menu_option_description'] = $this->ivr_menu_option_description;
 					$database->add();
 				}
 		}
@@ -295,7 +295,7 @@ include "root.php";
 		public function update() {
 
 			//udate the ivr menu
-				if (strlen($this->ivr_menu_options_action) == 0) {
+				if (strlen($this->ivr_menu_option_action) == 0) {
 					//get the dialplan uuid
 						$database = new database;
 						$database->table = "v_ivr_menus";
@@ -367,7 +367,7 @@ include "root.php";
 						$database->fields['ivr_menu_direct_dial'] = $this->ivr_menu_direct_dial;
 						$database->fields['ivr_menu_direct_dial'] = $this->ivr_menu_direct_dial;
 						$database->fields['ivr_menu_enabled'] = $this->ivr_menu_enabled;
-						$database->fields['ivr_menu_desc'] = $this->ivr_menu_desc;
+						$database->fields['ivr_menu_description'] = $this->ivr_menu_description;
 						$database->where[0]['name'] = 'domain_uuid';
 						$database->where[0]['value'] = $this->domain_uuid;
 						$database->where[0]['operator'] = '=';
@@ -384,7 +384,7 @@ include "root.php";
 							$database->fields['dialplan_order'] = '333';
 							$database->fields['dialplan_context'] = $_SESSION['context'];
 							$database->fields['dialplan_enabled'] = $this->ivr_menu_enabled;
-							$database->fields['dialplan_description'] = $this->ivr_menu_desc;
+							$database->fields['dialplan_description'] = $this->ivr_menu_description;
 							$database->fields['app_uuid'] = $this->app_uuid;
 							if ($this->dialplan_uuid) {
 								$database->where[0]['name'] = 'domain_uuid';
@@ -485,14 +485,14 @@ include "root.php";
 				}
 
 			//update the ivr menu option
-				if (strlen($this->ivr_menu_options_action) > 0) {
+				if (strlen($this->ivr_menu_option_action) > 0) {
 					$database = new database;
 					$database->table = "v_ivr_menu_options";
-					$database->fields['ivr_menu_options_digits'] = $this->ivr_menu_options_digits;
-					$database->fields['ivr_menu_options_action'] = $this->ivr_menu_options_action;
-					$database->fields['ivr_menu_options_param'] = $this->ivr_menu_options_param;
-					$database->fields['ivr_menu_options_order'] = $this->ivr_menu_options_order;
-					$database->fields['ivr_menu_options_desc'] = $this->ivr_menu_options_desc;
+					$database->fields['ivr_menu_option_digits'] = $this->ivr_menu_option_digits;
+					$database->fields['ivr_menu_option_action'] = $this->ivr_menu_option_action;
+					$database->fields['ivr_menu_option_param'] = $this->ivr_menu_option_param;
+					$database->fields['ivr_menu_option_order'] = $this->ivr_menu_option_order;
+					$database->fields['ivr_menu_option_description'] = $this->ivr_menu_option_description;
 					$database->where[0]['name'] = 'domain_uuid';
 					$database->where[0]['value'] = $this->domain_uuid;
 					$database->where[0]['operator'] = '=';

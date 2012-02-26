@@ -41,7 +41,7 @@ if (count($_POST)>0) {
 	$rss_uuid = check_str($_POST["rss_uuid"]);
 	$rss_sub_title = check_str($_POST["rss_sub_title"]);
 	$rss_sub_link = check_str($_POST["rss_sub_link"]);
-	$rss_sub_desc = check_str($_POST["rss_sub_desc"]);
+	$rss_sub_description = check_str($_POST["rss_sub_description"]);
 	$rss_sub_optional_1 = check_str($_POST["rss_sub_optional_1"]);
 	$rss_sub_optional_2 = check_str($_POST["rss_sub_optional_2"]);
 	$rss_sub_optional_3 = check_str($_POST["rss_sub_optional_3"]);
@@ -58,7 +58,7 @@ if (count($_POST)>0) {
 	$sql .= "rss_sub_uuid, ";
 	$sql .= "rss_sub_title, ";
 	$sql .= "rss_sub_link, ";
-	$sql .= "rss_sub_desc, ";
+	$sql .= "rss_sub_description, ";
 	$sql .= "rss_sub_optional_1, ";
 	$sql .= "rss_sub_optional_2, ";
 	$sql .= "rss_sub_optional_3, ";
@@ -74,7 +74,7 @@ if (count($_POST)>0) {
 	$sql .= "'$rss_sub_uuid', ";
 	$sql .= "'$rss_sub_title', ";
 	$sql .= "'$rss_sub_link', ";
-	$sql .= "'$rss_sub_desc', ";
+	$sql .= "'$rss_sub_description', ";
 	$sql .= "'$rss_sub_optional_1', ";
 	$sql .= "'$rss_sub_optional_2', ";
 	$sql .= "'$rss_sub_optional_3', ";
@@ -119,7 +119,7 @@ if (count($_POST)>0) {
 	echo "	<tr>";
 	echo "		<td valign='top'>Description:</td>";
 	echo "        <td>";
-	echo "		    <textarea class='txt' rows='12' name='rss_sub_desc'></textarea>";
+	echo "		    <textarea class='txt' rows='12' name='rss_sub_description'></textarea>";
 	echo "        </td>";
 	echo "	</tr>";
 	/*

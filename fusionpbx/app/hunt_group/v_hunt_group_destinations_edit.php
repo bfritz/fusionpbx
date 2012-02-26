@@ -59,7 +59,7 @@ require_once "includes/checkauth.php";
 		$destination_timeout = check_str($_POST["destination_timeout"]);
 		$destination_order = check_str($_POST["destination_order"]);
 		$destination_enabled = check_str($_POST["destination_enabled"]);
-		$destination_descr = check_str($_POST["destination_descr"]);
+		$destination_description = check_str($_POST["destination_description"]);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -76,7 +76,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($destination_timeout) == 0) { $msg .= "Please provide: Timeout<br>\n"; }
 		//if (strlen($destination_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
 		//if (strlen($destination_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		//if (strlen($destination_descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($destination_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -104,7 +104,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "destination_timeout, ";
 				$sql .= "destination_order, ";
 				$sql .= "destination_enabled, ";
-				$sql .= "destination_descr ";
+				$sql .= "destination_description ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
@@ -116,7 +116,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$destination_timeout', ";
 				$sql .= "'$destination_order', ";
 				$sql .= "'$destination_enabled', ";
-				$sql .= "'$destination_descr' ";
+				$sql .= "'$destination_description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -142,7 +142,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "destination_timeout = '$destination_timeout', ";
 				$sql .= "destination_order = '$destination_order', ";
 				$sql .= "destination_enabled = '$destination_enabled', ";
-				$sql .= "destination_descr = '$destination_descr' ";
+				$sql .= "destination_description = '$destination_description' ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and hunt_group_destination_uuid = '$hunt_group_destination_uuid'";
 				$db->exec(check_sql($sql));
@@ -178,7 +178,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$destination_timeout = $row["destination_timeout"];
 			$destination_order = $row["destination_order"];
 			$destination_enabled = $row["destination_enabled"];
-			$destination_descr = $row["destination_descr"];
+			$destination_description = $row["destination_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -337,7 +337,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='destination_descr' maxlength='255' value=\"$destination_descr\">\n";
+	echo "    <input class='formfld' type='text' name='destination_description' maxlength='255' value=\"$destination_description\">\n";
 	echo "<br />\n";
 	echo "You may enter a description here for your reference (not parsed).\n";
 	echo "</td>\n";

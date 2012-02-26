@@ -43,7 +43,7 @@ if (count($_POST)>0) {
 	$rss_sub_category = check_str($_POST["rss_sub_category"]);
 	$rss_title = check_str($_POST["rss_title"]);
 	$rss_link = check_str($_POST["rss_link"]);
-	$rss_desc = check_str($_POST["rss_desc"]);
+	$rss_description = check_str($_POST["rss_description"]);
 	$rss_img = check_str($_POST["rss_img"]);
 	$rss_optional_1 = check_str($_POST["rss_optional_1"]);
 	$rss_optional_2 = check_str($_POST["rss_optional_2"]);
@@ -73,7 +73,7 @@ if (count($_POST)>0) {
 	if (strlen($rss_sub_category) > 0) { $sql .= "and rss_sub_category like '%$rss_sub_category%' "; }
 	if (strlen($rss_title) > 0) { $sql .= "and rss_title like '%$rss_title%' "; }
 	if (strlen($rss_link) > 0) { $sql .= "and rss_link like '%$rss_link%' "; }
-	if (strlen($rss_desc) > 0) { $sql .= "and rss_desc like '%$rss_desc%' "; }
+	if (strlen($rss_description) > 0) { $sql .= "and rss_description like '%$rss_description%' "; }
 	if (strlen($rss_img) > 0) { $sql .= "and rss_img like '%$rss_img%' "; }
 	if (strlen($rss_optional_1) > 0) { $sql .= "and rss_optional_1 like '%$rss_optional_1%' "; }
 	if (strlen($rss_optional_2) > 0) { $sql .= "and rss_optional_2 like '%$rss_optional_2%' "; }
@@ -89,7 +89,7 @@ if (count($_POST)>0) {
 	if (strlen($rss_sub_category) > 0) { $sql .= "and rss_sub_category like '%$rss_sub_category%' "; }
 	if (strlen($rss_title) > 0) { $sql .= "and rss_title like '%$rss_title%' "; }
 	if (strlen($rss_link) > 0) { $sql .= "and rss_link like '%$rss_link%' "; }
-	if (strlen($rss_desc) > 0) { $sql .= "and rss_desc like '%$rss_desc%' "; }
+	if (strlen($rss_description) > 0) { $sql .= "and rss_description like '%$rss_description%' "; }
 	if (strlen($rss_img) > 0) { $sql .= "and rss_img like '%$rss_img%' "; }
 	if (strlen($rss_optional_1) > 0) { $sql .= "and rss_optional_1 like '%$rss_optional_1%' "; }
 	if (strlen($rss_optional_2) > 0) { $sql .= "and rss_optional_2 like '%$rss_optional_2%' "; }
@@ -131,7 +131,7 @@ if (count($_POST)>0) {
 		  echo "<th nowrap>&nbsp; &nbsp; Sub Category&nbsp; &nbsp; </th>";
 		  echo "<th nowrap>&nbsp; &nbsp; Title&nbsp; &nbsp; </th>";
 		  //echo "<th nowrap>&nbsp; &nbsp; rss_link&nbsp; &nbsp; </th>";
-		  //echo "<th nowrap>&nbsp; &nbsp; rss_desc&nbsp; &nbsp; </th>";
+		  //echo "<th nowrap>&nbsp; &nbsp; rss_description&nbsp; &nbsp; </th>";
 		  //echo "<th nowrap>&nbsp; &nbsp; rss_img&nbsp; &nbsp; </th>";
 		  //echo "<th nowrap>&nbsp; &nbsp; rss_optional_1&nbsp; &nbsp; </th>";
 		  //echo "<th nowrap>&nbsp; &nbsp; rss_optional_2&nbsp; &nbsp; </th>";
@@ -151,7 +151,7 @@ if (count($_POST)>0) {
 				echo "<td valign='top'>".$row[rss_sub_category]."</td>";
 				echo "<td valign='top'>".$row[rss_title]."</td>";
 				//echo "<td valign='top'>".$row[rss_link]."</td>";
-				//echo "<td valign='top'>".$row[rss_desc]."</td>";
+				//echo "<td valign='top'>".$row[rss_description]."</td>";
 				//echo "<td valign='top'>".$row[rss_img]."</td>";
 				//echo "<td valign='top'>".$row[rss_optional_1]."</td>";
 				//echo "<td valign='top'>".$row[rss_optional_2]."</td>";
@@ -224,7 +224,7 @@ if (count($_POST)>0) {
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td>Desc:</td>";
-	echo "		<td><input type='text' class='txt' name='rss_desc'></td>";
+	echo "		<td><input type='text' class='txt' name='rss_description'></td>";
 	echo "	</tr>";
 	//echo "	<tr>";
 	//echo "		<td>Image:</td>";

@@ -102,7 +102,7 @@ require_once "includes/paging.php";
 		echo th_order_by('ivr_menu_extension', 'Extension', $order_by, $order);
 		echo th_order_by('ivr_menu_direct_dial', 'Direct Dial', $order_by, $order);
 		echo th_order_by('ivr_menu_enabled', 'Enabled', $order_by, $order);
-		echo th_order_by('ivr_menu_desc', 'Description', $order_by, $order);
+		echo th_order_by('ivr_menu_description', 'Description', $order_by, $order);
 		echo "<td align='right' width='42'>\n";
 		if (permission_exists('ivr_menu_add')) {
 			echo "	<a href='v_ivr_menu_edit.php' alt='add'>$v_link_label_add</a>\n";
@@ -117,7 +117,7 @@ require_once "includes/paging.php";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_extension']."&nbsp;</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_direct_dial']."</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ivr_menu_enabled']."</td>\n";
-				echo "	<td valign='top' class='row_stylebg'>".$row['ivr_menu_desc']."&nbsp;</td>\n";
+				echo "	<td valign='top' class='row_stylebg'>".$row['ivr_menu_description']."&nbsp;</td>\n";
 				echo "	<td valign='top' align='right'>\n";
 				if (permission_exists('ivr_menu_edit')) {
 					echo "		<a href='v_ivr_menu_edit.php?id=".$row['ivr_menu_uuid']."' alt='edit'>$v_link_label_edit</a>\n";

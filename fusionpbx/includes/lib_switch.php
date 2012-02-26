@@ -934,14 +934,14 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				if ($select_type == "dialplan" || $select_type == "ivr") {
 					echo "<optgroup label='IVR Misc'>\n";
 				}
-				if ($ivr_menu_options_action == "menu-top") {
+				if ($ivr_menu_option_action == "menu-top") {
 					echo "		<option value='menu-top:' selected='selected'>Top</option>\n";
 					$selection_found = true;
 				}
 				else {
 					echo "		<option value='menu-top:'>Top</option>\n";
 				}
-				if ($ivr_menu_options_action == "menu-exit") {
+				if ($ivr_menu_option_action == "menu-exit") {
 					echo "		<option value='menu-exit:' selected='selected'>Exit</option>\n";
 					$selection_found = true;
 				}
@@ -2058,8 +2058,8 @@ function save_var_xml() {
 		if ($row['var_cat'] != 'Provision') {
 			if ($prev_var_cat != $row['var_cat']) {
 				$xml .= "\n<!-- ".$row['var_cat']." -->\n";
-				if (strlen($row["var_desc"]) > 0) {
-					$xml .= "<!-- ".base64_decode($row['var_desc'])." -->\n";
+				if (strlen($row["var_description"]) > 0) {
+					$xml .= "<!-- ".base64_decode($row['var_description'])." -->\n";
 				}
 			}
 			$xml .= "<X-PRE-PROCESS cmd=\"set\" data=\"".$row['var_name']."=".$row['var_value']."\"/>\n";
@@ -2283,7 +2283,7 @@ function save_hunt_group_xml() {
 					//$row['hunt_group_pin']
 					//$row['hunt_group_caller_announce']
 					//$row['hunt_group_enabled']
-					//$row['hunt_group_descr']
+					//$row['hunt_group_description']
 					$domain_uuid = $row['domain_uuid'];
 					$dialplan_uuid = $row['dialplan_uuid'];
 
@@ -2581,7 +2581,7 @@ function save_hunt_group_xml() {
 						//$ent['destination_profile']
 						//$ent['destination_order']
 						//$ent['destination_enabled']
-						//$ent['destination_descr']
+						//$ent['destination_description']
 
 						$destination_timeout = $ent['destination_timeout'];
 						if (strlen($destination_timeout) == 0) {
@@ -3722,15 +3722,15 @@ if (!function_exists('save_ivr_menu_xml')) {
 				$ivr_menu_digit_len = $row["ivr_menu_digit_len"];
 				$ivr_menu_direct_dial = $row["ivr_menu_direct_dial"];
 				$ivr_menu_enabled = $row["ivr_menu_enabled"];
-				$ivr_menu_desc = check_str($row["ivr_menu_desc"]);
+				$ivr_menu_description = check_str($row["ivr_menu_description"]);
 
 				//replace space with an underscore
 					$ivr_menu_name = str_replace(" ", "_", $ivr_menu_name);
 
 				//add each IVR menu to the XML config
 					$tmp = "<include>\n";
-					if (strlen($ivr_menu_desc) > 0) {
-						$tmp .= "	<!-- $ivr_menu_desc -->\n";
+					if (strlen($ivr_menu_description) > 0) {
+						$tmp .= "	<!-- $ivr_menu_description -->\n";
 					}
 					if (count($_SESSION["domains"]) > 1) {
 						$tmp .= "	<menu name=\"".$_SESSION['domains'][$domain_uuid]['domain']."-".$ivr_menu_name."\"\n";
@@ -3774,23 +3774,23 @@ if (!function_exists('save_ivr_menu_xml')) {
 					$sub_sql .= "select * from v_ivr_menu_options ";
 					$sub_sql .= "where ivr_menu_uuid = '$ivr_menu_uuid' ";
 					$sub_sql .= "and domain_uuid = '$domain_uuid' ";
-					$sub_sql .= "order by ivr_menu_options_order asc "; 
+					$sub_sql .= "order by ivr_menu_option_order asc "; 
 					$sub_prep_statement = $db->prepare(check_sql($sub_sql));
 					$sub_prep_statement->execute();
 					$sub_result = $sub_prep_statement->fetchAll(PDO::FETCH_ASSOC);
 					foreach ($sub_result as &$sub_row) {
 						//$ivr_menu_uuid = $sub_row["ivr_menu_uuid"];
-						$ivr_menu_options_digits = $sub_row["ivr_menu_options_digits"];
-						$ivr_menu_options_action = $sub_row["ivr_menu_options_action"];
-						$ivr_menu_options_param = $sub_row["ivr_menu_options_param"];
-						$ivr_menu_options_desc = $sub_row["ivr_menu_options_desc"];
+						$ivr_menu_option_digits = $sub_row["ivr_menu_option_digits"];
+						$ivr_menu_option_action = $sub_row["ivr_menu_option_action"];
+						$ivr_menu_option_param = $sub_row["ivr_menu_option_param"];
+						$ivr_menu_option_description = $sub_row["ivr_menu_option_description"];
 
-						$tmp .= "		<entry action=\"$ivr_menu_options_action\" digits=\"$ivr_menu_options_digits\" param=\"$ivr_menu_options_param\"/>";
-						if (strlen($ivr_menu_options_desc) == 0) {
+						$tmp .= "		<entry action=\"$ivr_menu_option_action\" digits=\"$ivr_menu_option_digits\" param=\"$ivr_menu_option_param\"/>";
+						if (strlen($ivr_menu_option_description) == 0) {
 							$tmp .= "\n";
 						}
 						else {
-							$tmp .= "	<!-- $ivr_menu_options_desc -->\n";
+							$tmp .= "	<!-- $ivr_menu_option_description -->\n";
 						}
 					}
 					unset ($sub_prep_statement, $sub_row);

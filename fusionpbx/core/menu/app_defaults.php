@@ -41,21 +41,21 @@
 		//set the defaults
 			$menu_name = 'default';
 			$menu_language = 'en';
-			$menu_desc = '';
+			$menu_description = '';
 		//add the menu
 			$sql = "insert into v_menus ";
 			$sql .= "(";
 			$sql .= "menu_uuid, ";
 			$sql .= "menu_name, ";
 			$sql .= "menu_language, ";
-			$sql .= "menu_desc ";
+			$sql .= "menu_description ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'".$menu_uuid."', ";
 			$sql .= "'$menu_name', ";
 			$sql .= "'$menu_language', ";
-			$sql .= "'$menu_desc' ";
+			$sql .= "'$menu_description' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);

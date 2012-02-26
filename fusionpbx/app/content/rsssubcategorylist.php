@@ -119,14 +119,14 @@ else { //received results
 
 	  echo "<th nowrap>&nbsp; &nbsp; ";
 	  if (strlen($order_by)==0) {
-		echo "<a href='?order_by=rss_sub_category_desc&order=desc' title='ascending'>rss_sub_category_desc</a>";
+		echo "<a href='?order_by=rss_sub_category_description&order=desc' title='ascending'>rss_sub_category_description</a>";
 	  }
 	  else {
 		if ($order=="asc") {
-			echo "<a href='?order_by=rss_sub_category_desc&order=desc' title='ascending'>rss_sub_category_desc</a>";
+			echo "<a href='?order_by=rss_sub_category_description&order=desc' title='ascending'>rss_sub_category_description</a>";
 		}
 		else {
-			echo "<a href='?order_by=rss_sub_category_desc&order=asc' title='descending'>rss_sub_category_desc</a>";
+			echo "<a href='?order_by=rss_sub_category_description&order=asc' title='descending'>rss_sub_category_description</a>";
 		}
 	  }
 	  echo "&nbsp; &nbsp; </th>";
@@ -168,7 +168,7 @@ else { //received results
 			echo "<td valign='top'><a href='rss_sub_categoryupdate.php?rss_sub_category_uuid=".$row[rss_sub_category_uuid]."'>".$row[rss_sub_category_uuid]."</a></td>";
 			echo "<td valign='top'>".$row[rss_category]."</td>";
 			echo "<td valign='top'>".$row[rss_sub_category]."</td>";
-			echo "<td valign='top'>".$row[rss_sub_category_desc]."</td>";
+			echo "<td valign='top'>".$row[rss_sub_category_description]."</td>";
 			echo "<td valign='top'>".$row[rss_add_user]."</td>";
 			echo "<td valign='top'>".$row[rss_add_date]."</td>";
 		echo "</tr>";

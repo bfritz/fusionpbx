@@ -67,7 +67,7 @@ else {
 		$ivr_menu_digit_len = $row["ivr_menu_digit_len"];
 		$ivr_menu_direct_dial = $row["ivr_menu_direct_dial"];
 		$ivr_menu_enabled = $row["ivr_menu_enabled"];
-		$ivr_menu_desc = 'copy: '.$row["ivr_menu_desc"];
+		$ivr_menu_description = 'copy: '.$row["ivr_menu_description"];
 		break; //limit to 1 row
 	}
 	unset ($prep_statement);
@@ -96,7 +96,7 @@ else {
 		$sql .= "ivr_menu_digit_len, ";
 		$sql .= "ivr_menu_direct_dial, ";
 		$sql .= "ivr_menu_enabled, ";
-		$sql .= "ivr_menu_desc ";
+		$sql .= "ivr_menu_description ";
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
@@ -120,7 +120,7 @@ else {
 		$sql .= "'$ivr_menu_digit_len', ";
 		$sql .= "'$ivr_menu_direct_dial', ";
 		$sql .= "'$ivr_menu_enabled', ";
-		$sql .= "'$ivr_menu_desc' ";
+		$sql .= "'$ivr_menu_description' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
 		unset($sql);
@@ -135,11 +135,11 @@ else {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$ivr_menu_options_digits = $row["ivr_menu_options_digits"];
-			$ivr_menu_options_action = $row["ivr_menu_options_action"];
-			$ivr_menu_options_param = $row["ivr_menu_options_param"];
-			$ivr_menu_options_order = $row["ivr_menu_options_order"];
-			$ivr_menu_options_desc = $row["ivr_menu_options_desc"];
+			$ivr_menu_option_digits = $row["ivr_menu_option_digits"];
+			$ivr_menu_option_action = $row["ivr_menu_option_action"];
+			$ivr_menu_option_param = $row["ivr_menu_option_param"];
+			$ivr_menu_option_order = $row["ivr_menu_option_order"];
+			$ivr_menu_option_description = $row["ivr_menu_option_description"];
 
 			//copy the ivr menu options
 				$ivr_menu_option_uuid = uuid();
@@ -148,22 +148,22 @@ else {
 				$sql .= "domain_uuid, ";
 				$sql .= "ivr_menu_uuid, ";
 				$sql .= "ivr_menu_option_uuid, ";
-				$sql .= "ivr_menu_options_digits, ";
-				$sql .= "ivr_menu_options_action, ";
-				$sql .= "ivr_menu_options_param, ";
-				$sql .= "ivr_menu_options_order, ";
-				$sql .= "ivr_menu_options_desc ";
+				$sql .= "ivr_menu_option_digits, ";
+				$sql .= "ivr_menu_option_action, ";
+				$sql .= "ivr_menu_option_param, ";
+				$sql .= "ivr_menu_option_order, ";
+				$sql .= "ivr_menu_option_description ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
 				$sql .= "'$domain_uuid', ";
 				$sql .= "'$ivr_menu_uuid', ";
 				$sql .= "'$ivr_menu_option_uuid', ";
-				$sql .= "'$ivr_menu_options_digits', ";
-				$sql .= "'$ivr_menu_options_action', ";
-				$sql .= "'$ivr_menu_options_param', ";
-				$sql .= "'$ivr_menu_options_order', ";
-				$sql .= "'$ivr_menu_options_desc' ";
+				$sql .= "'$ivr_menu_option_digits', ";
+				$sql .= "'$ivr_menu_option_action', ";
+				$sql .= "'$ivr_menu_option_param', ";
+				$sql .= "'$ivr_menu_option_order', ";
+				$sql .= "'$ivr_menu_option_description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);

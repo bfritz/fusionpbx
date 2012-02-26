@@ -38,7 +38,7 @@ else {
 	$path = check_str($_GET["path"]);
 	$msg = check_str($_GET["msg"]);
 	$group_name = check_str($_POST["group_name"]);
-	$group_desc = check_str($_POST["group_desc"]);
+	$group_description = check_str($_POST["group_description"]);
 
 if (strlen($group_name) > 0) {
 	$sql_insert = "insert into v_groups ";
@@ -46,14 +46,14 @@ if (strlen($group_name) > 0) {
 	$sql_insert .= "domain_uuid, ";
 	$sql_insert .= "group_uuid, ";
 	$sql_insert .= "group_name, ";
-	$sql_insert .= "group_desc ";
+	$sql_insert .= "group_description ";
 	$sql_insert .= ")";
 	$sql_insert .= "values ";
 	$sql_insert .= "(";
 	$sql_insert .= "'$domain_uuid', ";
 	$sql_insert .= "'".uuid()."', ";
 	$sql_insert .= "'$group_name', ";
-	$sql_insert .= "'$group_desc' ";
+	$sql_insert .= "'$group_description' ";
 	$sql_insert .= ")";
 	if (!$db->exec($sql_insert)) {
 		//echo $db->errorCode() . "<br>";
@@ -109,7 +109,7 @@ if (strlen($group_name) > 0) {
 	echo "Description:\n";
 	echo "</td>\n";
 	echo "<td align='left' class='vtable'>\n";
-	echo "<textarea name='group_desc' class='formfld'></textarea>\n";
+	echo "<textarea name='group_description' class='formfld'></textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

@@ -129,8 +129,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'hunt_group_descr';
-		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'huntgroup_descr';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'hunt_group_description';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'huntgroup_desc';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 
@@ -204,7 +204,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'destination_descr';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'destination_description';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'destinationdescr';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';

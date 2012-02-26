@@ -41,7 +41,7 @@ if (count($_POST)>0) {
 		$rss_sub_category = check_str($_POST["rss_sub_category"]);
 		$rss_title = check_str($_POST["rss_title"]);
 		$rss_link = check_str($_POST["rss_link"]);
-		$rss_desc = check_str($_POST["rss_desc"]);
+		$rss_description = check_str($_POST["rss_description"]);
 		$rss_img = check_str($_POST["rss_img"]);
 		$rss_optional_1 = check_str($_POST["rss_optional_1"]);
 		$rss_optional_2 = check_str($_POST["rss_optional_2"]);
@@ -61,7 +61,7 @@ if (count($_POST)>0) {
 		$sql .= "rss_sub_category, ";
 		$sql .= "rss_title, ";
 		$sql .= "rss_link, ";
-		$sql .= "rss_desc, ";
+		$sql .= "rss_description, ";
 		$sql .= "rss_img, ";
 		$sql .= "rss_optional_1, ";
 		$sql .= "rss_optional_2, ";
@@ -81,7 +81,7 @@ if (count($_POST)>0) {
 		$sql .= "'$rss_sub_category', ";
 		$sql .= "'$rss_title', ";
 		$sql .= "'$rss_link', ";
-		$sql .= "'$rss_desc', ";
+		$sql .= "'$rss_description', ";
 		$sql .= "'$rss_img', ";
 		$sql .= "'$rss_optional_1', ";
 		$sql .= "'$rss_optional_2', ";
@@ -118,7 +118,7 @@ if (count($_POST)>0) {
 
 			echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
 			echo "		editAreaLoader.init({\n";
-			echo "			id: \"rss_desc\" // id of the textarea to transform //, |, help\n";
+			echo "			id: \"rss_description\" // id of the textarea to transform //, |, help\n";
 			echo "			,start_highlight: true\n";
 			echo "			,font_size: \"8\"\n";
 			echo "			,allow_toggle: false\n";
@@ -266,10 +266,10 @@ if (count($_POST)>0) {
 	echo "		<td  class='' colspan='2' align='left'>";
 	echo "            <strong>Content:</strong> ";
 	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
-		echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rss_desc'); return false;\">on/off</a><br>";
+		echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rss_description'); return false;\">on/off</a><br>";
 	}
 	else {
-		echo "            <textarea name='rss_desc'  id='rss_desc' class='formfld' cols='20' style='width: 100%' rows='12' ></textarea>";
+		echo "            <textarea name='rss_description'  id='rss_description' class='formfld' cols='20' style='width: 100%' rows='12' ></textarea>";
 	}
 	echo "        </td>";
 	echo "	</tr>";

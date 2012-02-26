@@ -419,7 +419,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$huntgroup_caller_announce = $row["hunt_group_caller_announce"];
 		$hunt_group_user_list = $row["hunt_group_user_list"];
 		$hunt_group_enabled = $row["hunt_group_enabled"];
-		$hunt_group_descr = $row["hunt_group_descr"];
+		$hunt_group_description = $row["hunt_group_description"];
 
 		if ($row["hunt_group_type"] == 'call_forward') {
 			$call_forward_enabled = $hunt_group_enabled;

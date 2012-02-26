@@ -92,7 +92,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'rss_desc';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'rss_description';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'rssdesc';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
@@ -224,7 +224,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'rss_sub_desc';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'rss_sub_description';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'rsssubdesc';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
@@ -325,7 +325,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'rss_sub_category_desc';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'rss_sub_category_description';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'rsssubcategorydesc';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';

@@ -71,7 +71,7 @@ else {
 		$virtual_table_auth = $row["virtual_table_auth"];
 		$virtual_table_captcha = $row["virtual_table_captcha"];
 		$virtual_table_parent_id = $row["virtual_table_parent_id"];
-		$virtual_table_desc = $row["virtual_table_desc"];
+		$virtual_table_description = $row["virtual_table_description"];
 		break; //limit to 1 row
 	}
 	unset ($prep_statement);
@@ -104,7 +104,7 @@ else {
 				$virtual_field_required = $row["virtual_field_required"];
 				$virtual_field_order = $row["virtual_field_order"];
 				$virtual_field_order_tab = $row["virtual_field_order_tab"];
-				$virtual_field_desc = $row["virtual_field_desc"];
+				$virtual_field_description = $row["virtual_field_description"];
 
 				$name_array[$virtual_field_name]['virtual_field_label'] = $row["virtual_field_label"];
 				$name_array[$virtual_field_name]['virtual_field_type'] = $row["virtual_field_type"];
@@ -113,7 +113,7 @@ else {
 				$name_array[$virtual_field_name]['virtual_field_required'] = $row["virtual_field_required"];
 				$name_array[$virtual_field_name]['virtual_field_order'] = $row["virtual_field_order"];
 				$name_array[$virtual_field_name]['virtual_field_order_tab'] = $row["virtual_field_order_tab"];
-				$name_array[$virtual_field_name]['virtual_field_desc'] = $row["virtual_field_desc"];
+				$name_array[$virtual_field_name]['virtual_field_description'] = $row["virtual_field_description"];
 			}
 			unset($sql, $prep_statement, $row);
 			$fieldcount = count($name_array);
@@ -492,7 +492,7 @@ else {
 		//echo "	<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Do you really want to delete this?')){window.location='v_virtual_table_data_delete.php?id=".$virtual_table_uuid."&?virtual_data_row_id=".$virtual_data_row_id."&virtual_data_parent_row_id=$virtual_data_parent_row_id';}\" value='Delete'>\n";
 	}
 	echo "			<br />\n";
-	echo "			$virtual_table_desc\n";
+	echo "			$virtual_table_description\n";
 	echo "			<br />\n";
 	echo "			<br />\n";
 	echo "		</td>\n";

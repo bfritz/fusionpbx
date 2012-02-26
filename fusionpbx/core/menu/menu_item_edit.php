@@ -91,7 +91,7 @@ else {
 		$menu_item_title = check_str($_POST["menu_item_title"]);
 		$menu_item_link = check_str($_POST["menu_item_link"]);
 		$menu_item_category = check_str($_POST["menu_item_category"]);
-		$menu_item_desc = check_str($_POST["menu_item_desc"]);
+		$menu_item_description = check_str($_POST["menu_item_description"]);
 		$menu_item_protected = check_str($_POST["menu_item_protected"]);
 		//$menu_item_uuid = check_str($_POST["menu_item_uuid"]);
 		$menu_item_parent_uuid = check_str($_POST["menu_item_parent_uuid"]);
@@ -145,7 +145,7 @@ else {
 				$sql .= "menu_item_title, ";
 				$sql .= "menu_item_link, ";
 				$sql .= "menu_item_category, ";
-				$sql .= "menu_item_desc, ";
+				$sql .= "menu_item_description, ";
 				$sql .= "menu_item_protected, ";
 				$sql .= "menu_item_uuid, ";
 				$sql .= "menu_item_parent_uuid, ";
@@ -159,7 +159,7 @@ else {
 				$sql .= "'$menu_item_title', ";
 				$sql .= "'$menu_item_link', ";
 				$sql .= "'$menu_item_category', ";
-				$sql .= "'$menu_item_desc', ";
+				$sql .= "'$menu_item_description', ";
 				$sql .= "'$menu_item_protected', ";
 				$sql .= "'".uuid()."', ";
 				$sql .= "'$menu_item_parent_uuid', ";
@@ -184,7 +184,7 @@ else {
 				$sql .= "menu_item_title = '$menu_item_title', ";
 				$sql .= "menu_item_link = '$menu_item_link', ";
 				$sql .= "menu_item_category = '$menu_item_category', ";
-				$sql .= "menu_item_desc = '$menu_item_desc', ";
+				$sql .= "menu_item_description = '$menu_item_description', ";
 				$sql .= "menu_item_protected = '$menu_item_protected', ";
 				if (strlen($menu_item_parent_uuid) == 0) {
 					$sql .= "menu_item_parent_uuid = null, ";
@@ -226,7 +226,7 @@ else {
 			$menu_item_title = $row["menu_item_title"];
 			$menu_item_link = $row["menu_item_link"];
 			$menu_item_category = $row["menu_item_category"];
-			$menu_item_desc = $row["menu_item_desc"];
+			$menu_item_description = $row["menu_item_description"];
 			$menu_item_protected = $row["menu_item_protected"];
 			$menu_item_parent_uuid = $row["menu_item_parent_uuid"];
 			$menu_item_order = $row["menu_item_order"];
@@ -411,7 +411,7 @@ else {
 
 	echo "	<tr>";
 	echo "		<td class='vncell'>Description:</td>";
-	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_desc' value='$menu_item_desc'></td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='menu_item_description' value='$menu_item_description'></td>";
 	echo "	</tr>";
 
 	if (permission_exists('menu_add') || permission_exists('menu_edit')) {

@@ -89,7 +89,7 @@ $order = $_GET["order"];
 	echo th_order_by('virtual_field_required', 'Required', $order_by, $order);
 	echo th_order_by('virtual_field_order', 'Field Order', $order_by, $order);
 	echo th_order_by('virtual_field_order_tab', 'Tab Order', $order_by, $order);
-	echo th_order_by('virtual_field_desc', 'Description', $order_by, $order);
+	echo th_order_by('virtual_field_description', 'Description', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('virtual_tables_view')) {
 		echo "	<a href='v_virtual_table_fields_edit.php?virtual_table_uuid=".$virtual_table_uuid."' alt='add'>$v_link_label_add</a>\n";
@@ -110,7 +110,7 @@ $order = $_GET["order"];
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_required']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_order']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_order_tab']."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_desc']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_field_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('virtual_tables_edit')) {
 				echo "		<a href='v_virtual_table_fields_edit.php?virtual_table_uuid=".$row['virtual_table_uuid']."&id=".$row['virtual_table_field_uuid']."' alt='edit'>$v_link_label_edit</a>\n";

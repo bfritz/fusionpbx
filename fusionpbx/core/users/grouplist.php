@@ -80,10 +80,10 @@ require_once "includes/require.php";
 	foreach ($result as &$row) {
 		$group_name = $row["group_name"];
 		$group_uuid = $row["group_uuid"];
-		$group_desc = $row["group_desc"];
+		$group_description = $row["group_description"];
 		if (strlen($group_name) == 0) { $group_name = "&nbsp;"; }
-		if (strlen($group_desc) == 0) { $group_desc = "&nbsp;"; }
-		$group_desc = wordwrap($group_desc, 50, "<br />\n");
+		if (strlen($group_description) == 0) { $group_description = "&nbsp;"; }
+		$group_description = wordwrap($group_description, 50, "<br />\n");
 
 		if (!if_group("superadmin") && $group_name == "superadmin") {
 			//hide the superadmin group from non superadmin's
@@ -91,7 +91,7 @@ require_once "includes/require.php";
 		else {
 			$strlist .= "<tr>";
 			$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp; $group_name &nbsp; </td>\n";
-			$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp;  $group_desc &nbsp; </td>\n";
+			$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp;  $group_description &nbsp; </td>\n";
 
 			$strlist .= "<td class='".$row_style[$c]."' align=\"center\" nowrap>\n";
 			if (permission_exists('group_add') || if_group("superadmin")) {

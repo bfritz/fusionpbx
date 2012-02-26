@@ -47,7 +47,7 @@ else {
 	if (count($_POST)>0) {
 		$module_label = check_str($_POST["module_label"]);
 		$module_name = check_str($_POST["module_name"]);
-		$module_desc = check_str($_POST["module_desc"]);
+		$module_description = check_str($_POST["module_description"]);
 		$module_category = check_str($_POST["module_category"]);
 		$module_enabled = check_str($_POST["module_enabled"]);
 		$module_default_enabled = check_str($_POST["module_default_enabled"]);
@@ -63,7 +63,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		if (strlen($module_label) == 0) { $msg .= "Please provide: Label<br>\n"; }
 		if (strlen($module_name) == 0) { $msg .= "Please provide: Module Name<br>\n"; }
-		//if (strlen($module_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($module_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($module_category) == 0) { $msg .= "Please provide: Module Category<br>\n"; }
 		if (strlen($module_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		if (strlen($module_default_enabled) == 0) { $msg .= "Please provide: Default Enabled<br>\n"; }
@@ -89,7 +89,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "module_uuid, ";
 				$sql .= "module_label, ";
 				$sql .= "module_name, ";
-				$sql .= "module_desc, ";
+				$sql .= "module_description, ";
 				$sql .= "module_category, ";
 				$sql .= "module_enabled, ";
 				$sql .= "module_default_enabled ";
@@ -99,7 +99,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$module_uuid', ";
 				$sql .= "'$module_label', ";
 				$sql .= "'$module_name', ";
-				$sql .= "'$module_desc', ";
+				$sql .= "'$module_description', ";
 				$sql .= "'$module_category', ";
 				$sql .= "'$module_enabled', ";
 				$sql .= "'$module_default_enabled' ";
@@ -122,7 +122,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql = "update v_modules set ";
 				$sql .= "module_label = '$module_label', ";
 				$sql .= "module_name = '$module_name', ";
-				$sql .= "module_desc = '$module_desc', ";
+				$sql .= "module_description = '$module_description', ";
 				$sql .= "module_category = '$module_category', ";
 				$sql .= "module_enabled = '$module_enabled', ";
 				$sql .= "module_default_enabled = '$module_default_enabled' ";
@@ -155,7 +155,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		foreach ($result as &$row) {
 			$module_label = $row["module_label"];
 			$module_name = $row["module_name"];
-			$module_desc = $row["module_desc"];
+			$module_description = $row["module_description"];
 			$module_category = $row["module_category"];
 			$module_enabled = $row["module_enabled"];
 			$module_default_enabled = $row["module_default_enabled"];
@@ -216,7 +216,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='module_desc' maxlength='255' value=\"$module_desc\">\n";
+	echo "    <input class='formfld' type='text' name='module_description' maxlength='255' value=\"$module_description\">\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";

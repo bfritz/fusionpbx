@@ -69,7 +69,7 @@ if (strlen($_GET["id"]) > 0) {
 		$virtual_table_auth = $row["virtual_table_auth"];
 		$virtual_table_captcha = $row["virtual_table_captcha"];
 		$virtual_table_parent_id = $row["virtual_table_parent_id"];
-		$virtual_table_desc = $row["virtual_table_desc"];
+		$virtual_table_description = $row["virtual_table_description"];
 		break; //limit to 1 row
 	}
 	unset ($prep_statement);
@@ -96,7 +96,7 @@ if (strlen($_GET["id"]) > 0) {
 		$virtual_field_required = $row["virtual_field_required"];
 		$virtual_field_order = $row["virtual_field_order"];
 		$virtual_field_order_tab = $row["virtual_field_order_tab"];
-		$virtual_field_desc = $row["virtual_field_desc"];
+		$virtual_field_description = $row["virtual_field_description"];
 
 		$name_array[$virtual_field_name]['virtual_field_label'] = $row["virtual_field_label"];
 		$name_array[$virtual_field_name]['virtual_field_type'] = $row["virtual_field_type"];
@@ -105,7 +105,7 @@ if (strlen($_GET["id"]) > 0) {
 		$name_array[$virtual_field_name]['virtual_field_required'] = $row["virtual_field_required"];
 		$name_array[$virtual_field_name]['virtual_field_order'] = $row["virtual_field_order"];
 		$name_array[$virtual_field_name]['virtual_field_order_tab'] = $row["virtual_field_order_tab"];
-		$name_array[$virtual_field_name]['virtual_field_desc'] = $row["virtual_field_desc"];
+		$name_array[$virtual_field_name]['virtual_field_description'] = $row["virtual_field_description"];
 	}
 	unset($sql, $prep_statement, $row);
 	$fieldcount = count($name_array);
@@ -248,7 +248,7 @@ if (strlen($_GET["id"]) > 0) {
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "  <tr>\n";
 	echo "	<td align='left' valign='top'><strong>$virtual_table_label</strong><br>\n";
-	echo "		$virtual_table_desc\n";
+	echo "		$virtual_table_description\n";
 	echo "	</td>\n";
 	echo "	<td align='right' valign='top'>\n";
 	if (strlen($virtual_data_parent_row_id) == 0) {
@@ -324,7 +324,7 @@ if (strlen($_GET["id"]) > 0) {
 				$virtual_field_required = $name_array[$virtual_field_name]['virtual_field_required'];
 				$virtual_field_order = $name_array[$virtual_field_name]['virtual_field_order'];
 				$virtual_field_order_tab = $name_array[$virtual_field_name]['virtual_field_order_tab'];
-				$virtual_field_desc = $name_array[$virtual_field_name]['virtual_field_desc'];
+				$virtual_field_description = $name_array[$virtual_field_name]['virtual_field_description'];
 
 			if ($virtual_field_list_hidden != "hide") {
 				switch ($virtual_field_type) {

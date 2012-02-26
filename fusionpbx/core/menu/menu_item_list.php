@@ -120,7 +120,7 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 					//echo "<td valign='top'>&nbsp;".$menu_item_link."&nbsp;</td>";
 					echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$group_list."&nbsp;</td>";
 					echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_category."&nbsp;</td>";
-					//echo "<td valign='top'>".$row[menu_item_desc]."</td>";
+					//echo "<td valign='top'>".$row[menu_item_description]."</td>";
 					//echo "<td valign='top'>&nbsp;".$row[menu_item_order]."&nbsp;</td>";
 					if ($menu_item_protected == "true") {
 						echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; <strong>yes</strong> &nbsp;</td>";
@@ -286,7 +286,7 @@ $order = $_GET["order"];
 				echo "<td valign='top' class='".$row_style[$c]."'>&nbsp; ".$group_list."&nbsp;</td>";
 				//echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_link."&nbsp;</td>";
 				echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$menu_item_category."&nbsp;</td>";
-				//echo "<td valign='top' class='".$row_style[$c]."'>".$row[menu_item_desc]."</td>";
+				//echo "<td valign='top' class='".$row_style[$c]."'>".$row[menu_item_description]."</td>";
 				//echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$row['menu_item_parent_uuid']."&nbsp;</td>";
 				//echo "<td valign='top' class='".$row_style[$c]."'>&nbsp;".$row['menu_item_order']."&nbsp;</td>";
 

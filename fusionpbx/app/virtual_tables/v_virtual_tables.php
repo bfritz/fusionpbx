@@ -97,7 +97,7 @@ require_once "includes/paging.php";
 	echo th_order_by('virtual_table_label', 'Label', $order_by, $order);
 	echo th_order_by('virtual_table_name', 'Table Name', $order_by, $order);
 	echo th_order_by('virtual_table_auth', 'Authentication', $order_by, $order);
-	echo th_order_by('virtual_table_desc', 'Description', $order_by, $order);
+	echo th_order_by('virtual_table_description', 'Description', $order_by, $order);
 	//echo "<th align='center'>View</th>\n";
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('virtual_tables_add')) {
@@ -115,7 +115,7 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_table_label']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_table_name']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_table_auth']."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_table_desc']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['virtual_table_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('virtual_tables_edit')) {
 				echo "		<a href='v_virtual_tables_edit.php?id=".$row['virtual_table_uuid']."' alt='edit'>$v_link_label_edit</a>\n";

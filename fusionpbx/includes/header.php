@@ -115,12 +115,12 @@ require_once "includes/require.php";
 		$template_rss_sub_category = $row[rss_sub_category];
 		if (strlen($row[rss_group]) == 0) {
 			//content is public
-			$content_from_db = &$row[rss_desc];
+			$content_from_db = &$row[rss_description];
 			$customtitle = $row[rss_title];
 		}
 		else {
 			if (if_group($row[rss_group])) { //viewable only to designated group
-				$content_from_db = &$row[rss_desc];
+				$content_from_db = &$row[rss_description];
 				$customtitle = $row[rss_title];
 			}
 		}

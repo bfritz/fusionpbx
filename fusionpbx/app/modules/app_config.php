@@ -64,11 +64,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'module_desc';
-		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'moduledesc';
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
-		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'module_category';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'modulecat';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
@@ -81,6 +76,11 @@
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'module_default_enabled';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'moduledefaultenabled';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'module_description';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'moduledesc';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 

@@ -78,7 +78,7 @@ require_once "includes/paging.php";
 		}
 
 		$hunt_group_enabled = check_str($_POST["hunt_group_enabled"]);
-		$hunt_group_descr = check_str($_POST["hunt_group_descr"]);
+		$hunt_group_description = check_str($_POST["hunt_group_description"]);
 
 		//remove invalid characters
 		$hunt_group_cid_name_prefix = str_replace(":", "-", $hunt_group_cid_name_prefix);
@@ -113,7 +113,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($hunt_group_caller_announce) == 0) { $msg .= "Please provide: Caller Announce<br>\n"; }
 		//if (strlen($hunt_group_user_list) == 0) { $msg .= "Please provide: User List<br>\n"; }
 		//if (strlen($hunt_group_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
-		//if (strlen($hunt_group_descr) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($hunt_group_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -151,7 +151,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "hunt_group_caller_announce, ";
 					$sql .= "hunt_group_user_list, ";
 					$sql .= "hunt_group_enabled, ";
-					$sql .= "hunt_group_descr ";
+					$sql .= "hunt_group_description ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
@@ -171,7 +171,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$hunt_group_caller_announce', ";
 					$sql .= "'$hunt_group_user_list', ";
 					$sql .= "'$hunt_group_enabled', ";
-					$sql .= "'$hunt_group_descr' ";
+					$sql .= "'$hunt_group_description' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					unset($sql);
@@ -236,7 +236,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						$sql .= "hunt_group_user_list = '$hunt_group_user_list', ";
 					}
 					$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
-					$sql .= "hunt_group_descr = '$hunt_group_descr' ";
+					$sql .= "hunt_group_description = '$hunt_group_description' ";
 					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and hunt_group_uuid = '$hunt_group_uuid'";
 					$db->exec(check_sql($sql));
@@ -331,7 +331,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$hunt_group_caller_announce = $row["hunt_group_caller_announce"];
 			$hunt_group_user_list = $row["hunt_group_user_list"];
 			$hunt_group_enabled = $row["hunt_group_enabled"];
-			$hunt_group_descr = $row["hunt_group_descr"];
+			$hunt_group_description = $row["hunt_group_description"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
@@ -661,7 +661,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	 Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	 <input class='formfld' type='text' name='hunt_group_descr' maxlength='255' value=\"$hunt_group_descr\">\n";
+	echo "	 <input class='formfld' type='text' name='hunt_group_description' maxlength='255' value=\"$hunt_group_description\">\n";
 	echo "<br />\n";
 	echo "You may enter a description here for your reference (not parsed). \n";
 	echo "</td>\n";
@@ -746,7 +746,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['destination_type']."</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['destination_profile']."</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['destination_order']."</td>\n";
-				echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['destination_descr']."&nbsp;</td>\n";
+				echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['destination_description']."&nbsp;</td>\n";
 				echo "	<td valign='top' align='right'>\n";
 				if (permission_exists('hunt_group_edit')) {
 					echo "		<a href='v_hunt_group_destinations_edit.php?id=".$row['hunt_group_destination_uuid']."&id2=".$hunt_group_uuid."' alt='edit'>$v_link_label_edit</a>\n";

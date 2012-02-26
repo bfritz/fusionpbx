@@ -42,7 +42,7 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 	$rss_uuid = check_str($_POST["rss_uuid"]);
 	$rss_sub_title = check_str($_POST["rss_sub_title"]);
 	$rss_sub_link = check_str($_POST["rss_sub_link"]);
-	$rss_sub_desc = check_str($_POST["rss_sub_desc"]);
+	$rss_sub_description = check_str($_POST["rss_sub_description"]);
 	$rss_sub_optional_1 = check_str($_POST["rss_sub_optional_1"]);
 	$rss_sub_optional_2 = check_str($_POST["rss_sub_optional_2"]);
 	$rss_sub_optional_3 = check_str($_POST["rss_sub_optional_3"]);
@@ -55,7 +55,7 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 	if (strlen($rss_uuid) == 0) { $msg .= "Error missing rss_uuid.<br>\n"; }
 	if (strlen($rss_sub_uuid) == 0) { $msg .= "Error missing rss_sub_uuid.<br>\n"; }
 	//if (strlen($rss_sub_title) == 0) { $msg .= "Please provide a title.<br>\n"; }
-	if (strlen($rss_sub_desc) == 0) { $msg .= "Please provide a description.<br>\n"; }
+	if (strlen($rss_sub_description) == 0) { $msg .= "Please provide a description.<br>\n"; }
 
 	if (strlen($msg) > 0) {
 		require_once "includes/persistform.php";
@@ -83,7 +83,7 @@ if (count($_POST)>0 && $_POST["persistform"] == "0") {
 	//$sql .= "rss_uuid = '$rss_uuid', ";
 	$sql .= "rss_sub_title = '$rss_sub_title', ";
 	$sql .= "rss_sub_link = '$rss_sub_link', ";
-	$sql .= "rss_sub_desc = '$rss_sub_desc', ";
+	$sql .= "rss_sub_description = '$rss_sub_description', ";
 	$sql .= "rss_sub_optional_1 = '$rss_sub_optional_1', ";
 	$sql .= "rss_sub_optional_2 = '$rss_sub_optional_2', ";
 	$sql .= "rss_sub_optional_3 = '$rss_sub_optional_3', ";
@@ -121,7 +121,7 @@ else {
 		//$rss_uuid = $row["rss_uuid"];
 		$rss_sub_title = $row["rss_sub_title"];
 		$rss_sub_link = $row["rss_sub_link"];
-		$rss_sub_desc = $row["rss_sub_desc"];
+		$rss_sub_description = $row["rss_sub_description"];
 		$rss_sub_optional_1 = $row["rss_sub_optional_1"];
 		$rss_sub_optional_2 = $row["rss_sub_optional_2"];
 		$rss_sub_optional_3 = $row["rss_sub_optional_3"];
@@ -161,7 +161,7 @@ else {
 	echo "	<tr>";
 	echo "		<td valign='top'>Description:</td>";
 	echo "		<td>";
-	echo "            <textarea name='rss_sub_desc' rows='12' class='txt'>$rss_sub_desc</textarea>";
+	echo "            <textarea name='rss_sub_description' rows='12' class='txt'>$rss_sub_description</textarea>";
 	echo "        </td>";
 	echo "	</tr>";
 	//echo "	<tr>";

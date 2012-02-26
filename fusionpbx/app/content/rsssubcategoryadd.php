@@ -39,7 +39,7 @@ if (count($_POST)>0) {
 	$rss_sub_category_uuid = uuid();
 	$rss_category = check_str($_POST["rss_category"]);
 	$rss_sub_category = check_str($_POST["rss_sub_category"]);
-	$rss_sub_category_desc = check_str($_POST["rss_sub_category_desc"]);
+	$rss_sub_category_description = check_str($_POST["rss_sub_category_description"]);
 	$rss_add_user = check_str($_POST["rss_add_user"]);
 	$rss_add_date = check_str($_POST["rss_add_date"]);
 	
@@ -49,7 +49,7 @@ if (count($_POST)>0) {
 	$sql .= "rss_sub_category_uuid, ";
 	$sql .= "rss_category, ";
 	$sql .= "rss_sub_category, ";
-	$sql .= "rss_sub_category_desc, ";
+	$sql .= "rss_sub_category_description, ";
 	$sql .= "rss_add_user, ";
 	$sql .= "rss_add_date ";
 	$sql .= ")";
@@ -59,7 +59,7 @@ if (count($_POST)>0) {
 	$sql .= "'$rss_sub_category_uuid', ";
 	$sql .= "'$rss_category', ";
 	$sql .= "'$rss_sub_category', ";
-	$sql .= "'$rss_sub_category_desc', ";
+	$sql .= "'$rss_sub_category_description', ";
 	$sql .= "'$rss_add_user', ";
 	$sql .= "'$rss_add_date' ";
 	$sql .= ")";
@@ -91,8 +91,8 @@ echo "		<td>rss_sub_category:</td>";
 echo "		<td><input type='text' name='rss_sub_category'></td>";
 echo "	</tr>";
 echo "	<tr>";
-echo "		<td>rss_sub_category_desc:</td>";
-echo "		<td><input type='text' name='rss_sub_category_desc'></td>";
+echo "		<td>rss_sub_category_description:</td>";
+echo "		<td><input type='text' name='rss_sub_category_description'></td>";
 echo "	</tr>";
 echo "	<tr>";
 echo "		<td>rss_add_user:</td>";

@@ -46,7 +46,7 @@ else {
 //get the http post variables and set them to php variables
 	if (count($_POST)>0) {
 		$broadcast_name = check_str($_POST["broadcast_name"]);
-		$broadcast_desc = check_str($_POST["broadcast_desc"]);
+		$broadcast_description = check_str($_POST["broadcast_description"]);
 		$broadcast_timeout = check_str($_POST["broadcast_timeout"]);
 		$broadcast_concurrent_limit = check_str($_POST["broadcast_concurrent_limit"]);
 		$recording_uuid = check_str($_POST["recording_uuid"]);
@@ -66,7 +66,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
 		if (strlen($broadcast_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
-		//if (strlen($broadcast_desc) == 0) { $msg .= "Please provide: Description<br>\n"; }
+		//if (strlen($broadcast_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		//if (strlen($broadcast_timeout) == 0) { $msg .= "Please provide: Timeout<br>\n"; }
 		//if (strlen($broadcast_concurrent_limit) == 0) { $msg .= "Please provide: Concurrent Limit<br>\n"; }
 		//if (strlen($recording_uuid) == 0) { $msg .= "Please provide: Recording<br>\n"; }
@@ -97,7 +97,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "domain_uuid, ";
 			$sql .= "broadcast_uuid, ";
 			$sql .= "broadcast_name, ";
-			$sql .= "broadcast_desc, ";
+			$sql .= "broadcast_description, ";
 			$sql .= "broadcast_timeout, ";
 			$sql .= "broadcast_concurrent_limit, ";
 			$sql .= "recording_uuid, ";
@@ -112,7 +112,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$domain_uuid', ";
 			$sql .= "'$broadcast_uuid', ";
 			$sql .= "'$broadcast_name', ";
-			$sql .= "'$broadcast_desc', ";
+			$sql .= "'$broadcast_description', ";
 			if (strlen($broadcast_timeout) == 0) {
 				$sql .= "null, ";
 			}
@@ -147,7 +147,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "update" && permission_exists('call_broadcast_edit')) {
 			$sql = "update v_call_broadcasts set ";
 			$sql .= "broadcast_name = '$broadcast_name', ";
-			$sql .= "broadcast_desc = '$broadcast_desc', ";
+			$sql .= "broadcast_description = '$broadcast_description', ";
 			if (strlen($broadcast_timeout) == 0) {
 				$sql .= "broadcast_timeout = null, ";
 			}
@@ -193,7 +193,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement->execute();
 		while($row = $prep_statement->fetch()) {
 			$broadcast_name = $row["broadcast_name"];
-			$broadcast_desc = $row["broadcast_desc"];
+			$broadcast_description = $row["broadcast_description"];
 			$broadcast_timeout = $row["broadcast_timeout"];
 			$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
 			$recording_uuid = $row["recording_uuid"];
@@ -374,7 +374,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	Description:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='broadcast_desc' maxlength='255' value=\"$broadcast_desc\">\n";
+	echo "	<input class='formfld' type='text' name='broadcast_description' maxlength='255' value=\"$broadcast_description\">\n";
 	echo "<br />\n";
 	echo "Enter a description here.\n";
 	echo "</td>\n";
