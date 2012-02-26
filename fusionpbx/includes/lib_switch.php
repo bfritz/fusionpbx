@@ -159,7 +159,6 @@ foreach($settings_array as $name => $value) {
 		}
 	}
 
-
 //get the extensions that are assigned to this user
 	if (strlen($_SESSION["username"]) > 0 && count($_SESSION['user']['extension']) == 0) {
 		//get the user extension list

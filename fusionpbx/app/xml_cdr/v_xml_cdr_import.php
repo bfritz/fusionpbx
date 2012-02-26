@@ -161,7 +161,7 @@ function process_xml_cdr($db, $leg, $xml_string) {
 			$sql = "select domain_name, domain_uuid from v_domains ";
 			$row = $db->query($sql)->fetch();
 			$domain_uuid = $row['domain_uuid'];
-			if (strlen($domain_name) == 0) { $domain_name = $uuid." ".$row['domain_name']; }
+			if (strlen($domain_name) == 0) { $domain_name = $row['domain_name']; }
 		}
 		$database->domain_uuid = $domain_uuid;
 		$database->fields['domain_uuid'] = $domain_uuid;
