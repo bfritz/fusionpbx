@@ -46,44 +46,38 @@ include "root.php";
 					include "includes/config.php";
 
 				//set defaults
-					if (strlen($dbtype) > 0) { 
-						$db_type = $dbtype; 
-					}
-					if (strlen($dbhost) > 0) { 
-						$db_host = $dbhost; 
-					}
-					if (strlen($dbport) > 0) { 
-						$db_port = $dbport; 
-					}
-					if (strlen($dbname) > 0) { 
-						$db_name = $dbname; 
-					}
-					if (strlen($dbusername) > 0) { 
-						$db_username = $dbusername; 
-					}
-					if (strlen($dbpassword) > 0) { 
-						$db_password = $dbpassword; 
-					}
-					if (strlen($dbfilepath) > 0) { 
-						$db_path = $dbfilepath; 
-					}
-					if (strlen($dbfilename) > 0) { 
-						$db_name = $dbfilename; 
-					}
+					$this->db_type = $db_type;
+					$this->db_host = $db_host;
+					$this->db_port = $db_port;
+					$this->db_name = $db_name;
+					$this->db_username = $db_username;
+					$this->db_password = $db_password;
+					$this->db_path = $db_path;
+					$this->db_name = $db_name;
 
-				if ($db_type == "sqlite") {
-					if (strlen($db_name) == 0) {
+				//backwards compatibility
+					if (strlen($dbtype) > 0) { $db_type = $dbtype; }
+					if (strlen($dbhost) > 0) { $db_host = $dbhost; }
+					if (strlen($dbport) > 0) { $db_port = $dbport; }
+					if (strlen($dbname) > 0) { $db_name = $dbname; }
+					if (strlen($dbusername) > 0) { $db_username = $dbusername; }
+					if (strlen($dbpassword) > 0) { $db_password = $dbpassword; }
+					if (strlen($dbfilepath) > 0) { $db_path = $dbfilepath; }
+					if (strlen($dbfilename) > 0) { $db_name = $dbfilename; }
+
+				if ($this->db_type == "sqlite") {
+					if (strlen($this->db_name) == 0) {
 						$server_name = $_SERVER["SERVER_NAME"];
 						$server_name = str_replace ("www.", "", $server_name);
 						$db_name_short = $server_name;
-						$db_name = $server_name.'.db';
+						$this->db_name = $server_name.'.db';
 					}
 					else {
-						$db_name_short = $db_name;
+						$db_name_short = $this->db_name;
 					}
-					$db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
-					$db_path = realpath($db_path);
-					if (file_exists($db_path.'/'.$db_name)) {
+					$this->db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+					$this->db_path = realpath($this->db_path);
+					if (file_exists($this->db_path.'/'.$this->db_name)) {
 						//echo "main file exists<br>";
 					}
 					else {
@@ -92,7 +86,7 @@ include "root.php";
 						try {
 							//$db = new PDO('sqlite2:example.db'); //sqlite 2
 							//$db = new PDO('sqlite::memory:'); //sqlite 3
-							$db = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
+							$db = new PDO('sqlite:'.$this->db_path.'/'.$this->db_name); //sqlite 3
 							$db->beginTransaction();
 						}
 						catch (PDOException $error) {
@@ -118,19 +112,19 @@ include "root.php";
 						unset ($file_contents, $sql);
 						$db->commit();
 
-						if (is_writable($db_path.'/'.$db_name)) {
+						if (is_writable($this->db_path.'/'.$this->db_name)) {
 							//is writable - use database in current location
 						}
 						else { 
 							//not writable
-							echo "The database ".$db_path."/".$db_name." is not writeable.";
+							echo "The database ".$this->db_path."/".$this->db_name." is not writeable.";
 							exit;
 						}
 					}
 					try {
 						//$db = new PDO('sqlite2:example.db'); //sqlite 2
 						//$db = new PDO('sqlite::memory:'); //sqlite 3
-						$this->db = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
+						$this->db = new PDO('sqlite:'.$this->db_path.'/'.$this->db_name); //sqlite 3
 
 						//add additional functions to SQLite so that they are accessible inside SQL
 						//bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
@@ -146,7 +140,7 @@ include "root.php";
 					}
 				}
 
-				if ($db_type == "mysql") {
+				if ($this->db_type == "mysql") {
 					try {
 						//required for mysql_real_escape_string
 							if (function_exists(mysql_connect)) {
@@ -155,7 +149,7 @@ include "root.php";
 						//mysql pdo connection
 							if (strlen($this->db_host) == 0 && strlen($this->db_port) == 0) {
 								//if both host and port are empty use the unix socket
-								$db = new PDO("mysql:host=$this->db_host;unix_socket=/var/run/mysqld/mysqld.sock;dbname=$this->db_name", $db_username, $db_password);
+								$db = new PDO("mysql:host=$this->db_host;unix_socket=/var/run/mysqld/mysqld.sock;dbname=$this->db_name", $this->db_username, $this->db_password);
 							}
 							else {
 								if (strlen($this->db_port) == 0) {
@@ -180,7 +174,7 @@ include "root.php";
 					}
 				}
 
-				if ($db_type == "pgsql") {
+				if ($this->db_type == "pgsql") {
 					//database connection
 					try {
 						if (strlen($this->db_host) > 0) {
