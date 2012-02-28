@@ -3400,13 +3400,11 @@ function save_dialplan_xml() {
 
 			$dialplan_filename = $dialplan_order."_v_dialplan_".$dialplan_name.".xml";
 			if (strlen($row['dialplan_context']) > 0) {
-				if (!is_dir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'])) { 
-					mkdir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'],0644,true);
+				if (!is_dir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'])) {
+					mkdir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'],0755,true);
 				}
-				$fout = fopen($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename,"w");
+				file_put_contents($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename, $tmp);
 			}
-			fwrite($fout, $tmp);
-			fclose($fout);
 
 			unset($dialplan_filename);
 			unset($tmp);
