@@ -40,7 +40,6 @@ if ($_GET['a'] == "default" && permission_exists('dialplan_advanced_edit')) {
 	require_once "includes/classes/dialplan.php";
 	$dialplan = new dialplan;
 	$dialplan->domain_uuid = $_SESSION['domain_uuid'];
-	$dialplan->domain_name = $_SESSION['domain_name'];
 	$dialplan->switch_dialplan_dir = $_SESSION['switch']['dialplan']['dir'];
 	$dialplan->restore_advanced_xml();
 	//print_r($dialplan->result);
@@ -93,7 +92,7 @@ function sf() { document.forms[0].savetopath.focus(); }
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
    <tr>
      <td class="" >
-		<form action="dialplans.php" method="post" name="iform" id="iform">
+		<form action="dialplan_advanced.php" method="post" name="iform" id="iform">
 			<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			  <tr>
 				<td align='left' width='100%'><span class="vexpl"><span class="red"><strong>Default Dialplan<br>
@@ -125,7 +124,7 @@ function sf() { document.forms[0].savetopath.focus(); }
 					<input type='hidden' name='a' value='save' />
 					<?php
 					if (permission_exists('dialplan_advanced_edit')) {
-						echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='dialplans.php?a=default&f=default.xml';\" />";
+						echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='dialplan_advanced.php?a=default&f=default.xml';\" />";
 					}
 					?>
 				</td>
