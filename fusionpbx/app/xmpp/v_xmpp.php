@@ -40,7 +40,7 @@ require_once "includes/paging.php";
 
 if ($_SESSION['db_tables']['v_xmpp'] != 'valid') {
 	if ($db_type == "pgsql") {
-		$sql = "select count(*) from pg_tables where schemaname='public' and table_name = 'v_xmpp'";
+		$sql = "select count(*) from pg_tables where schemaname='public' and table_name = 'v_xmpp';";
 	} elseif ($db_type == "mysql") {
 		$sql = "select count(*) as count from information_schema.tables where TABLE_SCHEMA='" . $db_name . "' and TABLE_NAME='roomlist';";
 	} elseif ($db_type == "sqlite") {
