@@ -196,7 +196,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//if the user_context was not set then set the default value
 			if (strlen($user_context) == 0) { 
 				if (count($_SESSION["domains"]) > 1) {
-					$user_context = $domain_name;
+					$user_context = $_SESSION['domain_name'];
 				}
 				else {
 					$user_context = "default";
@@ -310,7 +310,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					if (strlen($mwi_account) > 0) {
 						if (strpos($mwi_account, '@') === false) {
 							if (count($_SESSION["domains"]) > 1) {
-								$mwi_account .= "@".$domain_name;
+								$mwi_account .= "@".$_SESSION['domain_name'];
 							}
 							else {
 								$mwi_account .= "@\$\${domain}";
@@ -435,7 +435,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if (strlen($mwi_account) > 0) {
 				if (strpos($mwi_account, '@') === false) {
 					if (count($_SESSION["domains"]) > 1) {
-						$mwi_account .= "@".$domain_name;
+						$mwi_account .= "@".$_SESSION['domain_name'];
 					}
 					else {
 						$mwi_account .= "@\$\${domain}";
@@ -1000,7 +1000,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (if_group("superadmin")) {
 		if (strlen($user_context) == 0) { 
 			if (count($_SESSION["domains"]) > 1) {
-				$user_context = $domain_name;
+				$user_context = $_SESSION['domain_name'];
 			}
 			else {
 				$user_context = "default";

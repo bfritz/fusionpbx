@@ -50,7 +50,7 @@ if ($fp) {
 		if ($_GET["a"] == "stop") {
 			$gateway_name = $_GET["gateway"];
 			if (count($_SESSION["domains"]) > 1) {
-				$cmd = 'api sofia profile '.$profile.' killgw '.$domain_name.'-'.$gateway_name;
+				$cmd = 'api sofia profile '.$profile.' killgw '.$_SESSION['domain_name'].'-'.$gateway_name;
 			}
 			else {
 				$cmd = 'api sofia profile '.$profile.' killgw '.$gateway_name;
@@ -68,10 +68,9 @@ if ($fp) {
 
 	if (!function_exists('switch_gateway_status')) {
 		function switch_gateway_status($gateway_name, $result_type = 'xml') {
-			global $domain_name;
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			if (count($_SESSION["domains"]) > 1) {
-				$cmd = 'api sofia xmlstatus gateway '.$domain_name.'-'.$gateway_name;
+				$cmd = 'api sofia xmlstatus gateway '.$_SESSION['domain_name'].'-'.$gateway_name;
 			}
 			else {
 				$cmd = 'api sofia xmlstatus gateway '.$gateway_name;

@@ -82,7 +82,7 @@ else {
 
 //set the fax directory
 	if (count($_SESSION["domains"]) > 1) {
-		$v_fax_dir = $_SESSION['switch']['storage']['dir'].'/fax/'.$domain_name;
+		$v_fax_dir = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domain_name'];
 	}
 	else {
 		$v_fax_dir = $_SESSION['switch']['storage']['dir'].'/fax';
@@ -272,7 +272,7 @@ else {
 					$fax_file = $dir_fax_temp."/".$fax_name.".tif";
 					if (count($route_array) == 0) {
 						//send the internal call to the registered extension
-							$fax_uri = "user/".$fax_number."@".$domain_name;
+							$fax_uri = "user/".$fax_number."@".$_SESSION['domain_name'];
 					}
 					else {
 						//send the external call

@@ -100,7 +100,7 @@ require_once "includes/checkauth.php";
 
 					//remove unrelated domains
 						if (count($_SESSION["domains"]) > 1 && !permission_exists('registrations_all')) {
-							if ($registrations[$x]['domain'] != $domain_name) {
+							if ($registrations[$x]['domain'] != $_SESSION['domain_name']) {
 								unset($registrations[$x]);
 							}
 						}

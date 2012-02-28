@@ -76,9 +76,9 @@ else {
 			$name = $row['name'];
 			$member_count = $row['member-count'];
 		//show the conferences that have a matching domain
-			$tmp_domain = substr($name, -strlen($domain_name));
-			if ($tmp_domain == $domain_name) {
-				$conference_name = substr($name, 0, strlen($name) - strlen('-'.$domain_name));
+			$tmp_domain = substr($name, -strlen($_SESSION['domain_name']));
+			if ($tmp_domain == $_SESSION['domain_name']) {
+				$conference_name = substr($name, 0, strlen($name) - strlen('-'.$_SESSION['domain_name']));
 				$conference_display_name = str_replace("-", " ", $conference_name);
 				$conference_display_name = str_replace("_", " ", $conference_display_name);
 

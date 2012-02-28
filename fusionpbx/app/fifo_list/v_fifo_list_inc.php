@@ -101,7 +101,7 @@ if ($fp) {
 		}
 		else {
 			//show only the fifo queues that match the domain_name
-				if (stripos($name, $domain_name) !== false) {
+				if (stripos($name, $_SESSION['domain_name']) !== false) {
 					echo "<tr>\n";
 					echo "<td valign='top' class='".$row_style[$c]."'>".$tmp_name."</td>\n";
 					echo "<td valign='top' class='".$row_style[$c]."'>".$consumer_count."</td>\n";

@@ -45,7 +45,7 @@ else {
 		$uuid = $_GET["uuid"];
 		$sql = "";
 		$sql .= "select * from voicemail_msgs ";
-		$sql .= "where domain = '$domain_name' ";
+		$sql .= "where domain = '".$_SESSION['domain_name']."' ";
 		$sql .= "and uuid = '$uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -181,7 +181,7 @@ else {
 				$sql = "";
 				$sql .= "select * from voicemail_msgs ";
 				if (count($_SESSION['domains']) > 1) {
-					$sql .= "where domain = '$domain_name' ";
+					$sql .= "where domain = '".$_SESSION['domain_name']."' ";
 					$sql .= "and username = '".$value['user']."' ";
 				}
 				else {

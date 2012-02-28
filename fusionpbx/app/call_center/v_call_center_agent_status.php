@@ -92,7 +92,7 @@ require_once "includes/paging.php";
 							//$dnd->debug = false;
 							$dnd->domain_uuid = $domain_uuid;
 							$dnd->dnd_uuid = $dnd_uuid;
-							$dnd->domain_name = $domain_name;
+							$dnd->domain_name = $_SESSION['domain_name'];
 							$dnd->extension = $extension;
 							if ($row['status'] == "Do Not Disturb") {
 								$dnd->dnd_enabled = "true";
@@ -133,7 +133,7 @@ require_once "includes/paging.php";
 			}
 		} else {
 			$tmp = explode('@',$row["name"]);
-			if ($tmp[1] == $domain_name) {
+			if ($tmp[1] == $_SESSION['domain_name']) {
 				//get the extension status from the call center agent list
 				preg_match('/user\/(\d{2,7})/', $row['contact'], $matches);
 				$extension = $matches[1];
@@ -184,7 +184,7 @@ require_once "includes/paging.php";
 	foreach($agent_array as $row) {
 		$tmp = explode('@',$row["name"]);
 		$agent_name = $tmp[0];
-		if ($tmp[1] == $domain_name) {
+		if ($tmp[1] == $_SESSION['domain_name']) {
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['name']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['status']."&nbsp;</td>\n";			

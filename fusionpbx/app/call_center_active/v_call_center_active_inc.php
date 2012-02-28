@@ -230,9 +230,9 @@ else {
 				echo "</tr>\n";
 				foreach ($tier_result as $tier_row) {
 					//$queue = $tier_row['queue'];
-					//$queue = str_replace('@'.$domain_name, '', $queue);
+					//$queue = str_replace('@'.$_SESSION['domain_name'], '', $queue);
 					$agent = $tier_row['agent'];
-					//$agent = str_replace('@'.$domain_name, '', $agent);
+					//$agent = str_replace('@'.$_SESSION['domain_name'], '', $agent);
 					$tier_state = $tier_row['state'];
 					$tier_level = $tier_row['level'];
 					$tier_position = $tier_row['position'];
@@ -240,7 +240,7 @@ else {
 					foreach ($agent_result as $agent_row) {
 						if ($tier_row['agent'] == $agent_row['name']) {
 							$name = $agent_row['name'];
-							$name = str_replace('@'.$domain_name, '', $name);
+							$name = str_replace('@'.$_SESSION['domain_name'], '', $name);
 							//$system = $agent_row['system'];
 							//$uuid = $agent_row['uuid'];
 							//$type = $agent_row['type'];

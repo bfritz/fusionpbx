@@ -39,8 +39,8 @@ if ($_GET['a'] == "default" && permission_exists('dialplan_advanced_edit')) {
 	//create the dialplan/default.xml for single tenant or dialplan/domain.xml
 	require_once "includes/classes/dialplan.php";
 	$dialplan = new dialplan;
-	$dialplan->domain_uuid = $domain_uuid;
-	$dialplan->domain_name = $domain_name;
+	$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+	$dialplan->domain_name = $_SESSION['domain_name'];
 	$dialplan->switch_dialplan_dir = $_SESSION['switch']['dialplan']['dir'];
 	$dialplan->restore_advanced_xml();
 	//print_r($dialplan->result);
@@ -48,8 +48,8 @@ if ($_GET['a'] == "default" && permission_exists('dialplan_advanced_edit')) {
 
 if ($_POST['a'] == "save" && permission_exists('dialplan_advanced_edit')) {
 	$v_content = str_replace("\r","",$_POST['code']);
-	if (file_exists($_SESSION['switch']['dialplan']['dir']."/$domain_name.xml")) {
-		$fd = fopen($_SESSION['switch']['dialplan']['dir']."/$domain_name.xml", "w");
+	if (file_exists($_SESSION['switch']['dialplan']['dir']."/".$_SESSION['domain_name'].".xml")) {
+		$fd = fopen($_SESSION['switch']['dialplan']['dir']."/".$_SESSION['domain_name'].".xml", "w");
 	}
 	else {
 		$fd = fopen($_SESSION['switch']['dialplan']['dir']."/default.xml", "w");
@@ -59,9 +59,9 @@ if ($_POST['a'] == "save" && permission_exists('dialplan_advanced_edit')) {
 	$savemsg = "Saved";
 }
 
-if (file_exists($_SESSION['switch']['dialplan']['dir']."/$domain_name.xml")) {
-	$fd = fopen($_SESSION['switch']['dialplan']['dir']."/$domain_name.xml", "r");
-	$v_content = fread($fd, filesize($_SESSION['switch']['dialplan']['dir']."/$domain_name.xml"));
+if (file_exists($_SESSION['switch']['dialplan']['dir']."/".$_SESSION['domain_name'].".xml")) {
+	$fd = fopen($_SESSION['switch']['dialplan']['dir']."/".$_SESSION['domain_name'].".xml", "r");
+	$v_content = fread($fd, filesize($_SESSION['switch']['dialplan']['dir']."/".$_SESSION['domain_name'].".xml"));
 }
 else {
 	$fd = fopen($_SESSION['switch']['dialplan']['dir']."/default.xml", "r");

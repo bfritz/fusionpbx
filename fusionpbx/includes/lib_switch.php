@@ -552,21 +552,21 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			foreach ($call_group_array as $call_group) {
 				$call_group = trim($call_group);
 				if ($previous_call_group_name != $call_group) {
-					if ("menu-exec-app:bridge group/".$call_group."@".$domain_name == $select_value || "bridge:group/".$call_group."@".$domain_name == $select_value) {
+					if ("menu-exec-app:bridge group/".$call_group."@".$_SESSION['domain_name'] == $select_value || "bridge:group/".$call_group."@".$_SESSION['domain_name'] == $select_value) {
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$domain_name."' selected='selected'>".$call_group."</option>\n";
+							echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$_SESSION['domain_name']."' selected='selected'>".$call_group."</option>\n";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='bridge:group/".$call_group."@".$domain_name."' selected='selected'>".$call_group."</option>\n";
+							echo "		<option value='bridge:group/".$call_group."@".$_SESSION['domain_name']."' selected='selected'>".$call_group."</option>\n";
 						}
 						$selection_found = true;
 					}
 					else {
 						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$domain_name."'>".$call_group."</option>\n";
+							echo "		<option value='menu-exec-app:bridge group/".$call_group."@".$_SESSION['domain_name']."'>".$call_group."</option>\n";
 						}
 						if ($select_type == "dialplan") {
-							echo "		<option value='bridge:group/".$call_group."@".$domain_name."'>".$call_group."</option>\n";
+							echo "		<option value='bridge:group/".$call_group."@".$_SESSION['domain_name']."'>".$call_group."</option>\n";
 						}
 					}
 					$previous_call_group_name = $call_group;
@@ -1851,7 +1851,7 @@ function save_gateway_xml() {
 
 	// delete all old gateways to prepare for new ones
 		if (count($_SESSION["domains"]) > 1) {
-			$v_needle = 'v_'.$domain_name.'-';
+			$v_needle = 'v_'.$_SESSION['domain_name'].'-';
 		}
 		else {
 			$v_needle = 'v_';
@@ -1891,9 +1891,9 @@ function save_gateway_xml() {
 						$profile = "external";
 					}
 				if (count($_SESSION["domains"]) > 1) {
-					$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$domain_name .'-'.$gateway.".xml","w");
+					$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$_SESSION['domain_name'].'-'.$gateway.".xml","w");
 					$tmp_xml .= "<include>\n";
-					$tmp_xml .= "    <gateway name=\"" . $domain_name .'-'. $gateway . "\">\n";
+					$tmp_xml .= "    <gateway name=\"". $_SESSION['domain_name'] .'-'. $gateway . "\">\n";
 				}
 				else {
 					$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$gateway.".xml","w");
@@ -2890,7 +2890,7 @@ function save_fax_xml() {
 					$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
 					$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
 					$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-					$dialplan_detail_data .= "domain=".$domain_name." ";
+					$dialplan_detail_data .= "domain=".$_SESSION['domain_name']." ";
 					$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
 					$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 
@@ -3010,7 +3010,7 @@ function save_fax_xml() {
 				$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
 				$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
 				$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-				$dialplan_detail_data .= "domain=".$domain_name." ";
+				$dialplan_detail_data .= "domain=".$_SESSION['domain_name']." ";
 				$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
 				$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 				$sql = "";
@@ -3670,7 +3670,7 @@ if (!function_exists('save_ivr_menu_xml')) {
 
 		//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
 			if (count($_SESSION["domains"]) > 1) {
-				$v_needle = 'v_'.$domain_name.'_';
+				$v_needle = 'v_'.$_SESSION['domain_name'].'_';
 			}
 			else {
 				$v_needle = 'v_';

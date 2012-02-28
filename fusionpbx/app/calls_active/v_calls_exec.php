@@ -85,31 +85,31 @@ if (count($_GET)>0) {
 		case "Available":
 			$user_status = "Available";
 			//update the user state
-			$cmd = "api callcenter_config agent set state ".$username."@".$domain_name." Waiting";
+			$cmd = "api callcenter_config agent set state ".$username."@".$_SESSION['domain_name']." Waiting";
 			$response = event_socket_request($fp, $cmd);
 			break;
 		case "Available_On_Demand":
 			$user_status = "Available (On Demand)";
 			//update the user state
-			$cmd = "api callcenter_config agent set state ".$username."@".$domain_name." Waiting";
+			$cmd = "api callcenter_config agent set state ".$username."@".$_SESSION['domain_name']." Waiting";
 			$response = event_socket_request($fp, $cmd);
 			break;
 		case "Logged_Out":
 			$user_status = "Logged Out";
 			//update the user state
-			$cmd = "api callcenter_config agent set state ".$username."@".$domain_name." Waiting";
+			$cmd = "api callcenter_config agent set state ".$username."@".$_SESSION['domain_name']." Waiting";
 			$response = event_socket_request($fp, $cmd);
 			break;
 		case "On_Break":
 			$user_status = "On Break";
 			//update the user state
-			$cmd = "api callcenter_config agent set state ".$username."@".$domain_name." Waiting";
+			$cmd = "api callcenter_config agent set state ".$username."@".$_SESSION['domain_name']." Waiting";
 			$response = event_socket_request($fp, $cmd);
 			break;
 		case "Do_Not_Disturb":
 			$user_status = "Do Not Disturb";
 			//update the user state
-			$cmd = "api callcenter_config agent set state ".$username."@".$domain_name." Waiting";
+			$cmd = "api callcenter_config agent set state ".$username."@".$_SESSION['domain_name']." Waiting";
 			$response = event_socket_request($fp, $cmd);
 			break;
 		default:
@@ -155,7 +155,7 @@ if (count($_GET)>0) {
 						$dnd = new do_not_disturb;
 						$dnd->domain_uuid = $domain_uuid;
 						$dnd->dnd_uuid = $dnd_uuid;
-						$dnd->domain_name = $domain_name;
+						$dnd->domain_name = $_SESSION['domain_name'];
 						$dnd->extension = $extension;
 						if ($user_status == "Do Not Disturb") {
 							$dnd->dnd_enabled = "true";

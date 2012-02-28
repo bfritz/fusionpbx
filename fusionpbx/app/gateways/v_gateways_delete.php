@@ -55,7 +55,7 @@ if (strlen($_GET["id"])>0) {
 
 	//delete the xml file
 		if (count($_SESSION["domains"]) > 1) {
-			$gateway_xml_file = $_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$domain_name .'-'.$gateway.".xml";
+			$gateway_xml_file = $_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$_SESSION['domain_name'].'-'.$gateway.".xml";
 		}
 		else {
 			$gateway_xml_file = $_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$gateway.".xml";
@@ -69,7 +69,7 @@ if (strlen($_GET["id"])>0) {
 		if ($fp) {
 			//send the api gateway stop command over event socket
 				if (count($_SESSION["domains"]) > 1) {
-					$tmp_cmd = 'api sofia profile external killgw '.$domain_name.'-'.$gateway;
+					$tmp_cmd = 'api sofia profile external killgw '.$_SESSION['domain_name'].'-'.$gateway;
 				}
 				else {
 					$tmp_cmd = 'api sofia profile external killgw '.$gateway;
