@@ -873,21 +873,21 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			if (count($_SESSION["domains"]) > 1) {
 				$extension_name =  $_SESSION['domains'][$row['domain_uuid']]['domain_name'].'-'.$extension_name;
 			}
-			if ("ivr:".$extension_name."" == $select_value || "ivr $extension_name" == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
+			if ("ivr:".$extension_name."" == $select_value || "ivr ".$extension_name == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value) {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:ivr $extension_name' selected='selected'>".$extension." ".$extension_label."</option>\n";
+					echo "		<option value='menu-exec-app:transfer ".$extension_name." XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$extension_label."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='ivr:$extension_name' selected='selected'>".$extension." ".$extension_label."</option>\n";
+					echo "		<option value='transfer:".$extension_name." XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$extension_label."</option>\n";
 				}
 				$selection_found = true;
 			}
 			else {
 				if ($select_type == "ivr") {
-					echo "		<option value='menu-exec-app:ivr $extension_name'>".$extension." ".$extension_label."</option>\n";
+					echo "		<option value='menu-exec-app:transfer ".$extension_name." XML ".$_SESSION["context"]."'>".$extension." ".$extension_label."</option>\n";
 				}
 				if ($select_type == "dialplan") {
-					echo "		<option value='ivr:$extension_name'>".$extension." ".$extension_label."</option>\n";
+					echo "		<option value='transfer:".$extension." XML ".$_SESSION["context"]."'>".$extension." ".$extension_label."</option>\n";
 				}
 			}
 		}
@@ -3400,6 +3400,9 @@ function save_dialplan_xml() {
 
 			$dialplan_filename = $dialplan_order."_v_dialplan_".$dialplan_name.".xml";
 			if (strlen($row['dialplan_context']) > 0) {
+				if (!is_dir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'])) { 
+					mkdir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'],0644,true);
+				}
 				$fout = fopen($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename,"w");
 			}
 			fwrite($fout, $tmp);
