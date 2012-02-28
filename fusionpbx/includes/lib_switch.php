@@ -550,6 +550,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$call_groups = $row["call_group"];
 			$call_group_array = explode(",", $call_groups);
 			foreach ($call_group_array as $call_group) {
+				$call_group = trim($call_group);
 				if ($previous_call_group_name != $call_group) {
 					if ("menu-exec-app:bridge group/".$call_group."@".$domain_name == $select_value || "bridge:group/".$call_group."@".$domain_name == $select_value) {
 						if ($select_type == "ivr") {
@@ -1583,6 +1584,7 @@ function save_extension_xml() {
 			$call_group = str_replace(";", ",", $call_group);
 			$tmp_array = explode(",", $call_group);
 			foreach ($tmp_array as &$tmp_call_group) {
+				$tmp_call_group = trim($tmp_call_group);
 				if (strlen($tmp_call_group) > 0) {
 					if (strlen($call_group_array[$tmp_call_group]) == 0) {
 						$call_group_array[$tmp_call_group] = $row['extension'];
@@ -1778,8 +1780,8 @@ function save_extension_xml() {
 		$tmp_xml .= "\n";
 		$previous_call_group = "";
 		foreach ($call_group_array as $key => $value) {
-			$call_group = $key;
-			$extension_list = $value;
+			$call_group = trim($key);
+			$extension_list = trim($value);
 			if (strlen($call_group) > 0) {
 				if ($previous_call_group != $call_group) {
 					$tmp_xml .= "			<group name=\"$call_group\">\n";

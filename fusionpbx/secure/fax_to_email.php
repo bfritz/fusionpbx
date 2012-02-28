@@ -35,9 +35,11 @@ if (defined('STDIN')) {
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
 }
 
-//include the config.php
+//includes
 	if (!defined('STDIN')) { include "root.php"; }
 	require_once "includes/require.php";
+	include "class.phpmailer.php";
+	include "class.smtp.php"; // optional, gets called from within class.phpmailer.php if not already loaded
 
 //set php ini values
 	ini_set(max_execution_time,900); //15 minutes
@@ -211,10 +213,6 @@ if (defined('STDIN')) {
 
 //send the email
 	if (strlen($fax_email) > 0 && file_exists($dir_fax."/".$fax_name.".tif")) {
-		//includes
-			include "class.phpmailer.php";
-			include "class.smtp.php"; // optional, gets called from within class.phpmailer.php if not already loaded
-
 		//prepare the message
 			$tmp_subject = "Fax Received: ".$fax_name;
 			$tmp_text_plain  = "\nFax Received:\n";
@@ -254,7 +252,7 @@ if (defined('STDIN')) {
 			foreach($tmp_to_array as $tmp_to_row) {
 				if (strlen($tmp_to_row) > 0) {
 					echo "tmp_to_row: $tmp_to_row\n";
-					$mail->AddAddress($tmp_to_row);
+					$mail->AddAddress(trim($tmp_to_row));
 				}
 			}
 

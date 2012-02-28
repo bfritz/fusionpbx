@@ -156,7 +156,7 @@ include "v_config_cli.php";
 		foreach($to_array as $to_row) {
 			if (strlen($to_row) > 0) {
 				echo "Add Address: $to_row\n";
-				$mail->AddAddress($to_row);
+				$mail->AddAddress(trim($to_row));
 			}
 		}
 	}
