@@ -118,6 +118,9 @@ include "root.php";
 
 		public function count() {
 			$database = new database;
+			if ($this->db) {
+				$database->db = $this->db;
+			}
 			$database->domain_uuid = $this->domain_uuid;
 			$database->table = "v_ivr_menus";
 			$database->where[0]['name'] = 'domain_uuid';
@@ -128,6 +131,9 @@ include "root.php";
 
 		public function find() {
 			$database = new database;
+			if ($this->db) {
+				$database->db = $this->db;
+			}
 			$database->table = "v_ivr_menus";
 			$database->where[0]['name'] = 'domain_uuid';
 			$database->where[0]['value'] = $this->domain_uuid;
@@ -159,6 +165,9 @@ include "root.php";
 					if (strlen($this->ivr_menu_extension) > 0) {
 						//add the dialplan
 							$database = new database;
+							if ($this->db) {
+								$database->db = $this->db;
+							}
 							$database->table = "v_dialplans";
 							$database->fields['domain_uuid'] = $this->domain_uuid;
 							$database->fields['dialplan_uuid'] = $this->dialplan_uuid;
@@ -243,6 +252,9 @@ include "root.php";
 					//add the ivr menu
 						$ivr_menu_uuid = uuid();
 						$database = new database;
+						if ($this->db) {
+							$database->db = $this->db;
+						}
 						$database->table = "v_ivr_menus";
 						$database->fields['domain_uuid'] = $this->domain_uuid;
 						if (strlen($this->ivr_menu_extension) > 0) {
@@ -279,6 +291,9 @@ include "root.php";
 				if (strlen($this->ivr_menu_option_action) > 0) {
 					$ivr_menu_uuid = uuid();
 					$database = new database;
+					if ($this->db) {
+						$database->db = $this->db;
+					}
 					$database->table = "v_ivr_menu_options";
 					$database->fields['domain_uuid'] = $this->domain_uuid;
 					$database->fields['ivr_menu_uuid'] = $this->ivr_menu_uuid;
@@ -298,6 +313,9 @@ include "root.php";
 				if (strlen($this->ivr_menu_option_action) == 0) {
 					//get the dialplan uuid
 						$database = new database;
+						if ($this->db) {
+							$database->db = $this->db;
+						}
 						$database->table = "v_ivr_menus";
 						$database->where[0]['name'] = 'domain_uuid';
 						$database->where[0]['value'] = $this->domain_uuid;
@@ -509,7 +527,9 @@ include "root.php";
 		function delete() {
 			//create the database object
 				$database = new database;
-
+				if ($this->db) {
+					$database->db = $this->db;
+				}
 			//start the transaction
 				//$count = $database->db->exec("BEGIN;");
 

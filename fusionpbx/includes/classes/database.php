@@ -28,7 +28,7 @@ include "root.php";
 //define the database class
 	if (!class_exists('database')) {
 		class database {
-			private $db;
+			public $db;
 			public $result;
 			public $type;
 			public $table;
@@ -149,24 +149,23 @@ include "root.php";
 						//mysql pdo connection
 							if (strlen($this->db_host) == 0 && strlen($this->db_port) == 0) {
 								//if both host and port are empty use the unix socket
-								$db = new PDO("mysql:host=$this->db_host;unix_socket=/var/run/mysqld/mysqld.sock;dbname=$this->db_name", $this->db_username, $this->db_password);
+								$this->db = new PDO("mysql:host=$this->db_host;unix_socket=/var/run/mysqld/mysqld.sock;dbname=$this->db_name", $this->db_username, $this->db_password);
 							}
 							else {
 								if (strlen($this->db_port) == 0) {
 									//leave out port if it is empty
-									$db = new PDO("mysql:host=$this->db_host;dbname=$this->db_name;", $this->db_username, $this->db_password, array(
+									$this->db = new PDO("mysql:host=$this->db_host;dbname=$this->db_name;", $this->db_username, $this->db_password, array(
 									PDO::ATTR_ERRMODE,
 									PDO::ERRMODE_EXCEPTION
 									));
 								}
 								else {
-									$db = new PDO("mysql:host=$this->db_host;port=$this->db_port;dbname=$this->db_name;", $this->db_username, $this->db_password, array(
+									$this->db = new PDO("mysql:host=$this->db_host;port=$this->db_port;dbname=$this->db_name;", $this->db_username, $this->db_password, array(
 									PDO::ATTR_ERRMODE,
 									PDO::ERRMODE_EXCEPTION
 									));
 								}
 							}
-							$this->db = $db;
 					}
 					catch (PDOException $error) {
 						print "error: " . $error->getMessage() . "<br/>";
@@ -179,17 +178,16 @@ include "root.php";
 					try {
 						if (strlen($this->db_host) > 0) {
 							if (strlen($this->db_port) == 0) { $this->db_port = "5432"; }
-							$db = new PDO("pgsql:host=$this->db_host port=$this->db_port dbname=$this->db_name user=$this->db_username password=$this->db_password");
+							$this->db = new PDO("pgsql:host=$this->db_host port=$this->db_port dbname=$this->db_name user=$this->db_username password=$this->db_password");
 						}
 						else {
-							$db = new PDO("pgsql:dbname=$this->db_name user=$this->db_username password=$this->db_password");
+							$this->db = new PDO("pgsql:dbname=$this->db_name user=$this->db_username password=$this->db_password");
 						}
 					}
 					catch (PDOException $error) {
 						print "error: " . $error->getMessage() . "<br/>";
 						die();
 					}
-					$this->db = $db;
 				}
 			}
 
