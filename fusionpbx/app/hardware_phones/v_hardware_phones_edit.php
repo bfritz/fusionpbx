@@ -189,7 +189,7 @@ require_once "includes/require.php";
 		$sql .= "and hardware_phone_uuid = '$hardware_phone_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$phone_mac_address = $row["phone_mac_address"];
 			$phone_mac_address = strtolower($phone_mac_address);

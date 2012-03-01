@@ -66,7 +66,7 @@ if (count($_REQUEST)>0) {
 	$prep_statement->execute();
 	//$v_mailboxes = '';
 	$x = 0;
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		//$v_mailboxes = $v_mailboxes.$row["mailbox"].'|';
 		//$extension_uuid = $row["extension_uuid"];

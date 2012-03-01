@@ -174,7 +174,7 @@ if (count($_POST)>0) {
 
 	echo "<select name=\"rss_group\" class='formfld'>\n";
 	echo "<option value=\"\">public</option>\n";
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	//$count = count($result);
 	foreach($result as $field) {
 			if ($rss_group == $field[group_name]) {

@@ -65,7 +65,7 @@ else {
 	$prep_statement->execute();
 	$v_mailboxes = '';
 	$x = 0;
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$x++;
 	}
@@ -201,7 +201,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and extension_uuid = '$extension_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$extension = $row["extension"];

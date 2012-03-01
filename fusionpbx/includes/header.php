@@ -76,7 +76,7 @@ require_once "includes/require.php";
 	$sql .= "and menu_item_link = '".$_SERVER["SCRIPT_NAME"]."' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$_SESSION["menu_item_parent_uuid"] = $row["menu_item_parent_uuid"];
 		break;
@@ -107,7 +107,7 @@ require_once "includes/require.php";
 	$sql .= "order by rss_order asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 
 	$customtitle = '';

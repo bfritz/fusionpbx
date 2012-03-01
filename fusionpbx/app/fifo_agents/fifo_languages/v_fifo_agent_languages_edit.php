@@ -138,7 +138,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and fifo_agent_language_id = '$fifo_agent_language_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$username = $row["username"];
@@ -195,7 +195,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<select name=\"username\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach($result as $field) {
 			if ($username == $field[username]) {
 				echo "<option value='".$field[username]."' selected='selected'>".$field[username]."</option>\n";
@@ -226,7 +226,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement->execute();
 		echo "<select name=\"language\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach($result as $field) {
 			if ($field[var_value] == $agent_status) {
 				echo "<option value='".$field[var_value]."' selected='selected'>".$field[var_name]."</option>\n";

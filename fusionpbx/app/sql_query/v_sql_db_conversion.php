@@ -356,7 +356,7 @@ else {
 	//get the default schema structure
 		$prep_statement = $db_dest->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result_dest = $prep_statement->fetchAll();
+		$result_dest = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	//clean the content from the table
 		foreach ($result_dest as &$row) {
 			$table_name = $row[0];

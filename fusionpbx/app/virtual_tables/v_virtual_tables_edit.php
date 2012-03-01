@@ -157,7 +157,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$virtual_table_category = $row["virtual_table_category"];
 			$virtual_table_label = $row["virtual_table_label"];
@@ -304,7 +304,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		if ($row["virtual_table_uuid"] == $virtual_table_parent_id) {
 			echo "			<option value='".$row["virtual_table_uuid"]."' selected>".$row["virtual_table_name"]."</option>\n";

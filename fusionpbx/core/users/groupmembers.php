@@ -51,7 +51,7 @@ else {
 		$sql .= "and username = '$username' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		if (count($prep_statement->fetchAll()) == 0) { return true; } else { return false; }
+		if (count($prep_statement->fetchAll(PDO::FETCH_NAMED)) == 0) { return true; } else { return false; }
 		unset ($sql, $prep_statement);
 	}
 	//$exampledatareturned = example("apples", 1);
@@ -97,7 +97,7 @@ else {
 	$strlist .= "</tr>\n";
 
 	$count = 0;
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$id = $row["id"];
 		$username = $row["username"];
@@ -137,7 +137,7 @@ else {
 
 	echo "<select name=\"username\" style='width: 200px;' class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach($result as $field) {
 		$username = $field[username];
 		if (if_group_members($db, $group_name, $username)) {

@@ -149,7 +149,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$virtual_data_types_name = $row["virtual_data_types_name"];
 			$virtual_data_types_value = $row["virtual_data_types_value"];

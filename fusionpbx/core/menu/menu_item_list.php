@@ -47,7 +47,7 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 		$sql .= "order by menu_item_order, menu_item_title asc ";
 		$prep_statement_2 = $db->prepare($sql);
 		$prep_statement_2->execute();
-		$result2 = $prep_statement_2->fetchAll();
+		$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
 
 		$row_style["0"] = "row_style1";
 		$row_style["1"] = "row_style1";
@@ -71,7 +71,7 @@ function build_db_child_menu_list ($db, $menu_item_level, $menu_item_uuid, $c) {
 					$sql .= "and menu_item_uuid = '".$menu_item_uuid."' ";
 					$sub_prep_statement = $db->prepare(check_sql($sql));
 					$sub_prep_statement->execute();
-					$sub_result = $sub_prep_statement->fetchAll();
+					$sub_result = $sub_prep_statement->fetchAll(PDO::FETCH_NAMED);
 					$group_list = "";
 					$x = 0;
 					foreach ($sub_result as &$sub_row) {
@@ -206,7 +206,7 @@ $order = $_GET["order"];
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 
 	$c = 0;
@@ -250,7 +250,7 @@ $order = $_GET["order"];
 				$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
 				$sub_prep_statement = $db->prepare(check_sql($sql));
 				$sub_prep_statement->execute();
-				$sub_result = $sub_prep_statement->fetchAll();
+				$sub_result = $sub_prep_statement->fetchAll(PDO::FETCH_NAMED);
 				$group_list = "";
 				$x = 0;
 				foreach ($sub_result as &$sub_row) {

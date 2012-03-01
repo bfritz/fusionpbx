@@ -85,7 +85,7 @@ require_once "includes/paging.php";
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$num_rows = count($result);
 	unset ($prep_statement, $result, $sql);
 
@@ -104,7 +104,7 @@ require_once "includes/paging.php";
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
 

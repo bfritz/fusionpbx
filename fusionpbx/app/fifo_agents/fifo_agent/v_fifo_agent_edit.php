@@ -171,7 +171,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= " where agent_username = '".$_SESSION["username"]."' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			//$fifo_name = $row["fifo_name"];
@@ -283,7 +283,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$prep_statement->execute();
 				echo "<select name=\"agent_status\" class='formfld'>\n";
 				echo "<option value=\"\"></option>\n";
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach($result as $field) {
 					if ($field[var_value] == $agent_status) {
 						echo "<option value='".$field[var_value]."' selected='selected'>".$field[var_name]."</option>\n";

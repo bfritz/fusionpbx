@@ -58,7 +58,7 @@ else {
 		}
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		if (count($result) == 0) {
 			echo "access denied";
 			exit;

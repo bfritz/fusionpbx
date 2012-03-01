@@ -55,7 +55,7 @@ if (count($_GET)>0) {
 			$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach ($result as &$row) {
 				$virtual_table_parent_id = $row["virtual_table_parent_id"];
 			}

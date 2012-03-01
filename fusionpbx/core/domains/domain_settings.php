@@ -94,7 +94,7 @@ require_once "includes/paging.php";
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		$result_count = count($result);
 		unset ($prep_statement, $sql);
 
@@ -138,7 +138,7 @@ require_once "includes/paging.php";
 				$sql .= "where menu_uuid = '".$row['domain_setting_value']."' ";
 				$sub_prep_statement = $db->prepare(check_sql($sql));
 				$sub_prep_statement->execute();
-				$sub_result = $sub_prep_statement->fetchAll();
+				$sub_result = $sub_prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach ($sub_result as &$sub_row) {
 					echo $sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
 				}

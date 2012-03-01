@@ -133,7 +133,7 @@ else {
 				$sql .= "limit 1 ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach ($result as &$row) {
 					$highest_menu_item_order = $row[menu_item_order];
 				}
@@ -220,7 +220,7 @@ else {
 		$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$menu_item_uuid = $row["menu_item_uuid"];
 			$menu_item_title = $row["menu_item_title"];
@@ -286,7 +286,7 @@ else {
 	$prep_statement->execute();
 	echo "<select name=\"menu_item_parent_uuid\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach($result as $field) {
 			if ($menu_item_parent_uuid == $field['menu_item_uuid']) {
 				echo "<option value='".$field['menu_item_uuid']."' selected>".$field['menu_item_title']."</option>\n";
@@ -312,7 +312,7 @@ else {
 	$prep_statement->bindParam(':menu_uuid', $menu_uuid);
 	$prep_statement->bindParam(':menu_item_uuid', $menu_item_uuid);
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 	foreach($result as $field) {
 		if (strlen($field['group_name']) > 0) {
@@ -335,7 +335,7 @@ else {
 	$prep_statement->execute();
 	echo "<select name=\"group_name\" class='frm'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach($result as $field) {
 		if ($field['group_name'] == "superadmin") {
 			//only show the superadmin group to other users in the superadmin group

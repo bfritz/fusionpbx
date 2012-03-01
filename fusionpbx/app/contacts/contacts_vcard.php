@@ -49,7 +49,7 @@ if (count($_GET)>0) {
 		$sql .= "and contact_uuid = '$contact_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$contact_type = $row["contact_type"];
 			$contact_organization = $row["contact_organization"];
@@ -91,7 +91,7 @@ if (count($_GET)>0) {
 		$sql .= "and contact_uuid = '$contact_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$phone_type = $row["phone_type"];
 			$phone_number = $row["phone_number"];
@@ -110,7 +110,7 @@ if (count($_GET)>0) {
 			$sql .= "and contact_uuid = '$contact_uuid' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach ($result as &$row) {
 				$address_type = $row["address_type"];
 				$address_street = $row["address_street"];

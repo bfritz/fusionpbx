@@ -64,7 +64,7 @@ require_once "includes/header.php";
 	//echo $sql;
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 	echo "<table border='0' width='100%'>";
 	if ($result_count == 0) { //no results
@@ -170,7 +170,7 @@ require_once "includes/header.php";
 
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		$result_count = count($result);
 
 		$c = 0;

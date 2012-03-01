@@ -67,7 +67,7 @@ function php_services_sync_package_php() {
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$tmp_prep_statement = $db->prepare(check_sql($sql));
 	$tmp_prep_statement->execute();
-	$tmp_result = $tmp_prep_statement->fetchAll();
+	$tmp_result = $tmp_prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($tmp_result as &$row) {
 		$service_name = $row["service_name"];
 		$tmp_service_name = str_replace(" ", "_", $service_name);
@@ -408,7 +408,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and php_service_uuid = '$php_service_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$service_name = $row["service_name"];
 			$tmp_service_name = str_replace(" ", "_", $service_name);

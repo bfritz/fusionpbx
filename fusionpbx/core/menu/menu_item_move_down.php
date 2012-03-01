@@ -48,7 +48,7 @@ if (count($_GET)>0) {
 	$sql .= "limit 1 ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$highestmenu_item_order = $row[menu_item_order];
 	}

@@ -232,7 +232,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= $sql_where;
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$caller_id_name = $row["caller_id_name"];
 		$caller_id_number = $row["caller_id_number"];

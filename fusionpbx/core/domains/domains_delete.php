@@ -45,7 +45,7 @@ if (strlen($id) > 0) {
 		$sql .= "where domain_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$domain_name = $row["domain_name"];
 		}
@@ -90,7 +90,7 @@ if (strlen($id) > 0) {
 		$sql .= "and domain_setting_enabled = 'true' ";
 		$prep_statement = $db->prepare($sql);
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach($result as $row) {
 			$name = $row['domain_setting_name'];
 			$category = $row['domain_setting_category'];

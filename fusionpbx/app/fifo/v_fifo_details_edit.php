@@ -160,7 +160,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and dialplan_detail_uuid = '$dialplan_detail_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$dialplan_uuid = $row["dialplan_uuid"];
 			$dialplan_detail_tag = $row["dialplan_detail_tag"];

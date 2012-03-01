@@ -116,7 +116,7 @@ else {
 	$sql .= "and rss_sub_uuid = '$rss_sub_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		//$rss_uuid = $row["rss_uuid"];
 		$rss_sub_title = $row["rss_sub_title"];

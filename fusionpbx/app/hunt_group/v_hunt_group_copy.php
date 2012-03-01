@@ -49,7 +49,7 @@ require_once "includes/paging.php";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$hunt_group_extension = $row["hunt_group_extension"];
 		$hunt_group_name = $row["hunt_group_name"];
@@ -115,7 +115,7 @@ require_once "includes/paging.php";
 		$sql .= "and hunt_group_uuid = '$hunt_group_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$hunt_group_uuid = $row["hunt_group_uuid"];
 			$destination_data = $row["destination_data"];

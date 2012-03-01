@@ -147,7 +147,7 @@ if (!function_exists('sync_directory')) {
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$x = 0;
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach ($result as &$row) {
 				//print_r($row);
 				$extension = $row["extension"];
@@ -165,7 +165,7 @@ if (!function_exists('sync_directory')) {
 						$sql .= "and username = '$username' ";
 						$prep_statement = $db->prepare(check_sql($sql));
 						$prep_statement->execute();
-						$tmp_result = $prep_statement->fetchAll();
+						$tmp_result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 						foreach ($tmp_result as &$row_tmp) {
 							$user_first_name = $row_tmp["user_first_name"];
 							$user_last_name = $row_tmp["user_last_name"];

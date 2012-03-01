@@ -47,7 +47,7 @@ else {
 	$sql .= "and gateway_uuid = '$gateway_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$gateway = $row["gateway"];
 		$username = $row["username"];

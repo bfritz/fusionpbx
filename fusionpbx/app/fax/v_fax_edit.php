@@ -271,7 +271,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and fax_uuid = '$fax_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		if (count($result) == 0) {
 			echo "access denied";
 			exit;
@@ -401,7 +401,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$prep_statement->bindParam(':domain_uuid', $domain_uuid);
 			$prep_statement->bindParam(':fax_uuid', $fax_uuid);
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
 			foreach($result as $field) {
 				if (strlen($field['user_uuid']) > 0) {
@@ -422,7 +422,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$prep_statement->execute();
 			echo "			<select name=\"user_uuid\" class='frm'>\n";
 			echo "			<option value=\"\"></option>\n";
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach($result as $field) {
 				echo "			<option value='".$field['user_uuid']."'>".$field['username']."</option>\n";
 			}

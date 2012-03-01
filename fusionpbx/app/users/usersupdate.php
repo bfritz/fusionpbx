@@ -51,7 +51,7 @@ else {
 	$sql .= "and user_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$username = $row["username"];
 		break; //limit to 1 row
@@ -160,7 +160,7 @@ else {
 	$sql .= "and username = '$username' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		if (if_group("admin")) {
 			$username = $row["username"];

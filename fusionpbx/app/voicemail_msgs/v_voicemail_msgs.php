@@ -49,7 +49,7 @@ else {
 		$sql .= "and uuid = '$uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$created_epoch = $row["created_epoch"];
 			$read_epoch = $row["read_epoch"];
@@ -190,7 +190,7 @@ else {
 				if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				$result_count = count($result);
 				unset ($prep_statement, $sql);
 

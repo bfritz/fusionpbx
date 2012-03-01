@@ -101,7 +101,7 @@ function v_settings() {
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach($result as $row) {
 				$name = $row['domain_setting_name'];
 				$settings_array[$name] = $row['domain_setting_value'];
@@ -115,7 +115,7 @@ function v_settings() {
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach($result as $row) {
 				$name = $row['server_setting_name'];
 				$settings_array[$name] = $row['server_setting_value'];
@@ -2107,7 +2107,7 @@ function outbound_route_to_bridge ($destination_number) {
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$x = 0;
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$dialplan_uuid = $row["dialplan_uuid"];
 			//$dialplan_detail_tag = $row["dialplan_detail_tag"];

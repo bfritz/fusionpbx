@@ -55,7 +55,7 @@ function db_table_exists ($db, $db_type, $db_name, $table_name) {
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	if (count($result) > 0) {
 		return true; //table exists
 	}
@@ -145,7 +145,7 @@ function db_column_exists ($db, $db_type, $db_name, $table_name, $column_name) {
 	if ($sql) {
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		if (!$result) {
 			return false;
 		}

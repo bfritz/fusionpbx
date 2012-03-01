@@ -140,7 +140,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and fifo_agent_profile_id = '$fifo_agent_profile_id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$domain_uuid = $row["domain_uuid"];
 		$profile_name = $row["profile_name"];

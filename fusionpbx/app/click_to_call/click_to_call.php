@@ -104,7 +104,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 						$sql .= "and extension = '$src' ";
 						$prep_statement = $db->prepare(check_sql($sql));
 						$prep_statement->execute();
-						$result = $prep_statement->fetchAll();
+						$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 						foreach ($result as &$row) {
 							$dest_cid_name = $row["outbound_caller_id_name"];
 							$dest_cid_number = $row["outbound_caller_id_number"];

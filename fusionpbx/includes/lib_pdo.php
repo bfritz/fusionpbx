@@ -67,7 +67,7 @@ if (!function_exists('get_db_field_names')) {
 			$query 		= sprintf("Pragma table_info(%s);", $table);
 			$stmt 		= $db->prepare($query);
 			$result 	= $stmt->execute();
-			$rows 		= $stmt->fetchAll();
+			$rows 		= $stmt->fetchAll(PDO::FETCH_NAMED);
 			//printf('<pre>%s</pre>', print_r($rows, true));
 			$row_count 	= count($rows);
 			//printf('<pre>%s</pre>', print_r($rows, true));
@@ -82,7 +82,7 @@ if (!function_exists('get_db_field_names')) {
 			);
 			$stmt 		= $db->prepare($query);
 			$result 	= $stmt->execute();
-			$rows 		= $stmt->fetchAll();
+			$rows 		= $stmt->fetchAll(PDO::FETCH_NAMED);
 			$row_count 	= count($rows);
 			//printf('<pre>%s</pre>', print_r($rows, true));
 			for ($i = 0; $i < $row_count; $i++) {
@@ -324,7 +324,7 @@ if ($db_type == "pgsql") {
 			$sql = "select * from v_domains ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach($result as $row) {
 				if (count($result) == 0) {
 					$_SESSION["domain_uuid"] = $row["domain_uuid"];
@@ -349,7 +349,7 @@ if ($db_type == "pgsql") {
 			$sql .= "where default_setting_enabled = 'true' ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach($result as $row) {
 				$name = $row['default_setting_name'];
 				$category = $row['default_setting_category'];
@@ -368,7 +368,7 @@ if ($db_type == "pgsql") {
 			$sql .= "and domain_setting_enabled = 'true' ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach($result as $row) {
 				$name = $row['domain_setting_name'];
 				$category = $row['domain_setting_category'];

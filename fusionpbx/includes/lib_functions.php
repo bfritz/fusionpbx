@@ -161,7 +161,7 @@
 			$sql .= "and username = '".$username."' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
 
 			$group_members = "||";
@@ -193,7 +193,7 @@
 			//echo $sql;
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
 
 			$strsuperadmin_list = "||";
@@ -234,7 +234,7 @@
 			//echo $sql;
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
 			//echo $result_count;
 			if ($result_count > 0) { //if user account exists then show login
@@ -283,7 +283,7 @@
 
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
 			if ($result_count > 0) { //if user account exists then show login
 				foreach($result as $field) {
@@ -328,7 +328,7 @@
 			//echo $sql;
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
 			//echo $result_count;
 			if ($result_count > 0) { //if user account exists then show login
@@ -561,7 +561,7 @@
 			$sql .= "and username = '".$username."' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
 			if ($result_count > 0) {
 				return true;
@@ -583,7 +583,7 @@
 				echo $sql."\n";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				unset($prep_statement);
 				foreach ($result as &$row) {
 					//check if the user_uuid exists in v_extension_users
@@ -593,7 +593,7 @@
 						echo $sql."\n";
 						$prep_statement = $db->prepare(check_sql($sql));
 						$prep_statement->execute();
-						$extension_users_result = $prep_statement->fetchAll();
+						$extension_users_result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 						unset($prep_statement);
 					//assign the extension to the user
 						if (count($extension_users_result) == 0) {
@@ -732,7 +732,7 @@ function format_string ($format, $data) {
 			$prep_statement = $db->prepare(check_sql($sql));
 			if ($prep_statement) {
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach ($result as &$row) {
 					$_SESSION["format_phone_array"][] = $row["var_value"];
 				}

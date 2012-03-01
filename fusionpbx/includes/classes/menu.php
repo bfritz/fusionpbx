@@ -200,7 +200,7 @@
 				}
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 
 				foreach($result as $field) {
 					$menu_item_id = $field['menu_item_id'];
@@ -305,7 +305,7 @@
 				$sql .= "order by menu_item_order, menu_item_title asc ";
 				$prep_statement_2 = $db->prepare($sql);
 				$prep_statement_2->execute();
-				$result_2 = $prep_statement_2->fetchAll();
+				$result_2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
 				if (count($result_2) > 0) {
 					//child menu found
 					$db_menu_sub .= "<ul class='menu_sub'>\n";

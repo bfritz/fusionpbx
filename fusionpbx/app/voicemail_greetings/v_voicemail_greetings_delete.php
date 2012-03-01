@@ -48,7 +48,7 @@ if (strlen($id)>0) {
 		$sql .= "and user_id = '$user_id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$greeting_name = $row["greeting_name"];
 			break; //limit to 1 row

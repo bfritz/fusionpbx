@@ -73,7 +73,7 @@ else {
       $sql .= "where id = '$id' ";
       $prep_statement = $db->prepare(check_sql($sql));
       $prep_statement->execute();
-      $result = $prep_statement->fetchAll();
+      $result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
       foreach ($result as &$row) {
           $clip_name = $row["clip_name"];
           $clip_folder = $row["clip_folder"];

@@ -39,7 +39,7 @@
 		$sql .= "and db_uuid = '".$_REQUEST['id']."' ";
 		$prep_statement = $db->prepare($sql);
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$db_type = $row["db_type"];
 			$db_host = $row["db_host"];
@@ -70,7 +70,7 @@ if (!function_exists('get_db_field_names')) {
 			$query 		= sprintf("Pragma table_info(%s);", $table);
 			$stmt 		= $db->prepare($query);
 			$result 	= $stmt->execute();
-			$rows 		= $stmt->fetchAll();
+			$rows 		= $stmt->fetchAll(PDO::FETCH_NAMED);
 			//printf('<pre>%s</pre>', print_r($rows, true));
 			$row_count 	= count($rows);
 			//printf('<pre>%s</pre>', print_r($rows, true));
@@ -85,7 +85,7 @@ if (!function_exists('get_db_field_names')) {
 			);
 			$stmt 		= $db->prepare($query);
 			$result 	= $stmt->execute();
-			$rows 		= $stmt->fetchAll();
+			$rows 		= $stmt->fetchAll(PDO::FETCH_NAMED);
 			$row_count 	= count($rows);
 			//printf('<pre>%s</pre>', print_r($rows, true));
 			for ($i = 0; $i < $row_count; $i++) {

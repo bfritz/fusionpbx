@@ -124,7 +124,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//echo "sql: ".$sql."<br />\n";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach ($result as &$row) {
 					$recording_filename_orig = $row["recording_filename"];
 					break; //limit to 1 row
@@ -170,7 +170,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and recording_uuid = '$recording_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$domain_uuid = $row["domain_uuid"];
 			$recording_filename = $row["recording_filename"];

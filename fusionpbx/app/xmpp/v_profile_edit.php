@@ -62,7 +62,7 @@ if ($action == "update") {
 	$prep_statement->execute();
 
 	$x = 0;
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$profiles_array[$x] = $row;
 		$x++;
@@ -133,7 +133,8 @@ if ($action == "add" && permission_exists('xmpp_add')) {
  	$sql .= "avatar, ";
  	$sql .= "candidate_acl, ";
  	$sql .= "local_network_acl, ";
-	$sql .= "description ";
+	$sql .= "description, ";
+	$sql .= "enabled ";
 	$sql .= ") values (";
 	$sql .= "'" . $domain_uuid . "', ";
 	$sql .= "'" . $xmpp_profile_uuid . "', ";
@@ -154,7 +155,8 @@ if ($action == "add" && permission_exists('xmpp_add')) {
  	$sql .= "'" . $request['avatar'] . "', ";
  	$sql .= "'" . $request['candidate_acl'] . "', ";
  	$sql .= "'" . $request['local_network_acl'] . "', ";
-	$sql .= "'" . $request['description'] . "' ";
+	$sql .= "'" . $request['description'] . "', ";
+	$sql .= "'" . $request['enabled'] . "' ";
 	$sql .= ") ";
 	$db->exec(check_sql($sql));
 
@@ -180,8 +182,11 @@ elseif ($action == "update" && permission_exists('xmpp_edit')) {
 	$sql .= "avatar = '" . $request['avatar'] . "', ";
 	$sql .= "candidate_acl = '" . $request['candidate_acl'] . "', ";
 	$sql .= "local_network_acl = '" . $request['local_network_acl'] . "', ";
-	$sql .= "description = '" . $request['description'] . "' ";
+	$sql .= "description = '" . $request['description'] . "', ";
+	$sql .= "enabled = '" . $request['enabled'] . "' ";
 	$sql .= "where xmpp_profile_uuid = " . $request['id'];
+	echo $sql;
+	exit;
 	$db->exec(check_sql($sql));
 
 	$xmpp_profile_uuid = $request['id'];

@@ -46,7 +46,7 @@ else {
 	$sql .= "and var_cat = 'Provision' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$provision_variables_array = $prep_statement->fetchAll();
+	$provision_variables_array = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($provision_variables_array as &$row) {
 		if ($row[var_name] == "password") {
 			$var_name = $row[var_name];
@@ -61,7 +61,7 @@ else {
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$phone_mac_address = $row["phone_mac_address"];
 		$phone_mac_address = strtolower($phone_mac_address);
@@ -156,7 +156,7 @@ else {
 							$sql2 .= "and domain_uuid = '$domain_uuid' ";
 							$prep_statement_2 = $db->prepare(check_sql($sql2));
 							$prep_statement_2->execute();
-							$result2 = $prep_statement_2->fetchAll();
+							$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
 							foreach ($result2 as &$row2) {
 								$provisioning_list = $row2["provisioning_list"];
 								if (strlen($provisioning_list) > 1) {

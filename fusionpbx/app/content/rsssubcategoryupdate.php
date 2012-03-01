@@ -72,7 +72,7 @@ else {
 	$sql .= "and rss_sub_category_uuid = '$rss_sub_category_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$rss_category = $row["rss_category"];
 		$rss_sub_category = $row["rss_sub_category"];

@@ -53,7 +53,7 @@ else {
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$x = 0;
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$conference_array = array ();
 			foreach ($result as &$row) {
 				$dialplan_uuid = $row["dialplan_uuid"];
@@ -100,7 +100,7 @@ else {
 				}
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				$result_count = count($result);
 				unset ($prep_statement, $sql);
 				if ($result_count == 0) { //no results

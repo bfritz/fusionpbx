@@ -95,7 +95,7 @@ require_once "includes/paging.php";
 		$prep_statement = $db->prepare(check_sql($sql));
 		if ($prep_statement) {
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
 			unset ($prep_statement, $sql);
 		}

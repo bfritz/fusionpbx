@@ -152,7 +152,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and fifo_agent_profile_member_id = '$fifo_agent_profile_member_id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$fifo_agent_profile_id = $row["fifo_agent_profile_id"];
 		$fifo_name = $row["fifo_name"];
@@ -206,7 +206,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$x = 0;
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	echo "<select name=\"fifo_name\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
 	foreach ($result as &$row) {
@@ -246,7 +246,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 
 		echo "<select name=\"agent_username\" class='formfld'>\n";
 		echo "<option value=\"\"></option>\n";
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach($result as $field) {
 			if ($agent_username == $field[username]) {
 				echo "<option value='".$field[username]."' selected='selected'>".$field[username]."</option>\n";

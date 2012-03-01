@@ -54,7 +54,7 @@ else {
 	$sql .= "and user_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$username = $row["username"];
 		break; //limit to 1 row
@@ -221,7 +221,7 @@ else {
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		if (if_group("admin")) {
 			$username = $row["username"];
@@ -312,7 +312,7 @@ else {
 	$prep_statement->bindParam(':domain_uuid', $domain_uuid);
 	$prep_statement->bindParam(':username', $username);
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 	foreach($result as $field) {
 		if (strlen($field['group_name']) > 0) {
@@ -335,7 +335,7 @@ else {
 	$prep_statement->execute();
 	echo "<select name=\"group_name\" class='frm'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach($result as $field) {
 		if ($field['group_name'] == "superadmin") {
 			//only show the superadmin group to other users in the superadmin group

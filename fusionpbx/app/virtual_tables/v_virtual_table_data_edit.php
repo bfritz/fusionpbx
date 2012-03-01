@@ -63,7 +63,7 @@ else {
 	$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$virtual_table_category = $row["virtual_table_category"];
 		$virtual_table_label = $row["virtual_table_label"];
@@ -560,7 +560,7 @@ else {
 	$sql .= "and virtual_field_type = 'upload_file' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
-	if (count($prep_statement->fetchAll()) > 0) {
+	if (count($prep_statement->fetchAll(PDO::FETCH_NAMED)) > 0) {
 		echo "<form method='post' name='frm' enctype='multipart/form-data' action=''>\n";
 		echo "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"104857600\" />\n";
 	}
@@ -576,7 +576,7 @@ else {
 	$sql .= "order by virtual_field_column asc, virtual_field_order asc ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 
 	echo "<input type='hidden' name='rcount' value='$result_count'>\n";
@@ -743,7 +743,7 @@ else {
 							$sqlselect .= "and virtual_table_field_uuid = '".$row[virtual_table_field_uuid]."' ";
 							$prep_statement_2 = $db->prepare($sqlselect);
 							$prep_statement_2->execute();
-							$result2 = $prep_statement_2->fetchAll();
+							$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
 							$result_count2 = count($result2);
 
 							echo "<table>";
@@ -769,7 +769,7 @@ else {
 							$sqlselect .= "and virtual_table_field_uuid = '".$row[virtual_table_field_uuid]."' ";
 							$prep_statement_2 = $db->prepare($sqlselect);
 							$prep_statement_2->execute();
-							$result2 = $prep_statement_2->fetchAll();
+							$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
 							$result_count2 = count($result2);
 
 							echo "<select tabindex='".$row['virtual_field_order_tab']."' class='formfld' style='width:90%'  name='".$x."field_value'>\n";
@@ -956,7 +956,7 @@ else {
 			$sql .= "and virtual_table_parent_id = '$virtual_table_uuid' ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach ($result as &$row) {
 				echo "<tr class='border'>\n";
 				echo "	<td colspan='999' align=\"left\">\n";

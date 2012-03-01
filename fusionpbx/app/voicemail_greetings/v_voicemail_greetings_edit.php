@@ -117,7 +117,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//echo "sql: ".$sql."<br />\n";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach ($result as &$row) {
 					$greeting_name_orig = $row["greeting_name"];
 					break; //limit to 1 row
@@ -160,7 +160,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and greeting_uuid = '$greeting_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$greeting_name = $row["greeting_name"];
 			$greeting_description = $row["greeting_description"];

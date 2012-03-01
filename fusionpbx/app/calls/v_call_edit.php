@@ -79,7 +79,7 @@ function destination_select($select_name, $select_value, $select_default) {
 	$sql .= "and enabled = 'true' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	if (count($result)== 0) {
 		echo "access denied";
 		exit;
@@ -265,7 +265,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and hunt_group_extension = '$extension' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			if ($row["hunt_group_type"] == 'call_forward') {
 				$call_forward_action = "update";
@@ -402,7 +402,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$hunt_group_uuid = $row["hunt_group_uuid"];
 		$hunt_group_extension = $row["hunt_group_extension"];
@@ -442,7 +442,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 			$prep_statement_2 = $db->prepare(check_sql($sql));
 			$prep_statement_2->execute();
-			$result2 = $prep_statement_2->fetchAll();
+			$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
 			$x=1;
 			foreach ($result2 as &$row2) {
 				if ($row["hunt_group_type"] == 'call_forward') {

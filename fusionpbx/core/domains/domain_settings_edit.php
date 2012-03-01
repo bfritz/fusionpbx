@@ -155,7 +155,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and domain_setting_uuid = '$domain_setting_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$domain_setting_category = $row["domain_setting_category"];
 			$domain_setting_subcategory = $row["domain_setting_subcategory"];
@@ -245,7 +245,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "order by menu_language, menu_name asc ";
 		$sub_prep_statement = $db->prepare(check_sql($sql));
 		$sub_prep_statement->execute();
-		$sub_result = $sub_prep_statement->fetchAll();
+		$sub_result = $sub_prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($sub_result as $sub_row) {
 			if (strtolower($row['domain_setting_value']) == strtolower($sub_row["menu_uuid"])) {
 				echo "		<option value='".$sub_row["menu_uuid"]."' selected='selected'>".$sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";

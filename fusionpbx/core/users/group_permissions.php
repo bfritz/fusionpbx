@@ -49,7 +49,7 @@ require_once "includes/paging.php";
 	$sql .= "select count(*) as count from v_group_permissions ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$group_permission_count = $row["count"];
 		break; //limit to 1 row
@@ -90,7 +90,7 @@ require_once "includes/paging.php";
 	$sql .= "and group_name = '$group_name' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$permission_name = $row["permission_name"];
 		$permissions_db[$permission_name] = "true";

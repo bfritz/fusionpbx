@@ -136,7 +136,7 @@ else {
 				$sql .= "and gateway = '$gateway_name' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach ($result as &$row) {
 					$gateway_domain_uuid = $row["domain_uuid"];
 					break;
@@ -149,7 +149,7 @@ else {
 				$sql .= "and gateway = '$gateway_2_name' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach ($result as &$row) {
 					$gateway_2_domain_uuid = $row["domain_uuid"];
 					break;
@@ -162,7 +162,7 @@ else {
 				$sql .= "and gateway = '$gateway_3_name' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach ($result as &$row) {
 					$gateway_3_domain_uuid = $row["domain_uuid"];
 					break;
@@ -656,7 +656,7 @@ function type_onchange(dialplan_detail_type) {
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	unset ($prep_statement, $sql);
 	echo "<select name=\"gateway\" id=\"gateway\" class=\"formfld\" $onchange style='width: 60%;'>\n";
 	echo "<option value=''></option>\n";
@@ -714,7 +714,7 @@ function type_onchange(dialplan_detail_type) {
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	unset ($prep_statement, $sql);
 	echo "<select name=\"gateway_2\" id=\"gateway\" class=\"formfld\" $onchange style='width: 60%;'>\n";
 	echo "<option value=''></option>\n";
@@ -772,7 +772,7 @@ function type_onchange(dialplan_detail_type) {
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	unset ($prep_statement, $sql);
 	echo "<select name=\"gateway_3\" id=\"gateway\" class=\"formfld\" $onchange style='width: 60%;'>\n";
 	echo "<option value=''></option>\n";

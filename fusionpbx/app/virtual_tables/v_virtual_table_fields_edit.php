@@ -183,7 +183,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and virtual_table_field_uuid = '$virtual_table_field_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$virtual_field_label = $row["virtual_field_label"];
 			$virtual_field_name = $row["virtual_field_name"];

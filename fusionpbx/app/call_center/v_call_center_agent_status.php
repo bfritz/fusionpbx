@@ -79,7 +79,7 @@ require_once "includes/paging.php";
 							$sql .= "and hunt_group_extension = '$extension' ";
 							$prep_statement_2 = $db->prepare(check_sql($sql));
 							$prep_statement_2->execute();
-							$result2 = $prep_statement_2->fetchAll();
+							$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
 							foreach ($result2 as &$row2) {
 								if ($row2["hunt_group_type"] == 'dnd') {
 									$dnd_action = "update";

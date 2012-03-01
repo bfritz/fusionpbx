@@ -45,7 +45,7 @@ if (strlen($id)>0) {
 	$sql .= "and php_service_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$service_name = $row["service_name"];
 		$tmp_service_name = str_replace(" ", "_", $service_name);

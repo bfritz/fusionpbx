@@ -76,7 +76,7 @@ require_once "includes/require.php";
 	$strlist .= "</tr>\n";
 
 	$count = 0;
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$group_name = $row["group_name"];
 		$group_uuid = $row["group_uuid"];

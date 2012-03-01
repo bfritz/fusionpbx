@@ -222,7 +222,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach ($result as &$row) {
 				$numbering_plan = $row["numbering_plan"];
 				$event_socket_ip_address = $row["event_socket_ip_address"];

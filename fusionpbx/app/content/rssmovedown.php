@@ -51,7 +51,7 @@ if (count($_GET)>0) {
 	//return;
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		//print_r( $row );
 		$highestrss_order = $row[rss_order];

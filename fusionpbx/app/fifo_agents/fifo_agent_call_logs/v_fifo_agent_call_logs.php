@@ -63,7 +63,7 @@ $order = $_GET["order"];
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$num_rows = count($result);
 	unset ($prep_statement, $result, $sql);
 	$rows_per_page = 10;
@@ -80,7 +80,7 @@ $order = $_GET["order"];
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
 

@@ -129,7 +129,7 @@ require_once "includes/paging.php";
 	$sql .= "and user_id = '$user_id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$config_greeting_list = "|";
 	foreach ($result as &$row) {
 		$config_greeting_list .= $row['greeting_name']."|";
@@ -291,7 +291,7 @@ require_once "includes/paging.php";
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		$result_count = count($result);
 		unset ($prep_statement, $sql);
 

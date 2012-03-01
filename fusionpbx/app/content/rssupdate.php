@@ -102,7 +102,7 @@ else {
 	$sql .= "and rss_uuid = '$rss_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$rss_category = $row["rss_category"];
 		$rss_sub_category = $row["rss_sub_category"];
@@ -206,7 +206,7 @@ else {
 
 	echo "<select name=\"rss_group\" class='formfld'>\n";
 	echo "<option value=\"\">public</option>\n";
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	//$count = count($result);
 	foreach($result as $field) {
 			if ($rss_group == $field[group_name]) {

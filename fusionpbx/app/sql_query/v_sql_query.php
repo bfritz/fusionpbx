@@ -102,7 +102,7 @@ else {
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		//$db_type = $row["db_type"];
 		//$db_host = $row["db_host"];
@@ -145,7 +145,7 @@ else {
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		echo "			<option value='".$row[0]."'>".$row[0]."</option>\n";
 	}

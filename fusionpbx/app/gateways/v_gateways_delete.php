@@ -45,7 +45,7 @@ if (strlen($_GET["id"])>0) {
 		$sql .= "and gateway_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$gateway = $row["gateway"];
 			$profile = $row["profile"];

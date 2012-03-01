@@ -94,7 +94,7 @@ $prep_statement->execute();
 
 $last_cat = "";
 $count = 0;
-$result = $prep_statement->fetchAll();
+$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 foreach ($result as &$row) {
 
 	$rss_uuid = $row["rss_uuid"];
@@ -149,7 +149,7 @@ foreach ($result as &$row) {
 
 			$prep_statement_2 = $db->prepare($sql);
 			$prep_statement_2->execute();
-			$result2 = $prep_statement->fetchAll();
+			$result2 = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count2 = count($result2);
 
 			$c2 = 0;

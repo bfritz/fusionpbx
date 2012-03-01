@@ -70,7 +70,7 @@ $svn_path = '/trunk/fusionpbx/';
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$path = trim($row["path"]);
 		$path_array[$path][type] = $row["type"];

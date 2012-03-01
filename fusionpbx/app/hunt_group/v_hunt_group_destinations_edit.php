@@ -170,7 +170,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and hunt_group_destination_uuid = '$hunt_group_destination_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$hunt_group_uuid = $row["hunt_group_uuid"];
 			$destination_data = $row["destination_data"];

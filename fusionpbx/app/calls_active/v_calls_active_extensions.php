@@ -211,7 +211,7 @@ echo "	</td>\n";
 	$sql .= "and username = '".$_SESSION['username']."' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$user_status = $row["user_status"];
 		break; //limit to 1 row

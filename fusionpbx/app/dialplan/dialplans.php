@@ -170,7 +170,7 @@ else {
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
 
@@ -221,7 +221,7 @@ else {
 				$sql .= "and dialplan_detail_type = 'destination_number' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$tmp_result = $prep_statement->fetchAll();
+				$tmp_result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				foreach ($tmp_result as &$tmp) {
 					//prepare the extension number
 						preg_match_all('/[\|0-9\*]/',$tmp["dialplan_detail_data"], $tmp_match);

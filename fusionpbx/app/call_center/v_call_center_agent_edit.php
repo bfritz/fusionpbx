@@ -266,7 +266,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "and call_center_agent_uuid = '$call_center_agent_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$agent_name = $row["agent_name"];
 			$agent_type = $row["agent_type"];
@@ -335,7 +335,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<select id=\"agent_name\" name=\"agent_name\" class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	//$catcount = count($result);
 	foreach($result as $field) {
 		if ($field[username] == $agent_name) {

@@ -58,7 +58,7 @@ $order = $_GET["order"];
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$x = 0;
-			$result = $prep_statement->fetchAll();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach ($result as &$row) {
 				$tmp_dialplan_uuid = $row["dialplan_uuid"];
 				$dialplan_detail_type = $row["dialplan_detail_type"];
@@ -310,7 +310,7 @@ $order = $_GET["order"];
 				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
-				$result = $prep_statement->fetchAll();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 				unset($prep_statement);
 				foreach ($result as $row) {
 					if ($row['dialplan_detail_type'] == "destination_number") {
@@ -403,7 +403,7 @@ $order = $_GET["order"];
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			if ($row['dialplan_detail_type'] == "destination_number") {
 				$dialplan_number = $row['dialplan_detail_data'];

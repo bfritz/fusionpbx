@@ -156,7 +156,7 @@ if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 	$sql .= "and fifo_agent_call_log_id = '$fifo_agent_call_log_id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$resolution_code = $row["resolution_code"];
 		$transaction_id = $row["transaction_id"];

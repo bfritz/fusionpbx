@@ -78,7 +78,7 @@ $order = $_GET["order"];
 		//$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		$result_count = count($result);
 		unset ($prep_statement, $sql);
 
@@ -128,7 +128,7 @@ $order = $_GET["order"];
 					$sql .= "and var_cat = 'Queues Agent Status' ";
 					$prep_statement = $db->prepare(check_sql($sql));
 					$prep_statement->execute();
-					$result = $prep_statement->fetchAll();
+					$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 					foreach($result as $field) {
 						$_SESSION["array_agent_status"][$field[var_value]] = $field[var_name];
 					}

@@ -47,7 +47,7 @@ else {
 	$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$ivr_menu_name = $row["ivr_menu_name"];
 		$ivr_menu_extension = $row["ivr_menu_extension"];
@@ -133,7 +133,7 @@ else {
 		$sql .= "order by ivr_menu_uuid asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$ivr_menu_option_digits = $row["ivr_menu_option_digits"];
 			$ivr_menu_option_action = $row["ivr_menu_option_action"];

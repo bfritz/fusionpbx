@@ -68,7 +68,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 		$sql .= "and username = '$username' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		if (count($prep_statement->fetchAll()) > 0) {
+		if (count($prep_statement->fetchAll(PDO::FETCH_NAMED)) > 0) {
 			$msgerror .= "Please choose a different Username.<br>\n";
 		}
 	}

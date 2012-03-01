@@ -136,7 +136,7 @@ if (count($_REQUEST)>0) {
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$num_rows = count($result);
 	unset ($prep_statement, $result, $sql);
 
@@ -179,7 +179,7 @@ if (count($_REQUEST)>0) {
 	//echo $sql;
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
 

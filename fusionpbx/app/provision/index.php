@@ -40,7 +40,7 @@ require_once "includes/require.php";
 	$sql .= "and var_cat = 'Provision' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$provision_variables_array = $prep_statement->fetchAll();
+	$provision_variables_array = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($provision_variables_array as &$row) {
 		if ($row['var_name'] == "password") {
 			$var_name = $row['var_name'];
@@ -282,7 +282,7 @@ require_once "includes/require.php";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$provisioning_list = $row["provisioning_list"];
 			$provisioning_list_array = explode("|", $provisioning_list);

@@ -45,7 +45,7 @@ if (count($_GET)>0) {
 	$sql .= "and call_center_agent_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$agent_name = $row["agent_name"];
 		break; //limit to 1 row
