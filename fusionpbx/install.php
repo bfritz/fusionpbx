@@ -358,13 +358,15 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					}
 
 				//add additional functions to SQLite - bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
-					//if (!function_exists('php_now')) {
-					//	function php_now() {
-							//return date('r');
-					//		return date("Y-m-d H:i:s");
-					//	}
-					//}
-					//$db_tmp->sqliteCreateFunction('now', 'php_now', 0);
+					if (!function_exists('php_now')) {
+						function php_now() {
+							if(function_exists("date_default_timezone_set") and function_exists("date_default_timezone_get")) {
+								@date_default_timezone_set(@date_default_timezone_get());
+							}
+							return date("Y-m-d H:i:s");
+						}
+					}
+					$db_tmp->sqliteCreateFunction('now', 'php_now', 0);
 					
 				//add the database structure
 					require_once "includes/classes/schema.php";
