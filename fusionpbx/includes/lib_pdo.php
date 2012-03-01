@@ -28,28 +28,28 @@ include "root.php";
 require_once "includes/lib_functions.php";
 
 //set defaults
-	if (strlen($dbtype) > 0) { 
+	if (isset($dbtype) > 0) { 
 		$db_type = $dbtype; 
 	}
-	if (strlen($dbhost) > 0) { 
+	if (isset($dbhost) > 0) { 
 		$db_host = $dbhost; 
 	}
-	if (strlen($dbport) > 0) { 
+	if (isset($dbport) > 0) { 
 		$db_port = $dbport; 
 	}
-	if (strlen($dbname) > 0) { 
+	if (isset($dbname) > 0) { 
 		$db_name = $dbname; 
 	}
-	if (strlen($dbusername) > 0) { 
+	if (isset($dbusername) > 0) { 
 		$db_username = $dbusername; 
 	}
-	if (strlen($dbpassword) > 0) { 
+	if (isset($dbpassword) > 0) { 
 		$db_password = $dbpassword; 
 	}
-	if (strlen($dbfilepath) > 0) { 
+	if (isset($dbfilepath) > 0) { 
 		$db_path = $dbfilepath; 
 	}
-	if (strlen($dbfilename) > 0) { 
+	if (isset($dbfilename) > 0) { 
 		$db_name = $dbfilename; 
 	}
 
@@ -171,7 +171,6 @@ if ($db_type == "sqlite") {
 	}
 	if (!function_exists('php_now')) {
 		function php_now() {
-			//return date('r');
 			return date("Y-m-d H:i:s");
 		}
 	}
@@ -343,7 +342,7 @@ if ($db_type == "pgsql") {
 	}
 
 //get the session settings
-	if (strlen($_SESSION['domain']['menu']) == 0) {
+	if (!isset($_SESSION['domain']['menu'])) {
 		//get the default settings
 			$sql = "select * from v_default_settings ";
 			$sql .= "where default_setting_enabled = 'true' ";

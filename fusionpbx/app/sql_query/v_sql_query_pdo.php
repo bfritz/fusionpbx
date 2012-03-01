@@ -25,7 +25,7 @@
  */
  
  //set the default values
-	if (strlen($dbfilepath) > 0) {
+	if (isset($dbfilepath) > 0) {
 		$db_path = $dbfilepath;
 		$db_name = $dbfilename;
 	}

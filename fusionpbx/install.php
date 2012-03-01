@@ -1732,11 +1732,11 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	eval('?>' . $template . '<?php ');
 	$template = ob_get_contents(); //get the output from the buffer
 	ob_end_clean(); //clean the buffer
-	$customhead = $customhead.$templatemenucss;
 
-	//$output = str_replace ("\r\n", "<br>", $output);
-	$output = str_replace ("<!--{title}-->", $customtitle, $template); //<!--{title}--> defined in each individual page
-	$output = str_replace ("<!--{head}-->", $customhead, $output); //<!--{head}--> defined in each individual page
+	$custom_title = '';
+	$custom_head = '';
+	$output = str_replace ("<!--{title}-->", $custom_title, $template); //<!--{title}--> defined in each individual page
+	$output = str_replace ("<!--{head}-->", $custom_head, $output); //<!--{head}--> defined in each individual page
 	$output = str_replace ("<!--{menu}-->", $_SESSION["menu"], $output); //defined in /includes/menu.php
 	$output = str_replace ("<!--{project_path}-->", PROJECT_PATH, $output); //defined in /includes/menu.php
 

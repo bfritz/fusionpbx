@@ -25,7 +25,6 @@
 */
 include "root.php";
 include "includes/require.php";
-session_start();
 
 //define the variable
 	$v_menu = '';

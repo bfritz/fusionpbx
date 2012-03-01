@@ -46,24 +46,24 @@ include "root.php";
 					include "includes/config.php";
 
 				//set defaults
-					$this->db_type = $db_type;
-					$this->db_host = $db_host;
-					$this->db_port = $db_port;
-					$this->db_name = $db_name;
-					$this->db_username = $db_username;
-					$this->db_password = $db_password;
-					$this->db_path = $db_path;
-					$this->db_name = $db_name;
+					if (isset($db_type) > 0) { $this->db_type = $db_type; }
+					if (isset($db_host) > 0) { $this->db_host = $db_host; }
+					if (isset($db_port) > 0) { $this->db_port = $db_port; }
+					if (isset($db_name) > 0) { $this->db_name = $db_name; }
+					if (isset($db_username) > 0) { $this->db_username = $db_username; }
+					if (isset($db_password) > 0) { $this->db_password = $db_password; }
+					if (isset($db_path) > 0) { $this->db_path = $db_path; }
+					if (isset($db_name) > 0) { $this->db_name = $db_name; }
 
 				//backwards compatibility
-					if (strlen($dbtype) > 0) { $db_type = $dbtype; }
-					if (strlen($dbhost) > 0) { $db_host = $dbhost; }
-					if (strlen($dbport) > 0) { $db_port = $dbport; }
-					if (strlen($dbname) > 0) { $db_name = $dbname; }
-					if (strlen($dbusername) > 0) { $db_username = $dbusername; }
-					if (strlen($dbpassword) > 0) { $db_password = $dbpassword; }
-					if (strlen($dbfilepath) > 0) { $db_path = $dbfilepath; }
-					if (strlen($dbfilename) > 0) { $db_name = $dbfilename; }
+					if (isset($dbtype) > 0) { $db_type = $dbtype; }
+					if (isset($dbhost) > 0) { $db_host = $dbhost; }
+					if (isset($dbport) > 0) { $db_port = $dbport; }
+					if (isset($dbname) > 0) { $db_name = $dbname; }
+					if (isset($dbusername) > 0) { $db_username = $dbusername; }
+					if (isset($dbpassword) > 0) { $db_password = $dbpassword; }
+					if (isset($dbfilepath) > 0) { $db_path = $dbfilepath; }
+					if (isset($dbfilename) > 0) { $db_name = $dbfilename; }
 
 				if ($this->db_type == "sqlite") {
 					if (strlen($this->db_name) == 0) {
@@ -393,29 +393,38 @@ include "root.php";
 					}
 					unset($prep_statement);
 			}
-
-			private function php_md5($string) {
-				return md5($string);
-			}
-
-			private function php_unix_time_stamp($string) {
-				return strtotime($string);
-			}
-
-			private function php_now() {
-				//return date('r');
-				return date("Y-m-d H:i:s");
-			}
-
-			private function php_left($string, $num) {
-				return substr($string, 0, $num);
-			}
-
-			private function php_right($string, $num) {
-				return substr($string, (strlen($string)-$num), strlen($string));
-			}
 		}
 	}
+
+if (!function_exists('php_md5')) {
+	function php_md5($string) {
+		return md5($string);
+	}
+}
+
+if (!function_exists('php_unix_time_stamp')) {
+	function php_unix_time_stamp($string) {
+		return strtotime($string);
+	}
+}
+
+if (!function_exists('php_now')) {
+	function php_now() {
+		return date("Y-m-d H:i:s");
+	}
+}
+
+if (!function_exists('php_left')) {
+	function php_left($string, $num) {
+		return substr($string, 0, $num);
+	}
+}
+
+if (!function_exists('php_right')) {
+	function php_right($string, $num) {
+		return substr($string, (strlen($string)-$num), strlen($string));
+	}
+}
 
 //example usage
 /*

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2010
+	Portions created by the Initial Developer are Copyright (C) 2008-2012
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -39,11 +39,11 @@
 
 // if the project directory exists then add it to the include path otherwise add the document root to the include path
 	if (is_dir($_SERVER["DOCUMENT_ROOT"].'/fusionpbx')){
-		define('PROJECT_PATH', '/fusionpbx');
+		if(!defined('PROJECT_PATH')) { define('PROJECT_PATH', '/fusionpbx'); }
 		set_include_path( get_include_path() . PATH_SEPARATOR . $_SERVER["DOCUMENT_ROOT"].'/fusionpbx' );
 	}
 	else {
-		define('PROJECT_PATH', '');
+		if(!defined('PROJECT_PATH')) { define('PROJECT_PATH', ''); }
 		set_include_path( get_include_path() . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] );
 	}
 

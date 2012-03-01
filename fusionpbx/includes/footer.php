@@ -70,12 +70,12 @@ require_once "includes/require.php";
 	require_once "includes/menu.php";
 
 //prepare the template to display the output
-	$customhead = $customhead.$templatemenucss;
-	//$output = str_replace ("\r\n", "<br>", $output);
-	$output = str_replace ("<!--{title}-->", $customtitle, $template); //<!--{title}--> defined in each individual page
-	$output = str_replace ("<!--{head}-->", $customhead, $output); //<!--{head}--> defined in each individual page
+	$custom_title = '';
+	$custom_head = '';
+	$output = str_replace ("<!--{title}-->", $custom_title, $template); //<!--{title}--> defined in each individual page
+	$output = str_replace ("<!--{head}-->", $custom_head, $output); //<!--{head}--> defined in each individual page
 	if (strlen($v_menu) > 0) {
-		$output = str_replace ("<!--{menu}-->", $v_menu, $output); //defined in /includes/menu.php
+		$output = str_replace ("<!--{menu}-->", $v_menu, $template); //defined in /includes/menu.php
 	}
 	else {
 		$output = str_replace ("<!--{menu}-->", $_SESSION["menu"], $output); //defined in /includes/menu.php

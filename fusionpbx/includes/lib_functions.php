@@ -365,7 +365,7 @@
 		//html table header order by
 		function th_order_by($field_name, $columntitle, $order_by, $order) {
 
-			$html .= "<th nowrap>&nbsp; &nbsp; ";
+			$html = "<th nowrap>&nbsp; &nbsp; ";
 			if (strlen($order_by)==0) {
 				$html .= "<a href='?order_by=$field_name&order=desc' title='ascending'>$columntitle</a>";
 			}
