@@ -414,7 +414,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		$result_count = count($result);
 		unset ($prep_statement, $sql);
-	
+
 		//create a new array that is sorted into groups and put the tags in order conditions, actions, anti-actions
 			$x = 0;
 			$details = '';
@@ -459,7 +459,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$x++;
 				}
 			unset($result);
-			
+
 		//define the alternating row styles
 			$c = 0;
 			$row_style["0"] = "row_style0";
@@ -479,10 +479,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "</td>\n";
 			echo "<tr>\n";
 
-			if ($result_count == 0) {
-				//no results
-			}
-			else { //received results
+			if ($result_count > 0) {
 				$x = 0;
 				foreach($details as $group) {
 					if ($x > 0) {
@@ -524,9 +521,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".wordwrap($row['dialplan_detail_data'],180,"<br>",1)."</td>\n";
 						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_detail_order']."</td>\n";
 						//echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['dialplan_detail_group']."</td>\n";
-						echo "	<td valign='top' align='right' nowrap='nowrap'='nowrap='nowrap''>\n";
-						echo "		<a href='dialplan_details_edit.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='edit'>$v_link_label_edit</a>\n";
-						echo "		<a href='dialplan_details_delete.php?id=".$row[dialplan_detail_uuid]."&id2=".$dialplan_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+						echo "	<td valign='top' align='right' nowrap='nowrap'>\n";
+						echo "		<a href='dialplan_details_edit.php?id=".$row['dialplan_detail_uuid']."&id2=".$dialplan_uuid."' alt='edit'>$v_link_label_edit</a>\n";
+						echo "		<a href='dialplan_details_delete.php?id=".$row['dialplan_detail_uuid']."&id2=".$dialplan_uuid."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 						echo "	</td>\n";
 						echo "</tr>\n";
 					}
