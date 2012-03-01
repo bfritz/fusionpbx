@@ -192,14 +192,26 @@ elseif ($action == "update" && permission_exists('xmpp_edit')) {
 } 
 
 writeout:
-include "client_template.php";
-$xml = make_xmpp_xml($request);
 
-$filename = $_SESSION['switch']['conf']['dir'] . "/jingle_profiles/" . "v_" . $domain_name . "_" . preg_replace("/[^A-Za-z0-9]/", "", $request['profile_name']) . "_" . $xmpp_profile_uuid . ".xml";
-$fh = fopen($filename,"w") or die("Unable to open the file");
-fwrite($fh, $xml);
-unset($file_name);
-fclose($fh);
+//prepare the xmpp files to be written. delete all jingle files that are prefixed with v_ and have a file extension of .xml
+$jingle_list = glob($_SESSION['switch']['conf']['dir'] . "/jingle_profiles/*v_*.xml");
+foreach($jingle_list as $name => $value) {
+	unlink($value);
+}
+
+
+if ($request['enabled'] == "true") {
+	//prepare the xml
+	include "client_template.php";
+	$xml = make_xmpp_xml($request);
+
+	//write the xml
+	$filename = $_SESSION['switch']['conf']['dir'] . "/jingle_profiles/" . "v_" . $_SESSION['domain_name'] . "_" . preg_replace("/[^A-Za-z0-9]/", "", $request['profile_name']) . "_" . $xmpp_profile_uuid . ".xml";
+	$fh = fopen($filename,"w") or die("Unable to open the file");
+	fwrite($fh, $xml);
+	unset($file_name);
+	fclose($fh);
+}
 
 $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 if ($fp) {

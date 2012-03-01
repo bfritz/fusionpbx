@@ -13,7 +13,7 @@
 <tr>
 	<th>Profile</th>
 	<th>Context</th>
-	<th>State</th>
+	<th>Status</th>
 	<th>Enabled</th>
 	<th>Description</th>
 <td align='right' width='42'>
