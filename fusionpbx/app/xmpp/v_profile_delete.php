@@ -46,7 +46,6 @@ $sql = "";
 $sql .= "select * from v_xmpp ";
 $sql .= "where domain_uuid = '$domain_uuid' ";
 $sql .= "and xmpp_profile_uuid = '$profile_id' ";
-
 $prep_statement = $db->prepare(check_sql($sql));
 $prep_statement->execute();
 
@@ -64,7 +63,6 @@ $sql = "";
 $sql .= "delete from v_xmpp ";
 $sql .= "where domain_uuid = '$domain_uuid' ";
 $sql .= "and xmpp_profile_uuid = '$profile_id' ";
-
 $db->exec(check_sql($sql));
 
 $filename = $_SESSION['switch']['conf']['dir'] . "/jingle_profiles/" . "v_" . $domain_name . "_" . 
@@ -79,7 +77,7 @@ if ($fp) {
 	$response = event_socket_request($fp, $tmp_cmd);
 	unset($tmp_cmd);
 
-	//Tell mod_dingaling to reload is config
+	//tell mod_dingaling to reload is config
 	$tmp_cmd = 'api dingaling reload';
 	$response = event_socket_request($fp, $tmp_cmd);
 	unset($tmp_cmd);

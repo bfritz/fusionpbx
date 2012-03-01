@@ -184,11 +184,8 @@ elseif ($action == "update" && permission_exists('xmpp_edit')) {
 	$sql .= "local_network_acl = '" . $request['local_network_acl'] . "', ";
 	$sql .= "description = '" . $request['description'] . "', ";
 	$sql .= "enabled = '" . $request['enabled'] . "' ";
-	$sql .= "where xmpp_profile_uuid = " . $request['id'];
-	echo $sql;
-	exit;
+	$sql .= "where xmpp_profile_uuid = '" . $request['id'] . "' ";
 	$db->exec(check_sql($sql));
-
 	$xmpp_profile_uuid = $request['id'];
 
 	goto writeout;

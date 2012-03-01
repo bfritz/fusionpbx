@@ -141,7 +141,7 @@ function hide_advanced_config() {
 					<td class='vtable' align='left'> 
 						<input class='formfld' type='text' name='context' maxlength='255' value="<?php echo $profile['context'];?>"> 
 						<br /> 
-						Enter the context here. **Do Not Edit This Unless you REALLY mean it
+						Enter the context here.
 					</td> 
 					</tr>
 
@@ -174,7 +174,7 @@ function hide_advanced_config() {
 					<td class='vtable' align='left'> 
 						<select class='formfld' name='sasl_type'> 
 						<option value='plain' <?php if($profile['sasl_type'] == "plain") echo "selected='selected'"; ?>>plain</option> 
-						<option value='md5' <?php if($profile['sasl_type'] == "plain") echo "selected='selected'"; ?>>md5</option> 
+						<option value='md5' <?php if($profile['sasl_type'] == "md5") echo "selected='selected'"; ?>>md5</option> 
 						</select>
 						<br /> 
 						Choose SASL Type. Plain or MD5
