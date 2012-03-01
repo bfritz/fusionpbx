@@ -614,6 +614,7 @@ function confirmdelete(url) {
 	$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/default/images/backgrounds';
 	$dir_list = opendir($dir);
 	$v_background_array = array();
+	$x = 0;
 	while (false !== ($file = readdir($dir_list))) {
 		if ($file != "." AND $file != ".."){
 			$new_path = $dir.'/'.$file;

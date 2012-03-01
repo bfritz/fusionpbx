@@ -138,20 +138,20 @@ include "root.php";
 			$database->where[0]['name'] = 'domain_uuid';
 			$database->where[0]['value'] = $this->domain_uuid;
 			$database->where[0]['operator'] = '=';
-			if ($this->ivr_menu_uuid) {
+			if (isset($this->ivr_menu_uuid)) {
 				$database->where[1]['name'] = 'ivr_menu_uuid';
 				$database->where[1]['value'] = $this->ivr_menu_uuid;
 				$database->where[1]['operator'] = '=';
 			}
-			if ($this->ivr_menu_option_uuid) {
+			if (isset($this->ivr_menu_option_uuid)) {
 				$database->where[2]['name'] = 'ivr_menu_uuid';
 				$database->where[2]['value'] = $this->ivr_menu_uuid;
 				$database->where[2]['operator'] = '=';
 			}
-			if ($this->order_by) {
+			if (isset($this->order_by)) {
 				$database->order_by = $this->order_by;
 			}
-			if ($this->order_type) {
+			if (isset($this->order_type)) {
 				$database->order_type = $this->order_type;
 			}
 			return $database->find();

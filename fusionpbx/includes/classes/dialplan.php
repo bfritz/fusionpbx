@@ -29,28 +29,27 @@ include "root.php";
 	if (!class_exists('dialplan')) {
 		class dialplan {
 			//variables
-			var $result;
-			var $domain_uuid;
-			var $dialplan_uuid;
-			var $domain;
-			var $switch_conf_dir;
+			public $result;
+			public $domain_uuid;
+			public $dialplan_uuid;
+			public $switch_conf_dir;
 
 			//dialplans
-			var $dialplan_name;
-			var $dialplan_continue;
-			var $dialplan_order;
-			var $context;
-			var $enabled;
-			var $description;
+			public $dialplan_name;
+			public $dialplan_continue;
+			public $dialplan_order;
+			public $context;
+			public $enabled;
+			public $description;
 
 			//dialplan_details
-			var $dialplan_detail_tag;
-			var $dialplan_detail_order;
-			var $dialplan_detail_type;
-			var $dialplan_detail_data;
-			var $dialplan_detail_break;
-			var $dialplan_detail_inline;
-			var $dialplan_detail_group;
+			public $dialplan_detail_tag;
+			public $dialplan_detail_order;
+			public $dialplan_detail_type;
+			public $dialplan_detail_data;
+			public $dialplan_detail_break;
+			public $dialplan_detail_inline;
+			public $dialplan_detail_group;
 
 			function dialplan_add() {
 				global $db;
@@ -126,9 +125,9 @@ include "root.php";
 					}
 					else {
 						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
-							$file_default_contents = str_replace("{v_domain}", $this->domain, $file_default_contents);
+							$file_default_contents = str_replace("{v_domain}", $_SESSION['domain_name'], $file_default_contents);
 						//set the file path
-							$file_path = $switch_dialplan_dir.'/'.$this->domain.'.xml';
+							$file_path = $switch_dialplan_dir.'/'.$_SESSION['domain_name'].'.xml';
 					}
 				//write the default dialplan
 					$fh = fopen($file_path,'w') or die('Unable to write to '.$file_path.'. Make sure the path exists and permissons are set correctly.');

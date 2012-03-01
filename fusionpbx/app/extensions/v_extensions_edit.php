@@ -139,7 +139,7 @@ else {
 		//redirect the browser
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_extensions_edit.php?id=$extension_uuid\">\n";
-			echo "<div align='center'>Delete Complete</div>";
+			echo "<div align='center'>Add Complete</div>";
 			require_once "includes/footer.php";
 			return;
 	}
@@ -665,7 +665,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		<td class='vncell' valign='top'>User List:</td>";
 		echo "		<td class='vtable'>";
 
-		echo "<table width='52%'>\n";
+		echo "			<table width='52%'>\n";
 		$sql = "SELECT * FROM v_extension_users as e, v_users as u ";
 		$sql .= "where e.user_uuid = u.user_uuid  ";
 		$sql .= "and e.domain_uuid=:domain_uuid ";
@@ -678,30 +678,33 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$result_count = count($result);
 		foreach($result as $field) {
 			if (strlen($field['user_uuid']) > 0) {
-				echo "<tr>\n";
-				echo "	<td class='vtable'>".$field['username']."</td>\n";
-				echo "	<td>\n";
-				echo "		<a href='v_extensions_edit.php?id=".$extension_uuid."&domain_uuid=".$domain_uuid."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-				echo "	</td>\n";
-				echo "</tr>\n";
+				echo "			<tr>\n";
+				echo "				<td class='vtable'>".$field['username']."</td>\n";
+				echo "				<td>\n";
+				echo "					<a href='v_extensions_edit.php?id=".$extension_uuid."&domain_uuid=".$domain_uuid."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "				</td>\n";
+				echo "			</tr>\n";
 			}
 		}
-		echo "</table>\n";
+		echo "			</table>\n";
 
-		echo "<br />\n";
+		echo "			<br />\n";
 		$sql = "SELECT * FROM v_users ";
 		$sql .= "where domain_uuid = '".$domain_uuid."' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-		echo "<select name=\"user_uuid\" class='frm'>\n";
-		echo "<option value=\"\"></option>\n";
+		echo "			<select name=\"user_uuid\" class='frm'>\n";
+		echo "			<option value=\"\"></option>\n";
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach($result as $field) {
-			echo "<option value='".$field['user_uuid']."'>".$field['username']."</option>\n";
+			echo "			<option value='".$field['user_uuid']."'>".$field['username']."</option>\n";
 		}
-		echo "</select>";
-		echo "<input type=\"submit\" class='btn' value=\"Add\">\n";
+		echo "			</select>";
+		echo "			<input type=\"submit\" class='btn' value=\"Add\">\n";
 		unset($sql, $result);
+		echo "			<br>\n";
+		echo "			Assign the users that are assigned to this extension.\n";
+		echo "			<br />\n";
 		echo "		</td>";
 		echo "	</tr>";
 

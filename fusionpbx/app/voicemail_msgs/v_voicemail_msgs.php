@@ -105,9 +105,15 @@ else {
 	require_once "includes/header.php";
 	require_once "includes/paging.php";
 
-//get the http get values
-	$order_by = $_GET["order_by"];
-	$order = $_GET["order"];
+//get the http values and set them as variables
+	if (isset($_GET["order_by"])) {
+		$order_by = check_str($_GET["order_by"]);
+		$order = check_str($_GET["order"]);
+	}
+	else {
+		$order_by = '';
+		$order = '';
+	}
 
 //pdo voicemail database connection
 	include "includes/lib_pdo_vm.php";
@@ -130,6 +136,8 @@ else {
 	if (if_group("admin") || if_group("superadmin")) {
 		echo "Voicemails for an extension are shown to the user(s) that have been assigned to an extension.\n";
 		echo "User accounts are created in the 'User Manager' and then are assigned on the 'Extensions' page. \n";
+		echo "	<br />\n";
+		echo "	<br />\n";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -159,7 +167,7 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
 
-	if (count($_SESSION['user']['extension']) == 0) {
+	if (!isset($_SESSION['user']['extension'])) {
 		echo $tmp_msg_header;
 	}
 	else {
@@ -187,7 +195,11 @@ else {
 				else {
 					$sql .= "where username = '".$value['user']."' ";
 				}
-				if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+				if (isset($order_by)) {
+					if (strlen($order_by) > 0) {
+						$sql .= "order by $order_by $order ";
+					}
+				}
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);

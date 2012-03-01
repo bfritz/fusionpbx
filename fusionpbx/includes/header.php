@@ -27,7 +27,7 @@ include "root.php";
 require_once "includes/require.php";
 
 //if reloadxml then run reloadacl, and reloadxml
-	if ($_SESSION["reload_xml"]) {
+	if (isset($_SESSION["reload_xml"])) {
 		if ($_SESSION['apply_settings'] == "true") {
 			//show the apply settings prompt
 		}
@@ -45,11 +45,11 @@ require_once "includes/require.php";
 	}
 
 //set a default template
-	if (strlen($_SESSION['domain']['template']['name']) == 0) { $_SESSION['domain']['template']['name'] = 'default'; }
+	if (!isset($_SESSION['domain']['template']['name'])) { $_SESSION['domain']['template']['name'] = 'default'; }
 
 //set a default template
 	$v_template_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
-	if (strlen($_SESSION['domain']['template']['name'])==0) {
+	if (!isset($_SESSION['domain']['template']['name'])) {
 		//get the contents of the template and save it to the template variable
 		$template_full_path = $v_template_path.'/'.$_SESSION['domain']['template']['name'].'/template.php';
 		if (!file_exists($template_full_path)) {
@@ -64,15 +64,17 @@ require_once "includes/require.php";
 	ob_start();
 
 // get the content
-	if (strlen($content) == 0) {
+	if (isset($content)) {
 		$content = $_GET["c"]; //link
 	}
-	//echo "content: ".$content;
+	else {
+		$content = '';
+	}
 
 //get the parent id
 	$sql = "";
 	$sql .= "select * from v_menu_items ";
-	$sql .= "where menu_uuid = '".$_SERVER['domain']['menu']['uuid']."' ";
+	$sql .= "where menu_uuid = '".$_SESSION['domain']['menu']['uuid']."' ";
 	$sql .= "and menu_item_link = '".$_SERVER["SCRIPT_NAME"]."' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -86,7 +88,7 @@ require_once "includes/require.php";
 //get the content
 	$sql = "";
 	$sql .= "select * from v_rss ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$sql .= "and rss_category = 'content' ";
 	if (strlen($content) == 0) {
 		$sql .= "and rss_link = '".$_SERVER["PHP_SELF"]."' ";

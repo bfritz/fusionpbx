@@ -61,7 +61,7 @@ require_once "includes/require.php";
 
 //start the output buffer
 	ob_start();
-	$template = $strheadertop.$_SESSION["template_content"];
+	$template = $_SESSION["template_content"];
 	eval('?>' . $template . '<?php ');
 	$template = ob_get_contents(); //get the output from the buffer
 	ob_end_clean(); //clean the buffer

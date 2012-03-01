@@ -36,9 +36,11 @@ else {
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
-//get the http values and set them as php variables
-	$order_by = $_GET["order_by"];
-	$order = $_GET["order"];
+//get the http values and set them as variables
+	if (isset($_GET["order_by"])) {
+		$order_by = check_str($_GET["order_by"]);
+		$order = check_str($_GET["order"]);
+	}
 
 //show the content
 	echo "<div align='center'>";
@@ -77,16 +79,16 @@ require_once "includes/paging.php";
 	//prepare to page the results
 		$rows_per_page = 150;
 		$param = "";
-		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
+		if (!isset($_GET['page'])) { $_GET['page'] = 0; }
+		$_GET['page'] = check_str($_GET['page']);
 		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
-		$offset = $rows_per_page * $page; 
+		$offset = $rows_per_page * $_GET['page']; 
 
 	//get the extension list
 		$sql = "";
 		$sql .= " select * from v_extensions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		if (strlen($order_by)> 0) {
+		if (isset($order_by)) {
 			$sql .= "order by $order_by $order ";
 		}
 		else {

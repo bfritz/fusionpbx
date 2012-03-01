@@ -36,8 +36,11 @@ else {
 
 require_once "includes/paging.php";
 
-$order_by = $_GET["order_by"];
-$order = $_GET["order"];
+//get the http values and set them as variables
+	if (isset($_GET["order_by"])) {
+		$order_by = check_str($_GET["order_by"]);
+		$order = check_str($_GET["order"]);
+	}
 
 //begin content
 	echo "<div align='center'>";
@@ -78,12 +81,12 @@ $order = $_GET["order"];
 		unset($prep_statement, $result);
 
 //prepare to page the results
-	$rows_per_page = 100;
+	$rows_per_page = 150;
 	$param = $_SERVER["QUERY_STRING"];
-	$page = $_GET['page'];
-	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
-	$offset = $rows_per_page * $page;
+	if (!isset($_GET['page'])) { $_GET['page'] = 0; }
+	$_GET['page'] = check_str($_GET['page']);
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page);
+	$offset = $rows_per_page * $_GET['page'];
 
 //get the menu options
 	$sql = "";

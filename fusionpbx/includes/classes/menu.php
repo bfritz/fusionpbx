@@ -26,7 +26,7 @@
 
 //define the follow me class
 	class menu {
-		var $menu_uuid;
+		public $menu_uuid;
 
 		//delete items in the menu that are not protected
 			function delete() {

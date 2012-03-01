@@ -33,6 +33,9 @@ include "includes/require.php";
 	//$_SESSION["menu"] = '';
 
 //build the menu if the session menu has no length
+	if (!isset($_SESSION["menu"])) {
+		$_SESSION["menu"] = '';
+	}
 	if (strlen($_SESSION["menu"]) == 0) {
 		$menuwidth = '110';
 		//echo "    <!-- http://www.seoconsultants.com/css/menus/horizontal/ -->\n";
