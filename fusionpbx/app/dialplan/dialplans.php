@@ -126,7 +126,10 @@ else {
 	$sql .= " select count(*) as num_rows from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($app_uuid) == 0) {
-		$sql .= "and app_uuid <> 'c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4' ";
+		//hide inbound routes
+			$sql .= "and app_uuid <> 'c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4' ";
+		//hide outbound routes
+			$sql .= "and app_uuid <> '8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3' ";
 	}
 	else {
 		$sql .= "and app_uuid = '".$app_uuid."' ";
@@ -155,7 +158,10 @@ else {
 	$sql .= " select * from v_dialplans ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($app_uuid) == 0) {
-		$sql .= "and app_uuid <> 'c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4' ";
+		//hide inbound routes
+			$sql .= "and app_uuid <> 'c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4' ";
+		//hide outbound routes
+			$sql .= "and app_uuid <> '8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3' ";
 	}
 	else {
 		$sql .= "and app_uuid = '".$app_uuid."' ";
