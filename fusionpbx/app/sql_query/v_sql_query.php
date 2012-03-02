@@ -98,21 +98,21 @@ else {
 	echo "			DB: <select name='sql_db'>\n";
 	echo "				<option value=''></option>\n";
 	$sql = "";
-	$sql .= "select * from v_db ";
+	$sql .= "select * from v_databases ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
-		//$db_type = $row["db_type"];
-		//$db_host = $row["db_host"];
-		//$db_port = $row["db_port"];
-		//$db_name = $row["db_name"];
-		//$db_username = $row["db_username"];
-		//$db_password = $row["db_password"];
-		//$db_path = $row["db_path"];
-		//$db_description = $row["db_description"];
-		echo "			<option value='".$row["db_uuid"]."'>".$row["db_host"]." - ".$row["db_name"]."</option>\n";
+		//$database_type = $row["database_type"];
+		//$database_host = $row["database_host"];
+		//$database_port = $row["database_port"];
+		//$database_name = $row["database_name"];
+		//$database_username = $row["database_username"];
+		//$database_password = $row["database_password"];
+		//$database_path = $row["database_path"];
+		//$database_description = $row["database_description"];
+		echo "			<option value='".$row["database_uuid"]."'>".$row["database_host"]." - ".$row["database_name"]."</option>\n";
 	}
 	unset ($prep_statement);
 	echo "			</select>\n";
@@ -147,7 +147,7 @@ else {
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
-		echo "			<option value='".$row[0]."'>".$row[0]."</option>\n";
+		echo "			<option value='".$row['name']."'>".$row['name']."</option>\n";
 	}
 	echo "			</select>\n";
 	echo "			<input type='hidden' name='id' value='".$_REQUEST['id']."'>\n";
