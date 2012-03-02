@@ -165,6 +165,10 @@ if (defined('STDIN')) {
 	}
 
 //forward the fax
+	if (strpos($fax_name,'#') !== false) {
+		$tmp = explode("#",$fax_name);
+		$fax_forward_number = $tmp[0];
+	}
 	if (strlen($fax_forward_number) > 0) {
 		if (file_exists($dir_fax."/".$fax_name.".tif")) {
 			//get the event socket information
