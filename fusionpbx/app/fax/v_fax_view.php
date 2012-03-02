@@ -273,12 +273,14 @@ else {
 					if (count($route_array) == 0) {
 						//send the internal call to the registered extension
 							$fax_uri = "user/".$fax_number."@".$_SESSION['domain_name'];
+							$t38 = "";
 					}
 					else {
 						//send the external call
 							$fax_uri = $route_array[0];
+							$t38 = "fax_enable_t38=true,fax_enable_t38_request=true";
 					}
-					$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number.",fax_uri=$fax_uri,fax_file='".$fax_file."',fax_retry_attempts=1,fax_retry_limit=20,fax_retry_sleep=180,fax_verbose=true,fax_use_ecm=off,api_hangup_hook='lua fax_retry.lua'}$fax_uri &txfax('".$fax_file."')";
+					$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number.",fax_uri=".$fax_uri.",fax_file='".$fax_file."',fax_retry_attempts=1,fax_retry_limit=20,fax_retry_sleep=180,fax_verbose=true,fax_use_ecm=off,".$t38."api_hangup_hook='lua fax_retry.lua'}".$fax_uri." &txfax('".$fax_file."')";
 				//send the command to event socket
 					$response = event_socket_request($fp, $cmd);
 					$response = str_replace("\n", "", $response);

@@ -127,7 +127,6 @@ if (defined('STDIN')) {
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
 		//set database fields as variables
-			//$fax_name = $row["fax_name"];
 			//$fax_email = $row["fax_email"];
 			$fax_pin_number = $row["fax_pin_number"];
 			//$fax_caller_id_name = $row["fax_caller_id_name"];
@@ -181,7 +180,7 @@ if (defined('STDIN')) {
 					$event_socket_ip_address = $row["event_socket_ip_address"];
 					$event_socket_port = $row["event_socket_port"];
 					$event_socket_password = $row["event_socket_password"];
-					break; //limit to 1 row
+					break;
 				}
 			//create the event socket connection
 				$fp = event_socket_create($event_socket_ip_address, $event_socket_port, $event_socket_password);
@@ -193,12 +192,14 @@ if (defined('STDIN')) {
 						if (count($route_array) == 0) {
 							//send the internal call to the registered extension
 								$fax_uri = "user/".$fax_forward_number."@".$domain;
+								$t38 = "";
 						}
 						else {
 							//send the external call
 								$fax_uri = $route_array[0];
+								$t38 = "fax_enable_t38=true,fax_enable_t38_request=true";
 						}
-						$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number.",fax_uri=$fax_uri,fax_file='".$fax_file."',fax_retry_attempts=1,fax_retry_limit=20,fax_retry_sleep=180,fax_verbose=true,fax_use_ecm=off,api_hangup_hook='lua fax_retry.lua'}$fax_uri &txfax('".$fax_file."')";
+						$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number.",fax_uri=".$fax_uri.",fax_file='".$fax_file."',fax_retry_attempts=1,fax_retry_limit=20,fax_retry_sleep=180,fax_verbose=true,fax_use_ecm=off,".$t38."api_hangup_hook='lua fax_retry.lua'}".$fax_uri." &txfax('".$fax_file."')";
 					//send info to the log
 						echo "fax forward\n";
 						echo $cmd."\n";
