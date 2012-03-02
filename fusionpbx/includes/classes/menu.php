@@ -167,7 +167,7 @@
 				$db = $this->db;
 				$db_menu_full = '';
 
-				if (count($_SESSION['groups']) == 0) {
+				if (!isset($_SESSION['groups'])) {
 					$_SESSION['groups'][0]['group_name'] = 'public';
 				}
 
@@ -178,7 +178,7 @@
 					$sql .= "and menu_item_uuid in ";
 					$sql .= "(select menu_item_uuid from v_menu_item_groups where menu_uuid = '".$this->menu_uuid."' ";
 					$sql .= "and ( ";
-					if (count($_SESSION['groups']) == 0) {
+					if (!isset($_SESSION['groups'])) {
 						$sql .= "group_name = 'public' ";
 					}
 					else {
@@ -223,6 +223,9 @@
 					if ($menu_item_level == "main") {
 						$db_menu  = "<ul class='menu_main'>\n";
 						$db_menu .= "<li>\n";
+						if (!isset($_SESSION["username"])) {
+							$_SESSION["username"] = '';
+						}
 						if (strlen($_SESSION["username"]) == 0) {
 							$db_menu .= "<a $menu_tags style='padding: 0px 0px; border-style: none; background: none;'><h2 align='center' style=''>".$field['menu_item_title']."</h2></a>\n";
 						}
@@ -247,7 +250,6 @@
 					}
 
 					$db_menu_full .= $db_menu;
-
 				} //end for each
 
 				unset($prep_statement, $sql, $result);
@@ -339,6 +341,6 @@
 				}
 				unset($prep_statement_2, $sql);
 			}
-	} //class
+	}
 
 ?>
