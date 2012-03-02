@@ -73,15 +73,19 @@ echo "<br />";
 	echo "<br />\n";
 
 //call forward, follow me and dnd
-	if (permission_exists('follow_me') || permission_exists('call_forward') || permission_exists('do_not_disturb')) {
-		$is_included = "true";
-		require_once "app/calls/v_calls.php";
+	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/calls/v_calls.php")) {
+		if (permission_exists('follow_me') || permission_exists('call_forward') || permission_exists('do_not_disturb')) {
+			$is_included = "true";
+			require_once "app/calls/v_calls.php";
+		}
 	}
 
 //call forward, follow me and dnd
-	if (permission_exists('hunt_group_call_forward')) {
-		$is_included = "true";
-		require_once "app/hunt_group/v_hunt_group_call_forward.php";
+	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/hunt_group/v_hunt_group_call_forward.php")) {
+		if (permission_exists('hunt_group_call_forward')) {
+			$is_included = "true";
+			require_once "app/hunt_group/v_hunt_group_call_forward.php";
+		}
 	}
 
 //show the footer
