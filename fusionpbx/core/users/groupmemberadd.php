@@ -47,12 +47,14 @@ else {
 if (strlen($username) > 0  && strlen($group_name) > 0)   {
 	$sql_insert = "insert into v_group_users ";
 	$sql_insert .= "(";
+	$sql_insert .= "group_user_uuid, ";
 	$sql_insert .= "domain_uuid, ";
 	$sql_insert .= "group_name, ";
 	$sql_insert .= "username ";
 	$sql_insert .= ")";
 	$sql_insert .= "values ";
 	$sql_insert .= "(";
+	$sql_insert .= "'".uuid()."', ";
 	$sql_insert .= "'$domain_uuid', ";
 	$sql_insert .= "'$group_name', ";
 	$sql_insert .= "'$username' ";

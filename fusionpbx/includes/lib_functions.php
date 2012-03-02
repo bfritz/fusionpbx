@@ -659,12 +659,14 @@
 					$group_name = 'user';
 					$sql = "insert into v_group_users ";
 					$sql .= "(";
+					$sql .= "group_user_uuid, ";
 					$sql .= "domain_uuid, ";
 					$sql .= "group_name, ";
 					$sql .= "username ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
+					$sql .= "'".uuid()."', ";
 					$sql .= "'$domain_uuid', ";
 					$sql .= "'$group_name', ";
 					$sql .= "'$username' ";

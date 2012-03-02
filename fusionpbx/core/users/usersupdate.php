@@ -122,12 +122,14 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		if (strlen($_REQUEST["group_name"]) > 0) {
 			$sql_insert = "insert into v_group_users ";
 			$sql_insert .= "(";
+			$sql_insert .= "group_user_uuid, ";
 			$sql_insert .= "domain_uuid, ";
 			$sql_insert .= "group_name, ";
 			$sql_insert .= "username ";
 			$sql_insert .= ")";
 			$sql_insert .= "values ";
 			$sql_insert .= "(";
+			$sql_insert .= "'".uuid()."', ";
 			$sql_insert .= "'$domain_uuid', ";
 			$sql_insert .= "'".$_REQUEST["group_name"]."', ";
 			$sql_insert .= "'$username' ";

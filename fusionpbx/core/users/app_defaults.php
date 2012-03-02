@@ -53,12 +53,14 @@
 					$sql = "insert into v_groups ";
 					$sql .= "(";
 					$sql .= "domain_uuid, ";
+					$sql .= "group_uuid, ";
 					$sql .= "group_name, ";
 					$sql .= "group_description ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$domain_uuid', ";
+					$sql .= "'".uuid()."', ";
 					$sql .= "'".$row['group_name']."', ";
 					$sql .= "'".$row['group_description']."' ";
 					$sql .= ")";
@@ -95,12 +97,14 @@
 					//add the record
 					$sql = "insert into v_group_permissions ";
 					$sql .= "(";
+					$sql .= "group_permission_uuid, ";
 					$sql .= "domain_uuid, ";
 					$sql .= "permission_name, ";
 					$sql .= "group_name ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
+					$sql .= "'".uuid()."', ";
 					$sql .= "'$domain_uuid', ";
 					$sql .= "'".$sub_row['name']."', ";
 					$sql .= "'".$group."' ";
