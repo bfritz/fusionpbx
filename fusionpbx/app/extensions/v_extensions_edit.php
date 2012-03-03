@@ -666,31 +666,27 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		<td class='vtable'>";
 
 		echo "			<table width='52%'>\n";
-		$sql = "SELECT * FROM v_extension_users as e, v_users as u ";
+		$sql = "SELECT u.username, e.user_uuid FROM v_extension_users as e, v_users as u ";
 		$sql .= "where e.user_uuid = u.user_uuid  ";
-		$sql .= "and e.domain_uuid=:domain_uuid ";
-		$sql .= "and e.extension_uuid=:extension_uuid ";
+		$sql .= "and e.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and e.extension_uuid = '".$extension_uuid."' ";
 		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->bindParam(':domain_uuid', $domain_uuid);
-		$prep_statement->bindParam(':extension_uuid', $extension_uuid);
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		$result_count = count($result);
 		foreach($result as $field) {
-			if (strlen($field['user_uuid']) > 0) {
-				echo "			<tr>\n";
-				echo "				<td class='vtable'>".$field['username']."</td>\n";
-				echo "				<td>\n";
-				echo "					<a href='v_extensions_edit.php?id=".$extension_uuid."&domain_uuid=".$domain_uuid."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-				echo "				</td>\n";
-				echo "			</tr>\n";
-			}
+			echo "			<tr>\n";
+			echo "				<td class='vtable'>".$field['username']."</td>\n";
+			echo "				<td>\n";
+			echo "					<a href='v_extensions_edit.php?id=".$extension_uuid."&domain_uuid=".$_SESSION['domain_uuid']."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "				</td>\n";
+			echo "			</tr>\n";
 		}
 		echo "			</table>\n";
 
 		echo "			<br />\n";
 		$sql = "SELECT * FROM v_users ";
-		$sql .= "where domain_uuid = '".$domain_uuid."' ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		echo "			<select name=\"user_uuid\" class='frm'>\n";
