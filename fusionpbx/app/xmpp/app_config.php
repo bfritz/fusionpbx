@@ -15,24 +15,19 @@
 		$apps[$x]['menu'][0]['parent_uuid'] = 'bc96d773-ee57-0cdd-c3ac-2d91aba61b55';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/app/xmpp/v_xmpp.php';
-		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
 		$apps[$x]['permissions'][0]['name'] = 'xmpp_view';
-		$apps[$x]['permissions'][0]['groups'][] = 'admin';
 		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][1]['name'] = 'xmpp_add';
-		$apps[$x]['permissions'][1]['groups'][] = 'admin';
 		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'xmpp_edit';
-		$apps[$x]['permissions'][2]['groups'][] = 'admin';
 		$apps[$x]['permissions'][2]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][3]['name'] = 'xmpp_delete';
-		$apps[$x]['permissions'][3]['groups'][] = 'admin';
 		$apps[$x]['permissions'][3]['groups'][] = 'superadmin';
 
 	//schema details
