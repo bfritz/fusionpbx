@@ -1595,6 +1595,7 @@ function save_extension_xml() {
 				}
 				$i++;
 			}
+			$user_context = $row['user_context'];
 			$vm_password = $row['vm_password'];
 			$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 
@@ -1717,7 +1718,12 @@ function save_extension_xml() {
 				$tmp_xml .= "    </variables>\n";
 				$tmp_xml .= "  </user>\n";
 
-				$fout = fopen($_SESSION['switch']['extensions']['dir']."/".$row['user_context']."/v_".$extension.".xml","w");
+				if (!is_dir($_SESSION['switch']['extensions']['dir']."/".$row['user_context'])) {
+					mkdir($_SESSION['switch']['extensions']['dir']."/".$row['user_context'],0755,true);
+				}
+				if (strlen($extension) > 0) {
+					$fout = fopen($_SESSION['switch']['extensions']['dir']."/".$row['user_context']."/v_".$extension.".xml","w");
+				}
 				$tmp_xml .= "</include>\n";
 				fwrite($fout, $tmp_xml);
 				unset($tmp_xml);
@@ -1728,8 +1734,8 @@ function save_extension_xml() {
 
 	//prepare extension 
 		$extension_dir_path = realpath($_SESSION['switch']['extensions']['dir']);
-		$extension_dir_name = str_replace(" ", "_", $extension_dir_name);
-		$extension_dir_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension_dir_name);
+		$user_context = str_replace(" ", "_", $user_context);
+		$user_context = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $user_context);
 
 	//define the group members
 		$tmp_xml = "<!--\n";
@@ -1753,11 +1759,11 @@ function save_extension_xml() {
 		$tmp_xml .= "\n";
 		$tmp_xml .= "<include>\n";
 		$tmp_xml .= "	<!--the domain or ip (the right hand side of the @ in the addr-->\n";
-		if ($extension_dir_name == "default") { 
+		if ($user_context == "default") { 
 			$tmp_xml .= "	<domain name=\"\$\${domain}\">\n";
 		}
 		else {
-			$tmp_xml .= "	<domain name=\"".$extension_dir_name."\">\n";
+			$tmp_xml .= "	<domain name=\"".$user_context."\">\n";
 		}
 		$tmp_xml .= "		<params>\n";
 		$tmp_xml .= "			<param name=\"dial-string\" value=\"{sip_invite_domain=\${domain_name},presence_id=\${dialed_user}@\${dialed_domain}}\${sofia_contact(\${dialed_user}@\${dialed_domain})}\"/>\n";
@@ -1772,9 +1778,9 @@ function save_extension_xml() {
 		$tmp_xml .= "		</variables>\n";
 		$tmp_xml .= "\n";
 		$tmp_xml .= "		<groups>\n";
-		$tmp_xml .= "			<group name=\"".$extension_dir_name."\">\n";
+		$tmp_xml .= "			<group name=\"".$user_context."\">\n";
 		$tmp_xml .= "			<users>\n";
-		$tmp_xml .= "				<X-PRE-PROCESS cmd=\"include\" data=\"".$extension_dir_name."/*.xml\"/>\n";
+		$tmp_xml .= "				<X-PRE-PROCESS cmd=\"include\" data=\"".$user_context."/*.xml\"/>\n";
 		$tmp_xml .= "			</users>\n";
 		$tmp_xml .= "			</group>\n";
 		$tmp_xml .= "\n";
@@ -1809,7 +1815,7 @@ function save_extension_xml() {
 		$tmp_xml .= "</include>";
 
 	//write the xml file
-		$fout = fopen($extension_dir_path."/".$extension_dir_name.".xml","w");
+		$fout = fopen($extension_dir_path."/".$user_context.".xml","w");
 		fwrite($fout, $tmp_xml);
 		unset($tmp_xml);
 		fclose($fout);
