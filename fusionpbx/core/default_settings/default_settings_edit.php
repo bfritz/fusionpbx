@@ -174,10 +174,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap='nowrap'><b>Global Setting Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>Default Setting Add</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap='nowrap'><b>Global Setting Edit</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>Default Setting Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='default_settings.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
