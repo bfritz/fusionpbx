@@ -15,24 +15,19 @@
 		$apps[$x]['menu'][0]['parent_uuid'] = '0438b504-8613-7887-c420-c837ffb20cb1';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/app/system/system.php';
-		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
 		$apps[$x]['permissions'][0]['name'] = 'system_view_info';
-		$apps[$x]['permissions'][0]['groups'][] = 'admin';
 		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][1]['name'] = 'system_view_cpu';
-		$apps[$x]['permissions'][1]['groups'][] = 'admin';
 		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][2]['name'] = 'system_view_hdd';
-		$apps[$x]['permissions'][2]['groups'][] = 'admin';
 		$apps[$x]['permissions'][2]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][3]['name'] = 'system_view_ram';
-		$apps[$x]['permissions'][3]['groups'][] = 'admin';
 		$apps[$x]['permissions'][3]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][4]['name'] = 'system_view_backup';

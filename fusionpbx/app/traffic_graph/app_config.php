@@ -15,11 +15,9 @@
 		$apps[$x]['menu'][0]['parent_uuid'] = '0438b504-8613-7887-c420-c837ffb20cb1';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/app/traffic_graph/status_graph.php?width=660&height=330';
-		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details
 		$apps[$x]['permissions'][0]['name'] = 'traffic_graph_view';
-		$apps[$x]['permissions'][0]['groups'][] = 'admin';
 		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 ?>
