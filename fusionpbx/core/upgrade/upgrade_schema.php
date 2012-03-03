@@ -85,10 +85,19 @@
 	$v_prep_statement = $db->prepare(check_sql($sql));
 	$v_prep_statement->execute();
 	$main_result = $v_prep_statement->fetchAll(PDO::FETCH_ASSOC);
+	$domain_count = count($main_result);
 	foreach ($main_result as &$row) {
 		//get the values from database and set them as php variables
 			$domain_uuid = $row["domain_uuid"];
 			$domain_name = $row["domain_name"];
+
+		//get the context
+			if ($domain_count == 1) {
+				$context = "default";
+			}
+			else {
+				$context = $domain_name;
+			}
 
 		//show the domain when display_type is set to text
 			if ($display_type == "text") {

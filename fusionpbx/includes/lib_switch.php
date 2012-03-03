@@ -1563,8 +1563,16 @@ function save_extension_xml() {
 	//declare global variables
 		global $config, $db, $domain_uuid;
 
+	//get the context based from the domain_uuid
+		if (count($_SESSION['domains']) == 1) {
+			$user_context = "default";
+		}
+		else {
+			$user_context = $_SESSION['domains'][$domain_uuid]['domain_name'];
+		}
+
 	//delete all old extensions to prepare for new ones
-		$dialplan_list = glob($_SESSION['switch']['extensions']['dir'] . "/*/v_*.xml");
+		$dialplan_list = glob($_SESSION['switch']['extensions']['dir'].$user_context."/*/v_*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
@@ -3130,13 +3138,21 @@ function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_t
 function save_dialplan_xml() {
 	global $db, $domain_uuid;
 
+	//get the context based from the domain_uuid
+		if (count($_SESSION['domains']) == 1) {
+			$user_context = "default";
+		}
+		else {
+			$user_context = $_SESSION['domains'][$domain_uuid]['domain_name'];
+		}
+
 	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
 		$v_needle = 'v_dialplan_';
-		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/*/*v_dialplan*.xml");
+		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/".$user_context."/*v_dialplan*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
-		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/*/*_v_*.xml");
+		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/".$user_context."/*_v_*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
@@ -4368,15 +4384,15 @@ if (!function_exists('xml_cdr_conf_xml')) {
 if (!function_exists('save_switch_xml')) {
 	function save_switch_xml() {
 		save_setting_xml();
-//		save_dialplan_xml();
-//		save_extension_xml();
-//		save_gateway_xml();
-//		save_module_xml();
-//		save_var_xml();
-//		save_hunt_group_xml();
-//		save_ivr_menu_xml();
-//		save_call_center_xml();
-//		save_fax_xml();
+		save_dialplan_xml();
+		save_extension_xml();
+		save_gateway_xml();
+		save_module_xml();
+		save_var_xml();
+		save_hunt_group_xml();
+		save_ivr_menu_xml();
+		save_call_center_xml();
+		save_fax_xml();
 	}
 }
 

@@ -72,7 +72,7 @@
 		}
 		$dialplan_name = 'Recordings';
 		$dialplan_order ='900';
-		$dialplan_context = $_SESSION['context'];
+		$dialplan_context = $context;
 		$dialplan_enabled = 'true';
 		$dialplan_description = '*732 Recordings';
 		$dialplan_uuid = uuid();
@@ -140,7 +140,7 @@
 		}
 		$dialplan_name = 'DISA';
 		$dialplan_order ='900';
-		$dialplan_context = $_SESSION['context'];
+		$dialplan_context = $context;
 		$dialplan_enabled = 'false';
 		$dialplan_description = '*3472 Direct Inward System Access ';
 		$dialplan_uuid = uuid();
@@ -160,7 +160,7 @@
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'dialplan_context='.$_SESSION['context'];
+		$dialplan_detail_data = 'dialplan_context='.$context;
 		$dialplan_detail_order = '002';
 		v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
@@ -196,7 +196,7 @@
 		}
 		$dialplan_name = 'Wake-Up';
 		$dialplan_order ='900';
-		$dialplan_context = $_SESSION['context'];
+		$dialplan_context = $context;
 		$dialplan_enabled = 'true';
 		$dialplan_description = '*923 Wake Up Calls';
 		$dialplan_uuid = uuid();
