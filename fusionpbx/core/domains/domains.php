@@ -36,9 +36,30 @@ else {
 
 //change the tenant
 	if (strlen($_GET["domain_uuid"]) > 0 && $_GET["domain_change"] == "true") {
+		//get the domain_uuid
+			$sql = "select * from v_domains ";
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+			foreach($result as $row) {
+				if (count($result) == 0) {
+					$_SESSION["domain_uuid"] = $row["domain_uuid"];
+					$_SESSION["domain_name"] = $row['domain_name'];
+				}
+				else {
+					if ($row['domain_name'] == $domain_array[0] || $row['domain_name'] == 'www.'.$domain_array[0]) {
+						$_SESSION["domain_uuid"] = $row["domain_uuid"];
+						$_SESSION["domain_name"] = $row['domain_name'];
+					}
+					$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
+					$_SESSION['domains'][$row['domain_uuid']]['domain_name'] = $row['domain_name'];
+				}
+			}
+			unset($result, $prep_statement);
+
 		//update the v_id and session variables
-			$domain_uuid = $_GET["domain_uuid"];
-			$_SESSION['domain_uuid'] = $_SESSION['domains'][$domain_uuid]['domain_uuid'];
+			$domain_uuid = check_str($_GET["domain_uuid"]);
+			$_SESSION['domain_uuid'] = $domain_uuid;
 			$_SESSION["domain_name"] = $_SESSION['domains'][$domain_uuid]['domain_name'];
 			$_SESSION['domain']['template']['name'] = $_SESSION['domains'][$domain_uuid]['template_name'];
 		//clear the menu session so that it is regenerated for the current tenant
