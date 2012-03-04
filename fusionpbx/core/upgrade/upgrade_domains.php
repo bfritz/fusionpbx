@@ -24,6 +24,29 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 
+//check the permission
+	if(defined('STDIN')) {
+		$document_root = str_replace("\\", "/", $_SERVER["PHP_SELF"]);
+		preg_match("/^(.*)\/core\/.*$/", $document_root, $matches);
+		$document_root = $matches[1];
+		set_include_path($document_root);
+		require_once "includes/require.php";
+		$_SERVER["DOCUMENT_ROOT"] = $document_root;
+		$display_type = 'text'; //html, text
+	}
+	else {
+		include "root.php";
+		require_once "includes/require.php";
+		require_once "includes/checkauth.php";
+		if (permission_exists('upgrade_schema') || permission_exists('upgrade_svn') || if_group("superadmin")) {
+			//echo "access granted";
+		}
+		else {
+			echo "access denied";
+			exit;
+		}
+	}
+
 //copy the files and directories from includes/install
 	require_once "includes/classes/install.php";
 	$install = new install;
@@ -44,6 +67,27 @@
 		$x++;
 	}
 
+//get the domain_uuid
+	$sql = "select * from v_domains ";
+	$prep_statement = $db->prepare($sql);
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	foreach($result as $row) {
+		if (count($result) == 0) {
+			$_SESSION["domain_uuid"] = $row["domain_uuid"];
+			$_SESSION["domain_name"] = $row['domain_name'];
+		}
+		else {
+			if ($row['domain_name'] == $domain_array[0] || $row['domain_name'] == 'www.'.$domain_array[0]) {
+				$_SESSION["domain_uuid"] = $row["domain_uuid"];
+				$_SESSION["domain_name"] = $row['domain_name'];
+			}
+			$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
+			$_SESSION['domains'][$row['domain_uuid']]['domain_name'] = $row['domain_name'];
+		}
+	}
+	unset($result, $prep_statement);
+
 //get the default settings
 	$sql = "select * from v_default_settings ";
 	$sql .= "where default_setting_enabled = 'true' ";
@@ -52,8 +96,7 @@
 	$result_default_settings = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 
 //loop through all domains
-	$sql = "";
-	$sql .= "select * from v_domains ";
+	$sql = "select * from v_domains ";
 	$v_prep_statement = $db->prepare(check_sql($sql));
 	$v_prep_statement->execute();
 	$main_result = $v_prep_statement->fetchAll(PDO::FETCH_ASSOC);
