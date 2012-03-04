@@ -89,15 +89,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
-
-				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=domains.php\">\n";
-				echo "<div align='center'>\n";
-				echo "Add Complete\n";
-				echo "</div>\n";
-				require_once "includes/footer.php";
-				return;
-			} //if ($action == "add")
+			}
 
 			if ($action == "update") {
 				$sql = "update v_domains set ";
@@ -106,16 +98,32 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
+			}
 
-				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=domains.php\">\n";
-				echo "<div align='center'>\n";
+		//upgrade the domains
+			require_once "core/upgrade/upgrade_domains.php";
+
+		//clear the domains session array to update it
+			unset($_SESSION["domains"]);
+			unset($_SESSION["domain_uuid"]);
+			unset($_SESSION["domain_name"]);
+			unset($_SESSION['domain']);
+			unset($_SESSION['switch']);
+
+		//redirect the browser
+			require_once "includes/header.php";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=domains.php\">\n";
+			echo "<div align='center'>\n";
+			if ($action == "update") {
 				echo "Update Complete\n";
-				echo "</div>\n";
-				require_once "includes/footer.php";
-				return;
-			} //if ($action == "update")
-		} //if ($_POST["persistformvar"] != "true") 
+			}
+			if ($action == "add") {
+				echo "Add Complete\n";
+			}
+			echo "</div>\n";
+			require_once "includes/footer.php";
+			return;
+		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form

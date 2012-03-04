@@ -51,7 +51,6 @@ if (strlen($id) > 0) {
 		}
 		unset ($prep_statement);
 
-
 	//delete the domain
 		$sql = "";
 		$sql .= "delete from v_domains ";
@@ -205,12 +204,13 @@ if (strlen($id) > 0) {
 	//apply settings reminder
 		$_SESSION["reload_xml"] = true;
 
-	//clear the domains session array so that it is updated
+	//clear the domains session array to update it
 		unset($_SESSION["domains"]);
+		unset($_SESSION["domain_uuid"]);
+		unset($_SESSION["domain_name"]);
+		unset($_SESSION['domain']);
+		unset($_SESSION['switch']);
 }
-
-//reset the session values
-	unset($_SESSION['domain']['menu']);
 
 //redirect the browser
 	require_once "includes/header.php";
