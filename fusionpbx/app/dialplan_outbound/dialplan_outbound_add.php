@@ -836,9 +836,9 @@ function type_onchange(dialplan_detail_type) {
 	echo "    <option value='^(\\d{13})\$'>13 digits</option>\n";
 	echo "    <option value='^(\\d{14})\$'>14 digits</option>\n";
 	echo "    <option value='^(\\d{15})\$'>15 digits International</option>\n";
-	echo "    <option value='^311\$'>311 information</option>\n";
-	echo "    <option value='^411\$'>411 information</option>\n";
-	echo "    <option value='^911\$'>911 emergency</option>\n";
+	echo "    <option value='^(311)\$'>311 information</option>\n";
+	echo "    <option value='^(411)\$'>411 information</option>\n";
+	echo "    <option value='^(911)\$'>911 emergency</option>\n";
 	echo "    <option value='^1?(8(00|55|66|77|88)[2-9]\\d{6})\$'>toll free</option>\n";
 	echo "    <option value='^9(\\d{2})\$'>Dial 9 then 2 digits</option>\n";
 	echo "    <option value='^9(\\d{3})\$'>Dial 9 then 3 digits</option>\n";
