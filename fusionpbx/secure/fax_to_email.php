@@ -129,8 +129,8 @@ if (defined('STDIN')) {
 		//set database fields as variables
 			//$fax_email = $row["fax_email"];
 			$fax_pin_number = $row["fax_pin_number"];
-			//$fax_caller_id_name = $row["fax_caller_id_name"];
-			//$fax_caller_id_number = $row["fax_caller_id_number"];
+			$fax_caller_id_name = $row["fax_caller_id_name"];
+			$fax_caller_id_number = $row["fax_caller_id_number"];
 			$fax_forward_number = $row["fax_forward_number"];
 			//$fax_user_list = $row["fax_user_list"];
 			$fax_description = $row["fax_description"];
