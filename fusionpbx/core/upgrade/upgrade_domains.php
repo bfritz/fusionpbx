@@ -95,6 +95,16 @@
 	$prep_statement->execute();
 	$result_default_settings = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 
+//get the default recordings directory
+	foreach($result_default_settings as $row) {
+		$name = $row['default_setting_name'];
+		$category = $row['default_setting_category'];
+		$subcategory = $row['default_setting_subcategory'];
+		if ($category == 'switch' && $subcategory = 'recordings' && $name = 'dir') {
+			$switch_recordings_dir = $row['default_setting_value'];
+		}
+	}
+
 //loop through all domains
 	$sql = "select * from v_domains ";
 	$v_prep_statement = $db->prepare(check_sql($sql));
@@ -152,15 +162,6 @@
 				else {
 					//$$category[$subcategory][$name] = $row['domain_setting_value'];
 					$_SESSION[$category][$subcategory][$name] = $row['domain_setting_value'];
-				}
-			}
-
-		//recordings add the domain to the path if there is more than one domains
-			if (count($_SESSION["domains"]) > 1) {
-				if (strlen($_SESSION['switch']['recordings']['dir']) > 0) {
-					if (substr($_SESSION['switch']['recordings']['dir'], -strlen($domain_name)) != $domain_name) {
-						$_SESSION['switch']['recordings']['dir'] = $_SESSION['switch']['recordings']['dir'].'/'.$domain_name;
-					}
 				}
 			}
 
