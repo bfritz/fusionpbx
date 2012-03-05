@@ -53,11 +53,11 @@
 //if multiple domains then make sure that the dialplan/public/domain_name.xml file exists
 	if (count($_SESSION["domains"]) > 1) {
 		//make sure the public xml file includes the domain directory
-		$file = $_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$domain_uuid]['domain'].".xml";
+		$file = $_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$domain_uuid]['domain_name'].".xml";
 		if (!file_exists($file)) {
 			$fout = fopen($file,"w");
 			$tmpxml = "<include>\n";
-			$tmpxml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$domain_uuid]['domain']."/*.xml\"/>\n";
+			$tmpxml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$domain_uuid]['domain_name']."/*.xml\"/>\n";
 			$tmpxml .= "</include>\n";
 			fwrite($fout, $tmpxml);
 			fclose($fout);

@@ -198,7 +198,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'lua';
-					$dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domains'][$domain_uuid]['domain'].'_'.$row['hunt_group_extension'].'.lua';
+					$dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domains'][$domain_uuid]['domain_name'].'_'.$row['hunt_group_extension'].'.lua';
 					$dialplan_detail_order = '001';
 					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
@@ -281,7 +281,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					//update the action
 					$sql = "";
 					$sql = "update v_dialplan_details set ";
-					$sql .= "dialplan_detail_data = 'v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain']."_".$row['hunt_group_extension'].".lua', ";
+					$sql .= "dialplan_detail_data = 'v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain_name']."_".$row['hunt_group_extension'].".lua', ";
 					$sql .= "dialplan_detail_type = 'lua' ";
 					$sql .= "where domain_uuid = '$domain_uuid' ";
 					$sql .= "and dialplan_detail_tag = 'action' ";

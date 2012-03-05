@@ -625,6 +625,48 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		}
 		unset ($prep_statement);
 
+	//list destinations
+		$sql = "";
+		$sql .= "select * from v_destinations ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and destination_enabled = 'true' ";
+		$sql .= "order by destination_name asc ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$x = 0;
+		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='Destinations'>\n";
+		}
+		foreach ($result as &$row) {
+			$name = $row["destination_name"];
+			$context = $row["destination_context"];
+			$extension = $row["destination_extension"];
+			$description = $row["destination_description"];
+			if ("execute_extension ".$extension." XML ".$context == $select_value || "execute_extension:".$extension." XML ".$context == $select_value) {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:execute_extension $extension XML ".$context."' selected='selected'>".$name." ".$description."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='execute_extension:$extension XML ".$context."' selected='selected'>".$name." ".$description."</option>\n";
+				}
+				$selection_found = true;
+			}
+			else {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:execute_extension $extension XML ".$context."'>".$name." ".$description."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='execute_extension:".$extension." XML ".$context."'>".$name." ".$description."</option>\n";
+				}
+			}
+			$x++;
+		}
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
+		}
+		unset ($prep_statement);
+
 	//list extensions
 		$sql = "";
 		$sql .= "select * from v_extensions ";
@@ -641,7 +683,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		foreach ($result as &$row) {
 			$extension = $row["extension"];
 			$description = $row["description"];
-			if ("transfer ".$extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value || "user/$extension@".$_SESSION['domains'][$domain_uuid]['domain'] == $select_value) {
+			if ("transfer ".$extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value || "user/$extension@".$_SESSION['domains'][$domain_uuid]['domain_name'] == $select_value) {
 				if ($select_type == "ivr") {
 					echo "		<option value='menu-exec-app:transfer $extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
@@ -649,7 +691,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
-					echo "		<option value='user/$extension@".$_SESSION['domains'][$domain_uuid]['domain']."' selected='selected'>".$extension." ".$description."</option>\n";
+					echo "		<option value='user/$extension@".$_SESSION['domains'][$domain_uuid]['domain_name']."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
 				$selection_found = true;
 			}
@@ -661,7 +703,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					echo "		<option value='transfer:$extension XML ".$_SESSION["context"]."'>".$extension." ".$description."</option>\n";
 				}
 				if ($select_type == "call_center_contact") {
-					echo "		<option value='user/$extension@".$_SESSION['domains'][$domain_uuid]['domain']."'>".$extension." ".$description."</option>\n";
+					echo "		<option value='user/$extension@".$_SESSION['domains'][$domain_uuid]['domain_name']."'>".$extension." ".$description."</option>\n";
 				}
 			}
 		}
@@ -2801,7 +2843,7 @@ function save_hunt_group_xml() {
 					//write the hungroup lua script
 						if (strlen($row['hunt_group_extension']) > 0) {
 							if ($row['hunt_group_enabled'] != "false") {
-								$hunt_group_filename = "v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain']."_".$huntgroup_extension.".lua";
+								$hunt_group_filename = "v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain_name']."_".$huntgroup_extension.".lua";
 								//echo "location".$_SESSION['switch']['scripts']['dir']."/".$hunt_group_filename;
 								$fout = fopen($_SESSION['switch']['scripts']['dir']."/".$hunt_group_filename,"w");
 								fwrite($fout, $tmp);
@@ -3757,7 +3799,7 @@ if (!function_exists('save_ivr_menu_xml')) {
 						$tmp .= "	<!-- $ivr_menu_description -->\n";
 					}
 					if (count($_SESSION["domains"]) > 1) {
-						$tmp .= "	<menu name=\"".$_SESSION['domains'][$domain_uuid]['domain']."-".$ivr_menu_name."\"\n";
+						$tmp .= "	<menu name=\"".$_SESSION['domains'][$domain_uuid]['domain_name']."-".$ivr_menu_name."\"\n";
 					}
 					else {
 						$tmp .= "	<menu name=\"$ivr_menu_name\"\n";
@@ -4020,7 +4062,7 @@ if (!function_exists('save_call_center_xml')) {
 									$dialplan->dialplan_uuid = $dialplan_uuid;
 									$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
 									$dialplan->dialplan_detail_type = 'callcenter';
-									$dialplan->dialplan_detail_data = $queue_name."@".$_SESSION['domains'][$domain_uuid]['domain'];
+									$dialplan->dialplan_detail_data = $queue_name."@".$_SESSION['domains'][$domain_uuid]['domain_name'];
 									$dialplan->dialplan_detail_break = '';
 									$dialplan->dialplan_detail_inline = '';
 									$dialplan->dialplan_detail_group = '2';
@@ -4108,7 +4150,7 @@ if (!function_exists('save_call_center_xml')) {
 								//update the action
 								$sql = "";
 								$sql = "update v_dialplan_details set ";
-								$sql .= "dialplan_detail_data = '".$queue_name."@".$_SESSION['domains'][$domain_uuid]['domain']."' ";
+								$sql .= "dialplan_detail_data = '".$queue_name."@".$_SESSION['domains'][$domain_uuid]['domain_name']."' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
 								$sql .= "and dialplan_detail_tag = 'action' ";
 								$sql .= "and dialplan_detail_type = 'callcenter' ";

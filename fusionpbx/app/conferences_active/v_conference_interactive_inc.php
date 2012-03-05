@@ -111,7 +111,7 @@ else {
 	}
 
 //replace the space with underscore
-	$conference_name = $conference_name.'-'.$_SESSION['domains'][$domain_uuid]['domain'];
+	$conference_name = $conference_name.'-'.$_SESSION['domains'][$domain_uuid]['domain_name'];
 
 //create the conference list command
 	$switch_cmd = "conference '".$conference_name."' xml_list";

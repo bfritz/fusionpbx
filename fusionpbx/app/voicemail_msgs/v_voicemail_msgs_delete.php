@@ -41,7 +41,7 @@ else {
 	}
 
 //get the domain from the domains array
-	$domain_name = $_SESSION['domains'][$domain_uuid]['domain'];
+	$domain_name = $_SESSION['domains'][$domain_uuid]['domain_name'];
 
 //create the event socket connection
 	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);

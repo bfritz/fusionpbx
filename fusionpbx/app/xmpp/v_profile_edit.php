@@ -40,7 +40,7 @@ else {
 
 require_once "includes/header.php";
 
-$domain_name = $_SESSION['domains'][$domain_uuid]['domain'];
+$domain_name = $_SESSION['domains'][$domain_uuid]['domain_name'];
 
 //add or update the database
 if (isset($_REQUEST["id"])) {
