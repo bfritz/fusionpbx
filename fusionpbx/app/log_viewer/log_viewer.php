@@ -69,7 +69,7 @@ echo "	<tr>\n";
 echo "		<td align=\"left\" valign='middle' width='100%'>\n";
 echo "			<b>Log Viewer</b><br />\n";
 echo "		</td>\n";
-echo "		<form action=\"v_log_viewer.php\" method=\"POST\">\n";
+echo "		<form action=\"log_viewer.php\" method=\"POST\">\n";
 echo "		<td width='145px' align='right' valign='middle' nowrap='nowrap'>\n";
 echo "				<input type=\"text\" class=\"formfld\" name=\"fs\" value=\"".$_POST['fs']."\">\n";
 echo "				<input type=\"submit\" class=\"btn\" name=\"submit\" value=\"reload\">\n";
@@ -77,7 +77,7 @@ echo "		</td>\n";
 echo "		</form>\n";
 echo "		<td width='125px' align='right' valign='middle' nowrap='nowrap'>\n";
 if (permission_exists('log_download')) {
-	echo "			<input type='button' class='btn' value='download logs' onclick=\"document.location.href='v_log_viewer.php?a=download&t=logs';\" />\n";
+	echo "			<input type='button' class='btn' value='download logs' onclick=\"document.location.href='log_viewer.php?a=download&t=logs';\" />\n";
 }
 echo "		</td>\n";
 echo "	</tr>\n";
