@@ -189,17 +189,17 @@ else {
 	echo "<td align='right' width='42'>\n";
 	if ($app_uuid == "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4") {
 		if (permission_exists('inbound_route_add')) {
-			echo "			<a href='/app/dialplan_inbound/dialplan_inbound_add.php' alt='add'>$v_link_label_add</a>\n";
+			echo "			<a href='".PROJECT_PATH."/app/dialplan_inbound/dialplan_inbound_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 	}
 	elseif ($app_uuid == "8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3") {
 		if (permission_exists('outbound_route_add')) {
-			echo "			<a href='/app/dialplan_outbound/dialplan_outbound_add.php' alt='add'>$v_link_label_add</a>\n";
+			echo "			<a href='".PROJECT_PATH."/app/dialplan_outbound/dialplan_outbound_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 	}
 	elseif ($app_uuid == "4b821450-926b-175a-af93-a03c441818b1") {
 		if (permission_exists('time_conditions_add')) {
-			echo "			<a href='/app/time_conditions/time_condition_add.php' alt='add'>$v_link_label_add</a>\n";
+			echo "			<a href='".PROJECT_PATH."/app/time_conditions/time_condition_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 	}
 	else {
@@ -295,17 +295,17 @@ else {
 	echo "			&nbsp;";
 	if ($app_uuid == "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4") {
 		if (permission_exists('inbound_route_add')) {
-			echo "			<a href='/app/dialplan_inbound/dialplan_inbound_add.php' alt='add'>$v_link_label_add</a>\n";
+			echo "			<a href='".PROJECT_PATH."/app/dialplan_inbound/dialplan_inbound_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 	}
 	elseif ($app_uuid == "8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3") {
 		if (permission_exists('outbound_route_add')) {
-			echo "			<a href='/app/dialplan_outbound/dialplan_outbound_add.php' alt='add'>$v_link_label_add</a>\n";
+			echo "			<a href='".PROJECT_PATH."/app/dialplan_outbound/dialplan_outbound_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 	}
 	elseif ($app_uuid == "4b821450-926b-175a-af93-a03c441818b1") {
 		if (permission_exists('time_conditions_add')) {
-			echo "			<a href='/app/time_conditions/time_condition_add.php' alt='add'>$v_link_label_add</a>\n";
+			echo "			<a href='".PROJECT_PATH."/app/time_conditions/time_condition_add.php' alt='add'>$v_link_label_add</a>\n";
 		}
 	}
 	else {
