@@ -213,14 +213,14 @@ else {
 				if (strlen($dialplan_expression)>0) {
 					if (count($_SESSION["domains"]) > 1) {
 						if (permission_exists('outbound_route_any_gateway')) {
-							$tmp_gateway_name = $_SESSION['domains'][$gateway_domain_uuid]['domain'] .'-'.$gateway_name;
+							$tmp_gateway_name = $_SESSION['domains'][$gateway_domain_uuid]['domain_name'] .'-'.$gateway_name;
 						}
 						else {
-							$tmp_gateway_name = $_SESSION['domains'][$domain_uuid]['domain'] .'-'.$gateway_name;
+							$tmp_gateway_name = $_SESSION['domains'][$domain_uuid]['domain_name'] .'-'.$gateway_name;
 						}
 						if (strlen($gateway_2_name) > 0) {
 							if (permission_exists('outbound_route_any_gateway')) {
-								$tmp_gateway_2_name = $_SESSION['domains'][$gateway_2_domain_uuid]['domain'] .'-'.$gateway_2_name;
+								$tmp_gateway_2_name = $_SESSION['domains'][$gateway_2_domain_uuid]['domain_name'] .'-'.$gateway_2_name;
 							}
 							else {
 								$tmp_gateway_2_name = $_SESSION['domains'][$domain_uuid]['domain_name'] .'-'.$gateway_2_name;
@@ -228,7 +228,7 @@ else {
 						}
 						if (strlen($gateway_3_name) > 0) {
 							if (permission_exists('outbound_route_any_gateway')) {
-								$tmp_gateway_3_name = $_SESSION['domains'][$gateway_3_domain_uuid]['domain'] .'-'.$gateway_3_name;
+								$tmp_gateway_3_name = $_SESSION['domains'][$gateway_3_domain_uuid]['domain_name'] .'-'.$gateway_3_name;
 							}
 							else {
 								$tmp_gateway_3_name = $_SESSION['domains'][$domain_uuid]['domain_name'] .'-'.$gateway_3_name;
