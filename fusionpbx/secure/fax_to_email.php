@@ -82,7 +82,7 @@ if (defined('STDIN')) {
 		unset($tmp_array);
 
 		$tmp_array = explode("=", $_SERVER["argv"][5]);
-		$domain = $tmp_array[1];
+		$domain_name = $tmp_array[1];
 		unset($tmp_array);
 
 		$tmp_array = explode("=", $_SERVER["argv"][6]);
@@ -140,7 +140,7 @@ if (defined('STDIN')) {
 	unset ($prep_statement);
 
 //set the fax directory
-	$dir_fax = $_SESSION['switch']['storage']['dir'].'/fax/'.$domain.'/'.$fax_extension.'/inbox';
+	$dir_fax = $_SESSION['switch']['storage']['dir'].'/fax/'.$domain_name.'/'.$fax_extension.'/inbox';
 	if (!file_exists($dir_fax)) {
 		$dir_fax = $_SESSION['switch']['storage']['dir'].'/fax/'.$fax_extension.'/inbox';
 	}
@@ -191,7 +191,7 @@ if (defined('STDIN')) {
 						$fax_file = $dir_fax."/".$fax_name.".tif";
 						if (count($route_array) == 0) {
 							//send the internal call to the registered extension
-								$fax_uri = "user/".$fax_forward_number."@".$domain;
+								$fax_uri = "user/".$fax_forward_number."@".$domain_name;
 								$t38 = "";
 						}
 						else {
