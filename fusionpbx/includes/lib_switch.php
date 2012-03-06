@@ -348,7 +348,6 @@ function event_socket_request_cmd($cmd) {
   
 	$sql = "";
 	$sql .= "select * from v_settings ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -3147,20 +3146,22 @@ function save_dialplan_xml() {
 		}
 
 	//prepare for dialplan .xml files to be written. delete all dialplan files that are prefixed with dialplan_ and have a file extension of .xml
-		$v_needle = 'v_dialplan_';
-		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/".$user_context."/*v_dialplan*.xml");
+		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/*/*v_dialplan*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
-		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/".$user_context."/*_v_*.xml");
+		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/*/*_v_*.xml");
+		foreach($dialplan_list as $name => $value) {
+			unlink($value);
+		}
+		$dialplan_list = glob($_SESSION['switch']['dialplan']['dir'] . "/*/*/*_v_*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
 
 	$sql = "";
 	$sql .= "select * from v_dialplans ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and dialplan_enabled = 'true' ";
+	$sql .= "where dialplan_enabled = 'true' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	if ($prep_statement) {
 		$prep_statement->execute();
@@ -3179,7 +3180,7 @@ function save_dialplan_xml() {
 			$sql = "";
 			$sql .= " select * from v_dialplan_details ";
 			$sql .= " where dialplan_uuid = '".$row['dialplan_uuid']."' ";
-			$sql .= " and domain_uuid = '".$domain_uuid."' ";
+			$sql .= " and domain_uuid = '".$row['domain_uuid']."' ";
 			$sql .= " order by dialplan_detail_group asc, dialplan_detail_order asc ";
 			$prep_statement_2 = $db->prepare($sql);
 			if ($prep_statement_2) {
@@ -3420,12 +3421,28 @@ function save_dialplan_xml() {
 			$dialplan_name = str_replace(" ", "_", $dialplan_name);
 			$dialplan_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $dialplan_name);
 
-			$dialplan_filename = $dialplan_order."_v_dialplan_".$dialplan_name.".xml";
+			$dialplan_filename = $dialplan_order."_v_".$dialplan_name.".xml";
 			if (strlen($row['dialplan_context']) > 0) {
 				if (!is_dir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'])) {
 					mkdir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'],0755,true);
 				}
-				file_put_contents($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename, $tmp);
+				if ($row['dialplan_context'] == "public") {
+					if (count($_SESSION['domains']) > 1) {
+						if (!is_dir($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name'])) {
+							mkdir($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name'],0755,true);
+						}
+						echo $_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name']."/".$dialplan_filename."<br />\n";
+						file_put_contents($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name']."/".$dialplan_filename, $tmp);
+					}
+					else {
+						echo $_SESSION['switch']['dialplan']['dir']."/public/".$dialplan_filename." 1234<br />\n";
+						file_put_contents($_SESSION['switch']['dialplan']['dir']."/public/".$dialplan_filename, $tmp);
+					}
+				}
+				else {
+					//echo $_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename."<br />\n";
+					file_put_contents($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename, $tmp);
+				}
 			}
 
 			unset($dialplan_filename);
