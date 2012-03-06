@@ -684,7 +684,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			$extension = $row["extension"];
 			$context = $row["user_context"];
 			$description = $row["description"];
-			if ("transfer ".$extension." XML ".$_SESSION["context"] == $select_value || "transfer:".$extension." XML ".$_SESSION["context"] == $select_value || "user/$extension@".$_SESSION['domains'][$domain_uuid]['domain_name'] == $select_value) {
+			if ("transfer ".$extension." XML ".$context == $select_value || "transfer:".$extension." XML ".$context == $select_value || "user/$extension@".$_SESSION['domains'][$domain_uuid]['domain_name'] == $select_value) {
 				if ($select_type == "ivr") {
 					echo "		<option value='menu-exec-app:transfer $extension XML ".$context."' selected='selected'>".$extension." ".$description."</option>\n";
 				}
@@ -1261,7 +1261,8 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 			echo "<optgroup label='Voicemail'>\n";
 		}
 		foreach ($result as &$row) {
-			$extension = $row["extension"]; //default ${domain_name} 
+			$extension = $row["extension"];
+			$context = $row["user_context"]; 
 			$description = $row["description"];
 			if ("voicemail default \${domain} ".$extension == $select_value || "voicemail:default \${domain} ".$extension == $select_value) {
 				if ($select_type == "ivr") {
