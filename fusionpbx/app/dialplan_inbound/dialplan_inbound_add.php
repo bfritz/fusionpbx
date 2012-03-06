@@ -162,7 +162,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'$dialplan_uuid', ";
 		$sql .= "'$dialplan_detail_uuid', ";
 		$sql .= "'condition', ";
-		$sql .= "'dialplan_context', ";
+		$sql .= "'context', ";
 		$sql .= "'public', ";
 		$sql .= "'10' ";
 		$sql .= ")";
