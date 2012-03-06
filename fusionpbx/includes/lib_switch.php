@@ -3431,16 +3431,13 @@ function save_dialplan_xml() {
 						if (!is_dir($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name'])) {
 							mkdir($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name'],0755,true);
 						}
-						echo $_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name']."/".$dialplan_filename."<br />\n";
 						file_put_contents($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name']."/".$dialplan_filename, $tmp);
 					}
 					else {
-						echo $_SESSION['switch']['dialplan']['dir']."/public/".$dialplan_filename." 1234<br />\n";
 						file_put_contents($_SESSION['switch']['dialplan']['dir']."/public/".$dialplan_filename, $tmp);
 					}
 				}
 				else {
-					//echo $_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename."<br />\n";
 					file_put_contents($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename, $tmp);
 				}
 			}
