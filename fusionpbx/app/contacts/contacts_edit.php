@@ -221,7 +221,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<input type='button' class='btn' name='' alt='qr code' onclick=\"window.location='contacts_vcard.php?id=$contact_uuid&type=image'\" value='QR Code'>\n";
 	echo "	<input type='button' class='btn' name='' alt='vcard' onclick=\"window.location='contacts_vcard.php?id=$contact_uuid&type=download'\" value='vCard'>\n";
 	if ($action == "update" && is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/app/invoices')) {
-		echo "	<input type='button' class='btn' name='' alt='invoice' onclick=\"window.location='/app/invoices/v_invoices.php?id=$contact_uuid'\" value='Invoices'>\n";
+		echo "	<input type='button' class='btn' name='' alt='invoice' onclick=\"window.location='".PROJECT_PATH."/app/invoices/v_invoices.php?id=$contact_uuid'\" value='Invoices'>\n";
 	}
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='contacts.php?".$_GET["query_string"]."'\" value='Back'>\n";
 	echo "</td>\n";
