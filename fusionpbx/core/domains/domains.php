@@ -66,7 +66,7 @@ else {
 			$_SESSION["menu"] = '';
 		//set the context
 			if (count($_SESSION["domains"]) > 1) {
-				$_SESSION["context"] = $_SESSION["v_domain"];
+				$_SESSION["context"] = $_SESSION["domain_name"];
 			}
 			else {
 				$_SESSION["context"] = 'default';
