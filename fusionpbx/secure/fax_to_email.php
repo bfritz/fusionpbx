@@ -112,15 +112,14 @@ if (defined('STDIN')) {
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	foreach ($result as &$row) {
-		$domain_uuid = $row["domain_uuid"];
-		break;
+		$_SESSION['domain_uuid'] = $row["domain_uuid"];
 	}
 	unset ($prep_statement);
 
 //get the fax details from the database
 	$sql = "";
 	$sql .= "select * from v_fax ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$sql .= "and fax_extension = '$fax_extension' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
@@ -134,8 +133,6 @@ if (defined('STDIN')) {
 			$fax_forward_number = $row["fax_forward_number"];
 			//$fax_user_list = $row["fax_user_list"];
 			$fax_description = $row["fax_description"];
-		//limit to one row
-			break;
 	}
 	unset ($prep_statement);
 
