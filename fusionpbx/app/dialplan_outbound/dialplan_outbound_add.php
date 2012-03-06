@@ -216,7 +216,7 @@ else {
 							$tmp_gateway_name = $_SESSION['domains'][$gateway_domain_uuid]['domain'] .'-'.$gateway_name;
 						}
 						else {
-							$tmp_gateway_name = $_SESSION['domains'][$domain_uuid]['domain_name'] .'-'.$gateway_name;
+							$tmp_gateway_name = $_SESSION['domains'][$domain_uuid]['domain'] .'-'.$gateway_name;
 						}
 						if (strlen($gateway_2_name) > 0) {
 							if (permission_exists('outbound_route_any_gateway')) {
@@ -532,7 +532,7 @@ else {
 
 		//redirect the user
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=/app/dialplan/dialplans.php?app_uuid=8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3\">\n";
 			echo "<div align='center'>\n";
 			echo "Update Complete\n";
 			echo "</div>\n";
@@ -589,7 +589,7 @@ function type_onchange(dialplan_detail_type) {
 	echo "			</strong></span></span>\n";
 	echo "		</td>\n";
 	echo "		<td align='right'>\n";
-	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='/app/dialplan/dialplans.php?app_uuid=8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3'\" value='Back'>\n";
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3'\" value='Back'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
