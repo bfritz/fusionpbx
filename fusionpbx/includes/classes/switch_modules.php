@@ -89,10 +89,24 @@ echo $mod->dir."\n";
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
+					case "mod_avmd":
+						$mod['module_label'] = 'AVMD';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Advanced voicemail beep detection.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
 					case "mod_blacklist":
 						$mod['module_label'] = 'Blacklist';
 						$mod['module_category'] = 'Applications';
 						$mod['module_description'] = 'Blacklist.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_bv":
+						$mod['module_label'] = 'BV';
+						$mod['module_category'] = 'Codecs';
+						$mod['module_description'] = 'BroadVoice16 and BroadVoice32 audio codecs.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
@@ -103,12 +117,33 @@ echo $mod->dir."\n";
 						$mod['module_enabled'] = 'false';
 						$mod['module_default_enabled'] = 'false';
 						break;
+					case "mod_cdr_sqlite":
+						$mod['module_label'] = 'CDR SQLite';
+						$mod['module_category'] = 'Event Handlers';
+						$mod['module_description'] = 'SQLite call detail record handler.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
+					case "mod_callcenter":
+						$mod['module_label'] = 'Call Center';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Call queuing with agents and tiers for call centers.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
 					case "mod_cepstral":
 						$mod['module_label'] = 'Cepstral';
 						$mod['module_category'] = 'Speech Recognition / Text to Speech';
 						$mod['module_description'] = 'Text to Speech engine.';
 						$mod['module_enabled'] = 'false';
 						$mod['module_default_enabled'] = 'false';
+						break;
+					case "mod_cidlookup":
+						$mod['module_label'] = 'CID Lookup';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Lookup caller id info.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
 						break;
 					case "mod_cluechoo":
 						$mod['module_label'] = 'Cluechoo';
@@ -138,10 +173,45 @@ echo $mod->dir."\n";
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
+					case "mod_curl":
+						$mod['module_label'] = 'CURL';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Allows scripts to make HTTP requests and return responses in plain text or JSON.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_db":
+						$mod['module_label'] = 'DB';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Database key / value storage functionality, dialing and limit backend.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_dialplan_asterisk":
+						$mod['module_label'] = 'Dialplan Asterisk';
+						$mod['module_category'] = 'Dialplan Interfaces';
+						$mod['module_description'] = 'Allows Asterisk dialplans.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
 					case "mod_dialplan_xml":
 						$mod['module_label'] = 'Dialplan XML';
 						$mod['module_category'] = 'Dialplan Interfaces';
 						$mod['module_description'] = 'Provides dialplan functionality in XML.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_directory":
+						$mod['module_label'] = 'Directory';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Dial by name directory.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_distributor":
+						$mod['module_label'] = 'Distributor';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Round robin call distribution.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
@@ -250,6 +320,20 @@ echo $mod->dir."\n";
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
+					case "mod_ladspa":
+						$mod['module_label'] = 'Ladspa';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Auto-tune calls.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
+					case "mod_lcr":
+						$mod['module_label'] = 'LCR';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Least cost routing.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
 					case "mod_local_stream":
 						$mod['module_label'] = 'Local Stream';
 						$mod['module_category'] = 'Streams / Files';
@@ -282,8 +366,8 @@ echo $mod->dir."\n";
 						$mod['module_label'] = 'Memcached';
 						$mod['module_category'] = 'Applications';
 						$mod['module_description'] = 'API for memcached.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_native_file":
 						$mod['module_label'] = 'Native File';
@@ -292,10 +376,31 @@ echo $mod->dir."\n";
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
+					case "mod_nibblebill":
+						$mod['module_label'] = 'Nibblebill';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Billing module.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
 					case "mod_opus":
 						$mod['module_label'] = 'Opus';
 						$mod['module_category'] = 'Codecs';
 						$mod['module_description'] = 'OPUS ultra-low delay audio codec';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_park":
+						$mod['module_label'] = 'Park';
+						$mod['module_category'] = 'Applications';
+						$mod['module_description'] = 'Park Calls.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_pocketsphinx":
+						$mod['module_label'] = 'PocketSphinx';
+						$mod['module_category'] = 'Speech Recognition / Text to Speech';
+						$mod['module_description'] = 'Speech Recognition.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
@@ -306,8 +411,84 @@ echo $mod->dir."\n";
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
+					case "mod_say_de":
+						$mod['module_label'] = 'German';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
 					case "mod_say_en":
 						$mod['module_label'] = 'English';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_es":
+						$mod['module_label'] = 'Spanish';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_fr":
+						$mod['module_label'] = 'French';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_he":
+						$mod['module_label'] = 'Hebrew';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_hu":
+						$mod['module_label'] = 'Hungarian';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_it":
+						$mod['module_label'] = 'Italian';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_nl":
+						$mod['module_label'] = 'Dutch';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_pt":
+						$mod['module_label'] = 'Portuguese';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_ru":
+						$mod['module_label'] = 'Russian';
+						$mod['module_category'] = 'Say';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_th":
+						$mod['module_label'] = 'Thai';
+						$mod['module_category'] = 'Say';
+						$mod['module_description'] = '';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_say_zh":
+						$mod['module_label'] = 'Chinese';
 						$mod['module_category'] = 'Say';
 						$mod['module_description'] = '';
 						$mod['module_enabled'] = 'true';
@@ -369,10 +550,52 @@ echo $mod->dir."\n";
 						$mod['module_enabled'] = 'false';
 						$mod['module_default_enabled'] = 'false';
 						break;
+					case "mod_spidermonkey_core_db":
+						$mod['module_label'] = 'SpiderMonkey Core DB';
+						$mod['module_category'] = 'Languages';
+						$mod['module_description'] = 'Javascript support for SQLite.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
+					case "mod_spidermonkey_curl":
+						$mod['module_label'] = 'SpiderMonkey Curl';
+						$mod['module_category'] = 'Languages';
+						$mod['module_description'] = 'Javascript curl support.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
+					case "mod_spidermonkey_socket":
+						$mod['module_label'] = 'SpiderMonkey Socket';
+						$mod['module_category'] = 'Languages';
+						$mod['module_description'] = 'Javascript socket support.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
+					case "mod_spidermonkey_teletone":
+						$mod['module_label'] = 'SpiderMonkey Teletone';
+						$mod['module_category'] = 'Languages';
+						$mod['module_description'] = 'Javascript teletone support.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
+					case "mod_syslog":
+						$mod['module_label'] = 'Syslog';
+						$mod['module_category'] = 'Loggers';
+						$mod['module_description'] = 'Send logs to a remote syslog server.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
 					case "mod_tone_stream":
 						$mod['module_label'] = 'Tone Stream';
 						$mod['module_category'] = 'Streams / Files';
 						$mod['module_description'] = 'Generate tone streams.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
+					case "mod_tts_commandline":
+						$mod['module_label'] = 'TTS Commandline';
+						$mod['module_category'] = 'Speech Recognition / Text to Speech';
+						$mod['module_description'] = 'Commandline text to speech engine.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
@@ -411,149 +634,17 @@ echo $mod->dir."\n";
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
+					case "mod_xml_curl":
+						$mod['module_label'] = 'XML Curl';
+						$mod['module_category'] = 'XML Interfaces';
+						$mod['module_description'] = 'Request XML config files dynamically.';
+						$mod['module_enabled'] = 'true';
+						$mod['module_default_enabled'] = 'true';
+						break;
 					case "mod_xml_rpc":
 						$mod['module_label'] = 'XML RPC';
 						$mod['module_category'] = 'XML Interfaces';
 						$mod['module_description'] = 'XML Remote Procedure Calls. Issue commands from your web application.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_distributor":
-						$mod['module_label'] = 'Distributor';
-						$mod['module_category'] = 'Applications';
-						$mod['module_description'] = 'Round robin call distribution.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_say_ru":
-						$mod['module_label'] = 'Russian';
-						$mod['module_category'] = 'Say';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_cdr_sqlite":
-						$mod['module_label'] = 'CDR SQLite';
-						$mod['module_category'] = 'Event Handlers';
-						$mod['module_description'] = 'SQLite call detail record handler.';
-						$mod['module_enabled'] = 'false';
-						$mod['module_default_enabled'] = 'false';
-						break;
-					case "mod_park":
-						$mod['module_label'] = 'Park';
-						$mod['module_category'] = 'Applications';
-						$mod['module_description'] = 'Park Calls.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_pocketsphinx":
-						$mod['module_label'] = 'PocketSphinx';
-						$mod['module_category'] = 'Speech Recognition / Text to Speech';
-						$mod['module_description'] = 'Speech Recognition.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_tts_commandline":
-						$mod['module_label'] = 'TTS Commandline';
-						$mod['module_category'] = 'Speech Recognition / Text to Speech';
-						$mod['module_description'] = 'Commandline text to speech engine.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_dialplan_asterisk":
-						$mod['module_label'] = 'Dialplan Asterisk';
-						$mod['module_category'] = 'Dialplan Interfaces';
-						$mod['module_description'] = 'Allows Asterisk dialplans.';
-						$mod['module_enabled'] = 'false';
-						$mod['module_default_enabled'] = 'false';
-						break;
-					case "mod_spidermonkey_socket":
-						$mod['module_label'] = 'SpiderMonkey Socket';
-						$mod['module_category'] = 'Languages';
-						$mod['module_description'] = 'Javascript socket support.';
-						$mod['module_enabled'] = 'false';
-						$mod['module_default_enabled'] = 'false';
-						break;
-					case "mod_nibblebill":
-						$mod['module_label'] = 'Nibblebill';
-						$mod['module_category'] = 'Applications';
-						$mod['module_description'] = 'Billing module.';
-						$mod['module_enabled'] = 'false';
-						$mod['module_default_enabled'] = 'false';
-						break;
-					case "mod_spidermonkey_core_db":
-						$mod['module_label'] = 'SpiderMonkey Core DB';
-						$mod['module_category'] = 'Languages';
-						$mod['module_description'] = 'Javascript support for SQLite.';
-						$mod['module_enabled'] = 'false';
-						$mod['module_default_enabled'] = 'false';
-						break;
-					case "mod_curl":
-						$mod['module_label'] = 'CURL';
-						$mod['module_category'] = 'Applications';
-						$mod['module_description'] = 'Allows scripts to make HTTP requests and return responses in plain text or JSON.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_db":
-						$mod['module_label'] = 'DB';
-						$mod['module_category'] = 'Applications';
-						$mod['module_description'] = 'Database key / value storage functionality, dialing and limit backend.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_avmd":
-						$mod['module_label'] = 'AVMD';
-						$mod['module_category'] = 'Applications';
-						$mod['module_description'] = 'Advanced voicemail beep detection.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_spidermonkey_teletone":
-						$mod['module_label'] = 'SpiderMonkey Teletone';
-						$mod['module_category'] = 'Languages';
-						$mod['module_description'] = 'Javascript teletone support.';
-						$mod['module_enabled'] = 'false';
-						$mod['module_default_enabled'] = 'false';
-						break;
-					case "mod_spidermonkey_curl":
-						$mod['module_label'] = 'SpiderMonkey Curl';
-						$mod['module_category'] = 'Languages';
-						$mod['module_description'] = 'Javascript curl support.';
-						$mod['module_enabled'] = 'false';
-						$mod['module_default_enabled'] = 'false';
-						break;			
-					case "mod_ladspa":
-						$mod['module_label'] = 'Ladspa';
-						$mod['module_category'] = 'Applications';
-						$mod['module_description'] = 'Auto-tune calls.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_lcr":
-						$mod['module_label'] = 'LCR';
-						$mod['module_category'] = 'Applications';
-						$mod['module_description'] = 'Least cost routing.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_syslog":
-						$mod['module_label'] = 'Syslog';
-						$mod['module_category'] = 'Loggers';
-						$mod['module_description'] = 'Send logs to a remote syslog server.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_cidlookup":
-						$mod['module_label'] = 'CID Lookup';
-						$mod['module_category'] = 'Applications';
-						$mod['module_description'] = 'Lookup caller id info.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
-						break;
-					case "mod_bv":
-						$mod['module_label'] = 'BV';
-						$mod['module_category'] = 'Codecs';
-						$mod['module_description'] = 'BroadVoice16 and BroadVoice32 audio codecs.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
