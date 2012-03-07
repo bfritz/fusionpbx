@@ -103,6 +103,13 @@ echo $mod->dir."\n";
 						$mod['module_enabled'] = 'false';
 						$mod['module_default_enabled'] = 'false';
 						break;
+					case "mod_cepstral":
+						$mod['module_label'] = 'Cepstral';
+						$mod['module_category'] = 'Speech Recognition / Text to Speech';
+						$mod['module_description'] = 'Text to Speech engine.';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
+						break;
 					case "mod_cluechoo":
 						$mod['module_label'] = 'Cluechoo';
 						$mod['module_category'] = 'Applications';
@@ -440,14 +447,14 @@ echo $mod->dir."\n";
 						break;
 					case "mod_pocketsphinx":
 						$mod['module_label'] = 'PocketSphinx';
-						$mod['module_category'] = 'ASR / TTS';
+						$mod['module_category'] = 'Speech Recognition / Text to Speech';
 						$mod['module_description'] = 'Speech Recognition.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
 						break;
 					case "mod_tts_commandline":
 						$mod['module_label'] = 'TTS Commandline';
-						$mod['module_category'] = 'ASR / TTS';
+						$mod['module_category'] = 'Speech Recognition / Text to Speech';
 						$mod['module_description'] = 'Commandline text to speech engine.';
 						$mod['module_enabled'] = 'true';
 						$mod['module_default_enabled'] = 'true';
