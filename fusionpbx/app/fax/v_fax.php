@@ -46,7 +46,6 @@ require_once "includes/paging.php";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
-
 	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "			<tr>\n";
 	echo "				<td align='left'>\n";
@@ -58,26 +57,30 @@ require_once "includes/paging.php";
 	echo "		</table>\n";
 	echo "		<br />";
 
-	$sql = "";
-	$sql .= "select * from v_fax ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (if_group("superadmin")) {
+	if (if_group("superadmin") || if_group("admin")) {
 		//show all fax extensions
-	}
-	else if (if_group("admin")) {
-		//show all fax extensions
+		$sql = "select count(*) as num_rows from v_fax ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	}
 	else {
 		//show only assigned fax extensions
-		$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
+		$sql = "select count(*) as num_rows from v_fax as f, v_fax_users as u ";
+		$sql .= "where f.fax_uuid = u.fax_uuid ";
+		$sql .= "and f.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
 	}
-
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	$num_rows = count($result);
-	unset ($prep_statement, $result, $sql);
+	if ($prep_statement) {
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+		if ($row['num_rows'] > 0) {
+			$num_rows = $row['num_rows'];
+		}
+		else {
+			$num_rows = '0';
+		}
+	}
+	unset($prep_statement, $result);
 
 	$rows_per_page = 150;
 	$param = "";
@@ -86,24 +89,23 @@ require_once "includes/paging.php";
 	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page;
 
-	$sql = "";
-	$sql .= "select * from v_fax ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	if (if_group("superadmin")) {
+	if (if_group("superadmin") || if_group("admin")) {
 		//show all fax extensions
-	}
-	else if (if_group("admin")) {
-		//show all fax extensions
+		$sql = "select * from v_fax ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 	}
 	else {
-		$sql .= "and fax_user_list like '%".$_SESSION["username"]."|%' ";
+		//show only assigned fax extensions
+		$sql = "select * from v_fax as f, v_fax_users as u ";
+		$sql .= "where f.fax_uuid = u.fax_uuid ";
+		$sql .= "and f.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
 	}
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-
 	$sql .= " limit $rows_per_page offset $offset ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 	$result_count = count($result);
 	unset ($prep_statement, $sql);
 

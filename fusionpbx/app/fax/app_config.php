@@ -131,6 +131,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fax_user_list';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fax_forward_number';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';

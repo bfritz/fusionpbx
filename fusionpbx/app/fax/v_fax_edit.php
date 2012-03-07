@@ -63,16 +63,16 @@ else {
 				mkdir($v_fax_dir.'/'.$fax_extension,0774,true);
 				chmod($v_fax_dir.'/'.$fax_extension,0774);
 			}
-			if (!is_dir($dir_fax_inbox)) { 
-				mkdir($dir_fax_inbox,0774,true); 
+			if (!is_dir($dir_fax_inbox)) {
+				mkdir($dir_fax_inbox,0774,true);
 				chmod($dir_fax_inbox,0774);
 			}
-			if (!is_dir($dir_fax_sent)) { 
+			if (!is_dir($dir_fax_sent)) {
 				mkdir($dir_fax_sent,0774,true); 
 				chmod($dir_fax_sent,0774);
 			}
-			if (!is_dir($dir_fax_temp)) { 
-				mkdir($dir_fax_temp,0774,true); 
+			if (!is_dir($dir_fax_temp)) {
+				mkdir($dir_fax_temp,0774,true);
 				chmod($dir_fax_temp,0774);
 			}
 	}
@@ -107,7 +107,7 @@ else {
 			$fax_uuid = check_str($_REQUEST["id"]);
 		//delete the group from the users
 			$sql = "delete from v_fax_users ";
-			$sql .= "where domain_uuid = '".$domain_uuid."' ";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and fax_uuid = '".$fax_uuid."' ";
 			$sql .= "and user_uuid = '".$user_uuid."' ";
 			$db->exec(check_sql($sql));
@@ -135,7 +135,7 @@ else {
 			$sql_insert .= "values ";
 			$sql_insert .= "(";
 			$sql_insert .= "'".uuid()."', ";
-			$sql_insert .= "'$domain_uuid', ";
+			$sql_insert .= "'".$_SESSION['domain_uuid']."', ";
 			$sql_insert .= "'".$fax_uuid."', ";
 			$sql_insert .= "'".$user_uuid."' ";
 			$sql_insert .= ")";
@@ -159,7 +159,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($fax_extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
 		if (strlen($fax_name) == 0) { $msg .= "Please provide: A file to Fax<br>\n"; }
 		//if (strlen($fax_email) == 0) { $msg .= "Please provide: Email<br>\n"; }
@@ -202,7 +201,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
+				$sql .= "'".$_SESSION['domain_uuid']."', ";
 				$sql .= "'$fax_uuid', ";
 				$sql .= "'$fax_extension', ";
 				$sql .= "'$fax_name', ";
@@ -244,7 +243,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "fax_forward_number = null, ";
 				}
 				$sql .= "fax_description = '$fax_description' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 				$sql .= "and fax_uuid = '$fax_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -267,7 +266,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$fax_uuid = check_str($_GET["id"]);
 		$sql = "";
 		$sql .= "select * from v_fax ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and fax_uuid = '$fax_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -311,23 +310,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	Extension:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='fax_extension' maxlength='255' value=\"$fax_extension\">\n";
-	echo "<br />\n";
-	echo "Enter the fax extension here.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "	Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='fax_name' maxlength='255' value=\"$fax_name\">\n";
 	echo "<br />\n";
 	echo "Enter the name here.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	Extension:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='fax_extension' maxlength='255' value=\"$fax_extension\">\n";
+	echo "<br />\n";
+	echo "Enter the fax extension here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -395,29 +394,25 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "			<table width='52%'>\n";
 			$sql = "SELECT * FROM v_fax_users as e, v_users as u ";
 			$sql .= "where e.user_uuid = u.user_uuid  ";
-			$sql .= "and e.domain_uuid=:domain_uuid ";
-			$sql .= "and e.fax_uuid=:fax_uuid ";
+			$sql .= "and e.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+			$sql .= "and e.fax_uuid = '".$fax_uuid."' ";
 			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->bindParam(':domain_uuid', $domain_uuid);
-			$prep_statement->bindParam(':fax_uuid', $fax_uuid);
 			$prep_statement->execute();
-			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+			$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 			$result_count = count($result);
 			foreach($result as $field) {
-				if (strlen($field['user_uuid']) > 0) {
-					echo "			<tr>\n";
-					echo "				<td class='vtable'>".$field['username']."</td>\n";
-					echo "				<td>\n";
-					echo "					<a href='v_fax_edit.php?id=".$fax_uuid."&domain_uuid=".$domain_uuid."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-					echo "				</td>\n";
-					echo "			</tr>\n";
-				}
+				echo "			<tr>\n";
+				echo "				<td class='vtable'>".$field['username']."</td>\n";
+				echo "				<td>\n";
+				echo "					<a href='v_fax_edit.php?id=".$fax_uuid."&domain_uuid=".$_SESSION['domain_uuid']."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "				</td>\n";
+				echo "			</tr>\n";
 			}
 			echo "			</table>\n";
 
 			echo "			<br />\n";
 			$sql = "SELECT * FROM v_users ";
-			$sql .= "where domain_uuid = '".$domain_uuid."' ";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			echo "			<select name=\"user_uuid\" class='frm'>\n";

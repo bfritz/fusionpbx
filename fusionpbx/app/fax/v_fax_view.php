@@ -42,26 +42,31 @@ else {
 //pre-populate the form
 	if (strlen($_GET['id']) > 0 && $_POST["persistformvar"] != "true") {
 		$fax_uuid = check_str($_GET["id"]);
-		$sql = "";
-		$sql .= "select * from v_fax ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and fax_uuid = '$fax_uuid' ";
-		if (if_group("superadmin")) {
+		if (if_group("superadmin") || if_group("admin")) {
 			//show all fax extensions
-		}
-		else if (if_group("admin")) {
-			//show all fax extensions
+			$sql = "select * from v_fax ";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+			$sql .= "and fax_uuid = '$fax_uuid' ";
 		}
 		else {
 			//show only assigned fax extensions
-			$sql .= "and fax_user_list like '%|".$_SESSION["username"]."|%' ";
+			$sql = "select * from v_fax as f, v_fax_users as u ";
+			$sql .= "where f.fax_uuid = u.fax_uuid ";
+			$sql .= "and f.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+			$sql .= "and f.fax_uuid = '$fax_uuid' ";
+			$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
 		}
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		if (count($result) == 0) {
-			echo "access denied";
-			exit;
+			if (if_group("superadmin") || if_group("admin")) {
+				//allow access
+			}
+			else {
+				echo "access denied";
+				exit;
+			}
 		}
 		foreach ($result as &$row) {
 			//set database fields as variables
@@ -72,7 +77,6 @@ else {
 				$fax_caller_id_name = $row["fax_caller_id_name"];
 				$fax_caller_id_number = $row["fax_caller_id_number"];
 				$fax_forward_number = $row["fax_forward_number"];
-				$fax_user_list = $row["fax_user_list"];
 				$fax_description = $row["fax_description"];
 			//limit to one row
 				break;
@@ -205,24 +209,6 @@ else {
 		if (strlen($fax_forward_number) > 0) {
 			$fax_forward_number = preg_replace("~[^0-9]~", "",$fax_forward_number);
 		}
-
-		//prepare the user list for the database
-		$fax_user_list = check_str(trim($_POST["fax_user_list"]));
-		if (strlen($fax_user_list) > 0) {
-			$fax_user_list_array = explode("\n", $fax_user_list);
-			if (count($fax_user_list_array) == 0) {
-				$fax_user_list = '';
-			}
-			else {
-				$fax_user_list = '|';
-				foreach($fax_user_list_array as $user){
-					if(strlen(trim($user)) > 0) {
-						$fax_user_list .= check_str(trim($user))."|";
-					}
-				}
-			}
-		}
-
 		$fax_description = check_str($_POST["fax_description"]);
 	}
 

@@ -50,7 +50,6 @@ else {
 			$sql .= "delete from v_fax ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and fax_uuid = '$fax_uuid' ";
-			//echo $sql."<br>\n";
 			$db->query($sql);
 			unset($sql);
 
