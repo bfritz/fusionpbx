@@ -4170,7 +4170,7 @@ if (!function_exists('save_call_center_xml')) {
 						$v_queues .= "\n";
 						$v_queues .= "		";
 					}
-					$v_queues .= "<queue name=\"$queue_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain']."\">\n";
+					$v_queues .= "<queue name=\"$queue_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\">\n";
 					$v_queues .= "			<param name=\"strategy\" value=\"$queue_strategy\"/>\n";
 					$v_queues .= "			<param name=\"moh-sound\" value=\"$queue_moh_sound\"/>\n";
 					if (strlen($queue_record_template) > 0) {
@@ -4263,7 +4263,7 @@ if (!function_exists('save_call_center_xml')) {
 						}
 
 					$v_agents .= "<agent ";
-					$v_agents .= "name=\"$agent_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain']."\" ";
+					$v_agents .= "name=\"$agent_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\" ";
 					$v_agents .= "type=\"$agent_type\" ";
 					$v_agents .= "contact=\"$tmp_agent_contact\" ";
 					$v_agents .= "status=\"$agent_status\" ";
@@ -4294,7 +4294,7 @@ if (!function_exists('save_call_center_xml')) {
 						$v_tiers .= "\n";
 						$v_tiers .= "		";
 					}
-					$v_tiers .= "<tier agent=\"$agent_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain']."\" queue=\"$queue_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain']."\" level=\"$tier_level\" position=\"$tier_position\"/>";
+					$v_tiers .= "<tier agent=\"$agent_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\" queue=\"$queue_name@".$_SESSION['domains'][$row["domain_uuid"]]['domain_name']."\" level=\"$tier_level\" position=\"$tier_position\"/>";
 					$x++;
 				}
 
