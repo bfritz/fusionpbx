@@ -993,7 +993,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "'$admin_username', ";
 			$sql .= "'$admin_username' ";
 			$sql .= ")";
-			$db->exec(check_sql($sql));
+			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 
 	//add the user to the superadmin group
