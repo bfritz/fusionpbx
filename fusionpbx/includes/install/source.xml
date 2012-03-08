@@ -2696,7 +2696,7 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/dialplan/v_dialplan_add.php</path> 
+		<path>/mod/dialplan/dialplan_add.php</path> 
 		<last_mod>Sat, 14 Aug 2010 07:01:10 GMT</last_mod> 
 		<md5>3d234f0355ce2c1b332ce504260d568e</md5> 
 		<size>26489</size> 
@@ -4306,7 +4306,7 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/time_conditions/v_dialplan_add.php</path> 
+		<path>/mod/time_conditions/dialplan_add.php</path> 
 		<last_mod>Thu, 15 Jul 2010 05:48:51 GMT</last_mod> 
 		<md5>88d76764c52f555967dd8009149da61a</md5> 
 		<size>41649</size> 

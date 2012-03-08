@@ -49,6 +49,7 @@ else {
 		$condition_field_2 = check_str($_POST["condition_field_2"]);
 		$condition_expression_2 = check_str($_POST["condition_expression_2"]);
 		$gateway = check_str($_POST["gateway"]);
+		$limit = check_str($_POST["limit"]);
 
 		//set the default type
 			$gateway_type = 'gateway';
@@ -178,7 +179,6 @@ else {
 //process the http form values
 	if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//check for all required data
-			if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 			if (strlen($gateway) == 0) { $msg .= "Please provide: Gateway Name<br>\n"; }
 			//if (strlen($gateway_2) == 0) { $msg .= "Please provide: Alternat 1<br>\n"; }
 			//if (strlen($gateway_3) == 0) { $msg .= "Please provide: Alternat 2<br>\n"; }
@@ -186,6 +186,7 @@ else {
 			//if (strlen($dialplan_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 			//if (strlen($condition_field_1) == 0) { $msg .= "Please provide: Condition Field<br>\n"; }
 			//if (strlen($condition_expression_1) == 0) { $msg .= "Please provide: Condition Expression<br>\n"; }
+			//if (strlen($limit) == 0) { $msg .= "Please provide: Limit<br>\n"; }
 			//if (strlen($dialplan_enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
 			//if (strlen($description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 			if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -201,9 +202,6 @@ else {
 				return;
 			}
 
-		//start the atomic transaction
-			$count = $db->exec("BEGIN;"); //returns affected rows
-
 		if (strlen(trim($_POST['dialplan_expression']))> 0) {
 
 			$tmp_array = explode("\n", $_POST['dialplan_expression']);
@@ -216,14 +214,14 @@ else {
 							$tmp_gateway_name = $_SESSION['domains'][$gateway_domain_uuid]['domain_name'] .'-'.$gateway_name;
 						}
 						else {
-							$tmp_gateway_name = $_SESSION['domains'][$domain_uuid]['domain_name'] .'-'.$gateway_name;
+							$tmp_gateway_name = $_SESSION['domains'][$_SESSION['domain_uuid']]['domain_name'] .'-'.$gateway_name;
 						}
 						if (strlen($gateway_2_name) > 0) {
 							if (permission_exists('outbound_route_any_gateway')) {
 								$tmp_gateway_2_name = $_SESSION['domains'][$gateway_2_domain_uuid]['domain_name'] .'-'.$gateway_2_name;
 							}
 							else {
-								$tmp_gateway_2_name = $_SESSION['domains'][$domain_uuid]['domain_name'] .'-'.$gateway_2_name;
+								$tmp_gateway_2_name = $_SESSION['domains'][$_SESSION['domain_uuid']]['domain_name'] .'-'.$gateway_2_name;
 							}
 						}
 						if (strlen($gateway_3_name) > 0) {
@@ -231,7 +229,7 @@ else {
 								$tmp_gateway_3_name = $_SESSION['domains'][$gateway_3_domain_uuid]['domain_name'] .'-'.$gateway_3_name;
 							}
 							else {
-								$tmp_gateway_3_name = $_SESSION['domains'][$domain_uuid]['domain_name'] .'-'.$gateway_3_name;
+								$tmp_gateway_3_name = $_SESSION['domains'][$_SESSION['domain_uuid']]['domain_name'] .'-'.$gateway_3_name;
 							}
 						}
 					}
@@ -389,12 +387,11 @@ else {
 						$bridge_3_data .= "\${enum_auto_route}";
 					}
 					if (strlen($dialplan_order) == 0) {
-						$dialplan_order ='999';
+						$dialplan_order ='333';
 					}
 					$dialplan_context = $_SESSION['context'];
 					$dialplan_continue = 'false';
 					$app_uuid = '8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3';
-					//$dialplan_uuid = v_dialplan_add($domain_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 					//add the main dialplan include entry
 						$dialplan_uuid = uuid();
@@ -412,7 +409,7 @@ else {
 						$sql .= ") ";
 						$sql .= "values ";
 						$sql .= "(";
-						$sql .= "'$domain_uuid', ";
+						$sql .= "'".$_SESSION['domain_uuid']."', ";
 						$sql .= "'$dialplan_uuid', ";
 						$sql .= "'$app_uuid', ";
 						$sql .= "'$dialplan_name', ";
@@ -432,50 +429,50 @@ else {
 					$dialplan_detail_type = 'destination_number';
 					$dialplan_detail_data = $dialplan_expression;
 					$dialplan_detail_order = '005';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = 'sip_h_X-accountcode=${accountcode}';
 					$dialplan_detail_order = '010';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = 'call_direction=outbound';
 					$dialplan_detail_order = '015';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = 'hangup_after_bridge=true';
 					$dialplan_detail_order = '020';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = 'effective_caller_id_name=${outbound_caller_id_name}';
 					$dialplan_detail_order = '025';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = 'effective_caller_id_number=${outbound_caller_id_number}';
 					$dialplan_detail_order = '030';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = 'inherit_codec=true';
 					$dialplan_detail_order = '035';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					if (strlen($bridge_2_data) > 0) {
 						$dialplan_detail_tag = 'action'; //condition, action, antiaction
 						$dialplan_detail_type = 'set';
 						$dialplan_detail_data = 'continue_on_fail=true';
 						$dialplan_detail_order = '040';
-						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+						dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 					}
 
 					if ($gateway_type == "enum" || $gateway_2_type == "enum") {
@@ -483,29 +480,37 @@ else {
 						$dialplan_detail_type = 'enum';
 						$dialplan_detail_data = $prefix_number."$1 e164.org";
 						$dialplan_detail_order = '045';
-						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+						dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					}
+
+					if (strlen($limit) > 0) {
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$field_type = 'limit';
+						$field_data = "db \${domain} outbound ".$limit." !USER_BUSY";
+						$field_order = '050';
+						dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 					}
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'bridge';
 					$dialplan_detail_data = $action_data;
-					$dialplan_detail_order = '050';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					$dialplan_detail_order = '055';
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					if (strlen($bridge_2_data) > 0) {
 						$dialplan_detail_tag = 'action'; //condition, action, antiaction
 						$dialplan_detail_type = 'bridge';
 						$dialplan_detail_data = $bridge_2_data;
-						$dialplan_detail_order = '055';
-						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+						$dialplan_detail_order = '060';
+						dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 					}
 
 					if (strlen($bridge_3_data) > 0) {
 						$dialplan_detail_tag = 'action'; //condition, action, antiaction
 						$dialplan_detail_type = 'bridge';
 						$dialplan_detail_data = $bridge_3_data;
-						$dialplan_detail_order = '060';
-						v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+						$dialplan_detail_order = '065';
+						dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 					}
 
 					unset($bridge_2_data);
@@ -523,9 +528,6 @@ else {
 			//changes in the dialplan may affect routes in the hunt groups
 				save_hunt_group_xml();
 		}
-
-		//commit the atomic transaction
-			$count = $db->exec("COMMIT;"); //returns affected rows
 
 		//synchronize the xml config
 			save_dialplan_xml();
@@ -869,6 +871,17 @@ function type_onchange(dialplan_detail_type) {
 	echo "    <input class='formfld' style='width: 60%;' type='text' name='prefix_number' maxlength='255' value=\"$prefix_number\">\n";
 	echo "<br />\n";
 	echo "Enter a prefix number to add to the beginning of the destination number.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Limit:\n";
+	echo "</td>\n";
+	echo "<td colspan='4' class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='limit' maxlength='255' value=\"$limit\">\n";
+	echo "<br />\n";
+	echo "Enter limit to restrict the number of outbound calls.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

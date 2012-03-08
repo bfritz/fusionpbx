@@ -2337,19 +2337,19 @@ function save_hunt_group_xml() {
 							$dialplan_description = 'fifo '.$row['hunt_group_extension'];
 							$app_uuid = '0610f841-2e27-4c5f-7926-08ab3aad02e0';
 							$dialplan_uuid = uuid();
-							v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+							dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 							$dialplan_detail_tag = 'condition'; //condition, action, antiaction
 							$dialplan_detail_type = 'destination_number';
 							$dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
 							$dialplan_detail_order = '000';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+							dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 							$dialplan_detail_tag = 'action'; //condition, action, antiaction
 							$dialplan_detail_type = 'set';
 							$dialplan_detail_data = 'fifo_music=$${hold_music}';
 							$dialplan_detail_order = '001';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+							dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 							$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
 							$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
@@ -2359,13 +2359,13 @@ function save_hunt_group_xml() {
 							$dialplan_detail_type = 'set';
 							$dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
 							$dialplan_detail_order = '002';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+							dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 							$dialplan_detail_tag = 'action'; //condition, action, antiaction
 							$dialplan_detail_type = 'fifo';
 							$dialplan_detail_data = $row['hunt_group_extension'].'@${domain_name} in';
 							$dialplan_detail_order = '003';
-							v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+							dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 						}
 						if ($action == 'update') {
 							//update the huntgroup fifo
@@ -2403,13 +2403,13 @@ function save_hunt_group_xml() {
 								$dialplan_detail_type = 'destination_number';
 								$dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
 								$dialplan_detail_order = '000';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+								dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 								$dialplan_detail_tag = 'action'; //condition, action, antiaction
 								$dialplan_detail_type = 'set';
 								$dialplan_detail_data = 'fifo_music=$${hold_music}';
 								$dialplan_detail_order = '001';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+								dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 								$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
 								$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
@@ -2419,13 +2419,13 @@ function save_hunt_group_xml() {
 								$dialplan_detail_type = 'set';
 								$dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
 								$dialplan_detail_order = '002';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+								dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 								$dialplan_detail_tag = 'action'; //condition, action, antiaction
 								$dialplan_detail_type = 'fifo';
 								$dialplan_detail_data = $row['hunt_group_extension'].'@${domain_name} in';
 								$dialplan_detail_order = '003';
-								v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+								dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 						}
 
 						save_dialplan_xml();
@@ -2877,7 +2877,7 @@ function save_fax_xml() {
 					$descr = $row['fax_description'];
 					$app_uuid = '24108154-4ac3-1db6-1551-4731703a4440';
 					$dialplan_uuid = uuid();
-					v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $app_uuid);
+					dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $app_uuid);
 
 					//add the dialplan_uuid to the fax
 					$sql = "update v_fax set ";
@@ -2893,7 +2893,7 @@ function save_fax_xml() {
 					$dialplan_detail_type = 'destination_number';
 					$dialplan_detail_data = '^'.$row['fax_extension'].'$';
 					$dialplan_detail_order = '000';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="system" data="$switch_scripts_dir/emailfax.sh USER DOMAIN {$_SESSION['switch']['scripts']['dir']}/fax/inbox/9872/${last_fax}.tif"/>
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
@@ -2908,42 +2908,42 @@ function save_fax_xml() {
 					$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
 
 					$dialplan_detail_order = '005';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="answer" />
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'answer';
 					$dialplan_detail_data = '';
 					$dialplan_detail_order = '010';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					////<action application="set" data="fax_enable_t38=true"/>
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = 'fax_enable_t38=true';
 					$dialplan_detail_order = '015';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					////<action application="set" data="fax_enable_t38_request=true"/>
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = 'fax_enable_t38_request=true';
 					$dialplan_detail_order = '020';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="playback" data="silence_stream://2000"/>
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'playback';
 					$dialplan_detail_data = 'silence_stream://2000';
 					$dialplan_detail_order = '025';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="set" data="last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}"/>
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
 					$dialplan_detail_data = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
 					$dialplan_detail_order = '030';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="rxfax" data="$switch_storage_dir/fax/inbox/${last_fax}.tif"/>
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
@@ -2955,14 +2955,14 @@ function save_fax_xml() {
 						$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
 					}
 					$dialplan_detail_order = '035';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 
 					//<action application="hangup"/>
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'hangup';
 					$dialplan_detail_data = '';
 					$dialplan_detail_order = '040';
-					v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
 				}
 				//unset($fax_uuid);
 			}
@@ -3075,7 +3075,7 @@ function get_recording_filename($id) {
 	unset ($prep_statement);
 }
 
-function v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid) {
+function dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid) {
 	global $db, $db_type;
 	$sql = "insert into v_dialplans ";
 	$sql .= "(";
@@ -3107,7 +3107,7 @@ function v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_
 	unset($sql);
 }
 
-function v_dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data) {
+function dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data) {
 	global $db;
 	$dialplan_detail_uuid = uuid();
 	$sql = "insert into v_dialplan_details ";
@@ -3926,7 +3926,7 @@ if (!function_exists('save_call_center_xml')) {
 								$dialplan_description = $queue_description;
 								$app_uuid = '95788e50-9500-079e-2807-fd530b0ea370';
 								$dialplan_uuid = uuid();
-								v_dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+								dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 								//add the dialplan_uuid to the call center table
 								$sql = "update v_call_center_queues set ";
