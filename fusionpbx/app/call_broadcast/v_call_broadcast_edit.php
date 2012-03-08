@@ -49,7 +49,7 @@ else {
 		$broadcast_description = check_str($_POST["broadcast_description"]);
 		$broadcast_timeout = check_str($_POST["broadcast_timeout"]);
 		$broadcast_concurrent_limit = check_str($_POST["broadcast_concurrent_limit"]);
-		$recording_uuid = check_str($_POST["recording_uuid"]);
+		//$recording_uuid = check_str($_POST["recording_uuid"]);
 		$broadcast_caller_id_name = check_str($_POST["broadcast_caller_id_name"]);
 		$broadcast_caller_id_number = check_str($_POST["broadcast_caller_id_number"]);
 		$broadcast_destination_type = check_str($_POST["broadcast_destination_type"]);
@@ -100,7 +100,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "broadcast_description, ";
 			$sql .= "broadcast_timeout, ";
 			$sql .= "broadcast_concurrent_limit, ";
-			$sql .= "recording_uuid, ";
+			//$sql .= "recording_uuid, ";
 			$sql .= "broadcast_caller_id_name, ";
 			$sql .= "broadcast_caller_id_number, ";
 			$sql .= "broadcast_destination_type, ";
@@ -125,7 +125,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			else {
 				$sql .= "'$broadcast_concurrent_limit', ";
 			}
-			$sql .= "'$recording_uuid', ";
+			//$sql .= "'$recording_uuid', ";
 			$sql .= "'$broadcast_caller_id_name', ";
 			$sql .= "'$broadcast_caller_id_number', ";
 			$sql .= "'$broadcast_destination_type', ";
@@ -160,7 +160,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			else {
 				$sql .= "broadcast_concurrent_limit = '$broadcast_concurrent_limit', ";
 			}
-			$sql .= "recording_uuid = '$recording_uuid', ";
+			//$sql .= "recording_uuid = '$recording_uuid', ";
 			$sql .= "broadcast_caller_id_name = '$broadcast_caller_id_name', ";
 			$sql .= "broadcast_caller_id_number = '$broadcast_caller_id_number', ";
 			$sql .= "broadcast_destination_type = '$broadcast_destination_type', ";
@@ -196,7 +196,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$broadcast_description = $row["broadcast_description"];
 			$broadcast_timeout = $row["broadcast_timeout"];
 			$broadcast_concurrent_limit = $row["broadcast_concurrent_limit"];
-			$recording_uuid = $row["recording_uuid"];
+			//$recording_uuid = $row["recording_uuid"];
 			$broadcast_caller_id_name = $row["broadcast_caller_id_name"];
 			$broadcast_caller_id_number = $row["broadcast_caller_id_number"];
 			$broadcast_destination_type = $row["broadcast_destination_type"];

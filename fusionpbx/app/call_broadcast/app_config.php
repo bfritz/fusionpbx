@@ -51,7 +51,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'call_broadcast_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'broadcast_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'call_broadcast_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
