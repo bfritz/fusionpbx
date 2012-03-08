@@ -71,14 +71,14 @@ if ($action == "update") {
 	$profile['profile_password'] = $profile['password'];
 } else {
  	$profile['dialplan'] = "XML";
-	$profile['context'] = $domain_name;
+	$profile['context'] = $_SESSION['domain_name'];
 	$profile['rtp_ip'] = '$${local_ip_v4}';
 	$profile['ext_rtp_ip'] = '$${external_rtp_ip}';
  	$profile['auto_login'] = "true";
- 	$profile['sasl_type'] = "plain";
+ 	$profile['sasl_type'] = "md5";
  	$profile['tls_enable'] = "true";
  	$profile['usr_rtp_timer'] = "true";
- 	$profile['vad'] = "both";
+ 	$profile['vad'] = "none";
 	$profile['candidate_acl'] = "wan.auto";
  	$profile['local_network_acl'] = "localnet.auto";
 }
