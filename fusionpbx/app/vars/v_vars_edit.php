@@ -53,7 +53,8 @@ else {
 		}
 		$var_enabled = check_str($_POST["var_enabled"]);
 		$var_order = check_str($_POST["var_order"]);
-		$var_description = check_str($_POST["var_description"]);
+		$var_description = $_POST["var_description"];
+		$var_description = str_replace("''", "'", $var_description);
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
