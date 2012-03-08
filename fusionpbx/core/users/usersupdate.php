@@ -93,22 +93,21 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$password = check_str($_POST["password"]);
 	$confirm_password = check_str($_POST["confirm_password"]);
 	$user_status = check_str($_POST["user_status"]);
-	$user_template_name = check_str($_POST["user_template_name"]);
+	//$user_template_name = check_str($_POST["user_template_name"]);
 	$user_time_zone = check_str($_POST["user_time_zone"]);
-	$user_email = check_str($_POST["user_email"]);
+	$contact_uuid = check_str($_POST["contact_uuid"]);
 	$group_member = check_str($_POST["group_member"]);
 
-	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
-	if (strlen($username) == 0) { $msgerror .= "Please provide the username.<br>\n"; }
-	if ($password != $confirm_password) { $msgerror .= "Passwords did not match.<br>\n"; }
-	//if (strlen($user_email) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
-	//if (strlen($user_time_zone) == 0) { $msgerror .= "Please provide an time zone.<br>\n"; }
-
-	if (strlen($msgerror) > 0) {
+	//if (strlen($password) == 0) { $msg_error .= "Password cannot be blank.<br>\n"; }
+	if (strlen($username) == 0) { $msg_error .= "Please provide the username.<br>\n"; }
+	if ($password != $confirm_password) { $msg_error .= "Passwords did not match.<br>\n"; }
+	//if (strlen($contact_uuid) == 0) { $msg_error .= "Please provide an email.<br>\n"; }
+	//if (strlen($user_time_zone) == 0) { $msg_error .= "Please provide an time zone.<br>\n"; }
+	if ($msg_error) {
 		require_once "includes/header.php";
 		echo "<div align='center'>";
 		echo "<table><tr><td>";
-		echo $msgerror;
+		echo $msg_error;
 		echo "</td></tr></table>";
 		echo "<br />\n";
 		require_once "includes/persistform.php";
@@ -146,12 +145,12 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		}
 
 	//if the template has not been assigned by the superadmin
-		if (strlen($_SESSION['domain']['template']['name']) == 0) {
+		//if (strlen($_SESSION['domain']['template']['name']) == 0) {
 			//set the session theme for the active user
-			if ($_SESSION["username"] == $username) {
-				$_SESSION['domain']['template']['name'] = $user_template_name;
-			}
-		}
+		//	if ($_SESSION["username"] == $username) {
+		//		$_SESSION['domain']['template']['name'] = $user_template_name;
+		//	}
+		//}
 
 	//sql update
 		$sql  = "update v_users set ";
@@ -166,9 +165,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				$sql .= "salt = '".$salt."', ";
 		}
 		$sql .= "user_status = '$user_status', ";
-//		$sql .= "user_template_name = '$user_template_name', ";
+		//$sql .= "user_template_name = '$user_template_name', ";
 		$sql .= "user_time_zone = '$user_time_zone', ";
-		$sql .= "user_email = '$user_email' ";
+		if (strlen($contact_uuid) > 0) {
+			$sql .= "contact_uuid = '$contact_uuid' ";
+		}
 		if (strlen($id)> 0) {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and user_uuid = '$id' ";
@@ -189,7 +190,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$response = event_socket_request($fp, $cmd);
 
 	//clear the template so it will rebuild in case the template was changed
-		$_SESSION["template_content"] = '';
+		//$_SESSION["template_content"] = '';
 
 	//redirect the browser
 		require_once "includes/header.php";
@@ -229,9 +230,9 @@ else {
 			$username = $row["username"];
 		}
 		$password = $row["password"];
-		$user_email = $row["user_email"];
+		$contact_uuid = $row["contact_uuid"];
 		$user_status = $row["user_status"];
-		$user_template_name = $row["user_template_name"];
+		//$user_template_name = $row["user_template_name"];
 		$user_time_zone = $row["user_time_zone"];
 		break; //limit to 1 row
 	}
@@ -364,10 +365,16 @@ else {
 	echo "	<th class='th' colspan='2' align='left'>Additional Info</th>\n";
 	echo "	</tr>\n";
 
-	echo "	<tr>";
-	echo "		<td width='30%' class='vncell'>Email:</td>";
-	echo "		<td width='70%' class='vtable'><input type='text' class='formfld' name='user_email' value=\"$user_email\"></td>";
-	echo "	</tr>";
+	if (strlen($contact_uuid) > 0) {
+		echo "	<tr>";
+		echo "		<td width='30%' class='vncell'>Contact:</td>";
+		echo "		<td width='70%' class='vtable'>\n";
+		//echo "			<input type='text' class='formfld' name='contact_uuid' value=\"$contact_uuid\">\n";
+		echo "			<a href=\"/app/contacts/contacts_edit.php?id=$contact_uuid\">View</a>\n";
+		echo "		</td>";
+		echo "	</tr>";
+	}
+
 	if ($_SESSION['user_status_display'] == "false") {
 		//hide the user_status when it is set to false
 	}

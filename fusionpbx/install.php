@@ -941,9 +941,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$db_tmp->commit();
 		unset($tmp);
 
-	//add the superadmin user account
+	//add a user and then add the user to the superadmin group
 		//prepare the values
 			$user_uuid = uuid();
+			$contact_uuid = uuid();
 		//salt used with the password to create a one way hash
 			$salt = generate_password('20', '4');
 		//add the user account
@@ -951,6 +952,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
 			$sql .= "user_uuid, ";
+			$sql .= "contact_uuid, ";
 			$sql .= "username, ";
 			$sql .= "password, ";
 			$sql .= "salt, ";
@@ -961,6 +963,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "(";
 			$sql .= "'".$_SESSION["domain_uuid"]."', ";
 			$sql .= "'$user_uuid', ";
+			$sql .= "'$contact_uuid', ";
 			$sql .= "'".$admin_username."', ";
 			$sql .= "'".md5($salt.$admin_password)."', ";
 			$sql .= "'$salt', ";
@@ -971,6 +974,26 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				fwrite($fp, $sql."\n");
 			}
 			$db_tmp->exec(check_sql($sql));
+			unset($sql);
+
+		//add to contacts
+			$sql = "insert into v_contacts ";
+			$sql .= "(";
+			$sql .= "domain_uuid, ";
+			$sql .= "contact_uuid, ";
+			$sql .= "contact_type, ";
+			$sql .= "contact_name_given, ";
+			$sql .= "contact_nickname ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$domain_uuid', ";
+			$sql .= "'$contact_uuid', ";
+			$sql .= "'user', ";
+			$sql .= "'$admin_username', ";
+			$sql .= "'$admin_username' ";
+			$sql .= ")";
+			$db->exec(check_sql($sql));
 			unset($sql);
 
 	//add the user to the superadmin group

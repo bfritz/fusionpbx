@@ -61,12 +61,12 @@ echo "	<td align=\"center\">\n";
 	else {
 		echo "	<option value='username'>Username</option>\n";
 	}
-	if ($field_name == "user_email") {
-		echo "	<option value='user_email' selected='selected'>Email</option>\n";
-	}
-	else {
-		echo "	<option value='user_email'>Email</option>\n";
-	}
+	//if ($field_name == "user_email") {
+	//	echo "	<option value='user_email' selected='selected'>Email</option>\n";
+	//}
+	//else {
+	//	echo "	<option value='user_email'>Email</option>\n";
+	//}
 	echo "	</select>\n";
 	echo "</td>\n";
 	echo "<td align='left' width='3px'>&nbsp;</td>";
@@ -106,7 +106,7 @@ echo "	<td align=\"center\">\n";
 
 	$sql = "";
 	$sql .= " select * from v_users ";
-	$sql .= " where domain_uuid = '$domain_uuid' ";
+	$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= " and $field_name like '%$field_value%' ";
 	}
@@ -134,7 +134,7 @@ echo "	<td align=\"center\">\n";
 
 	echo "<tr>\n";
 	echo th_order_by('username', 'Username', $order_by, $order);
-	echo th_order_by('user_email', 'Email', $order_by, $order);
+	//echo th_order_by('user_email', 'Email', $order_by, $order);
 	//echo th_order_by('user_template_name', 'Template', $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('user_add')) {
@@ -147,7 +147,7 @@ echo "	<td align=\"center\">\n";
 		foreach($result as $row) {
 			echo "<tr >\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['username']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_email']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_email']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('user_edit')) {
 				echo "		<a href='usersupdate.php?id=".$row['user_uuid']."' alt='edit'>$v_link_label_edit</a>\n";

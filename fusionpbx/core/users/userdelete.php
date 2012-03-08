@@ -75,10 +75,10 @@ else {
 	}
 
 //delete the user
-	$sqldelete = "delete from v_users ";
-	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
-	$sqldelete .= "and user_uuid = '$id' ";
-	if (!$db->exec($sqldelete)) {
+	$sql_delete = "delete from v_users ";
+	$sql_delete .= "where domain_uuid = '$domain_uuid' ";
+	$sql_delete .= "and user_uuid = '$id' ";
+	if (!$db->exec($sql_delete)) {
 		//echo $db->errorCode() . "<br>";
 		$info = $db->errorInfo();
 		print_r($info);
@@ -88,10 +88,10 @@ else {
 	}
 
 //delete the groups the user is assigned to
-	$sqldelete = "delete from v_group_users ";
-	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
-	$sqldelete .= "and username = '$username' ";
-	if (!$db->exec($sqldelete)) {
+	$sql_delete = "delete from v_group_users ";
+	$sql_delete .= "where domain_uuid = '$domain_uuid' ";
+	$sql_delete .= "and username = '$username' ";
+	if (!$db->exec($sql_delete)) {
 		$info = $db->errorInfo();
 		print_r($info);
 	}

@@ -74,7 +74,8 @@ require_once "includes/paging.php";
 			}
 			else {
 				$sql .= "and contact_uuid in (\n";
-				$sql .= "	select contact_uuid from v_contacts where domain_uuid = '$domain_uuid' \n";
+				$sql .= "	select contact_uuid from v_contacts ";
+				$sql .= "	where domain_uuid = '".$_SESSION['domain_uuid']."' \n";
 				$sql .= "	and (\n";
 				$sql .= "	contact_organization like '%".$search_all."%' or \n";
 				$sql .= "	contact_name_given like '%".$search_all."%' or \n";
@@ -134,7 +135,7 @@ require_once "includes/paging.php";
 				$sql .= "	contact_url like '%".$search_all."%' or \n";
 				$sql .= "	contact_time_zone like '%".$search_all."%' or \n";
 				$sql .= "	contact_note like '%".$search_all."%' or \n";
-				$sql .= "	type like '%".$search_all."%'\n";
+				$sql .= "	contact_type like '%".$search_all."%'\n";
 				$sql .= "	)\n";
 				$sql .= ")\n";
 			}

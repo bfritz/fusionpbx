@@ -38,11 +38,10 @@ else {
 $username = check_str($_POST["username"]);
 $password = check_str($_POST["password"]);
 $confirmpassword = check_str($_POST["confirmpassword"]);
-//$user_first_name = check_str($_POST["user_first_name"]);
-//$user_last_name = check_str($_POST["user_last_name"]);
-//$user_company_name = check_str($_POST["user_company_name"]);
+$contact_organization = check_str($_POST["contact_organization"]);
+$contact_name_given = check_str($_POST["contact_name_given"]);
+$contact_name_family = check_str($_POST["contact_name_family"]);
 $user_email = check_str($_POST["user_email"]);
-$user_email_emergency = check_str($_POST["user_email_emergency"]);
 
 if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 
@@ -75,8 +74,9 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 
 	if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
 	if ($password != $confirmpassword) { $msgerror .= "Passwords did not match.<br>\n"; }
-	//if (strlen($user_first_name) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
-	//if (strlen($user_last_name) == 0) { $msgerror .= "Please provide a last name $user_last_name.<br>\n"; }
+	//if (strlen($contact_organization) == 0) { $msgerror .= "Please provide a organization name.<br>\n"; }
+	//if (strlen($contact_name_given) == 0) { $msgerror .= "Please provide a first name.<br>\n"; }
+	//if (strlen($contact_name_family) == 0) { $msgerror .= "Please provide a last name $user_last_name.<br>\n"; }
 	if (strlen($user_email) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
 
 	if (strlen($msgerror) > 0) {
@@ -92,33 +92,60 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 		return;
 	}
 
-	$user_type = 'Individual';
-	$user_category = 'user';
-
 	//salt used with the password to create a one way hash
 	$salt = generate_password('20', '4');
 
+	//prepare the contact uuid
+	$contact_uuid = uuid();
+
+	//add the user
 	$sql = "insert into v_users ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
 	$sql .= "user_uuid, ";
+	$sql .= "contact_uuid, ";
 	$sql .= "username, ";
 	$sql .= "password, ";
 	$sql .= "salt, ";
-	$sql .= "user_email, ";
 	$sql .= "user_add_date, ";
 	$sql .= "user_add_user ";
-	$sql .= ")";
+	$sql .= ") ";
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
 	$sql .= "'".uuid()."', ";
+	$sql .= "'$contact_uuid', ";
 	$sql .= "'$username', ";
 	$sql .= "'".md5($salt.$password)."', ";
 	$sql .= "'".$salt."', ";
-	$sql .= "'$user_email', ";
 	$sql .= "now(), ";
 	$sql .= "'".$_SESSION["username"]."' ";
+	$sql .= ")";
+	$db->exec(check_sql($sql));
+	unset($sql);
+
+	//add to contacts
+	$sql = "insert into v_contacts ";
+	$sql .= "(";
+	$sql .= "domain_uuid, ";
+	$sql .= "contact_uuid, ";
+	$sql .= "contact_type, ";
+	$sql .= "contact_organization, ";
+	$sql .= "contact_name_given, ";
+	$sql .= "contact_name_family, ";
+	$sql .= "contact_nickname, ";
+	$sql .= "contact_email ";
+	$sql .= ") ";
+	$sql .= "values ";
+	$sql .= "(";
+	$sql .= "'$domain_uuid', ";
+	$sql .= "'$contact_uuid', ";
+	$sql .= "'User', ";
+	$sql .= "'$contact_organization', ";
+	$sql .= "'$contact_name_given', ";
+	$sql .= "'$contact_name_family', ";
+	$sql .= "'$username', ";
+	$sql .= "'$user_email' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql);
@@ -191,21 +218,21 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	echo "		<td class='vncellreq'>Confirm Password:</td>";
 	echo "		<td class='vtable'><input type='password' class='formfld' autocomplete='off' name='confirmpassword' value='$confirmpassword'></td>";
 	echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td class='vncellreq'>First Name:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='user_first_name' value='$user_first_name'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td class='vncellreq'>Last Name:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='user_last_name' value='$user_last_name'></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td>Company Name:</td>";
-	//echo "		<td><input type='text' class='formfld' name='user_company_name' value='$user_company_name'></td>";
-	//echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>Email:</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='user_email' value='$user_email'></td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td class='vncell'>First Name:</td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='contact_name_given' value='$contact_name_given'></td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td class='vncell'>Last Name:</td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='contact_name_family' value='$contact_name_family'></td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td class='vncell'>Company Name:</td>";
+	echo "		<td class='vtable'><input type='text' class='formfld' name='contact_organization' value='$contact_organization'></td>";
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";

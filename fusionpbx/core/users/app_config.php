@@ -263,6 +263,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'useremail';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'user_status';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'userstatus';
