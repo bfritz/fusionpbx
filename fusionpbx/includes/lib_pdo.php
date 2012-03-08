@@ -392,15 +392,6 @@ if ($db_type == "pgsql") {
 					date_default_timezone_set($_SESSION['domain']['time_zone']['name']);
 			}
 
-		//recordings add the domain to the path if there is more than one domains
-			if (count($_SESSION["domains"]) > 1) {
-				if (strlen($_SESSION['switch']['recordings']['dir']) > 0) {
-					if (substr($_SESSION['switch']['recordings']['dir'], -strlen($_SESSION["domain_name"])) != $_SESSION["domain_name"]) {
-						$_SESSION['switch']['recordings']['dir'] = $_SESSION['switch']['recordings']['dir'].'/'.$_SESSION["domain_name"];
-					}
-				}
-			}
-
 		//set the context
 			if (strlen($_SESSION["context"]) == 0) {
 				if (count($_SESSION["domains"]) > 1) {
@@ -410,6 +401,31 @@ if ($db_type == "pgsql") {
 					$_SESSION["context"] = 'default';
 				}
 			}
+	}
+
+//recordings add the domain to the path if there is more than one domains
+	if (count($_SESSION["domains"]) > 1) {
+		if (strlen($_SESSION['switch']['recordings']['dir']) > 0) {
+			if (substr($_SESSION['switch']['recordings']['dir'], -strlen($_SESSION["domain_name"])) != $_SESSION["domain_name"]) {
+				//get the default recordings directory
+					$sql = "select * from v_default_settings ";
+					$sql .= "where default_setting_enabled = 'true' ";
+					$sql .= "and default_setting_category = 'switch' ";
+					$sql .= "and default_setting_subcategory = 'recordings' ";
+					$sql .= "and default_setting_name = 'dir' ";
+					$prep_statement = $db->prepare($sql);
+					$prep_statement->execute();
+					$result_default_settings = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+					foreach($result_default_settings as $row) {
+						$name = $row['default_setting_name'];
+						$category = $row['default_setting_category'];
+						$subcategory = $row['default_setting_subcategory'];
+						$switch_recordings_dir = $row['default_setting_value'];
+					}
+				//add the domain
+					$_SESSION['switch']['recordings']['dir'] = $switch_recordings_dir.'/'.$_SESSION["domain_name"];
+			}
+		}
 	}
 
 //set the domain_uuid variable from the session
