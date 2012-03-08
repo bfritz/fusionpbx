@@ -169,7 +169,7 @@ foreach($settings_array as $name => $value) {
 			$sql .= "where e.domain_uuid = '$domain_uuid' ";
 			$sql .= "and e.extension_uuid = u.extension_uuid ";
 			$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
-			$sql .= "and enabled = 'true' ";
+			$sql .= "and e.enabled = 'true' ";
 			$sql .= "order by e.extension asc ";
 			$result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 			if (count($result) > 0) {
@@ -181,8 +181,6 @@ foreach($settings_array as $name => $value) {
 					$_SESSION['user_context'] = $row["user_context"];
 				}
 			}
-//			$user_extension_list = $_SESSION['user_extension_list'];
-//			$ext_array = explode("|",$user_extension_list);
 		//if no extension has been assigned then setting user_context will still need to be set
 			if (strlen($_SESSION['user_context']) == 0) {
 				if (count($_SESSION['domains']) == 1) {
@@ -3107,7 +3105,7 @@ function dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_or
 	unset($sql);
 }
 
-function dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data) {
+function dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data) {
 	global $db;
 	$dialplan_detail_uuid = uuid();
 	$sql = "insert into v_dialplan_details ";
