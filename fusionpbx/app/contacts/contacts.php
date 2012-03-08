@@ -53,7 +53,7 @@ require_once "includes/paging.php";
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
 	echo "	<td align=\"left\" valign=\"top\"><strong>Contacts</strong><br>\n";
-	echo "		The contact is a list of individuals and contact_organizations.\n";
+	echo "		The contact is a list of individuals and organizations.\n";
 	echo "	</td>\n";
 	echo "	<td align=\"right\" valign=\"top\">\n";
 	echo "		<form method=\"GET\" name=\"frm_search\" action=\"\">\n";

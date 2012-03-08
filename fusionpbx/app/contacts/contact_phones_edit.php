@@ -166,10 +166,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap='nowrap'><b>Contacts Tel Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>Contacts Phone Add</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap='nowrap'><b>Contacts Tel Edit</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>Contacts Phone Edit</b></td>\n";
 	}
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='contacts_edit.php?id=$contact_uuid'\" value='Back'></td>\n";
 	echo "</tr>\n";
