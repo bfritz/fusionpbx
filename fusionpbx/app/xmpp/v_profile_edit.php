@@ -40,7 +40,7 @@ else {
 
 require_once "includes/header.php";
 
-$domain_name = $_SESSION['domains'][$domain_uuid]['domain_name'];
+$domain_name = $_SESSION['domains'][$_SESSION['domain_uuid']]['domain_name'];
 
 //add or update the database
 if (isset($_REQUEST["id"])) {
@@ -50,13 +50,10 @@ if (isset($_REQUEST["id"])) {
 	$action = "add";
 }
 
-
 if ($action == "update") {
-
-//get a list of assigned extensions for this user
 	$sql = "";
 	$sql .= "select * from v_xmpp ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$sql .= "and xmpp_profile_uuid = '$profile_id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -72,7 +69,7 @@ if ($action == "update") {
 	unset ($prep_statement);
 	$profile['profile_username'] = $profile['username'];
 	$profile['profile_password'] = $profile['password'];
-} else { 
+} else {
  	$profile['dialplan'] = "XML";
 	$profile['context'] = $domain_name;
 	$profile['rtp_ip'] = '$${local_ip_v4}';
@@ -96,7 +93,7 @@ foreach ($_REQUEST as $field => $data){
 	$request[$field] = check_str($data);
 }
 
-// DataChecking Goes Here
+// check the data
 $error = "";
 if (strlen($request['profile_name']) < 1) $error .= "Profile name is a Required Field<br />\n";
 if (strlen($request['profile_username']) < 1) $error .= "Username is a Required Field<br />\n";
@@ -136,13 +133,18 @@ if ($action == "add" && permission_exists('xmpp_add')) {
 	$sql .= "description, ";
 	$sql .= "enabled ";
 	$sql .= ") values (";
-	$sql .= "'" . $domain_uuid . "', ";
+	$sql .= "'" . $_SESSION['domain_uuid'] . "', ";
 	$sql .= "'" . $xmpp_profile_uuid . "', ";
 	$sql .= "'" . $request['profile_name'] . "', ";
  	$sql .= "'" . $request['profile_username'] . "', ";
  	$sql .= "'" . $request['profile_password'] . "', ";
  	$sql .= "'" . $request['dialplan'] . "', ";
- 	$sql .= "'" . $request['context'] . "', ";
+	if (if_group("superadmin") && $request['context']) {
+		$sql .= "'" . $request['context'] . "', ";
+	}
+	else {
+		$sql .= "'" . $_SESSION['context'] . "', ";
+	}
  	$sql .= "'" . $request['rtp_ip'] . "', ";
  	$sql .= "'" . $request['ext_rtp_ip'] . "', ";
  	$sql .= "'" . $request['auto_login'] . "', ";
@@ -169,7 +171,12 @@ elseif ($action == "update" && permission_exists('xmpp_edit')) {
 	$sql .= "username = '" . $request['profile_username'] . "', ";
 	$sql .= "password = '" . $request['profile_password'] . "', ";
 	$sql .= "dialplan = '" . $request['dialplan'] . "', ";
-	$sql .= "context = '" . $request['context'] . "', ";
+	if (if_group("superadmin") && $request['context']) {
+		$sql .= "context = '" . $request['context'] . "', ";
+	}
+	else {
+		$sql .= "context = '" . $_SESSION["context"] . "', ";
+	}
 	$sql .= "rtp_ip = '" . $request['rtp_ip'] . "', ";
 	$sql .= "ext_rtp_ip = '" . $request['ext_rtp_ip'] . "', ";
 	$sql .= "auto_login = '" . $request['auto_login'] . "', ";

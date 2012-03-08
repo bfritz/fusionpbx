@@ -135,6 +135,7 @@ function hide_advanced_config() {
 		<div id="show_advanced" style="display:none"> 
 			<table width="100%" border="0" cellpadding="6" cellspacing="0"> 
 				<tr>
+				<?php if (if_group("superadmin")) { ?>
 					<td class='vncellreq' valign='top' align='left' nowrap='nowrap'> 
 						Context:
 					</td> 
@@ -144,7 +145,7 @@ function hide_advanced_config() {
 						Enter the context here.
 					</td> 
 					</tr>
-
+				<?php }	?>
 					<tr> 
 					<td class='vncellreq' valign='top' align='left' nowrap='nowrap'> 
 						RTP IP:
