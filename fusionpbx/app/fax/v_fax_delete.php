@@ -42,8 +42,16 @@ else {
 //delete the fax extension
 	if (strlen($fax_uuid)>0) {
 
-		//start the atomic transaction
-			$count = $db->exec("BEGIN;");
+		//get the dialplan uuid
+			$sql = "";
+			$sql .= "select * from v_fax ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql .= "and fax_uuid = '$fax_uuid' ";
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
+				$dialplan_uuid = $row['dialplan_uuid'];
+			}
 
 		//delete the fax entry
 			$sql = "";
@@ -52,37 +60,6 @@ else {
 			$sql .= "and fax_uuid = '$fax_uuid' ";
 			$db->query($sql);
 			unset($sql);
-
-		//get the dialplan info
-			$sql = "";
-			$sql .= "select * from v_fax ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and fax_uuid = '$fax_uuid' ";
-			$prep_statement_2 = $db->prepare($sql);
-			$prep_statement_2->execute();
-			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-				$dialplan_uuid = check_str($row2['dialplan_uuid']);
-			}
-
-		//get the dialplan info
-			/*
-			$sql = "";
-			$sql .= "select * from v_dialplans ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
-			$prep_statement_2 = $db->prepare($sql);
-			$prep_statement_2->execute();
-			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-				$dialplan_name = check_str($row2['dialplan_name']);
-				$dialplan_order = $row2['dialplan_order'];
-				$dialplan_context = $row2['dialplan_context'];
-				if (file_exists($_SESSION['switch']['dialplan']['dir']."/".$dialplan_context."/".$dialplan_order."_".$dialplan_name.".xml")){
-					unlink($_SESSION['switch']['dialplan']['dir']."/".$dialplan_context."/".$dialplan_order."_".$dialplan_name.".xml");
-				}
-				break; //limit to 1 row
-			}
-			unset ($sql, $prep_statement_2);
-			*/
 
 		//delete the dialplan entry
 			$sql = "";
@@ -102,11 +79,11 @@ else {
 			$db->query($sql);
 			unset($sql);
 
-		//commit the atomic transaction
-			$count = $db->exec("COMMIT;");
-
 		//syncrhonize configuration
-			save_fax_xml();
+			save_dialplan_xml();
+		
+		//apply settings reminder
+			$_SESSION["reload_xml"] = true;
 	}
 
 //redirect the user

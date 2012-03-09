@@ -2813,246 +2813,6 @@ function save_hunt_group_xml() {
 } //end huntgroup function lua
 
 
-function save_fax_xml() {
-	global $domain_uuid, $db;
-
-	$sql = "";
-	$sql .= "select * from v_fax ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	foreach ($result as &$row) {
-		//get the fax information such as the name and description
-			//$row['fax_uuid']
-			//$row['fax_extension']
-			//$row['fax_name']
-			//$row['fax_email']
-			//$row['fax_pin_number']
-			//$row['fax_caller_id_name']
-			//$row['fax_caller_id_number']
-			//$row['fax_description']
-
-		//determine if the entry should be an add, or update to the dialplan 
-		if (strlen($row['fax_uuid']) > 0) {
-			$action = 'add'; //set default action to add
-
-			$sql = "";
-			$sql .= "select * from v_dialplans ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-			$prep_statement_2 = $db->prepare($sql);
-			$prep_statement_2->execute();
-			while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-				$action = 'update';
-
-				$dialplan_uuid = $row2['dialplan_uuid'];
-				$dialplan_name = check_str($row2['dialplan_name']);
-				$order = $row2['order'];
-				$context = $row2['context'];
-				$enabled = $row2['enabled'];
-				$descr = check_str($row2['descr']);
-				$id = $i;
-
-				if (file_exists($_SESSION['switch']['dialplan']['dir']."/".$order."_".$dialplan_name.".xml")){
-					unlink($_SESSION['switch']['dialplan']['dir']."/".$order."_".$dialplan_name.".xml");
-				}
-
-				break; //limit to 1 row
-			}
-			unset ($sql, $prep_statement_2);
-
-/*
-			if ($action == 'add') {
-				//$faxid = $row['fax_uuid'];
-				if (strlen($row['fax_name']) > 0) {
-
-					//create an extension in the dialplan
-					$dialplan_name = $row['fax_name'];
-					$dialplan_order ='999';
-					$dialplan_context = $_SESSION['context'];
-					$enabled = 'true';
-					$descr = $row['fax_description'];
-					$app_uuid = '24108154-4ac3-1db6-1551-4731703a4440';
-					$dialplan_uuid = uuid();
-					dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $context, $enabled, $descr, $app_uuid);
-
-					//add the dialplan_uuid to the fax
-					$sql = "update v_fax set ";
-					$sql .= "dialplan_uuid = '$dialplan_uuid', ";
-					$sql .= "where domain_uuid = '$domain_uuid' ";
-					$sql .= "and fax_uuid = '".$row['fax_uuid']."' ";
-					$db->exec(check_sql($sql));
-					unset($sql);
-
-					//<!-- default ${domain_name} -->
-					//<condition field="destination_number" expression="^\*9978$">
-					$dialplan_detail_tag = 'condition'; //condition, action, antiaction
-					$dialplan_detail_type = 'destination_number';
-					$dialplan_detail_data = '^'.$row['fax_extension'].'$';
-					$dialplan_detail_order = '000';
-					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-					//<action application="system" data="$switch_scripts_dir/emailfax.sh USER DOMAIN {$_SESSION['switch']['scripts']['dir']}/fax/inbox/9872/${last_fax}.tif"/>
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'set';
-					$dialplan_detail_data = "api_hangup_hook=system ".PHP_BINDIR."/".$php_exe." ".$v_secure."/fax_to_email.php ";
-					$dialplan_detail_data .= "email=".$row['fax_email']." ";
-					$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
-					$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
-					$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-					$dialplan_detail_data .= "domain=".$_SESSION['domain_name']." ";
-					$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
-					$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
-
-					$dialplan_detail_order = '005';
-					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-					//<action application="answer" />
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'answer';
-					$dialplan_detail_data = '';
-					$dialplan_detail_order = '010';
-					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-					////<action application="set" data="fax_enable_t38=true"/>
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'set';
-					$dialplan_detail_data = 'fax_enable_t38=true';
-					$dialplan_detail_order = '015';
-					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-					////<action application="set" data="fax_enable_t38_request=true"/>
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'set';
-					$dialplan_detail_data = 'fax_enable_t38_request=true';
-					$dialplan_detail_order = '020';
-					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-					//<action application="playback" data="silence_stream://2000"/>
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'playback';
-					$dialplan_detail_data = 'silence_stream://2000';
-					$dialplan_detail_order = '025';
-					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-					//<action application="set" data="last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}"/>
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'set';
-					$dialplan_detail_data = 'last_fax=${caller_id_number}-${strftime(%Y-%m-%d-%H-%M-%S)}';
-					$dialplan_detail_order = '030';
-					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-					//<action application="rxfax" data="$switch_storage_dir/fax/inbox/${last_fax}.tif"/>
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'rxfax';
-					if (count($_SESSION["domains"]) > 1) {
-						$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain_name'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
-					}
-					else {
-						$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
-					}
-					$dialplan_detail_order = '035';
-					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-
-					//<action application="hangup"/>
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'hangup';
-					$dialplan_detail_data = '';
-					$dialplan_detail_order = '040';
-					dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
-				}
-				//unset($fax_uuid);
-			}
-			if ($action == 'update') {
-				$dialplan_name = $row['fax_name'];
-				$dialplan_order = $order;
-				$context = $context;
-				$enabled = $enabled;
-				$descr = $row['fax_description'];
-
-				$sql = "";
-				$sql = "update v_dialplans set ";
-				$sql .= "dialplan_name = '$dialplan_name', ";
-				if (strlen($dialplan_order) > 0) {
-					$sql .= "dialplan_order = '$dialplan_order', ";
-				}
-				$sql .= "context = '$context', ";
-				$sql .= "enabled = '$enabled', ";
-				$sql .= "descr = '$descr' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-
-				$db->query($sql);
-				unset($sql);
-
-				//update the condition
-				$sql = "";
-				$sql = "update v_dialplan_details set ";
-				$sql .= "dialplan_detail_data = '^".$row['fax_extension']."$' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_detail_tag = 'condition' ";
-				$sql .= "and dialplan_detail_type = 'destination_number' ";
-				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-				$db->query($sql);
-				unset($sql);
-
-				//update the action
-				if (count($_SESSION["domains"]) > 1) {
-					$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domains'][$row['domain_uuid']]['domain_name'].'/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
-				}
-				else {
-					$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$row['fax_extension'].'/inbox/${last_fax}.tif';
-				}
-				$sql = "";
-				$sql = "update v_dialplan_details set ";
-				$sql .= "dialplan_detail_data = '".$dialplan_detail_data."' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_detail_tag = 'action' ";
-				$sql .= "and dialplan_detail_type = 'rxfax' ";
-				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-				$db->query($sql);
-
-				//update the action
-				$dialplan_detail_tag = 'action'; //condition, action, antiaction
-				$dialplan_detail_type = 'set';
-				$dialplan_detail_data = "api_hangup_hook=system ".PHP_BINDIR."/".$php_exe." ".$v_secure."/fax_to_email.php ";
-				$dialplan_detail_data .= "email=".$row['fax_email']." ";
-				$dialplan_detail_data .= "extension=".$row['fax_extension']." ";
-				$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
-				$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
-				$dialplan_detail_data .= "domain=".$_SESSION['domain_name']." ";
-				$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
-				$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
-				$sql = "";
-				$sql = "update v_dialplan_details set ";
-				$sql .= "dialplan_detail_data = '".check_str($dialplan_detail_data)."' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and dialplan_detail_tag = 'action' ";
-				$sql .= "and dialplan_detail_type = 'set' ";
-				$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-				$sql .= "and dialplan_detail_data like 'api_hangup_hook=%' ";
-				$db->query(check_sql($sql));
-
-				unset($dialplan_name);
-				unset($order);
-				unset($context);
-				unset($enabled);
-				unset($descr);
-				unset($dialplan_uuid);
-				unset($id);
-			}
-*/
-			save_dialplan_xml();
-			unset($dialplanincludeid);
-		} //end if strlen fax_uuid; add the fax to the dialplan
-	} //end if result
-
-	//apply settings reminder
-		$_SESSION["reload_xml"] = true;
-} //end fax function
-
-
 function get_recording_filename($id) {
 	global $domain_uuid, $db;
 	$sql = "";
@@ -3066,7 +2826,6 @@ function get_recording_filename($id) {
 		//$filename = $row["filename"];
 		//$recording_name = $row["recording_name"];
 		//$recording_uuid = $row["recording_uuid"];
-		//$descr = $row["descr"];
 		return $row["filename"];
 		break; //limit to 1 row
 	}
@@ -4332,14 +4091,14 @@ if (!function_exists('switch_conf_xml')) {
 			$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/autoload_configs/switch.conf.xml");
 
 		//prepare the php variables
-			if (file_exists(PHP_BINDIR.'/php')) { $php_bin = 'php'; }
-			if (file_exists(PHP_BINDIR.'/php.exe')) { $php_bin = 'php.exe'; }
+			if (file_exists(PHP_BINDIR.'/php')) { PHP_BIN = 'php'; }
+			if (file_exists(PHP_BINDIR.'/php.exe')) { PHP_BIN = 'php.exe'; }
 			if (stristr(PHP_OS, 'WIN')) {
-				$v_mailer_app = PHP_BINDIR."/".$php_bin."";
-				$v_mailer_app_args = "".$v_secure."/v_mailto.php -t";
+				$v_mailer_app = PHP_BINDIR."/".PHP_BIN;
+				$v_mailer_app_args = $v_secure."/v_mailto.php -t";
 			}
 			else {
-				$v_mailer_app = PHP_BINDIR."/".$php_bin." ".$v_secure."/v_mailto.php";
+				$v_mailer_app = PHP_BINDIR."/".PHP_BIN." ".$v_secure."/v_mailto.php";
 				$v_mailer_app_args = "-t";
 			}
 
