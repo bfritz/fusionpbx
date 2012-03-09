@@ -131,7 +131,7 @@ function process_xml_cdr($db, $leg, $xml_string) {
 		unset($x);
 
 	//store the call leg
-		$database->fields['caller_id_number'] = $leg;
+		$database->fields['leg'] = $leg;
 
 	//store the call direction.
 		$database->fields['direction'] = check_str(urldecode($xml->variables->call_direction));
@@ -146,7 +146,7 @@ function process_xml_cdr($db, $leg, $xml_string) {
 		$tmp_day = date("d", $tmp_time);
 
 	//find the domain_uuid by using the domain_name
-		$domain_name = check_str(urldecode($xml->variables->domain));
+		$domain_name = check_str(urldecode($xml->variables->domain_name));
 		$sql = "select domain_uuid from v_domains ";
 		if (strlen($domain_name) == 0 && $context != 'public' && $context != 'default') {
 			$sql .= "where domain_name = '".$context."' ";
@@ -206,6 +206,9 @@ function process_xml_cdr($db, $leg, $xml_string) {
 
 	//insert xml_cdr into the db
 		$database->add();
+		if ($debug) {
+			echo $database->sql."\n";
+		}
 
 	//insert the values
 		if (strlen($uuid) > 0) {
@@ -347,8 +350,8 @@ function process_xml_cdr($db, $leg, $xml_string) {
 	if ($debug) {
 		$content = ob_get_contents(); //get the output from the buffer
 		ob_end_clean(); //clean the buffer
-		$time="\n\n$insert_count inserts in: ".number_format($insert_time,5). " seconds.\n";
-		$time.="Other processing time: ".number_format((microtime(true)-$time5-$insert_time),5). " seconds.\n";
+		$time = "\n\n$insert_count inserts in: ".number_format($insert_time,5). " seconds.\n";
+		$time .= "Other processing time: ".number_format((microtime(true)-$time5-$insert_time),5). " seconds.\n";
 		$fp = fopen('/tmp/xml_cdr_post.log', 'w');
 		fwrite($fp, $content.$time);
 		fclose($fp);
