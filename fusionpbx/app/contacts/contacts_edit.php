@@ -305,6 +305,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		else {
 			echo "	<option value='provider'>Provider</option>\n";
 		}
+		if ($contact_type == "user") { 
+			echo "	<option value='user' selected='selected' >User</option>\n";
+		}
+		else {
+			echo "	<option value='user'>User</option>\n";
+		}
 		if ($contact_type == "volunteer") { 
 			echo "	<option value='volunteer' selected='selected' >Volunteer</option>\n";
 		}
