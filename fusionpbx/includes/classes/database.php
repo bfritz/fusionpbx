@@ -39,6 +39,7 @@ include "root.php";
 			public $offset;
 			public $fields;
 			public $count;
+			public $sql;
 
 			public function connect() {
 				//include config.php
@@ -276,14 +277,25 @@ include "root.php";
 					$i = 1;
 					foreach($this->fields as $name => $value) {
 						if (count($this->fields) == $i) {
-							$sql .= "'".$value."' ";
+							if (strlen($value) > 0) {
+								$sql .= "'".$value."' ";
+							}
+							else {
+								$sql .= "'".$value."' ";
+							}
 						}
 						else {
-							$sql .= "'".$value."', ";
+							if (strlen($value) > 0) {
+								$sql .= "'".$value."', ";
+							}
+							else {
+								$sql .= "null, ";
+							}
 						}
 						$i++;
 					}
 					$sql .= ")";
+					$this->sql = $sql;
 					$this->db->exec($sql);
 					unset($this->fields);
 					unset($sql);
