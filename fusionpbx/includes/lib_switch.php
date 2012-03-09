@@ -76,7 +76,7 @@ require_once "includes/require.php";
 
 /*
 function v_settings() {
-	global $db, $domain_uuid, $v_secure;
+	global $db, $domain_uuid;
 
 	//get the program directory
 		$program_dir = '';
@@ -194,9 +194,9 @@ foreach($settings_array as $name => $value) {
 
 if ($db_type == "sqlite") {
 	//sqlite: check if call detail record (CDR) db file exists if not create it
-	if (!file_exists($dbfilepath.'/'.$server_name.'.cdr.db')) {
+	if (!file_exists($db_file_path.'/'.$server_name.'.cdr.db')) {
 		//echo "file does not exist: ".$_SESSION['switch']['db']['dir'].'/cdr.db';
-		if (copy($dbfilepath.'/cdr.clean.db', $dbfilepath.'/'.$server_name.'.cdr.db')) {
+		if (copy($db_file_path.'/cdr.clean.db', $db_file_path.'/'.$server_name.'.cdr.db')) {
 			//echo "copy succeeded.\n";
 		}
 	}
@@ -1476,7 +1476,7 @@ function save_setting_xml() {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach ($result as &$row) {
-			$fout = fopen($v_secure."/v_config_cli.php","w");
+			$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/v_config_cli.php","w");
 			$tmp_xml = "<?php\n";
 			$tmp_xml .= "\n";
 			$tmp_xml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
@@ -1498,7 +1498,7 @@ function save_setting_xml() {
 			$tmp_xml .= "//set system dir variables\n";
 			$tmp_xml .= "	\$switch_storage_dir = \"".$_SESSION['switch']['storage']['dir']."\";\n";
 			$tmp_xml .= "	\$tmp_dir = \"".$tmp_dir."\";\n";
-			$tmp_xml .= "	\$v_secure = \"".$v_secure."\";\n";
+			$tmp_xml .= "	\$v_secure = \"".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure"."\";\n";
 			$tmp_xml .= "\n";
 			$tmp_xml .= "?>";
 			fwrite($fout, $tmp_xml);
@@ -4095,10 +4095,10 @@ if (!function_exists('switch_conf_xml')) {
 			if (file_exists(PHP_BINDIR.'/php.exe')) { PHP_BIN = 'php.exe'; }
 			if (stristr(PHP_OS, 'WIN')) {
 				$v_mailer_app = PHP_BINDIR."/".PHP_BIN;
-				$v_mailer_app_args = $v_secure."/v_mailto.php -t";
+				$v_mailer_app_args = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/v_mailto.php -t";
 			}
 			else {
-				$v_mailer_app = PHP_BINDIR."/".PHP_BIN." ".$v_secure."/v_mailto.php";
+				$v_mailer_app = PHP_BINDIR."/".PHP_BIN." ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/v_mailto.php";
 				$v_mailer_app_args = "-t";
 			}
 

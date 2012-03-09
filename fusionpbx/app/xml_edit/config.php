@@ -32,10 +32,10 @@ $applicationname = 'Edit';
 $bodyoptions = "";
 
 $dbfilename = "clip.db";
-$dbfilepath = PROJECT_PATH."/xml_edit/";
+$db_file_path = PROJECT_PATH."/xml_edit/";
 
 //$temp = $_ENV["TEMP"]."\\";
-if (is_writable($dbfilepath.$dbfilename)) { //is writable
+if (is_writable($db_file_path.$dbfilename)) { //is writable
 	//use database in current location
 	echo "yes";
 }
@@ -43,13 +43,13 @@ else { //not writable
     /*
     //running from a non writable location so copy to temp directory
     if (file_exists($temp.$dbfilename)) {
-       $dbfilepath = $temp; //file already exists use existing file
+       $db_file_path = $temp; //file already exists use existing file
     }
     else { //file doese not exist
         //copy the file to the temp dir
-        if (copy($dbfilepath.$dbfilename, $temp.$dbfilename)) {
+        if (copy($db_file_path.$dbfilename, $temp.$dbfilename)) {
            //echo "copy succeeded.\n";
-           $dbfilepath = $temp;
+           $db_file_path = $temp;
         }
         else {
             echo "Copy Failed ";
@@ -140,7 +140,7 @@ try {
     } //end function
 
 /*
-    $db = new PDO('sqlite:'.$dbfilepath.$dbfilename); //sqlite 3
+    $db = new PDO('sqlite:'.$db_file_path.$dbfilename); //sqlite 3
     //bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
     $db->sqliteCreateFunction('md5', 'phpmd5', 1);
     //$db->sqliteCreateFunction('unix_timestamp', 'phpunix_timestamp', 1);

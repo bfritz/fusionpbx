@@ -59,9 +59,9 @@ else {
 	//set the database type
 		$db_dest_type = 'mysql'; //sqlite, mysql, pgsql, others with a manually created PDO connection
 
-	//sqlite: the dbfilename and dbfilepath are automatically assigned however the values can be overidden by setting the values here.
+	//sqlite: the dbfilename and db_file_path are automatically assigned however the values can be overidden by setting the values here.
 		//$dbfilename = 'fusionpbx.db'; //host name/ip address + '.db' is the default database filename
-		//$dbfilepath = '/var/www/voip.fusionpbx.com/secure'; //the path is determined by a php variable
+		//$db_file_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure'; //the path is determined by a php variable
 
 	//mysql: database connection information
 		$db_host = '127.0.0.1'; //set the host only if the database is not local

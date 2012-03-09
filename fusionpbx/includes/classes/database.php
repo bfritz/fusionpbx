@@ -63,7 +63,7 @@ include "root.php";
 					if (isset($dbname) > 0) { $db_name = $dbname; }
 					if (isset($dbusername) > 0) { $db_username = $dbusername; }
 					if (isset($dbpassword) > 0) { $db_password = $dbpassword; }
-					if (isset($dbfilepath) > 0) { $db_path = $dbfilepath; }
+					if (isset($dbfilepath) > 0) { $db_path = $db_file_path; }
 					if (isset($dbfilename) > 0) { $db_name = $dbfilename; }
 
 				if ($this->db_type == "sqlite") {

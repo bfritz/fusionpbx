@@ -61,7 +61,7 @@ function byte_convert( $bytes ) {
 */
 
 function php_services_sync_package_php() {
-	global $db, $domain_uuid, $startup_script_dir, $v_secure, $tmp_dir;
+	global $db, $domain_uuid, $startup_script_dir, $tmp_dir;
 	$sql = "";
 	$sql .= "select * from v_php_services ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -78,7 +78,7 @@ function php_services_sync_package_php() {
 
 		if ($row['service_enabled'] == "false") {
 			//delete the php service file
-				unlink($v_secure.'/php_service_'.$tmp_service_name.'.php');
+				unlink($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure/php_service_'.$tmp_service_name.'.php');
 			//delete the start up script
 				unlink($startup_script_dir.'/php_service_'.$tmp_service_name.'.sh');
 			//delete the pid file
@@ -134,13 +134,13 @@ function php_services_sync_package_php() {
 				$tmp .= "\n";
 				$tmp .= "?>";
 
-				$fout = fopen($v_secure."/".$php_service_file,"w");
+				$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure/'.$php_service_file,"w");
 				fwrite($fout, $tmp);
 				unset($tmp);
 				fclose($fout);
 
 			//add execute permissions to the php service script
-				chmod($v_secure."/".$php_service_file, 0776);
+				chmod($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure/'.$php_service_file, 0776);
 
 			//write the start up script
 				// CYGWIN_NT-5.1
@@ -168,14 +168,14 @@ function php_services_sync_package_php() {
 					$tmp .= "# by the PHP Service handler.\n";
 					$tmp .= "# \n";
 					$tmp .= "# Copy this script to the startup directory.\n";
-					$tmp .= "# cp -a ".$v_secure."/php_service_".$tmp_service_name.".sh ".$startup_script_dir."/php_service_".$tmp_service_name.".sh";
+					$tmp .= "# cp -a ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/php_service_".$tmp_service_name.".sh ".$startup_script_dir."/php_service_".$tmp_service_name.".sh";
 					$tmp .= "# \n";
 					$tmp .= "# Usage: ./php_service_".$tmp_service_name.".sh {start|stop|restart}\n";
 					$tmp .= "# ".$startup_script_dir."/./php_service_".$tmp_service_name.".sh start";
 					$tmp .= "\n";
 					$tmp .= "\n";
 					$tmp .= "rc_start() {\n";
-					$tmp .= "	".PHP_BINDIR."/php ".$v_secure."/".$php_service_file." >> /var/log/php_service_".$tmp_service_name.".log &\n";
+					$tmp .= "	".PHP_BINDIR."/php ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/".$php_service_file." >> /var/log/php_service_".$tmp_service_name.".log &\n";
 					$tmp .= "}\n";
 					$tmp .= "\n";
 					$tmp .= "rc_stop() {\n";
@@ -201,13 +201,13 @@ function php_services_sync_package_php() {
 					$tmp .= "		exit 1\n";
 					$tmp .= "		;;\n";
 					$tmp .= "esac\n";
-					$fout = fopen($v_secure."/php_service_".$tmp_service_name.".sh","w");
+					$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/php_service_".$tmp_service_name.".sh","w");
 					fwrite($fout, $tmp);
 					unset($tmp);
 					fclose($fout);
 
 					//add execute permissions to the start script
-						chmod($v_secure."/php_service_".$tmp_service_name.".sh", 0755);
+						chmod($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/php_service_".$tmp_service_name.".sh", 0755);
 
 					break;
 				default:
@@ -222,14 +222,14 @@ function php_services_sync_package_php() {
 					$tmp .= "# by the PHP Service handler.\n";
 					$tmp .= "# \n";
 					$tmp .= "# Copy this script to the startup directory.\n";
-					$tmp .= "# cp -a ".$v_secure."/php_service_".$tmp_service_name.".sh ".$startup_script_dir."/php_service_".$tmp_service_name.".sh";
+					$tmp .= "# cp -a ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/php_service_".$tmp_service_name.".sh ".$startup_script_dir."/php_service_".$tmp_service_name.".sh";
 					$tmp .= "# \n";
 					$tmp .= "# Usage: ./php_service_".$tmp_service_name.".sh {start|stop|restart}\n";
 					$tmp .= "# ".$startup_script_dir."/./php_service_".$tmp_service_name.".sh start";
 					$tmp .= "\n";
 					$tmp .= "\n";
 					$tmp .= "rc_start() {\n";
-					$tmp .= "	".PHP_BINDIR."/php ".$v_secure."/".$php_service_file." >> /var/log/".tmp_service_name.".log &\n";
+					$tmp .= "	".PHP_BINDIR."/php ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/".$php_service_file." >> /var/log/".tmp_service_name.".log &\n";
 					$tmp .= "}\n";
 					$tmp .= "\n";
 					$tmp .= "rc_stop() {\n";
@@ -257,13 +257,13 @@ function php_services_sync_package_php() {
 					$tmp .= "esac\n";
 					$tmp .= "\n";
 					$tmp .= "exit 0";
-					$fout = fopen($v_secure."/php_service_".$tmp_service_name.".sh","w");
+					$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/php_service_".$tmp_service_name.".sh","w");
 					fwrite($fout, $tmp);
 					unset($tmp);
 					fclose($fout);
 
 					//add execute permissions to the start script
-						chmod($v_secure."/php_service_".$tmp_service_name.".sh", 0755);
+						chmod($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/php_service_".$tmp_service_name.".sh", 0755);
 				}
 		} //end if enabled
 	}

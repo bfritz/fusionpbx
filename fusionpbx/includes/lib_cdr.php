@@ -38,10 +38,10 @@ if ($db_type == "sqlite") {
 		else {
 			$dbfilenameshort = $dbfilename;
 		}
-		$dbfilepath = str_replace("\\", "/", $dbfilepath);
+		$db_file_path = str_replace("\\", "/", $db_file_path);
 
 
-		if (file_exists($dbfilepath.'/'.$dbfilename)) {
+		if (file_exists($db_file_path.'/'.$dbfilename)) {
 			//echo "main file exists<br>";
 		}
 		else { //file doese not exist
@@ -64,7 +64,7 @@ if ($db_type == "sqlite") {
 						//create the call detail records database
 						if (strtolower(substr($sql, 0, 18)) == "create table v_cdr") {
 							try {
-								$dbcdr = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilenameshort.'.cdr.db'); //sqlite 3
+								$dbcdr = new PDO('sqlite:'.$db_file_path.'/'.$dbfilenameshort.'.cdr.db'); //sqlite 3
 								$dbcdr->query($sql);
 								unset($dbcdr);
 							}
@@ -78,18 +78,18 @@ if ($db_type == "sqlite") {
 					unset ($file_contents, $sql);
 			//--- end: create the sqlite db -----------------------------------------
 
-			if (is_writable($dbfilepath.'/'.$dbfilename)) { //is writable
+			if (is_writable($db_file_path.'/'.$dbfilename)) { //is writable
 				//use database in current location
 			}
 			else { //not writable
-				echo "The database ".$dbfilepath."/".$dbfilename." is not writeable2.";
+				echo "The database ".$db_file_path."/".$dbfilename." is not writeable2.";
 				exit;
 			}
 		}
 
 		unset($db);
 		//$db = new PDO('sqlite::memory:'); //sqlite 3
-		$db = new PDO('sqlite:'.$dbfilepath.'/'.$dbfilenameshort.'.cdr.db'); //sqlite 3
+		$db = new PDO('sqlite:'.$db_file_path.'/'.$dbfilenameshort.'.cdr.db'); //sqlite 3
 	}
 	catch (PDOException $error) {
 		print "error: " . $error->getMessage() . "<br/>";

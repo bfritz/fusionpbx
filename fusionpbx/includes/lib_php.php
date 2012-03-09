@@ -49,20 +49,6 @@
 	//get the document_root parent directory
 		$document_root_parent = join(array_slice(explode("\\",realpath($_SERVER["DOCUMENT_ROOT"])),0,-1), '/');
 
-	//detect the v_secure directory
-		if (strlen($dbfilepath) == 0) {
-			$tmp_path = $document_root_parent."/secure";
-			if (file_exists($tmp_path)) { $v_secure = $tmp_path; }
-
-			$tmp_path = realpath($_SERVER["DOCUMENT_ROOT"]).PROJECT_PATH."/secure";
-			if (file_exists($tmp_path)) { $v_secure = $tmp_path; }
-		}
-		else {
-			$v_secure = $dbfilepath;
-		}
-		$v_secure = str_replace("\\", "/", $v_secure);
-		$v_secure = realpath($v_secure);
-
 	//if magic quotes is enabled remove the slashes
 		if (get_magic_quotes_gpc()) {
 			$in = array(&$_GET, &$_POST, &$_REQUEST, &$_COOKIE);

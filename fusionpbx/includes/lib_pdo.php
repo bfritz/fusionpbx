@@ -46,8 +46,8 @@ require_once "includes/lib_functions.php";
 	if (isset($dbpassword) > 0) { 
 		$db_password = $dbpassword; 
 	}
-	if (isset($dbfilepath) > 0) { 
-		$db_path = $dbfilepath; 
+	if (isset($db_file_path) > 0) { 
+		$db_path = $db_file_path; 
 	}
 	if (isset($dbfilename) > 0) { 
 		$db_name = $dbfilename; 
@@ -107,8 +107,8 @@ if ($db_type == "sqlite") {
 		$db_name_short = $db_name;
 	}
 
-	$filepath = $v_secure;
-	$db_path = $v_secure;
+	$filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+	$db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
 	$db_path = realpath($db_path);
 	if (file_exists($db_path.'/'.$db_name)) {
 		//echo "main file exists<br>";

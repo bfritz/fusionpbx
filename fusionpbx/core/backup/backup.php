@@ -29,8 +29,8 @@ require_once "includes/checkauth.php";
 
 if (if_group("superadmin")) {
 
-	$fh = fopen($dbfilepath.'/'.$dbfilename, 'r+b');
-	$contents = fread($fh, filesize($dbfilepath.'/'.$dbfilename));
+	$fh = fopen($db_file_path.'/'.$dbfilename, 'r+b');
+	$contents = fread($fh, filesize($db_file_path.'/'.$dbfilename));
 
 	header("Content-disposition: attachment; filename=$dbfilename");
 	header("Content-Type: application/force-download");
