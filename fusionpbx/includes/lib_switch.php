@@ -1613,7 +1613,7 @@ function save_extension_xml() {
 		}
 
 	//delete all old extensions to prepare for new ones
-		$dialplan_list = glob($_SESSION['switch']['extensions']['dir'].$user_context."/*/v_*.xml");
+		$dialplan_list = glob($_SESSION['switch']['extensions']['dir']."/".$user_context."/v_*.xml");
 		foreach($dialplan_list as $name => $value) {
 			unlink($value);
 		}
