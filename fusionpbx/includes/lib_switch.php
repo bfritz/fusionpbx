@@ -4090,9 +4090,9 @@ if (!function_exists('switch_conf_xml')) {
 		//get the contents of the template
 			$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/autoload_configs/switch.conf.xml");
 
-		//prepare the php variables
-			if (file_exists(PHP_BINDIR.'/php')) { PHP_BIN = 'php'; }
-			if (file_exists(PHP_BINDIR.'/php.exe')) { PHP_BIN = 'php.exe'; }
+		//prepare the php variables 
+			if (file_exists(PHP_BINDIR.'/php')) { define("PHP_BIN", "php"); }
+			if (file_exists(PHP_BINDIR.'/php.exe')) { define("PHP_BIN", "php.exe"); }
 			if (stristr(PHP_OS, 'WIN')) {
 				$v_mailer_app = PHP_BINDIR."/".PHP_BIN;
 				$v_mailer_app_args = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/v_mailto.php -t";
