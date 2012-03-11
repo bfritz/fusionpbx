@@ -39,21 +39,57 @@ if (count($_GET)>0) {
 }
 
 if (strlen($id)>0) {
-	$sql = "";
-	$sql .= "delete from v_conferences ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and conference_uuid = '$id' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	unset($sql);
+
+	//get the dialplan uuid
+		$sql = "";
+		$sql .= "select * from v_conferences ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and conference_uuid = '$id' ";
+		$prep_statement = $db->prepare($sql);
+		$prep_statement->execute();
+		while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
+			$dialplan_uuid = $row['dialplan_uuid'];
+		}
+	
+	//delete conference
+		$sql = "";
+		$sql .= "delete from v_conferences ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and conference_uuid = '$id' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($sql);
+
+	//delete the dialplan entry
+		$sql = "";
+		$sql .= "delete from v_dialplans ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$db->query($sql);
+		unset($sql);
+
+	//delete the dialplan details
+		$sql = "";
+		$sql .= "delete from v_dialplan_details ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$db->query($sql);
+		unset($sql);
+
+	//syncrhonize configuration
+		save_dialplan_xml();
+	
+	//apply settings reminder
+		$_SESSION["reload_xml"] = true;
 }
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=conferences.php\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
-require_once "includes/footer.php";
-return;
+//redirect the user
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=conferences.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
 ?>
