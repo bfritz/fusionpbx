@@ -2341,13 +2341,15 @@ function save_hunt_group_xml() {
 							$dialplan_detail_type = 'destination_number';
 							$dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
 							$dialplan_detail_order = '000';
-							dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+							$dialplan_detail_group = '';
+							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 							$dialplan_detail_tag = 'action'; //condition, action, antiaction
 							$dialplan_detail_type = 'set';
 							$dialplan_detail_data = 'fifo_music=$${hold_music}';
 							$dialplan_detail_order = '001';
-							dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+							$dialplan_detail_group = '';
+							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 							$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
 							$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
@@ -2357,13 +2359,15 @@ function save_hunt_group_xml() {
 							$dialplan_detail_type = 'set';
 							$dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
 							$dialplan_detail_order = '002';
-							dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+							$dialplan_detail_group = '';
+							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 							$dialplan_detail_tag = 'action'; //condition, action, antiaction
 							$dialplan_detail_type = 'fifo';
 							$dialplan_detail_data = $row['hunt_group_extension'].'@${domain_name} in';
 							$dialplan_detail_order = '003';
-							dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+							$dialplan_detail_group = '';
+							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 						}
 						if ($action == 'update') {
 							//update the huntgroup fifo
@@ -2401,13 +2405,15 @@ function save_hunt_group_xml() {
 								$dialplan_detail_type = 'destination_number';
 								$dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
 								$dialplan_detail_order = '000';
-								dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+								$dialplan_detail_group = '';
+								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 								$dialplan_detail_tag = 'action'; //condition, action, antiaction
 								$dialplan_detail_type = 'set';
 								$dialplan_detail_data = 'fifo_music=$${hold_music}';
 								$dialplan_detail_order = '001';
-								dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+								$dialplan_detail_group = '';
+								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 								$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
 								$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
@@ -2417,13 +2423,15 @@ function save_hunt_group_xml() {
 								$dialplan_detail_type = 'set';
 								$dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
 								$dialplan_detail_order = '002';
-								dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+								$dialplan_detail_group = '';
+								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 								$dialplan_detail_tag = 'action'; //condition, action, antiaction
 								$dialplan_detail_type = 'fifo';
 								$dialplan_detail_data = $row['hunt_group_extension'].'@${domain_name} in';
 								$dialplan_detail_order = '003';
-								dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+								$dialplan_detail_group = '';
+								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 						}
 
 						save_dialplan_xml();
@@ -2864,7 +2872,7 @@ function dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_or
 	unset($sql);
 }
 
-function dialplan_details_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data) {
+function dialplan_detail_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data) {
 	global $db;
 	$dialplan_detail_uuid = uuid();
 	$sql = "insert into v_dialplan_details ";

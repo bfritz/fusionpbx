@@ -74,37 +74,38 @@
 		$dialplan_detail_type = 'destination_number';
 		$dialplan_detail_data = '^\*(732)$';
 		$dialplan_detail_order = '000';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		$dialplan_detail_group = '';
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
 		$dialplan_detail_data = 'recordings_dir='.$switch_recordings_dir.'/'.$domain_name;
 		$dialplan_detail_order = '001';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
 		$dialplan_detail_data = 'recording_slots=true';
 		$dialplan_detail_order = '002';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
 		$dialplan_detail_data = 'recording_prefix=recording';
 		$dialplan_detail_order = '003';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
 		$dialplan_detail_data = 'pin_number='.generate_password(6, 1);
 		$dialplan_detail_order = '004';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'lua';
 		$dialplan_detail_data = 'recordings.lua';
 		$dialplan_detail_order = '005';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 	}
 	else {
 		if ($display_type == "text") {
@@ -142,25 +143,25 @@
 		$dialplan_detail_type = 'destination_number';
 		$dialplan_detail_data = '^\*(3472)$';
 		$dialplan_detail_order = '000';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
 		$dialplan_detail_data = 'pin_number='.generate_password(6, 1);
 		$dialplan_detail_order = '001';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
 		$dialplan_detail_data = 'dialplan_context='.$context;
 		$dialplan_detail_order = '002';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'lua';
 		$dialplan_detail_data = 'disa.lua';
 		$dialplan_detail_order = '003';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 	}
 	else {
 		if ($display_type == "text") {
@@ -198,25 +199,25 @@
 		$dialplan_detail_type = 'destination_number';
 		$dialplan_detail_data = '^\*(923)$';
 		$dialplan_detail_order = '000';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
 		$dialplan_detail_data = 'pin_number='.generate_password(6, 1);
 		$dialplan_detail_order = '005';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'set';
 		$dialplan_detail_data = 'time_zone_offset=-7';
 		$dialplan_detail_order = '010';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
 		$dialplan_detail_tag = 'action'; //condition, action, antiaction
 		$dialplan_detail_type = 'lua';
 		$dialplan_detail_data = 'wakeup.lua';
 		$dialplan_detail_order = '015';
-		dialplan_details_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_type, $dialplan_detail_data);
+		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 	}
 	else {
 		if ($display_type == "text") {
