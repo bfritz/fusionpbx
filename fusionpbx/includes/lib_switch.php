@@ -2881,6 +2881,7 @@ function dialplan_detail_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag,
 	$sql .= "dialplan_uuid, ";
 	$sql .= "dialplan_detail_uuid, ";
 	$sql .= "dialplan_detail_tag, ";
+	$sql .= "dialplan_detail_group, ";
 	$sql .= "dialplan_detail_order, ";
 	$sql .= "dialplan_detail_type, ";
 	$sql .= "dialplan_detail_data ";
@@ -2891,6 +2892,7 @@ function dialplan_detail_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag,
 	$sql .= "'".check_str($dialplan_uuid)."', ";
 	$sql .= "'".check_str($dialplan_detail_uuid)."', ";
 	$sql .= "'".check_str($dialplan_detail_tag)."', ";
+	$sql .= "'".check_str($dialplan_detail_group)."', ";
 	$sql .= "'".check_str($dialplan_detail_order)."', ";
 	$sql .= "'".check_str($dialplan_detail_type)."', ";
 	$sql .= "'".check_str($dialplan_detail_data)."' ";
