@@ -4173,7 +4173,6 @@ if (!function_exists('save_switch_xml')) {
 		save_hunt_group_xml();
 		save_ivr_menu_xml();
 		save_call_center_xml();
-		save_fax_xml();
 	}
 }
 
