@@ -3049,11 +3049,15 @@ function save_dialplan_xml() {
 			}
 
 			$i=1;
-			if ($result_count2 > 0) { 
+			if ($result_count2 > 0) {
 				foreach($details as $group) {
 					$current_count = 0;
 					$x = 0;
 					foreach($group as $ent) {
+						$close_condition_tag = true;
+						if (empty($ent)) {
+							$close_condition_tag = false;
+						}
 						$current_tag = $ent['dialplan_detail_tag'];
 						$c = 0;
 						if ($ent['dialplan_detail_tag'] == "condition") {
@@ -3166,7 +3170,9 @@ function save_dialplan_xml() {
 							$previous_tag = $ent['dialplan_detail_tag'];
 						$i++;
 					} //end foreach
-					$tmp .= "   </condition>\n";
+					if ($close_condition_tag == true) {
+						$tmp .= "   </condition>\n";
+					}
 					$x++;
 				}
 				if ($condition_count > 0) {
