@@ -45,20 +45,19 @@
 		}
 
 // add a recordings dialplan entry if it doesn't exist
-	$v_recording_action = 'add';
+	$dialplan_action = 'add';
 	$app_uuid = '430737df-5385-42d1-b933-22600d3fb79e';
-	$sql = "";
-	$sql .= "select * from v_dialplans ";
+	$sql = "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and app_uuid = '$app_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
-		$v_recording_action = 'update';
+		$dialplan_action = 'update';
 		break; //limit to 1 row
 	}
 	unset ($sql, $prep_statement);
-	if ($v_recording_action == 'add') {
+	if ($dialplan_action == 'add') {
 		if ($display_type == "text") {
 			echo "	Dialplan Recording: 	added\n";
 		}
@@ -112,22 +111,22 @@
 			echo "	Dialplan Recording: 	no change\n";
 		}
 	}
+	unset($dialplan_action);
 
 // add a disa dialplan entry if it doesn't exist
-	$v_disa_action = 'add';
+	$dialplan_action = 'add';
 	$app_uuid = '3ade2d9a-f55d-4240-bb60-b4a3ab36951c';
-	$sql = "";
-	$sql .= "select * from v_dialplans ";
+	$sql = "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and app_uuid = '$app_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
-		$v_disa_action = 'update';
+		$dialplan_action = 'update';
 		break; //limit to 1 row
 	}
 	unset ($sql, $prep_statement);
-	if ($v_disa_action == 'add') {
+	if ($dialplan_action == 'add') {
 		if ($display_type == "text") {
 			echo "	Dialplan DISA: 		added\n";
 		}
@@ -168,22 +167,22 @@
 			echo "	Dialplan DISA: 		no change\n";
 		}
 	}
+	unset($dialplan_action);
 
 // add a wake up call dialplan entry if it doesn't exist
-	$v_wake_up_action = 'add';
+	$dialplan_action = 'add';
 	$app_uuid = 'e27abe68-41c0-4188-bb0f-67d93de0c610';
-	$sql = "";
-	$sql .= "select * from v_dialplans ";
+	$sql = "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and app_uuid = '$app_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
 	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
-		$v_wake_up_action = 'update';
+		$dialplan_action = 'update';
 		break; //limit to 1 row
 	}
 	unset ($sql, $prep_statement);
-	if ($v_wake_up_action == 'add') {
+	if ($dialplan_action == 'add') {
 		if ($display_type == "text") {
 			echo "	Wake Up Calls:		added\n";
 		}
@@ -224,6 +223,7 @@
 			echo "	Wake Up Calls: 		no change\n";
 		}
 	}
+	unset($dialplan_action);
 
 // synchronize the dialplan
 	if ($v_recording_action == 'add' || $v_disa_action == 'add') {
