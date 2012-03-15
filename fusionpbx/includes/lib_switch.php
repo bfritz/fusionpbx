@@ -3650,8 +3650,7 @@ if (!function_exists('save_call_center_xml')) {
 		//include the classes
 		include "includes/classes/dialplan.php";
 
-		$sql = "";
-		$sql .= "select * from v_call_center_queues ";
+		$sql = "select * from v_call_center_queues ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -3660,6 +3659,8 @@ if (!function_exists('save_call_center_xml')) {
 		if ($result_count > 0) { //found results
 			foreach($result as $row) {
 				$call_center_queue_uuid = $row["call_center_queue_uuid"];
+				$domain_uuid = $row["domain_uuid"];
+				$dialplan_uuid = $row["dialplan_uuid"];
 				$queue_name = check_str($row["queue_name"]);
 				$queue_extension = $row["queue_extension"];
 				$queue_strategy = $row["queue_strategy"];
@@ -3686,23 +3687,23 @@ if (!function_exists('save_call_center_xml')) {
 						$action = 'add'; //set default action to add
 						$i = 0;
 
-//						$sql = "";
-//						$sql .= "select * from v_dialplans ";
-//						$sql .= "where opt_1_name = 'call_center_queue_uuid' ";
-//						$sql .= "and opt_1_value = '".$row['call_center_queue_uuid']."' ";
-//						$prep_statement_2 = $db->prepare($sql);
-//						$prep_statement_2->execute();
-//						while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-//							$action = 'update';
-//							$dialplan_uuid = $row2['dialplan_uuid'];
-//							break; //limit to 1 row
-//						}
-//						unset ($sql, $prep_statement_2);
+						//determine the action add or update
+						if (strlen($dialplan_uuid) > 0) {
+							$sql = "select * from v_dialplans ";
+							$sql .= "where dialplan_uuid = '".$dialplan_uuid."' ";
+							$prep_statement_2 = $db->prepare($sql);
+							$prep_statement_2->execute();
+							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
+								$action = 'update';
+								break; //limit to 1 row
+							}
+							unset ($sql, $prep_statement_2);
+						}
 
 						if ($action == 'add') {
 							//create queue entry in the dialplan
 								$dialplan_name = $queue_name;
-								$dialplan_order ='9';
+								$dialplan_order ='210';
 								$dialplan_context = $_SESSION['context'];
 								$dialplan_enabled = 'true';
 								$dialplan_description = $queue_description;
@@ -3711,12 +3712,12 @@ if (!function_exists('save_call_center_xml')) {
 								dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 								//add the dialplan_uuid to the call center table
-								$sql = "update v_call_center_queues set ";
-								$sql .= "dialplan_uuid = '$dialplan_uuid', ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and call_center_queue_uuid = '".$row['call_center_queue_uuid']."' ";
-								$db->exec(check_sql($sql));
-								unset($sql);
+									$sql = "update v_call_center_queues set ";
+									$sql .= "dialplan_uuid = '$dialplan_uuid' ";
+									$sql .= "where domain_uuid = '$domain_uuid' ";
+									$sql .= "and call_center_queue_uuid = '".$row['call_center_queue_uuid']."' ";
+									$db->exec(check_sql($sql));
+									unset($sql);
 
 								//group 1
 									$dialplan = new dialplan;

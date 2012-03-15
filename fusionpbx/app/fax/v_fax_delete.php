@@ -81,7 +81,7 @@ else {
 
 		//syncrhonize configuration
 			save_dialplan_xml();
-		
+
 		//apply settings reminder
 			$_SESSION["reload_xml"] = true;
 	}

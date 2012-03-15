@@ -101,7 +101,7 @@ else {
 		$fax_description = check_str($_POST["fax_description"]);
 	}
 
-//delete the user from the v_extension_users
+//delete the user from the v_fax_users
 	if ($_GET["a"] == "delete" && permission_exists("fax_extension_delete")) {
 		//set the variables
 			$user_uuid = check_str($_REQUEST["user_uuid"]);
@@ -120,7 +120,7 @@ else {
 			return;
 	}
 
-//assign the extension to the user
+//add the user to the v_fax_users
 	if (strlen($_REQUEST["user_uuid"]) > 0 && strlen($_REQUEST["id"]) > 0 && $_GET["a"] != "delete") {
 		//set the variables
 			$user_uuid = check_str($_REQUEST["user_uuid"]);
@@ -141,7 +141,6 @@ else {
 			$sql_insert .= "'".$user_uuid."' ";
 			$sql_insert .= ")";
 			$db->exec($sql_insert);
-
 		//redirect the browser
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_fax_edit.php?id=$fax_uuid\">\n";
