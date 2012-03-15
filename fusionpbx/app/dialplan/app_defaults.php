@@ -44,186 +44,31 @@
 			fclose($fh);
 		}
 
-// add a recordings dialplan entry if it doesn't exist
-	$dialplan_action = 'add';
-	$app_uuid = '430737df-5385-42d1-b933-22600d3fb79e';
-	$sql = "select * from v_dialplans ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and app_uuid = '$app_uuid' ";
-	$prep_statement = $db->prepare($sql);
-	$prep_statement->execute();
-	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
-		$dialplan_action = 'update';
-		break; //limit to 1 row
+//get the $apps array from the installed apps from the core and mod directories
+	$xml_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/app/dialplan/resources/xml/*.xml");
+	foreach ($xml_list as &$xml_file) {
+		//get and parse the xml
+			$xml_string = file_get_contents($xml_file);
+		//get the order number prefix from the file name
+			$name_array = explode('_', basename($xml_file));
+			if (is_numeric($name_array[0])) {
+				$dialplan_order = $name_array[0];
+			}
+			else {
+				$dialplan_order = 0;
+			}
+		//dialplan class
+			require_once "includes/classes/dialplan.php";
+			$dialplan = new dialplan;
+			$dialplan->domain_uuid = $domain_uuid;
+			$dialplan->dialplan_order = $dialplan_order;
+			$dialplan->dialplan_context = $context;
+			if ($display_type == "text") {
+				$dialplan->display_type = 'text';
+			}
+			$dialplan->xml = $xml_string;
+			$dialplan->import();
 	}
-	unset ($sql, $prep_statement);
-	if ($dialplan_action == 'add') {
-		if ($display_type == "text") {
-			echo "	Dialplan Recording: 	added\n";
-		}
-		$dialplan_name = 'Recordings';
-		$dialplan_order ='900';
-		$dialplan_context = $context;
-		$dialplan_enabled = 'true';
-		$dialplan_description = '*732 Recordings';
-		$dialplan_uuid = uuid();
-		dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
-
-		$dialplan_detail_tag = 'condition'; //condition, action, antiaction
-		$dialplan_detail_type = 'destination_number';
-		$dialplan_detail_data = '^\*(732)$';
-		$dialplan_detail_order = '000';
-		$dialplan_detail_group = '';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'recordings_dir='.$switch_recordings_dir.'/'.$domain_name;
-		$dialplan_detail_order = '001';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'recording_slots=true';
-		$dialplan_detail_order = '002';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'recording_prefix=recording';
-		$dialplan_detail_order = '003';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'pin_number='.generate_password(6, 1);
-		$dialplan_detail_order = '004';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'lua';
-		$dialplan_detail_data = 'recordings.lua';
-		$dialplan_detail_order = '005';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-	}
-	else {
-		if ($display_type == "text") {
-			echo "	Dialplan Recording: 	no change\n";
-		}
-	}
-	unset($dialplan_action);
-
-// add a disa dialplan entry if it doesn't exist
-	$dialplan_action = 'add';
-	$app_uuid = '3ade2d9a-f55d-4240-bb60-b4a3ab36951c';
-	$sql = "select * from v_dialplans ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and app_uuid = '$app_uuid' ";
-	$prep_statement = $db->prepare($sql);
-	$prep_statement->execute();
-	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
-		$dialplan_action = 'update';
-		break; //limit to 1 row
-	}
-	unset ($sql, $prep_statement);
-	if ($dialplan_action == 'add') {
-		if ($display_type == "text") {
-			echo "	Dialplan DISA: 		added\n";
-		}
-		$dialplan_name = 'DISA';
-		$dialplan_order ='900';
-		$dialplan_context = $context;
-		$dialplan_enabled = 'false';
-		$dialplan_description = '*3472 Direct Inward System Access ';
-		$dialplan_uuid = uuid();
-		dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
-
-		$dialplan_detail_tag = 'condition'; //condition, action, antiaction
-		$dialplan_detail_type = 'destination_number';
-		$dialplan_detail_data = '^\*(3472)$';
-		$dialplan_detail_order = '000';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'pin_number='.generate_password(6, 1);
-		$dialplan_detail_order = '001';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'dialplan_context='.$context;
-		$dialplan_detail_order = '002';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'lua';
-		$dialplan_detail_data = 'disa.lua';
-		$dialplan_detail_order = '003';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-	}
-	else {
-		if ($display_type == "text") {
-			echo "	Dialplan DISA: 		no change\n";
-		}
-	}
-	unset($dialplan_action);
-
-// add a wake up call dialplan entry if it doesn't exist
-	$dialplan_action = 'add';
-	$app_uuid = 'e27abe68-41c0-4188-bb0f-67d93de0c610';
-	$sql = "select * from v_dialplans ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and app_uuid = '$app_uuid' ";
-	$prep_statement = $db->prepare($sql);
-	$prep_statement->execute();
-	while($sub_row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
-		$dialplan_action = 'update';
-		break; //limit to 1 row
-	}
-	unset ($sql, $prep_statement);
-	if ($dialplan_action == 'add') {
-		if ($display_type == "text") {
-			echo "	Wake Up Calls:		added\n";
-		}
-		$dialplan_name = 'Wake-Up';
-		$dialplan_order ='900';
-		$dialplan_context = $context;
-		$dialplan_enabled = 'true';
-		$dialplan_description = '*923 Wake Up Calls';
-		$dialplan_uuid = uuid();
-		dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
-
-		$dialplan_detail_tag = 'condition'; //condition, action, antiaction
-		$dialplan_detail_type = 'destination_number';
-		$dialplan_detail_data = '^\*(923)$';
-		$dialplan_detail_order = '000';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'pin_number='.generate_password(6, 1);
-		$dialplan_detail_order = '005';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'set';
-		$dialplan_detail_data = 'time_zone_offset=-7';
-		$dialplan_detail_order = '010';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-		$dialplan_detail_tag = 'action'; //condition, action, antiaction
-		$dialplan_detail_type = 'lua';
-		$dialplan_detail_data = 'wakeup.lua';
-		$dialplan_detail_order = '015';
-		dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-	}
-	else {
-		if ($display_type == "text") {
-			echo "	Wake Up Calls: 		no change\n";
-		}
-	}
-	unset($dialplan_action);
 
 // synchronize the dialplan
 	if ($v_recording_action == 'add' || $v_disa_action == 'add') {
