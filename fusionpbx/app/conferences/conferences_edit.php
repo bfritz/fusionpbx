@@ -178,7 +178,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$dialplan_context = $_SESSION['context'];
 					$dialplan_enabled = 'true';
 					$dialplan_description = $conference_description;
-					$app_uuid = 'b81412e8-7253-91f4-e48e-42fc2c9a38d9';			
+					$app_uuid = 'b81412e8-7253-91f4-e48e-42fc2c9a38d9';
 					dialplan_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
 					//<condition destination_number="500" />

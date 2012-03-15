@@ -1,5 +1,5 @@
 <extension name="recordings" app_uuid="430737df-5385-42d1-b933-22600d3fb79e">
-	<condition field="destination_number" expression="^\*(923)$">
+	<condition field="destination_number" expression="^\*(732)$">
 		<action application="answer"/>
 		<action application="set" data="pin_number={v_pin_number}"/>
 		<action application="set" data="recordings_dir={v_switch_recordings_dir}"/>
