@@ -299,6 +299,9 @@ include "root.php";
 										$this->dialplan_detail_tag = 'action';
 										$this->dialplan_detail_type = $row2['@attributes']['application'];
 										$this->dialplan_detail_data = $row2['@attributes']['data'];
+										$this->dialplan_detail_data = str_replace("{v_pin_number}", generate_password(8, 1), $this->dialplan_detail_data);
+										$this->dialplan_detail_data = str_replace("{v_context}", $this->dialplan_context, $this->dialplan_detail_data);
+										$this->dialplan_detail_data = str_replace("{v_switch_recordings_dir}", $_SESSION['switch']['recordings']['dir'], $this->dialplan_detail_data);
 										if (strlen($row2['@attributes']['inline']) > 0) {
 											$this->dialplan_detail_inline = $row2['@attributes']['inline'];
 										}
@@ -311,6 +314,9 @@ include "root.php";
 										$this->dialplan_detail_tag = 'anti-action';
 										$this->dialplan_detail_type = $row2['@attributes']['application'];
 										$this->dialplan_detail_data = $row2['@attributes']['data'];
+										$this->dialplan_detail_data = str_replace("{v_pin_number}", generate_password(8, 1), $this->dialplan_detail_data);
+										$this->dialplan_detail_data = str_replace("{v_context}", $this->dialplan_context, $this->dialplan_detail_data);
+										$this->dialplan_detail_data = str_replace("{v_switch_recordings_dir}", $_SESSION['switch']['recordings']['dir'], $this->dialplan_detail_data);
 										$this->dialplan_detail_group = $group;
 										$this->dialplan_detail_order = $order;
 										$this->dialplan_detail_add();
