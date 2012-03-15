@@ -3101,12 +3101,21 @@ function save_dialplan_xml() {
 								$condition_attribute = '';
 								foreach($ent['field'] as $field) {
 									if ($type == "time") {
-										$condition_attribute .= $field['type'].'="'.$field['data'].'" ';
+										$condition_attribute = '';
+										if (strlen($field['type']) > 0) {
+											$condition_attribute .= $field['type'].'="'.$field['data'].'" ';
+										}
 										$condition_expression = '';
 									}
 									if ($type == "default") {
-										$condition_attribute = 'field="'.$field['type'].'" ';
-										$condition_expression = 'expression="'.$field['data'].'" ';
+										$condition_attribute = '';
+										if (strlen($field['type']) > 0) {
+											$condition_attribute = 'field="'.$field['type'].'" ';
+										}
+										$condition_expression = '';
+										if (strlen($field['data']) > 0) {
+											$condition_expression = 'expression="'.$field['data'].'" ';
+										}
 									}
 								}
 
