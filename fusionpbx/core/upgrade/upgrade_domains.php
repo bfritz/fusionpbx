@@ -170,7 +170,10 @@
 			foreach ($default_list as &$default_path) {
 				include($default_path);
 			}
-
+		// synchronize the dialplan
+			if (function_exists('save_dialplan_xml')) {
+				save_dialplan_xml();
+			}
 	}
 	unset ($v_prep_statement);
 

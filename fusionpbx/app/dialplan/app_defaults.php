@@ -70,9 +70,4 @@
 			$dialplan->import();
 	}
 
-// synchronize the dialplan
-	if ($v_recording_action == 'add' || $v_disa_action == 'add') {
-		save_dialplan_xml();
-	}
-
 ?>
