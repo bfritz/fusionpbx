@@ -300,22 +300,6 @@ if ($db_type == "pgsql") {
 
 //domain list
 	if (strlen($_SESSION["domain_uuid"]) == 0) {
-		//get the count of the rows in v_domains
-			$sql = "";
-			$sql .= " select count(*) as num_rows from v_domains ";
-			$prep_statement = $db->prepare($sql);
-			if ($prep_statement) {
-				$prep_statement->execute();
-				$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
-				if ($row['num_rows'] > 0) {
-					$num_rows = $row['num_rows'];
-				}
-				else {
-					$num_rows = '0';
-				}
-			}
-			unset($prep_statement, $result);
-
 		//get the domain
 			$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
 
