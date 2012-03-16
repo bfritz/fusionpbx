@@ -1961,6 +1961,9 @@ function save_gateway_xml() {
 				else {
 					$tmp_xml .= "      <param name=\"username\" value=\"register:false\"/>\n";
 				}
+				if (strlen($row['distinct_to']) > 0) {
+					$tmp_xml .= "      <param name=\"distinct-to\" value=\"" . $row['distinct_to'] . "\"/>\n";
+				} 
 				if (strlen($row['auth_username']) > 0) {
 					$tmp_xml .= "      <param name=\"auth-username\" value=\"" . $row['auth_username'] . "\"/>\n";
 				} 

@@ -49,6 +49,7 @@ else {
 		$gateway = check_str($_POST["gateway"]);
 		$username = check_str($_POST["username"]);
 		$password = check_str($_POST["password"]);
+		$distinct_to = check_str($_POST["distinct_to"]);
 		$auth_username = check_str($_POST["auth_username"]);
 		$realm = check_str($_POST["realm"]);
 		$from_user = check_str($_POST["from_user"]);
@@ -90,6 +91,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if (strlen($username) == 0) { $msg .= "Please provide: Username<br>\n"; }
 			if (strlen($password) == 0) { $msg .= "Please provide: Password<br>\n"; }
 		}
+		//if (strlen($distinct_to) == 0) { $msg .= "Please provide: Distinct To<br>\n"; }
 		//if (strlen($auth_username) == 0) { $msg .= "Please provide: Auth username<br>\n"; }
 		//if (strlen($realm) == 0) { $msg .= "Please provide: Realm<br>\n"; }
 		//if (strlen($from_user) == 0) { $msg .= "Please provide: From user<br>\n"; }
@@ -141,6 +143,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "gateway, ";
 				$sql .= "username, ";
 				$sql .= "password, ";
+				$sql .= "distinct_to, ";
 				$sql .= "auth_username, ";
 				$sql .= "realm, ";
 				$sql .= "from_user, ";
@@ -163,7 +166,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "outbound_caller_id_name, ";
 				$sql .= "outbound_caller_id_number, ";
 				$sql .= "context, ";
-				$sql .= "profile, ";				
+				$sql .= "profile, ";
 				$sql .= "enabled, ";
 				$sql .= "description ";
 				$sql .= ")";
@@ -174,6 +177,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$gateway', ";
 				$sql .= "'$username', ";
 				$sql .= "'$password', ";
+				$sql .= "'$distinct_to', ";
 				$sql .= "'$auth_username', ";
 				$sql .= "'$realm', ";
 				$sql .= "'$from_user', ";
@@ -214,6 +218,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "gateway = '$gateway', ";
 				$sql .= "username = '$username', ";
 				$sql .= "password = '$password', ";
+				$sql .= "distinct_to = '$distinct_to', ";
 				$sql .= "auth_username = '$auth_username', ";
 				$sql .= "realm = '$realm', ";
 				$sql .= "from_user = '$from_user', ";
@@ -297,6 +302,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$gateway = $row["gateway"];
 			$username = $row["username"];
 			$password = $row["password"];
+			$distinct_to = $row["distinct_to"];
 			$auth_username = $row["auth_username"];
 			$realm = $row["realm"];
 			$from_user = $row["from_user"];
@@ -534,6 +540,31 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    Distinct To:\n";
+	echo "</td>\n";
+	echo "<td width='70%' class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='distinct_to'>\n";
+	echo "    <option value=''></option>\n";
+	if ($distinct_to == "true") { 
+		echo "    <option value='true' selected='selected'>true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($distinct_to == "false") { 
+		echo "    <option value='false' selected='selected'>false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "Enter the distinct_to here.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Auth username:\n";
 	echo "</td>\n";
 	echo "<td width='70%' class='vtable' align='left'>\n";
@@ -562,19 +593,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <select class='formfld' name='register_transport'>\n";
 	echo "    <option value=''></option>\n";
 	if ($register_transport == "udp") { 
-		echo "    <option value='udp' SELECTED >udp</option>\n";
+		echo "    <option value='udp' selected='selected'>udp</option>\n";
 	}
 	else {
 		echo "    <option value='udp'>udp</option>\n";
 	}
 	if ($register_transport == "tcp") { 
-		echo "    <option value='tcp' SELECTED >tcp</option>\n";
+		echo "    <option value='tcp' selected='selected'>tcp</option>\n";
 	}
 	else {
 		echo "    <option value='tcp'>tcp</option>\n";
 	}
 	if ($register_transport == "tls") { 
-		echo "    <option value='tls' SELECTED >tls</option>\n";
+		echo "    <option value='tls' selected='selected'>tls</option>\n";
 	}
 	else {
 		echo "    <option value='tls'>tls</option>\n";
@@ -615,13 +646,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<select class='formfld' name='caller_id_in_from'>\n";
 	echo "		<option value=''></option>\n";
 	if ($caller_id_in_from == "true") { 
-		echo "		<option value='true' SELECTED >true</option>\n";
+		echo "		<option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "		<option value='true'>true</option>\n";
 	}
 	if ($caller_id_in_from == "false") { 
-		echo "		<option value='false' SELECTED >false</option>\n";
+		echo "		<option value='false' selected='selected'>false</option>\n";
 	}
 	else {
 		echo "		<option value='false'>false</option>\n";
@@ -640,13 +671,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <select class='formfld' name='supress_cng'>\n";
 	echo "    <option value=''></option>\n";
 	if ($supress_cng == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+		echo "    <option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($supress_cng == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";
@@ -676,13 +707,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <select class='formfld' name='extension_in_contact'>\n";
 	echo "    <option value=''></option>\n";
 	if ($extension_in_contact == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+		echo "    <option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($extension_in_contact == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";
@@ -787,13 +818,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <select class='formfld' name='enabled'>\n";
 	echo "    <option value=''></option>\n";
 	if ($enabled == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+		echo "    <option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($enabled == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";
