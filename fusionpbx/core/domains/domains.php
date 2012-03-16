@@ -57,13 +57,15 @@ else {
 			}
 			unset($result, $prep_statement);
 
-		//update the v_id and session variables
+		//update the domain session variables
 			$domain_uuid = check_str($_GET["domain_uuid"]);
 			$_SESSION['domain_uuid'] = $domain_uuid;
 			$_SESSION["domain_name"] = $_SESSION['domains'][$domain_uuid]['domain_name'];
 			$_SESSION['domain']['template']['name'] = $_SESSION['domains'][$domain_uuid]['template_name'];
-		//clear the menu session so that it is regenerated for the current tenant
+		//clear the menu session so that it is regenerated for the selected domain
 			$_SESSION["menu"] = '';
+		//clear the extension array so that it is regenerated for the selected domain
+			unset($_SESSION['extension_array']);
 		//set the context
 			if (count($_SESSION["domains"]) > 1) {
 				$_SESSION["context"] = $_SESSION["domain_name"];
