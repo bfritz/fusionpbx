@@ -3223,6 +3223,9 @@ function save_dialplan_xml() {
 					}
 				}
 				else {
+					if (!is_dir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'])) {
+						mkdir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'],0755,true);
+					}
 					file_put_contents($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename, $tmp);
 				}
 			}
