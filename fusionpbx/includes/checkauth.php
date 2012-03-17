@@ -46,13 +46,8 @@ session_start();
 
 		//check the username and password if they don't match then redirect back to login
 			$sql = "select * from v_users ";
-			if (count($_SESSION['domains']) > 0) {
-				$sql .= "where domain_uuid=:domain_uuid ";
-				$sql .= "and username=:username ";
-			}
-			else {
-				$sql .= "where username=:username ";
-			}
+			$sql .= "where domain_uuid=:domain_uuid ";
+			$sql .= "and username=:username ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->bindParam(':domain_uuid', $domain_uuid);
 			$prep_statement->bindParam(':username', check_str($_REQUEST["username"]));
