@@ -2895,7 +2895,12 @@ function dialplan_detail_add($domain_uuid, $dialplan_uuid, $dialplan_detail_tag,
 	$sql .= "'".check_str($dialplan_uuid)."', ";
 	$sql .= "'".check_str($dialplan_detail_uuid)."', ";
 	$sql .= "'".check_str($dialplan_detail_tag)."', ";
-	$sql .= "'".check_str($dialplan_detail_group)."', ";
+	if (strlen($dialplan_detail_group) == 0) {
+		$sql .= "null, ";
+	}
+	else {
+		$sql .= "'".check_str($dialplan_detail_group)."', ";
+	}
 	$sql .= "'".check_str($dialplan_detail_order)."', ";
 	$sql .= "'".check_str($dialplan_detail_type)."', ";
 	$sql .= "'".check_str($dialplan_detail_data)."' ";
