@@ -69,15 +69,15 @@ include "root.php";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'".trim($this->domain_uuid)."', ";
-				$sql .= "'".trim($this->app_uuid)."', ";
-				$sql .= "'".trim($this->dialplan_uuid)."', ";
-				$sql .= "'".trim($this->dialplan_name)."', ";
-				$sql .= "'".trim($this->dialplan_continue)."', ";
-				$sql .= "'".trim($this->dialplan_order)."', ";
-				$sql .= "'".trim($this->dialplan_context)."', ";
-				$sql .= "'".trim($this->dialplan_enabled)."', ";
-				$sql .= "'".trim($this->dialplan_description)."' ";
+				$sql .= "'".check_str($this->domain_uuid)."', ";
+				$sql .= "'".check_str($this->app_uuid)."', ";
+				$sql .= "'".check_str($this->dialplan_uuid)."', ";
+				$sql .= "'".check_str($this->dialplan_name)."', ";
+				$sql .= "'".check_str($this->dialplan_continue)."', ";
+				$sql .= "'".check_str($this->dialplan_order)."', ";
+				$sql .= "'".check_str($this->dialplan_context)."', ";
+				$sql .= "'".check_str($this->dialplan_enabled)."', ";
+				$sql .= "'".check_str($this->dialplan_description)."' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -86,16 +86,16 @@ include "root.php";
 			public function dialplan_update() {
 				global $db;
 				$sql = "update v_dialplans set ";
-				$sql .= "dialplan_name = '".trim($this->dialplan_name)."', ";
+				$sql .= "dialplan_name = '".check_str($this->dialplan_name)."', ";
 				if (strlen($this->dialplan_continue) > 0) {
-					$sql .= "dialplan_continue = '".trim($this->dialplan_continue)."', ";
+					$sql .= "dialplan_continue = '".check_str($this->dialplan_continue)."', ";
 				}
-				$sql .= "dialplan_order = '".trim($this->dialplan_order)."', ";
-				$sql .= "dialplan_context = '".trim($this->dialplan_context)."', ";
-				$sql .= "dialplan_enabled = '".trim($this->dialplan_enabled)."', ";
-				$sql .= "dialplan_description = '".trim($this->dialplan_description)."' ";
-				$sql .= "where domain_uuid = '".trim($this->domain_uuid)."' ";
-				$sql .= "and dialplan_uuid = '".trim($this->dialplan_uuid)."' ";
+				$sql .= "dialplan_order = '".check_str($this->dialplan_order)."', ";
+				$sql .= "dialplan_context = '".check_str($this->dialplan_context)."', ";
+				$sql .= "dialplan_enabled = '".check_str($this->dialplan_enabled)."', ";
+				$sql .= "dialplan_description = '".check_str($this->dialplan_description)."' ";
+				$sql .= "where domain_uuid = '".check_str($this->domain_uuid)."' ";
+				$sql .= "and dialplan_uuid = '".check_str($this->dialplan_uuid)."' ";
 				//echo "sql: ".$sql."<br />";
 				$db->query($sql);
 				unset($sql);
@@ -120,29 +120,29 @@ include "root.php";
 				$sql .= "values ";
 				$sql .= "( ";
 				$sql .= "'".$dialplan_detail_uuid."', ";
-				$sql .= "'".trim($this->domain_uuid)."', ";
-				$sql .= "'".trim($this->dialplan_uuid)."', ";
-				$sql .= "'".trim($this->dialplan_detail_tag)."', ";
-				$sql .= "'".trim($this->dialplan_detail_order)."', ";
-				$sql .= "'".trim($this->dialplan_detail_type)."', ";
-				$sql .= "'".trim($this->dialplan_detail_data)."', ";
+				$sql .= "'".check_str($this->domain_uuid)."', ";
+				$sql .= "'".check_str($this->dialplan_uuid)."', ";
+				$sql .= "'".check_str($this->dialplan_detail_tag)."', ";
+				$sql .= "'".check_str($this->dialplan_detail_order)."', ";
+				$sql .= "'".check_str($this->dialplan_detail_type)."', ";
+				$sql .= "'".check_str($this->dialplan_detail_data)."', ";
 				if (strlen($this->dialplan_detail_break) == 0) {
 					$sql .= "null, ";
 				}
 				else {
-					$sql .= "'".trim($this->dialplan_detail_break)."', ";
+					$sql .= "'".check_str($this->dialplan_detail_break)."', ";
 				}
 				if (strlen($this->dialplan_detail_inline) == 0) {
 					$sql .= "null, ";
 				}
 				else {
-					$sql .= "'".trim($this->dialplan_detail_inline)."', ";
+					$sql .= "'".check_str($this->dialplan_detail_inline)."', ";
 				}
 				if (strlen($this->dialplan_detail_group) == 0) {
 					$sql .= "null ";
 				}
 				else {
-					$sql .= "'".trim($this->dialplan_detail_group)."' ";
+					$sql .= "'".check_str($this->dialplan_detail_group)."' ";
 				}
 				$sql .= ")";
 				//echo $sql."\n\n";
@@ -153,21 +153,21 @@ include "root.php";
 			public function dialplan_detail_update() {
 				global $db;
 				$sql = "update v_dialplans set ";
-				$sql .= "dialplan_detail_order = '".trim($this->dialplan_detail_order)."', ";
-				$sql .= "dialplan_detail_type = '".trim($this->dialplan_detail_type)."', ";
-				$sql .= "dialplan_detail_data = '".trim($this->dialplan_detail_data)."', ";
+				$sql .= "dialplan_detail_order = '".check_str($this->dialplan_detail_order)."', ";
+				$sql .= "dialplan_detail_type = '".check_str($this->dialplan_detail_type)."', ";
+				$sql .= "dialplan_detail_data = '".check_str($this->dialplan_detail_data)."', ";
 				if (strlen($this->dialplan_detail_break) > 0) {
-					$sql .= "dialplan_detail_break = '".trim($this->dialplan_detail_break)."', ";
+					$sql .= "dialplan_detail_break = '".check_str($this->dialplan_detail_break)."', ";
 				}
 				if (strlen($this->dialplan_detail_inline) > 0) {
-					$sql .= "dialplan_detail_inline = '".trim($this->dialplan_detail_inline)."', ";
+					$sql .= "dialplan_detail_inline = '".check_str($this->dialplan_detail_inline)."', ";
 				}
 				if (strlen($this->dialplan_detail_group) > 0) {
-					$sql .= "dialplan_detail_group = '".trim($this->dialplan_detail_group)."', ";
+					$sql .= "dialplan_detail_group = '".check_str($this->dialplan_detail_group)."', ";
 				}
-				$sql .= "dialplan_detail_tag = '".trim($this->dialplan_detail_tag)."' ";
-				$sql .= "where domain_uuid = '".trim($this->domain_uuid)."' ";
-				$sql .= "and dialplan_uuid = '".trim($this->dialplan_uuid)."' ";
+				$sql .= "dialplan_detail_tag = '".check_str($this->dialplan_detail_tag)."' ";
+				$sql .= "where domain_uuid = '".check_str($this->domain_uuid)."' ";
+				$sql .= "and dialplan_uuid = '".check_str($this->dialplan_uuid)."' ";
 				//echo "sql: ".$sql."<br />";
 				$db->query($sql);
 				unset($sql);
