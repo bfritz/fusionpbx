@@ -2320,7 +2320,7 @@ if [ $UPGFUSION -eq 1 ]; then
 		else
 				read -p "Ready to upgrade (y/n)? " YESNO2
 		fi
-		if [ $YESNO2 == "y" ]; then
+		
 		case $YESNO2 in 
 		
 		[YylL]*)
