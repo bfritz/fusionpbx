@@ -1858,7 +1858,16 @@ DELIM
 		else
 			nginxconfig
 		fi
-
+		if [ $DISTRO = "lucid" ]; then
+			/bin/grep fastcgi_param.*HTTPS.*\$https\; /etc/nginx/fastcgi_params
+			if [ $? -eq 0 ]; then
+				echo "Fixing a weird nginx fastcgi_parm issue"
+				echo "  you can also add the following stanzas to"
+				echo "  your /etc/nginx/sites-enabled/$GUI_NAME file"
+				echo "  set $https off; #for listen 80 and listen localhost"
+				echo "  set $https on; #for listen 443"
+				/bin/sed -i /etc/nginx/fastcgi_params -e s/fastcgi_param.*HTTPS.*\$https\;/#fastcgi_param\ HTTPS\ \$https\;/
+			fi
 	;;
 	
 	esac
