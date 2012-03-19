@@ -1883,7 +1883,9 @@ DELIM
 	#/etc/init.d/freeswitch stop
 	
 	if [ $INST_FPBX == svn ]; then
-			/usr/bin/svn checkout  -r r1877 http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+			#removed -r r1877 r1877 from new install
+			/usr/bin/svn checkout http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+			
         elif [ $INST_FPBX == tgz ]; then
 			/bin/tar -C $WWW_PATH -xzvf $TGZ_FILE
 	fi
@@ -2306,21 +2308,61 @@ if [ $UPGFUSION -eq 1 ]; then
 		/bin/echo "If you haven't done this you risk not being able to Upgrade->Schema"
 		/bin/echo "  which will toast your database"
 		/bin/echo
-		read -p "Ready to upgrade (y/n)? " YESNO2
+		
+		FUSIONREV=$(svn info $WWW_PATH/$GUI_NAME |grep -i revision|sed -e s/Revision:\ //)
+		if [ $FUSIONREV -le 1877 ];
+			echo "The project is still working on an upgrade tool"
+			echo "    for the latest svn version.  It is recommended"
+			echo "    that you stay with revision 1877.  Your current"
+			echo "    revision is $FUSIONREV"
+			echo
+			read -p "Do we want Revision 1877, or latest (1877/latest)?" YESNO2
+		else
+				read -p "Ready to upgrade (y/n)? " YESNO2
+		fi
 		if [ $YESNO2 == "y" ]; then
+		case $YESNO2 in 
+		
+		[YylL]*)
+		
 			#svn...
+			
 			/usr/bin/svn update http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
 			/bin/chown -R www-data:www-data $WWW_PATH/$GUI_NAME
 			#print message saying to hit advanced->upgrade schema
 			/bin/echo "Done upgrading Files"
 			/bin/echo "For the Upgrade to finish you MUST login to FusionPBX as superadmin"
 			/bin/echo "and select Advanced -> Upgrade Schema"
-		else
+		;;
+		
+		[1]*)
+			/usr/bin/svn update -r r1877 http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+			/bin/chown -R www-data:www-data $WWW_PATH/$GUI_NAME
+			#print message saying to hit advanced->upgrade schema
+			/bin/echo "Done upgrading Files"
+			/bin/echo "For the Upgrade to finish you MUST login to FusionPBX as superadmin"
+			/bin/echo "and select Advanced -> Upgrade Schema"
+		;;
+		*)
+			echo "Bad option, exiting"
 			exit 1
-		fi
+		;;
+		esac
 	else
 		exit 1
 	fi
+	read -p "Do you want to try and run the auto-upgrade php script from CLI (y/n)?" YESNO
+	case $YESNO in
+	[yY]*)
+			echo "Starting... /usr/bin/php $WWW_PATH/$GUI_NAME/core/upgrade/upgrade.php"
+			/usr/bin/php $WWW_PATH/$GUI_NAME/core/upgrade/upgrade.php
+			echo "Done"
+	;;
+	*)
+		echo "OK, don't forget to run it yourself via gui or here with"
+		echo "    /usr/bin/php $WWW_PATH/$GUI_NAME/core/upgrade/upgrade.php"
+	;;
+	esac
 	fusionfail2ban
 fi
 #------------------------------------
