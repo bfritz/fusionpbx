@@ -2310,13 +2310,13 @@ if [ $UPGFUSION -eq 1 ]; then
 		/bin/echo
 		
 		FUSIONREV=$(svn info $WWW_PATH/$GUI_NAME |grep -i revision|sed -e s/Revision:\ //)
-		if [ $FUSIONREV -le 1877 ];
+		if [ $FUSIONREV -le 1877 ]; then
 			echo "The project is still working on an upgrade tool"
 			echo "    for the latest svn version.  It is recommended"
 			echo "    that you stay with revision 1877.  Your current"
 			echo "    revision is $FUSIONREV"
 			echo
-			read -p "Do we want Revision 1877, or latest (1877/latest)?" YESNO2
+			read -p "Do we want Revision 1877, or latest (1877/latest)? " YESNO2
 		else
 				read -p "Ready to upgrade (y/n)? " YESNO2
 		fi
@@ -2351,7 +2351,7 @@ if [ $UPGFUSION -eq 1 ]; then
 	else
 		exit 1
 	fi
-	read -p "Do you want to try and run the auto-upgrade php script from CLI (y/n)?" YESNO
+	read -p "Do you want to try and run the auto-upgrade php script from CLI (y/n)? " YESNO
 	case $YESNO in
 	[yY]*)
 			echo "Starting... /usr/bin/php $WWW_PATH/$GUI_NAME/core/upgrade/upgrade.php"
