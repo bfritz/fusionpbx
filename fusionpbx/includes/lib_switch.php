@@ -2280,8 +2280,7 @@ function save_hunt_group_xml() {
 	//loop through all Hunt Groups
 		$x = 0;
 
-		$sql = "";
-		$sql .= "select * from v_hunt_groups ";
+		$sql = "select * from v_hunt_groups ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -2302,76 +2301,144 @@ function save_hunt_group_xml() {
 					$domain_uuid = $row['domain_uuid'];
 					$dialplan_uuid = $row['dialplan_uuid'];
 
-				//add each Hunt Group to the dialplan
+				//add each hunt group to the dialplan
 					if (strlen($row['hunt_group_uuid']) > 0) {
-						$action = 'add'; //set default action to add
-						$i = 0;
-
-						//check whether the fifo queue exists already
+						//set default action to add
+							$action = 'add'; 
+						//check whether the dialplan entry exists in the database
 							$action = 'add'; //set default action to add
 							$i = 0;
-
-							$sql = "";
-							$sql .= "select * from v_dialplans ";
-							$sql .= "where domain_uuid = '$domain_uuid' ";
-							$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-							$prep_statement_2 = $db->prepare($sql);
-							$prep_statement_2->execute();
-							while($row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC)) {
-								$dialplan_uuid = $row2['dialplan_uuid'];
-								$action = 'update';
-								break; //limit to 1 row
+							$sql = " select count(*) as num_rows from v_dialplans ";
+							$sql .= "where domain_uuid = '".$domain_uuid."' ";
+							$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
+							$prep_statement_2 = $db->prepare(check_sql($sql));
+							if ($prep_statement_2) {
+								$prep_statement_2->execute();
+								$row2 = $prep_statement_2->fetch(PDO::FETCH_ASSOC);
+								if ($row2['num_rows'] > 0) {
+									//$num_rows = $row2['num_rows'];
+									$action = 'update';
+								}
 							}
-							unset ($sql, $prep_statement_2);
+							unset($prep_statement, $result);
 
 						if ($action == 'add') {
-							//create a fifo queue for each huntgroup
-							$dialplan_name = check_str($row['hunt_group_name']).'.park';
-							$dialplan_order ='999';
-							$dialplan_context = $_SESSION['context'];
-							if ($row['hunt_group_enabled'] == "false") {
-								$dialplan_enabled = 'false';
-							}
-							else {
-								$dialplan_enabled = 'true';
-							}
-							$dialplan_description = 'fifo '.$row['hunt_group_extension'];
-							$app_uuid = '0610f841-2e27-4c5f-7926-08ab3aad02e0';
-							$dialplan_uuid = uuid();
-							dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
+							//create dialplan entry for each huntgroup
+								$app_uuid = '0610f841-2e27-4c5f-7926-08ab3aad02e0';
+								if ($row['hunt_group_enabled'] == "false") {
+									$dialplan_enabled = 'false';
+								}
+								else {
+									$dialplan_enabled = 'true';
+								}
+								if (strlen($dialplan_uuid) == 0) {
+									//create a dialplan uuid
+										$dialplan_uuid = uuid();
+									//update the hunt groups table with the database
+										$sql = "update v_hunt_groups ";
+										$sql .= "set dialplan_uuid = '".$dialplan_uuid."' ";
+										$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+										$sql .= "and hunt_group_uuid = '".$row['hunt_group_uuid']."' ";
+										$db->query($sql);
+										unset($sql);
+								}
 
-							$dialplan_detail_tag = 'condition'; //condition, action, antiaction
-							$dialplan_detail_type = 'destination_number';
-							$dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
-							$dialplan_detail_order = '000';
-							$dialplan_detail_group = '';
-							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
+								require_once "includes/classes/dialplan.php";
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->app_uuid = $app_uuid;
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_name = $row['hunt_group_name'];
+								//$dialplan->dialplan_continue = $dialplan_continue;
+								$dialplan->dialplan_order = '330';
+								$dialplan->dialplan_context = $_SESSION['context'];
+								$dialplan->dialplan_enabled = $dialplan_enabled;
+								$dialplan->dialplan_description = $row['hunt_group_description'];
+								$dialplan->dialplan_add();
+								unset($dialplan);
 
-							$dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan_detail_type = 'set';
-							$dialplan_detail_data = 'fifo_music=$${hold_music}';
-							$dialplan_detail_order = '001';
-							$dialplan_detail_group = '';
-							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'destination_number';
+								$dialplan->dialplan_detail_data = '^'.$row['hunt_group_extension'].'$';
+								//$dialplan->dialplan_detail_break = '';
+								//$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '1';
+								$dialplan->dialplan_detail_order = '010';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
 
-							$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
-							$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
-							if ($hunt_group_timeout_type == "voicemail") { $hunt_group_timeout_destination = '*99'.$hunt_group_timeout_destination; }
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'lua';
+								$dialplan->dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domain_name'].'_'.$row['hunt_group_extension'].'.lua';
+								//$dialplan->dialplan_detail_break = '';
+								//$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '1';
+								$dialplan->dialplan_detail_order = '020';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
 
-							$dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan_detail_type = 'set';
-							$dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
-							$dialplan_detail_order = '002';
-							$dialplan_detail_group = '';
-							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'destination_number';
+								$dialplan->dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
+								//$dialplan->dialplan_detail_break = '';
+								//$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '2';
+								$dialplan->dialplan_detail_order = '020';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
 
-							$dialplan_detail_tag = 'action'; //condition, action, antiaction
-							$dialplan_detail_type = 'fifo';
-							$dialplan_detail_data = $row['hunt_group_extension'].'@${domain_name} in';
-							$dialplan_detail_order = '003';
-							$dialplan_detail_group = '';
-							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'set';
+								$dialplan->dialplan_detail_data = 'fifo_music=$${hold_music}';
+								//$dialplan->dialplan_detail_break = '';
+								//$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '2';
+								$dialplan->dialplan_detail_order = '020';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
+
+								$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
+								$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
+								if ($hunt_group_timeout_type == "voicemail") { $hunt_group_timeout_destination = '*99'.$hunt_group_timeout_destination; }
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'set';
+								$dialplan->dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
+								//$dialplan->dialplan_detail_break = '';
+								//$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '2';
+								$dialplan->dialplan_detail_order = '030';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
+
+								$dialplan = new dialplan;
+								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->dialplan_uuid = $dialplan_uuid;
+								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+								$dialplan->dialplan_detail_type = 'fifo';
+								$dialplan->dialplan_detail_data = $row['hunt_group_extension'].'@${domain_name} in';
+								//$dialplan->dialplan_detail_break = '';
+								//$dialplan->dialplan_detail_inline = '';
+								$dialplan->dialplan_detail_group = '2';
+								$dialplan->dialplan_detail_order = '040';
+								$dialplan->dialplan_detail_add();
+								unset($dialplan);
 						}
+						/*
 						if ($action == 'update') {
 							//update the huntgroup fifo
 								$dialplan_name = $row['hunt_group_name'].'.park';
@@ -2383,7 +2450,7 @@ function save_hunt_group_xml() {
 								else {
 									$enabled = 'true';
 								}
-								$descr = 'fifo '.$row['hunt_group_extension'];
+								$description = 'fifo '.$row['hunt_group_extension'];
 								$hunt_group_uuid = $row['hunt_group_uuid'];
 
 								$sql = "";
@@ -2392,7 +2459,7 @@ function save_hunt_group_xml() {
 								$sql .= "dialplan_order = '$dialplan_order', ";
 								$sql .= "context = '$context', ";
 								$sql .= "enabled = '$enabled', ";
-								$sql .= "descr = '$descr' ";
+								$sql .= "description = '$description' ";
 								$sql .= "where domain_uuid = '$domain_uuid' ";
 								$db->query($sql);
 								unset($sql);
@@ -2436,9 +2503,9 @@ function save_hunt_group_xml() {
 								$dialplan_detail_group = '';
 								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 						}
+						*/
 
 						save_dialplan_xml();
-						unset($dialplanincludeid);
 					} //end if strlen hunt_group_uuid; add the Hunt Group to the dialplan
 
 				//get the list of destinations then build the Hunt Group Lua

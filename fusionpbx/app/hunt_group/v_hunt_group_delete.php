@@ -56,24 +56,21 @@ if (strlen($id)>0) {
 		}
 
 	//delete child data
-		$sql = "";
-		$sql .= "delete from v_hunt_group_destinations ";
+		$sql = "delete from v_hunt_group_destinations ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and hunt_group_uuid = '$id' ";
 		$db->query($sql);
 		unset($sql);
 
 	//delete parent data
-		$sql = "";
-		$sql .= "delete from v_hunt_groups ";
+		$sql = "delete from v_hunt_groups ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and hunt_group_uuid = '$id' ";
 		$db->query($sql);
 		unset($sql);
 
 	//delete the dialplan entry
-		$sql = "";
-		$sql .= "delete from v_dialplans ";
+		$sql = "delete from v_dialplans ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		//echo $sql."<br>\n";
@@ -81,8 +78,7 @@ if (strlen($id)>0) {
 		unset($sql);
 
 	//delete the dialplan details
-		$sql = "";
-		$sql .= "delete from v_dialplan_details ";
+		$sql = "delete from v_dialplan_details ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		//echo $sql."<br>\n";
@@ -95,8 +91,6 @@ if (strlen($id)>0) {
 	//synchronize the xml config
 		save_hunt_group_xml();
 
-	//synchronize the xml config
-		save_dialplan_xml();
 }
 
 //redirect the user
