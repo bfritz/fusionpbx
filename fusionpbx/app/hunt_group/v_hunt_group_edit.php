@@ -41,6 +41,7 @@ require_once "includes/paging.php";
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
 		$hunt_group_uuid = check_str($_REQUEST["id"]);
+		$dialplan_uuid = check_str($_REQUEST["dialplan_uuid"]);
 	}
 	else {
 		$action = "add";
@@ -177,31 +178,100 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					unset($sql);
 
 				//create huntgroup extension in the dialplan
-					$dialplan_name = check_str($row['hunt_group_name']);
-					$dialplan_order ='999';
-					$dialplan_context = $_SESSION['context'];
-					if ($row['hunt_group_enabled'] == "false") {
-						$dialplan_enabled = 'false';
-					}
-					else {
-						$dialplan_enabled = 'true';
-					}
-					$dialplan_description = 'huntgroup';
 					$app_uuid = '0610f841-2e27-4c5f-7926-08ab3aad02e0';
-					dialplan_add($domain_uuid, $dialplan_uuid, $dialplan_name, $dialplan_order, $dialplan_context, $dialplan_enabled, $dialplan_description, $app_uuid);
 
-					$dialplan_detail_tag = 'condition'; //condition, action, antiaction
-					$dialplan_detail_type = 'destination_number';
-					$dialplan_detail_data = '^'.$row['hunt_group_extension'].'$';
-					$dialplan_detail_order = '000';
-					$dialplan_detail_group = '';
-					dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
+					require_once "includes/classes/dialplan.php";
+					$dialplan = new dialplan;
+					$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+					$dialplan->app_uuid = $app_uuid;
+					$dialplan->dialplan_uuid = $dialplan_uuid;
+					$dialplan->dialplan_name = $hunt_group_name;
+					//$dialplan->dialplan_continue = $dialplan_continue;
+					$dialplan->dialplan_order = '330';
+					$dialplan->dialplan_context = $_SESSION['context'];
+					$dialplan->dialplan_enabled = $hunt_group_enabled;
+					$dialplan->dialplan_description = $hunt_group_description;
+					$dialplan->dialplan_add();
+					unset($dialplan);
 
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'lua';
-					$dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domains'][$domain_uuid]['domain_name'].'_'.$row['hunt_group_extension'].'.lua';
-					$dialplan_detail_order = '001';
-					dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
+					$dialplan = new dialplan;
+					$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+					$dialplan->dialplan_uuid = $dialplan_uuid;
+					$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
+					$dialplan->dialplan_detail_type = 'destination_number';
+					$dialplan->dialplan_detail_data = '^'.$hunt_group_extension.'$';
+					//$dialplan->dialplan_detail_break = '';
+					//$dialplan->dialplan_detail_inline = '';
+					$dialplan->dialplan_detail_group = '1';
+					$dialplan->dialplan_detail_order = '010';
+					$dialplan->dialplan_detail_add();
+					unset($dialplan);
+
+					$dialplan = new dialplan;
+					$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+					$dialplan->dialplan_uuid = $dialplan_uuid;
+					$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan->dialplan_detail_type = 'lua';
+					$dialplan->dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domain_name'].'_'.$hunt_group_extension.'.lua';
+					//$dialplan->dialplan_detail_break = '';
+					//$dialplan->dialplan_detail_inline = '';
+					$dialplan->dialplan_detail_group = '1';
+					$dialplan->dialplan_detail_order = '020';
+					$dialplan->dialplan_detail_add();
+					unset($dialplan);
+
+					$dialplan = new dialplan;
+					$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+					$dialplan->dialplan_uuid = $dialplan_uuid;
+					$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
+					$dialplan->dialplan_detail_type = 'destination_number';
+					$dialplan->dialplan_detail_data = '^\*'.$hunt_group_extension.'$';
+					//$dialplan->dialplan_detail_break = '';
+					//$dialplan->dialplan_detail_inline = '';
+					$dialplan->dialplan_detail_group = '2';
+					$dialplan->dialplan_detail_order = '020';
+					$dialplan->dialplan_detail_add();
+					unset($dialplan);
+
+					$dialplan = new dialplan;
+					$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+					$dialplan->dialplan_uuid = $dialplan_uuid;
+					$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan->dialplan_detail_type = 'set';
+					$dialplan->dialplan_detail_data = 'fifo_music=$${hold_music}';
+					//$dialplan->dialplan_detail_break = '';
+					//$dialplan->dialplan_detail_inline = '';
+					$dialplan->dialplan_detail_group = '2';
+					$dialplan->dialplan_detail_order = '020';
+					$dialplan->dialplan_detail_add();
+					unset($dialplan);
+
+					if ($hunt_group_timeout_type == "voicemail") { $hunt_group_timeout_destination = '*99'.$hunt_group_timeout_destination; }
+					$dialplan = new dialplan;
+					$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+					$dialplan->dialplan_uuid = $dialplan_uuid;
+					$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan->dialplan_detail_type = 'set';
+					$dialplan->dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$hunt_group_timeout;
+					//$dialplan->dialplan_detail_break = '';
+					//$dialplan->dialplan_detail_inline = '';
+					$dialplan->dialplan_detail_group = '2';
+					$dialplan->dialplan_detail_order = '030';
+					$dialplan->dialplan_detail_add();
+					unset($dialplan);
+
+					$dialplan = new dialplan;
+					$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+					$dialplan->dialplan_uuid = $dialplan_uuid;
+					$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
+					$dialplan->dialplan_detail_type = 'fifo';
+					$dialplan->dialplan_detail_data = $hunt_group_extension.'@${domain_name} in';
+					//$dialplan->dialplan_detail_break = '';
+					//$dialplan->dialplan_detail_inline = '';
+					$dialplan->dialplan_detail_group = '2';
+					$dialplan->dialplan_detail_order = '040';
+					$dialplan->dialplan_detail_add();
+					unset($dialplan);
 
 				//synchronize the xml config
 					save_hunt_group_xml();
@@ -238,55 +308,48 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					}
 					$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 					$sql .= "hunt_group_description = '$hunt_group_description' ";
-					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 					$sql .= "and hunt_group_uuid = '$hunt_group_uuid'";
 					$db->exec(check_sql($sql));
 					unset($sql);
 
 				//update the dialplan entry
-					$dialplan_name = check_str($row['hunt_group_name']);
-					$dialplan_order = '999';
-					$context = $row['hunt_group_context'];
-					if ($row['hunt_group_enabled'] == "false") {
-						$enabled = 'false';
-					}
-					else {
-						$enabled = 'true';
-					}
-					$descr = 'huntgroup';
-					$hunt_group_uuid = $row['hunt_group_uuid'];
-
-					$sql = "";
-					$sql = "update v_dialplans set ";
-					$sql .= "dialplan_name = '$dialplan_name', ";
-					$sql .= "dialplan_order = '$dialplan_order', ";
-					$sql .= "context = '$context', ";
-					$sql .= "enabled = '$enabled', ";
-					$sql .= "descr = '$descr' ";
-					$sql .= "where domain_uuid = '$domain_uuid' ";
-					$sql .= "and dialplan_uuid = 'dialplan_uuid' ";
-					$db->query($sql);
-					unset($sql);
+					require_once "includes/classes/dialplan.php";
+					$dialplan = new dialplan;
+					$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+					$dialplan->app_uuid = $app_uuid;
+					$dialplan->dialplan_uuid = $dialplan_uuid;
+					$dialplan->dialplan_name = $hunt_group_name;
+					//$dialplan->dialplan_continue = $dialplan_continue;
+					//$dialplan->dialplan_order = '330';
+					$dialplan->dialplan_context = $_SESSION['context'];
+					$dialplan->dialplan_enabled = $hunt_group_enabled;
+					$dialplan->dialplan_description = $hunt_group_description;
+					$dialplan->dialplan_update();
+					unset($dialplan);
 
 					//update the condition
 					$sql = "";
 					$sql = "update v_dialplan_details set ";
-					$sql .= "dialplan_detail_data = '^".$row['hunt_group_extension']."$' ";
-					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "dialplan_detail_data = '^".$hunt_group_extension."$' ";
+					$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 					$sql .= "and dialplan_detail_tag = 'condition' ";
 					$sql .= "and dialplan_detail_type = 'destination_number' ";
 					$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+					$sql .= "and dialplan_detail_group = '1' ";
 					$db->query($sql);
 					unset($sql);
 
 					//update the action
 					$sql = "";
 					$sql = "update v_dialplan_details set ";
-					$sql .= "dialplan_detail_data = 'v_huntgroup_".$_SESSION['domains'][$domain_uuid]['domain_name']."_".$row['hunt_group_extension'].".lua', ";
+					$sql .= "dialplan_detail_data = 'v_huntgroup_".$_SESSION['domain_name']."_".$hunt_group_extension.".lua', ";
 					$sql .= "dialplan_detail_type = 'lua' ";
-					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 					$sql .= "and dialplan_detail_tag = 'action' ";
 					$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+					$sql .= "and dialplan_detail_type = 'lua' ";
+					$sql .= "and dialplan_detail_group = '1' ";
 					$db->query($sql);
 
 				//synchronize the xml config
@@ -310,8 +373,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$hunt_group_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_hunt_groups ";
+		$sql = "select * from v_hunt_groups ";
 		$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$sql .- "hunt_group_enabled = 'true' ";
@@ -319,6 +381,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
+			$dialplan_uuid = $row["dialplan_uuid"];
 			$hunt_group_extension = $row["hunt_group_extension"];
 			$hunt_group_name = $row["hunt_group_name"];
 			$hunt_group_type = $row["hunt_group_type"];
@@ -381,23 +444,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	 Extension:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	 <input class='formfld' type='text' name='hunt_group_extension' maxlength='255' value=\"$hunt_group_extension\">\n";
-	echo "<br />\n";
-	echo "example: 7002\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "	 Hunt Group Name:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	 <input class='formfld' type='text' name='hunt_group_name' maxlength='255' value=\"$hunt_group_name\">\n";
 	echo "<br />\n";
 	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "	 Extension:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	 <input class='formfld' type='text' name='hunt_group_extension' maxlength='255' value=\"$hunt_group_extension\">\n";
+	echo "<br />\n";
+	echo "example: 7002\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -670,6 +733,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
+		echo "				<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 		echo "				<input type='hidden' name='hunt_group_uuid' value='$hunt_group_uuid'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
@@ -737,10 +801,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<tr>\n";
 
-		if ($result_count == 0) {
-			//no results
-		}
-		else { //received results
+		if ($result_count > 0) {
 			foreach($result as $row) {
 				echo "<tr >\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;&nbsp;".$row['destination_data']."</td>\n";

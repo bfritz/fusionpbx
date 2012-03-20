@@ -302,7 +302,6 @@ if ($db_type == "pgsql") {
 	if (strlen($_SESSION["domain_uuid"]) == 0) {
 		//get the domain
 			$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
-
 		//get the domain_uuid
 			$sql = "select * from v_domains ";
 			$prep_statement = $db->prepare($sql);
@@ -316,11 +315,11 @@ if ($db_type == "pgsql") {
 				else {
 					if ($row['domain_name'] == $domain_array[0] || $row['domain_name'] == 'www.'.$domain_array[0]) {
 						$_SESSION["domain_uuid"] = $row["domain_uuid"];
-						$_SESSION["domain_name"] = $row['domain_name'];
+						$_SESSION["domain_name"] = $row["domain_name"];
 					}
-					$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
-					$_SESSION['domains'][$row['domain_uuid']]['domain_name'] = $row['domain_name'];
 				}
+				$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
+				$_SESSION['domains'][$row['domain_uuid']]['domain_name'] = $row['domain_name'];
 			}
 			unset($result, $prep_statement);
 	}
@@ -355,7 +354,7 @@ if ($db_type == "pgsql") {
 			foreach($result as $row) {
 				$name = $row['domain_setting_name'];
 				$category = $row['domain_setting_category'];
-				$subcategory = $row['domain_setting_subcategory'];	
+				$subcategory = $row['domain_setting_subcategory'];
 				if (strlen($subcategory) == 0) {
 					//$$category[$name] = $row['domain_setting_value'];
 					$_SESSION[$category][$name] = $row['domain_setting_value'];

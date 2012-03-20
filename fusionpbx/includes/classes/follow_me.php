@@ -27,42 +27,42 @@ include "root.php";
 
 //define the follow me class
 	class follow_me {
-		var $domain_uuid;
-		var $db_type;
-		var $follow_me_uuid;
-		var $extension;
-		var $follow_me_enabled;
-		var $follow_me_type;
-		var $hunt_group_call_prompt;
-		var $hunt_group_timeout;
+		public $domain_uuid;
+		public $db_type;
+		public $follow_me_uuid;
+		public $extension;
+		public $follow_me_enabled;
+		public $follow_me_type;
+		public $hunt_group_call_prompt;
+		public $hunt_group_timeout;
 
-		var $destination_data_1;
-		var $destination_type_1;
-		var $destination_timeout_1;
+		public $destination_data_1;
+		public $destination_type_1;
+		public $destination_timeout_1;
 
-		var $destination_data_2;
-		var $destination_type_2;
-		var $destination_timeout_2;
+		public $destination_data_2;
+		public $destination_type_2;
+		public $destination_timeout_2;
 
-		var $destination_data_3;
-		var $destination_type_3;
-		var $destination_timeout_3;
+		public $destination_data_3;
+		public $destination_type_3;
+		public $destination_timeout_3;
 
-		var $destination_data_4;
-		var $destination_type_4;
-		var $destination_timeout_4;
+		public $destination_data_4;
+		public $destination_type_4;
+		public $destination_timeout_4;
 
-		var $destination_data_5;
-		var $destination_type_5;
-		var $destination_timeout_5;
+		public $destination_data_5;
+		public $destination_type_5;
+		public $destination_timeout_5;
 
-		var $destination_profile = 'internal';
-		var $destination_timeout = '';
-		var $destination_order = 1;
-		var $destination_enabled = 'true';
-		var $destination_description = 'follow me';
+		public $destination_profile = 'internal';
+		public $destination_timeout = '';
+		public $destination_order = 1;
+		public $destination_enabled = 'true';
+		public $destination_description = 'follow me';
 
-		function follow_me_add() {
+		public function follow_me_add() {
 			global $db;
 			$hunt_group_uuid = uuid();
 			$hunt_group_extension = $this->extension;
@@ -129,7 +129,7 @@ include "root.php";
 			$this->follow_me_destinations();
 		} //end function
 
-		function follow_me_update() {
+		public function follow_me_update() {
 			global $db;
 
 			$hunt_group_extension = $this->extension;
@@ -164,13 +164,13 @@ include "root.php";
 			$sql .= "hunt_group_enabled = '$hunt_group_enabled', ";
 			$sql .= "hunt_group_description = '$hunt_group_description' ";
 			$sql .= "where domain_uuid = '$this->domain_uuid' ";
-			$sql .= "and hunt_group_uuid = '$this->follow_me_uuid'";
+			$sql .= "and hunt_group_uuid = '$this->follow_me_uuid' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
 			$this->follow_me_destinations();
 		} //end function
 
-		function follow_me_destinations() {
+		public function follow_me_destinations() {
 			global $db;
 
 			//delete related v_hunt_group_destinations
@@ -181,6 +181,7 @@ include "root.php";
 				if (strlen($this->destination_data_1) > 0) {
 					$sql = "insert into v_hunt_group_destinations ";
 					$sql .= "(";
+					$sql .= "hunt_group_destination_uuid, ";
 					$sql .= "domain_uuid, ";
 					$sql .= "hunt_group_uuid, ";
 					$sql .= "destination_data, ";
@@ -193,6 +194,7 @@ include "root.php";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
+					$sql .= "'".uuid()."', ";
 					$sql .= "'$this->domain_uuid', ";
 					$sql .= "'$this->follow_me_uuid', ";
 					$sql .= "'$this->destination_data_1', ";

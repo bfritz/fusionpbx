@@ -45,10 +45,20 @@ if (strlen($id)>0) {
 	//start the atomic transaction
 		$count = $db->exec("BEGIN;");
 
+	//get the dialplan uuid
+		$sql = "select * from v_hunt_groups ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and hunt_group_uuid = '$id' ";
+		$prep_statement = $db->prepare($sql);
+		$prep_statement->execute();
+		while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
+			$dialplan_uuid = $row['dialplan_uuid'];
+		}
+
 	//delete child data
 		$sql = "";
 		$sql .= "delete from v_hunt_group_destinations ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and hunt_group_uuid = '$id' ";
 		$db->query($sql);
 		unset($sql);
@@ -56,63 +66,26 @@ if (strlen($id)>0) {
 	//delete parent data
 		$sql = "";
 		$sql .= "delete from v_hunt_groups ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and hunt_group_uuid = '$id' ";
-		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$db->query($sql);
 		unset($sql);
 
-	//delete the dialplan entries
+	//delete the dialplan entry
 		$sql = "";
-		$sql .= "select * from v_dialplans ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "delete from v_dialplans ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-		//echo "sql: ".$sql."<br />\n";
-		$prep_statement_2 = $db->prepare($sql);
-		$prep_statement_2->execute();
-		while($row2 = $prep_statement_2->fetch()) {
-			$dialplan_uuid = $row2['dialplan_uuid'];
-			//echo "dialplan_uuid: ".$dialplan_uuid."<br />\n";
-			break; //limit to 1 row
-		}
-		unset ($sql, $prep_statement_2);
-
-		$sql = "";
-		$sql = "delete from v_dialplan_details ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-		//echo "sql: ".$sql."<br />\n";
+		//echo $sql."<br>\n";
 		$db->query($sql);
 		unset($sql);
 
-		//hunt group fifo
-			$sql = "";
-			$sql .= "select * from v_dialplans ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-			//echo "sql fifo: ".$sql."<br />\n";
-			$prep_statement_2 = $db->prepare($sql);
-			$prep_statement_2->execute();
-			while($row2 = $prep_statement_2->fetch()) {
-				$dialplan_uuid = $row2['dialplan_uuid'];
-				//echo "dialplan_uuid fifo: ".$dialplan_uuid."<br />\n";
-				break; //limit to 1 row
-			}
-			unset ($sql, $prep_statement_2);
-
-			$sql = "";
-			$sql = "delete from v_dialplan_details ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-			//echo "sql fifo: ".$sql."<br />\n";
-			$db->query($sql);
-			unset($sql);
-
+	//delete the dialplan details
 		$sql = "";
-		$sql = "delete from v_dialplans ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "delete from v_dialplan_details ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-		//echo "sql: ".$sql."<br />\n";
+		//echo $sql."<br>\n";
 		$db->query($sql);
 		unset($sql);
 

@@ -27,14 +27,14 @@ include "root.php";
 
 //define the dnd class
 	class do_not_disturb {
-		var $domain_uuid;
-		var $dnd_uuid;
-		var $domain_name;
-		var $extension;
-		var $dnd_enabled;
+		public $domain_uuid;
+		public $dnd_uuid;
+		public $domain_name;
+		public $extension;
+		public $dnd_enabled;
 
 		//update the user_status
-		function dnd_status() {
+		public function dnd_status() {
 			global $db;
 			if ($this->dnd_enabled == "true") {
 				//update the call center status
@@ -56,7 +56,7 @@ include "root.php";
 			}
 		} //function
 
-		function dnd_add() {
+		public function dnd_add() {
 			global $db;
 			$hunt_group_uuid = uuid();
 
@@ -123,7 +123,7 @@ include "root.php";
 			unset($sql);
 		} //function
 
-		function dnd_update() {
+		public function dnd_update() {
 			global $db;
 
 			$hunt_group_extension = $this->extension;
