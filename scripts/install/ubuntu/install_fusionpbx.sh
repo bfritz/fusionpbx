@@ -1868,6 +1868,7 @@ DELIM
 				echo "  set $https on; #for listen 443"
 				/bin/sed -i /etc/nginx/fastcgi_params -e s/fastcgi_param.*HTTPS.*\$https\;/#fastcgi_param\ HTTPS\ \$https\;/
 			fi
+		fi
 	;;
 	
 	esac
