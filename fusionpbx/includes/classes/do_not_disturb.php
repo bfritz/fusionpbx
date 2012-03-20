@@ -58,8 +58,6 @@ include "root.php";
 
 		public function dnd_add() {
 			global $db;
-			$hunt_group_uuid = uuid();
-
 			$hunt_group_extension = $this->extension;
 			$huntgroup_name = 'dnd_'.$this->extension;
 			$hunt_group_type = 'dnd';
@@ -99,7 +97,7 @@ include "root.php";
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$this->domain_uuid', ";
-			$sql .= "'$hunt_group_uuid', ";
+			$sql .= "'$this->dnd_uuid', ";
 			$sql .= "'$hunt_group_extension', ";
 			$sql .= "'$huntgroup_name', ";
 			$sql .= "'$hunt_group_type', ";

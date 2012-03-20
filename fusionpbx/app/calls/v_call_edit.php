@@ -259,8 +259,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			}
 
 	//hunt_group information used to determine if this is an add or an update
-		$sql = "";
-		$sql .= "select * from v_hunt_groups ";
+		$sql = "select * from v_hunt_groups ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and hunt_group_extension = '$extension' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -294,19 +293,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//call forward config
 		if (permission_exists('call_forward')) {
 			$call_forward = new call_forward;
-			$call_forward->call_forward_uuid = $call_forward_uuid;
-			$call_forward->domain_uuid = $domain_uuid;
+			$call_forward->domain_uuid = $_SESSION['domain_uuid'];
 			$call_forward->db_type = $db_type;
 			$call_forward->extension = $extension;
 			$call_forward->call_forward_number = $call_forward_number;
 			$call_forward->call_forward_enabled = $call_forward_enabled;
-	
 			if ($call_forward_enabled == "true") {
 				if ($call_forward_action == "add") {
+					$call_forward->call_forward_uuid = uuid();
 					$call_forward->call_forward_add();
 				}
 			}
 			if ($call_forward_action == "update") {
+				$call_forward->call_forward_uuid = $call_forward_uuid;
 				$call_forward->call_forward_update();
 			}
 			unset($call_forward);
@@ -315,41 +314,42 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//follow me config
 		if (permission_exists('follow_me')) {
 			$follow_me = new follow_me;
-			$follow_me->domain_uuid = $domain_uuid;
+			$follow_me->domain_uuid = $_SESSION['domain_uuid'];
 			$follow_me->db_type = $db_type;
-			$follow_me->follow_me_uuid = $follow_me_uuid;
 			$follow_me->extension = $extension;
 			$follow_me->follow_me_enabled = $follow_me_enabled;
 			$follow_me->follow_me_type = $follow_me_type;
 			$follow_me->hunt_group_call_prompt = $hunt_group_call_prompt;
 			$follow_me->hunt_group_timeout = $hunt_group_timeout;
-	
+
 			$follow_me->destination_data_1 = $destination_data_1;
 			$follow_me->destination_type_1 = $destination_type_1;
 			$follow_me->destination_timeout_1 = $destination_timeout_1;
-	
+
 			$follow_me->destination_data_2 = $destination_data_2;
 			$follow_me->destination_type_2 = $destination_type_2;
 			$follow_me->destination_timeout_2 = $destination_timeout_2;
-	
+
 			$follow_me->destination_data_3 = $destination_data_3;
 			$follow_me->destination_type_3 = $destination_type_3;
 			$follow_me->destination_timeout_3 = $destination_timeout_3;
-	
+
 			$follow_me->destination_data_4 = $destination_data_4;
 			$follow_me->destination_type_4 = $destination_type_4;
 			$follow_me->destination_timeout_4 = $destination_timeout_4;
-	
+
 			$follow_me->destination_data_5 = $destination_data_5;
 			$follow_me->destination_type_5 = $destination_type_5;
 			$follow_me->destination_timeout_5 = $destination_timeout_5;
-	
+
 			if ($follow_me_enabled == "true") {
 				if ($follow_me_action == "add") {
+					$follow_me->follow_me_uuid = uuid();
 					$follow_me->follow_me_add();
 				}
 			}
 			if ($follow_me_action == "update") {
+				$follow_me->follow_me_uuid = $follow_me_uuid;
 				$follow_me->follow_me_update();
 			}
 			unset($follow_me);
@@ -358,17 +358,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//do not disturb (dnd) config
 		if (permission_exists('do_not_disturb')) {
 			$dnd = new do_not_disturb;
-			$dnd->domain_uuid = $domain_uuid;
-			$dnd->dnd_uuid = $dnd_uuid;
-			$dnd->domain_name = $domain_name;
+			$dnd->domain_uuid = $_SESSION['domain_uuid'];
+			$dnd->domain_name = $_SESSION['domain_name'];
 			$dnd->extension = $extension;
 			$dnd->dnd_enabled = $dnd_enabled;
 			if ($dnd_enabled == "true") {
 				if ($dnd_action == "add") {
+					$dnd->dnd_uuid = uuid();
 					$dnd->dnd_add();
 				}
 			}
 			if ($dnd_action == "update") {
+				$dnd->dnd_uuid = $dnd_uuid;
 				$dnd->dnd_update();
 			}
 			$dnd->dnd_status();
@@ -396,8 +397,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	require_once "includes/header.php";
 
 //pre-populate the form
-	$sql = "";
-	$sql .= "select * from v_hunt_groups ";
+	$sql = "select * from v_hunt_groups ";
 	$sql .= "where hunt_group_extension = '$extension' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -437,8 +437,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 		if ($row["hunt_group_type"] == 'call_forward' || $row["hunt_group_type"] == 'follow_me_sequence' || $row["hunt_group_type"] == 'follow_me_simultaneous') {
-			$sql = "";
-			$sql .= "select * from v_hunt_group_destinations ";
+			$sql = "select * from v_hunt_group_destinations ";
 			$sql .= "where hunt_group_uuid = '$hunt_group_uuid' ";
 			$prep_statement_2 = $db->prepare(check_sql($sql));
 			$prep_statement_2->execute();
@@ -478,7 +477,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 	}
 	unset ($prep_statement);
-
 
 //show the content
 	echo "<div align='center'>";
@@ -748,7 +746,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
-
 
 require_once "includes/footer.php";
 ?>
