@@ -92,10 +92,14 @@ else {
 	$seconds_month = $seconds_week * 4;
 
 //get the call volume between a start end end time in seconds
-	function get_call_volume_between($start, $end) {
-		global $db, $sql_where;
+	function get_call_volume_between($start, $end, $where) {
+		global $db;
+		
+		if (strlen($where) == 0) {
+			$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		}
 		$sql = " select count(*) as count from v_xml_cdr ";
-		$sql .= $sql_where;
+		$sql .= $where;
 		$sql .= "and start_epoch BETWEEN ".(time()-$start)." AND ".(time()-$end)." ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -115,10 +119,15 @@ else {
 //$call_volume_1st_hour
 
 //get the call time in seconds between the start and end time in seconds
-	function get_call_seconds_between($start, $end) {
-		global $db, $sql_where;
+	function get_call_seconds_between($start, $end, $where) {
+		global $db;
+		
+		if (strlen($where) == 0) {
+			$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		}
+
 		$sql = " select sum(billsec) as seconds from v_xml_cdr ";
-		$sql .= $sql_where;
+		$sql .= $where;
 		$sql .= "and start_epoch BETWEEN ".(time()-$start)." AND ".(time()-$end)." ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -143,6 +152,7 @@ else {
 	$call_seconds_1st_hour = get_call_seconds_between(3600, 0);
 //if (strlen($call_seconds_1st_hour) == 0) { $call_seconds_1st_hour = 0; }
 
+/*
 //get the call volume in a day
 	$sql = "";
 	$sql .= " select count(*) as count from v_xml_cdr ";
@@ -247,11 +257,42 @@ else {
 	}
 	unset($prep_statement, $result, $result_count, $sql);
 	if (strlen($call_seconds_month) == 0) { $call_seconds_month = 0; }
+*/
 
 //set the style
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
+echo "<br />\n";
+//echo "volume: ".get_call_volume_between(3600, 0)."<br />";
+//echo "seconds: ".get_call_seconds_between(3600, 0)."<br />";
+
+for ($i = 1; $i <= 24; $i++) {
+	$stats[$i]['volume'] = get_call_volume_between(3600*$i, 3600*($i-1), '');
+	$stats[$i]['seconds'] = get_call_seconds_between(3600*$i, 3600*($i-1), '');
+	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
+	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
+	$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
+	
+	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$where .= "and billsec = '0' ";
+	$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);
+	$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
+}
+
+
+//call info for a day
+
+//call info for a week
+
+//call info for a month
+	//$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	//$where .= "and start_epoch BETWEEN ".(time()-$seconds_month)." AND ".time()." ";
+	//$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);
+	//$stats[$i]['seconds'] = get_call_seconds_between(3600*$i, 3600*($i-1), $where);
+	//$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
+
+//echo "<pre>\n";print_r($stats);echo "</pre>\n";echo "<br />\n";
 
 //show the results
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -259,153 +300,27 @@ else {
 	echo "	<th>Hour</th>\n";
 	echo "	<th>Volume</th>\n";
 	echo "	<th>Minutes</th>\n";
+	echo "	<th>Calls Per Min</th>\n";
+	echo "	<th>Missed</th>\n";
+	echo "	<th>ASR</th>\n";
 	echo "</tr>\n";
 
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>1st</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between(3600, 0)."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between(3600, 0)."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>2nd</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*2), (3600*1))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*2), (3600*1))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>3rd</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*3), (3600*2))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*3), (3600*2))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>4th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*4), (3600*3))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*4), (3600*3))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>5th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*5), (3600*4))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*5), (3600*4))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>6th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*6), (3600*5))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*6), (3600*5))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>7th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*7), (3600*6))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*7), (3600*6))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>8th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*8), (3600*7))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*8), (3600*7))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>9th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*9), (3600*8))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*9), (3600*8))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>10th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*10), (3600*9))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*10), (3600*9))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>11th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*11), (3600*10))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*11), (3600*10))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>12th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*12), (3600*11))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*12), (3600*11))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>13th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*13), (3600*12))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*13), (3600*12))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>14th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*14), (3600*13))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*14), (3600*13))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>15th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*15), (3600*14))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*15), (3600*14))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>16th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*16), (3600*15))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*16), (3600*15))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>17th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*17), (3600*16))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*17), (3600*16))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>18th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*18), (3600*17))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*18), (3600*17))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>19th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*19), (3600*18))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*19), (3600*18))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>20th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*20), (3600*19))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*20), (3600*19))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>21st</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*21), (3600*20))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*21), (3600*20))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>22nd</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*22), (3600*21))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*22), (3600*21))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>23rd</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*23), (3600*22))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*23), (3600*22))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>24th</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_volume_between((3600*24), (3600*23))."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".get_call_seconds_between((3600*24), (3600*23))."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-
+	$i = 0;
+	foreach ($stats as $row) {
+		echo "<tr >\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".$i."</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['volume']."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['minutes']."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['avg_min']."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['missed']."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['asr']."&nbsp;</td>\n";
+		echo "</tr >\n";
+		if ($c==0) { $c=1; } else { $c=0; }
+		$i++;
+	}
+	echo "</table>\n";
+	
+/*
 	echo "<tr>\n";
 	echo "	<td colspan='3'><br /><br /></td>\n";
 	echo "</tr>\n";
@@ -439,7 +354,7 @@ else {
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
+*/
 //show the footer
 	require_once "includes/footer.php";
 ?>
