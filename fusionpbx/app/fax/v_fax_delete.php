@@ -43,9 +43,8 @@ else {
 	if (strlen($fax_uuid)>0) {
 
 		//get the dialplan uuid
-			$sql = "";
-			$sql .= "select * from v_fax ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql = "select * from v_fax ";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and fax_uuid = '$fax_uuid' ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
@@ -56,7 +55,7 @@ else {
 		//delete the fax entry
 			$sql = "";
 			$sql .= "delete from v_fax ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and fax_uuid = '$fax_uuid' ";
 			$db->query($sql);
 			unset($sql);
@@ -64,7 +63,7 @@ else {
 		//delete the dialplan entry
 			$sql = "";
 			$sql .= "delete from v_dialplans ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);
@@ -73,7 +72,7 @@ else {
 		//delete the dialplan details
 			$sql = "";
 			$sql .= "delete from v_dialplan_details ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 			//echo $sql."<br>\n";
 			$db->query($sql);
