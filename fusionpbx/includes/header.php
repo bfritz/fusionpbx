@@ -26,21 +26,23 @@
 include "root.php";
 require_once "includes/require.php";
 
-//if reloadxml then run reloadacl, and reloadxml
+//if reloadxml then run the command
 	if (isset($_SESSION["reload_xml"])) {
-		if ($_SESSION['apply_settings'] == "true") {
-			//show the apply settings prompt
-		}
-		else {
-			//create the event socket connection
-				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-			//reload the access control list this also runs reloadxml
-				$tmp_cmd = 'api reloadxml';
-				$response = event_socket_request($fp, $tmp_cmd);
-				unset($tmp_cmd);
-				usleep(1000);
-			//clear the apply settings reminder
-				$_SESSION["reload_xml"] = false;
+		if (strlen($_SESSION["reload_xml"]) > 0) {
+			if ($_SESSION['apply_settings'] == "true") {
+				//show the apply settings prompt
+			}
+			else {
+				//create the event socket connection
+					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+				//reload the access control list this also runs reloadxml
+					$response = event_socket_request($fp, 'api reloadxml');
+					$_SESSION["reload_xml"] = '';
+					unset($_SESSION["reload_xml"]);
+					usleep(500);
+				//clear the apply settings reminder
+					$_SESSION["reload_xml"] = false;
+			}
 		}
 	}
 
