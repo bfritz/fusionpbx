@@ -165,7 +165,7 @@ else {
 		$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$where .= "and billsec = '0' ";
 		$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);
-		$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume']) * 100;
+		$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 
 		//average length of call
 		$stats[$i]['aloc'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
@@ -180,7 +180,7 @@ else {
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
 	$stats[$i]['missed'] = get_call_volume_between($seconds_day, 0, $where);
-	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume']) * 100;
+	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
 
@@ -193,7 +193,7 @@ else {
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
 	$stats[$i]['missed'] = get_call_volume_between($seconds_week, 0, $where);
-	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume']) * 100;
+	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
 
@@ -206,7 +206,7 @@ else {
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
 	$stats[$i]['missed'] = get_call_volume_between($seconds_month, 0, $where);
-	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume']) * 100;
+	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
 
