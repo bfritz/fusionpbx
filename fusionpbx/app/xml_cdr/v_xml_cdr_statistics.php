@@ -168,7 +168,7 @@ else {
 		$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 
 		//average length of call
-		$stats[$i]['aloc'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
+		$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	}
 
 //call info for a day
