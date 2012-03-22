@@ -89,7 +89,7 @@ else {
 	$seconds_hour = 3600;
 	$seconds_day = $seconds_hour * 24;
 	$seconds_week = $seconds_day * 7;
-	$seconds_month = $seconds_week * 4;
+	$seconds_month = $seconds_day * 30;
 
 //get the call volume between a start end end time in seconds
 	function get_call_volume_between($start, $end, $where) {
@@ -159,7 +159,7 @@ else {
 		$stats[$i]['seconds'] = get_call_seconds_between(3600*$i, 3600*($i-1), '');
 		$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 		$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
-		$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
+		$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / 60;
 		
 		//answer / seizer ratio
 		$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
@@ -176,7 +176,7 @@ else {
 	$stats[$i]['seconds'] = get_call_seconds_between($seconds_day, 0, '');
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
-	$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
+	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24);
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
 	$stats[$i]['missed'] = get_call_volume_between($seconds_day, 0, $where);
@@ -189,7 +189,7 @@ else {
 	$stats[$i]['seconds'] = get_call_seconds_between($seconds_week, 0, '');
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
-	$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
+	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*7);
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
 	$stats[$i]['missed'] = get_call_volume_between($seconds_week, 0, $where);
@@ -202,7 +202,7 @@ else {
 	$stats[$i]['seconds'] = get_call_seconds_between($seconds_month, 0, '');
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
-	$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
+	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*30);
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
 	$stats[$i]['missed'] = get_call_volume_between($seconds_month, 0, $where);
