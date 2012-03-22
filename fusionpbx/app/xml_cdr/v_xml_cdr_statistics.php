@@ -148,7 +148,6 @@ else {
 	//$call_seconds_1st_hour = get_call_seconds_between(3600, 0);
 	//if (strlen($call_seconds_1st_hour) == 0) { $call_seconds_1st_hour = 0; }
 
-
 //set the style
 	$c = 0;
 	$row_style["0"] = "row_style0";
@@ -162,10 +161,14 @@ else {
 		$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 		$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
 		
+		//answer / seizer ratio
 		$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$where .= "and billsec = '0' ";
 		$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);
-		$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
+		$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume']) * 100;
+
+		//average length of call
+		$stats[$i]['aloc'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
 	}
 
 //call info for a day
@@ -177,7 +180,8 @@ else {
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
 	$stats[$i]['missed'] = get_call_volume_between($seconds_day, 0, $where);
-	$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
+	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume']) * 100;
+	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
 
 //call info for a week
@@ -189,7 +193,8 @@ else {
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
 	$stats[$i]['missed'] = get_call_volume_between($seconds_week, 0, $where);
-	$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
+	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume']) * 100;
+	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
 
 //call info for a month
@@ -201,40 +206,61 @@ else {
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
 	$stats[$i]['missed'] = get_call_volume_between($seconds_month, 0, $where);
-	$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
+	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume']) * 100;
+	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
 
 //show the results
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "	<th>Hour</th>\n";
+	echo "	<th>Hours</th>\n";
 	echo "	<th>Volume</th>\n";
 	echo "	<th>Minutes</th>\n";
 	echo "	<th>Calls Per Min</th>\n";
 	echo "	<th>Missed</th>\n";
 	echo "	<th>ASR</th>\n";
+	echo "	<th>ALOC</th>\n";
 	echo "</tr>\n";
 
 	$i = 0;
 	foreach ($stats as $row) {
 		echo "<tr >\n";
 		if ($i < 24) {
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$i."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".($i+1)."</td>\n";
 		}
 		elseif ($i == 24) {
-			echo "	<td valign='top' class='".$row_style[$c]."'>Day</td>\n";
+			echo "	<br /><br />\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "	<td>\n";
+			echo "		<br /><br />\n";
+			echo "	</td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "	<th nowrap='nowrap'>Days</th>\n";
+			echo "	<th>Volume</th>\n";
+			echo "	<th>Minutes</th>\n";
+			echo "	<th nowrap='nowrap'>Calls Per Min</th>\n";
+			echo "	<th>Missed</th>\n";
+			echo "	<th>ASR</th>\n";
+			echo "	<th>ALOC</th>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>1</td>\n";
 		}
 		elseif ($i == 25) {
-			echo "	<td valign='top' class='".$row_style[$c]."'>Week</td>\n";
+			echo "<tr>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>7</td>\n";
 		}
 		elseif ($i == 26) {
-			echo "	<td valign='top' class='".$row_style[$c]."'>Month</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>30</td>\n";
 		}
 		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['volume']."&nbsp;</td>\n";
 		echo "	<td valign='top' class='".$row_style[$c]."'>".(round($row['minutes'],2))."&nbsp;</td>\n";
 		echo "	<td valign='top' class='".$row_style[$c]."'>".(round($row['avg_min'],2))."&nbsp;</td>\n";
 		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['missed']."&nbsp;</td>\n";
 		echo "	<td valign='top' class='".$row_style[$c]."'>".(round($row['asr'],2))."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".(round($row['aloc'],2))."&nbsp;</td>\n";
 		echo "</tr >\n";
 		if ($c==0) { $c=1; } else { $c=0; }
 		$i++;
