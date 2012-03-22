@@ -94,7 +94,6 @@ else {
 //get the call volume between a start end end time in seconds
 	function get_call_volume_between($start, $end, $where) {
 		global $db;
-		
 		if (strlen($where) == 0) {
 			$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		}
@@ -116,16 +115,13 @@ else {
 		unset($prep_statement, $result, $sql);
 	}
 	$call_volume_1st_hour = get_call_volume_between(3600, 0);
-//$call_volume_1st_hour
 
 //get the call time in seconds between the start and end time in seconds
 	function get_call_seconds_between($start, $end, $where) {
 		global $db;
-		
 		if (strlen($where) == 0) {
 			$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		}
-
 		$sql = " select sum(billsec) as seconds from v_xml_cdr ";
 		$sql .= $where;
 		$sql .= "and start_epoch BETWEEN ".(time()-$start)." AND ".(time()-$end)." ";
@@ -149,150 +145,64 @@ else {
 		}
 		unset($prep_statement, $result, $sql);
 	}
-	$call_seconds_1st_hour = get_call_seconds_between(3600, 0);
-//if (strlen($call_seconds_1st_hour) == 0) { $call_seconds_1st_hour = 0; }
+	//$call_seconds_1st_hour = get_call_seconds_between(3600, 0);
+	//if (strlen($call_seconds_1st_hour) == 0) { $call_seconds_1st_hour = 0; }
 
-/*
-//get the call volume in a day
-	$sql = "";
-	$sql .= " select count(*) as count from v_xml_cdr ";
-	$sql .= $sql_where;
-	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_day)." AND ".time()." ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	$result_count = count($result);
-	unset ($prep_statement, $sql);
-	if ($result_count > 0) {
-		foreach($result as $row) {
-			$call_volume_day .= $row['count'];
-		}
-	}
-	unset($prep_statement, $result, $result_count, $sql);
-
-//get the call time in a day
-	$sql = "";
-	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
-	$sql .= $sql_where;
-	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_day)." AND ".time()." ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	$result_count = count($result);
-	unset ($prep_statement, $sql);
-	if ($result_count > 0) {
-		foreach($result as $row) {
-			$call_seconds_day .= $row['seconds'];
-		}
-	}
-	unset($prep_statement, $result, $result_count, $sql);
-	if (strlen($call_seconds_day) == 0) { $call_seconds_day = 0; }
-
-//get the call volume in a week
-	$sql = "";
-	$sql .= " select count(*) as count from v_xml_cdr ";
-	$sql .= $sql_where;
-	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_week)." AND ".time()." ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	$result_count = count($result);
-	unset ($prep_statement, $sql);
-	if ($result_count > 0) {
-		foreach($result as $row) {
-			$call_volume_week .= $row['count'];
-		}
-	}
-	unset($prep_statement, $result, $result_count, $sql);
-
-//get the call time in a week
-	$sql = "";
-	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
-	$sql .= $sql_where;
-	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_week)." AND ".time()." ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	$result_count = count($result);
-	unset ($prep_statement, $sql);
-	if ($result_count > 0) {
-		foreach($result as $row) {
-			$call_seconds_week .= $row['seconds'];
-		}
-	}
-	unset($prep_statement, $result, $result_count, $sql);
-	if (strlen($call_seconds_week) == 0) { $call_seconds_week = 0; }
-
-//get the call volume in a month
-	$sql = "";
-	$sql .= " select count(*) as count from v_xml_cdr ";
-	$sql .= $sql_where;
-	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_month)." AND ".time()." ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	$result_count = count($result);
-	unset ($prep_statement, $sql);
-	if ($result_count > 0) { 
-		foreach($result as $row) {
-			$call_volume_month .= $row['count'];
-		}
-	}
-	unset($prep_statement, $result, $result_count, $sql);	
-
-//get the call time in a month
-	$sql = "";
-	$sql .= " select sum(billsec) as seconds from v_xml_cdr ";
-	$sql .= $sql_where;
-	$sql .= "and start_epoch BETWEEN ".(time()-$seconds_month)." AND ".time()." ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	$result_count = count($result);
-	unset ($prep_statement, $sql);
-	if ($result_count > 0) {
-		foreach($result as $row) {
-			$call_seconds_month .= $row['seconds'];
-		}
-	}
-	unset($prep_statement, $result, $result_count, $sql);
-	if (strlen($call_seconds_month) == 0) { $call_seconds_month = 0; }
-*/
 
 //set the style
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
-echo "<br />\n";
-//echo "volume: ".get_call_volume_between(3600, 0)."<br />";
-//echo "seconds: ".get_call_seconds_between(3600, 0)."<br />";
 
-for ($i = 1; $i <= 24; $i++) {
-	$stats[$i]['volume'] = get_call_volume_between(3600*$i, 3600*($i-1), '');
-	$stats[$i]['seconds'] = get_call_seconds_between(3600*$i, 3600*($i-1), '');
+//call info hour by hour
+	for ($i = 1; $i <= 24; $i++) {
+		$stats[$i]['volume'] = get_call_volume_between(3600*$i, 3600*($i-1), '');
+		$stats[$i]['seconds'] = get_call_seconds_between(3600*$i, 3600*($i-1), '');
+		$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
+		$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
+		$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
+		
+		$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$where .= "and billsec = '0' ";
+		$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);
+		$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
+	}
+
+//call info for a day
+	$stats[$i]['volume'] = get_call_volume_between($seconds_day, 0, '');
+	$stats[$i]['seconds'] = get_call_seconds_between($seconds_day, 0, '');
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 	$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
-	
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
-	$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);
+	$stats[$i]['missed'] = get_call_volume_between($seconds_day, 0, $where);
 	$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
-}
-
-
-//call info for a day
+	$i++;
 
 //call info for a week
+	$stats[$i]['volume'] = get_call_volume_between($seconds_week, 0, '');
+	$stats[$i]['seconds'] = get_call_seconds_between($seconds_week, 0, '');
+	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
+	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
+	$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
+	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$where .= "and billsec = '0' ";
+	$stats[$i]['missed'] = get_call_volume_between($seconds_week, 0, $where);
+	$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
+	$i++;
 
 //call info for a month
-	//$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-	//$where .= "and start_epoch BETWEEN ".(time()-$seconds_month)." AND ".time()." ";
-	//$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);
-	//$stats[$i]['seconds'] = get_call_seconds_between(3600*$i, 3600*($i-1), $where);
-	//$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
-
-//echo "<pre>\n";print_r($stats);echo "</pre>\n";echo "<br />\n";
+	$stats[$i]['volume'] = get_call_volume_between($seconds_month, 0, '');
+	$stats[$i]['seconds'] = get_call_seconds_between($seconds_month, 0, '');
+	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
+	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
+	$stats[$i]['avg_min'] = $stats[$i]['minutes'] / $stats[$i]['volume'];
+	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$where .= "and billsec = '0' ";
+	$stats[$i]['missed'] = get_call_volume_between($seconds_month, 0, $where);
+	$stats[$i]['asr'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / $stats[$i]['volume'];
+	$i++;
 
 //show the results
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
@@ -308,53 +218,29 @@ for ($i = 1; $i <= 24; $i++) {
 	$i = 0;
 	foreach ($stats as $row) {
 		echo "<tr >\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".$i."</td>\n";
+		if ($i < 24) {
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$i."</td>\n";
+		}
+		elseif ($i == 24) {
+			echo "	<td valign='top' class='".$row_style[$c]."'>Day</td>\n";
+		}
+		elseif ($i == 25) {
+			echo "	<td valign='top' class='".$row_style[$c]."'>Week</td>\n";
+		}
+		elseif ($i == 26) {
+			echo "	<td valign='top' class='".$row_style[$c]."'>Month</td>\n";
+		}
 		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['volume']."&nbsp;</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['minutes']."&nbsp;</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['avg_min']."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".(round($row['minutes'],2))."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".(round($row['avg_min'],2))."&nbsp;</td>\n";
 		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['missed']."&nbsp;</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['asr']."&nbsp;</td>\n";
+		echo "	<td valign='top' class='".$row_style[$c]."'>".(round($row['asr'],2))."&nbsp;</td>\n";
 		echo "</tr >\n";
 		if ($c==0) { $c=1; } else { $c=0; }
 		$i++;
 	}
 	echo "</table>\n";
-	
-/*
-	echo "<tr>\n";
-	echo "	<td colspan='3'><br /><br /></td>\n";
-	echo "</tr>\n";
-	echo "<tr>\n";
-	echo "	<th>Time</th>\n";
-	echo "	<th>Volume</th>\n";
-	echo "	<th>Minutes</th>\n";
-	echo "</tr>\n";
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>Day</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".$call_volume_day."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".$call_seconds_day."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
 
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>Week</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".$call_volume_week."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".$call_seconds_week."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-
-	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>Month</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".$call_volume_month."</td>\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'>".$call_seconds_month."</td>\n";
-	echo "</tr >\n";
-	if ($c==0) { $c=1; } else { $c=0; }
-
-	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-	echo "<br><br>";
-*/
 //show the footer
 	require_once "includes/footer.php";
 ?>
