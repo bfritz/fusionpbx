@@ -3176,7 +3176,6 @@ function save_dialplan_xml() {
 								$condition_attribute = '';
 								foreach($ent['field'] as $field) {
 									if ($type == "time") {
-										$condition_attribute = '';
 										if (strlen($field['type']) > 0) {
 											$condition_attribute .= $field['type'].'="'.$field['data'].'" ';
 										}
