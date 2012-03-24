@@ -120,7 +120,7 @@ else {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
+				$sql .= "'".$_SESSION['domain_uuid']."', ";
 				$sql .= "'".check_str($dialplan_uuid)."', ";
 				$sql .= "'".check_str($dialplan_detail_uuid)."', ";
 				$sql .= "'".check_str($dialplan_detail_tag)."', ";
@@ -138,11 +138,22 @@ else {
 
 	//redirect the user
 		require_once "includes/header.php";
-		if ($dialplan_context == "public") {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?dialplan_context=public\">\n";
-		}
-		else {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+		switch ($app_uuid) {
+			case "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4":
+				//inbound routes
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+				break;
+			case "8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3":
+				//outbound routes
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+				break;
+			case "4b821450-926b-175a-af93-a03c441818b1":
+				//time conditions
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+				break;
+			default:
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+				break;
 		}
 		echo "<div align='center'>\n";
 		echo "Copy Complete\n";

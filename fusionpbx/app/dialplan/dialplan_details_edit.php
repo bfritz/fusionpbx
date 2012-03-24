@@ -76,7 +76,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($dialplan_detail_tag) == 0) { $msg .= "Please provide: Tag<br>\n"; }
 		if (strlen($dialplan_detail_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
 		//if (strlen($dialplan_detail_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
@@ -127,7 +126,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				else {
 					$sql .= "'$dialplan_detail_group', ";
 				}
-				$sql .= "'$domain_uuid' ";
+				$sql .= "'".$_SESSION['domain_uuid']."' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -159,7 +158,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				else {
 					$sql .= "dialplan_detail_group = '$dialplan_detail_group' ";
 				}
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 				$sql .= "and dialplan_detail_uuid = '$dialplan_detail_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -182,8 +181,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$dialplan_detail_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_dialplan_details ";
+		$sql = "select * from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_detail_uuid = '$dialplan_detail_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -216,14 +214,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<form method='post' name='frm' action=''>\n";
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
-
 	echo "<tr>\n";
-	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap><b>Dialplan Includes Detail Add</b></td>\n";
-	}
-	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap><b>Dialplan Includes Detail Update</b></td>\n";
-	}
+	echo "<td align='left' width='30%' nowrap><b>Dialplan Detail</b></td>\n";
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplan_edit.php?id=".$dialplan_uuid."'\" value='Back'></td>\n";
 	echo "</tr>\n";
 

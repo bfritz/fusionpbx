@@ -74,7 +74,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
 		if (strlen($dialplan_name) == 0) { $msg .= "Please provide: Extension Name<br>\n"; }
 		if (strlen($dialplan_order) == 0) { $msg .= "Please provide: Order<br>\n"; }
 		if (strlen($dialplan_continue) == 0) { $msg .= "Please provide: Continue<br>\n"; }
@@ -119,7 +118,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
-					$sql .= "'$domain_uuid', ";
+					$sql .= "'".$_SESSION['domain_uuid']."', ";
 					$sql .= "'$dialplan_uuid', ";
 					$sql .= "'742714e5-8cdf-32fd-462c-cbe7e3d655db', ";
 					$sql .= "'$dialplan_name', ";
@@ -138,11 +137,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				//redirect the user
 					require_once "includes/header.php";
-					if (strlen($app_uuid) == 0) {
-						echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
-					}
-					else {
-						echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+					switch ($app_uuid) {
+						case "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4":
+							//inbound routes
+							echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+							break;
+						case "8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3":
+							//outbound routes
+							echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+							break;
+						case "4b821450-926b-175a-af93-a03c441818b1":
+							//time conditions
+							echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+							break;
+						default:
+							echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+							break;
 					}
 					echo "<div align='center'>\n";
 					echo "Add Complete\n";
@@ -154,7 +164,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($action == "update" && permission_exists('dialplan_edit')) {
 				//update the database
 					$sql = "update v_dialplans set ";
-					$sql .= "domain_uuid = '$domain_uuid', ";
 					$sql .= "dialplan_name = '$dialplan_name', ";
 					$sql .= "dialplan_number = '$dialplan_number', ";
 					$sql .= "dialplan_order = '$dialplan_order', ";
@@ -162,7 +171,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "dialplan_context = '$dialplan_context', ";
 					$sql .= "dialplan_enabled = '$dialplan_enabled', ";
 					$sql .= "dialplan_description = '$dialplan_description' ";
-					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 					$sql .= "and dialplan_uuid = '$dialplan_uuid'";
 					$db->exec(check_sql($sql));
 					unset($sql);
@@ -172,11 +181,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				//redirect the user
 					require_once "includes/header.php";
-					if (strlen($app_uuid) == 0) {
-						echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
-					}
-					else {
-						echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+					switch ($app_uuid) {
+						case "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4":
+							//inbound routes
+							echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+							break;
+						case "8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3":
+							//outbound routes
+							echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+							break;
+						case "4b821450-926b-175a-af93-a03c441818b1":
+							//time conditions
+							echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php?app_uuid=$app_uuid\">\n";
+							break;
+						default:
+							echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplans.php\">\n";
+							break;
 					}
 					echo "<div align='center'>\n";
 					echo "Update Complete\n";
@@ -190,14 +210,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$dialplan_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_dialplans ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql = "select * from v_dialplans ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
+			$app_uuid = $row["app_uuid"];
 			$dialplan_name = $row["dialplan_name"];
 			$dialplan_number = $row["dialplan_number"];
 			$dialplan_order = $row["dialplan_order"];
@@ -205,7 +225,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$dialplan_context = $row["dialplan_context"];
 			$dialplan_enabled = $row["dialplan_enabled"];
 			$dialplan_description = $row["dialplan_description"];
-			break; //limit to 1 row
 		}
 		unset ($prep_statement);
 	}
@@ -230,11 +249,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    </td>\n";
 	echo "    <td width='70%' align='right'>\n";
 	echo "		<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='dialplan_copy.php?id=".$row['dialplan_uuid']."';}\" value='Copy'>\n";
-	if (strlen($app_uuid) == 0) {
-		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php'\" value='Back'>\n";
-	}
-	else {
-		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?app_uuid=$app_uuid'\" value='Back'>\n";
+	switch ($app_uuid) {
+		case "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4":
+			//inbound routes
+			echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?app_uuid=$app_uuid'\" value='Back'>\n";
+			break;
+		case "8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3":
+			//outbound routes
+			echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?app_uuid=$app_uuid'\" value='Back'>\n";
+			break;
+		case "4b821450-926b-175a-af93-a03c441818b1":
+			//time conditions
+			echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php?app_uuid=$app_uuid'\" value='Back'>\n";
+			break;
+		default:
+			echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='dialplans.php'\" value='Back'>\n";
+			break;
 	}
 	echo "	</td>\n";
 	echo "  </tr>\n";
@@ -404,9 +434,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</table>";
 		echo "<br />\n";
 
-		$sql = "";
-		$sql .= " select * from v_dialplan_details ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql = " select * from v_dialplan_details ";
+		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= " and dialplan_uuid = '$dialplan_uuid' ";
 		$sql .= " order by dialplan_detail_group asc, dialplan_detail_order asc";
 		$prep_statement = $db->prepare(check_sql($sql));
