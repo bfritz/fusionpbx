@@ -45,9 +45,8 @@ else {
 
 //get the dialplan data 
 	$dialplan_uuid = $_GET["id"];
-	$sql = "";
-	$sql .= "select * from v_dialplans ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql = "select * from v_dialplans ";
+	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -66,7 +65,6 @@ else {
 	unset ($prep_statement);
 
 	//copy the dialplan
-		$dialplan_context = $_SESSION['context'];
 		$dialplan_uuid = uuid();
 		$sql = "insert into v_dialplans ";
 		$sql .= "(";
@@ -82,10 +80,10 @@ else {
 		$sql .= ")";
 		$sql .= "values ";
 		$sql .= "(";
-		$sql .= "'$domain_uuid', ";
+		$sql .= "'".$_SESSION['domain_uuid']."', ";
 		$sql .= "'$dialplan_uuid', ";
 		$sql .= "'$app_uuid', ";
-		$sql .= "'$dialplan_name', ";
+		$sql .= "'copy-".$dialplan_name."', ";
 		$sql .= "'$dialplan_order', ";
 		$sql .= "'$dialplan_continue', ";
 		$sql .= "'$dialplan_context', ";
@@ -96,9 +94,8 @@ else {
 		unset($sql);
 
 	//get the the dialplan details
-		$sql = "";
-		$sql .= "select * from v_dialplan_details ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql = "select * from v_dialplan_details ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and dialplan_uuid = '$database_dialplan_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
