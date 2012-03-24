@@ -342,7 +342,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
-	echo "Conferences is used to setup conference rooms with a name, description, and optional pin number. Show <a href='/app/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.<br /><br />\n";
+	echo "Conferences is used to setup conference rooms with a name, description, and optional pin number. Show <a href='".PROJECT_PATH."/app/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

@@ -726,7 +726,7 @@ echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>Time 
 echo "			</strong></span></span>\n";
 echo "		</td>\n";
 echo "		<td align='right'>\n";
-echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_dialplans.php'\" value='Back'>\n";
+echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1'\" value='Back'>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
 echo "	<tr>\n";
