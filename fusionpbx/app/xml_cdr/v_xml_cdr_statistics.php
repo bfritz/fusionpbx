@@ -161,7 +161,7 @@ else {
 		$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 		$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / 60;
 		
-		//answer / seizer ratio
+		//answer / seizure ratio
 		$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$where .= "and billsec = '0' ";
 		$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);

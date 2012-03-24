@@ -67,7 +67,7 @@ require_once "includes/paging.php";
 	//prepare to page the results
 		$sql = "";
 		$sql .= " select count(*) as num_rows from v_contacts ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		if (strlen($search_all) > 0) {
 			if (is_numeric($search_all)) {
 				$sql .= "and contact_uuid in (select contact_uuid from v_contact_phones where phone_number like '%".$search_all."%') \n";
@@ -114,16 +114,15 @@ require_once "includes/paging.php";
 		$offset = $rows_per_page * $page; 
 
 	//get the  list
-		$sql = "";
-		$sql .= " select * from v_contacts ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql = " select * from v_contacts ";
+		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		if (strlen($search_all) > 0) {
 			if (is_numeric($search_all)) {
 				$sql .= "and contact_uuid in (select contact_uuid from v_contact_phones where phone_number like '%".$search_all."%') \n";
 			}
 			else {
 				$sql .= "and contact_uuid in (\n";
-				$sql .= "	select contact_uuid from v_contacts where domain_uuid = '$domain_uuid' \n";
+				$sql .= "	select contact_uuid from v_contacts where domain_uuid = '".$_SESSION['domain_uuid']."' \n";
 				$sql .= "	and (\n";
 				$sql .= "	contact_organization like '%".$search_all."%' or \n";
 				$sql .= "	contact_name_given like '%".$search_all."%' or \n";

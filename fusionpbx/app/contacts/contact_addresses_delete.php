@@ -42,7 +42,9 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
 	$sql = "";
 	$sql .= "delete from v_contact_addresses ";
-	$sql .= "where contact_address_uuid = '$id' ";
+	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$sql .= "and contact_address_uuid = '$id' ";
+	
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	unset($sql);
@@ -53,7 +55,6 @@ echo "<meta http-equiv=\"refresh\" content=\"2;url=contacts_edit.php?id=$contact
 echo "<div align='center'>\n";
 echo "Delete Complete\n";
 echo "</div>\n";
-
 require_once "includes/footer.php";
 return;
 

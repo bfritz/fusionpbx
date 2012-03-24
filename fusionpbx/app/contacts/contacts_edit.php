@@ -115,7 +115,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$domain_uuid', ";
+			$sql .= "'".$_SESSION['domain_uuid']."', ";
 			$sql .= "'$contact_uuid', ";
 			$sql .= "'$contact_type', ";
 			$sql .= "'$contact_organization', ";
@@ -143,7 +143,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		if ($action == "update") {
 			$sql = "update v_contacts set ";
-			$sql .= "domain_uuid = '$domain_uuid', ";
 			$sql .= "contact_type = '$contact_type', ";
 			$sql .= "contact_organization = '$contact_organization', ";
 			$sql .= "contact_name_given = '$contact_name_given', ";
@@ -155,7 +154,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "contact_url = '$contact_url', ";
 			$sql .= "contact_time_zone = '$contact_time_zone', ";
 			$sql .= "contact_note = '$contact_note' ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and contact_uuid = '$contact_uuid' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -176,7 +175,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$contact_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contacts ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and contact_uuid = '$contact_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

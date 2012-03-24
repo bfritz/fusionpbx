@@ -62,7 +62,7 @@ require_once "includes/paging.php";
 	//prepare to page the results
 		$sql = "";
 		$sql .= " select count(*) as num_rows from v_contact_addresses ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
@@ -88,7 +88,7 @@ require_once "includes/paging.php";
 	//get the contact list
 		$sql = "";
 		$sql .= " select * from v_contact_addresses ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";

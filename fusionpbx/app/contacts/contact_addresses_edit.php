@@ -112,7 +112,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$domain_uuid', ";
+			$sql .= "'".$_SESSION['domain_uuid']."', ";
 			$sql .= "'$contact_uuid', ";
 			$sql .= "'$contact_address_uuid', ";
 			$sql .= "'$address_type', ";
@@ -149,7 +149,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "address_country = '$address_country', ";
 			$sql .= "address_latitude = '$address_latitude', ";
 			$sql .= "address_longitude = '$address_longitude' ";
-			$sql .= "where domain_uuid = '$domain_uuid'";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."'";
 			$sql .= "and contact_address_uuid = '$contact_address_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
@@ -170,7 +170,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$contact_address_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_contact_addresses ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and contact_address_uuid = '$contact_address_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();

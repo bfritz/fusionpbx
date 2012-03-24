@@ -60,9 +60,8 @@ require_once "includes/paging.php";
 	echo "</table>\n";
 
 	//prepare to page the results
-		$sql = "";
-		$sql .= " select count(*) as num_rows from v_contact_notes ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql = " select count(*) as num_rows from v_contact_notes ";
+		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
@@ -86,9 +85,8 @@ require_once "includes/paging.php";
 		$offset = $rows_per_page * $page; 
 
 	//get the contact list
-		$sql = "";
-		$sql .= " select * from v_contact_notes ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql = " select * from v_contact_notes ";
+		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
@@ -152,7 +150,6 @@ require_once "includes/paging.php";
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results
-
 
 	echo "<tr>\n";
 	echo "<td colspan='4' align='left'>\n";

@@ -40,18 +40,16 @@ if (count($_GET)>0) {
 
 if (strlen($id)>0) {
 	//delete a contact
-		$sql = "";
-		$sql .= "delete from v_contacts ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql = "delete from v_contacts ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and contact_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($prep_statement, $sql);
 
 	//delete addresses
-		$sql = "";
-		$sql .= "delete from v_contact_addresses ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql = "delete from v_contact_addresses ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and contact_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -60,7 +58,7 @@ if (strlen($id)>0) {
 	//delete phones
 		$sql = "";
 		$sql .= "delete from v_contact_phones ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and contact_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -69,19 +67,20 @@ if (strlen($id)>0) {
 	//delete notes
 		$sql = "";
 		$sql .= "delete from v_contact_notes ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and contact_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($prep_statement, $sql);
 }
 
-require_once "includes/header.php";
-echo "<meta http-equiv=\"refresh\" content=\"2;url=contacts.php\">\n";
-echo "<div align='center'>\n";
-echo "Delete Complete\n";
-echo "</div>\n";
-require_once "includes/footer.php";
-return;
+//redirect the browser
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=contacts.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Delete Complete\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
 ?>

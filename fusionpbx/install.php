@@ -987,7 +987,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= ") ";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$domain_uuid', ";
+			$sql .= "'".$_SESSION["domain_uuid"]."', ";
 			$sql .= "'$contact_uuid', ";
 			$sql .= "'user', ";
 			$sql .= "'$admin_username', ";
