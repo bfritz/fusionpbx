@@ -83,7 +83,7 @@ else {
 		$sql .= "'".$_SESSION['domain_uuid']."', ";
 		$sql .= "'$dialplan_uuid', ";
 		$sql .= "'$app_uuid', ";
-		$sql .= "'copy-".$dialplan_name."', ";
+		$sql .= "'".$dialplan_name."-copy', ";
 		$sql .= "'$dialplan_order', ";
 		$sql .= "'$dialplan_continue', ";
 		$sql .= "'$dialplan_context', ";
