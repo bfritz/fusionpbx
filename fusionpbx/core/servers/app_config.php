@@ -52,15 +52,15 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_name';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the name.';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enter the name.';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_description';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the description.';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enter the description.';
 		$z++;
 
 		$y = 1; //table array index
@@ -69,30 +69,30 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_category';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the category.';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enter the category.';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_name';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the name.';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enter the name.';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_value';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = 'Enter the value.';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enter the value.';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_enabled';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'server_setting_description';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 */
 ?>
