@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = 'Destinations';
-		$apps[$x]['guid'] = '5EC89622-B19C-3559-64F0-AFDE802AB139';
+		$apps[$x]['uuid'] = '5EC89622-B19C-3559-64F0-AFDE802AB139';
 		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -15,29 +15,26 @@
 		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/app/destinations/destinations.php';
-		//$apps[$x]['menu'][0]['groups'][] = 'user';
-		//$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
+		$apps[$x]['menu'][0]['groups'][] = 'admin';
 
 	//permission details
 		$y = 0;
 		$apps[$x]['permissions'][$y]['name'] = 'destination_view';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'user';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'destination_add';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'destination_edit';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'user';
+		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'destination_delete';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
 		$y++;
 	//schema details
 		$y = 0; //table array index
