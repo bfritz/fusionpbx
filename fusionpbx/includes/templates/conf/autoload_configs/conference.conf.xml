@@ -206,7 +206,7 @@
     </profile>
 
     <profile name="page">
-      <param name="domain" value="${domain}"/>
+      <param name="domain" value="$${domain}"/>
       <param name="rate" value="8000"/>
       <param name="interval" value="20"/>
       <param name="energy-level" value="300"/>
