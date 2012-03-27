@@ -649,7 +649,7 @@ function confirmdelete(url) {
 	<table border='0' cellpadding='0' cellspacing='0' width='100%'>
 		<tr>
 			<td width='50%'>
-				<a href='/'><img src='<!--{project_path}-->/themes/enhanced/logo.png' /></a>
+				<a href='/<!--{project_path}-->'><img src='<!--{project_path}-->/themes/enhanced/logo.png' /></a>
 			</td>
 			<td width='50%' class='' align='right' valign='middle'>
 				<?php
