@@ -177,6 +177,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$ivr->ivr_menu_greet_long = $ivr_menu_greet_long;
 				$ivr->ivr_menu_greet_short = $ivr_menu_greet_short;
 				$ivr->ivr_menu_invalid_sound = $ivr_menu_invalid_sound;
+				$ivr->ivr_menu_exit_sound = $ivr_menu_exit_sound;
 				$ivr->ivr_menu_confirm_macro = $ivr_menu_confirm_macro;
 				$ivr->ivr_menu_confirm_key = $ivr_menu_confirm_key;
 				$ivr->ivr_menu_tts_engine = $ivr_menu_tts_engine;
