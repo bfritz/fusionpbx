@@ -372,9 +372,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
 					$schema->db = $db_tmp;
-					$schema->domain_uuid = $_SESSION["domain_uuid"];
 					$schema->db_type = $db_type;
-					$schema->add();
+					$schema->sql();
+					$schema->exec();
 
 				//get the contents of the sql file
 					$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/sqlite.sql';
@@ -454,9 +454,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
 					$schema->db = $db_tmp;
-					$schema->domain_uuid = $_SESSION["domain_uuid"];
 					$schema->db_type = $db_type;
-					$schema->add();
+					$schema->sql();
+					$schema->exec();
 
 				//get the contents of the sql file
 					$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/pgsql.sql';
@@ -621,9 +621,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
 					$schema->db = $db_tmp;
-					$schema->domain_uuid = $_SESSION["domain_uuid"];
 					$schema->db_type = $db_type;
-					$schema->add();
+					$schema->sql();
+					$schema->exec();
 
 				//add the defaults data into the database
 					//get the contents of the sql file
@@ -916,7 +916,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$x++;
 		$tmp[$x]['group_name'] = 'agent';
 		$tmp[$x]['group_description'] = 'Call Center Agent Group';
-		$db_tmp->beginTransaction();
 		foreach($tmp as $row) {
 			$sql = "insert into v_groups ";
 			$sql .= "(";
@@ -938,7 +937,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$db_tmp->exec(check_sql($sql));
 			unset($sql);
 		}
-		$db_tmp->commit();
 		unset($tmp);
 
 	//add a user and then add the user to the superadmin group

@@ -94,155 +94,82 @@ if (!function_exists('get_db_field_names')) {
 }
 
 if ($db_type == "sqlite") {
+	//prepare the database connection
+		if (strlen($db_name) == 0) {
+			//if (strlen($_SERVER["SERVER_NAME"]) == 0) { $_SERVER["SERVER_NAME"] = "http://localhost"; }
+			$server_name = $_SERVER["SERVER_NAME"];
+			$server_name = str_replace ("www.", "", $server_name);
+			//$server_name = str_replace (".", "_", $server_name);
+			$db_name_short = $server_name;
+			$db_name = $server_name.'.db';
+		}
+		else {
+			$db_name_short = $db_name;
+		}
 
-	if (strlen($db_name) == 0) {
-		//if (strlen($_SERVER["SERVER_NAME"]) == 0) { $_SERVER["SERVER_NAME"] = "http://localhost"; }
-		$server_name = $_SERVER["SERVER_NAME"];
-		$server_name = str_replace ("www.", "", $server_name);
-		//$server_name = str_replace (".", "_", $server_name);
-		$db_name_short = $server_name;
-		$db_name = $server_name.'.db';
-	}
-	else {
-		$db_name_short = $db_name;
-	}
+		$filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+		$db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
+		$db_path = realpath($db_path);
+		if (file_exists($db_path.'/'.$db_name)) {
+			//echo "database file exists<br>";
+		}
+		else {
+			if (is_writable($db_path.'/'.$db_name)) {
+				//use database in current location
+			}
+			else { //not writable
+				echo "The database ".$db_path."/".$db_name." does not exist or is not writable.";
+				exit;
+			}
+		}
 
-	$filepath = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
-	$db_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/secure';
-	$db_path = realpath($db_path);
-	if (file_exists($db_path.'/'.$db_name)) {
-		//echo "main file exists<br>";
-	}
-	else {
+		if (!function_exists('php_md5')) {
+			function php_md5($string) {
+				return md5($string);
+			}
+		}
+		if (!function_exists('php_unix_timestamp')) {
+			function php_unix_timestamp($string) {
+				return strtotime($string);
+			}
+		}
+		if (!function_exists('php_now')) {
+			function php_now() {
+				return date("Y-m-d H:i:s");
+			}
+		}
+		if (!function_exists('php_left')) {
+			function php_left($string, $num) {
+				return substr($string, 0, $num);
+			}
+		}
+		if (!function_exists('php_right')) {
+			function php_right($string, $num) {
+				return substr($string, (strlen($string)-$num), strlen($string));
+			}
+		}
 
-		//--- begin: create the sqlite db file -----------------------------------------
-		$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/sqlite.sql';
-		$file_contents = file_get_contents($filename);
+	//database connection
 		try {
-			//$db = new PDO('sqlite2:example.db'); //sqlite 2
-			//$db = new PDO('sqlite::memory:'); //sqlite 3
-			$db_sql = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
-			$db_sql->beginTransaction();
+			//create the database connection object
+				//$db = new PDO('sqlite2:example.db'); //sqlite 2
+				//$db = new PDO('sqlite::memory:'); //sqlite 3
+				$db = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
+			//enable foreign key constraints
+				$db->query('PRAGMA foreign_keys = ON;');
+			//add additional functions to SQLite so that they are accessible inside SQL
+				//bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
+				$db->sqliteCreateFunction('md5', 'php_md5', 1);
+				$db->sqliteCreateFunction('unix_timestamp', 'php_unix_timestamp', 1);
+				$db->sqliteCreateFunction('now', 'php_now', 0);
+				$db->sqliteCreateFunction('sqlitedatatype', 'phpsqlitedatatype', 2);
+				$db->sqliteCreateFunction('strleft', 'php_left', 2);
+				$db->sqliteCreateFunction('strright', 'php_right', 2);
 		}
 		catch (PDOException $error) {
 			print "error: " . $error->getMessage() . "<br/>";
 			die();
 		}
-
-		//replace \r\n with \n then explode on \n
-		$file_contents = str_replace("\r\n", "\n", $file_contents);
-
-		//loop line by line through all the lines of sql code
-		$stringarray = explode("\n", $file_contents);
-		$x = 0;
-		foreach($stringarray as $sql) {
-			try {
-				$db_sql->query($sql);
-			}
-			catch (PDOException $error) {
-				echo "error: " . $error->getMessage() . " sql: $sql<br/>";
-				//die();
-			}
-			$x++;
-		}
-		unset ($file_contents, $sql);
-		$db_sql->commit();
-		//--- end: create the sqlite db -----------------------------------------
-
-		if (is_writable($db_path.'/'.$db_name)) { //is writable
-			//use database in current location
-		}
-		else { //not writable
-			echo "The database ".$db_path."/".$db_name." is not writeable.";
-			exit;
-		}
-
-	}
-
-	if (!function_exists('php_md5')) {
-		function php_md5($string) {
-			return md5($string);
-		}
-	}
-	if (!function_exists('php_unix_timestamp')) {
-		function php_unix_timestamp($string) {
-			return strtotime($string);
-		}
-	}
-	if (!function_exists('php_now')) {
-		function php_now() {
-			return date("Y-m-d H:i:s");
-		}
-	}
-
-	if (!function_exists('php_left')) {
-		function php_left($string, $num) {
-			return substr($string, 0, $num);
-		}
-	}
-
-	if (!function_exists('php_right')) {
-		function php_right($string, $num) {
-			return substr($string, (strlen($string)-$num), strlen($string));
-		}
-	}
-
-	if (!function_exists('phpsqlitedatatype')) {
-		function phpsqlitedatatype($string, $field) {
-
-			//--- Begin: Get String Between start and end characters -----
-			$start = '(';
-			$end = ')';
-			$ini = stripos($string,$start);
-			if ($ini == 0) return "";
-			$ini += strlen($start);
-			$len = stripos($string,$end,$ini) - $ini;
-			$string = substr($string,$ini,$len);
-			//--- End: Get String Between start and end characters -----
-
-			$strdatatype = '';
-			$stringarray = explode(',', $string);
-			foreach($stringarray as $lnvalue) {
-
-				//$strdatatype .= "-- ".$lnvalue ." ".strlen($lnvalue)." delim ".strrchr($lnvalue, " ")."---<br>";
-				//$delimpos = stripos($lnvalue, " ");
-				//$strdatatype .= substr($value,$delimpos,strlen($value))." --<br>";
-
-				$fieldlistarray = explode (" ", $value);
-				//$strdatatype .= $value ."<br>";
-				//$strdatatype .= $fieldlistarray[0] ."<br>";
-				//echo $fieldarray[0]."<br>\n";
-				if ($fieldarray[0] == $field) {
-					//$strdatatype = $fieldarray[1]." ".$fieldarray[2]." ".$fieldarray[3]." ".$fieldarray[4]; //strdatatype
-				}
-				unset($fieldarray, $string, $field);
-			}
-
-			//$strdatatype = $string;
-			return $strdatatype;
-		}
-	} //end function
-
-
-	//database connection
-	try {
-		//$db = new PDO('sqlite2:example.db'); //sqlite 2
-		//$db = new PDO('sqlite::memory:'); //sqlite 3
-		$db = new PDO('sqlite:'.$db_path.'/'.$db_name); //sqlite 3
-
-		//Add additional functions to SQLite so that they are accessible inside SQL
-		//bool PDO::sqliteCreateFunction ( string function_name, callback callback [, int num_args] )
-		$db->sqliteCreateFunction('md5', 'php_md5', 1);
-		$db->sqliteCreateFunction('unix_timestamp', 'php_unix_timestamp', 1);
-		$db->sqliteCreateFunction('now', 'php_now', 0);
-		$db->sqliteCreateFunction('sqlitedatatype', 'phpsqlitedatatype', 2);
-		$db->sqliteCreateFunction('strleft', 'php_left', 2);
-		$db->sqliteCreateFunction('strright', 'php_right', 2);
-	}
-	catch (PDOException $error) {
-		print "error: " . $error->getMessage() . "<br/>";
-		die();
-	}
 } //end if db_type sqlite
 
 

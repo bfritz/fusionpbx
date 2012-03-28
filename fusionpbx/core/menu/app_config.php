@@ -148,9 +148,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
-		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_menus';
-		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'menu_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'menu_item_title';

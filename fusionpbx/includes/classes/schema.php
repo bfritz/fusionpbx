@@ -27,10 +27,10 @@ include "root.php";
 
 //define the follow me class
 	class schema {
-		public $domain_uuid;
 		public $db;
 		public $apps;
 		public $db_type;
+		public $result;
 
 		//get the list of installed apps from the core and mod directories
 			public function __construct() {
@@ -44,10 +44,9 @@ include "root.php";
 			}
 
 		//create the database schema
-			public function add() {
+			public function sql() {
 				$sql = '';
 				$sql_schema = '';
-				$this->db->beginTransaction();
 				foreach ($this->apps as $app) {
 					if (count($app['db'])) {
 						foreach ($app['db'] as $row) {
@@ -62,10 +61,10 @@ include "root.php";
 									else {
 										if ($field_count > 0 ) { $sql .= ",\n"; }
 										if (is_array($field['name'])) {
-											$sql .= $field['name']['text'] . " ";
+											$sql .= $field['name']['text']." ";
 										}
 										else {
-											$sql .= $field['name'] . " ";
+											$sql .= $field['name']." ";
 										}
 										if (is_array($field['type'])) {
 											$sql .= $field['type'][$this->db_type];
@@ -73,21 +72,50 @@ include "root.php";
 										else {
 											$sql .= $field['type'];
 										}
+										if ($field['key']['type'] == "primary") {
+											$sql .= " PRIMARY KEY";
+										}
+										if ($field['key']['type'] == "foreign") {
+											if ($this->db_type == "pgsql") {
+												$sql .= " references ".$field['key']['reference']['table']."(".$field['key']['reference']['field'].")";
+											}
+											if ($this->db_type == "sqlite") {
+												$sql .= " references ".$field['key']['reference']['table']."(".$field['key']['reference']['field'].")";
+											}
+											if ($this->db_type == "mysql") {
+												$sql .= " references ".$field['key']['reference']['table']."(".$field['key']['reference']['field'].")";
+											}
+										}
 										$field_count++;
 									}
 								}
-								$sql .= ");";
-							//execute the sql query
-								try {
-									$this->db->query($sql);
+								if ($this->db_type == "mysql") {
+									$sql .= ") ENGINE=INNODB;";	
 								}
-								catch (PDOException $error) {
-									echo "error: " . $error->getMessage() . " sql: $sql<br/>";
+								else {
+									$sql .= ");";	
 								}
+								$this->result['sql'][] = $sql;
 								unset($sql);
 						}
 					}
+				}				
+			}
+
+		//create the database schema
+			public function exec() {
+				foreach ($this->result['sql'] as $sql) {
+					//start the sql transaction
+						$this->db->beginTransaction();
+					//execute the sql query
+						try {
+							$this->db->query($sql);
+						}
+						catch (PDOException $error) {
+							echo "error: " . $error->getMessage() . " sql: $sql<br/>";
+						}
+					//complete the transaction
+						$this->db->commit();
 				}
-				$this->db->commit();
 			}
 	}
