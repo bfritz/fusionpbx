@@ -54,7 +54,6 @@ else {
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$username = $row["username"];
-		break; //limit to 1 row
 	}
 	unset ($prep_statement);
 
@@ -74,13 +73,11 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$user_status = check_str($_POST["user_status"]);
 	$user_template_name = check_str($_POST["user_template_name"]);
 	$user_time_zone = check_str($_POST["user_time_zone"]);
-	$user_email = check_str($_POST["user_email"]);
 	$group_member = check_str($_POST["group_member"]);
 
 	//if (strlen($password) == 0) { $msgerror .= "Password cannot be blank.<br>\n"; }
 	if (strlen($username) == 0) { $msgerror .= "Please provide the username.<br>\n"; }
 	if ($password != $confirm_password) { $msgerror .= "Passwords did not match.<br>\n"; }
-	//if (strlen($user_email) == 0) { $msgerror .= "Please provide an email.<br>\n"; }
 	//if (strlen($user_time_zone) == 0) { $msgerror .= "Please provide an time zone.<br>\n"; }
 
 	if (strlen($msgerror) > 0) {
@@ -118,9 +115,8 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				$sql .= "salt = '".$salt."', ";
 		}
 		$sql .= "user_status = '$user_status', ";
-//		$sql .= "user_template_name = '$user_template_name', ";
-		$sql .= "user_time_zone = '$user_time_zone', ";
-		$sql .= "user_email = '$user_email' ";
+		//$sql .= "user_template_name = '$user_template_name', ";
+		$sql .= "user_time_zone = '$user_time_zone' ";
 		if (strlen($id)> 0) {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and user_uuid = '$id' ";
@@ -166,7 +162,6 @@ else {
 			$username = $row["username"];
 		}
 		$password = $row["password"];
-		$user_email = $row["user_email"];
 		$user_status = $row["user_status"];
 		$user_template_name = $row["user_template_name"];
 		$user_time_zone = $row["user_time_zone"];
@@ -239,10 +234,6 @@ else {
 	//echo "		<td class='vtable'><input type='text' class='formfld' name='user_company_name' value=\"$user_company_name\"></td>";
 	//echo "	</tr>";
 
-
-
-
-
 	echo "		</td>";
 	echo "	</tr>";
 	echo "</table>";
@@ -254,10 +245,6 @@ else {
 	echo "	<th class='th' colspan='2' align='left'>Additional Info</th>\n";
 	echo "	</tr>\n";
 
-	echo "	<tr>";
-	echo "		<td width='30%' class='vncell'>Email:</td>";
-	echo "		<td width='70%' class='vtable'><input type='text' class='formfld' name='user_email' value=\"$user_email\"></td>";
-	echo "	</tr>";
 	if ($_SESSION['user_status_display'] == "false") {
 		//hide the user_status when it is set to false
 	}
@@ -374,7 +361,6 @@ else {
 	echo "		Select the default time zone.<br />\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
-
 	echo "	</table>";
 	echo "<br>";
 
