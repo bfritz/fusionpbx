@@ -43,8 +43,7 @@ else {
 		session_cache_limiter('public');
 
 		$uuid = $_GET["uuid"];
-		$sql = "";
-		$sql .= "select * from voicemail_msgs ";
+		$sql = "select * from voicemail_msgs ";
 		$sql .= "where domain = '".$_SESSION['domain_name']."' ";
 		$sql .= "and uuid = '$uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -166,7 +165,6 @@ else {
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
-
 	if (!isset($_SESSION['user']['extension'])) {
 		echo $tmp_msg_header;
 	}
@@ -186,8 +184,7 @@ else {
 
 				echo $tmp_msg_header;
 
-				$sql = "";
-				$sql .= "select * from voicemail_msgs ";
+				$sql = "select * from voicemail_msgs ";
 				if (count($_SESSION['domains']) > 1) {
 					$sql .= "where domain = '".$_SESSION['domain_name']."' ";
 					$sql .= "and username = '".$value['user']."' ";
@@ -213,7 +210,6 @@ else {
 				if ($result_count > 0) {
 					$prevextension = '';
 					foreach($result as $row) {
-
 						$extension_uuid = '';
 						foreach($_SESSION['user']['extension'] as $value) {
 							if ($value['user'] == $row['username']) {
@@ -295,9 +291,5 @@ else {
 //show the footer
 	require "includes/require.php";
 	require_once "includes/footer.php";
-	unset ($result_count);
-	unset ($result);
-	unset ($key);
-	unset ($val);
-	unset ($c);
-	?>
+
+?>

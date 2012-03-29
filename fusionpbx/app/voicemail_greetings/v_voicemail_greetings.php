@@ -44,15 +44,24 @@ require_once "includes/paging.php";
 	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
+//used to search the array to determin if an extension is assigned to the user
+	function is_extension_assigned($number) {
+		$result = false;
+		foreach ($_SESSION['user']['extension'] as $row) {
+			if ($row['user'] == $number) {
+				$result = true;
+			}
+		}
+		return $result;
+	}
+
 //allow admins, superadmins and users that are assigned to the extension to view the page
 	if (if_group("superadmin") || if_group("admin")) {
 		//access granted
 	}
 	else {
-		//get the extensions that are assigned to this user
-		$user_extension_array = explode("|", $_SESSION['user_extension_list']);
-		//print_r($user_extension_array);
-		if (!in_array($user_id, $user_extension_array)) {
+		//deny access if the user extension is not assigned
+		if (!is_extension_assigned($user_id)) {
 			echo "access denied";
 			return;
 		}

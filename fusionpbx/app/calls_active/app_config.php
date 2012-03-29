@@ -22,7 +22,7 @@
 		$apps[$x]['menu'][1]['parent_uuid'] = '0438b504-8613-7887-c420-c837ffb20cb1';
 		$apps[$x]['menu'][1]['category'] = 'internal';
 		$apps[$x]['menu'][1]['path'] = '/app/calls_active/v_calls_active_extensions.php';
-		$apps[$x]['menu'][1]['groups'][] = 'user';
+		//$apps[$x]['menu'][1]['groups'][] = 'user';
 		$apps[$x]['menu'][1]['groups'][] = 'admin';
 		$apps[$x]['menu'][1]['groups'][] = 'superadmin';
 
@@ -64,12 +64,12 @@
 		$apps[$x]['permissions'][9]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][10]['name'] = 'extensions_active_list_view';
-		$apps[$x]['permissions'][10]['groups'][] = 'user';
+		//$apps[$x]['permissions'][10]['groups'][] = 'user';
 		$apps[$x]['permissions'][10]['groups'][] = 'admin';
 		$apps[$x]['permissions'][10]['groups'][] = 'superadmin';
 
 		$apps[$x]['permissions'][11]['name'] = 'extensions_active_assigned_view';
-		$apps[$x]['permissions'][11]['groups'][] = 'user';
+		//$apps[$x]['permissions'][11]['groups'][] = 'user';
 		$apps[$x]['permissions'][11]['groups'][] = 'admin';
 		$apps[$x]['permissions'][11]['groups'][] = 'superadmin';
 ?>

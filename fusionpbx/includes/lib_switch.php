@@ -144,8 +144,7 @@ foreach($settings_array as $name => $value) {
 
 //get the event socket information
 	if (strlen($_SESSION['event_socket_ip_address']) == 0) {
-		$sql = "";
-		$sql .= "select * from v_settings ";
+		$sql = "select * from v_settings ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		if ($prep_statement) {
 			$prep_statement->execute();
@@ -160,13 +159,11 @@ foreach($settings_array as $name => $value) {
 	}
 
 //get the extensions that are assigned to this user
-	if (strlen($_SESSION["username"]) > 0 && count($_SESSION['user']['extension']) == 0) {
+	if (strlen($_SESSION["user_uuid"]) > 0 && count($_SESSION['user']['extension']) == 0) {
 		//get the user extension list
-			$_SESSION['user_extension_list'] = '';
 			unset($_SESSION['user']['extension']);
-			$sql = "";
-			$sql .= "select e.extension, e.user_context, e.extension_uuid from v_extensions as e, v_extension_users as u ";
-			$sql .= "where e.domain_uuid = '$domain_uuid' ";
+			$sql = "select e.extension, e.user_context, e.extension_uuid from v_extensions as e, v_extension_users as u ";
+			$sql .= "where e.domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and e.extension_uuid = u.extension_uuid ";
 			$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
 			$sql .= "and e.enabled = 'true' ";
@@ -175,10 +172,10 @@ foreach($settings_array as $name => $value) {
 			if (count($result) > 0) {
 				$x = 0;
 				foreach($result as $row) {
-					//$_SESSION['user_extension_list'] .= $row['extension']."";
 					$_SESSION['user']['extension'][$x]['user'] = $row['extension'];
 					$_SESSION['user']['extension'][$x]['extension_uuid'] = $row['extension_uuid'];
 					$_SESSION['user_context'] = $row["user_context"];
+					$x++;
 				}
 			}
 		//if no extension has been assigned then setting user_context will still need to be set
