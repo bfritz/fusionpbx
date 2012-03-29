@@ -351,18 +351,50 @@ echo "</tr>\n";
 //echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 echo "	Condition 1:\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
+?>
+<script>
+var Objs;
+function changeToInput_condition_field_1(obj){
+	tb=document.createElement('INPUT');
+	tb.type='text';
+	tb.name=obj.name;
+	tb.className='formfld';
+	tb.setAttribute('id', 'condition_field_1');
+	tb.setAttribute('style', 'width: 85%;');
+	tb.value=obj.options[obj.selectedIndex].value;
+	document.getElementById('btn_select_to_input_condition_field_1').style.visibility = 'hidden';
+	tbb=document.createElement('INPUT');
+	tbb.setAttribute('class', 'btn');
+	tbb.type='button';
+	tbb.value='<';
+	tbb.objs=[obj,tb,tbb];
+	tbb.onclick=function(){ Replace_condition_field_1(this.objs); }
+	obj.parentNode.insertBefore(tb,obj);
+	obj.parentNode.insertBefore(tbb,obj);
+	obj.parentNode.removeChild(obj);
+	Replace_condition_field_1(this.objs);
+}
+
+function Replace_condition_field_1(obj){
+	obj[2].parentNode.insertBefore(obj[0],obj[2]);
+	obj[0].parentNode.removeChild(obj[1]);
+	obj[0].parentNode.removeChild(obj[2]);
+	document.getElementById('btn_select_to_input_condition_field_1').style.visibility = 'visible';
+}
+</script>
+<?php
 echo "	<table style='width: 60%;' border='0'>\n";
 echo "	<tr>\n";
 echo "	<td style='width: 62px;'>Field:</td>\n";
-echo "	<td style='width: 35%;'>\n";
-echo "    <select class='formfld' name='condition_field_1' id='condition_field_1' onchange='type_onchange(\"condition_field_1\");' style='width:100%'>\n";
+echo "	<td style='width: 35%;' nowrap='nowrap'>\n";
+echo "    <select class='formfld' name='condition_field_1' id='condition_field_1' onchange='changeToInput_condition_field_1(this);this.style.visibility = \"hidden\";' style='width:85%'>\n";
 echo "    <option value=''></option>\n";
 if (strlen($condition_field_1) > 0) {
-	echo "    <option value='$condition_field_1' selected>$condition_field_1</option>\n";
+	echo "    <option value='$condition_field_1' selected='selected'>$condition_field_1</option>\n";
 }
 echo "	<optgroup label='Field'>\n";
 echo "		<option value='context'>context</option>\n";
@@ -391,7 +423,9 @@ echo "		<option value='year'>year</option>\n";
 echo "		<option value='wday'>day of week</option>\n";
 echo "		<option value='week'>week</option>\n";
 echo "	</optgroup>\n";
-echo "    </select><br />\n";
+echo "    </select>\n";
+echo "    <input type='button' id='btn_select_to_input_condition_field_1' class='btn' name='' alt='back' onclick='changeToInput_condition_field_1(document.getElementById(\"condition_field_1\"));this.style.visibility = \"hidden\";' value='<'>\n";
+echo "    <br />\n";
 echo "	</td>\n";
 echo "	<td style='width: 73px;'>&nbsp; Expression:</td>\n";
 echo "	<td>\n";
@@ -414,8 +448,40 @@ echo "	<tr>\n";
 echo "	<td align='left' style='width: 62px;'>\n";
 echo "		Field:\n";
 echo "	</td>\n";
-echo "	<td style='width: 35%;' align='left'>\n";
-echo "    <select class='formfld' name='condition_field_2' id='condition_field_2' onchange='type_onchange(\"condition_field_2\");' style='width:100%'>\n";
+echo "	<td style='width: 35%;' align='left' nowrap='nowrap'>\n";
+?>
+<script>
+var Objs;
+function changeToInput_condition_field_2(obj){
+	tb=document.createElement('INPUT');
+	tb.type='text';
+	tb.name=obj.name;
+	tb.className='formfld';
+	tb.setAttribute('id', 'condition_field_2');
+	tb.setAttribute('style', 'width: 85%;');
+	tb.value=obj.options[obj.selectedIndex].value;
+	document.getElementById('btn_select_to_input_condition_field_2').style.visibility = 'hidden';
+	tbb=document.createElement('INPUT');
+	tbb.setAttribute('class', 'btn');
+	tbb.type='button';
+	tbb.value='<';
+	tbb.objs=[obj,tb,tbb];
+	tbb.onclick=function(){ Replace_condition_field_2(this.objs); }
+	obj.parentNode.insertBefore(tb,obj);
+	obj.parentNode.insertBefore(tbb,obj);
+	obj.parentNode.removeChild(obj);
+	Replace_condition_field_2(this.objs);
+}
+
+function Replace_condition_field_2(obj){
+	obj[2].parentNode.insertBefore(obj[0],obj[2]);
+	obj[0].parentNode.removeChild(obj[1]);
+	obj[0].parentNode.removeChild(obj[2]);
+	document.getElementById('btn_select_to_input_condition_field_2').style.visibility = 'visible';
+}
+</script>
+<?php
+echo "    <select class='formfld' name='condition_field_2' id='condition_field_2' onchange='changeToInput_condition_field_2(this);this.style.visibility = \"hidden\";' style='width:85%'>\n";
 echo "    <option value=''></option>\n";
 if (strlen($condition_field_2) > 0) {
 	echo "    <option value='$condition_field_2' selected>$condition_field_2</option>\n";
@@ -447,7 +513,9 @@ echo "		<option value='year'>year</option>\n";
 echo "		<option value='wday'>day of week</option>\n";
 echo "		<option value='week'>week</option>\n";
 echo "	</optgroup>\n";
-echo "	</select><br />\n";
+echo "	</select>\n";
+echo "  <input type='button' id='btn_select_to_input_condition_field_2' class='btn' name='' alt='back' onclick='changeToInput_condition_field_2(document.getElementById(\"condition_field_2\"));this.style.visibility = \"hidden\";' value='<'>\n";
+echo "	<br />\n";
 echo "	</td>\n";
 echo "	<td style='width: 73px;' align='left'>\n";
 echo "		&nbsp; Expression:\n";
