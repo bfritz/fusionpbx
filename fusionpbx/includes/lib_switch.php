@@ -2305,7 +2305,7 @@ function save_hunt_group_xml() {
 						//check whether the dialplan entry exists in the database
 							$action = 'add'; //set default action to add
 							$i = 0;
-							$sql = " select count(*) as num_rows from v_dialplans ";
+							$sql = "select count(*) as num_rows from v_dialplans ";
 							$sql .= "where domain_uuid = '".$domain_uuid."' ";
 							$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
 							$prep_statement_2 = $db->prepare(check_sql($sql));
@@ -2386,7 +2386,7 @@ function save_hunt_group_xml() {
 								$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
 								$dialplan->dialplan_detail_type = 'destination_number';
 								$dialplan->dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
-								//$dialplan->dialplan_detail_break = '';
+								$dialplan->dialplan_detail_break = 'on-true';
 								//$dialplan->dialplan_detail_inline = '';
 								$dialplan->dialplan_detail_group = '2';
 								$dialplan->dialplan_detail_order = '020';
