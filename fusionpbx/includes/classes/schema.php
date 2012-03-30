@@ -77,7 +77,7 @@ include "root.php";
 										}
 										if ($field['key']['type'] == "foreign") {
 											if ($this->db_type == "pgsql") {
-												//$sql .= " references ".$field['key']['reference']['table']."(".$field['key']['reference']['field'].")";
+												$sql .= " references ".$field['key']['reference']['table']."(".$field['key']['reference']['field'].")";
 											}
 											if ($this->db_type == "sqlite") {
 												$sql .= " references ".$field['key']['reference']['table']."(".$field['key']['reference']['field'].")";
