@@ -43,6 +43,7 @@
 				event:addHeader("state", "Active (1 waiting)");
 				event:addHeader("from", park_extension.."@"..domain_name);
 				event:addHeader("login", park_extension.."@"..domain_name);
+				event:addHeader("unique-id", uuid);
 				event:addHeader("answer-state", "terminated");
 				event:fire();
 
@@ -86,6 +87,7 @@
 					event:addHeader("state", "Active (1 waiting)");
 					event:addHeader("from", park_extension.."@"..domain_name);
 					event:addHeader("login", park_extension.."@"..domain_name);
+					event:addHeader("unique-id", uuid);
 					event:addHeader("answer-state", "terminated");
 					event:fire();
 
@@ -115,6 +117,7 @@
 					event:addHeader("state", "Active (1 waiting)");
 					event:addHeader("from", park_extension.."@"..domain_name);
 					event:addHeader("login", park_extension.."@"..domain_name);
+					event:addHeader("unique-id", uuid);
 					event:addHeader("answer-state", "terminated");
 					event:fire();
 
