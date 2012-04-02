@@ -684,7 +684,7 @@ else
 		CONTINUE=YES
 	fi
 	lsb_release -c |grep -i precise > /dev/null
-	if [ $? -eq 0]; then
+	if [ $? -eq 0 ]; then
 		DISTRO=precise
 		/bin/echo "OK you're running Ubuntu 12.04 LTS [precise].  This script is"
 		/bin/echo "   a work in progress.  It is not recommended that you try it"
@@ -1537,7 +1537,10 @@ if [ $INSFUSION -eq 1 ]; then
 		/usr/bin/dpkg -i /var/cache/apt/archives/ppa-purge_0+bzr46.1~lucid1_all.deb
 	fi
 	
-	/usr/bin/apt-get -y install sqlite php5-cli php5-sqlite php5-odbc
+	/usr/bin/apt-get -y install sqlite php5-cli php5-sqlite php5-odbc 
+	if [ $DISTRO = "precise" ]; then
+		/usr/bin/apt-get -y install php-db
+	fi
 
 	#-----------------
 	# Apache
@@ -1811,6 +1814,13 @@ DELIM
 		if [ $DISTRO = "squeeze" ]; then
 			PHPINIFILE="/etc/php5/fpm/php.ini"
 			PHPCONFFILE="/etc/php5/fpm/php-fpm.conf"
+		elif [ $DISTRO = "precise" ]; then
+			PHPINIFILE="/etc/php5/fpm/php.ini"
+			#also exists, but www.conf used by default...
+			#PHPCONFFILE="/etc/php5/fpm/php-fpm.conf"
+			#max_children set in /etc/php5/fpm/pool.d/www.conf
+			PHPCONFFILE="/etc/php5/fpm/pool.d/www.conf"
+				
 		else
 			PHPINIFILE="/etc/php5/fpm/php.ini"
 			PHPCONFFILE="/etc/php5/fpm/php5-fpm.conf"
@@ -1833,7 +1843,7 @@ DELIM
 		if [ $? -ne 0 ]; then
 			/bin/sed -i -e s,';cgi\.fix_pathinfo=1','cgi\.fix_pathinfo=0', $PHPINIFILE
 			if [ $? -ne 0 ]; then
-				/bin/echo "ERROR: failed edit of /etc/php5/fpm/php.ini cgi.fix_pathinfo=0"
+				/bin/echo "ERROR: failed edit of $PHPINIFILE cgi.fix_pathinfo=0"
 				exit 1
 			fi
 		else
@@ -1849,12 +1859,27 @@ DELIM
 			/bin/sed -i -e s,"pm.max_children = 10","pm.max_children = 4", $PHPCONFFILE
 			if [ $? -ne 0 ]; then
 				#previous had an error
-				/bin/echo "ERROR: failed edit of /etc/php5/fpm/php5-fpm.conf pm.max_children = 4"
+				/bin/echo "ERROR: failed edit of $PHPCONFFILE pm.max_children = 4"
 				exit 1
 			fi
 		else
 			/bin/echo
-			/bin/echo "/etc/php5/fpm/php5-fpm.conf [children] already edited. Skipping..."
+			/bin/echo "$PHPCONFFILE [children] already edited. Skipping..."
+		fi
+		
+		#max_servers must be <= max_children
+		/bin/grep "pm.max_spare_servers = 4" $PHPCONFFILE > /dev/null
+		if [ $? -ne 0 ]; then
+			/bin/sed -i -e s,"pm.max_spare_servers = 6","pm.max_spare_servers = 4", $PHPCONFFILE
+			if [ $? -ne 0 ]; then
+				#previous had an error
+				/bin/echo "ERROR: failed edit of $PHPCONFFILE pm.max_spare_servers = 4"
+				exit 1
+			fi
+			
+		else
+			/bin/echo
+			/bin/echo "pm.max_spare_servers not changed"
 		fi
 
 		#update auto-starts ###PHP5-fpm and nginx are wrong??
@@ -2015,6 +2040,7 @@ DELIM
 				/bin/echo "  or verion 9 from PPA?"
 				/bin/echo
 				read -p "PostgreSQL 8.4 or 9 [8/9]? " POSTGRES9 
+			fi
 			echo
 		  ;;
 		esac
