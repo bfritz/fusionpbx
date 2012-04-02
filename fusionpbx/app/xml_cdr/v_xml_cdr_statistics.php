@@ -35,6 +35,7 @@ else {
 }
 
 //additional includes
+	require_once "xml_cdr_statistics_inc.php";
 	require_once "includes/header.php";
 
 //page title and description
@@ -43,6 +44,7 @@ else {
 	echo "<tr>\n";
 	echo "	<td width='30%' align='left' valign='top' nowrap='nowrap'><b>Call Detail Record Statistics</b></td>\n";
 	echo "	<td width='70%' align='right' valign='top'>\n";
+	echo "		<input type='button' class='btn' value='CSV' onclick=\"document.location.href='xml_cdr_statistics_csv.php';\">\n";
 	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_xml_cdr.php'\" value='Back'>\n";
 	echo "	</td>\n";
 	echo "</tr>\n";
@@ -55,215 +57,12 @@ else {
 	echo "</tr>\n";
 	echo "</table>\n";
 
-//show all call detail records to admin and superadmin. for everyone else show only the call details for extensions assigned to them
-	if (!if_group("admin") && !if_group("superadmin")) {
-		// select caller_id_number, destination_number from v_xml_cdr where domain_uuid = '' 
-		// and (caller_id_number = '1001' or destination_number = '1001' or destination_number = '*991001')
-		$sql_where = "where domain_uuid = '$domain_uuid' and ( ";
-		if (count($_SESSION['user']['extension']) > 0) {
-			$x = 0;
-			foreach($_SESSION['user']['extension'] as $row) {
-				if ($x==0) {
-					if ($row['user'] > 0) { $sql_where .= "caller_id_number = '".$row['user']."' \n"; } //source
-				}
-				else {
-					if ($row['user'] > 0) { $sql_where .= "or caller_id_number = '".$row['user']."' \n"; } //source
-				}
-				if ($row['user'] > 0) { $sql_where .= "or destination_number = '".$row['user']."' \n"; } //destination
-				if ($row['user'] > 0) { $sql_where .= "or destination_number = '*99".$row['user']."' \n"; } //destination
-				$x++;
-			}
-		}
-		$sql_where .= ") ";
-	}
-	else {
-		//superadmin or admin
-		$sql_where = "where domain_uuid = '$domain_uuid' ";
-	}
-
-//create the sql query to get the xml cdr records
-	if (strlen($order_by) == 0)  { $order_by  = "start_epoch"; }
-	if (strlen($order) == 0)  { $order  = "desc"; }
-
-//calculate the seconds in different time frames
-	$seconds_hour = 3600;
-	$seconds_day = $seconds_hour * 24;
-	$seconds_week = $seconds_day * 7;
-	$seconds_month = $seconds_day * 30;
-
-//get the call volume between a start end end time in seconds
-	function get_call_volume_between($start, $end, $where) {
-		global $db;
-		if (strlen($where) == 0) {
-			$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		}
-		$sql = " select count(*) as count from v_xml_cdr ";
-		$sql .= $where;
-		$sql .= "and start_epoch BETWEEN ".(time()-$start)." AND ".(time()-$end)." ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-		unset ($prep_statement, $sql);
-		if (count($result) > 0) {
-			foreach($result as $row) {
-				return $row['count'];
-			}
-		}
-		else {
-			return false;
-		}
-		unset($prep_statement, $result, $sql);
-	}
-	$call_volume_1st_hour = get_call_volume_between(3600, 0);
-
-//get the call time in seconds between the start and end time in seconds
-	function get_call_seconds_between($start, $end, $where) {
-		global $db;
-		if (strlen($where) == 0) {
-			$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		}
-		$sql = " select sum(billsec) as seconds from v_xml_cdr ";
-		$sql .= $where;
-		$sql .= "and start_epoch BETWEEN ".(time()-$start)." AND ".(time()-$end)." ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-		unset ($prep_statement, $sql);
-		if (count($result) > 0) {
-			foreach($result as $row) {
-				$result = $row['seconds'];
-				if (strlen($result) == 0) {
-					return 0;
-				}
-				else {
-					return $row['seconds'];
-				}
-			}
-		}
-		else {
-			return false;
-		}
-		unset($prep_statement, $result, $sql);
-	}
-	//$call_seconds_1st_hour = get_call_seconds_between(3600, 0);
-	//if (strlen($call_seconds_1st_hour) == 0) { $call_seconds_1st_hour = 0; }
-
 //set the style
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-//round down to the nearest hour
-	$time = time() - time() % 3600;
 
-//call info hour by hour
-	for ($i = 1; $i <= 24; $i++) {
-		$stats[$i]['volume'] = get_call_volume_between(3600*$i, 3600*($i-1), '');
-		$stats[$i]['start_epoch'] = $time - 3600*$i;
-		$stats[$i]['stop_epoch'] = $time - 3600*($i-1);
-		$stats[$i]['seconds'] = get_call_seconds_between(3600*$i, 3600*($i-1), '');
-		$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
-		$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
-		$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / 60;
-		
-		//answer / seizure ratio
-		$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$where .= "and billsec = '0' ";
-		$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);
-		$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
-
-		//average length of call
-		$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
-	}
-
-//call info for a day
-	$stats[$i]['volume'] = get_call_volume_between($seconds_day, 0, '');
-	$stats[$i]['seconds'] = get_call_seconds_between($seconds_day, 0, '');
-	$stats[$i]['start_epoch'] = time() - $seconds_day;
-	$stats[$i]['stop_epoch'] = time();
-	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
-	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
-	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24);
-	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-	$where .= "and billsec = '0' ";
-	$stats[$i]['missed'] = get_call_volume_between($seconds_day, 0, $where);
-	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
-	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
-	$i++;
-
-//call info for a week
-	$stats[$i]['volume'] = get_call_volume_between($seconds_week, 0, '');
-	$stats[$i]['seconds'] = get_call_seconds_between($seconds_week, 0, '');
-	$stats[$i]['start_epoch'] = time() - $seconds_week;
-	$stats[$i]['stop_epoch'] = time();
-	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
-	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
-	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*7);
-	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-	$where .= "and billsec = '0' ";
-	$stats[$i]['missed'] = get_call_volume_between($seconds_week, 0, $where);
-	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
-	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
-	$i++;
-
-//call info for a month
-	$stats[$i]['volume'] = get_call_volume_between($seconds_month, 0, '');
-	$stats[$i]['seconds'] = get_call_seconds_between($seconds_month, 0, '');
-	$stats[$i]['start_epoch'] = time() - $seconds_month;
-	$stats[$i]['stop_epoch'] = time();
-	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
-	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
-	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*30);
-	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-	$where .= "and billsec = '0' ";
-	$stats[$i]['missed'] = get_call_volume_between($seconds_month, 0, $where);
-	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
-	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
-	$i++;
-
-//show the graph
-	$x = 0;
-	foreach ($stats as $row) {
-		$graph['volume'][$x][] = $x+1;
-		$graph['volume'][$x][] = $row['volume']/1;
-		if ($x == 23) { break; }
-		$x++;
-	}
-	$x = 0;
-	foreach ($stats as $row) {
-		$graph['minutes'][$x][] = $x+1;
-		$graph['minutes'][$x][] = round($row['minutes'],2);
-		if ($x == 23) { break; }
-		$x++;
-	}
-	$x = 0;
-	foreach ($stats as $row) {
-		$graph['call_per_min'][$x][] = $x+1;
-		$graph['call_per_min'][$x][] = round($row['avg_min'],2);
-		if ($x == 23) { break; }
-		$x++;
-	}
-	$x = 0;
-	foreach ($stats as $row) {
-		$graph['missed'][$x][] = $x+1;
-		$graph['missed'][$x][] = $row['missed']/1;
-		if ($x == 23) { break; }
-		$x++;
-	}
-	$x = 0;
-	foreach ($stats as $row) {
-		$graph['asr'][$x][] = $x+1;
-		$graph['asr'][$x][] = round($row['asr'],2)/100;
-		if ($x == 23) { break; }
-		$x++;
-	}
-	$x = 0;
-	foreach ($stats as $row) {
-		$graph['aloc'][$x][] = $x+1;
-		$graph['aloc'][$x][] = round($row['aloc'],2);
-		if ($x == 23) { break; }
-		$x++;
-	}
 	?>
 	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/includes/jquery/flot/excanvas.min.js"></script><![endif]-->
     <script language="javascript" type="text/javascript" src="/includes/jquery/jquery-1.7.2.min.js"></script>
