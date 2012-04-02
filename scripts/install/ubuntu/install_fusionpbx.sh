@@ -2006,11 +2006,16 @@ DELIM
 		read -p "  Would you like to install MySQL, PostgreSQL or stay with Sqlite (m/p/S)? " SQLITEMYSQL
 		case "$SQLITEMYSQL" in
 		  [pP]*)
-			/bin/echo
-			/bin/echo "OK, PostgreSQL! Would you prefer the stock verion 8.4"
-			/bin/echo "  or verion 9 from PPA?"
-			/bin/echo
-			read -p "PostgreSQL 8.4 or 9 [8/9]? " POSTGRES9 
+			if [ $DISTRO = "precise" ]; then
+				echo "precise is PostgreSQL 9.1 by default"
+				POSTGRES9=9
+			else
+				/bin/echo
+				/bin/echo "OK, PostgreSQL! Would you prefer the stock verion 8.4"
+				/bin/echo "  or verion 9 from PPA?"
+				/bin/echo
+				read -p "PostgreSQL 8.4 or 9 [8/9]? " POSTGRES9 
+			echo
 		  ;;
 		esac
 		
@@ -2055,6 +2060,9 @@ DELIM
 				/bin/echo "deb http://backports.debian.org/debian-backports squeeze-backports main" > /etc/apt/sources.list.d/squeeze-backports.list
 				/usr/bin/apt-get update
 				/usr/bin/apt-get -y -t squeeze-backports install postgresql-9.1 php5-pgsql
+			elif [ $DISTRO = "precise" ]; then
+				#already there...
+				/usr/bin/apt-get -y install postgresql-9.1 php5-pgsql
 			else
 				#add the ppa
 				/usr/bin/apt-add-repository ppa:pitti/postgresql
