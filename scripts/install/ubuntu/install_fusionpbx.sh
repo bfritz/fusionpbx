@@ -682,6 +682,15 @@ else
 		/bin/echo "   and php-fpm."
 		/bin/echo 
 		CONTINUE=YES
+	fi
+	lsb_release -c |grep -i precise > /dev/null
+	if [ $? -eq 0]; then
+		DISTRO=precise
+		/bin/echo "OK you're running Ubuntu 12.04 LTS [precise].  This script is"
+		/bin/echo "   a work in progress.  It is not recommended that you try it"
+		/bin/echo "   at this time."
+		/bin/echo 
+		CONTINUE=YES
 	else
 		/bin/echo "This script was written for Ubuntu 10.04 LTS codename Lucid"
 		/bin/echo
@@ -722,11 +731,20 @@ if [ $INSFREESWITCH -eq 1 ]; then
 
 	/usr/bin/apt-get update
 	/usr/bin/apt-get -y upgrade
-	/usr/bin/apt-get -y install ssh vim git-core subversion build-essential \
-	autoconf automake libtool libncurses5 libncurses5-dev libjpeg62-dev ssh \
-	screen htop pkg-config bzip2 curl libtiff4-dev ntp \
-	time bison libssl-dev \
-	unixodbc libmyodbc unixodbc-dev 
+	
+	if [ $DISTRO = "precise" ]; then
+		/usr/bin/apt-get -y install ssh vim git-core subversion build-essential \
+		autoconf automake libtool libncurses5 libncurses5-dev libjpeg-dev ssh \
+		screen htop pkg-config bzip2 curl libtiff4-dev ntp \
+		time bison libssl-dev \
+		unixodbc libmyodbc unixodbc-dev 
+	else
+		/usr/bin/apt-get -y install ssh vim git-core subversion build-essential \
+			autoconf automake libtool libncurses5 libncurses5-dev libjpeg62-dev ssh \
+			screen htop pkg-config bzip2 curl libtiff4-dev ntp \
+			time bison libssl-dev \
+			unixodbc libmyodbc unixodbc-dev 
+	fi
 	
 	#added libgnutls-dev libgnutls26 for dingaling...
 	#gnutls no longer required for dingaling (git around oct 17 per mailing list..)
@@ -1736,6 +1754,11 @@ DELIM
 			/bin/cat /tmp/dotdeb.gpg | apt-key add - 
 			/bin/rm /tmp/dotdeb.gpg
 			/usr/bin/apt-get update
+			
+		elif [ $DISTRO = "precise" ]; then
+			#included in main repo we have nginx [nginx-full] and php5-fpm
+			echo "already in 12.04 LTS [precise], nothing to add."
+			
 
 		else
 			#add-apt-repository ppa:brianmercer/php  // apt-get -y install python-software-properties	
@@ -1781,6 +1804,7 @@ DELIM
 		if [ $DISTRO = "squeeze" ]; then
 			/usr/bin/apt-get -y install php5-fpm php5-common php5-gd php-pear php5-memcache php5-apc php5-sqlite
 		else
+			#should work for precise
 			/usr/bin/apt-get -y install php5-fpm php5-common php5-gd php-pear php5-memcache php-apc
 		fi
 
