@@ -153,9 +153,14 @@ else {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
+//round down to the nearest hour
+	$time = time() - time() % 3600;
+
 //call info hour by hour
 	for ($i = 1; $i <= 24; $i++) {
 		$stats[$i]['volume'] = get_call_volume_between(3600*$i, 3600*($i-1), '');
+		$stats[$i]['start_epoch'] = $time - 3600*$i;
+		$stats[$i]['stop_epoch'] = $time - 3600*($i-1);
 		$stats[$i]['seconds'] = get_call_seconds_between(3600*$i, 3600*($i-1), '');
 		$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 		$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
@@ -174,6 +179,8 @@ else {
 //call info for a day
 	$stats[$i]['volume'] = get_call_volume_between($seconds_day, 0, '');
 	$stats[$i]['seconds'] = get_call_seconds_between($seconds_day, 0, '');
+	$stats[$i]['start_epoch'] = time() - $seconds_day;
+	$stats[$i]['stop_epoch'] = time();
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24);
@@ -187,6 +194,8 @@ else {
 //call info for a week
 	$stats[$i]['volume'] = get_call_volume_between($seconds_week, 0, '');
 	$stats[$i]['seconds'] = get_call_seconds_between($seconds_week, 0, '');
+	$stats[$i]['start_epoch'] = time() - $seconds_week;
+	$stats[$i]['stop_epoch'] = time();
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*7);
@@ -200,6 +209,8 @@ else {
 //call info for a month
 	$stats[$i]['volume'] = get_call_volume_between($seconds_month, 0, '');
 	$stats[$i]['seconds'] = get_call_seconds_between($seconds_month, 0, '');
+	$stats[$i]['start_epoch'] = time() - $seconds_month;
+	$stats[$i]['stop_epoch'] = time();
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*30);
@@ -210,10 +221,138 @@ else {
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
 
+//show the graph
+	$x = 0;
+	foreach ($stats as $row) {
+		$graph['volume'][$x][] = $x+1;
+		$graph['volume'][$x][] = $row['volume']/1;
+		if ($x == 23) { break; }
+		$x++;
+	}
+	$x = 0;
+	foreach ($stats as $row) {
+		$graph['minutes'][$x][] = $x+1;
+		$graph['minutes'][$x][] = round($row['minutes'],2);
+		if ($x == 23) { break; }
+		$x++;
+	}
+	$x = 0;
+	foreach ($stats as $row) {
+		$graph['call_per_min'][$x][] = $x+1;
+		$graph['call_per_min'][$x][] = round($row['avg_min'],2);
+		if ($x == 23) { break; }
+		$x++;
+	}
+	$x = 0;
+	foreach ($stats as $row) {
+		$graph['missed'][$x][] = $x+1;
+		$graph['missed'][$x][] = $row['missed']/1;
+		if ($x == 23) { break; }
+		$x++;
+	}
+	$x = 0;
+	foreach ($stats as $row) {
+		$graph['asr'][$x][] = $x+1;
+		$graph['asr'][$x][] = round($row['asr'],2)/100;
+		if ($x == 23) { break; }
+		$x++;
+	}
+	$x = 0;
+	foreach ($stats as $row) {
+		$graph['aloc'][$x][] = $x+1;
+		$graph['aloc'][$x][] = round($row['aloc'],2);
+		if ($x == 23) { break; }
+		$x++;
+	}
+	?>
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/includes/jquery/flot/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/includes/jquery/jquery-1.7.2.min.js"></script>
+    <script language="javascript" type="text/javascript" src="/includes/jquery/flot/jquery.flot.js"></script>
+	<table>
+		<tr>
+			<td align='left'>
+				<div id="placeholder" style="width:700px;height:180px;"></div>
+			</td>
+			<td align='left' valign='top'>
+				<p id="choices"></p>
+			</td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+	$(function () {
+		var datasets = {
+			"volume": {
+				label: "Volume",
+				data: <?php echo json_encode($graph['volume']); ?>
+			},
+			"minutes": {
+				label: "Minutes",
+				data: <?php echo json_encode($graph['minutes']); ?>
+			},
+			"call_per_min": {
+				label: "Calls Per Min",
+				data: <?php echo json_encode($graph['call_per_min']); ?>
+			},
+			"missed": {
+				label: "Missed",
+				data: <?php echo json_encode($graph['missed']); ?>
+			},
+			"asr": {
+				label: "ASR",
+				data: <?php echo json_encode($graph['asr']); ?>
+			},
+			"aloc": {
+				label: "ALOC",
+				data: <?php echo json_encode($graph['aloc']); ?>
+			},		
+		};
+
+		// hard-code color indices to prevent them from shifting as
+		// countries are turned on/off
+		var i = 0;
+		$.each(datasets, function(key, val) {
+			val.color = i;
+			++i;
+		});
+		
+		// insert checkboxes 
+		var choiceContainer = $("#choices");
+		$.each(datasets, function(key, val) {
+			choiceContainer.append('<br /><input type="checkbox" name="' + key +
+								   '" checked="checked" id="id' + key + '">' +
+								   '<label for="id' + key + '">'
+									+ val.label + '</label>');
+		});
+		choiceContainer.find("input").click(plotAccordingToChoices);
+
+		
+		function plotAccordingToChoices() {
+			var data = [];
+
+			choiceContainer.find("input:checked").each(function () {
+				var key = $(this).attr("name");
+				if (key && datasets[key])
+					data.push(datasets[key]);
+			});
+
+			if (data.length > 0)
+				$.plot($("#placeholder"), data, {
+					yaxis: { min: 0 },
+					xaxis: { tickDecimals: 0 }
+				});
+		}
+
+		plotAccordingToChoices();
+	});
+	</script>
+	<?php
+
 //show the results
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "	<th>Hours</th>\n";
+	echo "	<th>Date</th>\n";
+	echo "	<th nowrap='nowrap'>Time</th>\n";
 	echo "	<th>Volume</th>\n";
 	echo "	<th>Minutes</th>\n";
 	echo "	<th>Calls Per Min</th>\n";
@@ -238,6 +377,8 @@ else {
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "	<th nowrap='nowrap'>Days</th>\n";
+			echo "	<th nowrap='nowrap'>Date</th>\n";
+			echo "	<th nowrap='nowrap'>Time</th>\n";
 			echo "	<th>Volume</th>\n";
 			echo "	<th>Minutes</th>\n";
 			echo "	<th nowrap='nowrap'>Calls Per Min</th>\n";
@@ -254,6 +395,14 @@ else {
 		}
 		elseif ($i == 26) {
 			echo "	<td valign='top' class='".$row_style[$c]."'>30</td>\n";
+		}
+		if ($i < 24) {
+			echo "	<td valign='top' class='".$row_style[$c]."'>".date('j M', $row['start_epoch'])."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".date('H:i', $row['start_epoch'])." - ".date('H:i', $row['stop_epoch'])."&nbsp;</td>\n";
+		}
+		else {
+			echo "	<td valign='top' class='".$row_style[$c]."'>".date('j M', $row['start_epoch'])."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".date('H:i', $row['start_epoch'])." - ".date('j M H:i', $row['stop_epoch'])."&nbsp;</td>\n";
 		}
 		echo "	<td valign='top' class='".$row_style[$c]."'>".$row['volume']."&nbsp;</td>\n";
 		echo "	<td valign='top' class='".$row_style[$c]."'>".(round($row['minutes'],2))."&nbsp;</td>\n";

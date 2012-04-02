@@ -461,10 +461,7 @@ else {
 	echo th_order_by('hangup_cause', 'Status', $order_by, $order);
 	echo "</tr>\n";
 
-	if ($result_count == 0) {
-		//no results
-	}
-	else { //received results
+	if ($result_count > 0) {
 		foreach($result as $row) {
 			$tmp_year = date("Y", strtotime($row['start_stamp']));
 			$tmp_month = date("M", strtotime($row['start_stamp']));
