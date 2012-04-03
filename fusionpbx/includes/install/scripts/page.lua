@@ -100,28 +100,38 @@ if ( session:ready() ) then
 			--extension_exists = "username_exists id "..extension.."@"..domain_name;
 			--reply = trim(api:executeString(extension_exists));
 			--if (reply == "true") then
-				extension_status = "show channels like "..extension.."@"..domain_name;
+				extension_status = "show channels like "..extension.."@";
 				reply = trim(api:executeString(extension_status));
 				if (reply == "0 total.") then
 					--freeswitch.consoleLog("NOTICE", "extension "..extension.." available\n");
 					if (extension == tonumber(sip_from_user)) then
 						--this extension is the caller that initated the page
 					else
+						--originate the call
 						cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..extension.."@"..domain_name.." conference:page@page+flags{mute} inline";
 						api:executeString(cmd_string);
 					end
 					--freeswitch.consoleLog("NOTICE", "cmd_string "..cmd_string.."\n");
 				else
-					--call status busy
+					--look inside the reply to check for the correct domain_name
+					if string.find(reply, domain_name) then
+						--found: extension number is busy
+					else
+						--not found
+						if (extension == tonumber(sip_from_user)) then
+							--this extension is the caller that initated the page
+						else
+							--originate the call
+							cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..extension.."@"..domain_name.." conference:page@page+flags{mute} inline";
+							api:executeString(cmd_string);
+						end
+					end
 				end
 			--end
-
 		end
 	end
 
-	--session:execute("info");
-
 	--send main call to the conference room
-		session:execute("conference", "page@page+flags{endconf}");
+	session:execute("conference", "page@page+flags{endconf}");
 
 end
