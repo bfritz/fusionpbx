@@ -62,7 +62,6 @@ else {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-
 	?>
 	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/includes/jquery/flot/excanvas.min.js"></script><![endif]-->
     <script language="javascript" type="text/javascript" src="/includes/jquery/jquery-1.7.2.min.js"></script>

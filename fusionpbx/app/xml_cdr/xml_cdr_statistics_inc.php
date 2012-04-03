@@ -198,42 +198,42 @@ else {
 //show the graph
 	$x = 0;
 	foreach ($stats as $row) {
-		$graph['volume'][$x][] = $x+1;
+		$graph['volume'][$x][] = date('H', $row['start_epoch']);
 		$graph['volume'][$x][] = $row['volume']/1;
 		if ($x == 23) { break; }
 		$x++;
 	}
 	$x = 0;
 	foreach ($stats as $row) {
-		$graph['minutes'][$x][] = $x+1;
+		$graph['minutes'][$x][] = date('H', $row['start_epoch']);
 		$graph['minutes'][$x][] = round($row['minutes'],2);
 		if ($x == 23) { break; }
 		$x++;
 	}
 	$x = 0;
 	foreach ($stats as $row) {
-		$graph['call_per_min'][$x][] = $x+1;
+		$graph['call_per_min'][$x][] = date('H', $row['start_epoch']);
 		$graph['call_per_min'][$x][] = round($row['avg_min'],2);
 		if ($x == 23) { break; }
 		$x++;
 	}
 	$x = 0;
 	foreach ($stats as $row) {
-		$graph['missed'][$x][] = $x+1;
+		$graph['missed'][$x][] = date('H', $row['start_epoch']);
 		$graph['missed'][$x][] = $row['missed']/1;
 		if ($x == 23) { break; }
 		$x++;
 	}
 	$x = 0;
 	foreach ($stats as $row) {
-		$graph['asr'][$x][] = $x+1;
+		$graph['asr'][$x][] = date('H', $row['start_epoch']);
 		$graph['asr'][$x][] = round($row['asr'],2)/100;
 		if ($x == 23) { break; }
 		$x++;
 	}
 	$x = 0;
 	foreach ($stats as $row) {
-		$graph['aloc'][$x][] = $x+1;
+		$graph['aloc'][$x][] = date('H', $row['start_epoch']);
 		$graph['aloc'][$x][] = round($row['aloc'],2);
 		if ($x == 23) { break; }
 		$x++;
