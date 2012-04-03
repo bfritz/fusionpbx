@@ -78,7 +78,7 @@ else {
 		}
 		$sql = " select count(*) as count from v_xml_cdr ";
 		$sql .= $where;
-		$sql .= "and start_epoch BETWEEN ".(time()-$start)." AND ".(time()-$end)." ";
+		$sql .= "and start_epoch BETWEEN ".$start." AND ".$end." ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -93,7 +93,6 @@ else {
 		}
 		unset($prep_statement, $result, $sql);
 	}
-	$call_volume_1st_hour = get_call_volume_between(3600, 0);
 
 //get the call time in seconds between the start and end time in seconds
 	function get_call_seconds_between($start, $end, $where) {
@@ -103,7 +102,7 @@ else {
 		}
 		$sql = " select sum(billsec) as seconds from v_xml_cdr ";
 		$sql .= $where;
-		$sql .= "and start_epoch BETWEEN ".(time()-$start)." AND ".(time()-$end)." ";
+		$sql .= "and start_epoch BETWEEN ".$start." AND ".$end." ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -132,10 +131,10 @@ else {
 
 //call info hour by hour
 	for ($i = 0; $i <= 23; $i++) {
-		$stats[$i]['volume'] = get_call_volume_between(3600*$i, 3600*($i-1), '');
 		$stats[$i]['start_epoch'] = $time - 3600*$i;
-		$stats[$i]['stop_epoch'] = $time - 3600*($i-1);
-		$stats[$i]['seconds'] = get_call_seconds_between(3600*$i, 3600*($i-1), '');
+		$stats[$i]['stop_epoch'] = $stats[$i]['start_epoch'] + 3600;
+		$stats[$i]['volume'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], '');
+		$stats[$i]['seconds'] = get_call_seconds_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], '');
 		$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 		$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 		$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / 60;
@@ -143,7 +142,7 @@ else {
 		//answer / seizure ratio
 		$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$where .= "and billsec = '0' ";
-		$stats[$i]['missed'] = get_call_volume_between(3600*$i, 3600*($i-1), $where);
+		$stats[$i]['missed'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], $where);
 		$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 
 		//average length of call
@@ -151,46 +150,47 @@ else {
 	}
 
 //call info for a day
-	$stats[$i]['volume'] = get_call_volume_between($seconds_day, 0, '');
-	$stats[$i]['seconds'] = get_call_seconds_between($seconds_day, 0, '');
+	$i = 24;
 	$stats[$i]['start_epoch'] = time() - $seconds_day;
 	$stats[$i]['stop_epoch'] = time();
+	$stats[$i]['volume'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], '');
+	$stats[$i]['seconds'] = get_call_seconds_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], '');
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24);
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
-	$stats[$i]['missed'] = get_call_volume_between($seconds_day, 0, $where);
+	$stats[$i]['missed'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], $where);
 	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
 
 //call info for a week
-	$stats[$i]['volume'] = get_call_volume_between($seconds_week, 0, '');
-	$stats[$i]['seconds'] = get_call_seconds_between($seconds_week, 0, '');
 	$stats[$i]['start_epoch'] = time() - $seconds_week;
 	$stats[$i]['stop_epoch'] = time();
+	$stats[$i]['volume'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], '');
+	$stats[$i]['seconds'] = get_call_seconds_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], '');
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*7);
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
-	$stats[$i]['missed'] = get_call_volume_between($seconds_week, 0, $where);
+	$stats[$i]['missed'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], $where);
 	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
 
 //call info for a month
-	$stats[$i]['volume'] = get_call_volume_between($seconds_month, 0, '');
-	$stats[$i]['seconds'] = get_call_seconds_between($seconds_month, 0, '');
 	$stats[$i]['start_epoch'] = time() - $seconds_month;
 	$stats[$i]['stop_epoch'] = time();
+	$stats[$i]['volume'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], '');
+	$stats[$i]['seconds'] = get_call_seconds_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], '');
 	$stats[$i]['minutes'] = $stats[$i]['seconds'] / 60;
 	$stats[$i]['avg_sec'] = $stats[$i]['seconds'] / $stats[$i]['volume'];
 	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*30);
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
-	$stats[$i]['missed'] = get_call_volume_between($seconds_month, 0, $where);
+	$stats[$i]['missed'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], $where);
 	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
 	$i++;
