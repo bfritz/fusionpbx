@@ -14,17 +14,17 @@
 		$apps[$x]['menu'][0]['uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][0]['parent_uuid'] = '';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/app/xml_cdr/v_xml_cdr.php';
+		$apps[$x]['menu'][0]['path'] = '/app/xml_cdr/xml_cdr.php';
 		$apps[$x]['menu'][0]['order'] = '3';
 		$apps[$x]['menu'][0]['groups'][] = 'user';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
-	
+
 		$apps[$x]['menu'][1]['title']['en'] = 'Call Detail Records';
 		$apps[$x]['menu'][1]['uuid'] = '8f80e71a-31a5-6432-47a0-7f5a7b271f05';
 		$apps[$x]['menu'][1]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][1]['category'] = 'internal';
-		$apps[$x]['menu'][1]['path'] = '/app/xml_cdr/v_xml_cdr.php';
+		$apps[$x]['menu'][1]['path'] = '/app/xml_cdr/xml_cdr.php';
 		$apps[$x]['menu'][1]['groups'][] = 'user';
 		$apps[$x]['menu'][1]['groups'][] = 'admin';
 		$apps[$x]['menu'][1]['groups'][] = 'superadmin';

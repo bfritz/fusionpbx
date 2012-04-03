@@ -76,7 +76,7 @@ else {
 	echo "<tr>\n";
 	echo "<td width='30%' align='left' valign='top' nowrap='nowrap'><b>Call Details</b></td>\n";
 	echo "<td width='70%' align='right' valign='top'>\n";
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_xml_cdr.php'\" value='Back'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='xml_cdr.php'\" value='Back'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -159,7 +159,7 @@ else {
 	echo "</tr>\n";
 
 	echo "<tr >\n";
-	echo "	<td valign='top' class='".$row_style[$c]."'><a href='v_xml_cdr_details.php?uuid=".$uuid."'>".$direction."</a></td>\n";
+	echo "	<td valign='top' class='".$row_style[$c]."'><a href='xml_cdr_details.php?uuid=".$uuid."'>".$direction."</a></td>\n";
 	//echo "	<td valign='top' class='".$row_style[$c]."'>".$language."</td>\n";
 	//echo "	<td valign='top' class='".$row_style[$c]."'>".$context."</td>\n";
 	echo "	<td valign='top' class='".$row_style[$c]."'>";
@@ -254,7 +254,7 @@ else {
 		echo "	<td valign='top' align='left' class='".$row_style[$c]."'>".$key."</td>\n";
 		if ($key == "bridge_uuid" || $key == "signal_bond") {
 			echo "	<td valign='top' align='left' class='".$row_style[$c]."'>\n";
-			echo "		<a href='v_xml_cdr_details.php?uuid=$value'>".$value."</a>&nbsp;\n";
+			echo "		<a href='xml_cdr_details.php?uuid=$value'>".$value."</a>&nbsp;\n";
 			$tmp_dir = $_SESSION['switch']['recordings']['dir'].'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
 			$tmp_name = '';
 			if (file_exists($tmp_dir.'/'.$value.'.wav')) {
@@ -449,7 +449,7 @@ else {
 							echo "					<td valign='top' align='left' class='".$row_style[$c]."'>".wordwrap($value,75,"<br />\n", TRUE)."&nbsp;</td>\n";
 						}
 						else {
-							echo "					<td valign='top' align='left' class='".$row_style[$c]."'><a href='v_xml_cdr_details.php?uuid=$value'>".$value."</a>&nbsp;</td>\n";
+							echo "					<td valign='top' align='left' class='".$row_style[$c]."'><a href='xml_cdr_details.php?uuid=$value'>".$value."</a>&nbsp;</td>\n";
 						}
 						echo "				</tr>\n";
 					}

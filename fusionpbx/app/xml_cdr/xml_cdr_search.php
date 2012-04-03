@@ -64,12 +64,12 @@ else {
 	echo "	<td align=\"left\">\n";
 	echo "		<br>";
 
-	echo "<form method='post' action='v_xml_cdr.php'>\n";
+	echo "<form method='post' action='xml_cdr.php'>\n";
 	echo "<table width='100%' cellpadding='6' cellspacing='0'>\n";
 
 	echo "<tr>\n";
 	echo "<td width='30%' nowrap valign='top'><b>Advanced Search</b></td>\n";
-	echo "<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_xml_cdr.php'\" value='Back'><br /><br /></td>\n";
+	echo "<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='xml_cdr.php'\" value='Back'><br /><br /></td>\n";
 	echo "</tr>\n";
 
 	echo "	<tr>";

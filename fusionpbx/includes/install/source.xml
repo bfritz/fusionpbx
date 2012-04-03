@@ -4516,7 +4516,7 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/xml_cdr/v_xml_cdr.php</path> 
+		<path>/mod/xml_cdr/xml_cdr.php</path> 
 		<last_mod>Sun, 29 Aug 2010 04:31:18 GMT</last_mod> 
 		<md5>5d0e850ce9af15f86937e76a518afea6</md5> 
 		<size>21108</size> 
