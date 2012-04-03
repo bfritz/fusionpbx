@@ -37,7 +37,7 @@ else {
 //set the action with add or update
 	if (isset($_REQUEST["id"])) {
 		$action = "update";
-		$broadcast_uuid = check_str($_REQUEST["id"]);
+		$call_broadcast_uuid = check_str($_REQUEST["id"]);
 	}
 	else {
 		$action = "add";
@@ -61,7 +61,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
-		$broadcast_uuid = check_str($_POST["broadcast_uuid"]);
+		$call_broadcast_uuid = check_str($_POST["call_broadcast_uuid"]);
 	}
 
 	//check for all required data
@@ -91,11 +91,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
 		if ($action == "add" && permission_exists('call_broadcast_add')) {
-			$broadcast_uuid = uuid();
+			$call_broadcast_uuid = uuid();
 			$sql = "insert into v_call_broadcasts ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "broadcast_uuid, ";
+			$sql .= "call_broadcast_uuid, ";
 			$sql .= "broadcast_name, ";
 			$sql .= "broadcast_description, ";
 			$sql .= "broadcast_timeout, ";
@@ -110,7 +110,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "values ";
 			$sql .= "(";
 			$sql .= "'$domain_uuid', ";
-			$sql .= "'$broadcast_uuid', ";
+			$sql .= "'$call_broadcast_uuid', ";
 			$sql .= "'$broadcast_name', ";
 			$sql .= "'$broadcast_description', ";
 			if (strlen($broadcast_timeout) == 0) {
@@ -167,7 +167,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "broadcast_phone_numbers = '$broadcast_phone_numbers', ";
 			$sql .= "broadcast_destination_data = '$broadcast_destination_data' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and broadcast_uuid = '$broadcast_uuid'";
+			$sql .= "and call_broadcast_uuid = '$call_broadcast_uuid'";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
@@ -184,11 +184,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$broadcast_uuid = $_GET["id"];
+		$call_broadcast_uuid = $_GET["id"];
 		$sql = "";
 		$sql .= "select * from v_call_broadcasts ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and broadcast_uuid = '$broadcast_uuid' ";
+		$sql .= "and call_broadcast_uuid = '$call_broadcast_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		while($row = $prep_statement->fetch()) {
@@ -383,8 +383,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='broadcast_uuid' value='$broadcast_uuid'>\n";
-		echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_broadcast_send.php?broadcast_uuid=$broadcast_uuid'\" value='Send Broadcast'>\n";
+		echo "			<input type='hidden' name='call_broadcast_uuid' value='$call_broadcast_uuid'>\n";
+		echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_call_broadcast_send.php?call_broadcast_uuid=$call_broadcast_uuid'\" value='Send Broadcast'>\n";
 	}
 
 	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
@@ -539,7 +539,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "	<tr>\n";
 		echo "		<td colspan='2' align='right'>\n";
-		echo "				<input type='hidden' name='broadcast_uuid' value='$broadcast_uuid'>\n";
+		echo "				<input type='hidden' name='call_broadcast_uuid' value='$call_broadcast_uuid'>\n";
 		echo "				<input type='submit' name='submit' class='btn' value='Send Broadcast'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";

@@ -43,7 +43,7 @@ else {
 	if (strlen($id)>0) {
 		$sql = "delete from v_call_broadcasts ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and broadcast_uuid = '$id' ";
+		$sql .= "and call_broadcast_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($sql);
