@@ -294,7 +294,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$x++;
 			}
 			echo "		</select>\n";
-			break;
 	} else {
 			echo "	<input class='formfld' type='text' name='default_setting_value' maxlength='255' value=\"$default_setting_value\">\n";
 	}
