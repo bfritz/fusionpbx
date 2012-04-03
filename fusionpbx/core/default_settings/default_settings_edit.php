@@ -268,7 +268,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			closedir($handle);
 		}
 		echo "		</select>\n";
-	} elseif ($category == "domain" && $subcategory == "time" && $name == "zone" ) {
+	} elseif ($category == "domain" && $subcategory == "time_zone" && $name == "name" ) {
 			echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
 			echo "		<option value=''></option>\n";
 			//$list = DateTimeZone::listAbbreviations();
