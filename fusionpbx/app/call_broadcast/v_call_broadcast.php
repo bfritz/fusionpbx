@@ -54,8 +54,7 @@ require_once "includes/paging.php";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr></table>\n";
 
-	$sql = "";
-	$sql .= "select * from v_call_broadcasts ";
+	$sql = "select * from v_call_broadcasts ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -71,8 +70,7 @@ require_once "includes/paging.php";
 	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page; 
 
-	$sql = "";
-	$sql .= "select * from v_call_broadcasts ";
+	$sql = "select * from v_call_broadcasts ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$sql .= " limit $rows_per_page offset $offset ";
@@ -100,22 +98,19 @@ require_once "includes/paging.php";
 	echo "</td>\n";
 	echo "<tr>\n";
 
-	if ($result_count == 0) {
-		//no results
-	}
-	else { //received results
+	if ($result_count > 0) {
 		foreach($result as $row) {
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[broadcast_name]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[broadcast_concurrent_limit]."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[recordingid]."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[broadcast_description]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['broadcast_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['broadcast_concurrent_limit']."&nbsp;</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['recordingid']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['broadcast_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('call_broadcast_edit')) {
-				echo "		<a href='v_call_broadcast_edit.php?id=".$row[call_broadcast_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='v_call_broadcast_edit.php?id=".$row['broadcast_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('call_broadcast_delete')) {
-				echo "		<a href='v_call_broadcast_delete.php?id=".$row[call_broadcast_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='v_call_broadcast_delete.php?id=".$row['broadcast_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -141,19 +136,16 @@ require_once "includes/paging.php";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
 	echo "<br><br>";
-
 
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
 	echo "</div>";
 	echo "<br><br>";
-
 
 require_once "includes/footer.php";
 ?>

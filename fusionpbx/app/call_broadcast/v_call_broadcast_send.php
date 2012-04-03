@@ -56,7 +56,7 @@ function cmd_async($cmd) {
 
 //get the http get values and set as php variables
 	$group_name = $_GET["group_name"];
-	$call_broadcast_uuid = $_GET["call_broadcast_uuid"];
+	$broadcast_uuid = $_GET["broadcast_uuid"];
 	$user_category = $_GET["user_category"];
 	$gateway = $_GET["gateway"];
 	$phonetype1 = $_GET["phonetype1"];
@@ -66,7 +66,7 @@ function cmd_async($cmd) {
 	$sql = "";
 	$sql .= "select * from v_call_broadcasts ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and call_broadcast_uuid = '$call_broadcast_uuid' ";
+	$sql .= "and broadcast_uuid = '$broadcast_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	while($row = $prep_statement->fetch()) {
