@@ -167,7 +167,10 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "user_status = '$user_status', ";
 		//$sql .= "user_template_name = '$user_template_name', ";
 		$sql .= "user_time_zone = '$user_time_zone', ";
-		if (strlen($contact_uuid) > 0) {
+		if (strlen($contact_uuid) == 0) {
+			$sql .= "contact_uuid = null ";
+		}
+		else {
 			$sql .= "contact_uuid = '$contact_uuid' ";
 		}
 		if (strlen($id)> 0) {
@@ -205,8 +208,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		return;
 }
 else {
-	$sql = "";
-	$sql .= "select * from v_users ";
+	$sql = "select * from v_users ";
 	//allow admin access
 	if (if_group("admin") || if_group("superadmin")) {
 		if (strlen($id)> 0) {
@@ -365,15 +367,47 @@ else {
 	echo "	<th class='th' colspan='2' align='left'>Additional Info</th>\n";
 	echo "	</tr>\n";
 
-	if (strlen($contact_uuid) > 0) {
-		echo "	<tr>";
-		echo "		<td width='30%' class='vncell'>Contact:</td>";
-		echo "		<td width='70%' class='vtable'>\n";
-		//echo "			<input type='text' class='formfld' name='contact_uuid' value=\"$contact_uuid\">\n";
-		echo "			<a href=\"/app/contacts/contacts_edit.php?id=$contact_uuid\">View</a>\n";
-		echo "		</td>";
-		echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td width='30%' class='vncell'>Contact:</td>";
+	echo "		<td width='70%' class='vtable'>\n";
+	$sql = " select contact_uuid, contact_organization, contact_name_given, contact_name_family from v_contacts ";
+	$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$sql .= " order by contact_organization asc ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	unset ($prep_statement, $sql);
+	echo "<select name=\"contact_uuid\" id=\"contact_uuid\" class=\"formfld\">\n";
+	echo "<option value=\"\"></option>\n";
+	foreach($result as $row) {
+			$contact_name = '';
+			if (strlen($row['contact_organization']) > 0) {
+					$contact_name = $row['contact_organization'];
+			}
+			if (strlen($row['contact_name_family']) > 0) {
+					if (strlen($contact_name) > 0) { $contact_name .= ", "; }
+					$contact_name .= $row['contact_name_family'];
+			}
+			if (strlen($row['contact_name_given']) > 0) {
+					if (strlen($contact_name) > 0) { $contact_name .= ", "; }
+					$contact_name .= $row['contact_name_given'];
+			}
+			if ($row['contact_uuid'] == $contact_uuid) {
+					echo "<option value=\"".$row['contact_uuid']."\" selected=\"selected\">".$contact_name."</option>\n";
+			}
+			else {
+					echo "<option value=\"".$row['contact_uuid']."\">".$contact_name."</option>\n";
+			}
 	}
+	unset($sql, $result, $row_count);
+	echo "</select>\n";
+	echo "<br />\n";
+	echo "Assign a contact to this user account.\n";
+	if (strlen($contact_uuid) > 0) {
+		echo "			<a href=\"/app/contacts/contacts_edit.php?id=$contact_uuid\">View</a>\n";
+	}
+	echo "		</td>";
+	echo "	</tr>";
 
 	if ($_SESSION['user_status_display'] == "false") {
 		//hide the user_status when it is set to false
