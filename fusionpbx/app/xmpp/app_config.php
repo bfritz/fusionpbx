@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "XMPP Manager";
 		$apps[$x]['uuid'] = '740f1c0d-6d82-fcde-3873-0fc9779789ec';
-		$apps[$x]['category'] = '';
+		$apps[$x]['category'] = 'Switch';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

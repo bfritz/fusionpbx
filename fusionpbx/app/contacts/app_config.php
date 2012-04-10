@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = 'Contacts';
 		$apps[$x]['uuid'] = '04481e0e-a478-c559-adad-52bd4174574c';
-		$apps[$x]['category'] = '';
+		$apps[$x]['category'] = 'CRM';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

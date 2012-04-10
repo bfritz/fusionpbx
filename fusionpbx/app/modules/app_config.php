@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Modules";
 		$apps[$x]['uuid'] = '5eb9cba1-8cb6-5d21-e36a-775475f16b5e';
-		$apps[$x]['category'] = '';
+		$apps[$x]['category'] = 'Switch';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
