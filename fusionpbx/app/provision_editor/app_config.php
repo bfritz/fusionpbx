@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Provision Editor";
 		$apps[$x]['uuid'] = 'a1fd4caf-c3c2-af10-9630-2f3c62050b02';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';;
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

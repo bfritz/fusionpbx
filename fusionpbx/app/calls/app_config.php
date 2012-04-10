@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Calls";
 		$apps[$x]['uuid'] = '19806921-e8ed-dcff-b325-dd3e5da4959d';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';;
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

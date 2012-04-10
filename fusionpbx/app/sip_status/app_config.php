@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "SIP Status";
 		$apps[$x]['uuid'] = 'caca8695-9ca7-b058-56e7-4ea94ea1c0e8';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';;
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

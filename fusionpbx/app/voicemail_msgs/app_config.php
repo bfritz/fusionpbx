@@ -2,8 +2,8 @@
 	//application details
 		$apps[$x]['name'] = "Voicemail Messages";
 		$apps[$x]['uuid'] = '789ea83b-4063-5076-55ba-2f7d63afa86b';
-		$apps[$x]['category'] = 'voicemail';
-		$apps[$x]['subcategory'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';
+		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
 		$apps[$x]['url'] = 'http://www.fusionpbx.com';

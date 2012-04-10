@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "CDR CSV";
 		$apps[$x]['uuid'] = '08caaf75-e30b-8b58-e4ad-d9cc76ba2f92';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';;
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

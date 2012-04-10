@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Call Center Active";
 		$apps[$x]['uuid'] = '3f159f62-ca2d-41b8-b3f0-c5519cebbc5a';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';;
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

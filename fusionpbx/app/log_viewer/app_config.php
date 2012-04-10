@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Log Viewer";
 		$apps[$x]['uuid'] = '159a2724-77e1-2782-9366-db08b3750e06';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';;
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

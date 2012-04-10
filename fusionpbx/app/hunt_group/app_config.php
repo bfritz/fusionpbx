@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Hunt Group";
 		$apps[$x]['uuid'] = '0610f841-2e27-4c5f-7926-08ab3aad02e0';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';;
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

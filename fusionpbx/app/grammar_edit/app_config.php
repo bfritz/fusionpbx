@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Grammar Editor";
 		$apps[$x]['uuid'] = '2d5db509-433d-1751-1740-eed43862b85f';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';;
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

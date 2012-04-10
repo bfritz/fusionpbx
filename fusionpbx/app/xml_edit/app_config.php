@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "XML Editor";
 		$apps[$x]['uuid'] = '784772b5-6004-4ff3-ca21-cad4acab158f';
-		$apps[$x]['category'] = 'PBX';
+		$apps[$x]['category'] = 'Switch';;
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

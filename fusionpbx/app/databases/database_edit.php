@@ -164,8 +164,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$database_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_databases ";
+		$sql = "select * from v_databases ";
 		$sql .= "where database_uuid = '$database_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -219,24 +218,31 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='database_type'>\n";
 	echo "	<option value=''></option>\n";
-	if ($database_type == "sqlite") { 
-		echo "	<option value='sqlite' SELECTED >sqlite</option>\n";
+	if ($database_type == "sqlite") {
+		echo "	<option value='sqlite' selected='selected'>sqlite</option>\n";
 	}
 	else {
 		echo "	<option value='sqlite'>sqlite</option>\n";
 	}
-	if ($database_type == "mysql") { 
-		echo "	<option value='mysql' SELECTED >mysql</option>\n";
+	if ($database_type == "odbc") {
+		echo "	<option value='odbc' selected='selected'>odbc</option>\n";
 	}
 	else {
-		echo "	<option value='mysql'>mysql</option>\n";
+		echo "	<option value='odbc'>odbc</option>\n";
 	}
-	if ($database_type == "pgsql") { 
-		echo "	<option value='pgsql' SELECTED >pgsql</option>\n";
+	if ($database_type == "pgsql") {
+		echo "	<option value='pgsql' selected='selected'>pgsql</option>\n";
 	}
 	else {
 		echo "	<option value='pgsql'>pgsql</option>\n";
 	}
+	if ($database_type == "mysql") {
+		echo "	<option value='mysql' selected='selected'>mysql</option>\n";
+	}
+	else {
+		echo "	<option value='mysql'>mysql</option>\n";
+	}
+
 	echo "	</select>\n";
 	echo "<br />\n";
 	echo "Select the database type.\n";
