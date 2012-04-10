@@ -45,6 +45,7 @@ end
 if ( session:ready() ) then
 	session:answer();
 	--get the dialplan variables and set them as local variables
+		destination_number = session:getVariable("destination_number");
 		pin_number = session:getVariable("pin_number");
 		domain_name = session:getVariable("domain_name");
 		sounds_dir = session:getVariable("sounds_dir");
@@ -108,7 +109,7 @@ if ( session:ready() ) then
 						--this extension is the caller that initated the page
 					else
 						--originate the call
-						cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..extension.."@"..domain_name.." conference:page@page+flags{mute} inline";
+						cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..extension.."@"..domain_name.." conference:page-"..destination_number.."@page+flags{mute} inline";
 						api:executeString(cmd_string);
 					end
 					--freeswitch.consoleLog("NOTICE", "cmd_string "..cmd_string.."\n");
@@ -122,7 +123,7 @@ if ( session:ready() ) then
 							--this extension is the caller that initated the page
 						else
 							--originate the call
-							cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..extension.."@"..domain_name.." conference:page@page+flags{mute} inline";
+							cmd_string = "bgapi originate {sip_auto_answer=true,hangup_after_bridge=false,origination_caller_id_name='"..caller_id_name.."',origination_caller_id_number="..caller_id_number.."}user/"..extension.."@"..domain_name.." conference:page-"..destination_number.."@page+flags{mute} inline";
 							api:executeString(cmd_string);
 						end
 					end
@@ -132,6 +133,6 @@ if ( session:ready() ) then
 	end
 
 	--send main call to the conference room
-	session:execute("conference", "page@page+flags{endconf}");
+	session:execute("conference", "page-"..destination_number.."@page+flags{endconf}");
 
 end
