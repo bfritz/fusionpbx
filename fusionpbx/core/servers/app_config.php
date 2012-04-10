@@ -3,7 +3,7 @@
 	//application details
 		$apps[$x]['name'] = 'Servers';
 		$apps[$x]['guid'] = '0f390134-071e-83d7-a79a-ebb7ae139d71';
-		$apps[$x]['category'] = '';
+		$apps[$x]['category'] = 'Core';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

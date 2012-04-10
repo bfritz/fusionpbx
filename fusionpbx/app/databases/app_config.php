@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = 'Databases';
 		$apps[$x]['uuid'] = '8d229b6d-1383-fcec-74c6-4ce1682479e2';
-		$apps[$x]['category'] = '';
+		$apps[$x]['category'] = 'Core';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
@@ -14,7 +14,7 @@
 		$apps[$x]['menu'][0]['uuid'] = 'ebbd754d-ca74-d5b1-a77e-9206ba3ecc3f';
 		$apps[$x]['menu'][0]['parent_uuid'] = '594d99c5-6128-9c88-ca35-4b33392cec0f';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/app/databases/databases.php';
+		$apps[$x]['menu'][0]['path'] = '/core/databases/databases.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 
 	//permission details

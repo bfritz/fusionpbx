@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = 'Destinations';
 		$apps[$x]['uuid'] = '5EC89622-B19C-3559-64F0-AFDE802AB139';
-		$apps[$x]['category'] = '';
+		$apps[$x]['category'] = 'Switch';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

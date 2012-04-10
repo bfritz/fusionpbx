@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = 'Domains';
 		$apps[$x]['guid'] = 'b31e723a-bf70-670c-a49b-470d2a232f71';
-		$apps[$x]['category'] = '';
+		$apps[$x]['category'] = 'Core';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';

@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Click to Call";
 		$apps[$x]['uuid'] = 'eb221c9b-cb13-5542-9140-dff924816dc4';
-		$apps[$x]['category'] = '';
+		$apps[$x]['category'] = 'Switch';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
