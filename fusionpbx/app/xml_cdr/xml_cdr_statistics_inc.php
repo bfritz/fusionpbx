@@ -142,6 +142,7 @@ else {
 		//answer / seizure ratio
 		$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$where .= "and billsec = '0' ";
+		$where .= "and direction = 'inbound' ";
 		$stats[$i]['missed'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], $where);
 		$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 
@@ -160,6 +161,7 @@ else {
 	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24);
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
+	$where .= "and direction = 'inbound' ";
 	$stats[$i]['missed'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], $where);
 	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
@@ -175,6 +177,7 @@ else {
 	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*7);
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
+	$where .= "and direction = 'inbound' ";
 	$stats[$i]['missed'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], $where);
 	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
@@ -190,6 +193,7 @@ else {
 	$stats[$i]['avg_min'] = ($stats[$i]['volume'] - $stats[$i]['missed']) / (60*24*30);
 	$where = "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$where .= "and billsec = '0' ";
+	$where .= "and direction = 'inbound' ";
 	$stats[$i]['missed'] = get_call_volume_between($stats[$i]['start_epoch'], $stats[$i]['stop_epoch'], $where);
 	$stats[$i]['asr'] = (($stats[$i]['volume'] - $stats[$i]['missed']) / ($stats[$i]['volume']) * 100);
 	$stats[$i]['aloc'] = $stats[$i]['minutes'] / ($stats[$i]['volume'] - $stats[$i]['missed']);
