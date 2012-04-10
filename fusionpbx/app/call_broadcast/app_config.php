@@ -7,7 +7,7 @@
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
 		$apps[$x]['url'] = 'http://www.fusionpbx.com';
-		$apps[$x]['description']['en'] = 'Deprecated';
+		$apps[$x]['description']['en'] = 'Schedule to immediately make multiple calls to the extension an IVR Menu, Conference Room, or any other number.';
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Call Broadcast';
