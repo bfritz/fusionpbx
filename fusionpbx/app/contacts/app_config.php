@@ -7,7 +7,7 @@
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
 		$apps[$x]['contact_url'] = 'http://www.fusionpbx.com';
-		$apps[$x]['description']['en'] = '';
+		$apps[$x]['description']['en'] = 'Provides a place to store contact information for individuals and organizations.';
 
 	//menu details
 		$apps[$x]['menu'][$y]['title']['en'] = 'Contacts';
