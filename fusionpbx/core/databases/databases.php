@@ -60,9 +60,7 @@ require_once "includes/paging.php";
 	echo "</table>\n";
 
 	//prepare to page the results
-		$sql = "";
-		$sql .= " select count(*) as num_rows from v_databases ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql = " select count(*) as num_rows from v_databases ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
@@ -80,14 +78,12 @@ require_once "includes/paging.php";
 		$rows_per_page = 10;
 		$param = "";
 		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
 		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 		$offset = $rows_per_page * $page; 
 
 	//get the  list
-		$sql = "";
-		$sql .= " select * from v_databases ";
-		//$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql = " select * from v_databases ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
