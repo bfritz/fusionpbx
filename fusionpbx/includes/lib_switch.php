@@ -1563,39 +1563,6 @@ function save_setting_xml() {
 				unset($tmp_xml);
 				fclose($fout);
 
-			//config.lua
-				$fout = fopen($_SESSION['switch']['scripts']['dir']."/config.lua","w");
-				$tmp = "--lua include\n\n";
-				if (strlen($_SESSION['switch']['sounds']['dir']) > 0) {
-					$tmp .= "sounds_dir = \"".$_SESSION['switch']['sounds']['dir']."\";\n";
-				}
-				if (strlen($_SESSION['switch']['recordings']['dir']) > 0) {
-					$tmp .= "recordings_dir = \"".$_SESSION['switch']['recordings']['dir']."\";\n";
-				}
-				if (strlen($db_type) > 0) {	
-					$tmp .= "db_type = \"".$db_type."\";\n";
-				}
-				if (strlen($db_name) > 0) {	
-					$tmp .= "db_name = \"".$db_name."\";\n";
-				}
-				if (strlen($db_path) > 0) {	
-					$tmp .= "db_path = \"".$db_path."\";\n";
-				}
-				$tmp .= "tmp_dir = \"".$tmp_dir."\";\n";
-				fwrite($fout, $tmp);
-				unset($tmp);
-				fclose($fout);
-
-			//config.js
-				$fout = fopen($_SESSION['switch']['scripts']['dir']."/config.js","w");
-				$tmp = "//javascript include\n\n";
-				$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
-				$tmp .= "var sounds_dir = \"".$_SESSION['switch']['sounds']['dir']."\";\n";
-				$tmp .= "var recordings_dir = \"".$_SESSION['switch']['recordings']['dir']."\";\n";
-				$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";
-				fwrite($fout, $tmp);
-				unset($tmp);
-				fclose($fout);
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
