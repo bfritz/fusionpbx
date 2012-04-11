@@ -32,11 +32,11 @@
 --connect to the database
 	--ODBC - data source name
 		if (dsn_name) then
-			local dbh = freeswitch.Dbh(dsn_name,dsn_username,dsn_password);
+			dbh = freeswitch.Dbh(dsn_name,dsn_username,dsn_password);
 		end
 	--FreeSWITCH core db handler
 		if (db_type == "sqlite") then
-			local dbh = freeswitch.Dbh("core:"..db_path.."/"..db_name);
+			dbh = freeswitch.Dbh("core:"..db_path.."/"..db_name);
 		end
 
 --get the variables
