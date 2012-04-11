@@ -1473,7 +1473,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='db_name' maxlength='255' value=\"$db_name\"><br />\n";
-		echo "	Default: fusiopbx.db. If the field is left empty then the file name is determined by the host or IP address.\n";
+		echo "	Set the database filename. The file extension should be '.db'.\n";
 		echo "\n";
 		echo "</td>\n";
 		echo "</tr>\n";
