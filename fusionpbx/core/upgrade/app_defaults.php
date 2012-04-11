@@ -29,6 +29,35 @@ if (strlen($_SESSION['switch']['scripts']['dir']) > 0) {
 	//if the resource scripts resource directory does not exist then create it
 		if (!is_dir($_SESSION['switch']['scripts']['dir']."/resources")) { mkdir($_SESSION['switch']['scripts']['dir']."/resources",0755,true); }
 
+	//get odbc information
+		$sql = "select count(*) as num_rows from v_databases ";
+		$sql .= "where database_type = 'odbc' ";
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+		$prep_statement = $db->prepare($sql);
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			if ($row['num_rows'] > 0) {
+				$odbc_num_rows = $row['num_rows'];
+
+				$sql = "select * from v_databases ";
+				$sql .= "where database_type = 'odbc' ";
+				$prep_statement = $db->prepare(check_sql($sql));
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+				foreach ($result as &$row) {
+					$dsn_name = $row["database_name"];
+					$dsn_username = $row["database_username"];
+					$dsn_password = $row["database_password"];
+					break; //limit to 1 row
+				}
+				unset ($prep_statement);
+			}
+			else {
+				$odbc_num_rows = '0';
+			}
+		}
+
 	//config.lua
 		$fout = fopen($_SESSION['switch']['scripts']['dir']."/resources/config.lua","w");
 		$tmp = "\n";
@@ -50,7 +79,16 @@ if (strlen($_SESSION['switch']['scripts']['dir']) > 0) {
 		if (strlen($db_path) > 0) {	
 			$tmp .= "	db_path = \"".$db_path."\";\n";
 		}
-		echo "\n";
+		if (strlen($dsn_name) > 0) {	
+			$tmp .= "	dsn_name = \"".$dsn_name."\";\n";
+		}
+		if (strlen($dsn_username) > 0) {	
+			$tmp .= "	dsn_username = \"".$dsn_username."\";\n";
+		}
+		if (strlen($dsn_password) > 0) {	
+			$tmp .= "	dsn_password = \"".$dsn_password."\";\n";
+		}
+		$tmp .= "\n";
 		$tmp .= "//additional info\n";
 		$tmp .= "	tmp_dir = \"".$tmp_dir."\";\n";
 		fwrite($fout, $tmp);
@@ -67,13 +105,22 @@ if (strlen($_SESSION['switch']['scripts']['dir']) > 0) {
 		$tmp .= "\n";
 		$tmp = "//database connection info\n";
 		if (strlen($db_type) > 0) {	
-			$tmp .= "var db_type = \"".$db_type."\";\n";
+			$tmp .= "	var db_type = \"".$db_type."\";\n";
 		}
 		if (strlen($db_name) > 0) {	
-			$tmp .= "var db_name = \"".$db_name."\";\n";
+			$tmp .= "	var db_name = \"".$db_name."\";\n";
 		}
 		if (strlen($db_path) > 0) {	
-			$tmp .= "var db_path = \"".$db_path."\";\n";
+			$tmp .= "	var db_path = \"".$db_path."\";\n";
+		}
+		if (strlen($dsn_name) > 0) {	
+			$tmp .= "	var dsn_name = \"".$dsn_name."\";\n";
+		}
+		if (strlen($dsn_username) > 0) {	
+			$tmp .= "	var dsn_username = \"".$dsn_username."\";\n";
+		}
+		if (strlen($dsn_password) > 0) {	
+			$tmp .= "	var dsn_password = \"".$dsn_password."\";\n";
 		}
 		$tmp .= "\n";
 		$tmp .= "//additional info\n";
