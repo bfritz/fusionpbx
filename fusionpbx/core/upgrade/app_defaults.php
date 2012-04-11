@@ -24,6 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 
+//if the resource scripts resource directory does not exist then create it
+	if (!is_dir($_SESSION['switch']['scripts']['dir']."/resources")) { mkdir($_SESSION['switch']['scripts']['dir']."/resources,0755,true); }
+
 //config.lua
 	$fout = fopen($_SESSION['switch']['scripts']['dir']."/resources/config.lua","w");
 	$tmp = "--lua include\n\n";
