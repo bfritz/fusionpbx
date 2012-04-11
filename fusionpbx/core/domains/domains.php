@@ -92,7 +92,7 @@ else {
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' nowrap><b>Domain List</b></td>\n";
+	echo "		<td width='50%' nowrap><b>Domains</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -103,7 +103,7 @@ else {
 	echo "</table>\n";
 
 	//prepare to page the results
-		$sql = " select count(*) as num_rows from v_domains ";
+		$sql = "select count(*) as num_rows from v_domains ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
@@ -126,7 +126,7 @@ else {
 		$offset = $rows_per_page * $page; 
 
 	//get the  list
-		$sql = " select * from v_domains ";
+		$sql = "select * from v_domains ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -141,7 +141,6 @@ else {
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo th_order_by('domain_name', 'Domain', $order_by, $order);
 	echo th_order_by('domain_description', 'Description', $order_by, $order);
