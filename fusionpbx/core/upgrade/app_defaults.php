@@ -28,35 +28,44 @@ if (strlen($_SESSION['switch']['scripts']['dir']) > 0) {
 
 	//if the resource scripts resource directory does not exist then create it
 		if (!is_dir($_SESSION['switch']['scripts']['dir']."/resources")) { mkdir($_SESSION['switch']['scripts']['dir']."/resources",0755,true); }
+
 	//config.lua
 		$fout = fopen($_SESSION['switch']['scripts']['dir']."/resources/config.lua","w");
-		$tmp = "--lua include\n\n";
+		$tmp = "\n";
+		$tmp .= "--switch directories\n";
 		if (strlen($_SESSION['switch']['sounds']['dir']) > 0) {
-			$tmp .= "sounds_dir = \"".$_SESSION['switch']['sounds']['dir']."\";\n";
+			$tmp .= "	sounds_dir = \"".$_SESSION['switch']['sounds']['dir']."\";\n";
 		}
 		if (strlen($_SESSION['switch']['recordings']['dir']) > 0) {
-			$tmp .= "recordings_dir = \"".$_SESSION['switch']['recordings']['dir']."\";\n";
+			$tmp .= "	recordings_dir = \"".$_SESSION['switch']['recordings']['dir']."\";\n";
 		}
+		$tmp .= "\n";
+		$tmp .= "--database connection info\n\n";
 		if (strlen($db_type) > 0) {	
-			$tmp .= "db_type = \"".$db_type."\";\n";
+			$tmp .= "	db_type = \"".$db_type."\";\n";
 		}
 		if (strlen($db_name) > 0) {	
-			$tmp .= "db_name = \"".$db_name."\";\n";
+			$tmp .= "	db_name = \"".$db_name."\";\n";
 		}
 		if (strlen($db_path) > 0) {	
-			$tmp .= "db_path = \"".$db_path."\";\n";
+			$tmp .= "	db_path = \"".$db_path."\";\n";
 		}
-		$tmp .= "tmp_dir = \"".$tmp_dir."\";\n";
+		echo "\n";
+		$tmp .= "//additional info\n";
+		$tmp .= "	tmp_dir = \"".$tmp_dir."\";\n";
 		fwrite($fout, $tmp);
 		unset($tmp);
 		fclose($fout);
 
 	//config.js
 		$fout = fopen($_SESSION['switch']['scripts']['dir']."/resources/config.js","w");
-		$tmp = "//javascript include\n\n";
-		$tmp .= "var admin_pin = \"".$row["admin_pin"]."\";\n";
-		$tmp .= "var sounds_dir = \"".$_SESSION['switch']['sounds']['dir']."\";\n";
-		$tmp .= "var recordings_dir = \"".$_SESSION['switch']['recordings']['dir']."\";\n";
+		$tmp = "\n";
+		$tmp .= "//switch directories\n";
+		$tmp .= "	var admin_pin = \"".$row["admin_pin"]."\";\n";
+		$tmp .= "	var sounds_dir = \"".$_SESSION['switch']['sounds']['dir']."\";\n";
+		$tmp .= "	var recordings_dir = \"".$_SESSION['switch']['recordings']['dir']."\";\n";
+		$tmp .= "\n";
+		$tmp = "//database connection info\n";
 		if (strlen($db_type) > 0) {	
 			$tmp .= "var db_type = \"".$db_type."\";\n";
 		}
@@ -66,7 +75,9 @@ if (strlen($_SESSION['switch']['scripts']['dir']) > 0) {
 		if (strlen($db_path) > 0) {	
 			$tmp .= "var db_path = \"".$db_path."\";\n";
 		}
-		$tmp .= "var tmp_dir = \"".$tmp_dir."\";\n";
+		$tmp .= "\n";
+		$tmp .= "//additional info\n";
+		$tmp .= "	var tmp_dir = \"".$tmp_dir."\";\n";
 		fwrite($fout, $tmp);
 		unset($tmp);
 		fclose($fout);
