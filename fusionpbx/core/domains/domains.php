@@ -103,8 +103,7 @@ else {
 	echo "</table>\n";
 
 	//prepare to page the results
-		$sql = "";
-		$sql .= " select count(*) as num_rows from v_domains ";
+		$sql = " select count(*) as num_rows from v_domains ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
@@ -119,7 +118,7 @@ else {
 		}
 
 	//prepare to page the results
-		$rows_per_page = 10;
+		$rows_per_page = 100;
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
@@ -127,8 +126,7 @@ else {
 		$offset = $rows_per_page * $page; 
 
 	//get the  list
-		$sql = "";
-		$sql .= " select * from v_domains ";
+		$sql = " select * from v_domains ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
