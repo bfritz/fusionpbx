@@ -69,7 +69,7 @@ if (strlen($_SESSION['switch']['scripts']['dir']) > 0) {
 			$tmp .= "	recordings_dir = \"".$_SESSION['switch']['recordings']['dir']."\";\n";
 		}
 		$tmp .= "\n";
-		$tmp .= "--database connection info\n\n";
+		$tmp .= "--database connection info\n";
 		if (strlen($db_type) > 0) {	
 			$tmp .= "	db_type = \"".$db_type."\";\n";
 		}
@@ -89,7 +89,7 @@ if (strlen($_SESSION['switch']['scripts']['dir']) > 0) {
 			$tmp .= "	dsn_password = \"".$dsn_password."\";\n";
 		}
 		$tmp .= "\n";
-		$tmp .= "//additional info\n";
+		$tmp .= "--additional info\n";
 		$tmp .= "	tmp_dir = \"".$tmp_dir."\";\n";
 		fwrite($fout, $tmp);
 		unset($tmp);
