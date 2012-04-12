@@ -89,9 +89,9 @@ else {
 	if (strlen($duration) > 0) { $sql_where .= "and duration like '%$duration%' "; }
 	if (strlen($billsec) > 0) { $sql_where .= "and billsec like '%$billsec%' "; }
 	if (strlen($hangup_cause) > 0) { $sql_where .= "and hangup_cause like '%$hangup_cause%' "; }
-	if (strlen($uuid) > 0) { $sql_where .= "and uuid like '%$uuid%' "; }
-	if (strlen($bleg_uuid) > 0) { $sql_where .= "and bleg_uuid like '%$bleg_uuid%' "; }
-	if (strlen($accountcode) > 0) { $sql_where .= "and accountcode like '%$accountcode%' "; }
+	if (strlen($uuid) > 0) { $sql_where .= "and uuid = '$uuid' "; }
+	if (strlen($bleg_uuid) > 0) { $sql_where .= "and bleg_uuid = '$bleg_uuid' "; }
+	if (strlen($accountcode) > 0) { $sql_where .= "and accountcode = '$accountcode' "; }
 	if (strlen($read_codec) > 0) { $sql_where .= "and read_codec like '%$read_codec%' "; }
 	if (strlen($write_codec) > 0) { $sql_where .= "and write_codec like '%$write_codec%' "; }
 	if (strlen($remote_media_ip) > 0) { $sql_where .= "and remote_media_ip like '%$remote_media_ip%' "; }
