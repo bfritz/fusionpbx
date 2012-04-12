@@ -40,8 +40,7 @@ else {
 	$tmp_array = '';
 
 //get any system -> variables defined in the 'provision;
-	$sql = "";
-	$sql .= "select * from v_vars ";
+	$sql = "select * from v_vars ";
 	$sql .= "where var_enabled = 'true' ";
 	$sql .= "and var_cat = 'Provision' ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -56,8 +55,7 @@ else {
 	}
 
 //get the hardware phone list
-	$sql = "";
-	$sql .= "select * from v_hardware_phones ";
+	$sql = "select * from v_hardware_phones ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -150,8 +148,7 @@ else {
 							}
 
 						//lookup the provisioning information for this MAC address.
-							$sql2 = "";
-							$sql2 .= "select * from v_extensions ";
+							$sql2 = "select * from v_extensions ";
 							$sql2 .= "where provisioning_list like '%$phone_mac_address%' ";
 							$sql2 .= "and domain_uuid = '$domain_uuid' ";
 							$prep_statement_2 = $db->prepare(check_sql($sql2));
@@ -173,7 +170,7 @@ else {
 												//echo "<hr><br />\n";
 											}
 											$file_contents = str_replace("{v_line".$line_number."_server_address}", $_SESSION['domain_name'], $file_contents);
-											$file_contents = str_replace("{v_line".$line_number."_displayname}", $row2["extension"], $file_contents);
+											$file_contents = str_replace("{v_line".$line_number."_displayname}", $row2["effective_caller_id_name"], $file_contents);
 											$file_contents = str_replace("{v_line".$line_number."_shortname}", $row2["extension"], $file_contents);
 											$file_contents = str_replace("{v_line".$line_number."_user_uuid}", $row2["extension"], $file_contents);
 											$file_contents = str_replace("{v_line".$line_number."_user_password}", $row2["password"], $file_contents);
@@ -211,21 +208,29 @@ else {
 							}
 
 						//replace {v_mac} in the file name
-							$file_name = str_replace("{v_mac}", $phone_mac_address, $file_name);
-
+							if (substr($phone_mac_address, 0, 6) == "00085d") {
+								//upper case the mac address for aastra phones
+								$file_name = str_replace("{v_mac}", strtoupper($phone_mac_address), $file_name);
+							}
+							else {
+								//all other phones
+								$file_name = str_replace("{v_mac}", $phone_mac_address, $file_name);
+							}
+				
 						//write the configuration to the directory
 							if (strlen($_SESSION['switch']['provision']['dir']) > 0) {
 								$dir_array = explode(";", $_SESSION['switch']['provision']['dir']);
 								foreach($dir_array as $directory) {
 									$fh = fopen($directory.'/'.$file_name,"w") or die("Unable to write to $directory for provisioning. Make sure the path exists and permissons are set correctly.");
 									fwrite($fh, $file_contents);
-									unset($file_name);
 									fclose($fh);
 								}
+								unset($file_name);
 							}
 					}
 			} //end for each
 			closedir($dir_list);
 	}
 	unset ($prep_statement);
+
 ?>
