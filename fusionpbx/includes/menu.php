@@ -23,8 +23,8 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
-include "root.php";
-include "includes/require.php";
+require_once "root.php";
+require_once "includes/require.php";
 
 //define the variable
 	$v_menu = '';
