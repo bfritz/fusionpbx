@@ -40,29 +40,27 @@ if (count($_GET)>0) {
 
 if (strlen($id)>0) {
 	//get filename
-		$sql = "";
-		$sql .= "select * from v_recordings ";
+		$sql = "select * from v_recordings ";
 		$sql .= "where recording_uuid = '$id' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
-			$filename = $row["filename"];
+			$filename = $row["recording_filename"];
 			break; //limit to 1 row
 		}
 		unset ($prep_statement);
 
 	//delete recording from the database
-		$sql = "";
-		$sql .= "delete from v_recordings ";
+		$sql = "delete from v_recordings ";
 		$sql .= "where recording_uuid = '$id' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($sql);
 
-	//delete the recording file
+	//delete the recording
 		unlink($_SESSION['switch']['recordings']['dir']."/".$filename);
 }
 
