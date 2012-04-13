@@ -268,7 +268,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$dialplan_detail_uuid', ";
 			$sql .= "'action', ";
 			$sql .= "'set', ";
-			$sql .= "'domain_name=\${domain}', ";
+			$sql .= "'domain_name=".$_SESSION['domain_name']."', ";
 			$sql .= "'50' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
