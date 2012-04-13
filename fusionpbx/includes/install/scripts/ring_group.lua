@@ -81,9 +81,18 @@
 --app_data
 	--freeswitch.consoleLog("notice", "Debug:\n" .. app_data .. "\n");
 
+--session actions
+	if (session:ready()) then
+		session:answer();
+		session:execute("set", "hangup_after_bridge=true");
+		session:execute("set", "continue_on_fail=true");
+		session:execute("bridge", app_data);
+		session:execute(ring_group_timeout_app, ring_group_timeout_data);
+	end
+
 --actions
-	ACTIONS = {}
-	table.insert(ACTIONS, {"set", "hangup_after_bridge=true"});
-	table.insert(ACTIONS, {"set", "continue_on_fail=true"});
-	table.insert(ACTIONS, {"bridge", app_data});
-	table.insert(ACTIONS, {ring_group_timeout_app, ring_group_timeout_data});
+	--ACTIONS = {}
+	--table.insert(ACTIONS, {"set", "hangup_after_bridge=true"});
+	--table.insert(ACTIONS, {"set", "continue_on_fail=true"});
+	--table.insert(ACTIONS, {"bridge", app_data});
+	--table.insert(ACTIONS, {ring_group_timeout_app, ring_group_timeout_data});
