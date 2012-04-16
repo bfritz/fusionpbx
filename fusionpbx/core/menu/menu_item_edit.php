@@ -74,8 +74,13 @@ else {
 
 //action add or update
 	if (isset($_REQUEST["menu_item_uuid"])) {
-		$action = "update";
-		$menu_item_uuid = check_str($_REQUEST["menu_item_uuid"]);
+		if (strlen($_REQUEST["menu_item_uuid"]) > 0) {
+			$action = "update";
+			$menu_item_uuid = check_str($_REQUEST["menu_item_uuid"]);
+		}
+		else {
+			$action = "add";
+		}
 	}
 	else {
 		$action = "add";
@@ -162,7 +167,12 @@ else {
 				$sql .= "'$menu_item_description', ";
 				$sql .= "'$menu_item_protected', ";
 				$sql .= "'".uuid()."', ";
-				$sql .= "'$menu_item_parent_uuid', ";
+				if (strlen($menu_item_parent_uuid) == 0) {
+					$sql .= "null, ";
+				}
+				else {
+					$sql .= "'$menu_item_parent_uuid', ";
+				}
 				$sql .= "'".($highest_menu_item_order+1)."', ";
 				$sql .= "'".$_SESSION["username"]."', ";
 				$sql .= "now() ";
