@@ -46,16 +46,24 @@ else {
 	if ($_REQUEST["a"] == "delete" && permission_exists("menu_delete")) {
 		//delete the group from the users
 			$sql = "delete from v_menu_item_groups  ";
-			$sql .= "where menu_uuid = '$menu_uuid' ";
+			$sql .= "where menu_uuid = '".$menu_uuid."' ";
+			$sql .= "and menu_item_uuid = '".$menu_item_uuid."' ";
 			$sql .= "and group_name = '".$group_name."' ";
-			$sql .= "and menu_group_name = '".$id."' ";
 			$db->exec(check_sql($sql));
+		//redirect the browser
+			require_once "includes/header.php";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?id=$menu_uuid&menu_item_uuid=$menu_item_uuid&menu_uuid=$menu_uuid\">\n";
+			echo "<div align='center'>\n";
+			echo "Delete Complete\n";
+			echo "</div>\n";
+			require_once "includes/footer.php";
+			return;
 	}
 
 //add a group to the menu
-	if (strlen($group_name) > 0 && permission_exists('menu_add')) {
+	if ($_REQUEST["a"] != "delete" && strlen($group_name) > 0 && permission_exists('menu_add')) {
 		//add the group to the menu
-			if (strlen($menu_item_uuid) > 0 && strlen($group_name) > 0) {
+			if (strlen($menu_item_uuid) > 0) {
 				$sql_insert = "insert into v_menu_item_groups ";
 				$sql_insert .= "(";
 				$sql_insert .= "menu_uuid, ";
@@ -64,7 +72,7 @@ else {
 				$sql_insert .= ")";
 				$sql_insert .= "values ";
 				$sql_insert .= "(";
-				$sql_insert .= "'$menu_uuid', ";
+				$sql_insert .= "'".$menu_uuid."', ";
 				$sql_insert .= "'".$menu_item_uuid."', ";
 				$sql_insert .= "'".$group_name."' ";
 				$sql_insert .= ")";
@@ -224,8 +232,7 @@ else {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$menu_item_uuid = $_GET["menu_item_uuid"];
 
-		$sql = "";
-		$sql .= "select * from v_menu_items ";
+		$sql = "select * from v_menu_items ";
 		$sql .= "where menu_uuid = '$menu_uuid' ";
 		$sql .= "and menu_item_uuid = '$menu_item_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -330,7 +337,7 @@ else {
 			echo "	<td class='vtable'>".$field['group_name']."</td>\n";
 			echo "	<td>\n";
 			if (permission_exists('group_member_delete') || if_group("superadmin")) {
-				echo "		<a href='menu_item_edit.php?id=".$field['menu_group_name']."&menu_uuid=".$field['menu_uuid']."&group_name=".$field['group_name']."&menu_item_uuid=".$menu_item_uuid."&menu_item_parent_uuid=".$menu_item_parent_uuid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='menu_item_edit.php?id=".$field['menu_uuid']."&group_name=".$field['group_name']."&menu_item_uuid=".$menu_item_uuid."&menu_item_parent_uuid=".$menu_item_parent_uuid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
