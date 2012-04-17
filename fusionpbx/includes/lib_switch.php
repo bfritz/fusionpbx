@@ -1088,6 +1088,40 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				echo "	<option value='set:default_language=de'>German</option>\n";
 			}
 		}
+		//portuguese - portugal
+		if ("menu-exec-app:set default_language=de" == $select_value || "set:default_language=de" == $select_value) {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set default_language=pt-pt' selected='selected'>Portuguese - Portugal</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:default_language=pt-pt' selected='selected'>Portuguese - Portugal</option>\n";
+			}
+		}
+		else {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set default_language=pt-pt'>Portuguese - Portuguese - Portugal</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:default_language=pt-pt'>Portuguese - Portugal</option>\n";
+			}
+		}
+		//portuguese - brazil
+		if ("menu-exec-app:set default_language=pt-br" == $select_value || "set:default_language=de" == $select_value) {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set default_language=pt-br' selected='selected'>Portuguese - Brazil</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:default_language=pt-br' selected='selected'>Portuguese - Brazil</option>\n";
+			}
+		}
+		else {
+			if ($select_type == "ivr") {
+				echo "	<option value='menu-exec-app:set default_language=pt-br'>Portuguese - Brazil</option>\n";
+			}
+			if ($select_type == "dialplan") {
+				echo "	<option value='set:default_language=pt-br'>Portuguese - Brazil</option>\n";
+			}
+		}
 		//spanish
 		if ("menu-exec-app:set default_language=es" == $select_value || "set:default_language=es" == $select_value) {
 			if ($select_type == "ivr") {
