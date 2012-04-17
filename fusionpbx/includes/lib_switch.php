@@ -665,7 +665,6 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-
 		if ($select_type == "dialplan" || $select_type == "ivr" || $select_type == "call_center_contact") {
 			echo "<optgroup label='Extensions'>\n";
 		}
@@ -1178,6 +1177,43 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				closedir($dh);
 				echo "</optgroup>\n";
 			}
+		}
+
+	//ring groups
+		$sql = "select * from v_ring_groups ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and ring_group_enabled = 'true' ";
+		$sql .= "order by ring_group_extension asc ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "<optgroup label='Ring Groups'>\n";
+		}
+		foreach ($result as &$row) {
+			$extension = $row["ring_group_extension"];
+			$context = $row["ring_group_context"]; 
+			$description = $row["ring_group_description"];
+			if ("transfer ".$extension." XML ".$context == $select_value || "transfer:".$extension." XML ".$context == $select_value) {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML ".$context."' selected='selected'>".$extension." ".$description."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='transfer:$extension XML ".$context."' selected='selected'>".$extension." ".$description."</option>\n";
+				}
+				$selection_found = true;
+			}
+			else {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:transfer $extension XML ".$context."'>".$extension." ".$description."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='transfer:$extension XML ".$context."'>".$extension." ".$description."</option>\n";
+				}
+			}
+		}
+		if ($select_type == "dialplan" || $select_type == "ivr") {
+			echo "</optgroup>\n";
 		}
 
 	//list time conditions
