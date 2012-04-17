@@ -400,7 +400,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-
 	echo "	<tr>";
 	echo "		<td class='vncell' valign='top'>Extensions:</td>";
 	echo "		<td class='vtable'>";
