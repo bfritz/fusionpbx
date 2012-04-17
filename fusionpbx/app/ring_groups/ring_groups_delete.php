@@ -70,6 +70,10 @@ else {
 			$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
 			$db->exec(check_sql($sql));
 			unset($sql);
+		//save the xml
+			save_dialplan_xml();
+		//apply settings reminder
+			$_SESSION["reload_xml"] = true;
 	}
 
 //redirect the user
