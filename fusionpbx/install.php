@@ -194,7 +194,12 @@ require_once "includes/lib_functions.php";
 							$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
 							$switch_conf_dir = '/usr/local/etc/freeswitch/conf';
 							$switch_db_dir = '/data/freeswitch/db';
-							$switch_log_dir = '/data/freeswitch/log';
+							if (is_dir('/var/log/freeswitch')) {
+								$switch_log_dir = '/var/log/freeswitch';
+							}
+							else {
+								$switch_log_dir = '/data/freeswitch/log';
+							}
 							$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
 							$switch_extensions_dir = $switch_conf_dir.'/directory';
 							$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
