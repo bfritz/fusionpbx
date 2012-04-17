@@ -66,9 +66,6 @@
 								$menu_item_path = $menu['path'];
 								$menu_item_order = $menu['order'];
 								$menu_item_description = $menu['desc'];
-								if (strlen($menu_item_order) == 0) {
-									$menu_item_order = 1;
-								}
 
 							//if the item uuid is not currently in the db then add it
 								$sql = "select * from v_menu_items ";
@@ -87,7 +84,9 @@
 											$sql .= "menu_item_title, ";
 											$sql .= "menu_item_link, ";
 											$sql .= "menu_item_category, ";
-											$sql .= "menu_item_order, ";
+											if (strlen($menu_item_order) > 0) {
+												$sql .= "menu_item_order, ";
+											}
 											if (strlen($menu_item_uuid) > 0) {
 												$sql .= "menu_item_uuid, ";
 											}
@@ -103,7 +102,9 @@
 											$sql .= "'$menu_item_title', ";
 											$sql .= "'$menu_item_path', ";
 											$sql .= "'$menu_item_category', ";
-											$sql .= "'$menu_item_order', ";
+											if (strlen($menu_item_order) > 0) {
+												$sql .= "'$menu_item_order', ";
+											}
 											if (strlen($menu_item_uuid) > 0) {
 												$sql .= "'$menu_item_uuid', ";
 											}
@@ -125,8 +126,7 @@
 					}
 
 				//if there are no groups listed in v_menu_item_groups under menu_uuid then add the default groups
-					$sql = "";
-					$sql .= "select count(*) as count from v_menu_item_groups ";
+					$sql = "select count(*) as count from v_menu_item_groups ";
 					$sql .= "where menu_uuid = '".$this->menu_uuid."' ";
 					$prep_statement = $db->prepare($sql);
 					$prep_statement->execute();
@@ -201,9 +201,7 @@
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-
 				foreach($result as $field) {
-
 					$menu_tags = '';
 					switch ($field['menu_item_category']) {
 						case "internal":

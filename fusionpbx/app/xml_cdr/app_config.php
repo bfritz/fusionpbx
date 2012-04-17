@@ -15,7 +15,7 @@
 		$apps[$x]['menu'][0]['parent_uuid'] = '';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/app/xml_cdr/xml_cdr.php';
-		$apps[$x]['menu'][0]['order'] = '3';
+		$apps[$x]['menu'][0]['order'] = '20';
 		$apps[$x]['menu'][0]['groups'][] = 'user';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';

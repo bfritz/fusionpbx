@@ -256,6 +256,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'username';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 
 		$y = 3; //table array index
 		$z = 0; //field array index

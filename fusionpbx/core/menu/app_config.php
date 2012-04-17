@@ -24,7 +24,7 @@
 		$apps[$x]['menu'][1]['parent_uuid'] = '';
 		$apps[$x]['menu'][1]['category'] = 'internal';
 		$apps[$x]['menu'][1]['path'] = '/index2.php';
-		$apps[$x]['menu'][1]['order'] = '0';
+		$apps[$x]['menu'][1]['order'] = '5';
 		$apps[$x]['menu'][1]['groups'][] = 'user';
 		$apps[$x]['menu'][1]['groups'][] = 'admin';
 		$apps[$x]['menu'][1]['groups'][] = 'superadmin';
@@ -34,16 +34,16 @@
 		$apps[$x]['menu'][2]['parent_uuid'] = '';
 		$apps[$x]['menu'][2]['category'] = 'internal';
 		$apps[$x]['menu'][2]['path'] = '/app/extensions/v_extensions.php';
-		$apps[$x]['menu'][2]['order'] = '1';
+		$apps[$x]['menu'][2]['order'] = '10';
 		$apps[$x]['menu'][2]['groups'][] = 'admin';
 		$apps[$x]['menu'][2]['groups'][] = 'superadmin';
 
-		$apps[$x]['menu'][3]['title']['en'] = 'Dialplan';
+		$apps[$x]['menu'][3]['title']['en'] = 'Dialplan2';
 		$apps[$x]['menu'][3]['uuid'] = 'b94e8bd9-9eb5-e427-9c26-ff7a6c21552a';
 		$apps[$x]['menu'][3]['parent_uuid'] = '';
 		$apps[$x]['menu'][3]['category'] = 'internal';
 		$apps[$x]['menu'][3]['path'] = '/app/dialplan/dialplans.php';
-		$apps[$x]['menu'][3]['order'] = '2';
+		$apps[$x]['menu'][3]['order'] = '15';
 		$apps[$x]['menu'][3]['groups'][] = 'admin';
 		$apps[$x]['menu'][3]['groups'][] = 'superadmin';
 
@@ -52,7 +52,7 @@
 		$apps[$x]['menu'][4]['parent_uuid'] = '';
 		$apps[$x]['menu'][4]['category'] = 'internal';
 		$apps[$x]['menu'][4]['path'] = '/app/calls_active/v_calls_active_extensions.php';
-		$apps[$x]['menu'][4]['order'] = '4';
+		$apps[$x]['menu'][4]['order'] = '25';
 		$apps[$x]['menu'][4]['groups'][] = 'user';
 		$apps[$x]['menu'][4]['groups'][] = 'admin';
 		$apps[$x]['menu'][4]['groups'][] = 'superadmin';
@@ -62,7 +62,7 @@
 		$apps[$x]['menu'][5]['parent_uuid'] = '';
 		$apps[$x]['menu'][5]['category'] = 'internal';
 		$apps[$x]['menu'][5]['path'] = '/app/exec/v_exec.php';
-		$apps[$x]['menu'][5]['order'] = '5';
+		$apps[$x]['menu'][5]['order'] = '30';
 		$apps[$x]['menu'][5]['groups'][] = 'superadmin';
 
 	//permission details
