@@ -26,7 +26,7 @@
 
 	if (!function_exists('software_version')) {
 		function software_version() {
-			return '2.0.9';
+			return '3.0 RC2';
 		}
 	}
 
@@ -190,7 +190,6 @@
 			global $domain_uuid;
 			$sql = "select * from v_group_users ";
 			$sql .= "where group_name = 'superadmin' ";
-			//echo $sql;
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -231,12 +230,10 @@
 			$html .= "<option value=''></option>\n";
 
 			$sql = "SELECT distinct($field_name) as $field_name FROM $table_name $sql_where_optional ";
-			//echo $sql;
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
-			//echo $result_count;
 			if ($result_count > 0) { //if user account exists then show login
 				//print_r($result);
 				foreach($result as $field) {
