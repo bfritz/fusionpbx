@@ -212,8 +212,8 @@ echo $mod->dir."\n";
 						$mod['module_label'] = 'Distributor';
 						$mod['module_category'] = 'Applications';
 						$mod['module_description'] = 'Round robin call distribution.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_dptools":
 						$mod['module_label'] = 'Dialplan Plan Tools';
@@ -303,15 +303,15 @@ echo $mod->dir."\n";
 						$mod['module_label'] = 'HT-TAPI';
 						$mod['module_category'] = 'Applications';
 						$mod['module_description'] = 'HT-TAPI Hypertext Telephony API';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_http_cache":
 						$mod['module_label'] = 'HTTP Cache';
 						$mod['module_category'] = 'Applications';
 						$mod['module_description'] = 'HTTP GET with caching';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_ilbc":
 						$mod['module_label'] = 'iLBC';
@@ -387,8 +387,8 @@ echo $mod->dir."\n";
 						$mod['module_label'] = 'Opus';
 						$mod['module_category'] = 'Codecs';
 						$mod['module_description'] = 'OPUS ultra-low delay audio codec';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_park":
 						$mod['module_label'] = 'Park';
@@ -638,8 +638,8 @@ echo $mod->dir."\n";
 						$mod['module_label'] = 'XML Curl';
 						$mod['module_category'] = 'XML Interfaces';
 						$mod['module_description'] = 'Request XML config files dynamically.';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 						break;
 					case "mod_xml_rpc":
 						$mod['module_label'] = 'XML RPC';
@@ -650,8 +650,8 @@ echo $mod->dir."\n";
 						break;
 					default:
 						$mod['module_category'] = 'Auto';
-						$mod['module_enabled'] = 'true';
-						$mod['module_default_enabled'] = 'true';
+						$mod['module_enabled'] = 'false';
+						$mod['module_default_enabled'] = 'false';
 				}
 				return $mod;
 			}
