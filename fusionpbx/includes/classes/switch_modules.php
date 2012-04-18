@@ -707,39 +707,46 @@ echo $mod->dir."\n";
 					$modules_new = '';
 					$module_found = false;
 					while (false !== ($file = readdir($handle))) {
-						if ($file != "." && $file != ".." && substr($file, -3) == ".so") {
-							$name = substr($file, 0, -3);
-							if (!$this->exists($name)) {
-								//set module found to true
-									$module_found = true;
-								//get the module array
-									$mod = $this->info($name);
-								//append the module label
-									$modules_new .= "<li>".$mod['module_label']."</li>\n";
-								//insert the data
-									$module_uuid = uuid();
-									$sql = "insert into v_modules ";
-									$sql .= "(";
-									$sql .= "module_uuid, ";
-									$sql .= "module_label, ";
-									$sql .= "module_name, ";
-									$sql .= "module_description, ";
-									$sql .= "module_category, ";
-									$sql .= "module_enabled, ";
-									$sql .= "module_default_enabled ";
-									$sql .= ")";
-									$sql .= "values ";
-									$sql .= "(";
-									$sql .= "'".$module_uuid."', ";
-									$sql .= "'".$mod['module_label']."', ";
-									$sql .= "'".$mod['module_name']."', ";
-									$sql .= "'".$mod['module_description']."', ";
-									$sql .= "'".$mod['module_category']."', ";
-									$sql .= "'".$mod['module_enabled']."', ";
-									$sql .= "'".$mod['module_default_enabled']."' ";
-									$sql .= ")";
-									$this->db->exec($sql);
-									unset($sql);
+						if ($file != "." && $file != "..") {
+							if (substr($file, -3) == ".so" || substr($file, -4) == ".dll") {
+								if (substr($file, -3) == ".so") {
+									$name = substr($file, 0, -3);
+								}
+								if (substr($file, -4) == ".dll") {
+									$name = substr($file, 0, -4);
+								}
+								if (!$this->exists($name)) {
+									//set module found to true
+										$module_found = true;
+									//get the module array
+										$mod = $this->info($name);
+									//append the module label
+										$modules_new .= "<li>".$mod['module_label']."</li>\n";
+									//insert the data
+										$module_uuid = uuid();
+										$sql = "insert into v_modules ";
+										$sql .= "(";
+										$sql .= "module_uuid, ";
+										$sql .= "module_label, ";
+										$sql .= "module_name, ";
+										$sql .= "module_description, ";
+										$sql .= "module_category, ";
+										$sql .= "module_enabled, ";
+										$sql .= "module_default_enabled ";
+										$sql .= ")";
+										$sql .= "values ";
+										$sql .= "(";
+										$sql .= "'".$module_uuid."', ";
+										$sql .= "'".$mod['module_label']."', ";
+										$sql .= "'".$mod['module_name']."', ";
+										$sql .= "'".$mod['module_description']."', ";
+										$sql .= "'".$mod['module_category']."', ";
+										$sql .= "'".$mod['module_enabled']."', ";
+										$sql .= "'".$mod['module_default_enabled']."' ";
+										$sql .= ")";
+										$this->db->exec($sql);
+										unset($sql);
+								}
 							}
 						}
 					}
