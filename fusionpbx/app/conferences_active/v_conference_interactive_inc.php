@@ -35,83 +35,44 @@ else {
 }
 
 //get the http get or post and set it as php variables
-	$conference_name = trim($_REQUEST["c"]);
+	$conference_name = check_str($_REQUEST["c"]);
 
-//check if the domain in the conference name matches the domain
-	if (if_group("superadmin")) {
+//determine if the user should have access to the conference room
+	if (if_group("superadmin") || if_group("admin")) {
 		//access granted
 	}
 	else {
-		//find the conference extensions from the dialplan include details
-			$sql = "";
-			$sql .= "select * from v_dialplan_details ";
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			if (!(if_group("admin") || if_group("superadmin"))) {
-				//find the assigned users
-					$sql .= "and dialplan_detail_data like 'conference_user_list%' and dialplan_detail_data like '%|".$_SESSION['username']."|%' ";
-			}
-			$prep_statement = $db->prepare(check_sql($sql));
-			$prep_statement->execute();
-			$x = 0;
-			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-			$conference_array = array ();
-			foreach ($result as &$row) {
-				$dialplan_uuid = $row["dialplan_uuid"];
-				//$dialplan_detail_tag = $row["dialplan_detail_tag"];
-				//$dialplan_detail_order = $row["dialplan_detail_order"];
-				$dialplan_detail_type = $row["dialplan_detail_type"];
-				//$dialplan_detail_data = $row["dialplan_detail_data"];
-				if (if_group("admin") || if_group("superadmin")) {
-					if ($dialplan_detail_type == "conference") {
-						$conference_array[$x]['dialplan_uuid'] = $dialplan_uuid;
-						$x++;
-					}
-				}
-				else {
-					$conference_array[$x]['dialplan_uuid'] = $dialplan_uuid;
-					$x++;
-				}
-			}
-			unset ($prep_statement);
+		//get the conference_uuid from the coference_name
+		$sql = "select conference_uuid from v_conferences ";
+		$sql .= "where conference_name = '".$conference_name."' ";
+		$sql .= "and domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$prep_statement = $db->prepare($sql);
+		if ($prep_statement) {
+		$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			$conference_uuid = $row['conference_uuid'];
+		}
 
-		//find if the user is in the admin or superadmin group or has been assigned to this conference
-			if (if_group("admin") || if_group("superadmin")) {
-				//allow admin and superadmin access to all conference rooms
+		//show only assigned extensions
+		$sql = "select count(*) as num_rows from v_conferences as c, v_conference_users as u ";
+		$sql .= "where c.conference_uuid = u.conference_uuid ";
+		$sql .= "and c.conference_uuid = '".$conference_uuid."' ";
+		$sql .= "and c.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
+		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+		$prep_statement = $db->prepare($sql);
+		if ($prep_statement) {
+		$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			if ($row['num_rows'] == 0) {
+				echo "access denied";
+				exit;
 			}
-			else {
-				//get the list of conference numbers the user is assigned to
-				$sql = "";
-				$sql .= " select * from v_dialplan_details ";
-				$x = 0;
-				foreach ($conference_array as &$row) {
-					if ($x == 0) {
-						$sql .= "where domain_uuid = '$domain_uuid' \n";
-						$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-						$sql .= "and dialplan_detail_type = 'conference' \n";
-						$sql .= "and dialplan_detail_data like '".$conference_name."%' \n";
-					}
-					else {
-						$sql .= "or domain_uuid = '$domain_uuid' \n";
-						$sql .= "and dialplan_uuid = '".$row['dialplan_uuid']."' \n";
-						$sql .= "and dialplan_detail_type = 'conference' \n";
-						$sql .= "and dialplan_detail_data like '".$conference_name."%' \n";
-					}
-					$x++;
-				}
-				$prep_statement = $db->prepare(check_sql($sql));
-				$prep_statement->execute();
-				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-				$result_count = count($result);
-				unset ($prep_statement, $sql);
-				if ($result_count == 0) { //no results
-					echo "access denied";
-					exit;
-				}
-			}
+		}
 	}
 
 //replace the space with underscore
-	$conference_name = $conference_name.'-'.$_SESSION['domains'][$domain_uuid]['domain_name'];
+	$conference_name = $conference_name.'-'.$_SESSION['domain_name'];
 
 //create the conference list command
 	$switch_cmd = "conference '".$conference_name."' xml_list";

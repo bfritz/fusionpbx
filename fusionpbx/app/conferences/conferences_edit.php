@@ -80,7 +80,7 @@ else {
 		//set the variables
 			$user_uuid = check_str($_REQUEST["user_uuid"]);
 			$conference_uuid = check_str($_REQUEST["id"]);
-		//assign the user to the fax extension
+		//assign the user to the extension
 			$sql_insert = "insert into v_conference_users ";
 			$sql_insert .= "(";
 			$sql_insert .= "conference_user_uuid, ";
@@ -172,7 +172,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$db->exec(check_sql($sql));
 					unset($sql);
 
-				//create the dialplan entry for fax
+				//create the dialplan entry
 					$dialplan_name = $conference_name;
 					$dialplan_order ='333';
 					$dialplan_context = $_SESSION['context'];
@@ -297,8 +297,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$conference_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_conferences ";
+		$sql = "select * from v_conferences ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and conference_uuid = '$conference_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -342,7 +341,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
-	echo "Conferences is used to setup conference rooms with a name, description, and optional pin number. Show <a href='".PROJECT_PATH."/app/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.<br /><br />\n";
+	echo "Conferences is used to setup conference rooms with a name, description, and optional pin number. \n";
+	echo "Click on <a href='".PROJECT_PATH."/app/conferences_active/v_conference_interactive.php?c=".$conference_name."'>Active Conference</a> \n";
+	echo "to monitor and interact with the conference room.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

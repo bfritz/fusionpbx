@@ -41,8 +41,7 @@ if (count($_GET)>0) {
 if (strlen($id)>0) {
 
 	//get the dialplan uuid
-		$sql = "";
-		$sql .= "select * from v_conferences ";
+		$sql = "select * from v_conferences ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and conference_uuid = '$id' ";
 		$prep_statement = $db->prepare($sql);
@@ -50,10 +49,9 @@ if (strlen($id)>0) {
 		while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
 			$dialplan_uuid = $row['dialplan_uuid'];
 		}
-	
+
 	//delete conference
-		$sql = "";
-		$sql .= "delete from v_conferences ";
+		$sql = "delete from v_conferences ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and conference_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -61,16 +59,14 @@ if (strlen($id)>0) {
 		unset($sql);
 
 	//delete the dialplan entry
-		$sql = "";
-		$sql .= "delete from v_dialplans ";
+		$sql = "delete from v_dialplans ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$db->query($sql);
 		unset($sql);
 
 	//delete the dialplan details
-		$sql = "";
-		$sql .= "delete from v_dialplan_details ";
+		$sql = "delete from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
 		$db->query($sql);
@@ -78,7 +74,7 @@ if (strlen($id)>0) {
 
 	//syncrhonize configuration
 		save_dialplan_xml();
-	
+
 	//apply settings reminder
 		$_SESSION["reload_xml"] = true;
 }

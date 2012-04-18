@@ -54,22 +54,25 @@ require_once "includes/paging.php";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td colspan='2'>\n";
-	echo "			Conferences is used to setup conference rooms with a name, description, and optional pin number. Show <a href='".PROJECT_PATH."/app/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.<br /><br />\n";
+	echo "			Conferences is used to setup conference rooms with a name, description, and optional pin number. \n";
+	if (permission_exists('conferences_active_advanced_view')) {
+		echo "			Show <a href='".PROJECT_PATH."/app/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.<br /><br />\n";
+	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
 
 	//prepare to page the results
 		if (if_group("superadmin") || if_group("admin")) {
-			//show all fax extensions
+			//show all extensions
 			$sql = "select count(*) as num_rows from v_conferences ";
 			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		}
 		else {
-			//show only assigned fax extensions
+			//show only assigned extensions
 			$sql = "select count(*) as num_rows from v_conferences as c, v_conference_users as u ";
 			$sql .= "where c.conference_uuid = u.conference_uuid ";
-			$sql .= "and f.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+			$sql .= "and c.domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
 		}
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
@@ -95,15 +98,15 @@ require_once "includes/paging.php";
 
 	//get the  list
 		if (if_group("superadmin") || if_group("admin")) {
-			//show all fax extensions
+			//show all extensions
 			$sql = "select * from v_conferences ";
 			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		}
 		else {
-			//show only assigned fax extensions
+			//show only assigned extensions
 			$sql = "select * from v_conferences as c, v_conference_users as u ";
 			$sql .= "where c.conference_uuid = u.conference_uuid ";
-			$sql .= "and f.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+			$sql .= "and c.domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
 		}
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
