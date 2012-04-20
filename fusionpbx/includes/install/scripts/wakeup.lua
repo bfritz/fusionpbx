@@ -172,7 +172,7 @@ else
 
 		--wakeup call has been scheduled	
 			session:streamFile("phrase:wakeup-scheduled");
-			session:say(wakeup_time, "en", "number", "pronounced");
+			session:say(wakeup_time, "en", "number", "ITERATED");
 
 		--wakeup confirm press 1 to 3
 			min_digits = 1;
