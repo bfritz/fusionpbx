@@ -79,6 +79,7 @@
 										//insert the default menu into the database
 											$sql = "insert into v_menu_items ";
 											$sql .= "(";
+											$sql .= "menu_item_uuid, ";
 											$sql .= "menu_uuid, ";
 											//$sql .= "menu_item_language, ";
 											$sql .= "menu_item_title, ";
@@ -97,6 +98,7 @@
 											$sql .= ") ";
 											$sql .= "values ";
 											$sql .= "(";
+											$sql .= "'".uuid()."', ";
 											$sql .= "'".$this->menu_uuid."', ";
 											//$sql .= "'$menu_item_language', ";
 											$sql .= "'$menu_item_title', ";
