@@ -34,16 +34,18 @@ require_once "includes/require.php";
 
 //get any system -> variables defined in the 'provision;
 	$sql .= "select * from v_vars ";
-	$sql .= "where var_enabled= 'true' ";
+	$sql .= "where var_enabled = 'true' ";
 	$sql .= "and var_cat = 'Provision' ";
 	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$provision_variables_array = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	foreach ($provision_variables_array as &$row) {
-		if ($row['var_name'] == "password") {
-			$var_name = $row['var_name'];
-			$var_value = $row['var_value'];
-			$$var_name = $var_value;
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$provision_variables_array = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		foreach ($provision_variables_array as &$row) {
+			if ($row['var_name'] == "password") {
+				$var_name = $row['var_name'];
+				$var_value = $row['var_value'];
+				$$var_name = $var_value;
+			}
 		}
 	}
 
@@ -274,7 +276,7 @@ require_once "includes/require.php";
 
 	//lookup the provisioning information for this MAC address.
 		$sql = "select * from v_extensions ";
-		$sql .= "where provisioning_list like '%$mac%' ";
+		$sql .= "where provisioning_list = '".$mac."' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
