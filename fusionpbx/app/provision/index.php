@@ -33,10 +33,8 @@ require_once "includes/require.php";
 	$phone_template = '';
 
 //get any system -> variables defined in the 'provision;
-	$sql = "";
 	$sql .= "select * from v_vars ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and var_enabled= 'true' ";
+	$sql .= "where var_enabled= 'true' ";
 	$sql .= "and var_cat = 'Provision' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -173,7 +171,6 @@ require_once "includes/require.php";
 				$phone_vendor = "";
 			}
 
-
 		//use the user_agent to pre-assign a template for 1-hit provisioning. Enter the a unique string to match in the user agent, and the template it should match.
 			$template_list=array(  
 					"Linksys/SPA-2102"=>"linksys/spa2102",
@@ -276,8 +273,7 @@ require_once "includes/require.php";
 //replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 
 	//lookup the provisioning information for this MAC address.
-		$sql = "";
-		$sql .= "select * from v_extensions ";
+		$sql = "select * from v_extensions ";
 		$sql .= "where provisioning_list like '%$mac%' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
