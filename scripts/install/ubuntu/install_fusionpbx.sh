@@ -2193,8 +2193,9 @@ DELIM
 		/bin/echo "  Just go to"
 		/bin/echo '  http://'`/sbin/ifconfig eth0 | /bin/grep 'inet addr:' | /usr/bin/cut -d: -f2 | /usr/bin/awk '{ print $1}'`	
 		/bin/echo
-		/bin/echo "Default login is:"
-		/bin/echo "  superadmin/fusionpbx"
+		/bin/echo "Default login is (whatever you picked in the GUI install):"
+		/bin/echo "  User: WhateverUsernameYouPicked"
+		/bin/echo "  Passwd: YourPasswordYouPicked"
 		
 	
 	;;
@@ -2223,8 +2224,9 @@ DELIM
 	/bin/echo "Installation Completed.  Now configure FreeSWITCH via the FusionPBX browser interface"
 	/bin/echo
 	/bin/echo '  http://'`/sbin/ifconfig eth0 | /bin/grep 'inet addr:' | /usr/bin/cut -d: -f2 | /usr/bin/awk '{ print $1}'`
-	/bin/echo "         username: superadmin"
-	/bin/echo "         password: fusionpbx"
+	/bin/echo "Default login is (whatever you picked in the GUI install):"
+	/bin/echo "  User: WhateverUsernameYouPicked"
+	/bin/echo "  Passwd: YourPasswordYouPicked"
 	
 	
 fi
@@ -2366,7 +2368,7 @@ if [ $UPGFUSION -eq 1 ]; then
 	/bin/echo "  a FreeSWITCH upgrade as well."
 	www_permissions
 	/bin/echo
-	/bin/echo "STOP! Make sure you are logged into fusionpbx as superadmin (via browser)!!!"
+	/bin/echo "STOP! Make sure you are logged into fusionpbx as the superadmin (via browser)!!!"
 	read -p "Have you done this yet (y/n)? " YESNO
 	if [ $YESNO == "y" ]; then
 		/bin/echo "Be really sure you are logged in as superadmin."
