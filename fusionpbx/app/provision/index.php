@@ -276,7 +276,7 @@ require_once "includes/require.php";
 
 	//lookup the provisioning information for this MAC address.
 		$sql = "select * from v_extensions ";
-		$sql .= "where provisioning_list = '".$mac."' ";
+		$sql .= "where provisioning_list like '%|".$mac.":%' ";
 		$sql .= "and domain_uuid = '$domain_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -291,11 +291,10 @@ require_once "includes/require.php";
 					$file_contents = str_replace("{v_line".$line_number."_server_address}", $_SESSION['domain_name'], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["effective_caller_id_name"], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_shortname}", $row["extension"], $file_contents);
-					$file_contents = str_replace("{v_line".$line_number."_user_uuid}", $row["extension"], $file_contents);
+					$file_contents = str_replace("{v_line".$line_number."_user_id}", $row["extension"], $file_contents);
 					$file_contents = str_replace("{v_line".$line_number."_user_password}", $row["password"], $file_contents);
 				}
 			}
-
 			//$vm_password = $row["vm_password"];
 			//$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 			//$accountcode = $row["accountcode"];
