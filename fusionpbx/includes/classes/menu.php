@@ -88,9 +88,6 @@
 											if (strlen($menu_item_order) > 0) {
 												$sql .= "menu_item_order, ";
 											}
-											if (strlen($menu_item_uuid) > 0) {
-												$sql .= "menu_item_uuid, ";
-											}
 											if (strlen($menu_item_parent_uuid) > 0) {
 												$sql .= "menu_item_parent_uuid, ";
 											}
@@ -106,9 +103,6 @@
 											$sql .= "'$menu_item_category', ";
 											if (strlen($menu_item_order) > 0) {
 												$sql .= "'$menu_item_order', ";
-											}
-											if (strlen($menu_item_uuid) > 0) {
-												$sql .= "'$menu_item_uuid', ";
 											}
 											if (strlen($menu_item_parent_uuid) > 0) {
 												$sql .= "'$menu_item_parent_uuid', ";
