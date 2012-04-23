@@ -1,7 +1,7 @@
 <?php
 	//application details
 		$apps[$x]['name'] = 'Destinations';
-		$apps[$x]['uuid'] = '5EC89622-B19C-3559-64F0-AFDE802AB139';
+		$apps[$x]['uuid'] = '5ec89622-b19c-3559-64f0-afde802ab139';
 		$apps[$x]['category'] = 'Switch';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
@@ -11,8 +11,8 @@
 
 	//menu details
 		$apps[$x]['menu'][0]['title']['en'] = 'Destinations';
-		$apps[$x]['menu'][0]['uuid'] = 'FD2A708A-FF03-C707-C19D-5A4194375EBA';
-		$apps[$x]['menu'][0]['parent_uuid'] = 'FD29E39C-C936-F5FC-8E2B-611681B266B5';
+		$apps[$x]['menu'][0]['uuid'] = 'fd2a708a-ff03-c707-c19d-5a4194375eba';
+		$apps[$x]['menu'][0]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
 		$apps[$x]['menu'][0]['path'] = '/app/destinations/destinations.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
