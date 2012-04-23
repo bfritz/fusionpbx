@@ -98,7 +98,7 @@
 											$sql .= ") ";
 											$sql .= "values ";
 											$sql .= "(";
-											$sql .= "'".uuid()."', ";
+											$sql .= "'".$menu_item_uuid."', ";
 											$sql .= "'".$this->menu_uuid."', ";
 											//$sql .= "'$menu_item_language', ";
 											$sql .= "'$menu_item_title', ";
