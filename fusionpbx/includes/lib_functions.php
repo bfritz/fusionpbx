@@ -163,7 +163,6 @@
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
-
 			$group_members = "||";
 			foreach($result as $field) {
 				//get the list of groups
@@ -194,14 +193,13 @@
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$result_count = count($result);
-
-			$strsuperadmin_list = "||";
+			$superadmin_list = "||";
 			foreach($result as $field) {
 				//get the list of superadmins
-				$strsuperadmin_list .= $field[group_name]."||";
+				$superadmin_list .= $field[group_name]."||";
 			}
 			unset($sql, $result, $row_count);
-			return $strsuperadmin_list;
+			return $superadmin_list;
 		}
 	}
 	//superadmin_list($db);
@@ -936,5 +934,18 @@ function format_string ($format, $data) {
 			return $result;
 		}
 	}
+
+function get_time_zone_offset($remote_tz, $origin_tz = 'UTC') {
+	$origin_dtz = new DateTimeZone($origin_tz);
+	$remote_dtz = new DateTimeZone($remote_tz);
+	$origin_dt = new DateTime("now", $origin_dtz);
+	$remote_dt = new DateTime("now", $remote_dtz);
+	$offset = $remote_dtz->getOffset($remote_dt) - $origin_dtz->getOffset($origin_dt);
+	return $offset;
+}
+
+function number_pad($number,$n) {
+	return str_pad((int) $number,$n,"0",STR_PAD_LEFT);
+}
 
 ?>
