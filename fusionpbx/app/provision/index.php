@@ -276,20 +276,22 @@ require_once "includes/require.php";
 
 	//get the time zone
 		$time_zone_name = $_SESSION['domain']['time_zone']['name'];
-		$time_zone_offset_raw = get_time_zone_offset($time_zone_name)/3600;
-		$time_zone_offset_hours = floor($time_zone_offset_raw);
-		$time_zone_offset_minutes = ($time_zone_offset_raw - $time_zone_offset_hours) * 60;
-		$time_zone_offset_minutes = number_pad($time_zone_offset_minutes, 2);
-		if ($time_zone_offset_raw > 0) {
-			$time_zone_offset_hours = number_pad($time_zone_offset_hours, 2);
-			$time_zone_offset_hours = "+".$time_zone_offset_hours;
+		if (strlen($time_zone_name) > 0) {
+			$time_zone_offset_raw = get_time_zone_offset($time_zone_name)/3600;
+			$time_zone_offset_hours = floor($time_zone_offset_raw);
+			$time_zone_offset_minutes = ($time_zone_offset_raw - $time_zone_offset_hours) * 60;
+			$time_zone_offset_minutes = number_pad($time_zone_offset_minutes, 2);
+			if ($time_zone_offset_raw > 0) {
+				$time_zone_offset_hours = number_pad($time_zone_offset_hours, 2);
+				$time_zone_offset_hours = "+".$time_zone_offset_hours;
+			}
+			else {
+				$time_zone_offset_hours = str_replace("-", "", $time_zone_offset_hours);
+				$time_zone_offset_hours = "-".number_pad($time_zone_offset_hours, 2);
+			}
+			$time_zone_offset = $time_zone_offset_hours.":".$time_zone_offset_minutes;
+			$file_contents = str_replace("{v_time_zone_offset}", $time_zone_offset, $file_contents);
 		}
-		else {
-			$time_zone_offset_hours = str_replace("-", "", $time_zone_offset_hours);
-			$time_zone_offset_hours = "-".number_pad($time_zone_offset_hours, 2);
-		}
-		$time_zone_offset = $time_zone_offset_hours.":".$time_zone_offset_minutes;
-		$file_contents = str_replace("{v_time_zone_offset}", $time_zone_offset, $file_contents);
 
 	//lookup the provisioning information for this MAC address.
 		$sql = "select * from v_extensions ";
@@ -342,6 +344,7 @@ require_once "includes/require.php";
 		$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
 		$file_contents = str_replace("{v_proxy1_address}", $proxy1_address, $file_contents);
 		$file_contents = str_replace("{v_password}", $password, $file_contents);
+		$file_contents = str_replace("{v_time_zone_offset}", $password, $file_contents);
 
 	//cleanup any remaining variables
 		for ($i = 1; $i <= 100; $i++) {
