@@ -1,5 +1,5 @@
 <flat-profile>
-<Profile_Rule>http://{domain_name}{v_project_path}/mod/provision/?mac=$MA&amp;password={v_password}</Profile_Rule>
+<Profile_Rule>http://{domain_name}{v_project_path}/app/provision/?mac=$MA&amp;password={v_password}</Profile_Rule>
 <Resync_Periodic>3600</Resync_Periodic>
 
 <!--<GPP_B>{v_agent}</GPP_B>-->
