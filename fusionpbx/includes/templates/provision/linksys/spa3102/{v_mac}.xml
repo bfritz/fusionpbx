@@ -65,6 +65,7 @@
   <Admin_Passwd/>
   <User_Password/>
   -->
+  <Time_Zone>GMT-{v_time_zone_offset}</Time_Zone>
 
 
   <!-- SIP settings -->

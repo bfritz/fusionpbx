@@ -148,10 +148,10 @@
 <GPP_N group="Provisioning/General_Purpose_Parameters"/>
 <GPP_O group="Provisioning/General_Purpose_Parameters"/>
 <GPP_P group="Provisioning/General_Purpose_Parameters"/>
-<Time_Zone group="Regional/Miscellaneous">GMT-08:00</Time_Zone>
+<Time_Zone group="Regional/Miscellaneous">GMT{v_time_zone_offset}</Time_Zone>
 <Time_Offset__HH_mm_ group="Regional/Miscellaneous"/>
 <Daylight_Saving_Time_Rule group="Regional/Miscellaneous"/>
-<Daylight_Saving_Time_Enable group="Regional/Miscellaneous">Yes</Daylight_Saving_Time_Enable>
+<Daylight_Saving_Time_Enable group="Regional/Miscellaneous">No</Daylight_Saving_Time_Enable>
 <Station_Name group="Phone/General">{v_line1_displayname}</Station_Name>
 <Voice_Mail_Number group="Phone/General">*98</Voice_Mail_Number>
 <Text_Logo group="Phone/General"/>
