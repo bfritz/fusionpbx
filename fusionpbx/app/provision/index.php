@@ -348,7 +348,7 @@ require_once "includes/require.php";
 			$file_contents = str_replace("{v_line".$i."_server_address}", "", $file_contents);
 			$file_contents = str_replace("{v_line".$i."_displayname}", "", $file_contents);
 			$file_contents = str_replace("{v_line".$i."_shortname}", "", $file_contents);
-			$file_contents = str_replace("{v_line".$i."_user_uuid}", "", $file_contents);
+			$file_contents = str_replace("{v_line".$i."_user_id}", "", $file_contents);
 			$file_contents = str_replace("{v_line".$i."_user_password}", "", $file_contents);
 		}
 
