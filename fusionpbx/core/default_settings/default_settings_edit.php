@@ -284,11 +284,25 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					}
 					echo "		<optgroup label='".$category."'>\n";
 				}
+				if (strlen($val) > 0) {
+					$time_zone_offset = get_time_zone_offset($val)/3600;
+					$time_zone_offset_hours = floor($time_zone_offset);
+					$time_zone_offset_minutes = ($time_zone_offset - $time_zone_offset_hours) * 60;
+					$time_zone_offset_minutes = number_pad($time_zone_offset_minutes, 2);
+					if ($time_zone_offset > 0) {
+						$time_zone_offset_hours = number_pad($time_zone_offset_hours, 2);
+						$time_zone_offset_hours = "+".$time_zone_offset_hours;
+					}
+					else {
+						$time_zone_offset_hours = str_replace("-", "", $time_zone_offset_hours);
+						$time_zone_offset_hours = "-".number_pad($time_zone_offset_hours, 2);
+					}
+				}
 				if ($val == $row['default_setting_value']) {
-					echo "			<option value='".$val."' selected='selected'>".$val."</option>\n";
+					echo "			<option value='".$val."' selected='selected'>(UTC ".$time_zone_offset_hours.":".$time_zone_offset_minutes.") ".$val."</option>\n";
 				}
 				else {
-					echo "			<option value='".$val."'>".$val."</option>\n";
+					echo "			<option value='".$val."'>(UTC ".$time_zone_offset_hours.":".$time_zone_offset_minutes.") ".$val."</option>\n";
 				}
 				$previous_category = $category;
 				$x++;
