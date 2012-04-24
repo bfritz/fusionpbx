@@ -1758,6 +1758,9 @@ function save_extension_xml() {
 				}
 				$tmp_xml .= "    </params>\n";
 				$tmp_xml .= "    <variables>\n";
+				if (strlen($row['call_group']) > 0) {
+					$tmp_xml .= "      <variable name=\"call_group\" value=\"" . $row['call_group'] . "\"/>\n";
+				}
 				if (strlen($row['hold_music']) > 0) {
 					$tmp_xml .= "      <variable name=\"hold_music\" value=\"" . $row['hold_music'] . "\"/>\n";
 				}
