@@ -1666,8 +1666,7 @@ function save_extension_xml() {
 		}
 
 	//write the xml files
-		$sql = "";
-		$sql .= "select * from v_extensions ";
+		$sql = "select * from v_extensions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "order by call_group asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -1783,6 +1782,15 @@ function save_extension_xml() {
 				}
 				if (strlen($row['outbound_caller_id_number']) > 0) {
 					$tmp_xml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $row['outbound_caller_id_number'] . "\"/>\n";
+				}
+				if (strlen($row['directory_full_name']) > 0) {
+					$tmp_xml .= "      <variable name=\"directory_full_name\" value=\"" . $row['directory_full_name'] . "\"/>\n";
+				}
+				if (strlen($row['directory_visible']) > 0) {
+					$tmp_xml .= "      <variable name=\"directory-visible\" value=\"" . $row['directory_visible'] . "\"/>\n";
+				}
+				if (strlen($row['directory_exten_visible']) > 0) {
+					$tmp_xml .= "      <variable name=\"directory-exten-visible\" value=\"" . $row['directory_exten_visible'] . "\"/>\n";
 				}
 				if (strlen($row['limit_max']) > 0) {
 					$tmp_xml .= "      <variable name=\"limit_max\" value=\"" . $row['limit_max'] . "\"/>\n";

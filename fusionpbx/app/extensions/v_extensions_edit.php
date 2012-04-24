@@ -73,6 +73,9 @@ else {
 			$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
 			$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
 			$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
+			$directory_full_name = check_str($_POST["directory_full_name"]);
+			$directory_visible = check_str($_POST["directory_visible"]);
+			$directory_exten_visible = check_str($_POST["directory_exten_visible"]);
 			$limit_max = check_str($_POST["limit_max"]);
 			$limit_destination = check_str($_POST["limit_destination"]);
 			$vm_enabled = check_str($_POST["vm_enabled"]);
@@ -161,6 +164,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($effective_caller_id_number) == 0) { $msg .= "Please provide: Effective Caller ID Number<br>\n"; }
 		//if (strlen($outbound_caller_id_name) == 0) { $msg .= "Please provide: Outbound Caller ID Name<br>\n"; }
 		//if (strlen($outbound_caller_id_number) == 0) { $msg .= "Please provide: Outbound Caller ID Number<br>\n"; }
+		//if (strlen($directory_full_name) == 0) { $msg .= "Please provide: Directory Full Name<br>\n"; }
+		//if (strlen($directory_visible) == 0) { $msg .= "Please provide: Directory Visible<br>\n"; }
+		//if (strlen($directory_exten_visible) == 0) { $msg .= "Please provide: Directory Extension Visible<br>\n"; }
 		//if (strlen($limit_max) == 0) { $msg .= "Please provide: Max Callsr<br>\n"; }
 		//if (strlen($limit_destination) == 0) { $msg .= "Please provide: Transfer Destination Number<br>\n"; }
 		//if (strlen($vm_mailto) == 0) { $msg .= "Please provide: Voicemail Mail To<br>\n"; }
@@ -244,6 +250,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "effective_caller_id_number, ";
 					$sql .= "outbound_caller_id_name, ";
 					$sql .= "outbound_caller_id_number, ";
+					$sql .= "directory_full_name, ";
+					$sql .= "directory_visible, ";
+					$sql .= "directory_exten_visible, ";
 					$sql .= "limit_max, ";
 					$sql .= "limit_destination, ";
 					$sql .= "vm_enabled, ";
@@ -286,6 +295,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$effective_caller_id_number', ";
 					$sql .= "'$outbound_caller_id_name', ";
 					$sql .= "'$outbound_caller_id_number', ";
+					$sql .= "'$directory_full_name', ";
+					$sql .= "'$directory_visible', ";
+					$sql .= "'$directory_exten_visible', ";
 					$sql .= "'$limit_max', ";
 					$sql .= "'$limit_destination', ";
 					$sql .= "'$vm_enabled', ";
@@ -405,6 +417,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "effective_caller_id_number = '$effective_caller_id_number', ";
 			$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
 			$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
+			$sql .= "directory_full_name = '$directory_full_name', ";
+			$sql .= "directory_visible = '$directory_visible', ";
+			$sql .= "directory_exten_visible = '$directory_exten_visible', ";
 			$sql .= "limit_max = '$limit_max', ";
 			$sql .= "limit_destination = '$limit_destination', ";
 			$sql .= "vm_enabled = '$vm_enabled', ";
@@ -486,8 +501,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$extension_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_extensions ";
+		$sql = "select * from v_extensions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and extension_uuid = '$extension_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -506,6 +520,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$effective_caller_id_number = $row["effective_caller_id_number"];
 			$outbound_caller_id_name = $row["outbound_caller_id_name"];
 			$outbound_caller_id_number = $row["outbound_caller_id_number"];
+			$directory_full_name = $row["directory_full_name"];
+			$directory_visible = $row["directory_visible"];
+			$directory_exten_visible = $row["directory_exten_visible"];
 			$limit_max = $row["limit_max"];
 			$limit_destination = $row["limit_destination"];
 			$vm_enabled = $row["vm_enabled"];
@@ -768,6 +785,69 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <input class='formfld' type='text' name='outbound_caller_id_number' maxlength='255' value=\"$outbound_caller_id_number\">\n";
 	echo "<br />\n";
 	echo "Enter the external caller id number here.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "    Directory Full Name:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='directory_full_name' maxlength='255' value=\"$directory_full_name\">\n";
+	echo "<br />\n";
+	echo "Enter the first name followed by the last name.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "    Directory Visible:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='directory_visible'>\n";
+	echo "    <option value=''></option>\n";
+	if ($directory_visible == "true" || $directory_visible == "") { 
+		echo "    <option value='true' selected='selected'>true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($directory_visible == "false") { 
+		echo "    <option value='false' selected >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "Select whether to hide the name from the directory.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "    Directory Extension Visible:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='directory_exten_visible'>\n";
+	echo "    <option value=''></option>\n";
+	if ($directory_exten_visible == "true" || $directory_exten_visible == "") { 
+		echo "    <option value='true' selected='selected'>true</option>\n";
+	}
+	else {
+		echo "    <option value='true'>true</option>\n";
+	}
+	if ($directory_exten_visible == "false") { 
+		echo "    <option value='false' selected >false</option>\n";
+	}
+	else {
+		echo "    <option value='false'>false</option>\n";
+	}
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo "Select whether announce the extension when calling the directory.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
