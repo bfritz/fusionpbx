@@ -350,13 +350,12 @@ include "root.php";
 						$this->connect();
 					}
 				//delete from the database
-					$sql = "";
-					$sql .= "delete from ".$this->table." ";
+					$sql = "delete from ".$this->table." ";
 					if ($this->where) {
 						$i = 0;
 						foreach($this->where as $row) {
 							if ($i == 0) {
-								$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+								$sql .= "where ".$row['name']." ".$row['operator']." '".$row['value']."' ";
 							}
 							else {
 								$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";
@@ -377,13 +376,12 @@ include "root.php";
 						$this->connect();
 					}
 				//get the number of rows
-					$sql = "";
-					$sql .= " select count(*) as num_rows from ".$this->table;
+					$sql = " select count(*) as num_rows from ".$this->table;
 					if ($this->where) {
 						$i = 0;
 						foreach($this->where as $row) {
 							if ($i == 0) {
-								$sql .= 'where '.$row['name']." ".$row['operator']." '".$row['value']."' ";
+								$sql .= "where ".$row['name']." ".$row['operator']." '".$row['value']."' ";
 							}
 							else {
 								$sql .= "and ".$row['name']." ".$row['operator']." '".$row['value']."' ";

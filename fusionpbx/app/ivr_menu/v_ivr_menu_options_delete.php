@@ -47,7 +47,6 @@ else {
 			require_once "includes/classes/switch_ivr_menu.php";
 			$ivr = new switch_ivr_menu;
 			$ivr->domain_uuid = $_SESSION["domain_uuid"];
-			$ivr->ivr_menu_uuid = $ivr_menu_uuid;
 			$ivr->ivr_menu_option_uuid = $id;
 			$ivr->delete();
 
