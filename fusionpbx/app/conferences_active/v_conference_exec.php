@@ -39,24 +39,42 @@ else {
 
 //get the http values and set them as php variables
 	if (count($_GET)>0) {
-		$switch_cmd = trim($_GET["cmd"]);
-		$action = trim($_GET["action"]);
+		$cmd = trim($_GET["cmd"]);
+		$name = trim($_GET["name"]);
+		$data = trim($_GET["data"]);
+		$id = trim($_GET["id"]);
 		$direction = trim($_GET["direction"]);
 	}
 
-if (count($_GET)>0) {
-	if (strlen($switch_cmd) > 0) {
+//authorized commands
+	if ($cmd == "conference") {
+		//authorized;
+	} else {
+		//not found. this command is not authorized
+		echo "access denied";
+		exit;
+	}
 
-		//check if the domain is in the switch_cmd
-			if(stristr($switch_cmd, $_SESSION['domain_name']) === FALSE) {
-				echo "access denied";
-				exit;
+//check if the domain is in the switch_cmd
+	if(stristr($name, $_SESSION['domain_name']) === FALSE) {
+		echo "access denied";
+		exit;
+	}
+
+if (count($_GET)>0) {
+	if (strlen($cmd) > 0) {
+		//prepare the switch cmd
+			$switch_cmd = $cmd . " ";
+			$switch_cmd .= $name . " ";
+			$switch_cmd .= $data . " ";
+			if (strlen($id) > 0) {
+				$switch_cmd .= " ".$id;
 			}
 
 		//connect to event socket
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			if ($fp) {
-				if ($action == "energy") {
+				if ($data == "energy") {
 					//conference 3001-example-domain.org energy 103
 					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 					$result_array = explode("=",$switch_result);
@@ -66,7 +84,7 @@ if (count($_GET)>0) {
 					//echo "energy $tmp_value<br />\n";
 					$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
 				}
-				if ($action == "volume_in") {
+				elseif ($data == "volume_in") {
 					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 					$result_array = explode("=",$switch_result);
 					$tmp_value = $result_array[1];
@@ -75,7 +93,7 @@ if (count($_GET)>0) {
 					//echo "volume $tmp_value<br />\n";
 					$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
 				}
-				if ($action == "volume_out") {
+				elseif ($data == "volume_out") {
 					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 					$result_array = explode("=",$switch_result);
 					$tmp_value = $result_array[1];
@@ -84,14 +102,25 @@ if (count($_GET)>0) {
 					//echo "volume $tmp_value<br />\n";
 					$switch_result = event_socket_request($fp, 'api '.$switch_cmd.' '.$tmp_value);
 				}
-			}
-
-		//send a command over event socket
-			if ($fp) {
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+				elseif ($data == "record") {
+					$switch_cmd .= $_SESSION['switch']['recordings']['dir']."/".$name."-tmp.wav";
+					if (!file_exists($_SESSION['switch']['recordings']['dir']."/".$name."-tmp.wav")) {
+						$switch_result = event_socket_request($fp, "api ".$switch_cmd);
+					}
+				}
+				elseif ($data == "norecord") {
+					//stop recording and rename the file
+					if (file_exists($_SESSION['switch']['recordings']['dir']."/".$name."-tmp.wav")) {
+						rename($_SESSION['switch']['recordings']['dir']."/".$name."-tmp.wav", $_SESSION['switch']['recordings']['dir']."/".$name."-".date("Y").".".date("M").".".date("d")."-".uuid().".wav");
+					}
+					$switch_cmd .= $_SESSION['switch']['recordings']['dir']."/".$name."-tmp.wav";
+					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+				}
+				else {
+					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+				}
 			}
 	}
-
 }
 
 ?>

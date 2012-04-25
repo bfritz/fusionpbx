@@ -117,7 +117,7 @@ else {
 		echo "<td >\n";
 		echo "	<strong>Count: $member_count</strong>\n";
 		echo "</td>\n";
-		echo "<td colspan='7'>\n";
+		echo "<td colspan='9'>\n";
 		echo "	&nbsp;\n";
 		echo "</td>\n";
 		echo "<td colspan='1' align='right'>\n";
@@ -125,15 +125,19 @@ else {
 			echo "	<strong>Conference Tools:</strong> \n";
 		}
 		if (permission_exists('conferences_active_record')) {
-			echo "	<a href='javascript:void(0);' onclick=\"record_count++;send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name." record recordings/conference_".$conference_name."-'+document.getElementById('time_stamp').innerHTML+'_'+record_count+'.wav');\">Start Record</a>&nbsp;\n";
-			echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name." norecord recordings/conference_".$conference_name."-'+document.getElementById('time_stamp').innerHTML+'_'+record_count+'.wav');\">Stop Record</a>&nbsp;\n";
+			if (file_exists($_SESSION['switch']['recordings']['dir']."/".$conference_name."-tmp.wav")) {
+				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference&name=".$conference_name."&data=norecord');\">Stop Record</a>&nbsp;\n";
+			}
+			else {
+				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference&name=".$conference_name."&data=record');\">Start Record</a>&nbsp;\n";
+			}
 		}
 		if (permission_exists('conferences_active_lock')) {
 			if ($locked == "true") {
-				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name." unlock');\">Unlock</a>&nbsp;\n";
+				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference&name=".$conference_name."&data=unlock');\">Unlock</a>&nbsp;\n";
 			}
 			else {
-				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name." lock');\">Lock</a>&nbsp;\n";
+				echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference&name=".$conference_name."&data=lock');\">Lock</a>&nbsp;\n";
 			}
 		}
 		echo "</td>\n";
@@ -144,9 +148,11 @@ else {
 		//echo "<th>UUID</th>\n";
 		echo "<th>Caller ID Name</th>\n";
 		echo "<th>Caller ID Number</th>\n";
+		echo "<th>Joined</th>\n";
 		echo "<th>Hear</th>\n";
 		echo "<th>Speak</th>\n";
 		echo "<th>Talking</th>\n";
+		echo "<th>Last Talked</th>\n";
 		echo "<th>Video</th>\n";
 		echo "<th>Has Floor</th>\n";
 		echo "<th>Tools</th>\n";
@@ -154,9 +160,12 @@ else {
 
 		foreach ($xml->conference->members->member as $row) {
 			$id = $row->id;
+			$record_path = $row->record_path;
 			$flag_can_hear = $row->flags->can_hear;
 			$flag_can_speak = $row->flags->can_speak;
 			$flag_talking = $row->flags->talking;
+			$last_talking = $row->last_talking;
+			$join_time = $row->join_time;
 			$flag_has_video = $row->flags->has_video;
 			$flag_has_floor = $row->flags->has_floor;
 			$uuid = $row->uuid;
@@ -164,81 +173,89 @@ else {
 			$caller_id_name = str_replace("%20", " ", $caller_id_name);
 			$caller_id_number = $row->caller_id_number;
 
-			echo "<tr>\n";
-			echo "<td valign='top' class='".$row_style[$c]."'>$id</td>\n";
-			//echo "<td valign='top' class='".$row_style[$c]."'>$uuid</td>\n";
-			echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_name</td>\n";
-			echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_number</td>\n";
-			if ($flag_can_hear == "true") {
-				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
-			}
-			else {
-				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
-			}
-			if ($flag_can_speak == "true") {
-				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
-			}
-			else {
-				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
-			}
-			if ($flag_talking == "true") {
-				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
-			}
-			else {
-				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
-			}
-			if ($flag_has_video == "true") {
-				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
-			}
-			else {
-				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
-			}
-			if ($flag_has_floor == "true") {
-				echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
-			}
-			else {
-				echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
-			}
-			echo "<td valign='top' class='".$row_style[$c]."' style='text-align:right;'>\n";
-			//energy
-				if (permission_exists('conferences_active_energy')) {
-					echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=energy&direction=up&cmd=conference%20".$conference_name."%20energy%20".$id."');\">+energy</a>&nbsp;\n";
-					echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=energy&direction=down&cmd=conference%20".$conference_name."%20energy%20".$id."');\">-energy</a>&nbsp;\n";
+			//format the seconds
+			$join_time_formatted = floor($join_time/60)."' ".($join_time - (floor($join_time/60))*60)."\"";
+			$last_talking_formatted = floor($last_talking/60)."' ".($last_talking - (floor($last_talking/60))*60)."\"";
+
+			if (strlen($record_path) == 0) {
+				echo "<tr>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$id</td>\n";
+				//echo "<td valign='top' class='".$row_style[$c]."'>$uuid</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_name</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>$caller_id_number</td>\n";
+				echo "<td valign='top' class='".$row_style[$c]."'>".$join_time_formatted."</td>\n";
+				if ($flag_can_hear == "true") {
+					echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
 				}
-			//volume
-				if (permission_exists('conferences_active_volume')) {
-					echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_in&direction=up&cmd=conference%20".$conference_name."%20volume_in%20".$id."');\">+vol</a>&nbsp;\n";
-					echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_in&direction=down&cmd=conference%20".$conference_name."%20volume_in%20".$id."');\">-vol</a>&nbsp;\n";
+				else {
+					echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
 				}
-				if (permission_exists('conferences_active_gain')) {
-					echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_out&direction=up&cmd=conference%20".$conference_name."%20volume_out%20".$id."');\">+gain</a>&nbsp;\n";
-					echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?action=volume_out&direction=down&cmd=conference%20".$conference_name."%20volume_out%20".$id."');\">-gain</a>&nbsp;\n";
+				if ($flag_can_speak == "true") {
+					echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
 				}
-			//mute and unmute
-				if (permission_exists('conferences_active_mute')) {
-					if ($flag_can_speak == "true"){
-						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20mute%20".$id."');\">mute</a>&nbsp;\n";
+				else {
+					echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
+				}
+				if ($flag_talking == "true") {
+					echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
+				}
+				else {
+					echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
+				}
+				echo "<td valign='top' class='".$row_style[$c]."'>$last_talking_formatted</td>\n";
+				if ($flag_has_video == "true") {
+					echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
+				}
+				else {
+					echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
+				}
+				if ($flag_has_floor == "true") {
+					echo "<td valign='top' class='".$row_style[$c]."'>yes</td>\n";
+				}
+				else {
+					echo "<td valign='top' class='".$row_style[$c]."'>no</td>\n";
+				}
+				echo "<td valign='top' class='".$row_style[$c]."' style='text-align:right;'>\n";
+				//energy
+					if (permission_exists('conferences_active_energy')) {
+						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?direction=up&cmd=conference&name=".$conference_name."&data=energy&id=".$id."');\">+energy</a>&nbsp;\n";
+						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?direction=down&cmd=conference&name=".$conference_name."&data=energy&id=".$id."');\">-energy</a>&nbsp;\n";
 					}
-					else {
-						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20unmute%20".$id."');\">unmute</a>&nbsp;\n";
+				//volume
+					if (permission_exists('conferences_active_volume')) {
+						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?direction=up&cmd=conference&name=".$conference_name."%&data=volume_in&id=".$id."');\">+vol</a>&nbsp;\n";
+						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?direction=down&cmd=conference&name=".$conference_name."&data=volume_in&id=".$id."');\">-vol</a>&nbsp;\n";
 					}
-				}
-			//deaf and undeaf
-				if (permission_exists('conferences_active_deaf')) {
-					if ($flag_can_hear == "true"){
-						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20deaf%20".$id."');\">deaf</a>&nbsp;\n";
+					if (permission_exists('conferences_active_gain')) {
+						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?direction=up&cmd=conference&name=".$conference_name."&data=volume_out&id=".$id."');\">+gain</a>&nbsp;\n";
+						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?direction=down&cmd=conference&name=".$conference_name."&data=volume_out&id=".$id."');\">-gain</a>&nbsp;\n";
 					}
-					else {
-						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20undeaf%20".$id."');\">undeaf</a>&nbsp;\n";
+				//mute and unmute
+					if (permission_exists('conferences_active_mute')) {
+						if ($flag_can_speak == "true"){
+							echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference&name=".$conference_name."&data=mute&id=".$id."');\">mute</a>&nbsp;\n";
+						}
+						else {
+							echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference&name=".$conference_name."&data=unmute&id=".$id."');\">unmute</a>&nbsp;\n";
+						}
 					}
-				}
-			//kick someone from the conference
-				if (permission_exists('conferences_active_kick')) {
-					echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference%20".$conference_name."%20kick%20".$id."');\">kick</a>&nbsp;\n";
-				}
-			echo "	&nbsp;";
-			echo "</td>\n";
-			echo "</tr>\n";
+				//deaf and undeaf
+					if (permission_exists('conferences_active_deaf')) {
+						if ($flag_can_hear == "true"){
+							echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference&name=".$conference_name."&data=deaf&id=".$id."');\">deaf</a>&nbsp;\n";
+						}
+						else {
+							echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference&name=".$conference_name."&data=undeaf&id=".$id."');\">undeaf</a>&nbsp;\n";
+						}
+					}
+				//kick someone from the conference
+					if (permission_exists('conferences_active_kick')) {
+						echo "	<a href='javascript:void(0);' onclick=\"send_cmd('v_conference_exec.php?cmd=conference&name=".$conference_name."&data=kick&id=".$id."');\">kick</a>&nbsp;\n";
+					}
+				echo "	&nbsp;";
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
 			if ($c==0) { $c=1; } else { $c=0; }
 		}
 		echo "</table>\n";
