@@ -41,15 +41,14 @@ else {
 	}
 
 //get the v_ivr_menus data 
-	$sql = "";
-	$sql .= "select * from v_ivr_menus ";
+	$sql = "select * from v_ivr_menus ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
-		$ivr_menu_name = $row["ivr_menu_name"];
+		$ivr_menu_name = 'copy-'.$row["ivr_menu_name"];
 		$ivr_menu_extension = $row["ivr_menu_extension"];
 		$ivr_menu_greet_long = $row["ivr_menu_greet_long"];
 		$ivr_menu_greet_short = $row["ivr_menu_greet_short"];
@@ -72,113 +71,114 @@ else {
 	}
 	unset ($prep_statement);
 
-	//copy the v_ivr_menus
-		$ivr_menu_uuid = uuid();
-		$sql = "insert into v_ivr_menus ";
-		$sql .= "(";
-		$sql .= "domain_uuid, ";
-		$sql .= "ivr_menu_uuid, ";
-		$sql .= "ivr_menu_name, ";
-		$sql .= "ivr_menu_extension, ";
-		$sql .= "ivr_menu_greet_long, ";
-		$sql .= "ivr_menu_greet_short, ";
-		$sql .= "ivr_menu_invalid_sound, ";
-		$sql .= "ivr_menu_exit_sound, ";
-		$sql .= "ivr_menu_confirm_macro, ";
-		$sql .= "ivr_menu_confirm_key, ";
-		$sql .= "ivr_menu_tts_engine, ";
-		$sql .= "ivr_menu_tts_voice, ";
-		$sql .= "ivr_menu_confirm_attempts, ";
-		$sql .= "ivr_menu_timeout, ";
-		$sql .= "ivr_menu_inter_digit_timeout, ";
-		$sql .= "ivr_menu_max_failures, ";
-		$sql .= "ivr_menu_max_timeouts, ";
-		$sql .= "ivr_menu_digit_len, ";
-		$sql .= "ivr_menu_direct_dial, ";
-		$sql .= "ivr_menu_enabled, ";
-		$sql .= "ivr_menu_description ";
-		$sql .= ")";
-		$sql .= "values ";
-		$sql .= "(";
-		$sql .= "'$domain_uuid', ";
-		$sql .= "'$ivr_menu_uuid', ";
-		$sql .= "'$ivr_menu_name', ";
-		$sql .= "'$ivr_menu_extension', ";
-		$sql .= "'$ivr_menu_greet_long', ";
-		$sql .= "'$ivr_menu_greet_short', ";
-		$sql .= "'$ivr_menu_invalid_sound', ";
-		$sql .= "'$ivr_menu_exit_sound', ";
-		$sql .= "'$ivr_menu_confirm_macro', ";
-		$sql .= "'$ivr_menu_confirm_key', ";
-		$sql .= "'$ivr_menu_tts_engine', ";
-		$sql .= "'$ivr_menu_tts_voice', ";
-		$sql .= "'$ivr_menu_confirm_attempts', ";
-		$sql .= "'$ivr_menu_timeout', ";
-		$sql .= "'$ivr_menu_inter_digit_timeout', ";
-		$sql .= "'$ivr_menu_max_failures', ";
-		$sql .= "'$ivr_menu_max_timeouts', ";
-		$sql .= "'$ivr_menu_digit_len', ";
-		$sql .= "'$ivr_menu_direct_dial', ";
-		$sql .= "'$ivr_menu_enabled', ";
-		$sql .= "'$ivr_menu_description' ";
-		$sql .= ")";
-		$db->exec(check_sql($sql));
-		unset($sql);
+//get the the ivr menu options
+	$sql = "select * from v_ivr_menu_options ";
+	$sql .= "where ivr_menu_uuid = '$ivr_menu_uuid' ";
+	$sql .= "and domain_uuid = '$domain_uuid' ";
+	$sql .= "order by ivr_menu_uuid asc ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result_options = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 
-	//get the the ivr menu options
-		$sql = "";
-		$sql .= "select * from v_ivr_menu_options ";
-		$sql .= "where ivr_menu_uuid = '$ivr_menu_uuid' ";
-		$sql .= "and domain_uuid = '$domain_uuid' ";
-		$sql .= "order by ivr_menu_uuid asc ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-		foreach ($result as &$row) {
-			$ivr_menu_option_digits = $row["ivr_menu_option_digits"];
-			$ivr_menu_option_action = $row["ivr_menu_option_action"];
-			$ivr_menu_option_param = $row["ivr_menu_option_param"];
-			$ivr_menu_option_order = $row["ivr_menu_option_order"];
-			$ivr_menu_option_description = $row["ivr_menu_option_description"];
+//copy the v_ivr_menus
+	$ivr_menu_uuid = uuid();
+	$sql = "insert into v_ivr_menus ";
+	$sql .= "(";
+	$sql .= "domain_uuid, ";
+	$sql .= "ivr_menu_uuid, ";
+	$sql .= "ivr_menu_name, ";
+	$sql .= "ivr_menu_extension, ";
+	$sql .= "ivr_menu_greet_long, ";
+	$sql .= "ivr_menu_greet_short, ";
+	$sql .= "ivr_menu_invalid_sound, ";
+	$sql .= "ivr_menu_exit_sound, ";
+	$sql .= "ivr_menu_confirm_macro, ";
+	$sql .= "ivr_menu_confirm_key, ";
+	$sql .= "ivr_menu_tts_engine, ";
+	$sql .= "ivr_menu_tts_voice, ";
+	$sql .= "ivr_menu_confirm_attempts, ";
+	$sql .= "ivr_menu_timeout, ";
+	$sql .= "ivr_menu_inter_digit_timeout, ";
+	$sql .= "ivr_menu_max_failures, ";
+	$sql .= "ivr_menu_max_timeouts, ";
+	$sql .= "ivr_menu_digit_len, ";
+	$sql .= "ivr_menu_direct_dial, ";
+	$sql .= "ivr_menu_enabled, ";
+	$sql .= "ivr_menu_description ";
+	$sql .= ")";
+	$sql .= "values ";
+	$sql .= "(";
+	$sql .= "'$domain_uuid', ";
+	$sql .= "'$ivr_menu_uuid', ";
+	$sql .= "'$ivr_menu_name', ";
+	$sql .= "'$ivr_menu_extension', ";
+	$sql .= "'$ivr_menu_greet_long', ";
+	$sql .= "'$ivr_menu_greet_short', ";
+	$sql .= "'$ivr_menu_invalid_sound', ";
+	$sql .= "'$ivr_menu_exit_sound', ";
+	$sql .= "'$ivr_menu_confirm_macro', ";
+	$sql .= "'$ivr_menu_confirm_key', ";
+	$sql .= "'$ivr_menu_tts_engine', ";
+	$sql .= "'$ivr_menu_tts_voice', ";
+	$sql .= "'$ivr_menu_confirm_attempts', ";
+	$sql .= "'$ivr_menu_timeout', ";
+	$sql .= "'$ivr_menu_inter_digit_timeout', ";
+	$sql .= "'$ivr_menu_max_failures', ";
+	$sql .= "'$ivr_menu_max_timeouts', ";
+	$sql .= "'$ivr_menu_digit_len', ";
+	$sql .= "'$ivr_menu_direct_dial', ";
+	$sql .= "'$ivr_menu_enabled', ";
+	$sql .= "'$ivr_menu_description' ";
+	$sql .= ")";
+	$db->exec(check_sql($sql));
+	unset($sql);
 
-			//copy the ivr menu options
-				$ivr_menu_option_uuid = uuid();
-				$sql = "insert into v_ivr_menu_options ";
-				$sql .= "(";
-				$sql .= "domain_uuid, ";
-				$sql .= "ivr_menu_uuid, ";
-				$sql .= "ivr_menu_option_uuid, ";
-				$sql .= "ivr_menu_option_digits, ";
-				$sql .= "ivr_menu_option_action, ";
-				$sql .= "ivr_menu_option_param, ";
-				$sql .= "ivr_menu_option_order, ";
-				$sql .= "ivr_menu_option_description ";
-				$sql .= ")";
-				$sql .= "values ";
-				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
-				$sql .= "'$ivr_menu_uuid', ";
-				$sql .= "'$ivr_menu_option_uuid', ";
-				$sql .= "'$ivr_menu_option_digits', ";
-				$sql .= "'$ivr_menu_option_action', ";
-				$sql .= "'$ivr_menu_option_param', ";
-				$sql .= "'$ivr_menu_option_order', ";
-				$sql .= "'$ivr_menu_option_description' ";
-				$sql .= ")";
-				$db->exec(check_sql($sql));
-				unset($sql);
-		}
+//get the the ivr menu options
+	foreach ($result_options as &$row) {
+		$ivr_menu_option_digits = $row["ivr_menu_option_digits"];
+		$ivr_menu_option_action = $row["ivr_menu_option_action"];
+		$ivr_menu_option_param = $row["ivr_menu_option_param"];
+		$ivr_menu_option_order = $row["ivr_menu_option_order"];
+		$ivr_menu_option_description = $row["ivr_menu_option_description"];
 
-	//synchronize the xml config
-		save_ivr_menu_xml();
+		//copy the ivr menu options
+			$ivr_menu_option_uuid = uuid();
+			$sql = "insert into v_ivr_menu_options ";
+			$sql .= "(";
+			$sql .= "domain_uuid, ";
+			$sql .= "ivr_menu_uuid, ";
+			$sql .= "ivr_menu_option_uuid, ";
+			$sql .= "ivr_menu_option_digits, ";
+			$sql .= "ivr_menu_option_action, ";
+			$sql .= "ivr_menu_option_param, ";
+			$sql .= "ivr_menu_option_order, ";
+			$sql .= "ivr_menu_option_description ";
+			$sql .= ")";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'$domain_uuid', ";
+			$sql .= "'$ivr_menu_uuid', ";
+			$sql .= "'$ivr_menu_option_uuid', ";
+			$sql .= "'$ivr_menu_option_digits', ";
+			$sql .= "'$ivr_menu_option_action', ";
+			$sql .= "'$ivr_menu_option_param', ";
+			$sql .= "'$ivr_menu_option_order', ";
+			$sql .= "'$ivr_menu_option_description' ";
+			$sql .= ")";
+			$db->exec(check_sql($sql));
+			unset($sql);
+	}
 
-	//redirect the user
-		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu.php\">\n";
-		echo "<div align='center'>\n";
-		echo "Copy Complete\n";
-		echo "</div>\n";
-		require_once "includes/footer.php";
-		return;
+//synchronize the xml config
+	save_ivr_menu_xml();
+
+//redirect the user
+	require_once "includes/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_ivr_menu.php\">\n";
+	echo "<div align='center'>\n";
+	echo "Copy Complete\n";
+	echo "</div>\n";
+	require_once "includes/footer.php";
+	return;
 
 ?>
