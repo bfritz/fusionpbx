@@ -90,6 +90,10 @@ INST_FPBX=svn
 #INST_FPBX=tgz
 #full path required
 #TGZ_FILE="/home/coltpbx/fusionpbx-1.2.1.tar.gz"
+FSREV="187abe02af4d64cdedc598bd3dfb1cd3ed0f4a91"
+FSCHECKOUTVER=false
+FPBXREV="1876"
+FBPXCHECKOUTVER=false
 
 
 #---------
@@ -791,6 +795,16 @@ if [ $DO_DAHDI == "y" ]; then
 			/bin/echo "GIT ERROR"
 			exit 1
 		else
+			if [ FSCHECKOUTVER ]; then
+				echo "OK we'll check out FreeSWITCH version $FSREV"
+				cd /usr/src/freeswitch
+				/usr/bin/git checkout $FSREV
+				if [ $? -ne 0 ]; then
+					#git checkout had an error
+					/bin/echo "GIT CHECKOUT ERROR"
+					exit 1
+				fi
+			fi
 			/bin/echo "git_done" >> /tmp/install_fusion_status
 		fi
 		
@@ -1942,8 +1956,14 @@ DELIM
 	#/etc/init.d/freeswitch stop
 	
 	if [ $INST_FPBX == svn ]; then
-			#removed -r r1877 r1877 from new install
-			/usr/bin/svn checkout http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+			
+			if [ $FBPXCHECKOUTVER ]; then
+				/usr/bin/svn checkout -r r$FPBXREV http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+			else			
+				#removed -r r1877 r1877 from new install
+				/usr/bin/svn checkout http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+			fi
+			
 			
         elif [ $INST_FPBX == tgz ]; then
 			/bin/tar -C $WWW_PATH -xzvf $TGZ_FILE
