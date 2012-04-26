@@ -358,6 +358,8 @@ function finish_fpbx_install_permissions {
 }
 
 function build_modules {
+	#bandaid
+	sed -i -e "s/applications\/mod_voicemail_ivr/#applications\/mod_voicemail_ivr/" $SRCPATH/modules.conf
 	#------------
 	#  new way v2
 	#------------
