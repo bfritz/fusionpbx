@@ -415,7 +415,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-	//v_dialplan_details
+	//dialplan details
 	if ($action == "update") {
 		echo "<div align='center'>";
 		echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -427,8 +427,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "    <td align='left'><p><span class=\"vexpl\"><span class=\"red\"><strong>Conditions and Actions<br />\n";
 		echo "        </strong></span>\n";
 		echo "        The following conditions, actions and anti-actions are used in the dialplan to direct \n";
-		echo "        call flow. Each is processed in order until you reach the action dialplan_detail_tag which tells what action to perform. \n";
-		echo "        You are not limited to only one condition or action dialplan_detail_tag for a given extension.\n";
+		echo "        call flow. Each is processed in order that it is given. \n";
+		echo "        Use as many conditions, actions or anti-actions as needed. \n";
 		echo "        </span></p></td>\n";
 		echo "  </tr>\n";
 		echo "</table>";
