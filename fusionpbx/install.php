@@ -315,21 +315,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		if (PHP_OS == "FreeBSD" && file_exists('/usr/local/etc/freeswitch/conf')) {
 			//install_switch_base_dir not required for the freebsd freeswitch port;
 		}
-		else {
-			if (strlen($install_switch_base_dir) == 0) { $msg .= "Please provide the Switch Directory.<br>\n"; }
-		}
 		if (strlen($install_tmp_dir) == 0) { $msg .= "Please provide the Temp Directory.<br>\n"; }
 		if (strlen($install_backup_dir) == 0) { $msg .= "Please provide the Backup Directory.<br>\n"; }
 		if (strlen($install_template_name) == 0) { $msg .= "Please provide the Theme.<br>\n"; }
-
-		if (!is_writable($install_switch_base_dir."/conf/vars.xml")) {
-			if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
-				//some windows operating systems report read only but are writable
-			}
-			else {
-				//$msg .= "<b>Write access to ".$install_switch_base_dir." and its sub-directories is required.</b><br />\n";
-			}
-		}
 	//define the step to return to
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			$_POST["install_step"] = "2";
@@ -1309,11 +1297,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 //show the html form
 	if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/header.php")) {
 		$installmsg .= "<li>Write access to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/ is required during the install.</li>\n";
-	}
-	if (strlen($install_switch_base_dir) > 0) {
-		if (!is_writable($install_switch_base_dir)) {
-			$installmsg .= "<li>Write access to the 'FreeSWITCH Directory' and most of its sub directories is required.</li>\n";
-		}
 	}
 	if (!extension_loaded('PDO')) {
 		$installmsg .= "<li>PHP PDO was not detected. Please install it before proceeding.</li>";
