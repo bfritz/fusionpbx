@@ -798,7 +798,7 @@ if [ $DO_DAHDI == "y" ]; then
 			/bin/echo "GIT ERROR"
 			exit 1
 		else
-			if [ FSCHECKOUTVER ]; then
+			if [ $FSCHECKOUTVER = true ]; then
 				echo "OK we'll check out FreeSWITCH version $FSREV"
 				cd /usr/src/freeswitch
 				/usr/bin/git checkout $FSREV
@@ -1960,9 +1960,11 @@ DELIM
 	
 	if [ $INST_FPBX == svn ]; then
 			
-			if [ $FBPXCHECKOUTVER ]; then
+			if [ $FBPXCHECKOUTVER = true ]; then
+				/bin/echo "Going to install FusionPBX SVN Rev $FPBXREV"
 				/usr/bin/svn checkout -r r$FPBXREV http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
-			else			
+			else	
+				"Going to install FusionPBX latest SVN!"
 				#removed -r r1877 r1877 from new install
 				/usr/bin/svn checkout http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
 			fi
