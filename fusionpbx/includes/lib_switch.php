@@ -4315,15 +4315,23 @@ if (!function_exists('xml_cdr_conf_xml')) {
 
 if (!function_exists('save_switch_xml')) {
 	function save_switch_xml() {
-		save_setting_xml();
-		save_dialplan_xml();
-		save_extension_xml();
-		save_gateway_xml();
-		save_module_xml();
-		save_var_xml();
-		save_hunt_group_xml();
-		save_ivr_menu_xml();
-		save_call_center_xml();
+		if (is_dir($_SESSION['switch']['dialplan']['dir'])) {
+			save_dialplan_xml();
+		}
+		if (is_dir($_SESSION['switch']['extensions']['dir'])) {
+			save_extension_xml();
+		}
+		if (is_dir($_SESSION['switch']['conf']['dir'])) {
+			save_setting_xml();
+			save_module_xml();
+			save_var_xml();
+			save_call_center_xml();
+			save_gateway_xml();
+			save_ivr_menu_xml();
+		}
+		if (is_dir($_SESSION['switch']['scripts']['dir'])) {
+			save_hunt_group_xml();
+		}
 	}
 }
 
