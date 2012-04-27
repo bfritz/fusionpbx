@@ -42,7 +42,8 @@ SETNONAT=n
 
 # rm -Rf /opt? A default install doesn't have /opt so no worries
 # if you do, set to no, and it will link /usr/local/freeswitch to /opt/freeswitch
-RMOPT=y
+#REMOVED OPTION
+#RMOPT=y
 
 # use freedtm/dahdi? y/n
 DO_DAHDI=n
@@ -1237,30 +1238,30 @@ if [ $DO_DAHDI == "y" ]; then
 	#/bin/echo
 	/bin/ln -s /usr/local/freeswitch/bin/fs_cli /usr/local/bin/
 	
-	if [ $DEBUG -eq 1 ]; then  
-		/bin/echo "FreeSWITCH was installed to /usr/local."
-		/bin/echo " normally we don't want to see /opt"
-		/bin/echo " since FusionPBX. tries to find it"
-		/bin/echo " and you end up with having to symlink"
-		/bin/echo " /usr/local/freeswitch to /opt/freeswitch"
-		/bin/echo 
-		/bin/echo " It would be easier to blow /opt away; but"
-		/bin/echo " this may not be a fresh Ubuntu install."
-		/bin/echo
-		read -p "Can I 'rm -Rf /opt (Y/n)? " RMOPT
-	fi
+	#if [ $DEBUG -eq 1 ]; then  
+	#	/bin/echo "FreeSWITCH was installed to /usr/local."
+	#	/bin/echo " normally we don't want to see /opt"
+	#	/bin/echo " since FusionPBX. tries to find it"
+	#	/bin/echo " and you end up with having to symlink"
+	#	/bin/echo " /usr/local/freeswitch to /opt/freeswitch"
+	#	/bin/echo 
+	#	/bin/echo " It would be easier to blow /opt away; but"
+	#	/bin/echo " this may not be a fresh Ubuntu install."
+	#	/bin/echo
+	#	read -p "Can I 'rm -Rf /opt (Y/n)? " RMOPT
+	#fi
 	
-	case "$RMOPT" in
-	[Yy]*)
-		/bin/rm -Rf /opt
-	;;
+	#case "$RMOPT" in
+	#[Yy]*)
+	#	/bin/rm -Rf /opt
+	#;;
 		
-	*)
-		/bin/echo "OK, linking /usr/local/freeswitch to /opt/freeswitch"
-		/bin/ln -s /usr/local/freeswitch /opt/freeswitch
-	;;
+	#*)
+		#/bin/echo "OK, linking /usr/local/freeswitch to /opt/freeswitch"
+		#/bin/ln -s /usr/local/freeswitch /opt/freeswitch
+	#;;
 	
-	esac
+	#esac
 	
 	if [ $DEBUG -eq 1 ]; then
 		/bin/echo
