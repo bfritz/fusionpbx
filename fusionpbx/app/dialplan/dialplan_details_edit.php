@@ -347,15 +347,98 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+?>
+<script language="javascript">
+var Objs;
 
+function changeToInput_dialplan_detail_type(obj){
+	tb=document.createElement('INPUT');
+	tb.type='text';
+	tb.name=obj.name;
+	tb.className='formfld';
+	tb.setAttribute('id', 'ivr_menu_option_param');
+	tb.setAttribute('style', '');
+	tb.value=obj.options[obj.selectedIndex].value;
+	document.getElementById('btn_select_to_input_dialplan_detail_type').style.visibility = 'hidden';
+	tbb=document.createElement('INPUT');
+	tbb.setAttribute('class', 'btn');
+	tbb.type='button';
+	tbb.value='<';
+	tbb.objs=[obj,tb,tbb];
+	tbb.onclick=function(){ Replaceivr_menu_option_param(this.objs); }
+	obj.parentNode.insertBefore(tb,obj);
+	obj.parentNode.insertBefore(tbb,obj);
+	obj.parentNode.removeChild(obj);
+	Replaceivr_menu_option_param(this.objs);
+}
+
+function Replaceivr_menu_option_param(obj){
+	obj[2].parentNode.insertBefore(obj[0],obj[2]);
+	obj[0].parentNode.removeChild(obj[1]);
+	obj[0].parentNode.removeChild(obj[2]);
+	document.getElementById('btn_select_to_input_dialplan_detail_type').style.visibility = 'visible';
+}
+</script>
+<?php
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Type:\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='dialplan_detail_type' maxlength='255' value=\"".htmlspecialchars($dialplan_detail_type)."\">\n";
-	echo "<br />\n";
-	echo "\n";
+	echo "<select name='dialplan_detail_type' id='dialplan_detail_type' class='formfld' onchange='changeToInput_dialplan_detail_type(this);'>\n";
+	if (strlen($dialplan_detail_type) > 0) {
+		echo "<optgroup label='selected'>\n";
+		echo "	<option value='".htmlspecialchars($dialplan_detail_type)."'>".htmlspecialchars($dialplan_detail_type)."</option>\n";
+		echo "</optgroup>\n";
+	}
+	else {
+		echo "	<option value=''></option>\n";
+	}
+	if (strlen($dialplan_detail_tag) == 0 || $dialplan_detail_tag == "condition" || $dialplan_detail_tag == "regex") {
+		echo "	<optgroup label='conditions or regex'>\n";
+		echo "	<option value='context'>context</option>\n";
+		echo "	<option value='username'>username</option>\n";
+		echo "	<option value='rdnis'>rdnis</option>\n";
+		echo "	<option value='destination_number'>destination_number</option>\n";
+		echo "	<option value='dialplan'>dialplan</option>\n";
+		echo "	<option value='caller_id_name'>caller_id_name</option>\n";
+		echo "	<option value='caller_id_number'>caller_id_number</option>\n";
+		echo "	<option value='ani'>ani</option>\n";
+		echo "	<option value='ani2'>ani2</option>\n";
+		echo "	<option value='uuid'>uuid</option>\n";
+		echo "	<option value='source'>source</option>\n";
+		echo "	<option value='chan_name'>chan_name</option>\n";
+		echo "	<option value='network_addr'>network_addr</option>\n";
+		echo "	<option value='\${number_alias}'>\${number_alias}</option>\n";
+		echo "	<option value='\${sip_from_uri}'>\${sip_from_uri}</option>\n";
+		echo "	<option value='\${sip_from_user}'>\${sip_from_user}</option>\n";
+		echo "	<option value='\${sip_from_host}'>\${sip_from_host}</option>\n";
+		echo "	<option value='\${sip_contact_uri}'>\${sip_contact_uri}</option>\n";
+		echo "	<option value='\${sip_contact_user}'>\${sip_contact_user}</option>\n";
+		echo "	<option value='\${sip_contact_host}'>\${sip_contact_host}</option>\n";
+		echo "	<option value='\${sip_to_uri}'>\${sip_to_uri}</option>\n";
+		echo "	<option value='\${sip_to_user}'>\${sip_to_user}</option>\n";
+		echo "	<option value='\${sip_to_host}'>\${sip_to_host}</option>\n";
+		echo "</optgroup>\n";
+	}
+	if (strlen($dialplan_detail_tag) == 0 || $dialplan_detail_tag == "action" || $dialplan_detail_tag == "anti-action") {
+		echo "<optgroup label='applications'>\n";
+		//get the list of applications
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		$result = event_socket_request($fp, 'api show application');
+		$tmp = explode("\n\n", $result);
+		$tmp = explode("\n", $tmp[0]);
+		foreach ($tmp as $row) {
+			if (strlen($row) > 0) {
+				$application = explode(",", $row);
+				if ($application[0] != "name" && stristr($application[0], "[") != true) {
+					echo "	<option value='".$application[0]."'>".$application[0]."</option>\n";
+				}
+			}
+		}
+		echo "</optgroup>\n";
+	}
+	echo "<input type='button' id='btn_select_to_input_dialplan_detail_type' class='btn' name='' alt='back' onclick='changeToInput_dialplan_detail_type(document.getElementById(\"dialplan_detail_type\"));this.style.visibility = \"hidden\";' value='<'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -471,134 +554,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>\n";
 	echo "</form>";
+	echo "</div>";
 
-	echo "    <table width='100%' cellpadding='0' cellspacing='0'>\n";
-	echo "    <tr>\n";
-	echo "    <td align='left'>\n";
-
-	if ($v_path_show) {
-		echo "<br />\n";
-		echo "<br />\n";
-		echo "<b>Conditions</b>\n";
-		echo "<br />\n";
-		echo "<br />\n";
-	}
-
-	?>
-
-	Conditions are pattern matching tags that help decide if the current call should be processed in this extension or not. When matching conditions against the current call you have several <b>fields</b> that you can compare against.
-	<ul>
-		<li><b>context</b></li>
-		<li><b>username</b> Extension Number, Also known as the extension number.</li>
-		<li><b>rdnis</b> Redirected Number, the directory number to which the call was last presented.</li>
-		<li><b>destination_number</b> Called Number, the number this call is trying to reach (within a given context)</li>
-		<li><b>dialplan</b> Name of the dialplan module that are used, the name is provided by each dialplan module. Example: XML</li>
-		<li><b>caller_id_name</b> Name of the caller (provided by the User Agent that has called us).</li>
-		<li><b>caller_id_number</b> Directory Number of the party who called (callee) -- can be masked (hidden)</li>
-		<li><b>ani</b> Automatic Number Identification, the number of the calling party (callee) -- cannot be masked</li>
-		<li><b>ani2</b> The type of device placing the call [1]</li>
-		<li><b>uuid</b> Unique identifier of the current call? (looks like a GUID)</li>
-		<li><b>source</b> Name of the module that received the call (e.g. PortAudio)</li>
-		<li><b>chan_name</b> Name of the current channel (Example: PortAudio/1234). Give us examples when this one can be used.</li>
-		<li><b>network_addr</b> IP address of the signalling source for a VoIP call.</li>
-	</ul>
-	In addition to the above you can also do variables using the syntax ${variable} or api functions using the syntax %{api} {args}
-	<br />
-	<br />
-	Variables may be used in either the field or the expression, as follows
-
-	<br />
-	<br />
-	<br />
-	<br />
-
-	<b>Action and Anti-Actions</b>
-	<br />
-	<br />
-	Actions are executed when the <b>condition matches</b>. Anti-Actions are executed when the <b>condition does NOT match</b>.
-	<br />
-	<br />
-	<br />
-	The following is a partial list of <b>applications</b>.
-	<ul>
-	<li><b>answer</b> answer the call</li>
-	<li><b>bridge</b> bridge the call</li>
-	<li><b>cond</b></li>
-	<li><b>db</b> is a runtime database either sqlite by default or odbc</li>
-	<li><b>global_set</b> allows setting of global vars similar to the ones found in vars.xml</li>
-	<li><b>group</b> allows grouping of several extensions for things like ring groups</li>
-	<li><b>expr</b></li>
-	<li><b>hangup</b> hangs up the call</li>
-	<li><b>info</b> sends call info to the console</li>
-	<li><b>javascript</b> run javascript .js files</li>
-	<li><b>playback</b></li>
-	<li><b>reject</b> reject the call</li>
-	<li><b>respond</b></li>
-	<li><b>ring_ready</b></li>
-	<li><b>set</b> set a variable</li>
-	<li><b>set_user</b></li>
-	<li><b>sleep</b></li>
-	<li><b>sofia_contact</b></li>
-	<li><b>transfer</b> transfer the call to another extension or number</li>
-	<li><b>voicemail</b> send the call to voicemail</li>
-	</ul>
-
-	<br />
-	<br />
-
-	<!--
-	<b>Param</b>
-	Example parameters by name and value
-	<br />
-	<ul>
-	<li><b>codec-ms</b> 20</li>
-	<li><b>codec-prefs</b> PCMU@20i</li>
-	<li><b>debug</b> 1</li>
-	<li><b>dialplan</b> XML</li>
-	<li><b>dtmf-duration</b> 100</li>
-	<li><b>rfc2833-pt</b>" 101</li>
-	<li><b>sip-port</b> 5060</li>
-	<li><b>use-rtp-timer</b> true</li>
-	</ul>
-	<br />
-	<br />
-	-->
-
-	<b>Regex</b>
-	<br />
-	<br />
-	If you need to compare two or more different fields on a single condition, then use the new regex syntax added on November 1, 2011:
-	<br />
-	<br />
-	Here's a quick example, for more details read <a href="http://wiki.freeswitch.org/wiki/Mod_dialplan_xml#Multiple_Conditions_.28Logical_OR.2C_XOR.29">this</a>.
-	<br />
-	<br />
-	<div style="border: 1px dotted #127cd9; width:95%;"><pre>  &lt;extension name=&quot;Regex OR example 1&quot; continue=&quot;true&quot;&gt;
-    &lt;condition regex=&quot;any&quot;&gt;
-      &lt;!-- If either of these is true then the subsequent actions are added to execute list --&gt;
-      &lt;regex field=&quot;caller_id_name&quot; expression=&quot;Some User&quot;/&gt;
-      &lt;regex field=&quot;caller_id_number&quot; expression=&quot;^1001$&quot;/&gt;
-      &lt;action application=&quot;log&quot; data=&quot;INFO At least one of the conditions matched!&quot;/&gt;
-      &lt;!-- If *none* of the regexes is true then the anti-actions are added to the execute list --&gt;
-      &lt;anti-action application=&quot;log&quot; data=&quot;WARNING None of the conditions matched!&quot;/&gt;
-      &lt;/condition&gt;
-  &lt;/extension&gt;</pre></div>
-
-	<br />
-	<br />
-	<br />
-	<br />
-	<br />
-
-	</td>
-	</tr>
-	</table>
-
-<?php
-echo "	</td>";
-echo "	</tr>";
-echo "</table>";
-echo "</div>";
-
-require_once "includes/footer.php";
+//include the footer
+	require_once "includes/footer.php";
 ?>
