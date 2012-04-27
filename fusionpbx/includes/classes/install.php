@@ -38,23 +38,25 @@ include "root.php";
 
 		function recursive_copy($src, $dst) {
 			$dir = opendir($src);
-			if (!$dir) {
-				throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
-			}
-			if (!is_dir($dst)) {
-				if (!mkdir($dst, 0755, true)) {
-					throw new Exception("recursive_copy() failed to create destination directory '".$dst."'");
+			if (is_dir($src) && is_dir($dst)) {
+				if (!$dir) {
+					throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
 				}
-			}
-			while(false !== ($file = readdir($dir))) {
-				if (($file != '.') && ($file != '..')) {
-					if (is_dir($src.'/'.$file)) {
-						$this->recursive_copy($src.'/'.$file, $dst.'/'.$file);
+				if (!is_dir($dst)) {
+					if (!mkdir($dst, 0755, true)) {
+						throw new Exception("recursive_copy() failed to create destination directory '".$dst."'");
 					}
-					else {
-						if (!file_exists($dst.'/'.$file)) {
-							//echo "copy(".$src."/".$file.", ".$dst."/".$file.");<br />\n";
-							copy($src.'/'.$file, $dst.'/'.$file);
+				}
+				while(false !== ($file = readdir($dir))) {
+					if (($file != '.') && ($file != '..')) {
+						if (is_dir($src.'/'.$file)) {
+							$this->recursive_copy($src.'/'.$file, $dst.'/'.$file);
+						}
+						else {
+							if (!file_exists($dst.'/'.$file)) {
+								//echo "copy(".$src."/".$file.", ".$dst."/".$file.");<br />\n";
+								copy($src.'/'.$file, $dst.'/'.$file);
+							}
 						}
 					}
 				}

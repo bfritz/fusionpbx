@@ -175,28 +175,30 @@ include "root.php";
 
 			public function restore_advanced_xml() {
 				$switch_dialplan_dir = $this->switch_dialplan_dir;
-				//get the contents of the dialplan/default.xml
-					$file_default_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/dialplan/default.xml';
-					$file_default_contents = file_get_contents($file_default_path);
-				//prepare the file contents and the path
-					if (count($_SESSION['domains']) < 2) {
-						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
-							$file_default_contents = str_replace("{v_domain}", 'default', $file_default_contents);
-						//set the file path
-							$file_path = $switch_dialplan_dir.'/default.xml';
-					}
-					else {
-						//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
-							$file_default_contents = str_replace("{v_domain}", $_SESSION['domain_name'], $file_default_contents);
-						//set the file path
-							$file_path = $switch_dialplan_dir.'/'.$_SESSION['domain_name'].'.xml';
-					}
-				//write the default dialplan
-					$fh = fopen($file_path,'w') or die('Unable to write to '.$file_path.'. Make sure the path exists and permissons are set correctly.');
-					fwrite($fh, $file_default_contents);
-					fclose($fh);
-				//set the message
-					$this->result['dialplan']['restore']['msg'] = "Default Restored";
+				if (is_dir($switch_dialplan_dir)) {
+					//get the contents of the dialplan/default.xml
+						$file_default_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/dialplan/default.xml';
+						$file_default_contents = file_get_contents($file_default_path);
+					//prepare the file contents and the path
+						if (count($_SESSION['domains']) < 2) {
+							//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
+								$file_default_contents = str_replace("{v_domain}", 'default', $file_default_contents);
+							//set the file path
+								$file_path = $switch_dialplan_dir.'/default.xml';
+						}
+						else {
+							//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
+								$file_default_contents = str_replace("{v_domain}", $_SESSION['domain_name'], $file_default_contents);
+							//set the file path
+								$file_path = $switch_dialplan_dir.'/'.$_SESSION['domain_name'].'.xml';
+						}
+					//write the default dialplan
+						$fh = fopen($file_path,'w') or die('Unable to write to '.$file_path.'. Make sure the path exists and permissons are set correctly.');
+						fwrite($fh, $file_default_contents);
+						fclose($fh);
+					//set the message
+						$this->result['dialplan']['restore']['msg'] = "Default Restored";
+				}
 			}
 
 			private function app_uuid_exists() {
