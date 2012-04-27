@@ -462,7 +462,12 @@ else {
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
-					$dialplan_detail_data = 'effective_caller_id_number=${outbound_caller_id_number}';
+					if ($dialplan_expression == '^(911)$') {
+						$dialplan_detail_data = 'effective_caller_id_number=${emergency_caller_id_number}';
+					}
+					else {
+						$dialplan_detail_data = 'effective_caller_id_number=${outbound_caller_id_number}';
+					}
 					$dialplan_detail_order = '030';
 					$dialplan_detail_group = '';
 					dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
