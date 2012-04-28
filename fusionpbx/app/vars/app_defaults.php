@@ -69,42 +69,50 @@ $vars_string = <<<EOD
 ]
 EOD;
 
-$sql = "";
-$sql .= " select count(*) as num_rows from v_vars ";
-$prep_statement = $db->prepare(check_sql($sql));
-if ($prep_statement) {
-	$prep_statement->execute();
-	$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
-	if ($row['num_rows'] == 0) {
-		$result = json_decode($vars_string, true);
-		$x = 1;
-		foreach($result as $row) {
-			$sql = "insert into v_vars ";
-			$sql .= "(";
-			$sql .= "var_uuid, ";
-			$sql .= "var_name, ";
-			$sql .= "var_value, ";
-			$sql .= "var_cat, ";
-			$sql .= "var_enabled, ";
-			$sql .= "var_order, ";
-			$sql .= "var_description ";
-			$sql .= ") ";
-			$sql .= "values ";
-			$sql .= "(";
-			$sql .= "'".uuid()."', ";
-			$sql .= "'".$row['var_name']."', ";
-			$sql .= "'".$row['var_value']."', ";
-			$sql .= "'".$row['var_cat']."', ";
-			$sql .= "'".$row['var_enabled']."', ";
-			$sql .= "'".$x."', ";
-			$sql .= "'".$row['var_description']."' ";
-			$sql .= ");";
-			$db->exec($sql);
-			unset($sql);
-			$x++;
+//if there are no variables in the vars table then add them
+	$sql = " select count(*) as num_rows from v_vars ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+		if ($row['num_rows'] == 0) {
+			$result = json_decode($vars_string, true);
+			$x = 1;
+			foreach($result as $row) {
+				$sql = "insert into v_vars ";
+				$sql .= "(";
+				$sql .= "var_uuid, ";
+				$sql .= "var_name, ";
+				$sql .= "var_value, ";
+				$sql .= "var_cat, ";
+				$sql .= "var_enabled, ";
+				$sql .= "var_order, ";
+				$sql .= "var_description ";
+				$sql .= ") ";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'".uuid()."', ";
+				$sql .= "'".$row['var_name']."', ";
+				$sql .= "'".$row['var_value']."', ";
+				$sql .= "'".$row['var_cat']."', ";
+				$sql .= "'".$row['var_enabled']."', ";
+				$sql .= "'".$x."', ";
+				$sql .= "'".$row['var_description']."' ";
+				$sql .= ");";
+				$db->exec($sql);
+				unset($sql);
+				$x++;
+			}
 		}
 	}
-}
-unset($prep_statement, $result);
+	unset($prep_statement, $result);
 
+//if there is more than one domain then disable the domain variable
+	if (count($_SESSION['domains']) > 1) {
+		$sql = "update v_vars set ";
+		$sql .= "var_enabled = 'false' ";
+		$sql .= "where var_name = 'domain'";
+		$db->exec(check_sql($sql));
+		unset($sql);
+	}
 ?>
