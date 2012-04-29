@@ -4316,6 +4316,68 @@ if (!function_exists('xml_cdr_conf_xml')) {
 	}
 }
 
+if (!function_exists('save_sip_profile_xml')) {
+	function save_sip_profile_xml() {
+
+		//get the global variables
+			global $db, $domain_uuid;
+
+		//get the sip profiles from the database
+			$sql = "select * from v_sip_profiles ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll();
+			$result_count = count($result);
+			unset ($prep_statement, $sql);
+			if ($result_count > 0) {
+				foreach($result as $row) {
+					$sip_profile_uuid = $row['sip_profile_uuid'];
+					$sip_profile_name = $row['sip_profile_name'];
+
+					//get the xml sip profile template
+						if ($sip_profile_name == "internal" || $sip_profile_name == "external" || $sip_profile_name == "internal-ipv6") {
+							$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/sip_profiles/resources/xml/sip_profiles/".$sip_profile_name.".xml");
+						}
+						else {
+							$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/sip_profiles/resources/xml/sip_profiles/default.xml");
+						}
+
+					//get the sip profile settings
+						$sql = "select * from v_sip_profile_settings ";
+						$sql .= "where sip_profile_uuid = '$sip_profile_uuid' ";
+						$sql .= "and sip_profile_setting_enabled = 'true' ";
+						$prep_statement = $db->prepare(check_sql($sql));
+						$prep_statement->execute();
+						$result = $prep_statement->fetchAll();
+						$sip_profile_settings = '';
+						foreach ($result as &$row) {
+							$sip_profile_settings .= "		<param name=\"".$row["sip_profile_setting_name"]."\" value=\"".$row["sip_profile_setting_value"]."\"/>\n";
+						}
+						unset ($prep_statement);
+
+					//replace the values in the template
+						$file_contents = str_replace("{v_sip_profile_name}", $sip_profile_name, $file_contents);
+						$file_contents = str_replace("{v_sip_profile_settings}", $sip_profile_settings, $file_contents);
+
+					//write the XML config file
+						if (is_dir($_SESSION['switch']['conf']['dir']."/sip_profiles/")) {
+							$fout = fopen($_SESSION['switch']['conf']['dir']."/sip_profiles/".$sip_profile_name.".xml","w");
+							fwrite($fout, $file_contents);
+							fclose($fout);
+						}
+
+					//if the directory does not exist then create it
+						if (!is_dir($_SESSION['switch']['conf']['dir']."/sip_profiles/".$sip_profile_name)) { mkdir($_SESSION['switch']['conf']['dir']."/sip_profiles/".$sip_profile_name,0775,true); }
+
+				} //end foreach
+				unset($sql, $result, $row_count);
+			} //end if results
+
+		//apply settings reminder
+			$_SESSION["reload_xml"] = true;
+	}
+}
+
 if (!function_exists('save_switch_xml')) {
 	function save_switch_xml() {
 		if (is_dir($_SESSION['switch']['dialplan']['dir'])) {
@@ -4331,6 +4393,7 @@ if (!function_exists('save_switch_xml')) {
 			save_call_center_xml();
 			save_gateway_xml();
 			save_ivr_menu_xml();
+			save_sip_profile_xml();
 		}
 		if (is_dir($_SESSION['switch']['scripts']['dir'])) {
 			save_hunt_group_xml();
