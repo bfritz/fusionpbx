@@ -49,20 +49,18 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' nowrap><b>Menu Manager</b></td>\n";
+	echo "		<td width='50%' align='left' nowrap='nowrap'><b>Menu Manager</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
-	echo "		<td colspan='2'>\n";
+	echo "		<td align='left' colspan='2'>\n";
 	echo "			Used to customize one or more menus.<br /><br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
 
 	//prepare to page the results
-		$sql = "";
-		$sql .= " select count(*) as num_rows from v_menus ";
-		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+		$sql = " select count(*) as num_rows from v_menus ";
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 		$prep_statement->execute();
@@ -76,7 +74,7 @@ require_once "includes/paging.php";
 		}
 
 	//prepare to page the results
-		$rows_per_page = 10;
+		$rows_per_page = 150;
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
@@ -84,8 +82,7 @@ require_once "includes/paging.php";
 		$offset = $rows_per_page * $page; 
 
 	//get the  list
-		$sql = "";
-		$sql .= " select * from v_menus ";
+		$sql = " select * from v_menus ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -100,7 +97,6 @@ require_once "includes/paging.php";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo th_order_by('menu_name', 'Name', $order_by, $order);
 	echo th_order_by('menu_language', 'Language', $order_by, $order);
