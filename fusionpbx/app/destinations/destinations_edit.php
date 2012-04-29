@@ -115,8 +115,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$destination_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_destinations ";
+		$sql = "select * from v_destinations ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and destination_uuid = '$destination_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -139,7 +138,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "	  <br>";
@@ -157,7 +155,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='destinations.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "An alias for a call destination. The destination will use the dialplan to find it its target.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

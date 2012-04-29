@@ -49,19 +49,18 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' nowrap><b>Addresses</b></td>\n";
+	echo "<td width='50%' align='left' nowrap='nowrap'><b>Addresses</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr>\n";
 	//echo "<tr>\n";
-	//echo "<td colspan='2'>\n";
+	//echo "<td align='left' colspan='2'>\n";
 	//echo "List of addresses for the contact.<br /><br />\n";
 	//echo "</td>\n";
 	//echo "</tr>\n";
 	echo "</table>\n";
 
 	//prepare to page the results
-		$sql = "";
-		$sql .= " select count(*) as num_rows from v_contact_addresses ";
+		$sql = " select count(*) as num_rows from v_contact_addresses ";
 		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
@@ -86,8 +85,7 @@ require_once "includes/paging.php";
 		$offset = $rows_per_page * $page; 
 
 	//get the contact list
-		$sql = "";
-		$sql .= " select * from v_contact_addresses ";
+		$sql = " select * from v_contact_addresses ";
 		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }

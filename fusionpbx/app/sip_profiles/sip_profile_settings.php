@@ -49,14 +49,14 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' nowrap><b>Sip Profile Setting</b></td>\n";
+	echo "		<td align='left' width='50%' nowrap='nowrap'><b>Settings</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
-	echo "	<tr>\n";
-	echo "		<td colspan='2'>\n";
-	echo "			Settings.<br /><br />\n";
-	echo "		</td>\n";
-	echo "	</tr>\n";
+	//echo "	<tr>\n";
+	//echo "		<td align='left' colspan='2'>\n";
+	//echo "			Settings.<br /><br />\n";
+	//echo "		</td>\n";
+	//echo "	</tr>\n";
 	echo "</table>\n";
 
 	//prepare to page the results

@@ -60,8 +60,7 @@ require_once "includes/paging.php";
 	//echo "</table>\n";
 
 	//prepare to page the results
-		$sql = "";
-		$sql .= " select count(*) as num_rows from v_domain_settings ";
+		$sql = " select count(*) as num_rows from v_domain_settings ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and domain_uuid = '$domain_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }

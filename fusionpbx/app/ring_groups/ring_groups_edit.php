@@ -286,7 +286,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$ring_group_strategy = $row["ring_group_strategy"];
 			$ring_group_timeout_sec = $row["ring_group_timeout_sec"];
 			$ring_group_timeout_app = $row["ring_group_timeout_app"];
-
 			$ring_group_timeout_data = $row["ring_group_timeout_data"];
 			$ring_group_enabled = $row["ring_group_enabled"];
 			$ring_group_description = $row["ring_group_description"];
@@ -335,7 +334,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='ring_groups.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "A ring group is a set of extensions that can be called with a ring strategy.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -402,7 +401,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>";
 	echo "		<td class='vncell' valign='top'>Extensions:</td>";
-	echo "		<td class='vtable'>";
+	echo "		<td class='vtable' align='left'>";
 	if ($action == "update") {
 		echo "			<table width='52%'>\n";
 		$sql = "SELECT g.ring_group_extension_uuid, e.extension_uuid, e.extension ";

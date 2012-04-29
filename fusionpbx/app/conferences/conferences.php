@@ -49,11 +49,11 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' nowrap><b>Conferences</b></td>\n";
+	echo "		<td align='left' width='50%' nowrap><b>Conferences</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
-	echo "		<td colspan='2'>\n";
+	echo "		<td align='left' colspan='2'>\n";
 	echo "			Conferences is used to setup conference rooms with a name, description, and optional pin number. \n";
 	if (permission_exists('conferences_active_advanced_view')) {
 		echo "			Show <a href='".PROJECT_PATH."/app/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.<br /><br />\n";

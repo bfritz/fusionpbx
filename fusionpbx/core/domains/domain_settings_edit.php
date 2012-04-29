@@ -149,8 +149,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$domain_setting_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_domain_settings ";
+		$sql = "select * from v_domain_settings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and domain_setting_uuid = '$domain_setting_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -191,7 +190,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='domains_edit.php?id=$domain_uuid'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "Settings used for each domain.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

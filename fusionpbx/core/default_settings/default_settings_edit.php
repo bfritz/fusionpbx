@@ -141,8 +141,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$default_setting_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_default_settings ";
+		$sql = "select * from v_default_settings ";
 		$sql .= "where default_setting_uuid = '$default_setting_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -182,7 +181,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='default_settings.php'\" value='Back'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td colspan='2'>\n";
+	echo "<td align='left' colspan='2'>\n";
 	echo "Settings used for all domains.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

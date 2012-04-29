@@ -49,11 +49,11 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' nowrap><b>Notes</b></td>\n";
+	echo "<td width='50%' align='left' nowrap='nowrap'><b>Notes</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr>\n";
 	//echo "<tr>\n";
-	//echo "<td colspan='2'>\n";
+	//echo "<td align='left' colspan='2'>\n";
 	//echo "	List of notes for the contact.<br /><br />\n";
 	//echo "</td>\n";
 	//echo "</tr>\n";
@@ -85,9 +85,9 @@ require_once "includes/paging.php";
 		$offset = $rows_per_page * $page; 
 
 	//get the contact list
-		$sql = " select * from v_contact_notes ";
-		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= " and contact_uuid = '$contact_uuid' ";
+		$sql = "select * from v_contact_notes ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));

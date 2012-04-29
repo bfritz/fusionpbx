@@ -49,19 +49,19 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' nowrap><b>Ring Groups</b></td>\n";
+	echo "		<td width='50%' align='left' nowrap='nowrap'><b>Ring Groups</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
-	echo "		<td colspan='2'>\n";
+	echo "		<td align='left' colspan='2'>\n";
 	echo "			A ring group is a set of extensions that can be called with a ring strategy.<br /><br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
 
 	//prepare to page the results
-		$sql = " select count(*) as num_rows from v_ring_groups ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql = "select count(*) as num_rows from v_ring_groups ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {

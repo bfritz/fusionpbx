@@ -49,7 +49,7 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' nowrap><b>Phone Numbers</b></td>\n";
+	echo "<td width='50%' align='left' nowrap='nowrap'><b>Phone Numbers</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "</tr>\n";
 	//echo "<tr>\n";
@@ -60,8 +60,7 @@ require_once "includes/paging.php";
 	echo "</table>\n";
 
 	//prepare to page the results
-		$sql = "";
-		$sql .= " select count(*) as num_rows from v_contact_phones ";
+		$sql = " select count(*) as num_rows from v_contact_phones ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
@@ -86,8 +85,7 @@ require_once "includes/paging.php";
 		$offset = $rows_per_page * $page; 
 
 	//get the contact list
-		$sql = "";
-		$sql .= " select * from v_contact_phones ";
+		$sql = " select * from v_contact_phones ";
 		$sql .= " where domain_uuid = '$domain_uuid' ";
 		$sql .= " and contact_uuid = '$contact_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
@@ -104,7 +102,6 @@ require_once "includes/paging.php";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo th_order_by('phone_type', 'Type', $order_by, $order);
 	echo th_order_by('phone_number', 'Numbers', $order_by, $order);
@@ -113,7 +110,6 @@ require_once "includes/paging.php";
 	echo "	<a href='contact_phones_edit.php?contact_uuid=".$_GET['id']."' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
-
 	if ($result_count > 0) {
 		foreach($result as $row) {
 			echo "<tr >\n";
