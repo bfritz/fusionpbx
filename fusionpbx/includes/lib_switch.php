@@ -1923,10 +1923,12 @@ function save_extension_xml() {
 		$tmp_xml .= "</include>";
 
 	//write the xml file
-		$fout = fopen($extension_dir_path."/".$user_context.".xml","w");
-		fwrite($fout, $tmp_xml);
-		unset($tmp_xml);
-		fclose($fout);
+		if (is_readable($extension_dir_path) && strlen($extension_dir_path) > 0) {
+			$fout = fopen($extension_dir_path."/".$user_context.".xml","w");
+			fwrite($fout, $tmp_xml);
+			unset($tmp_xml);
+			fclose($fout);
+		}
 
 	//syncrhonize the phone directory
 		sync_directory();
@@ -1940,22 +1942,22 @@ function save_extension_xml() {
 }
 
 function filename_safe($filename) {
-	// Lower case
-	$filename = strtolower($filename);
+	// lower case
+		$filename = strtolower($filename);
 
-	// Replace spaces with a '_'
-	$filename = str_replace(" ", "_", $filename);
+	// replace spaces with a '_'
+		$filename = str_replace(" ", "_", $filename);
 
-	// Loop through string
-	$result = '';
-	for ($i=0; $i<strlen($filename); $i++) {
-		if (preg_match('([0-9]|[a-z]|_)', $filename[$i])) {
-			$result .= $filename[$i];
+	// loop through string
+		$result = '';
+		for ($i=0; $i<strlen($filename); $i++) {
+			if (preg_match('([0-9]|[a-z]|_)', $filename[$i])) {
+				$result .= $filename[$i];
+			}
 		}
-	}
 
-	// Return filename
-	return $result;
+	// return filename
+		return $result;
 }
 
 function save_gateway_xml() {
