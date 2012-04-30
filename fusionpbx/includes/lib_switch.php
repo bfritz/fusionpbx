@@ -132,7 +132,6 @@ foreach($settings_array as $name => $value) {
 }
 */
 
-
 //create the recordings/archive/year/month/day directory structure
 	$v_recording_archive_dir = $_SESSION['switch']['recordings']['dir']."/archive/".date("Y")."/".date("M")."/".date("d");
 	if(!is_dir($v_recording_archive_dir)) {
@@ -198,7 +197,6 @@ if ($db_type == "sqlite") {
 		}
 	}
 }
-
 
 function build_menu() {
 	global $v_menu_tab_show;
@@ -376,7 +374,7 @@ function lan_sip_profile() {
 	clearstatcache();
 
 	//if the lan directory does not exist then create it
-	if (!is_dir($_SESSION['switch']['conf']['dir'].'/sip_profiles/lan/')) {
+	if (!is_readable($_SESSION['switch']['conf']['dir'].'/sip_profiles/lan/')) {
 		exec("mkdir ".$_SESSION['switch']['conf']['dir']."/sip_profiles/lan/");
 	}
 
@@ -1150,7 +1148,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 				echo "<optgroup label='Recordings'>\n";
 				while($file = readdir($dh)) {
 					if($file != "." && $file != ".." && $file[0] != '.') {
-						if(is_dir($_SESSION['switch']['recordings']['dir'] . "/" . $file)) {
+						if(is_readable($_SESSION['switch']['recordings']['dir'] . "/" . $file)) {
 							//this is a directory
 						}
 						else {
@@ -1828,7 +1826,7 @@ function save_extension_xml() {
 				$tmp_xml .= "    </variables>\n";
 				$tmp_xml .= "  </user>\n";
 
-				if (!is_dir($_SESSION['switch']['extensions']['dir']."/".$row['user_context'])) {
+				if (!is_readable($_SESSION['switch']['extensions']['dir']."/".$row['user_context'])) {
 					mkdir($_SESSION['switch']['extensions']['dir']."/".$row['user_context'],0755,true);
 				}
 				if (strlen($extension) > 0) {
@@ -1989,8 +1987,7 @@ function save_gateway_xml() {
 			closedir($dh);
 		}
 
-	$sql = "";
-	$sql .= "select * from v_gateways ";
+	$sql = "select * from v_gateways ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
@@ -4360,14 +4357,14 @@ if (!function_exists('save_sip_profile_xml')) {
 						$file_contents = str_replace("{v_sip_profile_settings}", $sip_profile_settings, $file_contents);
 
 					//write the XML config file
-						if (is_dir($_SESSION['switch']['conf']['dir']."/sip_profiles/")) {
+						if (is_readable($_SESSION['switch']['conf']['dir']."/sip_profiles/")) {
 							$fout = fopen($_SESSION['switch']['conf']['dir']."/sip_profiles/".$sip_profile_name.".xml","w");
 							fwrite($fout, $file_contents);
 							fclose($fout);
 						}
 
 					//if the directory does not exist then create it
-						if (!is_dir($_SESSION['switch']['conf']['dir']."/sip_profiles/".$sip_profile_name)) { mkdir($_SESSION['switch']['conf']['dir']."/sip_profiles/".$sip_profile_name,0775,true); }
+						if (!is_readable($_SESSION['switch']['conf']['dir']."/sip_profiles/".$sip_profile_name)) { mkdir($_SESSION['switch']['conf']['dir']."/sip_profiles/".$sip_profile_name,0775,true); }
 
 				} //end foreach
 				unset($sql, $result, $row_count);
@@ -4380,13 +4377,13 @@ if (!function_exists('save_sip_profile_xml')) {
 
 if (!function_exists('save_switch_xml')) {
 	function save_switch_xml() {
-		if (is_dir($_SESSION['switch']['dialplan']['dir'])) {
+		if (is_readable($_SESSION['switch']['dialplan']['dir'])) {
 			save_dialplan_xml();
 		}
-		if (is_dir($_SESSION['switch']['extensions']['dir'])) {
+		if (is_readable($_SESSION['switch']['extensions']['dir'])) {
 			save_extension_xml();
 		}
-		if (is_dir($_SESSION['switch']['conf']['dir'])) {
+		if (is_readable($_SESSION['switch']['conf']['dir'])) {
 			save_setting_xml();
 			save_module_xml();
 			save_var_xml();
@@ -4395,7 +4392,7 @@ if (!function_exists('save_switch_xml')) {
 			save_ivr_menu_xml();
 			save_sip_profile_xml();
 		}
-		if (is_dir($_SESSION['switch']['scripts']['dir'])) {
+		if (is_readable($_SESSION['switch']['scripts']['dir'])) {
 			save_hunt_group_xml();
 		}
 	}

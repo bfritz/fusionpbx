@@ -165,7 +165,7 @@ require_once "includes/lib_functions.php";
 						//set the default db_path
 							if (strlen($db_path) == 0) { //secure dir
 								$db_path = '/var/db/fusionpbx';
-								if (!is_dir($db_path)) { mkdir($db_path,0777,true); }
+								if (!is_readable($db_path)) { mkdir($db_path,0777,true); }
 							}
 						//set the other default directories
 							$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
@@ -188,13 +188,13 @@ require_once "includes/lib_functions.php";
 						//set the default db_path
 							if (strlen($db_path) == 0) { //secure dir
 								$db_path = '/data/db/fusionpbx';
-								if (!is_dir($db_path)) { mkdir($db_path,0777,true); }
+								if (!is_readable($db_path)) { mkdir($db_path,0777,true); }
 							}
 						//set the other default directories
 							$switch_bin_dir = '/usr/local/bin'; //freeswitch bin directory
 							$switch_conf_dir = '/usr/local/etc/freeswitch/conf';
 							$switch_db_dir = '/data/freeswitch/db';
-							if (is_dir('/var/log/freeswitch')) {
+							if (is_readable('/var/log/freeswitch')) {
 								$switch_log_dir = '/var/log/freeswitch';
 							}
 							else {
@@ -266,28 +266,28 @@ require_once "includes/lib_functions.php";
 				//integrated installer
 				$install_switch_base_dir = realpath($_SERVER["DOCUMENT_ROOT"]."/..");
 				$startup_script_dir = '';
-			} elseif (is_dir('C:/program files/FreeSWITCH')) {
+			} elseif (is_readable('C:/program files/FreeSWITCH')) {
 				$install_switch_base_dir = 'C:/program files/FreeSWITCH';
 				$startup_script_dir = '';
-			} elseif (is_dir('D:/program files/FreeSWITCH')) {
+			} elseif (is_readable('D:/program files/FreeSWITCH')) {
 				$install_switch_base_dir = 'D:/program files/FreeSWITCH';
 				$startup_script_dir = '';
-			} elseif (is_dir('E:/program files/FreeSWITCH')) {
+			} elseif (is_readable('E:/program files/FreeSWITCH')) {
 				$install_switch_base_dir = 'E:/program files/FreeSWITCH';
 				$startup_script_dir = '';
-			} elseif (is_dir('F:/program files/FreeSWITCH')) {
+			} elseif (is_readable('F:/program files/FreeSWITCH')) {
 				$install_switch_base_dir = 'F:/program files/FreeSWITCH';
 				$startup_script_dir = '';
-			} elseif (is_dir('C:/FreeSWITCH')) {
+			} elseif (is_readable('C:/FreeSWITCH')) {
 				$install_switch_base_dir = 'C:/FreeSWITCH';
 				$startup_script_dir = '';
-			} elseif (is_dir('D:/FreeSWITCH')) {
+			} elseif (is_readable('D:/FreeSWITCH')) {
 				$install_switch_base_dir = 'D:/FreeSWITCH';
 				$startup_script_dir = '';
-			} elseif (is_dir('E:/FreeSWITCH')) {
+			} elseif (is_readable('E:/FreeSWITCH')) {
 				$install_switch_base_dir = 'E:/FreeSWITCH';
 				$startup_script_dir = '';
-			} elseif (is_dir('F:/FreeSWITCH')) {
+			} elseif (is_readable('F:/FreeSWITCH')) {
 				$install_switch_base_dir = 'F:/FreeSWITCH';
 				$startup_script_dir = '';
 			}
@@ -1187,16 +1187,16 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		}
 
 	//create the necessary directories
-			if (!is_dir($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
-			if (!is_dir($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
-			if (is_readable($switch_log_dir)) {
-				if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/8000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
-				if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/16000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
-				if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/32000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
-				if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/48000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
-				if (!is_dir($switch_storage_dir.'/fax/')) { mkdir($switch_storage_dir.'/fax',0777,true); }
-				if (!is_dir($switch_recordings_dir.'')) { mkdir($switch_recordings_dir.'',0777,true); }
-			}
+		if (!is_readable($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
+		if (!is_readable($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
+		if (is_readable($switch_log_dir)) {
+			if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/8000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
+			if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/16000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
+			if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/32000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
+			if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/48000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
+			if (!is_readable($switch_storage_dir.'/fax/')) { mkdir($switch_storage_dir.'/fax',0777,true); }
+			if (!is_readable($switch_recordings_dir.'')) { mkdir($switch_recordings_dir.'',0777,true); }
+		}
 
 	//copy the files and directories from includes/install
 		require_once "includes/classes/install.php";
@@ -1412,7 +1412,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
 			if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
 				while (false !== ($dir_name = readdir($handle))) {
-					if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
+					if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_readable($theme_dir.'/'.$dir_name)) {
 						$dir_label = str_replace('_', ' ', $dir_name);
 						$dir_label = str_replace('-', ' ', $dir_label);
 						if ($dir_name == $install_template_name) {

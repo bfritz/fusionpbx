@@ -109,7 +109,7 @@ include "root.php";
 			clearstatcache();
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/scripts';
 			$dst_dir = $this->switch_scripts_dir;
-			if (is_dir($this->switch_scripts_dir)) {
+			if (is_readable($this->switch_scripts_dir)) {
 				if ($handle = opendir($src_dir)) {
 					$i = 0;
 					$files = array();
@@ -135,7 +135,7 @@ include "root.php";
 			clearstatcache();
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sounds/en/us/callie/custom/8000';
 			$dst_dir = $this->switch_sounds_dir.'/en/us/callie/custom/8000';
-			if (is_dir($this->switch_sounds_dir)) {
+			if (is_readable($this->switch_sounds_dir)) {
 				if ($handle = opendir($src_dir)) {
 					$i = 0;
 					$files = array();
@@ -193,7 +193,7 @@ include "root.php";
 			clearstatcache();
 			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/lang";
 			$dst_dir = $this->switch_conf_dir."/lang";
-			if (is_dir($this->switch_conf_dir)) {
+			if (is_readable($this->switch_conf_dir)) {
 				$this->recursive_copy($src_dir, $dst_dir);
 			}
 		}
