@@ -100,7 +100,7 @@ include "root.php";
 					}
 				//make sure the conf directory exists
 					if (!mkdir($this->switch_conf_dir, 0755, true)) {
-						throw new Exception("Failed to create the switch conf directory '".$this->switch_conf_dir;."'. ");
+						throw new Exception("Failed to create the switch conf directory '".$this->switch_conf_dir."'. ");
 					}
 			}
 		}
