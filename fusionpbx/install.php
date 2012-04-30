@@ -45,21 +45,6 @@ require_once "includes/lib_functions.php";
 	$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
 	$domain_name = $domain_array[0];
 
-//make sure the sys_get_temp_dir exists 
-	if ( !function_exists('sys_get_temp_dir')) {
-		function sys_get_temp_dir() {
-			if( $temp=getenv('TMP') ) { return $temp; }
-			if( $temp=getenv('TEMP') ) { return $temp; }
-			if( $temp=getenv('TMPDIR') ) { return $temp; }
-			$temp=tempnam(__FILE__,'');
-			if (file_exists($temp)) {
-				unlink($temp);
-				return dirname($temp);
-			}
-			return null;
-		}
-	}
-
 //if the config file exists then disable the install page
 	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php")) {
 		$msg .= "Already Installed";
@@ -72,7 +57,7 @@ require_once "includes/lib_functions.php";
 
 //save an install log if debug is true
 	if ($v_debug) {
-		$fp = fopen("/tmp/install.log", "w");
+		$fp = fopen(sys_get_temp_dir()."/install.log", "w");
 	}
 
 //set php variables with data from http post
