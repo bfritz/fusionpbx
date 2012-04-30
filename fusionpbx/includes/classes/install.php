@@ -88,7 +88,7 @@ include "root.php";
 			clearstatcache();
 			$src_dir = $this->switch_conf_dir;
 			$dst_dir = $this->switch_conf_dir.'.orig';
-			if (is_dir($src_dir)) {
+			if (is_readable($src_dir)) {
 				//make a backup copy of the conf directory
 					if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
 						$this->recursive_copy($src_dir, $dst_dir);

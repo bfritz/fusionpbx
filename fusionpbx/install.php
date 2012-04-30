@@ -1187,16 +1187,16 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		}
 
 	//create the necessary directories
-		if (!is_dir($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
-		if (!is_dir($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
-		if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/8000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
-		if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/16000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
-		if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/32000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
-		if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/48000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
-		if (!is_dir($switch_storage_dir.'/fax/')) { mkdir($switch_storage_dir.'/fax',0777,true); }
-		if (!is_dir($switch_log_dir.'')) { mkdir($switch_log_dir.'',0777,true); }
-		if (!is_dir($switch_sounds_dir.'')) { mkdir($switch_sounds_dir.'',0777,true); }
-		if (!is_dir($switch_recordings_dir.'')) { mkdir($switch_recordings_dir.'',0777,true); }
+			if (!is_dir($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
+			if (!is_dir($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
+			if (is_readable($switch_log_dir)) {
+				if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/8000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
+				if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/16000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
+				if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/32000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
+				if (!is_dir($switch_sounds_dir.'/en/us/callie/custom/48000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
+				if (!is_dir($switch_storage_dir.'/fax/')) { mkdir($switch_storage_dir.'/fax',0777,true); }
+				if (!is_dir($switch_recordings_dir.'')) { mkdir($switch_recordings_dir.'',0777,true); }
+			}
 
 	//copy the files and directories from includes/install
 		require_once "includes/classes/install.php";
@@ -1213,7 +1213,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		//copy includes/templates/conf to the freeswitch/conf dir
 		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf";
 		$dst_dir = $switch_conf_dir;
-		if (is_dir($dst_dir)) {
+		if (is_readable($dst_dir)) {
 			$install->recursive_copy($src_dir, $dst_dir);
 		}
 		//print_r($install->result);
