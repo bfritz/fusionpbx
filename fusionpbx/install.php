@@ -1164,62 +1164,62 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		unset($menu);
 
 	//write the variables to the log
-		if ($v_debug) {
-			fwrite($fp, "switch_conf_dir: ".$switch_conf_dir."\n");
-			fwrite($fp, "switch_scripts_dir: ".$switch_scripts_dir."\n");
-			fwrite($fp, "switch_sounds_dir: ".$switch_sounds_dir."\n");
-			fwrite($fp, "switch_recordings_dir: ".$switch_recordings_dir."\n");
-		}
+		if (is_readable($switch_conf_dir)) { // If FreeSWTICH exists, then then set up our config
+			if ($v_debug) {
+				fwrite($fp, "switch_base_dir: ".$install_switch_base_dir."\n");
+				fwrite($fp, "switch_conf_dir: ".$switch_conf_dir."\n");
+				fwrite($fp, "switch_dialplan_dir: ".$switch_dialplan_dir."\n");
+				fwrite($fp, "switch_scripts_dir: ".$switch_scripts_dir."\n");
+				fwrite($fp, "switch_sounds_dir: ".$switch_sounds_dir."\n");
+				fwrite($fp, "switch_recordings_dir: ".$switch_recordings_dir."\n");
 
-	//create the necessary directories
-		if (!is_readable($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
-		if (!is_readable($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
-		if (is_readable($switch_log_dir)) {
-			if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/8000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
-			if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/16000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
-			if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/32000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
-			if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/48000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
-			if (!is_readable($switch_storage_dir.'/fax/')) { mkdir($switch_storage_dir.'/fax',0777,true); }
-			if (!is_readable($switch_recordings_dir.'')) { mkdir($switch_recordings_dir.'',0777,true); }
-		}
+		//create the necessary directories
+			if (!is_readable($install_tmp_dir)) { mkdir($install_tmp_dir,0777,true); }
+			if (!is_readable($install_backup_dir)) { mkdir($install_backup_dir,0777,true); }
+			if (is_readable($switch_log_dir)) {
+				if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/8000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/8000',0777,true); }
+				if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/16000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/16000',0777,true); }
+				if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/32000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/32000',0777,true); }
+				if (!is_readable($switch_sounds_dir.'/en/us/callie/custom/48000')) { mkdir($switch_sounds_dir.'/en/us/callie/custom/48000',0777,true); }
+				if (!is_readable($switch_storage_dir.'/fax/')) { mkdir($switch_storage_dir.'/fax',0777,true); }
+				if (!is_readable($switch_recordings_dir.'')) { mkdir($switch_recordings_dir.'',0777,true); }
+			}
 
-	//copy the files and directories from includes/install
-		require_once "includes/classes/install.php";
-		$install = new install;
-		$install->domain_uuid = $_SESSION["domain_uuid"];
-		$install->domain = $domain_name;
-		$install->switch_conf_dir = $switch_conf_dir;
-		$install->switch_scripts_dir = $switch_scripts_dir;
-		$install->switch_sounds_dir = $switch_sounds_dir;
-		$install->switch_recordings_dir = $switch_recordings_dir;
-		$install->copy_conf();
-		$install->copy();
+		//copy the files and directories from includes/install
+			require_once "includes/classes/install.php";
+			$install = new install;
+			$install->domain_uuid = $_SESSION["domain_uuid"];
+			$install->domain = $domain_name;
+			$install->switch_conf_dir = $switch_conf_dir;
+			$install->switch_scripts_dir = $switch_scripts_dir;
+			$install->switch_sounds_dir = $switch_sounds_dir;
+			$install->switch_recordings_dir = $switch_recordings_dir;
+			$install->copy_conf();
+			$install->copy();
+			clearstatcache();
 
 		//copy includes/templates/conf to the freeswitch/conf dir
-		$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf";
-		$dst_dir = $switch_conf_dir;
-		if (is_readable($dst_dir)) {
-			$install->recursive_copy($src_dir, $dst_dir);
-		}
-		//print_r($install->result);
+			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf";
+			$dst_dir = $switch_conf_dir;
+			if (is_readable($dst_dir)) {
+				$install->recursive_copy($src_dir, $dst_dir);
+			}
+			//print_r($install->result);
 
-	//create the dialplan/default.xml for single tenant or dialplan/domain.xml
-		require_once "includes/classes/dialplan.php";
-		$dialplan = new dialplan;
-		$dialplan->domain_uuid = $_SESSION["domain_uuid"];
-		$dialplan->domain = $domain_name;
-		$dialplan->switch_dialplan_dir = $switch_dialplan_dir;
-		$dialplan->restore_advanced_xml();
-		//print_r($dialplan->result);
+		//create the dialplan/default.xml for single tenant or dialplan/domain.xml
+			require_once "includes/classes/dialplan.php";
+			$dialplan = new dialplan;
+			$dialplan->domain_uuid = $_SESSION["domain_uuid"];
+			$dialplan->domain = $domain_name;
+			$dialplan->switch_dialplan_dir = $switch_dialplan_dir;
+			$dialplan->restore_advanced_xml();
+			//print_r($dialplan->result);
 
-	//write the xml_cdr.conf.xml file
-		xml_cdr_conf_xml();
+		//write the xml_cdr.conf.xml file
+			xml_cdr_conf_xml();
 
-	//write the switch.conf.xml file
-		switch_conf_xml();
-
-	//login the user account
-		$_SESSION["username"] = $admin_username;
+		//write the switch.conf.xml file
+			switch_conf_xml();
 
 	//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
 		$sql = "SELECT * FROM v_group_users ";
