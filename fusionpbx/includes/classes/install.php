@@ -42,9 +42,7 @@ include "root.php";
 				throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
 			}
 			if (!is_dir($dst)) {
-				if (!mkdir($dst, 0755, true)) {
-					throw new Exception("recursive_copy() failed to create destination directory '".$dst."'");
-				}
+				mkdir($dst, 0755, true);
 			}
 			while(false !== ($file = readdir($dir))) {
 				if (($file != '.') && ($file != '..')) {
@@ -66,8 +64,8 @@ include "root.php";
 			if (strlen($dir) > 0) {
 				foreach (glob($dir) as $file) {
 					if (is_dir($file)) {
-						rmdir($file);
 						$this->recursive_delete("$file/*");
+						rmdir($file);
 						//echo "rm dir: ".$file."\n";
 					} else {
 						//echo "delete file: ".$file."\n";
@@ -75,6 +73,7 @@ include "root.php";
 					}
 				}
 			}
+			clearstatcache();
 		}
 
 		function copy() {
