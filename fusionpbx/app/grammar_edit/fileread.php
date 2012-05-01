@@ -34,7 +34,6 @@ else {
 	exit;
 }
 
-
 $filename = $_POST["file"];
 $filename = str_replace ("\\", "/", $filename);
 
@@ -46,6 +45,5 @@ if ($handle) {
 	}
 	fclose($handle);
 }
-
 
 ?>

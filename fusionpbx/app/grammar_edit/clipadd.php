@@ -33,7 +33,6 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 
 if (count($_POST)>0) {
 	$clip_name = check_str($_POST["clip_name"]);
@@ -42,9 +41,11 @@ if (count($_POST)>0) {
 	$clip_text_end = check_str($_POST["clip_text_end"]);
 	$clip_desc = check_str($_POST["clip_desc"]);
 	$clip_order = check_str($_POST["clip_order"]);
+	if (strlen($clip_order) == 0) { $clip_order = 0; }
 
-	$sql = "insert into v_clip_library ";
+	$sql = "insert into v_clips ";
 	$sql .= "(";
+	$sql .= "clip_uuid, ";
 	$sql .= "clip_name, ";
 	$sql .= "clip_folder, ";
 	$sql .= "clip_text_start, ";
@@ -54,6 +55,7 @@ if (count($_POST)>0) {
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
+	$sql .= "'".uuid()."', ";
 	$sql .= "'$clip_name', ";
 	$sql .= "'$clip_folder', ";
 	$sql .= "'$clip_text_start', ";
@@ -71,6 +73,7 @@ if (count($_POST)>0) {
 	return;
 }
 
+//show the content
 	require_once "header.php";
 	echo "<div align='left'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -119,5 +122,5 @@ if (count($_POST)>0) {
 	echo "</table>";
 	echo "</div>";
 
-require_once "footer.php";
+	require_once "footer.php";
 ?>
