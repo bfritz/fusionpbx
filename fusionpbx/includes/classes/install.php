@@ -98,9 +98,7 @@ include "root.php";
 						//exec ('cp -RLp '.$src_dir.' '.$dst_dir);
 					}
 				//make sure the conf directory exists
-					if (!mkdir($this->switch_conf_dir, 0755, true)) {
-						throw new Exception("Failed to create the switch conf directory '".$this->switch_conf_dir."'. ");
-					}
+					mkdir($this->switch_conf_dir, 0755, true);
 			}
 		}
 
