@@ -2421,7 +2421,7 @@ function save_hunt_group_xml() {
 						if ($action == 'update') {
 							//update the huntgroup fifo
 								$dialplan_name = $row['hunt_group_name'].'.park';
-								$dialplan_order = '999';
+								$dialplan_order = '330';
 								$context = $row['hunt_group_context'];
 								if ($row['hunt_group_enabled'] == "false") {
 									$enabled = 'false';
