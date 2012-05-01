@@ -345,7 +345,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 						}
 					}
 					$db_tmp->sqliteCreateFunction('now', 'php_now', 0);
-					
+
 				//add the database structure
 					require_once "includes/classes/schema.php";
 					$schema = new schema;
@@ -662,7 +662,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		//$server_protocol_array = explode('/', $_SERVER["SERVER_PROTOCOL"]);
 		//$install_server_protocol = strtolower($server_protocol[0]);
 		//unset($server_protocol_array);
-		
+
 	//add the default settings
 		$x = 0;
 		$tmp[$x]['name'] = 'uuid';
@@ -814,7 +814,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 			$sql .= "'".$row['value']."', ";
 			$sql .= "'".$row['category']."', ";
 			$sql .= "'".$row['subcategory']."', ";
-			$sql .= "'".$row['enabled']."' ";	
+			$sql .= "'".$row['enabled']."' ";
 			$sql .= ");";
 			if ($v_debug) {
 				fwrite($fp, $sql."\n");
@@ -1000,7 +1000,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				foreach ($app['permissions'] as $row) {
 					if ($v_debug) {
 						fwrite($fp, "v_group_permissions\n");
-						fwrite($fp, json_encode($row)."\n\n");	
+						fwrite($fp, json_encode($row)."\n\n");
 					}
 					if ($row['groups']) {
 						foreach ($row['groups'] as $group) {
@@ -1163,7 +1163,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$menu->restore();
 		unset($menu);
 
-	//write the variables to the log
+	//setup the switch config directory if it exists
 		if (is_readable($switch_conf_dir)) {
 			if ($v_debug) {
 				fwrite($fp, "switch_base_dir: ".$install_switch_base_dir."\n");
@@ -1223,6 +1223,9 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				switch_conf_xml();
 		}
 
+	//login the user account
+			$_SESSION["username"] = $admin_username;
+
 	//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
 		$sql = "SELECT * FROM v_group_users ";
 		$sql .= "where domain_uuid=:domain_uuid ";
@@ -1262,14 +1265,15 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//synchronize the config with the saved settings
 		save_switch_xml();
 
-	//clear the session variables
-		session_start();
-		session_unset();
-		session_destroy();
+	//do not show the apply settings reminder on the login page
+		$_SESSION["reload_xml"] = false;
+
+	//clear the menu
+		$_SESSION["menu"] = "";
 
 	//redirect to the login page
 		$msg = "install complete";
-		header("Location: ".PROJECT_PATH."/login.php?msg=".urlencode($msg));
+		header("Location: ".PROJECT_PATH."/logout.php?msg=".urlencode($msg));
 }
 
 //set a default template
