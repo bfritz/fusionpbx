@@ -59,7 +59,7 @@
 			$sql .= "'$clip_order' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
-			unset($sql,$db);
+			unset($sql);
 		}
 	}
 
