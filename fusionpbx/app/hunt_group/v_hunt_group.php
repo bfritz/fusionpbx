@@ -61,10 +61,6 @@ echo "<br />\n";
 //get the number of rows in v_hunt_groups
 $sql = "select count(*) as num_rows from v_hunt_groups ";
 $sql .= "where domain_uuid = '$domain_uuid' ";
-$sql .= "and hunt_group_type <> 'dnd' ";
-$sql .= "and hunt_group_type <> 'call_forward' ";
-$sql .= "and hunt_group_type <> 'follow_me_simultaneous' ";
-$sql .= "and hunt_group_type <> 'follow_me_sequence' ";
 $prep_statement = $db->prepare(check_sql($sql));
 if ($prep_statement) {
 	$prep_statement->execute();
@@ -87,13 +83,8 @@ list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows
 $offset = $rows_per_page * $page; 
 
 //get the hunt group list
-$sql = "";
-$sql .= " select * from v_hunt_groups ";
+$sql = "select * from v_hunt_groups ";
 $sql .= "where domain_uuid = '$domain_uuid' ";
-$sql .= "and hunt_group_type <> 'dnd' ";
-$sql .= "and hunt_group_type <> 'call_forward' ";
-$sql .= "and hunt_group_type <> 'follow_me_simultaneous' ";
-$sql .= "and hunt_group_type <> 'follow_me_sequence' ";
 if (strlen($order_by)> 0) {
 	$sql .= "order by $order_by $order ";
 }
@@ -113,7 +104,6 @@ $row_style["1"] = "row_style1";
 
 echo "<div align='center'>\n";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 echo "<tr>\n";
 echo th_order_by('hunt_group_extension', 'Extension', $order_by, $order);
 echo th_order_by('hunt_group_name', 'Hunt Group Name', $order_by, $order);
@@ -126,10 +116,7 @@ if (permission_exists('hunt_group_add')) {
 echo "</td>\n";
 echo "<tr>\n";
 
-if ($result_count == 0) {
-	//no results
-}
-else { //received results
+if ($result_count > 0) {
 	foreach($result as $row) {
 		echo "<tr >\n";
 		echo "   <td valign='top' class='".$row_style[$c]."'>".$row['hunt_group_extension']."</td>\n";
@@ -185,7 +172,6 @@ echo "</tr>";
 echo "</table>";
 echo "</div>";
 echo "<br><br>";
-
 
 require_once "includes/footer.php";
 unset ($result_count);
