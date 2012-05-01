@@ -46,7 +46,7 @@ else {
 		$sql = "";
 		$sql .= "delete from v_virtual_table_data_types_name_value ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and virtual_table_data_types_name_value_id = '$id' ";
+		$sql .= "and virtual_table_data_types_name_value_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		unset($sql);

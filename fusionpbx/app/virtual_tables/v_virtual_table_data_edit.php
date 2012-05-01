@@ -37,8 +37,8 @@ else {
 //set http get variables to php variables
 	$search_all = check_str($_GET["search_all"]);
 	$virtual_table_uuid = check_str($_GET["virtual_table_uuid"]);
-	if (strlen($_GET["virtual_data_row_id"])>0) { //update
-		$virtual_data_row_id = check_str($_GET["virtual_data_row_id"]);
+	if (strlen($_GET["virtual_data_row_uuid"])>0) { //update
+		$virtual_data_row_uuid = check_str($_GET["virtual_data_row_uuid"]);
 		$action = "update";
 	}
 	else {
@@ -52,8 +52,8 @@ else {
 	if (strlen($_GET["id"]) > 0) {
 		$virtual_table_uuid = check_str($_GET["id"]);
 	}
-	if (strlen($_GET["virtual_data_parent_row_id"])>0) {
-		$virtual_data_parent_row_id = check_str($_GET["virtual_data_parent_row_id"]);
+	if (strlen($_GET["virtual_data_parent_row_uuid"])>0) {
+		$virtual_data_parent_row_uuid = check_str($_GET["virtual_data_parent_row_uuid"]);
 	}
 
 //get virtual table information
@@ -124,7 +124,7 @@ else {
 			$virtual_data_field_value = check_str($_POST[$i."field_value"]);
 			if ($i==1) {
 				$unique_temp_id = md5('7k3j2m'.date('r')); //used to find the first item
-				$virtual_data_row_id = $unique_temp_id;
+				$virtual_data_row_uuid = $unique_temp_id;
 			}
 			$sql = "select virtual_field_type, virtual_field_name from v_virtual_table_fields ";
 			$sql .= "where domain_uuid  = '$domain_uuid' ";
@@ -184,18 +184,19 @@ else {
 			} //end if file or image
 
 			if ($action == "add" && permission_exists('virtual_tables_data_add')) {
-				//get a unique id for the virtual_data_row_id
+				//get a unique id for the virtual_data_row_uuid
 					if ($i==1) {
-						$virtual_data_row_id = uuid();
+						$virtual_data_row_uuid = uuid();
 					}
 
 				//insert the field data
 					$sql = "insert into v_virtual_table_data ";
 					$sql .= "(";
+					$sql .= "virtual_table_data_uuid, ";
 					$sql .= "domain_uuid, ";
-					$sql .= "virtual_data_row_id, ";
-					if(strlen($virtual_data_parent_row_id)>0) {
-						$sql .= "virtual_data_parent_row_id, ";
+					$sql .= "virtual_data_row_uuid, ";
+					if(strlen($virtual_data_parent_row_uuid)>0) {
+						$sql .= "virtual_data_parent_row_uuid, ";
 					}
 					$sql .= "virtual_table_uuid, ";
 					if (strlen($virtual_table_parent_id) > 0) {
@@ -208,10 +209,11 @@ else {
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
+					$sql .= "'".uuid()."', ";
 					$sql .= "'$domain_uuid', ";
-					$sql .= "'$virtual_data_row_id', ";
-					if(strlen($virtual_data_parent_row_id)>0) {
-						$sql .= "'$virtual_data_parent_row_id', ";
+					$sql .= "'$virtual_data_row_uuid', ";
+					if(strlen($virtual_data_parent_row_uuid)>0) {
+						$sql .= "'$virtual_data_parent_row_uuid', ";
 					}
 					$sql .= "'$virtual_table_uuid', ";
 					if (strlen($virtual_table_parent_id) > 0) {
@@ -247,7 +249,7 @@ else {
 			} //end action add
 
 			if ($action == "update" && permission_exists('virtual_tables_data_edit')) {
-					$virtual_data_row_id = $_POST["virtual_data_row_id"];
+					$virtual_data_row_uuid = $_POST["virtual_data_row_uuid"];
 
 					$sql_update  = "update v_virtual_table_data set ";
 					switch ($name_array[$virtual_field_name]['virtual_field_type']) {
@@ -275,9 +277,9 @@ else {
 					if (strlen($virtual_table_parent_id) > 0) {
 						$sql_update .= "and virtual_table_parent_id = '$virtual_table_parent_id' ";
 					}
-					$sql_update .= "and virtual_data_row_id = '$virtual_data_row_id' ";
-					if(strlen($virtual_data_parent_row_id)>0) {
-						$sql_update .= "and virtual_data_parent_row_id = '$virtual_data_parent_row_id' ";
+					$sql_update .= "and virtual_data_row_uuid = '$virtual_data_row_uuid' ";
+					if(strlen($virtual_data_parent_row_uuid)>0) {
+						$sql_update .= "and virtual_data_parent_row_uuid = '$virtual_data_parent_row_uuid' ";
 					}
 					$sql_update .= "and virtual_field_name = '$virtual_field_name' ";
 					$count = $db->exec(check_sql($sql_update));
@@ -290,9 +292,9 @@ else {
 						$sql = "insert into v_virtual_table_data ";
 						$sql .= "(";
 						$sql .= "domain_uuid, ";
-						$sql .= "virtual_data_row_id, ";
-						if(strlen($virtual_data_parent_row_id)>0) {
-							$sql .= "virtual_data_parent_row_id, ";
+						$sql .= "virtual_data_row_uuid, ";
+						if(strlen($virtual_data_parent_row_uuid)>0) {
+							$sql .= "virtual_data_parent_row_uuid, ";
 						}
 						$sql .= "virtual_table_uuid, ";
 						$sql .= "virtual_table_parent_id, ";
@@ -304,9 +306,9 @@ else {
 						$sql .= "values ";
 						$sql .= "(";
 						$sql .= "'$domain_uuid', ";
-						$sql .= "'$virtual_data_row_id', ";
-						if(strlen($virtual_data_parent_row_id)>0) {
-							$sql .= "'$virtual_data_parent_row_id', ";
+						$sql .= "'$virtual_data_row_uuid', ";
+						if(strlen($virtual_data_parent_row_uuid)>0) {
+							$sql .= "'$virtual_data_parent_row_uuid', ";
 						}
 						$sql .= "'$virtual_table_uuid', ";
 						$sql .= "'$virtual_table_parent_id', ";
@@ -347,11 +349,11 @@ else {
 			require_once "includes/header.php";
 
 		//set the meta redirect
-			if (strlen($virtual_data_parent_row_id) == 0) {
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?id=$virtual_table_uuid&virtual_data_row_id=$virtual_data_row_id\">\n";
+			if (strlen($virtual_data_parent_row_uuid) == 0) {
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?id=$virtual_table_uuid&virtual_data_row_uuid=$virtual_data_row_uuid\">\n";
 			}
 			else {
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_uuid=$virtual_data_parent_row_uuid\">\n";
 			}
 
 		//show a message to the user before the redirect
@@ -374,17 +376,17 @@ else {
 			$sql .= "where domain_uuid = '".$domain_uuid."' ";
 			if (strlen($search_all) == 0) {
 				$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
-				if (strlen($virtual_data_parent_row_id) > 0) {
-					$sql .= " and virtual_data_parent_row_id = '$virtual_data_parent_row_id' ";
+				if (strlen($virtual_data_parent_row_uuid) > 0) {
+					$sql .= " and virtual_data_parent_row_uuid = '$virtual_data_parent_row_uuid' ";
 				}
 			}
 			else {
-				$sql .= "and virtual_data_row_id in (";
-				$sql .= "select virtual_data_row_id from v_virtual_table_data \n";
+				$sql .= "and virtual_data_row_uuid in (";
+				$sql .= "select virtual_data_row_uuid from v_virtual_table_data \n";
 				$sql .= "where domain_uuid = '".$domain_uuid."' ";
 				$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
-				if (strlen($virtual_data_parent_row_id) > 0) {
-					$sql .= " and virtual_data_parent_row_id = '$virtual_data_parent_row_id' ";
+				if (strlen($virtual_data_parent_row_uuid) > 0) {
+					$sql .= " and virtual_data_parent_row_uuid = '$virtual_data_parent_row_uuid' ";
 				}
 				else {
 					//$sql .= "and virtual_data_field_value like '%$search_all%' )\n";
@@ -402,7 +404,7 @@ else {
 					}
 				}
 			}
-			$sql .= "order by virtual_data_row_id asc ";
+			$sql .= "order by virtual_data_row_uuid asc ";
 
 			$row_id = '';
 			$row_id_found = false;
@@ -413,41 +415,41 @@ else {
 			while($row = $prep_statement->fetch()) {
 				//set the last last row id
 					if ($x==0) {
-						if (strlen($virtual_data_row_id) == 0) {
-							$virtual_data_row_id = $row['virtual_data_row_id'];
+						if (strlen($virtual_data_row_uuid) == 0) {
+							$virtual_data_row_uuid = $row['virtual_data_row_uuid'];
 						}
-						$first_virtual_data_row_id = $row['virtual_data_row_id'];
+						$first_virtual_data_row_uuid = $row['virtual_data_row_uuid'];
 					}
 				//get the data for the specific row id
-					if ($virtual_data_row_id == $row['virtual_data_row_id']) {
+					if ($virtual_data_row_uuid == $row['virtual_data_row_uuid']) {
 						//set the data and save it to an array
 							$data_row[$row['virtual_field_name']] = $row['virtual_data_field_value'];
 						//set the previous row id
-							if ($previous_row_id != $row['virtual_data_row_id']) {
-								$previous_virtual_data_row_id = $previous_row_id;
+							if ($previous_row_id != $row['virtual_data_row_uuid']) {
+								$previous_virtual_data_row_uuid = $previous_row_id;
 								$row_id_found = true;
 							}
 					}
 				//detect a new row id
-					if ($previous_row_id != $row['virtual_data_row_id']) {
+					if ($previous_row_id != $row['virtual_data_row_uuid']) {
 						if ($row_id_found) { 
 							if (!$next_row_id_found) {
 								//make sure it is not the current row id
-								if ($virtual_data_row_id != $row['virtual_data_row_id']) {
-									$next_virtual_data_row_id = $row['virtual_data_row_id'];
+								if ($virtual_data_row_uuid != $row['virtual_data_row_uuid']) {
+									$next_virtual_data_row_uuid = $row['virtual_data_row_uuid'];
 									$next_row_id_found = true;
 								}
 							}
 						}
 
 						//set the last last row id
-							$last_virtual_data_row_id = $row['virtual_data_row_id'];
+							$last_virtual_data_row_uuid = $row['virtual_data_row_uuid'];
 
 						//set the temporary previous row id
-							$previous_row_id = $row['virtual_data_row_id'];
+							$previous_row_id = $row['virtual_data_row_uuid'];
 
 						//set the record number array
-							$record_number_array[$row['virtual_data_row_id']] = $x+1;
+							$record_number_array[$row['virtual_data_row_uuid']] = $x+1;
 
 						$x++;
 					}
@@ -489,7 +491,7 @@ else {
 	echo "	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
 	if ($action == "update" && permission_exists('virtual_tables_data_edit')) {
 		echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_uuid'\" value='Add'>\n";
-		//echo "	<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Do you really want to delete this?')){window.location='v_virtual_table_data_delete.php?id=".$virtual_table_uuid."&?virtual_data_row_id=".$virtual_data_row_id."&virtual_data_parent_row_id=$virtual_data_parent_row_id';}\" value='Delete'>\n";
+		//echo "	<input type='button' class='btn' name='' alt='delete' onclick=\"if (confirm('Do you really want to delete this?')){window.location='v_virtual_table_data_delete.php?id=".$virtual_table_uuid."&?virtual_data_row_uuid=".$virtual_data_row_uuid."&virtual_data_parent_row_uuid=$virtual_data_parent_row_uuid';}\" value='Delete'>\n";
 	}
 	echo "			<br />\n";
 	echo "			$virtual_table_description\n";
@@ -497,25 +499,25 @@ else {
 	echo "			<br />\n";
 	echo "		</td>\n";
 
-	if (strlen($virtual_data_parent_row_id) == 0) {
+	if (strlen($virtual_data_parent_row_uuid) == 0) {
 		echo "<td align='center' valign='top' nowrap='nowrap'>\n";
 
 		if ($action == "update" && permission_exists('virtual_tables_data_edit')) {
-			//echo "		<input type='button' class='btn' name='' alt='first' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_uuid&virtual_data_row_id=".$first_virtual_data_row_id."'\" value='First'>\n";
-			if (strlen($previous_virtual_data_row_id) == 0) {
+			//echo "		<input type='button' class='btn' name='' alt='first' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_uuid&virtual_data_row_uuid=".$first_virtual_data_row_uuid."'\" value='First'>\n";
+			if (strlen($previous_virtual_data_row_uuid) == 0) {
 				echo "		<input type='button' class='btn' name='' alt='prev' disabled='disabled' value='Prev'>\n";
 			}
 			else {
-				echo "		<input type='button' class='btn' name='' alt='prev' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_uuid&virtual_data_row_id=".$previous_virtual_data_row_id."&search_all=$search_all&n=".($n-1)."'\" value='Prev ".$previous_record_id."'>\n";
+				echo "		<input type='button' class='btn' name='' alt='prev' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_uuid&virtual_data_row_uuid=".$previous_virtual_data_row_uuid."&search_all=$search_all&n=".($n-1)."'\" value='Prev ".$previous_record_id."'>\n";
 			}
-			echo "		<input type='button' class='btn' name='' alt='prev' value='".$record_number_array[$virtual_data_row_id]." of $total_records'>\n";
-			if (strlen($next_virtual_data_row_id) == 0) {
+			echo "		<input type='button' class='btn' name='' alt='prev' value='".$record_number_array[$virtual_data_row_uuid]." of $total_records'>\n";
+			if (strlen($next_virtual_data_row_uuid) == 0) {
 				echo "		<input type='button' class='btn' name='' alt='next' disabled='disabled' value='Next'>\n";
 			}
 			else {
-				echo "		<input type='button' class='btn' name='' alt='next' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_uuid&virtual_data_row_id=".$next_virtual_data_row_id."&search_all=$search_all&n=".($n+1)."'\" value='Next ".$next_record_id."'>\n";
+				echo "		<input type='button' class='btn' name='' alt='next' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_uuid&virtual_data_row_uuid=".$next_virtual_data_row_uuid."&search_all=$search_all&n=".($n+1)."'\" value='Next ".$next_record_id."'>\n";
 			}
-			//echo "		<input type='button' class='btn' name='' alt='last' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_uuid&virtual_data_row_id=".$last_virtual_data_row_id."'\" value='Last'>\n";
+			//echo "		<input type='button' class='btn' name='' alt='last' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_uuid&virtual_data_row_uuid=".$last_virtual_data_row_uuid."'\" value='Last'>\n";
 		}
 		echo "		&nbsp;&nbsp;&nbsp;";
 		echo "		&nbsp;&nbsp;&nbsp;";
@@ -526,8 +528,8 @@ else {
 		echo "<td width='45%' align='right' valign='top' nowrap='nowrap'>\n";
 		echo "	<input type='hidden' name='virtual_table_uuid' value='$virtual_table_uuid'>\n";
 		//echo "	<input type='hidden' name='id' value='$virtual_table_uuid'>\n";
-		//echo "	<input type='hidden' name='virtual_data_parent_row_id' value='$virtual_data_parent_row_id'>\n";
-		//echo "	<input type='hidden' name='virtual_data_row_id' value='$first_virtual_data_row_id'>\n";
+		//echo "	<input type='hidden' name='virtual_data_parent_row_uuid' value='$virtual_data_parent_row_uuid'>\n";
+		//echo "	<input type='hidden' name='virtual_data_row_uuid' value='$first_virtual_data_row_uuid'>\n";
 		echo "	<input class='formfld' type='text' name='search_all' value='$search_all'>\n";
 		echo "	<input class='btn' type='submit' name='submit' value='Search All'>\n";
 		echo "</td>\n";
@@ -538,9 +540,9 @@ else {
 	}
 	else {
 		echo "	<td width='50%' align='right'>\n";
-		//echo "		<input type='button' class='btn' name='' alt='prev' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id'\" value='Prev'>\n";
-		//echo "		<input type='button' class='btn' name='' alt='next' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id'\" value='Next'>\n";
-		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id'\" value='Back'>\n";
+		//echo "		<input type='button' class='btn' name='' alt='prev' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_uuid=$virtual_data_parent_row_uuid'\" value='Prev'>\n";
+		//echo "		<input type='button' class='btn' name='' alt='next' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_uuid=$virtual_data_parent_row_uuid'\" value='Next'>\n";
+		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_uuid=$virtual_data_parent_row_uuid'\" value='Back'>\n";
 		echo "	</td>\n";
 	}
 	echo "  </tr>\n";
@@ -937,7 +939,7 @@ else {
 			echo "			<input type='submit' class='btn' name='submit' value='save'>\n";
 		}
 		if ($action == "update" && permission_exists('virtual_tables_data_edit')) {
-			echo "			<input type='hidden' name='virtual_data_row_id' value='$virtual_data_row_id'>\n";
+			echo "			<input type='hidden' name='virtual_data_row_uuid' value='$virtual_data_row_uuid'>\n";
 			echo "			<input type='submit' tabindex='9999999' class='btn' name='submit' value='Save'>\n";
 		}
 	echo "		</td>\n";
@@ -950,8 +952,7 @@ else {
 
 	if ($action == "update" && permission_exists('virtual_tables_data_edit')) {
 		//get the child virtual_table_uuid and use it to show the list of data
-			$sql = "";
-			$sql .= "select * from v_virtual_tables ";
+			$sql = "select * from v_virtual_tables ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_parent_id = '$virtual_table_uuid' ";
 			$prep_statement = $db->prepare($sql);
@@ -963,10 +964,10 @@ else {
 				echo "		<br>";
 				$_GET["id"] = $row["virtual_table_uuid"];
 				$virtual_table_label = $row["virtual_table_label"];
-				$_GET["virtual_data_parent_row_id"] = $virtual_data_row_id;
+				$_GET["virtual_data_parent_row_uuid"] = $virtual_data_row_uuid;
 
 				//show button
-				//echo "<input type='button' class='btn' name='' alt='".$virtual_table_label."' onclick=\"window.location='v_virtual_table_data_view.php?id=".$row["virtual_table_uuid"]."&virtual_data_parent_row_id=".$virtual_data_row_id."'\" value='".$virtual_table_label."'>\n";
+				//echo "<input type='button' class='btn' name='' alt='".$virtual_table_label."' onclick=\"window.location='v_virtual_table_data_view.php?id=".$row["virtual_table_uuid"]."&virtual_data_parent_row_uuid=".$virtual_data_row_uuid."'\" value='".$virtual_table_label."'>\n";
 
 				//show list
 				require_once "v_virtual_table_data_view.php";

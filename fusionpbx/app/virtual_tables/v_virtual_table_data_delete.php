@@ -40,8 +40,8 @@ if (count($_GET)>0) {
 		$virtual_table_parent_id = '';
 
 	//get the http get and set them as php variables
-		$virtual_data_row_id = check_str($_GET["virtual_data_row_id"]);
-		$virtual_data_parent_row_id = check_str($_GET["virtual_data_parent_row_id"]);
+		$virtual_data_row_uuid = check_str($_GET["virtual_data_row_uuid"]);
+		$virtual_data_parent_row_uuid = check_str($_GET["virtual_data_parent_row_uuid"]);
 		$virtual_table_uuid = check_str($_GET["virtual_table_uuid"]);
 
 	//show the results and redirect
@@ -49,8 +49,7 @@ if (count($_GET)>0) {
 
 	//get the virtual_table_parent_id from the child table
 		if (strlen($virtual_table_parent_id) == 0) {
-			$sql = "";
-			$sql .= "select * from v_virtual_tables ";
+			$sql = "select * from v_virtual_tables ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 			$prep_statement = $db->prepare($sql);
@@ -64,14 +63,14 @@ if (count($_GET)>0) {
 	//delete the child data
 		$sql = "delete from v_virtual_table_data ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and virtual_data_parent_row_id = '$virtual_data_row_id' ";
+		$sql .= "and virtual_data_parent_row_uuid = '$virtual_data_row_uuid' ";
 		$db->exec(check_sql($sql));
 		unset($sql);
 
 	//delete the data
 		$sql = "delete from v_virtual_table_data ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and virtual_data_row_id = '$virtual_data_row_id' ";
+		$sql .= "and virtual_data_row_uuid = '$virtual_data_row_uuid' ";
 		$db->exec(check_sql($sql));
 		unset($sql);
 
@@ -80,17 +79,17 @@ if (count($_GET)>0) {
 		//$sql .= "virtual_data_del_date = now(), ";
 		//$sql .= "virtual_data_del_user = '".$_SESSION["username"]."' ";
 		//$sql .= "where domain_uuid = '$domain_uuid' ";
-		//$sql .= "and virtual_data_row_id = '$virtual_data_row_id' ";
+		//$sql .= "and virtual_data_row_uuid = '$virtual_data_row_uuid' ";
 		//$db->exec(check_sql($sql));
 		//$lastinsertid = $db->lastInsertId($id);
 		//unset($sql);
 
 	//set the meta redirect
-		if (strlen($virtual_data_parent_row_id) == 0) {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_view.php?id=$virtual_table_uuid&virtual_data_row_id=$virtual_data_row_id\">\n";
+		if (strlen($virtual_data_parent_row_uuid) == 0) {
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_view.php?id=$virtual_table_uuid&virtual_data_row_uuid=$virtual_data_row_uuid\">\n";
 		}
 		else {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_id=$virtual_data_parent_row_id\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=v_virtual_table_data_edit.php?virtual_table_uuid=$virtual_table_parent_id&virtual_data_row_uuid=$virtual_data_parent_row_uuid\">\n";
 		}
 
 	//show a message to the user before the redirect
@@ -100,6 +99,5 @@ if (count($_GET)>0) {
 		require_once "includes/footer.php";
 		return;
 }
-
 
 ?>

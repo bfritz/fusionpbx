@@ -60,8 +60,7 @@ require_once "includes/paging.php";
 	echo "</tr>\n";
 	echo "</tr></table>\n";
 
-	$sql = "";
-	$sql .= " select * from v_virtual_tables ";
+	$sql = " select * from v_virtual_tables ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -76,8 +75,7 @@ require_once "includes/paging.php";
 	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
 	$offset = $rows_per_page * $page; 
 
-	$sql = "";
-	$sql .= " select * from v_virtual_tables ";
+	$sql = " select * from v_virtual_tables ";
 	$sql .= " where domain_uuid = '$domain_uuid' ";
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$sql .= " limit $rows_per_page offset $offset ";
