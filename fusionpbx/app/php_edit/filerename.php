@@ -43,59 +43,59 @@ $filename = $_GET["filename"];
 
 
 if (strlen($folder) > 0 && strlen($newfilename) > 0) {
-    //echo "new file: ".$newfilename."<br>";
-    //echo "folder: ".$folder."<br>";
-    //echo "orig filename: ".$filename."<br>";;
-    rename($folder.$filename, $folder.$newfilename);
-    header("Location: fileoptions.php");
+	//echo "new file: ".$newfilename."<br>";
+	//echo "folder: ".$folder."<br>";
+	//echo "orig filename: ".$filename."<br>";;
+	rename($folder.$filename, $folder.$newfilename);
+	header("Location: fileoptions.php");
 }
 else { //display form
 
-    require_once "header.php";
-    echo "<br>";
-    echo "<div align='left'>";
-    echo "<form method='get' action=''>";
-    echo "<table>";
-    echo "	<tr>";
-    echo "		<td>Path:</td>";
-    echo "	</tr>";
-    echo "	<tr>";
-    echo "		<td>".$folder.$filename."</td>";
-    echo "	</tr>";
-    echo "	<tr>";
-    echo "		<td><br></td>";
-    echo "	</tr>";
-    echo "	<tr>";
-    echo "		<td>Original file name:</td>";
-    echo "	</tr>";
-    echo "	<tr>";
-    echo "		<td>".$filename."</td>";
-    echo "	</tr>";
-    echo "</table>";
+	require_once "header.php";
+	echo "<br>";
+	echo "<div align='left'>";
+	echo "<form method='get' action=''>";
+	echo "<table>";
+	echo "	<tr>";
+	echo "		<td>Path:</td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td>".$folder.$filename."</td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td><br></td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td>Original file name:</td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td>".$filename."</td>";
+	echo "	</tr>";
+	echo "</table>";
 
-    echo "<br />";
+	echo "<br />";
 
-    echo "<table>";
-    echo "	<tr>";
-    echo "	  <td>Rename file to:</td>";
-    echo "	</tr>";
+	echo "<table>";
+	echo "	<tr>";
+	echo "	  <td>Rename file to:</td>";
+	echo "	</tr>";
 
-    echo "	<tr>";
-    echo "		<td><input type='text' name='newfilename' value=''></td>";
-    echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td><input type='text' name='newfilename' value=''></td>";
+	echo "	</tr>";
 
-    echo "	<tr>";
-    echo "	  <td colspan='1' align='right'>";
-    echo "          <input type='hidden' name='folder' value='$folder'>";
-    echo "          <input type='hidden' name='filename' value='$filename'>";
-    echo "		    <input type='submit' value='Rename File'>";
-    echo "    </td>";
-    echo "	</tr>";
-    echo "</table>";
-    echo "</form>";
-    echo "</div>";
+	echo "	<tr>";
+	echo "	  <td colspan='1' align='right'>";
+	echo "          <input type='hidden' name='folder' value='$folder'>";
+	echo "          <input type='hidden' name='filename' value='$filename'>";
+	echo "		    <input type='submit' value='Rename File'>";
+	echo "    </td>";
+	echo "	</tr>";
+	echo "</table>";
+	echo "</form>";
+	echo "</div>";
 
-    require_once "footer.php";
+	require_once "footer.php";
 
 }
 

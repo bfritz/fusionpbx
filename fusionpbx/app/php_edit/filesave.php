@@ -41,11 +41,6 @@ $content = $_POST["content"];
 $handle = fopen($filename, 'wb') or die("Error!!");
 fwrite($handle, $content);
 fclose($handle);
-
-//echo "File Saved: \n $filename";
-//echo "\n\nContent: $content\n";
-
 echo $content;
-
 
 ?>

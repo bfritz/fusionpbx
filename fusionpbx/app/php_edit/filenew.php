@@ -39,56 +39,50 @@ $folder = str_replace ("\\", "/", $folder);
 if (substr($folder, -1) != "/") { $folder = $folder.'/'; }
 $file = $_GET["file"];
 
-//echo $folder.$file;
-
 if (strlen($folder) > 0 && strlen($file) > 0) {
-
-    //create new file
-    $handle = fopen($folder.$file, 'wb') or die("Error!!");
-    $content = "<?php\n\n?>";
-    fwrite($handle, $content);
-    fclose($handle);
-   
-    header("Location: fileoptions.php");
+	//create new file
+	$handle = fopen($folder.$file, 'wb') or die("Error!!");
+	$content = "<?php\n\n?>";
+	fwrite($handle, $content);
+	fclose($handle);
+	header("Location: fileoptions.php");
 }
-else {//display form
+else {
+	require_once "header.php";
+	echo "<br>";
+	echo "<div align='left'>";
+	echo "<form method='get' action=''>";
+	echo "<table>";
+	echo "	<tr>";
+	echo "		<td>Path:</td>";
+	echo "	</tr>";   
+	echo "	<tr>";
+	echo "		<td>".$folder.$file."</td>";
+	echo "	</tr>";
+	echo "</table>";
 
-    require_once "header.php";
-    echo "<br>";
-    echo "<div align='left'>";
-    echo "<form method='get' action=''>";
-    echo "<table>";
-    echo "	<tr>";
-    echo "		<td>Path:</td>";
-    echo "	</tr>";   
-    echo "	<tr>";
-    echo "		<td>".$folder.$file."</td>";
-    echo "	</tr>";
-    echo "</table>";
+	echo "<br />";
 
-    echo "<br />";
-    
-    echo "<table>";
-    echo "	<tr>";
-    echo "	  <td>File Name:</td>";
-    echo "	</tr>";
-    
-    echo "	<tr>";
-    echo "		<td><input type='text' name='file' value=''></td>";
-    echo "	</tr>";
-    
-    echo "	<tr>";
-    echo "		<td colspan='1' align='right'>";
-    echo "      <input type='hidden' name='folder' value='$folder'>";
-    echo "		  <input type='submit' value='New File'>";
-    echo "    </td>";
-    echo "	</tr>";
-    echo "</table>";
-    echo "</form>";
-    echo "</div>";
-    
-    require_once "footer.php";
+	echo "<table>";
+	echo "	<tr>";
+	echo "	  <td>File Name:</td>";
+	echo "	</tr>";
 
+	echo "	<tr>";
+	echo "		<td><input type='text' name='file' value=''></td>";
+	echo "	</tr>";
+
+	echo "	<tr>";
+	echo "		<td colspan='1' align='right'>";
+	echo "      <input type='hidden' name='folder' value='$folder'>";
+	echo "		  <input type='submit' value='New File'>";
+	echo "    </td>";
+	echo "	</tr>";
+	echo "</table>";
+	echo "</form>";
+	echo "</div>";
+
+	require_once "footer.php";
 }
 
 ?>

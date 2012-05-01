@@ -33,7 +33,6 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 require_once "header.php";
 
 $file = $_GET["file"];
@@ -60,19 +59,14 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td valign='top' width='200' nowrap>";
-
 echo "  <IFRAME SRC='fileoptionslist.php' style='border: solid 1px #CCCCCC; height: 100%; width: 100%;' TITLE=''>\n";
 echo "  <!-- Clip List: Requires IFRAME support -->\n";
 echo "  </IFRAME>";
-
 echo "</td>\n";
 echo "<td valign='top' style=\"height: 100%;\">";
 
 echo "<div align='left'>";
 echo "<table width='100%' class='border'>";
-
-//echo "  <tr><td><input type='button' class='btn' name='' onclick=\"window.location='$urlpath'+document.getElementById('folder').value;\" value=' www          '></td></tr>\n";
-
 echo "  <tr><td><input type='button' class='btn' name='' onclick=\"window.location='filenew.php?folder='+document.getElementById('folder').value;\" value='Add File'></td></tr>\n";
 echo "  <tr><td><input type='button' class='btn' name='' onclick=\"window.location='foldernew.php?folder='+document.getElementById('folder').value;\" value='Add Dir'></td></tr>\n";
 echo "  <tr><td><input type='button' class='btn' name='' onclick=\"window.location='filerename.php?folder='+document.getElementById('folder').value+'&filename='+document.getElementById('filename').value;\" value='Rename File'></td></tr>\n";
@@ -80,7 +74,6 @@ echo "  <tr><td><input type='button' class='btn' name='' onclick=\"if (confirm('
 echo "  <tr><td><input type='button' class='btn' name='' onclick=\"if (confirm('Are you sure you want to delete the selected folder?')){ window.location='folderdelete.php?folder='+document.getElementById('folder').value; }\" value='Delete Dir'></td></tr>\n";
 echo "  <tr><td><br><br><br><br><br></td></tr>\n";
 echo "  <tr><td><input type='button' class='btn' name='' onclick='javascript:self.close();' value='Close'></td></tr>\n";
-
 echo "</table>";
 echo "</div>";
 

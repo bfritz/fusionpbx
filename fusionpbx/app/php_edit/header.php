@@ -95,7 +95,6 @@ echo "}\n";
 echo "//-->\n";
 echo "</style>";
 
-
 echo "<SCRIPT language=\"JavaScript\">\n";
 echo "<!--\n";
 echo "function confirmdelete(url)\n";
@@ -110,6 +109,5 @@ echo "</SCRIPT>";
 echo "</head>";
 echo "<body>";
 echo "<div align='center'>";
-
 
 ?>

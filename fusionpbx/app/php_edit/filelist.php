@@ -33,7 +33,6 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 require_once "header.php";
 
 function isfile($filename) {
@@ -48,7 +47,6 @@ function space($count) {
 	}
 	return $r;
 }
-
 
 function recur_dir($dir) {
 	clearstatcache();
@@ -120,7 +118,6 @@ function recur_dir($dir) {
 	closedir($dirlist);
 	return $htmldirlist ."\n". $htmlfilelist;
 }
-
 
 echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 echo "    function makeRequest(url, strpost) {\n";
@@ -224,11 +221,8 @@ echo "\n";
 echo "}\n";
 echo "</SCRIPT>";
 
-
-
 echo "<div align='center' valign='1'>";
 echo "<table  width='100%' height='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 echo "<tr class='border'>\n";
 echo "	<td align=\"left\" valign='top' nowrap>\n";
 //echo "      <br>";
@@ -273,7 +267,6 @@ echo "         </DIV></TD></TR></TABLE>\n";
 echo "\n";
 echo "      </DIV></TD></TR></TABLE>\n";
 */
-
 
 echo "</td>\n";
 echo "</tr>\n";
