@@ -1164,7 +1164,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		unset($menu);
 
 	//setup the switch config directory if it exists
-		if (is_readable($switch_conf_dir)) {
+		if ($switch_conf_dir != "/conf") {
 			if ($v_debug) {
 				fwrite($fp, "switch_base_dir: ".$install_switch_base_dir."\n");
 				fwrite($fp, "switch_conf_dir: ".$switch_conf_dir."\n");

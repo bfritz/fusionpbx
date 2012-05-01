@@ -42,7 +42,9 @@ include "root.php";
 				throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
 			}
 			if (!is_dir($dst)) {
-				mkdir($dst, 0755, true);
+				if (!mkdir($dst, 0755, true)) {
+					//throw new Exception("recursive_copy() failed to create destination directory '".$dst."'");
+				}
 			}
 			while(false !== ($file = readdir($dir))) {
 				if (($file != '.') && ($file != '..')) {
@@ -87,6 +89,9 @@ include "root.php";
 			clearstatcache();
 			$src_dir = $this->switch_conf_dir;
 			$dst_dir = $this->switch_conf_dir.'.orig';
+			if ($src_dir != "/conf") {
+				mkdir($src_dir, 0755, true);
+			}
 			if (is_readable($src_dir)) {
 				//make a backup copy of the conf directory
 					if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
@@ -98,7 +103,9 @@ include "root.php";
 						//exec ('cp -RLp '.$src_dir.' '.$dst_dir);
 					}
 				//make sure the conf directory exists
-					mkdir($this->switch_conf_dir, 0755, true);
+					if (!mkdir($this->switch_conf_dir, 0755, true)) {
+						//throw new Exception("Failed to create the switch conf directory '".$this->switch_conf_dir."'. ");
+					}
 			}
 		}
 
