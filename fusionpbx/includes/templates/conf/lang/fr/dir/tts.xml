@@ -1,4 +1,4 @@
-<include><!--This line will be ignored it's here to validate the xml and is optional -->
+<include>
 
 	<macro name="directory_intro">
 		<input pattern="^(last_name)" break_on_match="false">
