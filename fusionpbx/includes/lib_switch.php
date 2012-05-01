@@ -2416,7 +2416,43 @@ function save_hunt_group_xml() {
 								$dialplan->dialplan_description = $row['hunt_group_description'];
 								$dialplan->dialplan_add();
 								unset($dialplan);
+						}
 
+						if ($action == 'update') {
+							//update the huntgroup fifo
+								$dialplan_name = $row['hunt_group_name'].'.park';
+								$dialplan_order = '999';
+								$context = $row['hunt_group_context'];
+								if ($row['hunt_group_enabled'] == "false") {
+									$enabled = 'false';
+								}
+								else {
+									$enabled = 'true';
+								}
+								$description = $row['hunt_group_description'];
+								$hunt_group_uuid = $row['hunt_group_uuid'];
+
+								$sql = "update v_dialplans set ";
+								$sql .= "dialplan_name = '$dialplan_name', ";
+								$sql .= "dialplan_order = '$dialplan_order', ";
+								$sql .= "dialplan_context = '$context', ";
+								$sql .= "dialplan_enabled = '$enabled', ";
+								$sql .= "dialplan_description = '$description' ";
+								$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+								$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
+								$db->query($sql);
+								unset($sql);
+
+								$sql = "delete from v_dialplan_details ";
+								$sql .= "where domain_uuid = '$domain_uuid' ";
+								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+								$db->query($sql);
+								unset($sql);
+						}
+
+						//if action is add or update
+							if ($action == 'add' || $action == 'update') {
+								require_once "includes/classes/dialplan.php";
 								$dialplan = new dialplan;
 								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
 								$dialplan->dialplan_uuid = $dialplan_uuid;
@@ -2497,80 +2533,14 @@ function save_hunt_group_xml() {
 								$dialplan->dialplan_detail_order = '040';
 								$dialplan->dialplan_detail_add();
 								unset($dialplan);
-						}
-						/*
-						if ($action == 'update') {
-							//update the huntgroup fifo
-								$dialplan_name = $row['hunt_group_name'].'.park';
-								$dialplan_order = '999';
-								$context = $row['hunt_group_context'];
-								if ($row['hunt_group_enabled'] == "false") {
-									$enabled = 'false';
-								}
-								else {
-									$enabled = 'true';
-								}
-								$description = 'fifo '.$row['hunt_group_extension'];
-								$hunt_group_uuid = $row['hunt_group_uuid'];
+							}
 
-								$sql = "";
-								$sql = "update v_dialplans set ";
-								$sql .= "dialplan_name = '$dialplan_name', ";
-								$sql .= "dialplan_order = '$dialplan_order', ";
-								$sql .= "context = '$context', ";
-								$sql .= "enabled = '$enabled', ";
-								$sql .= "description = '$description' ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$db->query($sql);
-								unset($sql);
-
-								$sql = "";
-								$sql = "delete from v_dialplan_details ";
-								$sql .= "where domain_uuid = '$domain_uuid' ";
-								$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-								$db->query($sql);
-								unset($sql);
-
-								$dialplan_detail_tag = 'condition'; //condition, action, antiaction
-								$dialplan_detail_type = 'destination_number';
-								$dialplan_detail_data = '^\*'.$row['hunt_group_extension'].'$';
-								$dialplan_detail_order = '000';
-								$dialplan_detail_group = '';
-								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-								$dialplan_detail_tag = 'action'; //condition, action, antiaction
-								$dialplan_detail_type = 'set';
-								$dialplan_detail_data = 'fifo_music=$${hold_music}';
-								$dialplan_detail_order = '001';
-								$dialplan_detail_group = '';
-								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-								$hunt_group_timeout_type = $row['hunt_group_timeout_type'];
-								$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
-								if ($hunt_group_timeout_type == "voicemail") { $hunt_group_timeout_destination = '*99'.$hunt_group_timeout_destination; }
-
-								$dialplan_detail_tag = 'action'; //condition, action, antiaction
-								$dialplan_detail_type = 'set';
-								$dialplan_detail_data = 'fifo_orbit_exten='.$hunt_group_timeout_destination.':'.$row['hunt_group_timeout'];
-								$dialplan_detail_order = '002';
-								$dialplan_detail_group = '';
-								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
-								$dialplan_detail_tag = 'action'; //condition, action, antiaction
-								$dialplan_detail_type = 'fifo';
-								$dialplan_detail_data = $row['hunt_group_extension'].'@${domain_name} in';
-								$dialplan_detail_order = '003';
-								$dialplan_detail_group = '';
-								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-						}
-						*/
-
-						save_dialplan_xml();
+						//save the dialplan xml files
+							save_dialplan_xml();
 					} //end if strlen hunt_group_uuid; add the Hunt Group to the dialplan
 
 				//get the list of destinations then build the Hunt Group Lua
-					$tmp = "";
-					$tmp .= "\n";
+					$tmp = "\n";
 					$tmp .= "session:preAnswer();\n";
 					$tmp .= "extension = '".$row['hunt_group_extension']."';\n";
 					$tmp .= "result = '';\n";
@@ -2716,8 +2686,7 @@ function save_hunt_group_xml() {
 					$tmp .= "\n";
 
 					$i = 0;
-					$sql = "";
-					$sql .= "select * from v_hunt_group_destinations ";
+					$sql = "select * from v_hunt_group_destinations ";
 					$sql .= "where hunt_group_uuid = '".$row['hunt_group_uuid']."' ";
 					$sql .= "and domain_uuid = '$domain_uuid' ";
 					//$sql .= "and destination_enabled = 'true' ";
@@ -2953,8 +2922,7 @@ function save_hunt_group_xml() {
 
 function get_recording_filename($id) {
 	global $domain_uuid, $db;
-	$sql = "";
-	$sql .= "select * from v_recordings ";
+	$sql = "select * from v_recordings ";
 	$sql .= "where recording_uuid = '$id' ";
 	$sql .= "and domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
