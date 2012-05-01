@@ -157,7 +157,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//call forward config
 		$huntgroup_name = 'call_forward_'.$hunt_group_extension;
 		$hunt_group_type = 'call_forward';
-		$hunt_group_context = 'default';
+		$hunt_group_context = $_SESSION['context'];
 		$hunt_group_timeout = '3600';
 		$hunt_group_timeout_destination = $hunt_group_extension;
 		$hunt_group_timeout_type = 'voicemail';

@@ -162,7 +162,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$hunt_group_extension', ";
 					$sql .= "'$hunt_group_name', ";
 					$sql .= "'$hunt_group_type', ";
-					$sql .= "'default', ";
+					$sql .= "'".$_SESSION['context']."', ";
 					$sql .= "'$hunt_group_timeout', ";
 					$sql .= "'$hunt_group_timeout_destination', ";
 					$sql .= "'$hunt_group_timeout_type', ";
@@ -196,7 +196,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "hunt_group_extension = '$hunt_group_extension', ";
 					$sql .= "hunt_group_name = '$hunt_group_name', ";
 					$sql .= "hunt_group_type = '$hunt_group_type', ";
-					$sql .= "hunt_group_context = 'default', ";
+					$sql .= "hunt_group_context = '".$_SESSION['context']."', ";
 					$sql .= "hunt_group_timeout = '$hunt_group_timeout', ";
 					$sql .= "hunt_group_timeout_destination = '$hunt_group_timeout_destination', ";
 					$sql .= "hunt_group_timeout_type = '$hunt_group_timeout_type', ";
