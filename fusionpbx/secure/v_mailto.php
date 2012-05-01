@@ -1,4 +1,5 @@
 <?php
+
 /*
 	FusionPBX
 	Version: MPL 1.1
@@ -45,8 +46,7 @@ include "v_config_cli.php";
 	fclose($fd);
 
 //save output to 
-	if (file_exists('/tmp')) { $log_dir = '/tmp'; } else { $log_dir = ''; }
-	$fp = fopen($log_dir."/mailer-app.log", "w");
+	$fp = fopen(sys_get_temp_dir()."/mailer-app.log", "w");
 
 //prepare the output buffers
 	ob_end_clean();
@@ -54,9 +54,6 @@ include "v_config_cli.php";
 
 //testing show the raw email
 	//echo "Message: \n".$msg."\n";
-
-//define variables
-	$tmp_dir = '/tmp';
 
 //includes
 	require('includes/pop3/mime_parser.php');
