@@ -2314,7 +2314,7 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 			exit 1
 		fi
 		cd /usr/src/freeswitch
-		if [ $CORES -gt 1 ]; then 
+		if [ $CORES > "1" ]; then 
 			/bin/echo "  multicore processor detected. Upgrading with -j $CORES"
 			/usr/bin/time /usr/bin/make -j $CORES current
 		else 
