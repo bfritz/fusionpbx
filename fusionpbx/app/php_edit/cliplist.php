@@ -38,7 +38,6 @@ else {
 
 echo "<html>";
 echo "<head>";
-
 echo "<style>\n";
 echo "TD {\n";
 echo "	font-size: 11.5px;\n";

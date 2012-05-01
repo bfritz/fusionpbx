@@ -24,6 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
+require_once "includes/checkauth.php";
 if (permission_exists('php_editor_view')) {
 	//access granted
 }

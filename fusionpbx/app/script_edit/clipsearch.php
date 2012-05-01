@@ -24,7 +24,6 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "edit/includes/config.php";
 require_once "includes/checkauth.php";
 if (permission_exists('script_editor_view')) {
 	//access granted
@@ -35,7 +34,7 @@ else {
 }
 
 if (count($_POST)>0) {
-	$id = $_POST["id"];
+	$clip_uuid = $_POST["id"];
 	$clip_name = $_POST["clip_name"];
 	$clip_folder = $_POST["clip_folder"];
 	$clip_text_start = $_POST["clip_text_start"];
@@ -46,22 +45,19 @@ if (count($_POST)>0) {
 	require_once "header.php";
 	echo "<div align='left'>";
 	echo "<table width='175' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
 
-	$sql = "";
-	$sql .= "select * from v_clip_library ";
+    $sql .= "select * from v_clips ";
 	$sql .= "where ";
-	if (strlen($id) > 0) { $sql .= "and id like '%$id%' "; }
+	if (strlen($clip_uuid) > 0) { $sql .= "and id = '$clip_uuid' "; }
 	if (strlen($clip_name) > 0) { $sql .= "and clip_name like '%$clip_name%' "; }
 	if (strlen($clip_folder) > 0) { $sql .= "and clip_folder like '%$clip_folder%' "; }
 	if (strlen($clip_text_start) > 0) { $sql .= "and clip_text_start like '%$clip_text_start%' "; }
 	if (strlen($clip_text_end) > 0) { $sql .= "and clip_text_end like '%$clip_text_end%' "; }
 	if (strlen($clip_desc) > 0) { $sql .= "and clip_desc like '%$clip_desc%' "; }
 	if (strlen($clip_order) > 0) { $sql .= "and clip_order like '%$clip_order%' "; }
-
 
 	$sql = trim($sql);
 	if (substr($sql, -5) == "where"){ $sql = substr($sql, 0, (strlen($sql)-5)); }
@@ -79,11 +75,11 @@ if (count($_POST)>0) {
 	echo "<table border='0' cellpadding='1' cellspacing='1'>\n";
 	echo "<tr><td colspan='1'><img src='/edit/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
-	if ($result_count == 0) { //no results
+	if ($result_count == 0) {
+		//no results
 		echo "<tr><td>&nbsp;</td></tr>";
 	}
 	else { //received results
-
 		echo "<tr>";
 		  //echo "<th nowrap>&nbsp; &nbsp; Id&nbsp; &nbsp; </th>";
 		  echo "<th nowrap>&nbsp; &nbsp; clip_name Search &nbsp; &nbsp; </th>";
@@ -110,10 +106,8 @@ if (count($_POST)>0) {
 			echo "<tr><td colspan='1'><img src='images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach        unset($sql, $result, $row_count);
-
 		echo "</table>\n";
 		echo "</div>\n";
-
 
 		echo "  <br><br>";
 		echo "  </td>\n";
@@ -123,7 +117,6 @@ if (count($_POST)>0) {
 
 	echo "</table>\n";
 	echo "</div>";
-
 	echo "<br><br>";
 	require_once "footer.php";
 
@@ -136,40 +129,40 @@ if (count($_POST)>0) {
 }
 else {
 
+	//show the content
 	require_once "header.php";
 	echo "<div align='left'>";
 	echo "<table with='175' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "      <br>";
 
 	echo "<form method='post' action=''>";
 	echo "<table>";
-	  echo "	<tr>";
-	  echo "		<td>Name:</td>";
-	  echo "		<td><input type='text' class='txt' name='clip_name'></td>";
-	  echo "	</tr>";
-	  echo "	<tr>";
-	  echo "		<td>Folder:</td>";
-	  echo "		<td><input type='text' class='txt' name='clip_folder'></td>";
-	  echo "	</tr>";
-	  echo "	<tr>";
-	  echo "		<td>Start:</td>";
-	  echo "		<td><input type='text' class='txt' name='clip_text_start'></td>";
-	  echo "	</tr>";
-	  echo "	<tr>";
-	  echo "		<td>End:</td>";
-	  echo "		<td><input type='text' class='txt' name='clip_text_end'></td>";
-	  echo "	</tr>";
-	  echo "	<tr>";
-	  echo "		<td>Desc:</td>";
-	  echo "		<td><input type='text' class='txt' name='clip_desc'></td>";
-	  echo "	</tr>";
-	  //echo "	<tr>";
-	  //echo "		<td>clip_order:</td>";
-	  //echo "		<td><input type='text' class='txt' name='clip_order'></td>";
-	  //echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td>Name:</td>";
+	echo "		<td><input type='text' class='txt' name='clip_name'></td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td>Folder:</td>";
+	echo "		<td><input type='text' class='txt' name='clip_folder'></td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td>Start:</td>";
+	echo "		<td><input type='text' class='txt' name='clip_text_start'></td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td>End:</td>";
+	echo "		<td><input type='text' class='txt' name='clip_text_end'></td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td>Desc:</td>";
+	echo "		<td><input type='text' class='txt' name='clip_desc'></td>";
+	echo "	</tr>";
+	//echo "	<tr>";
+	//echo "		<td>clip_order:</td>";
+	//echo "		<td><input type='text' class='txt' name='clip_order'></td>";
+	//echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'><input type='submit' name='submit' value='Search'></td>";
 	echo "	</tr>";

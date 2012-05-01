@@ -32,84 +32,76 @@ else {
 	echo "access denied";
 	exit;
 }
-
-require_once "admin/edit/config.php";
 require_once "admin/edit/header.php";
+echo "<div align='left'>";
+echo "<table width='175'  border='0' cellpadding='0' cellspacing='2'>\n";
+echo "<tr class='border'>\n";
+echo "	<td align=\"left\">\n";
+echo "      <br>";
 
-//show the content
-    echo "<div align='left'>";
-    echo "<table width='175'  border='0' cellpadding='0' cellspacing='2'>\n";
+$sql = "select * from v_clips ";
+$prep_statement = $db->prepare(check_sql($sql));
+$prep_statement->execute();
+$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+$result_count = count($result);
 
-    echo "<tr class='border'>\n";
-    echo "	<td align=\"left\">\n";
-    echo "      <br>";
+$c = 0;
+$row_style["0"] = "background-color: #F5F5DC;";
+$row_style["1"] = "background-color: #FFFFFF;";
 
-    $sql = "";
-    $sql .= "select * from v_clip_library ";
+echo "<div align='left'>\n";
+echo "<table width='100%' border='0' cellpadding='1' cellspacing='1'>\n";
+echo "<tr><td colspan='1'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
 
-    $prep_statement = $db->prepare(check_sql($sql));
-    $prep_statement->execute();
-    $result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-    $result_count = count($result);
+if ($result_count == 0) { //no results
+	echo "<tr><td>&nbsp;</td></tr>";
+}
+else { //received results
+	echo "<tr>";
+	echo "<th nowrap>&nbsp; &nbsp; clip name &nbsp;</th>";
+	//echo "<th nowrap>&nbsp; &nbsp; clip_folder&nbsp; &nbsp; </th>";
+	//echo "<th nowrap>&nbsp; &nbsp; clip_text_start&nbsp; &nbsp; </th>";
+	//echo "<th nowrap>&nbsp; &nbsp; clip_text_end&nbsp; &nbsp; </th>";
+	//echo "<th nowrap>&nbsp; &nbsp; clip_desc&nbsp; &nbsp; </th>";
+	//echo "<th nowrap>&nbsp; &nbsp; clip_order&nbsp; &nbsp; </th>";
+	echo "</tr>";
+	echo "<tr><td colspan='1'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 
-    $c = 0;
-    $row_style["0"] = "background-color: #F5F5DC;";
-    $row_style["1"] = "background-color: #FFFFFF;";
+	foreach($result as $row) {
+		echo "<tr style='".$row_style[$c]."'>\n";
+			//echo "<td valign='top'><a href='update.php?id=".$row[id]."'>".$row['clip_uuid']."</a></td>";
+			echo "<td valign='top'><a href='/edit/update.php?id=".$row['clip_uuid']."'>".$row['clip_name']."</a></td>";
+			//echo "<td valign='top'>".$row[clip_folder]."</td>";
+			//echo "<td valign='top'>".$row[clip_text_start]."</td>";
+			//echo "<td valign='top'>".$row[clip_text_end]."</td>";
+			//echo "<td valign='top'>".$row[clip_desc]."</td>";
+			//echo "<td valign='top'>".$row[clip_order]."</td>";
+		echo "</tr>";
 
-    echo "<div align='left'>\n";
-    echo "<table width='100%' border='0' cellpadding='1' cellspacing='1'>\n";
-    echo "<tr><td colspan='1'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>";
+		echo "<tr><td colspan='1'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
+		if ($c==0) { $c=1; } else { $c=0; }
+	} //end foreach        unset($sql, $result, $row_count);
+	echo "</table>\n";
+	echo "</div>\n";
 
-    if ($result_count == 0) { //no results
-        echo "<tr><td>&nbsp;</td></tr>";
-    }
-    else { //received results
+	echo "  </td>\n";
+	echo "</tr>\n";
+} //end if results
+echo "</table>\n";
 
-        echo "<tr>";
-          //echo "<th nowrap>&nbsp; &nbsp; Id &nbsp;</th>";
-          echo "<th nowrap>&nbsp; &nbsp; clip_name &nbsp;</th>";
-          //echo "<th nowrap>&nbsp; &nbsp; clip_folder&nbsp; &nbsp; </th>";
-          //echo "<th nowrap>&nbsp; &nbsp; clip_text_start&nbsp; &nbsp; </th>";
-          //echo "<th nowrap>&nbsp; &nbsp; clip_text_end&nbsp; &nbsp; </th>";
-          //echo "<th nowrap>&nbsp; &nbsp; clip_desc&nbsp; &nbsp; </th>";
-          //echo "<th nowrap>&nbsp; &nbsp; clip_order&nbsp; &nbsp; </th>";
-        echo "</tr>";
-        echo "<tr><td colspan='1'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
+echo "<table width='175'><tr><td align='right'>\n"; 
+echo "<input type='button' class='btn' name='' onclick=\"window.location='clipsearch.php'\" value='Search'>&nbsp; &nbsp;\n";
+echo "<input type='button' class='btn' name='' onclick=\"window.location='clipadd.php'\" value='Add'>&nbsp; &nbsp;\n";
+echo "</td></tr><table>\n";
+echo "</div>";
 
-        foreach($result as $row) {
-        //print_r( $row );
-            echo "<tr style='".$row_style[$c]."'>\n";
-                //echo "<td valign='top'><a href='update.php?id=".$row[id]."'>".$row[id]."</a></td>";
-                echo "<td valign='top'><a href='/edit/update.php?id=".$row[id]."'>".$row[clip_name]."</a></td>";
-                //echo "<td valign='top'>".$row[clip_folder]."</td>";
-                //echo "<td valign='top'>".$row[clip_text_start]."</td>";
-                //echo "<td valign='top'>".$row[clip_text_end]."</td>";
-                //echo "<td valign='top'>".$row[clip_desc]."</td>";
-                //echo "<td valign='top'>".$row[clip_order]."</td>";
-            echo "</tr>";
+echo "<br><br>";
+require_once "admin/edit/footer.php";
 
-            echo "<tr><td colspan='1'><img src='/images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
-            if ($c==0) { $c=1; } else { $c=0; }
-        } //end foreach
-		unset($sql, $result, $row_count);
-        
-        echo "</table>\n";
-        echo "</div>\n";
-
-        echo "  </td>\n";
-        echo "</tr>\n";
-
-    } //end if results
-
-    echo "</table>\n";
-    
-    echo "<table width='175'><tr><td align='right'>\n"; 
-    echo "<input type='button' class='btn' name='' onclick=\"window.location='clipsearch.php'\" value='Search'>&nbsp; &nbsp;\n";
-    echo "<input type='button' class='btn' name='' onclick=\"window.location='clipadd.php'\" value='Add'>&nbsp; &nbsp;\n";
-    echo "</td></tr><table>\n";
-    echo "</div>";
-
-    echo "<br><br>";
-    require_once "admin/edit/footer.php";
+unset ($result_count);
+unset ($result);
+unset ($key);
+unset ($val);
+unset ($c);
 
 ?>

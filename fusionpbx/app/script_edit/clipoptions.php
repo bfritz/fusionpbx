@@ -33,21 +33,18 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 require_once "header.php";
 
 echo "<div align='left'>";
 echo "<table border='0' style=\"height: 100%; width: 100%;\">\n";
 echo "<form method='post' name='frm' action=''>";
-echo "<tr><td colspan='2'><div id='selectedclip'>Selected Clip: <input type='text' name='clip_name' id='clip_name' value=''><input type='hidden' name='clipid' id='clipid' value=''></div></td></tr>\n";
+echo "<tr><td colspan='2'><div id='selectedclip'>Selected Clip: <input type='text' name='clip_name' id='clip_name' value=''><input type='hidden' name='clip_uuid' id='clip_uuid' value=''></div></td></tr>\n";
 echo "</form>";
 echo "<tr>\n";
 echo "<td valign='top' width='200' nowrap>";
-
 echo "  <IFRAME SRC='clipoptionslist.php' style='border: solid 1px #CCCCCC; height: 100%; width: 100%;' WIDTH='100%' TITLE=''>\n";
 echo "  <!-- Clip List: Requires IFRAME support -->\n";
 echo "  </IFRAME>";
-
 echo "</td>\n";
 echo "<td valign='top' style=\"height: 100%;\">";
 
@@ -56,11 +53,12 @@ echo "  <table width='' class='border'>";
 //echo "  <tr><th>Options</th></tr>\n";
 //echo "  <tr><td colspan='1'><img src='images/spacer.gif' width='100%' height='1' style='background-color: #BBBBBB;'></td></tr>\n";
 
-echo "  <tr><td><input type='button' class='btn' name='' onclick=\"window.location='clipupdate.php?id='+document.getElementById('clipid').value;\" value='Edit Clip'></td></tr>\n";
+echo "  <tr><td><input type='button' class='btn' name='' onclick=\"window.location='clipupdate.php?id='+document.getElementById('clip_uuid').value;\" value='Edit Clip'></td></tr>\n";
 echo "  <tr><td><input type='button' class='btn' name='' onclick=\"window.location='clipadd.php'\" value='Add Clip'></td></tr>\n";
 //echo "  <tr><td><input type='button' class='btn' name='' onclick=\"window.location='clipadd.php'\" value='  Search  '></td></tr>\n";
-echo "  <tr><td><input type='button' class='btn' name='' onclick=\"if (confirm('Are you sure you want to delete the selected clip?')){ window.location='clipdelete.php?id='+document.getElementById('clipid').value; }\" value='  Delete   '></td></tr>\n";
+echo "  <tr><td><input type='button' class='btn' name='' onclick=\"if (confirm('Are you sure you want to delete the selected clip?')){ window.location='clipdelete.php?id='+document.getElementById('clip_uuid').value; }\" value='  Delete   '></td></tr>\n";
 echo "  <tr><td><br><br><br><br><br><br><br><br><br><br><br></td></tr>\n";
+
 echo "  <tr><td><input type='button' class='btn' name='' onclick='javascript:self.close();' value='   Close    '></td></tr>\n";
 echo "  </table>";
 

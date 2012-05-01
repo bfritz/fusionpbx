@@ -33,47 +33,44 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 
 if (count($_POST)>0) {
-    $id = check_str($_POST["id"]);
-    $clip_name = check_str($_POST["clip_name"]);
-    $clip_folder = check_str($_POST["clip_folder"]);
-    $clip_text_start = check_str($_POST["clip_text_start"]);
-    $clip_text_end = check_str($_POST["clip_text_end"]);
-    $clip_desc = check_str($_POST["clip_desc"]);
-    $clip_order = check_str($_POST["clip_order"]);
+	$clip_uuid = check_str($_POST["id"]);
+	$clip_name = check_str($_POST["clip_name"]);
+	$clip_folder = check_str($_POST["clip_folder"]);
+	$clip_text_start = check_str($_POST["clip_text_start"]);
+	$clip_text_end = check_str($_POST["clip_text_end"]);
+	$clip_desc = check_str($_POST["clip_desc"]);
+	$clip_order = check_str($_POST["clip_order"]);
 
-    //sql update
-    $sql  = "update v_clip_library set ";
-    $sql .= "clip_name = '$clip_name', ";
-    $sql .= "clip_folder = '$clip_folder', ";
-    $sql .= "clip_text_start = '$clip_text_start', ";
-    $sql .= "clip_text_end = '$clip_text_end', ";
-    $sql .= "clip_desc = '$clip_desc', ";
-    $sql .= "clip_order = '$clip_order' ";
-    $sql .= "where id = '$id' ";
-    $count = $db->exec(check_sql($sql));
-    //echo "Affected Rows: ".$count;
+	//sql update
+	$sql  = "update v_clips set ";
+	$sql .= "clip_name = '$clip_name', ";
+	$sql .= "clip_folder = '$clip_folder', ";
+	$sql .= "clip_text_start = '$clip_text_start', ";
+	$sql .= "clip_text_end = '$clip_text_end', ";
+	$sql .= "clip_desc = '$clip_desc', ";
+	$sql .= "clip_order = '$clip_order' ";
+	$sql .= "where clip_uuid = '$clip_uuid' ";
+	$count = $db->exec(check_sql($sql));
+	//echo "affected rows: ".$count;
 
-
-    //edit: make sure the meta redirect url is correct 
-    require_once "header.php";
-    echo "<meta http-equiv=\"refresh\" content=\"1;url=clipoptions.php\">\n";
-    echo "Update Complete";
-    require_once "footer.php";
-    return;
+	//redirect the browser
+	require_once "header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"1;url=clipoptions.php\">\n";
+	echo "Update Complete";
+	require_once "footer.php";
+	return;
 }
 else {
-	//get data from the db
-		$id = $_GET["id"];
+	//get the uuid from http values
+		$clip_uuid = check_str($_GET["id"]);
 
-		$sql = "";
-		$sql .= "select * from v_clip_library ";
-		$sql .= "where id = '$id' ";
+	//get the clip
+		$sql = "select * from v_clips ";
+		$sql .= "where clip_uuid = '$clip_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
-
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		foreach ($result as &$row) {
 			$clip_name = $row["clip_name"];
@@ -84,13 +81,12 @@ else {
 			$clip_order = $row["clip_order"];
 			break; //limit to 1 row
 		}
-		echo "</table>";
-		echo "<div>";}
+}
 
+//show the content
 	require_once "header.php";
 	echo "<div align='left'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 
@@ -126,7 +122,7 @@ else {
 
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
-	echo "     <input type='hidden' name='id' value='$id'>";
+	echo "     <input type='hidden' name='id' value='$clip_uuid'>";
 	echo "     <input type='submit' name='submit' value='Update'>";
 	echo "		</td>";
 	echo "	</tr>";

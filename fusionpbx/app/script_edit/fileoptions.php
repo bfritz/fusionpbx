@@ -33,14 +33,12 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 require_once "header.php";
 
 $file = $_GET["file"];
 $file = str_replace ("\\", "/", $file);
 $folder = $_GET["folder"];
 $folder = str_replace ($file, "", $folder);
-
 $urlpath = str_replace ($_SERVER["DOCUMENT_ROOT"], "", $folder);
 
 echo "<div align='left'>";
@@ -60,11 +58,9 @@ echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td valign='top' width='200' nowrap>";
-
 echo "  <IFRAME SRC='fileoptionslist.php' style='border: solid 1px #CCCCCC; height: 100%; width: 100%;' TITLE=''>\n";
 echo "  <!-- Clip List: Requires IFRAME support -->\n";
 echo "  </IFRAME>";
-
 echo "</td>\n";
 echo "<td valign='top' style=\"height: 100%;\">";
 

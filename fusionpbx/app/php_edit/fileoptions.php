@@ -40,7 +40,6 @@ $file = str_replace ("\\", "/", $file);
 $folder = $_GET["folder"];
 $folder = str_replace ($file, "", $folder);
 $urlpath = str_replace ($_SERVER["DOCUMENT_ROOT"], "", $folder);
-//echo "urlpath $urlpath<br>";
 
 echo "<div align='left'>";
 echo "<table border='0' style=\"height: 100%; width: 100%;\">\n";

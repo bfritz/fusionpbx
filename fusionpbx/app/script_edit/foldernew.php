@@ -33,7 +33,6 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 
 $folder = $_GET["folder"];
 $folder = str_replace ("\\", "/", $folder);
@@ -45,42 +44,40 @@ if (strlen($folder) > 0 && strlen($foldername) > 0) {
 	header("Location: fileoptions.php");
 }
 else { //display form
+	require_once "header.php";
+	echo "<br>";
+	echo "<div align='left'>";
+	echo "<form method='get' action=''>";
+	echo "<table>";
+	echo "	<tr>";
+	echo "		<td>Path:</td>";
+	echo "	</tr>";   
+	echo "	<tr>";
+	echo "		<td>".$folder."</td>";
+	echo "	</tr>";
+	echo "</table>";
 
-    require_once "header.php";
-    echo "<br>";
-    echo "<div align='left'>";
-    echo "<form method='get' action=''>";
-    echo "<table>";
-    echo "	<tr>";
-    echo "		<td>Path:</td>";
-    echo "	</tr>";   
-    echo "	<tr>";
-    echo "		<td>".$folder."</td>";
-    echo "	</tr>";
-    echo "</table>";
-    
-    echo "<br />";
-    
-    echo "<table>";
-    echo "	<tr>";
-    echo "	  <td>Folder Name:</td>";
-    echo "	</tr>";
-    
-    echo "	<tr>";
-    echo "		<td><input type='text' name='foldername' value=''></td>";
-    echo "	</tr>";
-    
-    echo "	<tr>";
-    echo "		<td colspan='1' align='right'>";
-    echo "      <input type='hidden' name='folder' value='$folder'>";
-    echo "		  <input type='submit' value='New Folder'>";
-    echo "    </td>";
-    echo "	</tr>";
-    echo "</table>";
-    echo "</form>";
-    echo "</div>";
-    
-    require_once "footer.php";
+	echo "<br />";
+
+	echo "<table>";
+	echo "	<tr>";
+	echo "	  <td>Folder Name:</td>";
+	echo "	</tr>";
+
+	echo "	<tr>";
+	echo "		<td><input type='text' name='foldername' value=''></td>";
+	echo "	</tr>";
+
+	echo "	<tr>";
+	echo "		<td colspan='1' align='right'>";
+	echo "      <input type='hidden' name='folder' value='$folder'>";
+	echo "		  <input type='submit' value='New Folder'>";
+	echo "    </td>";
+	echo "	</tr>";
+	echo "</table>";
+	echo "</form>";
+	echo "</div>";
+
+	require_once "footer.php";
 }
-
 ?>

@@ -33,18 +33,15 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 
 $folder = $_GET["folder"];
 $folder = str_replace ("\\", "/", $folder);
 if (substr($folder, -1) != "/") { $folder = $folder.'/'; }
 $file = $_GET["file"];
 
-//echo $folder.$file;
-
 if (strlen($folder) > 0 && strlen($file) > 0) {
-    unlink($folder.$file);
-    header("Location: fileoptions.php");
+	unlink($folder.$file);
+	header("Location: fileoptions.php");
 }
 else {
 	//display form

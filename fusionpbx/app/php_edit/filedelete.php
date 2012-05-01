@@ -43,8 +43,8 @@ if (strlen($folder) > 0 && strlen($file) > 0) {
 	unlink($folder.$file);
 	header("Location: fileoptions.php");
 }
-else {//display form
-
+else {
+	//display form
 	require_once "header.php";
 	echo "<br>";
 	echo "<div align='left'>";
@@ -81,5 +81,4 @@ else {//display form
 
 	require_once "footer.php";
 }
-
 ?>

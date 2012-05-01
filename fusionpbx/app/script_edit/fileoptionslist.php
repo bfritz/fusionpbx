@@ -33,7 +33,6 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 require_once "header.php";
 
 function isfile($filename) {
@@ -81,7 +80,6 @@ function recur_dir($dir) {
                //$htmldirlist .= space(count($level))."       </DIV></TD></TR></TABLE>\n";
                $htmldirlist .= recur_dir($newpath);
                $htmldirlist .= space(count($level))."</DIV></TD></TR></TABLE>\n";
-
            }
            else {
                 /*$mod_array[] = array(
@@ -98,8 +96,6 @@ function recur_dir($dir) {
                $htmlfilelist .= space(count($level))."<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><a href='javascript:void(0);' onclick=\"parent.document.getElementById('filename').value='".$filename."'; parent.document.getElementById('folder').value='".$newpath."';\" title='$filesize KB'><IMG SRC=\"images/file.png\" border='none'>$filename</a><DIV style='display:none'>\n";
                $htmlfilelist .=  space(count($level))."</DIV></TD></TR></TABLE>\n";
           }
-
-
        }
    }
 
@@ -107,164 +103,168 @@ function recur_dir($dir) {
    return $htmldirlist ."\n". $htmlfilelist;
 }
 
-//show the content
-    echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-    echo "    function makeRequest(url, strpost) {\n";
-    //echo "        alert(url); \n";
-    echo "        var http_request = false;\n";
-    echo "\n";
-    echo "        if (window.XMLHttpRequest) { // Mozilla, Safari, ...\n";
-    echo "            http_request = new XMLHttpRequest();\n";
-    echo "            if (http_request.overrideMimeType) {\n";
-    echo "                http_request.overrideMimeType('text/xml');\n";
-    echo "                // See note below about this line\n";
-    echo "            }\n";
-    echo "        } else if (window.ActiveXObject) { // IE\n";
-    echo "            try {\n";
-    echo "                http_request = new ActiveXObject(\"Msxml2.XMLHTTP\");\n";
-    echo "            } catch (e) {\n";
-    echo "                try {\n";
-    echo "                    http_request = new ActiveXObject(\"Microsoft.XMLHTTP\");\n";
-    echo "                } catch (e) {}\n";
-    echo "            }\n";
-    echo "        }\n";
-    echo "\n";
-    echo "        if (!http_request) {\n";
-    echo "            alert('Giving up :( Cannot create an XMLHTTP instance');\n";
-    echo "            return false;\n";
-    echo "        }\n";
-    echo "        http_request.onreadystatechange = function() { returnContent(http_request); };\n";
-    echo "        http_request.overrideMimeType('text/html');\n";
-    echo "        http_request.open('POST', url, true);\n";
-    echo "\n";
-    echo "\n";
-    echo "        if (strpost.length == 0) {\n";
-    //echo "            alert('none');\n";
-    echo "            //http_request.send(null);\n";
-    echo "            http_request.send('name=value&foo=bar');\n";
-    echo "        }\n";
-    echo "        else {\n";
-    //echo "            alert(strpost);\n";
-    echo "            http_request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');\n";
-    //echo "            http_request.send('name=value&foo=bar');\n";
-    echo "            http_request.send(strpost);\n";
-    echo "        }\n";
-    echo "\n";
-    echo "    }\n";
-    echo "\n";
-    echo "    function returnContent(http_request) {\n";
-    echo "\n";
-    echo "        if (http_request.readyState == 4) {\n";
-    echo "            if (http_request.status == 200) {\n";
+echo "<script type=\"text/javascript\" language=\"javascript\">\n";
+echo "    function makeRequest(url, strpost) {\n";
+//echo "        alert(url); \n";
+echo "        var http_request = false;\n";
+echo "\n";
+echo "        if (window.XMLHttpRequest) { // Mozilla, Safari, ...\n";
+echo "            http_request = new XMLHttpRequest();\n";
+echo "            if (http_request.overrideMimeType) {\n";
+echo "                http_request.overrideMimeType('text/xml');\n";
+echo "                // See note below about this line\n";
+echo "            }\n";
+echo "        } else if (window.ActiveXObject) { // IE\n";
+echo "            try {\n";
+echo "                http_request = new ActiveXObject(\"Msxml2.XMLHTTP\");\n";
+echo "            } catch (e) {\n";
+echo "                try {\n";
+echo "                    http_request = new ActiveXObject(\"Microsoft.XMLHTTP\");\n";
+echo "                } catch (e) {}\n";
+echo "            }\n";
+echo "        }\n";
+echo "\n";
+echo "        if (!http_request) {\n";
+echo "            alert('Giving up :( Cannot create an XMLHTTP instance');\n";
+echo "            return false;\n";
+echo "        }\n";
+echo "        http_request.onreadystatechange = function() { returnContent(http_request); };\n";
+echo "        http_request.overrideMimeType('text/html');\n";
+echo "        http_request.open('POST', url, true);\n";
+echo "\n";
+echo "\n";
+echo "        if (strpost.length == 0) {\n";
+//echo "            alert('none');\n";
+echo "            //http_request.send(null);\n";
+echo "            http_request.send('name=value&foo=bar');\n";
+echo "        }\n";
+echo "        else {\n";
+//echo "            alert(strpost);\n";
+echo "            http_request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');\n";
+//echo "            http_request.send('name=value&foo=bar');\n";
+echo "            http_request.send(strpost);\n";
+echo "        }\n";
+echo "\n";
+echo "    }\n";
+echo "\n";
+echo "    function returnContent(http_request) {\n";
+echo "\n";
+echo "        if (http_request.readyState == 4) {\n";
+echo "            if (http_request.status == 200) {\n";
 
-    echo "                  parent.editAreaLoader.setValue('edit1', http_request.responseText); \n";
-    //echo "                alert(http_request.responseText);\n";
-    echo "\n";
-    //echo "                //var xmldoc = http_request.responseXML;\n";
-    //echo "                //var root_node = xmldoc.getElementsByTagName('doc').item(0);\n";
-    //echo "                //alert(xmldoc.getElementByID('fr1').value);\n";
-    //echo "                //alert(root_node.firstChild.data);\n";
-    //echo "\n";
-    echo "            }\n";
-    echo "            else {\n";
-    echo "                alert('There was a problem with the request.');\n";
-    echo "            }\n";
-    echo "        }\n";
-    echo "\n";
-    echo "    }\n";
-    echo "</script>\n";
+echo "                  parent.editAreaLoader.setValue('edit1', http_request.responseText); \n";
+//echo "                alert(http_request.responseText);\n";
+echo "\n";
+//echo "                //var xmldoc = http_request.responseXML;\n";
+//echo "                //var root_node = xmldoc.getElementsByTagName('doc').item(0);\n";
+//echo "                //alert(xmldoc.getElementByID('fr1').value);\n";
+//echo "                //alert(root_node.firstChild.data);\n";
+//echo "\n";
+echo "            }\n";
+echo "            else {\n";
+echo "                alert('There was a problem with the request.');\n";
+echo "            }\n";
+echo "        }\n";
+echo "\n";
+echo "    }\n";
+echo "</script>\n";
 
-    echo "<SCRIPT LANGUAGE=\"JavaScript\">\n";
-    //echo "// ---------------------------------------------\n";
-    //echo "// --- http://www.codeproject.com/jscript/dhtml_treeview.asp\n";
-    //echo "// --- Name:    Easy DHTML Treeview           --\n";
-    //echo "// --- Author:  D.D. de Kerf                  --\n";
-    //echo "// --- Version: 0.2          Date: 13-6-2001  --\n";
-    //echo "// ---------------------------------------------\n";
-    echo "function Toggle(node, path) {\n";
-    echo "	parent.document.getElementById('folder').value=path; \n";
-    echo "	parent.document.getElementById('filename').value='';\n";
-    echo "	parent.document.getElementById('folder').focus();\n";
-    echo "	// Unfold the branch if it isn't visible\n";
-    echo "	if (node.nextSibling.style.display == 'none')	{\n";
-    echo "  		// Change the image (if there is an image)\n";
-    echo "  		if (node.childNodes.length > 0)	{\n";
-    echo "    			if (node.childNodes.item(0).nodeName == \"IMG\") {\n";
-    echo "    				node.childNodes.item(0).src = \"images/minus.gif\";\n";
-    echo "    			}\n";
-    echo "  		}\n";
-    echo "  \n";
-    echo "  		node.nextSibling.style.display = 'block';\n";
-    echo "	}\n";
-    echo "	// Collapse the branch if it IS visible\n";
-    echo "	else	{\n";
-    echo "  		// Change the image (if there is an image)\n";
-    echo "  		if (node.childNodes.length > 0)	{\n";
-    echo "    			if (node.childNodes.item(0).nodeName == \"IMG\") {\n";
-    echo "    				node.childNodes.item(0).src = \"images/plus.gif\";\n";
-    echo "    			}\n";
-    echo "  		}\n";
-    echo "  		node.nextSibling.style.display = 'none';\n";
-    echo "	}\n";
-    echo "\n";
-    echo "}\n";
-    echo "</SCRIPT>\n";
+echo "<SCRIPT LANGUAGE=\"JavaScript\">\n";
+//echo "// ---------------------------------------------\n";
+//echo "// --- http://www.codeproject.com/jscript/dhtml_treeview.asp\n";
+//echo "// --- Name:    Easy DHTML Treeview           --\n";
+//echo "// --- Author:  D.D. de Kerf                  --\n";
+//echo "// --- Version: 0.2          Date: 13-6-2001  --\n";
+//echo "// ---------------------------------------------\n";
+echo "function Toggle(node, path) {\n";
+echo "	parent.document.getElementById('folder').value=path; \n";
+echo "	parent.document.getElementById('filename').value='';\n";
+echo "	parent.document.getElementById('folder').focus();\n";
+echo "	// Unfold the branch if it isn't visible\n";
+echo "	if (node.nextSibling.style.display == 'none')	{\n";
+echo "  		// Change the image (if there is an image)\n";
+echo "  		if (node.childNodes.length > 0)	{\n";
+echo "    			if (node.childNodes.item(0).nodeName == \"IMG\") {\n";
+echo "    				node.childNodes.item(0).src = \"images/minus.gif\";\n";
+echo "    			}\n";
+echo "  		}\n";
+echo "  \n";
+echo "  		node.nextSibling.style.display = 'block';\n";
+echo "	}\n";
+echo "	// Collapse the branch if it IS visible\n";
+echo "	else	{\n";
+echo "  		// Change the image (if there is an image)\n";
+echo "  		if (node.childNodes.length > 0)	{\n";
+echo "    			if (node.childNodes.item(0).nodeName == \"IMG\") {\n";
+echo "    				node.childNodes.item(0).src = \"images/plus.gif\";\n";
+echo "    			}\n";
+echo "  		}\n";
+echo "  		node.nextSibling.style.display = 'none';\n";
+echo "	}\n";
+echo "\n";
+echo "}\n";
+echo "</SCRIPT>\n";
 
-    echo "<div align='center' valign='1'>";
-    echo "<table  width='100%' height='100%' border='0' cellpadding='0' cellspacing='2'>\n";
-    echo "<tr class='border'>\n";
-    echo "	<td align=\"left\" valign='top' nowrap>\n";
-    //echo "      <br>";
+echo "<div align='center' valign='1'>";
+echo "<table  width='100%' height='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 
-    echo "\n";    
-    echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><IMG SRC=\"images/folder.gif\" border='0'> Files <DIV style=''>\n"; //display:none
-    //echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><A onClick=\"Toggle(this, '')\"><IMG SRC=\"images/plus.gif\"> <IMG SRC=\"images/folder.gif\"> Files </A><DIV style=''>\n"; //display:none
-    
-    //echo "<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap><A onClick=\"Toggle(this, '')\"><IMG SRC=\"images/plus.gif\"> <IMG SRC=\"images/gear.png\"> Tools </A><DIV style='display:none'>\n";
-    //echo "<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><IMG SRC=\"images/file.png\"><a href='foldernew.php?folder=".urlencode($_SERVER["DOCUMENT_ROOT"])."' title=''>New Folder </a><DIV style='display:none'>\n"; //parent.document.getElementById('file').value='".urlencode($newpath)."'
-    //echo "</DIV></TD></TR></TABLE>\n";
-    //echo "<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><IMG SRC=\"images/file.png\"><a href='filenew.php?folder=".urlencode($_SERVER["DOCUMENT_ROOT"])."' title=''>New File </a><DIV style='display:none'>\n"; //parent.document.getElementById('file').value='".urlencode($newpath)."'
-    //echo "</DIV></TD></TR></TABLE>\n";
-    //echo "</DIV></TD></TR></TABLE>\n";
+echo "<tr class='border'>\n";
+echo "	<td align=\"left\" valign='top' nowrap>\n";
+echo "\n";    
+echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><IMG SRC=\"images/folder.gif\" border='0'> Files <DIV style=''>\n"; //display:none
+//echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><A onClick=\"Toggle(this, '')\"><IMG SRC=\"images/plus.gif\"> <IMG SRC=\"images/folder.gif\"> Files </A><DIV style=''>\n"; //display:none
+
+//echo "<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap><A onClick=\"Toggle(this, '')\"><IMG SRC=\"images/plus.gif\"> <IMG SRC=\"images/gear.png\"> Tools </A><DIV style='display:none'>\n";
+//echo "<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><IMG SRC=\"images/file.png\"><a href='foldernew.php?folder=".urlencode($_SERVER["DOCUMENT_ROOT"])."' title=''>New Folder </a><DIV style='display:none'>\n"; //parent.document.getElementById('file').value='".urlencode($newpath)."'
+//echo "</DIV></TD></TR></TABLE>\n";
+//echo "<TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD nowrap WIDTH=12></TD><TD nowrap align='bottom'><IMG SRC=\"images/file.png\"><a href='filenew.php?folder=".urlencode($_SERVER["DOCUMENT_ROOT"])."' title=''>New File </a><DIV style='display:none'>\n"; //parent.document.getElementById('file').value='".urlencode($newpath)."'
+//echo "</DIV></TD></TR></TABLE>\n";
+//echo "</DIV></TD></TR></TABLE>\n";
 	echo recur_dir($_SESSION['switch']['scripts']['dir']);
 
-    echo "</DIV></TD></TR></TABLE>\n";
+echo "</DIV></TD></TR></TABLE>\n";
 
-    /*
-    echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><A onClick=\"Toggle(this, '')\"><IMG SRC=\"/images/plus.gif\"> <IMG SRC=\"/images/folder.gif\"> Files </A><DIV style='display:none'>\n";
-    echo "\n";
-    echo "         <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD><A onClick=\"Toggle(this, '')\"><IMG SRC=\"/images/plus.gif\"> <IMG SRC=\"/images/folder.gif\"> Folder 1</A><DIV style='display:none'>\n";
-    echo "\n";
-    echo "         <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo1.php <DIV style='display:none'>\n";
-    echo "         </DIV></TD></TR></TABLE>\n";
-    echo "\n";
-    echo "         <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo2.php <DIV style='display:none'>\n";
-    echo "         </DIV></TD></TR></TABLE>\n";
-    echo "\n";
-    echo "         </DIV></TD></TR></TABLE>\n";
-    echo "\n";
-    echo "        <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD><A onClick=\"Toggle(this, '')\"><IMG SRC=\"/images/plus.gif\"> <IMG SRC=\"/images/folder.gif\"> Folder 2</A><DIV style='display:none'>\n";
-    echo "\n";
-    echo "            <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo3.php <DIV style='display:none'>\n";
-    echo "            </DIV></TD></TR></TABLE>\n";
-    echo "\n";
-    echo "            <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo4.php <DIV style='display:none'>\n";
-    echo "            </DIV></TD></TR></TABLE>\n";
-    echo "\n";
-    echo "         </DIV></TD></TR></TABLE>\n";
-    echo "\n";
-    echo "      </DIV></TD></TR></TABLE>\n";
-    */
+/*
+echo "      <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD><A onClick=\"Toggle(this, '')\"><IMG SRC=\"/images/plus.gif\"> <IMG SRC=\"/images/folder.gif\"> Files </A><DIV style='display:none'>\n";
+echo "\n";
+echo "         <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD><A onClick=\"Toggle(this, '')\"><IMG SRC=\"/images/plus.gif\"> <IMG SRC=\"/images/folder.gif\"> Folder 1</A><DIV style='display:none'>\n";
+echo "\n";
+echo "         <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo1.php <DIV style='display:none'>\n";
+echo "         </DIV></TD></TR></TABLE>\n";
+echo "\n";
+echo "         <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo2.php <DIV style='display:none'>\n";
+echo "         </DIV></TD></TR></TABLE>\n";
+echo "\n";
+echo "         </DIV></TD></TR></TABLE>\n";
+echo "\n";
+echo "        <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD><A onClick=\"Toggle(this, '')\"><IMG SRC=\"/images/plus.gif\"> <IMG SRC=\"/images/folder.gif\"> Folder 2</A><DIV style='display:none'>\n";
+echo "\n";
+echo "            <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo3.php <DIV style='display:none'>\n";
+echo "            </DIV></TD></TR></TABLE>\n";
+echo "\n";
+echo "            <TABLE BORDER=0 cellpadding='0' cellspacing='0'><TR><TD WIDTH=10></TD><TD align='bottom'><IMG SRC=\"/images/file.png\"> demo4.php <DIV style='display:none'>\n";
+echo "            </DIV></TD></TR></TABLE>\n";
+echo "\n";
+echo "         </DIV></TD></TR></TABLE>\n";
+echo "\n";
+echo "      </DIV></TD></TR></TABLE>\n";
+*/
 
-    echo "</td>\n";
-    echo "</tr>\n";
-    echo "</table>\n";
-    echo "</div>";
+echo "</td>\n";
+echo "</tr>\n";
+echo "</table>\n";
+echo "</div>";
 
-    echo "<br><br>";
-    require_once "footer.php";
+echo "<br><br>";
+require_once "footer.php";
 
-    echo "</body>";
-    echo "</html>";
+unset ($result_count);
+unset ($result);
+unset ($key);
+unset ($val);
+unset ($c);
+
+echo "</body>";
+echo "</html>";
 
 ?>

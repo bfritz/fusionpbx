@@ -33,22 +33,24 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "config.php";
 
-$id = $_GET["id"];
-if (strlen($id)>0) {
-    $sql = "";
-    $sql .= "delete from v_clip_library ";
-    $sql .= "where id = '$id' ";
-    $prep_statement = $db->prepare(check_sql($sql));
-    $prep_statement->execute();
-    unset($sql,$db);
-}
+//get the uuid from http values
+	$clip_uuid = check_str($_GET["id"]);
 
-require_once "header.php";
-echo "<meta http-equiv=\"refresh\" content=\"1;url=clipoptions.php\">\n";
-echo "Delete Complete";
-require_once "footer.php";
-return;
+//delete the clip
+	if (strlen($_GET["id"])>0) {
+		$sql = "delete from v_clips ";
+		$sql .= "where clip_uuid = '".$clip_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		unset($sql,$db);
+	}
+
+//redirect the browser
+	require_once "header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"1;url=clipoptions.php\">\n";
+	echo "Delete Complete";
+	require_once "footer.php";
+	return;
 
 ?>

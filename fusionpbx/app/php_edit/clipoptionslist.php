@@ -59,6 +59,7 @@ function space($count) {
 	return $r;
 }
 
+//show the content
 	echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 	echo "    function makeRequest(url, strpost) {\n";
 	echo "        var http_request = false;\n";
