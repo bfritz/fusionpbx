@@ -34,6 +34,7 @@
 		$php_self_dir = substr($php_self_dir, strlen(PROJECT_PATH), strlen($php_self_dir));
 	}
 ?>
+<link rel="icon" href="<!--{project_path}-->/favicon.ico">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <style type='text/css'>
 
