@@ -352,7 +352,7 @@ function process_xml_cdr($db, $leg, $xml_string) {
 		ob_end_clean(); //clean the buffer
 		$time = "\n\n$insert_count inserts in: ".number_format($insert_time,5). " seconds.\n";
 		$time .= "Other processing time: ".number_format((microtime(true)-$time5-$insert_time),5). " seconds.\n";
-		$fp = fopen('/tmp/xml_cdr_post.log', 'w');
+		$fp = fopen(sys_get_temp_dir().'/xml_cdr_post.log', 'w');
 		fwrite($fp, $content.$time);
 		fclose($fp);
 	}
