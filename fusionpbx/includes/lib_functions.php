@@ -571,11 +571,9 @@
 		function add_extension_user($extension_uuid, $username) {
 			global $db, $domain_uuid;
 			//get the user_uuid by using the username
-				$sql = "";
-				$sql .= "select * from v_users ";
+				$sql = "select * from v_users ";
 				$sql .= "where domain_uuid = '$domain_uuid' ";
 				$sql .= "and username = '$username' ";
-				echo $sql."\n";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -585,7 +583,6 @@
 						$sql = "select * from v_extension_users ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and user_uuid = '".$row["user_uuid"]."' ";
-						echo $sql."\n";
 						$prep_statement = $db->prepare(check_sql($sql));
 						$prep_statement->execute();
 						$extension_users_result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -604,7 +601,6 @@
 							$sql .= "'$extension_uuid', ";
 							$sql .= "'".$row["user_uuid"]."' ";
 							$sql .= ")";
-							echo $sql."\n";
 							$db->exec(check_sql($sql));
 							unset($sql);
 						}
@@ -726,6 +722,7 @@ function format_string ($format, $data) {
 			global $domain_uuid, $db;
 			$sql = "select * from v_vars ";
 			$sql .= "where var_name = 'format_phone' ";
+			$sql .= "and var_enabled = 'true' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			if ($prep_statement) {
 				$prep_statement->execute();
