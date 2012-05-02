@@ -73,7 +73,7 @@
 	unset($prep_statement, $sub_result);
 
 //if there are no permissions listed in v_group_permissions then set the default permissions
-	$sql .= "select count(*) as count from v_group_permissions ";
+	$sql = "select count(*) as count from v_group_permissions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
