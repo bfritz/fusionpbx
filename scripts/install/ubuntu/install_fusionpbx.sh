@@ -1988,13 +1988,13 @@ DELIM
 	/bin/echo "Stopping FreeSWITCH..."
 	#/etc/init.d/freeswitch stop
 	
-	if [ $INST_FPBX == svn ]; then
+	if [[ "$INST_FPBX" == "svn" ]]; then
 			
-			if [ $FBPXCHECKOUTVER = true ]; then
+			if [ $FBPXCHECKOUTVER == true ]; then
 				/bin/echo "Going to install FusionPBX SVN Rev $FPBXREV"
 				/usr/bin/svn checkout -r r$FPBXREV http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
 			else	
-				"Going to install FusionPBX latest SVN!"
+				/bin/echo "Going to install FusionPBX latest SVN!"
 				#removed -r r1877 r1877 from new install
 				/usr/bin/svn checkout http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
 			fi
