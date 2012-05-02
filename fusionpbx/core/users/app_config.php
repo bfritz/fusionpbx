@@ -313,4 +313,36 @@
 		//$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
 		//$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 
+		$y = 4; //table array index
+		$z = 0; //field array index
+		$apps[$x]['db'][$y]['table'] = 'v_user_settings';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_setting_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_setting_category';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enter the category.';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_setting_subcategory';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enter the subcategory.';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_setting_name';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enter the name.';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_setting_value';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enter the value.';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_setting_enabled';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_setting_description';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 ?>
