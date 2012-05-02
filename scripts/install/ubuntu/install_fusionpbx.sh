@@ -95,7 +95,7 @@ FSREV="187abe02af4d64cdedc598bd3dfb1cd3ed0f4a91"
 FSCHECKOUTVER=false
 FPBXREV="1876"
 FBPXCHECKOUTVER=false
-
+URLSCRIPT="http://fusionpbx.googlecode.com/svn/trunk/scripts/install/ubuntu/install_fusionpbx.sh"
 
 #---------
 #  NOTES
@@ -719,6 +719,36 @@ else
 	fi
 fi
 
+#Check for new version
+WHEREAMI=$(echo "`pwd`/`basename $0`")
+wget $URLSCRIPT -O /tmp/install_fusionpbx.latest
+CURMD5=$(md5sum "$WHEREAMI" | sed -e "s/\ .*//")
+echo "The md5sum of the current script is: $CURMD5"
+NEWMD5=$(md5sum /tmp/install_fusionpbx.latest | sed -e "s/\ .*//")
+echo "The md5sum of the latest script is: $NEWMD5"
+
+if [[ "$CURMD5" == "$NEWMD5" ]]; then
+	echo "files are the same, continuing"
+else
+	echo "There is a new version of this script."
+	echo "  It is PROBABLY a good idea use the new version"
+	echo "  the new file is saved in /tmp/install_fusionpbx.latest"
+	echo "  to see the difference, run:"
+	echo "  diff -y /tmp/install_fusionpbx.latest $WHEREAMI"
+	read -p "Continue [y/N]? " YESNO
+	case $YESNO in
+		[Yy]*)
+			echo "OK, Continuing"
+			echo "  Deleting newest script in /tmp"
+			rm /tmp/install_fusionpbx.latest
+		;;
+
+		*)
+			echo "OK, Stopping."
+			exit 0
+		;;
+	esac
+fi
 
 
 #----------------------
