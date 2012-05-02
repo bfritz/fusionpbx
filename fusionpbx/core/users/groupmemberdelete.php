@@ -42,14 +42,14 @@ else {
 
 //get the http values and set them as variables
 	$group_name = check_str($_GET["group_name"]);
-	$username = check_str($_GET["username"]);
+	$user_uuid = check_str($_GET["user_uuid"]);
 
 //delete the group membership
-	$sqldelete = "delete from v_group_users ";
-	$sqldelete .= "where domain_uuid = '$domain_uuid' ";
-	$sqldelete .= "and username = '$username' ";
-	$sqldelete .= "and group_name = '$group_name' ";
-	if (!$db->exec($sqldelete)) {
+	$sql_delete = "delete from v_group_users ";
+	$sql_delete .= "where domain_uuid = '$domain_uuid' ";
+	$sql_delete .= "and user_uuid = '$user_uuid' ";
+	$sql_delete .= "and group_name = '$group_name' ";
+	if (!$db->exec($sql_delete)) {
 		//echo $db->errorCode() . "<br>";
 		$info = $db->errorInfo();
 		print_r($info);

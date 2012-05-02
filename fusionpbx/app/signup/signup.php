@@ -147,16 +147,14 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$sql .= "group_user_uuid, ";
 	$sql .= "domain_uuid, ";
 	$sql .= "group_name, ";
-	$sql .= "user_uuid, ";
-	$sql .= "username ";
+	$sql .= "user_uuid ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'".uuid()."', ";
 	$sql .= "'" . $domain_uuid . "', ";
 	$sql .= "'" . $group_name . "', ";
-	$sql .= "'" . $user_uuid . "', ";
-	$sql .= "'" . $request['username']. "' ";
+	$sql .= "'" . $user_uuid . "' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql);

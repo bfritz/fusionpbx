@@ -257,18 +257,15 @@ require_once "includes/header.php";
 			//sleep(60);
 		}
 
-
 	if (strlen($group_name) > 0) {
-		$sql = "";
-		$sql .= " select * from v_users as u, v_group_users as m ";
-		$sql .= " where u.username = m.username ";
+		$sql = " select * from v_users as u, v_group_users as m ";
+		$sql .= " where u.user_uuid = m.user_uuid ";
 		$sql .= " and m.group_name = '".$group_name."' ";
 		$sql .= " and u.user_category = '".$user_category."' ";
 		//echo $sql."<br />";
 	}
 	else {
-		$sql = "";
-		$sql .= " select * from v_users as u ";
+		$sql = " select * from v_users as u ";
 		$sql .= " where u.user_category = '".$user_category."' ";
 		//echo $sql."<br />";
 	}
@@ -284,7 +281,6 @@ require_once "includes/header.php";
 
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	//echo th_order_by('username', 'Username', $order_by, $order);
 	echo th_order_by('user_type', 'Type', $order_by, $order);
@@ -296,11 +292,8 @@ require_once "includes/header.php";
 	echo th_order_by('user_phone_2', 'Phone2', $order_by, $order);
 	echo "<tr>\n";
 
-	if ($result_count == 0) { //no results
-	}
-	else { //received results
+	if ($result_count > 0) {
 		foreach($result as $row) {
-			//print_r( $row );
 			echo "<tr >\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[username]."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[user_type]."&nbsp;</td>\n";

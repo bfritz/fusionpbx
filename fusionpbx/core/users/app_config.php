@@ -256,6 +256,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'username';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';

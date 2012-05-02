@@ -45,8 +45,7 @@ else {
 	}
 
 //get the username from v_users
-	$sql = "";
-	$sql .= "select * from v_users ";
+	$sql = "select * from v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -149,15 +148,14 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		return;
 }
 else {
-
-	$sql = "";
-	$sql .= "select * from v_users ";
+	$sql = "select * from v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and username = '$username' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
+		$user_uuid = $row["user_uuid"];
 		if (if_group("admin")) {
 			$username = $row["username"];
 		}

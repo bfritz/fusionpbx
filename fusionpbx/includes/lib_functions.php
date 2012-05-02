@@ -166,7 +166,7 @@
 			$group_members = "||";
 			foreach($result as $field) {
 				//get the list of groups
-				$group_members .= $field[group_name]."||";
+				$group_members .= $field['group_name']."||";
 			}
 			unset($sql, $result, $row_count);
 			return $group_members;
@@ -196,7 +196,7 @@
 			$superadmin_list = "||";
 			foreach($result as $field) {
 				//get the list of superadmins
-				$superadmin_list .= $field[group_name]."||";
+				$superadmin_list .= $field['group_name']."||";
 			}
 			unset($sql, $result, $row_count);
 			return $superadmin_list;
@@ -653,14 +653,14 @@
 					$sql .= "group_user_uuid, ";
 					$sql .= "domain_uuid, ";
 					$sql .= "group_name, ";
-					$sql .= "username ";
+					$sql .= "user_uuid ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'".uuid()."', ";
 					$sql .= "'$domain_uuid', ";
 					$sql .= "'$group_name', ";
-					$sql .= "'$username' ";
+					$sql .= "'$user_uuid' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					unset($sql);

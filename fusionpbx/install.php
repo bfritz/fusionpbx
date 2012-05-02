@@ -921,6 +921,8 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		//prepare the values
 			$user_uuid = uuid();
 			$contact_uuid = uuid();
+		//set a sessiong variable
+			$_SESSION["user_uuid"] = $user_uuid;
 		//salt used with the password to create a one way hash
 			$salt = generate_password('20', '4');
 		//add the user account
@@ -977,14 +979,14 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 		$sql .= "(";
 		$sql .= "group_user_uuid, ";
 		$sql .= "domain_uuid, ";
-		$sql .= "username, ";
+		$sql .= "user_uuid, ";
 		$sql .= "group_name ";
 		$sql .= ") ";
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'".uuid()."', ";
 		$sql .= "'".$_SESSION["domain_uuid"]."', ";
-		$sql .= "'".$admin_username."', ";
+		$sql .= "'".$_SESSION["user_uuid"]."', ";
 		$sql .= "'superadmin' ";
 		$sql .= ");";
 		if ($v_debug) {
@@ -1229,10 +1231,10 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 	//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
 		$sql = "SELECT * FROM v_group_users ";
 		$sql .= "where domain_uuid=:domain_uuid ";
-		$sql .= "and username=:username ";
+		$sql .= "and user_uuid=:user_uuid ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->bindParam(':domain_uuid', $_SESSION["domain_uuid"]);
-		$prep_statement->bindParam(':username', $_SESSION["username"]);
+		$prep_statement->bindParam(':user_uuid', $_SESSION["user_uuid"]);
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 		$_SESSION["groups"] = $result;

@@ -73,7 +73,6 @@
 	unset($prep_statement, $sub_result);
 
 //if there are no permissions listed in v_group_permissions then set the default permissions
-	$sql = "";
 	$sql .= "select count(*) as count from v_group_permissions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare($sql);
@@ -117,4 +116,28 @@
 		$db->commit();
 	}
 
+//find rows that have a null user_uuid and set the correct user_uuid
+	$sql = "select * from v_group_users ";
+	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$sql .= "and user_uuid is null; ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	if ($prep_statement) {
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+			foreach($result as $row) {
+				//get the user_uuid
+					$sql = "select user_uuid from v_users where username = '".$row['username']."' ";
+					$prep_statement_sub = $db->prepare($sql);
+					$prep_statement_sub->execute();
+					$sub_result = $prep_statement_sub->fetch(PDO::FETCH_ASSOC);
+					unset ($prep_statement_sub);
+					$user_uuid = $sub_result['user_uuid'];
+				//set the user uuid
+					$sql = "update v_group_users set ";
+					$sql .= "user_uuid = '".$user_uuid."' ";
+					$sql .= "where username = '".$row['username']."'; ";
+					$db->exec($sql);
+					unset($sql);
+			}
+	}
 ?>

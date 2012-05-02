@@ -35,27 +35,13 @@ else {
 }
 
 //get the id
-	$id = check_str($_GET["id"]);
+	$user_uuid = check_str($_GET["id"]);
 
 //get the username from v_users
 	$sql = "";
 	$sql .= "select * from v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and user_uuid = '$id' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	foreach ($result as &$row) {
-		$username = $row["username"];
-		break; //limit to 1 row
-	}
-	unset ($prep_statement);
-
-//get the username from v_users
-	$sql = "";
-	$sql .= "select * from v_users ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and user_uuid = '$id' ";
+	$sql .= "and user_uuid = '$user_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -77,7 +63,7 @@ else {
 //delete the user
 	$sql_delete = "delete from v_users ";
 	$sql_delete .= "where domain_uuid = '$domain_uuid' ";
-	$sql_delete .= "and user_uuid = '$id' ";
+	$sql_delete .= "and user_uuid = '$user_uuid' ";
 	if (!$db->exec($sql_delete)) {
 		//echo $db->errorCode() . "<br>";
 		$info = $db->errorInfo();
@@ -90,7 +76,7 @@ else {
 //delete the groups the user is assigned to
 	$sql_delete = "delete from v_group_users ";
 	$sql_delete .= "where domain_uuid = '$domain_uuid' ";
-	$sql_delete .= "and username = '$username' ";
+	$sql_delete .= "and user_uuid = '$user_uuid' ";
 	if (!$db->exec($sql_delete)) {
 		$info = $db->errorInfo();
 		print_r($info);

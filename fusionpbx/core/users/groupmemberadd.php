@@ -42,22 +42,22 @@ else {
 
 //get the http values and set them as variables
 	$group_name = check_str($_POST["group_name"]);
-	$username = check_str($_POST["username"]);
+	$user_uuid = check_str($_POST["user_uuid"]);
 
-if (strlen($username) > 0  && strlen($group_name) > 0)   {
+if (strlen($user_uuid) > 0  && strlen($group_name) > 0)   {
 	$sql_insert = "insert into v_group_users ";
 	$sql_insert .= "(";
 	$sql_insert .= "group_user_uuid, ";
 	$sql_insert .= "domain_uuid, ";
 	$sql_insert .= "group_name, ";
-	$sql_insert .= "username ";
+	$sql_insert .= "user_uuid ";
 	$sql_insert .= ")";
 	$sql_insert .= "values ";
 	$sql_insert .= "(";
 	$sql_insert .= "'".uuid()."', ";
 	$sql_insert .= "'$domain_uuid', ";
 	$sql_insert .= "'$group_name', ";
-	$sql_insert .= "'$username' ";
+	$sql_insert .= "'$user_uuid' ";
 	$sql_insert .= ")";
 	if (!$db->exec($sql_insert)) {
 		//echo $db->errorCode() . "<br>";

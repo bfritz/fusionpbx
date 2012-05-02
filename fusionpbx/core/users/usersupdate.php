@@ -39,7 +39,7 @@ else {
 
 //get data from the db
 	if (strlen($_REQUEST["id"])> 0) {
-		$id = $_REQUEST["id"];
+		$user_uuid = $_REQUEST["id"];
 	}
 	else {
 		if (strlen($_SESSION["username"]) > 0) {
@@ -48,10 +48,9 @@ else {
 	}
 
 //get the username from v_users
-	$sql = "";
-	$sql .= "select * from v_users ";
+	$sql = "select * from v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and user_uuid = '$id' ";
+	$sql .= "and user_uuid = '$user_uuid' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -78,18 +77,18 @@ else {
 			$sql = "delete from v_group_users ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and group_name = '$group_name' ";
-			$sql .= "and username = '$username' ";
+			$sql .= "and user_uuid = '$user_uuid' ";
 			$db->exec(check_sql($sql));
 		//redirect the user
 			require_once "includes/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$id\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$user_uuid\">\n";
 			echo "<div align='center'>Update Complete</div>";
 			require_once "includes/footer.php";
 			return;
 	}
 
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
-	$id = $_REQUEST["id"];
+	$user_uuid = $_REQUEST["id"];
 	$password = check_str($_POST["password"]);
 	$confirm_password = check_str($_POST["confirm_password"]);
 	$user_status = check_str($_POST["user_status"]);
@@ -99,7 +98,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$group_member = check_str($_POST["group_member"]);
 
 	//if (strlen($password) == 0) { $msg_error .= "Password cannot be blank.<br>\n"; }
-	if (strlen($username) == 0) { $msg_error .= "Please provide the username.<br>\n"; }
+	//if (strlen($username) == 0) { $msg_error .= "Please provide the username.<br>\n"; }
 	if ($password != $confirm_password) { $msg_error .= "Passwords did not match.<br>\n"; }
 	//if (strlen($contact_uuid) == 0) { $msg_error .= "Please provide an email.<br>\n"; }
 	//if (strlen($user_time_zone) == 0) { $msg_error .= "Please provide an time zone.<br>\n"; }
@@ -124,14 +123,14 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 			$sql_insert .= "group_user_uuid, ";
 			$sql_insert .= "domain_uuid, ";
 			$sql_insert .= "group_name, ";
-			$sql_insert .= "username ";
+			$sql_insert .= "user_uuid ";
 			$sql_insert .= ")";
 			$sql_insert .= "values ";
 			$sql_insert .= "(";
 			$sql_insert .= "'".uuid()."', ";
 			$sql_insert .= "'$domain_uuid', ";
 			$sql_insert .= "'".$_REQUEST["group_name"]."', ";
-			$sql_insert .= "'$username' ";
+			$sql_insert .= "'$user_uuid' ";
 			$sql_insert .= ")";
 			if ($_REQUEST["group_name"] == "superadmin") {
 				//only a user in the superadmin group can add other users to that group
@@ -173,9 +172,9 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		else {
 			$sql .= "contact_uuid = '$contact_uuid' ";
 		}
-		if (strlen($id)> 0) {
+		if (strlen($user_uuid)> 0) {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and user_uuid = '$id' ";
+			$sql .= "and user_uuid = '$user_uuid' ";
 		}
 		else {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -198,10 +197,10 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	//redirect the browser
 		require_once "includes/header.php";
 		if (if_group("admin")) {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$id\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$user_uuid\">\n";
 		}
 		else {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$id\">\n";
+			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$user_uuid\">\n";
 		}
 		echo "<div align='center'>Update Complete</div>";
 		require_once "includes/footer.php";
@@ -211,9 +210,9 @@ else {
 	$sql = "select * from v_users ";
 	//allow admin access
 	if (if_group("admin") || if_group("superadmin")) {
-		if (strlen($id)> 0) {
+		if (strlen($user_uuid)> 0) {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and user_uuid = '$id' ";
+			$sql .= "and user_uuid = '$user_uuid' ";
 		}
 		else {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -312,10 +311,10 @@ else {
 	echo "<table width='52%'>\n";
 	$sql = "SELECT * FROM v_group_users ";
 	$sql .= "where domain_uuid=:domain_uuid ";
-	$sql .= "and username=:username ";
+	$sql .= "and user_uuid=:user_uuid ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->bindParam(':domain_uuid', $domain_uuid);
-	$prep_statement->bindParam(':username', $username);
+	$prep_statement->bindParam(':user_uuid', $user_uuid);
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	$result_count = count($result);
@@ -325,7 +324,7 @@ else {
 			echo "	<td class='vtable'>".$field['group_name']."</td>\n";
 			echo "	<td>\n";
 			if (permission_exists('group_member_delete') || if_group("superadmin")) {
-				echo "		<a href='usersupdate.php?id=".$id."&domain_uuid=".$domain_uuid."&group_name=".$field['group_name']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='usersupdate.php?id=".$user_uuid."&domain_uuid=".$domain_uuid."&group_name=".$field['group_name']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -533,7 +532,7 @@ else {
 	echo "<table $table_width>";
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
-	echo "			<input type='hidden' name='id' value=\"$id\">";
+	echo "			<input type='hidden' name='id' value=\"$user_uuid\">";
 	echo "			<input type='hidden' name='username' value=\"$username\">";
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>";
 	echo "		</td>";

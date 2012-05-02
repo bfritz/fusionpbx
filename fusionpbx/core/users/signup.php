@@ -95,7 +95,8 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	//salt used with the password to create a one way hash
 	$salt = generate_password('20', '4');
 
-	//prepare the contact uuid
+	//prepare the uuids
+	$user_uuid = uuid();
 	$contact_uuid = uuid();
 
 	//add the user
@@ -113,7 +114,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
-	$sql .= "'".uuid()."', ";
+	$sql .= "'$user_uuid', ";
 	$sql .= "'$contact_uuid', ";
 	$sql .= "'$username', ";
 	$sql .= "'".md5($salt.$password)."', ";
@@ -160,14 +161,14 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "group_user_uuid, ";
 	$sql .= "domain_uuid, ";
 	$sql .= "group_name, ";
-	$sql .= "username ";
+	$sql .= "user_uuid ";
 	$sql .= ")";
 	$sql .= "values ";
 	$sql .= "(";
 	$sql .= "'".uuid()."', ";
 	$sql .= "'$domain_uuid', ";
 	$sql .= "'$group_name', ";
-	$sql .= "'$username' ";
+	$sql .= "'$user_uuid' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql);

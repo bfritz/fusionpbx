@@ -44,7 +44,7 @@ session_start();
 				exit;
 			}
 
-		//check the username and password if they don't match then redirect back to login
+		//check the username and password if they don't match then redirect to the login
 			$sql = "select * from v_users ";
 			$sql .= "where domain_uuid=:domain_uuid ";
 			$sql .= "and username=:username ";
@@ -103,10 +103,10 @@ session_start();
 		//get the groups assigned to the user and then set the groups in $_SESSION["groups"]
 			$sql = "SELECT * FROM v_group_users ";
 			$sql .= "where domain_uuid=:domain_uuid ";
-			$sql .= "and username=:username ";
+			$sql .= "and user_uuid=:user_uuid ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->bindParam(':domain_uuid', $domain_uuid);
-			$prep_statement->bindParam(':username', $_SESSION["username"]);
+			$prep_statement->bindParam(':user_uuid', $_SESSION["user_uuid"]);
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			$_SESSION["groups"] = $result;

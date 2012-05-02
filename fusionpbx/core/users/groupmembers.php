@@ -44,11 +44,11 @@ else {
 	$group_name = $_GET["group_name"];
 
 //define the if group members function
-	function if_group_members($db, $group_name, $username) {
+	function if_group_members($db, $group_name, $user_uuid) {
 		$sql = "select * from v_group_users ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and group_name = '$group_name' ";
-		$sql .= "and username = '$username' ";
+		$sql .= "and user_uuid = '$user_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		if (count($prep_statement->fetchAll(PDO::FETCH_NAMED)) == 0) { return true; } else { return false; }
@@ -80,7 +80,6 @@ else {
 	echo "	</tr>\n";
 	echo "</table>\n";
 
-
 	$sql = "SELECT * FROM v_group_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and group_name = '$group_name' ";
@@ -99,14 +98,15 @@ else {
 	$count = 0;
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
-		$id = $row["id"];
+		$group_user_uuid = $row["group_user_uuid"];
 		$username = $row["username"];
+		$user_uuid = $row["user_uuid"];
 		$strlist .= "<tr'>";
 		$strlist .= "<td align=\"left\"  class='".$row_style[$c]."' nowrap> &nbsp; $username &nbsp; </td>\n";
 		$strlist .= "<td align=\"left\"  class='".$row_style[$c]."' nowrap> &nbsp; </td>\n";
 		$strlist .= "<td align=\"right\" nowrap>\n";
 		if (permission_exists('group_member_delete')) {
-			$strlist .= "	<a href='groupmemberdelete.php?username=$username&group_name=$group_name' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
+			$strlist .= "	<a href='groupmemberdelete.php?user_uuid=$user_uuid&group_name=$group_name' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
 		}
 		$strlist .= "</td>\n";
 		$strlist .= "</tr>\n";
@@ -135,13 +135,13 @@ else {
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 
-	echo "<select name=\"username\" style='width: 200px;' class='formfld'>\n";
+	echo "<select name=\"user_uuid\" style='width: 200px;' class='formfld'>\n";
 	echo "<option value=\"\"></option>\n";
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach($result as $field) {
-		$username = $field[username];
-		if (if_group_members($db, $group_name, $username)) {
-			echo "<option value='".$field['username']."'>".$field['username']."</option>\n";
+		$username = $field['username'];
+		if (if_group_members($db, $group_name, $field['user_uuid'])) {
+			echo "<option value='".$field['user_uuid']."'>".$field['username']."</option>\n";
 		}
 	}
 	echo "</select>";
