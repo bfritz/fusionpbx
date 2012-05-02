@@ -62,7 +62,7 @@ else {
 
 //required to be a superadmin to update an account that is a member of the superadmin group
 	$superadmin_list = superadmin_list($db);
-	if (if_superadmin($superadmin_list, $username)) {
+	if (if_superadmin($superadmin_list, $_SESSION['user_uuid'])) {
 		if (!if_group("superadmin")) { 
 			echo "access denied";
 			return;
@@ -227,6 +227,7 @@ else {
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
+		$user_uuid = $row["user_uuid"];
 		if (if_group("admin")) {
 			$username = $row["username"];
 		}
@@ -240,7 +241,7 @@ else {
 
 	//get the groups the user is a member of
 	//group_members function defined in config.php
-	$group_members = group_members($db, $username);
+	$group_members = group_members($db, $user_uuid);
 }
 
 //include the header

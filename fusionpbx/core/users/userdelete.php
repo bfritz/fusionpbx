@@ -53,13 +53,12 @@ else {
 
 //required to be a superadmin to delete a member of the superadmin group
 	$superadmin_list = superadmin_list($db);
-	if (if_superadmin($superadmin_list, $username)) {
+	if (if_superadmin($superadmin_list, $_SESSION['user_uuid'])) {
 		if (!if_group("superadmin")) { 
 			echo "access denied";
 			return;
 		}
 	}
-
 //delete the user
 	$sql_delete = "delete from v_users ";
 	$sql_delete .= "where domain_uuid = '$domain_uuid' ";

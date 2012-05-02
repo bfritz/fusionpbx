@@ -154,11 +154,11 @@
 	}
 
 	if (!function_exists('group_members')) {
-		function group_members($db, $username) {
+		function group_members($db, $user_uuid) {
 			global $domain_uuid;
 			$sql = "select * from v_group_users ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and username = '".$username."' ";
+			$sql .= "and user_uuid = '".$user_uuid."' ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -196,7 +196,7 @@
 			$superadmin_list = "||";
 			foreach($result as $field) {
 				//get the list of superadmins
-				$superadmin_list .= $field['group_name']."||";
+				$superadmin_list .= $field['user_uuid']."||";
 			}
 			unset($sql, $result, $row_count);
 			return $superadmin_list;
@@ -205,12 +205,12 @@
 	//superadmin_list($db);
 
 	if (!function_exists('if_superadmin')) {
-		function if_superadmin($superadmin_list, $username) {
-			if (stripos($superadmin_list, "||".$username."||") === false) {
-				return false; //username does not exist
+		function if_superadmin($superadmin_list, $user_uuid) {
+			if (stripos($superadmin_list, "||".$user_uuid."||") === false) {
+				return false; //user_uuid does not exist
 			}
 			else {
-				return true; //username exists
+				return true; //user_uuid exists
 			}
 		}
 	}
