@@ -295,6 +295,7 @@ if ($db_type == "pgsql") {
 		//get the domains settings
 			$sql = "select * from v_user_settings ";
 			$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+			$sql .= "and user_uuid = '".$_SESSION["user_uuid"]."' ";
 			$sql .= "and user_setting_enabled = 'true' ";
 			$prep_statement = $db->prepare($sql);
 			if ($prep_statement) {

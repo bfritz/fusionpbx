@@ -158,6 +158,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'usertimezone';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = 'true';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'user_add_user';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'useradduser';
@@ -321,6 +322,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
 		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_setting_category';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';

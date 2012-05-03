@@ -36,25 +36,13 @@ else {
 
 //get data from the db
 	if (strlen($_REQUEST["id"])> 0) {
-		$id = $_REQUEST["id"];
+		$user_uuid = $_REQUEST["id"];
 	}
 	else {
 		if (strlen($_SESSION["username"]) > 0) {
 			$username = $_SESSION["username"];
 		}
 	}
-
-//get the username from v_users
-	$sql = "select * from v_users ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and user_uuid = '$id' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	foreach ($result as &$row) {
-		$username = $row["username"];
-	}
-	unset ($prep_statement);
 
 //required to be a superadmin to update an account that is a member of the superadmin group
 	$superadmin_list = superadmin_list($db);
@@ -65,8 +53,42 @@ else {
 		}
 	}
 
+//get the username from v_users
+	$sql = "select * from v_users ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "and user_uuid = '$user_uuid' ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	foreach ($result as &$row) {
+		$username = $row["username"];
+	}
+	unset ($prep_statement);
+
+//get the user settings
+	$sql = "select * from v_user_settings ";
+	$sql .= "where user_uuid = '".$_SESSION["user_uuid"]."' ";
+	$sql .= "and user_setting_enabled = 'true' ";
+	$prep_statement = $db->prepare($sql);
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		foreach($result as $row) {
+			$name = $row['user_setting_name'];
+			$category = $row['user_setting_category'];
+			$subcategory = $row['user_setting_subcategory'];
+			if (strlen($subcategory) == 0) {
+				//$$category[$name] = $row['domain_setting_value'];
+				$user_settings[$category][$name] = $row['user_setting_value'];
+			}
+			else {
+				$user_settings[$category][$subcategory][$name] = $row['user_setting_value'];
+			}
+		}
+	}
+
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
-	$id = $_REQUEST["id"];
+	$user_uuid = check_str($_REQUEST["id"]);
 	$password = check_str($_POST["password"]);
 	$confirm_password = check_str($_POST["confirm_password"]);
 	$user_status = check_str($_POST["user_status"]);
@@ -93,13 +115,67 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		return;
 	}
 
-	//if the template has not been assigned by the superadmin
-		if (strlen($_SESSION['domain']['template']['name']) == 0) {
-			//set the session theme for the active user
-			if ($_SESSION["username"] == $username) {
-				$_SESSION['domain']['template']['name'] = $user_template_name;
+	//get the number of rows in v_user_settings 
+		$sql = "select count(*) as num_rows from v_user_settings ";
+		$sql .= "where user_setting_category = 'domain' ";
+		$sql .= "and user_setting_subcategory = 'time_zone' ";
+		$sql .= "and user_uuid = '".$user_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			if ($row['num_rows'] == 0) {
+				$user_setting_uuid = uuid();
+				$sql = "insert into v_user_settings ";
+				$sql .= "(";
+				$sql .= "user_setting_uuid, ";
+				$sql .= "user_setting_category, ";
+				$sql .= "user_setting_subcategory, ";
+				$sql .= "user_setting_name, ";
+				$sql .= "user_setting_value, ";
+				$sql .= "user_setting_enabled, ";
+				$sql .= "user_uuid ";
+				$sql .= ") ";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'".$user_setting_uuid."', ";
+				$sql .= "'domain', ";
+				$sql .= "'time_zone', ";
+				$sql .= "'name', ";
+				$sql .= "'".$user_time_zone."', ";
+				$sql .= "'true', ";
+				$sql .= "'".$user_uuid."' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+			}
+			else {
+				if (strlen($user_time_zone) == 0) {
+					$sql = "delete from v_user_settings ";
+					$sql .= "where user_setting_category = 'domain' ";
+					$sql .= "and user_setting_subcategory = 'time_zone' ";
+					$sql .= "and user_uuid = '".$user_uuid."' ";
+					$db->exec(check_sql($sql));
+					unset($sql);
+				}
+				else {
+					$sql  = "update v_user_settings set ";
+					$sql .= "user_setting_value = '".$user_time_zone."', ";
+					$sql .= "user_setting_enabled = 'true' ";
+					$sql .= "where user_setting_category = 'domain' ";
+					$sql .= "and user_setting_subcategory = 'time_zone' ";
+					$sql .= "and user_uuid = '".$user_uuid."' ";
+					$db->exec(check_sql($sql));
+				}
 			}
 		}
+
+	//if the template has not been assigned by the superadmin
+		//if (strlen($_SESSION['domain']['template']['name']) == 0) {
+			//set the session theme for the active user
+			//if ($_SESSION["username"] == $username) {
+			//	$_SESSION['domain']['template']['name'] = $user_template_name;
+			//}
+		//}
 
 	//sql update
 		$sql  = "update v_users set ";
@@ -116,9 +192,9 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "user_status = '$user_status', ";
 		//$sql .= "user_template_name = '$user_template_name', ";
 		$sql .= "user_time_zone = '$user_time_zone' ";
-		if (strlen($id)> 0) {
+		if (strlen($user_uuid)> 0) {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and user_uuid = '$id' ";
+			$sql .= "and user_uuid = '$user_uuid' ";
 		}
 		else {
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -142,7 +218,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
 	//redirect the browser
 		require_once "includes/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/users/usersupdate.php\">\n";
 		echo "<div align='center'>Update Complete</div>";
 		require_once "includes/footer.php";
 		return;
@@ -161,8 +237,6 @@ else {
 		}
 		$password = $row["password"];
 		$user_status = $row["user_status"];
-		$user_template_name = $row["user_template_name"];
-		$user_time_zone = $row["user_time_zone"];
 		break; //limit to 1 row
 	}
 
@@ -218,19 +292,6 @@ else {
 	echo "		<td class='vncell'>Confirm Password:</td>";
 	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirm_password' value=\"\"></td>";
 	echo "	</tr>";
-
-	//echo "	<tr>";
-	//echo "		<td class='vncell'>First Name:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='user_first_name' value=\"$user_first_name\"></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td class='vncell'>Last Name:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='user_last_name' value=\"$user_last_name\"></td>";
-	//echo "	</tr>";
-	//echo "	<tr>";
-	//echo "		<td class='vncell'>Company Name:</td>";
-	//echo "		<td class='vtable'><input type='text' class='formfld' name='user_company_name' value=\"$user_company_name\"></td>";
-	//echo "	</tr>";
 
 	echo "		</td>";
 	echo "	</tr>";
@@ -308,7 +369,7 @@ else {
 					if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
 						$dir_label = str_replace('_', ' ', $dir_name);
 						$dir_label = str_replace('-', ' ', $dir_label);
-						if ($dir_name == $user_template_name) {
+						if ($dir_name == $user_settings['domain']['template']['name']) {
 							echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
 						}
 						else {
@@ -325,6 +386,7 @@ else {
 			echo "	</tr>\n";
 		}
 		*/
+
 	echo "	<tr>\n";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 	echo "		Time Zone: \n";
@@ -345,7 +407,7 @@ else {
 			}
 			echo "		<optgroup label='".$category."'>\n";
 		}
-		if ($row == $user_time_zone) {
+		if ($row == $user_settings['domain']['time_zone']['name']) {
 			echo "			<option value='".$row."' selected='selected'>".$row."</option>\n";
 		}
 		else {
@@ -366,7 +428,7 @@ else {
 	echo "<table $table_width>";
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
-	echo "			<input type='hidden' name='id' value=\"$id\">";
+	echo "			<input type='hidden' name='id' value=\"$user_uuid\">";
 	echo "			<input type='hidden' name='username' value=\"$username\">";
 	echo "			<input type='submit' name='submit' class='btn' value='Save'>";
 	echo "		</td>";
