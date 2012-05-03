@@ -216,11 +216,12 @@ else {
 								//all other phones
 								$file_name = str_replace("{v_mac}", $phone_mac_address, $file_name);
 							}
-				
+
 						//write the configuration to the directory
 							if (strlen($_SESSION['switch']['provision']['dir']) > 0) {
 								$dir_array = explode(";", $_SESSION['switch']['provision']['dir']);
 								foreach($dir_array as $directory) {
+									//echo $directory.'/'.$file_name."\n";
 									$fh = fopen($directory.'/'.$file_name,"w") or die("Unable to write to $directory for provisioning. Make sure the path exists and permissons are set correctly.");
 									fwrite($fh, $file_contents);
 									fclose($fh);

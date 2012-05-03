@@ -75,7 +75,7 @@ if ( session:ready() ) then
 				return;
 			end
 		end
-	
+
 	--check the database to get the uuid
 		--eavesdrop
 			sql = "select uuid from channels where presence_id = '"..extension.."@"..domain_name.."' ";
@@ -93,7 +93,7 @@ end
 		session:execute("eavesdrop", uuid); --call barge
 	end
 
---notes	
+--notes
 	--originate a call
 		--cmd = "originate user/1007@voip.example.com &eavesdrop("..uuid..")";
 		--cmd = "uuid_bridge "..caller_uuid.." "..uuid;
