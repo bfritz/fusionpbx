@@ -39,7 +39,9 @@ include "root.php";
 		function recursive_copy($src, $dst) {
 			$dir = opendir($src);
 			if (!$dir) {
-				throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
+				if (!mkdir($src, 0755, true)) {
+					throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
+				}
 			}
 			if (!is_dir($dst)) {
 				if (!mkdir($dst, 0755, true)) {
