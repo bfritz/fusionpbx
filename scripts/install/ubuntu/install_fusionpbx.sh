@@ -828,7 +828,7 @@ if [ $DO_DAHDI == "y" ]; then
 			/bin/echo "GIT ERROR"
 			exit 1
 		else
-			if [ $FSCHECKOUTVER = true ]; then
+			if [ $FSCHECKOUTVER == true ]; then
 				echo "OK we'll check out FreeSWITCH version $FSREV"
 				cd /usr/src/freeswitch
 				/usr/bin/git checkout $FSREV
