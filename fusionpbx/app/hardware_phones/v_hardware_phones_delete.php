@@ -48,6 +48,9 @@ if (count($_GET)>0) {
 		unset($sql);
 	}
 
+//write the provision files
+	require_once "app/provision/provision_write.php";
+
 //redirect the user
 	require_once "includes/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=v_hardware_phones.php\">\n";

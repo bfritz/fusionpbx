@@ -350,7 +350,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//write the provision files
 				if (strlen($provisioning_list)>0) {
-					require_once "app/provision/v_provision_write.php";
+					require_once "app/provision/provision_write.php";
 				}
 
 			//prepare for alternating the row style
@@ -476,7 +476,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 			//write the provision files
 				if (strlen($provisioning_list)>0) {
-					require_once "app/provision/v_provision_write.php";
+					require_once "app/provision/provision_write.php";
 				}
 
 			//show the action and redirect the user

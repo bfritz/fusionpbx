@@ -106,7 +106,7 @@ require_once "includes/require.php";
 						$sql .= "phone_label, ";
 						$sql .= "phone_vendor, ";
 						$sql .= "phone_model, ";
-						$sql .= "phone_firmware_version, ";						
+						$sql .= "phone_firmware_version, ";
 						$sql .= "phone_provision_enable, ";
 						$sql .= "phone_template, ";
 						$sql .= "phone_username, ";
@@ -134,7 +134,7 @@ require_once "includes/require.php";
 						unset($sql);
 
 					//write the provision files
-						require_once "app/provision/v_provision_write.php";
+						require_once "app/provision/provision_write.php";
 
 					//redirect the user
 						require_once "includes/header.php";
@@ -166,7 +166,7 @@ require_once "includes/require.php";
 						unset($sql);
 
 					//write the provision files
-						require_once "app/provision/v_provision_write.php";
+						require_once "app/provision/provision_write.php";
 
 					//redirect the user
 						require_once "includes/header.php";
