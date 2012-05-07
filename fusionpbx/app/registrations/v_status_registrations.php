@@ -86,7 +86,6 @@ require_once "includes/checkauth.php";
 					//get the values from xml and set them to the channel array
 						$registrations[$x]['user'] = $row->{'user'};
 						$user_array = explode('@', $row->{'user'});
-						$registrations[$x]['domain'] = $user_array[1];
 						$registrations[$x]['call-id'] = $row->{'call-id'};
 						$registrations[$x]['contact'] = $row->{'contact'};
 						$registrations[$x]['sip-auth-user'] = $row->{'sip-auth-user'};
@@ -100,12 +99,12 @@ require_once "includes/checkauth.php";
 
 					//remove unrelated domains
 						if (count($_SESSION["domains"]) > 1 && !permission_exists('registrations_all')) {
-							if ($registrations[$x]['domain'] != $_SESSION['domain_name']) {
+							if ($registrations[$x]['sip-auth-realm'] != $_SESSION['domain_name']) {
 								unset($registrations[$x]);
 							}
 						}
 						else {
-							if ($registrations[$x]['domain'] != $_SESSION['domain_name']) {
+							if ($registrations[$x]['sip-auth-realm'] != $_SESSION['domain_name']) {
 								unset($registrations[$x]);
 							}
 						}
@@ -143,7 +142,6 @@ require_once "includes/checkauth.php";
 			//echo "	<th class='vncell'>Host</th>\n";
 			echo "	<th>IP</th>\n";
 			echo "	<th>Port</th>\n";
-			//echo "	<th class='vncell'>sip-auth-realm</th>\n";
 			//echo "	<th class='vncell'>mwi-account</th>\n";
 			echo "	<th>Status</th>\n";
 			echo "</tr>\n";
@@ -158,7 +156,7 @@ require_once "includes/checkauth.php";
 				foreach ($registrations as $row) {
 					echo "<tr>\n";
 					if (count($_SESSION["domains"]) > 1) {
-						echo "<td class='".$row_style[$c]."'>&nbsp;".$row['domain']."&nbsp;</td>\n";
+						echo "<td class='".$row_style[$c]."'>&nbsp;".$row['sip-auth-realm']."&nbsp;</td>\n";
 					}
 					//<td class='".$row_style[$c]."'>&nbsp;".$row['call-id']."&nbsp;</td>\n";
 					//echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['user']."&nbsp;</td>\n";
@@ -168,7 +166,6 @@ require_once "includes/checkauth.php";
 					//echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['host']."&nbsp;</td>\n";
 					echo "	<td class='".$row_style[$c]."'>&nbsp;<a href='http://".$row['network-ip']."' target='_blank'>".$row['network-ip']."</a>&nbsp;</td>\n";
 					echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['network-port']."&nbsp;</td>\n";
-					//echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['sip-auth-realm']."&nbsp;</td>\n";
 					//echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['mwi-account']."&nbsp;</td>\n";
 					echo "	<td class='".$row_style[$c]."'>&nbsp;".$row['status']."&nbsp;</td>\n";
 					echo "</tr>\n";
