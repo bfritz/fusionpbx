@@ -104,6 +104,11 @@ require_once "includes/checkauth.php";
 								unset($registrations[$x]);
 							}
 						}
+						else {
+							if ($registrations[$x]['domain'] != $_SESSION['domain_name']) {
+								unset($registrations[$x]);
+							}
+						}
 					//increment the array id
 						$x++;
 				}
