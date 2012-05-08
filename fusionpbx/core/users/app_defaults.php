@@ -125,19 +125,45 @@
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach($result as $row) {
-				//get the user_uuid
-					$sql = "select user_uuid from v_users where username = '".$row['username']."' ";
-					$prep_statement_sub = $db->prepare($sql);
-					$prep_statement_sub->execute();
-					$sub_result = $prep_statement_sub->fetch(PDO::FETCH_ASSOC);
-					unset ($prep_statement_sub);
-					$user_uuid = $sub_result['user_uuid'];
-				//set the user uuid
-					$sql = "update v_group_users set ";
-					$sql .= "user_uuid = '".$user_uuid."' ";
-					$sql .= "where username = '".$row['username']."'; ";
-					$db->exec($sql);
-					unset($sql);
+				if (strlen($row['username']) > 0) {
+					//get the user_uuid
+						$sql = "select user_uuid from v_users ";
+						$sql .= "where username = '".$row['username']."' ";
+						$prep_statement_sub = $db->prepare($sql);
+						$prep_statement_sub->execute();
+						$sub_result = $prep_statement_sub->fetch(PDO::FETCH_ASSOC);
+						unset ($prep_statement_sub);
+						$user_uuid = $sub_result['user_uuid'];
+					//set the user uuid
+						$sql = "update v_group_users set ";
+						$sql .= "user_uuid = '".$user_uuid."' ";
+						$sql .= "where username = '".$row['username']."'; ";
+						$db->exec($sql);
+						unset($sql);
+				}
+				else {
+					//get the number of users
+						$sql = "select count(*) as num_rows from v_users ";
+						$prep_statement_sub = $db->prepare($sql);
+						$prep_statement_sub->execute();
+						$sub_result = $prep_statement_sub->fetch(PDO::FETCH_ASSOC);
+						unset ($prep_statement_sub);
+						$num_rows = $sub_result['num_rows'];
+					if ($num_rows == 1) {
+						//get the user_uuid
+							$sql = "select user_uuid from v_users ";
+							$prep_statement_sub = $db->prepare($sql);
+							$prep_statement_sub->execute();
+							$sub_result = $prep_statement_sub->fetch(PDO::FETCH_ASSOC);
+							unset ($prep_statement_sub);
+							$user_uuid = $sub_result['user_uuid'];
+						//set the user uuid
+							$sql = "update v_group_users set ";
+							$sql .= "user_uuid = '".$user_uuid."' ";
+							$db->exec($sql);
+							unset($sql);
+					}
+				}
 			}
 	}
 ?>
