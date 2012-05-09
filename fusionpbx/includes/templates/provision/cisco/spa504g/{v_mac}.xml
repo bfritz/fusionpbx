@@ -107,7 +107,7 @@
 <Provision_Enable group="Provisioning/Configuration_Profile">Yes</Provision_Enable>
 <Resync_On_Reset group="Provisioning/Configuration_Profile">Yes</Resync_On_Reset>
 <Resync_Random_Delay group="Provisioning/Configuration_Profile">2</Resync_Random_Delay>
-<Resync_Periodic group="Provisioning/Configuration_Profile">3600</Resync_Periodic>
+<Resync_Periodic group="Provisioning/Configuration_Profile">0</Resync_Periodic>
 <Resync_Error_Retry_Delay group="Provisioning/Configuration_Profile">3600</Resync_Error_Retry_Delay>
 <Forced_Resync_Delay group="Provisioning/Configuration_Profile">14400</Forced_Resync_Delay>
 <Resync_From_SIP group="Provisioning/Configuration_Profile">Yes</Resync_From_SIP>
@@ -123,7 +123,7 @@
 <Log_Resync_Success_Msg group="Provisioning/Configuration_Profile">$PN $MAC -- Successful resync $SCHEME://$SERVIP:$PORT$PATH</Log_Resync_Success_Msg>
 <Log_Resync_Failure_Msg group="Provisioning/Configuration_Profile">$PN $MAC -- Resync failed: $ERR</Log_Resync_Failure_Msg>
 <Report_Rule group="Provisioning/Configuration_Profile"/>
-<User_Configurable_Resync group="Provisioning/Configuration_Profile">Yes</User_Configurable_Resync>
+<User_Configurable_Resync group="Provisioning/Configuration_Profile">No</User_Configurable_Resync>
 <Upgrade_Enable group="Provisioning/Firmware_Upgrade">Yes</Upgrade_Enable>
 <Upgrade_Error_Retry_Delay group="Provisioning/Firmware_Upgrade">3600</Upgrade_Error_Retry_Delay>
 <Downgrade_Rev_Limit group="Provisioning/Firmware_Upgrade"/>
