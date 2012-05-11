@@ -899,8 +899,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$onchange = "document.getElementById('provisioning_list').value += document.getElementById('select_mac_address').value;";
 	$onchange .= "document.getElementById('provisioning_list').value += ':'+document.getElementById('prov_line').value + '\\n'";
 
-	$sql = "";
-	$sql .= " select * from v_hardware_phones ";
+	$sql = "select * from v_hardware_phones ";
+	$sql .= "where domain_uuid = '".$domain_uuid."' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
