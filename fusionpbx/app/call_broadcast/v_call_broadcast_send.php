@@ -151,7 +151,7 @@ function cmd_async($cmd) {
 						$bridge_array = outbound_route_to_bridge ($phone1);
 
 					//prepare the string
-						$channel_variables = "ignore_early_media=true,origination_caller_id_name='$broadcast_caller_id_name',origination_caller_id_number=$broadcast_caller_id_number";
+						$channel_variables = "ignore_early_media=true,origination_number=$phone1,origination_caller_id_name='$broadcast_caller_id_name',origination_caller_id_number=$broadcast_caller_id_number";
 						$origination_url = "{".$channel_variables."}".$bridge_array[0]."";
 
 					//get the context
@@ -163,7 +163,7 @@ function cmd_async($cmd) {
 						}
 
 					//set the command
-						$cmd = "bgapi sched_api +".$sched_seconds." none originate ".$origination_url." ".$broadcast_destination_data." XML $context";
+						$cmd = "bgapi sched_api +".$sched_seconds." none bgapi originate ".$origination_url." ".$broadcast_destination_data." XML $context";
 
 					//if the event socket connection is lost then re-connect
 						if (!$fp) {
