@@ -292,7 +292,7 @@ if ($db_type == "pgsql") {
 				}
 			}
 
-		//get the domains settings
+		//get the user settings
 			$sql = "select * from v_user_settings ";
 			$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
 			$sql .= "and user_uuid = '".$_SESSION["user_uuid"]."' ";

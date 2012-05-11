@@ -1196,7 +1196,6 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 				$install->switch_conf_dir = $switch_conf_dir;
 				$install->switch_scripts_dir = $switch_scripts_dir;
 				$install->switch_sounds_dir = $switch_sounds_dir;
-				$install->switch_recordings_dir = $switch_recordings_dir;
 				$install->copy_conf();
 				$install->copy();
 				clearstatcache();

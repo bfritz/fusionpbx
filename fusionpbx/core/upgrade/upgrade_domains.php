@@ -55,7 +55,6 @@
 	$install->switch_conf_dir = $_SESSION['switch']['conf']['dir'];
 	$install->switch_scripts_dir = $_SESSION['switch']['scripts']['dir'];
 	$install->switch_sounds_dir = $_SESSION['switch']['sounds']['dir'];
-	$install->switch_recordings_dir = $_SESSION['switch']['recordings']['dir'];
 	$install->copy();
 	//print_r($install->result);
 
@@ -100,7 +99,7 @@
 		$name = $row['default_setting_name'];
 		$category = $row['default_setting_category'];
 		$subcategory = $row['default_setting_subcategory'];
-		if ($category == 'switch' && $subcategory = 'recordings' && $name = 'dir') {
+		if ($category == 'switch' && $subcategory == 'recordings' && $name == 'dir') {
 			$switch_recordings_dir = $row['default_setting_value'];
 		}
 	}
@@ -131,7 +130,7 @@
 				echo "\n";
 			}
 
-		//get the default settings need to do this on each domain can override the defaults loop to get back to the defautls
+		//get the default settings - this needs to be done to reset the session values back to the defaults for each domain in the loop
 			foreach($result_defaults_settings as $row) {
 				$name = $row['default_setting_name'];
 				$category = $row['default_setting_category'];
@@ -146,7 +145,7 @@
 
 		//get the domains settings
 			$sql = "select * from v_domain_settings ";
-			$sql .= "where domain_uuid = '".$_SESSION["domain_uuid"]."' ";
+			$sql .= "where domain_uuid = '".$domain_uuid."' ";
 			$sql .= "and domain_setting_enabled = 'true' ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
@@ -163,6 +162,11 @@
 					//$$category[$subcategory][$name] = $row['domain_setting_value'];
 					$_SESSION[$category][$subcategory][$name] = $row['domain_setting_value'];
 				}
+			}
+
+		//set the recordings directory
+			if (strlen($switch_recordings_dir) > 1 && count($_SESSION["domains"]) > 1) {
+				$_SESSION['switch']['recordings']['dir'] = $switch_recordings_dir."/".$domain_name;
 			}
 
 		//get the list of installed apps from the core and mod directories and execute the php code in app_defaults.php

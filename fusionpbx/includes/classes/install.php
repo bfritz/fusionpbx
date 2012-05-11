@@ -34,7 +34,6 @@ include "root.php";
 		var $switch_conf_dir;
 		var $switch_scripts_dir;
 		var $switch_sounds_dir;
-		var $switch_recordings_dir;
 
 		function recursive_copy($src, $dst) {
 			$dir = opendir($src);
@@ -213,7 +212,6 @@ include "root.php";
 	//$install->switch_conf_dir = $switch_conf_dir;
 	//$install->switch_scripts_dir = $switch_scripts_dir;
 	//$install->switch_sounds_dir = $switch_sounds_dir;
-	//$install->switch_recordings_dir = $switch_recordings_dir;
 	//$install->copy();
 	//print_r($install->result);
 ?>

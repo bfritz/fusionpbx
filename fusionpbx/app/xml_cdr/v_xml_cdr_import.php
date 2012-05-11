@@ -156,7 +156,6 @@ function process_xml_cdr($db, $leg, $xml_string) {
 		}
 		$row = $db->query($sql)->fetch();
 		$domain_uuid = $row['domain_uuid'];
-		//$switch_recordings_dir = $row['switch_recordings_dir'];
 		if (strlen($domain_uuid) == 0) {
 			$sql = "select domain_name, domain_uuid from v_domains ";
 			$row = $db->query($sql)->fetch();
