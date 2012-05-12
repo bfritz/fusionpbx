@@ -52,16 +52,19 @@
 
 //if multiple domains then make sure that the dialplan/public/domain_name.xml file exists
 	if (count($_SESSION["domains"]) > 1) {
-		//make sure the public xml file includes the domain directory
+		//make sure the public directory and xml file exist
+		if (!is_dir($_SESSION['switch']['dialplan']['dir'].'/public'.$_SESSION['domains'][$domain_uuid]['domain_name'])) { 
+			mkdir($_SESSION['switch']['dialplan']['dir'].'/public/'.$_SESSION['domains'][$domain_uuid]['domain_name'],0777,true);
+		}
 		$file = $_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$domain_uuid]['domain_name'].".xml";
 		if (!file_exists($file)) {
 			$fout = fopen($file,"w");
-			$tmpxml = "<include>\n";
-			$tmpxml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$domain_uuid]['domain_name']."/*.xml\"/>\n";
-			$tmpxml .= "</include>\n";
-			fwrite($fout, $tmpxml);
+			$xml = "<include>\n";
+			$xml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$domain_uuid]['domain_name']."/*.xml\"/>\n";
+			$xml .= "</include>\n";
+			fwrite($fout, $xml);
 			fclose($fout);
-			unset($tmpxml,$file);
+			unset($xml,$file);
 		}
 	}
 
