@@ -40,8 +40,7 @@ if (count($_GET)>0) {
 
 if (strlen($id) > 0) {
 	//get the domain using the id
-		$sql = "";
-		$sql .= "select * from v_domains ";
+		$sql = "select * from v_domains ";
 		$sql .= "where domain_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -51,14 +50,26 @@ if (strlen($id) > 0) {
 		}
 		unset ($prep_statement);
 
-	//delete the domain
-		$sql = "";
-		$sql .= "delete from v_domains ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and domain_uuid = '$id' ";
-		$prep_statement = $db->prepare(check_sql($sql));
+	//get the domain settings
+		$sql = "select * from v_domain_settings ";
+		$sql .= "where domain_uuid = '".$id."' ";
+		$sql .= "and domain_setting_enabled = 'true' ";
+		$prep_statement = $db->prepare($sql);
 		$prep_statement->execute();
-		unset($sql);
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		foreach($result as $row) {
+			$name = $row['domain_setting_name'];
+			$category = $row['domain_setting_category'];
+			$subcategory = $row['domain_setting_subcategory'];	
+			if (strlen($subcategory) == 0) {
+				//$$category[$name] = $row['domain_setting_value'];
+				$_SESSION[$category][$name] = $row['domain_setting_value'];
+			}
+			else {
+				//$$category[$subcategory][$name] = $row['domain_setting_value'];
+				$_SESSION[$category][$subcategory][$name] = $row['domain_setting_value'];
+			}
+		}
 
 	//get the $apps array from the installed apps from the core and mod directories
 		$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_config.php");
@@ -82,27 +93,6 @@ if (strlen($id) > 0) {
 			}
 		}
 		$db->commit();
-
-	//get the domains settings
-		$sql = "select * from v_domain_settings ";
-		$sql .= "where domain_uuid = '".$id."' ";
-		$sql .= "and domain_setting_enabled = 'true' ";
-		$prep_statement = $db->prepare($sql);
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-		foreach($result as $row) {
-			$name = $row['domain_setting_name'];
-			$category = $row['domain_setting_category'];
-			$subcategory = $row['domain_setting_subcategory'];	
-			if (strlen($subcategory) == 0) {
-				//$$category[$name] = $row['domain_setting_value'];
-				$_SESSION[$category][$name] = $row['domain_setting_value'];
-			}
-			else {
-				//$$category[$subcategory][$name] = $row['domain_setting_value'];
-				$_SESSION[$category][$subcategory][$name] = $row['domain_setting_value'];
-			}
-		}
 
 	if (strlen($domain_name) > 0) {
 		//set the needle
@@ -137,7 +127,7 @@ if (strlen($id) > 0) {
 			}
 
 		//delete the gateways
-			if($dh = opendir($_SESSION['switch']['gateways']['dir']."")) {
+			if($dh = opendir($_SESSION['switch']['gateways']['dir'])) {
 				$files = Array();
 				while($file = readdir($dh)) {
 					if($file != "." && $file != ".." && $file[0] != '.') {
@@ -154,24 +144,6 @@ if (strlen($id) > 0) {
 				closedir($dh);
 			}
 
-		//delete the hunt group lua scripts
-			$v_prefix = 'v_huntgroup_'.$domain_name.'_';
-			if($dh = opendir($_SESSION['switch']['scripts']['dir'])) {
-				$files = Array();
-				while($file = readdir($dh)) {
-					if($file != "." && $file != ".." && $file[0] != '.') {
-						if(is_dir($dir . "/" . $file)) {
-							//this is a directory
-						} else {
-							if (substr($file,0, strlen($v_prefix)) == $v_prefix && substr($file,-4) == '.lua') {
-								unlink($_SESSION['switch']['scripts']['dir'].'/'.$file);
-							}
-						}
-					}
-				}
-				closedir($dh);
-			}
-
 		//delete the ivr menu
 			if($dh = opendir($_SESSION['switch']['conf']['dir']."/ivr_menus/")) {
 				$files = Array();
@@ -181,7 +153,6 @@ if (strlen($id) > 0) {
 							//this is a directory
 						} else {
 							if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-								//echo "file: $file<br />\n";
 								unlink($_SESSION['switch']['conf']['dir']."/ivr_menus/".$file);
 							}
 						}
