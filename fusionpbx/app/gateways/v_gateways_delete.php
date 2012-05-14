@@ -69,18 +69,17 @@ if (strlen($_GET["id"])>0) {
 		if ($fp) {
 			//send the api gateway stop command over event socket
 				if (count($_SESSION["domains"]) > 1) {
-					$tmp_cmd = 'api sofia profile external killgw '.$_SESSION['domain_name'].'-'.$gateway;
+					$tmp_cmd = 'api sofia profile '.$profile.' killgw '.$_SESSION['domain_name'].'-'.$gateway;
 				}
 				else {
-					$tmp_cmd = 'api sofia profile external killgw '.$gateway;
+					$tmp_cmd = 'api sofia profile '.$profile.' killgw '.$gateway;
 				}
 				$response = event_socket_request($fp, $tmp_cmd);
 				unset($tmp_cmd);
 		}
 
 	//delete gateway
-		$sql = "";
-		$sql .= "delete from v_gateways ";
+		$sql = "delete from v_gateways ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and gateway_uuid = '$id' ";
 		$db->query($sql);
@@ -92,14 +91,14 @@ if (strlen($_GET["id"])>0) {
 	//synchronize the xml config
 		save_dialplan_xml();
 
-	//rescan the external profile to look for new or stopped gateways
+	//rescan the sip profile to look for new or stopped gateways
 		//create the event socket connection and send a command
 			if (!$fp) {
 				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			}
 			if ($fp) {
 				//send the api commandover event socket
-					$tmp_cmd = 'api sofia profile external rescan';
+					$tmp_cmd = 'api sofia profile '.$profile.' rescan';
 					$response = event_socket_request($fp, $tmp_cmd);
 					unset($tmp_cmd);
 				//close the connection
