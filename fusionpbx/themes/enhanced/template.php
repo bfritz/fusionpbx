@@ -644,7 +644,14 @@ function confirmdelete(url) {
 				<table border='0' cellpadding='0' cellspacing='0' width='100%'>
 					<tr>
 						<td width='50%'>
-							<a href='/<!--{project_path}-->'><img src='<!--{project_path}-->/themes/enhanced/logo.png' /></a>
+							<?php
+							if (strlen(PROJECT_PATH) > 0) {
+								echo "<a href='".PROJECT_PATH."'><img src='".PROJECT_PATH."/themes/enhanced/logo.png' /></a>";
+							}
+							else {
+								echo "<a href='/'><img src='/themes/enhanced/logo.png' /></a>";
+							}
+							?>
 						</td>
 						<td width='50%' class='' align='right' valign='middle'>
 							<?php
