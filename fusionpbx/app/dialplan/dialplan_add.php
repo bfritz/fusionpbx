@@ -241,7 +241,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		save_dialplan_xml();
 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplans.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php\">\n";
 	echo "<div align='center'>\n";
 	echo "Update Complete\n";
 	echo "</div>\n";
