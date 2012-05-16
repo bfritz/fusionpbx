@@ -1288,7 +1288,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 				$option_label = $extension_number.' '.$dialplan_name;
 				if ($select_type == "ivr") {
-					if ("menu-exec-app:transfer ".$row["dialplan_detail_data"]." XML ".$_SESSION["context"] == $select_value) {
+					if ("menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"] == $select_value) {
 						echo "		<option value='menu-exec-app:transfer ".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 						$selection_found = true;
 					}
@@ -1297,7 +1297,7 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 					}
 				}
 				if ($select_type == "dialplan") {
-					if ("transfer:".$row["dialplan_detail_data"] == $select_value) {
+					if ("transfer:".$extension_number == $select_value) {
 						echo "		<option value='transfer:".$extension_number." XML ".$_SESSION["context"]."' selected='selected'>".$option_label."</option>\n";
 						$selection_found = true;
 					}
