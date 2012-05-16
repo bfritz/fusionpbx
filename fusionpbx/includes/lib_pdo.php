@@ -231,6 +231,7 @@ if ($db_type == "pgsql") {
 			$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
 		//get the domain_uuid
 			$sql = "select * from v_domains ";
+			$sql .= "order by domain_name asc ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
