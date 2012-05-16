@@ -38,6 +38,7 @@ else {
 	if (strlen($_GET["domain_uuid"]) > 0 && $_GET["domain_change"] == "true") {
 		//get the domain_uuid
 			$sql = "select * from v_domains ";
+			$sql .= "order by domain_name asc ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -127,6 +128,7 @@ else {
 
 	//get the  list
 		$sql = "select * from v_domains ";
+		$sql .= "order by domain_name asc ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
