@@ -1135,9 +1135,11 @@ if [ $DO_DAHDI == "y" ]; then
 	if [ $? -eq 0 ]; then
 		#file exists and has been edited
 		/bin/echo "/etc/init.d/freeswitch already edited, skipping"
-	else
+	elif [ -e /usr/src/freeswitch/debian/freeswitch.init ]; then
 		
 		/bin/sed /usr/src/freeswitch/debian/freeswitch.init -e s,opt,usr/local, >/etc/init.d/freeswitch
+	else
+		 /bin/sed /usr/src/freeswitch/debian/freeswitch-sysvinit.freeswitch.init  -e s,opt,usr/local, >/etc/init.d/freeswitch
 	fi
 	
 	if [ $? -ne 0 ]; then
@@ -1153,12 +1155,22 @@ if [ $DO_DAHDI == "y" ]; then
 	if [ $? -eq 0 ]; then
 		#file exists and has been edited
 		/bin/echo "/etc/default/freeswitch already edited, skipping"
+		
 	else
-		/bin/sed /usr/src/freeswitch/debian/freeswitch.default -e s,false,true, > /etc/default/freeswitch
-		if [ $? -ne 0 ]; then
-			#previous had an error
-			/bin/echo "ERROR: Couldn't edit freeswitch RC script."
-			exit 1
+		if [ -e /usr/src/freeswitch/debian/freeswitch-sysvinit.freeswitch.default ]; then
+                        /bin/sed /usr/src/freeswitch/debian/freeswitch-sysvinit.freeswitch.default -e s,false,true, > /etc/default/freeswitch
+                        if [ $? -ne 0 ]; then
+                                #previous had an error
+                                /bin/echo "ERROR: Couldn't edit freeswitch RC script."
+                                exit 1
+                        fi
+		else
+			/bin/sed /usr/src/freeswitch/debian/freeswitch.default -e s,false,true, > /etc/default/freeswitch
+			if [ $? -ne 0 ]; then
+				#previous had an error
+				/bin/echo "ERROR: Couldn't edit freeswitch RC script."
+				exit 1
+			fi
 		fi
 		if [ $DEBUG -eq 1 ]; then
 			/bin/echo "Checking for a public IP Address..."
