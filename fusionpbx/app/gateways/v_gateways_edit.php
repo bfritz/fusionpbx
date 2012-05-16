@@ -67,10 +67,6 @@ else {
 		$supress_cng = check_str($_POST["supress_cng"]);
 		$sip_cid_type = check_str($_POST["sip_cid_type"]);
 		$extension_in_contact = check_str($_POST["extension_in_contact"]);
-		$effective_caller_id_name = check_str($_POST["effective_caller_id_name"]);
-		$effective_caller_id_number = check_str($_POST["effective_caller_id_number"]);
-		$outbound_caller_id_name = check_str($_POST["outbound_caller_id_name"]);
-		$outbound_caller_id_number = check_str($_POST["outbound_caller_id_number"]);
 		$context = check_str($_POST["context"]);
 		$profile = check_str($_POST["profile"]);
 		$enabled = check_str($_POST["enabled"]);
@@ -107,10 +103,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($supress_cng) == 0) { $msg .= "Please provide: Supress CNG<br>\n"; }
 		//if (strlen($sip_cid_type) == 0) { $msg .= "Please provide: SIP CID Type<br>\n"; }
 		//if (strlen($extension_in_contact) == 0) { $msg .= "Please provide: Extension in Contact<br>\n"; }
-		//if (strlen($effective_caller_id_name) == 0) { $msg .= "Please provide: Effective Caller ID Name<br>\n"; }
-		//if (strlen($effective_caller_id_number) == 0) { $msg .= "Please provide: Effective Caller ID Number<br>\n"; }
-		//if (strlen($outbound_caller_id_name) == 0) { $msg .= "Please provide: Outbound Caller ID Name<br>\n"; }
-		//if (strlen($outbound_caller_id_number) == 0) { $msg .= "Please provide: Outbound Caller ID Number<br>\n"; }
 		if (strlen($context) == 0) { $msg .= "Please provide: Context<br>\n"; }
 		//if (strlen($profile) == 0) { $msg .= "Please provide: Profile<br>\n"; }
 		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
@@ -161,10 +153,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "supress_cng, ";
 				$sql .= "sip_cid_type, ";
 				$sql .= "extension_in_contact, ";
-				$sql .= "effective_caller_id_name, ";
-				$sql .= "effective_caller_id_number, ";
-				$sql .= "outbound_caller_id_name, ";
-				$sql .= "outbound_caller_id_number, ";
 				$sql .= "context, ";
 				$sql .= "profile, ";
 				$sql .= "enabled, ";
@@ -195,10 +183,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$supress_cng', ";
 				$sql .= "'$sip_cid_type', ";
 				$sql .= "'$extension_in_contact', ";
-				$sql .= "'$effective_caller_id_name', ";
-				$sql .= "'$effective_caller_id_number', ";
-				$sql .= "'$outbound_caller_id_name', ";
-				$sql .= "'$outbound_caller_id_number', ";
 				$sql .= "'$context', ";
 				$sql .= "'$profile', ";
 				$sql .= "'$enabled', ";
@@ -236,10 +220,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "supress_cng = '$supress_cng', ";
 				$sql .= "sip_cid_type = '$sip_cid_type', ";
 				$sql .= "extension_in_contact = '$extension_in_contact', ";
-				$sql .= "effective_caller_id_name = '$effective_caller_id_name', ";
-				$sql .= "effective_caller_id_number = '$effective_caller_id_number', ";
-				$sql .= "outbound_caller_id_name = '$outbound_caller_id_name', ";
-				$sql .= "outbound_caller_id_number = '$outbound_caller_id_number', ";
 				$sql .= "context = '$context', ";
 				$sql .= "profile = '$profile', ";
 				$sql .= "enabled = '$enabled', ";
@@ -290,8 +270,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$gateway_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_gateways ";
+		$sql = "select * from v_gateways ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and gateway_uuid = '$gateway_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -320,10 +299,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$supress_cng = $row["supress_cng"];
 			$sip_cid_type = $row["sip_cid_type"];
 			$extension_in_contact = $row["extension_in_contact"];
-			$effective_caller_id_name = $row["effective_caller_id_name"];
-			$effective_caller_id_number = $row["effective_caller_id_number"];
-			$outbound_caller_id_name = $row["outbound_caller_id_name"];
-			$outbound_caller_id_number = $row["outbound_caller_id_number"];
 			$context = $row["context"];
 			$profile = $row["profile"];
 			$enabled = $row["enabled"];
@@ -491,13 +466,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <select class='formfld' name='register'>\n";
 	echo "    <option value=''></option>\n";
 	if ($register == "true") { 
-		echo "    <option value='true' SELECTED >true</option>\n";
+		echo "    <option value='true' selected='selected'>true</option>\n";
 	}
 	else {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($register == "false") { 
-		echo "    <option value='false' SELECTED >false</option>\n";
+		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";
@@ -734,52 +709,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "Enter the ping interval here in seconds.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
-	/*
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Effective Caller ID Name:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='effective_caller_id_name' maxlength='255' value=\"$effective_caller_id_name\">\n";
-	echo "<br />\n";
-	echo "Enter the effective caller ID name here.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Effective Caller ID Number:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='effective_caller_id_number' maxlength='255' value=\"$effective_caller_id_number\">\n";
-	echo "<br />\n";
-	echo "Enter the effective caller ID number here.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Outbound Caller ID Name:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='outbound_caller_id_name' maxlength='255' value=\"$outbound_caller_id_name\">\n";
-	echo "<br />\n";
-	echo "Enter the outbound caller ID name here.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    Outbound Caller ID Number:\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='outbound_caller_id_number' maxlength='255' value=\"$outbound_caller_id_number\">\n";
-	echo "<br />\n";
-	echo "Enter the outbound caller ID number here.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	*/
 
 	echo "	</table>\n";
 	echo "	</div>";
