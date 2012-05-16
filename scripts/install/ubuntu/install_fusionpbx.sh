@@ -96,6 +96,10 @@ FSCHECKOUTVER=false
 FPBXREV="1876"
 FBPXCHECKOUTVER=false
 URLSCRIPT="http://fusionpbx.googlecode.com/svn/trunk/scripts/install/ubuntu/install_fusionpbx.sh"
+INSFUSION=0
+INSFREESWITCH=0
+UPGFUSION=0
+UPGFREESWITCH=0
 
 #---------
 #  NOTES
