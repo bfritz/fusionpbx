@@ -1770,7 +1770,7 @@ function save_extension_xml() {
 				if (strlen($row['effective_caller_id_name']) > 0) {
 					$tmp_xml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";
 				}
-				if (strlen($row['outbound_caller_id_number']) > 0) {
+				if (strlen($row['effective_caller_id_number']) > 0) {
 					$tmp_xml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $row['effective_caller_id_number'] . "\"/>\n";
 				}
 				if (strlen($row['outbound_caller_id_name']) > 0) {

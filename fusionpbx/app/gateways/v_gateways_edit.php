@@ -735,6 +735,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	/*
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    Effective Caller ID Name:\n";
@@ -778,6 +779,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "Enter the outbound caller ID number here.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+	*/
 
 	echo "	</table>\n";
 	echo "	</div>";
