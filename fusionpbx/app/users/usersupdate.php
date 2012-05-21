@@ -262,7 +262,7 @@ else {
 	echo "<td align='left' width='90%' nowrap><b>Account Settings</b></td>\n";
 	echo "<td nowrap='nowrap'>\n";
 	echo "	<input type='submit' name='submit' class='btn' value='Save'>";
-	echo "	<input type='button' class='btn' onclick=\"window.location='index.php'\" value='Back'>";
+	echo "	<input type='button' class='btn' onclick=\"window.location='".PROJECT_PATH."/index2.php'\" value='Back'>";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
