@@ -568,9 +568,9 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		unset ($prep_statement);
 
 	//list conferences
-		$sql = "select * from v_dialplan_details ";
+		$sql = "select * from v_conferences ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "order by dialplan_detail_data asc ";
+		$sql .= "order by conference_name asc ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$x = 0;
@@ -578,34 +578,28 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 		if ($select_type == "dialplan" || $select_type == "ivr") {
 			echo "<optgroup label='Conferences'>\n";
 		}
-		$previous_conference_name = "";
 		foreach ($result as &$row) {
-			//$dialplan_detail_tag = $row["dialplan_detail_tag"];
-			if ($row["dialplan_detail_type"] == "conference") {
-				$conference_name = $row["dialplan_detail_data"];
-				$conference_name = str_replace('_${domain_name}@default', '', $conference_name);
-				if ($previous_conference_name != $conference_name) {
-					if ("menu-exec-app:conference ".$row["dialplan_detail_data"] == $select_value || "conference:default ".$row["dialplan_detail_data"] == $select_value) {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:conference ".$row["dialplan_detail_data"]."' selected='selected'>".$conference_name."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='conference:".$row["dialplan_detail_data"]."' selected='selected'>".$conference_name."</option>\n";
-						}
-						$selection_found = true;
-					}
-					else {
-						if ($select_type == "ivr") {
-							echo "		<option value='menu-exec-app:conference ".$row["dialplan_detail_data"]."'>".$conference_name."</option>\n";
-						}
-						if ($select_type == "dialplan") {
-							echo "		<option value='conference:".$row["dialplan_detail_data"]."'>".$conference_name."</option>\n";
-						}
-					}
-					$previous_conference_name = $conference_name;
+			$name = $row["conference_name"];
+			$extension = $row["conference_extension"];
+			$description = $row["conference_description"];
+			if ("execute_extension ".$extension." XML ".$_SESSION['context'] == $select_value || "execute_extension:".$extension." XML ".$_SESSION['context'] == $select_value) {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:execute_extension $extension XML ".$_SESSION['context']."' selected='selected'>".$name." ".$description."</option>\n";
 				}
-				$x++;
+				if ($select_type == "dialplan") {
+					echo "		<option value='execute_extension:$extension XML ".$_SESSION['context']."' selected='selected'>".$name." ".$description."</option>\n";
+				}
+				$selection_found = true;
 			}
+			else {
+				if ($select_type == "ivr") {
+					echo "		<option value='menu-exec-app:execute_extension $extension XML ".$_SESSION['context']."'>".$name." ".$description."</option>\n";
+				}
+				if ($select_type == "dialplan") {
+					echo "		<option value='execute_extension:".$extension." XML ".$_SESSION['context']."'>".$name." ".$description."</option>\n";
+				}
+			}
+			$x++;
 		}
 		if ($select_type == "dialplan" || $select_type == "ivr") {
 			echo "</optgroup>\n";
