@@ -194,8 +194,7 @@ $order = $_GET["order"];
 	echo "<td width='35' nowrap></td>\n";
 	echo "</tr></table>";
 
-	$sql = "";
-	$sql .= "select * from v_menu_items ";
+	$sql = "select * from v_menu_items ";
 	$sql .= "where menu_uuid = '".$menu_uuid."' ";
 	$sql .= "and menu_item_parent_uuid is null ";
 	if (strlen($order_by)> 0) {
