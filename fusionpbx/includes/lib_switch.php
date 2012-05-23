@@ -2542,8 +2542,8 @@ function save_hunt_group_xml() {
 					$tmp .= "caller_id_number = session:getVariable(\"caller_id_number\");\n";
 					$tmp .= "effective_caller_id_name = session:getVariable(\"effective_caller_id_name\");\n";
 					$tmp .= "effective_caller_id_number = session:getVariable(\"effective_caller_id_number\");\n";
-					$tmp .= "outbound_caller_id_name = session:getVariable(\"effective_caller_id_name\");\n";
-					$tmp .= "outbound_caller_id_number = session:getVariable(\"effective_caller_id_number\");\n";
+					$tmp .= "outbound_caller_id_name = session:getVariable(\"outbound_caller_id_name\");\n";
+					$tmp .= "outbound_caller_id_number = session:getVariable(\"outbound_caller_id_number\");\n";
 					$tmp .= "\n";
 
 					$tmp .= "--set the sounds path for the language, dialect and voice\n";
@@ -2715,7 +2715,7 @@ function save_hunt_group_xml() {
 							$bridge_array = outbound_route_to_bridge ($ent['destination_data']);
 							$destination_data = $bridge_array[0];
 							$tmp_sub_array["application"] = "bridge";
-							$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]".$destination_data."\"";
+							$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout,origination_caller_id_name=\"..outbound_caller_id_name..\",origination_caller_id_number=\"..outbound_caller_id_number..\"]".$destination_data."\"";
 							$tmp_array[$i] = $tmp_sub_array;
 							unset($tmp_sub_array);
 							unset($destination_data);
