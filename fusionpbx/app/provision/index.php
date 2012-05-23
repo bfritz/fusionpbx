@@ -253,7 +253,7 @@ require_once "includes/require.php";
 	//set variables for testing
 		//$line1_displayname= "1001";
 		//$line1_shortname= "1001";
-		//$line1_user_uuid= "1001";
+		//$line1_user_id= "1001";
 		//$line1_user_password= "1234.";
 		//$line1_server_address= "10.2.0.2";
 		//$line2_server_address= "";

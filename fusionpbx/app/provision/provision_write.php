@@ -172,7 +172,7 @@ else {
 											$file_contents = str_replace("{v_line".$line_number."_server_address}", $_SESSION['domain_name'], $file_contents);
 											$file_contents = str_replace("{v_line".$line_number."_displayname}", $row2["effective_caller_id_name"], $file_contents);
 											$file_contents = str_replace("{v_line".$line_number."_shortname}", $row2["extension"], $file_contents);
-											$file_contents = str_replace("{v_line".$line_number."_user_uuid}", $row2["extension"], $file_contents);
+											$file_contents = str_replace("{v_line".$line_number."_user_id}", $row2["extension"], $file_contents);
 											$file_contents = str_replace("{v_line".$line_number."_user_password}", $row2["password"], $file_contents);
 										}
 									}
@@ -203,7 +203,7 @@ else {
 								$file_contents = str_replace("{v_line".$i."_server_address}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_displayname}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_shortname}", "", $file_contents);
-								$file_contents = str_replace("{v_line".$i."_user_uuid}", "", $file_contents);
+								$file_contents = str_replace("{v_line".$i."_user_id}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_user_password}", "", $file_contents);
 							}
 
