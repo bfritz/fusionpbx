@@ -54,6 +54,10 @@ else {
 		$conference_order = check_str($_POST["conference_order"]);
 		$conference_description = check_str($_POST["conference_description"]);
 		$conference_enabled = check_str($_POST["conference_enabled"]);
+
+		//sanitize the conference name
+		$conference_name = preg_replace("/[^A-Za-z0-9\- ]/", "", $conference_name);
+		$conference_name = str_replace(" ", "-", $conference_name);
 	}
 
 //delete the user from the v_conference_users
@@ -313,6 +317,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$conference_order = $row["conference_order"];
 			$conference_description = $row["conference_description"];
 			$conference_enabled = $row["conference_enabled"];
+			$conference_name = str_replace("-", " ", $conference_name);
 		}
 		unset ($prep_statement);
 	}
@@ -342,7 +347,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
 	echo "Conferences is used to setup conference rooms with a name, description, and optional pin number. \n";
-	echo "Click on <a href='".PROJECT_PATH."/app/conferences_active/v_conference_interactive.php?c=".$conference_name."'>Active Conference</a> \n";
+	echo "Click on <a href='".PROJECT_PATH."/app/conferences_active/v_conference_interactive.php?c=".str_replace(" ", "-", $conference_name)."'>Active Conference</a> \n";
 	echo "to monitor and interact with the conference room.<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";

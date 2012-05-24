@@ -143,8 +143,10 @@ require_once "includes/paging.php";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
+			$conference_name = $row['conference_name'];
+			$conference_name = str_replace("-", " ", $conference_name);
 			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$conference_name."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_extension']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_profile']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_flags']."&nbsp;</td>\n";
