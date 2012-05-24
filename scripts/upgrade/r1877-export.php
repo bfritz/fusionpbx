@@ -2411,6 +2411,17 @@ user_setting_enabled text,
 user_setting_description text) ENGINE=INNODB;
 EOD;
 
+//add the create table statements
+	if ($db_type == "pgsql") {
+		echo $schema_pgsql."\n";
+	}
+	if ($db_type == "sqlite") {
+		echo $schema_sqlite."\n";
+	}
+	if ($db_type == "mysql") {
+		echo $schema_mysql."\n";
+	}
+
 //get the domain array and make it easily accessible by the v_id
 	$sql = "select v_id, v_domain as domain_name, v_description as domain_description from v_system_settings ";
 	$prep_statement = $db->prepare($sql);
