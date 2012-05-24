@@ -1143,7 +1143,18 @@ if [ $DO_DAHDI == "y" ]; then
 		
 		/bin/sed /usr/src/freeswitch/debian/freeswitch.init -e s,opt,usr/local, >/etc/init.d/freeswitch
 	else
-		 /bin/sed /usr/src/freeswitch/debian/freeswitch-sysvinit.freeswitch.init  -e s,opt,usr/local, >/etc/init.d/freeswitch
+		/bin/sed /usr/src/freeswitch/debian/freeswitch-sysvinit.freeswitch.init  -e s,opt,usr/local, >/etc/init.d/freeswitch
+		#DAEMON
+		/bin/sed -i /etc/init.d/freeswitch -e s,^DAEMON=.*,DAEMON=/usr/local/freeswitch/bin/freeswitch,
+					
+		#DAEMON_ARGS
+		/bin/sed -i /etc/init.d/freeswitch -e s,'^DAEMON_ARGS=.*','DAEMON_ARGS="-u www-data -g www-data -rp -nc -nonat"',
+
+		#PIDFILE
+		/bin/sed -i /etc/init.d/freeswitch -e s,^PIDFILE=.*,PIDFILE=/usr/local/freeswitch/run/\$NAME.pid,
+
+		#WORKDIR
+		/bin/sed -i /etc/init.d/freeswitch -e s,^WORKDIR=.*,WORKDIR=/usr/local/freeswitch/lib/,
 	fi
 	
 	if [ $? -ne 0 ]; then
@@ -1168,6 +1179,7 @@ if [ $DO_DAHDI == "y" ]; then
                                 /bin/echo "ERROR: Couldn't edit freeswitch RC script."
                                 exit 1
                         fi
+						
 		else
 			/bin/sed /usr/src/freeswitch/debian/freeswitch.default -e s,false,true, > /etc/default/freeswitch
 			if [ $? -ne 0 ]; then
