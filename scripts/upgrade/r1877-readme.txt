@@ -36,3 +36,17 @@ Move the sql file to the server then import the sql code into the database.
 For postgres you can import the sql file into the database by using the following command.
 su postgres
 psql -U postgres -d fusionpbx3 -f /tmp/database_backup.sql -L sql.log
+
+Edit fusionpbx/includes/config.php change the database name to the new database.
+
+Login with the web browser.
+
+Update the menu by going to:
+http://x.x.x.x//core/menu/menu.php then edit the menu and press 'restore default'
+
+Update the permissions.
+Got to advanced -> group manager edit the permissions for the superadmin group and select the permissions you that are not select in the list when finished press save.
+
+Logout of the web interface to clear the session.
+
+Log back in the upgrade is now complete.
