@@ -93,13 +93,13 @@ include "root.php";
 									$sql .= ") ENGINE=INNODB;";	
 								}
 								else {
-									$sql .= ");";	
+									$sql .= ");";
 								}
 								$this->result['sql'][] = $sql;
 								unset($sql);
 						}
 					}
-				}				
+				}
 			}
 
 		//create the database schema
