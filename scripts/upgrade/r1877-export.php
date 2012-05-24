@@ -37,7 +37,7 @@ else {
 //user defined settings
 	$export_type = "sql"; //default sql;
 	$debug = false;
-	$invoices = true; //default false;
+	$invoices = false; //default false;
 	$db_type = "sqlite"; //pgsql, sqlite, mysql
 
 //used for debugging
