@@ -778,13 +778,13 @@ if [ $INSFREESWITCH -eq 1 ]; then
 		autoconf automake libtool libncurses5 libncurses5-dev libjpeg-dev ssh \
 		screen htop pkg-config bzip2 curl libtiff4-dev ntp \
 		time bison libssl-dev \
-		unixodbc libmyodbc unixodbc-dev 
+		unixodbc libmyodbc unixodbc-dev libtiff-tools
 	else
 		/usr/bin/apt-get -y install ssh vim git-core subversion build-essential \
 			autoconf automake libtool libncurses5 libncurses5-dev libjpeg62-dev ssh \
 			screen htop pkg-config bzip2 curl libtiff4-dev ntp \
 			time bison libssl-dev \
-			unixodbc libmyodbc unixodbc-dev 
+			unixodbc libmyodbc unixodbc-dev libtiff-tools
 	fi
 	
 	#added libgnutls-dev libgnutls26 for dingaling...
