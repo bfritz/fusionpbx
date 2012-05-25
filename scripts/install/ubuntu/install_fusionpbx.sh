@@ -1508,7 +1508,7 @@ bantime  = 600
 
 [freeswitch-dos]
 enabled = true
-port = 55060,5061,5080,5081
+port = 5060,5061,5080,5081
 protocol = udp
 filter = freeswitch-dos
 logpath = /usr/local/freeswitch/log/freeswitch.log
