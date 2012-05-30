@@ -38,8 +38,15 @@ Migration Instructions
 
 13. Move the sql file to the server then import the sql code into the database.
 	a. For postgres you can import the sql file into the database by using the following command.
-	su postgres
-	psql -U postgres -d fusionpbx3 -f /tmp/database_backup.sql -L sql.log
+		su postgres
+		psql -U postgres -d fusionpbx3 -f /tmp/database_backup.sql -L sql.log
+	b. For sqlite you need to use sqlite by command line.
+		1. Assuming fusionpbx is installed to /var/www/fusionpbx and the database is called fusionpbx.db
+		2. Move the old database to a new name
+			mv /var/www/fusionpbx/secure/fusionpbx.db /var/www/fusionpbx/secure/fusionpbx-version2.db
+		3. Import the sql file into the sqlite database
+			sqlite /var/www/fusionpbx/secure/fusionpbx.db < /tmp/database_backup.sql
+		4. Make sure the database is writeable
 
 14. Edit fusionpbx/includes/config.php change the database name to the new database.
 
@@ -49,7 +56,7 @@ Migration Instructions
 16. Login with the web browser.
 
 17. Update the menu by going to:
-	http://x.x.x.x//core/menu/menu.php then edit the menu and press 'restore default'
+	http://x.x.x.x/core/menu/menu.php then edit the menu and press 'restore default'
 
 18. Update the permissions.
 	Go to advanced -> group manager edit the permissions for the superadmin group
