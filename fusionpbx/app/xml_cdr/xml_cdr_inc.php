@@ -83,9 +83,15 @@ else {
 		if (strlen($destination_number) > 0) { $sql_where .= "and destination_number like '%$destination_number%' "; }
 	}
 	if (strlen($context) > 0) { $sql_where .= "and context like '%$context%' "; }
-	if (strlen($start_stamp) > 0) { $sql_where .= "and start_stamp like '%$start_stamp%' "; }
+	if ($db_type == "sqlite") {
+		if (strlen($start_stamp) > 0) { $sql_where .= "and start_stamp like '%$start_stamp%' "; }
+		if (strlen($end_stamp) > 0) { $sql_where .= "and end_stamp like '%$end_stamp%' "; }
+	}
+	if ($db_type == "pgsql" || $db_type == "mysql") {
+		if (strlen($start_stamp) > 0 && strlen($end_stamp) == 0) { $sql_where .= "and start_stamp between '$start_stamp 00:00:00' and '$start_stamp 23:59:59' "; }
+		if (strlen($start_stamp) > 0 && strlen($end_stamp) > 0) { $sql_where .= "and start_stamp between '$start_stamp 00:00:00' and '$end_stamp 23:59:59' "; }
+	}
 	if (strlen($answer_stamp) > 0) { $sql_where .= "and answer_stamp like '%$answer_stamp%' "; }
-	if (strlen($end_stamp) > 0) { $sql_where .= "and end_stamp like '%$end_stamp%' "; }
 	if (strlen($duration) > 0) { $sql_where .= "and duration like '%$duration%' "; }
 	if (strlen($billsec) > 0) { $sql_where .= "and billsec like '%$billsec%' "; }
 	if (strlen($hangup_cause) > 0) { $sql_where .= "and hangup_cause like '%$hangup_cause%' "; }
