@@ -428,6 +428,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "			<br />\n";
 	$sql = "SELECT * FROM v_extensions ";
 	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+	$sql .= "order by extension asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	echo "			<select name=\"extension_uuid\" class='frm'>\n";
