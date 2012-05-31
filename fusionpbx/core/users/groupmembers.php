@@ -80,9 +80,10 @@ else {
 	echo "	</tr>\n";
 	echo "</table>\n";
 
-	$sql = "SELECT * FROM v_group_users ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and group_name = '$group_name' ";
+	$sql = "SELECT u.user_uuid, u.username, g.group_user_uuid FROM v_group_users as g, v_users as u ";
+	$sql .= "where g.user_uuid = u.user_uuid ";
+	$sql .= "and g.domain_uuid = '$domain_uuid' ";
+	$sql .= "and g.group_name = '$group_name' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 
