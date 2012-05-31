@@ -1742,8 +1742,11 @@ function save_extension_xml() {
 				if (strlen($row['mwi_account']) > 0) {
 					$tmp_xml .= "      <param name=\"MWI-Account\" value=\"" . $row['mwi_account'] . "\"/>\n";
 				}
-				if (strlen($row['auth-acl']) > 0) {
+				if (strlen($row['auth_acl']) > 0) {
 					$tmp_xml .= "      <param name=\"auth-acl\" value=\"" . $row['auth_acl'] . "\"/>\n";
+				}
+				if (strlen($row['directory_exten_visible']) > 0) {
+					$tmp_xml .= "      <param name=\"directory-exten-visible\" value=\"" . $row['directory_exten_visible'] . "\"/>\n";
 				}
 				$tmp_xml .= "    </params>\n";
 				$tmp_xml .= "    <variables>\n";
@@ -1781,9 +1784,6 @@ function save_extension_xml() {
 				}
 				if (strlen($row['directory_visible']) > 0) {
 					$tmp_xml .= "      <variable name=\"directory-visible\" value=\"" . $row['directory_visible'] . "\"/>\n";
-				}
-				if (strlen($row['directory_exten_visible']) > 0) {
-					$tmp_xml .= "      <variable name=\"directory-exten-visible\" value=\"" . $row['directory_exten_visible'] . "\"/>\n";
 				}
 				if (strlen($row['limit_max']) > 0) {
 					$tmp_xml .= "      <variable name=\"limit_max\" value=\"" . $row['limit_max'] . "\"/>\n";
