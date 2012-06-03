@@ -3983,6 +3983,9 @@ EOD;
 		//$opt_1_name = check_str($row["opt_1_name"]);
 		//$opt_1_value = check_str($row["opt_1_value"]);
 
+		//set the dialplan order
+		if ($dialplan_order < 320) { $dialplan_order = 320; }
+
 		//set the dialplan_uuid
 		$dialplan_array[$dialplan_include_id]['dialplan_uuid'] = $dialplan_uuid;
 
@@ -4044,7 +4047,6 @@ EOD;
 		$dialplan_detail_inline = check_str($row["field_inline"]);
 		$dialplan_detail_group = check_str($row["field_group"]);
 		$dialplan_detail_order = check_str($row["field_order"]);
-		if ($dialplan_detail_order < 3) { $dialplan_detail_order = 500; }
 		$dialplan_detail_data = str_replace("\\\\", "\\", $dialplan_detail_data);
 
 		//get the dialplan_uuid
