@@ -70,4 +70,10 @@ Migration Instructions
 21. Log back into the web interface and run.
 	Advanced -> Upgrade Schema (this will create new dialplans xml files for each domain)
 
-22. Upgrade is complete.
+22.  Go to Advanced -> XML Editor
+	Expand 'autoload_configs'
+	Click on xml_cdr.conf.xml
+	At <param name="url" remove /mod/ and replace it with /app/
+	Status -> SIP Status press 'reloadxml'
+	System -> Modules restart XML CDR.
+23. Upgrade is complete.
