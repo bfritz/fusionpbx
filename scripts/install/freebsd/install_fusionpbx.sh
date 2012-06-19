@@ -13,6 +13,10 @@ GUI_NAME=fusionpbx
 #csup -h `fastest_cvsup -c tld -q` /usr/share/examples/cvsup/standard-supfile
 portsnap fetch && portsnap-extract
 
+#help freeswitch to detect required odbc libraries
+setenv LDFLAGS -L/usr/local/lib
+setenv CPPFLAGS -I/usr/local/include 
+
 # Fix a bug in freeswitch-devel
 #sed -e 's|RUN_DEPENDS=    freeswitch:${PORTSDIR}/net/freeswitch-core|#RUN_DEPENDS=    freeswitch:${PORTSDIR}/net/freeswitch-core|g' ${PORTSDIR}/audio/freeswitch-music/Makefile
 #sed -e 's|RUN_DEPENDS=    freeswitch:${PORTSDIR}/net/freeswitch-core|#RUN_DEPENDS=    freeswitch:${PORTSDIR}/net/freeswitch-core|g' ${PORTSDIR}/audio/freeswitch-sounds/Makefile
@@ -160,18 +164,17 @@ cd ${PORTSDIR}/www/nginx && make install
 cd ${PORTSDIR}/databases/unixODBC/ && make install
 #pkg_add -r unixODBC
 
-cd /usr/ports/databases/libodbc++/ && make install
-#pkg_add -r libodbc++
-
-#help freeswitch to detect required odbc libraries
-setenv LDFLAGS -L/usr/local/lib
-setenv CPPFLAGS -I/usr/local/include 
+cd /usr/ports/databases/postgresql90-server/ && make install
+#pkg_add -r postgresql90-server
 
 cd /usr/ports/graphics/tiff && make install
 
 # php and php extensions
 cd ${PORTSDIR}/lang/php5/ && make install
 #pkg_add -r php5
+
+cd ${PORTSDIR}/www/php5-session/ && make install
+#pkg_add -r php5-session
 
 cd ${PORTSDIR}/databases/php5-pdo/ && make install
 #pkg_add -r php5-pdo
@@ -184,6 +187,9 @@ cd ${PORTSDIR}/databases/php5-pdo_odbc/ && make install
 
 cd ${PORTSDIR}/databases/php5-pdo_pgsql/ && make install
 #pkg_add -r php5-pdo_pgsql
+
+cd ${PORTSDIR}/databases/php5-pgsql/ && make install
+#pkg_add -r php5-pgsql
 
 #cd ${PORTSDIR}/databases/php5-pdo_mysql/ && make install
 #pkg_add -r php52-pdo_mysql
@@ -441,6 +447,7 @@ chown -R www:www ${LOCALBASE}/www/fusionpbx
 chmod -R 755 ${LOCALBASE}/www/fusionpbx
 
 # Instal spawn fast cgi - alternative to php fpm
+#cd /usr/ports/www/spawn-fcgi/ && make install clean
 #pkg_add -r spawn-fcgi
 #echo "spawn_fcgi_enable=\"YES\"" >> /etc/rc.conf
 
@@ -540,7 +547,7 @@ http {
 				break;
 		}
 		access_log /var/log/nginx/access.log;
-		error_log /var/log/nginx/.error.log;
+		error_log /var/log/nginx/error.log;
 
 		client_max_body_size 10M;
 		client_body_buffer_size 128k;
@@ -819,6 +826,7 @@ echo "freeswitch_flags=\"-nc\"" >> /etc/rc.conf
 echo "php_fpm_enable=\"YES\"" >> /etc/rc.conf
 echo "nginx_enable=\"YES\"" >> /etc/rc.conf
 echo "fail2ban_enable=\"YES\"" >> /etc/rc.conf
+echo "postgresql_enable=\"YES\"" >> /etc/rc.conf
 #
 ## Add user www to the freeswitch group for rw permissions
 #pw usermod www -G freeswitch
