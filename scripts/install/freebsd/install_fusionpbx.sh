@@ -121,7 +121,7 @@ cd /usr/ports/security/openssl/ && make config-recursive
 cd ${PORTSDIR}/net/ngrep && make config-recursive
 
 # Default
-cd ${PORTSDIR}/security/fail2ban && make config-recursive
+cd ${PORTSDIR}/security/py-fail2ban && make config-recursive
 
 # Default
 cd ${PORTSDIR}/devel/subversion/ && make config-recursive
@@ -149,7 +149,7 @@ cd ${PORTSDIR}/ports-mgmt/portmanager && make install
 cd ${PORTSDIR}/net/ngrep && make install
 #pkg_add -r ngrep
 
-cd ${PORTSDIR}/security/fail2ban && make install
+cd ${PORTSDIR}/security/py-fail2ban && make install
 #pkg_add -r py27-fail2ban
 
 #cd ${PORTSDIR}/security/bruteforceblocker && make install
@@ -392,9 +392,10 @@ gmake sounds-install
 gmake moh-install
 gmake hd-sounds-install
 gmake hd-moh-install
+chown -R www:www ${LOCALBASE}/freeswitch
 
 # add freswitch rc.d
-cat << EOF > "${LOCALBASE}/etc/rc.d/freeswitch "
+cat << EOF > "${LOCALBASE}/etc/rc.d/freeswitch"
 #!/bin/sh
 #
 # PROVIDE: freeswitch
@@ -411,20 +412,21 @@ cat << EOF > "${LOCALBASE}/etc/rc.d/freeswitch "
 . /etc/rc.subr
 
 name="freeswitch"
-rcvar=${name}_enable
+user="www"
+rcvar=\${name}_enable
 
-load_rc_config $name
+load_rc_config \${name}
 
-: ${freeswitch_enable="NO"}
-: ${freeswitch_pidfile="/usr/local/freeswitch/run/freeswitch.pid"}
+: \${freeswitch_enable="NO"}
+: \${freeswitch_pidfile="/usr/local/freeswitch/run/freeswitch.pid"}
 
-start_cmd=${name}_start
-stop_cmd=${name}_stop
+start_cmd=\${name}_start
+stop_cmd=\${name}_stop
 
-pidfile=${freeswitch_pidfile}
+pidfile=\${freeswitch_pidfile}
 
 freeswitch_start() {
-        /usr/local/freeswitch/bin/freeswitch ${freeswitch_flags}
+        /usr/local/freeswitch/bin/freeswitch -u \${user} \${freeswitch_flags}
 		echo -n "Starting FreeSWITCH: "
 }
 
@@ -432,14 +434,16 @@ freeswitch_stop() {
         /usr/local/freeswitch/bin/freeswitch -stop
 }
 
-run_rc_command "$1"
+run_rc_command "\$1"
 EOF
+
+#make the freeswitch script exectuable
+chmod 555 ${LOCALBASE}/etc/rc.d/freeswitch
 
 #--------------------------------------------------------
 
 cd ${PORTSDIR}/devel/subversion/ && make install
 #pkg_add -r subversion && rehash
-
 
 
 svn checkout http://fusionpbx.googlecode.com/svn/trunk/fusionpbx ${LOCALBASE}/www/fusionpbx
@@ -492,9 +496,9 @@ http {
     include       mime.types;
     default_type  application/octet-stream;
 
-    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-    #                  '$status $body_bytes_sent "$http_referer" '
-    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+    #log_format  main  '\$remote_addr - \$remote_user [\$time_local] "\$request" '
+    #                  '\$status $body_bytes_sent "\$http_referer" '
+    #                  '"\$http_user_agent" "\$http_x_forwarded_for"';
 
     #access_log  logs/access.log  main;
 
@@ -662,7 +666,7 @@ EOF
 
 # Configure Fail2ban
 mkdir -p ${LOCALBASE}/etc/fail2ban/action.d
-cat << EOF > "${LOCALBASE}/etc/fail2ban/action.d/bsd-pf"      
+cat << EOF > "${LOCALBASE}/etc/fail2ban/action.d/bsd-pf.conf"
 [Definition]
 
 actionstart =
@@ -794,7 +798,7 @@ filter   = fusionpbx
 logpath  = /var/log/auth.log
 action   = bsd-pf[name=fusionpbx, protocol=all]
 EOF
- 
+
 grep -A 1 'time.sleep(0\.1)' ${LOCALBASE}/bin/fail2ban-client |grep beautifier > /dev/null
 if [ $? -ne 0 ]; then
         sed -i -e s,beautifier\.setInputCmd\(c\),'time.sleep\(0\.1\)\n\t\t\tbeautifier.setInputCmd\(c\)', ${LOCALBASE}/bin/fail2ban-client
