@@ -1535,93 +1535,93 @@ function save_setting_xml() {
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach ($result as &$row) {
 			$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/v_config_cli.php","w");
-			$tmp_xml = "<?php\n";
-			$tmp_xml .= "\n";
-			$tmp_xml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
-			$tmp_xml .= "\n";
-			$tmp_xml .= "//set the email variables\n";
-			$tmp_xml .= "	\$v_smtp_host = \"".$row["smtp_host"]."\";\n";
+			$xml = "<?php\n";
+			$xml .= "\n";
+			$xml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
+			$xml .= "\n";
+			$xml .= "//set the email variables\n";
+			$xml .= "	\$v_smtp_host = \"".$row["smtp_host"]."\";\n";
 			if ($row["smtp_secure"] == "none") {
-				$tmp_xml .= "	\$v_smtp_secure = \"\";\n";
+				$xml .= "	\$v_smtp_secure = \"\";\n";
 			}
 			else {
-				$tmp_xml .= "	\$v_smtp_secure = \"".$row["smtp_secure"]."\";\n";
+				$xml .= "	\$v_smtp_secure = \"".$row["smtp_secure"]."\";\n";
 			}
-			$tmp_xml .= "	\$v_smtp_auth = \"".$row["smtp_auth"]."\";\n";
-			$tmp_xml .= "	\$v_smtp_username = \"".$row["smtp_username"]."\";\n";
-			$tmp_xml .= "	\$v_smtp_password = \"".$row["smtp_password"]."\";\n";
-			$tmp_xml .= "	\$v_smtp_from = \"".$row["smtp_from"]."\";\n";
-			$tmp_xml .= "	\$v_smtp_from_name = \"".$row["smtp_from_name"]."\";\n";
-			$tmp_xml .= "\n";
-			$tmp_xml .= "//set system dir variables\n";
-			$tmp_xml .= "	\$switch_storage_dir = \"".$_SESSION['switch']['storage']['dir']."\";\n";
-			$tmp_xml .= "	\$tmp_dir = \"".$_SESSION['server']['temp']['dir']."\";\n";
-			$tmp_xml .= "	\$v_secure = \"".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure"."\";\n";
-			$tmp_xml .= "\n";
-			$tmp_xml .= "?>";
-			fwrite($fout, $tmp_xml);
-			unset($tmp_xml);
+			$xml .= "	\$v_smtp_auth = \"".$row["smtp_auth"]."\";\n";
+			$xml .= "	\$v_smtp_username = \"".$row["smtp_username"]."\";\n";
+			$xml .= "	\$v_smtp_password = \"".$row["smtp_password"]."\";\n";
+			$xml .= "	\$v_smtp_from = \"".$row["smtp_from"]."\";\n";
+			$xml .= "	\$v_smtp_from_name = \"".$row["smtp_from_name"]."\";\n";
+			$xml .= "\n";
+			$xml .= "//set system dir variables\n";
+			$xml .= "	\$switch_storage_dir = \"".$_SESSION['switch']['storage']['dir']."\";\n";
+			$xml .= "	\$tmp_dir = \"".$_SESSION['server']['temp']['dir']."\";\n";
+			$xml .= "	\$v_secure = \"".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure"."\";\n";
+			$xml .= "\n";
+			$xml .= "?>";
+			fwrite($fout, $xml);
+			unset($xml);
 			fclose($fout);
 
 			$fout = fopen($_SESSION['switch']['conf']['dir']."/directory/default/default.xml","w");
-			$tmp_xml = "<include>\n";
-			$tmp_xml .= "  <user id=\"default\"> <!--if id is numeric mailbox param is not necessary-->\n";
-			$tmp_xml .= "    <variables>\n";
-			$tmp_xml .= "      <!--all variables here will be set on all inbound calls that originate from this user -->\n";
-			$tmp_xml .= "      <!-- set these to take advantage of a dialplan localized to this user -->\n";
-			$tmp_xml .= "      <variable name=\"numbering_plan\" value=\"" . $row['numbering_plan'] . "\"/>\n";
-			$tmp_xml .= "      <variable name=\"default_gateway\" value=\"" . $row['default_gateway'] . "\"/>\n";
-			$tmp_xml .= "      <variable name=\"default_area_code\" value=\"" . $row['default_area_code'] . "\"/>\n";
-			$tmp_xml .= "    </variables>\n";
-			$tmp_xml .= "  </user>\n";
-			$tmp_xml .= "</include>\n";
-			fwrite($fout, $tmp_xml);
-			unset($tmp_xml);
+			$xml = "<include>\n";
+			$xml .= "  <user id=\"default\"> <!--if id is numeric mailbox param is not necessary-->\n";
+			$xml .= "    <variables>\n";
+			$xml .= "      <!--all variables here will be set on all inbound calls that originate from this user -->\n";
+			$xml .= "      <!-- set these to take advantage of a dialplan localized to this user -->\n";
+			$xml .= "      <variable name=\"numbering_plan\" value=\"" . $row['numbering_plan'] . "\"/>\n";
+			$xml .= "      <variable name=\"default_gateway\" value=\"" . $row['default_gateway'] . "\"/>\n";
+			$xml .= "      <variable name=\"default_area_code\" value=\"" . $row['default_area_code'] . "\"/>\n";
+			$xml .= "    </variables>\n";
+			$xml .= "  </user>\n";
+			$xml .= "</include>\n";
+			fwrite($fout, $xml);
+			unset($xml);
 			fclose($fout);
 
 			$event_socket_ip_address = $row['event_socket_ip_address'];
 			if (strlen($event_socket_ip_address) == 0) { $event_socket_ip_address = '127.0.0.1'; }
 
 			$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/event_socket.conf.xml","w");
-			$tmp_xml = "<configuration name=\"event_socket.conf\" description=\"Socket Client\">\n";
-			$tmp_xml .= "  <settings>\n";
-			$tmp_xml .= "    <param name=\"listen-ip\" value=\"" . $event_socket_ip_address . "\"/>\n";
-			$tmp_xml .= "    <param name=\"listen-port\" value=\"" . $row['event_socket_port'] . "\"/>\n";
-			$tmp_xml .= "    <param name=\"password\" value=\"" . $row['event_socket_password'] . "\"/>\n";
-			$tmp_xml .= "    <!--<param name=\"apply-inbound-acl\" value=\"lan\"/>-->\n";
-			$tmp_xml .= "  </settings>\n";
-			$tmp_xml .= "</configuration>";
-			fwrite($fout, $tmp_xml);
-			unset($tmp_xml, $event_socket_password);
+			$xml = "<configuration name=\"event_socket.conf\" description=\"Socket Client\">\n";
+			$xml .= "  <settings>\n";
+			$xml .= "    <param name=\"listen-ip\" value=\"" . $event_socket_ip_address . "\"/>\n";
+			$xml .= "    <param name=\"listen-port\" value=\"" . $row['event_socket_port'] . "\"/>\n";
+			$xml .= "    <param name=\"password\" value=\"" . $row['event_socket_password'] . "\"/>\n";
+			$xml .= "    <!--<param name=\"apply-inbound-acl\" value=\"lan\"/>-->\n";
+			$xml .= "  </settings>\n";
+			$xml .= "</configuration>";
+			fwrite($fout, $xml);
+			unset($xml, $event_socket_password);
 			fclose($fout);
 
 			$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/xml_rpc.conf.xml","w");
-			$tmp_xml = "<configuration name=\"xml_rpc.conf\" description=\"XML RPC\">\n";
-			$tmp_xml .= "  <settings>\n";
-			$tmp_xml .= "    <!-- The port where you want to run the http service (default 8080) -->\n";
-			$tmp_xml .= "    <param name=\"http-port\" value=\"" . $row['xml_rpc_http_port'] . "\"/>\n";
-			$tmp_xml .= "    <!-- if all 3 of the following params exist all http traffic will require auth -->\n";
-			$tmp_xml .= "    <param name=\"auth-realm\" value=\"" . $row['xml_rpc_auth_realm'] . "\"/>\n";
-			$tmp_xml .= "    <param name=\"auth-user\" value=\"" . $row['xml_rpc_auth_user'] . "\"/>\n";
-			$tmp_xml .= "    <param name=\"auth-pass\" value=\"" . $row['xml_rpc_auth_pass'] . "\"/>\n";
-			$tmp_xml .= "  </settings>\n";
-			$tmp_xml .= "</configuration>\n";
-			fwrite($fout, $tmp_xml);
-			unset($tmp_xml);
+			$xml = "<configuration name=\"xml_rpc.conf\" description=\"XML RPC\">\n";
+			$xml .= "  <settings>\n";
+			$xml .= "    <!-- The port where you want to run the http service (default 8080) -->\n";
+			$xml .= "    <param name=\"http-port\" value=\"" . $row['xml_rpc_http_port'] . "\"/>\n";
+			$xml .= "    <!-- if all 3 of the following params exist all http traffic will require auth -->\n";
+			$xml .= "    <param name=\"auth-realm\" value=\"" . $row['xml_rpc_auth_realm'] . "\"/>\n";
+			$xml .= "    <param name=\"auth-user\" value=\"" . $row['xml_rpc_auth_user'] . "\"/>\n";
+			$xml .= "    <param name=\"auth-pass\" value=\"" . $row['xml_rpc_auth_pass'] . "\"/>\n";
+			$xml .= "  </settings>\n";
+			$xml .= "</configuration>\n";
+			fwrite($fout, $xml);
+			unset($xml);
 			fclose($fout);
 
 			//shout.conf.xml
 				$fout = fopen($_SESSION['switch']['conf']['dir']."/autoload_configs/shout.conf.xml","w");
-				$tmp_xml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
-				$tmp_xml .= "  <settings>\n";
-				$tmp_xml .= "    <!-- Don't change these unless you are insane -->\n";
-				$tmp_xml .= "    <param name=\"decoder\" value=\"" . $row['mod_shout_decoder'] . "\"/>\n";
-				$tmp_xml .= "    <param name=\"volume\" value=\"" . $row['mod_shout_volume'] . "\"/>\n";
-				$tmp_xml .= "    <!--<param name=\"outscale\" value=\"8192\"/>-->\n";
-				$tmp_xml .= "  </settings>\n";
-				$tmp_xml .= "</configuration>";
-				fwrite($fout, $tmp_xml);
-				unset($tmp_xml);
+				$xml = "<configuration name=\"shout.conf\" description=\"mod shout config\">\n";
+				$xml .= "  <settings>\n";
+				$xml .= "    <!-- Don't change these unless you are insane -->\n";
+				$xml .= "    <param name=\"decoder\" value=\"" . $row['mod_shout_decoder'] . "\"/>\n";
+				$xml .= "    <param name=\"volume\" value=\"" . $row['mod_shout_volume'] . "\"/>\n";
+				$xml .= "    <!--<param name=\"outscale\" value=\"8192\"/>-->\n";
+				$xml .= "  </settings>\n";
+				$xml .= "</configuration>";
+				fwrite($fout, $xml);
+				unset($xml);
 				fclose($fout);
 
 			break; //limit to 1 row
@@ -1988,104 +1988,104 @@ function save_gateway_xml() {
 						}
 					if (count($_SESSION["domains"]) > 1) {
 						$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$_SESSION['domain_name'].'-'.$gateway.".xml","w");
-						$tmp_xml .= "<include>\n";
-						$tmp_xml .= "    <gateway name=\"". $_SESSION['domain_name'] .'-'. $gateway . "\">\n";
+						$xml .= "<include>\n";
+						$xml .= "    <gateway name=\"". $_SESSION['domain_name'] .'-'. $gateway . "\">\n";
 					}
 					else {
 						$fout = fopen($_SESSION['switch']['gateways']['dir']."/".$profile."/v_".$gateway.".xml","w");
-						$tmp_xml .= "<include>\n";
-						$tmp_xml .= "    <gateway name=\"" . $gateway . "\">\n";
+						$xml .= "<include>\n";
+						$xml .= "    <gateway name=\"" . $gateway . "\">\n";
 					}
 					if (strlen($row['username']) > 0) {
-						$tmp_xml .= "      <param name=\"username\" value=\"" . $row['username'] . "\"/>\n";
+						$xml .= "      <param name=\"username\" value=\"" . $row['username'] . "\"/>\n";
 					}
 					else {
-						$tmp_xml .= "      <param name=\"username\" value=\"register:false\"/>\n";
+						$xml .= "      <param name=\"username\" value=\"register:false\"/>\n";
 					}
 					if (strlen($row['distinct_to']) > 0) {
-						$tmp_xml .= "      <param name=\"distinct-to\" value=\"" . $row['distinct_to'] . "\"/>\n";
+						$xml .= "      <param name=\"distinct-to\" value=\"" . $row['distinct_to'] . "\"/>\n";
 					} 
 					if (strlen($row['auth_username']) > 0) {
-						$tmp_xml .= "      <param name=\"auth-username\" value=\"" . $row['auth_username'] . "\"/>\n";
+						$xml .= "      <param name=\"auth-username\" value=\"" . $row['auth_username'] . "\"/>\n";
 					} 
 					if (strlen($row['password']) > 0) {
-						$tmp_xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
+						$xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
 					}
 					else {
-						$tmp_xml .= "      <param name=\"password\" value=\"register:false\"/>\n";
+						$xml .= "      <param name=\"password\" value=\"register:false\"/>\n";
 					}
 					if (strlen($row['realm']) > 0) {
-						$tmp_xml .= "      <param name=\"realm\" value=\"" . $row['realm'] . "\"/>\n";
+						$xml .= "      <param name=\"realm\" value=\"" . $row['realm'] . "\"/>\n";
 					}
 					if (strlen($row['from_user']) > 0) {
-						$tmp_xml .= "      <param name=\"from-user\" value=\"" . $row['from_user'] . "\"/>\n";
+						$xml .= "      <param name=\"from-user\" value=\"" . $row['from_user'] . "\"/>\n";
 					}
 					if (strlen($row['from_domain']) > 0) {
-						$tmp_xml .= "      <param name=\"from-domain\" value=\"" . $row['from_domain'] . "\"/>\n";
+						$xml .= "      <param name=\"from-domain\" value=\"" . $row['from_domain'] . "\"/>\n";
 					}
 					if (strlen($row['proxy']) > 0) {
-						$tmp_xml .= "      <param name=\"proxy\" value=\"" . $row['proxy'] . "\"/>\n";
+						$xml .= "      <param name=\"proxy\" value=\"" . $row['proxy'] . "\"/>\n";
 					}
 					if (strlen($row['register_proxy']) > 0) {
-										$tmp_xml .= "      <param name=\"register-proxy\" value=\"" . $row['register_proxy'] . "\"/>\n";
+										$xml .= "      <param name=\"register-proxy\" value=\"" . $row['register_proxy'] . "\"/>\n";
 					}
 					if (strlen($row['outbound_proxy']) > 0) {
-							$tmp_xml .= "      <param name=\"outbound-proxy\" value=\"" . $row['outbound_proxy'] . "\"/>\n";
+							$xml .= "      <param name=\"outbound-proxy\" value=\"" . $row['outbound_proxy'] . "\"/>\n";
 					}
 					if (strlen($row['expire_seconds']) > 0) {
-						$tmp_xml .= "      <param name=\"expire-seconds\" value=\"" . $row['expire_seconds'] . "\"/>\n";
+						$xml .= "      <param name=\"expire-seconds\" value=\"" . $row['expire_seconds'] . "\"/>\n";
 					}
 					if (strlen($row['register']) > 0) {
-						$tmp_xml .= "      <param name=\"register\" value=\"" . $row['register'] . "\"/>\n";
+						$xml .= "      <param name=\"register\" value=\"" . $row['register'] . "\"/>\n";
 					}
 
 					if (strlen($row['register_transport']) > 0) {
 						switch ($row['register_transport']) {
 						case "udp":
-							$tmp_xml .= "      <param name=\"register-transport\" value=\"udp\"/>\n";
+							$xml .= "      <param name=\"register-transport\" value=\"udp\"/>\n";
 							break;
 						case "tcp":
-							$tmp_xml .= "      <param name=\"register-transport\" value=\"tcp\"/>\n";
+							$xml .= "      <param name=\"register-transport\" value=\"tcp\"/>\n";
 							break;
 						case "tls":
-							$tmp_xml .= "      <param name=\"register-transport\" value=\"tls\"/>\n";
-							$tmp_xml .= "      <param name=\"contact-params\" value=\"transport=tls\"/>\n";
+							$xml .= "      <param name=\"register-transport\" value=\"tls\"/>\n";
+							$xml .= "      <param name=\"contact-params\" value=\"transport=tls\"/>\n";
 							break;
 						default:
-							$tmp_xml .= "      <param name=\"register-transport\" value=\"" . $row['register_transport'] . "\"/>\n";
+							$xml .= "      <param name=\"register-transport\" value=\"" . $row['register_transport'] . "\"/>\n";
 						}
 					  }
 
 					if (strlen($row['retry_seconds']) > 0) {
-						$tmp_xml .= "      <param name=\"retry-seconds\" value=\"" . $row['retry_seconds'] . "\"/>\n";
+						$xml .= "      <param name=\"retry-seconds\" value=\"" . $row['retry_seconds'] . "\"/>\n";
 					}
 					if (strlen($row['extension']) > 0) {
-						$tmp_xml .= "      <param name=\"extension\" value=\"" . $row['extension'] . "\"/>\n";
+						$xml .= "      <param name=\"extension\" value=\"" . $row['extension'] . "\"/>\n";
 					}
 					if (strlen($row['ping']) > 0) {
-						$tmp_xml .= "      <param name=\"ping\" value=\"" . $row['ping'] . "\"/>\n";
+						$xml .= "      <param name=\"ping\" value=\"" . $row['ping'] . "\"/>\n";
 					}
 					if (strlen($row['context']) > 0) {
-						$tmp_xml .= "      <param name=\"context\" value=\"" . $row['context'] . "\"/>\n";
+						$xml .= "      <param name=\"context\" value=\"" . $row['context'] . "\"/>\n";
 					}
 					if (strlen($row['caller_id_in_from']) > 0) {
-						$tmp_xml .= "      <param name=\"caller-id-in-from\" value=\"" . $row['caller_id_in_from'] . "\"/>\n";
+						$xml .= "      <param name=\"caller-id-in-from\" value=\"" . $row['caller_id_in_from'] . "\"/>\n";
 					}
 					if (strlen($row['supress_cng']) > 0) {
-						$tmp_xml .= "      <param name=\"supress-cng\" value=\"" . $row['supress_cng'] . "\"/>\n";
+						$xml .= "      <param name=\"supress-cng\" value=\"" . $row['supress_cng'] . "\"/>\n";
 					}
 					if (strlen($row['sip_cid_type']) > 0) {
-						$tmp_xml .= "      <param name=\"sip_cid_type\" value=\"" . $row['sip_cid_type'] . "\"/>\n";
+						$xml .= "      <param name=\"sip_cid_type\" value=\"" . $row['sip_cid_type'] . "\"/>\n";
 					}
 					if (strlen($row['extension_in_contact']) > 0) {
-						$tmp_xml .= "      <param name=\"extension-in-contact\" value=\"" . $row['extension_in_contact'] . "\"/>\n";
+						$xml .= "      <param name=\"extension-in-contact\" value=\"" . $row['extension_in_contact'] . "\"/>\n";
 					}
 
-					$tmp_xml .= "    </gateway>\n";
-					$tmp_xml .= "</include>";
+					$xml .= "    </gateway>\n";
+					$xml .= "</include>";
 
-					fwrite($fout, $tmp_xml);
-					unset($tmp_xml);
+					fwrite($fout, $xml);
+					unset($xml);
 					fclose($fout);
 			}
 
@@ -2217,15 +2217,15 @@ function outbound_route_to_bridge ($destination_number) {
 							$pattern = '/'.$dialplan_detail_data.'/';
 							preg_match($pattern, $destination_number, $matches, PREG_OFFSET_CAPTURE);
 							if (count($matches) == 0) {
-									$regex_match = false;
+								$regex_match = false;
 							}
 							else {
-									$regex_match = true;
-									$regex_match_1 = $matches[1][0];
-									$regex_match_2 = $matches[2][0];
-									$regex_match_3 = $matches[3][0];
-									$regex_match_4 = $matches[4][0];
-									$regex_match_5 = $matches[5][0];
+								$regex_match = true;
+								$regex_match_1 = $matches[1][0];
+								$regex_match_2 = $matches[2][0];
+								$regex_match_3 = $matches[3][0];
+								$regex_match_4 = $matches[4][0];
+								$regex_match_5 = $matches[5][0];
 							}
 					}
 				}
@@ -2371,7 +2371,7 @@ function save_hunt_group_xml() {
 									//update the hunt groups table with the database
 										$sql = "update v_hunt_groups ";
 										$sql .= "set dialplan_uuid = '".$dialplan_uuid."' ";
-										$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+										$sql .= "where domain_uuid = '".$domain_uuid."' ";
 										$sql .= "and hunt_group_uuid = '".$row['hunt_group_uuid']."' ";
 										$db->query($sql);
 										unset($sql);
@@ -2379,7 +2379,7 @@ function save_hunt_group_xml() {
 
 								require_once "includes/classes/switch_dialplan.php";
 								$dialplan = new dialplan;
-								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->domain_uuid = $domain_uuid;
 								$dialplan->app_uuid = $app_uuid;
 								$dialplan->dialplan_uuid = $dialplan_uuid;
 								$dialplan->dialplan_name = $row['hunt_group_name'];
@@ -2412,7 +2412,7 @@ function save_hunt_group_xml() {
 								$sql .= "dialplan_context = '$context', ";
 								$sql .= "dialplan_enabled = '$enabled', ";
 								$sql .= "dialplan_description = '$description' ";
-								$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+								$sql .= "where domain_uuid = '".$domain_uuid."' ";
 								$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
 								$db->query($sql);
 								unset($sql);
@@ -2428,7 +2428,7 @@ function save_hunt_group_xml() {
 							if ($action == 'add' || $action == 'update') {
 								require_once "includes/classes/switch_dialplan.php";
 								$dialplan = new dialplan;
-								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->domain_uuid = $domain_uuid;
 								$dialplan->dialplan_uuid = $dialplan_uuid;
 								$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
 								$dialplan->dialplan_detail_type = 'destination_number';
@@ -2441,11 +2441,11 @@ function save_hunt_group_xml() {
 								unset($dialplan);
 
 								$dialplan = new dialplan;
-								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->domain_uuid = $domain_uuid;
 								$dialplan->dialplan_uuid = $dialplan_uuid;
 								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
 								$dialplan->dialplan_detail_type = 'lua';
-								$dialplan->dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domain_name'].'_'.$row['hunt_group_extension'].'.lua';
+								$dialplan->dialplan_detail_data = 'v_huntgroup_'.$_SESSION['domains'][$domain_uuid]['domain_name'].'_'.$row['hunt_group_extension'].'.lua';
 								//$dialplan->dialplan_detail_break = '';
 								//$dialplan->dialplan_detail_inline = '';
 								$dialplan->dialplan_detail_group = '1';
@@ -2454,7 +2454,7 @@ function save_hunt_group_xml() {
 								unset($dialplan);
 
 								$dialplan = new dialplan;
-								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->domain_uuid = $domain_uuid;
 								$dialplan->dialplan_uuid = $dialplan_uuid;
 								$dialplan->dialplan_detail_tag = 'condition'; //condition, action, antiaction
 								$dialplan->dialplan_detail_type = 'destination_number';
@@ -2467,7 +2467,7 @@ function save_hunt_group_xml() {
 								unset($dialplan);
 
 								$dialplan = new dialplan;
-								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->domain_uuid = $domain_uuid;
 								$dialplan->dialplan_uuid = $dialplan_uuid;
 								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
 								$dialplan->dialplan_detail_type = 'set';
@@ -2483,7 +2483,7 @@ function save_hunt_group_xml() {
 								$hunt_group_timeout_destination = $row['hunt_group_timeout_destination'];
 								if ($hunt_group_timeout_type == "voicemail") { $hunt_group_timeout_destination = '*99'.$hunt_group_timeout_destination; }
 								$dialplan = new dialplan;
-								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->domain_uuid = $domain_uuid;
 								$dialplan->dialplan_uuid = $dialplan_uuid;
 								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
 								$dialplan->dialplan_detail_type = 'set';
@@ -2496,7 +2496,7 @@ function save_hunt_group_xml() {
 								unset($dialplan);
 
 								$dialplan = new dialplan;
-								$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+								$dialplan->domain_uuid = $domain_uuid;
 								$dialplan->dialplan_uuid = $dialplan_uuid;
 								$dialplan->dialplan_detail_tag = 'action'; //condition, action, antiaction
 								$dialplan->dialplan_detail_type = 'fifo';
@@ -2509,8 +2509,6 @@ function save_hunt_group_xml() {
 								unset($dialplan);
 							}
 
-						//save the dialplan xml files
-							save_dialplan_xml();
 					} //end if strlen hunt_group_uuid; add the Hunt Group to the dialplan
 
 				//get the list of destinations then build the Hunt Group Lua
@@ -2883,6 +2881,9 @@ function save_hunt_group_xml() {
 							}
 						}
 		} //end while
+
+	//save the dialplan xml files
+		save_dialplan_xml();
 
 	//apply settings reminder
 		$_SESSION["reload_xml"] = true;
