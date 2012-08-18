@@ -228,4 +228,15 @@ if ($db_type == "pgsql") {
 	}
 } //end if db_type pgsql
 
+if ($db_type == "odbc") {
+	//database connection
+		try {
+			unset($db);
+			$db = new PDO("odbc:$db_name", "$db_username", "$db_password");
+		}
+		catch (PDOException $e) {
+		   echo 'Connection failed: ' . $e->getMessage();
+		}
+} //end if db_type odbc
+
 ?>

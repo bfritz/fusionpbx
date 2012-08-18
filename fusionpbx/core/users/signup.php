@@ -65,6 +65,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 		$sql = "SELECT * FROM v_users ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and username = '$username' ";
+		$sql .= "and user_enabled = 'true' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		if (count($prep_statement->fetchAll(PDO::FETCH_NAMED)) > 0) {
@@ -109,7 +110,8 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "password, ";
 	$sql .= "salt, ";
 	$sql .= "user_add_date, ";
-	$sql .= "user_add_user ";
+	$sql .= "user_add_user, ";
+	$sql .= "user_enabled ";
 	$sql .= ") ";
 	$sql .= "values ";
 	$sql .= "(";
@@ -120,7 +122,8 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= "'".md5($salt.$password)."', ";
 	$sql .= "'".$salt."', ";
 	$sql .= "now(), ";
-	$sql .= "'".$_SESSION["username"]."' ";
+	$sql .= "'".$_SESSION["username"]."', ";
+	$sql .= "'true' ";
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql);

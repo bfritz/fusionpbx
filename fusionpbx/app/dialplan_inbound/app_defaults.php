@@ -25,47 +25,55 @@
 */
 
 //if there are multiple domains then update the public dir path to include the domain
-	if (count($_SESSION["domains"]) > 1) {
-		if (is_dir($_SESSION['switch']['dialplan']['dir'].'/public')) {
-			//clear out the old xml files
-				$v_needle = '_v_';
-				if($dh = opendir($_SESSION['switch']['dialplan']['dir'].'/public')) {
-					$files = Array();
-					while($file = readdir($dh)) {
-						if($file != "." && $file != ".." && $file[0] != '.') {
-							if(is_dir($dir . "/" . $file)) {
-								//this is a directory
-							} else {
-								if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
-									unlink($_SESSION['switch']['dialplan']['dir'].'/public/'.$file);
+	if ($domains_processed == 1) {
+		if (count($_SESSION["domains"]) > 1) {
+			if (is_dir($_SESSION['switch']['dialplan']['dir'].'/public')) {
+				//clear out the old xml files
+					$v_needle = '_v_';
+					if($dh = opendir($_SESSION['switch']['dialplan']['dir'].'/public')) {
+						$files = Array();
+						while($file = readdir($dh)) {
+							if($file != "." && $file != ".." && $file[0] != '.') {
+								if(is_dir($dir . "/" . $file)) {
+									//this is a directory
+								} else {
+									if (strpos($file, $v_needle) !== false && substr($file,-4) == '.xml') {
+										unlink($_SESSION['switch']['dialplan']['dir'].'/public/'.$file);
+									}
 								}
 							}
 						}
+						closedir($dh);
 					}
-					closedir($dh);
-				}
+			}
 		}
 	}
 
 //if the public directory doesn't exist then create it
-	if (!is_dir($_SESSION['switch']['dialplan']['dir'].'/public')) { mkdir($_SESSION['switch']['dialplan']['dir'].'/public',0777,true); }
+	if ($domains_processed == 1) {
+		if (strlen($_SESSION['switch']['dialplan']['dir']) > 0) {
+			if (!is_dir($_SESSION['switch']['dialplan']['dir'].'/public')) { mkdir($_SESSION['switch']['dialplan']['dir'].'/public',0777,true); }
+		}
+	}
 
 //if multiple domains then make sure that the dialplan/public/domain_name.xml file exists
 	if (count($_SESSION["domains"]) > 1) {
 		//make sure the public directory and xml file exist
-		if (!is_dir($_SESSION['switch']['dialplan']['dir'].'/public'.$_SESSION['domains'][$domain_uuid]['domain_name'])) { 
-			mkdir($_SESSION['switch']['dialplan']['dir'].'/public/'.$_SESSION['domains'][$domain_uuid]['domain_name'],0777,true);
+		if (strlen($_SESSION['switch']['dialplan']['dir']) > 0) {
+			if (!is_dir($_SESSION['switch']['dialplan']['dir'].'/public'.$_SESSION['domains'][$domain_uuid]['domain_name'])) { 
+				mkdir($_SESSION['switch']['dialplan']['dir'].'/public/'.$_SESSION['domains'][$domain_uuid]['domain_name'],0777,true);
+			}
+			$file = $_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$domain_uuid]['domain_name'].".xml";
+			if (!file_exists($file)) {
+				$fout = fopen($file,"w");
+				$xml = "<include>\n";
+				$xml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$domain_uuid]['domain_name']."/*.xml\"/>\n";
+				$xml .= "</include>\n";
+				fwrite($fout, $xml);
+				fclose($fout);
+				unset($xml,$file);
+			}
 		}
-		$file = $_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$domain_uuid]['domain_name'].".xml";
-		if (!file_exists($file)) {
-			$fout = fopen($file,"w");
-			$xml = "<include>\n";
-			$xml .= "  <X-PRE-PROCESS cmd=\"include\" data=\"".$_SESSION['domains'][$domain_uuid]['domain_name']."/*.xml\"/>\n";
-			$xml .= "</include>\n";
-			fwrite($fout, $xml);
-			fclose($fout);
-			unset($xml,$file);
 		}
-	}
 
 ?>

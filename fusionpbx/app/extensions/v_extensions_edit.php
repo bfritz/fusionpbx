@@ -96,6 +96,7 @@ else {
 			$nibble_account = check_str($_POST["nibble_account"]);
 			$mwi_account = check_str($_POST["mwi_account"]);
 			$sip_bypass_media = check_str($_POST["sip_bypass_media"]);
+			$dial_string = check_str($_POST["dial_string"]);
 			$enabled = check_str($_POST["enabled"]);
 			$description = check_str($_POST["description"]);
 	}
@@ -181,6 +182,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($auth_acl) == 0) { $msg .= "Please provide: Auth ACL<br>\n"; }
 		//if (strlen($cidr) == 0) { $msg .= "Please provide: CIDR<br>\n"; }
 		//if (strlen($sip_force_contact) == 0) { $msg .= "Please provide: SIP Force Contact<br>\n"; }
+		//if (strlen($dial_string) == 0) { $msg .= "Please provide: Dial String<br>\n"; }
 		if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		//if (strlen($description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -281,6 +283,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						$sql .= "mwi_account, ";
 					}
 					$sql .= "sip_bypass_media, ";
+					$sql .= "dial_string, ";
 					$sql .= "enabled, ";
 					$sql .= "description ";
 					$sql .= ")";
@@ -335,6 +338,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						$sql .= "'$mwi_account', ";
 					}
 					$sql .= "'$sip_bypass_media', ";
+					$sql .= "'$dial_string', ";
 					$sql .= "'$enabled', ";
 					$sql .= "'$description' ";
 					$sql .= ")";
@@ -464,6 +468,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			}
 			$sql .= "mwi_account = '$mwi_account', ";
 			$sql .= "sip_bypass_media = '$sip_bypass_media', ";
+			$sql .= "dial_string = '$dial_string', ";
 			$sql .= "enabled = '$enabled', ";
 			$sql .= "description = '$description' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -546,6 +551,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$nibble_account = $row["nibble_account"];
 			$mwi_account = $row["mwi_account"];
 			$sip_bypass_media = $row["sip_bypass_media"];
+			$dial_string = $row["dial_string"];
 			$enabled = $row["enabled"];
 			$description = $row["description"];
 			break; //limit to 1 row
@@ -691,6 +697,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "			<table width='52%'>\n";
 		$sql = "SELECT u.username, e.user_uuid FROM v_extension_users as e, v_users as u ";
 		$sql .= "where e.user_uuid = u.user_uuid  ";
+		$sql .= "and u.user_enabled = 'true' ";
 		$sql .= "and e.domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and e.extension_uuid = '".$extension_uuid."' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -710,6 +717,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "			<br />\n";
 		$sql = "SELECT * FROM v_users ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and user_enabled = 'true' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		echo "			<select name=\"user_uuid\" class='frm'>\n";
@@ -978,7 +986,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-	
+
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "    Voicemail Enabled:\n";
@@ -993,7 +1001,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "    <option value='true'>true</option>\n";
 	}
 	if ($vm_enabled == "false") { 
-		echo "    <option value='false' selected >false</option>\n";
+		echo "    <option value='false' selected='selected'>false</option>\n";
 	}
 	else {
 		echo "    <option value='false'>false</option>\n";
@@ -1169,13 +1177,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <select class='formfld' name='sip_force_contact'>\n";
 	echo "    <option value=''></option>\n";
 	if ($sip_force_contact == "NDLB-connectile-dysfunction") { 
-		echo "    <option value='NDLB-connectile-dysfunction' SELECTED >Rewrite contact IP and port</option>\n";
+		echo "    <option value='NDLB-connectile-dysfunction' selected='selected'>Rewrite contact IP and port</option>\n";
 	}
 	else {
 		echo "    <option value='NDLB-connectile-dysfunction'>Rewrite contact IP and port</option>\n";
 	}
+	if ($sip_force_contact == "NDLB-connectile-dysfunction-2.0") { 
+		echo "    <option value='NDLB-connectile-dysfunction-2.0' selected='selected'>Rewrite contact IP and port 2.0</option>\n";
+	}
+	else {
+		echo "    <option value='NDLB-connectile-dysfunction-2.0'>Rewrite contact IP and port 2.0</option>\n";
+	}
 	if ($sip_force_contact == "NDLB-tls-connectile-dysfunction") { 
-		echo "    <option value='NDLB-tls-connectile-dysfunction' SELECTED >Rewrite contact port</option>\n";
+		echo "    <option value='NDLB-tls-connectile-dysfunction' selected='selected'>Rewrite contact port</option>\n";
 	}
 	else {
 		echo "    <option value='NDLB-tls-connectile-dysfunction'>Rewrite contact port</option>\n";
@@ -1246,6 +1260,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    </select>\n";
 	echo "<br />\n";
 	echo "Choose whether to send the media stream point to point or in transparent proxy mode.\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "    Dial String:\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='dial_string' maxlength='255' value=\"$dial_string\">\n";
+	echo "<br />\n";
+	echo "Location of the endpoint.\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

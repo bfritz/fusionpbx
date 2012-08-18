@@ -154,6 +154,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_enabled';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'user_time_zone';
 		$apps[$x]['db'][$y]['fields'][$z]['name']['deprecated'] = 'usertimezone';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';

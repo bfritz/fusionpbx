@@ -304,7 +304,7 @@ function event_socket_request($fp, $cmd) {
 				$response .= $buffer;
 			}
 
-			if ($contentlength == 0) { //if content length is already don't process again
+			if ($contentlength == 0) { //if the content has length don't process again
 				if (strlen(trim($buffer)) > 0) { //run only if buffer has content
 					$temparray = explode(":", trim($buffer));
 					if ($temparray[0] == "Content-Length") {
@@ -315,7 +315,7 @@ function event_socket_request($fp, $cmd) {
 
 			usleep(20); //allow time for reponse
 
-			//optional because of script timeout //don't let while loop become endless
+			//prevent an endless loop //optional because of script timeout
 			if ($i > 1000000) { break; }
 
 			if ($contentlength > 0) { //is contentlength set
@@ -1528,42 +1528,13 @@ function switch_select_destination($select_type, $select_label, $select_name, $s
 
 function save_setting_xml() {
 	global $db, $domain_uuid, $host, $config;
- 
+
 	$sql = "select * from v_settings ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	if ($prep_statement) {
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach ($result as &$row) {
-			$fout = fopen($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/v_config_cli.php","w");
-			$xml = "<?php\n";
-			$xml .= "\n";
-			$xml .= "error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ^ E_DEPRECATED ); //hide notices and warnings\n";
-			$xml .= "\n";
-			$xml .= "//set the email variables\n";
-			$xml .= "	\$v_smtp_host = \"".$row["smtp_host"]."\";\n";
-			if ($row["smtp_secure"] == "none") {
-				$xml .= "	\$v_smtp_secure = \"\";\n";
-			}
-			else {
-				$xml .= "	\$v_smtp_secure = \"".$row["smtp_secure"]."\";\n";
-			}
-			$xml .= "	\$v_smtp_auth = \"".$row["smtp_auth"]."\";\n";
-			$xml .= "	\$v_smtp_username = \"".$row["smtp_username"]."\";\n";
-			$xml .= "	\$v_smtp_password = \"".$row["smtp_password"]."\";\n";
-			$xml .= "	\$v_smtp_from = \"".$row["smtp_from"]."\";\n";
-			$xml .= "	\$v_smtp_from_name = \"".$row["smtp_from_name"]."\";\n";
-			$xml .= "\n";
-			$xml .= "//set system dir variables\n";
-			$xml .= "	\$switch_storage_dir = \"".$_SESSION['switch']['storage']['dir']."\";\n";
-			$xml .= "	\$tmp_dir = \"".$_SESSION['server']['temp']['dir']."\";\n";
-			$xml .= "	\$v_secure = \"".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure"."\";\n";
-			$xml .= "\n";
-			$xml .= "?>";
-			fwrite($fout, $xml);
-			unset($xml);
-			fclose($fout);
-
 			$fout = fopen($_SESSION['switch']['conf']['dir']."/directory/default/default.xml","w");
 			$xml = "<include>\n";
 			$xml .= "  <user id=\"default\"> <!--if id is numeric mailbox param is not necessary-->\n";
@@ -1639,299 +1610,303 @@ function save_setting_xml() {
 }
 
 function save_extension_xml() {
-	//declare global variables
-		global $config, $db, $domain_uuid;
+	if (isset($_SESSION['switch']['extensions']['dir'])) {
+		//declare global variables
+			global $config, $db, $domain_uuid;
 
-	//get the context based from the domain_uuid
-		if (count($_SESSION['domains']) == 1) {
-			$user_context = "default";
-		}
-		else {
-			$user_context = $_SESSION['domains'][$domain_uuid]['domain_name'];
-		}
+		//get the context based from the domain_uuid
+			if (count($_SESSION['domains']) == 1) {
+				$user_context = "default";
+			}
+			else {
+				$user_context = $_SESSION['domains'][$domain_uuid]['domain_name'];
+			}
 
-	//delete all old extensions to prepare for new ones
-		$dialplan_list = glob($_SESSION['switch']['extensions']['dir']."/".$user_context."/v_*.xml");
-		foreach($dialplan_list as $name => $value) {
-			unlink($value);
-		}
+		//delete all old extensions to prepare for new ones
+			$dialplan_list = glob($_SESSION['switch']['extensions']['dir']."/".$user_context."/v_*.xml");
+			foreach($dialplan_list as $name => $value) {
+				unlink($value);
+			}
 
-	//write the xml files
-		$sql = "select * from v_extensions ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "order by call_group asc ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$i = 0;
-		$extension_xml_condensed = false;
+		//write the xml files
+			$sql = "select * from v_extensions ";
+			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql .= "order by call_group asc ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$i = 0;
+			$extension_xml_condensed = false;
 
-		while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
-			$call_group = $row['call_group'];
-			$call_group = str_replace(";", ",", $call_group);
-			$tmp_array = explode(",", $call_group);
-			foreach ($tmp_array as &$tmp_call_group) {
-				$tmp_call_group = trim($tmp_call_group);
-				if (strlen($tmp_call_group) > 0) {
-					if (strlen($call_group_array[$tmp_call_group]) == 0) {
-						$call_group_array[$tmp_call_group] = $row['extension'];
+			while($row = $prep_statement->fetch(PDO::FETCH_ASSOC)) {
+				$call_group = $row['call_group'];
+				$call_group = str_replace(";", ",", $call_group);
+				$tmp_array = explode(",", $call_group);
+				foreach ($tmp_array as &$tmp_call_group) {
+					$tmp_call_group = trim($tmp_call_group);
+					if (strlen($tmp_call_group) > 0) {
+						if (strlen($call_group_array[$tmp_call_group]) == 0) {
+							$call_group_array[$tmp_call_group] = $row['extension'];
+						}
+						else {
+							$call_group_array[$tmp_call_group] = $call_group_array[$tmp_call_group].','.$row['extension'];
+						}
+					}
+					$i++;
+				}
+				$user_context = $row['user_context'];
+				$vm_password = $row['vm_password'];
+				$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
+
+				//echo "enabled: ".$row['enabled'];
+				if ($row['enabled'] != "false") {
+					//remove invalid characters from the file names
+					$extension = $row['extension'];
+					$extension = str_replace(" ", "_", $extension);
+					$extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension);
+					$dial_string = $row['dial_string'];
+					if (strlen($dial_string) == 0) {
+						$dial_string = "{sip_invite_domain=\${domain_name},presence_id=\${dialed_user}@\${dialed_domain}}\${sofia_contact(\${dialed_user}@\${dialed_domain})}";
+					}
+
+					$xml .= "<include>\n";
+					$cidr = '';
+					if (strlen($row['cidr']) > 0) {
+						$cidr = " cidr=\"" . $row['cidr'] . "\"";
+					}
+					$number_alias = '';
+					if (strlen($row['number_alias']) > 0) {
+						$number_alias = " number-alias=\"".$row['number_alias']."\"";
+					}
+					$xml .= "  <user id=\"".$row['extension']."\"".$cidr."".$number_alias.">\n";
+					$xml .= "    <params>\n";
+					$xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
+					$xml .= "      <param name=\"vm-password\" value=\"" . $vm_password . "\"/>\n";
+					switch ($row['vm_enabled']) {
+					case "true":
+						$xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
+						break;
+					case "false":
+						$xml .= "      <param name=\"vm-enabled\" value=\"false\"/>\n";
+						break;
+					default:
+						$xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
+					}
+					if (strlen($row['vm_mailto']) > 0) {
+						$xml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
+
+						switch ($row['vm_attach_file']) {
+						case "true":
+								$xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+								break;
+						case "false":
+								$xml .= "      <param name=\"vm-attach-file\" value=\"false\"/>\n";
+								break;
+						default:
+								$xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+						}
+						switch ($row['vm_keep_local_after_email']) {
+						case "true":
+								$xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
+								break;
+						case "false":
+								$xml .= "      <param name=\"vm-keep-local-after-email\" value=\"false\"/>\n";
+								break;
+						default:
+								$xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
+						}
+						$xml .= "      <param name=\"vm-mailto\" value=\"" . $row['vm_mailto'] . "\"/>\n";
+					}
+					if (strlen($row['mwi_account']) > 0) {
+						$xml .= "      <param name=\"MWI-Account\" value=\"" . $row['mwi_account'] . "\"/>\n";
+					}
+					if (strlen($row['auth_acl']) > 0) {
+						$xml .= "      <param name=\"auth-acl\" value=\"" . $row['auth_acl'] . "\"/>\n";
+					}
+					if (strlen($row['directory_exten_visible']) > 0) {
+						$xml .= "      <param name=\"directory-exten-visible\" value=\"" . $row['directory_exten_visible'] . "\"/>\n";
+					}
+					$xml .= "      <param name=\"dial-string\" value=\"" . $dial_string . "\"/>\n";
+					$xml .= "    </params>\n";
+					$xml .= "    <variables>\n";
+					if (strlen($row['call_group']) > 0) {
+						$xml .= "      <variable name=\"call_group\" value=\"" . $row['call_group'] . "\"/>\n";
+					}
+					if (strlen($row['hold_music']) > 0) {
+						$xml .= "      <variable name=\"hold_music\" value=\"" . $row['hold_music'] . "\"/>\n";
+					}
+					$xml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
+					if (strlen($switch_account_code) > 0) {
+						$xml .= "      <variable name=\"accountcode\" value=\"" . $switch_account_code . "\"/>\n";
 					}
 					else {
-						$call_group_array[$tmp_call_group] = $call_group_array[$tmp_call_group].','.$row['extension'];
+						$xml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
 					}
+					$xml .= "      <variable name=\"user_context\" value=\"" . $row['user_context'] . "\"/>\n";
+					if (strlen($row['effective_caller_id_name']) > 0) {
+						$xml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";
+					}
+					if (strlen($row['effective_caller_id_number']) > 0) {
+						$xml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $row['effective_caller_id_number'] . "\"/>\n";
+					}
+					if (strlen($row['outbound_caller_id_name']) > 0) {
+						$xml .= "      <variable name=\"outbound_caller_id_name\" value=\"" . $row['outbound_caller_id_name'] . "\"/>\n";
+					}
+					if (strlen($row['outbound_caller_id_number']) > 0) {
+						$xml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $row['outbound_caller_id_number'] . "\"/>\n";
+					}
+					if (strlen($row['emergency_caller_id_number']) > 0) {
+						$xml .= "      <variable name=\"emergency_caller_id_number\" value=\"" . $row['emergency_caller_id_number'] . "\"/>\n";
+					}
+					if (strlen($row['directory_full_name']) > 0) {
+						$xml .= "      <variable name=\"directory_full_name\" value=\"" . $row['directory_full_name'] . "\"/>\n";
+					}
+					if (strlen($row['directory_visible']) > 0) {
+						$xml .= "      <variable name=\"directory-visible\" value=\"" . $row['directory_visible'] . "\"/>\n";
+					}
+					if (strlen($row['limit_max']) > 0) {
+						$xml .= "      <variable name=\"limit_max\" value=\"" . $row['limit_max'] . "\"/>\n";
+					}
+					else {
+						$xml .= "      <variable name=\"limit_max\" value=\"5\"/>\n";
+					}
+					if (strlen($row['limit_destination']) > 0) {
+						$xml .= "      <variable name=\"limit_destination\" value=\"" . $row['limit_destination'] . "\"/>\n";
+					}
+					if (strlen($row['sip_force_contact']) > 0) {
+						$xml .= "      <variable name=\"sip-force-contact\" value=\"" . $row['sip_force_contact'] . "\"/>\n";
+					}
+					if (strlen($row['sip_force_expires']) > 0) {
+						$xml .= "      <variable name=\"sip-force-expires\" value=\"" . $row['sip_force_expires'] . "\"/>\n";
+					}
+					if (strlen($row['nibble_account']) > 0) {
+						$xml .= "      <variable name=\"nibble_account\" value=\"" . $row['nibble_account'] . "\"/>\n";
+					}
+					switch ($row['sip_bypass_media']) {
+						case "bypass-media":
+								$xml .= "      <variable name=\"bypass_media\" value=\"true\"/>\n";
+								break;
+						case "bypass-media-after-bridge":
+								$xml .= "      <variable name=\"bypass_media_after_bridge\" value=\"true\"/>\n";
+								break;
+						case "proxy-media":
+								$xml .= "      <variable name=\"proxy_media\" value=\"true\"/>\n";
+								break;
+					}
+
+					$xml .= "    </variables>\n";
+					$xml .= "  </user>\n";
+
+					if (!is_readable($_SESSION['switch']['extensions']['dir']."/".$row['user_context'])) {
+						mkdir($_SESSION['switch']['extensions']['dir']."/".$row['user_context'],0755,true);
+					}
+					if (strlen($extension) > 0) {
+						$fout = fopen($_SESSION['switch']['extensions']['dir']."/".$row['user_context']."/v_".$extension.".xml","w");
+					}
+					$xml .= "</include>\n";
+					fwrite($fout, $xml);
+					unset($xml);
+					fclose($fout);
 				}
-				$i++;
 			}
-			$user_context = $row['user_context'];
-			$vm_password = $row['vm_password'];
-			$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
+			unset ($prep_statement);
 
-			//echo "enabled: ".$row['enabled'];
-			if ($row['enabled'] != "false") {
-				//remove invalid characters from the file names
-				$extension = $row['extension'];
-				$extension = str_replace(" ", "_", $extension);
-				$extension = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $extension);
+		//prepare extension 
+			$extension_dir_path = realpath($_SESSION['switch']['extensions']['dir']);
+			$user_context = str_replace(" ", "_", $user_context);
+			$user_context = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $user_context);
 
-				$tmp_xml .= "<include>\n";
-				$cidr = '';
-				if (strlen($row['cidr']) > 0) {
-					$cidr = " cidr=\"" . $row['cidr'] . "\"";
-				}
-				$number_alias = '';
-				if (strlen($row['number_alias']) > 0) {
-					$number_alias = " number-alias=\"".$row['number_alias']."\"";
-				}
-				$tmp_xml .= "  <user id=\"".$row['extension']."\"".$cidr."".$number_alias.">\n";
-				$tmp_xml .= "    <params>\n";
-				$tmp_xml .= "      <param name=\"password\" value=\"" . $row['password'] . "\"/>\n";
-				$tmp_xml .= "      <param name=\"vm-password\" value=\"" . $vm_password . "\"/>\n";
-				switch ($row['vm_enabled']) {
-				case "true":
-					$tmp_xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
-					break;
-				case "false":
-					$tmp_xml .= "      <param name=\"vm-enabled\" value=\"false\"/>\n";
-					break;
-				default:
-					$tmp_xml .= "      <param name=\"vm-enabled\" value=\"true\"/>\n";
-				}
-				if (strlen($row['vm_mailto']) > 0) {
-					$tmp_xml .= "      <param name=\"vm-email-all-messages\" value=\"true\"/>\n";
-
-					switch ($row['vm_attach_file']) {
-					case "true":
-							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
-							break;
-					case "false":
-							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"false\"/>\n";
-							break;
-					default:
-							$tmp_xml .= "      <param name=\"vm-attach-file\" value=\"true\"/>\n";
+		//define the group members
+			$xml = "<!--\n";
+			$xml .= "	NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE\n";
+			$xml .= "\n";
+			$xml .= "	FreeSWITCH works off the concept of users and domains just like email.\n";
+			$xml .= "	You have users that are in domains for example 1000@domain.com.\n";
+			$xml .= "\n";
+			$xml .= "	When freeswitch gets a register packet it looks for the user in the directory\n";
+			$xml .= "	based on the from or to domain in the packet depending on how your sofia profile\n";
+			$xml .= "	is configured.  Out of the box the default domain will be the IP address of the\n";
+			$xml .= "	machine running FreeSWITCH.  This IP can be found by typing \"sofia status\" at the\n";
+			$xml .= "	CLI.  You will register your phones to the IP and not the hostname by default.\n";
+			$xml .= "	If you wish to register using the domain please open vars.xml in the root conf\n";
+			$xml .= "	directory and set the default domain to the hostname you desire.  Then you would\n";
+			$xml .= "	use the domain name in the client instead of the IP address to register\n";
+			$xml .= "	with FreeSWITCH.\n";
+			$xml .= "\n";
+			$xml .= "	NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE\n";
+			$xml .= "-->\n";
+			$xml .= "\n";
+			$xml .= "<include>\n";
+			$xml .= "	<!--the domain or ip (the right hand side of the @ in the addr-->\n";
+			if ($user_context == "default") { 
+				$xml .= "	<domain name=\"\$\${domain}\">\n";
+			}
+			else {
+				$xml .= "	<domain name=\"".$user_context."\">\n";
+			}
+			$xml .= "		<params>\n";
+			//$xml .= "			<param name=\"dial-string\" value=\"{sip_invite_domain=\${domain_name},presence_id=\${dialed_user}@\${dialed_domain}}\${sofia_contact(\${dialed_user}@\${dialed_domain})}\"/>\n";
+			$xml .= "		</params>\n";
+			$xml .= "\n";
+			$xml .= "		<variables>\n";
+			$xml .= "			<variable name=\"record_stereo\" value=\"true\"/>\n";
+			$xml .= "			<variable name=\"default_gateway\" value=\"\$\${default_provider}\"/>\n";
+			$xml .= "			<variable name=\"default_areacode\" value=\"\$\${default_areacode}\"/>\n";
+			$xml .= "			<variable name=\"transfer_fallback_extension\" value=\"operator\"/>\n";
+			$xml .= "			<variable name=\"export_vars\" value=\"domain_name\"/>\n";
+			$xml .= "		</variables>\n";
+			$xml .= "\n";
+			$xml .= "		<groups>\n";
+			$xml .= "			<group name=\"".$user_context."\">\n";
+			$xml .= "			<users>\n";
+			$xml .= "				<X-PRE-PROCESS cmd=\"include\" data=\"".$user_context."/*.xml\"/>\n";
+			$xml .= "			</users>\n";
+			$xml .= "			</group>\n";
+			$xml .= "\n";
+			$previous_call_group = "";
+			foreach ($call_group_array as $key => $value) {
+				$call_group = trim($key);
+				$extension_list = trim($value);
+				if (strlen($call_group) > 0) {
+					if ($previous_call_group != $call_group) {
+						$xml .= "			<group name=\"$call_group\">\n";
+						$xml .= "				<users>\n";
+						$xml .= "					<!--\n";
+						$xml .= "					type=\"pointer\" is a pointer so you can have the\n";
+						$xml .= "					same user in multiple groups.  It basically means\n";
+						$xml .= "					to keep searching for the user in the directory.\n";
+						$xml .= "					-->\n";
+						$extension_array = explode(",", $extension_list);
+						foreach ($extension_array as &$tmp_extension) {
+							$xml .= "					<user id=\"$tmp_extension\" type=\"pointer\"/>\n";
+						}
+						$xml .= "				</users>\n";
+						$xml .= "			</group>\n";
+						$xml .= "\n";
 					}
-					switch ($row['vm_keep_local_after_email']) {
-					case "true":
-							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
-							break;
-					case "false":
-							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"false\"/>\n";
-							break;
-					default:
-							$tmp_xml .= "      <param name=\"vm-keep-local-after-email\" value=\"true\"/>\n";
-					}
-					$tmp_xml .= "      <param name=\"vm-mailto\" value=\"" . $row['vm_mailto'] . "\"/>\n";
+					$previous_call_group = $call_group;
 				}
-				if (strlen($row['mwi_account']) > 0) {
-					$tmp_xml .= "      <param name=\"MWI-Account\" value=\"" . $row['mwi_account'] . "\"/>\n";
-				}
-				if (strlen($row['auth_acl']) > 0) {
-					$tmp_xml .= "      <param name=\"auth-acl\" value=\"" . $row['auth_acl'] . "\"/>\n";
-				}
-				if (strlen($row['directory_exten_visible']) > 0) {
-					$tmp_xml .= "      <param name=\"directory-exten-visible\" value=\"" . $row['directory_exten_visible'] . "\"/>\n";
-				}
-				$tmp_xml .= "    </params>\n";
-				$tmp_xml .= "    <variables>\n";
-				if (strlen($row['call_group']) > 0) {
-					$tmp_xml .= "      <variable name=\"call_group\" value=\"" . $row['call_group'] . "\"/>\n";
-				}
-				if (strlen($row['hold_music']) > 0) {
-					$tmp_xml .= "      <variable name=\"hold_music\" value=\"" . $row['hold_music'] . "\"/>\n";
-				}
-				$tmp_xml .= "      <variable name=\"toll_allow\" value=\"" . $row['toll_allow'] . "\"/>\n";
-				if (strlen($switch_account_code) > 0) {
-					$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $switch_account_code . "\"/>\n";
-				}
-				else {
-					$tmp_xml .= "      <variable name=\"accountcode\" value=\"" . $row['accountcode'] . "\"/>\n";
-				}
-				$tmp_xml .= "      <variable name=\"user_context\" value=\"" . $row['user_context'] . "\"/>\n";
-				if (strlen($row['effective_caller_id_name']) > 0) {
-					$tmp_xml .= "      <variable name=\"effective_caller_id_name\" value=\"" . $row['effective_caller_id_name'] . "\"/>\n";
-				}
-				if (strlen($row['effective_caller_id_number']) > 0) {
-					$tmp_xml .= "      <variable name=\"effective_caller_id_number\" value=\"" . $row['effective_caller_id_number'] . "\"/>\n";
-				}
-				if (strlen($row['outbound_caller_id_name']) > 0) {
-					$tmp_xml .= "      <variable name=\"outbound_caller_id_name\" value=\"" . $row['outbound_caller_id_name'] . "\"/>\n";
-				}
-				if (strlen($row['outbound_caller_id_number']) > 0) {
-					$tmp_xml .= "      <variable name=\"outbound_caller_id_number\" value=\"" . $row['outbound_caller_id_number'] . "\"/>\n";
-				}
-				if (strlen($row['emergency_caller_id_number']) > 0) {
-					$tmp_xml .= "      <variable name=\"emergency_caller_id_number\" value=\"" . $row['emergency_caller_id_number'] . "\"/>\n";
-				}
-				if (strlen($row['directory_full_name']) > 0) {
-					$tmp_xml .= "      <variable name=\"directory_full_name\" value=\"" . $row['directory_full_name'] . "\"/>\n";
-				}
-				if (strlen($row['directory_visible']) > 0) {
-					$tmp_xml .= "      <variable name=\"directory-visible\" value=\"" . $row['directory_visible'] . "\"/>\n";
-				}
-				if (strlen($row['limit_max']) > 0) {
-					$tmp_xml .= "      <variable name=\"limit_max\" value=\"" . $row['limit_max'] . "\"/>\n";
-				}
-				else {
-					$tmp_xml .= "      <variable name=\"limit_max\" value=\"5\"/>\n";
-				}
-				if (strlen($row['limit_destination']) > 0) {
-					$tmp_xml .= "      <variable name=\"limit_destination\" value=\"" . $row['limit_destination'] . "\"/>\n";
-				}
-				if (strlen($row['sip_force_contact']) > 0) {
-					$tmp_xml .= "      <variable name=\"sip-force-contact\" value=\"" . $row['sip_force_contact'] . "\"/>\n";
-				}
-				if (strlen($row['sip_force_expires']) > 0) {
-					$tmp_xml .= "      <variable name=\"sip-force-expires\" value=\"" . $row['sip_force_expires'] . "\"/>\n";
-				}
-				if (strlen($row['nibble_account']) > 0) {
-					$tmp_xml .= "      <variable name=\"nibble_account\" value=\"" . $row['nibble_account'] . "\"/>\n";
-				}
-				switch ($row['sip_bypass_media']) {
-					case "bypass-media":
-							$tmp_xml .= "      <variable name=\"bypass_media\" value=\"true\"/>\n";
-							break;
-					case "bypass-media-after-bridge":
-							$tmp_xml .= "      <variable name=\"bypass_media_after_bridge\" value=\"true\"/>\n";
-							break;
-					case "proxy-media":
-							$tmp_xml .= "      <variable name=\"proxy_media\" value=\"true\"/>\n";
-							break;
-				}
+				unset($call_group);
+			}
+			$xml .= "		</groups>\n";
+			$xml .= "\n";
+			$xml .= "	</domain>\n";
+			$xml .= "</include>";
 
-				$tmp_xml .= "    </variables>\n";
-				$tmp_xml .= "  </user>\n";
-
-				if (!is_readable($_SESSION['switch']['extensions']['dir']."/".$row['user_context'])) {
-					mkdir($_SESSION['switch']['extensions']['dir']."/".$row['user_context'],0755,true);
-				}
-				if (strlen($extension) > 0) {
-					$fout = fopen($_SESSION['switch']['extensions']['dir']."/".$row['user_context']."/v_".$extension.".xml","w");
-				}
-				$tmp_xml .= "</include>\n";
-				fwrite($fout, $tmp_xml);
-				unset($tmp_xml);
+		//write the xml file
+			if (is_readable($extension_dir_path) && strlen($extension_dir_path) > 0) {
+				$fout = fopen($extension_dir_path."/".$user_context.".xml","w");
+				fwrite($fout, $xml);
+				unset($xml);
 				fclose($fout);
 			}
-		}
-		unset ($prep_statement);
 
-	//prepare extension 
-		$extension_dir_path = realpath($_SESSION['switch']['extensions']['dir']);
-		$user_context = str_replace(" ", "_", $user_context);
-		$user_context = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $user_context);
+		//syncrhonize the phone directory
+			sync_directory();
 
-	//define the group members
-		$tmp_xml = "<!--\n";
-		$tmp_xml .= "	NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "	FreeSWITCH works off the concept of users and domains just like email.\n";
-		$tmp_xml .= "	You have users that are in domains for example 1000@domain.com.\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "	When freeswitch gets a register packet it looks for the user in the directory\n";
-		$tmp_xml .= "	based on the from or to domain in the packet depending on how your sofia profile\n";
-		$tmp_xml .= "	is configured.  Out of the box the default domain will be the IP address of the\n";
-		$tmp_xml .= "	machine running FreeSWITCH.  This IP can be found by typing \"sofia status\" at the\n";
-		$tmp_xml .= "	CLI.  You will register your phones to the IP and not the hostname by default.\n";
-		$tmp_xml .= "	If you wish to register using the domain please open vars.xml in the root conf\n";
-		$tmp_xml .= "	directory and set the default domain to the hostname you desire.  Then you would\n";
-		$tmp_xml .= "	use the domain name in the client instead of the IP address to register\n";
-		$tmp_xml .= "	with FreeSWITCH.\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "	NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE\n";
-		$tmp_xml .= "-->\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "<include>\n";
-		$tmp_xml .= "	<!--the domain or ip (the right hand side of the @ in the addr-->\n";
-		if ($user_context == "default") { 
-			$tmp_xml .= "	<domain name=\"\$\${domain}\">\n";
-		}
-		else {
-			$tmp_xml .= "	<domain name=\"".$user_context."\">\n";
-		}
-		$tmp_xml .= "		<params>\n";
-		$tmp_xml .= "			<param name=\"dial-string\" value=\"{sip_invite_domain=\${domain_name},presence_id=\${dialed_user}@\${dialed_domain}}\${sofia_contact(\${dialed_user}@\${dialed_domain})}\"/>\n";
-		$tmp_xml .= "		</params>\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "		<variables>\n";
-		$tmp_xml .= "			<variable name=\"record_stereo\" value=\"true\"/>\n";
-		$tmp_xml .= "			<variable name=\"default_gateway\" value=\"\$\${default_provider}\"/>\n";
-		$tmp_xml .= "			<variable name=\"default_areacode\" value=\"\$\${default_areacode}\"/>\n";
-		$tmp_xml .= "			<variable name=\"transfer_fallback_extension\" value=\"operator\"/>\n";
-		$tmp_xml .= "			<variable name=\"export_vars\" value=\"domain_name\"/>\n";
-		$tmp_xml .= "		</variables>\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "		<groups>\n";
-		$tmp_xml .= "			<group name=\"".$user_context."\">\n";
-		$tmp_xml .= "			<users>\n";
-		$tmp_xml .= "				<X-PRE-PROCESS cmd=\"include\" data=\"".$user_context."/*.xml\"/>\n";
-		$tmp_xml .= "			</users>\n";
-		$tmp_xml .= "			</group>\n";
-		$tmp_xml .= "\n";
-		$previous_call_group = "";
-		foreach ($call_group_array as $key => $value) {
-			$call_group = trim($key);
-			$extension_list = trim($value);
-			if (strlen($call_group) > 0) {
-				if ($previous_call_group != $call_group) {
-					$tmp_xml .= "			<group name=\"$call_group\">\n";
-					$tmp_xml .= "				<users>\n";
-					$tmp_xml .= "					<!--\n";
-					$tmp_xml .= "					type=\"pointer\" is a pointer so you can have the\n";
-					$tmp_xml .= "					same user in multiple groups.  It basically means\n";
-					$tmp_xml .= "					to keep searching for the user in the directory.\n";
-					$tmp_xml .= "					-->\n";
-					$extension_array = explode(",", $extension_list);
-					foreach ($extension_array as &$tmp_extension) {
-						$tmp_xml .= "					<user id=\"$tmp_extension\" type=\"pointer\"/>\n";
-					}
-					$tmp_xml .= "				</users>\n";
-					$tmp_xml .= "			</group>\n";
-					$tmp_xml .= "\n";
-				}
-				$previous_call_group = $call_group;
-			}
-			unset($call_group);
-		}
-		$tmp_xml .= "		</groups>\n";
-		$tmp_xml .= "\n";
-		$tmp_xml .= "	</domain>\n";
-		$tmp_xml .= "</include>";
-
-	//write the xml file
-		if (is_readable($extension_dir_path) && strlen($extension_dir_path) > 0) {
-			$fout = fopen($extension_dir_path."/".$user_context.".xml","w");
-			fwrite($fout, $tmp_xml);
-			unset($tmp_xml);
-			fclose($fout);
-		}
-
-	//syncrhonize the phone directory
-		sync_directory();
-
-	//apply settings reminder
-		$_SESSION["reload_xml"] = true;
-
-	//$cmd = "api reloadxml";
-	//event_socket_request_cmd($cmd);
-	//unset($cmd);
+		//$cmd = "api reloadxml";
+		//event_socket_request_cmd($cmd);
+		//unset($cmd);
+	}
 }
 
 function filename_safe($filename) {
@@ -2888,8 +2863,6 @@ function save_hunt_group_xml() {
 	//save the dialplan xml files
 		save_dialplan_xml();
 
-	//apply settings reminder
-		$_SESSION["reload_xml"] = true;
 } //end huntgroup function lua
 
 
@@ -3002,311 +2975,313 @@ function save_dialplan_xml() {
 			unlink($value);
 		}
 
-	$sql = "select * from v_dialplans ";
-	$sql .= "where dialplan_enabled = 'true' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	if ($prep_statement) {
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-		foreach ($result as &$row) {
-			$tmp = "";
-			$tmp .= "\n";
+	//if dialplan dir exists then build and save the dialplan xml
+		if (is_dir($_SESSION['switch']['dialplan']['dir'])) {
+			$sql = "select * from v_dialplans ";
+			$sql .= "where dialplan_enabled = 'true' ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			if ($prep_statement) {
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+				foreach ($result as &$row) {
+					$tmp = "";
+					$tmp .= "\n";
 
-			$dialplan_continue = '';
-			if ($row['dialplan_continue'] == "true") {
-				$dialplan_continue = "continue=\"true\"";
-			}
+					$dialplan_continue = '';
+					if ($row['dialplan_continue'] == "true") {
+						$dialplan_continue = "continue=\"true\"";
+					}
 
-			$tmp = "<extension name=\"".$row['dialplan_name']."\" $dialplan_continue>\n";
+					$tmp = "<extension name=\"".$row['dialplan_name']."\" $dialplan_continue>\n";
 
-			$sql = " select * from v_dialplan_details ";
-			$sql .= " where dialplan_uuid = '".$row['dialplan_uuid']."' ";
-			$sql .= " and domain_uuid = '".$row['domain_uuid']."' ";
-			$sql .= " order by dialplan_detail_group asc, dialplan_detail_order asc ";
-			$prep_statement_2 = $db->prepare($sql);
-			if ($prep_statement_2) {
-				$prep_statement_2->execute();
-				$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
-				$result_count2 = count($result2);
-				unset ($prep_statement_2, $sql);
+					$sql = " select * from v_dialplan_details ";
+					$sql .= " where dialplan_uuid = '".$row['dialplan_uuid']."' ";
+					$sql .= " and domain_uuid = '".$row['domain_uuid']."' ";
+					$sql .= " order by dialplan_detail_group asc, dialplan_detail_order asc ";
+					$prep_statement_2 = $db->prepare($sql);
+					if ($prep_statement_2) {
+						$prep_statement_2->execute();
+						$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
+						$result_count2 = count($result2);
+						unset ($prep_statement_2, $sql);
 
-				//create a new array that is sorted into groups and put the tags in order conditions, actions, anti-actions
-					$details = '';
-					$previous_tag = '';
-					$details[$group]['condition_count'] = '';
-					//conditions
-						$x = 0;
-						$y = 0;
-						foreach($result2 as $row2) {
-							if ($row2['dialplan_detail_tag'] == "condition") {
-								//get the group
-									$group = $row2['dialplan_detail_group'];
-								//get the generic type
-									switch ($row2['dialplan_detail_type']) {
-									case "hour":
-										$type = 'time';
-										break;
-									case "minute":
-										$type = 'time';
-										break;
-									case "minute-of-day":
-										$type = 'time';
-										break;
-									case "mday":
-										$type = 'time';
-										break;
-									case "mweek":
-										$type = 'time';
-										break;
-									case "mon":
-										$type = 'time';
-										break;
-									case "yday":
-										$type = 'time';
-										break;
-									case "year":
-										$type = 'time';
-										break;
-									case "wday":
-										$type = 'time';
-										break;
-									case "week":
-										$type = 'time';
-										break;
-									default:
-										$type = 'default';
-									}
-
-								//add the conditions to the details array
-									$details[$group]['condition-'.$x]['dialplan_detail_tag'] = $row2['dialplan_detail_tag'];
-									$details[$group]['condition-'.$x]['dialplan_detail_type'] = $row2['dialplan_detail_type'];
-									$details[$group]['condition-'.$x]['dialplan_uuid'] = $row2['dialplan_uuid'];
-									$details[$group]['condition-'.$x]['dialplan_detail_order'] = $row2['dialplan_detail_order'];
-									$details[$group]['condition-'.$x]['field'][$y]['type'] = $row2['dialplan_detail_type'];
-									$details[$group]['condition-'.$x]['field'][$y]['data'] = $row2['dialplan_detail_data'];
-									$details[$group]['condition-'.$x]['dialplan_detail_break'] = $row2['dialplan_detail_break'];
-									$details[$group]['condition-'.$x]['dialplan_detail_group'] = $row2['dialplan_detail_group'];
-									$details[$group]['condition-'.$x]['dialplan_detail_inline'] = $row2['dialplan_detail_inline'];
-									if ($type == "time") {
-										$y++;
-									}
-							}
-							if ($type == "default") {
-								$x++;
+						//create a new array that is sorted into groups and put the tags in order conditions, actions, anti-actions
+							$details = '';
+							$previous_tag = '';
+							$details[$group]['condition_count'] = '';
+							//conditions
+								$x = 0;
 								$y = 0;
-							}
-						}
+								foreach($result2 as $row2) {
+									if ($row2['dialplan_detail_tag'] == "condition") {
+										//get the group
+											$group = $row2['dialplan_detail_group'];
+										//get the generic type
+											switch ($row2['dialplan_detail_type']) {
+											case "hour":
+												$type = 'time';
+												break;
+											case "minute":
+												$type = 'time';
+												break;
+											case "minute-of-day":
+												$type = 'time';
+												break;
+											case "mday":
+												$type = 'time';
+												break;
+											case "mweek":
+												$type = 'time';
+												break;
+											case "mon":
+												$type = 'time';
+												break;
+											case "yday":
+												$type = 'time';
+												break;
+											case "year":
+												$type = 'time';
+												break;
+											case "wday":
+												$type = 'time';
+												break;
+											case "week":
+												$type = 'time';
+												break;
+											default:
+												$type = 'default';
+											}
 
-					//actions
-						$x = 0;
-						foreach($result2 as $row2) {
-							if ($row2['dialplan_detail_tag'] == "action") {
-								$group = $row2['dialplan_detail_group'];
-								foreach ($row2 as $key => $val) {
-									$details[$group]['action-'.$x][$key] = $val;
-								}
-							}
-							$x++;
-						}
-					//anti-actions
-						$x = 0;
-						foreach($result2 as $row2) {
-							if ($row2['dialplan_detail_tag'] == "anti-action") {
-								$group = $row2['dialplan_detail_group'];
-								foreach ($row2 as $key => $val) {
-									$details[$group]['anti-action-'.$x][$key] = $val;
-								}
-							}
-							$x++;
-						}
-					unset($result2);
-			}
-
-			$i=1;
-			if ($result_count2 > 0) {
-				foreach($details as $group) {
-					$current_count = 0;
-					$x = 0;
-					foreach($group as $ent) {
-						$close_condition_tag = true;
-						if (empty($ent)) {
-							$close_condition_tag = false;
-						}
-						$current_tag = $ent['dialplan_detail_tag'];
-						$c = 0;
-						if ($ent['dialplan_detail_tag'] == "condition") {
-							//get the generic type
-								switch ($ent['dialplan_detail_type']) {
-								case "hour":
-									$type = 'time';
-									break;
-								case "minute":
-									$type = 'time';
-									break;
-								case "minute-of-day":
-									$type = 'time';
-									break;
-								case "mday":
-									$type = 'time';
-									break;
-								case "mweek":
-									$type = 'time';
-									break;
-								case "mon":
-									$type = 'time';
-									break;
-								case "yday":
-									$type = 'time';
-									break;
-								case "year":
-									$type = 'time';
-									break;
-								case "wday":
-									$type = 'time';
-									break;
-								case "week":
-									$type = 'time';
-									break;
-								default:
-									$type = 'default';
-								}
-
-							//set the attribute and expression
-								$condition_attribute = '';
-								foreach($ent['field'] as $field) {
-									if ($type == "time") {
-										if (strlen($field['type']) > 0) {
-											$condition_attribute .= $field['type'].'="'.$field['data'].'" ';
-										}
-										$condition_expression = '';
+										//add the conditions to the details array
+											$details[$group]['condition-'.$x]['dialplan_detail_tag'] = $row2['dialplan_detail_tag'];
+											$details[$group]['condition-'.$x]['dialplan_detail_type'] = $row2['dialplan_detail_type'];
+											$details[$group]['condition-'.$x]['dialplan_uuid'] = $row2['dialplan_uuid'];
+											$details[$group]['condition-'.$x]['dialplan_detail_order'] = $row2['dialplan_detail_order'];
+											$details[$group]['condition-'.$x]['field'][$y]['type'] = $row2['dialplan_detail_type'];
+											$details[$group]['condition-'.$x]['field'][$y]['data'] = $row2['dialplan_detail_data'];
+											$details[$group]['condition-'.$x]['dialplan_detail_break'] = $row2['dialplan_detail_break'];
+											$details[$group]['condition-'.$x]['dialplan_detail_group'] = $row2['dialplan_detail_group'];
+											$details[$group]['condition-'.$x]['dialplan_detail_inline'] = $row2['dialplan_detail_inline'];
+											if ($type == "time") {
+												$y++;
+											}
 									}
 									if ($type == "default") {
+										$x++;
+										$y = 0;
+									}
+								}
+
+							//actions
+								$x = 0;
+								foreach($result2 as $row2) {
+									if ($row2['dialplan_detail_tag'] == "action") {
+										$group = $row2['dialplan_detail_group'];
+										foreach ($row2 as $key => $val) {
+											$details[$group]['action-'.$x][$key] = $val;
+										}
+									}
+									$x++;
+								}
+							//anti-actions
+								$x = 0;
+								foreach($result2 as $row2) {
+									if ($row2['dialplan_detail_tag'] == "anti-action") {
+										$group = $row2['dialplan_detail_group'];
+										foreach ($row2 as $key => $val) {
+											$details[$group]['anti-action-'.$x][$key] = $val;
+										}
+									}
+									$x++;
+								}
+							unset($result2);
+					}
+
+					$i=1;
+					if ($result_count2 > 0) {
+						foreach($details as $group) {
+							$current_count = 0;
+							$x = 0;
+							foreach($group as $ent) {
+								$close_condition_tag = true;
+								if (empty($ent)) {
+									$close_condition_tag = false;
+								}
+								$current_tag = $ent['dialplan_detail_tag'];
+								$c = 0;
+								if ($ent['dialplan_detail_tag'] == "condition") {
+									//get the generic type
+										switch ($ent['dialplan_detail_type']) {
+										case "hour":
+											$type = 'time';
+											break;
+										case "minute":
+											$type = 'time';
+											break;
+										case "minute-of-day":
+											$type = 'time';
+											break;
+										case "mday":
+											$type = 'time';
+											break;
+										case "mweek":
+											$type = 'time';
+											break;
+										case "mon":
+											$type = 'time';
+											break;
+										case "yday":
+											$type = 'time';
+											break;
+										case "year":
+											$type = 'time';
+											break;
+										case "wday":
+											$type = 'time';
+											break;
+										case "week":
+											$type = 'time';
+											break;
+										default:
+											$type = 'default';
+										}
+
+									//set the attribute and expression
 										$condition_attribute = '';
-										if (strlen($field['type']) > 0) {
-											$condition_attribute = 'field="'.$field['type'].'" ';
+										foreach($ent['field'] as $field) {
+											if ($type == "time") {
+												if (strlen($field['type']) > 0) {
+													$condition_attribute .= $field['type'].'="'.$field['data'].'" ';
+												}
+												$condition_expression = '';
+											}
+											if ($type == "default") {
+												$condition_attribute = '';
+												if (strlen($field['type']) > 0) {
+													$condition_attribute = 'field="'.$field['type'].'" ';
+												}
+												$condition_expression = '';
+												if (strlen($field['data']) > 0) {
+													$condition_expression = 'expression="'.$field['data'].'" ';
+												}
+											}
 										}
-										$condition_expression = '';
-										if (strlen($field['data']) > 0) {
-											$condition_expression = 'expression="'.$field['data'].'" ';
+
+									//get the condition break attribute
+										$condition_break = '';
+										if (strlen($ent['dialplan_detail_break']) > 0) {
+											$condition_break = "break=\"".$ent['dialplan_detail_break']."\" ";
+										}
+
+									//get the count
+										$count = 0;
+										foreach($details as $group2) {
+											foreach($group2 as $ent2) {
+												if ($ent2['dialplan_detail_group'] == $ent['dialplan_detail_group'] && $ent2['dialplan_detail_tag'] == "condition") {
+													$count++;
+												}
+											}
+										}
+
+									//use the correct type of dialplan_detail_tag open or self closed
+										if ($count == 1) { //single condition
+											//start dialplan_detail_tag
+											$tmp .= "   <condition ".$condition_attribute."".$condition_expression."".$condition_break.">\n";
+										}
+										else { //more than one condition
+											$current_count++;
+											if ($current_count < $count) {
+												//all tags should be self-closing except the last one
+												$tmp .= "   <condition ".$condition_attribute."".$condition_expression."".$condition_break."/>\n";
+											}
+											else {
+												//for the last dialplan_detail_tag use the start dialplan_detail_tag
+												$tmp .= "   <condition ".$condition_attribute."".$condition_expression."".$condition_break.">\n";
+											}
+										}
+								}
+								//actions
+									if ($ent['dialplan_detail_tag'] == "action") {
+										//get the action inline attribute
+										$action_inline = '';
+										if (strlen($ent['dialplan_detail_inline']) > 0) {
+											$action_inline = "inline=\"".$ent['dialplan_detail_inline']."\"";
+										}
+										if (strlen($ent['dialplan_detail_data']) > 0) {
+											$tmp .= "       <action application=\"".$ent['dialplan_detail_type']."\" data=\"".$ent['dialplan_detail_data']."\" $action_inline/>\n";
+										}
+										else {
+											$tmp .= "       <action application=\"".$ent['dialplan_detail_type']."\" $action_inline/>\n";
 										}
 									}
-								}
-
-							//get the condition break attribute
-								$condition_break = '';
-								if (strlen($ent['dialplan_detail_break']) > 0) {
-									$condition_break = "break=\"".$ent['dialplan_detail_break']."\" ";
-								}
-
-							//get the count
-								$count = 0;
-								foreach($details as $group2) {
-									foreach($group2 as $ent2) {
-										if ($ent2['dialplan_detail_group'] == $ent['dialplan_detail_group'] && $ent2['dialplan_detail_tag'] == "condition") {
-											$count++;
+								//anti-actions
+									if ($ent['dialplan_detail_tag'] == "anti-action") {
+										if (strlen($ent['dialplan_detail_data']) > 0) {
+											$tmp .= "       <anti-action application=\"".$ent['dialplan_detail_type']."\" data=\"".$ent['dialplan_detail_data']."\"/>\n";
+										}
+										else {
+											$tmp .= "       <anti-action application=\"".$ent['dialplan_detail_type']."\"/>\n";
 										}
 									}
-								}
-
-							//use the correct type of dialplan_detail_tag open or self closed
-								if ($count == 1) { //single condition
-									//start dialplan_detail_tag
-									$tmp .= "   <condition ".$condition_attribute."".$condition_expression."".$condition_break.">\n";
-								}
-								else { //more than one condition
-									$current_count++;
-									if ($current_count < $count) {
-										//all tags should be self-closing except the last one
-										$tmp .= "   <condition ".$condition_attribute."".$condition_expression."".$condition_break."/>\n";
-									}
-									else {
-										//for the last dialplan_detail_tag use the start dialplan_detail_tag
-										$tmp .= "   <condition ".$condition_attribute."".$condition_expression."".$condition_break.">\n";
-									}
-								}
-						}
-						//actions
-							if ($ent['dialplan_detail_tag'] == "action") {
-								//get the action inline attribute
-								$action_inline = '';
-								if (strlen($ent['dialplan_detail_inline']) > 0) {
-									$action_inline = "inline=\"".$ent['dialplan_detail_inline']."\"";
-								}
-								if (strlen($ent['dialplan_detail_data']) > 0) {
-									$tmp .= "       <action application=\"".$ent['dialplan_detail_type']."\" data=\"".$ent['dialplan_detail_data']."\" $action_inline/>\n";
-								}
-								else {
-									$tmp .= "       <action application=\"".$ent['dialplan_detail_type']."\" $action_inline/>\n";
-								}
+								//set the previous dialplan_detail_tag
+									$previous_tag = $ent['dialplan_detail_tag'];
+								$i++;
+							} //end foreach
+							if ($close_condition_tag == true) {
+								$tmp .= "   </condition>\n";
 							}
-						//anti-actions
-							if ($ent['dialplan_detail_tag'] == "anti-action") {
-								if (strlen($ent['dialplan_detail_data']) > 0) {
-									$tmp .= "       <anti-action application=\"".$ent['dialplan_detail_type']."\" data=\"".$ent['dialplan_detail_data']."\"/>\n";
-								}
-								else {
-									$tmp .= "       <anti-action application=\"".$ent['dialplan_detail_type']."\"/>\n";
-								}
-							}
-						//set the previous dialplan_detail_tag
-							$previous_tag = $ent['dialplan_detail_tag'];
-						$i++;
-					} //end foreach
-					if ($close_condition_tag == true) {
-						$tmp .= "   </condition>\n";
-					}
-					$x++;
-				}
-				if ($condition_count > 0) {
-					$condition_count = $result_count2;
-				}
-				unset($sql, $result_count2, $result2, $row_count2);
-			} //end if results
-			$tmp .= "</extension>\n";
-
-			$dialplan_order = $row['dialplan_order'];
-			if (strlen($dialplan_order) == 0) { $dialplan_order = "000".$dialplan_order; }
-			if (strlen($dialplan_order) == 1) { $dialplan_order = "00".$dialplan_order; }
-			if (strlen($dialplan_order) == 2) { $dialplan_order = "0".$dialplan_order; }
-			if (strlen($dialplan_order) == 4) { $dialplan_order = "999"; }
-			if (strlen($dialplan_order) == 5) { $dialplan_order = "999"; }
-
-			//remove invalid characters from the file names
-			$dialplan_name = $row['dialplan_name'];
-			$dialplan_name = str_replace(" ", "_", $dialplan_name);
-			$dialplan_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $dialplan_name);
-
-			$dialplan_filename = $dialplan_order."_v_".$dialplan_name.".xml";
-			if (strlen($row['dialplan_context']) > 0) {
-				if (!is_dir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'])) {
-					mkdir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'],0755,true);
-				}
-				if ($row['dialplan_context'] == "public") {
-					if (count($_SESSION['domains']) > 1) {
-						if (!is_dir($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name'])) {
-							mkdir($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name'],0755,true);
+							$x++;
 						}
-						file_put_contents($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name']."/".$dialplan_filename, $tmp);
+						if ($condition_count > 0) {
+							$condition_count = $result_count2;
+						}
+						unset($sql, $result_count2, $result2, $row_count2);
+					} //end if results
+					$tmp .= "</extension>\n";
+
+					$dialplan_order = $row['dialplan_order'];
+					if (strlen($dialplan_order) == 0) { $dialplan_order = "000".$dialplan_order; }
+					if (strlen($dialplan_order) == 1) { $dialplan_order = "00".$dialplan_order; }
+					if (strlen($dialplan_order) == 2) { $dialplan_order = "0".$dialplan_order; }
+					if (strlen($dialplan_order) == 4) { $dialplan_order = "999"; }
+					if (strlen($dialplan_order) == 5) { $dialplan_order = "999"; }
+
+					//remove invalid characters from the file names
+					$dialplan_name = $row['dialplan_name'];
+					$dialplan_name = str_replace(" ", "_", $dialplan_name);
+					$dialplan_name = preg_replace("/[\*\:\\/\<\>\|\'\"\?]/", "", $dialplan_name);
+
+					$dialplan_filename = $dialplan_order."_v_".$dialplan_name.".xml";
+					if (strlen($row['dialplan_context']) > 0) {
+						if (!is_dir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'])) {
+							mkdir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'],0755,true);
+						}
+						if ($row['dialplan_context'] == "public") {
+							if (count($_SESSION['domains']) > 1) {
+								if (!is_dir($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name'])) {
+									mkdir($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name'],0755,true);
+								}
+								file_put_contents($_SESSION['switch']['dialplan']['dir']."/public/".$_SESSION['domains'][$row['domain_uuid']]['domain_name']."/".$dialplan_filename, $tmp);
+							}
+							else {
+								file_put_contents($_SESSION['switch']['dialplan']['dir']."/public/".$dialplan_filename, $tmp);
+							}
+						}
+						else {
+							if (!is_dir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'])) {
+								mkdir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'],0755,true);
+							}
+							file_put_contents($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename, $tmp);
+						}
 					}
-					else {
-						file_put_contents($_SESSION['switch']['dialplan']['dir']."/public/".$dialplan_filename, $tmp);
-					}
-				}
-				else {
-					if (!is_dir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'])) {
-						mkdir($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context'],0755,true);
-					}
-					file_put_contents($_SESSION['switch']['dialplan']['dir']."/".$row['dialplan_context']."/".$dialplan_filename, $tmp);
-				}
+					unset($dialplan_filename);
+					unset($tmp);
+				} //end while
+
+				//apply settings reminder
+					$_SESSION["reload_xml"] = true;
 			}
-
-			unset($dialplan_filename);
-			unset($tmp);
-		} //end while
-	}
-
-	//apply settings reminder
-		$_SESSION["reload_xml"] = true;
+		} //end if (is_dir($_SESSION['switch']['dialplan']['dir']))
 }
 
 
@@ -3424,6 +3399,7 @@ if (!function_exists('sync_directory')) {
 		//get a list of extensions and the users assigned to them
 			$sql = "select * from v_extensions ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
+			$sql .= "and extension_enabled = 'true'; ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$x = 0;
@@ -3439,6 +3415,7 @@ if (!function_exists('sync_directory')) {
 						$sql = "select * from v_users ";
 						$sql .= "where domain_uuid = '$domain_uuid' ";
 						$sql .= "and username = '$username' ";
+						$sql .= "and user_enabled = 'true' ";
 						$prep_statement = $db->prepare(check_sql($sql));
 						$prep_statement->execute();
 						$tmp_result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
@@ -3551,8 +3528,6 @@ if (!function_exists('sync_directory')) {
 			fwrite($fout, $tmp);
 			fclose($fout);
 
-		//apply settings reminder
-			$_SESSION["reload_xml"] = true;
 	} //end sync_directory
 } //end if function exists
 
@@ -3663,8 +3638,7 @@ if (!function_exists('save_ivr_menu_xml')) {
 					$tmp .= "		max-timeouts=\"$ivr_menu_max_timeouts\"\n";
 					$tmp .= "		digit-len=\"$ivr_menu_digit_len\">\n";
 
-					$sub_sql = "";
-					$sub_sql .= "select * from v_ivr_menu_options ";
+					$sub_sql = "select * from v_ivr_menu_options ";
 					$sub_sql .= "where ivr_menu_uuid = '$ivr_menu_uuid' ";
 					$sub_sql .= "and domain_uuid = '$domain_uuid' ";
 					$sub_sql .= "order by ivr_menu_option_order asc "; 
@@ -4165,11 +4139,12 @@ if (!function_exists('save_call_center_xml')) {
 				fwrite($fout, $file_contents);
 				fclose($fout);
 
-			//syncrhonize the configuration
+			//save the dialplan xml files
 				save_dialplan_xml();
 
 			//apply settings reminder
 				$_SESSION["reload_xml"] = true;
+
 		}
 	}
 }

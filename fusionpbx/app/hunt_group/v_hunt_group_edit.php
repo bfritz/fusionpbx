@@ -469,12 +469,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "	 <select class='formfld' name='hunt_group_ringback'>\n";
 	echo "	 <option value=''></option>\n";
-	if ($hunt_group_ringback == "ring") { 
-		echo "	 <option value='us-ring' selected='selected'>us-ring</option>\n";
-	}
-	else {
-		echo "	 <option value='us-ring'>us-ring</option>\n";
-	}
 	if ($hunt_group_ringback == "us-ring") { 
 		echo "	 <option value='us-ring' selected='selected'>us-ring</option>\n";
 	}
@@ -507,7 +501,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "	 </select>\n";
 	echo "<br />\n";
-	echo "Defines what the caller will hear while destination is being called. The choices are music (music on hold) ring (ring tone.) default: music \n";
+	echo "Defines what the caller will hear while the destination is being called. The choices are music (music on hold) ring (ring tone.) default: music \n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -570,7 +564,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		$onchange = "document.getElementById('hunt_group_user_list').value += document.getElementById('username').value + '\\n';";
-		$table_name = 'v_users'; $field_name = 'username'; $field_current_value = ''; $sql_where_optional = "where domain_uuid = '$domain_uuid' "; 
+		$table_name = 'v_users'; $field_name = 'username'; $field_current_value = ''; $sql_where_optional = "where domain_uuid = '$domain_uuid' and user_enabled = 'true' ";
 		echo html_select_on_change($db, $table_name, $field_name, $sql_where_optional, $field_current_value, $onchange);
 		echo "<br />\n";
 		echo "Use the select list to add users to the user list. This will assign users to this extension.\n";
