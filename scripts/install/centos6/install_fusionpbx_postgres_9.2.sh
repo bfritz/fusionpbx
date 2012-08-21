@@ -214,6 +214,7 @@ fi
 cd /usr/src
 git clone git://git.freeswitch.org/freeswitch.git
 cd freeswitch
+git checkout v1.2.stable
 ./bootstrap.sh -j
 
 #dz modify the /usr/src/freeswitch/modules.conf file here  dz120308
