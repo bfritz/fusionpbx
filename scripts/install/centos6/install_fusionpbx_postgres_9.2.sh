@@ -32,13 +32,13 @@
 #   The FreeSWITCH, FusionPBX and PostgreSQL Crews without them, none of this would be possible
 #  
 ###############################################
-VERSION="0.8"
+VERSION="0.9"
 
 ###########################################
 ##  Set Defaults for Variables
 
-defSUPPORTNAME='Helia Technologies'
-defSUPPORTEMAIL='support@helia.ca'
+defSUPPORTNAME='Company Name'
+defSUPPORTEMAIL='support@example.com'
 defPUBLICHOSTNAME='voice.example.com'
 defDOMAINNAME='example.com'
 
