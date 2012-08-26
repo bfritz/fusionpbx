@@ -161,8 +161,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$virtual_table_uuid = $_GET["id"];
-		$sql = "";
-		$sql .= "select * from v_virtual_tables ";
+		$sql = "select * from v_virtual_tables ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and virtual_table_uuid = '$virtual_table_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -194,7 +193,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<form method='post' name='frm' action=''>\n";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	if ($action == "add") {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>Virtual Table Add</b></td>\n";
@@ -204,8 +202,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "<td width='70%' align='right'>\n";
 	if (strlen($row[virtual_table_uuid]) > 0) {
-		echo "		<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_virtual_table_data_view.php?id=".$row[virtual_table_uuid]."'\" value='view'>&nbsp;&nbsp;\n";
-		echo "		<input type='button' class='btn' name='' alt='import' onclick=\"window.location='v_virtual_tables_import.php?id=".$row[virtual_table_uuid]."'\" value='import'>&nbsp;&nbsp;\n";
+		echo "		<input type='button' class='btn' name='' alt='view' onclick=\"window.location='v_virtual_table_data_view.php?id=".$row[virtual_table_uuid]."'\" value='View'>&nbsp;&nbsp;\n";
+		echo "		<input type='button' class='btn' name='' alt='import' onclick=\"window.location='v_virtual_tables_import.php?id=".$row[virtual_table_uuid]."'\" value='Import'>&nbsp;&nbsp;\n";
 	}
 	include "export/index.php";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='v_virtual_tables.php'\" value='Back'>\n";
@@ -309,8 +307,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "			<select name='virtual_table_parent_uuid' class='formfld'>\n";
 	echo "			<option value=''></option>\n";
-	$sql = "";
-	$sql .= "select * from v_virtual_tables ";
+	$sql = "select * from v_virtual_tables ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$prep_statement = $db->prepare($sql);
 	$prep_statement->execute();
