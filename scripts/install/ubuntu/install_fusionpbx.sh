@@ -76,6 +76,8 @@ VERSION="Version - using subversion, no longer keeping track. WAF License"
 #staying with default repository, feel free to change this to github. Some report faster downloads.
 FSGIT=git://git.freeswitch.org/freeswitch.git
 #FSGIT=git://github.com/FreeSWITCH/FreeSWITCH.git
+FSSTABLE="TRUE"
+FSStableVer="v1.2.stable"
 
 #right now, make -j not working. see: jira FS-3005
 #CORES=$(/bin/grep processor -c /proc/cpuinfo)
@@ -826,11 +828,24 @@ if [ $DO_DAHDI == "y" ]; then
 		/bin/echo "Git Already Done. Skipping"	
 	else
 		cd /usr/src
-		/usr/bin/time /usr/bin/git clone $FSGIT
-		if [ $? -ne 0 ]; then
-			#git had an error
-			/bin/echo "GIT ERROR"
-			exit 1
+		if [ "$FSSTABLE" -eq "TRUE" ]; then
+			/usr/bin/time /usr/bin/git clone -b $FSStableVer git://git.freeswitch.org/freeswitch.git
+			if [ $? -ne 0 ]; then
+				#git had an error
+				/bin/echo "GIT ERROR"
+				exit 1
+			fi			
+			
+		else			
+			/usr/bin/time /usr/bin/git clone $FSGIT
+			if [ $? -ne 0 ]; then
+				#git had an error
+				/bin/echo "GIT ERROR"
+				exit 1
+			fi
+		fi
+		
+		
 		else
 			if [ $FSCHECKOUTVER == true ]; then
 				echo "OK we'll check out FreeSWITCH version $FSREV"
