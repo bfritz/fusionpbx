@@ -2399,6 +2399,8 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 			echo "  since 1.4 [master] may not be very stable."
 			echo
 			read -p "Shall we change to the 1.2.x branch [Y/n]? " YESNO
+		else
+			YESNO="no"
 		fi
 		
 		case $YESNO in
@@ -2443,7 +2445,7 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 				/bin/echo "GIT PULL to 1.2.x ERROR"
 				exit 1
 			fi
-			/usr/bin/git checkout v1.2.stable
+			/usr/bin/git checkout $FSStableVer
 			if [ $? -ne 0 ]; then
 				#git checkout had an error
 				/bin/echo "GIT CHECKOUT to 1.2.x ERROR"
@@ -2455,6 +2457,8 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 			#	/bin/echo "GIT CHECKOUT to 1.2.x ERROR"
 			#	exit 1
 			#fi
+			echo "reconfiguring mod_spandsp"
+			make spandsp-reconf
 		else
 			echo "staying on dev branch.  Hope this works for you."
 		fi
