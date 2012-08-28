@@ -2493,7 +2493,7 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 		else 
 			/bin/echo "made_current" >> /tmp/install_fusion_status
 		fi
-		/etc/init.d/freeswitch start
+		
 	fi
 	
 	#------------------------
@@ -2529,6 +2529,15 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 		/etc/init.d/logrotate restart
 		freeswitch_logfiles
 	fi
+	
+	if [ -e $WWW_PATH/$GUI_NAME ]; then
+		echo "I noticed that FusionPBX is installed too"
+		echo "now going to fix freeswitch permissions from upgrade to be safe"
+		www_permissions
+	else
+		echo "Standalone FreeSWITCH installation, no permissions to change"
+	fi
+	/etc/init.d/freeswitch start
 fi
 #------------------------------------
 #    DONE UPGRADING FREESWITCH
