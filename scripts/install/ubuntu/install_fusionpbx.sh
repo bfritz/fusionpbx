@@ -2457,12 +2457,14 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 			#	/bin/echo "GIT CHECKOUT to 1.2.x ERROR"
 			#	exit 1
 			#fi
-			echo "reconfiguring mod_spandsp"
-			make spandsp-reconf
+			
 		else
 			echo "staying on dev branch.  Hope this works for you."
 		fi
 		
+		cd /usr/src/freeswitch
+		echo "reconfiguring mod_spandsp"
+		make spandsp-reconf
 		
 		if [ $CORES > "1" ]; then 
 			/bin/echo "  multicore processor detected. Upgrading with -j $CORES"
