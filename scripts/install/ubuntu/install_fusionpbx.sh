@@ -2381,12 +2381,85 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 		cd /usr/src/freeswitch
 		if [ $? -ne 0 ]; then
 			#previous had an error
-			/bin/echo "/usr/local/freeswitch does not exist"
+			/bin/echo "/usr/src/freeswitch does not exist"
 			/bin/echo "you probably installed from a FusionPBX ISO which deleted this"
 			/bin/echo "Directory to save space.  rerun with install-freeswitch option"
 			exit 1
 		fi
 		cd /usr/src/freeswitch
+		
+		#get on the 1.2.x release first...
+		echo
+		echo
+		echo "Checking to see which version of FreeSWITCH you are on"
+		git status |grep "1.2"
+		if [ $? -ne 0 ]; then
+			echo "It appears that you are currently on the FreeSWITCH Git Master branch, or no branch."
+			echo "  We currently recommend that you switch to the 1.2.x branch,"
+			echo "  since 1.4 [master] may not be very stable."
+			echo
+			read -p "Shall we change to the 1.2.x branch [Y/n]? " YESNO
+		fi
+		
+		case $YESNO in
+                [Nn]*)
+                        echo "OK, staying on current...."
+                        FSSTABLE=false
+                ;;
+
+                *)
+                        echo "OK, switching to 1.2.x."
+                        FSSTABLE=true
+                ;;
+        esac
+		
+		if [ $FSSTABLE == true ]; then
+			echo "OK we'll now use the 1.2.x stable branch"
+			cd /usr/src/freeswitch
+			
+			#odd edge case, I think from a specific version checkout
+				# git status
+				# Not currently on any branch.
+				# Untracked files:
+				#   (use "git add <file>..." to include in what will be committed)
+				#
+				#       src/mod/applications/mod_httapi/Makefile
+			
+			git status |grep -i "not currently"
+			if [ $? -eq 0 ]; then
+				echo "You are not on master branch.  We have to fix that first"
+				/usr/bin/git checkout master
+				if [ $? -ne 0 ]; then
+					#git checkout had an error
+					/bin/echo "GIT CHECKOUT to 1.2.x ERROR"
+					exit 1
+				fi
+			fi
+			
+			#/usr/bin/time /usr/bin/git clone -b $FSStableVer git://git.freeswitch.org/freeswitch.git
+			/usr/bin/git pull
+			if [ $? -ne 0 ]; then
+				#git checkout had an error
+				/bin/echo "GIT PULL to 1.2.x ERROR"
+				exit 1
+			fi
+			/usr/bin/git checkout v1.2.stable
+			if [ $? -ne 0 ]; then
+				#git checkout had an error
+				/bin/echo "GIT CHECKOUT to 1.2.x ERROR"
+				exit 1
+			fi
+			#/usr/bin/git checkout master
+			#if [ $? -ne 0 ]; then
+			#	#git checkout had an error
+			#	/bin/echo "GIT CHECKOUT to 1.2.x ERROR"
+			#	exit 1
+			#fi
+		else
+			echo "staying on dev branch.  Hope this works for you."
+		fi
+		
+		
 		if [ $CORES > "1" ]; then 
 			/bin/echo "  multicore processor detected. Upgrading with -j $CORES"
 			/usr/bin/time /usr/bin/make -j $CORES current
