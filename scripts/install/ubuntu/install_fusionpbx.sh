@@ -2479,6 +2479,21 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 			/bin/echo "make current error"
 			exit 1
 		fi			
+		
+		if [ $DEBUG -eq 1 ]; then
+			/bin/echo
+			/bin/echo "I'm going to stop here and wait.  FreeSWITCH has now been compiled and is ready to install"
+			/bin/echo "but in order to do this we need to stop FreeSWITCH [which will dump any active calls]."
+			/bin/echo "This should not take too long to finish, but we should try and time things correctly."
+			/bin/echo "The current status of your switch is:"
+			/bin/echo
+			/usr/local/freeswitch/bin/fs_cli -x status
+			/bin/echo
+			/bin/echo -n "Press Enter to continue the upgrade."
+			
+			read
+		fi
+		
 		/etc/init.d/freeswitch stop
 		if [ $? -ne 0 ]; then
 			#previous had an error
