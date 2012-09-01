@@ -35,7 +35,7 @@ SQLITEMYSQL=s
 
 # for postgresql v 9.0 (from ppa) set to 9, otherwise stick with 8
 # must set SQLITEMYSQL to p
-POSTGRES9=8
+POSTGRES9=9
 
 # to start FreeSWITCH with -nonat option set SETNONAT to y
 SETNONAT=n
@@ -80,8 +80,8 @@ FSSTABLE=true
 FSStableVer="v1.2.stable"
 
 #right now, make -j not working. see: jira FS-3005
-#CORES=$(/bin/grep processor -c /proc/cpuinfo)
-CORES=1
+CORES=$(/bin/grep processor -c /proc/cpuinfo)
+#CORES=1
 FQDN=$(hostname -f)
 #SRCPATH="/usr/src/freeswitch" #DEFAULT
 SRCPATH="/usr/src/freeswitch"
@@ -830,7 +830,9 @@ if [ $DO_DAHDI == "y" ]; then
 		cd /usr/src
 		if [ "$FSSTABLE" == true ]; then
 			echo "installing stable $FSStableVer of FreeSWITCH"
-			/usr/bin/time /usr/bin/git clone -b $FSStableVer git://git.freeswitch.org/freeswitch.git
+			/usr/bin/time /usr/bin/git clone $FSGIT
+			cd /usr/src/freeswitch
+			/usr/bin/git checkout $FSStableVer
 			if [ $? -ne 0 ]; then
 				#git had an error
 				/bin/echo "GIT ERROR"
