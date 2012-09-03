@@ -113,6 +113,7 @@ else {
 			if (if_group("admin") || if_group("superadmin")) {
 				echo "<th>Options</th>\n";
 			}
+			echo "<th>Agent</th>\n";
 			echo "</tr>\n";
 
 			foreach ($result as $row) {
@@ -122,8 +123,8 @@ else {
 					$system = $row['system'];
 					$uuid = $row['uuid'];
 					$session_uuid = $row['session_uuid'];
-					$caller_number = $row['caller_number'];
-					$caller_name = $row['caller_name'];
+					$caller_number = $row['cid_number'];
+					$caller_name = $row['cid_name'];
 					$system_epoch = $row['system_epoch'];
 					$joined_epoch = $row['joined_epoch'];
 					$rejoined_epoch = $row['rejoined_epoch'];
@@ -159,9 +160,13 @@ else {
 					echo "<td valign='top' class='".$row_style[$c]."'>".$state."</td>\n";
 					if (if_group("admin") || if_group("superadmin")) {
 						echo "<td valign='top' class='".$row_style[$c]."'>";
-						echo "	<a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=originate+user/".$_SESSION['user']['extension']['user'][0]."+%26eavesdrop(".$uuid.")');}\">eavesdrop</a>&nbsp;\n";
+						//debug
+						//echo "  <a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=log+user/".$_SESSION['user']['extension'][0]['user']."+%26eavesdrop(".$uuid.")');}\">log_cmd</a>&nbsp;\n";
+						
+						echo "  <a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=originate+{origination_caller_id_name=eavesdrop,origination_caller_id_number=".$caller_number."}user/".$_SESSION['user']['extension'][0]['user']."@".$_SESSION['domain_name']." +%26eavesdrop(".$session_uuid.")');}\">eavesdrop2</a>&nbsp;\n";
 						echo "</td>";
 					}
+					echo "<td valign='top' class='".$row_style[$c]."'>".$serving_agent."&nbsp;</td>\n";
 					echo "</tr>\n";
 					if ($c==0) { $c=1; } else { $c=0; }
 				} //end if uuid_exists
