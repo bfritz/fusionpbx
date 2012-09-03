@@ -117,8 +117,8 @@ else {
 			echo "</tr>\n";
 
 			$q_waiting=0;
-                        $q_trying=0;
-                        $q_answered=0;
+			$q_trying=0;
+			$q_answered=0;
 
 			foreach ($result as $row) {
 				$switch_cmd = 'uuid_exists '.$row['session_uuid'];
@@ -315,8 +315,7 @@ else {
 				}
 				echo "</table>\n\n";
 				echo "</br>";
-                                echo "<b>Total Waiting is {$q_waiting}. Total Trying is {$q_trying}. Total Answered is {$q_answered}.\n</b>";
-
+				echo "<b>Total Waiting is {$q_waiting}. Total Trying is {$q_trying}. Total Answered is {$q_answered}.\n</b>";
 
 		//add vertical spacing
 			echo "<br />\n";
