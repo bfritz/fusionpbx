@@ -116,6 +116,10 @@ else {
 			echo "<th>Agent</th>\n";
 			echo "</tr>\n";
 
+			$q_waiting=0;
+                        $q_trying=0;
+                        $q_answered=0;
+
 			foreach ($result as $row) {
 				$switch_cmd = 'uuid_exists '.$row['session_uuid'];
 				if (trim(event_socket_request($fp, 'api '.$switch_cmd)) == "true") {
@@ -135,6 +139,9 @@ else {
 					$serving_agent = $row['serving_agent'];
 					$serving_system = $row['serving_system'];
 					$state = $row['state'];
+					if ($state=="Trying") {$q_trying = $q_trying + 1;}
+					if ($state=="Waiting") {$q_waiting = $q_waiting + 1;}
+					if ($state=="Answered") {$q_answered = $q_answered + 1;}
 	
 					$joined_seconds = time() - $joined_epoch;
 					$joined_length_hour = floor($joined_seconds/3600);
@@ -160,10 +167,19 @@ else {
 					echo "<td valign='top' class='".$row_style[$c]."'>".$state."</td>\n";
 					if (if_group("admin") || if_group("superadmin")) {
 						echo "<td valign='top' class='".$row_style[$c]."'>";
+
+						$orig_command="{origination_caller_id_name=eavesdrop,origination_caller_id_number=".$caller_number."}user/".$_SESSION['user']['extension'][0]['user']."@".$_SESSION['domain_name']." %26eavesdrop(".$session_uuid.")"; 
+
+						//url encode any plus signs in caller id
+						$orig_command = str_replace("+", "%2B", $orig_command);
+
 						//debug
-						//echo "  <a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=log+user/".$_SESSION['user']['extension'][0]['user']."+%26eavesdrop(".$uuid.")');}\">log_cmd</a>&nbsp;\n";
-						
-						echo "  <a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=originate+{origination_caller_id_name=eavesdrop,origination_caller_id_number=".$caller_number."}user/".$_SESSION['user']['extension'][0]['user']."@".$_SESSION['domain_name']." +%26eavesdrop(".$session_uuid.")');}\">eavesdrop2</a>&nbsp;\n";
+						//echo $orig_command;
+						//echo "  <a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=log+".$orig_command.")');}\">log_cmd</a>&nbsp;\n";
+
+						echo "  <a href='javascript:void(0);' style='color: #444444;' onclick=\"confirm_response = confirm('Do you really want to do this?');if (confirm_response){send_cmd('v_call_center_exec.php?cmd=originate+".$orig_command.")');}\">eavesdrop</a>&nbsp;\n";
+
+
 						echo "</td>";
 					}
 					echo "<td valign='top' class='".$row_style[$c]."'>".$serving_agent."&nbsp;</td>\n";
@@ -297,7 +313,10 @@ else {
 
 					if ($c==0) { $c=1; } else { $c=0; }
 				}
-				echo "</table>\n";
+				echo "</table>\n\n";
+				echo "</br>";
+                                echo "<b>Total Waiting is {$q_waiting}. Total Trying is {$q_trying}. Total Answered is {$q_answered}.\n</b>";
+
 
 		//add vertical spacing
 			echo "<br />\n";
