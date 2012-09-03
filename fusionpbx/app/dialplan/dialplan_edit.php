@@ -434,10 +434,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</table>";
 		echo "<br />\n";
 
-		$sql = " select * from v_dialplan_details ";
-		$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= " and dialplan_uuid = '$dialplan_uuid' ";
-		$sql .= " order by dialplan_detail_group asc, dialplan_detail_order asc";
+		$sql = "select * from v_dialplan_details ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$sql .= "order by dialplan_detail_group asc, dialplan_detail_order asc";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -560,7 +560,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$x++;
 				} //end foreach
 				unset($sql, $result, $row_count);
-				
 			} //end if results
 
 			echo "<tr>\n";
