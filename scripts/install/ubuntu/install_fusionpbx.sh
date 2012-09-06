@@ -2570,6 +2570,7 @@ if [ $UPGFUSION -eq 1 ]; then
 	/bin/echo "Resetting FreeSWITCH permissions to www-data in case you did"
 	/bin/echo "  a FreeSWITCH upgrade as well."
 	www_permissions
+	cd $WWW_PATH/$GUI_NAME
 	/bin/echo
 	/bin/echo "STOP! Make sure you are logged into fusionpbx as the superadmin (via browser)!!!"
 	read -p "Have you done this yet (y/n)? " YESNO
