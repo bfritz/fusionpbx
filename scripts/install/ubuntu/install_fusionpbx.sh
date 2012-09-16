@@ -80,8 +80,8 @@ FSSTABLE=true
 FSStableVer="v1.2.stable"
 
 #right now, make -j not working. see: jira FS-3005
-CORES=$(/bin/grep processor -c /proc/cpuinfo)
-#CORES=1
+#CORES=$(/bin/grep processor -c /proc/cpuinfo)
+CORES=1
 FQDN=$(hostname -f)
 #SRCPATH="/usr/src/freeswitch" #DEFAULT
 SRCPATH="/usr/src/freeswitch"
