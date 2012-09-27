@@ -31,7 +31,8 @@
 		$apps[$x]['permissions'][$y]['name'] = 'domain_delete';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'domain_view';
+
+		$apps[$x]['permissions'][$y]['name'] = 'domain_setting_view';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'domain_setting_add';

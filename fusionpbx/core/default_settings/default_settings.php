@@ -83,7 +83,7 @@ require_once "includes/paging.php";
 		$offset = $rows_per_page * $page; 
 
 	//get the list
-		$sql = " select * from v_default_settings ";
+		$sql = "select * from v_default_settings ";
 		if (strlen($order_by) == 0) {
 			$sql .= "order by default_setting_category, default_setting_subcategory asc ";
 		}
