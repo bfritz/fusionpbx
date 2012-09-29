@@ -41,16 +41,16 @@ require_once "includes/header.php";
 
 if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])) {
 	//get the http variables and set them as variables
-		$src = $_REQUEST['src'];
-		$dest = $_REQUEST['dest'];
-		$ringback = $_REQUEST['ringback'];
+		$src = check_str($_REQUEST['src']);
+		$dest = check_str($_REQUEST['dest']);
+		$ringback = check_str($_REQUEST['ringback']);
 		$src = str_replace(array('.', '(', ')', '-', ' '), '', $src);
 		$dest = str_replace(array('.', '(', ')', '-', ' '), '', $dest);
-		$src_cid_name = $_REQUEST['src_cid_name'];
-		$src_cid_number = $_REQUEST['src_cid_number'];
-		$dest_cid_name = $_REQUEST['dest_cid_name'];
-		$dest_cid_number = $_REQUEST['dest_cid_number'];
-		$rec = $_REQUEST['rec']; //true,false
+		$src_cid_name = check_str($_REQUEST['src_cid_name']);
+		$src_cid_number = check_str($_REQUEST['src_cid_number']);
+		$dest_cid_name = check_str($_REQUEST['dest_cid_name']);
+		$dest_cid_number = check_str($_REQUEST['dest_cid_number']);
+		$rec = check_str($_REQUEST['rec']); //true,false
 		if (strlen($cid_number) == 0) { $cid_number = $src;}
 		if (strlen($_SESSION['context']) > 0) {
 			$context = $_SESSION['context'];

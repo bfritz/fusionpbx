@@ -56,8 +56,7 @@ function destination_select($select_name, $select_value, $select_default) {
 	$extension_uuid = $_REQUEST["id"];
 
 //get the extension number
-	$sql = "";
-	$sql .= "select * from v_extensions ";
+	$sql = "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and extension_uuid = '$extension_uuid' ";
 	if (!(if_group("admin") || if_group("superadmin"))) {
