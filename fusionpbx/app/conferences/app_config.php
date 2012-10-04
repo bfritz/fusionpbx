@@ -65,8 +65,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
-		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_domains';
-		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'domain_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_dialplans';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'dialplan_uuid';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'conference_name';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
@@ -98,7 +98,7 @@
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'conference_enabled';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Select whether to enable or disable the conference.';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = 'Enable or disable the conference.';
 
 		$y = 1; //table array index
 		$z = 0; //field array index
