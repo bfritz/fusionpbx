@@ -49,7 +49,7 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td align='left' width='50%' nowrap><b>Conferences</b></td>\n";
+	echo "		<td width='50%' align='left' nowrap='nowrap'><b>Conferences</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -96,7 +96,7 @@ require_once "includes/paging.php";
 		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
 		$offset = $rows_per_page * $page; 
 
-	//get the  list
+	//get the list
 		if (if_group("superadmin") || if_group("admin")) {
 			//show all extensions
 			$sql = "select * from v_conferences ";
@@ -110,7 +110,7 @@ require_once "includes/paging.php";
 			$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
 		}
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-		$sql .= " limit $rows_per_page offset $offset ";
+		$sql .= "limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
