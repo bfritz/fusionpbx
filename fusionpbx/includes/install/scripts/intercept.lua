@@ -79,7 +79,7 @@ if ( session:ready() ) then
 	--check the database to get the uuid
 		--intercept
 			sql = "select call_uuid as uuid from channels where presence_id = '"..extension.."@"..domain_name.."' and callstate = 'RINGING' ";
-		dbh:query(sql, function(result)
+			dbh:query(sql, function(result)
 			for key, val in pairs(result) do
 				freeswitch.consoleLog("NOTICE", "result "..key.." "..val.."\n");
 			end
