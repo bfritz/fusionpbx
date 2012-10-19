@@ -91,7 +91,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "default_setting_name, ";
 				$sql .= "default_setting_value, ";
 				$sql .= "default_setting_enabled, ";
-				$sql .= "default_setting_description ";	
+				$sql .= "default_setting_description ";
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
