@@ -18,7 +18,8 @@ Migration Instructions
 	Any database name you want to use will work for these instructions we will use a database name of fusionpbx3.
 
 6. Download the export PHP Script
-	http://code.google.com/p/fusionpbx/source/browse/trunk/scripts/upgrade/r1877-export.php
+	cd /var/www/fusionpbx
+	wget http://fusionpbx.googlecode.com/svn/trunk/scripts/upgrade/r1877-export.php
 
 7. Make a backup of the FusionPBX PHP directory and the FreeSWITCH conf directory.
 	cp -R /var/www/fusionpbx var/www/fusionpbx-bak
