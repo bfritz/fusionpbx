@@ -816,6 +816,10 @@ if [ $DO_DAHDI == "y" ]; then
 	/bin/echo
 	/bin/echo "ldconfig is finished"
 	/bin/echo
+	
+	if [ ! -e /tmp/install_fusion_status ]; then
+		touch /tmp/install_fusion_status
+	fi	
 
 	if [ $DEBUG -eq 1 ]; then
 		/bin/echo
