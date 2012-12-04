@@ -56,7 +56,7 @@ Migration Instructions
 15. Update the source code to 3.0.x
 	svn update
 
-16. Login with the web browser.
+16. Run logout.php from the browser to clear the session then login to the GUI with the web browser.
 
 17. Update the menu by going to:
 	http://x.x.x.x/core/menu/menu.php then edit the menu and press 'restore default'
