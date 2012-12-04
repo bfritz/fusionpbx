@@ -70,15 +70,18 @@ Migration Instructions
 20. For multi-tenant systems delete the domain based dialplan xml files in.
 	rm /usr/local/freeswitch/conf/dialplans/replace_with_the_domain_name.xml
 
-21. Upgrade FusionPBX
+21. For Single tenant systems go to Advanced -> Default Settings
+	Remove /default off the end of all of the paths. Should see it in 2 places.
+
+22. Upgrade FusionPBX
 	cd /var/www/fusionpbx
 	/usr/bin/php /var/www/fusionpbx/core/upgrade/upgrade.php
 
-22. Go to Advanced -> XML Editor
+23. Go to Advanced -> XML Editor
 	Expand 'autoload_configs'
 	Click on xml_cdr.conf.xml
 	At <param name="url" remove /mod/ and replace it with /app/
 	Status -> SIP Status press 'reloadxml'
 	System -> Modules restart XML CDR.
 
-23. Upgrade is complete.
+24. Upgrade is complete.
