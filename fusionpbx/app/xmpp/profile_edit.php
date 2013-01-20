@@ -37,7 +37,7 @@ function hide_advanced_config() {
 					</td>		<td width='50%' align='right'> 
 						<input type='submit' name='submit' class='btn' value='Save'> 
 						<!-- <input type='button' class='btn' name='' alt='copy' onclick="if (confirm('Do you really want to copy this?')){window.location='v_gateways_copy.php?id=1';}" value='Copy'>  -->
-						<input type='button' class='btn' name='' alt='back' onclick="window.location='v_xmpp.php'" value='Back'> 
+						<input type='button' class='btn' name='' alt='back' onclick="window.location='xmpp.php'" value='Back'> 
 					</td> 
 				</tr>
 				<tr>
@@ -66,7 +66,7 @@ function hide_advanced_config() {
 			Username:
 		</td>
 		<td class='vtable' align='left'>
-			<input class='formfld' type='text' name='profile_username' maxlength='255' value="<?php echo $profile['profile_username'];?>">
+			<input class='formfld' type='text' name='profile_username' autocomplete='off' maxlength='255' value="<?php echo $profile['profile_username'];?>">
 			<br />
 			Enter the XMPP username here.
 		</td>
@@ -77,7 +77,7 @@ function hide_advanced_config() {
 			Password:
 		</td>
 		<td class='vtable' align='left'>
-			<input class='formfld' type='password' name='profile_password' id='profile_password' maxlength='50' onfocus="document.getElementById('show_profile_password').innerHTML = 'Password: '+document.getElementById('profile_password').value;" value="<?php echo $profile['profile_password'];?>"> 
+			<input class='formfld' type='password' name='profile_password' autocomplete='off' id='profile_password' maxlength='50' onfocus="document.getElementById('show_profile_password').innerHTML = 'Password: '+document.getElementById('profile_password').value;" value="<?php echo $profile['profile_password'];?>"> 
 			<br />
 			<span onclick="document.getElementById('show_profile_password').innerHTML = ''">Enter the password here. </span><span id='show_profile_password'></span> 
 		</td>
@@ -202,8 +202,8 @@ function hide_advanced_config() {
 					</td> 
 					<td class='vtable' align='left'> 
 						<select class='formfld' name='use_rtp_timer'> 
-						<option value='true' <?php if($profile['tls_enable'] == "true") echo "selected='selected'"; ?>>true</option> 
-						<option value='false' <?php if($profile['tls_enable'] == "false") echo "selected='selected'"; ?>>false</option> 
+						<option value='true' <?php if($profile['use_rtp_timer'] == "true") echo "selected='selected'"; ?>>true</option> 
+						<option value='false' <?php if($profile['use_rtp_timer'] == "false") echo "selected='selected'"; ?>>false</option> 
 						</select> 
 						<br /> 
 						Disable to trade async for more calls

@@ -63,7 +63,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		//if (strlen($default_setting_category) == 0) { $msg .= "Please provide: Category<br>\n"; }
 		//if (strlen($default_setting_subcategory) == 0) { $msg .= "Please provide: Subcategory<br>\n"; }
-		//if (strlen($default_setting_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
+		//if (strlen($default_setting_name) == 0) { $msg .= "Please provide: Type<br>\n"; }
 		//if (strlen($default_setting_value) == 0) { $msg .= "Please provide: Value<br>\n"; }
 		//if (strlen($default_setting_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		//if (strlen($default_setting_description) == 0) { $msg .= "Please provide: Description<br>\n"; }

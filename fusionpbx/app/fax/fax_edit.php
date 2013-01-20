@@ -34,6 +34,12 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //get the fax_extension and save it as a variable
 	if (strlen($_REQUEST["fax_extension"]) > 0) {
 		$fax_extension = check_str($_REQUEST["fax_extension"]);
@@ -90,13 +96,25 @@ else {
 //get the http post values and set them as php variables
 	if (count($_POST)>0) {
 		$fax_name = check_str($_POST["fax_name"]);
+		$fax_extension = check_str($_POST["fax_extension"]);
+		$fax_destination_number = check_str($_POST["fax_destination_number"]);
 		$fax_email = check_str($_POST["fax_email"]);
 		$fax_pin_number = check_str($_POST["fax_pin_number"]);
 		$fax_caller_id_name = check_str($_POST["fax_caller_id_name"]);
 		$fax_caller_id_number = check_str($_POST["fax_caller_id_number"]);
 		$fax_forward_number = check_str($_POST["fax_forward_number"]);
-		if (strlen($fax_forward_number) > 0) {
-			$fax_forward_number = preg_replace("~[^0-9]~", "",$fax_forward_number);
+		if (strlen($fax_destination_number) == 0) {
+			$fax_destination_number = $fax_extension;
+		}
+		if (strlen($fax_forward_number) > 3) {
+			//$fax_forward_number = preg_replace("~[^0-9]~", "",$fax_forward_number);
+			$fax_forward_number = str_replace(" ", "", $fax_forward_number);
+			$fax_forward_number = str_replace("-", "", $fax_forward_number);
+		}
+		if (strripos($fax_forward_number, '$1') === false) {
+			$fax_prefix = ''; //not found
+		} else {
+			$fax_prefix = $fax_forward_number.'#'; //found
 		}
 		$fax_description = check_str($_POST["fax_description"]);
 	}
@@ -106,16 +124,18 @@ else {
 		//set the variables
 			$user_uuid = check_str($_REQUEST["user_uuid"]);
 			$fax_uuid = check_str($_REQUEST["id"]);
+
 		//delete the group from the users
 			$sql = "delete from v_fax_users ";
 			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and fax_uuid = '".$fax_uuid."' ";
 			$sql .= "and user_uuid = '".$user_uuid."' ";
 			$db->exec(check_sql($sql));
+
 		//redirect the browser
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=fax_edit.php?id=$fax_uuid\">\n";
-			echo "<div align='center'>Delete Complete</div>";
+			echo "<div align='center'>".$text['confirm-delete']."</div>";
 			require_once "includes/footer.php";
 			return;
 	}
@@ -141,10 +161,11 @@ else {
 			$sql_insert .= "'".$user_uuid."' ";
 			$sql_insert .= ")";
 			$db->exec($sql_insert);
+
 		//redirect the browser
 			require_once "includes/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=fax_edit.php?id=$fax_uuid\">\n";
-			echo "<div align='center'>Add Complete</div>";
+			echo "<div align='center'>".$text['confirm-add']."</div>";
 			require_once "includes/footer.php";
 			return;
 	}
@@ -160,8 +181,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($fax_extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
-		if (strlen($fax_name) == 0) { $msg .= "Please provide: A file to Fax<br>\n"; }
+		if (strlen($fax_extension) == 0) { $msg .= "".$text['confirm-ext']."<br>\n"; }
+		if (strlen($fax_name) == 0) { $msg .= "".$text['confirm-fax']."<br>\n"; }
 		//if (strlen($fax_email) == 0) { $msg .= "Please provide: Email<br>\n"; }
 		//if (strlen($fax_pin_number) == 0) { $msg .= "Please provide: Pin Number<br>\n"; }
 		//if (strlen($fax_caller_id_name) == 0) { $msg .= "Please provide: Caller ID Name<br>\n"; }
@@ -199,6 +220,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "fax_uuid, ";
 					$sql .= "dialplan_uuid, ";
 					$sql .= "fax_extension, ";
+					$sql .= "fax_destination_number, ";
 					$sql .= "fax_name, ";
 					$sql .= "fax_email, ";
 					$sql .= "fax_pin_number, ";
@@ -215,6 +237,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$fax_uuid', ";
 					$sql .= "'$dialplan_uuid', ";
 					$sql .= "'$fax_extension', ";
+					$sql .= "'$fax_destination_number', ";
 					$sql .= "'$fax_name', ";
 					$sql .= "'$fax_email', ";
 					$sql .= "'$fax_pin_number', ";
@@ -240,6 +263,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						$sql .= "dialplan_uuid = '".$dialplan_uuid."', ";
 					}
 					$sql .= "fax_extension = '$fax_extension', ";
+					$sql .= "fax_destination_number = '$fax_destination_number', ";
 					$sql .= "fax_name = '$fax_name', ";
 					$sql .= "fax_email = '$fax_email', ";
 					$sql .= "fax_pin_number = '$fax_pin_number', ";
@@ -278,7 +302,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				if ($dialplan_type == "add") {
 					//add the dialplan entry for fax
 						$dialplan_name = $fax_name;
-						$dialplan_order ='333';
+						$dialplan_order ='310';
 						$dialplan_context = $_SESSION['context'];
 						$dialplan_enabled = 'true';
 						$dialplan_description = $fax_description;
@@ -289,7 +313,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						//<condition field="destination_number" expression="^\*9978$">
 							$dialplan_detail_tag = 'condition'; //condition, action, antiaction
 							$dialplan_detail_type = 'destination_number';
-							$dialplan_detail_data = '^'.$fax_extension.'$';
+							$dialplan_detail_data = '^'.$fax_destination_number.'$';
 							$dialplan_detail_order = '000';
 							$dialplan_detail_group = '';
 							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
@@ -300,11 +324,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 							$dialplan_detail_data = "api_hangup_hook=system ".PHP_BINDIR."/".PHP_BIN." ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/fax_to_email.php ";
 							$dialplan_detail_data .= "email=".$fax_email." ";
 							$dialplan_detail_data .= "extension=".$fax_extension." ";
-							$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
+							$dialplan_detail_data .= "name=".$fax_prefix."\\\\\\\${last_fax} ";
 							$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
 							$dialplan_detail_data .= "domain=".$_SESSION['domain_name']." ";
 							$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
 							$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
+							$dialplan_detail_data .= "fax_relay=true ";
 
 							$dialplan_detail_order = '010';
 							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
@@ -348,10 +373,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 							$dialplan_detail_tag = 'action'; //condition, action, antiaction
 							$dialplan_detail_type = 'rxfax';
 							if (count($_SESSION["domains"]) > 1) {
-								$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domain_name'].'/'.$fax_extension.'/inbox/${last_fax}.tif';
+								$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domain_name'].'/'.$fax_extension.'/inbox/'.$fax_prefix.'${last_fax}.tif';
 							}
 							else {
-								$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$fax_extension.'/inbox/${last_fax}.tif';
+								$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$fax_extension.'/inbox/'.$fax_prefix.'${last_fax}.tif';
 							}
 							$dialplan_detail_order = '035';
 							dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
@@ -380,7 +405,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 					//update dialplan detail condition
 						$sql = "update v_dialplan_details set ";
-						$sql .= "dialplan_detail_data = '^".$fax_extension."$' ";
+						$sql .= "dialplan_detail_data = '^".$fax_destination_number."$' ";
 						$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 						$sql .= "and dialplan_detail_tag = 'condition' ";
 						$sql .= "and dialplan_detail_type = 'destination_number' ";
@@ -390,10 +415,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 					//update dialplan detail action
 						if (count($_SESSION["domains"]) > 1) {
-							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domain_name'].'/'.$fax_extension.'/inbox/${last_fax}.tif';
+							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$_SESSION['domain_name'].'/'.$fax_extension.'/inbox/'.$fax_prefix.'${last_fax}.tif';
 						}
 						else {
-							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$fax_extension.'/inbox/${last_fax}.tif';
+							$dialplan_detail_data = $_SESSION['switch']['storage']['dir'].'/fax/'.$fax_extension.'/inbox/'.$fax_prefix.'${last_fax}.tif';
 						}
 						$sql = "update v_dialplan_details set ";
 						$sql .= "dialplan_detail_data = '".$dialplan_detail_data."' ";
@@ -409,11 +434,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						$dialplan_detail_data = "api_hangup_hook=system ".PHP_BINDIR."/".PHP_BIN." ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/secure/fax_to_email.php ";
 						$dialplan_detail_data .= "email=".$fax_email." ";
 						$dialplan_detail_data .= "extension=".$fax_extension." ";
-						$dialplan_detail_data .= "name=\\\\\\\${last_fax} ";
+						$dialplan_detail_data .= "name=".$fax_prefix."\\\\\\\${last_fax} ";
 						$dialplan_detail_data .= "messages='result: \\\\\\\${fax_result_text} sender:\\\\\\\${fax_remote_station_id} pages:\\\\\\\${fax_document_total_pages}' ";
 						$dialplan_detail_data .= "domain=".$_SESSION['domain_name']." ";
 						$dialplan_detail_data .= "caller_id_name='\\\\\\\${caller_id_name}' ";
 						$dialplan_detail_data .= "caller_id_number=\\\\\\\${caller_id_number} ";
+						$dialplan_detail_data .= "fax_relay=true ";
 						$sql = "update v_dialplan_details set ";
 						$sql .= "dialplan_detail_data = '".check_str($dialplan_detail_data)."' ";
 						$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
@@ -430,15 +456,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//apply settings reminder
 				$_SESSION["reload_xml"] = true;
 
+			//delete the dialplan context from memcache
+				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+				if ($fp) {
+					$switch_cmd .= "memcache delete dialplan:".$_SESSION["context"]."@".$_SESSION['domain_name'];
+					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+				}
+
 			//redirect the browser
 				require_once "includes/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=fax.php\">\n";
 				echo "<div align='center'>\n";
 				if ($action == "update" && permission_exists('fax_extension_edit')) {
-					echo "Update Complete\n";
+					echo "".$text['confirm-update']."\n";
 				}
 				if ($action == "add" && permission_exists('fax_extension_add')) {
-					echo "Add Complete\n";
+					echo "".$text['confirm-add']."\n";
 				}
 				echo "</div>\n";
 				require_once "includes/footer.php";
@@ -463,6 +496,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		foreach ($result as &$row) {
 			$dialplan_uuid = $row["dialplan_uuid"];
 			$fax_extension = $row["fax_extension"];
+			$fax_destination_number = $row["fax_destination_number"];
 			$fax_name = $row["fax_name"];
 			$fax_email = $row["fax_email"];
 			$fax_pin_number = $row["fax_pin_number"];
@@ -488,98 +522,114 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap><b>Fax Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap><b>".$text['confirm-fax-add']."</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap><b>Fax Edit</b></td>\n";
+		echo "<td align='left' width='30%' nowrap><b>".$text['confirm-fax-edit']."</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('Do you really want to copy this?')){window.location='fax_copy.php?id=".$fax_uuid."';}\" value='Copy'>\n";
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='fax.php'\" value='Back'>\n";
+	echo "	<input type='button' class='btn' name='' alt='copy' onclick=\"if (confirm('".$text['confirm-copy-info']."')){window.location='fax_copy.php?id=".$fax_uuid."';}\" value='".$text['button-copy']."'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='fax.php'\" value='".$text['button-back']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	Name:\n";
+	echo "	".$text['label-name'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='fax_name' maxlength='255' value=\"$fax_name\">\n";
 	echo "<br />\n";
-	echo "Enter the name here.\n";
+	echo "".$text['description-name']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "	Extension:\n";
+	echo "	".$text['label-extension'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='fax_extension' maxlength='255' value=\"$fax_extension\">\n";
 	echo "<br />\n";
-	echo "Enter the fax extension here.\n";
+	echo "".$text['description-extension']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Email:\n";
+	echo "	".$text['label-destination-number'].":\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<input class='formfld' type='text' name='fax_destination_number' maxlength='255' value=\"$fax_destination_number\">\n";
+	echo "<br />\n";
+	echo " ".$text['description-destination-number']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "	".$text['label-email'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='fax_email' maxlength='255' value=\"$fax_email\">\n";
 	echo "<br />\n";
-	echo "	Enter the email address to send the FAX to.\n";
+	echo "	".$text['description-email']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	PIN Number:\n";
+	echo "	".$text['label-pin'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='fax_pin_number' maxlength='255' value=\"$fax_pin_number\">\n";
 	echo "<br />\n";
-	echo "Enter the PIN number here.\n";
+	echo "".$text['description-pin']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Caller ID Name:\n";
+	echo "	".$text['label-caller-id-name'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='fax_caller_id_name' maxlength='255' value=\"$fax_caller_id_name\">\n";
 	echo "<br />\n";
-	echo "Enter the Caller ID name here.\n";
+	echo "".$text['description-caller-id-name']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Caller ID Number:\n";
+	echo "	".$text['label-caller-id-number'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='fax_caller_id_number' maxlength='255' value=\"$fax_caller_id_number\">\n";
 	echo "<br />\n";
-	echo "Enter the Caller ID number here.\n";
+	echo "".$text['description-caller-id-number']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Forward Number:\n";
+	echo "	".$text['label-forward'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='fax_forward_number' maxlength='255' value=\"".format_phone($fax_forward_number)."\">\n";
+	if (is_numeric($fax_forward_number)) {
+		echo "	<input class='formfld' type='text' name='fax_forward_number' maxlength='255' value=\"".format_phone($fax_forward_number)."\">\n";
+	}
+	else {
+		echo "	<input class='formfld' type='text' name='fax_forward_number' maxlength='255' value=\"".$fax_forward_number."\">\n";
+	}
 	echo "<br />\n";
-	echo "Enter the forward number here. Used to forward the fax to a registered extension or external number.\n";
+	echo "".$text['description-forward-number']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	if (if_group("admin") || if_group("superadmin")) {
 		if ($action == "update") {
 			echo "	<tr>";
-			echo "		<td class='vncell' valign='top'>User List:</td>";
+			echo "		<td class='vncell' valign='top'>".$text['label-user-list'].":</td>";
 			echo "		<td class='vtable'>";
 
 			echo "			<table width='52%'>\n";
@@ -595,7 +645,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "			<tr>\n";
 				echo "				<td class='vtable'>".$field['username']."</td>\n";
 				echo "				<td>\n";
-				echo "					<a href='fax_edit.php?id=".$fax_uuid."&domain_uuid=".$_SESSION['domain_uuid']."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "					<a href='fax_edit.php?id=".$fax_uuid."&domain_uuid=".$_SESSION['domain_uuid']."&user_uuid=".$field['user_uuid']."&a=delete' alt='delete' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
 				echo "				</td>\n";
 				echo "			</tr>\n";
 			}
@@ -613,10 +663,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "			<option value='".$field['user_uuid']."'>".$field['username']."</option>\n";
 			}
 			echo "			</select>";
-			echo "			<input type=\"submit\" class='btn' value=\"Add\">\n";
+			echo "			<input type=\"submit\" class='btn' value=\"".$text['button-add']."\">\n";
 			unset($sql, $result);
 			echo "			<br>\n";
-			echo "			Assign the users that are can manage this fax extension.\n";
+			echo "			".$text['description-user-add']."\n";
 			echo "			<br />\n";
 			echo "		</td>";
 			echo "	</tr>";
@@ -625,12 +675,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "	Description:\n";
+	echo "	".$text['label-description'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='fax_description' maxlength='255' value=\"$fax_description\">\n";
 	echo "<br />\n";
-	echo "Enter the description here.\n";
+	echo "".$text['description-info']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "	<tr>\n";
@@ -639,7 +689,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "			<input type='hidden' name='fax_uuid' value='$fax_uuid'>\n";
 		echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 	}
-	echo "			<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";

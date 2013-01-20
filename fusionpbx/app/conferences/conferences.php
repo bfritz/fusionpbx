@@ -33,6 +33,13 @@ else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];                
+	}
+    
 require_once "includes/header.php";
 require_once "includes/paging.php";
 
@@ -49,14 +56,14 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' align='left' nowrap='nowrap'><b>Conferences</b></td>\n";
+	echo "		<td align='left' width='50%' nowrap><b>".$text['title']."</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td align='left' colspan='2'>\n";
-	echo "			Conferences is used to setup conference rooms with a name, description, and optional pin number. \n";
+	echo "			".$text['description']." \n";
 	if (permission_exists('conferences_active_advanced_view')) {
-		echo "			Show <a href='".PROJECT_PATH."/app/conferences_active/v_conferences_active.php'>Active Conferences</a> and then select a conference to monitor and interact with it.<br /><br />\n";
+		echo "			Show <a href='".PROJECT_PATH."/app/conferences_active/v_conferences_active.php'>".$text['title-2']."</a> ".$text['description-2']."<br /><br />\n";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
@@ -124,16 +131,16 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo th_order_by('conference_name', 'Name', $order_by, $order);
-	echo th_order_by('conference_extension', 'Extension', $order_by, $order);
-	echo th_order_by('conference_profile', 'Profile', $order_by, $order);
+	echo th_order_by('conference_name', $text['table-name'], $order_by, $order);
+	echo th_order_by('conference_extension', $text['table-extension'], $order_by, $order);
+	echo th_order_by('conference_profile', $text['table-profile'], $order_by, $order);
 	//echo th_order_by('conference_flags', 'Flags', $order_by, $order);
-	echo th_order_by('conference_order', 'Order', $order_by, $order);
-	echo th_order_by('conference_enabled', 'Enabled', $order_by, $order);
-	echo th_order_by('conference_description', 'Description', $order_by, $order);
+	echo th_order_by('conference_order', $text['table-order'], $order_by, $order);
+	echo th_order_by('conference_enabled', $text['table-enabled'], $order_by, $order);
+	echo th_order_by('conference_description', $text['table-description'], $order_by, $order);
 	echo "<td align='right' width='42'>\n";
 	if (permission_exists('conference_add')) {
-		echo "	<a href='conferences_edit.php' alt='add'>$v_link_label_add</a>\n";
+		echo "	<a href='conference_edit.php' alt='add'>$v_link_label_add</a>\n";
 	}
 	else {
 		echo "	&nbsp;\n";
@@ -155,10 +162,10 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='row_stylebg' width='35%'>".$row['conference_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('conference_edit')) {
-				echo "		<a href='conferences_edit.php?id=".$row['conference_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='conference_edit.php?id=".$row['conference_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('conference_delete')) {
-				echo "		<a href='conferences_delete.php?id=".$row['conference_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='conference_delete.php?id=".$row['conference_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -175,7 +182,7 @@ require_once "includes/paging.php";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('conference_add')) {
-		echo "			<a href='conferences_edit.php' alt='add'>$v_link_label_add</a>\n";
+		echo "			<a href='conference_edit.php' alt='add'>$v_link_label_add</a>\n";
 	}
 	else {
 		echo "			&nbsp;\n";

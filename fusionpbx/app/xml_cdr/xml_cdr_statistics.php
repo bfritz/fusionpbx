@@ -34,6 +34,12 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //additional includes
 	require_once "xml_cdr_statistics_inc.php";
 	require_once "includes/header.php";
@@ -42,15 +48,15 @@ else {
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "	<td width='30%' align='left' valign='top' nowrap='nowrap'><b>Call Detail Record Statistics</b></td>\n";
+	echo "	<td width='30%' align='left' valign='top' nowrap='nowrap'><b>".$text['label-call-statistics']."</b></td>\n";
 	echo "	<td width='70%' align='right' valign='top'>\n";
 	echo "		<input type='button' class='btn' value='CSV' onclick=\"document.location.href='xml_cdr_statistics_csv.php';\">\n";
-	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='xml_cdr.php'\" value='Back'>\n";
+	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='xml_cdr.php'\" value='".$text['button-back']."'>\n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "		<td align='left' colspan='2'>\n";
-	echo "			Call Detail Records Statics summarize the call information. \n";
+	echo "			".$text['label-call-statistics-description']." \n";
 	echo "			<br />\n";
 	echo "			<br />\n";
 	echo "		</td>\n";
@@ -62,10 +68,10 @@ else {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	?>
+?>
 	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/includes/jquery/flot/excanvas.min.js"></script><![endif]-->
-    <script language="javascript" type="text/javascript" src="/includes/jquery/jquery-1.7.2.min.js"></script>
-    <script language="javascript" type="text/javascript" src="/includes/jquery/flot/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="/includes/jquery/jquery-1.8.3.js"></script>
+	<script language="javascript" type="text/javascript" src="/includes/jquery/flot/jquery.flot.js"></script>
 	<table>
 		<tr>
 			<td align='left'>
@@ -148,13 +154,13 @@ else {
 //show the results
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "	<th>Hours</th>\n";
-	echo "	<th>Date</th>\n";
-	echo "	<th nowrap='nowrap'>Time</th>\n";
+	echo "	<th>".$text['table-hours']."</th>\n";
+	echo "	<th>".$text['table-date']."</th>\n";
+	echo "	<th nowrap='nowrap'>".$text['table-time']."</th>\n";
 	echo "	<th>Volume</th>\n";
-	echo "	<th>Minutes</th>\n";
-	echo "	<th>Calls Per Min</th>\n";
-	echo "	<th>Missed</th>\n";
+	echo "	<th>".$text['table-minutes']."</th>\n";
+	echo "	<th>".$text['table-calls-per-minute']."</th>\n";
+	echo "	<th>".$text['table-missed']."</th>\n";
 	echo "	<th>ASR</th>\n";
 	echo "	<th>ALOC</th>\n";
 	echo "</tr>\n";
@@ -174,13 +180,13 @@ else {
 			echo "	</td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
-			echo "	<th nowrap='nowrap'>Days</th>\n";
-			echo "	<th nowrap='nowrap'>Date</th>\n";
-			echo "	<th nowrap='nowrap'>Time</th>\n";
+			echo "	<th nowrap='nowrap'>".$text['table-days']."</th>\n";
+			echo "	<th nowrap='nowrap'>".$text['table-date']."</th>\n";
+			echo "	<th nowrap='nowrap'>".$text['table-time']."</th>\n";
 			echo "	<th>Volume</th>\n";
-			echo "	<th>Minutes</th>\n";
-			echo "	<th nowrap='nowrap'>Calls Per Min</th>\n";
-			echo "	<th>Missed</th>\n";
+			echo "	<th>".$text['table-minutes']."</th>\n";
+			echo "	<th nowrap='nowrap'>".$text['table-calls-per-minute']."</th>\n";
+			echo "	<th>".$text['table-missed']."</th>\n";
 			echo "	<th>ASR</th>\n";
 			echo "	<th>ALOC</th>\n";
 			echo "</tr>\n";

@@ -34,6 +34,12 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //get the http get value and set it as a php variable
 	if (count($_GET)>0) {
 		$fax_uuid = check_str($_GET["id"]);
@@ -80,13 +86,20 @@ else {
 
 		//apply settings reminder
 			$_SESSION["reload_xml"] = true;
+
+		//delete the dialplan context from memcache
+			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+			if ($fp) {
+				$switch_cmd .= "memcache delete dialplan:".$_SESSION["context"]."@".$_SESSION['domain_name'];
+				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+			}
 	}
 
 //redirect the user
 	require_once "includes/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=fax.php\">\n";
 	echo "<div align='center'>\n";
-	echo "Delete Complete\n";
+	echo "".$text['confirm-delete']."\n";
 	echo "</div>\n";
 	require_once "includes/footer.php";
 	return;

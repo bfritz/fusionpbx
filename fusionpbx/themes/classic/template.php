@@ -199,6 +199,7 @@ th:last-child th:first-child {
 }
 
 .vtable {
+	text-align: left;
 	border-bottom: 1px solid #DFDFDF;
 }
 
@@ -525,7 +526,7 @@ function confirmdelete(url) {
 						$tmp_style = "style=\"opacity:0.7;\" ";
 						$tmp_style .= "onmouseover=\"this.style.opacity=1;\" ";
 						$tmp_style .= "onmouseout=\"this.style.opacity=0.7;\" ";
-						echo "		<select id='domain_uuid' name='domain_uuid' class='formfld' onchange=\"window.location='".PROJECT_PATH."/core/domains/domains.php?domain_uuid='+this.value+'&domain_change=true';\" $tmp_style>\n";
+						echo "		<select id='domain_uuid' name='domain_uuid' class='formfld' onchange=\"window.location='".PROJECT_PATH."/core/domain_settings/domains.php?domain_uuid='+this.value+'&domain_change=true';\" $tmp_style>\n";
 						foreach($_SESSION['domains'] as $row) {
 							if ($row['domain_uuid'] == $_SESSION['domain_uuid']) {
 								echo "	<option value='".$row['domain_uuid']."' selected='selected'>".$row['domain_name']."</option>\n";
@@ -564,7 +565,7 @@ function confirmdelete(url) {
 <table width='100%' cellpadding='25' cellspacing='0' border='0'>
 <td width='100%' align='left' valign='top'>
 <?php
-if ($_SESSION["reload_xml"]) {
+if (isset($_SESSION["reload_xml"])) {
 		if ($_SERVER["PHP_SELF"] != PROJECT_PATH."/app/sip_status/sip_status.php") {
 			if(stristr($_SERVER["PHP_SELF"], "_edit") != FALSE) { 
 				//found
@@ -604,7 +605,6 @@ if ($_SESSION["reload_xml"]) {
 </td>
 </tr>
 </table>
-
 
 </td>
 </tr>

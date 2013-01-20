@@ -26,6 +26,7 @@
 include "root.php";
 require_once "includes/require.php";
 require_once "includes/checkauth.php";
+
 if (permission_exists('xml_cdr_view')) {
 	//access granted
 }
@@ -33,6 +34,12 @@ else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //get the http values and set them to a variable
 	if (strlen($_REQUEST["uuid"]) > 0) {
@@ -74,16 +81,16 @@ else {
 	echo "<br>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='30%' align='left' valign='top' nowrap='nowrap'><b>Call Details</b></td>\n";
+	echo "<td width='30%' align='left' valign='top' nowrap='nowrap'><b>".$text['title2']."</b></td>\n";
 	echo "<td width='70%' align='right' valign='top'>\n";
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='xml_cdr.php'\" value='Back'>\n";
+	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='xml_cdr.php'\" value='".$text['button-back']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
-	echo "A detailed view of the call and all information regarding it. \n";
-	echo "The information contains caller id name and number, channel data, \n";
-	echo "call variables, call flow, timing information, and other useful call details. \n";
+	echo "".$text['description-5']." \n";
+	echo "".$text['description-6']." \n";
+	echo "".$text['description-7']." \n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -139,23 +146,23 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td align='left'><b>Summary</b>&nbsp;</td>\n";
+	echo "<td align='left'><b>".$text['label-summary']."</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<th>Direction</th>\n";
+	echo "<th>".$text['table-direction']."</th>\n";
 	//echo "<th>Language</th>\n";
 	//echo "<th>Context</th>\n";
-	echo "<th>Name (play)</th>\n";
-	echo "<th>Number (download)</th>\n";
-	echo "<th>Destination</th>\n";
-	echo "<th>Start</th>\n";
-	echo "<th>End</th>\n";
-	echo "<th>Length</th>\n";
-	echo "<th>Status</th>\n";
+	echo "<th>".$text['table-name']."</th>\n";
+	echo "<th>".$text['table-download']."</th>\n";
+	echo "<th>".$text['label-destination']."</th>\n";
+	echo "<th>".$text['label-start']."</th>\n";
+	echo "<th>".$text['table-end']."</th>\n";
+	echo "<th>".$text['label-length']."</th>\n";
+	echo "<th>".$text['label-status']."</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr >\n";
@@ -205,7 +212,7 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td align='left'><b>Channel Data</b>&nbsp;</td>\n";
+	echo "<td align='left'><b>".$text['label-channel']."</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -244,8 +251,8 @@ else {
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<th>Name</th>\n";
-	echo "<th>Value</th>\n";
+	echo "<th>".$text['label-name']."</th>\n";
+	echo "<th>".$text['label-value']."</th>\n";
 	echo "</tr>\n";
 	foreach($xml->variables->children() as $child) {
 		$key = $child->getName();
@@ -300,15 +307,15 @@ else {
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td align='left'><b>Application Log</b>&nbsp;</td>\n";
+	echo "<td align='left'><b>".$text['label-application-log']."</b>&nbsp;</td>\n";
 	echo "<td></td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<th>Name</th>\n";
-	echo "<th>Data</th>\n";
+	echo "<th>".$text['label-name']."</th>\n";
+	echo "<th>".$text['label-data']."</th>\n";
 	echo "</tr>\n";
 
 	foreach ($xml->app_log->application as $row) {
@@ -340,15 +347,15 @@ else {
 		//attributes
 			echo "	<table width='95%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<td><b>Call Flow: Attributes</b>&nbsp;</td>\n";
+			echo "			<td><b>".$text['label-call-flow']."</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
 			echo "		</tr>\n";
 			echo "	</table>\n";
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<th>Name</th>\n";
-			echo "			<th>Value</th>\n";
+			echo "			<th>".$text['label-name']."</th>\n";
+			echo "			<th>".$text['label-value']."</th>\n";
 			echo "		</tr>\n";
 			foreach($row->attributes() as $key => $value) {
 				echo "		<tr>\n";
@@ -365,15 +372,15 @@ else {
 		//extension->attributes
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<td><b>Call Flow: Extension: Attributes</b>&nbsp;</td>\n";
+			echo "			<td><b>".$text['label-call-flow-2']."</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
 			echo "		</tr>\n";
 			echo "</table>\n";
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<th>Name</th>\n";
-			echo "			<th>Value</th>\n";
+			echo "			<th>".$text['label-name']."</th>\n";
+			echo "			<th>".$text['label-value']."</th>\n";
 			echo "		</tr>\n";
 			foreach($row->extension->attributes() as $key => $value) {
 				echo "		<tr >\n";
@@ -390,15 +397,15 @@ else {
 		//extension->application
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<td><b>Call Flow: Extension: Application</b>&nbsp;</td>\n";
+			echo "			<td><b>".$text['label-call-flow-3']."</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
 			echo "		</tr>\n";
 			echo "</table>\n";
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<th>Name</th>\n";
-			echo "			<th>Data</th>\n";
+			echo "			<th>".$text['label-name']."</th>\n";
+			echo "			<th>".$text['label-data']."</th>\n";
 			echo "		</tr>\n";
 			foreach ($row->extension->application as $tmp_row) {
 				$app_name = $tmp_row->attributes()->app_name;
@@ -417,15 +424,15 @@ else {
 		//caller_profile
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<td><b>Call Flow: Caller Profile</b>&nbsp;</td>\n";
+			echo "			<td><b>".$text['label-call-flow-4']."</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
 			echo "		</tr>\n";
 			echo "</table>\n";
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<th>Name</th>\n";
-			echo "			<th>Value</th>\n";
+			echo "			<th>".$text['label-name']."</th>\n";
+			echo "			<th>".$text['label-value']."</th>\n";
 			echo "		</tr>\n";
 			foreach($row->caller_profile->children() as $child) {
 				$key = $child->getName();
@@ -467,13 +474,13 @@ else {
 		//times
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "		<tr>\n";
-			echo "			<td><b>Call Flow: Times</b>&nbsp;</td>\n";
+			echo "			<td><b>".$text['label-call-flow-5']."</b>&nbsp;</td>\n";
 			echo "			<td></td>\n";
 			echo "		</tr>\n";
 
 			echo "		<tr>\n";
-			echo "			<th>Name</th>\n";
-			echo "			<th>Value</th>\n";
+			echo "			<th>".$text['label-name']."</th>\n";
+			echo "			<th>".$text['label-value']."</th>\n";
 			echo "		</tr>\n";
 			foreach($row->times->children() as $child) {
 				$key = $child->getName();

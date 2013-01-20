@@ -26,6 +26,7 @@
 require_once "root.php";
 require_once "includes/require.php";
 require_once "includes/checkauth.php";
+require_once "app_languages.php";
 if (permission_exists('xml_cdr_view')) {
 	//access granted
 }
@@ -34,6 +35,11 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //import xml_cdr files
 	require_once "v_xml_cdr_import.php";
 
@@ -41,20 +47,37 @@ else {
 	require_once "includes/header.php";
 	require_once "includes/paging.php";
 
+
 //xml cdr include
 	$rows_per_page = 100;
 	require_once "xml_cdr_inc.php";
+
+//javascript function: send_cmd
+	echo "<script type=\"text/javascript\">\n";
+	echo "function send_cmd(url) {\n";
+	echo "	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari\n";
+	echo "		xmlhttp=new XMLHttpRequest();\n";
+	echo "	}\n";
+	echo "	else {// code for IE6, IE5\n";
+	echo "		xmlhttp=new ActiveXObject(\"Microsoft.XMLHTTP\");\n";
+	echo "	}\n";
+	echo "	xmlhttp.open(\"GET\",url,true);\n";
+	echo "	xmlhttp.send(null);\n";
+	echo "	document.getElementById('cmd_reponse').innerHTML=xmlhttp.responseText;\n";
+	echo "}\n";
+	echo "</script>\n";
 
 //page title and description
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td align='left' width='50%' nowrap='nowrap'><b>Call Detail Records</b></td>\n";
+	echo "<td align='left' width='50%' nowrap='nowrap'><b>".$text['title']."</b></td>\n";
 	echo "<td align='right' width='100%'>\n";
 	echo "<table>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "	<input type='button' class='btn' value='Statistics' onclick=\"document.location.href='xml_cdr_statistics.php';\">\n";
+	echo "	<input type='button' class='btn' value='".$text['button-missed']."' onclick=\"document.location.href='xml_cdr.php?missed=true';\">\n";
+	echo "	<input type='button' class='btn' value='".$text['button-statistics']."' onclick=\"document.location.href='xml_cdr_statistics.php';\">\n";
 	echo "</td>\n";
 	echo "<form method='post' action='xml_cdr_csv.php'>";
 	echo "<td>\n";
@@ -86,10 +109,10 @@ else {
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
 
-	echo "Call Detail Records (CDRs) are detailed information on the calls. \n";
-	echo "The information contains source, destination, duration, and other useful call details. \n";
-	echo "Use the fields to filter the information for the specific call records that are desired. \n";
-	echo "Then view the calls in the list or download them as comma seperated file by using the 'csv' button. \n";
+	echo "".$text['description']." \n";
+	echo "".$text['description2']." \n";
+	echo "".$text['description-3']." \n";
+	echo "".$text['description-4']." \n";
 	//To do an advanced search of the call detail records click on the following advanced button.
 
 	echo "<br />\n";
@@ -107,34 +130,34 @@ else {
 			echo "<td width='33.3%'>\n";
 				echo "<table width='100%' border='0'>\n";
 				echo "	<tr>\n";
-				echo "		<td align='left' width='25%'>Direction:</td>\n";
+				echo "		<td align='left' width='25%'>".$text['label-description'].":</td>\n";
 				echo "		<td align='left' width='75%'>\n";
 				echo "			<select name='direction' style='width:100%' class='formfld'>\n";
 				echo "			<option value=''>                                </option>\n";
 				if ($direction == "inbound") {
-					echo "			<option value='inbound' selected='selected'>inbound</option>\n";
+					echo "			<option value='inbound' selected='selected'>".$text['label-inbound']."</option>\n";
 				}
 				else {
-					echo "			<option value='inbound'>inbound</option>\n";
+					echo "			<option value='inbound'>".$text['label-inbound']."</option>\n";
 				}
 				if ($direction == "outbound") {
-					echo "			<option value='outbound' selected='selected'>outbound</option>\n";
+					echo "			<option value='outbound' selected='selected'>".$text['label-outbound']."</option>\n";
 				}
 				else {
-					echo "			<option value='outbound'>outbound</option>\n";
+					echo "			<option value='outbound'>".$text['label-outbound']."</option>\n";
 				}
 				if ($direction == "local") {
-					echo "			<option value='local' selected='selected'>local</option>\n";
+					echo "			<option value='local' selected='selected'>".$text['label-local']."</option>\n";
 				}
 				else {
-					echo "			<option value='local'>local</option>\n";
+					echo "			<option value='local'>".$text['label-local']."</option>\n";
 				}
 				echo "			</select>\n";
 				echo "		</td>\n";
 				echo "	</tr>\n";
 
 				echo "	<tr>\n";
-				echo "		<td align=\"left\">CID Name:</td>\n";
+				echo "		<td align=\"left\">".$text['label-cid-name'].":</td>\n";
 				echo "		<td align=\"left\"><input type='text' class='formfld' name='caller_id_name' style='width:100%' value='$caller_id_name'></td>\n";
 				echo "	</tr>\n";
 
@@ -145,11 +168,11 @@ else {
 
 				echo "<table width='100%'>\n";
 				echo "	<tr>\n";
-				echo "		<td align='left' width='25%'>Source:</td>\n";
+				echo "		<td align='left' width='25%'>".$text['label-source'].":</td>\n";
 				echo "		<td align='left' width='75%'><input type='text' class='formfld' name='caller_id_number' style='width:100%' value='$caller_id_number'></td>\n";
 				echo "	</tr>\n";
 				echo "	<tr>\n";
-				echo "		<td align='left' width='25%'>Destination:</td>\n";
+				echo "		<td align='left' width='25%'>".$text['label-destination'].":</td>\n";
 				echo "		<td align='left' width='75%'><input type='text' class='formfld' name='destination_number' style='width:100%' value='$destination_number'></td>\n";
 				echo "	</tr>\n";
 				echo "</table>\n";
@@ -172,12 +195,12 @@ else {
 				//echo "	</tr>";
 
 				echo "	<tr>\n";
-				echo "		<td align='left' width='25%'>Start:</td>\n";
+				echo "		<td align='left' width='25%'>".$text['label-start'].":</td>\n";
 				echo "		<td align='left' width='75%'><input type='text' class='formfld' name='start_stamp' style='width:100%' value='$start_stamp'></td>\n";
 				echo "	</tr>\n";
 
 				echo "	<tr>\n";
-				echo "		<td align='left' width='25%'>Status:</td>\n";
+				echo "		<td align='left' width='25%'>".$text['label-status'].":</td>\n";
 				echo "		<td align='left' width='75%'>\n";
 				echo "			<select name=\"hangup_cause\" style='width:100%' class='formfld'>\n";
 				echo "			<option value='".$hangup_cause."' selected='selected'>".$hangup_cause."</option>\n";
@@ -297,16 +320,17 @@ else {
 	//echo th_order_by('default_language', 'Language', $order_by, $order);
 	//echo th_order_by('context', 'Context', $order_by, $order);
 	//echo th_order_by('leg', 'Leg', $order_by, $order);
-	echo th_order_by('caller_id_name', 'Name', $order_by, $order);
-	echo th_order_by('caller_id_number', 'Number', $order_by, $order);
-	echo th_order_by('destination_number', 'Destination', $order_by, $order);
-	echo th_order_by('start_stamp', 'Start', $order_by, $order);
+	echo th_order_by('caller_id_name', $text['label-name'], $order_by, $order);
+	echo th_order_by('caller_id_number', $text['label-number'], $order_by, $order);
+	echo th_order_by('destination_number', $text['label-destination'], $order_by, $order);
+	echo "<th>".$text['label-tools']."</th>\n";
+	echo th_order_by('start_stamp', $text['label-start'], $order_by, $order);
 	//echo th_order_by('end_stamp', 'End', $order_by, $order);
-	echo th_order_by('duration', 'Length', $order_by, $order);
+	echo th_order_by('duration', $text['label-length'], $order_by, $order);
 	if (if_group("admin") || if_group("superadmin")) { 
 		echo th_order_by('pdd_ms', 'PDD', $order_by, $order); 
 	}
-	echo th_order_by('hangup_cause', 'Status', $order_by, $order);
+	echo th_order_by('hangup_cause', $text['label-status'], $order_by, $order);
 	echo "</tr>\n";
 
 	if ($result_count > 0) {
@@ -326,13 +350,6 @@ else {
 			$hangup_cause = strtolower($hangup_cause);
 			$hangup_cause = ucwords($hangup_cause);
 
-			echo "<tr >\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['direction']."</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['default_language']."</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['context']."</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['leg']."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>";
-
 			$tmp_dir = $_SESSION['switch']['recordings']['dir'].'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
 			$tmp_name = '';
 			if(!empty($row['recording_file']) && file_exists($row['recording_file'])){
@@ -350,44 +367,57 @@ else {
 			elseif (file_exists($tmp_dir.'/'.$row['uuid'].'_1.mp3')) {
 				$tmp_name = $row['uuid']."_1.mp3";
 			}
-			if (strlen($tmp_name) > 0 && file_exists($_SESSION['switch']['recordings']['dir'].'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
-				echo "	  <a href=\"javascript:void(0);\" onclick=\"window.open('../recordings/v_recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
-				echo 	$row['caller_id_name'].' ';
-				echo "	  </a>";
-			}
-			else {
-				echo 	$row['caller_id_name'].' ';
-			}
-			echo "	</td>\n";
+
+			echo "<tr >\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['direction']."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['default_language']."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['context']."</td>\n";
+			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['leg']."</td>\n";
+
 			echo "	<td valign='top' class='".$row_style[$c]."'>";
-			if (strlen($tmp_name) > 0 && file_exists($_SESSION['switch']['recordings']['dir'].'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
-				echo "		<a href=\"../recordings/v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode("archive/".$tmp_year."/".$tmp_month."/".$tmp_day."/".$tmp_name)."\">\n";
-				if (is_numeric($row['caller_id_number'])) {
-					echo 	format_phone($row['caller_id_number']).' ';
-				}
-				else {
-					echo 	$row['caller_id_number'].' ';
-				}
-				echo "	  </a>";
+			echo 	$row['caller_id_name'].' ';
+			echo "	</td>\n";
+
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			echo "		&nbsp; <a href=\"javascript:void(0)\" onclick=\"send_cmd('".PROJECT_PATH."/app/click_to_call/click_to_call.php?src_cid_name=".urlencode($row['caller_id_name'])."&src_cid_number=".urlencode($row['caller_id_number'])."&dest_cid_name=".urlencode($_SESSION['user']['extension'][0]['outbound_caller_id_name'])."&dest_cid_number=".urlencode($_SESSION['user']['extension'][0]['outbound_caller_id_number'])."&src=".urlencode($_SESSION['user']['extension'][0]['user'])."&dest=".urlencode($row['caller_id_number'])."&rec=false&ringback=us-ring&auto_answer=true');\">\n";
+			if (is_numeric($row['caller_id_number'])) {
+				echo "		".format_phone($row['caller_id_number']).' ';
 			}
 			else {
-				if (is_numeric($row['caller_id_number'])) {
-					echo 	format_phone($row['caller_id_number']).' ';
-				}
-				else {
-					echo 	$row['caller_id_number'].' ';
-				}
+				echo "		".$row['caller_id_number'].' ';
+			}
+			echo "		</a>";
+			echo "	</td>\n";
+
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			echo "		<a href=\"javascript:void(0)\" onclick=\"send_cmd('".PROJECT_PATH."/app/click_to_call/click_to_call.php?src_cid_name=".urlencode($row['destination_number'])."&src_cid_number=".urlencode($row['destination_number'])."&dest_cid_name=".urlencode($_SESSION['user']['extension'][0]['outbound_caller_id_name'])."&dest_cid_number=".urlencode($_SESSION['user']['extension'][0]['outbound_caller_id_number'])."&src=".urlencode($_SESSION['user']['extension'][0]['user'])."&dest=".urlencode($row['destination_number'])."&rec=false&ringback=us-ring&auto_answer=true');\">\n";
+			if (is_numeric($row['destination_number'])) {
+				echo format_phone($row['destination_number'])."\n";
+			}
+			else {
+				echo "		".$row['destination_number']."\n";
+			}
+			echo "		</a>\n";
+			echo "	</td>\n";
+
+			echo "	<td valign='top' class='".$row_style[$c]."' nowrap=\"nowrap\">";
+			if (strlen($tmp_name) > 0 && file_exists($_SESSION['switch']['recordings']['dir'].'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
+				echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('".PROJECT_PATH."/app/recordings/v_recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
+				echo "			".$text['label-play']."\n";
+				echo "		</a>\n";
+				echo "		&nbsp;\n";
+				echo "		<a href=\"../recordings/v_recordings.php?a=download&type=rec&t=bin&filename=".base64_encode("archive/".$tmp_year."/".$tmp_month."/".$tmp_day."/".$tmp_name)."\">\n";
+				echo "			".$text['label-download']."\n";
+				echo "		</a>\n";
+			}
+			else {
+				echo "		&nbsp;\n";
 			}
 			echo "	</td>\n";
-			if (is_numeric($row['destination_number'])) {
-				echo "	<td valign='top' class='".$row_style[$c]."'>".format_phone($row['destination_number'])."</td>\n";
-			}
-			else {
-				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['destination_number']."</td>\n";
-			}
+
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$tmp_start_epoch."</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['end_stamp']."</td>\n";
-			
+
 			//If they cancelled, show the ring time, not the bill time.
 			$seconds = ($row['hangup_cause']=="ORIGINATOR_CANCEL") ? $row['duration'] : $row['billsec'];
 

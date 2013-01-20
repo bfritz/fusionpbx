@@ -2178,7 +2178,7 @@
 	</src> 
 	<src> 
 		<type>file</type> 
-		<path>/mod/calls_active/v_calls_active_extensions.php</path> 
+		<path>/mod/calls_active/calls_active_extensions.php</path> 
 		<last_mod>Mon, 30 Aug 2010 18:05:51 GMT</last_mod> 
 		<md5>bc748bd109faf4bb24dc6fbf0499dd60</md5> 
 		<size>7747</size> 
@@ -4884,13 +4884,6 @@
 		<last_mod>Tue, 29 Jun 2010 08:34:19 GMT</last_mod> 
 		<md5>a20aca300a3c9c1cdd724971dba4626d</md5> 
 		<size>1913</size> 
-	</src> 
-	<src> 
-		<type>file</type> 
-		<path>/secure/v_config_cli.php</path> 
-		<last_mod>Tue, 29 Jun 2010 08:34:19 GMT</last_mod> 
-		<md5>6e1e710fe517b4a624d0fad75313d1bb</md5> 
-		<size>1109</size> 
 	</src> 
 	<src> 
 		<type>file</type> 

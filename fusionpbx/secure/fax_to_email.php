@@ -22,6 +22,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	James Rose <james.o.rose@gmail.com>
 */
 
 if (defined('STDIN')) {
@@ -33,13 +34,14 @@ if (defined('STDIN')) {
 	//set the include path
 		set_include_path($document_root);
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
+		//echo "$document_root is document_root\n";
 }
 
 //includes
 	if (!defined('STDIN')) { include "root.php"; }
 	require_once "includes/require.php";
-	include "class.phpmailer.php";
-	include "class.smtp.php"; // optional, gets called from within class.phpmailer.php if not already loaded
+	include "resources/phpmailer/class.phpmailer.php";
+	include "resources/phpmailer/class.smtp.php"; // optional, gets called from within class.phpmailer.php if not already loaded
 
 //set php ini values
 	ini_set(max_execution_time,900); //15 minutes
@@ -62,7 +64,8 @@ if (defined('STDIN')) {
 		$fax_messages = $_REQUEST["messages"];
 		$caller_id_name = $_REQUEST["caller_id_name"];
 		$caller_id_number = $_REQUEST["caller_id_number"];
-		$fax_retry = $_REQUEST["retry"];
+		$fax_relay = $_REQUEST["retry"];
+		$mailfrom_address = $_REQUEST["mailfrom_address"];
 	}
 	else {
 		$tmp_array = explode("=", $_SERVER["argv"][1]);
@@ -94,15 +97,28 @@ if (defined('STDIN')) {
 		unset($tmp_array);
 
 		$tmp_array = explode("=", $_SERVER["argv"][8]);
-		$fax_retry = $tmp_array[1];
+		$fax_relay = $tmp_array[1];
 		unset($tmp_array);
+
+		$tmp_array = explode("=", $_SERVER["argv"][9]);
+		$mailfrom_address = $tmp_array[1];
+		unset($tmp_array);
+
+		//$tmp_array = explode("=", $_SERVER["argv"][10]);
+		//$destination_number = $tmp_array[1];
+		//unset($tmp_array);
 	}
 
+	$mailto_address = $fax_email;
+	echo "mailto_adress is ".$mailto_address."\n";
+	echo "fax_email is ".$fax_email."\n";
+
+
 //used for debug
-	//echo "fax_email $fax_email\n";
-	//echo "fax_extension $fax_extension\n";
-	//echo "fax_name $fax_name\n";
-	//echo "cd $dir_fax; /usr/bin/tiff2png ".$dir_fax.'/'.$fax_name.".png\n";
+	echo "fax_email $fax_email\n";
+	echo "fax_extension $fax_extension\n";
+	echo "fax_name $fax_name\n";
+	echo "cd $dir_fax; /usr/bin/tiff2png ".$dir_fax.'/'.$fax_name.".png\n";
 
 //get the fax details from the database
 	$sql = "select * from v_domains ";
@@ -136,6 +152,7 @@ if (defined('STDIN')) {
 
 //set the fax directory
 	$dir_fax = $_SESSION['switch']['storage']['dir'].'/fax/'.$domain_name.'/'.$fax_extension.'/inbox';
+	echo "dir_fax is $dir_fax\n";
 	if (!file_exists($dir_fax)) {
 		$dir_fax = $_SESSION['switch']['storage']['dir'].'/fax/'.$fax_extension.'/inbox';
 	}
@@ -156,6 +173,7 @@ if (defined('STDIN')) {
 	}
 	else {
 		$fax_file_warning = " Fax image not available on server.";
+		echo "$fax_file_warning\n";
 	}
 
 //forward the fax
@@ -163,6 +181,8 @@ if (defined('STDIN')) {
 		$tmp = explode("#",$fax_name);
 		$fax_forward_number = $tmp[0];
 	}
+
+	echo "fax_forward_number is $fax_forward_number\n";
 	if (strlen($fax_forward_number) > 0) {
 		if (file_exists($dir_fax."/".$fax_name.".tif")) {
 			//get the event socket information
@@ -193,7 +213,7 @@ if (defined('STDIN')) {
 								$fax_uri = $route_array[0];
 								$t38 = "fax_enable_t38=true,fax_enable_t38_request=true";
 						}
-						$cmd = "api originate {origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number.",fax_uri=".$fax_uri.",fax_file='".$fax_file."',fax_retry_attempts=1,fax_retry_limit=20,fax_retry_sleep=180,fax_verbose=true,fax_use_ecm=off,".$t38."api_hangup_hook='lua fax_retry.lua'}".$fax_uri." &txfax('".$fax_file."')";
+						$cmd = "api originate {mailto_address='".$mailto_address."',mailfrom_address='".$mailfrom_address."',origination_caller_id_name='".$fax_caller_id_name."',origination_caller_id_number=".$fax_caller_id_number.",fax_uri=".$fax_uri.",fax_file='".$fax_file."',fax_retry_attempts=1,fax_retry_limit=20,fax_retry_sleep=180,fax_verbose=true,fax_use_ecm=off,".$t38.",api_hangup_hook='lua fax_retry.lua'}".$fax_uri." &txfax('".$fax_file."')";
 					//send info to the log
 						echo "fax forward\n";
 						echo $cmd."\n";
@@ -219,8 +239,10 @@ if (defined('STDIN')) {
 			$tmp_text_plain .= "Extension: ".$fax_extension."\n";
 			$tmp_text_plain .= "Messages: ".$fax_messages."\n";
 			$tmp_text_plain .= $fax_file_warning."\n";
-			if ($fax_retry == 'yes') {
-				$tmp_text_plain .= "This message arrived earlier and has been queued until now due to email server issues.\n";
+			if ($fax_relay == 'yes') {
+				$tmp_subject = "Fax Received for Relay: ".$fax_name;
+				//$tmp_text_plain .= "This message arrived earlier and has been queued until now due to email server issues.\n";
+				$tmp_text_plain .= "\nThis message arrived successfully from your fax machine, and has been queued for outbound fax delivery. You will be notified later as to the success or failure of this fax.\n";
 			}
 			$tmp_text_html = $tmp_text_plain;
 

@@ -22,6 +22,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	James Rose <james.o.rose@gmail.com>
 */
 require_once "root.php";
 require_once "includes/require.php";
@@ -33,6 +34,12 @@ else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //delete the user from the v_extension_users
 	if ($_GET["a"] == "delete" && permission_exists("user_delete")) {
@@ -64,21 +71,34 @@ else {
 
 //get http post variables and set them to php variables
 	if (count($_POST)>0) {
-		$ring_group_name = check_str($_POST["ring_group_name"]);
-		$ring_group_extension = check_str($_POST["ring_group_extension"]);
-		$ring_group_context = check_str($_POST["ring_group_context"]);
-		$ring_group_strategy = check_str($_POST["ring_group_strategy"]);
-		$ring_group_timeout_sec = check_str($_POST["ring_group_timeout_sec"]);
-		$ring_group_timeout_action = check_str($_POST["ring_group_timeout_action"]);
-		$ring_group_cid_name_prefix = check_str($_POST["ring_group_cid_name_prefix"]);
-		$ring_group_enabled = check_str($_POST["ring_group_enabled"]);
-		$ring_group_description = check_str($_POST["ring_group_description"]);
-		$dialplan_uuid = check_str($_POST["dialplan_uuid"]);
-		//$ring_group_timeout_action = "transfer:1001 XML default";
-		$ring_group_timeout_array = explode(":", $ring_group_timeout_action);
-		$ring_group_timeout_app = array_shift($ring_group_timeout_array);
-		$ring_group_timeout_data = join(':', $ring_group_timeout_array);
-		$extension_uuid = check_str($_POST["extension_uuid"]);
+		//set variables from http values
+			$ring_group_name = check_str($_POST["ring_group_name"]);
+			$ring_group_extension = check_str($_POST["ring_group_extension"]);
+			$ring_group_context = check_str($_POST["ring_group_context"]);
+			$ring_group_strategy = check_str($_POST["ring_group_strategy"]);
+			$ring_group_timeout_sec = check_str($_POST["ring_group_timeout_sec"]);
+			$ring_group_timeout_action = check_str($_POST["ring_group_timeout_action"]);
+			$ring_group_cid_name_prefix = check_str($_POST["ring_group_cid_name_prefix"]);
+			$ring_group_ringback = check_str($_POST["ring_group_ringback"]);
+			$ring_group_enabled = check_str($_POST["ring_group_enabled"]);
+			$ring_group_description = check_str($_POST["ring_group_description"]);
+			$dialplan_uuid = check_str($_POST["dialplan_uuid"]);
+			//$ring_group_timeout_action = "transfer:1001 XML default";
+			$ring_group_timeout_array = explode(":", $ring_group_timeout_action);
+			$ring_group_timeout_app = array_shift($ring_group_timeout_array);
+			$ring_group_timeout_data = join(':', $ring_group_timeout_array);
+			$extension_uuid = check_str($_POST["extension_uuid"]);
+
+		//set the context for users that are not in the superadmin group
+			if (!if_group("superadmin")) {
+				if (count($_SESSION["domains"]) > 1) {
+					$ring_group_context = $_SESSION['domain_name'];
+				}
+				else {
+					$ring_group_context = "default";
+				}
+			}
+
 	}
 
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
@@ -89,13 +109,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($ring_group_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
-		if (strlen($ring_group_extension) == 0) { $msg .= "Please provide: Extension<br>\n"; }
-		if (strlen($ring_group_strategy) == 0) { $msg .= "Please provide: Strategy<br>\n"; }
-		if (strlen($ring_group_timeout_sec) == 0) { $msg .= "Please provide: Timeout<br>\n"; }
-		if (strlen($ring_group_timeout_app) == 0) { $msg .= "Please provide: Timeout Action<br>\n"; }
+		if (strlen($ring_group_name) == 0) { $msg .= $text['message-name']."<br>\n"; }
+		if (strlen($ring_group_extension) == 0) { $msg .= $text['message-extension']."<br>\n"; }
+		if (strlen($ring_group_strategy) == 0) { $msg .= $text['message-strategy']."<br>\n"; }
+		if (strlen($ring_group_timeout_sec) == 0) { $msg .= $text['message-strategy']."<br>\n"; }
+		if (strlen($ring_group_timeout_app) == 0) { $msg .= $text['message-timeout-action']."<br>\n"; }
 		//if (strlen($ring_group_cid_name_prefix) == 0) { $msg .= "Please provide: Caller ID Prefix<br>\n"; }
-		if (strlen($ring_group_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
+		//if (strlen($ring_group_ringback) == 0) { $msg .= "Please provide: Ringback<br>\n"; }
+		if (strlen($ring_group_enabled) == 0) { $msg .= $text['message-enabled']."<br>\n"; }
 		//if (strlen($ring_group_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
@@ -108,16 +129,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "</div>\n";
 			require_once "includes/footer.php";
 			return;
-		}
-
-	//set the context for users that are not in the superadmin group
-		if (!if_group("superadmin")) {
-			if (count($_SESSION["domains"]) > 1) {
-				$ring_group_context = $_SESSION['domain_name'];
-			}
-			else {
-				$ring_group_context = "default";
-			}
 		}
 
 	//add or update the database
@@ -139,6 +150,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "ring_group_timeout_app, ";
 					$sql .= "ring_group_timeout_data, ";
 					$sql .= "ring_group_cid_name_prefix, ";
+					$sql .= "ring_group_ringback, ";
 					$sql .= "ring_group_enabled, ";
 					$sql .= "ring_group_description, ";
 					$sql .= "dialplan_uuid ";
@@ -155,6 +167,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "'$ring_group_timeout_app', ";
 					$sql .= "'$ring_group_timeout_data', ";
 					$sql .= "'$ring_group_cid_name_prefix', ";
+					$sql .= "'$ring_group_ringback', ";
 					$sql .= "'$ring_group_enabled', ";
 					$sql .= "'$ring_group_description', ";
 					$sql .= "'$dialplan_uuid' ";
@@ -175,11 +188,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "ring_group_timeout_app = '$ring_group_timeout_app', ";
 				$sql .= "ring_group_timeout_data = '$ring_group_timeout_data', ";
 				$sql .= "ring_group_cid_name_prefix = '$ring_group_cid_name_prefix', ";
+				$sql .= "ring_group_ringback = '$ring_group_ringback', ";
 				$sql .= "ring_group_enabled = '$ring_group_enabled', ";
 				$sql .= "ring_group_description = '$ring_group_description' ";
 				//$sql .= "dialplan_uuid = '$dialplan_uuid' ";
 				$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-				$sql .= "and ring_group_uuid = '$ring_group_uuid'";
+				$sql .= "and ring_group_uuid = '$ring_group_uuid' ";
 				$db->exec(check_sql($sql));
 				unset($sql);
 			}
@@ -210,12 +224,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql = "select count(*) as num_rows from v_dialplans ";
 					$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 					$sql .= "and dialplan_uuid = '".$dialplan_uuid."' ";
+					$db->exec(check_sql($sql));
 					$prep_statement = $db->prepare(check_sql($sql));
 					if ($prep_statement) {
 						$prep_statement->execute();
 						$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 						if ($row['num_rows'] == 0) {
-							//create the dialplan entry for fax
+							//add the dialplan entry
 								$dialplan_name = $ring_group_name;
 								$dialplan_order ='333';
 								$dialplan_context = $ring_group_context;
@@ -240,14 +255,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 								$dialplan_detail_group = '1';
 								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
-								//<action application="set" data="ringback=${us-ring}"/>
-								$dialplan_detail_tag = 'action'; //condition, action, antiaction
-								$dialplan_detail_type = 'set';
-								$dialplan_detail_data = 'ringback=${us-ring}';
-								$dialplan_detail_order = '020';
-								$dialplan_detail_group = '1';
-								dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
-
 								//<action application="lua" data="ring_group.lua"/>
 								$dialplan_detail_tag = 'action'; //condition, action, antiaction
 								//$dialplan_detail_type = 'transfer';
@@ -266,15 +273,22 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 						}
 					}
 
+				//delete the dialplan context from memcache
+					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+					if ($fp) {
+						$switch_cmd = "memcache delete dialplan:".$_SESSION["context"]."@".$_SESSION['domain_name'];
+						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					}
+
 				//redirect the browser
 					require_once "includes/header.php";
 					echo "<meta http-equiv=\"refresh\" content=\"2;url=ring_groups_edit.php?id=$ring_group_uuid\">\n";
 					echo "<div align='center'>\n";
 					if ($action == "add") {
-						echo "Add Complete\n";
+						echo $text['message-enabled']."\n";
 					}
 					if ($action == "update") {
-						echo "Update Complete\n";
+						echo $text['message-update-complete']."\n";
 					}
 					echo "</div>\n";
 					require_once "includes/footer.php";
@@ -301,6 +315,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$ring_group_timeout_app = $row["ring_group_timeout_app"];
 			$ring_group_timeout_data = $row["ring_group_timeout_data"];
 			$ring_group_cid_name_prefix = $row["ring_group_cid_name_prefix"];
+			$ring_group_ringback = $row["ring_group_ringback"];
 			$ring_group_enabled = $row["ring_group_enabled"];
 			$ring_group_description = $row["ring_group_description"];
 			$dialplan_uuid = $row["dialplan_uuid"];
@@ -314,14 +329,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //set defaults
 	if (strlen($ring_group_timeout_sec) == 0) { $ring_group_timeout_sec = '30'; }
 	if (strlen($ring_group_enabled) == 0) { $ring_group_enabled = 'true'; }
-	if (if_group("superadmin")) {
-		if (strlen($ring_group_context) == 0) { 
-			if (count($_SESSION["domains"]) > 1) {
-				$ring_group_context = $_SESSION['domain_name'];
-			}
-			else {
-				$ring_group_context = "default";
-			}
+
+//set the context for users that are not in the superadmin group
+	if (strlen($ring_group_context) == 0) {
+		if (count($_SESSION["domains"]) > 1) {
+			$ring_group_context = $_SESSION['domain_name'];
+		}
+		else {
+			$ring_group_context = "default";
 		}
 	}
 
@@ -339,82 +354,78 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
-	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap='nowrap'><b>Ring Group Add</b></td>\n";
-	}
-	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap='nowrap'><b>Ring Group Edit</b></td>\n";
-	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='ring_groups.php'\" value='Back'></td>\n";
+	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['label-ring-group']."</b></td>\n";
+
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='ring_groups.php'\" value='".$text['button-back']."'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
-	echo "A ring group is a set of extensions that can be called with a ring strategy.<br /><br />\n";
+	echo $text['description']."<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	Name:\n";
+	echo "	".$text['label-name'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='ring_group_name' maxlength='255' value=\"$ring_group_name\">\n";
 	echo "<br />\n";
-	echo "Enter the name.\n";
+	echo $text['description-name']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	Extension:\n";
+	echo "	".$text['label-extension'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='ring_group_extension' maxlength='255' value=\"$ring_group_extension\">\n";
 	echo "<br />\n";
-	echo "Enter the extension.\n";
+	echo $text['description-extension']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	if (if_group("superadmin")) {
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "	Context:\n";
+		echo "	",$text['label-context'],":\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='ring_group_context' maxlength='255' value=\"$ring_group_context\">\n";
 		echo "<br />\n";
-		echo "Enter the context.\n";
+		echo $text['description-enter-context']."\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	Strategy:\n";
+	echo "	".$text['label-strategy'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='ring_group_strategy'>\n";
 	echo "	<option value=''></option>\n";
 	if ($ring_group_strategy == "sequence") { 
-		echo "	<option value='sequence' selected='selected'>sequence</option>\n";
+		echo "	<option value='selected' selected='selected'>".$text['dropdown-sequence']."</option>\n";
 	}
 	else {
-		echo "	<option value='sequence'>sequence</option>\n";
+		echo "	<option value='sequence'>".$text['dropdown-sequence']."</option>\n";
 	}
 	if ($ring_group_strategy == "simultaneous") { 
-		echo "	<option value='simultaneous' selected='selected'>simultaneous</option>\n";
+		echo "	<option value='simultaneous' selected='selected'>".$text['dropdown-simultaneous']."</option>\n";
 	}
 	else {
-		echo "	<option value='simultaneous'>simultaneous</option>\n";
+		echo "	<option value='simultaneous'>".$text['dropdown-simultaneous']."</option>\n";
 	}
 	echo "	</select>\n";
 	echo "<br />\n";
-	echo "Select the strategy.\n";
+	echo $text['label-sequence']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "	<tr>";
-	echo "		<td class='vncell' valign='top'>Extensions:</td>";
+	echo "		<td class='vncell' valign='top'>".$text['label-extensions'].":</td>";
 	echo "		<td class='vtable' align='left'>";
 	if ($action == "update") {
 		echo "			<table width='52%'>\n";
@@ -433,7 +444,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "			<tr>\n";
 			echo "				<td class='vtable'>".$field['extension']."</td>\n";
 			echo "				<td>\n";
-			echo "					<a href='ring_groups_edit.php?id=".$field['ring_group_extension_uuid']."&ring_group_uuid=".$ring_group_uuid."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+			echo "					<a href='ring_groups_edit.php?id=".$field['ring_group_extension_uuid']."&ring_group_uuid=".$ring_group_uuid."&a=delete' alt='delete' onclick=\"return confirm('".$text['message-delete']."')\">$v_link_label_delete</a>\n";
 			echo "				</td>\n";
 			echo "			</tr>\n";
 		}
@@ -453,71 +464,114 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "			</select>";
 	if ($action == "update") {
-		echo "			<input type=\"submit\" class='btn' value=\"Add\">\n";
+		echo "			<input type=\"submit\" class='btn' value=\"".$text['button-add']."\">\n";
 	}
 	unset($sql, $result);
 	echo "			<br>\n";
-	echo "			Add the extensions to the ring group.\n";
+	echo "			".$text['description-extension']."\n";
 	echo "			<br />\n";
 	echo "		</td>";
 	echo "	</tr>";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	Timeout:\n";
+	echo "	".$text['label-timeout'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "  <input class='formfld' type='text' name='ring_group_timeout_sec' maxlength='255' value='$ring_group_timeout_sec'>\n";
 	echo "<br />\n";
-	echo "Enter the timeout in seconds.\n";
+	echo $text['description-timeout']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	Destination:\n";
+	echo "	".$text['label-destination'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	//switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
 	switch_select_destination("dialplan", "", "ring_group_timeout_action", $ring_group_timeout_action, "", "");
 	echo "	<br />\n";
-	echo "	Select the timeout destination.\n";
+	echo "	".$text['description-destination']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	CID Prefix:\n";
+	echo "	".$text['label-cid-prefix'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "  <input class='formfld' type='text' name='ring_group_cid_name_prefix' maxlength='255' value='$ring_group_cid_name_prefix'>\n";
 	echo "<br />\n";
-	echo "Set a prefix on the caller ID name. \n";
+	echo $text['description-cid-prefix']." \n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	 ".$text['label-ringback'].":\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+
+	$select_options = "";
+	if ($ring_group_ringback == "\${us-ring}" || $ring_group_ringback == "us-ring") { 
+		$select_options .= "		<option value='\${us-ring}' selected='selected'>".$text['dropdown-usring']."</option>\n";
+	}
+	else {
+		$select_options .= "		<option value='\${us-ring}'>".$text['dropdown-usring']."</option>\n";
+	}
+	if ($ring_group_ringback == "\${fr-ring}" || $ring_group_ringback == "fr-ring") {
+		$select_options .= "		<option value='\${fr-ring}' selected='selected'>".$text['dropdown-frring']."</option>\n";
+	}
+	else {
+		$select_options .= "		<option value='\${fr-ring}'>".$text['dropdown-frring']."</option>\n";
+	}
+	if ($ring_group_ringback == "\${uk-ring}" || $ring_group_ringback == "uk-ring") { 
+		$select_options .= "		<option value='\${uk-ring}' selected='selected'>".$text['dropdown-ukring']."</option>\n";
+	}
+	else {
+		$select_options .= "		<option value='\${uk-ring}'>".$text['dropdown-ukring']."</option>\n";
+	}
+	if ($ring_group_ringback == "\${rs-ring}" || $ring_group_ringback == "rs-ring") { 
+		$select_options .= "		<option value='\${rs-ring}' selected='selected'>".$text['dropdown-rsring']."</option>\n";
+	}
+	else {
+		$select_options .= "		<option value='\${rs-ring}'>".$text['dropdown-rsring']."</option>\n";
+	}
+	require_once "app/music_on_hold/resources/classes/switch_music_on_hold.php";
+	$moh = new switch_music_on_hold;
+	$moh->select_name = "ring_group_ringback";
+	$moh->select_value = $ring_group_ringback;
+	$moh->select_options = $select_options;
+	echo $moh->select();
+
+	echo "<br />\n";
+	echo $text['description-ringback']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	Enabled:\n";
+	echo "	".$text['label-enabled'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='ring_group_enabled'>\n";
 	echo "	<option value=''></option>\n";
 	if ($ring_group_enabled == "true") { 
-		echo "	<option value='true' selected='selected'>true</option>\n";
+		echo "	<option value='true' selected='selected'>".$text['dropdown-true']."</option>\n";
 	}
 	else {
-		echo "	<option value='true'>true</option>\n";
+		echo "	<option value='true'>".$text['dropdown-true']."</option>\n";
 	}
 	if ($ring_group_enabled == "false") { 
-		echo "	<option value='false' selected='selected'>false</option>\n";
+		echo "	<option value='false' selected='selected'>".$text['dropdown-false']."</option>\n";
 	}
 	else {
-		echo "	<option value='false'>false</option>\n";
+		echo "	<option value='false'>".$text['dropdown-false']."</option>\n";
 	}
 	echo "	</select>\n";
 	echo "<br />\n";
-	echo "Select enable or disable the ring group.\n";
+	echo $text['description-enabled']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -528,7 +582,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='ring_group_description' maxlength='255' value=\"$ring_group_description\">\n";
 	echo "<br />\n";
-	echo "Enter the description.\n";
+	echo $text['description-description']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
