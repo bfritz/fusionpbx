@@ -22,14 +22,14 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
-	
-	Callblock is written by Gerrit Visser <gerrit308@gmail.com>
+
+	Call Block is written by Gerrit Visser <gerrit308@gmail.com>
 */
 require_once "root.php";
 require_once "includes/require.php";
 require_once "includes/checkauth.php";
 
-if (permission_exists('callblock_edit') || permission_exists('callblock_add')) {
+if (permission_exists('call_block_edit') || permission_exists('call_block_add')) {
 	//access granted
 }
 else {
@@ -37,29 +37,36 @@ else {
 	exit;
 }
 
-function callblock_get_extensions($select_extension) {
-	global $db, $domain_uuid;
-
-//list voicemail
-	$sql = "select extension, user_context, description from v_extensions ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and enabled = 'true' ";
-	$sql .= "order by extension asc ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
-	
-	echo "<optgroup label='Voicemail'>\n";
-	foreach ($result as &$row) {
-		$extension = $row["extension"];
-		$context = $row["user_context"];
-		$description = $row["description"];
-		if ($extension == $select_extension) $selected = "SELECTED";
-		echo "		<option value='Voicemail $context $extension' $selected>".$extension." ".$description."</option>\n";
-		$selected = "";
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
-	echo "</optgroup>\n";
-}
+
+//define the callblock_get_extensions function
+	function call_block_get_extensions($select_extension) {
+		global $db;
+
+		//list voicemail
+		$sql = "select extension, user_context, description from v_extensions ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and enabled = 'true' ";
+		$sql .= "order by extension asc ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+
+		echo "<optgroup label='Voicemail'>\n";
+		foreach ($result as &$row) {
+			$extension = $row["extension"];
+			$context = $row["user_context"];
+			$description = $row["description"];
+			if ($extension == $select_extension) $selected = "SELECTED";
+			echo "		<option value='Voicemail $context $extension' $selected>".$extension." ".$description."</option>\n";
+			$selected = "";
+		}
+		echo "</optgroup>\n";
+	}
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -86,11 +93,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	
 	//check for all required data
-		if (strlen($blocked_caller_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
+		if (strlen($blocked_caller_name) == 0) { $msg .= $text['label-provide-name']."<br>\n"; }
 		if ($action == "add") { 
-			if (strlen($blocked_caller_number) == 0) { $msg .= "Please provide: Number<br>\n"; }
+			if (strlen($blocked_caller_number) == 0) { $msg .= $text['label-provide-number']."<br>\n"; }
 		}
-		if (strlen($block_call_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
+		if (strlen($block_call_enabled) == 0) { $msg .= $text['label-provide-enabled']."<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "includes/header.php";
 			require_once "includes/persistformvar.php";
@@ -107,7 +114,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//add or update the database
 		if (($_POST["persistformvar"] != "true")>0) {
 			if ($action == "add") {
-				$sql = "insert into v_callblock ";
+				$sql = "insert into v_call_block ";
 				$sql .= "(";
 				$sql .= "domain_uuid, ";
 				$sql .= "blocked_caller_uuid, ";
@@ -120,7 +127,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ") ";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
+				$sql .= "'".$_SESSION['domain_uuid']."', ";
 				$sql .= "'".uuid()."', ";
 				$sql .= "'$blocked_caller_name', ";
 				$sql .= "'$blocked_caller_number', ";
@@ -133,29 +140,29 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=callblock.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=call_block.php\">\n";
 				echo "<div align='center'>\n";
-				echo "Add Complete\n";
+				echo $text['label-add-complete']."\n";
 				echo "</div>\n";
 				require_once "includes/footer.php";
 				return;
 			} //if ($action == "add")
 
 			if ($action == "update") {
-				$sql = "update v_callblock set ";
+				$sql = "update v_call_block set ";
 				$sql .= "blocked_caller_name = '$blocked_caller_name', ";
 				//$sql .= "blocked_caller_number = '$blocked_caller_number', ";
 				$sql .= "blocked_call_action = '$blocked_call_action', ";
 				$sql .= "block_call_enabled = '$block_call_enabled' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 				$sql .= "and blocked_caller_uuid = '$blocked_caller_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
-				
+
 				require_once "includes/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=callblock.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2;url=call_block.php\">\n";
 				echo "<div align='center'>\n";
-				echo "Update Complete\n";
+				echo $text['label-update-complete']."\n";
 				echo "</div>\n";
 				require_once "includes/footer.php";
 				return;
@@ -166,8 +173,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$blocked_caller_uuid = $_GET["id"];
-		$sql = "select * from v_callblock ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql = "select * from v_call_block ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and blocked_caller_uuid = '$blocked_caller_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -186,15 +193,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "includes/header.php";
 
-
 //show the content
-
 	echo "<div align='center'>";
 	// Show last 5-10 calls first, with add button
 
 //get the results from the db
 	$sql = "select caller_id_number, caller_id_name, start_epoch, uuid from v_xml_cdr ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	$sql .= "and direction != 'outbound' ";
 	$sql .= "order by start_stamp DESC ";
 	$sql .= "limit 20 ";
@@ -203,17 +208,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$result = $prep_statement->fetchAll();
 	$result_count = count($result);
 	unset ($prep_statement);
-	
+
 	echo "<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo th_order_by('caller_id_name', 'Name', $order_by, $order);
-	echo th_order_by('caller_id_number', 'Number', $order_by, $order);
-	echo th_order_by('start_stamp', 'Start', $order_by, $order);
-	
+	echo th_order_by('caller_id_name', $text['label-name'], $order_by, $order);
+	echo th_order_by('caller_id_number', $text['label-number'], $order_by, $order);
+	echo th_order_by('start_stamp', $text['label-called-on'], $order_by, $order);
+
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
-	
+
 	if ($result_count > 0) {
 		foreach($result as $row) {
 			if (strlen($row['caller_id_number']) >= 7) {
@@ -246,10 +251,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "</tr>\n";
-
 	echo "</table>";
 	// end of Display Last 5-10 Calls
-	
+
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
@@ -260,20 +264,20 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap='nowrap'><b>Call Block Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['label-edit-add']."</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap='nowrap'><b>Call Block Edit</b></td>\n";
+		echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['label-edit-edit']."</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='callblock.php'\" value='Back'></td>\n";
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='call_block.php'\" value='".$text['button-back']."'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
 	if ($action == "add") {
-	echo "Block calls from a number. Either select a number from the list above or enter the number, name and enable below.<br /><br />\n";
+	echo $text['label-add-note']."<br /><br />\n";
 	}
 	if ($action == "update") {
-	echo "Block calls from a number. Edit the name and enable/disable below.<br /><br />\n";
+	echo $text['label-edit-note']."<br /><br />\n";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -286,7 +290,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "add") {
 		echo "	<input class='formfld' type='text' name='blocked_caller_number' maxlength='255' value=\"$blocked_caller_number\">\n";
 		echo "<br />\n";
-		echo "Enter the exact number.\n";
+		echo $text['label-exact-number']."\n";
 	}
 	else {
 		echo $blocked_caller_number;
@@ -322,18 +326,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "   <option value='Reject' >Reject</option>\n";
 	}
 	if ($action == "Busy") {
-		echo "	<option value='Busy' SELECTED >Busy</option>\n";
+		echo "	<option value='Busy' SELECTED >".$text['label-reject']."</option>\n";
 	} else {
-		echo "   <option value='Busy' >Busy</option>\n";
+		echo "   <option value='Busy' >".$text['label-busy']."</option>\n";
 	}
-	callblock_get_extensions($extension);
+	call_block_get_extensions($extension);
 	echo "	</select>\n";
 	echo "<br />\n";
-	echo "Set an action for calls from this number.\n";
+	echo $text['label-action-message']."\n";
 	echo "\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-	
+
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	Enabled:\n";
@@ -348,14 +352,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	<option value='true'>true</option>\n";
 	}
 	if ($block_call_enabled == "false") { 
-		echo "	<option value='false' SELECTED >false</option>\n";
+		echo "	<option value='false' SELECTED >".$text['label-true']."</option>\n";
 	}
 	else {
-		echo "	<option value='false'>false</option>\n";
+		echo "	<option value='false'>".$text['label-false']."</option>\n";
 	}
 	echo "	</select>\n";
 	echo "<br />\n";
-	echo "Set to true to enable call blocking for this number.\n";
+	echo $text['label-enable-message']."\n";
 	echo "\n";
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -365,7 +369,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "				<input type='hidden' name='blocked_caller_uuid' value='$blocked_caller_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";

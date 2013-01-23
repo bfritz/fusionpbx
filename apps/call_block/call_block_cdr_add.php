@@ -22,20 +22,26 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
-	
-	Callblock is written by Gerrit Visser <gerrit308@gmail.com>
+
+	Call Block is written by Gerrit Visser <gerrit308@gmail.com>
 */
 require_once "root.php";
 require_once "includes/require.php";
 require_once "includes/checkauth.php";
 
-if (permission_exists('callblock_edit') || permission_exists('callblock_add')) {
+if (permission_exists('call_block_edit') || permission_exists('call_block_add')) {
 	//access granted
 }
 else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //action add from cdr
 	if (isset($_REQUEST["cdr_id"])) {
@@ -50,13 +56,13 @@ else {
 	$prep_statement->execute();
 	$result = $prep_statement->fetch();
 	unset ($prep_statement);
-	
+
 	$blocked_caller_name = $result["caller_id_name"];
 	$blocked_caller_number = $result["caller_id_number"];
 	$block_call_enabled = "true";
 	$block_call_action = "Reject";
 
-	$sql = "insert into v_callblock ";
+	$sql = "insert into v_call_block ";
 	$sql .= "(";
 	$sql .= "domain_uuid, ";
 	$sql .= "blocked_caller_uuid, ";
@@ -69,7 +75,7 @@ else {
 	$sql .= ") ";
 	$sql .= "values ";
 	$sql .= "(";
-	$sql .= "'$domain_uuid', ";
+	$sql .= "'".$_SESSION['domain_uuid']."', ";
 	$sql .= "'".uuid()."', ";
 	$sql .= "'$blocked_caller_name', ";
 	$sql .= "'$blocked_caller_number', ";
@@ -82,9 +88,9 @@ else {
 	unset($sql);
 
 	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=callblock.php\">\n";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=call_block.php\">\n";
 	echo "<div align='center'>\n";
-	echo "Add Complete\n";
+	echo $text['label-add-complete']."\n";
 	echo "</div>\n";
 	require_once "includes/footer.php";
 	return;
