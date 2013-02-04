@@ -842,6 +842,14 @@ if [ $DO_DAHDI == "y" ]; then
 				exit 1
 			fi
 		else
+			echo "going dev branch.  Hope this works for you."
+			/usr/bin/time /usr/bin/git clone $FSGIT
+			if [ $? -ne 0 ]; then
+				#git had an error
+				/bin/echo "GIT ERROR"
+				exit 1
+			fi
+			
 			if [ $FSCHECKOUTVER == true ]; then
 				echo "OK we'll check out FreeSWITCH version $FSREV"
 				cd /usr/src/freeswitch
@@ -849,14 +857,6 @@ if [ $DO_DAHDI == "y" ]; then
 				if [ $? -ne 0 ]; then
 					#git checkout had an error
 					/bin/echo "GIT CHECKOUT ERROR"
-					exit 1
-				fi
-			else
-				echo "going dev branch.  Hope this works for you."
-				/usr/bin/time /usr/bin/git clone $FSGIT
-				if [ $? -ne 0 ]; then
-					#git had an error
-					/bin/echo "GIT ERROR"
 					exit 1
 				fi
 			fi
