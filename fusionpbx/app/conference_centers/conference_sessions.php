@@ -48,6 +48,11 @@ else {
 	$order_by = check_str($_GET["order_by"]);
 	$order = check_str($_GET["order"]);
 
+//add meeting_uuid to a session variable
+	if (strlen($meeting_uuid) > 0) { 
+		$_SESSION['meeting']['uuid'] = $meeting_uuid;
+	}
+
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
@@ -70,7 +75,7 @@ else {
 	//prepare to page the results
 		$sql = "select count(*) as num_rows from v_conference_sessions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and meeting_uuid = '$meeting_uuid' ";
+		$sql .= "and meeting_uuid = '".$_SESSION['meeting']['uuid']."' ";
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 		$prep_statement->execute();
@@ -94,7 +99,7 @@ else {
 	//get the list
 		$sql = "select * from v_conference_sessions ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and meeting_uuid = '$meeting_uuid' ";
+		$sql .= "and meeting_uuid = '".$_SESSION['meeting']['uuid']."' ";
 		if (strlen($order_by) == 0) {
 			$sql .= "order by start_epoch desc ";
 		}
