@@ -36,7 +36,7 @@
 			end
 
 		--direct dial
-			if (dtmf_digits ~= nil) then
+			if (dtmf_digits) then
 				if (string.len(dtmf_digits) > 0) then
 					if (session:ready()) then
 						if (direct_dial["enabled"] == "true") then
