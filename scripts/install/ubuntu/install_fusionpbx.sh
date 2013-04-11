@@ -147,7 +147,7 @@ server{
 
         location ~ \.php$ {
             fastcgi_pass 127.0.0.1:9000;
-            #fastcgi_pass /var/run/php5-fpm.sock;
+            #fastcgi_pass unix:/var/run/php5-fpm.sock;
             fastcgi_index index.php;
             include fastcgi_params;
             fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$GUI_NAME\$fastcgi_script_name;
@@ -408,7 +408,6 @@ function build_modules {
 					else
 							/bin/echo "     ${modules_compile[$index]} ALREADY ENABLED!"
 					fi
-
 			else
 					#module is not present. Add to end of file
 					#/bin/echo "did not find ${modules_compile[$index]}"
@@ -849,7 +848,7 @@ if [ $DO_DAHDI == "y" ]; then
 				/bin/echo "GIT ERROR"
 				exit 1
 			fi
-			
+
 			if [ $FSCHECKOUTVER == true ]; then
 				echo "OK we'll check out FreeSWITCH version $FSREV"
 				cd /usr/src/freeswitch
@@ -1250,7 +1249,7 @@ if [ $DO_DAHDI == "y" ]; then
 			;;
 
 			*)
-						/bin/echo "OK, not using -nonat option."
+				/bin/echo "OK, not using -nonat option."
 			;;
 		esac
 		/bin/echo
@@ -1280,6 +1279,7 @@ if [ $DO_DAHDI == "y" ]; then
 	#fi
 
 	/usr/sbin/adduser freeswitch audio
+	/usr/sbin/groupadd freeswitch
 
 	if [ $DO_DAHDI == "y" ]; then
 		#dialout for dahdi
@@ -2722,7 +2722,7 @@ exit 0
 #	  FreeSWITCH with the -nonat option to save some time. Also a new variable
 #	TODO: Maybe probe cores and to the -b thing for quicker compile/bootstrap
 #	TODO: IPTABLES
-	
+
 #v4.3.1 2010 December 23
 #	look into make -j cores option
 #	made a state save file.  so if there's an error, don't re-bootstrap, configure, etc.
