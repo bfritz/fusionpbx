@@ -2727,8 +2727,9 @@ function save_hunt_group_xml() {
 							$tmp_sub_array["application"] = "bridge";
 							$tmp_sub_array["type"] = "extension";
 							$tmp_sub_array["extension"] = $ent['destination_data'];
-							//$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]\"..sofia_contact_".$ent['destination_data'];
-							$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]user/".$ent['destination_data']."@\"..domain_name";
+//$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]\"..sofia_contact_".$ent['destination_data'];
+//$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout]user/".$ent['destination_data']."@\"..domain_name";
+$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout,origination_caller_id_name=".$row['hunt_group_cid_name_prefix']."#\"..caller_id_name..\",origination_caller_id_number=\"..caller_id_number..\"]user/".$ent['destination_data']."@\"..domain_name";
 							$tmp_array[$i] = $tmp_sub_array;
 							unset($tmp_sub_array);
 						}
@@ -2749,7 +2750,9 @@ function save_hunt_group_xml() {
 							$bridge_array = outbound_route_to_bridge ($domain_uuid, $ent['destination_data']);
 							$destination_data = $bridge_array[0];
 							$tmp_sub_array["application"] = "bridge";
-							$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout,origination_caller_id_name=\"..caller_id_name..\",origination_caller_id_number=\"..caller_id_number..\"]".$destination_data."\"";
+							
+
+$tmp_sub_array["data"] = "\"[leg_timeout=$destination_timeout,origination_caller_id_name=".$row['hunt_group_cid_name_prefix']."#\"..caller_id_name..\",origination_caller_id_number=\"..caller_id_number..\"]".$destination_data."\"";
 							$tmp_array[$i] = $tmp_sub_array;
 							unset($tmp_sub_array);
 							unset($destination_data);
