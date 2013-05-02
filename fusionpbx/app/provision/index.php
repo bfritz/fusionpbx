@@ -30,7 +30,7 @@ require_once "includes/require.php";
 	$file_count = 0;
 	$row_count = 0;
 	$tmp_array = '';
-	$phone_template = '';
+	$device_template = '';
 
 //if password was defined in the system -> variables page then require the password.
 	if (strlen($_SESSION['provision']['password']['var']) > 0) {
@@ -60,7 +60,7 @@ require_once "includes/require.php";
 	$mac = check_str($_REQUEST['mac']);
 	$file = check_str($_REQUEST['file']);
 	if (strlen(check_str($_REQUEST['template'])) > 0) {
-		$phone_template = check_str($_REQUEST['template']);
+		$device_template = check_str($_REQUEST['template']);
 	}
 
 //check alternate MAC source
@@ -83,83 +83,84 @@ require_once "includes/require.php";
 //use the mac address to find the vendor
 	switch (substr($mac, 0, 6)) {
 	case "00085d":
-		$phone_vendor = "aastra";
+		$device_vendor = "aastra";
 		break;
 	case "000e08":
-		$phone_vendor = "linksys";
+		$device_vendor = "linksys";
 		break;
 	case "0004f2":
-		$phone_vendor = "polycom";
+		$device_vendor = "polycom";
 		break;
 	case "00907a":
-		$phone_vendor = "polycom";
+		$device_vendor = "polycom";
 		break;
 	case "001873":
-		$phone_vendor = "cisco";
+		$device_vendor = "cisco";
 		break;
 	case "00045a":
-		$phone_vendor = "linksys";
+		$device_vendor = "linksys";
 		break;
 	case "000625":
-		$phone_vendor = "linksys";
+		$device_vendor = "linksys";
 		break;
 	case "001565":
-		$phone_vendor = "yealink";
+		$device_vendor = "yealink";
 		break;
 	case "000413":
-		$phone_vendor = "snom";
+		$device_vendor = "snom";
 	default:
-		$phone_vendor = "";
+		$device_vendor = "";
 	}
 
-//check to see if the mac_address exists in v_hardware_phones
-	if (mac_exists_in_hardware_phones($db, $mac)) {
-		//get the phone_template
-			if (strlen($phone_template) == 0) {
-				$sql = "SELECT * FROM v_hardware_phones ";
+//check to see if the mac_address exists in v_devices
+	if (mac_exists_in_devices($db, $mac)) {
+		//get the device_template
+			if (strlen($device_template) == 0) {
+				$sql = "SELECT * FROM v_devices ";
 				$sql .= "where domain_uuid=:domain_uuid ";
-				$sql .= "and phone_mac_address=:mac ";
+				$sql .= "and device_mac_address=:mac ";
 				$prep_statement_2 = $db->prepare(check_sql($sql));
 				if ($prep_statement_2) {
-					$prep_statement_2->bindParam(':domain_uuid', $domain_uuid);
+					$prep_statement_2->bindParam(':domain_uuid', $_SESSION['domain_uuid']);
 					$prep_statement_2->bindParam(':mac', $mac);
 					$prep_statement_2->execute();
 					$row = $prep_statement_2->fetch();
-					$phone_label = $row["phone_label"];
-					if (strlen($row["phone_vendor"]) > 0) {
-						$phone_vendor = $row["phone_vendor"];
+					$device_uuid = $row["device_uuid"];
+					$device_label = $row["device_label"];
+					if (strlen($row["device_vendor"]) > 0) {
+						$device_vendor = $row["device_vendor"];
 					}
-					$phone_model = $row["phone_model"];
-					$phone_firmware_version = $row["phone_firmware_version"];
-					$phone_provision_enable = $row["phone_provision_enable"];
-					$phone_template = $row["phone_template"];
-					$phone_username = $row["phone_username"];
-					$phone_password = $row["phone_password"];
-					$phone_time_zone = $row["phone_time_zone"];
-					$phone_description = $row["phone_description"];
+					$device_model = $row["device_model"];
+					$device_firmware_version = $row["device_firmware_version"];
+					$device_provision_enable = $row["device_provision_enable"];
+					$device_template = $row["device_template"];
+					$device_username = $row["device_username"];
+					$device_password = $row["device_password"];
+					$device_time_zone = $row["device_time_zone"];
+					$device_description = $row["device_description"];
 				}
 			}
 		//find a template that was defined on another phone and use that as the default.
-			if (strlen($phone_template) == 0) {
-				$sql = "SELECT * FROM v_hardware_phones ";
+			if (strlen($device_template) == 0) {
+				$sql = "SELECT * FROM v_devices ";
 				$sql .= "where domain_uuid=:domain_uuid ";
-				$sql .= "and phone_template like '%/%' ";
+				$sql .= "and device_template like '%/%' ";
 				$prep_statement3 = $db->prepare(check_sql($sql));
 				if ($prep_statement3) {
-					$prep_statement3->bindParam(':domain_uuid', $domain_uuid);
+					$prep_statement3->bindParam(':domain_uuid', $_SESSION['domain_uuid']);
 					$prep_statement3->bindParam(':mac', $mac);
 					$prep_statement3->execute();
 					$row = $prep_statement3->fetch();
-					$phone_label = $row["phone_label"];
-					$phone_vendor = $row["phone_vendor"];
-					$phone_model = $row["phone_model"];
-					$phone_firmware_version = $row["phone_firmware_version"];
-					$phone_provision_enable = $row["phone_provision_enable"];
-					$phone_template = $row["phone_template"];
-					$phone_username = $row["phone_username"];
-					$phone_password = $row["phone_password"];
-					$phone_time_zone = $row["phone_time_zone"];
-					$phone_description = $row["phone_description"];
+					$device_label = $row["device_label"];
+					$device_vendor = $row["device_vendor"];
+					$device_model = $row["device_model"];
+					$device_firmware_version = $row["device_firmware_version"];
+					$device_provision_enable = $row["device_provision_enable"];
+					$device_template = $row["device_template"];
+					$device_username = $row["device_username"];
+					$device_password = $row["device_password"];
+					$device_time_zone = $row["device_time_zone"];
+					$device_description = $row["device_description"];
 				}
 			}
 	}
@@ -167,41 +168,42 @@ require_once "includes/require.php";
 		//use the user_agent to pre-assign a template for 1-hit provisioning. Enter the a unique string to match in the user agent, and the template it should match.
 			$template_list=array(  
 					"Linksys/SPA-2102"=>"linksys/spa2102",
-					"Linksys/SPA-3102"=>"linksys/spa3102"
+					"Linksys/SPA-3102"=>"linksys/spa3102",
+					"snom370"=>"snom/370"
 					);
 
 			foreach ($template_list as $key=>$val){
 				if(stripos($_SERVER['HTTP_USER_AGENT'],$key)!== false) {
-					$phone_template=$val;
+					$device_template=$val;
 					break;
 				}
 			}
 			unset($template_list);
 
 		//mac address does not exist in the table so add it
-			$hardware_phone_uuid = uuid();
-			$sql = "insert into v_hardware_phones ";
+			$device_uuid = uuid();
+			$sql = "insert into v_devices ";
 			$sql .= "(";
 			$sql .= "domain_uuid, ";
-			$sql .= "hardware_phone_uuid, ";
-			$sql .= "phone_mac_address, ";
-			$sql .= "phone_vendor, ";
-			$sql .= "phone_model, ";
-			$sql .= "phone_provision_enable, ";
-			$sql .= "phone_template, ";
-			$sql .= "phone_username, ";
-			$sql .= "phone_password, ";
-			$sql .= "phone_description ";
+			$sql .= "device_uuid, ";
+			$sql .= "device_mac_address, ";
+			$sql .= "device_vendor, ";
+			$sql .= "device_model, ";
+			$sql .= "device_provision_enable, ";
+			$sql .= "device_template, ";
+			$sql .= "device_username, ";
+			$sql .= "device_password, ";
+			$sql .= "device_description ";
 			$sql .= ")";
 			$sql .= "values ";
 			$sql .= "(";
-			$sql .= "'$domain_uuid', ";
-			$sql .= "'$hardware_phone_uuid', ";
+			$sql .= "'".$_SESSION['domain_uuid']."', ";
+			$sql .= "'$device_uuid', ";
 			$sql .= "'$mac', ";
-			$sql .= "'$phone_vendor', ";
+			$sql .= "'$device_vendor', ";
 			$sql .= "'', ";
 			$sql .= "'true', ";
-			$sql .= "'$phone_template', ";
+			$sql .= "'$device_template', ";
 			$sql .= "'', ";
 			$sql .= "'', ";
 			$sql .= "'auto {$_SERVER['HTTP_USER_AGENT']}' ";
@@ -210,15 +212,20 @@ require_once "includes/require.php";
 			unset($sql);
 	}
 
+//if the domain name directory exists then only use templates from it
+	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/provision/'.$_SESSION['domain_name'])) {
+		$device_template = $_SESSION['domain_name'].'/'.$device_template;
+	}
+
 //if $file is not provided then look for a default file that exists
 	if (strlen($file) == 0) { 
-		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}")) {
+		if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$device_template ."/{v_mac}")) {
 			$file = "{v_mac}";
 		}
-		elseif (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}.xml")) {
+		elseif (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$device_template ."/{v_mac}.xml")) {
 			$file = "{v_mac}.xml";
 		}
-		elseif (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/{v_mac}.cfg")) {
+		elseif (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$device_template ."/{v_mac}.cfg")) {
 			$file = "{v_mac}.cfg";
 		}
 		else {
@@ -228,7 +235,7 @@ require_once "includes/require.php";
 	}
 	else {
 		//make sure the file exists
-		if (!file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/".$file)) {
+		if (!file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$device_template ."/".$file)) {
 			echo "file not found";
 			exit;
 		}
@@ -261,7 +268,7 @@ require_once "includes/require.php";
 		//$proxy3_address= "";
 
 //get the contents of the template
-	$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$phone_template ."/".$file);
+	$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$device_template ."/".$file);
 
 //replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 
@@ -288,29 +295,25 @@ require_once "includes/require.php";
 		$mac_dash = substr($mac, 0,2).'-'.substr($mac, 2,2).'-'.substr($mac, 4,2).'-'.substr($mac, 6,2).'-'.substr($mac, 8,2).'-'.substr($mac, 10,2);
 
 	//lookup the provisioning information for this MAC address.
-		$sql = "select * from v_extensions ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and (provisioning_list like '%|".$mac.":%' or provisioning_list like '%|".$mac_dash.":%') ";
-		$sql .= "and enabled = 'true' ";
+		$sql = "SELECT e.extension, e.password, e.effective_caller_id_name, d.device_extension_uuid, d.extension_uuid, d.device_line ";
+		$sql .= "FROM v_device_extensions as d, v_extensions as e ";
+		$sql .= "WHERE e.extension_uuid = d.extension_uuid ";
+		$sql .= "AND d.device_uuid = '".$device_uuid."' ";
+		$sql .= "AND d.domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and e.enabled = 'true' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-		foreach ($result as &$row) {
-			$provisioning_list = $row["provisioning_list"];
-			$provisioning_list_array = explode("|", $provisioning_list);
-			foreach ($provisioning_list_array as &$prov_row) {
-				$prov_row_array = explode(":", $prov_row);
-				$prov_mac = strtolower($prov_row_array[0]);
-				$prov_mac = preg_replace('#[^a-fA-F0-9./]#', '', $prov_mac);
-				if ($prov_mac == $mac) {
-					$line_number = $prov_row_array[1];
-					$file_contents = str_replace("{v_line".$line_number."_server_address}", $_SESSION['domain_name'], $file_contents);
-					$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["effective_caller_id_name"], $file_contents);
-					$file_contents = str_replace("{v_line".$line_number."_shortname}", $row["extension"], $file_contents);
-					$file_contents = str_replace("{v_line".$line_number."_user_id}", $row["extension"], $file_contents);
-					$file_contents = str_replace("{v_line".$line_number."_user_password}", $row["password"], $file_contents);
-				}
-			}
+		$result_count = count($result);
+		foreach($result as $row) {
+			$line_number = $row['device_line'];
+
+			$file_contents = str_replace("{v_line".$line_number."_server_address}", $_SESSION['domain_name'], $file_contents);
+			$file_contents = str_replace("{v_line".$line_number."_displayname}", $row["effective_caller_id_name"], $file_contents);
+			$file_contents = str_replace("{v_line".$line_number."_shortname}", $row["extension"], $file_contents);
+			$file_contents = str_replace("{v_line".$line_number."_user_id}", $row["extension"], $file_contents);
+			$file_contents = str_replace("{v_line".$line_number."_user_password}", $row["password"], $file_contents);
+
 			//$vm_password = $row["vm_password"];
 			//$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 			//$accountcode = $row["accountcode"];
@@ -332,7 +335,7 @@ require_once "includes/require.php";
 		unset ($prep_statement);
 
 	//set the mac address in the correct format
-		switch ($phone_vendor) {
+		switch ($device_vendor) {
 		case "aastra":
 			$mac = strtoupper($mac);
 			break;
@@ -346,9 +349,9 @@ require_once "includes/require.php";
 
 	//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
 		$file_contents = str_replace("{v_mac}", $mac, $file_contents);
-		$file_contents = str_replace("{v_label}", $phone_label, $file_contents);
-		$file_contents = str_replace("{v_firmware_version}", $phone_firmware_version, $file_contents);
-		$file_contents = str_replace("{domain_time_zone}", $phone_time_zone, $file_contents);
+		$file_contents = str_replace("{v_label}", $device_label, $file_contents);
+		$file_contents = str_replace("{v_firmware_version}", $device_firmware_version, $file_contents);
+		$file_contents = str_replace("{domain_time_zone}", $device_time_zone, $file_contents);
 		$file_contents = str_replace("{domain_name}", $_SESSION['domain_name'], $file_contents);
 		$file_contents = str_replace("{v_project_path}", PROJECT_PATH, $file_contents);
 		$file_contents = str_replace("{v_server1_address}", $server1_address, $file_contents);
@@ -373,7 +376,7 @@ require_once "includes/require.php";
 //deliver the customized config over HTTP/HTTPS
 	//need to make sure content-type is correct
 	$cfg_ext = ".cfg";
-	if ($phone_vendor === "aastra" && strrpos($file, $cfg_ext, 0) === strlen($file) - strlen($cfg_ext)) {
+	if ($device_vendor === "aastra" && strrpos($file, $cfg_ext, 0) === strlen($file) - strlen($cfg_ext)) {
 		header ("content-type: text/plain");
 	} else {
 		header ("content-type: text/xml");
@@ -381,15 +384,14 @@ require_once "includes/require.php";
 	header ("Content-Length: ".strlen($file_contents));
 	echo $file_contents;
 
-//define the function which checks to see if the mac address exists in the table
-	function mac_exists_in_hardware_phones($db, $mac) {
-		global $domain_uuid;
-		$sql = "SELECT count(*) as count FROM v_hardware_phones ";
-		$sql .= "where domain_uuid=:domain_uuid ";
-		$sql .= "and phone_mac_address=:mac ";
+//define the function which checks to see if the mac address exists in devices
+	function mac_exists_in_devices($db, $mac) {
+		$sql = "SELECT count(*) as count FROM v_devices ";
+		$sql .= "WHERE domain_uuid=:domain_uuid ";
+		$sql .= "AND device_mac_address=:mac ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		if ($prep_statement) {
-			$prep_statement->bindParam(':domain_uuid', $domain_uuid);
+			$prep_statement->bindParam(':domain_uuid', $_SESSION['domain_uuid']);
 			$prep_statement->bindParam(':mac', $mac);
 			$prep_statement->execute();
 			$row = $prep_statement->fetch();

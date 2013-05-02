@@ -24,20 +24,14 @@
 --	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 --	POSSIBILITY OF SUCH DAMAGE.
 
---include the lua script
+--include config.lua
 	scripts_dir = string.sub(debug.getinfo(1).source,2,string.len(debug.getinfo(1).source)-(string.len(argv[0])+1));
-	include = assert(loadfile(scripts_dir .. "/resources/config.lua"));
-	include();
+	dofile(scripts_dir.."/resources/functions/config.lua");
+	dofile(config());
 
 --connect to the database
-	--ODBC - data source name
-		if (dsn_name) then
-			dbh = freeswitch.Dbh(dsn_name,dsn_username,dsn_password);
-		end
-	--FreeSWITCH core db handler
-		if (db_type == "sqlite") then
-			dbh = freeswitch.Dbh("core:"..db_path.."/"..db_name);
-		end
+	dofile(scripts_dir.."/resources/functions/database_handle.lua");
+	dbh = database_handle('system');
 
 --get the variables
 	if (session:ready()) then
@@ -52,15 +46,14 @@
 --get the extension list
 	sql = 
 	[[ SELECT g.ring_group_extension_uuid, e.extension_uuid, e.extension, 
-	r.ring_group_strategy, r.ring_group_timeout_sec, r.ring_group_timeout_app, r.ring_group_timeout_data, r.ring_group_cid_name_prefix, r.ring_group_ringback
+	r.ring_group_strategy, r.ring_group_timeout_sec, r.ring_group_timeout_app, g.extension_delay, g.extension_timeout, r.ring_group_timeout_data, r.ring_group_cid_name_prefix, r.ring_group_ringback
 	FROM v_ring_groups as r, v_ring_group_extensions as g, v_extensions as e 
 	where g.ring_group_uuid = r.ring_group_uuid 
 	and g.ring_group_uuid = ']]..ring_group_uuid..[[' 
 	and e.extension_uuid = g.extension_uuid 
 	and r.ring_group_enabled = 'true' 
-	order by e.extension asc ]]
+	order by g.extension_delay, e.extension asc ]]
 	--freeswitch.consoleLog("notice", "SQL:" .. sql .. "\n");
-	app_data = "";
 
 	x = 0;
 	dbh:query(sql, function(row)
@@ -69,6 +62,8 @@
 		ring_group_timeout_data = row.ring_group_timeout_data;
 		ring_group_cid_name_prefix = row.ring_group_cid_name_prefix;
 		ring_group_ringback = row.ring_group_ringback;
+		extension_delay = row.extension_delay;
+		extension_timeout = row.extension_timeout;
 
 		if (ring_group_ringback == "${uk-ring}") then
 			ring_group_ringback = "%(400,200,400,450);%(400,2200,400,450)";
@@ -97,16 +92,21 @@
 		if (row.ring_group_strategy == "simultaneous") then
 			delimiter = ",";
 		end
+		if (row.ring_group_strategy == "enterprise") then
+			delimiter = ":_:";
+		end
+
 		if (x == 0) then
-			app_data = "[leg_timeout="..ring_group_timeout_sec..",origination_caller_id_name="..origination_caller_id_name.."]user/" .. row.extension .. "@" .. domain_name;
+			app_data = ""; --{originate_timeout="..ring_group_timeout_sec.."}";
+			app_data = app_data .. "[sip_invite_domain="..domain_name..",leg_timeout="..extension_timeout..",leg_delay_start="..extension_delay..",origination_caller_id_name="..origination_caller_id_name.."]user/" .. row.extension .. "@" .. domain_name;
 		else
-			app_data = app_data .. delimiter .. "[leg_timeout="..ring_group_timeout_sec..",origination_caller_id_name="..origination_caller_id_name.."]user/" .. row.extension .. "@" .. domain_name;
+			app_data = app_data .. delimiter .. "[sip_invite_domain="..domain_name..",leg_timeout="..extension_timeout..",leg_delay_start="..extension_delay..",origination_caller_id_name="..origination_caller_id_name.."]user/" .. row.extension .. "@" .. domain_name;
 		end
 		x = x + 1;
 	end);
 
 --app_data
-	--freeswitch.consoleLog("notice", "Debug:\n" .. app_data .. "\n");
+	--freeswitch.consoleLog("notice", "[ring group] app_data: " .. app_data .. "\n");
 
 --session actions
 	if (session:ready()) then
@@ -117,7 +117,19 @@
 		session:execute("bind_meta_app", "2 ab s record_session::"..recordings_dir.."}/archive/"..os.date("%Y").."/"..os.date("%m").."/"..os.date("%d").."}/"..uuid..".wav");
 		session:execute("bind_meta_app", "3 ab s execute_extension::cf XML features");
 		session:execute("bind_meta_app", "4 ab s execute_extension::att_xfer XML features");
-		session:execute("bridge", app_data);
+		if (app_data) then
+			session:execute("bridge", app_data);
+		else
+			--get the timeout app and data
+				sql = [[SELECT ring_group_timeout_app, ring_group_timeout_data FROM v_ring_groups 
+				where ring_group_uuid = ']]..ring_group_uuid..[[' 
+				and ring_group_enabled = 'true' ]];
+				--freeswitch.consoleLog("notice", "SQL:" .. sql .. "\n");
+				dbh:query(sql, function(row)
+					ring_group_timeout_app = row.ring_group_timeout_app;
+					ring_group_timeout_data = row.ring_group_timeout_data;
+				end);
+		end
 		if (session:getVariable("originate_disposition") ~= "SUCCESS") then
 			session:execute(ring_group_timeout_app, ring_group_timeout_data);
 		end
@@ -129,3 +141,4 @@
 	--table.insert(ACTIONS, {"set", "continue_on_fail=true"});
 	--table.insert(ACTIONS, {"bridge", app_data});
 	--table.insert(ACTIONS, {ring_group_timeout_app, ring_group_timeout_data});
+

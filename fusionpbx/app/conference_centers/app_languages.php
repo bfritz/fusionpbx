@@ -62,14 +62,17 @@
 		$text['label-announce']['en-us'] = 'Announce';
 		$text['label-announce']['pt-pt'] = '';
 
-		$text['label-mute']['en-us'] = 'Mute';
+		$text['label-mute']['en-us'] = 'Mute on Entry';
 		$text['label-mute']['pt-pt'] = '';
 
 		$text['label-enabled']['en-us'] = 'Enabled';
 		$text['label-enabled']['pt-pt'] = 'Activo';
 
-		$text['label-count']['en-us'] = 'Count';
-		$text['label-count']['pt-pt'] = '';
+		$text['label-sounds']['en-us'] = 'Sounds';
+		$text['label-sounds']['pt-pt'] = '';
+
+		$text['label-members']['en-us'] = 'Members';
+		$text['label-members']['pt-pt'] = '';
 
 		$text['label-tools']['en-us'] = 'Tools';
 		$text['label-tools']['pt-pt'] = 'Ferramentas';
@@ -114,7 +117,7 @@
 		$text['label-users']['en-us'] = 'Users';
 		$text['label-users']['pt-pt'] = '';
 
-		$text['description-users']['en-us'] = 'Assign additional users to the conference room.';
+		$text['description-users']['en-us'] = 'Assign additional users as administrators of this conference room.';
 		$text['description-users']['pt-pt'] = '';
 
 		$text['button-add']['en-us'] = 'Add';
@@ -158,6 +161,9 @@
 
 		$text['button-save']['en-us'] = 'Save';
 		$text['button-save']['pt-pt'] = 'Guardar';
+
+		$text['button-search']['en-us'] = 'Search';
+		$text['button-search']['pt-pt'] = '';
 
 	//Conference Sessions
 		$text['title-conference-sessions']['en-us'] = 'Conference Sessions';

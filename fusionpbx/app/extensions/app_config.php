@@ -2,7 +2,7 @@
 	//application details
 		$apps[$x]['name'] = "Extensions";
 		$apps[$x]['uuid'] = 'e68d9689-2769-e013-28fa-6214bf47fca3';
-		$apps[$x]['category'] = 'Switch';;
+		$apps[$x]['category'] = 'Switch';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
@@ -189,6 +189,10 @@
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'toll_allow';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'call_timeout';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'call_group';

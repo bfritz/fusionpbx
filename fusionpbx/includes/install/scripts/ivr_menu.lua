@@ -31,20 +31,14 @@
 	debug["dtmf"] = false;
 	debug["tries"] = false;
 
---include the lua script
+--include config.lua
 	scripts_dir = string.sub(debug.getinfo(1).source,2,string.len(debug.getinfo(1).source)-(string.len(argv[0])+1));
-	include = assert(loadfile(scripts_dir .. "/resources/config.lua")); include();
-	include = loadfile(scripts_dir .. "/resources/local.lua"); if (include ~= nil) then include(); end
+	dofile(scripts_dir.."/resources/functions/config.lua");
+	dofile(config());
 
 --connect to the database
-	--ODBC - data source name
-		if (dsn_name) then
-			dbh = freeswitch.Dbh(dsn_name,dsn_username,dsn_password);
-		end
-	--FreeSWITCH core db handler
-		if (db_type == "sqlite") then
-			dbh = freeswitch.Dbh("core:"..db_path.."/"..db_name);
-		end
+	dofile(scripts_dir.."/resources/functions/database_handle.lua");
+	dbh = database_handle('system');
 
 --get the variables
 	domain_name = session:getVariable("domain_name");
@@ -96,7 +90,18 @@
 		ivr_menu_direct_dial = row["ivr_menu_direct_dial"];
 		--ivr_menu_description = row["ivr_menu_description"];
 		ivr_menu_ringback = row["ivr_menu_ringback"];
+		ivr_menu_cid_prefix = row["ivr_menu_cid_prefix"];
 	end);
+
+--set the caller id name
+	caller_id_name = session:getVariable("caller_id_name");
+	effective_caller_id_name = session:getVariable("effective_caller_id_name");
+	if (string.len(ivr_menu_cid_prefix) > 0) then
+		caller_id_name = ivr_menu_cid_prefix .. "#" .. caller_id_name;
+		effective_caller_id_name = ivr_menu_cid_prefix .. "#" .. effective_caller_id_name;
+		session:setVariable("caller_id_name", caller_id_name);
+		session:setVariable("effective_caller_id_name", effective_caller_id_name);
+	end
 
 --get the sounds dir, language, dialect and voice
 	sounds_dir = session:getVariable("sounds_dir");
@@ -144,14 +149,14 @@
 		min_digits = 1;
 		if (tries == 1) then
 			freeswitch.consoleLog("notice", "[ivr_menu] greet long: " .. ivr_menu_greet_long .. "\n");
-			dtmf_digits = session:playAndGetDigits(min_digits, ivr_menu_digit_len, 1, ivr_menu_timeout, ivr_menu_confirm_key, ivr_menu_greet_long, "", "\\d+");
+			dtmf_digits = session:playAndGetDigits(min_digits, ivr_menu_digit_len, 1, ivr_menu_timeout, ivr_menu_confirm_key, ivr_menu_greet_long, "", ".*");
 		else
 			freeswitch.consoleLog("notice", "[ivr_menu] greet long: " .. ivr_menu_greet_short .. "\n");
-			dtmf_digits = session:playAndGetDigits(min_digits, ivr_menu_digit_len, ivr_menu_max_timeouts, ivr_menu_timeout, ivr_menu_confirm_key, ivr_menu_greet_short, "", "\\d+");
+			dtmf_digits = session:playAndGetDigits(min_digits, ivr_menu_digit_len, ivr_menu_max_timeouts, ivr_menu_timeout, ivr_menu_confirm_key, ivr_menu_greet_short, "", ".*");
 		end
 		if (string.len(dtmf_digits) > 0) then
 			freeswitch.consoleLog("notice", "[ivr_menu] dtmf_digits: " .. dtmf_digits .. "\n");
-			menu_options(dtmf_digits);
+			menu_options(session, dtmf_digits);
 		else
 			if (tries <= tonumber(ivr_menu_max_failures)) then
 				--log the dtmf digits
@@ -164,9 +169,7 @@
 		end
 	end
 
-	function menu_options(digits)
-		--remove the pound sign
-			digits = digits:gsub("#", "");
+	function menu_options(session, digits)
 
 		--log the dtmf digits
 			if (debug["dtmf"]) then

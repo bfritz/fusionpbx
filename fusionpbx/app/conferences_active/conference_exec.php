@@ -74,6 +74,30 @@ else {
 		exit;
 	}
 
+//define an alternative kick all
+	function conference_end($fp, $name) {
+		$switch_cmd = "conference '".$name."' xml_list";
+		$xml_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
+		try {
+			$xml = new SimpleXMLElement($xml_str);
+		}
+		catch(Exception $e) {
+			//echo $e->getMessage();
+		}
+		$session_uuid = $xml->conference['uuid'];
+		$x = 0;
+		foreach ($xml->conference->members->member as $row) {
+			$switch_result = event_socket_request($fp, 'api uuid_kill '.$row->uuid);
+			if ($x < 1) {
+				usleep(500000); //500000 = 0.5 seconds
+			}
+			else {
+				usleep(10000);  //1000000 = 0.01 seconds
+			}
+			$x++;
+		}
+	}
+
 //execute the command
 	if (count($_GET) > 0) {
 		if (strlen($cmd) > 0) {
@@ -130,12 +154,22 @@ else {
 						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 					}
 					elseif ($data == "kick") {
-						$switch_result = event_socket_request($fp, "api ".$switch_cmd);
+						$switch_result = event_socket_request($fp, 'api uuid_kill '.$uuid);
 					}
-					//else {
-					//	$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-					//}
-					//echo $switch_cmd."<br\n>";
+					elseif ($data == "kick all") {
+						//$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+						conference_end($fp, $name);
+					}
+					elseif ($data == "mute" || $data == "unmute" || $data == "mute non_moderator" || $data == "unmute non_moderator") {
+						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					}
+					elseif ($data == "deaf" || $data == "undeaf" ) {
+						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					}
+					elseif ($data == "lock" || $data == "unlock" ) {
+						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					}
+					//echo "command: ".$switch_cmd." result: ".$switch_result."<br\n>";
 				}
 		}
 	}

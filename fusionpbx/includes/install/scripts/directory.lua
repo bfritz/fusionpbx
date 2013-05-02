@@ -37,20 +37,14 @@
 	debug["info"] = false;
 	debug["sql"] = false;
 
---include the lua script
+--include config.lua
 	scripts_dir = string.sub(debug.getinfo(1).source,2,string.len(debug.getinfo(1).source)-(string.len(argv[0])+1));
-	include = assert(loadfile(scripts_dir .. "/resources/config.lua"));
-	include();
+	dofile(scripts_dir.."/resources/functions/config.lua");
+	dofile(config());
 
 --connect to the database
-	--ODBC - data source name
-		if (dsn_name) then
-			dbh = freeswitch.Dbh(dsn_name,dsn_username,dsn_password);
-		end
-	--FreeSWITCH core db handler
-		if (db_type == "sqlite") then
-			dbh = freeswitch.Dbh("core:"..db_path.."/"..db_name);
-		end
+	dofile(scripts_dir.."/resources/functions/database_handle.lua");
+	dbh = database_handle('system');
 
 --prepare the api object
 	api = freeswitch.API();
@@ -63,8 +57,9 @@
 		--give time for the call to be ready
 			session:streamFile("silence_stream://1000");
 
-		--get the domain name
+		--get the domain info
 			domain_name = session:getVariable("domain_name");
+			domain_uuid = session:getVariable("domain_uuid");
 
 		--set the sounds path for the language, dialect and voice
 			default_language = session:getVariable("default_language");
@@ -118,15 +113,17 @@
 	end
 
 --get the domain_uuid
-	if (domain_name ~= nil) then
-		sql = "SELECT domain_uuid FROM v_domains ";
-		sql = sql .. "WHERE domain_name = '" .. domain_name .."' ";
-		if (debug["sql"]) then
-			freeswitch.consoleLog("notice", "[conference] SQL: " .. sql .. "\n");
+	if (domain_uuid == nil) then
+		if (domain_name ~= nil) then
+			sql = "SELECT domain_uuid FROM v_domains ";
+			sql = sql .. "WHERE domain_name = '" .. domain_name .."' ";
+			if (debug["sql"]) then
+				freeswitch.consoleLog("notice", "[conference] SQL: " .. sql .. "\n");
+			end
+			status = dbh:query(sql, function(rows)
+				domain_uuid = string.lower(rows["domain_uuid"]);
+				end);
 		end
-		status = dbh:query(sql, function(rows)
-			domain_uuid = string.lower(rows["domain_uuid"]);
-		end);
 	end
 
 --define explode

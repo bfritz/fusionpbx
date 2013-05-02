@@ -51,6 +51,6 @@ else {
 	}
 
 //redirect the user
-	header("Location: grouplist.php");
+	header("Location: groups.php");
 
 ?>

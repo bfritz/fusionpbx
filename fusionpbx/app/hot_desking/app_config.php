@@ -15,7 +15,7 @@
 		$apps[$x]['description']['fr'] = '';
 		$apps[$x]['description']['fr-ca'] = '';
 		$apps[$x]['description']['fr-ch'] = '';
-		$apps[$x]['description']['pt-pt'] = 'Entrar em desking quente com um ID e sua senha de correio de voz para encaminhar as chamadas para um ramal remoto. Em seguida, fazer e receber ligações como se estivesse em sua extensão.';
+		$apps[$x]['description']['pt-pt'] = 'Entrar em desking quente com um ID e sua senha de correio de voz para encaminhar as chamadas para um ramal remoto. Em seguida, fazer e receber ligaÃ§Ãµes como se estivesse em sua extensÃ£o.';
 		$apps[$x]['description']['pt-br'] = '';
 
 	//menu details

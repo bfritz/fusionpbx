@@ -31,23 +31,21 @@
 	debug["log"] = false;
 	debug["sql"] = false;
 
---include the lua script
+--include config.lua
 	scripts_dir = string.sub(debug.getinfo(1).source,2,string.len(debug.getinfo(1).source)-(string.len(argv[0])+1));
-	include = assert(loadfile(scripts_dir .. "/resources/config.lua"));
-	include();
+	dofile(scripts_dir.."/resources/functions/config.lua");
+	dofile(config());
+
+--general functions
+	dofile(scripts_dir.."/resources/functions/file_exists.lua");
+	dofile(scripts_dir.."/resources/functions/mkdir.lua");
 
 --connect to the database
-	--ODBC - data source name
-		if (dsn_name) then
-			dbh = freeswitch.Dbh(dsn_name,dsn_username,dsn_password);
-		end
-	--FreeSWITCH core db handler
-		if (db_type == "sqlite") then
-			dbh = freeswitch.Dbh("core:"..db_path.."/"..db_name);
-		end
+	dofile(scripts_dir.."/resources/functions/database_handle.lua");
+	dbh = database_handle('system');
 
 --make sure the scripts/run dir exists
-	os.execute("mkdir -p " .. scripts_dir .. "/run");
+	mkdir(scripts_dir .. "/run");
 
 --define the run file
 	run_file = scripts_dir .. "/run/call_flow_monitor.tmp";
@@ -60,11 +58,6 @@
 		o = h:read("*all")
 		h:close()
 		return o
-	end
-	--check if a file exists
-	function file_exists(name)
-		local f=io.open(name,"r")
-		if f~=nil then io.close(f) return true else return false end
 	end
 
 --used to stop the lua service

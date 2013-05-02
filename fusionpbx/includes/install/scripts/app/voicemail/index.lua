@@ -49,14 +49,8 @@
 	password_tries = 0;
 
 --connect to the database
-	--ODBC - data source name
-		if (dsn_name) then
-			dbh = freeswitch.Dbh(dsn_name,dsn_username,dsn_password);
-		end
-	--FreeSWITCH core db handler
-		if (db_type == "sqlite") then
-			dbh = freeswitch.Dbh("core:"..db_path.."/"..db_name);
-		end
+	dofile(scripts_dir.."/resources/functions/database_handle.lua");
+	dbh = database_handle('system');
 
 --set the api
 	api = freeswitch.API();
@@ -159,6 +153,7 @@
 	dofile(scripts_dir.."/resources/functions/file_exists.lua");
 	dofile(scripts_dir.."/resources/functions/explode.lua");
 	dofile(scripts_dir.."/resources/functions/format_seconds.lua");
+	dofile(scripts_dir.."/resources/functions/mkdir.lua");
 
 --voicemail functions
 	dofile(scripts_dir.."/app/voicemail/resources/functions/on_dtmf.lua");
@@ -276,19 +271,23 @@
 						send_email(voicemail_id, uuid);
 					end
 			else
-				--invalid voicemail
-					session:hangup();
+				--voicemail not enabled or does not exist
+					referred_by = session:getVariable("sip_h_Referred-By");
+					if (referred_by) then
+						referred_by = referred_by:match('[%d]+');
+						session:transfer(referred_by, "XML", context);
+					end
 			end
 	end
 
 --close the database connection
-	--dbh:release();
+	dbh:release();
 
 --notes
 	--record the video
 		--records audio only
 			--result = session:execute("set", "enable_file_write_buffering=false");
-			--os.execute("mkdir -p " .. voicemail_dir.."/"..voicemail_id);
+			--mkdir(voicemail_dir.."/"..voicemail_id);
 			--session:recordFile("/tmp/recording.fsv", 200, 200, 200);
 		--records audio and video
 			--result = session:execute("record_fsv", "file.fsv");
@@ -303,7 +302,7 @@
 
 	--callback (works with DTMF)
 		--http://wiki.freeswitch.org/wiki/Mod_fsv
-		--os.execute("mkdir -p " .. voicemail_dir.."/"..voicemail_id);
+		--mkdir(voicemail_dir.."/"..voicemail_id);
 		--session:recordFile(file_name, max_len_secs, silence_threshold, silence_secs) 
 		--session:sayPhrase(macro_name [,macro_data] [,language]);
 		--session:sayPhrase("voicemail_menu", "1:2:3:#", default_language);

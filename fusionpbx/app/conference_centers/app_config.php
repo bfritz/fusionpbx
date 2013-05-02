@@ -80,6 +80,15 @@
 		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
 		$apps[$x]['permissions'][$y]['groups'][] = 'user';
 		$y++;
+		$apps[$x]['permissions'][$y]['name'] = 'conference_session_play';
+		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'user';
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = 'conference_session_details';
+		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
+		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'conference_room_profile';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
@@ -106,6 +115,11 @@
 		$apps[$x]['permissions'][$y]['groups'][] = 'user';
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'conference_room_mute';
+		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'user';
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = 'conference_room_sounds';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
 		$apps[$x]['permissions'][$y]['groups'][] = 'user';
@@ -211,10 +225,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Introduce participants as they enter the conference.';
 		$z++;
-		//$apps[$x]['db'][$y]['fields'][$z]['name'] = 'enter_sound';
-		//$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
-		//$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'The sound played when someone enters the conference.';
-		//$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'sounds';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Play sound when someone enters or exists the conference.';
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'mute';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Mute participants on entering the conference.';
@@ -274,7 +288,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'end_epoch';
 		$z++;
 
-		$y = 4; //table array index
+		$y = 3; //table array index
 		$z = 0; //field array index
 		$apps[$x]['db'][$y]['table'] = 'v_conference_session_details';
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_uuid';
@@ -337,7 +351,7 @@
 		$z++;
 
 		/*
-		$y = 1; //table array index
+		$y = 4; //table array index
 		$z = 0; //field array index
 		$apps[$x]['db'][$y]['table'] = 'v_conference_center_users';
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'conference_user_uuid';

@@ -44,15 +44,46 @@ else {
 	require_once "includes/header.php";
 	require_once "includes/paging.php";
 
+//get the meeting_uuid using the pin number
+	$search = check_str($_GET["search"]);
+	$search = preg_replace('{\D}', '', $search);
+	if (strlen($search) > 0) {
+		$sql = "select * from v_meetings ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+		$sql .= "and (moderator_pin = '".$search."' or participant_pin = '".$search."') ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			$meeting_uuid = $row['meeting_uuid'];
+		}
+	}
+
 //if the $_GET array exists then process it
-	if (count($_GET) > 0) {
+	if (count($_GET) > 0 && strlen($_GET["search"]) == 0) {
 		//get http GET variables and set them as php variables
 			$conference_room_uuid = check_str($_GET["conference_room_uuid"]);
 			$record = check_str($_GET["record"]);
 			$wait_mod = check_str($_GET["wait_mod"]);
 			$announce = check_str($_GET["announce"]);
 			$mute = check_str($_GET["mute"]);
+			$sounds = check_str($_GET["sounds"]);
 			$enabled = check_str($_GET["enabled"]);
+			$meeting_uuid = check_str($_GET["meeting_uuid"]);
+
+		//record announcement
+			if ($record == "true") {
+				//prepare the values
+					$default_language = 'en';
+					$default_dialect = 'us';
+					$default_voice = 'callie';
+					$switch_cmd = "conference ".$meeting_uuid."-".$_SESSION['domain_name']." play ".$_SESSION['switch']['sounds']['dir']."/".$default_language."/".$default_dialect."/".$default_voice."/ivr/ivr-recording_started.wav";
+				//connect to event socket
+					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+					if ($fp) {
+						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					}
+			}
 
 		//update the conference room
 			$sql = "update v_conference_rooms set ";
@@ -67,6 +98,9 @@ else {
 			}
 			if (strlen($mute) > 0) {
 				$sql .= "mute = '$mute' ";
+			}
+			if (strlen($sounds) > 0) {
+				$sql .= "sounds = '$sounds' ";
 			}
 			if (strlen($enabled) > 0) {
 				$sql .= "enabled = '$enabled' ";
@@ -124,189 +158,223 @@ else {
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['title-conference-rooms']."</b></td>\n";
-	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
+	echo "		<form method='get' action=''>\n";
+	echo "			<td width='50%' align='left' nowrap='nowrap'><b>".$text['title-conference-rooms']."</b></td>\n";
+	echo "			<td width='50%' align='right'>\n";
+	echo "				<input type='text' class='txt' style='width: 150px' name='search' value='$search'>";
+	echo "				<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>";
+	echo "			</td>\n";
+	echo "		</form>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
 
-	//prepare to page the results
-		$sql = "select count(*) as num_rows from v_conference_rooms as r, v_meeting_users as u ";
-		$sql .= "where r.domain_uuid = '$domain_uuid' ";
-		$sql .= "and r.meeting_uuid = u.meeting_uuid ";
-		if (!if_group("admin") && !if_group("superadmin")) {
-			$sql .= "and u.user_uuid = '".$_SESSION["user_uuid"]."' ";
+	//get the conference room count
+		require_once "app/conference_centers/resources/classes/conference_center.php";
+		$conference_center = new conference_center;
+		$conference_center->db = $db;
+		$conference_center->domain_uuid = $_SESSION['domain_uuid'];
+		if (strlen($meeting_uuid) > 0) {
+			$conference_center->meeting_uuid = $meeting_uuid;
 		}
-		//$sql .= "and r.meeting_uuid = 'fbd2214a-39db-4a93-bd84-3fd830f63dba' ";
-		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-		$prep_statement = $db->prepare($sql);
-		if ($prep_statement) {
-			$prep_statement->execute();
-			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
-			if ($row['num_rows'] > 0) {
-				$num_rows = $row['num_rows'];
-			}
-			else {
-				$num_rows = '0';
-			}
+		if (strlen($search) > 0) {
+			$conference_center->search = $search;
 		}
+		$row_count = $conference_center->room_count();
 
 	//prepare to page the results
-		$rows_per_page = 10;
+		$rows_per_page = 150;
 		$param = "";
-		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
+		$page = check_str($_GET['page']);
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+		list($paging_controls, $rows_per_page, $var3) = paging($row_count, $param, $rows_per_page); 
 		$offset = $rows_per_page * $page; 
 
-	//get the list
-		$sql = "select * from v_conference_rooms as r, v_meeting_users as u ";
-		$sql .= "where r.domain_uuid = '$domain_uuid' ";
-		$sql .= "and r.meeting_uuid = u.meeting_uuid ";
-		if (!if_group("admin") && !if_group("superadmin")) {
-			$sql .= "and u.user_uuid = '".$_SESSION["user_uuid"]."' ";
+	//get the conference rooms
+		$conference_center->rows_per_page = $rows_per_page;
+		$conference_center->offset = $offset;
+		$conference_center->order_by = $order_by;
+		$conference_center->order = $order;
+		if (strlen($meeting_uuid) > 0) {
+			$conference_center->meeting_uuid = $meeting_uuid;
 		}
-		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-		$sql .= "limit $rows_per_page offset $offset ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll();
-		$result_count = count($result);
-		unset ($prep_statement, $sql);
+		if (strlen($search) > 0) {
+			$conference_center->search = $search;
+		}
+		$result = $conference_center->rooms();
+		$result_count = $conference_center->count;
 
-	$c = 0;
-	$row_style["0"] = "row_style0";
-	$row_style["1"] = "row_style1";
+	//prepare to alternate the row styles
+		$c = 0;
+		$row_style["0"] = "row_style0";
+		$row_style["1"] = "row_style1";
 
-	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-	echo "<tr>\n";
+	//table header
+		echo "<div align='center'>\n";
+		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+		echo "<tr>\n";
+		//echo th_order_by('conference_center_uuid', 'Conference UUID', $order_by, $order);
+		//echo th_order_by('meeting_uuid', 'Meeting UUID', $order_by, $order);
+		echo "<th nowrap='nowrap'>".$text['label-moderator-pin']."</th>\n";
+		echo "<th nowrap='nowrap'>".$text['label-participant-pin']."</th>\n";
+		//echo th_order_by('profile', $text['label-profile'], $order_by, $order);
+		echo th_order_by('record', $text['label-record'], $order_by, $order);
+		//echo th_order_by('max_members', 'Max', $order_by, $order);
+		echo th_order_by('wait_mod', $text['label-wait-moderator'], $order_by, $order);
+		echo th_order_by('announce', $text['label-announce'], $order_by, $order);
+		//echo th_order_by('enter_sound', 'Enter Sound', $order_by, $order);
+		echo th_order_by('mute', $text['label-mute'], $order_by, $order);
+		//echo th_order_by('created', 'Created', $order_by, $order);
+		//echo th_order_by('created_by', 'Created By', $order_by, $order);
+		echo th_order_by('sounds', $text['label-sounds'], $order_by, $order);
+		echo "<th>".$text['label-members']."</th>\n";
+		echo "<th>".$text['label-tools']."</th>\n";
+		if (permission_exists('conference_room_enabled')) {
+			echo th_order_by('enabled', $text['label-enabled'], $order_by, $order);
+		}
+		echo th_order_by('description', $text['label-description'], $order_by, $order);
+		echo "<td align='right' width='42' nowrap='nowrap'>\n";
+		if (permission_exists('conference_room_add')) {
+			echo "	<a href='conference_room_edit.php' alt='add'>$v_link_label_add</a>\n";
+		}
+		else {
+			echo "	&nbsp;\n";
+		}
+		echo "</td>\n";
+		echo "<tr>\n";
 
-	//echo th_order_by('conference_center_uuid', 'Conference UUID', $order_by, $order);
-	//echo th_order_by('meeting_uuid', 'Meeting UUID', $order_by, $order);
-	echo th_order_by('profile', $text['label-profile'], $order_by, $order);
-	echo th_order_by('record', $text['label-record'], $order_by, $order);
-	//echo th_order_by('max_members', 'Max', $order_by, $order);
-	echo th_order_by('wait_mod', $text['label-wait-moderator'], $order_by, $order);
-	echo th_order_by('announce', $text['label-announce'], $order_by, $order);
-	//echo th_order_by('enter_sound', 'Enter Sound', $order_by, $order);
-	echo th_order_by('mute', $text['label-mute'], $order_by, $order);
-	//echo th_order_by('created', 'Created', $order_by, $order);
-	//echo th_order_by('created_by', 'Created By', $order_by, $order);
-	echo th_order_by('enabled', $text['label-enabled'], $order_by, $order);
-	echo "<th>".$text['label-count']."</th>\n";
-	echo "<th>".$text['label-tools']."</th>\n";
-	echo th_order_by('description', $text['label-description'], $order_by, $order);
-	echo "<td align='right' width='42' nowrap='nowrap'>\n";
-	if (permission_exists('conference_room_add')) {
-		echo "	<a href='conference_room_edit.php' alt='add'>$v_link_label_add</a>\n";
-	}
-	else {
-		echo "	&nbsp;\n";
-	}
-	echo "</td>\n";
-	echo "<tr>\n";
+	//table data
+		if ($result_count > 0) {
+			foreach($result as $row) {
+				$meeting_uuid = $row['meeting_uuid'];
+				$moderator_pin = $row['moderator_pin'];
+				$participant_pin = $row['participant_pin'];
+				if (strlen($moderator_pin) == 9)  {
+					$moderator_pin = substr($moderator_pin, 0, 3) ."-".  substr($moderator_pin, 3, 3) ."-". substr($moderator_pin, -3)."\n";
+				}
+				if (strlen($participant_pin) == 9)  {
+					$participant_pin = substr($participant_pin, 0, 3) ."-".  substr($participant_pin, 3, 3) ."-". substr($participant_pin, -3)."\n";
+				}
 
-	if ($result_count > 0) {
-		foreach($result as $row) {
-			$meeting_uuid = $row['meeting_uuid'];
-			echo "<tr >\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_center_uuid']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['meeting_uuid']."&nbsp;</td>\n";
-			echo "	<td valign='middle' class='".$row_style[$c]."'>".$row['profile']."&nbsp;</td>\n";
-			echo "	<td valign='middle' class='".$row_style[$c]."'>";
-			if ($row['record'] == "true") {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&record=false\">".$text['label-true']."</a>";
-			}
-			else {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&record=true\">".$text['label-false']."</a>";
-			}
-			echo "		&nbsp;\n";
-			echo "	</td>\n";
-			//echo "	<td valign='middle' class='".$row_style[$c]."'>".$row['max_members']."&nbsp;</td>\n";
-			echo "	<td valign='middle' class='".$row_style[$c]."'>";
-			if ($row['wait_mod'] == "true") {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&wait_mod=false\">".$text['label-true']."</a>";
-			}
-			else {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&wait_mod=true\">".$text['label-false']."</a>";
-			}
-			echo "		&nbsp;\n";
-			echo "	</td>\n";
-			echo "	<td valign='middle' class='".$row_style[$c]."'>";
-			if ($row['announce'] == "true") {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&announce=false\">".$text['label-true']."</a>";
-			}
-			else {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&announce=true\">".$text['label-false']."</a>";
-			}
-			echo "		&nbsp;\n";
-			echo "	</td>\n";
+				echo "<tr >\n";
+				echo "	<td valign='middle' class='".$row_style[$c]."'>".$moderator_pin."&nbsp;</td>\n";
+				echo "	<td valign='middle' class='".$row_style[$c]."'>".$participant_pin."&nbsp;</td>\n";
+				//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_center_uuid']."&nbsp;</td>\n";
+				//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['meeting_uuid']."&nbsp;</td>\n";
+				//echo "	<td valign='middle' class='".$row_style[$c]."'>".$row['profile']."&nbsp;</td>\n";
+				echo "	<td valign='middle' class='".$row_style[$c]."'>";
+				if ($row['record'] == "true") {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&record=false&meeting_uuid=".$meeting_uuid."\">".$text['label-true']."</a>";
+				}
+				else {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&record=true&meeting_uuid=".$meeting_uuid."\">".$text['label-false']."</a>";
+				}
+				echo "		&nbsp;\n";
+				echo "	</td>\n";
+				//echo "	<td valign='middle' class='".$row_style[$c]."'>".$row['max_members']."&nbsp;</td>\n";
+				echo "	<td valign='middle' class='".$row_style[$c]."'>";
+				if ($row['wait_mod'] == "true") {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&wait_mod=false\">".$text['label-true']."</a>";
+				}
+				else {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&wait_mod=true\">".$text['label-false']."</a>";
+				}
+				echo "		&nbsp;\n";
+				echo "	</td>\n";
+				echo "	<td valign='middle' class='".$row_style[$c]."'>";
+				if ($row['announce'] == "true") {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&announce=false\">".$text['label-true']."</a>";
+				}
+				else {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&announce=true\">".$text['label-false']."</a>";
+				}
+				echo "		&nbsp;\n";
+				echo "	</td>\n";
 
-			//echo "	<td valign='middle' class='".$row_style[$c]."'>".$row['enter_sound']."&nbsp;</td>\n";
-			echo "	<td valign='middle' class='".$row_style[$c]."'>";
-			if ($row['mute'] == "true") {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&mute=false\">".$text['label-true']."</a>";
-			}
-			else {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&mute=true\">".$text['label-false']."</a>";
-			}
-			echo "		&nbsp;\n";
-			echo "	</td>\n";
-			//echo "	<td valign='middle' class='".$row_style[$c]."'>".$row['created']."&nbsp;</td>\n";
-			//echo "	<td valign='middle' class='".$row_style[$c]."'>".$row['created_by']."&nbsp;</td>\n";
-			echo "	<td valign='middle' class='".$row_style[$c]."'>";
-			if ($row['enabled'] == "true") {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&enabled=false\">".$text['label-true']."</a>";
-			}
-			else {
-				echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&enabled=true\">".$text['label-false']."</a>";
-			}
-			echo "		&nbsp;\n";
-			echo "	</td>\n";
-			if (strlen($conference[$meeting_uuid]["session_uuid"])) {
-				echo "	<td valign='middle' class='".$row_style[$c]."'>".$conference[$meeting_uuid]["member_count"]."&nbsp;</td>\n";
-			}
-			else {
-				echo "	<td valign='middle' class='".$row_style[$c]."'>0</td>\n";
-			}
-			echo "	<td valign='middle' class='".$row_style[$c]."'>\n";
-			echo "		<a href='".PROJECT_PATH."/app/conferences_active/conference_interactive.php?c=".$row['meeting_uuid']."'>".$text['label-view']."</a>&nbsp;\n";
-			echo "		<a href='conference_sessions.php?id=".$row['meeting_uuid']."'>".$text['label-sessions']."</a>\n";
-			echo "	</td>\n";
-			echo "	<td valign='middle' class='row_stylebg' width='20%' nowrap='nowrap'>".$row['description']."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
-			if (permission_exists('conference_room_edit')) {
-				echo "		<a href='conference_room_edit.php?id=".$row['conference_room_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
-			}
-			if (permission_exists('conference_room_delete')) {
-				echo "		<a href='conference_room_delete.php?id=".$row['conference_room_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-			}
-			echo "	</td>\n";
-			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
-		} //end foreach
-		unset($sql, $result, $row_count);
-	} //end if results
+				echo "	<td valign='middle' class='".$row_style[$c]."'>";
+				if ($row['mute'] == "true") {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&mute=false\">".$text['label-true']."</a>";
+				}
+				else {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&mute=true\">".$text['label-false']."</a>";
+				}
+				echo "		&nbsp;\n";
+				echo "	</td>\n";
 
-	echo "<tr>\n";
-	echo "<td colspan='12' align='left'>\n";
-	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
-	echo "	<tr>\n";
-	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
-	if (permission_exists('conference_room_add')) {
-		echo "			<a href='conference_room_edit.php' alt='add'>$v_link_label_add</a>\n";
-	}
-	else {
-		echo "			&nbsp;\n";
-	}
-	echo "		</td>\n";
-	echo "	</tr>\n";
- 	echo "	</table>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+				echo "	<td valign='middle' class='".$row_style[$c]."'>";
+				if ($row['sounds'] == "true") {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&sounds=false\">".$text['label-true']."</a>";
+				}
+				else {
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&sounds=true\">".$text['label-false']."</a>";
+				}
+				echo "		&nbsp;\n";
+				echo "	</td>\n";
 
+				if (strlen($conference[$meeting_uuid]["session_uuid"])) {
+					echo "	<td valign='middle' class='".$row_style[$c]."'>".$conference[$meeting_uuid]["member_count"]."&nbsp;</td>\n";
+				}
+				else {
+					echo "	<td valign='middle' class='".$row_style[$c]."'>0</td>\n";
+				}
+				echo "	<td valign='middle' class='".$row_style[$c]."' nowrap='nowrap'>\n";
+				echo "		<a href='".PROJECT_PATH."/app/conferences_active/conference_interactive.php?c=".$row['meeting_uuid']."'>".$text['label-view']."</a>&nbsp;\n";
+				echo "		<a href='conference_sessions.php?id=".$row['meeting_uuid']."'>".$text['label-sessions']."</a>\n";
+				echo "	</td>\n";
+
+				if (permission_exists('conference_room_enabled')) {
+					echo "	<td valign='middle' class='".$row_style[$c]."'>";
+					if ($row['enabled'] == "true") {
+						echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&enabled=false\">".$text['label-true']."</a>";
+					}
+					else {
+						echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&enabled=true\">".$text['label-false']."</a>";
+					}
+					echo "		&nbsp;\n";
+					echo "	</td>\n";
+				}
+
+				echo "	<td valign='middle' class='row_stylebg' width='20%'>";
+				echo "		".$row['description']."\n";
+				echo "		&nbsp;\n";
+				echo "	</td>\n";
+
+				echo "	<td valign='top' align='right' nowrap='nowrap'>\n";
+				echo "		&nbsp;\n";
+				if (permission_exists('conference_room_edit')) {
+					echo "		<a href='conference_room_edit.php?id=".$row['conference_room_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+				}
+				if (permission_exists('conference_room_delete')) {
+					echo "		<a href='conference_room_delete.php?id=".$row['conference_room_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				}
+				echo "	</td>\n";
+
+				echo "</tr>\n";
+				if ($c==0) { $c=1; } else { $c=0; }
+			} //end foreach
+			unset($sql, $result, $row_count);
+		} //end if results
+
+	//show paging
+		echo "<tr>\n";
+		echo "<td colspan='12' align='left'>\n";
+		echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
+		echo "	<tr>\n";
+		echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
+		echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
+		echo "		<td width='33.3%' align='right'>\n";
+		if (permission_exists('conference_room_add')) {
+			echo "			<a href='conference_room_edit.php' alt='add'>$v_link_label_add</a>\n";
+		}
+		else {
+			echo "			&nbsp;\n";
+		}
+		echo "		</td>\n";
+		echo "	</tr>\n";
+		echo "	</table>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+//close the tables
 	echo "</table>";
 	echo "</div>";
 	echo "<br /><br />";

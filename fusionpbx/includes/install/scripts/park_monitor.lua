@@ -28,11 +28,15 @@
 	--if the call has been answered
 	--then send presence terminate, and delete from the database
 
+--include config.lua
+	scripts_dir = string.sub(debug.getinfo(1).source,2,string.len(debug.getinfo(1).source)-(string.len(argv[0])+1));
+	dofile(scripts_dir.."/resources/functions/config.lua");
+	dofile(config());
+
 --connect to the database
-	--ODBC - data source name
-		--local dbh = freeswitch.Dbh("name","user","pass");
-	--FreeSWITCH core db
-		local dbh = freeswitch.Dbh("core:park");
+	--dbh = freeswitch.Dbh("core:core"); -- when using sqlite
+	dbh = freeswitch.Dbh("sqlite://"..database_dir.."/park.db");
+	--dofile(scripts_dir.."/resources/functions/database_handle.lua");
 
 --get the argv values
 	script_name = argv[0];
