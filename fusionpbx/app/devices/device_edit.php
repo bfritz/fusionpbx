@@ -217,7 +217,7 @@ require_once "includes/require.php";
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
-		$device_uuid = $_GET["id"];
+		$device_uuid = check_str($_GET["id"]);
 		$sql = "select * from v_devices ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and device_uuid = '$device_uuid' ";
@@ -241,19 +241,19 @@ require_once "includes/require.php";
 		unset ($prep_statement);
 	}
 
-//begin the content
+//show the header
 	require_once "includes/header.php";
 
+//show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
-	echo "	  <br>";
+	echo "		<br>";
 
 	echo "<form method='post' name='frm' action=''>\n";
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
-
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap='nowrap' align='left'><b>Device</b></td>\n";
 	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='devices.php'\" value='Back'></td>\n";
