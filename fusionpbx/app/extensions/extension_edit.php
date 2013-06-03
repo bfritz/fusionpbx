@@ -85,6 +85,9 @@ else {
 			$dial_string = check_str($_POST["dial_string"]);
 			$enabled = check_str($_POST["enabled"]);
 			$description = check_str($_POST["description"]);
+
+		//remove spaces
+			$vm_mailto = str_replace(" ", "", $vm_mailto);
 	}
 
 //delete the user from the v_extension_users
@@ -106,7 +109,7 @@ else {
 			return;
 	}
 
-//delete the user from the v_extension_users
+//delete the user from the v_device_extensions
 	if ($_GET["a"] == "delete" && strlen($_REQUEST["device_extension_uuid"]) > 0 && permission_exists("extension_delete")) {
 		//set the variables
 			$device_extension_uuid = check_str($_REQUEST["device_extension_uuid"]);
@@ -508,7 +511,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if (permission_exists('extension_add') || permission_exists('extension_edit')) {
 
 				//synchronize configuration
-					if (is_readable($_SESSION['switch']['extensions']['dir'])) {
+					if (is_writable($_SESSION['switch']['extensions']['dir'])) {
 						require_once "app/extensions/resources/classes/extension.php";
 						$ext = new extension;
 						$ext->xml();
@@ -613,7 +616,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$number_alias = $row["number_alias"];
 			$password = $row["password"];
 			$vm_password = $row["vm_password"];
-			$vm_password = str_replace("#", "", $vm_password); //preserves leading zeros
 			$accountcode = $row["accountcode"];
 			$effective_caller_id_name = $row["effective_caller_id_name"];
 			$effective_caller_id_number = $row["effective_caller_id_number"];
@@ -648,6 +650,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		unset ($prep_statement);
 	}
+
+//clean the variables
+	$vm_password = str_replace("#", "", $vm_password);
+	$vm_mailto = str_replace(" ", "", $vm_mailto);
 
 //set the defaults
 	if (strlen($limit_max) == 0) { $limit_max = '5'; }
