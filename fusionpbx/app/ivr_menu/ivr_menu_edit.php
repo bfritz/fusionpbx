@@ -484,7 +484,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 
 	echo "\n";
-	echo "		<select name='ivr_menu_greet_short' class='formfld' onchange='changeToInput(this);'\">\n";
+	echo "		<select name='ivr_menu_greet_short' class='formfld' onchange='changeToInput(this);'>\n";
 	echo "		<option></option>\n";
 	//misc
 		if (if_group("superadmin")) {
@@ -538,7 +538,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</optgroup>\n";
 	//select
 		if (if_group("superadmin")) {
-			if (!$tmp_selected) {
+			if (!$tmp_selected && strlen($ivr_menu_greet_short) > 0) {
 				echo "<optgroup label='selected'>\n";
 				if (file_exists($_SESSION['switch']['recordings']['dir']."/".$ivr_menu_greet_short)) {
 					echo "		<option value='".$_SESSION['switch']['recordings']['dir']."/".$ivr_menu_greet_short."' selected='selected'>".$ivr_menu_greet_short."</option>\n";
