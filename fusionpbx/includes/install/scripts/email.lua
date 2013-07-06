@@ -55,6 +55,9 @@
 --replace the &#34 with double quote
 	body = body:gsub("&#34;", [["]]);
 
+--remove spaces from the to
+	to = to:gsub(" ", "");
+
 --send the email
 	if (file == nil) then
 		freeswitch.email("",
