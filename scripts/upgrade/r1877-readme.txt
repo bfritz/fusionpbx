@@ -63,7 +63,7 @@ Migration Instructions
 
 18. Update the permissions.
 	Go to advanced -> group manager edit the permissions for the superadmin group
-	Select the permissions you that are not select in the list when finished press save.
+	Select the permissions that you want to enable and then press save.
 
 19. Logout of the web interface to clear the session.
 
