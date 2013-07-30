@@ -72,44 +72,19 @@ require_once "includes/paging.php";
 
 				//loop through the list of assigned extensions
 					foreach ($_SESSION['user']['extension'] as &$sub_row) {
-						$extension = $sub_row["user"];
-						//hunt_group information used to determine if this is an add or an update
-							$sql  = "select * from v_hunt_groups ";
-							$sql .= "where domain_uuid = '$domain_uuid' ";
-							$sql .= "and hunt_group_extension = '$extension' ";
-							$prep_statement_2 = $db->prepare(check_sql($sql));
-							$prep_statement_2->execute();
-							$result2 = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
-							foreach ($result2 as &$row2) {
-								if ($row2["hunt_group_type"] == 'dnd') {
-									$dnd_action = "update";
-									$dnd_uuid = $row2["hunt_group_uuid"];
-								}
-							}
-							unset ($prep_statement_2, $result2, $row2);
-						//add or update dnd
+						//update dnd
 							$dnd = new do_not_disturb;
 							//$dnd->debug = false;
 							$dnd->domain_uuid = $domain_uuid;
-							$dnd->dnd_uuid = $dnd_uuid;
 							$dnd->domain_name = $_SESSION['domain_name'];
-							$dnd->extension = $extension;
+							$dnd->extension = $sub_row["user"];
 							if ($row['status'] == "Do Not Disturb") {
-								$dnd->dnd_enabled = "true";
-								if ($dnd_action == "add") {
-									$dnd->dnd_add();
-								}
-								if ($dnd_action == "update") {
-									$dnd->dnd_update();
-								}
+								$dnd->enabled = "true";
 							}
 							else {
-								//for other status disable dnd
-								if ($dnd_action == "update") {
-									$dnd->dnd_enabled = "false";
-									$dnd->dnd_update();
-								}
+								$dnd->enabled = "false";
 							}
+							$dnd->set();
 							unset($dnd);
 					}
 					unset ($prep_statement);
