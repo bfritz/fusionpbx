@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2013
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -84,32 +84,42 @@ echo "	<td align=\"center\">\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-//get the user list from the database
-	$sql = "select * from v_users ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
+//get the list of superadmins
+	$superadmins = superadmin_list($db);
+
+//get the users from the database
+	$sql = "select count(*) as num_rows from v_users ";
+	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= "and $field_name = '$field_value' ";
 	}
 	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	$num_rows = count($result);
+	$prep_statement = $db->prepare($sql);
+	if ($prep_statement) {
+		$prep_statement->execute();
+		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+		if ($row['num_rows'] > 0) {
+			$num_rows = $row['num_rows'];
+		}
+		else {
+			$num_rows = '0';
+		}
+	}
 	unset ($prep_statement, $result, $sql);
 	$rows_per_page = 200;
 	$param = "";
 	$page = $_GET['page'];
-	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
-	$offset = $rows_per_page * $page; 
+	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page);
+	$offset = $rows_per_page * $page;
 
 	$sql = "select * from v_users ";
 	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 	if (strlen($field_name) > 0 && strlen($field_value) > 0) {
 		$sql .= "and $field_name like '%$field_value%' ";
 	}
-	if (strlen($order_by)> 0) { 
-		$sql .= "order by $order_by $order "; 
+	if (strlen($order_by)> 0) {
+		$sql .= "order by $order_by $order ";
 	}
 	else {
 		$sql .= "order by username ";
@@ -144,20 +154,24 @@ echo "	<td align=\"center\">\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['username']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_email']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_enabled']."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
-			if (permission_exists('user_edit')) {
-				echo "		<a href='usersupdate.php?id=".$row['user_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			if (if_superadmin($superadmins, $row['user_uuid']) && !if_group("superadmin")) {
+				//hide
+			} else {
+				echo "<tr >\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['username']."&nbsp;</td>\n";
+				//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_email']."&nbsp;</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['user_enabled']."&nbsp;</td>\n";
+				echo "	<td valign='top' align='right'>\n";
+				if (permission_exists('user_edit')) {
+					echo "		<a href='usersupdate.php?id=".$row['user_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+				}
+				if (permission_exists('user_delete')) {
+					echo "		<a href='userdelete.php?id=".$row['user_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				}
+				echo "	</td>\n";
+				echo "</tr>\n";
+				if ($c==0) { $c=1; } else { $c=0; }
 			}
-			if (permission_exists('user_delete')) {
-				echo "		<a href='userdelete.php?id=".$row['user_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
-			}
-			echo "	</td>\n";
-			echo "</tr>\n";
-			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
 		unset($sql, $result, $row_count);
 	} //end if results

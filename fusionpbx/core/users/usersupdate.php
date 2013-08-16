@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2013
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -57,16 +57,15 @@ else {
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$username = $row["username"];
-		break; //limit to 1 row
 	}
 	unset ($prep_statement);
 
 //required to be a superadmin to update an account that is a member of the superadmin group
-	$superadmin_list = superadmin_list($db);
-	if (if_superadmin($superadmin_list, $_SESSION['user_uuid'])) {
-		if (!if_group("superadmin")) { 
+	$superadmins = superadmin_list($db);
+	if (if_superadmin($superadmins, $user_uuid)) {
+		if (!if_group("superadmin")) {
 			echo "access denied";
-			return;
+			exit;
 		}
 	}
 
@@ -90,7 +89,7 @@ else {
 
 //get the user settings
 	$sql = "select * from v_user_settings ";
-	$sql .= "where user_uuid = '".$_SESSION["user_uuid"]."' ";
+	$sql .= "where user_uuid = '".$user_uuid."' ";
 	$sql .= "and user_setting_enabled = 'true' ";
 	$prep_statement = $db->prepare($sql);
 	if ($prep_statement) {
@@ -142,7 +141,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		return;
 	}
 
-	//get the number of rows in v_user_settings 
+	//get the number of rows in v_user_settings
 		$sql = "select count(*) as num_rows from v_user_settings ";
 		$sql .= "where user_setting_category = 'domain' ";
 		$sql .= "and user_setting_subcategory = 'time_zone' ";
@@ -330,7 +329,6 @@ else {
 //show the content
 	$table_width ='width="100%"';
 	echo "<form method='post' action=''>";
-	echo "<br />\n";
 
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
