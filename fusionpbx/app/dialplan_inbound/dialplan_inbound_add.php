@@ -664,7 +664,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if (permission_exists("inbound_route_edit") && $action == "advanced") {
+	if (permission_exists("inbound_route_edit") && $action == "advanced" && if_group("superadmin")) {
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "	".$text['label-condition_1'].":\n";
@@ -693,7 +693,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			obj.parentNode.removeChild(obj);
 			Replace_condition_field_1(this.objs);
 		}
-		
+
 		function Replace_condition_field_1(obj){
 			obj[2].parentNode.insertBefore(obj[0],obj[2]);
 			obj[0].parentNode.removeChild(obj[1]);
@@ -774,7 +774,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			obj.parentNode.removeChild(obj);
 			Replace_condition_field_2(this.objs);
 		}
-		
+
 		function Replace_condition_field_2(obj){
 			obj[2].parentNode.insertBefore(obj[0],obj[2]);
 			obj[0].parentNode.removeChild(obj[1]);
@@ -923,13 +923,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='dialplan_enabled' style='width: 60%;'>\n";
-	if ($dialplan_enabled == "true") { 
+	if ($dialplan_enabled == "true") {
 		echo "    <option value='true' SELECTED >".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "    <option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($dialplan_enabled == "false") { 
+	if ($dialplan_enabled == "false") {
 		echo "    <option value='false' SELECTED >".$text['label-false']."</option>\n";
 	}
 	else {
@@ -955,9 +955,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<tr>\n";
 	echo "	<td colspan='5' align='right'>\n";
 	if ($action == "update") {
-		echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
+		if ($action == "update" && if_group("superadmin")) {
+			echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
+		}
+		echo "			<input type='submit' class='btn' value='".$text['button-save']."'>\n";
 	}
-	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "	</td>\n";
 	echo "</tr>";
 
