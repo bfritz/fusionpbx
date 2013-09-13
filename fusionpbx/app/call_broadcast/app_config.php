@@ -12,7 +12,7 @@
 		$apps[$x]['description']['de'] = '';
 		$apps[$x]['description']['de-ch'] = '';
 		$apps[$x]['description']['de-at'] = '';
-		$apps[$x]['description']['fr'] = "Il fait d' massive appels vers des extensions, IVR, salles de conferences ou quelqu'autre nom.";
+		$apps[$x]['description']['fr'] = "Programme des appels multiples vers des extensions, IVR, salles de conferences ou autre.";
 		$apps[$x]['description']['fr-ca'] = '';
 		$apps[$x]['description']['fr-ch'] = '';
 		$apps[$x]['description']['pt-pt'] = 'Programação para imediatamente fazer várias chamadas para a extensão de um menu de URA, Sala de Conferência, ou qualquer outro número.';
@@ -114,6 +114,9 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_recordings';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'recording_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'broadcast_caller_id_name';

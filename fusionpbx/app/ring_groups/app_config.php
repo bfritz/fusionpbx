@@ -12,7 +12,7 @@
 		$apps[$x]['description']['de'] = '';
 		$apps[$x]['description']['de-ch'] = '';
 		$apps[$x]['description']['de-at'] = '';
-		$apps[$x]['description']['fr'] = '';
+		$apps[$x]['description']['fr'] = 'Outil pour appeler plusieurs extensions';
 		$apps[$x]['description']['fr-ca'] = '';
 		$apps[$x]['description']['fr-ch'] = '';
 		$apps[$x]['description']['pt-pt'] = 'Uma ferramenta para chamar várias extensões.';
@@ -24,7 +24,7 @@
 		$apps[$x]['menu'][0]['title']['de'] = '';
 		$apps[$x]['menu'][0]['title']['de-ch'] = '';
 		$apps[$x]['menu'][0]['title']['de-at'] = '';
-		$apps[$x]['menu'][0]['title']['fr'] = '';
+		$apps[$x]['menu'][0]['title']['fr'] = 'Groupes de sonnerie';
 		$apps[$x]['menu'][0]['title']['fr-ca'] = '';
 		$apps[$x]['menu'][0]['title']['fr-ch'] = '';
 		$apps[$x]['menu'][0]['title']['pt-pt'] = 'Grupos de Trabalho';
@@ -55,6 +55,14 @@
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
 		$y++;
+		$apps[$x]['permissions'][$y]['name'] = 'ring_group_forward';
+		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
+		$apps[$x]['permissions'][$y]['groups'][] = 'user';
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = 'ring_group_prompt';
+		$y++;
+
 	//schema details
 		$y = 0; //table array index
 		$z = 0; //field array index
@@ -63,13 +71,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_name';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
@@ -82,6 +90,14 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_context';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Enter the context.';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_forward_destination';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Enter the call forward destination.';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_forward_enabled';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Select enable or disable the ring group call forward.';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_cid_name_prefix';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
@@ -119,43 +135,83 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 		$z++;
-	//schema details
+
 		$y = 1; //table array index
 		$z = 0; //field array index
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_extension_uuid';
+		$apps[$x]['db'][$y]['table'] = 'v_ring_group_destinations';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_destination_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
 		$z++;
-		$apps[$x]['db'][$y]['table'] = 'v_ring_group_extensions';
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'extension_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'destination_number';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
+		$z++;
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'destination_delay';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'destination_timeout';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'destination_prompt';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric'; //confirm,announce
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
+		$z++;
+
+		$y = 2; //table array index
+		$z = 0; //field array index
+		$apps[$x]['db'][$y]['table'] = 'v_ring_group_users';
+		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'ring_group_user_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Select the extension.';
-		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'extension_delay';
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'extension_timeout';
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'numeric';
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'domain_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_domains';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'domain_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'ring_group_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_ring_groups';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'ring_group_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'user_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_users';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'user_uuid';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 ?>

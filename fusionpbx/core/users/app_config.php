@@ -12,7 +12,7 @@
 		$apps[$x]['description']['de'] = '';
 		$apps[$x]['description']['de-ch'] = '';
 		$apps[$x]['description']['de-at'] = '';
-		$apps[$x]['description']['fr'] = '';
+		$apps[$x]['description']['fr'] = 'Ajouter, Editer, Supprimer et Chercher des Usagers';
 		$apps[$x]['description']['fr-ca'] = '';
 		$apps[$x]['description']['fr-ch'] = '';
 		$apps[$x]['description']['pt-pt'] = 'Adicionar, editar, apagar e pesquisa pelos utilizadores.';
@@ -23,7 +23,7 @@
 		$apps[$x]['menu'][2]['title']['de'] = '';
 		$apps[$x]['menu'][2]['title']['de-ch'] = '';
 		$apps[$x]['menu'][2]['title']['de-at'] = '';
-		$apps[$x]['menu'][2]['title']['fr'] = '';
+		$apps[$x]['menu'][2]['title']['fr'] = 'Gestion Usagers';
 		$apps[$x]['menu'][2]['title']['fr-ca'] = '';
 		$apps[$x]['menu'][2]['title']['fr-ch'] = '';
 		$apps[$x]['menu'][2]['title']['pt-pt'] = 'Gestor de Utilizadores';
@@ -40,7 +40,7 @@
 		$apps[$x]['menu'][3]['title']['de'] = '';
 		$apps[$x]['menu'][3]['title']['de-ch'] = '';
 		$apps[$x]['menu'][3]['title']['de-at'] = '';
-		$apps[$x]['menu'][3]['title']['fr'] = '';
+		$apps[$x]['menu'][3]['title']['fr'] = 'Gestion Groupes';
 		$apps[$x]['menu'][3]['title']['fr-ca'] = '';
 		$apps[$x]['menu'][3]['title']['fr-ch'] = '';
 		$apps[$x]['menu'][3]['title']['pt-pt'] = 'Gestor de Grupos';

@@ -42,7 +42,7 @@
 		$apps[$x]['menu'][1]['title']['de'] = '';
 		$apps[$x]['menu'][1]['title']['de-ch'] = '';
 		$apps[$x]['menu'][1]['title']['de-at'] = '';
-		$apps[$x]['menu'][1]['title']['fr'] = 'Administrateur de Dialplan';
+		$apps[$x]['menu'][1]['title']['fr'] = 'Gestion du Dialplan';
 		$apps[$x]['menu'][1]['title']['fr-ca'] = '';
 		$apps[$x]['menu'][1]['title']['fr-ch'] = '';
 		$apps[$x]['menu'][1]['title']['pt-pt'] = 'Gestor de Dialplan';

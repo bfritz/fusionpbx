@@ -12,7 +12,7 @@
 		$apps[$x]['description']['de'] = '';
 		$apps[$x]['description']['de-ch'] = '';
 		$apps[$x]['description']['de-at'] = '';
-		$apps[$x]['description']['fr'] = "Usé pour définir cibler nombres externe.";
+		$apps[$x]['description']['fr'] = "Défini les numéros externes.";
 		$apps[$x]['description']['fr-ca'] = '';
 		$apps[$x]['description']['fr-ch'] = '';
 		$apps[$x]['description']['pt-pt'] = 'Utilizado para definir os números de destino externos.';
@@ -24,7 +24,7 @@
 		$apps[$x]['menu'][0]['title']['de'] = '';
 		$apps[$x]['menu'][0]['title']['de-ch'] = '';
 		$apps[$x]['menu'][0]['title']['de-at'] = '';
-		$apps[$x]['menu'][0]['title']['fr'] = 'Cibler';
+		$apps[$x]['menu'][0]['title']['fr'] = 'Destinations';
 		$apps[$x]['menu'][0]['title']['fr-ca'] = '';
 		$apps[$x]['menu'][0]['title']['fr-ch'] = '';
 		$apps[$x]['menu'][0]['title']['pt-pt'] = 'Destinos';
@@ -64,6 +64,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
 		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_domains';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'domain_uuid';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'destination_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
@@ -85,6 +87,8 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
 		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_fax';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'fax_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = 'destination_type';

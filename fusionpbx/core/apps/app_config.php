@@ -24,7 +24,7 @@
 		$apps[$x]['menu'][0]['title']['de'] = '';
 		$apps[$x]['menu'][0]['title']['de-ch'] = '';
 		$apps[$x]['menu'][0]['title']['de-at'] = '';
-		$apps[$x]['menu'][0]['title']['fr'] = '';
+		$apps[$x]['menu'][0]['title']['fr'] = 'Gestion App';
 		$apps[$x]['menu'][0]['title']['fr-ca'] = '';
 		$apps[$x]['menu'][0]['title']['fr-ch'] = '';
 		$apps[$x]['menu'][0]['title']['pt-pt'] = 'Gestor de Aplicações';
@@ -58,7 +58,19 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'app_category';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'app_version';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'app_enabled';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 		$z++;
 
 ?>

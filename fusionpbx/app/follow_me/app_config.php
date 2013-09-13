@@ -24,7 +24,7 @@
 		$apps[$x]['menu'][0]['title']['de'] = '';
 		$apps[$x]['menu'][0]['title']['de-ch'] = '';
 		$apps[$x]['menu'][0]['title']['de-at'] = '';
-		$apps[$x]['menu'][0]['title']['fr'] = 'Suis-moi';
+		$apps[$x]['menu'][0]['title']['fr'] = 'Follow me';
 		$apps[$x]['menu'][0]['title']['fr-ca'] = '';
 		$apps[$x]['menu'][0]['title']['fr-ch'] = '';
 		$apps[$x]['menu'][0]['title']['pt-pt'] = '';
@@ -58,10 +58,8 @@
 		$apps[$x]['permissions'][$y]['groups'][] = 'admin';
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = 'follow_me_cid_name_prefix';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'user';
 		$y++;
+		$apps[$x]['permissions'][$y]['name'] = 'follow_me_cid_number_prefix';
 
 	//schema details
 		$y = 0; //table array index
@@ -71,15 +69,21 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_domains';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'domain_uuid';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'follow_me_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'cid_name_prefix';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'cid_number_prefix';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en'] = '';
 		$z++;
@@ -100,19 +104,21 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_domains';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'domain_uuid';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'follow_me_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'foreign';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'foreign';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'follow_me_destination_uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'uuid';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'char(36)';
-		$apps[$x]['db'][$y]['fields'][$z]['key'] = 'primary';
+		$apps[$x]['db'][$y]['fields'][$z]['key']['type'] = 'primary';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'follow_me_destination';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';

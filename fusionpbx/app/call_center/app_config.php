@@ -12,7 +12,7 @@
 		$apps[$x]['description']['de'] = '';
 		$apps[$x]['description']['de-ch'] = '';
 		$apps[$x]['description']['de-at'] = '';
-		$apps[$x]['description']['fr'] = 'Queues pour envoyer les appels entrants vers les agents disponibles.';
+		$apps[$x]['description']['fr'] = "Files d'attente d'appels entrants distribués aux agents disponibles";
 		$apps[$x]['description']['fr-ca'] = '';
 		$apps[$x]['description']['fr-ch'] = '';
 		$apps[$x]['description']['pt-pt'] = 'As filas servem para gerenciamento de chamadas de entrada e encaminhamento das mesmas para os agentes disponíveis.';
@@ -24,7 +24,7 @@
 		$apps[$x]['menu'][0]['title']['de'] = '';
 		$apps[$x]['menu'][0]['title']['de-ch'] = '';
 		$apps[$x]['menu'][0]['title']['de-at'] = '';
-		$apps[$x]['menu'][0]['title']['fr'] = "Centre d' appels";
+		$apps[$x]['menu'][0]['title']['fr'] = "Centre d'appel";
 		$apps[$x]['menu'][0]['title']['fr-ca'] = '';
 		$apps[$x]['menu'][0]['title']['fr-ch'] = '';
 		$apps[$x]['menu'][0]['title']['pt-pt'] = 'Centro de Chamadas';

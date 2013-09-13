@@ -12,7 +12,7 @@
 		$apps[$x]['description']['de'] = '';
 		$apps[$x]['description']['de-ch'] = '';
 		$apps[$x]['description']['de-at'] = '';
-		$apps[$x]['description']['fr'] = "Les queues sont utilisés pour configurer lignes d'attend.  Elles sont connu comme queues FIFO.";
+		$apps[$x]['description']['fr'] = "Les files sont utilisés pour configurer les salles d'attente (FIFO).";
 		$apps[$x]['description']['fr-ca'] = '';
 		$apps[$x]['description']['fr-ch'] = '';
 		$apps[$x]['description']['pt-pt'] = 'As filas são usados​para configurar as filas de espera para chamadores. Também conhecida como filas FIFO.';
@@ -32,7 +32,7 @@
 		$apps[$x]['menu'][0]['uuid'] = 'c535ac0b-1da1-0f9c-4653-7934c6f4732c';
 		$apps[$x]['menu'][0]['parent_uuid'] = 'fd29e39c-c936-f5fc-8e2b-611681b266b5';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/app/fifo/fifo.php';
+		$apps[$x]['menu'][0]['path'] = '/app/dialplan/dialplans.php?app_uuid=16589224-c876-aeb3-f59f-523a1c0801f7';
 		$apps[$x]['menu'][0]['groups'][] = 'admin';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
 

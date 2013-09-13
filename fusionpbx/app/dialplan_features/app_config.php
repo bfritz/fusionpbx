@@ -8,14 +8,14 @@
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
 		$apps[$x]['url'] = 'http://www.fusionpbx.com';
 		$apps[$x]['description']['en-us'] = 'Provides dialplan context features including in call transfer and attended transfer and more.';
-		$apps[$x]['description']['es-mx'] = 'Provee opciones bajo contexto a los planes de marcado, incluyendo transferencia, espera y más.';
+		$apps[$x]['description']['es-mx'] = 'Provee opciones bajo contexto a los planes de marcado, incluyendo transferencia, espera y mÃ¡s.';
 		$apps[$x]['description']['de'] = '';
 		$apps[$x]['description']['de-ch'] = '';
 		$apps[$x]['description']['de-at'] = '';
-		$apps[$x]['description']['fr'] = "Il donne quelqu'options aux dialplans comme transfer, appel en attend et plus.";
+		$apps[$x]['description']['fr'] = "Donne des options aux dialplans comme le transfert, transfert supervisé et plus.";
 		$apps[$x]['description']['fr-ca'] = '';
 		$apps[$x]['description']['fr-ch'] = '';
-		$apps[$x]['description']['pt-pt'] = 'Fornece recursos contexto dialplan inclusive em transfer�ncia de chamadas e transfer�ncia atendidos e mais.';
+		$apps[$x]['description']['pt-pt'] = 'Fornece recursos contexto dialplan inclusive em transferência de chamadas e transferência atendidos e mais.';
 		$apps[$x]['description']['pt-br'] = '';
 
 ?>
