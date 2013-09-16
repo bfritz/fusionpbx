@@ -71,6 +71,6 @@
 	$text['label-default']['en-us'] = 'Default';
 	$text['label-default']['fr'] = 'Défaut';
 	$text['message-event-socket']['en-us'] = 'Connection to Event Socket failed.';
-	$text['message-event-socket']['fr²'] = 'Connection à Event Socket echoué.';
+	$text['message-event-socket']['fr'] = 'Connexion à Event Socket echoué.';
 
 ?>
