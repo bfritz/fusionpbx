@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('contacts_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('contact_view')) {
 	//access granted
 }
 else {
@@ -36,7 +36,7 @@ else {
 
 if (count($_GET)>0) {
 	//create the vcard object
-		require_once "includes/class_vcard.php";
+		require_once "resources/classes/vcard.php";
 		$vcard = new vcard();
 
 	//get the contact id
@@ -151,7 +151,7 @@ if (count($_GET)>0) {
 			$content = $vcard->card;
 
 			//include
-				require_once "includes/qr/qrcode.php";
+				require_once PROJECT_PATH."resources/qr/qrcode.php";
 
 			//error correction level
 				//QR_ERROR_CORRECT_LEVEL_L : $e = 0;

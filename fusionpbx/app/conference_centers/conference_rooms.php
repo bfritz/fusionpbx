@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('conference_room_view')) {
 	//access granted
 }
@@ -41,8 +41,8 @@ else {
 	}
 
 //additional includes
-	require_once "includes/header.php";
-	require_once "includes/paging.php";
+	require_once "resources/header.php";
+	require_once "resources/paging.php";
 
 //get the meeting_uuid using the pin number
 	$search = check_str($_GET["search"]);
@@ -167,6 +167,7 @@ else {
 	echo "		</form>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
+	echo "<br />\n";
 
 	//get the conference room count
 		require_once "app/conference_centers/resources/classes/conference_center.php";
@@ -387,5 +388,5 @@ else {
 	echo "<br /><br />";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

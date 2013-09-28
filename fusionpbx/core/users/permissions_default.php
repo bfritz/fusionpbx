@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('group_edit')) {
 	//access granted
 }
@@ -34,6 +34,12 @@ else {
 	return;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //permission restore default
 	require_once "core/users/resources/classes/permission.php";
 	$permission = new permission;
@@ -41,12 +47,12 @@ else {
 	$permission->restore();
 
 //show a message to the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=groups.php\">\n";
 	echo "<div align='center'>\n";
-	echo "Restore Complete\n";
+	echo $text['message-restore']."\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 
 ?>

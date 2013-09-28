@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 require_once "config.php";
 if (permission_exists('content_edit')) {
 	//access granted
@@ -91,12 +91,12 @@ if (count($_POST)>0) {
 	//exit;
 
 	//edit: make sure the meta redirect url is correct
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsslist.php\">\n";
 	echo "<div align='center'>";
 	echo $text['message-update'];
 	echo "</div>";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 }
 else {
@@ -140,15 +140,15 @@ else {
 	}
 }
 
-	require_once "includes/header.php";
-	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
+	require_once "resources/header.php";
+	if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/tiny_mce')) {
 		if ($rss_optional_1 == "text/html") {
-			require_once "includes/wysiwyg.php";
+			require_once "resources/wysiwyg.php";
 		}
 	}
 	else {
 		//--- Begin: Edit Area -----------------------------------------------------
-			echo "    <script language=\"javascript\" type=\"text/javascript\" src=\"".PROJECT_PATH."/includes/edit_area/edit_area_full.js\"></script>\n";
+			echo "    <script language=\"javascript\" type=\"text/javascript\" src=\"".PROJECT_PATH."/resources/edit_area/edit_area_full.js\"></script>\n";
 			echo "    <!-- -->\n";
 
 			echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
@@ -305,7 +305,7 @@ else {
 	echo "		<td  class='' colspan='2' align='left'>";
 	echo "            <strong>".$text['label-content'].":</strong> ";
 	if ($rss_optional_1 == "text/html") {
-		if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/tiny_mce')) {
+		if (is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/tiny_mce')) {
 			echo "            &nbsp; &nbsp; &nbsp; editor &nbsp; <a href='#' title='toggle' onclick=\"toogleEditorMode('rss_description'); return false;\">".$text['label-on-off']."</a><br>";
 		}
 		echo "            <textarea name='rss_description'  id='rss_description' class='formfld' cols='20' style='width: 100%' rows='12' >$rss_description</textarea>";
@@ -395,5 +395,5 @@ else {
 	echo "</div>";
 
 
-  require_once "includes/footer.php";
+  require_once "resources/footer.php";
 ?>

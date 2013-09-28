@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('active_queues_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('active_queue_view')) {
 	//access granted
 }
 else {
@@ -34,7 +34,15 @@ else {
 	exit;
 }
 
-require_once "includes/header.php";
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
+require_once "resources/header.php";
+$page["title"] = $text['title-active_queues'];
+
 ?><script type="text/javascript">
 function loadXmlHttp(url, id) {
 	var f = this;
@@ -90,8 +98,8 @@ echo "<div align='center'>";
 
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
-echo "	<td align='left'><b>Active Queues</b><br>\n";
-echo "		List all the queues that are currently active with one or more callers.\n";
+echo "	<td align='left'><b>".$text['header-active_queues']."</b><br>\n";
+echo "		".$text['description-active_queues']."\n";
 echo "	</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
@@ -108,5 +116,5 @@ echo "	</tr>";
 echo "</table>";
 echo "</div>";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

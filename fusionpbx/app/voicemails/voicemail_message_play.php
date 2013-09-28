@@ -25,8 +25,8 @@
 */
 
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('voicemail_view')) {
 	//access granted
 }
@@ -59,7 +59,7 @@ else {
 
 //show the error message or show the content
 	if (strlen($msg) > 0) {
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 		echo "<div align='center'>\n";
 		echo "	<table width='40%'>\n";
 		echo "		<tr>\n";
@@ -70,7 +70,7 @@ else {
 		echo "		</tr>\n";
 		echo "	</table>\n";
 		echo "</div>\n";
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 		return;
 	}
 

@@ -9,10 +9,10 @@
 		$apps[$x]['url'] = 'http://www.fusionpbx.com';
 		$apps[$x]['description']['en-us'] = 'PBX Settings.';
 		$apps[$x]['description']['es-mx'] = '';
-		$apps[$x]['description']['de'] = '';
+		$apps[$x]['description']['de-de'] = '';
 		$apps[$x]['description']['de-ch'] = '';
 		$apps[$x]['description']['de-at'] = '';
-		$apps[$x]['description']['fr'] = 'Confs PBX';
+		$apps[$x]['description']['fr-fr'] = 'Confs PBX';
 		$apps[$x]['description']['fr-ca'] = '';
 		$apps[$x]['description']['fr-ch'] = '';
 		$apps[$x]['description']['pt-pt'] = 'Definições do PBX.';
@@ -21,10 +21,10 @@
 	//menu details
 		$apps[$x]['menu'][0]['title']['en-us'] = 'Settings';
 		$apps[$x]['menu'][0]['title']['es-mx'] = '';
-		$apps[$x]['menu'][0]['title']['de'] = '';
+		$apps[$x]['menu'][0]['title']['de-de'] = '';
 		$apps[$x]['menu'][0]['title']['de-ch'] = '';
 		$apps[$x]['menu'][0]['title']['de-at'] = '';
-		$apps[$x]['menu'][0]['title']['fr'] = 'Configuration';
+		$apps[$x]['menu'][0]['title']['fr-fr'] = 'Configuration';
 		$apps[$x]['menu'][0]['title']['fr-ca'] = '';
 		$apps[$x]['menu'][0]['title']['fr-ch'] = '';
 		$apps[$x]['menu'][0]['title']['pt-pt'] = 'Definições';
@@ -32,15 +32,22 @@
 		$apps[$x]['menu'][0]['uuid'] = '148ea42a-3711-3d64-181b-07a6a3c3ed60';
 		$apps[$x]['menu'][0]['parent_uuid'] = '02194288-6d56-6d3e-0b1a-d53a2bc10788';
 		$apps[$x]['menu'][0]['category'] = 'internal';
-		$apps[$x]['menu'][0]['path'] = '/app/settings/settings_edit.php';
+		$apps[$x]['menu'][0]['path'] = '/app/settings/setting_edit.php';
 		$apps[$x]['menu'][0]['groups'][] = 'superadmin';
-	
-	//permission details
-		$apps[$x]['permissions'][0]['name'] = 'settings_view';
-		$apps[$x]['permissions'][0]['groups'][] = 'superadmin';
 
-		$apps[$x]['permissions'][1]['name'] = 'settings_edit';
-		$apps[$x]['permissions'][1]['groups'][] = 'superadmin';
+	//permission details
+		$y = 0;
+		$apps[$x]['permissions'][$y]['name'] = 'setting_view';
+		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = 'setting_edit';
+		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
+		//$y++;
+		//$apps[$x]['permissions'][$y]['name'] = 'setting_add';
+		//$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
+		//$y++;
+		//$apps[$x]['permissions'][$y]['name'] = 'setting_delete';
+		//$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 
 	//schema details
 		$y = 0; //table array index

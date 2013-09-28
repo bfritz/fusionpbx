@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-require_once "includes/paging.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+require_once "resources/paging.php";
 if (permission_exists('extension_add')) {
 	//access granted
 }
@@ -35,13 +35,19 @@ else {
 	exit;
 }
 
-//set the http get/post variable(s) to a php variable
-	if (isset($_REQUEST["id"])) {
-		$extension_uuid = check_str($_REQUEST["id"]);
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
-//get the v_extensions data 
-	$extension_uuid = $_GET["id"];
+//set the http get/post variable(s) to a php variable
+	if (isset($_REQUEST["id"]) && isset($_REQUEST["ext"])) {
+		$extension_uuid = check_str($_REQUEST["id"]);
+		$extension_new = check_str($_REQUEST["ext"]);
+	}
+
+//get the v_extensions data
 	$sql = "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and extension_uuid = '$extension_uuid' ";
@@ -110,11 +116,11 @@ else {
 	$sql .= "(";
 	$sql .= "'$domain_uuid', ";
 	$sql .= "'$extension_uuid', ";
-	$sql .= "'$extension', ";
+	$sql .= "'$extension_new', "; // new extension
 	$sql .= "'$password', ";
 	$sql .= "'$provisioning_list', ";
 	$sql .= "'#".generate_password(4, 1)."', ";
-	$sql .= "'$extension', ";
+	$sql .= "'', ";
 	$sql .= "'$effective_caller_id_name', ";
 	$sql .= "'$effective_caller_id_number', ";
 	$sql .= "'$outbound_caller_id_name', ";
@@ -135,16 +141,30 @@ else {
 	$db->exec(check_sql($sql));
 	unset($sql);
 
-//synchronize the xml config
-	save_extension_xml();
+//synchronize configuration
+	if (is_writable($_SESSION['switch']['extensions']['dir'])) {
+		require_once "app/extensions/resources/classes/extension.php";
+		$ext = new extension;
+		$ext->xml();
+		unset($ext);
+	}
 
 //redirect the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=extensions.php\">\n";
+	echo "<br />\n";
 	echo "<div align='center'>\n";
-	echo "Copy Complete\n";
+	echo "	<table width='40%'>\n";
+	echo "		<tr>\n";
+	echo "			<th align='left'>".$text['message-message']."</th>\n";
+	echo "		</tr>\n";
+	echo "		<tr>\n";
+	echo "			<td class='row_style1'><strong>".$text['message-copy']."</strong></td>\n";
+	echo "		</tr>\n";
+	echo "	</table>\n";
+	echo "	<br />\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 
 ?>

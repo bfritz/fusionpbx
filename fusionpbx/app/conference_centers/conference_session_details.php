@@ -23,8 +23,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('conference_session_view')) {
 	//access granted
 }
@@ -40,8 +40,8 @@ else {
 	}
 
 //additional includes
-	require_once "includes/header.php";
-	require_once "includes/paging.php";
+	require_once "resources/header.php";
+	require_once "resources/paging.php";
 
 //set variables from the http values
 	$order_by = check_str($_GET["order_by"]);
@@ -95,7 +95,7 @@ else {
 	}
 	if (strlen($tmp_name) > 0 && file_exists($tmp_dir.'/'.$tmp_name)) {
 		if (permission_exists('conference_session_play')) {
-			echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('".PROJECT_PATH."/app/recordings/recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
+			echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('".PROJECT_PATH."/app/recordings/recording_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
 			//echo "			".$text['label-play']."\n";
 			echo "			<input type='button' class='btn' name='' alt='".$text['label-play']."' onclick=\"\" value='".$text['label-play']."'></a>\n";
 			//echo "		\n";
@@ -105,7 +105,7 @@ else {
 		//echo "			".$text['label-download']."\n";
 		echo "			<input type='button' class='btn' name='' alt='".$text['label-download']."' onclick=\"\" value='".$text['label-download']."'></a>\n";
 		//echo "		\n";
-		//echo "			<input type='button' class='btn' name='' alt='".$text['label-download']."' onclick=\"window.location='".PROJECT_PATH."/app/recordings/recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."'\" value='".$text['label-download']."'>\n";
+		//echo "			<input type='button' class='btn' name='' alt='".$text['label-download']."' onclick=\"window.location='".PROJECT_PATH."/app/recordings/recording_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."'\" value='".$text['label-download']."'>\n";
 		echo "		&nbsp;\n";
 	}
 	echo "			<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='conference_sessions.php'\" value='".$text['button-back']."'>\n";
@@ -241,5 +241,5 @@ else {
 	echo "<br /><br />";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('menu_restore')) {
 	//access granted
 }
@@ -34,12 +34,18 @@ else {
 	return;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //get the http value and set as a php variable
 	$menu_uuid = check_str($_REQUEST["menu_uuid"]);
 	$menu_language = check_str($_REQUEST["menu_language"]);
 
 //menu restore default
-	require_once "includes/classes/menu.php";
+	require_once "resources/classes/menu.php";
 	$menu = new menu;
 	$menu->db = $db;
 	$menu->menu_uuid = $menu_uuid;
@@ -54,12 +60,12 @@ else {
 	$_SESSION["template_content"] = '';
 
 //show a message to the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/core/menu/menu_edit.php?id=$menu_uuid\">\n";
 	echo "<div align='center'>\n";
-	echo "Restore Complete\n";
+	echo $text['message-restore']."\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 
 ?>

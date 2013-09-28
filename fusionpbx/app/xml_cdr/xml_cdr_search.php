@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('xml_cdr_view')) {
 	//access granted
 }
@@ -56,7 +56,7 @@ if (count($_POST)>0) {
 }
 else {
 
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
@@ -150,7 +150,7 @@ else {
 	echo "</table>";
 	echo "</div>";
 
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 } //end if not post
 ?>

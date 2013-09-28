@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 require_once "config.php";
 if (permission_exists('content_view')) {
 	//access granted
@@ -42,7 +42,7 @@ else {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 
 $order_by = $_GET["order_by"];
 $order = $_GET["order"];    
@@ -199,7 +199,7 @@ echo "<input type='button' class='btn' name='' onclick=\"window.location='rss_su
 echo "</div>";
 
 echo "<br><br>";
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 
 unset ($result_count);
 unset ($result);

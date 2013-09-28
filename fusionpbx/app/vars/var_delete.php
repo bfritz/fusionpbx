@@ -17,16 +17,16 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2013
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('variables_delete')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('var_delete')) {
 	//access granted
 }
 else {
@@ -34,12 +34,19 @@ else {
 	exit;
 }
 
-if (count($_GET)>0) {
-	$id = $_GET["id"];
-}
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
+//get the id
+	if (count($_GET) > 0) {
+		$id = $_GET["id"];
+	}
 
 //delete the data
-	if (strlen($id)>0) {
+	if (strlen($id) > 0) {
 		$sql = "delete from v_vars ";
 		$sql .= "where var_uuid = '$id' ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -50,12 +57,12 @@ if (count($_GET)>0) {
 	}
 
 //redirect the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=vars.php\">\n";
 	echo "<div align='center'>\n";
-	echo "Delete Complete\n";
+	echo $text['message-delete']."\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 
 ?>

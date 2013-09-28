@@ -48,7 +48,7 @@
 	if (is_dir($_SESSION['switch']['dialplan']['dir'])) {
 		//write the dialplan/default.xml if it does not exist
 			//get the contents of the dialplan/default.xml
-				$file_default_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/templates/conf/dialplan/default.xml';
+				$file_default_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/templates/conf/dialplan/default.xml';
 				$file_default_contents = file_get_contents($file_default_path);
 
 			//prepare the file contents and the path
@@ -66,7 +66,7 @@
 	}
 
 //get the $apps array from the installed apps from the core and mod directories
-	$xml_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/resources/xml/dialplan/*.xml");
+	$xml_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/resources/switch/conf/dialplan/*.xml");
 	foreach ($xml_list as &$xml_file) {
 		//get and parse the xml
 			$xml_string = file_get_contents($xml_file);
@@ -79,7 +79,7 @@
 				$dialplan_order = 0;
 			}
 		//dialplan class
-			require_once "includes/classes/switch_dialplan.php";
+			require_once "resources/classes/dialplan.php";
 			$dialplan = new dialplan;
 			$dialplan->domain_uuid = $domain_uuid;
 			$dialplan->dialplan_order = $dialplan_order;

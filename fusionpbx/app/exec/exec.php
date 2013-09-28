@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('exec_command_line') || permission_exists('exec_php_command') || permission_exists('exec_switch')) {
 	//access granted
 }
@@ -50,10 +50,10 @@ else {
 	}
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //edit area
-	echo "	<script language=\"javascript\" type=\"text/javascript\" src=\"".PROJECT_PATH."/includes/edit_area/edit_area_full.js\"></script>\n";
+	echo "	<script language=\"javascript\" type=\"text/javascript\" src=\"".PROJECT_PATH."/resources/edit_area/edit_area_full.js\"></script>\n";
 	echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
 	echo "		// initialisation //load,\n";
 	echo "		editAreaLoader.init({\n";
@@ -202,5 +202,5 @@ else {
 	echo "</div>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 require_once "app_languages.php";
 if (permission_exists('follow_me') || permission_exists('call_forward') || permission_exists('do_not_disturb')) {
 	//access granted
@@ -119,6 +119,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$forward_all_enabled = check_str($_POST["forward_all_enabled"]);
 			$forward_all_destination = check_str($_POST["forward_all_destination"]);
 			$cid_name_prefix = check_str($_POST["cid_name_prefix"]);
+			$cid_number_prefix = check_str($_POST["cid_number_prefix"]);
 			$call_prompt = check_str($_POST["call_prompt"]);
 			$follow_me_enabled = check_str($_POST["follow_me_enabled"]);
 
@@ -184,15 +185,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//if (strlen($destination_timeout_7) == 0) { $msg .= "Please provide: sec<br>\n"; }
 			//if (strlen($hunt_group_call_prompt) == 0) { $msg .= "Please provide: call prompt<br>\n"; }
 			if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-				require_once "includes/header.php";
-				require_once "includes/persistformvar.php";
+				require_once "resources/header.php";
+				require_once "resources/persist_form_var.php";
 				echo "<div align='center'>\n";
 				echo "<table><tr><td>\n";
 				echo $msg."<br />";
 				echo "</td></tr></table>\n";
 				persistformvar($_POST);
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				require_once "resources/footer.php";
 				return;
 			}
 
@@ -208,9 +209,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//include the classes
-		include "resources/classes/switch_call_forward.php";
-		include "resources/classes/switch_follow_me.php";
-		include "resources/classes/switch_do_not_disturb.php";
+		include "resources/classes/call_forward.php";
+		include "resources/classes/follow_me.php";
+		include "resources/classes/do_not_disturb.php";
 
 	//call forward config
 		if (permission_exists('call_forward')) {
@@ -256,6 +257,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$follow_me->extension_uuid = $extension_uuid;
 			$follow_me->db_type = $db_type;
 			$follow_me->cid_name_prefix = $cid_name_prefix;
+			$follow_me->cid_number_prefix = $cid_number_prefix;
 			$follow_me->call_prompt = $call_prompt;
 			$follow_me->follow_me_enabled = $follow_me_enabled;
 
@@ -296,13 +298,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					unset($sql);
 
 					$follow_me->follow_me_uuid = $follow_me_uuid;
-					$follow_me->follow_me_add();
+					$follow_me->add();
 					$follow_me->set();
 				}
 			}
 			if ($follow_me_action == "update") {
 				$follow_me->follow_me_uuid = $follow_me_uuid;
-				$follow_me->follow_me_update();
+				$follow_me->update();
 				$follow_me->set();
 			}
 			unset($follow_me);
@@ -346,18 +348,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//redirect the user
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"3;url=".PROJECT_PATH."/core/user_settings/user_dashboard.php\">\n";
 		echo "<div align='center'>\n";
 		echo "".$text['confirm-update']."<br />\n";
 		echo "</div>\n";
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 		return;
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //pre-populate the form
 	$sql = "select * from v_follow_me ";
@@ -368,6 +370,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$cid_name_prefix = $row["cid_name_prefix"];
+		$cid_number_prefix = $row["cid_number_prefix"];
 		$call_prompt = $row["call_prompt"];
 		$follow_me_enabled = $row["follow_me_enabled"];
 
@@ -417,9 +420,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 //prepare the autocomplete
-	echo "<script src=\"".PROJECT_PATH."/includes/jquery/jquery-1.8.3.js\"></script>\n";
-	echo "<script src=\"".PROJECT_PATH."/includes/jquery/jquery-ui-1.9.2.min.js\"></script>\n";
-	echo "<link rel=\"stylesheet\" href=\"".PROJECT_PATH."/includes/jquery/jquery-ui.css\" />\n";
+	echo "<script src=\"".PROJECT_PATH."/resources/jquery/jquery-1.8.3.js\"></script>\n";
+	echo "<script src=\"".PROJECT_PATH."/resources/jquery/jquery-ui-1.9.2.min.js\"></script>\n";
+	echo "<link rel=\"stylesheet\" href=\"".PROJECT_PATH."/resources/jquery/jquery-ui.css\" />\n";
 	echo "<script type=\"text/javascript\">\n";
 	echo "\$(function() {\n";
 	echo "	var extensions = [\n";
@@ -560,7 +563,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	".$text['label-ring-delay']."\n"; 
 	destination_select('destination_delay_1', $destination_delay_1, '0');
 	echo "	".$text['label-ring-timeout']."\n"; 
-	destination_select('destination_timeout_1', $destination_timeout_1, '10');
+	destination_select('destination_timeout_1', $destination_timeout_1, '30');
 	//echo "<br />\n";
 	//echo "This number rings first.\n";
 	echo "</td>\n";
@@ -635,6 +638,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "  <input class='formfld' type='text' name='cid_name_prefix' maxlength='255' value='$cid_name_prefix'>\n";
 		echo "<br />\n";
 		echo $text['description-cid-name-prefix']." \n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	if (permission_exists('follow_me_cid_number_prefix')) {
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "	".$text['label-cid-number-prefix'].":\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "  <input class='formfld' type='text' name='cid_number_prefix' maxlength='255' value='$cid_number_prefix'>\n";
+		echo "<br />\n";
+		echo $text['description-cid-number-prefix']." \n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -723,5 +739,5 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

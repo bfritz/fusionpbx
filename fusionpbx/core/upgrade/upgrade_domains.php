@@ -30,14 +30,14 @@
 		preg_match("/^(.*)\/core\/.*$/", $document_root, $matches);
 		$document_root = $matches[1];
 		set_include_path($document_root);
-		require_once "includes/require.php";
+		require_once "resources/require.php";
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
 		$display_type = 'text'; //html, text
 	}
 	else {
 		include "root.php";
-		require_once "includes/require.php";
-		require_once "includes/checkauth.php";
+		require_once "resources/require.php";
+		require_once "resources/check_auth.php";
 		if (permission_exists('upgrade_schema') || permission_exists('upgrade_svn') || if_group("superadmin")) {
 			//echo "access granted";
 		}
@@ -47,8 +47,8 @@
 		}
 	}
 
-//copy the files and directories from includes/install
-	require_once "includes/classes/install.php";
+//copy the files and directories from resources/install
+	require_once "resources/classes/install.php";
 	$install = new install;
 	$install->domain_uuid = $domain_uuid;
 	$install->domain_name = $domain;

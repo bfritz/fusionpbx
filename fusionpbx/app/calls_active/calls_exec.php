@@ -27,9 +27,9 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('calls_active_view') || permission_exists('extensions_active_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('call_active_view') || permission_exists('extension_active_view')) {
 	//access granted
 }
 else {
@@ -125,7 +125,7 @@ if (count($_GET)>0) {
 
 		if (strlen($user_status) > 0) {
 			//include the dnd class
-				include "includes/classes/do_not_disturb.php";
+				include "app/calls/resources/classes/do_not_disturb.php";
 			//loop through the list of assigned extensions
 				foreach ($_SESSION['user']['extension'] as &$row) {
 					$extension = $row["user"];

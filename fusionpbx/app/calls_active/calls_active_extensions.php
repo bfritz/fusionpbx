@@ -24,10 +24,10 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 include "app_languages.php";
-if (permission_exists('extensions_active_view')) {
+if (permission_exists('extension_active_view')) {
 	//access granted
 }
 else {
@@ -63,7 +63,7 @@ else {
 $conference_name = trim($_REQUEST["c"]);
 $tmp_conference_name = str_replace("_", " ", $conference_name);
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 ?><script type="text/javascript">
 <!--
 
@@ -340,5 +340,5 @@ echo "}\n";
 echo "-->\n";
 echo "</script>\n";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

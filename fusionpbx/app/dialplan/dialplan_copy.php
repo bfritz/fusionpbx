@@ -24,13 +24,14 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-require_once "includes/paging.php";
-if (permission_exists('dialplan_add') 
-	|| permission_exists('inbound_route_add') 
-	|| permission_exists('outbound_route_add') 
-	|| permission_exists('time_conditions_add')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+require_once "resources/paging.php";
+if (permission_exists('dialplan_add')
+	|| permission_exists('inbound_route_add')
+	|| permission_exists('outbound_route_add')
+	|| permission_exists('fifo_add')
+	|| permission_exists('time_condition_add')) {
 	//access granted
 }
 else {
@@ -38,12 +39,18 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
 		$dialplan_uuid = check_str($_REQUEST["id"]);
 	}
 
-//get the dialplan data 
+//get the dialplan data
 	$dialplan_uuid = $_GET["id"];
 	$sql = "select * from v_dialplans ";
 	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
@@ -139,12 +146,12 @@ else {
 	//delete the dialplan context from memcache
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
-			$switch_cmd = "memcache delete dialplan:".$_SESSION["context"]."@".$_SESSION['domain_name'];
+			$switch_cmd = "memcache delete dialplan:".$dialplan_context;
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 		}
 
 	//redirect the user
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 		switch ($app_uuid) {
 			case "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4":
 				//inbound routes
@@ -163,9 +170,9 @@ else {
 				break;
 		}
 		echo "<div align='center'>\n";
-		echo "Copy Complete\n";
+		echo $text['message-copy']."\n";
 		echo "</div>\n";
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 		return;
 
 ?>

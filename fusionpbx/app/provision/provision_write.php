@@ -17,14 +17,14 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2008-2012 All Rights Reserved.
+	Copyright (C) 2008-2013 All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (if_group("admin") || if_group("superadmin")) {
 	//access granted
 }
@@ -74,7 +74,25 @@ else {
 				case "00907a":
 					$device_vendor = "polycom";
 					break;
+				case "0080f0":
+					$device_vendor = "panasonic";
+					break;
 				case "001873":
+					$device_vendor = "cisco";
+					break;
+				case "a44c11":
+					$device_vendor = "cisco";
+					break;
+				case "0021A0":
+					$device_vendor = "cisco";
+					break;
+				case "30e4db":
+					$device_vendor = "cisco";
+					break;
+				case "002155":
+					$device_vendor = "cisco";
+					break;
+				case "68efbd":
 					$device_vendor = "cisco";
 					break;
 				case "00045a":
@@ -88,6 +106,13 @@ else {
 					break;
 				case "000413":
 					$device_vendor = "snom";
+					break;
+				case "000b82":
+					$device_vendor = "grandstream";
+					break;
+				case "00177d":
+					$device_vendor = "konftel";
+					break;
 				default:
 					$device_vendor = "";
 				}
@@ -96,18 +121,18 @@ else {
 		//set the mac address in the correct format
 			switch ($device_vendor) {
 			case "aastra":
-				$mac = strtoupper($mac);
+				$device_mac_address = strtoupper($device_mac_address);
 				break;
 			case "snom":
-				$mac = strtoupper($mac);
-				$mac = str_replace("-", "", $mac);
+				$device_mac_address = strtoupper($device_mac_address);
+				$device_mac_address = str_replace("-", "", $device_mac_address);
 			default:
-				$mac = strtolower($mac);
-				$mac = substr($mac, 0,2).'-'.substr($mac, 2,2).'-'.substr($mac, 4,2).'-'.substr($mac, 6,2).'-'.substr($mac, 8,2).'-'.substr($mac, 10,2);
+				$device_mac_address = strtolower($device_mac_address);
+				$device_mac_address = substr($device_mac_address, 0,2).'-'.substr($device_mac_address, 2,2).'-'.substr($device_mac_address, 4,2).'-'.substr($device_mac_address, 6,2).'-'.substr($device_mac_address, 8,2).'-'.substr($device_mac_address, 10,2);
 			}
 
 		//loop through the provision template directory
-			$provision_template_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$device_template;
+			$provision_template_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/provision/".$device_template;
 
 			clearstatcache();
 			$dir_list = '';
@@ -160,7 +185,7 @@ else {
 						$file_size = round(filesize($new_path)/1024, 2);
 
 						//get the contents of the template
-							$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/provision/".$device_template ."/".$file_name);
+							$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/provision/".$device_template ."/".$file_name);
 
 						//prepare the files
 							//replace the variables in the template in the future loop through all the line numbers to do a replace for each possible line number
@@ -188,9 +213,9 @@ else {
 							$sql .= "AND d.device_uuid = '".$device_uuid."' ";
 							$sql .= "AND d.domain_uuid = '".$_SESSION['domain_uuid']."' ";
 							$sql .= "and e.enabled = 'true' ";
-							$prep_statement = $db->prepare(check_sql($sql));
-							$prep_statement->execute();
-							$sub_result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+							$sub_prep_statement = $db->prepare(check_sql($sql));
+							$sub_prep_statement->execute();
+							$sub_result = $sub_prep_statement->fetchAll(PDO::FETCH_NAMED);
 							foreach($sub_result as $field) {
 								$line_number = $field['device_line'];
 								$file_contents = str_replace("{v_line".$line_number."_server_address}", $_SESSION['domain_name'], $file_contents);
@@ -199,19 +224,39 @@ else {
 								$file_contents = str_replace("{v_line".$line_number."_user_id}", $field["extension"], $file_contents);
 								$file_contents = str_replace("{v_line".$line_number."_user_password}", $field["password"], $file_contents);
 							}
-							unset ($prep_statement_2);
+							unset ($sub_prep_statement);
+
+						//get the provisioning information from device lines table
+							$sql = "SELECT * FROM v_device_lines ";
+							$sql .= "WHERE device_uuid = '".$device_uuid."' ";
+							$sql .= "AND domain_uuid = '".$_SESSION['domain_uuid']."' ";
+							$sub_prep_statement = $db->prepare(check_sql($sql));
+							$sub_prep_statement->execute();
+							$sub_result = $sub_prep_statement->fetchAll(PDO::FETCH_NAMED);
+							foreach($sub_result as $field) {
+								$line_number = $field['line_number'];
+								$file_contents = str_replace("{v_line".$line_number."_server_address}", $field["server_address"], $file_contents);
+								$file_contents = str_replace("{v_line".$line_number."_outbound_proxy}", $field["outbound_proxy"], $file_contents);
+								$file_contents = str_replace("{v_line".$line_number."_displayname}", $field["display_name"], $file_contents);
+								$file_contents = str_replace("{v_line".$line_number."_user_id}", $field["user_id"], $file_contents);
+								$file_contents = str_replace("{v_line".$line_number."_auth_id}", $field["auth_id"], $file_contents);
+								$file_contents = str_replace("{v_line".$line_number."_user_password}", $field["password"], $file_contents);
+							}
+							unset ($sub_prep_statement);
 
 						//cleanup any remaining variables
 							for ($i = 1; $i <= 100; $i++) {
 								$file_contents = str_replace("{v_line".$i."_server_address}", "", $file_contents);
+								$file_contents = str_replace("{v_line".$i."_outbound_proxy}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_displayname}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_shortname}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_user_id}", "", $file_contents);
+								$file_contents = str_replace("{v_line".$i."_auth_id}", "", $file_contents);
 								$file_contents = str_replace("{v_line".$i."_user_password}", "", $file_contents);
 							}
 
 						//replace {v_mac} in the file name
-							if (substr($device_mac_address, 0, 6) == "00085d") {
+							if ($device_vendor == "aastra" || $device_vendor == "cisco") {
 								//upper case the mac address for aastra phones
 								$file_name = str_replace("{v_mac}", strtoupper($device_mac_address), $file_name);
 							}
@@ -224,7 +269,7 @@ else {
 							if (strlen($_SESSION['switch']['provision']['dir']) > 0) {
 								$dir_array = explode(";", $_SESSION['switch']['provision']['dir']);
 								foreach($dir_array as $directory) {
-									//echo $directory.'/'.$file_name."\n";
+									//echo $directory.'/'.$file_name."<br />\n";
 									$fh = fopen($directory.'/'.$file_name,"w") or die("Unable to write to $directory for provisioning. Make sure the path exists and permissons are set correctly.");
 									fwrite($fh, $file_contents);
 									fclose($fh);

@@ -24,15 +24,21 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('active_queues_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('active_queue_view')) {
 	//access granted
 }
 else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //get the fifo_name from http and set it to a php variable
 	$fifo_name = trim($_REQUEST["c"]);
@@ -51,7 +57,8 @@ else {
 	$tmp_fifo_name = $tmp_fifo_array[0];
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
+	$page["title"] = $text['title-queue'];
 
 ?>
 <script type="text/javascript">
@@ -122,8 +129,8 @@ echo "<div align='center'>";
 
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 echo "	<tr>\n";
-echo "	<td align='left'><b>Queues</b><br>\n";
-echo "		Use this to monitor queue activty for the <strong>$tmp_fifo_name</strong> queue.\n";
+echo "	<td align='left'><b>".$text['header-queue']."</b><br>\n";
+echo "		".$text['description-queue']."\n";
 echo "	</td>\n";
 echo "	</tr>\n";
 echo "</table>\n";
@@ -139,5 +146,5 @@ echo "</table>";
 
 echo "</div>";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

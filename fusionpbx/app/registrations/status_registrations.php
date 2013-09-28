@@ -25,11 +25,11 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 
 //check permissions
-	if (permission_exists("registrations_domain") || permission_exists("registrations_all") || if_group("superadmin")) {
+	if (permission_exists("registration_domain") || permission_exists("registration_all") || if_group("superadmin")) {
 		//access granted
 	}
 	else {
@@ -106,7 +106,7 @@ require_once "includes/checkauth.php";
 
 					//remove unrelated domains
 						if (count($_SESSION["domains"]) > 1) {
-							if (count($_SESSION["domains"]) > 1 && !permission_exists('registrations_all')) {
+							if (count($_SESSION["domains"]) > 1 && !permission_exists('registration_all')) {
 								if ($registrations[$x]['sip-auth-realm'] != $_SESSION['domain_name']) {
 									unset($registrations[$x]);
 								}
@@ -123,7 +123,7 @@ require_once "includes/checkauth.php";
 			}
 
 		//show the header
-			require_once "includes/header.php";
+			require_once "resources/header.php";
 
 		//show the registrations
 			echo "<table width='100%' border='0' cellspacing='0' cellpadding='5'>\n";
@@ -156,7 +156,7 @@ require_once "includes/checkauth.php";
 			echo "</tr>\n";
 
 		//order the array
-			require_once "includes/classes/array_order.php";
+			require_once "resources/classes/array_order.php";
 			$order = new array_order();
 			$registrations = $order->sort($registrations, 'domain', 'user');
 
@@ -193,6 +193,6 @@ require_once "includes/checkauth.php";
 	echo "<br />\n";
 
 //get the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>

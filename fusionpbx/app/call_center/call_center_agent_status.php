@@ -24,17 +24,26 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('call_center_agents_edit')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('call_center_agent_view')) {
 	//access granted
 }
 else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
+require_once "resources/header.php";
+$page["title"] = $text['title-call_center_agent_status'];
+
+require_once "resources/paging.php";
 
 //setup the event socket connection
 	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -42,7 +51,7 @@ require_once "includes/paging.php";
 //get the http post values and set them as php variables
 	if (count($_POST)>0) {
 		//include the dnd php class
-		include "includes/classes/do_not_disturb.php";
+		include PROJECT_PATH."/app/calls/resources/classes/do_not_disturb.php";
 
 		foreach($_POST['agents'] as $row) {
 			if (strlen($row['status']) > 0) {
@@ -129,15 +138,15 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' align='left' nowrap='nowrap'><b>Call Center Agent Status</b></td>\n";
+	echo "<td width='50%' align='left' nowrap='nowrap'><b>".$text['header-call_center_agent_status']."</b></td>\n";
 	echo "<td width='50%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='call_center_agent_status.php'\" value='Refresh'>\n";
-	echo "	<input type='button' class='btn' name='' alt='add' onclick=\"window.location='call_center_queues.php'\" value='Back'>\n";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-refresh']."' onclick=\"window.location='call_center_agent_status.php'\" value='".$text['button-refresh']."'>\n";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='call_center_queues.php'\" value='".$text['button-back']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
-	echo "List all the call center agents with the option to change the status of one or more agents.<br /><br />\n";
+	echo $text['description-call_center_agent_status']."<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</tr></table>\n";
@@ -150,30 +159,38 @@ require_once "includes/paging.php";
 	echo "<div align='center'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<th>Agent</th>\n";
-	echo "<th>Status</th>\n";
-	echo "<th>Options</th>\n";
+	echo "<th>".$text['label-agent']."</th>\n";
+	echo "<th>".$text['label-status']."</th>\n";
+	echo "<th>".$text['label-options']."</th>\n";
 	echo "<tr>\n";
 
 	$x = 0;
 	foreach($agent_array as $row) {
 		$tmp = explode('@',$row["name"]);
 		$agent_name = $tmp[0];
-		if ($tmp[1] == $_SESSION['domain_name']) {
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['name']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['status']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>";
-			echo "		<input type='hidden' name='agents[".$x."][name]' id='agent_".$x."_name' value='".$agent_name."'>\n";
-			echo "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_no_change' value='' checked='checked'><label for='agent_".$x."_status_no_change'>No Change</label>\n";
-			echo "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_available' value='Available'><label for='agent_".$x."_status_available'>Available</label>\n";
-			echo "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_logged_out' value='Logged Out'><label for='agent_".$x."_status_logged_out'>Logged Out</label>\n"; 
-			echo "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_on_break' value='On Break'><label for='agent_".$x."_status_on_break'>On Break</label>\n";
-			echo "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_dnd' value='Do Not Disturb'><label for='agent_".$x."_status_dnd'>DND</label>\n";
-			echo "	</td>\n";	
-			echo "</tr>\n";
+		$str = '';
+		$str .= "<tr >\n";
+		$str .= "	<td valign='top' class='".$row_style[$c]."'>".$row['name']."&nbsp;</td>\n";
+		$str .= "	<td valign='top' class='".$row_style[$c]."'>".$row['status']."&nbsp;</td>\n";
+		$str .= "	<td valign='top' class='".$row_style[$c]."'>";
+		$str .= "		<input type='hidden' name='agents[".$x."][name]' id='agent_".$x."_name' value='".$agent_name."'>\n";
+		$str .= "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_no_change' value='' checked='checked'><label for='agent_".$x."_status_no_change'>".$text['option-no_change']."</label>\n";
+		$str .= "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_available' value='Available'><label for='agent_".$x."_status_available'>".$text['option-available']."</label>\n";
+		$str .= "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_logged_out' value='Logged Out'><label for='agent_".$x."_status_logged_out'>".$text['option-logged_out']."</label>\n";
+		$str .= "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_on_break' value='On Break'><label for='agent_".$x."_status_on_break'>".$text['option-on_break']."</label>\n";
+		$str .= "		<input type='radio' name='agents[".$x."][status]' id='agent_".$x."_status_dnd' value='Do Not Disturb'><label for='agent_".$x."_status_dnd'>".$text['option-do_not_disturb']."</label>\n";
+		$str .= "	</td>\n";
+		$str .= "</tr>\n";
+		if (count($_SESSION['domains']) > 1) {
+			if ($tmp[1] == $_SESSION['domain_name']) {
+				echo $str;
+				if ($c==0) { $c=1; } else { $c=0; }
+			}
 		}
-		if ($c==0) { $c=1; } else { $c=0; }
+		else {
+			echo $str;
+			if ($c==0) { $c=1; } else { $c=0; }
+		}
 		$x++;
 	} //end foreach
 	unset($sql, $result, $row_count);
@@ -186,7 +203,7 @@ require_once "includes/paging.php";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	echo "			<br />\n";
-	echo "			<input type='submit' name='submit' class='btn' value='Update Status'>\n";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-update_status']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
@@ -206,5 +223,5 @@ require_once "includes/paging.php";
 	echo "<br><br>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

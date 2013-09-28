@@ -40,7 +40,7 @@
 	}
 
 //add the header
-	include "includes/header.php";
+	include "resources/header.php";
 
 //show the message
 	if (strlen($msg) > 0) {
@@ -71,7 +71,7 @@
 				echo "username: <strong>admin</strong> <br />password: <strong>fusionpbx</strong> <br/><br/>\n";
 				echo "</li>\n";
 				echo "<li>\n";
-				echo "The database connection settings have been saved to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php.<br />\n";
+				echo "The database connection settings have been saved to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/config.php.<br />\n";
 				echo "</li>\n";
 				echo "</ul>\n";
 				echo "<strong>\n";
@@ -141,6 +141,6 @@
 	echo "</div>";
 
 //add the footer
-	include "includes/footer.php";
+	include "resources/footer.php";
 
 ?>

@@ -23,14 +23,28 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
-include "root.php";
-if (!file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/includes/config.php")){
-	header("Location: ".PROJECT_PATH."/install.php");
-	exit;
-}
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-require_once "includes/header.php";
+
+//include the root directory
+	include "root.php";
+
+//if config.php file does not exist then redirect to the install page
+	if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/resources/config.php")) {
+		//do nothing
+	} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/resources/config.php")) {
+		//original directory
+	} elseif (file_exists("/etc/fusionpbx/config.php")){
+		//linux
+	} elseif (file_exists("/usr/local/etc/fusionpbx/config.php")){
+		//bsd
+	} else {
+		header("Location: ".PROJECT_PATH."/resources/install.php");
+		exit;
+	}
+
+//additional includes
+	require_once "resources/require.php";
+	require_once "resources/check_auth.php";
+	require_once "resources/header.php";
 
 //add multi-lingual support
 	echo "<!--\n";
@@ -91,14 +105,14 @@ require_once "includes/header.php";
 		}
 	}
 
-//hunt group forward
-	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/hunt_group/v_hunt_group_call_forward.php")) {
-		if (permission_exists('hunt_group_call_forward')) {
+//ring group forward
+	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/ring_groups/ring_group_forward.php")) {
+		if (permission_exists('ring_group_forward')) { //ring_group_forward
 			$is_included = "true";
-			require_once "app/hunt_group/v_hunt_group_call_forward.php";
+			require_once "app/ring_groups/ring_group_forward.php";
 		}
 	}
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

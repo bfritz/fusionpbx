@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('ivr_menu_delete')) {
 	//access granted
 }
@@ -49,21 +49,16 @@ else {
 //delete the ivr menu option
 	if (strlen($id)>0) {
 		//include the ivr menu class
-			require_once "includes/classes/database.php";
-			require_once "resources/classes/switch_ivr_menu.php";
-			$ivr = new switch_ivr_menu;
+			require_once "resources/classes/database.php";
+			require_once "resources/classes/ivr_menu.php";
+			$ivr = new ivr_menu;
 			$ivr->domain_uuid = $_SESSION["domain_uuid"];
 			$ivr->ivr_menu_option_uuid = $id;
 			$ivr->delete();
 	}
 
 //redirect the user
-	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=ivr_menu_edit.php?id=$ivr_menu_uuid\">\n";
-	echo "<div align='center'>\n";
-	echo "Delete Complete\n";
-	echo "</div>\n";
-	require_once "includes/footer.php";
-	return;
+	$_SESSION['message'] = $text['message-delete'];
+	header('Location: ivr_menu_edit.php?id='.$ivr_menu_uuid);
 
 ?>

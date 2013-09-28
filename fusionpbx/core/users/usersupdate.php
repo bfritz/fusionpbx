@@ -24,10 +24,10 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists("user_add") ||
-	permission_exists("user_edit") || 
+	permission_exists("user_edit") ||
 	permission_exists("user_delete") ||
 	if_group("superadmin")) {
 	//access allowed
@@ -36,6 +36,12 @@ else {
 	echo "access denied";
 	return;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //get data from the db
 	if (strlen($_REQUEST["id"])> 0) {
@@ -51,7 +57,6 @@ else {
 	$sql = "select * from v_users ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and user_uuid = '$user_uuid' ";
-	$sql .= "and user_enabled = 'true' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -80,10 +85,10 @@ else {
 			$sql .= "and user_uuid = '$user_uuid' ";
 			$db->exec(check_sql($sql));
 		//redirect the user
-			require_once "includes/header.php";
+			require_once "resources/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$user_uuid\">\n";
-			echo "<div align='center'>Update Complete</div>";
-			require_once "includes/footer.php";
+			echo "<div align='center'>".$text['message-update']."</div>";
+			require_once "resources/footer.php";
 			return;
 	}
 
@@ -109,7 +114,7 @@ else {
 		}
 	}
 
-if (count($_POST)>0 && $_POST["persistform"] != "1") {
+if (count($_POST) > 0 && $_POST["persistform"] != "1") {
 	$user_uuid = $_REQUEST["id"];
 	$password = check_str($_POST["password"]);
 	$confirm_password = check_str($_POST["confirm_password"]);
@@ -119,25 +124,24 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	$contact_uuid = check_str($_POST["contact_uuid"]);
 	$group_member = check_str($_POST["group_member"]);
 	$user_enabled = check_str($_POST["user_enabled"]);
+	$api_key = check_str($_POST["api_key"]);
 
-	//if (strlen($password) == 0) { $msg_error .= "Password cannot be blank.<br>\n"; }
-	//if (strlen($username) == 0) { $msg_error .= "Please provide the username.<br>\n"; }
-	if ($password != $confirm_password) { $msg_error .= "Passwords did not match.<br>\n"; }
-	//if (strlen($contact_uuid) == 0) { $msg_error .= "Please provide an email.<br>\n"; }
-	//if (strlen($user_time_zone) == 0) { $msg_error .= "Please provide an time zone.<br>\n"; }
-	if (strlen($user_enabled) == 0) { $msg_error .= "Please provide an enable or disable the user.<br>\n"; }
+	if ($password != $confirm_password) { $msg_error .= $text['message-password_mismatch']."<br>\n"; }
+	//if (strlen($contact_uuid) == 0) { $msg_error .= $text['message-required'].$text['label-email']."<br>\n"; }
+	//if (strlen($user_time_zone) == 0) { $msg_error .= $text['message-required'].$text['label-time_zone']."<br>\n"; }
+	if (strlen($user_enabled) == 0) { $msg_error .= $text['message-required'].$text['label-enabled']."<br>\n"; }
 
 	if ($msg_error) {
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 		echo "<div align='center'>";
 		echo "<table><tr><td>";
 		echo $msg_error;
 		echo "</td></tr></table>";
 		echo "<br />\n";
-		require_once "includes/persistform.php";
+		require_once "resources/persist_form.php";
 		echo persistform($_POST);
 		echo "</div>";
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 		return;
 	}
 
@@ -244,6 +248,12 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 				$sql .= "password = '".md5($salt.$password)."', ";
 				$sql .= "salt = '".$salt."', ";
 		}
+		if (strlen($api_key) > 0) {
+			$sql .= "api_key = '$api_key', ";
+		}
+		else {
+			$sql .= "api_key = null, ";
+		}
 		$sql .= "user_status = '$user_status', ";
 		$sql .= "user_enabled = '$user_enabled', ";
 		if (strlen($contact_uuid) == 0) {
@@ -275,15 +285,15 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		//$_SESSION["template_content"] = '';
 
 	//redirect the browser
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 		if (if_group("admin")) {
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$user_uuid\">\n";
 		}
 		else {
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$user_uuid\">\n";
 		}
-		echo "<div align='center'>Update Complete</div>";
-		require_once "includes/footer.php";
+		echo "<div align='center'>".$text['message-update']."</div>";
+		require_once "resources/footer.php";
 		return;
 }
 else {
@@ -303,7 +313,6 @@ else {
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and username = '$username' ";
 	}
-	$sql .= "and user_enabled = 'true' ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -313,9 +322,10 @@ else {
 			$username = $row["username"];
 		}
 		$password = $row["password"];
+		$api_key = $row["api_key"];
+		$user_enabled = $row["user_enabled"];
 		$contact_uuid = $row["contact_uuid"];
 		$user_status = $row["user_status"];
-		break; //limit to 1 row
 	}
 
 	//get the groups the user is a member of
@@ -324,7 +334,8 @@ else {
 }
 
 //include the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
+	$page["title"] = $text['title-user_edit'];
 
 //show the content
 	$table_width ='width="100%"';
@@ -336,15 +347,15 @@ else {
 	echo "<td>\n";
 
 	echo "<table $table_width cellpadding='3' cellspacing='0' border='0'>";
-	echo "<td align='left' width='90%' nowrap><b>User Manager</b></td>\n";
+	echo "<td align='left' width='90%' nowrap><b>".$text['header-user_edit']."</b></td>\n";
 	echo "<td nowrap='nowrap'>\n";
-	echo "	<input type='submit' name='submit' class='btn' value='Save'>";
-	echo "	<input type='button' class='btn' onclick=\"window.location='index.php'\" value='Back'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>";
+	echo "	<input type='button' class='btn' onclick=\"window.location='index.php'\" value='".$text['button-back']."'>";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
-	echo "	Edit user information and group membership. \n";
+	echo "	".$text['description-user_edit']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -353,25 +364,25 @@ else {
 
 	echo "<table $table_width cellpadding='6' cellspacing='0' border='0'>";
 	echo "<tr>\n";
-	echo "	<th class='th' colspan='2' align='left'>User Info</th>\n";
+	echo "	<th class='th' colspan='2' align='left'>".$text['label-user_info']."</th>\n";
 	echo "</tr>\n";
 
 	echo "	<tr>";
-	echo "		<td width='30%' class='vncellreq'>Username:</td>";
+	echo "		<td width='30%' class='vncellreq'>".$text['label-username'].":</td>";
 	echo "		<td width='70%' class='vtable'>$username</td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
-	echo "		<td class='vncell'>Password:</td>";
+	echo "		<td class='vncell'>".$text['label-password'].":</td>";
 	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='password' value=\"\"></td>";
 	echo "	</tr>";
 	echo "	<tr>";
-	echo "		<td class='vncell'>Confirm Password:</td>";
+	echo "		<td class='vncell'>".$text['label-confirm_password'].":</td>";
 	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirm_password' value=\"\"></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
-	echo "		<td class='vncell' valign='top'>Groups:</td>";
+	echo "		<td class='vncell' valign='top'>".$text['label-groups'].":</td>";
 	echo "		<td class='vtable'>";
 
 	echo "<table width='52%'>\n";
@@ -390,7 +401,7 @@ else {
 			echo "	<td class='vtable'>".$field['group_name']."</td>\n";
 			echo "	<td>\n";
 			if (permission_exists('group_member_delete') || if_group("superadmin")) {
-				echo "		<a href='usersupdate.php?id=".$user_uuid."&domain_uuid=".$domain_uuid."&group_name=".$field['group_name']."&a=delete' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='usersupdate.php?id=".$user_uuid."&domain_uuid=".$domain_uuid."&group_name=".$field['group_name']."&a=delete' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -418,7 +429,7 @@ else {
 		}
 	}
 	echo "</select>";
-	echo "<input type=\"submit\" class='btn' value=\"Add\">\n";
+	echo "<input type=\"submit\" class='btn' value=\"".$text['button-add']."\">\n";
 	unset($sql, $result);
 	echo "		</td>";
 	echo "	</tr>";
@@ -429,11 +440,11 @@ else {
 
 	echo "<table $table_width cellpadding='6' cellspacing='0'>";
 	echo "	<tr>\n";
-	echo "	<th class='th' colspan='2' align='left'>Additional Info</th>\n";
+	echo "	<th class='th' colspan='2' align='left'>".$text['label-additional_info']."</th>\n";
 	echo "	</tr>\n";
 
 	echo "	<tr>";
-	echo "		<td width='30%' class='vncell'>Contact:</td>";
+	echo "		<td width='30%' class='vncell'>".$text['label-contact'].":</td>";
 	echo "		<td width='70%' class='vtable'>\n";
 	$sql = " select contact_uuid, contact_organization, contact_name_given, contact_name_family from v_contacts ";
 	$sql .= " where domain_uuid = '".$_SESSION['domain_uuid']."' ";
@@ -467,9 +478,9 @@ else {
 	unset($sql, $result, $row_count);
 	echo "</select>\n";
 	echo "<br />\n";
-	echo "Assign a contact to this user account.\n";
+	echo $text['description-contact']."\n";
 	if (strlen($contact_uuid) > 0) {
-		echo "			<a href=\"/app/contacts/contacts_edit.php?id=$contact_uuid\">View</a>\n";
+		echo "			<a href=\"/app/contacts/contact_edit.php?id=$contact_uuid\">".$text['description-contact_view']."</a>\n";
 	}
 	echo "		</td>";
 	echo "	</tr>";
@@ -480,45 +491,45 @@ else {
 	else {
 		echo "	<tr>\n";
 		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-		echo "		Status:\n";
+		echo "		".$text['label-status'].":\n";
 		echo "	</td>\n";
 		echo "	<td class=\"vtable\">\n";
 		$cmd = "'".PROJECT_PATH."/app/calls_active/v_calls_exec.php?cmd=callcenter_config+agent+set+status+".$_SESSION['username']."@".$_SESSION['domain_name']."+'+this.value";
 		echo "		<select id='user_status' name='user_status' class='formfld' style='' onchange=\"send_cmd($cmd);\">\n";
 		echo "		<option value=''></option>\n";
 		if ($user_status == "Available") {
-			echo "		<option value='Available' selected='selected'>Available</option>\n";
+			echo "		<option value='Available' selected='selected'>".$text['option-available']."</option>\n";
 		}
 		else {
-			echo "		<option value='Available'>Available</option>\n";
+			echo "		<option value='Available'>".$text['option-available']."</option>\n";
 		}
 		if ($user_status == "Available (On Demand)") {
-			echo "		<option value='Available (On Demand)' selected='selected'>Available (On Demand)</option>\n";
+			echo "		<option value='Available (On Demand)' selected='selected'>".$text['option-available_on_demand']."</option>\n";
 		}
 		else {
-			echo "		<option value='Available (On Demand)'>Available (On Demand)</option>\n";
+			echo "		<option value='Available (On Demand)'>".$text['option-available_on_demand']."</option>\n";
 		}
 		if ($user_status == "Logged Out") {
-			echo "		<option value='Logged Out' selected='selected'>Logged Out</option>\n";
+			echo "		<option value='Logged Out' selected='selected'>".$text['option-logged_out']."</option>\n";
 		}
 		else {
-			echo "		<option value='Logged Out'>Logged Out</option>\n";
+			echo "		<option value='Logged Out'>".$text['option-logged_out']."</option>\n";
 		}
 		if ($user_status == "On Break") {
-			echo "		<option value='On Break' selected='selected'>On Break</option>\n";
+			echo "		<option value='On Break' selected='selected'>".$text['option-on_break']."</option>\n";
 		}
 		else {
-			echo "		<option value='On Break'>On Break</option>\n";
+			echo "		<option value='On Break'>".$text['option-on_break']."</option>\n";
 		}
 		if ($user_status == "Do Not Disturb") {
-			echo "		<option value='Do Not Disturb' selected='selected'>Do Not Disturb</option>\n";
+			echo "		<option value='Do Not Disturb' selected='selected'>".$text['option-do_not_disturb']."</option>\n";
 		}
 		else {
-			echo "		<option value='Do Not Disturb'>Do Not Disturb</option>\n";
+			echo "		<option value='Do Not Disturb'>".$text['option-do_not_disturb']."</option>\n";
 		}
 		echo "		</select>\n";
 		echo "		<br />\n";
-		echo "		Select a the user status.<br />\n";
+		echo "		".$text['description-status']."<br />\n";
 		echo "	</td>\n";
 		echo "	</tr>\n";
 	}
@@ -559,7 +570,7 @@ else {
 
 	echo "	<tr>\n";
 	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-	echo "		Time Zone: \n";
+	echo "		".$text['label-time_zone'].": \n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\" align='left'>\n";
 	echo "		<select id='user_time_zone' name='user_time_zone' class='formfld' style=''>\n";
@@ -588,34 +599,46 @@ else {
 	}
 	echo "		</select>\n";
 	echo "		<br />\n";
-	echo "		Select the default time zone.<br />\n";
+	echo "		".$text['description-time_zone']."<br />\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
 
+	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/app/api/app_config.php')) {
+		echo "	<tr>";
+		echo "		<td class='vncell'>".$text['label-api_key'].":</td>";
+		echo "		<td class='vtable'>\n";
+		echo "			<input type=\"text\" class='formfld' name=\"api_key\" value=\"".$api_key."\" >\n";
+		if (strlen($text['description-api_key']) > 0) {
+			echo "			<br />".$text['description-api_key']."<br />\n";
+		}
+		echo "		</td>";
+		echo "	</tr>";
+	}
+
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "    Enabled:\n";
+	echo "    ".$text['label-enabled'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='user_enabled'>\n";
 	echo "    <option value=''></option>\n";
-	if ($user_enabled == "true" || $user_enabled == "") { 
-		echo "    <option value='true' selected='selected'>true</option>\n";
+	if ($user_enabled == "true" || $user_enabled == "") {
+		echo "    <option value='true' selected='selected'>".$text['option-true']."</option>\n";
 	}
 	else {
-		echo "    <option value='true'>true</option>\n";
+		echo "    <option value='true'>".$text['option-true']."</option>\n";
 	}
-	if ($user_enabled == "false") { 
-		echo "    <option value='false' selected='selected'>false</option>\n";
+	if ($user_enabled == "false") {
+		echo "    <option value='false' selected='selected'>".$text['option-false']."</option>\n";
 	}
 	else {
-		echo "    <option value='false'>false</option>\n";
+		echo "    <option value='false'>".$text['option-false']."</option>\n";
 	}
 	echo "    </select>\n";
 	echo "<br />\n";
-	echo "Enable/disable this user.\n";
+	echo $text['description-enabled']."\n";
 	echo "</td>\n";
-	echo "</tr>\n";	
+	echo "</tr>\n";
 
 	echo "	</table>";
 	echo "<br>";
@@ -626,7 +649,7 @@ else {
 	echo "		<td colspan='2' align='right'>";
 	echo "			<input type='hidden' name='id' value=\"$user_uuid\">";
 	echo "			<input type='hidden' name='username' value=\"$username\">";
-	echo "			<input type='submit' name='submit' class='btn' value='Save'>";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>";
 	echo "		</td>";
 	echo "	</tr>";
 	echo "</table>";
@@ -638,6 +661,6 @@ else {
 	echo "</form>";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>

@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('call_center_active_view')) {
 	//access granted
 }
@@ -34,11 +34,19 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //get the queue_name and set it as a variable
 	$queue_name = $_GET[queue_name];
 
 //get the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
+	$page["title"] = $text['title-call_center_queue_activity'];
+
 ?><script type="text/javascript">
 function loadXmlHttp(url, id) {
 	var f = this;
@@ -118,5 +126,5 @@ echo "	</tr>";
 echo "</table>";
 echo "</div>";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

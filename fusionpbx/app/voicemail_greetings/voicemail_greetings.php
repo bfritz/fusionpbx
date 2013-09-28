@@ -17,16 +17,16 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2013
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('voicemail_greetings_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('voicemail_greeting_view')) {
 	//access granted
 }
 else {
@@ -41,7 +41,7 @@ else {
 	}
 
 //additional includes
-	require_once "includes/paging.php";
+	require_once "resources/paging.php";
 
 //set the max php execution time
 	ini_set(max_execution_time,7200);
@@ -78,7 +78,7 @@ else {
 	$v_greeting_dir = $_SESSION['switch']['storage']['dir'].'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain_name'].'/'.$voicemail_id;
 
 //upload the recording
-	if (($_POST['submit'] == "Save") && is_uploaded_file($_FILES['file']['tmp_name']) && permission_exists('recordings_upload')) {
+	if (($_POST['submit'] == "Save") && is_uploaded_file($_FILES['file']['tmp_name']) && permission_exists('recording_upload')) {
 		if ($_POST['type'] == 'rec') {
 			for($i = 1; $i < 10; $i++){
 				$tmp_greeting = 'greeting_'.$i.'.wav';
@@ -111,7 +111,7 @@ else {
 	}
 
 //download the voicemail greeting
-	if ($_GET['a'] == "download") { // && permission_exists('voicemail_greetings_download')) {
+	if ($_GET['a'] == "download") { // && permission_exists('voicemail_greeting_download')) {
 		session_cache_limiter('public');
 		if ($_GET['type'] = "rec") {
 			if (file_exists($v_greeting_dir.'/'.base64_decode($_GET['filename']))) {
@@ -208,7 +208,7 @@ else {
 	unset($prep_statement, $result);
 
 //include the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //show the message
 	if (strlen($save_msg) > 0) {
@@ -233,7 +233,7 @@ else {
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
 	echo "		<td align='left' width=\"50%\">\n";
-	echo "			<strong>".$text['title'].":</strong><br>\n";
+	echo "			<span class='title'>".$text['title'].":</span><br>\n";
 	echo "		</td>";
 	echo "		<td width='50%' align='right'>\n";
 	echo "			<label for=\"file\">".$text['label-upload'].":</label>\n";
@@ -302,8 +302,8 @@ else {
 	echo "<th width=\"50px\" class=\"listhdr\" nowrap=\"nowrap\">".$text['table-size']."</th>\n";
 	echo th_order_by('greeting_description', $text['table-description'], $order_by, $order);
 	echo "<td align='right' width='21'>\n";
-	//if (permission_exists('voicemail_greetings_add')) {
-	//	echo "	<a href='voicemail_greetings_edit.php?&voicemail_id=".$voicemail_id."' alt='add'>$v_link_label_add</a>\n";
+	//if (permission_exists('voicemail_greeting_add')) {
+	//	echo "	<a href='voicemail_greeting_edit.php?&voicemail_id=".$voicemail_id."' alt='add'>$v_link_label_add</a>\n";
 	//}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -331,7 +331,7 @@ else {
 			echo "		download";
 			echo "		</a>";
 			//echo "		&nbsp;\n";
-			//echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('voicemail_greetings_play.php?id=$voicemail_id&a=download&type=rec&filename=".base64_encode($row['greeting_name'])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
+			//echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('voicemail_greeting_play.php?id=$voicemail_id&a=download&type=rec&filename=".base64_encode($row['greeting_name'])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
 			//echo "		play";
 			//echo "		</a>";
 			echo 	"</td>\n";
@@ -343,10 +343,10 @@ else {
 			echo "	<td valign='top' class='row_stylebg'>".$row['greeting_description']."&nbsp;</td>\n";
 
 			echo "	<td valign='top' align='right'>\n";
-			//if (permission_exists('voicemail_greetings_edit')) {
+			//if (permission_exists('voicemail_greeting_edit')) {
 			//	echo "		<a href='voicemail_greeting_edit.php?id=".$row['voicemail_greeting_uuid']."&voicemail_id=".$voicemail_id."' alt='edit'>$v_link_label_edit</a>\n";
 			//}
-			if (permission_exists('voicemail_greetings_delete')) {
+			if (permission_exists('voicemail_greeting_delete')) {
 				echo "		<a href='voicemail_greeting_delete.php?id=".$row['voicemail_greeting_uuid']."&voicemail_id=".$voicemail_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
@@ -379,6 +379,6 @@ else {
 	echo "<br>\n";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>

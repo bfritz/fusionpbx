@@ -24,17 +24,17 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('services_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('service_view')) {
 	//access granted
 }
 else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+require_once "resources/header.php";
+require_once "resources/paging.php";
 
 $order_by = $_GET["order_by"];
 $order = $_GET["order"];
@@ -67,12 +67,12 @@ if (strlen($_GET["a"]) > 0) {
 		shell_exec($service_cmd_start);
 	}
 
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"5;url=services.php\">\n";
 	echo "<div align='center'>\n";
 	echo $msg."\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 }
 
@@ -141,7 +141,7 @@ if (strlen($_GET["a"]) > 0) {
 	echo "<th>Status</th>\n";
 	echo "<th>Action</th>\n";
 	echo "<td align='right' width='42'>\n";
-	if (permission_exists('services_add')) {
+	if (permission_exists('service_add')) {
 		echo "	<a href='service_edit.php' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "</td>\n";
@@ -173,10 +173,10 @@ if (strlen($_GET["a"]) > 0) {
 			}
 			echo "</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			if (permission_exists('services_edit')) {
+			if (permission_exists('service_edit')) {
 				echo "		<a href='service_edit.php?id=".$row[service_uuid]."' alt='edit'>$v_link_label_edit</a>\n";
 			}
-			if (permission_exists('services_delete')) {
+			if (permission_exists('service_delete')) {
 				echo "		<a href='service_delete.php?id=".$row[service_uuid]."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
@@ -193,7 +193,7 @@ if (strlen($_GET["a"]) > 0) {
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	if (permission_exists('services_add')) {
+	if (permission_exists('service_add')) {
 		echo "			<a href='service_edit.php' alt='add'>$v_link_label_add</a>\n";
 	}
 	echo "		</td>\n";
@@ -214,6 +214,6 @@ if (strlen($_GET["a"]) > 0) {
 	echo "<br><br>";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>

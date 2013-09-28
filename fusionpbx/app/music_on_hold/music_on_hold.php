@@ -26,8 +26,8 @@
 */
 
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('music_on_hold_view') || permission_exists('music_on_hold_default_view')) {
 	//access granted
 }
@@ -42,7 +42,7 @@ else {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
-require_once "includes/paging.php";
+require_once "resources/paging.php";
 
 $sampling_rate_dirs = Array(8000, 16000, 32000, 48000);
 $music_on_hold_dir = $_SESSION['switch']['sounds']['dir'].'/music';
@@ -91,7 +91,7 @@ if ($_GET['a'] == "download") {
 	exit;
 }
 
-if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['upload_file']['tmp_name'])) {
+if (is_uploaded_file($_FILES['upload_file']['tmp_name'])) {
 	$file_ext = strtolower(pathinfo($_FILES['upload_file']['name'], PATHINFO_EXTENSION));
 	if ($file_ext == 'wav' || $file_ext == 'mp3') {
 		if ($_POST['type'] == 'moh' && permission_exists('music_on_hold_add')) {
@@ -140,7 +140,7 @@ if (($_POST['submit'] == "Upload") && is_uploaded_file($_FILES['upload_file']['t
 						}
 					}
 				}
-				else { 
+				else {
 					exit();
 				}
 
@@ -222,10 +222,10 @@ if ($_GET['act'] == "del" && permission_exists('music_on_hold_delete')) {
 }
 
 //include the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //show the title and description
-	echo "<script language='JavaScript' type='text/javascript' src='".PROJECT_PATH."/includes/javascript/reset_file_input.js'></script>\n";
+	echo "<script language='JavaScript' type='text/javascript' src='".PROJECT_PATH."/resources/javascript/reset_file_input.js'></script>\n";
 	echo "<script>\n";
 	echo "function EvalSound(soundobj) {\n";
 	echo "	var thissound= eval(\"document.\"+soundobj);\n";
@@ -237,10 +237,9 @@ if ($_GET['act'] == "del" && permission_exists('music_on_hold_delete')) {
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
 	echo "		<td align='left'>\n";
-	echo "			<p><span class=\"vexpl\">\n";
-	echo "			<strong>".$text['label-moh']."</strong><br><br>\n";
+	echo "			<span class=\"title\">".$text['label-moh']."</span><br />\n";
 	echo "			".$text['desc-moh']."\n";
-	echo "			</span></p>\n";
+	echo "			<br /><br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
@@ -372,7 +371,7 @@ if ($_GET['act'] == "del" && permission_exists('music_on_hold_delete')) {
 	}
 
 	if ($v_path_show) {
-		echo "<div style='font-size: 10px; text-align: right; margin-right: 25px;'><b>".$text['label-location'].":</b> ".$music_on_hold_dir."</div>\n";
+		echo "<div style='font-size: 10px; text-align: right; margin-right: 25px;'><strong>".$text['label-location'].":</strong> ".$music_on_hold_dir."</div>\n";
 	}
 	echo "<br><br>\n";
 
@@ -439,12 +438,12 @@ if ($_GET['act'] == "del" && permission_exists('music_on_hold_delete')) {
 
 		echo "</table>\n";
 		if ($v_path_show) {
-			echo "<div style='font-size: 10px; text-align: right; margin-right: 25px;'><b>Location:</b> ".$music_on_hold_category_parent_dir."/".$category_dir."</div>\n";
+			echo "<div style='font-size: 10px; text-align: right; margin-right: 25px;'><strong>".$text['label-location'].":</strong> ".$music_on_hold_category_parent_dir."/".$category_dir."</div>\n";
 		}
 		echo "<br><br>\n";
 	}
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>

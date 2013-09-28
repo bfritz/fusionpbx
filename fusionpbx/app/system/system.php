@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('system_view_info') 
 	|| permission_exists('system_view_cpu') 
 	|| permission_exists('system_view_hdd') 
@@ -43,7 +43,7 @@ else {
 	foreach($text as $key => $value) {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
-require_once "includes/header.php";
+require_once "resources/header.php";
 
 echo "<br />";
 echo "<br />";
@@ -333,5 +333,5 @@ echo "<br />";
 	}
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

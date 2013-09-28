@@ -17,15 +17,15 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2013
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('user_view') || if_group("superadmin")) {
 	//access allowed
 }
@@ -34,15 +34,22 @@ else {
 	return;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //include the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
+	$page["title"] = $text['title-user_manager'];
 
 //show the user list
 	echo "<div align='center'>";
 	echo "	<table width='100%' border='0'>";
 	echo "		<tr>";
 	echo "		<td align='left' width='100%'>";
-	require_once "userlist.php";
+	require_once "users.php";
 	echo "				<br />";
 	echo "				<br />";
 	echo "				<br />";
@@ -52,6 +59,6 @@ else {
 	echo "</div>";
 
 //include the footer
-	include "includes/footer.php";
+	include "resources/footer.php";
 
 ?>

@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 require_once "config.php";
 if (permission_exists('content_add')) {
 	//access granted
@@ -94,18 +94,18 @@ if (count($_POST)>0) {
 	$db->exec(check_sql($sql));
 	unset($sql);
 
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsssublist.php?rss_uuid=$rss_uuid\">\n";
 	echo "<div align='center'>";
 	echo $text['message-add'];
 	echo "</div>";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 }
 
 //show the header
-	require_once "includes/header.php";
-	require_once "includes/wysiwyg.php";
+	require_once "resources/header.php";
+	require_once "resources/wysiwyg.php";
 
 //show the content
 	echo "<div align='center'>";
@@ -178,5 +178,5 @@ if (count($_POST)>0) {
 	echo "</div>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

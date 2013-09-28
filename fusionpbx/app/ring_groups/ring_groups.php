@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2010-2013
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('ring_group_view')) {
 	//access granted
 }
@@ -41,8 +41,8 @@ else {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
-require_once "includes/header.php";
-require_once "includes/paging.php";
+require_once "resources/header.php";
+require_once "resources/paging.php";
 
 //get variables used to control the order
 	$order_by = $_GET["order_by"];
@@ -84,7 +84,7 @@ require_once "includes/paging.php";
 		}
 
 	//prepare to page the results
-		$rows_per_page = 10;
+		$rows_per_page = 150;
 		$param = "";
 		$page = $_GET['page'];
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
@@ -92,8 +92,8 @@ require_once "includes/paging.php";
 		$offset = $rows_per_page * $page; 
 
 	//get the  list
-		$sql = " select * from v_ring_groups ";
-		$sql .= " where domain_uuid = '$domain_uuid' ";
+		$sql = "select * from v_ring_groups ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
 		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
@@ -119,7 +119,7 @@ require_once "includes/paging.php";
 	echo th_order_by('ring_group_enabled', $text['label-enabled'], $order_by, $order);
 	echo th_order_by('ring_group_description', $text['label-description'], $order_by, $order);
 	echo "<td align='right' width='42'>\n";
-	echo "	<a href='ring_groups_edit.php' alt='add'>$v_link_label_add</a>\n";
+	echo "	<a href='ring_group_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
 	echo "<tr>\n";
 
@@ -136,8 +136,8 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_enabled']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
-			echo "		<a href='ring_groups_edit.php?id=".$row['ring_group_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
-			echo "		<a href='ring_groups_delete.php?id=".$row['ring_group_uuid']."' alt='delete' onclick=\"return confirm('".$text['message-delete']."')\">$v_link_label_delete</a>\n";
+			echo "		<a href='ring_group_edit.php?id=".$row['ring_group_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+			echo "		<a href='ring_group_delete.php?id=".$row['ring_group_uuid']."' alt='delete' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
@@ -152,7 +152,7 @@ require_once "includes/paging.php";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
-	echo "			<a href='ring_groups_edit.php' alt='add'>$v_link_label_add</a>\n";
+	echo "			<a href='ring_group_edit.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
@@ -171,5 +171,5 @@ require_once "includes/paging.php";
 	echo "<br /><br />";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

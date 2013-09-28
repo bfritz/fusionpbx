@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 require_once "config.php";
 if (permission_exists('content_view')) {
 	//access granted
@@ -57,7 +57,7 @@ if (count($_POST)>0) {
 	$rss_sub_add_user = check_str($_POST["rss_sub_add_user"]);
 
 
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 	echo "<div align='center'>";
 	echo "<table border='0' cellpadding='0' cellspacing='2'>\n";
@@ -177,7 +177,7 @@ if (count($_POST)>0) {
 	echo "</div>";
 
 	echo "<br><br>";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 	unset ($result_count);
 	unset ($result);
@@ -188,7 +188,7 @@ if (count($_POST)>0) {
 	}
 	else {
 
-		echo "\n";    require_once "includes/header.php";
+		echo "\n";    require_once "resources/header.php";
 	echo "<div align='center'>";
 	echo "<table border='0' cellpadding='0' cellspacing='2'>\n";
 
@@ -212,7 +212,7 @@ if (count($_POST)>0) {
 	  echo "		<td><input type='text' class='txt' name='rss_sub_title'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
-	  echo "		<td>".text['label-sub-link'].":</td>";
+	  echo "		<td>".$text['label-sub-link'].":</td>";
 	  echo "		<td><input type='text' class='txt' name='rss_sub_link'></td>";
 	  echo "	</tr>";
 	  echo "	<tr>";
@@ -260,7 +260,7 @@ if (count($_POST)>0) {
 	echo "</div>";
 
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 
 } //end if not post
 ?>

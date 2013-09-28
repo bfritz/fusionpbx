@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('call_center_queues_add') || permission_exists('call_center_queues_edit')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('call_center_queue_add') || permission_exists('call_center_queue_edit')) {
 	//access granted
 }
 else {

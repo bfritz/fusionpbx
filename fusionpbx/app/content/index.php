@@ -26,8 +26,8 @@
 return; //disable
 
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('content_view')) {
 	//access granted
 }
@@ -39,12 +39,12 @@ else {
 require_once "config.php";
 session_start();
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"\" href=\"rss.php\" />\n";
 
 $_GET["c"] = "html";
 require_once "rss.php";
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 
 return;
 ?>

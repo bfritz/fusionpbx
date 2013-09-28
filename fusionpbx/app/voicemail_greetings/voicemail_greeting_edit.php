@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('voicemail_greetings_add') || permission_exists('voicemail_greetings_edit')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('voicemail_greeting_add') || permission_exists('voicemail_greeting_edit')) {
 	//access granted
 }
 else {
@@ -72,21 +72,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($greeting_name) == 0) { $msg .= "".$text['confirm-name']."<br>\n"; }
 		//if (strlen($greeting_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/header.php";
-			require_once "includes/persistformvar.php";
+			require_once "resources/header.php";
+			require_once "resources/persist_form_var.php";
 			echo "<div align='center'>\n";
 			echo "<table><tr><td>\n";
 			echo $msg."<br />";
 			echo "</td></tr></table>\n";
 			persistformvar($_POST);
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		}
 
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
-		if ($action == "add" && permission_exists('voicemail_greetings_add')) {
+		if ($action == "add" && permission_exists('voicemail_greeting_add')) {
 			$voicemail_greeting_uuid = uuid();
 			$sql = "insert into v_voicemail_greetings ";
 			$sql .= "(";
@@ -105,16 +105,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "includes/header.php";
+			require_once "resources/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=voicemail_greetings.php?id=".$voicemail_id."\">\n";
 			echo "<div align='center'>\n";
 			echo "".$text['confirm-add']."\n";
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		} //if ($action == "add")
 
-		if ($action == "update" && permission_exists('voicemail_greetings_edit')) {
+		if ($action == "update" && permission_exists('voicemail_greeting_edit')) {
 			//get the original filename
 				$sql = "select * from v_voicemail_greetings ";
 				$sql .= "where voicemail_greeting_uuid = '$voicemail_greeting_uuid' ";
@@ -145,12 +145,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 			//redirect the user
-				require_once "includes/header.php";
+				require_once "resources/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=voicemail_greetings.php?id=".$voicemail_id."\">\n";
 				echo "<div align='center'>\n";
 				echo "".$text['confirm-update']."\n";
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				require_once "resources/footer.php";
 				return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
@@ -174,7 +174,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //show the content
 	echo "<div align='center'>";
@@ -236,5 +236,5 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</div>";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

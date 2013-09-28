@@ -30,14 +30,20 @@
 		preg_match("/^(.*)\/core\/.*$/", $document_root, $matches);
 		$document_root = $matches[1];
 		set_include_path($document_root);
-		require_once "includes/require.php";
+		require_once "resources/require.php";
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
 		$display_type = 'text'; //html, text
+
+		//add multi-lingual support
+			require_once "app_languages.php";
+			foreach($text as $key => $value) {
+				$text[$key] = $value[$_SESSION['domain']['language']['code']];
+			}
 	}
 	else {
 		include "root.php";
-		require_once "includes/require.php";
-		require_once "includes/checkauth.php";
+		require_once "resources/require.php";
+		require_once "resources/check_auth.php";
 		if (permission_exists('upgrade_schema') || if_group("superadmin")) {
 			//echo "access granted";
 		}
@@ -45,7 +51,16 @@
 			echo "access denied";
 			exit;
 		}
-		require_once "includes/header.php";
+
+		//add multi-lingual support
+			require_once "app_languages.php";
+			foreach($text as $key => $value) {
+				$text[$key] = $value[$_SESSION['domain']['language']['code']];
+			}
+
+		require_once "resources/header.php";
+		$page["title"] = $text['title-upgrade_schema'];
+
 		$display_type = 'html'; //html, text
 	}
 
@@ -55,7 +70,7 @@
 	}
 
 //load the default database into memory and compare it with the active database
-	require_once "includes/lib_schema.php";
+	require_once "resources/schema.php";
 	db_upgrade_schema ($db, $db_type, $db_name, $display_results);
 	unset($apps);
 
@@ -65,7 +80,7 @@
 if ($display_results && $display_type == "html") {
 	echo "<br />\n";
 	echo "<br />\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 }
 
 ?>

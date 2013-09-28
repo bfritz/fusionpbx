@@ -31,8 +31,8 @@
 
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('click_to_call_view')) {
 	//access granted
 }
@@ -47,7 +47,7 @@ else {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 
 if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])) {
 	//get the http variables and set them as variables
@@ -218,7 +218,7 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	echo "	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
 	echo "	<td align='left'>\n";
-	echo "		<span class=\"vexpl\" class=\"red\">\n";
+	echo "		<span class=\"title\">\n";
 	echo "			<strong>".$text['label-click2call']."</strong>\n";
 	echo "		</span>\n";
 	echo "	</td>\n";
@@ -396,5 +396,5 @@ if (is_array($_REQUEST) && !empty($_REQUEST['src']) && !empty($_REQUEST['dest'])
 	echo "</form>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

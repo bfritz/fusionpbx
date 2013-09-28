@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('schema_edit')) {
 	//access granted
 }
@@ -33,6 +33,12 @@ else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -64,21 +70,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		if (strlen($schema_uuid) == 0) { $msg .= "Please provide: schema_uuid<br>\n"; }
-		if (strlen($schema_field_uuid) == 0) { $msg .= "Please provide: schema_field_uuid<br>\n"; }
-		if (strlen($data_types_name) == 0) { $msg .= "Please provide: Name<br>\n"; }
-		if (strlen($data_types_value) == 0) { $msg .= "Please provide: Value<br>\n"; }
+		if (strlen($domain_uuid) == 0) { $msg .= $text['message-required']."domain_uuid<br>\n"; }
+		if (strlen($schema_uuid) == 0) { $msg .= $text['message-required']."schema_uuid<br>\n"; }
+		if (strlen($schema_field_uuid) == 0) { $msg .= $text['message-required']."schema_field_uuid<br>\n"; }
+		if (strlen($data_types_name) == 0) { $msg .= $text['message-required'].$text['label-name_value_name']."<br>\n"; }
+		if (strlen($data_types_value) == 0) { $msg .= $text['message-required'].$text['label-name_value_value']."<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/header.php";
-			require_once "includes/persistformvar.php";
+			require_once "resources/header.php";
+			require_once "resources/persist_form_var.php";
 			echo "<div align='center'>\n";
 			echo "<table><tr><td>\n";
 			echo $msg."<br />";
 			echo "</td></tr></table>\n";
 			persistformvar($_POST);
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		}
 
@@ -106,12 +112,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "includes/header.php";
+				require_once "resources/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=schema_field_edit.php?schema_uuid=$schema_uuid&id=$schema_field_uuid\">\n";
 				echo "<div align='center'>\n";
-				echo "Add Complete\n";
+				echo $text['message-add']."\n";
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				require_once "resources/footer.php";
 				return;
 			} //if ($action == "add")
 
@@ -126,12 +132,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "includes/header.php";
+				require_once "resources/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=schema_field_edit.php?schema_uuid=$schema_uuid&id=$schema_field_uuid\">\n";
 				echo "<div align='center'>\n";
-				echo "Update Complete\n";
+				echo $text['message-update']."\n";
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				require_once "resources/footer.php";
 				return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
@@ -159,7 +165,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
+	$page["title"] = $text['title-name_value'];
 
 //show the content
 	echo "<div align='center'>";
@@ -174,38 +181,38 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td align='left' width='30%' nowrap=\"nowrap\"><b>Table Data Types Name Value Add</b></td>\n";
+		echo "<td align='left' width='30%' nowrap=\"nowrap\"><b>".$text['header-name_value']." ".$text['button-add']."</b></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td align='left' width='30%' nowrap=\"nowrap\"><b>Table Data Types Name Value Edit</b></td>\n";
+		echo "<td align='left' width='30%' nowrap=\"nowrap\"><b>".$text['header-name_value']." ".$text['button-edit']."</b></td>\n";
 	}
-	echo "<td width='70%' align=\"right\"><input type='button' class='btn' name='' alt='back' onclick=\"history.go(-1);return true;\" value='Back'></td>\n";
+	echo "<td width='70%' align=\"right\"><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"history.go(-1);return true;\" value='".$text['button-back']."'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align=\"left\" colspan='2'>\n";
-	echo "Stores the name and value pairs.<br /><br />\n";
+	echo $text['description-name_value']."<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap=\"nowrap\">\n";
-	echo "	Name:\n";
+	echo "	".$text['label-name_value_name'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='data_types_name' maxlength='255' value=\"$data_types_name\">\n";
 	echo "<br />\n";
-	echo "Enter the name.\n";
+	echo $text['description-name_value_name']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap=\"nowrap\">\n";
-	echo "	Value:\n";
+	echo "	".$text['label-name_value_value'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input class='formfld' type='text' name='data_types_value' maxlength='255' value=\"$data_types_value\">\n";
 	echo "<br />\n";
-	echo "Enter the value.\n";
+	echo $text['description-name_value_value']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "	<tr>\n";
@@ -215,7 +222,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "			<input type='hidden' name='schema_name_value_uuid' value='$schema_name_value_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
@@ -226,5 +233,5 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

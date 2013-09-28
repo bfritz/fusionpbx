@@ -17,27 +17,46 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2013
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
+require_once "resources/require.php";
 
 //check the permissions
-	require_once "includes/checkauth.php";
-	if (if_group("admin") || if_group("superadmin")) {
-		//access allowed
-	}
-	else {
-		echo "access denied";
-		return;
+require_once "resources/check_auth.php";
+if (if_group("admin") || if_group("superadmin")) {
+	//access allowed
+}
+else {
+	echo "access denied";
+	return;
+}
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
+	$page["title"] = $text['title-group_manager'];
+	if (isset($_REQUEST["change"])) {
+		//get the values from the HTTP POST and save them as PHP variables
+		$change = check_str($_REQUEST["change"]);
+		$group_name = check_str($_REQUEST["group_name"]);
+
+		$sql = "update v_groups set ";
+		$sql .= "group_protected = '$change' ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and group_name = '$group_name' ";
+		$db->exec(check_sql($sql));
+		unset($sql);
+	}
 
 //show the content
 	echo "<div class='' style='padding:0px;'>\n";
@@ -45,16 +64,17 @@ require_once "includes/require.php";
 	echo "<td>";
 
 	echo "<table width='100%' border='0'><tr>";
-	echo "<td width='50%'><b>Groups</b></td>";
+	echo "<td width='50%'><b>".$text['header-group_manager']."</b><br><br></td>";
 	echo "<td width='50%' align='right'>";
 	if (permission_exists('user_view')) {
-		echo "  <input type='button' class='btn' onclick=\"window.location='index.php'\" value='User Manager'>";
+		echo "  <input type='button' class='btn' onclick=\"window.location='index.php'\" value='".$text['header-user_manager']."'>";
 	}
 	echo "</td>\n";
 	echo "</tr></table>";
 
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "order by group_name asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 
@@ -64,13 +84,14 @@ require_once "includes/require.php";
 
 	$strlist = "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	$strlist .= "<tr class='border'>\n";
-	$strlist .= "	<th align=\"left\" nowrap> &nbsp; Group Name &nbsp; </th>\n";
-	$strlist .= "	<th align=\"left\" nowrap> &nbsp; Group Description &nbsp; </th>\n";
+	$strlist .= "	<th align=\"left\" nowrap> &nbsp; ".$text['label-group_name']." &nbsp; </th>\n";
+	$strlist .= "	<th align=\"left\" nowrap> &nbsp; ".$text['label-group_check']." &nbsp; </th>\n";
+	$strlist .= "	<th align=\"left\" nowrap> &nbsp; ".$text['label-group_description']." &nbsp; </th>\n";
 	$strlist .= "	<th align=\"center\" nowrap>&nbsp;</th>\n";
 
 	$strlist .= "	<td width='22px' align=\"right\" nowrap>\n";
 	if (permission_exists('group_add')) {
-		$strlist .= "	<a href='groupadd.php' alt='add'>$v_link_label_add</a>\n";
+		$strlist .= "	<a href='groupadd.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
 	}
 	$strlist .= "	</td>\n";
 	$strlist .= "</tr>\n";
@@ -79,6 +100,7 @@ require_once "includes/require.php";
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$group_name = $row["group_name"];
+		$group_protected= $row["group_protected"];
 		$group_uuid = $row["group_uuid"];
 		$group_description = $row["group_description"];
 		if (strlen($group_name) == 0) { $group_name = "&nbsp;"; }
@@ -91,19 +113,28 @@ require_once "includes/require.php";
 		else {
 			$strlist .= "<tr>";
 			$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp; $group_name &nbsp; </td>\n";
-			$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp;  $group_description &nbsp; </td>\n";
+			//$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp; $group_protected &nbsp; </td>\n";
+			$strlist .= "	<td class='".$row_style[$c]."' align=\"left\" nowrap='nowrap' nowrap>\n";
+			if ($group_protected == "true") {
+				$strlist .= "		<input type='checkbox' name='group_protected' checked='checked' value='true' onchange=\"window.location='".PROJECT_PATH."/core/users/groups.php?change=false&group_name=".$group_name."';\">\n";
+			}
+			else {
+				$strlist .= "		<input type='checkbox' name='group_protected' value='false' onchange=\"window.location='".PROJECT_PATH."/core/users/groups.php?change=true&group_name=".$group_name."';\">\n";
+			}
+			$strlist .= "	</td>\n";
+			$strlist .= "<td class='".$row_style[$c]."' align=\"left\" class='' nowrap> &nbsp; $group_description &nbsp; </td>\n";
 
 			$strlist .= "<td class='".$row_style[$c]."' align=\"center\" nowrap>\n";
 			if (permission_exists('group_add') || if_group("superadmin")) {
-				$strlist .= "&nbsp;<a class='' href='group_permissions.php?group_name=$group_name' title='Group Permissions'>Permissions</a>&nbsp;&nbsp;";
+				$strlist .= "&nbsp;<a class='' href='group_permissions.php?group_name=$group_name' title='".$text['label-group_permissions']."'>".$text['label-group_permissions']."</a>&nbsp;&nbsp;";
 			}
 			if (permission_exists('group_member_view') || if_group("superadmin")) {
-				$strlist .= "&nbsp;<a class='' href='groupmembers.php?group_name=$group_name' title='Group Members'>Members</a>&nbsp;";
+				$strlist .= "&nbsp;<a class='' href='groupmembers.php?group_name=$group_name' title='".$text['label-group_members']."'>".$text['label-group_members']."</a>&nbsp;";
 			}
 			$strlist .= "</td>\n";
 
 			$strlist .= "<td align=\"right\" nowrap>\n";
-			$strlist .= "<a href='groupdelete.php?id=$group_uuid' onclick=\"return confirm('Do you really want to delete this?')\" alt='delete'>$v_link_label_delete</a>\n";
+			$strlist .= "<a href='groupdelete.php?id=$group_uuid' onclick=\"return confirm('".$text['confirm-delete']."')\" alt='".$text['button-delete']."'>$v_link_label_delete</a>\n";
 
 			$strlist .= "</td>\n";
 			$strlist .= "</tr>\n";
@@ -113,9 +144,9 @@ require_once "includes/require.php";
 	}
 
 	$strlist .= "<tr>\n";
-	$strlist .= "<td colspan='4' align='right' height='20'>\n";
+	$strlist .= "<td colspan='5' align='right' height='20'>\n";
 	if (permission_exists('group_add')) {
-		$strlist .= "	<a href='groupadd.php' alt='add'>$v_link_label_add</a>\n";
+		$strlist .= "	<a href='groupadd.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
 	}
 	$strlist .= "</td>\n";
 	$strlist .= "</tr>\n";
@@ -132,6 +163,6 @@ require_once "includes/require.php";
 	echo "</div>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>

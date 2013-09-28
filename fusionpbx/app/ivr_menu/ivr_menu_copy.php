@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-require_once "includes/paging.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+require_once "resources/paging.php";
 if (permission_exists('ivr_menu_edit')) {
 	//access granted
 }
@@ -46,7 +46,7 @@ else {
 		$ivr_menu_uuid = $_GET["id"];
 	}
 
-//get the ivr_menus data 
+//get the ivr_menus data
 	$sql = "select * from v_ivr_menus ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and ivr_menu_uuid = '$ivr_menu_uuid' ";
@@ -73,7 +73,6 @@ else {
 		$ivr_menu_direct_dial = $row["ivr_menu_direct_dial"];
 		$ivr_menu_enabled = $row["ivr_menu_enabled"];
 		$ivr_menu_description = 'copy: '.$row["ivr_menu_description"];
-		break; //limit to 1 row
 	}
 	unset ($prep_statement);
 
@@ -175,13 +174,23 @@ else {
 			unset($sql);
 	}
 
+//synchronize the xml config
+	save_dialplan_xml();
+
+//delete the dialplan context from memcache
+	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+	if ($fp) {
+		$switch_cmd = "memcache delete dialplan:".$_SESSION["context"];
+		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+	}
+
 //redirect the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=ivr_menus.php\">\n";
 	echo "<div align='center'>\n";
-	echo "Copy Complete\n";
+	echo $text['message-copy']."\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 
 ?>

@@ -24,8 +24,8 @@
  Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('default_setting_view')) {
 	//access granted
 }
@@ -33,8 +33,17 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
+require_once "resources/header.php";
+$page["title"] = $text['title-default_settings'];
+
+require_once "resources/paging.php";
 
 //get variables used to control the order
 	$order_by = $_GET["order_by"];
@@ -49,12 +58,12 @@ require_once "includes/paging.php";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
-	echo "		<td width='50%' align='left' nowrap='nowrap'><b>Default Settings</b></td>\n";
+	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['header-default_settings']."</b></td>\n";
 	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td align='left' colspan='2'>\n";
-	echo "			Settings used for all domains.<br /><br />\n";
+	echo "			".$text['description-default_settings']."<br /><br />\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
@@ -78,9 +87,9 @@ require_once "includes/paging.php";
 		$rows_per_page = 100;
 		$param = "";
 		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
-		$offset = $rows_per_page * $page; 
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
+		$offset = $rows_per_page * $page;
 
 	//get the list
 		$sql = "select * from v_default_settings ";
@@ -112,14 +121,14 @@ require_once "includes/paging.php";
 				echo "	<br />\n";
 				echo "	<b>".ucfirst($row['default_setting_category'])."</b>&nbsp;</td></tr>\n";
 				echo "<tr>\n";
-				echo th_order_by('default_setting_subcategory', 'Category', $order_by, $order);
-				echo th_order_by('default_setting_name', 'Type', $order_by, $order);
-				echo th_order_by('default_setting_value', 'Value', $order_by, $order);
-				echo th_order_by('default_setting_enabled', 'Enabled', $order_by, $order);
-				echo th_order_by('default_setting_description', 'Description', $order_by, $order);
+				echo th_order_by('default_setting_subcategory', $text['label-subcategory'], $order_by, $order);
+				echo th_order_by('default_setting_name', $text['label-type'], $order_by, $order);
+				echo th_order_by('default_setting_value', $text['label-value'], $order_by, $order);
+				echo th_order_by('default_setting_enabled', $text['label-enabled'], $order_by, $order);
+				echo th_order_by('default_setting_description', $text['label-description'], $order_by, $order);
 				echo "<td align='right' width='42'>\n";
 				if (permission_exists('default_setting_add')) {
-					echo "	<a href='default_setting_edit.php' alt='add'>$v_link_label_add</a>\n";
+					echo "	<a href='default_setting_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
 				}
 				else {
 					echo "	&nbsp;\n";
@@ -159,10 +168,10 @@ require_once "includes/paging.php";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['default_setting_description']."&nbsp;</td>\n";
 			echo "	<td valign='top' align='right'>\n";
 			if (permission_exists('default_setting_edit')) {
-				echo "		<a href='default_setting_edit.php?id=".$row['default_setting_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "		<a href='default_setting_edit.php?id=".$row['default_setting_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
 			}
 			if (permission_exists('default_setting_delete')) {
-				echo "		<a href='default_setting_delete.php?id=".$row['default_setting_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "		<a href='default_setting_delete.php?id=".$row['default_setting_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -180,7 +189,7 @@ require_once "includes/paging.php";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
 	echo "		<td width='33.3%' align='right'>\n";
 	if (permission_exists('default_setting_add')) {
-		echo "			<a href='default_setting_edit.php' alt='add'>$v_link_label_add</a>\n";
+		echo "			<a href='default_setting_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
 	}
 	else {
 		echo "			&nbsp;\n";
@@ -203,5 +212,5 @@ require_once "includes/paging.php";
 	echo "<br /><br />";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

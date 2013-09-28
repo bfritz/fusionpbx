@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('sql_query_backup')) {
 	//access granted
 }
@@ -33,6 +33,12 @@ else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //pdo database connection
 	if (strlen($_REQUEST['id']) > 0) {
@@ -75,7 +81,7 @@ else {
 					$result2 = $prep_statement_2->fetchAll(PDO::FETCH_ASSOC);
 				}
 				else {
-					echo "<b>Error:</b>\n";
+					echo "<b>".$text['label-error'].":</b>\n";
 					echo "<pre>\n";
 					print_r($db->errorInfo());
 					echo "</pre>\n";

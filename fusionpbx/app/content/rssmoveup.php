@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 require_once "config.php";
 if (permission_exists('content_view')) {
 	//access granted
@@ -70,12 +70,12 @@ if (count($_GET)>0) {
 		$db->exec(check_sql($sql));
 		unset($sql);
 	}
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"1;url=rsslist.php?rss_uuid=$rss_uuid\">\n";
 	echo "<div align='center'>";
 	echo $text['message-item-up'];
 	echo "</div>";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 }
 

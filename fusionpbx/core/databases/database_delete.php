@@ -24,15 +24,21 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (if_group("superadmin")) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('database_delete')) {
 	//access granted
 }
 else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 if (count($_GET)>0) {
 	$id = check_str($_GET["id"]);
@@ -47,12 +53,12 @@ if (strlen($id)>0) {
 	unset($sql);
 }
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 echo "<meta http-equiv=\"refresh\" content=\"2;url=databases.php\">\n";
 echo "<div align='center'>\n";
-echo "Delete Complete\n";
+echo $text['message-delete']."\n";
 echo "</div>\n";
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 return;
 
 ?>

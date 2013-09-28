@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('services_delete')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('service_delete')) {
 	//access granted
 }
 else {
@@ -48,12 +48,12 @@ if (count($_GET)>0) {
 	}
 
 //redirect the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=services.php\">\n";
 	echo "<div align='center'>\n";
 	echo $text['message-delete']."\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 
 ?>

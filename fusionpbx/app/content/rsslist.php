@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 require_once "config.php";
 if (permission_exists('content_view')) {
 	//access granted
@@ -64,7 +64,7 @@ if (!function_exists('th_order_by')) {
 	}
 }
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"\" href=\"rss.php\" />\n";
 
 $order_by = $_GET["order_by"];
@@ -213,7 +213,7 @@ $order = $_GET["order"];
 	echo "</div>";
 
 	echo "<br><br>";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 	unset ($result_count);
 	unset ($result);

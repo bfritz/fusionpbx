@@ -34,7 +34,7 @@
 		$php_self_dir = substr($php_self_dir, strlen(PROJECT_PATH), strlen($php_self_dir));
 	}
 ?>
-<link rel="icon" href="<!--{project_path}-->/favicon.ico">
+<link rel="icon" href="<!--{project_path}-->/themes/enhanced/favicon.ico">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <style type='text/css'>
 
@@ -52,32 +52,45 @@ body {
 	margin-bottom: 0px;
 	margin-right: 0px;
 	margin-left: 0px;
-	/*background-image: url('<!--{project_path}-->/themes/enhanced/background.jpg');*/
+	/*background-image: url('<!--{project_path}-->/themes/enhanced/images/background.jpg');*/
 	/*background-repeat: repeat-x;*/
 	/*background-attachment: fixed;*/
 	/*background-color: #FFFFFF;*/
 }
 
-th {
-	border-top: 1px solid #444444;
-	border-bottom: 1px solid #444444;
-	text-align: left;
-	color: #FFFFFF;
-	font-size: 12px;
+.title {
+	color: #952424;
+	font-size: 15px;
 	font-family: arial;
-	font-weight: bold;
+	font-weight: bold
+}
+
+b {
+	color: #952424;
+	font-size: 15px;
+	font-family: arial;
+}
+
+th {
+	/*border-top: 1px solid #444444;*/
+	border-bottom: 1px solid #999999;
+	text-align: left;
+	color: #3164AD;
+	font-size: 13px;
+	font-family: arial;
+	/*font-weight: bold;*/
 	/*background-color: #506eab;*/
-	background-image: url('<!--{project_path}-->/themes/enhanced/background_th.png');
+	/*background-image: url('<!--{project_path}-->/themes/enhanced/images/background_th.png');*/
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-right: 7px;
 	padding-left: 7px;
 }
 
-th a:link{ color:#FFFFFF; }
-th a:visited{ color:#FFFFFF; }
-th a:hover{ color:#FFFFFF; }
-th a:active{ color:#FFFFFF; }
+th a:link{ color:#3164AD; }
+th a:visited{ color:#3164AD; }
+th a:hover{ color:#3164AD; }
+th a:active{ color:#3164AD; }
 
 td {
 	color: #5f5f5f;
@@ -173,7 +186,7 @@ INPUT.txt {
 .vncell {
 	border-bottom: 1px solid #999999;
 	/*background-color: #639BC1;*/
-	background-image: url('<!--{project_path}-->/themes/enhanced/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/enhanced/images/background_cell.gif');
 	padding-right: 20px;
 	padding-left: 8px;
 	text-align: left;
@@ -187,7 +200,7 @@ INPUT.txt {
 
 
 .vncellreq {
-	background-image: url('<!--{project_path}-->/themes/enhanced/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/enhanced/images/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	background-color: #639BC1;
 	padding-right: 20px;
@@ -213,7 +226,8 @@ INPUT.txt {
 }
 
 .row_style0 {
-	background-image: url('<!--{project_path}-->/themes/enhanced/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/enhanced/images/background_cell.gif');
+	/*background-color: #E5EEF6;*/
 	border-bottom: 1px solid #999999;
 	color: #444444;
 	text-align: left;
@@ -288,7 +302,7 @@ table td {
 
 table tr.even td {
 	background:#eee;
-	background-image: url('<!--{project_path}-->/themes/enhanced/background_cell.gif');
+	background-image: url('<!--{project_path}-->/themes/enhanced/images/background_cell.gif');
 	border-bottom: 1px solid #999999;
 	color: #333333;
 }
@@ -326,7 +340,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 /* begin the menu css*/
 
 	.menu_bar {
-		background-image: url('<!--{project_path}-->/themes/enhanced/background_black.png');
+		background-image: url('<!--{project_path}-->/themes/enhanced/images/background_black.png');
 		-webkit-border-radius: 7px 7px 7px 7px;
 		-moz-border-radius: 7px 7px 7px 7px;
 		border-radius: 7px 7px 7px 7px;
@@ -340,10 +354,10 @@ table tr:nth-last-child(-5) td:first-of-type {
 			}
 			else {
 				if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
-					echo "background-image: url('<!--{project_path}-->/themes/enhanced/menu_background.png');";
+					echo "background-image: url('<!--{project_path}-->/themes/enhanced/images/menu_background.png');";
 				}
 				else {
-					echo "background-image: url('<!--{project_path}-->/themes/enhanced/login_background.png');";
+					echo "background-image: url('<!--{project_path}-->/themes/enhanced/images/login_background.png');";
 				}
 			}
 		?>
@@ -373,11 +387,8 @@ table tr:nth-last-child(-5) td:first-of-type {
 				echo "background-color: #FFFFFF;";
 			}
 			else {
-				if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
-					echo "background-image: url('<!--{project_path}-->/themes/enhanced/content_background.png');";
-				}
-				else {
-					echo "background-image: url('<!--{project_path}-->/themes/enhanced/login_background.png');";
+				if (strlen($_SESSION["username"]) > 0) {
+					echo "background-image: url('<!--{project_path}-->/themes/enhanced/images/content_background.png');";
 				}
 			}
 		?>
@@ -531,9 +542,8 @@ table tr:nth-last-child(-5) td:first-of-type {
 	}
 
 /* end the menu css*/
-</style>
-<style type="text/css">
-	/* Remove margins from the 'html' and 'body' tags, and ensure the page takes up full screen height */
+
+/* Remove margins from the 'html' and 'body' tags, and ensure the page takes up full screen height */
 	html, body {
 		height:100%;
 		margin:0;
@@ -580,32 +590,47 @@ table tr:nth-last-child(-5) td:first-of-type {
 		-khtml-opacity: 0.9;
 		opacity: 0.9;
 	}
+
+	.message {
+		background-repeat: repeat-x;
+		background-attachment: fixed;
+		padding: 20px;
+		opacity: 0.9;
+		filter:alpha(opacity=90);
+		-moz-opacity:0.9;
+		-khtml-opacity: 0.9;
+		opacity: 0.9;
+		-webkit-border-radius: 7px 7px 7px 7px;
+		-moz-border-radius: 7px 7px 7px 7px;
+		border-radius: 7px 7px 7px 7px;
+		text-align: left;
+	}
 </style>
 
 <script type="text/javascript">
-<!--
-function jsconfirm(title,msg,url) {
-	if (confirm(msg)){
-		window.location = url;
-	}
-	else{
-	}
-}
-//-->
+	<!--
+		function jsconfirm(title,msg,url) {
+			if (confirm(msg)){
+				window.location = url;
+			}
+			else{
+			}
+		}
+	//-->
 </script>
 
 <SCRIPT language="JavaScript">
-<!--
-function confirmdelete(url) {
-	var confirmed = confirm("Are you sure want to delete this.");
-	if (confirmed == true) {
-		window.location=url;
-	}
-}
-//-->
+	<!--
+		function confirmdelete(url) {
+			var confirmed = confirm("Are you sure want to delete this.");
+			if (confirmed == true) {
+				window.location=url;
+			}
+		}
+	//-->
 </SCRIPT>
 </head>
-<body>
+<body onload="message_timeout();">
 	<?php
 	//get a random background image
 		$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/enhanced/images/backgrounds';
@@ -647,33 +672,101 @@ function confirmdelete(url) {
 						<td width='50%'>
 							<?php
 							if (strlen(PROJECT_PATH) > 0) {
-								echo "<a href='".PROJECT_PATH."'><img src='".PROJECT_PATH."/themes/enhanced/logo.png' /></a>";
+								echo "<a href='".PROJECT_PATH."'><img src='".PROJECT_PATH."/themes/enhanced/images/logo.png' /></a>";
 							}
 							else {
-								echo "<a href='/'><img src='/themes/enhanced/logo.png' /></a>";
+								echo "<a href='/'><img src='/themes/enhanced/images/logo.png' /></a>";
 							}
 							?>
 						</td>
 						<td width='50%' class='' align='right' valign='middle'>
 							<?php
-							if (permission_exists("domain_select") && count($_SESSION['domains']) > 1) {
-								//$tmp_style = "style=\"opacity:0.7;filter:alpha(opacity=70)\" ";
-								//$tmp_style .= "onmouseover=\"this.style.opacity=1;this.filters.alpha.opacity=90\" ";
-								//$tmp_style .= "onmouseout=\"this.style.opacity=0.7;this.filters.alpha.opacity=70\" ";
-								$tmp_style = "style=\"opacity:0.7;\" ";
-								$tmp_style .= "onmouseover=\"this.style.opacity=1;\" ";
-								$tmp_style .= "onmouseout=\"this.style.opacity=0.7;\" ";
-								echo "		<select id='domain_uuid' name='domain_uuid' class='formfld' onchange=\"window.location='".PROJECT_PATH."/core/domain_settings/domains.php?domain_uuid='+this.value+'&domain_change=true';\" $tmp_style>\n";
-								foreach($_SESSION['domains'] as $row) {
-									if ($row['domain_uuid'] == $_SESSION['domain_uuid']) {
-										echo "	<option value='".$row['domain_uuid']."' selected='selected'>".$row['domain_name']."</option>\n";
+							//logged in show the domains
+								if (strlen($_SESSION["username"]) > 0 && permission_exists("domain_select") && count($_SESSION['domains']) > 1) {
+									//$tmp_style = "style=\"opacity:0.7;filter:alpha(opacity=70)\" ";
+									//$tmp_style .= "onmouseover=\"this.style.opacity=1;this.filters.alpha.opacity=90\" ";
+									//$tmp_style .= "onmouseout=\"this.style.opacity=0.7;this.filters.alpha.opacity=70\" ";
+									$tmp_style = "style=\"opacity:0.7;\" ";
+									$tmp_style .= "onmouseover=\"this.style.opacity=1;\" ";
+									$tmp_style .= "onmouseout=\"this.style.opacity=0.7;\" ";
+									echo "		<select id='domain_uuid' name='domain_uuid' class='formfld' onchange=\"window.location='".PROJECT_PATH."/core/domain_settings/domains.php?domain_uuid='+this.value+'&domain_change=true';\" $tmp_style>\n";
+									foreach($_SESSION['domains'] as $row) {
+										if ($row['domain_uuid'] == $_SESSION['domain_uuid']) {
+											echo "	<option value='".$row['domain_uuid']."' selected='selected'>".$row['domain_name']."</option>\n";
+										}
+										else {
+											echo "	<option value='".$row['domain_uuid']."'>".$row['domain_name']."</option>\n";
+										}
 									}
-									else {
-										echo "	<option value='".$row['domain_uuid']."'>".$row['domain_name']."</option>\n";
-									}
+									echo "	</select>\n";
 								}
-								echo "	</select>\n";
-							}
+
+							//logged out show the login
+								if (strlen($_SESSION["username"]) == 0) {
+									//add multi-lingual support
+										require_once "core/user_settings/app_languages.php";
+										foreach($text as $key => $value) {
+											$text[$key] = $value[$_SESSION['domain']['language']['code']];
+										}
+									//set a default login destination
+										if (strlen($_SESSION['login']['destination']['url']) == 0) {
+											$_SESSION['login']['destination']['url'] = PROJECT_PATH."/core/user_settings/user_dashboard.php";
+										}
+									//login form
+										echo "<div align='right'>\n";
+										echo "<form name='login' METHOD=\"POST\" action=\"".$_SESSION['login']['destination']['url']."\">\n";
+										echo "<input type='hidden' name='path' value='$path'>\n";
+										echo "<table width='200' border='0'>\n";
+										echo "<tr>\n";
+										//echo "<td align='left'>\n";
+										//echo "	<strong>".$text['label-username'].":</strong>\n";
+										//echo "</td>\n";
+										echo "<td>\n";
+										echo "  <input type=\"text\" style='width: 150px;' class='formfld' name=\"username\" placeholder=\"".$text['label-username']."\">\n";
+										echo "</td>\n";
+										//echo "</tr>\n";
+
+										//echo "<tr>\n";
+										//echo "<td align='left'>\n";
+										//echo "	<strong>".$text['label-password'].":</strong>\n";
+										//echo "</td>\n";
+										echo "<td align='left'>\n";
+										echo "	<input type=\"password\" style='width: 150px;' class='formfld' name=\"password\" placeholder=\"".$text['label-password']."\">\n";
+										echo "</td>\n";
+										//echo "</tr>\n";
+
+										if ($_SESSION['login']['domain_name.visible']['boolean'] == "true") {
+											//echo "<tr>\n";
+											echo "<td align='left'>\n";
+											echo "	<strong>".$text['label-domain'].":</strong>\n";
+											echo "</td>\n";
+											echo "<td>\n";
+											if (count($_SESSION['login']['domain_name']) > 0) {
+												echo "    <select style='width: 150px;' class='formfld' name='domain_name'>\n";
+												echo "    <option value=''></option>\n";
+												foreach ($_SESSION['login']['domain_name'] as &$row) {
+													echo "    <option value='$row'>$row</option>\n";
+												}
+												echo "    </select>\n";
+											}
+											else {
+												echo "  <input type=\"text\" style='width: 150px;' class='formfld' name=\"domain_name\">\n";
+											}
+											echo "</td>\n";
+											//echo "</tr>\n";
+										}
+
+										//echo "<tr>\n";
+										echo "<td>\n";
+										echo "</td>\n";
+										echo "<td align=\"right\">\n";
+										echo "  <input type=\"submit\" class='btn' value=\"".$text['button-login']."\">\n";
+										echo "</td>\n";
+										echo "</tr>\n";
+										echo "</table>\n";
+										echo "</form>";
+										echo "</div>";
+								}
 							?>
 							&nbsp;
 						</td>
@@ -681,8 +774,9 @@ function confirmdelete(url) {
 				</table>
 			</td>
 		</tr>
+		<?php if (strlen($_SESSION["username"]) > 0) { ?>
 		<tr>
-			<td class='' colspan='2' width='100%' height='7px'><img src='<!--{project_path}-->/images/blank.gif'></td>
+			<td class='' colspan='2' width='100%' height='7px'><img src='<!--{project_path}-->/themes/enhanced/images/blank.gif'></td>
 		</tr>
 		<tr>
 			<td class='menu_bar' colspan='2' width='100%' height='30px'>
@@ -690,26 +784,34 @@ function confirmdelete(url) {
 			</td>
 		</tr>
 		<tr>
-			<td class='' colspan='2' width='100%' height='7px'><img src='<!--{project_path}-->/images/blank.gif'></td>
+			<td class='' colspan='2' width='100%' height='7px'><img src='<!--{project_path}-->/themes/enhanced/images/blank.gif'></td>
 		</tr>
+		<?php } ?>
 		<tr>
 			<td valign='top' align='center' width='100%'>
-
 				<table width='100%' cellpadding='0' cellspacing='0' border='0'>
 					<tr>
 						<td class='main_content' align='left' valign='top' width='85%'>
-
+							<script type = "text/javascript">
+								<!--
+								function message_hide() {
+									document.getElementById("message").style.display="none"; 
+								}
+								function message_timeout() {
+									var tim = window.setTimeout("message_hide()", 1000);
+								}
+								-->
+							</script>
+							<?php
+								if (strlen($_SESSION['message']) > 0) {
+									echo "<div id='message' style='position:absolute; left:50%;'>";
+									echo "	<table><tr><td class='vncellreq'>".$_SESSION['message']."</td></tr></table>";
+									echo "</div>";
+									unset($_SESSION['message']);
+								}
+							?>
 							<!--{body}-->
 
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
 							<br /><br />
 							<br /><br />
 							<br /><br />
@@ -728,13 +830,13 @@ function confirmdelete(url) {
 	<?php
 	if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
 		echo "<span class='smalltext'>\n";
-		echo "	<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2012. All Rights Reserved\n";
+		echo "	<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2013. All Rights Reserved\n";
 		echo "</span>\n";
 	}
 	else {
 		echo "<!--\n";
 		echo "	http://www.fusionpbx.com \n";
-		echo "	Copyright 2008 - 2011 \n";
+		echo "	Copyright 2008 - 2013 \n";
 		echo "	All Rights Reserved\n";
 		echo "-->\n";
 	}

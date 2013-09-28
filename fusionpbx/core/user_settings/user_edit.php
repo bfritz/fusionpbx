@@ -24,11 +24,11 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 include "app_languages.php";
 
-if (permission_exists("user_account_settings_view")) {
+if (permission_exists("user_account_setting_view")) {
 	//access granted
 }
 else {
@@ -92,16 +92,16 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 	//if (strlen($user_time_zone) == 0) { $msg .= "Please provide an time zone.<br>\n"; }
 
 	if (strlen($msg) > 0) {
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 		echo "<div align='center'>";
 		echo "<table><tr><td>";
 		echo $msg;
 		echo "</td></tr></table>";
 		echo "<br />\n";
-		require_once "includes/persistform.php";
+		require_once "resources/persist_form.php";
 		echo persistform($_POST);
 		echo "</div>";
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 		return;
 	}
 
@@ -179,7 +179,7 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		$sql .= "user_status = '$user_status' ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and user_uuid = '$user_uuid' ";
-		if (permission_exists("user_account_settings_edit")) {
+		if (permission_exists("user_account_setting_edit")) {
 			$count = $db->exec(check_sql($sql));
 		}
 
@@ -199,10 +199,10 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		//$_SESSION["template_content"] = '';
 
 	//redirect the browser
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/core/user_settings/user_edit.php\">\n";
 		echo "<div align='center'>".$text['confirm-update']."</div>";
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 		return;
 }
 else {
@@ -225,7 +225,7 @@ else {
 }
 
 //include the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //show the content
 	$table_width ='width="100%"';
@@ -416,6 +416,6 @@ else {
 	echo "</form>";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>

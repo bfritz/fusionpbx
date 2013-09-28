@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('conference_view')) {
 	//access granted
 }
@@ -40,8 +40,8 @@ else {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];                
 	}
     
-require_once "includes/header.php";
-require_once "includes/paging.php";
+require_once "resources/header.php";
+require_once "resources/paging.php";
 
 //get variables used to control the order
 	$order_by = $_GET["order_by"];
@@ -62,7 +62,7 @@ require_once "includes/paging.php";
 	echo "	<tr>\n";
 	echo "		<td align='left' colspan='2'>\n";
 	echo "			".$text['description']." \n";
-	if (permission_exists('conferences_active_advanced_view')) {
+	if (permission_exists('conference_active_advanced_view')) {
 		echo "			Show <a href='".PROJECT_PATH."/app/conferences_active/v_conferences_active.php'>".$text['title-2']."</a> ".$text['description-2']."<br /><br />\n";
 	}
 	echo "		</td>\n";
@@ -205,5 +205,5 @@ require_once "includes/paging.php";
 	echo "<br /><br />";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

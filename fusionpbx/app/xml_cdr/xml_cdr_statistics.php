@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('xml_cdr_view')) {
 	//access granted
 }
@@ -42,7 +42,7 @@ else {
 
 //additional includes
 	require_once "xml_cdr_statistics_inc.php";
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //page title and description
 	echo "<div align='center'>";
@@ -69,9 +69,9 @@ else {
 	$row_style["1"] = "row_style1";
 
 ?>
-	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/includes/jquery/flot/excanvas.min.js"></script><![endif]-->
-	<script language="javascript" type="text/javascript" src="/includes/jquery/jquery-1.8.3.js"></script>
-	<script language="javascript" type="text/javascript" src="/includes/jquery/flot/jquery.flot.js"></script>
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/resources/jquery/flot/excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="/resources/jquery/jquery-1.8.3.js"></script>
+	<script language="javascript" type="text/javascript" src="/resources/jquery/flot/jquery.flot.js"></script>
 	<table>
 		<tr>
 			<td align='left'>
@@ -221,5 +221,5 @@ else {
 	echo "</table>\n";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

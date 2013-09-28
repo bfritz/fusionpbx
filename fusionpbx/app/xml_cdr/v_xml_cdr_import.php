@@ -31,12 +31,12 @@
 		$document_root = $matches[1];
 		set_include_path($document_root);
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
-		require_once "includes/require.php";
+		require_once "resources/require.php";
 		$display_type = 'text'; //html, text
 	}
 	else {
 		include "root.php";
-		require_once "includes/require.php";
+		require_once "resources/require.php";
 	}
 
 //set debug
@@ -67,7 +67,7 @@
 			}
 
 		//prepare the database object
-			require_once "includes/classes/database.php";
+			require_once "resources/classes/database.php";
 			$database = new database;
 			$database->table = "v_xml_cdr";
 

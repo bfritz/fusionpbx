@@ -24,7 +24,7 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/lib_functions.php";
+require_once "resources/functions.php";
 
 //set debug to true or false
 	$v_debug = true;
@@ -46,7 +46,7 @@ require_once "includes/lib_functions.php";
 	$domain_name = $domain_array[0];
 
 //if the config file exists then disable the install page
-	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php")) {
+	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/config.php")) {
 		$msg .= "Already Installed";
 		header("Location: ".PROJECT_PATH."/index.php?msg=".urlencode($msg));
 		exit;
@@ -148,7 +148,7 @@ require_once "includes/lib_functions.php";
 				if (file_exists('/usr/bin')) {
 					$switch_bin_dir = '/usr/bin'; //freeswitch bin directory
 				}
-				if (file_exists('/etc/freeswitch')) {
+				if (file_exists('/etc/freeswitch/dialplan')) {
 					$switch_conf_dir = '/etc/freeswitch';
 					$switch_extensions_dir = $switch_conf_dir.'/directory';
 					$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
@@ -348,7 +348,7 @@ if ($_POST["install_step"] == "3" && count($_POST)>0 && strlen($_POST["persistfo
 }
 //show the error message if one exists
 	if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-		require_once "includes/persistformvar.php";
+		require_once "resources/persist_form_var.php";
 		echo "<br />\n";
 		echo "<br />\n";
 		echo "<div align='center'>\n";
@@ -449,15 +449,15 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		$tmp_config .= "		error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings";
 		$tmp_config .= "\n";
 		$tmp_config .= "?>";
-		if (is_dir($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/includes")) {
-			$config = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php";
+		if (is_dir($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/resources")) {
+			$config = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/config.php";
 		} elseif (is_dir("/etc/fusionpbx")){
 			$config = "/etc/fusionpbx/config.php";
 		} elseif (is_dir("/usr/local/etc/fusionpbx")){
 			$config = "/usr/local/etc/fusionpbx/config.php";
 		}
 		else {
-			$config = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/config.php";
+			$config = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/config.php";
 		}
 		$fout = fopen($config,"w");
 		fwrite($fout, $tmp_config);
@@ -491,7 +491,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				$db_tmp->sqliteCreateFunction('now', 'php_now', 0);
 
 			//add the database structure
-				require_once "includes/classes/schema.php";
+				require_once "resources/classes/schema.php";
 				$schema = new schema;
 				$schema->db = $db_tmp;
 				$schema->db_type = $db_type;
@@ -499,7 +499,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				$schema->exec();
 
 			//get the contents of the sql file
-				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/sqlite.sql';
+				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/sql/sqlite.sql';
 				$file_contents = file_get_contents($filename);
 				unset($filename);
 
@@ -573,7 +573,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				}
 
 			//add the database structure
-				require_once "includes/classes/schema.php";
+				require_once "resources/classes/schema.php";
 				$schema = new schema;
 				$schema->db = $db_tmp;
 				$schema->db_type = $db_type;
@@ -581,7 +581,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				$schema->exec();
 
 			//get the contents of the sql file
-				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/pgsql.sql';
+				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/sql/pgsql.sql';
 				$file_contents = file_get_contents($filename);
 
 			//replace \r\n with \n then explode on \n
@@ -740,7 +740,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				}
 
 			//add the database structure
-				require_once "includes/classes/schema.php";
+				require_once "resources/classes/schema.php";
 				$schema = new schema;
 				$schema->db = $db_tmp;
 				$schema->db_type = $db_type;
@@ -749,7 +749,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 			//add the defaults data into the database
 				//get the contents of the sql file
-					$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/includes/install/sql/mysql.sql';
+					$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/sql/mysql.sql';
 					$file_contents = file_get_contents($filename);
 
 				//replace \r\n with \n then explode on \n
@@ -1187,7 +1187,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		unset($db_tmp);
 
 	//include additional files
-		require "includes/require.php";
+		require "resources/require.php";
 
 	//set the defaults
 		$menu_name = 'default';
@@ -1215,7 +1215,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		unset($sql);
 
 		//add the menu items
-		require_once "includes/classes/menu.php";
+		require_once "resources/classes/menu.php";
 		$menu = new menu;
 		$menu->db = $db;
 		$menu->menu_uuid = $menu_uuid;
@@ -1246,8 +1246,8 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 					if (!is_readable($switch_recordings_dir.'') && $switch_scripts_dir != "/recordings") { mkdir($switch_recordings_dir.'',0777,true); }
 				}
 
-			//copy the files and directories from includes/install
-				require_once "includes/classes/install.php";
+			//copy the files and directories from resources/install
+				require_once "resources/classes/install.php";
 				$install = new install;
 				$install->domain_uuid = $_SESSION["domain_uuid"];
 				$install->domain = $domain_name;
@@ -1258,8 +1258,8 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				$install->copy();
 				clearstatcache();
 
-			//copy includes/templates/conf to the freeswitch/conf dir
-				$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf";
+			//copy resources/templates/conf to the freeswitch/conf dir
+				$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf";
 				$dst_dir = $switch_conf_dir;
 				if (is_readable($dst_dir)) {
 					$install->recursive_copy($src_dir, $dst_dir);
@@ -1267,7 +1267,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				//print_r($install->result);
 
 			//create the dialplan/default.xml for single tenant or dialplan/domain.xml
-				require_once "includes/classes/switch_dialplan.php";
+				require_once "resources/classes/dialplan.php";
 				$dialplan = new dialplan;
 				$dialplan->domain_uuid = $_SESSION["domain_uuid"];
 				$dialplan->domain = $domain_name;
@@ -1346,8 +1346,8 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 	ob_start();
 
 //show the html form
-	if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/header.php")) {
-		$install_msg .= "<li>Write access to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/ is required during the install.</li>\n";
+	if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/header.php")) {
+		$install_msg .= "<li>Write access to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/ is required during the install.</li>\n";
 	}
 	if (!extension_loaded('PDO')) {
 		$install_msg .= "<li>PHP PDO was not detected. Please install it before proceeding.</li>";
@@ -1370,7 +1370,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 	echo "<div align='center'>\n";
 	$msg = '';
 	//make sure the includes directory is writable so the config.php file can be written.
-		if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/lib_pdo.php")) {
+		if (!is_writable($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/pdo.php")) {
 			$msg .= "<b>Write access to ".$_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."</b><br />";
 			$msg .= "and its sub-directories are required during the install.<br /><br />\n";
 		}
@@ -1554,7 +1554,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 			if (strlen($db_port) == 0) { $db_port = '3306'; }
 			//if (strlen($db_name) == 0) { $db_name = 'fusionpbx'; }
 
-		//echo "However if preferred the database can be created manually with the <a href='". echo PROJECT_PATH; ."/includes/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
+		//echo "However if preferred the database can be created manually with the <a href='". echo PROJECT_PATH; ."/resources/install/sql/mysql.sql' target='_blank'>mysql.sql</a> script. ";
 		echo "<div id='page' align='center'>\n";
 		echo "<form method='post' name='frm' action=''>\n";
 		echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
@@ -1794,8 +1794,8 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 	$custom_head = '';
 	$output = str_replace ("<!--{title}-->", $custom_title, $template); //<!--{title}--> defined in each individual page
 	$output = str_replace ("<!--{head}-->", $custom_head, $output); //<!--{head}--> defined in each individual page
-	$output = str_replace ("<!--{menu}-->", $_SESSION["menu"], $output); //defined in /includes/menu.php
-	$output = str_replace ("<!--{project_path}-->", PROJECT_PATH, $output); //defined in /includes/menu.php
+	$output = str_replace ("<!--{menu}-->", $_SESSION["menu"], $output); //defined in /resources/menu.php
+	$output = str_replace ("<!--{project_path}-->", PROJECT_PATH, $output); //defined in /resources/menu.php
 
 	$pos = strrpos($output, "<!--{body}-->");
 	if ($pos === false) {

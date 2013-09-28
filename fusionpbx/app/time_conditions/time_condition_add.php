@@ -24,17 +24,17 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('time_conditions_add')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('time_condition_add')) {
 	//access granted
 }
 else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+require_once "resources/header.php";
+require_once "resources/paging.php";
 
 //add multi-lingual support
 require_once "app_languages.php";
@@ -93,15 +93,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
 		//if (strlen($dialplan_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/header.php";
-			require_once "includes/persistformvar.php";
+			require_once "resources/header.php";
+			require_once "resources/persist_form_var.php";
 			echo "<div align='center'>\n";
 			echo "<table><tr><td>\n";
 			echo $msg."<br />";
 			echo "</td></tr></table>\n";
 			persistformvar($_POST);
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		}
 
@@ -130,7 +130,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		$sql .= "'4b821450-926b-175a-af93-a03c441818b1', ";
 		$sql .= "'$dialplan_name', ";
 		$sql .= "'$dialplan_order', ";
-		$sql .= "'false', ";
+		$sql .= "'true', ";
 		$sql .= "'".$_SESSION['context']."', ";
 		$sql .= "'$dialplan_enabled', ";
 		$sql .= "'$dialplan_description' ";
@@ -478,17 +478,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//delete the dialplan context from memcache
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
-			$switch_cmd = "memcache delete dialplan:".$_SESSION["context"]."@".$_SESSION['domain_name'];
+			$switch_cmd = "memcache delete dialplan:".$_SESSION["context"];
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 		}
 
 	//redirect the browser
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1\">\n";
 		echo "<div align='center'>\n";
 		echo "".$text['confirm-update-complete']."\n";
 		echo "</div>\n";
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 		return;
 
 } //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
@@ -736,8 +736,8 @@ echo "<div align='center'>\n";
 
 echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "	<tr>\n";
-echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>".$text['title-time-condition-add']."\n";
-echo "			</strong></span></span>\n";
+echo "		<td align='left'>\n";
+echo "			<span class=\"title\">".$text['title-time-condition-add']."</span><br />\n";
 echo "		</td>\n";
 echo "		<td align='right'>\n";
 echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1'\" value='".$text['button-back']."'>\n";
@@ -1085,6 +1085,6 @@ echo "</div>";
 echo "<br><br>";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>

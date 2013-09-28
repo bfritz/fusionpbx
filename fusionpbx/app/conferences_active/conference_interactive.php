@@ -25,9 +25,9 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('conferences_active_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('conference_active_view')) {
 	//access granted
 }
 else {
@@ -47,7 +47,7 @@ else {
 	$conference_display_name = str_replace("_", " ", $conference_display_name);
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 ?><script type="text/javascript">
 function loadXmlHttp(url, id) {
@@ -132,5 +132,5 @@ echo "</table>";
 echo "</div>";
 
 //show the header
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

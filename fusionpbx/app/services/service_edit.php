@@ -25,9 +25,9 @@
 	James Rose <james.o.rose@gmail.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('services_add') || permission_exists('services_edit')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('service_add') || permission_exists('service_edit')) {
 	//access granted
 }
 else {
@@ -76,21 +76,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($service_cmd_stop) == 0) { $msg .= "Please provide: Stop Command<br>\n"; }
 		//if (strlen($service_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/header.php";
-			require_once "includes/persistformvar.php";
+			require_once "resources/header.php";
+			require_once "resources/persist_form_var.php";
 			echo "<div align='center'>\n";
 			echo "<table><tr><td>\n";
 			echo $msg."<br />";
 			echo "</td></tr></table>\n";
 			persistformvar($_POST);
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		}
 
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
-			if ($action == "add" && permission_exists('services_add')) {
+			if ($action == "add" && permission_exists('service_add')) {
 				$service_uuid = uuid();
 				$sql = "insert into v_services ";
 				$sql .= "(";
@@ -117,16 +117,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "includes/header.php";
+				require_once "resources/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=services.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Add Complete\n";
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				require_once "resources/footer.php";
 				return;
 			} //if ($action == "add")
 
-			if ($action == "update" && permission_exists('services_edit')) {
+			if ($action == "update" && permission_exists('service_edit')) {
 				$sql = "update v_services set ";
 				$sql .= "service_name = '$service_name', ";
 				$sql .= "service_type = '$service_type', ";
@@ -139,12 +139,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "includes/header.php";
+				require_once "resources/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=services.php\">\n";
 				echo "<div align='center'>\n";
 				echo "Update Complete\n";
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				require_once "resources/footer.php";
 				return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
@@ -172,7 +172,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //begin the content
 	echo "<div align='center'>";
@@ -296,5 +296,5 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</div>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

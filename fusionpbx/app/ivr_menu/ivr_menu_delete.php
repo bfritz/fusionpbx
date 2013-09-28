@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('ivr_menu_delete')) {
 	//access granted
 }
@@ -40,30 +40,32 @@ else {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
-if (count($_GET)>0) {
+if (count($_GET) > 0) {
 	$id = check_str($_GET["id"]);
 }
 
-if (strlen($id)>0) {
+if (strlen($id) > 0) {
 	//include the ivr menu class
-		require_once "includes/classes/database.php";
-		require_once "resources/classes/switch_ivr_menu.php";
-		$ivr = new switch_ivr_menu;
+		require_once "resources/classes/database.php";
+		require_once "resources/classes/ivr_menu.php";
+		$ivr = new ivr_menu;
 		$ivr->domain_uuid = $_SESSION["domain_uuid"];
 		$ivr->ivr_menu_uuid = $id;
 		$ivr->delete();
 
 	//synchronize the xml config
 		save_dialplan_xml();
+
+	//delete the dialplan context from memcache
+		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		if ($fp) {
+			$switch_cmd = "memcache delete dialplan:".$_SESSION["context"];
+			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+		}
 }
 
 //redirect the user
-	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=ivr_menus.php\">\n";
-	echo "<div align='center'>\n";
-	echo "Delete Complete\n";
-	echo "</div>\n";
-	require_once "includes/footer.php";
-	return;
+	$_SESSION['message'] = $text['message-delete'];
+	header("Location: ivr_menus.php");
 
 ?>

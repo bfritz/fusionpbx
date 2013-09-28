@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('extension_delete')) {
 	//access granted
 }
@@ -34,11 +34,17 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 if (count($_GET)>0) {
 	$id = check_str($_GET["id"]);
 }
 
-//delete the extension
+//delete the hot desking information
 	if (strlen($id)>0) {
 		$sql = "update v_extensions set ";
 		$sql .= "unique_id = null, ";
@@ -53,7 +59,7 @@ if (count($_GET)>0) {
 	}
 
 //get the extension
-	$sql = "select * from v_extensions ";
+	$sql = "select extension from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and extension_uuid = '$id' ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -72,21 +78,21 @@ if (count($_GET)>0) {
 	}
 
 //redirect the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=index.php\">\n";
 	echo "<br />\n";
 	echo "<div align='center'>\n";
 	echo "	<table width='40%'>\n";
 	echo "		<tr>\n";
-	echo "			<th align='left'>Message</th>\n";
+	echo "			<th align='left'>".$text['header-message']."</th>\n";
 	echo "		</tr>\n";
 	echo "		<tr>\n";
-	echo "			<td class='row_style1'><strong>Delete Complete</strong></td>\n";
+	echo "			<td class='row_style1'><strong>".$text['message-delete']."</strong></td>\n";
 	echo "		</tr>\n";
 	echo "	</table>\n";
 	echo "	<br />\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 
 ?>

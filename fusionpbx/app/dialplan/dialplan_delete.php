@@ -24,18 +24,25 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('dialplan_delete') 
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('dialplan_delete')
 	|| permission_exists('inbound_route_delete')
 	|| permission_exists('outbound_route_delete')
-	|| permission_exists('time_conditions_delete')) {
+	|| permission_exists('fifo_delete')
+	|| permission_exists('time_condition_delete')) {
 	//access granted
 }
 else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 if (count($_GET)>0) {
     $dialplan_uuid = check_str($_GET["id"]);
@@ -82,13 +89,13 @@ if (strlen($dialplan_uuid)>0) {
 	//delete the dialplan context from memcache
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
-			$switch_cmd = "memcache delete dialplan:".$_SESSION["context"]."@".$_SESSION['domain_name'];
+			$switch_cmd = "memcache delete dialplan:".$dialplan_context;
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 		}
 }
 
 //redirect the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	switch ($app_uuid) {
 		case "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4":
 			//inbound routes
@@ -107,8 +114,8 @@ if (strlen($dialplan_uuid)>0) {
 			break;
 	}
 	echo "<div align='center'>\n";
-	echo "Delete Complete\n";
+	echo $text['message-delete']."\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 ?>

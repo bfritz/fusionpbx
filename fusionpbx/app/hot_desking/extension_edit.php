@@ -23,8 +23,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('extension_add') || permission_exists('extension_edit')) {
 	//access granted
 }
@@ -32,6 +32,12 @@ else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
@@ -54,31 +60,31 @@ else {
 if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//check for all required data
-		//if (strlen($domain_uuid) == 0) { $msg .= "Please provide: domain_uuid<br>\n"; }
-		if (strlen($extension_uuid) == 0) { $msg .= "Please provide the extension<br>\n"; }
-		if (strlen($unique_id) == 0) { $msg .= "Please provide the unique ID.<br>\n"; }
-	//get the number of rows in v_extensions 
+		if (strlen($extension_uuid) == 0) { $msg .= $text['message-required'].$text['label-extension']."<br>\n"; }
+		if (strlen($unique_id) == 0) { $msg .= $text['message-required'].$text['label-unique_id']."<br>\n"; }
+	//get the number of rows in v_extensions
 		$sql = "select count(*) as num_rows from v_extensions ";
-		$sql .= "where unique_id = '".$unique_id."' ";
+		$sql .= "where unique_id = '".$unique_id."' and ";
+		$sql .= "extension_uuid <> '".$extension_uuid."'";
 		$prep_statement = $db->prepare(check_sql($sql));
 		if ($prep_statement) {
 			$prep_statement->execute();
 			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 			if ($row['num_rows'] > 0) {
-				$msg .= "The ID is not unqiue please provide a unique ID.<br>\n";
+				$msg .= $text['message-unique']."<br>\n";
 			}
 		}
 		unset($prep_statement, $result);
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/header.php";
-			require_once "includes/persistformvar.php";
+			require_once "resources/header.php";
+			require_once "resources/persist_form_var.php";
 			echo "<div align='center'>\n";
 			echo "<table><tr><td>\n";
 			echo $msg."<br />";
 			echo "</td></tr></table>\n";
 			persistformvar($_POST);
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		}
 
@@ -88,7 +94,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		else {
 			//if the user_context was not set then set the default value
-			if (strlen($user_context) == 0) { 
+			if (strlen($user_context) == 0) {
 				if (count($_SESSION["domains"]) > 1) {
 					$user_context = $_SESSION['domain_name'];
 				}
@@ -100,31 +106,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add or update the database
 	if ($_POST["persistformvar"] != "true") {
-		//update the extension
-			if ($action == "add" && permission_exists('extension_edit')) {
-				$sql = "update v_extensions set ";
-				$sql .= "unique_id = '$unique_id' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and extension_uuid = '$extension_uuid'";
-				$db->exec(check_sql($sql));
-				unset($sql);
-			}
-
-		//update the extension
-			if ($action == "update" && permission_exists('extension_edit')) {
-				$sql = "update v_extensions set ";
-				$sql .= "unique_id = '$unique_id', ";
-				if (strlen($vm_password) > 0) {
-					$sql .= "vm_password = '$vm_password' ";
-				}
-				else {
-					$sql .= "vm_password = 'user-choose' ";
-				}
-				$sql .= "where domain_uuid = '$domain_uuid' ";
-				$sql .= "and extension_uuid = '$extension_uuid'";
-				$db->exec(check_sql($sql));
-				unset($sql);
-			}
 
 		//get the extension
 			$sql = "select * from v_extensions ";
@@ -135,8 +116,36 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 			foreach ($result as &$row) {
 				$extension = $row["extension"];
+				$number_alias = $row["number_alias"];
 			}
 			unset ($prep_statement);
+
+		//update the extension and voicemail
+			if ($action == "update" && permission_exists('extension_edit')) {
+				//update the extension
+					$sql = "update v_extensions set ";
+					$sql .= "unique_id = '$unique_id', ";
+					$sql .= "where domain_uuid = '$domain_uuid' ";
+					$sql .= "and extension_uuid = '$extension_uuid'";
+					$db->exec(check_sql($sql));
+					unset($sql);
+
+				//update the voicemail
+					if (strlen($vm_password) > 0) {
+						$sql = "update v_voicemails set ";
+						$sql .= "unique_id = '$unique_id', ";
+						$sql .= "voicemail_password = '$vm_password' ";
+						$sql .= "where domain_uuid = '$domain_uuid' ";
+						if (is_numeric($extension)) {
+							$sql .= "and voicemail_id = '$extension'";
+						}
+						else {
+							$sql .= "and voicemail_id = '$number_alias'";
+						}
+						$db->exec(check_sql($sql));
+						unset($sql);
+					}
+			}
 
 		//delete extension from memcache
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -146,26 +155,26 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			}
 
 		//show the action and redirect the user
-			require_once "includes/header.php";
+			require_once "resources/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=index.php\">\n";
 			echo "<br />\n";
 			echo "<div align='center'>\n";
 			echo "	<table width='40%'>\n";
 			echo "		<tr>\n";
-			echo "			<th align='left'>Message</th>\n";
+			echo "			<th align='left'>".$text['header-message']."</th>\n";
 			echo "		</tr>\n";
 			echo "		<tr>\n";
 			if ($action == "add") {
-				echo "			<td class='row_style1'><strong>Add Complete</strong></td>\n";
+				echo "			<td class='row_style1'><strong>".$text['message-add']."</strong></td>\n";
 			}
 			if ($action == "update") {
-				echo "			<td class='row_style1'><strong>Update Complete</strong></td>\n";
+				echo "			<td class='row_style1'><strong>".$text['message-update']."</strong></td>\n";
 			}
 			echo "		</tr>\n";
 			echo "	</table>\n";
 			echo "<br />\n";
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 
 	} //if ($_POST["persistformvar"] != "true")
@@ -195,7 +204,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (strlen($limit_max) == 0) { $limit_max = '5'; }
 
 //begin the page content
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 	echo "<script type=\"text/javascript\" language=\"JavaScript\">\n";
 	echo "\n";
@@ -230,17 +239,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "	<td width='30%' nowrap='nowrap' align='left' valign='top'>\n";
-	echo "		<b>Hot Desking</b>\n";
+	echo "		<b>".$text['header-hot_desking']."</b>\n";
 	echo "	</td>\n";
 	echo "	<td width='70%' align='right' valign='top'>\n";
-	echo "		<input type='submit' name='submit' class='btn' value='Save'>\n";
-	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='index.php'\" value='Back'>\n";
+	echo "		<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "		<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='index.php'\" value='".$text['button-back']."'>\n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "    Extension:\n";
+	echo "    ".$text['label-extension'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	if ($action == "add") {
@@ -265,48 +274,48 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 		unset($sql, $result, $result_count);
 		echo  "</select><br />\n";
-		echo "Select the extension number.\n";
+		echo $text['description-extension-add']."\n";
 	}
 	if ($action == "update") {
 		echo "    $extension<br />\n";
-		echo "Extension number.\n";
+		echo $text['description-extension-edit']."\n";
 	}
 	echo "<br />\n";
-	
+
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "    Unique ID:\n";
+	echo "    ".$text['label-unique_id'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='unique_id' autocomplete='off' maxlength='255' value=\"$unique_id\">\n";
 	echo "<br />\n";
-	echo "A unique ID to identify the extension and domain.\n";
+	echo $text['description-unique_id']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	if ($action == "update") {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "    Voicemail Password:\n";
+		echo "    ".$text['label-voicemail_password'].":\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "  <input class='formfld' type='password' name='vm_password' id='vm_password' onfocus=\"document.getElementById('show_vm_password').innerHTML = 'Password: '+document.getElementById('vm_password').value;\" maxlength='255' value='$vm_password'>\n";
+		echo "  <input class='formfld' type='password' name='vm_password' id='vm_password' onfocus=\"document.getElementById('show_vm_password').innerHTML = '".$text['description-password'].": '+document.getElementById('vm_password').value;\" maxlength='255' value='$vm_password'>\n";
 		echo "<br />\n";
-		echo "<span onclick=\"document.getElementById('show_vm_password').innerHTML = ''\">Enter the voicemail password here. </span><span id='show_vm_password'></span>\n";
+		echo "<span onclick=\"document.getElementById('show_vm_password').innerHTML = ''\">".$text['description-voicemail_password']." </span><span id='show_vm_password'></span>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-		echo "    Dial String:\n";
+		echo "    ".$text['label-dial_string'].":\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "    <input class='formfld' type='text' name='dial_string' maxlength='255' value=\"$dial_string\">\n";
 		echo "<br />\n";
-		echo "Location of the endpoint.\n";
+		echo $text['description-dial_string']."\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
@@ -321,5 +330,5 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

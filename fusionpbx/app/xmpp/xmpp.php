@@ -26,8 +26,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('xmpp_view')) {
 	//access granted
 }
@@ -35,8 +35,17 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
+require_once "resources/header.php";
+$page["title"] = $text['title-xmpp'];
+
+require_once "resources/paging.php";
 
 //connect to event socket
 $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
@@ -87,6 +96,6 @@ unset ($prep_statement);
 include "profile_list.php";
 
 //include the footer
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 
 ?>

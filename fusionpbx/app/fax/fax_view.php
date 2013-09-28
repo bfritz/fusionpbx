@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('fax_extension_view')) {
 	//access granted
 }
@@ -234,6 +234,24 @@ else {
 		$fax_name = str_replace(".tif", "", $fax_name);
 		$fax_name = str_replace(".tiff", "", $fax_name);
 		$fax_name = str_replace(".pdf", "", $fax_name);
+		//lua doesn't seem to like special chars with env:GetHeader
+		$fax_name = str_replace(";", "_", $fax_name);
+		$fax_name = str_replace(",", "_", $fax_name);
+		$fax_name = str_replace("'", "_", $fax_name);
+		$fax_name = str_replace("!", "_", $fax_name);
+		$fax_name = str_replace("@", "_", $fax_name);
+		$fax_name = str_replace("#", "_", $fax_name);
+		$fax_name = str_replace("$", "_", $fax_name);
+		$fax_name = str_replace("%", "_", $fax_name);
+		$fax_name = str_replace("^", "_", $fax_name);
+		$fax_name = str_replace("`", "_", $fax_name);
+		$fax_name = str_replace("~", "_", $fax_name);
+		$fax_name = str_replace("&", "_", $fax_name);
+		$fax_name = str_replace("(", "_", $fax_name);
+		$fax_name = str_replace(")", "_", $fax_name);
+		$fax_name = str_replace("+", "_", $fax_name);
+		$fax_name = str_replace("=", "_", $fax_name);
+
 		$provider_type = check_str($_POST['provider_type']);
 		$fax_uuid = check_str($_POST["id"]);
 
@@ -349,7 +367,7 @@ else {
 
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //fax extension form
 	echo "<div align='center'>";
@@ -362,7 +380,7 @@ else {
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "		<td align='left' width='30%'>\n";
-	echo "			<span class=\"vexpl\"><span class=\"red\"><strong>".$text['title']."</strong></span>\n";
+	echo "			<span class=\"title\">".$text['title']."</span>\n";
 	echo "		</td>\n";
 	echo "		<td width='70%' align='right'>\n";
 	if (permission_exists('fax_extension_add') || permission_exists('fax_extension_edit')) {
@@ -432,11 +450,11 @@ else {
 		echo "	<table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n";
 		echo "	<tr>\n";
 		echo "		<td align='left'>\n";
-		echo "			<span class=\"vexpl\"><span class=\"red\"><strong>Inbox $fax_extension</strong></span>\n";
+		echo "			<span class=\"vexpl\"><span class=\"title\">".$text['label-inbox']." ".$fax_extension."</span>\n";
 		echo "		</td>\n";
 		echo "		<td align='right'>";
 		if ($v_path_show) {
-			echo "<b>".$text['label-location'].":</b>&nbsp;";
+			echo "<strong>".$text['label-location'].":</strong>&nbsp;";
 			echo $dir_fax_inbox."&nbsp; &nbsp; &nbsp;";
 		}
 		echo "		</td>\n";
@@ -572,27 +590,27 @@ else {
 
 //show the sent box
 	if (permission_exists('fax_sent_view')) {
-		echo "  <table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n";
+		echo "<table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n";
 		echo "	<tr>\n";
 		echo "		<td align='left'>\n";
-		echo "			<span class=\"vexpl\"><span class=\"red\"><strong>Sent</strong></span>\n";
+		echo "			<span class=\"vexpl\"><span class=\"title\">".$text['label-sent']."</span>\n";
 		echo "		</td>\n";
 		echo "		<td align='right'>\n";
 		if ($v_path_show) {
-			echo "<b>".$text['label-location'].": </b>\n";
+			echo "<strong>".$text['label-location'].": </strong>\n";
 			echo $dir_fax_sent."&nbsp; &nbsp; &nbsp;\n";
 		}
 		echo "		</td>\n";
 		echo "	</tr>\n";
-		echo "    </table>\n";
+		echo "</table>\n";
 		echo "\n";
-		echo "    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-		echo "    <tr>\n";
+		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+		echo "	<tr>\n";
 		echo "		<th width=\"60%\">".$text['table-file']."</td>\n";
 		echo "		<th width=\"10%\">".$text['table-view']."</td>\n";
 		echo "		<th width=\"20%\">".$text['table-modified']."</td>\n";
 		echo "		<th width=\"10%\" nowrap>".$text['table-size']."</td>\n";
-		echo "		</tr>";
+		echo "	</tr>";
 
 		if ($handle = opendir($dir_fax_sent)) {
 			//build an array of the files in the inbox
@@ -711,5 +729,5 @@ else {
 	echo "</div>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

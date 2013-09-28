@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('schema_delete')) {
 	//access granted
 }
@@ -33,6 +33,12 @@ else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 if (count($_GET)>0) {
 
@@ -45,7 +51,7 @@ if (count($_GET)>0) {
 		$schema_uuid = check_str($_GET["schema_uuid"]);
 
 	//show the results and redirect
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 
 	//get the schema_parent_id from the child table
 		if (strlen($schema_parent_id) == 0) {
@@ -94,9 +100,9 @@ if (count($_GET)>0) {
 
 	//show a message to the user before the redirect
 		echo "<div align='center'>\n";
-		echo "Delete Complete\n";
+		echo $text['message-delete']."\n";
 		echo "</div>\n";
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 		return;
 }
 

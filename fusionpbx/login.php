@@ -24,14 +24,23 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-//if config.php does not exist then redirect to the install.php.
-	if (!file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/includes/config.php")){
+
+//if config.php file does not exist then redirect to the install page
+	if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/resources/config.php")) {
+		//do nothing
+	} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/resources/config.php")) {
+		//original directory
+	} elseif (file_exists("/etc/fusionpbx/config.php")){
+		//linux
+	} elseif (file_exists("/usr/local/etc/fusionpbx/config.php")){
+		//bsd
+	} else {
 		header("Location: ".PROJECT_PATH."/resources/install.php");
 		exit;
 	}
 
 //adds multiple includes
-	require_once "includes/require.php";
+	require_once "resources/require.php";
 
 //include the login
 	if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/login.php")){

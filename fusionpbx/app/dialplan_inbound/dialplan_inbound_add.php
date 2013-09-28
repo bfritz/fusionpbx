@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 	FusionPBX
 	Version: MPL 1.1
@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('inbound_route_add')) {
 	//access granted
 }
@@ -33,14 +33,18 @@ else {
 	echo $text['label-access-denied'];
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
 
 //add multi-lingual support
 require_once "app_languages.php";
 foreach($text as $key => $value) {
 	$text[$key] = $value[$_SESSION['domain']['language']['code']];
 }
+
+require_once "resources/header.php";
+$page["title"] = $text['title-dialplan-inbound-add'];
+
+require_once "resources/paging.php";
+
 
 //get the http get values and set them as php variables
 	$order_by = $_GET["order_by"];
@@ -92,15 +96,15 @@ foreach($text as $key => $value) {
 			unset ($prep_statement);
 		}
 
-		if (if_group("superadmin") && $action == "advanced") {
+		if (permission_exists("inbound_route_advanced") && $action == "advanced") {
 			//allow users in the superadmin group advanced control
 		}
 		else {
 			if (strlen($condition_field_1) == 0) { $condition_field_1 = "destination_number"; }
-			if (is_numeric($condition_expression_1)) { 
+			if (is_numeric($condition_expression_1)) {
 				//the number is numeric
 				$condition_expression_1 = str_replace("+", "\+", $condition_expression_1);
-				$condition_expression_1 = '^'.$condition_expression_1.'$';
+				$condition_expression_1 = '^('.$condition_expression_1.')$';
 			}
 		}
 		$dialplan_enabled = check_str($_POST["dialplan_enabled"]);
@@ -119,15 +123,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($dialplan_enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
 		//if (strlen($dialplan_description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/header.php";
-			require_once "includes/persistformvar.php";
+			require_once "resources/header.php";
+			require_once "resources/persist_form_var.php";
 			echo "<div align='center'>\n";
 			echo "<table><tr><td>\n";
 			echo $msg."<br />";
 			echo "</td></tr></table>\n";
 			persistformvar($_POST);
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		}
 
@@ -558,13 +562,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			unset($sql);
 		}
 
+	//update the destination dialplan_uuid
+		if (strlen($destination_uuid) > 0) {
+			$sql = "update v_destinations set ";
+			$sql .= "dialplan_uuid = '".$dialplan_uuid."' ";
+			$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
+			$sql .= "and destination_uuid = '".$destination_uuid."' ";
+			$db->exec(check_sql($sql));
+			unset($sql);
+		}
+
 	//commit the atomic transaction
 		$count = $db->exec("COMMIT;"); //returns affected rows
 
 	//delete the dialplan context from memcache
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
-			$switch_cmd = "memcache delete dialplan:public@".$_SESSION['domain_name'];
+			$switch_cmd = "memcache delete dialplan:public";
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 		}
 
@@ -572,12 +586,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		save_dialplan_xml();
 
 	//redirect the user
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4\">\n";
 		echo "<div align='center'>\n";
 		echo "".$text['confirm-update-complete']."\n";
 		echo "</div>\n";
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 		return;
 } //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
@@ -625,19 +639,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
-	echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>".$text['title-dialplan-inbound-add']."\n";
-	echo "			</strong></span></span>\n";
+	echo "		<td align='left'>\n";
+	echo "			<span class=\"title\">".$text['title-dialplan-inbound-add']."</span>\n";
 	echo "		</td>\n";
 	echo "		<td align='right'>\n";
-	if (if_group("superadmin")) {
+	if (permission_exists("inbound_route_advanced")) {
 		if (permission_exists("inbound_route_edit") && $action == "advanced") {
-			echo "			<input type='button' class='btn' name='' alt='basic' onclick=\"window.location='dialplan_inbound_add.php?action=basic'\" value='".$text['button-basic']."'>\n";
+			echo "			<input type='button' class='btn' name='' alt='".$text['button-basic']."' onclick=\"window.location='dialplan_inbound_add.php?action=basic'\" value='".$text['button-basic']."'>\n";
 		}
 		else {
-			echo "			<input type='button' class='btn' name='' alt='advanced' onclick=\"window.location='dialplan_inbound_add.php?action=advanced'\" value='".$text['button-advanced']."'>\n";
+			echo "			<input type='button' class='btn' name='' alt='".$text['button-advanced']."' onclick=\"window.location='dialplan_inbound_add.php?action=advanced'\" value='".$text['button-advanced']."'>\n";
 		}
 	}
-	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4'\" value='".$text['button-back']."'>\n";
+	echo "			<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4'\" value='".$text['button-back']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -666,7 +680,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	if (permission_exists("inbound_route_edit") && $action == "advanced" && if_group("superadmin")) {
+	if (permission_exists("inbound_route_edit") && $action == "advanced" && permission_exists("inbound_route_advanced")) {
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 		echo "	".$text['label-condition_1'].":\n";
@@ -714,21 +728,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($condition_field_1) > 0) {
 			echo "    <option value='$condition_field_1' selected>$condition_field_1</option>\n";
 		}
-		echo "    <option value='context'>context</option>\n";
-		echo "    <option value='username'>username</option>\n";
-		echo "    <option value='rdnis'>rdnis</option>\n";
-		echo "    <option value='destination_number'>destination_number</option>\n";
-		echo "    <option value='public'>public</option>\n";
-		echo "    <option value='caller_id_name'>caller_id_name</option>\n";
-		echo "    <option value='caller_id_number'>caller_id_number</option>\n";
-		echo "    <option value='ani'>ani</option>\n";
-		echo "    <option value='ani2'>ani2</option>\n";
-		echo "    <option value='uuid'>uuid</option>\n";
-		echo "    <option value='source'>source</option>\n";
-		echo "    <option value='chan_name'>chan_name</option>\n";
-		echo "    <option value='network_addr'>network_addr</option>\n";
+		echo "    <option value='context'>".$text['option-context']."</option>\n";
+		echo "    <option value='username'>".$text['option-username']."</option>\n";
+		echo "    <option value='rdnis'>".$text['option-rdnis']."</option>\n";
+		echo "    <option value='destination_number'>".$text['option-destination_number']."</option>\n";
+		echo "    <option value='public'>".$text['option-public']."</option>\n";
+		echo "    <option value='caller_id_name'>".$text['option-caller_id_name']."</option>\n";
+		echo "    <option value='caller_id_number'>".$text['option-caller_id_number']."</option>\n";
+		echo "    <option value='ani'>".$text['option-ani']."</option>\n";
+		echo "    <option value='ani2'>".$text['option-ani2']."</option>\n";
+		echo "    <option value='uuid'>".$text['option-uuid']."</option>\n";
+		echo "    <option value='source'>".$text['option-source']."</option>\n";
+		echo "    <option value='chan_name'>".$text['option-chan_name']."</option>\n";
+		echo "    <option value='network_addr'>".$text['option-network_addr']."</option>\n";
 		echo "    </select>\n";
-		echo "    <input type='button' id='btn_select_to_input_condition_field_1' class='btn' name='' alt='back' onclick='changeToInput_condition_field_1(document.getElementById(\"condition_field_1\"));this.style.visibility = \"hidden\";' value='<'>\n";
+		echo "    <input type='button' id='btn_select_to_input_condition_field_1' class='btn' name='' alt='".$text['button-back']."' onclick='changeToInput_condition_field_1(document.getElementById(\"condition_field_1\"));this.style.visibility = \"hidden\";' value='<'>\n";
 		echo "    <br />\n";
 		echo "	</td>\n";
 		echo "	<td style='width: 73px;'>&nbsp; ".$text['label-expression'].":</td>\n";
@@ -790,21 +804,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($condition_field_2) > 0) {
 			echo "    <option value='$condition_field_2' selected>$condition_field_2</option>\n";
 		}
-		echo "    <option value='context'>context</option>\n";
-		echo "    <option value='username'>username</option>\n";
-		echo "    <option value='rdnis'>rdnis</option>\n";
-		echo "    <option value='destination_number'>destination_number</option>\n";
-		echo "    <option value='public'>public</option>\n";
-		echo "    <option value='caller_id_name'>caller_id_name</option>\n";
-		echo "    <option value='caller_id_number'>caller_id_number</option>\n";
-		echo "    <option value='ani'>ani</option>\n";
-		echo "    <option value='ani2'>ani2</option>\n";
-		echo "    <option value='uuid'>uuid</option>\n";
-		echo "    <option value='source'>source</option>\n";
-		echo "    <option value='chan_name'>chan_name</option>\n";
-		echo "    <option value='network_addr'>network_addr</option>\n";
+		echo "    <option value='context'>".$text['option-context']."</option>\n";
+		echo "    <option value='username'>".$text['option-username']."</option>\n";
+		echo "    <option value='rdnis'>".$text['option-rdnis']."</option>\n";
+		echo "    <option value='destination_number'>".$text['option-destination_number']."</option>\n";
+		echo "    <option value='public'>".$text['option-public']."</option>\n";
+		echo "    <option value='caller_id_name'>".$text['option-caller_id_name']."</option>\n";
+		echo "    <option value='caller_id_number'>".$text['option-caller_id_number']."</option>\n";
+		echo "    <option value='ani'>".$text['option-ani']."</option>\n";
+		echo "    <option value='ani2'>".$text['option-ani2']."</option>\n";
+		echo "    <option value='uuid'>".$text['option-uuid']."</option>\n";
+		echo "    <option value='source'>".$text['option-source']."</option>\n";
+		echo "    <option value='chan_name'>".$text['option-chan_name']."</option>\n";
+		echo "    <option value='network_addr'>".$text['option-network_addr']."</option>\n";
 		echo "	</select>\n";
-		echo "  <input type='button' id='btn_select_to_input_condition_field_2' class='btn' name='' alt='back' onclick='changeToInput_condition_field_2(document.getElementById(\"condition_field_2\"));this.style.visibility = \"hidden\";' value='<'>\n";
+		echo "  <input type='button' id='btn_select_to_input_condition_field_2' class='btn' name='' alt='".$text['button-back']."' onclick='changeToInput_condition_field_2(document.getElementById(\"condition_field_2\"));this.style.visibility = \"hidden\";' value='<'>\n";
 		echo "	<br />\n";
 		echo "	</td>\n";
 		echo "	<td style='width: 73px;' align='left'>\n";
@@ -837,14 +851,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "	<select name='destination_uuid' id='destination_uuid' class='formfld' style='width: 60%;' >\n";
 			echo "	<option></option>\n";
 			foreach ($result as &$row) {
-				echo "		<option value='".$row["destination_uuid"]."'>".$row["destination_number"]."</option>\n";
+				if (strlen($row["dialplan_uuid"]) == 0) {
+					echo "		<option value='".$row["destination_uuid"]."' style=\"font-weight:bold;\">".$row["destination_number"]." ".$row["destination_description"]."</option>\n";
+				}
+				else {
+					echo "		<option value='".$row["destination_uuid"]."'>".$row["destination_number"]." ".$row["destination_description"]."</option>\n";
+				}
 			}
 			echo "		</select>\n";
 			echo "<br />\n";
 			echo "".$text['label-select-inbound-destination-number']."\n";
 		}
 		else {
-			echo "	<input type=\"button\" class=\"btn\" name=\"\" alt=\"Add\" onclick=\"window.location='".PROJECT_PATH."/app/destinations/destinations.php'\" value='".$text['button-add']."'>\n";
+			echo "	<input type=\"button\" class=\"btn\" name=\"\" alt=\"".$text['button-add']."\" onclick=\"window.location='".PROJECT_PATH."/app/destinations/destinations.php'\" value='".$text['button-add']."'>\n";
 		}
 		unset ($prep_statement);
 
@@ -956,7 +975,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "	<td colspan='5' align='right'>\n";
-	if ($action == "update" && if_group("superadmin")) {
+	if ($action == "update" && permission_exists("inbound_route_edit")) {
 		echo "			<input type='hidden' name='dialplan_uuid' value='$dialplan_uuid'>\n";
 	}
 	echo "			<input type='submit' class='btn' value='".$text['button-save']."'>\n";
@@ -971,9 +990,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>";
 	echo "</table>";
 	echo "</div>";
-
 	echo "<br><br>";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

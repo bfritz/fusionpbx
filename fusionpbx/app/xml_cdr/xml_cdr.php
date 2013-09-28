@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 require_once "app_languages.php";
 if (permission_exists('xml_cdr_view')) {
 	//access granted
@@ -44,8 +44,8 @@ else {
 	require_once "v_xml_cdr_import.php";
 
 //additional includes
-	require_once "includes/header.php";
-	require_once "includes/paging.php";
+	require_once "resources/header.php";
+	require_once "resources/paging.php";
 
 
 //xml cdr include
@@ -402,7 +402,7 @@ else {
 
 			echo "	<td valign='top' class='".$row_style[$c]."' nowrap=\"nowrap\">";
 			if (strlen($tmp_name) > 0 && file_exists($_SESSION['switch']['recordings']['dir'].'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)) {
-				echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('".PROJECT_PATH."/app/recordings/recordings_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
+				echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('".PROJECT_PATH."/app/recordings/recording_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
 				echo "			".$text['label-play']."\n";
 				echo "		</a>\n";
 				echo "		&nbsp;\n";
@@ -454,5 +454,5 @@ else {
 	echo "<br><br>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

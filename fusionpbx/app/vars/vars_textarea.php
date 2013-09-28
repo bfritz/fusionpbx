@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('variables_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('var_view')) {
 	//access granted
 }
 else {
@@ -34,16 +34,23 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //include the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
+	$page["title"] = $text['title-variables_advanced'];
 
 //restore the default vars.xml
-if ($_GET['a'] == "default" && permission_exists('variables_edit')) {
+if ($_GET['a'] == "default" && permission_exists('var_edit')) {
 	//read default config file
 	$fd = fopen($_SESSION['switch']['conf']['dir'].".orig/vars.xml", "r");
 	$v_content = fread($fd, filesize($_SESSION['switch']['conf']['dir'].".orig/vars.xml"));
 	fclose($fd);
-	
+
 	//write the default config fget
 	$fd = fopen($_SESSION['switch']['conf']['dir']."/vars.xml", "w");
 	fwrite($fd, $v_content);
@@ -52,7 +59,7 @@ if ($_GET['a'] == "default" && permission_exists('variables_edit')) {
 }
 
 //save the vars.xml
-	if ($_POST['a'] == "save" && permission_exists('variables_edit')) {
+	if ($_POST['a'] == "save" && permission_exists('var_edit')) {
 		$v_content = str_replace("\r","",$_POST['code']);
 		$fd = fopen($_SESSION['switch']['conf']['dir']."/vars.xml", "w");
 		fwrite($fd, $v_content);
@@ -66,16 +73,16 @@ if ($_GET['a'] == "default" && permission_exists('variables_edit')) {
 	fclose($fd);
 
 //edit area
-	echo "	<script language=\"javascript\" type=\"text/javascript\" src=\"/edit_area/edit_area_full.js\"></script>\n";
+	echo "	<script language=\"javascript\" type=\"text/javascript\" src=\"/resources/edit_area/edit_area_full.js\"></script>\n";
 	echo "	<script language=\"Javascript\" type=\"text/javascript\">\n";
 	echo "		// initialisation //load,\n";
 	echo "		editAreaLoader.init({\n";
 	echo "			id: \"code\"	// id of the textarea to transform //, |, help\n";
 	echo "			,start_highlight: true\n";
-	echo "			,font_size: \"8\"\n";
+	echo "			,font_size: \"9\"\n";
 	echo "			,allow_toggle: false\n";
 	echo "			,language: \"en\"\n";
-	echo "			,syntax: \"html\"\n";
+	echo "			,syntax: \"xml\"\n";
 	echo "			,toolbar: \"search, go_to_line,|, fullscreen, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help\" //new_document,\n";
 	echo "			,plugins: \"charmap\"\n";
 	echo "			,charmap_default: \"arrows\"\n";
@@ -88,21 +95,20 @@ if ($_GET['a'] == "default" && permission_exists('variables_edit')) {
 
 <div align='center'>
 
-<table width="90%" border="0" cellpadding="0" cellspacing="0">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td>
 			<form action="vars.php" method="post" name="iform" id="iform">
 			<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr>
-				<td width='100%'><span class="vexpl"><span class="red"><strong>Variables<br>
-					</strong></span>
-					Define preprocessor variables here. Can be accessed in the xml configation with $${var_name}.
-					<br />
-					<br />
+				<td width='100%'><span class="vexpl"><span class="red"><strong><?=$text['header-variables_advanced']?></strong></span>
+					<br /><br />
+					<?=$text['description-variables_advanced']?>
+					<br /><br />
 				</td>
-				<td width='10%' align='right' valign='top'>
-					<?php if (permission_exists('variables_edit')) { ?>
-					<input type="submit" class='btn' value="save" />
+				<td align='right' valign='top'>
+					<?php if (permission_exists('var_edit')) { ?>
+					<input type="submit" class='btn' value="<?=$text['button-save']?>" />
 					<?php } ?>
 				</td>
 			</tr>
@@ -127,8 +133,8 @@ if ($_GET['a'] == "default" && permission_exists('variables_edit')) {
 					<input type="hidden" name="f" value="<?php echo $_GET['f']; ?>" />
 					<input type="hidden" name="a" value="save" />
 					<?php
-					if (permission_exists('variables_edit')) {
-						echo "<input type='button' class='btn' value='Restore Default' onclick=\"document.location.href='vars.php?a=default&f=vars.xml';\" />";
+					if (permission_exists('var_edit')) {
+						echo "<input type='button' class='btn' value='".$text['button-restore']."' onclick=\"document.location.href='vars.php?a=default&f=vars.xml';\" />";
 					}
 					?>
 				</td>
@@ -158,5 +164,5 @@ if ($_GET['a'] == "default" && permission_exists('variables_edit')) {
 </div>
 
 <?php
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

@@ -27,8 +27,8 @@
 */
 
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 
 if (permission_exists('xmpp_add') || permission_exists('xmpp_edit')) {
 	//access granted
@@ -38,17 +38,29 @@ else {
 	exit;
 }
 
-require_once "includes/header.php";
-
-$domain_name = $_SESSION['domains'][$_SESSION['domain_uuid']]['domain_name'];
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //add or update the database
 if (isset($_REQUEST["id"])) {
 	$action = "update";
 	$profile_id = check_str($_REQUEST["id"]);
-} else {  
+} else {
 	$action = "add";
 }
+
+require_once "resources/header.php";
+if ($action == "update") {
+	$page["title"] = $text['title-xmpp-edit'];
+}
+else if ($action == "add") {
+	$page["title"] = $text['title-xmpp-add'];
+}
+
+$domain_name = $_SESSION['domains'][$_SESSION['domain_uuid']]['domain_name'];
 
 if ($action == "update") {
 	$sql = "";
@@ -83,10 +95,10 @@ if ($action == "update") {
  	$profile['local_network_acl'] = "localnet.auto";
 }
 
-if ((!isset($_REQUEST['submit'])) || ($_REQUEST['submit'] != 'Save')) {
+if ((!isset($_REQUEST['submit'])) || ($_REQUEST['submit'] != $text['button-save'])) {
 	// If we arent saving a Profile Display the form.
-	include "profile_edit.php";	
-	require_once "includes/footer.php";
+	include "profile_edit.php";
+	require_once "resources/footer.php";
 	exit;
 }
 
@@ -94,17 +106,18 @@ foreach ($_REQUEST as $field => $data){
 	$request[$field] = check_str($data);
 }
 
+
 // check the data
 $error = "";
-if (strlen($request['profile_name']) < 1) $error .= "Profile name is a Required Field<br />\n";
-if (strlen($request['profile_username']) < 1) $error .= "Username is a Required Field<br />\n";
-if (strlen($request['profile_password']) < 1) $error .= "Password is a Required Field<br />\n";
-if (strlen($request['default_exten']) < 1) $error .= "Default Extension is a Required Field<br />\n";
-if (strlen($error) > 0) { 
+if (strlen($request['profile_name']) < 1) $error .= $text['message-required'].$text['label-profile_name']."<br />\n";
+if (strlen($request['profile_username']) < 1) $error .= $text['message-required'].$text['label-username']."<br />\n";
+if (strlen($request['profile_password']) < 1) $error .= $text['message-required'].$text['label-password']."<br />\n";
+if (strlen($request['default_exten']) < 1) $error .= $text['message-required'].$text['label-default_exten']."<br />\n";
+if (strlen($error) > 0) {
 	include "errors.php";
 	$profile = $request;
-	include "profile_edit.php";	
-	require_once "includes/footer.php";
+	include "profile_edit.php";
+	require_once "resources/footer.php";
 	exit;
 }
 
@@ -164,7 +177,7 @@ if ($action == "add" && permission_exists('xmpp_add')) {
 	$sql .= ") ";
 	$db->exec(check_sql($sql));
 
-} 
+}
 elseif ($action == "update" && permission_exists('xmpp_edit')) {
 	$sql = "";
 	$sql .= "UPDATE v_xmpp SET ";
@@ -195,7 +208,7 @@ elseif ($action == "update" && permission_exists('xmpp_edit')) {
 	$sql .= "where xmpp_profile_uuid = '" . $request['id'] . "' ";
 	$db->exec(check_sql($sql));
 	$xmpp_profile_uuid = $request['id'];
-} 
+}
 
 if ($request['enabled'] == "true") {
 	//prepare the xml
@@ -229,6 +242,6 @@ if ($fp) {
 include "update_complete.php";
 
 //show the footer
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 
 ?>

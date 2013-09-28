@@ -36,7 +36,7 @@
 
 //includes
 	if (!defined('STDIN')) { include "root.php"; }
-	require_once "includes/require.php";
+	require_once "resources/require.php";
 
 //set init settings
 	ini_set('max_execution_time',1800); //30 minutes
@@ -58,8 +58,8 @@
 	//echo "Message: \n".$msg."\n";
 
 //includes
-	require('includes/pop3/mime_parser.php');
-	require('includes/pop3/rfc822_addresses.php');
+	require('resources/pop3/mime_parser.php');
+	require('resources/pop3/rfc822_addresses.php');
 
 //parse the email message
 	$mime=new mime_parser_class;

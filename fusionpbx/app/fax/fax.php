@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('fax_extension_view')) {
 	//access granted
 }
@@ -33,8 +33,8 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+require_once "resources/header.php";
+require_once "resources/paging.php";
 
 //add multi-lingual support
 	echo "<!--\n";
@@ -57,9 +57,9 @@ require_once "includes/paging.php";
 	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "			<tr>\n";
 	echo "				<td align='left'>\n";
-	echo "					<p><span class=\"vexpl\"><span class=\"red\"><strong>FAX<br></strong></span>\n";
+	echo "					<span class=\"title\">".$text['title']."</span><br />\n";
 	echo "					".$text['description']."\n";
-	echo "					</p>\n";
+	echo "					\n";
 	echo "				</td>\n";
 	echo "			</tr>\n";
 	echo "		</table>\n";
@@ -184,5 +184,5 @@ require_once "includes/paging.php";
 	echo "<br><br>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

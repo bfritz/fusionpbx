@@ -39,7 +39,7 @@ if (defined('STDIN')) {
 
 //includes
 	if (!defined('STDIN')) { include "root.php"; }
-	require_once "includes/require.php";
+	require_once "resources/require.php";
 	include "resources/phpmailer/class.phpmailer.php";
 	include "resources/phpmailer/class.smtp.php"; // optional, gets called from within class.phpmailer.php if not already loaded
 
@@ -285,13 +285,13 @@ if (defined('STDIN')) {
 			echo "smtp_from_name: ".$_SESSION['email']['smtp_from_name']['var']."\n";
 			echo "tmp_subject: $tmp_subject\n";
 
-		//add teh attachments
+		//add the attachments
 			if (strlen($fax_name) > 0) {
-				if (!file_exists($dir_fax.'/'.$fax_name.".pdf")) {
-					$mail->AddAttachment($dir_fax.'/'.$fax_name.'.tif'); // tif attachment
-				}
 				if (file_exists($dir_fax.'/'.$fax_name.".pdf")) {
 					$mail->AddAttachment($dir_fax.'/'.$fax_name.'.pdf'); // pdf attachment
+				}
+				else {
+					$mail->AddAttachment($dir_fax.'/'.$fax_name.'.tif'); // tif attachment
 				}
 				//$filename='fax.tif'; $encoding = "base64"; $type = "image/tif";
 				//$mail->AddStringAttachment(base64_decode($strfax),$filename,$encoding,$type);
@@ -345,7 +345,7 @@ if (defined('STDIN')) {
 					fclose($fp);
 					$tmp_response = exec("chmod 777 ".$_SESSION['server']['temp']['dir']."/failed_fax_emails.sh");
 				// note we use batch in order to execute when system load is low.  Alternatively this could be replaced with AT.
-					$tmp_response = exec("batch -f ".$_SESSION['server']['temp']['dir']."/failed_fax_emails.sh now + 3 minutes");
+					$tmp_response = exec("at -f ".$_SESSION['server']['temp']['dir']."/failed_fax_emails.sh now + 3 minutes");
 			}
 		}
 	}
@@ -359,4 +359,5 @@ if (defined('STDIN')) {
 //write the contents of the buffer
 	fwrite($fp, $content);
 	fclose($fp);
+
 ?>

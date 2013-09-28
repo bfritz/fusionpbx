@@ -25,9 +25,9 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('conferences_active_advanced_view')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('conference_active_advanced_view')) {
 	//access granted
 }
 else {
@@ -42,7 +42,7 @@ else {
 	}
 
 
-require_once "includes/header.php";
+require_once "resources/header.php";
 ?><script type="text/javascript">
 function loadXmlHttp(url, id) {
 	var f = this;
@@ -116,5 +116,5 @@ echo "	</tr>";
 echo "</table>";
 echo "</div>";
 
-require_once "includes/footer.php";
+require_once "resources/footer.php";
 ?>

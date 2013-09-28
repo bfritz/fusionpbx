@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (if_group("superadmin")) {
 	//access granted
 }
@@ -33,6 +33,12 @@ else {
 	echo "access denied";
 	exit;
 }
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
 
 //action add or update
 	if (isset($_REQUEST["id"])) {
@@ -58,15 +64,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	//check for all required data
 		//if (strlen($app_enabled) == 0) { $msg .= "Please provide: Enabled<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/header.php";
-			require_once "includes/persistformvar.php";
+			require_once "resources/header.php";
+			require_once "resources/persist_form_var.php";
 			echo "<div align='center'>\n";
 			echo "<table><tr><td>\n";
 			echo $msg."<br />";
 			echo "</td></tr></table>\n";
 			persistformvar($_POST);
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		}
 
@@ -84,12 +90,12 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "includes/header.php";
+				require_once "resources/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=apps.php\">\n";
 				echo "<div align='center'>\n";
-				echo "Add Complete\n";
+				echo $text['message-add']."\n";
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				require_once "resources/footer.php";
 				return;
 			} //if ($action == "add")
 
@@ -100,19 +106,25 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "includes/header.php";
+				require_once "resources/header.php";
 				echo "<meta http-equiv=\"refresh\" content=\"2;url=apps.php\">\n";
 				echo "<div align='center'>\n";
-				echo "Update Complete\n";
+				echo $text['message-update']."\n";
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				require_once "resources/footer.php";
 				return;
 			} //if ($action == "update")
-		} //if ($_POST["persistformvar"] != "true") 
+		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
+	if ($action == "update") {
+		$page["title"] = $text['title-app-edit'];
+	}
+	if ($action == "add") {
+		$page["title"] = $text['title-app-add'];
+	}
 
 //pre-populate the form
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
@@ -135,9 +147,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 	}
 
-//show the header
-	require_once "includes/header.php";
-
 //show the content
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
@@ -149,18 +158,27 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
-	echo "<td align='left' width='30%' nowrap='nowrap'><b>$name</b></td>\n";
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='back' onclick=\"window.location='apps.php'\" value='Back'></td>\n";
+	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['header-app-edit']."</b></td>\n";
+	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='apps.php'\" value='".$text['button-back']."'></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
-	echo "Manage the applications that are installed.<br /><br />\n";
+	echo $text['description-app-edit']."<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "	<tr>\n";
 	echo "		<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "			Category:\n";
+	echo "			".$text['label-name'].":\n";
+	echo "		</td>\n";
+	echo "		<td class='vtable' align='left'>\n";
+	echo "			$name &nbsp;\n";
+	echo "		</td>\n";
+	echo "	</tr>";
+
+	echo "	<tr>\n";
+	echo "		<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "			".$text['label-category'].":\n";
 	echo "		</td>\n";
 	echo "		<td class='vtable' align='left'>\n";
 	echo "			$category &nbsp;\n";
@@ -169,7 +187,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "		<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "			Subcategory:\n";
+	echo "			".$text['label-subcategory'].":\n";
 	echo "		</td>\n";
 	echo "		<td class='vtable' align='left'>\n";
 	echo "			$subcategory &nbsp;\n";
@@ -178,7 +196,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "		<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "			Version:\n";
+	echo "			".$text['label-version'].":\n";
 	echo "		</td>\n";
 	echo "		<td class='vtable' align='left'>\n";
 	echo "				$version &nbsp;\n";
@@ -187,7 +205,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "		<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "			Description:\n";
+	echo "			".$text['label-description'].":\n";
 	echo "		</td>\n";
 	echo "		<td class='vtable' align='left'>\n";
 	echo "				$description &nbsp;\n";
@@ -199,7 +217,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "				<input type='hidden' name='app_uuid' value='$app_uuid'>\n";
 	}
-	echo "				<input type='submit' name='submit' class='btn' value='Save'>\n";
+	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
@@ -211,5 +229,5 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</div>";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

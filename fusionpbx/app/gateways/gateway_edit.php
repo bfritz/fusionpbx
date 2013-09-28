@@ -17,15 +17,15 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2013
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('gateway_add') || permission_exists('gateway_edit')) {
 	//access granted
 }
@@ -50,7 +50,7 @@ else {
 	}
 
 //get http post variables and set them to php variables
-	if (count($_POST)>0) {
+	if (count($_POST) > 0) {
 		$gateway = check_str($_POST["gateway"]);
 		$username = check_str($_POST["username"]);
 		$password = check_str($_POST["password"]);
@@ -68,9 +68,11 @@ else {
 		$retry_seconds = check_str($_POST["retry_seconds"]);
 		$extension = check_str($_POST["extension"]);
 		$ping = check_str($_POST["ping"]);
+		$channels = check_str($_POST["channels"]);
 		$caller_id_in_from = check_str($_POST["caller_id_in_from"]);
 		$supress_cng = check_str($_POST["supress_cng"]);
 		$sip_cid_type = check_str($_POST["sip_cid_type"]);
+		$codec_prefs = check_str($_POST["codec_prefs"]);
 		$extension_in_contact = check_str($_POST["extension_in_contact"]);
 		$context = check_str($_POST["context"]);
 		$profile = check_str($_POST["profile"]);
@@ -106,24 +108,29 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (strlen($retry_seconds) == 0) { $msg .= $text['message-required']." ".$text['label-retry_seconds']."<br>\n"; }
 		//if (strlen($extension) == 0) { $msg .= $text['message-required']." ".$text['label-extension']."<br>\n"; }
 		//if (strlen($ping) == 0) { $msg .= $text['message-required']." ".$text['label-ping']."<br>\n"; }
+		if (strlen($channels) == 0) {
+			//$msg .= $text['message-required']." ".$text['label-channels']."<br>\n";
+			$channels = 0;
+		}
 		//if (strlen($caller_id_in_from) == 0) { $msg .= $text['message-required']." ".$text['label-caller_id_in_from']."<br>\n"; }
 		//if (strlen($supress_cng) == 0) { $msg .= $text['message-required']." ".$text['label-supress_cng']."<br>\n"; }
 		//if (strlen($sip_cid_type) == 0) { $msg .= $text['message-required']." ".$text['label-sip_cid_type']."<br>\n"; }
+		//if (strlen($codec_prefs) == 0) { $msg .= $text['message-required']." ".$text['label-codec_prefs']."<br>\n"; }
 		//if (strlen($extension_in_contact) == 0) { $msg .= $text['message-required']." ".$text['label-extension_in_contact']."<br>\n"; }
 		if (strlen($context) == 0) { $msg .= $text['message-required']." ".$text['label-context']."<br>\n"; }
 		if (strlen($profile) == 0) { $msg .= $text['message-required']." ".$text['label-profile']."<br>\n"; }
 		if (strlen($enabled) == 0) { $msg .= $text['message-required']." ".$text['label-enabled']."<br>\n"; }
 		//if (strlen($description) == 0) { $msg .= $text['message-required']." ".$text['label-description']."<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-			require_once "includes/header.php";
-			require_once "includes/persistformvar.php";
+			require_once "resources/header.php";
+			require_once "resources/persist_form_var.php";
 			echo "<div align='center'>\n";
 			echo "<table><tr><td>\n";
 			echo $msg."<br />";
 			echo "</td></tr></table>\n";
 			persistformvar($_POST);
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		}
 
@@ -156,9 +163,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "retry_seconds, ";
 				$sql .= "extension, ";
 				$sql .= "ping, ";
+				$sql .= "channels, ";
 				$sql .= "caller_id_in_from, ";
 				$sql .= "supress_cng, ";
 				$sql .= "sip_cid_type, ";
+				$sql .= "codec_prefs, ";
 				$sql .= "extension_in_contact, ";
 				$sql .= "context, ";
 				$sql .= "profile, ";
@@ -186,9 +195,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$retry_seconds', ";
 				$sql .= "'$extension', ";
 				$sql .= "'$ping', ";
+				$sql .= "'$channels', ";
 				$sql .= "'$caller_id_in_from', ";
 				$sql .= "'$supress_cng', ";
 				$sql .= "'$sip_cid_type', ";
+				$sql .= "'$codec_prefs', ";
 				$sql .= "'$extension_in_contact', ";
 				$sql .= "'$context', ";
 				$sql .= "'$profile', ";
@@ -219,9 +230,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "retry_seconds = '$retry_seconds', ";
 				$sql .= "extension = '$extension', ";
 				$sql .= "ping = '$ping', ";
+				$sql .= "channels = '$channels', ";
 				$sql .= "caller_id_in_from = '$caller_id_in_from', ";
 				$sql .= "supress_cng = '$supress_cng', ";
 				$sql .= "sip_cid_type = '$sip_cid_type', ";
+				$sql .= "codec_prefs = '$codec_prefs', ";
 				$sql .= "extension_in_contact = '$extension_in_contact', ";
 				$sql .= "context = '$context', ";
 				$sql .= "profile = '$profile', ";
@@ -262,7 +275,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//redirect the user
 		if (isset($action)) {
-			require_once "includes/header.php";
+			require_once "resources/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=gateways.php\">\n";
 			echo "<div align='center'>\n";
 			if ($action == "add") {
@@ -272,7 +285,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "	".$text['message-update']."\n";
 			}
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 		}
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
@@ -304,21 +317,25 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$retry_seconds = $row["retry_seconds"];
 			$extension = $row["extension"];
 			$ping = $row["ping"];
+			$channels = $row["channels"];
 			$caller_id_in_from = $row["caller_id_in_from"];
 			$supress_cng = $row["supress_cng"];
 			$sip_cid_type = $row["sip_cid_type"];
+			$codec_prefs = $row["codec_prefs"];
 			$extension_in_contact = $row["extension_in_contact"];
 			$context = $row["context"];
 			$profile = $row["profile"];
 			$enabled = $row["enabled"];
 			$description = $row["description"];
-			break; //limit to 1 row
 		}
 		unset ($prep_statement);
 	}
 
+//set defaults
+	if (strlen($enabled) == 0) { $enabled = "true"; }
+
 //show the header
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 
 //show the content
 	echo "<script type=\"text/javascript\" language=\"JavaScript\">\n";
@@ -358,7 +375,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
 	echo "		<td align='left' width=\"50%\">\n";
-	echo "			<strong>".$text['title-gateway']."</strong><br>\n";
+	echo "			<span class=\"title\">".$text['title-gateway']."</span><br>\n";
 	echo "		</td>";
 	echo "		<td width='50%' align='right'>\n";
 	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
@@ -684,6 +701,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    ".$text['label-codec_prefs'].":\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='codec_prefs' maxlength='255' value=\"$codec_prefs\">\n";
+	echo "<br />\n";
+	echo $text['description-codec_prefs']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "    ".$text['label-extension_in_contact'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -715,6 +743,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    <input class='formfld' type='text' name='ping' maxlength='255' value=\"$ping\">\n";
 	echo "<br />\n";
 	echo $text['description-ping']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    ".$text['label-channels'].":\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='channels' maxlength='255' value=\"$channels\">\n";
+	echo "<br />\n";
+	echo $text['description-channels']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -802,5 +841,5 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</div>";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

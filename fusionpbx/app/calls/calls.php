@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('follow_me') || permission_exists('call_forward') || permission_exists('do_not_disturb')) {
 	//access granted
 }
@@ -48,8 +48,8 @@ else {
 	}
 
 //begin the content
-	require_once "includes/header.php";
-	require_once "includes/paging.php";
+	require_once "resources/header.php";
+	require_once "resources/paging.php";
 	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
@@ -194,7 +194,7 @@ else {
 	echo "<br>";
 
 	if ($is_included != "true") {
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 	}
 
 ?>

@@ -25,8 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('outbound_route_add')) {
 	//access granted
 }
@@ -42,21 +42,25 @@ else {
 	}
 
 //show the header
-	require_once "includes/header.php";
-	require_once "includes/paging.php";
+	require_once "resources/header.php";
+	$page["title"] = $text['title-dialplan-outbound-add'];
+
+	require_once "resources/paging.php";
 
 //get the http post values and set theme as php variables
 	if (count($_POST)>0) {
-		$dialplan_name = check_str($_POST["dialplan_name"]);
-		$dialplan_order = check_str($_POST["dialplan_order"]);
-		$dialplan_expression = check_str($_POST["dialplan_expression"]);
-		$prefix_number = check_str($_POST["prefix_number"]);
-		$condition_field_1 = check_str($_POST["condition_field_1"]);
-		$condition_expression_1 = check_str($_POST["condition_expression_1"]);
-		$condition_field_2 = check_str($_POST["condition_field_2"]);
-		$condition_expression_2 = check_str($_POST["condition_expression_2"]);
-		$gateway = check_str($_POST["gateway"]);
-		$limit = check_str($_POST["limit"]);
+		//set the variables
+			$dialplan_name = check_str($_POST["dialplan_name"]);
+			$dialplan_order = check_str($_POST["dialplan_order"]);
+			$dialplan_expression = check_str($_POST["dialplan_expression"]);
+			$prefix_number = check_str($_POST["prefix_number"]);
+			$condition_field_1 = check_str($_POST["condition_field_1"]);
+			$condition_expression_1 = check_str($_POST["condition_expression_1"]);
+			$condition_field_2 = check_str($_POST["condition_field_2"]);
+			$condition_expression_2 = check_str($_POST["condition_expression_2"]);
+			$gateway = check_str($_POST["gateway"]);
+			$limit = check_str($_POST["limit"]);
+			$accountcode = check_str($_POST["accountcode"]);
 
 		//set the default type
 			$gateway_type = 'gateway';
@@ -197,15 +201,15 @@ else {
 			//if (strlen($dialplan_enabled) == 0) { $msg .= "Please provide: Enabled True or False<br>\n"; }
 			//if (strlen($description) == 0) { $msg .= "Please provide: Description<br>\n"; }
 			if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
-				require_once "includes/header.php";
-				require_once "includes/persistformvar.php";
+				require_once "resources/header.php";
+				require_once "resources/persist_form_var.php";
 				echo "<div align='center'>\n";
 				echo "<table><tr><td>\n";
 				echo $msg."<br />";
 				echo "</td></tr></table>\n";
 				persistformvar($_POST);
 				echo "</div>\n";
-				require_once "includes/footer.php";
+				require_once "resources/footer.php";
 				return;
 			}
 
@@ -270,21 +274,17 @@ else {
 						$label = $text['label-11d'];
 						$abbrv = "11d";
 						break;
-					case "^(\d{12})$":
-						$label = $text['label-12d'];
-						$abbrv = "12d";
+					case "^\+?1?(\d{10})$":
+						$label = $text['label-north-america'];
+						$abbrv = "10-11d";
 						break;
-					case "^(\d{13})$":
-						$label = $text['label-13d'];
-						$abbrv = "13d";
+					case "^(011(\d{9,17})$":
+						$label = $text['label-north-america-intl'];
+						$abbrv = "011.9-17d";
 						break;
-					case "^(\d{14})$":
-						$label = $text['label-14d'];
-						$abbrv = "14d";
-						break;
-					case "^(\d{12,15})$":
-						$label = $text['label-int'];
-						$abbrv = "Intl";
+					case "^(\d{12,20})$":
+						$label = $text['label-intl'];
+						$abbrv = $text['label-intl'];
 						break;
 					case "^(311)$":
 						$label = $text['label-311'];
@@ -305,7 +305,7 @@ else {
 					case "^9(\d{4})$":
 						$label = $text['label-9d4'];
 						$abbrv = "9.4d";
-						break;	
+						break;
 					case "^9(\d{7})$":
 						$label = $text['label-9d7'];
 						$abbrv = "9.7d";
@@ -318,24 +318,13 @@ else {
 						$label = $text['label-9d11'];
 						$abbrv = "9.11d";
 						break;
-					case "^9(\d{12})$":
-						$label = $text['label-9d12'];
-						$abbrv = "9.Intl";
-						break;
-					case "^9(\d{13})$":
-						$label = $text['label-9d13'];
-						$abbrv = "9.13d";
-						break;
-					case "^9(\d{14})$":
-						$label = $text['label-9d14'];
-						break;
-					case "^9(\d{12,15})$":
-						$label = $text['label-9d15'];
-						$abbrv = "9.Intl";
+					case "^9(\d{12,20})$":
+						$label = $text['label-9d.12-20'];
+						$abbrv = "9.12-20";
 						break;
 					case "^1?(8(00|55|66|77|88)[2-9]\d{6})$":
 						$label = $text['label-800'];
-						$abbrv = "tollfree";
+						$abbrv = "800";
 						break;
 					default:
 						$label = $dialplan_expression;
@@ -439,12 +428,22 @@ else {
 					$dialplan_detail_group = '';
 					dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
 
-					$dialplan_detail_tag = 'action'; //condition, action, antiaction
-					$dialplan_detail_type = 'set';
-					$dialplan_detail_data = 'sip_h_X-accountcode=${accountcode}';
-					$dialplan_detail_order = '010';
-					$dialplan_detail_group = '';
-					dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
+					if (strlen($accountcode) > 0) {
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'set';
+						$dialplan_detail_data = 'sip_h_X-accountcode='.$accountcode;
+						$dialplan_detail_order = '010';
+						$dialplan_detail_group = '';
+						dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
+					}
+					else {
+						$dialplan_detail_tag = 'action'; //condition, action, antiaction
+						$dialplan_detail_type = 'set';
+						$dialplan_detail_data = 'sip_h_X-accountcode=${accountcode}';
+						$dialplan_detail_order = '010';
+						$dialplan_detail_group = '';
+						dialplan_detail_add($_SESSION['domain_uuid'], $dialplan_uuid, $dialplan_detail_tag, $dialplan_detail_order, $dialplan_detail_group, $dialplan_detail_type, $dialplan_detail_data);
+					}
 
 					$dialplan_detail_tag = 'action'; //condition, action, antiaction
 					$dialplan_detail_type = 'set';
@@ -566,12 +565,12 @@ else {
 			save_dialplan_xml();
 
 		//redirect the user
-			require_once "includes/header.php";
+			require_once "resources/header.php";
 			echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3\">\n";
 			echo "<div align='center'>\n";
 			echo $text['message-update']."\n";
 			echo "</div>\n";
-			require_once "includes/footer.php";
+			require_once "resources/footer.php";
 			return;
 	} //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 ?>
@@ -620,8 +619,8 @@ function type_onchange(dialplan_detail_type) {
 
 	echo " 	<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
-	echo "		<td align='left'><span class=\"vexpl\"><span class=\"red\"><strong>".$text['label-outbound-routes']."\n";
-	echo "			</strong></span></span>\n";
+	echo "		<td align='left'>\n";
+	echo "			<span class=\"title\">".$text['label-outbound-routes']."</span>\n";
 	echo "		</td>\n";
 	echo "		<td align='right'>\n";
 	echo "			<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3'\" value='".$text['button-back']."'>\n";
@@ -646,7 +645,7 @@ function type_onchange(dialplan_detail_type) {
 	echo "    ".$text['label-gateway'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	
+
 	if (if_group("superadmin")) {
 		echo "<script>\n";
 		echo "var Objs;\n";
@@ -868,10 +867,9 @@ function type_onchange(dialplan_detail_type) {
 	echo "    <option value='^(\\d{9})\$'>".$text['label-9d']."</option>\n";
 	echo "    <option value='^(\\d{10})\$'>".$text['label-10d']."</option>\n";
 	echo "    <option value='^\+?(\\d{11})\$'>".$text['label-11d']."</option>\n";
-	echo "    <option value='^(\\d{12})\$'>".$text['label-12d']."</option>\n";
-	echo "    <option value='^(\\d{13})\$'>".$text['label-13d']."</option>\n";
-	echo "    <option value='^(\\d{14})\$'>".$text['label-14d']."</option>\n";
-	echo "    <option value='^(\\d{15})\$'>".$text['label-int']."</option>\n";
+	echo "    <option value='^(\+?1?(\\d{10})\$'>".$text['label-north-america']."</option>\n";
+	echo "    <option value='^(011\\d{9,17})\$'>".$text['label-north-america-intl']."</option>\n";
+	echo "    <option value='^(\\d{12,20})\$'>".$text['label-intl']."</option>\n";
 	echo "    <option value='^(311)\$'>".$text['label-311']."</option>\n";
 	echo "    <option value='^(411)\$'>".$text['label-411']."</option>\n";
 	echo "    <option value='^(911)\$'>".$text['label-911']."</option>\n";
@@ -886,10 +884,7 @@ function type_onchange(dialplan_detail_type) {
 	echo "    <option value='^9(\\d{9})\$'>".$text['label-9d9']."</option>\n";
 	echo "    <option value='^9(\\d{10})\$'>".$text['label-9d10']."</option>\n";
 	echo "    <option value='^9(\\d{11})\$'>".$text['label-9d11']."</option>\n";
-	echo "    <option value='^9(\\d{12})\$'>".$text['label-9d12']."</option>\n";
-	echo "    <option value='^9(\\d{13})\$'>".$text['label-9d13']."</option>\n";
-	echo "    <option value='^9(\\d{14})\$'>".$text['label-9d14']."</option>\n";
-	echo "    <option value='^9(\\d{15})\$'>".$text['label-9d15']."</option>\n";
+	echo "    <option value='^9(\\d{12-20})\$'>".$text['label-9d.12-20']."</option>\n";
 	echo "    </select>\n";
 	echo "    <span class=\"vexpl\">\n";
 	echo "    <br />\n";
@@ -916,6 +911,17 @@ function type_onchange(dialplan_detail_type) {
 	echo "    <input class='formfld' style='width: 60%;' type='text' name='limit' maxlength='255' value=\"$limit\">\n";
 	echo "<br />\n";
 	echo $text['description-limit']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    ".$text['label-accountcode'].":\n";
+	echo "</td>\n";
+	echo "<td colspan='4' class='vtable' align='left'>\n";
+	echo "    <input class='formfld' style='width: 60%;' type='text' name='accountcode' maxlength='255' value=\"$accountcode\">\n";
+	echo "<br />\n";
+	echo $text['description-accountcode']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -949,13 +955,13 @@ function type_onchange(dialplan_detail_type) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='dialplan_enabled' style='width: 60%;'>\n";
 	//echo "    <option value=''></option>\n";
-	if ($dialplan_enabled == "true") { 
+	if ($dialplan_enabled == "true") {
 		echo "    <option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "    <option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($dialplan_enabled == "false") { 
+	if ($dialplan_enabled == "false") {
 		echo "    <option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -999,5 +1005,5 @@ function type_onchange(dialplan_detail_type) {
 	echo "<br><br>";
 
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

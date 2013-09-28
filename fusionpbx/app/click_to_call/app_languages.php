@@ -23,7 +23,6 @@
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 	James Rose <james.o.rose@gmail.com>
-	Philippe Rioual <bhouba@gmail.com>
 */
 
 	$text['label-click2call']['en-us'] = 'Click to Call';

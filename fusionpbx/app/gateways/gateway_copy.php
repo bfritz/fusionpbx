@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-require_once "includes/paging.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+require_once "resources/paging.php";
 if (permission_exists('gateway_add')) {
 	//access granted
 }
@@ -63,7 +63,9 @@ else {
 		$register_transport = $row["register_transport"];
 		$retry_seconds = $row["retry_seconds"];
 		$extension = $row["extension"];
+		$codec_prefs = $row["codec_prefs"];
 		$ping = $row["ping"];
+		$channels = $row["channels"];
 		$caller_id_in_from = $row["caller_id_in_from"];
 		$supress_cng = $row["supress_cng"];
 		$extension_in_contact = $row["extension_in_contact"];
@@ -99,7 +101,9 @@ else {
 	$sql .= "register_transport, ";
 	$sql .= "retry_seconds, ";
 	$sql .= "extension, ";
+	$sql .= "codec_prefs, ";
 	$sql .= "ping, ";
+	$sql .= "channels, ";
 	$sql .= "caller_id_in_from, ";
 	$sql .= "supress_cng, ";
 	$sql .= "extension_in_contact, ";
@@ -126,7 +130,9 @@ else {
 	$sql .= "'$register_transport', ";
 	$sql .= "'$retry_seconds', ";
 	$sql .= "'$extension', ";
+	$sql .= "'$codec_prefs', ";
 	$sql .= "'$ping', ";
+	$sql .= "'$channels', ";
 	$sql .= "'$caller_id_in_from', ";
 	$sql .= "'$supress_cng', ";
 	$sql .= "'$extension_in_contact', ";
@@ -141,12 +147,12 @@ else {
 	save_gateway_xml();
 
 //redirect the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=gateways.php\">\n";
 	echo "<div align='center'>\n";
 	echo "Copy Complete\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 
 ?>

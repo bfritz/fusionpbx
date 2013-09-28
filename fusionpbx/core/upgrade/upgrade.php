@@ -30,14 +30,20 @@
 		preg_match("/^(.*)\/core\/.*$/", $document_root, $matches);
 		$document_root = $matches[1];
 		set_include_path($document_root);
-		require_once "includes/require.php";
+		require_once "resources/require.php";
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
 		$display_type = 'text'; //html, text
+
+		//add multi-lingual support
+			require_once "app_languages.php";
+			foreach($text as $key => $value) {
+				$text[$key] = $value[$_SESSION['domain']['language']['code']];
+			}
 	}
 	else {
 		include "root.php";
-		require_once "includes/require.php";
-		require_once "includes/checkauth.php";
+		require_once "resources/require.php";
+		require_once "resources/check_auth.php";
 		if (permission_exists('upgrade_schema') || permission_exists('upgrade_svn') || if_group("superadmin")) {
 			//echo "access granted";
 		}
@@ -45,6 +51,13 @@
 			echo "access denied";
 			exit;
 		}
+
+		//add multi-lingual support
+			require_once "app_languages.php";
+			foreach($text as $key => $value) {
+				$text[$key] = $value[$_SESSION['domain']['language']['code']];
+			}
+
 	}
 
 //set the default
@@ -54,15 +67,15 @@
 
 //include the header
 	if ($display_results) {
-		require_once "includes/header.php";
+		require_once "resources/header.php";
 	}
 
 if ($display_type == 'text') {
 	echo "\n";
-	echo "Upgrade\n";
+	echo $text['label-upgrade']."\n";
 	echo "-----------------------------------------\n";
 	echo "\n";
-	echo "Database\n";
+	echo $text['label-database']."\n";
 }
 
 //upgrade the database schema
@@ -73,10 +86,10 @@ if ($display_type == 'text') {
 		echo "<div align='center'>\n";
 		echo "<table width='40%'>\n";
 		echo "<tr>\n";
-		echo "<th align='left'>Message</th>\n";
+		echo "<th align='left'>".$text['header-message']."</th>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td class='row_style1'><strong>Upgrade Completed</strong></td>\n";
+		echo "<td class='row_style1'><strong>".$text['message-upgrade']."</strong></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</div>\n";
@@ -95,6 +108,6 @@ if ($display_type == 'text') {
 
 //include the footer
 	if ($display_results) {
-		require_once "includes/footer.php";
+		require_once "resources/footer.php";
 	}
 ?>

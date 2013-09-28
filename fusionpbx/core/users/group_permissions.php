@@ -24,8 +24,15 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+require_once "resources/classes/logging.php";
+// Logging class initialization
+$log = new Logging();
+
+// set path and name of log file (optional)
+$log->lfile('/tmp/mylog.txt');
+
 if (permission_exists('group_permissions') || if_group("superadmin")) {
 	//access granted
 }
@@ -33,8 +40,17 @@ else {
 	echo "access denied";
 	exit;
 }
-require_once "includes/header.php";
-require_once "includes/paging.php";
+
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
+require_once "resources/header.php";
+$page["title"] = $text['title-group_permissions'];
+
+require_once "resources/paging.php";
 
 //get the list of installed apps from the core and mod directories
 	$config_list = glob($_SERVER["DOCUMENT_ROOT"] . PROJECT_PATH . "/*/*/app_config.php");
@@ -45,8 +61,7 @@ require_once "includes/paging.php";
 	}
 
 //if there are no permissions listed in v_group_permissions then set the default permissions
-	$sql = "";
-	$sql .= "select count(*) as count from v_group_permissions ";
+	$sql = "select count(*) as count from v_group_permissions ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -84,10 +99,9 @@ require_once "includes/paging.php";
 
 //get the http values and set them as php variables
 	$group_name = $_REQUEST['group_name'];
-	
+
 //get the permissions assigned to this group
-	$sql = "";
-	$sql .= " select * from v_group_permissions ";
+	$sql = " select * from v_group_permissions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and group_name = '$group_name' ";
 	$prep_statement = $db->prepare(check_sql($sql));
@@ -97,6 +111,7 @@ require_once "includes/paging.php";
 		$permission_name = $row["permission_name"];
 		$permissions_db[$permission_name] = "true";
 	}
+		
 //show the db checklist
 	//echo "<pre>";
 	//print_r($permissions_db);
@@ -112,7 +127,8 @@ require_once "includes/paging.php";
 				$permissions_db_checklist[$row['name']] = "false";
 			}
 		}
-	}
+	}	
+	
 //show the db checklist
 	//echo "<pre>";
 	//print_r($permissions_db_checklist);
@@ -139,7 +155,7 @@ require_once "includes/paging.php";
 			//echo "<pre>";
 			//print_r($permissions_form_checklist);
 			//echo "</pre>";
-		
+
 		//list all the permissions
 			foreach($apps as $app) {
 				foreach ($app['permissions'] as $row) {
@@ -158,6 +174,58 @@ require_once "includes/paging.php";
 							$sql .= "and permission_name = '$permission' ";
 							$db->exec(check_sql($sql));
 							unset($sql);
+							
+						foreach($apps as $app) {							
+							foreach ($app['permissions'] as $row) {
+								if ($row['name'] == $permission) {
+									
+									$log->lwrite("2");
+									$log->lwrite($row['menu']['uuid']);
+									
+									$sql = "delete from v_menu_item_groups ";
+									$sql .= "where menu_item_uuid = '".$row['menu']['uuid']."' ";
+									$sql .= "and group_name = '$group_name' ";
+									$sql .= "and menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";									
+									$db->exec(check_sql($sql));
+									unset($sql);
+									
+									$sql = "";
+									$sql .= " select menu_item_parent_uuid from v_menu_items ";
+									$sql .= "where menu_item_uuid = '".$row['menu']['uuid']."' ";
+									$sql .= "and menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";
+									$prep_statement = $db->prepare(check_sql($sql));
+									$prep_statement->execute();
+									$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+									foreach ($result as &$row) {
+										$menu_item_parent_uuid = $row["menu_item_parent_uuid"];
+									}
+									unset ($prep_statement);
+									
+									$sql = "";
+									$sql .= " select * from v_menu_items as i, v_menu_item_groups as g  ";
+									$sql .= "where i.menu_item_uuid = g.menu_item_uuid ";
+									$sql .= "and i.menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";
+									$sql .= "and i.menu_item_parent_uuid = '$menu_item_parent_uuid' ";
+									$sql .= "and g.group_name = '$group_name' ";
+									$prep_statement = $db->prepare(check_sql($sql));
+									$prep_statement->execute();
+									$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+									$result_count = count($result);
+									if ($result_count == 0) {
+										$sql = "delete from v_menu_item_groups ";
+										$sql .= "where menu_item_uuid = '$menu_item_parent_uuid' ";
+										$sql .= "and group_name = '$group_name' ";
+										$sql .= "and menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";									
+										$db->exec(check_sql($sql));
+										unset($sql);
+									}
+									unset ($prep_statement);
+									
+									
+									
+								}
+							}							
+						}
 						//set the permission to false in the permissions_db_checklist
 							$permissions_db_checklist[$permission] = "false";
 					}
@@ -179,6 +247,71 @@ require_once "includes/paging.php";
 							$sql .= ")";
 							$db->exec(check_sql($sql));
 							unset($sql);
+							
+						foreach($apps as $app) {							
+							foreach ($app['permissions'] as $row) {
+								if ($row['name'] == $permission) {
+									
+									$log->lwrite("1");
+									$log->lwrite($row['menu']['uuid']);
+									$log->lwrite($row['menu']['parent_uuid']);
+									
+									$sql = "insert into v_menu_item_groups ";
+									$sql .= "(";
+									$sql .= "menu_uuid, ";
+									$sql .= "menu_item_uuid, ";
+									$sql .= "group_name ";
+									$sql .= ")";
+									$sql .= "values ";
+									$sql .= "(";
+									$sql .= "'b4750c3f-2a86-b00d-b7d0-345c14eca286', ";
+									$sql .= "'".$row['menu']['uuid']."', ";
+									$sql .= "'$group_name' ";
+									$sql .= ")";
+									$db->exec(check_sql($sql));
+									unset($sql);
+									
+									$sql = "";
+									$sql .= " select menu_item_parent_uuid from v_menu_items ";
+									$sql .= "where menu_item_uuid = '".$row['menu']['uuid']."' ";
+									$sql .= "and menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";
+									$prep_statement = $db->prepare(check_sql($sql));
+									$prep_statement->execute();
+									$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+									foreach ($result as &$row) {
+										$menu_item_parent_uuid = $row["menu_item_parent_uuid"];
+									}
+									unset ($prep_statement);
+									
+									$sql = "";
+									$sql .= " select * from v_menu_item_groups ";
+									$sql .= "where menu_item_uuid = '$menu_item_parent_uuid' ";
+									$sql .= "and group_name = '$group_name' ";
+									$sql .= "and menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";
+									$prep_statement = $db->prepare(check_sql($sql));
+									$prep_statement->execute();
+									$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+									$result_count = count($result);
+									if ($result_count == 0) {
+										$sql = "insert into v_menu_item_groups ";
+										$sql .= "(";
+										$sql .= "menu_uuid, ";
+										$sql .= "menu_item_uuid, ";
+										$sql .= "group_name ";
+										$sql .= ")";
+										$sql .= "values ";
+										$sql .= "(";
+										$sql .= "'b4750c3f-2a86-b00d-b7d0-345c14eca286', ";
+										$sql .= "'$menu_item_parent_uuid', ";
+										$sql .= "'$group_name' ";
+										$sql .= ")";
+										$db->exec(check_sql($sql));
+										unset($sql);
+									}									
+									unset ($prep_statement);
+								}
+							}							
+						}
 						//set the permission to true in the permissions_db_checklist
 							$permissions_db_checklist[$permission] = "true";
 					}
@@ -192,21 +325,21 @@ require_once "includes/paging.php";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
-	echo "		<br>";
 
 	echo "<table width='100%' border='0'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' align=\"left\" nowrap=\"nowrap\"><b>Group Permissions for $group_name</b></td>\n";
+	echo "<td width='50%' align=\"left\" nowrap=\"nowrap\"><b>".$text['header-group_permissions'].$group_name."</b></td>\n";
 	echo "<td width='50%' align=\"right\">\n";
+	echo "	<input type='button' class='btn' alt='".$text['button-copy']."' onclick=\"var new_ext = prompt('".$text['message_extension']."'); if (new_ext != null) { window.location='permissions_copy.php?id=".$group_name."&ext=' + new_ext; }\" value='".$text['button-copy']."'>";
 	if (permission_exists('group_edit')) {
-		echo "	<input type='button' class='btn' alt='Restore Default Permissions' onclick=\"window.location='permissions_default.php'\" value='Restore Default'>";
+		echo "	<input type='button' class='btn' alt='".$text['button-restore']."' onclick=\"window.location='permissions_default.php'\" value='".$text['button-restore']."'>";
 	}
-	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='groups.php'\" value='Back'> ";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='groups.php'\" value='".$text['button-back']."'> ";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align=\"left\" colspan='2'>\n";
-	echo "	Assign permissions to groups.<br /><br />\n";
+	echo "	".$text['description-group_permissions']."<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</tr></table>\n";
@@ -224,12 +357,23 @@ require_once "includes/paging.php";
 			$app_name = $app['name'];
 			$description = $app['description']['en-us'];
 
-			echo "<strong>".$app_name."</strong><br />\n";
-			echo "".$description."<br /><br />";
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>\n";
-			echo "<th>Permissions</th>\n";
-			echo "<th>Description</th>\n";
+			echo "	<td valign='top' style='width:80%' nowrap='nowrap'>\n";
+			echo "<strong>".$app_name."</strong><br />\n";
+			echo "	</td>\n";			
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "	<td valign='top'>\n";
+			echo "".$description."<br /><br />";
+			echo "	</td>\n";
+			echo "</tr>\n";
+			echo "</table>";
+			
+			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+			echo "<tr>\n";
+			echo "<th>".$text['label-permission_permissions']."</th>\n";
+			echo "<th>".$text['label-permission_description']."</th>\n";
 			echo "<tr>\n";
 
 			foreach ($app['permissions'] as $row) {
@@ -249,10 +393,10 @@ require_once "includes/paging.php";
 				echo "</tr>\n";
 				if ($c==0) { $c=1; } else { $c=0; }
 			}
-			
+
 			echo "<tr>\n";
 			echo "	<td colspan='3' align='right'>\n";
-			echo "		<input type='submit' name='submit' class='btn' value='Save'>\n";
+			echo "		<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			echo "</table>";
@@ -270,9 +414,7 @@ require_once "includes/paging.php";
 	echo "</div>";
 	echo "<form>\n";
 
-	echo "<br><br>";
-
 //show the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>

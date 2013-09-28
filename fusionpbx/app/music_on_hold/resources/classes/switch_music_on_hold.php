@@ -37,7 +37,7 @@ include "root.php";
 		private $xml;
 
 		public function __construct() {
-			require_once "includes/classes/database.php";
+			require_once "resources/classes/database.php";
 			$this->app_uuid = '';
 		}
 
@@ -171,7 +171,7 @@ include "root.php";
 
 		public function save() {
 			//get the contents of the template
-				$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/includes/templates/conf/autoload_configs/local_stream.conf.xml");
+				$file_contents = file_get_contents($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf/autoload_configs/local_stream.conf.xml");
 
 			//replace the variable
 				$file_contents = str_replace("{v_moh_categories}", $this->xml, $file_contents);

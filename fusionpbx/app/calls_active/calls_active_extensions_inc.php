@@ -24,10 +24,10 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 include "app_languages.php";
-if (permission_exists('extensions_active_view')) {
+if (permission_exists('extension_active_view')) {
 	//access granted
 }
 else {
@@ -320,7 +320,7 @@ else {
 				include "calls_active_assigned_extensions_inc.php";
 
 			//list all extensions
-				if (permission_exists('extensions_active_list_view')) {
+				if (permission_exists('extension_active_list_view')) {
 					echo "<table width='100%' border='0' cellpadding='5' cellspacing='0'>\n";
 					echo "<tr>\n";
 					echo "<td valign='top'>\n";
@@ -374,20 +374,20 @@ else {
 
 						if ($found_extension) {
 							if ($application == "conference") { 
-								$alt_color = "background-image: url('".PROJECT_PATH."/images/background_cell_active.gif";
+								$alt_color = "background-image: url('".PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/images/background_cell_active.gif";
 							}
 							switch ($application) {
 							case "conference":
-								$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_conference.gif');\"";
+								$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/images/background_cell_conference.gif');\"";
 								break;
 							case "fifo":
-								$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_fifo.gif');\"";
+								$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/images/background_cell_fifo.gif');\"";
 								break;
 							case "valet_park":
-								$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_fifo.gif');\"";
+								$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/images/background_cell_fifo.gif');\"";
 								break;
 							default:
-								$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_active.gif');\"";
+								$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/images/background_cell_active.gif');\"";
 							}
 							echo "<tr>\n";
 							echo "<td class='".$row_style[$c]."' $style_alternate>$extension</td>\n";
@@ -429,7 +429,7 @@ else {
 							}
 						}
 						else {
-							$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/images/background_cell_light.gif');\"";
+							$style_alternate = "style=\"color: #444444; background-image: url('".PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/images/background_cell_light.gif');\"";
 							echo "<tr>\n";
 							echo "<td class='".$row_style[$c]."' $style_alternate>$extension</td>\n";
 							if ($_SESSION['user_status_display'] == "false") {

@@ -25,9 +25,9 @@
 */
 
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('voicemail_greetings_play')) {
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('voicemail_greeting_play')) {
 	//access granted
 }
 else {

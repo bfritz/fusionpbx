@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 require_once "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('conference_center_view')) {
 	//access granted
 }
@@ -47,8 +47,8 @@ else {
 	}
 
 //additional includes
-	require_once "includes/header.php";
-	require_once "includes/paging.php";
+	require_once "resources/header.php";
+	require_once "resources/paging.php";
 
 //get variables used to control the order
 	$order_by = $_GET["order_by"];
@@ -65,7 +65,7 @@ else {
 	echo "	<tr>\n";
 	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['title-conference-centers']."</b></td>\n";
 	echo "<td width='70%' align='right'>\n";
-	if (permission_exists('conferences_active_advanced_view')) {
+	if (permission_exists('conference_active_advanced_view')) {
 		echo "	<input type='button' class='btn' name='' alt='".$text['button-view']."' onclick=\"window.location='".PROJECT_PATH."/app/conferences_active/conferences_active.php'\" value='".$text['button-view']."'>\n";
 	}
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-rooms']."' onclick=\"window.location='conference_rooms.php'\" value='".$text['button-rooms']."'>\n";
@@ -77,6 +77,7 @@ else {
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";
+	echo "<br />\n";
 
 	//prepare to page the results
 		if (if_group("superadmin") || if_group("admin")) {
@@ -210,5 +211,5 @@ else {
 	echo "<br /><br />";
 
 //include the footer
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 ?>

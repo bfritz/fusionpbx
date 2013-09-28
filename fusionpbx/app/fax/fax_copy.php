@@ -24,9 +24,9 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-require_once "includes/paging.php";
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+require_once "resources/paging.php";
 if (permission_exists('fax_extension_add')) {
 	//access granted
 }
@@ -108,12 +108,12 @@ else {
 	unset($sql);
 
 //redirect the user
-	require_once "includes/header.php";
+	require_once "resources/header.php";
 	echo "<meta http-equiv=\"refresh\" content=\"2;url=fax.php\">\n";
 	echo "<div align='center'>\n";
 	echo "".$text['confirm-copy']."\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 	return;
 
 ?>

@@ -17,19 +17,20 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2013
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require_once "includes/require.php";
-require_once "includes/checkauth.php";
-if (permission_exists('dialplan_delete') 
-	|| permission_exists('inbound_route_delete') 
+require_once "resources/require.php";
+require_once "resources/check_auth.php";
+if (permission_exists('dialplan_delete')
+	|| permission_exists('inbound_route_delete')
 	|| permission_exists('outbound_route_delete')
-	|| permission_exists('time_conditions_delete')) {
+	|| permission_exists('fifo_delete')
+	|| permission_exists('time_condition_delete')) {
 	//access granted
 }
 else {
@@ -37,16 +38,22 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 if (count($_GET)>0) {
 	$id = $_GET["id"];
+	$app_uuid = check_str($_REQUEST["app_uuid"]);
 	$dialplan_uuid = check_str($_REQUEST["id2"]);
 }
 
 if (strlen($id)>0) {
 
 	//delete child data
-		$sql = "";
-		$sql .= "delete from v_dialplan_details ";
+		$sql = "delete from v_dialplan_details ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and dialplan_detail_uuid = '$id' ";
 		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
@@ -59,17 +66,17 @@ if (strlen($id)>0) {
 	//delete the dialplan context from memcache
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
-			$switch_cmd = "memcache delete dialplan:".$_SESSION["context"]."@".$_SESSION['domain_name'];
+			$switch_cmd = "memcache delete dialplan:".$_SESSION["context"];
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 		}
 }
 
 //redirect the user
-	require_once "includes/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplan_edit.php?id=".$dialplan_uuid."\">\n";
+	require_once "resources/header.php";
+	echo "<meta http-equiv=\"refresh\" content=\"2;url=dialplan_edit.php?id=".$dialplan_uuid."&app_uuid=".$app_uuid."\">\n";
 	echo "<div align='center'>\n";
-	echo "Delete Complete\n";
+	echo $text['message-delete']."\n";
 	echo "</div>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>
