@@ -24,8 +24,8 @@
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
 include "root.php";
-require "includes/require.php";
-require_once "includes/checkauth.php";
+require "resources/require.php";
+require_once "resources/check_auth.php";
 if (permission_exists('voicemail_view')) {
 	//access granted
 }
@@ -35,8 +35,8 @@ else {
 }
 
 //get the includes
-	require "includes/require.php";
-	require_once "includes/header.php";
+	require "resources/require.php";
+	require_once "resources/header.php";
 	echo "<pre>\n";
 
 //prepare the data variable
@@ -143,7 +143,7 @@ else {
 	}
 
 //pdo voicemail database connection
-	include "includes/lib_pdo_vm.php";
+	include "resources/pdo_vm.php";
 
 //list the voicemail prefs
 	$sql = "select * from voicemail_prefs ";
@@ -271,7 +271,7 @@ else {
 
 //reset the database connection
 	unset($db);
-	require "includes/require.php";
+	require "resources/require.php";
 
 //start the atomic transaction
 	$db->exec("BEGIN;");
@@ -288,6 +288,6 @@ else {
 
 //show the footer
 	echo "</pre>\n";
-	require_once "includes/footer.php";
+	require_once "resources/footer.php";
 
 ?>
