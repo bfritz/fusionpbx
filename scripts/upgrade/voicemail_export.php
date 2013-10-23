@@ -142,6 +142,23 @@ else {
 		}
 	}
 
+//list the voicemail messages
+	/*
+	$sql = "select * from v_voicemails ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
+	if ($result_count > 0) {
+		foreach($result as $row) {
+			$voicemail_id = $row['voicemail_id'];
+			$voicemail_uuid = $row['voicemail_uuid'];
+			$mailbox[$voicemail_id]['voicemail_uuid'] = $voicemail_uuid;
+		}
+	}
+	*/
+
 //pdo voicemail database connection
 	include "resources/pdo_vm.php";
 
@@ -208,7 +225,7 @@ else {
 			$read_epoch = $row['read_epoch'];
 			$voicemail_id = $row['username'];
 			$domain_name = $row['domain'];
-			$voicemail_message_uuid = $row['uuid'];
+			//$voicemail_message_uuid = $row['uuid'];
 			$caller_id_name = $row['cid_name'];
 			$caller_id_number = $row['cid_number'];
 			//$in_folder = $row['in_folder'];
@@ -217,6 +234,10 @@ else {
 			$voicemail_status = $row['flags'];
 			$voicemail_priority = $row['read_flags']; // B_NORMAL
 			//$forwarded_by = $row['forwarded_by'];
+
+			$file_path = $row['file_path'];
+			$array = explode(".", substr($file_path, -40));
+			$voicemail_message_uuid = $array[0];
 
 			//get the domain_uuid
 			foreach($_SESSION['domains'] as $tmp) {
