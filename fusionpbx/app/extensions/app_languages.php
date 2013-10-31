@@ -215,7 +215,7 @@
 		$text['label-sip_force_contact']['en-us'] = 'SIP Force Contact';
 		$text['label-sip_force_contact']['pt-pt'] = '';
 
-		$text['description-sip_force_contact']['en-us'] = 'Choose whether to rewrite the contact port, or rewrite both the contact IP and port.';
+		$text['description-sip_force_contact']['en-us'] = "Choose whether to rewrite the contact port, or rewrite both the contact IP and port.";
 		$text['description-sip_force_contact']['pt-pt'] = '';
 
 		$text['label-sip_force_expires']['en-us'] = 'SIP Force Expires';
