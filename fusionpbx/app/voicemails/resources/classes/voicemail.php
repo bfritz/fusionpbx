@@ -142,8 +142,10 @@
 				}
 
 			//delete the recording
-				$file_path = $_SESSION['switch']['storage']['dir']."/voicemail/default/".$_SESSION['domain_name']."/".$this->voicemail_id."/msg_".$this->voicemail_message_uuid.".wav";
-				unlink($file_path);
+				$file_path = $_SESSION['switch']['storage']['dir']."/voicemail/default/".$_SESSION['domain_name']."/".$this->voicemail_id;
+				foreach (glob($file_path."/msg_".$this->voicemail_message_uuid.".*") as $file_name) {
+					unlink($file_name);
+				}
 
 			//check the message waiting status
 				$this->message_waiting();
