@@ -21,6 +21,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	James Rose <james.o.rose@gmail.com>
 */
 include "root.php";
 require_once "resources/require.php";
@@ -437,7 +438,8 @@ require_once "resources/require.php";
 	//replace the dynamic provision variables that are defined in 'default settings' and 'domain settings'
 		//example: category=provision, subcategory=sip_transport, name=var, value=tls - used in the template as {v_sip_transport}
 		foreach($_SESSION['provision'] as $key=>$value) {
-			$file_contents = str_replace('{v_'.$key.'}', $value['var'], $file_contents);
+			//$file_contents = str_replace('{v_'.$key.'}', $value['var'], $file_contents);
+			$file_contents = str_replace('{v_'.$key.'}', $value, $file_contents);
 		}
 
 //deliver the customized config over HTTP/HTTPS
