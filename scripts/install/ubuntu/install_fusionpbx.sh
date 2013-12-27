@@ -61,13 +61,17 @@ DISTRO=precise
 if [ $DO_DAHDI == "y" ]; then
 	modules_add=( ../../libs/freetdm/mod_freetdm mod_spandsp mod_dingaling mod_portaudio mod_callcenter mod_lcr mod_cidlookup mod_flite mod_memcache mod_codec2 mod_pocketsphinx mod_xml_cdr mod_say_es )
 else
-	modules_add=( mod_spandsp mod_dingaling mod_callcenter mod_lcr mod_cidlookup mod_memcache, mod_codec2 mod_pocketsphinx mod_xml_cdr mod_say_es )
+	modules_add=( mod_spandsp mod_dingaling mod_callcenter mod_lcr mod_cidlookup mod_memcache mod_codec2 mod_pocketsphinx mod_xml_cdr mod_say_es )
 fi
 
 #-------
 #DEFINES
 #-------
 VERSION="Version - using subversion, no longer keeping track. WAF License"
+#latest stable
+FPBXBRANCH="http://fusionpbx.googlecode.com/svn/trunk/fusionpbx"
+#dev branch
+#FPBXBRANCH="http://fusionpbx.googlecode.com/svn/branches/dev/fusionpbx"
 # Modules_comp_default determined using
 #  grep -v ^$ /usr/src/freeswitch/modules.conf |grep -v ^# | tr '\n' ' '
 #  on FreeSWITCH version FreeSWITCH Version 1.0.head (git-8f2ee97 2010-12-05 17-19-28 -0600)
@@ -97,6 +101,7 @@ INST_FPBX=svn
 #full path required
 #TGZ_FILE="/home/coltpbx/fusionpbx-1.2.1.tar.gz"
 FSREV="187abe02af4d64cdedc598bd3dfb1cd3ed0f4a91"
+#IF FSCHECKOUTVER is true, FSSTABLE needs to be false
 FSCHECKOUTVER=false
 FPBXREV="1876"
 FBPXCHECKOUTVER=false
@@ -131,116 +136,115 @@ function nginxconfig {
 	#manually escaping now. needs variables....
 	/bin/cat > /etc/nginx/sites-available/$GUI_NAME  <<DELIM
 server{
-        listen 127.0.0.1:80;
-        server_name 127.0.0.1;
-        access_log /var/log/nginx/access.log;
-        error_log /var/log/nginx/error.log;
+	listen 127.0.0.1:80;
+	server_name 127.0.0.1;
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
 
-        client_max_body_size 10M;
-        client_body_buffer_size 128k;
+	client_max_body_size 10M;
+	client_body_buffer_size 128k;
 
+	location / {
+		root $WWW_PATH/$GUI_NAME;
+		index index.php;
+	}
 
-        location / {
-          root $WWW_PATH/$GUI_NAME;
-          index index.php;
-        }
+	location ~ \.php$ {
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+		#fastcgi_pass 127.0.0.1:9000;
+		fastcgi_index index.php;
+		include fastcgi_params;
+		fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$GUI_NAME\$fastcgi_script_name;
+	}
 
-        location ~ \.php$ {
-            fastcgi_pass 127.0.0.1:9000;
-            #fastcgi_pass unix:/var/run/php5-fpm.sock;
-            fastcgi_index index.php;
-            include fastcgi_params;
-            fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$GUI_NAME\$fastcgi_script_name;
-        }
-
-        # Disable viewing .htaccess & .htpassword & .db
-        location ~ .htaccess {
-                deny all;
-        }
-        location ~ .htpassword {
-                deny all;
-        }
-        location ~^.+.(db)$ {
-                deny all;
-        }
+	# Disable viewing .htaccess & .htpassword & .db
+	location ~ .htaccess {
+			deny all;
+	}
+	location ~ .htpassword {
+			deny all;
+	}
+	location ~^.+.(db)$ {
+			deny all;
+	}
 }
 
 server{
-        listen 80;
-        server_name $GUI_NAME;
-        if (\$uri !~* ^.*provision.*$) {
-                rewrite ^(.*) https://\$host\$1 permanent;
-                break;
-        }
-        access_log /var/log/nginx/access.log;
-        error_log /var/log/nginx/.error.log;
+	listen 80;
+	server_name $GUI_NAME;
+	if (\$uri !~* ^.*provision.*$) {
+		rewrite ^(.*) https://\$host\$1 permanent;
+		break;
+	}
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
 
-        client_max_body_size 10M;
-        client_body_buffer_size 128k;
+	client_max_body_size 10M;
+	client_body_buffer_size 128k;
 
+	location / {
+		root $WWW_PATH/$GUI_NAME;
+		index index.php;
+	}
 
-        location / {
-          root $WWW_PATH/$GUI_NAME;
-          index index.php;
-        }
+	location ~ \.php$ {
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+		#fastcgi_pass 127.0.0.1:9000;
+		fastcgi_index index.php;
+		include fastcgi_params;
+		fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$GUI_NAME\$fastcgi_script_name;
+	}
 
-        location ~ \.php$ {
-            fastcgi_pass 127.0.0.1:9000;
-            fastcgi_index index.php;
-            include fastcgi_params;
-            fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$GUI_NAME\$fastcgi_script_name;
-        }
-
-        # Disable viewing .htaccess & .htpassword & .db
-        location ~ .htaccess {
-                deny all;
-        }
-        location ~ .htpassword {
-                deny all;
-        }
-        location ~^.+.(db)$ {
-                deny all;
-        }
+	# Disable viewing .htaccess & .htpassword & .db
+	location ~ .htaccess {
+		deny all;
+	}
+	location ~ .htpassword {
+		deny all;
+	}
+	location ~^.+.(db)$ {
+		deny all;
+	}
 }
 
 server{
-        listen 443;
-        server_name $GUI_NAME;
-        ssl                     on;
-        ssl_certificate         /etc/ssl/certs/nginx.crt;
-        ssl_certificate_key     /etc/ssl/private/nginx.key;
-        ssl_protocols           SSLv3 TLSv1;
-        ssl_ciphers     HIGH:!ADH:!MD5;
+	listen 443;
+	server_name $GUI_NAME;
+	ssl                     on;
+	ssl_certificate         /etc/ssl/certs/nginx.crt;
+	ssl_certificate_key     /etc/ssl/private/nginx.key;
+	ssl_protocols           SSLv3 TLSv1;
+	ssl_ciphers     HIGH:!ADH:!MD5;
 
-        access_log /var/log/nginx/access.log;
-        error_log /var/log/nginx/.error.log;
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
 
-        client_max_body_size 10M;
-        client_body_buffer_size 128k;
+	client_max_body_size 10M;
+	client_body_buffer_size 128k;
 
+	location / {
+		root $WWW_PATH/$GUI_NAME;
+		index index.php;
+	}
 
-        location / {
-          root $WWW_PATH/$GUI_NAME;
-          index index.php;
-        }
+	location ~ \.php$ {
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+		#fastcgi_pass 127.0.0.1:9000;
+		fastcgi_index index.php;
+		include fastcgi_params;
+		fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$GUI_NAME\$fastcgi_script_name;
+	}
 
-        location ~ \.php$ {
-            fastcgi_pass 127.0.0.1:9000;
-            fastcgi_index index.php;
-            include fastcgi_params;
-            fastcgi_param   SCRIPT_FILENAME $WWW_PATH/$GUI_NAME\$fastcgi_script_name;
-        }
-
-        # Disable viewing .htaccess & .htpassword & .db
-        location ~ .htaccess {
-                deny all;
-        }
-        location ~ .htpassword {
-                deny all;
-        }
-        location ~^.+.(db)$ {
-                deny all;
-        }
+	# Disable viewing .htaccess & .htpassword & .db
+	location ~ .htaccess {
+		deny all;
+	}
+	location ~ .htpassword {
+		deny all;
+	}
+	location ~^.+.(db)$ {
+		deny all;
+	}
 }
 DELIM
 		/bin/ln -s /etc/nginx/sites-available/$GUI_NAME /etc/nginx/sites-enabled/$GUI_NAME
@@ -345,14 +349,14 @@ function finish_fpbx_install_permissions {
 	/bin/echo "The FusionPBX installation changed permissions of /usr/local/freeswitch/storage"
 	/bin/echo "  Waiting on you to finish installation (via browser), I'll clean up"
 	/bin/echo -ne "  the last bit of permissions when you finish."
-	/bin/echo "Waiting on $WWW_PATH/$GUI_NAME/includes/config.php"
-	while [ ! -e $WWW_PATH/$GUI_NAME/includes/config.php ]
+	/bin/echo "Waiting on $WWW_PATH/$GUI_NAME/resources/config.php"
+	while [ ! -e $WWW_PATH/$GUI_NAME/resources/config.php ]
 	do
 		/bin/echo -ne '.'
 		sleep 1
 	done
 	/bin/echo
-	/bin/echo "$WWW_PATH/$GUI_NAME/includes/config.php Found!"
+	/bin/echo "$WWW_PATH/$GUI_NAME/resources/config.php Found!"
 	/bin/echo "   Waiting 5 more seconds to be sure. "
 	SLEEPTIME=0
 	while [ "$SLEEPTIME" -lt 5 ]
@@ -666,10 +670,10 @@ fi
 
 #check for internet connection
 /usr/bin/wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null
-if [ ! -s /tmp/index.google ];then
+if [ ! -s /tmp/index.google ]; then
 	echo "No Internet connection. Exiting."
 	/bin/rm /tmp/index.google
-	exit 1
+	#exit 1
 else
 	echo "Internet connection is working, continuing!"
 	/bin/rm /tmp/index.google
@@ -749,8 +753,6 @@ else
 		;;
 
 		*)
-			echo "OK, Stopping."
-			exit 0
 		;;
 	esac
 fi
@@ -791,7 +793,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 	#added libgnutls-dev libgnutls26 for dingaling...
 	#gnutls no longer required for dingaling (git around oct 17 per mailing list..)
 	# removed libgnutls-dev libgnutls26
-if [ $DO_DAHDI == "y" ]; then
+	if [ $DO_DAHDI == "y" ]; then
 		#add stuff for free_tdm/dahdi
 		apt-get -y install linux-headers-`uname -r`
 		#add the headers so dahdi can build the modules...
@@ -821,6 +823,103 @@ if [ $DO_DAHDI == "y" ]; then
 		/bin/echo
 		read -p "Press Enter to continue (check for errors)"
 	fi
+
+	#-----------------
+	# Databases
+	#-----------------
+	#Lets ask... sqlite or postgresql -- for user option only
+	if [ $DEBUG -eq 1 ]; then
+		/bin/echo "New Option..."
+		/bin/echo "  FreeSWITCH now has native support for PostgreSQL (no more odbc in the core)"
+		/bin/echo " also note that freeswitch is now compiled with zrtp support"
+		/bin/echo
+		read -p "  Would you like to install PostgreSQL or stay with Sqlite (p/S)? " SQLITEMYSQL
+		case "$SQLITEMYSQL" in
+		  [pP]*)
+			if [ $DISTRO = "precise" ]; then
+				echo "precise is PostgreSQL 9.1 by default"
+				POSTGRES9=9
+			else
+				/bin/echo
+				/bin/echo "OK, PostgreSQL! Would you prefer the stock verion 8.4"
+				/bin/echo "  or verion 9 from PPA?"
+				/bin/echo
+				read -p "PostgreSQL 8.4 or 9 [8/9]? " POSTGRES9 
+			fi
+			echo
+		  ;;
+		esac
+	fi
+
+	case "$SQLITEMYSQL" in
+	[Pp]*)
+		/bin/echo -ne "Installing PostgeSQL"
+
+		if [ $POSTGRES9 == "9" ]; then
+			/bin/echo " version 9.1"
+			if [ $DISTRO = "squeeze" ]; then
+				#add squeeze repo
+				/bin/echo "Adding debian backports for postgres9.1"
+				/bin/echo "deb http://backports.debian.org/debian-backports squeeze-backports main" > /etc/apt/sources.list.d/squeeze-backports.list
+				/usr/bin/apt-get update
+				/usr/bin/apt-get -y -t squeeze-backports install postgresql-9.1 libpq-dev 
+			elif [ $DISTRO = "precise" ]; then
+				#already there...
+				/usr/bin/apt-get -y install postgresql-9.1 libpq-dev 
+			else
+				#add the ppa
+				/usr/bin/apt-add-repository ppa:pitti/postgresql
+				/usr/bin/apt-get update
+				/usr/bin/apt-get -y install postgresql-9.1 libpq-dev 
+			fi
+		else
+			/bin/echo " version 8.4"
+			/usr/bin/apt-get -y install postgresql libpq-dev 
+			#The following NEW packages will be installed:
+			#  libpq5 php5-pgsql postgresql postgresql-8.4 postgresql-client-8.4
+			#  postgresql-client-common postgresql-common
+		fi
+
+		/bin/su -l postgres -c "/usr/bin/createuser -s -e freeswitch"
+		#/bin/su -l postgres -c "/usr/bin/createdb -E UTF8 -O freeswitch freeswitch"
+		/bin/su -l postgres -c "/usr/bin/createdb -E UTF8 -T template0 -O freeswitch freeswitch"
+		PGSQLPASSWORD="dummy"
+		PGSQLPASSWORD2="dummy2"
+		while [ $PGSQLPASSWORD != $PGSQLPASSWORD2 ]; do
+		/bin/echo
+		/bin/echo
+		/bin/echo "THIS PROBABLY ISN'T THE MOST SECURE THING TO DO."
+		/bin/echo "IT IS; HOWEVER, AUTOMATED. WE ARE STORING THE PASSWORD"
+		/bin/echo "AS A BASH VARIABLE, AND USING ECHO TO PIPE IT TO"
+		/bin/echo "psql. THE COMMAND USED IS:"
+		/bin/echo
+		/bin/echo "/bin/su -l postgres -c \"/bin/echo 'ALTER USER freeswitch with PASSWORD \$PGSQLPASSWORD;' | psql freeswitch\""
+		/bin/echo
+		/bin/echo "AFTERWARDS WE OVERWRITE THE VARIABLE WITH RANDOM DATA"
+		/bin/echo
+		/bin/echo "The pgsql username is freeswitch"
+		/bin/echo "The pgsql database name is freeswitch"
+		/bin/echo "Please provide a password for the freeswitch user"
+		#/bin/stty -echo
+		read -s -p "  Password: " PGSQLPASSWORD
+		/bin/echo
+		/bin/echo "Let's repeat that"
+		read -s -p "  Password: " PGSQLPASSWORD2
+		/bin/echo
+		#/bin/stty echo
+		done
+
+		/bin/su -l postgres -c "/bin/echo \"ALTER USER freeswitch with PASSWORD '$PGSQLPASSWORD';\" | /usr/bin/psql freeswitch"
+		/bin/echo "overwriting pgsql password variable with random data"
+		PGSQLPASSWORD=$(/usr/bin/head -c 512 /dev/urandom)
+		PGSQLPASSWORD2=$(/usr/bin/head -c 512 /dev/urandom)
+	;;
+
+	*)
+	#elif [ $SQLITEMYSQL == "s" || $SQLITEMYSQL == "S" || $SQLITEMYSQL == "" ]; then
+		/bin/echo "SQLITE is chosen. already done. nothing left to install..."
+	;;
+	esac
 
 	#------------------------
 	# GIT FREESWITCH
@@ -961,7 +1060,14 @@ if [ $DO_DAHDI == "y" ]; then
 		/bin/echo -ne " ."
 		/bin/sleep 1
 		/bin/echo -ne " ."
-		/usr/bin/time /usr/src/freeswitch/configure
+		case "$SQLITEMYSQL" in
+		[Pp]*)
+			/usr/bin/time /usr/src/freeswitch/configure --enable-core-pgsql-support --enable-zrtp
+		;;
+		*)
+			/usr/bin/time /usr/src/freeswitch/configure --enable-zrtp
+		;;
+		esac
 
 		if [ $? -ne 0 ]; then
 			#previous had an error
@@ -1179,6 +1285,8 @@ if [ $DO_DAHDI == "y" ]; then
 
 	/bin/chmod 755 /etc/init.d/freeswitch
 	/bin/echo "enabling FreeSWITCH to start at boot"
+	/bin/mkdir /etc/freeswitch
+	/bin/touch /etc/freeswitch/freeswitch.xml
 
 	/bin/grep true /etc/default/freeswitch > /dev/null
 	if [ $? -eq 0 ]; then
@@ -1868,7 +1976,7 @@ DELIM
 			elif [ ! -e /etc/apt/sources.list.d./nginx-stable-lucid.list ]; then 
 				/bin/echo "Adding PPA for latest nginx"
 				/usr/bin/apt-add-repository ppa:nginx/stable
-				#/bin/echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu lucid main" >> /etc/apt/sources.list	
+				#/bin/echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu lucid main" >> /etc/apt/sources.list
 				#/usr/bin/apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C
 			else
 				/bin/echo "nginx ppa already added"
@@ -1896,14 +2004,14 @@ DELIM
 			#max_children set in /etc/php5/fpm/pool.d/www.conf
 			PHPCONFFILE="/etc/php5/fpm/pool.d/www.conf"
 		elif [ $DISTRO = "lucid" ]; then
-			#lucid ppa changed. updated 1/20/2013
+			#lucid ppa conf files changed 1/20/2013
 			PHPINIFILE="/etc/php5/fpm/php.ini"
 			PHPCONFFILE="/etc/php5/fpm/pool.d/www.conf"
 		else
 			PHPINIFILE="/etc/php5/fpm/php.ini"
 			PHPCONFFILE="/etc/php5/fpm/php5-fpm.conf"
 		fi
-		/bin/grep 10M /etc/php5/fpm/php.ini > /dev/null
+		/bin/grep 10M $PHPINIFILE > /dev/null
 		if [ $? -ne 0 ]; then
 			/bin/sed -i -e s,"upload_max_filesize = 2M","upload_max_filesize = 10M", $PHPINIFILE
 			if [ $? -ne 0 ]; then
@@ -1914,6 +2022,12 @@ DELIM
 		else
 			/bin/echo
 			/bin/echo "/etc/php5/fpm/php.ini already edited. Skipping..."
+		fi
+		
+		#change to socket
+		grep "listen = 127.0.0.1:9000" $PHPCONFFILE |grep \; 
+		if [ $? -ne 0 ]; then
+			sed -i $PHPCONFFILE -e s,listen\ \=\ 127\.0\.0\.\1\:9000,listen\ \=\ \/var\/run\/php5-fpm.sock,
 		fi
 
 		##Applying fix for cgi.fix_pathinfo
@@ -2020,11 +2134,11 @@ DELIM
 	if [[ "$INST_FPBX" == "svn" ]]; then
 			if [ $FBPXCHECKOUTVER == true ]; then
 				/bin/echo "Going to install FusionPBX SVN Rev $FPBXREV"
-				/usr/bin/svn checkout -r r$FPBXREV http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+				/usr/bin/svn checkout -r r$FPBXREV $FPBXBRANCH $WWW_PATH/$GUI_NAME
 			else
 				/bin/echo "Going to install FusionPBX latest SVN!"
 				#removed -r r1877 r1877 from new install
-				/usr/bin/svn checkout http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+				/usr/bin/svn checkout $FPBXBRANCH $WWW_PATH/$GUI_NAME
 			fi
 	elif [ $INST_FPBX == tgz ]; then
 			/bin/tar -C $WWW_PATH -xzvf $TGZ_FILE
@@ -2107,7 +2221,7 @@ DELIM
 		/bin/echo "New Option..."
 		/bin/echo "  SQlite is already installed (and required)"
 		/bin/echo
-		read -p "  Would you like to install MySQL, PostgreSQL or stay with Sqlite (m/p/S)? " SQLITEMYSQL
+		read -p "  Would you like to install MySQL, PostgreSQL, or stay with Sqlite (m/p/S)? " SQLITEMYSQL
 		case "$SQLITEMYSQL" in
 		  [pP]*)
 			if [ $DISTRO = "precise" ]; then
@@ -2146,7 +2260,7 @@ DELIM
 		/bin/echo "       ON the Second Page:"
 		/bin/echo "          Create Database Username: root"
 		/bin/echo "          Create Database Password: the_pw_you_set_during_install"
-		/bin/echo "			 other options: whatever you like"
+		/bin/echo "          other options: whatever you like"
 		/bin/echo "  I will wait here until you get done with that."
 		/bin/echo -ne "  When MySQL is configured come back and press enter. "
 		read
@@ -2154,8 +2268,12 @@ DELIM
 
 	[Pp]*)
 	#elif [ $SQLITEMYSQL == "p" ]; then	
-		/bin/echo -ne "Installing PostgeSQL"
-
+		#/bin/echo -ne "Installing PostgeSQL"
+		#moving most of this to fs install
+		/bin/echo "Time to add a $GUI_NAME user for the database."
+		/bin/echo -ne "    We will use $GUI_NAME as the username"
+		/bin/echo -ne "    please set the password."
+		#add php postgres packages
 		if [ $POSTGRES9 == "9" ]; then
 			/bin/echo " version 9.1"
 			if [ $DISTRO = "squeeze" ]; then
@@ -2163,19 +2281,19 @@ DELIM
 				/bin/echo "Adding debian backports for postgres9.1"
 				/bin/echo "deb http://backports.debian.org/debian-backports squeeze-backports main" > /etc/apt/sources.list.d/squeeze-backports.list
 				/usr/bin/apt-get update
-				/usr/bin/apt-get -y -t squeeze-backports install postgresql-9.1 php5-pgsql
+				/usr/bin/apt-get -y -t squeeze-backports install php5-pgsql
 			elif [ $DISTRO = "precise" ]; then
 				#already there...
-				/usr/bin/apt-get -y install postgresql-9.1 php5-pgsql
+				/usr/bin/apt-get -y install php5-pgsql
 			else
 				#add the ppa
 				/usr/bin/apt-add-repository ppa:pitti/postgresql
 				/usr/bin/apt-get update
-				/usr/bin/apt-get -y install postgresql-9.1 php5-pgsql
+				/usr/bin/apt-get -y install php5-pgsql
 			fi
 		else
 			/bin/echo " version 8.4"
-			/usr/bin/apt-get -y install postgresql php5-pgsql
+			/usr/bin/apt-get -y install postgresql libpq-dev
 			#The following NEW packages will be installed:
 			#  libpq5 php5-pgsql postgresql postgresql-8.4 postgresql-client-8.4
 			#  postgresql-client-common postgresql-common
@@ -2232,7 +2350,7 @@ DELIM
 		/bin/echo "          Database Name: $GUI_NAME"
 		/bin/echo "          Database Username: $GUI_NAME"
 		/bin/echo "          Database Password: whateveryouentered"
-		/bin/echo "          Database Username: Leave_Blank (remove pgsql)"
+		/bin/echo "          Create Database Username: Leave_Blank"
 		/bin/echo "          Create Database Password: Leave_Blank"
 		/bin/echo 
 		/bin/echo "  I will wait here until you get done with that."
@@ -2250,13 +2368,6 @@ DELIM
 			#apache2 is installed.
 			/etc/init.d/apache2 restart
 		fi
-		#with $GUI_NAME in there, it's really hosing things up and how.
-#		/usr/bin/curl -s -d "db_type=sqlite&install_switch_base_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_backup_dir=%2Ftmp&install_step=2&submit=Next" http://localhost/install.php > /dev/null
-#		/usr/bin/curl -s -d "db_filename=$GUI_NAME.db&db_filepath=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&db_type=sqlite&install_secure_dir=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&install_switch_base_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_backup_dir=%2Ftmp&install_step=3&submit=Next" http://localhost/install.php > /dev/null
-
-		#do for https too!
-#		/usr/bin/curl -k -s -d "db_type=sqlite&install_switch_base_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_backup_dir=%2Ftmp&install_step=2&submit=Next" https://localhost/install.php > /dev/null
-#		/usr/bin/curl -k -s -d "db_filename=$GUI_NAME.db&db_filepath=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&db_type=sqlite&install_secure_dir=%2Fvar%2Fwww%2F$GUI_NAME%2Fsecure&install_switch_base_dir=%2Fusr%2Flocal%2Ffreeswitch&install_php_dir=%2Fvar%2Fwww%2F$GUI_NAME&install_tmp_dir=%2Ftmp&install_backup_dir=%2Ftmp&install_step=3&submit=Next" https://localhost/install.php > /dev/null
 
 		/bin/echo "FusionPBX install.php was done automatically"
 		/bin/echo "  when sqlite was selected. "
@@ -2570,7 +2681,7 @@ if [ $UPGFUSION -eq 1 ]; then
 
 			#svn...
 
-			/usr/bin/svn update http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+			/usr/bin/svn update $FPBXBRANCH $WWW_PATH/$GUI_NAME
 			/bin/chown -R www-data:www-data $WWW_PATH/$GUI_NAME
 			#print message saying to hit advanced->upgrade schema
 			/bin/echo "Done upgrading Files"
@@ -2579,7 +2690,7 @@ if [ $UPGFUSION -eq 1 ]; then
 		;;
 
 		[1]*)
-			/usr/bin/svn update -r r1877 http://fusionpbx.googlecode.com/svn/trunk/fusionpbx $WWW_PATH/$GUI_NAME
+			/usr/bin/svn update -r r1877 $FPBXBRANCH $WWW_PATH/$GUI_NAME
 			/bin/chown -R www-data:www-data $WWW_PATH/$GUI_NAME
 			#print message saying to hit advanced->upgrade schema
 			/bin/echo "Done upgrading Files"
