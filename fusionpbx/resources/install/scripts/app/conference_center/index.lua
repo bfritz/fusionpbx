@@ -316,9 +316,10 @@
 			hold_music = session:getVariable("hold_music");
 			domain_name = session:getVariable("domain_name");
 			pin_number = session:getVariable("pin_number");
+			domain_uuid = session:getVariable("domain_uuid");
 
 		--get the domain_uuid
-			if (domain_name ~= nil) then
+			if (domain_name ~= nil and domain_uuid == nil) then
 				sql = "SELECT domain_uuid FROM v_domains ";
 				sql = sql .. "WHERE domain_name = '" .. domain_name .."' ";
 				if (debug["sql"]) then
