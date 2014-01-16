@@ -918,23 +918,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-order'].":\n";
+	echo "	".$text['label-order'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='public_order' class='formfld' style='width: 60%;'>\n";
+	echo "	<select name='public_order' class='formfld' style='width: 60%;'>\n";
 	if (strlen(htmlspecialchars($public_order))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($public_order)."'>".htmlspecialchars($public_order)."</option>\n";
+		echo "		<option selected='yes' value='".htmlspecialchars($public_order)."'>".htmlspecialchars($public_order)."</option>\n";
 	}
-	$i=0;
-	while($i<=999) {
-		if (strlen($i) == 1) { echo "              <option value='00$i'>00$i</option>\n"; }
-		if (strlen($i) == 2) { echo "              <option value='0$i'>0$i</option>\n"; }
-		if (strlen($i) == 3) { echo "              <option value='$i'>$i</option>\n"; }
-		$i++;
+	$i = 100;
+	while($i <= 999) {
+		if (strlen($i) == 1) { echo "		<option value='00$i'>00$i</option>\n"; }
+		if (strlen($i) == 2) { echo "		<option value='0$i'>0$i</option>\n"; }
+		if (strlen($i) == 3) { echo "		<option value='$i'>$i</option>\n"; }
+		$i = $i + 10;
 	}
-	echo "              </select>\n";
-	echo "<br />\n";
-	echo "\n";
+	echo "	</select>\n";
+	echo "	<br />\n";
+	echo "	\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
