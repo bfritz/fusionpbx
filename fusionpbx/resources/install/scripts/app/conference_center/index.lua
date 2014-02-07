@@ -587,14 +587,14 @@
 						session:execute("playback", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-recording_started.wav");
 					--play a message that the conference is being a recorded
 						--cmd = "conference "..meeting_uuid.."-"..domain_name.." play "..sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-recording_started.wav";
-						--freeswitch.consoleLog("notice", "[conference] ".. cmd .."\n");
+						--freeswitch.consoleLog("notice", "[conference center] ".. cmd .."\n");
 						--response = api:executeString(cmd);
 					--record the conference when it exists
 						if (conference_exists) then
 							--send a command to record the conference
 								if (not file_exists(recording..".wav")) then
 									cmd = "conference "..meeting_uuid.."-"..domain_name.." record "..recording..".wav";
-									freeswitch.consoleLog("notice", "[conference] cmd: " .. cmd .. "\n");
+									--freeswitch.consoleLog("notice", "[conference center] cmd: " .. cmd .. "\n");
 									response = api:executeString(cmd);
 								end
 						end
@@ -604,11 +604,11 @@
 				if (announce == "true") then
 					--announce the caller - play the recording
 						cmd = "conference "..meeting_uuid.."-"..domain_name.." play /tmp/conference-"..uuid..".wav";
-						freeswitch.consoleLog("notice", "[conference] ".. cmd .."\n");
+						--freeswitch.consoleLog("notice", "[conference center] ".. cmd .."\n");
 						response = api:executeString(cmd);
 					--play has entered the conference
 						cmd = "conference "..meeting_uuid.."-"..domain_name.." play "..sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/conference/conf-has_joined.wav";
-						freeswitch.consoleLog("notice", "[conference] ".. cmd .."\n");
+						--freeswitch.consoleLog("notice", "[conference center] ".. cmd .."\n");
 						response = api:executeString(cmd);
 				else
 					if (not conference_locked) then
@@ -618,9 +618,6 @@
 						end
 					end
 				end
-
-			--close the database connection
-				dbh:release();
 
 			--send the call to the conference
 				cmd = meeting_uuid.."-"..domain_name.."@"..profile.."+flags{".. flags .."}";
