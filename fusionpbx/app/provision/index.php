@@ -78,6 +78,10 @@ require_once "resources/require.php";
 		$device_template = check_str($_REQUEST['template']);
 	}
 
+//remove ../ and slashes in the file name
+	$search = array('..', '/', '\\');
+	$file = str_replace($search, "", $file);
+
 //check alternate MAC source
 	if (empty($mac)){
 		if($_SERVER['HTTP_USER_AGENT'][strlen($_SERVER['HTTP_USER_AGENT'])-17-1] == " ") {
