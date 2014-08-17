@@ -3,15 +3,15 @@
 # Thur June 6, 2014 Time: 07:30 CST
 
 # Select if to build stable/devel pkgs
-BUILD_STABLE_PKGS="n"
+BUILD_RELEASE_PKGS="y"
 
 #Set Pkg Version Number for build and for changelog
-PKGVER=3.5-90 # this is the version number you update
+PKGVER=3.6.0-1 # this is the version number you update
 
 #Set Timestamp in the change logs
 TIME=$(date +"%a, %d %b %Y %X")
 
-if [[ $BUILD_STABLE_PKGS == "y" ]]; then
+if [[ $BUILD_RELEASE_PKGS == "y" ]]; then
 SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
 REPO=/usr/home/repo/deb/debian
 else
@@ -48,7 +48,7 @@ DELIM
 
 ##set version in the changelog files for scripts
 cat > $WRKDIR/fusionpbx-scripts/debian/changelog << DELIM
-fusionpbx-scripts ($PKGVER) stable; urgency=low
+fusionpbx-scripts ($PKGVER) RELEASE; urgency=low
 
   * new deb pkg for fusionpbx-scripts
 
@@ -69,7 +69,7 @@ DELIM
 
 ##set version in the changelog files for sqldb 
 cat > $WRKDIR/fusionpbx-sql/debian/changelog << DELIM
-fusionpbx-sqldb ($PKGVER) stable; urgency=low
+fusionpbx-sqldb ($PKGVER) RELEASE; urgency=low
 
   * new deb pkg for fusionpbx-sqldb
 
@@ -92,7 +92,7 @@ done
 #set version in the changelog files for themes
 for i in enhanced
 do cat > $WRKDIR/fusionpbx-themes/fusionpbx-theme-"${i}"/debian/changelog << DELIM
-fusionpbx-theme-${i} ($PKGVER) stable; urgency=low
+fusionpbx-theme-${i} ($PKGVER) RELEASE; urgency=low
 
   * new deb pkg for fusionpbx-theme-"${i//_/-}"
 
