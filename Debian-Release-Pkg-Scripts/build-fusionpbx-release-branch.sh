@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Sun Aug 17, 2014 Time: 07:30 CST
 
 # Select if to build stable/devel pkgs
@@ -16,7 +15,7 @@ SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/trunk/Debian-Release-Pkg-Scripts
 SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
 REPO=/usr/home/repo/deb/debian
-WRK_DIR=/usr/src/fusionpbx-release pkg-build
+WRK_DIR=/usr/src/fusionpbx-release-pkg-build
 else
 SVN_SRC=http://fusionpbx.googlecode.com/svn/branches/dev
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/branches/dev/Debian-Devel-Pkgs-Scripts
@@ -25,10 +24,11 @@ REPO=/usr/home/repo/deb-dev/debian
 WRK_DIR=/usr/src/fusionpbx-devel-pkg-build
 fi
 
-rm -rf "$WRK_DIR"
+#remove old working dir
+rm -rf $WRK_DIR
 
 #get pkg system scripts
-svn export "$SVN_SRC_2" "$WRK_DIR"
+svn export $SVN_SRC_2 "$WRK_DIR"
 
 ##set version in the changelog files for core
 cat > $WRK_DIR/fusionpbx-core/debian/changelog << DELIM
