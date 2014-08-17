@@ -113,7 +113,7 @@ for i in adminer backup call_block call_broadcast call_center call_center_active
 	park provision recordings registrations ring_groups schemas services settings sipml5 sip_profiles \
 	sip_status sql_query system time_conditions traffic_graph vars voicemail_greetings voicemails xml_cdr \
 	xmpp
-	do cat > $WRKDIR/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/debian/changelog << DELIM
+do cat > $WRKDIR/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/debian/changelog << DELIM
 fusionpbx-app-${i//_/-} ($PKGVER) stable; urgency=low
 
   * new deb pkg for fusionpbx-app-"${i//_/-}"
