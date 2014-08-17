@@ -1,0 +1,6 @@
+fussionpbx-app-fax
+--------------------
+To receive a FAX setup a fax extension and then direct the incoming FAX with a dedicated number or you can detect the FAX tone by using on the Public tab.
+
+ -- Richard Neese <r.neese@gmail.com> Fri , 17 Jan 2014 07:07:00 -0500
+
