@@ -17,7 +17,7 @@
 
  The Initial Developer of the Original Code is
  Mark J Crane <markjcrane@fusionpbx.com>
- Portions created by the Initial Developer are Copyright (C) 2008-2012
+ Portions created by the Initial Developer are Copyright (C) 2008-2014
  the Initial Developer. All Rights Reserved.
 
  Contributor(s):
@@ -45,98 +45,37 @@ else {
 		$voicemail_uuid = check_str($_REQUEST["id"]);
 	}
 
-//set the voicemail_id array
-	foreach ($_SESSION['user']['extension'] as $value) {
-		$voicemail_ids[]['voicemail_id'] = $value['user'];
-	}
-
-//get the uuid and voicemail_id
-	$sql = "select * from v_voicemails ";
-	$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-	if (strlen($voicemail_uuid) > 0) {
-		if (permission_exists('voicemail_delete')) {
-			//view specific voicemail box usually reserved for an admin or superadmin
-			$sql .= "and voicemail_uuid = '$voicemail_uuid' ";
-		}
-		else {
-			//ensure that the requested voicemail id is assigned to this user
-			$found = false;
-			foreach($voicemail_ids as $row) {
-				if ($voicemail_uuid == $row['voicemail_id']) {
-					$sql .= "and voicemail_id = '".$row['voicemail_id']."' ";
-					$found = true;
-				}
-				$x++;
-			}
-			//id requested is not owned by the user return no results
-			if (!$found) {
-				$sql .= "and voicemail_uuid = '' ";
-			}
-		}
-	}
-	else {
-		$x = 0;
-		if (count($voicemail_ids) > 0) {
-			//show only the assigned voicemail ids
-			$sql .= "and (";
-			foreach($voicemail_ids as $row) {
-				if ($x == 0) {
-					$sql .= "voicemail_id = '".$row['voicemail_id']."' ";
-				}
-				else {
-					$sql .= " or voicemail_id = '".$row['voicemail_id']."'";
-				}
-				$x++;
-			}
-			$sql .= ")";
-		}
-		else {
-			//no assigned voicemail ids so return no results
-			$sql .= "and voicemail_uuid = '' ";
-		}
-	}
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$voicemails = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	unset ($prep_statement);
-
-//add the voicemail messages to the array
-	foreach ($voicemails as &$row) {
-			//get the voicemail messages
-			require_once "app/voicemails/resources/classes/voicemail.php";
-			$voicemail = new voicemail;
-			$voicemail->db = $db;
-			$voicemail->domain_uuid = $_SESSION['domain_uuid'];
-			$voicemail->voicemail_uuid = $row['voicemail_uuid'];
-			$voicemail->voicemail_id = $row['voicemail_id'];
-			$voicemail->order_by = $order_by;
-			$voicemail->order = $order;
-			$result = $voicemail->messages();
-			$voicemail_count = count($result);
-			$row['messages'] = $result;
-	}
-	//echo "<pre>\n";
-	//print_r($voicemails);
-	//echo "</pre>\n";
-
 //download the message
 	if (check_str($_REQUEST["action"]) == "download") {
 		$voicemail_message_uuid = check_str($_REQUEST["uuid"]);
 		$voicemail_id = check_str($_REQUEST["id"]);
-		require_once "resources/classes/voicemail.php";
+		$voicemail_uuid = check_str($_REQUEST["voicemail_uuid"]);
+		//require_once "resources/classes/voicemail.php";
 		$voicemail = new voicemail;
 		$voicemail->db = $db;
 		$voicemail->domain_uuid = $_SESSION['domain_uuid'];
 		$voicemail->voicemail_id = $voicemail_id;
+		$voicemail->voicemail_uuid = $voicemail_uuid;
 		$voicemail->voicemail_message_uuid = $voicemail_message_uuid;
 		$result = $voicemail->message_download();
 		unset($voicemail);
+		header("Location: voicemail_edit.php?id=".$voicemail_uuid);
 		exit;
 	}
 
 //get the html values and set them as variables
 	$order_by = check_str($_GET["order_by"]);
 	$order = check_str($_GET["order"]);
+
+//get the voicemail
+	require_once "app/voicemails/resources/classes/voicemail.php";
+	$vm = new voicemail;
+	$vm->db = $db;
+	$vm->domain_uuid = $_SESSION['domain_uuid'];
+	$vm->voicemail_uuid = $voicemail_uuid;
+	$vm->order_by = $order_by;
+	$vm->order = $order;
+	$voicemails = $vm->messages();
 
 //additional includes
 	require_once "resources/header.php";
@@ -181,7 +120,7 @@ else {
 	$table_header .= "<td align='right' width='21'>\n";
 	$table_header .= "	&nbsp;\n";
 	$table_header .= "</td>\n";
-	$table_header .= "<tr>\n";
+	$table_header .= "</tr>\n";
 
 //loop through the voicemail messages
 	if (count($voicemails) > 0) {
@@ -190,8 +129,8 @@ else {
 			if ($previous_voicemail_id != $field['voicemail_id']) {
 				echo "<tr>\n";
 				echo "	<td colspan='3' align='left'>\n";
-				echo "		<br /><br />\n";
-				echo "		<b>".$text['label-mailbox'].": ".$field['voicemail_id']." </b>&nbsp;\n";
+				echo "		<br /><br /><br /><br />\n";
+				echo "		<b>".$text['label-mailbox'].": ".$field['voicemail_id']." </b><br />&nbsp;\n";
 				echo "	</td>\n";
 				echo "	<td colspan='3' valign='bottom' align='right'>\n";
 				if (permission_exists('voicemail_greeting_view')) {
@@ -200,7 +139,7 @@ else {
 				if (permission_exists('voicemail_view')) {
 					echo "		<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='".PROJECT_PATH."/app/voicemails/voicemail_edit.php?id=".$field['voicemail_uuid']."'\" value='".$text['button-settings']."'>\n";
 				}
-				echo "	</td>\n";
+				echo "	<br /><br /></td>\n";
 				echo "	<td>&nbsp;</td>\n";
 				echo "</tr>\n";
 				echo $table_header;
@@ -222,12 +161,12 @@ else {
 				//echo "			".$text['label-play']."\n";
 				//echo "		</a>\n";
 				echo "		&nbsp;&nbsp;\n";
-				echo "		<a href=\"voicemail_messages.php?action=download&type=vm&t=bin&id=".$row['voicemail_id']."&uuid=".$row['voicemail_message_uuid']."\">\n";
+				echo "		<a href=\"voicemail_messages.php?action=download&type=vm&t=bin&id=".$row['voicemail_id']."&voicemail_uuid=".$row['voicemail_uuid']."&uuid=".$row['voicemail_message_uuid']."\">\n";
 				echo "			".$text['label-download']."\n";
 				echo "		</a>\n";
 				echo "	</td>\n";
 				//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['message_priority']."&nbsp;</td>\n";
-				echo "	<td valign='top' align='right'>\n";
+				echo "	<td class='list_control_icon'>\n";
 				if (permission_exists('voicemail_message_delete')) {
 					echo "		<a href='voicemail_message_delete.php?voicemail_uuid=".$row['voicemail_uuid']."&id=".$row['voicemail_message_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
 				}

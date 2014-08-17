@@ -61,6 +61,7 @@ else {
 						}
 						$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
 						$_SESSION['domains'][$row['domain_uuid']]['domain_name'] = $row['domain_name'];
+						$_SESSION['domains'][$row['domain_uuid']]['domain_description'] = $row['domain_description'];
 					}
 				}
 				unset($result, $prep_statement);
@@ -70,28 +71,39 @@ else {
 				$_SESSION['domain_uuid'] = $domain_uuid;
 				$_SESSION["domain_name"] = $_SESSION['domains'][$domain_uuid]['domain_name'];
 				$_SESSION['domain']['template']['name'] = $_SESSION['domains'][$domain_uuid]['template_name'];
-			//clear the menu session so that it is regenerated for the selected domain
-				$_SESSION["menu"] = '';
+
 			//clear the extension array so that it is regenerated for the selected domain
 				unset($_SESSION['extension_array']);
+
 			//set the setting arrays
-				//domains set()
-				require "resources/classes/domains.php";
 				$domain = new domains();
 				$domain->db = $db;
 				$domain->set();
+
+			// on domain change, redirect user
+				if ($_SESSION["login"]["destination"] != '') {
+					// to default, or domain specific, login destination
+					header("Location: ".PROJECT_PATH.$_SESSION["login"]["destination"]["url"]);
+				}
+				else {
+					header("Location: ".PROJECT_PATH."/core/user_settings/user_dashboard.php");
+				}
+				return;
 		}
 	}
 
 //includes
 	require_once "resources/header.php";
-	$page["title"] = $text['title-domains'];
+	$document['title'] = $text['title-domains'];
 
 	require_once "resources/paging.php";
 
-//get variables used to control the order
-	$order_by = $_GET["order_by"];
-	$order = $_GET["order"];
+//get the http values and set them as variables
+	$search = check_str($_GET["search"]);
+	if (isset($_GET["order_by"])) {
+		$order_by = check_str($_GET["order_by"]);
+		$order = check_str($_GET["order"]);
+	}
 
 //show the content
 	echo "<div align='center'>";
@@ -100,10 +112,16 @@ else {
 	echo "	<td align=\"center\">\n";
 	echo "		<br />";
 
+//show the header and the search
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['header-domains']."</b></td>\n";
-	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
+	echo "		<form method='get' action=''>\n";
+	echo "		<td width='50%' align='right'>\n";
+	echo "			<input type='text' class='txt' style='width: 150px' name='search' value='$search'>";
+	echo "			<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>";
+	echo "		</td>\n";
+	echo "		</form>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td align='left' colspan='2'>\n";
@@ -112,74 +130,97 @@ else {
 	echo "	</tr>\n";
 	echo "</table>\n";
 
-	//prepare to page the results
-		$sql = "select count(*) as num_rows from v_domains ";
-		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
-		$prep_statement = $db->prepare($sql);
-		if ($prep_statement) {
-		$prep_statement->execute();
-			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
-			if ($row['num_rows'] > 0) {
-				$num_rows = $row['num_rows'];
-			}
-			else {
-				$num_rows = '0';
-			}
-		}
-
-	//prepare to page the results
-		$rows_per_page = 100;
-		$param = "";
-		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
-		$offset = $rows_per_page * $page;
-
-	//get the  list
-		$sql = "select * from v_domains ";
-		if (strlen($order_by) == 0) {
-			$sql .= "order by domain_name asc ";
+//prepare to page the results
+	$sql = "select count(*) as num_rows from v_domains ";
+	if (strlen($search) > 0) {
+		$sql .= "where (";
+		$sql .= " 	domain_name like '%".$search."%' ";
+		$sql .= " 	or domain_description like '%".$search."%' ";
+		$sql .= ") ";
+	}
+	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+	$prep_statement = $db->prepare($sql);
+	if ($prep_statement) {
+	$prep_statement->execute();
+		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+		if ($row['num_rows'] > 0) {
+			$num_rows = $row['num_rows'];
 		}
 		else {
-			$sql .= "order by $order_by $order ";
+			$num_rows = '0';
 		}
-		$sql .= " limit $rows_per_page offset $offset ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-		$result_count = count($result);
-		unset ($prep_statement, $sql);
+	}
+
+//prepare to page the results
+	$rows_per_page = 100;
+	$param = "";
+	$page = $_GET['page'];
+	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+	list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
+	$offset = $rows_per_page * $page;
+
+//get the  list
+	$sql = "select * from v_domains ";
+	if (strlen($search) > 0) {
+		$sql .= "where (";
+		$sql .= " 	domain_name like '%".$search."%' ";
+		$sql .= " 	or domain_description like '%".$search."%' ";
+		$sql .= ") ";
+	}
+	if (strlen($order_by) == 0) {
+		$sql .= "order by domain_name asc ";
+	}
+	else {
+		$sql .= "order by $order_by $order ";
+	}
+	$sql .= " limit $rows_per_page offset $offset ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	$result_count = count($result);
+	unset ($prep_statement, $sql);
 
 	$c = 0;
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('domain_name', $text['label-domain'], $order_by, $order);
+	echo "<th>".$text['label-tools']."</th>";
 	echo th_order_by('domain_description', $text['label-description'], $order_by, $order);
-	echo "<td align='right' width='42'>\n";
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('domain_add')) {
-		echo "	<a href='domain_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
-	}
-	else {
-		echo "	&nbsp;\n";
+		echo "<a href='domain_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_name']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['domain_description']."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
+			$tr_link = (permission_exists('domain_edit')) ? "href='domain_edit.php?id=".$row['domain_uuid']."'" : null;
+			echo "<tr ".$tr_link.">\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			echo "		<a href='domain_edit.php?id=".$row['domain_uuid']."'>".$row['domain_name']."</a>";
+			echo "	</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			if (permission_exists('domain_edit')) {
-				echo "		<a href='domain_edit.php?id=".$row['domain_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
+				echo "<a href='".PROJECT_PATH."/core/domain_settings/domains.php?domain_uuid=".$row['domain_uuid']."&domain_change=true'>".$text['label-manage']."</a>";
+			}
+			echo "	</td>";
+			echo "	<td valign='top' class='row_stylebg'>".$row['domain_description']."&nbsp;</td>\n";
+			echo "	<td class='list_control_icons'>";
+			if (permission_exists('domain_edit')) {
+				echo "<a href='domain_edit.php?id=".$row['domain_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('domain_delete')) {
-				echo "		<a href='domain_delete.php?id=".$row['domain_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+				if ($_SESSION["groups"][0]["domain_uuid"] != $row['domain_uuid'] && $result_count > 1) {
+					echo "<a href='domain_delete.php?id=".$row['domain_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
+				}
+				else {
+					echo "<span onclick=\"alert('You cannot delete your own domain.\\n\\nPlease login with a user account under a different domain, then try again.');\">".$v_link_label_delete."</span>";
+				}
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -189,17 +230,14 @@ else {
 	} //end if results
 
 	echo "<tr>\n";
-	echo "<td colspan='3' align='left'>\n";
+	echo "<td colspan='4' align='left'>\n";
 	echo "	<table width='100%' cellpadding='0' cellspacing='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('domain_add')) {
-		echo "			<a href='domain_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
-	}
-	else {
-		echo "			&nbsp;\n";
+		echo "<a href='domain_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

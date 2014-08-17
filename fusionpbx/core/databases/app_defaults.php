@@ -49,6 +49,7 @@ if ($domains_processed == 1) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 		}
+		unset($prep_statement, $result);
 
 	//replace the backslash with a forward slash
 		$db_path = str_replace("\\", "/", $db_path);
@@ -62,6 +63,7 @@ if ($domains_processed == 1) {
 			if ($prep_statement) {
 				$prep_statement->execute();
 				$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+				unset($prep_statement);
 				if ($row['num_rows'] > 0) {
 					$odbc_num_rows = $row['num_rows'];
 
@@ -95,6 +97,7 @@ if ($domains_processed == 1) {
 				foreach ($result as &$row) {
 					$recordings_dir = $row["default_setting_value"];
 				}
+				unset($prep_statement, $result);
 			}
 
 		//config.lua
@@ -156,13 +159,16 @@ if ($domains_processed == 1) {
 				$tmp .= "--additional info\n";
 				$tmp .= "	domain_count = ".count($_SESSION["domains"]).";\n";
 				$tmp .= "	temp_dir = \"".$_SESSION['server']['temp']['dir']."\";\n";
+				if (isset($_SESSION['domain']['dial_string']['text'])) {
+					$tmp .= "	dial_string = \"".$_SESSION['domain']['dial_string']['text']."\";\n";
+				}
 				$tmp .= "\n";
 				$tmp .= "--include local.lua\n";
 				$tmp .= "	dofile(scripts_dir..\"/resources/functions/file_exists.lua\");\n";
 				$tmp .= "	if (file_exists(\"/etc/fusionpbx/local.lua\")) then\n";
-				$tmp .= "		dofile(scripts_dir..\"/etc/fusionpbx/local.lua\");\n";
+				$tmp .= "		dofile(\"/etc/fusionpbx/local.lua\");\n";
 				$tmp .= "	elseif (file_exists(\"/usr/local/etc/fusionpbx/local.lua\")) then\n";
-				$tmp .= "		dofile(scripts_dir..\"/usr/local/etc/fusionpbx/local.lua\");\n";
+				$tmp .= "		dofile(\"/usr/local/etc/fusionpbx/local.lua\");\n";
 				$tmp .= "	elseif (file_exists(scripts_dir..\"/resources/local.lua\")) then\n";
 				$tmp .= "		dofile(scripts_dir..\"/resources/local.lua\");\n";
 				$tmp .= "	end\n";

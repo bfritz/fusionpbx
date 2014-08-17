@@ -89,9 +89,9 @@ else {
 		$rows_per_page = 10;
 		$param = "";
 		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
-		$offset = $rows_per_page * $page; 
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
+		$offset = $rows_per_page * $page;
 
 	//get the  list
 		$sql = " select * from v_call_block ";
@@ -108,42 +108,51 @@ else {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('call_block_number', $text['label-number'], $order_by, $order);
 	echo th_order_by('call_block_name', $text['label-name'], $order_by, $order);
-	echo th_order_by('call_block_count', $text['label-count'], $order_by, $order);
+	echo th_order_by('call_block_count', $text['label-count'], $order_by, $order, '', "style='text-align: center;'");
 	echo th_order_by('date_added', $text['label-date-added'], $order_by, $order);
 	echo th_order_by('call_block_action', $text['label-action'], $order_by, $order);
 	echo th_order_by('call_block_enabled', $text['label-enabled'], $order_by, $order);
-	echo "<td align='right' width='42'>\n";
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('call_block_add')) {
-		echo "	<a href='call_block_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo "<a href='call_block_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['call_block_number']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['call_block_name']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['call_block_count']."&nbsp;</td>\n";
+			$tr_link = (permission_exists('call_block_edit')) ? "href='call_block_edit.php?id=".$row['call_block_uuid']."'" : null;
+			echo "<tr ".$tr_link.">\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			if (permission_exists('call_block_edit')) {
+				echo "<a href='call_block_edit.php?id=".$row['call_block_uuid']."'>".$row['call_block_number']."</a>";
+			}
+			else {
+				echo $row['call_block_number'];
+			}
+			echo "	</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['call_block_name']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."' style='text-align: center;'>".$row['call_block_count']."</td>\n";
 			if (defined('TIME_24HR') && TIME_24HR == 1) {
 				$tmp_date_added = date("j M Y H:i:s", $row['date_added']);
 			} else {
 				$tmp_date_added = date("j M Y h:i:sa", $row['date_added']);
 			}
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$tmp_date_added."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['call_block_action']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['call_block_enabled']."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$tmp_date_added."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['call_block_action']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords($row['call_block_enabled'])."</td>\n";
+			echo "	<td class='list_control_icons'>";
 			if (permission_exists('call_block_edit')) {
-				echo "		<a href='call_block_edit.php?id=".$row['call_block_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
+				echo "<a href='call_block_edit.php?id=".$row['call_block_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('call_block_delete')) {
-				echo "		<a href='call_block_delete.php?id=".$row['call_block_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm(".$text['confirm-delete'].")\">$v_link_label_delete</a>\n";
+				echo "<a href='call_block_delete.php?id=".$row['call_block_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			};
+			echo "  </td>";
 			echo "</tr>\n";
 			if ($c==0) { $c=1; } else { $c=0; }
 		} //end foreach
@@ -156,11 +165,11 @@ else {
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-		echo "		<td width='33.3%' align='right'>\n";
-		if (permission_exists('call_block_add')) {
-			echo "			<a href='call_block_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
-		}
-		echo "		</td>\n";
+	echo "		<td class='list_control_icons'>";
+	if (permission_exists('call_block_add')) {
+		echo "<a href='call_block_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
+	}
+	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
 	echo "</td>\n";

@@ -70,7 +70,12 @@ require_once "resources/paging.php";
 	//prepare to page the results
 		$sql = "select count(*) as num_rows from v_ring_groups ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+		if (strlen($order_by) == 0) {
+			$sql .= "order by ring_group_name, ring_group_extension asc ";
+		}
+		else {
+			$sql .= "order by $order_by $order ";
+		}
 		$prep_statement = $db->prepare($sql);
 		if ($prep_statement) {
 		$prep_statement->execute();
@@ -87,14 +92,19 @@ require_once "resources/paging.php";
 		$rows_per_page = 150;
 		$param = "";
 		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
-		$offset = $rows_per_page * $page; 
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
+		$offset = $rows_per_page * $page;
 
 	//get the  list
 		$sql = "select * from v_ring_groups ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+		if (strlen($order_by) == 0) {
+			$sql .= "order by ring_group_name, ring_group_extension asc ";
+		}
+		else {
+			$sql .= "order by $order_by $order ";
+		}
 		$sql .= " limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -107,42 +117,48 @@ require_once "resources/paging.php";
 	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('ring_group_name', $text['label-name'], $order_by, $order);
 	echo th_order_by('ring_group_extension', $text['label-extension'], $order_by, $order);
 	//echo th_order_by('ring_group_context', 'Context', $order_by, $order);
 	//echo th_order_by('ring_group_strategy', 'Strategy', $order_by, $order);
-	//echo th_order_by('ring_group_timeout_sec', 'Timeout', $order_by, $order);
 	//echo th_order_by('ring_group_timeout_app', 'Timeout App', $order_by, $order);
 	//echo th_order_by('ring_group_timeout_data', 'Timeout Data', $order_by, $order);
 	echo th_order_by('ring_group_enabled', $text['label-enabled'], $order_by, $order);
-	echo th_order_by('ring_group_description', $text['label-description'], $order_by, $order);
-	echo "<td align='right' width='42'>\n";
+	echo th_order_by('ring_group_description', $text['header-description'], $order_by, $order);
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('ring_group_add')) {
-		echo "	<a href='ring_group_edit.php' alt='add'>$v_link_label_add</a>\n";
+		echo "<a href='ring_group_edit.php' alt='add'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_name']."&nbsp;</td>\n";
+			$tr_link = (permission_exists('ring_group_edit')) ? "href='ring_group_edit.php?id=".$row['ring_group_uuid']."'" : null;
+			echo "<tr ".$tr_link.">\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			if (permission_exists('ring_group_edit')) {
+				echo "<a href='ring_group_edit.php?id=".$row['ring_group_uuid']."'>".$row['ring_group_name']."</a>";
+			}
+			else {
+				echo $row['ring_group_name'];
+			}
+			echo "	</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_extension']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_context']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_strategy']."&nbsp;</td>\n";
-			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_timeout_sec']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_timeout_app']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_timeout_data']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_enabled']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['ring_group_description']."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords($row['ring_group_enabled'])."&nbsp;</td>\n";
+			echo "	<td valign='top' class='row_stylebg'>".$row['ring_group_description']."&nbsp;</td>\n";
+			echo "	<td class='list_control_icons'>";
 			if (permission_exists('ring_group_edit')) {
-				echo "		<a href='ring_group_edit.php?id=".$row['ring_group_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+				echo "<a href='ring_group_edit.php?id=".$row['ring_group_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('ring_group_delete')) {
-				echo "		<a href='ring_group_delete.php?id=".$row['ring_group_uuid']."' alt='delete' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+				echo "<a href='ring_group_delete.php?id=".$row['ring_group_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -157,9 +173,9 @@ require_once "resources/paging.php";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('ring_group_add')) {
-		echo "			<a href='ring_group_edit.php' alt='add'>$v_link_label_add</a>\n";
+		echo 		"<a href='ring_group_edit.php' alt='add'>$v_link_label_add</a>";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

@@ -41,9 +41,9 @@
 	debug["sql"] = false;
 
 --get the argv values
-	script_name = argv[0];
-	voicemail_action = argv[1];
-
+	script_name = argv[1];
+	voicemail_action = argv[2];
+	
 --starting values
 	dtmf_digits = '';
 	timeouts = 0;
@@ -86,6 +86,11 @@
 			skip_instructions = session:getVariable("skip_instructions");
 			skip_greeting = session:getVariable("skip_greeting");
 			vm_message_ext = session:getVariable("vm_message_ext");
+			vm_disk_quota = session:getVariable("vm-disk-quota");
+			if (not vm_disk_quota) then
+				vm_disk_quota = session:getVariable("vm_disk_quota");
+			end
+			voicemail_authorized = session:getVariable("voicemail_authorized");
 			if (not vm_message_ext) then vm_message_ext = 'wav'; end
 
 		--set the sounds path for the language, dialect and voice
@@ -105,7 +110,7 @@
 							sql = "SELECT domain_uuid FROM v_domains ";
 							sql = sql .. "WHERE domain_name = '" .. domain_name .. "' ";
 							if (debug["sql"]) then
-								freeswitch.consoleLog("notice", "[xml_handler] SQL: " .. sql .. "\n");
+								freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
 							end
 							status = dbh:query(sql, function(rows)
 								domain_uuid = rows["domain_uuid"];
@@ -188,7 +193,7 @@
 --send a message waiting event
 	if (voicemail_action == "mwi") then
 		--get the mailbox info
-			account = argv[2];
+			account = argv[3];
 			array = explode("@", account);
 			voicemail_id = array[1];
 			domain_name = array[2];
@@ -213,7 +218,19 @@
 	if (voicemail_action == "check") then
 		if (session:ready()) then
 			--check the voicemail password
-				check_password(voicemail_id, password_tries);
+				if (voicemail_id) then
+					if (voicemail_authorized) then
+						if (voicemail_authorized == "true") then
+							--skip the password check
+						else
+							check_password(voicemail_id, password_tries);
+						end
+					else
+						check_password(voicemail_id, password_tries);
+					end
+				else
+					check_password(voicemail_id, password_tries);
+				end
 			--send to the main menu
 				timeouts = 0;
 				main_menu();
@@ -222,6 +239,27 @@
 
 --leave a message
 	if (voicemail_action == "save") then
+		--check the voicemail quota
+			if (vm_disk_quota) then
+				--get voicemail message seconds
+					sql = [[SELECT coalesce(sum(message_length), 0) as message_sum FROM v_voicemail_messages
+						WHERE domain_uuid = ']] .. domain_uuid ..[['
+						AND voicemail_uuid = ']] .. voicemail_uuid ..[[']]
+						if (debug["sql"]) then
+							freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "\n");
+						end
+					status = dbh:query(sql, function(row)
+						message_sum = row["message_sum"];
+					end);
+					if (message_sum ~= '') then
+						if (tonumber(vm_disk_quota) <= tonumber(message_sum)) then
+							--play message mailbox full
+								session:execute("playback", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/voicemail/vm-mailbox_full.wav")
+							--set the voicemail_uuid to nil to prevent saving the voicemail
+								voicemail_uuid = nil;
+						end
+					end
+			end
 
 		--valid voicemail
 			if (voicemail_uuid ~= nil) then
@@ -264,7 +302,7 @@
 						end
 						dbh:query(sql);
 					end
-				
+
 				--get saved and new message counts
 					sql = [[SELECT count(*) as new_messages FROM v_voicemail_messages
 						WHERE domain_uuid = ']] .. domain_uuid ..[['

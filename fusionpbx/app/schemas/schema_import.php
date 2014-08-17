@@ -209,7 +209,7 @@ if (count($_POST)>0) {
 
 			//show the header
 				require_once "resources/header.php";
-				$page["title"] = $text['title-import_results'];
+				$document['title'] = $text['title-import_results'];
 
 			echo "<div align='center'>\n";
 			echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
@@ -304,7 +304,7 @@ if (count($_POST)>0) {
 
 //show the header
 	require_once "resources/header.php";
-	$page["title"] = $text['title-import'];
+	$document['title'] = $text['title-import'];
 
 //show the content
 	echo "<div align='center'>";
@@ -331,7 +331,7 @@ if (count($_POST)>0) {
 	echo "    ".$text['label-import_data'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <textarea name='data' id='data' rows='7' class='txt' wrap='off'>$data</textarea>\n";
+	echo "    <textarea name='data' id='data' rows='7' class='formfld' style='width: 100%;' wrap='off'>$data</textarea>\n";
 	echo "<br />\n";
 	echo $text['description-import_data']."\n";
 	echo "</td>\n";

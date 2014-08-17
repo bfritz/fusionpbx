@@ -182,16 +182,16 @@ else {
 				mkdir($fax_dir.'/'.$fax_extension,0774,true);
 				chmod($fax_dir.'/'.$fax_extension,0774);
 			}
-			if (!is_dir($dir_fax_inbox)) { 
-				mkdir($dir_fax_inbox,0774,true); 
+			if (!is_dir($dir_fax_inbox)) {
+				mkdir($dir_fax_inbox,0774,true);
 				chmod($dir_fax_inbox,0774);
 			}
-			if (!is_dir($dir_fax_sent)) { 
-				mkdir($dir_fax_sent,0774,true); 
+			if (!is_dir($dir_fax_sent)) {
+				mkdir($dir_fax_sent,0774,true);
 				chmod($dir_fax_sent,0774);
 			}
-			if (!is_dir($dir_fax_temp)) { 
-				mkdir($dir_fax_temp,0774,true); 
+			if (!is_dir($dir_fax_temp)) {
+				mkdir($dir_fax_temp,0774,true);
 				chmod($dir_fax_temp,0774);
 			}
 	}
@@ -220,7 +220,7 @@ else {
 	}
 
 //clear file status cache
-	clearstatcache(); 
+	clearstatcache();
 
 //upload and send the fax
 	if (($_POST['type'] == "fax_send") && is_uploaded_file($_FILES['fax_file']['tmp_name'])) {
@@ -229,11 +229,14 @@ else {
 		if (strlen($fax_number) > 0) {
 			$fax_number = preg_replace("~[^0-9]~", "",$fax_number);
 		}
+
 		$fax_name = $_FILES['fax_file']['name'];
+		$fax_name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fax_name);
 		$fax_name = str_replace(" ", "_", $fax_name);
-		$fax_name = str_ireplace(".tif", "", $fax_name);
-		$fax_name = str_ireplace(".tiff", "", $fax_name);
-		$fax_name = str_ireplace(".pdf", "", $fax_name);
+		//$fax_name = str_ireplace(".tif", "", $fax_name);
+		//$fax_name = str_ireplace(".tiff", "", $fax_name);
+		//$fax_name = str_ireplace(".pdf", "", $fax_name);
+
 		//lua doesn't seem to like special chars with env:GetHeader
 		$fax_name = str_replace(";", "_", $fax_name);
 		$fax_name = str_replace(",", "_", $fax_name);
@@ -263,28 +266,43 @@ else {
 		}
 
 		//get the fax file extension
-			$fax_file_extension = substr($dir_fax_temp.'/'.$_FILES['fax_file']['name'], -4);
-			if (strtolower($fax_file_extension) == "tiff") { $fax_file_extension = ".tif"; }
+			$fax_file_extension = '.'. pathinfo($_FILES['fax_file']['name'], PATHINFO_EXTENSION);
+			if (strtolower($fax_file_extension) == ".tiff") { $fax_file_extension = ".tif"; }
 			if (strtolower($fax_file_extension) == ".tif") { $fax_file_extension = ".tif"; }
 			if (strtolower($fax_file_extension) == ".pdf") { $fax_file_extension = ".pdf"; }
 
 		//upload the file
 			move_uploaded_file($_FILES['fax_file']['tmp_name'], $dir_fax_temp.'/'.$fax_name.$fax_file_extension);
 
+		//file conversion
 			if ($fax_file_extension == ".pdf") {
 				chdir($dir_fax_temp);
 				exec("gs -q -sDEVICE=tiffg3 -r204x196 -g1728x2156 -dNOPAUSE -sOutputFile=".$fax_name.".tif -- ".$fax_name.".pdf -c quit");
-				//exec("rm ".$dir_fax_temp.'/'.$fax_name.".pdf");
+			} else {
+				exec("export HOME=/tmp && libreoffice --headless --convert-to pdf --outdir ".$dir_fax_temp." ".$dir_fax_temp.'/'.$fax_name.$fax_file_extension);
 			}
+
+		//if the tif does not exist then convert the pdf to a tif
+			if(file_exists($dir_fax_temp.'/'.$fax_name.'.pdf') && !file_exists($dir_fax_temp.'/'.$fax_name.'.tif')){
+				chdir($dir_fax_temp);
+				exec("gs -q -sDEVICE=tiffg3 -r204x196 -g1728x2156 -dNOPAUSE -sOutputFile=".$fax_name.".tif -- ".$fax_name.".pdf -c quit");
+			}
+
 		//get some more info to send the fax
-			$mailfrom_address = $_SESSION['email']['smtp_from']['var'];
+			if (isset($_SESSION['fax']['smtp_from']['var'])) {
+				$mailfrom_address = $_SESSION['fax']['smtp_from']['var'];
+			}
+			else {
+				$mailfrom_address = $_SESSION['email']['smtp_from']['var'];
+			}
+			//echo 'mail from: '.$mailfrom_address.'<br>';
 
 			$sql = "select fax_email from v_fax where fax_uuid = '".$fax_uuid."'; ";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetch(PDO::FETCH_NAMED);
 			$mailto_address_fax = $result["fax_email"];
-			echo $mailto_address_fax;
+			//echo 'mail address fax: '.$mailto_address_fax.'<br>';
 
 			$sql = "select contact_uuid from v_users where user_uuid = '".$_SESSION['user_uuid']."'; ";
 			$prep_statement = $db->prepare(check_sql($sql));
@@ -298,19 +316,19 @@ else {
 			$result = $prep_statement->fetch(PDO::FETCH_NAMED);
 			//print_r($result);
 			$mailto_address_user = $result["contact_email"];
-			echo $mailto_address_user;
+			//echo 'mail address user: '.$mailto_address_user.'<br>';
 
 			if ($mailto_address_user != $mailto_address_fax) {
 				$mailto_address = "'".$mailto_address_fax."\,".$mailto_address_user."'";
 			}
 			else {
-			$mailto_address = $mailto_address_user;
+				$mailto_address = $mailto_address_user;
 			}
 
 		//send the fax
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			if ($fp) {
-				//prepare the fax  command
+				//prepare the fax command
 					$route_array = outbound_route_to_bridge($_SESSION['domain_uuid'], $fax_number);
 					$fax_file = $dir_fax_temp."/".$fax_name.".tif";
 					if (count($route_array) == 0) {
@@ -337,20 +355,27 @@ else {
 		//copy the .tif to the sent directory
 			exec("cp ".$dir_fax_temp.'/'.$fax_name.".tif ".$dir_fax_sent.'/'.$fax_name.".tif");
 
-		//convert the tif to pdf
-			chdir($dir_fax_sent);
-			exec("gs -q -sDEVICE=tiffg3 -g1728x1078 -dNOPAUSE -sOutputFile=".$fax_name.".pdf -- ".$fax_name.".tif -c quit");
+		//copy the .pdf to the sent directory
+			if (file_exists($dir_fax_temp.'/'.$fax_name.".pdf")) {
+				exec("cp ".$dir_fax_temp.'/'.$fax_name.".pdf ".$dir_fax_sent.'/'.$fax_name.".pdf");
+			}
 
-		//delete the .tif from the temp directory
-			//exec("rm ".$dir_fax_temp.'/'.$fax_name.".tif");
+		//copy the original file to the sent box
+			foreach ($_SESSION['fax']['save'] as $row) {
+				if ($row == "all" || $row == "original") {
+					if ($fax_file_extension != ".pdf" || $fax_file_extension != ".tif") {
+						exec("cp ".$dir_fax_temp.'/'.$fax_name.".pdf ".$dir_fax_sent.'/'.$fax_name.$fax_file_extension);
+					}
+				}
+			}
 
 		//convert the tif to pdf and png
-			chdir($dir_fax_sent);
+			//chdir($dir_fax_sent);
 			//which tiff2pdf
-			if (is_file("/usr/local/bin/tiff2png")) {
-				exec($_SESSION['switch']['bin']['dir']."/tiff2png ".$dir_fax_sent.$fax_name.".tif");
-				exec($_SESSION['switch']['bin']['dir']."/tiff2pdf -f -o ".$fax_name.".pdf ".$dir_fax_sent.$fax_name.".tif");
-			}
+			//if (is_file("/usr/local/bin/tiff2png")) {
+			//	exec($_SESSION['switch']['bin']['dir']."/tiff2png ".$dir_fax_sent.$fax_name.".tif");
+			//	exec($_SESSION['switch']['bin']['dir']."/tiff2pdf -f -o ".$fax_name.".pdf ".$dir_fax_sent.$fax_name.".tif");
+			//}
 
 		//redirect the browser
 			header("Location: fax_view.php?id=".$fax_uuid."&msg=".$response);
@@ -386,10 +411,10 @@ else {
 	echo "			<span class=\"title\">".$text['title']."</span>\n";
 	echo "		</td>\n";
 	echo "		<td width='70%' align='right'>\n";
+	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='fax.php'\" value='".$text['button-back']."'>\n";
 	if (permission_exists('fax_extension_add') || permission_exists('fax_extension_edit')) {
 		echo "			<input type='button' class='btn' name='' alt='settings' onclick=\"window.location='fax_edit.php?id=$fax_uuid'\" value='".$text['button-settings']."'>\n";
 	}
-	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='fax.php'\" value='".$text['button-back']."'>\n";
 	echo "		</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
@@ -425,7 +450,7 @@ else {
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<input name=\"id\" type=\"hidden\" value=\"\$id\">\n";
 	echo "	<input name=\"type\" type=\"hidden\" value=\"fax_send\">\n";
-	echo "	<input name=\"fax_file\" type=\"file\" class=\"btn\" id=\"fax_file\" accept=\"image/tiff,application/pdf\">\n";
+	echo "	<input name=\"fax_file\" type=\"file\" class=\"formfld fileinput\" id=\"fax_file\" accept=\"image/tiff,application/pdf\">\n";
 	echo "	<br />\n";
 	echo "	".$text['description-upload']."\n";
 	echo "</td>\n";
@@ -448,7 +473,7 @@ else {
 	if (permission_exists('fax_inbox_view')) {
 		echo "\n";
 		echo "\n";
-		echo "	<br />\n";
+		echo "	<br /><br />\n";
 		echo "\n";
 		echo "	<table width=\"100%\" border=\"0\" cellpadding=\"5\" cellspacing=\"0\">\n";
 		echo "	<tr>\n";
@@ -475,7 +500,7 @@ else {
 		echo "		<th width=\"60%\" class=\"listhdrr\">".$text['table-file']."</td>\n";
 		echo "		<th width=\"10%\" class=\"listhdrr\">".$text['table-view']."</td>\n";
 		echo "		<th width=\"20%\" class=\"listhdr\">".$text['table-modified']."</td>\n";
-		echo "		<th width=\"10%\" class=\"listhdr\" nowrap>Size".$text['table-size']."</td>\n";
+		echo "		<th width=\"10%\" class=\"listhdr\" nowrap>".$text['table-size']."</td>\n";
 		echo "	</tr>";
 
 		if ($handle = opendir($dir_fax_inbox)) {
@@ -585,8 +610,7 @@ else {
 		echo "	</tr>\n";
 		echo "	</table>\n";
 		echo "\n";
-		echo "	<br />\n";
-		echo "	<br />\n";
+		echo "	<br /><br /><br />\n";
 		echo "\n";
 	}
 

@@ -77,12 +77,18 @@
 					local message_date = os.date("%A, %d %b %Y %I:%M %p", created_epoch)
 
 				--prepare the files
-					file_subject = scripts_dir.."/app/voicemail/resources/templates/"..default_language.."/"..default_dialect.."email_subject.tpl";
+					file_subject = scripts_dir.."/app/voicemail/resources/templates/"..default_language.."/"..default_dialect.."/email_subject.tpl";
 					file_body = scripts_dir.."/app/voicemail/resources/templates/"..default_language.."/"..default_dialect.."/email_body.tpl";
 					if (not file_exists(file_subject)) then
 						file_subject = scripts_dir.."/app/voicemail/resources/templates/en/us/email_subject.tpl";
 						file_body = scripts_dir.."/app/voicemail/resources/templates/en/us/email_body.tpl";
 					end
+
+				--prepare the headers
+					headers = '{"X-FusionPBX-Domain-UUID":"'..domain_uuid..'",';
+					headers = headers..'"X-FusionPBX-Domain-Name":"'..domain_name..'",';
+					headers = headers..'"X-FusionPBX-Call-UUID":"'..uuid..'",';
+					headers = headers..'"X-FusionPBX-Email-Type":"voicemail"}';
 
 				--prepare the subject
 					local f = io.open(file_subject, "r");
@@ -124,9 +130,9 @@
 							delete = "false";
 						end
 						file = voicemail_dir.."/"..id.."/msg_"..uuid.."."..vm_message_ext;
-						cmd = "luarun email.lua "..voicemail_mail_to.." "..voicemail_mail_to.." '"..subject.."' '"..body.."' '"..file.."' "..delete;
+						cmd = "luarun email.lua "..voicemail_mail_to.." "..voicemail_mail_to.." "..headers.." '"..subject.."' '"..body.."' '"..file.."' "..delete;
 					else
-						cmd = "luarun email.lua "..voicemail_mail_to.." "..voicemail_mail_to.." '"..subject.."' '"..body.."'";
+						cmd = "luarun email.lua "..voicemail_mail_to.." "..voicemail_mail_to.." "..headers.." '"..subject.."' '"..body.."'";
 					end
 					if (debug["info"]) then
 						freeswitch.consoleLog("notice", "[voicemail] cmd: " .. cmd .. "\n");

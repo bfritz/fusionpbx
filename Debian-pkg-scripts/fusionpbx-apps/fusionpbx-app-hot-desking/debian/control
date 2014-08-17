@@ -1,0 +1,12 @@
+Source: fusionpbx-app-hot-desking
+Section: user/www
+Priority: extra
+Maintainer: Richard Neese <r.neese@gmail.com>
+Standards-Version: 3.7.2
+#XSBC-Bugtracker: mailto:r.neese@gmail.com
+
+Package: fusionpbx-app-hot-desking
+Architecture: all
+Depends: ${misc:Depends}
+Description: Fusionpbx-app-hot-desk: Login into hot desking with an ID and your voicemail password to direct your calls to a remote extension.
+#XSBC-Bugtracker: mailto:r.neese@gmail.com

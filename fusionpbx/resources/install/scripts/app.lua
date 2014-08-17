@@ -23,6 +23,7 @@
 --	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 --	POSSIBILITY OF SUCH DAMAGE.
 
+
 --include config.lua
 	scripts_dir = string.sub(debug.getinfo(1).source,2,string.len(debug.getinfo(1).source)-(string.len(argv[0])+1));
 	dofile(scripts_dir.."/resources/functions/config.lua");
@@ -33,17 +34,18 @@
 	app_name = argv[1];
 
 --example use command
-	--luarun app.lua name 'a' 'b 123' 'c'
+	--luarun app.lua app_name 'a' 'b 123' 'c'
 
 --for loop through arguments
 	arguments = "";
 	for key,value in pairs(argv) do
 		if (key > 1) then
 			arguments = arguments .. " '" .. value .. "'";
-			freeswitch.consoleLog("notice", "[voicemail] argv["..key.."]: " .. argv[key] .. "\n");
+			--freeswitch.consoleLog("notice", "[app.lua] argv["..key.."]: "..argv[key].."\n");
 		end
 	end
 
 --route the request to the application
-	--freeswitch.consoleLog("notice", "[app] lua route: ".. scripts_dir .. "/app/" .. app_name .. "/index.lua" .. arguments .."\n");
-	dofile(scripts_dir .. "/app/" .. app_name .. "/index.lua" .. arguments);
+	--freeswitch.consoleLog("notice", "["..app_name.."]".. scripts_dir .. "/app/" .. app_name .. "/index.lua\n");
+	loadfile(scripts_dir .. "/app/" .. app_name .. "/index.lua")(argv);
+

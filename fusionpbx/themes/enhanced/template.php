@@ -33,30 +33,142 @@
 	if (strlen(PROJECT_PATH) > 0) {
 		$php_self_dir = substr($php_self_dir, strlen(PROJECT_PATH), strlen($php_self_dir));
 	}
+	if (isset($_SESSION['theme']['favicon']['text'])){
+		$favicon = $_SESSION['theme']['favicon']['text'];
+	}
+	else {
+		$favicon = '<!--{project_path}-->/themes/enhanced/favicon.ico';
+        }
 ?>
-<link rel="icon" href="<!--{project_path}-->/themes/enhanced/favicon.ico">
+<link rel="icon" href="<?php echo $favicon; ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <style type='text/css'>
+
+html, body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+DIV#page {
+	z-index: 1;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 0;
+	overflow: auto;
+}
+
+<?php
+if (
+	isset($_SESSION['theme']['background_image']) ||
+	$_SESSION['theme']['background_color'][0] != '' ||
+	$_SESSION['theme']['background_color'][1] != ''
+	) { ?>
+	/* Set the position and dimensions of the background image. */
+	DIV#page-background {
+		z-index: 0;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	<?php
+	if (
+		$_SESSION['theme']['background_color'][0] != '' &&
+		$_SESSION['theme']['background_color'][1] != ''
+		) {
+		?>
+		.page-background-gradient {
+			background-color: <?php echo $_SESSION['theme']['background_color'][0]?>;
+			background-image: -ms-linear-gradient(top, <?php echo $_SESSION['theme']['background_color'][0]?> 0%, <?php echo $_SESSION['theme']['background_color'][1]?> 100%);
+			background-image: -moz-linear-gradient(top , <?php echo $_SESSION['theme']['background_color'][0]?> 0%, <?php echo $_SESSION['theme']['background_color'][1]?> 100%);
+			background-image: -o-linear-gradient(top , <?php echo $_SESSION['theme']['background_color'][0]?> 0%, <?php echo $_SESSION['theme']['background_color'][1]?> 100%);
+			background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, <?php echo $_SESSION['theme']['background_color'][0]?>), color-stop(1, <?php echo $_SESSION['theme']['background_color'][1]?>));
+			background-image: -webkit-linear-gradient(top , <?php echo $_SESSION['theme']['background_color'][0]?> 0%, <?php echo $_SESSION['theme']['background_color'][1]?> 100%);
+			background-image: linear-gradient(to bottom, <?php echo $_SESSION['theme']['background_color'][0]?> 0%, <?php echo $_SESSION['theme']['background_color'][1]?> 100%);
+		}
+		<?php
+	}
+	?>
+<?php } ?>
+
+DIV#default_login {
+	z-index: 1000;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#default_login_container {
+	display: block;
+	width: 300px;
+	height: <?php echo ($_SESSION['login']['domain_name.visible']['boolean']) ? '300px' : '267px'; ?>;
+	<?php
+	if (
+		isset($_SESSION['theme']['background_image']) ||
+		$_SESSION['theme']['background_color'][0] != '' ||
+		$_SESSION['theme']['background_color'][1] != ''
+		) { ?>
+		background-color: <?php echo $_SESSION['theme']['login_background_color']['text']; ?>;
+		opacity: <?php echo $_SESSION['theme']['login_opacity']['text']; ?>;
+		filter: alpha(opacity=<?php echo (100 * (float) $_SESSION['theme']['login_opacity']['text']); ?>);
+		-moz-opacity: <?php echo $_SESSION['theme']['login_opacity']['text']; ?>;
+		-khtml-opacity: <?php echo $_SESSION['theme']['login_opacity']['text']; ?>;
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		border-radius: 4px;
+		-webkit-box-shadow: 0 1px 20px #888;
+		-moz-box-shadow: 0 1px 20px #888;
+		box-shadow: 0 1px 20px #888;
+		<?php
+	}
+	?>
+}
+
+DIV#footer {
+	background-color: <?php echo $_SESSION['theme']['footer_background_color']['text']; ?>;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 20px;
+	-khtml-opacity: <?php echo $_SESSION['theme']['footer_opacity']['text']; ?>;
+	-moz-opacity: <?php echo $_SESSION['theme']['footer_opacity']['text']; ?>;
+	filter: alpha(opacity=<?php echo (100 * (float) $_SESSION['theme']['footer_opacity']['text']); ?>);
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=<?php echo $_SESSION['theme']['footer_opacity']['text']; ?>);
+	opacity: <?php echo $_SESSION['theme']['footer_opacity']['text']; ?>;
+	text-align: center;
+	vertical-align: middle;
+	padding-bottom: 0;
+	padding-top: 8px;
+}
+
+.footer {
+	font-size: 11px;
+	font-family: arial;
+	color: <?php echo $_SESSION['theme']['footer_color']['text']; ?>;
+}
 
 img {
 	border: none;
 }
 
-A {
+a {
 	color: #004083;
 	width: 100%;
 }
 
-body {
-	margin-top: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-	margin-left: 0px;
-	/*background-image: url('<!--{project_path}-->/themes/enhanced/images/background.jpg');*/
-	/*background-repeat: repeat-x;*/
-	/*background-attachment: fixed;*/
-	/*background-color: #FFFFFF;*/
-}
+a:hover {
+	color: #5082ca;
+	}
 
 .title {
 	color: #952424;
@@ -72,24 +184,20 @@ b {
 }
 
 th {
-	/*border-top: 1px solid #444444;*/
-	border-bottom: 1px solid #999999;
+	border-bottom: 1px solid #a4aebf;
 	text-align: left;
 	color: #3164AD;
 	font-size: 13px;
 	font-family: arial;
-	/*font-weight: bold;*/
-	/*background-color: #506eab;*/
-	/*background-image: url('<!--{project_path}-->/themes/enhanced/images/background_th.png');*/
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-right: 7px;
-	padding-left: 7px;
+	padding-left: 0;
 }
 
-th a:link{ color:#3164AD; }
+th a:link{ color:#3164AD; text-decoration: none; }
 th a:visited{ color:#3164AD; }
-th a:hover{ color:#3164AD; }
+th a:hover{ color:#5082ca; text-decoration: underline; }
 th a:active{ color:#3164AD; }
 
 td {
@@ -98,179 +206,244 @@ td {
 	font-family: arial;
 }
 
-INPUT.btn {
-	font-family: verdana;
+td.list_control_icons {
+	/* multiple icons exist (horizontally) */
+	padding: none;
+	padding-left: 3px;
+	width: 50px;
+	text-align: right;
+	vertical-align: top;
+	white-space: nowrap;
+}
+
+td.list_control_icon {
+	/* a single icon exists */
+	padding: none;
+	padding-left: 3px;
+	width: 25px;
+	text-align: right;
+	vertical-align: top;
+	white-space: nowrap;
+}
+
+img.list_control_icon {
+	margin: 2px;
+	width: 21px;
+	height: 21px;
+	border: none;
+	opacity: 0.4;
+	-moz-opacity: 0.4;
+	}
+
+form {
+	margin: 0;
+	}
+
+input.btn, input.button {
+	font-family: Candara, Calibri, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+	padding: 2px 6px 3px 6px;
+	color: #fff;
+	font-weight: bold;
+	cursor: pointer;
 	font-size: 11px;
-}
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+	background-image: -moz-linear-gradient(top, #524f59 25%, #000 64%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.25, #524f59), color-stop(0.64, #000));
+	border: 1px solid #26242a;
+	background-color: #000;
+	text-align: center;
+	text-transform: uppercase;
+	opacity: 0.9;
+	-moz-opacity: 0.9;
+	}
 
-INPUT.button {
-	font-family: verdana;
-	font-size: 11px;
-}
+input.btn:hover, input.button:hover, img.list_control_icon:hover {
+	box-shadow: 0 0 5px #cddaf0;
+	-webkit-box-shadow: 0 0 5px #cddaf0;
+	-moz-box-shadow: 0 0 5px #cddaf0;
+	opacity: 1.0;
+	-moz-opacity: 1.0;
+	}
 
-SELECT.txt {
+input.txt, textarea.txt, select.txt, .formfld {
 	font-family: arial;
 	font-size: 12px;
-	width: 98.75%;
-	border: solid 1px #CCCCCC;
-	color: #666666;
-	background-color: #EFEFEF;
-	background-repeat:repeat-x;
-	height: 19px;
-}
-
-TEXTAREA.txt {
-	font-family: arial;
-	font-size: 12px;
-	width: 98.75%;
-	border: solid 1px #CCCCCC;
-	color: #666666;
-	background-color: #EFEFEF;
-	background-repeat:repeat-x;
-	overflow: auto;
-	padding: 4px;
-
-	-moz-border-radius-topleft:5px;
-	-webkit-border-top-left-radius:5px;
-	border-top-left-radius:5px;
-
-	-moz-border-radius-topright:5px;
-	-webkit-border-top-right-radius:5px;
-	border-top-right-radius:5px;
-
-	-moz-border-radius-bottomleft:5px;
-	-webkit-border-bottom-left-radius:5px;
-	border-bottom-left-radius:5px;
-
-	-moz-border-radius-bottomright:5px;
-	-webkit-border-bottom-right-radius:5px;
-	border-bottom-right-radius:5px;
-}
-
-INPUT.txt {
-	font-family: arial;
-	font-size: 12px;
-	width: 98.75%;
-	border: solid 1px #CCCCCC;
-	color: #666666;
-	background-color: #EFEFEF;
-	background-repeat:repeat-x;
-}
-
-.formfld {
-	border: solid 1px #CCCCCC;
-	color: #666666;
-	background-color: #F7F7F7;
-	width: 50%;
+	color: #000;
 	text-align: left;
-	/*width: 300px;*/
-	padding-left: 4px;
+	padding: 5px;
+	border: 1px solid #c0c0c0;
+	background-color: #fff;
+	box-shadow: 0 0 3px #cddaf0 inset;
+	-moz-box-shadow: 0 0 3px #cddaf0 inset;
+	-webkit-box-shadow: 0 0 3px #cddaf0 inset;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+    }
 
-	-moz-border-radius-topleft:5px;
-	-webkit-border-top-left-radius:5px;
-	border-top-left-radius:5px;
-
-	-moz-border-radius-topright:5px;
-	-webkit-border-top-right-radius:5px;
-	border-top-right-radius:5px;
-
-	-moz-border-radius-bottomleft:5px;
-	-webkit-border-bottom-left-radius:5px;
-	border-bottom-left-radius:5px;
-
-	-moz-border-radius-bottomright:5px;
-	-webkit-border-bottom-right-radius:5px;
-	border-bottom-right-radius:5px;
+input.txt, .formfld {
+	transition: width 0.25s;
+	-moz-transition: width 0.25s;
+	-webkit-transition: width 0.25s;
+	max-width: 500px;
 }
+
+input.txt:focus, .formfld:focus {
+	-webkit-box-shadow: 0 0 5px #cddaf0;
+	-moz-box-shadow: 0 0 5px #cddaf0;
+	box-shadow: 0 0 5px #cddaf0;
+	}
+
+select.formfld {
+	height: 27px;
+	padding: 4px;
+	}
+
+.formfld_highlight_bad {
+	border-color: #aa2525;
+	-webkit-box-shadow: 0 0 3px #aa2525 inset;
+	-moz-box-shadow: 0 0 3px #aa2525 inset;
+	box-shadow: 0 0 3px #aa2525 inset;
+	}
+
+.formfld_highlight_good {
+	border-color: #2fb22f;
+	-webkit-box-shadow: 0 0 3px #2fb22f inset;
+	-moz-box-shadow: 0 0 3px #2fb22f inset;
+	box-shadow: 0 0 3px #2fb22f inset;
+	}
+
+input.txt {
+	width: 98.75%;
+	}
+
+<!-- disables text input clear 'x' in IE 10+, slows down autosizeInput jquery script -->
+input[type=text]::-ms-clear {
+    display: none;
+}
+
+input.fileinput {
+	padding: 1px;
+	}
 
 .vncell {
-	border-bottom: 1px solid #999999;
-	/*background-color: #639BC1;*/
-	background-image: url('<!--{project_path}-->/themes/enhanced/images/background_cell.gif');
-	padding-right: 20px;
-	padding-left: 8px;
-	text-align: left;
-	color: #444444;
+	border-bottom: 1px solid #fff;
+	background-color: #e5e9f0;
+	padding: 8px;
+	text-align: right;
+	color: #000;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	border-right: 3px solid #e5e9f0;
 }
 
-.vncell a:link{ color:#444444; }
-.vncell a:visited{ color:#444444; }
-.vncell style0 a:hover{ color:#444444; }
-.vncell a:active{ color:#444444; }
-
-
 .vncellreq {
-	background-image: url('<!--{project_path}-->/themes/enhanced/images/background_cell.gif');
-	border-bottom: 1px solid #999999;
-	background-color: #639BC1;
-	padding-right: 20px;
-	padding-left: 8px;
+	border-bottom: 1px solid #fff;
+	background-color: #e5e9f0;
+	padding: 8px;
+	text-align: right;
+	font-weight: bold;
+	color: #000;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	border-right: 3px solid #cbcfd5;
+}
+
+.vncellcol {
+	background-color: #e5e9f0;
+	padding: 8px;
+	padding-bottom: 6px;
+	text-align: left;
+	color: #000;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	border-bottom: 3px solid #e5e9f0;
+}
+
+.vncellcolreq {
+	background-color: #e5e9f0;
+	padding: 8px;
+	padding-bottom: 6px;
 	text-align: left;
 	font-weight: bold;
-	color: #444444;
+	color: #000;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	border-bottom: 3px solid #cbcfd5;
 }
 
 .vtable {
-	border-bottom: 1px solid #DFDFDF;
+	border-bottom: 1px solid #e5e9f0;
+	color: #666;
+	font-size: 8pt;
+	text-align: left;
+	padding: 7px;
+	background-color: #fff;
+	vertical-align: middle;
+}
+
+.vtablerow {
+	color: #666;
+	text-align: left;
+	background-color: #fff;
+	vertical-align: middle;
+	height: 33px;
 }
 
 .listbg {
-	border-bottom: 1px solid #999999;
+	border-bottom: 1px solid #a4aebf;
 	font-size: 11px;
 	background-color: #990000;
-	color: #444444;	
-	padding-right: 16px;
-	padding-left: 6px;
-	padding-top: 4px;
-	padding-bottom: 4px;
+	color: #000;
+	padding: 4px 16px 4px 6px;
 }
+
+table.tr_hover tr {
+	background-color: transparent;
+	cursor: default;
+	}
+
+table.tr_hover tr:hover td,
+table.tr_hover tr:hover td a {
+	color: #5082ca;
+	}
 
 .row_style0 {
-	background-image: url('<!--{project_path}-->/themes/enhanced/images/background_cell.gif');
-	/*background-color: #E5EEF6;*/
-	border-bottom: 1px solid #999999;
-	color: #444444;
+	border-bottom: 1px solid #c5d1e5;
+	background-color: #e5e9f0;
+	color: #000;
 	text-align: left;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-right: 7px;
-	padding-left: 7px;
+	padding: 5px 7px;
 }
 
-.row_style0 a:link{ color:#444444; }
-.row_style0 a:visited{ color:#444444; }
-.row_style0 a:hover{ color:#444444; }
-.row_style0 a:active{ color:#444444; }
-
 .row_style1 {
-	border-bottom: 1px solid #999999;
-	background-color: #FFFFFF;
+	border-bottom: 1px solid #c5d1e5;
+	background-color: #fff;
+	color: #000;
 	text-align: left;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-right: 7px;
-	padding-left: 7px;
+	padding: 5px 7px;
 }
 
 .row_stylebg {
-	border-bottom: 1px solid #888888;
-	background-color: #5F5F5F;
-	color: #FFFFFF;
+	border-bottom: 1px solid #b9c5d8;
+	background-color: #f0f2f6;
+	color: #000;
 	text-align: left;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-right: 10px;
-	padding-left: 10px;
+	padding: 5px 7px;
 }
 
 .border {
-	border: solid 1px #999999;
+	border: solid 1px #a4aebf;
 	/*background-color: #FFFFFF;*/
 }
 
-.headermain {
-	/*background-color: #7FAEDE;*/
-}
 
 .frm {
 	border: solid 1px #CCCCCC;
@@ -292,9 +465,9 @@ table {
 }
 
 table th {
-	padding:4px 10px
+	padding:4px 7px
 }
- 
+
 table td {
 	/*background:#fff;*/
 	/*padding:2px 10px 4px 10px*/
@@ -303,12 +476,12 @@ table td {
 table tr.even td {
 	background:#eee;
 	background-image: url('<!--{project_path}-->/themes/enhanced/images/background_cell.gif');
-	border-bottom: 1px solid #999999;
+	border-bottom: 1px solid #a4aebf;
 	color: #333333;
 }
- 
+
 table tr.odd td {
-	border-bottom: 1px solid #999999;
+	border-bottom: 1px solid #a4aebf;
 	color: #000000;
 }
 
@@ -336,15 +509,37 @@ table tr:nth-last-child(-5) td:first-of-type {
 	border-bottom-top-radius:7px;
 }
 
+fieldset {
+	padding: 8px;
+	text-align: left;
+	border: 1px solid #aeb7c6;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	margin: 0;
+}
+
+legend {
+	font-size: 13px;
+	font-family: arial;
+	font-weight: bold;
+	color: #3164ad;
+	padding-bottom: 8px;
+	padding-right: 2px;
+}
 
 /* begin the menu css*/
 
 	.menu_bar {
 		background-image: url('<!--{project_path}-->/themes/enhanced/images/background_black.png');
-		-webkit-border-radius: 7px 7px 7px 7px;
-		-moz-border-radius: 7px 7px 7px 7px;
-		border-radius: 7px 7px 7px 7px;
-		padding: 3px;
+		background-position: 0px -1px;
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		border-radius: 4px;
+		padding: 4px;
+		-webkit-box-shadow: 0 1px 4px #aaa;
+		-moz-box-shadow: 0 1px 4px #aaa;
+		box-shadow: 0 1px 4px #aaa;
 	}
 
 	.menu_bg {
@@ -369,11 +564,10 @@ table tr:nth-last-child(-5) td:first-of-type {
 		filter:alpha(opacity=90);
 		-moz-opacity:0.9;
 		-khtml-opacity: 0.9;
-		opacity: 0.9;
 
-		-webkit-border-radius: 7px 7px 7px 7px;
-		-moz-border-radius: 7px 7px 7px 7px;
-		border-radius: 7px 7px 7px 7px;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
 		text-align: left;
 		padding-top: 15px;
 		padding-bottom: 25px;
@@ -383,26 +577,29 @@ table tr:nth-last-child(-5) td:first-of-type {
 
 	.main_content {
 		<?php
-			if ($browser_name == "Internet Explorer" && $browser_version_array[0] < '10' ) {
-				echo "background-color: #FFFFFF;";
-			}
-			else {
-				if (strlen($_SESSION["username"]) > 0) {
-					echo "background-image: url('<!--{project_path}-->/themes/enhanced/images/content_background.png');";
-				}
-			}
-		?>
-		background-repeat: repeat-x;
-		background-attachment: fixed;
-		padding: 20px;
-		opacity: 0.9;
-		filter:alpha(opacity=90);
-		-moz-opacity:0.9;
-		-khtml-opacity: 0.9;
-		opacity: 0.9;
-		-webkit-border-radius: 7px 7px 7px 7px;
-		-moz-border-radius: 7px 7px 7px 7px;
-		border-radius: 7px 7px 7px 7px;
+		if (
+			strlen($_SESSION["username"]) > 0 &&
+			(
+				isset($_SESSION['theme']['background_image']) ||
+				$_SESSION['theme']['background_color'][0] != '' ||
+				$_SESSION['theme']['background_color'][1] != ''
+			)) { ?>
+			background-color: #FFFFFF;
+			background-attachment: fixed;
+			opacity: 0.93;
+			filter:alpha(opacity=93);
+			-moz-opacity:0.93;
+			-khtml-opacity: 0.93;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			border-radius: 4px;
+			-webkit-box-shadow: 0 1px 4px #aaa;
+			-moz-box-shadow: 0 1px 4px #aaa;
+			box-shadow: 0 1px 4px #aaa;
+			padding: 20px;
+		<?php } else { ?>
+			padding: 10px;
+		<?php } ?>
 		text-align: left;
 	}
 
@@ -417,19 +614,32 @@ table tr:nth-last-child(-5) td:first-of-type {
 		/*border-color:#ccc #888 #555 #bbb;*/
 		white-space:nowrap;
 		margin:0;
-		padding:3px 3px 3px 3px;
+		padding: 3px;
 	}
 
 	#menu h2{
 		/*background:#222222 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 		/*text-transform:uppercase*/
-		width:118px;
+		<?php
+		if ($_SESSION['domain']['language']['code'] == "en-us") {
+			echo "width:125px;\n";
+		}
+		if ($_SESSION['domain']['language']['code'] == "es-cl") {
+			echo "width:175px;\n";
+		}
+		if ($_SESSION['domain']['language']['code'] == "fr-fr") {
+			echo "width:140px;\n";
+		}
+		if ($_SESSION['domain']['language']['code'] == "pt-pt") {
+			echo "width:175px;\n";
+		}
+		?>
 	}
 
 	#menu h2 h2{
 		/*background:#4e4b56 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 		/*text-transform:uppercase*/
-		padding:3px 3px 3px 3px;
+		padding: 3px;
 	}
 
 	#menu a{
@@ -444,27 +654,43 @@ table tr:nth-last-child(-5) td:first-of-type {
 	}
 
 	#menu a, #menu a:visited{
-		color:#cccccc;
+		color:#fff;
 	}
 
 	#menu .menu_sub {
 		display:none;
 		padding-top:10px;
-		width:124px;
+		<?php
+		if ($_SESSION['domain']['language']['code'] == "en-us") {
+			echo "width:125px;\n";
+		}
+		if ($_SESSION['domain']['language']['code'] == "es-cl") {
+			echo "width:175px;\n";
+		}
+		if ($_SESSION['domain']['language']['code'] == "fr-fr") {
+			echo "width:140px;\n";
+		}
+		if ($_SESSION['domain']['language']['code'] == "pt-pt") {
+			echo "width:175px;\n";
+		}
+		?>
 		background:#333333;
 		background-color: rgba(20, 20, 20, 0.9);
-		-webkit-border-radius: 0px 0px 12px 12px;
-		-moz-border-radius: 0px 0px 12px 12px;
-		border-radius: 0px 0px 12px 12px;
+		-webkit-border-radius: 0 0 3px 3px;
+		-moz-border-radius: 0 0 3px 3px;
+		border-radius: 0 0 3px 3px;
+		-webkit-box-shadow: 0 2px 3px #aaa;
+		-moz-box-shadow: 0 2px 3px #aaa;
+		box-shadow: 0 2px 3px #aaa;
 	}
 
 	#menu a:hover{
 		width:114px;
 		color:#fd9c03;
 		background:#1F1F1F;
-		-webkit-border-radius: 12px 12px 12px 12px;
-		-moz-border-radius: 12px 12px 12px 12px;
-		border-radius: 12px 12px 12px 12px;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
 	}
 
 	#menu a:active{
@@ -502,9 +728,9 @@ table tr:nth-last-child(-5) td:first-of-type {
 	file and this method */
 
 	div#menu h2:hover{
-		-webkit-border-radius: 12px 12px 12px 12px;
-		-moz-border-radius: 12px 12px 12px 12px;
-		border-radius: 12px 12px 12px 12px;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
 		/*background:#1F1F1F url(<!--{project_path}-->/css/images/expand3.gif) no-repeat -999px -9999px;*/
 	}
 
@@ -528,7 +754,7 @@ table tr:nth-last-child(-5) td:first-of-type {
 	#menu a.x, #menu a.x:visited{
 		font-weight:bold;
 		color:#000;
-		/*background:#999999 url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
+		/*background:#a4aebf url(<!--{project_path}-->/css/images/expand3.gif) no-repeat 100% 100%;*/
 	}
 
 	#menu a.x:hover{
@@ -543,68 +769,165 @@ table tr:nth-last-child(-5) td:first-of-type {
 
 /* end the menu css*/
 
-/* Remove margins from the 'html' and 'body' tags, and ensure the page takes up full screen height */
-	html, body {
-		height:100%;
-		margin:0;
-		padding:0;
+	#message_container {
+		z-index: 99998;
+		position: absolute;
+		top: -200px;
+		left: 0;
+		right: 0;
+		height: 30px;
+		filter: alpha(opacity=0);
+		opacity: 0;
+		-moz-opacity:0;
+		-khtml-opacity: 0;
+		padding: 8px 0;
 	}
 
-	/* Set the position and dimensions of the background image. */
-	#page-background {
-		position:fixed; 
-		top:0;
-		left:0;
-		width:100%;
-		height:100%;
+	#message_text {
+		z-index: 99999;
+		position: absolute;
+		top: -200px;
+		left: 0;
+		right: 0;
+		filter: alpha(opacity=0);
+		opacity: 0;
+		-moz-opacity:0;
+		-khtml-opacity: 0;
+		margin: 0 auto;
+		vertical-align: middle;
+		padding: 8px 0;
+		text-align: center;
+		font-family: arial, san-serif;
+		font-size: 10pt;
 	}
 
-	/* Specify the position and layering for the content that needs to 
-	appear in front of the background image. Must have a higher z-index 
-	value than the background image. Also add some padding to compensate 
-	for removing the margin from the 'html' and 'body' tags. */
-	#page {
-		position:relative; 
-		z-index:1;
-		padding:10px;
+	.message_container_mood_default {
+		background-color: <?php echo $_SESSION['theme']['message_default_background_color']['text']; ?>;
 	}
 
-	.vtable {
-		position:relative; 
-		z-index:1;
-		padding:7px;
-		color: 000;
-		text-align: left;
-		/*
-		box-shadow:5px -5px 10px #700;
-		-webkit-box-shadow:5px -5px 10px #888;
-		-moz-box-shadow:5px -5px 10px #334455;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
-		*/
-		/*border: 1px solid #555555;*/
-		/*padding: 10px;*/
-		background-color: #FFFFFF;
-		filter:alpha(opacity=90);
-		-moz-opacity:0.9;
-		-khtml-opacity: 0.9;
-		opacity: 0.9;
+	.message_container_mood_negative {
+		background-color: <?php echo $_SESSION['theme']['message_negative_background_color']['text']; ?>;
 	}
 
-	.message {
-		background-repeat: repeat-x;
-		background-attachment: fixed;
+	.message_container_mood_alert {
+		background-color: <?php echo $_SESSION['theme']['message_alert_background_color']['text']; ?>;
+	}
+
+	.message_text_mood_default {
+		color: <?php echo $_SESSION['theme']['message_default_color']['text']; ?>;
+	}
+
+	.message_text_mood_negative {
+		color: <?php echo $_SESSION['theme']['message_negative_color']['text']; ?>;
+	}
+
+	.message_text_mood_alert {
+		color: <?php echo $_SESSION['theme']['message_alert_color']['text']; ?>;
+	}
+
+	#logout_icon {
+		filter: alpha(opacity=80);
+		opacity: 0.8;
+		-moz-opacity: 0.8;
+		-khtml-opacity: 0.8;
+		margin-left: 17px;
+	}
+
+	#logout_icon:hover {
+		filter: alpha(opacity=100);
+		opacity: 1;
+		-moz-opacity: 1;
+		-khtml-opacity: 1;
+		cursor: pointer;
+	}
+
+	#domain_selector_icon {
+		filter: alpha(opacity=80);
+		opacity: 0.8;
+		-moz-opacity: 0.8;
+		-khtml-opacity: 0.8;
+		margin-left: 17px;
+	}
+
+	#domain_selector_icon:hover {
+		filter: alpha(opacity=100);
+		opacity: 1;
+		-moz-opacity: 1;
+		-khtml-opacity: 1;
+		cursor: pointer;
+	}
+
+	#domains_container {
+		z-index: 99990;
+		position: absolute;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		width: 360px;
+		overflow: hidden;
+		display: none;
+	}
+
+	#domains_block {
+		position: absolute;
+		right: -300px;
+		top: 0;
+		bottom: 0;
+		width: 300px;
+		padding: 20px 20px 100px 20px;
+		font-family: arial, san-serif;
+		font-size: 10pt;
+		overflow: hidden;
+		background-color: #fff;
+		-webkit-box-shadow: 0 0 10px #888;
+		-moz-box-shadow: 0 0 10px #888;
+		box-shadow: 0 0 10px #888;
+	}
+
+	#domains_header {
+		position: relative;
+		width: 300px;
+		height: 55px;
+		margin-bottom: 20px;
+	}
+
+	#domains_list {
+		position: relative;
+		overflow: auto;
+		width: 296px;
+		height: 100%;
+		padding: 1px;
+		background-color: #fff;
+		border: 1px solid #a4aebf;
+	}
+
+	DIV.domains_list_item {
+		border-bottom: 1px solid #c5d1e5;
+		padding: 5px 8px 8px 8px;
+		overflow: hidden;
+		white-space: nowrap;
+		cursor: pointer;
+		}
+
+	DIV.domains_list_item SPAN.domain_list_item_description {
+		color: #999;
+		font-size: 11px;
+		}
+
+	DIV.domains_list_item:hover A,
+	DIV.domains_list_item:hover SPAN {
+		color: #5082ca;
+		}
+
+	DIV.login_message {
+		border: 1px solid #bae0ba;
+		background-color: #eeffee;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
 		padding: 20px;
-		opacity: 0.9;
-		filter:alpha(opacity=90);
-		-moz-opacity:0.9;
-		-khtml-opacity: 0.9;
-		opacity: 0.9;
-		-webkit-border-radius: 7px 7px 7px 7px;
-		-moz-border-radius: 7px 7px 7px 7px;
-		border-radius: 7px 7px 7px 7px;
-		text-align: left;
-	}
+		}
+
 </style>
 
 <script type="text/javascript">
@@ -629,220 +952,472 @@ table tr:nth-last-child(-5) td:first-of-type {
 		}
 	//-->
 </SCRIPT>
-</head>
-<body onload="message_timeout();">
-	<?php
-	//get a random background image
-		$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/enhanced/images/backgrounds';
-		$dir_list = opendir($dir);
-		$v_background_array = array();
-		$x = 0;
-		while (false !== ($file = readdir($dir_list))) {
-			if ($file != "." AND $file != ".."){
-				$new_path = $dir.'/'.$file;
-				$level = explode('/',$new_path);
-				if (substr($new_path, -4) == ".svn") {
-					//ignore .svn dir and subdir
-				}
-				elseif (substr($new_path, -3) == ".db") {
-					//ignore .db files
-				}
-				else {
-					$new_path = str_replace($_SERVER["DOCUMENT_ROOT"], "", $new_path);
-					$v_background_array[] = $new_path;
-				}
-				if ($x > 1000) { break; };
-				$x++;
-			}
+
+<?php if (substr_count($_SERVER["PHP_SELF"], "xml_cdr_statistics.php") == 0) { ?>
+	<!-- // javascript calendar and color picker (source: http://rightjs.org) -->
+	<script language="JavaScript" type='text/javascript' src='<?php echo PROJECT_PATH; ?>/resources/rightjs/right.js'></script>
+	<script language="JavaScript" type='text/javascript' src='<?php echo PROJECT_PATH; ?>/resources/rightjs/right-calendar-src.js'></script>
+	<script language="JavaScript" type='text/javascript' src='<?php echo PROJECT_PATH; ?>/resources/rightjs/right-colorpicker-src.js'></script>
+<?php } ?>
+
+<script language="JavaScript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/jquery-1.8.3.js"></script>
+<script language="JavaScript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/jquery.autosize.input.js"></script>
+<script language="JavaScript" type="text/javascript">
+	$(document).ready(function() {
+
+		$("#domain_selector_icon").click(function() { show_domains(); });
+		$("#domains_hide").click(function() { hide_domains(); });
+
+		function show_domains() {
+			$("#domains_container").show();
+			$("#domains_block").animate({marginRight: '+=300'}, 400);
+			$("#domain_filter").focus();
+			document.getElementById('domains_visible').value = 1;
 		}
-		if (strlen($_SESSION['background_image'])== 0) {
-			$_SESSION['background_image'] = $v_background_array[array_rand($v_background_array, 1)];
+
+		function hide_domains() {
+			$(document).ready(function() {
+				$("#domains_block").animate({marginRight: '-=300'}, 400, function() {
+					$("#domain_filter").val('');
+					domain_search($("#domain_filter").val());
+					$("#domains_container").hide();
+				});
+			});
+			document.getElementById('domains_visible').value = 0;
+		}
+
+		// hit escape to toggle visibility of domain selector
+		$(document).keyup(function(e) {
+			if (e.keyCode == 27 && document.getElementById('domains_visible').value == 0) {
+				show_domains();
+			}
+			else if (e.keyCode == 27 && document.getElementById('domains_visible').value == 1) {
+				hide_domains();
+			}
+		});
+
+		// linkify rows (except the last - the list_control_icons cell)
+		// on a table with a class of 'tr_hover', according to the href
+		// attribute of the <tr> tag
+		$('.tr_hover tr').each(function(i,e) {
+		  $(e).children('td:not(.list_control_icon,.list_control_icons,.tr_link_void)').click(function() {
+			 var href = $(this).closest("tr").attr("href");
+			 if (href) { window.location = href; }
+		  });
+		});
+
+	});
+
+</script>
+
+<script language="JavaScript" type="text/javascript">
+	// applies the auto-size jquery script to all text inputs
+	$(document).ready(function() {
+		$("input.txt, textarea.txt, .formfld").autosizeInput();
+	});
+</script>
+
+<script language="JavaScript" type="text/javascript">
+	function display_message(msg, mood) {
+		mood = typeof mood !== 'undefined' ? mood : 'default';
+		if (msg != '') {
+			// insert temp div to get width w/o scroll bar
+			var helper_div = $('<div />');
+			$('#page').append(helper_div);
+			inner_width = helper_div.width();
+			helper_div.remove();
+			// add class by mood
+			$("#message_container").addClass('message_container_mood_'+mood);
+			$("#message_text").addClass('message_text_mood_'+mood);
+			// output message
+			$("#message_text").html(msg);
+			$("#message_container").css({height: $("#message_text").css("height")});
+			$("#message_container").css({width: inner_width});
+			$("#message_text").animate({top: '+=200'}, 0).animate({opacity: 1}, "fast").delay(<?php echo (1000 * (float) $_SESSION['theme']['message_delay']['text']); ?>).animate({top: '-=200'}, 1000).animate({opacity: 0});
+			$("#message_container").animate({top: '+=200'}, 0).animate({opacity: <?php echo $_SESSION['theme']['message_opacity']['text']; ?>}, "fast").delay(<?php echo (1000 * (float) $_SESSION['theme']['message_delay']['text']); ?>).animate({top: '-=200'}, 1000).animate({opacity: 0}, function() {
+				$("#message_container").removeClass('message_container_mood_'+mood);
+			});
+		}
+	}
+</script>
+
+</head>
+
+<?php
+// set message_onload
+if (strlen($_SESSION['message']) > 0) {
+	$message_text = addslashes($_SESSION['message']);
+	$message_mood = $_SESSION['message_mood'];
+
+	$onload .= "display_message('".$message_text."'";
+	if ($message_mood != '') {
+		$onload .= ", '".$message_mood."'";
+	}
+	$onload .= "); ";
+	unset($_SESSION['message'], $_SESSION['message_mood']);
+}
+?>
+
+<body onload="<?php echo $onload;?>">
+
+	<div id='message_container' class='message_container_mood_default'></div>
+	<div id='message_text' class='message_container_text_default'></div>
+
+	<?php
+	//logged in show the domains block
+	if (strlen($_SESSION["username"]) > 0 && permission_exists("domain_select") && count($_SESSION['domains']) > 1) {
+
+		//add multi-lingual support
+		require_once "themes/enhanced/app_languages.php";
+		foreach($text as $key => $value) {
+			$text[$key] = $value[$_SESSION['domain']['language']['code']];
+		}
+
+		?>
+		<div id="domains_container">
+			<input type="hidden" id="domains_visible" value="0">
+			<div id="domains_block">
+				<div id="domains_header">
+					<input id="domains_hide" type="button" class="btn" style="float: right" value="<?php echo $text['theme-button-close']; ?>">
+					<b style="color: #000;"><?php echo $text['theme-title-domains']; ?></b> (<?php echo sizeof($_SESSION['domains']); ?>)
+					<br><br>
+					<input type="text" id="domain_filter" class="formfld" style="min-width: 100%; width: 100%;" placeholder="<?php echo $text['theme-label-search']; ?>" onkeyup="domain_search(this.value);">
+				</div>
+				<div id="domains_list">
+					<?php
+					$bgcolor1 = "#eaedf2";
+					$bgcolor2 = "#fff";
+					foreach($_SESSION['domains'] as $domain) {
+						$bgcolor = ($bgcolor == $bgcolor1) ? $bgcolor2 : $bgcolor1;
+						$bgcolor = ($domain['domain_uuid'] == $_SESSION['domain_uuid']) ? "#eeffee" : $bgcolor;
+						echo "<div id=\"".$domain['domain_name']."\" class='domains_list_item' style='background-color: ".$bgcolor."' onclick=\"document.location.href='".PROJECT_PATH."/core/domain_settings/domains.php?domain_uuid=".$domain['domain_uuid']."&domain_change=true';\">";
+						echo "<a href='".PROJECT_PATH."/core/domain_settings/domains.php?domain_uuid=".$domain['domain_uuid']."&domain_change=true' ".(($domain['domain_uuid'] == $_SESSION['domain_uuid']) ? "style='font-weight: bold;'" : null).">".$domain['domain_name']."</a>\n";
+						if ($domain['domain_description'] != '') {
+							echo "<span class=\"domain_list_item_description\"> - ".$domain['domain_description']."</span>\n";
+						}
+						echo "</div>\n";
+						$ary_domain_names[] = $domain['domain_name'];
+						$ary_domain_descs[] = str_replace('"','\"',$domain['domain_description']);
+					}
+					?>
+				</div>
+
+				<script>
+					var domain_names = new Array("<?=implode('","', $ary_domain_names)?>");
+					var domain_descs = new Array("<?=implode('","', $ary_domain_descs)?>");
+
+					function domain_search(criteria) {
+						for (var x = 0; x < domain_names.length; x++) {
+							if (domain_names[x].toLowerCase().match(criteria.toLowerCase()) || domain_descs[x].toLowerCase().match(criteria.toLowerCase())) {
+								document.getElementById(domain_names[x]).style.display = '';
+							}
+							else {
+								document.getElementById(domain_names[x]).style.display = 'none';
+							}
+						}
+					}
+				</script>
+
+			</div>
+		</div>
+		<?php
+	}
+	?>
+
+	<?php
+	// check for background image
+	if (isset($_SESSION['theme']['background_image'])) {
+		// background image is enabled
+		$image_extensions = array('jpg','jpeg','png','gif');
+
+		if (count($_SESSION['theme']['background_image']) > 0) {
+
+			if (strlen($_SESSION['background_image']) == 0) {
+				$_SESSION['background_image'] = $_SESSION['theme']['background_image'][array_rand($_SESSION['theme']['background_image'])];
+				$background_image = $_SESSION['background_image'];
+			}
+
+			// background image(s) specified, check if source is file or folder
+			if (in_array(strtolower(pathinfo($background_image, PATHINFO_EXTENSION)), $image_extensions)) {
+				$image_source = 'file';
+			}
+			else {
+				$image_source = 'folder';
+			}
+
+			// is source (file/folder) local or remote
+			if (substr($background_image, 0, 4) == 'http') {
+				$source_path = $background_image;
+			}
+			else if (substr($background_image, 0, 1) == '/') { //
+				// use project path as root
+				$source_path = PROJECT_PATH.$background_image;
+			}
+			else {
+				// use theme images/backgrounds folder as root
+				$source_path = PROJECT_PATH.'/themes/enhanced/images/backgrounds/'.$background_image;
+			}
+
+		}
+		else {
+			// not set, so use default backgrounds folder and images
+			$image_source = 'folder';
+			$source_path = PROJECT_PATH.'/themes/enhanced/images/backgrounds';
+		}
+
+		if ($image_source == 'folder') {
+			if (file_exists($_SERVER["DOCUMENT_ROOT"].$source_path)) {
+				// retrieve a random background image
+				$dir_list = opendir($_SERVER["DOCUMENT_ROOT"].$source_path);
+				$v_background_array = array();
+				$x = 0;
+				while (false !== ($file = readdir($dir_list))) {
+					if ($file != "." AND $file != ".."){
+						$new_path = $dir.'/'.$file;
+						$level = explode('/',$new_path);
+						if (in_array(strtolower(pathinfo($new_path, PATHINFO_EXTENSION)), $image_extensions)) {
+							$v_background_array[] = $new_path;
+						}
+						if ($x > 100) { break; };
+						$x++;
+					}
+				}
+				if ($_SESSION['background_image'] == '' && sizeof($v_background_array) > 0) {
+					$_SESSION['background_image'] = PROJECT_PATH.$source_path.$v_background_array[array_rand($v_background_array, 1)];
+				}
+			}
+			else {
+				$_SESSION['background_image'] = '';
+			}
+
+		}
+		else if ($image_source == 'file') {
+			$_SESSION['background_image'] = $source_path;
 		}
 
 		//show the background
-		echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
+		if ($_SESSION['background_image'] != '') {
+			echo "<div id='page-background'><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%'></div>\n";
+		}
+
+	}
+
+	// check for background color
+	else if (
+		$_SESSION['theme']['background_color'][0] != '' ||
+		$_SESSION['theme']['background_color'][1] != ''
+		) { // background color 1 or 2 is enabled
+
+		echo "bg1 = ".$_SESSION['theme']['background_color'][0]."<br><br>";
+		echo "bg2 = ".$_SESSION['theme']['background_color'][1]."<br><br>";
+
+		if ($_SESSION['theme']['background_color'][0] != '' && $_SESSION['theme']['background_color'][1] == '') { // use color 1
+			echo "<div id='page-background' style='background-color: ".$_SESSION['theme']['background_color'][0].";'>&nbsp;</div>\n";
+		}
+		else if ($_SESSION['theme']['background_color'][0] == '' && $_SESSION['theme']['background_color'][1] != '') { // use color 2
+			echo "<div id='page-background' style='background-color: ".$_SESSION['theme']['background_color'][1].";'>&nbsp;</div>\n";
+		}
+		else if ($_SESSION['theme']['background_color'][0] != '' && $_SESSION['theme']['background_color'][1] != '') { // vertical gradient
+			echo "<div id='page-background' class='page-background-gradient'>&nbsp;</div>\n";
+		}
+		else { // default: white
+			echo "<div id='page-background' style='background-color: #fff;'>&nbsp;</div>\n";
+		}
+	}
+	?>
+
+	<?php
+	// qr code container for contacts
+	echo "<div id='qr_code_container' style='display: none;' onclick='$(this).fadeOut(400);'>";
+	echo "	<table cellpadding='0' cellspacing='0' border='0' width='100%' height='100%'><tr><td align='center' valign='middle'>";
+	echo "		<span id='qr_code' onclick=\"$('#qr_code_container').fadeOut(400);\"></span>";
+	echo "	</td></tr></table>";
+	echo "</div>";
 	?>
 
 	<div id="page" align='center'>
-	<table width='90%' class='border.disabled' border='0' cellpadding='0' cellspacing='0'>
-		<tr>
-			<td align='left' valign='top' class='headermain' colspan='2' width='100%' height='70px;'>
-				<table border='0' cellpadding='0' cellspacing='0' width='100%'>
-					<tr>
-						<td width='50%'>
-							<?php
-							if (strlen(PROJECT_PATH) > 0) {
-								echo "<a href='".PROJECT_PATH."'><img src='".PROJECT_PATH."/themes/enhanced/images/logo.png' /></a>";
-							}
-							else {
-								echo "<a href='/'><img src='/themes/enhanced/images/logo.png' /></a>";
-							}
-							?>
-						</td>
-						<td width='50%' class='' align='right' valign='middle'>
-							<?php
-							//logged in show the domains
-								if (strlen($_SESSION["username"]) > 0 && permission_exists("domain_select") && count($_SESSION['domains']) > 1) {
-									//$tmp_style = "style=\"opacity:0.7;filter:alpha(opacity=70)\" ";
-									//$tmp_style .= "onmouseover=\"this.style.opacity=1;this.filters.alpha.opacity=90\" ";
-									//$tmp_style .= "onmouseout=\"this.style.opacity=0.7;this.filters.alpha.opacity=70\" ";
-									$tmp_style = "style=\"opacity:0.7;\" ";
-									$tmp_style .= "onmouseover=\"this.style.opacity=1;\" ";
-									$tmp_style .= "onmouseout=\"this.style.opacity=0.7;\" ";
-									echo "		<select id='domain_uuid' name='domain_uuid' class='formfld' onchange=\"window.location='".PROJECT_PATH."/core/domain_settings/domains.php?domain_uuid='+this.value+'&domain_change=true';\" $tmp_style>\n";
-									foreach($_SESSION['domains'] as $row) {
-										if ($row['domain_uuid'] == $_SESSION['domain_uuid']) {
-											echo "	<option value='".$row['domain_uuid']."' selected='selected'>".$row['domain_name']."</option>\n";
+		<?php if (!$default_login) { ?>
+			<table width='90%' border='0' cellpadding='0' cellspacing='0'>
+				<tr>
+					<td align='left' valign='top'>
+						<table border='0' cellpadding='0' cellspacing='0' width='100%' style='margin-top: 10px;'>
+							<tr>
+								<td>
+									<?php
+									if ($_SERVER['PHP_SELF'] != PROJECT_PATH."/resources/install.php") {
+										if (isset($_SESSION['theme']['logo']['text'])){
+											$logo = $_SESSION['theme']['logo']['text'];
 										}
 										else {
-											echo "	<option value='".$row['domain_uuid']."'>".$row['domain_name']."</option>\n";
+											$logo = PROJECT_PATH."/themes/enhanced/images/logo.png";
+										}
+										if (strlen(PROJECT_PATH) > 0) {
+											echo "<a href='".PROJECT_PATH."'><img src='$logo' /></a>";
+										}
+										else {
+											if (!$default_login) {
+												echo "<a href='/'><img src='$logo' /></a>";
+											}
 										}
 									}
-									echo "	</select>\n";
-								}
+									?>
+								</td>
+								<td width='100%' style='padding-right: 15px;' align='right' valign='middle'>
+									<?php
+									echo "<span style='white-space: nowrap;'>";
 
-							//logged out show the login
-								if (strlen($_SESSION["username"]) == 0) {
-									//add multi-lingual support
-										require_once "core/user_settings/app_languages.php";
-										foreach($text as $key => $value) {
-											$text[$key] = $value[$_SESSION['domain']['language']['code']];
-										}
-									//set a default login destination
-										if (strlen($_SESSION['login']['destination']['url']) == 0) {
-											$_SESSION['login']['destination']['url'] = PROJECT_PATH."/core/user_settings/user_dashboard.php";
-										}
-									//login form
-										echo "<div align='right'>\n";
-										echo "<form name='login' METHOD=\"POST\" action=\"".$_SESSION['login']['destination']['url']."\">\n";
-										echo "<input type='hidden' name='path' value='$path'>\n";
-										echo "<table width='200' border='0'>\n";
-										echo "<tr>\n";
-										//echo "<td align='left'>\n";
-										//echo "	<strong>".$text['label-username'].":</strong>\n";
-										//echo "</td>\n";
-										echo "<td>\n";
-										echo "  <input type=\"text\" style='width: 150px;' class='formfld' name=\"username\" placeholder=\"".$text['label-username']."\">\n";
-										echo "</td>\n";
-										//echo "</tr>\n";
+								//logout icon
+									if ($_SESSION['username'] != '') {
+										$username_full = $_SESSION['username'].((count($_SESSION['domains']) > 1) ? "@".$_SESSION["user_context"] : null);
+										echo "<a href='".PROJECT_PATH."/logout.php' onclick=\"return confirm('".$text['theme-confirm-logout']."');\"><img id='logout_icon' src='".PROJECT_PATH."/themes/enhanced/images/icon_logout.png' style='width: 28px; height: 23px; border: none; margin-top: 15px;' title='".$text['theme-label-logout']." ".$username_full."' align='absmiddle'></a>";
+										unset($username_full);
+									}
 
-										//echo "<tr>\n";
-										//echo "<td align='left'>\n";
-										//echo "	<strong>".$text['label-password'].":</strong>\n";
-										//echo "</td>\n";
-										echo "<td align='left'>\n";
-										echo "	<input type=\"password\" style='width: 150px;' class='formfld' name=\"password\" placeholder=\"".$text['label-password']."\">\n";
-										echo "</td>\n";
-										//echo "</tr>\n";
+								//domain selector icon
+									if ($_SESSION["username"] != '' && permission_exists("domain_select") && count($_SESSION['domains']) > 1) {
+										echo "<img id='domain_selector_icon' src='".PROJECT_PATH."/themes/enhanced/images/icon_domain_selector.png' style='width: 28px; height: 23px; border: none; margin-top: 15px;' title='".$_SESSION['domain_name']." &#10;".$text['theme-label-open_selector']."' align='absmiddle'>";
+									}
 
-										if ($_SESSION['login']['domain_name.visible']['boolean'] == "true") {
-											//echo "<tr>\n";
-											echo "<td align='left'>\n";
-											echo "	<strong>".$text['label-domain'].":</strong>\n";
-											echo "</td>\n";
-											echo "<td>\n";
-											if (count($_SESSION['login']['domain_name']) > 0) {
-												echo "    <select style='width: 150px;' class='formfld' name='domain_name'>\n";
-												echo "    <option value=''></option>\n";
-												foreach ($_SESSION['login']['domain_name'] as &$row) {
-													echo "    <option value='$row'>$row</option>\n";
+									echo "</span>\n";
+
+								// login form
+									if ($_SERVER['PHP_SELF'] != PROJECT_PATH."/resources/install.php" && !$default_login) {
+										if (strlen($_SESSION["username"]) == 0) {
+										//add multi-lingual support
+											require_once "core/user_settings/app_languages.php";
+											foreach($text as $key => $value) {
+												$text[$key] = $value[$_SESSION['domain']['language']['code']];
+											}
+										//set a default login destination
+											if (strlen($_SESSION['login']['destination']['url']) == 0) {
+												$_SESSION['login']['destination']['url'] = PROJECT_PATH."/core/user_settings/user_dashboard.php";
+											}
+										//login form
+											echo "<div align='right'>\n";
+											echo "	<form name='login' METHOD=\"POST\" action=\"".$_SESSION['login']['destination']['url']."\">\n";
+											echo "		<input type='hidden' name='path' value='".$_GET['path']."'>\n";
+											echo "		<table width='200' border='0'>\n";
+											echo "			<tr>\n";
+											echo "				<td>\n";
+											echo "		  			<input type='text' class='formfld' style='min-width: 150px; width: 105px; text-align: center;' name='username' placeholder=\"".$text['label-username']."\">\n";
+											echo "				</td>\n";
+											echo "				<td align='left'>\n";
+											echo "					<input type='password' class='formfld' style='min-width: 150px; width: 105px; text-align: center;' name='password' placeholder=\"".$text['label-password']."\">\n";
+											echo "				</td>\n";
+
+											if ($_SESSION['login']['domain_name.visible']['boolean'] == "true") {
+												echo "			<td align='left'>\n";
+												echo "				<strong>".$text['label-domain'].":</strong>\n";
+												echo "			</td>\n";
+												echo "			<td>\n";
+												if (count($_SESSION['login']['domain_name']) > 0) {
+													echo "    		<select style='width: 150px;' class='formfld' name='domain_name'>\n";
+													echo "    			<option value=''></option>\n";
+													foreach ($_SESSION['login']['domain_name'] as &$row) {
+														echo "    		<option value='$row'>$row</option>\n";
+													}
+													echo "    		</select>\n";
 												}
-												echo "    </select>\n";
+												else {
+													echo "  		<input type='text' style='min-width: 150px; width: 150px;' class='formfld' name='domain_name'>\n";
+												}
+												echo "			</td>\n";
 											}
-											else {
-												echo "  <input type=\"text\" style='width: 150px;' class='formfld' name=\"domain_name\">\n";
-											}
-											echo "</td>\n";
-											//echo "</tr>\n";
+
+											echo "				<td align='right'>\n";
+											echo "  				<input type='submit' class='btn' style='margin-left: 5px;' value=\"".$text['button-login']."\">\n";
+											echo "				</td>\n";
+											echo "			</tr>\n";
+											echo "		</table>\n";
+											echo "	</form>";
+											echo "</div>";
 										}
-
-										//echo "<tr>\n";
-										echo "<td>\n";
-										echo "</td>\n";
-										echo "<td align=\"right\">\n";
-										echo "  <input type=\"submit\" class='btn' value=\"".$text['button-login']."\">\n";
-										echo "</td>\n";
-										echo "</tr>\n";
-										echo "</table>\n";
-										echo "</form>";
-										echo "</div>";
-								}
-							?>
-							&nbsp;
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<?php if (strlen($_SESSION["username"]) > 0) { ?>
-		<tr>
-			<td class='' colspan='2' width='100%' height='7px'><img src='<!--{project_path}-->/themes/enhanced/images/blank.gif'></td>
-		</tr>
-		<tr>
-			<td class='menu_bar' colspan='2' width='100%' height='30px'>
-				<!--{menu}-->
-			</td>
-		</tr>
-		<tr>
-			<td class='' colspan='2' width='100%' height='7px'><img src='<!--{project_path}-->/themes/enhanced/images/blank.gif'></td>
-		</tr>
-		<?php } ?>
-		<tr>
-			<td valign='top' align='center' width='100%'>
-				<table width='100%' cellpadding='0' cellspacing='0' border='0'>
+									}
+									?>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<?php
+				if (strlen($_SESSION["username"]) > 0) {
+					?>
 					<tr>
-						<td class='main_content' align='left' valign='top' width='85%'>
-							<script type = "text/javascript">
-								<!--
-								function message_hide() {
-									document.getElementById("message").style.display="none"; 
-								}
-								function message_timeout() {
-									var tim = window.setTimeout("message_hide()", 1000);
-								}
-								-->
-							</script>
-							<?php
-								if (strlen($_SESSION['message']) > 0) {
-									echo "<div id='message' style='position:absolute; left:50%;'>";
-									echo "	<table><tr><td class='vncellreq'>".$_SESSION['message']."</td></tr></table>";
-									echo "</div>";
-									unset($_SESSION['message']);
-								}
-							?>
-							<!--{body}-->
+						<td height='9px'><img src='<!--{project_path}-->/themes/enhanced/images/blank.gif'></td>
+					</tr>
+					<tr>
+						<td class='menu_bar' height='30px'>
+							<!--{menu}-->
+						</td>
+					</tr>
+					<tr>
+						<td height='9px'><img src='<!--{project_path}-->/themes/enhanced/images/blank.gif'></td>
+					</tr>
+					<?php
+				}
+				?>
+				<tr>
+					<td valign='top' align='center' width='100%'>
+						<table cellpadding='0' cellspacing='1' border='0' width='100%' style='margin-bottom: 60px;'>
 
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
-							<br /><br />
+							<tr>
+								<td class='main_content' valign='top' align='center'>
+									<!--{body}-->
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
 
+			<?php
+		}
+
+		// default login being used
+		else {
+			?>
+			<div id="main_content" class='main_content' style='position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 0;'>
+				<table cellpadding='0' cellspacing='0' border='0' width='100%' height='100%'>
+					<tr>
+						<td align='center' valign='middle'>
+							<span id='default_login_container'></span>
+							<br /><br /><br />
 						</td>
 					</tr>
 				</table>
-			</td>
-		</tr>
-	</table>
-	<?php
-	if (substr($_SERVER['PHP_SELF'], -9) != "login.php") {
-		echo "<span class='smalltext'>\n";
-		echo "	<a class='smalltext' target='_blank' href='http://www.fusionpbx.com'>fusionpbx.com</a>. Copyright 2008 - 2013. All Rights Reserved\n";
-		echo "</span>\n";
-	}
-	else {
-		echo "<!--\n";
-		echo "	http://www.fusionpbx.com \n";
-		echo "	Copyright 2008 - 2013 \n";
-		echo "	All Rights Reserved\n";
-		echo "-->\n";
-	}
-	?>
+			</div>
+			<?php
+		}
+		?>
 	</div>
 
-<br />
+	<?php
+	if (isset($_SESSION['theme']['logo']['text'])){
+		$logo = $_SESSION['theme']['logo']['text'];
+	}
+	else {
+		$logo = PROJECT_PATH."/themes/enhanced/images/logo.png";
+	}
+
+	if ($default_login) {
+		?>
+		<div id="default_login">
+			<table cellpadding='0' cellspacing='0' border='0' width='100%' height='100%'>
+				<tr>
+					<td align='center' valign='middle'>
+						<a href='<?php echo PROJECT_PATH; ?>/'><img src='<?php echo $logo; ?>' width='250'></a>
+						<br />
+						<!--{body}-->
+						<br /><br /><br />
+					</td>
+				</tr>
+			</table>
+		</div>
+		<?php
+	}
+	$footer .= "&copy; Copyright 2008 - ".date("Y")." <a href='http://www.fusionpbx.com' class='footer' target='_blank'>fusionpbx.com</a>. All rights reserved.\n";
+	echo "<div id='footer' style='position: absolute; z-index; 10000;'><span class='footer'>".$footer."</span></div>\n";
+	?>
+
 </body>
 </html>

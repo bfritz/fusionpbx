@@ -52,12 +52,11 @@ if (isset($_REQUEST["id"])) {
 	$action = "add";
 }
 
-require_once "resources/header.php";
 if ($action == "update") {
-	$page["title"] = $text['title-xmpp-edit'];
+	$document['title'] = $text['title-xmpp-edit'];
 }
 else if ($action == "add") {
-	$page["title"] = $text['title-xmpp-add'];
+	$document['title'] = $text['title-xmpp-add'];
 }
 
 $domain_name = $_SESSION['domains'][$_SESSION['domain_uuid']]['domain_name'];
@@ -97,6 +96,7 @@ if ($action == "update") {
 
 if ((!isset($_REQUEST['submit'])) || ($_REQUEST['submit'] != $text['button-save'])) {
 	// If we arent saving a Profile Display the form.
+	require_once "resources/header.php";
 	include "profile_edit.php";
 	require_once "resources/footer.php";
 	exit;
@@ -116,6 +116,7 @@ if (strlen($request['default_exten']) < 1) $error .= $text['message-required'].$
 if (strlen($error) > 0) {
 	include "errors.php";
 	$profile = $request;
+	require_once "resources/header.php";
 	include "profile_edit.php";
 	require_once "resources/footer.php";
 	exit;
@@ -240,8 +241,5 @@ if ($fp) {
 }
 
 include "update_complete.php";
-
-//show the footer
-require_once "resources/footer.php";
 
 ?>

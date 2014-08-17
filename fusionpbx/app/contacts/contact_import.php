@@ -365,6 +365,7 @@ else {
 	echo "	</td>\n";
 	echo "	<td width='70%' align='right'>\n";
 	echo "		<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='contacts.php?".$_GET["query_string"]."'\" value='".$text['button-back']."'>\n";
+	echo "		<input name=\"submit\" type=\"submit\" class=\"btn\" id=\"upload\" value=\"".$text['button-upload']."\">\n";
 	echo "	</td>\n";
 	echo "	</tr>\n";
 	echo "</table>";
@@ -407,7 +408,7 @@ else {
 	echo "			".$text['label-import_file_upload'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "			<input name=\"ulfile\" type=\"file\" class=\"btn\" id=\"ulfile\">\n";
+	echo "			<input name=\"ulfile\" type=\"file\" class=\"formfld fileinput\" id=\"ulfile\">\n";
 	echo "<br />\n";
 	//echo "Select the enclosure.\n";
 	echo "</td>\n";

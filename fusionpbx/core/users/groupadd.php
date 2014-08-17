@@ -71,18 +71,14 @@ if (strlen($group_name) > 0) {
 	}
 
 	//redirect the user
-		require_once "resources/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=groups.php\">\n";
-		echo "<div align='center'>\n";
-		echo $text['message-add']."\n";
-		echo "</div>\n";
-		require_once "resources/footer.php";
+		$_SESSION["message"] = $text['message-add'];
+		header("Location: groups.php");
 		return;
 }
 
 //include the header
 	include "resources/header.php";
-	$page["title"] = $text['title-group_add'];
+	$document['title'] = $text['title-group_add'];
 
 //show the content
 	echo "<div align='center'>";
@@ -96,6 +92,7 @@ if (strlen($group_name) > 0) {
 	echo "		</td>\n";
 	echo "		<td align='right'>\n";
 	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='groups.php'\" value='".$text['button-back']."'> ";
+	echo "  		<input type=\"submit\" class='btn' value=\"".$text['button-save']."\">\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "</table>\n";

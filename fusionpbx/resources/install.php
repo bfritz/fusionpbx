@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2014
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -41,12 +41,27 @@ require_once "resources/functions.php";
 	error_reporting (E_ALL ^ E_NOTICE); // Report everything
 	//error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING ); //hide notices and warnings
 
+//set the default time zone
+	date_default_timezone_set('UTC');
+
 //get the domain
 	$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
 	$domain_name = $domain_array[0];
 
 //if the config file exists then disable the install page
-	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/config.php")) {
+	$config_exists = false;
+	if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/resources/config.php")) {
+		$config_exists = true;
+	} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/resources/config.php")) {
+		//original directory
+		$config_exists = true;
+	} elseif (file_exists("/etc/fusionpbx/config.php")) {
+		//linux
+		$config_exists = true;
+	} elseif (file_exists("/usr/local/etc/fusionpbx/config.php")) {
+		$config_exists = true;
+	}
+	if ($config_exists) {
 		$msg .= "Already Installed";
 		header("Location: ".PROJECT_PATH."/index.php?msg=".urlencode($msg));
 		exit;
@@ -123,7 +138,7 @@ require_once "resources/functions.php";
 		$switch_log_dir = $install_switch_base_dir.'/log';
 		$switch_mod_dir = $install_switch_base_dir.'/mod';
 		$switch_extensions_dir = $switch_conf_dir.'/directory';
-		$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
+		$switch_sip_profiles_dir = $switch_conf_dir.'/sip_profiles';
 		$switch_dialplan_dir = $switch_conf_dir.'/dialplan';
 		$switch_scripts_dir = $install_switch_base_dir.'/scripts';
 		$switch_grammar_dir = $install_switch_base_dir.'/grammar';
@@ -148,10 +163,16 @@ require_once "resources/functions.php";
 				if (file_exists('/usr/bin')) {
 					$switch_bin_dir = '/usr/bin'; //freeswitch bin directory
 				}
-				if (file_exists('/etc/freeswitch/dialplan')) {
+				if (file_exists('/etc/fusionpbx/conf')) {
+					$switch_conf_dir = '/etc/fusionpbx/conf';
+					$switch_extensions_dir = $switch_conf_dir.'/directory';
+					$switch_sip_profiles_dir = $switch_conf_dir.'/sip_profiles';
+					$switch_dialplan_dir = $switch_conf_dir.'/dialplan';
+				}
+				if (file_exists('/etc/freeswitch/vars.xml')) {
 					$switch_conf_dir = '/etc/freeswitch';
 					$switch_extensions_dir = $switch_conf_dir.'/directory';
-					$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
+					$switch_sip_profiles_dir = $switch_conf_dir.'/sip_profiles';
 					$switch_dialplan_dir = $switch_conf_dir.'/dialplan';
 				}
 				if (file_exists('/var/lib/freeswitch/db')) {
@@ -199,7 +220,7 @@ require_once "resources/functions.php";
 							$switch_log_dir = '/var/log/freeswitch';
 							$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
 							$switch_extensions_dir = $switch_conf_dir.'/directory';
-							$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
+							$switch_sip_profiles_dir = $switch_conf_dir.'/sip_profiles';
 							$switch_dialplan_dir = $switch_conf_dir.'/dialplan';
 							$switch_scripts_dir = '/usr/local/etc/freeswitch/scripts';
 							$switch_grammar_dir = '/usr/local/etc/freeswitch/grammar';
@@ -227,7 +248,7 @@ require_once "resources/functions.php";
 							}
 							$switch_mod_dir = '/usr/local/lib/freeswitch/mod';
 							$switch_extensions_dir = $switch_conf_dir.'/directory';
-							$switch_gateways_dir = $switch_conf_dir.'/sip_profiles';
+							$switch_sip_profiles_dir = $switch_conf_dir.'/sip_profiles';
 							$switch_dialplan_dir = $switch_conf_dir.'/dialplan';
 							$switch_scripts_dir = '/usr/local/etc/freeswitch/scripts';
 							$switch_grammar_dir = '/usr/local/etc/freeswitch/grammar';
@@ -501,7 +522,12 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				$schema->exec();
 
 			//get the contents of the sql file
+				if (file_exists('/usr/share/fusionpbx/resources/install/sql/sqlite.sql')){
+					$filename = "/usr/share/fusionpbx/resources/install/sql/sqlite.sql";
+				}
+				else {
 				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/sql/sqlite.sql';
+				}
 				$file_contents = file_get_contents($filename);
 				unset($filename);
 
@@ -524,6 +550,9 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				}
 				unset ($file_contents, $sql);
 				$db_tmp->commit();
+				
+			//set the file permissions
+				chmod($db_path.'/'.$db_name, 0777);
 		}
 
 	//create the pgsql database
@@ -583,7 +612,12 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				$schema->exec();
 
 			//get the contents of the sql file
+				if (file_exists('/usr/share/fusionpbx/resources/install/sql/pgsql.sql')){
+					$filename = "/usr/share/fusionpbx/resources/install/sql/pgsql.sql";
+				}
+				else {
 				$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/sql/pgsql.sql';
+				}
 				$file_contents = file_get_contents($filename);
 
 			//replace \r\n with \n then explode on \n
@@ -614,28 +648,27 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 					if (strlen($db_host) == 0 && strlen($db_port) == 0) {
 						//if both host and port are empty use the unix socket
 						if (strlen($db_create_username) == 0) {
-							$db_tmp = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_username, $db_password);
+							$db_tmp = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 						}
 						else {
-							$db_tmp = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_create_username, $db_create_password);
+							$db_tmp = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;", $db_create_username, $db_create_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 						}
 					}
 					else {
 						if (strlen($db_port) == 0) {
 							//leave out port if it is empty
 							if (strlen($db_create_username) == 0) {
-								$db_tmp = new PDO("mysql:host=$db_host;", $db_username, $db_password);
+								$db_tmp = new PDO("mysql:host=$db_host;", $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 							}
 							else {
-								$db_tmp = new PDO("mysql:host=$db_host;", $db_create_username, $db_create_password);
-							}
+								$db_tmp = new PDO("mysql:host=$db_host;", $db_create_username, $db_create_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));							}
 						}
 						else {
 							if (strlen($db_create_username) == 0) {
-								$db_tmp = new PDO("mysql:host=$db_host;port=$db_port;", $db_username, $db_password);
+								$db_tmp = new PDO("mysql:host=$db_host;port=$db_port;", $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 							}
 							else {
-								$db_tmp = new PDO("mysql:host=$db_host;port=$db_port;", $db_create_username, $db_create_password);
+								$db_tmp = new PDO("mysql:host=$db_host;port=$db_port;", $db_create_username, $db_create_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 							}
 						}
 					}
@@ -751,7 +784,12 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 
 			//add the defaults data into the database
 				//get the contents of the sql file
+				if (file_exists('/usr/share/fusionpbx/resources/install/sql/mysql.sql')){
+					$filename = "/usr/share/fusionpbx/resources/install/sql/mysql.sql";
+				}
+				else {
 					$filename = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/sql/mysql.sql';
+				}
 					$file_contents = file_get_contents($filename);
 
 				//replace \r\n with \n then explode on \n
@@ -889,9 +927,9 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'dir';
-		$tmp[$x]['value'] = $switch_gateways_dir;
+		$tmp[$x]['value'] = $switch_sip_profiles_dir;
 		$tmp[$x]['category'] = 'switch';
-		$tmp[$x]['subcategory'] = 'gateways';
+		$tmp[$x]['subcategory'] = 'sip_profiles';
 		$tmp[$x]['enabled'] = 'true';
 		$x++;
 		$tmp[$x]['name'] = 'dir';
@@ -1225,7 +1263,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		unset($menu);
 
 	//setup the switch config directory if it exists
-		if ($switch_conf_dir != "/conf") {
+		if (file_exists($switch_conf_dir) && $switch_conf_dir != "/conf") {
 			if ($v_debug) {
 				fwrite($fp, "switch_base_dir: ".$install_switch_base_dir."\n");
 				fwrite($fp, "switch_conf_dir: ".$switch_conf_dir."\n");
@@ -1258,30 +1296,26 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 				$install->switch_sounds_dir = $switch_sounds_dir;
 				$install->copy_conf();
 				$install->copy();
-				clearstatcache();
-
-			//copy resources/templates/conf to the freeswitch/conf dir
-				$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf";
-				$dst_dir = $switch_conf_dir;
-				if (is_readable($dst_dir)) {
-					$install->recursive_copy($src_dir, $dst_dir);
-				}
-				//print_r($install->result);
 
 			//create the dialplan/default.xml for single tenant or dialplan/domain.xml
-				require_once "resources/classes/dialplan.php";
-				$dialplan = new dialplan;
-				$dialplan->domain_uuid = $_SESSION["domain_uuid"];
-				$dialplan->domain = $domain_name;
-				$dialplan->switch_dialplan_dir = $switch_dialplan_dir;
-				$dialplan->restore_advanced_xml();
-				//print_r($dialplan->result);
+				if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/dialplan")) {
+					$dialplan = new dialplan;
+					$dialplan->domain_uuid = $_SESSION["domain_uuid"];
+					$dialplan->domain = $domain_name;
+					$dialplan->switch_dialplan_dir = $switch_dialplan_dir;
+					$dialplan->restore_advanced_xml();
+					//print_r($dialplan->result);
+				}
 
 			//write the xml_cdr.conf.xml file
-				xml_cdr_conf_xml();
+				if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/xml_cdr")) {
+					xml_cdr_conf_xml();
+				}
 
 			//write the switch.conf.xml file
-				switch_conf_xml();
+				if (file_exists($switch_conf_dir)) {
+					switch_conf_xml();
+				}
 		}
 
 	//login the user account
@@ -1321,7 +1355,14 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 	//make sure the database schema and installation have performed all necessary tasks
 		$display_results = false;
 		$display_type = 'none';
-		require_once "core/upgrade/upgrade_schema.php";
+		require_once "resources/classes/schema.php";
+		$obj = new schema;
+		$obj->schema($db, $db_type, $db_name, $display_type);
+
+	//run all app_defaults.php files
+		require_once "resources/classes/domains.php";
+		$domain = new domains;
+		$domain->upgrade();
 
 	//synchronize the config with the saved settings
 		save_switch_xml();
@@ -1431,7 +1472,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "	Username:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -1441,7 +1482,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "	Password:\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
@@ -1451,7 +1492,7 @@ if ($_POST["install_step"] == "3" && count($_POST) > 0 && strlen($_POST["persist
 		echo "</tr>\n";
 
 		echo "	<tr>\n";
-		echo "	<td width='20%' class=\"vncellreq\" style='text-align: left;'>\n";
+		echo "	<td width='20%' class=\"vncellreq\" align='left' nowrap='nowrap'>\n";
 		echo "		Theme: \n";
 		echo "	</td>\n";
 		echo "	<td class=\"vtable\" align='left'>\n";

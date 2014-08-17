@@ -134,12 +134,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=ring_group_edit.php?id=$ring_group_uuid\">\n";
-				echo "<div align='center'>\n";
-				echo "	".$text['message-add']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-add'];
+				header("Location: ring_group_edit.php?id=".$ring_group_uuid);
 				return;
 			} //if ($action == "add")
 
@@ -159,15 +155,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=ring_group_edit.php?id=$ring_group_uuid\">\n";
-				echo "<div align='center'>\n";
-				echo "	".$text['message-update']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-update'];
+				header("Location: ring_group_edit.php?id=".$ring_group_uuid);
 				return;
 			} //if ($action == "update")
-		} //if ($_POST["persistformvar"] != "true") 
+		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
@@ -203,8 +195,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<div align='center'>\n";
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
-		echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['title-ring_group_destination']."</b></td>\n";
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='ring_group_edit.php?id=$ring_group_uuid'\" value='".$text['button-back']."'></td>\n";
+	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['title-ring_group_destination']."</b></td>\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='ring_group_edit.php?id=$ring_group_uuid'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";

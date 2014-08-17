@@ -52,23 +52,18 @@ else {
 	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 	if ($fp) {
 		if (strlen($_GET["a"]) > 0) {
-			$profile = $_GET["profile"];
+			$profile = check_str($_GET["profile"]);
 			if (strlen($profile) == 0) {
 				$profile = 'external';
 			}
 			if ($_GET["a"] == "stop") {
-				$gateway_name = $_GET["gateway"];
-				if (count($_SESSION["domains"]) > 1) {
-					$cmd = 'api sofia profile '.$profile.' killgw '.$_SESSION['domain_name'].'-'.$gateway_name;
-				}
-				else {
-					$cmd = 'api sofia profile '.$profile.' killgw '.$gateway_name;
-				}
+				$gateway_uuid = check_str($_GET["gateway"]);
+				$cmd = 'api sofia profile '.$profile.' killgw '.$gateway_uuid;
 				$response = trim(event_socket_request($fp, $cmd));
 				$msg = '<strong>Stop Gateway:</strong><pre>'.$response.'</pre>';
 			}
 			if ($_GET["a"] == "start") {
-				$gateway_name = $_GET["gateway"];
+				$gateway_uuid = $_GET["gateway"];
 				$cmd = 'api sofia profile '.$profile.' rescan';
 				$response = trim(event_socket_request($fp, $cmd));
 				$msg = '<strong>Start Gateway:</strong><pre>'.$response.'</pre>';
@@ -76,15 +71,15 @@ else {
 		}
 
 		if (!function_exists('switch_gateway_status')) {
-			function switch_gateway_status($gateway_name, $result_type = 'xml') {
+			function switch_gateway_status($gateway_uuid, $result_type = 'xml') {
 				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-				if (count($_SESSION["domains"]) > 1) {
-					$cmd = 'api sofia xmlstatus gateway '.$_SESSION['domain_name'].'-'.$gateway_name;
+				$cmd = 'api sofia xmlstatus gateway '.$gateway_uuid;
+				$response = trim(event_socket_request($fp, $cmd));
+				if ($response == "Invalid Gateway!") {
+					$cmd = 'api sofia xmlstatus gateway '.strtoupper($gateway_uuid);
+					$response = trim(event_socket_request($fp, $cmd));
 				}
-				else {
-					$cmd = 'api sofia xmlstatus gateway '.$gateway_name;
-				}
-				return trim(event_socket_request($fp, $cmd));
+				return $response;
 			}
 		}
 	}
@@ -154,7 +149,7 @@ else {
 	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('gateway', $text['label-gateway'], $order_by, $order);
 	echo th_order_by('context', $text['label-context'], $order_by, $order);
@@ -165,25 +160,33 @@ else {
 	}
 	echo th_order_by('enabled', $text['label-enabled'], $order_by, $order);
 	echo th_order_by('description', $text['label-description'], $order_by, $order);
-	echo "<td align='right' width='42'>\n";
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('gateway_add')) {
-		echo "	<a href='gateway_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo "<a href='gateway_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	if ($num_rows > 0) {
 		foreach($result as $row) {
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row["gateway"]."</td>\n";
+			$tr_link = (permission_exists('gateway_edit')) ? "href='gateway_edit.php?id=".$row['gateway_uuid']."'" : null;
+			echo "<tr ".$tr_link.">\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			if (permission_exists('gateway_edit')) {
+				echo "<a href='gateway_edit.php?id=".$row['gateway_uuid']."'>".$row["gateway"]."</a>";
+			}
+			else {
+				echo $row["gateway"];
+			}
+			echo "</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row["context"]."</td>\n";
 			if ($fp) {
 				if ($row["enabled"] == "true") {
-					$response = switch_gateway_status($row["gateway"]);
+					$response = switch_gateway_status($row["gateway_uuid"]);
 					if ($response == "Invalid Gateway!") {
 						//not running
 						echo "	<td valign='top' class='".$row_style[$c]."'>".$text['label-status-stopped']."</td>\n";
-						echo "	<td valign='top' class='".$row_style[$c]."'><a href='gateways.php?a=start&gateway=".$row["gateway"]."&profile=".$row["profile"]."' alt='".$text['label-action-start']."'>".$text['label-action-start']."</a></td>\n";
+						echo "	<td valign='top' class='".$row_style[$c]."'><a href='gateways.php?a=start&gateway=".$row["gateway_uuid"]."&profile=".$row["profile"]."' alt='".$text['label-action-start']."'>".$text['label-action-start']."</a></td>\n";
 						echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;</td>\n";
 					}
 					else {
@@ -192,7 +195,7 @@ else {
 							$xml = new SimpleXMLElement($response);
 							$state = $xml->state;
 							echo "	<td valign='top' class='".$row_style[$c]."'>".$text['label-status-running']."</td>\n";
-							echo "	<td valign='top' class='".$row_style[$c]."'><a href='gateways.php?a=stop&gateway=".$row["gateway"]."&profile=".$row["profile"]."' alt='".$text['label-action-stop']."'>".$text['label-action-stop']."</a></td>\n";
+							echo "	<td valign='top' class='".$row_style[$c]."'><a href='gateways.php?a=stop&gateway=".$row["gateway_uuid"]."&profile=".$row["profile"]."' alt='".$text['label-action-stop']."'>".$text['label-action-stop']."</a></td>\n";
 							echo "	<td valign='top' class='".$row_style[$c]."'>".$state."</td>\n"; //REGED, NOREG, UNREGED
 						}
 						catch(Exception $e) {
@@ -212,12 +215,12 @@ else {
 					echo "	<td valign='top' class='".$row_style[$c]."' style='align: center;'>".$text['label-false']."</td>\n";
 				}
 				echo "	<td valign='top' class='row_stylebg'>".$row["description"]."&nbsp;</td>\n";
-				echo "	<td valign='top' align='right'>\n";
+				echo "	<td class='list_control_icons'>";
 				if (permission_exists('gateway_edit')) {
-					echo "		<a href='gateway_edit.php?id=".$row['gateway_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
+					echo "<a href='gateway_edit.php?id=".$row['gateway_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 				}
 				if (permission_exists('gateway_delete')) {
-					echo "		<a href='gateway_delete.php?id=".$row['gateway_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+					echo "<a href='gateway_delete.php?id=".$row['gateway_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 				}
 				echo "	</td>\n";
 				echo "</tr>\n";
@@ -233,20 +236,12 @@ else {
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap='nowrap'>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap='nowrap'>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('gateway_add')) {
-		echo "			<a href='gateway_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo "<a href='gateway_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	else {
-		echo "			&nbsp;\n";
-	}
-	echo "		</td>\n";
-	echo "	</tr>\n";
-	echo "	<tr>\n";
-	echo "		<td colspan='8' align='left'>\n";
-	echo "			<br />\n";
-	if ($v_path_show) {
-		echo "			".$_SESSION['switch']['gateways']['dir']."/sip_profiles\n";
+		echo "&nbsp;";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
@@ -264,4 +259,5 @@ else {
 
 //include the footer
 	require_once "resources/footer.php";
+
 ?>

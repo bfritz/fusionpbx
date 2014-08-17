@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 	FusionPBX
 	Version: MPL 1.1
@@ -484,12 +484,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//redirect the browser
-		require_once "resources/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1\">\n";
-		echo "<div align='center'>\n";
-		echo "".$text['confirm-update-complete']."\n";
-		echo "</div>\n";
-		require_once "resources/footer.php";
+		$_SESSION["message"] = $text['confirm-update-complete'];
+		header("Location: ".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1");
 		return;
 
 } //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
@@ -498,15 +494,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 <!--
 
 function show_advanced_config() {
-	document.getElementById("show_advanced_box").innerHTML='';
-	aodiv = document.getElementById('show_advanced');
-	aodiv.style.display = "block";
-}
-
-function hide_advanced_config() {
-	document.getElementById("show_advanced_box").innerHTML='';
-	aodiv = document.getElementById('show_advanced');
-	aodiv.style.display = "block";
+	$('#show_advanced_box').slideToggle();
+	$('#show_advanced').slideToggle();
 }
 
 function template_onchange(tmp_object) {
@@ -742,6 +731,7 @@ echo "			<span class=\"title\">".$text['title-time-condition-add']."</span><br /
 echo "		</td>\n";
 echo "		<td align='right'>\n";
 echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1'\" value='".$text['button-back']."'>\n";
+echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
 echo "	<tr>\n";
@@ -789,13 +779,13 @@ echo "</tr>\n";
 //echo "<td class='vtable' align='left'>\n";
 //echo "    <select class='formfld' name='dialplan_continue' style='width: 60%;'>\n";
 //echo "    <option value=''></option>\n";
-//if ($dialplan_continue == "true") { 
+//if ($dialplan_continue == "true") {
 //	echo "    <option value='true' SELECTED >true</option>\n";
 //}
 //else {
 //	echo "    <option value='true'>true</option>\n";
 //}
-//if ($dialplan_continue == "false") { 
+//if ($dialplan_continue == "false") {
 //	echo "    <option value='false' SELECTED >false</option>\n";
 //}
 //else {
@@ -812,7 +802,7 @@ echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 echo "    ".$text['label-template'].":\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
-echo "	<select class='formfld' name='template2' id='template' onchange='template_onchange(this);' style='width: 60%;'>\n";
+echo "	<select class='formfld' name='template2' id='template' onchange='template_onchange(this);'>\n";
 echo "		<option value=''></option>\n";
 echo "	<optgroup label='".$text['label-optgroup-office']."'>\n";
 echo "		<option value='Office Hours Mon-Fri 8am-5pm'>".$text['label-option-office-8am-5pm']."</option>\n";
@@ -900,7 +890,7 @@ echo "</tr>\n";
 	echo "	<div id=\"show_advanced_box\">\n";
 	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "		<tr>\n";
-	echo "		<td width=\"20%\" valign=\"top\" class=\"vncell\">".$text['label-show-advanced'].":</td>\n";
+	echo "		<td width=\"20%\" valign=\"top\" class=\"vncell\">&nbsp;</td>\n";
 	echo "		<td width=\"80%\" class=\"vtable\">\n";
 	echo "			<input type=\"button\" class='btn' onClick=\"show_advanced_config()\" value=\"".$text['button-advanced']."\"></input></a>\n";
 	echo "		</td>\n";
@@ -990,7 +980,7 @@ echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
 //switch_select_destination(select_type, select_label, select_name, select_value, select_style, $action);
-switch_select_destination("dialplan", $action_1, "action_1", $action_1, "width: 60%;", "");
+switch_select_destination("dialplan", $action_1, "action_1", $action_1, "", "");
 
 echo "</td>\n";
 echo "</tr>\n";
@@ -1002,7 +992,7 @@ echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
 //switch_select_destination(select_type, select_label, select_name, select_value, select_style, $action);
-switch_select_destination("dialplan", $anti_action_1, "anti_action_1", $anti_action_1, "width: 60%;", "");
+switch_select_destination("dialplan", $anti_action_1, "anti_action_1", $anti_action_1, "", "");
 
 echo "	<div id='desc_anti_action_data_1'></div>\n";
 echo "</td>\n";
@@ -1013,21 +1003,17 @@ echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "    ".$text['label-order'].":\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
-echo "	<select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
-if (strlen(htmlspecialchars($dialplan_order))> 0) {
-	echo "		<option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
-}
-
+echo "	<select name='dialplan_order' class='formfld'>\n";
 $i = 300;
 while($i <= 999) {
-	if (strlen($i) == 1) { echo "		<option value='00$i'>00$i</option>\n"; }
-	if (strlen($i) == 2) { echo "		<option value='0$i'>0$i</option>\n"; }
-	if (strlen($i) == 3) { echo "		<option value='$i'>$i</option>\n"; }
+	$selected = ($dialplan_order == $i) ? "selected" : null;
+	if (strlen($i) == 1) { echo "<option value='00$i' ".$selected.">00$i</option>\n"; }
+	if (strlen($i) == 2) { echo "<option value='0$i' ".$selected.">0$i</option>\n"; }
+	if (strlen($i) == 3) { echo "<option value='$i' ".$selected.">$i</option>\n"; }
 	$i = $i + 10;
 }
 echo "	</select>\n";
-echo "<br />\n";
-echo "\n";
+echo "	<br />\n";
 echo "</td>\n";
 echo "</tr>\n";
 
@@ -1036,14 +1022,14 @@ echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "    ".$text['label-enabled'].":\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
-echo "    <select class='formfld' name='dialplan_enabled' style='width: 60%;'>\n";
-if ($dialplan_enabled == "true") { 
+echo "    <select class='formfld' name='dialplan_enabled'>\n";
+if ($dialplan_enabled == "true") {
 	echo "    <option value='true' SELECTED >".$text['label-true']."</option>\n";
 }
 else {
 	echo "    <option value='true'>".$text['label-true']."</option>\n";
 }
-if ($dialplan_enabled == "false") { 
+if ($dialplan_enabled == "false") {
 	echo "    <option value='false' SELECTED >".$text['label-false']."</option>\n";
 }
 else {
@@ -1060,7 +1046,7 @@ echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 echo "    ".$text['label-description'].":\n";
 echo "</td>\n";
 echo "<td colspan='4' class='vtable' align='left'>\n";
-echo "    <input class='formfld' style='width: 60%;' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
+echo "    <input class='formfld' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
 echo "<br />\n";
 echo "\n";
 echo "</td>\n";

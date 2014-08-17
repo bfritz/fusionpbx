@@ -115,12 +115,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				save_module_xml();
 
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=modules.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-add']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-add'];
+				header("Location: modules.php");
 				return;
 			} //if ($action == "add")
 
@@ -138,12 +134,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 				save_module_xml();
 
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=modules.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-update']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-update'];
+				header("Location: modules.php");
 				return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
@@ -172,10 +164,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "resources/header.php";
 	if ($action == "add") {
-		$page["title"] = $text['title-module_add'];
+		$document['title'] = $text['title-module_add'];
 	}
 	if ($action == "update") {
-		$page["title"] = $text['title-module_edit'];
+		$document['title'] = $text['title-module_edit'];
 	}
 
 //show the content
@@ -197,7 +189,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap><b>".$text['header-module_edit']."</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='modules.php'\" value='".$text['button-back']."'></td>\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='modules.php'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -223,17 +218,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-description'].":\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='module_description' maxlength='255' value=\"$module_description\">\n";
-	echo "<br />\n";
-	echo "\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    ".$text['label-module_category'].":\n";
 	echo "</td>\n";
@@ -251,18 +235,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='module_enabled'>\n";
-	echo "    <option value=''></option>\n";
-	if ($module_enabled == "true") {
-		echo "    <option value='true' SELECTED >".$text['option-true']."</option>\n";
-	}
-	else {
-		echo "    <option value='true'>".$text['option-true']."</option>\n";
-	}
 	if ($module_enabled == "false") {
 		echo "    <option value='false' SELECTED >".$text['option-false']."</option>\n";
 	}
 	else {
 		echo "    <option value='false'>".$text['option-false']."</option>\n";
+	}
+	if ($module_enabled == "true") {
+		echo "    <option value='true' SELECTED >".$text['option-true']."</option>\n";
+	}
+	else {
+		echo "    <option value='true'>".$text['option-true']."</option>\n";
 	}
 	echo "    </select>\n";
 	echo "<br />\n";
@@ -276,24 +259,35 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='module_default_enabled'>\n";
-	echo "    <option value=''></option>\n";
-	if ($module_default_enabled == "true") {
-		echo "    <option value='true' SELECTED >".$text['option-true']."</option>\n";
-	}
-	else {
-		echo "    <option value='true'>".$text['option-true']."</option>\n";
-	}
 	if ($module_default_enabled == "false") {
-		echo "    <option value='false' SELECTED >".$text['option-false']."</option>\n";
+		echo "    <option value='false' selected='selected'>".$text['option-false']."</option>\n";
 	}
 	else {
 		echo "    <option value='false'>".$text['option-false']."</option>\n";
+	}
+	if ($module_default_enabled == "true") {
+		echo "    <option value='true' selected='selected'>".$text['option-true']."</option>\n";
+	}
+	else {
+		echo "    <option value='true'>".$text['option-true']."</option>\n";
 	}
 	echo "    </select>\n";
 	echo "<br />\n";
 	echo "\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "    ".$text['label-description'].":\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='module_description' maxlength='255' value=\"$module_description\">\n";
+	echo "<br />\n";
+	echo "\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {

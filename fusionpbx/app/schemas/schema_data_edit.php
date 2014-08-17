@@ -350,29 +350,26 @@ else {
 			$i++;
 		}
 
-		//show the header
-			require_once "resources/header.php";
+		//redirect user
+			if ($action == "add") {
+				$_SESSION["message"] = $text['message-add'];
+			}
+			else if ($action == "update") {
+				$_SESSION["message"] = $text['message-update'];
+			}
 
-		//set the meta redirect
 			if (strlen($data_parent_row_uuid) == 0) {
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=schema_data_edit.php?id=$schema_uuid&data_row_uuid=$data_row_uuid\">\n";
+				header("Location: schema_data_edit.php?id=".$schema_uuid."&data_row_uuid=".$data_row_uuid);
 			}
 			else {
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=schema_data_edit.php?schema_uuid=$schema_parent_id&data_row_uuid=$data_parent_row_uuid\">\n";
+				header("Location: schema_data_edit.php?schema_uuid=".$schema_parent_id."&data_row_uuid=".$data_parent_row_uuid);
 			}
-
-		//show a message to the user before the redirect
-			echo "<div align='center'>\n";
-			if ($action == "add") { echo $text['message-add']."\n"; }
-			if ($action == "update") { echo $text['message-update']."\n"; }
-			echo "</div>\n";
-			require_once "resources/footer.php";
 			return;
 	}
 
 //show the header
 	require_once "resources/header.php";
-	$page["title"] = $text['title-data'];
+	$document['title'] = $text['title-data'];
 
 //pre-populate the form
 	if ($action == "update") {
@@ -527,18 +524,16 @@ else {
 		echo "		&nbsp;&nbsp;&nbsp;";
 		echo "</td>\n";
 
-		echo "<form method='GET' name='frm_search' action='schema_data_edit.php'>\n";
 		echo "<td width='45%' align='right' valign='top' nowrap='nowrap'>\n";
+		echo "	<form method='GET' name='frm_search' action='schema_data_edit.php'>\n";
 		echo "	<input type='hidden' name='schema_uuid' value='$schema_uuid'>\n";
 		//echo "	<input type='hidden' name='id' value='$schema_uuid'>\n";
 		//echo "	<input type='hidden' name='data_parent_row_uuid' value='$data_parent_row_uuid'>\n";
 		//echo "	<input type='hidden' name='data_row_uuid' value='$first_data_row_uuid'>\n";
 		echo "	<input class='formfld' type='text' name='search_all' value='$search_all'>\n";
 		echo "	<input class='btn' type='submit' name='submit' value='".$text['button-search_all']."'>\n";
-		echo "</td>\n";
-		echo "</form>\n";
-		echo "<td width='5%' align='right' valign='top' nowrap='nowrap'>\n";
-		echo "		<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='schema_data_view.php?id=$schema_uuid'\" value='".$text['button-back']."'>\n";
+		echo "	<input type='button' class='btn' alt='".$text['button-back']."' onclick=\"window.location='schema_data_view.php?id=$schema_uuid'\" value='".$text['button-back']."'>\n";
+		echo "	</form>\n";
 		echo "</td>\n";
 	}
 	else {
@@ -673,13 +668,13 @@ else {
 						case "password":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value='".$row['field_name']."'>\n";
-							echo "<input tabindex='".$row['field_order_tab']."' class='formfld' style='width:90%'  type='password' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row['field_name']]."\">\n";
+							echo "<input tabindex='".$row['field_order_tab']."' class='formfld' style='width:90%' type='password' name='".$x."field_value' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" maxlength='50' value=\"".$data_row[$row['field_name']]."\">\n";
 							echo "</td>\n";
 							break;
 						case "pin_number":
 							echo "<td valign='top' align='left' class='vtable'>\n";
 							echo "<input type='hidden' name='".$x."field_name' value=\"".$row['field_name']."\">\n";
-							echo "<input tabindex='".$row['field_order_tab']."' class='formfld' style='width:90%'  type='password' name='".$x."field_value' maxlength='50' value=\"".$data_row[$row['field_name']]."\">\n";
+							echo "<input tabindex='".$row['field_order_tab']."' class='formfld' style='width:90%' type='password' name='".$x."field_value' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" maxlength='50' value=\"".$data_row[$row['field_name']]."\">\n";
 							echo "</td>\n";
 							break;
 						case "hidden":
@@ -846,7 +841,7 @@ else {
 								echo "<td valign='top' align='left' class='vtable'>\n";
 								echo "<script type=\"text/javascript\">\n";
 								echo $row['field_name']." = \"\<input type=\'hidden\' name=\'".$x."field_name\' value=\'".$row['field_name']."\'>\\n\";\n";
-								echo $row['field_name']." += \"\<input tabindex='".$row['field_order_tab']."' class=\'txt\' type=\'file\' name='".$x."field_value\' value=\'".$data_row[$row['field_name']]."\'>\\n\";\n";
+								echo $row['field_name']." += \"\<input tabindex='".$row['field_order_tab']."' class=\'formfld fileinput\' type=\'file\' name='".$x."field_value\' value=\'".$data_row[$row['field_name']]."\'>\\n\";\n";
 								echo "</script>\n";
 
 								echo "<div id='".$row['field_name']."id'>";
@@ -878,7 +873,7 @@ else {
 							else {
 								echo "<td valign='top' align='left' class='vtable'>\n";
 								echo "<input type='hidden' name='".$x."field_name' value='".$row['field_name']."'>\n";
-								echo "<input tabindex='".$row['field_order_tab']."' class='formfld' style='width:90%'  type='file' name='".$x."field_value' value=\"".$data_row[$row['field_name']]."\">\n";
+								echo "<input tabindex='".$row['field_order_tab']."' class='formfld fileinput' style='width:90%'  type='file' name='".$x."field_value' value=\"".$data_row[$row['field_name']]."\">\n";
 								echo "</td>\n";
 							}
 							break;
@@ -887,7 +882,7 @@ else {
 								echo "<td valign='top' align='left' class='vtable'>\n";
 								echo "<script type=\"text/javascript\">\n";
 								echo $row['field_name']." = \"<input type='hidden' name='".$x."field_name' value='".$row['field_name']."'>\";\n";
-								echo $row['field_name']." += \"<input tabindex='".$row['field_order_tab']."' class='formfld' style='width:90%'  type='file' name='".$x."field_value' value='".$data_row[$row['field_name']]."'>\";\n";
+								echo $row['field_name']." += \"<input tabindex='".$row['field_order_tab']."' class='formfld fileinput' style='width:90%'  type='file' name='".$x."field_value' value='".$data_row[$row['field_name']]."'>\";\n";
 								echo "</script>\n";
 
 								echo "<span id='".$row['field_name']."'>";
@@ -907,7 +902,7 @@ else {
 							else {
 								echo "<td valign='top' align='left' class='vtable'>\n";
 								echo "<input type='hidden' name='".$x."field_name' value='".$row['field_name']."'>\n";
-								echo "<input tabindex='".$row['field_order_tab']."' class='formfld' style='width:90%'  type='file' name='".$x."field_value' value=\"".$data_row[$row['field_name']]."\">\n";
+								echo "<input tabindex='".$row['field_order_tab']."' class='formfld fileinput' style='width:90%'  type='file' name='".$x."field_value' value=\"".$data_row[$row['field_name']]."\">\n";
 								echo "</td>\n";
 							}
 

@@ -25,14 +25,37 @@
 --	POSSIBILITY OF SUCH DAMAGE.
 
 --get the cache
+	hostname = trim(api:execute("switchname", ""));
 	if (trim(api:execute("module_exists", "mod_memcache")) == "true") then
-		XML_STRING = trim(api:execute("memcache", "get configuration:sofia.conf"));
+		XML_STRING = trim(api:execute("memcache", "get configuration:sofia.conf:" .. hostname));
 	else
 		XML_STRING = "-ERR NOT FOUND";
 	end
 
 --set the cache
 	if (XML_STRING == "-ERR NOT FOUND") then
+
+		--connect to the database
+			dofile(scripts_dir.."/resources/functions/database_handle.lua");
+			dbh = database_handle('system');
+
+		--exits the script if we didn't connect properly
+			assert(dbh:connected());
+
+		--get the domain_uuid
+			if (domain_uuid == nil) then
+				--get the domain_uuid
+					if (domain_name ~= nil) then
+						sql = "SELECT domain_uuid FROM v_domains ";
+						sql = sql .. "WHERE domain_name = '" .. domain_name .."' ";
+						if (debug["sql"]) then
+							freeswitch.consoleLog("notice", "[xml_handler] SQL: " .. sql .. "\n");
+						end
+						status = dbh:query(sql, function(rows)
+							domain_uuid = rows["domain_uuid"];
+						end);
+					end
+			end
 
 		--get the variables
 			vars = trim(api:execute("global_getvar", ""));
@@ -58,8 +81,9 @@
 		--run the query
 			sql = "select p.sip_profile_name, p.sip_profile_description, s.sip_profile_setting_name, s.sip_profile_setting_value ";
 			sql = sql .. "from v_sip_profiles as p, v_sip_profile_settings as s ";
-			sql = sql .. "where p.sip_profile_uuid = s.sip_profile_uuid ";
-			sql = sql .. "and s.sip_profile_setting_enabled = 'true' ";
+			sql = sql .. "where s.sip_profile_setting_enabled = 'true' ";
+			sql = sql .. "and (p.sip_profile_hostname = '" .. hostname.. "' or p.sip_profile_hostname is null or p.sip_profile_hostname = '') ";
+			sql = sql .. "and p.sip_profile_uuid = s.sip_profile_uuid ";
 			sql = sql .. "order by p.sip_profile_name asc ";
 			if (debug["sql"]) then
 				freeswitch.consoleLog("notice", "[xml_handler] SQL: " .. sql .. "\n");
@@ -92,22 +116,14 @@
 								sql = sql .. "and g.domain_uuid = d.domain_uuid ";
 							else
 								sql = "select * from v_gateways ";
-								sql = sql .. "where profile = '"..sip_profile_name.."' and enabled = 'true' ";
+								sql = sql .. "where enabled = 'true' and profile = '"..sip_profile_name.."' ";
 							end
 							if (debug["sql"]) then
 								freeswitch.consoleLog("notice", "[xml_handler] SQL: " .. sql .. "\n");
 							end
 							x = 0;
 							dbh:query(sql, function(field)
-								--set as variables
-								gateway = field.gateway;
-								gateway = gateway:gsub(" ", "_");
-
-								if (domain_count > 1) then
-									table.insert(xml, [[						<gateway name="]] .. field.domain_name .."-".. gateway .. [[">]]);
-								else
-									table.insert(xml, [[						<gateway name="]] .. gateway .. [[">]]);
-								end
+								table.insert(xml, [[						<gateway name="]] .. string.lower(field.gateway_uuid) .. [[">]]);
 
 								if (string.len(field.username) > 0) then
 									table.insert(xml, [[							<param name="username" value="]] .. field.username .. [["/>]]);
@@ -240,8 +256,11 @@
 				freeswitch.consoleLog("notice", "[xml_handler] XML_STRING: " .. XML_STRING .. "\n");
 			end
 
+		--close the database connection
+			dbh:release();
+
 		--set the cache
-			result = trim(api:execute("memcache", "set configuration:sofia.conf '"..XML_STRING:gsub("'", "&#39;").."' "..expire["sofia.conf"]));
+			result = trim(api:execute("memcache", "set configuration:sofia.conf:" .. hostname .." '"..XML_STRING:gsub("'", "&#39;").."' "..expire["sofia.conf"]));
 
 		--send the xml to the console
 			if (debug["xml_string"]) then
@@ -252,7 +271,7 @@
 
 		--send to the console
 			if (debug["cache"]) then
-				freeswitch.consoleLog("notice", "[xml_handler] configuration:sofia.conf source: database\n");
+				freeswitch.consoleLog("notice", "[xml_handler] configuration:sofia.conf:" .. hostname .." source: database\n");
 			end
 	else
 		--replace the &#39 back to a single quote

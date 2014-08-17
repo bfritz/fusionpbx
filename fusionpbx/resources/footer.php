@@ -27,14 +27,19 @@ include "root.php";
 require_once "resources/require.php";
 
 //get the output from the buffer
-	$body = $content_from_db.ob_get_contents(); 
+	$body = $content_from_db.ob_get_contents();
 	ob_end_clean(); //clean the buffer
 
 //set a default template
 	if (strlen($_SESSION['domain']['template']['name']) == 0) { $_SESSION['domain']['template']['name'] = 'default'; }
 
+//clear the template
+	if ($_SESSION['theme']['cache']['boolean'] == "false") {
+			$_SESSION["template_content"] = '';
+	}
+
 //set a default template
-	if (strlen($_SESSION["template_content"])==0) { //build template if session template has no length
+	if (strlen($_SESSION["template_content"]) == 0) { //build template if session template has no length
 		$v_template_path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
 		if (strlen($template_rss_sub_category) > 0) {
 			//this template was assigned by the content manager
@@ -71,7 +76,24 @@ require_once "resources/require.php";
 
 //prepare the template to display the output
 	$custom_head = '';
-	$output = str_replace ("<!--{title}-->", $page["title"], $template); //<!--{title}--> defined in each individual page
+	
+	if (isset($_SESSION["theme"]["title"]["text"])) {
+		if (strlen($_SESSION["theme"]["title"]["text"]) > 0) {
+			$document_title = (($document["title"] != '') ? $document["title"]." - " : null).$_SESSION["theme"]["title"]["text"];
+		}
+		else {
+			$document_title = (($document["title"] != '') ? $document["title"]." " : null);
+		}
+	}
+	else {
+		if (isset($_SESSION["software_name"])) {
+			$document_title = (($document["title"] != '') ? $document["title"]." - " : null).$_SESSION["software_name"];
+		}
+		else {
+			$document_title = (($document["title"] != '') ? $document["title"]." " : null);
+		}
+	}
+	$output = str_replace ("<!--{title}-->", $document_title, $template); //<!--{title}--> defined in each individual page
 	$output = str_replace ("<!--{head}-->", $custom_head, $output); //<!--{head}--> defined in each individual page
 	if (strlen($v_menu) > 0) {
 		$output = str_replace ("<!--{menu}-->", $v_menu, $output); //defined in /resources/menu.php

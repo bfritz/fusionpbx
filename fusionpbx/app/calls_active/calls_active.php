@@ -37,13 +37,16 @@ else {
 
 //add multi-lingual support
 	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];                
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
 $conference_name = trim($_REQUEST["c"]);
 $tmp_conference_name = str_replace("_", " ", $conference_name);
 
+
 require_once "resources/header.php";
+$document['title'] = $text['title'];
+
 ?><script type="text/javascript">
 function loadXmlHttp(url, id) {
 	var f = this;
@@ -127,7 +130,7 @@ echo "			<div id=\"form_label\">\n";
 echo "			<div id=\"url\"></div>\n";
 echo "		</td>\n";
 echo "		<td align='left' valign='middle'>\n";
-echo "			<div id=\"form_label\"></div><input type=\"text\" id=\"form_value\" name=\"form_value\" />\n";
+echo "			<div id=\"form_label\"></div><input type=\"text\" class=\"formfld\" style=\"width: 100%;\" id=\"form_value\" name=\"form_value\" />\n";
 echo "		</td>\n";
 echo "		</tr>\n";
 echo "		</table>\n";
@@ -151,12 +154,12 @@ echo "<script type=\"text/javascript\">\n";
 echo "<!--\n";
 echo "function get_transfer_cmd(uuid) {\n";
 echo "	destination = document.getElementById('form_value').value;\n";
-echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg \"+destination+\" xml ".$_SESSION['user_context']."\";\n";
+echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg \"+destination+\" xml ".trim($_SESSION['user_context'])."\";\n";
 echo "	return escape(cmd);\n";
 echo "}\n";
 echo "\n";
 echo "function get_park_cmd(uuid) {\n";
-echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg *6000 xml ".$_SESSION['user_context']."\";\n";
+echo "	cmd = \"uuid_transfer \"+uuid+\" -bleg *6000 xml ".trim($_SESSION['user_context'])."\";\n";
 echo "	return escape(cmd);\n";
 echo "}\n";
 echo "\n";

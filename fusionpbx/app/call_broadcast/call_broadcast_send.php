@@ -62,7 +62,7 @@ function cmd_async($cmd) {
 
 //get the http get values and set as php variables
 	$group_name = $_GET["group_name"];
-	$call_broadcast_uuid = $_GET["call_broadcast_uuid"];
+	$call_broadcast_uuid = $_GET["id"];
 	$user_category = $_GET["user_category"];
 	$gateway = $_GET["gateway"];
 	$phonetype1 = $_GET["phonetype1"];
@@ -85,6 +85,7 @@ function cmd_async($cmd) {
 		$broadcast_destination_type = $row["broadcast_destination_type"];
 		$broadcast_phone_numbers = $row["broadcast_phone_numbers"];
 		$broadcast_destination_data = $row["broadcast_destination_data"];
+		$broadcast_avmd = $row["broadcast_avmd"];
 		//if (strlen($row["broadcast_destination_data"]) == 0) {
 		//	$broadcast_destination_application = '';
 		//	$broadcast_destination_data = '';
@@ -118,7 +119,7 @@ function cmd_async($cmd) {
 //get information over event socket
 	if (!$fp) {
 		require_once "resources/header.php";
-		$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>"; 
+		$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>";
 		echo "<div align='center'>\n";
 		echo "<table width='40%'>\n";
 		echo "<tr>\n";
@@ -141,23 +142,34 @@ function cmd_async($cmd) {
 				$count = 1;
 				$sched_seconds = '3';
 				foreach ($broadcast_phone_number_array as $tmp_value) {
-					$tmp_value = str_replace(";", "|", $tmp_value);
-					$tmp_value_array = explode ("|", $tmp_value);
+					//set the variables
+						$tmp_value = str_replace(";", "|", $tmp_value);
+						$tmp_value_array = explode ("|", $tmp_value);
 
-					//make sure the phone numbers are correct
-						$phone1 = trim($tmp_value_array[0]);
-						$phone1 = str_replace("-", "", $phone1);
-						$phone1 = str_replace("(", "", $phone1);
-						$phone1 = str_replace(")", "", $phone1);
-						$phone1 = str_replace(" ", "", $phone1);
-						$phone1 = str_replace(".", "", $phone1);
+					//remove the number formatting
+						$phone_1 = preg_replace('{\D}', '', $tmp_value_array[0]);
 
-					//get the correct gateway
-						$bridge_array = outbound_route_to_bridge ($_SESSION['domain_uuid'], $phone1);
+					//get the dialplan variables and bridge statement
+						$dialplan = new dialplan;
+						$dialplan->domain_uuid = $_SESSION['domain_uuid'];
+						$dialplan->outbound_routes($phone_1);
+						$dialplan_variables = $dialplan->variables;
+						$bridge_array[0] = $dialplan->bridges;
+						//echo "var: ".$variables."\n";
+						//echo "bridges: ".$bridges."\n";
 
 					//prepare the string
-						$channel_variables = "ignore_early_media=true,origination_number=$phone1,origination_caller_id_name='$broadcast_caller_id_name',origination_caller_id_number=$broadcast_caller_id_number";
-						$origination_url = "{".$channel_variables."}".$bridge_array[0]."";
+						$channel_variables = $dialplan_variables."ignore_early_media=true";
+						$channel_variables .= ",origination_number=$phone_1";
+						$channel_variables .= ",origination_caller_id_name='$broadcast_caller_id_name'";
+						$channel_variables .= ",origination_caller_id_number=$broadcast_caller_id_number";
+						$channel_variables .= ",domain_uuid=".$_SESSION['domain_uuid'];
+						$channel_variables .= ",domain=".$_SESSION['domain_name'];
+						$channel_variables .= ",domain_name=".$_SESSION['domain_name'];
+						if ($broadcast_avmd == "true") {
+							$channel_variables .= ",execute_on_answer='avmd start'";
+						}
+						$origination_url = "{".$channel_variables."}".$bridge_array[0];
 
 					//get the context
 						if (count($_SESSION["domains"]) > 1) {
@@ -168,7 +180,7 @@ function cmd_async($cmd) {
 						}
 
 					//set the command
-						$cmd = "bgapi sched_api +".$sched_seconds." none bgapi originate ".$origination_url." ".$broadcast_destination_data." XML $context";
+						$cmd = "bgapi sched_api +".$sched_seconds." ".$call_broadcast_uuid." bgapi originate ".$origination_url." ".$broadcast_destination_data." XML $context";
 
 					//if the event socket connection is lost then re-connect
 						if (!$fp) {
@@ -177,13 +189,13 @@ function cmd_async($cmd) {
 
 					//method 1
 						$response = trim(event_socket_request($fp, 'api '.$cmd));
-						
+
 					//method 2
 						//cmd_async($_SESSION['switch']['bin']['dir']."/fs_cli -x \"".$cmd."\";");
 
 					//spread the calls out so that they are scheduled with different times
 						if (strlen($broadcast_concurrent_limit) > 0 && strlen($broadcast_timeout) > 0) {
-							if ($broadcast_concurrent_limit == $count) { 
+							if ($broadcast_concurrent_limit == $count) {
 								$sched_seconds = $sched_seconds + $broadcast_timeout;
 								$count=0;
 							}
@@ -193,7 +205,6 @@ function cmd_async($cmd) {
 				}
 				fclose($fp);
 
-				//echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/calls_active/v_calls_active.php\">\n";
 				echo "<div align='center'>\n";
 				echo "<table width='50%'>\n";
 				echo "<tr>\n";
@@ -201,19 +212,23 @@ function cmd_async($cmd) {
 				echo "</tr>\n";
 				echo "<tr>\n";
 				echo "<td class='row_style1' align='center'>\n";
-				echo "	<strong>".$text['label-call-broadcast']." $broadcast_name ".$text['label-has-been']."</strong>\n";
-				echo "	<br /><br />\n";
-				echo "	<table width='100%'>\n";
-				echo "	<tr>\n";
-				echo "	<td align='center'>\n";
-				echo "		<a href='".PROJECT_PATH."/app/calls_active/calls_active.php'>".$text['label-view-calls']."</a>\n";
-				echo "	</td>\n";
-				echo "	</table>\n";
+				echo "	<strong>".$text['label-call-broadcast']." ".$broadcast_name." ".$text['label-has-been']."</strong>\n";
+
+				if (permission_exists('call_active_view')) {
+					echo "	<br /><br />\n";
+					echo "	<table width='100%'>\n";
+					echo "	<tr>\n";
+					echo "	<td align='center'>\n";
+					echo "		<a href='".PROJECT_PATH."/app/calls_active/calls_active.php'>".$text['label-view-calls']."</a>\n";
+					echo "	</td>\n";
+					echo "	</table>\n";
+				}
+
 				echo "</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
 				echo "</div>\n";
-				
+
 			}
 
 		//show the footer
@@ -232,7 +247,6 @@ require_once "resources/header.php";
 	echo "	<td align=\"center\">\n";
 	echo "		<br>";
 
-
 	echo "<table width='100%' border='0'><tr>\n";
 	echo "<td width='50%' nowrap><b>Contact List</b></td>\n";
 	echo "<td width='50%' align='right'>&nbsp;</td>\n";
@@ -243,19 +257,14 @@ require_once "resources/header.php";
 			$tmp_value = str_replace(";", "|", $tmp_value);
 			$tmp_value_array = explode ("|", $tmp_value);
 
-			//make sure the phone numbers are correct
-				$phone1 = trim($tmp_value_array[0]);
-				$phone1 = str_replace("-", "", $phone1);
-				$phone1 = str_replace("(", "", $phone1);
-				$phone1 = str_replace(")", "", $phone1);
-				$phone1 = str_replace(" ", "", $phone1);
-				$phone1 = str_replace(".", "", $phone1);
+			//remove the number formatting
+			$phone_1 = preg_replace('{\D}', '', $tmp_value_array[0]);
 
 			if ($gateway == "loopback") {
-				$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone1."/default/XML ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
+				$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone_1."/default/XML ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
 			}
 			else {
-				$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
+				$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone_1." ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
 			}
 			echo $cmd."<br />\n";
 			cmd_async($cmd);
@@ -295,8 +304,8 @@ require_once "resources/header.php";
 	echo th_order_by('user_first_name', 'First Name', $order_by, $order);
 	echo th_order_by('user_last_name', 'Last Name', $order_by, $order);
 	echo th_order_by('user_company_name', 'Organization', $order_by, $order);
-	echo th_order_by('user_phone_1', 'Phone1', $order_by, $order);
-	echo th_order_by('user_phone_2', 'Phone2', $order_by, $order);
+	echo th_order_by('user_phone_1', 'phone_1', $order_by, $order);
+	echo th_order_by('user_phone_2', 'phone_2', $order_by, $order);
 	echo "<tr>\n";
 
 	if ($result_count > 0) {
@@ -313,42 +322,34 @@ require_once "resources/header.php";
 			echo "</tr>\n";
 
 			//if (strlen($gateway) > 0) {
-				if ($phonetype1 == "phone1" && strlen($row[user_phone_1]) > 0) { $phone1 = $row[user_phone_1]; }
-				if ($phonetype1 == "phone2" && strlen($row[user_phone_2]) > 0) { $phone1 = $row[user_phone_2]; }
-				if ($phonetype1 == "cell" && strlen($row[user_phone_mobile]) > 0) { $phone1 = $row[user_phone_mobile]; }
-				if ($phonetype2 == "phone1" && strlen($row[user_phone_2]) > 0) { $phone2 = $row[user_phone_2]; }
-				if ($phonetype2 == "phone2" && strlen($row[user_phone_2]) > 0) { $phone2 = $row[user_phone_2]; }
-				if ($phonetype2 == "cell" && strlen($row[user_phone_mobile]) > 0) { $phone2 = $row[user_phone_mobile]; }
+				if ($phonetype1 == "phone_1" && strlen($row[user_phone_1]) > 0) { $phone_1 = $row[user_phone_1]; }
+				if ($phonetype1 == "phone_2" && strlen($row[user_phone_2]) > 0) { $phone_1 = $row[user_phone_2]; }
+				if ($phonetype1 == "cell" && strlen($row[user_phone_mobile]) > 0) { $phone_1 = $row[user_phone_mobile]; }
+				if ($phonetype2 == "phone_1" && strlen($row[user_phone_2]) > 0) { $phone_2 = $row[user_phone_2]; }
+				if ($phonetype2 == "phone_2" && strlen($row[user_phone_2]) > 0) { $phone_2 = $row[user_phone_2]; }
+				if ($phonetype2 == "cell" && strlen($row[user_phone_mobile]) > 0) { $phone_2 = $row[user_phone_mobile]; }
 
-			//make sure the phone numbers are correct
-				$phone1 = str_replace("-", "", $phone1);
-				$phone1 = str_replace("(", "", $phone1);
-				$phone1 = str_replace(")", "", $phone1);
-				$phone1 = str_replace(" ", "", $phone1);
-				$phone1 = str_replace(".", "", $phone1);
-				$phone2 = str_replace("-", "", $phone2);
-				$phone2 = str_replace("(", "", $phone2);
-				$phone2 = str_replace(")", "", $phone2);
-				$phone2 = str_replace(" ", "", $phone2);
-				$phone2 = str_replace(".", "", $phone2);
+			//remove the number formatting
+				$phone_1 = preg_replace('{\D}', '', $phone_1);
+				$phone_2 = preg_replace('{\D}', '', $phone_2);
 
 			//make the call
-				if (strlen($phone1)> 0) {
+				if (strlen($phone_1)> 0) {
 					if ($gateway == "loopback") {
-						$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone1."/default/XML ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
+						$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone_1."/default/XML ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
 					}
 					else {
-						$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone1." ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
+						$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone_1." ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
 					}
 					//echo $cmd."<br />\n";
 					cmd_async($cmd);
 				}
-				if (strlen($phone2)> 0) {
+				if (strlen($phone_2)> 0) {
 					if ($gateway == "loopback") {
-						$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone2."/default/XML ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
+						$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}loopback/".$phone_2."/default/XML ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
 					}
 					else {
-						$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone2." ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
+						$cmd = $_SESSION['switch']['bin']['dir']."/fs_cli -x \"luarun call_broadcast_originate.lua {call_timeout=".$broadcast_timeout."}sofia/gateway/".$gateway."/".$phone_2." ".$_SESSION['switch']['recordings']['dir']."/".$recording_filename." '".$broadcast_caller_id_name."' ".$broadcast_caller_id_number." ".$broadcast_timeout." '".$broadcast_destination_application."' '".$broadcast_destination_data."'\";";
 					}
 					//echo $cmd."<br />\n";
 					cmd_async($cmd);

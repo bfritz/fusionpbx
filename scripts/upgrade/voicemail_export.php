@@ -225,7 +225,7 @@ else {
 			$read_epoch = $row['read_epoch'];
 			$voicemail_id = $row['username'];
 			$domain_name = $row['domain'];
-			//$voicemail_message_uuid = $row['uuid'];
+			$voicemail_message_uuid = $row['uuid'];
 			$caller_id_name = $row['cid_name'];
 			$caller_id_number = $row['cid_number'];
 			//$in_folder = $row['in_folder'];

@@ -110,12 +110,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=contact_edit.php?id=$contact_uuid\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-add']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-add'];
+			header("Location: contact_edit.php?id=".$contact_uuid);
 			return;
 		} //if ($action == "add")
 
@@ -130,12 +126,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=contact_edit.php?id=$contact_uuid\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-update']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-update'];
+			header("Location: contact_edit.php?id=".$contact_uuid);
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
@@ -163,10 +155,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "resources/header.php";
 	if ($action == "update") {
-		$page["title"] = $text['title-contact_notes-edit'];
+		$document['title'] = $text['title-contact_notes-edit'];
 	}
 	else if ($action == "add") {
-		$page["title"] = $text['title-contact_notes-add'];
+		$document['title'] = $text['title-contact_notes-add'];
 	}
 
 //show the content
@@ -187,7 +179,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='15%' nowrap='nowrap'><b>".$text['header-contact_notes-edit']."</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='contact_edit.php?id=$contact_uuid'\" value='".$text['button-back']."'></td>\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='contact_edit.php?id=$contact_uuid'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";

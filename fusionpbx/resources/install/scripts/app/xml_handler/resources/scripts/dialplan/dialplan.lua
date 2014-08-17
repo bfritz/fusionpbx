@@ -33,6 +33,45 @@
 
 --set the cache
 	if (XML_STRING == "-ERR NOT FOUND") then
+
+		--connect to the database
+			dofile(scripts_dir.."/resources/functions/database_handle.lua");
+			dbh = database_handle('system');
+
+		--exits the script if we didn't connect properly
+			assert(dbh:connected());
+
+		--get the domains
+			x = 1;
+			domains = {}
+			sql = "SELECT * FROM v_domains;";
+			dbh:query(sql, function(row)
+				--add items to the domains array
+					domains[row["domain_name"]] = row["domain_uuid"];
+					domains[row["domain_uuid"]] = row["domain_name"];
+				--increment x
+					x = x + 1;
+			end);
+
+		--get the domain_uuid
+			if (domain_uuid == nil) then
+				--get the domain_uuid
+					if (domain_name ~= nil) then
+						domain_uuid = domains[domain_name];
+					end
+			end
+
+	
+		--get the domain name
+			function get_domain_name(domains, domain_uuid)
+				for key,value in ipairs(domains) do
+					if (value.domain_uuid == domain_uuid) then
+						return value.domain_name;
+					end
+				end
+			  	return nil;
+			end	
+
 		--set the xml array and then concatenate the array to a string
 			local xml = {}
 			table.insert(xml, [[<?xml version="1.0" encoding="UTF-8" standalone="no"?>]]);
@@ -51,12 +90,16 @@
 
 		--get the dialplan and related details
 			sql = "select * from v_dialplans as d, v_dialplan_details as s ";
-			sql = sql .. "where d.dialplan_context = '" .. call_context .. "' ";
+			if (call_context == domain_name) then
+				sql = sql .. "where (d.dialplan_context = '" .. call_context .. "' or d.dialplan_context = '${domain_name}') ";
+			else
+				sql = sql .. "where d.dialplan_context = '" .. call_context .. "' ";
+			end
+			if (call_context ~= "public") then
+				sql = sql .. "and (d.domain_uuid = '" .. domain_uuid .. "' or d.domain_uuid is null )";
+			end
 			sql = sql .. "and d.dialplan_enabled = 'true' ";
 			sql = sql .. "and d.dialplan_uuid = s.dialplan_uuid ";
-			--if (call_context ~= "public") then
-			--	sql = sql .. "and d.domain_uuid = '" .. domain_uuid .. "' ";
-			--end
 			sql = sql .. "order by ";
 			sql = sql .. "d.dialplan_order asc, ";
 			sql = sql .. "d.dialplan_name asc, ";
@@ -74,7 +117,7 @@
 			x = 0;
 			dbh:query(sql, function(row)
 				--get the dialplan
-					--domain_uuid = row.domain_uuid;
+					domain_uuid = row.domain_uuid;
 					dialplan_uuid = row.dialplan_uuid;
 					--app_uuid = row.app_uuid;
 					--dialplan_context = row.dialplan_context;
@@ -124,6 +167,7 @@
 					if (dialplan_tag_status == "closed") then
 						table.insert(xml, [[			<extension name="]] .. dialplan_name .. [[" continue="]] .. dialplan_continue .. [[" uuid="]] .. dialplan_uuid .. [[">]]);
 						dialplan_tag_status = "open";
+						first_action = true;
 					end
 					if (dialplan_detail_tag == "condition") then
 						--determine the type of condition
@@ -208,6 +252,22 @@
 							condition = ""; --prevents duplicate time conditions
 						end
 					end
+					
+					if (call_context == "public") then
+						if (dialplan_detail_tag == "action") then
+							if (first_action) then
+								if (domain_uuid ~= nil and domain_uuid ~= '') then
+									--domain_name = get_domain_name(domains, domain_uuid);
+									domain_name = domains[domain_uuid];
+									table.insert(xml, [[					<action application="set" data="call_direction=inbound"/>]]);
+									table.insert(xml, [[					<action application="set" data="domain_uuid=]] .. domain_uuid .. [["/>]]);
+									table.insert(xml, [[					<action application="set" data="domain_name=]] .. domain_name .. [["/>]]);			
+									table.insert(xml, [[					<action application="set" data="domain=]] .. domain_name .. [["/>]]);			
+									first_action = false;
+								end
+							end
+						end
+					end
 					if (dialplan_detail_tag == "action") then
 						table.insert(xml, [[					<action application="]] .. dialplan_detail_type .. [[" data="]] .. dialplan_detail_data .. [["]] .. detail_inline .. [[/>]]);
 					end
@@ -253,6 +313,9 @@
 			if (debug["cache"]) then
 				freeswitch.consoleLog("notice", "[xml_handler] dialplan:"..call_context.." source: database\n");
 			end
+
+		--close the database connection
+			dbh:release();
 	else
 		--replace the &#39 back to a single quote
 			XML_STRING = XML_STRING:gsub("&#39;", "'");

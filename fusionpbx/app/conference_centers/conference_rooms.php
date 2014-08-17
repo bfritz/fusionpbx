@@ -187,8 +187,8 @@ else {
 		$param = "";
 		$page = check_str($_GET['page']);
 		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
-		list($paging_controls, $rows_per_page, $var3) = paging($row_count, $param, $rows_per_page); 
-		$offset = $rows_per_page * $page; 
+		list($paging_controls, $rows_per_page, $var3) = paging($row_count, $param, $rows_per_page);
+		$offset = $rows_per_page * $page;
 
 	//get the conference rooms
 		$conference_center->rows_per_page = $rows_per_page;
@@ -211,7 +211,7 @@ else {
 
 	//table header
 		echo "<div align='center'>\n";
-		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+		echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 		echo "<tr>\n";
 		//echo th_order_by('conference_center_uuid', 'Conference UUID', $order_by, $order);
 		//echo th_order_by('meeting_uuid', 'Meeting UUID', $order_by, $order);
@@ -241,7 +241,7 @@ else {
 			echo "	&nbsp;\n";
 		}
 		echo "</td>\n";
-		echo "<tr>\n";
+		echo "</tr>\n";
 
 	//table data
 		if ($result_count > 0) {
@@ -256,9 +256,10 @@ else {
 					$participant_pin = substr($participant_pin, 0, 3) ."-".  substr($participant_pin, 3, 3) ."-". substr($participant_pin, -3)."\n";
 				}
 
-				echo "<tr >\n";
-				echo "	<td valign='middle' class='".$row_style[$c]."'>".$moderator_pin."&nbsp;</td>\n";
-				echo "	<td valign='middle' class='".$row_style[$c]."'>".$participant_pin."&nbsp;</td>\n";
+				$tr_link = (permission_exists('conference_room_edit')) ? "href='conference_room_edit.php?id=".$row['conference_room_uuid']."'" : null;
+				echo "<tr ".$tr_link.">\n";
+				echo "	<td valign='middle' class='".$row_style[$c]."'>".$moderator_pin."</td>\n";
+				echo "	<td valign='middle' class='".$row_style[$c]."'>".$participant_pin."</td>\n";
 				//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_center_uuid']."&nbsp;</td>\n";
 				//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['meeting_uuid']."&nbsp;</td>\n";
 				//echo "	<td valign='middle' class='".$row_style[$c]."'>".$row['profile']."&nbsp;</td>\n";
@@ -293,12 +294,11 @@ else {
 
 				echo "	<td valign='middle' class='".$row_style[$c]."'>";
 				if ($row['mute'] == "true") {
-					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&mute=false\">".$text['label-true']."</a>";
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&mute=false\">".$text['label-true']."</a>&nbsp;";
 				}
 				else {
-					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&mute=true\">".$text['label-false']."</a>";
+					echo "		<a href=\"?conference_room_uuid=".$row['conference_room_uuid']."&mute=true\">".$text['label-false']."</a>&nbsp;";
 				}
-				echo "		&nbsp;\n";
 				echo "	</td>\n";
 
 				echo "	<td valign='middle' class='".$row_style[$c]."'>";
@@ -339,13 +339,12 @@ else {
 				echo "		&nbsp;\n";
 				echo "	</td>\n";
 
-				echo "	<td valign='top' align='right' nowrap='nowrap'>\n";
-				echo "		&nbsp;\n";
+				echo "	<td class='list_control_icons'>";
 				if (permission_exists('conference_room_edit')) {
-					echo "		<a href='conference_room_edit.php?id=".$row['conference_room_uuid']."' alt='edit'>$v_link_label_edit</a>\n";
+					echo "<a href='conference_room_edit.php?id=".$row['conference_room_uuid']."' alt='".$text['label-edit']."'>$v_link_label_edit</a>";
 				}
 				if (permission_exists('conference_room_delete')) {
-					echo "		<a href='conference_room_delete.php?id=".$row['conference_room_uuid']."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+					echo "<a href='conference_room_delete.php?id=".$row['conference_room_uuid']."' alt='".$text['label-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 				}
 				echo "	</td>\n";
 
@@ -362,12 +361,9 @@ else {
 		echo "	<tr>\n";
 		echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 		echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-		echo "		<td width='33.3%' align='right'>\n";
+		echo "		<td class='list_control_icons'>";
 		if (permission_exists('conference_room_add')) {
-			echo "			<a href='conference_room_edit.php' alt='add'>$v_link_label_add</a>\n";
-		}
-		else {
-			echo "			&nbsp;\n";
+			echo 		"<a href='conference_room_edit.php' alt='add'>$v_link_label_add</a>";
 		}
 		echo "		</td>\n";
 		echo "	</tr>\n";

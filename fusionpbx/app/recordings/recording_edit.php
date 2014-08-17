@@ -113,12 +113,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=recordings.php\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-add']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-add'];
+			header("Location: recordings.php");
 			return;
 		} //if ($action == "add")
 
@@ -156,12 +152,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=recordings.php\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-update']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-update'];
+			header("Location: recordings.php");
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
@@ -209,28 +201,31 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap><b>".$text['title-edit']."</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='recordings.php'\" value='".$text['button-back']."'></td>\n";
-	echo "</tr>\n";
-
-	echo "<tr>\n";
-	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-file'].":\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='text' name='recording_filename' maxlength='255' value=\"$recording_filename\">\n";
-	echo "<br />\n";
-	echo $text['message-file']."\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='recordings.php'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-	echo "    ".$text['label-recording'].":\n";
+	echo "    ".$text['label-recording_name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <input class='formfld' type='text' name='recording_name' maxlength='255' value=\"$recording_name\">\n";
 	echo "<br />\n";
 	echo $text['description-recording']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
+	echo "    ".$text['label-file_name']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <input class='formfld' type='text' name='recording_filename' maxlength='255' value=\"$recording_filename\">\n";
+	echo "<br />\n";
+	echo $text['message-file']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

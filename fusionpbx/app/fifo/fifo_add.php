@@ -41,7 +41,7 @@ else {
 	}
 
 require_once "resources/header.php";
-$page["title"] = $text['title-queue_add'];
+$document['title'] = $text['title-queue_add'];
 
 require_once "resources/paging.php";
 
@@ -263,12 +263,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//redirect the user
-		require_once "resources/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=fifo.php\">\n";
-		echo "<div align='center'>\n";
-		echo $text['message-update']."\n";
-		echo "</div>\n";
-		require_once "resources/footer.php";
+		$_SESSION["message"] = $text['message-add'];
+		header("Location: ".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=16589224-c876-aeb3-f59f-523a1c0801f7");
 		return;
 
 } //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
@@ -286,6 +282,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "		<td align='left'><span class=\"vexpl\"><span class='title'>".$text['header-queue_add']."</span></span></td>\n";
 	echo "		<td align='right'>\n";
 	echo "			<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=16589224-c876-aeb3-f59f-523a1c0801f7'\" value='".$text['button-back']."'>\n";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
@@ -328,20 +325,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    ".$text['label-order'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
-	if (strlen(htmlspecialchars($dialplan_order))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
-	}
-	$i=0;
+	echo "	<select name='dialplan_order' class='formfld'>\n";
+	$i=300;
 	while($i<=999) {
-		if (strlen($i) == 1) { echo "              <option value='00$i'>00$i</option>\n"; }
-		if (strlen($i) == 2) { echo "              <option value='0$i'>0$i</option>\n"; }
-		if (strlen($i) == 3) { echo "              <option value='$i'>$i</option>\n"; }
+		$selected = ($dialplan_order == $i) ? "selected" : null;
+		if (strlen($i) == 1) { echo "<option value='00$i' ".$selected.">00$i</option>\n"; }
+		if (strlen($i) == 2) { echo "<option value='0$i' ".$selected.">0$i</option>\n"; }
+		if (strlen($i) == 3) { echo "<option value='$i' ".$selected.">$i</option>\n"; }
 		$i++;
 	}
-	echo "              </select>\n";
-	echo "<br />\n";
-	echo "\n";
+	echo "	</select>\n";
+	echo "	<br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -350,7 +344,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    ".$text['label-enabled'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <select class='formfld' name='dialplan_enabled' style='width: 60%;'>\n";
+	echo "    <select class='formfld' name='dialplan_enabled'>\n";
 	if ($dialplan_enabled == "true") {
 		echo "    <option value='true' selected='selected' >".$text['option-true']."</option>\n";
 	}

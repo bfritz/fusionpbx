@@ -90,13 +90,8 @@ if (count($_POST)>0) {
 	//echo "Affected Rows: ".$count;
 	//exit;
 
-	//edit: make sure the meta redirect url is correct
-	require_once "resources/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=rsslist.php\">\n";
-	echo "<div align='center'>";
-	echo $text['message-update'];
-	echo "</div>";
-	require_once "resources/footer.php";
+	$_SESSION["message"] = $text['message-update'];
+	header("Location: rsslist.php");
 	return;
 }
 else {
@@ -168,7 +163,7 @@ else {
 	}
 
 	echo "<div align='center'>";
-	echo "<table border='0' width='90%' cellpadding='0' cellspacing='0'>\n";
+	echo "<table border='0' width='100%' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\" width='100%'>\n";
@@ -208,6 +203,7 @@ else {
 	//---- Begin Select List --------------------
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "order by group_name asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 

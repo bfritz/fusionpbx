@@ -36,18 +36,19 @@
 		--convert_ext (optional) to replace the file's extension
 
 --Example
-	--luarun email.lua to@domain.com from@domain.com 'subject' 'body'
+	--luarun email.lua to@domain.com from@domain.com 'headers' 'subject' 'body'
 
 --get the argv values
 	script_name = argv[0];
 	to = argv[1];
 	from = argv[2];
-	subject = argv[3];
-	body = argv[4];
-	file = argv[5];
-	delete = argv[6];
-	--convert_cmd = argv[7];
-	--convert_ext = argv[8];
+	headers = argv[3];
+	subject = argv[4];
+	body = argv[5];
+	file = argv[6];
+	delete = argv[7];
+	--convert_cmd = argv[8];
+	--convert_ext = argv[9];
 
 --replace the &#39 with a single quote
 	body = body:gsub("&#39;", "'");
@@ -59,21 +60,21 @@
 	if (file == nil) then
 		freeswitch.email("",
 			"",
-			"To: "..to.."\nFrom: "..from.."\nSubject: "..subject,
+			"To: "..to.."\nFrom: "..from.."\nX-Headers: "..headers.."\nSubject: "..subject,
 			body
 			);
 	else
 		if (convert_cmd == nil) then
 			freeswitch.email("",
 				"",
-				"To: "..to.."\nFrom: "..from.."\nSubject: "..subject,
+				"To: "..to.."\nFrom: "..from.."\nX-Headers: "..headers.."\nSubject: "..subject,
 				body,
 				file
 				);
 		else
 			freeswitch.email("",
 				"",
-				"To: "..to.."\nFrom: "..from.."\nSubject: "..subject,
+				"To: "..to.."\nFrom: "..from.."\nX-Headers: "..headers.."\nSubject: "..subject,
 				body,
 				file,
 				convert_cmd,

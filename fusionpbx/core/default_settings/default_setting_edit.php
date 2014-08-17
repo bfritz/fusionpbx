@@ -36,6 +36,9 @@ else {
 
 //add multi-lingual support
 	require_once "app_languages.php";
+	foreach($text['button-save'] as $key => $value) {
+		$languages[$key] = '';
+	}
 	foreach($text as $key => $value) {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
@@ -50,16 +53,17 @@ else {
 	}
 
 //get http post variables and set them to php variables
-	if (count($_POST)>0) {
-		$default_setting_category = check_str($_POST["default_setting_category"]);
-		$default_setting_subcategory = check_str($_POST["default_setting_subcategory"]);
-		$default_setting_name = check_str($_POST["default_setting_name"]);
+	if (count($_REQUEST) > 0) {
+		$default_setting_category = strtolower(check_str($_REQUEST["default_setting_category"]));
+		$default_setting_subcategory = strtolower(check_str($_POST["default_setting_subcategory"]));
+		$default_setting_name = strtolower(check_str($_POST["default_setting_name"]));
 		$default_setting_value = check_str($_POST["default_setting_value"]);
+		$default_setting_order = check_str($_POST["default_setting_order"]);
 		$default_setting_enabled = check_str($_POST["default_setting_enabled"]);
 		$default_setting_description = check_str($_POST["default_setting_description"]);
 	}
 
-if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
+if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
@@ -71,6 +75,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($default_setting_subcategory) == 0) { $msg .= $text['message-required'].$text['label-subcategory']."<br>\n"; }
 		//if (strlen($default_setting_name) == 0) { $msg .= $text['message-required'].$text['label-type']."<br>\n"; }
 		//if (strlen($default_setting_value) == 0) { $msg .= $text['message-required'].$text['label-value']."<br>\n"; }
+		//if (strlen($default_setting_order) == 0) { $msg .= $text['message-required'].$text['label-order']."<br>\n"; }
 		//if (strlen($default_setting_enabled) == 0) { $msg .= $text['message-required'].$text['label-enabled']."<br>\n"; }
 		//if (strlen($default_setting_description) == 0) { $msg .= $text['message-required'].$text['label-description']."<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
@@ -88,6 +93,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//add or update the database
 		if ($_POST["persistformvar"] != "true") {
+			// fix null
+			$default_setting_order = ($default_setting_order != '') ? $default_setting_order : 'null';
+
 			if ($action == "add" && permission_exists('default_setting_add')) {
 				$sql = "insert into v_default_settings ";
 				$sql .= "(";
@@ -96,6 +104,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "default_setting_subcategory, ";
 				$sql .= "default_setting_name, ";
 				$sql .= "default_setting_value, ";
+				$sql .= "default_setting_order, ";
 				$sql .= "default_setting_enabled, ";
 				$sql .= "default_setting_description ";
 				$sql .= ")";
@@ -106,18 +115,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "'$default_setting_subcategory', ";
 				$sql .= "'$default_setting_name', ";
 				$sql .= "'$default_setting_value', ";
+				$sql .= "$default_setting_order, ";
 				$sql .= "'$default_setting_enabled', ";
 				$sql .= "'$default_setting_description' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=default_settings.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-add']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-add'];
+				header("Location: default_settings.php");
 				return;
 			} //if ($action == "add")
 
@@ -127,18 +133,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "default_setting_subcategory = '$default_setting_subcategory', ";
 				$sql .= "default_setting_name = '$default_setting_name', ";
 				$sql .= "default_setting_value = '$default_setting_value', ";
+				$sql .= "default_setting_order = $default_setting_order, ";
 				$sql .= "default_setting_enabled = '$default_setting_enabled', ";
 				$sql .= "default_setting_description = '$default_setting_description' ";
 				$sql .= "where default_setting_uuid = '$default_setting_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=default_settings.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-update']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-update'];
+				header("Location: default_settings.php");
 				return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
@@ -157,6 +160,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$default_setting_subcategory = $row["default_setting_subcategory"];
 			$default_setting_name = $row["default_setting_name"];
 			$default_setting_value = $row["default_setting_value"];
+			$default_setting_order = $row["default_setting_order"];
 			$default_setting_enabled = $row["default_setting_enabled"];
 			$default_setting_description = $row["default_setting_description"];
 			break; //limit to 1 row
@@ -167,10 +171,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "resources/header.php";
 	if ($action == "update") {
-		$page["title"] = $text['title-default_setting-edit'];
+		$document['title'] = $text['title-default_setting-edit'];
 	}
 	elseif ($action == "add") {
-		$page["title"] = $text['title-default_setting-add'];
+		$document['title'] = $text['title-default_setting-add'];
 	}
 
 //show the content
@@ -190,7 +194,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['header-default_setting-edit']."</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='default_settings.php'\" value='".$text['button-back']."'></td>\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='default_settings.php'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
@@ -215,11 +222,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-subcategory'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='default_setting_subcategory' maxlength='255' value=\"$default_setting_subcategory\">\n";
+	echo "	<input class='formfld' type='text' name='default_setting_subcategory' id='default_setting_subcategory' maxlength='255' value=\"$default_setting_subcategory\">\n";
 	echo "<br />\n";
 	echo $text['description-subcategory']."\n";
 	echo "</td>\n";
@@ -244,9 +251,38 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	$category = $row['default_setting_category'];
 	$subcategory = $row['default_setting_subcategory'];
 	$name = $row['default_setting_name'];
-	if ($category == "domain" && $subcategory == "menu" && $name == "uuid" ) {
+	if ($category == "cdr" && $subcategory == "format" && $name == "text" ) {
 		echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
-		echo "		<option value=''></option>\n";
+		if ($row['default_setting_value'] == "json") {
+			echo "		<option value='json' selected='selected'>json</option>\n";
+		}
+		else {
+			echo "		<option value='json'>json</option>\n";
+		}
+		if ($row['default_setting_value'] == "xml") {
+			echo "		<option value='xml' selected='selected'>xml</option>\n";
+		}
+		else {
+			echo "		<option value='xml'>xml</option>\n";
+		}
+		echo "		</select>\n";
+	} elseif ($category == "cdr" && $subcategory == "storage" && $name == "text" ) {
+		echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
+		if ($row['default_setting_value'] == "db") {
+			echo "		<option value='db' selected='selected'>db</option>\n";
+		}
+		else {
+			echo "		<option value='db'>db</option>\n";
+		}
+		if ($row['default_setting_value'] == "dir") {
+			echo "		<option value='dir' selected='selected'>dir</option>\n";
+		}
+		else {
+			echo "		<option value='dir'>dir</option>\n";
+		}
+		echo "		</select>\n";
+	} elseif ($category == "domain" && $subcategory == "menu" && $name == "uuid" ) {
+		echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
 		$sql = "";
 		$sql .= "select * from v_menus ";
 		$sql .= "order by menu_language, menu_name asc ";
@@ -265,7 +301,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		</select>\n";
 	} elseif ($category == "domain" && $subcategory == "template" && $name == "name" ) {
 		echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
-		echo "		<option value=''></option>\n";
 		//add all the themes to the list
 		$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
 		if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
@@ -282,6 +317,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 			}
 			closedir($handle);
+		}
+		echo "		</select>\n";
+	} elseif ($category == "domain" && $subcategory == "language" && $name == "code" ) {
+		echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
+		foreach ($languages as $key => $value) {
+			if ($row['default_setting_value'] == $key) {
+				echo "		<option value='$key' selected='selected'>$key</option>\n";
+			}
+			else {
+				echo "		<option value='$key'>$key</option>\n";
+			}
 		}
 		echo "		</select>\n";
 	} elseif ($category == "email" && $subcategory == "smtp_auth" && $name == "var" ) {
@@ -302,7 +348,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "    </select>\n";
 	} elseif ($category == "email" && $subcategory == "smtp_secure" && $name == "var" ) {
 		echo "    <select class='formfld' name='default_setting_value'>\n";
-		echo "    <option value=''></option>\n";
 		if ($row['default_setting_value'] == "none") {
 		echo "    <option value='none' selected='selected'>".$text['label-none']."</option>\n";
 		}
@@ -324,7 +369,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "    </select>\n";
 	} elseif ($category == "domain" && $subcategory == "time_zone" && $name == "name" ) {
 		echo "		<select id='default_setting_value' name='default_setting_value' class='formfld' style=''>\n";
-		echo "		<option value=''></option>\n";
 		//$list = DateTimeZone::listAbbreviations();
 		$time_zone_identifiers = DateTimeZone::listIdentifiers();
 		$previous_category = '';
@@ -364,11 +408,35 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		</select>\n";
 	}
 	elseif ($category == "email" && $subcategory == "smtp_password" && $name == "var" ) {
-		echo "	<input class='formfld' type='password' name='default_setting_value' maxlength='255' value=\"".$row['default_setting_value']."\">\n";
+		echo "	<input class='formfld' type='password' name='default_setting_value' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" maxlength='255' value=\"".$row['default_setting_value']."\">\n";
 	}
 	elseif ($category == "provision" && $subcategory == "password" && $name == "var" ) {
-		echo "	<input class='formfld' type='password' name='default_setting_value' maxlength='255' value=\"".$row['default_setting_value']."\">\n";
-	} else {
+		echo "	<input class='formfld' type='password' name='default_setting_value' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" maxlength='255' value=\"".$row['default_setting_value']."\">\n";
+	}
+	elseif (
+		$category == "theme" && $subcategory == "background_color" && $name == "array" ||
+		$category == "theme" && $subcategory == "login_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "footer_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "footer_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_default_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_default_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_negative_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_negative_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_alert_background_color" && $name == "text" ||
+		$category == "theme" && $subcategory == "message_alert_color" && $name == "text"
+		) {
+		echo "	<style>";
+		echo "		DIV.rui-colorpicker  { width: 253px; }";
+		echo "		DIV.rui-colorpicker DIV.controls { width: 61px; }";
+		echo "		DIV.rui-colorpicker DIV.controls DIV.preview { width: 55px; }";
+		echo "		DIV.rui-colorpicker DIV.controls INPUT.display { width: 61px; text-align: center; font-family: courier; }";
+		echo "		DIV.rui-colorpicker DIV.controls DIV.rgb-display { width: 50px; }";
+		echo "		DIV.rui-colorpicker DIV.controls DIV.rgb-display DIV INPUT { width: 30px; }";
+		echo "	</style>";
+		echo "	<input class='formfld' id='default_setting_value' name='default_setting_value' data-colorpcker=\"{format: 'hex'}\" value=\"".$row['default_setting_value']."\">\n";
+		echo "	<script type='text/javascript'>new Colorpicker().assignTo('default_setting_value');</script>";
+	}
+	else {
 		echo "	<input class='formfld' type='text' name='default_setting_value' maxlength='255' value=\"".$row['default_setting_value']."\">\n";
 	}
 	echo "<br />\n";
@@ -376,13 +444,40 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	if ($name == "array" || $name == '') {
+		echo "<tr>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap' width='30%'>\n";
+		echo "    ".$text['label-order']."\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<select name='default_setting_order' class='formfld'>\n";
+		$i=0;
+		while($i<=999) {
+			$selected = ($i == $default_setting_order) ? "selected" : null;
+			if (strlen($i) == 1) {
+				echo "		<option value='00$i' ".$selected.">00$i</option>\n";
+			}
+			if (strlen($i) == 2) {
+				echo "		<option value='0$i' ".$selected.">0$i</option>\n";
+			}
+			if (strlen($i) == 3) {
+				echo "		<option value='$i' ".$selected.">$i</option>\n";
+			}
+			$i++;
+		}
+		echo "	</select>\n";
+		echo "	<br />\n";
+		echo $text['description-order']."\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "    ".$text['label-enabled'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='default_setting_enabled'>\n";
-	echo "    <option value=''></option>\n";
 	if ($default_setting_enabled == "true") {
 		echo "    <option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
@@ -406,7 +501,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	".$text['label-description'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='default_setting_description' maxlength='255' value=\"$default_setting_description\">\n";
+	echo "	<input class='formfld' type='text' name='default_setting_description' maxlength='255' value=\"".$default_setting_description."\">\n";
 	echo "<br />\n";
 	echo $text['description-description']."\n";
 	echo "</td>\n";
@@ -415,7 +510,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
 	if ($action == "update") {
-		echo "				<input type='hidden' name='default_setting_uuid' value='$default_setting_uuid'>\n";
+		echo "			<input type='hidden' name='default_setting_uuid' value='".$default_setting_uuid."'>\n";
 	}
 	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
@@ -427,6 +522,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	</tr>";
 	echo "</table>";
 	echo "</div>";
+
+	if ($_REQUEST["id"] == '' && $_REQUEST["default_setting_category"] != '') {
+		echo "<script>document.getElementById('default_setting_subcategory').focus();</script>";
+	}
 
 //include the footer
 	require_once "resources/footer.php";

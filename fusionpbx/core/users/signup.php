@@ -44,19 +44,21 @@ else {
 $username = check_str($_POST["username"]);
 $password = check_str($_POST["password"]);
 $confirmpassword = check_str($_POST["confirmpassword"]);
+$group_name = check_str($_POST["group_name"]);
+$user_email = check_str($_POST["user_email"]);
 $contact_organization = check_str($_POST["contact_organization"]);
 $contact_name_given = check_str($_POST["contact_name_given"]);
 $contact_name_family = check_str($_POST["contact_name_family"]);
-$user_email = check_str($_POST["user_email"]);
+
 
 if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 
-	$msgerror = '';
+	$msg = '';
 
 	//--- begin captcha verification ---------------------
 		//session_start(); //make sure sessions are started
 		if (strtolower($_SESSION["captcha"]) != strtolower($_REQUEST["captcha"]) || strlen($_SESSION["captcha"]) == 0) {
-			//$msgerror .= "Captcha Verification Failed<br>\n";
+			//$msg .= "Captcha Verification Failed<br>\n";
 		}
 		else {
 			//echo "verified";
@@ -65,32 +67,34 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 
 	//username is already used.
 	if (strlen($username) == 0) {
-		$msgerror .= $text['message-required'].$text['label-username']."<br>\n";
+		$msg .= $text['message-required'].$text['label-username']."<br>\n";
 	}
 	else {
 		$sql = "SELECT * FROM v_users ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and username = '$username' ";
-		$sql .= "and user_enabled = 'true' ";
+		$sql .= "WHERE username = '$username' ";
+		if ($_SESSION["user"]["unique"]["text"] != "global") {
+			$sql .= "AND domain_uuid = '$domain_uuid' ";
+		}
+		//$sql .= "and user_enabled = 'true' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		if (count($prep_statement->fetchAll(PDO::FETCH_NAMED)) > 0) {
-			$msgerror .= "Please choose a different Username.<br>\n";
+			$msg .= "Please choose a different Username.<br>\n";
 		}
 	}
 
-	if (strlen($password) == 0) { $msgerror .= $text['message-password_blank']."<br>\n"; }
-	if ($password != $confirmpassword) { $msgerror .= $text['message-password_mismatch']."<br>\n"; }
-	//if (strlen($contact_organization) == 0) { $msgerror .= $text['message-required'].$text['label-company_name']."<br>\n"; }
-	//if (strlen($contact_name_given) == 0) { $msgerror .= $text['message-required'].$text['label-first_name']."<br>\n"; }
-	//if (strlen($contact_name_family) == 0) { $msgerror .= $text['message-required'].$text['label-last_name']."<br>\n"; }
-	if (strlen($user_email) == 0) { $msgerror .= $text['message-required'].$text['label-email']."<br>\n"; }
+	if (strlen($password) == 0) { $msg .= $text['message-password_blank']."<br>\n"; }
+	if ($password != $confirmpassword) { $msg .= $text['message-password_mismatch']."<br>\n"; }
+	//if (strlen($contact_organization) == 0) { $msg .= $text['message-required'].$text['label-company_name']."<br>\n"; }
+	//if (strlen($contact_name_given) == 0) { $msg .= $text['message-required'].$text['label-first_name']."<br>\n"; }
+	//if (strlen($contact_name_family) == 0) { $msg .= $text['message-required'].$text['label-last_name']."<br>\n"; }
+	if (strlen($user_email) == 0) { $msg .= $text['message-required'].$text['label-email']."<br>\n"; }
 
-	if (strlen($msgerror) > 0) {
+	if (strlen($msg) > 0) {
 		require_once "resources/header.php";
 		echo "<div align='center'>";
 		echo "<table><tr><td>";
-		echo $msgerror;
+		echo $msg;
 		echo "</td></tr></table>";
 		require_once "resources/persist_form.php";
 		echo persistform($_POST);
@@ -104,6 +108,7 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 
 	//prepare the uuids
 	$user_uuid = uuid();
+	$group_user_uuid = uuid();
 	$contact_uuid = uuid();
 
 	//add the user
@@ -133,6 +138,28 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	$sql .= ")";
 	$db->exec(check_sql($sql));
 	unset($sql);
+
+	//add the user to the group
+	if (strlen($group_name) > 0) {
+		if ( ($group_name == "superadmin" && if_group("superadmin")) || $group_name != "superadmin") {
+			$sql = "insert into v_group_users ";
+			$sql .= "( ";
+			$sql .= "group_user_uuid, ";
+			$sql .= "domain_uuid, ";
+			$sql .= "group_name, ";
+			$sql .= "user_uuid ";
+			$sql .= ") ";
+			$sql .= "values ";
+			$sql .= "(";
+			$sql .= "'".$group_user_uuid."', ";
+			$sql .= "'".$domain_uuid."', ";
+			$sql .= "'".$group_name."', ";
+			$sql .= "'".$user_uuid."' ";
+			$sql .= ")";
+			$db->exec(check_sql($sql));
+			unset($sql);
+		}
+	}
 
 	//add to contacts
 	$sql = "insert into v_contacts ";
@@ -164,36 +191,45 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 	//$log_type = 'user'; $log_status='add'; $log_add_user=$_SESSION["username"]; $log_desc= "username: ".$username." user added.";
 	//log_add($db, $log_type, $log_status, $log_desc, $log_add_user, $_SERVER["REMOTE_ADDR"]);
 
-	$group_name = 'user';
-	$sql = "insert into v_group_users ";
-	$sql .= "(";
-	$sql .= "group_user_uuid, ";
-	$sql .= "domain_uuid, ";
-	$sql .= "group_name, ";
-	$sql .= "user_uuid ";
-	$sql .= ")";
-	$sql .= "values ";
-	$sql .= "(";
-	$sql .= "'".uuid()."', ";
-	$sql .= "'$domain_uuid', ";
-	$sql .= "'$group_name', ";
-	$sql .= "'$user_uuid' ";
-	$sql .= ")";
-	$db->exec(check_sql($sql));
-	unset($sql);
-
-	require_once "resources/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"3;url=index.php\">\n";
-	echo "<div align='center'>".$text['message-add']."</div>";
-	require_once "resources/footer.php";
+	$_SESSION["message"] = $text['message-add'];
+	header("Location: index.php");
 	return;
 }
 
 //show the header
 	require_once "resources/header.php";
-	$page["title"] = $text['title-user_add'];
+	$document['title'] = $text['title-user_add'];
 
 //show the content
+	echo "<script>";
+	echo "	function compare_passwords() {";
+	echo "		if (document.getElementById('password') === document.activeElement || document.getElementById('confirmpassword') === document.activeElement) {";
+	echo "			if (document.getElementById('password').value != '' || document.getElementById('confirmpassword').value != '') {";
+	echo "				if (document.getElementById('password').value != document.getElementById('confirmpassword').value) {";
+	echo "					$('#password').removeClass('formfld_highlight_good');";
+	echo "					$('#confirmpassword').removeClass('formfld_highlight_good');";
+	echo "					$('#password').addClass('formfld_highlight_bad');";
+	echo "					$('#confirmpassword').addClass('formfld_highlight_bad');";
+	echo "				}";
+	echo "				else {";
+	echo "					$('#password').removeClass('formfld_highlight_bad');";
+	echo "					$('#confirmpassword').removeClass('formfld_highlight_bad');";
+	echo "					$('#password').addClass('formfld_highlight_good');";
+	echo "					$('#confirmpassword').addClass('formfld_highlight_good');";
+	echo "				}";
+	echo "			}";
+	echo "		}";
+	echo "		else {";
+	echo "			if (document.getElementById('password').value == document.getElementById('confirmpassword').value) {";
+	echo "				$('#password').removeClass('formfld_highlight_bad');";
+	echo "				$('#confirmpassword').removeClass('formfld_highlight_bad');";
+	echo "				$('#password').removeClass('formfld_highlight_good');";
+	echo "				$('#confirmpassword').removeClass('formfld_highlight_good');";
+	echo "			}";
+	echo "		}";
+	echo "	}";
+	echo "</script>";
+
 	echo "<div align='center'>";
 
 	$tablewidth ='width="100%"';
@@ -215,21 +251,42 @@ if (count($_POST)>0 && check_str($_POST["persistform"]) != "1") {
 
 	echo "<table border='0' $tablewidth cellpadding='6' cellspacing='0'>";
 	echo "	<tr>";
-	echo "		<td class='vncellreq' width='40%'>".$text['label-username'].":</td>";
-	echo "		<td class='vtable' width='60%'><input type='text' class='formfld' autocomplete='off' name='username' value='$username'></td>";
+	echo "		<td class='vncellreq' width='30%'>".$text['label-username'].":</td>";
+	echo "		<td class='vtable' width='70%'><input type='text' class='formfld' autocomplete='off' name='username' value='$username'></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>".$text['label-password'].":</td>";
-	echo "		<td class='vtable'><input type='password' class='formfld' autocomplete='off' name='password' value='$password'></td>";
+	echo "		<td class='vtable'><input type='password' class='formfld' autocomplete='off' name='password' id='password' value='$password' onfocus='compare_passwords();' onkeyup='compare_passwords();' onblur='compare_passwords();'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>".$text['label-confirm_password'].":</td>";
-	echo "		<td class='vtable'><input type='password' class='formfld' autocomplete='off' name='confirmpassword' value='$confirmpassword'></td>";
+	echo "		<td class='vtable'><input type='password' class='formfld' autocomplete='off' name='confirmpassword' id='confirmpassword' value='$confirmpassword' onfocus='compare_passwords();' onkeyup='compare_passwords();' onblur='compare_passwords();'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncellreq'>".$text['label-email'].":</td>";
 	echo "		<td class='vtable'><input type='text' class='formfld' name='user_email' value='$user_email'></td>";
+	echo "	</tr>";
+	echo "	<tr>";
+	echo "		<td class='vncell' valign='top'>".$text['label-group'].":</td>";
+	echo "		<td class='vtable'>";
+	$sql = "SELECT * FROM v_groups ";
+	$sql .= "where domain_uuid = '".$domain_uuid."' ";
+	$sql .= "order by group_name asc ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	echo "			<select name=\"group_name\" class='formfld' style='width: auto; margin-right: 3px;'>\n";
+	echo "				<option value=\"\"></option>\n";
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	foreach($result as $field) {
+		if ($field['group_name'] == "superadmin" && !if_group("superadmin")) { continue; }	//only show the superadmin group to other users in the superadmin group
+		if (!in_array($field["group_name"], $assigned_groups)) {
+			echo "		<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
+		}
+	}
+	echo "			</select>";
+	unset($sql, $result);
+	echo "		</td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>".$text['label-first_name'].":</td>";

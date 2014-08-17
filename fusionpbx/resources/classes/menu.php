@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2013
+	Copyright (C) 2010 - 2014
 	All Rights Reserved.
 
 	Contributor(s):
@@ -59,7 +59,9 @@
 					}
 
 				//begin the transaction
-					$db->beginTransaction();
+					if ($db_type == "sqlite") {
+						$db->beginTransaction();
+					}
 
 				//use the app array to restore the default menu
 					foreach ($apps as $row) {
@@ -178,7 +180,7 @@
 									$sql .= "'".$sub_row['uuid']."', ";
 									$sql .= "'".$group."' ";
 									$sql .= ")";
-									$db->exec($sql);
+									$db->exec(check_sql($sql));
 									unset($sql);
 								}
 							}
@@ -186,7 +188,9 @@
 					}
 
 				//commit the transaction
-					$db->commit();
+					if ($db_type == "sqlite") {
+						$db->commit();
+					}
 			} //end function
 
 			//restore the menu and group permissions
@@ -206,7 +210,6 @@
 					}
 
 				//use the app array to restore the default menu
-					//$db->beginTransaction();
 					foreach ($apps as $row) {
 						foreach ($row['menu'] as $menu) {
 							//set the variables
@@ -367,7 +370,7 @@
 									$sql .= "'".$sub_row['uuid']."', ";
 									$sql .= "'".$group."' ";
 									$sql .= ")";
-									$db->exec($sql);
+									$db->exec(check_sql($sql));
 									unset($sql);
 								}
 							}
@@ -389,7 +392,8 @@
 				}
 
 				if (strlen($sql) == 0) { //default sql for base of the menu
-					$sql = "select i.menu_item_link, l.menu_item_title as menu_language_title, i.menu_item_title, i.menu_item_protected, i.menu_item_category, i.menu_item_uuid, i.menu_item_parent_uuid from v_menu_items as i, v_menu_languages as l ";
+					$sql = "select i.menu_item_link, l.menu_item_title as menu_language_title, i.menu_item_title, i.menu_item_protected, i.menu_item_category, i.menu_item_uuid, i.menu_item_parent_uuid ";
+					$sql .= "from v_menu_items as i, v_menu_languages as l ";
 					$sql .= "where i.menu_item_uuid = l.menu_item_uuid ";
 					$sql .= "and l.menu_language = '".$_SESSION['domain']['language']['code']."' ";
 					$sql .= "and l.menu_uuid = '".$this->menu_uuid."' ";

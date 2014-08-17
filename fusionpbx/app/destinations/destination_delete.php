@@ -40,27 +40,69 @@ else {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
-if (count($_GET)>0) {
-	$id = check_str($_GET["id"]);
-}
-
-//delete the destination
-	if (strlen($id) > 0) {
-		$sql = "delete from v_destinations ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and destination_uuid = '$id' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		unset($sql);
+//get the ID
+	if (count($_GET) > 0) {
+		$id = check_str($_GET["id"]);
 	}
 
-//redirect the browser
-	require_once "resources/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=destinations.php\">\n";
-	echo "<div align='center'>\n";
-	echo $text['message-delete']."\n";
-	echo "</div>\n";
-	require_once "resources/footer.php";
+//if the ID is not set then exit
+	if (!isset($id)) {
+		echo "ID is required.";
+		exit;
+	}
+
+//get the dialplan_uuid
+	$orm = new orm;
+	$orm->name('destinations');
+	$orm->uuid($id);
+	$result = $orm->find()->get();
+	foreach ($result as &$row) {
+		$dialplan_uuid = $row["dialplan_uuid"];
+		$destination_context = $row["destination_context"];
+	}
+	unset ($prep_statement);
+
+//start the atomic transaction
+	$db->beginTransaction();
+
+//delete the dialplan
+	if (isset($dialplan_uuid)) {
+		$sql = "delete from v_dialplan_details ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$db->exec(check_sql($sql));
+		unset($sql);
+
+		$sql = "delete from v_dialplans ";
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
+		$db->exec(check_sql($sql));
+		unset($sql);
+	 }
+
+//delete the destination
+	$sql = "delete from v_destinations ";
+	$sql .= "where domain_uuid = '$domain_uuid' ";
+	$sql .= "and destination_uuid = '$id' ";
+	$db->exec(check_sql($sql));
+	unset($sql);
+
+//commit the atomic transaction
+	$db->commit();
+
+//synchronize the xml config
+	save_dialplan_xml();
+
+//clear memcache
+	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+	if ($fp) {
+		$switch_cmd = "memcache delete dialplan:".$destination_context;
+		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+	}
+
+//redirect the user
+	$_SESSION["message"] = $text['message-delete'];
+	header("Location: destinations.php");
 	return;
 
 ?>

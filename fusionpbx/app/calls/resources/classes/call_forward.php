@@ -17,11 +17,12 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2010
+	Copyright (C) 2010 - 2014
 	All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 include "root.php";
 
@@ -58,13 +59,19 @@ include "root.php";
 
 			//set the dial string
 				if ($this->forward_all_enabled == "true") {
-					$dial_string = "{presence_id=".$this->forward_all_destination."@".$_SESSION['domain_name'].",instant_ringback=true";
+					$dial_string = "{presence_id=".$this->forward_all_destination."@".$_SESSION['domain_name'];
+					$dial_string .= ",instant_ringback=true";
+					$dial_string .= ",domain_uuid=".$_SESSION['domain_uuid'];
+					$dial_string .= ",sip_invite_domain=".$_SESSION['domain_name'];
+					$dial_string .= ",domain_name=".$_SESSION['domain_name'];
+					$dial_string .= ",domain=".$_SESSION['domain_name'];
+					$dial_string .= ",extension_uuid=".$this->extension_uuid;
 					if (strlen($this->accountcode) > 0) {
 						$dial_string .= ",accountcode=".$this->accountcode;
 					}
 					$dial_string .= "}";
 					if (extension_exists($this->forward_all_destination)) {
-						$dial_string .= "\${sofia_contact(".$this->forward_all_destination."@".$_SESSION['domain_name'].")}";
+						$dial_string .= "user/".$this->forward_all_destination."@".$_SESSION['domain_name'];
 					}
 					else {
 						$bridge = outbound_route_to_bridge ($_SESSION['domain_uuid'], $this->forward_all_destination);

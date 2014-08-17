@@ -36,13 +36,11 @@ else {
 
 //get the https values and set as variables
 	$order_by = check_str($_GET["order_by"]);
-	$order = check_str($_GET["order"]); 
+	$order = check_str($_GET["order"]);
 
 //add multi-lingual support
 	unset($text);
-	echo "<!--\n";
 	require_once "app/calls/app_languages.php";
-	echo "-->\n";
 	foreach($text as $key => $value) {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
@@ -102,9 +100,9 @@ else {
 	$rows_per_page = 150;
 	$param = "";
 	$page = $_GET['page'];
-	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
-	$offset = $rows_per_page * $page; 
+	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+	list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page);
+	$offset = $rows_per_page * $page;
 
 	$sql = "select * from v_extensions ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -142,7 +140,7 @@ else {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<th>".$text['table-extension']."</th>\n";
 	echo "<th>".$text['table-tools']."</th>\n";
@@ -151,20 +149,14 @@ else {
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			echo "<tr >\n";
+			$tr_url = PROJECT_PATH."/app/calls/call_edit.php?id=".$row['extension_uuid'];
+			$tr_link = (permission_exists('call_forward') || permission_exists('follow_me') || permission_exists('do_not_disturb')) ? "href='".$tr_url."'" : null;
+			echo "<tr ".$tr_link.">\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['extension']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>\n";
-			if (permission_exists('call_forward')) {
-				echo "		<a href='".PROJECT_PATH."/app/calls/call_edit.php?id=".$row['extension_uuid']."&a=call_forward' alt='Call Forward'>".$text['label-call-forward']."</a> \n";
-				echo "		&nbsp;&nbsp;\n";
-			}
-			if (permission_exists('follow_me')) {
-				echo "		<a href='".PROJECT_PATH."/app/calls/call_edit.php?id=".$row['extension_uuid']."&a=follow_me' alt='Follow Me'>".$text['label-follow-me']."</a> \n";
-				echo "		&nbsp;&nbsp;\n";
-			}
-			if (permission_exists('do_not_disturb')) {
-				echo "		<a href='".PROJECT_PATH."/app/calls/call_edit.php?id=".$row['extension_uuid']."&a=do_not_disturb' alt='Do Not Disturb'>".$text['label-dnd']."</a> \n";
-			}
+			if (permission_exists('call_forward')) { 	echo "<a href='".$tr_url."'>".$text['label-call-forward']."</a>&nbsp;&nbsp;&nbsp;"; }
+			if (permission_exists('follow_me')) {		echo "<a href='".$tr_url."'>".$text['label-follow-me']."</a>&nbsp;&nbsp;&nbsp;"; }
+			if (permission_exists('do_not_disturb')) {	echo "<a href='".$tr_url."'>".$text['label-dnd']."</a>"; }
 			echo "	</td>\n";
 			echo "	<td valign='top' class='row_stylebg' width='40%'>".$row['description']."&nbsp;</td>\n";
 			echo "</tr>\n";

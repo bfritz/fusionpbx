@@ -7,15 +7,8 @@ function enable_change(enable_over) {
 }
 
 function show_advanced_config() {
-  document.getElementById("show_advanced_box").innerHTML='';
-  aodiv = document.getElementById('show_advanced');
-  aodiv.style.display = "block";
-}
-
-function hide_advanced_config() {
-  document.getElementById("show_advanced_box").innerHTML='';
-  aodiv = document.getElementById('show_advanced');
-  aodiv.style.display = "block";
+	$('#show_advanced_box').slideToggle();
+	$('#show_advanced').slideToggle();
 }
 </script>
 
@@ -44,8 +37,8 @@ function hide_advanced_config() {
 						?>
 						</span><br>
 					</td>		<td width='50%' align='right'>
-						<input type='submit' name='submit' class='btn' value='<?php echo $text['button-save']?>'>
 						<input type='button' class='btn' name='' alt='back' onclick="window.location='xmpp.php'" value='<?php echo $text['button-back']?>'>
+						<input type='submit' name='submit' class='btn' value='<?php echo $text['button-save']?>'>
 					</td>
 				</tr>
 				<tr>
@@ -85,9 +78,9 @@ function hide_advanced_config() {
 			<?php echo $text['label-password']?>:
 		</td>
 		<td class='vtable' align='left'>
-			<input class='formfld' type='password' name='profile_password' autocomplete='off' id='profile_password' maxlength='50' onfocus="document.getElementById('show_profile_password').innerHTML = '<?php echo $text['label-password']?>: '+document.getElementById('profile_password').value;" value="<?php echo $profile['profile_password'];?>">
+			<input class='formfld' type='password' name='profile_password' autocomplete='off' id='profile_password' maxlength='50' onmouseover="this.type='text';" onfocus="this.type='text';" onmouseout="if (!$(this).is(':focus')) { this.type='password'; }" onblur="this.type='password';" value="<?php echo $profile['profile_password'];?>">
 			<br />
-			<span onclick="document.getElementById('show_profile_password').innerHTML = ''"><?php echo $text['description-password']?> </span><span id='show_profile_password'></span>
+			<?php echo $text['description-password']?>
 		</td>
 	</tr>
 
@@ -132,9 +125,9 @@ function hide_advanced_config() {
 		<div id="show_advanced_box">
 			<table width="100%" border="0" cellpadding="6" cellspacing="0">
 				<tr>
-					<td width="30%" valign="top" class="vncell"><?php echo $text['label-advanced']?></td>
+					<td width="30%" valign="top" class="vncell">&nbsp;</td>
 					<td width="70%" class="vtable">
-						<input type="button" onClick="show_advanced_config()" value="<?php echo $text['button-advanced']?>"></input>
+						<input type="button" class="btn" onClick="show_advanced_config()" value="<?php echo $text['button-advanced']?>"></input>
 					</td>
 				</tr>
 			</table>
@@ -143,10 +136,10 @@ function hide_advanced_config() {
 			<table width="100%" border="0" cellpadding="6" cellspacing="0">
 				<tr>
 				<?php if (if_group("superadmin")) { ?>
-					<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>
+					<td width='30%' class='vncellreq' valign='top' align='left' nowrap='nowrap'>
 						<?php echo $text['label-context']?>:
 					</td>
-					<td class='vtable' align='left'>
+					<td width='70%' class='vtable' align='left'>
 						<input class='formfld' type='text' name='context' maxlength='255' value="<?php echo $profile['context'];?>">
 						<br />
 						<?php echo $text['description-context']?>

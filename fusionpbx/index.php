@@ -25,6 +25,9 @@
 */
 include "root.php";
 
+// start the session
+	session_start();
+
 //if config.php file does not exist then redirect to the install page
 	if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/resources/config.php")) {
 		//do nothing
@@ -33,26 +36,45 @@ include "root.php";
 	} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/includes/config.php")) {
 		//move config.php from the includes to resources directory.
 		rename($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/includes/config.php", $_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/resources/config.php");
-	} elseif (file_exists("/etc/fusionpbx/config.php")){
+	} elseif (file_exists("/etc/fusionpbx/config.php")) {
 		//linux
-	} elseif (file_exists("/usr/local/etc/fusionpbx/config.php")){
+	} elseif (file_exists("/usr/local/etc/fusionpbx/config.php")) {
 		//bsd
 	} else {
 		header("Location: ".PROJECT_PATH."/resources/install.php");
 		exit;
 	}
 
+// if not logged in, clear the session variables
+	//if (strlen($_SESSION["username"]) == 0) {
+	//	session_unset();
+	//	session_destroy();
+	//}
+
 //adds multiple includes
 	require_once "resources/require.php";
 
-//show the index page
-	if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/index.php")){
-		require_once "themes/".$_SESSION['domain']['template']['name']."/index.php";
+// if logged in, redirect to login destination
+	if (strlen($_SESSION["username"]) > 0) {
+		if (strlen($_SESSION['login']['destination']['url']) > 0) {
+			header("Location: ".$_SESSION['login']['destination']['url']);
+		}
+		else {
+			require_once "resources/header.php";
+			require_once "resources/footer.php";
+		}
 	}
 	else {
-		require_once "resources/require.php";
-		require_once "resources/header.php";
-		echo "<br /><br />\n";
-		require_once "resources/footer.php";
+		//use custom index, if present, otherwise use custom login, if present, otherwise use default login
+		if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/index.php")) {
+			require_once "themes/".$_SESSION['domain']['template']['name']."/index.php";
+		}
+		else if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/themes/".$_SESSION['domain']['template']['name']."/login.php")) {
+			require_once "themes/".$_SESSION['domain']['template']['name']."/login.php";
+		}
+		else {
+			require_once "resources/login.php";
+		}
 	}
+
 ?>

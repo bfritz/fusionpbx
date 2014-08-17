@@ -65,6 +65,30 @@ td {
 	font-family: arial;
 }
 
+form {
+	margin: 0px;
+	}
+
+td.list_control_icons {
+	/* multiple icons exist (horizontally) */
+	padding: none;
+	padding-left: 3px;
+	width: 50px;
+	text-align: right;
+	vertical-align: top;
+	white-space: nowrap;
+}
+
+td.list_control_icon {
+	/* a single icon exists */
+	padding: none;
+	padding-left: 3px;
+	width: 25px;
+	text-align: right;
+	vertical-align: top;
+	white-space: nowrap;
+}
+
 INPUT.btn {
 	font-family: verdana;
 	font-size: 11px;
@@ -207,7 +231,7 @@ th:last-child th:first-child {
 	border-bottom: 1px solid #999999;
 	font-size: 11px;
 	background-color: #990000;
-	color: #444444;	
+	color: #444444;
 	padding-right: 16px;
 	padding-left: 6px;
 	padding-top: 4px;
@@ -282,7 +306,7 @@ table {
 table th {
 	padding:4px 10px
 }
- 
+
 table td {
 	/*background:#fff;*/
 	/*padding:2px 10px 4px 10px*/
@@ -294,7 +318,7 @@ table tr.even td {
 	border-bottom: 1px solid #999999;
 	color: #444444;
 }
- 
+
 table tr.odd td {
 	border-bottom: 1px solid #999999;
 	color: #000000;
@@ -474,6 +498,50 @@ table tr:nth-last-child(-5) td:first-of-type {
 	}
 
 /* end the menu css*/
+
+	#message_container {
+		z-index: 99999;
+		position: absolute;
+		left: 0px;
+		top: -200px;
+		right: 0px;
+		filter: alpha(opacity=0);
+		opacity: 0;
+		-moz-opacity:0;
+		-khtml-opacity: 0;
+	}
+
+	#message_block {
+		margin: 0px auto;
+		width: 300px;
+		height: auto;
+		background-color: #000;
+		background-repeat: repeat-x;
+		background-image: url('<?=PROJECT_PATH?>/themes/classic/images/background_black.png');
+		background-position: top center;
+		padding: 10px;
+		-webkit-border-radius: 0px 0px 7px 7px;
+		-moz-border-radius: 0px 0px 7px 7px;
+		border-radius: 0px 0px 7px 7px;
+		text-align: center;
+	}
+
+	#message_block .text {
+		font-family: arial, san-serif;
+		font-size: 10pt;
+		font-weight: bold;
+		color: #fff;
+	}
+
+	DIV.login_message {
+		border: 1px solid #bae0ba;
+		background-color: #eeffee;
+		-webkit-border-radius: 3px 3px 3px 3px;
+		-moz-border-radius: 3px 3px 3px 3px;
+		border-radius: 3px 3px 3px 3px;
+		padding: 20px;
+		}
+
 </style>
 
 <script type="text/javascript">
@@ -498,8 +566,44 @@ function confirmdelete(url) {
 }
 //-->
 </SCRIPT>
+
+<script language="javascript" type="text/javascript" src="<?=PROJECT_PATH?>/resources/jquery/jquery-1.8.3.js"></script>
+
+<script language="JavaScript" type="text/javascript">
+	function display_message(msg) {
+		$("#message_text").html(msg);
+		$("#message_container").animate({top: '+=200'}, 0).animate({ opacity: 0.9 }, "fast").delay(1750).animate({top: '-=200'}, 1000).animate({opacity: 0});
+	}
+</script>
+
 </head>
-<body>
+
+<?php
+// set message_onload
+if (strlen($_SESSION['message']) > 0) {
+	$message_text = addslashes($_SESSION['message']);
+	$onload .= "display_message('".$message_text."');";
+	unset($_SESSION['message']);
+}
+?>
+
+<body onload="<?php echo $onload;?>">
+
+	<div id='message_container'>
+		<div id='message_block'>
+			<span id='message_text' class='text'></span>
+		</div>
+	</div>
+
+	<?php
+		// qr code container for contacts
+		echo "<div id='qr_code_container' style='display: none;' onclick='$(this).fadeOut(400);'>";
+		echo "	<table cellpadding='0' cellspacing='0' border='0' width='100%' height='100%'><tr><td align='center' valign='middle'>";
+		echo "		<span id='qr_code' onclick=\"$('#qr_code_container').fadeOut(400);\"></span>";
+		echo "	</td></tr></table>";
+		echo "</div>";
+	?>
+
 <div align='center'>
 <table width='90%' class='border.disabled' style='background-color:#FFFFFF;' border='0' cellpadding='0' cellspacing='0'>
 <tr>

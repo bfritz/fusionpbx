@@ -39,31 +39,17 @@ else {
 
 //add multi-lingual support
 	require_once "app_languages.php";
+	foreach($text['button-save'] as $key => $value) {
+		$languages[$key] = '';
+	}
 	foreach($text as $key => $value) {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
 //get data from the db
-	if (strlen($_REQUEST["id"])> 0) {
+	if (strlen($_REQUEST["id"]) > 0) {
 		$user_uuid = $_REQUEST["id"];
 	}
-	else {
-		if (strlen($_SESSION["username"]) > 0) {
-			$username = $_SESSION["username"];
-		}
-	}
-
-//get the username from v_users
-	$sql = "select * from v_users ";
-	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and user_uuid = '$user_uuid' ";
-	$prep_statement = $db->prepare(check_sql($sql));
-	$prep_statement->execute();
-	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-	foreach ($result as &$row) {
-		$username = $row["username"];
-	}
-	unset ($prep_statement);
 
 //required to be a superadmin to update an account that is a member of the superadmin group
 	$superadmins = superadmin_list($db);
@@ -85,10 +71,8 @@ else {
 			$sql .= "and user_uuid = '$user_uuid' ";
 			$db->exec(check_sql($sql));
 		//redirect the user
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$user_uuid\">\n";
-			echo "<div align='center'>".$text['message-update']."</div>";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-update'];
+			header("Location: usersupdate.php?id=".$user_uuid);
 			return;
 	}
 
@@ -115,35 +99,99 @@ else {
 	}
 
 if (count($_POST) > 0 && $_POST["persistform"] != "1") {
-	$user_uuid = $_REQUEST["id"];
-	$password = check_str($_POST["password"]);
-	$confirm_password = check_str($_POST["confirm_password"]);
-	$user_status = check_str($_POST["user_status"]);
-	//$user_template_name = check_str($_POST["user_template_name"]);
-	$user_time_zone = check_str($_POST["user_time_zone"]);
-	$contact_uuid = check_str($_POST["contact_uuid"]);
-	$group_member = check_str($_POST["group_member"]);
-	$user_enabled = check_str($_POST["user_enabled"]);
-	$api_key = check_str($_POST["api_key"]);
 
-	if ($password != $confirm_password) { $msg_error .= $text['message-password_mismatch']."<br>\n"; }
-	//if (strlen($contact_uuid) == 0) { $msg_error .= $text['message-required'].$text['label-email']."<br>\n"; }
-	//if (strlen($user_time_zone) == 0) { $msg_error .= $text['message-required'].$text['label-time_zone']."<br>\n"; }
-	if (strlen($user_enabled) == 0) { $msg_error .= $text['message-required'].$text['label-enabled']."<br>\n"; }
+	//get the HTTP values and set as variables
+		$user_uuid = $_REQUEST["id"];
+		$username_old = check_str($_POST["username_old"]);
+		$username = check_str($_POST["username"]);
+		$password = check_str($_POST["password"]);
+		$confirm_password = check_str($_POST["confirm_password"]);
+		$user_status = check_str($_POST["user_status"]);
+		$user_language = check_str($_POST["user_language"]);
+		$user_time_zone = check_str($_POST["user_time_zone"]);
+		$contact_uuid = check_str($_POST["contact_uuid"]);
+		$group_member = check_str($_POST["group_member"]);
+		$user_enabled = check_str($_POST["user_enabled"]);
+		$api_key = check_str($_POST["api_key"]);
 
-	if ($msg_error) {
-		require_once "resources/header.php";
-		echo "<div align='center'>";
-		echo "<table><tr><td>";
-		echo $msg_error;
-		echo "</td></tr></table>";
-		echo "<br />\n";
-		require_once "resources/persist_form.php";
-		echo persistform($_POST);
-		echo "</div>";
-		require_once "resources/footer.php";
-		return;
-	}
+	//check required values
+		if ($username != $username_old) {
+			$sql = "select count(*) as num_rows from v_users where domain_uuid = '".$domain_uuid."' and username = '".$username."'";
+			$prep_statement = $db->prepare(check_sql($sql));
+			if ($prep_statement) {
+				$prep_statement->execute();
+				$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+				if (0 < $row['num_rows']) {
+					$msg_error = $text['message-username_exists'];
+				}
+			}
+			unset($sql);
+		}
+
+		if ($password != $confirm_password) { $msg_error = $text['message-password_mismatch']; }
+
+		if ($msg_error) {
+			$_SESSION["message"] = $msg_error;
+			$_SESSION["message_mood"] = 'negative';
+			header("Location: usersupdate.php?id=".$user_uuid);
+			exit;
+		}
+
+	//check to see if user language is set
+		$sql = "select count(*) as num_rows from v_user_settings ";
+		$sql .= "where user_setting_category = 'domain' ";
+		$sql .= "and user_setting_subcategory = 'language' ";
+		$sql .= "and user_uuid = '".$user_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			if ($row['num_rows'] == 0) {
+				$user_setting_uuid = uuid();
+				$sql = "insert into v_user_settings ";
+				$sql .= "(";
+				$sql .= "domain_uuid, ";
+				$sql .= "user_setting_uuid, ";
+				$sql .= "user_setting_category, ";
+				$sql .= "user_setting_subcategory, ";
+				$sql .= "user_setting_name, ";
+				$sql .= "user_setting_value, ";
+				$sql .= "user_setting_enabled, ";
+				$sql .= "user_uuid ";
+				$sql .= ") ";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'".$_SESSION["domain_uuid"]."', ";
+				$sql .= "'".$user_setting_uuid."', ";
+				$sql .= "'domain', ";
+				$sql .= "'language', ";
+				$sql .= "'code', ";
+				$sql .= "'".$user_language."', ";
+				$sql .= "'true', ";
+				$sql .= "'".$user_uuid."' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+			}
+			else {
+				if (strlen($user_language) == 0) {
+					$sql = "delete from v_user_settings ";
+					$sql .= "where user_setting_category = 'domain' ";
+					$sql .= "and user_setting_subcategory = 'language' ";
+					$sql .= "and user_uuid = '".$user_uuid."' ";
+					$db->exec(check_sql($sql));
+					unset($sql);
+				}
+				else {
+					$sql  = "update v_user_settings set ";
+					$sql .= "user_setting_value = '".$user_language."', ";
+					$sql .= "user_setting_enabled = 'true' ";
+					$sql .= "where user_setting_category = 'domain' ";
+					$sql .= "and user_setting_subcategory = 'language' ";
+					$sql .= "and user_uuid = '".$user_uuid."' ";
+					$db->exec(check_sql($sql));
+				}
+			}
+		}
 
 	//get the number of rows in v_user_settings
 		$sql = "select count(*) as num_rows from v_user_settings ";
@@ -179,6 +227,7 @@ if (count($_POST) > 0 && $_POST["persistform"] != "1") {
 				$sql .= "'".$user_uuid."' ";
 				$sql .= ")";
 				$db->exec(check_sql($sql));
+				unset($sql);
 			}
 			else {
 				if (strlen($user_time_zone) == 0) {
@@ -197,6 +246,7 @@ if (count($_POST) > 0 && $_POST["persistform"] != "1") {
 					$sql .= "and user_setting_subcategory = 'time_zone' ";
 					$sql .= "and user_uuid = '".$user_uuid."' ";
 					$db->exec(check_sql($sql));
+					unset($sql);
 				}
 			}
 		}
@@ -228,17 +278,9 @@ if (count($_POST) > 0 && $_POST["persistform"] != "1") {
 			}
 		}
 
-	//if the template has not been assigned by the superadmin
-		//if (strlen($_SESSION['domain']['template']['name']) == 0) {
-			//set the session theme for the active user
-		//	if ($_SESSION["username"] == $username) {
-		//		$_SESSION['domain']['template']['name'] = $user_template_name;
-		//	}
-		//}
-
 	//sql update
 		$sql  = "update v_users set ";
-		if (if_group("admin") && strlen($_POST["username"])> 0) {
+		if (strlen($username) > 0 && $username != $username_old) {
 			$sql .= "username = '$username', ";
 		}
 		if (strlen($password) > 0 && $confirm_password == $password) {
@@ -262,65 +304,57 @@ if (count($_POST) > 0 && $_POST["persistform"] != "1") {
 		else {
 			$sql .= "contact_uuid = '$contact_uuid' ";
 		}
-		if (strlen($user_uuid)> 0) {
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and user_uuid = '$user_uuid' ";
-		}
-		else {
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and username = '$username' ";
-		}
+		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "and user_uuid = '$user_uuid' ";
 		$db->exec(check_sql($sql));
 
-	//update the user_status
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-		$switch_cmd .= "callcenter_config agent set status ".$username."@".$_SESSION['domain_name']." '".$user_status."'";
-		$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 
-	//update the user state
-		$cmd = "api callcenter_config agent set state ".$username."@".$_SESSION['domain_name']." Waiting";
-		$response = event_socket_request($fp, $cmd);
+	// if call center installed
+	if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/call_center/app_config.php")) {
 
-	//clear the template so it will rebuild in case the template was changed
-		//$_SESSION["template_content"] = '';
+		// update agent and tiers tables
+			$sql  = "update v_call_center_agents set agent_name = '".$username."' where domain_uuid = '".$domain_uuid."' and agent_name = '".$username_old."' ";
+			$db->exec(check_sql($sql));
+			unset($sql);
+
+			$sql  = "update v_call_center_tiers set agent_name = '".$username."' where domain_uuid = '".$domain_uuid."' and agent_name = '".$username_old."' ";
+			$db->exec(check_sql($sql));
+			unset($sql);
+
+		//syncrhonize the configuration
+			save_call_center_xml();
+
+		//update the user_status
+			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+			$switch_cmd .= "callcenter_config agent set status ".$username."@".$_SESSION['domain_name']." '".$user_status."'";
+			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+
+		//update the user state
+			$cmd = "api callcenter_config agent set state ".$username."@".$_SESSION['domain_name']." Waiting";
+			$response = event_socket_request($fp, $cmd);
+
+	}
 
 	//redirect the browser
-		require_once "resources/header.php";
-		if (if_group("admin")) {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$user_uuid\">\n";
-		}
-		else {
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=usersupdate.php?id=$user_uuid\">\n";
-		}
-		echo "<div align='center'>".$text['message-update']."</div>";
-		require_once "resources/footer.php";
+		$_SESSION["message"] = $text['message-update'];
+		header("Location: index.php");
 		return;
+
 }
 else {
+
 	$sql = "select * from v_users ";
 	//allow admin access
 	if (if_group("admin") || if_group("superadmin")) {
-		if (strlen($user_uuid)> 0) {
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and user_uuid = '$user_uuid' ";
-		}
-		else {
-			$sql .= "where domain_uuid = '$domain_uuid' ";
-			$sql .= "and username = '$username' ";
-		}
-	}
-	else {
 		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and username = '$username' ";
+		$sql .= "and user_uuid = '$user_uuid' ";
 	}
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach ($result as &$row) {
 		$user_uuid = $row["user_uuid"];
-		if (if_group("admin")) {
-			$username = $row["username"];
-		}
+		$username = $row["username"];
 		$password = $row["password"];
 		$api_key = $row["api_key"];
 		$user_enabled = $row["user_enabled"];
@@ -331,14 +365,45 @@ else {
 	//get the groups the user is a member of
 	//group_members function defined in config.php
 	$group_members = group_members($db, $user_uuid);
+
 }
 
 //include the header
 	require_once "resources/header.php";
-	$page["title"] = $text['title-user_edit'];
+	$document['title'] = $text['title-user_edit'];
 
 //show the content
 	$table_width ='width="100%"';
+
+	echo "<script>";
+	echo "	function compare_passwords() {";
+	echo "		if (document.getElementById('password') === document.activeElement || document.getElementById('confirmpassword') === document.activeElement) {";
+	echo "			if (document.getElementById('password').value != '' || document.getElementById('confirmpassword').value != '') {";
+	echo "				if (document.getElementById('password').value != document.getElementById('confirmpassword').value) {";
+	echo "					$('#password').removeClass('formfld_highlight_good');";
+	echo "					$('#confirmpassword').removeClass('formfld_highlight_good');";
+	echo "					$('#password').addClass('formfld_highlight_bad');";
+	echo "					$('#confirmpassword').addClass('formfld_highlight_bad');";
+	echo "				}";
+	echo "				else {";
+	echo "					$('#password').removeClass('formfld_highlight_bad');";
+	echo "					$('#confirmpassword').removeClass('formfld_highlight_bad');";
+	echo "					$('#password').addClass('formfld_highlight_good');";
+	echo "					$('#confirmpassword').addClass('formfld_highlight_good');";
+	echo "				}";
+	echo "			}";
+	echo "		}";
+	echo "		else {";
+	echo "			if (document.getElementById('password').value == document.getElementById('confirmpassword').value) {";
+	echo "				$('#password').removeClass('formfld_highlight_bad');";
+	echo "				$('#confirmpassword').removeClass('formfld_highlight_bad');";
+	echo "				$('#password').removeClass('formfld_highlight_good');";
+	echo "				$('#confirmpassword').removeClass('formfld_highlight_good');";
+	echo "			}";
+	echo "		}";
+	echo "	}";
+	echo "</script>";
+
 	echo "<form method='post' action=''>";
 
 	echo "<div align='center'>";
@@ -349,8 +414,8 @@ else {
 	echo "<table $table_width cellpadding='3' cellspacing='0' border='0'>";
 	echo "<td align='left' width='90%' nowrap><b>".$text['header-user_edit']."</b></td>\n";
 	echo "<td nowrap='nowrap'>\n";
-	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>";
 	echo "	<input type='button' class='btn' onclick=\"window.location='index.php'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -369,16 +434,23 @@ else {
 
 	echo "	<tr>";
 	echo "		<td width='30%' class='vncellreq'>".$text['label-username'].":</td>";
-	echo "		<td width='70%' class='vtable'>$username</td>";
+	echo "		<td width='70%' class='vtable'>";
+	if (if_group("admin") || if_group("superadmin")) {
+		echo "		<input type='txt' autocomplete='off' class='formfld' name='username' value='".$username."'>";
+	}
+	else {
+		echo "		".$username;
+	}
+	echo "		</td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
 	echo "		<td class='vncell'>".$text['label-password'].":</td>";
-	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='password' value=\"\"></td>";
+	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='password' id='password' value='' onfocus='compare_passwords();' onkeyup='compare_passwords();' onblur='compare_passwords();'></td>";
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td class='vncell'>".$text['label-confirm_password'].":</td>";
-	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirm_password' value=\"\"></td>";
+	echo "		<td class='vtable'><input type='password' autocomplete='off' class='formfld' name='confirm_password' id='confirmpassword' value='' onfocus='compare_passwords();' onkeyup='compare_passwords();' onblur='compare_passwords();'></td>";
 	echo "	</tr>";
 
 	echo "	<tr>";
@@ -405,6 +477,7 @@ else {
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
+			$assigned_groups[] = $field['group_name'];
 		}
 	}
 	echo "</table>\n";
@@ -412,19 +485,15 @@ else {
 	echo "<br />\n";
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where domain_uuid = '".$domain_uuid."' ";
+	$sql .= "order by group_name asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	echo "<select name=\"group_name\" class='frm'>\n";
+	echo "<select name=\"group_name\" class='formfld' style='width: auto; margin-right: 3px;'>\n";
 	echo "<option value=\"\"></option>\n";
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach($result as $field) {
-		if ($field['group_name'] == "superadmin") {
-			//only show the superadmin group to other users in the superadmin group
-			if (if_group("superadmin")) {
-				echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
-			}
-		}
-		else {
+		if ($field['group_name'] == "superadmin" && !if_group("superadmin")) { continue; }	//only show the superadmin group to other users in the superadmin group
+		if (!in_array($field["group_name"], $assigned_groups)) {
 			echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
 		}
 	}
@@ -480,7 +549,7 @@ else {
 	echo "<br />\n";
 	echo $text['description-contact']."\n";
 	if (strlen($contact_uuid) > 0) {
-		echo "			<a href=\"/app/contacts/contact_edit.php?id=$contact_uuid\">".$text['description-contact_view']."</a>\n";
+		echo "			<a href=\"".PROJECT_PATH."/app/contacts/contact_edit.php?id=$contact_uuid\">".$text['description-contact_view']."</a>\n";
 	}
 	echo "		</td>";
 	echo "	</tr>";
@@ -490,7 +559,7 @@ else {
 	}
 	else {
 		echo "	<tr>\n";
-		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "	<td width='20%' class=\"vncell\">\n";
 		echo "		".$text['label-status'].":\n";
 		echo "	</td>\n";
 		echo "	<td class=\"vtable\">\n";
@@ -534,42 +603,29 @@ else {
 		echo "	</tr>\n";
 	}
 
-	//if the template has not been assigned by the superadmin
-		/*
-		if (strlen($_SESSION['domain']['template']['name']) == 0) {
-			echo "	<tr>\n";
-			echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
-			echo "		Template: \n";
-			echo "	</td>\n";
-			echo "	<td class=\"vtable\">\n";
-			echo "		<select id='user_template_name' name='user_template_name' class='formfld' style=''>\n";
-			echo "		<option value=''></option>\n";
-			$theme_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes';
-			if ($handle = opendir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes')) {
-				while (false !== ($dir_name = readdir($handle))) {
-					if ($dir_name != "." && $dir_name != ".." && $dir_name != ".svn" && is_dir($theme_dir.'/'.$dir_name)) {
-						$dir_label = str_replace('_', ' ', $dir_name);
-						$dir_label = str_replace('-', ' ', $dir_label);
-						if ($dir_name == $user_settings['domain']['template']['name']) {
-							echo "		<option value='$dir_name' selected='selected'>$dir_label</option>\n";
-						}
-						else {
-							echo "		<option value='$dir_name'>$dir_label</option>\n";
-						}
-					}
-				}
-				closedir($handle);
-			}
-			echo "	</select>\n";
-			echo "	<br />\n";
-			echo "	Select a template to set as the default and then press save.<br />\n";
-			echo "	</td>\n";
-			echo "	</tr>\n";
+	echo "	<tr>\n";
+	echo "	<td width='20%' class=\"vncell\">\n";
+	echo "		".$text['label-user_language'].": \n";
+	echo "	</td>\n";
+	echo "	<td class=\"vtable\" align='left'>\n";
+	echo "		<select id='user_language' name='user_language' class='formfld' style=''>\n";
+	echo "		<option value=''></option>\n";
+	foreach ($languages as $key => $value) {
+		if ($key == $user_settings['domain']['language']['code']) {
+			echo "		<option value='$key' selected='selected'>$key</option>\n";
 		}
-		*/
+		else {
+			echo "		<option value='$key'>$key</option>\n";
+		}
+	}
+	echo "		</select>\n";
+	echo "		<br />\n";
+	echo "		".$text['description-user_language']."<br />\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
 
 	echo "	<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+	echo "	<td width='20%' class=\"vncell\">\n";
 	echo "		".$text['label-time_zone'].": \n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\" align='left'>\n";
@@ -607,7 +663,8 @@ else {
 		echo "	<tr>";
 		echo "		<td class='vncell'>".$text['label-api_key'].":</td>";
 		echo "		<td class='vtable'>\n";
-		echo "			<input type=\"text\" class='formfld' name=\"api_key\" value=\"".$api_key."\" >\n";
+		echo "			<input type=\"text\" class='formfld' name=\"api_key\" id='api_key' value=\"".$api_key."\" >";
+		echo "			<input type='button' class='btn' value='".$text['button-generate']."' onclick=\"getElementById('api_key').value='".uuid()."';\">";
 		if (strlen($text['description-api_key']) > 0) {
 			echo "			<br />".$text['description-api_key']."<br />\n";
 		}
@@ -621,8 +678,7 @@ else {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='user_enabled'>\n";
-	echo "    <option value=''></option>\n";
-	if ($user_enabled == "true" || $user_enabled == "") {
+	if ($user_enabled == "true") {
 		echo "    <option value='true' selected='selected'>".$text['option-true']."</option>\n";
 	}
 	else {
@@ -648,7 +704,7 @@ else {
 	echo "	<tr>";
 	echo "		<td colspan='2' align='right'>";
 	echo "			<input type='hidden' name='id' value=\"$user_uuid\">";
-	echo "			<input type='hidden' name='username' value=\"$username\">";
+	echo "			<input type='hidden' name='username_old' value=\"$username\">";
 	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>";
 	echo "		</td>";
 	echo "	</tr>";

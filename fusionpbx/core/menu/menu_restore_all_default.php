@@ -34,6 +34,12 @@ else {
 	return;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 //get the http value and set as a php variable
 	$menu_uuid = check_str($_REQUEST["menu_uuid"]);
 	$menu_language = check_str($_REQUEST["menu_language"]);
@@ -45,7 +51,7 @@ else {
 	$menu->menu_uuid = $menu_uuid;
 	$menu->menu_language = $menu_language;
 	$menu->delete();
-	$menu->restore2();
+	$menu->restore_all();
 
 //unset the menu session variable
 	$_SESSION["menu"] = "";
@@ -54,12 +60,8 @@ else {
 	$_SESSION["template_content"] = '';
 
 //show a message to the user
-	require_once "resources/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=/core/menu/menu_edit.php?id=$menu_uuid\">\n";
-	echo "<div align='center'>\n";
-	echo "Restore Complete\n";
-	echo "</div>\n";
-	require_once "resources/footer.php";
+	$_SESSION["message"] = $text['message-restore'];
+	header("Location: /core/menu/menu_edit.php?id=".$menu_uuid);
 	return;
 
 ?>

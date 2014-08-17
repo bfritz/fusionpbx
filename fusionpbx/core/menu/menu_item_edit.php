@@ -54,12 +54,8 @@ else {
 			$sql .= "and group_name = '".$group_name."' ";
 			$db->exec(check_sql($sql));
 		//redirect the browser
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_item_edit.php?id=$menu_uuid&menu_item_uuid=$menu_item_uuid&menu_uuid=$menu_uuid\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-delete']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-delete'];
+			header("Location: menu_item_edit.php?id=".$menu_uuid."&menu_item_uuid=".$menu_item_uuid."&menu_uuid=".$menu_uuid);
 			return;
 	}
 
@@ -131,23 +127,24 @@ else {
 					$menu_language = $row['menu_language'];
 				}
 
+			//get the highest menu item order
+				if (strlen($menu_item_parent_uuid) == 0) {
+					$sql = "SELECT menu_item_order FROM v_menu_items ";
+					$sql .= "where menu_uuid = '$menu_uuid' ";
+					$sql .= "and menu_item_parent_uuid is null ";
+					$sql .= "order by menu_item_order desc ";
+					$sql .= "limit 1 ";
+					$prep_statement = $db->prepare(check_sql($sql));
+					$prep_statement->execute();
+					$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+					foreach ($result as &$row) {
+						$highest_menu_item_order = $row['menu_item_order'];
+					}
+					unset($prep_statement);
+				}
+
 			//add a menu item
 				if ($action == "add" && permission_exists('menu_add')) {
-					if (strlen($menu_item_parent_uuid) == 0) {
-						$sql = "SELECT menu_item_order FROM v_menu_items ";
-						$sql .= "where menu_uuid = '$menu_uuid' ";
-						$sql .= "and menu_item_parent_uuid = '$menu_item_parent_uuid' ";
-						$sql .= "order by menu_item_order desc ";
-						$sql .= "limit 1 ";
-						$prep_statement = $db->prepare(check_sql($sql));
-						$prep_statement->execute();
-						$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-						foreach ($result as &$row) {
-							$highest_menu_item_order = $row['menu_item_order'];
-						}
-						unset($prep_statement);
-					}
-
 					$menu_item_uuid = uuid();
 					$sql = "insert into v_menu_items ";
 					$sql .= "(";
@@ -198,7 +195,12 @@ else {
 					$sql .= "menu_item_protected = '$menu_item_protected', ";
 					if (strlen($menu_item_parent_uuid) == 0) {
 						$sql .= "menu_item_parent_uuid = null, ";
-						$sql .= "menu_item_order = '$menu_item_order', ";
+						if (strlen($menu_item_order) > 0) {
+							$sql .= "menu_item_order = '$menu_item_order', ";
+						}
+						else {
+							$sql .= "menu_item_order = '".($highest_menu_item_order+1)."', ";
+						}
 					}
 					else {
 						$sql .= "menu_item_parent_uuid = '$menu_item_parent_uuid', ";
@@ -234,12 +236,14 @@ else {
 				if ($_REQUEST["a"] != "delete" && strlen($menu_item_title) > 0 && permission_exists('menu_add')) {
 					$sql = "select count(*) as num_rows from v_menu_languages ";
 					$sql .= "where menu_item_uuid = '".$menu_item_uuid."' ";
+					$sql .= "and menu_language = '$menu_language' ";
 					$prep_statement = $db->prepare($sql);
 					$prep_statement->execute();
 					$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 					if ($row['num_rows'] == 0) {
 						$sql_insert = "insert into v_menu_languages ";
 						$sql_insert .= "(";
+						$sql_insert .= "menu_language_uuid, ";
 						$sql_insert .= "menu_uuid, ";
 						$sql_insert .= "menu_item_uuid, ";
 						$sql_insert .= "menu_language, ";
@@ -247,6 +251,7 @@ else {
 						$sql_insert .= ")";
 						$sql_insert .= "values ";
 						$sql_insert .= "(";
+						$sql_insert .= "'".uuid()."', ";
 						$sql_insert .= "'".$menu_uuid."', ";
 						$sql_insert .= "'".$menu_item_uuid."', ";
 						$sql_insert .= "'".$menu_language."', ";
@@ -265,18 +270,14 @@ else {
 				}
 
 			//redirect the user
-				require_once "resources/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=menu_edit.php?id=$menu_uuid\">\n";
-					echo "<div align='center'>\n";
-					if ($action == "add") {
-						echo $text['message-add']."\n";
-					}
-					if ($action == "update") {
-						echo $text['message-update']."\n";
-					}
-					echo "</div>\n";
-					require_once "resources/footer.php";
-					return;
+				if ($action == "add") {
+					$_SESSION["message"] = $text['message-add'];
+				}
+				if ($action == "update") {
+					$_SESSION["message"] = $text['message-update'];
+				}
+				header("Location: menu_edit.php?id=".$menu_uuid);
+				return;
 		} //if ($_POST["persistformvar"] != "true")
 	} //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
@@ -310,10 +311,10 @@ else {
 //include the header
 	require_once "resources/header.php";
 	if ($action == "update") {
-		$page["title"] = $text['title-menu_item-edit'];
+		$document['title'] = $text['title-menu_item-edit'];
 	}
 	if ($action == "add") {
-		$page["title"] = $text['title-menu_item-add'];
+		$document['title'] = $text['title-menu_item-add'];
 	}
 
 	echo "<div align='center'>";
@@ -333,7 +334,11 @@ else {
 		echo $text['header-menu_item-add'];
 	}
 	echo "</b></td>\n";
-	echo "<td width='70%' align='right' valign='top'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='menu_edit.php?id=".$menu_uuid."'\" value='".$text['button-back']."'><br /><br /></td>\n";
+	echo "<td width='70%' align='right' valign='top'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='menu_edit.php?id=".$menu_uuid."'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' class='btn' name='submit' value='".$text['button-save']."'>\n";
+	echo "	<br><br>";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "	<tr>";
@@ -348,7 +353,6 @@ else {
 	echo "		<td class='vncellreq'>".$text['label-category'].":</td>";
 	echo "		<td class='vtable'>";
 	echo "            <select name=\"menu_item_category\" class='formfld'>\n";
-	echo "            <option value=\"\"></option>\n";
 	if ($menu_item_category == "internal") { echo "<option value=\"internal\" selected>".$text['option-internal']."</option>\n"; } else { echo "<option value=\"internal\">".$text['option-internal']."</option>\n"; }
 	if ($menu_item_category == "external") { echo "<option value=\"external\" selected>".$text['option-external']."</option>\n"; } else { echo "<option value=\"external\">".$text['option-external']."</option>\n"; }
 	if ($menu_item_category == "email") { echo "<option value=\"email\" selected>".$text['option-email']."</option>\n"; } else { echo "<option value=\"email\">".$text['option-email']."</option>\n"; }
@@ -404,6 +408,7 @@ else {
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
+			$assigned_groups[] = $field['group_name'];
 		}
 	}
 	echo "</table>\n";
@@ -411,20 +416,20 @@ else {
 	echo "<br />\n";
 	$sql = "SELECT * FROM v_groups ";
 	$sql .= "where domain_uuid = '".$domain_uuid."' ";
+	$sql .= "order by group_name asc ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	$prep_statement->execute();
-	echo "<select name=\"group_name\" class='frm'>\n";
+	echo "<select name=\"group_name\" class='formfld' style='width: auto; margin-right: 3px;'>\n";
 	echo "<option value=\"\"></option>\n";
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach($result as $field) {
-		if ($field['group_name'] == "superadmin") {
-			//only show the superadmin group to other users in the superadmin group
-			if (if_group("superadmin")) {
+		if (!in_array($field['group_name'], $assigned_groups)) {
+			if ($field['group_name'] == "superadmin" && if_group("superadmin")) {
+				echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n"; //only show the superadmin group to other users in the superadmin group
+			}
+			else {
 				echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
 			}
-		}
-		else {
-			echo "<option value='".$field['group_name']."'>".$field['group_name']."</option>\n";
 		}
 	}
 	echo "</select>";
@@ -439,18 +444,17 @@ else {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='menu_item_protected'>\n";
-	echo "    <option value=''></option>\n";
-	if ($menu_item_protected == "true") {
-		echo "    <option value='true' selected='selected' >".$text['label-true']."</option>\n";
-	}
-	else {
-		echo "    <option value='true'>".$text['label-true']."</option>\n";
-	}
 	if ($menu_item_protected == "false") {
 		echo "    <option value='false' selected='selected' >".$text['label-false']."</option>\n";
 	}
 	else {
 		echo "    <option value='false'>".$text['label-false']."</option>\n";
+	}
+	if ($menu_item_protected == "true") {
+		echo "    <option value='true' selected='selected' >".$text['label-true']."</option>\n";
+	}
+	else {
+		echo "    <option value='true'>".$text['label-true']."</option>\n";
 	}
 	echo "    </select><br />\n";
 	echo $text['description-protected']."<br />\n";

@@ -1,0 +1,155 @@
+
+# SIP Default Generic Configuration File 
+ 
+# Image Version
+image_version: P003-08-9-00
+
+# Proxy Server
+proxy1_address: ""		; Can be dotted IP or FQDN
+proxy2_address: ""		; Can be dotted IP or FQDN
+proxy3_address: ""		; Can be dotted IP or FQDN
+proxy4_address: ""		; Can be dotted IP or FQDN
+proxy5_address: ""		; Can be dotted IP or FQDN
+proxy6_address: ""		; Can be dotted IP or FQDN
+
+# Proxy Server Port (default - 5060)
+proxy1_port: 5060 
+proxy2_port: 5060 
+proxy3_port: 5060 
+proxy4_port: 5060 
+proxy5_port: 5060 
+proxy6_port: 5060 
+
+# Proxy Registration (0-disable (default), 1-enable)
+proxy_register: 0 
+
+# Phone Registration Expiration [1-3932100 sec] (Default - 3600)
+timer_register_expires: 3600 
+
+# Codec for media stream (g711ulaw (default), g711alaw, g729a)
+preferred_codec: g711ulaw
+
+# TOS bits in media stream [0-5] (Default - 5)
+tos_media: 5
+
+# Inband DTMF Settings (0-disable, 1-enable (default))
+dtmf_inband: 1
+
+# Out of band DTMF Settings (none-disable, avt-avt enable (default), avt_always - always avt )
+dtmf_outofband: avt
+
+# DTMF dB Level Settings (1-6dB down, 2-3db down, 3-nominal (default), 4-3db up, 5-6dB up)
+dtmf_db_level: 3
+
+# SIP Timers
+timer_t1: 500 			; Default 500 msec
+timer_t2: 4000 			; Default 4 sec
+sip_retx: 10			; Default 10
+sip_invite_retx: 6 		; Default 6
+timer_invite_expires: 180 	; Default 180 sec
+
+####### New Parameters added in Release 2.0 #######
+
+# Dialplan template (.xml format file relative to the TFTP root directory)
+dial_template: dialplan
+
+# TFTP Phone Specific Configuration File Directory
+tftp_cfg_dir: ""		; Example:  ./sip_phone/
+ 
+# Time Server (There are multiple values and configurations refer to Admin Guide for Specifics)
+sntp_server: ""			; SNTP Server IP Address
+sntp_mode: directedbroadcast	; unicast, multicast, anycast, or directedbroadcast (default)
+time_zone: EST			; Time Zone Phone is in
+dst_offset: 1			; Offset from Phone's time when DST is in effect 
+dst_start_month: April		; Month in which DST starts
+dst_start_day: ""		; Day of month in which DST starts
+dst_start_day_of_week: Sun	; Day of week in which DST starts
+dst_start_week_of_month: 1	; Week of month in which DST starts
+dst_start_time: 02		; Time of day in which DST starts
+dst_stop_month: Oct		; Month in which DST stops
+dst_stop_day: ""		; Day of month in which DST stops
+dst_stop_day_of_week: Sunday	; Day of week in which DST stops
+dst_stop_week_of_month: 8	; Week of month in which DST stops 8=last week of month
+dst_stop_time: 2		; Time of day in which DST stops
+dst_auto_adjust: 1		; Enable(1-Default)/Disable(0) DST automatic adjustment
+time_format_24hr: 1		; Enable(1 - 24Hr Default)/Disable(0 - 12Hr)
+
+# Do Not Disturb Control (0-off, 1-on, 2-off with no user control, 3-on with no user control)
+dnd_control: 0			; Default 0 (Do Not Disturb feature is off)
+
+# Caller ID Blocking (0-disbaled, 1-enabled, 2-disabled no user control, 3-enabled no user control)
+callerid_blocking: 0		; Default 0 (Disable sending all calls as anonymous) 
+
+# Anonymous Call Blocking (0-disabled, 1-enabled, 2-disabled no user control, 3-enabled no user control)
+anonymous_call_block: 0		; Default 0 (Disable blocking of anonymous calls)
+
+# DTMF AVT Payload (Dynamic payload range for AVT tones - 96-127)
+dtmf_avt_payload: 101		; Default 101
+
+# Sync value of the phone used for remote reset 
+sync: 1				; Default 1
+
+####### New Parameters added in Release 2.1 #######
+
+# Backup Proxy Support
+proxy_backup: ""		; Dotted IP of Backup Proxy
+proxy_backup_port: 5060		; Backup Proxy port (default is 5060)
+
+# Emergency Proxy Support
+proxy_emergency: "" 		; Dotted IP of Emergency Proxy
+proxy_emergency_port: 5060	; Emergency Proxy port (default is 5060)
+
+# Configurable VAD option
+enable_vad: 0			; VAD setting 0-disable (Default), 1-enable
+
+####### New Parameters added in Release 2.2 ######
+
+# NAT/Firewall Traversal
+nat_enable: 0                   ; 0-Disabled (default), 1-Enabled
+nat_address: ""		        ; WAN IP address of NAT box (dotted IP or DNS A record only)
+voip_control_port: 5060      	; UDP port used for SIP messages (default - 5060)
+start_media_port: 16384 	; Start RTP range for media (default - 16384)
+end_media_port: 32766   	; End RTP range for media (default - 32766)
+nat_received_processing: 0	; 0-Disabled (default), 1-Enabled
+
+# Outbound Proxy Support
+outbound_proxy: ""	 	; restricted to dotted IP or DNS A record only
+outbound_proxy_port: 5060       ; default is 5060
+
+####### New Parameter added in Release 3.0 #######
+
+# Allow for the bridge on a 3way call to join remaining parties upon hangup
+cnf_join_enable : 1		; 0-Disabled, 1-Enabled (default)
+
+####### New Parameters added in Release 3.1 #######
+
+# Allow Transfer to be completed while target phone is still ringing
+semi_attended_transfer: 1	; 0-Disabled, 1-Enabled (default)
+
+# Telnet Level (enable or disable the ability to telnet into the phone) 
+telnet_level: 1			; 0-Disabled (default), 1-Enabled, 2-Privileged
+
+####### New Parameters added in Release 4.0 #######
+
+# XML URLs
+services_url: ""		; URL for external Phone Services
+directory_url: ""		; URL for external Directory location
+logo_url: ""			; URL for branding logo to be used on phone display
+
+# HTTP Proxy Support
+http_proxy_addr: ""		; Address of HTTP Proxy server
+http_proxy_port: 80		; Port of HTTP Proxy Server (80-default)
+
+# Dynamic DNS/TFTP Support
+dyn_dns_addr_1: ""              ; restricted to dotted IP
+dyn_dns_addr_2: ""              ; restricted to dotted IP
+dyn_tftp_addr: ""               ; restricted to dotted IP
+
+# Remote Party ID
+remote_party_id: 0		; 0-Disabled (default), 1-Enabled
+
+####### New Parameters added in Release 4.4 #######
+
+# Call Hold Ringback (0-disabled, 1-enabled, 2-disabled no user control, 3-enabled no user control)
+call_hold_ringback: 0		; Default 0 (Disable ringback of held call)
+

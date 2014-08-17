@@ -113,12 +113,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$menu->restore();
 
 			//redirect the user back to the main menu
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-add']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-add'];
+				header("Location: menu.php");
 				return;
 		} //if ($action == "add")
 
@@ -133,12 +129,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				unset($sql);
 
 			//redirect the user back to the main menu
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=menu.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-update']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-update'];
+				header("Location: menu.php");
 				return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
@@ -165,10 +157,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "resources/header.php";
 	if ($action == "update") {
-		$page["title"] = $text['title-menu-edit'];
+		$document['title'] = $text['title-menu-edit'];
 	}
 	if ($action == "add") {
-		$page["title"] = $text['title-menu-add'];
+		$document['title'] = $text['title-menu-add'];
 	}
 
 //show the content
@@ -189,13 +181,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['header-menu-edit']."</b></td>\n";
 	}
 	echo "<td width='70%' align='right'>\n";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='menu.php'\" value='".$text['button-back']."'>\n";
 	if (permission_exists('menu_restore') && $action == "update") {
 		echo "	<input type='button' class='btn' value='".$text['button-restore_all']."' onclick=\"document.location.href='menu_restore_all_default.php?menu_uuid=$menu_uuid&menu_language=$menu_language';\" />";
 	}
 	if (permission_exists('menu_restore') && $action == "update") {
 		echo "	<input type='button' class='btn' value='".$text['button-restore_default']."' onclick=\"document.location.href='menu_restore_default.php?menu_uuid=$menu_uuid&menu_language=$menu_language';\" />";
 	}
-	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='menu.php'\" value='".$text['button-back']."'></td>\n";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
@@ -210,7 +204,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-name'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -221,7 +215,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-language'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -255,7 +249,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
-	echo "</div>";
+	echo "</div><br><br>";
 
 //show the menu items
 	require_once "core/menu/menu_item_list.php";

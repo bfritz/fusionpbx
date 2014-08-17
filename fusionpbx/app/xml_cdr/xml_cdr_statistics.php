@@ -50,8 +50,9 @@ else {
 	echo "<tr>\n";
 	echo "	<td width='30%' align='left' valign='top' nowrap='nowrap'><b>".$text['label-call-statistics']."</b></td>\n";
 	echo "	<td width='70%' align='right' valign='top'>\n";
-	echo "		<input type='button' class='btn' value='CSV' onclick=\"document.location.href='xml_cdr_statistics_csv.php';\">\n";
-	echo "		<input type='button' class='btn' name='' alt='back' onclick=\"window.location='xml_cdr.php'\" value='".$text['button-back']."'>\n";
+	echo "		<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='xml_cdr.php'\" value='".$text['button-back']."'>\n";
+	echo "		<input type='button' class='btn' value='".$text['button-extension_summary']."' onclick=\"document.location.href='xml_cdr_extension_summary.php';\">\n";
+	echo "		<input type='button' class='btn' value='".$text['button-download_csv']."' onclick=\"document.location.href='xml_cdr_statistics_csv.php';\">\n";
 	echo "	</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -69,9 +70,9 @@ else {
 	$row_style["1"] = "row_style1";
 
 ?>
-	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/resources/jquery/flot/excanvas.min.js"></script><![endif]-->
-	<script language="javascript" type="text/javascript" src="/resources/jquery/jquery-1.8.3.js"></script>
-	<script language="javascript" type="text/javascript" src="/resources/jquery/flot/jquery.flot.js"></script>
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/flot/excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/jquery-1.8.3.js"></script>
+	<script language="javascript" type="text/javascript" src="<?php echo PROJECT_PATH; ?>/resources/jquery/flot/jquery.flot.js"></script>
 	<table>
 		<tr>
 			<td align='left'>
@@ -108,7 +109,7 @@ else {
 			"aloc": {
 				label: "ALOC",
 				data: <?php echo json_encode($graph['aloc']); ?>
-			},		
+			},
 		};
 
 		// hard-code color indices to prevent them from shifting as
@@ -118,8 +119,8 @@ else {
 			val.color = i;
 			++i;
 		});
-		
-		// insert checkboxes 
+
+		// insert checkboxes
 		var choiceContainer = $("#choices");
 		$.each(datasets, function(key, val) {
 			choiceContainer.append('<br /><input type="checkbox" name="' + key +
@@ -129,7 +130,7 @@ else {
 		});
 		choiceContainer.find("input").click(plotAccordingToChoices);
 
-		
+
 		function plotAccordingToChoices() {
 			var data = [];
 

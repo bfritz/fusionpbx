@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2013
+	Portions created by the Initial Developer are Copyright (C) 2008-2014
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -26,7 +26,14 @@
 
 	if (!function_exists('software_version')) {
 		function software_version() {
-			return '3.4';
+			return '3.6.0';
+		}
+	}
+
+	if (!function_exists('check_float')) {
+		function check_float($string) {
+			$string = str_replace(",",".",$string);
+			return trim($string);
 		}
 	}
 
@@ -66,6 +73,27 @@
 		}
 	}
 
+	if (!function_exists('check_cidr')) {
+		function check_cidr ($cidr,$ip_address) {
+			list ($subnet, $mask) = explode ('/', $cidr);
+			return ( ip2long ($ip_address) & ~((1 << (32 - $mask)) - 1) ) == ip2long ($subnet);
+		}
+	}
+
+	if (!function_exists('fix_postback')) {
+		function fix_postback($post_array) {
+			foreach ($post_array as $index => $value) {
+				if (is_array($value)) { fix_postback($value); }
+				else {
+					$value = str_replace('"', "&#34;", $value);
+					$value = str_replace("'", "&#39;", $value);
+					$post_array[$index] = $value;
+				}
+			}
+			return $post_array;
+		}
+	}
+
 	if (!function_exists('uuid')) {
 		function uuid() {
 			//uuid version 4
@@ -90,6 +118,14 @@
 			);
 		}
 		//echo uuid();
+	}
+
+	if (!function_exists('is_uuid')) {
+		function is_uuid($uuid) {
+			//uuid version 4
+			$regex = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
+			return preg_match($regex, $uuid);
+		}
 	}
 
 	if (!function_exists('recursive_copy')) {
@@ -220,11 +256,11 @@
 			//html select other : build a select box from distinct items in db with option for other
 			global $domain_uuid;
 
-			$html  = "<table width='50%' border='0' cellpadding='1' cellspacing='0'>\n";
+			$html  = "<table border='0' cellpadding='1' cellspacing='0'>\n";
 			$html .= "<tr>\n";
-			$html .= "<td id=\"cell".$field_name."1\" width='100%'>\n";
+			$html .= "<td id=\"cell".$field_name."1\">\n";
 			$html .= "\n";
-			$html .= "<select id=\"".$field_name."\" name=\"".$field_name."\" class='formfld' style='width: 100%;' onchange=\"if (document.getElementById('".$field_name."').value == 'Other') { /*enabled*/ document.getElementById('".$field_name."_other').style.width='95%'; document.getElementById('cell".$field_name."2').width='70%'; document.getElementById('cell".$field_name."1').width='30%'; document.getElementById('".$field_name."_other').disabled = false; document.getElementById('".$field_name."_other').className='txt'; document.getElementById('".$field_name."_other').focus(); } else { /*disabled*/ document.getElementById('".$field_name."_other').value = ''; document.getElementById('cell".$field_name."1').width='95%'; document.getElementById('cell".$field_name."2').width='5%'; document.getElementById('".$field_name."_other').disabled = true; document.getElementById('".$field_name."_other').className='frmdisabled' } \">\n";
+			$html .= "<select id=\"".$field_name."\" name=\"".$field_name."\" class='formfld' onchange=\"if (document.getElementById('".$field_name."').value == 'Other') { /*enabled*/ document.getElementById('".$field_name."_other').style.display=''; document.getElementById('".$field_name."_other').className='formfld'; document.getElementById('".$field_name."_other').focus(); } else { /*disabled*/ document.getElementById('".$field_name."_other').value = ''; document.getElementById('".$field_name."_other').style.display='none'; } \">\n";
 			$html .= "<option value=''></option>\n";
 
 			$sql = "SELECT distinct($field_name) as $field_name FROM $table_name $sql_where_optional ";
@@ -251,7 +287,7 @@
 			$html .= "</select>\n";
 			$html .= "</td>\n";
 			$html .= "<td id=\"cell".$field_name."2\" width='5'>\n";
-			$html .= "<input id=\"".$field_name."_other\" name=\"".$field_name."_other\" value='' style='width: 5%;' disabled onload='document.getElementById('".$field_name."_other').disabled = true;' type='text' class='frmdisabled'>\n";
+			$html .= "<input id=\"".$field_name."_other\" name=\"".$field_name."_other\" value='' type='text' class='formfld' style='display: none;'>\n";
 			$html .= "</td>\n";
 			$html .= "</tr>\n";
 			$html .= "</table>";
@@ -358,21 +394,22 @@
 
 	if (!function_exists('th_order_by')) {
 		//html table header order by
-		function th_order_by($field_name, $columntitle, $order_by, $order) {
-
-			$html = "<th nowrap>&nbsp; &nbsp; ";
+		function th_order_by($field_name, $columntitle, $order_by, $order, $app_uuid = '', $css = '', $additional_get_params='') {
+			if (strlen($app_uuid) > 0) { $app_uuid = "&app_uuid=".$app_uuid; }	// accomodate need to pass app_uuid where necessary (inbound/outbound routes lists)
+			if (strlen($additional_get_params) > 0) {$additional_get_params = '&'.$additional_get_params; } // you may need to pass other parameters
+			$html = "<th ".$css." nowrap>";
 			if (strlen($order_by)==0) {
-				$html .= "<a href='?order_by=$field_name&order=desc' title='ascending'>$columntitle</a>";
+				$html .= "<a href='?order_by=$field_name&order=desc".$app_uuid."$additional_get_params' title='ascending'>$columntitle</a>";
 			}
 			else {
 				if ($order=="asc") {
-					$html .= "<a href='?order_by=$field_name&order=desc' title='ascending'>$columntitle</a>";
+					$html .= "<a href='?order_by=$field_name&order=desc".$app_uuid."$additional_get_params' title='ascending'>$columntitle</a>";
 				}
 				else {
-					$html .= "<a href='?order_by=$field_name&order=asc' title='descending'>$columntitle</a>";
+					$html .= "<a href='?order_by=$field_name&order=asc".$app_uuid."$additional_get_params' title='descending'>$columntitle</a>";
 				}
 			}
-			$html .= "&nbsp; &nbsp; </th>";
+			$html .= "</th>";
 			return $html;
 		}
 	}
@@ -426,7 +463,7 @@
 				//echo 'No File Extension Present';
 				return '';
 			}
-	 
+
 			if(count($pattern) > 1) {
 				$filenamepart = $pattern[count($pattern)-1][0];
 				preg_match('/[^?]*/', $filenamepart, $matches);
@@ -518,7 +555,7 @@
 					//echo "file_name_base: ".$file_name_base."<br />\n";
 					//echo "dest_dir: ".$dest_dir."<br />\n";
 
-					//move the file to upload directory  
+					//move the file to upload directory
 					//bool move_uploaded_file  ( string $filename, string $destination  )
 
 						if (move_uploaded_file($tmp_name, $dest_dir.'/'.$file_name)){
@@ -529,7 +566,7 @@
 							return false;
 						}
 						exit;
-						
+
 			} //end function
 	}
 
@@ -676,7 +713,7 @@ function switch_module_is_running($fp, $mod) {
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		//if the handle still does not exist show an error message
 			if (!$fp) {
-				$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>"; 
+				$msg = "<div align='center'>Connection to Event Socket failed.<br /></div>";
 			}
 	}
 	if ($fp) {
@@ -719,7 +756,7 @@ function format_string ($format, $data) {
 
 //get the format and use it to format the phone number
 	function format_phone($phone_number) {
-		if (strlen($_SESSION["format_phone_array"]) == 0) {
+		if ((is_string($_SESSION["format_phone_array"])) && (strlen($_SESSION["format_phone_array"]) == 0)) {
 			$_SESSION["format_phone_array"] = ""; //clear the menu
 			global $domain_uuid, $db;
 			$sql = "select * from v_vars ";
@@ -747,8 +784,8 @@ function format_string ($format, $data) {
 	}
 
 //browser detection without browscap.ini dependency
-	function http_user_agent() { 
-		$u_agent = $_SERVER['HTTP_USER_AGENT']; 
+	function http_user_agent() {
+		$u_agent = $_SERVER['HTTP_USER_AGENT'];
 		$bname = 'Unknown';
 		$platform = 'Unknown';
 		$version= "";
@@ -765,36 +802,36 @@ function format_string ($format, $data) {
 			}
 
 		//get the name of the useragent yes seperately and for good reason
-			if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent)) 
-			{ 
-				$bname = 'Internet Explorer'; 
-				$ub = "MSIE"; 
-			} 
-			elseif(preg_match('/Firefox/i',$u_agent)) 
-			{ 
-				$bname = 'Mozilla Firefox'; 
-				$ub = "Firefox"; 
-			} 
-			elseif(preg_match('/Chrome/i',$u_agent)) 
-			{ 
-				$bname = 'Google Chrome'; 
-				$ub = "Chrome"; 
-			} 
-			elseif(preg_match('/Safari/i',$u_agent)) 
-			{ 
-				$bname = 'Apple Safari'; 
-				$ub = "Safari"; 
-			} 
-			elseif(preg_match('/Opera/i',$u_agent)) 
-			{ 
-				$bname = 'Opera'; 
-				$ub = "Opera"; 
-			} 
-			elseif(preg_match('/Netscape/i',$u_agent)) 
-			{ 
-				$bname = 'Netscape'; 
-				$ub = "Netscape"; 
-			} 
+			if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
+			{
+				$bname = 'Internet Explorer';
+				$ub = "MSIE";
+			}
+			elseif(preg_match('/Firefox/i',$u_agent))
+			{
+				$bname = 'Mozilla Firefox';
+				$ub = "Firefox";
+			}
+			elseif(preg_match('/Chrome/i',$u_agent))
+			{
+				$bname = 'Google Chrome';
+				$ub = "Chrome";
+			}
+			elseif(preg_match('/Safari/i',$u_agent))
+			{
+				$bname = 'Apple Safari';
+				$ub = "Safari";
+			}
+			elseif(preg_match('/Opera/i',$u_agent))
+			{
+				$bname = 'Opera';
+				$ub = "Opera";
+			}
+			elseif(preg_match('/Netscape/i',$u_agent))
+			{
+				$bname = 'Netscape';
+				$ub = "Netscape";
+			}
 
 		//finally get the correct version number
 			$known = array('Version', $ub, 'other');
@@ -829,17 +866,17 @@ function format_string ($format, $data) {
 			'platform'  => $platform,
 			'pattern'    => $pattern
 		);
-	} 
+	}
 
 //tail php function for non posix systems
 	function tail($file, $num_to_get=10) {
 			$fp = fopen($file, 'r');
 			$position = filesize($file);
 			$chunklen = 4096;
-			if($position-$chunklen<=0) { 
-				fseek($fp,0); 
+			if($position-$chunklen<=0) {
+				fseek($fp,0);
 			}
-			else { 
+			else {
 				fseek($fp, $position-$chunklen);
 			}
 			$data="";$ret="";$lc=0;
@@ -866,16 +903,20 @@ function format_string ($format, $data) {
 	}
 
 //generate a random password with upper, lowercase and symbols
-	function generate_password($length = 10, $strength = 4) {
+	function generate_password($length = 0, $strength = 0) {
 		$password = '';
 		$charset = '';
+		if ($length === 0 && $strength === 0) { //set length and strenth if specified in default settings and strength isn't numeric-only
+			$length = (is_numeric($_SESSION["security"]["password_length"]["var"])) ? $_SESSION["security"]["password_length"]["var"] : 10;
+			$strength = (is_numeric($_SESSION["security"]["password_strength"]["var"])) ? $_SESSION["security"]["password_strength"]["var"] : 4;
+		}
 		if ($strength >= 1) { $charset .= "0123456789"; }
 		if ($strength >= 2) { $charset .= "abcdefghijkmnopqrstuvwxyz";	}
 		if ($strength >= 3) { $charset .= "ABCDEFGHIJKLMNPQRSTUVWXYZ";	}
 		if ($strength >= 4) { $charset .= "!!!!!^$%*?....."; }
 		srand((double)microtime() * rand(1000000, 9999999));
 		while ($length > 0) {
-				$password.= $charset[rand(0, strlen($charset)-1)];
+				$password .= $charset[rand(0, strlen($charset)-1)];
 				$length--;
 		}
 		return $password;
@@ -946,4 +987,34 @@ function number_pad($number,$n) {
 	return str_pad((int) $number,$n,"0",STR_PAD_LEFT);
 }
 
+// validate email address syntax
+if(!function_exists('validate_email')) {
+	function valid_email($email) {
+		$regex = '/^[A-z0-9][\w.-]*@[A-z0-9][\w\-\.]+\.[A-z0-9]{2,6}$/';
+		if ($email != "" && preg_match($regex, $email) == 0) {
+			return false; // email address does not have valid syntax
+		}
+		else {
+			return true; // email address has valid syntax
+		}
+	}
+}
+
+// ellipsisnicely truncate long text
+if(!function_exists('ellipsis')) {
+	function ellipsis($string, $max_characters, $preserve_word = true) {
+		if ($max_characters+$x >= strlen($string)) { return $string; }
+		if ($preserve_word) {
+			for ($x = 0; $x < strlen($string); $x++) {
+				if ($string{$max_characters+$x} == " ") {
+					return substr($string,0,$max_characters+$x)." ...";
+				}
+				else { continue; }
+			}
+		}
+		else {
+			return substr($string,0,$max_characters)." ...";
+		}
+	}
+}
 ?>

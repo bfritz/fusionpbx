@@ -1,0 +1,88 @@
+# SIP Configuration Generic File (start)
+
+
+# Proxy Server
+proxy1_address: "apolloinsurance.dyndns.org"
+proxy2_address: ""
+
+
+# Line 1 Settings
+line1_name: "103"                     ; Line 1 Extension\User ID
+line1_shortname: "103"              ; Line 1 Display Name
+line1_displayname: "103"              ; Line 1 Display Name
+line1_authname: "103"                 ; Line 1 Registration Authentication
+line1_password: "3je57dze3"          ; Line 1 Registration Password
+
+# Line 2 Settings
+line2_name: ""                          ; Line 2 Extension\User ID
+line2_displayname: ""                   ; Line 2 Display Name
+line2_authname: ""         ; Line 2 Registration Authentication
+line2_password: ""         ; Line 2 Registration Password
+
+# Line 3 Settings
+line3_name: ""                          ; Line 3 Extension\User ID
+line3_displayname: ""                   ; Line 3 Display Name
+line3_authname: "UNPROVISIONED"         ; Line 3 Registration Authentication
+line3_password: "UNPROVISIONED"         ; Line 3 Registration Password
+
+# Line 4 Settings
+line4_name: ""                          ; Line 4 Extension\User ID
+line4_displayname: ""                   ; Line 4 Display Name
+line4_authname: "UNPROVISIONED"         ; Line 4 Registration Authentication
+line4_password: "UNPROVISIONED"         ; Line 4 Registration Password
+
+# Line 5 Settings
+line5_name: ""                          ; Line 5 Extension\User ID
+line5_displayname: ""                   ; Line 5 Display Name
+line5_authname: "UNPROVISIONED"         ; Line 5 Registration Authentication
+line5_password: "UNPROVISIONED"         ; Line 5 Registration Password
+
+# Line 6 Settings
+line6_name: ""                          ; Line 6 Extension\User ID
+line6_displayname: ""                   ; Line 6 Display Name
+line6_authname: "UNPROVISIONED"         ; Line 6 Registration Authentication
+line6_password: "UNPROVISIONED"         ; Line 6 Registration Password
+
+# Emergency Proxy info
+proxy_emergency: ""
+proxy_emergency_port: "5060"
+
+# Backup Proxy info
+proxy_backup: ""
+proxy_backup_port: "5060"
+
+# Outbound Proxy info
+outbound_proxy: ""
+outbound_proxy_port: "5060"
+
+# NAT/Firewall Traversal
+nat_enable: "1"
+nat_address: ""
+voip_control_port: "5060"
+start_media_port: "16384"
+end_media_port:  "32766"
+nat_received_processing: "1"
+
+# Phone Label (Text desired to be displayed in upper right corner)
+phone_label: "FreeSWITCH "            ; Has no effect on SIP messaging
+
+# Telnet Level (enable or disable the ability to telnet into this phone
+telnet_level: "2"      ; 0-Disabled (default), 1-Enabled, 2-Privileged
+
+# Phone prompt/password for telnet/console session
+phone_prompt: "SIP Phone"                              ; Telnet/Console Prompt
+phone_password: "cisco"                          ; Telnet/Console Password
+
+# Enable_VAD (1-enabled, 0-disabled)
+enable_vad: "0"
+
+# Network Media Type (auto, full100, full10, half100, half10)
+network_media_type: "auto"
+user_info: phone
+
+# URL for external Directory location
+logo_url: ""                    ; URL for branding logo to be used on phone display
+
+# SIP Configuration Generic File (stop)
+
+

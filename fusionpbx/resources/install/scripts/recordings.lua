@@ -63,7 +63,7 @@
 			if (recording_slots) then
 				min_digits = 1;
 				max_digits = 20;
-				recording_number = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_recording_number.wav", "", "\\d+");
+				recording_number = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-id_number.wav", "", "\\d+");
 				recording_name = recording_prefix..recording_number..".wav";
 			end
 
@@ -76,7 +76,7 @@
 			end
 
 		--prompt for the recording
-			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/begin_recording.wav");
+			session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/ivr/ivr-recording_started.wav");
 			session:execute("set", "playback_terminators=#");
 
 		--begin recording
@@ -142,11 +142,6 @@ if ( session:ready() ) then
 	--set the base recordings dir
 		base_recordings_dir = recordings_dir;
 
-	--get the recordings from the config.lua and append the domain_name if the system is multi-tenant
-		if (domain_count > 1) then
-			recordings_dir = recordings_dir .. "/" .. domain_name;
-		end
-
 	--use the recording_dir when the variable is set
 		if (session:getVariable("recordings_dir")) then
 			if (base_recordings_dir ~= session:getVariable("recordings_dir")) then
@@ -154,6 +149,10 @@ if ( session:ready() ) then
 			end
 		end
 
+	--get the recordings from the config.lua and append the domain_name if the system is multi-tenant
+		if (domain_count > 1) then
+			recordings_dir = recordings_dir .. "/" .. domain_name;
+		end
 	--set the sounds path for the language, dialect and voice
 		default_language = session:getVariable("default_language");
 		default_dialect = session:getVariable("default_dialect");
@@ -166,11 +165,11 @@ if ( session:ready() ) then
 		if (pin_number) then
 			min_digits = string.len(pin_number);
 			max_digits = string.len(pin_number)+1;
-			digits = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/please_enter_the_pin_number.wav", "", "\\d+");
+			digits = session:playAndGetDigits(min_digits, max_digits, max_tries, digit_timeout, "#", "phrase:voicemail_enter_pass:#", "", "\\d+");
 			if (digits == pin_number) then
 				--pin is correct
 			else
-				session:streamFile(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/custom/your_pin_number_is_incorect_goodbye.wav");
+				session:streamFile("phrase:voicemail_fail_auth:#");
 				session:hangup("NORMAL_CLEARING");
 				return;
 			end

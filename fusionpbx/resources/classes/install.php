@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2010
+	Copyright (C) 2010-2014
 	All Rights Reserved.
 
 	Contributor(s):
@@ -35,61 +35,51 @@ include "root.php";
 		var $switch_scripts_dir;
 		var $switch_sounds_dir;
 
-		function recursive_copy($src, $dst) {
-			$dir = opendir($src);
-			if (!$dir) {
-				if (!mkdir($src, 0755, true)) {
-					throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
-				}
+		//$option '-n' --no-clobber
+		public function recursive_copy($src, $dst, $option = '') {
+			if (file_exists('/bin/cp')) {
+				 exec ('cp -RLp '.$option.' '.$src.'/* '.$dst);
 			}
-			if (!is_dir($dst)) {
-				if (!mkdir($dst, 0755, true)) {
-					//throw new Exception("recursive_copy() failed to create destination directory '".$dst."'");
-				}
-			}
-			while(false !== ($file = readdir($dir))) {
-				if (($file != '.') && ($file != '..')) {
-					if (is_dir($src.'/'.$file)) {
-						$this->recursive_copy($src.'/'.$file, $dst.'/'.$file);
-					}
-					else {
-						//copy only missing files
-							if (!file_exists($dst.'/'.$file)) {
-								copy($src.'/'.$file, $dst.'/'.$file);
-								//echo "copy(".$src."/".$file.", ".$dst."/".$file.");<br />\n";
-							}
-						//check the file type by ext
-							//if (substr($file, -3) == "lua") {
-								//set the exception default
-									//$exception = false;
-								//set the exceptions
-									//if ($file == "database_handle.lua") { $exception = true; }
-								//check for exceptions
-									//if ($exception) {
-									//	//file does not exist, save a copy in the destination directory
-									//	if (!file_exists($dst.'/'.$file)) {
-									//		copy($src.'/'.$file, $dst.'/'.$file);
-									//	}
-									//}
-									//else {
-										//write over the file
-									//	copy($src.'/'.$file, $dst.'/'.$file);
-									//}
-							//}
-							//else {
-								//file does not exist, save a copy in the destination directory
-								//if (!file_exists($dst.'/'.$file)) {
-								//	copy($src.'/'.$file, $dst.'/'.$file);
-								//}
-							//}
+			else {
+				$dir = opendir($src);
+				if (!$dir) {
+					if (!mkdir($src, 0755, true)) {
+						throw new Exception("recursive_copy() source directory '".$src."' does not exist.");
 					}
 				}
+				if (!is_dir($dst)) {
+					if (!mkdir($dst, 0755, true)) {
+						throw new Exception("recursive_copy() failed to create destination directory '".$dst."'");
+					}
+				}
+				while(false !== ($file = readdir($dir))) {
+					if (($file != '.') && ($file != '..')) {
+						if (is_dir($src.'/'.$file)) {
+							$this->recursive_copy($src.'/'.$file, $dst.'/'.$file);
+						}
+						else {
+							//copy only missing files -n --no-clobber
+								if ($option == '-n') {
+									if (!file_exists($dst.'/'.$file)) {
+										copy($src.'/'.$file, $dst.'/'.$file);
+										//echo "copy(".$src."/".$file.", ".$dst."/".$file.");<br />\n";
+									}
+								}
+								else {
+									copy($src.'/'.$file, $dst.'/'.$file);
+								}
+						}
+					}
+				}
+				closedir($dir);
 			}
-			closedir($dir);
 		}
 
 		function recursive_delete($dir) {
-			if (strlen($dir) > 0) {
+			if (file_exists('/bin/rm')) {
+				 exec ('rm -Rf '.$dir.'/*');
+			}
+			else {
 				foreach (glob($dir) as $file) {
 					if (is_dir($file)) {
 						$this->recursive_delete("$file/*");
@@ -108,114 +98,91 @@ include "root.php";
 			$this->copy_scripts();
 			$this->copy_sounds();
 			$this->copy_swf();
-			$this->copy_phrases();
 		}
 
 		function copy_conf() {
-			clearstatcache();
-			$src_dir = $this->switch_conf_dir;
-			$dst_dir = $this->switch_conf_dir.'.orig';
-			if ($src_dir != "/conf") {
-				mkdir($src_dir, 0755, true);
-			}
-			if (is_readable($src_dir)) {
+			if (file_exists($this->switch_conf_dir)) {
 				//make a backup copy of the conf directory
-					if (substr(strtoupper(PHP_OS), 0, 3) == "WIN") {
+					$src_dir = $this->switch_conf_dir;
+					$dst_dir = $this->switch_conf_dir.'.orig';
+					if (is_readable($src_dir)) {
 						$this->recursive_copy($src_dir, $dst_dir);
-						$this->recursive_delete($this->switch_conf_dir);
+						$this->recursive_delete($src_dir);
 					}
 					else {
-						exec ('mv '.$src_dir.' '.$dst_dir);
-						//exec ('cp -RLp '.$src_dir.' '.$dst_dir);
+						if ($src_dir != "/conf") {
+							mkdir($src_dir, 0774, true);
+						}
 					}
 				//make sure the conf directory exists
-					if (!mkdir($this->switch_conf_dir, 0755, true)) {
-						//throw new Exception("Failed to create the switch conf directory '".$this->switch_conf_dir."'. ");
+					if (!is_dir($this->switch_conf_dir)) {
+						if (!mkdir($this->switch_conf_dir, 0774, true)) {
+							throw new Exception("Failed to create the switch conf directory '".$this->switch_conf_dir."'. ");
+						}
 					}
+				//copy resources/templates/conf to the freeswitch conf dir
+					if (file_exists('/usr/share/fusionpbx/resources/templates/conf')){
+						$src_dir = "/usr/share/fusionpbx/resources/templates/conf";
+					}
+					else {
+						
+						$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf";
+					}
+					$dst_dir = $this->switch_conf_dir;
+					if (is_readable($dst_dir)) {
+						$this->recursive_copy($src_dir, $dst_dir);
+					}
+					//print_r($install->result);
 			}
 		}
 
 		function copy_scripts() {
-			clearstatcache();
-			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/scripts';
-			$dst_dir = $this->switch_scripts_dir;
-			if (is_readable($this->switch_scripts_dir)) {
-				$this->recursive_copy($src_dir, $dst_dir);
-				unset($src_dir, $dst_dir);
+			if (file_exists($this->switch_scripts_dir)) {
+				if (file_exists('/usr/share/fusionpbx/resources/install/scripts')){
+					$src_dir = '/usr/share/fusionpbx/resources/install/scripts';
+				}
+				else {
+					$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/scripts';
+				}
+				$dst_dir = $this->switch_scripts_dir;
+				if (is_readable($this->switch_scripts_dir)) {
+					$this->recursive_copy($src_dir, $dst_dir, "-n");
+					unset($src_dir, $dst_dir);
+				}
+				chmod($dst_dir, 0774);
 			}
 		}
 
 		function copy_sounds() {
-			clearstatcache();
-			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/sounds/en/us/callie/custom/8000';
-			$dst_dir = $this->switch_sounds_dir.'/en/us/callie/custom/8000';
-			if (is_readable($this->switch_sounds_dir)) {
-				if ($handle = opendir($src_dir)) {
-					$i = 0;
-					$files = array();
-					while (false !== ($file = readdir($handle))) {
-						if ($file != "." && $file != ".." && is_file($src_dir.'/'.$file)) {
-							if (!file_exists($dst_dir.'/'.$file) ) {
-								//copy the file if it does not exist in the destination directory
-								if (copy($src_dir.'/'.$file, $dst_dir.'/'.$file)) {
-									$this->result['copy']['sounds']['8000'][] = "copied from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
-								}
-								else {
-									$this->result['copy']['sounds']['8000'][] = "copy failed from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
-								}
-							}
-						}
-					}
-				}
-
-				$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/sounds/en/us/callie/custom/16000';
-				$dst_dir = $this->switch_sounds_dir.'/en/us/callie/custom/16000';
-				if ($handle = opendir($src_dir)) {
-					$i = 0;
-					$files = array();
-					while (false !== ($file = readdir($handle))) {
-						if ($file != "." && $file != ".." && is_file($src_dir.'/'.$file)) {
-							if (!file_exists($dst_dir.'/'.$file) ) {
-								//copy the file if it does not exist in the destination directory
-								if (copy($src_dir.'/'.$file, $dst_dir.'/'.$file)) {
-									$this->result['copy']['sounds']['16000'][] = "copied from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
-								}
-								else {
-									$this->result['copy']['sounds']['16000'][] = "copy failed from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
-								}
-							}
-						}
-					}
+			if (file_exists($this->switch_sounds_dir)) {
+				$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/sounds/en/us/callie/custom/';
+				$dst_dir = $this->switch_sounds_dir.'/en/us/callie/custom/';
+				$this->recursive_copy($src_dir, $dst_dir, "-n");
+				if (is_readable($this->switch_sounds_dir)) {
+					$this->recursive_copy($src_dir, $dst_dir);
+					chmod($dst_dir, 0664);
 				}
 			}
 		}
 
 		function copy_swf() {
 			clearstatcache();
-			$file = "slim.swf";
-			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/htdocs';
-			$dst_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/app/recordings';
-			if (copy($src_dir.'/'.$file, $dst_dir.'/'.$file)) {
-				$this->result['copy']['swf'][] = "copied from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
-			}
-			else {
-				$this->result['copy']['swf'][] = "copy failed from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
-			}
-		}
-
-		function copy_phrases() {
-			clearstatcache();
-			$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf/lang";
-			$dst_dir = $this->switch_conf_dir."/lang";
-			if (is_readable($this->switch_conf_dir)) {
-				$this->recursive_copy($src_dir, $dst_dir);
+			if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/app/recordings')) {
+				$file = "slim.swf";
+				$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/htdocs';
+				$dst_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/app/recordings';
+				if (copy($src_dir.'/'.$file, $dst_dir.'/'.$file)) {
+					$this->result['copy']['swf'][] = "copied from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
+				}
+				else {
+					$this->result['copy']['swf'][] = "copy failed from ".$src_dir."/".$file." to ".$dst_dir."/".$file."<br />\n";
+				}
 			}
 		}
 
 	}
 
 //how to use the class
-	//include "resources/classes/install.php";
 	//$install = new install;
 	//$install->domain_uuid = $domain_uuid;
 	//$install->switch_conf_dir = $switch_conf_dir;

@@ -118,12 +118,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$_SESSION["reload_xml"] = true;
 
 				//redirect the browser
-					require_once "resources/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=sip_profile_edit.php?id=$sip_profile_uuid\">\n";
-					echo "<div align='center'>\n";
-					echo $text['message-add']."\n";
-					echo "</div>\n";
-					require_once "resources/footer.php";
+					$_SESSION["message"] = $text['message-add'];
+					header("Location: sip_profile_edit.php?id=".$sip_profile_uuid);
 					return;
 			} //if ($action == "add")
 
@@ -146,12 +142,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$_SESSION["reload_xml"] = true;
 
 				//redirect the browser
-					require_once "resources/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=sip_profile_edit.php?id=$sip_profile_uuid\">\n";
-					echo "<div align='center'>\n";
-					echo $text['message-update']."\n";
-					echo "</div>\n";
-					require_once "resources/footer.php";
+					$_SESSION["message"] = $text['message-update'];
+					header("Location: sip_profile_edit.php?id=".$sip_profile_uuid);
 					return;
 			} //if ($action == "update")
 		} //if ($_POST["persistformvar"] != "true")
@@ -177,7 +169,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //show the header
 	require_once "resources/header.php";
-	$page["title"] = $text['title-setting'];
+	$document['title'] = $text['title-setting'];
 
 //show the content
 	echo "<div align='center'>";
@@ -191,7 +183,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<table width='100%'  border='0' cellpadding='6' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['header-setting']."</b></td>\n";
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='sip_profile_edit.php?id=$sip_profile_uuid'\" value='".$text['button-back']."'></td>\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='sip_profile_edit.php?id=$sip_profile_uuid'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
@@ -200,7 +195,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-setting_name'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -211,7 +206,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-setting_value'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -227,8 +222,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='sip_profile_setting_enabled'>\n";
-	echo "    <option value=''></option>\n";
-	if ($sip_profile_setting_enabled == "true" || strlen($sip_profile_setting_enabled) == 0) {
+	if ($sip_profile_setting_enabled == "true") {
 		echo "    <option value='true' selected >".$text['option-true']."</option>\n";
 	}
 	else {

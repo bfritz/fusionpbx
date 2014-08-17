@@ -78,36 +78,34 @@ echo "<div align='center'>\n";
 
 echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 echo "	<tr>\n";
-echo "		<td align=\"left\" valign='middle' width='100%'>\n";
+echo "		<td align=\"left\" valign='middle' width='100%' style='padding-right: 15px;' nowrap>\n";
 echo "			<b>".$text['label-log-viewer']."</b><br />\n";
 echo "		</td>\n";
-echo "		<form action=\"log_viewer.php\" method=\"POST\">\n";
 echo "		<td align='right' valign='middle' nowrap>\n";
-echo "			<label for='filter' style='margin-right: 30px;'>".$text['label-filter']." <input type=\"text\" class=\"formfld\" style=\"width: 150px; text-align: center;\" name=\"filter\" value=\"".$_POST['filter']."\" onclick=\"this.select();\"></label>";
-echo "			<label for='ln' style='margin-right: 30px;'><input type='checkbox' name='ln' id='ln' value='1' ".(($_POST['ln'] == 1) ? 'checked' : null)."> ".$text['label-line-num']."</label>";
-echo "			<label for='ord' style='margin-right: 30px;'><input type='checkbox' name='ord' id='ord' value='desc' ".(($_POST['ord'] == 'desc') ? 'checked' : null)."> ".$text['label-sort']."</label>";
+echo "			<form action=\"log_viewer.php\" method=\"POST\">\n";
+echo "			<label for='filter' style='margin-right: 20px;'>".$text['label-filter']." <input type=\"text\" class=\"formfld\" style=\"width: 150px; text-align: center;\" name=\"filter\" value=\"".$_POST['filter']."\" onclick=\"this.select();\"></label>";
+echo "			<label for='ln' style='margin-right: 20px;'><input type='checkbox' name='ln' id='ln' value='1' ".(($_POST['ln'] == 1) ? 'checked' : null)."> ".$text['label-line-num']."</label>";
+echo "			<label for='ord' style='margin-right: 20px;'><input type='checkbox' name='ord' id='ord' value='desc' ".(($_POST['ord'] == 'desc') ? 'checked' : null)."> ".$text['label-sort']."</label>";
 echo "			Display <input type=\"text\" class=\"formfld\" style=\"width: 50px; text-align: center;\" name=\"fs\" value=\"".$_POST['fs']."\" onclick=\"this.select();\"> ".$text['label-kb']."";
-echo "			<input type=\"submit\" class=\"btn\" style=\"margin-left: 30px;\" name=\"submit\" value=\"".$text['button-reload']."\">";
-echo "		</td>\n";
-echo "		</form>\n";
-echo "		<td width='125' align='right' valign='middle' nowrap='nowrap'>\n";
+echo "			<input type=\"submit\" class=\"btn\" style=\"margin-left: 20px;\" name=\"submit\" value=\"".$text['button-reload']."\">";
 if (permission_exists('log_download')) {
-	echo "			<input type='button' class='btn' value='".$text['button-download']."' onclick=\"document.location.href='log_viewer.php?a=download&t=logs';\" />\n";
+	echo "		<input type='button' class='btn' value='".$text['button-download']."' onclick=\"document.location.href='log_viewer.php?a=download&t=logs';\" />\n";
 }
+echo "			</form>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
+echo "	<tr><td colspan='2'>&nbsp;</td></tr>";
 echo "	<tr>\n";
-echo "		<td colspan='3'>";
+echo "		<td colspan='2' style='background-color: #1c1c1c; padding: 8px; text-align: left;'>";
 
 if (permission_exists('log_view')) {
 
 	$MAXEL = 3; //pattern2, pattern3|color2, color3 etc...
 
 	$user_filesize = '0';
-	$default_color = 'white';
+	$default_color = '#fff';
 	$default_type = 'normal';
 	$default_font = 'monospace';
-	$background_color = 'black';
 	$default_fsize = '512000';
 	$log_file = $_SESSION['switch']['log']['dir']."/freeswitch.log";
 
@@ -155,10 +153,8 @@ if (permission_exists('log_view')) {
 	}
 	*/
 
-	echo "<table style=\"width: 100%\;\" width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">";
-	echo "<tbody><tr><th colspan=\"2\" style=\"text-alight: left\;\">".$text['label-syntax']."</th></tr>";
-	echo "<tr><td style=\"text-align: left;background-color: #000000;\">";
-
+	echo "		<table cellpadding='0' cellspacing='0' border='0' width='100%'>";
+	echo "			<tr>";
 	$user_filesize = '32768';
 	if (isset($_POST['submit'])) {
 		if (!is_numeric($_POST['fs'])){
@@ -170,12 +166,15 @@ if (permission_exists('log_view')) {
 		}
 		if (strlen($_REQUEST['filter']) > 0){
 			$uuid_filter = $_REQUEST['filter'];
-			echo "<div style=\"text-align: right;color: #FFFFFF;\">".$text['description-filter']." " . $uuid_filter . "</div>";
+			echo "		<td style=\"text-align: left; color: #FFFFFF;\">".$text['description-filter']." ".$uuid_filter."</td>";
 		}
 	}
 
 	//echo "Log File Size: " . $file_size . " bytes. <br />";
-	echo "<div style=\"text-align: right;color: #FFFFFF;\">".$text['label-displaying']." " . number_format($user_filesize,0,'.',',') . " of " . number_format($file_size,0,'.',',') . " ".$text['label-bytes'].". </div><br><hr>";
+	echo "				<td style=\"text-align: right;color: #FFFFFF;\">".$text['label-displaying']." ".number_format($user_filesize,0,'.',',')." of ".number_format($file_size,0,'.',',')." ".$text['label-bytes'].". </td>";
+	echo "			</tr>";
+	echo "		</table>";
+	echo "		<hr size='1' style='color: #fff;'>";
 
 	$file = fopen($log_file, "r") or exit($text['error-open-file']);
 
@@ -245,19 +244,17 @@ if (permission_exists('log_view')) {
 				if ($pos !== false){
 					//color adjustments on words in log line
 					for ($i=2; $i<=$MAXEL; $i++){
-						if (isset ($v1["pattern".$i])){
-							$log_line = str_replace($v1["pattern".$i], "<font color=\"{$v1["color".$i]}\">{$v1["pattern".$i]}</font>", $log_line);
+						if (isset ($v1["pattern".$i])) {
+							$log_line = str_replace($v1["pattern".$i], "<span style='color: ".$v1["color".$i].";'>".$v1["pattern".$i]."</span>", $log_line);
 						}
 					}
-					$ary_output[] = "<font color=\"{$v1[color]}\" face=\"{$v1[font]}\">".$log_line."</font><br>";
+					$ary_output[] = "<span style='color: ".$v1[color]."; font-family: ".$v1[font].";'>".$log_line."</span><br>";
 					$noprint = true;
 				}
 			}
 
 			if ($noprint !== true){
-				//more firefox workaround...
-				//echo "<p style=\"background-color:$background_color;color:$default_color;font-wieght:$default_type;font-family:$default_font\">";
-				$ary_output[] = "<font color=\"$default_color\" face=\"$default_font\">".htmlentities($log_line)."</font><br>";
+				$ary_output[] = "<span style='color: ".$default_color."; font-family: ".$default_font.";'>".htmlentities($log_line)."</span><br>";
 			}
 		}
 	}
@@ -271,7 +268,7 @@ if (permission_exists('log_view')) {
 		$adj_index = 1;
 	}
 	foreach ($ary_output as $index => $line) {
-		if ($line != '<font color="white" face="monospace"></font><br>') {
+		if ($line != "<span style='color: #fff; font-family: monospace;'></span><br>") {
 			if ($_POST['ln']) {
 				$line_num = "<span style='font-family: courier; color: #aaa; font-size: 10px;'>".($index + $adj_index)."&nbsp;&nbsp;&nbsp;</span>";
 			}
@@ -280,9 +277,11 @@ if (permission_exists('log_view')) {
 	}
 
 	fclose($file);
-	echo "</tr></td>";
-}
 
+	echo "		</div>";
+}
+echo "		</td>";
+echo "	</tr>\n";
 echo "</table>\n";
 echo "</div>\n";
 

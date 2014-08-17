@@ -41,7 +41,7 @@ else {
 	}
 
 require_once "resources/header.php";
-$page["title"] = $text['title-schemas'];
+$document['title'] = $text['title-schemas'];
 
 require_once "resources/paging.php";
 
@@ -99,43 +99,54 @@ require_once "resources/paging.php";
 	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('schema_label', $text['label-label'], $order_by, $order);
 	echo th_order_by('schema_name', $text['label-schema_name'], $order_by, $order);
 	echo th_order_by('schema_auth', $text['label-authentication'], $order_by, $order);
 	echo th_order_by('schema_description', $text['label-description'], $order_by, $order);
 	//echo "<th align='center'>View</th>\n";
-	echo "<td align='right' width='42'>\n";
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('schema_add')) {
-		echo "	<a href='schema_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo "<a href='schema_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($result_count == 0) {
 		//no results
 	}
 	else { //received results
 		foreach($result as $row) {
-			echo "<tr >\n";
+			$tr_link = (permission_exists('schema_edit')) ? "href='schema_edit.php?id=".$row['schema_uuid']."'" : null;
+			echo "<tr ".$tr_link.">\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['schema_label']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['schema_name']."</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			if (permission_exists('schema_edit')) {
+				echo "<a href='schema_edit.php?id=".$row['schema_uuid']."'>".$row['schema_name']."</a>";
+			}
+			else {
+				echo $row['schema_name'];
+			}
+			echo "	</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			if ($row['schema_auth'] == 'yes') {
 				echo $text['option-true'];
 			}
-			else if ($row['schema_auth'] == 'false') {
+			else if ($row['schema_auth'] == 'no') {
 				echo $text['option-false'];
 			}
+			else {
+				echo "&nbsp;";
+			}
 			echo "	</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['schema_description']."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
+			echo "	<td valign='top' class='row_stylebg'>".$row['schema_description']."&nbsp;</td>\n";
+			echo "	<td class='list_control_icons'>";
 			if (permission_exists('schema_edit')) {
-				echo "		<a href='schema_edit.php?id=".$row['schema_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
+				echo "<a href='schema_edit.php?id=".$row['schema_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('schema_delete')) {
-				echo "		<a href='schema_delete.php?id=".$row['schema_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+				echo "<a href='schema_delete.php?id=".$row['schema_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -150,9 +161,9 @@ require_once "resources/paging.php";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('schema_add')) {
-		echo "			<a href='schema_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo 		"<a href='schema_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

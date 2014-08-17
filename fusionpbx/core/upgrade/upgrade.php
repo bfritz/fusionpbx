@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2014
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -32,13 +32,7 @@
 		set_include_path($document_root);
 		require_once "resources/require.php";
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
-		$display_type = 'text'; //html, text
-
-		//add multi-lingual support
-			require_once "app_languages.php";
-			foreach($text as $key => $value) {
-				$text[$key] = $value[$_SESSION['domain']['language']['code']];
-			}
+		$format = 'text'; //html, text
 	}
 	else {
 		include "root.php";
@@ -51,38 +45,36 @@
 			echo "access denied";
 			exit;
 		}
-
-		//add multi-lingual support
-			require_once "app_languages.php";
-			foreach($text as $key => $value) {
-				$text[$key] = $value[$_SESSION['domain']['language']['code']];
-			}
-
+		$format = 'html';
 	}
 
-//set the default
-	if (!isset($display_results)) {
-		$display_results = false;
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
-//include the header
-	if ($display_results) {
-		require_once "resources/header.php";
+//show the title
+	if ($format == 'text') {
+		echo "\n";
+		echo $text['label-upgrade']."\n";
+		echo "-----------------------------------------\n";
+		echo "\n";
+		echo $text['label-database']."\n";
 	}
 
-if ($display_type == 'text') {
-	echo "\n";
-	echo $text['label-upgrade']."\n";
-	echo "-----------------------------------------\n";
-	echo "\n";
-	echo $text['label-database']."\n";
-}
+//make sure the database schema and installation have performed all necessary tasks
+	require_once "resources/classes/schema.php";
+	$obj = new schema;
+	echo $obj->schema("text");
 
-//upgrade the database schema
-	require_once "core/upgrade/upgrade_schema.php";
+//run all app_defaults.php files
+	require_once "resources/classes/domains.php";
+	$domain = new domains;
+	$domain->upgrade();
 
 //show the content
-	if ($display_type == 'html') {
+	if ($format == 'html') {
 		echo "<div align='center'>\n";
 		echo "<table width='40%'>\n";
 		echo "<tr>\n";
@@ -102,12 +94,13 @@ if ($display_type == 'text') {
 		echo "<br />\n";
 		echo "<br />\n";
 	}
-	elseif ($display_type == 'text') {
+	elseif ($format == 'text') {
 		echo "\n";
 	}
 
 //include the footer
-	if ($display_results) {
+	if ($format == "html") {
 		require_once "resources/footer.php";
 	}
+
 ?>

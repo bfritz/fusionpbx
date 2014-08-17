@@ -54,7 +54,7 @@ echo "	<td align=\"center\">\n";
 	echo "<td align='left' width='90%' nowrap><b>".$text['header-user_manager']."</b></td>\n";
 	echo "<td align='right' nowrap='nowrap'>".$text['label-search_by'].":&nbsp;</td>";
 	echo "<td align='left'>\n";
-	echo "	<select name='field_name' style='width:150px' class='frm'>\n";
+	echo "	<select name='field_name' style='width:150px' class='formfld'>\n";
 	echo "	<option value=''></option>\n";
 	if ($field_name == "username") {
 		echo "	<option value='username' selected='selected'>".$text['label-username']."</option>\n";
@@ -65,7 +65,7 @@ echo "	<td align=\"center\">\n";
 	echo "	</select>\n";
 	echo "</td>\n";
 	echo "<td align='left' width='3px'>&nbsp;</td>";
-	echo "<td align='left'><input type='text' class='txt' style='width: 150px' name='field_value' value='$field_value'></td>";
+	echo "<td align='left'><input type='text' class='txt' style='width: 150px; margin-right: 3px;' name='field_value' value='$field_value'></td>";
 	echo "<td align='left' width='60px'><input type='submit' class='btn' name='submit' value='".$text['button-search']."'></td>";
 	echo "</tr>\n";
 	echo "</form>";
@@ -80,6 +80,20 @@ echo "	<td align=\"center\">\n";
 
 //get the list of superadmins
 	$superadmins = superadmin_list($db);
+
+//get the users' group(s) from the database
+	$sql = "select * from v_group_users ";
+	$sql .= "where domain_uuid = '".$domain_uuid."' ";
+	$sql .= "order by group_name asc ";
+	$prep_statement = $db->prepare(check_sql($sql));
+	$prep_statement->execute();
+	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+	if (count($result) > 0) {
+		foreach($result as $row) {
+			$user_groups[$row['user_uuid']][] = $row['group_name'];
+		}
+	}
+	unset ($sql, $prep_statement);
 
 //get the users from the database
 	$sql = "select count(*) as num_rows from v_users ";
@@ -132,25 +146,39 @@ echo "	<td align=\"center\">\n";
 
 //show the data
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
 	echo th_order_by('username', $text['label-username'], $order_by, $order);
+	echo "<th>".$text['label-group']."</th>\n";
 	echo "<th>".$text['label-enabled']."</th>\n";
-	echo "<td align='right' width='42'>\n";
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('user_add')) {
-		echo "	<a href='signup.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo "<a href='signup.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
 			if (if_superadmin($superadmins, $row['user_uuid']) && !if_group("superadmin")) {
 				//hide
 			} else {
-				echo "<tr >\n";
-				echo "	<td valign='top' class='".$row_style[$c]."'>".$row['username']."&nbsp;</td>\n";
+				$tr_link = (permission_exists('user_edit')) ? "href='usersupdate.php?id=".$row['user_uuid']."'" : null;
+				echo "<tr ".$tr_link.">\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>";
+				if (permission_exists('user_edit')) {
+					echo "<a href='usersupdate.php?id=".$row['user_uuid']."'>".$row['username']."</a>";
+				}
+				else {
+					echo $row['username'];
+				}
+				echo "	</td>\n";
+				echo "	<td valign='top' class='".$row_style[$c]."'>";
+				if (sizeof($user_groups[$row['user_uuid']]) > 0) {
+					echo implode(', ', $user_groups[$row['user_uuid']]);
+				}
+				echo "&nbsp;</td>\n";
 				echo "	<td valign='top' class='".$row_style[$c]."'>";
 				if ($row['user_enabled'] == 'true') {
 					echo $text['option-true'];
@@ -159,12 +187,17 @@ echo "	<td align=\"center\">\n";
 					echo $text['option-false'];
 				}
 				echo "&nbsp;</td>\n";
-				echo "	<td valign='top' align='right'>\n";
+				echo "	<td valign='top' align='right'>";
 				if (permission_exists('user_edit')) {
-					echo "		<a href='usersupdate.php?id=".$row['user_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
+					echo "<a href='usersupdate.php?id=".$row['user_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 				}
 				if (permission_exists('user_delete')) {
-					echo "		<a href='userdelete.php?id=".$row['user_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+					if ($_SESSION["user"]["user_uuid"] != $row['user_uuid'] && $result_count > 1) {
+						echo "<a href='userdelete.php?id=".$row['user_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">".$v_link_label_delete."</a>";
+					}
+					else {
+						echo "<span onclick=\"alert('You cannot delete your own user account.\\n\\nPlease login as a different user, then try again.');\">".$v_link_label_delete."</span>";
+					}
 				}
 				echo "	</td>\n";
 				echo "</tr>\n";
@@ -180,9 +213,9 @@ echo "	<td align=\"center\">\n";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('user_add')) {
-		echo "			<a href='signup.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo "<a href='signup.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

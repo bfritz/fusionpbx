@@ -45,41 +45,51 @@ else {
 	}
 
 //set the dialplan uuid
-	if (count($_GET) > 0) {
-		$dialplan_uuid = check_str($_GET["id"]);
-	}
+	$dialplan_uuids = $_REQUEST["id"];
+	$app_uuid = check_str($_REQUEST['app_uuid']);
 
-if (strlen($dialplan_uuid) > 0) {
-	//get the dialplan data
-		$sql = "select * from v_dialplans ";
-		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-		foreach ($result as &$row) {
-			$database_dialplan_uuid = $row["dialplan_uuid"];
-			$dialplan_context = $row["dialplan_context"];
-			$app_uuid = $row["app_uuid"];
-		}
-		unset ($prep_statement);
+if (sizeof($dialplan_uuids) > 0) {
+
+	//get dialplan contexts
+	foreach ($dialplan_uuids as $dialplan_uuid) {
+
+		//check each
+			$dialplan_uuid = check_str($dialplan_uuid);
+
+		//get the dialplan data
+			$sql = "select * from v_dialplans ";
+			$sql .= "where dialplan_uuid = '".$dialplan_uuid."' ";
+			$prep_statement = $db->prepare(check_sql($sql));
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+			foreach ($result as &$row) {
+				$database_dialplan_uuid = $row["dialplan_uuid"];
+				$dialplan_contexts[] = $row["dialplan_context"];
+			}
+			unset($prep_statement);
+	}
 
 	//start the atomic transaction
 		$db->beginTransaction();
 
-	//delete child data
-		$sql = "delete from v_dialplan_details ";
-		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-		$db->query($sql);
-		unset($sql);
+	//delete dialplan and details
+	$dialplans_deleted = 0;
+	foreach ($dialplan_uuids as $dialplan_uuid) {
 
-	//delete parent data
-		$sql = "delete from v_dialplans ";
-		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
-		$sql .= "and dialplan_uuid = '$dialplan_uuid' ";
-		$db->query($sql);
-		unset($sql);
+		//delete child data
+			$sql = "delete from v_dialplan_details ";
+			$sql .= "where dialplan_uuid = '".$dialplan_uuid."'; ";
+			$db->query($sql);
+			unset($sql);
+
+		//delete parent data
+			$sql = "delete from v_dialplans ";
+			$sql .= "where dialplan_uuid = '".$dialplan_uuid."'; ";
+			$db->query($sql);
+			unset($sql);
+
+		$dialplans_deleted++;
+	}
 
 	//commit the atomic transaction
 		$db->commit();
@@ -87,36 +97,22 @@ if (strlen($dialplan_uuid) > 0) {
 	//synchronize the xml config
 		save_dialplan_xml();
 
-	//delete the dialplan context from memcache
+	//strip duplicate contexts
+	$dialplan_contexts = array_unique($dialplan_contexts, SORT_STRING);
+
+	//delete the dialplan contexts from memcache
+	if (sizeof($dialplan_contexts) > 0) {
 		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 		if ($fp) {
-			$switch_cmd = "memcache delete dialplan:".$dialplan_context;
-			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+			foreach($dialplan_contexts as $dialplan_context) {
+				$switch_cmd = "memcache delete dialplan:".$dialplan_context;
+				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+			}
 		}
+	}
 }
 
-//redirect the user
-	require_once "resources/header.php";
-	switch ($app_uuid) {
-		case "c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4":
-			//inbound routes
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=$app_uuid\">\n";
-			break;
-		case "8c914ec3-9fc0-8ab5-4cda-6c9288bdc9a3":
-			//outbound routes
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=$app_uuid\">\n";
-			break;
-		case "4b821450-926b-175a-af93-a03c441818b1":
-			//time conditions
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php?app_uuid=$app_uuid\">\n";
-			break;
-		default:
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php\">\n";
-			break;
-	}
-	echo "<div align='center'>\n";
-	echo $text['message-delete']."\n";
-	echo "</div>\n";
-	require_once "resources/footer.php";
-	return;
+
+$_SESSION["message"] = $text['message-delete'].(($dialplans_deleted > 1) ? ": ".$dialplans_deleted : null);
+header("Location: ".PROJECT_PATH."/app/dialplan/dialplans.php".(($app_uuid != '') ? "?app_uuid=".$app_uuid : null));
 ?>

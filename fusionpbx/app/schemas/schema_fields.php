@@ -34,14 +34,13 @@ else {
 	exit;
 }
 
-require_once "resources/header.php";
+//require_once "resources/header.php";
 require_once "resources/paging.php";
 
 $order_by = $_GET["order_by"];
 $order = $_GET["order"];
 
 //show the content
-	echo "<div align='center'>";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='2'>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"center\">\n";
@@ -57,7 +56,7 @@ $order = $_GET["order"];
 	echo $text['description-fields']."<br /><br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-	echo "</tr></table>\n";
+	echo "</table>\n";
 
 	if (strlen($order_by) == 0) {
 		$order_by = 'field_order';
@@ -78,8 +77,7 @@ $order = $_GET["order"];
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('field_label', $text['label-field_label'], $order_by, $order);
 	echo th_order_by('field_name', $text['label-field_name'], $order_by, $order);
@@ -91,18 +89,26 @@ $order = $_GET["order"];
 	echo th_order_by('field_order', $text['label-field_order'], $order_by, $order);
 	echo th_order_by('field_order_tab', $text['label-field_tab_order'], $order_by, $order);
 	echo th_order_by('field_description', $text['label-field_description'], $order_by, $order);
-	echo "<td align='right' width='42'>\n";
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('schema_view')) {
-		echo "	<a href='schema_field_edit.php?schema_uuid=".$schema_uuid."' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo "<a href='schema_field_edit.php?schema_uuid=".$schema_uuid."' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			echo "<tr >\n";
+			$tr_link = (permission_exists('schema_edit')) ? "href='schema_field_edit.php?schema_uuid=".$row['schema_uuid']."&id=".$row['schema_field_uuid']."'" : null;
+			echo "<tr ".$tr_link.">\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['field_label']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['field_name']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			if (permission_exists('schema_edit')) {
+				echo "<a href='schema_field_edit.php?schema_uuid=".$row['schema_uuid']."&id=".$row['schema_field_uuid']."'>".$row['field_name']."</a>";
+			}
+			else {
+				echo $row['field_name'];
+			}
+			echo "	</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>";
 			switch ($row['field_type']) {
 				case "text" : echo $text['option-text']; break;
@@ -153,13 +159,13 @@ $order = $_GET["order"];
 			echo "	</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['field_order']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['field_order_tab']."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['field_description']."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
+			echo "	<td valign='top' class='row_stylebg'>".$row['field_description']."&nbsp;</td>\n";
+			echo "	<td class='list_control_icons'>";
 			if (permission_exists('schema_edit')) {
-				echo "		<a href='schema_field_edit.php?schema_uuid=".$row['schema_uuid']."&id=".$row['schema_field_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
+				echo "<a href='schema_field_edit.php?schema_uuid=".$row['schema_uuid']."&id=".$row['schema_field_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('schema_delete')) {
-				echo "		<a href='schema_field_delete.php?schema_uuid=".$row['schema_uuid']."&id=".$row['schema_field_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+				echo "<a href='schema_field_delete.php?schema_uuid=".$row['schema_uuid']."&id=".$row['schema_field_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -174,28 +180,23 @@ $order = $_GET["order"];
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>&nbsp;</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('schema_add')) {
-		echo "			<a href='schema_field_edit.php?schema_uuid=".$schema_uuid."' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo 		"<a href='schema_field_edit.php?schema_uuid=".$schema_uuid."' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";
  	echo "	</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
 	echo "</table>";
-	echo "</div>";
-	echo "<br><br>";
-	echo "<br><br>";
 
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
-	echo "</div>";
 	echo "<br><br>";
 
 //include the footer
-	require_once "resources/footer.php";
+//	require_once "resources/footer.php";
 
 ?>

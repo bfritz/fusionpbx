@@ -78,7 +78,7 @@ else {
 	$v_greeting_dir = $_SESSION['switch']['storage']['dir'].'/voicemail/default/'.$_SESSION['domains'][$domain_uuid]['domain_name'].'/'.$voicemail_id;
 
 //upload the recording
-	if (($_POST['submit'] == "Save") && is_uploaded_file($_FILES['file']['tmp_name']) && permission_exists('recording_upload')) {
+	if (($_POST['submit'] == $text['button-upload']) && is_uploaded_file($_FILES['file']['tmp_name']) && permission_exists('voicemail_greeting_upload')) {
 		if ($_POST['type'] == 'rec') {
 			for($i = 1; $i < 10; $i++){
 				$tmp_greeting = 'greeting_'.$i.'.wav';
@@ -91,13 +91,13 @@ else {
 			if ($_REQUEST['greeting']) {
 				mkdir($v_greeting_dir, 0777, true);
 				move_uploaded_file($_FILES['file']['tmp_name'], $v_greeting_dir.'/'.$_REQUEST['greeting']);
-				$save_msg = "Uploaded ".$_REQUEST['greeting'];
+				$_SESSION["message"] = $text['message-uploaded'].": ".$_REQUEST['greeting'];
 			}
 		}
 	}
 
 //save the selected greeting
-	if ($_REQUEST['submit'] == "Save") {
+	if ($_REQUEST['submit'] == $text['button-upload']) {
 		//save the greeting_id to a variable
 			$greeting_id = check_str($_REQUEST['greeting_id']);
 
@@ -196,7 +196,7 @@ else {
 		}
 	}
 
-//get the number of rows in v_extensions 
+//get the number of rows in v_extensions
 	$sql = "select greeting_id from v_voicemails ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
 	$sql .= "and voicemail_id = '$voicemail_id' ";
@@ -210,11 +210,6 @@ else {
 
 //include the header
 	require_once "resources/header.php";
-
-//show the message
-	if (strlen($save_msg) > 0) {
-		echo "Message: ".$save_msg;
-	}
 
 //begin the content
 	echo "<script>\n";
@@ -233,17 +228,19 @@ else {
 
 	echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 	echo "	<tr>\n";
-	echo "		<td align='left' width=\"50%\">\n";
-	echo "			<span class='title'>".$text['title'].":</span><br>\n";
+	echo "		<td align='left' nowrap>\n";
+	echo "			<span class='title'>".$text['title']."</span><br>\n";
 	echo "		</td>";
-	echo "		<td width='50%' align='right'>\n";
-	echo "			<label for=\"file\">".$text['label-upload'].":</label>\n";
-	echo "			<input name=\"file\" type=\"file\" class=\"btn\" id=\"file\">\n";
-	echo "			<input name=\"type\" type=\"hidden\" value=\"rec\">\n";
-	echo "			<input name=\"submit\" type=\"submit\" class=\"btn\" id=\"upload\" value=\"".$text['button-save']."\">\n";
-	echo "			&nbsp;&nbsp;&nbsp;\n";
-	echo "			<input type='button' class='btn' name='' alt='back' onclick=\"javascript:history.back();\" value='".$text['button-back']."'>\n";
-	echo "		</td>\n";
+
+	if (permission_exists('voicemail_greeting_upload')) {
+		echo "	<td align='right' nowrap>\n";
+		echo "		<input type='button' class='btn' name='' alt='back' onclick=\"javascript:history.back();\" value='".$text['button-back']."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
+		echo "		<input name=\"file\" type=\"file\" class=\"formfld fileinput\" id=\"file\">\n";
+		echo "		<input name=\"type\" type=\"hidden\" value=\"rec\">\n";
+		echo "		<input name=\"submit\" type=\"submit\" class=\"btn\" id=\"upload\" value=\"".$text['button-upload']."\">\n";
+		echo "	</td>\n";
+	}
+
 	echo "	</tr>";
 	echo "	<tr>";
 	echo "		<td align='left' colspan='2'>\n";
@@ -254,7 +251,7 @@ else {
 
 	echo "<br />\n";
 
-	//get the number of rows in v_voicemail_greetings 
+	//get the number of rows in v_voicemail_greetings
 		$sql = "select count(*) as num_rows from v_voicemail_greetings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
 		$sql .= "and voicemail_id = '$voicemail_id' ";
@@ -275,9 +272,9 @@ else {
 		$rows_per_page = 100;
 		$param = "";
 		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page); 
-		$offset = $rows_per_page * $page; 
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+		list($paging_controls, $rows_per_page, $var_3) = paging($num_rows, $param, $rows_per_page);
+		$offset = $rows_per_page * $page;
 
 	//get the greetings list
 		$sql = "select * from v_voicemail_greetings ";
@@ -295,11 +292,11 @@ else {
 	$row_style["0"] = "row_style0";
 	$row_style["1"] = "row_style1";
 
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<th>".$text['table-choose']."</th>\n";
 	echo th_order_by('greeting_name', $text['table-name'], $order_by, $order);
-	echo "<th align='right'>".$text['table-download']."</th>\n";
+	echo "<th align='right'>".$text['label-tools']."</th>\n";
 	echo "<th width=\"50px\" class=\"listhdr\" nowrap=\"nowrap\">".$text['table-size']."</th>\n";
 	echo th_order_by('greeting_description', $text['table-description'], $order_by, $order);
 	echo "<td align='right' width='21'>\n";
@@ -313,8 +310,9 @@ else {
 		foreach($result as $row) {
 			$tmp_filesize = filesize($v_greeting_dir.'/'.$row['greeting_name']);
 			$tmp_filesize = byte_convert($tmp_filesize);
-			echo "<tr >\n";
-			echo "	<td class='".$row_style[$c]."' ondblclick=\"\" width='30px;' valign='top'>\n";
+			$tr_link = (permission_exists('voicemail_greeting_edit')) ? "href='voicemail_greeting_edit.php?id=".$row['voicemail_greeting_uuid']."&voicemail_id=".$voicemail_id."'" : null;
+			echo "<tr ".$tr_link.">\n";
+			echo "	<td class='".$row_style[$c]." tr_link_void' width='30px;' valign='top'>\n";
 			if (preg_replace('{\D}', '', $row['greeting_name']) == $greeting_id) {
 				echo "		<input type=\"radio\" name=\"greeting_id\" value=\"".preg_replace('{\D}', '', $row['greeting_name'])."\" checked=\"checked\">\n";
 			}
@@ -322,33 +320,26 @@ else {
 				echo "		<input type=\"radio\" name=\"greeting_id\" value=\"".preg_replace('{\D}', '', $row['greeting_name'])."\">\n";
 			}
 			echo "	</td>\n";
-
+			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['greeting_name']."</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>";
-			echo $row['greeting_name'];
-			echo 	"</td>\n";
 
-			echo "	<td valign='top' class='".$row_style[$c]."'>";
-			echo "		<a href=\"voicemail_greetings.php?id=$voicemail_id&a=download&type=rec&t=bin&filename=".base64_encode($row['greeting_name'])."\">\n";
-			echo "		download";
-			echo "		</a>";
-			//echo "		&nbsp;\n";
-			//echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('voicemail_greeting_play.php?id=$voicemail_id&a=download&type=rec&filename=".base64_encode($row['greeting_name'])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
-			//echo "		play";
-			//echo "		</a>";
-			echo 	"</td>\n";
+			if (permission_exists('voicemail_greeting_download')) {
+				echo "	<a href=\"voicemail_greetings.php?id=$voicemail_id&a=download&type=rec&t=bin&filename=".base64_encode($row['greeting_name'])."\">".$text['table-download']."</a>";
+			}
+				//echo "&nbsp;\n";
+				//echo "<a href=\"javascript:void(0);\" onclick=\"window.open('voicemail_greeting_play.php?id=$voicemail_id&a=download&type=rec&filename=".base64_encode($row['greeting_name'])."', 'play',' width=420,height=40,menubar=no,status=no,toolbar=no')\">\n";
+				//echo "play";
+				//echo "</a>";
 
-			echo "	<td class='".$row_style[$c]."' ondblclick=\"\">\n";
-			echo "	".$tmp_filesize;
 			echo "	</td>\n";
-
+			echo "	<td class='".$row_style[$c]."' nowrap>".$tmp_filesize."</td>\n";
 			echo "	<td valign='top' class='row_stylebg'>".$row['greeting_description']."&nbsp;</td>\n";
-
-			echo "	<td valign='top' align='right'>\n";
-			//if (permission_exists('voicemail_greeting_edit')) {
-			//	echo "		<a href='voicemail_greeting_edit.php?id=".$row['voicemail_greeting_uuid']."&voicemail_id=".$voicemail_id."' alt='edit'>$v_link_label_edit</a>\n";
-			//}
+			echo "	<td class='list_control_icons'>\n";
+			if (permission_exists('voicemail_greeting_edit')) {
+				echo "<a href='voicemail_greeting_edit.php?id=".$row['voicemail_greeting_uuid']."&voicemail_id=".$voicemail_id."' alt='edit'>$v_link_label_edit</a>";
+			}
 			if (permission_exists('voicemail_greeting_delete')) {
-				echo "		<a href='voicemail_greeting_delete.php?id=".$row['voicemail_greeting_uuid']."&voicemail_id=".$voicemail_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>\n";
+				echo "<a href='voicemail_greeting_delete.php?id=".$row['voicemail_greeting_uuid']."&voicemail_id=".$voicemail_id."' alt='delete' onclick=\"return confirm('Do you really want to delete this?')\">$v_link_label_delete</a>";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -371,7 +362,7 @@ else {
 	echo "</tr>\n";
 	echo "</table>";
 	echo "</div>";
-	echo "				<input type='hidden' name='id' value='$voicemail_id'>\n";
+	echo "<input type='hidden' name='id' value='$voicemail_id'>\n";
 	echo "</form>";
 
 	echo "<br>\n";

@@ -66,6 +66,50 @@ else {
 			$voicemail_mail_to = str_replace(" ", "", $voicemail_mail_to);
 	}
 
+//unassign the voicemail id copy from the voicemail id
+	if ($_GET["a"] == "delete" && strlen($voicemail_uuid) > 0 && strlen($_REQUEST["voicemail_destination_uuid"]) > 0) {
+		//set the variables
+			$voicemail_destination_uuid = check_str($_REQUEST["voicemail_destination_uuid"]);
+		//delete the voicemail from the destionations
+			$sqld = "
+				delete from
+					v_voicemail_destinations as d
+				where
+					d.voicemail_destination_uuid = '".$voicemail_destination_uuid."' and
+					d.voicemail_uuid = '".$voicemail_uuid."'";
+			$db->exec(check_sql($sqld));
+		//redirect the browser
+			$_SESSION["message"] = $text['message-delete'];
+			header("Location: voicemail_edit.php?id=".$voicemail_uuid);
+			return;
+	}
+
+//assign the voicemail id copy to the voicemail id
+	if (strlen($voicemail_uuid) > 0 && strlen($_REQUEST["voicemail_uuid_copy"]) > 0) {
+		//set the variables
+			$voicemail_uuid_copy = check_str($_REQUEST["voicemail_uuid_copy"]);
+		//assign the user to the extension
+			$sqli = "
+				insert into
+					v_voicemail_destinations
+				(
+					voicemail_destination_uuid,
+					voicemail_uuid,
+					voicemail_uuid_copy
+				)
+				values
+				(
+					'".uuid()."',
+					'".$voicemail_uuid."',
+					'".$voicemail_uuid_copy."'
+				)";
+			$db->exec(check_sql($sqli));
+		//redirect the browser
+//			$_SESSION["message"] = $text['message-add'];
+//			header("Location: voicemail_edit.php?id=".$voicemail_uuid);
+//			return;
+	}
+
 if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
@@ -133,12 +177,8 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=voicemails.php\">\n";
-				echo "<div align='center'>\n";
-				echo "	".$text['message-add']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-add'];
+				header("Location: voicemails.php");
 				return;
 			} //if ($action == "add")
 
@@ -162,20 +202,16 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 				$db->exec(check_sql($sql));
 				unset($sql);
 
-				require_once "resources/header.php";
+				$_SESSION["message"] = $text['message-update'];
 				if ($referer_path == "/app/voicemails/voicemail_messages.php") {
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=voicemail_messages.php?".$referer_query."\">\n";
+					header("Location: voicemail_messages.php?".$referer_query);
 				}
 				else {
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=voicemails.php\">\n";
+					header("Location: voicemail_edit.php?id=".$voicemail_uuid);
 				}
-				echo "<div align='center'>\n";
-				echo "	".$text['message-update']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
 				return;
 			} //if ($action == "update")
-		} //if ($_POST["persistformvar"] != "true") 
+		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
@@ -226,11 +262,12 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['title-voicemail']."</b></td>\n";
 	echo "<td width='70%' align='right'>\n";
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"javascript:history.back();\" value='".$text['button-back']."'>\n";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-voicemail_id'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -241,13 +278,13 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-voicemail_password'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='password' name='voicemail_password' id='password' onfocus=\"document.getElementById('show_password').innerHTML = '".$text['label-voicemail_password'].": '+document.getElementById('password').value;\" autocomplete='off' maxlength='50' value=\"$voicemail_password\">\n";
+	echo "	<input class='formfld' type='password' name='voicemail_password' id='password' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" autocomplete='off' maxlength='50' value=\"$voicemail_password\">\n";
 	echo "<br />\n";
-	echo $text['description-voicemail_password']." <span id='show_password'></span>\n";
+	echo $text['description-voicemail_password']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -279,14 +316,13 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='voicemail_attach_file'>\n";
-	echo "	<option value=''></option>\n";
-	if ($voicemail_attach_file == "true") { 
+	if ($voicemail_attach_file == "true") {
 		echo "	<option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "	<option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($voicemail_attach_file == "false") { 
+	if ($voicemail_attach_file == "false") {
 		echo "	<option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -304,14 +340,13 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='voicemail_local_after_email'>\n";
-	echo "	<option value=''></option>\n";
-	if ($voicemail_local_after_email == "true") { 
+	if ($voicemail_local_after_email == "true") {
 		echo "	<option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "	<option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($voicemail_local_after_email == "false") { 
+	if ($voicemail_local_after_email == "false") {
 		echo "	<option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -323,20 +358,95 @@ if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	/*
+	//still in development
+
+	if ($action == "update") {
+		echo "	<tr>";
+		echo "		<td class='vncell' valign='top'>".$text['label-forward_destinations'].":</td>";
+		echo "		<td class='vtable'>";
+
+		echo "			<table width='52%'>\n";
+		$sql = "
+			select
+				v.voicemail_id,
+				d.voicemail_destination_uuid,
+				d.voicemail_uuid_copy
+			from
+				v_voicemails as v,
+				v_voicemail_destinations as d
+			where
+				d.voicemail_uuid_copy = v.voicemail_uuid and
+				v.domain_uuid = '".$_SESSION['domain_uuid']."' and
+				v.voicemail_enabled = 'true' and
+				d.voicemail_uuid = '".$voicemail_uuid."'
+			order by
+				v.voicemail_id asc";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		$result_count = count($result);
+		foreach($result as $field) {
+			echo "			<tr>\n";
+			echo "				<td class='vtable'>".$field['voicemail_id']."</td>\n";
+			echo "				<td>\n";
+			echo "					<a href='voicemail_edit.php?id=".$voicemail_uuid."&voicemail_destination_uuid=".$field['voicemail_destination_uuid']."&a=delete' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+			echo "				</td>\n";
+			echo "			</tr>\n";
+			$voicemail_uuid_copied[] = $field['voicemail_uuid_copy'];
+		}
+		echo "			</table>\n";
+
+		if (sizeof($voicemail_uuid_copied) > 0) {
+			// modify sql to remove already copied voicemail uuids from the list
+			$sql_mod = " and v.voicemail_uuid not in ('".implode("','", $voicemail_uuid_copied)."') ";
+		}
+		echo "			<br />\n";
+		$sql = "
+			select
+				v.voicemail_id,
+				v.voicemail_uuid
+			from
+				v_voicemails as v
+			where
+				v.domain_uuid = '".$_SESSION['domain_uuid']."' and
+				v.voicemail_enabled = 'true' and
+				v.voicemail_uuid <> '".$voicemail_uuid."'
+				".$sql_mod."
+			order by
+				v.voicemail_id asc";
+		$prep_statement = $db->prepare(check_sql($sql));
+		$prep_statement->execute();
+		echo "			<select name=\"voicemail_uuid_copy\" class='formfld' style='width: auto;'>\n";
+		echo "			<option value=\"\"></option>\n";
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		foreach($result as $field) {
+			echo "			<option value='".$field['voicemail_uuid']."'>".$field['voicemail_id']."</option>\n";
+		}
+		echo "			</select>";
+		echo "			<input type=\"submit\" class='btn' value=\"".$text['button-add']."\">\n";
+		unset($sql, $result);
+		echo "			<br>\n";
+		echo "			".$text['description-forward_destinations']."\n";
+		echo "			<br />\n";
+		echo "		</td>";
+		echo "	</tr>";
+	}
+	*/
+
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-voicemail_enabled'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='voicemail_enabled'>\n";
-	echo "	<option value=''></option>\n";
-	if ($voicemail_enabled == "true") { 
+	if ($voicemail_enabled == "true") {
 		echo "	<option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "	<option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($voicemail_enabled == "false") { 
+	if ($voicemail_enabled == "false") {
 		echo "	<option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {

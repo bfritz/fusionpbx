@@ -99,7 +99,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//get and then set the complete agent_contact with the call_timeout and when necessary confirm
-		$tmp_confirm = "group_confirm_file=custom/press_1_to_accept_this_call.wav,group_confirm_key=1";
+		//if you change this variable, also change resources/switch.php
+		$tmp_confirm = "group_confirm_file=custom/press_1_to_accept_this_call.wav,group_confirm_key=1,group_confirm_read_timeout=2000,leg_timeout=".$agent_call_timeout;
 		if(strstr($agent_contact, '}') === FALSE) {
 			//not found
 			if(stristr($agent_contact, 'sofia/gateway') === FALSE) {
@@ -110,6 +111,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//add the call_timeout and confirm
 				$tmp_agent_contact = $tmp_first.',call_timeout='.$agent_call_timeout.$tmp_last;
 				$tmp_agent_contact = "{".$tmp_confirm.",call_timeout=".$agent_call_timeout."}".$agent_contact;
+				echo "\n\n".$tmp_agent_contact."\n\n";
 			}
 		}
 		else {
@@ -230,14 +232,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//syncrhonize configuration
 				save_call_center_xml();
 
-			//redirect the user
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=call_center_agents.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-add']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
-				return;
+			$_SESSION["message"] = $text['message-add'];
+			header("Location: call_center_agents.php");
+			return;
 		} //if ($action == "add")
 
 		if ($action == "update") {
@@ -261,12 +258,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//syncrhonize configuration
 			save_call_center_xml();
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=call_center_agents.php\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-update']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-update'];
+			header("Location: call_center_agents.php");
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
@@ -301,7 +294,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //set default values
 	if (strlen($agent_type) == 0) { $agent_type = "callback"; }
 	if (strlen($agent_call_timeout) == 0) { $agent_call_timeout = 10; }
-	if (strlen($agent_max_no_answer) == 0) { $agent_max_no_answer = "3"; }
+	if (strlen($agent_max_no_answer) == 0) { $agent_max_no_answer = "0"; }
 	if (strlen($agent_wrap_up_time) == 0) { $agent_wrap_up_time = "10"; }
 	if (strlen($agent_no_answer_delay_time) == 0) { $agent_no_answer_delay_time = "10"; }
 	if (strlen($agent_reject_delay_time) == 0) { $agent_reject_delay_time = "10"; }
@@ -310,10 +303,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "resources/header.php";
 	if ($action == "add") {
-		$page["title"] = $text['title-call_center_agent_add'];
+		$document['title'] = $text['title-call_center_agent_add'];
 	}
 	if ($action == "update") {
-		$page["title"] = $text['title-call_center_agent_edit'];
+		$document['title'] = $text['title-call_center_agent_edit'];
 	}
 
 //show the content
@@ -333,7 +326,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['header-call_center_agent_edit']."</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='call_center_agents.php'\" value='".$text['button-back']."'></td>\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='call_center_agents.php'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
@@ -342,7 +338,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "	".$text['label-agent_name'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -397,7 +393,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 	echo "	".$text['label-contact'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";

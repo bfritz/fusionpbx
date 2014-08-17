@@ -28,29 +28,29 @@ include "root.php";
 require_once "resources/functions.php";
 
 //set defaults
-	if (isset($dbtype) > 0) { 
-		$db_type = $dbtype; 
+	if (isset($dbtype)) {
+		$db_type = $dbtype;
 	}
-	if (isset($dbhost) > 0) { 
-		$db_host = $dbhost; 
+	if (isset($dbhost)) {
+		$db_host = $dbhost;
 	}
-	if (isset($dbport) > 0) { 
-		$db_port = $dbport; 
+	if (isset($dbport)) {
+		$db_port = $dbport;
 	}
-	if (isset($dbname) > 0) { 
-		$db_name = $dbname; 
+	if (isset($dbname)) {
+		$db_name = $dbname;
 	}
-	if (isset($dbusername) > 0) { 
-		$db_username = $dbusername; 
+	if (isset($dbusername)) {
+		$db_username = $dbusername;
 	}
-	if (isset($dbpassword) > 0) { 
-		$db_password = $dbpassword; 
+	if (isset($dbpassword)) {
+		$db_password = $dbpassword;
 	}
-	if (isset($db_file_path) > 0) { 
-		$db_path = $db_file_path; 
+	if (isset($db_file_path)) {
+		$db_path = $db_file_path;
 	}
-	if (isset($dbfilename) > 0) { 
-		$db_name = $dbfilename; 
+	if (isset($dbfilename)) {
+		$db_name = $dbfilename;
 	}
 
 if (!function_exists('get_db_field_names')) {
@@ -188,18 +188,20 @@ if ($db_type == "mysql") {
 		//mysql pdo connection
 			if (strlen($db_host) == 0 && strlen($db_port) == 0) {
 				//if both host and port are empty use the unix socket
-				$db = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;dbname=$db_name", $db_username, $db_password);
+				$db = new PDO("mysql:host=$db_host;unix_socket=/var/run/mysqld/mysqld.sock;dbname=$db_name", $db_username, $db_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 			}
 			else {
 				if (strlen($db_port) == 0) {
 					//leave out port if it is empty
 					$db = new PDO("mysql:host=$db_host;dbname=$db_name;", $db_username, $db_password, array(
+					PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
 					PDO::ATTR_ERRMODE,
 					PDO::ERRMODE_EXCEPTION
 					));
 				}
 				else {
 					$db = new PDO("mysql:host=$db_host;port=$db_port;dbname=$db_name;", $db_username, $db_password, array(
+					PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
 					PDO::ATTR_ERRMODE,
 					PDO::ERRMODE_EXCEPTION
 					));
@@ -211,7 +213,6 @@ if ($db_type == "mysql") {
 		die();
 	}
 } //end if db_type mysql
-
 
 if ($db_type == "pgsql") {
 	//database connection
@@ -234,9 +235,26 @@ if ($db_type == "pgsql") {
 	if (strlen($_SESSION["domain_uuid"]) == 0) {
 		//get the domain
 			$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
-		//get the domain_uuid
-			$sql = "select * from v_domains ";
-			$sql .= "order by domain_name asc ";
+		//natural sort domains into array
+			$sql = "select domain_name from v_domains";
+			$prep_statement = $db->prepare($sql);
+			$prep_statement->execute();
+			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+			if (count($result) > 0) {
+				foreach($result as $row) {
+					$domain_names[] = $row['domain_name'];
+				}
+			}
+			unset($result, $prep_statement);
+			natsort($domain_names);
+		//get the domains in the natural sort order
+			$n = 1;
+			$sql = "select * from v_domains order by case ";
+			foreach ($domain_names as $dn) {
+				$sql .= "when domain_name = '".$dn."' then ".$n." ";
+				$n++;
+			}
+			$sql .= "else ".$n." end ";
 			$prep_statement = $db->prepare($sql);
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
@@ -253,8 +271,21 @@ if ($db_type == "pgsql") {
 				}
 				$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
 				$_SESSION['domains'][$row['domain_uuid']]['domain_name'] = $row['domain_name'];
+				$_SESSION['domains'][$row['domain_uuid']]['domain_description'] = $row['domain_description'];
 			}
 			unset($result, $prep_statement);
+	}
+
+//get the software name
+	if (!isset($_SESSION["software_name"])) {
+		$sql = "select * from v_software ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			$_SESSION["software_name"] = $row['software_name'];
+		}
+		unset($prep_statement, $result);
 	}
 
 //set the setting arrays
@@ -266,11 +297,42 @@ if ($db_type == "pgsql") {
 	}
 
 //set the domain_uuid variable from the session
-	if (strlen($_SESSION["domain_uuid"]) > 0) { 
+	if (strlen($_SESSION["domain_uuid"]) > 0) {
 		$domain_uuid = $_SESSION["domain_uuid"];
 	}
 	else {
 		$domain_uuid = uuid();
+	}
+
+//check the domain cidr range
+	if (is_array($_SESSION['domain']["cidr"])) {
+		$found = false;
+		foreach($_SESSION['domain']["cidr"] as $cidr) {
+			if (check_cidr($cidr, $_SERVER['REMOTE_ADDR'])) {
+				$found = true;
+				break;
+			}
+		}
+		if (!$found) {
+			echo "access denied";
+			exit;
+		}
+	}
+
+//check the api cidr range
+	if (is_array($_SESSION['api']["cidr"])) {
+		$found = false;
+		foreach($_SESSION['api']["cidr"] as $cidr) {
+			if (check_cidr($cidr, $_SERVER['REMOTE_ADDR'])) {
+				$found = true;
+				break;
+			}
+		}
+		if (!$found) {
+			unset ($_REQUEST['key']);
+			unset ($_POST['key']);
+			unset ($_GET['key']);
+		}
 	}
 
 ?>

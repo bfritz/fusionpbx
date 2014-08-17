@@ -43,11 +43,11 @@ require_once "resources/require.php";
 				$_SESSION["template_content"] = '';
 			}
 
-		//if the username from the form is not provided then send to login.php
+		//if the username is not provided then send to login.php
 			if (strlen(check_str($_REQUEST["username"])) == 0 && strlen(check_str($_REQUEST["key"])) == 0) {
-				$php_self = $_SERVER["PHP_SELF"];
-				$msg = "username required";
-				header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($php_self)."&msg=".urlencode($msg));
+				$target_path = ($_REQUEST["path"] != '') ? $_REQUEST["path"] : $_SERVER["PHP_SELF"];
+				$_SESSION["message"] = "Invalid Username and/or Password";
+				header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($target_path));
 				exit;
 			}
 
@@ -56,10 +56,12 @@ require_once "resources/require.php";
 				//get the domain from the url
 					$domain_name = $_SERVER["HTTP_HOST"];
 				//get the domain name from the username
-					$username_array = explode("@", check_str($_REQUEST["username"]));
-					if (count($username_array) > 1) {
-						$domain_name = $username_array[count($username_array) -1];
-						$_REQUEST["username"] = substr(check_str($_REQUEST["username"]), 0, -(strlen($domain_name)+1));
+					if ($_SESSION["user"]["unique"]["text"] != "global") {
+						$username_array = explode("@", check_str($_REQUEST["username"]));
+						if (count($username_array) > 1) {
+							$domain_name = $username_array[count($username_array) -1];
+							$_REQUEST["username"] = substr(check_str($_REQUEST["username"]), 0, -(strlen($domain_name)+1));
+						}
 					}
 				//get the domain name from the http value
 					if (strlen(check_str($_REQUEST["domain_name"])) > 0) {
@@ -67,16 +69,12 @@ require_once "resources/require.php";
 					}
 				//set the domain information
 					if (strlen($domain_name) > 0) {
-						require_once "resources/classes/domains.php";
 						foreach ($_SESSION['domains'] as &$row) {
 							if ($row['domain_name'] == $domain_name) {
 								//set the domain session variables
 									$domain_uuid = $row["domain_uuid"];
 									$_SESSION["domain_uuid"] = $row["domain_uuid"];
-									$_SESSION['domains'][$row['domain_uuid']]['domain_uuid'] = $row['domain_uuid'];
-									$_SESSION['domains'][$row['domain_uuid']]['domain_name'] = $domain_name;
-									$_SESSION["domain_name"] = $domain_name;
-
+									$_SESSION["domain_name"] = $_SESSION['domains'][$domain_uuid]['domain_name'];
 								//set the setting arrays
 									$domain = new domains();
 									$domain->db = $db;
@@ -187,20 +185,28 @@ require_once "resources/require.php";
 			else {
 				//check the username and password if they don't match then redirect to the login
 					$sql = "select * from v_users ";
-					//$sql .= "where domain_uuid='".$domain_uuid."' ";
-					$sql .= "where domain_uuid=:domain_uuid ";
-					if (strlen($key) > 0) {
-						$sql .= "and api_key=:key ";
+					if (strlen($_REQUEST["key"]) > 30) {
+						$sql .= "where api_key=:key ";
 						//$sql .= "and api_key='".$key."' ";
 					}
 					else {
-						$sql .= "and username=:username ";
+						$sql .= "where username=:username ";
 						//$sql .= "and username='".$username."' ";
+					}
+					//$sql .= "and domain_uuid='".$domain_uuid."' ";
+					if ($_SESSION["user"]["unique"]["text"] == "global") {
+						//unique username - global (example: email address)
+					}
+					else {
+						//unique username - per domain
+						$sql .= "and domain_uuid=:domain_uuid ";
 					}
 					$sql .= "and (user_enabled = 'true' or user_enabled is null) ";
 					$prep_statement = $db->prepare(check_sql($sql));
-					$prep_statement->bindParam(':domain_uuid', $domain_uuid);
-					if (strlen($key) > 0) {
+					if ($_SESSION["user"]["unique"]["text"] != "global") {
+						$prep_statement->bindParam(':domain_uuid', $domain_uuid);
+					}
+					if (strlen($_REQUEST["key"]) > 30) {
 						$prep_statement->bindParam(':key', $key);
 					}
 					else {
@@ -212,11 +218,20 @@ require_once "resources/require.php";
 						$auth_failed = true;
 					}
 					else {
-						if (strlen($key) > 0) {
+						if (isset($_REQUEST["key"])) {
 							$auth_failed = false;
 						}
 						else {
 							foreach ($result as &$row) {
+								//get the domain uuid
+									$domain_uuid = $row["domain_uuid"];
+								//set the domain session variables
+									$_SESSION["domain_uuid"] = $domain_uuid;
+									$_SESSION["domain_name"] = $_SESSION['domains'][$domain_uuid]['domain_name'];
+								//set the setting arrays
+									$domain = new domains();
+									$domain->db = $db;
+									$domain->set();
 								//get the salt from the database
 									$salt = $row["salt"];
 								//if salt is not defined then use the default salt for backwards compatibility
@@ -239,9 +254,9 @@ require_once "resources/require.php";
 					syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] authentication failed for ".check_str($_REQUEST["username"]));
 					closelog();
 				//redirect the user to the login page
-					$php_self = $_SERVER["PHP_SELF"];
-					$msg = "incorrect account information";
-					header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($php_self)."&msg=".urlencode($msg));
+					$target_path = ($_REQUEST["path"] != '') ? $_REQUEST["path"] : $_SERVER["PHP_SELF"];
+					$_SESSION["message"] = "Invalid Username and/or Password";
+					header("Location: ".PROJECT_PATH."/login.php?path=".urlencode($target_path));
 					exit;
 			}
 			foreach ($result as &$row) {
@@ -279,23 +294,60 @@ require_once "resources/require.php";
 			unset($sql, $row_count, $prep_statement);
 
 		//get the permissions assigned to the groups that the user is a member of set the permissions in $_SESSION['permissions']
-			$x = 0;
-			$sql = "select distinct(permission_name) from v_group_permissions ";
-			foreach($_SESSION["groups"] as $field) {
-				if (strlen($field['group_name']) > 0) {
-					if ($x == 0) {
-						$sql .= "where (domain_uuid = '".$domain_uuid."' and group_name = '".$field['group_name']."') ";
+			if (count($_SESSION["groups"]) > 0) {
+				$x = 0;
+				$sql = "select distinct(permission_name) from v_group_permissions ";
+				foreach($_SESSION["groups"] as $field) {
+					if (strlen($field['group_name']) > 0) {
+						if ($x == 0) {
+							$sql .= "where (domain_uuid = '".$domain_uuid."' and group_name = '".$field['group_name']."') ";
+						}
+						else {
+							$sql .= "or (domain_uuid = '".$domain_uuid."' and group_name = '".$field['group_name']."') ";
+						}
+						$x++;
 					}
-					else {
-						$sql .= "or (domain_uuid = '".$domain_uuid."' and group_name = '".$field['group_name']."') ";
+				}
+				$prep_statement_sub = $db->prepare($sql);
+				$prep_statement_sub->execute();
+				$_SESSION['permissions'] = $prep_statement_sub->fetchAll(PDO::FETCH_NAMED);
+				unset($sql, $prep_statement_sub);
+			}
+
+		//get the user settings
+			$sql = "select * from v_user_settings ";
+			$sql .= "where domain_uuid = '" . $_SESSION["domain_uuid"] . "' ";
+			$sql .= "and user_uuid = '" . $_SESSION["user_uuid"] . "' ";
+			$sql .= "and user_setting_enabled = 'true' ";
+			$prep_statement = $db->prepare($sql);
+			if ($prep_statement) {
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+				foreach ($result as $row) {
+					$name = $row['user_setting_name'];
+					$category = $row['user_setting_category'];
+					$subcategory = $row['user_setting_subcategory'];
+					if (strlen($row['user_setting_value']) > 0) {
+						if (strlen($subcategory) == 0) {
+							//$$category[$name] = $row['domain_setting_value'];
+							if ($name == "array") {
+								$_SESSION[$category][] = $row['user_setting_value'];
+							}
+							else {
+								$_SESSION[$category][$name] = $row['user_setting_value'];
+							}
+						} else {
+							//$$category[$subcategory][$name] = $row['domain_setting_value'];
+							if ($name == "array") {
+								$_SESSION[$category][$subcategory][] = $row['user_setting_value'];
+							}
+							else {
+								$_SESSION[$category][$subcategory][$name] = $row['user_setting_value'];
+							}
+						}
 					}
-					$x++;
 				}
 			}
-			$prep_statement_sub = $db->prepare($sql);
-			$prep_statement_sub->execute();
-			$_SESSION['permissions'] = $prep_statement_sub->fetchAll(PDO::FETCH_NAMED);
-			unset($sql, $prep_statement_sub);
 
 		//redirect the user
 			if (check_str($_REQUEST["rdr"]) !== 'n'){

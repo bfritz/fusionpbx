@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2014
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -37,15 +37,13 @@ else {
 
 //add multi-lingual support
 	foreach($text as $key => $value) {
-		$text[$key] = $value[$_SESSION['domain']['language']['code']];                
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
 //define the destination_select function
 	function destination_select($select_name, $select_value, $select_default) {
 		if (strlen($select_value) == 0) { $select_value = $select_default; }
-		echo "	<select class='formfld' style='width: 45px;' name='$select_name'>\n";
-		echo "	<option value=''></option>\n";
-
+		echo "	<select class='formfld' style='width: 55px;' name='$select_name'>\n";
 		$i = 0;
 		while($i <= 100) {
 			if ($select_value == $i) {
@@ -120,48 +118,52 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$forward_all_destination = check_str($_POST["forward_all_destination"]);
 			$cid_name_prefix = check_str($_POST["cid_name_prefix"]);
 			$cid_number_prefix = check_str($_POST["cid_number_prefix"]);
-			$call_prompt = check_str($_POST["call_prompt"]);
 			$follow_me_enabled = check_str($_POST["follow_me_enabled"]);
 
 			$destination_data_1 = check_str($_POST["destination_data_1"]);
 			$destination_delay_1 = check_str($_POST["destination_delay_1"]);
+			$destination_prompt_1 = check_str($_POST["destination_prompt_1"]);
 			$destination_timeout_1 = check_str($_POST["destination_timeout_1"]);
 
 			$destination_data_2 = check_str($_POST["destination_data_2"]);
 			$destination_delay_2 = check_str($_POST["destination_delay_2"]);
+			$destination_prompt_2 = check_str($_POST["destination_prompt_2"]);
 			$destination_timeout_2 = check_str($_POST["destination_timeout_2"]);
 
 			$destination_data_3 = check_str($_POST["destination_data_3"]);
 			$destination_delay_3 = check_str($_POST["destination_delay_3"]);
+			$destination_prompt_3 = check_str($_POST["destination_prompt_3"]);
 			$destination_timeout_3 = check_str($_POST["destination_timeout_3"]);
 
 			$destination_data_4 = check_str($_POST["destination_data_4"]);
 			$destination_delay_4 = check_str($_POST["destination_delay_4"]);
+			$destination_prompt_4 = check_str($_POST["destination_prompt_4"]);
 			$destination_timeout_4 = check_str($_POST["destination_timeout_4"]);
 
 			$destination_data_5 = check_str($_POST["destination_data_5"]);
 			$destination_delay_5 = check_str($_POST["destination_delay_5"]);
+			$destination_prompt_5 = check_str($_POST["destination_prompt_5"]);
 			$destination_timeout_5 = check_str($_POST["destination_timeout_5"]);
 
 			$dnd_enabled = check_str($_POST["dnd_enabled"]);
 
 			if (strlen($forward_all_destination) > 0) {
-				$forward_all_destination = preg_replace("~[^0-9]~", "",$forward_all_destination);
+			//	$forward_all_destination = preg_replace("~[^0-9]~", "",$forward_all_destination);
 			}
 			if (strlen($destination_data_1) > 0) {
-				$destination_data_1 = preg_replace("~[^0-9]~", "",$destination_data_1);
+			//	$destination_data_1 = preg_replace("~[^0-9]~", "",$destination_data_1);
 			}
 			if (strlen($destination_data_2) > 0) {
-				$destination_data_2 = preg_replace("~[^0-9]~", "",$destination_data_2);
+			//	$destination_data_2 = preg_replace("~[^0-9]~", "",$destination_data_2);
 			}
 			if (strlen($destination_data_3) > 0) {
-				$destination_data_3 = preg_replace("~[^0-9]~", "",$destination_data_3);
+			//	$destination_data_3 = preg_replace("~[^0-9]~", "",$destination_data_3);
 			}
 			if (strlen($destination_data_4) > 0) {
-				$destination_data_4 = preg_replace("~[^0-9]~", "",$destination_data_4);
+			//	$destination_data_4 = preg_replace("~[^0-9]~", "",$destination_data_4);
 			}
 			if (strlen($destination_data_5) > 0) {
-				$destination_data_5 = preg_replace("~[^0-9]~", "",$destination_data_5);
+			//	$destination_data_5 = preg_replace("~[^0-9]~", "",$destination_data_5);
 			}
 		}
 
@@ -183,7 +185,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			//if (strlen($destination_timeout_6) == 0) { $msg .= "Please provide: sec<br>\n"; }
 			//if (strlen($destination_data_7) == 0) { $msg .= "Please provide: 7th Number<br>\n"; }
 			//if (strlen($destination_timeout_7) == 0) { $msg .= "Please provide: sec<br>\n"; }
-			//if (strlen($hunt_group_call_prompt) == 0) { $msg .= "Please provide: call prompt<br>\n"; }
 			if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 				require_once "resources/header.php";
 				require_once "resources/persist_form_var.php";
@@ -258,32 +259,36 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$follow_me->db_type = $db_type;
 			$follow_me->cid_name_prefix = $cid_name_prefix;
 			$follow_me->cid_number_prefix = $cid_number_prefix;
-			$follow_me->call_prompt = $call_prompt;
 			$follow_me->follow_me_enabled = $follow_me_enabled;
 
 			$follow_me->destination_data_1 = $destination_data_1;
 			$follow_me->destination_type_1 = $destination_type_1;
 			$follow_me->destination_delay_1 = $destination_delay_1;
+			$follow_me->destination_prompt_1 = $destination_prompt_1;
 			$follow_me->destination_timeout_1 = $destination_timeout_1;
 
 			$follow_me->destination_data_2 = $destination_data_2;
 			$follow_me->destination_type_2 = $destination_type_2;
 			$follow_me->destination_delay_2 = $destination_delay_2;
+			$follow_me->destination_prompt_2 = $destination_prompt_2;
 			$follow_me->destination_timeout_2 = $destination_timeout_2;
 
 			$follow_me->destination_data_3 = $destination_data_3;
 			$follow_me->destination_type_3 = $destination_type_3;
 			$follow_me->destination_delay_3 = $destination_delay_3;
+			$follow_me->destination_prompt_3 = $destination_prompt_3;
 			$follow_me->destination_timeout_3 = $destination_timeout_3;
 
 			$follow_me->destination_data_4 = $destination_data_4;
 			$follow_me->destination_type_4 = $destination_type_4;
 			$follow_me->destination_delay_4 = $destination_delay_4;
+			$follow_me->destination_prompt_4 = $destination_prompt_4;
 			$follow_me->destination_timeout_4 = $destination_timeout_4;
 
 			$follow_me->destination_data_5 = $destination_data_5;
 			$follow_me->destination_type_5 = $destination_type_5;
 			$follow_me->destination_delay_5 = $destination_delay_5;
+			$follow_me->destination_prompt_5 = $destination_prompt_5;
 			$follow_me->destination_timeout_5 = $destination_timeout_5;
 
 			if ($follow_me_enabled == "true") {
@@ -348,12 +353,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		}
 
 	//redirect the user
-		require_once "resources/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"3;url=".PROJECT_PATH."/core/user_settings/user_dashboard.php\">\n";
-		echo "<div align='center'>\n";
-		echo "".$text['confirm-update']."<br />\n";
-		echo "</div>\n";
-		require_once "resources/footer.php";
+		$_SESSION["message"] = $text['confirm-update'];
+		header("Location: ".PROJECT_PATH."/core/user_settings/user_dashboard.php");
 		return;
 
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
@@ -371,7 +372,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	foreach ($result as &$row) {
 		$cid_name_prefix = $row["cid_name_prefix"];
 		$cid_number_prefix = $row["cid_number_prefix"];
-		$call_prompt = $row["call_prompt"];
 		$follow_me_enabled = $row["follow_me_enabled"];
 
 		$sql = "select * from v_follow_me_destinations ";
@@ -385,26 +385,31 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			if ($x == 1) {
 				$destination_data_1 = $row2["follow_me_destination"];
 				$destination_delay_1 = $row2["follow_me_delay"];
+				$destination_prompt_1 = $row2["follow_me_prompt"];
 				$destination_timeout_1 = $row2["follow_me_timeout"];
 			}
 			if ($x == 2) {
 				$destination_data_2 = $row2["follow_me_destination"];
 				$destination_delay_2 = $row2["follow_me_delay"];
+				$destination_prompt_2 = $row2["follow_me_prompt"];
 				$destination_timeout_2 = $row2["follow_me_timeout"];
 			}
 			if ($x == 3) {
 				$destination_data_3 = $row2["follow_me_destination"];
 				$destination_delay_3 = $row2["follow_me_delay"];
+				$destination_prompt_3 = $row2["follow_me_prompt"];
 				$destination_timeout_3 = $row2["follow_me_timeout"];
 			}
 			if ($x == 4) {
 				$destination_data_4 = $row2["follow_me_destination"];
 				$destination_delay_4 = $row2["follow_me_delay"];
+				$destination_prompt_4 = $row2["follow_me_prompt"];
 				$destination_timeout_4 = $row2["follow_me_timeout"];
 			}
 			if ($x == 5) {
 				$destination_data_5 = $row2["follow_me_destination"];
 				$destination_delay_5 = $row2["follow_me_delay"];
+				$destination_prompt_5 = $row2["follow_me_prompt"];
 				$destination_timeout_5 = $row2["follow_me_timeout"];
 			}
 			$x++;
@@ -475,6 +480,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td width='70%' align='right'>\n";
 	echo "	<input type='button' class='btn' name='' alt='back' onclick=\"window.location='calls.php'\" value='".$text['button-back']."'>\n";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -554,78 +560,121 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-ring-1'].":\n";
+	echo "	".$text['label-destinations'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 
-	echo "	<input class='formfld' type='text' name='destination_data_1' id='destination_data_1' maxlength='255' value=\"$destination_data_1\">\n";
+	echo "	<table border='0' cellpadding='2' cellspacing='0'>\n";
+	echo "		<tr>\n";
+	echo "			<td class='vtable'>".$text['label-destination_number']."</td>\n";
+	echo "			<td class='vtable'>".$text['label-destination_delay']."</td>\n";
+	echo "			<td class='vtable'>".$text['label-destination_timeout']."</td>\n";
+	if (permission_exists('follow_me_prompt')) {
+		echo "		<td class='vtable'>".$text['label-destination_prompt']."</td>\n";
+	}
+	echo "		</tr>\n";
 
-	echo "	".$text['label-ring-delay']."\n"; 
-	destination_select('destination_delay_1', $destination_delay_1, '0');
-	echo "	".$text['label-ring-timeout']."\n"; 
-	destination_select('destination_timeout_1', $destination_timeout_1, '30');
-	//echo "<br />\n";
-	//echo "This number rings first.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	// 1st destination
+	echo "		<tr>\n";
+	echo "			<td><input class='formfld' type='text' name='destination_data_1' id='destination_data_1' maxlength='255' value=\"".$destination_data_1."\"></td>\n";
+	echo "			<td>\n";
+							destination_select('destination_delay_1', $destination_delay_1, '0');
+	echo "			</td>\n";
+	echo "			<td>\n";
+							destination_select('destination_timeout_1', $destination_timeout_1, '30');
+	echo "			</td>\n";
+	if (permission_exists('follow_me_prompt')) {
+		echo "		<td>\n";
+		echo "			<select class='formfld' style='width: 90px;' name='destination_prompt_1'>\n";
+		echo "				<option value=''></option>\n";
+		echo "				<option value='1' ".(($destination_prompt_1)?"selected='selected'":null).">".$text['label-destination_prompt_confirm']."</option>\n";
+		//echo "			<option value='2'>".$text['label-destination_prompt_announce]."</option>\n";
+		echo "			</select>\n";
+		echo "		</td>\n";
+	}
+	echo "		</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-ring-2'].":\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='destination_data_2' id='destination_data_2' maxlength='255' value=\"$destination_data_2\">\n";
-	echo "	".$text['label-ring-delay']."\n"; 
-	destination_select('destination_delay_2', $destination_delay_2, '0');
-	echo "	".$text['label-ring-timeout']."\n"; 
-	destination_select('destination_timeout_2', $destination_timeout_2, '30');
-	//echo "<br />\n";
-	//echo "Enter the destination number.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	// 2nd destination
+	echo "		<tr>\n";
+	echo "			<td><input class='formfld' type='text' name='destination_data_2' id='destination_data_2' maxlength='255' value=\"".$destination_data_2."\"></td>\n";
+	echo "			<td>\n";
+						destination_select('destination_delay_2', $destination_delay_2, '0');
+	echo "			</td>\n";
+	echo "			<td>\n";
+						destination_select('destination_timeout_2', $destination_timeout_2, '30');
+	echo "			</td>\n";
+	if (permission_exists('follow_me_prompt')) {
+		echo "		<td>\n";
+		echo "			<select class='formfld' style='width: 90px;' name='destination_prompt_2'>\n";
+		echo "				<option value=''></option>\n";
+		echo "				<option value='1' ".(($destination_prompt_2)?"selected='selected'":null).">".$text['label-destination_prompt_confirm']."</option>\n";
+		//echo "			<option value='2'>".$text['label-destination_prompt_announce]."</option>\n";
+		echo "			</select>\n";
+		echo "		</td>\n";
+	}
+	echo "		</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-ring-3'].":\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='destination_data_3' id='destination_data_3' maxlength='255' value=\"$destination_data_3\">\n";
-	echo "	".$text['label-ring-delay']."\n"; 
-	destination_select('destination_delay_3', $destination_delay_3, '0');
-	echo "	".$text['label-ring-timeout']."\n"; 
-	destination_select('destination_timeout_3', $destination_timeout_3, '30');
-	//echo "<br />\n";
-	//echo "Enter the destination number.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	// 3rd destination
+	echo "		<tr>\n";
+	echo "			<td><input class='formfld' type='text' name='destination_data_3' id='destination_data_3' maxlength='255' value=\"".$destination_data_3."\"></td>\n";
+	echo "			<td>\n";
+						destination_select('destination_delay_3', $destination_delay_3, '0');
+	echo "			</td>\n";
+	echo "			<td>\n";
+						destination_select('destination_timeout_3', $destination_timeout_3, '30');
+	echo "			</td>\n";
+	if (permission_exists('follow_me_prompt')) {
+		echo "		<td>\n";
+		echo "			<select class='formfld' style='width: 90px;' name='destination_prompt_3'>\n";
+		echo "				<option value=''></option>\n";
+		echo "				<option value='1' ".(($destination_prompt_3)?"selected='selected'":null).">".$text['label-destination_prompt_confirm']."</option>\n";
+		//echo "			<option value='2'>".$text['label-destination_prompt_announce]."</option>\n";
+		echo "			</select>\n";
+		echo "		</td>\n";
+	}
+	echo "		</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-ring-4'].":\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='destination_data_4' id='destination_data_4' maxlength='255' value=\"$destination_data_4\">\n";
-	echo "	".$text['label-ring-delay']."\n"; 
-	destination_select('destination_delay_4', $destination_delay_4, '0');
-	echo "	".$text['label-ring-timeout']."\n"; 
-	destination_select('destination_timeout_4', $destination_timeout_4, '30');
-	//echo "<br />\n";
-	//echo "Enter the destination number.\n";
-	echo "</td>\n";
-	echo "</tr>\n";
+	// 4th destination
+	echo "		<tr>\n";
+	echo "			<td><input class='formfld' type='text' name='destination_data_4' id='destination_data_4' maxlength='255' value=\"".$destination_data_4."\"></td>\n";
+	echo "			<td>\n";
+						destination_select('destination_delay_4', $destination_delay_4, '0');
+	echo "			</td>\n";
+	echo "			<td>\n";
+						destination_select('destination_timeout_4', $destination_timeout_4, '30');
+	echo "			</td>\n";
+	if (permission_exists('follow_me_prompt')) {
+		echo "		<td>\n";
+		echo "			<select class='formfld' style='width: 90px;' name='destination_prompt_4'>\n";
+		echo "				<option value=''></option>\n";
+		echo "				<option value='1' ".(($destination_prompt_4)?"selected='selected'":null).">".$text['label-destination_prompt_confirm']."</option>\n";
+		//echo "			<option value='2'>".$text['label-destination_prompt_announce]."</option>\n";
+		echo "			</select>\n";
+		echo "		</td>\n";
+	}
+	echo "		</tr>\n";
 
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-	echo "	".$text['label-ring-5'].":\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='destination_data_5' id='destination_data_5' maxlength='255' value=\"$destination_data_5\">\n";
-	echo "	".$text['label-ring-delay']."\n"; 
-	destination_select('destination_delay_5', $destination_delay_5, '0');
-	echo "	".$text['label-ring-timeout']."\n"; 
-	destination_select('destination_timeout_5', $destination_timeout_5, '30');
-	//echo "<br />\n";
-	//echo "Enter the destination number.\n";
+	// 5th destination
+	echo "		<tr>\n";
+	echo "			<td><input class='formfld' type='text' name='destination_data_5' id='destination_data_5' maxlength='255' value=\"".$destination_data_5."\"></td>\n";
+	echo "			<td>\n";
+						destination_select('destination_delay_5', $destination_delay_5, '0');
+	echo "			</td>\n";
+	echo "			<td>\n";
+						destination_select('destination_timeout_5', $destination_timeout_5, '30');
+	echo "			</td>\n";
+	if (permission_exists('follow_me_prompt')) {
+		echo "		<td>\n";
+		echo "			<select class='formfld' style='width: 90px;' name='destination_prompt_5'>\n";
+		echo "				<option value=''></option>\n";
+		echo "				<option value='1' ".(($destination_prompt_5)?"selected='selected'":null).">".$text['label-destination_prompt_confirm']."</option>\n";
+		//echo "			<option value='2'>".$text['label-destination_prompt_announce]."</option>\n";
+		echo "			</select>\n";
+		echo "		</td>\n";
+	}
+	echo "		</tr>\n";
+
+	echo "	</table>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -654,31 +703,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
-
-	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-	echo $text['label-call-prompt'].":\n";
-	echo "</td>\n";
-	echo "<td class='vtable' align='left'>\n";
-	echo "<select class='formfld' name='call_prompt'>\n";
-	//echo "<option value=''></option>\n";
-	if ($call_prompt == "true") {
-		echo "<option value='true' selected='selected'>true</option>\n";
-	}
-	else {
-		echo "<option value='true'>true</option>\n";
-	}
-	if ($call_prompt == "false") {
-		echo "<option value='false' selected='selected'>false</option>\n";
-	}
-	else {
-		echo "<option value='false'>false</option>\n";
-	}
-	echo "</select>\n";
-	echo "<br />\n";
-	echo $text['description-call-prompt']." \n";
-	echo "</td>\n";
-	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td colspan='2'>\n";
@@ -739,5 +763,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</table>";
 	echo "</div>";
 
-require_once "resources/footer.php";
+//include the footer
+	require_once "resources/footer.php";
 ?>

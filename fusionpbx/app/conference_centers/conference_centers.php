@@ -109,9 +109,9 @@ else {
 		$rows_per_page = 10;
 		$param = "";
 		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
-		$offset = $rows_per_page * $page; 
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
+		$offset = $rows_per_page * $page;
 
 	//get the list
 		if (if_group("superadmin") || if_group("admin")) {
@@ -126,7 +126,12 @@ else {
 			$sql .= "and c.domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "and u.user_uuid = '".$_SESSION['user_uuid']."' ";
 		}
-		if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
+		if (strlen($order_by) == 0) {
+			$sql .= "order by conference_center_name asc ";
+		}
+		else {
+			$sql .= "order by $order_by $order ";
+		}
 		$sql .= "limit $rows_per_page offset $offset ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -139,39 +144,47 @@ else {
 	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('conference_center_name', $text['label-name'], $order_by, $order);
 	echo th_order_by('conference_center_extension', $text['label-extension'], $order_by, $order);
 	//echo th_order_by('conference_center_order', 'Order', $order_by, $order);
 	echo th_order_by('conference_center_enabled', $text['label-enabled'], $order_by, $order);
 	echo th_order_by('conference_center_description', $text['label-description'], $order_by, $order);
-	echo "<td align='right' width='42'>\n";
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('conference_center_add')) {
-		echo "	<a href='conference_center_edit.php' alt='add'>$v_link_label_add</a>\n";
+		echo "<a href='conference_center_edit.php' alt='add'>$v_link_label_add</a>";
 	}
 	else {
 		echo "	&nbsp;\n";
 	}
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
 			$conference_center_name = $row['conference_center_name'];
 			$conference_center_name = str_replace("-", " ", $conference_center_name);
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$conference_center_name."&nbsp;</td>\n";
+			$tr_link = (permission_exists('conference_center_edit')) ? "href='conference_center_edit.php?id=".$row['conference_center_uuid']."'" : null;
+			echo "<tr ".$tr_link.">\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			if (permission_exists('conference_center_edit')) {
+				echo "<a href='conference_center_edit.php?id=".$row['conference_center_uuid']."'>".$conference_center_name."</a>";
+			}
+			else {
+				echo $conference_center_name;
+			}
+			echo "	</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_center_extension']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_center_order']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['conference_center_enabled']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords($row['conference_center_enabled'])."&nbsp;</td>\n";
 			echo "	<td valign='top' class='row_stylebg' width='35%'>".$row['conference_center_description']."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
+			echo "	<td class='list_control_icons'>";
 			if (permission_exists('conference_center_edit')) {
-				echo "		<a href='conference_center_edit.php?id=".$row['conference_center_uuid']."' alt='".$text['label-edit']."'>$v_link_label_edit</a>\n";
+				echo "<a href='conference_center_edit.php?id=".$row['conference_center_uuid']."' alt='".$text['label-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('conference_center_delete')) {
-				echo "		<a href='conference_center_delete.php?id=".$row['conference_center_uuid']."' alt='".$text['label-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+				echo "<a href='conference_center_delete.php?id=".$row['conference_center_uuid']."' alt='".$text['label-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -186,12 +199,9 @@ else {
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('conference_center_add')) {
-		echo "			<a href='conference_center_edit.php' alt='add'>$v_link_label_add</a>\n";
-	}
-	else {
-		echo "			&nbsp;\n";
+		echo 		"<a href='conference_center_edit.php' alt='add'>$v_link_label_add</a>";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

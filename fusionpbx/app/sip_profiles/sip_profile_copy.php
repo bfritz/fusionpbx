@@ -47,17 +47,17 @@ else {
 //set the http get/post variable(s) to a php variable
 	if (isset($_REQUEST["id"])) {
 		$sip_profile_uuid = check_str($_REQUEST["id"]);
+		$sip_profile_name = check_str($_REQUEST["name"]);
 	}
 
 //get the sip profile data
-	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+	if (count($_GET) > 0 && $_POST["persistformvar"] != "true") {
 		$sql = "select * from v_sip_profiles ";
 		$sql .= "where sip_profile_uuid = '$sip_profile_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
 		$result = $prep_statement->fetchAll();
 		foreach ($result as &$row) {
-			$sip_profile_name = $row["sip_profile_name"];
 			$sip_profile_description = $row["sip_profile_description"];
 		}
 		unset ($prep_statement);
@@ -74,7 +74,7 @@ else {
 		$sql .= "values ";
 		$sql .= "(";
 		$sql .= "'".$sip_profile_uuid_new."', ";
-		$sql .= "'".$sip_profile_name."-copy', ";
+		$sql .= "'".$sip_profile_name."', ";
 		$sql .= "'".$sip_profile_description."' ";
 		$sql .= ")";
 		$db->exec(check_sql($sql));
@@ -123,12 +123,8 @@ else {
 		$_SESSION["reload_xml"] = true;
 
 	//redirect the user
-		require_once "resources/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/sip_profiles/sip_profiles.php\">\n";
-		echo "<div align='center'>\n";
-		echo $text['message-copy']."\n";
-		echo "</div>\n";
-		require_once "resources/footer.php";
+		$_SESSION["message"] = $text['message-copy'];
+		header("Location: ".PROJECT_PATH."/app/sip_profiles/sip_profiles.php");
 		return;
 
 ?>

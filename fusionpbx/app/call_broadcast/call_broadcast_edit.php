@@ -60,6 +60,7 @@ else {
 		$broadcast_caller_id_number = check_str($_POST["broadcast_caller_id_number"]);
 		$broadcast_destination_type = check_str($_POST["broadcast_destination_type"]);
 		$broadcast_phone_numbers = check_str($_POST["broadcast_phone_numbers"]);
+		$broadcast_avmd = check_str($_POST["broadcast_avmd"]);
 		$broadcast_destination_data = check_str($_POST["broadcast_destination_data"]);
 	}
 
@@ -80,6 +81,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//if (strlen($broadcast_caller_id_number) == 0) { $msg .= "Please provide: Caller ID Number<br>\n"; }
 		//if (strlen($broadcast_destination_type) == 0) { $msg .= "Please provide: Type<br>\n"; }
 		//if (strlen($broadcast_phone_numbers) == 0) { $msg .= "Please provide: Phone Number List<br>\n"; }
+		//if (strlen($broadcast_avmd) == 0) { $msg .= "Please provide: Voicemail Detection<br>\n"; }
 		//if (strlen($broadcast_destination_data) == 0) { $msg .= "Please provide: Destination<br>\n"; }
 		if (strlen($msg) > 0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "resources/header.php";
@@ -111,6 +113,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "broadcast_caller_id_number, ";
 			$sql .= "broadcast_destination_type, ";
 			$sql .= "broadcast_phone_numbers, ";
+			$sql .= "broadcast_avmd, ";
 			$sql .= "broadcast_destination_data ";
 			$sql .= ")";
 			$sql .= "values ";
@@ -136,17 +139,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "'$broadcast_caller_id_number', ";
 			$sql .= "'$broadcast_destination_type', ";
 			$sql .= "'$broadcast_phone_numbers', ";
+			$sql .= "'$broadcast_avmd', ";
 			$sql .= "'$broadcast_destination_data' ";
 			$sql .= ")";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=call_broadcast.php\">\n";
-			echo "<div align='center'>\n";
-			echo "".$text['confirm-add']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['confirm-add'];
+			header("Location: call_broadcast.php");
 			return;
 		} //if ($action == "add")
 
@@ -171,18 +171,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$sql .= "broadcast_caller_id_number = '$broadcast_caller_id_number', ";
 			$sql .= "broadcast_destination_type = '$broadcast_destination_type', ";
 			$sql .= "broadcast_phone_numbers = '$broadcast_phone_numbers', ";
+			$sql .= "broadcast_avmd = '$broadcast_avmd', ";
 			$sql .= "broadcast_destination_data = '$broadcast_destination_data' ";
 			$sql .= "where domain_uuid = '$domain_uuid' ";
 			$sql .= "and call_broadcast_uuid = '$call_broadcast_uuid'";
+			echo $sql."<br><br>";
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=call_broadcast.php\">\n";
-			echo "<div align='center'>\n";
-			echo "".$text['confirm-update']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+
+
+			$_SESSION["message"] = $text['confirm-update'];
+			header("Location: call_broadcast.php");
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
@@ -206,6 +206,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$broadcast_caller_id_number = $row["broadcast_caller_id_number"];
 			$broadcast_destination_type = $row["broadcast_destination_type"];
 			$broadcast_phone_numbers = $row["broadcast_phone_numbers"];
+			$broadcast_avmd = $row["broadcast_avmd"];
 			$broadcast_destination_data = $row["broadcast_destination_data"];
 			break; //limit to 1 row
 		}
@@ -231,7 +232,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<tr>\n";
 	echo "<td width='30%' align='left' nowrap='nowrap'><b>".$text['label-call-broadcast']."</b></td>\n";
 	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='back' alt='back' onclick=\"window.location='call_broadcast.php'\" value='".$text['button-back']."'>\n";
+	echo "	<input type='button' class='btn' name='back' alt='".$text['button-back']."' onclick=\"window.location='call_broadcast.php'\" value='".$text['button-back']."'>\n";
+	if ($action == "update") {
+		echo "<input type='hidden' name='call_broadcast_uuid' value='$call_broadcast_uuid'>\n";
+		echo "<input type='button' class='btn' name='' alt='".$text['button-send']."' onclick=\"window.location='call_broadcast_send.php?id=$call_broadcast_uuid'\" value='".$text['button-send']."'>\n";
+		echo "<input type='button' class='btn' name='' alt='".$text['button-stop']."' onclick=\"window.location='call_broadcast_stop.php?id=".$call_broadcast_uuid."'\" value='".$text['button-stop']."'>\n";
+	}
+	echo "	<input type='submit' class='btn' name='submit' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -370,6 +377,21 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "    ".$text['label-avmd'].":\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "    <select class='formfld' name='broadcast_avmd'>\n";
+	echo "    	<option value='false' ".(($broadcast_avmd == "false") ? "selected='selected'" : null).">".$text['option-false']."</option>\n";
+	echo "    	<option value='true' ".(($broadcast_avmd == "true") ? "selected='selected'" : null).">".$text['option-true']."</option>\n";
+	echo "    </select>\n";
+	echo "<br />\n";
+	echo "<br />\n";
+	echo $text['description-avmd']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
 	echo "	".$text['label-description'].":\n";
 	echo "</td>\n";
@@ -382,12 +404,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
-	if ($action == "update") {
-		echo "			<input type='hidden' name='call_broadcast_uuid' value='$call_broadcast_uuid'>\n";
-		echo "			<input type='button' class='btn' name='' alt='back' onclick=\"window.location='call_broadcast_send.php?call_broadcast_uuid=$call_broadcast_uuid'\" value='".$text['button-send']."'>\n";
-	}
-
-	echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";

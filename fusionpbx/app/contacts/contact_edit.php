@@ -138,12 +138,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=contacts.php\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-add']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-add'];
+			header("Location: contacts.php");
 			return;
 		} //if ($action == "add")
 
@@ -166,12 +162,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=contacts.php\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-update']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-update'];
+			header("Location: contacts.php");
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
@@ -207,22 +199,72 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "resources/header.php";
 	if ($action == "update") {
-		$page["title"] = $text['title-contact-edit'];
+		$document['title'] = $text['title-contact-edit'];
 	}
 	else if ($action == "add") {
-		$page["title"] = $text['title-contact-add'];
+		$document['title'] = $text['title-contact-add'];
 	}
 
+// qr code generation
+	$_GET['type'] = "text";
+	$qr_vcard = true;
+	include "contacts_vcard.php";
+	echo "<input type='hidden' id='qr_vcard' value=\"".$qr_vcard."\">";
+	echo "<style>";
+	echo "	#qr_code_container {";
+	echo "		z-index: 999999; ";
+	echo "		position: absolute; ";
+	echo "		left: 0px; ";
+	echo "		top: 0px; ";
+	echo "		right: 0px; ";
+	echo "		bottom: 0px; ";
+	echo "		text-align: center; ";
+	echo "		vertical-align: middle;";
+	echo "	}";
+	echo "	#qr_code {";
+	echo "		display: block; ";
+	echo "		width: 650px; ";
+	echo "		height: 650px; ";
+	echo "		-webkit-box-shadow: 0px 1px 20px #888; ";
+	echo "		-moz-box-shadow: 0px 1px 20px #888; ";
+	echo "		box-shadow: 0px 1px 20px #888;";
+	echo "	}";
+	echo "</style>";
+	echo "<script src='".PROJECT_PATH."/resources/jquery/jquery.qrcode-0.8.0.min.js'></script>";
+	echo "<script language='JavaScript' type='text/javascript'>";
+	echo "	$(document).ready(function() {";
+	echo "		$(window).load(function() {";
+	echo "			$('#qr_code').qrcode({ ";
+	echo "				render: 'canvas', ";
+	echo "				minVersion: 6, ";
+	echo "				maxVersion: 40, ";
+	echo "				ecLevel: 'H', ";
+	echo "				size: 650, ";
+	echo "				radius: 0.2, ";
+	echo "				quiet: 6, ";
+	echo "				background: '#fff', ";
+	echo "				mode: 4, ";
+	echo "				mSize: 0.2, ";
+	echo "				mPosX: 0.5, ";
+	echo "				mPosY: 0.5, ";
+	echo "				image: $('#img-buffer')[0], ";
+	echo "				text: document.getElementById('qr_vcard').value ";
+	echo "			});";
+	echo "		});";
+	echo "	});";
+	echo "</script>";
+	echo "<img id='img-buffer' src='".PROJECT_PATH."/themes/".$_SESSION["domain"]["template"]["name"]."/images/qr_code.png' style='display: none;'>";
 
 //show the content
 	echo "<div align='center'>";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing=''>\n";
+	echo "<form method='post' name='frm' action=''>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr class='border'>\n";
 	echo "	<td align=\"left\">\n";
 	echo "		<br>";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='6' cellspacing='0'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap='nowrap'><b>";
 	switch ($action) {
@@ -231,14 +273,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 	echo "</b></td>\n";
 	echo "<td width='70%' align='right'>\n";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='contacts.php?".$_GET["query_string"]."'\" value='".$text['button-back']."'>\n";
 	if ($action == "update") {
-		echo "	<input type='button' class='btn' name='' alt='".$text['button-qr_code']."' onclick=\"window.location='contacts_vcard.php?id=$contact_uuid&type=image'\" value='".$text['button-qr_code']."'>\n";
+		echo "	<input type='button' class='btn' name='' alt='".$text['button-qr_code']."' onclick=\"$('#qr_code_container').fadeIn(400);\" value='".$text['button-qr_code']."'>\n";
 		echo "	<input type='button' class='btn' name='' alt='".$text['button-vcard']."' onclick=\"window.location='contacts_vcard.php?id=$contact_uuid&type=download'\" value='".$text['button-vcard']."'>\n";
 	}
 	if ($action == "update" && is_dir($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/app/invoices')) {
 		echo "	<input type='button' class='btn' name='' alt='".$text['button-invoices']."' onclick=\"window.location='".PROJECT_PATH."/app/invoices/invoices.php?id=$contact_uuid'\" value='".$text['button-invoices']."'>\n";
 	}
-	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='contacts.php?".$_GET["query_string"]."'\" value='".$text['button-back']."'>\n";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -254,19 +297,18 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<table border='0' cellpadding='3' cellspacing='3' width='100%'>\n";
 	echo "<tr>\n";
-	echo "<td width='50%' class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td width='40%' valign='top' align='left' nowrap='nowrap'>\n";
 
-		echo "<form method='post' name='frm' action=''>\n";
-		echo "<table border='0' width='100%'>\n";
+		echo "<table border='0' cellpadding='0' cellspacing='0' width='100%'>\n";
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "<td width='30%' class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "	".$text['label-contact_type'].":\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 
 		if (is_array($_SESSION["contact"]["role"])) {
 			sort($_SESSION["contact"]["role"]);
-			echo "	<select class='formfld' style='width:85%;' name='contact_type'>\n";
+			echo "	<select class='formfld' name='contact_type'>\n";
 			echo "	<option value=''></option>\n";
 			foreach($_SESSION["contact"]["type"] as $row) {
 				if ($row == $contact_type) {
@@ -279,7 +321,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			echo "	</select>\n";
 		}
 		else {
-			echo "	<select class='formfld' style='width:85%;' name='contact_type'>\n";
+			echo "	<select class='formfld' name='contact_type'>\n";
 			echo "	<option value=''></option>\n";
 
 			if ($contact_type == "customer") {
@@ -406,7 +448,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td class='vtable' align='left'>\n";
 		if (is_array($_SESSION["contact"]["title"])) {
 			sort($_SESSION["contact"]["title"]);
-			echo "	<select class='formfld' style='width:85%;' name='contact_title'>\n";
+			echo "	<select class='formfld' name='contact_title'>\n";
 			echo "	<option value=''></option>\n";
 			foreach($_SESSION["contact"]["title"] as $row) {
 				if ($row == $contact_title) {
@@ -433,7 +475,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td class='vtable' align='left'>\n";
 		if (is_array($_SESSION["contact"]["category"])) {
 			sort($_SESSION["contact"]["category"]);
-			echo "	<select class='formfld' style='width:85%;' name='contact_category'>\n";
+			echo "	<select class='formfld' name='contact_category'>\n";
 			echo "	<option value=''></option>\n";
 			foreach($_SESSION["contact"]["category"] as $row) {
 				if ($row == $contact_category) {
@@ -460,7 +502,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "<td class='vtable' align='left'>\n";
 		if (is_array($_SESSION["contact"]["role"])) {
 			sort($_SESSION["contact"]["role"]);
-			echo "	<select class='formfld' style='width:85%;' name='contact_role'>\n";
+			echo "	<select class='formfld' name='contact_role'>\n";
 			echo "	<option value=''></option>\n";
 			foreach($_SESSION["contact"]["role"] as $row) {
 				if ($row == $contact_role) {
@@ -533,22 +575,25 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if ($action == "update") {
 			echo "				<input type='hidden' name='contact_uuid' value='$contact_uuid'>\n";
 		}
-		echo "				<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+		echo "			<br>";
+		echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 		echo "		</td>\n";
 		echo "	</tr>";
 		echo "</table>";
-		echo "</form>";
 
 	echo "</td>\n";
-	echo "<td width='50%' class='' valign='top' align='center'>\n";
-		//echo "	<img src='contacts_vcard.php?id=$contact_uuid&type=image' width='90%'><br /><br />\n";
-		if ($action == "update") {
+
+	if ($action == "update") {
+		echo "<td>&nbsp;&nbsp;</td>";
+		echo "<td width='60%' class='' valign='top' align='center'>\n";
+			//echo "	<img src='contacts_vcard.php?id=$contact_uuid&type=image' width='90%'><br /><br />\n";
 			require "contact_phones.php";
 			require "contact_addresses.php";
+			require "contact_extensions.php";
 			require "contact_notes.php";
-		}
+		echo "</td>\n";
+	}
 
-	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 
@@ -560,6 +605,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	</td>";
 	echo "	</tr>";
 	echo "</table>";
+	echo "</form>";
 	echo "</div>";
 
 //include the footer

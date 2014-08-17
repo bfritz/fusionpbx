@@ -139,12 +139,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=contact_edit.php?id=$contact_uuid\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-add']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-add'];
+			header("Location: contact_edit.php?id=".$contact_uuid);
 			return;
 		} //if ($action == "add")
 
@@ -167,12 +163,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$db->exec(check_sql($sql));
 			unset($sql);
 
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=contact_edit.php?id=$contact_uuid\">\n";
-			echo "<div align='center'>\n";
-			echo $text['message-update']."\n";
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			$_SESSION["message"] = $text['message-update'];
+			header("Location: contact_edit.php?id=".$contact_uuid);
 			return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
@@ -207,10 +199,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "resources/header.php";
 	if ($action == "update") {
-		$page["title"] = $text['title-contact_addresses-edit'];
+		$document['title'] = $text['title-contact_addresses-edit'];
 	}
 	else if ($action == "add") {
-		$page["title"] = $text['title-contact_addresses-add'];
+		$document['title'] = $text['title-contact_addresses-add'];
 	}
 
 //show the content
@@ -232,7 +224,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo $text['header-contact_addresses-add'];
 	}
 	echo "</b></td>\n";
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='contact_edit.php?id=$contact_uuid'\" value='".$text['button-back']."'></td>\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='contact_edit.php?id=$contact_uuid'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align='left' colspan='2'>\n";
@@ -269,16 +264,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "	<select class='formfld' name='address_type'>\n";
 		echo "	<option value=''></option>\n";
 		if (strtolower($address_type) == "home") {
-			echo "	<option value='home' selected='selected'>home</option>\n";
+			echo "	<option value='home' selected='selected'>".$text['option-home']."</option>\n";
 		}
 		else {
-			echo "	<option value='home'>home</option>\n";
+			echo "	<option value='home'>".$text['option-home']."</option>\n";
 		}
 		if (strtolower($address_type) == "work") {
-			echo "	<option value='work' selected='selected'>work</option>\n";
+			echo "	<option value='work' selected='selected'>".$text['option-work']."</option>\n";
 		}
 		else {
-			echo "	<option value='work'>work</option>\n";
+			echo "	<option value='work'>".$text['option-work']."</option>\n";
 		}
 		echo "	</select>\n";
 	}

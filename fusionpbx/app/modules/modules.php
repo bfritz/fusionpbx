@@ -41,7 +41,7 @@ else {
 	}
 
 require_once "resources/header.php";
-$page["title"] = $text['title-modules'];
+$document['title'] = $text['title-modules'];
 
 require_once "resources/paging.php";
 
@@ -114,16 +114,16 @@ if (strlen($_GET["a"]) > 0) {
 	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	$tmp_module_header = "\n";
 	$tmp_module_header .= "<tr>\n";
 	$tmp_module_header .= "<th>".$text['label-label']."</th>\n";
-	$tmp_module_header .= "<th>".$text['label-description']."</th>\n";
 	$tmp_module_header .= "<th>".$text['label-status']."</th>\n";
 	$tmp_module_header .= "<th>".$text['label-action']."</th>\n";
 	$tmp_module_header .= "<th>".$text['label-enabled']."</th>\n";
-	$tmp_module_header .= "<td align='right' width='42'>\n";
-	$tmp_module_header .= "	<a href='module_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+	$tmp_module_header .= "<th>".$text['label-description']."</th>\n";
+	$tmp_module_header .= "<td class='list_control_icons'>";
+	$tmp_module_header .= "<a href='module_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	$tmp_module_header .= "</td>\n";
 	$tmp_module_header .= "<tr>\n";
 
@@ -156,9 +156,16 @@ if (strlen($_GET["a"]) > 0) {
 				echo $tmp_module_header;
 			}
 
-			echo "<tr >\n";
-			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_label"]."</td>\n";
-			echo "   <td valign='top' class='".$row_style[$c]."'>".$row["module_description"]."&nbsp;</td>\n";
+			$tr_link = (permission_exists('module_edit')) ? "href='module_edit.php?id=".$row["module_uuid"]."'" : null;
+			echo "<tr ".$tr_link.">\n";
+			echo "   <td valign='top' class='".$row_style[$c]."'>";
+			if (permission_exists('module_edit')) {
+				echo "<a href='module_edit.php?id=".$row["module_uuid"]."'>".$row["module_label"]."</a>";
+			}
+			else {
+				echo $row["module_label"];
+			}
+			echo "	</td>\n";
 			if ($mod->active($row["module_name"])) {
 				echo "   <td valign='top' class='".$row_style[$c]."'>".$text['label-running']."</td>\n";
 				echo "   <td valign='top' class='".$row_style[$c]."'><a href='modules.php?a=stop&m=".$row["module_name"]."' alt='".$text['label-stop']."'>".$text['label-stop']."</a></td>\n";
@@ -180,14 +187,15 @@ if (strlen($_GET["a"]) > 0) {
 				echo $text['option-false'];
 			}
 			echo "</td>\n";
-			echo "   <td valign='top' align='right'>\n";
+			echo "	<td valign='top' class='row_stylebg'>".$row["module_description"]."&nbsp;</td>\n";
+			echo "   <td class='list_control_icons'>";
 			if (permission_exists('module_edit')) {
-				echo "		<a href='module_edit.php?id=".$row["module_uuid"]."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
+				echo "<a href='module_edit.php?id=".$row["module_uuid"]."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('module_delete')) {
-				echo "		<a href='module_delete.php?id=".$row["module_uuid"]."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+				echo "<a href='module_delete.php?id=".$row["module_uuid"]."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			}
-			echo "   </td>\n";
+			echo "</td>\n";
 			echo "</tr>\n";
 
 			$prev_module_category = $row["module_category"];
@@ -202,11 +210,11 @@ if (strlen($_GET["a"]) > 0) {
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('module_add')) {
-		echo "			<a href='module_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo "<a href='module_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
-	echo "		</td>\n";
+	echo "</td>\n";
 	echo "	</tr>\n";
 	echo "	</table>\n";
 	echo "</td>\n";

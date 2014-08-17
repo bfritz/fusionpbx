@@ -26,9 +26,9 @@
 
 $vars = <<<EOD
 [
-{"var_name":"domain","var_value":"\$\${local_ip_v4}","var_cat":"Domain","var_enabled":"true","var_description":"U2V0cyB0aGUgZGVmYXVsdCBkb21haW4u"},
+{"var_name":"domain","var_value":"{$_SESSION['domain_name']}","var_cat":"Domain","var_enabled":"true","var_description":"U2V0cyB0aGUgZGVmYXVsdCBkb21haW4u"},
 {"var_name":"domain_name","var_value":"\$\${domain}","var_cat":"Domain","var_enabled":"true","var_description":""},
-{"var_name":"sound_prefix","var_value":"\$\${base_dir}/sounds/en/us/callie","var_cat":"Sound","var_enabled":"true","var_description":"U2V0cyB0aGUgc291bmQgZGlyZWN0b3J5Lg=="},
+{"var_name":"sound_prefix","var_value":"\$\${sounds_dir}/en/us/callie","var_cat":"Sound","var_enabled":"true","var_description":"U2V0cyB0aGUgc291bmQgZGlyZWN0b3J5Lg=="},
 {"var_name":"hold_music","var_value":"local_stream://default","var_cat":"Music on Hold","var_enabled":"true","var_description":""},
 {"var_name":"global_codec_prefs","var_value":"G7221@32000h,G7221@16000h,G722,PCMU,PCMA,GSM","var_cat":"Codecs","var_enabled":"true","var_description":"RzcyMjFAMzIwMDBoLEc3MjIxQDE2MDAwaCxHNzIyLFBDTVUsUENNQSxpTEJDLEdTTSxIMjYzLEgyNjQ="},
 {"var_name":"outbound_codec_prefs","var_value":"PCMU,PCMA,GSM","var_cat":"Codecs","var_enabled":"true","var_description":"ZGVmYXVsdDogUENNVSxQQ01BLEdTTQ=="},
@@ -43,6 +43,7 @@ $vars = <<<EOD
 {"var_name":"default_areacode","var_value":"208","var_cat":"Defaults","var_enabled":"true","var_description":""},
 {"var_name":"uk-ring","var_value":"%(400,200,400,450);%(400,2200,400,450)","var_cat":"Defaults","var_enabled":"true","var_description":""},
 {"var_name":"us-ring","var_value":"%(2000, 4000, 440.0, 480.0)","var_cat":"Defaults","var_enabled":"true","var_description":""},
+{"var_name":"pt-ring","var_value":"%(1000, 5000, 400.0, 0.0)","var_cat":"Defaults","var_enabled":"true","var_description":""},
 {"var_name":"fr-ring","var_value":"%(1500, 3500, 440.0, 0.0)","var_cat":"Defaults","var_enabled":"true","var_description":""},
 {"var_name":"rs-ring","var_value":"%(1000, 4000, 425.0, 0.0)","var_cat":"Defaults","var_enabled":"true","var_description":""},
 {"var_name":"bong-ring","var_value":"v=-7;%(100,0,941.0,1477.0);v=-7;>=2;+=.1;%(1400,0,350,440)","var_cat":"Defaults","var_enabled":"true","var_description":""},
@@ -107,8 +108,8 @@ EOD;
 					$x++;
 				}
 			}
+			unset($prep_statement, $result);
 		}
-		unset($prep_statement, $result);
 	}
 
 //adjust the variables required variables
@@ -144,6 +145,7 @@ EOD;
 					$db->exec(check_sql($sql));
 					unset($sql);
 				}
+				unset($prep_statement, $row);
 			}
 
 		//set the transfer_ringback
@@ -177,6 +179,7 @@ EOD;
 					$db->exec(check_sql($sql));
 					unset($sql);
 				}
+				unset($prep_statement, $row);
 			}
 
 		//set variables that depend on the number of domains
@@ -220,6 +223,7 @@ EOD;
 							$db->exec(check_sql($sql));
 							unset($sql);
 						}
+						unset($prep_statement, $row);
 					}
 			}
 

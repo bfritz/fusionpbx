@@ -51,7 +51,7 @@ Migration Instructions
 			sqlite3 /var/www/fusionpbx/secure/fusionpbx.db < /tmp/database_backup.sql
 		4. Make sure the database is writeable
 
-14. Edit fusionpbx/includes/config.php change the database name to the new database.
+14. Edit fusionpbx/resources/config.php change the database name to the new database.
 
 15. Update the source code to 3.0.x
 	svn update

@@ -42,7 +42,7 @@ else {
 
 //additional includes
 	require_once "resources/header.php";
-	$page["title"] = $text['title-dialplan_add'];
+	$document['title'] = $text['title-dialplan_add'];
 	require_once "resources/paging.php";
 
 //set the variables
@@ -256,14 +256,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 		}
 
-	//redirect the browser
-		require_once "resources/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/app/dialplan/dialplans.php\">\n";
-		echo "<div align='center'>\n";
-		echo $text['message-update']."\n";
-		echo "</div>\n";
-		require_once "resources/footer.php";
-		return;
+	$_SESSION["message"] = $text['message-update'];
+	header("Location: ".PROJECT_PATH."/app/dialplan/dialplans.php");
+	return;
 } //end if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 ?><script type="text/javascript">
@@ -313,6 +308,7 @@ echo "			<span class=\"title\">".$text['header-dialplan-add']."</span>\n";
 echo "		</td>\n";
 echo "		<td align='right'>\n";
 echo "			<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='dialplans.php'\" value='".$text['button-back']."'>\n";
+echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 echo "		</td>\n";
 echo "	</tr>\n";
 
@@ -381,8 +377,9 @@ function changeToInput_condition_field_1(obj){
 	document.getElementById('btn_select_to_input_condition_field_1').style.visibility = 'hidden';
 	tbb=document.createElement('INPUT');
 	tbb.setAttribute('class', 'btn');
+	tbb.setAttribute('style', 'margin-left: 4px;');
 	tbb.type='button';
-	tbb.value='<';
+	tbb.value=$("<div />").html('&#9665;').text();
 	tbb.objs=[obj,tb,tbb];
 	tbb.onclick=function(){ Replace_condition_field_1(this.objs); }
 	obj.parentNode.insertBefore(tb,obj);
@@ -436,7 +433,7 @@ echo "		<option value='wday'>".$text['option-day_of_week']."</option>\n";
 echo "		<option value='week'>".$text['option-week']."</option>\n";
 echo "	</optgroup>\n";
 echo "    </select>\n";
-echo "    <input type='button' id='btn_select_to_input_condition_field_1' class='btn' name='' alt='".$text['button-back']."' onclick='changeToInput_condition_field_1(document.getElementById(\"condition_field_1\"));this.style.visibility = \"hidden\";' value='<'>\n";
+echo "    <input type='button' id='btn_select_to_input_condition_field_1' class='btn' name='' alt='".$text['button-back']."' onclick='changeToInput_condition_field_1(document.getElementById(\"condition_field_1\"));this.style.visibility = \"hidden\";' value='&#9665;'>\n";
 echo "    <br />\n";
 echo "	</td>\n";
 echo "	<td style='width: 73px;'>&nbsp; ".$text['label-expression'].":</td>\n";
@@ -475,8 +472,9 @@ function changeToInput_condition_field_2(obj){
 	document.getElementById('btn_select_to_input_condition_field_2').style.visibility = 'hidden';
 	tbb=document.createElement('INPUT');
 	tbb.setAttribute('class', 'btn');
+	tbb.setAttribute('style', 'margin-left: 4px;');
 	tbb.type='button';
-	tbb.value='<';
+	tbb.value=$("<div />").html('&#9665;').text();
 	tbb.objs=[obj,tb,tbb];
 	tbb.onclick=function(){ Replace_condition_field_2(this.objs); }
 	obj.parentNode.insertBefore(tb,obj);
@@ -526,7 +524,7 @@ echo "		<option value='wday'>".$text['option-day_of_week']."</option>\n";
 echo "		<option value='week'>".$text['option-week']."</option>\n";
 echo "	</optgroup>\n";
 echo "	</select>\n";
-echo "  <input type='button' id='btn_select_to_input_condition_field_2' class='btn' name='' alt='".$text['button-back']."' onclick='changeToInput_condition_field_2(document.getElementById(\"condition_field_2\"));this.style.visibility = \"hidden\";' value='<'>\n";
+echo "  <input type='button' id='btn_select_to_input_condition_field_2' class='btn' name='' alt='".$text['button-back']."' onclick='changeToInput_condition_field_2(document.getElementById(\"condition_field_2\"));this.style.visibility = \"hidden\";' value='&#9665;'>\n";
 echo "	<br />\n";
 echo "	</td>\n";
 echo "	<td style='width: 73px;' align='left'>\n";
@@ -548,7 +546,7 @@ echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
 //switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
-switch_select_destination("dialplan", "", "action_1", $action_1, "width: 60%;", "");
+switch_select_destination("dialplan", "", "action_1", $action_1, "", "");
 
 echo "</td>\n";
 echo "</tr>\n";
@@ -563,7 +561,7 @@ echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
 
 //switch_select_destination(select_type, select_label, select_name, select_value, select_style, action);
-switch_select_destination("dialplan", "", "action_2", $action_2, "width: 60%;", "");
+switch_select_destination("dialplan", "", "action_2", $action_2, "", "");
 
 echo "</td>\n";
 echo "</tr>\n";
@@ -583,7 +581,7 @@ echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "	".$text['label-order'].":\n";
 echo "</td>\n";
 echo "<td class='vtable' align='left'>\n";
-echo "	<select name='dialplan_order' class='formfld' style='width: 60%;'>\n";
+echo "	<select name='dialplan_order' class='formfld'>\n";
 //echo "		<option></option>\n";
 if (strlen(htmlspecialchars($dialplan_order)) > 0) {
 	echo "		 <option selected='selected' value='".htmlspecialchars($dialplan_order)."'>".htmlspecialchars($dialplan_order)."</option>\n";
@@ -603,7 +601,7 @@ echo "	<td class='vncellreq' valign='top' align='left' nowrap>\n";
 echo "		".$text['label-enabled'].":\n";
 echo "	</td>\n";
 echo "	<td class='vtable' align='left'>\n";
-echo "		<select class='formfld' name='dialplan_enabled' style='width: 60%;'>\n";
+echo "		<select class='formfld' name='dialplan_enabled'>\n";
 if ($dialplan_enabled == "true") {
 	echo "			<option value='true' selected='selected' >".$text['option-true']."</option>\n";
 }
@@ -626,7 +624,7 @@ echo "	<td class='vncell' valign='top' align='left' nowrap>\n";
 echo " 		".$text['label-description'].":\n";
 echo "	</td>\n";
 echo "	<td colspan='4' class='vtable' align='left'>\n";
-echo "		<input class='formfld' style='width: 60%;' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
+echo "		<input class='formfld' type='text' name='dialplan_description' maxlength='255' value=\"$dialplan_description\">\n";
 echo "		<br />\n";
 echo "	</td>\n";
 echo "</tr>\n";

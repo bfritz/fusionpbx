@@ -44,9 +44,12 @@ else {
 		$voicemail_ids[]['voicemail_id'] = $value['user'];
 	}
 
-//get variables used to control the order
-	$order_by = $_GET["order_by"];
-	$order = $_GET["order"];
+//get the http values and set them as variables
+	$search = check_str($_GET["search"]);
+	if (isset($_GET["order_by"])) {
+		$order_by = check_str($_GET["order_by"]);
+		$order = check_str($_GET["order"]);
+	}
 
 //additional includes
 	require_once "resources/header.php";
@@ -62,7 +65,12 @@ else {
 	echo "<table width='100%' border='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='50%' align='left' nowrap='nowrap'><b>".$text['title-voicemails']."</b></td>\n";
-	echo "		<td width='50%' align='right'>&nbsp;</td>\n";
+	echo "		<form method='get' action=''>\n";
+	echo "			<td width='30%' align='right'>\n";
+	echo "				<input type='text' class='txt' style='width: 150px' name='search' value='$search'>";
+	echo "				<input type='submit' class='btn' name='submit' value='".$text['button-search']."'>";
+	echo "			</td>\n";
+	echo "		</form>\n";
 	echo "	</tr>\n";
 	echo "	<tr>\n";
 	echo "		<td align='left' colspan='2'>\n";
@@ -74,6 +82,16 @@ else {
 	//prepare to page the results
 		$sql = "select count(*) as num_rows from v_voicemails ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
+		if (strlen($search) > 0) {
+			$sql .= "and (";
+			$sql .= "	voicemail_id like '%".$search."%' ";
+			$sql .= " 	or voicemail_mail_to like '%".$search."%' ";
+			$sql .= " 	or voicemail_attach_file like '%".$search."%' ";
+			$sql .= " 	or voicemail_local_after_email like '%".$search."%' ";
+			$sql .= " 	or voicemail_enabled like '%".$search."%' ";
+			$sql .= " 	or voicemail_description like '%".$search."%' ";
+			$sql .= ") ";
+		}
 		if (!permission_exists('voicemail_delete')) {
 			$x = 0;
 			if (count($voicemail_ids) > 0) {
@@ -107,13 +125,23 @@ else {
 		$rows_per_page = 150;
 		$param = "";
 		$page = $_GET['page'];
-		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; } 
-		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page); 
-		$offset = $rows_per_page * $page; 
+		if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
+		list($paging_controls, $rows_per_page, $var3) = paging($num_rows, $param, $rows_per_page);
+		$offset = $rows_per_page * $page;
 
 	//get the list
 		$sql = "select * from v_voicemails ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
+		if (strlen($search) > 0) {
+			$sql .= "and (";
+			$sql .= "	voicemail_id like '%".$search."%' ";
+			$sql .= " 	or voicemail_mail_to like '%".$search."%' ";
+			$sql .= " 	or voicemail_attach_file like '%".$search."%' ";
+			$sql .= " 	or voicemail_local_after_email like '%".$search."%' ";
+			$sql .= " 	or voicemail_enabled like '%".$search."%' ";
+			$sql .= " 	or voicemail_description like '%".$search."%' ";
+			$sql .= ") ";
+		}
 		if (!permission_exists('voicemail_delete')) {
 			$x = 0;
 			if (count($voicemail_ids) > 0) {
@@ -148,7 +176,7 @@ else {
 	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('voicemail_id', $text['label-voicemail_id'], $order_by, $order);
 	//echo th_order_by('voicemail_password', $text['label-voicemail_password'], $order_by, $order);
@@ -160,38 +188,43 @@ else {
 	echo "<th>".$text['label-tools']."</th>\n";
 	echo th_order_by('voicemail_enabled', $text['label-voicemail_enabled'], $order_by, $order);
 	echo th_order_by('voicemail_description', $text['label-voicemail_description'], $order_by, $order);
-	echo "<td align='right' width='42'>\n";
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('voicemail_add')) {
-		echo "	<a href='voicemail_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
-	}
-	else {
-		echo "	&nbsp;\n";
+		echo "<a href='voicemail_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['voicemail_id']."&nbsp;</td>\n";
+			$tr_link = (permission_exists('voicemail_edit')) ? "href='voicemail_edit.php?id=".$row['voicemail_uuid']."'" : null;
+			echo "<tr ".$tr_link.">\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			if (permission_exists('voicemail_edit')) {
+				echo "<a href='voicemail_edit.php?id=".$row['voicemail_uuid']."'>".$row['voicemail_id']."</a>";
+			}
+			else {
+				echo $row['voicemail_id'];
+			}
+			echo "	</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['voicemail_password']."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row['greeting_id']."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['voicemail_mail_to']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['voicemail_attach_file']."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['voicemail_local_after_email']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords($row['voicemail_attach_file'])."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords($row['voicemail_local_after_email'])."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>&nbsp;</td>\n";
-			echo "	<td valign='middle' class='".$row_style[$c]."'>\n";
+			echo "	<td valign='middle' class='".$row_style[$c]."' style='white-space: nowrap;'>\n";
 			echo "		<a href='voicemail_messages.php?id=".$row['voicemail_uuid']."'>".$text['label-view']."</a>&nbsp;&nbsp;\n";
 			echo "		<a href='".PROJECT_PATH."/app/voicemail_greetings/voicemail_greetings.php?id=".$row['voicemail_id']."'>".$text['label-greetings']."</a>\n";
 			echo "	</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row['voicemail_enabled']."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords($row['voicemail_enabled'])."&nbsp;</td>\n";
 			echo "	<td valign='top' class='row_stylebg' width='30%'>".$row['voicemail_description']."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
+			echo "	<td class='list_control_icons'>";
 			if (permission_exists('voicemail_edit')) {
-				echo "		<a href='voicemail_edit.php?id=".$row['voicemail_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
+				echo "<a href='voicemail_edit.php?id=".$row['voicemail_uuid']."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('voicemail_delete')) {
-				echo "		<a href='voicemail_delete.php?id=".$row['voicemail_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+				echo "<a href='voicemail_delete.php?id=".$row['voicemail_uuid']."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -206,12 +239,9 @@ else {
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap='nowrap'>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap='nowrap'>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('voicemail_add')) {
-		echo "			<a href='voicemail_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
-	}
-	else {
-		echo "			&nbsp;\n";
+		echo 		"<a href='voicemail_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

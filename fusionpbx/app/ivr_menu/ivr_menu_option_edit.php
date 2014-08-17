@@ -133,7 +133,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$ivr->update();
 
 				//redirect the user
-					$_SESSION['message'] = $text['message-add'];
+					$_SESSION['message'] = $text['message-update'];
 					header('Location: ivr_menu_edit.php?id='.$ivr_menu_uuid);
 					return;
 			} //if ($action == "update")
@@ -176,10 +176,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //send the content to the browser
 	require_once "resources/header.php";
 	if ($action == "add") {
-		$page["title"] = $text['title-option_add'];
+		$document['title'] = $text['title-option_add'];
 	}
 	if ($action == "update") {
-		$page["title"] = $text['title-option_edit'];
+		$document['title'] = $text['title-option_edit'];
 	}
 
 	echo "<div align='center'>";
@@ -199,7 +199,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align='left' width='30%' nowrap='nowrap' align='left'><b>".$text['header-option_edit']."</b></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='ivr_menu_edit.php?id=$ivr_menu_uuid'\" value='".$text['button-back']."'></td>\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='ivr_menu_edit.php?id=$ivr_menu_uuid'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2' align='left'>\n";
@@ -303,20 +306,17 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select name='ivr_menu_option_order' class='formfld'>\n";
-	//echo "	<option></option>\n";
-	if (strlen(htmlspecialchars($ivr_menu_option_order))> 0) {
-		echo "	<option selected='yes' value='".htmlspecialchars($ivr_menu_option_order)."'>".htmlspecialchars($ivr_menu_option_order)."</option>\n";
-	}
 	$i=0;
 	while($i<=999) {
+		$selected = ($ivr_menu_option_order == $i) ? "selected" : null;
 		if (strlen($i) == 1) {
-			echo "	<option value='00$i'>00$i</option>\n";
+			echo "	<option value='00$i' ".$selected.">00$i</option>\n";
 		}
 		if (strlen($i) == 2) {
-			echo "	<option value='0$i'>0$i</option>\n";
+			echo "	<option value='0$i' ".$selected.">0$i</option>\n";
 		}
 		if (strlen($i) == 3) {
-			echo "	<option value='$i'>$i</option>\n";
+			echo "	<option value='$i' ".$selected.">$i</option>\n";
 		}
 		$i++;
 	}

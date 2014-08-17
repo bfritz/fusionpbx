@@ -1,0 +1,12 @@
+Source: fusionpbx-theme-minmal
+Section: user/www
+Priority: extra
+Maintainer: Richard Neese <r.neese@gmail.com>
+Standards-Version: 3.7.2
+#XSBC-Bugtracker: mailto:r.neese@gmail.com
+
+Package: fusionpbx-theme-minimal
+Architecture: all
+Depends: ${misc:Depends}
+Description: Fusionpbx-theme-minmal: minimal theme for use the Web gui for controlling/administrating freeswitch softwitch 
+#XSBC-Bugtracker: mailto:r.neese@gmail.com

@@ -41,7 +41,7 @@ else {
 	}
 
 require_once "resources/header.php";
-$page["title"] = $text['title-call_center_queues'];
+$document['title'] = $text['title-call_center_queues'];
 
 require_once "resources/paging.php";
 
@@ -61,7 +61,6 @@ require_once "resources/paging.php";
 	echo "<td width='50%' align='left' nowrap='nowrap'><b>".$text['header-call_center_queues']."</b></td>\n";
 	echo "<td width='50%' align='right'>\n";
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-agents']."' onclick=\"window.location='call_center_agents.php'\" value='".$text['button-agents']."'>\n";
-	echo "	<input type='button' class='btn' name='' alt='".$text['button-tiers']."' onclick=\"window.location='call_center_tiers.php'\" value='".$text['button-tiers']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -113,7 +112,7 @@ require_once "resources/paging.php";
 	$row_style["1"] = "row_style1";
 
 	echo "<div align='center'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo th_order_by('queue_name', $text['label-queue_name'], $order_by, $order);
 	echo th_order_by('queue_extension', $text['label-extension'], $order_by, $order);
@@ -130,17 +129,25 @@ require_once "resources/paging.php";
 	//echo th_order_by('queue_abandoned_resume_allowed', $text['label-abandoned_resume_allowed'], $order_by, $order);
 	//echo th_order_by('queue_tier_rule_wait_multiply_level', $text['label-tier_rule_wait_multiply_level'], $order_by, $order);
 	echo th_order_by('queue_description', $text['label-description'], $order_by, $order);
-	echo "<td align='right' width='42'>\n";
+	echo "<td class='list_control_icons'>";
 	if (permission_exists('call_center_queue_add')) {
-		echo "	<a href='call_center_queue_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo "<a href='call_center_queue_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "</td>\n";
-	echo "<tr>\n";
+	echo "</tr>\n";
 
 	if ($result_count > 0) {
 		foreach($result as $row) {
-			echo "<tr >\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_name]."&nbsp;</td>\n";
+			$tr_link = (permission_exists('call_center_queue_edit')) ? "href='call_center_queue_edit.php?id=".$row[call_center_queue_uuid]."'" : null;
+			echo "<tr ".$tr_link.">\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>";
+			if (permission_exists('call_center_queue_edit')) {
+				echo "<a href='call_center_queue_edit.php?id=".$row[call_center_queue_uuid]."'>".$row[queue_name]."</a>";
+			}
+			else {
+				echo $row[queue_name];
+			}
+			echo "	</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_extension]."&nbsp;</td>\n";
 			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_strategy]."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_moh_sound]."&nbsp;</td>\n";
@@ -148,19 +155,19 @@ require_once "resources/paging.php";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_time_base_score]."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_max_wait_time]."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_max_wait_time_with_no_agent]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_tier_rules_apply]."&nbsp;</td>\n";
+			echo "	<td valign='top' class='".$row_style[$c]."'>".ucwords($row[queue_tier_rules_apply])."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_tier_rule_wait_second]."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_tier_rule_no_agent_no_wait]."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_discard_abandoned_after]."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_abandoned_resume_allowed]."&nbsp;</td>\n";
 			//echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_tier_rule_wait_multiply_level]."&nbsp;</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".$row[queue_description]."&nbsp;</td>\n";
-			echo "	<td valign='top' align='right'>\n";
+			echo "	<td valign='top' class='row_stylebg'>".$row[queue_description]."&nbsp;</td>\n";
+			echo "	<td class='list_control_icons'>";
 			if (permission_exists('call_center_queue_edit')) {
-				echo "		<a href='call_center_queue_edit.php?id=".$row[call_center_queue_uuid]."' alt='".$text['button-edit']."'>$v_link_label_edit</a>\n";
+				echo "<a href='call_center_queue_edit.php?id=".$row[call_center_queue_uuid]."' alt='".$text['button-edit']."'>$v_link_label_edit</a>";
 			}
 			if (permission_exists('call_center_queue_delete')) {
-				echo "		<a href='call_center_queue_delete.php?id=".$row[call_center_queue_uuid]."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>\n";
+				echo "<a href='call_center_queue_delete.php?id=".$row[call_center_queue_uuid]."' alt='".$text['button-delete']."' onclick=\"return confirm('".$text['confirm-delete']."')\">$v_link_label_delete</a>";
 			}
 			echo "	</td>\n";
 			echo "</tr>\n";
@@ -175,9 +182,9 @@ require_once "resources/paging.php";
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>";
 	if (permission_exists('call_center_queue_add')) {
-		echo "			<a href='call_center_queue_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>\n";
+		echo 		"<a href='call_center_queue_edit.php' alt='".$text['button-add']."'>$v_link_label_add</a>";
 	}
 	echo "		</td>\n";
 	echo "	</tr>\n";

@@ -17,11 +17,12 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2010
+	Copyright (C) 2010 - 2014
 	All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
+	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 include "root.php";
 
@@ -33,33 +34,37 @@ include "root.php";
 		public $cid_name_prefix;
 		public $cid_number_prefix;
 		public $accountcode;
-		public $call_prompt;
 		public $follow_me_enabled;
 		private $extension;
-		
+
 		public $destination_data_1;
 		public $destination_type_1;
 		public $destination_delay_1;
+		public $destination_prompt_1;
 		public $destination_timeout_1;
 
 		public $destination_data_2;
 		public $destination_type_2;
 		public $destination_delay_2;
+		public $destination_prompt_2;
 		public $destination_timeout_2;
 
 		public $destination_data_3;
 		public $destination_type_3;
 		public $destination_delay_3;
+		public $destination_prompt_3;
 		public $destination_timeout_3;
 
 		public $destination_data_4;
 		public $destination_type_4;
 		public $destination_delay_4;
+		public $destination_prompt_4;
 		public $destination_timeout_4;
 
 		public $destination_data_5;
 		public $destination_type_5;
 		public $destination_delay_5;
+		public $destination_prompt_5;
 		public $destination_timeout_5;
 
 		public $destination_timeout = 0;
@@ -78,7 +83,6 @@ include "root.php";
 				if (strlen($this->cid_number_prefix) > 0) {
 					$sql .= "cid_number_prefix, ";
 				}
-				$sql .= "call_prompt, ";
 				$sql .= "follow_me_enabled ";
 				$sql .= ")";
 				$sql .= "values ";
@@ -89,7 +93,6 @@ include "root.php";
 				if (strlen($this->cid_number_prefix) > 0) {
 					$sql .= "'$this->cid_number_prefix', ";
 				}
-				$sql .= "'$this->call_prompt', ";
 				$sql .= "'$this->follow_me_enabled' ";
 				$sql .= ")";
 				if ($v_debug) {
@@ -107,10 +110,7 @@ include "root.php";
 				$sql = "update v_follow_me set ";
 				$sql .= "follow_me_enabled = '$this->follow_me_enabled', ";
 				$sql .= "cid_name_prefix = '$this->cid_name_prefix', ";
-				if (strlen($this->cid_number_prefix) > 0) {
-					$sql .= "cid_number_prefix = '$this->cid_number_prefix', ";
-				}
-				$sql .= "call_prompt = '$this->call_prompt' ";
+				$sql .= "cid_number_prefix = '$this->cid_number_prefix' ";
 				$sql .= "where domain_uuid = '$this->domain_uuid' ";
 				$sql .= "and follow_me_uuid = '$this->follow_me_uuid' ";
 				$db->exec(check_sql($sql));
@@ -136,6 +136,7 @@ include "root.php";
 					$sql .= "follow_me_destination, ";
 					$sql .= "follow_me_timeout, ";
 					$sql .= "follow_me_delay, ";
+					$sql .= "follow_me_prompt, ";
 					$sql .= "follow_me_order ";
 					$sql .= ") ";
 					$sql .= "values ";
@@ -146,8 +147,10 @@ include "root.php";
 					$sql .= "'$this->destination_data_1', ";
 					$sql .= "'$this->destination_timeout_1', ";
 					$sql .= "'$this->destination_delay_1', ";
+					$sql .= "'$this->destination_prompt_1', ";
 					$sql .= "'1' ";
 					$sql .= ")";
+					//echo $sql.";<br/>";
 					$db->exec(check_sql($sql));
 					$this->destination_order++;
 					unset($sql);
@@ -161,6 +164,7 @@ include "root.php";
 					$sql .= "follow_me_destination, ";
 					$sql .= "follow_me_timeout, ";
 					$sql .= "follow_me_delay, ";
+					$sql .= "follow_me_prompt, ";
 					$sql .= "follow_me_order ";
 					$sql .= ") ";
 					$sql .= "values ";
@@ -171,8 +175,10 @@ include "root.php";
 					$sql .= "'$this->destination_data_2', ";
 					$sql .= "'$this->destination_timeout_2', ";
 					$sql .= "'$this->destination_delay_2', ";
+					$sql .= "'$this->destination_prompt_2', ";
 					$sql .= "'2' ";
 					$sql .= ")";
+					//echo $sql.";<br/>";
 					$db->exec(check_sql($sql));
 					$this->destination_order++;
 					unset($sql);
@@ -186,6 +192,7 @@ include "root.php";
 					$sql .= "follow_me_destination, ";
 					$sql .= "follow_me_timeout, ";
 					$sql .= "follow_me_delay, ";
+					$sql .= "follow_me_prompt, ";
 					$sql .= "follow_me_order ";
 					$sql .= ") ";
 					$sql .= "values ";
@@ -196,6 +203,7 @@ include "root.php";
 					$sql .= "'$this->destination_data_3', ";
 					$sql .= "'$this->destination_timeout_3', ";
 					$sql .= "'$this->destination_delay_3', ";
+					$sql .= "'$this->destination_prompt_3', ";
 					$sql .= "'3' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
@@ -211,6 +219,7 @@ include "root.php";
 					$sql .= "follow_me_destination, ";
 					$sql .= "follow_me_timeout, ";
 					$sql .= "follow_me_delay, ";
+					$sql .= "follow_me_prompt, ";
 					$sql .= "follow_me_order ";
 					$sql .= ") ";
 					$sql .= "values ";
@@ -221,6 +230,7 @@ include "root.php";
 					$sql .= "'$this->destination_data_4', ";
 					$sql .= "'$this->destination_timeout_4', ";
 					$sql .= "'$this->destination_delay_4', ";
+					$sql .= "'$this->destination_prompt_4', ";
 					$sql .= "'4' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
@@ -236,6 +246,7 @@ include "root.php";
 					$sql .= "follow_me_destination, ";
 					$sql .= "follow_me_timeout, ";
 					$sql .= "follow_me_delay, ";
+					$sql .= "follow_me_prompt, ";
 					$sql .= "follow_me_order ";
 					$sql .= ") ";
 					$sql .= "values ";
@@ -246,6 +257,7 @@ include "root.php";
 					$sql .= "'$this->destination_data_5', ";
 					$sql .= "'$this->destination_timeout_5', ";
 					$sql .= "'$this->destination_delay_5', ";
+					$sql .= "'$this->destination_prompt_5', ";
 					$sql .= "'5' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
@@ -281,7 +293,6 @@ include "root.php";
 				if (count($result) > 0) {
 					foreach ($result as &$row) {
 						$follow_me_uuid = $row["follow_me_uuid"];
-						$this->call_prompt = $row["call_prompt"];
 						$this->cid_name_prefix = $row["cid_name_prefix"];
 						$this->cid_number_prefix = $row["cid_number_prefix"];
 					}
@@ -292,7 +303,7 @@ include "root.php";
 				if ($this->follow_me_enabled == "true") {
 					//add follow me
 						if (strlen($follow_me_uuid) == 0) {
-							$this->follow_me_add();
+							$this->add();
 						}
 					//set the extension dial string
 						$sql = "select * from v_follow_me_destinations ";
@@ -301,59 +312,93 @@ include "root.php";
 						$prep_statement_2 = $db->prepare(check_sql($sql));
 						$prep_statement_2->execute();
 						$result = $prep_statement_2->fetchAll(PDO::FETCH_NAMED);
-						$dial_string = "{instant_ringback=true,ignore_early_media=true,sip_invite_domain=".$_SESSION['domain_name'];
+						$dial_string = "{instant_ringback=true";
+						$dial_string .= ",ignore_early_media=true,";
+						$dial_string .= ",domain_uuid=".$_SESSION['domain_uuid'];
+						$dial_string .= ",sip_invite_domain=".$_SESSION['domain_name'];
+						$dial_string .= ",domain_name=".$_SESSION['domain_name'];
+						$dial_string .= ",domain=".$_SESSION['domain_name'];
+						$dial_string .= ",group_confirm_key=exec,group_confirm_file=lua confirm.lua";
+
 						if (strlen($this->cid_name_prefix) > 0) {
 							$dial_string .= ",origination_caller_id_name=".$this->cid_name_prefix."#\${caller_id_name}";
 						}
-						else
+						else {
 							$dial_string .= ",origination_caller_id_name=\${caller_id_name}";
+						}
 
 						if (strlen($this->cid_number_prefix) > 0) {
 							//$dial_string .= ",origination_caller_id_number=".$this->cid_number_prefix."";
 							$dial_string .= ",origination_caller_id_number=".$this->cid_number_prefix."#\${caller_id_number}";
 						}
-						else
+						else {
 							$dial_string .= ",origination_caller_id_number=\${caller_id_number}";
+						}
 
 						if (strlen($this->accountcode) > 0) {
 							$dial_string .= ",accountcode=".$this->accountcode;
 						}
 						$dial_string .= "}";
 						foreach ($result as &$row) {
-
 							$dial_string .= "[";
-
 							if (extension_exists($row["follow_me_destination"])) {
-							
-								$dial_string .= "outbound_caller_id_number=\${caller_id_number},";
-
-								$dial_string .= "presence_id=".$row["follow_me_destination"]."@".$_SESSION['domain_name'].",";
-								if ($this->call_prompt == "true") {
-									$dial_string .= "group_confirm_key=exec,group_confirm_file=lua confirm.lua,";
+								//get the extension uuid
+								$sql = "select * from v_extensions ";
+								$sql .= "where domain_uuid = '".$this->domain_uuid."' ";
+								$sql .= "and (extension = '".$row["follow_me_destination"]."' or number_alias = '".$row["follow_me_destination"]."') ";
+								$prep_statement = $db->prepare(check_sql($sql));
+								$prep_statement->execute();
+								$extension_result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+								$extension_uuid = '';
+								if (count($extension_result) > 0) {
+									foreach ($extension_result as &$field) {
+										$extension_uuid = $field["extension_uuid"];
+									}
 								}
-								$dial_string .= "leg_delay_start=".$row["follow_me_delay"].",";
-								$dial_string .= "leg_timeout=".$row["follow_me_timeout"]."]";
-							
-								$dial_string .= "\${sofia_contact(".$row["follow_me_destination"]."@".$_SESSION['domain_name'].")},";
+								unset ($prep_statement);
+
+								//set the dial string
+								if (strlen($_SESSION['domain']['dial_string']['text']) == 0) {
+									$dial_string .= "outbound_caller_id_number=\${caller_id_number},";
+									$dial_string .= "presence_id=".$row["follow_me_destination"]."@".$_SESSION['domain_name'].",";
+									if ($row["follow_me_prompt"] == "1") {
+										$dial_string .= "group_confirm_key=exec,group_confirm_file=lua confirm.lua,confirm=true,";
+									}
+									$dial_string .= "extension_uuid=".$extension_uuid.",";
+									$dial_string .= "leg_delay_start=".$row["follow_me_delay"].",";
+									$dial_string .= "leg_timeout=".$row["follow_me_timeout"]."]";
+									$dial_string .= "\${sofia_contact(".$row["follow_me_destination"]."@".$_SESSION['domain_name'].")},";
+									//$dial_string .= "user/".$row["follow_me_destination"]."@".$_SESSION['domain_name'].",";
+								}
+								else {
+									$replace_value = $row["follow_me_destination"].",extension_uuid=".$extension_uuid;
+									if ($row["follow_me_prompt"] == "1") {
+										$replace_value .= "group_confirm_key=exec,group_confirm_file=lua confirm.lua,confirm=true,";
+									}
+									$dial_string = $_SESSION['domain']['dial_string']['text'];
+									$dial_string = str_replace("\${dialed_user}", $replace_value, $dial_string);
+								}
 							}
 							else {
-
 								$dial_string .= "outbound_caller_id_number=\${outbound_caller_id_number},";
-
 								$dial_string .= "presence_id=".$this->extension."@".$_SESSION['domain_name'].",";
-								if ($this->call_prompt == "true") {
-									$dial_string .= "group_confirm_key=exec,group_confirm_file=lua confirm.lua,";
+								if ($row["follow_me_prompt"] == "1") {
+									$dial_string .= "group_confirm_key=exec,group_confirm_file=lua confirm.lua,confirm=true,";
 								}
 								$dial_string .= "leg_delay_start=".$row["follow_me_delay"].",";
 								$dial_string .= "leg_timeout=".$row["follow_me_timeout"]."]";
-							
-								$bridge = outbound_route_to_bridge ($_SESSION['domain_uuid'], $row["follow_me_destination"]);
-								//if (strlen($bridge[0]) > 0) {
-								//	$dial_string .= "".$bridge[0].",";
-								//}
-								//else {
-									$dial_string .= "loopback/".$row["follow_me_destination"].",";
-								//}
+								if (is_numeric($row["follow_me_destination"])) {
+									$bridge = outbound_route_to_bridge ($_SESSION['domain_uuid'], $row["follow_me_destination"]);
+									//if (strlen($bridge[0]) > 0) {
+									//	$dial_string .= "".$bridge[0].",";
+									//}
+									//else {
+										$dial_string .= "loopback/".$row["follow_me_destination"].",";
+									//}
+								}
+								else {
+									$dial_string .= $row["follow_me_destination"].",";
+								}
 							}
 						}
 						$this->dial_string = trim($dial_string, ",");
@@ -361,6 +406,16 @@ include "root.php";
 				else {
 					$this->dial_string = '';
 				}
+
+				$sql  = "update v_follow_me set ";
+				$sql .= "dial_string = '".$this->dial_string."' ";
+				$sql .= "where domain_uuid = '".$this->domain_uuid."' ";
+				$sql .= "and follow_me_uuid = '".$this->follow_me_uuid."' ";
+				if ($this->debug) {
+					echo $sql."<br />";
+				}
+				$db->exec($sql);
+				unset($sql);
 
 				$sql  = "update v_extensions set ";
 				$sql .= "dial_string = '".$this->dial_string."', ";

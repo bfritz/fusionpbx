@@ -1,0 +1,12 @@
+Source: fusionpbx-theme-enhanced
+Section: user/www
+Priority: extra
+Maintainer: Richard Neese <r.neese@gmail.com>
+Standards-Version: 3.7.2
+#XSBC-Bugtracker: mailto:r.neese@gmail.com
+
+Package: fusionpbx-theme-enhanced
+Architecture: all
+Depends: ${misc:Depends}
+Description: Fusionpbx-theme-enhanced: theme for use the Web gui for controlling/administrating freeswitch softwitch 
+#XSBC-Bugtracker: mailto:r.neese@gmail.com

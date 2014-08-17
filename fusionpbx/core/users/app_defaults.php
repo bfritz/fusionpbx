@@ -36,18 +36,23 @@
 			$x = 0;
 			$tmp[$x]['group_name'] = 'superadmin';
 			$tmp[$x]['group_description'] = 'Super Administrator Group';
+			$tmp[$x]['group_protected'] = 'false';
 			$x++;
 			$tmp[$x]['group_name'] = 'admin';
 			$tmp[$x]['group_description'] = 'Administrator Group';
+			$tmp[$x]['group_protected'] = 'false';
 			$x++;
 			$tmp[$x]['group_name'] = 'user';
 			$tmp[$x]['group_description'] = 'User Group';
+			$tmp[$x]['group_protected'] = 'false';
 			$x++;
 			$tmp[$x]['group_name'] = 'public';
 			$tmp[$x]['group_description'] = 'Public Group';
+			$tmp[$x]['group_protected'] = 'false';
 			$x++;
 			$tmp[$x]['group_name'] = 'agent';
 			$tmp[$x]['group_description'] = 'Call Center Agent Group';
+			$tmp[$x]['group_protected'] = 'false';
 			foreach($tmp as $row) {
 				if (strlen($row['group_name']) > 0) {
 					$sql = "insert into v_groups ";
@@ -55,22 +60,24 @@
 					$sql .= "domain_uuid, ";
 					$sql .= "group_uuid, ";
 					$sql .= "group_name, ";
-					$sql .= "group_description ";
+					$sql .= "group_description, ";
+					$sql .= "group_protected ";
 					$sql .= ")";
 					$sql .= "values ";
 					$sql .= "(";
 					$sql .= "'$domain_uuid', ";
 					$sql .= "'".uuid()."', ";
 					$sql .= "'".$row['group_name']."', ";
-					$sql .= "'".$row['group_description']."' ";
+					$sql .= "'".$row['group_description']."', ";
+					$sql .= "'".$row['group_protected']."' ";
 					$sql .= ")";
 					$db->exec(check_sql($sql));
 					unset($sql);
 				}
 			}
 		}
+		unset($prep_statement, $sub_result);
 	}
-	unset($prep_statement, $sub_result);
 
 //if there are no permissions listed in v_group_permissions then set the default permissions
 	$sql = "select count(*) as count from v_group_permissions ";
@@ -122,13 +129,38 @@
 	$sql .= "and user_uuid is null; ";
 	$prep_statement = $db->prepare(check_sql($sql));
 	if ($prep_statement) {
-			$prep_statement->execute();
-			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-			foreach($result as $row) {
-				if (strlen($row['username']) > 0) {
+		$prep_statement->execute();
+		$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+		foreach($result as $row) {
+			if (strlen($row['username']) > 0) {
+				//get the user_uuid
+					$sql = "select user_uuid from v_users ";
+					$sql .= "where username = '".$row['username']."' ";
+					$sql .= "and user_enabled = 'true' ";
+					$prep_statement_sub = $db->prepare($sql);
+					$prep_statement_sub->execute();
+					$sub_result = $prep_statement_sub->fetch(PDO::FETCH_ASSOC);
+					unset ($prep_statement_sub);
+					$user_uuid = $sub_result['user_uuid'];
+				//set the user uuid
+					$sql = "update v_group_users set ";
+					$sql .= "user_uuid = '".$user_uuid."' ";
+					$sql .= "where username = '".$row['username']."'; ";
+					$db->exec($sql);
+					unset($sql);
+			}
+			else {
+				//get the number of users
+					$sql = "select count(*) as num_rows from v_users ";
+					$sql .= "where user_enabled = 'true' ";
+					$prep_statement_sub = $db->prepare($sql);
+					$prep_statement_sub->execute();
+					$sub_result = $prep_statement_sub->fetch(PDO::FETCH_ASSOC);
+					unset ($prep_statement_sub);
+					$num_rows = $sub_result['num_rows'];
+				if ($num_rows == 1) {
 					//get the user_uuid
 						$sql = "select user_uuid from v_users ";
-						$sql .= "where username = '".$row['username']."' ";
 						$sql .= "and user_enabled = 'true' ";
 						$prep_statement_sub = $db->prepare($sql);
 						$prep_statement_sub->execute();
@@ -138,36 +170,12 @@
 					//set the user uuid
 						$sql = "update v_group_users set ";
 						$sql .= "user_uuid = '".$user_uuid."' ";
-						$sql .= "where username = '".$row['username']."'; ";
 						$db->exec($sql);
 						unset($sql);
 				}
-				else {
-					//get the number of users
-						$sql = "select count(*) as num_rows from v_users ";
-						$sql .= "where user_enabled = 'true' ";
-						$prep_statement_sub = $db->prepare($sql);
-						$prep_statement_sub->execute();
-						$sub_result = $prep_statement_sub->fetch(PDO::FETCH_ASSOC);
-						unset ($prep_statement_sub);
-						$num_rows = $sub_result['num_rows'];
-					if ($num_rows == 1) {
-						//get the user_uuid
-							$sql = "select user_uuid from v_users ";
-							$sql .= "and user_enabled = 'true' ";
-							$prep_statement_sub = $db->prepare($sql);
-							$prep_statement_sub->execute();
-							$sub_result = $prep_statement_sub->fetch(PDO::FETCH_ASSOC);
-							unset ($prep_statement_sub);
-							$user_uuid = $sub_result['user_uuid'];
-						//set the user uuid
-							$sql = "update v_group_users set ";
-							$sql .= "user_uuid = '".$user_uuid."' ";
-							$db->exec($sql);
-							unset($sql);
-					}
-				}
 			}
+		}
+		unset ($prep_statement);
 	}
 
 //if there are no permissions listed in v_group_permissions then set the default permissions

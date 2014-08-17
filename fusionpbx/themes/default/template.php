@@ -79,6 +79,30 @@ td {
 	font-family: arial;
 }
 
+form {
+	margin: 0px;
+	}
+
+td.list_control_icons {
+	/* multiple icons exist (horizontally) */
+	padding: none;
+	padding-left: 3px;
+	width: 50px;
+	text-align: right;
+	vertical-align: top;
+	white-space: nowrap;
+}
+
+td.list_control_icon {
+	/* a single icon exists */
+	padding: none;
+	padding-left: 3px;
+	width: 25px;
+	text-align: right;
+	vertical-align: top;
+	white-space: nowrap;
+}
+
 INPUT.btn {
 	font-family: verdana;
 	font-size: 11px;
@@ -199,7 +223,7 @@ INPUT.txt {
 	border-bottom: 1px solid #999999;
 	font-size: 11px;
 	background-color: #990000;
-	color: #444444;	
+	color: #444444;
 	padding-right: 16px;
 	padding-left: 6px;
 	padding-top: 4px;
@@ -274,7 +298,7 @@ table {
 table th {
 	padding:4px 10px
 }
- 
+
 table td {
 	/*background:#fff;*/
 	/*padding:2px 10px 4px 10px*/
@@ -286,7 +310,7 @@ table tr.even td {
 	border-bottom: 1px solid #999999;
 	color: #333333;
 }
- 
+
 table tr.odd td {
 	border-bottom: 1px solid #999999;
 	color: #000000;
@@ -535,6 +559,16 @@ table tr:nth-last-child(-5) td:first-of-type {
 		text-decoration:none;
 	}
 /* end the menu css*/
+
+	DIV.login_message {
+		border: 1px solid #bae0ba;
+		background-color: #eeffee;
+		-webkit-border-radius: 3px 3px 3px 3px;
+		-moz-border-radius: 3px 3px 3px 3px;
+		border-radius: 3px 3px 3px 3px;
+		padding: 20px;
+		}
+
 </style>
 <style type="text/css">
 	/* Remove margins from the 'html' and 'body' tags, and ensure the page takes up full screen height */
@@ -546,25 +580,25 @@ table tr:nth-last-child(-5) td:first-of-type {
 
 	/* Set the position and dimensions of the background image. */
 	#page-background {
-		position:fixed; 
+		position:fixed;
 		top:0;
 		left:0;
 		width:100%;
 		height:100%;
 	}
 
-	/* Specify the position and layering for the content that needs to 
-	appear in front of the background image. Must have a higher z-index 
-	value than the background image. Also add some padding to compensate 
+	/* Specify the position and layering for the content that needs to
+	appear in front of the background image. Must have a higher z-index
+	value than the background image. Also add some padding to compensate
 	for removing the margin from the 'html' and 'body' tags. */
 	#page {
-		position:relative; 
+		position:relative;
 		z-index:1;
 		padding:10px;
 	}
 
 	.vtable {
-		position:relative; 
+		position:relative;
 		z-index:1;
 		padding:10px;
 		color: 000;
@@ -584,6 +618,41 @@ table tr:nth-last-child(-5) td:first-of-type {
 		-khtml-opacity: 0.9;
 		opacity: 0.9;
 	}
+
+	#message_container {
+		z-index: 99999;
+		position: absolute;
+		left: 0px;
+		top: -200px;
+		right: 0px;
+		filter: alpha(opacity=0);
+		opacity: 0;
+		-moz-opacity:0;
+		-khtml-opacity: 0;
+	}
+
+	#message_block {
+		margin: 0px auto;
+		width: 300px;
+		height: auto;
+		background-color: #000;
+		background-repeat: repeat-x;
+		background-image: url('<?=PROJECT_PATH?>/themes/default/images/background_black.png');
+		background-position: top center;
+		padding: 10px;
+		-webkit-border-radius: 0px 0px 7px 7px;
+		-moz-border-radius: 0px 0px 7px 7px;
+		border-radius: 0px 0px 7px 7px;
+		text-align: center;
+	}
+
+	#message_block .text {
+		font-family: arial, san-serif;
+		font-size: 10pt;
+		font-weight: bold;
+		color: #fff;
+	}
+
 </style>
 
 <script type="text/javascript">
@@ -608,41 +677,75 @@ function confirmdelete(url) {
 }
 //-->
 </SCRIPT>
+
+<script language="javascript" type="text/javascript" src="<?=PROJECT_PATH?>/resources/jquery/jquery-1.8.3.js"></script>
+
+<script language="JavaScript" type="text/javascript">
+	function display_message(msg) {
+		$("#message_text").html(msg);
+		$("#message_container").animate({top: '+=200'}, 0).animate({ opacity: 0.9 }, "fast").delay(1750).animate({top: '-=200'}, 1000).animate({opacity: 0});
+	}
+</script>
+
 </head>
-<body>
+
 <?php
-
-//get a random background image
-	$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/default/images/backgrounds';
-	$dir_list = opendir($dir);
-	$v_background_array = array();
-	$x = 0;
-	while (false !== ($file = readdir($dir_list))) {
-		if ($file != "." AND $file != ".."){
-			$new_path = $dir.'/'.$file;
-			$level = explode('/',$new_path);
-			if (substr($new_path, -4) == ".svn") {
-				//ignore .svn dir and subdir
-			}
-			elseif (substr($new_path, -3) == ".db") {
-				//ignore .db files
-			}
-			else {
-				$new_path = str_replace($_SERVER["DOCUMENT_ROOT"], "", $new_path);
-				$v_background_array[] = $new_path;
-			}
-			if ($x > 1000) { break; };
-			$x++;
-		}
-	}
-	if (strlen($_SESSION['background_image'])== 0) {
-		$_SESSION['background_image'] = $v_background_array[array_rand($v_background_array, 1)];
-	}
-
-	//show the background
-	echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
+// set message_onload
+if (strlen($_SESSION['message']) > 0) {
+	$message_text = addslashes($_SESSION['message']);
+	$onload .= "display_message('".$message_text."');";
+	unset($_SESSION['message']);
+}
 ?>
 
+<body onload="<?php echo $onload;?>">
+
+	<div id='message_container'>
+		<div id='message_block'>
+			<span id='message_text' class='text'></span>
+		</div>
+	</div>
+
+	<?php
+	//get a random background image
+		$dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/themes/default/images/backgrounds';
+		$dir_list = opendir($dir);
+		$v_background_array = array();
+		$x = 0;
+		while (false !== ($file = readdir($dir_list))) {
+			if ($file != "." AND $file != ".."){
+				$new_path = $dir.'/'.$file;
+				$level = explode('/',$new_path);
+				if (substr($new_path, -4) == ".svn") {
+					//ignore .svn dir and subdir
+				}
+				elseif (substr($new_path, -3) == ".db") {
+					//ignore .db files
+				}
+				else {
+					$new_path = str_replace($_SERVER["DOCUMENT_ROOT"], "", $new_path);
+					$v_background_array[] = $new_path;
+				}
+				if ($x > 1000) { break; };
+				$x++;
+			}
+		}
+		if (strlen($_SESSION['background_image'])== 0) {
+			$_SESSION['background_image'] = $v_background_array[array_rand($v_background_array, 1)];
+		}
+
+		//show the background
+		echo "<div id=\"page-background\"><img src=\"".$_SESSION['background_image']."\" width='100%' height='100%' alt=''></div>\n";
+	?>
+
+	<?php
+		// qr code container for contacts
+		echo "<div id='qr_code_container' style='display: none;' onclick='$(this).fadeOut(400);'>";
+		echo "	<table cellpadding='0' cellspacing='0' border='0' width='100%' height='100%'><tr><td align='center' valign='middle'>";
+		echo "		<span id='qr_code' onclick=\"$('#qr_code_container').fadeOut(400);\"></span>";
+		echo "	</td></tr></table>";
+		echo "</div>";
+	?>
 
 <div id="page" align='center'>
 <table width='90%' class='border.disabled' border='0' cellpadding='0' cellspacing='7'>

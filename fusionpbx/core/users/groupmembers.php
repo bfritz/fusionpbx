@@ -64,7 +64,7 @@ else {
 
 //include the header
 	require_once "resources/header.php";
-	$page["title"] = $text['title-group_members'];
+	$document['title'] = $text['title-group_members'];
 
 //show the content
 	$c = 0;
@@ -110,14 +110,16 @@ else {
 		$strlist .= "<tr'>";
 		$strlist .= "<td align=\"left\"  class='".$row_style[$c]."' nowrap> &nbsp; $username &nbsp; </td>\n";
 		$strlist .= "<td align=\"left\"  class='".$row_style[$c]."' nowrap> &nbsp; </td>\n";
-		$strlist .= "<td align=\"right\" nowrap>\n";
+		$strlist .= "<td class='list_control_icons' style='width: 25px;'>";
 		if (permission_exists('group_member_delete')) {
-			$strlist .= "	<a href='groupmemberdelete.php?user_uuid=$user_uuid&group_name=$group_name' onclick=\"return confirm('".$text['confirm-delete']."')\" alt='".$text['button-delete']."'>$v_link_label_delete</a>\n";
+			$strlist .= "<a href='groupmemberdelete.php?user_uuid=$user_uuid&group_name=$group_name' onclick=\"return confirm('".$text['confirm-delete']."')\" alt='".$text['button-delete']."'>$v_link_label_delete</a>";
 		}
 		$strlist .= "</td>\n";
 		$strlist .= "</tr>\n";
 
 		if ($c==0) { $c=1; } else { $c=0; }
+
+		$group_users[] = $row["user_uuid"];
 		$count++;
 	}
 
@@ -143,7 +145,7 @@ else {
 	$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
 	foreach($result as $field) {
 		$username = $field['username'];
-		if (if_group_members($db, $group_name, $field['user_uuid'])) {
+		if (if_group_members($db, $group_name, $field['user_uuid']) && !in_array($field['user_uuid'], $group_users)) {
 			echo "<option value='".$field['user_uuid']."'>".$field['username']."</option>\n";
 		}
 	}

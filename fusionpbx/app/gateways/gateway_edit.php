@@ -208,7 +208,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$db->exec(check_sql($sql));
 				unset($sql);
-
 			} //if ($action == "add")
 
 			if ($action == "update" && permission_exists('gateway_edit')) {
@@ -244,19 +243,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= "and gateway_uuid = '$gateway_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
-
 			} //if ($action == "update")
+
+			//remove xml file (if any) if not enabled
+				if ($enabled != 'true' && $_SESSION['switch']['sip_profiles']['dir'] != '') {
+					$gateway_xml_file = $_SESSION['switch']['sip_profiles']['dir']."/".$profile."/v_".$gateway_uuid.".xml";
+					if (file_exists($gateway_xml_file)) {
+						unlink($gateway_xml_file);
+					}
+				}
 
 			//syncrhonize configuration
 				save_gateway_xml();
 
-			//synchronize the xml config
-				save_dialplan_xml();
-
 			//delete the sip profiles from memcache
 				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 				if ($fp) {
-					$switch_cmd = "memcache delete configuration:sofia.conf";
+					$hostname = trim(event_socket_request($fp, 'api switchname'));
+					$switch_cmd = "memcache delete configuration:sofia.conf:".$hostname;
 					$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
 				}
 
@@ -275,23 +279,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	//redirect the user
 		if (isset($action)) {
-			require_once "resources/header.php";
-			echo "<meta http-equiv=\"refresh\" content=\"2;url=gateways.php\">\n";
-			echo "<div align='center'>\n";
 			if ($action == "add") {
-				echo "	".$text['message-add']."\n";
+				$_SESSION["message"] = $text['message-add'];
 			}
 			if ($action == "update") {
-				echo "	".$text['message-update']."\n";
+				$_SESSION["message"] = $text['message-update'];
 			}
-			echo "</div>\n";
-			require_once "resources/footer.php";
+			header("Location: gateways.php");
 			return;
 		}
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
-	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+	if (count($_GET) > 0 && $_POST["persistformvar"] != "true") {
 		$gateway_uuid = check_str($_GET["id"]);
 		$sql = "select * from v_gateways ";
 		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
@@ -333,6 +333,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //set defaults
 	if (strlen($enabled) == 0) { $enabled = "true"; }
+	if (strlen($register) == 0) { $register = "true"; }
+	if (strlen($retry_seconds) == 0) { $retry_seconds = "30"; }
 
 //show the header
 	require_once "resources/header.php";
@@ -348,15 +350,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "}\n";
 	echo "\n";
 	echo "function show_advanced_config() {\n";
-	echo "	document.getElementById(\"show_advanced_box\").innerHTML='';\n";
-	echo "	aodiv = document.getElementById('show_advanced');\n";
-	echo "	aodiv.style.display = \"block\";\n";
-	echo "}\n";
-	echo "\n";
-	echo "function hide_advanced_config() {\n";
-	echo "	document.getElementById(\"show_advanced_box\").innerHTML='';\n";
-	echo "	aodiv = document.getElementById('show_advanced');\n";
-	echo "	aodiv.style.display = \"block\";\n";
+	echo "	$('#show_advanced_box').slideToggle();\n";
+	echo "	$('#show_advanced').slideToggle();\n";
 	echo "}\n";
 	echo "</script>";
 
@@ -378,9 +373,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "			<span class=\"title\">".$text['title-gateway']."</span><br>\n";
 	echo "		</td>";
 	echo "		<td width='50%' align='right'>\n";
-	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
-	echo "			<input type='button' class='btn' name='' alt='".$text['button-copy']."' onclick=\"if (confirm('".$text['confirm-copy']."')){window.location='gateway_copy.php?id=".$gateway_uuid."';}\" value='".$text['button-copy']."'>\n";
 	echo "			<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='gateways.php'\" value='".$text['button-back']."'>\n";
+	if ($action == "update") {
+		echo "			<input type='button' class='btn' name='' alt='".$text['button-copy']."' onclick=\"if (confirm('".$text['confirm-copy']."')){window.location='gateway_copy.php?id=".$gateway_uuid."';}\" value='".$text['button-copy']."'>\n";
+	}
+	echo "			<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "	<tr>";
@@ -421,9 +418,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    ".$text['label-password'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "    <input class='formfld' type='password' name='password' id='password' autocomplete='off' maxlength='255' onfocus=\"document.getElementById('show_password').innerHTML = 'Password: '+document.getElementById('password').value;\" value=\"$password\">\n";
-	echo "<br />\n";
-	echo "<span onclick=\"document.getElementById('show_password').innerHTML = ''\">".$text['description-password']."</span><span id='show_password'></span>\n";
+	echo "    <input class='formfld' type='password' name='password' id='password' autocomplete='off' maxlength='255' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" value=\"$password\">\n";
+	echo "    <br />\n";
+	echo "    ".$text['description-password']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -489,14 +486,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='register'>\n";
-	echo "    <option value=''></option>\n";
-	if ($register == "true") { 
+	if ($register == "true") {
 		echo "    <option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "    <option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($register == "false") { 
+	if ($register == "false") {
 		echo "    <option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -513,7 +509,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    ".$text['label-retry_seconds'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	if (strlen($retry_seconds) == 0) { $retry_seconds = "60"; }
 	echo "  <input class='formfld' type='text' name='retry_seconds' maxlength='255' value='$retry_seconds'>\n";
 	echo "<br />\n";
 	echo $text['description-retry_seconds']."\n";
@@ -527,9 +522,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<div id=\"show_advanced_box\">\n";
 	echo "		<table width=\"100%\" border=\"0\" cellpadding=\"6\" cellspacing=\"0\">\n";
 	echo "		<tr>\n";
-	echo "		<td width=\"30%\" valign=\"top\" class=\"vncell\">".$text['button-advanced-show']."</td>\n";
+	echo "		<td width=\"30%\" valign=\"top\" class=\"vncell\">&nbsp;</td>\n";
 	echo "		<td width=\"70%\" class=\"vtable\">\n";
-	echo "			<input type=\"button\" onClick=\"show_advanced_config()\" value=\"".$text['button-advanced']."\"></input></a>\n";
+	echo "			<input type=\"button\" class=\"btn\" onClick=\"show_advanced_config()\" value=\"".$text['button-advanced']."\"></input>\n";
 	echo "		</td>\n";
 	echo "		</tr>\n";
 	echo "		</table>\n";
@@ -545,13 +540,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td width='70%' class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='distinct_to'>\n";
 	echo "    <option value=''></option>\n";
-	if ($distinct_to == "true") { 
+	if ($distinct_to == "true") {
 		echo "    <option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "    <option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($distinct_to == "false") { 
+	if ($distinct_to == "false") {
 		echo "    <option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -592,19 +587,19 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='register_transport'>\n";
 	echo "    <option value=''></option>\n";
-	if ($register_transport == "udp") { 
+	if ($register_transport == "udp") {
 		echo "    <option value='udp' selected='selected'>udp</option>\n";
 	}
 	else {
 		echo "    <option value='udp'>udp</option>\n";
 	}
-	if ($register_transport == "tcp") { 
+	if ($register_transport == "tcp") {
 		echo "    <option value='tcp' selected='selected'>tcp</option>\n";
 	}
 	else {
 		echo "    <option value='tcp'>tcp</option>\n";
 	}
-	if ($register_transport == "tls") { 
+	if ($register_transport == "tls") {
 		echo "    <option value='tls' selected='selected'>tls</option>\n";
 	}
 	else {
@@ -645,13 +640,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	<td class='vtable' align='left'>\n";
 	echo "		<select class='formfld' name='caller_id_in_from'>\n";
 	echo "		<option value=''></option>\n";
-	if ($caller_id_in_from == "true") { 
+	if ($caller_id_in_from == "true") {
 		echo "		<option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "		<option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($caller_id_in_from == "false") { 
+	if ($caller_id_in_from == "false") {
 		echo "		<option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -670,13 +665,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='supress_cng'>\n";
 	echo "    <option value=''></option>\n";
-	if ($supress_cng == "true") { 
+	if ($supress_cng == "true") {
 		echo "    <option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "    <option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($supress_cng == "false") { 
+	if ($supress_cng == "false") {
 		echo "    <option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -717,13 +712,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='extension_in_contact'>\n";
 	echo "    <option value=''></option>\n";
-	if ($extension_in_contact == "true") { 
+	if ($extension_in_contact == "true") {
 		echo "    <option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "    <option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($extension_in_contact == "false") { 
+	if ($extension_in_contact == "false") {
 		echo "    <option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -794,14 +789,13 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "	<select class='formfld' name='enabled'>\n";
-	echo "	<option value=''></option>\n";
-	if ($enabled == "true") { 
+	if ($enabled == "true") {
 		echo "	<option value='true' selected='selected'>".$text['label-true']."</option>\n";
 	}
 	else {
 		echo "	<option value='true'>".$text['label-true']."</option>\n";
 	}
-	if ($enabled == "false") { 
+	if ($enabled == "false") {
 		echo "	<option value='false' selected='selected'>".$text['label-false']."</option>\n";
 	}
 	else {
@@ -842,4 +836,5 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //include the footer
 	require_once "resources/footer.php";
+
 ?>

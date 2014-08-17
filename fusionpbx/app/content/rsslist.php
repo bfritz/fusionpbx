@@ -42,28 +42,6 @@ else {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
 
-if (!function_exists('th_order_by')) {
-	//html table header order by
-	function th_order_by($field_name, $columntitle, $order_by, $order) {
-
-		$html .= "<th nowrap>&nbsp; &nbsp; ";
-		if (strlen($order_by)==0) {
-			$html .= "<a href='?order_by=$field_name&order=desc' title='ascending'>$columntitle</a>";
-		}
-		else {
-			if ($order=="asc") {
-				$html .= "<a href='?order_by=$field_name&order=desc' title='ascending'>$columntitle</a>";
-			}
-			else {
-				$html .= "<a href='?order_by=$field_name&order=asc' title='descending'>$columntitle</a>";
-			}
-		}
-		$html .= "&nbsp; &nbsp; </th>";
-
-		return $html;
-	}
-}
-
 require_once "resources/header.php";
 echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"\" href=\"rss.php\" />\n";
 
@@ -112,18 +90,18 @@ $order = $_GET["order"];
 	$row_style["1"] = "row_style1";
 
 	echo "<div align='left'>\n";
-	echo "<table width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
+	echo "<table class='tr_hover' width='100%' border='0' cellpadding='2' cellspacing='0'>\n";
 	echo "<tr>";
 	echo th_order_by('rss_title', $text['label-title'], $order_by, $order);
 	echo th_order_by('rss_link', $text['label-link'], $order_by, $order);
 	//echo th_order_by('rss_sub_category', 'Template', $order_by, $order);
 	echo th_order_by('rss_group', $text['label-group'], $order_by, $order);
-	echo th_order_by('rss_order', $text['label-order'], $order_by, $order);
+	echo th_order_by('rss_order', $text['label-order'], $order_by, $order, '', "style='text-align: center;'");
 	if ($result_count == 0) { //no results
-		echo "<td align='right' width='21'>\n";
+		echo "<td class='list_control_icons'>\n";
 	}
 	else {
-		echo "<td align='right' width='42'>\n";
+		echo "<td class='list_control_icons'>\n";
 	}
 	echo "	<a href='rssadd.php' alt='add'>$v_link_label_add</a>\n";
 	echo "</td>\n";
@@ -132,12 +110,13 @@ $order = $_GET["order"];
 	if ($result_count > 0) {
 		foreach($result as $row) {
 		//print_r( $row );
-			echo "<tr style='".$row_style[$c]."'>\n";
+			$tr_link = "href='rssupdate.php?rss_uuid=".$row[rss_uuid]."'";
+			echo "<tr ".$tr_link.">\n";
 				//echo "<td valign='top'><a href='rssupdate.php?rss_uuid=".$row[rss_uuid]."'>".$row[rss_uuid]."</a></td>";
 				//echo "<td valign='top'>".$row[rss_category]."</td>";
 
-				echo "<td valign='top' nowrap class='".$row_style[$c]."'>&nbsp;".$row[rss_title]."&nbsp;</td>";                
-				echo "<td valign='top' nowrap class='".$row_style[$c]."'>&nbsp;<a href='/index.php?c=".$row[rss_link]."'>".$row[rss_link]."</a>&nbsp;</td>";
+				echo "<td valign='top' nowrap class='".$row_style[$c]."'><a href='rssupdate.php?rss_uuid=".$row[rss_uuid]."'>".$row[rss_title]."</a></td>";
+				echo "<td valign='top' nowrap class='".$row_style[$c]."'><a href='/index.php?c=".$row[rss_link]."'>".$row[rss_link]."</a></td>";
 				//echo "<td valign='top' class='".$row_style[$c]."'>".$row[rss_sub_category]."&nbsp;</td>";
 				if (strlen($row[rss_group]) > 0) {
 					echo "<td valign='top' class='".$row_style[$c]."'>".$row[rss_group]."</td>";
@@ -162,17 +141,17 @@ $order = $_GET["order"];
 				//echo "<td valign='top'>".$row[rss_optional_3]."</td>";
 				//echo "<td valign='top'>".$row[rss_optional_4]."</td>";
 				//echo "<td valign='top'>".$row[rss_optional_5]."</td>";
-				echo "<td valign='top' class='".$row_style[$c]."'>".$row[rss_order]."&nbsp;</td>";
+				echo "<td valign='top' class='".$row_style[$c]."' style='text-align: center;'>".$row[rss_order]."</td>";
 
 				//echo "<td valign='top' align='center'>";
 				//echo "  <input type='button' class='btn' name='' onclick=\"window.location='rssmoveup.php?menuparentid=".$row[menuparentid]."&rss_uuid=".$row[rss_uuid]."&rss_order=".$row[rss_order]."'\" value='<' title='".$row[rss_order].". Move Up'>";
 				//echo "  <input type='button' class='btn' name='' onclick=\"window.location='rssmovedown.php?menuparentid=".$row[menuparentid]."&rss_uuid=".$row[rss_uuid]."&rss_order=".$row[rss_order]."'\" value='>' title='".$row[rss_order].". Move Down'>";
 				//echo "</td>";
 
-				echo "	<td valign='top' align='right'>\n";
-				echo "		<a href='rssupdate.php?rss_uuid=".$row[rss_uuid]."' alt='".$text['label-edit']."'>$v_link_label_edit</a>\n";
-				echo "		<a href='rssdelete.php?rss_uuid=".$row[rss_uuid]."' alt='delete' onclick=\"return confirm('".$text['message-confirm-delete']."')\">$v_link_label_delete</a>\n";
-				echo "	</td>\n";
+				echo "	<td class='list_control_icons'>";
+				echo "<a href='rssupdate.php?rss_uuid=".$row[rss_uuid]."' alt='".$text['label-edit']."'>$v_link_label_edit</a>";
+				echo "<a href='rssdelete.php?rss_uuid=".$row[rss_uuid]."' alt='delete' onclick=\"return confirm('".$text['message-confirm-delete']."')\">$v_link_label_delete</a>";
+				echo "</td>\n";
 
 				//echo "<td valign='top' align='right' class='".$row_style[$c]."'>";
 				//echo "  <input type='button' class='btn' name='' onclick=\"if (confirm('Are you sure you wish to continue?')) { window.location='rssdelete.php?rss_uuid=".$row[rss_uuid]."' }\" value='Delete'>";
@@ -193,7 +172,7 @@ $order = $_GET["order"];
 	echo "	<tr>\n";
 	echo "		<td width='33.3%' nowrap>&nbsp;</td>\n";
 	echo "		<td width='33.3%' align='center' nowrap>$paging_controls</td>\n";
-	echo "		<td width='33.3%' align='right'>\n";
+	echo "		<td class='list_control_icons'>\n";
 	echo "			<a href='rssadd.php' alt='add'>$v_link_label_add</a>\n";
 	echo "		</td>\n";
 	echo "	</tr>\n";

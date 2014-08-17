@@ -26,12 +26,6 @@
 require_once "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
-require_once "resources/classes/logging.php";
-// Logging class initialization
-$log = new Logging();
-
-// set path and name of log file (optional)
-$log->lfile('/tmp/mylog.txt');
 
 if (permission_exists('group_permissions') || if_group("superadmin")) {
 	//access granted
@@ -48,7 +42,7 @@ else {
 	}
 
 require_once "resources/header.php";
-$page["title"] = $text['title-group_permissions'];
+$document['title'] = $text['title-group_permissions'];
 
 require_once "resources/paging.php";
 
@@ -111,7 +105,7 @@ require_once "resources/paging.php";
 		$permission_name = $row["permission_name"];
 		$permissions_db[$permission_name] = "true";
 	}
-		
+
 //show the db checklist
 	//echo "<pre>";
 	//print_r($permissions_db);
@@ -127,8 +121,8 @@ require_once "resources/paging.php";
 				$permissions_db_checklist[$row['name']] = "false";
 			}
 		}
-	}	
-	
+	}
+
 //show the db checklist
 	//echo "<pre>";
 	//print_r($permissions_db_checklist);
@@ -174,21 +168,18 @@ require_once "resources/paging.php";
 							$sql .= "and permission_name = '$permission' ";
 							$db->exec(check_sql($sql));
 							unset($sql);
-							
-						foreach($apps as $app) {							
+
+						foreach($apps as $app) {
 							foreach ($app['permissions'] as $row) {
 								if ($row['name'] == $permission) {
-									
-									$log->lwrite("2");
-									$log->lwrite($row['menu']['uuid']);
-									
+
 									$sql = "delete from v_menu_item_groups ";
 									$sql .= "where menu_item_uuid = '".$row['menu']['uuid']."' ";
 									$sql .= "and group_name = '$group_name' ";
-									$sql .= "and menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";									
+									$sql .= "and menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";
 									$db->exec(check_sql($sql));
 									unset($sql);
-									
+
 									$sql = "";
 									$sql .= " select menu_item_parent_uuid from v_menu_items ";
 									$sql .= "where menu_item_uuid = '".$row['menu']['uuid']."' ";
@@ -200,7 +191,7 @@ require_once "resources/paging.php";
 										$menu_item_parent_uuid = $row["menu_item_parent_uuid"];
 									}
 									unset ($prep_statement);
-									
+
 									$sql = "";
 									$sql .= " select * from v_menu_items as i, v_menu_item_groups as g  ";
 									$sql .= "where i.menu_item_uuid = g.menu_item_uuid ";
@@ -215,16 +206,16 @@ require_once "resources/paging.php";
 										$sql = "delete from v_menu_item_groups ";
 										$sql .= "where menu_item_uuid = '$menu_item_parent_uuid' ";
 										$sql .= "and group_name = '$group_name' ";
-										$sql .= "and menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";									
+										$sql .= "and menu_uuid = 'b4750c3f-2a86-b00d-b7d0-345c14eca286' ";
 										$db->exec(check_sql($sql));
 										unset($sql);
 									}
 									unset ($prep_statement);
-									
-									
-									
+
+
+
 								}
-							}							
+							}
 						}
 						//set the permission to false in the permissions_db_checklist
 							$permissions_db_checklist[$permission] = "false";
@@ -247,15 +238,11 @@ require_once "resources/paging.php";
 							$sql .= ")";
 							$db->exec(check_sql($sql));
 							unset($sql);
-							
-						foreach($apps as $app) {							
+
+						foreach($apps as $app) {
 							foreach ($app['permissions'] as $row) {
 								if ($row['name'] == $permission) {
-									
-									$log->lwrite("1");
-									$log->lwrite($row['menu']['uuid']);
-									$log->lwrite($row['menu']['parent_uuid']);
-									
+
 									$sql = "insert into v_menu_item_groups ";
 									$sql .= "(";
 									$sql .= "menu_uuid, ";
@@ -270,7 +257,7 @@ require_once "resources/paging.php";
 									$sql .= ")";
 									$db->exec(check_sql($sql));
 									unset($sql);
-									
+
 									$sql = "";
 									$sql .= " select menu_item_parent_uuid from v_menu_items ";
 									$sql .= "where menu_item_uuid = '".$row['menu']['uuid']."' ";
@@ -282,7 +269,7 @@ require_once "resources/paging.php";
 										$menu_item_parent_uuid = $row["menu_item_parent_uuid"];
 									}
 									unset ($prep_statement);
-									
+
 									$sql = "";
 									$sql .= " select * from v_menu_item_groups ";
 									$sql .= "where menu_item_uuid = '$menu_item_parent_uuid' ";
@@ -307,17 +294,37 @@ require_once "resources/paging.php";
 										$sql .= ")";
 										$db->exec(check_sql($sql));
 										unset($sql);
-									}									
+									}
 									unset ($prep_statement);
 								}
-							}							
+							}
 						}
 						//set the permission to true in the permissions_db_checklist
 							$permissions_db_checklist[$permission] = "true";
 					}
 				}
 			}
+
+		$_SESSION["message"] = $text['message-update'];
+		header("Location: groups.php");
+		return;
 	}
+
+// copy group javascript
+
+	echo "<script language='javascript' type='text/javascript'>\n";
+	echo "	function copy_group() {\n";
+	echo "		var new_group_name;\n";
+	echo "		var new_group_desc;\n";
+	echo "		new_group_name = prompt('".$text['message-new_group_name']."');\n";
+	echo "		if (new_group_name != null) {\n";
+	echo "			new_group_desc = prompt('".$text['message-new_group_description']."');\n";
+	echo "			if (new_group_desc != null) {\n";
+	echo "				window.location = 'permissions_copy.php?group_name=".$group_name."&new_group_name=' + new_group_name + '&new_group_desc=' + new_group_desc;\n";
+	echo "			}\n";
+	echo "		}\n";
+	echo "	}\n";
+	echo "</script>\n";
 
 //show the content
 	echo "<form method='post' name='frm' action=''>\n";
@@ -330,11 +337,8 @@ require_once "resources/paging.php";
 	echo "<tr>\n";
 	echo "<td width='50%' align=\"left\" nowrap=\"nowrap\"><b>".$text['header-group_permissions'].$group_name."</b></td>\n";
 	echo "<td width='50%' align=\"right\">\n";
-	echo "	<input type='button' class='btn' alt='".$text['button-copy']."' onclick=\"var new_ext = prompt('".$text['message_extension']."'); if (new_ext != null) { window.location='permissions_copy.php?id=".$group_name."&ext=' + new_ext; }\" value='".$text['button-copy']."'>";
-	if (permission_exists('group_edit')) {
-		echo "	<input type='button' class='btn' alt='".$text['button-restore']."' onclick=\"window.location='permissions_default.php'\" value='".$text['button-restore']."'>";
-	}
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='groups.php'\" value='".$text['button-back']."'> ";
+	echo "	<input type='button' class='btn' alt='".$text['button-copy']."' onclick='copy_group();' value='".$text['button-copy']."'>";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -361,7 +365,7 @@ require_once "resources/paging.php";
 			echo "<tr>\n";
 			echo "	<td valign='top' style='width:80%' nowrap='nowrap'>\n";
 			echo "<strong>".$app_name."</strong><br />\n";
-			echo "	</td>\n";			
+			echo "	</td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "	<td valign='top'>\n";
@@ -369,7 +373,7 @@ require_once "resources/paging.php";
 			echo "	</td>\n";
 			echo "</tr>\n";
 			echo "</table>";
-			
+
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>\n";
 			echo "<th>".$text['label-permission_permissions']."</th>\n";
@@ -387,7 +391,7 @@ require_once "resources/paging.php";
 				}
 				echo "		&nbsp; ".$row['name']."\n";
 				echo "	</td>\n";
-				echo "	<td valign='top' class='".$row_style[$c]."'>\n";
+				echo "	<td valign='top' class='row_stylebg'>\n";
 				echo "		&nbsp; ".$row['description']."\n";
 				echo "	</td>\n";
 				echo "</tr>\n";
@@ -395,7 +399,7 @@ require_once "resources/paging.php";
 			}
 
 			echo "<tr>\n";
-			echo "	<td colspan='3' align='right'>\n";
+			echo "	<td colspan='3' align='right' style='padding-top: 5px;'>\n";
 			echo "		<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 			echo "	</td>\n";
 			echo "</tr>\n";

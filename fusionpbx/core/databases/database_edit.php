@@ -143,12 +143,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				require_once "app_defaults.php";
 
 			//redirect the browser
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=databases.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-add']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-add'];
+				header("Location: databases.php");
 				return;
 		} //if ($action == "add")
 
@@ -173,12 +169,8 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				require_once "app_defaults.php";
 
 			//redirect the browser
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=databases.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-update']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-update'];
+				header("Location: databases.php");
 				return;
 		} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
@@ -210,10 +202,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //show the header
 	require_once "resources/header.php";
 	if ($action == "update") {
-		$page["title"] = $text['title-database-edit'];
+		$document['title'] = $text['title-database-edit'];
 	}
 	if ($action == "add") {
-		$page["title"] = $text['title-database-add'];
+		$document['title'] = $text['title-database-add'];
 	}
 
 //show the content
@@ -233,7 +225,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if ($action == "update") {
 		echo "<td align=\"left\" width='30%' nowrap=\"nowrap\"><b>".$text['header-database-edit']."</b></td>\n";
 	}
-	echo "<td width='70%' align=\"right\"><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='databases.php'\" value='".$text['button-back']."'></td>\n";
+	echo "<td width='70%' align=\"right\">";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='databases.php'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td align=\"left\" colspan='2'>\n";

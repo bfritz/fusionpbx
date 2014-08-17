@@ -17,12 +17,15 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2014
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
 */
+
+// set included, if not
+	if (!isset($included)) { $included = false; }
 
 //check the permission
 	if(defined('STDIN')) {
@@ -32,15 +35,16 @@
 		set_include_path($document_root);
 		require_once "resources/require.php";
 		$_SERVER["DOCUMENT_ROOT"] = $document_root;
-		$display_type = 'text'; //html, text
+		$format = 'text'; //html, text
 
 		//add multi-lingual support
-			require_once "app_languages.php";
-			foreach($text as $key => $value) {
-				$text[$key] = $value[$_SESSION['domain']['language']['code']];
-			}
+		require_once "app_languages.php";
+		foreach($text as $key => $value) {
+			$text[$key] = $value[$_SESSION['domain']['language']['code']];
+		}
+
 	}
-	else {
+	else if (!$included) {
 		include "root.php";
 		require_once "resources/require.php";
 		require_once "resources/check_auth.php";
@@ -52,32 +56,18 @@
 			exit;
 		}
 
-		//add multi-lingual support
-			require_once "app_languages.php";
-			foreach($text as $key => $value) {
-				$text[$key] = $value[$_SESSION['domain']['language']['code']];
-			}
-
 		require_once "resources/header.php";
-		$page["title"] = $text['title-upgrade_schema'];
+		$document['title'] = $text['title-upgrade_schema'];
 
-		$display_type = 'html'; //html, text
+		$format = 'html'; //html, text
 	}
 
-//set the default
-	if (!isset($display_results)) {
-		$display_results = true;
-	}
+//get the database schema put it into an array then compare and update the database as needed.
+	require_once "resources/classes/schema.php";
+	$obj = new schema;
+	echo $obj->schema($format);
 
-//load the default database into memory and compare it with the active database
-	require_once "resources/schema.php";
-	db_upgrade_schema ($db, $db_type, $db_name, $display_results);
-	unset($apps);
-
-//upgrade the domains
-	require_once "core/upgrade/upgrade_domains.php";
-
-if ($display_results && $display_type == "html") {
+if (!$included && $format == 'html') {
 	echo "<br />\n";
 	echo "<br />\n";
 	require_once "resources/footer.php";

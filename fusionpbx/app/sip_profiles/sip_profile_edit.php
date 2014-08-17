@@ -22,7 +22,7 @@
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Luis Daniel Lucio Quiroz <daniel.lucio@astraqom.com> 
+	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 require_once "root.php";
 require_once "resources/require.php";
@@ -51,13 +51,13 @@ else {
 	}
 
 //get http post variables and set them to php variables
-	if (count($_POST)>0) {
+	if (count($_POST) > 0) {
 		$sip_profile_name = check_str($_POST["sip_profile_name"]);
 		$sip_profile_description = check_str($_POST["sip_profile_description"]);
 		$sip_profile_hostname = check_str($_POST["sip_profile_hostname"]);
 	}
 
-if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
+if (count($_POST) > 0 && strlen($_POST["persistformvar"]) == 0) {
 
 	$msg = '';
 	if ($action == "update") {
@@ -131,18 +131,14 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				}
 
 			//redirect the browser
-				require_once "resources/header.php";
-				echo "<meta http-equiv=\"refresh\" content=\"2;url=sip_profiles.php\">\n";
-				echo "<div align='center'>\n";
-				echo $text['message-update']."\n";
-				echo "</div>\n";
-				require_once "resources/footer.php";
+				$_SESSION["message"] = $text['message-update'];
+				header("Location: sip_profiles.php");
 				return;
 		} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
 
 //pre-populate the form
-	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
+	if (count($_GET) > 0 && $_POST["persistformvar"] != "true") {
 		$sip_profile_uuid = $_GET["id"];
 		$sql = "select * from v_sip_profiles ";
 		$sql .= "where sip_profile_uuid = '$sip_profile_uuid' ";
@@ -160,7 +156,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 //show the header
 	require_once "resources/header.php";
-	$page["title"] = $text['title-sip_profile'];
+	$document['title'] = $text['title-sip_profile'];
 
 //show the content
 	echo "<div align='center'>";
@@ -175,8 +171,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "<tr>\n";
 	echo "<td align='left' width='30%' nowrap='nowrap'><b>".$text['header-sip_profile']."</b></td>\n";
 	echo "<td width='70%' align='right'>\n";
-	echo "	<input type='button' class='btn' name='' alt='".$text['button-copy']."' onclick=\"if (confirm('".$text['confirm-copy']."')){window.location='sip_profile_copy.php?id=".$sip_profile_uuid."';}\" value='".$text['button-copy']."'>\n";
 	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='sip_profiles.php'\" value='".$text['button-back']."'>\n";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-copy']."' onclick=\"var name = prompt('".$text['confirm-copy']."'); if (name != null) { window.location='sip_profile_copy.php?id=".$sip_profile_uuid."&name=' + name; }\" value='".$text['button-copy']."'>\n";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -186,7 +183,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-name'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
@@ -212,7 +209,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	".$text['label-description'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "	<input class='formfld' type='text' name='sip_profile_description' maxlength='255' value=\"$sip_profile_description\">\n";
+	echo "	<textarea class='formfld' style='width: 300px;' name='sip_profile_description' rows='4'>$sip_profile_description</textarea>\n";
 	echo "<br />\n";
 	echo $text['description-description']."\n";
 	echo "</td>\n";

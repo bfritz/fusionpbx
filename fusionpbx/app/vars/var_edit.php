@@ -122,14 +122,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//synchronize the configuration
 					save_var_xml();
 
-				//redirect the user
-					require_once "resources/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=vars.php\">\n";
-					echo "<div align='center'>\n";
-					echo $text['message-add']."\n";
-					echo "</div>\n";
-					require_once "resources/footer.php";
-					return;
+				$_SESSION["message"] = $text['message-add'];
+				header("Location: vars.php");
+				return;
 			} //if ($action == "add")
 
 			if ($action == "update" && permission_exists('var_edit')) {
@@ -151,14 +146,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				//synchronize the configuration
 					save_var_xml();
 
-				//redirect the user
-					require_once "resources/header.php";
-					echo "<meta http-equiv=\"refresh\" content=\"2;url=vars.php\">\n";
-					echo "<div align='center'>\n";
-					echo $text['message-update']."\n";
-					echo "</div>\n";
-					require_once "resources/footer.php";
-					return;
+				$_SESSION["message"] = $text['message-update'];
+				header("Location: vars.php");
+				return;
 			} //if ($action == "update")
 	} //if ($_POST["persistformvar"] != "true")
 } //(count($_POST)>0 && strlen($_POST["persistformvar"]) == 0)
@@ -185,10 +175,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 //include header
 	require_once "resources/header.php";
 	if ($action == "add") {
-		$page["title"] = $text['title-var_add'];
+		$document['title'] = $text['title-var_add'];
 	}
 	if ($action == "update") {
-		$page["title"] = $text['title-var_edit'];
+		$document['title'] = $text['title-var_edit'];
 	}
 
 //show contents
@@ -204,12 +194,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "<tr>\n";
 	if ($action == "add") {
-		echo "<td width='30%' align='left'nowrap><b>".$text['header-var_add']."</b></td>\n";
+		echo "<td width='30%' align='left'nowrap><b>".$text['header-variable_add']."</b><br><br></td>\n";
 	}
 	if ($action == "update") {
-		echo "<td width='30%' align='left' nowrap><b>".$text['header-var_edit']."</b></td>\n";
+		echo "<td width='30%' align='left' nowrap><b>".$text['header-variable_edit']."</b><br><br></td>\n";
 	}
-	echo "<td width='70%' align='right'><input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='vars.php'\" value='".$text['button-back']."'></td>\n";
+	echo "<td width='70%' align='right'>";
+	echo "	<input type='button' class='btn' name='' alt='".$text['button-back']."' onclick=\"window.location='vars.php'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>\n";
+	echo "</td>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -252,7 +245,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
 	echo "    <select class='formfld' name='var_enabled'>\n";
-	echo "    <option value=''></option>\n";
 	if ($var_enabled == "true") {
 		echo "    <option value='true' SELECTED >".$text['option-true']."</option>\n";
 	}
@@ -276,27 +268,23 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "    ".$text['label-order'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-	echo "              <select name='var_order' class='formfld'>\n";
-	if (strlen(htmlspecialchars($var_order ))> 0) {
-		echo "              <option selected='yes' value='".htmlspecialchars($var_order )."'>".htmlspecialchars($var_order )."</option>\n";
-	}
+	echo "	<select name='var_order' class='formfld'>\n";
 	$i=0;
 	while($i<=999) {
-	  if (strlen($i) == 1) {
-		echo "              <option value='00$i'>00$i</option>\n";
-	  }
-	  if (strlen($i) == 2) {
-		echo "              <option value='0$i'>0$i</option>\n";
-	  }
-	  if (strlen($i) == 3) {
-		echo "              <option value='$i'>$i</option>\n";
-	  }
-
-	  $i++;
+		$selected = ($var_order == $i) ? "selected" : null;
+		if (strlen($i) == 1) {
+			echo "	<option value='00$i' ".$selected.">00$i</option>\n";
+		}
+		if (strlen($i) == 2) {
+			echo "	<option value='0$i' ".$selected.">0$i</option>\n";
+		}
+		if (strlen($i) == 3) {
+			echo "	<option value='$i' ".$selected.">$i</option>\n";
+		}
+		$i++;
 	}
-	echo "              </select>\n";
-	echo "<br />\n";
-	echo "\n";
+	echo "	</select>\n";
+	echo "	<br />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 

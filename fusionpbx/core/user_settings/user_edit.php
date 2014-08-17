@@ -38,6 +38,9 @@ else {
 
 //add multi-lingual support
 	require_once "app_languages.php";
+	foreach($text['button-save'] as $key => $value) {
+		$languages[$key] = '';
+	}
 	foreach($text as $key => $value) {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
@@ -49,7 +52,7 @@ else {
 //required to be a superadmin to update an account that is a member of the superadmin group
 	$superadmin_list = superadmin_list($db);
 	if (if_superadmin($superadmin_list, $user_uuid)) {
-		if (!if_group("superadmin")) { 
+		if (!if_group("superadmin")) {
 			echo "access denied";
 			return;
 		}
@@ -79,33 +82,91 @@ else {
 
 if (count($_POST)>0 && $_POST["persistform"] != "1") {
 
-	$password = check_str($_POST["password"]);
-	$confirm_password = check_str($_POST["confirm_password"]);
-	$user_status = check_str($_POST["user_status"]);
-	$user_template_name = check_str($_POST["user_template_name"]);
-	$user_time_zone = check_str($_POST["user_time_zone"]);
-	$group_member = check_str($_POST["group_member"]);
+	//get the HTTP values and set as variables
+		$password = check_str($_POST["password"]);
+		$confirm_password = check_str($_POST["confirm_password"]);
+		$user_status = check_str($_POST["user_status"]);
+		$user_template_name = check_str($_POST["user_template_name"]);
+		$user_language = check_str($_POST["user_language"]);
+		$user_time_zone = check_str($_POST["user_time_zone"]);
+		$group_member = check_str($_POST["group_member"]);
 
-	$msg = '';
-	//if (strlen($password) == 0) { $msg .= "Password cannot be blank.<br>\n"; }
-	if ($password != $confirm_password) { $msg .= "".$text['confirm-password']."<br>\n"; }
-	//if (strlen($user_time_zone) == 0) { $msg .= "Please provide an time zone.<br>\n"; }
+	//set the required values
+		$msg = '';
+		//if (strlen($password) == 0) { $msg .= "Password cannot be blank.<br>\n"; }
+		if ($password != $confirm_password) { $msg .= "".$text['confirm-password']."<br>\n"; }
+		//if (strlen($user_time_zone) == 0) { $msg .= "Please provide an time zone.<br>\n"; }
+		if (strlen($msg) > 0) {
+			require_once "resources/header.php";
+			echo "<div align='center'>";
+			echo "<table><tr><td>";
+			echo $msg;
+			echo "</td></tr></table>";
+			echo "<br />\n";
+			require_once "resources/persist_form.php";
+			echo persistform($_POST);
+			echo "</div>";
+			require_once "resources/footer.php";
+			return;
+		}
 
-	if (strlen($msg) > 0) {
-		require_once "resources/header.php";
-		echo "<div align='center'>";
-		echo "<table><tr><td>";
-		echo $msg;
-		echo "</td></tr></table>";
-		echo "<br />\n";
-		require_once "resources/persist_form.php";
-		echo persistform($_POST);
-		echo "</div>";
-		require_once "resources/footer.php";
-		return;
-	}
+	//check to see if user language is set
+		$sql = "select count(*) as num_rows from v_user_settings ";
+		$sql .= "where user_setting_category = 'domain' ";
+		$sql .= "and user_setting_subcategory = 'language' ";
+		$sql .= "and user_uuid = '".$user_uuid."' ";
+		$prep_statement = $db->prepare(check_sql($sql));
+		if ($prep_statement) {
+			$prep_statement->execute();
+			$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
+			if ($row['num_rows'] == 0) {
+				$user_setting_uuid = uuid();
+				$sql = "insert into v_user_settings ";
+				$sql .= "(";
+				$sql .= "domain_uuid, ";
+				$sql .= "user_setting_uuid, ";
+				$sql .= "user_setting_category, ";
+				$sql .= "user_setting_subcategory, ";
+				$sql .= "user_setting_name, ";
+				$sql .= "user_setting_value, ";
+				$sql .= "user_setting_enabled, ";
+				$sql .= "user_uuid ";
+				$sql .= ") ";
+				$sql .= "values ";
+				$sql .= "(";
+				$sql .= "'".$_SESSION["domain_uuid"]."', ";
+				$sql .= "'".$user_setting_uuid."', ";
+				$sql .= "'domain', ";
+				$sql .= "'language', ";
+				$sql .= "'code', ";
+				$sql .= "'".$user_language."', ";
+				$sql .= "'true', ";
+				$sql .= "'".$user_uuid."' ";
+				$sql .= ")";
+				$db->exec(check_sql($sql));
+			}
+			else {
+				if (strlen($user_language) == 0) {
+					$sql = "delete from v_user_settings ";
+					$sql .= "where user_setting_category = 'domain' ";
+					$sql .= "and user_setting_subcategory = 'language' ";
+					$sql .= "and user_uuid = '".$user_uuid."' ";
+					$db->exec(check_sql($sql));
+					unset($sql);
+				}
+				else {
+					$sql  = "update v_user_settings set ";
+					$sql .= "user_setting_value = '".$user_language."', ";
+					$sql .= "user_setting_enabled = 'true' ";
+					$sql .= "where user_setting_category = 'domain' ";
+					$sql .= "and user_setting_subcategory = 'language' ";
+					$sql .= "and user_uuid = '".$user_uuid."' ";
+					$db->exec(check_sql($sql));
+				}
+			}
+		}
 
-	//get the number of rows in v_user_settings 
+	//check to see if user time_zone is set
 		$sql = "select count(*) as num_rows from v_user_settings ";
 		$sql .= "where user_setting_category = 'domain' ";
 		$sql .= "and user_setting_subcategory = 'time_zone' ";
@@ -199,10 +260,8 @@ if (count($_POST)>0 && $_POST["persistform"] != "1") {
 		//$_SESSION["template_content"] = '';
 
 	//redirect the browser
-		require_once "resources/header.php";
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=".PROJECT_PATH."/core/user_settings/user_edit.php\">\n";
-		echo "<div align='center'>".$text['confirm-update']."</div>";
-		require_once "resources/footer.php";
+		$_SESSION["message"] = $text['confirm-update'];
+		header("Location: ".PROJECT_PATH."/core/user_settings/user_edit.php");
 		return;
 }
 else {
@@ -238,8 +297,8 @@ else {
 	echo "<table $table_width cellpadding='3' cellspacing='0' border='0'>";
 	echo "<td align='left' width='90%' nowrap><b>".$text['title']."</b></td>\n";
 	echo "<td nowrap='nowrap'>\n";
-	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>";
 	echo "	<input type='button' class='btn' onclick=\"window.location='".$_SESSION['login']['destination']['url']."'\" value='".$text['button-back']."'>";
+	echo "	<input type='submit' name='submit' class='btn' value='".$text['button-save']."'>";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
@@ -286,10 +345,10 @@ else {
 	}
 	else {
 		echo "	<tr>\n";
-		echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+		echo "	<td width='30%' class=\"vncell\">\n";
 		echo "		".$text['label-status'].":\n";
 		echo "	</td>\n";
-		echo "	<td class=\"vtable\" align='left'>\n";
+		echo "	<td width='70%' class=\"vtable\" align='left'>\n";
 		echo "		<select id='user_status' name='user_status' class='formfld' style=''>\n";
 		echo "		<option value=''></option>\n";
 		if ($user_status == "Available") {
@@ -333,7 +392,7 @@ else {
 		/*
 		if (strlen($_SESSION['domain']['template']['name']) == 0) {
 			echo "	<tr>\n";
-			echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+			echo "	<td width='20%' class=\"vncell\">\n";
 			echo "		Template: \n";
 			echo "	</td>\n";
 			echo "	<td class=\"vtable\">\n";
@@ -364,7 +423,28 @@ else {
 		*/
 
 	echo "	<tr>\n";
-	echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
+	echo "	<td width='20%' class=\"vncell\">\n";
+	echo "		".$text['label-user_language'].": \n";
+	echo "	</td>\n";
+	echo "	<td class=\"vtable\" align='left'>\n";
+	echo "		<select id='user_language' name='user_language' class='formfld' style=''>\n";
+	echo "		<option value=''></option>\n";
+	foreach ($languages as $key => $value) {
+		if ($key == $user_settings['domain']['language']['code']) {
+			echo "		<option value='$key' selected='selected'>$key</option>\n";
+		}
+		else {
+			echo "		<option value='$key'>$key</option>\n";
+		}
+	}
+	echo "		</select>\n";
+	echo "		<br />\n";
+	echo "		".$text['description-user_language']."<br />\n";
+	echo "	</td>\n";
+	echo "	</tr>\n";
+
+	echo "	<tr>\n";
+	echo "	<td width='20%' class=\"vncell\">\n";
 	echo "		".$text['label-time'].": \n";
 	echo "	</td>\n";
 	echo "	<td class=\"vtable\" align='left'>\n";

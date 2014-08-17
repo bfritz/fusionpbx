@@ -34,6 +34,12 @@ else {
 	exit;
 }
 
+//add multi-lingual support
+	require_once "app_languages.php";
+	foreach($text as $key => $value) {
+		$text[$key] = $value[$_SESSION['domain']['language']['code']];
+	}
+
 if (count($_GET)>0) {
 	$id = check_str($_GET["id"]);
 }
@@ -70,14 +76,6 @@ if (strlen($id)>0) {
 		$prep_statement->execute();
 		unset($sql);
 
-	//delete the meeting pins
-		$sql = "delete from v_meeting_pins ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
-		$sql .= "and meeting_uuid = '$meeting_uuid' ";
-		$prep_statement = $db->prepare(check_sql($sql));
-		$prep_statement->execute();
-		unset($sql);
-
 	//delete the meetings
 		$sql = "delete from v_meetings ";
 		$sql .= "where domain_uuid = '$domain_uuid' ";
@@ -87,13 +85,9 @@ if (strlen($id)>0) {
 		unset($sql);
 }
 
-//redirect the user
-	require_once "resources/header.php";
-	echo "<meta http-equiv=\"refresh\" content=\"2;url=conference_rooms.php\">\n";
-	echo "<div align='center'>\n";
-	echo "Delete Complete\n";
-	echo "</div>\n";
-	require_once "resources/footer.php";
-	return;
+
+$_SESSION["message"] = $text['message-delete'];
+header("Location: conference_rooms.php");
+return;
 
 ?>
