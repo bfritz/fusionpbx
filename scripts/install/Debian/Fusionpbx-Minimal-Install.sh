@@ -72,7 +72,7 @@ odroid_boards="n"
 freeswitch_repo="stable"
 
 #Fusionpbx repo (release = 3.6.0 / devel = 3.5) 
-fusionpbx_repo="devel"
+fusionpbx_repo="release"
 
 # To start FreeSWITCH with -nonat option set freeswitch_NAT to y
 # Set to y if on public static IP
@@ -301,8 +301,8 @@ for i in update upgrade ;do apt-get -y "${i}" ; done
 esac
 
 #adding FusionPBX repo
-if [[ $fusionpbx_repo == "stable" ]]; then
-echo 'installing fusionpbx stable repo'
+if [[ $fusionpbx_repo == "release" ]]; then
+echo 'installing fusionpbx release repo'
 /bin/cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 deb http://repo.fusionpbx.com/deb/debian/ wheezy main
 DELIM
