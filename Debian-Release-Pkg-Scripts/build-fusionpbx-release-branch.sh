@@ -135,9 +135,8 @@ do svn export --force $SVN_SRC/fusionpbx/app/"${i}" $WRK_DIR/fusionpbx-apps/fusi
 done
 
 #get src for extra apps
-for i in sipml5
-do svn export --force $SVN_SRC/apps/"${i}" $WRK_DIR/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/"${i}"
-done
+svn export --force $SVN_SRC_3 $WRK_DIR/fusionpbx-apps/fusionpbx-app-sipml5/sipml5
+
 
 #get src for core
 svn export --force $SVN_SRC/fusionpbx $WRK_DIR/fusionpbx-core
