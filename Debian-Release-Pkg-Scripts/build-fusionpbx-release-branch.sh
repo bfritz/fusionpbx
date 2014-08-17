@@ -14,21 +14,23 @@ TIME=$(date +"%a, %d %b %Y %X")
 if [[ $BUILD_RELEASE_PKGS == "y" ]]; then
 SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/trunk/Debian-Release-Pkg-Scripts
+SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
 REPO=/usr/home/repo/deb/debian
 WRK_DIR=/usr/src/fusionpbx-release pkg-build
 else
 SVN_SRC=http://fusionpbx.googlecode.com/svn/branches/dev
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/branches/dev/Debian-Devel-Pkgs-Scripts
+SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
 REPO=/usr/home/repo/deb-dev/debian
 WRK_DIR=/usr/src/fusionpbx-devel-pkg-build
 fi
 
-WRKDIR=$WRK_DIR
+WRKDIR="$WRK_DIR"
 
-rm -rf $WRKDIR
+rm -rf "$WRKDIR"
 
 #get pkg system scripts
-svn export $SVN_SRC_2 "$WRKDIR"
+svn export "$SVN_SRC_2" "$WRKDIR"
 
 ##set version in the changelog files for core
 cat > $WRKDIR/fusionpbx-core/debian/changelog << DELIM
@@ -131,40 +133,40 @@ for i in adminer backup call_block call_broadcast call_center call_center_active
 	park provision recordings registrations ring_groups schemas services settings sipml5 sip_profiles \
 	sip_status sql_query system time_conditions traffic_graph vars voicemail_greetings voicemails xml_cdr \
 	xmpp
-do svn export "$SVN_SRC"/fusionpbx/app/"${i}" "$WRKDIR"/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/"${i}"
+do svn export --force $SVN_SRC/fusionpbx/app/"${i}" $WRKDIR/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/"${i}"
 done
 
 #get src for extra apps
 for i in sipml5
-do svn export "$SVN_SRC"/apps/"${i}" "$WRKDIR"/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/"${i}"
+do svn export --force $SVN_SRC/apps/"${i}" $WRKDIR/fusionpbx-apps/fusionpbx-app-"${i//_/-}"/"${i}"
 done
 
 #get src for core
-svn export --force "$SVN_SRC"/fusionpbx "$WRKDIR"/fusionpbx-core
+svn export --force $SVN_SRC/fusionpbx $WRKDIR/fusionpbx-core
 for i in app/* themes/* resources/templates/provision resources/templates/conf resources/install/sounds resources/install/scripts resources/install/sql
-do rm -rf "$WRKDIR"/fusionpbx-core/"${i}"
+do rm -rf $WRKDIR/fusionpbx-core/"${i}"
 done
 
 #conf dir src
-svn export --force "$SVN_SRC"/fusionpbx/resources/templates/conf "$WRKDIR"/fusionpbx-conf/conf
+svn export --force $SVN_SRC/fusionpbx/resources/templates/conf "$WRKDIR"/fusionpbx-conf/conf
 
 #scripts dir src
-svn export --force "$SVN_SRC"/fusionpbx/resources/install/scripts "$WRKDIR"/fusionpbx-scripts/scripts
+svn export --force $SVN_SRC/fusionpbx/resources/install/scripts "$WRKDIR"/fusionpbx-scripts/scripts
 
 #sounds dir src
-svn export --force "$SVN_SRC"/fusionpbx/resources/install/sounds "$WRKDIR"/fusionpbx-sounds/sounds
+svn export --force $SVN_SRC/fusionpbx/resources/install/sounds "$WRKDIR"/fusionpbx-sounds/sounds
 
 #scripts dir src
-svn export --force "$SVN_SRC"/fusionpbx/resources/install/sql "$WRKDIR"/fusionpbx-sql/sql
+svn export --force $SVN_SRC/fusionpbx/resources/install/sql "$WRKDIR"/fusionpbx-sql/sql
 
 #phone provisioing templates
 for i in aastra cisco grandstream linksys panasonic polycom snom yealink
-do svn export "$SVN_SRC"/fusionpbx/resources/templates/provision/"${i}" "$WRKDIR"/fusionpbx-templates/fusionpbx-provisioning-template-"${i}"/"${i}"
+do svn export --force $SVN_SRC/fusionpbx/resources/templates/provision/"${i}" $WRKDIR/fusionpbx-templates/fusionpbx-provisioning-template-"${i}"/"${i}"
 done
 
 #get src for theme
 for i in enhanced minimized
-do svn export "$SVN_SRC"/fusionpbx/themes/"${i}" "$WRKDIR"/fusionpbx-themes/fusionpbx-theme-"${i}"/"${i}"
+do svn export --force $SVN_SRC/fusionpbx/themes/"${i}" $WRKDIR/fusionpbx-themes/fusionpbx-theme-"${i}"/"${i}"
 done
 
 #patch config files
@@ -193,7 +195,7 @@ fifo-list follow-me gateways hot-desking ivr-menu login log-viewer meetings modu
 park provision recordings registrations ring-groups schemas services settings sipml5 sip-profiles \
 sip-status sql-query system time-conditions traffic-graph vars voicemail-greetings voicemails xml-cdr \
 xmpp
-do cd "$WRKDIR"/fusionpbx-apps/fusionpbx-app-"${i}" 
+do cd $WRKDIR/fusionpbx-apps/fusionpbx-app-"${i}" 
 dpkg-buildpackage -rfakeroot -i
 done
 
@@ -219,13 +221,13 @@ dpkg-buildpackage -rfakeroot -i
 
 #Build provision pkg
 for i in aastra cisco grandstream linksys panasonic polycom snom yealink
-do cd "$WRKDIR"/fusionpbx-templates/fusionpbx-provisioning-template-"${i}"
+do cd $WRKDIR/fusionpbx-templates/fusionpbx-provisioning-template-"${i}"
 dpkg-buildpackage -rfakeroot -i
 done
 
 #build theme pkgs
 for i in enhanced minimized
-do cd "$WRKDIR"/fusionpbx-themes/fusionpbx-theme-"${i}"
+do cd $WRKDIR/fusionpbx-themes/fusionpbx-theme-"${i}"
 dpkg-buildpackage -rfakeroot -i
 done
 
