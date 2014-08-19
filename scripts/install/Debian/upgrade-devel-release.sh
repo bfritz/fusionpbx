@@ -20,3 +20,4 @@ php /usr/share/nginx/www/fusionpbx/core/upgrade/app_defaults.php
 php /usr/share/nginx/www/fusionpbx/core/upgrade/upgrade_schema.php
 #cd root dir
 cd ~
+apt-get remove custom-scripts && apt-get install custom-scripts
