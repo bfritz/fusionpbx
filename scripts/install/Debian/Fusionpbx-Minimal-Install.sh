@@ -133,6 +133,9 @@ secure_server="n"
 # Please paste the public key you wish to add to the permited keys file 
 # for root access via ssh
 ssh_key=
+
+#Install Ajenti
+install_ajenti == "n"
  
 #-------- Edit only if necessary---------
 #Custom Dir Layout
@@ -894,6 +897,7 @@ iptables -I INPUT -j DROP -p udp --dport 5068 -m string --string "friendly-scann
 iptables -I INPUT -j DROP -p udp --dport 5069 -m string --string "friendly-scanner" --algo bm
 iptables -I INPUT -j DROP -p udp --dport 5080 -m string --string "friendly-scanner" --algo bm
 
+
 #Install postgresql-client
 if [[ $postgresql_client == "y" ]]; then
 	clear
@@ -1030,6 +1034,16 @@ $ssh_key
 DELIM
 sed -i /etc/ssh/sshd_config -e s,'PermitRootLogin yes','#PermitRootLogin no',
 sevice ssh restart
+fi
+
+#Ajenti admin portal. Makes maintaining the system easier.
+#ADD Ajenti repo & ajenti
+if [[ $install_ajenti == "y" ]]; then
+/bin/cat > "/etc/apt/sources.list.d/ajenti.list" <<DELIM
+deb http://repo.ajenti.org/debian main main debian
+DELIM
+wget http://repo.ajenti.org/debian/key -O- | apt-key add -
+apt-get update &> /dev/null && apt-get -y install ajenti
 fi
 
 echo " The install $wui_name minimal install has finished...  "
