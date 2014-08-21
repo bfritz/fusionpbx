@@ -1,5 +1,5 @@
 #!bin/bash
-svn swap http://fusionpbx.googlecode.com/svn/trunk/fusionpbx
+svn switch http://fusionpbx.googlecode.com/svn/trunk/fusionpbx
 #change to the fusionpbx www dir
 cd /var/www/fusionpbx
 svn update
