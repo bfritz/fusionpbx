@@ -1,7 +1,7 @@
 #!bin/bash
-svn switch http://fusionpbx.googlecode.com/svn/trunk/fusionpbx
 #change to the fusionpbx www dir
 cd /var/www/fusionpbx
+svn switch http://fusionpbx.googlecode.com/svn/trunk/fusionpbx
 svn update
 #run upgrade commands
 php /var/www/fusionpbx/core/upgrade/upgrade.php
