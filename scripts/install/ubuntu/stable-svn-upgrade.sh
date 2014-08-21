@@ -10,6 +10,7 @@ php /var/www/fusionpbx/core/upgrade/app_defaults.php
 php /var/www/fusionpbx/core/upgrade/upgrade_schema.php
 #cd root dir
 cd ~
+cp -rp /usr/local/freeswitch/scripts /usr/local/freeswitch/scripts.bak
 rm -rf /usr/local/freeswitch/scripts/*
 cp -r /var/www/fusionpbx/resources/install/scripts/* /usr/local/freeswitch/scripts
 chown -R www-data:www-data /usr/local/freeswitch/scripts
