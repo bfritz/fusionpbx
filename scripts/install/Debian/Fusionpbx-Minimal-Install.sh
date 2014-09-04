@@ -1026,7 +1026,7 @@ apt-get autoclean && apt-get autoremove
 esac
 
 #Secure System
-if [[ $secure_system == "y" ]]; then
+if [[ $secure_server == "y" ]]; then
 mdir ~/.ssh
 touch ~/.ssh/authorized_keys
 cat >> ~/.ssh/authorized_keys << DELIM
