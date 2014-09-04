@@ -135,7 +135,7 @@ secure_server="n"
 ssh_key=
 
 #Install Ajenti
-install_ajenti == "n"
+install_ajenti="n"
  
 #-------- Edit only if necessary---------
 #Custom Dir Layout
