@@ -72,9 +72,9 @@ fi
 #-------
 VERSION="Version - using subversion, no longer keeping track. WAF License"
 #latest stable
-#FPBXBRANCH="http://fusionpbx.googlecode.com/svn/trunk/fusionpbx"
+FPBXBRANCH="http://fusionpbx.googlecode.com/svn/trunk/fusionpbx"
 #dev branch
-FPBXBRANCH="http://fusionpbx.googlecode.com/svn/branches/dev/fusionpbx"
+#FPBXBRANCH="http://fusionpbx.googlecode.com/svn/branches/dev/fusionpbx"
 # Modules_comp_default determined using
 #  grep -v ^$ /usr/src/freeswitch/modules.conf |grep -v ^# | tr '\n' ' '
 #  on FreeSWITCH version FreeSWITCH Version 1.0.head (git-8f2ee97 2010-12-05 17-19-28 -0600)
@@ -112,7 +112,10 @@ FSREV="187abe02af4d64cdedc598bd3dfb1cd3ed0f4a91"
 FSCHECKOUTVER=false
 FPBXREV="1876"
 FBPXCHECKOUTVER=false
-URLSCRIPT="http://fusionpbx.googlecode.com/svn/branches/dev/scripts/install/ubuntu/install_fusionpbx.sh"
+#dev
+#URLSCRIPT="http://fusionpbx.googlecode.com/svn/branches/dev/scripts/install/ubuntu/install_fusionpbx.sh"
+#trunk
+URLSCRIPT="https://fusionpbx.googlecode.com/svn/trunk/scripts/install/ubuntu/install_fusionpbx.sh"
 INSFUSION=0
 INSFREESWITCH=0
 UPGFUSION=0
