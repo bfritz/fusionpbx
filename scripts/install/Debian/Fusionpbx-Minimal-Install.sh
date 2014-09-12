@@ -98,8 +98,7 @@ postgresql_client="n"
 # your pbx emmc/sd in half.
 postgresql_server="n"
 
-# Set Postgresql Server Admin username
-# Lower case only
+# Set Postgresql Server Admin username ( Lower case only )
 pgsql_admin=
 
 # Set Postgresql Server Admin password
