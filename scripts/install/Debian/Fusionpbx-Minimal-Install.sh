@@ -1048,6 +1048,6 @@ fi
 echo " The install $wui_name minimal install has finished...  "
 
 
-echo " Enabling setup menu'
+echo " Enabling setup menu " 
 echo
-/usr/local/bin/setup-menu.sh
+setup-menu.sh
