@@ -4,8 +4,7 @@ set -e
 case "$1" in
   configure)
     for x in \
-      /usr/share/fusionpbx/resources/templates/provision/aastra
-    do
+      /usr/share/examples/fusionpbx/
       chown -R www-data:www-data $x
     done
     ;;

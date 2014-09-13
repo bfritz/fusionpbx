@@ -4,8 +4,7 @@ set -e
 case "$1" in
   configure)
     for x in \
-      /usr/share/fusionpbx/resources/install/scripts \
-      /var/lib/fusionpbx/scripts;
+      /usr/share/examples/fusionpbx/ \
     do
       chown -R www-data:www-data $x
     done

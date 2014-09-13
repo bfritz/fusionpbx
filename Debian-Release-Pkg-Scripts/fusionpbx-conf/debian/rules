@@ -49,8 +49,8 @@ install: build
 	# Add here commands to install the package into debian/lookup.
 	# cd builddir && $(MAKE) INSTALL_ROOT=$(CURDIR)/debian/$(APPNAME) install
 	#rm -rf $(CURDIR)/debian/lookup-dbg
-	mkdir -p debian/fusionpbx-conf/usr/share/fusionpbx/resources/templates
-	cp -pr conf debian/fusionpbx-conf/usr/share/fusionpbx/resources/templates
+	mkdir -p debian/fusionpbx-conf/usr/share/examples/fusionpbx/resources/templates
+	cp -pr conf debian/fusionpbx-conf/usr/share/examples/fusionpbx/resources/templates
 
 build-indep: build install
 

@@ -49,11 +49,19 @@ install: build
 	# Add here commands to install the package into debian/lookup.
 	# cd builddir && $(MAKE) INSTALL_ROOT=$(CURDIR)/debian/$(APPNAME) install
 	#rm -rf $(CURDIR)/debian/lookup-dbg
-	mkdir -p debian/fusionpbx-core/etc/fusionpbx
-	mkdir -p debian/fusionpbx-core/usr/share/nginx/www/fusionpbx/app
-	mkdir -p debian/fusionpbx-core/usr/share/nginx/www/fusionpbx/themes
-	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/db
+	mkdir -p debian/fusionpbx-core/etc/fusionpbx/fsconf
+	mkdir -p debian/fusionpbx-core/etc/fusionpbx/resources/templates/provision
+	mkdir -p debian/fusionpbx-core/usr/share/nginx/www/fusionpbx
 	cp -pr core resources secure *.php debian/fusionpbx-core/usr/share/nginx/www/fusionpbx
+	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/app
+	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/db
+	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/recordings
+	mkdir -p debian/fusionpbx-scripts/var/lib/fusionpbx/scripts
+	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/sounds
+	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/storage/fax
+	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/storage/voicemail
+	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/themes
+	
 
 build-indep: build install
 
