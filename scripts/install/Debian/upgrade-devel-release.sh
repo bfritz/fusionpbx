@@ -1,4 +1,4 @@
-ste#!/bin/bash
+#!/bin/bash
 #change repo to release repo
 cat > /etc/apt/sources.list.d/fusionpbx.list << DELIM
 deb http://repo.fusionpbx.com/deb/debian/ wheezy main
