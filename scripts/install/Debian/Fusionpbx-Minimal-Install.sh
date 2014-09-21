@@ -258,13 +258,13 @@ DELIM
 elif [[ $freeswitch_repo == "beta" ]]; then
 echo 'installing armhf beta repo'
 /bin/cat > "/etc/apt/sources.list.d/voyagepbx.list" <<DELIM
-deb http://repo.voyagepbx.com/deb-beta/debian/ wheezy main
+deb http://91.121.162.77/deb-beta/debian/ wheezy main
 DELIM
 
 elif [[ $freeswitch_repo == "head" ]]; then
 echo 'installing armhf head repo'
 /bin/cat > "/etc/apt/sources.list.d/voyagepbx.list" <<DELIM
-deb http://repo.voyagepbx.com/deb-head/debian/ wheezy main
+deb http://91.121.162.77/deb-head/debian/ wheezy main
 DELIM
 fi
 esac
