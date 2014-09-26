@@ -252,7 +252,7 @@ case $(uname -m) in armv7l)
 if [[ $freeswitch_repo == "stable" ]]; then
 echo 'installing armhf stable repo'
 /bin/cat > "/etc/apt/sources.list.d/voyagepbx.list" <<DELIM
-deb http://repo.voyagepbx.com/deb-stable/debian/ wheezy main
+deb http://91.121.162.77/deb-stable/debian/ wheezy main
 DELIM
 
 elif [[ $freeswitch_repo == "beta" ]]; then
