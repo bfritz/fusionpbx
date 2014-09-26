@@ -375,6 +375,9 @@ chown -R freeswitch:freeswitch "$fs_conf_dir"
 #fix permissions for "$fs_conf_dir" so www-data can write to it
 find "$fs_conf_dir" -type f -exec chmod 664 {} +
 find "$fs_conf_dir" -type d -exec chmod 775 {} +
+#fix permissions for "$fs_storage_dir" so www-data can write to it
+find "/var/lib/freeswitch/storage" -type f -exec chmod 664 {} +
+find "/var/lib/freeswitch/storage" -type d -exec chmod 775 {} +
 
 #fix permissions on the freeswitch xml_cdr dir so fusionpbx can read from it
 find "$fs_log_dir"/xml_cdr -type d -exec chmod 775 {} +
