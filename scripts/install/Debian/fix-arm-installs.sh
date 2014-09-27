@@ -19,18 +19,11 @@ apt-get remove -y fusionpbx*
 #read list and reinstall rm pkgs
 aptitude install $(cat /tmp/fusionpbx-pkg.log | awk '{print $1}')
 #change to the fusionpbx www dir
-cd /usr/share/nginx/www/fusionpbx
-#run upgrade commands
-php /usr/share/nginx/www/fusionpbx/core/upgrade/upgrade.php
-php /usr/share/nginx/www/fusionpbx/core/upgrade/upgrade_domains.php
-php /usr/share/nginx/www/fusionpbx/core/upgrade/app_defaults.php
-php /usr/share/nginx/www/fusionpbx/core/upgrade/upgrade_schema.php
-#cd root dir
 cd ~
 #update scripts
 cp -rp /var/lib/fusionpbx/scripts /var/lib/fusionpbx/scripts.bak
 rm -rf /var/lib/fusionpbx/scripts/*
-cp -rp /usr/share/fusionpbx/resources/install/scripts /var/lib/fusionpbx/
+cp -rp /usr/share/examples/fusionpbx/resources/install/scripts /var/lib/fusionpbx/
 chown -R www-data:www-data /var/lib/fusionpbx/scripts
 find "/var/lib/fusionpbx/scripts" -type f -exec chmod 664 {} +
 find "/var/lib/fusionpbx/scripts" -type d -exec chmod 775 {} +
