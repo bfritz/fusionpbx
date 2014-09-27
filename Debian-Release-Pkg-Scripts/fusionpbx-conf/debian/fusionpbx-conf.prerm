@@ -3,7 +3,7 @@ set -e
 
 case "$1" in
   remove|upgrade|deconfigure)
-    if [ -d /usr/share/fusionpbx/resources/templates/conf ]; then
+    if [ -d /usr/share/examples/fusionpbx/resources/templates/conf ]; then
       echo "We're about to remove default fusionpbx freswitch config..." >&2
     fi
     ;;
