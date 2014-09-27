@@ -661,6 +661,9 @@ apt-get -y --force-yes install fusionpbx-core fusionpbx-app-calls fusionpbx-app-
 		fusionpbx-app-time-conditions fusionpbx-sounds fusionpbx-app-xml-cdr fusionpbx-app-vars fusionpbx-app-voicemails \
 		fusionpbx-app-voicemail-greetings fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb fusionpbx-theme-enhanced
 
+#Temp fix with pkgs
+ln -s /usr/share/examples/fusionpbx /usr/share/fusionpbx
+
 #set permissions
 chmod 775 /etc/fusionpbx
 chmod 775 /var/lib/fusionpbx
@@ -1013,7 +1016,7 @@ apt-get install -y --force-yes custom-scripts
 
 #DigiDaz Tested and approved
 case $(uname -m) in armv7l)
-/bin/sed -i /usr/share/fusionpbx/resources/templates/conf/autoload_configs/logfile.conf.xml -e 's#<map name="all" value="debug,info,notice,warning,err,crit,alert"/>#<map name="all" value="warning,err,crit,alert"/>#'
+/bin/sed -i /usr/share/examples/fusionpbx/resources/templates/conf/autoload_configs/logfile.conf.xml -e 's#<map name="all" value="debug,info,notice,warning,err,crit,alert"/>#<map name="all" value="warning,err,crit,alert"/>#'
 /bin/sed -i "$WWW_PATH"/"$wui_name"/app/vars/app_defaults.php -e 's#{"var_name":"xml_cdr_archive","var_value":"dir","var_cat":"Defaults","var_enabled":"true","var_description":""}#{"var_name":"xml_cdr_archive","var_value":"none","var_cat":"Defaults","var_enabled":"true","var_description":""}#'
 esac
 
