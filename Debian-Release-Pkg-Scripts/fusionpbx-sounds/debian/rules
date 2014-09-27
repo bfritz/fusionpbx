@@ -49,8 +49,8 @@ install: build
 	# Add here commands to install the package into debian/lookup.
 	# cd builddir && $(MAKE) INSTALL_ROOT=$(CURDIR)/debian/$(APPNAME) install
 	#rm -rf $(CURDIR)/debian/lookup-dbg
-	mkdir -p debian/fusionpbx-sounds/usr/share/fusionpbx/resources/install
-	cp -pr sounds debian/fusionpbx-sounds/usr/share/fusionpbx/resources/install/sounds
+	mkdir -p debian/fusionpbx-sounds/usr/share/examples/fusionpbx/resources/install
+	cp -pr sounds debian/fusionpbx-sounds/usr/share/examples/fusionpbx/resources/install/sounds
 
 build-indep: build install
 
