@@ -5,7 +5,7 @@
 BUILD_RELEASE_PKGS="y"
 
 if [[ $BUILD_RELEASE_PKGS == "y" ]]; then
-PKGVER=3.6.2 # this is the version number you update
+PKGVER=3.6.2~2 # this is the version number you update
 SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/trunk/Debian-Release-Pkg-Scripts
 SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
