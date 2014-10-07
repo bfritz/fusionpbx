@@ -358,6 +358,12 @@ else {
 		require_once "resources/classes/database.php";
 		$database = new database;
 	}
+	if (count($_SESSION['domains']) == 1) { // add to path if single-tenant
+		$path_mod = $_SESSION["domain_name"];
+	}
+	else {
+		$path_mod = "";
+	}
 	if ($result_count > 0) {
 		foreach($result as $row) {
 			$tmp_year = date("Y", strtotime($row['start_stamp']));
@@ -375,7 +381,7 @@ else {
 			$hangup_cause = strtolower($hangup_cause);
 			$hangup_cause = ucwords($hangup_cause);
 
-			$tmp_dir = $_SESSION['switch']['recordings']['dir'].'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
+			$tmp_dir = $_SESSION['switch']['recordings']['dir'].'/'.$path_mod.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
 			$tmp_name = '';
 			if(!empty($row['recording_file']) && file_exists($row['recording_file'])){
 				$tmp_name=$row['recording_file'];
