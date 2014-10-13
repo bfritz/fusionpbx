@@ -195,29 +195,13 @@
 									cidr = [[ cidr="]] .. row.cidr .. [["]];
 								end
 								number_alias = "";
+								number_alias_string = "";
 								if (string.len(row.number_alias) > 0) then
-									number_alias = [[ number-alias="]] .. row.number_alias .. [["]];
+									number_alias = row.number_alias;
+									number_alias_string = [[ number-alias="]] .. row.number_alias .. [["]];
 								end
 							--params
 								password = row.password;
-								--vm_enabled = "true";
-								--if (string.len(row.vm_enabled) > 0) then
-								--	vm_enabled = row.vm_enabled;
-								--end
-								--vm_password = row.vm_password;
-								--vm_attach_file = "true";
-								--if (string.len(row.vm_attach_file) > 0) then
-								--	vm_attach_file = row.vm_attach_file;
-								--end
-								--vm_keep_local_after_email = "true";
-								--if (string.len(row.vm_keep_local_after_email) > 0) then
-								--	vm_keep_local_after_email = row.vm_keep_local_after_email;
-								--end
-								--if (string.len(row.vm_mailto) > 0) then
-								--	vm_mailto = row.vm_mailto;
-								--else
-								--	vm_mailto = "";
-								--end
 								mwi_account = row.mwi_account;
 								auth_acl = row.auth_acl;
 							--variables
@@ -275,6 +259,38 @@
 						end);
 					end
 
+				--get the voicemail from the database
+					if (continue) then
+						vm_enabled = "true";
+						if (tonumber(user) == nil) then
+							sql = "SELECT * FROM v_voicemails WHERE domain_uuid = '" .. domain_uuid .. "' and voicemail_id = '" .. number_alias .. "' ";
+						else
+							sql = "SELECT * FROM v_voicemails WHERE domain_uuid = '" .. domain_uuid .. "' and voicemail_id = '" .. user .. "' ";
+						end
+						if (debug["sql"]) then
+							freeswitch.consoleLog("notice", "[xml_handler] SQL: " .. sql .. "\n");
+						end
+						dbh:query(sql, function(row)
+							if (string.len(row.voicemail_enabled) > 0) then
+								vm_enabled = row.voicemail_enabled;
+							end
+							vm_password = row.voicemail_password;
+							vm_attach_file = "true";
+							if (string.len(row.voicemail_attach_file) > 0) then
+								vm_attach_file = row.voicemail_attach_file;
+							end
+							vm_keep_local_after_email = "true";
+							if (string.len(row.voicemail_local_after_email) > 0) then
+								vm_keep_local_after_email = row.voicemail_local_after_email;
+							end
+							if (string.len(row.voicemail_mail_to) > 0) then
+								vm_mailto = row.voicemail_mail_to;
+							else
+								vm_mailto = "";
+							end
+						end);
+					end
+
 				--if the extension does not exist set continue to false;
 					if (extension_uuid == nil) then
 						continue = false;
@@ -329,9 +345,9 @@
 							table.insert(xml, [[					<users>]]);
 							if (number_alias) then
 								if (cidr) then
-									table.insert(xml, [[						<user id="]] .. extension .. [["]] .. cidr .. number_alias .. [[ type=>]]);
+									table.insert(xml, [[						<user id="]] .. extension .. [["]] .. cidr .. number_alias_string .. [[ type=>]]);
 								else
-									table.insert(xml, [[						<user id="]] .. extension .. [["]] .. number_alias .. [[>]]);
+									table.insert(xml, [[						<user id="]] .. extension .. [["]] .. number_alias_string .. [[>]]);
 								end
 							else
 								if (cidr) then
@@ -342,14 +358,14 @@
 							end
 							table.insert(xml, [[							<params>]]);
 							table.insert(xml, [[								<param name="password" value="]] .. password .. [["/>]]);
-							--table.insert(xml, [[								<param name="vm-enabled" value="]] .. vm_enabled .. [["/>]]);
-							--if (string.len(vm_mailto) > 0) then
-							--	table.insert(xml, [[							<param name="vm-password" value="]] .. vm_password  .. [["/>]]);
-							--	table.insert(xml, [[							<param name="vm-email-all-messages" value="]] .. vm_enabled  ..[["/>]]);
-							--	table.insert(xml, [[							<param name="vm-attach-file" value="]] .. vm_attach_file .. [["/>]]);
-							--	table.insert(xml, [[							<param name="vm-keep-local-after-email" value="]] .. vm_keep_local_after_email .. [["/>]]);
-							--	table.insert(xml, [[							<param name="vm-mailto" value="]] .. vm_mailto .. [["/>]]);
-							--end
+							table.insert(xml, [[								<param name="vm-enabled" value="]] .. vm_enabled .. [["/>]]);
+							if (string.len(vm_mailto) > 0) then
+								table.insert(xml, [[								<param name="vm-password" value="]] .. vm_password  .. [["/>]]);
+								table.insert(xml, [[								<param name="vm-email-all-messages" value="]] .. vm_enabled  ..[["/>]]);
+								table.insert(xml, [[								<param name="vm-attach-file" value="]] .. vm_attach_file .. [["/>]]);
+								table.insert(xml, [[								<param name="vm-keep-local-after-email" value="]] .. vm_keep_local_after_email .. [["/>]]);
+								table.insert(xml, [[								<param name="vm-mailto" value="]] .. vm_mailto .. [["/>]]);
+							end
 							if (string.len(mwi_account) > 0) then
 								table.insert(xml, [[							<param name="MWI-Account" value="]] .. mwi_account .. [["/>]]);
 							end
