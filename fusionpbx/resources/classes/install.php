@@ -127,8 +127,8 @@ include "root.php";
 						}
 					}
 				//copy resources/templates/conf to the freeswitch conf dir
-					if (file_exists('/usr/share/fusionpbx/resources/templates/conf')){
-						$src_dir = "/usr/share/fusionpbx/resources/templates/conf";
+					if (file_exists('/usr/share/examples/fusionpbx/resources/templates/conf')){
+						$src_dir = "/usr/share/examples/fusionpbx/resources/templates/conf";
 					}
 					else {
 						
@@ -144,8 +144,8 @@ include "root.php";
 
 		function copy_scripts() {
 			if (file_exists($this->switch_scripts_dir)) {
-				if (file_exists('/usr/share/fusionpbx/resources/install/scripts')){
-					$src_dir = '/usr/share/fusionpbx/resources/install/scripts';
+				if (file_exists('/usr/share/examples/fusionpbx/resources/install/scripts')){
+					$src_dir = '/usr/share/examples/fusionpbx/resources/install/scripts';
 				}
 				else {
 					$src_dir = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH.'/resources/install/scripts';
