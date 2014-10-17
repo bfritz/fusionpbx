@@ -74,10 +74,6 @@ freeswitch_repo="stable"
 #Fusionpbx repo (release = 3.6.0 / devel = 3.5) 
 fusionpbx_repo="release"
 
-# To start FreeSWITCH with -nonat option set freeswitch_NAT to y
-# Set to y if on public static IP
-freeswitch_nat=n
-
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
 keep_logs=5
 
@@ -382,19 +378,10 @@ find "/var/lib/freeswitch/storage" -type d -exec chmod 775 {} +
 #fix permissions on the freeswitch xml_cdr dir so fusionpbx can read from it
 find "$fs_log_dir"/xml_cdr -type d -exec chmod 775 {} +
 
-#Settinf /etc/default freeswitch startup options with proper scripts dir and to run without nat.
-#DISABLE NAT
-if [[ $freeswitch_nat == y ]]; then
-cat > "/etc/default/freeswitch" << DELIM
-CONFDIR=$fs_conf_dir
-DAEMON_ARGS="-u $fs_usr -g $fs_grp -rp -nonat -conf $fs_conf_dir -db $fs_db_dir -log $fs_log_dir -scripts $fs_scripts_dir -run $fs_run_dir -storage $fs_storage_dir -recordings $fs_recordings_dir -nc"
-DELIM
-else
 cat > "/etc/default/freeswitch" << DELIM
 CONFDIR=$fs_conf_dir
 DAEMON_ARGS="-u $fs_usr -g $fs_grp -rp -conf $fs_conf_dir -db $fs_db_dir -log $fs_log_dir -scripts $fs_scripts_dir -run $fs_run_dir -storage $fs_storage_dir -recordings $fs_recordings_dir -nc"
 DELIM
-fi
 
 service freeswitch restart
 
