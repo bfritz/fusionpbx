@@ -689,7 +689,7 @@ if [[ $content == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-content 
 fi
 if [[ $edit == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-edit;
+apt-get -y --force-yes install fusionpbx-app-edit
 fi
 if [[ $exec == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-exec
@@ -746,10 +746,10 @@ if [[ $yealink == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-yealink
 fi 
 if [[ $verto == "y" ]]; then
-apt-get -y --force-yes install freeswitch-mod-verto && break ;;
+apt-get -y --force-yes install freeswitch-mod-verto
 fi
 if [[ $minimized == "y" ]]; then
-apt-get -y --force-yes install freeswitch-theme-minimized && break ;;
+apt-get -y --force-yes install freeswitch-theme-minimized
 fi
 if [[ $all == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-adminer fusionpbx-app-backup fusionpbx-app-call-broadcast freeswitch-mod-callcenter fusionpbx-app-call-center fusionpbx-app-call-center-active fusionpbx-app-call-flows freeswitch-mod-conference fusionpbx-app-conference-centers \
