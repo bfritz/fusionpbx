@@ -258,33 +258,7 @@ else
 fi
 
 apt-get update && apt-get -y upgrade
-
-case $(uname -m) in armv7l)
-apt-get -y update && apt-get -y dist-upgrade
 apt-get -y install acpi-support-base usbmount usbutils
-esac
-
-#adding FusionPBX repo ( contains freeswitch armhf debs, and a few custom scripts debs)
-case $(uname -m) in armv7l)
-if [[ $freeswitch_repo == "stable" ]]; then
-echo 'installing armhf stable repo'
-/bin/cat > "/etc/apt/sources.list.d/voyagepbx.list" <<DELIM
-deb http://91.121.162.77/deb-stable/debian/ wheezy main
-DELIM
-
-elif [[ $freeswitch_repo == "beta" ]]; then
-echo 'installing armhf beta repo'
-/bin/cat > "/etc/apt/sources.list.d/voyagepbx.list" <<DELIM
-deb http://91.121.162.77/deb-beta/debian/ wheezy main
-DELIM
-
-elif [[ $freeswitch_repo == "head" ]]; then
-echo 'installing armhf head repo'
-/bin/cat > "/etc/apt/sources.list.d/voyagepbx.list" <<DELIM
-deb http://91.121.162.77/deb-head/debian/ wheezy main
-DELIM
-fi
-esac
 
 #freeswitch repo for x86 x86-64 bit pkgs
 case $(uname -m) in x86_64|i[4-6]86)
