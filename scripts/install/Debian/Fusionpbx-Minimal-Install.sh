@@ -77,9 +77,6 @@ fusionpbx_repo="release"
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
 keep_logs=5
 
-#Dahdi & freetdm (Under Development in pkgs)(Not Yet Useable)
-freeswitch_freetdm="n"
-
 #------Postgresql start-------
 #Optional (Not Required)
 # Please Select Server or Client not both.
@@ -120,16 +117,7 @@ db_user_passwd=
 #Install openvpn scripts
 install_openvpn="n"
 
-#--------Secure-Server-Root Lockdown-------------
-# This will lock down the root user to using keys to login to ssh. meaning no 
-# root login to ssh with out a ssh key
-secure_server="n"
-
-# Please paste the public key you wish to add to the permited keys file 
-# for root access via ssh
-ssh_key=
-
-#Install Ajenti
+#Install Ajenti Optional Admin Portal
 install_ajenti="n"
  
 #-------- Edit only if necessary---------
@@ -328,7 +316,7 @@ service ntp restart
 apt-get upgrade
 
 #install Freeswitch Deps
-apt-get -y install curl unixodbc uuid memcached libtiff5 libtiff-tools ghostscript libreoffice-common
+apt-get -y install curl unixodbc uuid memcached libtiff5 libtiff-tools 
 
 # install freeswitch
 apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-lang-en freeswitch-meta-codecs freeswitch-mod-commands freeswitch-mod-curl \
@@ -347,12 +335,6 @@ esac
 
 case $(uname -m) in armv7l)
 apt-get -y install freeswitch-mod-vlc
-esac
-
-case $(uname -m) in x86_64|i[4-6]86)
-if [[ $freeswitch_freetdm == y ]]; then
-apt-get -y install dahdi dahdi-linux freeswitch-mod-freetdm
-fi
 esac
 
 #make the conf dir 
@@ -642,11 +624,11 @@ adduser freeswitch www-data
 apt-get -y --force-yes install fusionpbx-core fusionpbx-app-calls fusionpbx-app-calls-active fusionpbx-app-call-block \
 		fusionpbx-app-contacts fusionpbx-app-destinations fusionpbx-app-dialplan fusionpbx-app-dialplan-inbound \
 		fusionpbx-app-dialplan-outbound fusionpbx-app-extensions fusionpbx-app-follow-me fusionpbx-app-gateways \
-		fusionpbx-app-fax fusionpbx-app-ivr-menu fusionpbx-app-login fusionpbx-app-log-viewer fusionpbx-app-modules \
-		fusionpbx-app-music-on-hold fusionpbx-app-recordings fusionpbx-app-registrations fusionpbx-app-ring-groups \
-		fusionpbx-app-settings fusionpbx-app-sip-profiles fusionpbx-app-sip-status fusionpbx-app-system \
-		fusionpbx-app-time-conditions fusionpbx-sounds fusionpbx-app-xml-cdr fusionpbx-app-vars fusionpbx-app-voicemails \
-		fusionpbx-app-voicemail-greetings fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb fusionpbx-theme-enhanced
+		fusionpbx-app-ivr-menu fusionpbx-app-login fusionpbx-app-log-viewer fusionpbx-app-modules fusionpbx-app-music-on-hold \
+		fusionpbx-app-recordings fusionpbx-app-registrations fusionpbx-app-ring-groups fusionpbx-app-settings \
+		fusionpbx-app-sip-profiles fusionpbx-app-sip-status fusionpbx-app-system fusionpbx-app-time-conditions \
+		fusionpbx-sounds fusionpbx-app-xml-cdr fusionpbx-app-vars fusionpbx-app-voicemails fusionpbx-app-voicemail-greetings \
+		fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb fusionpbx-theme-enhanced
 
 #Temp fix with pkgs
 ln -s /usr/share/examples/fusionpbx /usr/share/fusionpbx
@@ -1016,17 +998,6 @@ fi
 case $(uname -m) in armv7l)
 apt-get autoclean && apt-get autoremove
 esac
-
-#Secure System
-if [[ $secure_server == "y" ]]; then
-mdir ~/.ssh
-touch ~/.ssh/authorized_keys
-cat >> ~/.ssh/authorized_keys << DELIM
-$ssh_key
-DELIM
-sed -i /etc/ssh/sshd_config -e s,'PermitRootLogin yes','#PermitRootLogin no',
-sevice ssh restart
-fi
 
 #Ajenti admin portal. Makes maintaining the system easier.
 #ADD Ajenti repo & ajenti
