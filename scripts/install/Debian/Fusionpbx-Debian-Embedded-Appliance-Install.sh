@@ -84,13 +84,6 @@ keep_logs=5
 # Install postgresql Client 9.3 for connection to remote postgresql servers (y/n)
 postgresql_client="n"
 
-# Install postgresql server 9.3 (y/n) (client included)(Local Machine)
-# Notice:
-# You should not use postgresql server on a nand/emmc/sd. It cuts the performance
-# life in half due to all the needed reads and writes. This cuts the life of
-# your pbx emmc/sd in half.
-postgresql_server="n"
-
 # Set Postgresql Server Admin username ( Lower case only )
 pgsql_admin=
 
@@ -901,39 +894,6 @@ cat << DELIM
 	Database Password: "$db_user_passwd"
 	Create Database Username: Database_Superuser_Name of the remote postgresql server
 	Create Database Password: Database_Superuser_password of the remote postgresql server
-DELIM
-fi
-
-#install & configure basic postgresql-server
-if [[ $postgresql_server == "y" ]]; then
-	clear
-	case $(uname -m) in x86_64|i[4-6]86)
-	for i in postgresql-9.3 php5-pgsql ;do apt-get -y install "${i}"; done
-	esac
-	
-	case $(uname -m) in armv7l)
-	echo "no are deb pkgs for pgsql postgresql-client-9.3"
-	echo "postgresql-9.1 is being installed"
-	for i in postgresql-9.1 php5-pgsql ;do apt-get -y install "${i}"; done
-	esac
-	
-	service php5-fpm restart
-	#Adding a SuperUser and Password for Postgresql database.
-	su -l postgres -c "/usr/bin/psql -c \"create role $pgsql_admin with superuser login password '$pgsql_admin_passwd'\""
-	clear
-echo ''
-	printf '	Please open a web browser to http://'; ip -f inet addr show dev $net_iface | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'   
-cat << DELIM
-	Or the Doamin name asigned to the machine like http://"$(hostname).$(dnsdomainname)".
-	On the First configuration page of the web user interface
-	Please Select the PostgreSQL option in the pull-down menu as your Database
-	Also Please fill in the SuperUser Name and Password fields.
-	On the Second Configuration Page of the web user interface please fill in the following fields:
-	Database Name: "$db_name"
-	Database Username: "$db_user_name"
-	Database Password: "$db_user_passwd"
-	Create Database Username: "$pgsql_admin"
-	Create Database Password: "$pgsql_admin_passwd"
 DELIM
 else
 clear
