@@ -1139,7 +1139,3 @@ apt-get update &> /dev/null && apt-get -y install ajenti
 fi
 
 echo " The install $wui_name minimal install has finished...  "
-
-echo " Enabling setup menu " 
-echo
-setup-menu.sh
