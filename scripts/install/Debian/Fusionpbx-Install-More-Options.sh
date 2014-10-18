@@ -673,7 +673,7 @@ fi
 if [[ $call_broadcast == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-call-broadcast
 fi
-if [[ $ == "callcenter" ]]; then
+if [[ $call_center == "y" ]]; then
 apt-get -y --force-yes install freeswitch-mod-callcenter fusionpbx-app-call-center fusionpbx-app-call-center-active
 fi
 if [[ $call_flows == "y" ]]; then
@@ -712,10 +712,10 @@ fi
 if [[ $rtmp == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-sipml5 freeswitch-mod-rtmp
 fi
-if [[ $sql == "y" ]]; then
+if [[ $sql_query == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-sql-query
 fi
-if [[ $ == "y" ]]; then
+if [[ $traffic_graph == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-traffic-graph
 fi
 if [[ $xmpp == "y" ]]; then
