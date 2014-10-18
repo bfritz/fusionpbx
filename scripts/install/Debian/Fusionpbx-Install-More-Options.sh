@@ -722,28 +722,28 @@ if [[ $xmpp == "y" ]]; then
 apt-get -y --force-yes install freeswitch-mod-dingaling fusionpbx-app-xmpp;
 fi
 if [[ $aastra == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-aastra 
+apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-aastra  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/aastra /etc/fusionpbx/resources/templates/provision/
 fi
 if [[ $cisco == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-cisco
+apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-cisco && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/cisco /etc/fusionpbx/resources/templates/provision/
 fi
 if [[ $grandstream == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-grandstream
+apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-grandstream && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/grandstream /etc/fusionpbx/resources/templates/provision/
 fi
 if [[ $linksys == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-linksys 
+apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-linksys  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/linksys /etc/fusionpbx/resources/templates/provision/
 fi
 if [[ $panasonic == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-panasonic 
+apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-panasonic  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/panasonic /etc/fusionpbx/resources/templates/provision/
 fi
 if [[ $polycom == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-polycom
+apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-polycom && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/polycom /etc/fusionpbx/resources/templates/provision/
 fi
 if [[ $snom == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-snom
+apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-snom && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/snom /etc/fusionpbx/resources/templates/provision/
 fi
 if [[ $yealink == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-yealink
+apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-yealink && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/yealink /etc/fusionpbx/resources/templates/provision/
 fi 
 if [[ $verto == "y" ]]; then
 apt-get -y --force-yes install freeswitch-mod-verto
@@ -756,7 +756,7 @@ apt-get -y --force-yes install fusionpbx-app-adminer fusionpbx-app-backup fusion
   				fusionpbx-app-conferences-active fusionpbx-app-meetings fusionpbx-app-conferences fusionpbx-app-content fusionpbx-app-edit fusionpbx-app-exec freeswitch-mod-fifo fusionpbx-app-fifo fusionpbx-app-fifo-list fusionpbx-app-hot-desking fusionpbx-app-schemas \
   				fusionpbx-app-services fusionpbx-app-sipml5 freeswitch-mod-rtmp fusionpbx-app-sql-query fusionpbx-app-traffic-graph freeswitch-mod-dingaling fusionpbx-app-xmpp fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-aastra \
   				fusionpbx-provisioning-template-cisco fusionpbx-provisioning-template-grandstream fusionpbx-provisioning-template-linksys fusionpbx-provisioning-template-panasonic fusionpbx-app-provision fusionpbx-provisioning-template-polycom fusionpbx-app-provision \
-  				fusionpbx-provisioning-template-snom fusionpbx-provisioning-template-yealink fusionpbx-theme-minimized 
+  				fusionpbx-provisioning-template-snom fusionpbx-provisioning-template-yealink fusionpbx-theme-minimized && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/* /etc/fusionpbx/resources/templates/provision/
 fi
 
 #Temp fix with pkgs
