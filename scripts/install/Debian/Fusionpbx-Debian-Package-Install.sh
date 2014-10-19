@@ -27,13 +27,13 @@
 cat  <<  DELIM
 
         This Is A One Time Install Script. ( Not Ment For Lamp Installs )
-            
+
         This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy).
-            
+
                     It Is Not Intended To Be Run Multi Times
-            
-        If It Fails For Any Reason Please Report To r.neese@gmail.com. 
-            
+
+        If It Fails For Any Reason Please Report To r.neese@gmail.com.
+
         Please Include Any Screen Output You Can To Show Where It Fails.
 
 DELIM
@@ -43,9 +43,9 @@ if [[ -f /proc/vz ]]; then
 cat << DELIM
 
     Note: "
-        Those of you running this script on openvz. You must run it as root and 
+        Those of you running this script on openvz. You must run it as root and
         bash  Fusionpbx-Debian-Pkg-Install-New.sh or it fails the networking check.
-        Please take the time to refer to this document if you have install issues 
+        Please take the time to refer to this document if you have install issues
         on openvz
         http://openvz.org/Virtual_Ethernet_device and make sure to setup a eth0 .
 
@@ -57,7 +57,7 @@ fi
 #<------Start Edit HERE--------->
 
 #Network Interface selection
-#Default = eth0 
+#Default = eth0
 net_iface=eth0
 
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
@@ -69,7 +69,7 @@ adminer="n" # : integrated for an administrator in the superadmin group to enabl
 backup="n" # : pbx backup module. backup sqlite db / configs/ logs
 call_broadcast="n" # : Create a recording and select one or more groups to have the system call and play the recording
 call_center="n" # : display queue status, agent status, tier status for call centers using mod_callcenter call queues
-call_flows="n" # : Typically used with day night mode. To direct calls between two destinations. 
+call_flows="n" # : Typically used with day night mode. To direct calls between two destinations.
 conference_centers="n" # : tools for multi room confrences and room contol
 conference="n" # : tools for single room confrences and room contol
 content="n" # : Advanced-Content Manager
@@ -350,9 +350,9 @@ service freeswitch restart
 #Start of FusionPBX / nginx / php5 install
 #Install and configure  PHP + Nginx + sqlite3 for use with the fusionpbx gui.
 
-apt-get -y install sqlite3 ssl-cert nginx php5-cli php5-common php-apc php5-gd php-db \
-				php5-fpm php5-memcache php5-odbc php-pear php5-sqlite
-				
+apt-get -y install sqlite3 ssl-cert nginx php5-cli php5-common php-apc php5-gd \
+		php-db php5-fpm php5-memcache php5-odbc php-pear php5-sqlite
+
 # Changing file upload size from 2M to 15M
 /bin/sed -i $php_ini -e 's#"upload_max_filesize = 2M"#"upload_max_filesize = 15M"#'
 
@@ -412,12 +412,12 @@ server{
 
 		#yealink mac
 		rewrite "^.*/([A-Fa-f0-9]{12})(\.(xml|cfg))?$" /app/provision/index.php?mac=\$1 last;
-	
+
 		if (\$uri !~* ^.*provision.*$) {
 			rewrite ^(.*) https://\$host\$1 permanent;
 			break;
-		}	
-		
+		}
+
         access_log /var/log/nginx/access.log;
         error_log /var/log/nginx/.error.log;
 
@@ -535,9 +535,9 @@ http {
 	open_file_cache_valid 30s;
 	open_file_cache_min_uses 2;
 	open_file_cache_errors off;
-	
+
 	fastcgi_cache_path /var/cache/nginx levels=1:2 keys_zone=microcache:10m max_size=1000m inactive=60m;
-	
+
 	##
 	# Logging Settings
 	##
@@ -573,7 +573,7 @@ http {
 	##
 	# Uncomment it if you installed nginx-passenger
 	##
-	
+
 	#passenger_root /usr;
 	#passenger_ruby /usr/bin/ruby;
 
@@ -600,15 +600,15 @@ for i in nginx php5-fpm ;do service "${i}" restart > /dev/null 2>&1 ; done
 adduser www-data freeswitch
 adduser freeswitch www-data
 
-# Install FusionPBX Web User Interface 
+# Install FusionPBX Web User Interface
 apt-get -y --force-yes install fusionpbx-core fusionpbx-app-calls fusionpbx-app-calls-active fusionpbx-app-call-block \
-		fusionpbx-app-contacts fusionpbx-app-destinations fusionpbx-app-dialplan fusionpbx-app-dialplan-inbound \
-		fusionpbx-app-dialplan-outbound fusionpbx-app-extensions fusionpbx-app-follow-me fusionpbx-app-gateways \
-		fusionpbx-app-ivr-menu fusionpbx-app-login fusionpbx-app-log-viewer fusionpbx-app-modules fusionpbx-app-music-on-hold \
-		fusionpbx-app-recordings fusionpbx-app-registrations fusionpbx-app-ring-groups fusionpbx-app-settings \
-		fusionpbx-app-sip-profiles fusionpbx-app-sip-status fusionpbx-app-system fusionpbx-app-time-conditions \
-		fusionpbx-sounds fusionpbx-app-xml-cdr fusionpbx-app-vars fusionpbx-app-voicemails fusionpbx-app-voicemail-greetings \
-		fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb fusionpbx-theme-enhanced
+	fusionpbx-app-contacts fusionpbx-app-destinations fusionpbx-app-dialplan fusionpbx-app-dialplan-inbound \
+	fusionpbx-app-dialplan-outbound fusionpbx-app-extensions fusionpbx-app-follow-me fusionpbx-app-gateways \
+	fusionpbx-app-ivr-menu fusionpbx-app-login fusionpbx-app-log-viewer fusionpbx-app-modules fusionpbx-app-music-on-hold \
+	fusionpbx-app-recordings fusionpbx-app-registrations fusionpbx-app-ring-groups fusionpbx-app-settings \
+	fusionpbx-app-sip-profiles fusionpbx-app-sip-status fusionpbx-app-system fusionpbx-app-time-conditions \
+	fusionpbx-sounds fusionpbx-app-xml-cdr fusionpbx-app-vars fusionpbx-app-voicemails fusionpbx-app-voicemail-greetings \
+	fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb fusionpbx-theme-enhanced
 
 #Optional APP PKGS
 if [[ $adminer == "y" ]]; then
@@ -633,7 +633,7 @@ if [[ $conference == "y" ]]; then
 apt-get -y --force-yes install freeswitch-mod-conference fusionpbx-app-conferences fusionpbx-app-conferences-active fusionpbx-app-meetings 
 fi
 if [[ $content == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-content 
+apt-get -y --force-yes install fusionpbx-app-content
 fi
 if [[ $edit == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-edit
@@ -691,7 +691,7 @@ apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fus
 fi
 if [[ $yealink == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-yealink && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/yealink /etc/fusionpbx/resources/templates/provision/
-fi 
+fi
 if [[ $verto == "y" ]]; then
 apt-get -y --force-yes install freeswitch-mod-verto
 fi
@@ -963,13 +963,13 @@ if [[ $postgresql_client == "y" ]]; then
 	case $(uname -m) in x86_64|i[4-6]86)
 	for i in postgresql-client-9.3 php5-pgsql ;do apt-get -y install "${i}"; done
 	esac
-	
+
 	case $(uname -m) in armv7l)
 	echo "no are deb pkgs for pgsql postgresql-client-9.3"
 	echo "postgresql-client-9.1 is being installed"
 	for i in postgresql-client-9.1 php5-pgsql ;do apt-get -y install "${i}"; done
 	esac
-		
+
 	service php5-fpm restart
 	echo
 	printf '	Please open a web-browser to http://'; ip -f inet addr show dev $net_iface | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
@@ -995,14 +995,15 @@ if [[ $postgresql_server == "y" ]]; then
 	case $(uname -m) in x86_64|i[4-6]86)
 	for i in postgresql-9.3 php5-pgsql ;do apt-get -y install "${i}"; done
 	esac
-	
+
 	case $(uname -m) in armv7l)
 	echo "no are deb pkgs for pgsql postgresql-client-9.3"
 	echo "postgresql-9.1 is being installed"
 	for i in postgresql-9.1 php5-pgsql ;do apt-get -y install "${i}"; done
 	esac
-	
+
 	service php5-fpm restart
+
 	#Adding a SuperUser and Password for Postgresql database.
 	su -l postgres -c "/usr/bin/psql -c \"create role $pgsql_admin with superuser login password '$pgsql_admin_passwd'\""
 	clear
@@ -1040,7 +1041,7 @@ DELIM
 
 apt-get install -y --force-yes custom-scripts
 
-#Install openvpn openvpn-scripts 
+#Install openvpn openvpn-scripts
 if [[ $install_openvpn == "y" ]]; then
 apt-get install openvpn openvpn-scripts
 fi
