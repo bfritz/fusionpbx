@@ -1,5 +1,5 @@
 #!/bin/bash
-#Date Aug 26 2014 15:00 CST
+#Date Oct 19 2014 08:45 CDT
 ################################################################################
 # The MIT License (MIT)
 #
@@ -45,17 +45,6 @@ DELIM
 exit
 fi
 ################################################################################
-case $(uname -m) in armv7l)
-cat << DELIM
-    Note:
-        It is suggested you only use sqlite and or postgresql client for best preformance on 
-        armhf when using a sd or emmc or nand.
-        For those arm units supporting sata and usb3 harddrives you can opt for Postgrsql if 
-        you wish. Currently only Postgresql 9.1 is supported in the armhf pkgs. I have not 
-        foud a repo with 9.3 pkgs. I will update the script when I do.
-DELIM
-esac
-################################################################################
 
 #<------Start Edit HERE--------->
 
@@ -71,13 +60,13 @@ odroid_boards="n"
 # Default is stable (currently there is only one working repo for freeswitch)
 freeswitch_repo="stable"
 
-#Fusionpbx repo (release = 3.6.0 / devel = 3.5) 
-fusionpbx_repo="release"
+#Fusionpbx repo (stable = 3.6.2 / devel = 3.5) 
+fusionpbx_repo="stable"
 
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
 keep_logs=5
 
-#----Optional Apps/Modules----
+#----Optional-Fusionpbx-Apps/Modules----
 
 adminer="n" # : integrated for an administrator in the superadmin group to enable easy database access
 backup="n" # : pbx backup module. backup sqlite db / configs/ logs
@@ -110,7 +99,7 @@ verto="n" # (x86/amd64 Only) (future option on arm)
 minimized_theme="n" # : minimal theme for fusionpbx
 all="n" #: Install all extra modules for fusionpbx and related freeswitch deps
 
-#------Postgresql start-------
+#------Postgresql-client-server-start-------
 #Optional (Not Required)
 # Please Select Server or Client not both.
 # Used for connecting to remote postgresql database servers
@@ -144,7 +133,7 @@ db_user_name=fusionpbx
 # Please set a ver secure passwd
 db_user_passwd=
 
-#-------Postgresql-End--------------
+#-------Extra-Optinal-Componets---------
 
 #Extra Option's
 #Install openvpn scripts
@@ -163,6 +152,7 @@ fs_log_dir="/var/log/freeswitch"
 fs_recordings_dir="/var/lib/freeswitch/recordings"
 fs_run_dir="/var/run/freeswitch"
 fs_scripts_dir="/var/lib/fusionpbx/scripts"
+fs_sounds_dir="/usr/share/freeswitch/sounds"
 fs_storage_dir="/var/lib/freeswitch/storage"
 #fs_temp_dir="/tmp"
 fs_usr=freeswitch
@@ -274,12 +264,6 @@ echo ' installing stable repo '
 deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
 DELIM
 
-elif [[ $freeswitch_repo == "beta" ]]; then
-echo 'installing beta repo'
-/bin/cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-deb http://files.freeswitch.org/repo/deb-beta/debian/ wheezy main
-DELIM
-
 elif [[ $freeswitch_repo == "master" ]]; then
 echo 'install master repo'
 /bin/cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
@@ -294,8 +278,8 @@ for i in update upgrade ;do apt-get -y "${i}" ; done
 esac
 
 #adding FusionPBX repo
-if [[ $fusionpbx_repo == "release" ]]; then
-echo 'installing fusionpbx release repo'
+if [[ $fusionpbx_repo == "stable" ]]; then
+echo 'installing fusionpbx stable repo'
 /bin/cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 deb http://repo.fusionpbx.com/deb/debian/ wheezy main
 DELIM
@@ -360,16 +344,21 @@ chown -R freeswitch:freeswitch "$fs_conf_dir"
 #fix permissions for "$fs_conf_dir" so www-data can write to it
 find "$fs_conf_dir" -type f -exec chmod 664 {} +
 find "$fs_conf_dir" -type d -exec chmod 775 {} +
+
 #fix permissions for "$fs_storage_dir" so www-data can write to it
-find "/var/lib/freeswitch/storage" -type f -exec chmod 664 {} +
-find "/var/lib/freeswitch/storage" -type d -exec chmod 775 {} +
+find "fs_storage_dir" -type f -exec chmod 664 {} +
+find "fs_storage_dir" -type d -exec chmod 775 {} +
+
+#fix for moh storage
+find "fs_sounds_dir" -type f -exec chmod 664 {} +
+find "fs_sounds_dir" -type d -exec chmod 775 {} +
 
 #fix permissions on the freeswitch xml_cdr dir so fusionpbx can read from it
 find "$fs_log_dir"/xml_cdr -type d -exec chmod 775 {} +
 
 cat > "/etc/default/freeswitch" << DELIM
 CONFDIR=$fs_conf_dir
-DAEMON_ARGS="-u $fs_usr -g $fs_grp -rp -conf $fs_conf_dir -db $fs_db_dir -log $fs_log_dir -scripts $fs_scripts_dir -run $fs_run_dir -storage $fs_storage_dir -recordings $fs_recordings_dir -nc"
+DAEMON_ARGS="-u $fs_usr -g $fs_grp -rp -conf $fs_conf_dir -db $fs_db_dir -log $fs_log_dir -scripts $fs_scripts_dir -run $fs_run_dir -storage $fs_storage_dir -recordings $fs_recordings_dir options"
 DELIM
 
 service freeswitch restart
@@ -1085,12 +1074,6 @@ DELIM
 fi
 
 apt-get install -y --force-yes custom-scripts
-
-#DigiDaz Tested and approved
-case $(uname -m) in armv7l)
-/bin/sed -i /usr/share/examples/fusionpbx/resources/templates/conf/autoload_configs/logfile.conf.xml -e 's#<map name="all" value="debug,info,notice,warning,err,crit,alert"/>#<map name="all" value="warning,err,crit,alert"/>#'
-/bin/sed -i "$WWW_PATH"/"$wui_name"/app/vars/app_defaults.php -e 's#{"var_name":"xml_cdr_archive","var_value":"dir","var_cat":"Defaults","var_enabled":"true","var_description":""}#{"var_name":"xml_cdr_archive","var_value":"none","var_cat":"Defaults","var_enabled":"true","var_description":""}#'
-esac
 
 #Install openvpn openvpn-scripts 
 if [[ $install_openvpn == "y" ]]; then
