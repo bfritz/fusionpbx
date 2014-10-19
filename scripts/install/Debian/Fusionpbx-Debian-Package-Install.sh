@@ -25,22 +25,27 @@
 #
 ################################################################################
 cat  <<  DELIM
-            This is a one time install script. (NOT MENT FOR LAMP INSTALLS)
-            This script is ment to be run on a fresh install of debian 7 (wheezy).
-            It is not intended to be run multi times
-            If it fails for any reason please report to r.neese@gmail.com. 
-            Please include any screen output you can to show where it fails.
+        This is a one time install script. (NOT MENT FOR LAMP INSTALLS)
+        
+        This script is ment to be run on a fresh install of debian 7 (wheezy).
+        
+        ...........It is not intended to be run multi times.........
+        
+        If It Fails For Any Reason Please Report To r.neese@gmail.com. 
+        
+        Please include any screen output you can to show where it fails.
 DELIM
 ################################################################################
 #checks to see if installing on openvz server
 if [[ -f /proc/vz ]]; then
 cat << DELIM
       Note: "
-            Those of you running this script on openvz. You must run it as root and 
-            bash  Fusionpbx-Debian-Pkg-Install-New.sh or it fails the networking check.
-            Please take the time to refer to this document if you have install issues 
-            on openvz
-            http://openvz.org/Virtual_Ethernet_device and make sure to setup a eth0 .
+        Those of you running this script on openvz. You must run it as root and 
+        bash Fusionpbx-Debian-Package-Install.sh or it fails the networking check.
+        
+        Please take the time to refer to this document if you have install issues 
+        on openvz,
+        http://openvz.org/Virtual_Ethernet_device and make sure to setup a eth0 .
 DELIM
 exit
 fi
@@ -51,17 +56,6 @@ fi
 #Network Interface selection
 #Default = eth0 
 net_iface=eth0
-
-#Use for configuring a odroid
-odroid_boards="n"
-
-#Required
-#Stable/release=1.4/master=1.5 aka git head
-# Default is stable (currently there is only one working repo for freeswitch)
-freeswitch_repo="stable"
-
-#Fusionpbx repo (stable = 3.6.2 / devel = 3.5) 
-fusionpbx_repo="stable"
 
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
 keep_logs=5
@@ -250,58 +244,36 @@ fi
 apt-get update && apt-get -y upgrade
 apt-get -y install acpi-support-base usbmount usbutils
 
-#freeswitch repo for x86 x86-64 bit pkgs
-case $(uname -m) in x86_64|i[4-6]86)
+#freeswitch release/stable repo for x86 x86-64 bit pkgs
 # install curl to fetch repo key
 echo ' installing curl '
 apt-get update && apt-get -y install curl
 
 #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
-
-if [[ $freeswitch_repo == "stable" ]]; then
 echo ' installing stable repo '
 /bin/cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
 DELIM
 
-elif [[ $freeswitch_repo == "master" ]]; then
-echo 'install master repo'
-/bin/cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-deb http://files.freeswitch.org/repo/deb-master/debian/ wheezy main
-DELIM
-fi
-
 #adding key for freeswitch repo
 echo 'fetcing repo key'
 curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
-for i in update upgrade ;do apt-get -y "${i}" ; done
-esac
 
-#adding FusionPBX repo
-if [[ $fusionpbx_repo == "stable" ]]; then
+#adding FusionPBX stable/release repo
 echo 'installing fusionpbx stable repo'
 /bin/cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 deb http://repo.fusionpbx.com/deb/debian/ wheezy main
 DELIM
 
-elif [[ $fusionpbx_repo == "devel" ]]; then
-echo 'installing fusionpbx devel repo'
-/bin/cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
-deb http://repo.fusionpbx.com/deb-dev/debian/ wheezy main
-DELIM
-fi
-
 #postgresql 9.3 repo for x86 x86-64 bit pkgs
-case $(uname -m) in x86_64|i[4-6]86)
 #add in pgsql 9.3
 cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
 deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
 DELIM
 #add pgsql repo key
 wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
-esac
 
-apt-get update
+for i in update upgrade ;do apt-get -y "${i}" ; done
 apt-get -y install ntp
 service ntp restart
 apt-get upgrade
@@ -350,7 +322,6 @@ find "fs_storage_dir" -type f -exec chmod 664 {} +
 find "fs_storage_dir" -type d -exec chmod 775 {} +
 
 #fix for moh storage
-find "fs_sounds_dir" -type f -exec chmod 664 {} +
 find "fs_sounds_dir" -type d -exec chmod 775 {} +
 
 #fix permissions on the freeswitch xml_cdr dir so fusionpbx can read from it
