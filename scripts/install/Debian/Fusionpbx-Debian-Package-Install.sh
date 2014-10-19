@@ -731,22 +731,23 @@ chmod 775 "$fs_log_dir"/xml_cdr
 
 for i in freeswitch nginx php5-fpm ;do service "${i}" restart >/dev/null 2>&1 ; done
 
-#Future Use
-#cat > "/etc/default/freeswitch" << DELIM
-#CONFDIR=$fs_conf_dir
-#fs-usr=freeswitch
-#fs-grp=$fs_usr
-#fs_conf=
-#fs_db=
-#fs_log=
-#fs_scripts=
-#fs_run=
-#fs_storage=
-#fs_recordings=
-#fs_options= -nc -rp
-#DAEMON_ARGS="-u $fs-usr -g $fs-grp -conf $fs_conf -db $fs_db -log $fs_log -scripts $fs_scripts -run $fs-run -storage $fs_storage -recordings $fs_recordings $fs_options"
+#For Future Use
+#cat > '/etc/default/freeswitch' << DELIM
+#CONFDIR="/etc/freeswitch"
+#fs_conf="/etc/freeswitch"
+#fs_db="/var/lib/freeswitch/db"
+#fs_log="/var/log/freeswitch"
+#fs_recordings="/var/lib/freeswitch/recordings"
+#fs_run="/var/run/freeswitch"
+#fs_scripts="/var/lib/fusionpbx/scripts"
+#fs_storage="/var/lib/freeswitch/storage"
+#fs_usr=freeswitch
+#fs_grp=\$fs_usr
+#fs_options="-nc -rp"
+#DAEMON_ARGS="-u \$fs_usr -g \$fs_grp -conf \$fs_conf -db \$fs_db -log \$fs_log -scripts \$fs_scripts -run \$fs_run -storage \$fs_storage -recordings \$fs_recordings \$fs_options"
 #DELIM
 
+#restarting freeswitch after path changes
 service freeswitch restart
 
 # SEE http://wiki.freeswitch.org/wiki/Fail2ban
