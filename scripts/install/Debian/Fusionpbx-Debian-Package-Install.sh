@@ -25,15 +25,17 @@
 #
 ################################################################################
 cat  <<  DELIM
-        This is a one time install script. (NOT MENT FOR LAMP INSTALLS)
+
+        This is a one time install script. ( NOT MENT FOR LAMP INSTALLS )
         
-        This script is ment to be run on a fresh install of debian 7 (wheezy).
+        This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy).
         
-        ...........It is not intended to be run multi times.........
+        ...........It Is Not Intended To Be Run Multi Times.........
         
         If It Fails For Any Reason Please Report To r.neese@gmail.com. 
         
         Please include any screen output you can to show where it fails.
+
 DELIM
 ################################################################################
 #checks to see if installing on openvz server
