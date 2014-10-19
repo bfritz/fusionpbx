@@ -1,5 +1,5 @@
 #!/bin/bash
-#Date Aug 26 2014 15:00 CST
+#Date Oct i9 2014 14:15 CDT
 ################################################################################
 # The MIT License (MIT)
 #
@@ -656,7 +656,7 @@ fi
 if [[ $services == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-services
 fi
-if [[ $rtmp == "y" ]]; then
+if [[ $sipml5 == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-sipml5 freeswitch-mod-rtmp
 fi
 if [[ $sql_query == "y" ]]; then
