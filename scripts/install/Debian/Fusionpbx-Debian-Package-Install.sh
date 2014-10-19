@@ -626,7 +626,7 @@ fi
 if [[ $call_flows == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-call-flows
 fi
-if [[ $conference_center == "y" ]]; then
+if [[ $conference_centers == "y" ]]; then
 apt-get -y --force-yes install freeswitch-mod-conference fusionpbx-app-conference-centers fusionpbx-app-conferences-active fusionpbx-app-meetings
 fi
 if [[ $conference == "y" ]]; then
@@ -647,7 +647,7 @@ fi
 if [[ $fifo == "y" ]]; then
 apt-get -y --force-yes install freeswitch-mod-fifo fusionpbx-app-fifo fusionpbx-app-fifo-list
 fi
-if [[ $hot_desking == "y" ]]; then
+if [[ $hot_desk == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-hot-desking
 fi
 if [[ $schemas == "y" ]]; then
@@ -695,7 +695,7 @@ fi
 if [[ $verto == "y" ]]; then
 apt-get -y --force-yes install freeswitch-mod-verto
 fi
-if [[ $minimized == "y" ]]; then
+if [[ $minimized_theme == "y" ]]; then
 apt-get -y --force-yes install freeswitch-theme-minimized
 fi
 if [[ $all == "y" ]]; then
@@ -733,11 +733,11 @@ for i in freeswitch nginx php5-fpm ;do service "${i}" restart >/dev/null 2>&1 ; 
 
 #For Future Use
 #cat > '/etc/default/freeswitch' << DELIM
-#CONFDIR="/etc/freeswitch"
-#fs_conf="/etc/freeswitch"
+#CONFDIR="/etc/fusionpbx/switch/conf"
+#fs_conf="/etc/fusionpbx/switch/conf"
 #fs_db="/var/lib/freeswitch/db"
 #fs_log="/var/log/freeswitch"
-#fs_recordings="/var/lib/freeswitch/recordings"
+#fs_recordings="/var/lib/fusionpbx/recordings"
 #fs_run="/var/run/freeswitch"
 #fs_scripts="/var/lib/fusionpbx/scripts"
 #fs_storage="/var/lib/freeswitch/storage"
