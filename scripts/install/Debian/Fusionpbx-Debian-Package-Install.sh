@@ -25,36 +25,33 @@
 #
 ################################################################################
 cat  <<  DELIM
-            This is a one time install script. (NOT MENT FOR LAMP INSTALLS)
-            This script is ment to be run on a fresh install of debian 7 (wheezy).
-            It is not intended to be run multi times
-            If it fails for any reason please report to r.neese@gmail.com. 
-            Please include any screen output you can to show where it fails.
+
+        This Is A One Time Install Script. ( Not Ment For Lamp Installs )
+            
+        This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy).
+            
+                    It Is Not Intended To Be Run Multi Times
+            
+        If It Fails For Any Reason Please Report To r.neese@gmail.com. 
+            
+        Please Include Any Screen Output You Can To Show Where It Fails.
+
 DELIM
 ################################################################################
 #checks to see if installing on openvz server
 if [[ -f /proc/vz ]]; then
 cat << DELIM
-      Note: "
-            Those of you running this script on openvz. You must run it as root and 
-            bash  Fusionpbx-Debian-Pkg-Install-New.sh or it fails the networking check.
-            Please take the time to refer to this document if you have install issues 
-            on openvz
-            http://openvz.org/Virtual_Ethernet_device and make sure to setup a eth0 .
+
+    Note: "
+        Those of you running this script on openvz. You must run it as root and 
+        bash  Fusionpbx-Debian-Pkg-Install-New.sh or it fails the networking check.
+        Please take the time to refer to this document if you have install issues 
+        on openvz
+        http://openvz.org/Virtual_Ethernet_device and make sure to setup a eth0 .
+
 DELIM
 exit
 fi
-################################################################################
-case $(uname -m) in armv7l)
-cat << DELIM
-    Note:
-        It is suggested you only use sqlite and or postgresql client for best preformance on 
-        armhf when using a sd or emmc or nand.
-        For those arm units supporting sata and usb3 harddrives you can opt for Postgrsql if 
-        you wish. Currently only Postgresql 9.1 is supported in the armhf pkgs. I have not 
-        foud a repo with 9.3 pkgs. I will update the script when I do.
-DELIM
-esac
 ################################################################################
 
 #<------Start Edit HERE--------->
@@ -63,21 +60,10 @@ esac
 #Default = eth0 
 net_iface=eth0
 
-#Use for configuring a odroid
-odroid_boards="n"
-
-#Required
-#Stable/release=1.4/master=1.5 aka git head
-# Default is stable (currently there is only one working repo for freeswitch)
-freeswitch_repo="stable"
-
-#Fusionpbx repo (release = 3.6.0 / devel = 3.5) 
-fusionpbx_repo="release"
-
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
 keep_logs=5
 
-#----Optional Apps/Modules----
+#----Optional Fusionpbx Apps/Modules----
 
 adminer="n" # : integrated for an administrator in the superadmin group to enable easy database access
 backup="n" # : pbx backup module. backup sqlite db / configs/ logs
@@ -163,6 +149,8 @@ fs_log_dir="/var/log/freeswitch"
 fs_recordings_dir="/var/lib/freeswitch/recordings"
 fs_run_dir="/var/run/freeswitch"
 fs_scripts_dir="/var/lib/fusionpbx/scripts"
+fs_sounds_dir="/usr/share/freeswitch/sounds"
+fs_music_dir="$fs_sounds_dir/music"
 fs_storage_dir="/var/lib/freeswitch/storage"
 #fs_temp_dir="/tmp"
 fs_usr=freeswitch
@@ -261,66 +249,37 @@ apt-get update && apt-get -y upgrade
 apt-get -y install acpi-support-base usbmount usbutils
 
 #freeswitch repo for x86 x86-64 bit pkgs
-case $(uname -m) in x86_64|i[4-6]86)
 # install curl to fetch repo key
 echo ' installing curl '
 apt-get update && apt-get -y install curl
 
 #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
-
-if [[ $freeswitch_repo == "stable" ]]; then
 echo ' installing stable repo '
 /bin/cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
 DELIM
 
-elif [[ $freeswitch_repo == "beta" ]]; then
-echo 'installing beta repo'
-/bin/cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-deb http://files.freeswitch.org/repo/deb-beta/debian/ wheezy main
-DELIM
-
-elif [[ $freeswitch_repo == "master" ]]; then
-echo 'install master repo'
-/bin/cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-deb http://files.freeswitch.org/repo/deb-master/debian/ wheezy main
-DELIM
-fi
-
 #adding key for freeswitch repo
 echo 'fetcing repo key'
 curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
-for i in update upgrade ;do apt-get -y "${i}" ; done
-esac
 
 #adding FusionPBX repo
-if [[ $fusionpbx_repo == "release" ]]; then
 echo 'installing fusionpbx release repo'
 /bin/cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 deb http://repo.fusionpbx.com/deb/debian/ wheezy main
 DELIM
 
-elif [[ $fusionpbx_repo == "devel" ]]; then
-echo 'installing fusionpbx devel repo'
-/bin/cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
-deb http://repo.fusionpbx.com/deb-dev/debian/ wheezy main
-DELIM
-fi
-
 #postgresql 9.3 repo for x86 x86-64 bit pkgs
-case $(uname -m) in x86_64|i[4-6]86)
 #add in pgsql 9.3
 cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
 deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
 DELIM
 #add pgsql repo key
 wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
-esac
 
-apt-get update
+for i in update upgrade ;do apt-get -y "${i}" ; done
 apt-get -y install ntp
 service ntp restart
-apt-get upgrade
 
 #install Freeswitch Deps
 apt-get -y install curl unixodbc uuid memcached libtiff5 libtiff-tools 
@@ -360,17 +319,21 @@ chown -R freeswitch:freeswitch "$fs_conf_dir"
 #fix permissions for "$fs_conf_dir" so www-data can write to it
 find "$fs_conf_dir" -type f -exec chmod 664 {} +
 find "$fs_conf_dir" -type d -exec chmod 775 {} +
+
 #fix permissions for "$fs_storage_dir" so www-data can write to it
-find "/var/lib/freeswitch/storage" -type f -exec chmod 664 {} +
-find "/var/lib/freeswitch/storage" -type d -exec chmod 775 {} +
+find "$fs_storage_dir" -type f -exec chmod 664 {} +
+find "$fs_storage_dir" -type d -exec chmod 775 {} +
+
+#fix permissions for "$fs_music_dir" so www-data can write to it
+find "$fs_music_dir" -type d -exec chmod 775 {} +
 
 #fix permissions on the freeswitch xml_cdr dir so fusionpbx can read from it
 find "$fs_log_dir"/xml_cdr -type d -exec chmod 775 {} +
 
 cat > "/etc/default/freeswitch" << DELIM
 CONFDIR=$fs_conf_dir
-fs-usr=freeswitch
-fs-grp=$fs_usr
+fs-usr=$fs_usr
+fs-grp=$fs_grp
 fs_conf=$fs_conf_dir
 fs_db=$fs_db_dir
 fs_log=$fs_log_dir
@@ -768,20 +731,21 @@ chmod 775 "$fs_log_dir"/xml_cdr
 
 for i in freeswitch nginx php5-fpm ;do service "${i}" restart >/dev/null 2>&1 ; done
 
-cat > "/etc/default/freeswitch" << DELIM
-CONFDIR=$fs_conf_dir
-fs-usr=freeswitch
-fs-grp=$fs_usr
-fs_conf=
-fs_db=
-fs_log=
-fs_scripts=
-fs_run=
-fs_storage=
-fs_recordings=
-fs_options= -nc -rp
-DAEMON_ARGS="-u $fs-usr -g $fs-grp -conf $fs_conf -db $fs_db -log $fs_log -scripts $fs_scripts -run $fs-run -storage $fs_storage -recordings $fs_recordings $fs_options"
-DELIM
+#Future Use
+#cat > "/etc/default/freeswitch" << DELIM
+#CONFDIR=$fs_conf_dir
+#fs-usr=freeswitch
+#fs-grp=$fs_usr
+#fs_conf=
+#fs_db=
+#fs_log=
+#fs_scripts=
+#fs_run=
+#fs_storage=
+#fs_recordings=
+#fs_options= -nc -rp
+#DAEMON_ARGS="-u $fs-usr -g $fs-grp -conf $fs_conf -db $fs_db -log $fs_log -scripts $fs_scripts -run $fs-run -storage $fs_storage -recordings $fs_recordings $fs_options"
+#DELIM
 
 service freeswitch restart
 
@@ -1074,51 +1038,12 @@ cat > /etc/sysctl.conf << DELIM
 kernel.panic = 10
 DELIM
 
-#DigiDaz Tested and approved
-#set fs to run in atempfs ramdrive
-cat >> /etc/fstab << DELIM
-tmpfs	/tmp	tmpfs	defaults	0	0
-tmpfs	/var/lib/freeswitch/db	tmpfs	defaults	0	0
-tmpfs   /var/tmp	tmpfs	defaults	0	0
-DELIM
-
-#DigiDaz Tested and approved
-if [[ $odroid_boards == "y" ]]; then
-cat > /etc/network/if-pre-up.d/copyip << DELIM
-#!/bin/bash
-if [ ! -f "/boot/ip.txt ];
-then
-break ;;
-elif [ -f "/boot/ip.txt.bak ];
-then
-break ;;
-else
-if [ -f "/boot/ip.txt ];
-then
-cp /boot/ip.txt /etc/network/interfaces
-mv /boot/ip.txt /boot/ip.txt.bak
-fi
-fi
-DELIM
-fi
-
 apt-get install -y --force-yes custom-scripts
-
-#DigiDaz Tested and approved
-case $(uname -m) in armv7l)
-/bin/sed -i /usr/share/examples/fusionpbx/resources/templates/conf/autoload_configs/logfile.conf.xml -e 's#<map name="all" value="debug,info,notice,warning,err,crit,alert"/>#<map name="all" value="warning,err,crit,alert"/>#'
-/bin/sed -i "$WWW_PATH"/"$wui_name"/app/vars/app_defaults.php -e 's#{"var_name":"xml_cdr_archive","var_value":"dir","var_cat":"Defaults","var_enabled":"true","var_description":""}#{"var_name":"xml_cdr_archive","var_value":"none","var_cat":"Defaults","var_enabled":"true","var_description":""}#'
-esac
 
 #Install openvpn openvpn-scripts 
 if [[ $install_openvpn == "y" ]]; then
 apt-get install openvpn openvpn-scripts
 fi
-
-#apt-get cleanup (clean and remove unused pkgs)
-case $(uname -m) in armv7l)
-apt-get autoclean && apt-get autoremove
-esac
 
 #Ajenti admin portal. Makes maintaining the system easier.
 #ADD Ajenti repo & ajenti
