@@ -5,16 +5,16 @@
 BUILD_RELEASE_PKGS="y"
 
 if [[ $BUILD_RELEASE_PKGS == "y" ]]; then
-PKGVER=3.6.2~2 # this is the version number you update
+PKGVER=3.6.2~6 # this is the version number you update
 SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/trunk/Debian-Release-Pkg-Scripts
 SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
 REPO=/usr/home/repo/deb/debian
 WRK_DIR=/usr/src/fusionpbx-release-pkg-build
 else
-PKGVER=3.7.0-1 # this is the version number you update
+PKGVER=3.7.0-5 # this is the version number you update
 SVN_SRC=http://fusionpbx.googlecode.com/svn/branches/dev
-SVN_SRC_2=http://fusionpbx.googlecode.com/svn/branches/dev/Debian-Devel-Pkgs-Scripts
+SVN_SRC_2=http://fusionpbx.googlecode.com/svn/branches/dev/Debian-Devel-Pkg-Scripts
 SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
 REPO=/usr/home/repo/deb-dev/debian
 WRK_DIR=/usr/src/fusionpbx-devel-pkg-build
