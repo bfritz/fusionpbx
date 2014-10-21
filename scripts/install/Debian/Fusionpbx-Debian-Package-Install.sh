@@ -256,7 +256,7 @@ apt-get -y install acpi-support-base curl usbmount usbutils
 
 #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
 echo ' installing stable repo '
-/bin/cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
 DELIM
 
@@ -266,8 +266,8 @@ curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt
 
 #adding FusionPBX repo
 echo 'installing fusionpbx release repo'
-/bin/cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
-deb http://repo.fusionpbx.com/deb/debian/ wheezy main
+cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
+deb http://repo.fusionpbx.com/release/debian/ wheezy main
 DELIM
 
 #postgresql 9.3 repo for x86 x86-64 bit pkgs
