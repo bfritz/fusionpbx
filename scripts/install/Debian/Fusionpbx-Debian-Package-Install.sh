@@ -960,18 +960,9 @@ iptables -I INPUT -j DROP -p udp --dport 5080 -m string --string "friendly-scann
 
 #Install postgresql-client
 if [[ $postgresql_client == "y" ]]; then
-	clear
-	case $(uname -m) in x86_64|i[4-6]86)
 	for i in postgresql-client-9.3 php5-pgsql ;do apt-get -y install "${i}"; done
-	esac
-
-	case $(uname -m) in armv7l)
-	echo "no are deb pkgs for pgsql postgresql-client-9.3"
-	echo "postgresql-client-9.1 is being installed"
-	for i in postgresql-client-9.1 php5-pgsql ;do apt-get -y install "${i}"; done
-	esac
-
 	service php5-fpm restart
+	clear
 	echo
 	printf '	Please open a web-browser to http://'; ip -f inet addr show dev $net_iface | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
 cat << DELIM
@@ -992,23 +983,13 @@ fi
 
 #install & configure basic postgresql-server
 if [[ $postgresql_server == "y" ]]; then
-	clear
-	case $(uname -m) in x86_64|i[4-6]86)
 	for i in postgresql-9.3 php5-pgsql ;do apt-get -y install "${i}"; done
-	esac
-
-	case $(uname -m) in armv7l)
-	echo "no are deb pkgs for pgsql postgresql-client-9.3"
-	echo "postgresql-9.1 is being installed"
-	for i in postgresql-9.1 php5-pgsql ;do apt-get -y install "${i}"; done
-	esac
-
 	service php5-fpm restart
 
 	#Adding a SuperUser and Password for Postgresql database.
 	su -l postgres -c "/usr/bin/psql -c \"create role $pgsql_admin with superuser login password '$pgsql_admin_passwd'\""
 	clear
-echo ''
+	echo
 	printf '	Please open a web browser to http://'; ip -f inet addr show dev $net_iface | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'   
 cat << DELIM
 	Or the Doamin name asigned to the machine like http://"$(hostname).$(dnsdomainname)".
