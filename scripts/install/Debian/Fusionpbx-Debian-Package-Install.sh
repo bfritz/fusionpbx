@@ -252,12 +252,7 @@ else
 fi
 
 apt-get update && apt-get -y upgrade
-apt-get -y install acpi-support-base usbmount usbutils
-
-#freeswitch repo for x86 x86-64 bit pkgs
-# install curl to fetch repo key
-echo ' installing curl '
-apt-get update && apt-get -y install curl
+apt-get -y install acpi-support-base curl usbmount usbutils
 
 #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
 echo ' installing stable repo '
@@ -299,15 +294,7 @@ apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-lang-en fre
 		freeswitch-mod-event-multicast freeswitch-mod-event-socket freeswitch-mod-event-test freeswitch-mod-local-stream freeswitch-mod-native-file \
 		freeswitch-mod-sndfile freeswitch-mod-tone-stream freeswitch-mod-lua freeswitch-mod-console freeswitch-mod-logfile freeswitch-mod-syslog \
 		freeswitch-mod-say-en freeswitch-mod-posix-timer freeswitch-mod-timerfd freeswitch-mod-v8 freeswitch-mod-xml-cdr freeswitch-mod-xml-curl \
-		freeswitch-mod-xml-rpc freeswitch-sounds freeswitch-music freeswitch-conf-vanilla
-
-case $(uname -m) in x86_64|i[4-6]86)
-apt-get -y install freeswitch-mod-shout
-esac
-
-case $(uname -m) in armv7l)
-apt-get -y install freeswitch-mod-vlc
-esac
+		freeswitch-mod-xml-rpc freeswitch-sounds freeswitch-music freeswitch-conf-vanilla freeswitch-mod-shout
 
 #make the conf dir
 mkdir -p "$fs_conf_dir"
@@ -357,7 +344,7 @@ service freeswitch restart
 #Install and configure  PHP + Nginx + sqlite3 for use with the fusionpbx gui.
 
 apt-get -y install sqlite3 ssl-cert nginx php5-cli php5-common php-apc php5-gd \
-		php-db php5-fpm php5-memcache php5-odbc php-pear php5-sqlite
+		php-db php5-fpm php5-memcache php-pear php5-sqlite
 
 # Changing file upload size from 2M to 15M
 /bin/sed -i $php_ini -e 's#"upload_max_filesize = 2M"#"upload_max_filesize = 15M"#'
@@ -746,7 +733,7 @@ for i in freeswitch nginx php5-fpm ;do service "${i}" restart >/dev/null 2>&1 ; 
 #fs_recordings="/var/lib/fusionpbx/recordings"
 #fs_run="/var/run/freeswitch"
 #fs_scripts="/var/lib/fusionpbx/scripts"
-#fs_storage="/var/lib/freeswitch/storage"
+#fs_storage="/var/lib/fusionpbx/storage"
 #fs_usr=freeswitch
 #fs_grp=\$fs_usr
 #fs_options="-nc -rp"
