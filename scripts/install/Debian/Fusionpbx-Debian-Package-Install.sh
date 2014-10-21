@@ -131,6 +131,12 @@ db_user_name=fusionpbx
 db_user_passwd=
 
 #-------Postgresql-End--------------
+# disbale generation of xml_cdr files and only store in cdr in the database
+xmlcdr="n"
+
+# disable  extra logging and on show warnings/errors. shrinks the size of 
+# logfiles and whats displayed in the logging page
+logging="n"
 
 #Extra Option's
 #Install openvpn scripts
@@ -937,6 +943,16 @@ fi
 DELIM
 
 chmod 664 /etc/cron.daily/freeswitch_log_rotation
+
+#option to disable xml_cdr files
+if [[ $xmlcdr == "y" ]]; then
+/bin/sed -i "$WWW_PATH"/"$wui_name"/app/vars/app_defaults.php -e 's#{"var_name":"xml_cdr_archive","var_value":"dir","var_cat":"Defaults","var_enabled":"true","var_description":""}#{"var_name":"xml_cdr_archive","var_value":"none","var_cat":"Defaults","var_enabled":"true","var_description":""}#'
+fi
+
+#option to disable some loging execpt for 
+if [[ $logging == "y" ]]; then
+/bin/sed -i /usr/share/examples/fusionpbx/resources/templates/conf/autoload_configs/logfile.conf.xml -e 's#<map name="all" value="debug,info,notice,warning,err,crit,alert"/>#<map name="all" value="warning,err,crit,alert"/>#'
+fi
 
 # restarting services
 for i in php5-fpm niginx monit fail2ban freeswitch ;do service "${i}" restart  >/dev/null 2>&1 ; done
