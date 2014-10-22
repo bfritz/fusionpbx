@@ -4,7 +4,7 @@ set -e
 case "$1" in
   configure)
     for x in \
-      /usr/share/nginx/www/fusionpbx/app/sip_status
+      /var/www/fusionpbx/app/sip_status
     do
       chown -R www-data:www-data $x
     done

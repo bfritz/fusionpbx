@@ -3,7 +3,7 @@ set -e
 
 case "$1" in
   remove|upgrade|deconfigure)
-    if [ -d /usr/share/nginx/www/fusionpbx/themes/enhanced ]; then
+    if [ -d /var/www/fusionpbx/themes/enhanced ]; then
       echo "We're about to remove fusionpnx enhanced theme..." >&2
     fi
     ;;

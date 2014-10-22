@@ -49,8 +49,8 @@ install: build
 	# Add here commands to install the package into debian/lookup.
 	# cd builddir && $(MAKE) INSTALL_ROOT=$(CURDIR)/debian/$(APPNAME) install
 	#rm -rf $(CURDIR)/debian/lookup-dbg
-	mkdir -p debian/fusionpbx-app-sipml5/usr/share/nginx/www/fusionpbx/app
-	cp -pr sipml5 debian/fusionpbx-app-sipml5/usr/share/nginx/www/fusionpbx/app
+	mkdir -p debian/fusionpbx-app-sipml5/var/www/fusionpbx/app
+	cp -pr sipml5 debian/fusionpbx-app-sipml5/var/www/fusionpbx/app
 
 build-indep: build install
 

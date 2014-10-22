@@ -3,7 +3,7 @@ set -e
 
 case "$1" in
   remove|upgrade|deconfigure)
-    if [ -d /usr/share/nginx/www/fusionpbx/app/contacts ]; then
+    if [ -d /var/www/fusionpbx/app/contacts ]; then
       echo "We're about to remove a configured fusionpbx contacts app..." >&2
     fi
     ;;

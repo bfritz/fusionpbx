@@ -5,7 +5,7 @@ case "$1" in
   configure)
     for x in \
       /etc/fusionpbx \
-      /usr/share/nginx/www/fusionpbx \
+      /var/www/fusionpbx \
       /var/lib/fusionpbx;
     do
       chown -R www-data:www-data $x
