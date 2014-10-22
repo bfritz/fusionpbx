@@ -5,18 +5,18 @@
 BUILD_RELEASE_PKGS="y"
 
 if [[ $BUILD_RELEASE_PKGS == "y" ]]; then
-PKGVER=3.6.2~6 # this is the version number you update
+PKGVER=3.6.2-6 # this is the version number you update
 SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/trunk/Debian-Release-Pkg-Scripts
 SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
-REPO=/usr/home/repo/deb/debian
+REPO=/usr/home/repo/release/debian
 WRK_DIR=/usr/src/fusionpbx-release-pkg-build
 else
-PKGVER=3.7.0-5 # this is the version number you update
+PKGVER=3.7.0-6 # this is the version number you update
 SVN_SRC=http://fusionpbx.googlecode.com/svn/branches/dev
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/branches/dev/Debian-Devel-Pkg-Scripts
 SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
-REPO=/usr/home/repo/deb-dev/debian
+REPO=/usr/home/repo/head/debian
 WRK_DIR=/usr/src/fusionpbx-devel-pkg-build
 fi
 
@@ -81,7 +81,7 @@ fusionpbx-sqldb ($PKGVER) stable; urgency=low
 DELIM
 
 ##set version in the changelog files for provisioing templates
-for i in aastra cisco grandstream linksys panasonic polycom snom yealink
+for i in aastra atcom cisco grandstream linksys panasonic polycom snom yealink
 do cat > $WRK_DIR/fusionpbx-templates/fusionpbx-provisioning-template-"${i}"/debian/changelog << DELIM
 fusionpbx-provisioning-template-${i} ($PKGVER) stable; urgency=low
 
@@ -93,7 +93,7 @@ DELIM
 done
 
 #set version in the changelog files for themes
-for i in enhanced minimized
+for i in accessible classic default enhanced minimized 
 do cat > $WRK_DIR/fusionpbx-themes/fusionpbx-theme-"${i}"/debian/changelog << DELIM
 fusionpbx-theme-${i} ($PKGVER) stable; urgency=low
 
@@ -182,6 +182,7 @@ sed "$WRK_DIR"/fusionpbx-conf/conf/sip_profiles/internal.xml -i -e s,'<!-- *<par
 				-e s,'<!--<param name="log-auth-failures" value="false"/>','<param name="log-auth-failures" value="true"/>', \
 				-e s,'<param name="log-auth-failures" value="false"/>-->','<param name="log-auth-failures" value="true"/>',g
 
+
 #Build pkgs
 #build app pkgs
 for i in adminer backup call-block call-broadcast call-center call-center-active call-flows calls \
@@ -191,7 +192,7 @@ fifo-list follow-me gateways hot-desking ivr-menu login log-viewer meetings modu
 park provision recordings registrations ring-groups schemas services settings sipml5 sip-profiles \
 sip-status sql-query system time-conditions traffic-graph vars voicemail-greetings voicemails xml-cdr \
 xmpp
-do cd $WRK_DIR/fusionpbx-apps/fusionpbx-app-"${i}" 
+do cd $WRK_DIR/fusionpbx-apps/fusionpbx-app-"${i}"
 dpkg-buildpackage -rfakeroot -i
 done
 
@@ -216,13 +217,13 @@ cd "$WRK_DIR"/fusionpbx-sql
 dpkg-buildpackage -rfakeroot -i
 
 #Build provision pkg
-for i in aastra cisco grandstream linksys panasonic polycom snom yealink
+for i in aastra atcom cisco grandstream linksys panasonic polycom snom yealink
 do cd $WRK_DIR/fusionpbx-templates/fusionpbx-provisioning-template-"${i}"
 dpkg-buildpackage -rfakeroot -i
 done
 
 #build theme pkgs
-for i in enhanced minimized
+for i in accessible classic default enhanced minimized
 do cd $WRK_DIR/fusionpbx-themes/fusionpbx-theme-"${i}"
 dpkg-buildpackage -rfakeroot -i
 done
