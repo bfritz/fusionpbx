@@ -4,7 +4,7 @@ set -e
 case "$1" in
   configure)
     for x in \
-      /usr/share/fusionpbx/resources/templates/provision/snom
+      /usr/share/examples/fusionpbx/resources/templates/provision/snom
     do
       chown -R www-data:www-data $x
     done

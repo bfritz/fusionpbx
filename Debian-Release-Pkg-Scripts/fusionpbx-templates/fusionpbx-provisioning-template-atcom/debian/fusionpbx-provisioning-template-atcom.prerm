@@ -3,7 +3,7 @@ set -e
 
 case "$1" in
   remove|upgrade|deconfigure)
-    if [ -d /usr/share/fusionpbx/resources/templates/provision/atcom ]; then
+    if [ -d /usr/share/examples/fusionpbx/resources/templates/provision/atcom ]; then
       echo "We're about to remove a configured fusionpbx provisioning templates for atcom phones ..." >&2
     fi
     ;;

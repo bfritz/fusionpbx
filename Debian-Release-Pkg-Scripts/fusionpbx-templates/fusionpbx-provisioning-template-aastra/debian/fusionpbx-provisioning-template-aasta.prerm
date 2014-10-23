@@ -3,7 +3,7 @@ set -e
 
 case "$1" in
   remove|upgrade|deconfigure)
-    if [ -d /usr/share/fusionpbx/resources/templates/provision/aastra ]; then
+    if [ -d /usr/share/examples/fusionpbx/resources/templates/provision/aastra ]; then
       echo "We're about to remove a configured fusionpbx provisioning templates for aastra phones ..." >&2
     fi
     ;;
