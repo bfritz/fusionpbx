@@ -2958,8 +2958,8 @@ if (!function_exists('save_call_center_xml')) {
 				}
 
 			//set the path
-				if (file_exists('/usr/share/fusionpbx/resources/templates/conf')) {
-					$path = "/usr/share/fusionpbx/resources/templates/conf";
+				if (file_exists('/usr/share/examples/fusionpbx/resources/templates/conf')) {
+					$path = "/usr/share/examples/fusionpbx/resources/templates/conf";
 				}
 				else {
 					$path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf";
@@ -2999,8 +2999,8 @@ if (!function_exists('switch_conf_xml')) {
 			global $db, $domain_uuid;
 
 		//get the contents of the template
-			if (file_exists('/usr/share/fusionpbx/resources/templates/conf')) {
-				$path = "/usr/share/fusionpbx/resources/templates/conf";
+			if (file_exists('/usr/share/examples/fusionpbx/resources/templates/conf')) {
+				$path = "/usr/share/examples/fusionpbx/resources/templates/conf";
 			}
 			else {
 				$path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf";
@@ -3046,8 +3046,8 @@ if (!function_exists('xml_cdr_conf_xml')) {
 			global $db, $domain_uuid;
 
 		//get the contents of the template
-		 	if (file_exists('/usr/share/fusionpbx/resources/templates/conf')) {
-				$path = "/usr/share/fusionpbx/resources/templates/conf";
+		 	if (file_exists('/usr/share/examples/fusionpbx/resources/templates/conf')) {
+				$path = "/usr/share/examples/fusionpbx/resources/templates/conf";
 			}
 			else {
 				$path = $_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/resources/templates/conf";
