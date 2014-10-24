@@ -1024,7 +1024,7 @@ cat > /etc/sysctl.conf << DELIM
 kernel.panic = 10
 DELIM
 
-apt-get install -y --force-yes custom-scripts
+#apt-get install -y --force-yes custom-scripts
 
 #Install openvpn openvpn-scripts
 if [[ $install_openvpn == "y" ]]; then
