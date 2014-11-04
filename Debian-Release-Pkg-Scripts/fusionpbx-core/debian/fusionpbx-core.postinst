@@ -3,12 +3,25 @@ set -e
 
 case "$1" in
   configure)
-    for x in \
-      /etc/fusionpbx \
-      /var/www/fusionpbx \
-      /var/lib/fusionpbx;
+    for w in \
+  	  /etc/fusionpbx \
+      /var/www/fusionpbx;
     do
-      chown -R www-data:www-data $x
+      chown -R www-data:www-data $w
+    done
+    for x in \
+      /var/lib/fusionpbx \
+      /var/lib/fusionpbx/db \
+      /var/lib/fusionpbx/scripts \
+      /var/lib/fusionpbx/sounds;
+    do
+      chown www-data:www-data $x
+    done
+    for y in \
+      /var/lib/fusionpbx/storage/voicemail \
+      /var/lib/fusionpbx/recordings;
+    do
+      chown www-data:freeswitch $y
     done
     ;;
   abort-upgrade|abort-remove|abort-deconfigure)
