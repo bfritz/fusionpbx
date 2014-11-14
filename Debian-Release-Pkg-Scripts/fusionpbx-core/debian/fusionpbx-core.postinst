@@ -13,13 +13,17 @@ case "$1" in
       /var/lib/fusionpbx \
       /var/lib/fusionpbx/db \
       /var/lib/fusionpbx/scripts \
-      /var/lib/fusionpbx/sounds;
+      /var/lib/fusionpbx/sounds\
+      /var/lib/fusionpbx/storage;
     do
       chown www-data:www-data $x
     done
     for y in \
-      /var/lib/fusionpbx/storage/voicemail \
-      /var/lib/fusionpbx/recordings;
+      /var/lib/fusionpbx/recordings \
+      /var/lib/fusionpbx/sounds/music \
+      /var/lib/fusionpbx/sounds/custom \
+      /var/lib/fusionpbx/storage/fax \
+      /var/lib/fusionpbx/storage/voicemail;
     do
       chown www-data:freeswitch $y
     done

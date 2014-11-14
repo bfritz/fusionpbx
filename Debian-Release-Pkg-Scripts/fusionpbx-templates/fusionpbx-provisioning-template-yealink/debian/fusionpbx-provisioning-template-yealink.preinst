@@ -3,8 +3,8 @@ set -e
 
 case "$1" in
   install|upgrade)
-    if [ -d /var/www/fusionpbx ]; then
-      echo "It looks like you have FusionPBX installed !." >&2
+    if [ -d /usr/share/examples/fusionpbx/resources/templates/provision/yealink ]; then
+      echo "It looks like you have FusionPBX yealink provisioning template installed !." >&2
     fi
     ;;
   abort-upgrade)

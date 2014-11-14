@@ -3,8 +3,8 @@ set -e
 
 case "$1" in
   install|upgrade)
-    if [ -d /var/www/fusionpbx ]; then
-      echo "It looks like you have FusionPBX installed !." >&2
+    if [ -d /var/www/fusionpbx/app/conference_centers ]; then
+      echo "It looks like you have FusionPBX conference centers app installed !." >&2
     fi
     ;;
   abort-upgrade)

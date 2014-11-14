@@ -56,7 +56,7 @@ install: build
 	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/recordings
 	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/scripts
 	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/sounds/music
-	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/sounds/recordings
+	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/sounds/custom
 	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/storage/fax
 	mkdir -p debian/fusionpbx-core/var/lib/fusionpbx/storage/voicemail
 	mkdir -p debian/fusionpbx-core/var/www/fusionpbx
