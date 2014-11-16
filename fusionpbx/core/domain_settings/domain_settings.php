@@ -17,7 +17,7 @@
 
  The Initial Developer of the Original Code is
  Mark J Crane <markjcrane@fusionpbx.com>
- Portions created by the Initial Developer are Copyright (C) 2008-2012
+ Portions created by the Initial Developer are Copyright (C) 2008-2014
  the Initial Developer. All Rights Reserved.
 
  Contributor(s):
@@ -45,11 +45,9 @@ require_once "resources/paging.php";
 //prepare to page the results
 	$sql = "select count(*) as num_rows from v_domain_settings ";
 	$sql .= "where domain_uuid = '$domain_uuid' ";
-	$sql .= "and domain_uuid = '$domain_uuid' ";
-	if (strlen($order_by)> 0) { $sql .= "order by $order_by $order "; }
 	$prep_statement = $db->prepare($sql);
 	if ($prep_statement) {
-	$prep_statement->execute();
+		$prep_statement->execute();
 		$row = $prep_statement->fetch(PDO::FETCH_ASSOC);
 		if ($row['num_rows'] > 0) {
 			$num_rows = $row['num_rows'];
@@ -57,10 +55,11 @@ require_once "resources/paging.php";
 		else {
 			$num_rows = '0';
 		}
+		unset ($prep_statement, $sql);
 	}
 
 //prepare to page the results
-	$rows_per_page = 100;
+	$rows_per_page = 200;
 	$param = "";
 	$page = $_GET['page'];
 	if (strlen($page) == 0) { $page = 0; $_GET['page'] = 0; }
@@ -142,12 +141,12 @@ require_once "resources/paging.php";
 			$subcategory = $row['domain_setting_subcategory'];
 			$name = $row['domain_setting_name'];
 			if ($category == "domain" && $subcategory == "menu" && $name == "uuid" ) {
-				$sql = "";
-				$sql .= "select * from v_menus ";
+				$sql = "select * from v_menus ";
 				$sql .= "where menu_uuid = '".$row['domain_setting_value']."' ";
 				$sub_prep_statement = $db->prepare(check_sql($sql));
 				$sub_prep_statement->execute();
 				$sub_result = $sub_prep_statement->fetchAll(PDO::FETCH_NAMED);
+				unset ($prep_statement, $sql);
 				foreach ($sub_result as &$sub_row) {
 					echo $sub_row["menu_language"]." - ".$sub_row["menu_name"]."\n";
 				}
@@ -158,7 +157,7 @@ require_once "resources/paging.php";
 			elseif ($category == "provision" && $subcategory == "password" && $name == "var" ) {
 				echo "		******** &nbsp;\n";
 			} else {
-				echo 		$row['domain_setting_value'];
+				echo "		".substr($row['domain_setting_value'],0,58);
 			}
 			echo "		&nbsp;\n";
 			echo "	</td>\n";
