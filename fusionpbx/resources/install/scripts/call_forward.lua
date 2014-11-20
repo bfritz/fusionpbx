@@ -237,8 +237,8 @@
 			else
 				if (string.len(forward_all_destination) == 0) then
 					enabled = false;
-					forward_all_enabled = "false";	
-				end	
+					forward_all_enabled = "false";
+				end
 			end
 
 		--update the extension
@@ -250,7 +250,6 @@
 					sql = sql .. "do_not_disturb = 'false', ";
 				else
 					sql = sql .. "dial_string = null, ";
-					sql = sql .. "forward_all_destination = null, ";
 				end
 				sql = sql .. "forward_all_enabled = '"..forward_all_enabled.."' ";
 				sql = sql .. "where domain_uuid = '"..domain_uuid.."' ";
