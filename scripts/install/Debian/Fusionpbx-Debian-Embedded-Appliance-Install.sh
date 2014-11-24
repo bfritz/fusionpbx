@@ -321,7 +321,7 @@ esac
 #adding Freeswitch/FusionPBX ARMHF repo
 echo 'installing FusionPBX head repo'
 cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
-deb http://repo.fusionpbx.com/head/debian/ wheezy main
+deb http://repo.fusionpbx.com/release/debian/ wheezy main
 DELIM
 
 case $(uname -m) in x86_64|i[4-6]86)
