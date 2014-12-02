@@ -2,17 +2,17 @@
 # Sun Aug 17, 2014 Time: 07:30 CST
 
 # Select if to build stable/devel pkgs
-BUILD_RELEASE_PKGS="y"
+BUILD_RELEASE_PKGS="n"
 
 if [[ $BUILD_RELEASE_PKGS == "y" ]]; then
-PKGVER=3.6.2-6 # this is the version number you update
+PKGVER=3.6.3-3 # this is the version number you update
 SVN_SRC=http://fusionpbx.googlecode.com/svn/trunk
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/trunk/Debian-Release-Pkg-Scripts
 SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
 REPO=/usr/home/repo/release/debian
 WRK_DIR=/usr/src/fusionpbx-release-pkg-build
 else
-PKGVER=3.7.0-6 # this is the version number you update
+PKGVER=3.7.1-24 # this is the version number you update
 SVN_SRC=http://fusionpbx.googlecode.com/svn/branches/dev
 SVN_SRC_2=http://fusionpbx.googlecode.com/svn/branches/dev/Debian-Devel-Pkg-Scripts
 SVN_SRC_3=http://sipml5.googlecode.com/svn/trunk
@@ -60,16 +60,6 @@ fusionpbx-scripts ($PKGVER) stable; urgency=low
 DELIM
 
 
-##set version in the changelog files for sounds
-cat > $WRK_DIR/fusionpbx-sounds/debian/changelog << DELIM
-fusionpbx-sounds ($PKGVER) stable; urgency=low
-
-  * new deb pkg for fusionpbx-sounds
-
- -- Richard Neese <r.neese@gmail.com>  $TIME -0600
-
-DELIM
-
 ##set version in the changelog files for sqldb
 cat > $WRK_DIR/fusionpbx-sql/debian/changelog << DELIM
 fusionpbx-sqldb ($PKGVER) stable; urgency=low
@@ -93,7 +83,7 @@ DELIM
 done
 
 #set version in the changelog files for themes
-for i in accessible classic default enhanced minimized 
+for i in accessible classic default enhanced minimized
 do cat > $WRK_DIR/fusionpbx-themes/fusionpbx-theme-"${i}"/debian/changelog << DELIM
 fusionpbx-theme-${i} ($PKGVER) stable; urgency=low
 
@@ -149,19 +139,16 @@ svn export --force $SVN_SRC/fusionpbx/resources/templates/conf "$WRK_DIR"/fusion
 #scripts dir src
 svn export --force $SVN_SRC/fusionpbx/resources/install/scripts "$WRK_DIR"/fusionpbx-scripts/scripts
 
-#sounds dir src
-svn export --force $SVN_SRC/fusionpbx/resources/install/sounds "$WRK_DIR"/fusionpbx-sounds/sounds
-
 #scripts dir src
 svn export --force $SVN_SRC/fusionpbx/resources/install/sql "$WRK_DIR"/fusionpbx-sql/sql
 
 #phone provisioing templates
-for i in aastra cisco grandstream linksys panasonic polycom snom yealink
+for i in aastra atcom cisco grandstream linksys panasonic polycom snom yealink
 do svn export --force $SVN_SRC/fusionpbx/resources/templates/provision/"${i}" $WRK_DIR/fusionpbx-templates/fusionpbx-provisioning-template-"${i}"/"${i}"
 done
 
 #get src for theme
-for i in enhanced minimized
+for i in accessible classic default enhanced minimized
 do svn export --force $SVN_SRC/fusionpbx/themes/"${i}" $WRK_DIR/fusionpbx-themes/fusionpbx-theme-"${i}"/"${i}"
 done
 
@@ -171,7 +158,7 @@ for i in "$WRK_DIR"/fusionpbx-conf/conf/directory/default/*.xml ;do rm "$i" ; do
 for i in "$WRK_DIR"/fusionpbx-conf/conf/directory/default/*.noload ;do rm "$i" ; done
 
 #fix sounds dir
-/bin/sed "$WRK_DIR"/fusionpbx-conf/conf/autoload_configs/local_stream.conf.xml -i -e s,'<directory name="default" path="$${sounds_dir}/music/8000">','<directory name="default" path="$${sounds_dir}/music/default/8000">',g
+/bin/sed "$WRK_DIR"/fusionpbx-conf/conf/autoload_configs/local_stream.conf.xml -i -e s,'<directory name="default" path="$${sounds_dir}/music/8000">','<directory name="default" path="$${sounds_dir}/music/fusionpbx/8000">',g
 
 #Adding changes to freeswitch profiles
 #Enableing device login auth failures ing the sip profiles.
@@ -206,10 +193,6 @@ dpkg-buildpackage -rfakeroot -i
 
 #Build scripts pkg
 cd "$WRK_DIR"/fusionpbx-scripts
-dpkg-buildpackage -rfakeroot -i
-
-#Build sounds pkg
-cd "$WRK_DIR"/fusionpbx-sounds
 dpkg-buildpackage -rfakeroot -i
 
 #Build sql pkg
