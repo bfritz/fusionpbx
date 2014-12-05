@@ -85,9 +85,6 @@ upload_size="25M"
 # en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong 
 use_lang="en-us"
 
-#Install / Use freeswitch default music on hold
-use_default_music="n"
-
 #----Optional Fusionpbx Apps/Modules----
 
 adminer="n" # : integrated for an administrator in the superadmin group to enable easy database access
@@ -414,12 +411,6 @@ mkdir fr-sounds && cd zh-hk-sounds
 wget http://files.freeswitch.org/freeswitch-sounds-zh-hk-sinmei-8000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-hk-sinmei-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
 wget http://files.freeswitch.org/freeswitch-sounds-zh-hk-sinmei-16000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-hk-sinmei-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
 cd ~
-fi
-
-if [[ $use_default_music == "y" ]]; then
-apt-get -y install --force-yes freeswitch-music
-else
-mkdir /usr/share/freeswitch/sounds/music
 fi
 
 #make the conf dir
