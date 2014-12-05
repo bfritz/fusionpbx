@@ -79,9 +79,6 @@ use_lang="en-us"
 #Install / Use freeswitch default music on hold
 use_default_music="n"
 
-#Set a Nginx of Apache y=Nginx n=Apache
-#use_nginx="y"
-
 #----Optional Fusionpbx Apps/Modules----
 
 adminer="n" # : integrated for an administrator in the superadmin group to enable easy database access
