@@ -206,7 +206,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
+				$sql .= "'".$_SESSION['domain_uuid']."', ";
 				$sql .= "'$call_center_queue_uuid', ";
 				$sql .= "'$queue_name', ";
 				$sql .= "'$queue_extension', ";
@@ -274,7 +274,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 					$sql .= "queue_announce_frequency = '$queue_announce_frequency', ";
 				}
 				$sql .= "queue_description = '$queue_description' ";
-				$sql .= "where domain_uuid = '$domain_uuid' ";
+				$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 				$sql .= "and call_center_queue_uuid = '$call_center_queue_uuid'";
 				$db->exec(check_sql($sql));
 				unset($sql);
@@ -338,7 +338,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$sql .= ")";
 				$sql .= "values ";
 				$sql .= "(";
-				$sql .= "'$domain_uuid', ";
+				$sql .= "'".$_SESSION['domain_uuid']."', ";
 				$sql .= "'$call_center_tier_uuid', ";
 				$sql .= "'$agent_name', ";
 				$sql .= "'$queue_name', ";
@@ -363,7 +363,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	if (count($_GET)>0 && $_POST["persistformvar"] != "true") {
 		$call_center_queue_uuid = $_GET["id"];
 		$sql = "select * from v_call_center_queues ";
-		$sql .= "where domain_uuid = '$domain_uuid' ";
+		$sql .= "where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 		$sql .= "and call_center_queue_uuid = '$call_center_queue_uuid' ";
 		$prep_statement = $db->prepare(check_sql($sql));
 		$prep_statement->execute();
@@ -550,18 +550,16 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "			</tr>\n";
 
 		if ($call_center_queue_uuid != '') {
-
 			//replace the space in the queue name with a dash
 			$db_queue_name = str_replace(" ", "-", $queue_name);
 
 			$sql = "select * from v_call_center_tiers ";
 			$sql .= "where queue_name = '".$db_queue_name."' ";
-			$sql .= "and domain_uuid = '".$domain_uuid."' ";
+			$sql .= "and domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			$sql .= "order by tier_level asc, tier_position asc, agent_name asc";
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-			$result_count = count($result);
 			foreach($result as $field) {
 				echo "	<tr>\n";
 				echo "		<td class='vtable'>".$field['agent_name']."</td>\n";
@@ -593,16 +591,15 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			$prep_statement = $db->prepare(check_sql($sql));
 			$prep_statement->execute();
 			$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
-
-			if (sizeof($result)>0) {
+			if (sizeof($result) > 0) {
 				echo "		<tr>\n";
 				echo "			<td class='vtable'>\n";
-				echo "				<select id='agent_name' name='agent_name' class='formfld'>\n";
+				echo "<select id='agent_name' name='agent_name' class='formfld'>\n";
 				echo "					<option value=''></option>\n";
 				foreach($result as $field) {
 					echo "				<option value='".$field['agent_name']."'>".$field['agent_name']."</option>\n";
 				}
-				unset($sql, $result);
+				unset($sql,$prep_statement);
 				echo "				</select>";
 				echo "			</td>\n";
 				echo "			<td class='vtable' style='text-align: center;'>\n";
@@ -624,7 +621,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				echo "			</td>\n";
 				echo "		</tr>\n";
 			}
-
 		}
 
 		echo "		</table>\n";
@@ -633,7 +629,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		echo "		<br />\n";
 		echo "	</td>";
 		echo "</tr>";
-
 	}
 
 	echo "<tr>\n";
@@ -696,7 +691,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "	".$text['label-record_template'].":\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-        $record_ext=($_SESSION['record_ext']=='mp3'?'mp3':'wav');
+	$record_ext=($_SESSION['record_ext']=='mp3'?'mp3':'wav');
 	$record_template = $_SESSION['switch']['recordings']['dir']."/archive/\${strftime(%Y)}/\${strftime(%b)}/\${strftime(%d)}/\${uuid}.".$record_ext;
 	echo "	<select class='formfld' name='queue_record_template'>\n";
 	if (strlen($queue_record_template) > 0) {
