@@ -98,7 +98,7 @@ else {
 				from
 					v_call_center_tiers
 				where
-					domain_uuid = '".$domain_uuid."' and
+					domain_uuid = '".$_SESSION['domain_uuid']."' and
 					call_center_tier_uuid = '".$tier_uuid."'
 					";
 			$prep_statement = $db->prepare(check_sql($sql));
@@ -111,19 +111,19 @@ else {
 			}
 			unset ($prep_statement);
 		//delete the agent from freeswitch
-			//get the domain using the $domain_uuid
-			$tmp_domain = $_SESSION['domains'][$domain_uuid]['domain_name'];
+			//get the domain using the $_SESSION['domain_uuid']
+			$tmp_domain = $_SESSION['domains'][$_SESSION['domain_uuid']]['domain_name'];
 			//setup the event socket connection
 			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 			//delete the agent over event socket
 			if ($fp) {
 				//callcenter_config tier del [queue_name] [agent_name]
-				$cmd = "api callcenter_config tier del ".$queue_name."@".$tmp_domain." ".$agent_name."@".$_SESSION['domains'][$domain_uuid]['domain_name'];
+				$cmd = "api callcenter_config tier del ".$queue_name."@".$tmp_domain." ".$agent_name."@".$_SESSION['domains'][$_SESSION['domain_uuid']]['domain_name'];
 				$response = event_socket_request($fp, $cmd);
 			}
 		//delete the tier from the database
 			if (strlen($tier_uuid)>0) {
-				$sql = "delete from v_call_center_tiers where domain_uuid = '".$domain_uuid."' and call_center_tier_uuid = '".$tier_uuid."'";
+				$sql = "delete from v_call_center_tiers where domain_uuid = '".$_SESSION['domain_uuid']."' and call_center_tier_uuid = '".$tier_uuid."'";
 				$prep_statement = $db->prepare(check_sql($sql));
 				$prep_statement->execute();
 				unset($sql);
@@ -138,7 +138,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	}
 
 	//check for all required data
-		if (strlen($domain_uuid) == 0) { $msg .= $text['message-required']."domain_uuid<br>\n"; }
+		//if (strlen($domain_uuid) == 0) { $msg .= $text['message-required']."domain_uuid<br>\n"; }
 		if (strlen($queue_name) == 0) { $msg .= $text['message-required'].$text['label-queue_name']."<br>\n"; }
 		if (strlen($queue_extension) == 0) { $msg .= $text['message-required'].$text['label-extension']."<br>\n"; }
 		if (strlen($queue_strategy) == 0) { $msg .= $text['message-required'].$text['label-strategy']."<br>\n"; }
@@ -537,7 +537,6 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</tr>\n";
 
 	if (permission_exists('call_center_tier_view')) {
-
 		echo "<tr>";
 		echo "	<td class='vncell' valign='top'>".$text['label-tiers'].":</td>";
 		echo "	<td class='vtable' align='left'>";
@@ -577,13 +576,11 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 				$assigned_agents[] = $field['agent_name'];
 			}
 			unset ($prep_statement, $sql, $result);
-
 		}
 
 		if (permission_exists('call_center_tier_add')) {
-
 			//get agents
-			$sql = "select agent_name from v_call_center_agents where domain_uuid = '".$domain_uuid."' ";
+			$sql = "select agent_name from v_call_center_agents where domain_uuid = '".$_SESSION['domain_uuid']."' ";
 			foreach($assigned_agents as $assigned_agent) {
 				$sql .= "and agent_name <> '".$assigned_agent."' ";
 			}
@@ -910,29 +907,27 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "  ".$text['label-caller_announce_sound'].":\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "  <input class='formfld' type='text' name='queue_announce_sound' maxlength='255' value='$queue_announce_sound'>\n";
+	echo "<br />\n";
+	echo $text['description-caller_announce_sound']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
-        echo "<tr>\n";
-        echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-        echo "  ".$text['label-caller_announce_sound'].":\n";
-        echo "</td>\n";
-        echo "<td class='vtable' align='left'>\n";
-        echo "  <input class='formfld' type='text' name='queue_announce_sound' maxlength='255' value='$queue_announce_sound'>\n";
-        echo "<br />\n";
-        echo $text['description-caller_announce_sound']."\n";
-        echo "</td>\n";
-        echo "</tr>\n";
-
-        echo "<tr>\n";
-        echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-        echo "  ".$text['label-caller_announce_frequency'].":\n";
-        echo "</td>\n";
-        echo "<td class='vtable' align='left'>\n";
-        echo "  <input class='formfld' type='text' name='queue_announce_frequency' maxlength='255' value='$queue_announce_frequency'>\n";
-        echo "<br />\n";
-        echo $text['description-caller_announce_frequency']."\n";
-        echo "</td>\n";
-        echo "</tr>\n";
-
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
+	echo "  ".$text['label-caller_announce_frequency'].":\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "  <input class='formfld' type='text' name='queue_announce_frequency' maxlength='255' value='$queue_announce_frequency'>\n";
+	echo "<br />\n";
+	echo $text['description-caller_announce_frequency']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap>\n";
