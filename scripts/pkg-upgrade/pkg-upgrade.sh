@@ -38,6 +38,15 @@ DELIM
 #add pgsql repo key
 wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
 
+#update repo list
+apt-get update
+#read pkg out to a logfile
+dpkg --get-selections 'fusionpbx*' > /tmp/fusionpbx-pkg.log
+#remove the pkgs in the list
+apt-get remove -y fusionpbx*
+#read list and reinstall rm pkgs
+aptitude install $(cat /tmp/fusionpbx-pkg.log | awk '{print $1}')
+
 #Make new dir's for the new layout
 mkdir -p /etc/fusionpbx/switch/conf /var/lib/fusionpbx/sounds/music mkdir -p /var/lib/fusionpbx/storage 
 
