@@ -380,12 +380,6 @@ wget http://files.freeswitch.org/freeswitch-sounds-zh-hk-sinmei-16000-1.0.51.tar
 cd ~
 fi
 
-if [[ $use_default_music == "y" ]]; then
-apt-get -y install --force-yes freeswitch-music
-else
-mkdir /usr/share/freeswitch/sounds/music
-fi
-
 #make the conf dir
 mkdir -p "$fs_conf_dir"
 
