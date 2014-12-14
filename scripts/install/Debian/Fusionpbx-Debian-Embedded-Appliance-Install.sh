@@ -157,13 +157,6 @@ xml_cdr_files="n"
 # logfiles and whats displayed in the logging page
 logging_level="n"
 
-#Extra Option's
-#Install Optional shell admin menu scripts (currently broken ) 
-#install_scripts="n"
-
-#Install openvpn scripts
-#install_openvpn="n"
-
 #Install Ajenti Optional Admin Portal
 install_ajenti="n"
 
@@ -1168,17 +1161,6 @@ fi
 fi
 DELIM
 fi
-
-#Install optional custom-scripts
-#if [[ $install_scripts == "y" ]]; then
-#apt-get install -y --force-yes custom-scripts
-#fi
-
-#Install optional openvpn-scripts
-#if [[ $install_openvpn == "y" ]]; then
-#echo "Installing Open-vpn configuration scripts"
-#apt-get install openvpn openvpn-scripts
-#fi
 
 #Ajenti admin portal. Makes maintaining the system easier.
 #ADD Ajenti repo & ajenti
