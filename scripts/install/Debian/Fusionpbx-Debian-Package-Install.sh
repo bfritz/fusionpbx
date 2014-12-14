@@ -76,9 +76,6 @@ upload_size="25M"
 # en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong 
 use_lang="en-us"
 
-#Install / Use freeswitch default music on hold
-use_default_music="n"
-
 #----Optional Fusionpbx Apps/Modules----
 
 adminer="n" # : integrated for an administrator in the superadmin group to enable easy database access
@@ -131,10 +128,10 @@ postgresql_client="n"
 postgresql_server="n"
 
 # Set Postgresql Server Admin username ( Lower case only )
-pgsql_admin=
+pgsql_admin=pgsqladmin
 
 # Set Postgresql Server Admin password
-pgsql_admin_passwd=
+pgsql_admin_passwd=pgsqladmin2015
 
 # Set Database Name used for fusionpbx in the postgresql server
 # (Default: fusionpbx)
@@ -143,24 +140,14 @@ db_name=fusionpbx
 # Set FusionPBX database admin name.(used by fusionpbx to access
 # the database table in the postgresql server.
 # (Default: fusionpbx)
-db_user_name=fusionpbx
+db_user_name=fusionpbxadmin
 
 # Set FusionPBX database admin password .(used by fusionpbx to access
 # the database table in the postgresql server).
 # Please set a very secure passwd
-db_user_passwd=
+db_user_passwd=fusionpbx2015
 
 #-------Postgresql-End--------------
-# disbale generation of xml_cdr files and only store in cdr in the database
-xml_cdr_files="n"
-
-# disable  extra logging and on show warnings/errors. shrinks the size of 
-# logfiles and whats displayed in the logging page
-logging_level="n"
-
-#Extra Option's
-#Install openvpn scripts
-install_openvpn="n"
 
 #Install Ajenti Optional Admin Portal
 install_ajenti="n"
@@ -1123,16 +1110,6 @@ for i in php5-fpm niginx monit fail2ban freeswitch ;do service "${i}" restart  >
 
 #----End of fail2ban/monit services install--------
 
-#option to disable xml_cdr files
-if [[ $xml_cdr_files == "y" ]]; then
-/bin/sed -i "$WWW_PATH"/"$wui_name"/app/vars/app_defaults.php -e 's#{"var_name":"xml_cdr_archive","var_value":"dir","var_cat":"Defaults","var_enabled":"true","var_description":""}#{"var_name":"xml_cdr_archive","var_value":"none","var_cat":"Defaults","var_enabled":"true","var_description":""}#'
-fi
-
-#option to disable some loging execpt for 
-if [[ $logging_level == "y" ]]; then
-/bin/sed -i /usr/share/examples/fusionpbx/resources/templates/conf/autoload_configs/logfile.conf.xml -e 's#<map name="all" value="debug,info,notice,warning,err,crit,alert"/>#<map name="all" value="warning,err,crit,alert"/>#'
-fi
-
 #end of fusionpbx install
 
 #---Setup scanner blocking service in iptables----------
@@ -1153,12 +1130,6 @@ iptables -I INPUT -j DROP -p udp --dport 5080 -m string --string "friendly-scann
 cat > /etc/sysctl.conf << DELIM
 kernel.panic = 10
 DELIM
-
-#Install optional openvpn-scripts
-#if [[ $install_openvpn == "y" ]]; then
-#echo "Installing Open-vpn configuration scripts"
-#apt-get install openvpn openvpn-scripts
-#fi
 
 #Ajenti admin portal. Makes maintaining the system easier.
 #ADD Ajenti repo & ajenti
