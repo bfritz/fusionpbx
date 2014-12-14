@@ -102,4 +102,4 @@ for i in fail2ban freeswitch monit ;do service "${i}" stop > /dev/null 2>&1 ; do
 sed -i "/etc/nginx/sites-enabled/fusionpbx" -e "s#/usr/share/nginx/www/fusionpbx#/var/www/fusionpbx#"
 
 #restartng services with the fusionpbx freeswitch fhs dir layoout
-for i in ph5-fpm ngninx ;do service "${i}" stop > /dev/null 2>&1 ; done
+for i in php5-fpm ngninx ;do service "${i}" stop > /dev/null 2>&1 ; done
