@@ -1,4 +1,4 @@
-#!/bin.bash
+#!/bin/bash
 
 #stop running services for upgrade
 for i in monit fail2ban freeswitch ;do service "${i}" stop > /dev/null 2>&1 ; done
@@ -28,7 +28,6 @@ echo 'installing fusionpbx release repo'
 cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 deb http://repo.fusionpbx.com/release/debian/ wheezy main
 DELIM
-esac
 
 #postgresql 9.3 / 9.4repo for x86 x86-64 bit pkgs
 #add in pgsql 9.3 / 9.4
