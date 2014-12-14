@@ -39,6 +39,8 @@ wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key
 
 #update repo list
 apt-get update
+#rm the nolonger existing freeswitch sounds
+apt-get remove fusionpbx-sounds
 #read pkg out to a logfile
 dpkg --get-selections 'fusionpbx*' > /tmp/fusionpbx-pkg.log
 #remove the pkgs in the list
