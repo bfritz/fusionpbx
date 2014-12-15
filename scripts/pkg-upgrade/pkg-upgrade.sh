@@ -101,7 +101,7 @@ find "/var/lib/fusionpbx/db" -type f -exec chmod 666 {} +
 for i in fail2ban freeswitch monit ;do service "${i}" stop > /dev/null 2>&1 ; done
 
 #Reseting nginx to new dir path
-sed -i "/etc/nginx/sites-enabled/fusionpbx" -e "s#/usr/share/nginx/www/fusionpbx#/var/www/fusionpbx#"
+sed  "/etc/nginx/sites-available/fusionpbx" -e i s,'/usr/share/nginx/www/fusionpbx','/var/www/fusionpbx',g
 
 #restartng services with the fusionpbx freeswitch fhs dir layoout
 for i in php5-fpm ngninx ;do service "${i}" stop > /dev/null 2>&1 ; done
