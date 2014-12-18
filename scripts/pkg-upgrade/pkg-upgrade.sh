@@ -48,6 +48,14 @@ apt-get remove -y fusionpbx*
 #read list and reinstall rm pkgs
 aptitude install $(cat /tmp/fusionpbx-pkg.log | awk '{print $1}')
 
+#update scripts
+cp -rp /var/lib/fusionpbx/scripts /var/lib/fusionpbx/scripts.bak
+rm -rf /var/lib/fusionpbx/scripts/*
+cp -rp /usr/share/fusionpbx/resources/install/scripts /var/lib/fusionpbx/
+chown -R www-data:www-data /var/lib/fusionpbx/scripts
+find "/var/lib/fusionpbx/scripts" -type f -exec chmod 664 {} +
+find "/var/lib/fusionpbx/scripts" -type d -exec chmod 775 {} +
+
 #Make new dir's for the new layout
 mkdir -p /etc/fusionpbx/switch/conf /var/lib/fusionpbx/sounds/music mkdir -p /var/lib/fusionpbx/storage 
 
