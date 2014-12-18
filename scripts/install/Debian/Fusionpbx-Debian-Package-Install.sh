@@ -298,8 +298,8 @@ cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 deb http://repo.fusionpbx.com/release/debian/ wheezy main
 DELIM
 
-#postgresql 9.3 repo for x86 x86-64 bit pkgs
-#add in pgsql 9.3
+#postgresql 9.4 repo for x86 x86-64 bit pkgs
+#add in pgsql 9.4
 cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
 deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
 DELIM
@@ -908,6 +908,7 @@ find "/var/lib/fusionpbx/db" -type d -exec chmod 777 {} +
 find "/var/lib/fusionpbx/db" -type f -exec chmod 666 {} +
 
 #Linking moh dir so freeswitch can read in the moh files
+mkdir /usr/share/freeswitch/sounds/music
 ln -s /var/lib/fusionpbx/sounds/music /usr/share/freeswitch/sounds/music/fusionpbx
 ln -s /var/lib/fusionpbx/sounds/custom /usr/share/freeswitch/sounds/
 #------end of fusionpbx install and configuration-----
