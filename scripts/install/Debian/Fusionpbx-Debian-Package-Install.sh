@@ -911,6 +911,8 @@ find "/var/lib/fusionpbx/db" -type f -exec chmod 666 {} +
 mkdir /usr/share/freeswitch/sounds/music
 ln -s /var/lib/fusionpbx/sounds/music /usr/share/freeswitch/sounds/music/fusionpbx
 ln -s /var/lib/fusionpbx/sounds/custom /usr/share/freeswitch/sounds/
+chown -R www-data:www-data /var/lib/fusionpbx/sounds
+
 #------end of fusionpbx install and configuration-----
 
 #-----Installing Fail2Ban/monit Protection services------
