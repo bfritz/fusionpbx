@@ -304,14 +304,14 @@ case $(uname -m) in armv7l)
 #adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
 echo 'installing Freeswitch ARMHF head repo'
 cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-deb http://repo.fusionpbx.com/freeswitch-armhf/debian/ wheezy main
+deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
 DELIM
 esac 
 
 #adding Freeswitch/FusionPBX ARMHF repo
 echo 'installing FusionPBX head repo'
 cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
-deb http://repo.fusionpbx.com/release/debian/ wheezy main
+deb http://repo.fusionpbx.com/fusionpbx/release/debian/ wheezy main
 DELIM
 
 case $(uname -m) in x86_64|i[4-6]86)
@@ -1146,21 +1146,74 @@ DELIM
 
 #DigiDaz Tested and approved
 if [[ $odroid_boards == "y" ]]; then
-cat > /etc/network/if-pre-up.d/copyip << DELIM
+cat > /etc/network/if-pre-up.d/pre-network-setup << DELIM
 #!/bin/bash
-if [ ! -f "/boot/ip.txt ];
-then
-break ;;
-elif [ -f "/boot/ip.txt.bak ];
-then
-break ;;
-else
-if [ -f "/boot/ip.txt ];
-then
-cp /boot/ip.txt /etc/network/interfaces
-mv /boot/ip.txt /boot/ip.txt.bak
+if [ ! -f /boot/.mac ]; then
+        if [ -f /etc/smsc95xx_mac_addr ]; then
+                rm /etc/smsc95xx_mac_addr
+        fi
+        # unloading nic driver
+        rmmod smsc95xx
+        #running modprobe on nic
+        modprobe smsc95xx
+        #placing holder file
+        touch /boot/.mac
+        #rebooting to load new mac
+        reboot
 fi
+
+if [ ! -f /boot/.net ]; then
+if [ -f "/boot/configs/ip.txt" ]; then
+        cp /boot/setup/ip.txt /etc/network/interfaces
+
 fi
+
+if [ -f "/boot/configs/resolv.txt" ]; then
+        cp /boot/setup/resolv.txt /etc/resolv.conf
+fi
+
+if [ -f "/boot/configs/hostname.txt" ]; then
+        cp /boot/setup/hostname.txt /etc/hostname
+fi
+
+if [ -f "/boot/configs/hosts.txt" ]; then
+        cp /boot/setup/hosts.txt /etc/hosts
+fi
+touch /boot/.net
+reboot
+fi
+DELIM
+
+cat >> /boot/setup/ip.txt.dflt<< DELIM
+# interfaces(5) file used by ifup(8) and ifdown(8)
+#Local loop back interface
+auto lo
+iface lo inet loopback
+
+#Static mac configuration
+allow-hotplug eth0
+iface eth0 inet static
+address 10.0.0.2
+netmask 255.0.0.0
+gateway 10.0.0.1
+DELIM
+
+cat >> /boot/setup/hostname.txt.dflt << DELIM
+Odroid-U3
+DELIM
+
+cat > /boot/setup/hosts.txt.dflt << DELIM
+127.0.0.1       localhost
+::1     localhost       ip6-localhost   ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+127.0.0.1       Odroid-U3
+DELIM
+
+cat >> //boot/setup/hostname.txt.dflt << DELIM
+Odroid-U3
 DELIM
 fi
 

@@ -295,7 +295,7 @@ curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt
 #adding FusionPBX repo
 echo 'installing fusionpbx head repo'
 cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
-deb http://repo.fusionpbx.com/release/debian/ wheezy main
+deb http://repo.fusionpbx.com/fusionpbx/release/debian/ wheezy main
 DELIM
 
 #postgresql 9.4 repo for x86 x86-64 bit pkgs
