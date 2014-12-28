@@ -276,8 +276,8 @@ deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
 DELIM
 
 #adding key for freeswitch repo
-echo 'fetcing repo key'
-curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
+#echo 'fetcing repo key'
+#curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
 
 #adding FusionPBX repo
 echo 'installing fusionpbx head repo'
