@@ -68,25 +68,35 @@ fi
 
 ################################################################################
 
-#<------Start Edit HERE--------->
+#<------Start/Begin Edit HERE--------->
+#############################################################################
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
+#############################################################################
 keep_logs=5
 
+####################################################################
 #Set mp3/wav file upload/post size limit(Must Have the M on the end)
+####################################################################
 upload_size="25M"
 
+##################################################################
 # Set what language lang/say pkgs and language sound files to use.
-# en-ca=English/CA en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong 
+#############################################################################################
+# en-ca=English/CA en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill 
+# ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong 
+#############################################################################################
 use_lang="en-us"
 
 #----Optional Fusionpbx Apps/Modules----
+#######################################
 # DO NOT SELECT FROM BOTH !!!!!!!!!!
+###################################################################
 # If you wish to install all options use THE ALL OPTION ONLY!!!!!!!
-
+###################################################################
 all="n" #: Install all extra modules for fusionpbx and related freeswitch deps
-
+########################################
 # Else select options from here........
-
+########################################
 adminer="n" # : integrated for an administrator in the superadmin group to enable easy database access
 backup="n" # : pbx backup module. backup sqlite db / configs/ logs
 call_broadcast="n" # : Create a recording and select one or more groups to have the system call and play the recording
@@ -122,45 +132,65 @@ default_theme="n" # : default theme for fusionpbx
 minimized_theme="n" # : minimal theme for fusionpbx
 
 #------Postgresql start-------
+
+#########################
 #Optional (Not Required)
+#########################
+
+##########################################
 # Please Select Server or Client not both.
-# Used for connecting to remote postgresql database servers
+##########################################
+
+#################################################################################
 # Install postgresql Client 9.4 for connection to remote postgresql servers (y/n)
+#################################################################################
 postgresql_client="n"
 
+#################################################################################
 # Install postgresql server 9.4 (y/n) (client included)(Local Machine)
 # Notice:
 # You should not use postgresql server on a nand/emmc/sd. It cuts the performance
 # life in half due to all the needed reads and writes. This cuts the life of
 # your pbx emmc/sd in half.
+#################################################################################
 postgresql_server="n"
 
+##########################################################
 # Set Postgresql Server Admin username ( Lower case only )
+##########################################################
 pgsql_admin=pgsqladmin
 
+######################################
 # Set Postgresql Server Admin password
+######################################
 pgsql_admin_passwd=pgsqladmin2015
 
-# Set Database Name used for fusionpbx in the postgresql server
-# (Default: fusionpbx)
+####################################################################################
+# Set Database Name used for fusionpbx in the postgresql server (Default: fusionpbx)
+####################################################################################
 db_name=fusionpbx
 
-# Set FusionPBX database admin name.(used by fusionpbx to access
-# the database table in the postgresql server.
-# (Default: fusionpbx)
+####################################################################################
+# Set FusionPBX database admin name.(used by fusionpbx to access the database table 
+# in the postgresql server (Default: fusionpbx)
+####################################################################################
 db_user_name=fusionpbxadmin
 
-# Set FusionPBX database admin password .(used by fusionpbx to access
-# the database table in the postgresql server).
-# Please set a very secure passwd
+###################################################################################
+# Set FusionPBX database admin password .(used by fusionpbx to access the database 
+#table in the postgresql server). Please set a very secure password !!!!!!
+###################################################################################
 db_user_passwd=fusionpbx2015
 
 #-------Postgresql-End--------------
 
-#Install Ajenti Optional Admin Portal
+################################################################
+#Install Ajenti Optional Admin Portal  Optional (Not Required)
+################################################################
 install_ajenti="n"
 
-#<------Stop Edit Here-------->
+#<------Stop/End Edit Here-------->
+
 ################################################################################
 # Hard Set Varitables (Do Not EDIT)
 #Freeswitch default 
