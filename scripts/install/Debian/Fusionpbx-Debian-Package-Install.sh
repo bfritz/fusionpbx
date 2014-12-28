@@ -269,9 +269,10 @@ apt-get -y install acpi-support-base curl usbmount usbutils
 #--------adding in custom repos-------
 
 #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
-echo ' installing stable repo '
+echo ' installing Release/Stable repo '
 cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
+#deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
+deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
 DELIM
 
 #adding key for freeswitch repo
