@@ -767,7 +767,7 @@ if [[ $postgresql_client == "y" ]]; then
 	echo
 	echo " Now Waiting on you to finish the installation via web browser "
 	echo	
-	printf '	Please open a web-browser to http://'; ip -f inet addr show dev $net_iface | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
+	printf '	Please open a web-browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
 cat << DELIM
 	Or the Doamin name assigned to the machine like http://"$(hostname).$(dnsdomainname)".
 	On the First configuration page of the web user interface.
@@ -797,7 +797,7 @@ if [[ $postgresql_server == "y" ]]; then
 	echo
 	echo " Now Waiting on you to finish the installation via web browser "
 	echo
-	printf 'Please open a web browser to http://'; ip -f inet addr show dev $net_iface | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'   
+	printf 'Please open a web browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'   
 cat << DELIM
  Or the Doamin name asigned to the machine like http://"$(hostname).$(dnsdomainname)".
  On the First configuration page of the web user interface
@@ -817,7 +817,7 @@ echo " The $wui_name install has finished...  "
 echo
 echo " Now Waiting on you to finish the installation via web browser "
 echo
-printf ' Please open a web-browser to http://'; ip -f inet addr show dev $net_iface | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
+printf ' Please open a web-browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
 cat << DELIM
  or the Doamin name asigned to the machine like http://"$(hostname).$(dnsdomainname)".
  On the First Configuration page of the web user interface "$wui_name".
