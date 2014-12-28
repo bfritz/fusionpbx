@@ -44,12 +44,17 @@ DELIM
 if [[ -f /proc/vz ]]; then
 cat << DELIM
 
-    Note: "
+    Note:
+    
         Those of you running this script on openvz. You must run it as root and
-        bash  Fusionpbx-Debian-Package-Install.sh or it fails the networking check.
+        
+        bash Fusionpbx-Debian-Package-Install.sh or it fails the networking check.
+        
         Please take the time to refer to this document if you have install issues
-        on openvz
-        http://openvz.org/Virtual_Ethernet_device and make sure to setup a eth0 .
+        
+        on openvz http://openvz.org/Virtual_Ethernet_device and make sure to setup 
+        
+        a eth0 for better performance with the script.
 
 DELIM
 exit
