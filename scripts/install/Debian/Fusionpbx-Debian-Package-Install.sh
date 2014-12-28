@@ -78,6 +78,12 @@ upload_size="25M"
 use_lang="en-us"
 
 #----Optional Fusionpbx Apps/Modules----
+# DO NOT SELECT FROM BOTH !!!!!!!!!!
+# If you wish to install all options use THE ALL OPTION ONLY!!!!!!!
+
+all="n" #: Install all extra modules for fusionpbx and related freeswitch deps
+
+# Else select options from here........
 
 adminer="n" # : integrated for an administrator in the superadmin group to enable easy database access
 backup="n" # : pbx backup module. backup sqlite db / configs/ logs
@@ -112,7 +118,6 @@ accessible_theme="n" # : accessible theme for fusionpbx
 classic_theme="n" # : classic theme for fusionpbx
 default_theme="n" # : default theme for fusionpbx
 minimized_theme="n" # : minimal theme for fusionpbx
-all="n" #: Install all extra modules for fusionpbx and related freeswitch deps
 
 #------Postgresql start-------
 #Optional (Not Required)
