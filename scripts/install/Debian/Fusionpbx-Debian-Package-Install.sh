@@ -26,15 +26,17 @@
 ################################################################################
 cat  <<  DELIM
 
-        This Is A One Time Install Script. ( Not Ment For Lamp Installs )
+                  ( Not Ment For L.a.m.p Installs )
 
-        This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy).
+                  THIS IS A ONE TIME INSTALL SCRIPT. 
 
-                    It Is Not Intended To Be Run Multi Times
+   This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy).
 
-        If It Fails For Any Reason Please Report To r.neese@gmail.com.
+   It Is Not Intended To Be Run Multi Times
 
-        Please Include Any Screen Output You Can To Show Where It Fails.
+   If It Fails For Any Reason Please Report To r.neese@gmail.com.
+
+   Please Include Any Screen Output You Can To Show Where It Fails.
 
 DELIM
 ################################################################################
@@ -429,7 +431,7 @@ server{
 		#rewrite "^.*/provision/([A-Fa-f0-9]{12})(\.(cfg))?$" /app/provision/?mac=$1 last;
 
 		#yealink common
-		rewrite "^.*/provision/(y[0-9]{12})(\.cfg)?$" /app/provision/index.php?file=\$1\$2;
+		rewrite "^.*/provision/(y[0-9]{12})(\.cfg)?$" /app/provision/index.php?file=$1$2;
 
 		#yealink mac
 		rewrite "^.*/([A-Fa-f0-9]{12})(\.(xml|cfg))?$" /app/provision/index.php?mac=\$1 last;
@@ -723,8 +725,7 @@ if [[ $snom == "y" ]]; then
 apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-snom && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/snom /etc/fusionpbx/resources/templates/provision/
 fi
 if [[ $yealink == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-yealink \
-&& mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/yealink /etc/fusionpbx/resources/templates/provision/
+apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-yealink && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/yealink /etc/fusionpbx/resources/templates/provision/
 fi
 if [[ $verto == "y" ]]; then
 apt-get -y --force-yes install freeswitch-mod-verto
