@@ -308,7 +308,7 @@ deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
 DELIM
 esac 
 
-#adding Freeswitch/FusionPBX ARMHF repo
+#adding FusionPBX Release repo
 echo 'installing FusionPBX head repo'
 cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 deb http://repo.fusionpbx.com/fusionpbx/release/debian/ wheezy main
@@ -354,56 +354,36 @@ apt-get -y install --force-yes freeswitch-mod-vlc
 esac
 
 #setup language / sound files for use
+if [[ $use_lang == "en-ca" ]]; then
+apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-en-ca-june
+fi
+
 if [[ $use_lang == "en-us" ]]; then
-apt-get -y install --force-yes freeswitch-lang-en freeswitch-mod-say-en freeswitch-sounds
+apt-get -y install --force-yes freeswitch-lang-en freeswitch-mod-say-en freeswitch-sounds-en-us-callie
 fi
 
 if [[ $use_lang == "fr-ca" ]]; then
-apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr
-mkdir fr-sounds && cd fr-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-fr-ca-june-8000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-fr-ca-june-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-fr-ca-june-16000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-fr-ca-june-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd~
+apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-fr-ca-june
 fi
 
 if [[ $use_lang == "pt-br" ]]; then
-apt-get -y install --force-yes freeswitch-lang-pt freeswitch-mod-say-pl
-mkdir fr-sounds && cd pt-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-pt-BR-karina-8000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-pt-BR-karina-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-pt-BR-karina-16000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-pt-BR-karina-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd ~
+apt-get -y install --force-yes freeswitch-lang-pt freeswitch-mod-say-pt freeswitch-sounds-pt-br-karina
 fi
 
 if [[ $use_lang == "ru-ru" ]]; then
-apt-get -y install --force-yes freeswitch-lang-ru freeswitch-mod-say-ru
-mkdir fr-sounds && cd ru-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-ru-RU-elena-8000-1.0.12.tar.gz && tar xzvf freeswitch-sounds-ru-RU-elena-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-ru-RU-elena-16000-1.0.12.tar.gz && tar xzvf freeswitch-sounds-ru-RU-elena-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd~
+apt-get -y install --force-yes freeswitch-lang-ru freeswitch-mod-say-ru freeswitch-sounds-ru-ru-elena
 fi
 
 if [[ $use_lang == "sv-se" ]]; then
-apt-get -y install --force-yes freeswitch-lang-sv freeswitch-mod-say-sv
-mkdir fr-sounds && cd sv-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-sv-se-jakob-8000-1.0.50.tar.gz && tar xzvf freeswitch-sounds-sv-se-jakob-8000-1.0.50.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-sv-se-jakob-16000-1.0.50.tar.gz && tar xzvf freeswitch-sounds-sv-se-jakob-16000-1.0.50.tar.gz -C /usr/share/freeswitch/sounds
-cd ~
+apt-get -y install --force-yes freeswitch-lang-sv freeswitch-mod-say-sv freeswitch-sounds-sv-se-jakob
 fi
 
 if [[ $use_lang == "zh-cn" ]]; then
-apt-get -y install --force-yes freeswitch-mod-say-zh
-mkdir fr-sounds && cd zh-cn-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-zh-cn-sinmei-8000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-cn-sinmei-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-zh-cn-sinmei-16000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-cn-sinmei-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd ~
+apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-cn-sinmei
 fi
 
 if [[ $use_lang == "zh-hk" ]]; then
-apt-get -y install --force-yes freeswitch-mod-say-zh
-mkdir fr-sounds && cd zh-hk-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-zh-hk-sinmei-8000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-hk-sinmei-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-zh-hk-sinmei-16000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-hk-sinmei-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd ~
+apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-hk-sinmei
 fi
 
 #make the conf dir
@@ -814,7 +794,7 @@ for i in freeswitch nginx php5-fpm ;do service "${i}" restart >/dev/null 2>&1 ; 
 if [[ $postgresql_client == "y" ]]; then
 	clear
 	case $(uname -m) in x86_64|i[4-6]86)
-	for i in postgresql-client-9.3 php5-pgsql ;do apt-get -y install "${i}"; done
+	for i in postgresql-client-9.4 php5-pgsql ;do apt-get -y install "${i}"; done
 	esac
 
 	case $(uname -m) in armv7l)
@@ -1199,7 +1179,7 @@ gateway 10.0.0.1
 DELIM
 
 cat >> /boot/setup/hostname.txt.dflt << DELIM
-Odroid-U3
+Odroid
 DELIM
 
 cat > /boot/setup/hosts.txt.dflt << DELIM
@@ -1209,13 +1189,15 @@ fe00::0 ip6-localnet
 ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
-127.0.0.1       Odroid-U3
+127.0.0.1       Odroid
 DELIM
 
 cat >> //boot/setup/hostname.txt.dflt << DELIM
-Odroid-U3
+Odroid
 DELIM
 fi
+
+
 
 #Ajenti admin portal. Makes maintaining the system easier.
 #ADD Ajenti repo & ajenti

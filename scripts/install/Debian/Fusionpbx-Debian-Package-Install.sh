@@ -1,5 +1,5 @@
 #!/bin/bash
-#Date Dec 14 2014 12:25 CST
+#Date Dec 28 2014 07:45 CST
 ################################################################################
 # The MIT License (MIT)
 #
@@ -65,6 +65,7 @@ fi
 # and fill in the required information.
 
 ################################################################################
+
 #<------Start Edit HERE--------->
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
 keep_logs=5
@@ -73,7 +74,7 @@ keep_logs=5
 upload_size="25M"
 
 # Set what language lang/say pkgs and language sound files to use.
-# en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong 
+# en-ca=English/CA en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong 
 use_lang="en-us"
 
 #----Optional Fusionpbx Apps/Modules----
@@ -117,10 +118,10 @@ all="n" #: Install all extra modules for fusionpbx and related freeswitch deps
 #Optional (Not Required)
 # Please Select Server or Client not both.
 # Used for connecting to remote postgresql database servers
-# Install postgresql Client 9.3 for connection to remote postgresql servers (y/n)
+# Install postgresql Client 9.4 for connection to remote postgresql servers (y/n)
 postgresql_client="n"
 
-# Install postgresql server 9.3 (y/n) (client included)(Local Machine)
+# Install postgresql server 9.4 (y/n) (client included)(Local Machine)
 # Notice:
 # You should not use postgresql server on a nand/emmc/sd. It cuts the performance
 # life in half due to all the needed reads and writes. This cuts the life of
@@ -155,28 +156,13 @@ install_ajenti="n"
 #<------Stop Edit Here-------->
 ################################################################################
 # Hard Set Varitables (Do Not EDIT)
-#Freeswitch default runtime Dir Layout
+#Freeswitch default 
 fs_conf_dir="/etc/freeswitch"
 fs_dflt_conf_dir="/usr/share/freeswitch/conf"
-#fs_db_dir="/var/lib/freeswitch/db"
 fs_log_dir="/var/log/freeswitch"
-#fs_mod_dir="/usr/lib/freeswitch/mod" (not currently used)
-#fs_recordings_dir="/var/lib/freeswitch/recordings"
-#fs_run_dir="/var/run/freeswitch"
 fs_scripts_dir="/var/lib/freeswitch/scripts"
-#fs_sounds_dir="/usr/share/freeswitch/sounds"
 fs_storage_dir="/var/lib/freeswitch/storage"
-#fs_temp_dir="/tmp"
-##
-#Fusionpbx freeswitch runtime Dir Layout
-#fs_conf="/etc/fusionpbx/switch/conf"
-#fs_db="/var/lib/freeswitch/db"
-#fs_log="/var/log/freeswitch"
-#fs_recordings="/var/lib/fusionpbx/recordings"
-#fs_run="/var/run/freeswitch"
-#fs_scripts="/var/lib/fusionpbx/scripts"
-#fs_storage="/var/lib/fusionpbx/storage"
-##
+
 ################################################################################
 # Hard Set Varitables (Do Not EDIT)
 #Nginx default www dir
@@ -328,56 +314,36 @@ apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-meta-codecs
 		freeswitch-mod-xml-rpc freeswitch-conf-vanilla freeswitch-mod-shout
 
 #setup language / sound files for use
+if [[ $use_lang == "en-ca" ]]; then
+apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-en-ca-june
+fi
+
 if [[ $use_lang == "en-us" ]]; then
-apt-get -y install --force-yes freeswitch-lang-en freeswitch-mod-say-en freeswitch-sounds
+apt-get -y install --force-yes freeswitch-lang-en freeswitch-mod-say-en freeswitch-sounds-en-us-callie
 fi
 
 if [[ $use_lang == "fr-ca" ]]; then
-apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr
-mkdir fr-sounds && cd fr-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-fr-ca-june-8000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-fr-ca-june-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-fr-ca-june-16000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-fr-ca-june-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd~
+apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-fr-ca-june
 fi
 
 if [[ $use_lang == "pt-br" ]]; then
-apt-get -y install --force-yes freeswitch-lang-pt freeswitch-mod-say-pt
-mkdir pt-sounds && cd pt-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-pt-BR-karina-8000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-pt-BR-karina-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-pt-BR-karina-16000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-pt-BR-karina-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd ~
+apt-get -y install --force-yes freeswitch-lang-pt freeswitch-mod-say-pt freeswitch-sounds-pt-br-karina
 fi
 
 if [[ $use_lang == "ru-ru" ]]; then
-apt-get -y install --force-yes freeswitch-lang-ru freeswitch-mod-say-ru
-mkdir ru-sounds && cd ru-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-ru-RU-elena-8000-1.0.12.tar.gz && tar xzvf freeswitch-sounds-ru-RU-elena-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-ru-RU-elena-16000-1.0.12.tar.gz && tar xzvf freeswitch-sounds-ru-RU-elena-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd~
+apt-get -y install --force-yes freeswitch-lang-ru freeswitch-mod-say-ru freeswitch-sounds-ru-ru-elena
 fi
 
 if [[ $use_lang == "sv-se" ]]; then
-apt-get -y install --force-yes freeswitch-lang-sv freeswitch-mod-say-sv
-mkdir sv-sounds && cd sv-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-sv-se-jakob-8000-1.0.50.tar.gz && tar xzvf freeswitch-sounds-sv-se-jakob-8000-1.0.50.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-sv-se-jakob-16000-1.0.50.tar.gz && tar xzvf freeswitch-sounds-sv-se-jakob-16000-1.0.50.tar.gz -C /usr/share/freeswitch/sounds
-cd ~
+apt-get -y install --force-yes freeswitch-lang-sv freeswitch-mod-say-sv freeswitch-sounds-sv-se-jakob
 fi
 
 if [[ $use_lang == "zh-cn" ]]; then
-apt-get -y install --force-yes freeswitch-mod-say-zh
-mkdir zh-cn-sounds && cd zh-cn-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-zh-cn-sinmei-8000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-cn-sinmei-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-zh-cn-sinmei-16000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-cn-sinmei-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd ~
+apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-cn-sinmei
 fi
 
 if [[ $use_lang == "zh-hk" ]]; then
-apt-get -y install --force-yes freeswitch-mod-say-zh
-mkdir zh-hk-sounds && cd zh-hk-sounds
-wget http://files.freeswitch.org/freeswitch-sounds-zh-hk-sinmei-8000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-hk-sinmei-8000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-wget http://files.freeswitch.org/freeswitch-sounds-zh-hk-sinmei-16000-1.0.51.tar.gz && tar xzvf freeswitch-sounds-zh-hk-sinmei-16000-1.0.51.tar.gz -C /usr/share/freeswitch/sounds
-cd ~
+apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-hk-sinmei
 fi
 
 #make the conf dir
@@ -457,7 +423,7 @@ server{
 		#rewrite "^.*/provision/([A-Fa-f0-9]{12})(\.(cfg))?$" /app/provision/?mac=$1 last;
 
 		#yealink common
-		rewrite "^.*/provision/(y[0-9]{12})(\.cfg)?$" /app/provision/index.php?file=\\$1\\$2;
+		rewrite "^.*/provision/(y[0-9]{12})(\.cfg)?$" /app/provision/index.php?file=\$1\$2;
 
 		#yealink mac
 		rewrite "^.*/([A-Fa-f0-9]{12})(\.(xml|cfg))?$" /app/provision/index.php?mac=\$1 last;
