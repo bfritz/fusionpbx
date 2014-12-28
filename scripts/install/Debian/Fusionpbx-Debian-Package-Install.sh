@@ -90,10 +90,13 @@ use_lang="en-us"
 #----Optional Fusionpbx Apps/Modules----
 #######################################
 # DO NOT SELECT FROM BOTH !!!!!!!!!!
+#######################################
+
 ###################################################################
 # If you wish to install all options use THE ALL OPTION ONLY!!!!!!!
 ###################################################################
 all="n" #: Install all extra modules for fusionpbx and related freeswitch deps
+
 ########################################
 # Else select options from here........
 ########################################
