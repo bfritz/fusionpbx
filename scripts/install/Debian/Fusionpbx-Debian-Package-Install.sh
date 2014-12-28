@@ -140,9 +140,9 @@ minimized_theme="n" # : minimal theme for fusionpbx
 #Optional (Not Required)
 #########################
 
-##########################################
-# Please Select Server or Client not both.
-##########################################
+################################################
+# Please Select Server or Client not both !!!!!!
+################################################
 
 #################################################################################
 # Install postgresql Client 9.4 for connection to remote postgresql servers (y/n)
@@ -181,7 +181,7 @@ db_user_name=fusionpbxadmin
 
 ###################################################################################
 # Set FusionPBX database admin password .(used by fusionpbx to access the database 
-#table in the postgresql server). Please set a very secure password !!!!!!
+# table in the postgresql server). Please set a very secure password !!!!!!
 ###################################################################################
 db_user_passwd=fusionpbx2015
 
@@ -194,24 +194,22 @@ install_ajenti="n"
 
 #<------Stop/End Edit Here-------->
 
-################################################################################
-# Hard Set Varitables (Do Not EDIT)
-#Freeswitch default 
+######################################################
+# Hard Set Varitables (Do Not EDIT) Freeswitch default
+###################################################### 
 fs_conf_dir="/etc/freeswitch"
 fs_dflt_conf_dir="/usr/share/freeswitch/conf"
 fs_log_dir="/var/log/freeswitch"
 fs_scripts_dir="/var/lib/freeswitch/scripts"
 fs_storage_dir="/var/lib/freeswitch/storage"
-
-################################################################################
-# Hard Set Varitables (Do Not EDIT)
+######################################################
 #Nginx default www dir
 WWW_PATH="/var/www" #debian nginx default dir
 #set Web User Interface Dir Name
 wui_name="fusionpbx"
 #Php ini config file
 php_ini="/etc/php5/fpm/php.ini"
-#################################################################################
+######################################################
 
 #-----Start installation------
 
@@ -234,8 +232,7 @@ fi
 #--- end internet test------
 
 #----OS ENVIRONMENT CHECKS-------
-#check to confirm running as root
-#
+# check to confirm running as root
 # First, we need to be root...
 
 if [ "$(id -u)" -ne "0" ]; then
