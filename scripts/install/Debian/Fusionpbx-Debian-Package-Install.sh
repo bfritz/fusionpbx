@@ -313,27 +313,14 @@ apt-get -y install acpi-support-base curl usbmount usbutils
 #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
 echo ' installing Release/Stable repo '
 cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-#deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
 deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
 DELIM
-
-#adding key for freeswitch repo
-#echo 'fetcing repo key'
-#curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
 
 #adding FusionPBX repo
 echo 'installing fusionpbx head repo'
 cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 deb http://repo.fusionpbx.com/fusionpbx/release/debian/ wheezy main
 DELIM
-
-#postgresql 9.4 repo for x86 x86-64 bit pkgs
-#add in pgsql 9.4
-cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
-deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
-DELIM
-#add pgsql repo key
-wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
 
 #------end of installing repos-----
 
@@ -800,6 +787,17 @@ for i in freeswitch nginx php5-fpm ;do service "${i}" restart >/dev/null 2>&1 ; 
 
 #Install postgresql-client option
 if [[ $postgresql_client == "y" ]]; then
+#postgresql 9.4 repo for x86 x86-64 bit pkgs
+cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
+deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
+DELIM
+	
+	#add pgsql repo key
+	wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
+
+	#update the repos
+	apt-get update
+	
 	for i in postgresql-client-9.4 php5-pgsql ;do apt-get -y install "${i}"; done
 	service php5-fpm restart
 	clear
@@ -827,6 +825,17 @@ fi
 
 #-----install & configure basic postgresql-server
 if [[ $postgresql_server == "y" ]]; then
+#postgresql 9.4 repo for x86 x86-64 bit pkgs
+cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
+deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
+DELIM
+	
+	#add pgsql repo key
+	wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
+
+	#update the repos
+	apt-get update
+	
 	for i in postgresql-9.4 php5-pgsql ;do apt-get -y install "${i}"; done
 	service php5-fpm restart
 
