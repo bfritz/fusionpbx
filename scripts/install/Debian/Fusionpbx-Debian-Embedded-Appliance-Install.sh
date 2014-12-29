@@ -42,51 +42,76 @@ esac
 ################################################################################
 cat  <<  DELIM
 
-        This Is A One Time Install Script. (((( Not Ment For Lamp Installs ))))
+                  ( Not Ment For L.a.m.p Installs )
 
-        This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy).
+                  THIS IS A ONE TIME INSTALL SCRIPT. 
 
-                    It Is Not Intended To Be Run Multi Times
+   This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy).
 
-        If It Fails For Any Reason Please Report To r.neese@gmail.com.
+   It Is Not Intended To Be Run Multi Times
 
-        Please Include Any Screen Output You Can To Show Where It Fails.
+   If It Fails For Any Reason Please Report To r.neese@gmail.com.
+
+   Please Include Any Screen Output You Can To Show Where It Fails.
 
 DELIM
 ################################################################################
 case $(uname -m) in armv7l)
 cat << DELIM
-    Note:
-        It is suggested you only use sqlite and or postgresql client for best
+  Note:
 
-        preformance on armhf when using a sd or emmc or nand. For those arm
+      It is suggested you only use sqlite and or postgresql client for best
 
-        units supporting sata and usb3 harddrives you can opt for Postgrsql
+      preformance on armhf when using a sd or emmc or nand. For those arm
 
-        if you wish. Currently only Postgresql 9.1 is supported in the armhf
+      units supporting sata and usb3 harddrives you can opt for Postgrsql
 
-        pkgs. I have not found a arm repo with 9.3 pkgs. I will update the
+      if you wish. Currently only Postgresql 9.1 is supported in the armhf
 
-        script when I do.
+      pkgs. I have not found a arm repo with 9.3 pkgs. I will update the
+
+      script when I do.
 DELIM
 esac
 ################################################################################
 #<------Start Edit HERE--------->
-#Use for configuring a odroid
+
+#####################################
+#Use for configuring a odroid boards
+#####################################
 odroid_boards="n"
 
+#############################################################################
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
+#############################################################################
 keep_logs=5
 
-#Set mp3/wav file upload/post size limit(Must Have the M on the end)
+#######################################################################
+#Set mp3/wav file upload/post size limit ( Must Have the M on the end )
+#######################################################################
 upload_size="25M"
 
+##################################################################
 # Set what language lang/say pkgs and language sound files to use.
-# en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong 
+#############################################################################################
+# en-ca=English/CA en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill 
+# ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong 
+#############################################################################################
 use_lang="en-us"
 
 #----Optional Fusionpbx Apps/Modules----
+#######################################
+# DO NOT SELECT FROM BOTH !!!!!!!!!!
+#######################################
 
+###################################################################
+# If you wish to install all options use THE ALL OPTION ONLY!!!!!!!
+###################################################################
+all="n" #: Install all extra modules for fusionpbx and related freeswitch deps
+
+########################################
+# Else select options from here........
+########################################
 adminer="n" # : integrated for an administrator in the superadmin group to enable easy database access
 backup="n" # : pbx backup module. backup sqlite db / configs/ logs
 call_broadcast="n" # : Create a recording and select one or more groups to have the system call and play the recording
@@ -120,79 +145,83 @@ accessible_theme="n" # : accessible theme for fusionpbx
 classic_theme="n" # : classic theme for fusionpbx
 default_theme="n" # : default theme for fusionpbx
 minimized_theme="n" # : minimal theme for fusionpbx
-all="n" #: Install all extra modules for fusionpbx and related freeswitch deps
 
 #------Postgresql start-------
+
+#########################
 #Optional (Not Required)
-# Used for connecting to remote postgresql database servers
-# Install postgresql Client 9.3 for connection to remote postgresql servers (y/n)
+#########################
+
+################################################
+# Please Select Server or Client not both !!!!!!
+################################################
+
+#################################################################################
+# Install postgresql Client 9.4 for connection to remote postgresql servers (y/n)
+#################################################################################
 postgresql_client="n"
 
+#################################################################################
+# Install postgresql server 9.4 (y/n) (client included)(Local Machine)
+# Notice:
+# You should not use postgresql server on a nand/emmc/sd. It cuts the performance
+# life in half due to all the needed reads and writes. This cuts the life of
+# your pbx emmc/sd in half.
+#################################################################################
+postgresql_server="n"
+
+##########################################################
 # Set Postgresql Server Admin username ( Lower case only )
-pgsql_admin=
+##########################################################
+pgsql_admin=pgsqladmin
 
+######################################
 # Set Postgresql Server Admin password
-pgsql_admin_passwd=
+######################################
+pgsql_admin_passwd=pgsqladmin2015
 
-# Set Database Name used for fusionpbx in the postgresql server
-# (Default: fusionpbx)
+####################################################################################
+# Set Database Name used for fusionpbx in the postgresql server (Default: fusionpbx)
+####################################################################################
 db_name=fusionpbx
 
-# Set FusionPBX database admin name.(used by fusionpbx to access
-# the database table in the postgresql server.
-# (Default: fusionpbx)
-db_user_name=fusionpbx
+####################################################################################
+# Set FusionPBX database admin name.(used by fusionpbx to access the database table 
+# in the postgresql server (Default: fusionpbx)
+####################################################################################
+db_user_name=fusionpbxadmin
 
-# Set FusionPBX database admin password .(used by fusionpbx to access
-# the database table in the postgresql server).
-# Please set a very secure passwd
-db_user_passwd=
+###################################################################################
+# Set FusionPBX database admin password .(used by fusionpbx to access the database 
+# table in the postgresql server). Please set a very secure password !!!!!!
+###################################################################################
+db_user_passwd=fusionpbx2015
 
 #-------Postgresql-End--------------
 
-# disbale generation of xml_cdr files and only store in cdr in the database
-xml_cdr_files="n"
-
-# disable  extra logging and on show warnings/errors. shrinks the size of 
-# logfiles and whats displayed in the logging page
-logging_level="n"
-
-#Install Ajenti Optional Admin Portal
+################################################################
+#Install Ajenti Optional Admin Portal  Optional (Not Required)
+################################################################
 install_ajenti="n"
 
-#<------Stop Edit Here-------->
-################################################################################
-# Hard Set Varitables (Do Not EDIT)
-#Freeswitch default runtime Dir Layout
+#<------Stop/End Edit Here-------->
+
+######################################################
+# Hard Set Varitables (Do Not EDIT) Freeswitch default
+###################################################### 
 fs_conf_dir="/etc/freeswitch"
 fs_dflt_conf_dir="/usr/share/freeswitch/conf"
-#fs_db_dir="/var/lib/freeswitch/db"
 fs_log_dir="/var/log/freeswitch"
-#fs_mod_dir="/usr/lib/freeswitch/mod" (not currently used)
-#fs_recordings_dir="/var/lib/freeswitch/recordings"
-#fs_run_dir="/var/run/freeswitch"
 fs_scripts_dir="/var/lib/freeswitch/scripts"
-#fs_sounds_dir="/usr/share/freeswitch/sounds"
 fs_storage_dir="/var/lib/freeswitch/storage"
-#fs_temp_dir="/tmp"
-##
-#Fusionpbx freeswitch runtime Dir Layout
-#fs_conf="/etc/fusionpbx/switch/conf"
-#fs_db="/var/lib/freeswitch/db"
-#fs_log="/var/log/freeswitch"
-#fs_recordings="/var/lib/fusionpbx/recordings"
-#fs_run="/var/run/freeswitch"
-#fs_scripts="/var/lib/fusionpbx/scripts"
-#fs_storage="/var/lib/fusionpbx/storage"
-################################################################################
-# Hard Set Varitables (Do Not EDIT)
+######################################################
 #Nginx default www dir
 WWW_PATH="/var/www" #debian nginx default dir
 #set Web User Interface Dir Name
 wui_name="fusionpbx"
 #Php ini config file
 php_ini="/etc/php5/fpm/php.ini"
-#################################################################################
+######################################################
 
 #-----Start installation------
 
@@ -292,13 +321,13 @@ case $(uname -m) in x86_64|i[4-6]86)
 #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
 echo ' installing stable repo '
 cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-deb http://files.freeswitch.org/repo/deb/debian/ wheezy main
+deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
 DELIM
 
 #adding key for freeswitch repo
-echo 'fetcing repo key'
-curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
-esac
+#echo 'fetcing repo key'
+#curl http://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
+#esac
 
 case $(uname -m) in armv7l)
 #adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
@@ -403,7 +432,7 @@ service freeswitch restart
 #---Start of nginx / php5 install --------
 #Install and configure  PHP + Nginx + sqlite3 for use with the fusionpbx gui.
 apt-get -y install sqlite3 ssl-cert nginx php5-cli php5-common php-apc \
-	php5-gd php-db php5-fpm php5-memcache php5-sqlite
+	php5-gd php-db php5-fpm php5-memcache php5-sqlite php5-imap php5-mcrypt php5-curl
 
 # Changing file upload size from 2M to upload_size
 sed -i "$php_ini" -e "s#upload_max_filesize = 2M#upload_max_filesize = $upload_size#"
@@ -792,7 +821,16 @@ for i in freeswitch nginx php5-fpm ;do service "${i}" restart >/dev/null 2>&1 ; 
 
 #Install postgresql-client option
 if [[ $postgresql_client == "y" ]]; then
-	clear
+	case $(uname -m) in x86_64|i[4-6]86)
+	#postgresql 9.3 repo for x86 x86-64 bit pkgs
+	#add in pgsql 9.3
+cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
+deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
+DELIM
+	#add pgsql repo key
+	wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
+	esac
+	
 	case $(uname -m) in x86_64|i[4-6]86)
 	for i in postgresql-client-9.4 php5-pgsql ;do apt-get -y install "${i}"; done
 	esac
