@@ -27,7 +27,6 @@ include "root.php";
 require_once "resources/require.php";
 require_once "resources/check_auth.php";
 require_once "resources/paging.php";
-require_once "resources/classes/logging.php";
 require_once "resources/classes/orm.php";
 if (permission_exists('dialplan_add')
 	|| permission_exists('dialplan_edit')
@@ -51,9 +50,6 @@ else {
 	foreach($text as $key => $value) {
 		$text[$key] = $value[$_SESSION['domain']['language']['code']];
 	}
-
-//logger
-	$log = new Logging();
 
 //set the action as an add or an update
 	if (isset($_REQUEST["id"])) {
