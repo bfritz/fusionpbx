@@ -276,6 +276,13 @@ use_extra_modules="n"
 ################################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
 ################################################################################
+if [[ $use_freetdm === "y" ]]; then
+fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
+    mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
+    mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
+    mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random \
+    ../../libs/freetdm/mod_freetdm )
+else
 fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
     mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
     mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
