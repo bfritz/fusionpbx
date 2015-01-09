@@ -232,12 +232,12 @@ use_freetdm="n"
 ################################################################################
 # Enable / Build GsmOpen into freeswitch (UNDER DEVELOPMENT)
 ################################################################################
-use_gsmopen="n"
+#use_gsmopen="n"
 
 ################################################################################
 #Freeswutch Modules Selection
 ################################################################################
-use_extra_modules="n"
+#use_optional_modules="n"
 
 #####################################################
 #Freeswitch Default Enabled Modules ( Required for base build )
@@ -333,9 +333,9 @@ fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_
 ###################################################
 # Add / Enable optional modules from list above here
 ###################################################
-if [[ $use_extra_modules == "y" ]]; then
-	extra_modules_add=( )
-fi
+#if [[ $use_optional_modules == "y" ]]; then
+#	extra_modules_add=( )
+#fi
 
 #################################
 # Freeswitch Contrib Modules
@@ -347,23 +347,23 @@ fi
 # Options contrib modules (only if you selected to use the contribs git option )
 # (future Option) (UNDER DEVELOPMENT )
 #################################################################################################
-if [[ $use_freeswitch_contrib == "y" ]]; then
-	contrib_modules_add=( ../../contrib/ledr/c/mod_odbc_query cd mo	)
-fi
+#if [[ $use_freeswitch_contrib == "y" ]]; then
+#	contrib_modules_add=( ../../contrib/ledr/c/mod_odbc_query cd mo	)
+#fi
 
 ###############################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
 ################################################################################
-if [[ $use_freetdm == "y" ]]; then
-	freetdm_modules_add=( ../../libs/freetdm/mod_freetdm )
-fi
+#if [[ $use_freetdm == "y" ]]; then
+#	freetdm_modules_add=( ../../libs/freetdm/mod_freetdm )
+#fi
 
 ################################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
 ################################################################################
-if [[ $use_gsmopen == "y" ]]; then
-	gsmopen_modules_add=( gsmopen mod_siren mod_xml_curl )
-fi
+#if [[ $use_gsmopen == "y" ]]; then
+#	gsmopen_modules_add=( gsmopen mod_siren mod_xml_curl )
+#fi
 
 ################################################################
 # Option to disable some loging execpt for  warnings and errors
