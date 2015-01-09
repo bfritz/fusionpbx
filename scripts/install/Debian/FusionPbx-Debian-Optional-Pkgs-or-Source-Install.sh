@@ -183,6 +183,11 @@ echo
 ########################
 # Freeswitch Options
 ########################
+########################################################
+# Select to use the Release or head branch of freeswitch
+########################################################
+freeswitch_stable="y"
+
 ################################################################################
 # If you select to use the freeswitch pkgs it will use the prebuilt debian pkgs.
 # If you select not to use the freeswitch debian pkgs it will use git and pull
@@ -489,7 +494,12 @@ install_ajenti="n"
 ######################################################
 # Hard Set Varitables (Do Not EDIT) Freeswitch default
 ######################################################
+if [[ $freeswitch_stable == "y" ]];then
 FS_VER="v1.4"
+else
+FS_VER="v1.5"
+fi
+
 FS_SRC_PATH=/usr/src/freeswitch-"$FS_VER"
 ################################################################
 #Used for pkg based installs for cp the base configs into place
@@ -675,7 +685,13 @@ fi
 #####################################################################
 #grap the freeswitch 1.4 release src code from the freeswitch stache
 #####################################################################
+if [[ $freeswitch_stable == "y" ]];then
+echo " Pulling freeswitch 1.4 stable branch from stache repo
 time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$FS_VER" "$FS_SRC_PATH"
+else
+echo " Pulling freeswitch 1.5 heaad branch from stache repo
+time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git "$FS_SRC_PATH"
+fi
 
 #####################################################################
 #grap the freeswitch contrib src code from the freeswitch stache
