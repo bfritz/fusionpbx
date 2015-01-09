@@ -360,6 +360,11 @@ logging_level="N"
 ####################
 # FUSIONPBX OPTIONS
 ####################
+######################################################
+# Select to use the Stable or Dev Branch of fusionpbx
+######################################################
+use_stable="y"
+
 #############################################################################
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
 #############################################################################
@@ -1151,11 +1156,18 @@ adduser www-data dialout
 ######################
 #adding FusionPBX repo
 #######################
-echo 'installing fusionpbx head repo'
+if [[ $use_stable == "y" ]]; then
+echo 'installing fusionpbx Stabe/Release repo'
 cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 deb http://repo.fusionpbx.com/fusionpbx/release/debian/ wheezy main
 DELIM
-
+else
+echo 'installing fusionpbx head/devel repo'
+cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
+deb http://repo.fusionpbx.com/fusionpbx/head/debian/ wheezy main
+DELIM
+fi
+echo
 #################################################
 #run repo update after adding in a new repo....
 #################################################
