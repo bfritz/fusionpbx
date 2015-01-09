@@ -361,7 +361,7 @@ fi
 ################################################################
 # Option to disable some loging execpt for  warnings and errors
 ################################################################
-logging_level="N"
+logging_level="n"
 
 ####################
 # FUSIONPBX OPTIONS
@@ -678,7 +678,7 @@ if [ $use_freetdm == "y" ]; then
 	#add stuff for freetdm/dahdi
 	apt-get -y install linux-headers-"$(uname -r)"
 	#add the headers so dahdi can build the modules...
-	apt-get -y install dahdi dahdi-linux dahdi-firmware-nonfree \
+	apt-get -y install libpri dahdi dahdi-linux dahdi-firmware-nonfree \
 				dahdi-source libtonezone-dev libtonezone2.0
 	#running ldconfig to prep for freetdm build
 	pgrep -f ldconfig > /dev/null
