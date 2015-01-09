@@ -1235,8 +1235,6 @@ Odroid
 DELIM
 fi
 
-
-
 #Ajenti admin portal. Makes maintaining the system easier.
 #ADD Ajenti repo & ajenti
 if [[ $install_ajenti == "y" ]]; then
