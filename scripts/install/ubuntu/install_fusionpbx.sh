@@ -71,7 +71,7 @@ fi
 #DEFINES
 #-------
 VERSION="Version - using subversion, no longer keeping track. WAF License"
-#latest stable
+#latest release
 FPBXBRANCH="http://fusionpbx.googlecode.com/svn/trunk/fusionpbx"
 #dev branch
 #FPBXBRANCH="http://fusionpbx.googlecode.com/svn/branches/dev/fusionpbx"
@@ -827,7 +827,7 @@ case $DISTRO_DETECT in
 	wheezy)
 		DISTRO=wheezy
 		/bin/echo "OK you're running Debian Wheezy.  This script is known to work"
-		/bin/echo "   with apache/nginx and sqlite|postgres9.3 options"
+		/bin/echo "   with apache/nginx and sqlite|postgres9.4 options"
 		/bin/echo "   Please consider providing feedback on whether or not this works."
 		
 		/bin/echo 
@@ -921,7 +921,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 	if [ $DISTRO == "precise" ]; then
 		/usr/bin/apt-get -y install ssh vim git-core libjpeg-dev subversion build-essential \
 		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
-		python-dev pkg-config libtiff4-dev \
+		python-dev pkg-config libtiff4-dev php5-curl php5-imap php5-mcrypt lame \
 		libperl-dev libgdbm-dev gettext libssl-dev \
 		libcurl4-openssl-dev libpcre3-dev libspeex-dev libspeexdsp-dev \
 		libsqlite3-dev libedit-dev libgdbm-dev libmemcached-dev \
@@ -933,7 +933,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 		python-dev pkg-config libtiff5-dev libldns-dev \
 		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev \
 		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev libedit-dev \
-		screen htop pkg-config bzip2 curl ntp \
+		screen htop pkg-config bzip2 curl memcached ntp php5-curl php5-imap php5-mcrypt lame \
 		time bison libssl-dev unixodbc libmyodbc unixodbc-dev libtiff-tools libmemcached-dev
 	else
 		/usr/bin/apt-get -y install ssh vim git-core libjpeg-dev subversion build-essential \
@@ -941,7 +941,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev \
 		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev libedit-dev \
 		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev libjpeg62-dev \
-		screen htop pkg-config bzip2 curl ntp \
+		screen htop pkg-config bzip2 curl memcached ntp php5-curl php5-imap php5-mcrypt lame \
 		time bison libssl-dev unixodbc libmyodbc unixodbc-dev libtiff-tools libmemcached-dev
 	fi
 
@@ -991,8 +991,8 @@ if [ $INSFREESWITCH -eq 1 ]; then
 		read -p "  Would you like to install PostgreSQL or stay with Sqlite (p/S)? " SQLITEMYSQL
 		case "$SQLITEMYSQL" in
 		  [pP]*)
-			if [ $DISTRO = "precise" ]; then
-				echo "precise is PostgreSQL 9.1 by default"
+			if [ $DISTRO = "wheezy" ]; then
+				echo "wheezy is PostgreSQL 9.4 by default"
 				POSTGRES9=9
 			else
 				/bin/echo
@@ -1021,18 +1021,18 @@ if [ $INSFREESWITCH -eq 1 ]; then
 				/usr/bin/apt-get -y -t squeeze-backports install postgresql-9.1 libpq-dev 
 			elif [ $DISTRO = "precise" ]; then
 				POSTGRES9=9
-				#update repository for postgres 9.3 ...
+				#update repository for postgres 9.4 ...
 				/bin/echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 				wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
 				/usr/bin/apt-get update
-				/usr/bin/apt-get -y install postgresql-9.3 libpq-dev
+				/usr/bin/apt-get -y install postgresql-9.4 libpq-dev
 			elif [ $DISTRO = "wheezy" ]; then
 				POSTGRES9=9
-				#update repository for postgres 9.3 ...
+				#update repository for postgres 9.4 ...
 				/bin/echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 				wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
 				/usr/bin/apt-get update
-				/usr/bin/apt-get -y install postgresql-9.3 libpq-dev php5-pgsql		
+				/usr/bin/apt-get -y install postgresql-9.4 libpq-dev php5-pgsql		
 				
 				service postgresql status |grep down
 				if [ $? -eq 0 ]; then
@@ -1049,7 +1049,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 				#add the ppa
 				/usr/bin/apt-add-repository ppa:pitti/postgresql
 				/usr/bin/apt-get update
-				/usr/bin/apt-get -y install postgresql-9.1 libpq-dev 
+				/usr/bin/apt-get -y install postgresql-9.3 libpq-dev 
 			fi
 		else
 			/bin/echo " version 8.4"
@@ -1109,7 +1109,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 	else
 		cd /usr/src
 		if [ "$FSSTABLE" == true ]; then
-			echo "installing stable $FSStableVer of FreeSWITCH"
+			echo "installing $FSStableVer of FreeSWITCH"
 			/usr/bin/time /usr/bin/git clone $FSGIT
 			cd /usr/src/freeswitch
 			/usr/bin/git checkout $FSStableVer
@@ -1119,7 +1119,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 				exit 1
 			fi
 		else
-			echo "going dev branch.  Hope this works for you."
+			echo "going dev branch."
 			/usr/bin/time /usr/bin/git clone $FSGIT
 			if [ $? -ne 0 ]; then
 				#git had an error
@@ -1278,7 +1278,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 		#might see about -j cores option to make...
 
 		/bin/echo
-		/bin/echo -ne "Compiling FreeSWITCH. This might take a LONG while [~30 minutes]"
+		/bin/echo -ne "Compiling FreeSWITCH. This might take a while [~30 minutes]"
 		/bin/sleep 1
 		/bin/echo -ne "."
 		/bin/sleep 1
@@ -1531,7 +1531,7 @@ if [ $INSFREESWITCH -eq 1 ]; then
 
 		case "$SETNONAT" in
 			[Yy]*)
-				/bin/sed /etc/default/freeswitch -i -e s,'FREESWITCH_PARAMS="-nc"','FREESWITCH_PARAMS="-nc -nonat"',
+				/bin/sed /etc/default/freeswitch -i -e s,'FREESWITCH_PARAMS="-nc"','FREESWITCH_PARAMS="-nc -nonat -reincarnate"',
 				/bin/echo "init script set to start 'freeswitch -nc -nonat'"
 			;;
 
@@ -1827,7 +1827,7 @@ DELIM
 	#  SOLUTION: Turn off RepeatedMsgReduction in rsyslog.
 	/bin/echo "Turning off RepeatedMsgReduction in /etc/rsyslog.conf"
 	#not sure what the deal is with the single quotes here. Fixed in v4.4.0
-	#/bin/sed -i ‘s/RepeatedMsgReduction\ on/RepeatedMsgReduction\ off/’ /etc/rsyslog.conf
+	#/bin/sed -i 's/RepeatedMsgReduction\ on/RepeatedMsgReduction\ off/' /etc/rsyslog.conf
 	/bin/sed -i 's/RepeatedMsgReduction\ on/RepeatedMsgReduction\ off/' /etc/rsyslog.conf
 	/etc/init.d/rsyslog restart
 
@@ -2418,8 +2418,8 @@ DELIM
 		read -p "  Would you like to install MySQL, PostgreSQL, or stay with Sqlite (m/p/S)? " SQLITEMYSQL
 		case "$SQLITEMYSQL" in
 		  [pP]*)
-			if [ $DISTRO = "precise" ]; then
-				echo "precise is PostgreSQL 9.1 by default"
+			if [ $DISTRO = "wheezy" ]; then
+				echo "precise is PostgreSQL 9.4 by default"
 				POSTGRES9=9
 			else
 				/bin/echo
@@ -2469,7 +2469,7 @@ DELIM
 		/bin/echo -ne "    please set the password."
 		#add php postgres packages
 		if [ $POSTGRES9 == "9" ]; then
-			/bin/echo " version 9.1"
+			/bin/echo " version 9.3"
 			if [ $DISTRO = "squeeze" ]; then
 				#add squeeze repo
 				/bin/echo "Adding debian backports for postgres9.1"
@@ -2481,14 +2481,14 @@ DELIM
 				/usr/bin/apt-get -y install php5-pgsql
 			elif [ $DISTRO = "wheezy" ]; then
                                 POSTGRES9=9
-                                #update repository for postgres 9.3 ...
+                                #update repository for postgres 9.4 ...
                                 /bin/echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/apt/sources.list.d/pgdg.list
                                 wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
                                 /usr/bin/apt-get update
-                                /usr/bin/apt-get -y install postgresql-9.3 libpq-dev php5-pgsql
+                                /usr/bin/apt-get -y install postgresql-9.4 libpq-dev php5-pgsql
 			else
 				#add the ppa
-				#/usr/bin/apt-add-repository ppa:pitti/postgresql
+				/usr/bin/apt-add-repository ppa:pitti/postgresql
 				/usr/bin/apt-get update
 				/usr/bin/apt-get -y install php5-pgsql
 			fi
@@ -2662,7 +2662,7 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 	#------------------------
 	/bin/grep 'made_current' /tmp/install_fusion_status > /dev/null
 	if [ $? -eq 0 ]; then
-		/bin/echo "Modules.conf Already edited"	
+		/bin/echo "Modules.conf Already edited"
 	else
 		/bin/echo
 		/bin/echo ' going to run make curent'
@@ -2688,10 +2688,10 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 		git status |grep "1.2"
 		if [ $? -ne 0 ]; then
 			echo "It appears that you are currently on the FreeSWITCH Git Master branch, or no branch."
-			echo "  We currently recommend that you switch to the 1.2.x branch,"
-			echo "  since 1.4 [master] may not be very stable."
+			echo "  We currently recommend that you switch to the 1.4.x branch,"
+			echo "  since 1.5 [master]."
 			echo
-			read -p "Shall we change to the 1.2.x branch [Y/n]? " YESNO
+			read -p "Shall we change to the 1.4.x release branch [Y/n]? " YESNO
 		else
 			YESNO="no"
 		fi
@@ -2703,13 +2703,13 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 				;;
 
 				*)
-						echo "OK, switching to 1.2.x."
+						echo "OK, switching to 1.4.x."
 						FSSTABLE=true
 				;;
 		esac
 
 		if [ $FSSTABLE == true ]; then
-			echo "OK we'll now use the 1.2.x stable branch"
+			echo "OK we'll now use the 1.4.x release branch"
 			cd /usr/src/freeswitch
 			
 			#odd edge case, I think from a specific version checkout
@@ -2752,7 +2752,7 @@ if [ $UPGFREESWITCH -eq 1 ]; then
 			#fi
 
 		else
-			echo "staying on dev branch.  Hope this works for you."
+			echo "Staying on dev branch."
 		fi
 
 		cd /usr/src/freeswitch
@@ -2860,7 +2860,7 @@ if [ $UPGFUSION -eq 1 ]; then
 	www_permissions
 	cd $WWW_PATH/$GUI_NAME
 	/bin/echo
-	/bin/echo "STOP! Make sure you are logged into fusionpbx as the superadmin (via browser)!!!"
+	/bin/echo "STOP! Make sure you are logged into fusionpbx as the superadmin (via browser)!"
 	read -p "Have you done this yet (y/n)? " YESNO
 	if [ $YESNO == "y" ]; then
 		/bin/echo "Be really sure you are logged in as superadmin."
@@ -2921,7 +2921,7 @@ if [ $UPGFUSION -eq 1 ]; then
 			echo "Done"
 	;;
 	*)
-		echo "OK, don't forget to run it yourself via gui or here with"
+		echo "OK, don't forget to run it yourself via GUI or here with"
 		echo "    /usr/bin/php $WWW_PATH/$GUI_NAME/core/upgrade/upgrade.php"
 	;;
 	esac
