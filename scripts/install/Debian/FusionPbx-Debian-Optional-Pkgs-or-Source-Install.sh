@@ -33,7 +33,7 @@ if [ "$(id -u)" -ne "0" ]; then
   sudo -p "$(basename "$0") must be run as root, please enter your sudo password : " "$0" "$@"
   exit 0
 fi
-
+echo
 echo "You're root.... continuing!"
 echo
 ################################################################################
@@ -221,7 +221,7 @@ echo
 # Select to use the Release or head branch of freeswitch
 # if you select to change y to n it will use 1.5 head branch
 ############################################################
-freeswitch_stable="y"
+use_freeswitch_stable="y"
 
 ################################################################################
 # If you select to use the freeswitch pkgs it will use the prebuilt debian pkgs.
@@ -266,13 +266,16 @@ use_freetdm="n"
 ################################################################################
 # Enable / Build GsmOpen into freeswitch (UNDER DEVELOPMENT)
 ################################################################################
-#use_gsmopen="n"
+use_gsmopen="n"
 
 ################################################################################
 #Freeswutch Modules Selection
 ################################################################################
-#use_optional_modules="n"
+use_optional_modules="n"
 
+################################################################################
+# Freeswitch Modules
+################################################################################
 #####################################################
 #Freeswitch Default Enabled Modules ( Required for base build )
 #####################################################
@@ -367,9 +370,9 @@ fi
 ###################################################
 # Add / Enable optional modules from list above here
 ###################################################
-#if [[ $use_optional_modules == "y" ]]; then
-#	extra_modules_add=( )
-#fi
+if [[ $use_optional_modules == "y" ]]; then
+	extra_modules_add=( )
+fi
 
 #################################
 # Freeswitch Contrib Modules
@@ -381,9 +384,9 @@ fi
 # Options contrib modules (only if you selected to use the contribs git option )
 # (future Option) (UNDER DEVELOPMENT )
 #################################################################################################
-#if [[ $use_freeswitch_contrib == "y" ]]; then
-#	contrib_modules_add=( ../../contrib/ledr/c/mod_odbc_query cd mo	)
-#fi
+if [[ $use_freeswitch_contrib == "y" ]]; then
+	contrib_modules_add=( ../../contrib/ledr/c/mod_odbc_query cd mo	)
+fi
 
 ###############################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
@@ -395,9 +398,9 @@ fi
 ################################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
 ################################################################################
-#if [[ $use_gsmopen == "y" ]]; then
-#	gsmopen_modules_add=( gsmopen mod_siren mod_xml_curl )
-#fi
+if [[ $use_gsmopen == "y" ]]; then
+	gsmopen_modules_add=( gsmopen mod_siren mod_xml_curl )
+fi
 
 ################################################################
 # Option to disable some loging execpt for  warnings and errors
@@ -542,10 +545,10 @@ install_ajenti="n"
 ######################################################
 # Hard Set Varitables (Do Not EDIT) Freeswitch default
 ######################################################
-if [[ $freeswitch_stable == "y" ]];then
-FS_VER="v1.4"
+if [[ $use_freeswitch_stable == "y" ]];then
+	FS_VER="v1.4"
 else
-FS_VER="v1.5"
+	FS_VER="v1.5"
 fi
 
 FS_SRC_PATH=/usr/src/freeswitch-"$FS_VER"
@@ -600,43 +603,42 @@ echo
 #######################################
 #--------adding in custom repos-------
 #######################################
-if [[ $use_freeswitch_pkgs == "y" ]]; then
 ##############################
 # Detect and Set Intel/AMD Repos
 ##############################
-	case $(uname -m) in x86_64|i[4-6]86)
-		if [[ $use_freeswitch_stable == "y" ]]; then
+if [[ $use_freeswitch_pkgs == "y" ]]; then
+case $(uname -m) in x86_64|i[4-6]86)
+	if [[ $use_freeswitch_stable == "y" ]]; then
 		#adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
 		echo " installing Intel/AMD64 Release/Stable repo "
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 		deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
 DELIM
-	else
+else
 		echo " installing Intel/AMD64 Head/Devel repo "
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 		deb http://repo.fusionpbx.com/freeswitch/head/debian/ wheezy main
 DELIM
-		fi	
-	esac
+	fi
+esac
+
 ##############################
 # Detect and Set ArmHF Repos
 ##############################
-	case $(uname -m) in armv7l)
-		if [[ $use_freeswitch_stable == "y" ]]; then
+case $(uname -m) in armv7l)
+	if [[ $use_freeswitch_stable == "y" ]]; then
 		#adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
 		echo 'installing Freeswitch ARMHF Release/Stable repo'
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 		deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
 DELIM
-	else
+else
 		echo 'installing Freeswitch ARMHF Head/Devel repo'
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 		deb http://repo.fusionpbx.com/freeswitch-armhf/head/debian/ wheezy main
-DELIM	
-		fi
-	esac	
-fi
-fi
+DELIM
+	fi	
+esac	
 ################################
 #adding key for freeswitch repo
 ################################
@@ -753,13 +755,13 @@ else
 # Install freeswitch build deps
 ################################
 apt-get -y install time ntp ssh vim git-core libjpeg-dev subversion build-essential \
-	autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
-	python-dev pkg-config libtiff5-dev libldns-dev \
-	libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev  \
-	libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev \
-	libedit-dev screen htop pkg-config bzip2 bison libssl-dev unixodbc \
-	unixodbc-dev libtiff-tools libmemcached-dev uuid-dev libpq5 libpq-dev \
-	portaudio19-dev lame
+		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
+		python-dev pkg-config libtiff5-dev libldns-dev \
+		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev  \
+		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev \
+		libedit-dev screen htop pkg-config bzip2 bison libssl-dev unixodbc \
+		unixodbc-dev libtiff-tools libmemcached-dev uuid-dev libpq5 libpq-dev \
+		portaudio19-dev lame
 
 #######################
 # Install Freetdm Deps
@@ -974,6 +976,7 @@ fi
 #############################################################
 #---End / Finish Freeswitch FHS Source Build Install -------
 #############################################################
+
 #####################################################
 #---Start of nginx / php5 install --------
 #####################################################
