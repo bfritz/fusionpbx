@@ -266,12 +266,12 @@ use_freetdm="n"
 ################################################################################
 # Enable / Build GsmOpen into freeswitch (UNDER DEVELOPMENT)
 ################################################################################
-use_gsmopen="n"
+#use_gsmopen="n"
 
 ################################################################################
 #Freeswutch Modules Selection
 ################################################################################
-use_optional_modules="n"
+#use_optional_modules="n"
 
 ################################################################################
 # Freeswitch Modules
@@ -370,9 +370,9 @@ fi
 ###################################################
 # Add / Enable optional modules from list above here
 ###################################################
-if [[ $use_optional_modules == "y" ]]; then
-	extra_modules_add=( )
-fi
+#if [[ $use_optional_modules == "y" ]]; then
+#	optional_modules_add=( )
+#fi
 
 #################################
 # Freeswitch Contrib Modules
@@ -384,9 +384,9 @@ fi
 # Options contrib modules (only if you selected to use the contribs git option )
 # (future Option) (UNDER DEVELOPMENT )
 #################################################################################################
-if [[ $use_freeswitch_contrib == "y" ]]; then
-	contrib_modules_add=( ../../contrib/ledr/c/mod_odbc_query cd mo	)
-fi
+#if [[ $use_freeswitch_contrib == "y" ]]; then
+#	contrib_modules_add=( ../../contrib/ledr/c/mod_odbc_query cd mo	)
+#fi
 
 ###############################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
@@ -398,9 +398,9 @@ fi
 ################################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
 ################################################################################
-if [[ $use_gsmopen == "y" ]]; then
-	gsmopen_modules_add=( gsmopen mod_siren mod_xml_curl )
-fi
+#if [[ $use_gsmopen == "y" ]]; then
+#	gsmopen_modules_add=( gsmopen mod_siren mod_xml_curl )
+#fi
 
 ################################################################
 # Option to disable some loging execpt for  warnings and errors
@@ -614,7 +614,7 @@ case $(uname -m) in x86_64|i[4-6]86)
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 		deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
 DELIM
-else
+	else
 		echo " installing Intel/AMD64 Head/Devel repo "
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 		deb http://repo.fusionpbx.com/freeswitch/head/debian/ wheezy main
@@ -632,7 +632,7 @@ case $(uname -m) in armv7l)
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 		deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
 DELIM
-else
+	else
 		echo 'installing Freeswitch ARMHF Head/Devel repo'
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
 		deb http://repo.fusionpbx.com/freeswitch-armhf/head/debian/ wheezy main
@@ -674,49 +674,49 @@ apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-meta-codecs
 # Intel/AMD gets mod_shout
 #############################
 case $(uname -m) in x86_64|i[4-6]86)	
-apt-get -y install --force-yes freeswitch-mod-shout
+	apt-get -y install --force-yes freeswitch-mod-shout
 esac
 
 #############################
 # ArmHF gets mod_vlc
 #############################
 case $(uname -m) in armv7l)
-apt-get -y install --force-yes freeswitch-mod-vlc
+	apt-get -y install --force-yes freeswitch-mod-vlc
 esac
 
 ######################################
 #setup language / sound files for use
 ######################################
 if [[ $use_lang == "en-ca" ]]; then
-apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-en-ca-june
+	apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-en-ca-june
 fi
 
 if [[ $use_lang == "en-us" ]]; then
-apt-get -y install --force-yes freeswitch-lang-en freeswitch-mod-say-en freeswitch-sounds-en-us-callie
+	apt-get -y install --force-yes freeswitch-lang-en freeswitch-mod-say-en freeswitch-sounds-en-us-callie
 fi
 
 if [[ $use_lang == "fr-ca" ]]; then
-apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-fr-ca-june
+	apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-fr-ca-june
 fi
 
 if [[ $use_lang == "pt-br" ]]; then
-apt-get -y install --force-yes freeswitch-lang-pt freeswitch-mod-say-pt freeswitch-sounds-pt-br-karina
+	apt-get -y install --force-yes freeswitch-lang-pt freeswitch-mod-say-pt freeswitch-sounds-pt-br-karina
 fi
 
 if [[ $use_lang == "ru-ru" ]]; then
-apt-get -y install --force-yes freeswitch-lang-ru freeswitch-mod-say-ru freeswitch-sounds-ru-ru-elena
+	apt-get -y install --force-yes freeswitch-lang-ru freeswitch-mod-say-ru freeswitch-sounds-ru-ru-elena
 fi
 
 if [[ $use_lang == "sv-se" ]]; then
-apt-get -y install --force-yes freeswitch-lang-sv freeswitch-mod-say-sv freeswitch-sounds-sv-se-jakob
+	apt-get -y install --force-yes freeswitch-lang-sv freeswitch-mod-say-sv freeswitch-sounds-sv-se-jakob
 fi
 
 if [[ $use_lang == "zh-cn" ]]; then
-apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-cn-sinmei
+	apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-cn-sinmei
 fi
 
 if [[ $use_lang == "zh-hk" ]]; then
-apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-hk-sinmei
+	apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-hk-sinmei
 fi
 
 ###############################
@@ -770,8 +770,7 @@ if [ $use_freetdm == "y" ]; then
 	#add stuff for freetdm/dahdi
 	apt-get -y install linux-headers-"$(uname -r)"
 	#add the headers so dahdi can build the modules...
-	apt-get -y install libpri dahdi dahdi-linux dahdi-firmware-nonfree \
-				dahdi-source libtonezone-dev libtonezone2.0
+	apt-get -y install libpri dahdi dahdi-linux dahdi-firmware-nonfree dahdi-source libtonezone-dev libtonezone2.0
 	#running ldconfig to prep for freetdm build
 	pgrep -f ldconfig > /dev/null
 fi
@@ -780,10 +779,10 @@ fi
 #grap the freeswitch 1.4 release src code from the freeswitch stache
 #####################################################################
 if [[ $freeswitch_stable == "y" ]];then
-	echo " Pulling freeswitch 1.4 stable branch from stache repo
+	echo " Pulling freeswitch 1.4 stable branch from stache repo "
 	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$FS_VER" "$FS_SRC_PATH"
 else
-	echo " Pulling freeswitch 1.5 heaad branch from stache repo
+	echo " Pulling freeswitch 1.5 heaad branch from stache repo "
 	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git "$FS_SRC_PATH"
 fi
 
