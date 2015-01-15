@@ -2082,8 +2082,8 @@ wget http://repo.ajenti.org/debian/key -O- | apt-key add -
 apt-get update &> /dev/null && apt-get -y install ajenti
 fi
 
-echo " ####################################################################################### "
-echo " The Freeswitch / Fusionpbx Install is now complete and your system is ready for use.... "
-echo " ####################################################################################### "
-echo "                   Please send any feed back to r.neese@gmail.com #                      "
-echo " ####################################################################################### "
+echo " ########################################################################################## "
+echo " # The Freeswitch / Fusionpbx Install is now complete and your system is ready for use... # "
+echo " ########################################################################################## "
+echo " #                   Please send any feed back to r.neese@gmail.com #                     # "
+echo " ########################################################################################## "
