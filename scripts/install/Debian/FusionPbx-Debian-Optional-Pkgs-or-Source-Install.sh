@@ -36,6 +36,40 @@ fi
 
 echo "You're root.... continuing!"
 echo
+################################################################################
+# Run a Hardware compatabilty Check
+################################################################################
+################
+# ARMEL
+################
+case $(uname -m) in armv[4-6]l)
+echo
+echo " ArmEL only supported in the build of freeswitch . "
+echo
+echo " Do not attempt to use freeswitch debian pkgs. "
+echo
+esac
+################
+# ARMHF
+################
+case $(uname -m) in armv7l)
+echo
+echo " ArmHF arm v7 Supported "
+echo
+echo " You can either Build from Source or use the freeswitch armhf Debian pkgs. "
+echo
+esac
+################
+# Intel/AMD
+################
+case $(uname -m) in x86_64|i[4-6]86)
+echo
+echo " Intel / Amd  boards Spported"
+echo
+echo " You can either Build from Source or use the freeswitch Intel/AMD Debian pkgs. "
+echo
+esac
+echo
 #######################################################################################
 #removes the cd img from the /etc/apt/sources.list file (not needed after base install)
 #######################################################################################
@@ -287,7 +321,7 @@ fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_
     mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
     mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
     mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random )
-
+fi
 #############################
 # Optional Freeswitch Modules
 #############################
@@ -490,6 +524,11 @@ db_user_passwd=fusionpbx2015
 # sqlite or pgsql database only. 
 ###############################################################################
 xml_cdr_files == "y"
+
+#####################################
+#Use for configuring a odroid boards
+#####################################
+odroid_boards="n"
 
 ################################################################
 #Install Ajenti Optional Admin Portal  Optional (Not Required)
@@ -1429,9 +1468,11 @@ if [[ $postgresql_client == "y" ]]; then
 #####################################################
 # add in postgresql 9.4 repo for x86 x86-64 bit pkgs
 #####################################################
+case $(uname -m) in x86_64|i[4-6]86)
 cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
 deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
 DELIM
+
 	####################
 	#add pgsql repo key
 	####################
@@ -1447,7 +1488,21 @@ DELIM
 	############################
 	for i in postgresql-client-9.4 php5-pgsql ;do apt-get -y install "${i}"; done
 	service php5-fpm restart
+	esac
 	clear
+	
+	##########################################
+	#Install and configure PGSQL 9.1 for armhf
+	##########################################
+	case $(uname -m) in armv7l)
+	echo "no arm deb pkgs for pgsql postgresql-client-9.3"
+	echo "postgresql-client-9.1 is being installed"
+	for i in postgresql-client-9.1 php5-pgsql ;do apt-get -y install "${i}"; done
+	esac
+	
+	##########################################################
+	# Goto gui configure statement
+	##########################################################
 	echo
 	echo " The $wui_name install has finished...  "
 	echo
@@ -1477,27 +1532,46 @@ if [[ $postgresql_server == "y" ]]; then
 #####################################################
 # add in postgresql 9.4 repo for x86 x86-64 bit pkgs
 #####################################################
+case $(uname -m) in x86_64|i[4-6]86)
 cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
 deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
 DELIM
+
 	####################
 	#add pgsql repo key
 	####################
-	wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
+	wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -	
+
 	###############################################
 	#run repo update after adding in a new repo....
 	################################################
 	apt-get update
-	############################
-	#Install and configure PGSQL
-	############################
+
+	#################################
+	#Install and configure PGSQL 9.4
+	#################################
 	for i in postgresql-9.4 php5-pgsql ;do apt-get -y install "${i}"; done
 	service php5-fpm restart
+	esac
+
+	##########################################
+	#Install and configure PGSQL 9.1 for armhf
+	##########################################
+	case $(uname -m) in armv7l)
+	echo "no arm deb pkgs for pgsql postgresql-client-9.3"
+	echo "postgresql-client-9.1 is being installed"
+	for i in postgresql-client-9.1 php5-pgsql ;do apt-get -y install "${i}"; done
+	esac
+
 	#########################################################
 	#Adding a SuperUser and Password for Postgresql database.
 	#########################################################
 	su -l postgres -c "psql -c \"create role $pgsql_admin with superuser login password '$pgsql_admin_passwd'\""
 	clear
+	
+	##########################################################
+	# Goto gui configure statement
+	##########################################################
 	echo
 	echo " The $wui_name install has finished...  "
 	echo
@@ -1859,13 +1933,88 @@ kernel.panic = 10
 DELIM
 
 ####################################
-# Set fs to run in atempfs ramdrive
+# Set fs to run in a tempfs ramdrive
 ####################################
 cat >> /etc/fstab << DELIM
 tmpfs	/tmp	tmpfs	defaults	0	0
 tmpfs	/var/lib/freeswitch/db	tmpfs	defaults	0	0
 tmpfs   /var/tmp	tmpfs	defaults	0	0
 DELIM
+
+######################################
+# Add in Odroid Preconfigure settings
+######################################
+if [[ $odroid_boards == "y" ]]; then
+cat > /etc/network/if-pre-up.d/pre-network-setup << DELIM
+#!/bin/bash
+if [ ! -f /boot/.mac ]; then
+        if [ -f /etc/smsc95xx_mac_addr ]; then
+                rm /etc/smsc95xx_mac_addr
+        fi
+        # unloading nic driver
+        rmmod smsc95xx
+        #running modprobe on nic
+        modprobe smsc95xx
+        #placing holder file
+        touch /boot/.mac
+        #rebooting to load new mac
+        reboot
+fi
+
+if [ ! -f /boot/.net ]; then
+if [ -f "/boot/configs/ip.txt" ]; then
+        cp /boot/setup/ip.txt /etc/network/interfaces
+
+fi
+
+if [ -f "/boot/configs/resolv.txt" ]; then
+        cp /boot/setup/resolv.txt /etc/resolv.conf
+fi
+
+if [ -f "/boot/configs/hostname.txt" ]; then
+        cp /boot/setup/hostname.txt /etc/hostname
+fi
+
+if [ -f "/boot/configs/hosts.txt" ]; then
+        cp /boot/setup/hosts.txt /etc/hosts
+fi
+touch /boot/.net
+reboot
+fi
+DELIM
+
+cat >> /boot/setup/ip.txt.dflt<< DELIM
+# interfaces(5) file used by ifup(8) and ifdown(8)
+#Local loop back interface
+auto lo
+iface lo inet loopback
+
+#Static mac configuration
+allow-hotplug eth0
+iface eth0 inet static
+address 10.0.0.2
+netmask 255.0.0.0
+gateway 10.0.0.1
+DELIM
+
+cat >> /boot/setup/hostname.txt.dflt << DELIM
+Odroid
+DELIM
+
+cat > /boot/setup/hosts.txt.dflt << DELIM
+127.0.0.1       localhost
+::1     localhost       ip6-localhost   ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+127.0.0.1       Odroid
+DELIM
+
+cat >> //boot/setup/hostname.txt.dflt << DELIM
+Odroid
+DELIM
+fi
 
 ###########################################################
 #Ajenti admin portal. Makes maintaining the system easier.
@@ -1877,6 +2026,7 @@ echo "Installing Ajenti Admin Portal"
 cat > "/etc/apt/sources.list.d/ajenti.list" <<DELIM
 deb http://repo.ajenti.org/debian main main debian
 DELIM
+
 ######################
 # add ajenti repo key
 ######################
@@ -1888,8 +2038,8 @@ wget http://repo.ajenti.org/debian/key -O- | apt-key add -
 apt-get update &> /dev/null && apt-get -y install ajenti
 fi
 
-echo " ###################################################################################### "
-echo " The Freeswitch/ fusionpbx install is now complete and your system is ready for use....."
-echo " ###################################################################################### "
-echo "                   Please send any feed back to r.neese@gmail.com                       "
-echo " ###################################################################################### "
+echo " ####################################################################################### "
+echo " The Freeswitch / Fusionpbx Install is now complete and your system is ready for use.... "
+echo " ####################################################################################### "
+echo "                   Please send any feed back to r.neese@gmail.com #                      "
+echo " ####################################################################################### "
