@@ -808,55 +808,55 @@ echo
 ########################
 #Configure modules.conf
 ########################
-	#find the default modules - redundant really...
-	modules_comp_default=( $(grep -v ^$ "$FS_SRC_PATH"/modules.conf | grep -v ^# | tr '\n' ' ') )
+#find the default modules - redundant really...
+modules_comp_default=( $(grep -v ^$ "$FS_SRC_PATH"/modules.conf | grep -v ^# | tr '\n' ' ') )
 	
-	#add the directory prefixes to the modules in array so the modules we wish to add will compile
-	module_count=`echo ${#fusionpbx_modules_add[@]}`
-	index=0
+#add the directory prefixes to the modules in array so the modules we wish to add will compile
+module_count=`echo ${#fusionpbx_modules_add[@]}`
+index=0
 	
-	while [ "$index" -lt "$module_count" ]
-	do
-			modules_compile_add[$index]=$(grep "${fusionpbx_modules_add[$index]}" "$FS_SRC_PATH"/modules.conf | sed -e "s/#//g")
-			let "index = $index + 1"
-	done
+while [ "$index" -lt "$module_count" ]
+do
+modules_compile_add[$index]=$(grep "${fusionpbx_modules_add[$index]}" "$FS_SRC_PATH"/modules.conf | sed -e "s/#//g")
+let "index = $index + 1"
+done
 
-	modules_compile=( ${modules_comp_default[*]} ${modules_compile_add[*]} )
+modules_compile=( ${modules_comp_default[*]} ${modules_compile_add[*]} )
 
-	#BUILD MODULES.CONF for COMPILER
-	echo
-	echo "Now enabling modules for compile in $FS_SRC_PATH/modules.conf"
-	echo
-	index=0
-	module_count=`echo ${#modules_compile[@]}`
+#BUILD MODULES.CONF for COMPILER
+echo
+echo " Now enabling modules for compile in $FS_SRC_PATH/modules.conf "
+echo
+index=0
+module_count=`echo ${#modules_compile[@]}`
 	
-	#get rid of unwanted spacing in modules.conf
-	sed -i -e "s/ *//g" "$FS_SRC_PATH"/modules.conf
+#get rid of unwanted spacing in modules.conf
+sed -i -e "s/ *//g" "$FS_SRC_PATH"/modules.conf
 	
-	while [ "$index" -lt "$module_count" ]
-	do
-			grep ${modules_compile[$index]} "$FS_SRC_PATH"/modules.conf > /dev/null
-			if [ $? -eq 0 ]; then
-					#module is present in file. see if we need to enable it
-					grep '#'${modules_compile[$index]} "$FS_SRC_PATH"/modules.conf > /dev/null
-					if [ $? -eq 0 ]; then
-							sed -i -e s,'#'${modules_compile[$index]},${modules_compile[$index]}, "$FS_SRC_PATH"/modules.conf
-							echo "     [ENABLED] ${modules_compile[$index]}"
-					else
-							echo "     ${modules_compile[$index]} THESE SELECTED MODULES ARE ALREADY ENABLED!"
-					fi
-			else
-					#module is not present. Add to end of file
-					#echo "did not find ${modules_compile[$index]}"
-					echo ${modules_compile[$index]} >> "$FS_SRC_PATH"/modules.conf
-					echo "     [ADDED] ${modules_compile[$index]}"
-			fi
-
-			let "index = $index + 1"
-	done
+while [ "$index" -lt "$module_count" ]
+do
+grep ${modules_compile[$index]} "$FS_SRC_PATH"/modules.conf > /dev/null
+if [ $? -eq 0 ]; then
+	#module is present in file. see if we need to enable it
+	grep '#'${modules_compile[$index]} "$FS_SRC_PATH"/modules.conf > /dev/null
+	if [ $? -eq 0 ]; then
+		sed -i -e s,'#'${modules_compile[$index]},${modules_compile[$index]}, "$FS_SRC_PATH"/modules.conf
+		echo " [ENABLED] ${modules_compile[$index]}"
+	else
+		echo " ${modules_compile[$index]} THESE SELECTED MODULES ARE ALREADY ENABLED!"
+	fi
+else
+	#module is not present. Add to end of file
+	#echo "did not find ${modules_compile[$index]}"
+	echo ${modules_compile[$index]} >> "$FS_SRC_PATH"/modules.conf
+	echo " [ADDED] ${modules_compile[$index]}"
+fi
+let "index = $index + 1"
+done
 
 ###################################################################################
 # cd to the freeswitch src code and condifure it for proper dir layout and options.
+###################################################################################
 ###################################################################################
 # Pulled from freeswitch/debain/rules files. Sets Dir in FHS Layout.....
 ###################################################################################
