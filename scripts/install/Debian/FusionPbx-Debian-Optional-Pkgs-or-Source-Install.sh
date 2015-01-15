@@ -604,35 +604,38 @@ if [[ $use_freeswitch_pkgs == "y" ]]; then
 ##############################
 # Detect and Set Intel/AMD Repos
 ##############################
-case $(uname -m) in x86_64)
-	if [[ $use_freeswitch_stable == "y" ]]; then
-#adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
-	echo " installing Intel/AMD64 Release/Stable repo "
-	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-	deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
+	case $(uname -m) in x86_64|i[4-6]86)
+		if [[ $use_freeswitch_stable == "y" ]]; then
+		#adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
+		echo " installing Intel/AMD64 Release/Stable repo "
+		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+		deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
 DELIM
-else
-	echo " installing Intel/AMD64 Head/Devel repo "
-	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-	deb http://repo.fusionpbx.com/freeswitch/head/debian/ wheezy main
+	else
+		echo " installing Intel/AMD64 Head/Devel repo "
+		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+		deb http://repo.fusionpbx.com/freeswitch/head/debian/ wheezy main
 DELIM
-	fi	
+		fi	
+	esac
 ##############################
 # Detect and Set ArmHF Repos
 ##############################
-case $(uname -m) in armv7l)
-	if [[ $use_freeswitch_stable == "y" ]]; then
-#adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
-	echo 'installing Freeswitch ARMHF Release/Stable repo'
-	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-	deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
+	case $(uname -m) in armv7l)
+		if [[ $use_freeswitch_stable == "y" ]]; then
+		#adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
+		echo 'installing Freeswitch ARMHF Release/Stable repo'
+		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+		deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
 DELIM
 	else
-	echo 'installing Freeswitch ARMHF Head/Devel repo'
-	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-	deb http://repo.fusionpbx.com/freeswitch-armhf/head/debian/ wheezy main
+		echo 'installing Freeswitch ARMHF Head/Devel repo'
+		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+		deb http://repo.fusionpbx.com/freeswitch-armhf/head/debian/ wheezy main
 DELIM	
-	fi
+		fi
+	esac	
+fi
 fi
 ################################
 #adding key for freeswitch repo
@@ -668,7 +671,7 @@ apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-meta-codecs
 #############################
 # Intel/AMD gets mod_shout
 #############################
-case $(uname -m) in x86_64)		
+case $(uname -m) in x86_64|i[4-6]86)	
 apt-get -y install --force-yes freeswitch-mod-shout
 esac
 
@@ -775,11 +778,11 @@ fi
 #grap the freeswitch 1.4 release src code from the freeswitch stache
 #####################################################################
 if [[ $freeswitch_stable == "y" ]];then
-echo " Pulling freeswitch 1.4 stable branch from stache repo
-time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$FS_VER" "$FS_SRC_PATH"
+	echo " Pulling freeswitch 1.4 stable branch from stache repo
+	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$FS_VER" "$FS_SRC_PATH"
 else
-echo " Pulling freeswitch 1.5 heaad branch from stache repo
-time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git "$FS_SRC_PATH"
+	echo " Pulling freeswitch 1.5 heaad branch from stache repo
+	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git "$FS_SRC_PATH"
 fi
 
 #####################################################################
@@ -930,7 +933,7 @@ cp "$FS_SRC_PATH"/debian/freeswitch-sysvinit.freeswitch.default /etc/default/fre
 echo
 echo " Installing/Enabling init.d startup scripts for freeswitch"
 cp "$FS_SRC_PATH"/debian/freeswitch-sysvinit.freeswitch.init /etc/init.d/freeswitch
-eco
+echo
 echo "enabling FreeSWITCH to start at boot"
 chmod 755 /etc/init.d/freeswitch
 echo
@@ -1262,14 +1265,14 @@ adduser www-data dialout
 #adding FusionPBX repo
 #######################
 if [[ $use_fusionpbx_stable == "y" ]]; then
-echo 'installing fusionpbx Stabe/Release repo'
-cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
-deb http://repo.fusionpbx.com/fusionpbx/release/debian/ wheezy main
+	echo 'installing fusionpbx Stabe/Release repo'
+	cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
+	deb http://repo.fusionpbx.com/fusionpbx/release/debian/ wheezy main
 DELIM
 else
-echo 'installing fusionpbx head/devel repo'
-cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
-deb http://repo.fusionpbx.com/fusionpbx/head/debian/ wheezy main
+	echo 'installing fusionpbx head/devel repo'
+	cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
+	deb http://repo.fusionpbx.com/fusionpbx/head/debian/ wheezy main
 DELIM
 fi
 echo
@@ -1300,197 +1303,196 @@ find "/var/lib/fusionpbx" -type f -exec chmod 664 {} +
 #Optional APP PKGS installs
 ###########################
 if [[ $adminer == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-adminer
+	apt-get -y --force-yes install fusionpbx-app-adminer
 fi
 
 if [[ $backup == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-backup
+	apt-get -y --force-yes install fusionpbx-app-backup
 fi
 
 if [[ $call_broadcast == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-call-broadcast
+	apt-get -y --force-yes install fusionpbx-app-call-broadcast
 fi
 
 if [[ $call_center == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-call-center fusionpbx-app-call-center-active
-	if [[ -f /root/.fs_src ]] ; then
-		if [[ ! -f /usr/lib/freeswitch/mod/mod_callcenter ]] ; then
-			echo " Requires freeswitch mod_callcenter "
+	apt-get -y --force-yes install fusionpbx-app-call-center fusionpbx-app-call-center-active
+		if [[ -f /root/.fs_src ]] ; then
+			if [[ ! -f /usr/lib/freeswitch/mod/mod_callcenter ]] ; then
+				echo " Requires freeswitch mod_callcenter "
+			fi
+		else
+			apt-get -y --force-yes install freeswitch-mod-callcenter
 		fi
-	else
-		apt-get -y --force-yes install freeswitch-mod-callcenter
-	fi
 fi
 
 if [[ $call_flows == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-call-flows
+	apt-get -y --force-yes install fusionpbx-app-call-flows
 fi
 
 if [[ $conference_centers == "y" ]]; then
-apt-get -y --force-yes install freeswitch-mod-conference fusionpbx-app-conference-centers fusionpbx-app-conferences-active fusionpbx-app-meetings
-	if [[ -f /root/.fs_src ]] ; then
-		if [[ ! -f /usr/lib/freeswitch/mod/mod_conference ]] ; then
-			echo " Requires freeswitch mod_conference "
+	apt-get -y --force-yes install freeswitch-mod-conference fusionpbx-app-conference-centers fusionpbx-app-conferences-active fusionpbx-app-meetings
+		if [[ -f /root/.fs_src ]] ; then
+			if [[ ! -f /usr/lib/freeswitch/mod/mod_conference ]] ; then
+				echo " Requires freeswitch mod_conference "
+			fi
+		else
+			apt-get -y --force-yes install freeswitch-mod-conference
 		fi
-	else
-		apt-get -y --force-yes install freeswitch-mod-conference
-	fi
 fi
 
 if [[ $conference == "y" ]]; then
-apt-get -y --force-yes install freeswitch-mod-conference fusionpbx-app-conferences fusionpbx-app-conferences-active fusionpbx-app-meetings
-	if [[ -f /root/.fs_src ]] ; then
-		if [[ ! -f /usr/lib/freeswitch/mod/mod_conference ]] ; then
-			echo " Requires freeswitch mod_conference "
+	apt-get -y --force-yes install freeswitch-mod-conference fusionpbx-app-conferences fusionpbx-app-conferences-active fusionpbx-app-meetings
+		if [[ -f /root/.fs_src ]] ; then
+			if [[ ! -f /usr/lib/freeswitch/mod/mod_conference ]] ; then
+				echo " Requires freeswitch mod_conference "
+			fi
+		else
+			apt-get -y --force-yes install freeswitch-mod-conference
 		fi
-	else
-		apt-get -y --force-yes install freeswitch-mod-conference
-	fi
 fi
 
 if [[ $content == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-content
+	apt-get -y --force-yes install fusionpbx-app-content
 fi
 
 if [[ $edit == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-edit
+	apt-get -y --force-yes install fusionpbx-app-edit
 fi
 
 if [[ $exec == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-exec
+	apt-get -y --force-yes install fusionpbx-app-exec
 fi
 
 if [[ $fax == "y" ]]; then
-apt-get -y --force-yes install ghostscript libreoffice-common fusionpbx-app-fax
+	apt-get -y --force-yes install ghostscript libreoffice-common fusionpbx-app-fax
 fi
 
 if [[ $fifo == "y" ]]; then
-apt-get -y --force-yes install freeswitch-mod-fifo fusionpbx-app-fifo fusionpbx-app-fifo-list
-	if [[ -f /root/.fs_src ]] ; then
-		if [[ ! -f /usr/lib/freeswitch/mod/mod_fifo ]] ; then
-			echo " Requires freeswitch mod_fifo "
+	apt-get -y --force-yes install freeswitch-mod-fifo fusionpbx-app-fifo fusionpbx-app-fifo-list
+		if [[ -f /root/.fs_src ]] ; then
+			if [[ ! -f /usr/lib/freeswitch/mod/mod_fifo ]] ; then
+				echo " Requires freeswitch mod_fifo "
+			fi
+		else
+			apt-get -y --force-yes install freeswitch-mod-fifo
 		fi
-	else
-		apt-get -y --force-yes install freeswitch-mod-fifo
-	fi
 fi
 
 if [[ $hot_desk == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-hot-desking
+	apt-get -y --force-yes install fusionpbx-app-hot-desking
 fi
 
 if [[ $schemas == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-schemas
+	apt-get -y --force-yes install fusionpbx-app-schemas
 fi
 
 if [[ $services == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-services
+	apt-get -y --force-yes install fusionpbx-app-services
 fi
 
 if [[ $sipml5 == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-sipml5
-	if [[ -f /root/.fs_src ]] ; then
-		if [[ ! -f /usr/lib/freeswitch/mod/mod_rtmp ]] ; then
-			echo " Requires freeswitch mod_rtmp "
+	apt-get -y --force-yes install fusionpbx-app-sipml5
+		if [[ -f /root/.fs_src ]] ; then
+			if [[ ! -f /usr/lib/freeswitch/mod/mod_rtmp ]] ; then
+				echo " Requires freeswitch mod_rtmp "
+			fi
+		else
+			apt-get -y --force-yes install freeswitch-mod-rtmp
 		fi
-	else
-		apt-get -y --force-yes install freeswitch-mod-rtmp
-	fi
 fi
 
 if [[ $sql_query == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-sql-query
+	apt-get -y --force-yes install fusionpbx-app-sql-query
 fi
 
 if [[ $traffic_graph == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-traffic-graph
+	apt-get -y --force-yes install fusionpbx-app-traffic-graph
 fi
 
 if [[ $xmpp == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-xmpp;
-	if [[ -f /root/.fs_src ]] ; then
-		if [[ ! -f /usr/lib/freeswitch/mod/mod_dingaling ]] ; then
-			echo " Requires freeswitch mod_dingaling "
+	apt-get -y --force-yes install fusionpbx-app-xmpp;
+		if [[ -f /root/.fs_src ]] ; then
+			if [[ ! -f /usr/lib/freeswitch/mod/mod_dingaling ]] ; then
+				echo " Requires freeswitch mod_dingaling "
+			fi
+		else
+			apt-get -y --force-yes install freeswitch-mod-dingaling
 		fi
-	else
-		apt-get -y --force-yes install freeswitch-mod-dingaling
-	fi
 fi
 
 if [[ $aastra == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-aastra  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/aastra /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-aastra  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/aastra /etc/fusionpbx/resources/templates/provision/
 fi
 
 if [[ $atcom == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-atcom  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/atcom /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-atcom  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/atcom /etc/fusionpbx/resources/templates/provision/
 fi
 
 if [[ $cisco == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-cisco && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/cisco /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-cisco && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/cisco /etc/fusionpbx/resources/templates/provision/
 fi
 
 if [[ $grandstream == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-grandstream && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/grandstream /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-grandstream && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/grandstream /etc/fusionpbx/resources/templates/provision/
 fi
 
 if [[ $linksys == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-linksys  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/linksys /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-linksys  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/linksys /etc/fusionpbx/resources/templates/provision/
 fi
 
 if [[ $panasonic == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-panasonic  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/panasonic /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-panasonic  && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/panasonic /etc/fusionpbx/resources/templates/provision/
 fi
 
 if [[ $polycom == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-polycom && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/polycom /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-polycom && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/polycom /etc/fusionpbx/resources/templates/provision/
 fi
 
 if [[ $snom == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-snom && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/snom /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-snom && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/snom /etc/fusionpbx/resources/templates/provision/
 fi
 
 if [[ $yealink == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-yealink && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/yealink /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-devices fusionpbx-app-provision fusionpbx-provisioning-template-yealink && mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/yealink /etc/fusionpbx/resources/templates/provision/
 fi
 
 if [[ $verto == "y" ]]; then
-apt-get -y --force-yes install freeswitch-mod-verto
+	apt-get -y --force-yes install freeswitch-mod-verto
 fi
 
 if [[ $accessible_theme == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-theme-accessible
+	apt-get -y --force-yes install fusionpbx-theme-accessible
 fi
 
 if [[ $classic_theme == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-theme-classic
+	apt-get -y --force-yes install fusionpbx-theme-classic
 fi
 
 if [[ $default_theme == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-theme-default
+	apt-get -y --force-yes install fusionpbx-theme-default
 fi
 
 if [[ $minimized_theme == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-theme-minimized
+	apt-get -y --force-yes install fusionpbx-theme-minimized
 fi
 
 if [[ $all == "y" ]]; then
-apt-get -y --force-yes install fusionpbx-app-adminer fusionpbx-app-backup fusionpbx-app-call-broadcast  \
-	fusionpbx-app-call-center fusionpbx-app-call-center-active fusionpbx-app-call-flows fusionpbx-app-conference-centers \
-	fusionpbx-app-conferences-active fusionpbx-app-meetings fusionpbx-app-conferences fusionpbx-app-content \
-	fusionpbx-app-edit fusionpbx-app-exec fusionpbx-app-fifo fusionpbx-app-fifo-list ghostscript libreoffice-common \
-	fusionpbx-app-fax fusionpbx-app-hot-desking fusionpbx-app-schemas fusionpbx-app-services fusionpbx-app-sipml5 \
-	fusionpbx-app-sql-query fusionpbx-app-traffic-graph fusionpbx-app-xmpp fusionpbx-app-devices fusionpbx-app-provision \
-	fusionpbx-provisioning-template-aastra fusionpbx-provisioning-template-atcom fusionpbx-provisioning-template-cisco \
-	fusionpbx-provisioning-template-grandstream fusionpbx-provisioning-template-linksys fusionpbx-provisioning-template-panasonic \
-	fusionpbx-provisioning-template-polycom fusionpbx-provisioning-template-snom fusionpbx-provisioning-template-yealink \
-	fusionpbx-theme-accessible fusionpbx-theme-classic fusionpbx-theme-default fusionpbx-theme-minimized \
-	&& mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/* /etc/fusionpbx/resources/templates/provision/
+	apt-get -y --force-yes install fusionpbx-app-adminer fusionpbx-app-backup fusionpbx-app-call-broadcast  \
+		fusionpbx-app-call-center fusionpbx-app-call-center-active fusionpbx-app-call-flows fusionpbx-app-conference-centers \
+		fusionpbx-app-conferences-active fusionpbx-app-meetings fusionpbx-app-conferences fusionpbx-app-content \
+		fusionpbx-app-edit fusionpbx-app-exec fusionpbx-app-fifo fusionpbx-app-fifo-list ghostscript libreoffice-common \
+		fusionpbx-app-fax fusionpbx-app-hot-desking fusionpbx-app-schemas fusionpbx-app-services fusionpbx-app-sipml5 \
+		fusionpbx-app-sql-query fusionpbx-app-traffic-graph fusionpbx-app-xmpp fusionpbx-app-devices fusionpbx-app-provision \
+		fusionpbx-provisioning-template-aastra fusionpbx-provisioning-template-atcom fusionpbx-provisioning-template-cisco \
+		fusionpbx-provisioning-template-grandstream fusionpbx-provisioning-template-linksys fusionpbx-provisioning-template-panasonic \
+		fusionpbx-provisioning-template-polycom fusionpbx-provisioning-template-snom fusionpbx-provisioning-template-yealink \
+		fusionpbx-theme-accessible fusionpbx-theme-classic fusionpbx-theme-default fusionpbx-theme-minimized \
+		&& mkdir -p /etc/fusionpbx/resources/templates/provision && cp -rp /usr/share/examples/fusionpbx/resources/templates/provision/* /etc/fusionpbx/resources/templates/provision/
 
 	if [[ -f /root/.fs_src ]] ; then
 		echo " Requires freeswitch mod_callcenter mod_conference mod_fifo mod_rtmp mod_dingaling "
 	else
-		apt-get -y --force-yes install freeswitch-mod-callcenter freeswitch-mod-conference \
-		          freeswitch-mod-fifo freeswitch-mod-rtmp freeswitch-mod-dingaling
+		apt-get -y --force-yes install freeswitch-mod-callcenter freeswitch-mod-conference freeswitch-mod-fifo freeswitch-mod-rtmp freeswitch-mod-dingaling
 	fi
 fi
 ########################################
@@ -1509,9 +1511,9 @@ if [[ $postgresql_client == "y" ]]; then
 #####################################################
 # add in postgresql 9.4 repo for x86 x86-64 bit pkgs
 #####################################################
-case $(uname -m) in x86_64|i[4-6]86)
-cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
-deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
+	case $(uname -m) in x86_64|i[4-6]86)
+	cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
+	deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
 DELIM
 
 	####################
@@ -1550,7 +1552,7 @@ DELIM
 	echo " Now Waiting on you to finish the installation via web browser "
 	echo
 	printf '	Please open a web-browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
-cat << DELIM
+	cat << DELIM
 	Or the Doamin name assigned to the machine like http://"$(hostname).$(dnsdomainname)".
 	On the First configuration page of the web user interface.
 	Please Select the PostgreSQL option in the pull-down menu as your Database
@@ -1573,9 +1575,9 @@ if [[ $postgresql_server == "y" ]]; then
 #####################################################
 # add in postgresql 9.4 repo for x86 x86-64 bit pkgs
 #####################################################
-case $(uname -m) in x86_64|i[4-6]86)
-cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
-deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
+	case $(uname -m) in x86_64|i[4-6]86)
+	cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
+	deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
 DELIM
 
 	####################
@@ -1619,32 +1621,32 @@ DELIM
 	echo " Now Waiting on you to finish the installation via web browser "
 	echo
 	printf 'Please open a web browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
-cat << DELIM
- Or the Doamin name asigned to the machine like http://"$(hostname).$(dnsdomainname)".
- On the First configuration page of the web user interface
- Please Select the PostgreSQL option in the pull-down menu as your Database
- Also Please fill in the SuperUser Name and Password fields.
- On the Second Configuration Page of the web user interface please fill in the following fields:
- Database Name: "$db_name"
- Database Username: "$db_user_name"
- Database Password: "$db_user_passwd"
- Create Database Username: "$pgsql_admin"
- Create Database Password: "$pgsql_admin_passwd"
+	cat << DELIM
+	Or the Doamin name asigned to the machine like http://"$(hostname).$(dnsdomainname)".
+	On the First configuration page of the web user interface
+	Please Select the PostgreSQL option in the pull-down menu as your Database
+	Also Please fill in the SuperUser Name and Password fields.
+	On the Second Configuration Page of the web user interface please fill in the following fields:
+	Database Name: "$db_name"
+	Database Username: "$db_user_name"
+	Database Password: "$db_user_passwd"
+	Create Database Username: "$pgsql_admin"
+	Create Database Password: "$pgsql_admin_passwd"
 DELIM
 else
- clear
- echo
- echo " The $wui_name install has finished...  "
- echo
- echo " Now Waiting on you to finish the installation via web browser "
- echo
- printf ' Please open a web-browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
-cat << DELIM
- or the Domain name asigned to the machine like http://"pbx.$(hostname).com".
- On the First Configuration page of the web user interface "$wui_name".
- Also Please fill in the SuperUser Name and Password fields.
- Freeswitch & FusionPBX Web User Interface Installation Completed
- Now you can configure FreeSWITCH using the FusionPBX web user interface
+	clear
+	echo
+	echo " The $wui_name install has finished...  "
+	echo
+	echo " Now Waiting on you to finish the installation via web browser "
+	echo
+	printf ' Please open a web-browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
+	cat << DELIM
+	or the Domain name asigned to the machine like http://"pbx.$(hostname).com".
+	On the First Configuration page of the web user interface "$wui_name".
+	Also Please fill in the SuperUser Name and Password fields.
+	Freeswitch & FusionPBX Web User Interface Installation Completed
+	Now you can configure FreeSWITCH using the FusionPBX web user interface
 DELIM
 fi
 
@@ -2003,24 +2005,23 @@ if [ ! -f /boot/.mac ]; then
 fi
 
 if [ ! -f /boot/.net ]; then
-if [ -f "/boot/configs/ip.txt" ]; then
+	if [ -f "/boot/configs/ip.txt" ]; then
         cp /boot/setup/ip.txt /etc/network/interfaces
+	fi
 
-fi
+	if [ -f "/boot/configs/resolv.txt" ]; then
+		cp /boot/setup/resolv.txt /etc/resolv.conf
+	fi
 
-if [ -f "/boot/configs/resolv.txt" ]; then
-        cp /boot/setup/resolv.txt /etc/resolv.conf
-fi
+	if [ -f "/boot/configs/hostname.txt" ]; then
+		cp /boot/setup/hostname.txt /etc/hostname
+	fi
 
-if [ -f "/boot/configs/hostname.txt" ]; then
-        cp /boot/setup/hostname.txt /etc/hostname
-fi
-
-if [ -f "/boot/configs/hosts.txt" ]; then
-        cp /boot/setup/hosts.txt /etc/hosts
-fi
-touch /boot/.net
-reboot
+	if [ -f "/boot/configs/hosts.txt" ]; then
+		cp /boot/setup/hosts.txt /etc/hosts
+	fi
+	touch /boot/.net
+	reboot
 fi
 DELIM
 
@@ -2063,9 +2064,9 @@ fi
 #ADD Ajenti repo & ajenti
 ##########################
 if [[ $install_ajenti == "y" ]]; then
-echo "Installing Ajenti Admin Portal"
-cat > "/etc/apt/sources.list.d/ajenti.list" <<DELIM
-deb http://repo.ajenti.org/debian main main debian
+	echo "Installing Ajenti Admin Portal"
+	cat > "/etc/apt/sources.list.d/ajenti.list" <<DELIM
+	deb http://repo.ajenti.org/debian main main debian
 DELIM
 
 ######################
