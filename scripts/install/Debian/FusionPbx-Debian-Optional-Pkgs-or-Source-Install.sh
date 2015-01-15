@@ -605,7 +605,7 @@ if [[ $use_freeswitch_pkgs == "y" ]]; then
 # Set Intel/AMD Repos
 ##############################
 case $(uname -m) in x86_64)
-	if [[ $use_pkgs_stable == "y" ]]; then
+	if [[ $use_freeswitch_stable == "y" ]]; then
 #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
 	echo " installing Intel/AMD64 Release/Stable repo "
 	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
@@ -621,7 +621,7 @@ DELIM
 # Set ArmHF Repos
 ##############################
 case $(uname -m) in armv7l)
-	if [[ $use_pkgs_stable == "y" ]]; then
+	if [[ $use_freeswitch_stable == "y" ]]; then
 #adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
 	echo 'installing Freeswitch ARMHF Release/Stable repo'
 	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
