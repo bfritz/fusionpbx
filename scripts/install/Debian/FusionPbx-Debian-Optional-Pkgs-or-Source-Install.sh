@@ -56,7 +56,7 @@ case $(uname -m) in armv7l)
 echo
 echo " ArmHF arm v7 Supported "
 echo
-echo " You can either Build from Source or use the freeswitch armhf Debian pkgs. "
+echo " You can either Build from Source or use the freeswitch Armhf Debian pkgs. "
 echo
 esac
 ################
@@ -310,7 +310,7 @@ use_freetdm="n"
 ################################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
 ################################################################################
-if [[ $use_freetdm === "y" ]]; then
+if [[ $use_freetdm == "y" ]]; then
 fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
     mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
     mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
@@ -523,7 +523,7 @@ db_user_passwd=fusionpbx2015
 # Disable xml_cdr files in /var/log/freeswitch/xml_cdr and only log cdr to the 
 # sqlite or pgsql database only. 
 ###############################################################################
-xml_cdr_files == "y"
+xml_cdr_files="n"
 
 #######################################
 #Use for configuring odroid arm boards
@@ -601,12 +601,39 @@ echo
 #--------adding in custom repos-------
 #######################################
 if [[ $use_freeswitch_pkgs == "y" ]]; then
+##############################
+# Set Intel/AMD Repos
+##############################
+case $(uname -m) in x86_64)
+	if [[ $use_pkgs_stable == "y" ]]; then
 #adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
-echo ' installing Release/Stable repo '
-cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
-deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
+	echo " installing Intel/AMD64 Release/Stable repo "
+	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+	deb http://repo.fusionpbx.com/freeswitch/release/debian/ wheezy main
 DELIM
-
+else
+	echo " installing Intel/AMD64 Head/Devel repo "
+	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+	deb http://repo.fusionpbx.com/freeswitch/head/debian/ wheezy main
+DELIM
+	fi	
+##############################
+# Set ArmHF Repos
+##############################
+case $(uname -m) in armv7l)
+	if [[ $use_pkgs_stable == "y" ]]; then
+#adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
+	echo 'installing Freeswitch ARMHF Release/Stable repo'
+	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+	deb http://repo.fusionpbx.com/freeswitch-armhf/release/debian/ wheezy main
+DELIM
+	else
+	echo 'installing Freeswitch ARMHF Head/Devel repo'
+	cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
+	deb http://repo.fusionpbx.com/freeswitch-armhf/head/debian/ wheezy main
+DELIM	
+	fi
+fi
 ################################
 #adding key for freeswitch repo
 ################################
