@@ -808,11 +808,12 @@ echo
 ########################
 #Configure modules.conf
 ########################
-#find the default modules - redundant really...
+#Reads the $FS_SRC_PATH"/modules.conf and looks for lines without a # sign Default enabled modules.
 modules_comp_default=( $(grep -v ^$ "$FS_SRC_PATH"/modules.conf | grep -v ^# | tr '\n' ' ') )
 	
-#add the directory prefixes to the modules in array so the modules we wish to add will compile
+#Reads in the fusionpbx_modules_add list of modules to add and index's and counts them .
 module_count=`echo ${#fusionpbx_modules_add[@]}`
+#sets index to = 
 index=0
 	
 while [ "$index" -lt "$module_count" ]
@@ -823,10 +824,8 @@ done
 
 modules_compile=( ${modules_comp_default[*]} ${modules_compile_add[*]} )
 
-#BUILD MODULES.CONF for COMPILER
-echo
-echo " Now enabling modules for compile in $FS_SRC_PATH/modules.conf "
-echo
+#Enable module in MODULES.CONF
+echo " Now enabling modules in $FS_SRC_PATH/modules.conf "
 index=0
 module_count=`echo ${#modules_compile[@]}`
 	
@@ -837,17 +836,18 @@ while [ "$index" -lt "$module_count" ]
 do
 grep ${modules_compile[$index]} "$FS_SRC_PATH"/modules.conf > /dev/null
 if [ $? -eq 0 ]; then
-	#module is present in file. see if we need to enable it
-	grep '#'${modules_compile[$index]} "$FS_SRC_PATH"/modules.conf > /dev/null
+	#check if module is present in file. see if we need to enable it by removing the # at the start of the line
+		grep '#'${modules_compile[$index]} "$FS_SRC_PATH"/modules.conf > /dev/null
 	if [ $? -eq 0 ]; then
 		sed -i -e s,'#'${modules_compile[$index]},${modules_compile[$index]}, "$FS_SRC_PATH"/modules.conf
+		#reads the index of the modules that where added and echo's it enabled the following modules		
 		echo " [ENABLED] ${modules_compile[$index]}"
 	else
-		echo " ${modules_compile[$index]} THESE SELECTED MODULES ARE ALREADY ENABLED!"
+		#reads the index of the modules that where added and echo's what modules where already enabled
+		echo " ${modules_compile[$index]} These selected modules are already enabled !"
 	fi
 else
 	#module is not present. Add to end of file
-	#echo "did not find ${modules_compile[$index]}"
 	echo ${modules_compile[$index]} >> "$FS_SRC_PATH"/modules.conf
 	echo " [ADDED] ${modules_compile[$index]}"
 fi
