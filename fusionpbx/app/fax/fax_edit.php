@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2012
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -197,6 +197,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 			require_once "resources/footer.php";
 			return;
 		}
+
+	//replace the spaces with a dash
+		$fax_name = str_replace(" ", "-", $fax_name);
 
 	//escape the commas with a backslash and remove the spaces
 		$fax_email = str_replace(" ", "", $fax_email);
@@ -509,6 +512,9 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		unset ($prep_statement);
 	}
 
+//replace the dash with a space
+	$fax_name = str_replace("-", " ", $fax_name);
+
 //remove the backslash
 	$fax_email = str_replace("\\", "", $fax_email);
 
@@ -544,24 +550,24 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	".$text['label-email'].":\n";
+		echo "	".$text['label-email']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='fax_email' maxlength='255' value=\"$fax_email\">\n";
+		echo "	<input class='formfld' type='email' name='fax_email' maxlength='255' value=\"$fax_email\">\n";
 		echo "<br />\n";
 		echo "	".$text['description-email']."\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
 	}
-	else { //admin,superadmin,etc
+	else { //admin, superadmin, etc
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "	".$text['label-name'].":\n";
+		echo "	".$text['label-name']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='fax_name' maxlength='255' value=\"$fax_name\">\n";
+		echo "	<input class='formfld' type='text' name='fax_name' maxlength='255' value=\"$fax_name\" required='required'>\n";
 		echo "<br />\n";
 		echo "".$text['description-name']."\n";
 		echo "</td>\n";
@@ -569,10 +575,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncellreq' valign='top' align='left' nowrap>\n";
-		echo "	".$text['label-extension'].":\n";
+		echo "	".$text['label-extension']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='fax_extension' maxlength='255' value=\"$fax_extension\">\n";
+		echo "	<input class='formfld' type='text' name='fax_extension' maxlength='255' value=\"$fax_extension\" required='required'>\n";
 		echo "<br />\n";
 		echo "".$text['description-extension']."\n";
 		echo "</td>\n";
@@ -580,10 +586,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	".$text['label-destination-number'].":\n";
+		echo "	".$text['label-destination-number']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-		echo "	<input class='formfld' type='text' name='fax_destination_number' maxlength='255' value=\"$fax_destination_number\">\n";
+		echo "	<input class='formfld' type='number' name='fax_destination_number' maxlength='255' min='0' step='1' value=\"$fax_destination_number\">\n";
 		echo "<br />\n";
 		echo " ".$text['description-destination-number']."\n";
 		echo "</td>\n";
@@ -591,7 +597,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	".$text['label-email'].":\n";
+		echo "	".$text['label-email']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='fax_email' maxlength='255' value=\"$fax_email\">\n";
@@ -602,7 +608,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		//echo "<tr>\n";
 		//echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		//echo "	".$text['label-pin'].":\n";
+		//echo "	".$text['label-pin']."\n";
 		//echo "</td>\n";
 		//echo "<td class='vtable' align='left'>\n";
 		//echo "	<input class='formfld' type='text' name='fax_pin_number' maxlength='255' value=\"$fax_pin_number\">\n";
@@ -612,10 +618,10 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		//echo "</tr>\n";
 
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	".$text['label-caller-id-name'].":\n";
+		echo "<td width='30%' class='vncell' valign='top' align='left' nowrap>\n";
+		echo "	".$text['label-caller-id-name']."\n";
 		echo "</td>\n";
-		echo "<td class='vtable' align='left'>\n";
+		echo "<td width='70%' class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='fax_caller_id_name' maxlength='255' value=\"$fax_caller_id_name\">\n";
 		echo "<br />\n";
 		echo "".$text['description-caller-id-name']."\n";
@@ -624,7 +630,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	".$text['label-caller-id-number'].":\n";
+		echo "	".$text['label-caller-id-number']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='fax_caller_id_number' maxlength='255' value=\"$fax_caller_id_number\">\n";
@@ -635,7 +641,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	".$text['label-forward'].":\n";
+		echo "	".$text['label-forward']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		if (is_numeric($fax_forward_number)) {
@@ -652,7 +658,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 		if (if_group("admin") || if_group("superadmin")) {
 			if ($action == "update") {
 				echo "	<tr>";
-				echo "		<td class='vncell' valign='top'>".$text['label-user-list'].":</td>";
+				echo "		<td class='vncell' valign='top'>".$text['label-user-list']."</td>";
 				echo "		<td class='vtable'>";
 
 				$sql = "SELECT * FROM v_fax_users as e, v_users as u ";
@@ -704,7 +710,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap>\n";
-		echo "	".$text['label-description'].":\n";
+		echo "	".$text['label-description']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<input class='formfld' type='text' name='fax_description' maxlength='255' value=\"$fax_description\">\n";
@@ -717,6 +723,7 @@ if (count($_POST)>0 && strlen($_POST["persistformvar"]) == 0) {
 
 	echo "	<tr>\n";
 	echo "		<td colspan='2' align='right'>\n";
+	echo "			<br>";
 	if ($action == "update") {
 		if (if_group("user")) {
 			echo "	<input type='hidden' name='fax_name' value=\"$fax_name\">\n";
