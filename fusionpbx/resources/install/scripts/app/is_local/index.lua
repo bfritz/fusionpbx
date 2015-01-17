@@ -32,6 +32,9 @@
 	dofile(scripts_dir.."/resources/functions/database_handle.lua");
 	dbh = database_handle('system');
 
+--prepare the api object
+	api = freeswitch.API();
+
 --add the trim function
 	function trim(s)
 		if (s) then
