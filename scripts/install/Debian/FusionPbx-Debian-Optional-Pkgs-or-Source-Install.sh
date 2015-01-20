@@ -790,7 +790,7 @@ fi
 #bootstrap the srccode
 #######################
 cd "$fs_src_path"
-if [ $CPU_CORES -gt 1 ]; then
+if [[ $multi_core == "y" ]]; then
 	./bootstrap.sh -j "$(nproc)"
 else
 	./bootstrap.sh
@@ -944,11 +944,12 @@ service freeswitch restart
 #installing freeswitch sounds.
 ##############################
 cd "$fs_src_path"
-if [[ $multi_core == "y" ]]; then
-		time make -j "$(nproc)"	cd-sounds-install
-	else
-		time make cd-sounds-install
-	fi
+if [[ $freeswitch_cd_sounds == "y" ]]; then
+		if [[ $multi_core == "y" ]]; then
+			time make -j "$(nproc)"	cd-sounds-install
+		else
+			time make cd-sounds-install
+		fi
 else	
 	cd "$fs_src_path"
 	if [[ $multi_core == "y" ]]; then
