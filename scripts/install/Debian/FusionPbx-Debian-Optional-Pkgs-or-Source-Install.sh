@@ -251,7 +251,7 @@ use_cd_sounds=="y"
 # If you select not to use pkgs but to build from source. Here is a option to
 # set how many COU_CORES are used to compile with
 ################################################################################
-MULTI_CORES="y"
+multi_core="y"
 
 ################################################################################
 # If you select not to use pkgs but to build from source. Here is a option to
@@ -884,7 +884,7 @@ cd "$FS_SRC_PATH"
 # BUILD fREESWITCH
 ####################
 cd "$FS_SRC_PATH"
-if [ $MULTI_CORES == "y" ]; then
+if [[ $multi_core == "y" ]]; then
 	time make -j "$(nproc)" core
 	time make -j "$(nproc)"
 else
@@ -901,7 +901,7 @@ useradd --system -U freeswitch -Gaudio -d /var/lib/freeswitch -s /bin/false -e '
 #Install Freeswitch
 #####################
 cd "$FS_SRC_PATH"
-if [ $MULTI_CORES == "y" ]; then
+if [[ $multi_core == "y" ]]; then
 	time make -j "$(nproc)" install
 else
 	time make install
@@ -952,7 +952,7 @@ service freeswitch restart
 #installing freeswitch sounds.
 ##############################
 cd "$FS_SRC_PATH"
-if [ $MULTI_CORES == "y" ]; then
+if [[ $multi_core == "y" ]]; then
 		time make -j "$(nproc)"	cd-sounds-install
 	else
 		time make cd-sounds-install
@@ -960,7 +960,7 @@ if [ $MULTI_CORES == "y" ]; then
 else	
 	cd "$FS_SRC_PATH"
 
-	if [ $MULTI_CORES == "y" ]; then
+	if [[ $multi_core == "y" ]]; then
 		time make -j "$(nproc)" hd-sounds-install
 	else
 		time make hd-sounds-install
