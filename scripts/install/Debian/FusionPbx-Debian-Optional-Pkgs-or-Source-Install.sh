@@ -884,7 +884,7 @@ cd "$FS_SRC_PATH"
 # BUILD fREESWITCH
 ####################
 cd "$FS_SRC_PATH"
-if [ $MILTI_CORES == "y" ]; then
+if [ $MULTI_CORES == "y" ]; then
 	time make -j "$(nproc)" core
 	time make -j "$(nproc)"
 else
@@ -901,8 +901,8 @@ useradd --system -U freeswitch -Gaudio -d /var/lib/freeswitch -s /bin/false -e '
 #Install Freeswitch
 #####################
 cd "$FS_SRC_PATH"
-if [ $CPU_CORES -gt 1 ]; then
-	time make -j $CPU_CORES install
+if [ $MULTI_CORES == "y" ]; then
+	time make -j "$(nproc)" install
 else
 	time make install
 fi
@@ -951,17 +951,17 @@ service freeswitch restart
 ##############################
 #installing freeswitch sounds.
 ##############################
-if [[ $use_cd_sounds == "y" ]]; then
-	cd "$FS_SRC_PATH"
-	if [ $CPU_CORES -gt 1 ]; then
-		time make -j $CPU_CORES cd-sounds-install
+cd "$FS_SRC_PATH"
+if [ $MULTI_CORES == "y" ]; then
+		time make -j "$(nproc)"	cd-sounds-install
 	else
 		time make cd-sounds-install
 	fi
 else	
 	cd "$FS_SRC_PATH"
-	if [ $CPU_CORES -gt 1 ]; then
-		time make -j $CPU_CORES hd-sounds-install
+
+	if [ $MULTI_CORES == "y" ]; then
+		time make -j "$(nproc)" hd-sounds-install
 	else
 		time make hd-sounds-install
 	fi
