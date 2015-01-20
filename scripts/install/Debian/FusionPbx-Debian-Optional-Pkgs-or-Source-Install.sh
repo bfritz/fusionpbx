@@ -89,32 +89,22 @@ fi
 #################
 lsb_release -c |grep -i wheezy &> /dev/null 2>&1
 if [ $? -eq 0 ]; then
-		echo "Good, you are running Debian 7 codename: wheezy"
-		echo
+	echo "Good, you are running Debian 7 codename: wheezy"
+	echo
 else
-		lsb_release -c |grep -i jessie > /dev/null
-		if [ $? -eq 0 ]; then
-                /bin/echo "OK you are running Debian 8 CodeName: Jessie. This script is known to work"
+	lsb_release -c |grep -i jessie > /dev/null
+	if [ $? -eq 0 ]; then
+		/bin/echo "OK you are running Debian 8 CodeName: Jessie. This script is known to work"
+	else
+		echo "This script was written for Debian 7 codename wheezy & Debian 8 codename Jessie"
 		echo
-				CONTINUE=YES
-		else
-				echo "This script was written for Debian 7 codename wheezy"
-				echo "Your OS appears to be:" lsb_release -a
-				read -p "Do you wish to continue y/n? " CONTINUE
-				case "$CONTINUE" in
-					[yY]*)
-					echo "Ok, this does not always work..,"
-					echo "  but well give it a go."
-					;;
-
-                *)
-					echo "Exiting the install."
-                    exit
-                ;;
-                esac
-		fi
+		echo "Your OS appears to be:" lsb_release -a
+		echo
+		echo "Your OS is not supported... Exiting the install."
+		exit
+	fi
 fi
-
+clear
 ###################
 # Notes / Warnings
 ###################
@@ -128,11 +118,16 @@ cat << DELIM
 
              "IT IS NOT INTENDED TO BE RUN MULTIPLE TIMES"
 
-   This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy).
+   This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy)
+   
+   or Fresh Install Of Debian 8 (Jessie). 
+   
+   			("Ubuntu Is Unsupported with this script")
 
    If It Fails For Any Reason Please Report To r.neese@gmail.com.
 
    Please Include Any Screen Output You Can To Show Where It Fails.
+   
 DELIM
 
 ###############################################
@@ -221,7 +216,7 @@ freeswitch_stable="y"
 # down all the build deps and and git the freeswitch src and build and install
 # from the freeswitch source code using the debian fhs lay out.
 ################################################################################
-freeswitch_pkgs="n"
+freeswitch_pkgs="y"
 
 #####################################################################################################
 # Set what language lang/say pkgs and language sound files to use. ( Only if pkgs install is selected )
@@ -242,7 +237,7 @@ freeswitch_cd_sounds=="y"
 # If you select not to use pkgs but to build from source. Here is a option to
 # set how many COU_CORES are used to compile with
 ################################################################################
-multi_core="y"
+multi_core="n"
 
 ################################################################################
 # If you select not to use pkgs but to build from source. Here is a option to
@@ -543,7 +538,9 @@ else
 	fs_ver="v1.5"
 fi
 
+# Set the freeswitch src path based on version
 fs_src_path=/usr/src/freeswitch-"$fs_ver"
+
 ################################################################
 #Used for pkg based installs for cp the base configs into place
 ################################################################
@@ -569,6 +566,7 @@ php_ini="/etc/php5/fpm/php.ini"
 #Testing for internet connection. Pulled from and modified
 #http://www.linuxscrew.com/2009/04/02/tiny-bash-scripts-check-internet-connection-availability/
 ###############################################################################################
+#######################################
 #-----test internet connection-------
 #######################################
 echo
@@ -650,9 +648,9 @@ service ntp restart
 ########################################
 apt-get -y install unixodbc uuid memcached libtiff5 libtiff-tools time bison htop screen libpq5 lame
 
-##############################################
+#############################################
 #-----Start Install of freeswitch-----------
-##############################################
+#############################################
 apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-meta-codecs freeswitch-mod-commands freeswitch-mod-curl \
 		freeswitch-mod-db freeswitch-mod-distributor freeswitch-mod-dptools freeswitch-mod-enum freeswitch-mod-esf freeswitch-mod-esl \
 		freeswitch-mod-expr freeswitch-mod-fsv freeswitch-mod-hash freeswitch-mod-memcache freeswitch-mod-portaudio freeswitch-mod-portaudio-stream \
@@ -663,9 +661,9 @@ apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-meta-codecs
 		freeswitch-mod-say-en freeswitch-mod-posix-timer freeswitch-mod-timerfd freeswitch-mod-v8 freeswitch-mod-xml-cdr freeswitch-mod-xml-curl \
 		freeswitch-mod-xml-rpc freeswitch-conf-vanilla 
 
-#############################
+############################
 # Intel/AMD gets mod_shout
-#############################
+############################
 case $(uname -m) in x86_64|i[4-6]86)	
 	apt-get -y install --force-yes freeswitch-mod-shout
 esac
@@ -747,15 +745,26 @@ else
 ################################
 # Install freeswitch build deps
 ################################
-apt-get -y install time ntp ssh vim git-core libjpeg-dev subversion build-essential \
+lsb_release -c |grep -i jessie > /dev/null
+if [ $? -eq 0 ]; then
+	apt-get -y install time ntp ssh vim git-core libjpeg62-turbo-dev subversion build-essential \
 		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
 		python-dev pkg-config libtiff5-dev libldns-dev \
 		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev  \
 		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev \
 		libedit-dev screen htop pkg-config bzip2 bison libssl-dev unixodbc \
 		unixodbc-dev libtiff-tools libmemcached-dev uuid-dev libpq5 libpq-dev \
-		portaudio19-dev lame
-
+		portaudio19-dev lame libldap2-dev
+else
+	apt-get -y install time ntp ssh vim git-core libjpeg-dev subversion build-essential \
+		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
+		python-dev pkg-config libtiff5-dev libldns-dev \
+		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev  \
+		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev \
+		libedit-dev screen htop pkg-config bzip2 bison libssl-dev unixodbc \
+		unixodbc-dev libtiff-tools libmemcached-dev uuid-dev libpq5 libpq-dev \
+		portaudio19-dev lame libldap2-dev
+fi
 #######################
 # Install Freetdm Deps
 #######################
@@ -853,6 +862,7 @@ done
 # Pulled from freeswitch/debain/rules files. Sets Dir in FHS Layout.....
 ###################################################################################
 cd "$fs_src_path"
+if [[ freeswitch_stable == "y" ]]; then
 ./configure -C --with-gnu-ld --with-python --with-openssl \
 --enable-core-odbc-support --enable-zrtp \
 --enable-core-pgsql-support \
@@ -871,6 +881,27 @@ cd "$fs_src_path"
 --with-scriptdir=/var/lib/freeswitch/scripts \
 --with-recordingsdir=/var/lib/freeswitch/recordings \
 --enable-static-v8 --disable-parallel-build-v8
+else
+./configure -C --with-gnu-ld --with-python --with-openssl \
+--enable-core-odbc-support --enable-zrtp \
+--enable-core-pgsql-support \
+--prefix=/usr --localstatedir=/var \
+--sysconfdir=/etc/freeswitch \
+--with-modinstdir=/usr/lib/freeswitch/mod \
+--with-rundir=/var/run/freeswitch \
+--with-logfiledir=/var/log/freeswitch \
+--with-dbdir=/var/lib/freeswitch/db \
+--with-htdocsdir=/usr/share/freeswitch/htdocs \
+--with-soundsdir=/usr/share/freeswitch/sounds \
+--with-storagedir=/var/lib/freeswitch/storage \
+--with-cachedir=/var/cache/freeswitch \
+--with-grammardir=/usr/share/freeswitch/grammar \
+--with-certsdir=/etc/freeswitch/tls \
+--with-scriptdir=/var/lib/freeswitch/scripts \
+--with-recordingsdir=/var/lib/freeswitch/recordings \
+--enable-static-v8 --disable-parallel-build-v8 \
+--enable-sytem-lua
+fi
 
 ####################
 # BUILD fREESWITCH
