@@ -251,7 +251,7 @@ use_cd_sounds=="y"
 # If you select not to use pkgs but to build from source. Here is a option to
 # set how many COU_CORES are used to compile with
 ################################################################################
-CPU_CORES=1
+MULTI_CORES="y"
 
 ################################################################################
 # If you select not to use pkgs but to build from source. Here is a option to
@@ -799,7 +799,7 @@ fi
 #######################
 cd "$FS_SRC_PATH"
 if [ $CPU_CORES -gt 1 ]; then
-	./bootstrap.sh -j $CPU_CORES
+	./bootstrap.sh -j "$(nproc)"
 else
 	./bootstrap.sh
 fi
@@ -884,9 +884,9 @@ cd "$FS_SRC_PATH"
 # BUILD fREESWITCH
 ####################
 cd "$FS_SRC_PATH"
-if [ $CPU_CORES -gt 1 ]; then
-	time make -j $CPU_CORES core
-	time make -j $CPU_CORES
+if [ $MILTI_CORES == "y" ]; then
+	time make -j "$(nproc)" core
+	time make -j "$(nproc)"
 else
 	time make
 fi
