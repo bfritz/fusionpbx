@@ -205,8 +205,6 @@ install_ajenti="n"
 fs_conf_dir="/etc/freeswitch"
 fs_dflt_conf_dir="/usr/share/freeswitch/conf"
 fs_log_dir="/var/log/freeswitch"
-fs_scripts_dir="/var/lib/freeswitch/scripts"
-fs_storage_dir="/var/lib/freeswitch/storage"
 ######################################################
 #Nginx default www dir
 WWW_PATH="/var/www" #debian nginx default dir
