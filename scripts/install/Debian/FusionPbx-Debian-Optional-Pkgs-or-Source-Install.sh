@@ -26,9 +26,9 @@
 ##################################
 #----OS ENVIRONMENT CHECKS-------
 ##################################
-################################################################################
+##################################################################
 # check to confirm running as root. # First, we need to be root...
-################################################################################
+##################################################################
 if [ "$(id -u)" -ne "0" ]; then
   sudo -p "$(basename "$0") must be run as root, please enter your sudo password : " "$0" "$@"
   exit 0
@@ -36,12 +36,12 @@ fi
 echo
 echo "You're root.... continuing!"
 echo
-################################################################################
+####################################
 # Run a Hardware compatabilty Check
-################################################################################
-################
+####################################
+########
 # ARMEL
-################
+########
 case $(uname -m) in armv[4-6]l)
 echo
 echo " ArmEL only supported in the build of freeswitch . "
@@ -49,9 +49,9 @@ echo
 echo " Do not attempt to use freeswitch debian pkgs. "
 echo
 esac
-################
+########
 # ARMHF
-################
+########
 case $(uname -m) in armv7l)
 echo
 echo " ArmHF arm v7 Supported "
@@ -116,9 +116,9 @@ else
 		fi
 fi
 
-################################################################################
+###################
 # Notes / Warnings
-################################################################################
+###################
 echo
 cat << DELIM
 
@@ -138,9 +138,9 @@ cat << DELIM
 
 DELIM
 
-################################################################################
+###############################################
 # Checks to see if installing on openvz server
-################################################################################
+###############################################
 if [[ -f /proc/vz ]]; then
 echo
 cat << DELIM
@@ -161,9 +161,9 @@ DELIM
 exit
 fi
 
-################################################################################
+###########################
 # Pre-Install Information
-################################################################################
+###########################
 echo
 cat << DELIM
 
@@ -381,10 +381,10 @@ fi
 
 #../../contrib/ledr/c/mod_odbc_
 
-#################################################################################################
+#################################################################################
 # Options contrib modules (only if you selected to use the contribs git option )
 # (future Option) (UNDER DEVELOPMENT )
-#################################################################################################
+#################################################################################
 #if [[ $use_freeswitch_contrib == "y" ]]; then
 #	contrib_modules_add=( ../../contrib/ledr/c/mod_odbc_query cd mo	)
 #fi
@@ -552,7 +552,7 @@ else
 	FS_VER="v1.5"
 fi
 
-FS_SRC_PATH=/usr/src/freeswitch-"$FS_VER"
+fs_src_path=/usr/src/freeswitch-"$FS_VER"
 ################################################################
 #Used for pkg based installs for cp the base configs into place
 ################################################################
@@ -781,23 +781,23 @@ fi
 #####################################################################
 if [[ $freeswitch_stable == "y" ]];then
 	echo " Pulling freeswitch 1.4 stable branch from stache repo "
-	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$FS_VER" "$FS_SRC_PATH"
+	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$FS_VER" "$fs_src_path"
 else
 	echo " Pulling freeswitch 1.5 heaad branch from stache repo "
-	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git "$FS_SRC_PATH"
+	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git "$fs_src_path"
 fi
 
 #####################################################################
 #grap the freeswitch contrib src code from the freeswitch stache
 #####################################################################
 if [[ $use_freeswitch_contrib == "y" ]]; then
-	time git clone https://stash.freeswitch.org/scm/fs/freeswitch-contrib.git "$FS_SRC_PATH"/contrib
+	time git clone https://stash.freeswitch.org/scm/fs/freeswitch-contrib.git "$fs_src_path"/contrib
 fi
 
 #######################
 #bootstrap the srccode
 #######################
-cd "$FS_SRC_PATH"
+cd "$fs_src_path"
 if [ $CPU_CORES -gt 1 ]; then
 	./bootstrap.sh -j "$(nproc)"
 else
@@ -808,8 +808,8 @@ echo
 ########################
 #Configure modules.conf
 ########################
-#Reads the $FS_SRC_PATH"/modules.conf and looks for lines without a # sign Default enabled modules.
-modules_comp_default=( $(grep -v ^$ "$FS_SRC_PATH"/modules.conf | grep -v ^# | tr '\n' ' ') )
+#Reads the $fs_src_path"/modules.conf and looks for lines without a # sign Default enabled modules.
+modules_comp_default=( $(grep -v ^$ "$fs_src_path"/modules.conf | grep -v ^# | tr '\n' ' ') )
 	
 #Reads in the fusionpbx_modules_add list of modules to add and index's and counts them .
 module_count=`echo ${#fusionpbx_modules_add[@]}`
@@ -818,28 +818,28 @@ index=0
 	
 while [ "$index" -lt "$module_count" ]
 do
-modules_compile_add[$index]=$(grep "${fusionpbx_modules_add[$index]}" "$FS_SRC_PATH"/modules.conf | sed -e "s/#//g")
+modules_compile_add[$index]=$(grep "${fusionpbx_modules_add[$index]}" "$fs_src_path"/modules.conf | sed -e "s/#//g")
 let "index = $index + 1"
 done
 
 modules_compile=( ${modules_comp_default[*]} ${modules_compile_add[*]} )
 
 #Enable module in MODULES.CONF
-echo " Now enabling modules in $FS_SRC_PATH/modules.conf "
+echo " Now enabling modules in $fs_src_path/modules.conf "
 index=0
 module_count=`echo ${#modules_compile[@]}`
 	
 #get rid of unwanted spacing in modules.conf
-sed -i -e "s/ *//g" "$FS_SRC_PATH"/modules.conf
+sed -i -e "s/ *//g" "$fs_src_path"/modules.conf
 	
 while [ "$index" -lt "$module_count" ]
 do
-grep ${modules_compile[$index]} "$FS_SRC_PATH"/modules.conf > /dev/null
+grep ${modules_compile[$index]} "$fs_src_path"/modules.conf > /dev/null
 if [ $? -eq 0 ]; then
 	#check if module is present in file. see if we need to enable it by removing the # at the start of the line
-		grep '#'${modules_compile[$index]} "$FS_SRC_PATH"/modules.conf > /dev/null
+		grep '#'${modules_compile[$index]} "$fs_src_path"/modules.conf > /dev/null
 	if [ $? -eq 0 ]; then
-		sed -i -e s,'#'${modules_compile[$index]},${modules_compile[$index]}, "$FS_SRC_PATH"/modules.conf
+		sed -i -e s,'#'${modules_compile[$index]},${modules_compile[$index]}, "$fs_src_path"/modules.conf
 		#reads the index of the modules that where added and echo's it enabled the following modules		
 		echo " [ENABLED] ${modules_compile[$index]}"
 	else
@@ -848,7 +848,7 @@ if [ $? -eq 0 ]; then
 	fi
 else
 	#module is not present. Add to end of file
-	echo ${modules_compile[$index]} >> "$FS_SRC_PATH"/modules.conf
+	echo ${modules_compile[$index]} >> "$fs_src_path"/modules.conf
 	echo " [ADDED] ${modules_compile[$index]}"
 fi
 let "index = $index + 1"
@@ -860,7 +860,7 @@ done
 ###################################################################################
 # Pulled from freeswitch/debain/rules files. Sets Dir in FHS Layout.....
 ###################################################################################
-cd "$FS_SRC_PATH"
+cd "$fs_src_path"
 ./configure -C --with-gnu-ld --with-python --with-openssl \
 --enable-core-odbc-support --enable-zrtp \
 --enable-core-pgsql-support \
@@ -883,7 +883,7 @@ cd "$FS_SRC_PATH"
 ####################
 # BUILD fREESWITCH
 ####################
-cd "$FS_SRC_PATH"
+cd "$fs_src_path"
 if [[ $multi_core == "y" ]]; then
 	time make -j "$(nproc)" core
 	time make -j "$(nproc)"
@@ -900,7 +900,7 @@ useradd --system -U freeswitch -Gaudio -d /var/lib/freeswitch -s /bin/false -e '
 #####################
 #Install Freeswitch
 #####################
-cd "$FS_SRC_PATH"
+cd "$fs_src_path"
 if [[ $multi_core == "y" ]]; then
 	time make -j "$(nproc)" install
 else
@@ -931,16 +931,16 @@ fi
 #Put Freeswitch init.d service script into place
 #################################################
 echo 
-cp "$FS_SRC_PATH"/debian/freeswitch-sysvinit.freeswitch.default /etc/default/freeswitch
+cp "$fs_src_path"/debian/freeswitch-sysvinit.freeswitch.default /etc/default/freeswitch
 echo
 echo " Installing/Enabling init.d startup scripts for freeswitch"
-cp "$FS_SRC_PATH"/debian/freeswitch-sysvinit.freeswitch.init /etc/init.d/freeswitch
+cp "$fs_src_path"/debian/freeswitch-sysvinit.freeswitch.init /etc/init.d/freeswitch
 echo
 echo "enabling FreeSWITCH to start at boot"
 chmod 755 /etc/init.d/freeswitch
 echo
 echo "Installing/ Enabling systemd init scripts for freeswitch"
-cp "$FS_SRC_PATH"/debian/freeswitch-systemd.freeswitch.service /lib/systemd/system/freeswitch.service
+cp "$fs_src_path"/debian/freeswitch-systemd.freeswitch.service /lib/systemd/system/freeswitch.service
 echo
 
 #########################################
@@ -951,15 +951,14 @@ service freeswitch restart
 ##############################
 #installing freeswitch sounds.
 ##############################
-cd "$FS_SRC_PATH"
+cd "$fs_src_path"
 if [[ $multi_core == "y" ]]; then
 		time make -j "$(nproc)"	cd-sounds-install
 	else
 		time make cd-sounds-install
 	fi
 else	
-	cd "$FS_SRC_PATH"
-
+	cd "$fs_src_path"
 	if [[ $multi_core == "y" ]]; then
 		time make -j "$(nproc)" hd-sounds-install
 	else
