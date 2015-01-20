@@ -1,5 +1,5 @@
 #!/bin/bash
-#Date Jan 09 2015 10:00CST
+#Date Jan 20 2015 12:20 CST
 ################################################################################
 # The MIT License (MIT)
 ################################################################################
@@ -59,9 +59,9 @@ echo
 echo " You can either Build from Source or use the freeswitch Armhf Debian pkgs. "
 echo
 esac
-################
+#############
 # Intel/AMD
-################
+#############
 case $(uname -m) in x86_64|i[4-6]86)
 echo
 echo " Intel / Amd  boards Spported"
@@ -70,9 +70,10 @@ echo " You can either Build from Source or use the freeswitch Intel/AMD Debian p
 echo
 esac
 echo
-#######################################################################################
-#removes the cd img from the /etc/apt/sources.list file (not needed after base install)
-#######################################################################################
+########################################################
+# removes the cd img from the /etc/apt/sources.list file 
+# (not needed after base install)
+########################################################
 sed -i '/cdrom:/d' /etc/apt/sources.list
 #sed -i '2,4d' /etc/apt/sources.list
 
@@ -98,18 +99,16 @@ else
 				CONTINUE=YES
 		else
 				echo "This script was written for Debian 7 codename wheezy"
-				echo
-				echo "Your OS appears to be:"
-				lsb_release -a
+				echo "Your OS appears to be:" lsb_release -a
 				read -p "Do you wish to continue y/n? " CONTINUE
 				case "$CONTINUE" in
 					[yY]*)
-					echo 'Ok, this does not always work..,'
-					echo '  but well give it a go.'
+					echo "Ok, this does not always work..,"
+					echo "  but well give it a go."
 					;;
 
                 *)
-					echo 'Exiting the install.'
+					echo "Exiting the install."
                     exit
                 ;;
                 esac
@@ -121,7 +120,6 @@ fi
 ###################
 echo
 cat << DELIM
-
                   ( "Not Ment For L.a.m.p Installs" )
 
                 ( "L.A.M.P = Linux Apache Mysql PHP" )
@@ -135,7 +133,6 @@ cat << DELIM
    If It Fails For Any Reason Please Report To r.neese@gmail.com.
 
    Please Include Any Screen Output You Can To Show Where It Fails.
-
 DELIM
 
 ###############################################
@@ -144,19 +141,17 @@ DELIM
 if [[ -f /proc/vz ]]; then
 echo
 cat << DELIM
-
     Note:
 
-        Those of you running this script on openvz. You must run it as root and
+    Those of you running this script on openvz. You must run it as root and
 
-        bash Fusionpbx-Debian-Package-Install.sh or it fails the networking check.
+    bash Fusionpbx-Debian-Package-Install.sh or it fails the networking check.
 
-        Please take the time to refer to this document if you have install issues
+    Please take the time to refer to this document if you have install issues
 
-        on openvz http://openvz.org/Virtual_Ethernet_device and make sure to setup
+    on openvz http://openvz.org/Virtual_Ethernet_device and make sure to setup
 
-        a eth0 for better performance with the script.
-
+    a eth0 for better performance with the script.
 DELIM
 exit
 fi
@@ -166,26 +161,23 @@ fi
 ###########################
 echo
 cat << DELIM
-
   Note:
 
-     Pre-Install Information:
+  Pre-Install Information:
 
-       This script uses Sqlite by default for the fusionpbx database.
+    This script uses Sqlite by default for the fusionpbx database.
 
-       If you wish to use postgresql locally or on a remote server.
+    If you wish to use postgresql localy or on a remote server.
 
-       You need to edit the script and enable the pgsql-client or pgsql
+    You need to edit the script and enable the pgsql-client or pgsql
 
-       option and fill in the required information.
-
+    option and fill in the required information.
 DELIM
 echo
-################################################################################
-################### FreeSWITCH Debian FHS Configuration ########################
-################################################################################
+########################################
+# FreeSWITCH Debian FHS Configuration 
+########################################
 cat << DELIM
-
   " FreeSWITCH Debian FHS Configuration "
 
      Locations:
@@ -208,10 +200,9 @@ cat << DELIM
       soundsdir:       /usr/share/freeswitch/sounds
       storagedir:      /var/lib/freeswitch/storage
       cachedir:        /var/cache/freeswitch
-      
 DELIM
 echo
-################################################################################
+#######################################################
 ########################################
 #<------Start/Begin Edit HERE--------->
 ########################################
@@ -222,7 +213,7 @@ echo
 # Select to use the Release or head branch of freeswitch
 # if you select to change y to n it will use 1.5 head branch
 ############################################################
-use_freeswitch_stable="y"
+freeswitch_stable="y"
 
 ################################################################################
 # If you select to use the freeswitch pkgs it will use the prebuilt debian pkgs.
@@ -230,22 +221,22 @@ use_freeswitch_stable="y"
 # down all the build deps and and git the freeswitch src and build and install
 # from the freeswitch source code using the debian fhs lay out.
 ################################################################################
-use_freeswitch_pkgs="n"
+freeswitch_pkgs="n"
 
 #####################################################################################################
 # Set what language lang/say pkgs and language sound files to use. ( Only if pkgs install is selected )
 # en-ca=English/CA en-us=English/US (default) fr-ca=French/Canadian pt-br=Portuguese/Brazill
 # ru-ru=Russian/Russia sv-se=Swedish/Sweden zh-cn=chinese/Mandarin zh-hk=chinese/HongKong
 #####################################################################################################
-use_lang="en-us"
+freeswitch_sounds_language="en-us"
 
 ################################################################################
 #Set what sounds to use when using the freeswitch source build.
-# cdsounds = 8k / 16k / 32k / 48k 
+# cd sounds = 8k / 16k / 32k / 48k 
 # if you select not to use cd sounds it will use
-# hdsounds = 8k / 16k sounds only
+# hd sounds = 8k / 16k sounds only
 ################################################################################
-use_cd_sounds=="y" 
+freeswitch_cd_sounds=="y" 
 
 ################################################################################
 # If you select not to use pkgs but to build from source. Here is a option to
@@ -262,7 +253,7 @@ use_freeswitch_contrib="n"
 ################################################################################
 # Enable / Build Freetdm into freeswitch (UNDER DEVELOPMENT)
 ################################################################################
-use_freetdm="n"
+use_mod_freetdm="n"
 
 ################################################################################
 # Enable / Build GsmOpen into freeswitch (UNDER DEVELOPMENT)
@@ -314,7 +305,7 @@ use_freetdm="n"
 ################################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
 ################################################################################
-if [[ $use_freetdm == "y" ]]; then
+if [[ $use_mod_freetdm == "y" ]]; then
 fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
     mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
     mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
@@ -392,7 +383,7 @@ fi
 ###############################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
 ################################################################################
-#if [[ $use_freetdm == "y" ]]; then
+#if [[ $use_mod_freetdm == "y" ]]; then
 #	freetdm_modules_add=( ../../libs/freetdm/mod_freetdm )
 #fi
 
@@ -415,7 +406,7 @@ logging_level="n"
 # Select to use the Stable or Dev Branch of fusionpbx
 # Change the y to n to use the dev branch for fusionpbx
 ########################################################
-use_fusionpbx_stable="y"
+fusionpbx_stable="y"
 
 #############################################################################
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
@@ -546,13 +537,13 @@ install_ajenti="n"
 ######################################################
 # Hard Set Varitables (Do Not EDIT) Freeswitch default
 ######################################################
-if [[ $use_freeswitch_stable == "y" ]];then
-	FS_VER="v1.4"
+if [[ $freeswitch_stable == "y" ]];then
+	fs_ver="v1.4"
 else
-	FS_VER="v1.5"
+	fs_ver="v1.5"
 fi
 
-fs_src_path=/usr/src/freeswitch-"$FS_VER"
+fs_src_path=/usr/src/freeswitch-"$fs_ver"
 ################################################################
 #Used for pkg based installs for cp the base configs into place
 ################################################################
@@ -607,9 +598,9 @@ echo
 ##############################
 # Detect and Set Intel/AMD Repos
 ##############################
-if [[ $use_freeswitch_pkgs == "y" ]]; then
+if [[ $freeswitch_pkgs == "y" ]]; then
 case $(uname -m) in x86_64|i[4-6]86)
-	if [[ $use_freeswitch_stable == "y" ]]; then
+	if [[ $freeswitch_stable == "y" ]]; then
 		#adding in freeswitch reop to /etc/apt/sources.list.d/freeswitch.lists
 		echo " installing Intel/AMD64 Release/Stable repo "
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
@@ -627,7 +618,7 @@ esac
 # Detect and Set ArmHF Repos
 ##############################
 case $(uname -m) in armv7l)
-	if [[ $use_freeswitch_stable == "y" ]]; then
+	if [[ $freeswitch_stable == "y" ]]; then
 		#adding Freeswitch ARMHF repo to /etc/apt/sources.list.d/freeswitch.lists
 		echo 'installing Freeswitch ARMHF Release/Stable repo'
 		cat > "/etc/apt/sources.list.d/freeswitch.list" <<DELIM
@@ -639,7 +630,8 @@ DELIM
 		deb http://repo.fusionpbx.com/freeswitch-armhf/head/debian/ wheezy main
 DELIM
 	fi	
-esac	
+esac
+	
 ################################
 #adding key for freeswitch repo
 ################################
@@ -688,35 +680,35 @@ esac
 ######################################
 #setup language / sound files for use
 ######################################
-if [[ $use_lang == "en-ca" ]]; then
+if [[ $freeswitch_sounds_language == "en-ca" ]]; then
 	apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-en-ca-june
 fi
 
-if [[ $use_lang == "en-us" ]]; then
+if [[ $freeswitch_sounds_language == "en-us" ]]; then
 	apt-get -y install --force-yes freeswitch-lang-en freeswitch-mod-say-en freeswitch-sounds-en-us-callie
 fi
 
-if [[ $use_lang == "fr-ca" ]]; then
+if [[ $freeswitch_sounds_language == "fr-ca" ]]; then
 	apt-get -y install --force-yes freeswitch-lang-fr freeswitch-mod-say-fr freeswitch-sounds-fr-ca-june
 fi
 
-if [[ $use_lang == "pt-br" ]]; then
+if [[ $freeswitch_sounds_language == "pt-br" ]]; then
 	apt-get -y install --force-yes freeswitch-lang-pt freeswitch-mod-say-pt freeswitch-sounds-pt-br-karina
 fi
 
-if [[ $use_lang == "ru-ru" ]]; then
+if [[ $freeswitch_sounds_language == "ru-ru" ]]; then
 	apt-get -y install --force-yes freeswitch-lang-ru freeswitch-mod-say-ru freeswitch-sounds-ru-ru-elena
 fi
 
-if [[ $use_lang == "sv-se" ]]; then
+if [[ $freeswitch_sounds_language == "sv-se" ]]; then
 	apt-get -y install --force-yes freeswitch-lang-sv freeswitch-mod-say-sv freeswitch-sounds-sv-se-jakob
 fi
 
-if [[ $use_lang == "zh-cn" ]]; then
+if [[ $freeswitch_sounds_language == "zh-cn" ]]; then
 	apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-cn-sinmei
 fi
 
-if [[ $use_lang == "zh-hk" ]]; then
+if [[ $freeswitch_sounds_language == "zh-hk" ]]; then
 	apt-get -y install --force-yes freeswitch-mod-say-zh freeswitch-sounds-zh-hk-sinmei
 fi
 
@@ -767,7 +759,7 @@ apt-get -y install time ntp ssh vim git-core libjpeg-dev subversion build-essent
 #######################
 # Install Freetdm Deps
 #######################
-if [ $use_freetdm == "y" ]; then
+if [ $use_mod_freetdm == "y" ]; then
 	#add stuff for freetdm/dahdi
 	apt-get -y install linux-headers-"$(uname -r)"
 	#add the headers so dahdi can build the modules...
@@ -781,7 +773,7 @@ fi
 #####################################################################
 if [[ $freeswitch_stable == "y" ]];then
 	echo " Pulling freeswitch 1.4 stable branch from stache repo "
-	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$FS_VER" "$fs_src_path"
+	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$fs_ver" "$fs_src_path"
 else
 	echo " Pulling freeswitch 1.5 heaad branch from stache repo "
 	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git "$fs_src_path"
@@ -1266,7 +1258,7 @@ adduser www-data dialout
 ######################
 #adding FusionPBX repo
 #######################
-if [[ $use_fusionpbx_stable == "y" ]]; then
+if [[ $fusionpbx_stable == "y" ]]; then
 	echo 'installing fusionpbx Stabe/Release repo'
 	cat > "/etc/apt/sources.list.d/fusionpbx.list" <<DELIM
 	deb http://repo.fusionpbx.com/fusionpbx/release/debian/ wheezy main
@@ -1603,7 +1595,7 @@ DELIM
 	#Install and configure PGSQL 9.1 for armhf
 	##########################################
 	case $(uname -m) in armv7l)
-	echo "no arm deb pkgs for pgsql postgresql-client-9.3"
+	echo "no arm deb pkgs for pgsql postgresql-client-9.4"
 	echo "postgresql-client-9.1 is being installed"
 	for i in postgresql-client-9.1 php5-pgsql ;do apt-get -y install "${i}"; done
 	esac
@@ -2085,5 +2077,5 @@ fi
 echo " ########################################################################################## "
 echo " # The Freeswitch / Fusionpbx Install is now complete and your system is ready for use... # "
 echo " ########################################################################################## "
-echo " #                   Please send any feed back to r.neese@gmail.com #                     # "
+echo " #                   Please send any feed back to r.neese@gmail.com                       # "
 echo " ########################################################################################## "
