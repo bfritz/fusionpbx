@@ -241,14 +241,18 @@ multi_core="n"
 # If you select not to use pkgs but to build from source. Here is a option to
 # pull and use the freeswitch contribs src for extra modules. (UNDER DEVELOPMENT)
 ################################################################################
-use_freeswitch_contrib="n"
+#use_freeswitch_contrib="n"
 
 ################################################################################
 # Enable / Build Freetdm into freeswitch (UNDER DEVELOPMENT)
+# Digium/openzap/rhino/sangoma card support
 ################################################################################
+#Digium/openzap card support
 use_mod_freetdm="n"
+
 #add sangoma support
 #sangoma_freetdm="n"
+
 #add rhino support
 #rhino_freetdm="n"
 
@@ -851,7 +855,8 @@ if [ $use_mod_freetdm == "y" ]; then
 	#add stuff for freetdm/dahdi
 	apt-get -y install linux-headers-"$(uname -r)"
 	#add the headers so dahdi can build the modules...
-	apt-get -y install libpri1.4 libpri-dev dahdi dahdi-linux dahdi-firmware-nonfree dahdi-source libtonezone-dev libtonezone2.0
+	apt-get -y install libpri1.4 libpri-dev dahdi dahdi-linux dahdi-firmware-nonfree \
+		dahdi-source libtonezone-dev libtonezone2.0 libopenr2-3 libopenr2-bin libopenr2-dev
 	#running ldconfig to prep for freetdm build
 	pgrep -f ldconfig > /dev/null
 fi
