@@ -253,7 +253,7 @@ use_mod_freetdm="n"
 ################################################################################
 # Enable / Build GsmOpen into freeswitch (UNDER DEVELOPMENT)
 ################################################################################
-use_gsmopen="n"
+use_mod_gsmopen="n"
 
 ################################################################################
 #Freeswutch Modules Selection
@@ -305,8 +305,8 @@ if [[ $use_mod_freetdm == "y" ]]; then
 	fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
     	mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
     	mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
-    	mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random \
-    	../../libs/freetdm/mod_freetdm mod_v8)
+    	mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random mod_v8\
+    	../../libs/freetdm/mod_freetdm )
 #enable gsmopen in the freeswitchch / fusionpbx build    	
 elif [[ $use_mod_gsmopen == "y" ]]; then
 		fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
@@ -862,7 +862,6 @@ fi
 sed -i "$fs_src_path"/src/mod/formats/mod_shout/Makefile.in -e 's|mpg123-1.13.2|mpg123-1.19.0|g' 
 #Update ZMQ
 sed -i "$fs_src_path"/src/mod/event_handlers/mod_event_zmq/Makefile.in -e 's|2.1.9|4.0.5|g' 
-sed -i "$fs_src_path"/src/mod/event_handlers/mod_event_zmq/Makefile.in -e 's|ZMQ_BASEURL=http://download.zeromq.org|ZMQ_BASEURL=file://${DISTDIR}/${DIST_SUBDIR}/|g' 
 
 #######################
 #bootstrap the srccode
@@ -1610,14 +1609,14 @@ if [[ $postgresql_client == "y" ]]; then
 # add in postgresql 9.4 repo for x86 x86-64 bit pkgs
 #####################################################
 	case $(uname -m) in x86_64|i[4-6]86)
-	lsb_release -c |grep -i jessie > /dev/null
+	lsb_release -c |grep -i wheezy > /dev/null
 	if [ $? -eq 0 ]; then
 		cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
-		deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main
+		deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
 DELIM	
 	else
 		cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
-		deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
+		deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main
 DELIM
 	fi
 	####################
@@ -1680,14 +1679,14 @@ if [[ $postgresql_server == "y" ]]; then
 # add in postgresql 9.4 repo for x86 x86-64 bit pkgs
 #####################################################
 	case $(uname -m) in x86_64|i[4-6]86)
-	lsb_release -c |grep -i jessie > /dev/null
+	lsb_release -c |grep -i wheezy > /dev/null
 	if [ $? -eq 0 ]; then
 		cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
-		deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main
+		deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
 DELIM	
 	else
 		cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
-		deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
+		deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main
 DELIM
 	fi
 
