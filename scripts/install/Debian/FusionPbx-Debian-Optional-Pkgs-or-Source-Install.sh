@@ -1439,6 +1439,10 @@ apt-get -y --force-yes install fusionpbx-core fusionpbx-app-calls fusionpbx-app-
 	fusionpbx-app-xml-cdr fusionpbx-app-vars fusionpbx-app-voicemails fusionpbx-app-voicemail-greetings \
 	fusionpbx-conf fusionpbx-scripts fusionpbx-sqldb fusionpbx-theme-enhanced fusionpbx-music-default
 
+if [[ $fusionpbx_stable == "n" ]]; then
+	apt-get -y --force-yes install fusionpbx-operator-panel
+fi
+
 ########################
 #set permissions on dir
 ########################
