@@ -857,9 +857,9 @@ fi
 # add patches for updating builds
 ##################################
 #fix mod_shout build
-sed -i "$fs_src_path"/src/mod/formats/mod_shout/Makefile.in -e 's|mpg123-1.13.2|mpg123-1.19.0|g' 
+sed -i "$fs_src_path/src/mod/formats/mod_shout/Makefile.in" -e 's|mpg123-1.13.2|mpg123-1.19.0|' 
 #Update ZMQ
-sed -i "$fs_src_path"/src/mod/event_handlers/mod_event_zmq/Makefile.in -e 's|2.1.9|4.0.5|g' 
+sed -i "$fs_src_path/src/mod/event_handlers/mod_event_zmq/Makefile.in" -e 's|2.1.9|4.0.5|' 
 
 #######################
 #bootstrap the srccode
