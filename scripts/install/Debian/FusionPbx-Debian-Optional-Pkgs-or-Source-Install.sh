@@ -599,13 +599,15 @@ echo
 #######################################
 lsb_release -c |grep -i wheezy &> /dev/null 2>&1
 if [ $? -eq 0 ]; then
-	cat > "/etc/apt/sources.list << DELIM
-	deb http://mirrors.digitalocean.com/debian wheezy main contrib non-free
+	cat > "/etc/apt/sources.list" << DELIM
+	deb http://ftp.us.debian.org/debian/ wheezy main contrib non-free
+	deb-src http://ftp.us.debian.org/debian/ wheezy main contrib non-free
 	deb http://security.debian.org/ wheezy/updates main contrib non-free
 DELIM
 else
-	cat > "/etc/apt/sources.list << DELIM
-	deb http://mirrors.digitalocean.com/debian jessie main contrib non-free
+	cat > "/etc/apt/sources.list" << DELIM
+	deb http://ftp.us.debian.org/debian/ jessie main contrib non-free
+	deb-src http://ftp.us.debian.org/debian/ jessie main contrib non-free
 	deb http://security.debian.org/ jessie/updates main contrib non-free
 DELIM
 fi
@@ -962,7 +964,8 @@ if [[ $freeswitch_stable == "y" ]]; then
 --with-certsdir=/etc/freeswitch/tls \
 --with-scriptdir=/var/lib/freeswitch/scripts \
 --with-recordingsdir=/var/lib/freeswitch/recordings \
---enable-static-v8 --disable-parallel-build-v8
+--enable-static-v8 --disable-parallel-build-v8 \
+--with-libpri
 else
 ./configure -C --with-gnu-ld --with-python --with-openssl \
 --enable-core-odbc-support --enable-zrtp \
@@ -982,7 +985,8 @@ else
 --with-scriptdir=/var/lib/freeswitch/scripts \
 --with-recordingsdir=/var/lib/freeswitch/recordings \
 --enable-static-v8 --disable-parallel-build-v8 \
---enable-sytem-lua
+--enable-sytem-lua \
+--with-libpri
 fi
 
 ####################
