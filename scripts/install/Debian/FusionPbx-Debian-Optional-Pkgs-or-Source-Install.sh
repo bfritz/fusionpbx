@@ -867,12 +867,18 @@ fi
 ###################################
 # Install gsmopen Deps if selected
 ###################################
-if [ $use_mod_freetdm == "y" ]; then
+if [ $use_mod_gsmopen == "y" ]; then
+	#Install gsm resuirements
 	apt-get -y install libgsmsd7 libgsmsmme-dev libgsmme1c2a libgsm0710mux3 libgsm-tools \
-		libgsm1 libgsm1-dev libgsm0710-0 libgsm0710-dev usb-modeswitch-data usb-modeswitch
-	#git pull/build libctb
-	git clone https://github.com/homme/cesium-terrain-builder.git /usr/src/libctb-src
-	
+		libgsm1 libgsm1-dev libgsm0710-0 libgsm0710-dev
+	# Install usb mode switch requirements	 
+	apt-get -y installusb-modeswitch-data usb-modeswitch
+	#wget/build libctb
+	wget https://iftools.com/download/ctb/0.16/libctb-0.16.tar.gz
+	tar xzvf libctb-0.16.tar.gz -C /usr/src
+	cd /usr/src/libctb-0.16/build
+	make DEBUG=0 GPIB=0
+	make DEBUG=0 GPIB=0 install	
 	#running ldconfig to prep for freetdm build
 	pgrep -f ldconfig > /dev/null
 fi
