@@ -89,18 +89,18 @@ fi
 #################
 lsb_release -c |grep -i wheezy &> /dev/null 2>&1
 if [ $? -eq 0 ]; then
-	echo "Good, you are running Debian 7 codename: wheezy"
+	echo "Good, you are running Debian 7 : wheezy"
 	echo
 else
 	lsb_release -c |grep -i jessie > /dev/null
 	if [ $? -eq 0 ]; then
-		/bin/echo "OK you are running Debian 8 CodeName: Jessie. This script is known to work"
+		/bin/echo "OK you are running Debian 8 : Jessie. This script is known to work"
 	else
-		echo "This script was written for Debian 7 codename wheezy & Debian 8 codename Jessie"
+		echo "This script was written for Debian 7 wheezy & Debian 8 Jessie"
 		echo
 		echo "Your OS appears to be:" lsb_release -a
 		echo
-		echo "Your OS is not supported... Exiting the install."
+		echo "Your OS is not currently supported... Exiting the install."
 		exit
 	fi
 fi
