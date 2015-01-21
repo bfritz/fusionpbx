@@ -551,7 +551,7 @@ fi
 ###############################################
 # Set the freeswitch src path based on version
 ###############################################
-fs_src_path=/usr/src/freeswitch-"$fs_ver"
+fs_src_path="/usr/src/freeswitch-$fs_ver"
 
 ################################################################
 #Used for pkg based installs for cp the base configs into place
@@ -1040,13 +1040,13 @@ service freeswitch restart
 ##############################
 #installing freeswitch sounds.
 ##############################
-cd "$fs_src_path"
 if [[ $freeswitch_cd_sounds == "y" ]]; then
-		if [[ $multi_core == "y" ]]; then
-			time make -j "$(nproc)"	cd-sounds-install
-		else
-			time make cd-sounds-install
-		fi
+	cd "$fs_src_path"
+	if [[ $multi_core == "y" ]]; then
+		time make -j "$(nproc)"	cd-sounds-install
+	else
+		time make cd-sounds-install
+	fi
 else
 	cd "$fs_src_path"
 	if [[ $multi_core == "y" ]]; then
