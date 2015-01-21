@@ -247,6 +247,10 @@ use_freeswitch_contrib="n"
 # Enable / Build Freetdm into freeswitch (UNDER DEVELOPMENT)
 ################################################################################
 use_mod_freetdm="n"
+#add sangoma support
+#sangoma_freetdm="n"
+#add rhino support
+#rhino_freetdm="n"
 
 ################################################################################
 # Enable / Build GsmOpen into freeswitch (UNDER DEVELOPMENT)
