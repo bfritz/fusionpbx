@@ -253,7 +253,7 @@ use_mod_freetdm="n"
 ################################################################################
 # Enable / Build GsmOpen into freeswitch (UNDER DEVELOPMENT)
 ################################################################################
-#use_gsmopen="n"
+use_gsmopen="n"
 
 ################################################################################
 #Freeswutch Modules Selection
@@ -300,17 +300,26 @@ use_mod_freetdm="n"
 ################################################################################
 #Enable optional modules from list above here used for fusionpnbx build !!!!!!
 ################################################################################
+#enable freetdm in the freeswitch /fusionpbx build
 if [[ $use_mod_freetdm == "y" ]]; then
-fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
-    mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
-    mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
-    mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random \
-    ../../libs/freetdm/mod_freetdm mod_v8)
+	fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
+    	mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
+    	mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
+    	mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random \
+    	../../libs/freetdm/mod_freetdm mod_v8)
+#enable gsmopen in the freeswitchch / fusionpbx build    	
+elif [[ $use_mod_gsmopen == "y" ]]; then
+		fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
+    		mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
+    		mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
+    		mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random \
+     		mod_v8 gsmopen mod_siren mod_xml_curl )
+#use defualt set of modules for freeswitc/fusionpbx
 else
-fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
-    mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
-    mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
-    mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random mod_v8)
+	fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
+    	mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
+    	mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
+    	mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random mod_v8)
 fi
 #############################
 # Optional Freeswitch Modules
@@ -401,7 +410,7 @@ logging_level="n"
 # Select to use the Stable or Dev Branch of fusionpbx
 # Change the y to n to use the dev branch for fusionpbx
 ########################################################
-fusionpbx_stable="y"
+fusionpbx_stable="n"
 
 #############################################################################
 #Set how long to keep freeswitch/fusionpbx log files 1 to 30 days (Default:5)
@@ -532,13 +541,18 @@ install_ajenti="n"
 ######################################################
 # Hard Set Varitables (Do Not EDIT) Freeswitch default
 ######################################################
+####################################################
+# Set Freeswitch version to us in the build/install
+######################################################
 if [[ $freeswitch_stable == "y" ]];then
 	fs_ver="v1.4"
 else
 	fs_ver="v1.5"
 fi
 
+###############################################
 # Set the freeswitch src path based on version
+###############################################
 fs_src_path=/usr/src/freeswitch-"$fs_ver"
 
 ################################################################
@@ -595,6 +609,7 @@ echo
 #######################################
 ##############################
 # Detect and Set Intel/AMD Repos
+# Set Release or devel repos
 ##############################
 if [[ $freeswitch_pkgs == "y" ]]; then
 case $(uname -m) in x86_64|i[4-6]86)
@@ -632,6 +647,7 @@ esac
 
 ##############################
 # Detect and Set ArmHF Repos
+# Set Release or devel repos
 ##############################
 case $(uname -m) in armv7l)
 	if [[ $freeswitch_stable == "y" ]]; then
@@ -686,6 +702,9 @@ apt-get -y install unixodbc uuid memcached libtiff5 libtiff-tools time bison hto
 
 #############################################
 #-----Start Install of freeswitch-----------
+#############################################
+#############################################
+# Install Freeswitch Pkgs used by fusion gui
 #############################################
 apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-meta-codecs freeswitch-mod-commands freeswitch-mod-curl \
 		freeswitch-mod-db freeswitch-mod-distributor freeswitch-mod-dptools freeswitch-mod-enum freeswitch-mod-esf freeswitch-mod-esl \
@@ -781,17 +800,12 @@ else
 ################################
 # Install freeswitch build deps
 ################################
-lsb_release -c |grep -i jessie > /dev/null
+################################################
+# Check if using wheezy and install wheezy pkgs
+# else install jessie pkgs
+################################################
+lsb_release -c |grep -i wheezy > /dev/null
 if [ $? -eq 0 ]; then
-	apt-get -y install time ntp ssh vim git-core libjpeg62-turbo-dev subversion build-essential \
-		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
-		python-dev pkg-config libtiff5-dev libldns-dev \
-		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev  \
-		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev \
-		libedit-dev screen htop pkg-config bzip2 bison libssl-dev unixodbc \
-		unixodbc-dev libtiff-tools libmemcached-dev uuid-dev libpq5 libpq-dev \
-		portaudio19-dev lame libldap2-dev lua5.2 liblua5.2-dev
-else
 	apt-get -y install time ntp ssh vim git-core libjpeg-dev subversion build-essential \
 		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
 		python-dev pkg-config libtiff5-dev libldns-dev \
@@ -800,10 +814,19 @@ else
 		libedit-dev screen htop pkg-config bzip2 bison libssl-dev unixodbc \
 		unixodbc-dev libtiff-tools libmemcached-dev uuid-dev libpq5 libpq-dev \
 		portaudio19-dev lame libldap2-dev lua5.2 liblua5.2-dev
+else
+	apt-get -y install time ntp ssh vim git-core libjpeg62-turbo-dev subversion build-essential \
+		autoconf automake devscripts gawk g++ git-core libtool make libncurses5-dev \
+		python-dev pkg-config libtiff5-dev libldns-dev \
+		libperl-dev libgdbm-dev libdb-dev gettext libcurl4-openssl-dev  \
+		libpcre3-dev libspeex-dev libspeexdsp-dev libsqlite3-dev \
+		libedit-dev screen htop pkg-config bzip2 bison libssl-dev unixodbc \
+		unixodbc-dev libtiff-tools libmemcached-dev uuid-dev libpq5 libpq-dev \
+		portaudio19-dev lame libldap2-dev lua5.2 liblua5.2-dev
 fi
-#######################
-# Install Freetdm Deps
-#######################
+###################################
+# Install Freetdm Deps if selected
+###################################
 if [ $use_mod_freetdm == "y" ]; then
 	#add stuff for freetdm/dahdi
 	apt-get -y install linux-headers-"$(uname -r)"
@@ -813,9 +836,10 @@ if [ $use_mod_freetdm == "y" ]; then
 	pgrep -f ldconfig > /dev/null
 fi
 
-#####################################################################
-#grap the freeswitch 1.4 release src code from the freeswitch stache
-#####################################################################
+########################################################################################
+# grab the freeswitch 1.4 release src code from the freeswitch stache if stable selected
+# else grab the freeswitch 1.5 head branch for building.
+########################################################################################
 if [[ $freeswitch_stable == "y" ]];then
 	echo " Pulling freeswitch 1.4 stable branch from stache repo "
 	time git clone https://stash.freeswitch.org/scm/fs/freeswitch.git -b "$fs_ver" "$fs_src_path"
@@ -830,6 +854,15 @@ fi
 if [[ $use_freeswitch_contrib == "y" ]]; then
 	time git clone https://stash.freeswitch.org/scm/fs/freeswitch-contrib.git "$fs_src_path"/contrib
 fi
+
+#################################
+# add patches for updating builds
+##################################
+#fix mod_shout build
+sed -i "$fs_src_path"/src/mod/formats/mod_shout/Makefile.in -e 's|mpg123-1.13.2|mpg123-1.19.0|g' 
+#Update ZMQ
+sed -i "$fs_src_path"/src/mod/event_handlers/mod_event_zmq/Makefile.in -e 's|2.1.9|4.0.5|g' 
+sed -i "$fs_src_path"/src/mod/event_handlers/mod_event_zmq/Makefile.in -e 's|ZMQ_BASEURL=http://download.zeromq.org|ZMQ_BASEURL=file://${DISTDIR}/${DIST_SUBDIR}/|g' 
 
 #######################
 #bootstrap the srccode
@@ -1346,6 +1379,9 @@ apt-get update
 ###########################
 #Installing fusionpbx pkgs
 ###########################
+##########################################
+# Install default minimal fusionpbx pkgs
+##########################################
 apt-get -y --force-yes install fusionpbx-core fusionpbx-app-calls fusionpbx-app-calls-active fusionpbx-app-call-block \
 	fusionpbx-app-contacts fusionpbx-app-destinations fusionpbx-app-dialplan fusionpbx-app-dialplan-inbound \
 	fusionpbx-app-dialplan-outbound fusionpbx-app-extensions fusionpbx-app-follow-me fusionpbx-app-gateways \
