@@ -122,8 +122,6 @@ cat << DELIM
    
    or Fresh Install Of Debian 8 (Jessie). 
    
-   			("Ubuntu Is Unsupported with this script")
-
    If It Fails For Any Reason Please Report To r.neese@gmail.com.
 
    Please Include Any Screen Output You Can To Show Where It Fails.
