@@ -594,6 +594,22 @@ else
 	/bin/rm /tmp/index.google
 fi
 echo
+#######################################
+#Setup Main debian repo for right pkgs
+#######################################
+lsb_release -c |grep -i wheezy &> /dev/null 2>&1
+if [ $? -eq 0 ]; then
+	cat > "/etc/apt/source.list << DELIM
+	deb http://mirrors.digitalocean.com/debian wheezy main contrib non-free
+	deb http://security.debian.org/ wheezy/updates main contrib non-free
+DELIM
+else
+	cat > "/etc/apt/source.list << DELIM
+	deb http://mirrors.digitalocean.com/debian jessie main contrib non-free
+	deb http://security.debian.org/ jessie/updates main contrib non-free
+DELIM
+fi
+
 ####################################
 #----- upgrading base install-----
 ####################################
@@ -829,7 +845,7 @@ if [ $use_mod_freetdm == "y" ]; then
 	#add stuff for freetdm/dahdi
 	apt-get -y install linux-headers-"$(uname -r)"
 	#add the headers so dahdi can build the modules...
-	apt-get -y install libpri dahdi dahdi-linux dahdi-firmware-nonfree dahdi-source libtonezone-dev libtonezone2.0
+	apt-get -y install libpri1.4 dahdi dahdi-linux dahdi-firmware-nonfree dahdi-source libtonezone-dev libtonezone2.0
 	#running ldconfig to prep for freetdm build
 	pgrep -f ldconfig > /dev/null
 fi
