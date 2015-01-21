@@ -246,6 +246,7 @@ multi_core="n"
 ################################################################################
 # Enable / Build Freetdm into freeswitch (UNDER DEVELOPMENT)
 # Digium/openzap/rhino/sangoma card support
+# Requires you build from Source. Currently no packages.
 ################################################################################
 #Digium/openzap card support
 use_mod_freetdm="n"
@@ -258,6 +259,8 @@ use_mod_freetdm="n"
 
 ################################################################################
 # Enable / Build GsmOpen into freeswitch (UNDER DEVELOPMENT)
+# Supported devices : hauwii usb modems voice unlocked
+# Requires you build from Source. Currently no packages.
 ################################################################################
 use_mod_gsmopen="n"
 
@@ -857,6 +860,19 @@ if [ $use_mod_freetdm == "y" ]; then
 	#add the headers so dahdi can build the modules...
 	apt-get -y install libpri1.4 libpri-dev dahdi dahdi-linux dahdi-firmware-nonfree \
 		dahdi-source libtonezone-dev libtonezone2.0 libopenr2-3 libopenr2-bin libopenr2-dev
+	#running ldconfig to prep for freetdm build
+	pgrep -f ldconfig > /dev/null
+fi
+
+###################################
+# Install gsmopen Deps if selected
+###################################
+if [ $use_mod_freetdm == "y" ]; then
+	apt-get -y install libgsmsd7 libgsmsmme-dev libgsmme1c2a libgsm0710mux3 libgsm-tools \
+		libgsm1 libgsm1-dev libgsm0710-0 libgsm0710-dev usb-modeswitch-data usb-modeswitch
+	#git pull/build libctb
+	git clone https://github.com/homme/cesium-terrain-builder.git /usr/src/libctb-src
+	
 	#running ldconfig to prep for freetdm build
 	pgrep -f ldconfig > /dev/null
 fi
