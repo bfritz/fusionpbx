@@ -71,7 +71,7 @@ echo
 esac
 echo
 ########################################################
-# removes the cd img from the /etc/apt/sources.list file 
+# removes the cd img from the /etc/apt/sources.list file
 # (not needed after base install)
 ########################################################
 sed -i '/cdrom:/d' /etc/apt/sources.list
@@ -119,13 +119,13 @@ cat << DELIM
              "IT IS NOT INTENDED TO BE RUN MULTIPLE TIMES"
 
    This Script Is Ment To Be Run On A Fresh Install Of Debian 7 (Wheezy)
-   
-   or Fresh Install Of Debian 8 (Jessie). 
-   
+
+   or Fresh Install Of Debian 8 (Jessie).
+
    If It Fails For Any Reason Please Report To r.neese@gmail.com.
 
    Please Include Any Screen Output You Can To Show Where It Fails.
-   
+
 DELIM
 
 ###############################################
@@ -168,7 +168,7 @@ cat << DELIM
 DELIM
 echo
 ########################################
-# FreeSWITCH Debian FHS Configuration 
+# FreeSWITCH Debian FHS Configuration
 ########################################
 cat << DELIM
   " FreeSWITCH Debian FHS Configuration "
@@ -301,13 +301,13 @@ use_mod_gsmopen="n"
 #enable freetdm in the freeswitch /fusionpbx build
 if [[ $use_mod_freetdm == "y" ]]; then
 	fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
-    	mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
-    	mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
-    	mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random mod_v8\
-    	../../libs/freetdm/mod_freetdm )
-#enable gsmopen in the freeswitchch / fusionpbx build    	
+    		mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
+    		mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
+    		mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random mod_v8\
+    		../../libs/freetdm/mod_freetdm )
+#enable gsmopen in the freeswitchch / fusionpbx build
 elif [[ $use_mod_gsmopen == "y" ]]; then
-		fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
+	fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
     		mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
     		mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
     		mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random \
@@ -315,9 +315,9 @@ elif [[ $use_mod_gsmopen == "y" ]]; then
 #use defualt set of modules for freeswitc/fusionpbx
 else
 	fusionpbx_modules_add=( mod_blacklist mod_callcenter mod_cidlookup mod_curl mod_distributor \
-    	mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
-    	mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
-    	mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random mod_v8)
+    		mod_esl mod_lcr mod_memcache mod_amrwb mod_celt mod_codec2 mod_isac mod_silk mod_siren \
+    		mod_theora mod_portaudio mod_dingaling mod_spy mod_translate mod_flite mod_pocketsphinx \
+    		mod_tts_commandline mod_event_multicast mod_event_test mod_shout mod_rtmp mod_random mod_v8 )
 fi
 #############################
 # Optional Freeswitch Modules
@@ -341,14 +341,14 @@ fi
 #event_handlers/mod_odbc_cdr      #event_handlers/mod_rayo          #event_handlers/mod_snmp
 #formats/mod_shell_stream         #formats/mod_ssml                 #formats/mod_vlc
 #languages/mod_basic              #languages/mod_java               #languages/mod_managed
-#languages/mod_perl               #languages/mod_python             
+#languages/mod_perl               #languages/mod_python
 #languages/mod_yaml               #loggers/mod_graylog2             #say/mod_say_de
 #say/mod_say_es                   #say/mod_say_es_ar                #say/mod_say_fa
 #say/mod_say_fr                   #say/mod_say_he                   #say/mod_say_hr
 #say/mod_say_hu                   #say/mod_say_it                   #say/mod_say_ja
 #say/mod_say_nl                   #say/mod_say_pl                   #say/mod_say_pt
 #say/mod_say_ru                   #say/mod_say_th                   #say/mod_say_zh
-#say/mod_say_sv                   #xml_int/mod_xml_ldap             #xml_int/mod_xml_radius           
+#say/mod_say_sv                   #xml_int/mod_xml_ldap             #xml_int/mod_xml_radius
 #mod_posix_timer                  #mod_timerfd
 
 #../../libs/freetdm/mod_freetdm
@@ -517,8 +517,8 @@ db_user_name=fusionpbxadmin
 db_user_passwd=fusionpbx2015
 
 ###############################################################################
-# Disable xml_cdr files in /var/log/freeswitch/xml_cdr and only log cdr to the 
-# sqlite or pgsql database only. 
+# Disable xml_cdr files in /var/log/freeswitch/xml_cdr and only log cdr to the
+# sqlite or pgsql database only.
 ###############################################################################
 xml_cdr_files="n"
 
@@ -677,9 +677,9 @@ DELIM
 			deb http://repo.fusionpbx.com/freeswitch-armhf/head/debian/ jessie main
 DELIM
 		fi
-	fi	
+	fi
 esac
-	
+
 ################################
 #adding key for freeswitch repo
 ################################
@@ -712,12 +712,12 @@ apt-get -y install --force-yes freeswitch freeswitch-init freeswitch-meta-codecs
 		freeswitch-mod-event-multicast freeswitch-mod-event-socket freeswitch-mod-event-test freeswitch-mod-local-stream freeswitch-mod-native-file \
 		freeswitch-mod-sndfile freeswitch-mod-tone-stream freeswitch-mod-lua freeswitch-mod-console freeswitch-mod-logfile freeswitch-mod-syslog \
 		freeswitch-mod-say-en freeswitch-mod-posix-timer freeswitch-mod-timerfd freeswitch-mod-v8 freeswitch-mod-xml-cdr freeswitch-mod-xml-curl \
-		freeswitch-mod-xml-rpc freeswitch-conf-vanilla 
+		freeswitch-mod-xml-rpc freeswitch-conf-vanilla
 
 ############################
 # Intel/AMD gets mod_shout
 ############################
-case $(uname -m) in x86_64|i[4-6]86)	
+case $(uname -m) in x86_64|i[4-6]86)
 	apt-get -y install --force-yes freeswitch-mod-shout
 esac
 
@@ -877,12 +877,12 @@ echo
 ########################
 #Reads the $fs_src_path"/modules.conf and looks for lines without a # sign Default enabled modules.
 modules_comp_default=( $(grep -v ^$ "$fs_src_path"/modules.conf | grep -v ^# | tr '\n' ' ') )
-	
+
 #Reads in the fusionpbx_modules_add list of modules to add and index's and counts them .
 module_count=`echo ${#fusionpbx_modules_add[@]}`
-#sets index to = 
+#sets index to =
 index=0
-	
+
 while [ "$index" -lt "$module_count" ]
 do
 modules_compile_add[$index]=$(grep "${fusionpbx_modules_add[$index]}" "$fs_src_path"/modules.conf | sed -e "s/#//g")
@@ -895,10 +895,10 @@ modules_compile=( ${modules_comp_default[*]} ${modules_compile_add[*]} )
 echo " Now enabling modules in $fs_src_path/modules.conf "
 index=0
 module_count=`echo ${#modules_compile[@]}`
-	
+
 #get rid of unwanted spacing in modules.conf
 sed -i -e "s/ *//g" "$fs_src_path"/modules.conf
-	
+
 while [ "$index" -lt "$module_count" ]
 do
 grep ${modules_compile[$index]} "$fs_src_path"/modules.conf > /dev/null
@@ -907,7 +907,7 @@ if [ $? -eq 0 ]; then
 		grep '#'${modules_compile[$index]} "$fs_src_path"/modules.conf > /dev/null
 	if [ $? -eq 0 ]; then
 		sed -i -e s,'#'${modules_compile[$index]},${modules_compile[$index]}, "$fs_src_path"/modules.conf
-		#reads the index of the modules that where added and echo's it enabled the following modules		
+		#reads the index of the modules that where added and echo's it enabled the following modules
 		echo " [ENABLED] ${modules_compile[$index]}"
 	else
 		#reads the index of the modules that where added and echo's what modules where already enabled
@@ -1047,7 +1047,7 @@ if [[ $freeswitch_cd_sounds == "y" ]]; then
 		else
 			time make cd-sounds-install
 		fi
-else	
+else
 	cd "$fs_src_path"
 	if [[ $multi_core == "y" ]]; then
 		time make -j "$(nproc)" hd-sounds-install
@@ -1611,7 +1611,7 @@ if [[ $postgresql_client == "y" ]]; then
 	if [ $? -eq 0 ]; then
 		cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
 		deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
-DELIM	
+DELIM
 	else
 		cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
 		deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main
@@ -1634,7 +1634,7 @@ DELIM
 	service php5-fpm restart
 	esac
 	clear
-	
+
 	##########################################
 	#Install and configure PGSQL 9.1 for armhf
 	##########################################
@@ -1643,7 +1643,7 @@ DELIM
 	echo "postgresql-client-9.1 is being installed"
 	for i in postgresql-client-9.1 php5-pgsql ;do apt-get -y install "${i}"; done
 	esac
-	
+
 	##########################################################
 	# Goto gui configure statement
 	##########################################################
@@ -1681,7 +1681,7 @@ if [[ $postgresql_server == "y" ]]; then
 	if [ $? -eq 0 ]; then
 		cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
 		deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
-DELIM	
+DELIM
 	else
 		cat > "/etc/apt/sources.list.d/pgsql-pgdg.list" << DELIM
 		deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main
@@ -1691,7 +1691,7 @@ DELIM
 	####################
 	#add pgsql repo key
 	####################
-	wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -	
+	wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
 
 	###############################################
 	#run repo update after adding in a new repo....
@@ -1719,7 +1719,7 @@ DELIM
 	#########################################################
 	su -l postgres -c "psql -c \"create role $pgsql_admin with superuser login password '$pgsql_admin_passwd'\""
 	clear
-	
+
 	##########################################################
 	# Goto gui configure statement
 	##########################################################
