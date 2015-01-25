@@ -534,6 +534,9 @@ db_user_name=fusionpbxadmin
 ###################################################################################
 db_user_passwd=fusionpbx2015
 
+######################################
+# ( Optional Not Required)
+######################################
 ###############################################################################
 # Disable xml_cdr files in /var/log/freeswitch/xml_cdr and only log cdr to the
 # sqlite or pgsql database only.
