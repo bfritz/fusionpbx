@@ -165,6 +165,11 @@ cat << DELIM
     You need to edit the script and enable the pgsql-client or pgsql
 
     option and fill in the required information.
+    
+    Please Referance :
+    
+    http://wiki.fusionpbx.com/index.php?title=Debian_Fusionpbx_Pkg_or_Source_Install
+    
 DELIM
 echo
 ########################################
