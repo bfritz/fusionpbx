@@ -1719,7 +1719,7 @@ DELIM
 	echo
 	printf '	Please open a web-browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
 	cat << DELIM
-	Or the Doamin name assigned to the machine like http://"$(hostname).$(dnsdomainname)".
+	Or the Doamin name assigned to the machine like http://"$(hostname)".yourdomin.com
 	On the First configuration page of the web user interface.
 	Please Select the PostgreSQL option in the pull-down menu as your Database
 	Also Please fill in the SuperUser Name and Password fields.
@@ -1795,7 +1795,7 @@ DELIM
 	echo
 	printf 'Please open a web browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
 	cat << DELIM
-	Or the Doamin name asigned to the machine like http://"$(hostname).$(dnsdomainname)".
+	Or the Doamin name asigned to the machine like http://"$(hostname)".yourdomin.com.
 	On the First configuration page of the web user interface
 	Please Select the PostgreSQL option in the pull-down menu as your Database
 	Also Please fill in the SuperUser Name and Password fields.
@@ -1815,7 +1815,7 @@ else
 	echo
 	printf ' Please open a web-browser to http://'; ip -f inet addr show dev eth0 | sed -n 's/^ *inet *\([.0-9]*\).*/\1/p'
 	cat << DELIM
-	or the Domain name asigned to the machine like http://"pbx.$(hostname).com".
+	or the Domain name asigned to the machine like http://"$(hostname)".yourdomin.com.
 	On the First Configuration page of the web user interface "$wui_name".
 	Also Please fill in the SuperUser Name and Password fields.
 	Freeswitch & FusionPBX Web User Interface Installation Completed
@@ -1913,11 +1913,14 @@ find "/var/lib/fusionpbx/db" -type d -exec chmod 777 {} +
 find "/var/lib/fusionpbx/db" -type f -exec chmod 666 {} +
 
 ########################################################
-#Linking moh dir so freeswitch can read in the moh files
+# Setting up Music on Hold based on fusion FHS
 ########################################################
 mkdir /usr/share/freeswitch/sounds/music
+#Linking moh dir so freeswitch can read in the moh files
 ln -s /var/lib/fusionpbx/sounds/music /usr/share/freeswitch/sounds/music/fusionpbx
+#Linking custom dir so freeswitch can read in the custom sounds files
 ln -s /var/lib/fusionpbx/sounds/custom /usr/share/freeswitch/sounds/
+# setting permissions on the dir
 chown -R www-data:www-data /var/lib/fusionpbx/sounds
 
 #########################################################
@@ -2293,3 +2296,4 @@ echo " # The Freeswitch / Fusionpbx Install is now complete and your system is r
 echo " ########################################################################################## "
 echo " #                   Please send any feed back to r.neese@gmail.com                       # "
 echo " ########################################################################################## "
+
