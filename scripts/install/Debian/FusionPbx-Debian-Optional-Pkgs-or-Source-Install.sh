@@ -1861,7 +1861,28 @@ fs_scripts="/var/lib/fusionpbx/scripts"
 fs_storage="/var/lib/fusionpbx/storage"
 fs_usr=freeswitch
 fs_grp=\$fs_usr
-fs_options="-nc -rp"
+#These are the optional arguments you can pass to freeswitch:
+# -nf                    -- no forking
+# -reincarnate           -- restart the switch on an uncontrolled exit
+# -reincarnate-reexec    -- run execv on a restart (helpful for upgrades)
+# -u [user]              -- specify user to switch to
+# -g [group]             -- specify group to switch to
+# -core                  -- dump cores
+# -rp                    -- enable high(realtime) priority settings
+# -lp                    -- enable low priority settings
+# -np                    -- enable normal priority settings
+# -vg                    -- run under valgrind
+# -nosql                 -- disable internal sql scoreboard
+# -heavy-timer           -- Heavy Timer, possibly more accurate but at a cost
+# -nonat                 -- disable auto nat detection
+# -nonatmap              -- disable auto nat port mapping
+# -nocal                 -- disable clock calibration
+# -nort                  -- disable clock clock_realtime
+# -stop                  -- stop freeswitch
+# -nc                    -- do not output to a console and background
+# -ncwait                -- do not output to a console and background but wait until the system is ready before exiting (implies -nc)
+# -c                     -- output to a console and stay in the foreground
+fs_options="-nc -rp -reincarnate"
 DAEMON_ARGS="-u \$fs_usr -g \$fs_grp -conf \$fs_conf -db \$fs_db -log \$fs_log -scripts \$fs_scripts -run \$fs_run -storage \$fs_storage -recordings \$fs_recordings \$fs_options"
 DELIM
 
@@ -2130,7 +2151,7 @@ iptables -I INPUT -j DROP -p udp --dport 5080 -m string --string "friendly-scann
 # Logs cdr only to database. 
 ##################################
 if [[ $xml_cdr_files == "y" ]]; then
-/bin/sed -i "$WWW_PATH"/"$wui_name"/app/vars/app_defaults.php -e 's#{"var_name":"xml_cdr_archive","var_value":"dir","var_cat":"Defaults","var_enabled":"true","var_description":""}#{"var_name":"xml_cdr_archive","var_value":"none","var_cat":"Defaults","var_enabled":"true","var_description":""}#'
+	sed -i "$WWW_PATH"/"$wui_name"/app/vars/app_defaults.php -e 's#{"var_name":"xml_cdr_archive","var_value":"dir","var_cat":"Defaults","var_enabled":"true","var_description":""}#{"var_name":"xml_cdr_archive","var_value":"none","var_cat":"Defaults","var_enabled":"true","var_description":""}#'
 fi
 
 ##########################################
@@ -2138,7 +2159,7 @@ fi
 # warnings and errors
 ###########################################
 if [[ $logging_level == "y" ]]; then
-/bin/sed -i /usr/share/examples/fusionpbx/resources/templates/conf/autoload_configs/logfile.conf.xml -e 's#<map name="all" value="debug,info,notice,warning,err,crit,alert"/>#<map name="all" value="warning,err,crit,alert"/>#'
+	sed -i /usr/share/examples/fusionpbx/resources/templates/conf/autoload_configs/logfile.conf.xml -e 's#<map name="all" value="debug,info,notice,warning,err,crit,alert"/>#<map name="all" value="warning,err,crit,alert"/>#'
 fi
 
 ##############################
