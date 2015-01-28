@@ -1852,6 +1852,7 @@ done
 ##################################################
 cat > '/etc/default/freeswitch' << DELIM
 CONFDIR="/etc/fusionpbx/switch/conf"
+#
 # Uncooment extra lines and make sure to add cut and paste them to the DAEMON_ARGS 
 # Options to control locations of files: 
 #fs_base=""  # -base $fs_base
