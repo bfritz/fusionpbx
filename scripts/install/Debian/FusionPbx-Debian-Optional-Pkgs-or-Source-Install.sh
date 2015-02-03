@@ -23,6 +23,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 ################################################################################
+
 ##################################
 #----OS ENVIRONMENT CHECKS-------
 ##################################
@@ -36,9 +37,9 @@ fi
 echo
 echo "You're root.... continuing!"
 echo
-####################################
-# Run a Hardware compatabilty Check
-####################################
+###########################################
+# Run a OS and Platform compatabilty Check
+###########################################
 ########
 # ARMEL
 ########
@@ -94,13 +95,14 @@ if [ $? -eq 0 ]; then
 else
 	lsb_release -c |grep -i jessie > /dev/null
 	if [ $? -eq 0 ]; then
-		echo "OK you are running Debian 8 : Jessie. This script is known to work"
+		echo " OK you are running Debian 8 : Jessie. This script is known to work "
+		echo " with building from source. No Jessie pkgs yet. "
 	else
-		echo "This script was written for Debian 7 wheezy & Debian 8 Jessie (Testing)"
+		echo " This script was written for Debian 7 wheezy & Debian 8 Jessie (Testing) "
 		echo
-		echo "Your OS appears to be:" lsb_release -a
+		echo " Your OS appears to be: " lsb_release -a
 		echo
-		echo "Your OS is not currently supported... Exiting the install."
+		echo " Your OS is not currently supported... Exiting the install. "
 		exit
 	fi
 fi
