@@ -1154,8 +1154,8 @@ legend {
 				</div>
 
 				<script>
-					var domain_names = new Array("<?=implode('","', $ary_domain_names)?>");
-					var domain_descs = new Array("<?=implode('","', $ary_domain_descs)?>");
+					var domain_names = new Array("<?php echo implode('","', $ary_domain_names)?>");
+					var domain_descs = new Array("<?php echo implode('","', $ary_domain_descs)?>");
 
 					function domain_search(criteria) {
 						for (var x = 0; x < domain_names.length; x++) {
