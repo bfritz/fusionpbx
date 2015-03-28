@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2013
+	Portions created by the Initial Developer are Copyright (C) 2008-2015
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -25,9 +25,7 @@
 	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 
-
 //check the permission
-
 	if(defined('STDIN')) {
 		$document_root = str_replace("\\", "/", $_SERVER["PHP_SELF"]);
 		preg_match("/^(.*)\/app\/.*$/", $document_root, $matches);
@@ -40,10 +38,11 @@
 	else {
 		include "root.php";
 		require_once "resources/require.php";
+		require_once "resources/pdo.php";
 	}
 
 //set debug
-	$debug = true; //true //false
+	$debug = false; //true //false
 	if($debug){
 		$time5 = microtime(true);
 		$insert_time=$insert_count=0;
@@ -57,14 +56,39 @@
 //set pdo attribute that enables exception handling
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
+//add rating functions if the billing is installed
 	if (file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH."/app/billing/app_config.php")){
 		require_once "app/billing/resources/functions/rating.php";
 	}
+
 //define the process_xml_cdr function
 	function process_xml_cdr($db, $leg, $xml_string) {
 		//set global variable
 			global $debug;
+
+		//fix the xml by escaping the contents of <sip_full_from>
+			preg_match("/<sip_full_from>(.*)<\/sip_full_from>/", $xml_string, $matches);
+			$match_result = str_replace("<", "&lt;", $matches[1]);
+			$match_result = str_replace(">", "&gt;", $match_result);
+			$xml_string = str_replace($matches[1], $match_result, $xml_string);
+
+		//fix the xml by escaping the contents of <sip_full_to>
+			preg_match("/<sip_full_to>(.*)<\/sip_full_to>/", $xml_string, $matches);
+			$match_result = str_replace("<", "&lt;", $matches[1]);
+			$match_result = str_replace(">", "&gt;", $match_result);
+			$xml_string = str_replace($matches[1], $match_result, $xml_string);
+
+		//fix the xml by escaping the contents of <caller_id>
+			preg_match("/<caller_id>(.*)<\/caller_id>/", $xml_string, $matches);
+			$match_result = str_replace("<", "&lt;", $matches[1]);
+			$match_result = str_replace(">", "&gt;", $match_result);
+			$xml_string = str_replace($matches[1], $match_result, $xml_string);
+
+		//fix the xml by escaping the contents of <sip_invite_record_route>
+			preg_match("/<sip_invite_record_route>(.*)<\/sip_invite_record_route>/", $xml_string, $matches);
+			$match_result = str_replace("<", "&lt;", $matches[1]);
+			$match_result = str_replace(">", "&gt;", $match_result);
+			$xml_string = str_replace($matches[1], $match_result, $xml_string);
 
 		//parse the xml to get the call detail record info
 			try {
@@ -261,7 +285,6 @@
 							$callee_number = check_str(urldecode($row->caller_profile->destination_number));
 							$callee_number_serie = number_series($callee_number);
 							$sql_user_rate = "SELECT v_lcr.currency, v_lcr.rate, v_lcr.connect_increment, v_lcr.talk_increment, v_lcr.currency FROM v_lcr WHERE v_lcr.carrier_uuid IS NULL AND v_lcr.enabled='true' AND v_lcr.lcr_direction='inbound' AND v_lcr.digits IN (".$callee_number_serie.") ORDER BY digits DESC, rate ASC, date_start DESC LIMIT 1";
-
 							if ($debug) {
 								echo "sql_user_rate: $sql_user_rate\n";
 							}
@@ -306,7 +329,6 @@
 							$lcr_user_currency = (strlen($db2->result[0]['currency'])?check_str($db2->result[0]['currency']):
 								(strlen($_SESSION['billing']['currency']['text'])?$_SESSION['billing']['currency']['text']:'USD')
 							);
-
 
 							// Actually, internal calls have 0 cost
 							$lcr_rate = 0; $lcr_first_increment = 0; $lcr_second_increment = 0;
@@ -467,7 +489,7 @@
 				print_r ($_POST["cdr"]);
 			}
 		//authentication for xml cdr http post
-			if (strlen($_SESSION["xml_cdr"]["http_enabled"]) == 0) {
+			if ($_SESSION["cdr"]["http_enabled"]["boolean"] == "true" && strlen($_SESSION["xml_cdr"]["username"]) == 0) {
 				//get the contents of xml_cdr.conf.xml
 					$conf_xml_string = file_get_contents($_SESSION['switch']['conf']['dir'].'/autoload_configs/xml_cdr.conf.xml');
 
@@ -478,34 +500,35 @@
 					catch(Exception $e) {
 						echo $e->getMessage();
 					}
-					$_SESSION["xml_cdr"]["http_enabled"] = false;
 					foreach ($conf_xml->settings->param as $row) {
 						if ($row->attributes()->name == "cred") {
 							$auth_array = explode(":", $row->attributes()->value);
-							$_SESSION["xml_cdr"]["username"] = $auth_array[0];
-							$_SESSION["xml_cdr"]["password"] = $auth_array[1];
-							//echo "username: ".$_SESSION["xml_cdr"]["username"]."<br />\n";
-							//echo "password: ".$_SESSION["xml_cdr"]["password"]."<br />\n";
+							//echo "username: ".$auth_array[0]."<br />\n";
+							//echo "password: ".$auth_array[1]."<br />\n";
 						}
 						if ($row->attributes()->name == "url") {
-							$_SESSION["xml_cdr"]["http_enabled"] = true;
+							//check name is equal to url
 						}
 					}
 			}
 
 		//if http enabled is set to false then deny access
-			if (!$_SESSION["xml_cdr"]["http_enabled"]) {
+			if ($_SESSION["cdr"]["http_enabled"]["boolean"] == "false") {
 				echo "access denied<br />\n";
 				return;
 			}
 
 		//check for the correct username and password
-			if ($_SESSION["xml_cdr"]["username"] == $_SERVER["PHP_AUTH_USER"] && $_SESSION["xml_cdr"]["password"] == $_SERVER["PHP_AUTH_PW"]) {
-				//echo "access granted<br />\n";
-			}
-			else {
-				echo "access denied<br />\n";
-				return;
+			if ($_SESSION["cdr"]["http_enabled"]["boolean"] == "true") {
+				if ($auth_array[0] == $_SERVER["PHP_AUTH_USER"] && $auth_array[1] == $_SERVER["PHP_AUTH_PW"]) {
+					//echo "access granted<br />\n";
+					$_SESSION["xml_cdr"]["username"] = $auth_array[0];
+					$_SESSION["xml_cdr"]["password"] = $auth_array[1];
+				}
+				else {
+					echo "access denied<br />\n";
+					return;
+				}
 			}
 		//loop through all attribues
 			//foreach($xml->settings->param[1]->attributes() as $a => $b) {
@@ -531,7 +554,7 @@
 	$xml_cdr_dir = $_SESSION['switch']['log']['dir'].'/xml_cdr';
 	$dir_handle = opendir($xml_cdr_dir);
 	$x = 0;
-	while($file=readdir($dir_handle)) {
+	while($file = readdir($dir_handle)) {
 		if ($file != '.' && $file != '..') {
 			if ( !is_dir($xml_cdr_dir . '/' . $file) ) {
 				//get the leg of the call
