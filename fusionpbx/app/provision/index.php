@@ -124,117 +124,42 @@ openlog("fusion-provisioning", LOG_PID | LOG_PERROR, LOG_LOCAL0);
 		}
 	}
 
-//Digest or Basic
-	$sql_device = "select device_template from v_devices where device_mac_address='$mac' and device_provision_enable='true'";
-	$prep_statement_device = $db->prepare($sql_device);
-	$prep_statement_device->execute();
-	$result_device = $prep_statement_device->fetchAll(PDO::FETCH_NAMED);
-	foreach($result_device as $row_device) {
-		$device_template = $row_device["device_template"];
+//http authentication
+	if (strlen($provision["http_auth_username"]) > 0 && strlen($provision["http_auth_password"]) > 0) {
+		if (!isset($_SERVER['PHP_AUTH_USER'])) {
+			header('WWW-Authenticate: Basic realm="'.$_SESSION['domain_name']." ".date('r').'"');
+			header('HTTP/1.0 401 Unauthorized');
+			header("Content-Type: text/plain");
+			echo 'Authorization Required';
+			exit;
+		} else {
+			if ($_SERVER['PHP_AUTH_USER'] == $provision["http_auth_username"] && $_SERVER['PHP_AUTH_PW'] == $provision["http_auth_password"]) {
+				//authorized
+			}
+			else {
+				//access denied
+				header('WWW-Authenticate: Basic realm="'.$_SESSION['domain_name']." ".date('r').'"');
+				unset($_SERVER['PHP_AUTH_USER'],$_SERVER['PHP_AUTH_PW']);
+				usleep(rand(1000000,3000000));//1-3 seconds.
+				echo 'Authorization Required';
+				exit;
+			}
+		}
 	}
-	unset($result_device, $prep_statement_device);
 
-	syslog(LOG_INFO, "template: $device_template");
-	switch ($device_template){
-		case "linksys/spa2102":
-		case "linksys/spa3102":
-		case "linksys/spa921":
-		case "linksys/spa942":
-		case "cisco/spa112":
-		case "cisco/spa502g":
-		case "cisco/spa504g":
-		case "cisco/spa509g":
-		case "cisco/spa301":
-		case "cisco/spa514g":
-		case "cisco/spa512g":
-		case "cisco/spa501g":
-		case "cisco/spa525g":
-		case "cisco/spa508g":
-		case "cisco/spa122":
-		case "cisco/spa303":
-			syslog(LOG_INFO, "using digest authentication");
-			if (strlen($provision["http_auth_username"]) > 0 && strlen($provision["http_auth_password"]) > 0) {
-			
-				if (empty($_SERVER['PHP_AUTH_DIGEST'])) {
-					header('HTTP/1.1 401 Unauthorized');
-					header('WWW-Authenticate: Digest realm="'.$_SESSION['domain_name'].
-						'",qop="auth",nonce="'.uniqid().'",opaque="'.md5($_SESSION['domain_name']).'"');
-
-					echo 'Authorization Required';
-					exit;
-				}
-				else{
-					if (!($data = http_digest_parse($_SERVER['PHP_AUTH_DIGEST']))){
-						header('HTTP/1.1 401 Unauthorized');
-						header('WWW-Authenticate: Digest realm="'.$_SESSION['domain_name'].
-							'",qop="auth",nonce="'.uniqid().'",opaque="'.md5($_SESSION['domain_name']).'"');
-
-						echo 'Authorization Required';
-						exit;
-					}
-				
-					$A1 = md5($provision["http_auth_username"] . ':' . $_SESSION['domain_name'] . ':' . $provision["http_auth_password"]);
-					$A2 = md5($_SERVER['REQUEST_METHOD'].':'.$data['uri']);
-					$valid_response = md5($A1.':'.$data['nonce'].':'.$data['nc'].':'.$data['cnonce'].':'.$data['qop'].':'.$A2);
-					syslog(LOG_INFO, "valid_response: $valid_response");
-					syslog(LOG_INFO, "data[response]".$data['response']);
-					if ($data['response'] != $valid_response){
-						header('HTTP/1.1 401 Unauthorized');
-						header('WWW-Authenticate: Digest realm="'.$_SESSION['domain_name'].
-							'",qop="auth",nonce="'.uniqid().'",opaque="'.md5($_SESSION['domain_name']).'"');
-
-						echo 'Authorization Required';
-						exit;
-					}
-				}
-			}
-		
-			break;
-		defaut:
-			syslog(LOG_INFO, "using basic authentication");
-			//http authentication
-			//http://www.php.net/manual/en/features.http-auth.php
-			if (strlen($provision["http_auth_username"]) > 0 && strlen($provision["http_auth_password"]) > 0) {
-				if (!isset($_SERVER['PHP_AUTH_USER'])) {
-					header('WWW-Authenticate: Basic realm="'.$_SESSION['domain_name']." ".date('r').'"');
-					header('HTTP/1.0 401 Unauthorized');
-					header("Content-Type: text/plain");
-					echo 'Authorization Required';
-					exit;
-				} else {
-					if ($_SERVER['PHP_AUTH_USER'] == $provision["http_auth_username"] && $_SERVER['PHP_AUTH_PW'] == $provision["http_auth_password"]) {
-						//authorized
-					}
-					else {
-						//access denied
-						header('WWW-Authenticate: Basic realm="'.$_SESSION['domain_name']." ".date('r').'"');
-						unset($_SERVER['PHP_AUTH_USER'],$_SERVER['PHP_AUTH_PW']);
-						usleep(rand(1000000,3000000));//1-3 seconds.
-						echo 'Authorization Required';
-						exit;
-					}
-				}
-			}
-			
-			//if password was defined in the system -> variables page then require the password.
-			if (strlen($provision['password']) > 0) {
-				//deny access if the password doesn't match
-				if ($provision['password'] != check_str($_REQUEST['password'])) {
-					//log the failed auth attempt to the system, to be available for fail2ban.
-					openlog('FusionPBX', LOG_NDELAY, LOG_AUTH);
-					syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt bad password for ".check_str($_REQUEST['mac']));
-					closelog();
-
-					usleep(rand(1000000,3000000));//1-3 seconds.
-					echo "access denied 4";
-					return;
-				}
-			}
-
+//if password was defined in the system -> variables page then require the password.
+	if (strlen($provision['password']) > 0) {
+		//deny access if the password doesn't match
+		if ($provision['password'] != check_str($_REQUEST['password'])) {
+			//log the failed auth attempt to the system, to be available for fail2ban.
+			openlog('FusionPBX', LOG_NDELAY, LOG_AUTH);
+			syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt bad password for ".check_str($_REQUEST['mac']));
+			closelog();
+			usleep(rand(1000000,3000000));//1-3 seconds.
+			echo "access denied 4";
+			return;
+		}
 	}
-	
-
-
 
 //output template to string for header processing
 	$prov = new provision;
