@@ -500,11 +500,12 @@ else {
 
 			echo "	<td valign='top' class='".$row_style[$c]."' nowrap=\"nowrap\">";
 			if (strlen($tmp_name) > 0 && file_exists($tmp_dir.'/'.$tmp_name)) {
-				echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('".PROJECT_PATH."/app/recordings/recording_play.php?a=download&type=moh&filename=".base64_encode('archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
+				$relative_tmp_dir = $path_mod.'/archive/'.$tmp_year.'/'.$tmp_month.'/'.$tmp_day;
+				echo "		<a href=\"javascript:void(0);\" onclick=\"window.open('".PROJECT_PATH."/app/recordings/recording_play.php?a=download&type=moh&filename=".base64_encode($relative_tmp_dir.'/'.$tmp_name)."', 'play',' width=420,height=150,menubar=no,status=no,toolbar=no')\">\n";
 				echo "			".$text['label-play']."\n";
 				echo "		</a>\n";
 				echo "		&nbsp;\n";
-				echo "		<a href=\"../recordings/recordings.php?a=download&type=rec&t=bin&filename=".base64_encode("archive/".$tmp_year."/".$tmp_month."/".$tmp_day."/".$tmp_name)."\">\n";
+				echo "		<a href=\"../recordings/recordings.php?a=download&type=rec&t=bin&filename=".base64_encode($relative_tmp_dir.'/'.$tmp_name)."\">\n";
 				echo "			".$text['label-download']."\n";
 				echo "		</a>\n";
 			}
